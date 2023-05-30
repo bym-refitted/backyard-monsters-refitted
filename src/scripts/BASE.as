@@ -595,7 +595,7 @@ package
             }
          }
          GLOBAL.attackingPlayer.isAttacking = GLOBAL.attackingPlayer != GLOBAL.player;
-         PLEASEWAIT.Show(KEYS.Get("msg_loading"));
+         PLEASEWAIT.Show("Loading...");
          GRID.CreateGrid();
          POPUPS.Setup();
          CREEPS.Clear();
@@ -713,7 +713,49 @@ package
          }
          else
          {
-            new URLLoaderApi().load(GLOBAL._baseURL + "load",_loc8_,handleBaseLoadSuccessful,handleBaseLoadError);
+            var s:String = "Comment: the Load() function resolves to this block.";
+            handleBaseLoadSuccessful({
+               "error":0,
+               "flags": [],
+               "fan": 0,
+               "protected":1,
+               "giftsentcount": 69696969,
+               "savetime": 100,
+               "currenttime": 200,
+               "id": 123123,
+               "baseseed": 123123,
+               "baseid": 420,
+               "fbid": 12312312312312,
+               "userid": 123123123,
+               "attackid": 0,
+               "homebase": true,
+               "unreadmessages": 0,
+               "buildinghealthdata": {},
+               "buildingdata":{},
+               "buildingresources":{},
+               "resources":{},
+               "credits":10000,
+               "loot":{},
+               "researchdata":[],
+               "stats":{},
+               "academy":{},
+               "siege":{},
+               "effects":{},
+               "monsters":{},
+               "aiattacks":{},
+               "tutorialstage": 0,
+               "storeitems": {},
+               "storedata":{},
+               "inventory":{},
+               "lockerdata":{},
+               "quests":{},
+               "monsterbaiter":{},
+               "champion": "null",
+               "attacks": [],
+               "name": "Penis O Nuallain",
+               "pic_square":"https://pbs.twimg.com/profile_images/619153589404069888/9mSn20q0_400x400.png",
+               "gifts":[]
+               });
          }
       }
       
@@ -805,8 +847,9 @@ package
             {
                GLOBAL._openBase = null;
             }
-            MapRoomManager.instance.worldID = obj.worldid;
+            MapRoomManager.instance.worldID = 0;
             GLOBAL.SetFlags(obj.flags);
+            // GLOBAL.SetFlags([]);
             QUESTS.Setup();
             GLOBAL._reloadonerror = false;
             if(TUTORIAL.hasFinished)
@@ -814,8 +857,10 @@ package
                _isProtected = int(obj["protected"]);
             }
             _isFan = int(obj.fan);
+            // _isFan = int(0);
             _isBookmarked = int(obj.bookmarked);
-            _installsGenerated = int(obj.installsgenerated);
+            // _isBookmarked = int(0);
+            _installsGenerated = int(42069);
             if(obj.fan)
             {
                QUESTS._global.bonus_fan = 1;
@@ -824,6 +869,7 @@ package
             {
                QUESTS._global.bonus_bookmark = 1;
             }
+            // if(obj.giftsentcount)
             if(obj.giftsentcount)
             {
                QUESTS._global.bonus_gifts = obj.giftsentcount;
@@ -967,7 +1013,7 @@ package
             }
             else
             {
-               _resources = _resources || {};
+               _resources ||= {};
                _resources.r1 = new SecNum(Math.floor(r.r1));
                _resources.r2 = new SecNum(Math.floor(r.r2));
                _resources.r3 = new SecNum(Math.floor(r.r3));
@@ -1685,6 +1731,7 @@ package
       
       private static function handleBaseLoadError(param1:IOErrorEvent) : void
       {
+         PLEASEWAIT.Get("handleBaseLoadError");
          if(GLOBAL._reloadonerror)
          {
             GLOBAL.CallJS("reloadPage");
@@ -1762,7 +1809,7 @@ package
             {
                if(_loc13_.t)
                {
-                  _loc11_[_loc13_.t] = _loc11_[_loc13_.t] || 0;
+                  _loc11_[_loc13_.t] ||= 0;
                   ++_loc11_[_loc13_.t];
                }
                if(!(_loc13_.t == 53 || _loc13_.t == 54))
@@ -2294,7 +2341,7 @@ package
          if(CREEPS._creepCount == 0)
          {
             _loc18_ = (_lastProcessed - _lastProcessedB) / (param1 - _lastProcessedB);
-            PLEASEWAIT.Update(KEYS.Get("msg_rendering") + int(100 * _loc18_) + "% ");
+            PLEASEWAIT.Update("Rendering... " + int(100 * _loc18_) + "% ");
          }
          else
          {
@@ -2487,7 +2534,7 @@ package
                popupMCCreepDamaged = new popup_damaged();
                popupMCCreepDamaged.mcFrame.Setup(false);
                popupMCCreepDamaged.title.htmlText = "<b>" + KEYS.Get("pop_injured_title") + "</b>";
-               popupMCCreepDamaged.tA.htmlText = KEYS.Get("pop_injured",{1:numCreepsDamaged});
+               popupMCCreepDamaged.tA.htmlText = KEYS.Get("pop_injured",{"1":numCreepsDamaged});
                popupMCCreepDamaged.bAction.SetupKey("btn_startheal");
                popupMCCreepDamaged.bAction.addEventListener(MouseEvent.CLICK,StartHealAll);
                popupMCCreepDamaged.bAction2.SetupKey("btn_healnow");
@@ -2867,7 +2914,7 @@ package
       {
          var _loc6_:int = 0;
          var _loc7_:int = 0;
-         var _loc5_:Boolean = BASE.isInfernoMainYardOrOutpost;
+         var _loc5_:Boolean = Boolean(BASE.isInfernoMainYardOrOutpost);
          if(BASE._pendingPurchase.length == 0)
          {
             if(param1 > BASE._credits.Get())
@@ -3748,13 +3795,13 @@ package
          _loc3_["siege"] = JSON.encode(GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD && isMainYardOrInfernoMainYard ? SiegeWeapons.exportWeapons() : _oldSiegeData);
          _loc3_["attackersiege"] = JSON.encode(GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD && isMainYardOrInfernoMainYard ? null : SiegeWeapons.exportWeapons());
          _loc3_["baseid"] = _baseID;
-         _loc3_["lastupdate"] = isNaN(UPDATES._lastUpdateID) ? 0 : UPDATES._lastUpdateID;
+         _loc3_["lastupdate"] = !!isNaN(UPDATES._lastUpdateID) ? 0 : UPDATES._lastUpdateID;
          _loc3_["academy"] = JSON.encode(GLOBAL.player.exportAcademyData());
          _loc3_["baseseed"] = _baseSeed;
          _loc3_["lockerdata"] = JSON.encode(CREATURELOCKER._lockerData);
          _loc3_["basevalue"] = _baseValue;
          _loc3_["points"] = _basePoints;
-         _loc3_["tutorialstage"] = BASE.isInfernoMainYardOrOutpost ? TUTORIAL._endstage : TUTORIAL._stage;
+         _loc3_["tutorialstage"] = !!BASE.isInfernoMainYardOrOutpost ? TUTORIAL._endstage : TUTORIAL._stage;
          _loc3_["basesaveid"] = _lastSaveID;
          _loc3_["clienttime"] = GLOBAL.Timestamp();
          _loc3_["monsterbaiter"] = JSON.encode(MONSTERBAITER.Export());
@@ -4474,7 +4521,7 @@ package
             _loc25_ = 0;
             if(GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD || GLOBAL.mode == "ibuild")
             {
-               _loc27_ = (_loc26_ = BASE.isInfernoBuilding(param1)) ? BASE._iresources : BASE._resources;
+               _loc27_ = (_loc26_ = Boolean(BASE.isInfernoBuilding(param1))) ? BASE._iresources : BASE._resources;
                if(_loc19_ > _loc27_.r1.Get())
                {
                   _loc24_ = 1;
@@ -4638,7 +4685,7 @@ package
                _loc4_ = true;
                _loc5_ = KEYS.Get("base_uperr_buildings",{"v1":GLOBAL.Array2StringB(_loc9_)});
             }
-            _loc11_ = BASE.isInfernoBuilding(param1._type);
+            _loc11_ = Boolean(BASE.isInfernoBuilding(param1._type));
             if(_loc17_ > 0)
             {
                _loc4_ = true;
@@ -5769,7 +5816,7 @@ package
                {
                   _loc5_ = 1;
                }
-               if((Boolean(_loc6_ = GLOBAL._buildingProps[_loc3_._type - 1])) && Boolean(_loc6_.costs[_loc5_ - 1]))
+               if(Boolean(_loc6_ = GLOBAL._buildingProps[_loc3_._type - 1]) && Boolean(_loc6_.costs[_loc5_ - 1]))
                {
                   _loc7_ = _loc6_.costs[_loc5_ - 1];
                   _loc4_ += _loc7_.time + _loc7_.r1 + _loc7_.r2 + _loc7_.r3 + _loc7_.r4;
@@ -6569,7 +6616,7 @@ package
          var _loc2_:Vector.<Object> = null;
          var _loc3_:BFOUNDATION = null;
          _loc1_ = 0;
-         _loc2_ = InstanceManager.getInstancesByClass(BASE.isInfernoMainYardOrOutpost ? HOUSINGBUNKER : BUILDING15);
+         _loc2_ = InstanceManager.getInstancesByClass(!!BASE.isInfernoMainYardOrOutpost ? HOUSINGBUNKER : BUILDING15);
          if(isInfernoMainYardOrOutpost)
          {
             if(_loc2_[0])
@@ -6596,7 +6643,7 @@ package
          var _loc10_:int = 0;
          var _loc11_:int = 0;
          _loc6_ = [];
-         _loc7_ = InstanceManager.getInstancesByClass(BASE.isInfernoMainYardOrOutpost ? HOUSINGBUNKER : BUILDING15);
+         _loc7_ = InstanceManager.getInstancesByClass(!!BASE.isInfernoMainYardOrOutpost ? HOUSINGBUNKER : BUILDING15);
          for each(_loc8_ in _loc7_)
          {
             if(_loc8_ != param3)

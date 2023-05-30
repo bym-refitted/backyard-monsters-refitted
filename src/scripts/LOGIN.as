@@ -5,7 +5,6 @@ package
    import com.monsters.enums.EnumYardType;
    import com.monsters.maproom_manager.MapRoomManager;
    import com.monsters.player.Player;
-   import com.monsters.radio.RADIO;
    import flash.events.*;
    import flash.external.ExternalInterface;
    import flash.net.*;
@@ -46,8 +45,11 @@ package
       
       public static function Login() : void
       {
-         PLEASEWAIT.Show("Logging in...");
-         new URLLoaderApi().load(GLOBAL._apiURL + "bm/getnewmap",null,OnGetNewMap);
+         var a_NewMap:Boolean = false;
+         var a_MapHeaderURL:String = "";
+         MapRoomManager.instance.init(a_NewMap,a_MapHeaderURL);
+         LOGIN.Process();
+         // new URLLoaderApi().load(GLOBAL._apiURL + "bm/getnewmap",null,OnGetNewMap);
       }
       
       private static function OnGetNewMap(param1:Object) : void
@@ -117,97 +119,39 @@ package
          }
       }
       
-      public static function Process(param1:Object) : void
+      public static function Process() : void
       {
-         var _loc2_:Object = null;
-         if(param1.version != GLOBAL._version.Get())
-         {
-            if(ExternalInterface.available)
-            {
-               _loc2_ = {
-                  "tag":"userload",
-                  "version_mismatch_h":1,
-                  "vh2":param1.version,
-                  "vh1":GLOBAL._version.Get()
-               };
-               GLOBAL.CallJS("cc.logGenericEvent",[_loc2_]);
-            }
-            GLOBAL.ErrorMessage(KEYS.Get("msg_updatedgame"),GLOBAL.ERROR_ORANGE_BOX_ONLY);
-         }
-         else
-         {
-            GLOBAL.player = new Player();
-            GLOBAL.player.ID = param1.userid;
-            GLOBAL.player.name = param1.username;
-            GLOBAL.player.lastName = param1.last_name;
-            GLOBAL.player.picture = param1.pic_square;
-            GLOBAL.player.timePlayed = param1.timeplayed;
-            GLOBAL.player.email = param1.email;
-            _playerID = param1.userid;
-            _playerName = param1.username;
-            _playerLastName = param1.last_name;
-            _playerPic = param1.pic_square;
-            _timePlayed = param1.timeplayed;
-            _email = param1.email;
-            if(param1.stats)
-            {
-               if(param1.stats.inferno != undefined)
-               {
-                  _inferno = param1.stats.inferno;
-               }
-            }
-            GLOBAL._friendCount = param1.friendcount;
-            GLOBAL._sessionCount = param1.sessioncount;
-            GLOBAL._addTime = param1.addtime;
-            GLOBAL._mapVersion = param1.mapversion;
-            GLOBAL._mailVersion = param1.mailversion;
-            GLOBAL._soundVersion = param1.soundversion;
-            GLOBAL._languageVersion = param1.languageversion;
-            GLOBAL._appid = param1.app_id;
-            GLOBAL._tpid = param1.tpid;
-            GLOBAL._currencyURL = param1.currency_url;
-            if(param1.bookmarks)
-            {
-               MapRoomManager.instance.bookmarkData = param1.bookmarks;
-            }
-            else
-            {
-               MapRoomManager.instance.bookmarkData = {};
-            }
-            if(param1.settings)
-            {
-               _settings = param1.settings;
-               RADIO.Setup(_settings);
-            }
-            if(param1.proxy_email)
-            {
-               _proxymail = param1.proxy_email;
-            }
-            if(!param1.languageversion)
-            {
-               GLOBAL._languageVersion = 8;
-            }
-            if(param1.sendgift == 1)
-            {
-               GLOBAL._canGift = true;
-            }
-            if(param1.sendinvite == 1)
-            {
-               GLOBAL._canInvite = true;
-            }
-            BASE._isFan = int(param1.isfan);
-            if(param1.ncpCandidate == 1)
-            {
-               GLOBAL._fbcncp = param1.ncpCandidate;
-            }
-            KEYS._storageURL = GLOBAL.languageUrl;
-            KEYS._logFunction = LOGGER.Log;
-            KEYS._languageVersion = GLOBAL._languageVersion;
-            KEYS._language = param1.language;
-            POPUPS.Setup();
-            Digits(_playerID);
-            KEYS.Setup(Done);
-         }
+         GLOBAL.player = new Player();
+         GLOBAL.player.ID = 10101010;
+         GLOBAL.player.name = "John";
+         GLOBAL.player.lastName = "Doe";
+         GLOBAL.player.picture = "";
+         GLOBAL.player.timePlayed = 200;
+         GLOBAL.player.email = "reactX@hotmail.com";
+         _playerID = 101;
+         _playerName = "John";
+         _playerLastName = "Doe";
+         _playerPic = "";
+         _timePlayed = 200;
+         _email = "reactX@hotmail.com";
+         GLOBAL._friendCount = 0;
+         GLOBAL._sessionCount = 1;
+         GLOBAL._addTime = 100;
+         GLOBAL._mapVersion = 3;
+         GLOBAL._mailVersion = 1;
+         GLOBAL._soundVersion = 1;
+         GLOBAL._languageVersion = 8;
+         GLOBAL._appid = "2de76fv89";
+         GLOBAL._tpid = "t76fbxXsw";
+         GLOBAL._currencyURL = "";
+         BASE._isFan = int(0);
+         KEYS._storageURL = GLOBAL.languageUrl;
+         KEYS._logFunction = LOGGER.Log;
+         KEYS._languageVersion = GLOBAL._languageVersion;
+         KEYS._language = "en";
+         POPUPS.Setup();
+         Digits(_playerID);
+         KEYS.Setup(Done);
       }
       
       public static function Digits(param1:int) : void
@@ -265,6 +209,7 @@ package
          else
          {
             BASE.yardType = MapRoomManager.instance.isInMapRoom3 ? int(EnumYardType.PLAYER) : int(EnumYardType.MAIN_YARD);
+            var s:String = "Comment: The Load() function gets called from this block.";
             BASE.Load();
          }
       }

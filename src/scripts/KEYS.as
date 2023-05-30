@@ -1,9 +1,7 @@
 package
 {
    import flash.events.Event;
-   import flash.events.IOErrorEvent;
    import flash.net.URLLoader;
-   import flash.net.URLRequest;
    
    public class KEYS
    {
@@ -43,9 +41,8 @@ package
          _setup = true;
          cbf = param1;
          var _loc2_:URLLoader = new URLLoader();
-         _loc2_.load(new URLRequest(_storageURL + _language + ".v" + _languageVersion + ".txt"));
-         _loc2_.addEventListener(Event.COMPLETE,handleSucc);
-         _loc2_.addEventListener(IOErrorEvent.IO_ERROR,GLOBAL.handleLoadError);
+         var s:String = "Comment: Below line cbf() was directly called instead of handleSucc";
+         cbf();
       }
       
       private static function handleSucc(param1:Event) : void
@@ -74,114 +71,116 @@ package
       
       public static function Get(param1:String, param2:Object = null) : String
       {
-         var tmp:String = null;
-         var k:String = null;
-         var tk:String = null;
-         var test:RegExp = null;
-         var matches:Array = null;
-         var i:String = null;
-         var replace:Boolean = false;
-         var ig:String = null;
-         var gib:Array = null;
-         var bits:Array = null;
-         var w:uint = 0;
-         var word:String = null;
-         var gibWord:String = null;
-         var l:uint = 0;
-         var key:String = param1;
-         var values:Object = param2;
-         try
-         {
-            if(!values)
-            {
-               tmp = getStringC(key);
-               if(!tmp)
-               {
-                  tmp = getStringB(key);
-                  if(!tmp)
-                  {
-                     if(key != "outpost_upgradedesc")
-                     {
-                     }
-                     if(_logFunction != null)
-                     {
-                        _logFunction("log","missing key: " + key);
-                     }
-                     return "[[" + key + "]]";
-                  }
-               }
-            }
-            else
-            {
-               tmp = String(_keys.game[key]);
-               if(!tmp)
-               {
-                  if(_logFunction != null)
-                  {
-                     _logFunction("log","missing key: " + key);
-                  }
-                  return "[[" + key + "]]";
-               }
-               for(k in values)
-               {
-                  tk = "#" + k + "#";
-                  while(tmp.search(tk) != -1)
-                  {
-                     tmp = tmp.replace(tk,values[k]);
-                  }
-               }
-               if(tmp.lastIndexOf("#") != -1)
-               {
-                  test = /#[a-z]+_[a-z]+(_[a-z])*\#/g;
-                  matches = tmp.match(test);
-                  for each(i in matches)
-                  {
-                     replace = true;
-                     for each(ig in _ignore)
-                     {
-                        if(ig == i)
-                        {
-                           replace = false;
-                        }
-                        if(replace)
-                        {
-                           tmp = tmp.replace(i,_keys.core[i]);
-                        }
-                     }
-                  }
-               }
-            }
-            if(_gibberish)
-            {
-               gib = [];
-               bits = tmp.split(" ");
-               w = 0;
-               while(w < bits.length)
-               {
-                  word = String(bits[w]);
-                  gibWord = "";
-                  l = 0;
-                  while(l < word.length)
-                  {
-                     gibWord += "*";
-                     l += 1;
-                  }
-                  gib.push(gibWord);
-                  w += 1;
-               }
-               return gib.join(" ");
-            }
-         }
-         catch(e:Error)
-         {
-            LOGGER.Log("log","KEYS.Get " + key);
-            tmp = "KEYS Error";
-         }
-         if(tmp.lastIndexOf("&") != -1)
-         {
-            tmp = CleanDiacritics(tmp);
-         }
-         return tmp;
+         return param1;
+         
+         // var tmp:String = null;
+         // var k:String = null;
+         // var tk:String = null;
+         // var test:RegExp = null;
+         // var matches:Array = null;
+         // var i:String = null;
+         // var replace:Boolean = false;
+         // var ig:String = null;
+         // var gib:Array = null;
+         // var bits:Array = null;
+         // var w:uint = 0;
+         // var word:String = null;
+         // var gibWord:String = null;
+         // var l:uint = 0;
+         // var key:String = param1;
+         // var values:Object = param2;
+         // try
+         // {
+         //    if(!values)
+         //    {
+         //       tmp = getStringC(key);
+         //       if(!tmp)
+         //       {
+         //          tmp = getStringB(key);
+         //          if(!tmp)
+         //          {
+         //             if(key != "outpost_upgradedesc")
+         //             {
+         //             }
+         //             if(_logFunction != null)
+         //             {
+         //                _logFunction("log","missing key: " + key);
+         //             }
+         //             return "[[" + key + "]]";
+         //          }
+         //       }
+         //    }
+         //    else
+         //    {
+         //       tmp = String(_keys.game[key]);
+         //       if(!tmp)
+         //       {
+         //          if(_logFunction != null)
+         //          {
+         //             _logFunction("log","missing key: " + key);
+         //          }
+         //          return "[[" + key + "]]";
+         //       }
+         //       for(k in values)
+         //       {
+         //          tk = "#" + k + "#";
+         //          while(tmp.search(tk) != -1)
+         //          {
+         //             tmp = tmp.replace(tk,values[k]);
+         //          }
+         //       }
+         //       if(tmp.lastIndexOf("#") != -1)
+         //       {
+         //          test = /#[a-z]+_[a-z]+(_[a-z])*\#/g;
+         //          matches = tmp.match(test);
+         //          for each(i in matches)
+         //          {
+         //             replace = true;
+         //             for each(ig in _ignore)
+         //             {
+         //                if(ig == i)
+         //                {
+         //                   replace = false;
+         //                }
+         //                if(replace)
+         //                {
+         //                   tmp = tmp.replace(i,_keys.core[i]);
+         //                }
+         //             }
+         //          }
+         //       }
+         //    }
+         //    if(_gibberish)
+         //    {
+         //       gib = [];
+         //       bits = tmp.split(" ");
+         //       w = 0;
+         //       while(w < bits.length)
+         //       {
+         //          word = String(bits[w]);
+         //          gibWord = "";
+         //          l = 0;
+         //          while(l < word.length)
+         //          {
+         //             gibWord += "*";
+         //             l += 1;
+         //          }
+         //          gib.push(gibWord);
+         //          w += 1;
+         //       }
+         //       return gib.join(" ");
+         //    }
+         // }
+         // catch(e:Error)
+         // {
+         //    LOGGER.Log("log","KEYS.Get " + key);
+         //    tmp = "KEYS Error";
+         // }
+         // if(tmp.lastIndexOf("&") != -1)
+         // {
+         //    tmp = CleanDiacritics(tmp);
+         // }
+         // return tmp;
       }
       
       public static function CleanDiacritics(param1:String) : String
