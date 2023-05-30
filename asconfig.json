@@ -1,0 +1,12 @@
+{
+	"compilerOptions": {
+		"targets": [
+			"JSRoyale"
+		],
+		"source-path": [
+			"src"
+		],
+		"source-map": true
+	},
+	"mainClass": "scripts/GAME"
+}

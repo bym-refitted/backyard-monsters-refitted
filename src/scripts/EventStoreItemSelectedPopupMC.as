@@ -1,0 +1,31 @@
+package
+{
+   import flash.display.MovieClip;
+   import flash.text.TextField;
+   
+   public dynamic class EventStoreItemSelectedPopupMC extends MovieClip
+   {
+       
+      
+      public var previewImageHolder:MovieClip;
+      
+      public var xpCostText:TextField;
+      
+      public var previewImageFrame:MovieClip;
+      
+      public var titleImageHolder:MovieClip;
+      
+      public var experienceDisplay:MovieClip;
+      
+      public var descriptionText:TextField;
+      
+      public var purchaseButton:Button_CLIP;
+      
+      public var prizeNameText:TextField;
+      
+      public function EventStoreItemSelectedPopupMC()
+      {
+         super();
+      }
+   }
+}
