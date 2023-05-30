@@ -1,11 +1,19 @@
 import { Router, Response } from "express";
+import { logging } from "./utils/logger.js";
 
 const router = Router();
 
 const resGetter = (res: Response) =>
   res.status(200).json({
     error: 0,
-    flags: [],
+    flags: {
+      viximo: 0,
+      kongregate: 1,
+      showProgressBar: 0,
+      midgameIncentive: 0,
+      plinko: 0,
+      fanfriendbookmarkquests: 0
+    },
     fan: 0,
     protected: 1,
     giftsentcount: 4,
@@ -26,10 +34,12 @@ const resGetter = (res: Response) =>
     credits: 250,
     loot: {},
     researchdata: [],
-    stats: {},
+    stats: {
+      popupdata: {},
+    },
     academy: {},
     siege: {},
-    effects: {},
+    effects: [],
     monsters: {},
     aiattacks: {},
     tutorialstage: 0,
@@ -45,10 +55,18 @@ const resGetter = (res: Response) =>
     pic_square: "https://apprecs.org/ios/images/app-icons/256/df/634186975.jpg",
     gifts: [],
     h: "someHashValue",
+    basename: "testBase",
+    basevalue: 20,
+    points: 5,
   });
 
 router.get("/base/load/", (_: any, res: Response) => resGetter(res));
 router.post("/base/load/", (_: any, res: Response) => resGetter(res));
+
+
+router.post("/api/player/recorddebugdata/", (req: any) => {
+  logging(`Debug Message: ${req.body.message}`, req.body.debugVars);
+});
 
 router.get("/api/", (_: any, res: Response) =>
   res.status(200).json({
