@@ -2,7 +2,7 @@ import { Router, Response } from "express";
 
 const router = Router();
 
-router.get("/base", (_: any, res: Response) =>
+router.get("/base/load", (_: any, res: Response) =>
   res.status(200).json({
     error: 0,
     flags: [],
