@@ -774,6 +774,7 @@ package
          var obj:Object = param1;
          if(obj.error == 0)
          {
+            GLOBAL.Message("Attempting to load base from successful function.")
             if(parseBaseLoadMessages(obj))
             {
                return;

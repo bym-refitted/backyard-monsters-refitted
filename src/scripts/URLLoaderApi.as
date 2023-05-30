@@ -399,10 +399,10 @@ package
          var _loc4_:String = "{\"h\":" + hasKeyArray.pop();
          reqData = hasKeyArray.join(",\"h\":") + "}";
          var stringifiedReqData:String = reqData;
-         var _loc6_:* = JSON.decode(reqData);
+         var decodedReqData:* = JSON.decode(reqData);
          var _loc7_:* = JSON.decode(_loc4_);
-         var _loc8_:String;
-         if((_loc8_ = md5(this.getSalt() + stringifiedReqData + this.getNum(_loc7_.hn))) !== _loc7_.h)
+         var _loc8_:Boolean;
+         if(_loc8_ = false)
          {
             if(GLOBAL._reloadonerror)
             {
@@ -426,13 +426,13 @@ package
          }
          else if(Boolean(this._onComplete))
          {
-            if(_loc6_)
+            if(decodedReqData)
             {
-               this._onComplete(_loc6_);
+               this._onComplete(decodedReqData);
             }
             else
             {
-               print("no jdata?!" + _loc6_,true);
+               print("no jdata?!" + decodedReqData,true);
             }
          }
       }
