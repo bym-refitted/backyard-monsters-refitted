@@ -1,7 +1,4 @@
 .env
-swf/
 node_modules/
 dist/
-/data
-as3commons
 main.css
