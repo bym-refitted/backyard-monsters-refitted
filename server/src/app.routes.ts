@@ -2,7 +2,7 @@ import { Router, Response } from "express";
 
 const router = Router();
 
-router.get("/base/load", (_: any, res: Response) =>
+const resGetter = (res: Response) =>
   res.status(200).json({
     error: 0,
     flags: [],
@@ -44,10 +44,13 @@ router.get("/base/load", (_: any, res: Response) =>
     name: "John Doe",
     pic_square: "https://apprecs.org/ios/images/app-icons/256/df/634186975.jpg",
     gifts: [],
-  })
-);
+    h: "someHashValue",
+  });
 
-router.get("/api", (_: any, res: Response) =>
+router.get("/base/load/", (_: any, res: Response) => resGetter(res));
+router.post("/base/load/", (_: any, res: Response) => resGetter(res));
+
+router.get("/api/", (_: any, res: Response) =>
   res.status(200).json({
     error: 0,
   })

@@ -2,6 +2,7 @@
 $black: #000;
 $white: #fff;
 $green: #20853b;
+$orange: #e3b129;
 $background-color: #f5f5f5;
 $box-shadow: 0px 2px 12px 2px rgba(0, 0, 0, 0.063);
 
@@ -78,9 +79,24 @@ header {
   }
 }
 
+/* Mixins */
+@mixin badge($color) {
+  margin-left: auto;
+  padding: 10px 25px;
+  background-color: $color;
+  border-radius: 4px;
+
+  > p {
+    margin: 0;
+    color: $white;
+    font-weight: bold;
+    text-transform: uppercase;
+  }
+}
+
 /* Main styles */
 main {
-  padding: 60px 50px;
+  padding: 60px 50px 0px 50px;
 
   .card {
     width: 80%;
@@ -96,24 +112,18 @@ main {
       flex-direction: row;
       align-items: center;
       gap: 20px;
-      
+
       .route {
         font-size: 22px;
         font-weight: bold;
       }
 
-      > div {
-        margin-left: auto;
-        padding: 10px 25px;
-        background-color: $green;
-        border-radius: 4px;
+      .get {
+        @include badge($green);
+      }
 
-        > p {
-          margin: 0;
-          color: $white;
-          font-weight: bold;
-          text-transform: uppercase;
-        }
+      .config {
+        @include badge($orange);
       }
     }
   }
