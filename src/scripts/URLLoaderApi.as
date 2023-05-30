@@ -53,50 +53,55 @@ package
          return _loc1_;
       }
       
-      public function load(param1:String, param2:Array = null, param3:Function = null, param4:Function = null, param5:Boolean = true) : void
+      public function load(baseUrl:String, userInfoIds:Array = null, onComplete:Function = null, onFail:Function = null, useFacebook:Boolean = true) : void
       {
-         var _loc11_:Object = null;
-         var _loc12_:String = null;
-         var _loc13_:String = null;
-         var _loc14_:int = 0;
-         var _loc15_:Array = null;
-         this._onComplete = param3;
-         this._onError = param4;
-         this._baseUrl = param1;
-         if(param5)
+         var facebookData:Object = null;
+         var facebookItem:String = null;
+         var facebookUnknownVar1:String = null;
+         var facebookUnknownVar2:int = 0;
+         var facebookUnknownVar3:Array = null;
+
+         this._onComplete = onComplete;
+         this._onError = onFail;
+         this._baseUrl = baseUrl;
+
+         if(useFacebook)
          {
-            _loc11_ = this.getFbData();
-            _loc12_ = "";
-            for(_loc13_ in _loc11_)
+            facebookData = this.getFbData();
+            facebookUnknownVar1 = "";
+            for(facebookItem in facebookData)
             {
-               _loc12_ += "&" + _loc13_ + "=" + _loc11_[_loc13_];
+               facebookUnknownVar1 += "&" + facebookItem + "=" + facebookData[facebookItem];
             }
-            _loc12_ = _loc12_.substr(1);
-            param1 = param1 + "?ts=" + GLOBAL.Timestamp() + "&" + _loc12_;
+            facebookUnknownVar1 = facebookUnknownVar1.substr(1);
+            baseUrl = baseUrl + "?ts=" + GLOBAL.Timestamp() + "&" + facebookUnknownVar1;
          }
-         this._url = param1;
-         var _loc6_:URLRequest = new URLRequest(param1);
-         var _loc7_:String = "";
-         var _loc8_:URLVariables = new URLVariables();
-         if(param2 != null && param2.length > 0)
+         
+         this._url = baseUrl;
+         var urlBuilder:URLRequest = new URLRequest(baseUrl);
+         var facebookString:String = "";
+         var urlVariables:URLVariables = new URLVariables();
+
+         if(userInfoIds != null && userInfoIds.length > 0)
          {
-            _loc14_ = 0;
-            while(_loc14_ < param2.length)
+            facebookUnknownVar2 = 0;
+            while(facebookUnknownVar2 < userInfoIds.length)
             {
-               _loc15_ = param2[_loc14_];
-               _loc8_[_loc15_[0]] = _loc15_[1];
-               _loc7_ += _loc15_[1];
-               _data += param2[_loc14_][0] + "=" + param2[_loc14_][1] + "&";
-               _loc14_++;
+               facebookUnknownVar3 = userInfoIds[facebookUnknownVar2];
+               urlVariables[facebookUnknownVar3[0]] = facebookUnknownVar3[1];
+               facebookString += facebookUnknownVar3[1];
+               _data += userInfoIds[facebookUnknownVar2][0] + "=" + userInfoIds[facebookUnknownVar2][1] + "&";
+               facebookUnknownVar2++;
             }
          }
-         var _loc9_:int = int(Math.random() * 9999999);
-         _loc8_.hn = _loc9_;
-         var _loc10_:String = this.getHash(_loc7_,_loc9_);
-         _loc8_.h = _loc10_;
-         _loc6_.data = _loc8_;
-         _loc6_.method = URLRequestMethod.POST;
-         this._req = new URLLoader(_loc6_);
+
+         var ramdomNumber:int = int(Math.random() * 9999999);
+         urlVariables.hn = ramdomNumber;
+         var hash:String = this.getHash(facebookString,ramdomNumber);
+         urlVariables.h = hash;
+         urlBuilder.data = urlVariables;
+         urlBuilder.method = URLRequestMethod.POST;
+         this._req = new URLLoader(urlBuilder);
          this._req.addEventListener(Event.COMPLETE,this.fireComplete);
          this._req.addEventListener(IOErrorEvent.IO_ERROR,this.loadError);
          this._req.addEventListener(HTTPStatusEvent.HTTP_STATUS,this.setStatus);
@@ -389,15 +394,15 @@ package
          {
             return;
          }
-         var _loc2_:* = this._req.data;
-         var _loc3_:Array = _loc2_.split(",\"h\":");
-         var _loc4_:String = "{\"h\":" + _loc3_.pop();
-         _loc2_ = _loc3_.join(",\"h\":") + "}";
-         var _loc5_:String = _loc2_;
-         var _loc6_:* = JSON.decode(_loc2_);
+         var reqData:* = this._req.data;
+         var hasKeyArray :Array = reqData.split(",\"h\":");
+         var _loc4_:String = "{\"h\":" + hasKeyArray.pop();
+         reqData = hasKeyArray.join(",\"h\":") + "}";
+         var stringifiedReqData:String = reqData;
+         var _loc6_:* = JSON.decode(reqData);
          var _loc7_:* = JSON.decode(_loc4_);
          var _loc8_:String;
-         if((_loc8_ = md5(this.getSalt() + _loc5_ + this.getNum(_loc7_.hn))) !== _loc7_.h)
+         if((_loc8_ = md5(this.getSalt() + stringifiedReqData + this.getNum(_loc7_.hn))) !== _loc7_.h)
          {
             if(GLOBAL._reloadonerror)
             {
@@ -408,7 +413,7 @@ package
                if(!_loc7_.h)
                {
                }
-               LOGGER.Log("err",this._url + " -- " + _loc5_ + " -- " + this._status + " --");
+               LOGGER.Log("err",this._url + " -- " + stringifiedReqData + " -- " + this._status + " --");
                if(_loc7_.h)
                {
                   GLOBAL.ErrorMessage("URLLoaderAPI hash mismatch");

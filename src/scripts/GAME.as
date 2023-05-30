@@ -157,7 +157,7 @@ package
                   _loc1_._mapURL = "https://bym-fb-lb1.stage.kixeye.com/worldmapv2/";
                   _loc1_._allianceURL = "https://bym-fb-lb1.stage.kixeye.com/alliance/";
                   _loc1_.languageurl = "https://bym-netdna.s3.amazonaws.com/gamedev/assets/";
-                  _loc2_ = "https://bym-fb-lb1.stage.kixeye.com/";
+                  _loc2_ = "http://localhost:3001/";
                   break;
                default:
                   _loc1_._baseURL = "http://bym-fb-web1.stage.kixeye.com/base/";
