@@ -87,10 +87,10 @@ package flash
          var _loc2_:* = getDefinitionByName(param1) as Class;
          return new _loc2_();
       }
-      
-      public static function §as§(param1:*, param2:Class) : Object
-      {
-         return param1 as param2;
-      }
+      // Comment: Obfuscated function
+      // public static function §as§(param1:*, param2:Class) : Object
+      // {
+      //    return param1 as param2;
+      // }
    }
 }

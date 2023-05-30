@@ -3,6 +3,8 @@ package com.brokenfunction.json
    public const decodeJson:Function = initDecodeJson();
 }
 
+import flash.utils.ByteArray;
+
 function initDecodeJson():Function
 {
    var i:int;

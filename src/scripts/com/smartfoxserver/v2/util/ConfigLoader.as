@@ -29,7 +29,7 @@ package com.smartfoxserver.v2.util
          var _loc3_:XML = null;
          var _loc4_:ConfigData = null;
          var _loc2_:URLLoader = param1.target as URLLoader;
-         _loc3_ = {_loc2_.data};
+         _loc3_ = {data: _loc2_.data};
          (_loc4_ = new ConfigData()).host = _loc3_.ip;
          _loc4_.port = int(_loc3_.port);
          _loc4_.udpHost = _loc3_.udpIp;

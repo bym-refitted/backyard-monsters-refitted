@@ -91,26 +91,27 @@ package com.gskinner.utils
       {
          return this._seed;
       }
-      
-      public function set seed(param1:uint) : void
-      {
-         if(param1 != this._seed)
-         {
-            this.seedInvalid = true;
-            this._pointer = 0;
-         }
-         this._seed = param1;
-      }
+      // Comment: Two functions with the namespace - this one seems to be redundant
+      // public function set seed(param1:uint) : void
+      // {
+      //    if(param1 != this._seed)
+      //    {
+      //       this.seedInvalid = true;
+      //       this._pointer = 0;
+      //    }
+      //    this._seed = param1;
+      // }
       
       public function get pointer() : uint
       {
          return this._pointer;
       }
       
-      public function set pointer(param1:uint) : void
-      {
-         this._pointer = param1;
-      }
+      // Comment: Two functions with the namespace - this one seems to be redundant
+      // public function set pointer(param1:uint) : void
+      // {
+      //    this._pointer = param1;
+      // }
       
       public function random() : Number
       {

@@ -461,7 +461,8 @@ package com.monsters.chat
       
       private function onUserVarsUpdate(param1:SFSEvent) : void
       {
-         §§pop();
+         // Comment: Obfuscated code
+         // §§pop();
       }
       
       public function updateDisplayName(param1:com.monsters.chat.Channel, param2:String, param3:String) : void

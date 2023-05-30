@@ -162,13 +162,14 @@ package de.polygonal.core.fmt
                _loc6_ = "0";
                _loc7_ = 0;
                _loc8_ = param4 - 1;
-               §§push("-");
+               // Comment: Obfuscated code
+               // §§push("-");
                while(_loc7_ < _loc8_)
                {
                   _loc9_ = _loc7_++;
                   _loc6_ += "0";
                }
-               param1 = §§pop() + (_loc6_ + param1.substr(1));
+               // param1 = §§pop() + (_loc6_ + param1.substr(1));
             }
             else
             {
@@ -350,7 +351,8 @@ package de.polygonal.core.fmt
                      _loc17_ = _loc12_;
                      _loc18_ = _loc10_;
                      _loc19_ = _loc17_.length;
-                     §§push(_loc4_);
+                      // Comment: Obfuscated code
+                     // §§push(_loc4_);
                      if(_loc18_ > 0 && _loc19_ < _loc18_)
                      {
                         _loc18_ -= _loc19_;
@@ -383,13 +385,15 @@ package de.polygonal.core.fmt
                            _loc20_ = "0";
                            _loc21_ = 0;
                            _loc22_ = _loc18_ - 1;
-                           §§push("-");
+                            // Comment: Obfuscated code
+                           // §§push("-");
                            while(_loc21_ < _loc22_)
                            {
                               _loc23_ = _loc21_++;
                               _loc20_ += "0";
                            }
-                           _loc17_ = §§pop() + (_loc20_ + _loc17_.substr(1));
+                            // Comment: Obfuscated code
+                           //_loc17_ = §§pop() + (_loc20_ + _loc17_.substr(1));
                         }
                         else
                         {
@@ -404,7 +408,8 @@ package de.polygonal.core.fmt
                            _loc17_ = _loc20_ + _loc17_;
                         }
                      }
-                     _loc4_ = §§pop() + _loc17_;
+                      // Comment: Obfuscated code
+                     //_loc4_ = §§pop() + _loc17_;
                   }
                   else if((_loc13_ & 131328) != 0)
                   {
@@ -574,7 +579,8 @@ package de.polygonal.core.fmt
                      _loc17_ = _loc12_;
                      _loc19_ = _loc10_;
                      _loc21_ = _loc17_.length;
-                     §§push(_loc4_);
+                      // Comment: Obfuscated code
+                     //§§push(_loc4_);
                      if(_loc19_ > 0 && _loc21_ < _loc19_)
                      {
                         _loc19_ -= _loc21_;
@@ -607,13 +613,15 @@ package de.polygonal.core.fmt
                            _loc20_ = "0";
                            _loc22_ = 0;
                            _loc23_ = _loc19_ - 1;
-                           §§push("-");
+                            // Comment: Obfuscated code
+                           //§§push("-");
                            while(_loc22_ < _loc23_)
                            {
                               _loc25_ = _loc22_++;
                               _loc20_ += "0";
                            }
-                           _loc17_ = §§pop() + (_loc20_ + _loc17_.substr(1));
+                            // Comment: Obfuscated code
+                           //_loc17_ = §§pop() + (_loc20_ + _loc17_.substr(1));
                         }
                         else
                         {
@@ -628,7 +636,8 @@ package de.polygonal.core.fmt
                            _loc17_ = _loc20_ + _loc17_;
                         }
                      }
-                     _loc4_ = §§pop() + _loc17_;
+                      // Comment: Obfuscated code
+                     //_loc4_ = §§pop() + _loc17_;
                   }
                   else if((_loc13_ & 6144) != 0)
                   {

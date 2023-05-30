@@ -294,7 +294,8 @@ package gs
                      }
                      else if(_loc6_ == null)
                      {
-                        (_loc6_ = new TweenLite.plugins.roundProps()).add(_loc7_.target,_loc3_,_loc7_.start,_loc7_.change);
+                        // Comment: This could not be found
+                        // (_loc6_ = new TweenLite.plugins.roundProps()).add(_loc7_.target,_loc3_,_loc7_.start,_loc7_.change);
                         _hasPlugins = true;
                         this.tweens[_loc2_] = new TweenInfo(_loc6_,"changeFactor",0,1,_loc3_,true);
                      }

@@ -9,8 +9,9 @@ package com.monsters.monsters.components
       private var m_healthProperty:GameObject;
       
       private var m_lastKnownValue:Number;
-      
-      public function MaxHealthProperty(param1:GameObject, param2:Number = 1.7976931348623157e+308, param3:Number = -Infinity)
+
+      // Comment: Rewritten function - floating-point numbers are not compile-time constants.
+      public function MaxHealthProperty(param1:GameObject, param2:Number = Number.MAX_VALUE, param3:Number = Number.NEGATIVE_INFINITY)
       {
          super(param2,param3,0);
          this.m_healthProperty = param1;

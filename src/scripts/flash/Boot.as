@@ -23,11 +23,11 @@ package flash
       
       public function Boot()
       {
+         super();
          if(Boot.skip_constructor)
          {
             return;
          }
-         super();
       }
       
       public static function enum_to_string(param1:Object) : String

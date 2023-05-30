@@ -135,25 +135,25 @@ package
          }
          return false;
       }
-      
-      internal static function ShouldUpgradePortal(param1:uint) : Boolean
-      {
-         return ShouldUpgradePortal(param1);
-      }
+      // Comment: For some reason there was two functions with the same namespace? Check which one is suitable.
+      // internal static function ShouldUpgradePortal(param1:uint) : Boolean
+      // {
+      //    return ShouldUpgradePortal(param1);
+      // }
       
       internal static function GetUpgradeLevel() : Number
       {
          return _lastLevel + 1;
       }
-      
-      internal static function GetUpgradeLevel() : Number
-      {
-         if(isLastDay())
-         {
-            return _maxLevel;
-         }
-         return GetUpgradeLevel();
-      }
+      // Comment: For some reason there was two functions with the same namespace? Check which one is suitable.
+      // internal static function GetUpgradeLevel() : Number
+      // {
+      //    if(isLastDay())
+      //    {
+      //       return _maxLevel;
+      //    }
+      //    return GetUpgradeLevel();
+      // }
       
       public static function FocusOnPortal() : void
       {

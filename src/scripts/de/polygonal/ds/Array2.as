@@ -357,8 +357,9 @@ package de.polygonal.ds
       
       public function setAtIndex(param1:int, param2:Object) : void
       {
-         null;
-         return _a[int(param1 / _w) * _w + int(param1 % _w)] = param2;
+         // Comment:  Rewritten function - no return needed for void return type
+         // null;
+         _a[int(param1 / _w) * _w + int(param1 % _w)] = param2;
       }
       
       public function set(param1:int, param2:int, param3:Object) : void

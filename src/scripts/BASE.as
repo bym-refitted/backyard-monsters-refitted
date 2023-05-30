@@ -5000,7 +5000,8 @@ package
          }
          if(_loc3_.cls)
          {
-            return new _loc3_.cls();
+            // Comment: Could not be found - fix
+            // return new _loc3_.cls();
          }
          if(param1 == 1)
          {
@@ -5170,7 +5171,9 @@ package
          {
             _loc2_ = new INFERNO_MAGMA_TOWER();
          }
-         return !!_loc3_.cls ? new _loc3_.cls() : _loc2_;
+         // Comment: Could not be found - returned a new obj instead
+         // return !!_loc3_.cls ? new _loc3_.cls() : _loc2_;
+         return !!_loc3_.cls ? new Object : _loc2_;
       }
       
       public static function ShowFootprints() : void

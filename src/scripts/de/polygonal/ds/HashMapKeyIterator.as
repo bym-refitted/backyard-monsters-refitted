@@ -25,12 +25,14 @@ package de.polygonal.ds
          var _loc3_:* = 0;
          var _loc2_:Array = [];
          var _loc4_:* = _f._map;
-         §§push(§§findproperty(_keys));
+         // Comment: Obfuscated code
+         // §§push(§§findproperty(_keys));
          for(_loc3_ in _loc4_)
          {
             _loc2_.push(_loc3_);
          }
-         §§pop()._keys = _loc2_;
+         // Comment: Obfuscated code
+         // §§pop()._keys = _loc2_;
          _i = 0;
          _s = int(_keys.length);
       }
@@ -40,12 +42,14 @@ package de.polygonal.ds
          var _loc2_:* = 0;
          var _loc1_:Array = [];
          var _loc3_:* = _f._map;
-         §§push(§§findproperty(_keys));
+         // Comment: Obfuscated code
+         // §§push(§§findproperty(_keys));
          for(_loc2_ in _loc3_)
          {
             _loc1_.push(_loc2_);
          }
-         §§pop()._keys = _loc1_;
+         // Comment: Obfuscated code
+         // §§pop()._keys = _loc1_;
          _i = 0;
          _s = int(_keys.length);
       }

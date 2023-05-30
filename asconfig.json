@@ -1,12 +1,12 @@
 {
 	"compilerOptions": {
-		"targets": [
-			"JSRoyale"
-		],
-		"source-path": [
-			"src"
-		],
-		"source-map": true
+		"warnings": false,
+		"strict": false,
+		"output": "swf/bym-refit-v128.v5690.swf",
+		"source-path": ["src/scripts","src/images"]
 	},
-	"mainClass": "scripts/GAME"
+	// "mainClass": "GAME",
+	"copySourcePathAssets": true,
+	"config": "flex",
+	"files": ["src/scripts/GAME.as"]
 }

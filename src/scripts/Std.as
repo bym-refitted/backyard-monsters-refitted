@@ -9,11 +9,11 @@ package
       public function Std()
       {
       }
-      
-      public static function §is§(param1:*, param2:*) : Boolean
-      {
-         return Boot.__instanceof(param1,param2);
-      }
+      // Comment: Obfuscated function
+      // public static function §is§(param1:*, param2:*) : Boolean
+      // {
+      //    return Boot.__instanceof(param1,param2);
+      // }
       
       public static function string(param1:*) : String
       {

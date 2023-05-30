@@ -187,7 +187,8 @@ package com.monsters.maproom
       private function onMessage(param1:MouseEvent) : void
       {
          MapRoom.BRIDGE.SOUNDS.Play("click1");
-         var _loc2_:* = new MapRoom.BRIDGE.MessageUI();
+         // Important Comment: This does not exist - fix.
+         // var _loc2_:* = new MapRoom.BRIDGE.MessageUI();
          var _loc3_:Contact = new Contact(String(this.player.data.userid.Get()),{
             "first_name":this.player.data.ownerName,
             "last_name":"",
@@ -248,7 +249,8 @@ package com.monsters.maproom
          {
             if(MapRoom._useMailBoxForTruces)
             {
-               _loc2_ = new MapRoom.BRIDGE.MessageUI();
+                // Important Comment: This does not exist - fix.
+               // _loc2_ = new MapRoom.BRIDGE.MessageUI();
                _loc3_ = new Contact(String(this.player.data.userid.Get()),{
                   "first_name":this.player.data.ownerName,
                   "last_name":"",

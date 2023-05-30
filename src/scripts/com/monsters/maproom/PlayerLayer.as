@@ -207,7 +207,8 @@ package com.monsters.maproom
          {
          }
          loadVars = [["baseid",0]];
-         r = new MapRoom.BRIDGE.URLLoaderApi();
+          // Comment: This does not exist - handle the use of this network request
+         // r = new MapRoom.BRIDGE.URLLoaderApi();
          r.load(MapRoom.BRIDGE.GLOBAL._apiURL + "bm/neighbours/get",loadVars,handleLoadSuccessful,handleLoadError);
       }
       

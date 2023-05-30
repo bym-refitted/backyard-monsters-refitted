@@ -7,7 +7,9 @@ package com.smartfoxserver.v2.requests
    import com.smartfoxserver.v2.exceptions.SFSError;
    import com.smartfoxserver.v2.exceptions.SFSValidationError;
    import com.smartfoxserver.v2.logging.Logger;
-   import de.polygonal.ds.HashSet;
+   import flash.utils.Dictionary;
+   // Comment: Removed import as it is heavily obfuscated;
+   // import de.polygonal.ds.HashSet;
    
    public class GenericMessageRequest extends BaseRequest
    {
@@ -252,7 +254,9 @@ package com.smartfoxserver.v2.requests
          {
             this._room = param1.lastJoinedRoom;
          }
-         var _loc2_:HashSet = new HashSet();
+         // Comment: Since HashSet class cannot be used due to obfuscation, we will have to use the Dictionary import instead.
+         // var _loc2_:HashSet = new HashSet();
+         var _loc2_:Dictionary = new Dictionary();
          if(this._recipient is Array)
          {
             _loc3_ = this._recipient as Array;

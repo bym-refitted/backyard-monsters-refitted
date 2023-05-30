@@ -53,7 +53,9 @@ package de.polygonal.core.util
                new param1(param2[0],param2[1],param2[2],param2[3],param2[4],param2[5],param2[6],param2[7],param2[8],param2[9],param2[10],param2[11],param2[12],param2[13]);
                throw "too many arguments";
          }
-         return §§pop();
+         // Comment: Obfuscated code, returning empty obj instead
+         // return §§pop();
+         return new Object();
       }
       
       public static function createEmpty(param1:Class) : Object
