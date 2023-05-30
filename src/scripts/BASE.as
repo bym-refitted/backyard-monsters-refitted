@@ -3935,7 +3935,6 @@ package
          else
          {
             // Comment: the Save() function resolves to this block
-            GLOBAL.Message("Saving base...");
             new URLLoaderApi().load(GLOBAL._baseURL + "save",_loc7_,handleLoadSuccessful,handleLoadError);
          }
          if(_saveOver)
@@ -3945,12 +3944,12 @@ package
          return true;
       }
       
-      private static function handleLoadSuccessful(param1:Object) : void
+      private static function handleLoadSuccessful(serverData:Object) : void
       {
          var _loc2_:int = 0;
          var _loc3_:int = 0;
          var _loc4_:MapRoom3OutpostSecured = null;
-         if(param1.error == 0)
+         if(serverData.error == 0)
          {
             GLOBAL.CleanAttackersDeltaResources();
             CleanDeltaResources();
@@ -3958,7 +3957,7 @@ package
             {
                ATTACK.CleanLoot();
             }
-            if(_returnHome && param1.over == 1)
+            if(_returnHome && serverData.over == 1)
             {
                if(isInfernoMainYardOrOutpost)
                {
@@ -3973,24 +3972,24 @@ package
             }
             _saveErrors = 0;
             _lastSaved = GLOBAL.Timestamp();
-            _lastSaveID = param1.basesaveid;
-            _credits.Set(int(param1.credits));
-            _hpCredits = int(param1.credits);
-            GLOBAL._credits.Set(int(param1.credits));
-            if(param1.resources)
+            _lastSaveID = serverData.basesaveid;
+            _credits.Set(int(serverData.credits));
+            _hpCredits = int(serverData.credits);
+            GLOBAL._credits.Set(int(serverData.credits));
+            if(serverData.resources)
             {
                if(_saveCounterA == _saveCounterB)
                {
                   _loc3_ = 1;
                   while(_loc3_ < 5)
                   {
-                     if(param1.resources["r" + _loc3_])
+                     if(serverData.resources["r" + _loc3_])
                      {
-                        _resources["r" + _loc3_].Set(param1.resources["r" + _loc3_]);
+                        _resources["r" + _loc3_].Set(serverData.resources["r" + _loc3_]);
                         _hpResources["r" + _loc3_] = _resources["r" + _loc3_].Get();
                         if(GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD || GLOBAL.mode == "ibuild")
                         {
-                           GLOBAL._resources["r" + _loc3_].Set(param1.resources["r" + _loc3_]);
+                           GLOBAL._resources["r" + _loc3_].Set(serverData.resources["r" + _loc3_]);
                            GLOBAL._hpResources["r" + _loc3_] = GLOBAL._resources["r" + _loc3_].Get();
                         }
                      }
@@ -4004,21 +4003,21 @@ package
                }
                CleanDeltaResources();
             }
-            _isProtected = int(param1["protected"]);
-            _isFan = int(param1.fan);
-            _isBookmarked = int(param1.bookmarked);
-            _installsGenerated = int(param1.installsgenerated);
-            if(param1.fan)
+            _isProtected = int(serverData["protected"]);
+            _isFan = int(serverData.fan);
+            _isBookmarked = int(serverData.bookmarked);
+            _installsGenerated = int(serverData.installsgenerated);
+            if(serverData.fan)
             {
                QUESTS._global.bonus_fan = 1;
             }
-            if(param1.bookmarked)
+            if(serverData.bookmarked)
             {
                QUESTS._global.bonus_bookmark = 1;
             }
-            if(Boolean(param1.updates) && param1.updates.length > 0)
+            if(Boolean(serverData.updates) && serverData.updates.length > 0)
             {
-               UPDATES.Process(param1.updates);
+               UPDATES.Process(serverData.updates);
             }
             if(_loadBase.length > 0)
             {
@@ -4028,16 +4027,16 @@ package
             {
                ATTACK.End();
             }
-            if(param1.takeover)
+            if(serverData.takeover)
             {
-               _loc4_ = new MapRoom3OutpostSecured(BASE.yardType,param1.takeover);
+               _loc4_ = new MapRoom3OutpostSecured(BASE.yardType,serverData.takeover);
                POPUPS.Push(_loc4_);
             }
          }
          else
          {
-            LOGGER.Log("err","Base.Save: " + JSON.encode(param1));
-            GLOBAL.ErrorMessage("BASE.SaveB 2: " + param1.error);
+            LOGGER.Log("err","Base.Save: " + JSON.encode(serverData));
+            GLOBAL.ErrorMessage("BASE.SaveB 2: " + serverData.error);
          }
          _saving = false;
       }
@@ -4071,7 +4070,7 @@ package
       {
          var handleLoadSuccessful:Function = null;
          var handleLoadError:Function = null;
-         handleLoadSuccessful = function(param1:Object):void
+         handleLoadSuccessful = function(p_serverData:Object):void
          {
             var _loc2_:int = 0;
             var _loc3_:int = 0;
@@ -4081,61 +4080,61 @@ package
             var _loc7_:Object = null;
             var _loc8_:int = 0;
             _lastPaged = int(Math.random() * 5);
-            if(param1.error == 0)
+            if(p_serverData.error == 0)
             {
                _paging = false;
-               GLOBAL.SetFlags(param1.flags);
-               GLOBAL._unreadMessages = !!param1.unreadmessages ? int(param1.unreadmessages) : 0;
+               GLOBAL.SetFlags(p_serverData.flags);
+               GLOBAL._unreadMessages = !!p_serverData.unreadmessages ? int(p_serverData.unreadmessages) : 0;
                _pageErrors = 0;
-               _credits.Set(int(param1.credits));
-               _hpCredits = int(param1.credits);
-               GLOBAL._credits.Set(int(param1.credits));
-               _isProtected = int(param1["protected"]);
-               _isFan = int(param1.fan);
-               _isBookmarked = int(param1.bookmarked);
-               _installsGenerated = int(param1.installsgenerated);
-               if((GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD || GLOBAL.mode == GLOBAL.e_BASE_MODE.IBUILD) && param1.resources && _saveCounterA == _saveCounterB)
+               _credits.Set(int(p_serverData.credits));
+               _hpCredits = int(p_serverData.credits);
+               GLOBAL._credits.Set(int(p_serverData.credits));
+               _isProtected = int(p_serverData["protected"]);
+               _isFan = int(p_serverData.fan);
+               _isBookmarked = int(p_serverData.bookmarked);
+               _installsGenerated = int(p_serverData.installsgenerated);
+               if((GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD || GLOBAL.mode == GLOBAL.e_BASE_MODE.IBUILD) && p_serverData.resources && _saveCounterA == _saveCounterB)
                {
-                  if(param1.resources.r1 != _resources.r1.Get() || param1.resources.r2 != _resources.r2.Get() || param1.resources.r3 != _resources.r3.Get() || param1.resources.r4 != _resources.r4.Get())
+                  if(p_serverData.resources.r1 != _resources.r1.Get() || p_serverData.resources.r2 != _resources.r2.Get() || p_serverData.resources.r3 != _resources.r3.Get() || p_serverData.resources.r4 != _resources.r4.Get())
                   {
                   }
                   _loc2_ = 1;
                   while(_loc2_ < 5)
                   {
-                     if(param1.resources["r" + _loc2_])
+                     if(p_serverData.resources["r" + _loc2_])
                      {
                         _loc3_ = 0;
                         if(BASE._deltaResources && BASE._deltaResources["r" + _loc2_] && BASE._deltaResources["r" + _loc2_].Get() > 0)
                         {
                            _loc3_ = int(BASE._deltaResources["r" + _loc2_].Get());
                         }
-                        _resources["r" + _loc2_].Set(param1.resources["r" + _loc2_] + _loc3_);
+                        _resources["r" + _loc2_].Set(p_serverData.resources["r" + _loc2_] + _loc3_);
                         _hpResources["r" + _loc2_] = _resources["r" + _loc2_].Get();
-                        GLOBAL._resources["r" + _loc2_].Set(param1.resources["r" + _loc2_] + _loc3_);
+                        GLOBAL._resources["r" + _loc2_].Set(p_serverData.resources["r" + _loc2_] + _loc3_);
                         GLOBAL._hpResources["r" + _loc2_] = GLOBAL._resources["r" + _loc2_].Get();
                      }
                      _loc2_++;
                   }
                }
-               if(param1.fan)
+               if(p_serverData.fan)
                {
                   QUESTS._global.bonus_fan = 1;
                }
-               if(param1.bookmarked)
+               if(p_serverData.bookmarked)
                {
                   QUESTS._global.bonus_bookmark = 1;
                }
-               if(param1.giftsentcount)
+               if(p_serverData.giftsentcount)
                {
-                  QUESTS._global.bonus_gifts = param1.giftsentcount;
+                  QUESTS._global.bonus_gifts = p_serverData.giftsentcount;
                }
-               if(Boolean(param1.updates) && param1.updates.length > 0)
+               if(Boolean(p_serverData.updates) && p_serverData.updates.length > 0)
                {
-                  UPDATES.Process(param1.updates);
+                  UPDATES.Process(p_serverData.updates);
                }
-               if(param1.buildingresources)
+               if(p_serverData.buildingresources)
                {
-                  _rawGIP = param1.buildingresources;
+                  _rawGIP = p_serverData.buildingresources;
                   _processedGIP = {};
                   _GIP = {
                      "r1":new SecNum(0),
@@ -4237,13 +4236,13 @@ package
                }
                if(GLOBAL._loadmode == GLOBAL.e_BASE_MODE.BUILD && isMainYard)
                {
-                  if(param1.alliancedata)
+                  if(p_serverData.alliancedata)
                   {
-                     _allianceID = int(param1.alliancedata.alliance_id);
+                     _allianceID = int(p_serverData.alliancedata.alliance_id);
                      if(_userID == LOGIN._playerID)
                      {
-                        ALLIANCES._allianceID = int(param1.alliancedata.alliance_id);
-                        ALLIANCES._myAlliance = ALLIANCES.SetAlliance(param1.alliancedata);
+                        ALLIANCES._allianceID = int(p_serverData.alliancedata.alliance_id);
+                        ALLIANCES._myAlliance = ALLIANCES.SetAlliance(p_serverData.alliancedata);
                      }
                   }
                   else if(_userID == LOGIN._playerID && (ALLIANCES._allianceID || ALLIANCES._myAlliance))
@@ -4252,20 +4251,20 @@ package
                      POWERUPS.Validate();
                   }
                }
-               if(param1.powerups)
+               if(p_serverData.powerups)
                {
-                  POWERUPS.Setup(param1.powerups,null,false);
+                  POWERUPS.Setup(p_serverData.powerups,null,false);
                }
-               if(param1.attpowerups)
+               if(p_serverData.attpowerups)
                {
-                  POWERUPS.Setup(null,param1.attpowerups,false);
+                  POWERUPS.Setup(null,p_serverData.attpowerups,false);
                }
                QUESTS.Check();
             }
             else
             {
-               LOGGER.Log("err","Base.Page: " + JSON.encode(param1));
-               GLOBAL.ErrorMessage("Base.Page: " + param1.error);
+               LOGGER.Log("err","Base.Page: " + JSON.encode(p_serverData));
+               GLOBAL.ErrorMessage("Base.Page: " + p_serverData.error);
             }
          };
          handleLoadError = function(param1:IOErrorEvent):void

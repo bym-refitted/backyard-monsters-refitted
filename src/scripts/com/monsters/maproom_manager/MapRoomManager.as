@@ -292,7 +292,7 @@ package com.monsters.maproom_manager
       {
          PLEASEWAIT.Hide();
          LOGGER.Log("err","HTTP error upgrading to Map Room 3");
-         // GLOBAL.ErrorMessage("HTTP error upgrading to Map Room 3");
+         GLOBAL.ErrorMessage("HTTP error upgrading to Map Room 3");
       }
       
       public function DowngradeFromMapRoom3() : void

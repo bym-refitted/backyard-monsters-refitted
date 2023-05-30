@@ -1007,6 +1007,7 @@ package
             }
             else
             {
+               // Comment: This function call is used to force upgrade to map room 3 when the game first loads
                MapRoomManager.instance.CheckForAndForceUpgradeFromMapRoom1();
                ++_timePlayed;
                _loc1_ = int(tickables.length - 1);

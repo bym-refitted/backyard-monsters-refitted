@@ -63,7 +63,7 @@ const baseLoadData = (res: Response) =>
       r3max: 10000,
       r4max: 10000,
     },
-    credits: 10000,
+    credits: 2000,
     loot: {},
     researchdata: [],
     stats: {
@@ -176,11 +176,29 @@ const baseLoadData = (res: Response) =>
   });
 
 const baseSaveData = (res: Response) => {
-  res.status(200).json({});
+  res.status(200).json({
+    error: 0,
+    basesaveid: 87658764,
+    credits: 2000,
+    protected: 1,
+    fan: 0,
+    bookmarked: 0,
+    installsgenerated: 42069,
+    resources: {},
+    h: "someHashValue",
+  });
 };
 
+const updateSaved = (res: Response) => {
+  res.status(200).json({ error: 0, h: "someHashValue", });
+}
+
 const mapRoomVersion = (res: Response) => {
-  res.status(200).json({ version: 3 });
+  res.status(200).json({
+    error: 0, 
+    version: 3, 
+    h: "someHashValue", 
+  });
 };
 
 router.get("/base/load/", (_: any, res: Response) => baseLoadData(res));
@@ -188,6 +206,9 @@ router.post("/base/load/", (_: any, res: Response) => baseLoadData(res));
 
 router.get("/base/save/", (_: any, res: Response) => baseSaveData(res));
 router.post("/base/save/", (_: any, res: Response) => baseSaveData(res));
+
+// router.get("/base/updatesaved/", (_: any, res: Response) => updateSaved(res));
+// router.post("/base/updatesaved/", (_: any, res: Response) => updateSaved(res));
 
 router.get("/worldmapv3/setmapversion/", (_: any, res: Response) => mapRoomVersion(res));
 router.post("/worldmapv3/setmapversion/", (_: any, res: Response) => mapRoomVersion(res));
