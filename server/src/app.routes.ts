@@ -8,7 +8,7 @@ interface LogProps {
 }
 
 const router = Router();
-const resGetter = (res: Response) =>
+const baseLoadData = (res: Response) =>
   res.status(200).json({
     error: 0,
     flags: {
@@ -63,7 +63,7 @@ const resGetter = (res: Response) =>
       r3max: 10000,
       r4max: 10000,
     },
-    credits: 250,
+    credits: 10000,
     loot: {},
     researchdata: [],
     stats: {
@@ -149,6 +149,14 @@ const resGetter = (res: Response) =>
       BR43: {
         quantity: 100,
       },
+      FIX: {},
+      BLK2: {},
+      BLK3: {},
+      BLK4: {},
+      BLK5: {},
+      HOD: {},
+      POD: {},
+      EXH: {},
     },
     storedata: {},
     inventory: {},
@@ -167,9 +175,24 @@ const resGetter = (res: Response) =>
     mushrooms: {},
   });
 
-router.get("/base/load/", (_: any, res: Response) => resGetter(res));
-router.post("/base/load/", (_: any, res: Response) => resGetter(res));
- 
+const baseSaveData = (res: Response) => {
+  res.status(200).json({});
+};
+
+const mapRoomVersion = (res: Response) => {
+  res.status(200).json({ version: 3 });
+};
+
+router.get("/base/load/", (_: any, res: Response) => baseLoadData(res));
+router.post("/base/load/", (_: any, res: Response) => baseLoadData(res));
+
+router.get("/base/save/", (_: any, res: Response) => baseSaveData(res));
+router.post("/base/save/", (_: any, res: Response) => baseSaveData(res));
+
+router.get("/worldmapv3/setmapversion/", (_: any, res: Response) => mapRoomVersion(res));
+router.post("/worldmapv3/setmapversion/", (_: any, res: Response) => mapRoomVersion(res));
+
+
 router.post("/api/player/recorddebugdata/", (req: Request) => {
   logging(`=========== NEW RUN ${randomUUID()} ===========`);
   JSON.parse(req.body.message).forEach((element: LogProps) => {
@@ -177,9 +200,5 @@ router.post("/api/player/recorddebugdata/", (req: Request) => {
   });
   errorLog(`ERROR: ${req.body.error}`);
 });
-
-router.get("/api/", (_: any, res: Response) =>
-  res.status(200).json({})
-);
 
 export default router;

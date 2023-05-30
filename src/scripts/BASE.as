@@ -713,7 +713,7 @@ package
          }
          else
          {
-             // Comment: the Load() function resolves to this block.
+            // Comment: the Load() function resolves to this block.
             new URLLoaderApi().load(GLOBAL._baseURL + "load",_loc8_,handleBaseLoadSuccessful,handleBaseLoadError);
          }
       }
@@ -3934,6 +3934,8 @@ package
          }
          else
          {
+            // Comment: the Save() function resolves to this block
+            GLOBAL.Message("Saving base...");
             new URLLoaderApi().load(GLOBAL._baseURL + "save",_loc7_,handleLoadSuccessful,handleLoadError);
          }
          if(_saveOver)
@@ -4957,199 +4959,199 @@ package
          return param1;
       }
       
-      public static function addBuildingC(param1:int) : BFOUNDATION
+      public static function addBuildingC(buildingNum:int) : BFOUNDATION
       {
          var _loc2_:BFOUNDATION = null;
          var _loc3_:Object = null;
-         _loc3_ = GLOBAL._buildingProps[param1 - 1] || {};
+         _loc3_ = GLOBAL._buildingProps[buildingNum - 1] || {};
          if(_loc3_.type == "decoration")
          {
-            if(BTOTEM.IsTotem2(param1))
+            if(BTOTEM.IsTotem2(buildingNum))
             {
-               _loc2_ = new BTOTEM(param1);
+               _loc2_ = new BTOTEM(buildingNum);
             }
             else
             {
-               _loc2_ = new BDECORATION(param1);
+               _loc2_ = new BDECORATION(buildingNum);
             }
             return _loc2_;
          }
          if(_loc3_.cls)
          {
             // Comment: Could not be found - fix
-            // return new _loc3_.cls();
+            return new _loc3_.cls();
          }
-         if(param1 == 1)
+         if(buildingNum == 1)
          {
             _loc2_ = new BUILDING1();
          }
-         else if(param1 == 2)
+         else if(buildingNum == 2)
          {
             _loc2_ = new BUILDING2();
          }
-         else if(param1 == 3)
+         else if(buildingNum == 3)
          {
             _loc2_ = new BUILDING3();
          }
-         else if(param1 == 4)
+         else if(buildingNum == 4)
          {
             _loc2_ = new BUILDING4();
          }
-         else if(param1 == 5)
+         else if(buildingNum == 5)
          {
             _loc2_ = new BUILDING5();
          }
-         else if(param1 == 6)
+         else if(buildingNum == 6)
          {
             _loc2_ = new BUILDING6();
          }
-         else if(param1 == 7)
+         else if(buildingNum == 7)
          {
             _loc2_ = new BUILDING7();
          }
-         else if(param1 == 8)
+         else if(buildingNum == 8)
          {
             _loc2_ = new BUILDING8();
          }
-         else if(param1 == 9)
+         else if(buildingNum == 9)
          {
             _loc2_ = new BUILDING9();
          }
-         else if(param1 == 10)
+         else if(buildingNum == 10)
          {
             _loc2_ = new BUILDING10();
          }
-         else if(param1 == 11)
+         else if(buildingNum == 11)
          {
             _loc2_ = new BUILDING11();
          }
-         else if(param1 == 12)
+         else if(buildingNum == 12)
          {
             _loc2_ = new BUILDING12();
          }
-         else if(param1 == 13)
+         else if(buildingNum == 13)
          {
             _loc2_ = new BUILDING13();
          }
-         else if(param1 == 14)
+         else if(buildingNum == 14)
          {
             _loc2_ = new BUILDING14();
          }
-         else if(param1 == 15)
+         else if(buildingNum == 15)
          {
             _loc2_ = new BUILDING15();
          }
-         else if(param1 == 16)
+         else if(buildingNum == 16)
          {
             _loc2_ = new BUILDING16();
          }
-         else if(param1 == 17)
+         else if(buildingNum == 17)
          {
             _loc2_ = new BUILDING17();
          }
-         else if(param1 == 18)
+         else if(buildingNum == 18)
          {
             _loc2_ = new BUILDING18();
          }
-         else if(param1 == 19)
+         else if(buildingNum == 19)
          {
             _loc2_ = new BUILDING19();
          }
-         else if(param1 == 20)
+         else if(buildingNum == 20)
          {
             _loc2_ = new BUILDING20();
          }
-         else if(param1 == 21)
+         else if(buildingNum == 21)
          {
             _loc2_ = new BUILDING21();
          }
-         else if(param1 == 22)
+         else if(buildingNum == 22)
          {
             _loc2_ = new BUILDING22();
          }
-         else if(param1 == 23)
+         else if(buildingNum == 23)
          {
             _loc2_ = new BUILDING23();
          }
-         else if(param1 == 24)
+         else if(buildingNum == 24)
          {
             _loc2_ = new BUILDING24();
          }
-         else if(param1 == 25)
+         else if(buildingNum == 25)
          {
             _loc2_ = new BUILDING25();
          }
-         else if(param1 == 26)
+         else if(buildingNum == 26)
          {
             _loc2_ = new BUILDING26();
          }
-         else if(param1 == 27)
+         else if(buildingNum == 27)
          {
             _loc2_ = new BUILDING27();
          }
-         else if(param1 == 51)
+         else if(buildingNum == 51)
          {
             _loc2_ = new BUILDING51();
          }
-         else if(param1 == 52)
+         else if(buildingNum == 52)
          {
             _loc2_ = new BUILDING52();
          }
-         else if(param1 == 112)
+         else if(buildingNum == 112)
          {
             _loc2_ = new BUILDING112();
          }
-         else if(param1 == 113)
+         else if(buildingNum == 113)
          {
             _loc2_ = new BUILDING113();
          }
-         else if(param1 == 114)
+         else if(buildingNum == 114)
          {
             _loc2_ = new CHAMPIONCAGE();
          }
-         else if(param1 == 115)
+         else if(buildingNum == 115)
          {
             _loc2_ = new BUILDING115();
          }
-         else if(param1 == 116)
+         else if(buildingNum == 116)
          {
             _loc2_ = new MONSTERLAB();
          }
-         else if(param1 == 117)
+         else if(buildingNum == 117)
          {
             _loc2_ = new BUILDING117();
          }
-         else if(param1 == 118)
+         else if(buildingNum == 118)
          {
             _loc2_ = new BUILDING118();
          }
-         else if(param1 == 119)
+         else if(buildingNum == 119)
          {
             _loc2_ = new CHAMPIONCHAMBER();
          }
-         else if(param1 == 128)
+         else if(buildingNum == 128)
          {
             _loc2_ = new HOUSINGBUNKER();
          }
-         else if(param1 == 127)
+         else if(buildingNum == 127)
          {
             _loc2_ = new INFERNOPORTAL();
          }
-         else if(param1 == 129)
+         else if(buildingNum == 129)
          {
             _loc2_ = new INFERNOQUAKETOWER();
          }
-         else if(param1 == 130)
+         else if(buildingNum == 130)
          {
             _loc2_ = new INFERNO_CANNON_TOWER();
          }
-         else if(param1 == 132)
+         else if(buildingNum == 132)
          {
             _loc2_ = new INFERNO_MAGMA_TOWER();
          }
          // Comment: Could not be found - returned a new obj instead
-         // return !!_loc3_.cls ? new _loc3_.cls() : _loc2_;
-         return !!_loc3_.cls ? new Object() : _loc2_;
+         return !!_loc3_.cls ? new _loc3_.cls() : _loc2_;
+         // return !!_loc3_.cls ? new Object() : _loc2_;
       }
       
       public static function ShowFootprints() : void

@@ -21,21 +21,6 @@
       </nav>
     </header>
     <main>
-      <h2>Config</h2>
-      <a href="/crossdomain.xml" target="_blank">
-        <div class="card">
-          <div class="route-item">
-            <i class="fa-solid fa-gear"></i>
-            <p class="route">/crossdomain.xml</p>
-            <div class="config">
-              <p>Config</p>
-            </div>
-          </div>
-        </div>
-      </a>
-    </main>
-
-    <main>
       <h2>Routes</h2>
       <div onclick="getRoute('base/load')" class="card">
         <div class="route-item">
@@ -49,18 +34,44 @@
           <code id="base/load" class="language-json"></code>
         </pre>
       </div>
-      <div onclick="getRoute('api')" class="card">
+      <div onclick="getRoute('base/save/')" class="card">
         <div class="route-item">
           <i class="fa-solid fa-cube"></i>
-          <p class="route">/api</p>
+          <p class="route">/base/save</p>
           <div class="get">
             <p>Get</p>
           </div>
         </div>
         <pre>
-          <code id="api" class="language-json"></code>
+          <code id="base/save/" class="language-json"></code>
         </pre>
       </div>
+      <div onclick="getRoute('worldmapv3/setmapversion/')" class="card">
+        <div class="route-item">
+          <i class="fa-solid fa-cube"></i>
+          <p class="route">/worldmapv3/setmapversion</p>
+          <div class="get">
+            <p>Get</p>
+          </div>
+        </div>
+        <pre>
+          <code id="worldmapv3/setmapversion/" class="language-json"></code>
+        </pre>
+      </div>
+    </main>
+    <main>
+      <h2>Config</h2>
+      <a href="/crossdomain.xml" target="_blank">
+        <div class="card">
+          <div class="route-item">
+            <i class="fa-solid fa-gear"></i>
+            <p class="route">/crossdomain.xml</p>
+            <div class="config">
+              <p>Config</p>
+            </div>
+          </div>
+        </div>
+      </a>
     </main>
     <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
   </body>

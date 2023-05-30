@@ -217,7 +217,6 @@ package
          var reourceMax:Number = NaN;
          var iResourceMax:Number = NaN;
          var _loc23_:String = null;
-         LOGGER.DebugQAdd("Variables func", {base:BASE.isMainYard});
          if(BASE.isOutpost)
          {
             LOGGER.DebugQAdd("isOutpost", {isOutpost:BASE.isOutpost});
