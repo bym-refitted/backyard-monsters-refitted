@@ -5150,7 +5150,6 @@ package
          }
          // Comment: Could not be found - returned a new obj instead
          return !!_loc3_.cls ? new _loc3_.cls() : _loc2_;
-         // return !!_loc3_.cls ? new Object() : _loc2_;
       }
       
       public static function ShowFootprints() : void

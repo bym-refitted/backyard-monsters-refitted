@@ -5,6 +5,7 @@ package com.monsters.maproom_manager
    import com.monsters.maproom3.popups.MapRoom3ConfirmMigrationPopup;
    import com.monsters.maproom_advanced.MapRoom;
    import com.monsters.monsters.components.CModifiableProperty;
+   import config.singletonlock.SingletonLock;
    import flash.events.IOErrorEvent;
    import flash.utils.Dictionary;
    
@@ -28,7 +29,7 @@ package com.monsters.maproom_manager
       
       private var m_AttackCostMultiplier:CModifiableProperty;
       
-      public function MapRoomManager(param1:SingletonLock)
+      public function MapRoomManager(param1:config.singletonlock.SingletonLock)
       {
          this.m_AttackCostMultiplier = new CModifiableProperty(Number.MAX_VALUE,Number.MIN_VALUE,1);
          super();
@@ -36,7 +37,7 @@ package com.monsters.maproom_manager
       
       public static function get instance() : com.monsters.maproom_manager.MapRoomManager
       {
-         return s_Instance = s_Instance || new com.monsters.maproom_manager.MapRoomManager(new SingletonLock());
+         return s_Instance = s_Instance || new com.monsters.maproom_manager.MapRoomManager(new config.singletonlock.SingletonLock());
       }
       
       public function get currentMapRoom() : com.monsters.maproom_manager.IMapRoom
@@ -277,6 +278,7 @@ package com.monsters.maproom_manager
       {
          if(param1.error == 0)
          {
+            PLEASEWAIT.Hide();
             PLEASEWAIT.Show(KEYS.Get("upgraded_to_map_room3_refresh"));
             GLOBAL.CallJS("cc.reloadParent");
          }
@@ -329,12 +331,3 @@ package com.monsters.maproom_manager
    }
 }
 
-class SingletonLock
-{
-    
-   
-   public function SingletonLock()
-   {
-      super();
-   }
-}
