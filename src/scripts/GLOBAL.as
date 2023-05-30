@@ -1934,12 +1934,12 @@ package
          };
       }
       
-      public static function SetFlags(param1:Object) : void
+      public static function SetFlags(serverFlags:Object) : void
       {
          var _loc2_:int = 0;
          var _loc3_:int = 0;
          var _loc4_:int = 0;
-         _flags = param1;
+         _flags = serverFlags;
          if(!_flags.viximo && !_flags.kongregate)
          {
             _loc2_ = int(LOGIN._digits[LOGIN._digits.length - 1]);

@@ -2,7 +2,7 @@ package
 {
    import com.monsters.enums.EnumYardType;
    import flash.events.IOErrorEvent;
-   
+
    public class LOGGER
    {
       
@@ -20,27 +20,37 @@ package
          super();
       }
       
-      public static function Log(param1:String, param2:String, param3:Boolean = false) : void
+      public static function Log(logType:String, message:String, param3:Boolean = false) : void
       {
          var _loc4_:Array = null;
-         if(param2.search("recorddebugdata") != -1)
+         if(message.search("recorddebugdata") != -1)
          {
             return;
          }
          if(param3 || !GLOBAL._flags || GLOBAL._flags && GLOBAL._flags.gamedebug == 1)
          {
-            if(!_logged[param1 + param2])
+            if(!_logged[logType + message])
             {
-               if(param1 == "hak" || param1 == "err" || param1 == "log")
+               if(logType == "hak" || logType == "err" || logType == "log")
                {
-                  _logged[param1 + param2] = 1;
+                  _logged[logType + message] = 1;
                }
-               param2 = "" + "[v" + GLOBAL._version.Get() + "" + "r" + GLOBAL._softversion + "] " + param2 + " [mode: " + GLOBAL._loadmode + " baseid:" + BASE._baseID + "]";
-               _loc4_ = [["key",param1],["value",param2],["saveid",BASE._lastSaveID]];
+               message = "" + "[v" + GLOBAL._version.Get() + "" + "r" + GLOBAL._softversion + "] " + message + " [mode: " + GLOBAL._loadmode + " baseid:" + BASE._baseID + "]";
+               _loc4_ = [["key",logType],["value",message],["saveid",BASE._lastSaveID]];
                print(_loc4_.toString());
                new URLLoaderApi().load(GLOBAL._apiURL + "player/recorddebugdata",_loc4_,handleLoadSuccessful,handleLoadError);
             }
          }
+      }
+
+      public static function Debug(logMessage:String, debugVars:Object) : void
+      {
+         var logger:Array = [["key", "logType"], ["message", logMessage], ["saveid", "BASE._lastSaveID"]];
+
+         if (debugVars){
+            logger.push(["debugVars", JSON.encode(debugVars)]);
+         }
+         new URLLoaderApi().load(GLOBAL._apiURL + "player/recorddebugdata", logger, handleLoadSuccessful, handleLoadError);
       }
       
       public static function info(param1:String) : void

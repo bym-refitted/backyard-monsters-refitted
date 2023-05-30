@@ -738,28 +738,28 @@ package
          return false;
       }
       
-      private static function handleBaseLoadSuccessful(param1:Object) : void
+      private static function handleBaseLoadSuccessful(data:Object) : void
       {
-         var TauntB:Function;
+       var TauntB:Function;
          var onImageLoad:Function;
          var LoadImageError:Function;
          var firstLoad:Boolean = false;
          var idstr:String = null;
          var ix:int = 0;
-         var r:Object = null;
+         var resources:Object = null;
          var bd:Object = null;
-         var i:String = null;
-         var ir:Object = null;
+         var researchdata:String = null;
+         var iresources:Object = null;
          var kx:int = 0;
-         var ooo:Object = null;
-         var length:int = 0;
+         var champion:Object = null;
+         var size:int = 0;
          var existingGuardians:Dictionary = null;
          var playerGuardianIndex:int = 0;
          var guardianIndex:int = 0;
          var addedGuardian:Boolean = false;
          var unfrozenFound:Boolean = false;
          var j:int = 0;
-         var st:String = null;
+         var championString:String = null;
          var attacksArr:Array = null;
          var attackCount:int = 0;
          var attackObj:Object = null;
@@ -771,18 +771,17 @@ package
          var promoItemsArr:Array = null;
          var promoID:Array = null;
          var promoGifts:Array = null;
-         var obj:Object = param1;
-         if(obj.error == 0)
+         var serverData:Object = data;
+         if(serverData.error == 0)
          {
-            GLOBAL.Message("Attempting to load base from successful function.")
-            if(parseBaseLoadMessages(obj))
+            if(parseBaseLoadMessages(serverData))
             {
                return;
             }
-            loadObject = obj;
-            if(obj && obj.player && Boolean(obj.player.buffs))
+            loadObject = serverData;
+            if(serverData && serverData.player && Boolean(serverData.player.buffs))
             {
-               s_resourceCells = obj.player.buffs.resources;
+               s_resourceCells = serverData.player.buffs.resources;
             }
             if(MapRoomManager.instance.isInMapRoom3)
             {
@@ -808,57 +807,57 @@ package
                GLOBAL._openBase = null;
             }
             MapRoomManager.instance.worldID = 0;
-            GLOBAL.SetFlags(obj.flags);
-            GLOBAL.SetFlags([]);
+            GLOBAL.SetFlags(serverData.flags);
             QUESTS.Setup();
+            LOGGER.Debug("testing_log",{"key":"val"});
             GLOBAL._reloadonerror = false;
             if(TUTORIAL.hasFinished)
             {
-               _isProtected = int(obj["protected"]);
+               _isProtected = int(serverData["protected"]);
             }
-            _isFan = int(obj.fan);
+            _isFan = int(serverData.fan);
             _isFan = int(0);
-            _isBookmarked = int(obj.bookmarked);
+            _isBookmarked = int(serverData.bookmarked);
             _isBookmarked = int(0);
             _installsGenerated = int(42069);
-            if(obj.fan)
+            if(serverData.fan)
             {
                QUESTS._global.bonus_fan = 1;
             }
-            if(obj.bookmarked)
+            if(serverData.bookmarked)
             {
                QUESTS._global.bonus_bookmark = 1;
             }
-            if(obj.giftsentcount)
+            if(serverData.giftsentcount)
             {
-               QUESTS._global.bonus_gifts = obj.giftsentcount;
+               QUESTS._global.bonus_gifts = serverData.giftsentcount;
             }
             QUESTS._global.bonus_invites = _installsGenerated;
-            _lastProcessed = int(obj.savetime);
+            _lastProcessed = int(serverData.savetime);
             GLOBAL.t = _lastProcessed;
-            _currentTime = int(obj.currenttime);
+            _currentTime = int(serverData.currenttime);
             if(_lastProcessed < _currentTime - 60 * 60 * 24 * 2)
             {
                _lastProcessed = _currentTime - 60 * 60 * 24 * 2;
             }
-            if(obj.chatservers != null)
+            if(serverData.chatservers != null)
             {
-               Chat._chatServers = obj.chatservers;
+               Chat._chatServers = serverData.chatservers;
             }
             else
             {
                Chat._chatServers = new Array();
             }
-            _lastSaveID = obj.id;
-            _baseSeed = obj.baseseed;
-            _loadedBaseID = obj.baseid;
+            _lastSaveID = serverData.id;
+            _baseSeed = serverData.baseseed;
+            _loadedBaseID = serverData.baseid;
             if(GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD)
             {
-               _loadedFriendlyBaseID = obj.baseid;
+               _loadedFriendlyBaseID = serverData.baseid;
                _loadedYardType = m_yardType;
             }
-            _loadedFBID = obj.fbid;
-            _userID = obj.userid;
+            _loadedFBID = serverData.fbid;
+            _userID = serverData.userid;
             idstr = _userID.toString();
             _userDigits = [];
             ix = 0;
@@ -869,13 +868,13 @@ package
             }
             if(GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD && isMainYard)
             {
-               if(obj.alliancedata)
+               if(serverData.alliancedata)
                {
-                  _allianceID = int(obj.alliancedata.alliance_id);
+                  _allianceID = int(serverData.alliancedata.alliance_id);
                   if(_userID == LOGIN._playerID)
                   {
-                     ALLIANCES._allianceID = int(obj.alliancedata.alliance_id);
-                     ALLIANCES._myAlliance = ALLIANCES.SetAlliance(obj.alliancedata);
+                     ALLIANCES._allianceID = int(serverData.alliancedata.alliance_id);
+                     ALLIANCES._myAlliance = ALLIANCES.SetAlliance(serverData.alliancedata);
                      ACHIEVEMENTS.Check("alliance",1);
                   }
                }
@@ -884,21 +883,21 @@ package
                   ALLIANCES.Clear();
                }
             }
-            if(obj.powerups)
+            if(serverData.powerups)
             {
-               POWERUPS.Setup(obj.powerups,null,true);
+               POWERUPS.Setup(serverData.powerups,null,true);
             }
-            if(obj.attpowerups)
+            if(serverData.attpowerups)
             {
-               POWERUPS.Setup(null,obj.attpowerups,true);
+               POWERUPS.Setup(null,serverData.attpowerups,true);
             }
-            _attackID = int(obj.attackid);
-            if(obj.worldsize)
+            _attackID = int(serverData.attackid);
+            if(serverData.worldsize)
             {
-               MapRoomManager.instance.mapWidth = obj.worldsize[0];
-               MapRoomManager.instance.mapHeight = obj.worldsize[1];
+               MapRoomManager.instance.mapWidth = serverData.worldsize[0];
+               MapRoomManager.instance.mapHeight = serverData.worldsize[1];
             }
-            if(obj.usemap)
+            if(serverData.usemap)
             {
                if(isInfernoMainYardOrOutpost)
                {
@@ -913,39 +912,39 @@ package
             {
                if(GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD)
                {
-                  if(obj.homebaseid)
+                  if(serverData.homebaseid)
                   {
-                     GLOBAL._homeBaseID = obj.homebaseid;
+                     GLOBAL._homeBaseID = serverData.homebaseid;
                   }
-                  if(obj.homebase)
+                  if(serverData.homebase)
                   {
-                     if(obj.homebase.length == 2 && obj.homebase[0] > -1 && obj.homebase[1] > -1)
+                     if(serverData.homebase.length == 2 && serverData.homebase[0] > -1 && serverData.homebase[1] > -1)
                      {
-                        if(obj.outposts)
+                        if(serverData.outposts)
                         {
                            GLOBAL._mapOutpost = [];
                            GLOBAL._mapOutpostIDs = [];
                            ix = 0;
-                           while(ix < obj.outposts.length)
+                           while(ix < serverData.outposts.length)
                            {
-                              if(obj.outposts[ix].length == 3)
+                              if(serverData.outposts[ix].length == 3)
                               {
-                                 GLOBAL._mapOutpost.push(new Point(obj.outposts[ix][0],obj.outposts[ix][1]));
-                                 GLOBAL._mapOutpostIDs.push(obj.outposts[ix][2]);
+                                 GLOBAL._mapOutpost.push(new Point(serverData.outposts[ix][0],serverData.outposts[ix][1]));
+                                 GLOBAL._mapOutpostIDs.push(serverData.outposts[ix][2]);
                               }
                               ix++;
                            }
                         }
-                        GLOBAL._mapHome = new Point(obj.homebase[0],obj.homebase[1]);
+                        GLOBAL._mapHome = new Point(serverData.homebase[0],serverData.homebase[1]);
                      }
                      else
                      {
-                        LOGGER.Log("err","BASE.Process Invalid home base coordinate. " + obj.homebase);
+                        LOGGER.Log("err","BASE.Process Invalid home base coordinate. " + serverData.homebase);
                      }
                   }
-                  if(obj.empiredestroyed)
+                  if(serverData.empiredestroyed)
                   {
-                     GLOBAL._empireDestroyed = obj.empiredestroyed;
+                     GLOBAL._empireDestroyed = serverData.empiredestroyed;
                   }
                   else
                   {
@@ -953,13 +952,13 @@ package
                   }
                }
             }
-            else if(MapRoomManager.instance.isInMapRoom3 && Boolean(obj.homebase))
+            else if(MapRoomManager.instance.isInMapRoom3 && Boolean(serverData.homebase))
             {
-               GLOBAL._mapHome = new Point(obj.homebase[0],obj.homebase[1]);
+               GLOBAL._mapHome = new Point(serverData.homebase[0],serverData.homebase[1]);
             }
-            GLOBAL._unreadMessages = obj.unreadmessages;
-            r = obj.resources;
-            if(r == null)
+            GLOBAL._unreadMessages = serverData.unreadmessages;
+            resources = serverData.resources;
+            if(resources == null)
             {
                _resources.r1 = 1000;
                _resources.r2 = 1000;
@@ -973,49 +972,49 @@ package
             else
             {
                _resources ||= {};
-               _resources.r1 = new SecNum(Math.floor(r.r1));
-               _resources.r2 = new SecNum(Math.floor(r.r2));
-               _resources.r3 = new SecNum(Math.floor(r.r3));
-               _resources.r4 = new SecNum(Math.floor(r.r4));
-               _resources.r1bonus = r.r1bonus;
-               _resources.r2bonus = r.r2bonus;
-               _resources.r3bonus = r.r3bonus;
-               _resources.r4bonus = r.r4bonus;
+               _resources.r1 = new SecNum(Math.floor(resources.r1));
+               _resources.r2 = new SecNum(Math.floor(resources.r2));
+               _resources.r3 = new SecNum(Math.floor(resources.r3));
+               _resources.r4 = new SecNum(Math.floor(resources.r4));
+               _resources.r1bonus = resources.r1bonus;
+               _resources.r2bonus = resources.r2bonus;
+               _resources.r3bonus = resources.r3bonus;
+               _resources.r4bonus = resources.r4bonus;
             }
-            if(obj.iresources)
+            if(serverData.iresources)
             {
-               ir = obj.iresources;
-               _iresources.r1 = new SecNum(Math.floor(ir.r1));
-               _iresources.r2 = new SecNum(Math.floor(ir.r2));
-               _iresources.r3 = new SecNum(Math.floor(ir.r3));
-               _iresources.r4 = new SecNum(Math.floor(ir.r4));
-               _iresources.r1max = int(ir.r1max);
-               _iresources.r2max = int(ir.r2max);
-               _iresources.r3max = int(ir.r3max);
-               _iresources.r4max = int(ir.r4max);
+               iresources = serverData.iresources;
+               _iresources.r1 = new SecNum(Math.floor(iresources.r1));
+               _iresources.r2 = new SecNum(Math.floor(iresources.r2));
+               _iresources.r3 = new SecNum(Math.floor(iresources.r3));
+               _iresources.r4 = new SecNum(Math.floor(iresources.r4));
+               _iresources.r1max = int(iresources.r1max);
+               _iresources.r2max = int(iresources.r2max);
+               _iresources.r3max = int(iresources.r3max);
+               _iresources.r4max = int(iresources.r4max);
             }
-            if(Boolean(obj.updates) && obj.updates.length > 0)
+            if(Boolean(serverData.updates) && serverData.updates.length > 0)
             {
-               UPDATES.Process(obj.updates);
+               UPDATES.Process(serverData.updates);
             }
-            else if(obj.lastupdate)
+            else if(serverData.lastupdate)
             {
-               UPDATES._lastUpdateID = Number(obj.lastupdate);
+               UPDATES._lastUpdateID = Number(serverData.lastupdate);
             }
             else
             {
                UPDATES._lastUpdateID = 0;
             }
-            if(obj.mushrooms.l)
+            if(serverData.mushrooms.l)
             {
-               _mushroomList = obj.mushrooms.l;
+               _mushroomList = serverData.mushrooms.l;
             }
-            if(obj.mushrooms.s)
+            if(serverData.mushrooms.s)
             {
-               _lastSpawnedMushroom = int(obj.mushrooms.s);
+               _lastSpawnedMushroom = int(serverData.mushrooms.s);
             }
-            _buildingHealthData = obj.buildinghealthdata;
-            _buildingData = obj.buildingdata;
+            _buildingHealthData = serverData.buildinghealthdata;
+            _buildingData = serverData.buildingdata;
             if(!MapRoomManager.instance.isInMapRoom3)
             {
                for each(bd in _buildingData)
@@ -1040,7 +1039,7 @@ package
                   }
                }
             }
-            _rawGIP = obj.buildingresources;
+            _rawGIP = serverData.buildingresources;
             _processedGIP = {};
             _GIP = {
                "r1":new SecNum(0),
@@ -1049,9 +1048,9 @@ package
                "r4":new SecNum(0)
             };
             _lastProcessedGIP = AutoBankManager.updateLoadData(_rawGIP,_GIP,_processedGIP,_lastProcessed,_lastProcessedGIP);
-            _baseName = obj.basename;
-            _baseValue = uint(obj.basevalue);
-            _basePoints = Number(obj.points);
+            _baseName = serverData.basename;
+            _baseValue = uint(serverData.basevalue);
+            _basePoints = Number(serverData.points);
             if(!_outpostValue)
             {
                _outpostValue = 0;
@@ -1060,17 +1059,17 @@ package
             {
                _basePoints = 0;
             }
-            _credits = new SecNum(int(obj.credits));
-            GLOBAL._credits = new SecNum(int(obj.credits));
-            _hpCredits = int(obj.credits);
-            _tempLoot = obj.loot;
+            _credits = new SecNum(int(serverData.credits));
+            GLOBAL._credits = new SecNum(int(serverData.credits));
+            _hpCredits = int(serverData.credits);
+            _tempLoot = serverData.loot;
             GLOBAL.SetBuildingProps();
             _buildingsStored = {};
-            for(i in obj.researchdata)
+            for(researchdata in serverData.researchdata)
             {
-               if(obj.researchdata[i])
+               if(serverData.researchdata[researchdata])
                {
-                  _buildingsStored[i] = new SecNum(obj.researchdata[i]);
+                  _buildingsStored[researchdata] = new SecNum(serverData.researchdata[researchdata]);
                }
             }
             _hpResources = {
@@ -1089,44 +1088,44 @@ package
                   kx++;
                }
             }
-            if(obj.stats.mp)
+            if(serverData.stats.mp)
             {
-               QUESTS._global.mushroomspicked = obj.stats.mp;
+               QUESTS._global.mushroomspicked = serverData.stats.mp;
             }
-            if(obj.stats.mg)
+            if(serverData.stats.mg)
             {
-               QUESTS._global.goldmushroomspicked = obj.stats.mg;
+               QUESTS._global.goldmushroomspicked = serverData.stats.mg;
             }
-            if(obj.stats.mob)
+            if(serverData.stats.mob)
             {
-               QUESTS._global.monstersblended = obj.stats.mob;
+               QUESTS._global.monstersblended = serverData.stats.mob;
             }
-            if(obj.stats.mobg)
+            if(serverData.stats.mobg)
             {
-               QUESTS._global.monstersblendedgoo = obj.stats.mobg;
+               QUESTS._global.monstersblendedgoo = serverData.stats.mobg;
             }
-            if(obj.stats.moga)
+            if(serverData.stats.moga)
             {
-               QUESTS._global.gift_accept = obj.stats.moga;
+               QUESTS._global.gift_accept = serverData.stats.moga;
             }
-            NewPopupSystem.instance.Setup(obj.stats.popupdata);
-            if(obj.stats.updateid)
+            NewPopupSystem.instance.Setup(serverData.stats.popupdata);
+            if(serverData.stats.updateid)
             {
-               GLOBAL._whatsnewid = obj.stats.updateid;
+               GLOBAL._whatsnewid = serverData.stats.updateid;
             }
-            if(obj.stats.updateid_mr2 != null)
+            if(serverData.stats.updateid_mr2 != null)
             {
-               GLOBAL._mr2TutorialId = Math.max(GLOBAL._mr2TutorialId,obj.stats.updateid_mr2);
+               GLOBAL._mr2TutorialId = Math.max(GLOBAL._mr2TutorialId,serverData.stats.updateid_mr2);
             }
             else
             {
                GLOBAL._mr2TutorialId = Math.max(GLOBAL._mr2TutorialId,MapRoomManager.instance.isInMapRoom2 ? 1 : 0);
             }
-            MapRoom3Tutorial.instance.importData(obj);
+            MapRoom3Tutorial.instance.importData(serverData);
             GLOBAL._otherStats = {"s":1};
-            if(obj.stats.other)
+            if(serverData.stats.other)
             {
-               GLOBAL._otherStats = obj.stats.other;
+               GLOBAL._otherStats = serverData.stats.other;
             }
             if(GLOBAL.StatGet(BUILDING11.CHANGED_TO_MR2) == 1)
             {
@@ -1136,9 +1135,9 @@ package
                },MapRoomManager.instance.worldID);
                GLOBAL.StatSet(BUILDING11.CHANGED_TO_MR2,2);
             }
-            if(obj.wmid)
+            if(serverData.wmid)
             {
-               _wmID = obj.wmid;
+               _wmID = serverData.wmid;
             }
             if(GLOBAL._otherStats && GLOBAL._otherStats.descentLvl && GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD)
             {
@@ -1150,40 +1149,40 @@ package
                      GLOBAL.StatSet("descentLvl",MAPROOM_DESCENT._descentLvl);
                   }
                }
-               else if(MAPROOM_DESCENT._descentLvl < obj.stats.other.descentLvl)
+               else if(MAPROOM_DESCENT._descentLvl < serverData.stats.other.descentLvl)
                {
-                  MAPROOM_DESCENT._descentLvl = obj.stats.other.descentLvl;
+                  MAPROOM_DESCENT._descentLvl = serverData.stats.other.descentLvl;
                }
             }
-            GLOBAL.player.importAcademyData(obj.academy);
+            GLOBAL.player.importAcademyData(serverData.academy);
             if(GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD && isMainYardOrInfernoMainYard)
             {
-               SiegeWeapons.importWeapons(obj.siege);
+               SiegeWeapons.importWeapons(serverData.siege);
             }
             else
             {
-               _oldSiegeData = obj.siege;
+               _oldSiegeData = serverData.siege;
             }
-            EFFECTS.Setup(obj.effects);
-            if(Boolean(obj.monsters) && Boolean(obj.monsters.housed))
+            EFFECTS.Setup(serverData.effects);
+            if(Boolean(serverData.monsters) && Boolean(serverData.monsters.housed))
             {
-               GLOBAL.player.fillMonsterData(obj.monsters.housed);
+               GLOBAL.player.fillMonsterData(serverData.monsters.housed);
             }
-            else if(obj.monsters)
+            else if(serverData.monsters)
             {
-               GLOBAL.player.fillMonsterData(obj.monsters);
+               GLOBAL.player.fillMonsterData(serverData.monsters);
             }
-            _rawMonsters = obj.monsters;
+            _rawMonsters = serverData.monsters;
             TRIBES.Setup();
-            if(obj.wmstatus)
+            if(serverData.wmstatus)
             {
-               WMBASE.Data(obj.wmstatus);
+               WMBASE.Data(serverData.wmstatus);
             }
             else
             {
                WMBASE.Clear();
             }
-            WMATTACK.Setup(obj.aiattacks);
+            WMATTACK.Setup(serverData.aiattacks);
             if(GLOBAL.mode == GLOBAL.e_BASE_MODE.WMATTACK || GLOBAL.mode == GLOBAL.e_BASE_MODE.WMVIEW || GLOBAL.mode == GLOBAL.e_BASE_MODE.IWMATTACK)
             {
                WMBASE.Setup();
@@ -1197,30 +1196,30 @@ package
                }
                else
                {
-                  TUTORIAL._stage = int(obj.tutorialstage);
+                  TUTORIAL._stage = int(serverData.tutorialstage);
                }
                TUTORIAL.Tick();
             }
             WORKERS.Setup();
             QUEUE.Setup();
-            STORE.Data(obj.storeitems,obj.storedata,obj.inventory);
-            CREATURELOCKER.Data(obj.lockerdata);
-            QUESTS.Data(obj.quests);
-            MONSTERBAITER.Setup(obj.monsterbaiter);
-            if(obj.chatenabled != null)
+            STORE.Data(serverData.storeitems,serverData.storedata,serverData.inventory);
+            CREATURELOCKER.Data(serverData.lockerdata);
+            QUESTS.Data(serverData.quests);
+            MONSTERBAITER.Setup(serverData.monsterbaiter);
+            if(serverData.chatenabled != null)
             {
-               Chat._chatEnabled = obj.chatenabled;
+               Chat._chatEnabled = serverData.chatenabled;
                if(Chat.flagsShouldChatExist())
                {
                   Chat.initChat();
                }
             }
-            if(obj.stats.achievements)
+            if(serverData.stats.achievements)
             {
-               ACHIEVEMENTS.Data(obj.stats.achievements);
+               ACHIEVEMENTS.Data(serverData.stats.achievements);
                ACHIEVEMENTS.CheckRetroactiveAchievments();
             }
-            else if(obj.quests)
+            else if(serverData.quests)
             {
                if(GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD)
                {
@@ -1229,9 +1228,9 @@ package
                   ACHIEVEMENTS._stats.upgrade_champ3 = QUESTS._global.upgrade_champ3;
                   ACHIEVEMENTS._stats.monstersblended = QUESTS._global.monstersblended;
                   ACHIEVEMENTS._stats.wm2hall = QUESTS._global.destroy_tribe2;
-                  if(obj.alliancedata)
+                  if(serverData.alliancedata)
                   {
-                     if(obj.alliancedata.alliance_id)
+                     if(serverData.alliancedata.alliance_id)
                      {
                         ACHIEVEMENTS._stats.alliance = 1;
                      }
@@ -1240,20 +1239,20 @@ package
                }
             }
             _guardianData.length = 0;
-            if(obj.champion)
+            if(serverData.champion)
             {
-               if(obj.champion != "\"null\"" && obj.champion != "null")
+               if(serverData.champion != "\"null\"" && serverData.champion != "null")
                {
-                  ooo = JSON.decode(obj.champion);
-                  length = 0;
-                  if(ooo.t)
+                  champion = JSON.decode(serverData.champion);
+                  size = 0;
+                  if(champion.t)
                   {
-                     length = 1;
-                     ooo = [ooo];
+                     size = 1;
+                     champion = [champion];
                   }
                   else
                   {
-                     length = int(ooo.length);
+                     size = int(champion.length);
                   }
                   existingGuardians = new Dictionary();
                   playerGuardianIndex = 0;
@@ -1261,75 +1260,75 @@ package
                   addedGuardian = false;
                   unfrozenFound = false;
                   j = 0;
-                  while(j < length)
+                  while(j < size)
                   {
                      try
                      {
-                        if(Boolean(ooo[j].t) && !existingGuardians[ooo[j].t])
+                        if(Boolean(champion[j].t) && !existingGuardians[champion[j].t])
                         {
-                           existingGuardians[ooo[j].t] = true;
+                           existingGuardians[champion[j].t] = true;
                            _guardianData[guardianIndex] = {};
                            addedGuardian = true;
-                           if(ooo[j].nm)
+                           if(champion[j].nm)
                            {
-                              _guardianData[guardianIndex].nm = ooo[j].nm;
+                              _guardianData[guardianIndex].nm = champion[j].nm;
                            }
-                           _guardianData[guardianIndex].t = ooo[j].t;
-                           if(ooo[j].ft)
+                           _guardianData[guardianIndex].t = champion[j].t;
+                           if(champion[j].ft)
                            {
-                              _guardianData[guardianIndex].ft = ooo[j].ft;
+                              _guardianData[guardianIndex].ft = champion[j].ft;
                            }
-                           if(ooo[j].fd)
+                           if(champion[j].fd)
                            {
-                              _guardianData[guardianIndex].fd = ooo[j].fd;
+                              _guardianData[guardianIndex].fd = champion[j].fd;
                            }
                            else
                            {
                               _guardianData[guardianIndex].fd = 0;
                            }
-                           if(ooo[j].l)
+                           if(champion[j].l)
                            {
-                              _guardianData[guardianIndex].l = new SecNum(ooo[j].l);
+                              _guardianData[guardianIndex].l = new SecNum(champion[j].l);
                            }
                            else
                            {
                               _guardianData[guardianIndex].l = new SecNum(0);
                            }
-                           if(ooo[j].hp)
+                           if(champion[j].hp)
                            {
-                              _guardianData[guardianIndex].hp = new SecNum(ooo[j].hp);
+                              _guardianData[guardianIndex].hp = new SecNum(champion[j].hp);
                            }
                            else
                            {
                               _guardianData[guardianIndex].hp = new SecNum(0);
                            }
-                           if(ooo[j].fb)
+                           if(champion[j].fb)
                            {
-                              _guardianData[guardianIndex].fb = new SecNum(ooo[j].fb);
+                              _guardianData[guardianIndex].fb = new SecNum(champion[j].fb);
                            }
                            else
                            {
                               _guardianData[guardianIndex].fb = new SecNum(0);
                            }
-                           if(ooo[j].pl)
+                           if(champion[j].pl)
                            {
-                              _guardianData[guardianIndex].pl = new SecNum(ooo[j].pl);
+                              _guardianData[guardianIndex].pl = new SecNum(champion[j].pl);
                            }
                            else
                            {
                               _guardianData[guardianIndex].pl = new SecNum(0);
                            }
-                           if(ooo[j].status is int)
+                           if(champion[j].status is int)
                            {
-                              _guardianData[guardianIndex].status = ooo[j].status;
+                              _guardianData[guardianIndex].status = champion[j].status;
                            }
                            else
                            {
                               _guardianData[guardianIndex].status = ChampionBase.k_CHAMPION_STATUS_NORMAL;
                            }
-                           if(ooo[j].log)
+                           if(champion[j].log)
                            {
-                              _guardianData[guardianIndex].log = ooo[j].log;
+                              _guardianData[guardianIndex].log = champion[j].log;
                            }
                            else
                            {
@@ -1351,9 +1350,9 @@ package
                      }
                      catch(e:Error)
                      {
-                        st = JSON.decode(obj.champion) as String;
-                        _guardianData[j] = JSON.decode(st);
-                        Console.warning("Base::handleBaseLoadSuccessful - Error thrown on champion, champion data is - " + st,true);
+                        championString = JSON.decode(serverData.champion) as String;
+                        _guardianData[j] = JSON.decode(championString);
+                        Console.warning("Base::handleBaseLoadSuccessful - Error thrown on champion, champion data is - " + championString,true);
                         continue;
                      }
                      if(GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD && isMainYard && Boolean(_guardianData[j]))
@@ -1371,7 +1370,7 @@ package
             }
             _attackerArray = [];
             _attackerNameArray = [];
-            if(GLOBAL.mode != GLOBAL.e_BASE_MODE.WMATTACK && GLOBAL.mode != GLOBAL.e_BASE_MODE.WMVIEW && Boolean(obj.attacks))
+            if(GLOBAL.mode != GLOBAL.e_BASE_MODE.WMATTACK && GLOBAL.mode != GLOBAL.e_BASE_MODE.WMVIEW && Boolean(serverData.attacks))
             {
                TauntB = function(param1:int, param2:int):Function
                {
@@ -1383,7 +1382,7 @@ package
                      POPUPS.Next();
                   };
                };
-               attacksArr = obj.attacks;
+               attacksArr = serverData.attacks;
                attackCount = 0;
                for each(attackObj in attacksArr)
                {
@@ -1470,24 +1469,25 @@ package
                   POPUPS.Push(popupMC);
                }
             }
-            _ownerName = GLOBAL.mode == GLOBAL.e_BASE_MODE.WMATTACK || GLOBAL.mode == GLOBAL.e_BASE_MODE.WMVIEW ? String(TRIBES.TribeForBaseID(_wmID).name) : String(obj.name);
-            _ownerPic = GLOBAL.mode == GLOBAL.e_BASE_MODE.WMATTACK || GLOBAL.mode == GLOBAL.e_BASE_MODE.WMVIEW ? String(TRIBES.TribeForBaseID(_wmID).profilepic) : String(obj.pic_square);
+            _ownerName = GLOBAL.mode == GLOBAL.e_BASE_MODE.WMATTACK || GLOBAL.mode == GLOBAL.e_BASE_MODE.WMVIEW ? String(TRIBES.TribeForBaseID(_wmID).name) : String(serverData.name);
+            _ownerPic = GLOBAL.mode == GLOBAL.e_BASE_MODE.WMATTACK || GLOBAL.mode == GLOBAL.e_BASE_MODE.WMVIEW ? String(TRIBES.TribeForBaseID(_wmID).profilepic) : String(serverData.pic_square);
             if(!GLOBAL._flags.viximo && !GLOBAL._flags.kongregate)
             {
-               if(obj.promotiontimer)
+               GLOBAL.Message("If this function runs, the world is fucked.");
+               if(serverData.promotiontimer)
                {
-                  if(obj.promotiontimer is int)
+                  if(serverData.promotiontimer is int)
                   {
-                     promoTimer = int(obj.promotiontimer);
+                     promoTimer = int(serverData.promotiontimer);
                      GLOBAL._flags.hasPromo = 1;
                   }
-                  else if(obj.promotiontimer is String && obj.promotiontimer == "purchasereceive")
+                  else if(serverData.promotiontimer is String && serverData.promotiontimer == "purchasereceive")
                   {
-                     if(obj.purchasereceive)
+                     if(serverData.purchasereceive)
                      {
-                        promoItemsArr = obj.purchasereceive;
+                        promoItemsArr = serverData.purchasereceive;
                         BUY.purchaseProcess(promoItemsArr);
-                        BUY.purchaseComplete(obj.promotiontimer);
+                        BUY.purchaseComplete(serverData.promotiontimer);
                         GLOBAL._flags.hasPromo = 1;
                      }
                   }
@@ -1495,19 +1495,19 @@ package
             }
             if(!GLOBAL._flags.viximo && !GLOBAL._flags.kongregate)
             {
-               if(obj.fbpromos)
+               if(serverData.fbpromos)
                {
                   promoID = [];
                   promoGifts = [];
-                  if(obj.fbpromos)
+                  if(serverData.fbpromos)
                   {
-                     if(obj.fbpromos.ids)
+                     if(serverData.fbpromos.ids)
                      {
-                        promoID = obj.fbpromos.ids;
+                        promoID = serverData.fbpromos.ids;
                      }
                      if(promoGifts)
                      {
-                        promoGifts = obj.fbpromos.items;
+                        promoGifts = serverData.fbpromos.items;
                      }
                      if(Boolean(promoID) && Boolean(promoGifts))
                      {
@@ -1527,14 +1527,14 @@ package
                   }
                }
             }
-            _tempGifts = obj.gifts;
-            if(obj.sentgifts)
+            _tempGifts = serverData.gifts;
+            if(serverData.sentgifts)
             {
-               _tempSentGifts = obj.sentgifts;
+               _tempSentGifts = serverData.sentgifts;
             }
-            if(obj.sentinvites)
+            if(serverData.sentinvites)
             {
-               _tempSentInvites = obj.sentinvites;
+               _tempSentInvites = serverData.sentinvites;
             }
             else
             {
@@ -1547,7 +1547,7 @@ package
          {
             GLOBAL.CallJS("reloadPage");
          }
-         else if(GLOBAL._local && obj.error == "Incorrect map version")
+         else if(GLOBAL._local && serverData.error == "Incorrect map version")
          {
             switch(GLOBAL._localMode)
             {
@@ -1675,7 +1675,7 @@ package
          }
          else
          {
-            GLOBAL.ErrorMessage(obj.error,GLOBAL.ERROR_ORANGE_BOX_ONLY);
+            GLOBAL.ErrorMessage(serverData.error,GLOBAL.ERROR_ORANGE_BOX_ONLY);
             PLEASEWAIT.Hide();
          }
          LOGGER.StatB({
@@ -1686,6 +1686,7 @@ package
          {
             LOGGER.Stat([LOGGER.STAT_MEM,"loadbase",(System.totalMemory / 1024 / 1024).toString(),int(getTimer() * 0.001).toString()]);
          }
+      
       }
       
       private static function handleBaseLoadError(param1:IOErrorEvent) : void

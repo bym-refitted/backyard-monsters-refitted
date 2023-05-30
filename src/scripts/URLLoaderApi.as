@@ -53,13 +53,13 @@ package
          return _loc1_;
       }
       
-      public function load(baseUrl:String, userInfoIds:Array = null, onComplete:Function = null, onFail:Function = null, useFacebook:Boolean = true) : void
+      public function load(baseUrl:String, keyValuePairs:Array = null, onComplete:Function = null, onFail:Function = null, useFacebook:Boolean = true) : void
       {
          var facebookData:Object = null;
          var facebookItem:String = null;
          var facebookUnknownVar1:String = null;
-         var facebookUnknownVar2:int = 0;
-         var facebookUnknownVar3:Array = null;
+         var currentIndex:int = 0;
+         var currentPair:Array = null;
 
          this._onComplete = onComplete;
          this._onError = onFail;
@@ -82,16 +82,20 @@ package
          var facebookString:String = "";
          var urlVariables:URLVariables = new URLVariables();
 
-         if(userInfoIds != null && userInfoIds.length > 0)
+         // User info IDs = [["key",logType],["value",message],["saveid",BASE._lastSaveID]]
+         if(keyValuePairs != null && keyValuePairs.length > 0)
          {
-            facebookUnknownVar2 = 0;
-            while(facebookUnknownVar2 < userInfoIds.length)
+            currentIndex = 0;
+            while(currentIndex < keyValuePairs.length)
             {
-               facebookUnknownVar3 = userInfoIds[facebookUnknownVar2];
-               urlVariables[facebookUnknownVar3[0]] = facebookUnknownVar3[1];
-               facebookString += facebookUnknownVar3[1];
-               _data += userInfoIds[facebookUnknownVar2][0] + "=" + userInfoIds[facebookUnknownVar2][1] + "&";
-               facebookUnknownVar2++;
+               currentPair = keyValuePairs[currentIndex]; // gets the pair ["key",logType]
+               // currentPair[0] = currentKey
+               // currentPair[1] = currentValue
+               urlVariables[currentPair[0]] = currentPair[1];
+               facebookString += currentPair[1]; // "logType"
+               // currentKey "=" + currentValue + "&"
+               _data += keyValuePairs[currentIndex][0] + "=" + keyValuePairs[currentIndex][1] + "&";
+               currentIndex++;
             }
          }
 
