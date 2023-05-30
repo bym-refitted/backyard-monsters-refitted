@@ -212,195 +212,210 @@ package
          var _loc7_:BFOUNDATION = null;
          var _loc8_:int = 0;
          var _loc13_:BFOUNDATION = null;
-         var _loc19_:Object = null;
-         var _loc20_:Object = null;
-         var _loc21_:Number = NaN;
-         var _loc22_:Number = NaN;
+         var mainStoreItems:Object = null;
+         var infernoStoreItems:Object = null;
+         var reourceMax:Number = NaN;
+         var iResourceMax:Number = NaN;
          var _loc23_:String = null;
+         LOGGER.DebugQAdd("Variables func", {base:BASE.isMainYard});
          if(BASE.isOutpost)
          {
+            LOGGER.DebugQAdd("isOutpost", {isOutpost:BASE.isOutpost});
             _grouping = [[MapRoomManager.instance.isInMapRoom3 ? [] : ["BST","BLK2","BLK3","BLK4","BLK5"]],[MapRoomManager.instance.isInMapRoom3 ? [] : ["BR11","BR12","BR13","BR21","BR22","BR23","BR31","BR32","BR33","BR41","BR42","BR43"]],[MapRoomManager.instance.isInMapRoom3 ? ["SP1","SP2","SP3","SP4","FIX"] : ["SP1","SP2","SP3","SP4","POD","FIX","HOD","HOD2","HOD3"]],[MapRoomManager.instance.isInMapRoom3 ? [] : ["PRO1","PRO2","PRO3","TOD","EXH"]]];
          }
          else if(BASE.isMainYard)
          {
+            LOGGER.DebugQAdd("isMainYard", {isMainYard:BASE.isMainYard});
             if(MAPROOM_DESCENT.DescentPassed)
             {
                _grouping = [[["BEW","BST","ENL","BLK2","BLK3","BLK4","BLK5"]],[["BR11","BR12","BR13","BR21","BR22","BR23","BR31","BR32","BR33","BR41","BR42","BR43","BR11I","BR12I","BR13I","BR21I","BR22I","BR23I","BR31I","BR32I","BR33I","BR41I","BR42I","BR43I","BIP"]],[["SP1","SP2","SP3","SP4","POD","FIX","HOD","HOD2","HOD3"]],[MapRoomManager.instance.isInMapRoom3 ? ["PRO1","PRO2","PRO3","MOD","MDOD","MSOD","TOD"] : ["PRO1","PRO2","PRO3","MOD","MDOD","MSOD","EXH","TOD"]]];
             }
             else
             {
+               LOGGER.DebugQAdd("STORE:234 _grouping", {});
                _grouping = [[["BEW","BST","ENL","BLK2","BLK3","BLK4","BLK5"]],[["BR11","BR12","BR13","BR21","BR22","BR23","BR31","BR32","BR33","BR41","BR42","BR43","BIP"]],[["SP1","SP2","SP3","SP4","POD","FIX","HOD","HOD2","HOD3"]],[MapRoomManager.instance.isInMapRoom3 ? ["PRO1","PRO2","PRO3","MOD","MDOD","MSOD","TOD"] : ["PRO1","PRO2","PRO3","MOD","MDOD","MSOD","EXH","TOD"]]];
             }
          }
          else
          {
+            LOGGER.DebugQAdd("STORE:240 _grouping", {});
             _grouping = [[["ENLI","BLK2I","BLK3I"]],[["BR11I","BR12I","BR13I","BR21I","BR22I","BR23I","BR31I","BR32I","BR33I","BR41I","BR42I","BR43I","BIP"]],[["SP1","SP2","SP3","SP4","FIX","HODI","HOD2I","HOD3I"]],[MapRoomManager.instance.isInMapRoom3 ? ["PRO1","PRO2","PRO3","TODI"] : ["PRO1","PRO2","PRO3","EXHI","TODI"]]];
          }
-         var _loc1_:int = 1;
-         while(_loc1_ <= 4)
+         var resourceIndex:int = 1;
+         while(resourceIndex <= 4)
          {
-            _loc21_ = BASE._resources["r" + _loc1_ + "max"] * 0.1;
-            _loc22_ = BASE._iresources["r" + _loc1_ + "max"] * 0.1;
+            LOGGER.DebugQAdd("STORE:246 loop", {});
+            reourceMax = BASE._resources["r" + resourceIndex + "max"] * 0.1;
+            iResourceMax = BASE._iresources["r" + resourceIndex + "max"] * 0.1;
             if(BASE.isInfernoMainYardOrOutpost)
             {
-               _loc19_ = _storeItems["BR" + _loc1_ + "1I"];
+               LOGGER.DebugQAdd("STORE:251 isInfernoMainYardOrOutpost", {});
+               mainStoreItems = _storeItems["BR" + resourceIndex + "1I"];
             }
             else
             {
-               _loc19_ = _storeItems["BR" + _loc1_ + "1"];
-               _loc20_ = _storeItems["BR" + _loc1_ + "1I"];
+               LOGGER.DebugQAdd("STORE:256 no isInfernoMainYardOrOutpost", {});
+               mainStoreItems = _storeItems["BR" + resourceIndex + "1"];
+               infernoStoreItems = _storeItems["BR" + resourceIndex + "1I"];
             }
-            _loc19_.t = KEYS.Get("str_top_extra",{
-               "v1":GLOBAL.FormatNumber(_loc21_),
-               "v2":KEYS.Get(GLOBAL._resourceNames[_loc1_ - 1])
+            mainStoreItems.t = KEYS.Get("str_top_extra",{
+               "v1":GLOBAL.FormatNumber(reourceMax),
+               "v2":KEYS.Get(GLOBAL._resourceNames[resourceIndex - 1])
             });
-            if(BASE._resources["r" + _loc1_].Get() + BASE._resources["r" + _loc1_ + "max"] * 0.1 < BASE._resources["r" + _loc1_ + "max"])
+            LOGGER.DebugQAdd("STORE:265 mainStoreItems.t ", {});
+            if(BASE._resources["r" + resourceIndex].Get() + BASE._resources["r" + resourceIndex + "max"] * 0.1 < BASE._resources["r" + resourceIndex + "max"])
             {
-               _loc19_.c = [Math.ceil(Math.pow(Math.sqrt(_loc21_ / 2),0.75))];
-               _loc19_.d = KEYS.Get("str_top_10pct",{
-                  "v1":GLOBAL._resourceNames[_loc1_ - 1],
-                  "v2":GLOBAL._resourceNames[_loc1_ - 1],
-                  "v3":GLOBAL.FormatNumber(BASE._resources["r" + _loc1_].Get() + _loc21_)
+               mainStoreItems.c = [Math.ceil(Math.pow(Math.sqrt(reourceMax / 2),0.75))];
+               mainStoreItems.d = KEYS.Get("str_top_10pct",{
+                  "v1":GLOBAL._resourceNames[resourceIndex - 1],
+                  "v2":GLOBAL._resourceNames[resourceIndex - 1],
+                  "v3":GLOBAL.FormatNumber(BASE._resources["r" + resourceIndex].Get() + reourceMax)
                });
-               _loc19_.quantity = _loc21_;
+               mainStoreItems.quantity = reourceMax;
             }
             else
             {
-               _loc19_.d = KEYS.Get("str_top_10pct_noroom",{"v1":GLOBAL._resourceNames[_loc1_ - 1]});
-               _loc19_.c = [0];
-               _loc19_.quantity = 0;
+               mainStoreItems.d = KEYS.Get("str_top_10pct_noroom",{"v1":GLOBAL._resourceNames[resourceIndex - 1]});
+               mainStoreItems.c = [0];
+               mainStoreItems.quantity = 0;
             }
-            if(_loc20_)
+            LOGGER.DebugQAdd("STORE:282 infernoStoreItems ", {});
+            if(infernoStoreItems)
             {
-               _loc20_.t = KEYS.Get("str_top_extra",{
-                  "v1":GLOBAL.FormatNumber(_loc22_),
-                  "v2":KEYS.Get(GLOBAL.iresourceNames[_loc1_ - 1])
+               infernoStoreItems.t = KEYS.Get("str_top_extra",{
+                  "v1":GLOBAL.FormatNumber(iResourceMax),
+                  "v2":KEYS.Get(GLOBAL.iresourceNames[resourceIndex - 1])
                });
             }
-            if(Boolean(BASE._iresources) && BASE._iresources["r" + _loc1_].Get() + BASE._iresources["r" + _loc1_ + "max"] * 0.1 < BASE._iresources["r" + _loc1_ + "max"])
+            LOGGER.DebugQAdd("STORE:290 _iresources ", {});
+            if(Boolean(BASE._iresources) && BASE._iresources["r" + resourceIndex].Get() + BASE._iresources["r" + resourceIndex + "max"] * 0.1 < BASE._iresources["r" + resourceIndex + "max"])
             {
-               if(_loc20_)
+               if(infernoStoreItems)
                {
-                  _loc20_.c = [Math.ceil(Math.pow(Math.sqrt(_loc22_ / 2),0.75))];
-                  _loc20_.d = KEYS.Get("str_top_10pct",{
-                     "v1":GLOBAL.iresourceNames[_loc1_ - 1],
-                     "v2":GLOBAL.iresourceNames[_loc1_ - 1],
-                     "v3":GLOBAL.FormatNumber(BASE._iresources["r" + _loc1_].Get() + _loc22_)
+                  infernoStoreItems.c = [Math.ceil(Math.pow(Math.sqrt(iResourceMax / 2),0.75))];
+                  infernoStoreItems.d = KEYS.Get("str_top_10pct",{
+                     "v1":GLOBAL.iresourceNames[resourceIndex - 1],
+                     "v2":GLOBAL.iresourceNames[resourceIndex - 1],
+                     "v3":GLOBAL.FormatNumber(BASE._iresources["r" + resourceIndex].Get() + iResourceMax)
                   });
-                  _loc20_.quantity = _loc22_;
+                  infernoStoreItems.quantity = iResourceMax;
                }
             }
-            else if(_loc20_)
+            else if(infernoStoreItems)
             {
-               _loc20_.d = KEYS.Get("str_top_10pct_noroom",{"v1":GLOBAL.iresourceNames[_loc1_ - 1]});
-               _loc20_.c = [0];
-               _loc20_.quantity = 0;
+               infernoStoreItems.d = KEYS.Get("str_top_10pct_noroom",{"v1":GLOBAL.iresourceNames[resourceIndex - 1]});
+               infernoStoreItems.c = [0];
+               infernoStoreItems.quantity = 0;
             }
-            _loc21_ = BASE._resources["r" + _loc1_ + "max"] * 0.5;
-            _loc22_ = BASE._iresources["r" + _loc1_ + "max"] * 0.5;
+            LOGGER.DebugQAdd("STORE:310 reourceMax ", {});
+            reourceMax = BASE._resources["r" + resourceIndex + "max"] * 0.5;
+            iResourceMax = BASE._iresources["r" + resourceIndex + "max"] * 0.5;
             if(BASE.isInfernoMainYardOrOutpost)
             {
-               _loc19_ = _storeItems["BR" + _loc1_ + "2I"];
+               mainStoreItems = _storeItems["BR" + resourceIndex + "2I"];
             }
             else
             {
-               _loc19_ = _storeItems["BR" + _loc1_ + "2"];
-               _loc20_ = _storeItems["BR" + _loc1_ + "2I"];
+               mainStoreItems = _storeItems["BR" + resourceIndex + "2"];
+               infernoStoreItems = _storeItems["BR" + resourceIndex + "2I"];
             }
-            _loc19_.t = KEYS.Get("str_top_extra",{
-               "v1":GLOBAL.FormatNumber(_loc21_),
-               "v2":KEYS.Get(GLOBAL._resourceNames[_loc1_ - 1])
+            mainStoreItems.t = KEYS.Get("str_top_extra",{
+               "v1":GLOBAL.FormatNumber(reourceMax),
+               "v2":KEYS.Get(GLOBAL._resourceNames[resourceIndex - 1])
             });
-            if(BASE._resources["r" + _loc1_].Get() + BASE._resources["r" + _loc1_ + "max"] * 0.5 < BASE._resources["r" + _loc1_ + "max"])
+            if(BASE._resources["r" + resourceIndex].Get() + BASE._resources["r" + resourceIndex + "max"] * 0.5 < BASE._resources["r" + resourceIndex + "max"])
             {
-               _loc19_.c = [Math.ceil(Math.pow(Math.sqrt(_loc21_ / 2),0.75))];
-               _loc19_.d = KEYS.Get("str_top_50pct",{
-                  "v1":GLOBAL._resourceNames[_loc1_ - 1],
-                  "v2":GLOBAL._resourceNames[_loc1_ - 1],
-                  "v3":GLOBAL.FormatNumber(BASE._resources["r" + _loc1_].Get() + _loc21_)
+               mainStoreItems.c = [Math.ceil(Math.pow(Math.sqrt(reourceMax / 2),0.75))];
+               mainStoreItems.d = KEYS.Get("str_top_50pct",{
+                  "v1":GLOBAL._resourceNames[resourceIndex - 1],
+                  "v2":GLOBAL._resourceNames[resourceIndex - 1],
+                  "v3":GLOBAL.FormatNumber(BASE._resources["r" + resourceIndex].Get() + reourceMax)
                });
-               _loc19_.quantity = _loc21_;
+               mainStoreItems.quantity = reourceMax;
             }
             else
             {
-               _loc19_.d = KEYS.Get("str_top_50pct_noroom",{"v1":GLOBAL._resourceNames[_loc1_ - 1]});
-               _loc19_.c = [0];
-               _loc19_.quantity = 0;
+               mainStoreItems.d = KEYS.Get("str_top_50pct_noroom",{"v1":GLOBAL._resourceNames[resourceIndex - 1]});
+               mainStoreItems.c = [0];
+               mainStoreItems.quantity = 0;
             }
-            if(_loc20_)
+            LOGGER.DebugQAdd("STORE:342 reourceMax ", {});
+            if(infernoStoreItems)
             {
-               _loc20_.t = KEYS.Get("str_top_extra",{
-                  "v1":GLOBAL.FormatNumber(_loc22_),
-                  "v2":KEYS.Get(GLOBAL.iresourceNames[_loc1_ - 1])
+               infernoStoreItems.t = KEYS.Get("str_top_extra",{
+                  "v1":GLOBAL.FormatNumber(iResourceMax),
+                  "v2":KEYS.Get(GLOBAL.iresourceNames[resourceIndex - 1])
                });
-               if(BASE._iresources["r" + _loc1_].Get() + BASE._iresources["r" + _loc1_ + "max"] * 0.5 < BASE._iresources["r" + _loc1_ + "max"])
+               if(BASE._iresources["r" + resourceIndex].Get() + BASE._iresources["r" + resourceIndex + "max"] * 0.5 < BASE._iresources["r" + resourceIndex + "max"])
                {
-                  _loc20_.c = [Math.ceil(Math.pow(Math.sqrt(_loc22_ / 2),0.75))];
-                  _loc20_.d = KEYS.Get("str_top_50pct",{
-                     "v1":GLOBAL.iresourceNames[_loc1_ - 1],
-                     "v2":GLOBAL.iresourceNames[_loc1_ - 1],
-                     "v3":GLOBAL.FormatNumber(BASE._iresources["r" + _loc1_].Get() + _loc22_)
+                  infernoStoreItems.c = [Math.ceil(Math.pow(Math.sqrt(iResourceMax / 2),0.75))];
+                  infernoStoreItems.d = KEYS.Get("str_top_50pct",{
+                     "v1":GLOBAL.iresourceNames[resourceIndex - 1],
+                     "v2":GLOBAL.iresourceNames[resourceIndex - 1],
+                     "v3":GLOBAL.FormatNumber(BASE._iresources["r" + resourceIndex].Get() + iResourceMax)
                   });
-                  _loc20_.quantity = _loc22_;
+                  infernoStoreItems.quantity = iResourceMax;
                }
                else
                {
-                  _loc20_.d = KEYS.Get("str_top_50pct_noroom",{"v1":GLOBAL.iresourceNames[_loc1_ - 1]});
-                  _loc20_.c = [0];
-                  _loc20_.quantity = 0;
+                  infernoStoreItems.d = KEYS.Get("str_top_50pct_noroom",{"v1":GLOBAL.iresourceNames[resourceIndex - 1]});
+                  infernoStoreItems.c = [0];
+                  infernoStoreItems.quantity = 0;
                }
             }
+            LOGGER.DebugQAdd("STORE:342 reourceMax ", {});
             if(BASE.isInfernoMainYardOrOutpost)
             {
-               _loc19_ = _storeItems["BR" + _loc1_ + "3I"];
+               mainStoreItems = _storeItems["BR" + resourceIndex + "3I"];
             }
             else
             {
-               _loc19_ = _storeItems["BR" + _loc1_ + "3"];
-               _loc20_ = _storeItems["BR" + _loc1_ + "3I"];
+               mainStoreItems = _storeItems["BR" + resourceIndex + "3"];
+               infernoStoreItems = _storeItems["BR" + resourceIndex + "3I"];
             }
-            _loc19_.t = KEYS.Get("str_top_fill_label",{"v1":GLOBAL._resourceNames[_loc1_ - 1]});
-            if(BASE._resources["r" + _loc1_ + "max"] > BASE._resources["r" + _loc1_].Get())
+            mainStoreItems.t = KEYS.Get("str_top_fill_label",{"v1":GLOBAL._resourceNames[resourceIndex - 1]});
+            if(BASE._resources["r" + resourceIndex + "max"] > BASE._resources["r" + resourceIndex].Get())
             {
-               _loc21_ = BASE._resources["r" + _loc1_ + "max"] - BASE._resources["r" + _loc1_].Get();
-               _loc19_.c = [Math.ceil(Math.pow(Math.sqrt(_loc21_ / 2),0.75))];
-               _loc19_.d = KEYS.Get("str_top_fill",{
-                  "v1":GLOBAL.FormatNumber(_loc21_),
-                  "v2":GLOBAL._resourceNames[_loc1_ - 1]
+               reourceMax = BASE._resources["r" + resourceIndex + "max"] - BASE._resources["r" + resourceIndex].Get();
+               mainStoreItems.c = [Math.ceil(Math.pow(Math.sqrt(reourceMax / 2),0.75))];
+               mainStoreItems.d = KEYS.Get("str_top_fill",{
+                  "v1":GLOBAL.FormatNumber(reourceMax),
+                  "v2":GLOBAL._resourceNames[resourceIndex - 1]
                });
-               _loc19_.quantity = _loc21_;
+               mainStoreItems.quantity = reourceMax;
             }
             else
             {
-               _loc19_.d = KEYS.Get("str_resourcesfull",{"v1":KEYS.Get(GLOBAL._resourceNames[_loc1_ - 1])});
-               _loc19_.c = [0];
-               _loc19_.quantity = 0;
+               mainStoreItems.d = KEYS.Get("str_resourcesfull",{"v1":KEYS.Get(GLOBAL._resourceNames[resourceIndex - 1])});
+               mainStoreItems.c = [0];
+               mainStoreItems.quantity = 0;
             }
-            if(_loc20_)
+            if(infernoStoreItems)
             {
-               _loc20_.t = KEYS.Get("str_top_fill_label",{"v1":GLOBAL.iresourceNames[_loc1_ - 1]});
+               infernoStoreItems.t = KEYS.Get("str_top_fill_label",{"v1":GLOBAL.iresourceNames[resourceIndex - 1]});
             }
-            if(BASE._iresources["r" + _loc1_ + "max"] > BASE._iresources["r" + _loc1_].Get())
+            if(BASE._iresources["r" + resourceIndex + "max"] > BASE._iresources["r" + resourceIndex].Get())
             {
-               if(_loc20_)
+               if(infernoStoreItems)
                {
-                  _loc22_ = BASE._iresources["r" + _loc1_ + "max"] - BASE._iresources["r" + _loc1_].Get();
-                  _loc20_.c = [Math.ceil(Math.pow(Math.sqrt(_loc22_ / 2),0.75))];
-                  _loc20_.d = KEYS.Get("str_top_fill",{
-                     "v1":GLOBAL.FormatNumber(_loc22_),
-                     "v2":GLOBAL.iresourceNames[_loc1_ - 1]
+                  iResourceMax = BASE._iresources["r" + resourceIndex + "max"] - BASE._iresources["r" + resourceIndex].Get();
+                  infernoStoreItems.c = [Math.ceil(Math.pow(Math.sqrt(iResourceMax / 2),0.75))];
+                  infernoStoreItems.d = KEYS.Get("str_top_fill",{
+                     "v1":GLOBAL.FormatNumber(iResourceMax),
+                     "v2":GLOBAL.iresourceNames[resourceIndex - 1]
                   });
-                  _loc20_.quantity = _loc22_;
+                  infernoStoreItems.quantity = iResourceMax;
                }
             }
-            else if(_loc20_)
+            else if(infernoStoreItems)
             {
-               _loc20_.d = KEYS.Get("str_resourcesfull",{"v1":GLOBAL.iresourceNames[_loc1_ - 1]});
-               _loc20_.c = [0];
-               _loc20_.quantity = 0;
+               infernoStoreItems.d = KEYS.Get("str_resourcesfull",{"v1":GLOBAL.iresourceNames[resourceIndex - 1]});
+               infernoStoreItems.c = [0];
+               infernoStoreItems.quantity = 0;
             }
-            _loc1_++;
+            resourceIndex++;
          }
+         LOGGER.DebugQAdd("STORE:418 _selectedBuilding ", {});
          if(GLOBAL._selectedBuilding)
          {
             if(GLOBAL._selectedBuilding._repairing)
@@ -456,6 +471,7 @@ package
                }
             }
          }
+         LOGGER.DebugQAdd("STORE:474 _storeItems.FIX.c ", {});
          _storeItems.FIX.c = [GetTimeCost(_loc4_) + _loc5_ * 10];
          _storeItems.FIX.d = KEYS.Get("desc_repairbdgs",{"v1":_repairCount});
          _storeItems.FIX.t = KEYS.Get("str_repairbdgs");

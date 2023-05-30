@@ -13,7 +13,8 @@ package
       public static var _statUpdated:int = 0;
       
       public static const STAT_MEM:uint = 99;
-       
+      
+      public static var logQueue:Array  = [];
       
       public function LOGGER()
       {
@@ -42,13 +43,17 @@ package
             }
          }
       }
+   
+      public static function DebugQAdd(logMessage:String, debugVars:Object): void {
+         logQueue.push({logMessage: logMessage, debugVars: JSON.encode(debugVars)});
+      }
 
-      public static function Debug(logMessage:String, debugVars:Object) : void
+      public static function DebugQPost(trace: Error = null) : void
       {
-         var logger:Array = [["key", "logType"], ["message", logMessage], ["saveid", "BASE._lastSaveID"]];
+         var logger:Array = [["key", "logType"], ["message", JSON.encode(logQueue)], ["saveid", "BASE._lastSaveID"] ];
 
-         if (debugVars){
-            logger.push(["debugVars", JSON.encode(debugVars)]);
+         if (trace){
+            logger.push(["error", JSON.encode(trace.getStackTrace())]);
          }
          new URLLoaderApi().load(GLOBAL._apiURL + "player/recorddebugdata", logger, handleLoadSuccessful, handleLoadError);
       }

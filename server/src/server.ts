@@ -3,6 +3,7 @@ import routes from "./app.routes.js";
 import fs from "fs";
 import morgan from "morgan";
 import { logging } from "./utils/logger.js";
+import { ascii_node } from "./utils/ascii_art.js";
 
 const app: Express = express();
 const port = 3001;
@@ -22,8 +23,10 @@ app.get("/crossdomain.xml", (_: any, res) => {
 
 app.use(express.static("./public"));
 
-app.listen(process.env.PORT || port, () =>
-  logging(`Server running on http://localhost:${port}`)
-);
+app.listen(process.env.PORT || port, () => {
+  logging(`
+  ${ascii_node} Admin dashboard: http://localhost:${port}
+  `);
+});
 
 export default app;
