@@ -1,0 +1,25 @@
+// {
+//     "version": "2.0.0",
+//     "tasks": [
+//         {
+//             "label": "build",
+//             "type": "shell",
+//             "command": "mxmlc",
+//             "args": [
+//                 "-warnings=false",
+//                 "-strict=false",
+//                 "-source-path=src",
+//                 "src/scripts/GAME.as",
+//                 "-o",
+//                 "swf/bym-refit-v128.v5690.swf",
+//             ],
+//             "options": {
+//                 "cwd": "${workspaceFolder}"
+//             },
+//             "group": {
+//                 "kind": "build",
+//                 "isDefault": true
+//             }
+//         }
+//     ]
+// }

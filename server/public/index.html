@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Backyard Monsters Server</title>
+    <link rel="stylesheet" href="main.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/default.min.css"
+    />
+  </head>
+  <body>
+    <header>
+      <h1>Backyard Monsters Server</h1>
+      <nav>
+        <ul></ul>
+      </nav>
+    </header>
+    <main>
+      <h2>Routes</h2>
+      <div onclick="getRoute('base')" class="card">
+        <div class="route-item">
+          <i class="fa-solid fa-cube"></i>
+          <p class="route">/base</p>
+          <div>
+            <p>Get</p>
+          </div>
+        </div>
+        <pre class="prebase">
+          <code id="base" class="language-json"></code>
+        </pre>
+      </div>
+      <div onclick="getRoute('api')" class="card">
+        <div class="route-item">
+          <i class="fa-solid fa-cube"></i>
+          <p class="route">/api</p>
+          <div>
+            <p>Get</p>
+          </div>
+        </div>
+        <pre>
+          <code id="api" class="language-json"></code>
+        </pre>
+      </div>
+    </main>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+  </body>
+</html>
+
+<script>
+  const getRoute = async (route) => {
+    const response = await fetch(`http://localhost:3001/${route}`);
+    const data = await response.json();
+    const snippet = document.getElementById(route);
+
+    snippet.innerHTML = `${JSON.stringify(data, null, 2)}`;
+    snippet.parentElement.style.display = "block";
+
+    hljs.highlightAll();
+  };
+</script>

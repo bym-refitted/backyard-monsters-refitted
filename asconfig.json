@@ -2,10 +2,9 @@
 	"compilerOptions": {
 		"warnings": false,
 		"strict": false,
-		"output": "swf/bym-refit-v128.v5690.swf",
-		"source-path": ["src/scripts","src/images"]
+		"output": "swf/bym-refit.swf",
+		"source-path": ["src/scripts"]
 	},
-	// "mainClass": "GAME",
 	"copySourcePathAssets": true,
 	"config": "flex",
 	"files": ["src/scripts/GAME.as"]

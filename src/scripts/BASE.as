@@ -713,49 +713,8 @@ package
          }
          else
          {
-            var s:String = "Comment: the Load() function resolves to this block.";
-            handleBaseLoadSuccessful({
-               "error":0,
-               "flags": [],
-               "fan": 0,
-               "protected":1,
-               "giftsentcount": 69696969,
-               "savetime": 100,
-               "currenttime": 200,
-               "id": 123123,
-               "baseseed": 123123,
-               "baseid": 420,
-               "fbid": 12312312312312,
-               "userid": 123123123,
-               "attackid": 0,
-               "homebase": true,
-               "unreadmessages": 0,
-               "buildinghealthdata": {},
-               "buildingdata":{},
-               "buildingresources":{},
-               "resources":{},
-               "credits":10000,
-               "loot":{},
-               "researchdata":[],
-               "stats":{},
-               "academy":{},
-               "siege":{},
-               "effects":{},
-               "monsters":{},
-               "aiattacks":{},
-               "tutorialstage": 0,
-               "storeitems": {},
-               "storedata":{},
-               "inventory":{},
-               "lockerdata":{},
-               "quests":{},
-               "monsterbaiter":{},
-               "champion": "null",
-               "attacks": [],
-               "name": "Penis O Nuallain",
-               "pic_square":"https://pbs.twimg.com/profile_images/619153589404069888/9mSn20q0_400x400.png",
-               "gifts":[]
-               });
+             // Comment: the Load() function resolves to this block.
+            new URLLoaderApi().load(GLOBAL._baseURL + "load",_loc8_,handleBaseLoadSuccessful,handleBaseLoadError);
          }
       }
       
@@ -849,7 +808,7 @@ package
             }
             MapRoomManager.instance.worldID = 0;
             GLOBAL.SetFlags(obj.flags);
-            // GLOBAL.SetFlags([]);
+            GLOBAL.SetFlags([]);
             QUESTS.Setup();
             GLOBAL._reloadonerror = false;
             if(TUTORIAL.hasFinished)
@@ -857,9 +816,9 @@ package
                _isProtected = int(obj["protected"]);
             }
             _isFan = int(obj.fan);
-            // _isFan = int(0);
+            _isFan = int(0);
             _isBookmarked = int(obj.bookmarked);
-            // _isBookmarked = int(0);
+            _isBookmarked = int(0);
             _installsGenerated = int(42069);
             if(obj.fan)
             {
@@ -869,7 +828,6 @@ package
             {
                QUESTS._global.bonus_bookmark = 1;
             }
-            // if(obj.giftsentcount)
             if(obj.giftsentcount)
             {
                QUESTS._global.bonus_gifts = obj.giftsentcount;
