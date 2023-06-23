@@ -26,7 +26,7 @@ const baseLoadData = (res: Response) =>
     currenttime: 200,
     id: 9765443,
     baseseed: 4520,
-    baseid: 1,
+    baseid: 1234,
     fbid: 67879,
     userid: 4567,
     attackid: 0,
@@ -178,7 +178,8 @@ const baseLoadData = (res: Response) =>
 const baseSaveData = (res: Response) => {
   res.status(200).json({
     error: 0,
-    basesaveid: 87658764,
+    over: 1,
+    basesaveid: 1234,
     credits: 2000,
     protected: 1,
     fan: 0,
@@ -190,7 +191,22 @@ const baseSaveData = (res: Response) => {
 };
 
 const updateSaved = (res: Response) => {
-  res.status(200).json({ error: 0, h: "someHashValue", });
+  res.status(200).json({ 
+    error: 0, 
+    baseid: 1234,
+    version: 128,
+    lastupdate: 0,
+    type: "build",
+    flags: {
+      viximo: 0,
+      kongregate: 1,
+      showProgressBar: 0,
+      midgameIncentive: 0,
+      plinko: 0,
+      fanfriendbookmarkquests: 0,
+    },
+    h: "someHashValue",
+   });
 }
 
 const mapRoomVersion = (res: Response) => {
@@ -202,17 +218,28 @@ const mapRoomVersion = (res: Response) => {
 };
 
 router.get("/base/load/", (_: any, res: Response) => baseLoadData(res));
-router.post("/base/load/", (_: any, res: Response) => baseLoadData(res));
+router.post("/base/load/", (req: Request, res: Response) => {
+  baseLoadData(res);
+  logging(`Base load data: ${JSON.stringify(req.body)}`);
+});
 
 router.get("/base/save/", (_: any, res: Response) => baseSaveData(res));
-router.post("/base/save/", (_: any, res: Response) => baseSaveData(res));
+router.post("/base/save/", (req: Request, res: Response) => {
+  baseSaveData(res);
+  logging(`User's saved data: ${JSON.stringify(req.body)}`);
+});
 
-// router.get("/base/updatesaved/", (_: any, res: Response) => updateSaved(res));
-// router.post("/base/updatesaved/", (_: any, res: Response) => updateSaved(res));
+router.get("/base/updatesaved/", (_: any, res: Response) => updateSaved(res));
+router.post("/base/updatesaved/", (req: Request, res: Response) => {
+  updateSaved(res);
+  logging(`Updatesaved data: ${JSON.stringify(req.body)}`);
+});
 
 router.get("/worldmapv3/setmapversion/", (_: any, res: Response) => mapRoomVersion(res));
-router.post("/worldmapv3/setmapversion/", (_: any, res: Response) => mapRoomVersion(res));
-
+router.post("/worldmapv3/setmapversion/", (req: Request, res: Response) => {
+  mapRoomVersion(res);
+  logging(`Setmapversion data: ${JSON.stringify(req.body)}`);
+});
 
 router.post("/api/player/recorddebugdata/", (req: Request) => {
   logging(`=========== NEW RUN ${randomUUID()} ===========`);

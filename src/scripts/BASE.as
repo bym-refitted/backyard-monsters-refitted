@@ -713,7 +713,7 @@ package
          }
          else
          {
-            // Comment: the Load() function resolves to this block.
+            // Comment: load route triggered
             new URLLoaderApi().load(GLOBAL._baseURL + "load",_loc8_,handleBaseLoadSuccessful,handleBaseLoadError);
          }
       }
@@ -3934,7 +3934,7 @@ package
          }
          else
          {
-            // Comment: the Save() function resolves to this block
+            // Comment: save route triggered
             new URLLoaderApi().load(GLOBAL._baseURL + "save",_loc7_,handleLoadSuccessful,handleLoadError);
          }
          if(_saveOver)
@@ -4302,6 +4302,7 @@ package
          }
          else
          {
+            // Comment: updatedsaved route triggered
             new URLLoaderApi().load(GLOBAL._baseURL + "updatesaved",[["baseid",BASE._loadedBaseID],["version",GLOBAL._version.Get()],["lastupdate",UPDATES._lastUpdateID],["type",tmpMode]],handleLoadSuccessful,handleLoadError);
          }
       }
