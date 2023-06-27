@@ -125,10 +125,10 @@ package com.monsters.maproom_manager
          return this.m_CurrentMapRoom.allianceDataById;
       }
       
-      public function init(a_NewMap:Boolean, headerUrl:String) : void
+      public function init(onMapRoom3:Boolean, mapRoom3HeaderURL:String) : void
       {
-         this.m_CurrentMapRoom = a_NewMap ? new MapRoom3(headerUrl) : new MapRoom();
-         if(a_NewMap)
+         this.m_CurrentMapRoom = onMapRoom3 ? new MapRoom3(mapRoom3HeaderURL) : new MapRoom();
+         if(onMapRoom3)
          {
             this.mapRoomVersion = MAP_ROOM_VERSION_3;
          }

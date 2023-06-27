@@ -208,7 +208,7 @@ package
          loaderInfo.uncaughtErrorEvents.addEventListener(UncaughtErrorEvent.UNCAUGHT_ERROR,this.uncaughtErrorThrown);
          GLOBAL._baseURL = obj._baseURL;
          u = String(GLOBAL._baseURL.split("/")[2]);
-         Security.allowDomain(u);
+         Security.allowDomain("*");
          SWFProfiler.init(stage,null);
          Console.initialize(stage);
          _contained = contained;

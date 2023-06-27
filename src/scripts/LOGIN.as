@@ -45,39 +45,41 @@ package
       
       public static function Login() : void
       {
-         var a_NewMap:Boolean = false;
-         var a_MapHeaderURL:String = "";
-         MapRoomManager.instance.init(a_NewMap,a_MapHeaderURL);
+         // Comment: Setting onMapRoom3 to true forces the player onto map room 3 and skips the migration process.
+         var onMapRoom3:Boolean = true;
+         var mapRoom3HeaderURL:String = "http://localhost:3001/" + "bm/getnewmap";
+         MapRoomManager.instance.init(onMapRoom3, mapRoom3HeaderURL);
          LOGIN.Process();
-         // new URLLoaderApi().load(GLOBAL._apiURL + "bm/getnewmap",null,OnGetNewMap);
+         // new URLLoaderApi().load(GLOBAL._apiURL + "bm/getnewmap",null, null); // OnGetNewMap
       }
       
-      private static function OnGetNewMap(param1:Object) : void
+      private static function OnGetNewMap(serverData:Object) : void
       {
-         _Login(param1.newmap,param1.mapheaderurl);
+         _Login(serverData.newmap, serverData.mapheaderurl);
       }
       
-      private static function _Login(param1:Boolean, param2:String) : void
+      // Comment: This function is skipped. We directly process login instead.
+      private static function _Login(newmap:Boolean, mapheaderurl:String) : void
       {
          var handleLoadSuccessful:Function;
          var handleLoadError:Function;
-         var a_NewMap:Boolean = param1;
-         var a_MapHeaderURL:String = param2;
-         MapRoomManager.instance.init(a_NewMap,a_MapHeaderURL);
+         var onMapRoom3:Boolean = newmap;
+         var mapRoom3HeaderURL:String = mapheaderurl;
+         MapRoomManager.instance.init(onMapRoom3,mapRoom3HeaderURL);
          if(GLOBAL._local)
          {
-            handleLoadSuccessful = function(param1:Object):void
+            handleLoadSuccessful = function(serverData:Object):void
             {
-               if(param1.error == 0)
+               if(serverData.error == 0)
                {
-                  LOGIN.Process(param1);
+                  LOGIN.Process(serverData);
                }
                else
                {
-                  GLOBAL.ErrorMessage(param1.error,GLOBAL.ERROR_ORANGE_BOX_ONLY);
+                  GLOBAL.ErrorMessage(serverData.error,GLOBAL.ERROR_ORANGE_BOX_ONLY);
                }
             };
-            handleLoadError = function(param1:IOErrorEvent):void
+            handleLoadError = function(serverData:IOErrorEvent):void
             {
                GLOBAL.WaitHide();
                GLOBAL.ErrorMessage("LOGIN loadEror");

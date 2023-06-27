@@ -8,6 +8,7 @@ package com.monsters.display
    import flash.events.TimerEvent;
    import flash.net.URLRequest;
    import flash.utils.Timer;
+   import com.monsters.display.Loadable;
    
    public class ImageCache
    {
@@ -202,13 +203,17 @@ package com.monsters.display
          }
       }
       
+      // Load Dynamic assets
       private function initLoadable(param1:Loadable) : void
       {
          var req_str:String;
          var l:Loadable = param1;
          l.loadState = LOADING;
          req_str = l.shouldPrepend ? prependImagePath + l.key : l.key;
+         // Comment: Attempts to load all dynamic assets from the server
          l.loader.load(new URLRequest(req_str));
+         LOGGER.DebugQAdd("Fetched asset: ", {url: req_str});
+         LOGGER.DebugQPost();
          l.loader.contentLoaderInfo.addEventListener(Event.COMPLETE,function(param1:Event):void
          {
             onAssetComplete(l);
@@ -300,41 +305,5 @@ package com.monsters.display
             }
          }
       }
-   }
-}
-
-import flash.display.Loader;
-
-class Loadable
-{
-    
-   
-   public var callbacks:Array;
-   
-   public var tries:uint;
-   
-   public var loadState:uint;
-   
-   public var loader:Loader;
-   
-   public var key:String;
-   
-   public var tryLimit:uint = 5;
-   
-   public var shouldPrepend:Boolean = true;
-   
-   public var priority:int;
-   
-   public function Loadable()
-   {
-      super();
-      this.callbacks = [].concat();
-      this.tries = 0;
-      this.loader = new Loader();
-   }
-   
-   public function toString() : String
-   {
-      return "[object Loadable key:" + this.key + ", loadState:" + this.loadState + "]";
    }
 }

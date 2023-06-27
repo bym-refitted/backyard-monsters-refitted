@@ -29,4 +29,6 @@ app.listen(process.env.PORT || port, () => {
   `);
 });
 
+app.use(express.static(__dirname + '/public'));
+
 export default app;
