@@ -9,6 +9,7 @@ package com.monsters.display
    import flash.net.URLRequest;
    import flash.utils.Timer;
    import com.monsters.display.Loadable;
+   import flash.events.UncaughtErrorEvent;
    
    public class ImageCache
    {
@@ -220,8 +221,10 @@ package com.monsters.display
          });
          l.loader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR,function(param1:IOErrorEvent):void
          {
+            //Comment: Errors out here
             onError(l);
          });
+         //l.loader.uncaughtErrorEvents.addEventListener(IOErrorEvent.IO_ERROR,function(param1:IOErrorEvent):void {});
          l.loader.contentLoaderInfo.addEventListener(IOErrorEvent.NETWORK_ERROR,function(param1:IOErrorEvent):void
          {
             onError(l);
@@ -243,6 +246,7 @@ package com.monsters.display
                }
                else
                {
+                  // Comment: Resolves here, gives up.
                   param1.loadState = GAVE_UP;
                   load.splice(_loc2_,1);
                   print("ImageCache.onError Failed" + param1);

@@ -74,7 +74,7 @@ const baseLoadData = (res: Response) =>
     effects: [],
     monsters: {},
     aiattacks: {},
-    tutorialstage: 0,
+    tutorialstage: 205, // 205 skips tutorial
     storeitems: {
       BR11I: {
         quantity: 100,

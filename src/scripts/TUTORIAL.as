@@ -17,9 +17,9 @@ package
    public class TUTORIAL
    {
       
-      public static var _stage:int = 0;
+      public static var _stage:int = 205;
       
-      public static var _currentStage:int = 0;
+      public static var _currentStage:int = 205;
       
       public static const _endstage:int = 205;
       
