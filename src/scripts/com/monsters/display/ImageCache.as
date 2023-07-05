@@ -205,51 +205,50 @@ package com.monsters.display
       }
       
       // Load Dynamic assets
-      private function initLoadable(param1:Loadable) : void
+      private function initLoadable(queue:Loadable) : void
       {
          var req_str:String;
-         var l:Loadable = param1;
+         var l:Loadable = queue;
          l.loadState = LOADING;
          req_str = l.shouldPrepend ? prependImagePath + l.key : l.key;
-         // Comment: Attempts to load all dynamic assets from the server
+         // Comment: Attempts to load dynamic assets from the server
          l.loader.load(new URLRequest(req_str));
-         LOGGER.DebugQAdd("Fetched asset: ", {url: req_str});
-         LOGGER.DebugQPost();
          l.loader.contentLoaderInfo.addEventListener(Event.COMPLETE,function(param1:Event):void
          {
             onAssetComplete(l);
          });
          l.loader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR,function(param1:IOErrorEvent):void
          {
-            //Comment: Errors out here
+            var errorMessage:String = param1.text;
+            LOGGER.DebugQAdd("Cannot fetch the following asset: ", {err: errorMessage});
+            LOGGER.DebugQPost();
             onError(l);
          });
-         //l.loader.uncaughtErrorEvents.addEventListener(IOErrorEvent.IO_ERROR,function(param1:IOErrorEvent):void {});
          l.loader.contentLoaderInfo.addEventListener(IOErrorEvent.NETWORK_ERROR,function(param1:IOErrorEvent):void
          {
             onError(l);
          });
          load.push(l);
       }
-      
-      private function onError(param1:Loadable) : void
+    
+      private function onError(queue:Loadable) : void
       {
          var _loc2_:uint = 0;
          while(_loc2_ < load.length)
          {
-            if(param1 == load[_loc2_])
+            if(queue == load[_loc2_])
             {
-               ++param1.tries;
-               if(param1.tries < param1.tryLimit)
+               ++queue.tries;
+               if(queue.tries < queue.tryLimit)
                {
                   this.queue.push(load.splice(_loc2_,1)[0]);
                }
                else
                {
                   // Comment: Resolves here, gives up.
-                  param1.loadState = GAVE_UP;
+                  queue.loadState = GAVE_UP;
                   load.splice(_loc2_,1);
-                  print("ImageCache.onError Failed" + param1);
+                  print("ImageCache.onError Failed" + queue);
                }
                return;
             }

@@ -41,7 +41,7 @@ package
          _setup = true;
          cbf = param1;
          var _loc2_:URLLoader = new URLLoader();
-         var s:String = "Comment: Below line cbf() was directly called instead of handleSucc";
+         // Comment: Below function 'cbf' is called directly. This skips the processing of the languages.txt from the server
          cbf();
       }
       

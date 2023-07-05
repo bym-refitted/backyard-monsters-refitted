@@ -149,14 +149,16 @@ package
                   _loc1_._allianceURL = "http://bym-ko-web1.stage.kixeye.com/alliance/";
                   _loc2_ = "http://bym-ko-web1.stage.kixeye.com/";
                   break;
+
+               // Endpoints
                case BYMConfig.k_sLOCAL_MODE_PREVIEW:
-                  _loc1_._baseURL = "https://bym-fb-lb1.stage.kixeye.com/base/";
-                  _loc1_._apiURL = "https://bym-fb-lb1.stage.kixeye.com/api/";
-                  _loc1_.infbaseurl = null;
-                  _loc1_._statsURL = "https://bym-fb-lb1.stage.kixeye.com/recordstats.php";
-                  _loc1_._mapURL = "https://bym-fb-lb1.stage.kixeye.com/worldmapv2/";
-                  _loc1_._allianceURL = "https://bym-fb-lb1.stage.kixeye.com/alliance/";
-                  _loc1_.languageurl = "https://bym-netdna.s3.amazonaws.com/gamedev/assets/";
+                  _loc1_._baseURL = "http://localhost:3001/base/";
+                  _loc1_._apiURL = "http://localhost:3001/api/";
+                  _loc1_.infbaseurl = "http://localhost:3001/api/bm/base/";
+                  _loc1_._statsURL = "http://localhost:3001/recordstats.php";
+                  _loc1_._mapURL = "http://localhost:3001/worldmapv2/";
+                  _loc1_._allianceURL = "http://localhost:3001/alliance/";
+                  _loc1_.languageurl = "http://localhost:3001/gamedev/assets/";
                   _loc2_ = "http://localhost:3001/";
                   break;
                default:
@@ -178,14 +180,15 @@ package
                _loc1_._mapURL = _loc2_ + "worldmapv2/";
                _loc1_.map3url = _loc2_ + "worldmapv3/";
                _loc1_._allianceURL = _loc2_ + "alliance/";
+               _loc1_.languageurl = _loc2_ + "gamestage/assets/";
+               _loc1_._storageURL = _loc2_ + "assets/";
+               _loc1_._soundPathURL = _loc2_ + "assets/sounds/";
+               _loc1_._gameURL = _loc2_ + "";
+               _loc1_._appid = _loc2_ + "";
+               _loc1_._tpid = _loc2_ + "";
+               _loc1_._currencyURL = _loc2_ + "";
+               _loc1_._countryCode = _loc2_ + "us";
             }
-            _loc1_._gameURL = "";
-            _loc1_._storageURL = "assets/";
-            _loc1_._soundPathURL = "assets/sounds/";
-            _loc1_._appid = "";
-            _loc1_._tpid = "";
-            _loc1_._currencyURL = "";
-            _loc1_._countryCode = "us";
             this.Data(_loc1_,false);
          }
       }
@@ -232,6 +235,10 @@ package
          GLOBAL._fbdata = obj;
          GLOBAL._monetized = obj.monetized;
          MarketingRecapture.instance.importData(obj.urlparams);
+
+         // Logging endpoints
+         LOGGER.DebugQAdd("Game endpoints: ", {url: obj});
+         LOGGER.DebugQPost();
          GLOBAL._ROOT = new MovieClip();
          addChild(GLOBAL._ROOT);
          GLOBAL._layerMap = GLOBAL._ROOT.addChild(new Sprite()) as Sprite;
