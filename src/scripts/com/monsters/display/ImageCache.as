@@ -219,9 +219,6 @@ package com.monsters.display
          });
          l.loader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR,function(param1:IOErrorEvent):void
          {
-            var errorMessage:String = param1.text;
-            LOGGER.DebugQAdd("Cannot fetch the following asset: ", {err: errorMessage});
-            LOGGER.DebugQPost();
             onError(l);
          });
          l.loader.contentLoaderInfo.addEventListener(IOErrorEvent.NETWORK_ERROR,function(param1:IOErrorEvent):void
