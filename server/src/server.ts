@@ -1,3 +1,5 @@
+import 'reflect-metadata';
+import { EntityManager } from '@mikro-orm/sqlite';
 import express, { Express } from "express";
 import routes from "./app.routes.js";
 import fs from "fs";
@@ -8,8 +10,8 @@ import { ascii_node } from "./utils/ascii_art.js";
 const app: Express = express();
 const port = 3001;
 
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
+app.use(express.urlencoded({ extended: true, limit: '50mb' }));
+app.use(express.json({limit: '50mb'}));
 app.use(morgan("combined"));
 
 app.use(routes);
@@ -28,5 +30,7 @@ app.listen(process.env.PORT || port, () => {
   ${ascii_node} Admin dashboard: http://localhost:${port}
   `);
 });
+
+app.use(express.static(__dirname + '/public'));
 
 export default app;

@@ -34,13 +34,13 @@ package com.monsters.maproom3
       
       private var m_Open:Boolean = false;
       
-      public function MapRoom3(param1:String)
+      public function MapRoom3(headerUrl:String)
       {
          this.m_CurrentBookmarkData = {};
          super();
-         if(param1 != null)
+         if(headerUrl != null)
          {
-            this.m_HeightMapLoader = new URLLoader(new URLRequest(param1));
+            this.m_HeightMapLoader = new URLLoader(new URLRequest(headerUrl));
             this.m_HeightMapLoader.addEventListener(Event.COMPLETE,this.OnHeightMapLoaded,false,0,true);
             this.m_HeightMapLoader.addEventListener(IOErrorEvent.IO_ERROR,this.OnHeightMapLoadFailed,false,0,true);
             this.m_HeightMapLoader.addEventListener(IOErrorEvent.NETWORK_ERROR,this.OnHeightMapLoadFailed,false,0,true);
@@ -108,8 +108,8 @@ package com.monsters.maproom3
       
       public function OnHeightMapLoaded(param1:Event) : void
       {
-         var _loc2_:Object = JSON.decode(this.m_HeightMapLoader.data);
-         this.m_MapRoom3Data = new MapRoom3Data(_loc2_);
+         var decodedData:Object = JSON.decode(this.m_HeightMapLoader.data);
+         this.m_MapRoom3Data = new MapRoom3Data(decodedData);
       }
       
       public function OnHeightMapLoadFailed(param1:Event) : void

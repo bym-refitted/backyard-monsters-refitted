@@ -713,7 +713,7 @@ package
          }
          else
          {
-            // Comment: the Load() function resolves to this block.
+            // Comment: load route triggered
             new URLLoaderApi().load(GLOBAL._baseURL + "load",_loc8_,handleBaseLoadSuccessful,handleBaseLoadError);
          }
       }
@@ -1007,7 +1007,7 @@ package
             {
                UPDATES._lastUpdateID = 0;
             }
-            serverData.mushrooms = {} // TODO: WHATTHEfuck IS happening here??????????????????????????????????????????????????????????????????????????????????????????
+            serverData.mushrooms = {} // Reminder: This is not real
             LOGGER.DebugQAdd("LN:1011 - Before mushromn",{shrooms:serverData.mushrooms});
             if(serverData.mushrooms.l)
             {
@@ -1699,10 +1699,11 @@ package
             LOGGER.Stat([LOGGER.STAT_MEM,"loadbase",(System.totalMemory / 1024 / 1024).toString(),int(getTimer() * 0.001).toString()]);
          }
       
+            LOGGER.DebugQPost(error);
       }
          catch (error:Error)
          {
-            LOGGER.DebugQPost(error);
+            // Move logger back here later
          }
       }
       
@@ -3934,7 +3935,7 @@ package
          }
          else
          {
-            // Comment: the Save() function resolves to this block
+            // Comment: save route triggered
             new URLLoaderApi().load(GLOBAL._baseURL + "save",_loc7_,handleLoadSuccessful,handleLoadError);
          }
          if(_saveOver)
@@ -4302,6 +4303,7 @@ package
          }
          else
          {
+            // Comment: updatedsaved route triggered
             new URLLoaderApi().load(GLOBAL._baseURL + "updatesaved",[["baseid",BASE._loadedBaseID],["version",GLOBAL._version.Get()],["lastupdate",UPDATES._lastUpdateID],["type",tmpMode]],handleLoadSuccessful,handleLoadError);
          }
       }
@@ -5149,6 +5151,9 @@ package
             _loc2_ = new INFERNO_MAGMA_TOWER();
          }
          // Comment: Could not be found - returned a new obj instead
+         if (!!_loc3_.cls) {
+            LOGGER.DebugQAdd("The CLS problem should be happening", {loc2:_loc2_});
+         }
          return !!_loc3_.cls ? new _loc3_.cls() : _loc2_;
       }
       

@@ -1,4 +1,4 @@
-import { Router, Request, Response } from "express";
+import { Router, Request, Response, NextFunction } from "express";
 import { errorLog, logging } from "./utils/logger.js";
 import { randomUUID } from "crypto";
 
@@ -26,11 +26,11 @@ const baseLoadData = (res: Response) =>
     currenttime: 200,
     id: 9765443,
     baseseed: 4520,
-    baseid: 1,
+    baseid: 1234,
     fbid: 67879,
     userid: 4567,
     attackid: 0,
-    homebase: true,
+    homebase: false, // This should be an array
     unreadmessages: 0,
     buildinghealthdata: [],
     buildingdata: {},
@@ -74,7 +74,7 @@ const baseLoadData = (res: Response) =>
     effects: [],
     monsters: {},
     aiattacks: {},
-    tutorialstage: 0,
+    tutorialstage: 205, // 205 skips tutorial
     storeitems: {
       BR11I: {
         quantity: 100,
@@ -178,7 +178,8 @@ const baseLoadData = (res: Response) =>
 const baseSaveData = (res: Response) => {
   res.status(200).json({
     error: 0,
-    basesaveid: 87658764,
+    over: 1,
+    basesaveid: 1234,
     credits: 2000,
     protected: 1,
     fan: 0,
@@ -190,7 +191,22 @@ const baseSaveData = (res: Response) => {
 };
 
 const updateSaved = (res: Response) => {
-  res.status(200).json({ error: 0, h: "someHashValue", });
+  res.status(200).json({ 
+    error: 0, 
+    baseid: 1234,
+    version: 128,
+    lastupdate: 0,
+    type: "build",
+    flags: {
+      viximo: 0,
+      kongregate: 1,
+      showProgressBar: 0,
+      midgameIncentive: 0,
+      plinko: 0,
+      fanfriendbookmarkquests: 0,
+    },
+    h: "someHashValue",
+   });
 }
 
 const mapRoomVersion = (res: Response) => {
@@ -201,23 +217,40 @@ const mapRoomVersion = (res: Response) => {
   });
 };
 
-router.get("/base/load/", (_: any, res: Response) => baseLoadData(res));
-router.post("/base/load/", (_: any, res: Response) => baseLoadData(res));
+const getNewMap = (res: Response) => {
+  res.status(200).json({
+    error: 0, 
+    h: "someHashValue", 
+  });
+};
 
-router.get("/base/save/", (_: any, res: Response) => baseSaveData(res));
-router.post("/base/save/", (_: any, res: Response) => baseSaveData(res));
+// Middleware
+const debugDataLog = (req: Request, _: any, next: NextFunction) => {
+  logging(`Request body: ${JSON.stringify(req.body)}`);
+  next();
+};
 
-// router.get("/base/updatesaved/", (_: any, res: Response) => updateSaved(res));
-// router.post("/base/updatesaved/", (_: any, res: Response) => updateSaved(res));
+// Game routes
+router.get("/base/load/", debugDataLog, (_: any, res: Response) => baseLoadData(res));
+router.post("/base/load/", debugDataLog, (_: Request, res: Response) => baseLoadData(res));
 
-router.get("/worldmapv3/setmapversion/", (_: any, res: Response) => mapRoomVersion(res));
-router.post("/worldmapv3/setmapversion/", (_: any, res: Response) => mapRoomVersion(res));
+router.get("/base/save/", debugDataLog, (_: any, res: Response) => baseSaveData(res));
+router.post("/base/save/", debugDataLog, (_: Request, res: Response) => baseSaveData(res));
 
+router.get("/base/updatesaved/", debugDataLog, (_: any, res: Response) => updateSaved(res));
+router.post("/base/updatesaved/", debugDataLog, (_: Request, res: Response) => updateSaved(res));
 
+router.get("/worldmapv3/setmapversion/", debugDataLog, (_: any, res: Response) => mapRoomVersion(res));
+router.post("/worldmapv3/setmapversion/", debugDataLog, (_: Request, res: Response) => mapRoomVersion(res));
+
+router.get("/api/bm/getnewmap/", debugDataLog, (_: any, res: Response) => getNewMap(res));
+router.post("/api/bm/getnewmap/", debugDataLog, (_: Request, res: Response) => getNewMap(res));
+
+// Logging routes
 router.post("/api/player/recorddebugdata/", (req: Request) => {
   logging(`=========== NEW RUN ${randomUUID()} ===========`);
   JSON.parse(req.body.message).forEach((element: LogProps) => {
-    logging(`Debug Message: ${element.logMessage}`, element.debugVars);
+    logging(`${element.logMessage}`, element.debugVars);
   });
   errorLog(`ERROR: ${req.body.error}`);
 });
