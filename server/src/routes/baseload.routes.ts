@@ -1,13 +1,8 @@
-import { Router, Request, Response, NextFunction } from "express";
-import { errorLog, logging } from "./utils/logger.js";
-import { randomUUID } from "crypto";
-
-interface LogProps {
-  logMessage: string;
-  debugVars: Object;
-}
+import { Router, Request, Response } from "express";
+import { debugDataLog } from "../middleware/debugDataLog";
 
 const router = Router();
+
 const baseLoadData = (res: Response) =>
   res.status(200).json({
     error: 0,
@@ -175,88 +170,7 @@ const baseLoadData = (res: Response) =>
     mushrooms: {},
   });
 
-const baseSaveData = (res: Response) => {
-  res.status(200).json({
-    error: 0,
-    over: 1,
-    basesaveid: 1234,
-    credits: 2000,
-    protected: 1,
-    fan: 0,
-    bookmarked: 0,
-    installsgenerated: 42069,
-    resources: {},
-    h: "someHashValue",
-  });
-};
-
-const updateSaved = (res: Response) => {
-  res.status(200).json({ 
-    error: 0, 
-    baseid: 1234,
-    version: 128,
-    lastupdate: 0,
-    type: "build",
-    flags: {
-      viximo: 0,
-      kongregate: 1,
-      showProgressBar: 0,
-      midgameIncentive: 0,
-      plinko: 0,
-      fanfriendbookmarkquests: 0,
-    },
-    h: "someHashValue",
-   });
-}
-
-const mapRoomVersion = (res: Response) => {
-  res.status(200).json({
-    error: 0, 
-    version: 3, 
-    h: "someHashValue", 
-  });
-};
-
-const getNewMap = (res: Response) => {
-  res.status(200).json({
-    error: 0, 
-    h: "someHashValue", 
-  });
-};
-
-// Middleware
-const debugDataLog = (req: Request, _: any, next: NextFunction) => {
-  logging(`Request body: ${JSON.stringify(req.body)}`);
-  next();
-};
-
-// Game routes
 router.get("/base/load/", debugDataLog, (_: any, res: Response) => baseLoadData(res));
 router.post("/base/load/", debugDataLog, (_: Request, res: Response) => baseLoadData(res));
-
-router.get("/base/save/", debugDataLog, (_: any, res: Response) => baseSaveData(res));
-router.post("/base/save/", debugDataLog, (_: Request, res: Response) => {
-
-  
-  return baseSaveData(res);
-});
-
-router.get("/base/updatesaved/", debugDataLog, (_: any, res: Response) => updateSaved(res));
-router.post("/base/updatesaved/", debugDataLog, (_: Request, res: Response) => updateSaved(res));
-
-router.get("/worldmapv3/setmapversion/", debugDataLog, (_: any, res: Response) => mapRoomVersion(res));
-router.post("/worldmapv3/setmapversion/", debugDataLog, (_: Request, res: Response) => mapRoomVersion(res));
-
-router.get("/api/bm/getnewmap/", debugDataLog, (_: any, res: Response) => getNewMap(res));
-router.post("/api/bm/getnewmap/", debugDataLog, (_: Request, res: Response) => getNewMap(res));
-
-// Logging routes
-router.post("/api/player/recorddebugdata/", (req: Request) => {
-  logging(`=========== NEW RUN ${randomUUID()} ===========`);
-  JSON.parse(req.body.message).forEach((element: LogProps) => {
-    logging(`${element.logMessage}`, element.debugVars);
-  });
-  errorLog(`ERROR: ${req.body.error}`);
-});
 
 export default router;
