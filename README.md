@@ -1,4 +1,8 @@
-<img  width="100%" src="https://i.imgur.com/M0aw8WF.jpg">
+<p align="center">
+<img align="center" width="450px" src="https://gitlab.com/monkey-patch/backyard-monsters-refitted/uploads/2791878fcf4948d65aecff6174c88cd6/Refitted_Logo_Bym.png">
+</p>
+
+<br>
 
 ![Redis](https://img.shields.io/badge/ActionScript-%23DD0031.svg?style=for-the-badge)
 ![Gulp](https://img.shields.io/badge/Flash-%23CF4647.svg?style=for-the-badge)
