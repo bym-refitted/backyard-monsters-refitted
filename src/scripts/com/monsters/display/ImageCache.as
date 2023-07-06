@@ -204,7 +204,6 @@ package com.monsters.display
          }
       }
       
-      // Load Dynamic assets
       private function initLoadable(queue:Loadable) : void
       {
          var req_str:String;
@@ -242,7 +241,6 @@ package com.monsters.display
                }
                else
                {
-                  // Comment: Resolves here, gives up.
                   queue.loadState = GAVE_UP;
                   load.splice(_loc2_,1);
                   print("ImageCache.onError Failed" + queue);
