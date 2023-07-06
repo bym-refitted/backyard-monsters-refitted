@@ -1,3 +1,5 @@
+import 'reflect-metadata';
+import { EntityManager } from '@mikro-orm/sqlite';
 import express, { Express } from "express";
 import routes from "./app.routes.js";
 import fs from "fs";

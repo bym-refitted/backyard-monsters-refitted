@@ -41,6 +41,10 @@ package
          _setup = true;
          cbf = param1;
          var _loc2_:URLLoader = new URLLoader();
+         //_loc2_.load(new URLRequest(_storageURL + _language + ".v" + _languageVersion + ".txt"));
+         //_loc2_.addEventListener(Event.COMPLETE,handleSucc);
+         //_loc2_.addEventListener(IOErrorEvent.IO_ERROR,GLOBAL.handleLoadError);
+         
          // Comment: Below function 'cbf' is called directly. This skips the processing of the languages.txt from the server
          cbf();
       }
