@@ -61,7 +61,7 @@ https://github.com/jindrapetrik/jpexs-decompiler/releases
 
 <br />
 
-3. To contribute you will need to copy your changes to the src directory. If you are wondering why we are using this horrible workflow please see [CONTRIBUTING.md](https://gitlab.com/monkey-patch/backyard-monsters-refitted/-/blob/main/CONTRIBUTING.md) for more information.
+3. To contribute you will need to copy your changes to the src directory. If you are wondering why we are using this horrible workflow please see [CONTRIBUTING.md](https://gitlab.com/monkey-patch/backyard-monsters-refitted/-/blob/main/CONTRIBUTING.md) for more information. If you are able to figure out how to compile directly to swf without unlinking all assets, please let us know
  
 
 4. You can find the most recent release of the game here: [backyard-monsters-refitted-stable](https://gitlab.com/monkey-patch/backyard-monsters-refitted/-/releases)  
