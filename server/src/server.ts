@@ -1,5 +1,3 @@
-import 'reflect-metadata';
-import { EntityManager } from '@mikro-orm/sqlite';
 import express, { Express } from "express";
 import routes from "./app.routes.js";
 import fs from "fs";
@@ -24,13 +22,12 @@ app.get("/crossdomain.xml", (_: any, res) => {
 });
 
 app.use(express.static("./public"));
+app.use(express.static(__dirname + '/public'));
 
 app.listen(process.env.PORT || port, () => {
   logging(`
   ${ascii_node} Admin dashboard: http://localhost:${port}
   `);
 });
-
-app.use(express.static(__dirname + '/public'));
 
 export default app;

@@ -5,10 +5,7 @@
     "target": "ES2020",                   
     "sourceMap": true,       
     "outDir": "dist",                          
-    "forceConsistentCasingInFileNames": true,       
-    "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
-    "esModuleInterop": true,    
+    "forceConsistentCasingInFileNames": true   
   },
   "include": ["src/**/*"],
 }
