@@ -197,14 +197,14 @@ package com.monsters.maproom3.data
          new URLLoaderApi().load(MapRoomManager.instance.mapRoom3URL + "initworldmap",_loc2_,this.OnInitialPlayerCellDataLoaded);
       }
       
-      private function OnInitialPlayerCellDataLoaded(param1:Object) : void
+      private function OnInitialPlayerCellDataLoaded(serverData:Object) : void
       {
          var _loc9_:int = 0;
          var _loc10_:int = 0;
-         this.m_InitialPlayerCellData = param1;
+         this.m_InitialPlayerCellData = serverData;
          if(this.m_InitialCentrePoint == null)
          {
-            this.m_InitialCentrePoint = new Point(param1.celldata[0].x,param1.celldata[0].y);
+            this.m_InitialCentrePoint = new Point(serverData.celldata[0].x,serverData.celldata[0].y); // X and Y coordinates from server
          }
          var _loc2_:Array = [];
          var _loc3_:int = Math.max(0,this.m_InitialCentrePoint.x - CELL_LOAD_BUFFER_X);

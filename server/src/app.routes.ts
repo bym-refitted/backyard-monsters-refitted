@@ -221,6 +221,12 @@ const mapRoomVersion = (res: Response) => {
 const initMapRoom = (res: Response) => {
   res.status(200).json({
     error: 0, 
+    celldata: [
+      {
+      x: 500,
+      y: 500
+      }
+  ],
     h: "someHashValue", 
   });
 };
