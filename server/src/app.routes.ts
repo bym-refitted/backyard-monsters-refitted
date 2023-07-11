@@ -18,6 +18,7 @@ const baseLoadData = (res: Response) =>
       midgameIncentive: 0,
       plinko: 0,
       fanfriendbookmarkquests: 0,
+      maproom2: 1, // any other value sets the maproom to disabled
     },
     fan: 0,
     protected: 1,
@@ -217,6 +218,13 @@ const mapRoomVersion = (res: Response) => {
   });
 };
 
+const initMapRoom = (res: Response) => {
+  res.status(200).json({
+    error: 0, 
+    h: "someHashValue", 
+  });
+};
+
 const getNewMap = (res: Response) => {
   res.status(200).json({
     error: 0, 
@@ -242,6 +250,9 @@ router.post("/base/updatesaved/", debugDataLog, (_: Request, res: Response) => u
 
 router.get("/worldmapv3/setmapversion/", debugDataLog, (_: any, res: Response) => mapRoomVersion(res));
 router.post("/worldmapv3/setmapversion/", debugDataLog, (_: Request, res: Response) => mapRoomVersion(res));
+
+router.get("/worldmapv3/initworldmap/", debugDataLog, (_: any, res: Response) => initMapRoom(res));
+router.post("/worldmapv3/initworldmap/", debugDataLog, (_: Request, res: Response) => initMapRoom(res));
 
 router.get("/api/bm/getnewmap/", debugDataLog, (_: any, res: Response) => getNewMap(res));
 router.post("/api/bm/getnewmap/", debugDataLog, (_: Request, res: Response) => getNewMap(res));
