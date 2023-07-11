@@ -231,6 +231,13 @@ const initMapRoom = (res: Response) => {
   });
 };
 
+const mapRoomGetCells = (res: Response) => {
+  res.status(200).json({
+    error: 0, 
+    h: "someHashValue", 
+  });
+};
+
 const getNewMap = (res: Response) => {
   res.status(200).json({
     error: 0, 
@@ -259,6 +266,9 @@ router.post("/worldmapv3/setmapversion/", debugDataLog, (_: Request, res: Respon
 
 router.get("/worldmapv3/initworldmap/", debugDataLog, (_: any, res: Response) => initMapRoom(res));
 router.post("/worldmapv3/initworldmap/", debugDataLog, (_: Request, res: Response) => initMapRoom(res));
+
+router.get("/worldmapv3/getcells/", debugDataLog, (_: any, res: Response) => mapRoomGetCells(res));
+router.post("/worldmapv3/getcells/", debugDataLog, (_: Request, res: Response) => mapRoomGetCells(res));
 
 router.get("/api/bm/getnewmap/", debugDataLog, (_: any, res: Response) => getNewMap(res));
 router.post("/api/bm/getnewmap/", debugDataLog, (_: Request, res: Response) => getNewMap(res));
