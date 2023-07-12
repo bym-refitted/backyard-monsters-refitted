@@ -57,22 +57,22 @@ package com.monsters.maproom3.data
       
       private var m_InitialCentrePoint:Point = null;
       
-      public function MapRoom3Data(param1:Object = null)
+      public function MapRoom3Data(serverData:Object = null)
       {
          this.m_AllianceDataById = new Dictionary();
          this.m_ExpiryTimeByCellId = new Dictionary();
          super();
-         if(param1 == null)
+         if(serverData == null)
          {
-            param1 = GenerateDefaultMapData();
+            serverData = GenerateDefaultMapData();
          }
-         this.m_Width = param1.width;
-         this.m_Height = param1.height;
+         this.m_Width = serverData.width;
+         this.m_Height = serverData.height;
          this.m_BorderCell = new MapRoom3Cell(0,0,MapRoom3TileSetManager.BORDER_CELL_HEIGHT,EnumYardType.BORDER);
          var _loc2_:int = this.m_Width * this.m_Height;
          this.m_MapRoom3Cells = new Vector.<MapRoom3Cell>(_loc2_);
          this.m_PlayerOwnedCells = new Vector.<IMapRoomCell>();
-         this.m_CreatingMapData = param1;
+         this.m_CreatingMapData = serverData;
          this.m_CellCreationIndexX = 0;
          this.m_CellCreationIndexY = 0;
          this.UpdateCellCreation();
@@ -145,26 +145,27 @@ package com.monsters.maproom3.data
       
       public function UpdateCellCreation() : void
       {
-         var _loc1_:int = 0;
-         var _loc2_:Object = null;
+         var index:int = 0;
+         var cellData:Object = null;
          if(this.areAllCellsCreated == true)
          {
             return;
          }
-         var _loc3_:int = getTimer();
+         var timer:int = getTimer();
          this.m_CellCreationIndexX;
          while(this.m_CellCreationIndexX < this.m_Width)
          {
             this.m_CellCreationIndexY;
             while(this.m_CellCreationIndexY < this.m_Height)
             {
-               _loc1_ = this.GetCellIndex(this.m_CellCreationIndexX,this.m_CellCreationIndexY);
-               _loc2_ = this.m_CreatingMapData.data[_loc1_];
-               this.m_MapRoom3Cells[_loc1_] = new MapRoom3Cell(this.m_CellCreationIndexX,this.m_CellCreationIndexY,_loc2_.h,_loc2_.t);
-               if(getTimer() - _loc3_ > CELL_CREATION_LOOP_TIMEOUT)
-               {
-                  return;
-               }
+               index = this.GetCellIndex(this.m_CellCreationIndexX,this.m_CellCreationIndexY);
+               cellData = this.m_CreatingMapData.data[index];
+               this.m_MapRoom3Cells[index] = new MapRoom3Cell(this.m_CellCreationIndexX,this.m_CellCreationIndexY,cellData.h,cellData.t);
+               // Comment: Why does this timeout? This was causing areAllCellsCreated to return false
+               //if(getTimer() - timer > CELL_CREATION_LOOP_TIMEOUT)
+               //{
+                 // return;
+               //}
                ++this.m_CellCreationIndexY;
             }
             this.m_CellCreationIndexY = 0;
@@ -197,14 +198,14 @@ package com.monsters.maproom3.data
          new URLLoaderApi().load(MapRoomManager.instance.mapRoom3URL + "initworldmap",_loc2_,this.OnInitialPlayerCellDataLoaded);
       }
       
-      private function OnInitialPlayerCellDataLoaded(serverData:Object) : void
+      private function OnInitialPlayerCellDataLoaded(initworldmapData:Object) : void
       {
          var _loc9_:int = 0;
          var _loc10_:int = 0;
-         this.m_InitialPlayerCellData = serverData;
+         this.m_InitialPlayerCellData = initworldmapData;
          if(this.m_InitialCentrePoint == null)
          {
-            this.m_InitialCentrePoint = new Point(serverData.celldata[0].x,serverData.celldata[0].y); // X and Y coordinates from server
+            this.m_InitialCentrePoint = new Point(initworldmapData.celldata[0].x,initworldmapData.celldata[0].y); // X and Y coordinates from server
          }
          var _loc2_:Array = [];
          var _loc3_:int = Math.max(0,this.m_InitialCentrePoint.x - CELL_LOAD_BUFFER_X);
@@ -375,53 +376,55 @@ package com.monsters.maproom3.data
             _loc12_.push(["worldid",DEBUG_WORLD_ID]);
          }
          this.m_PendingCellDataRequest = _loc12_;
-         new URLLoaderApi().load(GetCellsRequestURL(),_loc12_,this.OnCellDataLoaded);
+         new URLLoaderApi().load(GetCellsRequestURL(),_loc12_,this.OnCellDataLoaded);  // worldmapv3/getcells endpoint called
       }
       
-      private function OnCellDataLoaded(param1:Object) : void
+      private function OnCellDataLoaded(getcellsData:Object) : void
       {
          if(this.m_PendingCellDataRequest == null)
          {
             return;
          }
          this.m_PendingCellDataRequest = null;
-         this.ParseCellData(param1);
+         this.ParseCellData(getcellsData);
       }
       
-      private function ParseCellData(param1:Object) : void
+      private function ParseCellData(getcellsData:Object) : void
       {
-         var _loc2_:Array = null;
-         var _loc6_:Object = null;
-         var _loc7_:MapRoom3Cell = null;
-         var _loc8_:int = 0;
-         _loc2_ = param1.celldata;
-         var _loc3_:int = getTimer();
-         var _loc4_:uint = _loc2_.length;
-         var _loc5_:int = 0;
-         while(_loc5_ < _loc4_)
+         var cellDataArray:Array = null;
+         var cellData:Object = null;
+         var mapRoomCell:MapRoom3Cell = null;
+         var cellID:int = 0;
+         cellDataArray = getcellsData.celldata;
+         var timer:int = getTimer();
+         var cellDataArrayLength:uint = cellDataArray.length;
+         var index:int = 0;
+         
+         while(index < cellDataArrayLength)
          {
-            _loc6_ = _loc2_[_loc5_];
-            (_loc7_ = this.GetMapRoom3Cell(_loc6_.x,_loc6_.y)).Setup(_loc6_);
-            _loc8_ = MapRoomManager.instance.CalculateCellId(_loc7_.cellX,_loc7_.cellY);
-            this.m_ExpiryTimeByCellId[_loc8_] = _loc3_ + DEFAULT_CELL_EXPIRIY_TIME;
-            if(_loc7_.isOwnedByPlayer)
+            cellData = cellDataArray[index];
+            (mapRoomCell = this.GetMapRoom3Cell(cellData.x,cellData.y)).Setup(cellData);
+            cellID = MapRoomManager.instance.CalculateCellId(mapRoomCell.cellX, mapRoomCell.cellY);
+            this.m_ExpiryTimeByCellId[cellID] = timer + DEFAULT_CELL_EXPIRIY_TIME;
+
+            if(mapRoomCell.isOwnedByPlayer)
             {
-               this.m_ExpiryTimeByCellId[_loc8_] = _loc3_ + PLAYER_CELL_EXPIRIY_TIME;
-               this.UpdateCellsInAttackRange(_loc7_);
-               if(this.m_PlayerOwnedCells.indexOf(_loc7_) == -1)
+               this.m_ExpiryTimeByCellId[cellID] = timer + PLAYER_CELL_EXPIRIY_TIME;
+               this.UpdateCellsInAttackRange(mapRoomCell);
+               if(this.m_PlayerOwnedCells.indexOf(mapRoomCell) == -1)
                {
-                  this.m_PlayerOwnedCells.push(_loc7_);
+                  this.m_PlayerOwnedCells.push(mapRoomCell);
                }
             }
-            if(_loc7_.cellType == EnumYardType.STRONGHOLD)
+            if(mapRoomCell.cellType == EnumYardType.STRONGHOLD)
             {
-               this.UpdateCellsInStrongholdRange(_loc7_);
+               this.UpdateCellsInStrongholdRange(mapRoomCell);
             }
-            _loc5_++;
+            index++;
          }
-         if(param1.alliancedata != null)
+         if(getcellsData.alliancedata != null)
          {
-            this.OnAllianceDataLoaded(param1.alliancedata);
+            this.OnAllianceDataLoaded(getcellsData.alliancedata);
          }
          if(MapRoom3.mapRoom3Window != null)
          {

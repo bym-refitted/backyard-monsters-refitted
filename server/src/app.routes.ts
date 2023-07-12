@@ -224,7 +224,7 @@ const initMapRoom = (res: Response) => {
     celldata: [
       {
       x: 500,
-      y: 500
+      y: 500,
       }
   ],
     h: "someHashValue", 
@@ -234,14 +234,24 @@ const initMapRoom = (res: Response) => {
 const mapRoomGetCells = (res: Response) => {
   res.status(200).json({
     error: 0, 
-    h: "someHashValue", 
+    celldata: [
+      {
+      x: 500,
+      y: 500,
+      },
+  ],
+  h: "someHashValue", 
   });
 };
 
 const getNewMap = (res: Response) => {
   res.status(200).json({
-    error: 0, 
-    h: "someHashValue", 
+    width: 500,
+    height: 500,
+    data: {
+      h: 150,
+      t: 150
+    }
   });
 };
 

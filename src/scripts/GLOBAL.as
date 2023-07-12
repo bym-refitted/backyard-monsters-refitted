@@ -1092,7 +1092,8 @@ package
                _nextOutpostWaiting = 0;
                _showMapWaiting = 0;
                BASE.LoadNext();
-            }
+            }        
+            // Comment: ReadyToShow() must be true before loading the map, otherwise it loads forever  
             else if(_showMapWaiting && BASE._saveCounterA == BASE._saveCounterB && !BASE._saving && !BASE._loading && MapRoomManager.instance.ReadyToShow())
             {
                _loc9_ = _showMapWaiting;

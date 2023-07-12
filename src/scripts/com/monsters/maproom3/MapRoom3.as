@@ -108,8 +108,9 @@ package com.monsters.maproom3
       
       public function OnHeightMapLoaded(param1:Event) : void
       {
-         var decodedData:Object = JSON.decode(this.m_HeightMapLoader.data);
-         this.m_MapRoom3Data = new MapRoom3Data(decodedData);
+         var serverData:Object = JSON.decode(this.m_HeightMapLoader.data);
+         // Comment: Here is were we pass in the data we get from 'bm/getnewmap' into our maproom
+         this.m_MapRoom3Data = new MapRoom3Data(serverData);
       }
       
       public function OnHeightMapLoadFailed(param1:Event) : void
@@ -124,8 +125,15 @@ package com.monsters.maproom3
       }
       
       public function ReadyToShow() : Boolean
-      {
-         return this.m_MapRoom3Data && this.m_MapRoom3Data.areAllCellsCreated && this.m_MapRoom3Data.isInitialCellDataLoaded && MapRoom3AssetCache.instance.areAssetsLoaded && MapRoom3TileSetManager.instance.isCurrentTileSetAndBackgroundLoaded;
+      {  
+         var areAllCellsCreated = this.m_MapRoom3Data.areAllCellsCreated;
+         var isInitialCellDataLoaded = this.m_MapRoom3Data.isInitialCellDataLoaded;
+         var areAssetsLoaded = MapRoom3AssetCache.instance.areAssetsLoaded; // false: can't load all required assets
+         var isCurrentTileSetAndBackgroundLoaded = MapRoom3TileSetManager.instance.isCurrentTileSetAndBackgroundLoaded // false: can't load worldmap/background.jpg
+
+         // Comment: Attempt to load the map anyway without assets
+         //return this.m_MapRoom3Data && areAllCellsCreated && isInitialCellDataLoaded && areAssetsLoaded && isCurrentTileSetAndBackgroundLoaded;
+         return this.m_MapRoom3Data && areAllCellsCreated && isInitialCellDataLoaded;
       }
       
       public function ShowDelayed(param1:Boolean = false) : void
