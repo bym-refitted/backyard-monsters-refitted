@@ -3,7 +3,7 @@ import { Entity, Property, PrimaryKey } from "@mikro-orm/core";
 @Entity()
 export class Save {
   @PrimaryKey()
-  id!: number;
+  basesaveid!: number;
 
   // Primatives
   @Property()
@@ -13,13 +13,9 @@ export class Save {
   @Property()
   flinger!: number;
   @Property()
-  basesaveid!: number;
-  @Property()
   baseid!: number;
   @Property()
   catapult!: number;
-  @Property()
-  h!: string;
   @Property()
   version!: number;
   @Property()
@@ -33,9 +29,13 @@ export class Save {
   @Property()
   points!: number;
   @Property()
-  lastupdate!: number;
-  @Property()
   empirevalue!: number;
   @Property()
-  hn!: number;
+  createdAt: Date = new Date();
+
+  @Property({ onUpdate: () => new Date() })
+  lastupdate: Date = new Date();
+
+  @Property({ type: 'json', nullable: true })
+  buildingdata?: { [key: string | number]: any; };
 }

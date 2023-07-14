@@ -1725,7 +1725,7 @@ package
       {
          var _loc8_:BFOUNDATION = null;
          var _loc12_:int = 0;
-         var _loc13_:Object = null;
+         var building:Object = null;
          var _loc17_:DisplayObject = null;
          var _loc18_:int = 0;
          var _loc19_:int = 0;
@@ -1780,70 +1780,70 @@ package
             _buildingData = null;
          }
          var _loc11_:Dictionary = new Dictionary();
-         for each(_loc13_ in _buildingData)
+         for each(building in _buildingData)
          {
-            if(_loc13_)
+            if(building)
             {
-               if(_loc13_.t)
+               if(building.t)
                {
-                  _loc11_[_loc13_.t] ||= 0;
-                  ++_loc11_[_loc13_.t];
+                  _loc11_[building.t] ||= 0;
+                  ++_loc11_[building.t];
                }
-               if(!(_loc13_.t == 53 || _loc13_.t == 54))
+               if(!(building.t == 53 || building.t == 54))
                {
-                  _loc6_ = _loc13_;
-                  if(_loc13_.t == 18)
+                  _loc6_ = building;
+                  if(building.t == 18)
                   {
-                     _loc13_.t = 17;
-                     _loc13_.l = 2;
+                     building.t = 17;
+                     building.l = 2;
                   }
-                  if(_loc13_.t == 14)
+                  if(building.t == 14)
                   {
                   }
-                  if(_loc13_.t == 7)
+                  if(building.t == 7)
                   {
                      _loc12_++;
                   }
-                  if(_loc8_ = addBuildingC(_loc13_.t))
+                  if(_loc8_ = addBuildingC(building.t))
                   {
                      _loc9_ = _loc8_._type;
                   }
-                  if(_loc13_.t == 16 && _rawMonsters && Boolean(_rawMonsters.hcc))
+                  if(building.t == 16 && _rawMonsters && Boolean(_rawMonsters.hcc))
                   {
-                     _loc13_.mq = _rawMonsters.hcc;
+                     building.mq = _rawMonsters.hcc;
                   }
-                  if(_loc13_.t == 13 && _rawMonsters && Boolean(_rawMonsters.h) && Boolean(_rawMonsters.hid))
+                  if(building.t == 13 && _rawMonsters && Boolean(_rawMonsters.h) && Boolean(_rawMonsters.hid))
                   {
                      _loc18_ = int(_rawMonsters.hid.length);
                      _loc19_ = int(_rawMonsters.h.length);
                      _loc20_ = 0;
                      while(_loc20_ < _loc18_ && _loc20_ < _loc19_)
                      {
-                        if(_rawMonsters.hid[_loc20_] == _loc13_.id)
+                        if(_rawMonsters.hid[_loc20_] == building.id)
                         {
                            if(_rawMonsters.h[_loc20_].length > 0)
                            {
-                              _loc13_.rIP = _rawMonsters.h[_loc20_][0];
-                              _loc13_.rCP = _rawMonsters.h[_loc20_][1];
+                              building.rIP = _rawMonsters.h[_loc20_][0];
+                              building.rCP = _rawMonsters.h[_loc20_][1];
                            }
                            else
                            {
-                              _loc13_.rIP = "";
-                              _loc13_.rCP = 0;
+                              building.rIP = "";
+                              building.rCP = 0;
                            }
                            if(Boolean(_rawMonsters.hstage) && _rawMonsters.hstage.length > _loc20_)
                            {
-                              _loc13_.rPS = _rawMonsters.hstage[_loc20_];
+                              building.rPS = _rawMonsters.hstage[_loc20_];
                            }
-                           if(_loc13_.id == _rawMonsters.hid[_loc20_] && _rawMonsters.h[_loc20_].length > 2)
+                           if(building.id == _rawMonsters.hid[_loc20_] && _rawMonsters.h[_loc20_].length > 2)
                            {
-                              _loc13_.mq = _rawMonsters.h[_loc20_][2];
+                              building.mq = _rawMonsters.h[_loc20_][2];
                            }
                            else
                            {
-                              _loc13_.mq = [];
+                              building.mq = [];
                            }
-                           _loc13_.saved = _rawMonsters.saved;
+                           building.saved = _rawMonsters.saved;
                            break;
                         }
                         _loc20_++;
@@ -1851,15 +1851,15 @@ package
                   }
                   if(_loc8_)
                   {
-                     if(Boolean(_buildingHealthData) && _loc13_.id in _buildingHealthData)
+                     if(Boolean(_buildingHealthData) && building.id in _buildingHealthData)
                      {
-                        _loc13_.hp = _buildingHealthData[_loc13_.id];
+                        building.hp = _buildingHealthData[building.id];
                      }
                      else if(MapRoomManager.instance.isInMapRoom3 && !BASE.isInfernoMainYardOrOutpost)
                      {
-                        delete _loc13_.hp;
+                        delete building.hp;
                      }
-                     _loc8_.Setup(_loc13_);
+                     _loc8_.Setup(building);
                      if(_loc8_._id > _buildingCount)
                      {
                         _buildingCount = _loc8_._id;

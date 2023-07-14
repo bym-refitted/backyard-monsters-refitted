@@ -32,8 +32,16 @@ export const ORMContext = {} as {
 
   app.use(express.urlencoded({ extended: true, limit: '50mb' }));
   app.use(express.json({limit: '50mb'}));
-  app.use(morgan("combined"));
-  
+  app.use(morgan("combined",
+    {
+      // Comment this out to log asset requests
+      skip: req => req.originalUrl.startsWith('/assets')
+    }
+  ));
+    
+    app.use(express.static("./public"));
+    app.use(express.static(__dirname + '/public'));
+    
   // Register routes
   app.use(baseLoad);
   app.use(baseSave);
@@ -47,8 +55,7 @@ export const ORMContext = {} as {
     res.send(crossdomain);
   });
   
-  app.use(express.static("./public"));
-  app.use(express.static(__dirname + '/public'));
+  
   
   app.listen(process.env.PORT || port, () => {
     logging(`

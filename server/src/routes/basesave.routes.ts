@@ -2,22 +2,9 @@ import { Router, Request, Response } from "express";
 import { debugDataLog } from "../middleware/debugDataLog";
 import { ORMContext } from "../server";
 import { Save } from "../models/save.model";
+import { logging } from "../utils/logger";
 
 const router = Router();
-
-const baseSaveData = () => (
-  {
-    error: 0,
-    over: 1,
-    basesaveid: 1234,
-    credits: 2000,
-    protected: 1,
-    fan: 0,
-    bookmarked: 0,
-    installsgenerated: 42069,
-    resources: {},
-    h: "someHashValue",
-  });
 
 
 const updateSaved = (res: Response) => {
@@ -39,19 +26,33 @@ const updateSaved = (res: Response) => {
   });
 };
 
-router.get("/base/save/", debugDataLog, (_: any, res: Response) =>res.status(200).json({
-  ...baseSaveData,
-})
-);
 router.post(
   "/base/save/",
   debugDataLog,
   async (req: Request, res: Response) => {
-    const save = ORMContext.em.create(Save, req.body);
-    const saveData = await ORMContext.em.persistAndFlush(save);
-    return res.status(200).json({
-      ...baseSaveData
-    })
+    logging(`Saving the base!`);
+    let save = await ORMContext.em.findOne(Save, { basesaveid: req.body.basesaveid });
+
+    // update the save with the values from the request
+    // Equivalent to Object.assign() - merges second object onto entity
+    ORMContext.em.assign(save, req.body);
+    // Execute the update in the db
+    await ORMContext.em.persistAndFlush(save);
+
+    // hardcoded for now
+    const baseSaveData = {
+      error: 0,
+      over: 1,
+      basesaveid: req.body.basesaveid,
+      credits: 2000,
+      protected: 1,
+      fan: 0,
+      bookmarked: 0,
+      installsgenerated: 42069,
+      resources: {},
+      h: "someHashValue",
+    }
+    return res.status(200).json({ ...baseSaveData })
   }
 );
 

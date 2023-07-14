@@ -1,10 +1,52 @@
 import { Router, Request, Response } from "express";
 import { debugDataLog } from "../middleware/debugDataLog";
+import { ORMContext } from "../server";
+import { Save } from "../models/save.model";
+import { logging } from "../utils/logger";
 
 const router = Router();
 
-const baseLoadData = (res: Response) =>
-  res.status(200).json({
+const baseLoadData = async (req: Request, res: Response) => {
+  
+  // get the latest base for userID (0) if it dosnt exist create it - for now its 1234
+  // get the latest save id for the base (1234)- if there isnt any in db create it
+  const baseid = 1234;
+  // Try find an already existing save
+  let save = await ORMContext.em.findOne(Save, { baseid });
+
+  if (save) {
+    logging(`Record base load:`, JSON.stringify(save, null, 2));
+  } else {
+    // There was no existing save, create one with some defaults
+    logging(`Record not found, creating a new save`);
+
+    // Initialise
+    const defaults = {
+      basevalue: 20,
+      timeplayed: 0,
+      flinger: 0,
+      catapult: 0,
+      version: 128,
+      clienttime: 0,
+      baseseed: 4520,
+      damage: 0,
+      healtime: 0,
+      points: 5,
+      empirevalue: 0,
+      baseid
+    };
+
+    save = ORMContext.em.create(Save, defaults);
+
+    // Add the save to the database
+    await ORMContext.em.persistAndFlush(save);
+  }
+  // Collect the values for the response from the save
+  const { baseseed, basevalue, points, basesaveid, buildingdata } = save;
+  let buildingdataArray = buildingdata || []
+ 
+  // Return the base load values
+  return res.status(200).json({
     error: 0,
     flags: {
       viximo: 0,
@@ -19,16 +61,16 @@ const baseLoadData = (res: Response) =>
     giftsentcount: 4,
     savetime: 100,
     currenttime: 200,
-    id: 9765443,
-    baseseed: 4520,
-    baseid: 1234,
+    id: basesaveid,
+    baseseed,
+    baseid,
     fbid: 67879,
     userid: 4567,
     attackid: 0,
     homebase: false, // This should be an array
     unreadmessages: 0,
     buildinghealthdata: [],
-    buildingdata: {},
+    buildingdata: buildingdataArray,
     buildingresources: {},
     resources: {
       r1: 10000,
@@ -165,12 +207,17 @@ const baseLoadData = (res: Response) =>
     gifts: [],
     h: "someHashValue",
     basename: "testBase",
-    basevalue: 20,
-    points: 5,
+    basevalue,
+    points,
     mushrooms: {},
   });
+};
 
-router.get("/base/load/", debugDataLog, (_: any, res: Response) => baseLoadData(res));
-router.post("/base/load/", debugDataLog, (_: Request, res: Response) => baseLoadData(res));
+router.get("/base/load/", debugDataLog, (req: any, res: Response) =>
+  baseLoadData(req, res)
+);
+router.post("/base/load/", debugDataLog, (req: Request, res: Response) =>
+  baseLoadData(req, res)
+);
 
 export default router;

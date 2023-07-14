@@ -3,8 +3,8 @@
   "tables": [
     {
       "columns": {
-        "id": {
-          "name": "id",
+        "basesaveid": {
+          "name": "basesaveid",
           "type": "integer",
           "unsigned": true,
           "autoincrement": true,
@@ -39,15 +39,6 @@
           "nullable": false,
           "mappedType": "integer"
         },
-        "basesaveid": {
-          "name": "basesaveid",
-          "type": "integer",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "mappedType": "integer"
-        },
         "baseid": {
           "name": "baseid",
           "type": "integer",
@@ -65,15 +56,6 @@
           "primary": false,
           "nullable": false,
           "mappedType": "integer"
-        },
-        "h": {
-          "name": "h",
-          "type": "text",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "mappedType": "text"
         },
         "version": {
           "name": "version",
@@ -129,15 +111,6 @@
           "nullable": false,
           "mappedType": "integer"
         },
-        "lastupdate": {
-          "name": "lastupdate",
-          "type": "integer",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "mappedType": "integer"
-        },
         "empirevalue": {
           "name": "empirevalue",
           "type": "integer",
@@ -147,14 +120,34 @@
           "nullable": false,
           "mappedType": "integer"
         },
-        "hn": {
-          "name": "hn",
-          "type": "integer",
+        "created_at": {
+          "name": "created_at",
+          "type": "datetime",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": false,
-          "mappedType": "integer"
+          "length": 0,
+          "mappedType": "datetime"
+        },
+        "lastupdate": {
+          "name": "lastupdate",
+          "type": "datetime",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 0,
+          "mappedType": "datetime"
+        },
+        "buildingdata": {
+          "name": "buildingdata",
+          "type": "json",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "json"
         }
       },
       "name": "save",
@@ -162,7 +155,7 @@
         {
           "keyName": "primary",
           "columnNames": [
-            "id"
+            "basesaveid"
           ],
           "composite": false,
           "primary": true,
