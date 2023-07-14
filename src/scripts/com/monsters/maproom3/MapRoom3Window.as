@@ -663,7 +663,8 @@ package com.monsters.maproom3
          }
          this.SetSelectedCellGraphic(null);
          this.SetMousedoverCellGraphic(_loc2_);
-         MapRoom3.mapRoom3WindowHUD.DisplayCoordinatesOfCell(_loc2_.cell);
+         // Comment: Remember to enable this for maproom3 HUD
+         // MapRoom3.mapRoom3WindowHUD.DisplayCoordinatesOfCell(_loc2_.cell);
       }
       
       private function OnCellGraphicRollOut(param1:MouseEvent) : void
