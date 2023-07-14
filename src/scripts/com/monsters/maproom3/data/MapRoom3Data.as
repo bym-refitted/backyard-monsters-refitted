@@ -403,7 +403,7 @@ package com.monsters.maproom3.data
          while(index < cellDataArrayLength)
          {
             cellData = cellDataArray[index];
-            (mapRoomCell = this.GetMapRoom3Cell(cellData.x,cellData.y)).Setup(cellData);
+            (mapRoomCell = this.GetMapRoom3Cell(cellData.x,cellData.y)).Setup(cellData); // Comment: Here is were we pass in our cellData from 'worldmapv3/getcells' to mapRoom3Cell
             cellID = MapRoomManager.instance.CalculateCellId(mapRoomCell.cellX, mapRoomCell.cellY);
             this.m_ExpiryTimeByCellId[cellID] = timer + DEFAULT_CELL_EXPIRIY_TIME;
 

@@ -151,10 +151,12 @@ package com.monsters.maproom3
          this.m_MapRoom3Data.ParseInitialCellData();
          BookmarksManager.instance.Setup(this.m_CurrentBookmarkData,this.m_MapRoom3Data);
          this.m_MapRoom3Data.LoadBookmarkedCells(BookmarksManager.instance.GetBookmarksOfType(BookmarksManager.TYPE_CUSTOM));
+
+         // Comment: MapRoom3WindowHUD is missing assets, remember to enable for HUD
          m_MapRoom3Window = new com.monsters.maproom3.MapRoom3Window(this.m_MapRoom3Data);
-         m_MapRoom3WindowHUD = new com.monsters.maproom3.MapRoom3WindowHUD();
+         //m_MapRoom3WindowHUD = new com.monsters.maproom3.MapRoom3WindowHUD();
          GLOBAL._layerUI.addChild(m_MapRoom3Window);
-         GLOBAL._layerUI.addChild(m_MapRoom3WindowHUD);
+         //GLOBAL._layerUI.addChild(m_MapRoom3WindowHUD);
          UI2.SetupHUD();
          if(GLOBAL._currentCell == null)
          {

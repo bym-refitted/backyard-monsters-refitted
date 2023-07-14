@@ -29,7 +29,7 @@ const baseLoadData = (res: Response) =>
     baseseed: 4520,
     baseid: 1234,
     fbid: 67879,
-    userid: 4567,
+    userid: 101,
     attackid: 0,
     homebase: false, // This should be an array
     unreadmessages: 0,
@@ -236,8 +236,24 @@ const mapRoomGetCells = (res: Response) => {
     error: 0, 
     celldata: [
       {
-      x: 500,
-      y: 500,
+      n: "Placeholder name",
+      uid: 101, // user ID
+      bid: 1234, // base ID
+      tid: 0, // wild monster tribe ID
+      x: 500, // base x-coord
+      y: 500, // base y-coord
+      aid: 0,
+      l: 0,
+      pl: 0,
+      r: 0,
+      dm: 0,
+      rel: 7,
+      lo: 0,
+      fr: 0,
+      p: 0,
+      d: 0,
+      t: 0,
+      fbid: "",
       },
   ],
   h: "someHashValue", 
@@ -248,10 +264,6 @@ const getNewMap = (res: Response) => {
   res.status(200).json({
     width: 500,
     height: 500,
-    data: {
-      h: 150,
-      t: 150
-    }
   });
 };
 

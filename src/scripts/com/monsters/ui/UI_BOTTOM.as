@@ -144,7 +144,8 @@ package com.monsters.ui
          }
          if(MapRoom3.mapRoom3Window)
          {
-            MapRoom3.mapRoom3WindowHUD.PositionRightMenuButtonsBar();
+            // Comment: Remember to enable this for maproom3 HUD
+            //MapRoom3.mapRoom3WindowHUD.PositionRightMenuButtonsBar();
          }
       }
       

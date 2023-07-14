@@ -86,10 +86,10 @@ package com.monsters.maproom3.data
       
       private var m_CellDataBitField2:uint = 0;
       
-      public function MapRoom3CellData(param1:Object)
+      public function MapRoom3CellData(cellData:Object)
       {
          super();
-         this.Map(param1);
+         this.Map(cellData);
       }
       
       public function get name() : String
@@ -177,30 +177,30 @@ package com.monsters.maproom3.data
          return (this.m_CellDataBitField2 >> BIT_SHIFT_TRUCE & MAX_VALUE_TRUCE) == 1;
       }
       
-      public function Map(param1:Object) : void
+      public function Map(cellData:Object) : void
       {
-         this.m_Name = param1.hasOwnProperty("n") ? String(param1["n"]) : "";
-         this.m_FacebookId = param1.hasOwnProperty("fbid") ? String(param1["fbid"]) : "";
-         this.m_AllianceId = param1.hasOwnProperty("aid") ? int(param1["aid"]) : 0;
-         this.m_BaseId = param1.hasOwnProperty("bid") ? Number(param1["bid"]) : 0;
-         this.m_UserId = param1.hasOwnProperty("uid") ? int(param1["uid"]) : 0;
+         this.m_Name = cellData.hasOwnProperty("n") ? String(cellData["n"]) : "";
+         this.m_FacebookId = cellData.hasOwnProperty("fbid") ? String(cellData["fbid"]) : "";
+         this.m_AllianceId = cellData.hasOwnProperty("aid") ? int(cellData["aid"]) : 0;
+         this.m_BaseId = cellData.hasOwnProperty("bid") ? Number(cellData["bid"]) : 0;
+         this.m_UserId = cellData.hasOwnProperty("uid") ? int(cellData["uid"]) : 0;
          this.m_CellDataBitField1 = 0;
-         var _loc2_:int = param1.hasOwnProperty("l") ? int(param1["l"]) : 0;
-         var _loc3_:int = param1.hasOwnProperty("pl") ? int(param1["pl"]) : 0;
-         var _loc4_:int = param1.hasOwnProperty("r") ? int(param1["r"]) : 0;
-         var _loc5_:int = param1.hasOwnProperty("dm") ? int(param1["dm"]) : 0;
+         var _loc2_:int = cellData.hasOwnProperty("l") ? int(cellData["l"]) : 0;
+         var _loc3_:int = cellData.hasOwnProperty("pl") ? int(cellData["pl"]) : 0;
+         var _loc4_:int = cellData.hasOwnProperty("r") ? int(cellData["r"]) : 0;
+         var _loc5_:int = cellData.hasOwnProperty("dm") ? int(cellData["dm"]) : 0;
          this.m_CellDataBitField1 |= (_loc2_ & MAX_VALUE_BASE_LEVEL) << BIT_SHIFT_BASE_LEVEL;
          this.m_CellDataBitField1 |= (_loc3_ & MAX_VALUE_PLAYER_LEVEL) << BIT_SHIFT_PLAYER_LEVEL;
          this.m_CellDataBitField1 |= (_loc4_ & MAX_VALUE_ATTACK_RANGE) << BIT_SHIFT_ATTACK_RANGE;
          this.m_CellDataBitField1 |= (_loc5_ & MAX_VALUE_DAMAGE) << BIT_SHIFT_DAMAGE;
          this.m_CellDataBitField2 = 0;
-         var _loc6_:int = param1.hasOwnProperty("tid") ? int(param1["tid"]) : 0;
-         var _loc7_:int = param1.hasOwnProperty("rel") ? int(param1["rel"]) : EnumBaseRelationship.k_RELATIONSHIP_NONE;
-         var _loc8_:int = param1.hasOwnProperty("lo") ? int(param1["lo"]) : 0;
-         var _loc9_:int = param1.hasOwnProperty("fr") ? int(param1["fr"]) : 0;
-         var _loc10_:int = param1.hasOwnProperty("p") ? int(param1["p"]) : 0;
-         var _loc11_:int = param1.hasOwnProperty("d") ? int(param1["d"]) : 0;
-         var _loc12_:int = param1.hasOwnProperty("t") ? int(param1["t"]) : 0;
+         var _loc6_:int = cellData.hasOwnProperty("tid") ? int(cellData["tid"]) : 0;
+         var _loc7_:int = cellData.hasOwnProperty("rel") ? int(cellData["rel"]) : EnumBaseRelationship.k_RELATIONSHIP_NONE;
+         var _loc8_:int = cellData.hasOwnProperty("lo") ? int(cellData["lo"]) : 0;
+         var _loc9_:int = cellData.hasOwnProperty("fr") ? int(cellData["fr"]) : 0;
+         var _loc10_:int = cellData.hasOwnProperty("p") ? int(cellData["p"]) : 0;
+         var _loc11_:int = cellData.hasOwnProperty("d") ? int(cellData["d"]) : 0;
+         var _loc12_:int = cellData.hasOwnProperty("t") ? int(cellData["t"]) : 0;
          this.m_CellDataBitField2 |= (_loc6_ & MAX_VALUE_WILD_MONSTER_TRIBE_ID) << BIT_SHIFT_WILD_MONSTER_TRIBE_ID;
          this.m_CellDataBitField2 |= (_loc7_ & MAX_VALUE_RELATIONSHIP) << BIT_SHIFT_RELATIONSHIP;
          this.m_CellDataBitField2 |= (_loc8_ & MAX_VALUE_LOCKED_INVISIBLE) << BIT_SHIFT_LOCKED_INVISIBLE;
