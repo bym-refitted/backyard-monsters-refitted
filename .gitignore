@@ -3,4 +3,5 @@ node_modules/
 dist/
 .vscode
 main.css
-server/src/db/bym-db
+server/src/db/bym-db*
+server/src/db/migrations/.snapshot*
