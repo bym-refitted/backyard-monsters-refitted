@@ -34,8 +34,8 @@ router.post(
     let save = await ORMContext.em.findOne(Save, { basesaveid: req.body.basesaveid });
 
     // update the save with the values from the request
-    // Equivalent to Object.assign() - merges second object onto entity
     req.body.buildingdata = JSON.parse(req.body.buildingdata);
+    // Equivalent to Object.assign() - merges second object onto entity
     ORMContext.em.assign(save, req.body);
     // Execute the update in the db
     await ORMContext.em.persistAndFlush(save);
