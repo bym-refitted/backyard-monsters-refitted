@@ -3,14 +3,6 @@ import { debugDataLog } from "../middleware/debugDataLog";
 
 const router = Router();
 
-  router.get("/worldmapv3/setmapversion/", debugDataLog, (_: any, res: Response) => mapRoomVersion(res));
-  router.post("/worldmapv3/setmapversion/", debugDataLog, (_: Request, res: Response) => mapRoomVersion(res));
-  
-  router.get("/api/bm/getnewmap/", debugDataLog, (_: any, res: Response) => getNewMap(res));
-  router.post("/api/bm/getnewmap/", debugDataLog, (_: Request, res: Response) => getNewMap(res));
-
-  
-
 const mapRoomVersion = (res: Response) => {
   res.status(200).json({
     error: 0, 
