@@ -26,7 +26,14 @@ Please see the [CONTRIBUTING.md](https://gitlab.com/monkey-patch/backyard-monste
 
 <br />
 
-2. Copy & paste the example.env file and rename the new file to .env. Configure the PORT.
+2. Copy & paste the `example.env` file found in the `./server` directory and rename the new file to `.env`. Configure the following:
+
+```js
+// Values: (number) Your port of choice
+PORT= 
+// Values: (string) "enabled" | "disabled"
+LOG_ASSETS=
+```
 
 <br />
 
