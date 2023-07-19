@@ -12,7 +12,7 @@ This repository includes all the modified client files for Kixeye's 2010 Flash g
 <br />
 
 ## AS3 Developer Help Wanted:
-Please see the [CONTRIBUTING.md](https://gitlab.com/monkey-patch/backyard-monsters-refitted/-/blob/main/CONTRIBUTING.md) file for more information.
+Please see the [CONTRIBUTING.md](./CONTRIBUTING.md) file for more information.
 
 <br />
 
@@ -71,7 +71,7 @@ https://github.com/jindrapetrik/jpexs-decompiler/releases
 
 <br />
 
-3. To contribute you will need to copy your changes to the src directory. If you are wondering why we are using this horrible workflow please see [CONTRIBUTING.md](https://gitlab.com/monkey-patch/backyard-monsters-refitted/-/blob/main/CONTRIBUTING.md) for more information. If you are able to figure out how to compile directly to swf without unlinking all assets, please let us know
+3. To contribute you will need to copy your changes to the src directory. If you are wondering why we are using this horrible workflow please see [CONTRIBUTING.md](./CONTRIBUTING.md) for more information. If you are able to figure out how to compile directly to swf without unlinking all assets, please let us know
  
 
-4. You can find the most recent release of the game here: [backyard-monsters-refitted-stable](https://gitlab.com/monkey-patch/backyard-monsters-refitted/-/releases)  
+4. You can find the most recent release of the game here: [backyard-monsters-refitted-stable](http://178.32.125.55:25590/monkey-patch/backyard-monsters-refitted/releases)  
