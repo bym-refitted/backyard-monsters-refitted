@@ -252,19 +252,19 @@ package com.monsters.maproom3
          return this.isOwnedByWildMonster && this.cellType == EnumYardType.EMPTY;
       }
       
-      public function Setup(param1:Object) : void
+      public function Setup(cellData:Object) : void
       {
          var _loc2_:int = 0;
          var _loc3_:int = 0;
-         if(param1.hasOwnProperty("i"))
+         if(cellData.hasOwnProperty("i"))
          {
-            _loc2_ = int(param1.i);
+            _loc2_ = int(cellData.i);
             this.m_CellHeaderBitField &= ~(MAX_VALUE_CELL_HEIGHT << BIT_SHIFT_CELL_HEIGHT);
             this.m_CellHeaderBitField |= (_loc2_ & MAX_VALUE_CELL_HEIGHT) << BIT_SHIFT_CELL_HEIGHT;
          }
-         if(param1.hasOwnProperty("b"))
+         if(cellData.hasOwnProperty("b"))
          {
-            _loc3_ = int(param1.b);
+            _loc3_ = int(cellData.b);
             if(_loc3_ == -1)
             {
                _loc3_ = int(EnumYardType.EMPTY);
@@ -274,11 +274,11 @@ package com.monsters.maproom3
          }
          if(this.m_CellData != null)
          {
-            this.m_CellData.Map(param1);
+            this.m_CellData.Map(cellData);
          }
          else
          {
-            this.m_CellData = new MapRoom3CellData(param1);
+            this.m_CellData = new MapRoom3CellData(cellData);
          }
       }
       
