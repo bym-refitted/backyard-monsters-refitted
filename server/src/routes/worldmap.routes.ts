@@ -60,16 +60,16 @@ const getNewMap = (res: Response) => {
   });
 };
 
-router.get("/worldmapv3/setmapversion/", debugDataLog, (_: any, res: Response) => mapRoomVersion(res));
-router.post("/worldmapv3/setmapversion/", debugDataLog, (_: Request, res: Response) => mapRoomVersion(res));
+router.get("/worldmapv3/setmapversion/", debugDataLog(), (_: any, res: Response) => mapRoomVersion(res));
+router.post("/worldmapv3/setmapversion/", debugDataLog("Set maproom version"), (_: Request, res: Response) => mapRoomVersion(res));
 
-router.get("/worldmapv3/initworldmap/", debugDataLog, (_: any, res: Response) => initMapRoom(res));
-router.post("/worldmapv3/initworldmap/", debugDataLog, (_: Request, res: Response) => initMapRoom(res));
+router.get("/worldmapv3/initworldmap/", debugDataLog(), (_: any, res: Response) => initMapRoom(res));
+router.post("/worldmapv3/initworldmap/", debugDataLog("Init maproom data"), (_: Request, res: Response) => initMapRoom(res));
 
-router.get("/worldmapv3/getcells/", debugDataLog, (_: any, res: Response) => mapRoomGetCells(res));
-router.post("/worldmapv3/getcells/", debugDataLog, (_: Request, res: Response) => mapRoomGetCells(res));
+router.get("/worldmapv3/getcells/", debugDataLog(), (_: any, res: Response) => mapRoomGetCells(res));
+router.post("/worldmapv3/getcells/", debugDataLog("Get maproom cells"), (_: Request, res: Response) => mapRoomGetCells(res));
 
-router.get("/api/bm/getnewmap/", debugDataLog, (_: any, res: Response) => getNewMap(res));
-router.post("/api/bm/getnewmap/", debugDataLog, (_: Request, res: Response) => getNewMap(res));
+router.get("/api/bm/getnewmap/", debugDataLog(), (_: any, res: Response) => getNewMap(res));
+router.post("/api/bm/getnewmap/", debugDataLog("Get new maproom"), (_: Request, res: Response) => getNewMap(res));
 
   export default router;

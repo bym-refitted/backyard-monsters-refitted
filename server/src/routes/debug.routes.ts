@@ -15,7 +15,6 @@ router.post("/api/player/recorddebugdata/", (req: Request) => {
   JSON.parse(req.body.message).forEach((element: LogProps) => {
     logging(`${element.logMessage}`, element.debugVars);
   });
-  errorLog(`ERROR: ${req.body.error}`);
 });
 
 export default router;

@@ -28,7 +28,7 @@ const updateSaved = (res: Response) => {
 
 router.post(
   "/base/save/",
-  debugDataLog,
+  debugDataLog("Base save data"),
   async (req: Request, res: Response) => {
     logging(`Saving the base!`);
     let save = await ORMContext.em.findOne(Save, { basesaveid: req.body.basesaveid });
@@ -57,10 +57,10 @@ router.post(
   }
 );
 
-router.get("/base/updatesaved/", debugDataLog, (_: any, res: Response) =>
+router.get("/base/updatesaved/", debugDataLog(), (_: any, res: Response) =>
   updateSaved(res)
 );
-router.post("/base/updatesaved/", debugDataLog, (_: Request, res: Response) =>
+router.post("/base/updatesaved/", debugDataLog("Base updated save"), (_: Request, res: Response) =>
   updateSaved(res)
 );
 

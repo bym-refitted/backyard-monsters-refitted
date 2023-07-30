@@ -213,10 +213,11 @@ const baseLoadData = async (req: Request, res: Response) => {
   });
 };
 
-router.get("/base/load/", debugDataLog, (req: any, res: Response) =>
+router.get("/base/load/", debugDataLog(), (req: any, res: Response) =>
   baseLoadData(req, res)
 );
-router.post("/base/load/", debugDataLog, (req: Request, res: Response) =>
+
+router.post("/base/load/", debugDataLog("Base load data"), (req: Request, res: Response) =>
   baseLoadData(req, res)
 );
 
