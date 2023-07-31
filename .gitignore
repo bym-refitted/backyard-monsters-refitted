@@ -5,4 +5,4 @@ dist/
 main.css
 server/src/db/bym-db*
 server/src/db/migrations/.snapshot*
-server/src/data
+server/data
