@@ -6,7 +6,6 @@ import { logging } from "../utils/logger";
 
 const router = Router();
 
-
 const updateSaved = (res: Response) => {
   res.status(200).json({
     error: 0,
@@ -31,10 +30,14 @@ router.post(
   debugDataLog("Base save data"),
   async (req: Request, res: Response) => {
     logging(`Saving the base!`);
-    let save = await ORMContext.em.findOne(Save, { basesaveid: req.body.basesaveid });
+    let save = await ORMContext.em.findOne(Save, {
+      basesaveid: req.body.basesaveid,
+    });
 
     // update the save with the values from the request
-    req.body.buildingdata = JSON.parse(req.body.buildingdata);
+    for (const key of Save.jsonKeys) {
+      req.body[key] = JSON.parse(req.body[key]);
+    }
     // Equivalent to Object.assign() - merges second object onto entity
     ORMContext.em.assign(save, req.body);
     // Execute the update in the db
@@ -52,16 +55,18 @@ router.post(
       installsgenerated: 42069,
       resources: {},
       h: "someHashValue",
-    }
-    return res.status(200).json({ ...baseSaveData })
+    };
+    return res.status(200).json({ ...baseSaveData });
   }
 );
 
 router.get("/base/updatesaved/", debugDataLog(), (_: any, res: Response) =>
   updateSaved(res)
 );
-router.post("/base/updatesaved/", debugDataLog("Base updated save"), (_: Request, res: Response) =>
-  updateSaved(res)
+router.post(
+  "/base/updatesaved/",
+  debugDataLog("Base updated save"),
+  (_: Request, res: Response) => updateSaved(res)
 );
 
 export default router;

@@ -33,6 +33,30 @@ const baseLoadData = async (req: Request, res: Response) => {
       points: 5,
       empirevalue: 0,
       baseid,
+      stats: {
+        popupdata: {},
+      },
+      resources: {
+        r1: 10000,
+        r2: 10000,
+        r3: 10000,
+        r4: 10000,
+        r1bonus: 10000,
+        r2bonus: 10000,
+        r3bonus: 10000,
+        r4bonus: 10000,
+        r1max: 10000,
+        r2max: 10000,
+        r3max: 10000,
+        r4max: 10000,
+      },
+      lockerdata: {},
+      buildingdata: {},
+      mushrooms: {},
+      buildinghealthdata: {},
+      monsterbaiter: {},
+      aiattacks: {},
+      inventory:{}
     };
 
     save = ORMContext.em.create(Save, defaults);
@@ -40,9 +64,23 @@ const baseLoadData = async (req: Request, res: Response) => {
     // Add the save to the database
     await ORMContext.em.persistAndFlush(save);
   }
-  // Collect the values for the response from the save
-  const { baseseed, basevalue, points, basesaveid, buildingdata } = save;
-  let buildingdataArray = buildingdata || [];
+  
+  // Collect the values from the save table
+  const {
+    baseseed,
+    basevalue,
+    points,
+    basesaveid,
+    buildingdata,
+    stats,
+    resources,
+    lockerdata,
+    buildinghealthdata,
+    mushrooms,
+    monsterbaiter,
+    aiattacks,
+    inventory,
+  } = save;
 
   // Return the base load values
   return res.status(200).json({
@@ -69,48 +107,20 @@ const baseLoadData = async (req: Request, res: Response) => {
     attackid: 0,
     homebase: false, // This should be an array
     unreadmessages: 0,
-    buildinghealthdata: [],
-    buildingdata: buildingdataArray,
+    buildinghealthdata,
+    buildingdata,
     buildingresources: {},
-    resources: {
-      r1: 10000,
-      r2: 10000,
-      r3: 10000,
-      r4: 10000,
-      r1bonus: 10000,
-      r2bonus: 10000,
-      r3bonus: 10000,
-      r4bonus: 10000,
-      r1max: 10000,
-      r2max: 10000,
-      r3max: 10000,
-      r4max: 10000,
-    },
-    iresources: {
-      r1: 10000,
-      r2: 10000,
-      r3: 10000,
-      r4: 10000,
-      r1bonus: 10000,
-      r2bonus: 10000,
-      r3bonus: 10000,
-      r4bonus: 10000,
-      r1max: 10000,
-      r2max: 10000,
-      r3max: 10000,
-      r4max: 10000,
-    },
+    resources,
+    iresources: resources,
     credits: 2000,
     loot: {},
     researchdata: [],
-    stats: {
-      popupdata: {},
-    },
+    stats,
     academy: {},
     siege: {},
     effects: [],
     monsters: {},
-    aiattacks: {},
+    aiattacks,
     tutorialstage: 205, // 205 skips tutorial
     storeitems: {
       BR11I: {
@@ -196,20 +206,20 @@ const baseLoadData = async (req: Request, res: Response) => {
       EXH: {},
     },
     storedata: {},
-    inventory: {},
-    lockerdata: {},
+    inventory,
+    lockerdata,
     quests: {},
-    monsterbaiter: {},
+    monsterbaiter,
     champion: "null",
     attacks: [],
-    name: "John Doe",
-    pic_square: "https://apprecs.org/ios/images/app-icons/256/df/634186975.jpg",
     gifts: [],
     h: "someHashValue",
     basename: "testBase",
+    mushrooms,
+    name: "John Doe",
+    pic_square: "https://apprecs.org/ios/images/app-icons/256/df/634186975.jpg",
     basevalue,
     points,
-    mushrooms: {},
   });
 };
 
@@ -217,8 +227,10 @@ router.get("/base/load/", debugDataLog(), (req: any, res: Response) =>
   baseLoadData(req, res)
 );
 
-router.post("/base/load/", debugDataLog("Base load data"), (req: Request, res: Response) =>
-  baseLoadData(req, res)
+router.post(
+  "/base/load/",
+  debugDataLog("Base load data"),
+  (req: Request, res: Response) => baseLoadData(req, res)
 );
 
 export default router;
