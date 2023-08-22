@@ -160,12 +160,11 @@ package com.monsters.maproom3.data
             {
                index = this.GetCellIndex(this.m_CellCreationIndexX,this.m_CellCreationIndexY);
                cellData = this.m_CreatingMapData.data[index];
-               this.m_MapRoom3Cells[index] = new MapRoom3Cell(this.m_CellCreationIndexX,this.m_CellCreationIndexY,cellData.h,cellData.t);
-               // Comment: Why does this timeout? This was causing areAllCellsCreated to return false
-               //if(getTimer() - timer > CELL_CREATION_LOOP_TIMEOUT)
-               //{
-                 // return;
-               //}
+               this.m_MapRoom3Cells[index] = new MapRoom3Cell(this.m_CellCreationIndexX,this.m_CellCreationIndexY,cellData.h,cellData.t); // 0, 0, 0, 100
+               if(getTimer() - timer > CELL_CREATION_LOOP_TIMEOUT)
+               {
+                 return;
+               }
                ++this.m_CellCreationIndexY;
             }
             this.m_CellCreationIndexY = 0;
