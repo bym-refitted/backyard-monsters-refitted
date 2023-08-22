@@ -109,7 +109,7 @@ package com.monsters.maproom3
       public function OnHeightMapLoaded(param1:Event) : void
       {
          var serverData:Object = JSON.decode(this.m_HeightMapLoader.data);
-         // Comment: Here is were we pass in the data we get from 'bm/getnewmap' into our maproom
+         // Comment: Here is were we pass in the data we get from 'api/bm/getnewmap' into our maproom
          this.m_MapRoom3Data = new MapRoom3Data(serverData);
       }
       

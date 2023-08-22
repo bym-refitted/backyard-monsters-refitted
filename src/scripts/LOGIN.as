@@ -47,10 +47,10 @@ package
       {
          // Comment: Setting onMapRoom3 to true forces the player onto map room 3 and skips the migration process.
          var onMapRoom3:Boolean = true;
-         var mapRoom3HeaderURL:String = "http://localhost:3001/" + "bm/getnewmap";
+         var mapRoom3HeaderURL:String = "http://localhost:3001/" + "api/bm/getnewmap";
          MapRoomManager.instance.init(onMapRoom3, mapRoom3HeaderURL);
          LOGIN.Process();
-         // new URLLoaderApi().load(GLOBAL._apiURL + "bm/getnewmap",null, null); // OnGetNewMap
+         // new URLLoaderApi().load(GLOBAL._apiURL + "bm/getnewmap",null, OnGetNewMap); // OnGetNewMap
       }
       
       private static function OnGetNewMap(serverData:Object) : void
