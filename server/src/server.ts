@@ -9,6 +9,7 @@ import ormConfig from "./mikro-orm.config";
 import "reflect-metadata";
 import "dotenv/config";
 
+import playerAuth from "./routes/auth.routes.js";
 import debug from "./routes/debug.routes.js";
 import baseLoad from "./routes/baseload.routes.js";
 import baseSave from "./routes/basesave.routes.js";
@@ -42,6 +43,7 @@ export const ORMContext = {} as {
   app.use(express.static(__dirname + "/public"));
 
   // Register routes
+  app.use(playerAuth);
   app.use(baseLoad);
   app.use(baseSave);
   app.use(worldmap);
