@@ -33,6 +33,10 @@ Please see the [CONTRIBUTING.md](./CONTRIBUTING.md) file for more information.
 PORT= 
 // Values: (string) "enabled" | "disabled"
 LOG_ASSETS=
+// A neat way to generate this:
+// type 'node' into your terminal and then run the following command:
+// crypto.randomBytes(32).toString('hex');
+SECRET_KEY
 ```
 
 <br />
