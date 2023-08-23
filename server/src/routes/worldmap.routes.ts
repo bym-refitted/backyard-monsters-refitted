@@ -55,7 +55,7 @@ const mapRoomGetCells = (res: Response) => {
 
 const getNewMap = (res: Response) => {
   const cells = []; // Represents each cell
-  const mapGrid = 500; // Represents the size of the map by width & height
+  const mapGrid = 500; // Represents the size of the map by width & height, must be kept at 500
 
   // Loops through each row and column of the map (X/Y co-ordinates) and creates a new cell
   for (let x = 0; x < mapGrid; x++) {
@@ -67,7 +67,15 @@ const getNewMap = (res: Response) => {
     }
   }
 
-  const response = { width: 500, height: 500, data: cells };
+  const response = {
+    newmap: true, // forces the player onto map room 3 and skips the migration process.
+    mapheaderurl: "http://localhost:3001/api/bm/getnewmap", // Reminder: put in ENV
+    width: 500,
+    height: 500,
+    data: cells,
+    h: "someHashValue"
+  };
+
   res.status(200).json(response);
 };
 
