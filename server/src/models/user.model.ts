@@ -1,56 +1,65 @@
 import { Entity, Property, PrimaryKey } from "@mikro-orm/core";
 import { FieldData } from "./save.model";
+import { FrontendKey } from "../utils/FrontendKey";
 
 @Entity()
 export class User {
+  @FrontendKey
   @PrimaryKey()
   userid!: number;
 
-  @Property()
+  @Property({unique:true})
+  @FrontendKey
   username!: string;
 
   @Property()
+  @FrontendKey
   last_name!: string;
 
-  @Property()
+  @FrontendKey
+  @Property({unique:true})
   email!: string;
 
   @Property()
   password!: string;
 
-  @Property()
-  pic_square!: string;
+  @FrontendKey
+  @Property({ nullable: true })
+  pic_square?: string;
 
-  @Property()
-  app_id!: string;
-
-  @Property()
-  tpid!: string;
-
-  @Property()
+  @FrontendKey
+  @Property({ default: 0 })
   timeplayed?: number;
 
+  @FrontendKey
   @Property({ type: "json", nullable: true })
   stats?: FieldData;
 
-  @Property()
+  @FrontendKey
+  @Property({ default: 0 })
   friendcount?: number;
 
-  @Property()
+  @FrontendKey
+  @Property({ default: 0 })
   sessioncount?: number;
 
-  @Property()
+  @FrontendKey
+  @Property({ default: 100 })
   addtime?: number;
 
+  @FrontendKey
   @Property({ type: "json", nullable: true })
   bookmarks?: FieldData;
 
-  @Property()
+  @FrontendKey
+  @Property({ default: 0 })
   _isFan?: number;
 
-  @Property()
+  @FrontendKey
+  @Property({ default: 0 })
   sendgift?: number;
-
-  @Property()
+  
+  @FrontendKey
+  @Property({ default: 0 })
   sendinvite?: number;
 }

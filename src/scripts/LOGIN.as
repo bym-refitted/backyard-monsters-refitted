@@ -45,16 +45,15 @@ package
       
       public static function Login() : void
       {
-         PLEASEWAIT.Show("Logging in...");
-         new URLLoaderApi().load(GLOBAL._apiURL + "bm/getnewmap",null, OnGetNewMap);
+         GLOBAL._ROOT.addChild(new AuthForm())
       }
       
-      private static function OnGetNewMap(serverData:Object) : void
+      public static function OnGetNewMap(serverData:Object, authInfo:Array) : void
       {
-         _Login(serverData.newmap, serverData.mapheaderurl);
+         _Login(serverData.newmap, serverData.mapheaderurl, authInfo);
       }
       
-      private static function _Login(newmap:Boolean, mapheaderurl:String) : void
+      private static function _Login(newmap:Boolean, mapheaderurl:String, authInfo:Array) : void
       {
          var handleLoadSuccessful:Function;
          var handleLoadError:Function;
@@ -80,7 +79,7 @@ package
                GLOBAL.WaitHide();
                GLOBAL.ErrorMessage("LOGIN loadEror");
             };
-            new URLLoaderApi().load(GLOBAL._apiURL + "player/getinfo",[["version",GLOBAL._version.Get()]],handleLoadSuccessful);
+            new URLLoaderApi().load(GLOBAL._apiURL + "player/getinfo",[["version",GLOBAL._version.Get()]].concat(authInfo),handleLoadSuccessful);
          }
          else
          {

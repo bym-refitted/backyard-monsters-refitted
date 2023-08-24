@@ -10,9 +10,9 @@
     "start": "node dist/server.js",
     "preserve": "npm run build",
     "serve": "concurrently \"npx tsc -w\" \"npm run compile-sass\" \"nodemon dist/server.js\"",
-    "migration:create": "mikro-orm migration:create",
+    "migration:create": "npm run build && mikro-orm migration:create",
     "migration:up": "mikro-orm migration:create",
-    "db:init": "mikro-orm migration:create && mikro-orm schema:create -r"
+    "db:init": "npm run build && mikro-orm migration:create && mikro-orm schema:create -r"
   },
   "author": "React-X-",
   "license": "ISC",
@@ -26,7 +26,8 @@
     "jsonwebtoken": "^9.0.1",
     "pino": "^8.12.0",
     "pino-pretty": "^10.0.0",
-    "reflect-metadata": "^0.1.13"
+    "reflect-metadata": "^0.1.13",
+    "zod": "^3.22.2"
   },
   "devDependencies": {
     "@mikro-orm/cli": "^5.7.12",

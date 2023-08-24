@@ -14,6 +14,7 @@ import debug from "./routes/debug.routes.js";
 import baseLoad from "./routes/baseload.routes.js";
 import baseSave from "./routes/basesave.routes.js";
 import worldmap from "./routes/worldmap.routes.js";
+import { ErrorInterceptor } from "./middleware/clientSafeError.js";
 
 export const ORMContext = {} as {
   orm: MikroORM;
@@ -48,14 +49,22 @@ export const ORMContext = {} as {
   app.use(baseSave);
   app.use(worldmap);
   app.use(debug);
+  
+
+
+  process.on('unhandledRejection', (reason, promise) => {
+    console.error('Unhandled Rejection at:', promise, 'reason:', reason);
+    // Handle the error or exit gracefully
+  });
 
   app.get("/crossdomain.xml", (_: any, res) => {
     res.set("Content-Type", "text/xml");
-
+    
     const crossdomain = fs.readFileSync("./crossdomain.xml");
     res.send(crossdomain);
   });
-
+  
+  app.use(ErrorInterceptor);
   app.listen(process.env.PORT || port, () => {
     logging(`
     ${ascii_node} Admin dashboard: http://localhost:${port}
