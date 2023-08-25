@@ -6,23 +6,38 @@ package
     import flash.text.TextFieldAutoSize;
     import flash.events.MouseEvent;
     import flash.events.Event;
-    import flash.display.DisplayObjectContainer;
     import flash.text.TextFormat;
-    import flash.text.TextFormatAlign;
     import flash.filters.DropShadowFilter;
     import flash.display.Bitmap;
     import flash.display.Loader;
     import flash.net.URLRequest;
+    import flash.events.FocusEvent;
 
     public class AuthForm extends Sprite
     {
         private var background:Sprite;
 
-        private var emailInput:TextField;
+        private var emailValue:String;
 
-        private var passwordInput:TextField;
+        private var passwordValue:String;
 
         private var loader:Loader;
+
+        private var centerX:Number;
+
+        private var centerY:Number;
+
+        private var startY:Number;
+
+        private var verticalSpacingBetweenBlocks:Number = 0;
+
+        private var BLACK:uint = 0x000000;
+
+        private var WHITE:uint = 0xFFFFFF;
+
+        private var LIGHT_GRAY:uint = 0xF5F5F5;
+
+        private var PRIMARY:uint = 0xE9D34F;
 
         public function AuthForm()
         {
@@ -33,123 +48,200 @@ package
         {
             removeEventListener(Event.ADDED_TO_STAGE, formAddedToStageHandler);
 
+            stage.color = LIGHT_GRAY;
+
+            // Form
+            var formContainer:Sprite = new Sprite();
+            var formWidth:Number = 450;
+            var formHeight:Number = 600;
+            var formRadius:Number = 16;
+
+            formContainer.graphics.beginFill(WHITE);
+            formContainer.graphics.drawRoundRect(0, 0, formWidth, formHeight, formRadius, formRadius);
+            formContainer.graphics.endFill();
+            formContainer.x = (stage.stageWidth - formContainer.width) / 2;
+            formContainer.y = (stage.stageHeight - formContainer.height) / 2;
+
+            // Create a drop shadow filter
+            var dropShadow:DropShadowFilter = new DropShadowFilter();
+            dropShadow.color = BLACK;
+            dropShadow.angle = 45;
+            dropShadow.distance = 5;
+            dropShadow.blurX = dropShadow.blurY = 14;
+            dropShadow.alpha = 0.15;
+            dropShadow.quality = 1;
+
+            formContainer.filters = [dropShadow];
+
+            addChild(formContainer);
+
             // Get center point of stage
-            var centerX:Number = stage.stageWidth / 2;
-            var centerY:Number = stage.stageHeight / 2;
+            centerX = stage.stageWidth / 2;
+            centerY = stage.stageHeight / 2;
+
+            // Calculate starting y position to center content
+            startY = centerY;
 
             loader = new Loader();
-            loader.contentLoaderInfo.addEventListener(Event.COMPLETE, onImageLoaded);
+            loader.contentLoaderInfo.addEventListener(Event.COMPLETE, function(event:Event):void
+                {
+                    onImageLoaded(event, formContainer);
+                });
             loader.load(new URLRequest("http://localhost:3001/assets/bym-refitted-assets/refitted-logo.png"));
 
-            // Create input fields
-            emailInput = createInputField(350, 30, "Email");
-            passwordInput = createInputField(350, 30, "Password", true);
-        
-            emailInput.x = centerX - emailInput.width / 2;
-            emailInput.y = centerY - emailInput.height;
-            passwordInput.x = centerX - passwordInput.width / 2;
-            passwordInput.y = centerY + 10;
+            // Create inputs within the container
+            createBlock(formContainer, 350, 35, "Email");
+            createBlock(formContainer, 350, 35, "Password", true);
 
-            addChild(emailInput);
-            addChild(passwordInput);
-
-            // Create a button
-            var submitButton:Sprite = createButton("Submit");
-            submitButton.x = centerX - submitButton.width / 2;
-            submitButton.y = centerY + 50;
-            addChild(submitButton);
+            // Create button
+            var submitButton:Sprite = createButton("LOG IN");
+            submitButton.x = (formContainer.width - submitButton.width) / 2;
+            submitButton.y = startY;
+            formContainer.addChild(submitButton);
 
             // Add a click event handler to the button
             submitButton.addEventListener(MouseEvent.CLICK, submitButtonClickHandler);
         }
 
-        private function onImageLoaded(event:Event):void
+        private function onImageLoaded(event:Event, formContainer:Sprite):void
         {
             var image:Bitmap = Bitmap(loader.content);
 
-            var centerX:Number = stage.stageWidth / 2;
-
-            image.x = centerX - image.width / 2 + 150;
+            image.x = (formContainer.width - image.width) / 2 + 160; // temporary centering...
+            image.y = 20;
             image.scaleX = 0.5;
             image.scaleY = 0.5;
-            addChild(image);
+            formContainer.addChild(image);
         }
 
-        private function createInputField(width:Number, height:Number, label:String = "", isPassword:Boolean = false):TextField
+        // Function to create and position inputs
+        function createBlock(formContainer:Sprite, width:Number, height:Number, placeholder:String = "", isPassword:Boolean = false):TextField
         {
-            var textField:TextField = new TextField();
+            var input:TextField = createInputField(width, height, placeholder, isPassword);
+            formContainer.addChild(input);
+
+            // Position input vertically as a block
+            input.x = (formContainer.width - input.width) / 2;
+            input.y = startY;
+
+            // Add event listener to capture input value
+            input.addEventListener(Event.CHANGE, function(event:Event):void
+                {
+                    if (placeholder == "Email")
+                    {
+                        emailValue = input.text; // Update email input value
+                    }
+                    else if (placeholder == "Password")
+                    {
+                        passwordValue = input.text; // Update password input value
+                    }
+                });
+
+            // Adjusts the values between each block
+            startY += input.height + 20;
+
+            return input;
+        }
+
+        private function createInputField(width:Number, height:Number, placeholder:String = "", isPassword:Boolean = false):TextField
+        {
+            var input:TextField = new TextField();
+
+            input.background = true;
+            input.backgroundColor = WHITE;
+            input.type = TextFieldType.INPUT;
+            input.border = true;
+            input.borderColor = 0xDDDDDD;
+            input.width = width;
+            input.height = height;
+
+            var inputMargin:Number = 10;
+
+            // Normal input
+            var inputTextFormat:TextFormat = new TextFormat();
+            inputTextFormat.size = 16;
+            inputTextFormat.color = BLACK;
+            inputTextFormat.leftMargin = inputMargin;
+            inputTextFormat.rightMargin = inputMargin;
+            inputTextFormat.leading = (input.height - inputTextFormat.size) / 2;
+            input.defaultTextFormat = inputTextFormat;
+
+            // Placeholder
+            var placeholderTextFormat:TextFormat = new TextFormat();
+            placeholderTextFormat.size = 16;
+            placeholderTextFormat.color = 0xC9C9C9;
+            placeholderTextFormat.leftMargin = inputMargin;
+            inputTextFormat.rightMargin = inputMargin;
+            placeholderTextFormat.leading = (input.height - placeholderTextFormat.size) / 2;
+            input.text = placeholder;
+            input.setTextFormat(placeholderTextFormat);
 
             if (isPassword)
-                textField.displayAsPassword = true;
+                input.displayAsPassword = true;
 
-            textField.background = true;
-            textField.backgroundColor = 0xFFFFFF;
-            textField.type = TextFieldType.INPUT;
-            textField.border = true;
-            textField.borderColor = 0xDDDDDD;
-            textField.width = width;
-            textField.height = height;
+            if (placeholder)
+            {
+                input.text = placeholder;
 
-            var textFormat:TextFormat = new TextFormat();
-            textFormat.size = 16;
-            textField.defaultTextFormat = textFormat;
+                input.addEventListener(FocusEvent.FOCUS_IN, function(event:FocusEvent):void
+                    {
+                        if (input.text == placeholder)
+                        {
+                            input.text = "";
+                            input.setTextFormat(inputTextFormat);
+                        }
+                    });
 
-            // Create a drop shadow filter
-            var dropShadow:DropShadowFilter = new DropShadowFilter();
-            dropShadow.color = 0x000000;
-            dropShadow.angle = 45;
-            dropShadow.distance = 4;
-            dropShadow.blurX = dropShadow.blurY = 4;
-            dropShadow.alpha = 0.2;
-            dropShadow.quality = 1;
+                input.addEventListener(FocusEvent.FOCUS_OUT, function(event:FocusEvent):void
+                    {
+                        if (input.text == "")
+                        {
+                            input.text = placeholder;
+                            input.setTextFormat(placeholderTextFormat);
+                        }
+                    });
+            }
 
-            textField.filters = [dropShadow];
-
-            return textField;
+            return input;
         }
 
         private function createButton(label:String):Sprite
         {
             var button:Sprite = new Sprite();
-            button.graphics.beginFill(0x3366CC);
-            button.graphics.drawRect(0, 0, 350, 30);
+            button.graphics.beginFill(PRIMARY);
+            button.graphics.drawRect(0, 0, 350, 50);
             button.graphics.endFill();
 
-            var labelField:TextField = new TextField();
-            labelField.text = label;
-            labelField.textColor = 0xFFFFFF;
-            labelField.width = button.width;
-            labelField.height = button.height;
-            labelField.selectable = false;
-            labelField.mouseEnabled = false;
+            var buttonText:TextField = new TextField();
+            buttonText.text = label;
+            buttonText.textColor = WHITE;
+            buttonText.width = button.width;
+            buttonText.height = button.height;
+            buttonText.selectable = false;
+            buttonText.mouseEnabled = false;
 
             // Set alignment properties
             var textFormat:TextFormat = new TextFormat();
-            textFormat.align = TextFormatAlign.CENTER;
-            labelField.defaultTextFormat = textFormat;
+            textFormat.size = 24;
+            textFormat.align = "center";
+            buttonText.defaultTextFormat = textFormat;
 
-            labelField.autoSize = TextFieldAutoSize.CENTER;
-            labelField.x = (button.width - labelField.width) / 2;
-            labelField.y = (button.height - labelField.height) / 2;
+            buttonText.autoSize = TextFieldAutoSize.CENTER;
+            buttonText.x = (button.width - buttonText.width) / 2;
+            buttonText.y = (button.height - buttonText.height) / 2;
 
-            button.addChild(labelField);
+            button.addChild(buttonText);
 
             return button;
         }
 
         private function submitButtonClickHandler(event:MouseEvent):void
         {
-
-            // new URLLoaderApi().load(GLOBAL._apiURL + "player/recorddebugdata", logger, handleLoadSuccessful, handleLoadError);
-
             new URLLoaderApi().load(GLOBAL._apiURL + "bm/getnewmap", null, attachAuthCredentials);
-            
         }
 
-        private function attachAuthCredentials(serverData:Object) {
-            var emailValue:String = emailInput.text;
-            var passwordValue:String = passwordInput.text;
-            
+        private function attachAuthCredentials(serverData:Object)
+        {
             LOGIN.OnGetNewMap(serverData, [["email", emailValue], ["password", passwordValue]]);
         }
 
