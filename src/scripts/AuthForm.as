@@ -2,6 +2,7 @@ package
 {
     import flash.display.Sprite;
     import flash.text.TextField;
+    import flash.text.TextFormatAlign;
     import flash.text.TextFieldType;
     import flash.text.TextFieldAutoSize;
     import flash.events.MouseEvent;
@@ -12,14 +13,27 @@ package
     import flash.display.Loader;
     import flash.net.URLRequest;
     import flash.events.FocusEvent;
+    import flash.text.TextFormatAlign;
 
     public class AuthForm extends Sprite
     {
-        private var background:Sprite;
+        private var formContainer:Sprite;
 
-        private var emailValue:String;
+        private var emailInput:TextField;
 
-        private var passwordValue:String;
+        private var passwordInput:TextField;
+
+        private var emailValue:String = "";
+
+        private var passwordValue:String = "";
+
+        private var emailErrorText:TextField;
+
+        private var passwordErrorText:TextField;
+
+        private var submitButton:Sprite;
+
+        private var image:Bitmap;
 
         private var loader:Loader;
 
@@ -35,7 +49,11 @@ package
 
         private var WHITE:uint = 0xFFFFFF;
 
-        private var LIGHT_GRAY:uint = 0xF5F5F5;
+        private var RED:uint = 0xFF0000;
+
+        private var STAGE_BG:uint = 0xF5F5F5;
+
+        private var LIGHT_GRAY = 0xC9C9C9;
 
         private var PRIMARY:uint = 0xE9D34F;
 
@@ -47,11 +65,13 @@ package
         public function formAddedToStageHandler(event:Event):void
         {
             removeEventListener(Event.ADDED_TO_STAGE, formAddedToStageHandler);
+            stage.color = STAGE_BG;
 
-            stage.color = LIGHT_GRAY;
+            // Global Initialization
+            formContainer = new Sprite();
+            emailErrorText = new TextField();
+            passwordErrorText = new TextField();
 
-            // Form
-            var formContainer:Sprite = new Sprite();
             var formWidth:Number = 450;
             var formHeight:Number = 600;
             var formRadius:Number = 16;
@@ -83,18 +103,15 @@ package
             startY = centerY;
 
             loader = new Loader();
-            loader.contentLoaderInfo.addEventListener(Event.COMPLETE, function(event:Event):void
-                {
-                    onImageLoaded(event, formContainer);
-                });
+            loader.contentLoaderInfo.addEventListener(Event.COMPLETE, onImageLoaded);
             loader.load(new URLRequest("http://localhost:3001/assets/bym-refitted-assets/refitted-logo.png"));
 
             // Create inputs within the container
-            createBlock(formContainer, 350, 35, "Email");
-            createBlock(formContainer, 350, 35, "Password", true);
+            emailInput = createBlock(350, 35, "Email");
+            passwordInput = createBlock(350, 35, "Password", true);
 
             // Create button
-            var submitButton:Sprite = createButton("LOG IN");
+            submitButton = createButton("Log in");
             submitButton.x = (formContainer.width - submitButton.width) / 2;
             submitButton.y = startY;
             formContainer.addChild(submitButton);
@@ -103,41 +120,39 @@ package
             submitButton.addEventListener(MouseEvent.CLICK, submitButtonClickHandler);
         }
 
-        private function onImageLoaded(event:Event, formContainer:Sprite):void
+        private function onImageLoaded(event:Event):void
         {
-            var image:Bitmap = Bitmap(loader.content);
+            image = Bitmap(loader.content);
 
-            image.x = (formContainer.width - image.width) / 2 + 160; // temporary centering...
+            image.x = (formContainer.width - image.width) / 2 + 160;
             image.y = 20;
             image.scaleX = 0.5;
             image.scaleY = 0.5;
             formContainer.addChild(image);
         }
 
-        // Function to create and position inputs
-        function createBlock(formContainer:Sprite, width:Number, height:Number, placeholder:String = "", isPassword:Boolean = false):TextField
+        // Function to create and position input fields
+        private function createBlock(width:Number, height:Number, placeholder:String = "", isPassword:Boolean = false):TextField
         {
             var input:TextField = createInputField(width, height, placeholder, isPassword);
             formContainer.addChild(input);
 
-            // Position input vertically as a block
             input.x = (formContainer.width - input.width) / 2;
             input.y = startY;
 
-            // Add event listener to capture input value
             input.addEventListener(Event.CHANGE, function(event:Event):void
                 {
                     if (placeholder == "Email")
                     {
-                        emailValue = input.text; // Update email input value
+                        emailValue = input.text;
                     }
                     else if (placeholder == "Password")
                     {
-                        passwordValue = input.text; // Update password input value
+                        passwordValue = input.text;
                     }
                 });
 
-            // Adjusts the values between each block
+            // Gap between each block
             startY += input.height + 20;
 
             return input;
@@ -163,16 +178,16 @@ package
             inputTextFormat.color = BLACK;
             inputTextFormat.leftMargin = inputMargin;
             inputTextFormat.rightMargin = inputMargin;
-            inputTextFormat.leading = (input.height - inputTextFormat.size) / 2;
+
             input.defaultTextFormat = inputTextFormat;
 
             // Placeholder
             var placeholderTextFormat:TextFormat = new TextFormat();
             placeholderTextFormat.size = 16;
-            placeholderTextFormat.color = 0xC9C9C9;
+            placeholderTextFormat.color = LIGHT_GRAY;
             placeholderTextFormat.leftMargin = inputMargin;
-            inputTextFormat.rightMargin = inputMargin;
-            placeholderTextFormat.leading = (input.height - placeholderTextFormat.size) / 2;
+            placeholderTextFormat.rightMargin = inputMargin;
+
             input.text = placeholder;
             input.setTextFormat(placeholderTextFormat);
 
@@ -213,7 +228,6 @@ package
             button.graphics.endFill();
 
             var buttonText:TextField = new TextField();
-            buttonText.text = label;
             buttonText.textColor = WHITE;
             buttonText.width = button.width;
             buttonText.height = button.height;
@@ -222,9 +236,10 @@ package
 
             // Set alignment properties
             var textFormat:TextFormat = new TextFormat();
-            textFormat.size = 24;
-            textFormat.align = "center";
+            textFormat.size = 16;
+            textFormat.align = TextFormatAlign.CENTER;
             buttonText.defaultTextFormat = textFormat;
+            buttonText.text = label.toUpperCase();
 
             buttonText.autoSize = TextFieldAutoSize.CENTER;
             buttonText.x = (button.width - buttonText.width) / 2;
@@ -237,12 +252,103 @@ package
 
         private function submitButtonClickHandler(event:MouseEvent):void
         {
-            new URLLoaderApi().load(GLOBAL._apiURL + "bm/getnewmap", null, attachAuthCredentials);
+            clearErrorMessages();
+
+            var isEmailValid:Boolean = isValidEmail(emailValue);
+            var isPasswordValid:Boolean = isValidPassword(passwordValue);
+            var buttonText:TextField = (submitButton.getChildAt(0) as TextField);
+
+            if (isEmailValid && isPasswordValid)
+            {
+                if (buttonText)
+                {
+                    buttonText.text = "Please wait...";
+                    buttonText.text = buttonText.text.toUpperCase();
+                }
+                new URLLoaderApi().load(GLOBAL._apiURL + "bm/getnewmap", null, validatePostCredentials);
+            }
+            else
+            {
+                if (!isEmailValid)
+                {
+                    showErrorMessage(emailInput, "Invalid email format");
+                }
+                if (!isPasswordValid)
+                {
+                    showErrorMessage(passwordInput, "Password must be at least 8 characters");
+                }
+            }
         }
 
-        private function attachAuthCredentials(serverData:Object)
+        private function validatePostCredentials(serverData:Object)
         {
             LOGIN.OnGetNewMap(serverData, [["email", emailValue], ["password", passwordValue]]);
+        }
+
+        private function isValidEmail(email:String):Boolean
+        {
+            var emailPattern:RegExp = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+            return emailPattern.test(email);
+        }
+
+        private function isValidPassword(password:String):Boolean
+        {
+            return password.length >= 8;
+        }
+
+        private function clearErrorMessages():void
+        {
+            emailErrorText.text = "";
+            passwordErrorText.text = "";
+        }
+
+        private function showErrorMessage(inputField:TextField, errorMessage:String):void
+        {
+            var errorText:TextField = new TextField();
+            errorText.text = errorMessage;
+            errorText.textColor = RED;
+            errorText.x = inputField.x;
+            ;
+            errorText.y = inputField.y + inputField.height;
+            errorText.width = inputField.width;
+            errorText.height = errorText.textHeight + 3;
+            formContainer.addChild(errorText);
+
+            if (inputField == emailInput)
+            {
+                emailErrorText = errorText;
+            }
+            else if (inputField == passwordInput)
+            {
+                passwordErrorText = errorText;
+            }
+        }
+
+        public function disposeUI():void
+        {
+            // Remove event listeners
+            submitButton.removeEventListener(MouseEvent.CLICK, submitButtonClickHandler);
+
+            // Remove display objects
+            formContainer.removeChild(submitButton);
+            formContainer.removeChild(emailInput);
+            formContainer.removeChild(passwordInput);
+            formContainer.removeChild(image);
+
+            // Clean up resources
+            loader.unload();
+            loader.contentLoaderInfo.removeEventListener(Event.COMPLETE, onImageLoaded);
+
+            submitButton = null;
+            emailInput = null;
+            passwordInput = null;
+            image = null;
+            loader = null;
+
+            if (formContainer.parent)
+            {
+                formContainer.parent.removeChild(formContainer);
+            }
         }
 
     }

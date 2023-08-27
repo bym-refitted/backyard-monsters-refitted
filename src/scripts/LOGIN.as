@@ -9,7 +9,9 @@ package
    import flash.external.ExternalInterface;
    import flash.net.*;
    import flash.system.Capabilities;
-   
+   import flash.text.TextField;
+   import flash.text.TextFormat;
+
    public class LOGIN
    {
       
@@ -36,16 +38,18 @@ package
       public static var _sumdigit:int;
       
       public static var _inferno:int = 0;
-       
-      
+
+      public static var authForm:AuthForm;
+
       public function LOGIN()
       {
          super();
       }
-      
-      public static function Login() : void
+
+      public static function Login():void
       {
-         GLOBAL._ROOT.addChild(new AuthForm())
+         authForm = new AuthForm();
+         GLOBAL._layerTop.addChild(authForm);
       }
       
       public static function OnGetNewMap(serverData:Object, authInfo:Array) : void
@@ -74,12 +78,12 @@ package
                   GLOBAL.ErrorMessage(serverData.error,GLOBAL.ERROR_ORANGE_BOX_ONLY);
                }
             };
-            handleLoadError = function(serverData:IOErrorEvent):void
+            handleLoadError = function(IOErrorEvent:Object):void
             {
-               GLOBAL.WaitHide();
-               GLOBAL.ErrorMessage("LOGIN loadEror");
+              var errorMessage = "Hmm.. it seems this email and password combination does not match any account or there was an issue connecting.";
+              GLOBAL._layerTop.addChild(GLOBAL.Message(errorMessage));
             };
-            new URLLoaderApi().load(GLOBAL._apiURL + "player/getinfo",[["version",GLOBAL._version.Get()]].concat(authInfo),handleLoadSuccessful);
+            new URLLoaderApi().load(GLOBAL._apiURL + "player/getinfo", [["version", GLOBAL._version.Get()]].concat(authInfo), handleLoadSuccessful, handleLoadError);
          }
          else
          {
@@ -135,6 +139,10 @@ package
          }
          else
          {
+            // Removes the AuthForm from the display container since the user is authenticated.
+            if (authForm)
+               authForm.disposeUI();
+
             GLOBAL.player = new Player();
             GLOBAL.player.ID = param1.userid;
             GLOBAL.player.name = param1.username;

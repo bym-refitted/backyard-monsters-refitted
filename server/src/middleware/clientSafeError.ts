@@ -32,7 +32,6 @@ export const ErrorInterceptor: ErrorRequestHandler = async (
   res,
   next
 ) => {
-  console.log("CAASLJASNDOKLJASNBDKJASBNDKJBASKDJB");
   // Check if the error is client safe
   const isSafe = err instanceof ClientSafeError;
   // if (!inProd) console.error(err);
