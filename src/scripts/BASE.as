@@ -1723,7 +1723,7 @@ package
       
       public static function Build() : void
       {
-         var _loc8_:BFOUNDATION = null;
+         var buildingFoundation:BFOUNDATION = null;
          var _loc12_:int = 0;
          var building:Object = null;
          var _loc17_:DisplayObject = null;
@@ -1744,37 +1744,37 @@ package
          {
             MAPROOM.Hide();
          }
-         var _loc1_:int = GLOBAL._layerMap.numChildren - 1;
-         while(_loc1_ >= 0)
+         var layerIndexThingy:int = GLOBAL._layerMap.numChildren - 1;
+         while(layerIndexThingy >= 0)
          {
-            if((_loc17_ = GLOBAL._layerMap.getChildAt(_loc1_)).parent)
+            if((_loc17_ = GLOBAL._layerMap.getChildAt(layerIndexThingy)).parent)
             {
                _loc17_.parent.removeChild(_loc17_);
             }
-            _loc1_--;
+            layerIndexThingy--;
          }
          UI2.Setup();
          GLOBAL.ResizeGame(null);
          GLOBAL._render = false;
          PATHING.Setup();
-         var _loc2_:int = getTimer();
-         var _loc3_:String = "grass";
+         var timer:int = getTimer();
+         var terrainType:String = "grass";
          if(!MapRoomManager.instance.isInMapRoom3 && GLOBAL._currentCell && (isOutpostOrInfernoOutpost || GLOBAL.mode == GLOBAL.e_BASE_MODE.WMATTACK || GLOBAL.mode == GLOBAL.e_BASE_MODE.WMVIEW))
          {
-            _loc3_ = (GLOBAL._currentCell as MapRoomCell).terrain;
+            terrainType = (GLOBAL._currentCell as MapRoomCell).terrain;
          }
          if(BASE.isInfernoMainYardOrOutpost)
          {
-            _loc3_ = "lava";
+            terrainType = "lava";
          }
-         var _loc4_:MAP = new MAP(_loc3_);
-         var _loc5_:Targeting = new Targeting();
+         var map:MAP = new MAP(terrainType);
+         var targeting:Targeting = new Targeting();
          QUEUE.Spawn(0);
          Smoke.Setup();
-         var _loc6_:Object = {};
-         var _loc7_:int = 0;
-         var _loc9_:int = 0;
-         var _loc10_:Boolean = false;
+         var currentBuilding:Object = {};
+         var buildingCount:int = 0;
+         var foundationType:int = 0;
+         var isCoreBuilding:Boolean = false;
          if(MapRoom3Tutorial.instance.isStarted && (MapRoom3Tutorial.instance.tutorialStep === MapRoom3Tutorial.k_STEP_SCOUTWM || MapRoom3Tutorial.instance.tutorialStep === MapRoom3Tutorial.k_STEP_ATTACKWM))
          {
             _buildingData = null;
@@ -1791,7 +1791,7 @@ package
                }
                if(!(building.t == 53 || building.t == 54))
                {
-                  _loc6_ = building;
+                  currentBuilding = building;
                   if(building.t == 18)
                   {
                      building.t = 17;
@@ -1804,9 +1804,9 @@ package
                   {
                      _loc12_++;
                   }
-                  if(_loc8_ = addBuildingC(building.t))
+                  if(buildingFoundation = addBuildingC(building.t))
                   {
-                     _loc9_ = _loc8_._type;
+                     foundationType = buildingFoundation._type;
                   }
                   if(building.t == 16 && _rawMonsters && Boolean(_rawMonsters.hcc))
                   {
@@ -1849,7 +1849,7 @@ package
                         _loc20_++;
                      }
                   }
-                  if(_loc8_)
+                  if(buildingFoundation)
                   {
                      if(Boolean(_buildingHealthData) && building.id in _buildingHealthData)
                      {
@@ -1859,69 +1859,70 @@ package
                      {
                         delete building.hp;
                      }
-                     _loc8_.Setup(building);
-                     if(_loc8_._id > _buildingCount)
+                     buildingFoundation.Setup(building);
+                     if(buildingFoundation._id > _buildingCount)
                      {
-                        _buildingCount = _loc8_._id;
+                        _buildingCount = buildingFoundation._id;
                      }
-                     if(_loc8_ is ICoreBuilding)
+                     if(buildingFoundation is ICoreBuilding)
                      {
-                        _loc10_ = true;
+                        isCoreBuilding = true;
                      }
-                     _loc7_++;
+                     buildingCount++;
                   }
                }
             }
          }
+
          BFOUNDATION.redrawAllShadowData();
          _buildingHealthData = null;
          _buildingData = null;
-         if(_loc7_ == 0)
+         if(buildingCount == 0)
          {
             if(isOutpost && !MapRoom3Tutorial.instance.isStarted)
             {
-               (_loc8_ = addBuildingC(112)).Setup({
+               (buildingFoundation = addBuildingC(112)).Setup({
                   "X":0,
                   "Y":-50,
-                  "id":_loc7_++,
+                  "id":buildingCount++,
                   "t":112,
                   "l":1
                });
             }
             else if(BASE.isInfernoMainYardOrOutpost)
             {
-               (_loc8_ = addBuildingC(14)).Setup({
+               (buildingFoundation = addBuildingC(14)).Setup({
                   "X":-100,
                   "Y":0,
-                  "id":_loc7_++,
+                  "id":buildingCount++,
                   "t":14,
                   "l":1
                });
-               (_loc8_ = addBuildingC(1)).Setup({
+               (buildingFoundation = addBuildingC(1)).Setup({
                   "X":60,
                   "Y":0,
-                  "id":_loc7_++,
+                  "id":buildingCount++,
                   "t":1,
                   "l":1
                });
-               (_loc8_ = addBuildingC(2)).Setup({
+               (buildingFoundation = addBuildingC(2)).Setup({
                   "X":60,
                   "Y":70,
-                  "id":_loc7_++,
+                  "id":buildingCount++,
                   "t":2,
                   "l":1
                });
-               (_loc8_ = addBuildingC(6)).Setup({
+               (buildingFoundation = addBuildingC(6)).Setup({
                   "X":130,
                   "Y":0,
-                  "id":_loc7_++,
+                  "id":buildingCount++,
                   "t":6,
                   "l":3
                });
-               (_loc8_ = addBuildingC(6)).Setup({
+               (buildingFoundation = addBuildingC(6)).Setup({
                   "X":130,
                   "Y":80,
-                  "id":_loc7_++,
+                  "id":buildingCount++,
                   "t":6,
                   "l":3
                });
@@ -1929,33 +1930,33 @@ package
             }
             else
             {
-               (_loc8_ = addBuildingC(14)).Setup({
+               (buildingFoundation = addBuildingC(14)).Setup({
                   "X":-70,
                   "Y":0,
-                  "id":_loc7_++,
+                  "id":buildingCount++,
                   "t":14,
                   "l":1
                });
-               (_loc8_ = addBuildingC(1)).Setup({
+               (buildingFoundation = addBuildingC(1)).Setup({
                   "X":60,
                   "Y":0,
-                  "id":_loc7_++,
+                  "id":buildingCount++,
                   "t":1,
                   "l":1
                });
-               _loc8_._stored.Set(200);
-               _loc8_._hpStored = 200;
-               (_loc8_ = addBuildingC(2)).Setup({
+               buildingFoundation._stored.Set(200);
+               buildingFoundation._hpStored = 200;
+               (buildingFoundation = addBuildingC(2)).Setup({
                   "X":60,
                   "Y":70,
-                  "id":_loc7_++,
+                  "id":buildingCount++,
                   "t":2,
                   "l":1
                });
-               (_loc8_ = addBuildingC(12)).Setup({
+               (buildingFoundation = addBuildingC(12)).Setup({
                   "X":60,
                   "Y":-70,
-                  "id":_loc7_++,
+                  "id":buildingCount++,
                   "t":12,
                   "l":1
                });
@@ -1973,7 +1974,7 @@ package
                SOUNDS.TutorialStopMusic();
             }
          }
-         else if(isMainYard && !_loc10_)
+         else if(isMainYard && !isCoreBuilding)
          {
             LOGGER.Log("err","Town Hall Missing");
          }
@@ -1991,19 +1992,19 @@ package
                   _loc24_ = int(_loc14_.length - 1);
                   while(_loc24_ >= 0)
                   {
-                     if(_loc8_ = _loc14_[_loc24_] as BFOUNDATION)
+                     if(buildingFoundation = _loc14_[_loc24_] as BFOUNDATION)
                      {
-                        if(_loc8_._type == _loc23_.id)
+                        if(buildingFoundation._type == _loc23_.id)
                         {
                            _loc22_ += 1;
                         }
                         _loc25_ = _loc21_ < _loc23_.quantity.length ? int(_loc23_.quantity[_loc21_]) : int(_loc23_.quantity[_loc23_.quantity.length - 1]);
                         if(_loc22_ > _loc25_)
                         {
-                           Console.print("BASE::Build:too many buildings " + _loc22_ + "/" + _loc25_ + " type:" + _loc8_._type);
-                           LOGGER.Log("log","Too many buildings of type " + _loc8_._type + " th " + _loc21_ + " count " + _loc22_);
+                           Console.print("BASE::Build:too many buildings " + _loc22_ + "/" + _loc25_ + " type:" + buildingFoundation._type);
+                           LOGGER.Log("log","Too many buildings of type " + buildingFoundation._type + " th " + _loc21_ + " count " + _loc22_);
                            BASE.BuildingDeselect();
-                           _loc8_.clear();
+                           buildingFoundation.clear();
                            _loc22_--;
                         }
                      }
@@ -2015,16 +2016,16 @@ package
          var _loc15_:int = 0;
          var _loc16_:int = 0;
          _loc14_ = InstanceManager.getInstancesByClass(BFOUNDATION);
-         for each(_loc8_ in _loc14_)
+         for each(buildingFoundation in _loc14_)
          {
-            if(GRID.FromISO(_loc8_.x,_loc8_.y).x > 1000)
+            if(GRID.FromISO(buildingFoundation.x,buildingFoundation.y).x > 1000)
             {
-               GRID.FindSpace(_loc8_);
+               GRID.FindSpace(buildingFoundation);
             }
-            if(_loc8_ is BTRAP === false && _loc8_ is BWALL === false)
+            if(buildingFoundation is BTRAP === false && buildingFoundation is BWALL === false)
             {
-               _loc15_ += _loc8_.health;
-               _loc16_ += _loc8_.maxHealth;
+               _loc15_ += buildingFoundation.health;
+               _loc16_ += buildingFoundation.maxHealth;
             }
          }
          LOGGER.Stat([17,1,int(_tempLoot.r1)]);
@@ -4960,201 +4961,197 @@ package
          return param1;
       }
       
+      // Theory - this function returns the building to where it was before it failed to move in building B
       public static function addBuildingC(buildingNum:int) : BFOUNDATION
       {
-         var _loc2_:BFOUNDATION = null;
-         var _loc3_:Object = null;
-         _loc3_ = GLOBAL._buildingProps[buildingNum - 1] || {};
-         if(_loc3_.type == "decoration")
+         var buildingFoundation:BFOUNDATION = null;
+         var buildingProperties:Object = null;
+         buildingProperties = GLOBAL._buildingProps[buildingNum - 1] || {};
+         if(buildingProperties.type == "decoration")
          {
             if(BTOTEM.IsTotem2(buildingNum))
             {
-               _loc2_ = new BTOTEM(buildingNum);
+               buildingFoundation = new BTOTEM(buildingNum);
             }
             else
             {
-               _loc2_ = new BDECORATION(buildingNum);
+               buildingFoundation = new BDECORATION(buildingNum);
             }
-            return _loc2_;
+            return buildingFoundation;
          }
-         if(_loc3_.cls)
+         if(buildingProperties.cls)
          {
-            // Comment: Could not be found - fix
-            return new _loc3_.cls();
+            return new buildingProperties.cls();
          }
          if(buildingNum == 1)
          {
-            _loc2_ = new BUILDING1();
+            buildingFoundation = new BUILDING1();
          }
          else if(buildingNum == 2)
          {
-            _loc2_ = new BUILDING2();
+            buildingFoundation = new BUILDING2();
          }
          else if(buildingNum == 3)
          {
-            _loc2_ = new BUILDING3();
+            buildingFoundation = new BUILDING3();
          }
          else if(buildingNum == 4)
          {
-            _loc2_ = new BUILDING4();
+            buildingFoundation = new BUILDING4();
          }
          else if(buildingNum == 5)
          {
-            _loc2_ = new BUILDING5();
+            buildingFoundation = new BUILDING5();
          }
          else if(buildingNum == 6)
          {
-            _loc2_ = new BUILDING6();
+            buildingFoundation = new BUILDING6();
          }
          else if(buildingNum == 7)
          {
-            _loc2_ = new BUILDING7();
+            buildingFoundation = new BUILDING7();
          }
          else if(buildingNum == 8)
          {
-            _loc2_ = new BUILDING8();
+            buildingFoundation = new BUILDING8();
          }
          else if(buildingNum == 9)
          {
-            _loc2_ = new BUILDING9();
+            buildingFoundation = new BUILDING9();
          }
          else if(buildingNum == 10)
          {
-            _loc2_ = new BUILDING10();
+            buildingFoundation = new BUILDING10();
          }
          else if(buildingNum == 11)
          {
-            _loc2_ = new BUILDING11();
+            buildingFoundation = new BUILDING11();
          }
          else if(buildingNum == 12)
          {
-            _loc2_ = new BUILDING12();
+            buildingFoundation = new BUILDING12();
          }
          else if(buildingNum == 13)
          {
-            _loc2_ = new BUILDING13();
+            buildingFoundation = new BUILDING13();
          }
          else if(buildingNum == 14)
          {
-            _loc2_ = new BUILDING14();
+            buildingFoundation = new BUILDING14();
          }
          else if(buildingNum == 15)
          {
-            _loc2_ = new BUILDING15();
+            buildingFoundation = new BUILDING15();
          }
          else if(buildingNum == 16)
          {
-            _loc2_ = new BUILDING16();
+            buildingFoundation = new BUILDING16();
          }
          else if(buildingNum == 17)
          {
-            _loc2_ = new BUILDING17();
+            buildingFoundation = new BUILDING17();
          }
          else if(buildingNum == 18)
          {
-            _loc2_ = new BUILDING18();
+            buildingFoundation = new BUILDING18();
          }
          else if(buildingNum == 19)
          {
-            _loc2_ = new BUILDING19();
+            buildingFoundation = new BUILDING19();
          }
          else if(buildingNum == 20)
          {
-            _loc2_ = new BUILDING20();
+            buildingFoundation = new BUILDING20();
          }
          else if(buildingNum == 21)
          {
-            _loc2_ = new BUILDING21();
+            buildingFoundation = new BUILDING21();
          }
          else if(buildingNum == 22)
          {
-            _loc2_ = new BUILDING22();
+            buildingFoundation = new BUILDING22();
          }
          else if(buildingNum == 23)
          {
-            _loc2_ = new BUILDING23();
+            buildingFoundation = new BUILDING23();
          }
          else if(buildingNum == 24)
          {
-            _loc2_ = new BUILDING24();
+            buildingFoundation = new BUILDING24();
          }
          else if(buildingNum == 25)
          {
-            _loc2_ = new BUILDING25();
+            buildingFoundation = new BUILDING25();
          }
          else if(buildingNum == 26)
          {
-            _loc2_ = new BUILDING26();
+            buildingFoundation = new BUILDING26();
          }
          else if(buildingNum == 27)
          {
-            _loc2_ = new BUILDING27();
+            buildingFoundation = new BUILDING27();
          }
          else if(buildingNum == 51)
          {
-            _loc2_ = new BUILDING51();
+            buildingFoundation = new BUILDING51();
          }
          else if(buildingNum == 52)
          {
-            _loc2_ = new BUILDING52();
+            buildingFoundation = new BUILDING52();
          }
          else if(buildingNum == 112)
          {
-            _loc2_ = new BUILDING112();
+            buildingFoundation = new BUILDING112();
          }
          else if(buildingNum == 113)
          {
-            _loc2_ = new BUILDING113();
+            buildingFoundation = new BUILDING113();
          }
          else if(buildingNum == 114)
          {
-            _loc2_ = new CHAMPIONCAGE();
+            buildingFoundation = new CHAMPIONCAGE();
          }
          else if(buildingNum == 115)
          {
-            _loc2_ = new BUILDING115();
+            buildingFoundation = new BUILDING115();
          }
          else if(buildingNum == 116)
          {
-            _loc2_ = new MONSTERLAB();
+            buildingFoundation = new MONSTERLAB();
          }
          else if(buildingNum == 117)
          {
-            _loc2_ = new BUILDING117();
+            buildingFoundation = new BUILDING117();
          }
          else if(buildingNum == 118)
          {
-            _loc2_ = new BUILDING118();
+            buildingFoundation = new BUILDING118();
          }
          else if(buildingNum == 119)
          {
-            _loc2_ = new CHAMPIONCHAMBER();
+            buildingFoundation = new CHAMPIONCHAMBER();
          }
          else if(buildingNum == 128)
          {
-            _loc2_ = new HOUSINGBUNKER();
+            buildingFoundation = new HOUSINGBUNKER();
          }
          else if(buildingNum == 127)
          {
-            _loc2_ = new INFERNOPORTAL();
+            buildingFoundation = new INFERNOPORTAL();
          }
          else if(buildingNum == 129)
          {
-            _loc2_ = new INFERNOQUAKETOWER();
+            buildingFoundation = new INFERNOQUAKETOWER();
          }
          else if(buildingNum == 130)
          {
-            _loc2_ = new INFERNO_CANNON_TOWER();
+            buildingFoundation = new INFERNO_CANNON_TOWER();
          }
          else if(buildingNum == 132)
          {
-            _loc2_ = new INFERNO_MAGMA_TOWER();
+            buildingFoundation = new INFERNO_MAGMA_TOWER();
          }
-         // Comment: Could not be found - returned a new obj instead
-         if (!!_loc3_.cls) {
-            LOGGER.DebugQAdd("The CLS problem should be happening", {loc2:_loc2_});
-         }
-         return !!_loc3_.cls ? new _loc3_.cls() : _loc2_;
+         return !!buildingProperties.cls ? new buildingProperties.cls() : buildingFoundation;
       }
       
       public static function ShowFootprints() : void

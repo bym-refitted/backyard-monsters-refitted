@@ -436,7 +436,7 @@ package
       public static function getBuildingSaveData() : Vector.<Object>
       {
          var _loc6_:Object = null;
-         var _loc7_:BFOUNDATION = null;
+         var buildingData:BFOUNDATION = null;
          var _loc8_:Boolean = false;
          var _loc1_:Vector.<Object> = new Vector.<Object>();
          var _loc2_:Vector.<Object> = InstanceManager.getInstancesByClass(BFOUNDATION);
@@ -446,40 +446,40 @@ package
          _loc1_[0] = _loc4_;
          _loc1_[1] = _loc3_;
          s_totalBuildingHP = s_totalBuildingMaxHP = 0;
-         for each(_loc7_ in _loc2_)
+         for each(buildingData in _loc2_)
          {
-            if(!(_loc7_ is BMUSHROOM))
+            if(!(buildingData is BMUSHROOM))
             {
-               if(_loc7_ is ICoreBuilding)
+               if(buildingData is ICoreBuilding)
                {
                   _loc8_ = true;
                }
-               if(_loc7_ is BTRAP && _loc7_._fired || _loc7_._type == 53 && _loc7_._expireTime < GLOBAL.Timestamp())
+               if(buildingData is BTRAP && buildingData._fired || buildingData._type == 53 && buildingData._expireTime < GLOBAL.Timestamp())
                {
-                  Console.warning("Ignored Building" + _loc7_ + _loc7_._type + _loc7_._expireTime + " setting buildinghealthdata to 0");
-                  _loc3_[_loc7_._id] = 0;
+                  Console.warning("Ignored Building" + buildingData + buildingData._type + buildingData._expireTime + " setting buildinghealthdata to 0");
+                  _loc3_[buildingData._id] = 0;
                }
                else
                {
-                  if(_loc7_ is BWALL === false)
+                  if(buildingData is BWALL === false)
                   {
                      if(BASE.isMainYardOrInfernoMainYard && (GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD || GLOBAL.mode == GLOBAL.e_BASE_MODE.IBUILD))
                      {
-                        s_totalBuildingHP += _loc7_.maxHealth;
+                        s_totalBuildingHP += buildingData.maxHealth;
                      }
                      else
                      {
-                        s_totalBuildingHP += _loc7_.health;
+                        s_totalBuildingHP += buildingData.health;
                      }
-                     s_totalBuildingMaxHP += _loc7_.maxHealth;
+                     s_totalBuildingMaxHP += buildingData.maxHealth;
                   }
-                  if(_loc7_.health < _loc7_.maxHealth)
+                  if(buildingData.health < buildingData.maxHealth)
                   {
-                     _loc3_[_loc7_._id] = int(_loc7_.health);
+                     _loc3_[buildingData._id] = int(buildingData.health);
                   }
-                  if(_loc6_ = _loc7_.Export())
+                  if(_loc6_ = buildingData.Export())
                   {
-                     _loc4_[_loc7_._id] = _loc6_;
+                     _loc4_[buildingData._id] = _loc6_;
                      _loc5_ += (_loc6_.X + _loc6_.Y).toString();
                   }
                }
