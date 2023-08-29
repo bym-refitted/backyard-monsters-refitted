@@ -78,7 +78,7 @@ package
                   GLOBAL.ErrorMessage(serverData.error,GLOBAL.ERROR_ORANGE_BOX_ONLY);
                }
             };
-            handleLoadError = function(IOErrorEvent:Object):void
+            handleLoadError = function(error:IOErrorEvent):void
             {
               var errorMessage = "Hmm.. it seems this email and password combination does not match any account or there was an issue connecting.";
               GLOBAL._layerTop.addChild(GLOBAL.Message(errorMessage));
