@@ -1,12 +1,14 @@
-import { Router, Request, Response } from "express";
+import Router from "@koa/router";
+import { Context, Next } from "koa";
 import { debugDataLog } from "../middleware/debugDataLog";
 import { ORMContext } from "../server";
 import { Save } from "../models/save.model";
 import { logging } from "../utils/logger";
+import { KoaController } from "../utils/KoaController";
 
-const router = Router();
+const router = new Router();
 
-const baseLoadData = async (req: Request, res: Response) => {
+const baseLoadData: KoaController = async ctx => {
   // get the latest base for userID (0) if it dosnt exist create it - for now its 1234
   // get the latest save id for the base (1234)- if there isnt any in db create it
   const baseid = 1234;
@@ -56,7 +58,7 @@ const baseLoadData = async (req: Request, res: Response) => {
       buildinghealthdata: {},
       monsterbaiter: {},
       aiattacks: {},
-      inventory:{}
+      inventory: {},
     };
 
     save = ORMContext.em.create(Save, defaults);
@@ -64,7 +66,7 @@ const baseLoadData = async (req: Request, res: Response) => {
     // Add the save to the database
     await ORMContext.em.persistAndFlush(save);
   }
-  
+
   // Collect the values from the save table
   const {
     baseseed,
@@ -83,7 +85,8 @@ const baseLoadData = async (req: Request, res: Response) => {
   } = save;
 
   // Return the base load values
-  return res.status(200).json({
+  ctx.status = 200;
+  ctx.body = {
     error: 0,
     flags: {
       viximo: 0,
@@ -220,17 +223,17 @@ const baseLoadData = async (req: Request, res: Response) => {
     pic_square: "https://apprecs.org/ios/images/app-icons/256/df/634186975.jpg",
     basevalue,
     points,
-  });
+  };
 };
 
-router.get("/base/load/", debugDataLog(), (req: any, res: Response) =>
-  baseLoadData(req, res)
+router.get("/base/load", debugDataLog(), async (ctx: Context) =>
+  baseLoadData(ctx)
 );
 
 router.post(
-  "/base/load/",
+  "/base/load",
   debugDataLog("Base load data"),
-  (req: Request, res: Response) => baseLoadData(req, res)
+  async (ctx: Context) => baseLoadData(ctx)
 );
 
 export default router;
