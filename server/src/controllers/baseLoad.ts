@@ -1,14 +1,9 @@
-import Router from "@koa/router";
-import { Context, Next } from "koa";
-import { debugDataLog } from "../middleware/debugDataLog";
-import { ORMContext } from "../server";
 import { Save } from "../models/save.model";
-import { logging } from "../utils/logger";
+import { ORMContext } from "../server";
 import { KoaController } from "../utils/KoaController";
+import { logging } from "../utils/logger";
 
-const router = new Router();
-
-const baseLoadData: KoaController = async ctx => {
+export const baseLoad: KoaController = async ctx => {
   // get the latest base for userID (0) if it dosnt exist create it - for now its 1234
   // get the latest save id for the base (1234)- if there isnt any in db create it
   const baseid = 1234;
@@ -225,15 +220,3 @@ const baseLoadData: KoaController = async ctx => {
     points,
   };
 };
-
-router.get("/base/load", debugDataLog(), async (ctx: Context) =>
-  baseLoadData(ctx)
-);
-
-router.post(
-  "/base/load",
-  debugDataLog("Base load data"),
-  async (ctx: Context) => baseLoadData(ctx)
-);
-
-export default router;

@@ -1,10 +1,11 @@
 import { z } from "zod";
 import bcrypt from "bcrypt";
-import { ORMContext } from "../server";
-import { User } from "../models/user.model";
-import { FilterFrontendKeys } from "../utils/FrontendKey";
-import { KoaController } from "../utils/KoaController";
-import { ClientSafeError } from "../middleware/clientSafeError";
+import { KoaController } from "../../utils/KoaController";
+import { ORMContext } from "../../server";
+import { User } from "../../models/user.model";
+import { FilterFrontendKeys } from "../../utils/FrontendKey";
+import { ClientSafeError } from "../../middleware/clientSafeError";
+
 
 const UserRegisterSchema = z.object({
   username: z.string(),
@@ -14,7 +15,7 @@ const UserRegisterSchema = z.object({
   pic_square: z.string(),
 });
 
-export const register: KoaController = async (ctx) => {
+export const register: KoaController = async ctx => {
   try {
     const userInput = UserRegisterSchema.parse(ctx.request.body);
     const hash = await bcrypt.hash(userInput.password, 10);

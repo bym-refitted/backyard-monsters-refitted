@@ -8,12 +8,7 @@ import fs from "fs/promises";
 import morgan from "koa-morgan";
 import serve from "koa-static";
 import ormConfig from "./mikro-orm.config";
-
-import playerAuth from "./routes/auth.routes.js";
-import debugRouter from "./routes/debug.routes.js";
-import baseLoadRouter from "./routes/baseload.routes.js";
-import baseSaveRouter from "./routes/basesave.routes.js";
-import worldmapRouter from "./routes/worldmap.routes.js";
+import router from "./app.routes";
 
 import { SqliteDriver } from "@mikro-orm/sqlite";
 import { EntityManager, MikroORM, RequestContext } from "@mikro-orm/core";
@@ -62,20 +57,8 @@ api.get("/", (ctx: Context) => ctx.body = {});
   app.use(serve(__dirname + "/public"));
 
   // Routes
-  app.use(playerAuth.routes());
-  app.use(playerAuth.allowedMethods());
-
-  app.use(baseLoadRouter.routes());
-  app.use(baseLoadRouter.allowedMethods());
-
-  app.use(baseSaveRouter.routes());
-  app.use(baseSaveRouter.allowedMethods());
-
-  app.use(worldmapRouter.routes());
-  app.use(worldmapRouter.allowedMethods());
-
-  app.use(debugRouter.routes());
-  app.use(debugRouter.allowedMethods());
+  app.use(router.routes());
+  app.use(router.allowedMethods());
 
   process.on("unhandledRejection", (reason, promise) => {
     console.error("Unhandled Rejection at:", promise, "reason:", reason);

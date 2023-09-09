@@ -1,10 +1,9 @@
-import { User } from "../models/user.model";
-import { ORMContext } from "../server";
+import { User } from "../../models/user.model";
+import { ORMContext } from "../../server";
 import bcrypt from "bcrypt";
 import JWT from "jsonwebtoken";
-import { FilterFrontendKeys } from "../utils/FrontendKey";
-import { KoaController } from "../utils/KoaController";
-import { Context } from "koa";
+import { FilterFrontendKeys } from "../../utils/FrontendKey";
+import { KoaController } from "../../utils/KoaController";
 import z from "zod";
 
 const UserLoginSchema = z.object({
@@ -21,7 +20,7 @@ const UserLoginSchema = z.object({
 //    - Redis / store session token in sqlite -^^^^^
 //  4. Clientside ability to skip the login - Default login credentials for dev?
 
-export const login: KoaController = async (ctx: Context) => {
+export const login: KoaController = async ctx => {
   try {
     const { email, password } = UserLoginSchema.parse(ctx.request.body);
     let user = await ORMContext.em.findOne(User, { email });
