@@ -1,18 +1,22 @@
-import { Router, Request, Response } from "express";
+import Router from "@koa/router";
 import { debugDataLog } from "../middleware/debugDataLog";
+import { KoaController } from "../utils/KoaController";
+import { Context, Next } from "koa";
 
-const router = Router();
+const router = new Router();
 
-const mapRoomVersion = (res: Response) => {
-  res.status(200).json({
+const mapRoomVersion: KoaController = async (ctx, next) => {
+  ctx.status = 200;
+  ctx.body = {
     error: 0,
     version: 3,
     h: "someHashValue",
-  });
+  };
 };
 
-const initMapRoom = (res: Response) => {
-  res.status(200).json({
+const initMapRoom: KoaController = async (ctx, next) => {
+  ctx.status = 200;
+  ctx.body = {
     error: 0,
     celldata: [
       {
@@ -21,11 +25,12 @@ const initMapRoom = (res: Response) => {
       },
     ],
     h: "someHashValue",
-  });
+  };
 };
 
-const mapRoomGetCells = (res: Response) => {
-  res.status(200).json({
+const mapRoomGetCells: KoaController = async (ctx, next) => {
+  ctx.status = 200;
+  ctx.body = {
     error: 0,
     celldata: [
       {
@@ -50,10 +55,10 @@ const mapRoomGetCells = (res: Response) => {
       },
     ],
     h: "someHashValue",
-  });
+  };
 };
 
-const getNewMap = (res: Response) => {
+const getNewMap: KoaController = async (ctx, next) => {
   const cells = []; // Represents each cell
   const mapGrid = 500; // Represents the size of the map by width & height, must be kept at 500
 
@@ -73,52 +78,56 @@ const getNewMap = (res: Response) => {
     width: 500,
     height: 500,
     data: cells,
-    h: "someHashValue"
+    h: "someHashValue",
   };
 
-  res.status(200).json(response);
+  ctx.status = 200;
+  ctx.body = response;
 };
 
 router.get(
-  "/worldmapv3/setmapversion/",
+  "/worldmapv3/setmapversion",
   debugDataLog(),
-  (_: any, res: Response) => mapRoomVersion(res)
+  async (ctx: Context, next: Next) => mapRoomVersion(ctx, next)
 );
 router.post(
-  "/worldmapv3/setmapversion/",
+  "/worldmapv3/setmapversion",
   debugDataLog("Set maproom version"),
-  (_: Request, res: Response) => mapRoomVersion(res)
+  async (ctx: Context, next: Next) => mapRoomVersion(ctx, next)
 );
 
 router.get(
-  "/worldmapv3/initworldmap/",
+  "/worldmapv3/initworldmap",
   debugDataLog(),
-  (_: any, res: Response) => initMapRoom(res)
+  async (ctx: Context, next: Next) => initMapRoom(ctx, next)
 );
 router.post(
-  "/worldmapv3/initworldmap/",
+  "/worldmapv3/initworldmap",
   debugDataLog("Init maproom data"),
-  (_: Request, res: Response) => initMapRoom(res)
-);
-
-router.get("/worldmapv3/getcells/", debugDataLog(), (_: any, res: Response) =>
-  mapRoomGetCells(res)
-);
-router.post(
-  "/worldmapv3/getcells/",
-  debugDataLog("Get maproom cells"),
-  (_: Request, res: Response) => mapRoomGetCells(res)
+  async (ctx: Context, next: Next) => initMapRoom(ctx, next)
 );
 
 router.get(
-  "/api/bm/getnewmap/",
-  debugDataLog("Get new map"),
-  (_: any, res: Response) => getNewMap(res)
+  "/worldmapv3/getcells",
+  debugDataLog(),
+  async (ctx: Context, next: Next) => mapRoomGetCells(ctx, next)
 );
 router.post(
-  "/api/bm/getnewmap/",
+  "/worldmapv3/getcells",
+  debugDataLog("Get maproom cells"),
+  async (ctx: Context, next: Next) => mapRoomGetCells(ctx, next)
+);
+
+router.get(
+  "/api/bm/getnewmap",
+  debugDataLog("Get new map"),
+  async (ctx: Context, next: Next) => getNewMap(ctx, next)
+);
+
+router.post(
+  "/api/bm/getnewmap",
   debugDataLog("Posting to new maproom"),
-  (_: Request, res: Response) => getNewMap(res)
+  async (ctx: Context, next: Next) => getNewMap(ctx, next)
 );
 
 export default router;

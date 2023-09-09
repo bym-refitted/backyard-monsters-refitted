@@ -370,7 +370,7 @@ package
          {
             // Error #2219: Security sandbox violation: caller /AppData/Local/Temp/ffded/424242.swf 
             // cannot access LoaderInfo.applicationDomain owned by http://localhost:3001/assets/sounds/uisounds.v1.swf
-            GLOBAL.Message("Audio error: " + e.message);
+           // GLOBAL.Message("Audio error: " + e.message);
          }
       }
       

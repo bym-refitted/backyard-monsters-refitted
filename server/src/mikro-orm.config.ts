@@ -9,6 +9,7 @@ import { User } from './models/user.model';
 export default {
   type: 'sqlite',
   // clientUrl: DATABASE_URL,
+  allowGlobalContext: false,
   debug: true,
   entities: [Save, User],
   dbName: 'src/db/bym-db',
