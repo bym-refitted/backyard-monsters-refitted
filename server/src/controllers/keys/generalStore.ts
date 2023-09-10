@@ -1,5 +1,6 @@
 export const storeKeys = [
   "BST",
+  "BEW",
   "ENL",
   "BLK2",
   "BLK3",
