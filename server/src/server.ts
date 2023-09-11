@@ -15,6 +15,7 @@ import { EntityManager, MikroORM, RequestContext } from "@mikro-orm/core";
 import { logging } from "./utils/logger.js";
 import { ascii_node } from "./utils/ascii_art.js";
 import { ErrorInterceptor } from "./middleware/clientSafeError.js";
+import { registerDevUser } from "./database/seeds/dev.user";
 
 export const ORMContext = {} as {
   orm: MikroORM;
@@ -39,6 +40,10 @@ api.get("/", (ctx: Context) => ctx.body = {});
       formLimit: "50mb",
     })
   );
+
+  // Register a dev user
+  const em = ORMContext.em.fork();
+  registerDevUser(em);
 
   app.use((_, next: Next) =>
     RequestContext.createAsync(ORMContext.orm.em, next)

@@ -1,3 +1,4 @@
+import { gameConfig } from "../config/GameSettings";
 import { Save } from "../models/save.model";
 import { ORMContext } from "../server";
 import { KoaController } from "../utils/KoaController";
@@ -104,6 +105,8 @@ export const baseLoad: KoaController = async (ctx) => {
     }
   });
 
+  const isTutorialEnabled = gameConfig.skipTutorial ? 205 : 0;
+
   // Return the base load values
   ctx.status = 200;
   ctx.body = {
@@ -144,7 +147,7 @@ export const baseLoad: KoaController = async (ctx) => {
     effects: [],
     monsters: {},
     aiattacks,
-    tutorialstage: 205, // 205 skips tutorial
+    tutorialstage: isTutorialEnabled, // 205 skips tutorial
     storeitems: { ...storeItems },
     storedata: {},
     inventory,
