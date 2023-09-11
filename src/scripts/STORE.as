@@ -219,41 +219,34 @@ package
          var _loc23_:String = null;
          if(BASE.isOutpost)
          {
-            LOGGER.DebugQAdd("isOutpost", {isOutpost:BASE.isOutpost});
             _grouping = [[MapRoomManager.instance.isInMapRoom3 ? [] : ["BST","BLK2","BLK3","BLK4","BLK5"]],[MapRoomManager.instance.isInMapRoom3 ? [] : ["BR11","BR12","BR13","BR21","BR22","BR23","BR31","BR32","BR33","BR41","BR42","BR43"]],[MapRoomManager.instance.isInMapRoom3 ? ["SP1","SP2","SP3","SP4","FIX"] : ["SP1","SP2","SP3","SP4","POD","FIX","HOD","HOD2","HOD3"]],[MapRoomManager.instance.isInMapRoom3 ? [] : ["PRO1","PRO2","PRO3","TOD","EXH"]]];
          }
          else if(BASE.isMainYard)
          {
-            LOGGER.DebugQAdd("isMainYard", {isMainYard:BASE.isMainYard});
             if(MAPROOM_DESCENT.DescentPassed)
             {
                _grouping = [[["BEW","BST","ENL","BLK2","BLK3","BLK4","BLK5"]],[["BR11","BR12","BR13","BR21","BR22","BR23","BR31","BR32","BR33","BR41","BR42","BR43","BR11I","BR12I","BR13I","BR21I","BR22I","BR23I","BR31I","BR32I","BR33I","BR41I","BR42I","BR43I","BIP"]],[["SP1","SP2","SP3","SP4","POD","FIX","HOD","HOD2","HOD3"]],[MapRoomManager.instance.isInMapRoom3 ? ["PRO1","PRO2","PRO3","MOD","MDOD","MSOD","TOD"] : ["PRO1","PRO2","PRO3","MOD","MDOD","MSOD","EXH","TOD"]]];
             }
             else
             {
-               LOGGER.DebugQAdd("STORE:234 _grouping", {});
                _grouping = [[["BEW","BST","ENL","BLK2","BLK3","BLK4","BLK5"]],[["BR11","BR12","BR13","BR21","BR22","BR23","BR31","BR32","BR33","BR41","BR42","BR43","BIP"]],[["SP1","SP2","SP3","SP4","POD","FIX","HOD","HOD2","HOD3"]],[MapRoomManager.instance.isInMapRoom3 ? ["PRO1","PRO2","PRO3","MOD","MDOD","MSOD","TOD"] : ["PRO1","PRO2","PRO3","MOD","MDOD","MSOD","EXH","TOD"]]];
             }
          }
          else
          {
-            LOGGER.DebugQAdd("STORE:240 _grouping", {});
             _grouping = [[["ENLI","BLK2I","BLK3I"]],[["BR11I","BR12I","BR13I","BR21I","BR22I","BR23I","BR31I","BR32I","BR33I","BR41I","BR42I","BR43I","BIP"]],[["SP1","SP2","SP3","SP4","FIX","HODI","HOD2I","HOD3I"]],[MapRoomManager.instance.isInMapRoom3 ? ["PRO1","PRO2","PRO3","TODI"] : ["PRO1","PRO2","PRO3","EXHI","TODI"]]];
          }
          var resourceIndex:int = 1;
          while(resourceIndex <= 4)
          {
-            LOGGER.DebugQAdd("STORE:246 loop", {});
             reourceMax = BASE._resources["r" + resourceIndex + "max"] * 0.1;
             iResourceMax = BASE._iresources["r" + resourceIndex + "max"] * 0.1;
             if(BASE.isInfernoMainYardOrOutpost)
             {
-               LOGGER.DebugQAdd("STORE:251 isInfernoMainYardOrOutpost", {});
                mainStoreItems = _storeItems["BR" + resourceIndex + "1I"];
             }
             else
             {
-               LOGGER.DebugQAdd("STORE:256 no isInfernoMainYardOrOutpost", {});
                mainStoreItems = _storeItems["BR" + resourceIndex + "1"];
                infernoStoreItems = _storeItems["BR" + resourceIndex + "1I"];
             }
@@ -261,7 +254,6 @@ package
                "v1":GLOBAL.FormatNumber(reourceMax),
                "v2":KEYS.Get(GLOBAL._resourceNames[resourceIndex - 1])
             });
-            LOGGER.DebugQAdd("STORE:265 mainStoreItems.t ", {});
             if(BASE._resources["r" + resourceIndex].Get() + BASE._resources["r" + resourceIndex + "max"] * 0.1 < BASE._resources["r" + resourceIndex + "max"])
             {
                mainStoreItems.c = [Math.ceil(Math.pow(Math.sqrt(reourceMax / 2),0.75))];
@@ -273,12 +265,11 @@ package
                mainStoreItems.quantity = reourceMax;
             }
             else
-            {
+            { 
                mainStoreItems.d = KEYS.Get("str_top_10pct_noroom",{"v1":GLOBAL._resourceNames[resourceIndex - 1]});
                mainStoreItems.c = [0];
                mainStoreItems.quantity = 0;
             }
-            LOGGER.DebugQAdd("STORE:282 infernoStoreItems ", {});
             if(infernoStoreItems)
             {
                infernoStoreItems.t = KEYS.Get("str_top_extra",{
@@ -286,7 +277,6 @@ package
                   "v2":KEYS.Get(GLOBAL.iresourceNames[resourceIndex - 1])
                });
             }
-            LOGGER.DebugQAdd("STORE:290 _iresources ", {});
             if(Boolean(BASE._iresources) && BASE._iresources["r" + resourceIndex].Get() + BASE._iresources["r" + resourceIndex + "max"] * 0.1 < BASE._iresources["r" + resourceIndex + "max"])
             {
                if(infernoStoreItems)
@@ -306,7 +296,6 @@ package
                infernoStoreItems.c = [0];
                infernoStoreItems.quantity = 0;
             }
-            LOGGER.DebugQAdd("STORE:310 reourceMax ", {});
             reourceMax = BASE._resources["r" + resourceIndex + "max"] * 0.5;
             iResourceMax = BASE._iresources["r" + resourceIndex + "max"] * 0.5;
             if(BASE.isInfernoMainYardOrOutpost)
@@ -338,7 +327,6 @@ package
                mainStoreItems.c = [0];
                mainStoreItems.quantity = 0;
             }
-            LOGGER.DebugQAdd("STORE:342 reourceMax ", {});
             if(infernoStoreItems)
             {
                infernoStoreItems.t = KEYS.Get("str_top_extra",{
@@ -362,7 +350,6 @@ package
                   infernoStoreItems.quantity = 0;
                }
             }
-            LOGGER.DebugQAdd("STORE:342 reourceMax ", {});
             if(BASE.isInfernoMainYardOrOutpost)
             {
                mainStoreItems = _storeItems["BR" + resourceIndex + "3I"];
@@ -414,7 +401,6 @@ package
             }
             resourceIndex++;
          }
-         LOGGER.DebugQAdd("STORE:418 _selectedBuilding ", {});
          if(GLOBAL._selectedBuilding)
          {
             if(GLOBAL._selectedBuilding._repairing)
@@ -470,7 +456,6 @@ package
                }
             }
          }
-         LOGGER.DebugQAdd("STORE:474 _storeItems.FIX.c ", {});
          _storeItems.FIX.c = [GetTimeCost(_loc4_) + _loc5_ * 10];
          _storeItems.FIX.d = KEYS.Get("desc_repairbdgs",{"v1":_repairCount});
          _storeItems.FIX.t = KEYS.Get("str_repairbdgs");
@@ -1497,9 +1482,9 @@ package
          var _loc8_:String = null;
          var _loc9_:* = null;
          var _loc10_:* = null;
-         var _loc13_:Array = null;
-         var _loc20_:String = null;
-         var _loc21_:Object = null;
+         var groupArray:Array = null;
+         var item:String = null;
+         var storeItemObject:Object = null;
          var _loc22_:Object = null;
          var _loc23_:STOREITEM = null;
          var _loc24_:int = 0;
@@ -1606,34 +1591,34 @@ package
          }
          if(_customPage)
          {
-            _loc13_ = _customPage;
+            groupArray = _customPage; 
          }
          else if(param1 == 5)
          {
-            _loc13_ = [];
+            groupArray = [];
             ZazzleAdd();
          }
          else
          {
-            _loc13_ = _grouping[_tab - 1][0];
+            groupArray = _grouping[_tab - 1][0];
          }
          var _loc14_:Number = 0;
          var _loc15_:Number = 3;
          var _loc16_:Number = 0;
          var _loc17_:Number = 0;
          var _loc18_:Number = 8;
-         var _loc19_:int = 0;
-         while(_loc19_ < _loc13_.length)
+         var index:int = 0;
+         while(index < groupArray.length)
          {
-            _loc20_ = String(_loc13_[_loc19_]);
-            _loc21_ = _storeItems[_loc20_];
-            _loc22_ = _storeData[_loc20_];
+            item = String(groupArray[index]);
+            storeItemObject = _storeItems[item];
+            _loc22_ = _storeData[item];
             _loc23_ = new STOREITEM();
             _loc24_ = 0;
             _loc28_ = GLOBAL._selectedBuilding;
             _loc29_ = false;
-            _loc30_ = _loc21_.c;
-            _loc31_ = _loc20_;
+            _loc30_ = storeItemObject.c;
+            _loc31_ = item;
             _loc23_.name = _loc31_;
             if(_loc31_.substr(0,2) == "SP")
             {
@@ -1647,30 +1632,30 @@ package
             {
                _loc23_.gotoAndStop(1);
             }
-            if(Boolean(_loc21_.fbc_cost) && _loc21_.fbc_cost[0] > 0)
+            if(Boolean(storeItemObject.fbc_cost) && storeItemObject.fbc_cost[0] > 0)
             {
                _loc29_ = true;
-               _loc30_ = _loc21_.fbc_cost;
+               _loc30_ = storeItemObject.fbc_cost;
             }
-            if(_loc20_.substr(0,2) == "SP")
+            if(item.substr(0,2) == "SP")
             {
-               if(_loc20_ == "SP1")
+               if(item == "SP1")
                {
-                  _loc21_.t = KEYS.Get("str_closeenough");
+                  storeItemObject.t = KEYS.Get("str_closeenough");
                }
-               else if(_loc20_.substr(0,3) == "SP2")
+               else if(item.substr(0,3) == "SP2")
                {
-                  _loc21_.t = KEYS.Get("str_30minutes");
+                  storeItemObject.t = KEYS.Get("str_30minutes");
                }
-               else if(_loc20_.substr(0,3) == "SP3")
+               else if(item.substr(0,3) == "SP3")
                {
-                  _loc21_.t = KEYS.Get("str_60minutes");
+                  storeItemObject.t = KEYS.Get("str_60minutes");
                }
-               else if(_loc20_.substr(0,3) == "SP4")
+               else if(item.substr(0,3) == "SP4")
                {
-                  _loc21_.t = KEYS.Get("str_finishnow");
+                  storeItemObject.t = KEYS.Get("str_finishnow");
                }
-               _loc21_.d = KEYS.Get("str_speedup_na");
+               storeItemObject.d = KEYS.Get("str_speedup_na");
                if(_loc28_)
                {
                   _loc24_ = _loc28_._countdownUpgrade.Get() + _loc28_._countdownBuild.Get() + _loc28_._countdownFortify.Get();
@@ -1697,41 +1682,41 @@ package
                         _loc26_ = KEYS.Get("str_repair");
                         _loc27_ = KEYS.Get("str_repairing");
                      }
-                     if(_loc20_ == "SP1")
+                     if(item == "SP1")
                      {
-                        _loc21_.t = KEYS.Get("str_closeenough");
-                        _loc21_.d = KEYS.Get("str_closeenough_desc",{
+                        storeItemObject.t = KEYS.Get("str_closeenough");
+                        storeItemObject.d = KEYS.Get("str_closeenough_desc",{
                            "v1":_loc27_,
                            "v2":_loc28_._buildingProps.name
                         });
                         if(_loc24_ <= 60 * 5)
                         {
-                           _loc21_.d = KEYS.Get("str_closeenough_desc_ok",{
+                           storeItemObject.d = KEYS.Get("str_closeenough_desc_ok",{
                               "v1":_loc27_,
                               "v2":_loc28_._buildingProps.name
                            });
                         }
                      }
-                     else if(_loc20_.substr(0,3) == "SP2")
+                     else if(item.substr(0,3) == "SP2")
                      {
-                        _loc21_.t = KEYS.Get("str_30minutes");
-                        _loc21_.d = KEYS.Get("str_30minutes_desc",{
+                        storeItemObject.t = KEYS.Get("str_30minutes");
+                        storeItemObject.d = KEYS.Get("str_30minutes_desc",{
                            "v1":_loc26_,
                            "v2":_loc28_._buildingProps.name
                         });
                      }
-                     else if(_loc20_.substr(0,3) == "SP3")
+                     else if(item.substr(0,3) == "SP3")
                      {
-                        _loc21_.t = KEYS.Get("str_60minutes");
-                        _loc21_.d = KEYS.Get("str_60minutes_desc",{
+                        storeItemObject.t = KEYS.Get("str_60minutes");
+                        storeItemObject.d = KEYS.Get("str_60minutes_desc",{
                            "v1":_loc26_,
                            "v2":_loc28_._buildingProps.name
                         });
                      }
-                     else if(_loc20_.substr(0,3) == "SP4")
+                     else if(item.substr(0,3) == "SP4")
                      {
-                        _loc21_.t = KEYS.Get("str_finishnow_desc",{"v1":_loc26_});
-                        _loc21_.d = KEYS.Get("str_finishnow_timesave",{
+                        storeItemObject.t = KEYS.Get("str_finishnow_desc",{"v1":_loc26_});
+                        storeItemObject.d = KEYS.Get("str_finishnow_timesave",{
                            "v1":GLOBAL.ToTime(_loc24_,false,false),
                            "v2":_loc27_,
                            "v3":_loc28_._buildingProps.name
@@ -1747,29 +1732,29 @@ package
                         _loc25_ = String(CREATURELOCKER._creatures[CREATURELOCKER._unlocking].name);
                         if(_loc24_ > 0)
                         {
-                           if(_loc20_ == "SP1")
+                           if(item == "SP1")
                            {
-                              _loc21_.t = KEYS.Get("str_closeenough");
-                              _loc21_.d = KEYS.Get("str_closeenough_unlock",{"v1":_loc25_});
+                              storeItemObject.t = KEYS.Get("str_closeenough");
+                              storeItemObject.d = KEYS.Get("str_closeenough_unlock",{"v1":_loc25_});
                               if(_loc24_ <= 60 * 5)
                               {
-                                 _loc21_.d = KEYS.Get("str_closeenough_unlock",{"v1":_loc25_});
+                                 storeItemObject.d = KEYS.Get("str_closeenough_unlock",{"v1":_loc25_});
                               }
                            }
-                           else if(_loc20_.substr(0,3) == "SP2")
+                           else if(item.substr(0,3) == "SP2")
                            {
-                              _loc21_.t = KEYS.Get("str_30minutes_unlocklabel");
-                              _loc21_.d = KEYS.Get("str_30minutes_unlockdesc",{"v1":_loc25_});
+                              storeItemObject.t = KEYS.Get("str_30minutes_unlocklabel");
+                              storeItemObject.d = KEYS.Get("str_30minutes_unlockdesc",{"v1":_loc25_});
                            }
-                           else if(_loc20_.substr(0,3) == "SP3")
+                           else if(item.substr(0,3) == "SP3")
                            {
-                              _loc21_.t = KEYS.Get("str_60minutes_unlocklabel");
-                              _loc21_.d = KEYS.Get("str_60minutes_unlockdesc",{"v1":_loc25_});
+                              storeItemObject.t = KEYS.Get("str_60minutes_unlocklabel");
+                              storeItemObject.d = KEYS.Get("str_60minutes_unlockdesc",{"v1":_loc25_});
                            }
-                           else if(_loc20_.substr(0,3) == "SP4")
+                           else if(item.substr(0,3) == "SP4")
                            {
-                              _loc21_.t = KEYS.Get("str_finishnow_unlocklabel",{"v1":_loc25_});
-                              _loc21_.d = KEYS.Get("str_finishnow_unlocktimesave",{
+                              storeItemObject.t = KEYS.Get("str_finishnow_unlocklabel",{"v1":_loc25_});
+                              storeItemObject.d = KEYS.Get("str_finishnow_unlocktimesave",{
                                  "v1":GLOBAL.ToTime(_loc24_,false,false),
                                  "v2":_loc25_
                               });
@@ -1785,29 +1770,29 @@ package
                         _loc25_ = KEYS.Get(CREATURELOCKER._creatures[ACADEMY._monsterID].name);
                         if(_loc24_ > 0)
                         {
-                           if(_loc20_ == "SP1")
+                           if(item == "SP1")
                            {
-                              _loc21_.t = KEYS.Get("str_closeenough");
-                              _loc21_.d = KEYS.Get("str_closeenough_traindesc",{"v1":_loc25_});
+                              storeItemObject.t = KEYS.Get("str_closeenough");
+                              storeItemObject.d = KEYS.Get("str_closeenough_traindesc",{"v1":_loc25_});
                               if(_loc24_ <= 60 * 5)
                               {
-                                 _loc21_.d = KEYS.Get("str_closeenough_traindesc_ok",{"v1":_loc25_});
+                                 storeItemObject.d = KEYS.Get("str_closeenough_traindesc_ok",{"v1":_loc25_});
                               }
                            }
-                           else if(_loc20_.substr(0,3) == "SP2")
+                           else if(item.substr(0,3) == "SP2")
                            {
-                              _loc21_.t = KEYS.Get("str_30minutes_trainlabel");
-                              _loc21_.d = KEYS.Get("str_30minutes_traindesc",{"v1":_loc25_});
+                              storeItemObject.t = KEYS.Get("str_30minutes_trainlabel");
+                              storeItemObject.d = KEYS.Get("str_30minutes_traindesc",{"v1":_loc25_});
                            }
-                           else if(_loc20_.substr(0,3) == "SP3")
+                           else if(item.substr(0,3) == "SP3")
                            {
-                              _loc21_.t = KEYS.Get("str_60minutes_trainlabel");
-                              _loc21_.d = KEYS.Get("str_60minutes_traindesc",{"v1":_loc25_});
+                              storeItemObject.t = KEYS.Get("str_60minutes_trainlabel");
+                              storeItemObject.d = KEYS.Get("str_60minutes_traindesc",{"v1":_loc25_});
                            }
-                           else if(_loc20_.substr(0,3) == "SP4")
+                           else if(item.substr(0,3) == "SP4")
                            {
-                              _loc21_.t = KEYS.Get("str_finishnow_trainlabel",{"v1":_loc25_});
-                              _loc21_.d = KEYS.Get("str_finishnow_unlocktimesave",{
+                              storeItemObject.t = KEYS.Get("str_finishnow_trainlabel",{"v1":_loc25_});
+                              storeItemObject.d = KEYS.Get("str_finishnow_unlocktimesave",{
                                  "v1":GLOBAL.ToTime(_loc24_,false,false),
                                  "v2":_loc25_
                               });
@@ -1824,41 +1809,41 @@ package
                         _loc35_ = KEYS.Get(MONSTERLAB._powerupProps[_loc34_._upgrading].name);
                         if(_loc24_ > 0)
                         {
-                           if(_loc20_ == "SP1")
+                           if(item == "SP1")
                            {
-                              _loc21_.t = KEYS.Get("str_closeenough");
-                              _loc21_.d = KEYS.Get("str_closeenough_powerupdesc",{
+                              storeItemObject.t = KEYS.Get("str_closeenough");
+                              storeItemObject.d = KEYS.Get("str_closeenough_powerupdesc",{
                                  "v1":_loc25_,
                                  "v2":_loc35_
                               });
                               if(_loc24_ <= 60 * 5)
                               {
-                                 _loc21_.d = KEYS.Get("str_closeenough_powerupdesc_ok",{
+                                 storeItemObject.d = KEYS.Get("str_closeenough_powerupdesc_ok",{
                                     "v1":_loc25_,
                                     "v2":_loc35_
                                  });
                               }
                            }
-                           else if(_loc20_.substr(0,3) == "SP2")
+                           else if(item.substr(0,3) == "SP2")
                            {
-                              _loc21_.t = KEYS.Get("str_30minutes_poweruplabel",{"v1":_loc35_});
-                              _loc21_.d = KEYS.Get("str_30minutes_powerupdesc",{
+                              storeItemObject.t = KEYS.Get("str_30minutes_poweruplabel",{"v1":_loc35_});
+                              storeItemObject.d = KEYS.Get("str_30minutes_powerupdesc",{
                                  "v1":_loc25_,
                                  "v2":_loc35_
                               });
                            }
-                           else if(_loc20_.substr(0,3) == "SP3")
+                           else if(item.substr(0,3) == "SP3")
                            {
-                              _loc21_.t = KEYS.Get("str_60minutes_poweruplabel",{"v1":_loc35_});
-                              _loc21_.d = KEYS.Get("str_60minutes_powerupdesc",{
+                              storeItemObject.t = KEYS.Get("str_60minutes_poweruplabel",{"v1":_loc35_});
+                              storeItemObject.d = KEYS.Get("str_60minutes_powerupdesc",{
                                  "v1":_loc25_,
                                  "v2":_loc35_
                               });
                            }
-                           else if(_loc20_.substr(0,3) == "SP4")
+                           else if(item.substr(0,3) == "SP4")
                            {
-                              _loc21_.t = KEYS.Get("str_finishnow_poweruplabel",{"v1":_loc35_});
-                              _loc21_.d = KEYS.Get("str_finishnow_unlocktimesave",{
+                              storeItemObject.t = KEYS.Get("str_finishnow_poweruplabel",{"v1":_loc35_});
+                              storeItemObject.d = KEYS.Get("str_finishnow_unlocktimesave",{
                                  "v1":GLOBAL.ToTime(_loc24_,false,false),
                                  "v2":_loc25_,
                                  "v3":_loc35_
@@ -1869,115 +1854,115 @@ package
                   }
                }
             }
-            else if(_loc20_.substr(0,3) == "BEW")
+            else if(item.substr(0,3) == "BEW")
             {
-               _loc21_.t = KEYS.Get("str_code_bew_title2");
-               _loc21_.d = KEYS.Get("str_code_bew_body2");
+               storeItemObject.t = KEYS.Get("str_code_bew_title2");
+               storeItemObject.d = KEYS.Get("str_code_bew_body2");
             }
-            else if(_loc20_ == "BST")
+            else if(item == "BST")
             {
-               _loc21_.t = KEYS.Get("str_code_bst_title2");
-               _loc21_.d = KEYS.Get("str_code_bst_body2");
+               storeItemObject.t = KEYS.Get("str_code_bst_title2");
+               storeItemObject.d = KEYS.Get("str_code_bst_body2");
             }
-            else if(_loc20_ == "ENL" || _loc20_ == "ENLI")
+            else if(item == "ENL" || item == "ENLI")
             {
-               _loc21_.t = KEYS.Get("str_code_enl_title2");
-               _loc21_.d = KEYS.Get("str_code_enl_body2");
+               storeItemObject.t = KEYS.Get("str_code_enl_title2");
+               storeItemObject.d = KEYS.Get("str_code_enl_body2");
             }
-            else if(_loc20_ == "BIP")
+            else if(item == "BIP")
             {
-               _loc21_.t = KEYS.Get("str_code_bip_title");
-               _loc21_.d = KEYS.Get(BASE.isInfernoMainYardOrOutpost ? "str_code_bipi_body2" : "str_code_bip_body2");
+               storeItemObject.t = KEYS.Get("str_code_bip_title");
+               storeItemObject.d = KEYS.Get(BASE.isInfernoMainYardOrOutpost ? "str_code_bipi_body2" : "str_code_bip_body2");
             }
-            else if(_loc20_ == "HOD")
+            else if(item == "HOD")
             {
-               _loc21_.t = KEYS.Get("str_code_hod_title2");
-               _loc21_.d = KEYS.Get("str_code_hod_body2");
+               storeItemObject.t = KEYS.Get("str_code_hod_title2");
+               storeItemObject.d = KEYS.Get("str_code_hod_body2");
             }
-            else if(_loc20_ == "HOD2")
+            else if(item == "HOD2")
             {
-               _loc21_.t = KEYS.Get("str_code_hod2_title2");
-               _loc21_.d = KEYS.Get("str_code_hod2_body2");
+               storeItemObject.t = KEYS.Get("str_code_hod2_title2");
+               storeItemObject.d = KEYS.Get("str_code_hod2_body2");
             }
-            else if(_loc20_ == "HOD3")
+            else if(item == "HOD3")
             {
-               _loc21_.t = KEYS.Get("str_code_hod3_title2");
-               _loc21_.d = KEYS.Get("str_code_hod3_body2");
+               storeItemObject.t = KEYS.Get("str_code_hod3_title2");
+               storeItemObject.d = KEYS.Get("str_code_hod3_body2");
             }
-            else if(_loc20_ == "HODI")
+            else if(item == "HODI")
             {
-               _loc21_.t = KEYS.Get("str_code_hodi_title2");
-               _loc21_.d = KEYS.Get("str_code_hodi_body2");
+               storeItemObject.t = KEYS.Get("str_code_hodi_title2");
+               storeItemObject.d = KEYS.Get("str_code_hodi_body2");
             }
-            else if(_loc20_ == "HOD2I")
+            else if(item == "HOD2I")
             {
-               _loc21_.t = KEYS.Get("str_code_hod2i_title2");
-               _loc21_.d = KEYS.Get("str_code_hod2i_body2");
+               storeItemObject.t = KEYS.Get("str_code_hod2i_title2");
+               storeItemObject.d = KEYS.Get("str_code_hod2i_body2");
             }
-            else if(_loc20_ == "HOD3I")
+            else if(item == "HOD3I")
             {
-               _loc21_.t = KEYS.Get("str_code_hod3i_title2");
-               _loc21_.d = KEYS.Get("str_code_hod3i_body2");
+               storeItemObject.t = KEYS.Get("str_code_hod3i_title2");
+               storeItemObject.d = KEYS.Get("str_code_hod3i_body2");
             }
-            else if(_loc20_ == "PRO1")
+            else if(item == "PRO1")
             {
-               _loc21_.t = KEYS.Get("str_code_pro1_title2");
-               _loc21_.d = KEYS.Get("str_code_pro1_body2");
+               storeItemObject.t = KEYS.Get("str_code_pro1_title2");
+               storeItemObject.d = KEYS.Get("str_code_pro1_body2");
             }
-            else if(_loc20_ == "PRO2")
+            else if(item == "PRO2")
             {
-               _loc21_.t = KEYS.Get("str_code_pro2_title2");
-               _loc21_.d = KEYS.Get("str_code_pro2_body2");
+               storeItemObject.t = KEYS.Get("str_code_pro2_title2");
+               storeItemObject.d = KEYS.Get("str_code_pro2_body2");
             }
-            else if(_loc20_ == "PRO3")
+            else if(item == "PRO3")
             {
-               _loc21_.t = KEYS.Get("str_code_pro3_title2");
-               _loc21_.d = KEYS.Get("str_code_pro3_body2");
+               storeItemObject.t = KEYS.Get("str_code_pro3_title2");
+               storeItemObject.d = KEYS.Get("str_code_pro3_body2");
             }
-            else if(_loc20_ == "TOD")
+            else if(item == "TOD")
             {
-               _loc21_.t = KEYS.Get("str_code_tod_title");
-               _loc21_.d = KEYS.Get("str_code_tod_body");
+               storeItemObject.t = KEYS.Get("str_code_tod_title");
+               storeItemObject.d = KEYS.Get("str_code_tod_body");
             }
-            else if(_loc20_ == "TODI")
+            else if(item == "TODI")
             {
-               _loc21_.t = KEYS.Get("str_code_tod_title");
-               _loc21_.d = KEYS.Get("todi_body");
+               storeItemObject.t = KEYS.Get("str_code_tod_title");
+               storeItemObject.d = KEYS.Get("todi_body");
             }
-            else if(_loc20_ == "MOD")
+            else if(item == "MOD")
             {
-               _loc21_.t = KEYS.Get("str_code_mod_title");
-               _loc21_.d = KEYS.Get("str_code_mod_body");
+               storeItemObject.t = KEYS.Get("str_code_mod_title");
+               storeItemObject.d = KEYS.Get("str_code_mod_body");
             }
-            else if(_loc20_ == "MDOD")
+            else if(item == "MDOD")
             {
-               _loc21_.t = KEYS.Get("str_code_mdod_title");
-               _loc21_.d = KEYS.Get("str_code_mdod_body");
+               storeItemObject.t = KEYS.Get("str_code_mdod_title");
+               storeItemObject.d = KEYS.Get("str_code_mdod_body");
             }
-            else if(_loc20_ == "MSOD")
+            else if(item == "MSOD")
             {
-               _loc21_.t = KEYS.Get("str_code_msod_title");
-               _loc21_.d = KEYS.Get("str_code_msod_body");
+               storeItemObject.t = KEYS.Get("str_code_msod_title");
+               storeItemObject.d = KEYS.Get("str_code_msod_body");
             }
             _loc6_ = 0;
-            _loc7_ = int(_loc21_.c.length);
+            _loc7_ = int(storeItemObject.c.length);
             if(_loc22_)
             {
                _loc6_ = int(_loc22_.q);
             }
-            if(_loc21_.i)
+            if(storeItemObject.i)
             {
                _loc6_ = 0;
             }
-            _loc8_ = "<b>" + _loc21_.t + "</b><br>" + _loc21_.d;
-            if(_loc20_ == "BIP" && _storeData.BIP && _storeData.BIP.q < 10)
+            _loc8_ = "<b>" + storeItemObject.t + "</b><br>" + storeItemObject.d;
+            if(item == "BIP" && _storeData.BIP && _storeData.BIP.q < 10)
             {
                _loc8_ += " " + KEYS.Get("store_total%increase",{"v1":(_storeData.BIP.q + 1) * 10});
             }
             _loc32_ = "";
-            if(_loc20_.substr(0,2) == "BR" && _loc21_.c[0] == 0)
+            if(item.substr(0,2) == "BR" && storeItemObject.c[0] == 0)
             {
-               if((_loc31_ = _loc20_).substr(0,2) == "SP")
+               if((_loc31_ = item).substr(0,2) == "SP")
                {
                   _loc31_ = _loc31_.substr(0,3);
                }
@@ -1986,7 +1971,7 @@ package
                   _loc32_ = KEYS.Get("str_prob_cantbuymore");
                }
             }
-            if(_loc20_.substr(0,2) == "SP")
+            if(item.substr(0,2) == "SP")
             {
                if(!_loc28_)
                {
@@ -2022,19 +2007,19 @@ package
                   {
                      _loc32_ = KEYS.Get("str_prob_nothing");
                   }
-                  else if(_loc20_ == "SP1" && _loc24_ > 5 * 60)
+                  else if(item == "SP1" && _loc24_ > 5 * 60)
                   {
                      _loc32_ = KEYS.Get("str_prob_morethan5");
                   }
-                  else if(_loc20_.substr(0,3) == "SP2" && (_loc24_ < 60 * 60 && !_storeInventory.SP2 || _storeInventory.SP2 && _loc24_ <= 5 * 60))
+                  else if(item.substr(0,3) == "SP2" && (_loc24_ < 60 * 60 && !_storeInventory.SP2 || _storeInventory.SP2 && _loc24_ <= 5 * 60))
                   {
                      _loc32_ = KEYS.Get("str_prob_notneeded");
                   }
-                  else if(_loc20_.substr(0,3) == "SP3" && (_loc24_ < 60 * 60 * 2 && !_storeInventory.SP3 || _storeInventory.SP3 && _loc24_ <= 5 * 60))
+                  else if(item.substr(0,3) == "SP3" && (_loc24_ < 60 * 60 * 2 && !_storeInventory.SP3 || _storeInventory.SP3 && _loc24_ <= 5 * 60))
                   {
                      _loc32_ = KEYS.Get("str_prob_notneeded");
                   }
-                  else if(_loc20_.substr(0,3) == "SP4" && _loc24_ <= 5 * 60)
+                  else if(item.substr(0,3) == "SP4" && _loc24_ <= 5 * 60)
                   {
                      _loc32_ = KEYS.Get("str_prob_notneeded");
                   }
@@ -2044,41 +2029,41 @@ package
                   _loc32_ = KEYS.Get("str_prob_nothingselected");
                }
             }
-            if(_loc20_.substr(0,3) == "HOD" && !GLOBAL._bHatchery)
+            if(item.substr(0,3) == "HOD" && !GLOBAL._bHatchery)
             {
                _loc32_ = KEYS.Get("str_prob_nohatcheries");
             }
-            if(_loc20_ == "CLOD" && !GLOBAL._bLocker)
+            if(item == "CLOD" && !GLOBAL._bLocker)
             {
                _loc32_ = KEYS.Get("str_prob_nolocker");
             }
-            if(_loc20_ == "FIX")
+            if(item == "FIX")
             {
                if(_repairCount == 0)
                {
                   _loc32_ = KEYS.Get("str_prob_notneeded");
                }
             }
-            if(_loc20_.substr(0,3) == "BLK")
+            if(item.substr(0,3) == "BLK")
             {
                _loc36_ = GLOBAL.townHall._lvl.Get();
                if(BASE.isOutpost)
                {
                   _loc36_ = 7;
                }
-               if(!BASE.isOutpost && _loc36_ < 3 && _loc20_.substr(3,1) == "2")
+               if(!BASE.isOutpost && _loc36_ < 3 && item.substr(3,1) == "2")
                {
                   _loc32_ = KEYS.Get("upgradeth",{"v1":3});
                }
-               else if(!BASE.isOutpost && _loc36_ < 4 && _loc20_.substr(3,1) == "3")
+               else if(!BASE.isOutpost && _loc36_ < 4 && item.substr(3,1) == "3")
                {
                   _loc32_ = KEYS.Get("upgradeth",{"v1":4});
                }
-               else if(!BASE.isOutpost && _loc36_ < 5 && _loc20_.substr(3,1) == "4")
+               else if(!BASE.isOutpost && _loc36_ < 5 && item.substr(3,1) == "4")
                {
                   _loc32_ = KEYS.Get("upgradeth",{"v1":5});
                }
-               else if(!BASE.isOutpost && _loc36_ < 6 && _loc20_.substr(3,1) == "5")
+               else if(!BASE.isOutpost && _loc36_ < 6 && item.substr(3,1) == "5")
                {
                   _loc32_ = KEYS.Get("upgradeth",{"v1":6});
                }
@@ -2118,19 +2103,19 @@ package
                         }
                      }
                   }
-                  if(_loc20_.substr(3,1) == "2" && !_loc37_)
+                  if(item.substr(3,1) == "2" && !_loc37_)
                   {
                      _loc32_ = KEYS.Get("str_prob_notneeded");
                   }
-                  if(_loc20_.substr(3,1) == "3" && !_loc38_)
+                  if(item.substr(3,1) == "3" && !_loc38_)
                   {
                      _loc32_ = KEYS.Get("str_prob_notneeded");
                   }
-                  if(_loc20_.substr(3,1) == "4" && !_loc39_)
+                  if(item.substr(3,1) == "4" && !_loc39_)
                   {
                      _loc32_ = KEYS.Get("str_prob_notneeded");
                   }
-                  if(_loc20_.substr(3,1) == "5" && !_loc40_)
+                  if(item.substr(3,1) == "5" && !_loc40_)
                   {
                      _loc32_ = KEYS.Get("str_prob_notneeded");
                   }
@@ -2138,12 +2123,12 @@ package
             }
             if(_loc29_)
             {
-               _loc33_ = "<b><font color=\"#335280\">" + GLOBAL.FormatNumber(_loc21_.fbc_cost[_loc6_]) + "</font></b>";
+               _loc33_ = "<b><font color=\"#335280\">" + GLOBAL.FormatNumber(storeItemObject.fbc_cost[_loc6_]) + "</font></b>";
             }
             else
             {
-               _loc33_ = "<b>" + GLOBAL.FormatNumber(_loc21_.c[_loc6_]) + "</b>";
-               if(_loc21_.c[_loc6_] == 0 && _loc32_ == "")
+               _loc33_ = "<b>" + GLOBAL.FormatNumber(storeItemObject.c[_loc6_]) + "</b>";
+               if(storeItemObject.c[_loc6_] == 0 && _loc32_ == "")
                {
                   _loc33_ = "<font color=\"#0000CC\"><b>" + KEYS.Get("str_buy_free") + "</b></font>";
                }
@@ -2152,7 +2137,7 @@ package
             {
                _loc23_.mcScreen.visible = true;
                _loc23_.mcScreen.enabled = true;
-               if((_loc31_ = _loc20_).substr(0,2) == "SP")
+               if((_loc31_ = item).substr(0,2) == "SP")
                {
                   _loc31_ = _loc31_.substr(0,3);
                }
@@ -2173,12 +2158,12 @@ package
                {
                   _loc23_.bBuy.Enabled = false;
                }
-               if(_loc6_ >= _loc7_ && !_loc21_.i || _loc20_.substr(0,3) == "BEW" && QUEUE._workerCount >= 5 || _loc20_.substr(0,2) == "BR" && BASE._resources["r" + _loc20_.substr(2,1)].Get() >= BASE._resources["r" + _loc20_.substr(2,1) + "max"] && _loc20_.substr(_loc20_.length - 1) != "I" || _loc20_.substr(0,2) == "BR" && !BASE.isInfernoMainYardOrOutpost && _loc20_.substr(_loc20_.length - 1) == "I" && BASE._iresources["r" + _loc20_.substr(2,1)].Get() >= BASE._iresources["r" + _loc20_.substr(2,1) + "max"])
+               if(_loc6_ >= _loc7_ && !storeItemObject.i || item.substr(0,3) == "BEW" && QUEUE._workerCount >= 5 || item.substr(0,2) == "BR" && BASE._resources["r" + item.substr(2,1)].Get() >= BASE._resources["r" + item.substr(2,1) + "max"] && item.substr(item.length - 1) != "I" || item.substr(0,2) == "BR" && !BASE.isInfernoMainYardOrOutpost && item.substr(item.length - 1) == "I" && BASE._iresources["r" + item.substr(2,1)].Get() >= BASE._iresources["r" + item.substr(2,1) + "max"])
                {
                   _loc23_.mcScreen.visible = true;
                   _loc23_.mcScreen.enabled = true;
                   _loc23_.bBuy.Enabled = false;
-                  if((_loc31_ = _loc20_).substr(0,2) == "SP")
+                  if((_loc31_ = item).substr(0,2) == "SP")
                   {
                      _loc31_ = _loc31_.substr(0,3);
                   }
@@ -2190,9 +2175,9 @@ package
                   else
                   {
                      _loc9_ = "<font color=\"#CC0000\">" + KEYS.Get("str_prob_soldout") + "</font>";
-                     if(_loc21_.du > 0)
+                     if(storeItemObject.du > 0)
                      {
-                        _loc10_ = "<font color=\"#CC0000\">" + KEYS.Get("store_rebuy",{"v1":GLOBAL.ToTime(_storeData[_loc20_].e - GLOBAL.Timestamp(),true)}) + "</font>";
+                        _loc10_ = "<font color=\"#CC0000\">" + KEYS.Get("store_rebuy",{"v1":GLOBAL.ToTime(_storeData[item].e - GLOBAL.Timestamp(),true)}) + "</font>";
                      }
                      else if(_loc6_ == 0)
                      {
@@ -2212,7 +2197,7 @@ package
                   _loc23_.mcScreen.visible = false;
                   _loc23_.mcScreen.enabled = false;
                   _loc23_.bBuy.Highlight = true;
-                  if((_loc31_ = _loc20_).substr(0,2) == "SP")
+                  if((_loc31_ = item).substr(0,2) == "SP")
                   {
                      _loc31_ = _loc31_.substr(0,3);
                   }
@@ -2224,16 +2209,16 @@ package
                   }
                   else
                   {
-                     if(_loc21_.i)
+                     if(storeItemObject.i)
                      {
                         _loc6_ = 0;
                      }
                      _loc9_ = _loc33_;
-                     if(_loc21_.du > 0)
+                     if(storeItemObject.du > 0)
                      {
-                        _loc10_ = "<font color=\"#0000CC\">" + KEYS.Get("str_buy_cooldown",{"v1":GLOBAL.ToTime(_loc21_.du)}) + "</font>";
+                        _loc10_ = "<font color=\"#0000CC\">" + KEYS.Get("str_buy_cooldown",{"v1":GLOBAL.ToTime(storeItemObject.du)}) + "</font>";
                      }
-                     else if(_loc21_.i)
+                     else if(storeItemObject.i)
                      {
                         _loc10_ = "<font color=\"#0000CC\">" + KEYS.Get("str_buyoften") + "</font>";
                      }
@@ -2263,7 +2248,7 @@ package
             _loc23_.tA.htmlText = _loc8_ + " ";
             _loc23_.tB.htmlText = _loc9_;
             _loc23_.tC.htmlText = _loc10_ + " ";
-            if((_loc31_ = _loc20_).substr(0,2) == "SP")
+            if((_loc31_ = item).substr(0,2) == "SP")
             {
                _loc31_ = _loc31_.substr(0,3);
             }
@@ -2277,15 +2262,15 @@ package
             }
             if(_loc23_.bBuy.Enabled)
             {
-               _loc23_.bBuy.addEventListener(MouseEvent.MOUSE_DOWN,Buy(_loc20_));
+               _loc23_.bBuy.addEventListener(MouseEvent.MOUSE_DOWN,Buy(item));
             }
-            if(_loc20_.substr(0,2) == "SP")
+            if(item.substr(0,2) == "SP")
             {
-               _loc23_.mcIcon.gotoAndStop(_loc20_.substr(0,3));
+               _loc23_.mcIcon.gotoAndStop(item.substr(0,3));
             }
-            else if(MovieClipUtils.validateFrameLabel(_loc23_.mcIcon,_loc20_))
+            else if(MovieClipUtils.validateFrameLabel(_loc23_.mcIcon,item))
             {
-               _loc23_.mcIcon.gotoAndStop(_loc20_);
+               _loc23_.mcIcon.gotoAndStop(item);
             }
             else
             {
@@ -2296,7 +2281,7 @@ package
             _loc14_ = Math.floor(_loc16_ / _loc15_);
             _loc12_ = _loc16_ % _loc15_ * 220 + _loc16_ % _loc15_ * _loc17_;
             _loc11_ = _loc14_ * 150 + _loc14_ * _loc18_;
-            _loc19_++;
+            index++;
          }
          _mc.window.content.mask = _mc.window.msk;
          if(_scrollUpdate)

@@ -2,8 +2,9 @@ import { Save } from "../models/save.model";
 import { ORMContext } from "../server";
 import { KoaController } from "../utils/KoaController";
 import { logging } from "../utils/logger";
+import { storeKeys } from "./keys/generalStore";
 
-export const baseLoad: KoaController = async ctx => {
+export const baseLoad: KoaController = async (ctx) => {
   // get the latest base for userID (0) if it dosnt exist create it - for now its 1234
   // get the latest save id for the base (1234)- if there isnt any in db create it
   const baseid = 1234;
@@ -79,6 +80,30 @@ export const baseLoad: KoaController = async ctx => {
     inventory,
   } = save;
 
+  const storeObject = {
+    t: "title_val",
+    d: "desc_val",
+    c: [0],
+    // fbc_cost: [0],
+    // i: "",
+    // q: 0,
+    // du: 0
+  };
+
+  const quantities = {};
+  storeKeys.forEach((key) => {
+    quantities[key] = 100;
+  });
+
+  const storeItems = {};
+  storeKeys.forEach((key) => {
+    if (quantities[key]) {
+      storeItems[key] = { ...storeObject, quantity: quantities[key] };
+    } else {
+      storeItems[key] = { ...storeObject };
+    }
+  });
+
   // Return the base load values
   ctx.status = 200;
   ctx.body = {
@@ -120,89 +145,7 @@ export const baseLoad: KoaController = async ctx => {
     monsters: {},
     aiattacks,
     tutorialstage: 205, // 205 skips tutorial
-    storeitems: {
-      BR11I: {
-        quantity: 100,
-      },
-      BR21I: {
-        quantity: 100,
-      },
-      BR31I: {
-        quantity: 100,
-      },
-      BR41I: {
-        quantity: 100,
-      },
-      BR11: {
-        quantity: 100,
-      },
-      BR21: {
-        quantity: 100,
-      },
-      BR31: {
-        quantity: 100,
-      },
-      BR41: {
-        quantity: 100,
-      },
-      BR12I: {
-        quantity: 100,
-      },
-      BR22I: {
-        quantity: 100,
-      },
-      BR32I: {
-        quantity: 100,
-      },
-      BR42I: {
-        quantity: 100,
-      },
-      BR12: {
-        quantity: 100,
-      },
-      BR22: {
-        quantity: 100,
-      },
-      BR32: {
-        quantity: 100,
-      },
-      BR42: {
-        quantity: 100,
-      },
-
-      BR13I: {
-        quantity: 100,
-      },
-      BR23I: {
-        quantity: 100,
-      },
-      BR33I: {
-        quantity: 100,
-      },
-      BR43I: {
-        quantity: 100,
-      },
-      BR13: {
-        quantity: 100,
-      },
-      BR23: {
-        quantity: 100,
-      },
-      BR33: {
-        quantity: 100,
-      },
-      BR43: {
-        quantity: 100,
-      },
-      FIX: {},
-      BLK2: {},
-      BLK3: {},
-      BLK4: {},
-      BLK5: {},
-      HOD: {},
-      POD: {},
-      EXH: {},
-    },
+    storeitems: { ...storeItems },
     storedata: {},
     inventory,
     lockerdata,
