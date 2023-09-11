@@ -18,7 +18,7 @@ const UserLoginSchema = z.object({
 // 3. Create auth middleware
 //    - add token to requests. JWT? Bearer?
 //    - Redis / store session token in sqlite -^^^^^
-//  4. Clientside ability to skip the login - Default login credentials for dev?
+//  4. Clientside ability to skip the login
 
 export const login: KoaController = async ctx => {
   try {

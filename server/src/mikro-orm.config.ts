@@ -12,9 +12,9 @@ export default {
   allowGlobalContext: false,
   debug: true,
   entities: [Save, User],
-  dbName: 'src/db/bym-db',
+  dbName: 'src/database/bym-db',
   migrations: {
-    path: path.join(__dirname, '../src/db/migrations'),
+    path: path.join(__dirname, '../src/database/migrations'),
     pattern: /^[\w-]+\d+\.[j]s$/,
   },
 } as Parameters<typeof MikroORM.init<SqliteDriver>>[0];
