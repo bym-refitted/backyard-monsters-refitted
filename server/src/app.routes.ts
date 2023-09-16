@@ -11,6 +11,7 @@ import { getNewMap } from "./controllers/maproom/getNewMap";
 import { Context } from "koa";
 import { logging } from "./utils/logger";
 import { randomUUID } from "crypto";
+import {auth} from "./middleware/auth";
 
 interface LogProps {
     logMessage: string;
@@ -24,11 +25,11 @@ router.post("/api/player/getinfo", debugDataLog("User login attempt"), login);
 router.post("/api/player/register", debugDataLog("Registering user"), register);
 
 // Save
-router.post("/base/save", debugDataLog("Base save data"), baseSave);
+router.post("/base/save", auth, debugDataLog("Base save data"), baseSave);
 router.post("/base/updatesaved", debugDataLog("Base updated save"), updateSaved);
 
 // Load
-router.post("/base/load", debugDataLog("Base load data"), baseLoad);
+router.post("/base/load", auth, debugDataLog("Base load data"), baseLoad);
 
 // Worldmap
 router.post("/worldmapv3/setmapversion", debugDataLog("Set maproom version"), mapRoomVersion);

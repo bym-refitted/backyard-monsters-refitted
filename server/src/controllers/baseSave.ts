@@ -4,7 +4,8 @@ import { KoaController } from "../utils/KoaController";
 import { logging } from "../utils/logger";
 
 export const baseSave: KoaController = async ctx => {
-    logging(`Saving the base!`);
+    const user = ctx.authUser
+    logging(`Saving the base! user: ${user.username}`);
 
     const requestBody = ctx.request.body as { basesaveid: number };
 
