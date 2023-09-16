@@ -4,13 +4,19 @@ import { ORMContext } from "../server";
 import { KoaController } from "../utils/KoaController";
 import { logging } from "../utils/logger";
 import { storeKeys } from "./keys/generalStore";
+import {User} from "../models/user.model";
 
 export const baseLoad: KoaController = async (ctx) => {
   // get the latest base for userID (0) if it dosnt exist create it - for now its 1234
   // get the latest save id for the base (1234)- if there isnt any in db create it
-  const baseid = 1234;
+  // const baseid = 1234;
   // Try find an already existing save
-  let save = await ORMContext.em.findOne(Save, { baseid });
+  logging(`Loading base, user: ${ctx.authUser.username}`)
+  const user: User = ctx.authUser
+  await ORMContext.em.populate(user, ['save']);
+  let save = user.save
+  // let save = await ORMContext.em.findOne(Save, { user });
+  const baseid = 0
 
   if (save) {
     logging(`Record base load:`, JSON.stringify(save, null, 2));
@@ -26,7 +32,6 @@ export const baseLoad: KoaController = async (ctx) => {
       catapult: 0,
       version: 128,
       clienttime: 0,
-      baseseed: 4520,
       damage: 0,
       healtime: 0,
       points: 5,
@@ -56,12 +61,18 @@ export const baseLoad: KoaController = async (ctx) => {
       monsterbaiter: {},
       aiattacks: {},
       inventory: {},
+      user,
     };
 
     save = ORMContext.em.create(Save, defaults);
 
     // Add the save to the database
     await ORMContext.em.persistAndFlush(save);
+
+    user.save = save
+
+    // Update user base save
+    await ORMContext.em.persistAndFlush(user)
   }
 
   // Collect the values from the save table
@@ -129,7 +140,7 @@ export const baseLoad: KoaController = async (ctx) => {
     baseseed,
     baseid,
     fbid: 67879,
-    userid: 101,
+    userid: user.userid,
     attackid: 0,
     homebase: false, // This should be an array
     unreadmessages: 0,
