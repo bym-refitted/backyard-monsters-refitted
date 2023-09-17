@@ -37,16 +37,16 @@ router.post("/worldmapv3/getcells", debugDataLog("Get maproom cells"), getMapRoo
 router.post("/api/bm/getnewmap", debugDataLog("Posting to new maproom"), getNewMap);
 
 // Logging routes
-router.post(
-    "/api/player/recorddebugdata",
-    async (ctx: Context) => {
-      logging(`=========== NEW RUN ${randomUUID()} ===========`);
-      const requestLog = ctx.request.body as { message: string };
+// router.post(
+//     "/api/player/recorddebugdata",
+//     async (ctx: Context) => {
+//       logging(`=========== NEW RUN ${randomUUID()} ===========`);
+//       const requestLog = ctx.request.body as { message: string };
   
-      JSON.parse(requestLog.message).forEach((element: LogProps) => {
-        logging(`${element.logMessage}`, element.debugVars);
-      });
-    }
-  );
+//       JSON.parse(requestLog.message).forEach((element: LogProps) => {
+//         logging(`${element.logMessage}`, element.debugVars);
+//       });
+//     }
+//   );
 
 export default router;
