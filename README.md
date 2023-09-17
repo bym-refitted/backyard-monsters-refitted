@@ -11,11 +11,6 @@ This repository includes all the modified client files for Kixeye's 2010 Flash g
 
 <br />
 
-## AS3 Developer Help Wanted:
-Please see the [CONTRIBUTING.md](./CONTRIBUTING.md) file for more information.
-
-<br />
-
 ## Server setup
 
 1. Clone or fork this repo:
