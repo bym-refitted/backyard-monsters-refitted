@@ -1,4 +1,4 @@
-import { Entity, Property, PrimaryKey } from "@mikro-orm/core";
+import {Entity, Property, PrimaryKey} from "@mikro-orm/core";
 
 export interface FieldData {
   [key: string | number]: any;

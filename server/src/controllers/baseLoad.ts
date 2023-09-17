@@ -4,12 +4,16 @@ import { ORMContext } from "../server";
 import { KoaController } from "../utils/KoaController";
 import { logging } from "../utils/logger";
 import { storeKeys } from "./keys/generalStore";
+import {User} from "../models/user.model";
 
-export const baseLoad: KoaController = async (ctx) => {
+export const baseLoad: KoaController = async ctx => {
   const baseid = 1234;
 
   // Try find an already existing save
-  let save = await ORMContext.em.findOne(Save, { baseid });
+  logging(`Loading base, user: ${ctx.authUser.username}`)
+  const user: User = ctx.authUser
+  await ORMContext.em.populate(user, ['save']);
+  let save = user.save
 
   if (save) {
     logging(`Record base load:`, JSON.stringify(save, null, 2));
@@ -59,6 +63,7 @@ export const baseLoad: KoaController = async (ctx) => {
       relationship: 0,
       error: 0,
       currenttime: 200,
+      user,
 
       // Objects
       buildingdata: {},
@@ -145,6 +150,11 @@ export const baseLoad: KoaController = async (ctx) => {
 
     // Add the save to the database
     await ORMContext.em.persistAndFlush(save);
+
+    user.save = save
+
+    // Update user base save
+    await ORMContext.em.persistAndFlush(user)
   }
 
   // Collect the values from the save table
@@ -332,7 +342,7 @@ export const baseLoad: KoaController = async (ctx) => {
     // Primitives
     baseid,
     type,
-    userid,
+    userid: user.userid,
     wmid,
     createtime,
     savetime,

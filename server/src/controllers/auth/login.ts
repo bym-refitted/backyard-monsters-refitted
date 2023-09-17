@@ -20,7 +20,7 @@ const UserLoginSchema = z.object({
 //    - Redis / store session token in sqlite -^^^^^
 //  4. Clientside ability to skip the login
 
-export const login: KoaController = async ctx => {
+export const login: KoaController = async (ctx) => {
   try {
     const { email, password } = UserLoginSchema.parse(ctx.request.body);
     let user = await ORMContext.em.findOne(User, { email });
@@ -35,8 +35,9 @@ export const login: KoaController = async ctx => {
     const isMatch = await bcrypt.compare(password, user.password);
 
     if (isMatch) {
+      const sessionLifeTime = parseInt(process.env.SESSION_LIFETIME) || 1;
       const token = JWT.sign({ userId: user.userid }, process.env.SECRET_KEY, {
-        expiresIn: "30d",
+        expiresIn: `${sessionLifeTime}d`,
       });
 
       const filteredUser = FilterFrontendKeys(user);
@@ -57,6 +58,12 @@ export const login: KoaController = async ctx => {
         h: "someHashValue",
         ...filteredUser,
       };
+
+      const cookieExpiryTime = sessionLifeTime * (24 * 60 * 60) * 1000;
+      const expires = new Date(Date.now() + cookieExpiryTime);
+      ctx.cookies.set("x-bym-refitted", token, {
+        expires,
+      });
     } else {
       ctx.status = 401;
       ctx.body = { error: "Password does not match." };

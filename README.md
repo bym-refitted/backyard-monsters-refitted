@@ -36,7 +36,9 @@ LOG_ASSETS=
 // A neat way to generate this:
 // type 'node' into your terminal and then run the following command:
 // crypto.randomBytes(32).toString('hex');
-SECRET_KEY
+SECRET_KEY=
+// Values: (number) The amount of days before the session expires
+SESSION_LIFETIME=
 ```
 
 <br />
