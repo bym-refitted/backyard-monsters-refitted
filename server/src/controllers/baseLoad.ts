@@ -3,164 +3,39 @@ import { Save } from "../models/save.model";
 import { ORMContext } from "../server";
 import { KoaController } from "../utils/KoaController";
 import { logging } from "../utils/logger";
-import { storeKeys } from "./keys/generalStore";
-import {User} from "../models/user.model";
+import { storeKeys } from "../keys/generalStore";
+import { User } from "../models/user.model";
+import { getDefaultBaseData } from "../data/getDefaultBaseData";
 
-export const baseLoad: KoaController = async ctx => {
-  const baseid = 1234;
-
+export const baseLoad: KoaController = async (ctx) => {
   // Try find an already existing save
-  logging(`Loading base, user: ${ctx.authUser.username}`)
-  const user: User = ctx.authUser
-  await ORMContext.em.populate(user, ['save']);
-  let save = user.save
+  const user: User = ctx.authUser;
+  await ORMContext.em.populate(user, ["save"]);
+
+  let save = user.save;
+  logging(`Loading base for user: ${ctx.authUser.username}`);
 
   if (save) {
-    logging(`Record base load:`, JSON.stringify(save, null, 2));
+    logging(`Base loaded:`, JSON.stringify(save, null, 2));
   } else {
     // There was no existing save, create one with some defaults
-    logging(`Record not found, creating a new save`);
+    logging(`Base not found, creating a new save`);
 
-    const defaultGameData = {
-      baseid,
-      type: "main",
-      userid: 101, // Generate
-      wmid: 0,
-      createtime: 0,
-      savetime: 0,
-      seed: 0,
-      saveuserid: 0,
-      bookmarked: 0,
-      fan: 0,
-      emailshared: 1,
-      unreadmessages: 0,
-      giftsentcount: 0,
-      id: 0, // Generate
-      canattack: false,
-      cellid: 0, // Generate
-      baseid_inferno: 0,
-      fbid: "67879",
-      fortifycellid: 0,
-      name: "name",
-      level: 1,
-      catapult: 0,
-      flinger: 0,
-      destroyed: 0,
-      damage: 0,
-      locked: 0,
-      points: 5,
-      basevalue: 20,
-      protectedVal: 1,
-      lastupdate: 0,
-      usemap: 1,
-      homebaseid: 0, // Generate
-      credits: 1000,
-      champion: "null",
-      empiredestroyed: 1,
-      worldid: "0", // Generate
-      event_score: 0,
-      chatenabled: 0,
-      relationship: 0,
-      error: 0,
-      currenttime: 200,
-      user,
-
-      // Objects
-      buildingdata: {},
-      buildinghealthdata: {},
-      researchdata: {},
-      lockerdata: {},
-      aiattacks: {},
-      mushrooms: {},
-      stats: { popupdata: {} },
-      academy: {},
-      monsterbaiter: {},
-      loot: {},
-      storedata: {},
-      coords: {},
-      quests: {},
-      resources: {
-        r2: 1600,
-        r2max: 10000,
-        r1max: 10000,
-        r1: 1600,
-        r4max: 10000,
-        r3max: 10000,
-        r3: 0,
-        r4: 0,
-      },
-      inventory: {},
-      monsters: {},
-      player: {},
-      krallen: {},
-      siege: {},
-      buildingresources: {},
-      frontpage: {},
-      events: {},
-      rewards: {},
-      iresources: {
-        r2: 1600,
-        r4: 0,
-        r1: 1600,
-        r3: 0,
-        r3max: 10000,
-        r2max: 10000,
-        r1max: 10000,
-        r4max: 10000,
-      },
-
-      // Arrays
-      updates: [],
-      effects: [],
-      homebase: [],
-      outposts: [],
-      worldsize: [500, 500],
-      wmstatus: [],
-      chatservers: ["bym-chat.kixeye.com"],
-
-      // Client saves | not returned
-      version: 128,
-      baseseed: 4520,
-      healtime: 0,
-      empirevalue: 0,
-      clienttime: 0,
-      timeplayed: 0,
-      achieved: [],
-      monsterupdate: {},
-      basename: "basename",
-      attackreport: "",
-      over: 0,
-      protect: 0,
-      attackid: 0,
-      attacks: [],
-      gifts: [],
-      sentinvites: [],
-      sentgifts: [],
-      purchase: {},
-      attackcreatures: {},
-      attackloot: {},
-      lootreport: {},
-      attackerchampion: [],
-      attackersiege: {},
-      purchasecomplete: 0,
-      fbpromos: [],
-    };
-
-    save = ORMContext.em.create(Save, defaultGameData);
+    save = ORMContext.em.create(Save, getDefaultBaseData(user));
 
     // Add the save to the database
     await ORMContext.em.persistAndFlush(save);
 
-    user.save = save
+    user.save = save;
 
     // Update user base save
-    await ORMContext.em.persistAndFlush(user)
+    await ORMContext.em.persistAndFlush(user);
   }
 
   // Collect the values from the save table
   const {
+    baseid,
     type,
-    userid,
     wmid,
     createtime,
     savetime,
@@ -171,7 +46,6 @@ export const baseLoad: KoaController = async ctx => {
     emailshared,
     unreadmessages,
     giftsentcount,
-    id,
     canattack,
     cellid,
     baseid_inferno,
@@ -338,6 +212,7 @@ export const baseLoad: KoaController = async ctx => {
     },
     basename: "testBase",
     pic_square: "https://apprecs.org/ios/images/app-icons/256/df/634186975.jpg",
+    storeitems: { ...storeItems },
 
     // Primitives
     baseid,
@@ -381,7 +256,6 @@ export const baseLoad: KoaController = async ctx => {
     protected: protectedVal,
     id: basesaveid,
     tutorialstage: isTutorialEnabled,
-    storeitems: { ...storeItems },
 
     // Objects
     buildinghealthdata,

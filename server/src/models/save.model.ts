@@ -11,7 +11,7 @@ export class Save {
   basesaveid!: number;
 
   @Property()
-  baseid!: number;
+  baseid!: string;
 
   @Property()
   type!: string;
