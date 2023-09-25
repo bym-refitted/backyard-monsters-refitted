@@ -49,6 +49,7 @@ export const getDefaultBaseData = (user?: User) => {
 
     // Objects
     buildingdata: {},
+    buildingkeydata: {},
     buildinghealthdata: {},
     researchdata: {},
     lockerdata: {},

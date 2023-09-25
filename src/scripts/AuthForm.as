@@ -14,6 +14,7 @@ package
     import flash.net.URLRequest;
     import flash.events.FocusEvent;
     import flash.text.TextFormatAlign;
+    import flash.system.LoaderContext;
 
     public class AuthForm extends Sprite
     {
@@ -103,8 +104,10 @@ package
             startY = centerY;
 
             loader = new Loader();
+            var context:LoaderContext = new LoaderContext();
+            context.checkPolicyFile = true;
             loader.contentLoaderInfo.addEventListener(Event.COMPLETE, onImageLoaded);
-            loader.load(new URLRequest("http://localhost:3001/assets/bym-refitted-assets/refitted-logo.png"));
+            loader.load(new URLRequest("http://localhost:3001/assets/bym-refitted-assets/refitted-logo.png"), context);
 
             // Create inputs within the container
             emailInput = createBlock(350, 35, "Email");

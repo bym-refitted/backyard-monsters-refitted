@@ -1008,22 +1008,17 @@ package
                UPDATES._lastUpdateID = 0;
             }
             serverData.mushrooms = {} // Reminder: This is not real
-            LOGGER.DebugQAdd("LN:1011 - Before mushromn",{shrooms:serverData.mushrooms});
             if(serverData.mushrooms.l)
             {
-                LOGGER.DebugQAdd("LN:1015 -  mushromn l",{});
                _mushroomList = serverData.mushrooms.l;
             }
             if(serverData.mushrooms.s)
             {
-                LOGGER.DebugQAdd("LN:1020 - mushromn s",{});
                _lastSpawnedMushroom = int(serverData.mushrooms.s);
             }
             
-             LOGGER.DebugQAdd("LN:1024 -buildHealth",{});
             _buildingHealthData = serverData.buildinghealthdata;
             _buildingData = serverData.buildingdata;
-            LOGGER.DebugQAdd("LN:1019", {});
             if(!MapRoomManager.instance.isInMapRoom3)
             {
                for each(bd in _buildingData)
@@ -1048,7 +1043,6 @@ package
                   }
                }
             }
-            LOGGER.DebugQAdd("LN:1047 past map room 3", {});
             _rawGIP = serverData.buildingresources;
             _processedGIP = {};
             _GIP = {
@@ -1061,7 +1055,6 @@ package
             _baseName = serverData.basename;
             _baseValue = uint(serverData.basevalue);
             _basePoints = Number(serverData.points);
-            LOGGER.DebugQAdd("LN:1060 pre outpost value", {});
             if(!_outpostValue)
             {
                _outpostValue = 0;
@@ -1074,7 +1067,6 @@ package
             GLOBAL._credits = new SecNum(int(serverData.credits));
             _hpCredits = int(serverData.credits);
             _tempLoot = serverData.loot;
-            LOGGER.DebugQAdd("LN:1073 pre SetBuildingProps", {});
             GLOBAL.SetBuildingProps();
             _buildingsStored = {};
             for(researchdata in serverData.researchdata)
@@ -1699,11 +1691,11 @@ package
             LOGGER.Stat([LOGGER.STAT_MEM,"loadbase",(System.totalMemory / 1024 / 1024).toString(),int(getTimer() * 0.001).toString()]);
          }
       
-            LOGGER.DebugQPost(error);
       }
          catch (error:Error)
          {
             // Move logger back here later
+            // LOGGER.DebugQPost(error);
          }
       }
       

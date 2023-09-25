@@ -228,6 +228,10 @@ export class Save {
 
   @FrontendKey
   @Property({ type: "json", nullable: true })
+  buildingkeydata?: FieldData;
+
+  @FrontendKey
+  @Property({ type: "json", nullable: true })
   researchdata?: FieldData;
 
   @FrontendKey
@@ -409,6 +413,7 @@ export class Save {
 
   public static jsonKeys: (keyof FieldData)[] = [
     "buildingdata",
+    "buildingkeydata",
     "researchdata",
     "stats",
     "rewards",

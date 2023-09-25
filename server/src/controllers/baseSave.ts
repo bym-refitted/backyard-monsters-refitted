@@ -18,7 +18,7 @@ export const baseSave: KoaController = async ctx => {
     try {
       ctx.request.body[key] = JSON.parse(ctx.request.body[key]);
     } catch (error) {
-      errorLog(`Error parsing JSON for key '${key}': ${error.message}`);
+      // errorLog(`Error parsing JSON for key '${key}': ${error.message}`);
     }
   }
   // Equivalent to Object.assign() - merges second object onto entity
