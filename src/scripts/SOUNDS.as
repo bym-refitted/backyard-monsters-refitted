@@ -18,7 +18,7 @@ package
       
       public static var _mutedMusic:int = 0;
       
-      public static var _assets:Array;
+      public static var _soundAssets:Array;
       
       private static var soundLibraries:Vector.<SoundLibrary>;
       
@@ -182,7 +182,12 @@ package
       public static function Setup() : void
       {
          var s:String = null;
-         var surl:String = null;
+         var uiSounds:String = null;
+         var otherSounds:String = null;
+         var attackSounds:String = null;
+         var musicSounds:String = null;
+         var infernoSounds:String = null;
+         var infernoMusic:String = null;
          var i:int = 0;
          if(!_setup)
          {
@@ -209,24 +214,34 @@ package
             }
             catch(e:Error)
             {
-               LOGGER.Log("err","SOUNDS.Setup: " + e.message + " | " + e.getStackTrace());
+               GLOBAL.Message("There was a problem setting up audio ", e);
             }
-            surl = GLOBAL._soundPathURL + "uisounds.v" + GLOBAL._soundVersion + ".swf";
-            _assets = [surl,GLOBAL._soundPathURL + "othersounds.v" + GLOBAL._soundVersion + ".swf",GLOBAL._soundPathURL + "attacksounds.v" + GLOBAL._soundVersion + ".swf",GLOBAL._soundPathURL + "music.v" + GLOBAL._soundVersion + ".swf",GLOBAL._soundPathURL + "infernoSounds.v" + GLOBAL._soundVersion + ".swf",GLOBAL._soundPathURL + "infernoMusic.v" + GLOBAL._soundVersion + ".swf"];
             if(GLOBAL._local)
             {
-               surl = GLOBAL._soundPathURL + "uisounds.swf";
-               _assets = [surl,GLOBAL._soundPathURL + "othersounds.swf",GLOBAL._soundPathURL + "attacksounds.swf",GLOBAL._soundPathURL + "music.swf",GLOBAL._soundPathURL + "infernoSounds.swf",GLOBAL._soundPathURL + "infernoMusic.swf"];
+               uiSounds = GLOBAL._soundPathURL + "uisounds.swf";
+               otherSounds = GLOBAL._soundPathURL + "othersounds.swf";
+               attackSounds = GLOBAL._soundPathURL + "attacksounds.swf";
+               musicSounds = GLOBAL._soundPathURL + "music.swf";
+               infernoSounds = GLOBAL._soundPathURL + "infernoSounds.swf";
+               infernoMusic = GLOBAL._soundPathURL + "infernoMusic.swf";
+               _soundAssets = [uiSounds,otherSounds,attackSounds,musicSounds,infernoSounds,infernoMusic];
             }
+            uiSounds = GLOBAL._soundPathURL + "uisounds.v" + GLOBAL._soundVersion + ".swf";
+            otherSounds = GLOBAL._soundPathURL + "othersounds.v" + GLOBAL._soundVersion + ".swf";
+            attackSounds = GLOBAL._soundPathURL + "attacksounds.v" + GLOBAL._soundVersion + ".swf";
+            musicSounds = GLOBAL._soundPathURL + "music.v" + GLOBAL._soundVersion + ".swf";
+            infernoSounds = GLOBAL._soundPathURL + "infernoSounds.v" + GLOBAL._soundVersion + ".swf";
+            infernoMusic = GLOBAL._soundPathURL + "infernoMusic.v" + GLOBAL._soundVersion + ".swf";
+            _soundAssets = [uiSounds,otherSounds,attackSounds,musicSounds,infernoSounds,infernoMusic];
             soundLibraries = new Vector.<SoundLibrary>();
             i = 0;
-            while(i < _assets.length)
+            while(i < _soundAssets.length)
             {
-               soundLibraries.push(new SoundLibrary(_assets[i]));
+               soundLibraries.push(new SoundLibrary(_soundAssets[i]));
                i++;
             }
             i = 0;
-            while(i < _assets.length - 1)
+            while(i < _soundAssets.length - 1)
             {
                soundLibraries[i].next = soundLibraries[i + 1];
                i++;
@@ -301,10 +316,10 @@ package
       
       public static function PlayMusicB(param1:String = "", param2:Number = 0.7, param3:Number = 0, param4:Number = 0) : void
       {
-         var _loc5_:String = null;
-         var _loc6_:SoundLibrary = null;
-         var _loc7_:Class = null;
-         var _loc8_:Sound = null;
+         var soundUrl:String = null;
+         var soundLibrary:SoundLibrary = null;
+         var soundClass:Class = null;
+         var sound:Sound = null;
          if(_currentMusic == param1)
          {
             return;
@@ -318,10 +333,10 @@ package
             if(_concurrent[param1] <= 2)
             {
                _concurrent[param1] += 1;
-               _loc5_ = param1;
+               soundUrl = param1;
                if(_sounds[param1] is String)
                {
-                  _loc5_ = String(_sounds[param1]);
+                  soundUrl = String(_sounds[param1]);
                }
                else if(_sounds[param1])
                {
@@ -334,17 +349,17 @@ package
                   _currentMusic = param1;
                   _musicChannel.addEventListener(Event.SOUND_COMPLETE,replayMusic);
                }
-               for each(_loc6_ in soundLibraries)
+               for each(soundLibrary in soundLibraries)
                {
-                  if(Boolean(_loc6_.loaded) && _loc6_.li.applicationDomain.hasDefinition(_loc5_))
+                  if(Boolean(soundLibrary.loaded) && soundLibrary.li.applicationDomain.hasDefinition(soundUrl))
                   {
-                     _loc8_ = new (_loc7_ = _loc6_.li.applicationDomain.getDefinition(_loc5_) as Class)() as Sound;
+                     sound = new (soundClass = soundLibrary.li.applicationDomain.getDefinition(soundUrl) as Class)() as Sound;
                      if(_musicChannel)
                      {
                         _musicChannel.stop();
                         _musicChannel.removeEventListener(Event.SOUND_COMPLETE,replayMusic);
                      }
-                     _musicChannel = _loc8_.play(param4,99999,new SoundTransform(param2,param3));
+                     _musicChannel = sound.play(param4,99999,new SoundTransform(param2,param3));
                      _currentMusic = param1;
                      _musicChannel.addEventListener(Event.SOUND_COMPLETE,replayMusic);
                   }
@@ -353,6 +368,9 @@ package
          }
          catch(e:Error)
          {
+            // Error #2219: Security sandbox violation: caller /AppData/Local/Temp/ffded/424242.swf 
+            // cannot access LoaderInfo.applicationDomain owned by http://localhost:3001/assets/sounds/uisounds.v1.swf
+           // GLOBAL.Message("Audio error: " + e.message);
          }
       }
       
@@ -426,6 +444,7 @@ package
          if(_setup && _loadState == 0 && ImageCache.load.length == 0)
          {
             _loadState = 1;
+            // Comment: Loads the audio from here
             (soundLibraries[0] as SoundLibrary).Load();
          }
          if(_currentMusic != _queuedMusic)
@@ -445,6 +464,7 @@ package
             }
             else
             {
+               // Comment: Call is made here to play audio
                PlayMusicB(_queuedMusic,_musicVolume,_musicPan);
             }
          }
@@ -482,7 +502,7 @@ package
          }
          catch(e:Error)
          {
-            LOGGER.Log("err","SOUNDS.Toggle: " + e.message + " | " + e.getStackTrace());
+            GLOBAL.Message("There was a problem turning sounds on ", e);
          }
       }
       
@@ -506,7 +526,7 @@ package
          }
          catch(e:Error)
          {
-            LOGGER.Log("err","SOUNDS.Toggle: " + e.message + " | " + e.getStackTrace());
+            GLOBAL.Message("There was a problem turning the music on ", e);
          }
       }
       

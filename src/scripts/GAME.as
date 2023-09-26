@@ -236,9 +236,6 @@ package
          GLOBAL._monetized = obj.monetized;
          MarketingRecapture.instance.importData(obj.urlparams);
 
-         // Logging endpoints
-         LOGGER.DebugQAdd("Game endpoints: ", {url: obj});
-         LOGGER.DebugQPost();
          GLOBAL._ROOT = new MovieClip();
          addChild(GLOBAL._ROOT);
          GLOBAL._layerMap = GLOBAL._ROOT.addChild(new Sprite()) as Sprite;

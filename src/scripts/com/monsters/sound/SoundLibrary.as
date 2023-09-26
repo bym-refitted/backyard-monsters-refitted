@@ -7,6 +7,9 @@ package com.monsters.sound
    import flash.net.URLRequest;
    import flash.system.ApplicationDomain;
    import flash.system.LoaderContext;
+   import flash.system.SecurityDomain;
+   import flash.events.IEventDispatcher;
+   import flash.system.Security;
    
    public class SoundLibrary
    {
@@ -31,10 +34,16 @@ package com.monsters.sound
       
       public function Load() : void
       {
+         Security.loadPolicyFile("http://localhost:3001/crossdomain.xml");
+         var context:LoaderContext = new LoaderContext();
+         context.checkPolicyFile = true;
+         context.securityDomain = SecurityDomain.currentDomain;
+         context.applicationDomain = ApplicationDomain.currentDomain;
+
          this.loader = new Loader();
-         this.loader.load(new URLRequest(this._asset),new LoaderContext(false,new ApplicationDomain(ApplicationDomain.currentDomain)));
+         this.loader.load(new URLRequest(this._asset), context);
          this.loader.contentLoaderInfo.addEventListener(Event.COMPLETE,this.onLoad);
-         this.loader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR,GLOBAL.handleLoadError);
+         this.loader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR,this.handleLoadError);
       }
       
       private function onLoad(param1:Event) : void
@@ -49,6 +58,13 @@ package com.monsters.sound
          {
             SOUNDS._loadState = 2;
          }
+      }
+
+      private function handleLoadError(param1:IOErrorEvent) : void
+      {
+         IEventDispatcher(param1.target).removeEventListener(IOErrorEvent.IO_ERROR,this.handleLoadError);
+         var errMessage:String = param1.text;
+         GLOBAL._layerTop.addChild(GLOBAL.Message("There was an error loading sounds and music"));
       }
    }
 }
