@@ -261,31 +261,46 @@ package
             var isPasswordValid:Boolean = isValidPassword(passwordValue);
             var buttonText:TextField = (submitButton.getChildAt(0) as TextField);
 
-            if (isEmailValid && isPasswordValid)
+            // Set to false for production
+            var isDevEnvEnabled = true;
+
+            if (isDevEnvEnabled)
             {
-                if (buttonText)
-                {
-                    buttonText.text = "Please wait...";
-                    buttonText.text = buttonText.text.toUpperCase();
-                }
-                new URLLoaderApi().load(GLOBAL._apiURL + "bm/getnewmap", null, validatePostCredentials);
+                new URLLoaderApi().load(GLOBAL._apiURL + "bm/getnewmap", null, postDevEnvDetails);
             }
             else
             {
-                if (!isEmailValid)
+                if (isEmailValid && isPasswordValid)
                 {
-                    showErrorMessage(emailInput, "Invalid email format");
+                    if (buttonText)
+                    {
+                        buttonText.text = "Please wait...";
+                        buttonText.text = buttonText.text.toUpperCase();
+                    }
+                    new URLLoaderApi().load(GLOBAL._apiURL + "bm/getnewmap", null, postAuthDetails);
                 }
-                if (!isPasswordValid)
+                else
                 {
-                    showErrorMessage(passwordInput, "Password must be at least 8 characters");
+                    if (!isEmailValid)
+                    {
+                        showErrorMessage(emailInput, "Invalid email format");
+                    }
+                    if (!isPasswordValid)
+                    {
+                        showErrorMessage(passwordInput, "Password must be at least 8 characters");
+                    }
                 }
             }
         }
 
-        private function validatePostCredentials(serverData:Object)
+        private function postAuthDetails(serverData:Object)
         {
             LOGIN.OnGetNewMap(serverData, [["email", emailValue], ["password", passwordValue]]);
+        }
+
+        private function postDevEnvDetails(serverData:Object)
+        {
+            LOGIN.OnGetNewMap(serverData, [["email", "dev@test.com"], ["password", "dev12345"]]);
         }
 
         private function isValidEmail(email:String):Boolean
