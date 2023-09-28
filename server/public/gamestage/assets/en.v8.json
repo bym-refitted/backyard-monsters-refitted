@@ -1,0 +1,234 @@
+{
+    "msg": {
+        "loading": "Loading... ",
+        "rendering": "Rendering... ",
+        "crunching": "Crunching ",
+        "stopconstructionconfirm": "Are you sure you want to stop construction and destroy this building? <b>This can not be un-done</b>",
+        "destroybuilding": {
+            "btn": "Destroy Building"
+        },
+        "dontpanic": "Don't Panic!",
+        "inactiveupgrade": "Inactive Upgrade"
+    },
+    "pop": {
+        "levelup": {
+            "title": "Congratulations!",
+            "headline": "You're now <b>Level {v1}</b>",
+            "body": "Keep up the good work and don't forget to brag about it."
+        },
+        "goldenmushroom": {
+            "title": "Your worker struct gold!",
+            "desc": "You've picked a golden mushroom worth {v1} Shiny. <b>Mushrooms grow back every day.</b>"
+        },
+        "oops": {
+            "title": "Oops, something broke!",
+            "body": "Reasons for errors include(but are not limited to):<br/>* Having the game open in more than 1 place.<br/>* Loss of internet connection.<br/>* Your computer running too slowly.<br/><br/><b>We&apos;ve logged the error, please reload to continue.</b>"
+        },
+        "resource2": "{v1}",
+        "experiencebar": "{v1}",
+        "sendgifts": "Send Gifts",
+        "mailbox": "Mailbox"
+    },
+    "ui": {
+        "topbuildings": "Buildings",
+        "topquests": "Quests",
+        "topstore": "Store",
+        "topmap": "Map",
+        "topaddshiny": "Add",
+        "worker": {
+            "hire": "Hire",
+            "idle": "Idle",
+            "walking": "Walking",
+            "hireicon": "HIRE"
+        },
+        "producing": "<b>{v2} {v1}</b> <br>Ready to Collect <br>Producing...",
+        "buildingfull": "<b>FULL</b><br /><br /> Production paused, bank to resume production"
+    },
+    "uitop": {
+        "backyardmonsters": "BACKYARD MONSTERS"
+    },
+    "btn": {
+        "build": "Build",
+        "brag": "Brag to your friends",
+        "pick": "Pick",
+        "relocateYard": "Relocate Yard",
+        "upgrade": "Upgrade",
+        "move": "Move",
+        "more": "More...",
+        "openstore": "Open Store",
+        "collect": "Collect",
+        "fortify": "Fortify",
+        "bank": "Bank {v1}",
+        "bankall": "Bank All",
+        "speedup": "Speed Up",
+        "earn": "Earn",
+        "stopbuild": "STOP Build",
+        "useshiny": "Use {v1} Shiny",
+        "resources": "Resources",
+        "buildings": "Buildings",
+        "defensive": "Defensive",
+        "decorations": "Decorations",
+        "evil": "Evil",
+        "plants": "Plants",
+        "good": "Good",
+        "flags": "Flags",
+        "premium": "Premium"
+    },
+    "bdg": {
+        "state": {
+            "building": "BUILDING",
+            "upgrading": "UPGRADING"
+        },
+        "infopop": {
+            "levelnum": "Level {v1}"
+        },
+        "upgradedesc": "<b>Upgrade your {v1} to Level {v2}</b>",
+        "upgraderequirements": "<br><b>Requirements</b></li>"
+    },
+    "quests": {
+        "title": "Quests"
+    },
+    "q": {
+        "u1": {
+            "name": "Next Level",
+            "description": "Upgrade any building to Level 2"
+        },
+        "bk1": {
+            "name": "Mushroom Soup",
+            "description": "Pick 5 Mushrooms"
+        }
+    },
+    "settings": {
+        "zoomout": "Zoom Out",
+        "zoomin": "Zoom In",
+        "fullscreenenter": "Full Screen",
+        "fullscreenexit": "Windowed Mode",
+        "soundon": "Sound On",
+        "soundoff": "Sound Off",
+        "musicon": "Music On",
+        "musicoff": "Music Off",
+        "saved": "Saved",
+        "saving": "Saving"
+    },
+    "#r": {
+        "twigs#": "Twigs",
+        "pebbles#": "Pebbles",
+        "putty#": "Putty",
+        "goo#": "Goo",
+        "shiny#": "Shiny",
+        "time#": "Time"
+    },
+    "#b": {
+        "townhall#": "Town Hall",
+        "twigsnapper#": "Twig Snapper",
+        "pebbleshiner#": "Pebble Shiner",
+        "puttysquisher#": "Putty Squisher",
+        "goofactory#": "Goo Factory",
+        "generalstore#": "General Store",
+        "storagesilo#": "Storage Silo",
+        "shiny#": "Shiny",
+        "snipertower#": "Sniper Tower",
+        "cannontower#": "Cannon Tower",
+        "teslatower#": "Tesla Tower",
+        "lasertower#": "Laser Tower",
+        "flaktower#": "Aerial Defense Tower",
+        "railguntower#": "Railgun",
+        "monsterbunker#": "Monster Bunker",
+        "monstercage#": "Champion Cage",
+        "boobytrap#": "Booby Trap",
+        "heavytrap#": "Heavy Trap",
+        "championchamber#": "Champion Chamber",
+        "woodenblock#": "Block",
+        "hatchery#": "Hatchery",
+        "housing#": "Housing",
+        "monsterlocker#": "Monster Locker",
+        "flinger#": "Flinger",
+        "maproom#": "Map Room",
+        "monsterjuicer#": "Monster Juicer",
+        "monsteracademy#": "Monster Academy",
+        "catapult#": "Catapult",
+        "wildmonsterbaiter#": "Wild Monster Baiter",
+        "monsterlab#": "Monster Lab",
+        "yardplanner#": "Yard Planner",
+        "hcc#": "Hatchery Control Center",
+        "radiotower#": "Radio Tower"
+    },
+    "#m": {
+        "pokey#": "Pokey",
+        "octoooze#": "Octoooze",
+        "bolt#": "Bolt",
+        "fink#": "Fink",
+        "eyera#": "Eyera",
+        "ichi#": "Ichi",
+        "bandito#": "Bandito",
+        "fang#": "Fang",
+        "brain#": "Brain",
+        "crabatron#": "Crabatron",
+        "projectx#": "Project X",
+        "zafreeti#": "Zafreeti",
+        "teratorn#": "Teratorn",
+        "wormzer#": "Wormzer",
+        "dave#": "Dave"
+    },
+    "ai": {
+        "popupwarning": {
+            "title": "WILD MONSTER ALERT"
+        },
+        "kozu": {
+            "name": "Kozu Tribe"
+        },
+        "legionnaire": {
+            "name": "Legionnaire Tribe"
+        },
+        "abunakki": {
+            "name": "Abunakki Tribe"
+        },
+        "preparedefenses": {
+            "btn": "Prepare Defenses"
+        },
+        "engage": {
+            "btn": "Engage Attack"
+        },
+        "eta": "{v1}",
+        "monsterbar": {
+            "title": "Prepare for battle...",
+            "sendnow": {
+                "btn": "I'm Ready Now"
+            }
+        },
+        "tribe": "{v1}",
+        "gooddefense": "ATTACK REPELLED",
+        "settings": {
+            "title": "We'll be back for your bones",
+            "more": {
+                "btn": "Bring more monsters next time."
+            },
+            "same": {
+                "btn": "I'll be waiting"
+            },
+            "less": {
+                "btn": "Can't we all just get along?"
+            }
+        }
+    },
+    "global": {
+        "days": " days",
+        "day": " day",
+        "hours": {
+            "": " hours",
+            "short": " hr"
+        },
+        "hour": " hour",
+        "minutes": " minutes",
+        "minute": " minute",
+        "seconds": {
+            "short": " sec"
+        }
+    },
+    "buildoptions": {
+        "shiny": "Use {v1} Shiny",
+        "buildinstant": "Keep your resources and build instantly!",
+        "upgradeinstant": "Keep your resources and upgrade instantly!",
+        "resources": "Use Resources"
+    }
+}
