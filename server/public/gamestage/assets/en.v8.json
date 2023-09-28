@@ -4,11 +4,49 @@
         "rendering": "Rendering... ",
         "crunching": "Crunching ",
         "stopconstructionconfirm": "Are you sure you want to stop construction and destroy this building? <b>This can not be un-done</b>",
+        "upgradecancelconfirm": "Are you sure you want to stop upgrading this building?",
+        "recycleconfirm": "Are you sure you want to recycle this building? <b>This can not be un-done</b>",
         "destroybuilding": {
             "btn": "Destroy Building"
         },
+        "stopupgrading": {
+            "btn": "Stop Upgrading"
+        },
+        "recyclebuilding": {
+            "btn": "Recycle Building"
+        },
         "dontpanic": "Don't Panic!",
-        "inactiveupgrade": "Inactive Upgrade"
+        "inactiveupgrade": "Inactive Upgrade",
+        "cantrecycleth": "You cannot recycle your Town Hall."
+    },
+    "th": {
+        "willunlockthe": "<b>You will unlock:</b><br>{v1}",
+        "willbuildmore": "You will be able to build more:",
+        "willupgrade": "You will be able to upgrade your:",
+        "recycledesc":" You are about to recyle your Town Hall."
+    },
+    "base": {
+        "uperr": {
+            "buildings": "Level {v1} required.",
+            "bdgpart2": "{v1} {v2}"
+        },
+        "builderr": {
+            "thlevelreqd": "Town Hall Level {v1} required."
+        }
+    },
+    "map": {
+        "cannot": {
+            "recycle": {
+                "map": {
+                    "room3": "You cannot recycle your Map Room in the New World Map. If you want to relocate your yard, click on your Town Hall and choose Relocate."
+                }
+            }
+        }
+    },
+    "fp": {
+        "radiotower": {
+            "title": "Can You Hear Me Now?"
+        }
     },
     "pop": {
         "levelup": {
@@ -22,12 +60,24 @@
         },
         "oops": {
             "title": "Oops, something broke!",
-            "body": "Reasons for errors include(but are not limited to):<br/>* Having the game open in more than 1 place.<br/>* Loss of internet connection.<br/>* Your computer running too slowly.<br/><br/><b>We&apos;ve logged the error, please reload to continue.</b>"
+            "body": "Reasons for errors include(but are not limited to):<br>* Having the game open in more than 1 place.<br>* Loss of internet connection.<br>* Your computer running too slowly.<br><br><b>We&apos;ve logged the error, please reload to continue.</b>"
+        },
+        "hireanother": {
+            "title": "All Workers Are Busy"
         },
         "resource2": "{v1}",
         "experiencebar": "{v1}",
         "sendgifts": "Send Gifts",
-        "mailbox": "Mailbox"
+        "mailbox": "Mailbox",
+        "alerts": "Alert",
+        "afk" : {
+            "title": "Anyone home?",
+            "body": "Hmm.. it seems like you may be ideal."
+        },
+        "timeout": {
+            "title": "Oops.. timeout!",
+            "body": "It looks like the game was left ideal for too long, and has timed out. Please start the game again."
+        }
     },
     "ui": {
         "topbuildings": "Buildings",
@@ -35,20 +85,27 @@
         "topstore": "Store",
         "topmap": "Map",
         "topaddshiny": "Add",
+        "building": "<b>Building<br><br>{v1}</b><br>Speed up to finish.",
+        "upgrading": "<b>Upgrading<br><br>{v1}</b><br>Speed up to finish.",
         "worker": {
             "hire": "Hire",
             "idle": "Idle",
             "walking": "Walking",
             "hireicon": "HIRE"
         },
-        "producing": "<b>{v2} {v1}</b> <br>Ready to Collect <br>Producing...",
-        "buildingfull": "<b>FULL</b><br /><br /> Production paused, bank to resume production"
+        "producing": "<b>Producing<br>{v1}<br><br>{v2}</b><br>{v3}% FULL",
+        "buildingfull": "<b>FULL</b><br /><br /> Production paused, bank to resume production",
+        "needmoreroom": "<b>Not enough room.</b><br/>Build more or upgrade existing storage silos"
     },
     "uitop": {
         "backyardmonsters": "BACKYARD MONSTERS"
     },
+    "worker": {
+        "speedup": "Speed-up a worker's task for {v1} Shiny."
+    },
     "btn": {
         "build": "Build",
+        "buildnow": "Build Now",
         "brag": "Brag to your friends",
         "pick": "Pick",
         "relocateYard": "Relocate Yard",
@@ -72,9 +129,57 @@
         "plants": "Plants",
         "good": "Good",
         "flags": "Flags",
-        "premium": "Premium"
+        "premium": "Premium",
+        "getresources": "Get Resources",
+        "stopupgrade": "STOP Upgrade",
+        "recycle": "Recycle",
+        "openradio": "Open Radio"
+    },
+    "townhall": {
+        "desc": "The hub of any great yard and the first building you need to build. Upgrading the Town Hall unlocks new buildings, features and lets you upgrade other buildings to a higher level."
+    },
+    "snipertower": {
+        "desc": "Long range, high damage, but slow to reload. This tower picks off enemy monsters before they even get close. Protect a larger area with this tower."
+    },
+    "cannontower": {
+        "desc": "Short range but high damage, this tower's shells explode on impact, great for taking out tightly-packed groups."
+    },
+    "twigsnapper": {
+        "desc": "Produces Twigs. Used in the construction of buildings"
+    },
+    "pebbleshiner": {
+        "desc": "Produces Pebbles. Used in the construction of buildings"
+    },
+    "goofactory": {
+        "desc": "Produces Goo. Goo is used in the <b>Hatchery</b> to produce monsters."
+    },
+    "puttysquisher": {
+        "desc": "Produces Putty. Used in the construction of buildings"
+    },
+    "radio": {
+        "tTitle": "Radio Tower",
+        "build": {
+            "desc": "Never be caught off guard again! Get e-mail alerts while you're away from your yard."
+        },
+        "desc": "Never be caught off guard again! Get e-mail alerts while you're away from your yard.",
+        "cbNews": "News",
+        "cbAttack": "Attacks",
+        "tEmail": "Email your email",
+        "enterValidEmail": "Enter a valid email",
+        "tfEmail": "Email",
+        "bSave": "Save",
+        "bSaving": "Save",
+        "noSubscribe": "Don't want to subscribe?",
+        "noSubscribeN": "No Thanks",
+        "noSubscribeY": "Yes Please",
+        "saveFail": "<b>Hmm.. seems like the broadcast frequency is broken.</b><br><br>Radio channel not available on Backyard Monsters Refitted.",
+        "recycledesc": "<b>Recycle:</b>"
     },
     "bdg": {
+        "tower": {
+            "rangeupgrade": "<b>Range:</b> Increases from {v1} to {v2}",
+            "damageupgrade": "<b>Damage:</b> Increases from {v1} dps to {v2} dps"
+        },
         "state": {
             "building": "BUILDING",
             "upgrading": "UPGRADING"
@@ -82,8 +187,16 @@
         "infopop": {
             "levelnum": "Level {v1}"
         },
-        "upgradedesc": "<b>Upgrade your {v1} to Level {v2}</b>",
-        "upgraderequirements": "<br><b>Requirements</b></li>"
+        "fullyupgraded": "Fully Upgraded!",
+        "buildingrequirement": "Level {v1} {v2}",
+        "upgradedesc": "<b>Upgrade your {v1} to Level {v2}</b><br>{v3}<br>",
+        "upgraderequirements": "<b>Requirements</b><br>{v1}",
+        "resource": {
+            "upproduction": "<b>Production:</b> Increases from {v1} to {v2}/hour",
+            "upcapacity": "<b>Capcity:</b> Increases from {v1} to {v2}"
+        },
+        "more": "<b>{v1} level {v2}</b><br><br>{v3}<br><br><b>Recycle:</b>{v4}",
+        "morenolevel": "<b>{v1}</b><br>{v2}<br><br><br>{v3}"
     },
     "quests": {
         "title": "Quests"
@@ -151,7 +264,7 @@
         "monsterlab#": "Monster Lab",
         "yardplanner#": "Yard Planner",
         "hcc#": "Hatchery Control Center",
-        "radiotower#": "Radio Tower"
+        "radio#": "Radio Tower"
     },
     "#m": {
         "pokey#": "Pokey",
@@ -175,13 +288,16 @@
             "title": "WILD MONSTER ALERT"
         },
         "kozu": {
-            "name": "Kozu Tribe"
+            "name": "Kozu Tribe",
+            "taunt": "We'll be back for your bones!"
         },
         "legionnaire": {
-            "name": "Legionnaire Tribe"
+            "name": "Legionnaire Tribe",
+            "taunt": "We'll be back for your bones!"
         },
         "abunakki": {
-            "name": "Abunakki Tribe"
+            "name": "Abunakki Tribe",
+            "taunt": "We'll be back for your bones!"
         },
         "preparedefenses": {
             "btn": "Prepare Defenses"
@@ -197,9 +313,9 @@
             }
         },
         "tribe": "{v1}",
-        "gooddefense": "ATTACK REPELLED",
+        "gooddefense": "You successfully defended your yard from an attack by the {v1}",
         "settings": {
-            "title": "We'll be back for your bones",
+            "title": "ATTACK REPELLED",
             "more": {
                 "btn": "Bring more monsters next time."
             },
@@ -211,24 +327,39 @@
             }
         }
     },
+    "mail": {
+        "disabled": "Mailbox is disabled."
+    },
     "global": {
-        "days": " days",
-        "day": " day",
-        "hours": {
-            "": " hours",
-            "short": " hr"
+        "days": {
+            "long": "days",
+            "short": "d"
         },
-        "hour": " hour",
-        "minutes": " minutes",
-        "minute": " minute",
+        "hours": {
+            "long": "hours",
+            "short": "h"
+        },
+        "minutes": {
+            "long": " minutes",
+            "short": "m"
+        },
         "seconds": {
-            "short": " sec"
-        }
+            "short": "s"
+        },
+        "day": "day",
+        "hour": "hour",
+        "minute": "minute"
     },
     "buildoptions": {
         "shiny": "Use {v1} Shiny",
         "buildinstant": "Keep your resources and build instantly!",
         "upgradeinstant": "Keep your resources and upgrade instantly!",
-        "resources": "Use Resources"
+        "fortifyinstant": "Keep your resources and fortify instantly!",
+        "resources": "Use Resources",
+        "err": {
+            "moreresources": "<b>You need {v1} more resources to build.</b><br><br>Get the resources and start building for {v2} Shiny?",
+            "moreresourcesupgrade": "<b>You need {v1} more resources to upgrade.</b><br><br>Get the resources and start upgrading for {v2} Shiny?",
+            "moresilosupgrade": "Upgrade storage silos to increase your resource capacity."
+        }
     }
 }
