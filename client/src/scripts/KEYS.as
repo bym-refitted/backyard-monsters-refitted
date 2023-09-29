@@ -57,33 +57,51 @@ package
          cbf();
       }
 
+      // Processes the JSON language file from the server
+      // Does not split the key if it is part of the exclusion list
+      // Else splits the key for every occurrence of '_' to create child properties
+      // Replaces placeholders within JSON with dynamic values e.g. {v1} with 20
       public static function Get(jsonKeyPath:String, placeholders:Object = null):String
       {
-         var keyPath:Array = jsonKeyPath.split("_");
-         var jsonValue:Object = jsonData;
+         var jsonValue:Object = jsonData.data;
+         var excludeList:Array = jsonData.exclusionList;
 
-         for each (var key:String in keyPath)
+         if (excludeList && excludeList.indexOf(jsonKeyPath) !== -1)
          {
-            if (jsonValue.hasOwnProperty(key))
-            {
-               jsonValue = jsonValue[key];
-            }
-            else
-            {
-               jsonValue = null;
-               break;
-            }
+            // Exlucde
+            return jsonValue.hasOwnProperty(jsonKeyPath) ? jsonValue[jsonKeyPath] as String : "";
          }
-
-         // Convert jsonValue to a string
+         else
+         {
+            // Split
+            var keyPath:Array = jsonKeyPath.split("_");
+            jsonValue = createChildKeys(jsonValue, keyPath);
+         }
          var jsonString:String = jsonValue as String;
 
          if (placeholders != null && jsonString != null)
          {
+            // Replace
             jsonString = replacePlaceholders(jsonString, placeholders);
          }
 
          return jsonString != null ? jsonString : jsonKeyPath;
+      }
+
+      private static function createChildKeys(json:Object, keyPath:Array):Object
+      {
+         for each (var key:String in keyPath)
+         {
+            if (json.hasOwnProperty(key))
+            {
+               json = json[key];
+            }
+            else
+            {
+               return null;
+            }
+         }
+         return json;
       }
 
       private static function replacePlaceholders(input:String, placeholders:Object):String

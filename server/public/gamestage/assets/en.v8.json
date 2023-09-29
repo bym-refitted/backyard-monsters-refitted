@@ -15,6 +15,10 @@
         "recyclebuilding": {
             "btn": "Recycle Building"
         },
+        "purchase": {
+            "complete": "Purchase Complete."
+        },
+        "housingfull": "Housing full.",
         "dontpanic": "Don't Panic!",
         "inactiveupgrade": "Inactive Upgrade",
         "cantrecycleth": "You cannot recycle your Town Hall."
@@ -23,7 +27,7 @@
         "willunlockthe": "<b>You will unlock:</b><br>{v1}",
         "willbuildmore": "You will be able to build more:",
         "willupgrade": "You will be able to upgrade your:",
-        "recycledesc":" You are about to recyle your Town Hall."
+        "recycledesc": " You are about to recyle your Town Hall."
     },
     "base": {
         "uperr": {
@@ -70,7 +74,7 @@
         "sendgifts": "Send Gifts",
         "mailbox": "Mailbox",
         "alerts": "Alert",
-        "afk" : {
+        "afk": {
             "title": "Anyone home?",
             "body": "Hmm.. it seems like you may be ideal."
         },
@@ -133,7 +137,9 @@
         "getresources": "Get Resources",
         "stopupgrade": "STOP Upgrade",
         "recycle": "Recycle",
-        "openradio": "Open Radio"
+        "openradio": "Open Radio",
+        "viewhousing": "View Housing",
+        "viewhatchery": "View Hatchery"
     },
     "townhall": {
         "desc": "The hub of any great yard and the first building you need to build. Upgrading the Town Hall unlocks new buildings, features and lets you upgrade other buildings to a higher level."
@@ -156,6 +162,86 @@
     "puttysquisher": {
         "desc": "Produces Putty. Used in the construction of buildings"
     },
+    "storagesilo": {
+        "desc": "Increase your bank's capacity of Twigs, Pebbles, Putty and Goo."
+    },
+    "monsterlocker": {
+        "desc": "Research and unlock new monsters to hatch in the Hatchery."
+    },
+    "housing": {
+        "desc": "Stores the creatures you produce in the Hatchery, upgrade or build more to increase capacity."
+    },
+    "flinger": {
+        "desc": "The Flinger flings monsters into battle. This building is required if you wish to attack another player. Use the Map Room to find and target enemy yards."
+    },
+    "maproom": {
+        "desc": "Look around the world, find and help friends and select other player yards to attack."
+    },
+    "monsteracademy": {
+        "desc": "Through a demanding curriculum of physics, philosophy and physical education, your monsters will earn their PhD in Advanced Destruction. Failing that, we have a large supply of steroids."
+    },
+    "hatchery": {
+        "desc": "Converts Goo produced by the Goo Factory into the monsters you have unlocked in the Monster Locker."
+    },
+    "hcc": {
+        "desc": "Control all of your Hatcheries from a single building. You add monsters to one build queue and it sends instructions to whichever Hatchery becomes available first."
+    },
+    "catapult": {
+        "desc": "A siege weapon, the Catapult hurls twigs at enemy bases to damage buildings. Upgrade to increase firepower."
+    },
+    "monsterlab": {
+        "desc": "Research top secret abilities for your monsters. In war, science rules."
+    },
+    "wildmonsterbaiter": {
+        "desc": "The Wild Monster Baiter sprays a musk into the air that Wild Monsters can't resist, causing them to flock to your base, a great way to test your defenses. If it gets too much for you the building has a siren you can use to scare them off."
+    },
+    "yardplanner": {
+        "desc": "Quickly move some things around or completely remodel your layout! This building gives you a birds-eye view of your yard and makes moving buildings a snap."
+    },
+    "monsterjuicer": {
+        "desc": "Got some unwanted monsters in your Housing? Want to make some space for bigger and better things? Want to make a sacrifice to the Backyard Gods? Then this is the building for you! Recycle Monsters back into Goo with minimal suffering."
+    },
+    "generalstore": {
+        "desc": "Spend your Shiny on time-saving upgrades."
+    },
+    "boobytrap": {
+        "desc": "Invisible to the enemy until it's too late. Triggered when a Monster steps on it, deals large damage to a small area. Place close to buildings or use walls to group attackers into a small place."
+    },
+    "woodenblock": {
+        "desc": "A simple brown block, used to build wall to protect buildings and channel attackers into traps or closer to towers. Can be upgraded from wood to stone to metal to gold to black diamond!"
+    },
+    "teslatower": {
+        "desc": "Talk about evil science, this high voltage tower fries any enemy that gets within range. Upgrade to improve, number of shocks per charge, damage per shock, and range."
+    },
+    "lasertower": {
+        "desc": "Deadly and fast, this plasma energy tower zaps any invading enemy at the speed of light. Great for taking out packed groups of monsters."
+    },
+    "railguntower": {
+        "desc": "An electrical gun that accelerates a conductive projectile along a pair of rails, the Railgun tower makes up for its slow reload with high damage and an infinite line of fire."
+    },
+    "flaktower": {
+        "desc": "Fast-firing cannon designed to nullify or reduce the effectiveness of hostile air action."
+    },
+    "monsterbunker": {
+        "desc": "This defensive housing allows monsters to fight to death defending your base."
+    },
+    "monstercage": {
+        "desc": "Hatch and Evolve a Champion Monster to attack enemies and defend your base."
+    },
+    "championchamber": {
+        "desc": "This building allows you to change out your active champ, keeping inactive ones safe on ice until you call them forth again. (Frozen champs aren't hurt even when the Champion Chamber is completely destroyed.)"
+    },
+    "heavytrap": {
+        "desc": "Invisible to your enemies until it's too late, Heavy Traps use a specialized trigger that only fires when the most powerful monsters step on it, but cause splash damage to all nearby units."
+    },
+    "bi": {
+        "spurtzcannon": {
+            "desc": "Your very own Backyard Shotgun! This cannon fires a spurtz militia to do your bidding - Just what you need to stop groups of invaders dead in their tracks."
+        },
+        "blackspurtzcannon": {
+            "desc": "The Black Diamond Spurtz Cannon boasts stronger durability and reduced loading times. Your enemies will need a monster miracle to get past these!"
+        }
+    },
     "radio": {
         "tTitle": "Radio Tower",
         "build": {
@@ -174,6 +260,55 @@
         "noSubscribeY": "Yes Please",
         "saveFail": "<b>Hmm.. seems like the broadcast frequency is broken.</b><br><br>Radio channel not available on Backyard Monsters Refitted.",
         "recycledesc": "<b>Recycle:</b>"
+    },
+    "hatcherypopup": {
+        "level": "Level {v1}"
+    },
+    "hat_producing": "Producing.",
+    "hat": {
+        "nothinginproduction": "Nothing in production.",
+        "notenoughgoo": "Not enough Goo.",
+        "needhousing": "Not enough housing space.",
+        "producing": {
+            "message": "Select monsters from below to add to the queue."
+        },
+        "status": {
+            "waiting":"Waiting"
+        },
+        "slot": {
+            "upgrade": "Upgrade Hatchery to unlock"
+        },
+        "unlockinlocker": "Unlock {v1} in the Monster Locker."
+    },
+    "mon": {
+        "pokeydesc": "Like a swarm of ants, a roaming pack of Pokeys can devour a grown cow in less than five minutes.<br><b>Favorite Target:</b> Anything",
+        "octooozedesc": "The slimy octo-ooze soaks up fire power like a sponge so other monsters can wreak havoc.<br><b>Favorite Target:</b> Defensive Towers",
+        "boltdesc": "Bolt is fast as lightning and can run ahead of your other monsters to munch on buildings with its razor sharp teeth.<br><b>Favorite Target:</b> Harvesters, Town Halls and Silos",
+        "finkdesc": "Found deep inside Amazonia, Fink's chemo-receptors makes its attacks deadly accurate.<br><b>Favorite Target:</b> Anything",
+        "eyeradesc": "Warning: Eye-ra's chemical makeup combusts within close proximity to walls.<br><b>Favorite Target:</b> Walls",
+        "ichidesc": "Discovered in the peak of Mt. Fuji, Ichi is one of the deadliest monsters and can withstand intense damage from towers and booby traps.<br><b>Favorite Target:</b> Defensive Towers",
+        "banditodesc": "Bandito's thick exoskeleton and impeccable accuracy make it the perfect monster assassin.<br><b>Favorite Target:</b> Anything",
+        "fangdesc": "Fang's bite releases a toxic venom which liquidates any target.<br><b>Favorite Target:</b> Anything",
+        "braindesc": "Cunning and greedy, Brain's pulsating cerebral cortex and high intelligence make him perfect for looting resources.<br><b>Favorite Target:</b> Harvesters, Town Halls and Silos",
+        "crabatrondesc": "Using its claws to snap towers like twigs, Crabatron strikes fear into the heart of its enemies.<br><b>Favorite Target:</b> Defensive Towers",
+        "projectxdesc": "A government experiment gone terribly wrong, Project X is programmed to attack defense towers in battle.<br><b>Favorite Target:</b> Defensive Towers",
+        "zafreetidesc": "From deep within the Sahara, comes the mystical Zafreeti healer.<br><b>Favorite Target:</b> Your Monsters (heal), Zafreeti doesn't heal other Vorgs or Zafreetis",
+        "teratorndesc": "With its swift wings and fiery breath, the flying Teratorn rains death from above.<br><b>Favorite Target:</b> Anything",
+        "wormzerdesc": "Wormzer utilizes his burrowing ability to launch surprise attacks and evade even the toughest walled defense<br><b>Favorite Target:</b> Anything",
+        "davedesc": "D.A.V.E only listens to his master and has a habit of completely destroying bases.<br><b>Favorite Target:</b> Anything",
+        "slimeattikusdesc": "An unholy biological terror birthed in the Bangweulu Swamps of Zambia, the Slimeattikus dissolves foes on contact and fissions when attacked.<br><b>Favorite Target:</b> Anything",
+        "vorgdesc": "Hatched in giant hives deep inside the asteroid belt, Vorg are flying alien healers with a penchant for mischief<br><b>Favorite Target:</b> Your Monsters (heal)",
+        "att": {
+            "speed": "Speed",
+            "health": "Health",
+            "damage": "Damage",
+            "cost": "Goo Cost",
+            "housing": "Housing",
+            "time": "Time",
+            "costvalue": "{v1} {v2}",
+            "housingvalue": "{v1} spaces"
+        },
+        "statsspeed": "{v1} kph"
     },
     "bdg": {
         "tower": {
@@ -197,6 +332,10 @@
         },
         "more": "<b>{v1} level {v2}</b><br><br>{v3}<br><br><b>Recycle:</b>{v4}",
         "morenolevel": "<b>{v1}</b><br>{v2}<br><br><br>{v3}"
+    },
+    "str": {
+        "finishnow": "Finish now",
+        "heal": "Heal"
     },
     "quests": {
         "title": "Quests"
