@@ -1,8 +1,9 @@
 import { Next } from "koa";
 import { Context } from "vm";
 import fs from "fs/promises";
+import { errorLog } from "../utils/logger";
+import { exclusionList } from "../keys/languageExclude";
 
-const exclusionList = ["hat_producing"];
 const languageFilePath = "./public/gamestage/assets/en.v8.json";
 
 export const processLanguagesFile = async (ctx: Context, next: Next) => {
@@ -16,7 +17,7 @@ export const processLanguagesFile = async (ctx: Context, next: Next) => {
     } catch (error) {
       ctx.status = 500;
       ctx.body = "Error processing JSON data";
-      console.error(error);
+      errorLog(error);
     }
   } else {
     await next();

@@ -47,6 +47,7 @@
             }
         }
     },
+    "fp_radiotower": "Nervous about leaving your Yard vulnerable? Build a Radio Tower and get attack alerts while you're away.",
     "fp": {
         "radiotower": {
             "title": "Can You Hear Me Now?"
