@@ -63,7 +63,7 @@ package
                if(KEYS._setup)
                {
                   this._mc.tA.htmlText = "<b>" + KEYS.Get("pop_oops_title") + "</b>";
-                  // this._mc.tB.htmlText = KEYS.Get("pop_oops_body");
+                  this._mc.tB.htmlText = KEYS.Get("pop_oops_body");
                   this._mc.tB.htmlText = KEYS.Get(_message);
                }
                this._blocker = this._mc.blocker;

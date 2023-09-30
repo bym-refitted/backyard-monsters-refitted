@@ -12,10 +12,11 @@ import router from "./app.routes";
 
 import { SqliteDriver } from "@mikro-orm/sqlite";
 import { EntityManager, MikroORM, RequestContext } from "@mikro-orm/core";
-import { logging } from "./utils/logger.js";
+import { errorLog, logging } from "./utils/logger.js";
 import { ascii_node } from "./utils/ascii_art.js";
 import { ErrorInterceptor } from "./middleware/clientSafeError.js";
 import { registerDevUser } from "./database/seeds/dev.user";
+import { processLanguagesFile } from "./middleware/processLanguageFile";
 
 export const ORMContext = {} as {
   orm: MikroORM;
@@ -27,7 +28,7 @@ const port = process.env.PORT || 3001;
 
 // Entry point for all modules.
 const api = new Router();
-api.get("/", (ctx: Context) => ctx.body = {});
+api.get("/", (ctx: Context) => (ctx.body = {}));
 
 (async () => {
   ORMContext.orm = await MikroORM.init<SqliteDriver>(ormConfig);
@@ -57,6 +58,8 @@ api.get("/", (ctx: Context) => ctx.body = {});
       },
     })
   );
+  
+  app.use(processLanguagesFile);
 
   app.use(serve("./public"));
   app.use(serve(__dirname + "/public"));
@@ -87,4 +90,4 @@ api.get("/", (ctx: Context) => ctx.body = {});
     ${ascii_node} Admin dashboard: http://localhost:${port}
     `);
   });
-})().catch((e) => console.error(e));
+})().catch((e) => errorLog(e));

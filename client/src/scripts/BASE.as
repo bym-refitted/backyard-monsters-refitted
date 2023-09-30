@@ -595,7 +595,7 @@ package
             }
          }
          GLOBAL.attackingPlayer.isAttacking = GLOBAL.attackingPlayer != GLOBAL.player;
-         PLEASEWAIT.Show("Loading...");
+         PLEASEWAIT.Show(KEYS.Get("msg_loading"));
          GRID.CreateGrid();
          POPUPS.Setup();
          CREEPS.Clear();
@@ -2311,7 +2311,7 @@ package
          if(CREEPS._creepCount == 0)
          {
             _loc18_ = (_lastProcessed - _lastProcessedB) / (param1 - _lastProcessedB);
-            PLEASEWAIT.Update("Rendering... " + int(100 * _loc18_) + "% ");
+            PLEASEWAIT.Update(KEYS.Get("msg_rendering") + int(100 * _loc18_) + "% ");
          }
          else
          {
@@ -2319,7 +2319,7 @@ package
             {
                _tmpPercent += 0.5;
             }
-            PLEASEWAIT.Update("Crunching " + int(_tmpPercent) + "%");
+            PLEASEWAIT.Update(KEYS.Get("msg_crunching") + int(_tmpPercent) + "%");
          }
       }
       

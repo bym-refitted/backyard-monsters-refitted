@@ -1,0 +1,771 @@
+{
+    "msg": {
+        "loading": "Loading... ",
+        "rendering": "Rendering... ",
+        "crunching": "Crunching ",
+        "nojuicer": "Monster Juicer not built",
+        "juicegoo": "Juice {v1} monsters for {v2} Goo?",
+        "finishqueue": "Finish all monsters in the queue?",
+        "stopconstructionconfirm": "Are you sure you want to stop construction and destroy this building? <b>This can not be un-done</b>",
+        "upgradecancelconfirm": "Are you sure you want to stop upgrading this building?",
+        "recycleconfirm": "Are you sure you want to recycle this building? <b>This can not be un-done</b>",
+        "destroybuilding": {
+            "btn": "Destroy Building"
+        },
+        "stopupgrading": {
+            "btn": "Stop Upgrading"
+        },
+        "recyclebuilding": {
+            "btn": "Recycle Building"
+        },
+        "purchase": {
+            "complete": "Purchase Complete."
+        },
+        "housingfull": "Housing full.",
+        "dontpanic": "Don't Panic!",
+        "inactiveupgrade": "Inactive Upgrade",
+        "cantrecycleth": "You cannot recycle your Town Hall."
+    },
+    "th": {
+        "willunlockthe": "<b>You will unlock:</b><br>{v1}",
+        "willbuildmore": "You will be able to build more:",
+        "willupgrade": "You will be able to upgrade your:",
+        "recycledesc": " You are about to recyle your Town Hall."
+    },
+    "base": {
+        "uperr": {
+            "buildings": "Level {v1} required.",
+            "bdgpart1": "{v1}",
+            "bdgpart2": "{v1} {v2}",
+            "bdgpart3": "{v1} {v2}",
+            "bdgpart4": "{v1} {v2} {v3}"
+        },
+        "forterr": {
+            "buildings": "Level {v1} required.",
+            "bdgpart1": "{v1}",
+            "bdgpart2": "{v1} {v2}",
+            "bdgpart3": "{v1} {v2}",
+            "bdgpart4": "{v1} {v2} {v3}"
+        },
+        "builderr": {
+            "thlevelreqd": "Town Hall Level {v1} required."
+        }
+    },
+    "map_cannot_recycle_map_room3": "You cannot recycle your Map Room in the New World Map. If you want to relocate your yard, click on your Town Hall and choose Relocate.",
+    "fp_radiotower": "Nervous about leaving your Yard vulnerable? Build a Radio Tower and get attack alerts while you're away.",
+    "fp": {
+        "radiotower": {
+            "title": "Can You Hear Me Now?"
+        }
+    },
+    "pm": {
+        "juiceall": {
+            "popup": {
+                "title": "<b>Juice all monsters?</b>",
+                "body": "Are you sure you want to juice all monsters?"
+            }
+        }
+    },
+    "pop": {
+        "questcollected": {
+            "body": "{v1} Quest Collected!"
+        },
+        "noshiny": {
+            "title": "All out of shiny.",
+            "body": "You can purchase more shiny in the store."
+        },
+        "unlock": {
+            "start": "<b>Unlocking {v1}</b><br>Will be completed in {v2}",
+            "complete": "<b>{v1} unlocked in Hatchery</b>"
+        },
+        "levelup": {
+            "title": "Congratulations!",
+            "headline": "You're now <b>Level {v1}</b>",
+            "body": "Keep up the good work and don't forget to brag about it."
+        },
+        "goldenmushroom": {
+            "title": "Your worker struct gold!",
+            "desc": "You've picked a golden mushroom worth {v1} Shiny. <b>Mushrooms grow back every day.</b>"
+        },
+        "mushroom": {
+            "msg1": "I found {v1} Shiny!",
+            "msg2": "Plain old fungus.",
+            "msg3": "Mmmm, mushroom soup.",
+            "msg4": "These things grow like weeds."
+        },
+        "oops": {
+            "title": "Oops, something broke!",
+            "body": "Reasons for errors include(but are not limited to):<br>* Having the game open in more than 1 place.<br>* Loss of internet connection.<br>* Your computer running too slowly.<br><br><b>We&apos;ve logged the error, please reload to continue.</b>"
+        },
+        "hireanother": {
+            "title": "All Workers Are Busy"
+        },
+        "resource2": "{v1}",
+        "experiencebar": "You have <b>{v1} experience points</b> and need <b>{v2}</b> more to reach <b>Level {v3}</b>",
+        "sendgifts": "Send Gifts",
+        "mailbox": "Mailbox",
+        "alerts": "Alert",
+        "afk": {
+            "title": "Anyone home?",
+            "body": "Hmm.. it seems like you may be ideal."
+        },
+        "timeout": {
+            "title": "Oops.. timeout!",
+            "body": "It looks like the game was left ideal for too long, and has timed out. Please start the game again."
+        }
+    },
+    "popup": {
+        "label": {
+            "reward": "Reward:"
+        }
+    },
+    "ui": {
+        "topbuildings": "Buildings",
+        "topquests": "Quests",
+        "topstore": "Store",
+        "topmap": "Map",
+        "topaddshiny": "Add",
+        "building": "<b>Building<br><br>{v1}</b><br>Speed up to finish.",
+        "upgrading": "<b>Upgrading<br><br>{v1}</b><br>Speed up to finish.",
+        "worker": {
+            "hire": "Hire",
+            "idle": "Idle",
+            "walking": "Walking",
+            "hireicon": "HIRE",
+            "assign1": "I'm on it!",
+            "assign2": "In a Jiffy",
+            "assign3": "Off to work",
+            "assign4": "I can do that",
+            "assign5": "On my way",
+            "assign6": "No problem!",
+            "doneconstruct1": "Hope you like it",
+            "doneconstruct2": "That was easy",
+            "doneconstruct3": "Perfect",
+            "doneconstruct4": "All done!",
+            "doneconstruct5": "All done boss",
+            "doneconstruct6": "All in a days work",
+            "doneconstruct7": "Lookin' good!",
+            "doneconstruct8": "Job done!",
+            "doneupgrade1": "Job done!",
+            "doneupgrade2": "All done!",
+            "doneupgrade3": "All in a days work",
+            "doneupgrade4": "Hope you like it",
+            "doneupgrade5": "Lookin' good!",
+            "donerepair1": "Finished repair.",
+            "donerepair2": "All done!"
+        },
+        "producing": "<b>Producing<br>{v1}<br><br>{v2}</b><br>{v3}% FULL",
+        "buildingfull": "<b>FULL</b><br /><br /> Production paused, bank to resume production",
+        "needmoreroom": "<b>Not enough room.</b><br/>Build more or upgrade existing storage silos"
+    },
+    "uitop": {
+        "backyardmonsters": "BACKYARD MONSTERS"
+    },
+    "worker": {
+        "speedup": "Speed-up a worker's task for {v1} Shiny."
+    },
+    "btn": {
+        "build": "Build",
+        "buildnow": "Build Now",
+        "brag": "Brag to your friends",
+        "pick": "Pick",
+        "yes": "Yes",
+        "relocateYard": "Relocate Yard",
+        "upgrade": "Upgrade",
+        "move": "Move",
+        "more": "More...",
+        "openstore": "Open Store",
+        "collect": "Collect",
+        "fortify": "Fortify",
+        "bank": "Bank {v1}",
+        "bankall": "Bank All",
+        "speedup": "Speed Up",
+        "earn": "Earn",
+        "stopbuild": "STOP Build",
+        "useshiny": "Use {v1} Shiny",
+        "resources": "Resources",
+        "buildings": "Buildings",
+        "defensive": "Defensive",
+        "decorations": "Decorations",
+        "evil": "Evil",
+        "plants": "Plants",
+        "good": "Good",
+        "flags": "Flags",
+        "premium": "Premium",
+        "getresources": "Get Resources",
+        "stopupgrade": "STOP Upgrade",
+        "recycle": "Recycle",
+        "openradio": "Open Radio",
+        "viewhousing": "View Housing",
+        "viewhatchery": "View Hatchery",
+        "previous": "Previous",
+        "prev": "Prev",
+        "next": "Next",
+        "ascendmonsters": "Transfer Monsters",
+        "clear": "Clear",
+        "juicemonsters": "Juice Monsters",
+        "openlocker": "Open Locker",
+        "unlockinstantly": "Unlock Instantly for {v1} Shiny",
+        "startunlocking": "Start Unlocking",
+        "warnyourfriends": "Warn your friends",
+        "cancel": "Cancel",
+        "housing": {
+            "heal": {
+                "all": "Heal All Instantly - {v1} Shiny"
+            }
+        },
+        "mh": {
+            "heal": "Heal"
+        }
+    },
+    "bunker": {
+        "btn": {
+            "juice": "Juice"
+        }
+    },
+    "townhall": {
+        "desc": "The hub of any great yard and the first building you need to build. Upgrading the Town Hall unlocks new buildings, features and lets you upgrade other buildings to a higher level."
+    },
+    "snipertower": {
+        "desc": "Long range, high damage, but slow to reload. This tower picks off enemy monsters before they even get close. Protect a larger area with this tower."
+    },
+    "cannontower": {
+        "desc": "Short range but high damage, this tower's shells explode on impact, great for taking out tightly-packed groups."
+    },
+    "twigsnapper": {
+        "desc": "Produces Twigs. Used in the construction of buildings"
+    },
+    "pebbleshiner": {
+        "desc": "Produces Pebbles. Used in the construction of buildings"
+    },
+    "goofactory": {
+        "desc": "Produces Goo. Goo is used in the <b>Hatchery</b> to produce monsters."
+    },
+    "puttysquisher": {
+        "desc": "Produces Putty. Used in the construction of buildings"
+    },
+    "storagesilo": {
+        "desc": "Increase your bank's capacity of Twigs, Pebbles, Putty and Goo."
+    },
+    "monsterlocker": {
+        "desc": "Research and unlock new monsters to hatch in the Hatchery."
+    },
+    "housing": {
+        "desc": "Stores the creatures you produce in the Hatchery, upgrade or build more to increase capacity."
+    },
+    "flinger": {
+        "desc": "The Flinger flings monsters into battle. This building is required if you wish to attack another player. Use the Map Room to find and target enemy yards."
+    },
+    "maproom": {
+        "desc": "Look around the world, find and help friends and select other player yards to attack."
+    },
+    "monsteracademy": {
+        "desc": "Through a demanding curriculum of physics, philosophy and physical education, your monsters will earn their PhD in Advanced Destruction. Failing that, we have a large supply of steroids."
+    },
+    "hatchery": {
+        "desc": "Converts Goo produced by the Goo Factory into the monsters you have unlocked in the Monster Locker."
+    },
+    "hcc": {
+        "desc": "Control all of your Hatcheries from a single building. You add monsters to one build queue and it sends instructions to whichever Hatchery becomes available first."
+    },
+    "catapult": {
+        "desc": "A siege weapon, the Catapult hurls twigs at enemy bases to damage buildings. Upgrade to increase firepower."
+    },
+    "monsterlab": {
+        "desc": "Research top secret abilities for your monsters. In war, science rules."
+    },
+    "wildmonsterbaiter": {
+        "desc": "The Wild Monster Baiter sprays a musk into the air that Wild Monsters can't resist, causing them to flock to your base, a great way to test your defenses. If it gets too much for you the building has a siren you can use to scare them off."
+    },
+    "yardplanner": {
+        "desc": "Quickly move some things around or completely remodel your layout! This building gives you a birds-eye view of your yard and makes moving buildings a snap."
+    },
+    "monsterjuicer": {
+        "desc": "Got some unwanted monsters in your Housing? Want to make some space for bigger and better things? Want to make a sacrifice to the Backyard Gods? Then this is the building for you! Recycle Monsters back into Goo with minimal suffering."
+    },
+    "generalstore": {
+        "desc": "Spend your Shiny on time-saving upgrades."
+    },
+    "boobytrap": {
+        "desc": "Invisible to the enemy until it's too late. Triggered when a Monster steps on it, deals large damage to a small area. Place close to buildings or use walls to group attackers into a small place."
+    },
+    "woodenblock": {
+        "desc": "A simple brown block, used to build wall to protect buildings and channel attackers into traps or closer to towers. Can be upgraded from wood to stone to metal to gold to black diamond!"
+    },
+    "teslatower": {
+        "desc": "Talk about evil science, this high voltage tower fries any enemy that gets within range. Upgrade to improve, number of shocks per charge, damage per shock, and range."
+    },
+    "lasertower": {
+        "desc": "Deadly and fast, this plasma energy tower zaps any invading enemy at the speed of light. Great for taking out packed groups of monsters."
+    },
+    "railguntower": {
+        "desc": "An electrical gun that accelerates a conductive projectile along a pair of rails, the Railgun tower makes up for its slow reload with high damage and an infinite line of fire."
+    },
+    "flaktower": {
+        "desc": "Fast-firing cannon designed to nullify or reduce the effectiveness of hostile air action."
+    },
+    "monsterbunker": {
+        "desc": "This defensive housing allows monsters to fight to death defending your base."
+    },
+    "monstercage": {
+        "desc": "Hatch and Evolve a Champion Monster to attack enemies and defend your base."
+    },
+    "championchamber": {
+        "desc": "This building allows you to change out your active champ, keeping inactive ones safe on ice until you call them forth again. (Frozen champs aren't hurt even when the Champion Chamber is completely destroyed.)"
+    },
+    "heavytrap": {
+        "desc": "Invisible to your enemies until it's too late, Heavy Traps use a specialized trigger that only fires when the most powerful monsters step on it, but cause splash damage to all nearby units."
+    },
+    "bi": {
+        "spurtzcannon": {
+            "desc": "Your very own Backyard Shotgun! This cannon fires a spurtz militia to do your bidding - Just what you need to stop groups of invaders dead in their tracks."
+        },
+        "blackspurtzcannon": {
+            "desc": "The Black Diamond Spurtz Cannon boasts stronger durability and reduced loading times. Your enemies will need a monster miracle to get past these!"
+        }
+    },
+    "radio": {
+        "tTitle": "RADIO TOWER",
+        "build": {
+            "desc": "Never be caught off guard again! Get e-mail alerts while you're away from your yard."
+        },
+        "desc": "Never be caught off guard again! Get e-mail alerts while you're away from your yard.",
+        "cbNews": "News",
+        "cbAttack": "Attacks",
+        "tEmail": "Email your email",
+        "enterValidEmail": "Enter a valid email",
+        "tfEmail": "Email",
+        "bSave": "Save",
+        "bSaving": "Save",
+        "noSubscribe": "Don't want to subscribe?",
+        "noSubscribeN": "No Thanks",
+        "noSubscribeY": "Yes Please",
+        "saveFail": "<b>Hmm.. seems like the broadcast frequency is broken.</b><br><br>Radio channel not available on Backyard Monsters Refitted.",
+        "recycledesc": "<b>Recycle:</b>"
+    },
+    "hatcherypopup": {
+        "level": "Level {v1}"
+    },
+    "hat_producing": "Producing {v1}.",
+    "hat": {
+        "nothinginproduction": "Nothing in production.",
+        "notenoughgoo": "Not enough Goo.",
+        "needhousing": "Not enough housing space.",
+        "producing": {
+            "message": "Select monsters from below to add to the queue."
+        },
+        "status": {
+            "waiting": "Waiting"
+        },
+        "slot": {
+            "upgrade": "Upgrade Hatchery to unlock"
+        },
+        "unlockinlocker": "Unlock {v1} in the Monster Locker."
+    },
+    "mh": {
+        "title": "MONSTER HOUSING",
+        "housing": {
+            "section": {
+                "label": "HOUSING"
+            }
+        },
+        "healing": {
+            "section": {
+                "label": "HEALING"
+            }
+        },
+        "bunkers": {
+            "section": {
+                "label": "BUNKERS"
+            }
+        },
+        "cancel": {
+            "btn": "Cancel"
+        },
+        "juicemonsterX": {
+            "btn": "Juice {v1} monster"
+        },
+        "juicemonstersX": {
+            "btn": "Juice {v1} monsters"
+        },
+        "ascension": {
+            "noinf": "Inferno not discovered."
+        },
+        "capacity": {
+            "desc": "Capacity of all your Houses combined",
+            "column": {
+                "label": "CAPACITY"
+            }
+        },
+        "health": {
+            "column": {
+                "label": "HEALTH"
+            }
+        },
+        "nomonsters": {
+            "btn": "No monsters selected"
+        },
+        "juicing": {
+            "txt": "<b>Juice Monsters:</b><br>Juice selected monsters from your housing."
+        }
+    },
+    "moni": {
+        "att": {
+            "cost": "Cost"
+        }
+    },
+    "mon": {
+        "pokeydesc": "Like a swarm of ants, a roaming pack of Pokeys can devour a grown cow in less than five minutes.<br><b>Favorite Target:</b> Anything",
+        "octooozedesc": "The slimy octo-ooze soaks up fire power like a sponge so other monsters can wreak havoc.<br><b>Favorite Target:</b> Defensive Towers",
+        "boltdesc": "Bolt is fast as lightning and can run ahead of your other monsters to munch on buildings with its razor sharp teeth.<br><b>Favorite Target:</b> Harvesters, Town Halls and Silos",
+        "finkdesc": "Found deep inside Amazonia, Fink's chemo-receptors makes its attacks deadly accurate.<br><b>Favorite Target:</b> Anything",
+        "eyeradesc": "Warning: Eye-ra's chemical makeup combusts within close proximity to walls.<br><b>Favorite Target:</b> Walls",
+        "ichidesc": "Discovered in the peak of Mt. Fuji, Ichi is one of the deadliest monsters and can withstand intense damage from towers and booby traps.<br><b>Favorite Target:</b> Defensive Towers",
+        "banditodesc": "Bandito's thick exoskeleton and impeccable accuracy make it the perfect monster assassin.<br><b>Favorite Target:</b> Anything",
+        "fangdesc": "Fang's bite releases a toxic venom which liquidates any target.<br><b>Favorite Target:</b> Anything",
+        "braindesc": "Cunning and greedy, Brain's pulsating cerebral cortex and high intelligence make him perfect for looting resources.<br><b>Favorite Target:</b> Harvesters, Town Halls and Silos",
+        "crabatrondesc": "Using its claws to snap towers like twigs, Crabatron strikes fear into the heart of its enemies.<br><b>Favorite Target:</b> Defensive Towers",
+        "projectxdesc": "A government experiment gone terribly wrong, Project X is programmed to attack defense towers in battle.<br><b>Favorite Target:</b> Defensive Towers",
+        "zafreetidesc": "From deep within the Sahara, comes the mystical Zafreeti healer.<br><b>Favorite Target:</b> Your Monsters (heal), Zafreeti doesn't heal other Vorgs or Zafreetis",
+        "teratorndesc": "With its swift wings and fiery breath, the flying Teratorn rains death from above.<br><b>Favorite Target:</b> Anything",
+        "wormzerdesc": "Wormzer utilizes his burrowing ability to launch surprise attacks and evade even the toughest walled defense<br><b>Favorite Target:</b> Anything",
+        "davedesc": "D.A.V.E only listens to his master and has a habit of completely destroying bases.<br><b>Favorite Target:</b> Anything",
+        "slimeattikusdesc": "An unholy biological terror birthed in the Bangweulu Swamps of Zambia, the Slimeattikus dissolves foes on contact and fissions when attacked.<br><b>Favorite Target:</b> Anything",
+        "vorgdesc": "Hatched in giant hives deep inside the asteroid belt, Vorg are flying alien healers with a penchant for mischief<br><b>Favorite Target:</b> Your Monsters (heal)",
+        "att": {
+            "speed": "Speed",
+            "health": "Health",
+            "damage": "Damage",
+            "cost": "Goo Cost",
+            "housing": "Housing",
+            "time": "Time",
+            "costvalue": "{v1} {v2}",
+            "housingvalue": "{v1} spaces"
+        },
+        "statsspeed": "{v1} kph",
+        "statsstorage": "{v1} spaces",
+        "unlocked": "Unlocked",
+        "locked": "Locked",
+        "infounlocked": "<b>Unlocked</b><br>Produce in your Hatchery or train in your Monster Academy.",
+        "infotounlock": "<b>To Unlock:</b><br><b>Time:</b> {v1}<br>",
+        "infolockerlevelrequired": "<b>Locker Level:</b> {v1}",
+        "confirmcancel": "Are you sure you want to stop unlocking <b>{v1}?</b>",
+        "infounlocking": "<b>Unlocking</b><br>Press \"Speed Up\" to reduce the time remaining.",
+        "upgradelocker": "{v1} level {v2} required.",
+        "alreadyunlocking": "You are already unlocking a monster.",
+        "needputty": "Not enough putty."
+    },
+    "cloc": {
+        "prodstats": {
+            "label": "<b>Production Stats<br>(once unlocked)</b>"
+        }
+    },
+    "bdg": {
+        "tower": {
+            "rangeupgrade": "<b>Range:</b> Increases from {v1} to {v2}",
+            "damageupgrade": "<b>Damage:</b> Increases from {v1} dps to {v2} dps"
+        },
+        "state": {
+            "building": "BUILDING",
+            "upgrading": "UPGRADING"
+        },
+        "infopop": {
+            "levelnum": "Level {v1}"
+        },
+        "housing": {
+            "capacitydesc": "Increases housing capacity from {v1} to {v2}."
+        },
+        "fullyupgraded": "Fully Upgraded!",
+        "buildingrequirement": "Level {v1} {v2}",
+        "upgradedesc": "<b>Upgrade your {v1} to Level {v2}</b><br>{v3}<br>",
+        "upgraderequirements": "<b>Requirements</b><br>{v1}",
+        "resource": {
+            "upproduction": "<b>Production:</b> Increases from {v1} to {v2}/hour",
+            "upcapacity": "<b>Capcity:</b> Increases from {v1} to {v2}"
+        },
+        "more": "<b>{v1} level {v2}</b><br><br>{v3}<br><br><b>Recycle:</b>{v4}",
+        "morenolevel": "<b>{v1}</b><br>{v2}<br><br><br>{v3}"
+    },
+    "str": {
+        "finishnow": "Finish now",
+        "heal": "Heal",
+        "getmore": {
+            "btn": "Get more Shiny"
+        },
+        "prob": {
+            "alreadyhave": "You already have this building constructed."
+        }
+    },
+    "quests": {
+        "title": "Quests"
+    },
+    "q": {
+        "construction": "Construction",
+        "monsters": "Monsters",
+        "attacking": "Attacking",
+        "good": "Good",
+        "evil": "Evil",
+        "ui": {
+            "completed": "Completed. Click \"Collect\""
+        },
+        "u1": {
+            "name": "Next Level",
+            "description": "Upgrade any building to Level 2"
+        },
+        "bk1": {
+            "name": "Mushroom Soup",
+            "description": "Pick 5 Mushrooms"
+        },
+        "t1": {
+            "name": "Sniper Tower",
+            "description": "Build a Sniper Rower"
+        },
+        "t2": {
+            "name": "Cannon Tower",
+            "description": "Build a Cannon Tower"
+        },
+        "t3": {
+            "name": "Tesla Tower",
+            "description": "Build a Tesla Tower"
+        },
+        "cr2": {
+            "name": "Start Hatching",
+            "description": "Build a Hatchery"
+        },
+        "cr3": {
+            "name": "Home Sweet Home",
+            "description": "Build Monster Housing"
+        },
+        "c3": {
+            "name": "Next Level II",
+            "description": "Upgrade one of each resource building to level 2"
+        },
+        "c4": {
+            "name": "Level 4 Twig Snapper",
+            "description": "Upgrade your Twig Snapper to Level 4"
+        },
+        "c5": {
+            "name": "Level 4 Pebble Shiner",
+            "description": "Upgrade your Pebble Shiner to Level 4"
+        },
+        "c6": {
+            "name": "Level 4 Putty Squisher",
+            "description": "Upgrade your Putty Squisher to Level 4"
+        },
+        "c7": {
+            "name": "Level 4 Goo Factory",
+            "description": "Upgrade your Goo Factory to Level 4"
+        },
+        "c9": {
+            "name": "Level 3 Twig Snapper",
+            "description": "Upgrade your Twig Snapper to Level 3"
+        },
+        "c10": {
+            "name": "Level 3 Pebble Shiner",
+            "description": "Upgrade your Pebble Shiner to Level 3"
+        },
+        "c11": {
+            "name": "Level 3 Putty Squiser",
+            "description": "Upgrade your Putty Squiser to Level 3"
+        },
+        "c12": {
+            "name": "Level 3 Goo Factory",
+            "description": "Upgrade your Goo Factory to Level 3"
+        },
+        "c13": {
+            "name": "Town Hall Level 2",
+            "description": "Upgrade your Town Hall to Level 2"
+        },
+        "c14": {
+            "name": "Town Hall Level 3",
+            "description": "Upgrade your Town Hall to Level 3"
+        },
+        "c15": {
+            "name": "Town Hall Level 4",
+            "description": "Upgrade your Town Hall to Level 4"
+        },
+        "c16": {
+            "name": "Town Hall Level 5",
+            "description": "Upgrade your Town Hall to Level 5"
+        },
+        "c17": {
+            "name": "Monster Maps",
+            "description": "Build a Map Room"
+        },
+        "c18": {
+            "name": "Flinger",
+            "description": "Build a Flinger"
+        },
+        "ga1": {
+            "name": "End Radio Silence",
+            "description": "Build the Radio Tower to get email alerts"
+        },
+        "d1": {
+            "name": "First Blood",
+            "description": "Defend your yard from a Wild Monster attack"
+        },
+        "s1": {
+            "name": "Storage Silo",
+            "description": "Build a Storage Silo"
+        },
+        "s2": {
+            "name": "Storage Silo Level 2",
+            "description": "Upgrade your Storage Silo to Level 2"
+        },
+        "s3": {
+            "name": "Storage Silo Level 3",
+            "description": "Upgrade your Storage Silo to Level 3"
+        },
+        "s4": {
+            "name": "Storage Silo Level 4",
+            "description": "Upgrade your Storage Silo to Level 4"
+        },
+        "s5": {
+            "name": "Storage Silo Level 5",
+            "description": "Upgrade your Storage Silo to Level 5"
+        }
+    },
+    "settings": {
+        "zoomout": "Zoom Out",
+        "zoomin": "Zoom In",
+        "fullscreenenter": "Full Screen",
+        "fullscreenexit": "Windowed Mode",
+        "soundon": "Sound On",
+        "soundoff": "Sound Off",
+        "musicon": "Music On",
+        "musicoff": "Music Off",
+        "saved": "Saved",
+        "saving": "Saving"
+    },
+    "#r": {
+        "twigs#": "Twigs",
+        "pebbles#": "Pebbles",
+        "putty#": "Putty",
+        "goo#": "Goo",
+        "shiny#": "Shiny",
+        "time#": "Time"
+    },
+    "#b": {
+        "townhall#": "Town Hall",
+        "twigsnapper#": "Twig Snapper",
+        "pebbleshiner#": "Pebble Shiner",
+        "puttysquisher#": "Putty Squisher",
+        "goofactory#": "Goo Factory",
+        "generalstore#": "General Store",
+        "storagesilo#": "Storage Silo",
+        "shiny#": "Shiny",
+        "snipertower#": "Sniper Tower",
+        "cannontower#": "Cannon Tower",
+        "teslatower#": "Tesla Tower",
+        "lasertower#": "Laser Tower",
+        "flaktower#": "Aerial Defense Tower",
+        "railguntower#": "Railgun",
+        "monsterbunker#": "Monster Bunker",
+        "monstercage#": "Champion Cage",
+        "boobytrap#": "Booby Trap",
+        "heavytrap#": "Heavy Trap",
+        "championchamber#": "Champion Chamber",
+        "woodenblock#": "Block",
+        "hatchery#": "Hatchery",
+        "housing#": "Housing",
+        "monsterlocker#": "Monster Locker",
+        "flinger#": "Flinger",
+        "maproom#": "Map Room",
+        "monsterjuicer#": "Monster Juicer",
+        "monsteracademy#": "Monster Academy",
+        "catapult#": "Catapult",
+        "wildmonsterbaiter#": "Wild Monster Baiter",
+        "monsterlab#": "Monster Lab",
+        "yardplanner#": "Yard Planner",
+        "hcc#": "Hatchery Control Center",
+        "radio#": "Radio Tower"
+    },
+    "#m": {
+        "pokey#": "Pokey",
+        "octoooze#": "Octoooze",
+        "bolt#": "Bolt",
+        "fink#": "Fink",
+        "eyera#": "Eyera",
+        "ichi#": "Ichi",
+        "bandito#": "Bandito",
+        "fang#": "Fang",
+        "brain#": "Brain",
+        "crabatron#": "Crabatron",
+        "projectx#": "Project X",
+        "zafreeti#": "Zafreeti",
+        "teratorn#": "Teratorn",
+        "wormzer#": "Wormzer",
+        "dave#": "Dave"
+    },
+    "ai": {
+        "popupwarning": {
+            "title": "WILD MONSTER ALERT"
+        },
+        "kozu": {
+            "name": "Kozu Tribe",
+            "taunt": "We'll be back for your bones!"
+        },
+        "legionnaire": {
+            "name": "Legionnaire Tribe",
+            "taunt": "We'll be back for your bones!"
+        },
+        "abunakki": {
+            "name": "Abunakki Tribe",
+            "taunt": "We'll be back for your bones!"
+        },
+        "preparedefenses": {
+            "btn": "Prepare Defenses"
+        },
+        "engage": {
+            "btn": "Engage Attack"
+        },
+        "eta": "{v1}",
+        "monsterbar": {
+            "title": "Prepare for battle...",
+            "sendnow": {
+                "btn": "I'm Ready Now"
+            }
+        },
+        "tribe": "{v1}",
+        "gooddefense": "You successfully defended your yard from an attack by the {v1}",
+        "settings": {
+            "title": "ATTACK REPELLED",
+            "more": {
+                "btn": "Bring more monsters next time."
+            },
+            "same": {
+                "btn": "I'll be waiting"
+            },
+            "less": {
+                "btn": "Can't we all just get along?"
+            }
+        }
+    },
+    "mail": {
+        "disabled": "Mailbox is disabled."
+    },
+    "global_days": "days",
+    "global_hours": "hours",
+    "global_minutes": "minutes",
+    "global_days_short": "d",
+    "global_hours_short": "h",
+    "global_minutes_short": "m",
+    "global_seconds_short": "s",
+    "global": {
+        "day": "day",
+        "hour": "hr",
+        "minute": "min"
+    },
+    "buildoptions": {
+        "shiny": "Use {v1} Shiny",
+        "buildinstant": "Keep your resources and build instantly!",
+        "upgradeinstant": "Keep your resources and upgrade instantly!",
+        "fortifyinstant": "Keep your resources and fortify instantly!",
+        "resources": "Use Resources",
+        "err": {
+            "moreresources": "<b>You need {v1} more resources to build.</b><br><br>Get the resources and start building for {v2} Shiny?",
+            "moreresourcesupgrade": "<b>You need {v1} more resources to upgrade.</b><br><br>Get the resources and start upgrading for {v2} Shiny?",
+            "moresilosupgrade": "Upgrade storage silos to increase your resource capacity."
+        }
+    }
+}
