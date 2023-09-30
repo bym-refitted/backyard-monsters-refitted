@@ -1432,7 +1432,7 @@ package
             {
                if(_loc6_ > 1)
                {
-                  _loc10_ += _loc6_ + KEYS.Get("global_days_long") + " ";
+                  _loc10_ += _loc6_ + KEYS.Get("global_days") + " ";
                }
                else
                {
@@ -1443,7 +1443,7 @@ package
             {
                if(_loc7_ > 1)
                {
-                  _loc10_ += _loc7_ + KEYS.Get("global_hours_long") + " ";
+                  _loc10_ += _loc7_ + KEYS.Get("global_hours") + " ";
                }
                else
                {
@@ -1454,7 +1454,7 @@ package
             {
                if(_loc8_ > 1)
                {
-                  _loc10_ += _loc8_ + KEYS.Get("global_minutes_long") + " ";
+                  _loc10_ += _loc8_ + KEYS.Get("global_minutes") + " ";
                }
                else
                {
@@ -1480,11 +1480,11 @@ package
          var _loc3_:Number = Math.ceil(_loc2_ / 86400);
          if(_loc3_ > 1)
          {
-            _loc4_ = _loc3_ + " " + KEYS.Get("global_days_long");
+            _loc4_ = _loc3_ + " " + KEYS.Get("global_days");
          }
          else if((_loc5_ = Math.ceil(_loc2_ / 3600)) > 1)
          {
-            _loc4_ = _loc5_ + " " + KEYS.Get("global_hours_long");
+            _loc4_ = _loc5_ + " " + KEYS.Get("global_hours");
          }
          else
          {

@@ -35,7 +35,17 @@
     "base": {
         "uperr": {
             "buildings": "Level {v1} required.",
-            "bdgpart2": "{v1} {v2}"
+            "bdgpart1": "{v1}",
+            "bdgpart2": "{v1} {v2}",
+            "bdgpart3": "{v1} {v2}",
+            "bdgpart4": "{v1} {v2} {v3}"
+        },
+        "forterr": {
+            "buildings": "Level {v1} required.",
+            "bdgpart1": "{v1}",
+            "bdgpart2": "{v1} {v2}",
+            "bdgpart3": "{v1} {v2}",
+            "bdgpart4": "{v1} {v2} {v3}"
         },
         "builderr": {
             "thlevelreqd": "Town Hall Level {v1} required."
@@ -57,6 +67,17 @@
         }
     },
     "pop": {
+        "questcollected": {
+            "body": "{v1} Quest Collected!"
+        },
+        "noshiny": {
+            "title": "All out of shiny.",
+            "body": "You can purchase more shiny in the store."
+        },
+        "unlock": {
+            "start": "<b>Unlocking {v1}</b><br>Will be completed in {v2}",
+            "complete": "<b>{v1} unlocked in Hatchery</b>"
+        },
         "levelup": {
             "title": "Congratulations!",
             "headline": "You're now <b>Level {v1}</b>",
@@ -66,6 +87,12 @@
             "title": "Your worker struct gold!",
             "desc": "You've picked a golden mushroom worth {v1} Shiny. <b>Mushrooms grow back every day.</b>"
         },
+        "mushroom": {
+            "msg1": "I found {v1} Shiny!",
+            "msg2": "Plain old fungus.",
+            "msg3": "Mmmm, mushroom soup.",
+            "msg4": "These things grow like weeds."
+        },
         "oops": {
             "title": "Oops, something broke!",
             "body": "Reasons for errors include(but are not limited to):<br>* Having the game open in more than 1 place.<br>* Loss of internet connection.<br>* Your computer running too slowly.<br><br><b>We&apos;ve logged the error, please reload to continue.</b>"
@@ -74,7 +101,7 @@
             "title": "All Workers Are Busy"
         },
         "resource2": "{v1}",
-        "experiencebar": "{v1}",
+        "experiencebar": "You have <b>{v1} experience points</b> and need <b>{v2}</b> more to reach <b>Level {v3}</b>",
         "sendgifts": "Send Gifts",
         "mailbox": "Mailbox",
         "alerts": "Alert",
@@ -85,6 +112,11 @@
         "timeout": {
             "title": "Oops.. timeout!",
             "body": "It looks like the game was left ideal for too long, and has timed out. Please start the game again."
+        }
+    },
+    "popup": {
+        "label": {
+            "reward": "Reward:"
         }
     },
     "ui": {
@@ -99,7 +131,28 @@
             "hire": "Hire",
             "idle": "Idle",
             "walking": "Walking",
-            "hireicon": "HIRE"
+            "hireicon": "HIRE",
+            "assign1": "I'm on it!",
+            "assign2": "In a Jiffy",
+            "assign3": "Off to work",
+            "assign4": "I can do that",
+            "assign5": "On my way",
+            "assign6": "No problem!",
+            "doneconstruct1": "Hope you like it",
+            "doneconstruct2": "That was easy",
+            "doneconstruct3": "Perfect",
+            "doneconstruct4": "All done!",
+            "doneconstruct5": "All done boss",
+            "doneconstruct6": "All in a days work",
+            "doneconstruct7": "Lookin' good!",
+            "doneconstruct8": "Job done!",
+            "doneupgrade1": "Job done!",
+            "doneupgrade2": "All done!",
+            "doneupgrade3": "All in a days work",
+            "doneupgrade4": "Hope you like it",
+            "doneupgrade5": "Lookin' good!",
+            "donerepair1": "Finished repair.",
+            "donerepair2": "All done!"
         },
         "producing": "<b>Producing<br>{v1}<br><br>{v2}</b><br>{v3}% FULL",
         "buildingfull": "<b>FULL</b><br /><br /> Production paused, bank to resume production",
@@ -116,6 +169,7 @@
         "buildnow": "Build Now",
         "brag": "Brag to your friends",
         "pick": "Pick",
+        "yes": "Yes",
         "relocateYard": "Relocate Yard",
         "upgrade": "Upgrade",
         "move": "Move",
@@ -150,6 +204,11 @@
         "ascendmonsters": "Transfer Monsters",
         "clear": "Clear",
         "juicemonsters": "Juice Monsters",
+        "openlocker": "Open Locker",
+        "unlockinstantly": "Unlock Instantly for {v1} Shiny",
+        "startunlocking": "Start Unlocking",
+        "warnyourfriends": "Warn your friends",
+        "cancel": "Cancel",
         "housing": {
             "heal": {
                 "all": "Heal All Instantly - {v1} Shiny"
@@ -296,7 +355,7 @@
             "message": "Select monsters from below to add to the queue."
         },
         "status": {
-            "waiting":"Waiting"
+            "waiting": "Waiting"
         },
         "slot": {
             "upgrade": "Upgrade Hatchery to unlock"
@@ -305,14 +364,29 @@
     },
     "mh": {
         "title": "MONSTER HOUSING",
+        "housing": {
+            "section": {
+                "label": "HOUSING"
+            }
+        },
+        "healing": {
+            "section": {
+                "label": "HEALING"
+            }
+        },
+        "bunkers": {
+            "section": {
+                "label": "BUNKERS"
+            }
+        },
         "cancel": {
             "btn": "Cancel"
         },
         "juicemonsterX": {
-            "btn": "{v1} monster for {v2} Goo"
+            "btn": "Juice {v1} monster"
         },
         "juicemonstersX": {
-            "btn": "{v1} monsters for {v2} Goo"
+            "btn": "Juice {v1} monsters"
         },
         "ascension": {
             "noinf": "Inferno not discovered."
@@ -333,6 +407,11 @@
         },
         "juicing": {
             "txt": "<b>Juice Monsters:</b><br>Juice selected monsters from your housing."
+        }
+    },
+    "moni": {
+        "att": {
+            "cost": "Cost"
         }
     },
     "mon": {
@@ -363,7 +442,23 @@
             "costvalue": "{v1} {v2}",
             "housingvalue": "{v1} spaces"
         },
-        "statsspeed": "{v1} kph"
+        "statsspeed": "{v1} kph",
+        "statsstorage": "{v1} spaces",
+        "unlocked": "Unlocked",
+        "locked": "Locked",
+        "infounlocked": "<b>Unlocked</b><br>Produce in your Hatchery or train in your Monster Academy.",
+        "infotounlock": "<b>To Unlock:</b><br><b>Time:</b> {v1}<br>",
+        "infolockerlevelrequired": "<b>Locker Level:</b> {v1}",
+        "confirmcancel": "Are you sure you want to stop unlocking <b>{v1}?</b>",
+        "infounlocking": "<b>Unlocking</b><br>Press \"Speed Up\" to reduce the time remaining.",
+        "upgradelocker": "{v1} level {v2} required.",
+        "alreadyunlocking": "You are already unlocking a monster.",
+        "needputty": "Not enough putty."
+    },
+    "cloc": {
+        "prodstats": {
+            "label": "<b>Production Stats<br>(once unlocked)</b>"
+        }
     },
     "bdg": {
         "tower": {
@@ -378,7 +473,7 @@
             "levelnum": "Level {v1}"
         },
         "housing": {
-            "capacitydesc": "Upgrade your housing to increase capacity."
+            "capacitydesc": "Increases housing capacity from {v1} to {v2}."
         },
         "fullyupgraded": "Fully Upgraded!",
         "buildingrequirement": "Level {v1} {v2}",
@@ -393,12 +488,26 @@
     },
     "str": {
         "finishnow": "Finish now",
-        "heal": "Heal"
+        "heal": "Heal",
+        "getmore": {
+            "btn": "Get more Shiny"
+        },
+        "prob": {
+            "alreadyhave": "You already have this building constructed."
+        }
     },
     "quests": {
         "title": "Quests"
     },
     "q": {
+        "construction": "Construction",
+        "monsters": "Monsters",
+        "attacking": "Attacking",
+        "good": "Good",
+        "evil": "Evil",
+        "ui": {
+            "completed": "Completed. Click \"Collect\""
+        },
         "u1": {
             "name": "Next Level",
             "description": "Upgrade any building to Level 2"
@@ -406,6 +515,114 @@
         "bk1": {
             "name": "Mushroom Soup",
             "description": "Pick 5 Mushrooms"
+        },
+        "t1": {
+            "name": "Sniper Tower",
+            "description": "Build a Sniper Rower"
+        },
+        "t2": {
+            "name": "Cannon Tower",
+            "description": "Build a Cannon Tower"
+        },
+        "t3": {
+            "name": "Tesla Tower",
+            "description": "Build a Tesla Tower"
+        },
+        "cr2": {
+            "name": "Start Hatching",
+            "description": "Build a Hatchery"
+        },
+        "cr3": {
+            "name": "Home Sweet Home",
+            "description": "Build Monster Housing"
+        },
+        "c3": {
+            "name": "Next Level II",
+            "description": "Upgrade one of each resource building to level 2"
+        },
+        "c4": {
+            "name": "Level 4 Twig Snapper",
+            "description": "Upgrade your Twig Snapper to Level 4"
+        },
+        "c5": {
+            "name": "Level 4 Pebble Shiner",
+            "description": "Upgrade your Pebble Shiner to Level 4"
+        },
+        "c6": {
+            "name": "Level 4 Putty Squisher",
+            "description": "Upgrade your Putty Squisher to Level 4"
+        },
+        "c7": {
+            "name": "Level 4 Goo Factory",
+            "description": "Upgrade your Goo Factory to Level 4"
+        },
+        "c9": {
+            "name": "Level 3 Twig Snapper",
+            "description": "Upgrade your Twig Snapper to Level 3"
+        },
+        "c10": {
+            "name": "Level 3 Pebble Shiner",
+            "description": "Upgrade your Pebble Shiner to Level 3"
+        },
+        "c11": {
+            "name": "Level 3 Putty Squiser",
+            "description": "Upgrade your Putty Squiser to Level 3"
+        },
+        "c12": {
+            "name": "Level 3 Goo Factory",
+            "description": "Upgrade your Goo Factory to Level 3"
+        },
+        "c13": {
+            "name": "Town Hall Level 2",
+            "description": "Upgrade your Town Hall to Level 2"
+        },
+        "c14": {
+            "name": "Town Hall Level 3",
+            "description": "Upgrade your Town Hall to Level 3"
+        },
+        "c15": {
+            "name": "Town Hall Level 4",
+            "description": "Upgrade your Town Hall to Level 4"
+        },
+        "c16": {
+            "name": "Town Hall Level 5",
+            "description": "Upgrade your Town Hall to Level 5"
+        },
+        "c17": {
+            "name": "Monster Maps",
+            "description": "Build a Map Room"
+        },
+        "c18": {
+            "name": "Flinger",
+            "description": "Build a Flinger"
+        },
+        "ga1": {
+            "name": "End Radio Silence",
+            "description": "Build the Radio Tower to get email alerts"
+        },
+        "d1": {
+            "name": "First Blood",
+            "description": "Defend your yard from a Wild Monster attack"
+        },
+        "s1": {
+            "name": "Storage Silo",
+            "description": "Build a Storage Silo"
+        },
+        "s2": {
+            "name": "Storage Silo Level 2",
+            "description": "Upgrade your Storage Silo to Level 2"
+        },
+        "s3": {
+            "name": "Storage Silo Level 3",
+            "description": "Upgrade your Storage Silo to Level 3"
+        },
+        "s4": {
+            "name": "Storage Silo Level 4",
+            "description": "Upgrade your Storage Silo to Level 4"
+        },
+        "s5": {
+            "name": "Storage Silo Level 5",
+            "description": "Upgrade your Storage Silo to Level 5"
         }
     },
     "settings": {
@@ -527,25 +744,17 @@
     "mail": {
         "disabled": "Mailbox is disabled."
     },
+    "global_days": "days",
+    "global_hours": "hours",
+    "global_minutes": "minutes",
+    "global_days_short": "d",
+    "global_hours_short": "h",
+    "global_minutes_short": "m",
+    "global_seconds_short": "s",
     "global": {
-        "days": {
-            "long": "days",
-            "short": "d"
-        },
-        "hours": {
-            "long": "hours",
-            "short": "h"
-        },
-        "minutes": {
-            "long": " minutes",
-            "short": "m"
-        },
-        "seconds": {
-            "short": "s"
-        },
         "day": "day",
-        "hour": "hour",
-        "minute": "minute"
+        "hour": "hr",
+        "minute": "min"
     },
     "buildoptions": {
         "shiny": "Use {v1} Shiny",
