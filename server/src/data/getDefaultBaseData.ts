@@ -44,7 +44,7 @@ export const getDefaultBaseData = (user?: User) => {
     chatenabled: 0,
     relationship: 0,
     error: 0,
-    currenttime: currentTimeInSeconds,
+    currenttime: 0,
     user,
 
     // Objects

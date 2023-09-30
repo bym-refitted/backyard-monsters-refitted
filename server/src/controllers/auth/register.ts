@@ -6,7 +6,6 @@ import { User } from "../../models/user.model";
 import { FilterFrontendKeys } from "../../utils/FrontendKey";
 import { ClientSafeError } from "../../middleware/clientSafeError";
 
-
 const UserRegisterSchema = z.object({
   username: z.string(),
   password: z.string(),
@@ -30,10 +29,10 @@ export const register: KoaController = async ctx => {
     ctx.status = 200;
     ctx.body = { user: filteredUser };
   } catch (err) {
-    console.log("Issue: ", err);
     throw new ClientSafeError({
       message: "Sorry, it appears an account with that email already exists",
       status: 400,
+      code: "LOGIN_ERROR",
       data: err,
     });
   }

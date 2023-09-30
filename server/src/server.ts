@@ -58,15 +58,11 @@ api.get("/", (ctx: Context) => (ctx.body = {}));
       },
     })
   );
-  
+
   app.use(processLanguagesFile);
 
   app.use(serve("./public"));
   app.use(serve(__dirname + "/public"));
-
-  // Routes
-  app.use(router.routes());
-  app.use(router.allowedMethods());
 
   process.on("unhandledRejection", (reason, promise) => {
     console.error("Unhandled Rejection at:", promise, "reason:", reason);
@@ -84,6 +80,10 @@ api.get("/", (ctx: Context) => (ctx.body = {}));
   });
 
   app.use(ErrorInterceptor);
+
+  // Routes
+  app.use(router.routes());
+  app.use(router.allowedMethods());
 
   app.listen(port, () => {
     logging(`
