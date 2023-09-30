@@ -3,6 +3,9 @@
         "loading": "Loading... ",
         "rendering": "Rendering... ",
         "crunching": "Crunching ",
+        "nojuicer": "Monster Juicer not built",
+        "juicegoo": "Juice {v1} monsters for {v2} Goo?",
+        "finishqueue": "Finish all monsters in the queue?",
         "stopconstructionconfirm": "Are you sure you want to stop construction and destroy this building? <b>This can not be un-done</b>",
         "upgradecancelconfirm": "Are you sure you want to stop upgrading this building?",
         "recycleconfirm": "Are you sure you want to recycle this building? <b>This can not be un-done</b>",
@@ -38,19 +41,19 @@
             "thlevelreqd": "Town Hall Level {v1} required."
         }
     },
-    "map": {
-        "cannot": {
-            "recycle": {
-                "map": {
-                    "room3": "You cannot recycle your Map Room in the New World Map. If you want to relocate your yard, click on your Town Hall and choose Relocate."
-                }
-            }
-        }
-    },
+    "map_cannot_recycle_map_room3": "You cannot recycle your Map Room in the New World Map. If you want to relocate your yard, click on your Town Hall and choose Relocate.",
     "fp_radiotower": "Nervous about leaving your Yard vulnerable? Build a Radio Tower and get attack alerts while you're away.",
     "fp": {
         "radiotower": {
             "title": "Can You Hear Me Now?"
+        }
+    },
+    "pm": {
+        "juiceall": {
+            "popup": {
+                "title": "<b>Juice all monsters?</b>",
+                "body": "Are you sure you want to juice all monsters?"
+            }
         }
     },
     "pop": {
@@ -140,7 +143,26 @@
         "recycle": "Recycle",
         "openradio": "Open Radio",
         "viewhousing": "View Housing",
-        "viewhatchery": "View Hatchery"
+        "viewhatchery": "View Hatchery",
+        "previous": "Previous",
+        "prev": "Prev",
+        "next": "Next",
+        "ascendmonsters": "Transfer Monsters",
+        "clear": "Clear",
+        "juicemonsters": "Juice Monsters",
+        "housing": {
+            "heal": {
+                "all": "Heal All Instantly - {v1} Shiny"
+            }
+        },
+        "mh": {
+            "heal": "Heal"
+        }
+    },
+    "bunker": {
+        "btn": {
+            "juice": "Juice"
+        }
     },
     "townhall": {
         "desc": "The hub of any great yard and the first building you need to build. Upgrading the Town Hall unlocks new buildings, features and lets you upgrade other buildings to a higher level."
@@ -244,7 +266,7 @@
         }
     },
     "radio": {
-        "tTitle": "Radio Tower",
+        "tTitle": "RADIO TOWER",
         "build": {
             "desc": "Never be caught off guard again! Get e-mail alerts while you're away from your yard."
         },
@@ -265,7 +287,7 @@
     "hatcherypopup": {
         "level": "Level {v1}"
     },
-    "hat_producing": "Producing.",
+    "hat_producing": "Producing {v1}.",
     "hat": {
         "nothinginproduction": "Nothing in production.",
         "notenoughgoo": "Not enough Goo.",
@@ -280,6 +302,38 @@
             "upgrade": "Upgrade Hatchery to unlock"
         },
         "unlockinlocker": "Unlock {v1} in the Monster Locker."
+    },
+    "mh": {
+        "title": "MONSTER HOUSING",
+        "cancel": {
+            "btn": "Cancel"
+        },
+        "juicemonsterX": {
+            "btn": "{v1} monster for {v2} Goo"
+        },
+        "juicemonstersX": {
+            "btn": "{v1} monsters for {v2} Goo"
+        },
+        "ascension": {
+            "noinf": "Inferno not discovered."
+        },
+        "capacity": {
+            "desc": "Capacity of all your Houses combined",
+            "column": {
+                "label": "CAPACITY"
+            }
+        },
+        "health": {
+            "column": {
+                "label": "HEALTH"
+            }
+        },
+        "nomonsters": {
+            "btn": "No monsters selected"
+        },
+        "juicing": {
+            "txt": "<b>Juice Monsters:</b><br>Juice selected monsters from your housing."
+        }
     },
     "mon": {
         "pokeydesc": "Like a swarm of ants, a roaming pack of Pokeys can devour a grown cow in less than five minutes.<br><b>Favorite Target:</b> Anything",
@@ -322,6 +376,9 @@
         },
         "infopop": {
             "levelnum": "Level {v1}"
+        },
+        "housing": {
+            "capacitydesc": "Upgrade your housing to increase capacity."
         },
         "fullyupgraded": "Fully Upgraded!",
         "buildingrequirement": "Level {v1} {v2}",

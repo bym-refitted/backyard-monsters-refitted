@@ -69,7 +69,8 @@ package
          if (excludeList && excludeList.indexOf(jsonKeyPath) !== -1)
          {
             // Exlucde
-            return jsonValue.hasOwnProperty(jsonKeyPath) ? jsonValue[jsonKeyPath] as String : "";
+            var excludedValue:String = jsonValue.hasOwnProperty(jsonKeyPath) ? jsonValue[jsonKeyPath] as String : "";
+            return replacePlaceholders(excludedValue, placeholders);
          }
          else
          {
