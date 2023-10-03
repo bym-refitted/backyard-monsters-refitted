@@ -3,7 +3,6 @@ import { Save } from "../models/save.model";
 import { ORMContext } from "../server";
 import { FilterFrontendKeys } from "../utils/FrontendKey";
 import { KoaController } from "../utils/KoaController";
-import { logging } from "../utils/logger";
 
 export const updateSaved: KoaController = async (ctx) => {
   const basesaveidCookie = ctx.cookies.get("basesaveid");
@@ -22,7 +21,6 @@ export const updateSaved: KoaController = async (ctx) => {
     error: 0,
     flags,
     ...filteredSave,
-    protectedVal: filteredSave.protectedVal,
     h: "someHashValue",
   };
 

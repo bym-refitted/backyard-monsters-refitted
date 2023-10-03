@@ -126,7 +126,7 @@ export class Save {
 
   @FrontendKey
   @Property()
-  protectedVal!: number;
+  protected!: number;
 
   @FrontendKey
   @Property()

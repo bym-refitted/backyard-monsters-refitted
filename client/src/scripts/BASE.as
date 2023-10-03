@@ -747,7 +747,7 @@ package
          var idstr:String = null;
          var ix:int = 0;
          var resources:Object = null;
-         var bd:Object = null;
+         var building:Object = null;
          var researchdata:String = null;
          var iresources:Object = null;
          var kx:int = 0;
@@ -1021,9 +1021,9 @@ package
             _buildingData = serverData.buildingdata;
             if(!MapRoomManager.instance.isInMapRoom3)
             {
-               for each(bd in _buildingData)
+               for each(building in _buildingData)
                {
-                  if(bd.t == 14)
+                  if(building.t == 14)
                   {
                      if(isOutpost && (GLOBAL._currentCell && GLOBAL._currentCell.baseType == EnumYardType.INFERNO_OUTPOST))
                      {
@@ -1032,7 +1032,7 @@ package
                      }
                      break;
                   }
-                  if(bd.t == 112)
+                  if(building.t == 112)
                   {
                      if(isMainYardOrInfernoMainYard && (GLOBAL._currentCell && GLOBAL._currentCell.baseType != EnumYardType.INFERNO_OUTPOST))
                      {
@@ -1716,17 +1716,17 @@ package
       public static function Build() : void
       {
          var buildingFoundation:BFOUNDATION = null;
-         var _loc12_:int = 0;
+         var counter:int = 0;
          var building:Object = null;
-         var _loc17_:DisplayObject = null;
-         var _loc18_:int = 0;
-         var _loc19_:int = 0;
-         var _loc20_:int = 0;
-         var _loc21_:int = 0;
-         var _loc22_:int = 0;
-         var _loc23_:Object = null;
-         var _loc24_:int = 0;
-         var _loc25_:int = 0;
+         var displayObject:DisplayObject = null;
+         var rawMonstersHidLength:int = 0;
+         var rawMonstersHLength:int = 0;
+         var rawMonsterIndex:int = 0;
+         var townHallLevel:int = 0;
+         var buildingTypeCount:int = 0;
+         var props:Object = null;
+         var foundationIndex:int = 0;
+         var propCount:int = 0;
          PLEASEWAIT.Update(KEYS.Get("msg_building"));
          if(MAPROOM_INFERNO._open)
          {
@@ -1736,14 +1736,14 @@ package
          {
             MAPROOM.Hide();
          }
-         var layerIndexThingy:int = GLOBAL._layerMap.numChildren - 1;
-         while(layerIndexThingy >= 0)
+         var mapIndex:int = GLOBAL._layerMap.numChildren - 1;
+         while(mapIndex >= 0)
          {
-            if((_loc17_ = GLOBAL._layerMap.getChildAt(layerIndexThingy)).parent)
+            if((displayObject = GLOBAL._layerMap.getChildAt(mapIndex)).parent)
             {
-               _loc17_.parent.removeChild(_loc17_);
+               displayObject.parent.removeChild(displayObject);
             }
-            layerIndexThingy--;
+            mapIndex--;
          }
          UI2.Setup();
          GLOBAL.ResizeGame(null);
@@ -1771,15 +1771,15 @@ package
          {
             _buildingData = null;
          }
-         var _loc11_:Dictionary = new Dictionary();
+         var buildingTypeCounts:Dictionary = new Dictionary();
          for each(building in _buildingData)
          {
             if(building)
             {
                if(building.t)
                {
-                  _loc11_[building.t] ||= 0;
-                  ++_loc11_[building.t];
+                  buildingTypeCounts[building.t] ||= 0;
+                  ++buildingTypeCounts[building.t];
                }
                if(!(building.t == 53 || building.t == 54))
                {
@@ -1794,7 +1794,7 @@ package
                   }
                   if(building.t == 7)
                   {
-                     _loc12_++;
+                     counter++;
                   }
                   if(buildingFoundation = addBuildingC(building.t))
                   {
@@ -1806,30 +1806,30 @@ package
                   }
                   if(building.t == 13 && _rawMonsters && Boolean(_rawMonsters.h) && Boolean(_rawMonsters.hid))
                   {
-                     _loc18_ = int(_rawMonsters.hid.length);
-                     _loc19_ = int(_rawMonsters.h.length);
-                     _loc20_ = 0;
-                     while(_loc20_ < _loc18_ && _loc20_ < _loc19_)
+                     rawMonstersHidLength = int(_rawMonsters.hid.length);
+                     rawMonstersHLength = int(_rawMonsters.h.length);
+                     rawMonsterIndex = 0;
+                     while(rawMonsterIndex < rawMonstersHidLength && rawMonsterIndex < rawMonstersHLength)
                      {
-                        if(_rawMonsters.hid[_loc20_] == building.id)
+                        if(_rawMonsters.hid[rawMonsterIndex] == building.id)
                         {
-                           if(_rawMonsters.h[_loc20_].length > 0)
+                           if(_rawMonsters.h[rawMonsterIndex].length > 0)
                            {
-                              building.rIP = _rawMonsters.h[_loc20_][0];
-                              building.rCP = _rawMonsters.h[_loc20_][1];
+                              building.rIP = _rawMonsters.h[rawMonsterIndex][0];
+                              building.rCP = _rawMonsters.h[rawMonsterIndex][1];
                            }
                            else
                            {
                               building.rIP = "";
                               building.rCP = 0;
                            }
-                           if(Boolean(_rawMonsters.hstage) && _rawMonsters.hstage.length > _loc20_)
+                           if(Boolean(_rawMonsters.hstage) && _rawMonsters.hstage.length > rawMonsterIndex)
                            {
-                              building.rPS = _rawMonsters.hstage[_loc20_];
+                              building.rPS = _rawMonsters.hstage[rawMonsterIndex];
                            }
-                           if(building.id == _rawMonsters.hid[_loc20_] && _rawMonsters.h[_loc20_].length > 2)
+                           if(building.id == _rawMonsters.hid[rawMonsterIndex] && _rawMonsters.h[rawMonsterIndex].length > 2)
                            {
-                              building.mq = _rawMonsters.h[_loc20_][2];
+                              building.mq = _rawMonsters.h[rawMonsterIndex][2];
                            }
                            else
                            {
@@ -1838,7 +1838,7 @@ package
                            building.saved = _rawMonsters.saved;
                            break;
                         }
-                        _loc20_++;
+                        rawMonsterIndex++;
                      }
                   }
                   if(buildingFoundation)
@@ -1971,44 +1971,44 @@ package
             LOGGER.Log("err","Town Hall Missing");
          }
          RebuildTH();
-         var _loc14_:Vector.<Object> = InstanceManager.getInstancesByClass(BFOUNDATION);
+         var bFoundation:Vector.<Object> = InstanceManager.getInstancesByClass(BFOUNDATION);
          if(GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD && GLOBAL.townHall && isMainYardOrInfernoMainYard && !GLOBAL._aiDesignMode)
          {
-            _loc21_ = GLOBAL.townHall._lvl.Get();
-            _loc22_ = 0;
-            for each(_loc23_ in GLOBAL._buildingProps)
+            townHallLevel = GLOBAL.townHall._lvl.Get();
+            buildingTypeCount = 0;
+            for each(props in GLOBAL._buildingProps)
             {
-               if(_loc23_.type != "decoration")
+               if(props.type != "decoration")
                {
-                  _loc22_ = 0;
-                  _loc24_ = int(_loc14_.length - 1);
-                  while(_loc24_ >= 0)
+                  buildingTypeCount = 0;
+                  foundationIndex = int(bFoundation.length - 1);
+                  while(foundationIndex >= 0)
                   {
-                     if(buildingFoundation = _loc14_[_loc24_] as BFOUNDATION)
+                     if(buildingFoundation = bFoundation[foundationIndex] as BFOUNDATION)
                      {
-                        if(buildingFoundation._type == _loc23_.id)
+                        if(buildingFoundation._type == props.id)
                         {
-                           _loc22_ += 1;
+                           buildingTypeCount += 1;
                         }
-                        _loc25_ = _loc21_ < _loc23_.quantity.length ? int(_loc23_.quantity[_loc21_]) : int(_loc23_.quantity[_loc23_.quantity.length - 1]);
-                        if(_loc22_ > _loc25_)
+                        propCount = townHallLevel < props.quantity.length ? int(props.quantity[townHallLevel]) : int(props.quantity[props.quantity.length - 1]);
+                        if(buildingTypeCount > propCount)
                         {
-                           Console.print("BASE::Build:too many buildings " + _loc22_ + "/" + _loc25_ + " type:" + buildingFoundation._type);
-                           LOGGER.Log("log","Too many buildings of type " + buildingFoundation._type + " th " + _loc21_ + " count " + _loc22_);
+                           Console.print("BASE::Build:too many buildings " + buildingTypeCount + "/" + propCount + " type:" + buildingFoundation._type);
+                           LOGGER.Log("log","Too many buildings of type " + buildingFoundation._type + " th " + townHallLevel + " count " + buildingTypeCount);
                            BASE.BuildingDeselect();
                            buildingFoundation.clear();
-                           _loc22_--;
+                           buildingTypeCount--;
                         }
                      }
-                     _loc24_--;
+                     foundationIndex--;
                   }
                }
             }
          }
          var _loc15_:int = 0;
          var _loc16_:int = 0;
-         _loc14_ = InstanceManager.getInstancesByClass(BFOUNDATION);
-         for each(buildingFoundation in _loc14_)
+         bFoundation = InstanceManager.getInstancesByClass(BFOUNDATION);
+         for each(buildingFoundation in bFoundation)
          {
             if(GRID.FromISO(buildingFoundation.x,buildingFoundation.y).x > 1000)
             {

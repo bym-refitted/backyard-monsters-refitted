@@ -32,7 +32,7 @@ export const getDefaultBaseData = (user?: User) => {
     locked: 0,
     points: 5,
     basevalue: 20,
-    protectedVal: 1,
+    protected: 1,
     lastupdate: 0,
     usemap: 1,
     homebaseid: 0, // Generate

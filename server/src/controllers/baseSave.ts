@@ -14,7 +14,6 @@ export const baseSave: KoaController = async (ctx) => {
   let save = await ORMContext.em.findOne(Save, {
     basesaveid: requestBody.basesaveid,
   });
-  save.over += 1;
 
   // update the save with the values from the request
   for (const key of Save.jsonKeys) {
@@ -41,7 +40,7 @@ export const baseSave: KoaController = async (ctx) => {
   ctx.body = {
     ...baseSaveData,
     ...filteredSave,
-    protected: filteredSave.protectedVal,
+    // over: (save.over += 1),
     h: "someHashValue",
   };
 };
