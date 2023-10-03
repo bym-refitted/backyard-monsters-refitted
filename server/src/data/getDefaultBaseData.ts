@@ -44,7 +44,7 @@ export const getDefaultBaseData = (user?: User) => {
     chatenabled: 0,
     relationship: 0,
     error: 0,
-    currenttime: 0,
+    currenttime: currentTimeInSeconds,
     user,
 
     // Objects
@@ -81,6 +81,7 @@ export const getDefaultBaseData = (user?: User) => {
     frontpage: {},
     events: {},
     rewards: {},
+    takeover: {},
     iresources: {
       r2: 1600,
       r4: 0,
@@ -93,13 +94,15 @@ export const getDefaultBaseData = (user?: User) => {
     },
 
     // Arrays
-    updates: [],
+    updates: [], // Important: is this [] or "[]"
     effects: [],
     homebase: [],
     outposts: [],
     worldsize: [500, 500],
     wmstatus: [],
     chatservers: ["bym-chat.kixeye.com"],
+    powerups: [], // ToDo: add to DB
+    attpowerups: [], // ToDo: add to DB
 
     // Client saves | not returned
     version: 128,
@@ -112,7 +115,7 @@ export const getDefaultBaseData = (user?: User) => {
     monsterupdate: {},
     basename: "basename",
     attackreport: "",
-    over: 0,
+    over: 1,
     protect: 0,
     attackid: 0,
     attacks: [],
@@ -123,7 +126,7 @@ export const getDefaultBaseData = (user?: User) => {
     attackcreatures: {},
     attackloot: {},
     lootreport: {},
-    attackerchampion: [],
+    attackerchampion: "null", // []
     attackersiege: {},
     purchasecomplete: 0,
     fbpromos: [],
