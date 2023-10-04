@@ -2,5 +2,5 @@
 export const gameConfig = {
   skipTutorial: true, 
   loadFinishedBase: false,
-  loadMidBase: true
+  loadMidBase: false
 };

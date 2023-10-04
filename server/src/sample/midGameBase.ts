@@ -4596,7 +4596,7 @@ export const midGameBase = {
     [949, 50, 0],
     [950, 50, 0],
   ],
-  credits: 78,
+  credits: 2000,
   champion:
     '[{"ft":1359139826,"status":0,"l":4,"hp":0,"log":"0","fd":0,"t":1,"fb":0,"pl":0},{"ft":82629,"status":1,"l":2,"hp":20000,"log":"1","fd":3,"t":2,"fb":0,"pl":0},{"ft":71121,"status":1,"l":1,"hp":15000,"log":"1","fd":0,"t":3,"fb":0,"pl":1}]',
   player: {

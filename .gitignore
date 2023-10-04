@@ -7,4 +7,3 @@ server/src/database/bym-db*
 server/src/database/migrations/.snapshot*
 server/data
 .idea
-dummyworkingsave.ts
