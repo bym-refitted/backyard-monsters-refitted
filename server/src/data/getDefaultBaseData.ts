@@ -1,8 +1,16 @@
+import { gameConfig } from "../config/GameSettings";
 import { User } from "../models/user.model";
+import { endGameBase } from "../sample/endGameBase";
+import { midGameBase } from "../sample/midGameBase";
 
 const currentTimeInSeconds: number = Math.floor(new Date().getTime() / 1000);
 
 export const getDefaultBaseData = (user?: User) => {
+  // This allows us to work with example bases
+  // Which are at the half-way and end-game mark in terms of progress.
+  if (gameConfig.loadFinishedBase) return endGameBase;
+  if (gameConfig.loadMidBase) return midGameBase;
+
   return {
     baseid: "0",
     type: "main",
