@@ -6847,24 +6847,24 @@ package
          "imageData":{
             "baseurl":"buildings/iportal/",
             1:{
-               "top":["top.1.v2.png",new Point(-85,-5)],
-               "shadow":["shadow.1.v2.jpg",new Point(-43,47)]
+               "top":["top.1.v2.png",new Point(-85,-5)]
+               //"shadow":["shadow.1.v2.jpg",new Point(-43,47)]
             },
             2:{
-               "top":["top.2.v2.png",new Point(-105,-29)],
-               "shadow":["shadow.2.v2.jpg",new Point(-87,52)]
+               "top":["top.2.v2.png",new Point(-105,-29)]
+               //"shadow":["shadow.2.v2.jpg",new Point(-87,52)]
             },
             3:{
-               "top":["top.3.v2.png",new Point(-136,-64)],
-               "shadow":["shadow.3.v2.jpg",new Point(-110,47)]
+               "top":["top.3.v2.png",new Point(-136,-64)]
+               //"shadow":["shadow.3.v2.jpg",new Point(-110,47)]
             },
             4:{
-               "top":["top.4.v2.png",new Point(-140,-114)],
-               "shadow":["shadow.4.v2.jpg",new Point(-140,11)]
+               "top":["top.4.v2.png",new Point(-140,-114)]
+               //"shadow":["shadow.4.v2.jpg",new Point(-140,11)]
             },
             5:{
-               "top":["top.5.v2.png",new Point(-160,-172)],
-               "shadow":["shadow.5.v2.jpg",new Point(-169,0)]
+               "top":["top.5.v2.png",new Point(-160,-172)]
+               //"shadow":["shadow.5.v2.jpg",new Point(-169,0)]
             }
          },
          "quantity":[1,1,1,1,1],
@@ -7767,14 +7767,14 @@ package
          "imageData":{
             "baseurl":"buildings/blackspurtztower/",
             1:{
-               "anim":["top-normal-anim.v2.png",new Rectangle(-27,-57,54,42),31],
+               // "anim":["top-normal-anim.v2.png",new Rectangle(-27,-57,54,42),31],
                "top":["normal_base.png",new Point(-39,-35)],
-               "shadow":["normal_damaged_shadow.jpg",new Point(-31,10)],
-               "animdamaged":["top-damaged-anim.v2.png",new Rectangle(-27,-57,54,42),31],
+               // "shadow":["normal_damaged_shadow.jpg",new Point(-31,10)],
+               // "animdamaged":["top-damaged-anim.v2.png",new Rectangle(-27,-57,54,42),31],
                "topdamaged":["damaged_base.png",new Point(-39,-35)],
-               "shadowdamaged":["normal_damaged_shadow.jpg",new Point(-38,16)],
-               "topdestroyed":["destroyed_base.png",new Point(-39,-13)],
-               "shadowdestroyed":["destroyed_shadow.jpg",new Point(-36,22)]
+               // "shadowdamaged":["normal_damaged_shadow.jpg",new Point(-38,16)],
+               "topdestroyed":["destroyed_base.png",new Point(-39,-13)]
+               // "shadowdestroyed":["destroyed_shadow.jpg",new Point(-36,22)]
             }
          },
          "buildingbuttons":["black_diamond_spurtz_cannon_button"],

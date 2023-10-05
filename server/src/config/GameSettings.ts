@@ -1,3 +1,7 @@
+/** Check the Wiki to get more information on each of these flags. */
 export const gameConfig = {
-  skipTutorial: true,
+  logMissingAssets: false,
+  skipTutorial: true, 
+  loadFinishedBase: false,
+  loadMidBase: false
 };

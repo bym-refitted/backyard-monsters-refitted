@@ -1,8 +1,16 @@
+import { gameConfig } from "../config/GameSettings";
 import { User } from "../models/user.model";
+import { endGameBase } from "../sample/endGameBase";
+import { midGameBase } from "../sample/midGameBase";
 
 const currentTimeInSeconds: number = Math.floor(new Date().getTime() / 1000);
 
 export const getDefaultBaseData = (user?: User) => {
+  // This allows us to work with example bases
+  // Which are at the half-way and end-game mark in terms of progress.
+  if (gameConfig.loadFinishedBase) return endGameBase;
+  if (gameConfig.loadMidBase) return midGameBase;
+
   return {
     baseid: "0",
     type: "main",
@@ -32,11 +40,11 @@ export const getDefaultBaseData = (user?: User) => {
     locked: 0,
     points: 5,
     basevalue: 20,
-    protectedVal: 1,
+    protected: 1,
     lastupdate: 0,
     usemap: 1,
     homebaseid: 0, // Generate
-    credits: 1000,
+    credits: 2000,
     champion: "null",
     empiredestroyed: 1,
     worldid: "0", // Generate
@@ -44,7 +52,7 @@ export const getDefaultBaseData = (user?: User) => {
     chatenabled: 0,
     relationship: 0,
     error: 0,
-    currenttime: 0,
+    currenttime: currentTimeInSeconds,
     user,
 
     // Objects
@@ -81,6 +89,7 @@ export const getDefaultBaseData = (user?: User) => {
     frontpage: {},
     events: {},
     rewards: {},
+    takeover: {},
     iresources: {
       r2: 1600,
       r4: 0,
@@ -93,13 +102,15 @@ export const getDefaultBaseData = (user?: User) => {
     },
 
     // Arrays
-    updates: [],
+    updates: [], // Important: is this [] or "[]"
     effects: [],
     homebase: [],
     outposts: [],
     worldsize: [500, 500],
     wmstatus: [],
     chatservers: ["bym-chat.kixeye.com"],
+    powerups: [], // ToDo: add to DB
+    attpowerups: [], // ToDo: add to DB
 
     // Client saves | not returned
     version: 128,
@@ -112,7 +123,7 @@ export const getDefaultBaseData = (user?: User) => {
     monsterupdate: {},
     basename: "basename",
     attackreport: "",
-    over: 0,
+    over: 1,
     protect: 0,
     attackid: 0,
     attacks: [],
@@ -123,7 +134,7 @@ export const getDefaultBaseData = (user?: User) => {
     attackcreatures: {},
     attackloot: {},
     lootreport: {},
-    attackerchampion: [],
+    attackerchampion: "null", // []
     attackersiege: {},
     purchasecomplete: 0,
     fbpromos: [],

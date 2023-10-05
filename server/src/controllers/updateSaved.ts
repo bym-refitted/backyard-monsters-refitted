@@ -1,21 +1,29 @@
+import { flags } from "../data/flags";
+import { Save } from "../models/save.model";
+import { ORMContext } from "../server";
+import { FilterFrontendKeys } from "../utils/FrontendKey";
 import { KoaController } from "../utils/KoaController";
 
-export const updateSaved: KoaController = async ctx => {
-  ctx.status = 200;
-  ctx.body = {
+export const updateSaved: KoaController = async (ctx) => {
+  const basesaveidCookie = ctx.cookies.get("basesaveid");
+  const basesaveid = parseInt(basesaveidCookie, 10);
+  let save = await ORMContext.em.findOne(Save, { basesaveid });
+
+  if (!save) {
+    ctx.status = 404;
+    ctx.body = { message: "Save not updated" };
+    return;
+  }
+
+  const filteredSave = FilterFrontendKeys(save);
+
+  const baseUpdateSave = {
     error: 0,
-    baseid: 1234,
-    version: 128,
-    lastupdate: 0,
-    type: "build",
-    flags: {
-      viximo: 0,
-      kongregate: 1,
-      showProgressBar: 0,
-      midgameIncentive: 0,
-      plinko: 0,
-      fanfriendbookmarkquests: 0,
-    },
+    flags,
+    ...filteredSave,
     h: "someHashValue",
   };
+
+  ctx.status = 200;
+  ctx.body = baseUpdateSave;
 };

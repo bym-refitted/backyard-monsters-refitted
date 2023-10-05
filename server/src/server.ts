@@ -5,7 +5,6 @@ import Koa, { Context, Next } from "koa";
 import Router from "@koa/router";
 import bodyParser from "koa-bodyparser";
 import fs from "fs/promises";
-import morgan from "koa-morgan";
 import serve from "koa-static";
 import ormConfig from "./mikro-orm.config";
 import router from "./app.routes";
@@ -17,6 +16,7 @@ import { ascii_node } from "./utils/ascii_art.js";
 import { ErrorInterceptor } from "./middleware/clientSafeError.js";
 import { registerDevUser } from "./database/seeds/dev.user";
 import { processLanguagesFile } from "./middleware/processLanguageFile";
+import { logMissingAssets, morganLogging } from "./middleware/morganLogging";
 
 export const ORMContext = {} as {
   orm: MikroORM;
@@ -50,14 +50,9 @@ api.get("/", (ctx: Context) => (ctx.body = {}));
     RequestContext.createAsync(ORMContext.orm.em, next)
   );
 
-  app.use(
-    morgan("combined", {
-      skip: (ctx) => {
-        const isAssetsDisabled = process.env.LOG_ASSETS !== "enabled";
-        return isAssetsDisabled && ctx.url.startsWith("/assets");
-      },
-    })
-  );
+  // Logs
+  app.use(logMissingAssets);
+  app.use(morganLogging);
 
   app.use(processLanguagesFile);
 

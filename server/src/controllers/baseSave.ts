@@ -2,18 +2,18 @@ import { Save } from "../models/save.model";
 import { ORMContext } from "../server";
 import { FilterFrontendKeys } from "../utils/FrontendKey";
 import { KoaController } from "../utils/KoaController";
-import { errorLog, logging } from "../utils/logger";
+import { logging } from "../utils/logger";
 
 export const baseSave: KoaController = async (ctx) => {
   const user = ctx.authUser;
   logging(`Saving the base! user: ${user.username}`);
 
   const requestBody = ctx.request.body as { basesaveid: number };
+  ctx.cookies.set("basesaveid", requestBody.basesaveid.toString());
 
   let save = await ORMContext.em.findOne(Save, {
     basesaveid: requestBody.basesaveid,
   });
- // save.over += 1;
 
   // update the save with the values from the request
   for (const key of Save.jsonKeys) {
@@ -29,23 +29,18 @@ export const baseSave: KoaController = async (ctx) => {
   await ORMContext.em.persistAndFlush(save);
 
   const filteredSave = FilterFrontendKeys(save);
-  // hardcoded for now
+
   const baseSaveData = {
     error: 0,
     basesaveid: requestBody.basesaveid,
-    credits: 2000,
-    protected: 1, //protectedVal
-    fan: 0,
-    bookmarked: 0,
     installsgenerated: 42069,
-    resources: {},
-    h: "someHashValue",
   };
+
   ctx.status = 200;
   ctx.body = {
     ...baseSaveData,
     ...filteredSave,
-    // over:0,
-    protected: filteredSave.protectedVal,
+    // over: (save.over += 1),
+    h: "someHashValue",
   };
 };

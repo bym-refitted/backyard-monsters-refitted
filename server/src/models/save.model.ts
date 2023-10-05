@@ -126,7 +126,7 @@ export class Save {
 
   @FrontendKey
   @Property()
-  protectedVal!: number;
+  protected!: number;
 
   @FrontendKey
   @Property()
@@ -245,6 +245,10 @@ export class Save {
   @FrontendKey
   @Property({ type: "json", nullable: true })
   rewards?: FieldData;
+
+  // @FrontendKey
+  // @Property({ type: "json", nullable: true })
+  // takeover?: FieldData; // this creates an in-game popup that can't be dismissed until maproom is fixed
 
   @FrontendKey
   @Property({ type: "json", nullable: true })
@@ -368,7 +372,7 @@ export class Save {
 
   @FrontendKey
   @Property({ type: "json", nullable: true })
-  outposts: string[];
+  outposts: string[][];
 
   @FrontendKey
   @Property({ type: "json", nullable: true })
@@ -417,6 +421,7 @@ export class Save {
     "researchdata",
     "stats",
     "rewards",
+    // "takeover",
     "aiattacks",
     "monsters",
     "resources",
