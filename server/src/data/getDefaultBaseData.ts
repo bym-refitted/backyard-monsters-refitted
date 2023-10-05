@@ -44,7 +44,7 @@ export const getDefaultBaseData = (user?: User) => {
     lastupdate: 0,
     usemap: 1,
     homebaseid: 0, // Generate
-    credits: 1000,
+    credits: 2000,
     champion: "null",
     empiredestroyed: 1,
     worldid: "0", // Generate
