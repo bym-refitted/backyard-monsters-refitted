@@ -7286,14 +7286,11 @@ package
             1:{
                // "anim":["anim.1.v2.png",new Rectangle(-26,-50,54,42),31],
                // "anim2":["anim.2.v2.png",new Rectangle(-17,26,38,19),31],
-               "top":["top.1.v2.png",new Point(-34,-9)]
-               // "shadow":["shadow.1.v2.jpg",new Point(-31,10)],
+               "top":["top.1.v2.png",new Point(-34,-30)]
                // "animdamaged":["anim.1.damaged.v2.png",new Rectangle(-28.6,-47.6,52,43),31],
                // "animdamaged2":["anim.2.damaged.v2.png",new Rectangle(-21,28,38,19),31],
                // "topdamaged":["top.1.damaged.v2.png",new Point(-38,-4)],
-               // "shadowdamaged":["shadow.1.v2.jpg",new Point(-38,16)],
                // "topdestroyed":["top.1.destroyed.v2.png",new Point(-36,6)],
-               // "shadowdestroyed":["shadow.1.destroyed.v2.jpg",new Point(-36,22)]
             }
          },
          "buildingbuttons":["magma_tower.v2"],
@@ -7467,9 +7464,6 @@ package
                // "anim":["anim1.v4.png",new Rectangle(-54,22,43,39),60],
                // "anim2":["anim2.v3.png",new Rectangle(-24,-92,59,100),60],
                // "anim3":["anim3.v3.png",new Rectangle(19,11,38,40),60],
-               // "shadow":["shadow.1.jpg",new Point(-50,4)],
-               // "shadowdamaged":["shadow.1.jpg",new Point(-50,4)],
-               // "shadowdestroyed":["shadow.1.jpg",new Point(-50,4)]
             }
          },
          "stats":[{
@@ -7655,14 +7649,11 @@ package
          "imageData":{
             "baseurl":"buildings/spurtztower/",
             1:{
-               "anim":["top-normal-anim.v2.png",new Rectangle(-27,-57,51,43),31],
-               "top":["normal_base.png",new Point(-39,-35)],
-               "shadow":["normal_damaged_shadow.jpg",new Point(-31,10)],
-               "animdamaged":["top-damaged-anim.v2.png",new Rectangle(-27,-57,50,43),31],
-               "topdamaged":["damaged_base.png",new Point(-39,-35)],
-               "shadowdamaged":["normal_damaged_shadow.jpg",new Point(-38,16)],
-               "topdestroyed":["destroyed_base.png",new Point(-39,-13)],
-               "shadowdestroyed":["destroyed_shadow.jpg",new Point(-36,22)]
+               // "anim":["top-normal-anim.v2.png",new Rectangle(-27,-57,51,43),31],
+               "top":["normal_base.png",new Point(-39,-50)],
+               // "animdamaged":["top-damaged-anim.v2.png",new Rectangle(-27,-57,50,43),31],
+               "topdamaged":["damaged_base.png",new Point(-39,-50)],
+               "topdestroyed":["destroyed_base.png",new Point(-39,-13)]
             }
          },
          "buildingbuttons":["spurtz_tower_button"],
@@ -7767,14 +7758,11 @@ package
          "imageData":{
             "baseurl":"buildings/blackspurtztower/",
             1:{
-               // "anim":["top-normal-anim.v2.png",new Rectangle(-27,-57,54,42),31],
-               "top":["normal_base.png",new Point(-39,-35)],
-               // "shadow":["normal_damaged_shadow.jpg",new Point(-31,10)],
+               //"anim":["top-normal-anim.v2.png",new Rectangle(-10,-57,54,42),31],
+               "top":["normal_base.png",new Point(-39,-50)],
                // "animdamaged":["top-damaged-anim.v2.png",new Rectangle(-27,-57,54,42),31],
-               "topdamaged":["damaged_base.png",new Point(-39,-35)],
-               // "shadowdamaged":["normal_damaged_shadow.jpg",new Point(-38,16)],
+               "topdamaged":["damaged_base.png",new Point(-39,-50)],
                "topdestroyed":["destroyed_base.png",new Point(-39,-13)]
-               // "shadowdestroyed":["destroyed_shadow.jpg",new Point(-36,22)]
             }
          },
          "buildingbuttons":["black_diamond_spurtz_cannon_button"],
