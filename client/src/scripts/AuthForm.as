@@ -107,7 +107,7 @@ package
             var context:LoaderContext = new LoaderContext();
             context.checkPolicyFile = true;
             loader.contentLoaderInfo.addEventListener(Event.COMPLETE, onImageLoaded);
-            loader.load(new URLRequest("http://localhost:3001/assets/bym-refitted-assets/refitted-logo.png"), context);
+            loader.load(new URLRequest(GLOBAL.serverUrl + "assets/bym-refitted-assets/refitted-logo.png"), context);
 
             // Create inputs within the container
             emailInput = createBlock(350, 35, "Email");

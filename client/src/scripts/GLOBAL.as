@@ -41,7 +41,8 @@ package
    
    public class GLOBAL
    {
-      
+      public static var serverUrl:String = "http://localhost:3001/"; // Configure for prod
+
       public static var _local:Boolean = false;
       
       public static var _save:Boolean = true;
