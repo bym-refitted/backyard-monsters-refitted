@@ -32,6 +32,9 @@
         "willupgrade": "You will be able to upgrade your:",
         "recycledesc": " You are about to recyle your Town Hall."
     },
+    "newmap": {
+        "opening": "Opening Map..."
+    },
     "base": {
         "uperr": {
             "buildings": "Level {v1} required.",

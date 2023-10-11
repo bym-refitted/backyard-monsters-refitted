@@ -34,10 +34,10 @@ package com.monsters.sound
       
       public function Load() : void
       {
-         Security.loadPolicyFile("http://localhost:3001/crossdomain.xml");
+         Security.loadPolicyFile(GLOBAL.serverUrl + "crossdomain.xml");
          var context:LoaderContext = new LoaderContext();
          context.checkPolicyFile = true;
-         context.securityDomain = SecurityDomain.currentDomain;
+         //context.securityDomain = SecurityDomain.currentDomain;
          context.applicationDomain = ApplicationDomain.currentDomain;
 
          this.loader = new Loader();
