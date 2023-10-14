@@ -130,6 +130,7 @@
         "topaddshiny": "Add",
         "building": "<b>Building<br><br>{v1}</b><br>Speed up to finish.",
         "upgrading": "<b>Upgrading<br><br>{v1}</b><br>Speed up to finish.",
+        "repairing": "<b>Repairing<br><br>{v1}</b><br>Speed up to finish.",
         "worker": {
             "hire": "Hire",
             "idle": "Idle",
@@ -470,7 +471,8 @@
         },
         "state": {
             "building": "BUILDING",
-            "upgrading": "UPGRADING"
+            "upgrading": "UPGRADING",
+            "repairing": "REPAIRING"
         },
         "infopop": {
             "levelnum": "Level {v1}"
@@ -682,6 +684,10 @@
         "yardplanner#": "Yard Planner",
         "hcc#": "Hatchery Control Center",
         "radio#": "Radio Tower"
+    },
+    "#bi": {
+        "spurtzcannon#": "Spurtz Cannon",
+        "blackspurtzcannon#": "Diamond Spurtz Cannon"
     },
     "#m": {
         "pokey#": "Pokey",

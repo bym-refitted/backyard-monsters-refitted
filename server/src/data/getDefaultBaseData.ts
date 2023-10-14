@@ -88,7 +88,17 @@ export const getDefaultBaseData = (user?: User) => {
     buildingresources: {},
     frontpage: {},
     events: {},
-    rewards: {},
+    rewards: {
+      spurtzCannonReward2: {
+        id: "spurtzCannonReward2",
+      },
+      spurtzCannonReward: {
+        id: "spurtzCannonReward",
+      },
+      spurtzCannonReward3: {
+        id: "spurtzCannonReward3",
+      },
+    },
     takeover: {},
     iresources: {
       r2: 1600,
