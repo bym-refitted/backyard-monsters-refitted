@@ -36,6 +36,9 @@ router.post(
 // Load
 router.post("/base/load", auth, debugDataLog("Base load data"), baseLoad);
 
+// Inferno
+router.post("/api/bm/base/load", auth, debugDataLog("Inferno load data"), baseLoad);
+
 // Worldmap
 router.post(
   "/worldmapv3/setmapversion",
