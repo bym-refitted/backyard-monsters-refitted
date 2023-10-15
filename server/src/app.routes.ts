@@ -12,6 +12,7 @@ import {
 import { getMapRoomCells } from "./controllers/maproom/getCells";
 import { getNewMap } from "./controllers/maproom/getNewMap";
 import { auth } from "./middleware/auth";
+import { relocate } from "./controllers/maproom/relocate";
 
 interface LogProps {
   logMessage: string;
@@ -51,6 +52,13 @@ router.post(
   debugDataLog("Get maproom cells"),
   getMapRoomCells
 );
+
+router.post(
+  "/worldmapv3/relocate",
+  debugDataLog("Relocating base"),
+  relocate
+);
+
 router.post(
   "/api/bm/getnewmap",
   debugDataLog("Posting to new maproom"),
