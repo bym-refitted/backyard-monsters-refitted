@@ -7283,7 +7283,7 @@ package
          "imageData":{
             "baseurl":"buildings/imagmatower/",
             1:{
-               // "anim":["anim.1.v2.png",new Rectangle(-26,-50,54,42),31],
+               "anim":["anim.1.v2.png",new Rectangle(-26,-40,54,42),31],
                // "anim2":["anim.2.v2.png",new Rectangle(-17,26,38,19),31],
                "top":["top.1.v2.png",new Point(-34,-30)]
                // "animdamaged":["anim.1.damaged.v2.png",new Rectangle(-28.6,-47.6,52,43),31],
