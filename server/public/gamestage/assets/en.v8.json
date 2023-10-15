@@ -687,7 +687,9 @@
     },
     "#bi": {
         "spurtzcannon#": "Spurtz Cannon",
-        "blackspurtzcannon#": "Diamond Spurtz Cannon"
+        "blackspurtzcannon#": "Diamond Spurtz Cannon",
+        "quaketower#": "Quake Tower",
+        "magmatower#": "Magma Tower"
     },
     "#m": {
         "pokey#": "Pokey",
@@ -774,7 +776,8 @@
         "err": {
             "moreresources": "<b>You need {v1} more resources to build.</b><br><br>Get the resources and start building for {v2} Shiny?",
             "moreresourcesupgrade": "<b>You need {v1} more resources to upgrade.</b><br><br>Get the resources and start upgrading for {v2} Shiny?",
-            "moresilosupgrade": "Upgrade storage silos to increase your resource capacity."
+            "moresilosupgrade": "Upgrade storage silos to increase your resource capacity.",
+            "moresilos": "Build more silos to increase your resource capacity"
         }
     }
 }
