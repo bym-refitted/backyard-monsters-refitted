@@ -118,25 +118,25 @@ package com.monsters.maproom3.popups
       {
          this.Hide();
          PLEASEWAIT.Show(KEYS.Get("wait_relocating"));
-         var _loc2_:* = MapRoomManager.instance.mapRoom3URL + "relocate";
+         var url:* = MapRoomManager.instance.mapRoom3URL + "relocate";
          var _loc3_:Array = [];
          if(param1 != -1)
          {
             _loc3_.push(["userid",param1]);
          }
-         new URLLoaderApi().load(_loc2_,_loc3_,this.OnRelocationSuccessful,this.OnRelocationFailed);
+         new URLLoaderApi().load(url,_loc3_,this.OnRelocationSuccessful,this.OnRelocationFailed);
       }
       
-      private function OnRelocationSuccessful(param1:Object) : void
+      private function OnRelocationSuccessful(serverData:Object) : void
       {
          PLEASEWAIT.Hide();
-         if(param1.error != 0)
+         if(serverData.error != 0)
          {
             GLOBAL.ErrorMessage("Error relocating main base, MapRoom3RelocatePopup::OnRelocationSuccessful");
-            LOGGER.Log("err","Error relocating main base, MapRoom3RelocatePopup::OnRelocationSuccessful " + param1.error);
+            LOGGER.Log("err","Error relocating main base, MapRoom3RelocatePopup::OnRelocationSuccessful " + serverData.error);
             return;
          }
-         MapRoomManager.instance.OnMapRoom3RelocationSuccessful(param1.mapheaderurl);
+         MapRoomManager.instance.OnMapRoom3RelocationSuccessful(serverData.mapheaderurl);
          BASE.LoadBase(null,0,0,GLOBAL.e_BASE_MODE.BUILD,false,EnumYardType.PLAYER);
       }
       
