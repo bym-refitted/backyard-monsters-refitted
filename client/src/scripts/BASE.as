@@ -1694,8 +1694,7 @@ package
       }
          catch (error:Error)
          {
-            // Move logger back here later
-            // LOGGER.DebugQPost(error);
+            GLOBAL.Message("Whoops... we encountered an issue loading your base.\n\nReport: " + error);
          }
       }
       
