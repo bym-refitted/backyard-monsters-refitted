@@ -3,7 +3,7 @@ import { Save } from "../models/save.model";
 import { ORMContext } from "../server";
 import { KoaController } from "../utils/KoaController";
 import { logging } from "../utils/logger";
-import { storeKeys } from "../keys/generalStore";
+import { storeItems } from "../data/storeItems";
 import { User } from "../models/user.model";
 import { getDefaultBaseData } from "../data/getDefaultBaseData";
 import { FilterFrontendKeys } from "../utils/FrontendKey";
@@ -34,29 +34,6 @@ export const baseLoad: KoaController = async ctx => {
   }
   const filteredSave = FilterFrontendKeys(save);
 
-  const storeObject = {
-    t: "title_val",
-    d: "desc_val",
-    c: [0],
-    i: "",
-    q: 0,
-    du: 0,
-  };
-
-  const quantities = {};
-  storeKeys.forEach((key) => {
-    quantities[key] = 100;
-  });
-
-  const storeItems = {};
-  storeKeys.forEach((key) => {
-    if (quantities[key]) {
-      storeItems[key] = { ...storeObject, quantity: quantities[key] };
-    } else {
-      storeItems[key] = { ...storeObject };
-    }
-  });
-
   const isTutorialEnabled = gameConfig.skipTutorial ? 205 : 0;
 
   ctx.status = 200;
@@ -65,11 +42,10 @@ export const baseLoad: KoaController = async ctx => {
     error: 0,
     basename: "testBase",
     pic_square: "https://apprecs.org/ios/images/app-icons/256/df/634186975.jpg",
-    storeitems: { ...storeItems },
+    storeitems: { ...storeItems},
     ...filteredSave,
     id: filteredSave.basesaveid,
     tutorialstage: isTutorialEnabled,
-    iresources: filteredSave.resources,
     // Important: 'h' must always be at the end of the payload, as the client checks for this
     h: "someHashValue",
     hn: 0,
