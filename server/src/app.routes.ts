@@ -13,6 +13,7 @@ import { getMapRoomCells } from "./controllers/maproom/getCells";
 import { getNewMap } from "./controllers/maproom/getNewMap";
 import { auth } from "./middleware/auth";
 import { relocate } from "./controllers/maproom/relocate";
+import { infernoMonsters } from "./controllers/inferno/infernoMonsters";
 
 interface LogProps {
   logMessage: string;
@@ -27,43 +28,22 @@ router.post("/api/player/register", debugDataLog("Registering user"), register);
 
 // Save
 router.post("/base/save", auth, debugDataLog("Base save data"), baseSave);
-router.post(
-  "/base/updatesaved",
-  debugDataLog("Base updated save"),
-  updateSaved
-);
+router.post("/base/updatesaved", debugDataLog("Base updated save"), updateSaved);
 
 // Load
 router.post("/base/load", auth, debugDataLog("Base load data"), baseLoad);
 
+// Inferno
+router.post("/api/bm/base/load", auth, debugDataLog("Inferno load data"), baseLoad);
+router.post("/api/bm/base/infernomonsters", auth, debugDataLog("Load inferno monsters"), infernoMonsters);
+router.post("/api/bm/base/save", auth, debugDataLog("Inferno save data"), baseSave);
+
 // Worldmap
-router.post(
-  "/worldmapv3/setmapversion",
-  debugDataLog("Set maproom version"),
-  mapRoomVersion
-);
-router.post(
-  "/worldmapv3/initworldmap",
-  debugDataLog("Init maproom data"),
-  initMapRoom
-);
-router.post(
-  "/worldmapv3/getcells",
-  debugDataLog("Get maproom cells"),
-  getMapRoomCells
-);
-
-router.post(
-  "/worldmapv3/relocate",
-  debugDataLog("Relocating base"),
-  relocate
-);
-
-router.post(
-  "/api/bm/getnewmap",
-  debugDataLog("Posting to new maproom"),
-  getNewMap
-);
+router.post("/worldmapv3/setmapversion", debugDataLog("Set maproom version"), mapRoomVersion);
+router.post("/worldmapv3/initworldmap", debugDataLog("Init maproom data"), initMapRoom);
+router.post("/worldmapv3/getcells", debugDataLog("Get maproom cells"), getMapRoomCells);
+router.post("/worldmapv3/relocate", debugDataLog("Relocating base"), relocate);
+router.post("/api/bm/getnewmap", debugDataLog("Posting to new maproom"), getNewMap);
 
 // Logging routes
 // router.post(

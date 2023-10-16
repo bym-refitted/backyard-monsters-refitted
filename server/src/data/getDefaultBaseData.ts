@@ -63,7 +63,8 @@ export const getDefaultBaseData = (user?: User) => {
     lockerdata: {},
     aiattacks: {},
     mushrooms: {},
-    stats: { // Reminder: Remove contents
+    stats: {
+      // Reminder: Remove contents
       mobg: 367720503,
       popupdata: {
         popupStates: [],
@@ -145,14 +146,14 @@ export const getDefaultBaseData = (user?: User) => {
     coords: {},
     quests: {},
     resources: {
-      r2: 1600,
-      r2max: 10000,
-      r1max: 10000,
       r1: 1600,
-      r4max: 10000,
-      r3max: 10000,
+      r2: 1600,
       r3: 0,
       r4: 0,
+      r1max: 10000,
+      r2max: 10000,
+      r3max: 10000,
+      r4max: 10000,
     },
     inventory: {},
     monsters: {},
@@ -162,7 +163,8 @@ export const getDefaultBaseData = (user?: User) => {
     buildingresources: {},
     frontpage: {},
     events: {},
-    rewards: { // Reminder: Remove contents
+    rewards: {
+      // Reminder: Remove contents
       spurtzCannonReward2: {
         id: "spurtzCannonReward2",
       },
@@ -175,13 +177,13 @@ export const getDefaultBaseData = (user?: User) => {
     },
     takeover: {},
     iresources: {
-      r2: 1600,
-      r4: 0,
       r1: 1600,
+      r2: 1600,
       r3: 0,
-      r3max: 10000,
-      r2max: 10000,
+      r4: 0,
       r1max: 10000,
+      r2max: 10000,
+      r3max: 10000,
       r4max: 10000,
     },
 
