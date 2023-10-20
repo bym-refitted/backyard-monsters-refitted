@@ -10,47 +10,52 @@ package com.monsters.sound
    import flash.system.SecurityDomain;
    import flash.events.IEventDispatcher;
    import flash.system.Security;
-   
+   import flash.media.Sound;
+   import flash.errors.IOError;
+
    public class SoundLibrary
    {
-       
-      
+
       public var _asset:String;
-      
+
       public var li:LoaderInfo;
-      
+
       public var loader:Loader;
-      
+
       public var next:com.monsters.sound.SoundLibrary;
-      
+
       public var loaded:Boolean;
-      
-      public function SoundLibrary(param1:String)
+
+      public function SoundLibrary(audioAsset:String)
       {
          super();
-         this._asset = param1;
+         this._asset = audioAsset;
          this.loaded = false;
       }
-      
-      public function Load() : void
-      {
-         Security.loadPolicyFile(GLOBAL.serverUrl + "crossdomain.xml");
-         var context:LoaderContext = new LoaderContext();
-         context.checkPolicyFile = true;
-         //context.securityDomain = SecurityDomain.currentDomain;
-         context.applicationDomain = ApplicationDomain.currentDomain;
 
-         this.loader = new Loader();
-         this.loader.load(new URLRequest(this._asset), context);
-         this.loader.contentLoaderInfo.addEventListener(Event.COMPLETE,this.onLoad);
-         this.loader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR,this.handleLoadError);
-      }
-      
-      private function onLoad(param1:Event) : void
+      public function Load():void
       {
-         this.li = param1.target as LoaderInfo;
+         var sound:Sound = new Sound();
+         sound.addEventListener(Event.COMPLETE, onLoad);
+         sound.addEventListener(IOErrorEvent.IO_ERROR, handleLoadError);
+
+         var soundURLRequest:URLRequest = new URLRequest(this._asset);
+
+         try
+         {
+            sound.load(soundURLRequest);
+         }
+         catch (error:IOError)
+         {
+            trace("IOError: " + error.message);
+         }
+      }
+
+      private function onLoad(event:Event):void
+      {
+         // The MP3 file is loaded and ready to be played.
          this.loaded = true;
-         if(this.next)
+         if (this.next)
          {
             this.next.Load();
          }
@@ -60,9 +65,9 @@ package com.monsters.sound
          }
       }
 
-      private function handleLoadError(param1:IOErrorEvent) : void
+      private function handleLoadError(param1:IOErrorEvent):void
       {
-         IEventDispatcher(param1.target).removeEventListener(IOErrorEvent.IO_ERROR,this.handleLoadError);
+         IEventDispatcher(param1.target).removeEventListener(IOErrorEvent.IO_ERROR, this.handleLoadError);
          var errMessage:String = param1.text;
          GLOBAL._layerTop.addChild(GLOBAL.Message("There was an error loading sounds and music"));
       }

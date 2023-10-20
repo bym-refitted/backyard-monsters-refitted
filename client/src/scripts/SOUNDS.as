@@ -10,143 +10,144 @@ package
    import flash.media.SoundChannel;
    import flash.media.SoundMixer;
    import flash.media.SoundTransform;
-   
+   import flash.net.URLRequest;
+   import flash.events.IOErrorEvent;
+
    public class SOUNDS
    {
-      
+
       public static var _muted:int = 0;
-      
+
       public static var _mutedMusic:int = 0;
-      
+
       public static var _soundAssets:Array;
-      
+
       private static var soundLibraries:Vector.<SoundLibrary>;
-      
+
       public static var _setup:Boolean = false;
-      
+
       public static var _loadState:int = 0;
-      
+
       private static var _currentMusic:String = null;
-      
+
       private static var _queuedMusic:String = "musicbuild";
-      
+
       private static var _musicVolume:Number = 0.7;
-      
+
       private static var _musicPan:Number = 0;
-      
+
       private static var _musicTime:Number;
-      
+
       public static var _concurrent:Object = {};
-      
+
       public static var _musicChannel:SoundChannel;
-      
+
       public static var _sounds:Object = {
-         "click1":new sound_click1(),
-         "laser":"sound_laser",
-         "wmbstart":"sound_monsterbaiterloop",
-         "wmbhorn":"sound_monsterbaiterhorn",
-         "purchasepopup":"sound_purchasepop",
-         "bankfire":"sound_bankfire",
-         "bankland":"sound_bankland",
-         "repair1":"sound_repair1",
-         "error1":"sound_error1",
-         "levelup":"sound_levelup",
-         "shotgun":"sound_shotgun",
-         "clock1":"sound_clock1",
-         "warcry1":"sound_warcry1",
-         "splat1":"sound_splat1",
-         "splat2":"sound_splat2",
-         "splat3":"sound_splat3",
-         "splat4":"sound_splat4",
-         "splat5":"sound_splat5",
-         "snipe1":"sound_snipe1",
-         "magma1":"sound_magma_attack1",
-         "magma2":"sound_magma_attack2",
-         "quake":"sound_quake_attack",
-         "railgun1":"sound_railgun1",
-         "splash1":"sound_splash1",
-         "juice":"sound_juice",
-         "close":"sound_close",
-         "buildingplace":"sound_buildingplace",
-         "lightningstart":"sound_lightningstart",
-         "lightningfire":"sound_lightningfire",
-         "lightningend":"sound_lightningend",
-         "chaching":"sound_chaching",
-         "pebblebomb":"sound_pebblebomb",
-         "twigbomb":"sound_twigbomb",
-         "puttybomb":"sound_puttybomb",
-         "trap":"sound_trap",
-         "damage1":"building_damage_1",
-         "damage2":"building_damage_2",
-         "damage3":"building_damage_3",
-         "destroy1":"building_destroy_1",
-         "destroy2":"building_destroy_2",
-         "destroy3":"building_destroy_3",
-         "destroy4":"building_destroy_4",
-         "destroytownhall":"town_hall_destroy",
-         "monsterland1":"monster_land_1",
-         "monsterland2":"monster_land_2",
-         "monsterland3":"monster_land_3",
-         "monsterlanddave":"monster_land_dave",
-         "hit1":"sound_hit1",
-         "hit2":"sound_hit2",
-         "hit3":"sound_hit3",
-         "hit4":"sound_hit4",
-         "hit5":"sound_hit5",
-         "ihit1":"sound_ihit1",
-         "ihit2":"sound_ihit2",
-         "ihit3":"sound_ihit3",
-         "ihit4":"sound_ihit4",
-         "ihit5":"sound_ihit5",
-         "ihit6":"sound_ihit6",
-         "ihit7":"sound_ihit7",
-         "ihit8":"sound_ihit8",
-         "imonster1":"inferno_monster1",
-         "imonster2":"inferno_monster2",
-         "imonster3":"inferno_monster3",
-         "imonster4":"inferno_monster4",
-         "iquestshow":"inferno_questshow",
-         "iquesthide":"inferno_questhide",
-         "inf_buildingplace":"sound_infernoplace",
-         "ibankfire":"sound_ibankfire",
-         "ibankland":"sound_ibankland",
-         "icannon":"inferno_cannonfire",
-         "isniper":"inferno_sniperfire",
-         "arise":"wormzer_arise",
-         "dig":"wormzer_dig",
-         "bunkerdoor":"bunkerdoor",
-         "pumpkintreat":"sound_pumpkin_treat",
-         "musicattack":"Music_Attack",
-         "musicbuild":"Music_Building",
-         "musicpanic":"Music_UnderAttack",
-         "musiciattack":"Music_IAttack",
-         "musicibuild":"Music_IBuild",
-         "musicipanic":"Music_IDefense"
-      };
-      
+            "click1": new sound_click1(),
+            "laser": "attacksounds/sound_laser.wav",
+            "wmbstart": "othersounds/sound_monsterbaiterloop.mp3",
+            "wmbhorn": "othersounds/sound_monsterbaiterhorn.mp3",
+            "purchasepopup": "uisounds/sound_purchasepop.mp3",
+            "bankfire": "uisounds/sound_bankfire.mp3",
+            "bankland": "uisounds/sound_bankland.mp3",
+            "repair1": "uisounds/sound_repair1.mp3",
+            "error1": "uisounds/sound_error1.mp3",
+            "levelup": "othersounds/sound_levelup.mp3",
+            "shotgun": "uisounds/sound_shotgun.mp3",
+            "clock1": "uisounds/sound_clock1.mp3",
+            "warcry1": "attacksounds/sound_warcry1.mp3",
+            "splat1": "attacksounds/sound_splat1.mp3",
+            "splat2": "attacksounds/sound_splat2.mp3",
+            "splat3": "attacksounds/sound_splat3.mp3",
+            "splat4": "attacksounds/sound_splat4.mp3",
+            "splat5": "attacksounds/sound_splat5.mp3",
+            "snipe1": "attacksounds/sound_snipe1.mp3",
+            "magma1": "infernosounds/sound_magma_attack1.mp3",
+            "magma2": "infernosounds/sound_magma_attack2.mp3",
+            "quake": "infernosounds/sound_quake_attack.mp3",
+            "railgun1": "attacksounds/sound_railgun1.mp3",
+            "splash1": "attacksounds/sound_splash1.mp3",
+            "juice": "othersounds/sound_juice.mp3",
+            "close": "uisounds/sound_close.mp3",
+            "buildingplace": "uisounds/sound_buildingplace.mp3",
+            "lightningstart": "attacksounds/sound_lightningstart.mp3",
+            "lightningfire": "attacksounds/sound_lightningfire.mp3",
+            "lightningend": "attacksounds/sound_lightningend.mp3",
+            "chaching": "uisounds/sound_chaching.mp3",
+            "pebblebomb": "attacksounds/sound_pebblebomb.mp3",
+            "twigbomb": "attacksounds/sound_twigbomb.mp3",
+            "puttybomb": "attacksounds/sound_puttybomb.mp3",
+            "trap": "attacksounds/sound_trap.mp3",
+            "damage1": "attacksounds/building_damage_1.mp3",
+            "damage2": "attacksounds/building_damage_2.wav",
+            "damage3": "attacksounds/building_damage_3.mp3",
+            "destroy1": "attacksounds/building_destroy_1.wav",
+            "destroy2": "attacksounds/building_destroy_2.wav",
+            "destroy3": "attacksounds/building_destroy_3.wav",
+            "destroy4": "attacksounds/building_destroy_4.wav",
+            "destroytownhall": "attacksounds/town_hall_destroy.mp3",
+            "monsterland1": "attacksounds/monster_land_1.wav",
+            "monsterland2": "attacksounds/monster_land_2.mp3",
+            "monsterland3": "attacksounds/monster_land_3.mp3",
+            "monsterlanddave": "attacksounds/monster_land_dave.mp3",
+            "hit1": "attacksounds/sound_hit1.wav",
+            "hit2": "attacksounds/sound_hit2.wav",
+            "hit3": "attacksounds/sound_hit3.wav",
+            "hit4": "attacksounds/sound_hit4.wav",
+            "hit5": "attacksounds/sound_hit5.wav",
+            "ihit1": "attacksounds/sound_ihit1.mp3",
+            "ihit2": "attacksounds/sound_ihit2.mp3",
+            "ihit3": "attacksounds/sound_ihit3.mp3",
+            "ihit4": "attacksounds/sound_ihit4.mp3",
+            "ihit5": "attacksounds/sound_ihit5.mp3",
+            "ihit6": "attacksounds/sound_ihit6.mp3",
+            "ihit7": "attacksounds/sound_ihit7.mp3",
+            "ihit8": "attacksounds/sound_ihit8.mp3",
+            "imonster1": "infernosounds/inferno_monster1.mp3",
+            "imonster2": "infernosounds/inferno_monster2.mp3",
+            "imonster3": "infernosounds/inferno_monster3.mp3",
+            "imonster4": "infernosounds/inferno_monster4.mp3",
+            "iquestshow": "infernosounds/inferno_questshow.mp3",
+            "iquesthide": "infernosounds/inferno_questhide.mp3",
+            "inf_buildingplace": "infernosounds/sound_infernoplace.mp3",
+            "ibankfire": "infernosounds/sound_ibankfire.mp3",
+            "ibankland": "infernosounds/sound_ibankland.mp3",
+            "icannon": "infernosounds/inferno_cannonfire.mp3",
+            "isniper": "infernosounds/inferno_sniperfire.mp3",
+            "arise": "attacksounds/wormzer_arise.mp3",
+            "dig": "attacksounds/wormzer_dig.mp3",
+            "bunkerdoor": "attacksounds/bunkerdoor.mp3",
+            "pumpkintreat": "othersounds/sound_pumpkin_treat.mp3",
+            "musicattack": "music/Music_Attack.mp3",
+            "musicbuild": "music/Music_Building.mp3",
+            "musicpanic": "music/Music_UnderAttack.mp3",
+            "musiciattack": "infernomusic/Music_IAttack.mp3",
+            "musicibuild": "infernomusic/Music_IBuild.mp3",
+            "musicipanic": "infernomusic/Music_IDefense.mp3"
+         };
+
       public static var music_volumes:Object = {
-         "musicattack":0.7,
-         "musicbuild":0.6,
-         "musicpanic":0.7,
-         "musicibuild":0.6,
-         "musicipanic":0.7,
-         "musiciattack":0.7
-      };
-       
-      
+            "musicattack": 0.7,
+            "musicbuild": 0.6,
+            "musicpanic": 0.7,
+            "musicibuild": 0.6,
+            "musicipanic": 0.7,
+            "musiciattack": 0.7
+         };
+
       public function SOUNDS()
       {
          super();
       }
-      
-      public static function DamageSoundIDForLevel(param1:int) : String
+
+      public static function DamageSoundIDForLevel(param1:int):String
       {
          var _loc2_:String = "";
-         if(param1 < 3)
+         if (param1 < 3)
          {
             _loc2_ = "damage1";
          }
-         else if(param1 < 6)
+         else if (param1 < 6)
          {
             _loc2_ = "damage2";
          }
@@ -156,19 +157,19 @@ package
          }
          return _loc2_;
       }
-      
-      public static function DestroySoundIDForLevel(param1:int) : String
+
+      public static function DestroySoundIDForLevel(param1:int):String
       {
          var _loc2_:String = "";
-         if(param1 < 2)
+         if (param1 < 2)
          {
             _loc2_ = "destroy1";
          }
-         else if(param1 < 5)
+         else if (param1 < 5)
          {
             _loc2_ = "destroy2";
          }
-         else if(param1 < 8)
+         else if (param1 < 8)
          {
             _loc2_ = "destroy3";
          }
@@ -178,8 +179,8 @@ package
          }
          return _loc2_;
       }
-      
-      public static function Setup() : void
+
+      public static function Setup():void
       {
          var s:String = null;
          var uiSounds:String = null;
@@ -189,13 +190,13 @@ package
          var infernoSounds:String = null;
          var infernoMusic:String = null;
          var i:int = 0;
-         if(!_setup)
+         if (!_setup)
          {
             _setup = true;
             try
             {
                _muted = 0;
-               if(_mutedMusic == 0)
+               if (_mutedMusic == 0)
                {
                   _musicVolume = 0.7;
                }
@@ -203,45 +204,30 @@ package
                {
                   _musicVolume = 0;
                }
-               if(GLOBAL.StatGet("mute") == 1)
+               if (GLOBAL.StatGet("mute") == 1)
                {
                   MuteUnmute(true);
                }
-               if(GLOBAL.StatGet("mutemusic") == 1)
+               if (GLOBAL.StatGet("mutemusic") == 1)
                {
-                  MuteUnmute(true,"music");
+                  MuteUnmute(true, "music");
                }
             }
-            catch(e:Error)
+            catch (e:Error)
             {
                GLOBAL.Message("There was a problem setting up audio ", e);
             }
-            if(GLOBAL._local)
-            {
-               uiSounds = GLOBAL._soundPathURL + "uisounds.swf";
-               otherSounds = GLOBAL._soundPathURL + "othersounds.swf";
-               attackSounds = GLOBAL._soundPathURL + "attacksounds.swf";
-               musicSounds = GLOBAL._soundPathURL + "music.swf";
-               infernoSounds = GLOBAL._soundPathURL + "infernoSounds.swf";
-               infernoMusic = GLOBAL._soundPathURL + "infernoMusic.swf";
-               _soundAssets = [uiSounds,otherSounds,attackSounds,musicSounds,infernoSounds,infernoMusic];
-            }
-            uiSounds = GLOBAL._soundPathURL + "uisounds.v" + GLOBAL._soundVersion + ".swf";
-            otherSounds = GLOBAL._soundPathURL + "othersounds.v" + GLOBAL._soundVersion + ".swf";
-            attackSounds = GLOBAL._soundPathURL + "attacksounds.v" + GLOBAL._soundVersion + ".swf";
-            musicSounds = GLOBAL._soundPathURL + "music.v" + GLOBAL._soundVersion + ".swf";
-            infernoSounds = GLOBAL._soundPathURL + "infernoSounds.v" + GLOBAL._soundVersion + ".swf";
-            infernoMusic = GLOBAL._soundPathURL + "infernoMusic.v" + GLOBAL._soundVersion + ".swf";
-            _soundAssets = [uiSounds,otherSounds,attackSounds,musicSounds,infernoSounds,infernoMusic];
+            var musicBuilding = GLOBAL._soundPathURL + "music_building.mp3";
+            _soundAssets = [musicBuilding];
             soundLibraries = new Vector.<SoundLibrary>();
             i = 0;
-            while(i < _soundAssets.length)
+            while (i < _soundAssets.length)
             {
                soundLibraries.push(new SoundLibrary(_soundAssets[i]));
                i++;
             }
             i = 0;
-            while(i < _soundAssets.length - 1)
+            while (i < _soundAssets.length - 1)
             {
                soundLibraries[i].next = soundLibraries[i + 1];
                i++;
@@ -249,9 +235,9 @@ package
          }
          else
          {
-            if(_muted == 1)
+            if (_muted == 1)
             {
-               if(GLOBAL.mode == GLOBAL.e_BASE_MODE.ATTACK || GLOBAL.mode == GLOBAL.e_BASE_MODE.WMATTACK)
+               if (GLOBAL.mode == GLOBAL.e_BASE_MODE.ATTACK || GLOBAL.mode == GLOBAL.e_BASE_MODE.WMATTACK)
                {
                   UI2._top.mcSound.gotoAndStop(2 + 2);
                }
@@ -260,7 +246,7 @@ package
                   UI2._top.mcSound.gotoAndStop(2);
                }
             }
-            else if(GLOBAL.mode == GLOBAL.e_BASE_MODE.ATTACK || GLOBAL.mode == GLOBAL.e_BASE_MODE.WMATTACK)
+            else if (GLOBAL.mode == GLOBAL.e_BASE_MODE.ATTACK || GLOBAL.mode == GLOBAL.e_BASE_MODE.WMATTACK)
             {
                UI2._top.mcSound.gotoAndStop(1 + 2);
             }
@@ -268,9 +254,9 @@ package
             {
                UI2._top.mcSound.gotoAndStop(1);
             }
-            if(_musicVolume == 0)
+            if (_musicVolume == 0)
             {
-               if(GLOBAL.mode == GLOBAL.e_BASE_MODE.ATTACK || GLOBAL.mode == GLOBAL.e_BASE_MODE.WMATTACK)
+               if (GLOBAL.mode == GLOBAL.e_BASE_MODE.ATTACK || GLOBAL.mode == GLOBAL.e_BASE_MODE.WMATTACK)
                {
                   UI2._top.mcMusic.gotoAndStop(2 + 2);
                }
@@ -279,7 +265,7 @@ package
                   UI2._top.mcMusic.gotoAndStop(2);
                }
             }
-            else if(GLOBAL.mode == GLOBAL.e_BASE_MODE.ATTACK || GLOBAL.mode == GLOBAL.e_BASE_MODE.WMATTACK)
+            else if (GLOBAL.mode == GLOBAL.e_BASE_MODE.ATTACK || GLOBAL.mode == GLOBAL.e_BASE_MODE.WMATTACK)
             {
                UI2._top.mcMusic.gotoAndStop(1 + 2);
             }
@@ -288,15 +274,15 @@ package
                UI2._top.mcMusic.gotoAndStop(1);
             }
          }
-         for each(s in Jars.CRACKING_SOUNDS)
+         for each (s in Jars.CRACKING_SOUNDS)
          {
             _sounds[s] = s;
          }
-         for each(s in Jars.EXPLODE_SOUNDS)
+         for each (s in Jars.EXPLODE_SOUNDS)
          {
             _sounds[s] = s;
          }
-         for each(s in Jars.LAND_SOUNDS)
+         for each (s in Jars.LAND_SOUNDS)
          {
             _sounds[s] = s;
          }
@@ -304,190 +290,250 @@ package
          _sounds[Decoy.EXPLOSION_SOUND] = Decoy.EXPLOSION_SOUND;
          _sounds[Decoy.LOOPING_SOUND] = Decoy.LOOPING_SOUND;
       }
-      
-      public static function PlayMusic(param1:String = "") : void
+
+      public static function PlayMusic(param1:String = ""):void
       {
          _queuedMusic = param1;
-         if(!_mutedMusic)
+         if (!_mutedMusic)
          {
             _musicVolume = music_volumes[param1];
          }
       }
-      
-      public static function PlayMusicB(param1:String = "", param2:Number = 0.7, param3:Number = 0, param4:Number = 0) : void
+
+      public static function PlayMusicB(param1:String = "", param2:Number = 0.7, param3:Number = 0, param4:Number = 0):void
       {
-         var soundUrl:String = null;
-         var soundLibrary:SoundLibrary = null;
-         var soundClass:Class = null;
-         var sound:Sound = null;
-         if(_currentMusic == param1)
+         if (_currentMusic == param1)
          {
             return;
          }
+
          try
          {
-            if(!_concurrent[param1])
+            if (!_concurrent[param1])
             {
                _concurrent[param1] = 1;
             }
-            if(_concurrent[param1] <= 2)
+
+            if (_concurrent[param1] <= 2)
             {
                _concurrent[param1] += 1;
-               soundUrl = param1;
-               if(_sounds[param1] is String)
-               {
-                  soundUrl = String(_sounds[param1]);
-               }
-               else if(_sounds[param1])
-               {
-                  if(_musicChannel)
+               var sound:Sound = new Sound();
+               sound.addEventListener(IOErrorEvent.IO_ERROR, function(event:IOErrorEvent):void
                   {
-                     _musicChannel.stop();
-                     _musicChannel.removeEventListener(Event.SOUND_COMPLETE,replayMusic);
-                  }
-                  _musicChannel = _sounds[param1].play(param4,99999,new SoundTransform(param2,param3));
-                  _currentMusic = param1;
-                  _musicChannel.addEventListener(Event.SOUND_COMPLETE,replayMusic);
-               }
-               for each(soundLibrary in soundLibraries)
+                     GLOBAL.Message("Error loading music: " + event.text);
+                  });
+
+               if (_sounds[param1] is String)
                {
-                  if(Boolean(soundLibrary.loaded) && soundLibrary.li.applicationDomain.hasDefinition(soundUrl))
-                  {
-                     sound = new (soundClass = soundLibrary.li.applicationDomain.getDefinition(soundUrl) as Class)() as Sound;
-                     if(_musicChannel)
-                     {
-                        _musicChannel.stop();
-                        _musicChannel.removeEventListener(Event.SOUND_COMPLETE,replayMusic);
-                     }
-                     _musicChannel = sound.play(param4,99999,new SoundTransform(param2,param3));
-                     _currentMusic = param1;
-                     _musicChannel.addEventListener(Event.SOUND_COMPLETE,replayMusic);
-                  }
+                  var soundURLRequest:URLRequest = new URLRequest(GLOBAL._soundPathURL + _sounds[param1] as String);
+                  sound.load(soundURLRequest);
                }
+               else if (_sounds[param1] is Sound)
+               {
+                  sound = _sounds[param1] as Sound;
+               }
+
+               if (_musicChannel)
+               {
+                  _musicChannel.stop();
+                  _musicChannel.removeEventListener(Event.SOUND_COMPLETE, replayMusic);
+               }
+               _musicChannel = sound.play(param4, int.MAX_VALUE, new SoundTransform(param2, param3));
+               _currentMusic = param1;
+               _musicChannel.addEventListener(Event.SOUND_COMPLETE, replayMusic);
             }
          }
-         catch(e:Error)
+         catch (e:Error)
          {
-            // Error #2219: Security sandbox violation: caller /AppData/Local/Temp/ffded/424242.swf 
-            // cannot access LoaderInfo.applicationDomain owned by http://localhost:3001/assets/sounds/uisounds.v1.swf
-           // GLOBAL.Message("Audio error: " + e.message);
+            GLOBAL.Message("Audio error: " + e.getStackTrace());
          }
       }
-      
-      private static function replayMusic(param1:Event) : void
+
+      private static function replayMusic(param1:Event):void
       {
          _queuedMusic = _currentMusic;
          _currentMusic = null;
          PlayMusicB(_queuedMusic);
       }
-      
-      public static function Play(param1:String = "", param2:Number = 0.8, param3:Number = 0, param4:int = 1) : SoundChannel
+      private static var _soundChannel:SoundChannel;
+
+      public static function Play(param1:String = "", param2:Number = 0.8, param3:Number = 0, param4:int = 1):SoundChannel
       {
-         var soundLinkName:String = null;
-         var s:SoundLibrary = null;
-         var sndC:Class = null;
-         var sndO:Sound = null;
          var id:String = param1;
          var volume:Number = param2;
          var pan:Number = param3;
          var loops:int = param4;
-         if(!GLOBAL._catchup && !_muted)
+
+         if (!GLOBAL._catchup && !_muted)
          {
             try
             {
-               if(!_concurrent[id])
+               if (!_concurrent[id])
                {
                   _concurrent[id] = 1;
                }
-               if(_concurrent[id] <= 2)
+
+               if (_concurrent[id] <= 2)
                {
                   _concurrent[id] += 1;
-                  soundLinkName = id;
-                  if(_sounds[id] is String)
+                  var sound:Sound = null;
+
+                  // If you're storing audio file paths in the _sounds object:
+                  if (_sounds[id] is String)
                   {
-                     soundLinkName = String(_sounds[id]);
+                     var soundURLRequest:URLRequest = new URLRequest(GLOBAL._soundPathURL + _sounds[id] as String);
+                     sound = new Sound();
+                     sound.addEventListener(Event.COMPLETE, function(e:Event):void
+                        {
+                           playSound(sound, volume, pan, loops);
+                        });
+
+                     sound.addEventListener(IOErrorEvent.IO_ERROR, function(e:IOErrorEvent):void
+                        {
+                           GLOBAL.Message("Error loading sound: " + event.text);
+                        });
+
+                     sound.load(soundURLRequest);
                   }
-                  else if(_sounds[id])
+                  else if (_sounds[id] is Sound)
                   {
-                     return _sounds[id].play(0,loops,new SoundTransform(volume,pan));
-                  }
-                  for each(s in soundLibraries)
-                  {
-                     if(s.loaded && s.li.applicationDomain.hasDefinition(soundLinkName))
-                     {
-                        sndC = s.li.applicationDomain.getDefinition(soundLinkName) as Class;
-                        sndO = new sndC() as Sound;
-                        return sndO.play(0,loops,new SoundTransform(volume,pan));
-                     }
+                     sound = _sounds[id] as Sound;
+                     playSound(sound, volume, pan, loops);
                   }
                }
             }
-            catch(e:Error)
+            catch (e:Error)
             {
-               LOGGER.Log("err","SOUNDS.Play error",Boolean(e.getStackTrace()));
+               // Handle any errors here
+               GLOBAL.Message("SOUNDS.Play error" + e.getStackTrace());
             }
          }
+
          return null;
       }
-      
-      public static function Tick() : void
+
+      private static function playSound(sound:Sound, volume:Number, pan:Number, loops:int):SoundChannel
+      {
+         // Stop any currently playing sound
+         if (_soundChannel)
+         {
+            _soundChannel.stop();
+         }
+
+         // Play the new audio file
+         _soundChannel = sound.play(0, loops, new SoundTransform(volume, pan));
+         return _soundChannel;
+      }
+
+      // ------- OLD Implementation -------- //
+
+      // public static function Play(param1:String = "", param2:Number = 0.8, param3:Number = 0, param4:int = 1):SoundChannel
+      // {
+      // var soundLinkName:String = null;
+      // var s:SoundLibrary = null;
+      // var sndC:Class = null;
+      // var sndO:Sound = null;
+      // var id:String = param1;
+      // var volume:Number = param2;
+      // var pan:Number = param3;
+      // var loops:int = param4;
+      // if (!GLOBAL._catchup && !_muted)
+      // {
+      // try
+      // {
+      // if (!_concurrent[id])
+      // {
+      // _concurrent[id] = 1;
+      // }
+      // if (_concurrent[id] <= 2)
+      // {
+      // _concurrent[id] += 1;
+      // soundLinkName = id;
+      // if (_sounds[id] is String)
+      // {
+      // soundLinkName = String(_sounds[id]);
+      // }
+      // else if (_sounds[id])
+      // {
+      // return _sounds[id].play(0, loops, new SoundTransform(volume, pan));
+      // }
+      // for each (s in soundLibraries)
+      // {
+      // if (s.loaded && s.li.applicationDomain.hasDefinition(soundLinkName))
+      // {
+      // sndC = s.li.applicationDomain.getDefinition(soundLinkName) as Class;
+      // sndO = new sndC() as Sound;
+      // return sndO.play(0, loops, new SoundTransform(volume, pan));
+      // }
+      // }
+      // }
+      // }
+      // catch (e:Error)
+      // {
+      // LOGGER.Log("err", "SOUNDS.Play error", Boolean(e.getStackTrace()));
+      // }
+      // }
+      // return null;
+      // }
+
+      public static function Tick():void
       {
          var _loc1_:String = null;
          var _loc2_:Number = NaN;
-         for(_loc1_ in _concurrent)
+         for (_loc1_ in _concurrent)
          {
-            if(_concurrent[_loc1_] > 0)
+            if (_concurrent[_loc1_] > 0)
             {
-               --_concurrent[_loc1_];
+               -- _concurrent[_loc1_];
             }
          }
-         if(_setup && _loadState == 0 && ImageCache.load.length == 0)
+         if (_setup && _loadState == 0 && ImageCache.load.length == 0)
          {
             _loadState = 1;
             // Comment: Loads the audio from here
             (soundLibraries[0] as SoundLibrary).Load();
          }
-         if(_currentMusic != _queuedMusic)
+         if (_currentMusic != _queuedMusic)
          {
-            if(_currentMusic)
+            if (_currentMusic)
             {
                _loc2_ = _musicChannel.soundTransform.volume;
                _loc2_ -= 0.05;
-               if(_loc2_ <= 0)
+               if (_loc2_ <= 0)
                {
-                  PlayMusicB(_queuedMusic,_musicVolume,_musicPan);
+                  PlayMusicB(_queuedMusic, _musicVolume, _musicPan);
                }
                else
                {
-                  _musicChannel.soundTransform = new SoundTransform(_loc2_,_musicPan);
+                  _musicChannel.soundTransform = new SoundTransform(_loc2_, _musicPan);
                }
             }
             else
             {
                // Comment: Call is made here to play audio
-               PlayMusicB(_queuedMusic,_musicVolume,_musicPan);
+               PlayMusicB(_queuedMusic, _musicVolume, _musicPan);
             }
          }
       }
-      
-      public static function TutorialStopMusic() : void
+
+      public static function TutorialStopMusic():void
       {
-         MuteUnmute(true,"music");
+         MuteUnmute(true, "music");
          _queuedMusic = null;
          _currentMusic = null;
       }
-      
-      public static function StopAll() : void
+
+      public static function StopAll():void
       {
          SoundMixer.stopAll();
       }
-      
-      public static function Toggle(param1:MouseEvent = null) : void
+
+      public static function Toggle(param1:MouseEvent = null):void
       {
          var e:MouseEvent = param1;
          try
          {
-            if(_muted == 0)
+            if (_muted == 0)
             {
                MuteUnmute(true);
             }
@@ -495,49 +541,49 @@ package
             {
                MuteUnmute(false);
             }
-            if(GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD)
+            if (GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD)
             {
-               GLOBAL.StatSet("mute",_muted);
+               GLOBAL.StatSet("mute", _muted);
             }
          }
-         catch(e:Error)
+         catch (e:Error)
          {
             GLOBAL.Message("There was a problem turning sounds on ", e);
          }
       }
-      
-      public static function ToggleMusic(param1:MouseEvent = null) : void
+
+      public static function ToggleMusic(param1:MouseEvent = null):void
       {
          var e:MouseEvent = param1;
          try
          {
-            if(_mutedMusic == 0)
+            if (_mutedMusic == 0)
             {
-               MuteUnmute(true,"music");
+               MuteUnmute(true, "music");
             }
             else
             {
-               MuteUnmute(false,"music");
+               MuteUnmute(false, "music");
             }
-            if(GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD)
+            if (GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD)
             {
-               GLOBAL.StatSet("mutemusic",_mutedMusic);
+               GLOBAL.StatSet("mutemusic", _mutedMusic);
             }
          }
-         catch(e:Error)
+         catch (e:Error)
          {
             GLOBAL.Message("There was a problem turning the music on ", e);
          }
       }
-      
-      public static function MuteUnmute(param1:Boolean = true, param2:String = "snd") : void
+
+      public static function MuteUnmute(param1:Boolean = true, param2:String = "snd"):void
       {
          var _loc3_:SoundTransform = null;
-         if(param2 == "snd")
+         if (param2 == "snd")
          {
-            if(param1)
+            if (param1)
             {
-               if(GLOBAL.mode == GLOBAL.e_BASE_MODE.ATTACK || GLOBAL.mode == GLOBAL.e_BASE_MODE.WMATTACK)
+               if (GLOBAL.mode == GLOBAL.e_BASE_MODE.ATTACK || GLOBAL.mode == GLOBAL.e_BASE_MODE.WMATTACK)
                {
                   UI2._top.mcSound.gotoAndStop(2 + 2);
                }
@@ -549,7 +595,7 @@ package
             }
             else
             {
-               if(GLOBAL.mode == GLOBAL.e_BASE_MODE.ATTACK || GLOBAL.mode == GLOBAL.e_BASE_MODE.WMATTACK)
+               if (GLOBAL.mode == GLOBAL.e_BASE_MODE.ATTACK || GLOBAL.mode == GLOBAL.e_BASE_MODE.WMATTACK)
                {
                   UI2._top.mcSound.gotoAndStop(1 + 2);
                }
@@ -560,12 +606,12 @@ package
                _muted = 0;
             }
          }
-         else if(param2 == "music")
+         else if (param2 == "music")
          {
             _loc3_ = new SoundTransform();
-            if(param1)
+            if (param1)
             {
-               if(GLOBAL.mode == GLOBAL.e_BASE_MODE.ATTACK || GLOBAL.mode == GLOBAL.e_BASE_MODE.WMATTACK)
+               if (GLOBAL.mode == GLOBAL.e_BASE_MODE.ATTACK || GLOBAL.mode == GLOBAL.e_BASE_MODE.WMATTACK)
                {
                   UI2._top.mcMusic.gotoAndStop(2 + 2);
                }
@@ -578,7 +624,7 @@ package
             }
             else
             {
-               if(GLOBAL.mode == GLOBAL.e_BASE_MODE.ATTACK || GLOBAL.mode == GLOBAL.e_BASE_MODE.WMATTACK)
+               if (GLOBAL.mode == GLOBAL.e_BASE_MODE.ATTACK || GLOBAL.mode == GLOBAL.e_BASE_MODE.WMATTACK)
                {
                   UI2._top.mcMusic.gotoAndStop(1 + 2);
                }
@@ -588,9 +634,9 @@ package
                }
                _musicVolume = 0.7;
                _mutedMusic = 0;
-               if(_currentMusic == null && _queuedMusic == null)
+               if (_currentMusic == null && _queuedMusic == null)
                {
-                  switch(GLOBAL.mode)
+                  switch (GLOBAL.mode)
                   {
                      case GLOBAL.e_BASE_MODE.ATTACK:
                      case GLOBAL.e_BASE_MODE.WMATTACK:
@@ -605,7 +651,7 @@ package
                }
             }
             _loc3_.volume = _musicVolume;
-            if(_musicChannel)
+            if (_musicChannel)
             {
                _musicChannel.soundTransform = _loc3_;
             }

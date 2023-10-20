@@ -21,9 +21,9 @@ package com.monsters.siege.weapons
       
       public static const DAMAGE:String = "siegeWeaponDamage";
       
-      public static const EXPLOSION_SOUND:String = "decoyExplosionSound";
+      public static const EXPLOSION_SOUND:String = "othersounds/decoyExplosionSound.wav";
       
-      public static const LOOPING_SOUND:String = "decoyLoopingSound";
+      public static const LOOPING_SOUND:String = "othersounds/decoyLoopingSound.wav";
       
       public static const DECOY_WAVE:String = "decoyWaveAnimation";
       
@@ -31,7 +31,7 @@ package com.monsters.siege.weapons
       
       public static const DECOY_EXPLOSION:String = "decoyExplosionAnimation";
       
-      public static const LAND_SOUND:String = "decoyLandSound";
+      public static const LAND_SOUND:String = "othersounds/decoyLandSound.wav";
        
       
       public var x:Number;
