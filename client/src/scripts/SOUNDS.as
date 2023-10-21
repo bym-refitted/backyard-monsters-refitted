@@ -3,7 +3,6 @@ package
    import com.monsters.display.ImageCache;
    import com.monsters.siege.weapons.Decoy;
    import com.monsters.siege.weapons.Jars;
-   import com.monsters.sound.SoundLibrary;
    import flash.events.Event;
    import flash.events.MouseEvent;
    import flash.media.Sound;
@@ -15,14 +14,11 @@ package
 
    public class SOUNDS
    {
-
       public static var _muted:int = 0;
 
       public static var _mutedMusic:int = 0;
 
       public static var _soundAssets:Array;
-
-      private static var soundLibraries:Vector.<SoundLibrary>;
 
       public static var _setup:Boolean = false;
 
@@ -43,12 +39,12 @@ package
       public static var _musicChannel:SoundChannel;
 
       // Sound paths
-      public static var attacksounds = "attacksounds/";
-      public static var othersounds = "othersounds/";
-      public static var uisounds = "uisounds/";
-      public static var infernosounds = "infernosounds/";
-      public static var mainmusic = "music/";
-      public static var infernomusic = "infernomusic/";
+      public static var attacksounds:String = "attacksounds/";
+      public static var othersounds:String = "othersounds/";
+      public static var uisounds:String = "uisounds/";
+      public static var infernosounds:String = "infernosounds/";
+      public static var mainmusic:String = "music/";
+      public static var infernomusic:String = "infernomusic/";
 
       public static var _sounds:Object = {
             "click1": new sound_click1(),
@@ -103,14 +99,14 @@ package
             "hit3": attacksounds + "sound_hit3.wav",
             "hit4": attacksounds + "sound_hit4.wav",
             "hit5": attacksounds + "sound_hit5.wav",
-            "ihit1": attacksounds + "sound_ihit1.mp3",
-            "ihit2": attacksounds + "sound_ihit2.mp3",
-            "ihit3": attacksounds + "sound_ihit3.mp3",
-            "ihit4": attacksounds + "sound_ihit4.mp3",
-            "ihit5": attacksounds + "sound_ihit5.mp3",
-            "ihit6": attacksounds + "sound_ihit6.mp3",
-            "ihit7": attacksounds + "sound_ihit7.mp3",
-            "ihit8": attacksounds + "sound_ihit8.mp3",
+            "ihit1": infernosounds + "sound_ihit1.mp3",
+            "ihit2": infernosounds + "sound_ihit2.mp3",
+            "ihit3": infernosounds + "sound_ihit3.mp3",
+            "ihit4": infernosounds + "sound_ihit4.mp3",
+            "ihit5": infernosounds + "sound_ihit5.mp3",
+            "ihit6": infernosounds + "sound_ihit6.mp3",
+            "ihit7": infernosounds + "sound_ihit7.mp3",
+            "ihit8": infernosounds + "sound_ihit8.mp3",
             "imonster1": infernosounds + "inferno_monster1.mp3",
             "imonster2": infernosounds + "inferno_monster2.mp3",
             "imonster3": infernosounds + "inferno_monster3.mp3",
@@ -146,6 +142,46 @@ package
       public function SOUNDS()
       {
          super();
+      }
+
+      public static function Setup():void
+      {
+         if (!_setup)
+         {
+            _setup = true;
+            _muted = 0;
+            if (_mutedMusic == 0)
+            {
+               _musicVolume = 0.7;
+            }
+            else
+            {
+               _musicVolume = 0;
+            }
+            if (GLOBAL.StatGet("mute") == 1)
+            {
+               MuteUnmute(true);
+            }
+            if (GLOBAL.StatGet("mutemusic") == 1)
+            {
+               MuteUnmute(true, "music");
+            }
+            try
+            {
+               for (var key:String in _sounds)
+               {
+                  if (key == "click1")
+                     continue;
+
+                  // Comment: Preload the audio from the server
+                  _sounds[key] = new Sound(new URLRequest(GLOBAL._soundPathURL + _sounds[key]));
+               }
+            }
+            catch (e:Error)
+            {
+               GLOBAL.Message("There was a problem setting up audio " + e.message);
+            }
+         }
       }
 
       public static function DamageSoundIDForLevel(param1:int):String
@@ -188,118 +224,6 @@ package
          return _loc2_;
       }
 
-      public static function Setup():void
-      {
-         var s:String = null;
-         var uiSounds:String = null;
-         var otherSounds:String = null;
-         var attackSounds:String = null;
-         var musicSounds:String = null;
-         var infernoSounds:String = null;
-         var infernoMusic:String = null;
-         var i:int = 0;
-         if (!_setup)
-         {
-            _setup = true;
-            try
-            {
-               _muted = 0;
-               if (_mutedMusic == 0)
-               {
-                  _musicVolume = 0.7;
-               }
-               else
-               {
-                  _musicVolume = 0;
-               }
-               if (GLOBAL.StatGet("mute") == 1)
-               {
-                  MuteUnmute(true);
-               }
-               if (GLOBAL.StatGet("mutemusic") == 1)
-               {
-                  MuteUnmute(true, "music");
-               }
-            }
-            catch (e:Error)
-            {
-               GLOBAL.Message("There was a problem setting up audio ", e);
-            }
-            // ToDo: What is this? We probably should preload and cache all our sounds
-            var musicBuilding = GLOBAL._soundPathURL + "music/Music_Building.mp3";
-            _soundAssets = [musicBuilding];
-            soundLibraries = new Vector.<SoundLibrary>();
-            i = 0;
-            while (i < _soundAssets.length)
-            {
-               soundLibraries.push(new SoundLibrary(_soundAssets[i]));
-               i++;
-            }
-            i = 0;
-            while (i < _soundAssets.length - 1)
-            {
-               soundLibraries[i].next = soundLibraries[i + 1];
-               i++;
-            }
-         }
-         else
-         {
-            if (_muted == 1)
-            {
-               if (GLOBAL.mode == GLOBAL.e_BASE_MODE.ATTACK || GLOBAL.mode == GLOBAL.e_BASE_MODE.WMATTACK)
-               {
-                  UI2._top.mcSound.gotoAndStop(2 + 2);
-               }
-               else
-               {
-                  UI2._top.mcSound.gotoAndStop(2);
-               }
-            }
-            else if (GLOBAL.mode == GLOBAL.e_BASE_MODE.ATTACK || GLOBAL.mode == GLOBAL.e_BASE_MODE.WMATTACK)
-            {
-               UI2._top.mcSound.gotoAndStop(1 + 2);
-            }
-            else
-            {
-               UI2._top.mcSound.gotoAndStop(1);
-            }
-            if (_musicVolume == 0)
-            {
-               if (GLOBAL.mode == GLOBAL.e_BASE_MODE.ATTACK || GLOBAL.mode == GLOBAL.e_BASE_MODE.WMATTACK)
-               {
-                  UI2._top.mcMusic.gotoAndStop(2 + 2);
-               }
-               else
-               {
-                  UI2._top.mcMusic.gotoAndStop(2);
-               }
-            }
-            else if (GLOBAL.mode == GLOBAL.e_BASE_MODE.ATTACK || GLOBAL.mode == GLOBAL.e_BASE_MODE.WMATTACK)
-            {
-               UI2._top.mcMusic.gotoAndStop(1 + 2);
-            }
-            else
-            {
-               UI2._top.mcMusic.gotoAndStop(1);
-            }
-         }
-         for each (s in Jars.CRACKING_SOUNDS)
-         {
-            _sounds[s] = s;
-         }
-         for each (s in Jars.EXPLODE_SOUNDS)
-         {
-            _sounds[s] = s;
-         }
-         for each (s in Jars.LAND_SOUNDS)
-         {
-            _sounds[s] = s;
-         }
-         _sounds[Decoy.LAND_SOUND] = Decoy.LAND_SOUND;
-         _sounds[Decoy.EXPLOSION_SOUND] = Decoy.EXPLOSION_SOUND;
-         _sounds[Decoy.LOOPING_SOUND] = Decoy.LOOPING_SOUND;
-      }
-
       public static function PlayMusic(param1:String = ""):void
       {
          _queuedMusic = param1;
@@ -326,30 +250,18 @@ package
             if (_concurrent[param1] <= 2)
             {
                _concurrent[param1] += 1;
-               var sound:Sound = new Sound();
-               sound.addEventListener(IOErrorEvent.IO_ERROR, function(event:IOErrorEvent):void
+               var sound:Sound = _sounds[param1] as Sound;
+               if (sound)
+               {
+                  if (_musicChannel)
                   {
-                     GLOBAL.Message("Error loading music: " + event.text);
-                  });
-
-               if (_sounds[param1] is String)
-               {
-                  var soundURLRequest:URLRequest = new URLRequest(GLOBAL._soundPathURL + _sounds[param1] as String);
-                  sound.load(soundURLRequest);
+                     _musicChannel.stop();
+                     _musicChannel.removeEventListener(Event.SOUND_COMPLETE, replayMusic);
+                  }
+                  _musicChannel = sound.play(param4, int.MAX_VALUE, new SoundTransform(param2, param3));
+                  _currentMusic = param1;
+                  _musicChannel.addEventListener(Event.SOUND_COMPLETE, replayMusic);
                }
-               else if (_sounds[param1] is Sound)
-               {
-                  sound = _sounds[param1] as Sound;
-               }
-
-               if (_musicChannel)
-               {
-                  _musicChannel.stop();
-                  _musicChannel.removeEventListener(Event.SOUND_COMPLETE, replayMusic);
-               }
-               _musicChannel = sound.play(param4, int.MAX_VALUE, new SoundTransform(param2, param3));
-               _currentMusic = param1;
-               _musicChannel.addEventListener(Event.SOUND_COMPLETE, replayMusic);
             }
          }
          catch (e:Error)
@@ -366,160 +278,59 @@ package
       }
       private static var _soundChannel:SoundChannel;
 
-      public static function Play(param1:String = "", param2:Number = 0.8, param3:Number = 0, param4:int = 1):SoundChannel
+      public static function Play(soundPath:String = "", volume:Number = 0.8, pan:Number = 0, loop:int = 1):SoundChannel
       {
-         var id:String = param1;
-         var volume:Number = param2;
-         var pan:Number = param3;
-         var loops:int = param4;
-
-         if (!GLOBAL._catchup && !_muted)
+         if (!_concurrent[soundPath] || _concurrent[soundPath] <= 2)
          {
-            try
+            _concurrent[soundPath] = (_concurrent[soundPath] || 0) + 1;
+
+            // Comment: Gets the preloaded audio
+            if (_sounds[soundPath] is Sound)
             {
-               if (!_concurrent[id])
-               {
-                  _concurrent[id] = 1;
-               }
-
-               if (_concurrent[id] <= 2)
-               {
-                  _concurrent[id] += 1;
-                  var sound:Sound = null;
-
-                  // If you're storing audio file paths in the _sounds object:
-                  if (_sounds[id] is String)
-                  {
-                     var soundURLRequest:URLRequest = new URLRequest(GLOBAL._soundPathURL + _sounds[id] as String);
-                     sound = new Sound();
-                     sound.addEventListener(Event.COMPLETE, function(e:Event):void
-                        {
-                           playSound(sound, volume, pan, loops);
-                        });
-
-                     sound.addEventListener(IOErrorEvent.IO_ERROR, function(e:IOErrorEvent):void
-                        {
-                           GLOBAL.Message("Error loading sound: " + event.text);
-                        });
-
-                     sound.load(soundURLRequest);
-                  }
-                  else if (_sounds[id] is Sound)
-                  {
-                     sound = _sounds[id] as Sound;
-                     playSound(sound, volume, pan, loops);
-                  }
-               }
-            }
-            catch (e:Error)
-            {
-               // Handle any errors here
-               GLOBAL.Message("SOUNDS.Play error" + e.getStackTrace());
+               return PlayCachedSound(_sounds[soundPath] as Sound, volume, pan, loop);
             }
          }
-
          return null;
       }
 
-      private static function playSound(sound:Sound, volume:Number, pan:Number, loops:int):SoundChannel
+      private static function PlayCachedSound(sound:Sound, volume:Number, pan:Number, loops:int):SoundChannel
       {
-         // Stop any currently playing sound
-         if (_soundChannel)
+         if (_musicChannel)
          {
-            _soundChannel.stop();
+            _musicChannel.stop();
+            _musicChannel.removeEventListener(Event.SOUND_COMPLETE, replayMusic);
          }
 
-         // Play the new audio file
-         _soundChannel = sound.play(0, loops, new SoundTransform(volume, pan));
-         return _soundChannel;
+         return sound.play(0, loops, new SoundTransform(volume, pan));
       }
-
-      // ------- OLD Implementation -------- //
-
-      // public static function Play(param1:String = "", param2:Number = 0.8, param3:Number = 0, param4:int = 1):SoundChannel
-      // {
-      // var soundLinkName:String = null;
-      // var s:SoundLibrary = null;
-      // var sndC:Class = null;
-      // var sndO:Sound = null;
-      // var id:String = param1;
-      // var volume:Number = param2;
-      // var pan:Number = param3;
-      // var loops:int = param4;
-      // if (!GLOBAL._catchup && !_muted)
-      // {
-      // try
-      // {
-      // if (!_concurrent[id])
-      // {
-      // _concurrent[id] = 1;
-      // }
-      // if (_concurrent[id] <= 2)
-      // {
-      // _concurrent[id] += 1;
-      // soundLinkName = id;
-      // if (_sounds[id] is String)
-      // {
-      // soundLinkName = String(_sounds[id]);
-      // }
-      // else if (_sounds[id])
-      // {
-      // return _sounds[id].play(0, loops, new SoundTransform(volume, pan));
-      // }
-      // for each (s in soundLibraries)
-      // {
-      // if (s.loaded && s.li.applicationDomain.hasDefinition(soundLinkName))
-      // {
-      // sndC = s.li.applicationDomain.getDefinition(soundLinkName) as Class;
-      // sndO = new sndC() as Sound;
-      // return sndO.play(0, loops, new SoundTransform(volume, pan));
-      // }
-      // }
-      // }
-      // }
-      // catch (e:Error)
-      // {
-      // LOGGER.Log("err", "SOUNDS.Play error", Boolean(e.getStackTrace()));
-      // }
-      // }
-      // return null;
-      // }
 
       public static function Tick():void
       {
-         var _loc1_:String = null;
-         var _loc2_:Number = NaN;
-         for (_loc1_ in _concurrent)
+         for (var soundName:String in _concurrent)
          {
-            if (_concurrent[_loc1_] > 0)
+            if (_concurrent[soundName] > 0)
             {
-               -- _concurrent[_loc1_];
+               _concurrent[soundName]--;
             }
          }
-         if (_setup && _loadState == 0 && ImageCache.load.length == 0)
-         {
-            _loadState = 1;
-            // Comment: Loads the audio from here
-            (soundLibraries[0] as SoundLibrary).Load();
-         }
+
          if (_currentMusic != _queuedMusic)
          {
             if (_currentMusic)
             {
-               _loc2_ = _musicChannel.soundTransform.volume;
-               _loc2_ -= 0.05;
-               if (_loc2_ <= 0)
+               var currentMusicVolume:Number = _musicChannel.soundTransform.volume;
+               currentMusicVolume -= 0.05;
+               if (currentMusicVolume <= 0)
                {
                   PlayMusicB(_queuedMusic, _musicVolume, _musicPan);
                }
                else
                {
-                  _musicChannel.soundTransform = new SoundTransform(_loc2_, _musicPan);
+                  _musicChannel.soundTransform = new SoundTransform(currentMusicVolume, _musicPan);
                }
             }
             else
             {
-               // Comment: Call is made here to play audio
                PlayMusicB(_queuedMusic, _musicVolume, _musicPan);
             }
          }
