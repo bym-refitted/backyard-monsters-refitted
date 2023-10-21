@@ -165,7 +165,10 @@ package
          mc.mcR5.bAdd.txtAdd.htmlText = KEYS.Get("ui_topaddshiny");
          mc.mcR5.bAdd.mcBG.width = mc.mcR5.bAdd.txtAdd.width + 11;
          mc.mcR5.mcBG.width = 82 + mc.mcR5.bAdd.width;
-         mc.mcR5.bAdd.addEventListener(MouseEvent.CLICK,BUY.Show);
+         // mc.mcR5.bAdd.addEventListener(MouseEvent.CLICK,BUY.Show);
+         mc.mcR5.bAdd.addEventListener(MouseEvent.CLICK, function(event: MouseEvent): void {
+             GLOBAL.Message(KEYS.Get("disabled_addshiny")); 
+             });
          mc.mcR5.bAdd.buttonMode = true;
          mc.mcR5.bAdd.mouseChildren = false;
          mc.mcOutposts.mcHit.addEventListener(MouseEvent.MOUSE_OVER,this.ButtonInfoShow);
@@ -1329,11 +1332,13 @@ package
             {
                if(POPUPS.QueueCount("gifts") > 0)
                {
-                  POPUPS.Show("gifts");
+                  // POPUPS.Show("gifts");
+                  GLOBAL.Message(KEYS.Get("disabled_gifts"));
                }
                else
                {
-                  POPUPS.Gift();
+                  // POPUPS.Gift();
+                  GLOBAL.Message(KEYS.Get("disabled_gifts"));
                }
             }
             else if(label == "alert")
@@ -1348,11 +1353,12 @@ package
             {
                if(GLOBAL._flags.messaging == 1)
                {
-                  MAILBOX.Show();
+                  // MAILBOX.Show();
+                  GLOBAL.Message(KEYS.Get("disabled_mail"));
                }
                else
                {
-                  GLOBAL.Message(KEYS.Get("mail_disabled"));
+                  GLOBAL.Message(KEYS.Get("disabled_mail"));
                }
             }
             else if(label == "daily")
@@ -1361,7 +1367,8 @@ package
             }
             else if(label == "earn")
             {
-               BUY.Offers("earn");
+               // BUY.Offers("earn");
+               GLOBAL.Message(KEYS.Get("discord_earn"));
             }
          };
       }

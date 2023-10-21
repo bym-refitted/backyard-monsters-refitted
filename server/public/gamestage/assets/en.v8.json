@@ -1,4 +1,13 @@
 {
+    "discord": {
+        "earn": "Join the <b>Backyard Monsters Refitted Discord</b> community to earn Shiny and more!"
+    },
+    "disabled": {
+        "gifts": "Gifts are currently disabled on Backyard Monster Refitted.",
+        "mail": "Mail is currently disabled on Backyard Monster Refitted.",
+        "daveclub": "Dave Club is currently disabled on Backyard Monster Refitted.",
+        "addshiny": "Sorry... you cannot add Shiny on Backyard Monsters Refitted. To find out more please visit our <b>Discord.</b>"
+    },
     "msg": {
         "loading": "Loading... ",
         "rendering": "Rendering... ",
@@ -683,7 +692,8 @@
         "monsterlab#": "Monster Lab",
         "yardplanner#": "Yard Planner",
         "hcc#": "Hatchery Control Center",
-        "radio#": "Radio Tower"
+        "radio#": "Radio Tower",
+        "mushroom#": "Mushroom"
     },
     "#bi": {
         "spurtzcannon#": "Spurtz Cannon",

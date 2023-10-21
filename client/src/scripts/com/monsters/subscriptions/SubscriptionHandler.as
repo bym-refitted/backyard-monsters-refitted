@@ -195,7 +195,8 @@ package com.monsters.subscriptions
          }
          else
          {
-            this.showPromoPopup();
+            GLOBAL.Message(KEYS.Get("disabled_daveclub"));
+            // this.showPromoPopup();
          }
       }
       
