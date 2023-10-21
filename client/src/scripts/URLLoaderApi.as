@@ -7,6 +7,7 @@ package
    import flash.net.URLRequest;
    import flash.net.URLRequestMethod;
    import flash.net.URLVariables;
+   import flash.events.SecurityErrorEvent;
    
    public class URLLoaderApi
    {
@@ -109,6 +110,9 @@ package
          this._req.addEventListener(Event.COMPLETE,this.fireComplete);
          this._req.addEventListener(IOErrorEvent.IO_ERROR,this.loadError);
          this._req.addEventListener(HTTPStatusEvent.HTTP_STATUS,this.setStatus);
+         this._req.addEventListener(SecurityErrorEvent.SECURITY_ERROR, function(event: SecurityErrorEvent) {
+            GLOBAL.ErrorMessage(event.text, GLOBAL.ERROR_ORANGE_BOX_ONLY);
+         });
       }
       
       private function getHash(param1:String, param2:int) : String

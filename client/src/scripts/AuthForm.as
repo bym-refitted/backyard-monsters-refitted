@@ -15,6 +15,7 @@ package
     import flash.events.FocusEvent;
     import flash.text.TextFormatAlign;
     import flash.system.LoaderContext;
+    import flash.events.IOErrorEvent;
 
     public class AuthForm extends Sprite
     {
@@ -108,6 +109,7 @@ package
             context.checkPolicyFile = true;
             loader.contentLoaderInfo.addEventListener(Event.COMPLETE, onImageLoaded);
             loader.load(new URLRequest(GLOBAL.serverUrl + "assets/bym-refitted-assets/refitted-logo.png"), context);
+            loader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, handleNetworkError);
 
             // Create inputs within the container
             emailInput = createBlock(350, 35, "Email");
@@ -266,7 +268,7 @@ package
 
             if (isDevEnvEnabled)
             {
-                new URLLoaderApi().load(GLOBAL._apiURL + "bm/getnewmap", null, postDevEnvDetails);
+                new URLLoaderApi().load(GLOBAL._apiURL + "bm/getnewmap", null, postDevEnvDetails, handleNetworkError);
             }
             else
             {
@@ -277,7 +279,7 @@ package
                         buttonText.text = "Please wait...";
                         buttonText.text = buttonText.text.toUpperCase();
                     }
-                    new URLLoaderApi().load(GLOBAL._apiURL + "bm/getnewmap", null, postAuthDetails);
+                    new URLLoaderApi().load(GLOBAL._apiURL + "bm/getnewmap", null, postAuthDetails, handleNetworkError);
                 }
                 else
                 {
@@ -293,14 +295,19 @@ package
             }
         }
 
-        private function postAuthDetails(serverData:Object)
+        private function postAuthDetails(serverData:Object):void
         {
             LOGIN.OnGetNewMap(serverData, [["email", emailValue], ["password", passwordValue]]);
         }
 
-        private function postDevEnvDetails(serverData:Object)
+        private function postDevEnvDetails(serverData:Object):void
         {
             LOGIN.OnGetNewMap(serverData, [["email", "dev@test.com"], ["password", "dev12345"]]);
+        }
+
+        public function handleNetworkError(event:Event):void
+        {
+            GLOBAL.Message("Hmm.. it seems we cannot connect you to the server at this time. Please try again later or check our server status.");
         }
 
         private function isValidEmail(email:String):Boolean
