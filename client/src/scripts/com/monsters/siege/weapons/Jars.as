@@ -11,11 +11,11 @@ package com.monsters.siege.weapons
       
       public static const ID:String = "jars";
       
-      public static const CRACKING_SOUNDS:Vector.<String> = Vector.<String>(["glass_cracking_1","glass_cracking_2","glass_cracking_3","glass_cracking_4"]);
+      public static const CRACKING_SOUNDS:Vector.<String> = Vector.<String>(["othersounds/glass_cracking_1.mp3","othersounds/glass_cracking_2.mp3","othersounds/glass_cracking_3.mp3","othersounds/glass_cracking_4.mp3"]);
       
-      public static const EXPLODE_SOUNDS:Vector.<String> = Vector.<String>(["glass_explode_1","glass_explode_2"]);
+      public static const EXPLODE_SOUNDS:Vector.<String> = Vector.<String>(["othersounds/glass_explode_1.mp3","othersounds/glass_explode_2.mp3"]);
       
-      public static const LAND_SOUNDS:Vector.<String> = Vector.<String>(["jar_land_2"]);
+      public static const LAND_SOUNDS:Vector.<String> = Vector.<String>(["othersounds/jar_land_2.mp3"]);
       
       public static const JAR_GRAPHIC:String = "jarAnimation";
       

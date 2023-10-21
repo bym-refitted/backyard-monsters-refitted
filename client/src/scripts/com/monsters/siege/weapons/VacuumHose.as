@@ -221,7 +221,7 @@ package com.monsters.siege.weapons
          var _loc3_:Bitmap = new Bitmap(this._vacuumEndSource);
          this._vacuum.addChild(_loc3_);
          MAP._EFFECTSTOP.addChild(this._vacuum);
-         this._vacuumSound = SOUNDS.Play("vacuumstart");
+         this._vacuumSound = SOUNDS.Play("othersounds/vacuumstart.mp3");
          if(this._vacuumSound)
          {
             this._vacuumSound.addEventListener(Event.SOUND_COMPLETE,this.onLoopStartSoundComplete,false,0,true);
@@ -262,7 +262,7 @@ package com.monsters.siege.weapons
       
       public function onLoopStartSoundComplete(param1:Event) : void
       {
-         this._vacuumSound = SOUNDS.Play("vacuumloop",0.8,0,100);
+         this._vacuumSound = SOUNDS.Play("othersounds/vacuumloop.mp3",0.8,0,100);
       }
       
       public function RemoveVacuum(param1:Boolean = false) : void
@@ -291,7 +291,7 @@ package com.monsters.siege.weapons
             if(this._vacuumSound)
             {
                this._vacuumSound.stop();
-               SOUNDS.Play(wasDestroyed ? "vacuumbroken" : "vacuumloopoff");
+               SOUNDS.Play(wasDestroyed ? "othersounds/vacuumbroken.mp3" : "othersounds/vacuumloopoff.mp3");
             }
             TweenLite.to(savedVacuum,2,{
                "y":this._target.y - 400,
