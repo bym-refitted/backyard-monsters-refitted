@@ -120,17 +120,17 @@ package
          }
       }
 
-   public static function Process(param1:Object) : void
+   public static function Process(serverData:Object) : void
       {
          var _loc2_:Object = null;
-         if(param1.version != GLOBAL._version.Get())
+         if(serverData.version != GLOBAL._version.Get())
          {
             if(ExternalInterface.available)
             {
                _loc2_ = {
                   "tag":"userload",
                   "version_mismatch_h":1,
-                  "vh2":param1.version,
+                  "vh2":serverData.version,
                   "vh1":GLOBAL._version.Get()
                };
                GLOBAL.CallJS("cc.logGenericEvent",[_loc2_]);
@@ -144,73 +144,73 @@ package
                authForm.disposeUI();
 
             GLOBAL.player = new Player();
-            GLOBAL.player.ID = param1.userid;
-            GLOBAL.player.name = param1.username;
-            GLOBAL.player.lastName = param1.last_name;
-            GLOBAL.player.picture = param1.pic_square;
-            GLOBAL.player.timePlayed = param1.timeplayed;
-            GLOBAL.player.email = param1.email;
-            _playerID = param1.userid;
-            _playerName = param1.username;
-            _playerLastName = param1.last_name;
-            _playerPic = param1.pic_square;
-            _timePlayed = param1.timeplayed;
-            _email = param1.email;
-            if(param1.stats)
+            GLOBAL.player.ID = serverData.userid;
+            GLOBAL.player.name = serverData.username;
+            GLOBAL.player.lastName = serverData.last_name;
+            GLOBAL.player.picture = serverData.pic_square;
+            GLOBAL.player.timePlayed = serverData.timeplayed;
+            GLOBAL.player.email = serverData.email;
+            _playerID = serverData.userid;
+            _playerName = serverData.username;
+            _playerLastName = serverData.last_name;
+            _playerPic = serverData.pic_square;
+            _timePlayed = serverData.timeplayed;
+            _email = serverData.email;
+            if(serverData.stats)
             {
-               if(param1.stats.inferno != undefined)
+               if(serverData.stats.inferno != undefined)
                {
-                  _inferno = param1.stats.inferno;
+                  _inferno = serverData.stats.inferno;
                }
             }
-            GLOBAL._friendCount = param1.friendcount;
-            GLOBAL._sessionCount = param1.sessioncount;
-            GLOBAL._addTime = param1.addtime;
-            GLOBAL._mapVersion = param1.mapversion;
-            GLOBAL._mailVersion = param1.mailversion;
-            GLOBAL._soundVersion = param1.soundversion;
-            GLOBAL._languageVersion = param1.languageversion;
-            GLOBAL._appid = param1.app_id;
-            GLOBAL._tpid = param1.tpid;
-            GLOBAL._currencyURL = param1.currency_url;
-            if(param1.bookmarks)
+            GLOBAL._friendCount = serverData.friendcount;
+            GLOBAL._sessionCount = serverData.sessioncount;
+            GLOBAL._addTime = serverData.addtime;
+            GLOBAL._mapVersion = serverData.mapversion;
+            GLOBAL._mailVersion = serverData.mailversion;
+            GLOBAL._soundVersion = serverData.soundversion;
+            GLOBAL._languageVersion = serverData.languageversion;
+            GLOBAL._appid = serverData.app_id;
+            GLOBAL._tpid = serverData.tpid;
+            GLOBAL._currencyURL = serverData.currency_url;
+            if(serverData.bookmarks)
             {
-               MapRoomManager.instance.bookmarkData = param1.bookmarks;
+               MapRoomManager.instance.bookmarkData = serverData.bookmarks;
             }
             else
             {
                MapRoomManager.instance.bookmarkData = {};
             }
-            if(param1.settings)
+            if(serverData.settings)
             {
-               _settings = param1.settings;
+               _settings = serverData.settings;
                RADIO.Setup(_settings);
             }
-            if(param1.proxy_email)
+            if(serverData.proxy_email)
             {
-               _proxymail = param1.proxy_email;
+               _proxymail = serverData.proxy_email;
             }
-            if(!param1.languageversion)
+            if(!serverData.languageversion)
             {
                GLOBAL._languageVersion = 8;
             }
-            if(param1.sendgift == 1)
+            if(serverData.sendgift == 1)
             {
                GLOBAL._canGift = true;
             }
-            if(param1.sendinvite == 1)
+            if(serverData.sendinvite == 1)
             {
                GLOBAL._canInvite = true;
             }
-            BASE._isFan = int(param1.isfan);
-            if(param1.ncpCandidate == 1)
+            BASE._isFan = int(serverData.isfan);
+            if(serverData.ncpCandidate == 1)
             {
-               GLOBAL._fbcncp = param1.ncpCandidate;
+               GLOBAL._fbcncp = serverData.ncpCandidate;
             }
             KEYS._storageURL = GLOBAL.languageUrl;
             KEYS._logFunction = LOGGER.Log;
             KEYS._languageVersion = GLOBAL._languageVersion;
-            KEYS._language = param1.language;
+            KEYS._language = serverData.language;
             POPUPS.Setup();
             Digits(_playerID);
             KEYS.Setup(Done);
