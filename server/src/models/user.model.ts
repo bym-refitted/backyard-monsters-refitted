@@ -1,5 +1,5 @@
-import {Entity, Property, PrimaryKey, OneToOne} from "@mikro-orm/core";
-import {FieldData, Save} from "./save.model";
+import { Entity, Property, PrimaryKey, OneToOne } from "@mikro-orm/core";
+import { FieldData, Save } from "./save.model";
 import { FrontendKey } from "../utils/FrontendKey";
 
 @Entity()
@@ -8,10 +8,10 @@ export class User {
   @PrimaryKey()
   userid!: number;
 
-  @OneToOne(() => Save, {nullable: true})
+  @OneToOne(() => Save, { nullable: true })
   save?: Save;
 
-  @Property({unique:true})
+  @Property({ unique: true })
   @FrontendKey
   username!: string;
 
@@ -20,7 +20,7 @@ export class User {
   last_name!: string;
 
   @FrontendKey
-  @Property({unique:true})
+  @Property({ unique: true })
   email!: string;
 
   @Property()

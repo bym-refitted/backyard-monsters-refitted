@@ -8,6 +8,9 @@
         "daveclub": "Dave Club is currently disabled on Backyard Monster Refitted.",
         "addshiny": "Sorry... you cannot add Shiny on Backyard Monsters Refitted. To find out more please visit our <b>Discord.</b>"
     },
+    "requirements": {
+        "notmet": "Requirements not met."
+    },
     "msg": {
         "loading": "Loading... ",
         "rendering": "Rendering... ",
@@ -183,6 +186,8 @@
         "brag": "Brag to your friends",
         "pick": "Pick",
         "yes": "Yes",
+        "nothanks": "No Thanks",
+        "fullscreen": "Full Screen",
         "relocateYard": "Relocate Yard",
         "upgrade": "Upgrade",
         "move": "Move",
@@ -717,6 +722,48 @@
         "teratorn#": "Teratorn",
         "wormzer#": "Wormzer",
         "dave#": "Dave"
+    },
+    "tut": {
+        "1b": "<b>Welcome {v1} to Backyard Monsters!</b><br>Click Full Screen to view more of your Yard.",
+        "NWM": {
+            "Step2": "Let's build a Sniper Tower to defend your yard.<br><br>Click on the <b>Buildings</b> menu.",
+            "Step3": "Here you can browse all the different buildings you can add to your yard.<br><br>Click the <b>Defensive</b> buildings tab.",
+            "Step4": "Select the \"Sniper Tower\"",
+            "Step5": "Here you can see the description, requirements and cost of the Sniper Tower. Press <b>Build.</b>",
+            "Step6": "Now place it in your yard by clicking on the grass.",
+            "Step7": "Click on the Sniper Tower and select <b>Speed Up.</b>",
+            "Step8": "Buy \"Close Enough\" to finish the upgrade instantly.<br><br>The \"Close Enough\" speed-up is free for upgrades with 5 minutes or less remaining.",
+            "Step9": "Your Sniper Tower is complete and will now fire on any intruders that try to attack your base. Collect your reward!",
+            "Step10": "WHOA! Just in time, here come some Wild Monsters!<br><br>Don't worry, the Sniper Tower should make short work of them, <b>just sit back and watch the action.</b>",
+            "Step11": "Oooh, looks like you completed a rather bloody quest for defending your yard. Don't forget to collect the reward by clicking on <b>Quests</b> menu.",
+            "Step12": "That attack came from the nearby <b>Legionnaire Wild Monster Tribe.</b> Let's strike back before they get a chance to build up a larger attack",
+            "Step13": "The first thing we need to do is build housing for your monster army. Click on the <b>Buildings</b> menu.",
+            "Step14": "Select the <b>Buildings</b> tab.",
+            "Step15": "Select \"Monster Housing\"",
+            "Step16": "Now click on <b>Build</b>",
+            "Step17": "Place it somewhere in your backyard.<br><br>You can click and drag to move the backyard around to find space.",
+            "Step18": "Select your Monster Housing, then click on <b>Speed Up.</b>",
+            "Step19": "Buy \"Close Enough\"",
+            "Step20": "We've recruited some Pokeys to help. Pokeys are a little slow and small but what they lack in strength they make up for in numbers!<br><br>Collect your reward now.",
+            "Step21": "Now let's build a Flinger so we can fling our Pokeys into the enemy backyard. Click on the <b>Buildings</b> menu.",
+            "Step22": "Select the \"Flinger\"",
+            "Step23": "Press <b>Build</b>",
+            "Step24": "Place it somewhere in your backyard (remember, you can click and drag to find space).",
+            "Step25": "Click on the Flinger and select <b>Speed Up.</b>",
+            "Step26": "Since the Flinger takes longer than 5 minutes to build, let's buy the \"Finish Building NOW!\" speed-up",
+            "Step27": "Now let's build a Map Room so we can find the Wild Monster Tribe. Click on the <b>Buildings</b> menu.",
+            "Step28": "Select the \"Map Room\"",
+            "Step29": "Press <b>Build</b>",
+            "Step30": "Place it in your backyard.",
+            "Step31":"Click on the Map Room and select <b>Speed Up.</b>",
+            "Step32": "Buy \"Finish Building NOW!\"",
+            "Step33": "Now let's use the Map Room to find the Wild Monster Tribe that attacked you and strike back with our Pokey army!<br><br>Click on the<b>Map</b> menu."
+        },
+        "98": "Buy \"Finish Building NOW!\"",
+        "99": "Time to collect some quest rewards for all that new construction!",
+        "next": {
+            "btn": "Next"
+        }
     },
     "ai": {
         "popupwarning": {
