@@ -46,18 +46,19 @@ export const login: KoaController = async (ctx) => {
     ctx.status = 200;
     ctx.body = {
       error: 0,
+      ...filteredUser,
       version: 128,
       token,
       mapversion: 3,
       mailversion: 1,
       soundversion: 1,
       languageversion: 8,
-      app_id: "2de76fv89",
-      tpid: "t76fbxXsw",
+      app_id: "",
+      tpid: "",
       currency_url: "",
       language: "en",
+      settings: {},
       h: "someHashValue",
-      ...filteredUser,
     };
 
     const cookieExpiryTime = sessionLifeTime * (24 * 60 * 60) * 1000;

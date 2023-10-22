@@ -11,6 +11,7 @@ package
    import flash.system.Capabilities;
    import flash.text.TextField;
    import flash.text.TextFormat;
+   import com.monsters.radio.RADIO;
 
    public class LOGIN
    {
