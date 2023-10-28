@@ -2,6 +2,7 @@ import "reflect-metadata";
 import "dotenv/config";
 
 import Koa, { Context, Next } from "koa";
+import session from "koa-session";
 import Router from "@koa/router";
 import bodyParser from "koa-bodyparser";
 import fs from "fs/promises";
@@ -17,6 +18,7 @@ import { ErrorInterceptor } from "./middleware/clientSafeError.js";
 import { registerDevUser } from "./database/seeds/dev.user";
 import { processLanguagesFile } from "./middleware/processLanguageFile";
 import { logMissingAssets, morganLogging } from "./middleware/morganLogging";
+import { SESSION_CONFIG } from "./config/SessionConfig";
 
 export const ORMContext = {} as {
   orm: MikroORM;
@@ -25,6 +27,10 @@ export const ORMContext = {} as {
 
 export const app = new Koa();
 const port = process.env.PORT || 3001;
+
+// Sessions
+app.keys = [process.env.SECRET_KEY];
+app.use(session(SESSION_CONFIG, app));
 
 // Entry point for all modules.
 const api = new Router();
@@ -60,8 +66,7 @@ api.get("/", (ctx: Context) => (ctx.body = {}));
   app.use(serve(__dirname + "/public"));
 
   process.on("unhandledRejection", (reason, promise) => {
-    console.error("Unhandled Rejection at:", promise, "reason:", reason);
-    // Handle the error or exit gracefully
+    errorLog(`Unhandled Rejection at: ${promise} reason: ${reason}`);
   });
 
   app.use(async (ctx, next) => {

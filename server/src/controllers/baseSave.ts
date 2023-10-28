@@ -9,7 +9,7 @@ export const baseSave: KoaController = async (ctx) => {
   logging(`Saving the base! user: ${user.username}`);
 
   const requestBody = ctx.request.body as { basesaveid: number };
-  ctx.cookies.set("basesaveid", requestBody.basesaveid.toString());
+  ctx.session.basesaveid = requestBody.basesaveid;
 
   let save = await ORMContext.em.findOne(Save, {
     basesaveid: requestBody.basesaveid,
