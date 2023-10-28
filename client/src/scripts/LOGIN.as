@@ -43,6 +43,8 @@ package
 
       public static var authForm:AuthForm;
 
+      public static var sharedObject:SharedObject = SharedObject.getLocal("BymRefittedAppData", "/");
+
       public function LOGIN()
       {
          super();
@@ -52,7 +54,6 @@ package
       {
          authForm = new AuthForm();
          GLOBAL._layerTop.addChild(authForm);
-         GLOBAL._layerTop.addChild(GLOBAL.Message("Token: " + GLOBAL.authToken));
       }
 
       public static function OnGetNewMap(serverData:Object, authInfo:Array):void
@@ -74,13 +75,12 @@ package
             {
                if (serverData.error == 0)
                {
-                  var authToken: String = serverData.token;
+                  var authToken:String = serverData.token;
                   if (GLOBAL._local)
                   {
                      try
                      {
                         // No access to the browser - save the token using SharedObjects
-                        var sharedObject:SharedObject = SharedObject.getLocal("BymAppData");
                         sharedObject.data.authToken = authToken;
                         GLOBAL.authToken = sharedObject.data.authToken;
                         sharedObject.flush();

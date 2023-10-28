@@ -32,6 +32,8 @@ package
       private var _onError:Function;
       
       private var _baseUrl:String;
+
+      public static var sharedObject:SharedObject = SharedObject.getLocal("BymRefittedAppData", "/");
       
       public function URLLoaderApi()
       {
@@ -61,6 +63,7 @@ package
       {
          var currentIndex:int = 0;
          var currentPair:Array = null;
+         var authToken = sharedObject.data.authToken;
 
          this._onComplete = onComplete;
          this._onError = onFail;
@@ -84,8 +87,8 @@ package
             }
          }
          // Attach the token to the request header if we have it
-         if (GLOBAL.authToken) {
-            var authHeader:URLRequestHeader = new URLRequestHeader("Authorization", "Bearer " + GLOBAL.authToken);
+         if (authToken) {
+            var authHeader:URLRequestHeader = new URLRequestHeader("Authorization", "Bearer " + authToken);
             urlBuilder.requestHeaders.push(authHeader);
          }
 
