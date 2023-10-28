@@ -183,6 +183,7 @@
     "btn": {
         "build": "Build",
         "buildnow": "Build Now",
+        "viewmap": "Open Map",
         "brag": "Brag to your friends",
         "pick": "Pick",
         "yes": "Yes",
@@ -724,7 +725,7 @@
         "dave#": "Dave"
     },
     "tut": {
-        "1b": "<b>Welcome {v1} to Backyard Monsters!</b><br>Click Full Screen to view more of your Yard.",
+        "1b": "Hey <b>{v1},<br><br>Welcome to Backyard Monsters!</b><br>Click Full Screen to view more of your Yard.",
         "NWM": {
             "Step2": "Let's build a Sniper Tower to defend your yard.<br><br>Click on the <b>Buildings</b> menu.",
             "Step3": "Here you can browse all the different buildings you can add to your yard.<br><br>Click the <b>Defensive</b> buildings tab.",
@@ -757,7 +758,7 @@
             "Step30": "Place it in your backyard.",
             "Step31":"Click on the Map Room and select <b>Speed Up.</b>",
             "Step32": "Buy \"Finish Building NOW!\"",
-            "Step33": "Now let's use the Map Room to find the Wild Monster Tribe that attacked you and strike back with our Pokey army!<br><br>Click on the<b>Map</b> menu."
+            "Step33": "Now let's use the Map Room to find the Wild Monster Tribe that attacked you and strike back with our Pokey army!<br><br>Click on the <b>Map</b> menu."
         },
         "98": "Buy \"Finish Building NOW!\"",
         "99": "Time to collect some quest rewards for all that new construction!",

@@ -5,8 +5,7 @@ import { FilterFrontendKeys } from "../utils/FrontendKey";
 import { KoaController } from "../utils/KoaController";
 
 export const updateSaved: KoaController = async (ctx) => {
-  const basesaveidCookie = ctx.cookies.get("basesaveid");
-  const basesaveid = parseInt(basesaveidCookie, 10);
+  const basesaveid = ctx.session.basesaveid;
   let save = await ORMContext.em.findOne(Save, { basesaveid });
 
   if (!save) {

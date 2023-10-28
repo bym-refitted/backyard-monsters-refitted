@@ -42,6 +42,7 @@ export const login: KoaController = async (ctx) => {
     });
 
     const filteredUser = FilterFrontendKeys(user);
+    ctx.session.userid = filteredUser.userid;
     // return logged in user data
     ctx.status = 200;
     ctx.body = {
