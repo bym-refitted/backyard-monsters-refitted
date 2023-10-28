@@ -63,7 +63,7 @@ package
       {
          var currentIndex:int = 0;
          var currentPair:Array = null;
-         var authToken = sharedObject.data.authToken;
+         var token = sharedObject.data.token;
 
          this._onComplete = onComplete;
          this._onError = onFail;
@@ -87,8 +87,8 @@ package
             }
          }
          // Attach the token to the request header if we have it
-         if (authToken) {
-            var authHeader:URLRequestHeader = new URLRequestHeader("Authorization", "Bearer " + authToken);
+         if (token) {
+            var authHeader:URLRequestHeader = new URLRequestHeader("Authorization", "Bearer " + token);
             urlBuilder.requestHeaders.push(authHeader);
          }
 

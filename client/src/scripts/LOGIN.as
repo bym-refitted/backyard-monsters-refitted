@@ -43,7 +43,7 @@ package
 
       public static var authForm:AuthForm;
 
-      public static var sharedObject:SharedObject = SharedObject.getLocal("BymRefittedAppData", "/");
+      public static var sharedObject:SharedObject = SharedObject.getLocal("bym_refitted_local_data", "/");
 
       public function LOGIN()
       {
@@ -52,8 +52,16 @@ package
 
       public static function Login():void
       {
+         var isLoggedIn:Boolean = sharedObject.data.user;
          authForm = new AuthForm();
-         GLOBAL._layerTop.addChild(authForm);
+         if (isLoggedIn)
+         {
+            LOGIN.AuthFromSharedObject(sharedObject.data.user);
+         }
+         else
+         {
+            GLOBAL._layerTop.addChild(authForm);
+         }
       }
 
       public static function OnGetNewMap(serverData:Object, authInfo:Array):void
@@ -75,14 +83,12 @@ package
             {
                if (serverData.error == 0)
                {
-                  var authToken:String = serverData.token;
                   if (GLOBAL._local)
                   {
                      try
                      {
-                        // No access to the browser - save the token using SharedObjects
-                        sharedObject.data.authToken = authToken;
-                        GLOBAL.authToken = sharedObject.data.authToken;
+                        // No access to browser - save user details to SharedObjects
+                        sharedObject.data.user = JSON.encode(serverData);
                         sharedObject.flush();
                         LOGIN.Process(serverData);
                      }
@@ -149,96 +155,117 @@ package
          var _loc2_:Object = null;
          if (serverData.version != GLOBAL._version.Get())
          {
-            if (ExternalInterface.available)
-            {
-               _loc2_ = {
-                     "tag": "userload",
-                     "version_mismatch_h": 1,
-                     "vh2": serverData.version,
-                     "vh1": GLOBAL._version.Get()
-                  };
-               GLOBAL.CallJS("cc.logGenericEvent", [_loc2_]);
-            }
-            GLOBAL.ErrorMessage(KEYS.Get("msg_updatedgame"), GLOBAL.ERROR_ORANGE_BOX_ONLY);
+            handleVersionMismatch(serverData);
          }
          else
          {
-            // Removes the AuthForm from the display container since the user is authenticated.
-            if (authForm)
-               authForm.disposeUI();
+            handleUserLogin(serverData);
 
-            GLOBAL.player = new Player();
-            GLOBAL.player.ID = serverData.userid;
-            GLOBAL.player.name = serverData.username;
-            GLOBAL.player.lastName = serverData.last_name;
-            GLOBAL.player.picture = serverData.pic_square;
-            GLOBAL.player.timePlayed = serverData.timeplayed;
-            GLOBAL.player.email = serverData.email;
-            _playerID = serverData.userid;
-            _playerName = serverData.username;
-            _playerLastName = serverData.last_name;
-            _playerPic = serverData.pic_square;
-            _timePlayed = serverData.timeplayed;
-            _email = serverData.email;
-            if (serverData.stats)
-            {
-               if (serverData.stats.inferno != undefined)
-               {
-                  _inferno = serverData.stats.inferno;
-               }
-            }
-            GLOBAL._friendCount = serverData.friendcount;
-            GLOBAL._sessionCount = serverData.sessioncount;
-            GLOBAL._addTime = serverData.addtime;
-            GLOBAL._mapVersion = serverData.mapversion;
-            GLOBAL._mailVersion = serverData.mailversion;
-            GLOBAL._soundVersion = serverData.soundversion;
-            GLOBAL._languageVersion = serverData.languageversion;
-            GLOBAL._appid = serverData.app_id;
-            GLOBAL._tpid = serverData.tpid;
-            GLOBAL._currencyURL = serverData.currency_url;
-            if (serverData.bookmarks)
-            {
-               MapRoomManager.instance.bookmarkData = serverData.bookmarks;
-            }
-            else
-            {
-               MapRoomManager.instance.bookmarkData = {};
-            }
-            if (serverData.settings)
-            {
-               _settings = serverData.settings;
-               RADIO.Setup(_settings);
-            }
-            if (serverData.proxy_email)
-            {
-               _proxymail = serverData.proxy_email;
-            }
-            if (!serverData.languageversion)
-            {
-               GLOBAL._languageVersion = 8;
-            }
-            if (serverData.sendgift == 1)
-            {
-               GLOBAL._canGift = true;
-            }
-            if (serverData.sendinvite == 1)
-            {
-               GLOBAL._canInvite = true;
-            }
-            BASE._isFan = int(serverData.isfan);
-            if (serverData.ncpCandidate == 1)
-            {
-               GLOBAL._fbcncp = serverData.ncpCandidate;
-            }
-            KEYS._storageURL = GLOBAL.languageUrl;
-            KEYS._logFunction = LOGGER.Log;
-            KEYS._languageVersion = GLOBAL._languageVersion;
-            KEYS._language = serverData.language;
-            POPUPS.Setup();
-            Digits(_playerID);
-            KEYS.Setup(Done);
          }
+      }
+
+      // User already authenticated, set up their session.
+      public static function AuthFromSharedObject(savedUserData:Object):void
+      {
+
+         var user:Object = JSON.decode(savedUserData);
+         GLOBAL.player = new Player();
+         GLOBAL.player.ID = user.userid;
+         GLOBAL.Message("Already authenticated.")
+      }
+
+      // Initial user authentication
+      private static function handleUserLogin(serverData:Object):void
+      {
+         if (authForm)
+            authForm.disposeUI();
+
+         GLOBAL.player = new Player();
+         GLOBAL.player.ID = serverData.userid;
+         GLOBAL.player.name = serverData.username;
+         GLOBAL.player.lastName = serverData.last_name;
+         GLOBAL.player.picture = serverData.pic_square;
+         GLOBAL.player.timePlayed = serverData.timeplayed;
+         GLOBAL.player.email = serverData.email;
+         _playerID = serverData.userid;
+         _playerName = serverData.username;
+         _playerLastName = serverData.last_name;
+         _playerPic = serverData.pic_square;
+         _timePlayed = serverData.timeplayed;
+         _email = serverData.email;
+         if (serverData.stats)
+         {
+            if (serverData.stats.inferno != undefined)
+            {
+               _inferno = serverData.stats.inferno;
+            }
+         }
+         GLOBAL._friendCount = serverData.friendcount;
+         GLOBAL._sessionCount = serverData.sessioncount;
+         GLOBAL._addTime = serverData.addtime;
+         GLOBAL._mapVersion = serverData.mapversion;
+         GLOBAL._mailVersion = serverData.mailversion;
+         GLOBAL._soundVersion = serverData.soundversion;
+         GLOBAL._languageVersion = serverData.languageversion;
+         GLOBAL._appid = serverData.app_id;
+         GLOBAL._tpid = serverData.tpid;
+         GLOBAL._currencyURL = serverData.currency_url;
+         if (serverData.bookmarks)
+         {
+            MapRoomManager.instance.bookmarkData = serverData.bookmarks;
+         }
+         else
+         {
+            MapRoomManager.instance.bookmarkData = {};
+         }
+         if (serverData.settings)
+         {
+            _settings = serverData.settings;
+            RADIO.Setup(_settings);
+         }
+         if (serverData.proxy_email)
+         {
+            _proxymail = serverData.proxy_email;
+         }
+         if (!serverData.languageversion)
+         {
+            GLOBAL._languageVersion = 8;
+         }
+         if (serverData.sendgift == 1)
+         {
+            GLOBAL._canGift = true;
+         }
+         if (serverData.sendinvite == 1)
+         {
+            GLOBAL._canInvite = true;
+         }
+         BASE._isFan = int(serverData.isfan);
+         if (serverData.ncpCandidate == 1)
+         {
+            GLOBAL._fbcncp = serverData.ncpCandidate;
+         }
+         KEYS._storageURL = GLOBAL.languageUrl;
+         KEYS._logFunction = LOGGER.Log;
+         KEYS._languageVersion = GLOBAL._languageVersion;
+         KEYS._language = serverData.language;
+         POPUPS.Setup();
+         Digits(_playerID);
+         KEYS.Setup(Done);
+      }
+
+      private static function handleVersionMismatch(serverData:Object):void
+      {
+         if (ExternalInterface.available)
+         {
+            var eventData:Object = {
+                  "tag": "userload",
+                  "version_mismatch_h": 1,
+                  "vh2": serverData.version,
+                  "vh1": GLOBAL._version.Get()
+               };
+            GLOBAL.CallJS("cc.logGenericEvent", [eventData]);
+         }
+         GLOBAL.ErrorMessage(KEYS.Get("msg_updatedgame"), GLOBAL.ERROR_ORANGE_BOX_ONLY);
       }
 
       public static function Digits(param1:int):void
