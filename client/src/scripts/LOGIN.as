@@ -52,11 +52,13 @@ package
 
       public static function Login():void
       {
-         var isLoggedIn:Boolean = sharedObject.data.user;
+         var hasToken:Boolean = sharedObject.data.token;
          authForm = new AuthForm();
-         if (isLoggedIn)
+         if (hasToken)
          {
-            LOGIN.AuthFromSharedObject(sharedObject.data.user);
+            var storedMapData:Object = JSON.decode(sharedObject.data.getNewMap);
+            var storedUserDetails:Array = [["email", "dev@test.com"], ["password", "dev12345"]];
+            new URLLoaderApi().load(GLOBAL._apiURL + "bm/getnewmap", null, OnGetNewMap(storedMapData, storedUserDetails));
          }
          else
          {
@@ -66,6 +68,8 @@ package
 
       public static function OnGetNewMap(serverData:Object, authInfo:Array):void
       {
+         sharedObject.data.getNewMap = JSON.encode(serverData);
+         sharedObject.flush();
          _Login(serverData.newmap, serverData.mapheaderurl, authInfo);
       }
 
@@ -83,25 +87,7 @@ package
             {
                if (serverData.error == 0)
                {
-                  if (GLOBAL._local)
-                  {
-                     try
-                     {
-                        // No access to browser - save user details to SharedObjects
-                        sharedObject.data.user = JSON.encode(serverData);
-                        sharedObject.flush();
-                        LOGIN.Process(serverData);
-                     }
-                     catch (error:Error)
-                     {
-                        GLOBAL.Message("Error saving token in SharedObjects: " + error.message);
-                     }
-                  }
-                  else
-                  {
-                     // ToDo: Implement if we are running in a browser.
-                     ExternalInterface.call("setItem", "authToken", authToken);
-                  }
+                  LOGIN.Process(serverData);
                }
                else
                {
@@ -159,27 +145,35 @@ package
          }
          else
          {
-            handleUserLogin(serverData);
-
+            if (GLOBAL._local)
+            {
+               try
+               {
+                  // No access to browser - save user details to SharedObjects;
+                  sharedObject.data.userid = serverData.userid;
+                  sharedObject.data.token = serverData.token;
+                  sharedObject.flush();
+               }
+               catch (err:Error)
+               {
+                  GLOBAL.Message("Error saving SharedObject");
+               }
+               handleUserLogin(serverData);
+            }
+            else
+            {
+               // ToDo: Implement if we are running in a browser.
+               ExternalInterface.call("setItem", "authToken", authToken);
+            }
          }
       }
 
-      // User already authenticated, set up their session.
-      public static function AuthFromSharedObject(savedUserData:Object):void
-      {
-
-         var user:Object = JSON.decode(savedUserData);
-         GLOBAL.player = new Player();
-         GLOBAL.player.ID = user.userid;
-         GLOBAL.Message("Already authenticated.")
-      }
-
-      // Initial user authentication
       private static function handleUserLogin(serverData:Object):void
       {
-         if (authForm)
+         if (!sharedObject.data.token && authForm)
+         {
             authForm.disposeUI();
-
+         }
          GLOBAL.player = new Player();
          GLOBAL.player.ID = serverData.userid;
          GLOBAL.player.name = serverData.username;
