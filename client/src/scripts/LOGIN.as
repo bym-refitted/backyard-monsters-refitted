@@ -52,13 +52,14 @@ package
 
       public static function Login():void
       {
-         var hasToken:Boolean = sharedObject.data.token;
          authForm = new AuthForm();
-         if (hasToken)
+         if (sharedObject.data.token)
          {
-            var storedMapData:Object = JSON.decode(sharedObject.data.getNewMap);
-            var storedUserDetails:Array = [["email", "dev@test.com"], ["password", "dev12345"]];
-            new URLLoaderApi().load(GLOBAL._apiURL + "bm/getnewmap", null, OnGetNewMap(storedMapData, storedUserDetails));
+            new URLLoaderApi().load(GLOBAL._apiURL + "bm/getnewmap", null,
+                  function(serverData:Object)
+                  {
+                     LOGIN.OnGetNewMap(serverData, [["token", sharedObject.data.token]]);
+                  });
          }
          else
          {
@@ -68,8 +69,6 @@ package
 
       public static function OnGetNewMap(serverData:Object, authInfo:Array):void
       {
-         sharedObject.data.getNewMap = JSON.encode(serverData);
-         sharedObject.flush();
          _Login(serverData.newmap, serverData.mapheaderurl, authInfo);
       }
 
@@ -87,7 +86,26 @@ package
             {
                if (serverData.error == 0)
                {
-                  LOGIN.Process(serverData);
+                  if (GLOBAL._local)
+                  {
+                     try
+                     {
+                        // No access to browser - save user details to SharedObjects;
+                        sharedObject.data.userid = serverData.userid;
+                        sharedObject.data.token = serverData.token;
+                        sharedObject.flush();
+                     }
+                     catch (err:Error)
+                     {
+                        GLOBAL.Message("Error saving SharedObject");
+                     }
+                     LOGIN.Process(serverData);
+                  }
+                  else
+                  {
+                     // ToDo: Implement if we are running in a browser.
+                     ExternalInterface.call("setItem", "authToken", authToken);
+                  }
                }
                else
                {
@@ -145,106 +163,90 @@ package
          }
          else
          {
-            if (GLOBAL._local)
-            {
-               try
-               {
-                  // No access to browser - save user details to SharedObjects;
-                  sharedObject.data.userid = serverData.userid;
-                  sharedObject.data.token = serverData.token;
-                  sharedObject.flush();
-               }
-               catch (err:Error)
-               {
-                  GLOBAL.Message("Error saving SharedObject");
-               }
-               handleUserLogin(serverData);
-            }
-            else
-            {
-               // ToDo: Implement if we are running in a browser.
-               ExternalInterface.call("setItem", "authToken", authToken);
-            }
+            handleUserLogin(serverData);
          }
       }
 
       private static function handleUserLogin(serverData:Object):void
       {
-         if (!sharedObject.data.token && authForm)
+         if (!sharedObject.data.userid && authForm)
          {
             authForm.disposeUI();
          }
-         GLOBAL.player = new Player();
-         GLOBAL.player.ID = serverData.userid;
-         GLOBAL.player.name = serverData.username;
-         GLOBAL.player.lastName = serverData.last_name;
-         GLOBAL.player.picture = serverData.pic_square;
-         GLOBAL.player.timePlayed = serverData.timeplayed;
-         GLOBAL.player.email = serverData.email;
-         _playerID = serverData.userid;
-         _playerName = serverData.username;
-         _playerLastName = serverData.last_name;
-         _playerPic = serverData.pic_square;
-         _timePlayed = serverData.timeplayed;
-         _email = serverData.email;
-         if (serverData.stats)
+         if (serverData)
          {
-            if (serverData.stats.inferno != undefined)
+            GLOBAL.player = new Player();
+            GLOBAL.player.ID = serverData.userid;
+            GLOBAL.player.name = serverData.username;
+            GLOBAL.player.lastName = serverData.last_name;
+            GLOBAL.player.picture = serverData.pic_square;
+            GLOBAL.player.timePlayed = serverData.timeplayed;
+            GLOBAL.player.email = serverData.email;
+            _playerID = serverData.userid;
+            _playerName = serverData.username;
+            _playerLastName = serverData.last_name;
+            _playerPic = serverData.pic_square;
+            _timePlayed = serverData.timeplayed;
+            _email = serverData.email;
+            if (serverData.stats)
             {
-               _inferno = serverData.stats.inferno;
+               if (serverData.stats.inferno != undefined)
+               {
+                  _inferno = serverData.stats.inferno;
+               }
             }
+            GLOBAL._friendCount = serverData.friendcount;
+            GLOBAL._sessionCount = serverData.sessioncount;
+            GLOBAL._addTime = serverData.addtime;
+            GLOBAL._mapVersion = serverData.mapversion;
+            GLOBAL._mailVersion = serverData.mailversion;
+            GLOBAL._soundVersion = serverData.soundversion;
+            GLOBAL._languageVersion = serverData.languageversion;
+            GLOBAL._appid = serverData.app_id;
+            GLOBAL._tpid = serverData.tpid;
+            GLOBAL._currencyURL = serverData.currency_url;
+            if (serverData.bookmarks)
+            {
+               MapRoomManager.instance.bookmarkData = serverData.bookmarks;
+            }
+            else
+            {
+               MapRoomManager.instance.bookmarkData = {};
+            }
+            if (serverData.settings)
+            {
+               _settings = serverData.settings;
+               RADIO.Setup(_settings);
+            }
+            if (serverData.proxy_email)
+            {
+               _proxymail = serverData.proxy_email;
+            }
+            if (!serverData.languageversion)
+            {
+               GLOBAL._languageVersion = 8;
+            }
+            if (serverData.sendgift == 1)
+            {
+               GLOBAL._canGift = true;
+            }
+            if (serverData.sendinvite == 1)
+            {
+               GLOBAL._canInvite = true;
+            }
+            BASE._isFan = int(serverData.isfan);
+            if (serverData.ncpCandidate == 1)
+            {
+               GLOBAL._fbcncp = serverData.ncpCandidate;
+            }
+            KEYS._storageURL = GLOBAL.languageUrl;
+            KEYS._logFunction = LOGGER.Log;
+            KEYS._languageVersion = GLOBAL._languageVersion;
+            KEYS._language = serverData.language;
+            POPUPS.Setup();
+            Digits(_playerID);
+            KEYS.Setup(Done);
          }
-         GLOBAL._friendCount = serverData.friendcount;
-         GLOBAL._sessionCount = serverData.sessioncount;
-         GLOBAL._addTime = serverData.addtime;
-         GLOBAL._mapVersion = serverData.mapversion;
-         GLOBAL._mailVersion = serverData.mailversion;
-         GLOBAL._soundVersion = serverData.soundversion;
-         GLOBAL._languageVersion = serverData.languageversion;
-         GLOBAL._appid = serverData.app_id;
-         GLOBAL._tpid = serverData.tpid;
-         GLOBAL._currencyURL = serverData.currency_url;
-         if (serverData.bookmarks)
-         {
-            MapRoomManager.instance.bookmarkData = serverData.bookmarks;
-         }
-         else
-         {
-            MapRoomManager.instance.bookmarkData = {};
-         }
-         if (serverData.settings)
-         {
-            _settings = serverData.settings;
-            RADIO.Setup(_settings);
-         }
-         if (serverData.proxy_email)
-         {
-            _proxymail = serverData.proxy_email;
-         }
-         if (!serverData.languageversion)
-         {
-            GLOBAL._languageVersion = 8;
-         }
-         if (serverData.sendgift == 1)
-         {
-            GLOBAL._canGift = true;
-         }
-         if (serverData.sendinvite == 1)
-         {
-            GLOBAL._canInvite = true;
-         }
-         BASE._isFan = int(serverData.isfan);
-         if (serverData.ncpCandidate == 1)
-         {
-            GLOBAL._fbcncp = serverData.ncpCandidate;
-         }
-         KEYS._storageURL = GLOBAL.languageUrl;
-         KEYS._logFunction = LOGGER.Log;
-         KEYS._languageVersion = GLOBAL._languageVersion;
-         KEYS._language = serverData.language;
-         POPUPS.Setup();
-         Digits(_playerID);
-         KEYS.Setup(Done);
       }
 
       private static function handleVersionMismatch(serverData:Object):void
@@ -317,7 +319,7 @@ package
          else
          {
             BASE.yardType = MapRoomManager.instance.isInMapRoom3 ? int(EnumYardType.PLAYER) : int(EnumYardType.MAIN_YARD);
-            var s:String = "Comment: The Load() function gets called from this block.";
+            // Comment: The Load() function gets called from this block.;
             BASE.Load();
          }
       }

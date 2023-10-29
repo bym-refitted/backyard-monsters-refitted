@@ -32,8 +32,6 @@ package
       private var _onError:Function;
       
       private var _baseUrl:String;
-
-      public static var sharedObject:SharedObject = SharedObject.getLocal("BymRefittedAppData", "/");
       
       public function URLLoaderApi()
       {
@@ -63,7 +61,7 @@ package
       {
          var currentIndex:int = 0;
          var currentPair:Array = null;
-         var token = sharedObject.data.token;
+         var token = LOGIN.sharedObject.data.token;
 
          this._onComplete = onComplete;
          this._onError = onFail;
