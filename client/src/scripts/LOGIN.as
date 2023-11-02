@@ -53,7 +53,7 @@ package
       public static function Login():void
       {
          authForm = new AuthForm();
-         if (sharedObject.data.token)
+         if (sharedObject.data.token && sharedObject.data.remembered)
          {
             new URLLoaderApi().load(GLOBAL._apiURL + "bm/getnewmap", null,
                   function(serverData:Object)

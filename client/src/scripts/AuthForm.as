@@ -33,6 +33,10 @@ package
 
         private var passwordErrorText:TextField;
 
+        private var checkbox:Checkbox;
+
+        private var rememberText:TextField;
+
         private var submitButton:Sprite;
 
         private var image:Bitmap;
@@ -71,8 +75,11 @@ package
 
             // Global Initialization
             formContainer = new Sprite();
+            checkboxContainer = new Sprite();
             emailErrorText = new TextField();
             passwordErrorText = new TextField();
+            rememberText = new TextField();
+            checkbox = new Checkbox();
 
             var formWidth:Number = 450;
             var formHeight:Number = 600;
@@ -115,14 +122,44 @@ package
             emailInput = createBlock(350, 35, "Email");
             passwordInput = createBlock(350, 35, "Password", true);
 
+            // Create Checkbox & Remember Me text
+            checkbox.x = 60;
+            checkbox.y = startY + 3;
+            formContainer.addChild(checkbox);
+            checkbox.addEventListener(Checkbox.CHECK_EVENT, onRememberUser);
+
+            rememberText.x = 80;
+            rememberText.y = startY;
+
+            var rememberMeFormat:TextFormat = new TextFormat();
+            rememberMeFormat.size = 14;
+            rememberMeFormat.color = BLACK;
+            rememberText.defaultTextFormat = rememberMeFormat;
+            rememberText.text = "Remember Me?";
+
+            formContainer.addChild(rememberText);
+
             // Create button
             submitButton = createButton("Log in");
             submitButton.x = (formContainer.width - submitButton.width) / 2;
-            submitButton.y = startY;
+            submitButton.y = startY + 28;
             formContainer.addChild(submitButton);
 
             // Add a click event handler to the button
             submitButton.addEventListener(MouseEvent.CLICK, submitButtonClickHandler);
+        }
+
+        private function onRememberUser(event:Event):void
+        {
+            if (checkbox.Checked)
+            {
+                GLOBAL.Message("<b>Reminder:</b> checking this box will allow you to log in freely, however, it is considered <b>less secure.</b>");
+                LOGIN.sharedObject.data.remembered = true;
+            }
+            else
+            {
+                LOGIN.sharedObject.data.remembered = false;
+            }
         }
 
         private function onImageLoaded(event:Event):void

@@ -10,9 +10,8 @@ import { Context } from "koa";
 
 // ToDo:
 // 1. Auth middleware for all routes
-// 2. Make soft-auth optional
-// 3. Handle expired or malformed token
-// 4. Test sessionLifeTime date
+// 2. Handle expired or malformed token
+// 3. Test sessionLifeTime date
 
 const UserLoginSchema = z.object({
   email: z.string().optional(),
