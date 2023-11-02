@@ -3,6 +3,7 @@ import { User } from "../models/user.model";
 import { KoaController } from "../utils/KoaController";
 import * as jwt from "jsonwebtoken";
 
+// This isn't being used correctly yet
 export const auth: KoaController = async (ctx, next) => {
   const rawToken = ctx.cookies.get("x-bym-refitted");
   if (!rawToken) {
