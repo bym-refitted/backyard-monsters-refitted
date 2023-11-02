@@ -390,12 +390,15 @@ package
         {
             // Remove event listeners
             submitButton.removeEventListener(MouseEvent.CLICK, submitButtonClickHandler);
+            checkbox.Remove();
 
             // Remove display objects
             formContainer.removeChild(submitButton);
             formContainer.removeChild(emailInput);
             formContainer.removeChild(passwordInput);
             formContainer.removeChild(image);
+            formContainer.removeChild(checkbox);
+            removeChild(formContainer);
 
             // Clean up resources
             loader.unload();

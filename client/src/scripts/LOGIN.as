@@ -52,9 +52,9 @@ package
 
       public static function Login():void
       {
-         authForm = new AuthForm();
          if (sharedObject.data.token && sharedObject.data.remembered)
          {
+            PLEASEWAIT.Show("Logging in...");
             new URLLoaderApi().load(GLOBAL._apiURL + "bm/getnewmap", null,
                   function(serverData:Object)
                   {
@@ -63,6 +63,7 @@ package
          }
          else
          {
+            authForm = new AuthForm();
             GLOBAL._layerTop.addChild(authForm);
          }
       }
