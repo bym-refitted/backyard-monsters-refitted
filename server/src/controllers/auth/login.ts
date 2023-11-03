@@ -10,9 +10,7 @@ import { Context } from "koa";
 
 // ToDo:
 // 1. Auth middleware for all routes
-// 2. Handle expired or malformed token
-// 3. Test sessionLifeTime date
-
+// 2. Improve client side errors
 const UserLoginSchema = z.object({
   email: z.string().optional(),
   password: z.string().optional(),
@@ -42,7 +40,6 @@ const authenticateWithToken = async (ctx: Context) => {
 
     return user;
   } catch (err) {
-    console.log("Auth failed: " + err);
     throw loginFailureError;
   }
 };
@@ -84,7 +81,8 @@ export const login: KoaController = async (ctx) => {
       // Generate and set the token
       const sessionLifeTime = parseInt(process.env.SESSION_LIFETIME) || 1;
       const token = JWT.sign({ userId: user.userid }, process.env.SECRET_KEY, {
-        expiresIn: `${sessionLifeTime}d`,
+        // expiresIn: `${sessionLifeTime}d`,
+        expiresIn: "20s",
       });
 
       const filteredUser = FilterFrontendKeys(user);

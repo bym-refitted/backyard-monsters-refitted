@@ -115,8 +115,20 @@ package
             };
             handleLoadError = function(error:IOErrorEvent):void
             {
-               var errorMessage = "Hmm.. it seems this email and password combination does not match any account or there was an issue connecting.";
-               GLOBAL._layerTop.addChild(GLOBAL.Message(errorMessage));
+               // ToDo: Can we get error codes from server rather than this IOErrorEvent?
+               // If token is malformed or expired - improve, right now it's an assumption based on conditions
+               if (sharedObject.data.token && sharedObject.data.remembered)
+               {
+                  sharedObject.data.remembered = false;
+                  PLEASEWAIT.Hide();
+                  authForm = new AuthForm();
+                  GLOBAL._layerTop.addChild(authForm);
+                  GLOBAL._layerTop.addChild(GLOBAL.Message("Your session has expired. Please <b>login</b> again."));
+               }
+               else
+               {
+                  GLOBAL._layerTop.addChild(GLOBAL.Message("Hmm.. it seems this email and password combination does not match any account or there was an issue connecting."));
+               }
             };
             new URLLoaderApi().load(GLOBAL._apiURL + "player/getinfo", [["version", GLOBAL._version.Get()]].concat(authInfo), handleLoadSuccessful, handleLoadError);
          }
