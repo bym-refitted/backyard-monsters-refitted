@@ -82,7 +82,7 @@ export const login: KoaController = async (ctx) => {
       const sessionLifeTime = parseInt(process.env.SESSION_LIFETIME) || 1;
       const token = JWT.sign({ userId: user.userid }, process.env.SECRET_KEY, {
         // expiresIn: `${sessionLifeTime}d`,
-        expiresIn: "20s",
+        expiresIn: `${sessionLifeTime}d`,
       });
 
       const filteredUser = FilterFrontendKeys(user);
