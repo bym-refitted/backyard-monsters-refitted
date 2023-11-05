@@ -7,6 +7,9 @@ package
     import flash.text.TextFieldAutoSize;
     import flash.events.MouseEvent;
     import flash.events.Event;
+    import flash.ui.MouseCursor;
+    import flash.ui.Mouse;
+    import flash.events.MouseEvent;
     import flash.text.TextFormat;
     import flash.filters.DropShadowFilter;
     import flash.display.Bitmap;
@@ -19,11 +22,18 @@ package
 
     public class AuthForm extends Sprite
     {
+
+        private var isRegisterForm:Boolean = false;
+
         private var formContainer:Sprite;
+
+        private var usernameInput:TextField;
 
         private var emailInput:TextField;
 
         private var passwordInput:TextField;
+
+        private var usernameValue:String = "";
 
         private var emailValue:String = "";
 
@@ -38,6 +48,14 @@ package
         private var rememberText:TextField;
 
         private var submitButton:Sprite;
+
+        private var hasAccountText:TextField;
+
+        private var hasAccountFormat:TextFormat;
+
+        private var button:Sprite;
+
+        private var buttonText:TextField;
 
         private var image:Bitmap;
 
@@ -75,11 +93,15 @@ package
 
             // Global Initialization
             formContainer = new Sprite();
-            checkboxContainer = new Sprite();
+            usernameInput = new TextField();
+            emailInput = new TextField();
+            passwordInput = new TextField();
             emailErrorText = new TextField();
+            buttonText = new TextField();
             passwordErrorText = new TextField();
             rememberText = new TextField();
             checkbox = new Checkbox();
+            hasAccountText = new TextField();
 
             var formWidth:Number = 450;
             var formHeight:Number = 600;
@@ -118,7 +140,7 @@ package
             loader.load(new URLRequest(GLOBAL.serverUrl + "assets/bym-refitted-assets/refitted-logo.png"), context);
             loader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, handleNetworkError);
 
-            // Create inputs within the container
+            usernameInput = createBlock(0, 0, "Username");
             emailInput = createBlock(350, 35, "Email");
             passwordInput = createBlock(350, 35, "Password", true);
 
@@ -127,6 +149,10 @@ package
             checkbox.y = startY + 3;
             formContainer.addChild(checkbox);
             checkbox.addEventListener(Checkbox.CHECK_EVENT, onRememberUser);
+            checkbox.buttonMode = true;
+            checkbox.useHandCursor = true;
+            checkbox.mouseChildren = false;
+            onMouseHoverEffect(checkbox);
 
             rememberText.x = 80;
             rememberText.y = startY;
@@ -136,24 +162,25 @@ package
             rememberMeFormat.color = BLACK;
             rememberText.defaultTextFormat = rememberMeFormat;
             rememberText.text = "Remember Me?";
-
             formContainer.addChild(rememberText);
+            updateCheckboxVisibility();
 
             // Create button
-            submitButton = createButton("Log in");
+            submitButton = createButton();
             submitButton.x = (formContainer.width - submitButton.width) / 2;
             submitButton.y = startY + 28;
             formContainer.addChild(submitButton);
-
-            // Add a click event handler to the button
             submitButton.addEventListener(MouseEvent.CLICK, submitButtonClickHandler);
+
+            // Link
+            createLink();
         }
 
         private function onRememberUser(event:Event):void
         {
             if (checkbox.Checked)
             {
-                GLOBAL.Message("<b>Reminder:</b> checking this box will allow you to log in freely, however, it is considered <b>less secure.</b>");
+                GLOBAL.Message("<b>Reminder:</b> checking this box will keep you logged into your account, however, it is considered <b>less secure.</b>");
                 LOGIN.sharedObject.data.remembered = true;
             }
             else
@@ -191,6 +218,10 @@ package
                     else if (placeholder == "Password")
                     {
                         passwordValue = input.text;
+                    }
+                    else if (placeholder == "Username")
+                    {
+                        usernameValue = input.text;
                     }
                 });
 
@@ -262,14 +293,15 @@ package
             return input;
         }
 
-        private function createButton(label:String):Sprite
+        private function createButton():Sprite
         {
-            var button:Sprite = new Sprite();
-            button.graphics.beginFill(PRIMARY);
-            button.graphics.drawRect(0, 0, 350, 50);
-            button.graphics.endFill();
+            button = new Sprite();
+            updateButtonColor();
+            button.buttonMode = true;
+            button.useHandCursor = true;
+            button.mouseChildren = false;
 
-            var buttonText:TextField = new TextField();
+            buttonText = new TextField();
             buttonText.textColor = WHITE;
             buttonText.width = button.width;
             buttonText.height = button.height;
@@ -281,53 +313,159 @@ package
             textFormat.size = 16;
             textFormat.align = TextFormatAlign.CENTER;
             buttonText.defaultTextFormat = textFormat;
-            buttonText.text = label.toUpperCase();
+            updateButtonText();
 
             buttonText.autoSize = TextFieldAutoSize.CENTER;
             buttonText.x = (button.width - buttonText.width) / 2;
             buttonText.y = (button.height - buttonText.height) / 2;
+            onMouseHoverEffect(button);
 
             button.addChild(buttonText);
 
             return button;
         }
 
+        private function createLink():void
+        {
+            var linkContainer:Sprite = new Sprite();
+            linkContainer.buttonMode = true;
+            linkContainer.useHandCursor = true;
+            linkContainer.mouseChildren = false;
+
+            hasAccountText = new TextField();
+            hasAccountText.autoSize = TextFieldAutoSize.LEFT;
+            hasAccountText.x = linkContainer.width / 2;
+
+            hasAccountFormat = new TextFormat();
+            hasAccountFormat.size = 14;
+            updateLinkColour();
+            updateLinkText();
+
+            hasAccountText.y = 0;
+            linkContainer.addChild(hasAccountText);
+
+            // Position the text container beneath the button
+            linkContainer.x = (formContainer.width - linkContainer.width) / 2;
+            linkContainer.y = submitButton.y + submitButton.height + 15; // Adjust the vertical position
+            onMouseHoverEffect(linkContainer);
+
+            formContainer.addChild(linkContainer);
+            linkContainer.addEventListener(MouseEvent.CLICK, function(event:Event)
+                {
+                    isRegisterForm = !isRegisterForm;
+                    updateUI();
+                });
+        }
+
+        private function updateFormFields():void
+        {
+            if (isRegisterForm)
+            {
+                usernameInput.width = 350;
+                usernameInput.height = 35;
+                usernameInput.x = 50;
+                usernameInput.y = emailInput.y - usernameInput.height - 20;
+            }
+            else
+            {
+                usernameInput.width = 0;
+                usernameInput.height = 0;
+            }
+        }
+
+        private function updateLinkText():void
+        {
+            hasAccountText.text = isRegisterForm ? "Already have an account? Login here." : "Don't have an account? Register here.";
+        }
+
+        private function updateLinkColour():void
+        {
+            hasAccountFormat.color = isRegisterForm ? BLACK : PRIMARY;
+            hasAccountText.defaultTextFormat = hasAccountFormat;
+            hasAccountText.setTextFormat(hasAccountFormat);
+        }
+
+        private function updateButtonText():void
+        {
+            button.graphics.beginFill(isRegisterForm ? PRIMARY : BLACK);
+            buttonText.text = isRegisterForm ? "Register".toUpperCase() : "Login".toUpperCase();
+        }
+
+        private function updateButtonColor():void
+        {
+            // button.graphics.clear();
+            button.graphics.beginFill(isRegisterForm ? BLACK : PRIMARY);
+            button.graphics.drawRect(0, 0, 350, 50);
+            button.graphics.endFill();
+        }
+
+        private function updateCheckboxVisibility():void
+        {
+            if (isRegisterForm)
+            {
+                checkbox.visible = false;
+                rememberText.visible = false;
+            }
+            else
+            {
+                checkbox.visible = true;
+                rememberText.visible = true;
+            }
+        }
+
+        private function onMouseHoverEffect(element:Sprite):void
+        {
+            element.addEventListener(MouseEvent.ROLL_OVER, function(e:MouseEvent):void
+                {
+                    Mouse.cursor = MouseCursor.BUTTON;
+                });
+
+            element.addEventListener(MouseEvent.ROLL_OUT, function(e:MouseEvent):void
+                {
+                    Mouse.cursor = MouseCursor.AUTO;
+                });
+        }
+
         private function submitButtonClickHandler(event:MouseEvent):void
         {
             clearErrorMessages();
 
+            var isUsernameValid:Boolean = isValidUsername(usernameValue);
             var isEmailValid:Boolean = isValidEmail(emailValue);
             var isPasswordValid:Boolean = isValidPassword(passwordValue);
-            var buttonText:TextField = (submitButton.getChildAt(0) as TextField);
 
-            // Set to false for production
-            var isDevEnvEnabled = true;
-
-            if (isDevEnvEnabled)
+            if (isEmailValid && isPasswordValid)
             {
-                new URLLoaderApi().load(GLOBAL._apiURL + "bm/getnewmap", null, postDevEnvDetails, handleNetworkError);
-            }
-            else
-            {
-                if (isEmailValid && isPasswordValid)
+                if (isRegisterForm)
                 {
-                    if (buttonText)
+                    if (isUsernameValid)
                     {
-                        buttonText.text = "Please wait...";
-                        buttonText.text = buttonText.text.toUpperCase();
+                        var newUser:Array = [["username", usernameValue], ["email", emailValue], ["password", passwordValue], ["last_name", ""], ["pic_square", ""]];
+                        new URLLoaderApi().load(GLOBAL._apiURL + "player/register", newUser, registerNewUser, handleNetworkError);
                     }
-                    new URLLoaderApi().load(GLOBAL._apiURL + "bm/getnewmap", null, postAuthDetails, handleNetworkError);
+                    else
+                    {
+                        GLOBAL.Message("<b>Usernames must be:</b><br><br>• At least 2 characters long.<br>• No longer than 15 characters.<br>• Can only include numbers, letters, and underscores.");
+                    }
                 }
                 else
                 {
-                    if (!isEmailValid)
-                    {
-                        showErrorMessage(emailInput, "Invalid email format");
-                    }
-                    if (!isPasswordValid)
-                    {
-                        showErrorMessage(passwordInput, "Password must be at least 8 characters");
-                    }
+                    new URLLoaderApi().load(GLOBAL._apiURL + "bm/getnewmap", null, postAuthDetails, handleNetworkError);
+                }
+            }
+            else
+            {
+                if (!isEmailValid)
+                {
+                    showErrorMessage(emailInput, "Invalid email format");
+                }
+                if (!isPasswordValid)
+                {
+                    showErrorMessage(passwordInput, "Password must be at least 8 characters");
+                }
+                if (!isUsernameValid && isRegisterForm)
+                {
+                    GLOBAL.Message("<b>Usernames must be:</b><br><br>• At least 2 characters long.<br>• No longer than 15 characters.<br>• Can only include numbers, letters, and underscores.");
                 }
             }
         }
@@ -337,14 +475,22 @@ package
             LOGIN.OnGetNewMap(serverData, [["email", emailValue], ["password", passwordValue]]);
         }
 
-        private function postDevEnvDetails(serverData:Object):void
+        private function registerNewUser(serverData:Object):void
         {
-            LOGIN.OnGetNewMap(serverData, [["email", "dev@test.com"], ["password", "dev12345"]]);
+            GLOBAL.Message("<b>Congratulations!</b> Your account has been successfully created, you can now login.<br><br>As a new member of Backyard Monsters Refitted, we're excited to have you on board!");
+            isRegisterForm = false;
+            updateUI();
         }
 
         public function handleNetworkError(event:Event):void
         {
             GLOBAL.Message("Hmm.. it seems we cannot connect you to the server at this time. Please try again later or check our server status.");
+        }
+
+        private function isValidUsername(username:String):Boolean
+        {
+            var pattern:RegExp = /^[a-zA-Z0-9_]+$/;
+            return username.length >= 2 && username.length <= 15 && pattern.test(username);
         }
 
         private function isValidEmail(email:String):Boolean
@@ -384,6 +530,16 @@ package
             {
                 passwordErrorText = errorText;
             }
+        }
+
+        public function updateUI():void
+        {
+            updateFormFields();
+            updateButtonText();
+            updateButtonColor();
+            updateCheckboxVisibility();
+            updateLinkText();
+            updateLinkColour();
         }
 
         public function disposeUI():void
