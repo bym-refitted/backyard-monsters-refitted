@@ -2,46 +2,27 @@ import { User } from "../../models/user.model";
 import { ORMContext } from "../../server";
 import { FilterFrontendKeys } from "../../utils/FrontendKey";
 import { KoaController } from "../../utils/KoaController";
-import { ClientSafeError } from "../../middleware/clientSafeError";
 import z from "zod";
 import bcrypt from "bcrypt";
 import JWT from "jsonwebtoken";
 import { Context } from "koa";
+import { authFailureError, verifyJwtToken } from "../../utils/verifyJwtToken";
 
-// ToDo:
-// 1. Auth middleware for all routes
-// 2. Improve client side errors
 const UserLoginSchema = z.object({
   email: z.string().optional(),
   password: z.string().optional(),
   token: z.string().optional(),
 });
 
-const loginFailureError = new ClientSafeError({
-  message: "Could not authenticate",
-  status: 403,
-  code: "AUTH_ERROR",
-  data: null,
-});
-
 const authenticateWithToken = async (ctx: Context) => {
   const { token } = UserLoginSchema.parse(ctx.request.body);
 
-  try {
-    const { userId } = <JWT.UserIDJwtPayload>(
-      JWT.verify(token, process.env.SECRET_KEY || "MISSING_SECRET")
-    );
+  let user = await ORMContext.em.findOne(User, {
+    userid: verifyJwtToken(token).userId,
+  });
 
-    let user = await ORMContext.em.findOne(User, { userid: userId });
-
-    if (!user) {
-      throw loginFailureError;
-    }
-
-    return user;
-  } catch (err) {
-    throw loginFailureError;
-  }
+  if (!user) throw authFailureError;
+  return user;
 };
 
 export const login: KoaController = async (ctx) => {
@@ -71,9 +52,7 @@ export const login: KoaController = async (ctx) => {
     };
   } else {
     const user = await ORMContext.em.findOne(User, { email });
-    if (!user) {
-      throw loginFailureError;
-    }
+    if (!user) throw authFailureError;
 
     const isMatch = await bcrypt.compare(password, user.password);
 
@@ -81,7 +60,6 @@ export const login: KoaController = async (ctx) => {
       // Generate and set the token
       const sessionLifeTime = parseInt(process.env.SESSION_LIFETIME) || 1;
       const token = JWT.sign({ userId: user.userid }, process.env.SECRET_KEY, {
-        // expiresIn: `${sessionLifeTime}d`,
         expiresIn: `${sessionLifeTime}d`,
       });
 
@@ -105,14 +83,6 @@ export const login: KoaController = async (ctx) => {
         settings: {},
         h: "someHashValue",
       };
-
-      // const cookieExpiryTime = sessionLifeTime * (24 * 60 * 60) * 1000;
-      // const expires = new Date(Date.now() + cookieExpiryTime);
-      // ctx.cookies.set("x-bym-refitted", token, {
-      //   expires,
-      // });
-    } else {
-      throw loginFailureError;
-    }
+    } else throw authFailureError;
   }
 };
