@@ -8,6 +8,8 @@ package
    import flash.net.URLRequestMethod;
    import flash.net.URLVariables;
    import flash.events.SecurityErrorEvent;
+   import flash.net.URLRequestHeader;
+   import flash.net.SharedObject;
    
    public class URLLoaderApi
    {
@@ -53,66 +55,54 @@ package
          }
          return _loc1_;
       }
-      
-      public function load(baseUrl:String, keyValuePairs:Array = null, onComplete:Function = null, onFail:Function = null, useFacebook:Boolean = true) : void
+
+
+      public function load(baseUrl:String, keyValuePairs:Array = null, onComplete:Function = null, onFail:Function = null) : void
       {
-         var facebookData:Object = null;
-         var facebookItem:String = null;
-         var facebookUnknownVar1:String = null;
          var currentIndex:int = 0;
          var currentPair:Array = null;
+         var token = LOGIN.sharedObject.data.token;
 
          this._onComplete = onComplete;
          this._onError = onFail;
          this._baseUrl = baseUrl;
-
-         if(useFacebook)
-         {
-            facebookData = this.getFbData();
-            facebookUnknownVar1 = "";
-            for(facebookItem in facebookData)
-            {
-               facebookUnknownVar1 += "&" + facebookItem + "=" + facebookData[facebookItem];
-            }
-            facebookUnknownVar1 = facebookUnknownVar1.substr(1);
-            baseUrl = baseUrl + "?ts=" + GLOBAL.Timestamp() + "&" + facebookUnknownVar1;
-         }
-         
          this._url = baseUrl;
+
          var urlBuilder:URLRequest = new URLRequest(baseUrl);
          var facebookString:String = "";
          var urlVariables:URLVariables = new URLVariables();
 
-         // User info IDs = [["key",logType],["value",message],["saveid",BASE._lastSaveID]]
          if(keyValuePairs != null && keyValuePairs.length > 0)
          {
             currentIndex = 0;
             while(currentIndex < keyValuePairs.length)
             {
-               currentPair = keyValuePairs[currentIndex]; // gets the pair ["key",logType]
-               // currentPair[0] = currentKey
-               // currentPair[1] = currentValue
+               currentPair = keyValuePairs[currentIndex];
                urlVariables[currentPair[0]] = currentPair[1];
-               facebookString += currentPair[1]; // "logType"
-               // currentKey "=" + currentValue + "&"
+               facebookString += currentPair[1];
                _data += keyValuePairs[currentIndex][0] + "=" + keyValuePairs[currentIndex][1] + "&";
                currentIndex++;
             }
          }
+         // Attach the token to the request header if we have it
+         if (token) {
+            var authHeader:URLRequestHeader = new URLRequestHeader("Authorization", "Bearer " + token);
+            urlBuilder.requestHeaders.push(authHeader);
+         }
 
-         var ramdomNumber:int = int(Math.random() * 9999999);
-         urlVariables.hn = ramdomNumber;
-         var hash:String = this.getHash(facebookString,ramdomNumber);
-         urlVariables.h = hash;
-         urlBuilder.data = urlVariables;
-         urlBuilder.method = URLRequestMethod.POST;
-         this._req = new URLLoader(urlBuilder);
-         this._req.addEventListener(Event.COMPLETE,this.fireComplete);
-         this._req.addEventListener(IOErrorEvent.IO_ERROR,this.loadError);
-         this._req.addEventListener(HTTPStatusEvent.HTTP_STATUS,this.setStatus);
-         this._req.addEventListener(SecurityErrorEvent.SECURITY_ERROR, function(event: SecurityErrorEvent) {
-            GLOBAL.ErrorMessage(event.text, GLOBAL.ERROR_ORANGE_BOX_ONLY);
-         });
+            var ramdomNumber:int = int(Math.random() * 9999999);
+            urlVariables.hn = ramdomNumber;
+            var hash:String = this.getHash(facebookString,ramdomNumber);
+            urlVariables.h = hash;
+            urlBuilder.data = urlVariables;
+            urlBuilder.method = URLRequestMethod.POST;
+            this._req = new URLLoader(urlBuilder);
+            this._req.addEventListener(Event.COMPLETE,this.fireComplete);
+            this._req.addEventListener(IOErrorEvent.IO_ERROR,this.loadError);
+            this._req.addEventListener(HTTPStatusEvent.HTTP_STATUS,this.setStatus);
+            this._req.addEventListener(SecurityErrorEvent.SECURITY_ERROR, function(event: SecurityErrorEvent) {
+               GLOBAL.ErrorMessage(event.text, GLOBAL.ERROR_ORANGE_BOX_ONLY);
+            });
       }
       
       private function getHash(param1:String, param2:int) : String

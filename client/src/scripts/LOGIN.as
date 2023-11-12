@@ -11,36 +11,39 @@ package
    import flash.system.Capabilities;
    import flash.text.TextField;
    import flash.text.TextFormat;
+   import flash.net.SharedObject;
    import com.monsters.radio.RADIO;
 
    public class LOGIN
    {
-      
+
       public static var _playerID:int;
-      
+
       public static var _playerName:String;
-      
+
       public static var _playerLastName:String;
-      
+
       public static var _playerPic:String;
-      
+
       public static var _timePlayed:int;
-      
+
       public static var _playerLevel:int;
-      
+
       public static var _email:String;
-      
+
       public static var _proxymail:String;
-      
+
       public static var _settings:Object;
-      
+
       public static var _digits:Array;
-      
+
       public static var _sumdigit:int;
-      
+
       public static var _inferno:int = 0;
 
       public static var authForm:AuthForm;
+
+      public static var sharedObject:SharedObject = SharedObject.getLocal("bym_refitted_local_data", "/");
 
       public function LOGIN()
       {
@@ -49,101 +52,142 @@ package
 
       public static function Login():void
       {
-         authForm = new AuthForm();
-         GLOBAL._layerTop.addChild(authForm);
+         if (sharedObject.data.token && sharedObject.data.remembered)
+         {
+            PLEASEWAIT.Show("Logging in...");
+            new URLLoaderApi().load(GLOBAL._apiURL + "bm/getnewmap", null,
+                  function(serverData:Object)
+                  {
+                     LOGIN.OnGetNewMap(serverData, [["token", sharedObject.data.token]]);
+                  });
+         }
+         else
+         {
+            authForm = new AuthForm();
+            GLOBAL._layerTop.addChild(authForm);
+         }
       }
-      
-      public static function OnGetNewMap(serverData:Object, authInfo:Array) : void
+
+      public static function OnGetNewMap(serverData:Object, authInfo:Array):void
       {
          _Login(serverData.newmap, serverData.mapheaderurl, authInfo);
       }
-      
-      private static function _Login(newmap:Boolean, mapheaderurl:String, authInfo:Array) : void
+
+      private static function _Login(newmap:Boolean, mapheaderurl:String, authInfo:Array):void
       {
          var handleLoadSuccessful:Function;
          var handleLoadError:Function;
-         var onMapRoom3:Boolean = newmap; 
+         var onMapRoom3:Boolean = newmap;
          var mapRoom3HeaderURL:String = mapheaderurl;
-         
-         MapRoomManager.instance.init(onMapRoom3,mapRoom3HeaderURL);
-         if(GLOBAL._local)
+
+         MapRoomManager.instance.init(onMapRoom3, mapRoom3HeaderURL);
+         if (GLOBAL._local)
          {
             handleLoadSuccessful = function(serverData:Object):void
             {
-               if(serverData.error == 0)
+               if (serverData.error == 0)
                {
-                  LOGIN.Process(serverData);
+                  if (GLOBAL._local)
+                  {
+                     try
+                     {
+                        // No access to browser - save user details to SharedObjects;
+                        sharedObject.data.userid = serverData.userid;
+                        sharedObject.data.token = serverData.token;
+                        sharedObject.flush();
+                     }
+                     catch (err:Error)
+                     {
+                        GLOBAL.Message("Error saving SharedObject");
+                     }
+                     LOGIN.Process(serverData);
+                  }
+                  else
+                  {
+                     // ToDo: Implement if we are running in a browser.
+                     ExternalInterface.call("setItem", "authToken", authToken);
+                  }
                }
                else
                {
-                  GLOBAL.ErrorMessage(serverData.error,GLOBAL.ERROR_ORANGE_BOX_ONLY);
+                  GLOBAL.ErrorMessage(serverData.error, GLOBAL.ERROR_ORANGE_BOX_ONLY);
                }
             };
             handleLoadError = function(error:IOErrorEvent):void
             {
-              var errorMessage = "Hmm.. it seems this email and password combination does not match any account or there was an issue connecting.";
-              GLOBAL._layerTop.addChild(GLOBAL.Message(errorMessage));
+               // ToDo: Can we get error codes from server rather than this IOErrorEvent?
+               // If token is malformed or expired - improve, right now it's an assumption based on conditions
+               if (sharedObject.data.token && sharedObject.data.remembered)
+               {
+                  sharedObject.data.remembered = false;
+                  PLEASEWAIT.Hide();
+                  authForm = new AuthForm();
+                  GLOBAL._layerTop.addChild(authForm);
+                  GLOBAL._layerTop.addChild(GLOBAL.Message("Your session has expired. Please <b>login</b> again."));
+               }
+               else
+               {
+                  GLOBAL._layerTop.addChild(GLOBAL.Message("Hmm.. it seems this email and password combination does not match any account or there was an issue connecting."));
+               }
             };
             new URLLoaderApi().load(GLOBAL._apiURL + "player/getinfo", [["version", GLOBAL._version.Get()]].concat(authInfo), handleLoadSuccessful, handleLoadError);
          }
          else
          {
-            ExternalInterface.addCallback("loginsuccessful",function(param1:String):void
-            {
-               var _loc2_:Object = JSON.decode(param1);
-               GLOBAL.WaitHide();
-               if(_loc2_.error == 0)
+            ExternalInterface.addCallback("loginsuccessful", function(param1:String):void
                {
-                  if(LOGIN.checkHash(param1))
+                  var _loc2_:Object = JSON.decode(param1);
+                  GLOBAL.WaitHide();
+                  if (_loc2_.error == 0)
                   {
-                     LOGIN.Process(_loc2_);
+                     if (LOGIN.checkHash(param1))
+                     {
+                        LOGIN.Process(_loc2_);
+                     }
+                     else
+                     {
+                        LOGGER.Log("err", "JSLogin", true);
+                        GLOBAL.ErrorMessage("JSLogin");
+                     }
                   }
                   else
                   {
-                     LOGGER.Log("err","JSLogin",true);
-                     GLOBAL.ErrorMessage("JSLogin");
+                     GLOBAL.ErrorMessage(_loc2_.error, GLOBAL.ERROR_ORANGE_BOX_ONLY);
                   }
-               }
-               else
-               {
-                  GLOBAL.ErrorMessage(_loc2_.error,GLOBAL.ERROR_ORANGE_BOX_ONLY);
-               }
-            });
-            if(BYMDevConfig.instance.USE_CLIENT_WITH_CALLBACK)
+               });
+            if (BYMDevConfig.instance.USE_CLIENT_WITH_CALLBACK)
             {
-               GLOBAL.CallJSWithClient("cc.initApplication","loginsuccessful",[GLOBAL._version.Get()]);
+               GLOBAL.CallJSWithClient("cc.initApplication", "loginsuccessful", [GLOBAL._version.Get()]);
             }
             else
             {
-               GLOBAL.CallJS("cc.initApplication",[GLOBAL._version.Get(),"loginsuccessful"]);
+               GLOBAL.CallJS("cc.initApplication", [GLOBAL._version.Get(), "loginsuccessful"]);
             }
             logFlashCapabilities();
          }
       }
 
-   public static function Process(serverData:Object) : void
+      public static function Process(serverData:Object):void
       {
          var _loc2_:Object = null;
-         if(serverData.version != GLOBAL._version.Get())
+         if (serverData.version != GLOBAL._version.Get())
          {
-            if(ExternalInterface.available)
-            {
-               _loc2_ = {
-                  "tag":"userload",
-                  "version_mismatch_h":1,
-                  "vh2":serverData.version,
-                  "vh1":GLOBAL._version.Get()
-               };
-               GLOBAL.CallJS("cc.logGenericEvent",[_loc2_]);
-            }
-            GLOBAL.ErrorMessage(KEYS.Get("msg_updatedgame"),GLOBAL.ERROR_ORANGE_BOX_ONLY);
+            handleVersionMismatch(serverData);
          }
          else
          {
-            // Removes the AuthForm from the display container since the user is authenticated.
-            if (authForm)
-               authForm.disposeUI();
+            handleUserLogin(serverData);
+         }
+      }
 
+      private static function handleUserLogin(serverData:Object):void
+      {
+         if (!sharedObject.data.userid && authForm)
+         {
+            authForm.disposeUI();
+         }
+         if (serverData)
+         {
             GLOBAL.player = new Player();
             GLOBAL.player.ID = serverData.userid;
             GLOBAL.player.name = serverData.username;
@@ -157,9 +201,9 @@ package
             _playerPic = serverData.pic_square;
             _timePlayed = serverData.timeplayed;
             _email = serverData.email;
-            if(serverData.stats)
+            if (serverData.stats)
             {
-               if(serverData.stats.inferno != undefined)
+               if (serverData.stats.inferno != undefined)
                {
                   _inferno = serverData.stats.inferno;
                }
@@ -174,7 +218,7 @@ package
             GLOBAL._appid = serverData.app_id;
             GLOBAL._tpid = serverData.tpid;
             GLOBAL._currencyURL = serverData.currency_url;
-            if(serverData.bookmarks)
+            if (serverData.bookmarks)
             {
                MapRoomManager.instance.bookmarkData = serverData.bookmarks;
             }
@@ -182,29 +226,29 @@ package
             {
                MapRoomManager.instance.bookmarkData = {};
             }
-            if(serverData.settings)
+            if (serverData.settings)
             {
                _settings = serverData.settings;
                RADIO.Setup(_settings);
             }
-            if(serverData.proxy_email)
+            if (serverData.proxy_email)
             {
                _proxymail = serverData.proxy_email;
             }
-            if(!serverData.languageversion)
+            if (!serverData.languageversion)
             {
                GLOBAL._languageVersion = 8;
             }
-            if(serverData.sendgift == 1)
+            if (serverData.sendgift == 1)
             {
                GLOBAL._canGift = true;
             }
-            if(serverData.sendinvite == 1)
+            if (serverData.sendinvite == 1)
             {
                GLOBAL._canInvite = true;
             }
             BASE._isFan = int(serverData.isfan);
-            if(serverData.ncpCandidate == 1)
+            if (serverData.ncpCandidate == 1)
             {
                GLOBAL._fbcncp = serverData.ncpCandidate;
             }
@@ -217,82 +261,97 @@ package
             KEYS.Setup(Done);
          }
       }
-         
-      public static function Digits(param1:int) : void
+
+      private static function handleVersionMismatch(serverData:Object):void
+      {
+         if (ExternalInterface.available)
+         {
+            var eventData:Object = {
+                  "tag": "userload",
+                  "version_mismatch_h": 1,
+                  "vh2": serverData.version,
+                  "vh1": GLOBAL._version.Get()
+               };
+            GLOBAL.CallJS("cc.logGenericEvent", [eventData]);
+         }
+         GLOBAL.ErrorMessage(KEYS.Get("msg_updatedgame"), GLOBAL.ERROR_ORANGE_BOX_ONLY);
+      }
+
+      public static function Digits(param1:int):void
       {
          var _loc4_:int = 0;
          var _loc5_:String = null;
          var _loc2_:String = param1.toString();
          _digits = [];
          var _loc3_:int = 0;
-         while(_loc3_ < _loc2_.length)
+         while (_loc3_ < _loc2_.length)
          {
             _digits.push(int(_loc2_.charAt(_loc3_)));
             _loc3_++;
          }
          _sumdigit = 0;
-         if(_digits.length >= 3)
+         if (_digits.length >= 3)
          {
             _loc5_ = (_loc4_ = int(_digits[_digits.length - 1] + _digits[_digits.length - 2] + _digits[_digits.length - 3])).toString();
-            _sumdigit = int(_loc5_.substr(_loc5_.length - 1,1));
+            _sumdigit = int(_loc5_.substr(_loc5_.length - 1, 1));
          }
       }
-      
-      public static function Done() : void
+
+      public static function Done():void
       {
          var _loc1_:int = 0;
          GLOBAL.Setup();
-         if(GLOBAL._openBase && GLOBAL._openBase.url && (Boolean(GLOBAL._openBase.userid) || Boolean(GLOBAL._openBase.baseid)) && GLOBAL._openBase.userid != LOGIN._playerID)
+         if (GLOBAL._openBase && GLOBAL._openBase.url && (Boolean(GLOBAL._openBase.userid) || Boolean(GLOBAL._openBase.baseid)) && GLOBAL._openBase.userid != LOGIN._playerID)
          {
             BASE.yardType = MapRoomManager.instance.isInMapRoom3 ? int(EnumYardType.PLAYER) : int(EnumYardType.MAIN_YARD);
-            if(!GLOBAL._openBase.userid)
+            if (!GLOBAL._openBase.userid)
             {
                GLOBAL._openBase.userid = 0;
             }
-            if(!GLOBAL._openBase.baseid)
+            if (!GLOBAL._openBase.baseid)
             {
                GLOBAL._openBase.baseid = 0;
             }
             GLOBAL._currentCell = null;
             GLOBAL.setMode(GLOBAL.e_BASE_MODE.HELP);
             _loc1_ = 1;
-            while(_loc1_ < 5)
+            while (_loc1_ < 5)
             {
                GLOBAL._resources["r" + _loc1_] = new SecNum(0);
                GLOBAL._hpResources["r" + _loc1_] = 0;
                _loc1_++;
             }
-            BASE.Load(GLOBAL._openBase.url,GLOBAL._openBase.userid,GLOBAL._openBase.baseid);
+            BASE.Load(GLOBAL._openBase.url, GLOBAL._openBase.userid, GLOBAL._openBase.baseid);
          }
-         else if(_inferno != 0)
+         else if (_inferno != 0)
          {
             MapRoomManager.instance.mapRoomVersion = MapRoomManager.MAP_ROOM_VERSION_1;
             BASE.yardType = EnumYardType.INFERNO_YARD;
-            BASE.LoadBase(GLOBAL._infBaseURL,0,0,"ibuild",false,EnumYardType.INFERNO_YARD);
+            BASE.LoadBase(GLOBAL._infBaseURL, 0, 0, "ibuild", false, EnumYardType.INFERNO_YARD);
          }
          else
          {
             BASE.yardType = MapRoomManager.instance.isInMapRoom3 ? int(EnumYardType.PLAYER) : int(EnumYardType.MAIN_YARD);
-            var s:String = "Comment: The Load() function gets called from this block.";
+            // Comment: The Load() function gets called from this block.;
             BASE.Load();
          }
       }
-      
-      private static function logFlashCapabilities() : void
+
+      private static function logFlashCapabilities():void
       {
          var _loc1_:Object = null;
-         if(ExternalInterface.available)
+         if (ExternalInterface.available)
          {
             _loc1_ = {
-               "flash_version":Capabilities.version,
-               "screen_resolution":Capabilities.screenResolutionX + "x" + Capabilities.screenResolutionY,
-               "screen_dpi":Capabilities.screenDPI
-            };
-            GLOBAL.CallJS("cc.logFlashCapabilities",[_loc1_]);
+                  "flash_version": Capabilities.version,
+                  "screen_resolution": Capabilities.screenResolutionX + "x" + Capabilities.screenResolutionY,
+                  "screen_dpi": Capabilities.screenDPI
+               };
+            GLOBAL.CallJS("cc.logFlashCapabilities", [_loc1_]);
          }
       }
-      
-      public static function checkHash(param1:String) : Boolean
+
+      public static function checkHash(param1:String):Boolean
       {
          var _loc2_:Array = param1.split(",\"h\":");
          param1 = _loc2_[0] + "}";
@@ -301,32 +360,32 @@ package
          var _loc5_:* = JSON.decode(param1);
          var _loc6_:* = JSON.decode(_loc3_);
          var _loc7_:String;
-         if((_loc7_ = md5(getSalt() + _loc4_ + getNum(_loc6_.hn))) !== _loc6_.h)
+         if ((_loc7_ = md5(getSalt() + _loc4_ + getNum(_loc6_.hn))) !== _loc6_.h)
          {
             return false;
          }
          return true;
       }
-      
-      public static function getNum(param1:int) : int
+
+      public static function getNum(param1:int):int
       {
          return param1 * (param1 % 11);
       }
-      
-      public static function getSalt() : String
+
+      public static function getSalt():String
       {
          return decodeSalt("84V37530976X4W7175W9Z02U3483Y6VW");
       }
-      
-      public static function decodeSalt(param1:String) : String
+
+      public static function decodeSalt(param1:String):String
       {
          var _loc4_:String = null;
          var _loc2_:* = "";
          var _loc3_:int = 0;
-         while(_loc3_ < param1.length)
+         while (_loc3_ < param1.length)
          {
-            _loc4_ = param1.substring(_loc3_,_loc3_ + 1);
-            switch(_loc4_)
+            _loc4_ = param1.substring(_loc3_, _loc3_ + 1);
+            switch (_loc4_)
             {
                case "a":
                   _loc2_ += "Z";

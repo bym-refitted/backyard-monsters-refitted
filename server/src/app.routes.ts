@@ -22,16 +22,19 @@ interface LogProps {
 
 const router = new Router();
 
+// Init route
+router.post("/api/bm/getnewmap", debugDataLog("Posting to new maproom"), getNewMap);
+
 // Auth
 router.post("/api/player/getinfo", debugDataLog("User login attempt"), login);
 router.post("/api/player/register", debugDataLog("Registering user"), register);
 
-// Save
-router.post("/base/save", auth, debugDataLog("Base save data"), baseSave);
-router.post("/base/updatesaved", debugDataLog("Base updated save"), updateSaved);
-
 // Load
 router.post("/base/load", auth, debugDataLog("Base load data"), baseLoad);
+
+// Save
+router.post("/base/save", auth, debugDataLog("Base save data"), baseSave);
+router.post("/base/updatesaved", auth, debugDataLog("Base updated save"), updateSaved);
 
 // Inferno
 router.post("/api/bm/base/load", auth, debugDataLog("Inferno load data"), baseLoad);
@@ -39,11 +42,10 @@ router.post("/api/bm/base/infernomonsters", auth, debugDataLog("Load inferno mon
 router.post("/api/bm/base/save", auth, debugDataLog("Inferno save data"), baseSave);
 
 // Worldmap
-router.post("/worldmapv3/setmapversion", debugDataLog("Set maproom version"), mapRoomVersion);
-router.post("/worldmapv3/initworldmap", debugDataLog("Init maproom data"), initMapRoom);
-router.post("/worldmapv3/getcells", debugDataLog("Get maproom cells"), getMapRoomCells);
-router.post("/worldmapv3/relocate", debugDataLog("Relocating base"), relocate);
-router.post("/api/bm/getnewmap", debugDataLog("Posting to new maproom"), getNewMap);
+router.post("/worldmapv3/setmapversion", auth, debugDataLog("Set maproom version"), mapRoomVersion);
+router.post("/worldmapv3/initworldmap", auth, debugDataLog("Init maproom data"), initMapRoom);
+router.post("/worldmapv3/getcells", auth, debugDataLog("Get maproom cells"), getMapRoomCells);
+router.post("/worldmapv3/relocate", auth, debugDataLog("Relocating base"), relocate);
 
 // Logging routes
 // router.post(

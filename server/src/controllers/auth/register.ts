@@ -14,7 +14,7 @@ const UserRegisterSchema = z.object({
   pic_square: z.string(),
 });
 
-export const register: KoaController = async ctx => {
+export const register: KoaController = async (ctx) => {
   try {
     const userInput = UserRegisterSchema.parse(ctx.request.body);
     const hash = await bcrypt.hash(userInput.password, 10);
@@ -27,7 +27,7 @@ export const register: KoaController = async ctx => {
     const filteredUser = FilterFrontendKeys(user);
 
     ctx.status = 200;
-    ctx.body = { user: filteredUser };
+    ctx.body = { user: filteredUser, h: "someHashValue" };
   } catch (err) {
     throw new ClientSafeError({
       message: "Sorry, it appears an account with that email already exists",
