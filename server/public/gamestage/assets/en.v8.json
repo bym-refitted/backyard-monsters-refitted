@@ -126,7 +126,7 @@
         },
         "timeout": {
             "title": "Oops.. timeout!",
-            "body": "It looks like the game was left ideal for too long, and has timed out. Please start the game again."
+            "body": "It looks like the game was left idle for too long, and has timed out. Please start the game again."
         }
     },
     "popup": {
