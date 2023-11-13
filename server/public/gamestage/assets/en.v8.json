@@ -47,6 +47,16 @@
     "newmap": {
         "opening": "Opening Map..."
     },
+    "map": {
+        "msg": {
+            "disabled": "The Map Room is currently <b>disabled</b> in Backyard Monsters Refitted. For more information visit out discord."
+        }
+    },
+    "inferno": {
+        "msg": {
+            "disabled": "Inferno is currently <b>disabled</b> in Backyard Monsters Refitted. For more information visit out discord."
+        }
+    },
     "base": {
         "uperr": {
             "buildings": "Level {v1} required.",
@@ -756,7 +766,7 @@
             "Step28": "Select the \"Map Room\"",
             "Step29": "Press <b>Build</b>",
             "Step30": "Place it in your backyard.",
-            "Step31":"Click on the Map Room and select <b>Speed Up.</b>",
+            "Step31": "Click on the Map Room and select <b>Speed Up.</b>",
             "Step32": "Buy \"Finish Building NOW!\"",
             "Step33": "Now let's use the Map Room to find the Wild Monster Tribe that attacked you and strike back with our Pokey army!<br><br>Click on the <b>Map</b> menu."
         },

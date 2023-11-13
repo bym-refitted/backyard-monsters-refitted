@@ -53,13 +53,23 @@ package
       
       public static function EnterPortal(param1:Boolean = false) : void
       {
-         if(MAPROOM_DESCENT.DescentPassed)
+         if (GLOBAL._flags.inferno != 1)
          {
-            ToggleYard();
-         }
-         else
-         {
-            EnterDescent();
+            GLOBAL.Message(KEYS.Get("inferno_msg_disabled"));
+         } else {
+            if(MAPROOM_DESCENT.DescentPassed)
+            {
+               if (GLOBAL._flags.inferno != 1)
+               {
+                  GLOBAL.Message(KEYS.Get("inferno_msg_disabled"));
+                  return;
+               }
+               ToggleYard();
+            }
+            else
+            {
+               EnterDescent();
+            }
          }
       }
       
