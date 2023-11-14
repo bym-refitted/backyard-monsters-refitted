@@ -13,6 +13,7 @@ import router from "./app.routes";
 import { SqliteDriver } from "@mikro-orm/sqlite";
 import { EntityManager, MikroORM, RequestContext } from "@mikro-orm/core";
 import { errorLog, logging } from "./utils/logger.js";
+import { firstRunEnv } from "./utils/firstRunEnv.js"
 import { ascii_node } from "./utils/ascii_art.js";
 import { ErrorInterceptor } from "./middleware/clientSafeError.js";
 import { processLanguagesFile } from "./middleware/processLanguageFile";
@@ -27,15 +28,17 @@ export const ORMContext = {} as {
 export const app = new Koa();
 const port = process.env.PORT || 3001;
 
-// Sessions
-app.keys = [process.env.SECRET_KEY];
-app.use(session(SESSION_CONFIG, app));
-
 // Entry point for all modules.
 const api = new Router();
 api.get("/", (ctx: Context) => (ctx.body = {}));
 
 (async () => {
+  await firstRunEnv();
+
+  // Sessions
+  app.keys = [process.env.SECRET_KEY];
+  app.use(session(SESSION_CONFIG, app));
+
   ORMContext.orm = await MikroORM.init<SqliteDriver>(ormConfig);
   ORMContext.em = ORMContext.orm.em;
 
