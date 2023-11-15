@@ -1,5 +1,6 @@
 package
 {
+   import com.brokenfunction.json.encodeJson;
    import com.monsters.ai.TRIBES;
    import com.monsters.ai.WMBASE;
    import com.monsters.mailbox.Message;
@@ -7,7 +8,6 @@ package
    import flash.display.MovieClip;
    import flash.events.MouseEvent;
    import flash.events.ProgressEvent;
-   import com.brokenfunction.json.encodeJson;
    
    public class MAPROOM
    {

@@ -13,14 +13,14 @@ package com.monsters.baseplanner.components
       
       private var _collapsed:Boolean;
       
-      private var _elementList:Vector.<com.monsters.baseplanner.components.PlannerExplorerButton>;
+      private var _elementList:Vector.<PlannerExplorerButton>;
       
       public function PlannerExplorerHeader(param1:String)
       {
          var _loc2_:String = null;
          super();
          this._category = param1;
-         this._elementList = new Vector.<com.monsters.baseplanner.components.PlannerExplorerButton>();
+         this._elementList = new Vector.<PlannerExplorerButton>();
          mc = new BasePlannerPopup_ExplorerItem_Category();
          addChild(mc);
          switch(param1)
@@ -181,9 +181,9 @@ package com.monsters.baseplanner.components
          return _loc1_;
       }
       
-      public function addElement(param1:PlannerNode) : com.monsters.baseplanner.components.PlannerExplorerButton
+      public function addElement(param1:PlannerNode) : PlannerExplorerButton
       {
-         var _loc4_:com.monsters.baseplanner.components.PlannerExplorerButton = null;
+         var _loc4_:PlannerExplorerButton = null;
          var _loc2_:Boolean = true;
          var _loc3_:int = 0;
          while(_loc3_ < this._elementList.length)
@@ -199,7 +199,7 @@ package com.monsters.baseplanner.components
          }
          if(_loc2_)
          {
-            _loc4_ = new com.monsters.baseplanner.components.PlannerExplorerButton(param1);
+            _loc4_ = new PlannerExplorerButton(param1);
             this._elementList.push(_loc4_);
             this._elementList.sort(this.sortExplorerButtons);
             addChild(_loc4_);
@@ -213,7 +213,7 @@ package com.monsters.baseplanner.components
          return null;
       }
       
-      private function sortExplorerButtons(param1:com.monsters.baseplanner.components.PlannerExplorerButton, param2:com.monsters.baseplanner.components.PlannerExplorerButton) : Number
+      private function sortExplorerButtons(param1:PlannerExplorerButton, param2:PlannerExplorerButton) : Number
       {
          if(param1.displayName < param2.displayName)
          {

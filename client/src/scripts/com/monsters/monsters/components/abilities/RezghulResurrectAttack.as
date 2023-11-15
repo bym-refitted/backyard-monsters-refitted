@@ -14,11 +14,11 @@ package com.monsters.monsters.components.abilities
       private static const k_UNRESURRECTABLE_CREATURES:Vector.<String> = Vector.<String>(["C16","C15","C19","C18"]);
        
       
-      private var m_zombiefy:com.monsters.monsters.components.abilities.Zombiefy;
+      private var m_zombiefy:Zombiefy;
       
       private var m_resurrectRange:uint;
       
-      public function RezghulResurrectAttack(param1:uint, param2:int, param3:int, param4:uint, param5:Projectilev2, param6:com.monsters.monsters.components.abilities.Zombiefy)
+      public function RezghulResurrectAttack(param1:uint, param2:int, param3:int, param4:uint, param5:Projectilev2, param6:Zombiefy)
       {
          super(param1,param2,param3,param5);
          this.m_zombiefy = param6;

@@ -3,6 +3,7 @@ package
    import flash.display.MovieClip;
    import flash.text.TextField;
    
+   [Embed(source="/_assets/assets.swf", symbol="popup_infernodescent_battle_report")]
    public dynamic class popup_infernodescent_battle_report extends MovieClip
    {
        

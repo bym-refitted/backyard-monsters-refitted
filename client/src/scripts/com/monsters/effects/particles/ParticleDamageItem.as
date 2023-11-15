@@ -8,7 +8,7 @@ package com.monsters.effects.particles
    {
        
       
-      public var _mc:com.monsters.effects.particles.ParticleDamageItem;
+      public var _mc:ParticleDamageItem;
       
       public function ParticleDamageItem()
       {
@@ -17,7 +17,7 @@ package com.monsters.effects.particles
       
       public function Init(param1:Point, param2:int, param3:uint) : void
       {
-         this._mc = MAP._PROJECTILES.addChild(this) as com.monsters.effects.particles.ParticleDamageItem;
+         this._mc = MAP._PROJECTILES.addChild(this) as ParticleDamageItem;
          this.Fill(param2,param3);
          this.Move(param1);
       }

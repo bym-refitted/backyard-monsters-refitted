@@ -3,6 +3,7 @@ package SWC_ALL_fla
    import flash.display.MovieClip;
    import flash.text.TextField;
    
+   [Embed(source="/_assets/assets.swf", symbol="SWC_ALL_fla.icon_counter_847")]
    public dynamic class icon_counter_847 extends MovieClip
    {
        

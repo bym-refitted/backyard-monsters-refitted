@@ -53,7 +53,7 @@ package
       
       public var _targetFlyers:Array;
       
-      public var _targetCreep;
+      public var _targetCreep:*;
       
       public var _hasTargets:Boolean = false;
       

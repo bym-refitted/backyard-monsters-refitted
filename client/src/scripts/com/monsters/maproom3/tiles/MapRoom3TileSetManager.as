@@ -8,7 +8,7 @@ package com.monsters.maproom3.tiles
    public class MapRoom3TileSetManager
    {
       
-      private static var s_Instance:com.monsters.maproom3.tiles.MapRoom3TileSetManager = null;
+      private static var s_Instance:MapRoom3TileSetManager = null;
       
       public static const BLOCKED_CELL_STARTING_HEIGHT:int = 51;
       
@@ -207,9 +207,9 @@ package com.monsters.maproom3.tiles
          super();
       }
       
-      public static function get instance() : com.monsters.maproom3.tiles.MapRoom3TileSetManager
+      public static function get instance() : MapRoom3TileSetManager
       {
-         return s_Instance = s_Instance || new com.monsters.maproom3.tiles.MapRoom3TileSetManager(new SingletonLock());
+         return s_Instance = s_Instance || new MapRoom3TileSetManager(new SingletonLock());
       }
       
       public function get currentBackground() : BitmapData

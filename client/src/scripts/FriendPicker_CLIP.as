@@ -4,6 +4,7 @@ package
    import flash.display.SimpleButton;
    import flash.text.TextField;
    
+   [Embed(source="/_assets/assets.swf", symbol="FriendPicker_CLIP")]
    public dynamic class FriendPicker_CLIP extends MovieClip
    {
        

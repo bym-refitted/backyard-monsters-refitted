@@ -65,7 +65,7 @@ package com.monsters.maproom_advanced
       
       private var _fullScreen:Boolean = false;
       
-      private var _fallbackHomeCell:com.monsters.maproom_advanced.MapRoomCell;
+      private var _fallbackHomeCell:MapRoomCell;
       
       private var _popupAttackA:PopupAttackA;
       
@@ -285,7 +285,7 @@ package com.monsters.maproom_advanced
          mcOutposts.tR.htmlText = GLOBAL._mapOutpost.length + " " + KEYS.Get("newmap_outposts");
       }
       
-      public function ShowInfo(param1:com.monsters.maproom_advanced.MapRoomCell) : void
+      public function ShowInfo(param1:MapRoomCell) : void
       {
          if(!param1._updated)
          {
@@ -675,7 +675,7 @@ package com.monsters.maproom_advanced
       {
          var _loc4_:int = 0;
          var _loc6_:int = 0;
-         var _loc7_:com.monsters.maproom_advanced.MapRoomCell = null;
+         var _loc7_:MapRoomCell = null;
          var _loc2_:int = GLOBAL._ROOT.stage.stageWidth;
          var _loc3_:int = GLOBAL.GetGameHeight();
          if(_loc2_ > 1024)
@@ -730,7 +730,7 @@ package com.monsters.maproom_advanced
             _loc6_ = 0;
             while(_loc6_ < this._cellCountY)
             {
-               (_loc7_ = new com.monsters.maproom_advanced.MapRoomCell()).x = int(_loc3_ * (this._cellWidth * 0.75) - this._cellWidth * 0.75 * 4);
+               (_loc7_ = new MapRoomCell()).x = int(_loc3_ * (this._cellWidth * 0.75) - this._cellWidth * 0.75 * 4);
                _loc7_.y = int(_loc6_ * this._cellHeight - this._cellHeight * 5);
                _loc7_.X = _loc3_;
                _loc7_.Y = _loc6_;
@@ -781,7 +781,7 @@ package com.monsters.maproom_advanced
             }
             _loc3_++;
          }
-         this._fallbackHomeCell = new com.monsters.maproom_advanced.MapRoomCell();
+         this._fallbackHomeCell = new MapRoomCell();
          this._fallbackHomeCell.X = GLOBAL._mapHome.x;
          this._fallbackHomeCell.Y = GLOBAL._mapHome.y;
          this._cellContainer.addEventListener(MouseEvent.MOUSE_DOWN,this.ContainerClick);
@@ -825,7 +825,7 @@ package com.monsters.maproom_advanced
       
       public function Tick() : void
       {
-         var _loc1_:com.monsters.maproom_advanced.MapRoomCell = null;
+         var _loc1_:MapRoomCell = null;
          this.UpdateResourceDisplay();
          for each(_loc1_ in this._cells)
          {
@@ -836,7 +836,7 @@ package com.monsters.maproom_advanced
       
       public function Check() : void
       {
-         var _loc1_:com.monsters.maproom_advanced.MapRoomCell = null;
+         var _loc1_:MapRoomCell = null;
          for each(_loc1_ in this._cells)
          {
             _loc1_.Check();
@@ -848,11 +848,11 @@ package com.monsters.maproom_advanced
          var _loc3_:Boolean = false;
          var _loc4_:Boolean = false;
          var _loc5_:Object = null;
-         var _loc6_:com.monsters.maproom_advanced.MapRoomCell = null;
+         var _loc6_:MapRoomCell = null;
          var _loc7_:int = 0;
-         var _loc8_:com.monsters.maproom_advanced.MapRoomCell = null;
+         var _loc8_:MapRoomCell = null;
          var _loc9_:Boolean = false;
-         var _loc10_:com.monsters.maproom_advanced.MapRoomCell = null;
+         var _loc10_:MapRoomCell = null;
          var _loc11_:Number = NaN;
          var _loc2_:int = getTimer();
          if(this._fullScreen && GLOBAL._ROOT.stage.displayState == StageDisplayState.NORMAL)
@@ -1018,7 +1018,7 @@ package com.monsters.maproom_advanced
          this.DisplayBuffs();
       }
       
-      public function ShowBubble(param1:com.monsters.maproom_advanced.MapRoomCell) : void
+      public function ShowBubble(param1:MapRoomCell) : void
       {
       }
       
@@ -1030,11 +1030,11 @@ package com.monsters.maproom_advanced
          }
       }
       
-      public function ShowRange(param1:com.monsters.maproom_advanced.MapRoomCell, param2:int) : void
+      public function ShowRange(param1:MapRoomCell, param2:int) : void
       {
          var _loc3_:CellData = null;
          var _loc4_:Vector.<CellData> = null;
-         var _loc5_:com.monsters.maproom_advanced.MapRoomCell = null;
+         var _loc5_:MapRoomCell = null;
          if(!this._dragged)
          {
             if(param1._water == 0)
@@ -1047,7 +1047,7 @@ package com.monsters.maproom_advanced
                _loc4_ = this.GetCellsInRange(param1.X,param1.Y,param2);
                for each(_loc3_ in _loc4_)
                {
-                  if((Boolean(_loc5_ = _loc3_.cell as com.monsters.maproom_advanced.MapRoomCell)) && !_loc5_._water)
+                  if((Boolean(_loc5_ = _loc3_.cell as MapRoomCell)) && !_loc5_._water)
                   {
                      if(!_loc5_._over)
                      {
@@ -1456,9 +1456,9 @@ package com.monsters.maproom_advanced
          return _loc4_;
       }
       
-      private function GetCell(param1:int, param2:int) : com.monsters.maproom_advanced.MapRoomCell
+      private function GetCell(param1:int, param2:int) : MapRoomCell
       {
-         var _loc3_:com.monsters.maproom_advanced.MapRoomCell = null;
+         var _loc3_:MapRoomCell = null;
          if(param1 >= MapRoom._mapWidth)
          {
             param1 -= MapRoom._mapWidth;
@@ -1489,7 +1489,7 @@ package com.monsters.maproom_advanced
          return null;
       }
       
-      public function ShowInfoMine(param1:com.monsters.maproom_advanced.MapRoomCell) : void
+      public function ShowInfoMine(param1:MapRoomCell) : void
       {
          this.HideBookmarkMenu();
          if(!this._dragged)
@@ -1513,7 +1513,7 @@ package com.monsters.maproom_advanced
          SOUNDS.Play("close");
       }
       
-      public function ShowInfoEnemy(param1:com.monsters.maproom_advanced.MapRoomCell, param2:Boolean = false) : void
+      public function ShowInfoEnemy(param1:MapRoomCell, param2:Boolean = false) : void
       {
          this.HideBookmarkMenu();
          if(!this._dragged)
@@ -1537,7 +1537,7 @@ package com.monsters.maproom_advanced
          SOUNDS.Play("close");
       }
       
-      public function ShowInfoViewOnly(param1:com.monsters.maproom_advanced.MapRoomCell, param2:Boolean = false) : void
+      public function ShowInfoViewOnly(param1:MapRoomCell, param2:Boolean = false) : void
       {
          if(!this._dragged)
          {
@@ -1559,7 +1559,7 @@ package com.monsters.maproom_advanced
          SOUNDS.Play("close");
       }
       
-      public function ShowInfoDestroyed(param1:com.monsters.maproom_advanced.MapRoomCell) : void
+      public function ShowInfoDestroyed(param1:MapRoomCell) : void
       {
          this.HideBookmarkMenu();
          if(!this._dragged)
@@ -1578,7 +1578,7 @@ package com.monsters.maproom_advanced
       {
       }
       
-      public function ShowMonstersA(param1:com.monsters.maproom_advanced.MapRoomCell, param2:Boolean = false) : void
+      public function ShowMonstersA(param1:MapRoomCell, param2:Boolean = false) : void
       {
          SOUNDS.Play("click1");
          this.HideBookmarkMenu();
@@ -1598,7 +1598,7 @@ package com.monsters.maproom_advanced
          SOUNDS.Play("close");
       }
       
-      public function ShowMonstersB(param1:Object, param2:com.monsters.maproom_advanced.MapRoomCell) : void
+      public function ShowMonstersB(param1:Object, param2:MapRoomCell) : void
       {
          SOUNDS.Play("click1");
          this.HideBookmarkMenu();
@@ -1617,7 +1617,7 @@ package com.monsters.maproom_advanced
          SOUNDS.Play("close");
       }
       
-      public function ShowAttack(param1:com.monsters.maproom_advanced.MapRoomCell) : void
+      public function ShowAttack(param1:MapRoomCell) : void
       {
          SOUNDS.Play("click1");
          this.HideBookmarkMenu();
@@ -1778,7 +1778,7 @@ package com.monsters.maproom_advanced
          }
       }
       
-      public function ShowBookmarkAddPopup(param1:com.monsters.maproom_advanced.MapRoomCell) : void
+      public function ShowBookmarkAddPopup(param1:MapRoomCell) : void
       {
          SOUNDS.Play("click1");
          MapRoom._currentPosition = new Point(param1.X,param1.Y);
@@ -1790,7 +1790,7 @@ package com.monsters.maproom_advanced
          this.addChild(this._popupBookmarkAdd);
       }
       
-      public function ShowRelocateMePopup(param1:com.monsters.maproom_advanced.MapRoomCell) : void
+      public function ShowRelocateMePopup(param1:MapRoomCell) : void
       {
          SOUNDS.Play("click1");
          this._popupRelocateMe.Setup(param1);

@@ -1,9 +1,9 @@
 package com.monsters.subscriptions
 {
+   import com.brokenfunction.json.decodeJson;
    import com.monsters.debug.Console;
    import flash.events.EventDispatcher;
    import flash.external.ExternalInterface;
-   import com.brokenfunction.json.decodeJson;
    
    public class SubscriptionService extends EventDispatcher
    {

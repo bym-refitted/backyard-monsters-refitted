@@ -17,7 +17,7 @@ package com.monsters.siege.weapons
       public static var target:BFOUNDATION;
        
       
-      public var hose:com.monsters.siege.weapons.VacuumHose;
+      public var hose:VacuumHose;
       
       public function Vacuum()
       {
@@ -153,7 +153,7 @@ package com.monsters.siege.weapons
          canUseInOutposts = true;
       }
       
-      public static function getHose() : com.monsters.siege.weapons.VacuumHose
+      public static function getHose() : VacuumHose
       {
          var _loc1_:SiegeWeapon = SiegeWeapons.activeWeapon;
          if(Boolean(_loc1_) && _loc1_ is Vacuum)
@@ -216,7 +216,7 @@ package com.monsters.siege.weapons
             print("Could not start Vacuum, either no valid target or the weapon is already on");
             return;
          }
-         this.hose = new com.monsters.siege.weapons.VacuumHose(_loc3_,this.durability,this.lootBonus);
+         this.hose = new VacuumHose(_loc3_,this.durability,this.lootBonus);
          this.hose._vacuum.addEventListener(Event.ENTER_FRAME,this.onEnterFrame);
          Vacuum.target;
       }

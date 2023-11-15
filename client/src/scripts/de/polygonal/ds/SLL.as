@@ -8,15 +8,15 @@ package de.polygonal.ds
    {
        
       
-      public var tail:de.polygonal.ds.SLLNode;
+      public var tail:SLLNode;
       
       public var maxSize:int;
       
       public var key:int;
       
-      public var head:de.polygonal.ds.SLLNode;
+      public var head:SLLNode;
       
-      public var _tailPool:de.polygonal.ds.SLLNode;
+      public var _tailPool:SLLNode;
       
       public var _size:int;
       
@@ -24,12 +24,12 @@ package de.polygonal.ds
       
       public var _poolSize:int;
       
-      public var _headPool:de.polygonal.ds.SLLNode;
+      public var _headPool:SLLNode;
       
       public function SLL(param1:int = 0, param2:int = -1)
       {
          var _loc3_:* = null as Object;
-         var _loc4_:* = null as de.polygonal.ds.SLLNode;
+         var _loc4_:* = null as SLLNode;
          if(Boot.skip_constructor)
          {
             return;
@@ -41,7 +41,7 @@ package de.polygonal.ds
          if(param1 > 0)
          {
             _loc3_ = null;
-            _headPool = _tailPool = new de.polygonal.ds.SLLNode(_loc3_,this);
+            _headPool = _tailPool = new SLLNode(_loc3_,this);
          }
          head = tail = null;
          var _loc5_:int;
@@ -49,16 +49,16 @@ package de.polygonal.ds
          key = _loc5_;
       }
       
-      public function unlink(param1:de.polygonal.ds.SLLNode) : de.polygonal.ds.SLLNode
+      public function unlink(param1:SLLNode) : SLLNode
       {
-         var _loc3_:* = null as de.polygonal.ds.SLLNode;
-         var _loc4_:* = null as de.polygonal.ds.SLLNode;
+         var _loc3_:* = null as SLLNode;
+         var _loc4_:* = null as SLLNode;
          var _loc5_:* = null as Object;
          var _loc6_:* = null as Object;
          null;
          null;
          null;
-         var _loc2_:de.polygonal.ds.SLLNode = param1.next;
+         var _loc2_:SLLNode = param1.next;
          if(param1 == head)
          {
             null;
@@ -137,7 +137,7 @@ package de.polygonal.ds
          var _loc5_:int = 0;
          var _loc6_:int = 0;
          var _loc1_:DA = new DA(_size);
-         var _loc2_:de.polygonal.ds.SLLNode = head;
+         var _loc2_:SLLNode = head;
          var _loc3_:int = 0;
          var _loc4_:int = _size;
          while(_loc3_ < _loc4_)
@@ -161,7 +161,7 @@ package de.polygonal.ds
          null;
          var _loc2_:Array = new Array(_size);
          var _loc1_:Array = _loc2_;
-         var _loc3_:de.polygonal.ds.SLLNode = head;
+         var _loc3_:SLLNode = head;
          var _loc4_:int = 0;
          var _loc5_:int = _size;
          while(_loc4_ < _loc5_)
@@ -197,11 +197,11 @@ package de.polygonal.ds
       {
          var _loc3_:* = null as Class;
          var _loc4_:int = 0;
-         var _loc5_:* = null as de.polygonal.ds.SLLNode;
+         var _loc5_:* = null as SLLNode;
          var _loc6_:int = 0;
          var _loc7_:int = 0;
          var _loc8_:* = null as Object;
-         var _loc9_:* = null as de.polygonal.ds.SLLNode;
+         var _loc9_:* = null as SLLNode;
          var _loc10_:int = 0;
          var _loc2_:int = _size;
          if(param1 == null)
@@ -262,7 +262,7 @@ package de.polygonal.ds
       
       public function shiftUp() : void
       {
-         var _loc1_:* = null as de.polygonal.ds.SLLNode;
+         var _loc1_:* = null as SLLNode;
          null;
          if(_size > 1)
          {
@@ -288,8 +288,8 @@ package de.polygonal.ds
       {
          var _loc1_:* = null as Array;
          var _loc2_:int = 0;
-         var _loc3_:* = null as de.polygonal.ds.SLLNode;
-         var _loc4_:* = null as de.polygonal.ds.SLLNode;
+         var _loc3_:* = null as SLLNode;
+         var _loc4_:* = null as SLLNode;
          if(_size > 1)
          {
             _loc1_ = [];
@@ -313,11 +313,11 @@ package de.polygonal.ds
       
       public function removeTail() : Object
       {
-         var _loc2_:* = null as de.polygonal.ds.SLLNode;
-         var _loc3_:* = null as de.polygonal.ds.SLLNode;
+         var _loc2_:* = null as SLLNode;
+         var _loc3_:* = null as SLLNode;
          var _loc5_:* = null as Object;
          null;
-         var _loc1_:de.polygonal.ds.SLLNode = tail;
+         var _loc1_:SLLNode = tail;
          if(_size > 1)
          {
             _loc3_ = head;
@@ -354,10 +354,10 @@ package de.polygonal.ds
       
       public function removeHead() : Object
       {
-         var _loc2_:* = null as de.polygonal.ds.SLLNode;
+         var _loc2_:* = null as SLLNode;
          var _loc4_:* = null as Object;
          null;
-         var _loc1_:de.polygonal.ds.SLLNode = head;
+         var _loc1_:SLLNode = head;
          if(_size > 1)
          {
             head = head.next;
@@ -392,19 +392,19 @@ package de.polygonal.ds
       
       public function remove(param1:Object) : Boolean
       {
-         var _loc7_:* = null as de.polygonal.ds.SLLNode;
+         var _loc7_:* = null as SLLNode;
          var _loc8_:* = null as Object;
-         var _loc9_:* = null as de.polygonal.ds.SLLNode;
+         var _loc9_:* = null as SLLNode;
          var _loc10_:* = null as Object;
-         var _loc11_:* = null as de.polygonal.ds.SLLNode;
+         var _loc11_:* = null as SLLNode;
          var _loc2_:Object = param1;
          var _loc3_:int = _size;
          if(_loc3_ == 0)
          {
             return false;
          }
-         var _loc4_:de.polygonal.ds.SLLNode = head;
-         var _loc5_:de.polygonal.ds.SLLNode = head.next;
+         var _loc4_:SLLNode = head;
+         var _loc5_:SLLNode = head.next;
          var _loc6_:Object = null;
          while(_loc5_ != null)
          {
@@ -468,10 +468,10 @@ package de.polygonal.ds
          return _size < _loc3_;
       }
       
-      public function prepend(param1:Object) : de.polygonal.ds.SLLNode
+      public function prepend(param1:Object) : SLLNode
       {
-         var _loc3_:* = null as de.polygonal.ds.SLLNode;
-         var _loc2_:de.polygonal.ds.SLLNode = _reservedSize == 0 || _poolSize == 0 ? new de.polygonal.ds.SLLNode(param1,this) : (null, _loc3_ = _headPool, _headPool = _headPool.next, --_poolSize, _loc3_.val = param1, _loc3_.next = null, _loc3_);
+         var _loc3_:* = null as SLLNode;
+         var _loc2_:SLLNode = _reservedSize == 0 || _poolSize == 0 ? new SLLNode(param1,this) : (null, _loc3_ = _headPool, _headPool = _headPool.next, --_poolSize, _loc3_.val = param1, _loc3_.next = null, _loc3_);
          if(tail != null)
          {
             _loc2_.next = head;
@@ -487,8 +487,8 @@ package de.polygonal.ds
       
       public function popDown() : void
       {
-         var _loc1_:* = null as de.polygonal.ds.SLLNode;
-         var _loc2_:* = null as de.polygonal.ds.SLLNode;
+         var _loc1_:* = null as SLLNode;
+         var _loc2_:* = null as SLLNode;
          null;
          if(_size > 1)
          {
@@ -515,9 +515,9 @@ package de.polygonal.ds
          }
       }
       
-      public function nodeOf(param1:Object, param2:de.polygonal.ds.SLLNode = undefined) : de.polygonal.ds.SLLNode
+      public function nodeOf(param1:Object, param2:SLLNode = undefined) : SLLNode
       {
-         var _loc3_:de.polygonal.ds.SLLNode = param2;
+         var _loc3_:SLLNode = param2;
          while(_loc3_ != null)
          {
             if(_loc3_.val == param1)
@@ -531,7 +531,7 @@ package de.polygonal.ds
       
       public function merge(param1:SLL) : void
       {
-         var _loc2_:* = null as de.polygonal.ds.SLLNode;
+         var _loc2_:* = null as SLLNode;
          var _loc3_:int = 0;
          var _loc4_:int = 0;
          var _loc5_:int = 0;
@@ -564,7 +564,7 @@ package de.polygonal.ds
       
       public function join(param1:String) : String
       {
-         var _loc3_:* = null as de.polygonal.ds.SLLNode;
+         var _loc3_:* = null as SLLNode;
          var _loc2_:String = "";
          if(_size > 0)
          {
@@ -589,12 +589,12 @@ package de.polygonal.ds
          return _size == 0;
       }
       
-      public function insertBefore(param1:de.polygonal.ds.SLLNode, param2:Object) : de.polygonal.ds.SLLNode
+      public function insertBefore(param1:SLLNode, param2:Object) : SLLNode
       {
-         var _loc4_:* = null as de.polygonal.ds.SLLNode;
+         var _loc4_:* = null as SLLNode;
          null;
          null;
-         var _loc3_:de.polygonal.ds.SLLNode = _reservedSize == 0 || _poolSize == 0 ? new de.polygonal.ds.SLLNode(param2,this) : (null, _loc4_ = _headPool, _headPool = _headPool.next, --_poolSize, _loc4_.val = param2, _loc4_.next = null, _loc4_);
+         var _loc3_:SLLNode = _reservedSize == 0 || _poolSize == 0 ? new SLLNode(param2,this) : (null, _loc4_ = _headPool, _headPool = _headPool.next, --_poolSize, _loc4_.val = param2, _loc4_.next = null, _loc4_);
          if(param1 == head)
          {
             _loc3_.next = head;
@@ -613,12 +613,12 @@ package de.polygonal.ds
          return _loc3_;
       }
       
-      public function insertAfter(param1:de.polygonal.ds.SLLNode, param2:Object) : de.polygonal.ds.SLLNode
+      public function insertAfter(param1:SLLNode, param2:Object) : SLLNode
       {
-         var _loc4_:* = null as de.polygonal.ds.SLLNode;
+         var _loc4_:* = null as SLLNode;
          null;
          null;
-         var _loc3_:de.polygonal.ds.SLLNode = _reservedSize == 0 || _poolSize == 0 ? new de.polygonal.ds.SLLNode(param2,this) : (null, _loc4_ = _headPool, _headPool = _headPool.next, --_poolSize, _loc4_.val = param2, _loc4_.next = null, _loc4_);
+         var _loc3_:SLLNode = _reservedSize == 0 || _poolSize == 0 ? new SLLNode(param2,this) : (null, _loc4_ = _headPool, _headPool = _headPool.next, --_poolSize, _loc4_.val = param2, _loc4_.next = null, _loc4_);
          param1._insertAfter(_loc3_);
          if(param1 == tail)
          {
@@ -628,12 +628,12 @@ package de.polygonal.ds
          return _loc3_;
       }
       
-      public function getNodeAt(param1:int) : de.polygonal.ds.SLLNode
+      public function getNodeAt(param1:int) : SLLNode
       {
          var _loc4_:int = 0;
          null;
          null;
-         var _loc2_:de.polygonal.ds.SLLNode = head;
+         var _loc2_:SLLNode = head;
          var _loc3_:int = 0;
          while(_loc3_ < param1)
          {
@@ -645,10 +645,10 @@ package de.polygonal.ds
       
       public function free() : void
       {
-         var _loc3_:* = null as de.polygonal.ds.SLLNode;
-         var _loc4_:* = null as de.polygonal.ds.SLLNode;
+         var _loc3_:* = null as SLLNode;
+         var _loc4_:* = null as SLLNode;
          var _loc1_:Object = null;
-         var _loc2_:de.polygonal.ds.SLLNode = head;
+         var _loc2_:SLLNode = head;
          while(_loc2_ != null)
          {
             _loc3_ = _loc2_.next;
@@ -676,7 +676,7 @@ package de.polygonal.ds
          {
             param3 = _size;
          }
-         var _loc4_:de.polygonal.ds.SLLNode = head;
+         var _loc4_:SLLNode = head;
          var _loc5_:int = 0;
          while(_loc5_ < param3)
          {
@@ -689,7 +689,7 @@ package de.polygonal.ds
       public function contains(param1:Object) : Boolean
       {
          var _loc2_:Object = param1;
-         var _loc3_:de.polygonal.ds.SLLNode = head;
+         var _loc3_:SLLNode = head;
          while(_loc3_ != null)
          {
             if(_loc3_.val == _loc2_)
@@ -704,16 +704,16 @@ package de.polygonal.ds
       public function concat(param1:SLL) : SLL
       {
          var _loc4_:* = null as Object;
-         var _loc5_:* = null as de.polygonal.ds.SLLNode;
-         var _loc6_:* = null as de.polygonal.ds.SLLNode;
+         var _loc5_:* = null as SLLNode;
+         var _loc6_:* = null as SLLNode;
          null;
          null;
          var _loc2_:SLL = new SLL();
-         var _loc3_:de.polygonal.ds.SLLNode = head;
+         var _loc3_:SLLNode = head;
          while(_loc3_ != null)
          {
             _loc4_ = _loc3_.val;
-            _loc5_ = _loc2_._reservedSize == 0 || _loc2_._poolSize == 0 ? new de.polygonal.ds.SLLNode(_loc4_,_loc2_) : (null, _loc6_ = _loc2_._headPool, _loc2_._headPool = _loc2_._headPool.next, --_loc2_._poolSize, _loc6_.val = _loc4_, _loc6_.next = null, _loc6_);
+            _loc5_ = _loc2_._reservedSize == 0 || _loc2_._poolSize == 0 ? new SLLNode(_loc4_,_loc2_) : (null, _loc6_ = _loc2_._headPool, _loc2_._headPool = _loc2_._headPool.next, --_loc2_._poolSize, _loc6_.val = _loc4_, _loc6_.next = null, _loc6_);
             if(_loc2_.tail != null)
             {
                _loc2_.tail.next = _loc5_;
@@ -731,7 +731,7 @@ package de.polygonal.ds
          while(_loc3_ != null)
          {
             _loc4_ = _loc3_.val;
-            _loc5_ = _loc2_._reservedSize == 0 || _loc2_._poolSize == 0 ? new de.polygonal.ds.SLLNode(_loc4_,_loc2_) : (null, _loc6_ = _loc2_._headPool, _loc2_._headPool = _loc2_._headPool.next, --_loc2_._poolSize, _loc6_.val = _loc4_, _loc6_.next = null, _loc6_);
+            _loc5_ = _loc2_._reservedSize == 0 || _loc2_._poolSize == 0 ? new SLLNode(_loc4_,_loc2_) : (null, _loc6_ = _loc2_._headPool, _loc2_._headPool = _loc2_._headPool.next, --_loc2_._poolSize, _loc6_.val = _loc4_, _loc6_.next = null, _loc6_);
             if(_loc2_.tail != null)
             {
                _loc2_.tail.next = _loc5_;
@@ -750,9 +750,9 @@ package de.polygonal.ds
       
       public function clone(param1:Boolean, param2:Object = undefined) : Collection
       {
-         var _loc5_:* = null as de.polygonal.ds.SLLNode;
-         var _loc6_:* = null as de.polygonal.ds.SLLNode;
-         var _loc7_:* = null as de.polygonal.ds.SLLNode;
+         var _loc5_:* = null as SLLNode;
+         var _loc6_:* = null as SLLNode;
+         var _loc7_:* = null as SLLNode;
          var _loc8_:int = 0;
          var _loc9_:* = 0;
          var _loc10_:int = 0;
@@ -767,7 +767,7 @@ package de.polygonal.ds
          if(param1)
          {
             _loc5_ = head;
-            _loc6_ = _loc4_.head = new de.polygonal.ds.SLLNode(head.val,_loc4_);
+            _loc6_ = _loc4_.head = new SLLNode(head.val,_loc4_);
             if(_size == 1)
             {
                _loc4_.tail = _loc4_.head;
@@ -779,17 +779,17 @@ package de.polygonal.ds
             while(_loc8_ < _loc9_)
             {
                _loc10_ = _loc8_++;
-               _loc6_ = _loc6_.next = new de.polygonal.ds.SLLNode(_loc5_.val,_loc4_);
+               _loc6_ = _loc6_.next = new SLLNode(_loc5_.val,_loc4_);
                _loc5_ = _loc5_.next;
             }
-            _loc4_.tail = _loc6_.next = new de.polygonal.ds.SLLNode(_loc5_.val,_loc4_);
+            _loc4_.tail = _loc6_.next = new SLLNode(_loc5_.val,_loc4_);
          }
          else if(_loc3_ == null)
          {
             _loc5_ = head;
             null;
             _loc11_ = head.val;
-            _loc6_ = _loc4_.head = new de.polygonal.ds.SLLNode(_loc11_.clone(),_loc4_);
+            _loc6_ = _loc4_.head = new SLLNode(_loc11_.clone(),_loc4_);
             if(_size == 1)
             {
                _loc4_.tail = _loc4_.head;
@@ -803,17 +803,17 @@ package de.polygonal.ds
                _loc10_ = _loc8_++;
                null;
                _loc11_ = _loc5_.val;
-               _loc6_ = _loc6_.next = new de.polygonal.ds.SLLNode(_loc11_.clone(),_loc4_);
+               _loc6_ = _loc6_.next = new SLLNode(_loc11_.clone(),_loc4_);
                _loc5_ = _loc5_.next;
             }
             null;
             _loc11_ = _loc5_.val;
-            _loc4_.tail = _loc6_.next = new de.polygonal.ds.SLLNode(_loc11_.clone(),_loc4_);
+            _loc4_.tail = _loc6_.next = new SLLNode(_loc11_.clone(),_loc4_);
          }
          else
          {
             _loc5_ = head;
-            _loc6_ = _loc4_.head = new de.polygonal.ds.SLLNode(_loc3_(head.val),_loc4_);
+            _loc6_ = _loc4_.head = new SLLNode(_loc3_(head.val),_loc4_);
             if(_size == 1)
             {
                _loc4_.tail = _loc4_.head;
@@ -825,10 +825,10 @@ package de.polygonal.ds
             while(_loc8_ < _loc9_)
             {
                _loc10_ = _loc8_++;
-               _loc6_ = _loc6_.next = new de.polygonal.ds.SLLNode(_loc3_(_loc5_.val),_loc4_);
+               _loc6_ = _loc6_.next = new SLLNode(_loc3_(_loc5_.val),_loc4_);
                _loc5_ = _loc5_.next;
             }
-            _loc4_.tail = _loc6_.next = new de.polygonal.ds.SLLNode(_loc3_(_loc5_.val),_loc4_);
+            _loc4_.tail = _loc6_.next = new SLLNode(_loc3_(_loc5_.val),_loc4_);
          }
          return _loc4_;
       }
@@ -836,10 +836,10 @@ package de.polygonal.ds
       public function clear(param1:Boolean = false) : void
       {
          var _loc2_:* = null as Object;
-         var _loc3_:* = null as de.polygonal.ds.SLLNode;
-         var _loc4_:* = null as de.polygonal.ds.SLLNode;
+         var _loc3_:* = null as SLLNode;
+         var _loc4_:* = null as SLLNode;
          var _loc5_:* = null as Object;
-         var _loc6_:* = null as de.polygonal.ds.SLLNode;
+         var _loc6_:* = null as SLLNode;
          var _loc7_:* = null as Object;
          if(param1 || _reservedSize > 0)
          {
@@ -879,7 +879,7 @@ package de.polygonal.ds
          {
             param3 = _size;
          }
-         var _loc4_:de.polygonal.ds.SLLNode = head;
+         var _loc4_:SLLNode = head;
          var _loc5_:int = 0;
          while(_loc5_ < param3)
          {
@@ -889,10 +889,10 @@ package de.polygonal.ds
          }
       }
       
-      public function append(param1:Object) : de.polygonal.ds.SLLNode
+      public function append(param1:Object) : SLLNode
       {
-         var _loc3_:* = null as de.polygonal.ds.SLLNode;
-         var _loc2_:de.polygonal.ds.SLLNode = _reservedSize == 0 || _poolSize == 0 ? new de.polygonal.ds.SLLNode(param1,this) : (null, _loc3_ = _headPool, _headPool = _headPool.next, --_poolSize, _loc3_.val = param1, _loc3_.next = null, _loc3_);
+         var _loc3_:* = null as SLLNode;
+         var _loc2_:SLLNode = _reservedSize == 0 || _poolSize == 0 ? new SLLNode(param1,this) : (null, _loc3_ = _headPool, _headPool = _headPool.next, --_poolSize, _loc3_.val = param1, _loc3_.next = null, _loc3_);
          if(tail != null)
          {
             tail.next = _loc2_;
@@ -906,14 +906,14 @@ package de.polygonal.ds
          return _loc2_;
       }
       
-      public function _valid(param1:de.polygonal.ds.SLLNode) : Boolean
+      public function _valid(param1:SLLNode) : Boolean
       {
          return param1 != null;
       }
       
-      public function _putNode(param1:de.polygonal.ds.SLLNode) : Object
+      public function _putNode(param1:SLLNode) : Object
       {
-         var _loc3_:* = null as de.polygonal.ds.SLLNode;
+         var _loc3_:* = null as SLLNode;
          var _loc4_:* = null as Object;
          var _loc2_:Object = param1.val;
          if(_reservedSize > 0 && _poolSize < _reservedSize)
@@ -932,18 +932,18 @@ package de.polygonal.ds
          return _loc2_;
       }
       
-      public function _mergeSortComparable(param1:de.polygonal.ds.SLLNode) : de.polygonal.ds.SLLNode
+      public function _mergeSortComparable(param1:SLLNode) : SLLNode
       {
-         var _loc3_:* = null as de.polygonal.ds.SLLNode;
-         var _loc4_:* = null as de.polygonal.ds.SLLNode;
-         var _loc5_:* = null as de.polygonal.ds.SLLNode;
+         var _loc3_:* = null as SLLNode;
+         var _loc4_:* = null as SLLNode;
+         var _loc5_:* = null as SLLNode;
          var _loc8_:int = 0;
          var _loc9_:int = 0;
          var _loc10_:int = 0;
          var _loc12_:int = 0;
          var _loc13_:int = 0;
-         var _loc2_:de.polygonal.ds.SLLNode = param1;
-         var _loc6_:de.polygonal.ds.SLLNode = null;
+         var _loc2_:SLLNode = param1;
+         var _loc6_:SLLNode = null;
          var _loc7_:* = 1;
          while(true)
          {
@@ -1019,18 +1019,18 @@ package de.polygonal.ds
          return _loc2_;
       }
       
-      public function _mergeSort(param1:de.polygonal.ds.SLLNode, param2:Function) : de.polygonal.ds.SLLNode
+      public function _mergeSort(param1:SLLNode, param2:Function) : SLLNode
       {
-         var _loc4_:* = null as de.polygonal.ds.SLLNode;
-         var _loc5_:* = null as de.polygonal.ds.SLLNode;
-         var _loc6_:* = null as de.polygonal.ds.SLLNode;
+         var _loc4_:* = null as SLLNode;
+         var _loc5_:* = null as SLLNode;
+         var _loc6_:* = null as SLLNode;
          var _loc9_:int = 0;
          var _loc10_:int = 0;
          var _loc11_:int = 0;
          var _loc13_:int = 0;
          var _loc14_:int = 0;
-         var _loc3_:de.polygonal.ds.SLLNode = param1;
-         var _loc7_:de.polygonal.ds.SLLNode = null;
+         var _loc3_:SLLNode = param1;
+         var _loc7_:SLLNode = null;
          var _loc8_:* = 1;
          while(true)
          {
@@ -1102,20 +1102,20 @@ package de.polygonal.ds
          return _loc3_;
       }
       
-      public function _insertionSortComparable(param1:de.polygonal.ds.SLLNode) : de.polygonal.ds.SLLNode
+      public function _insertionSortComparable(param1:SLLNode) : SLLNode
       {
          var _loc6_:int = 0;
          var _loc7_:* = null as Object;
          var _loc10_:int = 0;
          var _loc2_:Array = [];
          var _loc3_:int = 0;
-         var _loc4_:de.polygonal.ds.SLLNode = param1;
+         var _loc4_:SLLNode = param1;
          while(_loc4_ != null)
          {
             _loc2_[_loc3_++] = _loc4_.val;
             _loc4_ = _loc4_.next;
          }
-         var _loc5_:de.polygonal.ds.SLLNode = param1;
+         var _loc5_:SLLNode = param1;
          var _loc8_:int = 1;
          var _loc9_:int = _size;
          while(_loc8_ < _loc9_)
@@ -1141,20 +1141,20 @@ package de.polygonal.ds
          return _loc5_;
       }
       
-      public function _insertionSort(param1:de.polygonal.ds.SLLNode, param2:Function) : de.polygonal.ds.SLLNode
+      public function _insertionSort(param1:SLLNode, param2:Function) : SLLNode
       {
          var _loc7_:int = 0;
          var _loc8_:* = null as Object;
          var _loc11_:int = 0;
          var _loc3_:Array = [];
          var _loc4_:int = 0;
-         var _loc5_:de.polygonal.ds.SLLNode = param1;
+         var _loc5_:SLLNode = param1;
          while(_loc5_ != null)
          {
             _loc3_[_loc4_++] = _loc5_.val;
             _loc5_ = _loc5_.next;
          }
-         var _loc6_:de.polygonal.ds.SLLNode = param1;
+         var _loc6_:SLLNode = param1;
          var _loc9_:int = 1;
          var _loc10_:int = _size;
          while(_loc9_ < _loc10_)
@@ -1179,9 +1179,9 @@ package de.polygonal.ds
          return _loc6_;
       }
       
-      public function _getNodeBefore(param1:de.polygonal.ds.SLLNode) : de.polygonal.ds.SLLNode
+      public function _getNodeBefore(param1:SLLNode) : SLLNode
       {
-         var _loc2_:de.polygonal.ds.SLLNode = head;
+         var _loc2_:SLLNode = head;
          while(_loc2_.next != param1)
          {
             _loc2_ = _loc2_.next;
@@ -1189,12 +1189,12 @@ package de.polygonal.ds
          return _loc2_;
       }
       
-      public function _getNode(param1:Object) : de.polygonal.ds.SLLNode
+      public function _getNode(param1:Object) : SLLNode
       {
-         var _loc2_:* = null as de.polygonal.ds.SLLNode;
+         var _loc2_:* = null as SLLNode;
          if(_reservedSize == 0 || _poolSize == 0)
          {
-            return new de.polygonal.ds.SLLNode(param1,this);
+            return new SLLNode(param1,this);
          }
          null;
          _loc2_ = _headPool;
@@ -1210,7 +1210,7 @@ package de.polygonal.ds
          param1._list = param2;
       }
       
-      public function __insertAfter(param1:Object, param2:de.polygonal.ds.SLLNode) : void
+      public function __insertAfter(param1:Object, param2:SLLNode) : void
       {
          param1._insertAfter(param2);
       }

@@ -2,6 +2,7 @@ package
 {
    import flash.display.MovieClip;
    
+   [Embed(source="/_assets/assets.swf", symbol="icon_popups")]
    public dynamic class icon_popups extends MovieClip
    {
        

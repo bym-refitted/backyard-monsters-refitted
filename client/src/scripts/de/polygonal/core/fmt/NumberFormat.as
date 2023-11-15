@@ -3,7 +3,7 @@ package de.polygonal.core.fmt
    public class NumberFormat
    {
       
-      public static var _hexLUT:Array = ["0","1","2","3","4","5","6","7","8","9","A","B","C","D","E","F"];
+      public static var _hexLUT:Array;
        
       
       public function NumberFormat()

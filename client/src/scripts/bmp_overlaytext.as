@@ -2,6 +2,7 @@ package
 {
    import flash.display.BitmapData;
    
+   [Embed(source="/_assets/1705_bmp_overlaytext_bmp_overlaytext.png")]
    public dynamic class bmp_overlaytext extends BitmapData
    {
        

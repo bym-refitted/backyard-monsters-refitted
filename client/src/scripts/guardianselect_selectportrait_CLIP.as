@@ -3,6 +3,7 @@ package
    import flash.display.MovieClip;
    import flash.text.TextField;
    
+   [Embed(source="/_assets/assets.swf", symbol="guardianselect_selectportrait_CLIP")]
    public dynamic class guardianselect_selectportrait_CLIP extends MovieClip
    {
        

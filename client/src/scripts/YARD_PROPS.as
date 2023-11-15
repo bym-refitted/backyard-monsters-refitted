@@ -95,7 +95,7 @@ package
          }],
          "imageData":{
             "baseurl":"buildings/twigsnapper.v2/",
-            1:{
+            "1":{
                "anim":["anim.1.png",new Rectangle(-4,10,23,33),34],
                "top":["top.1.png",new Point(-30,-19)],
                "shadow":["shadow.1.jpg",new Point(-23,29)],
@@ -104,7 +104,7 @@ package
                "topdestroyed":["top.destroyed.png",new Point(-34,2)],
                "shadowdestroyed":["shadow.destroyed.jpg",new Point(-31,20)]
             },
-            3:{
+            "3":{
                "anim":["anim.3.png",new Rectangle(0,6,23,30),34],
                "top":["top.3.png",new Point(-32,-40)],
                "shadow":["shadow.3.jpg",new Point(-38,11)],
@@ -113,7 +113,7 @@ package
                "topdestroyed":["top.destroyed.png",new Point(-34,2)],
                "shadowdestroyed":["shadow.destroyed.jpg",new Point(-31,20)]
             },
-            6:{
+            "6":{
                "anim":["anim.6.png",new Rectangle(-1,1,34,34),34],
                "top":["top.6.png",new Point(-34,-42)],
                "shadow":["shadow.6.jpg",new Point(-25,26)],
@@ -122,7 +122,7 @@ package
                "topdestroyed":["top.destroyed.png",new Point(-34,2)],
                "shadowdestroyed":["shadow.destroyed.jpg",new Point(-31,20)]
             },
-            10:{
+            "10":{
                "anim":["anim.10.png",new Rectangle(-2,3,35,33),34],
                "top":["top.10.png",new Point(-34,-54)],
                "shadow":["shadow.10.jpg",new Point(-26,26)],
@@ -134,20 +134,20 @@ package
          },
          "upgradeImgData":{
             "baseurl":"buildingbuttons/",
-            1:{
+            "1":{
                "img":"1.1.jpg",
                "silhouette_img":"1.3.silhouette.jpg"
             },
-            3:{"img":"1.3.jpg"},
-            6:{"img":"1.6.jpg"},
-            10:{"img":"1.10.jpg"}
+            "3":{"img":"1.3.jpg"},
+            "6":{"img":"1.6.jpg"},
+            "10":{"img":"1.10.jpg"}
          },
          "thumbImgData":{
             "baseurl":"buildingthumbs/",
-            1:{"img":"1.1.png"},
-            3:{"img":"1.3.png"},
-            6:{"img":"1.6.png"},
-            10:{"img":"1.10.png"}
+            "1":{"img":"1.1.png"},
+            "3":{"img":"1.3.png"},
+            "6":{"img":"1.6.png"},
+            "10":{"img":"1.10.png"}
          },
          "quantity":[0,1,2,4,5,6,6,6,6,6,6],
          "produce":[2,4,7,11,16,22,29,37,46,56],
@@ -242,7 +242,7 @@ package
          }],
          "imageData":{
             "baseurl":"buildings/pebbleshiner.v2/",
-            1:{
+            "1":{
                "anim":["anim.1.png",new Rectangle(-21,8,42,24),26],
                "top":["top.1.png",new Point(-34,-12)],
                "shadow":["shadow.1.jpg",new Point(-33,27)],
@@ -251,7 +251,7 @@ package
                "topdestroyed":["top.destroyed.png",new Point(-35,-2)],
                "shadowdestroyed":["shadow.destroyed.jpg",new Point(-33,22)]
             },
-            3:{
+            "3":{
                "anim":["anim.3.png",new Rectangle(-29,3,58,31),26],
                "top":["top.3.png",new Point(-34,-27)],
                "shadow":["shadow.3.jpg",new Point(-33,27)],
@@ -260,7 +260,7 @@ package
                "topdestroyed":["top.destroyed.png",new Point(-35,-2)],
                "shadowdestroyed":["shadow.destroyed.jpg",new Point(-32,22)]
             },
-            6:{
+            "6":{
                "anim":["anim.6.png",new Rectangle(-29,-5,58,41),26],
                "top":["top.6.png",new Point(-34,-34)],
                "shadow":["shadow.6.jpg",new Point(-34,20)],
@@ -269,7 +269,7 @@ package
                "topdestroyed":["top.destroyed.png",new Point(-35,-2)],
                "shadowdestroyed":["shadow.destroyed.jpg",new Point(-33,22)]
             },
-            10:{
+            "10":{
                "anim":["anim.10.png",new Rectangle(-29,-37,62,72),24],
                "top":["top.10.png",new Point(-34,-32)],
                "shadow":["shadow.10.jpg",new Point(-34,22)],
@@ -281,20 +281,20 @@ package
          },
          "upgradeImgData":{
             "baseurl":"buildingbuttons/",
-            1:{
+            "1":{
                "img":"2.1.jpg",
                "silhouette_img":"2.1.silhouette.jpg"
             },
-            3:{"img":"2.3.jpg"},
-            6:{"img":"2.6.jpg"},
-            10:{"img":"2.10.jpg"}
+            "3":{"img":"2.3.jpg"},
+            "6":{"img":"2.6.jpg"},
+            "10":{"img":"2.10.jpg"}
          },
          "thumbImgData":{
             "baseurl":"buildingthumbs/",
-            1:{"img":"2.1.png"},
-            3:{"img":"2.3.png"},
-            6:{"img":"2.6.png"},
-            10:{"img":"2.10.png"}
+            "1":{"img":"2.1.png"},
+            "3":{"img":"2.3.png"},
+            "6":{"img":"2.6.png"},
+            "10":{"img":"2.10.png"}
          },
          "quantity":[0,1,2,4,5,6,6,6,6,6,6],
          "produce":[2,4,7,11,16,22,29,37,46,56],
@@ -389,7 +389,7 @@ package
          }],
          "imageData":{
             "baseurl":"buildings/puttysquisher.v2/",
-            1:{
+            "1":{
                "anim":["anim.1.png",new Rectangle(-10,8,28,18),26],
                "top":["top.1.png",new Point(-26,5)],
                "shadow":["shadow.1.jpg",new Point(-21,29)],
@@ -398,7 +398,7 @@ package
                "topdestroyed":["top.destroyed.png",new Point(-39,5)],
                "shadowdestroyed":["shadow.destroyed.jpg",new Point(-36,21)]
             },
-            3:{
+            "3":{
                "anim":["anim.3.png",new Rectangle(-10,-7,29,20),26],
                "top":["top.3.png",new Point(-28,-20)],
                "shadow":["shadow.3.jpg",new Point(-33,18)],
@@ -407,7 +407,7 @@ package
                "topdestroyed":["top.destroyed.png",new Point(-39,5)],
                "shadowdestroyed":["shadow.destroyed.jpg",new Point(-36,21)]
             },
-            6:{
+            "6":{
                "anim":["anim.6.png",new Rectangle(-10,-6,29,19),26],
                "top":["top.6.png",new Point(-30,-43)],
                "shadow":["shadow.6.jpg",new Point(-28,23)],
@@ -416,7 +416,7 @@ package
                "topdestroyed":["top.destroyed.png",new Point(-39,5)],
                "shadowdestroyed":["shadow.destroyed.jpg",new Point(-36,21)]
             },
-            10:{
+            "10":{
                "anim":["anim.10.png",new Rectangle(-10,-39,44,52),25],
                "top":["top.10.png",new Point(-31,-42)],
                "shadow":["shadow.10.jpg",new Point(-31,22)],
@@ -428,20 +428,20 @@ package
          },
          "upgradeImgData":{
             "baseurl":"buildingbuttons/",
-            1:{
+            "1":{
                "img":"3.1.jpg",
                "silhouette_img":"3.6.v2.silhouette.jpg"
             },
-            3:{"img":"3.3.v2.jpg"},
-            6:{"img":"3.6.v2.jpg"},
-            10:{"img":"3.10.v2.jpg"}
+            "3":{"img":"3.3.v2.jpg"},
+            "6":{"img":"3.6.v2.jpg"},
+            "10":{"img":"3.10.v2.jpg"}
          },
          "thumbImgData":{
             "baseurl":"buildingthumbs/",
-            1:{"img":"3.1.png"},
-            3:{"img":"3.3.png"},
-            6:{"img":"3.6.png"},
-            10:{"img":"3.10.png"}
+            "1":{"img":"3.1.png"},
+            "3":{"img":"3.3.png"},
+            "6":{"img":"3.6.png"},
+            "10":{"img":"3.10.png"}
          },
          "quantity":[0,1,2,4,5,6,6,6,6,6,6],
          "produce":[2,4,7,11,16,22,29,37,46,56],
@@ -536,7 +536,7 @@ package
          }],
          "imageData":{
             "baseurl":"buildings/goofactory.v2/",
-            1:{
+            "1":{
                "anim":["anim.1.png",new Rectangle(3,14,22,40),26],
                "top":["top.1.png",new Point(-26,-33)],
                "shadow":["shadow.1.jpg",new Point(-25,29)],
@@ -545,7 +545,7 @@ package
                "topdestroyed":["top.destroyed.png",new Point(-31,0)],
                "shadowdestroyed":["shadow.destroyed.jpg",new Point(-35,24)]
             },
-            3:{
+            "3":{
                "anim":["anim.3.png",new Rectangle(4,12,25,45),26],
                "top":["top.3.png",new Point(-27,-33)],
                "shadow":["shadow.3.jpg",new Point(-31,21)],
@@ -554,7 +554,7 @@ package
                "topdestroyed":["top.destroyed.png",new Point(-31,0)],
                "shadowdestroyed":["shadow.destroyed.jpg",new Point(-35,24)]
             },
-            6:{
+            "6":{
                "anim":["anim.6.png",new Rectangle(-21,12,51,48),26],
                "top":["top.6.png",new Point(-33,-33)],
                "shadow":["shadow.6.jpg",new Point(-26,27)],
@@ -563,7 +563,7 @@ package
                "topdestroyed":["top.destroyed.png",new Point(-31,0)],
                "shadowdestroyed":["shadow.destroyed.jpg",new Point(-35,24)]
             },
-            10:{
+            "10":{
                "anim":["anim.10.png",new Rectangle(-21,11,51,47),26],
                "top":["top.10.png",new Point(-40,-48)],
                "shadow":["shadow.10.jpg",new Point(-35,28)],
@@ -575,20 +575,20 @@ package
          },
          "upgradeImgData":{
             "baseurl":"buildingbuttons/",
-            1:{
+            "1":{
                "img":"4.1.jpg",
                "silhouette_img":"4.3.silhouette.jpg"
             },
-            3:{"img":"4.3.jpg"},
-            6:{"img":"4.6.jpg"},
-            10:{"img":"4.10.jpg"}
+            "3":{"img":"4.3.jpg"},
+            "6":{"img":"4.6.jpg"},
+            "10":{"img":"4.10.jpg"}
          },
          "thumbImgData":{
             "baseurl":"buildingthumbs/",
-            1:{"img":"4.1.png"},
-            3:{"img":"4.3.png"},
-            6:{"img":"4.6.png"},
-            10:{"img":"4.10.png"}
+            "1":{"img":"4.1.png"},
+            "3":{"img":"4.3.png"},
+            "6":{"img":"4.6.png"},
+            "10":{"img":"4.10.png"}
          },
          "quantity":[0,1,2,4,5,6,6,6,6,6,6],
          "produce":[2,4,7,11,16,22,29,37,46,56],
@@ -647,7 +647,7 @@ package
          }],
          "imageData":{
             "baseurl":"buildings/flinger/",
-            1:{
+            "1":{
                "top":["top.1.png",new Point(-46,-43)],
                "shadow":["shadow.1.jpg",new Point(-50,20)],
                "topdamaged":["top.1.damaged.png",new Point(-63,-36)],
@@ -655,7 +655,7 @@ package
                "topdestroyed":["top.2.destroyed.png",new Point(-75,-3)],
                "shadowdestroyed":["shadow.2.destroyed.jpg",new Point(-70,24)]
             },
-            2:{
+            "2":{
                "top":["top.2.png",new Point(-45,-40)],
                "shadow":["shadow.2.jpg",new Point(-48,19)],
                "topdamaged":["top.2.damaged.png",new Point(-63,-18)],
@@ -663,7 +663,7 @@ package
                "topdestroyed":["top.2.destroyed.png",new Point(-75,-3)],
                "shadowdestroyed":["shadow.2.destroyed.jpg",new Point(-70,24)]
             },
-            3:{
+            "3":{
                "top":["top.3.png",new Point(-47,-45)],
                "shadow":["shadow.3.jpg",new Point(-44,20)],
                "topdamaged":["top.3.damaged.png",new Point(-75,-37)],
@@ -671,7 +671,7 @@ package
                "topdestroyed":["top.2.destroyed.png",new Point(-75,-3)],
                "shadowdestroyed":["shadow.2.destroyed.jpg",new Point(-70,24)]
             },
-            4:{
+            "4":{
                "top":["top.4.png",new Point(-45,-66)],
                "shadow":["shadow.4.jpg",new Point(-47,22)],
                "topdamaged":["top.4.damaged.png",new Point(-76,-53)],
@@ -679,7 +679,7 @@ package
                "topdestroyed":["top.2.destroyed.png",new Point(-75,-3)],
                "shadowdestroyed":["shadow.2.destroyed.jpg",new Point(-70,24)]
             },
-            5:{
+            "5":{
                "top":["top.4.png",new Point(-45,-66)],
                "shadow":["shadow.4.jpg",new Point(-47,22)],
                "topdamaged":["top.4.damaged.png",new Point(-76,-53)],
@@ -690,22 +690,22 @@ package
          },
          "upgradeImgData":{
             "baseurl":"buildingbuttons/",
-            1:{
+            "1":{
                "img":"5.1.jpg",
                "silhouette_img":"5.3.silhouette.jpg"
             },
-            2:{"img":"5.2.jpg"},
-            3:{"img":"5.3.jpg"},
-            4:{"img":"5.4.jpg"},
-            5:{"img":"5.4.jpg"}
+            "2":{"img":"5.2.jpg"},
+            "3":{"img":"5.3.jpg"},
+            "4":{"img":"5.4.jpg"},
+            "5":{"img":"5.4.jpg"}
          },
          "thumbImgData":{
             "baseurl":"buildingthumbs/",
-            1:{"img":"5.1.png"},
-            2:{"img":"5.2.png"},
-            3:{"img":"5.3.png"},
-            4:{"img":"5.4.png"},
-            5:{"img":"5.4.png"}
+            "1":{"img":"5.1.png"},
+            "2":{"img":"5.2.png"},
+            "3":{"img":"5.3.png"},
+            "4":{"img":"5.4.png"},
+            "5":{"img":"5.4.png"}
          },
          "quantity":[0,1,1,1,1,1,1,1,1,1,1],
          "capacity":[250,850,1500,2500,3500,3500,3500],
@@ -827,7 +827,7 @@ package
          }],
          "imageData":{
             "baseurl":"buildings/storagesilo/",
-            1:{
+            "1":{
                "anim":["anim.3.png",new Rectangle(-37,-52,74,121),26],
                "top":["top.3.png",new Point(-37,-52)],
                "shadow":["shadow.3.jpg",new Point(-37,25)],
@@ -839,30 +839,30 @@ package
          },
          "upgradeImgData":{
             "baseurl":"buildingbuttons/",
-            1:{
+            "1":{
                "img":"6.jpg",
                "silhouette_img":"6.silhouette.jpg"
             }
          },
          "thumbImgData":{
             "baseurl":"buildingthumbs/",
-            1:{"img":"6.png"}
+            "1":{"img":"6.png"}
          },
          "fortImgData":{
             "baseurl":"buildings/fortifications/",
-            1:{
+            "1":{
                "front":["fort70_F1.png",new Point(-73,28)],
                "back":["fort70_B1.png",new Point(-71,-4)]
             },
-            2:{
+            "2":{
                "front":["fort70_F2.png",new Point(-69,26)],
                "back":["fort70_B2.png",new Point(-65,-7)]
             },
-            3:{
+            "3":{
                "front":["fort70_F3.png",new Point(-73,17)],
                "back":["fort70_B3.png",new Point(-69,-5)]
             },
-            4:{
+            "4":{
                "front":["fort70_F4.png",new Point(-70,-3)],
                "back":["fort70_B4.png",new Point(-62,-31)]
             }
@@ -894,7 +894,7 @@ package
          }],
          "thumbImgData":{
             "baseurl":"buildingthumbs/",
-            1:{"img":"7.png"}
+            "1":{"img":"7.png"}
          },
          "quantity":[0],
          "hp":[10],
@@ -943,7 +943,7 @@ package
          }],
          "imageData":{
             "baseurl":"buildings/monsterlocker/",
-            1:{
+            "1":{
                "anim":["anim.1.png",new Rectangle(-42,-44,36,41),21],
                "top":["top.1.png",new Point(-31,-29)],
                "shadow":["shadow.1.jpg",new Point(-27,37)],
@@ -952,7 +952,7 @@ package
                "topdestroyed":["top.2.destroyed.png",new Point(-53,-41)],
                "shadowdestroyed":["shadow.2.destroyed.jpg",new Point(-52,25)]
             },
-            2:{
+            "2":{
                "anim":["anim.2.png",new Rectangle(-46,-93,61,69),20],
                "top":["top.2.png",new Point(-51,-64)],
                "shadow":["shadow.2.jpg",new Point(-40,18)],
@@ -961,7 +961,7 @@ package
                "topdestroyed":["top.2.destroyed.png",new Point(-53,-41)],
                "shadowdestroyed":["shadow.2.destroyed.jpg",new Point(-52,25)]
             },
-            3:{
+            "3":{
                "anim":["anim.3.png",new Rectangle(-48,-90,87,89),20],
                "top":["top.3.png",new Point(-53,-79)],
                "shadow":["shadow.3.jpg",new Point(-55,23)],
@@ -970,7 +970,7 @@ package
                "topdestroyed":["top.2.destroyed.png",new Point(-53,-41)],
                "shadowdestroyed":["shadow.2.destroyed.jpg",new Point(-52,25)]
             },
-            4:{
+            "4":{
                "anim":["anim.4.png",new Rectangle(-50,-91,92,89),21],
                "top":["top.4.png",new Point(-54,-98)],
                "shadow":["shadow.4.jpg",new Point(-54,30)],
@@ -982,20 +982,20 @@ package
          },
          "upgradeImgData":{
             "baseurl":"buildingbuttons/",
-            1:{
+            "1":{
                "img":"8.1.jpg",
                "silhouette_img":"8.2.silhouette.jpg"
             },
-            2:{"img":"8.2.jpg"},
-            3:{"img":"8.3.jpg"},
-            4:{"img":"8.4.jpg"}
+            "2":{"img":"8.2.jpg"},
+            "3":{"img":"8.3.jpg"},
+            "4":{"img":"8.4.jpg"}
          },
          "thumbImgData":{
             "baseurl":"buildingthumbs/",
-            1:{"img":"8.1.png"},
-            2:{"img":"8.2.png"},
-            3:{"img":"8.3.png"},
-            4:{"img":"8.4.png"}
+            "1":{"img":"8.1.png"},
+            "2":{"img":"8.2.png"},
+            "3":{"img":"8.3.png"},
+            "4":{"img":"8.4.png"}
          },
          "quantity":[0,0,1,1,1,1,1,1,1,1,1],
          "hp":[4000,16000,32000,64000],
@@ -1037,7 +1037,7 @@ package
          }],
          "imageData":{
             "baseurl":"buildings/monsterjuiceloosener/",
-            1:{
+            "1":{
                "anim":["anim.2.png",new Rectangle(-30,-17,60,39),51],
                "top":["top.2.png",new Point(-44,-8)],
                "shadow":["shadow.2.jpg",new Point(-44,16)],
@@ -1049,14 +1049,14 @@ package
          },
          "upgradeImgData":{
             "baseurl":"buildingbuttons/",
-            1:{
+            "1":{
                "img":"9.jpg",
                "silhouette_img":"9.silhouette.jpg"
             }
          },
          "thumbImgData":{
             "baseurl":"buildingthumbs/",
-            1:{"img":"9.png"}
+            "1":{"img":"9.png"}
          },
          "quantity":[0,1,1,1,1,1,1,1,1,1,1],
          "hp":[16000,32000,64000],
@@ -1085,7 +1085,7 @@ package
          }],
          "imageData":{
             "baseurl":"buildings/yardplanner/",
-            1:{
+            "1":{
                "top":["top.1.png",new Point(-45,-29)],
                "shadow":["shadow.1.jpg",new Point(-57,16)],
                "topdamaged":["top.1.damaged.png",new Point(-58,-27)],
@@ -1096,14 +1096,14 @@ package
          },
          "upgradeImgData":{
             "baseurl":"buildingbuttons/",
-            1:{
+            "1":{
                "img":"10.jpg",
                "silhouette_img":"10.silhouette.jpg"
             }
          },
          "thumbImgData":{
             "baseurl":"buildingthumbs/",
-            1:{"img":"10.png"}
+            "1":{"img":"10.png"}
          },
          "quantity":[0,0,0,1,1,1,1,1,1,1,1],
          "hp":[16000],
@@ -1138,7 +1138,7 @@ package
          }],
          "imageData":{
             "baseurl":"buildings/maproom/",
-            1:{
+            "1":{
                "top":["top.1.png",new Point(-58,-67)],
                "shadow":["shadow.1.jpg",new Point(-68,15)],
                "topdamaged":["top.1.damaged.png",new Point(-73,-44)],
@@ -1149,14 +1149,14 @@ package
          },
          "upgradeImgData":{
             "baseurl":"buildingbuttons/",
-            1:{
+            "1":{
                "img":"11.jpg",
                "silhouette_img":"11.silhouette.jpg"
             }
          },
          "thumbImgData":{
             "baseurl":"buildingthumbs/",
-            1:{"img":"11.png"}
+            "1":{"img":"11.png"}
          },
          "quantity":[0,1,1,1,1,1,1,1,1,1,1],
          "hp":[5000,10000],
@@ -1184,7 +1184,7 @@ package
          "cls":BUILDING12,
          "imageData":{
             "baseurl":"buildings/generalstore/",
-            1:{
+            "1":{
                "top":["top.1.png",new Point(-40,-37)],
                "shadow":["shadow.1.jpg",new Point(-44,13)],
                "topdamaged":["top.1.damaged.png",new Point(-44,-49)],
@@ -1195,14 +1195,14 @@ package
          },
          "upgradeImgData":{
             "baseurl":"buildingbuttons/",
-            1:{
+            "1":{
                "img":"12.jpg",
                "silhouette_img":"12.silhouette.jpg"
             }
          },
          "thumbImgData":{
             "baseurl":"buildingthumbs/",
-            1:{"img":"12.png"}
+            "1":{"img":"12.png"}
          },
          "quantity":[0,1,1,1,1,1,1,1,1,1,1],
          "hp":[4000],
@@ -1244,7 +1244,7 @@ package
          }],
          "imageData":{
             "baseurl":"buildings/hatchery/",
-            1:{
+            "1":{
                "anim":["anim.2.png",new Rectangle(-53,-104,103,80),31],
                "top":["top.2.png",new Point(-50,-52)],
                "shadow":["shadow.2.jpg",new Point(-31,32)],
@@ -1253,7 +1253,7 @@ package
                "topdestroyed":["top.1.destroyed.png",new Point(-58,0)],
                "shadowdestroyed":["shadow.1.destroyed.jpg",new Point(-58,32)]
             },
-            2:{
+            "2":{
                "anim":["anim.3.png",new Rectangle(-40,-123,105,124),31],
                "top":["top.3.png",new Point(-51,-62)],
                "shadow":["shadow.3.jpg",new Point(-48,26)],
@@ -1262,7 +1262,7 @@ package
                "topdestroyed":["top.1.destroyed.png",new Point(-58,0)],
                "shadowdestroyed":["shadow.1.destroyed.jpg",new Point(-58,32)]
             },
-            3:{
+            "3":{
                "anim":["anim.4.png",new Rectangle(-12,-112,113,105),31],
                "top":["top.4.png",new Point(-50,-114)],
                "shadow":["shadow.4.jpg",new Point(-44,25)],
@@ -1274,18 +1274,18 @@ package
          },
          "upgradeImgData":{
             "baseurl":"buildingbuttons/",
-            1:{
+            "1":{
                "img":"13.1.jpg",
                "silhouette_img":"13.2.silhouette.jpg"
             },
-            2:{"img":"13.2.jpg"},
-            3:{"img":"13.3.jpg"}
+            "2":{"img":"13.2.jpg"},
+            "3":{"img":"13.3.jpg"}
          },
          "thumbImgData":{
             "baseurl":"buildingthumbs/",
-            1:{"img":"13.1.png"},
-            2:{"img":"13.2.png"},
-            3:{"img":"13.3.png"}
+            "1":{"img":"13.1.png"},
+            "2":{"img":"13.2.png"},
+            "3":{"img":"13.3.png"}
          },
          "quantity":[0,1,2,3,4,5,5,5,5,5,5],
          "hp":[4000,16000,32000],
@@ -1407,7 +1407,7 @@ package
          }],
          "imageData":{
             "baseurl":"buildings/townhall/",
-            1:{
+            "1":{
                "top":["top.1.png",new Point(-45,-52)],
                "shadow":["shadow.1.jpg",new Point(-55,37)],
                "topdamaged":["top.1.damaged.png",new Point(-50,-50)],
@@ -1416,7 +1416,7 @@ package
                "shadowdestroyed":["shadow.1.destroyed.jpg",new Point(-54,37)],
                "topdestroyedfire":["top.1.destroyed.fire.png",new Point(-57,17)]
             },
-            2:{
+            "2":{
                "top":["top.2.png",new Point(-48,-62)],
                "shadow":["shadow.2.jpg",new Point(-55,36)],
                "topdamaged":["top.2.damaged.png",new Point(-49,-59)],
@@ -1425,7 +1425,7 @@ package
                "shadowdestroyed":["shadow.2.destroyed.jpg",new Point(-59,28)],
                "topdestroyedfire":["top.2.destroyed.fire.png",new Point(-61,6)]
             },
-            3:{
+            "3":{
                "top":["top.3.png",new Point(-65,-67)],
                "shadow":["shadow.3.jpg",new Point(-70,28)],
                "topdamaged":["top.3.damaged.png",new Point(-69,-68)],
@@ -1434,7 +1434,7 @@ package
                "shadowdestroyed":["shadow.3.destroyed.jpg",new Point(-70,30)],
                "topdestroyedfire":["top.3.destroyed.fire.png",new Point(-70,-8)]
             },
-            4:{
+            "4":{
                "top":["top.4.png",new Point(-66,-72)],
                "shadow":["shadow.4.jpg",new Point(-88,20)],
                "topdamaged":["top.4.damaged.png",new Point(-66,-72)],
@@ -1443,7 +1443,7 @@ package
                "shadowdestroyed":["shadow.4.destroyed.jpg",new Point(-91,25)],
                "topdestroyedfire":["top.4.destroyed.fire.png",new Point(-92,-18)]
             },
-            5:{
+            "5":{
                "top":["top.5.png",new Point(-67,-75)],
                "shadow":["shadow.5.jpg",new Point(-67,33)],
                "topdamaged":["top.5.damaged.png",new Point(-70,-69)],
@@ -1452,7 +1452,7 @@ package
                "shadowdestroyed":["shadow.5.destroyed.jpg",new Point(-88,30)],
                "topdestroyedfire":["top.5.destroyed.fire.png",new Point(-89,-16)]
             },
-            6:{
+            "6":{
                "top":["top.6.png",new Point(-72,-82)],
                "shadow":["shadow.6.jpg",new Point(-84,26)],
                "topdamaged":["top.6.damaged.png",new Point(-72,-67)],
@@ -1461,7 +1461,7 @@ package
                "shadowdestroyed":["shadow.6.destroyed.jpg",new Point(-90,25)],
                "topdestroyedfire":["top.6.destroyed.fire.png",new Point(-92,-8)]
             },
-            7:{
+            "7":{
                "top":["top.7.png",new Point(-81,-88)],
                "shadow":["shadow.7.jpg",new Point(-121,-3)],
                "topdamaged":["top.7.damaged.png",new Point(-81,-89)],
@@ -1469,7 +1469,7 @@ package
                "topdestroyed":["top.7.destroyed.png",new Point(-84,-13)],
                "shadowdestroyed":["shadow.7.destroyed.jpg",new Point(-102,8)]
             },
-            8:{
+            "8":{
                "top":["top.8.png",new Point(-80,-87)],
                "shadow":["shadow.8.jpg",new Point(-94,8)],
                "topdamaged":["top.8.damaged.png",new Point(-86,-91)],
@@ -1477,7 +1477,7 @@ package
                "topdestroyed":["top.8.destroyed.png",new Point(-84,-13)],
                "shadowdestroyed":["shadow.8.destroyed.jpg",new Point(-102,8)]
             },
-            9:{
+            "9":{
                "top":["top.9.png",new Point(-77,-97)],
                "shadow":["shadow.9.jpg",new Point(-76,24)],
                "topdamaged":["top.9.damaged.png",new Point(-86,-71)],
@@ -1485,7 +1485,7 @@ package
                "topdestroyed":["top.9.destroyed.png",new Point(-80,-54)],
                "shadowdestroyed":["shadow.9.destroyed.jpg",new Point(-81,23)]
             },
-            10:{
+            "10":{
                "top":["top.10.png",new Point(-77,-110)],
                "shadow":["shadow.10.jpg",new Point(-85,24)],
                "topdamaged":["top.10.damaged.png",new Point(-77,-110)],
@@ -1496,46 +1496,46 @@ package
          },
          "upgradeImgData":{
             "baseurl":"buildingbuttons/",
-            1:{
+            "1":{
                "img":"14.1.jpg",
                "silhouette_img":"14.1.silhouette.jpg"
             },
-            2:{"img":"14.2.jpg"},
-            3:{"img":"14.3.jpg"},
-            4:{"img":"14.4.jpg"},
-            5:{"img":"14.5.jpg"},
-            6:{"img":"14.6.jpg"},
-            7:{"img":"14.7.jpg"},
-            8:{"img":"14.8.jpg"},
-            9:{"img":"14.9.jpg"},
-            10:{"img":"14.10.jpg"}
+            "2":{"img":"14.2.jpg"},
+            "3":{"img":"14.3.jpg"},
+            "4":{"img":"14.4.jpg"},
+            "5":{"img":"14.5.jpg"},
+            "6":{"img":"14.6.jpg"},
+            "7":{"img":"14.7.jpg"},
+            "8":{"img":"14.8.jpg"},
+            "9":{"img":"14.9.jpg"},
+            "10":{"img":"14.10.jpg"}
          },
          "thumbImgData":{
             "baseurl":"buildingthumbs/",
-            1:{"img":"14.1.png"},
-            2:{"img":"14.2.png"},
-            3:{"img":"14.3.png"},
-            4:{"img":"14.4.png"},
-            5:{"img":"14.5.png"},
-            6:{"img":"14.6.png"},
-            7:{"img":"14.7.png"},
-            8:{"img":"14.8.png"}
+            "1":{"img":"14.1.png"},
+            "2":{"img":"14.2.png"},
+            "3":{"img":"14.3.png"},
+            "4":{"img":"14.4.png"},
+            "5":{"img":"14.5.png"},
+            "6":{"img":"14.6.png"},
+            "7":{"img":"14.7.png"},
+            "8":{"img":"14.8.png"}
          },
          "fortImgData":{
             "baseurl":"buildings/fortifications/",
-            1:{
+            "1":{
                "front":["fort130_F1.png",new Point(-127,46)],
                "back":["fort130_B1.png",new Point(-122,-10)]
             },
-            2:{
+            "2":{
                "front":["fort130_F2.png",new Point(-124,48)],
                "back":["fort130_B2.png",new Point(-120,-15)]
             },
-            3:{
+            "3":{
                "front":["fort130_F3.png",new Point(-124,32)],
                "back":["fort130_B3.png",new Point(-110,-11)]
             },
-            4:{
+            "4":{
                "front":["fort130_F4.png",new Point(-124,15)],
                "back":["fort130_B4.png",new Point(-116,-49)]
             }
@@ -1630,7 +1630,7 @@ package
          }],
          "imageData":{
             "baseurl":"buildings/monsterhousing/",
-            1:{
+            "1":{
                "top":["top.3.v2.png",new Point(-109,11)],
                "shadow":["shadow.3.v2.jpg",new Point(-112,23)],
                "topdamaged":["top.3.damaged.v2.png",new Point(-107,12)],
@@ -1641,14 +1641,14 @@ package
          },
          "upgradeImgData":{
             "baseurl":"buildingbuttons/",
-            1:{
+            "1":{
                "img":"15.jpg",
                "silhouette_img":"15.silhouette.jpg"
             }
          },
          "thumbImgData":{
             "baseurl":"buildingthumbs/",
-            1:{"img":"15.png"}
+            "1":{"img":"15.png"}
          },
          "quantity":[0,1,1,2,2,3,3,3,4,4,4],
          "capacity":[250,425,520,670,740,870,1090,1225,1440,1680],
@@ -1678,7 +1678,7 @@ package
          }],
          "imageData":{
             "baseurl":"buildings/hatcherycontrolcenter/",
-            1:{
+            "1":{
                "top":["top.1.png",new Point(-40,-58)],
                "shadow":["shadow.1.jpg",new Point(-51,20)],
                "topdamaged":["top.1.damaged.png",new Point(-51,-59)],
@@ -1689,14 +1689,14 @@ package
          },
          "upgradeImgData":{
             "baseurl":"buildingbuttons/",
-            1:{
+            "1":{
                "img":"16.jpg",
                "silhouette_img":"16.silhouette.jpg"
             }
          },
          "thumbImgData":{
             "baseurl":"buildingthumbs/",
-            1:{"img":"16.png"}
+            "1":{"img":"16.png"}
          },
          "quantity":[0,0,0,1,1,1,1,1,1,1,1],
          "hp":[64000],
@@ -1753,7 +1753,7 @@ package
          "buildingbuttons":["17.1"],
          "imageData":{
             "baseurl":"buildings/walls/",
-            1:{
+            "1":{
                "top":["top.1.png",new Point(-21,-21)],
                "shadow":["shadow.jpg",new Point(-28,-7)],
                "topdamaged":["top.1.damaged.png",new Point(-21,-21)],
@@ -1761,7 +1761,7 @@ package
                "topdestroyed":["top.1.destroyed.png",new Point(-21,-5)],
                "shadowdestroyed":["shadow.jpg",new Point(-28,-7)]
             },
-            2:{
+            "2":{
                "top":["top.2.png",new Point(-20,-20)],
                "shadow":["shadow.jpg",new Point(-28,-7)],
                "topdamaged":["top.2.damaged.png",new Point(-21,-20)],
@@ -1769,7 +1769,7 @@ package
                "topdestroyed":["top.2.destroyed.png",new Point(-19,0)],
                "shadowdestroyed":["shadow.jpg",new Point(-28,-7)]
             },
-            3:{
+            "3":{
                "top":["top.3.png",new Point(-21,-21)],
                "shadow":["shadow.jpg",new Point(-28,-7)],
                "topdamaged":["top.3.damaged.png",new Point(-22,-21)],
@@ -1777,7 +1777,7 @@ package
                "topdestroyed":["top.3.destroyed.png",new Point(-21,-3)],
                "shadowdestroyed":["shadow.jpg",new Point(-28,-7)]
             },
-            4:{
+            "4":{
                "top":["top.4.v2.png",new Point(-20,-22)],
                "shadow":["shadow.jpg",new Point(-28,-7)],
                "topdamaged":["top.4.damaged.v2.png",new Point(-20,-22)],
@@ -1785,7 +1785,7 @@ package
                "topdestroyed":["top.4.destroyed.png",new Point(-20,-2)],
                "shadowdestroyed":["shadow.jpg",new Point(-28,-7)]
             },
-            5:{
+            "5":{
                "top":["top.5.png",new Point(-20,-22)],
                "shadow":["shadow.jpg",new Point(-28,-7)],
                "topdamaged":["top.5.damaged.png",new Point(-20,-19)],
@@ -1796,28 +1796,28 @@ package
          },
          "upgradeImgData":{
             "baseurl":"buildingbuttons/",
-            1:{
+            "1":{
                "img":"17.1.jpg",
                "silhouette_img":"17.1.silhouette.jpg"
             },
-            2:{"img":"17.2.v2.jpg"},
-            3:{
+            "2":{"img":"17.2.v2.jpg"},
+            "3":{
                "img":"17.3.v2.jpg",
                "silhouette_img":"17.3.v2.silhouette.jpg"
             },
-            4:{
+            "4":{
                "img":"17.4.jpg",
                "silhouette_img":"17.4.silhouette.jpg"
             },
-            5:{"img":"17.5.jpg"}
+            "5":{"img":"17.5.jpg"}
          },
          "thumbImgData":{
             "baseurl":"buildingthumbs/",
-            1:{"img":"17.1.png"},
-            2:{"img":"17.2.png"},
-            3:{"img":"17.3.png"},
-            4:{"img":"17.4.png"},
-            4:{"img":"17.5.png"}
+            "1":{"img":"17.1.png"},
+            "2":{"img":"17.2.png"},
+            "3":{"img":"17.3.png"},
+            "4":{"img":"17.4.png"},
+            "4":{"img":"17.5.png"}
          },
          "quantity":[0,0,30,60,120,200,220,280,300,340,400],
          "hp":[1000,2300,5750,18000,27000],
@@ -1846,7 +1846,7 @@ package
          }],
          "imageData":{
             "baseurl":"buildings/walls/stone/",
-            1:{
+            "1":{
                "top":["top.1.png",new Point(-16,-21)],
                "shadow":["shadow.1.jpg",new Point(-19,-1)],
                "topdamaged":["top.1.damaged.png",new Point(-17,-19)],
@@ -1857,11 +1857,11 @@ package
          },
          "upgradeImgData":{
             "baseurl":"buildingbuttons/",
-            1:{"img":"18.jpg"}
+            "1":{"img":"18.jpg"}
          },
          "thumbImgData":{
             "baseurl":"buildingthumbs/",
-            1:{"img":"18.png"}
+            "1":{"img":"18.png"}
          },
          "quantity":[0,0,10,20,40,60,70,90,90,90,90],
          "hp":[3600],
@@ -1931,7 +1931,7 @@ package
          }],
          "imageData":{
             "baseurl":"buildings/monsterbaiter/",
-            1:{
+            "1":{
                "anim":["anim.1.png",new Rectangle(-33,-23,67,77),41],
                "top":["top.1.png",new Point(-37,-6)],
                "shadow":["shadow.1.jpg",new Point(-9,16)],
@@ -1943,14 +1943,14 @@ package
          },
          "upgradeImgData":{
             "baseurl":"buildingbuttons/",
-            1:{
+            "1":{
                "img":"19.jpg",
                "silhouette_img":"19.silhouette.jpg"
             }
          },
          "thumbImgData":{
             "baseurl":"buildingthumbs/",
-            1:{"img":"19.png"}
+            "1":{"img":"19.png"}
          },
          "quantity":[0,0,0,0,1,1,1,1,1,1,1],
          "produce":[2,2,2,2,2,2,2],
@@ -2135,7 +2135,7 @@ package
          }],
          "imageData":{
             "baseurl":"buildings/cannontower/",
-            1:{
+            "1":{
                "top":["top.3.png",new Point(-33,-25)],
                "shadow":["shadow.3.jpg",new Point(-38,20)],
                "topdamaged":["top.3.damaged.png",new Point(-48,-25)],
@@ -2147,30 +2147,30 @@ package
          },
          "upgradeImgData":{
             "baseurl":"buildingbuttons/",
-            1:{
+            "1":{
                "img":"20.jpg",
                "silhouette_img":"20.silhouette.jpg"
             }
          },
          "thumbImgData":{
             "baseurl":"buildingthumbs/",
-            1:{"img":"20.png"}
+            "1":{"img":"20.png"}
          },
          "fortImgData":{
             "baseurl":"buildings/fortifications/",
-            1:{
+            "1":{
                "front":["fort70_F1.png",new Point(-73,21)],
                "back":["fort70_B1.png",new Point(-70,-10)]
             },
-            2:{
+            "2":{
                "front":["fort70_F2.png",new Point(-69,22)],
                "back":["fort70_B2.png",new Point(-65,-12)]
             },
-            3:{
+            "3":{
                "front":["fort70_F3.png",new Point(-72,10)],
                "back":["fort70_B3.png",new Point(-68,-12)]
             },
-            4:{
+            "4":{
                "front":["fort70_F4.png",new Point(-70,-11)],
                "back":["fort70_B4.png",new Point(-61,-36)]
             }
@@ -2356,7 +2356,7 @@ package
          }],
          "imageData":{
             "baseurl":"buildings/snipertower/",
-            1:{
+            "1":{
                "anim":["anim.3.png",new Rectangle(-27,-50,55,47),30],
                "top":["top.3.png",new Point(-40,-30)],
                "shadow":["shadow.3.jpg",new Point(-43,12)],
@@ -2370,30 +2370,30 @@ package
          },
          "upgradeImgData":{
             "baseurl":"buildingbuttons/",
-            1:{
+            "1":{
                "img":"21.jpg",
                "silhouette_img":"21.silhouette.jpg"
             }
          },
          "thumbImgData":{
             "baseurl":"buildingthumbs/",
-            1:{"img":"21.png"}
+            "1":{"img":"21.png"}
          },
          "fortImgData":{
             "baseurl":"buildings/fortifications/",
-            1:{
+            "1":{
                "front":["fort70_F1.png",new Point(-73,21)],
                "back":["fort70_B1.png",new Point(-70,-10)]
             },
-            2:{
+            "2":{
                "front":["fort70_F2.png",new Point(-69,22)],
                "back":["fort70_B2.png",new Point(-65,-12)]
             },
-            3:{
+            "3":{
                "front":["fort70_F3.png",new Point(-72,10)],
                "back":["fort70_B3.png",new Point(-68,-12)]
             },
-            4:{
+            "4":{
                "front":["fort70_F4.png",new Point(-70,-11)],
                "back":["fort70_B4.png",new Point(-61,-36)]
             }
@@ -2454,7 +2454,7 @@ package
          }],
          "imageData":{
             "baseurl":"buildings/bunker/",
-            1:{
+            "1":{
                "anim":["anim.1.png",new Rectangle(-46,-15,90,83),15],
                "shadow":["shadow.1.jpg",new Point(-66,10)],
                "topdamaged":["top.1.damaged.png",new Point(-45,-8)],
@@ -2465,14 +2465,14 @@ package
          },
          "upgradeImgData":{
             "baseurl":"buildingbuttons/",
-            1:{
+            "1":{
                "img":"22.jpg",
                "silhouette_img":"22.silhouette.jpg"
             }
          },
          "thumbImgData":{
             "baseurl":"buildingthumbs/",
-            1:{"img":"22.png"}
+            "1":{"img":"22.png"}
          },
          "quantity":[0,0,0,1,1,2,2,3,4,4,4],
          "capacity":[190,225,270,330,400],
@@ -2628,7 +2628,7 @@ package
          }],
          "imageData":{
             "baseurl":"buildings/lasertower/",
-            1:{
+            "1":{
                "anim":["anim.1.png",new Rectangle(-13,-50,29,32),54],
                "top":["top.1.png",new Point(-33,-29)],
                "shadow":["shadow.1.jpg",new Point(-36,15)],
@@ -2642,30 +2642,30 @@ package
          },
          "upgradeImgData":{
             "baseurl":"buildingbuttons/",
-            1:{
+            "1":{
                "img":"23.jpg",
                "silhouette_img":"23.silhouette.jpg"
             }
          },
          "thumbImgData":{
             "baseurl":"buildingthumbs/",
-            1:{"img":"23.png"}
+            "1":{"img":"23.png"}
          },
          "fortImgData":{
             "baseurl":"buildings/fortifications/",
-            1:{
+            "1":{
                "front":["fort70_F1.png",new Point(-73,21)],
                "back":["fort70_B1.png",new Point(-70,-10)]
             },
-            2:{
+            "2":{
                "front":["fort70_F2.png",new Point(-69,22)],
                "back":["fort70_B2.png",new Point(-65,-12)]
             },
-            3:{
+            "3":{
                "front":["fort70_F3.png",new Point(-72,10)],
                "back":["fort70_B3.png",new Point(-68,-12)]
             },
-            4:{
+            "4":{
                "front":["fort70_F4.png",new Point(-70,-11)],
                "back":["fort70_B4.png",new Point(-61,-36)]
             }
@@ -2697,7 +2697,7 @@ package
          }],
          "imageData":{
             "baseurl":"buildings/boobytrap/",
-            1:{
+            "1":{
                "top":["top.1.png",new Point(-15,1)],
                "shadow":["shadow.1.jpg",new Point(-13,3)],
                "topdestroyed":["top.1.destroyed.png",new Point(-15,2)],
@@ -2706,14 +2706,14 @@ package
          },
          "upgradeImgData":{
             "baseurl":"buildingbuttons/",
-            1:{
+            "1":{
                "img":"24.jpg",
                "silhouette_img":"24.silhouette.jpg"
             }
          },
          "thumbImgData":{
             "baseurl":"buildingthumbs/",
-            1:{"img":"24.png"}
+            "1":{"img":"24.png"}
          },
          "quantity":[0,0,8,15,20,28,35,42,50,60,75],
          "damage":[1000],
@@ -2869,7 +2869,7 @@ package
          }],
          "imageData":{
             "baseurl":"buildings/lightningtower/",
-            1:{
+            "1":{
                "anim":["anim.3.png",new Rectangle(-25,-15,27,53),55],
                "top":["top.3.png",new Point(-33,-57)],
                "shadow":["shadow.3.jpg",new Point(-38,18)],
@@ -2883,30 +2883,30 @@ package
          },
          "upgradeImgData":{
             "baseurl":"buildingbuttons/",
-            1:{
+            "1":{
                "img":"25.jpg",
                "silhouette_img":"25.silhouette.jpg"
             }
          },
          "thumbImgData":{
             "baseurl":"buildingthumbs/",
-            1:{"img":"25.png"}
+            "1":{"img":"25.png"}
          },
          "fortImgData":{
             "baseurl":"buildings/fortifications/",
-            1:{
+            "1":{
                "front":["fort70_F1.png",new Point(-73,21)],
                "back":["fort70_B1.png",new Point(-70,-10)]
             },
-            2:{
+            "2":{
                "front":["fort70_F2.png",new Point(-69,22)],
                "back":["fort70_B2.png",new Point(-65,-12)]
             },
-            3:{
+            "3":{
                "front":["fort70_F3.png",new Point(-72,10)],
                "back":["fort70_B3.png",new Point(-68,-12)]
             },
-            4:{
+            "4":{
                "front":["fort70_F4.png",new Point(-70,-11)],
                "back":["fort70_B4.png",new Point(-61,-36)]
             }
@@ -2963,7 +2963,7 @@ package
          }],
          "imageData":{
             "baseurl":"buildings/academy/",
-            1:{
+            "1":{
                "anim":["anim.1.v2.png",new Rectangle(-22,-13,48,26),21],
                "top":["top.1.png",new Point(-42,-12)],
                "shadow":["shadow.1.jpg",new Point(-47,27)],
@@ -2972,7 +2972,7 @@ package
                "topdestroyed":["top.1.destroyed.png",new Point(-50,11)],
                "shadowdestroyed":["shadow.1.destroyed.jpg",new Point(-48,26)]
             },
-            2:{
+            "2":{
                "anim":["anim.2.png",new Rectangle(-22,-11,47,24),21],
                "top":["top.2.png",new Point(-43,-14)],
                "shadow":["shadow.2.jpg",new Point(-48,27)],
@@ -2981,7 +2981,7 @@ package
                "topdestroyed":["top.1.destroyed.png",new Point(-50,11)],
                "shadowdestroyed":["shadow.1.destroyed.jpg",new Point(-48,26)]
             },
-            3:{
+            "3":{
                "anim":["anim.3.png",new Rectangle(-24,-17,48,24),21],
                "top":["top.3.png",new Point(-53,-18)],
                "shadow":["shadow.3.jpg",new Point(-53,27)],
@@ -2990,7 +2990,7 @@ package
                "topdestroyed":["top.1.destroyed.png",new Point(-50,11)],
                "shadowdestroyed":["shadow.1.destroyed.jpg",new Point(-48,26)]
             },
-            4:{
+            "4":{
                "anim":["anim.3.png",new Rectangle(-24,-36,48,24),21],
                "top":["top.4.png",new Point(-53,-37)],
                "shadow":["shadow.4.jpg",new Point(-53,27)],
@@ -3002,20 +3002,20 @@ package
          },
          "upgradeImgData":{
             "baseurl":"buildingbuttons/",
-            1:{
+            "1":{
                "img":"26.1.jpg",
                "silhouette_img":"26.2.silhouette.jpg"
             },
-            2:{"img":"26.2.jpg"},
-            3:{"img":"26.3.jpg"},
-            4:{"img":"26.4.jpg"}
+            "2":{"img":"26.2.jpg"},
+            "3":{"img":"26.3.jpg"},
+            "4":{"img":"26.4.jpg"}
          },
          "thumbImgData":{
             "baseurl":"buildingthumbs/",
-            1:{"img":"26.1.png"},
-            2:{"img":"26.2.png"},
-            3:{"img":"26.3.png"},
-            4:{"img":"26.4.png"}
+            "1":{"img":"26.1.png"},
+            "2":{"img":"26.2.png"},
+            "3":{"img":"26.3.png"},
+            "4":{"img":"26.4.png"}
          },
          "quantity":[0,0,0,1,1,2,2,2,2,2,2],
          "hp":[6000,10000,14000,20000,30000],
@@ -3045,7 +3045,7 @@ package
          }],
          "imageData":{
             "baseurl":"buildings/trojanhorse/",
-            1:{
+            "1":{
                "anim":["anim.1.png",new Rectangle(-92,-23,39,31),2],
                "top":["top.1.png",new Point(-91,-65)],
                "shadow":["shadow.1.jpg",new Point(-72,11)]
@@ -3080,7 +3080,7 @@ package
          }],
          "imageData":{
             "baseurl":"buildings/decorations/flags/",
-            1:{
+            "1":{
                "anim":["flag-usa.png",new Rectangle(1,-35,24,30),21],
                "top":["flagpole.png",new Point(-5,-43)],
                "shadow":["shadow.jpg",new Point(-3,5)]
@@ -3114,7 +3114,7 @@ package
          }],
          "imageData":{
             "baseurl":"buildings/decorations/flags/",
-            1:{
+            "1":{
                "anim":["flag-britain.png",new Rectangle(1,-35,24,30),21],
                "top":["flagpole.png",new Point(-5,-43)],
                "shadow":["shadow.jpg",new Point(-3,5)]
@@ -3148,7 +3148,7 @@ package
          }],
          "imageData":{
             "baseurl":"buildings/decorations/flags/",
-            1:{
+            "1":{
                "anim":["flag-australia.png",new Rectangle(1,-35,24,30),21],
                "top":["flagpole.png",new Point(-5,-43)],
                "shadow":["shadow.jpg",new Point(-3,5)]
@@ -3182,7 +3182,7 @@ package
          }],
          "imageData":{
             "baseurl":"buildings/decorations/flags/",
-            1:{
+            "1":{
                "anim":["flag-brazil.png",new Rectangle(1,-35,24,30),21],
                "top":["flagpole.png",new Point(-5,-43)],
                "shadow":["shadow.jpg",new Point(-3,5)]
@@ -3217,7 +3217,7 @@ package
          }],
          "imageData":{
             "baseurl":"buildings/decorations/flags/",
-            1:{
+            "1":{
                "anim":["flag-europe.png",new Rectangle(1,-35,24,30),21],
                "top":["flagpole.png",new Point(-5,-43)],
                "shadow":["shadow.jpg",new Point(-3,5)]
@@ -3251,7 +3251,7 @@ package
          }],
          "imageData":{
             "baseurl":"buildings/decorations/flags/",
-            1:{
+            "1":{
                "anim":["flag-france.png",new Rectangle(1,-35,24,30),21],
                "top":["flagpole.png",new Point(-5,-43)],
                "shadow":["shadow.jpg",new Point(-3,5)]
@@ -3285,7 +3285,7 @@ package
          }],
          "imageData":{
             "baseurl":"buildings/decorations/flags/",
-            1:{
+            "1":{
                "anim":["flag-indonesian.png",new Rectangle(1,-35,24,30),21],
                "top":["flagpole.png",new Point(-5,-43)],
                "shadow":["shadow.jpg",new Point(-3,5)]
@@ -3319,7 +3319,7 @@ package
          }],
          "imageData":{
             "baseurl":"buildings/decorations/flags/",
-            1:{
+            "1":{
                "anim":["flag-italy.png",new Rectangle(1,-35,24,30),21],
                "top":["flagpole.png",new Point(-5,-43)],
                "shadow":["shadow.jpg",new Point(-3,5)]
@@ -3353,7 +3353,7 @@ package
          }],
          "imageData":{
             "baseurl":"buildings/decorations/flags/",
-            1:{
+            "1":{
                "anim":["flag-malaysia.png",new Rectangle(1,-35,24,30),21],
                "top":["flagpole.png",new Point(-5,-43)],
                "shadow":["shadow.jpg",new Point(-3,5)]
@@ -3387,7 +3387,7 @@ package
          }],
          "imageData":{
             "baseurl":"buildings/decorations/flags/",
-            1:{
+            "1":{
                "anim":["flag-dutch.png",new Rectangle(1,-35,24,30),21],
                "top":["flagpole.png",new Point(-5,-43)],
                "shadow":["shadow.jpg",new Point(-3,5)]
@@ -3421,7 +3421,7 @@ package
          }],
          "imageData":{
             "baseurl":"buildings/decorations/flags/",
-            1:{
+            "1":{
                "anim":["flag-newzealand.png",new Rectangle(1,-35,24,30),21],
                "top":["flagpole.png",new Point(-5,-43)],
                "shadow":["shadow.jpg",new Point(-3,5)]
@@ -3455,7 +3455,7 @@ package
          }],
          "imageData":{
             "baseurl":"buildings/decorations/flags/",
-            1:{
+            "1":{
                "anim":["flag-norway.png",new Rectangle(1,-35,24,30),21],
                "top":["flagpole.png",new Point(-5,-43)],
                "shadow":["shadow.jpg",new Point(-3,5)]
@@ -3489,7 +3489,7 @@ package
          }],
          "imageData":{
             "baseurl":"buildings/decorations/flags/",
-            1:{
+            "1":{
                "anim":["flag-poland.png",new Rectangle(1,-35,24,30),21],
                "top":["flagpole.png",new Point(-5,-43)],
                "shadow":["shadow.jpg",new Point(-3,5)]
@@ -3523,7 +3523,7 @@ package
          }],
          "imageData":{
             "baseurl":"buildings/decorations/flags/",
-            1:{
+            "1":{
                "anim":["flag-sweden.png",new Rectangle(1,-35,24,30),21],
                "top":["flagpole.png",new Point(-5,-43)],
                "shadow":["shadow.jpg",new Point(-3,5)]
@@ -3557,7 +3557,7 @@ package
          }],
          "imageData":{
             "baseurl":"buildings/decorations/flags/",
-            1:{
+            "1":{
                "anim":["flag-turkey.png",new Rectangle(1,-35,24,30),21],
                "top":["flagpole.png",new Point(-5,-43)],
                "shadow":["shadow.jpg",new Point(-3,5)]
@@ -3591,7 +3591,7 @@ package
          }],
          "imageData":{
             "baseurl":"buildings/decorations/flags/",
-            1:{
+            "1":{
                "anim":["flag-canadian.png",new Rectangle(1,-35,24,30),21],
                "top":["flagpole.png",new Point(-5,-43)],
                "shadow":["shadow.jpg",new Point(-3,5)]
@@ -3625,7 +3625,7 @@ package
          }],
          "imageData":{
             "baseurl":"buildings/decorations/flags/",
-            1:{
+            "1":{
                "anim":["flag-denmark.png",new Rectangle(1,-35,24,30),21],
                "top":["flagpole.png",new Point(-5,-43)],
                "shadow":["shadow.jpg",new Point(-3,5)]
@@ -3659,7 +3659,7 @@ package
          }],
          "imageData":{
             "baseurl":"buildings/decorations/flags/",
-            1:{
+            "1":{
                "anim":["flag-germany.png",new Rectangle(1,-35,24,30),21],
                "top":["flagpole.png",new Point(-5,-43)],
                "shadow":["shadow.jpg",new Point(-3,5)]
@@ -3693,7 +3693,7 @@ package
          }],
          "imageData":{
             "baseurl":"buildings/decorations/flags/",
-            1:{
+            "1":{
                "anim":["flag-philippines.png",new Rectangle(1,-35,24,30),21],
                "top":["flagpole.png",new Point(-5,-43)],
                "shadow":["shadow.jpg",new Point(-3,5)]
@@ -3727,7 +3727,7 @@ package
          }],
          "imageData":{
             "baseurl":"buildings/decorations/flags/",
-            1:{
+            "1":{
                "anim":["flag-singapore.png",new Rectangle(1,-35,24,30),21],
                "top":["flagpole.png",new Point(-5,-43)],
                "shadow":["shadow.jpg",new Point(-3,5)]
@@ -3761,7 +3761,7 @@ package
          }],
          "imageData":{
             "baseurl":"buildings/decorations/flags/",
-            1:{
+            "1":{
                "anim":["flag-austria.png",new Rectangle(1,-35,24,30),21],
                "top":["flagpole.png",new Point(-5,-43)],
                "shadow":["shadow.jpg",new Point(-3,5)]
@@ -3796,7 +3796,7 @@ package
          }],
          "imageData":{
             "baseurl":"buildings/decorations/flags/",
-            1:{
+            "1":{
                "anim":["flag-pirate.png",new Rectangle(1,-35,24,30),21],
                "top":["flagpole.png",new Point(-5,-43)],
                "shadow":["shadow.jpg",new Point(-3,5)]
@@ -3831,7 +3831,7 @@ package
          }],
          "imageData":{
             "baseurl":"buildings/decorations/flags/",
-            1:{
+            "1":{
                "anim":["flag-peace.png",new Rectangle(1,-35,24,30),21],
                "top":["flagpole.png",new Point(-5,-43)],
                "shadow":["shadow.jpg",new Point(-3,5)]
@@ -3885,7 +3885,7 @@ package
          }],
          "imageData":{
             "baseurl":"buildings/catapult/",
-            1:{
+            "1":{
                "top":["top.1.png",new Point(-43,12)],
                "shadow":["shadow.1.jpg",new Point(-42,28)],
                "topdamaged":["top.1.damaged.png",new Point(-40,12)],
@@ -3893,7 +3893,7 @@ package
                "topdestroyed":["top.3.destroyed.png",new Point(-48,9)],
                "shadowdestroyed":["shadow.3.destroyed.jpg",new Point(-47,23)]
             },
-            2:{
+            "2":{
                "top":["top.2.png",new Point(-44,-21)],
                "shadow":["shadow.2.jpg",new Point(-49,19)],
                "topdamaged":["top.2.damaged.png",new Point(-43,-16)],
@@ -3901,7 +3901,7 @@ package
                "topdestroyed":["top.3.destroyed.png",new Point(-48,9)],
                "shadowdestroyed":["shadow.3.destroyed.jpg",new Point(-47,23)]
             },
-            3:{
+            "3":{
                "top":["top.3.png",new Point(-43,-29)],
                "shadow":["shadow.3.jpg",new Point(-39,27)],
                "topdamaged":["top.3.damaged.png",new Point(-51,-29)],
@@ -3912,18 +3912,18 @@ package
          },
          "upgradeImgData":{
             "baseurl":"buildingbuttons/",
-            1:{
+            "1":{
                "img":"51.1.jpg",
                "silhouette_img":"51.3.silhouette.jpg"
             },
-            2:{"img":"51.2.jpg"},
-            3:{"img":"51.3.jpg"}
+            "2":{"img":"51.2.jpg"},
+            "3":{"img":"51.3.jpg"}
          },
          "thumbImgData":{
             "baseurl":"buildingthumbs/",
-            1:{"img":"51.1.png"},
-            2:{"img":"51.2.png"},
-            3:{"img":"51.3.png"}
+            "1":{"img":"51.1.png"},
+            "2":{"img":"51.2.png"},
+            "3":{"img":"51.3.png"}
          },
          "quantity":[0,0,0,1,1,1,1,1,1,1,1],
          "hp":[4000,8000,16000,32000],
@@ -3955,7 +3955,7 @@ package
          }],
          "imageData":{
             "baseurl":"buildings/decorations/flags/",
-            1:{
+            "1":{
                "anim":["flag-pirate.png",new Rectangle(1,-25,24,30),21],
                "top":["flagpole.png",new Point(-5,-33)],
                "shadow":["shadow.jpg",new Point(-3,15)]
@@ -3983,7 +3983,7 @@ package
          "repairTime":[10],
          "imageData":{
             "baseurl":"buildings/decorations/pumpkins/",
-            1:{
+            "1":{
                "anim":["anim.png",new Rectangle(-18,-15,37,36),30],
                "shadow":["shadow.jpg",new Point(-22,-1)]
             }
@@ -4007,7 +4007,7 @@ package
          "repairTime":[10],
          "imageData":{
             "baseurl":"buildings/decorations/pumpkins/",
-            1:{
+            "1":{
                "top":["large-top-6.png",new Point(-169,-60)],
                "shadow":["large-shadow-6.jpg",new Point(-168,5)],
                "anim":["large-anim-6.png",new Rectangle(-119,-113,189,155),45]
@@ -4038,7 +4038,7 @@ package
          }],
          "imageData":{
             "baseurl":"buildings/decorations/acorn/",
-            1:{
+            "1":{
                "top":["top.png",new Point(-10,-9)],
                "shadow":["shadow.jpg",new Point(-9,8)]
             }
@@ -4071,7 +4071,7 @@ package
          }],
          "imageData":{
             "baseurl":"buildings/decorations/beehive/",
-            1:{
+            "1":{
                "top":["top.png",new Point(-18,-15)],
                "shadow":["shadow.jpg",new Point(-14,6)]
             }
@@ -4104,7 +4104,7 @@ package
          }],
          "imageData":{
             "baseurl":"buildings/decorations/birdhouse/",
-            1:{
+            "1":{
                "top":["top.png",new Point(-16,-46)],
                "shadow":["shadow.jpg",new Point(-2,17)]
             }
@@ -4138,7 +4138,7 @@ package
          }],
          "imageData":{
             "baseurl":"buildings/decorations/campingtent/",
-            1:{
+            "1":{
                "top":["top.png",new Point(-30,-12)],
                "shadow":["shadow.jpg",new Point(-29,6)]
             }
@@ -4172,7 +4172,7 @@ package
          }],
          "imageData":{
             "baseurl":"buildings/decorations/childrensjax/",
-            1:{
+            "1":{
                "top":["top.png",new Point(-11,-11)],
                "shadow":["shadow.jpg",new Point(-7,5)]
             }
@@ -4205,7 +4205,7 @@ package
          }],
          "imageData":{
             "baseurl":"buildings/decorations/gnomes/",
-            1:{
+            "1":{
                "top":["top-red.png",new Point(-10,-31)],
                "shadow":["shadow.jpg",new Point(-13,2)]
             }
@@ -4238,7 +4238,7 @@ package
          }],
          "imageData":{
             "baseurl":"buildings/decorations/gnomes/",
-            1:{
+            "1":{
                "top":["top-blue.png",new Point(-10,-31)],
                "shadow":["shadow.jpg",new Point(-13,2)]
             }
@@ -4271,7 +4271,7 @@ package
          }],
          "imageData":{
             "baseurl":"buildings/decorations/gnomes/",
-            1:{
+            "1":{
                "top":["top-green.png",new Point(-10,-31)],
                "shadow":["shadow.jpg",new Point(-13,2)]
             }
@@ -4304,7 +4304,7 @@ package
          }],
          "imageData":{
             "baseurl":"buildings/decorations/hammock/",
-            1:{
+            "1":{
                "top":["top.png",new Point(-25,-8)],
                "shadow":["shadow.jpg",new Point(-26,6)]
             }
@@ -4337,7 +4337,7 @@ package
          }],
          "imageData":{
             "baseurl":"buildings/decorations/lawnchair/",
-            1:{
+            "1":{
                "top":["top.png",new Point(-24,-14)],
                "shadow":["shadow.jpg",new Point(-25,4)]
             }
@@ -4370,7 +4370,7 @@ package
          }],
          "imageData":{
             "baseurl":"buildings/decorations/outhouse/",
-            1:{
+            "1":{
                "top":["top.png",new Point(-16,-19)],
                "shadow":["shadow.jpg",new Point(-11,10)]
             }
@@ -4403,7 +4403,7 @@ package
          }],
          "imageData":{
             "baseurl":"buildings/decorations/pinecone/",
-            1:{
+            "1":{
                "top":["top.png",new Point(-13,-10)],
                "shadow":["shadow.jpg",new Point(-23,3)]
             }
@@ -4437,7 +4437,7 @@ package
          }],
          "imageData":{
             "baseurl":"buildings/decorations/rock/",
-            1:{
+            "1":{
                "top":["top.png",new Point(-15,0)],
                "shadow":["shadow.jpg",new Point(-15,9)]
             }
@@ -4470,7 +4470,7 @@ package
          }],
          "imageData":{
             "baseurl":"buildings/decorations/scaleelectriccartoyset/",
-            1:{
+            "1":{
                "top":["top.png",new Point(-48,0)],
                "shadow":["shadow.jpg",new Point(-57,8)]
             }
@@ -4504,7 +4504,7 @@ package
          }],
          "imageData":{
             "baseurl":"buildings/decorations/scarecrow/",
-            1:{
+            "1":{
                "top":["top.png",new Point(-25,-43)],
                "shadow":["shadow.jpg",new Point(-20,8)]
             }
@@ -4538,7 +4538,7 @@ package
          }],
          "imageData":{
             "baseurl":"buildings/decorations/sundial/",
-            1:{
+            "1":{
                "top":["top.png",new Point(-23,-6)],
                "shadow":["shadow.jpg",new Point(-23,8)]
             }
@@ -4571,7 +4571,7 @@ package
          }],
          "imageData":{
             "baseurl":"buildings/decorations/tikitorch/",
-            1:{
+            "1":{
                "anim":["anim.png",new Rectangle(-11,-71,16,36),25],
                "top":["top.png",new Point(-8,-38)],
                "shadow":["shadow.jpg",new Point(-6,3)]
@@ -4605,7 +4605,7 @@ package
          }],
          "imageData":{
             "baseurl":"buildings/decorations/walnut/",
-            1:{
+            "1":{
                "top":["top.png",new Point(-12,-2)],
                "shadow":["shadow.jpg",new Point(-23,3)]
             }
@@ -4638,7 +4638,7 @@ package
          }],
          "imageData":{
             "baseurl":"buildings/decorations/graveyardtombstone/",
-            1:{
+            "1":{
                "top":["top.png",new Point(-22,-13)],
                "shadow":["shadow.jpg",new Point(-20,9)]
             }
@@ -4671,7 +4671,7 @@ package
          }],
          "imageData":{
             "baseurl":"buildings/decorations/headsonsticks/",
-            1:{
+            "1":{
                "top":["top-pokey.png",new Point(-6,-28)],
                "shadow":["shadow.jpg",new Point(-1,7)]
             }
@@ -4704,7 +4704,7 @@ package
          }],
          "imageData":{
             "baseurl":"buildings/decorations/headsonsticks/",
-            1:{
+            "1":{
                "top":["top-octo.png",new Point(-6,-23)],
                "shadow":["shadow.jpg",new Point(-1,7)]
             }
@@ -4737,7 +4737,7 @@ package
          }],
          "imageData":{
             "baseurl":"buildings/decorations/headsonsticks/",
-            1:{
+            "1":{
                "top":["top-bolt.png",new Point(-10,-23)],
                "shadow":["shadow.jpg",new Point(-1,7)]
             }
@@ -4770,7 +4770,7 @@ package
          }],
          "imageData":{
             "baseurl":"buildings/decorations/headsonsticks/",
-            1:{
+            "1":{
                "top":["top-bandito.png",new Point(-5,-26)],
                "shadow":["shadow.jpg",new Point(-1,7)]
             }
@@ -4803,7 +4803,7 @@ package
          }],
          "imageData":{
             "baseurl":"buildings/decorations/headsonsticks/",
-            1:{
+            "1":{
                "top":["top-brain.png",new Point(-9,-28)],
                "shadow":["shadow.jpg",new Point(-1,7)]
             }
@@ -4836,7 +4836,7 @@ package
          }],
          "imageData":{
             "baseurl":"buildings/decorations/headsonsticks/",
-            1:{
+            "1":{
                "top":["top-crabatron.png",new Point(-10,-29)],
                "shadow":["shadow.jpg",new Point(-1,7)]
             }
@@ -4869,7 +4869,7 @@ package
          }],
          "imageData":{
             "baseurl":"buildings/decorations/headsonsticks/",
-            1:{
+            "1":{
                "top":["top-dave.png",new Point(-14,-30)],
                "shadow":["shadow.jpg",new Point(-1,7)]
             }
@@ -4902,7 +4902,7 @@ package
          }],
          "imageData":{
             "baseurl":"buildings/decorations/headsonsticks/",
-            1:{
+            "1":{
                "top":["top-eyera.png",new Point(-4,-23)],
                "shadow":["shadow.jpg",new Point(-1,7)]
             }
@@ -4935,7 +4935,7 @@ package
          }],
          "imageData":{
             "baseurl":"buildings/decorations/headsonsticks/",
-            1:{
+            "1":{
                "top":["top-fang.png",new Point(-10,-30)],
                "shadow":["shadow.jpg",new Point(-1,7)]
             }
@@ -4968,7 +4968,7 @@ package
          }],
          "imageData":{
             "baseurl":"buildings/decorations/headsonsticks/",
-            1:{
+            "1":{
                "top":["top-fink.png",new Point(-11,-29)],
                "shadow":["shadow.jpg",new Point(-1,7)]
             }
@@ -5001,7 +5001,7 @@ package
          }],
          "imageData":{
             "baseurl":"buildings/decorations/headsonsticks/",
-            1:{
+            "1":{
                "top":["top-ichi.png",new Point(-6,-29)],
                "shadow":["shadow.jpg",new Point(-1,7)]
             }
@@ -5034,7 +5034,7 @@ package
          }],
          "imageData":{
             "baseurl":"buildings/decorations/headsonsticks/",
-            1:{
+            "1":{
                "top":["top-projectx.png",new Point(-19,-24)],
                "shadow":["shadow.jpg",new Point(-1,7)]
             }
@@ -5067,7 +5067,7 @@ package
          }],
          "imageData":{
             "baseurl":"buildings/decorations/blackberrybush/",
-            1:{"top":["top.png",new Point(-25,-13)]}
+            "1":{"top":["top.png",new Point(-25,-13)]}
          },
          "quantity":[0],
          "hp":[100],
@@ -5097,7 +5097,7 @@ package
          }],
          "imageData":{
             "baseurl":"buildings/decorations/bonsaitree/",
-            1:{
+            "1":{
                "top":["top.png",new Point(-41,-36)],
                "shadow":["shadow.jpg",new Point(-22,15)]
             }
@@ -5130,7 +5130,7 @@ package
          }],
          "imageData":{
             "baseurl":"buildings/decorations/cactus/",
-            1:{
+            "1":{
                "top":["top.png",new Point(-14,-30)],
                "shadow":["shadow.jpg",new Point(-12,2)]
             }
@@ -5163,7 +5163,7 @@ package
          }],
          "imageData":{
             "baseurl":"buildings/decorations/flytrap/",
-            1:{
+            "1":{
                "top":["top.png",new Point(-33,-5)],
                "shadow":["shadow.jpg",new Point(-38,20)]
             }
@@ -5196,7 +5196,7 @@ package
          }],
          "imageData":{
             "baseurl":"buildings/decorations/thorns/",
-            1:{
+            "1":{
                "top":["top.png",new Point(-23,-18)],
                "shadow":["shadow.jpg",new Point(-25,7)]
             }
@@ -5229,7 +5229,7 @@ package
          }],
          "imageData":{
             "baseurl":"buildings/decorations/flowers/",
-            1:{
+            "1":{
                "top":["top-pink.png",new Point(-18,-21)],
                "shadow":["shadow.jpg",new Point(-10,2)]
             }
@@ -5262,7 +5262,7 @@ package
          }],
          "imageData":{
             "baseurl":"buildings/decorations/flowers/",
-            1:{
+            "1":{
                "top":["top-purple.png",new Point(-18,-21)],
                "shadow":["shadow.jpg",new Point(-10,2)]
             }
@@ -5295,7 +5295,7 @@ package
          }],
          "imageData":{
             "baseurl":"buildings/decorations/flowers/",
-            1:{
+            "1":{
                "top":["top-red.png",new Point(-18,-21)],
                "shadow":["shadow.jpg",new Point(-10,2)]
             }
@@ -5328,7 +5328,7 @@ package
          }],
          "imageData":{
             "baseurl":"buildings/decorations/flowers/",
-            1:{
+            "1":{
                "top":["top-white.png",new Point(-18,-21)],
                "shadow":["shadow.jpg",new Point(-10,2)]
             }
@@ -5361,7 +5361,7 @@ package
          }],
          "imageData":{
             "baseurl":"buildings/decorations/flowers/",
-            1:{
+            "1":{
                "top":["top-yellow.png",new Point(-18,-21)],
                "shadow":["shadow.jpg",new Point(-10,2)]
             }
@@ -5395,11 +5395,11 @@ package
          "buildingbuttons":["96.v2"],
          "upgradeImgData":{
             "baseurl":"buildingbuttons/",
-            1:{"img":"96.v2.jpg"}
+            "1":{"img":"96.v2.jpg"}
          },
          "imageData":{
             "baseurl":"buildings/decorations/statue-baseball/",
-            1:{
+            "1":{
                "top":["top.v2.png",new Point(-20,-36)],
                "shadow":["shadow.v2.jpg",new Point(-21,10)]
             }
@@ -5433,11 +5433,11 @@ package
          "buildingbuttons":["97.v2"],
          "upgradeImgData":{
             "baseurl":"buildingbuttons/",
-            1:{"img":"97.v2.jpg"}
+            "1":{"img":"97.v2.jpg"}
          },
          "imageData":{
             "baseurl":"buildings/decorations/statue-football/",
-            1:{
+            "1":{
                "top":["top.v2.png",new Point(-19,-39)],
                "shadow":["shadow.v2.jpg",new Point(-17,10)]
             }
@@ -5471,11 +5471,11 @@ package
          "buildingbuttons":["98.v2"],
          "upgradeImgData":{
             "baseurl":"buildingbuttons/",
-            1:{"img":"98.v2.jpg"}
+            "1":{"img":"98.v2.jpg"}
          },
          "imageData":{
             "baseurl":"buildings/decorations/statue-soccer/",
-            1:{
+            "1":{
                "top":["top.v2.png",new Point(-23,-36)],
                "shadow":["shadow.v2.jpg",new Point(-15,12)]
             }
@@ -5509,11 +5509,11 @@ package
          "buildingbuttons":["99.v2"],
          "upgradeImgData":{
             "baseurl":"buildingbuttons/",
-            1:{"img":"99.v2.jpg"}
+            "1":{"img":"99.v2.jpg"}
          },
          "imageData":{
             "baseurl":"buildings/decorations/statue-liberty/",
-            1:{
+            "1":{
                "top":["top.v2.png",new Point(-37,-118)],
                "shadow":["shadow.v2.jpg",new Point(-31,20)]
             }
@@ -5547,11 +5547,11 @@ package
          "buildingbuttons":["100.v2"],
          "upgradeImgData":{
             "baseurl":"buildingbuttons/",
-            1:{"img":"100.v2.jpg"}
+            "1":{"img":"100.v2.jpg"}
          },
          "imageData":{
             "baseurl":"buildings/decorations/statue-eiffeltower/",
-            1:{
+            "1":{
                "top":["top.v2.png",new Point(-60,-121)],
                "shadow":["shadow.v2.jpg",new Point(-60,5)]
             }
@@ -5585,11 +5585,11 @@ package
          "buildingbuttons":["101.v2"],
          "upgradeImgData":{
             "baseurl":"buildingbuttons/",
-            1:{"img":"101.v2.jpg"}
+            "1":{"img":"101.v2.jpg"}
          },
          "imageData":{
             "baseurl":"buildings/decorations/statue-bigben/",
-            1:{
+            "1":{
                "top":["top.v2.png",new Point(-32,-104)],
                "shadow":["shadow.v2.jpg",new Point(-32,19)]
             }
@@ -5622,7 +5622,7 @@ package
          }],
          "imageData":{
             "baseurl":"buildings/decorations/pool/",
-            1:{
+            "1":{
                "top":["top.png",new Point(-65,8)],
                "shadow":["shadow.jpg",new Point(-65,15)]
             }
@@ -5655,7 +5655,7 @@ package
          }],
          "imageData":{
             "baseurl":"buildings/decorations/pond/",
-            1:{"top":["top.png",new Point(-40,14)]}
+            "1":{"top":["top.png",new Point(-40,14)]}
          },
          "quantity":[0],
          "hp":[100],
@@ -5685,7 +5685,7 @@ package
          }],
          "imageData":{
             "baseurl":"buildings/decorations/zengarden/",
-            1:{
+            "1":{
                "top":["top.png",new Point(-72,-5)],
                "shadow":["shadow.jpg",new Point(-72,16)]
             }
@@ -5718,7 +5718,7 @@ package
          }],
          "imageData":{
             "baseurl":"buildings/decorations/fountain/",
-            1:{
+            "1":{
                "anim":["anim.png",new Rectangle(-47,-51,89,114),42],
                "shadow":["shadow.jpg",new Point(-41,16)]
             }
@@ -5751,7 +5751,7 @@ package
          }],
          "imageData":{
             "baseurl":"buildings/decorations/japaneseteagarden/",
-            1:{
+            "1":{
                "top":["top.png",new Point(-62,-38)],
                "shadow":["shadow.jpg",new Point(-57,12)]
             }
@@ -5784,7 +5784,7 @@ package
          }],
          "imageData":{
             "baseurl":"buildings/decorations/headsonsticks/",
-            1:{
+            "1":{
                "top":["top-skull.png",new Point(-7,-39)],
                "shadow":["shadow.jpg",new Point(-1,-7)]
             }
@@ -5817,7 +5817,7 @@ package
          }],
          "imageData":{
             "baseurl":"buildings/decorations/rubikscube/",
-            1:{
+            "1":{
                "top":["top-unsolved.png",new Point(-20,-23)],
                "shadow":["shadow.jpg",new Point(-22,-5)]
             }
@@ -5850,7 +5850,7 @@ package
          }],
          "imageData":{
             "baseurl":"buildings/decorations/rubikscube/",
-            1:{
+            "1":{
                "top":["top-solved.png",new Point(-20,-23)],
                "shadow":["shadow.jpg",new Point(-22,-5)]
             }
@@ -5884,7 +5884,7 @@ package
          }],
          "imageData":{
             "baseurl":"buildings/decorations/pumpkins/",
-            1:{
+            "1":{
                "top":["attended-large-top.png",new Point(-24,-32)],
                "shadow":["attended-large-shadow.jpg",new Point(-25,1)]
             }
@@ -5917,7 +5917,7 @@ package
          }],
          "imageData":{
             "baseurl":"buildings/decorations/pumpkins/",
-            1:{
+            "1":{
                "top":["attended-small-top.png",new Point(-10,-4)],
                "shadow":["attended-small-shadow.jpg",new Point(-12,2)]
             }
@@ -5965,7 +5965,7 @@ package
          }],
          "imageData":{
             "baseurl":"buildings/radiotower/",
-            1:{
+            "1":{
                "top":["top.1.png",new Point(-40,-80)],
                "topdamaged":["top.1.damaged.png",new Point(-40,-83)],
                "topdestroyed":["top.1.destroyed.png",new Point(-41,11)],
@@ -5976,7 +5976,7 @@ package
          },
          "upgradeImgData":{
             "baseurl":"buildingbuttons/",
-            1:{
+            "1":{
                "img":"113.jpg",
                "silhouette_img":"113.silhouette.jpg"
             }
@@ -6007,7 +6007,7 @@ package
          }],
          "imageData":{
             "baseurl":"buildings/monstercage/",
-            1:{
+            "1":{
                "top":["top.1.png",new Point(-128,-13)],
                "topopen":["top.1.v2.png",new Point(-129,-13)],
                "shadow":["shadow.1.jpg",new Point(-132,10)],
@@ -6016,7 +6016,7 @@ package
          },
          "upgradeImgData":{
             "baseurl":"buildingbuttons/",
-            1:{
+            "1":{
                "img":"114.jpg",
                "silhouette_img":"114.silhouette.jpg"
             }
@@ -6175,7 +6175,7 @@ package
          }],
          "imageData":{
             "baseurl":"buildings/flaktower/",
-            1:{
+            "1":{
                "anim":["anim.3.png",new Rectangle(-32,-23,62,52),32],
                "top":["top.3.png",new Point(-39,6)],
                "shadow":["shadow.3.jpg",new Point(-43,14)],
@@ -6189,26 +6189,26 @@ package
          },
          "upgradeImgData":{
             "baseurl":"buildingbuttons/",
-            1:{
+            "1":{
                "img":"115.jpg",
                "silhouette_img":"115.silhouette.jpg"
             }
          },
          "fortImgData":{
             "baseurl":"buildings/fortifications/",
-            1:{
+            "1":{
                "front":["fort70_F1.png",new Point(-73,21)],
                "back":["fort70_B1.png",new Point(-70,-10)]
             },
-            2:{
+            "2":{
                "front":["fort70_F2.png",new Point(-69,22)],
                "back":["fort70_B2.png",new Point(-65,-12)]
             },
-            3:{
+            "3":{
                "front":["fort70_F3.png",new Point(-72,10)],
                "back":["fort70_B3.png",new Point(-68,-12)]
             },
-            4:{
+            "4":{
                "front":["fort70_F4.png",new Point(-70,-11)],
                "back":["fort70_B4.png",new Point(-61,-36)]
             }
@@ -6252,7 +6252,7 @@ package
          }],
          "imageData":{
             "baseurl":"buildings/monsterlab/",
-            1:{
+            "1":{
                "anim":["anim.1.png",new Rectangle(-28,-30,54,48),32],
                "anim2":["anim.2.png",new Rectangle(-66,26,33,31),5],
                "anim3":["anim.3.png",new Rectangle(32,26,33,31),5],
@@ -6266,7 +6266,7 @@ package
          },
          "upgradeImgData":{
             "baseurl":"buildingbuttons/",
-            1:{
+            "1":{
                "img":"116.jpg",
                "silhouette_img":"116.silhouette.jpg"
             }
@@ -6297,7 +6297,7 @@ package
          }],
          "imageData":{
             "baseurl":"buildings/heavytrap/",
-            1:{
+            "1":{
                "top":["top.1.png",new Point(-16,-5)],
                "shadow":["shadow.1.jpg",new Point(-18,1)],
                "topdestroyed":["top.1.destroyed.png",new Point(-16,5)],
@@ -6306,7 +6306,7 @@ package
          },
          "upgradeImgData":{
             "baseurl":"buildingbuttons/",
-            1:{
+            "1":{
                "img":"117.jpg",
                "silhouette_img":"117.silhouette.jpg"
             }
@@ -6467,7 +6467,7 @@ package
          }],
          "imageData":{
             "baseurl":"buildings/railguntower/",
-            1:{
+            "1":{
                "anim":["anim.3.loaded.png",new Rectangle(-49,-9,96,56),32],
                "top":["top.3.png",new Point(-39,7)],
                "shadow":["shadow.3.jpg",new Point(-40,20)],
@@ -6481,30 +6481,30 @@ package
          },
          "upgradeImgData":{
             "baseurl":"buildingbuttons/",
-            1:{
+            "1":{
                "img":"118.jpg",
                "silhouette_img":"118.silhouette.jpg"
             }
          },
          "thumbImgData":{
             "baseurl":"buildingthumbs/",
-            1:{"img":"118.png"}
+            "1":{"img":"118.png"}
          },
          "fortImgData":{
             "baseurl":"buildings/fortifications/",
-            1:{
+            "1":{
                "front":["fort70_F1.png",new Point(-73,21)],
                "back":["fort70_B1.png",new Point(-70,-10)]
             },
-            2:{
+            "2":{
                "front":["fort70_F2.png",new Point(-69,22)],
                "back":["fort70_B2.png",new Point(-65,-12)]
             },
-            3:{
+            "3":{
                "front":["fort70_F3.png",new Point(-72,10)],
                "back":["fort70_B3.png",new Point(-68,-12)]
             },
-            4:{
+            "4":{
                "front":["fort70_F4.png",new Point(-70,-11)],
                "back":["fort70_B4.png",new Point(-61,-36)]
             }
@@ -6535,7 +6535,7 @@ package
          }],
          "imageData":{
             "baseurl":"buildings/champchamber/",
-            1:{
+            "1":{
                "top":["top.3.png",new Point(-66,-62)],
                "shadow":["shadow.3.jpg",new Point(-66,10)],
                "topdamaged":["top.3.damaged.png",new Point(-66,-54)],
@@ -6546,7 +6546,7 @@ package
          },
          "upgradeImgData":{
             "baseurl":"buildingbuttons/",
-            1:{
+            "1":{
                "img":"119.jpg",
                "silhouette_img":"119.silhouette.jpg"
             }
@@ -6580,7 +6580,7 @@ package
          }],
          "imageData":{
             "baseurl":"buildings/decorations/biggulp/",
-            1:{
+            "1":{
                "top":["top.png",new Point(-27,-36)],
                "shadow":["shadow.jpg",new Point(-35,16)]
             }
@@ -6614,7 +6614,7 @@ package
          }],
          "imageData":{
             "baseurl":"buildings/decorations/wmitotem/",
-            1:{
+            "1":{
                "top":["top1.png",new Point(-31,-23)],
                "shadow":["shadow1.jpg",new Point(-60,-18)]
             }
@@ -6648,7 +6648,7 @@ package
          }],
          "imageData":{
             "baseurl":"buildings/decorations/wmitotem/",
-            1:{
+            "1":{
                "top":["top2.png",new Point(-30,-60)],
                "shadow":["shadow2.jpg",new Point(-71,-44)]
             }
@@ -6682,7 +6682,7 @@ package
          }],
          "imageData":{
             "baseurl":"buildings/decorations/wmitotem/",
-            1:{
+            "1":{
                "top":["top3.png",new Point(-30,-90)],
                "shadow":["shadow3.jpg",new Point(-64,-61)]
             }
@@ -6716,7 +6716,7 @@ package
          }],
          "imageData":{
             "baseurl":"buildings/decorations/wmitotem/",
-            1:{
+            "1":{
                "top":["top4.png",new Point(-30,-110)],
                "shadow":["shadow4.jpg",new Point(-67,-82)]
             }
@@ -6751,7 +6751,7 @@ package
          "buildingbuttons":["125.v2"],
          "imageData":{
             "baseurl":"buildings/decorations/wmitotem/",
-            1:{
+            "1":{
                "top":["top5.v2.png",new Point(-30,-110)],
                "shadow":["shadow4.jpg",new Point(-67,-82)]
             }
@@ -6785,7 +6785,7 @@ package
          }],
          "imageData":{
             "baseurl":"buildings/decorations/wmitotem/",
-            1:{
+            "1":{
                "top":["top6.png",new Point(-30,-110)],
                "shadow":["shadow4.jpg",new Point(-67,-82)]
             }
@@ -6846,26 +6846,11 @@ package
          }],
          "imageData":{
             "baseurl":"buildings/iportal/",
-            1:{
-               "top":["top.1.v2.png",new Point(-85,-5)]
-               //"shadow":["shadow.1.v2.jpg",new Point(-43,47)]
-            },
-            2:{
-               "top":["top.2.v2.png",new Point(-105,-29)]
-               //"shadow":["shadow.2.v2.jpg",new Point(-87,52)]
-            },
-            3:{
-               "top":["top.3.v2.png",new Point(-136,-64)]
-               //"shadow":["shadow.3.v2.jpg",new Point(-110,47)]
-            },
-            4:{
-               "top":["top.4.v2.png",new Point(-140,-114)]
-               //"shadow":["shadow.4.v2.jpg",new Point(-140,11)]
-            },
-            5:{
-               "top":["top.5.v2.png",new Point(-160,-172)]
-               //"shadow":["shadow.5.v2.jpg",new Point(-169,0)]
-            }
+            "1":{"top":["top.1.v2.png",new Point(-85,-5)]},
+            "2":{"top":["top.2.v2.png",new Point(-105,-29)]},
+            "3":{"top":["top.3.v2.png",new Point(-136,-64)]},
+            "4":{"top":["top.4.v2.png",new Point(-140,-114)]},
+            "5":{"top":["top.5.v2.png",new Point(-160,-172)]}
          },
          "quantity":[1,1,1,1,1],
          "damage":[1,1,1,1,1],
@@ -7000,7 +6985,7 @@ package
          }],
          "imageData":{
             "baseurl":"buildings/iquaketower/",
-            1:{
+            "1":{
                "anim":["anim.1.png",new Rectangle(-37,-75,75,132),33],
                "shadow":["shadow.1.v2.png",new Point(-37,28)],
                "topdamaged":["top.1.damaged.png",new Point(-40,-75)],
@@ -7012,30 +6997,30 @@ package
          "buildingbuttons":["quake_tower.v2"],
          "upgradeImgData":{
             "baseurl":"buildingbuttons/",
-            1:{
+            "1":{
                "img":"quake_tower.v2.jpg",
                "silhouette_img":"quake_tower.v2.silhouette.jpg"
             }
          },
          "thumbImgData":{
             "baseurl":"buildingthumbs/",
-            1:{"img":"20.png"}
+            "1":{"img":"20.png"}
          },
          "fortImgData":{
             "baseurl":"buildings/fortifications/",
-            1:{
+            "1":{
                "front":["fort70_F1.png",new Point(-73,21)],
                "back":["fort70_B1.png",new Point(-70,-10)]
             },
-            2:{
+            "2":{
                "front":["fort70_F2.png",new Point(-69,22)],
                "back":["fort70_B2.png",new Point(-65,-12)]
             },
-            3:{
+            "3":{
                "front":["fort70_F3.png",new Point(-72,10)],
                "back":["fort70_B3.png",new Point(-68,-12)]
             },
-            4:{
+            "4":{
                "front":["fort70_F4.png",new Point(-70,-11)],
                "back":["fort70_B4.png",new Point(-61,-36)]
             }
@@ -7127,27 +7112,27 @@ package
          "buildingbuttons":["131.bb1","131.bb2","131.bb3","131.bb4","131.bb5.v2","131.bb6"],
          "imageData":{
             "baseurl":"buildings/decorations/wmitotem2/",
-            1:{
+            "1":{
                "top":["top1.png",new Point(-31,-25)],
                "shadow":["shadow1.jpg",new Point(-55,-20)]
             },
-            2:{
+            "2":{
                "top":["top2.png",new Point(-31,-60)],
                "shadow":["shadow2.jpg",new Point(-64,-44)]
             },
-            3:{
+            "3":{
                "top":["top3.png",new Point(-31,-86)],
                "shadow":["shadow3.jpg",new Point(-66,-61)]
             },
-            4:{
+            "4":{
                "top":["top4.png",new Point(-31,-122)],
                "shadow":["shadow4.jpg",new Point(-66,-83)]
             },
-            5:{
+            "5":{
                "top":["top5.v2.png",new Point(-30,-125)],
                "shadow":["shadow4.jpg",new Point(-66,-83)]
             },
-            6:{
+            "6":{
                "top":["top6.png",new Point(-31,-128)],
                "shadow":["shadow4.jpg",new Point(-66,-83)]
             }
@@ -7282,39 +7267,34 @@ package
          }],
          "imageData":{
             "baseurl":"buildings/imagmatower/",
-            1:{
+            "1":{
                "anim":["anim.1.v2.png",new Rectangle(-26,-40,54,42),31],
-               // "anim2":["anim.2.v2.png",new Rectangle(-17,26,38,19),31],
                "top":["top.1.v2.png",new Point(-34,-30)]
-               // "animdamaged":["anim.1.damaged.v2.png",new Rectangle(-28.6,-47.6,52,43),31],
-               // "animdamaged2":["anim.2.damaged.v2.png",new Rectangle(-21,28,38,19),31],
-               // "topdamaged":["top.1.damaged.v2.png",new Point(-38,-4)],
-               // "topdestroyed":["top.1.destroyed.v2.png",new Point(-36,6)],
             }
          },
          "buildingbuttons":["magma_tower.v2"],
          "upgradeImgData":{
             "baseurl":"buildingbuttons/",
-            1:{
+            "1":{
                "img":"magma_tower.v2.jpg",
                "silhouette_img":"magma_tower.v2.silhouette.jpg"
             }
          },
          "fortImgData":{
             "baseurl":"buildings/fortifications/",
-            1:{
+            "1":{
                "front":["fort70_F1.png",new Point(-73,21)],
                "back":["fort70_B1.png",new Point(-70,-10)]
             },
-            2:{
+            "2":{
                "front":["fort70_F2.png",new Point(-69,22)],
                "back":["fort70_B2.png",new Point(-65,-12)]
             },
-            3:{
+            "3":{
                "front":["fort70_F3.png",new Point(-72,10)],
                "back":["fort70_B3.png",new Point(-68,-12)]
             },
-            4:{
+            "4":{
                "front":["fort70_F4.png",new Point(-70,-11)],
                "back":["fort70_B4.png",new Point(-61,-36)]
             }
@@ -7347,20 +7327,16 @@ package
          }],
          "imageData":{
             "baseurl":"buildings/siegefactory/",
-            1:{
-               "top":["top.1.v3.png",new Point(-75,-23)], // Cannot find
+            "1":{
+               "top":["top.1.v3.png",new Point(-75,-23)],
                "topdamaged":["top.1.damaged.v3.png",new Point(-75,-88)],
                "topdestroyed":["top.1.destroyed.png",new Point(-75,-48)]
-               // "anim":["anim.1.v2.png",new Rectangle(-58,-99,129,77),35],
-               // "shadow":["shadow.1.jpg",new Point(-29,14)],
-               // "shadowdamaged":["shadow.1.jpg",new Point(-29,14)],
-               // "shadowdestroyed":["shadow.1.jpg",new Point(-29,14)]
             }
          },
          "buildingbuttons":["seige_factory"],
          "upgradeImgData":{
             "baseurl":"buildingbuttons/",
-            1:{
+            "1":{
                "img":"seige_factory.jpg",
                "silhouette_img":"siege_factory.silhouette.v2.jpg"
             }
@@ -7456,13 +7432,10 @@ package
          }],
          "imageData":{
             "baseurl":"buildings/siegelab/",
-            1:{
-               "top":["top.1.v6.png",new Point(-69,-68)], // Cannot find
+            "1":{
+               "top":["top.1.v6.png",new Point(-69,-68)],
                "topdamaged":["top.1.damaged.v4.png",new Point(-66,-98)],
                "topdestroyed":["top.1.destroyed.png",new Point(-57,-44)]
-               // "anim":["anim1.v4.png",new Rectangle(-54,22,43,39),60],
-               // "anim2":["anim2.v3.png",new Rectangle(-24,-92,59,100),60],
-               // "anim3":["anim3.v3.png",new Rectangle(19,11,38,40),60],
             }
          },
          "stats":[{
@@ -7509,7 +7482,7 @@ package
          "buildingbuttons":["siege_lab"],
          "upgradeImgData":{
             "baseurl":"buildingbuttons/",
-            1:{
+            "1":{
                "img":"siege_lab.jpg",
                "silhouette_img":"siege_lab.silhouette.jpg"
             }
@@ -7545,14 +7518,14 @@ package
          "buildingbuttons":["135"],
          "imageData":{
             "baseurl":"buildings/decorations/dave_trophy/",
-            1:{
+            "1":{
                "top":["top.png",new Point(-38,-30)],
                "shadow":["shadow.jpg",new Point(-38,20)]
             }
          },
          "upgradeImgData":{
             "baseurl":"buildingbuttons/",
-            1:{"img":"135.jpg"}
+            "1":{"img":"135.jpg"}
          },
          "quantity":[0],
          "hp":[100],
@@ -7647,7 +7620,7 @@ package
          }],
          "imageData":{
             "baseurl":"buildings/spurtztower/",
-            1:{
+            "1":{
                "anim":["top-normal-anim.v2.png",new Rectangle(-27,-60,54,42),31],
                "top":["normal_base.png",new Point(-39,-50)],
                "animdamaged":["top-damaged-anim.v2.png",new Rectangle(-27,-60,54,42),31],
@@ -7658,7 +7631,7 @@ package
          "buildingbuttons":["spurtz_tower_button"],
          "upgradeImgData":{
             "baseurl":"buildingbuttons/",
-            1:{
+            "1":{
                "img":"spurtz_tower_button.jpg",
                "silhouette_img":"spurtz_tower_silhouette.jpg"
             }
@@ -7756,7 +7729,7 @@ package
          }],
          "imageData":{
             "baseurl":"buildings/blackspurtztower/",
-            1:{
+            "1":{
                "anim":["top-normal-anim.v2.png",new Rectangle(-27,-60,54,42),31],
                "top":["normal_base.png",new Point(-39,-50)],
                "animdamaged":["top-damaged-anim.v2.png",new Rectangle(-27,-60,54,42),31],
@@ -7767,7 +7740,7 @@ package
          "buildingbuttons":["black_diamond_spurtz_cannon_button"],
          "upgradeImgData":{
             "baseurl":"buildingbuttons/",
-            1:{
+            "1":{
                "img":"black_diamond_spurtz_cannon_button.jpg",
                "silhouette_img":"black_diamond_spurtz_cannon_silohouette.jpg"
             }
@@ -7829,7 +7802,7 @@ package
          }],
          "imageData":{
             "baseurl":"buildings/guardtower/",
-            1:{
+            "1":{
                "top":["top.v2.1.png",new Point(-98,-75)],
                "shadow":["shadow.v2.1.png",new Point(-78,9)],
                "anim":["anim.v2.1.png",new Rectangle(-47,-231,95,212),32],
@@ -7843,7 +7816,7 @@ package
          },
          "upgradeImgData":{
             "baseurl":"buildingbuttons/",
-            1:{"img":"guard_tower.jpg"}
+            "1":{"img":"guard_tower.jpg"}
          },
          "quantity":[0,1,1,1],
          "hp":[400000,500000,600000],
@@ -7876,7 +7849,7 @@ package
          "rps":[1,2,5,11,23],
          "imageData":{
             "baseurl":"buildings/resourceoutpost/",
-            1:{
+            "1":{
                "top":["top.v2.1.png",new Point(-86,-64)],
                "shadow":["shadow.v2.1.png",new Point(-86,25)],
                "anim":["anim.v2.1.png",new Rectangle(-20,-25,51,39),30]
@@ -7940,7 +7913,7 @@ package
          }],
          "imageData":{
             "baseurl":"buildings/outpostdefender/",
-            1:{
+            "1":{
                "top":["top.1.png",new Point(-59,-19)],
                "shadow":["shadow.1.png",new Point(-59,39)],
                "anim":["anim.1.png",new Rectangle(-91,-101,178,156),32],
@@ -7952,7 +7925,7 @@ package
          },
          "upgradeImgData":{
             "baseurl":"buildingbuttons/",
-            1:{"img":"guard_tower.jpg"}
+            "1":{"img":"guard_tower.jpg"}
          },
          "quantity":[0,1,1,1,1,1],
          "hp":[8800,42000,200000,400000,600000],

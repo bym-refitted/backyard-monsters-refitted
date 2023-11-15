@@ -6,7 +6,7 @@ package com.monsters.display
    public class CreepSkinManager
    {
       
-      private static var s_Instance:com.monsters.display.CreepSkinManager = null;
+      private static var s_Instance:CreepSkinManager = null;
        
       
       private var m_CreepSkinPairs:Dictionary;
@@ -18,9 +18,9 @@ package com.monsters.display
          this.m_CreepSkinPairs = new Dictionary();
       }
       
-      public static function get instance() : com.monsters.display.CreepSkinManager
+      public static function get instance() : CreepSkinManager
       {
-         return !!s_Instance ? s_Instance : new com.monsters.display.CreepSkinManager(new SingletonLock());
+         return !!s_Instance ? s_Instance : new CreepSkinManager(new SingletonLock());
       }
       
       public function SetupSkins(param1:String) : void

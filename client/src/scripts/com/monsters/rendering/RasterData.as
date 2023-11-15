@@ -8,16 +8,18 @@ package com.monsters.rendering
    import flash.geom.Point;
    import flash.geom.Rectangle;
    
+   use namespace renderer_friend;
+   
    public class RasterData
    {
       
-      renderer_friend static const s_rasterData:Vector.<com.monsters.rendering.RasterData> = new Vector.<com.monsters.rendering.RasterData>();
+      renderer_friend static const s_rasterData:Vector.<RasterData> = new Vector.<RasterData>();
       
-      renderer_friend static const s_visibleData:Vector.<com.monsters.rendering.RasterData> = new Vector.<com.monsters.rendering.RasterData>();
+      renderer_friend static const s_visibleData:Vector.<RasterData> = new Vector.<RasterData>();
       
-      renderer_friend static const s_unsortedData:Vector.<com.monsters.rendering.RasterData> = new Vector.<com.monsters.rendering.RasterData>();
+      renderer_friend static const s_unsortedData:Vector.<RasterData> = new Vector.<RasterData>();
       
-      renderer_friend static const s_debugData:Vector.<com.monsters.rendering.RasterData> = new Vector.<com.monsters.rendering.RasterData>();
+      renderer_friend static const s_debugData:Vector.<RasterData> = new Vector.<RasterData>();
       
       renderer_friend static var s_needsSort:Boolean;
       
@@ -74,12 +76,12 @@ package com.monsters.rendering
          }
       }
       
-      public static function get rasterData() : Vector.<com.monsters.rendering.RasterData>
+      public static function get rasterData() : Vector.<RasterData>
       {
          return renderer_friend::s_rasterData;
       }
       
-      public static function get visibleData() : Vector.<com.monsters.rendering.RasterData>
+      public static function get visibleData() : Vector.<RasterData>
       {
          return renderer_friend::s_visibleData;
       }
@@ -87,7 +89,7 @@ package com.monsters.rendering
       public static function get totalMemory() : uint
       {
          var _loc1_:uint = 0;
-         var _loc2_:com.monsters.rendering.RasterData = null;
+         var _loc2_:RasterData = null;
          var _loc3_:BitmapData = null;
          for each(_loc2_ in renderer_friend::s_rasterData)
          {
@@ -102,7 +104,7 @@ package com.monsters.rendering
       
       renderer_friend static function showDebug() : void
       {
-         var _loc1_:com.monsters.rendering.RasterData = null;
+         var _loc1_:RasterData = null;
          var _loc2_:BitmapData = null;
          var _loc3_:Shape = null;
          for each(_loc1_ in renderer_friend::s_rasterData)
@@ -114,14 +116,14 @@ package com.monsters.rendering
                _loc3_.graphics.lineStyle(1,16711680);
                _loc3_.graphics.beginFill(10027008,0.4);
                _loc3_.graphics.drawRect(0,0,_loc2_.width,_loc2_.height);
-               renderer_friend::s_debugData[renderer_friend::s_debugData.length] = new com.monsters.rendering.RasterData(_loc3_,_loc1_.renderer_friend::_pt,_loc1_.renderer_friend::_depth);
+               renderer_friend::s_debugData[renderer_friend::s_debugData.length] = new RasterData(_loc3_,_loc1_.renderer_friend::_pt,_loc1_.renderer_friend::_depth);
             }
          }
       }
       
       renderer_friend static function hideDebug() : void
       {
-         var _loc1_:com.monsters.rendering.RasterData = null;
+         var _loc1_:RasterData = null;
          for each(_loc1_ in renderer_friend::s_debugData)
          {
             _loc1_.clear(true);
@@ -131,7 +133,7 @@ package com.monsters.rendering
       
       public static function clear(param1:Boolean = false) : void
       {
-         var _loc2_:com.monsters.rendering.RasterData = null;
+         var _loc2_:RasterData = null;
          for each(_loc2_ in renderer_friend::s_rasterData)
          {
             _loc2_.clear(param1);
@@ -248,9 +250,9 @@ package com.monsters.rendering
          this.renderer_friend::_visible = param1;
       }
       
-      public function clone() : com.monsters.rendering.RasterData
+      public function clone() : RasterData
       {
-         return new com.monsters.rendering.RasterData(this.renderer_friend::_data,this.renderer_friend::_pt,this.renderer_friend::_depth);
+         return new RasterData(this.renderer_friend::_data,this.renderer_friend::_pt,this.renderer_friend::_depth);
       }
       
       public function clear(param1:Boolean = false) : void

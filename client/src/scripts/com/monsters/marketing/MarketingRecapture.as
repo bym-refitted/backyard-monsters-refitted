@@ -11,7 +11,7 @@ package com.monsters.marketing
       
       public static const k_POPUP_KORATH:uint = 4;
       
-      protected static var s_instance:com.monsters.marketing.MarketingRecapture;
+      protected static var s_instance:MarketingRecapture;
        
       
       protected var m_champPopup:uint;
@@ -25,9 +25,9 @@ package com.monsters.marketing
          }
       }
       
-      public static function get instance() : com.monsters.marketing.MarketingRecapture
+      public static function get instance() : MarketingRecapture
       {
-         s_instance = s_instance || new com.monsters.marketing.MarketingRecapture(new InstanceEnforcer());
+         s_instance = s_instance || new MarketingRecapture(new InstanceEnforcer());
          return s_instance;
       }
       

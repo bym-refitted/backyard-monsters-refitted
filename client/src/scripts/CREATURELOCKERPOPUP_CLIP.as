@@ -3,6 +3,7 @@ package
    import flash.display.MovieClip;
    import flash.text.TextField;
    
+   [Embed(source="/_assets/assets.swf", symbol="CREATURELOCKERPOPUP_CLIP")]
    public dynamic class CREATURELOCKERPOPUP_CLIP extends MovieClip
    {
        

@@ -3,6 +3,7 @@ package
    import flash.display.MovieClip;
    import flash.text.TextField;
    
+   [Embed(source="/_assets/assets.swf", symbol="MR3EventHUD_CLIP")]
    public dynamic class MR3EventHUD_CLIP extends MovieClip
    {
        

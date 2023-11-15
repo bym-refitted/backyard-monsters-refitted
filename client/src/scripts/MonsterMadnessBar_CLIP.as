@@ -3,6 +3,7 @@ package
    import flash.display.MovieClip;
    import flash.text.TextField;
    
+   [Embed(source="/_assets/assets.swf", symbol="MonsterMadnessBar_CLIP")]
    public dynamic class MonsterMadnessBar_CLIP extends MovieClip
    {
        

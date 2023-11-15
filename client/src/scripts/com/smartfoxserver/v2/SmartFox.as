@@ -35,6 +35,8 @@ package com.smartfoxserver.v2
    import flash.system.Capabilities;
    import flash.utils.setTimeout;
    
+   use namespace kernel;
+   
    public class SmartFox extends EventDispatcher
    {
        

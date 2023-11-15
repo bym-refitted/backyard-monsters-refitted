@@ -8,8 +8,6 @@ package com.monsters.display
    import flash.events.TimerEvent;
    import flash.net.URLRequest;
    import flash.utils.Timer;
-   import com.monsters.display.Loadable;
-   import flash.events.UncaughtErrorEvent;
    
    public class ImageCache
    {
@@ -26,7 +24,7 @@ package com.monsters.display
       
       public static const GAVE_UP:uint = 3;
       
-      private static var instance:com.monsters.display.ImageCache;
+      private static var instance:ImageCache;
       
       private static var allowInstantiation:Boolean = false;
       
@@ -57,12 +55,12 @@ package com.monsters.display
          throw new Error("nice try, sucka\'!");
       }
       
-      private static function getInstance() : com.monsters.display.ImageCache
+      private static function getInstance() : ImageCache
       {
          if(!instance)
          {
             allowInstantiation = true;
-            instance = new com.monsters.display.ImageCache();
+            instance = new ImageCache();
             allowInstantiation = false;
          }
          return instance;
@@ -210,7 +208,6 @@ package com.monsters.display
          var l:Loadable = queue;
          l.loadState = LOADING;
          req_str = l.shouldPrepend ? prependImagePath + l.key : l.key;
-         // Comment: Attempts to load dynamic assets from the server
          l.loader.load(new URLRequest(req_str));
          l.loader.contentLoaderInfo.addEventListener(Event.COMPLETE,function(param1:Event):void
          {
@@ -226,7 +223,7 @@ package com.monsters.display
          });
          load.push(l);
       }
-    
+      
       private function onError(queue:Loadable) : void
       {
          var _loc2_:uint = 0;

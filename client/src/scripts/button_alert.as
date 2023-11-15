@@ -2,6 +2,7 @@ package
 {
    import flash.display.MovieClip;
    
+   [Embed(source="/_assets/assets.swf", symbol="button_alert")]
    public dynamic class button_alert extends MovieClip
    {
        

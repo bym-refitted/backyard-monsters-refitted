@@ -9,9 +9,9 @@ package com.smartfoxserver.v2.entities.match
       
       private var _varName:String;
       
-      private var _condition:com.smartfoxserver.v2.entities.match.IMatcher;
+      private var _condition:IMatcher;
       
-      private var _value;
+      private var _value:*;
       
       internal var _logicOp:LogicOperator;
       
@@ -19,7 +19,7 @@ package com.smartfoxserver.v2.entities.match
       
       internal var _next:MatchExpression;
       
-      public function MatchExpression(param1:String, param2:com.smartfoxserver.v2.entities.match.IMatcher, param3:*)
+      public function MatchExpression(param1:String, param2:IMatcher, param3:*)
       {
          super();
          this._varName = param1;
@@ -27,7 +27,7 @@ package com.smartfoxserver.v2.entities.match
          this._value = param3;
       }
       
-      internal static function chainedMatchExpression(param1:String, param2:com.smartfoxserver.v2.entities.match.IMatcher, param3:*, param4:LogicOperator, param5:MatchExpression) : MatchExpression
+      internal static function chainedMatchExpression(param1:String, param2:IMatcher, param3:*, param4:LogicOperator, param5:MatchExpression) : MatchExpression
       {
          var _loc6_:MatchExpression;
          (_loc6_ = new MatchExpression(param1,param2,param3))._logicOp = param4;
@@ -35,13 +35,13 @@ package com.smartfoxserver.v2.entities.match
          return _loc6_;
       }
       
-      public function and(param1:String, param2:com.smartfoxserver.v2.entities.match.IMatcher, param3:*) : MatchExpression
+      public function and(param1:String, param2:IMatcher, param3:*) : MatchExpression
       {
          this._next = chainedMatchExpression(param1,param2,param3,LogicOperator.AND,this);
          return this._next;
       }
       
-      public function or(param1:String, param2:com.smartfoxserver.v2.entities.match.IMatcher, param3:*) : MatchExpression
+      public function or(param1:String, param2:IMatcher, param3:*) : MatchExpression
       {
          this._next = chainedMatchExpression(param1,param2,param3,LogicOperator.OR,this);
          return this._next;
@@ -52,7 +52,7 @@ package com.smartfoxserver.v2.entities.match
          return this._varName;
       }
       
-      public function get condition() : com.smartfoxserver.v2.entities.match.IMatcher
+      public function get condition() : IMatcher
       {
          return this._condition;
       }

@@ -53,7 +53,7 @@ package com.monsters.mailbox
       
       private var firstLoaded:Boolean = false;
       
-      public var _mc;
+      public var _mc:*;
       
       public function Thread()
       {

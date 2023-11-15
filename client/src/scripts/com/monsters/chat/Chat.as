@@ -8,7 +8,7 @@ package com.monsters.chat
    public class Chat
    {
       
-      public static var _bymChat:com.monsters.chat.BYMChat;
+      public static var _bymChat:BYMChat;
       
       public static var _chatroomNumber:Number = 0;
       
@@ -90,7 +90,7 @@ package com.monsters.chat
          _chatServer = _chatServers[_chatroomNumber % _chatServers.length];
          if(_bymChat == null)
          {
-            _bymChat = new com.monsters.chat.BYMChat(new ChatBox(),_chatServer);
+            _bymChat = new BYMChat(new ChatBox(),_chatServer);
             _bymChat.system_message("Connecting to chat");
             _chatInited = true;
             GLOBAL._layerUI.addChild(_bymChat);
@@ -126,7 +126,7 @@ package com.monsters.chat
          {
             return;
          }
-         if(_bymChat == null || com.monsters.chat.BYMChat.serverInited || _bymChat.IsConnected || _bymChat.IsJoined)
+         if(_bymChat == null || BYMChat.serverInited || _bymChat.IsConnected || _bymChat.IsJoined)
          {
             return;
          }

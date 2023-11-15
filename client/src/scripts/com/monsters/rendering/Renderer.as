@@ -7,6 +7,8 @@ package com.monsters.rendering
    import flash.geom.Point;
    import flash.geom.Rectangle;
    
+   use namespace renderer_friend;
+   
    public class Renderer
    {
       

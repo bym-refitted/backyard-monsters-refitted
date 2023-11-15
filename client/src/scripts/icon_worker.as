@@ -3,6 +3,7 @@ package
    import flash.display.MovieClip;
    import flash.text.TextField;
    
+   [Embed(source="/_assets/assets.swf", symbol="icon_worker")]
    public dynamic class icon_worker extends MovieClip
    {
        

@@ -2,6 +2,7 @@ package
 {
    import flash.display.MovieClip;
    
+   [Embed(source="/_assets/assets.swf", symbol="ScrollSet_CLIP")]
    public dynamic class ScrollSet_CLIP extends MovieClip
    {
        

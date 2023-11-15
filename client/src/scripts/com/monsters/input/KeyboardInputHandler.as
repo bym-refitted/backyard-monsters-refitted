@@ -6,7 +6,7 @@ package com.monsters.input
    public class KeyboardInputHandler
    {
       
-      protected static var s_Instance:com.monsters.input.KeyboardInputHandler = null;
+      protected static var s_Instance:KeyboardInputHandler = null;
       
       private static var keyunlock:int = 0;
        
@@ -21,9 +21,9 @@ package com.monsters.input
          return new SingletonLock();
       }
       
-      public static function get instance() : com.monsters.input.KeyboardInputHandler
+      public static function get instance() : KeyboardInputHandler
       {
-         s_Instance = s_Instance || new com.monsters.input.KeyboardInputHandler(singletonLock);
+         s_Instance = s_Instance || new KeyboardInputHandler(singletonLock);
          return s_Instance;
       }
       

@@ -2,6 +2,7 @@ package
 {
    import flash.display.BitmapData;
    
+   [Embed(source="/_assets/2056_frame3_filler_left_frame3_filler_left.png")]
    public dynamic class frame3_filler_left extends BitmapData
    {
        

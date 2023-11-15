@@ -1,8 +1,8 @@
 package com.monsters.radio
 {
-   import flash.display.StageDisplayState;
    import com.brokenfunction.json.decodeJson;
    import com.brokenfunction.json.encodeJson;
+   import flash.display.StageDisplayState;
    
    public class RADIO
    {
@@ -15,7 +15,7 @@ package com.monsters.radio
       
       private static var _requestedName:Boolean = false;
       
-      private static var _mc:com.monsters.radio.RADIOSETTINGSPOPUP;
+      private static var _mc:RADIOSETTINGSPOPUP;
       
       public static var _proxymode:Boolean = false;
       
@@ -205,7 +205,7 @@ package com.monsters.radio
                MAP.Focus(0,0);
             }
             GLOBAL.BlockerAdd();
-            _mc = new com.monsters.radio.RADIOSETTINGSPOPUP();
+            _mc = new RADIOSETTINGSPOPUP();
             _mc.Center();
             _mc.ScaleUp();
             GLOBAL._layerWindows.addChild(_mc);

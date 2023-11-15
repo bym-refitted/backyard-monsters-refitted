@@ -10,10 +10,10 @@ package com.monsters.event_store
    public class EventStoreItemSelectedPopup extends EventStoreItemSelectedPopupMC
    {
       
-      private static var s_Instance:com.monsters.event_store.EventStoreItemSelectedPopup = null;
+      private static var s_Instance:EventStoreItemSelectedPopup = null;
        
       
-      private var m_PrizeBeingDisplayed:com.monsters.event_store.EventStorePrize = null;
+      private var m_PrizeBeingDisplayed:EventStorePrize = null;
       
       private var m_TitleImage:Bitmap = null;
       
@@ -28,12 +28,12 @@ package com.monsters.event_store
          previewImageHolder.addChild(this.m_PreviewImage);
       }
       
-      public static function get instance() : com.monsters.event_store.EventStoreItemSelectedPopup
+      public static function get instance() : EventStoreItemSelectedPopup
       {
-         return s_Instance = s_Instance || new com.monsters.event_store.EventStoreItemSelectedPopup(new SingletonLock());
+         return s_Instance = s_Instance || new EventStoreItemSelectedPopup(new SingletonLock());
       }
       
-      public function Show(param1:com.monsters.event_store.EventStorePrize) : void
+      public function Show(param1:EventStorePrize) : void
       {
          var _loc4_:int = 0;
          if(this.m_PrizeBeingDisplayed != null)

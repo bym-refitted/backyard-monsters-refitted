@@ -1,5 +1,7 @@
 package
 {
+   import com.brokenfunction.json.decodeJson;
+   import com.brokenfunction.json.encodeJson;
    import com.monsters.configs.BYMConfig;
    import com.monsters.inventory.InventoryManager;
    import com.monsters.managers.InstanceManager;
@@ -11,8 +13,6 @@ package
    import flash.events.MouseEvent;
    import flash.geom.Point;
    import flash.text.TextFieldAutoSize;
-   import com.brokenfunction.json.decodeJson;
-   import com.brokenfunction.json.encodeJson;
    
    public class UPDATES
    {

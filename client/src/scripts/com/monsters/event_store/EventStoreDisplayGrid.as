@@ -21,13 +21,13 @@ package com.monsters.event_store
       
       private var m_ScrollBar:ScrollSetV;
       
-      private var m_DisplayItems:Vector.<com.monsters.event_store.EventStorePrize>;
+      private var m_DisplayItems:Vector.<EventStorePrize>;
       
       private var m_AvailablePrizes:Array = null;
       
       public function EventStoreDisplayGrid(param1:Sprite)
       {
-         this.m_DisplayItems = new Vector.<com.monsters.event_store.EventStorePrize>();
+         this.m_DisplayItems = new Vector.<EventStorePrize>();
          super();
          this.m_ScrollContents = new Sprite();
          addChild(this.m_ScrollContents);
@@ -119,7 +119,7 @@ package com.monsters.event_store
       private function _Populate() : void
       {
          var _loc1_:int = 0;
-         var _loc5_:com.monsters.event_store.EventStorePrize = null;
+         var _loc5_:EventStorePrize = null;
          if(this.m_AvailablePrizes == null)
          {
             return;
@@ -133,7 +133,7 @@ package com.monsters.event_store
          while(_loc1_ < _loc6_)
          {
             _loc4_ = this.m_AvailablePrizes[_loc1_];
-            _loc5_ = new com.monsters.event_store.EventStorePrize(_loc4_);
+            _loc5_ = new EventStorePrize(_loc4_);
             this.m_DisplayItems.push(_loc5_);
             this.m_ScrollContents.addChild(_loc5_);
             _loc5_.x = _loc2_;
@@ -156,7 +156,7 @@ package com.monsters.event_store
       
       internal function Clear() : void
       {
-         var _loc1_:com.monsters.event_store.EventStorePrize = null;
+         var _loc1_:EventStorePrize = null;
          var _loc2_:uint = this.m_DisplayItems.length;
          var _loc3_:uint = 0;
          while(_loc3_ < _loc2_)

@@ -22,7 +22,7 @@ package com.smartfoxserver.v2.requests
       
       private var _matchExpr:MatchExpression;
       
-      private var _target;
+      private var _target:*;
       
       private var _limit:int;
       

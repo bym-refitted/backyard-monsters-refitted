@@ -10,7 +10,7 @@ package de.polygonal.ds
       
       public var key:int;
       
-      public var _a:de.polygonal.ds.DA;
+      public var _a:DA;
       
       public function ListSet()
       {
@@ -18,7 +18,7 @@ package de.polygonal.ds
          {
             return;
          }
-         _a = new de.polygonal.ds.DA();
+         _a = new DA();
          var _loc1_:int;
          HashKey._counter = (_loc1_ = int(HashKey._counter)) + 1;
          key = _loc1_;
@@ -29,7 +29,7 @@ package de.polygonal.ds
          return Sprintf.format("{ListSet, size: %d}",[size()]);
       }
       
-      public function toDA() : de.polygonal.ds.DA
+      public function toDA() : DA
       {
          return _a.toDA();
       }
@@ -46,7 +46,7 @@ package de.polygonal.ds
       
       public function set(param1:Object) : Boolean
       {
-         var _loc3_:* = null as de.polygonal.ds.DA;
+         var _loc3_:* = null as DA;
          var _loc5_:int = 0;
          var _loc7_:int = 0;
          var _loc2_:Object = param1;
@@ -132,7 +132,7 @@ package de.polygonal.ds
       {
          var _loc7_:int = 0;
          var _loc2_:Object = param1;
-         var _loc3_:de.polygonal.ds.DA = _a;
+         var _loc3_:DA = _a;
          var _loc4_:Boolean = false;
          var _loc5_:int = 0;
          var _loc6_:int = _loc3_._size;
@@ -158,7 +158,7 @@ package de.polygonal.ds
       {
          var _loc7_:int = 0;
          var _loc2_:Object = param1;
-         var _loc3_:de.polygonal.ds.DA = _a;
+         var _loc3_:DA = _a;
          var _loc4_:Boolean = false;
          var _loc5_:int = 0;
          var _loc6_:int = _loc3_._size;
@@ -191,7 +191,7 @@ package de.polygonal.ds
          var _loc4_:int = 0;
          var _loc5_:int = 0;
          var _loc6_:int = 0;
-         var _loc2_:de.polygonal.ds.DA = _a;
+         var _loc2_:DA = _a;
          if(param1)
          {
             _loc3_ = null;

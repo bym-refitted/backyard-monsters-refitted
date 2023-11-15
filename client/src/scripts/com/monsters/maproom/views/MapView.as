@@ -17,7 +17,7 @@ package com.monsters.maproom.views
    public class MapView extends MapView_CLIP
    {
       
-      private static var instance:com.monsters.maproom.views.MapView;
+      private static var instance:MapView;
        
       
       public var map:Sprite;
@@ -57,11 +57,11 @@ package com.monsters.maproom.views
          this.bases = [].concat();
       }
       
-      public static function getInstance() : com.monsters.maproom.views.MapView
+      public static function getInstance() : MapView
       {
          if(!instance)
          {
-            return new com.monsters.maproom.views.MapView();
+            return new MapView();
          }
          return instance;
       }

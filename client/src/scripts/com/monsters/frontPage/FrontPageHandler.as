@@ -10,7 +10,7 @@ package com.monsters.frontPage
    public class FrontPageHandler
    {
       
-      private static var _graphic:com.monsters.frontPage.FrontPageGraphic;
+      private static var _graphic:FrontPageGraphic;
       
       private static var _activeCategory:Category;
       
@@ -105,7 +105,7 @@ package com.monsters.frontPage
             closedPopup();
             POPUPS.Remove(_loc2_);
          }
-         _graphic = new com.monsters.frontPage.FrontPageGraphic();
+         _graphic = new FrontPageGraphic();
          _graphic.addEventListener(FrontPageEvent.NEXT,nextCategory);
          _graphic.addEventListener(FrontPageEvent.PREVIOUS,previousCategory);
          _graphic.addEventListener(FrontPageEvent.CHANGE_CATEGORY,changeCategory);

@@ -33,7 +33,7 @@ package com.monsters.configs
       
       public static const k_sMAX_FORTIFICATION_LEVEL:int = 4;
       
-      protected static var _instance:com.monsters.configs.BYMConfig;
+      protected static var _instance:BYMConfig;
        
       
       public function BYMConfig(param1:InstanceEnforcer)
@@ -41,9 +41,9 @@ package com.monsters.configs
          super();
       }
       
-      public static function get instance() : com.monsters.configs.BYMConfig
+      public static function get instance() : BYMConfig
       {
-         _instance = _instance || new com.monsters.configs.BYMConfig(new InstanceEnforcer());
+         _instance ||= new BYMConfig(new InstanceEnforcer());
          return _instance;
       }
       

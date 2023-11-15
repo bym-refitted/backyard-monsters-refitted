@@ -21,7 +21,7 @@ package com.monsters.mailbox
       
       public var unread:uint = 0;
       
-      public var image;
+      public var image:*;
       
       public var data:ThreadData;
       

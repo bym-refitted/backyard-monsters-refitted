@@ -10,7 +10,7 @@ package com.monsters.alliances
       
       private static var _alliances:Object;
       
-      public static var _myAlliance:com.monsters.alliances.AllyInfo;
+      public static var _myAlliance:AllyInfo;
       
       private static var _open:Boolean;
        
@@ -46,9 +46,9 @@ package com.monsters.alliances
          }
       }
       
-      public static function SetCellAlliance(param1:MapRoomCell, param2:Boolean = false) : com.monsters.alliances.AllyInfo
+      public static function SetCellAlliance(param1:MapRoomCell, param2:Boolean = false) : AllyInfo
       {
-         var _loc3_:com.monsters.alliances.AllyInfo = null;
+         var _loc3_:AllyInfo = null;
          var _loc4_:int = 0;
          if(Boolean(param1.allianceID) && param1.allianceID != 0)
          {
@@ -67,9 +67,9 @@ package com.monsters.alliances
          return null;
       }
       
-      public static function SetAlliance(param1:Object) : com.monsters.alliances.AllyInfo
+      public static function SetAlliance(param1:Object) : AllyInfo
       {
-         var _loc2_:com.monsters.alliances.AllyInfo = null;
+         var _loc2_:AllyInfo = null;
          var _loc3_:int = int(param1.alliance_id);
          if(_alliances[param1.alliance_id])
          {
@@ -77,7 +77,7 @@ package com.monsters.alliances
          }
          else
          {
-            _loc2_ = new com.monsters.alliances.AllyInfo(param1);
+            _loc2_ = new AllyInfo(param1);
          }
          if(_allianceID && _allianceID != 0 && _loc2_ && !_loc2_.relationship)
          {
@@ -89,12 +89,12 @@ package com.monsters.alliances
       public static function ProcessAlliances(param1:Array) : void
       {
          var _loc3_:Object = null;
-         var _loc4_:com.monsters.alliances.AllyInfo = null;
+         var _loc4_:AllyInfo = null;
          var _loc2_:int = 0;
          while(_loc2_ < param1.length)
          {
             _loc3_ = param1[_loc2_];
-            _loc4_ = new com.monsters.alliances.AllyInfo(_loc3_);
+            _loc4_ = new AllyInfo(_loc3_);
             _alliances[_loc3_.alliance_id] = _loc4_;
             _loc2_++;
          }

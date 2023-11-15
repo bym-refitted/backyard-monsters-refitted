@@ -1,10 +1,12 @@
 package com.monsters.configs
 {
-    final class InstanceEnforcer
-{
-   public function InstanceEnforcer()
+   internal final class InstanceEnforcer
    {
-      super();
+       
+      
+      public function InstanceEnforcer()
+      {
+         super();
+      }
    }
-}
 }

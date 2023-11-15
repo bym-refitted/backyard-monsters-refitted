@@ -1,5 +1,6 @@
 package
 {
+   import com.brokenfunction.json.decodeJson;
    import com.monsters.configs.BYMDevConfig;
    import com.monsters.display.ImageCache;
    import com.monsters.inventory.InventoryManager;
@@ -10,7 +11,6 @@ package
    import flash.external.ExternalInterface;
    import flash.net.*;
    import gs.TweenLite;
-   import com.brokenfunction.json.decodeJson;
    
    public class BUY
    {
@@ -311,7 +311,7 @@ package
                      }
                      return _loc2_;
                   };
-                  upgradeImgLen = numImageElements(imageDataA);
+                  upgradeImgLen = int(numImageElements(imageDataA));
                   if(Boolean(imageDataA[_building._lvl.Get()]) && imageDataA[_building._lvl.Get()] >= _building._buildingProps.hp.length)
                   {
                      imageDataB = imageDataA[_building._lvl.Get()];

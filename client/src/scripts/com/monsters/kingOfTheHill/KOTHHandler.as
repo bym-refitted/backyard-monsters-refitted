@@ -24,7 +24,7 @@ package com.monsters.kingOfTheHill
    public class KOTHHandler implements IHandler
    {
       
-      private static var _instance:com.monsters.kingOfTheHill.KOTHHandler;
+      private static var _instance:KOTHHandler;
        
       
       private const k_CONSECUTIVE_WINS_TO_PERMAKRALLEN:int = 5;
@@ -61,11 +61,11 @@ package com.monsters.kingOfTheHill
          super();
       }
       
-      public static function get instance() : com.monsters.kingOfTheHill.KOTHHandler
+      public static function get instance() : KOTHHandler
       {
          if(!_instance)
          {
-            _instance = new com.monsters.kingOfTheHill.KOTHHandler();
+            _instance = new KOTHHandler();
          }
          return _instance;
       }

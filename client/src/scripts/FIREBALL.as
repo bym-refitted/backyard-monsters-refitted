@@ -39,7 +39,7 @@ package
       
       public var _previousTarget:BFOUNDATION;
       
-      public var _targetCreep;
+      public var _targetCreep:*;
       
       public var _type:String;
       

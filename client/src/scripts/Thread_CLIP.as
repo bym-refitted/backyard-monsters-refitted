@@ -3,6 +3,7 @@ package
    import flash.display.MovieClip;
    import flash.text.TextField;
    
+   [Embed(source="/_assets/assets.swf", symbol="Thread_CLIP")]
    public dynamic class Thread_CLIP extends MovieClip
    {
        

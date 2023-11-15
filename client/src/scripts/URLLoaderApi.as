@@ -1,16 +1,15 @@
 package
 {
+   import com.brokenfunction.json.decodeJson;
    import flash.events.Event;
    import flash.events.HTTPStatusEvent;
    import flash.events.IOErrorEvent;
+   import flash.events.SecurityErrorEvent;
    import flash.net.URLLoader;
    import flash.net.URLRequest;
+   import flash.net.URLRequestHeader;
    import flash.net.URLRequestMethod;
    import flash.net.URLVariables;
-   import flash.events.SecurityErrorEvent;
-   import flash.net.URLRequestHeader;
-   import flash.net.SharedObject;
-   import com.brokenfunction.json.decodeJson;
    
    public class URLLoaderApi
    {
@@ -56,23 +55,25 @@ package
          }
          return _loc1_;
       }
-
-
+      
       public function load(baseUrl:String, keyValuePairs:Array = null, onComplete:Function = null, onFail:Function = null) : void
       {
+         var urlBuilder:URLRequest;
+         var facebookString:String;
+         var urlVariables:URLVariables;
+         var authHeader:URLRequestHeader;
+         var ramdomNumber:int;
+         var hash:String;
          var currentIndex:int = 0;
          var currentPair:Array = null;
-         var token = LOGIN.sharedObject.data.token;
-
+         var token:* = LOGIN.sharedObject.data.token;
          this._onComplete = onComplete;
          this._onError = onFail;
          this._baseUrl = baseUrl;
          this._url = baseUrl;
-
-         var urlBuilder:URLRequest = new URLRequest(baseUrl);
-         var facebookString:String = "";
-         var urlVariables:URLVariables = new URLVariables();
-
+         urlBuilder = new URLRequest(baseUrl);
+         facebookString = "";
+         urlVariables = new URLVariables();
          if(keyValuePairs != null && keyValuePairs.length > 0)
          {
             currentIndex = 0;
@@ -85,25 +86,25 @@ package
                currentIndex++;
             }
          }
-         // Attach the token to the request header if we have it
-         if (token) {
-            var authHeader:URLRequestHeader = new URLRequestHeader("Authorization", "Bearer " + token);
+         if(token)
+         {
+            authHeader = new URLRequestHeader("Authorization","Bearer " + token);
             urlBuilder.requestHeaders.push(authHeader);
          }
-
-            var ramdomNumber:int = int(Math.random() * 9999999);
-            urlVariables.hn = ramdomNumber;
-            var hash:String = this.getHash(facebookString,ramdomNumber);
-            urlVariables.h = hash;
-            urlBuilder.data = urlVariables;
-            urlBuilder.method = URLRequestMethod.POST;
-            this._req = new URLLoader(urlBuilder);
-            this._req.addEventListener(Event.COMPLETE,this.fireComplete);
-            this._req.addEventListener(IOErrorEvent.IO_ERROR,this.loadError);
-            this._req.addEventListener(HTTPStatusEvent.HTTP_STATUS,this.setStatus);
-            this._req.addEventListener(SecurityErrorEvent.SECURITY_ERROR, function(event: SecurityErrorEvent) {
-               GLOBAL.ErrorMessage(event.text, GLOBAL.ERROR_ORANGE_BOX_ONLY);
-            });
+         ramdomNumber = int(Math.random() * 9999999);
+         urlVariables.hn = ramdomNumber;
+         hash = this.getHash(facebookString,ramdomNumber);
+         urlVariables.h = hash;
+         urlBuilder.data = urlVariables;
+         urlBuilder.method = URLRequestMethod.POST;
+         this._req = new URLLoader(urlBuilder);
+         this._req.addEventListener(Event.COMPLETE,this.fireComplete);
+         this._req.addEventListener(IOErrorEvent.IO_ERROR,this.loadError);
+         this._req.addEventListener(HTTPStatusEvent.HTTP_STATUS,this.setStatus);
+         this._req.addEventListener(SecurityErrorEvent.SECURITY_ERROR,function(event:SecurityErrorEvent):*
+         {
+            GLOBAL.ErrorMessage(event.text,GLOBAL.ERROR_ORANGE_BOX_ONLY);
+         });
       }
       
       private function getHash(param1:String, param2:int) : String
@@ -394,15 +395,13 @@ package
             return;
          }
          var reqData:Object = this._req.data;
-         var hasKeyArray :Array = reqData.split(",\"h\":");
+         var hasKeyArray:Array = reqData.split(",\"h\":");
          var _loc4_:String = "{\"h\":" + hasKeyArray.pop();
          reqData = hasKeyArray.join(",\"h\":") + "}";
-         var stringifiedReqData:String = reqData;
+         var stringifiedReqData:String = String(reqData);
          var decodedReqData:Object = decodeJson(reqData);
          var _loc7_:Object = decodeJson(_loc4_);
          var _loc8_:Boolean;
-         // var _loc8_:String;
-         // if((_loc8_ = md5(this.getSalt() + _loc5_ + this.getNum(_loc7_.hn))) !== _loc7_.h) // Original implementation
          if(_loc8_ = false)
          {
             if(GLOBAL._reloadonerror)
@@ -411,7 +410,7 @@ package
             }
             else
             {
-               if(!_loc7_.h)
+               if(_loc7_.h)
                {
                }
                LOGGER.Log("err",this._url + " -- " + stringifiedReqData + " -- " + this._status + " --");

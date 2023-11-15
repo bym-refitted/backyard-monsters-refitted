@@ -8,7 +8,7 @@ package utils.exposed
    public class ExposedDefinitionManager
    {
       
-      private static var s_Instance:utils.exposed.ExposedDefinitionManager = null;
+      private static var s_Instance:ExposedDefinitionManager = null;
       
       internal static const VECTOR_TYPE_NAME:String = "__AS3__.vec::Vector.<";
        
@@ -29,9 +29,9 @@ package utils.exposed
          this.m_ExposedPrimitives["uint"] = uint;
       }
       
-      public static function get instance() : utils.exposed.ExposedDefinitionManager
+      public static function get instance() : ExposedDefinitionManager
       {
-         return s_Instance = s_Instance || new utils.exposed.ExposedDefinitionManager(new SingletonLock());
+         return s_Instance = s_Instance || new ExposedDefinitionManager(new SingletonLock());
       }
       
       internal function IsPrimitiveType(param1:String) : Boolean

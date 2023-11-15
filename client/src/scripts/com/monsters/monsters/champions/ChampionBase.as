@@ -67,7 +67,7 @@ package com.monsters.monsters.champions
       
       public var _buffRadius:Number = 0;
       
-      public var _helpCreep;
+      public var _helpCreep:*;
       
       public var _type:int = 1;
       

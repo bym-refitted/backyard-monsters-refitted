@@ -1,9 +1,9 @@
 package com.monsters.siege
 {
+   import com.brokenfunction.json.encodeJson;
    import com.monsters.siege.weapons.*;
    import flash.events.TimerEvent;
    import flash.utils.Timer;
-   import com.brokenfunction.json.encodeJson;
    
    public class SiegeWeapons
    {

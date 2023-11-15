@@ -2,6 +2,7 @@ package
 {
    import flash.display.MovieClip;
    
+   [Embed(source="/_assets/assets.swf", symbol="UI_TOP_CLIP")]
    public dynamic class UI_TOP_CLIP extends MovieClip
    {
        

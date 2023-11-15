@@ -14,20 +14,20 @@ package de.polygonal.ds
       
       public var _top:int;
       
-      public var _tailPool:de.polygonal.ds.LinkedStackNode;
+      public var _tailPool:LinkedStackNode;
       
       public var _reservedSize:int;
       
       public var _poolSize:int;
       
-      public var _headPool:de.polygonal.ds.LinkedStackNode;
+      public var _headPool:LinkedStackNode;
       
-      public var _head:de.polygonal.ds.LinkedStackNode;
+      public var _head:LinkedStackNode;
       
       public function LinkedStack(param1:int = 0, param2:int = -1)
       {
          var _loc3_:* = null as Object;
-         var _loc4_:* = null as de.polygonal.ds.LinkedStackNode;
+         var _loc4_:* = null as LinkedStackNode;
          if(Boot.skip_constructor)
          {
             return;
@@ -46,7 +46,7 @@ package de.polygonal.ds
          if(param1 > 0)
          {
             _loc3_ = null;
-            _headPool = _tailPool = new de.polygonal.ds.LinkedStackNode(_loc3_);
+            _headPool = _tailPool = new LinkedStackNode(_loc3_);
          }
          var _loc5_:int;
          HashKey._counter = (_loc5_ = int(HashKey._counter)) + 1;
@@ -71,7 +71,7 @@ package de.polygonal.ds
          var _loc1_:DA = new DA(_top);
          _loc1_.fill(null,_top);
          var _loc2_:Array = [];
-         var _loc3_:de.polygonal.ds.LinkedStackNode = _head;
+         var _loc3_:LinkedStackNode = _head;
          var _loc4_:int = 0;
          var _loc5_:int = _top;
          while(_loc4_ < _loc5_)
@@ -106,7 +106,7 @@ package de.polygonal.ds
             _loc5_ = _loc4_++;
             _loc1_[_loc5_] = null;
          }
-         var _loc6_:de.polygonal.ds.LinkedStackNode = _head;
+         var _loc6_:LinkedStackNode = _head;
          _loc3_ = 0;
          _loc4_ = _top;
          while(_loc3_ < _loc4_)
@@ -124,7 +124,7 @@ package de.polygonal.ds
          null;
          null;
          null;
-         var _loc3_:de.polygonal.ds.LinkedStackNode = _head;
+         var _loc3_:LinkedStackNode = _head;
          if(param1 < param2)
          {
             param1 ^= param2;
@@ -137,7 +137,7 @@ package de.polygonal.ds
             _loc3_ = _loc3_.next;
             _loc4_--;
          }
-         var _loc5_:de.polygonal.ds.LinkedStackNode = _loc3_;
+         var _loc5_:LinkedStackNode = _loc3_;
          while(_loc4_ > param2)
          {
             _loc3_ = _loc3_.next;
@@ -157,11 +157,11 @@ package de.polygonal.ds
       {
          var _loc3_:* = null as Class;
          var _loc4_:int = 0;
-         var _loc5_:* = null as de.polygonal.ds.LinkedStackNode;
+         var _loc5_:* = null as LinkedStackNode;
          var _loc6_:int = 0;
          var _loc7_:int = 0;
          var _loc8_:* = null as Object;
-         var _loc9_:* = null as de.polygonal.ds.LinkedStackNode;
+         var _loc9_:* = null as LinkedStackNode;
          var _loc10_:int = 0;
          var _loc2_:int = _top;
          if(param1 == null)
@@ -224,7 +224,7 @@ package de.polygonal.ds
       {
          null;
          null;
-         var _loc3_:de.polygonal.ds.LinkedStackNode = _head;
+         var _loc3_:LinkedStackNode = _head;
          param1 = _top - param1;
          while(true)
          {
@@ -242,7 +242,7 @@ package de.polygonal.ds
       {
          var _loc5_:int = 0;
          null;
-         var _loc2_:de.polygonal.ds.LinkedStackNode = _head;
+         var _loc2_:LinkedStackNode = _head;
          var _loc3_:int = 0;
          var _loc4_:* = param1 - 2;
          while(_loc3_ < _loc4_)
@@ -250,7 +250,7 @@ package de.polygonal.ds
             _loc5_ = _loc3_++;
             _loc2_ = _loc2_.next;
          }
-         var _loc6_:de.polygonal.ds.LinkedStackNode = _loc2_.next;
+         var _loc6_:LinkedStackNode = _loc2_.next;
          _loc2_.next = _loc6_.next;
          _loc6_.next = _head;
          _head = _loc6_;
@@ -260,9 +260,9 @@ package de.polygonal.ds
       {
          var _loc6_:int = 0;
          null;
-         var _loc2_:de.polygonal.ds.LinkedStackNode = _head;
+         var _loc2_:LinkedStackNode = _head;
          _head = _head.next;
-         var _loc3_:de.polygonal.ds.LinkedStackNode = _head;
+         var _loc3_:LinkedStackNode = _head;
          var _loc4_:int = 0;
          var _loc5_:* = param1 - 2;
          while(_loc4_ < _loc5_)
@@ -276,19 +276,19 @@ package de.polygonal.ds
       
       public function remove(param1:Object) : Boolean
       {
-         var _loc7_:* = null as de.polygonal.ds.LinkedStackNode;
+         var _loc7_:* = null as LinkedStackNode;
          var _loc8_:* = null as Object;
-         var _loc9_:* = null as de.polygonal.ds.LinkedStackNode;
+         var _loc9_:* = null as LinkedStackNode;
          var _loc10_:* = null as Object;
-         var _loc11_:* = null as de.polygonal.ds.LinkedStackNode;
+         var _loc11_:* = null as LinkedStackNode;
          var _loc2_:Object = param1;
          if(_top == 0)
          {
             return false;
          }
          var _loc3_:Boolean = false;
-         var _loc4_:de.polygonal.ds.LinkedStackNode = _head;
-         var _loc5_:de.polygonal.ds.LinkedStackNode = _head.next;
+         var _loc4_:LinkedStackNode = _head;
+         var _loc5_:LinkedStackNode = _head.next;
          var _loc6_:Object = null;
          while(_loc5_ != null)
          {
@@ -338,9 +338,9 @@ package de.polygonal.ds
       
       public function push(param1:Object) : void
       {
-         var _loc4_:* = null as de.polygonal.ds.LinkedStackNode;
+         var _loc4_:* = null as LinkedStackNode;
          var _loc2_:Object = param1;
-         var _loc3_:de.polygonal.ds.LinkedStackNode = _reservedSize == 0 || _poolSize == 0 ? new de.polygonal.ds.LinkedStackNode(_loc2_) : (_loc4_ = _headPool, _headPool = _headPool.next, --_poolSize, _loc4_.val = _loc2_, _loc4_);
+         var _loc3_:LinkedStackNode = _reservedSize == 0 || _poolSize == 0 ? new LinkedStackNode(_loc2_) : (_loc4_ = _headPool, _headPool = _headPool.next, --_poolSize, _loc4_.val = _loc2_, _loc4_);
          _loc3_.next = _head;
          _head = _loc3_;
          ++_top;
@@ -348,11 +348,11 @@ package de.polygonal.ds
       
       public function pop() : Object
       {
-         var _loc3_:* = null as de.polygonal.ds.LinkedStackNode;
+         var _loc3_:* = null as LinkedStackNode;
          var _loc4_:* = null as Object;
          null;
          --_top;
-         var _loc1_:de.polygonal.ds.LinkedStackNode = _head;
+         var _loc1_:LinkedStackNode = _head;
          _head = _head.next;
          var _loc2_:Object = _loc1_.val;
          if(_reservedSize > 0 && _poolSize < _reservedSize)
@@ -380,7 +380,7 @@ package de.polygonal.ds
       {
          null;
          null;
-         var _loc2_:de.polygonal.ds.LinkedStackNode = _head;
+         var _loc2_:LinkedStackNode = _head;
          param1 = _top - param1;
          while(true)
          {
@@ -396,10 +396,10 @@ package de.polygonal.ds
       
       public function free() : void
       {
-         var _loc3_:* = null as de.polygonal.ds.LinkedStackNode;
-         var _loc4_:* = null as de.polygonal.ds.LinkedStackNode;
+         var _loc3_:* = null as LinkedStackNode;
+         var _loc4_:* = null as LinkedStackNode;
          var _loc1_:Object = null;
-         var _loc2_:de.polygonal.ds.LinkedStackNode = _head;
+         var _loc2_:LinkedStackNode = _head;
          while(_loc2_ != null)
          {
             _loc3_ = _loc2_.next;
@@ -427,7 +427,7 @@ package de.polygonal.ds
          {
             param2 = _top;
          }
-         var _loc3_:de.polygonal.ds.LinkedStackNode = _head;
+         var _loc3_:LinkedStackNode = _head;
          var _loc4_:int = 0;
          while(_loc4_ < param2)
          {
@@ -447,10 +447,10 @@ package de.polygonal.ds
       
       public function dup() : void
       {
-         var _loc3_:* = null as de.polygonal.ds.LinkedStackNode;
+         var _loc3_:* = null as LinkedStackNode;
          null;
          var _loc2_:Object = _head.val;
-         var _loc1_:de.polygonal.ds.LinkedStackNode = _reservedSize == 0 || _poolSize == 0 ? new de.polygonal.ds.LinkedStackNode(_loc2_) : (_loc3_ = _headPool, _headPool = _headPool.next, --_poolSize, _loc3_.val = _loc2_, _loc3_);
+         var _loc1_:LinkedStackNode = _reservedSize == 0 || _poolSize == 0 ? new LinkedStackNode(_loc2_) : (_loc3_ = _headPool, _headPool = _headPool.next, --_poolSize, _loc3_.val = _loc2_, _loc3_);
          _loc1_.next = _head;
          _head = _loc1_;
          ++_top;
@@ -462,7 +462,7 @@ package de.polygonal.ds
          null;
          null;
          null;
-         var _loc3_:de.polygonal.ds.LinkedStackNode = _head;
+         var _loc3_:LinkedStackNode = _head;
          if(param1 < param2)
          {
             param1 ^= param2;
@@ -487,7 +487,7 @@ package de.polygonal.ds
       public function contains(param1:Object) : Boolean
       {
          var _loc2_:Object = param1;
-         var _loc3_:de.polygonal.ds.LinkedStackNode = _head;
+         var _loc3_:LinkedStackNode = _head;
          while(_loc3_ != null)
          {
             if(_loc3_.val == _loc2_)
@@ -501,9 +501,9 @@ package de.polygonal.ds
       
       public function clone(param1:Boolean, param2:Object = undefined) : Collection
       {
-         var _loc6_:* = null as de.polygonal.ds.LinkedStackNode;
-         var _loc7_:* = null as de.polygonal.ds.LinkedStackNode;
-         var _loc8_:* = null as de.polygonal.ds.LinkedStackNode;
+         var _loc6_:* = null as LinkedStackNode;
+         var _loc7_:* = null as LinkedStackNode;
+         var _loc8_:* = null as LinkedStackNode;
          var _loc9_:* = null as Cloneable;
          var _loc3_:* = param2;
          var _loc4_:LinkedStack = new LinkedStack(_reservedSize,maxSize);
@@ -516,11 +516,11 @@ package de.polygonal.ds
          if(param1)
          {
             _loc6_ = _head;
-            _loc7_ = _loc5_._head = new de.polygonal.ds.LinkedStackNode(_loc6_.val);
+            _loc7_ = _loc5_._head = new LinkedStackNode(_loc6_.val);
             _loc6_ = _loc6_.next;
             while(_loc6_ != null)
             {
-               _loc7_ = _loc7_.next = new de.polygonal.ds.LinkedStackNode(_loc6_.val);
+               _loc7_ = _loc7_.next = new LinkedStackNode(_loc6_.val);
                _loc6_ = _loc6_.next;
             }
          }
@@ -529,24 +529,24 @@ package de.polygonal.ds
             _loc6_ = _head;
             null;
             _loc9_ = _loc6_.val;
-            _loc7_ = _loc5_._head = new de.polygonal.ds.LinkedStackNode(_loc9_.clone());
+            _loc7_ = _loc5_._head = new LinkedStackNode(_loc9_.clone());
             _loc6_ = _loc6_.next;
             while(_loc6_ != null)
             {
                null;
                _loc9_ = _loc6_.val;
-               _loc7_ = _loc7_.next = new de.polygonal.ds.LinkedStackNode(_loc9_.clone());
+               _loc7_ = _loc7_.next = new LinkedStackNode(_loc9_.clone());
                _loc6_ = _loc6_.next;
             }
          }
          else
          {
             _loc6_ = _head;
-            _loc7_ = _loc5_._head = new de.polygonal.ds.LinkedStackNode(_loc3_(_loc6_.val));
+            _loc7_ = _loc5_._head = new LinkedStackNode(_loc3_(_loc6_.val));
             _loc6_ = _loc6_.next;
             while(_loc6_ != null)
             {
-               _loc7_ = _loc7_.next = new de.polygonal.ds.LinkedStackNode(_loc3_(_loc6_.val));
+               _loc7_ = _loc7_.next = new LinkedStackNode(_loc3_(_loc6_.val));
                _loc6_ = _loc6_.next;
             }
          }
@@ -555,10 +555,10 @@ package de.polygonal.ds
       
       public function clear(param1:Boolean = false) : void
       {
-         var _loc2_:* = null as de.polygonal.ds.LinkedStackNode;
-         var _loc3_:* = null as de.polygonal.ds.LinkedStackNode;
+         var _loc2_:* = null as LinkedStackNode;
+         var _loc3_:* = null as LinkedStackNode;
          var _loc4_:* = null as Object;
-         var _loc5_:* = null as de.polygonal.ds.LinkedStackNode;
+         var _loc5_:* = null as LinkedStackNode;
          var _loc6_:* = null as Object;
          if(param1 || _reservedSize > 0)
          {
@@ -592,7 +592,7 @@ package de.polygonal.ds
          {
             param3 = _top;
          }
-         var _loc4_:de.polygonal.ds.LinkedStackNode = _head;
+         var _loc4_:LinkedStackNode = _head;
          var _loc5_:int = 0;
          while(_loc5_ < param3)
          {
@@ -602,9 +602,9 @@ package de.polygonal.ds
          }
       }
       
-      public function _putNode(param1:de.polygonal.ds.LinkedStackNode) : Object
+      public function _putNode(param1:LinkedStackNode) : Object
       {
-         var _loc3_:* = null as de.polygonal.ds.LinkedStackNode;
+         var _loc3_:* = null as LinkedStackNode;
          var _loc4_:* = null as Object;
          var _loc2_:Object = param1.val;
          if(_reservedSize > 0 && _poolSize < _reservedSize)
@@ -618,12 +618,12 @@ package de.polygonal.ds
          return _loc2_;
       }
       
-      public function _getNode(param1:Object) : de.polygonal.ds.LinkedStackNode
+      public function _getNode(param1:Object) : LinkedStackNode
       {
-         var _loc2_:* = null as de.polygonal.ds.LinkedStackNode;
+         var _loc2_:* = null as LinkedStackNode;
          if(_reservedSize == 0 || _poolSize == 0)
          {
-            return new de.polygonal.ds.LinkedStackNode(param1);
+            return new LinkedStackNode(param1);
          }
          _loc2_ = _headPool;
          _headPool = _headPool.next;

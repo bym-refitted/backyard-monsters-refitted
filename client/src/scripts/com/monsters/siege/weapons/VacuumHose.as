@@ -231,11 +231,11 @@ package com.monsters.siege.weapons
          var _loc4_:int = -GLOBAL._mapHeight;
          var _loc5_:int = 0;
          _loc3_.x = -(END_WIDTH / 2);
-         _loc3_.y = _loc5_ = _loc5_ - END_HEIGHT;
+         _loc3_.y = _loc5_ -= END_HEIGHT;
          while(_loc5_ > _loc4_)
          {
             (_loc6_ = new Bitmap(this._vacuumPipeSource)).x = -(PIPE_WIDTH / 2);
-            _loc6_.y = _loc5_ = _loc5_ - PIPE_HEIGHT;
+            _loc6_.y = _loc5_ -= PIPE_HEIGHT;
             this._vacuum.addChild(_loc6_);
          }
          this._totalPossibleLoot = uint.MAX_VALUE;

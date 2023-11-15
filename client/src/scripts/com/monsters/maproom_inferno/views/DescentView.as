@@ -17,7 +17,7 @@ package com.monsters.maproom_inferno.views
    public class DescentView extends DescentView_CLIP
    {
       
-      private static var instance:com.monsters.maproom_inferno.views.DescentView;
+      private static var instance:DescentView;
       
       private static const _MAPSIZE:Rectangle = new Rectangle(0,0,700,1842);
        
@@ -59,11 +59,11 @@ package com.monsters.maproom_inferno.views
          this.bases = [].concat();
       }
       
-      public static function getInstance() : com.monsters.maproom_inferno.views.DescentView
+      public static function getInstance() : DescentView
       {
          if(!instance)
          {
-            return new com.monsters.maproom_inferno.views.DescentView();
+            return new DescentView();
          }
          return instance;
       }

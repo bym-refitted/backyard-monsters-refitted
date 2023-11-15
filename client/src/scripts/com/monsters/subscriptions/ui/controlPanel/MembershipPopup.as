@@ -8,7 +8,7 @@ package com.monsters.subscriptions.ui.controlPanel
    {
        
       
-      private var _cancelConfirm:com.monsters.subscriptions.ui.controlPanel.SubscriptionCancelPopup;
+      private var _cancelConfirm:SubscriptionCancelPopup;
       
       public function MembershipPopup()
       {
@@ -85,7 +85,7 @@ package com.monsters.subscriptions.ui.controlPanel
       
       private function clickedCancelConfirm(param1:MouseEvent = null) : void
       {
-         this._cancelConfirm = new com.monsters.subscriptions.ui.controlPanel.SubscriptionCancelPopup();
+         this._cancelConfirm = new SubscriptionCancelPopup();
          POPUPS.Add(this._cancelConfirm);
          this._cancelConfirm.addEventListener(SubscriptionHandler.CANCELCONFIRM,this.eventCancel);
          this._cancelConfirm.addEventListener(SubscriptionHandler.CLOSECONFIRM,this.removeConfirmationPopup);

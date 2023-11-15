@@ -29,7 +29,7 @@ package com.monsters.replayableEvents
       
       private var _titlelogo:String;
       
-      private var _event:com.monsters.replayableEvents.ReplayableEvent;
+      private var _event:ReplayableEvent;
       
       private const BASEIMAGEURL:String = "specialevent/";
       
@@ -52,7 +52,7 @@ package com.monsters.replayableEvents
          return this;
       }
       
-      public function setup(param1:com.monsters.replayableEvents.ReplayableEvent) : void
+      public function setup(param1:ReplayableEvent) : void
       {
          this._event = param1;
          bHelp.addEventListener(MouseEvent.CLICK,this.ShowInfoPopup);

@@ -4,13 +4,13 @@ package as3reflect
    {
        
       
-      private var _type:as3reflect.Type;
+      private var _type:Type;
       
       private var _index:int;
       
       private var _isOptional:Boolean;
       
-      public function Parameter(param1:int, param2:as3reflect.Type, param3:Boolean = false)
+      public function Parameter(param1:int, param2:Type, param3:Boolean = false)
       {
          super();
          _index = param1;
@@ -28,7 +28,7 @@ package as3reflect
          return _isOptional;
       }
       
-      public function get type() : as3reflect.Type
+      public function get type() : Type
       {
          return _type;
       }

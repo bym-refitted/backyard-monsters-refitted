@@ -16,7 +16,7 @@ package com.smartfoxserver.v2.entities.variables
       
       protected var _type:String;
       
-      protected var _value;
+      protected var _value:*;
       
       public function SFSBuddyVariable(param1:String, param2:*, param3:int = -1)
       {

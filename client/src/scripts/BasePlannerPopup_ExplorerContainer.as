@@ -2,6 +2,7 @@ package
 {
    import flash.display.MovieClip;
    
+   [Embed(source="/_assets/assets.swf", symbol="BasePlannerPopup_ExplorerContainer")]
    public dynamic class BasePlannerPopup_ExplorerContainer extends MovieClip
    {
        

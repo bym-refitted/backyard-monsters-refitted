@@ -18,7 +18,7 @@ package
       
       public var _juiceList:Object;
       
-      private var _bunker = null;
+      private var _bunker:* = null;
       
       private var _capacity:int = 0;
       

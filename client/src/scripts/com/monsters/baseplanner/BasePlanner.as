@@ -28,11 +28,11 @@ package com.monsters.baseplanner
       
       public var popup:BasePlannerPopup;
       
-      public var service:com.monsters.baseplanner.BasePlannerService;
+      public var service:BasePlannerService;
       
-      private var _templates:Vector.<com.monsters.baseplanner.BaseTemplate>;
+      private var _templates:Vector.<BaseTemplate>;
       
-      private var _activeTemplate:com.monsters.baseplanner.PlannerTemplate;
+      private var _activeTemplate:PlannerTemplate;
       
       private var _transferPopup:BasePlannerTransferPopup;
       
@@ -44,10 +44,10 @@ package com.monsters.baseplanner
       public function setup(param1:Boolean = true) : void
       {
          canSave = !BASE.isOutpost;
-         this.service = new com.monsters.baseplanner.BasePlannerService();
+         this.service = new BasePlannerService();
          this.service.loadTemplates();
          this.service.addEventListener(BasePlannerServiceEvent.LOADED_TEMPLATES_LIST,this.loadedTemplateList);
-         this._activeTemplate = new com.monsters.baseplanner.PlannerTemplate();
+         this._activeTemplate = new PlannerTemplate();
          this.setActiveTemplate(BASE.getTemplate());
          this.show();
       }
@@ -66,7 +66,7 @@ package com.monsters.baseplanner
          this.setActiveTemplate(this._templates[param1]);
       }
       
-      private function setActiveTemplate(param1:com.monsters.baseplanner.BaseTemplate) : void
+      private function setActiveTemplate(param1:BaseTemplate) : void
       {
          this._activeTemplate.importData(param1);
          if(this.popup)
@@ -134,7 +134,7 @@ package com.monsters.baseplanner
          while(_loc2_ < this._activeTemplate.inventoryData.length)
          {
             _loc3_ = this._activeTemplate.inventoryData[_loc2_];
-            if(_loc3_.building._id != com.monsters.baseplanner.PlannerTemplate._DECORATION_ID && _loc3_.category == BuildingItem.TYPE_DECORATION)
+            if(_loc3_.building._id != PlannerTemplate._DECORATION_ID && _loc3_.category == BuildingItem.TYPE_DECORATION)
             {
                _loc3_.building.RecycleC();
                InstanceManager.removeInstance(_loc3_.building);

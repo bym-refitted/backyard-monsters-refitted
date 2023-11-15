@@ -46,9 +46,9 @@ package com.monsters.player
       
       public var m_upgrades:Object;
       
-      private var m_monsterList:Vector.<com.monsters.player.MonsterData>;
+      private var m_monsterList:Vector.<MonsterData>;
       
-      private var m_iMonsterList:Vector.<com.monsters.player.MonsterData>;
+      private var m_iMonsterList:Vector.<MonsterData>;
       
       private var m_monsterIndexList:Array;
       
@@ -61,9 +61,9 @@ package com.monsters.player
          this._handlers = Vector.<IHandler>([RewardHandler.instance,KOTHHandler.instance,SubscriptionHandler.instance,BaseBuffHandler.instance]);
          this.m_upgrades = {};
          super();
-         this.m_monsterList = new Vector.<com.monsters.player.MonsterData>();
+         this.m_monsterList = new Vector.<MonsterData>();
          this.m_monsterIndexList = new Array();
-         this.m_iMonsterList = new Vector.<com.monsters.player.MonsterData>();
+         this.m_iMonsterList = new Vector.<MonsterData>();
          this.m_healQueue = new Vector.<String>();
          this.m_iHealQueue = new Vector.<String>();
       }
@@ -74,7 +74,7 @@ package com.monsters.player
       
       public function clear() : void
       {
-         var _loc1_:Vector.<com.monsters.player.MonsterData> = this.monsterList;
+         var _loc1_:Vector.<MonsterData> = this.monsterList;
          var _loc2_:int = int(_loc1_.length);
          var _loc3_:int = 0;
          while(_loc3_ < _loc2_)
@@ -84,7 +84,7 @@ package com.monsters.player
          }
       }
       
-      public function set monsterList(param1:Vector.<com.monsters.player.MonsterData>) : void
+      public function set monsterList(param1:Vector.<MonsterData>) : void
       {
          if(BASE.isInfernoMainYardOrOutpost && !MAPROOM_DESCENT._inDescent)
          {
@@ -96,7 +96,7 @@ package com.monsters.player
          }
       }
       
-      public function get monsterList() : Vector.<com.monsters.player.MonsterData>
+      public function get monsterList() : Vector.<MonsterData>
       {
          if(BASE.isInfernoMainYardOrOutpost && !MAPROOM_DESCENT._inDescent)
          {
@@ -114,13 +114,13 @@ package com.monsters.player
          return this.m_healQueue;
       }
       
-      public function monsterListByID(param1:String) : com.monsters.player.MonsterData
+      public function monsterListByID(param1:String) : MonsterData
       {
          if(param1.substr(0,1) == "B")
          {
             print("ERROR. ERROR. tried to get monsterListByID of a bunker.");
          }
-         var _loc2_:Vector.<com.monsters.player.MonsterData> = this.monsterList;
+         var _loc2_:Vector.<MonsterData> = this.monsterList;
          if(this.m_monsterIndexList[param1])
          {
             return _loc2_[this.m_monsterIndexList[param1] - 1];
@@ -142,7 +142,7 @@ package com.monsters.player
          var _loc3_:int = 0;
          var _loc4_:int = 0;
          var _loc5_:int = 0;
-         var _loc2_:Vector.<com.monsters.player.MonsterData> = this.monsterList;
+         var _loc2_:Vector.<MonsterData> = this.monsterList;
          if(param1.substr(0,1) == "B")
          {
             _loc3_ = int(_loc2_.length);
@@ -163,7 +163,7 @@ package com.monsters.player
          var _loc3_:int = 0;
          var _loc4_:int = 0;
          var _loc5_:int = 0;
-         var _loc2_:Vector.<com.monsters.player.MonsterData> = this.monsterList;
+         var _loc2_:Vector.<MonsterData> = this.monsterList;
          if(param1.substr(0,1) == "B")
          {
             _loc3_ = int(_loc2_.length);
@@ -277,15 +277,15 @@ package com.monsters.player
       
       public function addMonster(param1:String, param2:MonsterBase = null) : void
       {
-         var _loc3_:Vector.<com.monsters.player.MonsterData> = this.monsterList;
-         var _loc4_:com.monsters.player.MonsterData;
+         var _loc3_:Vector.<MonsterData> = this.monsterList;
+         var _loc4_:MonsterData;
          if(_loc4_ = this.monsterListByID(param1))
          {
             _loc4_.add(1,param2);
          }
          else
          {
-            (_loc4_ = new com.monsters.player.MonsterData()).m_creatureID = param1;
+            (_loc4_ = new MonsterData()).m_creatureID = param1;
             _loc4_.add(1,param2);
             if(this.m_upgrades[param1] != null)
             {
@@ -300,11 +300,11 @@ package com.monsters.player
       {
          var _loc5_:String = null;
          var _loc6_:int = 0;
-         var _loc7_:com.monsters.player.MonsterData = null;
+         var _loc7_:MonsterData = null;
          var _loc8_:int = 0;
          var _loc9_:int = 0;
          var _loc10_:int = 0;
-         var _loc2_:Vector.<com.monsters.player.MonsterData> = this.monsterList;
+         var _loc2_:Vector.<MonsterData> = this.monsterList;
          var _loc3_:Vector.<String> = this.healQueue;
          _loc2_.length = 0;
          this.m_monsterIndexList = [];
@@ -327,7 +327,7 @@ package com.monsters.player
                }
                if(_loc6_)
                {
-                  _loc7_ = new com.monsters.player.MonsterData();
+                  _loc7_ = new MonsterData();
                   if(_loc5_ == "C100")
                   {
                      _loc5_ = "C12";
@@ -382,7 +382,7 @@ package com.monsters.player
       {
          var _loc8_:Array = null;
          var _loc9_:int = 0;
-         var _loc1_:Vector.<com.monsters.player.MonsterData> = this.monsterList;
+         var _loc1_:Vector.<MonsterData> = this.monsterList;
          var _loc2_:Vector.<String> = this.healQueue;
          var _loc3_:Object = new Object();
          var _loc4_:int = int(_loc1_.length);
@@ -513,7 +513,7 @@ package com.monsters.player
       
       private function setQueueByID(param1:String, param2:Boolean, param3:int = 0) : void
       {
-         var _loc5_:Vector.<com.monsters.player.MonsterData> = null;
+         var _loc5_:Vector.<MonsterData> = null;
          var _loc6_:int = 0;
          var _loc7_:int = 0;
          var _loc4_:int = 0;
@@ -556,7 +556,7 @@ package com.monsters.player
          var _loc3_:int = 0;
          var _loc4_:int = 0;
          var _loc5_:int = 0;
-         var _loc2_:Vector.<com.monsters.player.MonsterData> = this.monsterList;
+         var _loc2_:Vector.<MonsterData> = this.monsterList;
          if(param1.substr(0,1) != "B")
          {
             return this.monsterListByID(param1).checkForNonQueuedCreeps();
@@ -577,7 +577,7 @@ package com.monsters.player
       
       public function getHighestTimeHealingUsingNumberOfHousing(param1:String) : int
       {
-         var _loc4_:Vector.<com.monsters.player.MonsterData> = null;
+         var _loc4_:Vector.<MonsterData> = null;
          var _loc5_:int = 0;
          var _loc6_:int = 0;
          var _loc2_:int = 0;
@@ -628,7 +628,7 @@ package com.monsters.player
          var _loc4_:int = 0;
          var _loc5_:int = 0;
          var _loc6_:int = 0;
-         var _loc2_:Vector.<com.monsters.player.MonsterData> = this.monsterList;
+         var _loc2_:Vector.<MonsterData> = this.monsterList;
          var _loc3_:Boolean = true;
          if(param1.substr(0,1) == "B")
          {
@@ -656,7 +656,7 @@ package com.monsters.player
          var _loc3_:int = 0;
          var _loc4_:int = 0;
          var _loc5_:int = 0;
-         var _loc2_:Vector.<com.monsters.player.MonsterData> = this.monsterList;
+         var _loc2_:Vector.<MonsterData> = this.monsterList;
          if(param1.substr(0,1) == "B")
          {
             _loc3_ = int(_loc2_.length);
@@ -677,7 +677,7 @@ package com.monsters.player
       
       public function healInstantAll() : void
       {
-         var _loc1_:Vector.<com.monsters.player.MonsterData> = null;
+         var _loc1_:Vector.<MonsterData> = null;
          _loc1_ = this.monsterList;
          var _loc2_:int = int(_loc1_.length);
          var _loc3_:int = 0;
@@ -697,7 +697,7 @@ package com.monsters.player
          var _loc8_:String = null;
          var _loc9_:int = 0;
          var _loc10_:int = 0;
-         var _loc3_:Vector.<com.monsters.player.MonsterData> = this.monsterList;
+         var _loc3_:Vector.<MonsterData> = this.monsterList;
          var _loc4_:int = 0;
          if(param1.substr(0,1) == "B")
          {
@@ -728,7 +728,7 @@ package com.monsters.player
       
       public function getNumDamagedCreeps() : int
       {
-         var _loc1_:Vector.<com.monsters.player.MonsterData> = null;
+         var _loc1_:Vector.<MonsterData> = null;
          _loc1_ = this.monsterList;
          var _loc2_:int = int(_loc1_.length);
          var _loc3_:int = 0;
@@ -747,7 +747,7 @@ package com.monsters.player
          var _loc5_:String = null;
          var _loc6_:int = 0;
          var _loc7_:int = 0;
-         var _loc2_:Vector.<com.monsters.player.MonsterData> = this.monsterList;
+         var _loc2_:Vector.<MonsterData> = this.monsterList;
          var _loc3_:int = 0;
          if(param1.substr(0,1) == "B")
          {
@@ -776,7 +776,7 @@ package com.monsters.player
          var _loc7_:String = null;
          var _loc8_:int = 0;
          var _loc9_:int = 0;
-         var _loc3_:Vector.<com.monsters.player.MonsterData> = this.monsterList;
+         var _loc3_:Vector.<MonsterData> = this.monsterList;
          _loc4_ = {
             "num":0,
             "resoLeft":param2
@@ -809,7 +809,7 @@ package com.monsters.player
          var _loc9_:String = null;
          var _loc10_:int = 0;
          var _loc11_:int = 0;
-         var _loc3_:Vector.<com.monsters.player.MonsterData> = this.monsterList;
+         var _loc3_:Vector.<MonsterData> = this.monsterList;
          var _loc6_:int = 0;
          var _loc7_:int = 0;
          if(param1.substr(0,1) == "B")
@@ -848,7 +848,7 @@ package com.monsters.player
       
       public function numCreepsInBunker(param1:int) : int
       {
-         var _loc2_:Vector.<com.monsters.player.MonsterData> = null;
+         var _loc2_:Vector.<MonsterData> = null;
          _loc2_ = this.monsterList;
          var _loc3_:int = int(_loc2_.length);
          var _loc4_:int = 0;
@@ -863,7 +863,7 @@ package com.monsters.player
       
       public function getBunkerStorage(param1:int) : int
       {
-         var _loc2_:Vector.<com.monsters.player.MonsterData> = null;
+         var _loc2_:Vector.<MonsterData> = null;
          _loc2_ = this.monsterList;
          var _loc3_:int = int(_loc2_.length);
          var _loc4_:int = 0;

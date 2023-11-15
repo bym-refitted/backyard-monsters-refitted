@@ -17,9 +17,9 @@ package com.monsters.display
       
       public var doesRepeat:Boolean;
       
-      public var spriteData:com.monsters.display.SpriteData;
+      public var spriteData:SpriteData;
       
-      public function SpriteSheetAnimation(param1:com.monsters.display.SpriteData, param2:int)
+      public function SpriteSheetAnimation(param1:SpriteData, param2:int)
       {
          this.spriteData = param1;
          this.totalFrames = param2;

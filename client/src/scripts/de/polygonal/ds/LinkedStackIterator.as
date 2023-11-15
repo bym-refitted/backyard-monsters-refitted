@@ -6,11 +6,11 @@ package de.polygonal.ds
    {
        
       
-      public var _walker:de.polygonal.ds.LinkedStackNode;
+      public var _walker:LinkedStackNode;
       
-      public var _f:de.polygonal.ds.LinkedStack;
+      public var _f:LinkedStack;
       
-      public function LinkedStackIterator(param1:de.polygonal.ds.LinkedStack = undefined)
+      public function LinkedStackIterator(param1:LinkedStack = undefined)
       {
          if(Boot.skip_constructor)
          {
@@ -37,7 +37,7 @@ package de.polygonal.ds
          return _walker != null;
       }
       
-      public function __head(param1:Object) : de.polygonal.ds.LinkedStackNode
+      public function __head(param1:Object) : LinkedStackNode
       {
          return param1._head;
       }

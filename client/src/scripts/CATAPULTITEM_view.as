@@ -2,6 +2,7 @@ package
 {
    import flash.display.MovieClip;
    
+   [Embed(source="/_assets/assets.swf", symbol="CATAPULTITEM_view")]
    public dynamic class CATAPULTITEM_view extends MovieClip
    {
        

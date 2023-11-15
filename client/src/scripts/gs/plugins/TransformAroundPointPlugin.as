@@ -19,7 +19,7 @@ package gs.plugins
       
       protected var _point:Point;
       
-      protected var _shortRotation:gs.plugins.ShortRotationPlugin;
+      protected var _shortRotation:ShortRotationPlugin;
       
       public function TransformAroundPointPlugin()
       {
@@ -31,7 +31,7 @@ package gs.plugins
       override public function onInitTween(param1:Object, param2:*, param3:TweenLite) : Boolean
       {
          var _loc4_:String = null;
-         var _loc5_:gs.plugins.ShortRotationPlugin = null;
+         var _loc5_:ShortRotationPlugin = null;
          var _loc6_:String = null;
          var _loc7_:Number = NaN;
          var _loc8_:Number = NaN;
@@ -52,7 +52,7 @@ package gs.plugins
             {
                if(_loc4_ == "shortRotation")
                {
-                  this._shortRotation = new gs.plugins.ShortRotationPlugin();
+                  this._shortRotation = new ShortRotationPlugin();
                   this._shortRotation.onInitTween(this._target,param2[_loc4_],param3);
                   addTween(this._shortRotation,"changeFactor",0,1,"shortRotation");
                   for(_loc6_ in param2[_loc4_])

@@ -1,5 +1,6 @@
 package
 {
+   import com.brokenfunction.json.decodeJson;
    import com.cc.utils.SecNum;
    import com.monsters.display.ImageCache;
    import com.monsters.managers.InstanceManager;
@@ -8,7 +9,6 @@ package
    import flash.display.BitmapData;
    import flash.events.Event;
    import flash.events.MouseEvent;
-   import com.brokenfunction.json.decodeJson;
    
    public class popup_prefab extends popup_prefab_CLIP
    {

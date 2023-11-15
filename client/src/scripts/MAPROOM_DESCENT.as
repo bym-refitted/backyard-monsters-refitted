@@ -1,5 +1,6 @@
 package
 {
+   import com.brokenfunction.json.encodeJson;
    import com.monsters.ai.*;
    import com.monsters.mailbox.Message;
    import com.monsters.maproom_inferno.DescentMapRoom;
@@ -7,7 +8,6 @@ package
    import flash.events.Event;
    import flash.events.MouseEvent;
    import flash.events.ProgressEvent;
-   import com.brokenfunction.json.encodeJson;
    
    public class MAPROOM_DESCENT
    {

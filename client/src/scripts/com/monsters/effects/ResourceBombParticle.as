@@ -38,7 +38,7 @@ package com.monsters.effects
       
       private var m_position:Point;
       
-      private var m_bomb:com.monsters.effects.ResourceBomb;
+      private var m_bomb:ResourceBomb;
       
       private var m_id:String;
       
@@ -50,7 +50,7 @@ package com.monsters.effects
       
       private var m_cleared:Boolean;
       
-      public function ResourceBombParticle(param1:MovieClip, param2:MovieClip, param3:Point, param4:com.monsters.effects.ResourceBomb, param5:String, param6:int, param7:int)
+      public function ResourceBombParticle(param1:MovieClip, param2:MovieClip, param3:Point, param4:ResourceBomb, param5:String, param6:int, param7:int)
       {
          super();
          this.mctop = param1;

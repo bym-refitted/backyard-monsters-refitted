@@ -1,5 +1,6 @@
 package
 {
+   import com.brokenfunction.json.encodeJson;
    import com.monsters.effects.LASERS;
    import com.monsters.effects.ResourceBombs;
    import com.monsters.effects.particles.Particles;
@@ -12,7 +13,6 @@ package
    import flash.geom.Matrix;
    import flash.geom.Point;
    import flash.geom.Rectangle;
-   import com.brokenfunction.json.encodeJson;
    
    public class EFFECTS
    {

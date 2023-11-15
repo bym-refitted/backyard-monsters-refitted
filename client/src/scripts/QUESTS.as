@@ -1,5 +1,6 @@
 package
 {
+   import com.brokenfunction.json.encodeJson;
    import com.monsters.maproom_manager.MapRoomManager;
    import com.monsters.missions.*;
    import com.monsters.siege.SiegeWeapons;
@@ -8,7 +9,6 @@ package
    import com.monsters.siege.weapons.Vacuum;
    import flash.events.MouseEvent;
    import flash.text.TextFieldAutoSize;
-   import com.brokenfunction.json.encodeJson;
    
    public class QUESTS
    {

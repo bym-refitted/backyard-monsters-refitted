@@ -2,6 +2,7 @@ package SWC_ALL_fla
 {
    import flash.display.MovieClip;
    
+   [Embed(source="/_assets/assets.swf", symbol="SWC_ALL_fla.GuardianCagePopup_HPBarBar_280")]
    public dynamic class GuardianCagePopup_HPBarBar_280 extends MovieClip
    {
        
