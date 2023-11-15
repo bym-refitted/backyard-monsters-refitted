@@ -54,6 +54,7 @@ package
    import flash.utils.getTimer;
    import gs.*;
    import gs.easing.*;
+   import com.brokenfunction.json.decodeJson;
    
    public class BASE
    {
@@ -1247,7 +1248,7 @@ package
             {
                if(serverData.champion != "\"null\"" && serverData.champion != "null")
                {
-                  champion = JSON.decode(serverData.champion);
+                  champion = decodeJson(serverData.champion);
                   size = 0;
                   if(champion.t)
                   {
@@ -1354,8 +1355,8 @@ package
                      }
                      catch(e:Error)
                      {
-                        championString = JSON.decode(serverData.champion) as String;
-                        _guardianData[j] = JSON.decode(championString);
+                        championString = decodeJson(serverData.champion) as String;
+                        _guardianData[j] = decodeJson(championString);
                         Console.warning("Base::handleBaseLoadSuccessful - Error thrown on champion, champion data is - " + championString,true);
                         continue;
                      }

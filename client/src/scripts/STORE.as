@@ -16,6 +16,7 @@ package
    import flash.events.*;
    import flash.geom.Rectangle;
    import flash.net.*;
+   import com.brokenfunction.json.decodeJson;
    
    public class STORE
    {
@@ -2860,7 +2861,7 @@ package
       
       public static function FacebookCreditPurchaseB(param1:String) : void
       {
-         if(int(JSON.decode(param1).success) == 1)
+         if(int(decodeJson(param1).success) == 1)
          {
             BuyB(_facebookPurchaseItemCode);
          }
@@ -3121,7 +3122,7 @@ package
       public static function updateCredits(param1:String) : void
       {
          POPUPS.Next();
-         var _loc2_:Object = JSON.decode(param1);
+         var _loc2_:Object = decodeJson(param1);
          if(_loc2_.error == 0)
          {
             if(LOGIN.checkHash(param1))

@@ -11,6 +11,7 @@ package
    import flash.events.MouseEvent;
    import flash.geom.Point;
    import flash.text.TextFieldAutoSize;
+   import com.brokenfunction.json.decodeJson;
    
    public class UPDATES
    {
@@ -64,7 +65,7 @@ package
                   {
                      _lastUpdateID = _loc2_.id;
                   }
-                  _loc3_ = JSON.decode(_loc2_.data);
+                  _loc3_ = decodeJson(_loc2_.data);
                   for each(_loc4_ in _loc3_)
                   {
                      _updates.push({

@@ -5,6 +5,7 @@ package
    import flash.net.URLRequest;
    import flash.events.Event;
    import flash.events.IOErrorEvent;
+   import com.brokenfunction.json.decodeJson;
 
    public class KEYS
    {
@@ -53,7 +54,7 @@ package
       private static function handleSucc(param1:Event):void
       {
          var rawData:String = param1.target.data;
-         jsonData = JSON.decode(rawData);
+         jsonData = decodeJson(rawData);
          cbf();
       }
 

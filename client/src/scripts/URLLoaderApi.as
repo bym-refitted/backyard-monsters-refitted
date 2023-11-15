@@ -10,6 +10,7 @@ package
    import flash.events.SecurityErrorEvent;
    import flash.net.URLRequestHeader;
    import flash.net.SharedObject;
+   import com.brokenfunction.json.decodeJson;
    
    public class URLLoaderApi
    {
@@ -392,14 +393,16 @@ package
          {
             return;
          }
-         var reqData:* = this._req.data;
+         var reqData:Object = this._req.data;
          var hasKeyArray :Array = reqData.split(",\"h\":");
          var _loc4_:String = "{\"h\":" + hasKeyArray.pop();
          reqData = hasKeyArray.join(",\"h\":") + "}";
          var stringifiedReqData:String = reqData;
-         var decodedReqData:* = JSON.decode(reqData);
-         var _loc7_:* = JSON.decode(_loc4_);
+         var decodedReqData:Object = decodeJson(reqData);
+         var _loc7_:Object = decodeJson(_loc4_);
          var _loc8_:Boolean;
+         // var _loc8_:String;
+         // if((_loc8_ = md5(this.getSalt() + _loc5_ + this.getNum(_loc7_.hn))) !== _loc7_.h) // Original implementation
          if(_loc8_ = false)
          {
             if(GLOBAL._reloadonerror)

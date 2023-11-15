@@ -2,6 +2,7 @@ package com.monsters.baseplanner
 {
    import com.monsters.baseplanner.events.BasePlannerServiceEvent;
    import flash.events.EventDispatcher;
+   import com.brokenfunction.json.decodeJson;
    
    public class BasePlannerService extends EventDispatcher
    {
@@ -56,7 +57,7 @@ package com.monsters.baseplanner
                _loc6_ = uint(_loc3_.slotid);
                _loc5_.name = _loc3_.name;
                _loc5_.slot = _loc6_;
-               _loc5_.importData(JSON.decode(_loc3_.data));
+               _loc5_.importData(decodeJson(_loc3_.data));
                if(_loc6_ < _loc2_.length)
                {
                   _loc2_[_loc6_] = _loc5_;

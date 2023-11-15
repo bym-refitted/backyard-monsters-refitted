@@ -8,6 +8,7 @@ package
    import flash.geom.Rectangle;
    import flash.utils.Dictionary;
    import gs.easing.*;
+   import com.brokenfunction.json.decodeJson;
    
    public class CHAMPIONCHAMBER extends BFOUNDATION
    {
@@ -280,7 +281,7 @@ package
          super.Setup(param1);
          if(param1.fz)
          {
-            _loc3_ = JSON.decode(param1.fz) as Array;
+            _loc3_ = decodeJson(param1.fz) as Array;
             this._frozen = [];
             _loc4_ = new Dictionary();
             _loc5_ = null;

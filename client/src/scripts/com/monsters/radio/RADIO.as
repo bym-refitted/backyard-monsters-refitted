@@ -1,6 +1,7 @@
 package com.monsters.radio
 {
    import flash.display.StageDisplayState;
+   import com.brokenfunction.json.decodeJson;
    
    public class RADIO
    {
@@ -97,7 +98,7 @@ package com.monsters.radio
       
       public static function TwitterCallback(param1:String) : void
       {
-         var _loc2_:Object = JSON.decode(param1);
+         var _loc2_:Object = decodeJson(param1);
          if(_loc2_.error)
          {
             if(_loc2_.error != "noname")

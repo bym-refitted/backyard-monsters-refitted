@@ -38,6 +38,7 @@ package
    import flash.utils.*;
    import gs.TweenLite;
    import gs.easing.Cubic;
+   import com.brokenfunction.json.decodeJson;
    
    public class GLOBAL
    {
@@ -1363,7 +1364,7 @@ package
       
       public static function OpenMap(param1:String) : void
       {
-         var _loc2_:Object = JSON.decode(param1);
+         var _loc2_:Object = decodeJson(param1);
          if(_loc2_.status)
          {
             if(_loc2_.status == "open")
@@ -1563,7 +1564,7 @@ package
       {
          var _loc3_:Object = null;
          var _loc2_:String = param1;
-         _loc3_ = JSON.decode(_loc2_);
+         _loc3_ = decodeJson(_loc2_);
          var _loc4_:String = String(_loc3_.h);
          var _loc5_:int = int(_loc3_.hid);
          _loc2_ = _loc2_.split(",\"h\":\"" + _loc4_ + "\"").join("");
