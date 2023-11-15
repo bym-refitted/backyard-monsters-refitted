@@ -60,8 +60,7 @@ api.get("/", (ctx: Context) => (ctx.body = {}));
 
   app.use(processLanguagesFile);
 
-  app.use(serve("./public"));
-  app.use(serve(__dirname + "/public"));
+  app.use(serve("public/"));
 
   process.on("unhandledRejection", (reason, promise) => {
     errorLog(`Unhandled Rejection at: ${promise} reason: ${reason}`);
