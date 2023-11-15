@@ -24,6 +24,7 @@ package
    import com.monsters.subscriptions.SubscriptionHandler;
    import flash.display.MovieClip;
    import flash.events.MouseEvent;
+   import com.brokenfunction.json.encodeJson;
    
    public class CREATURELOCKER
    {
@@ -1143,7 +1144,7 @@ package
             Push("IC" + i);
             i++;
          }
-         return md5(JSON.encode(tmpArray));
+         return md5(encodeJson(tmpArray));
       }
       
       public static function GetAppropriateCreatures() : Object

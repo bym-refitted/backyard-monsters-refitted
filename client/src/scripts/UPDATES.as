@@ -12,6 +12,7 @@ package
    import flash.geom.Point;
    import flash.text.TextFieldAutoSize;
    import com.brokenfunction.json.decodeJson;
+   import com.brokenfunction.json.encodeJson;
    
    public class UPDATES
    {
@@ -574,7 +575,7 @@ package
             }
             else
             {
-               LOGGER.Log("err","UPDATES.Create: " + JSON.encode(param1));
+               LOGGER.Log("err","UPDATES.Create: " + encodeJson(param1));
                GLOBAL.ErrorMessage("UPDATES.Create");
             }
          };
@@ -608,7 +609,7 @@ package
          {
             isHelping = true;
          }
-         loadVars = [["baseid",id],["data",JSON.encode([update])],["lastupdate",lastupdate],["help",isHelping]];
+         loadVars = [["baseid",id],["data",encodeJson([update])],["lastupdate",lastupdate],["help",isHelping]];
          new URLLoaderApi().load(url + "saveupdate",loadVars,handleLoadSuccessful,handleLoadError);
       }
       

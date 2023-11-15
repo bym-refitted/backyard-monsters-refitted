@@ -8,6 +8,7 @@ package
    import com.monsters.siege.weapons.Vacuum;
    import flash.events.MouseEvent;
    import flash.text.TextFieldAutoSize;
+   import com.brokenfunction.json.encodeJson;
    
    public class QUESTS
    {
@@ -2135,7 +2136,7 @@ package
             }
             _loc2_++;
          }
-         return md5(JSON.encode(_loc1_));
+         return md5(encodeJson(_loc1_));
       }
       
       public static function Completed() : void

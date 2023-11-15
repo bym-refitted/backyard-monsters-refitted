@@ -18,10 +18,11 @@ package com.monsters.maproom_advanced
    import flash.events.IOErrorEvent;
    import flash.events.MouseEvent;
    import flash.net.URLRequest;
+   import com.brokenfunction.json.encodeJson;
    
-   internal class PopupAttackA extends PopupAttackA_CLIP
+   // internal class PopupAttackA extends PopupAttackA_CLIP
+   public class PopupAttackA extends PopupAttackA_CLIP
    {
-       
       
       private var _cell:com.monsters.maproom_advanced.MapRoomCell;
       
@@ -495,10 +496,10 @@ package com.monsters.maproom_advanced
             this._enabled = true;
          }
          var _loc4_:String = "";
-         _loc4_ = "X:" + this._cell.X + " Y:" + this._cell.Y + "<br>_base:" + this._cell._base + "<br>_height:" + this._cell._height + "<br>_water:" + this._cell._water + "<br>_mine:" + this._cell._mine + "<br>_flinger:" + this._cell._flingerRange + "<br>_catapult:" + this._cell._catapult + "<br>_userID:" + this._cell._userID + "<br>_truce:" + this._cell._truce + "<br>_name:" + this._cell._name + "<br>_protected:" + this._cell._protected + "<br>_resources:" + JSON.encode(this._cell._resources) + "<br>_ticks:" + JSON.encode(this._cell._ticks) + "<br>_monsters:" + JSON.encode(this._cell._monsters);
+         _loc4_ = "X:" + this._cell.X + " Y:" + this._cell.Y + "<br>_base:" + this._cell._base + "<br>_height:" + this._cell._height + "<br>_water:" + this._cell._water + "<br>_mine:" + this._cell._mine + "<br>_flinger:" + this._cell._flingerRange + "<br>_catapult:" + this._cell._catapult + "<br>_userID:" + this._cell._userID + "<br>_truce:" + this._cell._truce + "<br>_name:" + this._cell._name + "<br>_protected:" + this._cell._protected + "<br>_resources:" + encodeJson(this._cell._resources) + "<br>_ticks:" + encodeJson(this._cell._ticks) + "<br>_monsters:" + encodeJson(this._cell._monsters);
          if(this._cell._monsterData)
          {
-            _loc4_ = (_loc4_ = (_loc4_ = (_loc4_ += "<br>_monsterData:" + JSON.encode(this._cell._monsterData)) + ("<br>_monsterData.saved:" + JSON.encode(this._cell._monsterData.saved))) + ("<br>_monsterData.h:" + JSON.encode(this._cell._monsterData.h))) + ("<br>_monsterData.hcount:" + this._cell._monsterData.hcount);
+            _loc4_ = (_loc4_ = (_loc4_ = (_loc4_ += "<br>_monsterData:" + encodeJson(this._cell._monsterData)) + ("<br>_monsterData.saved:" + encodeJson(this._cell._monsterData.saved))) + ("<br>_monsterData.h:" + encodeJson(this._cell._monsterData.h))) + ("<br>_monsterData.hcount:" + this._cell._monsterData.hcount);
          }
          if(this._scroller)
          {

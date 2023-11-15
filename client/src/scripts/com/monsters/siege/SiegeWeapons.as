@@ -3,6 +3,7 @@ package com.monsters.siege
    import com.monsters.siege.weapons.*;
    import flash.events.TimerEvent;
    import flash.utils.Timer;
+   import com.brokenfunction.json.encodeJson;
    
    public class SiegeWeapons
    {
@@ -187,7 +188,7 @@ package com.monsters.siege
             _loc1_.push(getWeapon(Jars.ID).getProperty(SiegeWeapon.DURABILITY).values[_loc2_]);
             _loc2_++;
          }
-         return md5(JSON.encode(_loc1_));
+         return md5(encodeJson(_loc1_));
       }
    }
 }

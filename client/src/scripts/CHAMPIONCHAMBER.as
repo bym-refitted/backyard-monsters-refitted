@@ -9,6 +9,7 @@ package
    import flash.utils.Dictionary;
    import gs.easing.*;
    import com.brokenfunction.json.decodeJson;
+   import com.brokenfunction.json.encodeJson;
    
    public class CHAMPIONCHAMBER extends BFOUNDATION
    {
@@ -468,7 +469,7 @@ package
             _loc3_.push(_loc6_);
             _loc5_++;
          }
-         _loc1_.fz = JSON.encode(_loc3_);
+         _loc1_.fz = encodeJson(_loc3_);
          return _loc1_;
       }
    }

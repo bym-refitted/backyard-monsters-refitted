@@ -7,8 +7,10 @@ package com.monsters.maproom_advanced
    import flash.events.IOErrorEvent;
    import flash.events.MouseEvent;
    import flash.geom.Point;
+   import com.brokenfunction.json.encodeJson;
    
-   internal class PopupRelocateMe extends PopupRelocateMe_CLIP
+   // internal class PopupRelocateMe extends PopupRelocateMe_CLIP
+   public class PopupRelocateMe extends PopupRelocateMe_CLIP
    {
        
       
@@ -235,7 +237,7 @@ package com.monsters.maproom_advanced
                GLOBAL.Message(KEYS.Get("map_relocate_notenoughresources"));
                return;
             }
-            relocateVars.push(["resources",JSON.encode({
+            relocateVars.push(["resources",encodeJson({
                "r1":this.RESOURCECOST.Get(),
                "r2":this.RESOURCECOST.Get(),
                "r3":this.RESOURCECOST.Get(),

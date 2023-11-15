@@ -7,6 +7,7 @@ package
    import flash.display.MovieClip;
    import flash.events.MouseEvent;
    import flash.events.ProgressEvent;
+   import com.brokenfunction.json.encodeJson;
    
    public class MAPROOM
    {
@@ -210,7 +211,7 @@ package
                }
                else
                {
-                  LOGGER.Log("err","MAPROOM.RequestTruce: " + JSON.encode(param1));
+                  LOGGER.Log("err","MAPROOM.RequestTruce: " + encodeJson(param1));
                }
             };
             new URLLoaderApi().load(GLOBAL._apiURL + "player/requesttruce",[["baseid",baseid],["duration",1209600],["message",mc.bMessage.text]],handleLoadSuccessful);

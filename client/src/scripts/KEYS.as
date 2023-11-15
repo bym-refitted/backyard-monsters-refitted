@@ -125,7 +125,7 @@ package
       // {
       // var _loc3_:String = null;
       // var _loc4_:String = null;
-      // _keys = JSON.decode(param1.target.data);
+      // _keys = decodeJson(param1.target.data);
       // var _loc2_:Number = 0;
       // for(_loc3_ in _keys)
       // {
@@ -325,7 +325,7 @@ package
 
       // public static function Dump() : String
       // {
-      // return JSON.encode(_keys);
+      // return encodeJson(_keys);
       // }
 
       // public static function getStringB(param1:String) : String

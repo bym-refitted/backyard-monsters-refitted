@@ -8,8 +8,10 @@ package com.monsters.maproom_advanced
    import flash.events.IOErrorEvent;
    import flash.events.MouseEvent;
    import flash.geom.Point;
+   import com.brokenfunction.json.encodeJson;
    
-   internal class PopupTakeover extends MapRoomPopup_takeover_CLIP
+   // internal class PopupTakeover extends MapRoomPopup_takeover_CLIP
+   public class PopupTakeover extends MapRoomPopup_takeover_CLIP
    {
       
       private static const TAKEOVER_CAP:int = 65000000;
@@ -210,7 +212,7 @@ package com.monsters.maproom_advanced
                GLOBAL.Message(KEYS.Get("newmap_take4"));
                return;
             }
-            takeoverVars = [["baseid",this._cell._baseID],["resources",JSON.encode({
+            takeoverVars = [["baseid",this._cell._baseID],["resources",encodeJson({
                "r1":this._resourceCost.Get(),
                "r2":this._resourceCost.Get(),
                "r3":this._resourceCost.Get(),

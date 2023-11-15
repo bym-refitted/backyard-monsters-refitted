@@ -39,6 +39,7 @@ package
    import gs.TweenLite;
    import gs.easing.Cubic;
    import com.brokenfunction.json.decodeJson;
+   import com.brokenfunction.json.encodeJson;
    
    public class GLOBAL
    {
@@ -1635,7 +1636,7 @@ package
             Push(i);
             i++;
          }
-         return md5(JSON.encode(tmpArray));
+         return md5(encodeJson(tmpArray));
       }
       
       public static function Brag(param1:String, param2:String, param3:String, param4:String) : void
@@ -1647,7 +1648,7 @@ package
       {
          if(debugLogJSCalls)
          {
-            print("CallJS> func: " + param1 + " \n     args: " + JSON.encode(param2) + " \n     exitFS: " + param3);
+            print("CallJS> func: " + param1 + " \n     args: " + encodeJson(param2) + " \n     exitFS: " + param3);
          }
          if(GLOBAL._local)
          {
@@ -1670,7 +1671,7 @@ package
       {
          if(debugLogJSCalls)
          {
-            print("CallJS> func: " + param1 + " \n     args: " + JSON.encode(param3) + " \n     exitFS: " + param4);
+            print("CallJS> func: " + param1 + " \n     args: " + encodeJson(param3) + " \n     exitFS: " + param4);
          }
          if(GLOBAL._local)
          {

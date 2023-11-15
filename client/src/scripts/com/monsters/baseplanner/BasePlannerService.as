@@ -3,6 +3,7 @@ package com.monsters.baseplanner
    import com.monsters.baseplanner.events.BasePlannerServiceEvent;
    import flash.events.EventDispatcher;
    import com.brokenfunction.json.decodeJson;
+   import com.brokenfunction.json.encodeJson;
    
    public class BasePlannerService extends EventDispatcher
    {
@@ -21,7 +22,7 @@ package com.monsters.baseplanner
       
       public function saveTemplate(param1:BaseTemplate, param2:uint) : void
       {
-         var _loc3_:Object = JSON.encode(param1.exportData());
+         var _loc3_:Object = encodeJson(param1.exportData());
          this.callServerMethod("savetemplate",[["slotid",param2],["name",param1.name],["data",_loc3_]],this.savedTemplate);
          print("saving \'" + param1.name + "\' in slot " + param2);
       }

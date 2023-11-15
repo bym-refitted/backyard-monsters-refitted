@@ -17,6 +17,7 @@ package
    import flash.geom.Rectangle;
    import flash.net.*;
    import com.brokenfunction.json.decodeJson;
+   import com.brokenfunction.json.encodeJson;
    
    public class STORE
    {
@@ -129,7 +130,7 @@ package
          {
             _loc1_[_loc2_] = _storeInventory[_loc2_].Get();
          }
-         return JSON.encode(_loc1_);
+         return encodeJson(_loc1_);
       }
       
       public static function GetHealAllShinyCost() : int
