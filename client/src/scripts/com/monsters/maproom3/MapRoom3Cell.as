@@ -11,6 +11,7 @@ package com.monsters.maproom3
    import com.monsters.maproom_manager.IMapRoomCell;
    import com.monsters.maproom_manager.MapRoomManager;
    import flash.utils.Dictionary;
+   import com.brokenfunction.json.encodeJson;
    
    public class MapRoom3Cell implements IMapRoomCell
    {
@@ -402,7 +403,7 @@ package com.monsters.maproom3
       {
          PLEASEWAIT.Show(KEYS.Get("msg_loading"));
          var _loc2_:int = MapRoomManager.instance.CalculateCellId(this.cellX,this.cellY);
-         var _loc3_:Array = [["cellids",JSON.encode([_loc2_])]];
+         var _loc3_:Array = [["cellids",encodeJson([_loc2_])]];
          new URLLoaderApi().load(MapRoom3Data.GetCellsRequestURL(),_loc3_,param1);
       }
       

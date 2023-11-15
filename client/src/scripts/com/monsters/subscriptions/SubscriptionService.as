@@ -3,6 +3,7 @@ package com.monsters.subscriptions
    import com.monsters.debug.Console;
    import flash.events.EventDispatcher;
    import flash.external.ExternalInterface;
+   import com.brokenfunction.json.decodeJson;
    
    public class SubscriptionService extends EventDispatcher
    {
@@ -41,7 +42,7 @@ package com.monsters.subscriptions
             dispatchEvent(_loc2_);
             return;
          }
-         var _loc3_:Object = JSON.decode(param1)[0];
+         var _loc3_:Object = decodeJson(param1)[0];
          if(_loc3_.length == 0)
          {
             Console.warning("got subscription data but it\'s emtpy, not going to try to parse it");

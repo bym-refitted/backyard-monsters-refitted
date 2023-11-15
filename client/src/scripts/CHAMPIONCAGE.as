@@ -16,6 +16,7 @@ package
    import flash.geom.Rectangle;
    import gs.*;
    import gs.easing.*;
+   import com.brokenfunction.json.encodeJson;
    
    public class CHAMPIONCAGE extends BFOUNDATION
    {
@@ -488,7 +489,7 @@ package
             Push(i);
             i++;
          }
-         return md5(JSON.encode(tmpArray));
+         return md5(encodeJson(tmpArray));
       }
       
       public static function getGuardianSpawnClass(param1:int) : Class

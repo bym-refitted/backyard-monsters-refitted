@@ -8,6 +8,8 @@ package
    import flash.geom.Rectangle;
    import flash.utils.Dictionary;
    import gs.easing.*;
+   import com.brokenfunction.json.decodeJson;
+   import com.brokenfunction.json.encodeJson;
    
    public class CHAMPIONCHAMBER extends BFOUNDATION
    {
@@ -280,7 +282,7 @@ package
          super.Setup(param1);
          if(param1.fz)
          {
-            _loc3_ = JSON.decode(param1.fz) as Array;
+            _loc3_ = decodeJson(param1.fz) as Array;
             this._frozen = [];
             _loc4_ = new Dictionary();
             _loc5_ = null;
@@ -467,7 +469,7 @@ package
             _loc3_.push(_loc6_);
             _loc5_++;
          }
-         _loc1_.fz = JSON.encode(_loc3_);
+         _loc1_.fz = encodeJson(_loc3_);
          return _loc1_;
       }
    }

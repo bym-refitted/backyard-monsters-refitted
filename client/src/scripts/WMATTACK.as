@@ -14,6 +14,7 @@ package
    import flash.events.MouseEvent;
    import flash.geom.Point;
    import flash.utils.getTimer;
+   import com.brokenfunction.json.decodeJson;
    
    public class WMATTACK
    {
@@ -273,7 +274,7 @@ package
                _history.sessionsSinceLastAttack = 20;
                break;
             case 6:
-               _history = JSON.decode("{\"sessionsSinceLastAttack\":45,\"attackPreference\":0,\"queued\":{\"attack\":{\"C10\":27,\"C7\":13},\"warned\":1,\"degrees\":180,\"attackTime\":1284677486,\"distances\":{\"C10\":275,\"C7\":275}},\"lastattack\":1284676962,\"nextAttack\":1284612571,\"s1\":[1,1284676962,1]}");
+               _history = decodeJson("{\"sessionsSinceLastAttack\":45,\"attackPreference\":0,\"queued\":{\"attack\":{\"C10\":27,\"C7\":13},\"warned\":1,\"degrees\":180,\"attackTime\":1284677486,\"distances\":{\"C10\":275,\"C7\":275}},\"lastattack\":1284676962,\"nextAttack\":1284612571,\"s1\":[1,1284676962,1]}");
          }
       }
       

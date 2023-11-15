@@ -8,6 +8,7 @@ package
    import flash.events.MouseEvent;
    import flash.geom.Point;
    import flash.geom.Rectangle;
+   import com.brokenfunction.json.encodeJson;
    
    public class INFERNOPORTAL extends BFOUNDATION
    {
@@ -170,7 +171,7 @@ package
          }
          _ascensionData = null;
          loader = new URLLoaderApi();
-         loader.load(GLOBAL._infBaseURL + "infernomonsters",[["type","set"],["imonsters",JSON.encode(result)]],onLoad,onError);
+         loader.load(GLOBAL._infBaseURL + "infernomonsters",[["type","set"],["imonsters",encodeJson(result)]],onLoad,onError);
       }
       
       private static function destroyCreep(param1:String, param2:int) : void

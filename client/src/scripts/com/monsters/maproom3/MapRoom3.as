@@ -13,6 +13,7 @@ package com.monsters.maproom3
    import flash.net.URLLoader;
    import flash.net.URLRequest;
    import flash.utils.Dictionary;
+   import com.brokenfunction.json.decodeJson;
    
    public class MapRoom3 implements IMapRoom
    {
@@ -108,7 +109,7 @@ package com.monsters.maproom3
       
       public function OnHeightMapLoaded(param1:Event) : void
       {
-         var serverData:Object = JSON.decode(this.m_HeightMapLoader.data);
+         var serverData:Object = decodeJson(this.m_HeightMapLoader.data);
          // Comment: Here is were we pass in the data we get from 'api/bm/getnewmap' into our maproom
          this.m_MapRoom3Data = new MapRoom3Data(serverData);
       }

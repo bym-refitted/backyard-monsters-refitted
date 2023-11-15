@@ -7,6 +7,7 @@ package com.monsters.effects
    import flash.display.BitmapData;
    import flash.display.MovieClip;
    import flash.geom.Point;
+   import com.brokenfunction.json.encodeJson;
    
    public class ResourceBombs
    {
@@ -392,7 +393,8 @@ package com.monsters.effects
       public static function Tick() : void
       {
          var _loc1_:String = null;
-         var _loc3_:ResourceBomb = null;
+         //var _loc3_:ResourceBomb = null;
+         var _loc3_:* = null;
          var _loc4_:Vector.<Object> = null;
          var _loc5_:BFOUNDATION = null;
          var _loc2_:int = 0;
@@ -459,7 +461,7 @@ package com.monsters.effects
                _loc1_.push(_bombs[_loc3_].speedlength);
             }
          }
-         return md5(JSON.encode(_loc1_));
+         return md5(encodeJson(_loc1_));
       }
    }
 }

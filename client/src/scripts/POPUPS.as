@@ -15,6 +15,7 @@ package
    import flash.text.TextFieldAutoSize;
    import flash.utils.Timer;
    import gs.TweenLite;
+   import com.brokenfunction.json.decodeJson;
    
    public class POPUPS
    {
@@ -830,7 +831,7 @@ package
          {
             if(o)
             {
-               obj = JSON.decode(o);
+               obj = decodeJson(o);
                BASE._credits.Set(int(obj.credits));
                BASE._hpCredits = int(obj.credits);
                GLOBAL._credits.Set(int(obj.credits));

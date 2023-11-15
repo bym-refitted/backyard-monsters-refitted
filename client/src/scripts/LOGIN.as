@@ -13,6 +13,7 @@ package
    import flash.text.TextFormat;
    import flash.net.SharedObject;
    import com.monsters.radio.RADIO;
+   import com.brokenfunction.json.decodeJson;
 
    public class LOGIN
    {
@@ -136,7 +137,7 @@ package
          {
             ExternalInterface.addCallback("loginsuccessful", function(param1:String):void
                {
-                  var _loc2_:Object = JSON.decode(param1);
+                  var _loc2_:Object = decodeJson(param1);
                   GLOBAL.WaitHide();
                   if (_loc2_.error == 0)
                   {
@@ -357,8 +358,8 @@ package
          param1 = _loc2_[0] + "}";
          var _loc3_:String = "{\"h\":" + _loc2_[1];
          var _loc4_:String = param1;
-         var _loc5_:* = JSON.decode(param1);
-         var _loc6_:* = JSON.decode(_loc3_);
+         var _loc5_:* = decodeJson(param1);
+         var _loc6_:* = decodeJson(_loc3_);
          var _loc7_:String;
          if ((_loc7_ = md5(getSalt() + _loc4_ + getNum(_loc6_.hn))) !== _loc6_.h)
          {

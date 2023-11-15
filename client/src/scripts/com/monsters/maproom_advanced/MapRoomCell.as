@@ -10,6 +10,7 @@ package com.monsters.maproom_advanced
    import flash.events.MouseEvent;
    import flash.geom.Point;
    import flash.utils.getTimer;
+   import com.brokenfunction.json.encodeJson;
    
    public class MapRoomCell extends MapRoomCell_CLIP implements IMapRoomCell
    {
@@ -1191,11 +1192,11 @@ package com.monsters.maproom_advanced
             }
             if(this._hpMonsterData)
             {
-               _loc2_ += " monsterdata " + JSON.encode(this._hpMonsterData);
+               _loc2_ += " monsterdata " + encodeJson(this._hpMonsterData);
             }
             if(this._hpResources)
             {
-               _loc2_ += " resources " + JSON.encode(this._hpResources);
+               _loc2_ += " resources " + encodeJson(this._hpResources);
             }
          }
          MapRoom.TransferMonstersB(this);

@@ -10,6 +10,7 @@ package
    import flash.external.ExternalInterface;
    import flash.net.*;
    import gs.TweenLite;
+   import com.brokenfunction.json.decodeJson;
    
    public class BUY
    {
@@ -53,7 +54,7 @@ package
       
       public static function FBCAdd(param1:String) : void
       {
-         var _loc2_:Object = JSON.decode(param1);
+         var _loc2_:Object = decodeJson(param1);
          if(!_loc2_.status)
          {
             LOGGER.Log("err","FBCAdd " + param1);
@@ -62,7 +63,7 @@ package
       
       public static function FBCOfferEarn(param1:String) : void
       {
-         var _loc2_:Object = JSON.decode(param1);
+         var _loc2_:Object = decodeJson(param1);
          if(_loc2_.status)
          {
             if(_loc2_.status != "settled")
@@ -83,7 +84,7 @@ package
       
       public static function FBCOfferDaily(param1:String) : void
       {
-         var _loc2_:Object = JSON.decode(param1);
+         var _loc2_:Object = decodeJson(param1);
          if(_loc2_.status)
          {
             if(_loc2_.status != "settled")
@@ -414,7 +415,7 @@ package
       public static function purchaseReceive(param1:String) : void
       {
          POPUPS.Next();
-         var _loc2_:Object = JSON.decode(param1);
+         var _loc2_:Object = decodeJson(param1);
          if(_loc2_.error == 0)
          {
             if(LOGIN.checkHash(param1))
@@ -447,7 +448,7 @@ package
       
       public static function startPromo(param1:String) : void
       {
-         var _loc2_:Object = JSON.decode(param1);
+         var _loc2_:Object = decodeJson(param1);
          if(_loc2_.endtime)
          {
             SALESPECIALSPOPUP.StartSale(_loc2_.endtime);

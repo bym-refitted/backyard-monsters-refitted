@@ -12,6 +12,7 @@ package
    import flash.geom.Matrix;
    import flash.geom.Point;
    import flash.geom.Rectangle;
+   import com.brokenfunction.json.encodeJson;
    
    public class EFFECTS
    {
@@ -246,7 +247,7 @@ package
             }
             _loc2_++;
          }
-         _effectsJSON = JSON.encode(_effects);
+         _effectsJSON = encodeJson(_effects);
       }
       
       public static function SnapShot(param1:Object) : void
@@ -300,7 +301,7 @@ package
          if(_switcher % 2 == 0)
          {
             _effects.push(param1);
-            _effectsJSON = JSON.encode(_effects);
+            _effectsJSON = encodeJson(_effects);
             if(_effects.length > _effectsLimit)
             {
                _effects.shift();
