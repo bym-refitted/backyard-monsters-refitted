@@ -1,19 +1,18 @@
 import { Save } from "../models/save.model";
+import { User } from "../models/user.model";
 import { ORMContext } from "../server";
 import { FilterFrontendKeys } from "../utils/FrontendKey";
 import { KoaController } from "../utils/KoaController";
 import { logging } from "../utils/logger";
 
 export const baseSave: KoaController = async (ctx) => {
-  const user = ctx.authUser;
+  const user: User = ctx.authUser;
   logging(`Saving the base! user: ${user.username}`);
 
-  const requestBody = ctx.request.body as { basesaveid: number };
-  ctx.session.basesaveid = requestBody.basesaveid;
+  await ORMContext.em.populate(user, ["save"]);
+  let save = user.save;
 
-  let save = await ORMContext.em.findOne(Save, {
-    basesaveid: requestBody.basesaveid,
-  });
+  ctx.session.basesaveid = save.basesaveid;
 
   // update the save with the values from the request
   for (const key of Save.jsonKeys) {
@@ -32,7 +31,7 @@ export const baseSave: KoaController = async (ctx) => {
 
   const baseSaveData = {
     error: 0,
-    basesaveid: requestBody.basesaveid,
+    basesaveid: save.basesaveid,
     installsgenerated: 42069,
   };
 

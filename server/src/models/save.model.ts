@@ -7,6 +7,10 @@ export interface FieldData {
 
 @Entity()
 export class Save {
+
+  // basesaveid is probably for your own personal save data
+  // baseid is probably for loading your opponent's data
+
   // Primatives
   @FrontendKey
   @PrimaryKey()
