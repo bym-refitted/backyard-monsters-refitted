@@ -143,11 +143,11 @@ package com.monsters.monsters
       
       public var _targetBuilding:BFOUNDATION;
       
-      public var _homeBunker;
+      public var _homeBunker:*;
       
       public var _targetCreeps:Array;
       
-      public var _targetCreep:com.monsters.monsters.MonsterBase;
+      public var _targetCreep:MonsterBase;
       
       public var _id:String;
       
@@ -1071,7 +1071,7 @@ package com.monsters.monsters
       
       public function findHuntingTargets() : void
       {
-         var _loc4_:com.monsters.monsters.MonsterBase = null;
+         var _loc4_:MonsterBase = null;
          var _loc1_:int = 0;
          var _loc2_:Array = [];
          var _loc3_:Object = CREATURES._creatures;

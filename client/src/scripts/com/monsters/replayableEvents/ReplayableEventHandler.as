@@ -15,9 +15,9 @@ package com.monsters.replayableEvents
       
       public static var doesDebugClear:Boolean;
       
-      public static var activeEvent:com.monsters.replayableEvents.ReplayableEvent;
+      public static var activeEvent:ReplayableEvent;
       
-      private static var _graphic:com.monsters.replayableEvents.IReplayableEventUI;
+      private static var _graphic:IReplayableEventUI;
       
       public static const k_DURATION_STORE_IS_OPEN_AFTER_EVENT:Number = 172800;
       
@@ -48,7 +48,7 @@ package com.monsters.replayableEvents
       
       public static function initialize(param1:Object = null) : void
       {
-         var _loc2_:com.monsters.replayableEvents.ReplayableEvent = null;
+         var _loc2_:ReplayableEvent = null;
          var _loc3_:Number = NaN;
          if(GLOBAL.isAtHome() && TUTORIAL.hasFinished)
          {
@@ -125,7 +125,7 @@ package com.monsters.replayableEvents
          }
       }
       
-      public static function scheduleNewEvent(param1:com.monsters.replayableEvents.ReplayableEvent, param2:Number) : void
+      public static function scheduleNewEvent(param1:ReplayableEvent, param2:Number) : void
       {
          if(param1.startDate)
          {
@@ -204,7 +204,7 @@ package com.monsters.replayableEvents
          }
       }
       
-      public static function getPotentialStartDateForEvent(param1:com.monsters.replayableEvents.ReplayableEvent) : Number
+      public static function getPotentialStartDateForEvent(param1:ReplayableEvent) : Number
       {
          var _loc5_:Date = null;
          var _loc6_:Number = NaN;
@@ -241,9 +241,9 @@ package com.monsters.replayableEvents
          return Boolean(getQualifiedLiveEvent()) || !hasRecentlyParticipatedInAnEvent() && ABTest.isInTestGroup("ers",205);
       }
       
-      private static function getQualifiedLiveEvent() : com.monsters.replayableEvents.ReplayableEvent
+      private static function getQualifiedLiveEvent() : ReplayableEvent
       {
-         var _loc2_:com.monsters.replayableEvents.ReplayableEvent = null;
+         var _loc2_:ReplayableEvent = null;
          var _loc1_:int = 0;
          while(_loc1_ < ReplayableEventLibrary.EVENTS.length)
          {
@@ -259,7 +259,7 @@ package com.monsters.replayableEvents
       
       private static function hasQualifiedLiveEventSoonAfter(param1:Number) : Boolean
       {
-         var _loc3_:com.monsters.replayableEvents.ReplayableEvent = null;
+         var _loc3_:ReplayableEvent = null;
          var _loc2_:int = 0;
          while(_loc2_ < ReplayableEventLibrary.EVENTS.length)
          {
@@ -275,7 +275,7 @@ package com.monsters.replayableEvents
       
       private static function hasRecentlyParticipatedInAnEvent() : Boolean
       {
-         var _loc2_:com.monsters.replayableEvents.ReplayableEvent = null;
+         var _loc2_:ReplayableEvent = null;
          var _loc1_:int = 0;
          while(_loc1_ < ReplayableEventLibrary.EVENTS.length)
          {
@@ -289,11 +289,11 @@ package com.monsters.replayableEvents
          return false;
       }
       
-      public static function getQualifiedEvent() : com.monsters.replayableEvents.ReplayableEvent
+      public static function getQualifiedEvent() : ReplayableEvent
       {
-         var _loc3_:com.monsters.replayableEvents.ReplayableEvent = null;
-         var _loc4_:com.monsters.replayableEvents.ReplayableEvent = null;
-         var _loc1_:Vector.<com.monsters.replayableEvents.ReplayableEvent> = new Vector.<com.monsters.replayableEvents.ReplayableEvent>();
+         var _loc3_:ReplayableEvent = null;
+         var _loc4_:ReplayableEvent = null;
+         var _loc1_:Vector.<ReplayableEvent> = new Vector.<ReplayableEvent>();
          var _loc2_:int = 0;
          while(_loc2_ < ReplayableEventLibrary.EVENTS.length)
          {
@@ -311,7 +311,7 @@ package com.monsters.replayableEvents
          return _loc3_;
       }
       
-      private static function comparePriority(param1:com.monsters.replayableEvents.ReplayableEvent, param2:com.monsters.replayableEvents.ReplayableEvent) : Number
+      private static function comparePriority(param1:ReplayableEvent, param2:ReplayableEvent) : Number
       {
          return param2.priority - param1.priority;
       }
@@ -319,7 +319,7 @@ package com.monsters.replayableEvents
       public static function exportData() : Object
       {
          var _loc2_:Boolean = false;
-         var _loc4_:com.monsters.replayableEvents.ReplayableEvent = null;
+         var _loc4_:ReplayableEvent = null;
          var _loc5_:Object = null;
          if(doesDebugClear)
          {
@@ -357,7 +357,7 @@ package com.monsters.replayableEvents
       public static function importData(param1:Object) : void
       {
          var _loc2_:String = null;
-         var _loc3_:com.monsters.replayableEvents.ReplayableEvent = null;
+         var _loc3_:ReplayableEvent = null;
          for(_loc2_ in param1)
          {
             _loc3_ = ReplayableEventLibrary.getEventByName(_loc2_);

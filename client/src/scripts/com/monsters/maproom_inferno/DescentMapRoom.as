@@ -18,9 +18,9 @@ package com.monsters.maproom_inferno
       public static var BRIDGE:Object = {};
        
       
-      public var players:com.monsters.maproom_inferno.DescentLayer;
+      public var players:DescentLayer;
       
-      public var miniMap:com.monsters.maproom_inferno.MiniMap;
+      public var miniMap:MiniMap;
       
       public var dv:DescentView;
       
@@ -47,7 +47,7 @@ package com.monsters.maproom_inferno
          top = new Sprite();
          top.addChild(bReturn);
          addChild(top);
-         this.players = new com.monsters.maproom_inferno.DescentLayer();
+         this.players = new DescentLayer();
          if(BRIDGE.TUTORIAL._stage < this._tutorialModeThresh)
          {
             this.players._wmbToDisplay = 1;

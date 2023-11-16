@@ -9,11 +9,11 @@ package de.polygonal.ds
       
       public var val:Object;
       
-      public var next:de.polygonal.ds.SLLNode;
+      public var next:SLLNode;
       
-      public var _list:de.polygonal.ds.SLL;
+      public var _list:SLL;
       
-      public function SLLNode(param1:Object = undefined, param2:de.polygonal.ds.SLL = undefined)
+      public function SLLNode(param1:Object = undefined, param2:SLL = undefined)
       {
          if(Boot.skip_constructor)
          {
@@ -23,18 +23,18 @@ package de.polygonal.ds
          _list = param2;
       }
       
-      public function unlink() : de.polygonal.ds.SLLNode
+      public function unlink() : SLLNode
       {
-         var _loc3_:* = null as de.polygonal.ds.SLLNode;
-         var _loc4_:* = null as de.polygonal.ds.SLLNode;
+         var _loc3_:* = null as SLLNode;
+         var _loc4_:* = null as SLLNode;
          var _loc5_:* = null as Object;
          var _loc6_:* = null as Object;
          null;
-         var _loc1_:de.polygonal.ds.SLL = _list;
+         var _loc1_:SLL = _list;
          null;
          null;
          null;
-         var _loc2_:de.polygonal.ds.SLLNode = next;
+         var _loc2_:SLLNode = next;
          if(this == _loc1_.head)
          {
             null;
@@ -131,7 +131,7 @@ package de.polygonal.ds
          return next != null;
       }
       
-      public function getList() : de.polygonal.ds.SLL
+      public function getList() : SLL
       {
          return _list;
       }
@@ -143,7 +143,7 @@ package de.polygonal.ds
          next = null;
       }
       
-      public function _insertAfter(param1:de.polygonal.ds.SLLNode) : void
+      public function _insertAfter(param1:SLLNode) : void
       {
          param1.next = next;
          next = param1;

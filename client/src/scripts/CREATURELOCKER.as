@@ -1,5 +1,6 @@
 package
 {
+   import com.brokenfunction.json.encodeJson;
    import com.monsters.creep_types.CreepTypeManager;
    import com.monsters.maproom_manager.MapRoomManager;
    import com.monsters.monsters.creeps.Bandito;
@@ -24,7 +25,6 @@ package
    import com.monsters.subscriptions.SubscriptionHandler;
    import flash.display.MovieClip;
    import flash.events.MouseEvent;
-   import com.brokenfunction.json.encodeJson;
    
    public class CREATURELOCKER
    {

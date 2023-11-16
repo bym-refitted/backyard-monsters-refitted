@@ -12,7 +12,7 @@ package com.monsters.maproom_manager
    public class MapRoomManager
    {
       
-      private static var s_Instance:com.monsters.maproom_manager.MapRoomManager = null;
+      private static var s_Instance:MapRoomManager = null;
       
       public static const MAP_ROOM_VERSION_1:int = 1;
       
@@ -21,7 +21,7 @@ package com.monsters.maproom_manager
       public static const MAP_ROOM_VERSION_3:int = 3;
        
       
-      private var m_CurrentMapRoom:com.monsters.maproom_manager.IMapRoom;
+      private var m_CurrentMapRoom:IMapRoom;
       
       private var m_MapRoom3URL:String;
       
@@ -35,12 +35,12 @@ package com.monsters.maproom_manager
          super();
       }
       
-      public static function get instance() : com.monsters.maproom_manager.MapRoomManager
+      public static function get instance() : MapRoomManager
       {
-         return s_Instance = s_Instance || new com.monsters.maproom_manager.MapRoomManager(new config.singletonlock.SingletonLock());
+         return s_Instance = s_Instance || new MapRoomManager(new config.singletonlock.SingletonLock());
       }
       
-      public function get currentMapRoom() : com.monsters.maproom_manager.IMapRoom
+      public function get currentMapRoom() : IMapRoom
       {
          return this.m_CurrentMapRoom;
       }
@@ -323,11 +323,10 @@ package com.monsters.maproom_manager
          {
             return;
          }
-         if(com.monsters.maproom_manager.MapRoomManager.instance.isInMapRoom2 == false)
+         if(MapRoomManager.instance.isInMapRoom2 == false)
          {
             MapRoom3ConfirmMigrationPopup.instance.Show(true);
          }
       }
    }
 }
-

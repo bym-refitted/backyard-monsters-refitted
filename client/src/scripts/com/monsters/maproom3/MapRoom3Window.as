@@ -46,7 +46,7 @@ package com.monsters.maproom3
       
       private var m_MapData:MapRoom3Data;
       
-      private var m_TileBuffer:Vector.<com.monsters.maproom3.MapRoom3CellGraphic>;
+      private var m_TileBuffer:Vector.<MapRoom3CellGraphic>;
       
       private var m_TileLookup:Array;
       
@@ -74,11 +74,11 @@ package com.monsters.maproom3
       
       private var m_InfoLayer:Sprite;
       
-      private var m_MouseoverInfo:com.monsters.maproom3.MapRoom3CellMouseover;
+      private var m_MouseoverInfo:MapRoom3CellMouseover;
       
-      private var m_MousedoverCellGraphic:com.monsters.maproom3.MapRoom3CellGraphic = null;
+      private var m_MousedoverCellGraphic:MapRoom3CellGraphic = null;
       
-      private var m_SelectedCellGraphic:com.monsters.maproom3.MapRoom3CellGraphic = null;
+      private var m_SelectedCellGraphic:MapRoom3CellGraphic = null;
       
       private var m_CenterPoint:Point;
       
@@ -102,9 +102,9 @@ package com.monsters.maproom3
       {
          this.RANGE_GLOW_FILTER = new GlowFilter(RANGE_GLOW_COLOUR,0.5,RANGE_GLOW_BLUR_X,RANGE_GLOW_BLUR_Y,RANGE_GLOW_BLUR_STRENGTH,1,true,true);
          this.MOUSEOVER_RANGE_GLOW_FILTER = new GlowFilter(MOUSEOVER_RANGE_GLOW_COLOUR,0.5,RANGE_GLOW_BLUR_X,RANGE_GLOW_BLUR_Y,RANGE_GLOW_BLUR_STRENGTH,1,true,true);
-         this.m_TileBuffer = new Vector.<com.monsters.maproom3.MapRoom3CellGraphic>();
+         this.m_TileBuffer = new Vector.<MapRoom3CellGraphic>();
          this.m_TileLookup = new Array();
-         this.m_MouseoverInfo = new com.monsters.maproom3.MapRoom3CellMouseover();
+         this.m_MouseoverInfo = new MapRoom3CellMouseover();
          this.m_CenterPoint = new Point();
          this.m_CenterPointForLoading = new Point();
          super();
@@ -225,7 +225,7 @@ package com.monsters.maproom3
          return this.m_CenterPointForLoading;
       }
       
-      public function get mouseoverInfo() : com.monsters.maproom3.MapRoom3CellMouseover
+      public function get mouseoverInfo() : MapRoom3CellMouseover
       {
          return this.m_MouseoverInfo;
       }
@@ -254,8 +254,8 @@ package com.monsters.maproom3
       
       private function AdjustCenterPoint() : void
       {
-         this.m_CenterPoint.x = int(-(this.m_ScrollingCanvas.x - (GLOBAL.StageX + GLOBAL.StageWidth * 0.5) + (!!(this.m_CenterPoint.y % 2) ? com.monsters.maproom3.MapRoom3CellGraphic.HEX_WIDTH * 0.5 : 0)) / com.monsters.maproom3.MapRoom3CellGraphic.HEX_WIDTH);
-         this.m_CenterPoint.y = int(-(this.m_ScrollingCanvas.y - (GLOBAL.StageY + GLOBAL.StageHeight * 0.5)) / com.monsters.maproom3.MapRoom3CellGraphic.HEX_HEIGHT_OVERLAP);
+         this.m_CenterPoint.x = int(-(this.m_ScrollingCanvas.x - (GLOBAL.StageX + GLOBAL.StageWidth * 0.5) + (!!(this.m_CenterPoint.y % 2) ? MapRoom3CellGraphic.HEX_WIDTH * 0.5 : 0)) / MapRoom3CellGraphic.HEX_WIDTH);
+         this.m_CenterPoint.y = int(-(this.m_ScrollingCanvas.y - (GLOBAL.StageY + GLOBAL.StageHeight * 0.5)) / MapRoom3CellGraphic.HEX_HEIGHT_OVERLAP);
          this.m_CenterPoint.x /= this.m_ScrollingCanvas.scaleX;
          this.m_CenterPoint.y /= this.m_ScrollingCanvas.scaleY;
          if(!this.m_CenterPointForLoadingLocked)
@@ -371,7 +371,7 @@ package com.monsters.maproom3
       
       public function Clear() : void
       {
-         var _loc1_:com.monsters.maproom3.MapRoom3CellGraphic = null;
+         var _loc1_:MapRoom3CellGraphic = null;
          TweenLite.killTweensOf(this.m_ScrollingCanvas,true);
          this.m_CenterPointForLoadingLocked = false;
          removeEventListener(MouseEvent.MOUSE_DOWN,this.OnMouseDown);
@@ -443,8 +443,8 @@ package com.monsters.maproom3
          this.m_CenterPointForLoading.y = param1.y;
          this.m_CenterPointForLoadingLocked = true;
          TweenLite.killTweensOf(this.m_ScrollingCanvas,true);
-         var _loc2_:int = this.AdjustHorizontalBounds(this.m_ScrollingCanvas.x - (param1.x - this.m_CenterPoint.x) * (com.monsters.maproom3.MapRoom3CellGraphic.HEX_WIDTH * this.m_ScrollingCanvas.scaleX));
-         var _loc3_:int = this.AdjustVerticalBounds(this.m_ScrollingCanvas.y - (param1.y - this.m_CenterPoint.y) * (com.monsters.maproom3.MapRoom3CellGraphic.HEX_HEIGHT_OVERLAP * this.m_ScrollingCanvas.scaleY));
+         var _loc2_:int = this.AdjustHorizontalBounds(this.m_ScrollingCanvas.x - (param1.x - this.m_CenterPoint.x) * (MapRoom3CellGraphic.HEX_WIDTH * this.m_ScrollingCanvas.scaleX));
+         var _loc3_:int = this.AdjustVerticalBounds(this.m_ScrollingCanvas.y - (param1.y - this.m_CenterPoint.y) * (MapRoom3CellGraphic.HEX_HEIGHT_OVERLAP * this.m_ScrollingCanvas.scaleY));
          TweenLite.to(this.m_ScrollingCanvas,1,{
             "x":_loc2_,
             "y":_loc3_,
@@ -463,19 +463,19 @@ package com.monsters.maproom3
       
       private function CenterOn(param1:Point) : void
       {
-         this.m_ScrollingCanvas.x = this.AdjustHorizontalBounds(-(this.m_CenterPoint.x * com.monsters.maproom3.MapRoom3CellGraphic.HEX_WIDTH + (!!(this.m_CenterPoint.y % 2) ? com.monsters.maproom3.MapRoom3CellGraphic.HEX_WIDTH * 0.5 : 0)) + (GLOBAL.StageX + GLOBAL.StageWidth * 0.5) - com.monsters.maproom3.MapRoom3CellGraphic.HEX_WIDTH * 0.5);
-         this.m_ScrollingCanvas.y = this.AdjustVerticalBounds(-this.m_CenterPoint.y * com.monsters.maproom3.MapRoom3CellGraphic.HEX_HEIGHT_OVERLAP + (GLOBAL.StageY + GLOBAL.StageHeight * 0.5) - com.monsters.maproom3.MapRoom3CellGraphic.HEX_HEIGHT * 0.5);
+         this.m_ScrollingCanvas.x = this.AdjustHorizontalBounds(-(this.m_CenterPoint.x * MapRoom3CellGraphic.HEX_WIDTH + (!!(this.m_CenterPoint.y % 2) ? MapRoom3CellGraphic.HEX_WIDTH * 0.5 : 0)) + (GLOBAL.StageX + GLOBAL.StageWidth * 0.5) - MapRoom3CellGraphic.HEX_WIDTH * 0.5);
+         this.m_ScrollingCanvas.y = this.AdjustVerticalBounds(-this.m_CenterPoint.y * MapRoom3CellGraphic.HEX_HEIGHT_OVERLAP + (GLOBAL.StageY + GLOBAL.StageHeight * 0.5) - MapRoom3CellGraphic.HEX_HEIGHT * 0.5);
          this.UpdateMap(true);
       }
       
       private function GetBufferWidth() : int
       {
-         return int(GLOBAL.StageWidth / (com.monsters.maproom3.MapRoom3CellGraphic.HEX_WIDTH * this.m_ScrollingCanvas.scaleX)) + 5;
+         return int(GLOBAL.StageWidth / (MapRoom3CellGraphic.HEX_WIDTH * this.m_ScrollingCanvas.scaleX)) + 5;
       }
       
       private function GetBufferHeight() : int
       {
-         return int(GLOBAL.StageHeight / (com.monsters.maproom3.MapRoom3CellGraphic.HEX_HEIGHT_OVERLAP * this.m_ScrollingCanvas.scaleY)) + 4;
+         return int(GLOBAL.StageHeight / (MapRoom3CellGraphic.HEX_HEIGHT_OVERLAP * this.m_ScrollingCanvas.scaleY)) + 4;
       }
       
       public function Refresh() : void
@@ -515,7 +515,7 @@ package com.monsters.maproom3
          var _loc12_:int = 0;
          var _loc13_:int = 0;
          var _loc14_:MapRoom3Cell = null;
-         var _loc15_:com.monsters.maproom3.MapRoom3CellGraphic = null;
+         var _loc15_:MapRoom3CellGraphic = null;
          var _loc16_:Vector.<MapRoom3Cell> = null;
          var _loc19_:int = 0;
          var _loc20_:int = 0;
@@ -531,13 +531,13 @@ package com.monsters.maproom3
          var _loc4_:int = _loc2_ * _loc3_;
          var _loc5_:int = this.m_CenterPoint.x - int(_loc2_ * 0.5);
          var _loc6_:int = this.m_CenterPoint.y - int(_loc3_ * 0.5);
-         var _loc17_:Vector.<com.monsters.maproom3.MapRoom3CellGraphic> = new Vector.<com.monsters.maproom3.MapRoom3CellGraphic>();
-         var _loc18_:Vector.<com.monsters.maproom3.MapRoom3CellGraphic> = new Vector.<com.monsters.maproom3.MapRoom3CellGraphic>();
+         var _loc17_:Vector.<MapRoom3CellGraphic> = new Vector.<MapRoom3CellGraphic>();
+         var _loc18_:Vector.<MapRoom3CellGraphic> = new Vector.<MapRoom3CellGraphic>();
          for each(_loc15_ in this.m_TileBuffer)
          {
             _loc14_ = _loc15_.cell;
-            _loc8_ = int(_loc15_.x / com.monsters.maproom3.MapRoom3CellGraphic.HEX_WIDTH) - _loc5_;
-            _loc9_ = int(_loc15_.y / com.monsters.maproom3.MapRoom3CellGraphic.HEX_HEIGHT_OVERLAP) - _loc6_;
+            _loc8_ = int(_loc15_.x / MapRoom3CellGraphic.HEX_WIDTH) - _loc5_;
+            _loc9_ = int(_loc15_.y / MapRoom3CellGraphic.HEX_HEIGHT_OVERLAP) - _loc6_;
             if(param1 || _loc8_ < 0 || _loc9_ < 0 || _loc8_ >= _loc2_ || _loc9_ >= _loc3_)
             {
                this.m_TileLayer.removeChild(_loc15_);
@@ -580,15 +580,15 @@ package com.monsters.maproom3
                   }
                   else
                   {
-                     (_loc15_ = new com.monsters.maproom3.MapRoom3CellGraphic()).addEventListener(MouseEvent.CLICK,this.OnCellGraphicClicked);
+                     (_loc15_ = new MapRoom3CellGraphic()).addEventListener(MouseEvent.CLICK,this.OnCellGraphicClicked);
                      _loc15_.addEventListener(MouseEvent.ROLL_OVER,this.OnCellGraphicRollOver);
                      _loc15_.addEventListener(MouseEvent.ROLL_OUT,this.OnCellGraphicRollOut);
                   }
                   this.m_TileBuffer.push(_loc15_);
                   _loc15_.cellIndex = _loc12_;
                   this.m_TileLookup[_loc12_] = _loc15_;
-                  _loc15_.x = _loc10_ * com.monsters.maproom3.MapRoom3CellGraphic.HEX_WIDTH + (!!(_loc11_ % 2) ? com.monsters.maproom3.MapRoom3CellGraphic.HEX_WIDTH * 0.5 : 0);
-                  _loc15_.y = _loc11_ * com.monsters.maproom3.MapRoom3CellGraphic.HEX_HEIGHT_OVERLAP;
+                  _loc15_.x = _loc10_ * MapRoom3CellGraphic.HEX_WIDTH + (!!(_loc11_ % 2) ? MapRoom3CellGraphic.HEX_WIDTH * 0.5 : 0);
+                  _loc15_.y = _loc11_ * MapRoom3CellGraphic.HEX_HEIGHT_OVERLAP;
                   _loc15_.setMapCell(_loc14_);
                   _loc19_ = 0;
                   _loc20_ = this.m_TileLayer.numChildren;
@@ -634,7 +634,7 @@ package com.monsters.maproom3
       
       private function OnCellGraphicClicked(param1:MouseEvent) : void
       {
-         var _loc2_:com.monsters.maproom3.MapRoom3CellGraphic = param1.currentTarget as com.monsters.maproom3.MapRoom3CellGraphic;
+         var _loc2_:MapRoom3CellGraphic = param1.currentTarget as MapRoom3CellGraphic;
          if(_loc2_ == null)
          {
             return;
@@ -648,7 +648,7 @@ package com.monsters.maproom3
       
       private function OnCellGraphicRollOver(param1:MouseEvent) : void
       {
-         var _loc2_:com.monsters.maproom3.MapRoom3CellGraphic = param1.currentTarget as com.monsters.maproom3.MapRoom3CellGraphic;
+         var _loc2_:MapRoom3CellGraphic = param1.currentTarget as MapRoom3CellGraphic;
          if(_loc2_ == null)
          {
             return;
@@ -663,13 +663,11 @@ package com.monsters.maproom3
          }
          this.SetSelectedCellGraphic(null);
          this.SetMousedoverCellGraphic(_loc2_);
-         // Comment: Remember to enable this for maproom3 HUD
-         // MapRoom3.mapRoom3WindowHUD.DisplayCoordinatesOfCell(_loc2_.cell);
       }
       
       private function OnCellGraphicRollOut(param1:MouseEvent) : void
       {
-         var _loc2_:com.monsters.maproom3.MapRoom3CellGraphic = param1.currentTarget as com.monsters.maproom3.MapRoom3CellGraphic;
+         var _loc2_:MapRoom3CellGraphic = param1.currentTarget as MapRoom3CellGraphic;
          if(_loc2_ == null)
          {
             return;
@@ -690,7 +688,7 @@ package com.monsters.maproom3
          this.SetMousedoverCellGraphic(null);
       }
       
-      private function SetMousedoverCellGraphic(param1:com.monsters.maproom3.MapRoom3CellGraphic) : void
+      private function SetMousedoverCellGraphic(param1:MapRoom3CellGraphic) : void
       {
          var _loc2_:Number = NaN;
          var _loc3_:Number = NaN;
@@ -710,14 +708,14 @@ package com.monsters.maproom3
             this.m_MousedoverCellGraphic.mousedover = true;
             if(param1.cell.DoesContainDisplayableBase())
             {
-               _loc2_ = this.m_ScrollingCanvas.x + this.m_MousedoverCellGraphic.x * this.m_ScrollingCanvas.scaleX + com.monsters.maproom3.MapRoom3CellGraphic.HEX_WIDTH * this.m_ScrollingCanvas.scaleX * 0.5;
-               _loc3_ = this.m_ScrollingCanvas.y + this.m_MousedoverCellGraphic.y * this.m_ScrollingCanvas.scaleY + com.monsters.maproom3.MapRoom3CellGraphic.HEX_HEIGHT * this.m_ScrollingCanvas.scaleY * 0.5;
+               _loc2_ = this.m_ScrollingCanvas.x + this.m_MousedoverCellGraphic.x * this.m_ScrollingCanvas.scaleX + MapRoom3CellGraphic.HEX_WIDTH * this.m_ScrollingCanvas.scaleX * 0.5;
+               _loc3_ = this.m_ScrollingCanvas.y + this.m_MousedoverCellGraphic.y * this.m_ScrollingCanvas.scaleY + MapRoom3CellGraphic.HEX_HEIGHT * this.m_ScrollingCanvas.scaleY * 0.5;
                this.m_MouseoverInfo.Show(this.m_MousedoverCellGraphic.cell,_loc2_,_loc3_,false);
             }
          }
       }
       
-      private function SetSelectedCellGraphic(param1:com.monsters.maproom3.MapRoom3CellGraphic) : void
+      private function SetSelectedCellGraphic(param1:MapRoom3CellGraphic) : void
       {
          var _loc2_:Number = NaN;
          var _loc3_:Number = NaN;
@@ -735,8 +733,8 @@ package com.monsters.maproom3
          {
             this.m_SelectedCellGraphic = param1;
             this.m_SelectedCellGraphic.selected = true;
-            _loc2_ = this.m_ScrollingCanvas.x + this.m_SelectedCellGraphic.x * this.m_ScrollingCanvas.scaleX + com.monsters.maproom3.MapRoom3CellGraphic.HEX_WIDTH * this.m_ScrollingCanvas.scaleX * 0.5;
-            _loc3_ = this.m_ScrollingCanvas.y + this.m_SelectedCellGraphic.y * this.m_ScrollingCanvas.scaleY + com.monsters.maproom3.MapRoom3CellGraphic.HEX_HEIGHT * this.m_ScrollingCanvas.scaleY * 0.5;
+            _loc2_ = this.m_ScrollingCanvas.x + this.m_SelectedCellGraphic.x * this.m_ScrollingCanvas.scaleX + MapRoom3CellGraphic.HEX_WIDTH * this.m_ScrollingCanvas.scaleX * 0.5;
+            _loc3_ = this.m_ScrollingCanvas.y + this.m_SelectedCellGraphic.y * this.m_ScrollingCanvas.scaleY + MapRoom3CellGraphic.HEX_HEIGHT * this.m_ScrollingCanvas.scaleY * 0.5;
             this.m_MouseoverInfo.Show(this.m_SelectedCellGraphic.cell,_loc2_,_loc3_,true);
          }
       }
@@ -802,7 +800,7 @@ package com.monsters.maproom3
       private function AdjustHorizontalBounds(param1:int) : int
       {
          var _loc2_:int = 0;
-         _loc2_ = com.monsters.maproom3.MapRoom3CellGraphic.HEX_WIDTH * this.m_ScrollingCanvas.scaleX;
+         _loc2_ = MapRoom3CellGraphic.HEX_WIDTH * this.m_ScrollingCanvas.scaleX;
          var _loc3_:int = GLOBAL.StageX + _loc2_ * 1.5;
          var _loc4_:int = GLOBAL.StageX + GLOBAL.StageWidth - this.m_MapData.mapWidth * _loc2_ - _loc2_ * 2;
          if(param1 > _loc3_)
@@ -820,8 +818,8 @@ package com.monsters.maproom3
       {
          var _loc2_:int = 0;
          var _loc3_:int = 0;
-         _loc2_ = com.monsters.maproom3.MapRoom3CellGraphic.HEX_HEIGHT * this.m_ScrollingCanvas.scaleY;
-         _loc3_ = com.monsters.maproom3.MapRoom3CellGraphic.HEX_HEIGHT_OVERLAP * this.m_ScrollingCanvas.scaleY;
+         _loc2_ = MapRoom3CellGraphic.HEX_HEIGHT * this.m_ScrollingCanvas.scaleY;
+         _loc3_ = MapRoom3CellGraphic.HEX_HEIGHT_OVERLAP * this.m_ScrollingCanvas.scaleY;
          var _loc4_:int = GLOBAL.StageY + _loc2_ * 2;
          var _loc5_:int = GLOBAL.StageY + GLOBAL.StageHeight - this.m_MapData.mapHeight * _loc3_ - _loc2_ * 3 + _loc3_;
          if(param1 > _loc4_)

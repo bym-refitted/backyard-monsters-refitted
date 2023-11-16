@@ -25,7 +25,7 @@ package com.monsters.subscriptions.ui.controlPanel
       
       private var _tiles:Vector.<MovieClip>;
       
-      private var _memberPopup:com.monsters.subscriptions.ui.controlPanel.MembershipPopup = null;
+      private var _memberPopup:MembershipPopup = null;
       
       public function SubscriptionControlPanelPopup()
       {
@@ -119,7 +119,7 @@ package com.monsters.subscriptions.ui.controlPanel
       
       private function clickedMembership(param1:MouseEvent = null) : void
       {
-         this._memberPopup = new com.monsters.subscriptions.ui.controlPanel.MembershipPopup();
+         this._memberPopup = new MembershipPopup();
          this._memberPopup.addEventListener(SubscriptionHandler.REACTIVATE,this.membershipReactivated);
          this._memberPopup.addEventListener(SubscriptionHandler.CHANGE,this.membershipChanged);
          this._memberPopup.addEventListener(SubscriptionHandler.CANCEL,this.membershipCancel);

@@ -11,7 +11,7 @@ package com.monsters.effects.fire
       
       private static var flames:Array = [];
       
-      private static var flame:com.monsters.effects.fire.Flame;
+      private static var flame:Flame;
       
       private static var phase:int;
       
@@ -35,7 +35,7 @@ package com.monsters.effects.fire
       {
          if(flames.length < 5)
          {
-            flame = (param1 as MovieClip).addChild(new com.monsters.effects.fire.Flame(param1,param2.width + 20,param2.height + 60)) as com.monsters.effects.fire.Flame;
+            flame = (param1 as MovieClip).addChild(new Flame(param1,param2.width + 20,param2.height + 60)) as Flame;
             flame.emitter = param2;
             flame.enhance = 5;
             flame.cooling = 5;

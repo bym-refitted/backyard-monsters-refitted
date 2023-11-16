@@ -1,5 +1,7 @@
 package
 {
+   import com.brokenfunction.json.decodeJson;
+   import com.brokenfunction.json.encodeJson;
    import com.cc.utils.SecNum;
    import com.monsters.configs.BYMConfig;
    import com.monsters.monsters.champions.ChampionBase;
@@ -8,8 +10,6 @@ package
    import flash.geom.Rectangle;
    import flash.utils.Dictionary;
    import gs.easing.*;
-   import com.brokenfunction.json.decodeJson;
-   import com.brokenfunction.json.encodeJson;
    
    public class CHAMPIONCHAMBER extends BFOUNDATION
    {

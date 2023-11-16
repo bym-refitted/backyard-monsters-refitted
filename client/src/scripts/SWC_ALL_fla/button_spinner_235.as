@@ -3,6 +3,7 @@ package SWC_ALL_fla
    import flash.display.MovieClip;
    import flash.events.Event;
    
+   [Embed(source="/_assets/assets.swf", symbol="SWC_ALL_fla.button_spinner_235")]
    public dynamic class button_spinner_235 extends MovieClip
    {
        

@@ -8,11 +8,11 @@ package de.polygonal.ds
       
       public var _i:int;
       
-      public var _f:de.polygonal.ds.ArrayedStack;
+      public var _f:ArrayedStack;
       
       public var _a:Array;
       
-      public function ArrayedStackIterator(param1:de.polygonal.ds.ArrayedStack = undefined)
+      public function ArrayedStackIterator(param1:ArrayedStack = undefined)
       {
          if(Boot.skip_constructor)
          {

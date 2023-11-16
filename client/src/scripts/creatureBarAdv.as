@@ -2,6 +2,7 @@ package
 {
    import flash.display.MovieClip;
    
+   [Embed(source="/_assets/assets.swf", symbol="creatureBarAdv")]
    public dynamic class creatureBarAdv extends MovieClip
    {
        

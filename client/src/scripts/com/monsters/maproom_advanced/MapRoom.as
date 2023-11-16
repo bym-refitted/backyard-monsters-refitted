@@ -1,5 +1,6 @@
 package com.monsters.maproom_advanced
 {
+   import com.brokenfunction.json.encodeJson;
    import com.cc.utils.SecNum;
    import com.monsters.alliances.ALLIANCES;
    import com.monsters.chat.Chat;
@@ -21,7 +22,6 @@ package com.monsters.maproom_advanced
    import flash.utils.Dictionary;
    import flash.utils.getTimer;
    import flash.xml.XMLDocument;
-   import com.brokenfunction.json.encodeJson;
    
    public class MapRoom implements IMapRoom
    {
@@ -48,7 +48,7 @@ package com.monsters.maproom_advanced
       
       internal static var _resourceTransferInProgress:Boolean = false;
       
-      internal static var _homeCell:com.monsters.maproom_advanced.MapRoomCell;
+      internal static var _homeCell:MapRoomCell;
       
       private static var _resourceTransfer:Object = {};
       
@@ -62,7 +62,7 @@ package com.monsters.maproom_advanced
       
       private static var _bubbleSelectTarget:bubble_selecttarget;
       
-      private static var _monsterSource:com.monsters.maproom_advanced.MapRoomCell;
+      private static var _monsterSource:MapRoomCell;
       
       private static var _requestedZones:Array;
       
@@ -663,10 +663,10 @@ package com.monsters.maproom_advanced
                      if(_zones && _zones[_loc4_] && Boolean(_zones[_loc4_].data) && Boolean(_zones[_loc4_].data[BASE._currentCellLoc.x]))
                      {
                         _loc7_ = _zones[_loc4_].data[BASE._currentCellLoc.x][BASE._currentCellLoc.y];
-                        GLOBAL._currentCell = new com.monsters.maproom_advanced.MapRoomCell();
-                        (GLOBAL._currentCell as com.monsters.maproom_advanced.MapRoomCell).Setup(_loc7_);
-                        (GLOBAL._currentCell as com.monsters.maproom_advanced.MapRoomCell).cellX = BASE._currentCellLoc.x;
-                        (GLOBAL._currentCell as com.monsters.maproom_advanced.MapRoomCell).cellY = BASE._currentCellLoc.y;
+                        GLOBAL._currentCell = new MapRoomCell();
+                        (GLOBAL._currentCell as MapRoomCell).Setup(_loc7_);
+                        (GLOBAL._currentCell as MapRoomCell).cellX = BASE._currentCellLoc.x;
+                        (GLOBAL._currentCell as MapRoomCell).cellY = BASE._currentCellLoc.y;
                         _zones = {};
                      }
                   }
@@ -732,7 +732,7 @@ package com.monsters.maproom_advanced
       {
       }
       
-      internal static function TransferMonstersA(param1:com.monsters.maproom_advanced.MapRoomCell, param2:Object) : void
+      internal static function TransferMonstersA(param1:MapRoomCell, param2:Object) : void
       {
          var _loc4_:String = null;
          _monsterTransfer = {};
@@ -762,7 +762,7 @@ package com.monsters.maproom_advanced
          }
       }
       
-      internal static function TransferMonstersB(param1:com.monsters.maproom_advanced.MapRoomCell) : void
+      internal static function TransferMonstersB(param1:MapRoomCell) : void
       {
          if(_monsterTransferInProgress)
          {
@@ -782,7 +782,7 @@ package com.monsters.maproom_advanced
          }
       }
       
-      internal static function TransferMonstersC(param1:com.monsters.maproom_advanced.MapRoomCell) : String
+      internal static function TransferMonstersC(param1:MapRoomCell) : String
       {
          var transferSuccessful:Function;
          var transferError:Function;
@@ -798,7 +798,7 @@ package com.monsters.maproom_advanced
          var targetMonsterData:Object = null;
          var transferVars:Array = null;
          var cost:int = 0;
-         var targetCell:com.monsters.maproom_advanced.MapRoomCell = param1;
+         var targetCell:MapRoomCell = param1;
          if(_monsterTransferInProgress)
          {
             if(targetCell._mine)
@@ -1059,7 +1059,7 @@ package com.monsters.maproom_advanced
       
       public static function ShowInfoEnemy(param1:IMapRoomCell, param2:Boolean = false) : void
       {
-         _mc.ShowInfoEnemy(param1 as com.monsters.maproom_advanced.MapRoomCell,param2);
+         _mc.ShowInfoEnemy(param1 as MapRoomCell,param2);
       }
       
       public static function HideInfoMine() : void
@@ -1154,12 +1154,12 @@ package com.monsters.maproom_advanced
                _mc.JumpTo(new Point(GLOBAL._currentCell.cellX,GLOBAL._currentCell.cellY));
                if(_showEnemyWait)
                {
-                  _mc.ShowInfoEnemy(GLOBAL._currentCell as com.monsters.maproom_advanced.MapRoomCell,true);
+                  _mc.ShowInfoEnemy(GLOBAL._currentCell as MapRoomCell,true);
                   _showEnemyWait = false;
                }
                else if(_showAttackWait)
                {
-                  _mc.ShowAttack(GLOBAL._currentCell as com.monsters.maproom_advanced.MapRoomCell);
+                  _mc.ShowAttack(GLOBAL._currentCell as MapRoomCell);
                   _showAttackWait = false;
                }
             }

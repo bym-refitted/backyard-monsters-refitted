@@ -53,7 +53,7 @@ package com.monsters.maproom_inferno
       
       public var popUp:MapBasePopup;
       
-      public var handler:com.monsters.maproom_inferno.PlayerHandler;
+      public var handler:PlayerHandler;
       
       public var loader:Loader;
       
@@ -118,7 +118,7 @@ package com.monsters.maproom_inferno
          this.mouseTimer = new Timer(400);
          this.mouseTimer.addEventListener(TimerEvent.TIMER,this.onTimer);
          this.mouseTimer.start();
-         new com.monsters.maproom_inferno.PlayerHandler().configure(this);
+         new PlayerHandler().configure(this);
       }
       
       public function setState(param1:String) : void

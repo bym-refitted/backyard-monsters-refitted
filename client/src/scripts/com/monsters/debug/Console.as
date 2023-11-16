@@ -17,7 +17,7 @@ package com.monsters.debug
       
       public static const keyCodes:Vector.<uint> = Vector.<uint>([223,192]);
       
-      public static var view:com.monsters.debug.ConsoleView;
+      public static var view:ConsoleView;
       
       private static var _commands:Dictionary;
        
@@ -129,8 +129,8 @@ package com.monsters.debug
          catch(e:Error)
          {
             stackTrace = String(e.getStackTrace());
-            return stackTrace;
          }
+         return stackTrace;
       }
       
       public static function isKey(param1:uint) : Boolean

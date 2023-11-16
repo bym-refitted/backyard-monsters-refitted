@@ -6,7 +6,7 @@ package com.smartfoxserver.v2.entities.data
       
       private var _type:int;
       
-      private var _data;
+      private var _data:*;
       
       public function SFSDataWrapper(param1:int, param2:*)
       {

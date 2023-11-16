@@ -25,13 +25,13 @@ package com.monsters.baseplanner
       
       private var _layerHeaders:Sprite;
       
-      private var _inventoryData:Vector.<com.monsters.baseplanner.PlannerNode>;
+      private var _inventoryData:Vector.<PlannerNode>;
       
       private var _headers:Vector.<PlannerExplorerHeader>;
       
       private var _lastClickedItem:String;
       
-      public function PlannerExplorer(param1:Vector.<com.monsters.baseplanner.PlannerNode>)
+      public function PlannerExplorer(param1:Vector.<PlannerNode>)
       {
          super();
          this._inventoryData = param1;
@@ -63,7 +63,7 @@ package com.monsters.baseplanner
          this._inventoryData.sort(this.plannerNodeSort);
       }
       
-      private function plannerNodeSort(param1:com.monsters.baseplanner.PlannerNode, param2:com.monsters.baseplanner.PlannerNode) : Number
+      private function plannerNodeSort(param1:PlannerNode, param2:PlannerNode) : Number
       {
          if(param1.name < param2.name)
          {
@@ -126,7 +126,7 @@ package com.monsters.baseplanner
          }
       }
       
-      public function addElement(param1:com.monsters.baseplanner.PlannerNode, param2:Boolean = true, param3:Boolean = true) : void
+      public function addElement(param1:PlannerNode, param2:Boolean = true, param3:Boolean = true) : void
       {
          var _loc5_:PlannerExplorerButton = null;
          var _loc4_:int = 0;

@@ -68,7 +68,7 @@ package com.monsters.baseplanner
       
       private var _layerGround:Sprite;
       
-      private var displayData:Vector.<com.monsters.baseplanner.PlannerNode>;
+      private var displayData:Vector.<PlannerNode>;
       
       private var displayInventory:Vector.<BuildingItem>;
       
@@ -120,7 +120,7 @@ package com.monsters.baseplanner
       
       public var _selectMoveDragPoint:Point;
       
-      public function PlannerDesignView(param1:Vector.<com.monsters.baseplanner.PlannerNode>)
+      public function PlannerDesignView(param1:Vector.<PlannerNode>)
       {
          this.fontSize = new Point(14,12);
          this._windowRect = new Rectangle(35,65,565,425);
@@ -161,7 +161,7 @@ package com.monsters.baseplanner
          this._canvas.y = 290;
       }
       
-      public function populateBuildingItems(param1:Vector.<com.monsters.baseplanner.PlannerNode>) : void
+      public function populateBuildingItems(param1:Vector.<PlannerNode>) : void
       {
          var _loc4_:BuildingItem = null;
          var _loc2_:int = 1;
@@ -340,7 +340,7 @@ package com.monsters.baseplanner
          this._canvas.y = GLOBAL._SCREEN.height / 2 - BOTTOMBAR_HEIGHT;
       }
       
-      public function addInventoryItem(param1:com.monsters.baseplanner.PlannerNode) : void
+      public function addInventoryItem(param1:PlannerNode) : void
       {
          var _loc2_:BuildingItem = null;
          var _loc3_:Point = null;
@@ -424,7 +424,7 @@ package com.monsters.baseplanner
       public function onBuildingClick(param1:BasePlannerNodeEvent) : void
       {
          var _loc2_:BuildingItem = null;
-         var _loc3_:com.monsters.baseplanner.PlannerNode = null;
+         var _loc3_:PlannerNode = null;
          this.toolTarget = param1.target as Object;
          if(!param1.target is BuildingItem)
          {
@@ -466,7 +466,7 @@ package com.monsters.baseplanner
          this.removeBuildingItem(param1);
       }
       
-      public function spliceDisplayData(param1:com.monsters.baseplanner.PlannerNode) : void
+      public function spliceDisplayData(param1:PlannerNode) : void
       {
          this.displayData.splice(this.displayData.indexOf(param1),1);
       }
@@ -739,7 +739,7 @@ package com.monsters.baseplanner
          this.clearAllLayers();
       }
       
-      public function redraw(param1:Vector.<com.monsters.baseplanner.PlannerNode> = null) : void
+      public function redraw(param1:Vector.<PlannerNode> = null) : void
       {
          this.setup();
       }

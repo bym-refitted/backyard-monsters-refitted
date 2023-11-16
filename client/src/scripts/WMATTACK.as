@@ -1,5 +1,6 @@
 package
 {
+   import com.brokenfunction.json.decodeJson;
    import com.gskinner.utils.Rndm;
    import com.monsters.ai.*;
    import com.monsters.display.ImageCache;
@@ -14,7 +15,6 @@ package
    import flash.events.MouseEvent;
    import flash.geom.Point;
    import flash.utils.getTimer;
-   import com.brokenfunction.json.decodeJson;
    
    public class WMATTACK
    {

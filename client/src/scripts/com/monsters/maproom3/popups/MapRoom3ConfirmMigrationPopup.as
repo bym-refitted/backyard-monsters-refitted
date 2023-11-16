@@ -6,7 +6,7 @@ package com.monsters.maproom3.popups
    public class MapRoom3ConfirmMigrationPopup extends popup_new_map_confirm
    {
       
-      private static var s_Instance:com.monsters.maproom3.popups.MapRoom3ConfirmMigrationPopup = null;
+      private static var s_Instance:MapRoom3ConfirmMigrationPopup = null;
        
       
       private var m_IsShowing:Boolean = false;
@@ -16,9 +16,9 @@ package com.monsters.maproom3.popups
          super();
       }
       
-      public static function get instance() : com.monsters.maproom3.popups.MapRoom3ConfirmMigrationPopup
+      public static function get instance() : MapRoom3ConfirmMigrationPopup
       {
-         return s_Instance = s_Instance || new com.monsters.maproom3.popups.MapRoom3ConfirmMigrationPopup(new SingletonLock());
+         return s_Instance = s_Instance || new MapRoom3ConfirmMigrationPopup(new SingletonLock());
       }
       
       public function Show(param1:Boolean = false) : void

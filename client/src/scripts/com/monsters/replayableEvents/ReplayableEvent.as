@@ -44,7 +44,7 @@ package com.monsters.replayableEvents
       
       protected var _duration:uint = 345600;
       
-      protected var _quotas:Vector.<com.monsters.replayableEvents.ReplayableEventQuota>;
+      protected var _quotas:Vector.<ReplayableEventQuota>;
       
       protected var m_mustBeInsideBase:Boolean = false;
       
@@ -61,7 +61,7 @@ package com.monsters.replayableEvents
             }
             FrontPageLibrary.EVENTS.addMessage(this._rewardMessage);
          }
-         this._quotas = new Vector.<com.monsters.replayableEvents.ReplayableEventQuota>();
+         this._quotas = new Vector.<ReplayableEventQuota>();
       }
       
       public function get preEventHUDImageURL() : String
@@ -287,7 +287,7 @@ package com.monsters.replayableEvents
       {
          var _loc1_:int = 0;
          var _loc2_:int = 0;
-         var _loc3_:com.monsters.replayableEvents.ReplayableEventQuota = null;
+         var _loc3_:ReplayableEventQuota = null;
          if(!this.m_mustBeInsideBase || this.m_mustBeInsideBase && GLOBAL.isAtHome() === true)
          {
             _loc1_ = int(this._quotas.length);
@@ -304,9 +304,9 @@ package com.monsters.replayableEvents
          }
       }
       
-      protected function getLatestMetQuota(param1:Number) : com.monsters.replayableEvents.ReplayableEventQuota
+      protected function getLatestMetQuota(param1:Number) : ReplayableEventQuota
       {
-         var _loc3_:com.monsters.replayableEvents.ReplayableEventQuota = null;
+         var _loc3_:ReplayableEventQuota = null;
          var _loc2_:int = int(this._quotas.length - 1);
          while(_loc2_ >= 0)
          {
@@ -423,7 +423,7 @@ package com.monsters.replayableEvents
          return this._score;
       }
       
-      public function get rewards() : Vector.<com.monsters.replayableEvents.ReplayableEventQuota>
+      public function get rewards() : Vector.<ReplayableEventQuota>
       {
          return this._quotas;
       }

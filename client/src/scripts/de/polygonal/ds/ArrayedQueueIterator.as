@@ -12,13 +12,13 @@ package de.polygonal.ds
       
       public var _front:int;
       
-      public var _f:de.polygonal.ds.ArrayedQueue;
+      public var _f:ArrayedQueue;
       
       public var _capacity:int;
       
       public var _a:Array;
       
-      public function ArrayedQueueIterator(param1:de.polygonal.ds.ArrayedQueue = undefined)
+      public function ArrayedQueueIterator(param1:ArrayedQueue = undefined)
       {
          if(Boot.skip_constructor)
          {

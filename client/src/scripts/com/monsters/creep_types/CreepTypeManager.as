@@ -3,23 +3,23 @@ package com.monsters.creep_types
    public class CreepTypeManager
    {
       
-      private static var s_Instance:com.monsters.creep_types.CreepTypeManager = null;
+      private static var s_Instance:CreepTypeManager = null;
        
       
-      private var m_CreepTypes:Vector.<com.monsters.creep_types.CreepType>;
+      private var m_CreepTypes:Vector.<CreepType>;
       
       public function CreepTypeManager(param1:SingletonLock)
       {
-         this.m_CreepTypes = new Vector.<com.monsters.creep_types.CreepType>();
+         this.m_CreepTypes = new Vector.<CreepType>();
          super();
       }
       
-      public static function get instance() : com.monsters.creep_types.CreepTypeManager
+      public static function get instance() : CreepTypeManager
       {
-         return s_Instance = s_Instance || new com.monsters.creep_types.CreepTypeManager(new SingletonLock());
+         return s_Instance = s_Instance || new CreepTypeManager(new SingletonLock());
       }
       
-      internal function RegisterCreepType(param1:com.monsters.creep_types.CreepType) : void
+      internal function RegisterCreepType(param1:CreepType) : void
       {
          if(this.m_CreepTypes.indexOf(param1) == -1)
          {
@@ -27,7 +27,7 @@ package com.monsters.creep_types
          }
       }
       
-      internal function DeregisterCreepType(param1:com.monsters.creep_types.CreepType) : void
+      internal function DeregisterCreepType(param1:CreepType) : void
       {
          var _loc2_:int = this.m_CreepTypes.indexOf(param1);
          if(_loc2_ != -1)
@@ -38,7 +38,7 @@ package com.monsters.creep_types
       
       public function AddExposedCreepTypes(param1:Object) : void
       {
-         var _loc4_:com.monsters.creep_types.CreepType = null;
+         var _loc4_:CreepType = null;
          var _loc2_:uint = this.m_CreepTypes.length;
          var _loc3_:uint = 0;
          while(_loc3_ < _loc2_)

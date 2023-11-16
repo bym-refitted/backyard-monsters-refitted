@@ -10,6 +10,8 @@ package com.smartfoxserver.v2.entities
    import com.smartfoxserver.v2.kernel;
    import com.smartfoxserver.v2.util.ArrayUtil;
    
+   use namespace kernel;
+   
    public class SFSRoom implements Room
    {
        

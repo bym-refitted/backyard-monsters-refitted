@@ -2,6 +2,7 @@ package
 {
    import flash.display.MovieClip;
    
+   [Embed(source="/_assets/assets.swf", symbol="meterBar_rounded_red_CLIP")]
    public dynamic class meterBar_rounded_red_CLIP extends MovieClip
    {
        

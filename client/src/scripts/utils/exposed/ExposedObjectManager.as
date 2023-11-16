@@ -6,7 +6,7 @@ package utils.exposed
    public class ExposedObjectManager
    {
       
-      private static var s_Instance:utils.exposed.ExposedObjectManager = null;
+      private static var s_Instance:ExposedObjectManager = null;
        
       
       private var m_ReferenceableObjects:Dictionary;
@@ -22,9 +22,9 @@ package utils.exposed
          super();
       }
       
-      public static function get instance() : utils.exposed.ExposedObjectManager
+      public static function get instance() : ExposedObjectManager
       {
-         return s_Instance = s_Instance || new utils.exposed.ExposedObjectManager(new SingletonLock());
+         return s_Instance = s_Instance || new ExposedObjectManager(new SingletonLock());
       }
       
       public function LoadExposedCollection(param1:XML, param2:XML = null) : ExposedCollection
@@ -45,7 +45,7 @@ package utils.exposed
       {
          if(this.m_ReferenceableObjects[param1.id] != null)
          {
-            Warning.Show("Trying to registering referenceable object \'" + param1.id + "\' that has already been registered.",utils.exposed.ExposedObjectManager);
+            Warning.Show("Trying to registering referenceable object \'" + param1.id + "\' that has already been registered.",ExposedObjectManager);
             return;
          }
          this.m_ReferenceableObjects[param1.id] = param1;
@@ -72,7 +72,7 @@ package utils.exposed
          --this.m_ReferenceLoadingBlockCounter;
          if(this.m_ReferenceLoadingBlockCounter < 0)
          {
-            Warning.Show("Reference loading block mis-match.",utils.exposed.ExposedObjectManager);
+            Warning.Show("Reference loading block mis-match.",ExposedObjectManager);
             this.m_ReferenceLoadingBlockCounter = 0;
          }
          if(this.m_ReferenceLoadingBlockCounter == 0)
@@ -85,7 +85,7 @@ package utils.exposed
       {
          if(this.m_ReferenceLoadingBlockCounter <= 0)
          {
-            Warning.Show("AddReferenceToResolve called outside of a reference loading block.",utils.exposed.ExposedObjectManager);
+            Warning.Show("AddReferenceToResolve called outside of a reference loading block.",ExposedObjectManager);
             return;
          }
          this.m_ReferencesToResolve.push(param1);
@@ -107,7 +107,7 @@ package utils.exposed
             }
             else if((_loc4_ = this.FindReferenceableObject(_loc3_.referencedObjectId)) == null)
             {
-               Warning.Show("Resolving reference \'" + _loc3_.referencedObjectId + "\' for accessor \'" + _loc3_.exposedAccessor.name + "\' of type \'" + _loc3_.exposedAccessor.qualifiedClassName + "\' but we couldn\'t find the referenced object.",utils.exposed.ExposedObjectManager);
+               Warning.Show("Resolving reference \'" + _loc3_.referencedObjectId + "\' for accessor \'" + _loc3_.exposedAccessor.name + "\' of type \'" + _loc3_.exposedAccessor.qualifiedClassName + "\' but we couldn\'t find the referenced object.",ExposedObjectManager);
                _loc3_.exposedStructure[_loc3_.exposedAccessor.name] = null;
                _loc3_.Destroy();
             }
@@ -115,7 +115,7 @@ package utils.exposed
             {
                if(_loc3_.vectorIndex >= _loc3_.exposedStructure[_loc3_.exposedAccessor.name].length)
                {
-                  Warning.Show("Resolving reference \'" + _loc3_.referencedObjectId + "\' for accessor \'" + _loc3_.exposedAccessor.name + "\' of type \'" + _loc3_.exposedAccessor.qualifiedClassName + "\' at index \'" + _loc3_.vectorIndex + "\' that is greater than length \'" + this[_loc3_.exposedAccessor.name].length + "\'.",utils.exposed.ExposedObjectManager);
+                  Warning.Show("Resolving reference \'" + _loc3_.referencedObjectId + "\' for accessor \'" + _loc3_.exposedAccessor.name + "\' of type \'" + _loc3_.exposedAccessor.qualifiedClassName + "\' at index \'" + _loc3_.vectorIndex + "\' that is greater than length \'" + this[_loc3_.exposedAccessor.name].length + "\'.",ExposedObjectManager);
                   _loc3_.exposedStructure[_loc3_.exposedAccessor.name][_loc3_.vectorIndex] = null;
                }
                else
@@ -126,7 +126,7 @@ package utils.exposed
             }
             else if(!(_loc4_ is _loc3_.exposedAccessor.classType))
             {
-               Warning.Show("Resolving reference \'" + _loc3_.referencedObjectId + "\' for accessor \'" + _loc3_.exposedAccessor.name + "\' that is not of type \'" + _loc3_.exposedAccessor.qualifiedClassName + "\'.",utils.exposed.ExposedObjectManager);
+               Warning.Show("Resolving reference \'" + _loc3_.referencedObjectId + "\' for accessor \'" + _loc3_.exposedAccessor.name + "\' that is not of type \'" + _loc3_.exposedAccessor.qualifiedClassName + "\'.",ExposedObjectManager);
                _loc3_.exposedStructure[_loc3_.exposedAccessor.name] = null;
                _loc3_.Destroy();
             }

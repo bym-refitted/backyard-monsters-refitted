@@ -14,7 +14,7 @@ package com.monsters.maproom_advanced
    {
        
       
-      private var _cell:com.monsters.maproom_advanced.MapRoomCell;
+      private var _cell:MapRoomCell;
       
       private var _mcMonsters:MovieClip;
       
@@ -105,7 +105,7 @@ package com.monsters.maproom_advanced
          MapRoom._mc.HideInfoMine();
       }
       
-      public function Setup(param1:com.monsters.maproom_advanced.MapRoomCell) : void
+      public function Setup(param1:MapRoomCell) : void
       {
          var _loc3_:int = 0;
          var _loc4_:int = 0;

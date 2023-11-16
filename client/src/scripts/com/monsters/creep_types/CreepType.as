@@ -26,9 +26,9 @@ package com.monsters.creep_types
       
       private var m_Stream:Vector.<String>;
       
-      private var m_BaseProps:com.monsters.creep_types.CreepProps;
+      private var m_BaseProps:CreepProps;
       
-      private var m_Upgrades:Vector.<com.monsters.creep_types.CreepUpgrade>;
+      private var m_Upgrades:Vector.<CreepUpgrade>;
       
       public var trainingCosts:Array;
       
@@ -49,8 +49,8 @@ package com.monsters.creep_types
       public function CreepType()
       {
          this.m_Stream = new Vector.<String>();
-         this.m_BaseProps = new com.monsters.creep_types.CreepProps();
-         this.m_Upgrades = new Vector.<com.monsters.creep_types.CreepUpgrade>();
+         this.m_BaseProps = new CreepProps();
+         this.m_Upgrades = new Vector.<CreepUpgrade>();
          this.trainingCosts = new Array();
          this.props = new Object();
          super();
@@ -146,22 +146,22 @@ package com.monsters.creep_types
          this.m_Level = param1;
       }
       
-      public function get baseProps() : com.monsters.creep_types.CreepProps
+      public function get baseProps() : CreepProps
       {
          return this.m_BaseProps;
       }
       
-      public function set baseProps(param1:com.monsters.creep_types.CreepProps) : void
+      public function set baseProps(param1:CreepProps) : void
       {
          this.m_BaseProps = param1;
       }
       
-      public function get upgrades() : Vector.<com.monsters.creep_types.CreepUpgrade>
+      public function get upgrades() : Vector.<CreepUpgrade>
       {
          return this.m_Upgrades;
       }
       
-      public function set upgrades(param1:Vector.<com.monsters.creep_types.CreepUpgrade>) : void
+      public function set upgrades(param1:Vector.<CreepUpgrade>) : void
       {
          this.m_Upgrades = param1;
       }
@@ -178,7 +178,7 @@ package com.monsters.creep_types
       
       override protected function _Init() : void
       {
-         var _loc3_:com.monsters.creep_types.CreepUpgrade = null;
+         var _loc3_:CreepUpgrade = null;
          super._Init();
          CreepTypeManager.instance.RegisterCreepType(this);
          this.props.speed = [this.m_BaseProps.speed];

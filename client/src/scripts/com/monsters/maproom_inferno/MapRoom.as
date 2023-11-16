@@ -18,9 +18,9 @@ package com.monsters.maproom_inferno
       public static var BRIDGE:Object = {};
        
       
-      public var players:com.monsters.maproom_inferno.PlayerLayer;
+      public var players:PlayerLayer;
       
-      public var miniMap:com.monsters.maproom_inferno.MiniMap;
+      public var miniMap:MiniMap;
       
       public var mv:MapView;
       
@@ -50,7 +50,7 @@ package com.monsters.maproom_inferno
          top.addChild(mvBtn);
          top.addChild(lvBtn);
          addChild(top);
-         this.players = new com.monsters.maproom_inferno.PlayerLayer();
+         this.players = new PlayerLayer();
          if(BRIDGE.TUTORIAL._stage < this._tutorialModeThresh)
          {
             this.players._wmbToDisplay = 1;

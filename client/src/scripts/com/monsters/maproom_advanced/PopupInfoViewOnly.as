@@ -1,5 +1,6 @@
 package com.monsters.maproom_advanced
 {
+   import com.brokenfunction.json.encodeJson;
    import com.monsters.display.ImageCache;
    import com.monsters.enums.EnumYardType;
    import flash.display.Bitmap;
@@ -9,14 +10,12 @@ package com.monsters.maproom_advanced
    import flash.events.IOErrorEvent;
    import flash.events.MouseEvent;
    import flash.net.URLRequest;
-   import com.brokenfunction.json.encodeJson;
    
-   // internal class PopupInfoViewOnly extends PopupInfoViewOnly_CLIP
    public class PopupInfoViewOnly extends PopupInfoViewOnly_CLIP
    {
        
       
-      private var _cell:com.monsters.maproom_advanced.MapRoomCell;
+      private var _cell:MapRoomCell;
       
       private var _profilePic:Loader;
       
@@ -54,7 +53,7 @@ package com.monsters.maproom_advanced
          MapRoom._mc.HideInfoViewOnly();
       }
       
-      public function Setup(param1:com.monsters.maproom_advanced.MapRoomCell, param2:Boolean = false) : void
+      public function Setup(param1:MapRoomCell, param2:Boolean = false) : void
       {
          var _loc3_:int = 0;
          var _loc4_:int = 0;

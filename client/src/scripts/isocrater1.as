@@ -2,6 +2,7 @@ package
 {
    import flash.display.BitmapData;
    
+   [Embed(source="/_assets/2179_isocrater1_isocrater1.jpg")]
    public dynamic class isocrater1 extends BitmapData
    {
        

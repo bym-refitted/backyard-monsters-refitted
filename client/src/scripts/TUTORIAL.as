@@ -69,7 +69,7 @@ package
       
       public static var _doArrow:DisplayObject;
       
-      public static var _container;
+      public static var _container:*;
       
       public static var _timer:int;
       

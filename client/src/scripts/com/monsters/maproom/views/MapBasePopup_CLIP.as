@@ -3,6 +3,7 @@ package com.monsters.maproom.views
    import flash.display.MovieClip;
    import flash.text.TextField;
    
+   [Embed(source="/_assets/assets.swf", symbol="com.monsters.maproom.views.MapBasePopup_CLIP")]
    public dynamic class MapBasePopup_CLIP extends MovieClip
    {
        

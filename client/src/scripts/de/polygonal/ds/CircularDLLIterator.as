@@ -6,15 +6,15 @@ package de.polygonal.ds
    {
        
       
-      public var _walker:de.polygonal.ds.DLLNode;
+      public var _walker:DLLNode;
       
       public var _s:int;
       
       public var _i:int;
       
-      public var _f:de.polygonal.ds.DLL;
+      public var _f:DLL;
       
-      public function CircularDLLIterator(param1:de.polygonal.ds.DLL = undefined)
+      public function CircularDLLIterator(param1:DLL = undefined)
       {
          if(Boot.skip_constructor)
          {

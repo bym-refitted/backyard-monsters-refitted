@@ -13,16 +13,16 @@ package com.monsters.baseplanner
       
       public var name:String;
       
-      public var inventoryData:Vector.<com.monsters.baseplanner.PlannerNode>;
+      public var inventoryData:Vector.<PlannerNode>;
       
-      public var displayData:Vector.<com.monsters.baseplanner.PlannerNode>;
+      public var displayData:Vector.<PlannerNode>;
       
-      private var _savableData:com.monsters.baseplanner.BaseTemplate;
+      private var _savableData:BaseTemplate;
       
-      public function PlannerTemplate(param1:com.monsters.baseplanner.BaseTemplate = null)
+      public function PlannerTemplate(param1:BaseTemplate = null)
       {
-         this.inventoryData = new Vector.<com.monsters.baseplanner.PlannerNode>();
-         this.displayData = new Vector.<com.monsters.baseplanner.PlannerNode>();
+         this.inventoryData = new Vector.<PlannerNode>();
+         this.displayData = new Vector.<PlannerNode>();
          super();
          if(param1)
          {
@@ -30,10 +30,10 @@ package com.monsters.baseplanner
          }
       }
       
-      public function exportData() : com.monsters.baseplanner.BaseTemplate
+      public function exportData() : BaseTemplate
       {
-         var _loc4_:com.monsters.baseplanner.PlannerNode = null;
-         var _loc1_:com.monsters.baseplanner.BaseTemplate = new com.monsters.baseplanner.BaseTemplate(this.name);
+         var _loc4_:PlannerNode = null;
+         var _loc1_:BaseTemplate = new BaseTemplate(this.name);
          var _loc2_:Vector.<BaseTemplateNode> = new Vector.<BaseTemplateNode>();
          var _loc3_:int = 0;
          while(_loc3_ < this.displayData.length)
@@ -50,7 +50,7 @@ package com.monsters.baseplanner
          return _loc1_;
       }
       
-      public function importData(param1:com.monsters.baseplanner.BaseTemplate) : void
+      public function importData(param1:BaseTemplate) : void
       {
          this._savableData = param1;
          this.name = this._savableData.name;
@@ -58,12 +58,12 @@ package com.monsters.baseplanner
          this.getPlannerDataFromTemplate(param1);
       }
       
-      private function getPlannerDataFromTemplate(param1:com.monsters.baseplanner.BaseTemplate) : void
+      private function getPlannerDataFromTemplate(param1:BaseTemplate) : void
       {
          var _loc6_:BaseTemplateNode = null;
          var _loc7_:BFOUNDATION = null;
-         var _loc8_:com.monsters.baseplanner.PlannerNode = null;
-         var _loc9_:com.monsters.baseplanner.PlannerNode = null;
+         var _loc8_:PlannerNode = null;
+         var _loc9_:PlannerNode = null;
          var _loc10_:Point = null;
          var _loc11_:uint = 0;
          var _loc12_:Boolean = false;
@@ -81,12 +81,12 @@ package com.monsters.baseplanner
             }
             else
             {
-               _loc8_ = new com.monsters.baseplanner.PlannerNode(_loc7_,_loc6_.x,_loc6_.y);
+               _loc8_ = new PlannerNode(_loc7_,_loc6_.x,_loc6_.y);
                this.displayData.push(_loc8_);
             }
             _loc3_++;
          }
-         var _loc4_:Vector.<com.monsters.baseplanner.PlannerNode> = this.getNodesFromUnusedBuildings(param1);
+         var _loc4_:Vector.<PlannerNode> = this.getNodesFromUnusedBuildings(param1);
          _loc3_ = 0;
          while(_loc3_ < _loc4_.length)
          {
@@ -103,7 +103,7 @@ package com.monsters.baseplanner
             }
             _loc3_++;
          }
-         var _loc5_:Vector.<com.monsters.baseplanner.PlannerNode> = this.getNodesFromStoredBuildings();
+         var _loc5_:Vector.<PlannerNode> = this.getNodesFromStoredBuildings();
          _loc3_ = 0;
          while(_loc3_ < _loc5_.length)
          {
@@ -140,22 +140,22 @@ package com.monsters.baseplanner
          return BASE.getBuildingByID(param1.id);
       }
       
-      private function getNodesFromUnusedBuildings(param1:com.monsters.baseplanner.BaseTemplate) : Vector.<com.monsters.baseplanner.PlannerNode>
+      private function getNodesFromUnusedBuildings(param1:BaseTemplate) : Vector.<PlannerNode>
       {
          var _loc4_:BFOUNDATION = null;
          var _loc2_:Vector.<BFOUNDATION> = BASE.getYardPlannerBuildings();
-         var _loc3_:Vector.<com.monsters.baseplanner.PlannerNode> = new Vector.<com.monsters.baseplanner.PlannerNode>();
+         var _loc3_:Vector.<PlannerNode> = new Vector.<PlannerNode>();
          for each(_loc4_ in _loc2_)
          {
             if(!param1.getNodeFromBuildingID(_loc4_._id))
             {
-               _loc3_.push(new com.monsters.baseplanner.PlannerNode(_loc4_));
+               _loc3_.push(new PlannerNode(_loc4_));
             }
          }
          return _loc3_;
       }
       
-      private function getNodesFromStoredBuildings() : Vector.<com.monsters.baseplanner.PlannerNode>
+      private function getNodesFromStoredBuildings() : Vector.<PlannerNode>
       {
          var _loc2_:int = 0;
          var _loc3_:Object = null;
@@ -166,7 +166,7 @@ package com.monsters.baseplanner
          var _loc8_:Object = null;
          var _loc9_:int = 0;
          var _loc10_:BFOUNDATION = null;
-         var _loc1_:Vector.<com.monsters.baseplanner.PlannerNode> = new Vector.<com.monsters.baseplanner.PlannerNode>();
+         var _loc1_:Vector.<PlannerNode> = new Vector.<PlannerNode>();
          if(BASE._buildingsStored)
          {
             _loc2_ = 0;
@@ -197,7 +197,7 @@ package com.monsters.baseplanner
                      _loc10_._lvl.Set(_loc9_);
                      _loc10_._fortification.Set(0);
                      _loc10_._range = 0;
-                     _loc1_.push(new com.monsters.baseplanner.PlannerNode(_loc10_));
+                     _loc1_.push(new PlannerNode(_loc10_));
                      _loc7_++;
                   }
                }

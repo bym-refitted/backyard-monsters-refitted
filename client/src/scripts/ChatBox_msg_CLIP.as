@@ -3,6 +3,7 @@ package
    import flash.display.MovieClip;
    import flash.text.TextField;
    
+   [Embed(source="/_assets/assets.swf", symbol="ChatBox_msg_CLIP")]
    public dynamic class ChatBox_msg_CLIP extends MovieClip
    {
        

@@ -38,7 +38,7 @@ package com.monsters.maproom3
       
       public static const k_MAX_STEP:uint = 8;
       
-      private static var m_instance:com.monsters.maproom3.MapRoom3Tutorial;
+      private static var m_instance:MapRoom3Tutorial;
        
       
       private var m_started:Boolean;
@@ -62,9 +62,9 @@ package com.monsters.maproom3
          }
       }
       
-      public static function get instance() : com.monsters.maproom3.MapRoom3Tutorial
+      public static function get instance() : MapRoom3Tutorial
       {
-         m_instance = m_instance || new com.monsters.maproom3.MapRoom3Tutorial(new InstanceEnforcer());
+         m_instance = m_instance || new MapRoom3Tutorial(new InstanceEnforcer());
          return m_instance;
       }
       

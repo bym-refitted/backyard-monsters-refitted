@@ -2,6 +2,7 @@ package
 {
    import flash.display.BitmapData;
    
+   [Embed(source="/_assets/2674_frame1_button_fullscreen_frame1_button_fullscreen.png")]
    public dynamic class frame1_button_fullscreen extends BitmapData
    {
        

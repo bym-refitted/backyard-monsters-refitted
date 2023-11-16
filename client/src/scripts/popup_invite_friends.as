@@ -3,6 +3,7 @@ package
    import flash.display.MovieClip;
    import flash.text.TextField;
    
+   [Embed(source="/_assets/assets.swf", symbol="popup_invite_friends")]
    public dynamic class popup_invite_friends extends MovieClip
    {
        

@@ -3,6 +3,7 @@ package
    import flash.display.MovieClip;
    import flash.text.TextField;
    
+   [Embed(source="/_assets/assets.swf", symbol="MISSIONS_INFO_CLIP")]
    public dynamic class MISSIONS_INFO_CLIP extends MovieClip
    {
        

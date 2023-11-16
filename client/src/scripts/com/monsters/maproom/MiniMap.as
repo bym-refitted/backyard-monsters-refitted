@@ -9,7 +9,7 @@ package com.monsters.maproom
    public class MiniMap extends MiniMap_CLIP
    {
       
-      private static var instance:com.monsters.maproom.MiniMap;
+      private static var instance:MiniMap;
       
       private static const COLOR1:uint = 65280;
       
@@ -20,9 +20,9 @@ package com.monsters.maproom
       private static const COLOR4:uint = 16711680;
        
       
-      public var playerLayer:com.monsters.maproom.PlayerLayer;
+      public var playerLayer:PlayerLayer;
       
-      public var largeMap:com.monsters.maproom.MapRoom;
+      public var largeMap:MapRoom;
       
       public var selector:Sprite;
       
@@ -51,11 +51,11 @@ package com.monsters.maproom
          super();
       }
       
-      public static function getInstance() : com.monsters.maproom.MiniMap
+      public static function getInstance() : MiniMap
       {
          if(!instance)
          {
-            instance = new com.monsters.maproom.MiniMap();
+            instance = new MiniMap();
          }
          return instance;
       }

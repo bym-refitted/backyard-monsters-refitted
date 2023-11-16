@@ -23,7 +23,7 @@ package com.monsters.mailbox
       
       public var loader:Loader;
       
-      public var currentSelection:com.monsters.mailbox.FriendPickerItem;
+      public var currentSelection:FriendPickerItem;
       
       public var isOpen:Boolean = false;
       
@@ -68,7 +68,7 @@ package com.monsters.mailbox
          var _loc2_:Array = null;
          var _loc3_:int = 0;
          var _loc4_:uint = 0;
-         var _loc5_:com.monsters.mailbox.FriendPickerItem = null;
+         var _loc5_:FriendPickerItem = null;
          if(this.isOpen)
          {
             this.close();
@@ -84,7 +84,7 @@ package com.monsters.mailbox
             _loc4_ = 0;
             while(_loc4_ < _loc3_)
             {
-               (_loc5_ = new com.monsters.mailbox.FriendPickerItem(_loc2_[_loc4_])).addEventListener(MouseEvent.MOUSE_OVER,this.onItemOver);
+               (_loc5_ = new FriendPickerItem(_loc2_[_loc4_])).addEventListener(MouseEvent.MOUSE_OVER,this.onItemOver);
                _loc5_.addEventListener(MouseEvent.MOUSE_OUT,this.onItemOut);
                _loc5_.addEventListener(MouseEvent.MOUSE_DOWN,this.onItemDown);
                _loc5_.shouldLoadImage();
@@ -171,7 +171,7 @@ package com.monsters.mailbox
          var _loc1_:Array = null;
          var _loc2_:int = 0;
          var _loc3_:uint = 0;
-         var _loc4_:com.monsters.mailbox.FriendPickerItem = null;
+         var _loc4_:FriendPickerItem = null;
          this.scroller.visible = true;
          arrowBtn.gotoAndStop(1);
          if(!this.pool)
@@ -182,7 +182,7 @@ package com.monsters.mailbox
             _loc3_ = 0;
             while(_loc3_ < _loc2_)
             {
-               (_loc4_ = new com.monsters.mailbox.FriendPickerItem(_loc1_[_loc3_])).addEventListener(MouseEvent.MOUSE_OVER,this.onItemOver);
+               (_loc4_ = new FriendPickerItem(_loc1_[_loc3_])).addEventListener(MouseEvent.MOUSE_OVER,this.onItemOver);
                _loc4_.addEventListener(MouseEvent.MOUSE_OUT,this.onItemOut);
                _loc4_.addEventListener(MouseEvent.MOUSE_DOWN,this.onItemDown);
                _loc4_.shouldLoadImage();
@@ -251,7 +251,7 @@ package com.monsters.mailbox
       
       public function preloadSelection(param1:Contact) : void
       {
-         var _loc2_:com.monsters.mailbox.FriendPickerItem = new com.monsters.mailbox.FriendPickerItem(param1);
+         var _loc2_:FriendPickerItem = new FriendPickerItem(param1);
          this.setData(_loc2_);
          removeChild(hitBtn);
          removeChild(arrowBtn);
@@ -273,15 +273,15 @@ package com.monsters.mailbox
       
       public function onItemDown(param1:MouseEvent) : void
       {
-         this.setData(param1.target as com.monsters.mailbox.FriendPickerItem);
+         this.setData(param1.target as FriendPickerItem);
       }
       
-      public function setData(param1:com.monsters.mailbox.FriendPickerItem) : void
+      public function setData(param1:FriendPickerItem) : void
       {
          var last_str:String;
          var onErr:Function = null;
          var onImgComplete:Function = null;
-         var item:com.monsters.mailbox.FriendPickerItem = param1;
+         var item:FriendPickerItem = param1;
          onErr = function(param1:IOErrorEvent):void
          {
          };

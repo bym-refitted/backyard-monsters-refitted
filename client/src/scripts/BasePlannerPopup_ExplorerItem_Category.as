@@ -3,6 +3,7 @@ package
    import flash.display.MovieClip;
    import flash.text.TextField;
    
+   [Embed(source="/_assets/assets.swf", symbol="BasePlannerPopup_ExplorerItem_Category")]
    public dynamic class BasePlannerPopup_ExplorerItem_Category extends MovieClip
    {
        

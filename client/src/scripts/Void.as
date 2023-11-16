@@ -1,3 +1,8 @@
+
+{
+   (global.Void = §§newclass(Void,Object)).__constructs__ = [];
+}
+
 package
 {
    import flash.Boot;
@@ -7,7 +12,7 @@ package
       
       public static const __isenum:Boolean = true;
       
-      public static var __constructs__ = [];
+      public static var __constructs__:*;
        
       
       public var tag:String;

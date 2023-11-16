@@ -54,7 +54,7 @@ package com.monsters.maproom
       
       public var popUp:MapBasePopup;
       
-      public var handler:com.monsters.maproom.PlayerHandler;
+      public var handler:PlayerHandler;
       
       public var loader:Loader;
       
@@ -130,7 +130,7 @@ package com.monsters.maproom
          this.mouseTimer = new Timer(400);
          this.mouseTimer.addEventListener(TimerEvent.TIMER,this.onTimer);
          this.mouseTimer.start();
-         this.handler = new com.monsters.maproom.PlayerHandler();
+         this.handler = new PlayerHandler();
          this.Update();
       }
       

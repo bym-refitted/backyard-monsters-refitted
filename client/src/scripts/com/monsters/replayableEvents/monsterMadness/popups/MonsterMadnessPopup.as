@@ -25,7 +25,7 @@ package com.monsters.replayableEvents.monsterMadness.popups
       
       internal static const _MEDIA_DIMENTIONS_Y:int = 200;
       
-      private static const _infoSets:Vector.<com.monsters.replayableEvents.monsterMadness.popups.MonsterMadnessPopupInfo> = Vector.<com.monsters.replayableEvents.monsterMadness.popups.MonsterMadnessPopupInfo>([new MonsterMadnessPopupInfoSet1(),new MonsterMadnessPopupInfoSet2(),new MonsterMadnessPopupInfoSet3(),new MonsterMadnessPopupInfoSet4(),new MonsterMadnessPopupInfoGoal1(),new MonsterMadnessPopupInfoGoal1Complete(),new MonsterMadnessPopupInfoGoal2(),new MonsterMadnessPopupInfoGoal2Complete(),new MonsterMadnessPopupInfoGoal3(),new MonsterMadnessPopupInfoGoal3Complete(),new MonsterMadnessPopupInfoEventComplete()]);
+      private static const _infoSets:Vector.<MonsterMadnessPopupInfo> = Vector.<MonsterMadnessPopupInfo>([new MonsterMadnessPopupInfoSet1(),new MonsterMadnessPopupInfoSet2(),new MonsterMadnessPopupInfoSet3(),new MonsterMadnessPopupInfoSet4(),new MonsterMadnessPopupInfoGoal1(),new MonsterMadnessPopupInfoGoal1Complete(),new MonsterMadnessPopupInfoGoal2(),new MonsterMadnessPopupInfoGoal2Complete(),new MonsterMadnessPopupInfoGoal3(),new MonsterMadnessPopupInfoGoal3Complete(),new MonsterMadnessPopupInfoEventComplete()]);
        
       
       public var infoIndex:int;
@@ -35,7 +35,7 @@ package com.monsters.replayableEvents.monsterMadness.popups
          var _loc3_:String = null;
          super();
          var _loc1_:int = this.getUserState();
-         var _loc2_:com.monsters.replayableEvents.monsterMadness.popups.MonsterMadnessPopupInfo = _infoSets[getSetIndex()];
+         var _loc2_:MonsterMadnessPopupInfo = _infoSets[getSetIndex()];
          this.infoIndex = _infoSets.indexOf(_loc2_);
          ImageCache.GetImageWithCallBack(_loc2_.getBanner(_loc1_),this.onImageLoad,true,4,"",[mcImage]);
          if(CREATURES._guardian)
@@ -46,7 +46,7 @@ package com.monsters.replayableEvents.monsterMadness.popups
             "v1":_loc3_,
             "v2":_loc3_
          });
-         _loc2_.addEventListener(com.monsters.replayableEvents.monsterMadness.popups.MonsterMadnessPopupInfo.REMOVE_LOADING_CIRCLE,this.onRemoveLoadingCircle,false,0,true);
+         _loc2_.addEventListener(MonsterMadnessPopupInfo.REMOVE_LOADING_CIRCLE,this.onRemoveLoadingCircle,false,0,true);
          _loc2_.setupButton(bAction,_loc1_);
          _loc2_.setupButton2(bAction2,_loc1_);
          mcVideo.addChild(_loc2_.getMedia(_loc1_));

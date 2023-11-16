@@ -16,7 +16,7 @@ package
       private static const kBarWidth:int = 535;
        
       
-      private var m_bunker = null;
+      private var m_bunker:* = null;
       
       private var _capacity:int = 0;
       

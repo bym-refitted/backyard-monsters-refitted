@@ -10,7 +10,7 @@ package com.monsters.maproom3
    public class MapRoom3AssetCache
    {
       
-      private static var s_Instance:com.monsters.maproom3.MapRoom3AssetCache = null;
+      private static var s_Instance:MapRoom3AssetCache = null;
       
       internal static const CELL_ICON_DAMAGE_PROTECTION:String = "worldmap/icons/damage_protection.png";
       
@@ -152,9 +152,9 @@ package com.monsters.maproom3
          super();
       }
       
-      public static function get instance() : com.monsters.maproom3.MapRoom3AssetCache
+      public static function get instance() : MapRoom3AssetCache
       {
-         return s_Instance = s_Instance || new com.monsters.maproom3.MapRoom3AssetCache(new SingletonLock());
+         return s_Instance = s_Instance || new MapRoom3AssetCache(new SingletonLock());
       }
       
       public function get areAssetsLoaded() : Boolean

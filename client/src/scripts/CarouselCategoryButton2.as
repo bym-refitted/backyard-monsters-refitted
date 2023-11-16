@@ -3,6 +3,7 @@ package
    import flash.display.MovieClip;
    import flash.text.TextField;
    
+   [Embed(source="/_assets/assets.swf", symbol="CarouselCategoryButton2")]
    public dynamic class CarouselCategoryButton2 extends MovieClip
    {
        

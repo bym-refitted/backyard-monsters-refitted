@@ -8,9 +8,9 @@ package com.monsters.maproom3.bookmarks
    {
        
       
-      private var m_BookmarkToDisplay:com.monsters.maproom3.bookmarks.Bookmark;
+      private var m_BookmarkToDisplay:Bookmark;
       
-      public function BookmarksPopupMenuItem(param1:com.monsters.maproom3.bookmarks.Bookmark)
+      public function BookmarksPopupMenuItem(param1:Bookmark)
       {
          super();
          this.m_BookmarkToDisplay = param1;

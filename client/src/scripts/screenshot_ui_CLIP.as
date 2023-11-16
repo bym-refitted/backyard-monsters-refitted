@@ -3,6 +3,7 @@ package
    import flash.display.MovieClip;
    import flash.text.TextField;
    
+   [Embed(source="/_assets/assets.swf", symbol="screenshot_ui_CLIP")]
    public dynamic class screenshot_ui_CLIP extends MovieClip
    {
        

@@ -9,7 +9,7 @@ package com.monsters.ai
    {
        
       
-      public var _solutions:Vector.<com.monsters.ai.Solution>;
+      public var _solutions:Vector.<Solution>;
       
       private var solsProcessed:uint = 0;
       
@@ -28,20 +28,20 @@ package com.monsters.ai
       {
          this._intelligence = param1;
          this._inProgress = true;
-         this._solutions = new Vector.<com.monsters.ai.Solution>();
+         this._solutions = new Vector.<Solution>();
          var _loc2_:Number = GLOBAL._mapWidth;
          var _loc3_:Number = GLOBAL._mapHeight;
          var _loc4_:int = 0;
          while(_loc4_ < WMATTACK._attackResolution)
          {
-            this._solutions.push(new com.monsters.ai.Solution(360 / WMATTACK._attackResolution * _loc4_,_loc2_,_loc3_));
+            this._solutions.push(new Solution(360 / WMATTACK._attackResolution * _loc4_,_loc2_,_loc3_));
             _loc4_ += 1;
          }
          this.solsProcessed = 0;
          this.Process(this._solutions[0],this.onProcess);
       }
       
-      public function Process(param1:com.monsters.ai.Solution, param2:Function) : void
+      public function Process(param1:Solution, param2:Function) : void
       {
          var _loc3_:BFOUNDATION = null;
          var _loc4_:Point = null;
@@ -97,7 +97,7 @@ package com.monsters.ai
       
       public function beginProcessB() : void
       {
-         var _loc2_:com.monsters.ai.Solution = null;
+         var _loc2_:Solution = null;
          var _loc3_:int = 0;
          var _loc1_:Array = [].concat();
          for each(_loc2_ in this._solutions)
@@ -112,7 +112,7 @@ package com.monsters.ai
          WMATTACK.Queue(_loc1_[_loc3_]);
       }
       
-      public function ProcessB(param1:com.monsters.ai.Solution) : void
+      public function ProcessB(param1:Solution) : void
       {
          var _loc2_:int = 0;
          while(_loc2_ < param1.wayPoints.length)
@@ -122,7 +122,7 @@ package com.monsters.ai
          }
       }
       
-      public function ProcessC(param1:com.monsters.ai.Solution) : void
+      public function ProcessC(param1:Solution) : void
       {
          var _loc6_:Number = NaN;
          var _loc7_:BFOUNDATION = null;

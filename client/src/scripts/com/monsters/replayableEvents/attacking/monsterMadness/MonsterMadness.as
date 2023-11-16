@@ -26,7 +26,7 @@ package com.monsters.replayableEvents.attacking.monsterMadness
       
       public static var today:Date = new Date(2012,2,23);
       
-      public static var infoBar:com.monsters.replayableEvents.attacking.monsterMadness.MonsterMadnessInfoBar;
+      public static var infoBar:MonsterMadnessInfoBar;
       
       public static var stage:uint;
       
@@ -203,7 +203,7 @@ package com.monsters.replayableEvents.attacking.monsterMadness
          {
             return;
          }
-         infoBar = new com.monsters.replayableEvents.attacking.monsterMadness.MonsterMadnessInfoBar();
+         infoBar = new MonsterMadnessInfoBar();
          addInfoBar();
          showPopup();
       }

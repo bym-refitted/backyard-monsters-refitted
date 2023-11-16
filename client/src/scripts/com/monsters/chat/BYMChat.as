@@ -14,9 +14,9 @@ package com.monsters.chat
    public class BYMChat extends Sprite
    {
       
-      private static var _chat:com.monsters.chat.CS_SmartFoxServer2X = null;
+      private static var _chat:CS_SmartFoxServer2X = null;
       
-      public static var _userRecord:com.monsters.chat.UserRecord = null;
+      public static var _userRecord:UserRecord = null;
       
       public static const WIDTH:int = 380;
       
@@ -25,11 +25,11 @@ package com.monsters.chat
       private static var _displayNameMap:Dictionary = new Dictionary();
        
       
-      public const GLOBAL_CHANNEL:com.monsters.chat.Channel = new com.monsters.chat.Channel("World","system");
+      public const GLOBAL_CHANNEL:Channel = new Channel("World","system");
       
-      public const IGNORE_LIST_CHANNEL:com.monsters.chat.Channel = new com.monsters.chat.Channel("IgnoreList","system");
+      public const IGNORE_LIST_CHANNEL:Channel = new Channel("IgnoreList","system");
       
-      private var _auth:com.monsters.chat.AS_Login = null;
+      private var _auth:AS_Login = null;
       
       private var _joinAttempts:int = 0;
       
@@ -51,7 +51,7 @@ package com.monsters.chat
       
       private var messageQueue:Array;
       
-      public var sector_channel:com.monsters.chat.Channel = null;
+      public var sector_channel:Channel = null;
       
       private var default_chat_channel:String = "sector";
       
@@ -98,8 +98,8 @@ package com.monsters.chat
          this.chatBox = param1;
          addChild(param1 as MovieClip);
          param1.addEventListener(KeyboardEvent.KEY_DOWN,this.keyboardEventHandler);
-         var _loc3_:String = param2 == null || param2 == "" ? com.monsters.chat.CS_SmartFoxServer2X.HOST_TEST : param2;
-         var _loc4_:int = com.monsters.chat.CS_SmartFoxServer2X.PORT;
+         var _loc3_:String = param2 == null || param2 == "" ? CS_SmartFoxServer2X.HOST_TEST : param2;
+         var _loc4_:int = CS_SmartFoxServer2X.PORT;
          var _loc5_:Array;
          if((_loc5_ = _loc3_.split(":")).length > 1)
          {
@@ -142,7 +142,7 @@ package com.monsters.chat
       {
          try
          {
-            _chat = new com.monsters.chat.CS_SmartFoxServer2X(this._chatHost,this._chatPort);
+            _chat = new CS_SmartFoxServer2X(this._chatHost,this._chatPort);
             _chat.addEventListener(ChatEvent.CONNECT,this.onConnect);
             _chat.addEventListener(ChatEvent.LOGIN,this.onLogin);
             _chat.addEventListener(ChatEvent.JOIN,this.onJoin);
@@ -268,8 +268,8 @@ package com.monsters.chat
       
       public function login(param1:String, param2:String, param3:int) : void
       {
-         _userRecord = new com.monsters.chat.UserRecord(param1,param2);
-         this._auth = new com.monsters.chat.AS_Login(_userRecord);
+         _userRecord = new UserRecord(param1,param2);
+         this._auth = new AS_Login(_userRecord);
          this._auth.authenticate();
          if(this._isConnected)
          {
@@ -474,7 +474,7 @@ package com.monsters.chat
                _chat.leave(this.sector_channel);
             }
          }
-         this.sector_channel = new com.monsters.chat.Channel(param1,"system");
+         this.sector_channel = new Channel(param1,"system");
          if(this._isConnected)
          {
             this.joinSector();
@@ -514,7 +514,7 @@ package com.monsters.chat
          {
             return;
          }
-         var _loc3_:com.monsters.chat.Channel = new com.monsters.chat.Channel(param1,"private");
+         var _loc3_:Channel = new Channel(param1,"private");
          _chat.say(_loc3_,param2);
       }
       
@@ -581,10 +581,10 @@ package com.monsters.chat
       
       private function onJoin(param1:ChatEvent) : void
       {
-         var _loc2_:com.monsters.chat.Channel = null;
+         var _loc2_:Channel = null;
          if(param1.Success)
          {
-            _loc2_ = param1.Get("channel") as com.monsters.chat.Channel;
+            _loc2_ = param1.Get("channel") as Channel;
             this.clearChat();
             this.system_message("Joined channel " + _loc2_.Name + ".");
             this.system_message("Type /h for help.");
@@ -611,12 +611,12 @@ package com.monsters.chat
       
       private function onSay(param1:ChatEvent) : void
       {
-         var _loc2_:com.monsters.chat.Channel = null;
+         var _loc2_:Channel = null;
          var _loc3_:String = null;
          var _loc4_:String = null;
          if(param1.Success)
          {
-            _loc2_ = param1.Get("channel") as com.monsters.chat.Channel;
+            _loc2_ = param1.Get("channel") as Channel;
             _loc3_ = param1.Get("user") as String;
             _loc4_ = param1.Get("message") as String;
             if(this.userIsIgnored(_loc3_))
@@ -817,7 +817,7 @@ package com.monsters.chat
          this.chatBox.push(_loc3_,param2,param1,"IgnoreList");
       }
       
-      private function showChatMessage(param1:com.monsters.chat.Channel, param2:String, param3:String) : void
+      private function showChatMessage(param1:Channel, param2:String, param3:String) : void
       {
          var _loc4_:* = null;
          var _loc5_:String = null;

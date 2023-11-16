@@ -3,6 +3,7 @@ package
    import flash.display.MovieClip;
    import flash.text.TextField;
    
+   [Embed(source="/_assets/assets.swf", symbol="frontpage_featuredItem_CLIP")]
    public dynamic class frontpage_featuredItem_CLIP extends MovieClip
    {
        

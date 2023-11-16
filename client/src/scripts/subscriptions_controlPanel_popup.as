@@ -3,6 +3,7 @@ package
    import flash.display.MovieClip;
    import flash.text.TextField;
    
+   [Embed(source="/_assets/assets.swf", symbol="subscriptions_controlPanel_popup")]
    public dynamic class subscriptions_controlPanel_popup extends MovieClip
    {
        

@@ -2,6 +2,7 @@ package
 {
    import flash.display.BitmapData;
    
+   [Embed(source="/_assets/1704_bmp_healthbarlarge_bmp_healthbarlarge.png")]
    public dynamic class bmp_healthbarlarge extends BitmapData
    {
        

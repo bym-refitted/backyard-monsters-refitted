@@ -7,7 +7,7 @@ package com.monsters.maproom3.popups
    public class MapRoom3AttackFinishedPopup extends popup_attackend_CLIP
    {
       
-      private static var s_Instance:com.monsters.maproom3.popups.MapRoom3AttackFinishedPopup = null;
+      private static var s_Instance:MapRoom3AttackFinishedPopup = null;
        
       
       public function MapRoom3AttackFinishedPopup(param1:SingletonLock)
@@ -15,9 +15,9 @@ package com.monsters.maproom3.popups
          super();
       }
       
-      public static function get instance() : com.monsters.maproom3.popups.MapRoom3AttackFinishedPopup
+      public static function get instance() : MapRoom3AttackFinishedPopup
       {
-         return s_Instance = s_Instance || new com.monsters.maproom3.popups.MapRoom3AttackFinishedPopup(new SingletonLock());
+         return s_Instance = s_Instance || new MapRoom3AttackFinishedPopup(new SingletonLock());
       }
       
       public function Show(param1:Boolean) : void

@@ -14,9 +14,9 @@ package com.monsters.ai
       
       public var composition:Array;
       
-      public var targetBuilding;
+      public var targetBuilding:*;
       
-      public var defensiveBuilding;
+      public var defensiveBuilding:*;
       
       public var resourcesGained:Number;
       

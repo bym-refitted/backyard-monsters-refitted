@@ -22,7 +22,7 @@ package gs.plugins
       
       protected var _matrix:Array;
       
-      protected var _matrixTween:gs.plugins.EndArrayPlugin;
+      protected var _matrixTween:EndArrayPlugin;
       
       public function ColorMatrixFilterPlugin()
       {
@@ -177,7 +177,7 @@ package gs.plugins
                _loc5_ = colorize(_loc5_,_loc4_.colorize,_loc4_.amount);
             }
          }
-         this._matrixTween = new gs.plugins.EndArrayPlugin();
+         this._matrixTween = new EndArrayPlugin();
          this._matrixTween.init(this._matrix,_loc5_);
          return true;
       }

@@ -4,11 +4,11 @@ package utils.exposed
    import flash.utils.getDefinitionByName;
    import utils.debug.Warning;
    
-   public class ExposedCollection extends utils.exposed.ExposedObject
+   public class ExposedCollection extends ExposedObject
    {
        
       
-      private var m_Contents:Vector.<utils.exposed.ExposedObject>;
+      private var m_Contents:Vector.<ExposedObject>;
       
       private var m_CachedContentsState:XML = null;
       
@@ -16,7 +16,7 @@ package utils.exposed
       
       public function ExposedCollection()
       {
-         this.m_Contents = new Vector.<utils.exposed.ExposedObject>();
+         this.m_Contents = new Vector.<ExposedObject>();
          super();
          this.m_ContentsLoaded = this.AreContentsLoadedByDefault();
       }
@@ -56,9 +56,9 @@ package utils.exposed
          return false;
       }
       
-      public function FindChildObject(param1:String) : utils.exposed.ExposedObject
+      public function FindChildObject(param1:String) : ExposedObject
       {
-         var _loc4_:utils.exposed.ExposedObject = null;
+         var _loc4_:ExposedObject = null;
          var _loc2_:uint = this.m_Contents.length;
          var _loc3_:uint = 0;
          while(_loc3_ < _loc2_)
@@ -72,9 +72,9 @@ package utils.exposed
          return null;
       }
       
-      public function FindAndRemoveChildObject(param1:String) : utils.exposed.ExposedObject
+      public function FindAndRemoveChildObject(param1:String) : ExposedObject
       {
-         var _loc4_:utils.exposed.ExposedObject = null;
+         var _loc4_:ExposedObject = null;
          var _loc2_:uint = this.m_Contents.length;
          var _loc3_:uint = 0;
          while(_loc3_ < _loc2_)
@@ -217,9 +217,9 @@ package utils.exposed
          }
          var _loc3_:uint = uint(param1.@length);
          var _loc4_:uint = 0;
-         var _loc5_:utils.exposed.ExposedObject = null;
+         var _loc5_:ExposedObject = null;
          var _loc6_:Class = null;
-         var _loc7_:Vector.<utils.exposed.ExposedObject> = new Vector.<utils.exposed.ExposedObject>(_loc3_);
+         var _loc7_:Vector.<ExposedObject> = new Vector.<ExposedObject>(_loc3_);
          for each(_loc8_ in param1.object)
          {
             _loc11_ = String(_loc8_.@id);

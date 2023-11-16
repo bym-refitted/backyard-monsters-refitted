@@ -1,5 +1,6 @@
 package
 {
+   import com.brokenfunction.json.encodeJson;
    import com.cc.utils.SecNum;
    import com.monsters.enums.EnumYardType;
    import com.monsters.maproom_manager.MapRoomManager;
@@ -8,7 +9,6 @@ package
    import flash.events.MouseEvent;
    import flash.geom.Point;
    import flash.geom.Rectangle;
-   import com.brokenfunction.json.encodeJson;
    
    public class INFERNOPORTAL extends BFOUNDATION
    {
@@ -54,23 +54,22 @@ package
       
       public static function EnterPortal(param1:Boolean = false) : void
       {
-         if (GLOBAL._flags.inferno != 1)
+         if(GLOBAL._flags.inferno != 1)
          {
             GLOBAL.Message(KEYS.Get("inferno_msg_disabled"));
-         } else {
-            if(MAPROOM_DESCENT.DescentPassed)
+         }
+         else if(MAPROOM_DESCENT.DescentPassed)
+         {
+            if(GLOBAL._flags.inferno != 1)
             {
-               if (GLOBAL._flags.inferno != 1)
-               {
-                  GLOBAL.Message(KEYS.Get("inferno_msg_disabled"));
-                  return;
-               }
-               ToggleYard();
+               GLOBAL.Message(KEYS.Get("inferno_msg_disabled"));
+               return;
             }
-            else
-            {
-               EnterDescent();
-            }
+            ToggleYard();
+         }
+         else
+         {
+            EnterDescent();
          }
       }
       

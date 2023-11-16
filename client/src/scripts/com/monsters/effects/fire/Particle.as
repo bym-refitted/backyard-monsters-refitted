@@ -16,7 +16,7 @@ package com.monsters.effects.fire
       
       public var clock:Number;
       
-      public var next:com.monsters.effects.fire.Particle;
+      public var next:Particle;
       
       public function Particle(param1:Number, param2:Number)
       {

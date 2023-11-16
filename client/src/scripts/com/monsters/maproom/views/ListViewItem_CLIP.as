@@ -3,6 +3,7 @@ package com.monsters.maproom.views
    import flash.display.MovieClip;
    import flash.text.TextField;
    
+   [Embed(source="/_assets/assets.swf", symbol="com.monsters.maproom.views.ListViewItem_CLIP")]
    public dynamic class ListViewItem_CLIP extends MovieClip
    {
        

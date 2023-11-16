@@ -3,6 +3,7 @@ package
    import flash.display.MovieClip;
    import flash.text.TextField;
    
+   [Embed(source="/_assets/assets.swf", symbol="HatcheryMonsterIcon_CLIP")]
    public dynamic class HatcheryMonsterIcon_CLIP extends MovieClip
    {
        

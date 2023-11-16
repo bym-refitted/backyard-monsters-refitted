@@ -1,5 +1,6 @@
 package com.monsters.maproom_advanced
 {
+   import com.brokenfunction.json.encodeJson;
    import com.cc.utils.SecNum;
    import com.monsters.alliances.*;
    import com.monsters.display.ImageCache;
@@ -18,13 +19,12 @@ package com.monsters.maproom_advanced
    import flash.events.IOErrorEvent;
    import flash.events.MouseEvent;
    import flash.net.URLRequest;
-   import com.brokenfunction.json.encodeJson;
    
-   // internal class PopupAttackA extends PopupAttackA_CLIP
    public class PopupAttackA extends PopupAttackA_CLIP
    {
+       
       
-      private var _cell:com.monsters.maproom_advanced.MapRoomCell;
+      private var _cell:MapRoomCell;
       
       private var _mcResources:MovieClip;
       
@@ -32,7 +32,7 @@ package com.monsters.maproom_advanced
       
       private var _monstersInRange:Boolean = false;
       
-      private var _cellsInRange:Vector.<com.monsters.maproom_advanced.CellData>;
+      private var _cellsInRange:Vector.<CellData>;
       
       private var _enabled:Boolean = false;
       
@@ -47,7 +47,7 @@ package com.monsters.maproom_advanced
       public function PopupAttackA()
       {
          this._attackResources = {};
-         this._cellsInRange = new Vector.<com.monsters.maproom_advanced.CellData>(0,true);
+         this._cellsInRange = new Vector.<CellData>(0,true);
          super();
          mMonsters.mask = mMonstersMask;
          this._scroller = new ScrollSet();
@@ -79,7 +79,7 @@ package com.monsters.maproom_advanced
          MapRoom._mc.HideAttack();
       }
       
-      public function Setup(param1:com.monsters.maproom_advanced.MapRoomCell) : void
+      public function Setup(param1:MapRoomCell) : void
       {
          this._cell = param1;
          if(this._cell._base == 3)
@@ -117,7 +117,7 @@ package com.monsters.maproom_advanced
       {
          this.bAttack.removeEventListener(MouseEvent.CLICK,this.Attack);
          this.bCancel.removeEventListener(MouseEvent.CLICK,this.Hide);
-         this._cellsInRange = new Vector.<com.monsters.maproom_advanced.CellData>(0,true);
+         this._cellsInRange = new Vector.<CellData>(0,true);
       }
       
       private function Attack(param1:MouseEvent) : void
@@ -192,8 +192,8 @@ package com.monsters.maproom_advanced
       
       public function Update() : Boolean
       {
-         var _loc2_:com.monsters.maproom_advanced.CellData = null;
-         var _loc3_:com.monsters.maproom_advanced.MapRoomCell = null;
+         var _loc2_:CellData = null;
+         var _loc3_:MapRoomCell = null;
          var _loc5_:int = 0;
          var _loc6_:int = 0;
          var _loc7_:int = 0;
@@ -226,7 +226,7 @@ package com.monsters.maproom_advanced
             this._cellsInRange = MapRoom._mc.GetCellsInRange(this._cell.X,this._cell.Y,10 + _loc1_);
             for each(_loc2_ in this._cellsInRange)
             {
-               _loc3_ = _loc2_.cell as com.monsters.maproom_advanced.MapRoomCell;
+               _loc3_ = _loc2_.cell as MapRoomCell;
                if(Boolean(_loc3_) && !_loc3_._processed)
                {
                   return false;
@@ -467,7 +467,7 @@ package com.monsters.maproom_advanced
             _loc9_.x = 130;
             _loc9_.y = 0;
             this._mcResources.addChild(_loc9_);
-            if((Boolean(_loc10_ = SiegeWeapons.availableWeapon)) && MapRoom._flingerInRange)
+            if(Boolean(_loc10_ = SiegeWeapons.availableWeapon) && MapRoom._flingerInRange)
             {
                (_loc9_ = new CATAPULTITEM())._props = _loc10_;
                _loc9_._bombid = _loc10_.weaponID;

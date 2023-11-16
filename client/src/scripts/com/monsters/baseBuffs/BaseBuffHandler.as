@@ -6,10 +6,10 @@ package com.monsters.baseBuffs
    public class BaseBuffHandler implements IPlayerHandler
    {
       
-      public static var instance:com.monsters.baseBuffs.BaseBuffHandler = new com.monsters.baseBuffs.BaseBuffHandler();
+      public static var instance:BaseBuffHandler = new BaseBuffHandler();
        
       
-      private var m_buffs:Vector.<com.monsters.baseBuffs.BaseBuff>;
+      private var m_buffs:Vector.<BaseBuff>;
       
       private var m_player:Player;
       
@@ -25,9 +25,9 @@ package com.monsters.baseBuffs
          return this.m_isInitialized;
       }
       
-      public function getBuffByID(param1:uint) : com.monsters.baseBuffs.BaseBuff
+      public function getBuffByID(param1:uint) : BaseBuff
       {
-         var _loc3_:com.monsters.baseBuffs.BaseBuff = null;
+         var _loc3_:BaseBuff = null;
          if(!this.isInitialized)
          {
             return null;
@@ -45,9 +45,9 @@ package com.monsters.baseBuffs
          return null;
       }
       
-      public function getBuffByName(param1:String) : com.monsters.baseBuffs.BaseBuff
+      public function getBuffByName(param1:String) : BaseBuff
       {
-         var _loc3_:com.monsters.baseBuffs.BaseBuff = null;
+         var _loc3_:BaseBuff = null;
          var _loc2_:int = 0;
          while(_loc2_ < this.m_buffs.length)
          {
@@ -61,9 +61,9 @@ package com.monsters.baseBuffs
          return null;
       }
       
-      public function addBuffByID(param1:uint) : com.monsters.baseBuffs.BaseBuff
+      public function addBuffByID(param1:uint) : BaseBuff
       {
-         var _loc2_:com.monsters.baseBuffs.BaseBuff = BaseBuffLibrary.getBuffByID(param1);
+         var _loc2_:BaseBuff = BaseBuffLibrary.getBuffByID(param1);
          if(_loc2_)
          {
             this.addBuff(_loc2_);
@@ -71,7 +71,7 @@ package com.monsters.baseBuffs
          return _loc2_;
       }
       
-      private function addBuff(param1:com.monsters.baseBuffs.BaseBuff) : void
+      private function addBuff(param1:BaseBuff) : void
       {
          this.m_buffs.push(param1);
          param1.apply();
@@ -102,7 +102,7 @@ package com.monsters.baseBuffs
       public function importData(param1:Object) : void
       {
          var _loc2_:* = undefined;
-         var _loc3_:com.monsters.baseBuffs.BaseBuff = null;
+         var _loc3_:BaseBuff = null;
          for(_loc2_ in param1)
          {
             if(!(!(_loc2_ is uint) || param1[_loc2_] == null || param1[_loc2_] == 0))
@@ -122,7 +122,7 @@ package com.monsters.baseBuffs
          if(!this.m_buffs)
          {
             BaseBuffLibrary.initialize();
-            this.m_buffs = new Vector.<com.monsters.baseBuffs.BaseBuff>();
+            this.m_buffs = new Vector.<BaseBuff>();
          }
          this.m_isInitialized = true;
       }

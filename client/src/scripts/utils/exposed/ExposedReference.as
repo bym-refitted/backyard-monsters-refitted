@@ -4,7 +4,7 @@ package utils.exposed
    {
        
       
-      private var m_ExposedStructure:utils.exposed.ExposedStructure;
+      private var m_ExposedStructure:ExposedStructure;
       
       private var m_ExposedAccessor:ExposedAccessor;
       
@@ -12,7 +12,7 @@ package utils.exposed
       
       private var m_VectorIndex:int;
       
-      public function ExposedReference(param1:utils.exposed.ExposedStructure, param2:ExposedAccessor, param3:String, param4:int = -1)
+      public function ExposedReference(param1:ExposedStructure, param2:ExposedAccessor, param3:String, param4:int = -1)
       {
          super();
          this.m_ExposedStructure = param1;
@@ -21,7 +21,7 @@ package utils.exposed
          this.m_VectorIndex = param4;
       }
       
-      internal function get exposedStructure() : utils.exposed.ExposedStructure
+      internal function get exposedStructure() : ExposedStructure
       {
          return this.m_ExposedStructure;
       }

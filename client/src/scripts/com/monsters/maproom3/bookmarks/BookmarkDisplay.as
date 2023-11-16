@@ -10,13 +10,13 @@ package com.monsters.maproom3.bookmarks
    {
        
       
-      private var m_BookmarkToDisplay:com.monsters.maproom3.bookmarks.Bookmark;
+      private var m_BookmarkToDisplay:Bookmark;
       
       private var m_ThumbnailIcon:Bitmap;
       
       private var m_DamageBarIcon:Bitmap;
       
-      public function BookmarkDisplay(param1:com.monsters.maproom3.bookmarks.Bookmark, param2:String, param3:BitmapData)
+      public function BookmarkDisplay(param1:Bookmark, param2:String, param3:BitmapData)
       {
          super();
          this.m_BookmarkToDisplay = param1;

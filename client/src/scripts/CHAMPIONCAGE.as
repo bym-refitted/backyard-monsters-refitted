@@ -1,5 +1,6 @@
 package
 {
+   import com.brokenfunction.json.encodeJson;
    import com.cc.utils.SecNum;
    import com.monsters.configs.BYMConfig;
    import com.monsters.interfaces.ITargetable;
@@ -16,7 +17,6 @@ package
    import flash.geom.Rectangle;
    import gs.*;
    import gs.easing.*;
-   import com.brokenfunction.json.encodeJson;
    
    public class CHAMPIONCAGE extends BFOUNDATION
    {

@@ -5,7 +5,7 @@ package com.smartfoxserver.v2.logging
    public class Logger extends EventDispatcher
    {
       
-      private static var _instance:com.smartfoxserver.v2.logging.Logger;
+      private static var _instance:Logger;
       
       private static var _locked:Boolean = true;
        
@@ -26,12 +26,12 @@ package com.smartfoxserver.v2.logging
          this._loggingLevel = LogLevel.INFO;
       }
       
-      public static function getInstance() : com.smartfoxserver.v2.logging.Logger
+      public static function getInstance() : Logger
       {
          if(_instance == null)
          {
             _locked = false;
-            _instance = new com.smartfoxserver.v2.logging.Logger();
+            _instance = new Logger();
             _locked = true;
          }
          return _instance;

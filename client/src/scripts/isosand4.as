@@ -2,6 +2,7 @@ package
 {
    import flash.display.BitmapData;
    
+   [Embed(source="/_assets/2166_isosand4_isosand4.jpg")]
    public dynamic class isosand4 extends BitmapData
    {
        

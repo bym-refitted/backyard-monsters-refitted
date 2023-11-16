@@ -6,11 +6,11 @@ package de.polygonal.ds
    {
        
       
-      public var _walker:de.polygonal.ds.DLLNode;
+      public var _walker:DLLNode;
       
-      public var _f:de.polygonal.ds.DLL;
+      public var _f:DLL;
       
-      public function DLLIterator(param1:de.polygonal.ds.DLL = undefined)
+      public function DLLIterator(param1:DLL = undefined)
       {
          if(Boot.skip_constructor)
          {

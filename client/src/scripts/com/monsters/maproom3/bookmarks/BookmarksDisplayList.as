@@ -9,7 +9,7 @@ package com.monsters.maproom3.bookmarks
    {
        
       
-      private var m_BookmarksToDisplay:Vector.<com.monsters.maproom3.bookmarks.Bookmark>;
+      private var m_BookmarksToDisplay:Vector.<Bookmark>;
       
       private var m_BookmarkDisplays:Vector.<Sprite>;
       
@@ -25,7 +25,7 @@ package com.monsters.maproom3.bookmarks
       
       private var m_LastSelectedBookmarkIndex:int = -1;
       
-      public function BookmarksDisplayList(param1:Vector.<com.monsters.maproom3.bookmarks.Bookmark>, param2:Function, param3:int = -1)
+      public function BookmarksDisplayList(param1:Vector.<Bookmark>, param2:Function, param3:int = -1)
       {
          super();
          this.m_BookmarksToDisplay = param1;

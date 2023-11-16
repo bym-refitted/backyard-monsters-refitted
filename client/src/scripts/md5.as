@@ -1,3 +1,15 @@
+
+{
+   leadingZeros[0] = "";
+   leadingZeros[1] = "0";
+   leadingZeros[2] = "00";
+   leadingZeros[3] = "000";
+   leadingZeros[4] = "0000";
+   leadingZeros[5] = "00000";
+   leadingZeros[6] = "000000";
+   return leadingZeros[7] = "0000000";
+}
+
 package
 {
    import flash.utils.ByteArray;

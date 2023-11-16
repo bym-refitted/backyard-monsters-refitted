@@ -11,12 +11,12 @@ package com.monsters.mailbox
       
       public static var contacts:Array;
       
-      private static var instance:com.monsters.mailbox.MailBox;
+      private static var instance:MailBox;
       
-      public static var currentThread:com.monsters.mailbox.Thread;
+      public static var currentThread:Thread;
        
       
-      public var inbox:com.monsters.mailbox.Inbox;
+      public var inbox:Inbox;
       
       public function MailBox()
       {
@@ -50,7 +50,7 @@ package com.monsters.mailbox
          instance.addChild(instance.inbox);
       }
       
-      public static function ShowThread(param1:com.monsters.mailbox.Thread) : void
+      public static function ShowThread(param1:Thread) : void
       {
          GLOBAL.BlockerAdd();
          GLOBAL._layerWindows.addChild(param1);
@@ -95,7 +95,7 @@ package com.monsters.mailbox
             _loc4_ = new Contact(_loc3_,param1.targets[_loc3_]);
             contacts.push(_loc4_);
          }
-         this.inbox = new com.monsters.mailbox.Inbox();
+         this.inbox = new Inbox();
          this.inbox.addEventListener(Event.COMPLETE,this.onInboxInit);
          this.inbox.Setup();
          ShowInbox();
