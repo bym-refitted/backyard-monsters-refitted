@@ -16,14 +16,7 @@ import { relocate } from "./controllers/maproom/relocate";
 import { infernoMonsters } from "./controllers/inferno/infernoMonsters";
 
 import { Context } from "koa";
-import { logging } from "./utils/logger.js";
-import { randomUUID } from "crypto";
-
-
-interface LogProps {
-  logMessage: string;
-  debugVars: Object;
-}
+import { recordDebugData } from "./controllers/debug/recordDebugData";
 
 const router = new Router();
 
@@ -53,13 +46,6 @@ router.post("/worldmapv3/getcells", auth, debugDataLog("Get maproom cells"), get
 router.post("/worldmapv3/relocate", auth, debugDataLog("Relocating base"), relocate);
 
 // Logging routes
-router.post(
-    "/api/player/recorddebugdata",
-    async (ctx: Context) => {
-      logging(`=========== NEW RUN ${randomUUID()} ===========`);
-      logging("Parsed body: ", JSON.stringify(ctx.request.body));
-      ctx.status = 204;
-    }
-  );
+router.post("/api/player/recorddebugdata", recordDebugData);
 
 export default router;
