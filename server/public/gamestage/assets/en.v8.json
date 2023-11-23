@@ -21,6 +21,16 @@
         "stopconstructionconfirm": "Are you sure you want to stop construction and destroy this building? <b>This can not be un-done</b>",
         "upgradecancelconfirm": "Are you sure you want to stop upgrading this building?",
         "recycleconfirm": "Are you sure you want to recycle this building? <b>This can not be un-done</b>",
+        "champion": {
+            "fed": "Champion has already been fed."
+        },
+        "juicechampion": {
+            "confirm": "Are you sure you want to juice your champion? <b>This can not be un-done</b>",
+            "yes": "Juice Champion"
+        },
+        "cage": {
+            "recycle": "You cannot recycle with an active champion."
+        },
         "destroybuilding": {
             "btn": "Destroy Building"
         },
@@ -140,6 +150,7 @@
         }
     },
     "popup": {
+        "championselecttitle": "SELECT YOUR CHAMPION",
         "label": {
             "reward": "Reward:"
         }
@@ -238,6 +249,14 @@
         "startunlocking": "Start Unlocking",
         "warnyourfriends": "Warn your friends",
         "cancel": "Cancel",
+        "opencage": "Open Cage",
+        "raisechampion":"Raise {v1}",
+        "champion": "Champion",
+        "evolution": "Evolution",
+        "healchampion": "Heal Champion",
+        "feednow": "Feed Now",
+        "dailyfeed": "Daily Feed",
+        "juiceguardian": "Juice Champion",
         "housing": {
             "heal": {
                 "all": "Heal All Instantly - {v1} Shiny"
@@ -246,6 +265,22 @@
         "mh": {
             "heal": "Heal"
         }
+    },
+    "gcage": {
+        "title": "CHAMPION CAGE",
+        "evo": "Evolution:",
+        "labelDamage": "Damage",
+        "labelHealth": "Health",
+        "labelSpeed": "Speed",
+        "labelBuff": "Buff",
+        "day": "Bonus",
+        "feedsFromEvo": " Feeds from Evolution",
+        "nextFeedIn": "Feed Me In",
+        "instantEvolve": "Evolve your Champion instantly!",
+        "msgNotHungry": "Your champion is not hungry.",
+        "msgFullBuff": "Your champion is fully buffed!",
+        "instantBuffAdd": "Add another buff instantly with Shiny!",
+        "feedBuffDesc": "Each day you feed your Champion Monster will further improve his abilities, up to a maximum of three times. Careful though, if he's not fed everyday, he will weaken."
     },
     "bunker": {
         "btn": {
@@ -444,6 +479,14 @@
         }
     },
     "mon": {
+        "drulltitle": "DRULL<br>High Attack",
+        "gorgotitle": "GORGO<br>High Defense",
+        "fomortitle": "FOMOR<br>Powers up other Monsters",
+        "korathtitle": "KORATH<br>Inferno Monster",
+        "drulldesc": "Covered in red obsidian scales, this two-headed beast delivers overwhelming damage during attacks.",
+        "gorgodesc": "Discovered inside the Bermuda Triangle, Gorgo is a powerful 'tank' monster of simian origin.",
+        "fomordesc": "Known in the nothern isles as the 'Flying Frog of Death', Fomor's presence provides a 'buff' to your monster army, granting armor and speed to nearby monsters.",
+        "korathdesc": "Spawned in the magma pits of Inferno, Korath uses his massive body and fiery core to eliminate enemies.",
         "pokeydesc": "Like a swarm of ants, a roaming pack of Pokeys can devour a grown cow in less than five minutes.<br><b>Favorite Target:</b> Anything",
         "octooozedesc": "The slimy octo-ooze soaks up fire power like a sponge so other monsters can wreak havoc.<br><b>Favorite Target:</b> Defensive Towers",
         "boltdesc": "Bolt is fast as lightning and can run ahead of your other monsters to munch on buildings with its razor sharp teeth.<br><b>Favorite Target:</b> Harvesters, Town Halls and Silos",
