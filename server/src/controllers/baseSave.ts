@@ -22,13 +22,34 @@ export const baseSave: KoaController = async (ctx) => {
       // errorLog(`Error parsing JSON for key '${key}': ${error.message}`);
     }
   }
+
+  // Update store data with the new quantity provided the user has funds
+  const purchaseString: [string, number] | undefined = (
+    ctx.request.body as { purchase?: [string, number] }
+  )?.purchase;
+
+  if (purchaseString) {
+    const purchase: [string, number] = purchaseString;
+
+    const [item, quantity] = purchase;
+    const storeData = save.storedata || {};
+
+    if (storeData[item]) {
+      storeData[item].q += quantity;
+    } else {
+      storeData[item] = {
+        q: quantity,
+      };
+    }
+
+    save.storedata = storeData;
+  }
+
   // Equivalent to Object.assign() - merges second object onto entity
   ORMContext.em.assign(save, ctx.request.body);
-  // Execute the update in the db
   await ORMContext.em.persistAndFlush(save);
 
   const filteredSave = FilterFrontendKeys(save);
-
   const baseSaveData = {
     error: 0,
     basesaveid: save.basesaveid,
@@ -39,7 +60,6 @@ export const baseSave: KoaController = async (ctx) => {
   ctx.body = {
     ...baseSaveData,
     ...filteredSave,
-    // over: (save.over += 1),
     h: "someHashValue",
   };
 };

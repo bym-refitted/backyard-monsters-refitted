@@ -90,20 +90,20 @@ package
          super();
       }
       
-      public static function Data(param1:Object, param2:Object, param3:Object = null) : void
+      public static function Data(storeItems:Object, storeData:Object, param3:Object = null) : void
       {
          _storeItems = {};
          _storeData = {};
          _storeInventory = {};
          GLOBAL._monsterOverdrive = new SecNum(0);
-         if(!param1 || !param2)
+         if(!storeItems || !storeData)
          {
             return;
          }
-         if(param1 != null)
+         if(storeItems != null)
          {
-            _storeItems = param1;
-            _storeData = param2;
+            _storeItems = storeItems;
+            _storeData = storeData;
             if(param3)
             {
                InventoryImport(param3);

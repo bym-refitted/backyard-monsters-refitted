@@ -95,52 +95,52 @@ package
       
       public static function CanDo() : Object
       {
-         var _loc2_:String = null;
-         var _loc1_:int = 0;
-         while(_loc1_ < _stack.length)
+         var errorName:String = null;
+         var stackIndex:int = 0;
+         while(stackIndex < _stack.length)
          {
-            if(!_stack[_loc1_].active)
+            if(!_stack[stackIndex].active)
             {
                return {
                   "error":false,
                   "errormessage":""
                };
             }
-            _loc1_++;
+            stackIndex++;
          }
          if(!STORE.CheckUpgrade("BEW"))
          {
             if(GLOBAL._bStore)
             {
-               _loc2_ = KEYS.Get("ui_worker_busy");
+               errorName = KEYS.Get("ui_worker_busy");
             }
             else
             {
-               _loc2_ = KEYS.Get("ui_worker_waitforfinish");
+               errorName = KEYS.Get("ui_worker_waitforfinish");
                if(TUTORIAL._stage >= 200)
                {
-                  _loc2_ += " " + KEYS.Get("ui_worker_impatient");
+                  errorName += " " + KEYS.Get("ui_worker_impatient");
                }
                else
                {
-                  _loc2_ += " " + KEYS.Get("ui_worker_tute");
+                  errorName += " " + KEYS.Get("ui_worker_tute");
                }
             }
          }
          else if(STORE.CheckUpgrade("BEW").q + 1 == 5)
          {
-            _loc2_ = KEYS.Get("ui_worker_5busy");
+            errorName = KEYS.Get("ui_worker_5busy");
          }
          else
          {
-            _loc2_ = KEYS.Get("ui_worker_xbusy",{
+            errorName = KEYS.Get("ui_worker_xbusy",{
                "v1":STORE.CheckUpgrade("BEW").q + 1,
                "v2":STORE.CheckUpgrade("BEW").q + 1
             });
          }
          return {
             "error":true,
-            "errormessage":_loc2_
+            "errormessage":errorName
          };
       }
       
@@ -185,32 +185,37 @@ package
          return 0;
       }
       
-      public static function Add(param1:String, param2:BFOUNDATION = null) : Boolean
+      public static function Add(param1:String, buildingFoundation:BFOUNDATION = null) : Boolean
       {
-         var _loc3_:int = 0;
+         var stackIndex:int = 0;
          var _loc4_:Object = null;
-         var _loc5_:Object = null;
+         var worker:Object = null;
          _items[param1] = {
             "id":param1,
-            "building":param2
+            "building":buildingFoundation
          };
-         if(!CanDo().error)
+
+         var test = CanDo();
+         if(test.error){
+            GLOBAL.Message("QUEUE.as - CanDo: " + test.errormessage);
+         }// test.errorMessage
+         if(!test.error)
          {
-            if(_loc5_ = WORKERS.Assign(param2))
+            if(worker = WORKERS.Assign(buildingFoundation))
             {
-               _loc3_ = 0;
-               while(_loc3_ < _stack.length)
+               stackIndex = 0;
+               while(stackIndex < _stack.length)
                {
-                  if((_loc4_ = _stack[_loc3_]).workermc == _loc5_.mc)
+                  if((_loc4_ = _stack[stackIndex]).workermc == worker.mc)
                   {
-                     _stack[_loc3_].id = param1;
-                     _stack[_loc3_].active = true;
-                     _stack[_loc3_].building = param2;
-                     _stack[_loc3_].say = _loc5_.say;
-                     _stack[_loc3_].timestamp = GLOBAL.Timestamp();
+                     _stack[stackIndex].id = param1;
+                     _stack[stackIndex].active = true;
+                     _stack[stackIndex].building = buildingFoundation;
+                     _stack[stackIndex].say = worker.say;
+                     _stack[stackIndex].timestamp = GLOBAL.Timestamp();
                      break;
                   }
-                  _loc3_++;
+                  stackIndex++;
                }
                _placed += 1;
             }

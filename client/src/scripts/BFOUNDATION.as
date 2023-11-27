@@ -22,6 +22,7 @@ package
    import com.monsters.pathing.PATHING;
    import com.monsters.rendering.RasterData;
    import com.monsters.utils.MovieClipUtils;
+   import com.monsters.utils.ImageCallbackHelper;
    import flash.display.Bitmap;
    import flash.display.BitmapData;
    import flash.display.BlendMode;
@@ -34,6 +35,7 @@ package
    import flash.geom.Matrix;
    import flash.geom.Point;
    import flash.geom.Rectangle;
+   import com.brokenfunction.json.decodeJson;
    
    public class BFOUNDATION extends GameObject
    {
@@ -3585,23 +3587,23 @@ package
          return _loc1_;
       }
       
-      public function Setup(param1:Object) : void
+      public function Setup(building:Object) : void
       {
          var _loc2_:Point = null;
          var _loc3_:int = 0;
          var _loc4_:int = 0;
          var _loc5_:int = 0;
          var _loc6_:int = 0;
-         this._type = param1.t;
-         this._id = param1.id;
-         _loc2_ = GRID.ToISO(param1.X,param1.Y,0);
+         this._type = building.t;
+         this._id = building.id;
+         _loc2_ = GRID.ToISO(building.X,building.Y,0);
          if(this._type == 112)
          {
-            param1.l = 1;
+            building.l = 1;
          }
-         if(Boolean(param1.l) && param1.l <= int.MAX_VALUE)
+         if(Boolean(building.l) && building.l <= int.MAX_VALUE)
          {
-            this._lvl.Set(int(param1.l));
+            this._lvl.Set(int(building.l));
          }
          else
          {
@@ -3610,16 +3612,16 @@ package
          _mc.x = _loc2_.x;
          _mc.y = _loc2_.y;
          ++BASE._buildingCount;
-         this._countdownBuild.Set(int(param1.cB));
-         if(param1.prefab)
+         this._countdownBuild.Set(int(building.cB));
+         if(building.prefab)
          {
-            this._prefab = param1.prefab;
-            this._lvl.Set(param1.prefab);
+            this._prefab = building.prefab;
+            this._lvl.Set(building.prefab);
             if(this._countdownBuild.Get() == 0)
             {
                _loc3_ = 0;
                _loc4_ = 0;
-               while(_loc4_ < param1.prefab)
+               while(_loc4_ < building.prefab)
                {
                   _loc3_ += GLOBAL._buildingProps[this._type - 1].costs[_loc4_].time;
                   _loc4_++;
@@ -3627,64 +3629,64 @@ package
                this._countdownBuild.Set(_loc3_);
             }
          }
-         this._countdownUpgrade.Set(int(param1.cU));
-         this._countdownRebuild.Set(int(param1.cR));
+         this._countdownUpgrade.Set(int(building.cU));
+         this._countdownRebuild.Set(int(building.cR));
          this._hpCountdownRebuild = this._countdownRebuild.Get();
-         if(param1.fort)
+         if(building.fort)
          {
-            this._fortification.Set(Math.min(param1.fort,BYMConfig.k_sMAX_FORTIFICATION_LEVEL));
+            this._fortification.Set(Math.min(building.fort,BYMConfig.k_sMAX_FORTIFICATION_LEVEL));
          }
          else
          {
             this._fortification.Set(0);
          }
-         if(Boolean(param1.cF) && this._fortification.Get() < BYMConfig.k_sMAX_FORTIFICATION_LEVEL)
+         if(Boolean(building.cF) && this._fortification.Get() < BYMConfig.k_sMAX_FORTIFICATION_LEVEL)
          {
-            this._countdownFortify.Set(int(param1.cF));
+            this._countdownFortify.Set(int(building.cF));
          }
          else
          {
             this._countdownFortify.Set(0);
          }
-         this._repairing = int(param1.rE);
+         this._repairing = int(building.rE);
          if(this._repairing > 0)
          {
             this._repairing = 1;
          }
-         this._productionStage.Set(int(param1.rPS));
-         this._countdownProduce.Set(int(param1.rCP));
+         this._productionStage.Set(int(building.rPS));
+         this._countdownProduce.Set(int(building.rCP));
          this._hpCountdownProduce = this._countdownProduce.Get();
-         if(Boolean(param1.rIP) && param1.rIP != "")
+         if(Boolean(building.rIP) && building.rIP != "")
          {
-            this._inProduction = param1.rIP;
+            this._inProduction = building.rIP;
          }
          if(this._inProduction == "C100")
          {
             this._inProduction = "C12";
          }
-         if(param1.hl)
+         if(building.hl)
          {
-            this._helpList = param1.hl;
+            this._helpList = building.hl;
          }
-         if(param1.ti)
+         if(building.ti)
          {
-            this._threadid = param1.ti;
+            this._threadid = building.ti;
          }
-         if(param1.sid)
+         if(building.sid)
          {
-            this._senderid = param1.sid;
+            this._senderid = building.sid;
          }
-         if(param1.snm)
+         if(building.snm)
          {
-            this._senderName = param1.snm;
+            this._senderName = building.snm;
          }
-         if(param1.spc)
+         if(building.spc)
          {
-            this._senderPic = param1.spc;
+            this._senderPic = building.spc;
          }
-         if(param1.sbj)
+         if(building.sbj)
          {
-            this._subject = param1.sbj;
+            this._subject = building.sbj;
          }
          if(this._countdownBuild.Get() > 0 && !this._prefab)
          {
@@ -3701,13 +3703,13 @@ package
             _loc6_ = int(this._buildingProps.hp[_loc5_ - 1]);
             maxHealthProperty.value = _loc6_;
          }
-         if(param1.hp == null)
+         if(building.hp == null)
          {
             setHealth(maxHealth);
          }
          else
          {
-            setHealth(int(param1.hp));
+            setHealth(int(building.hp));
             if(health > maxHealth)
             {
                setHealth(maxHealth);
@@ -3731,18 +3733,18 @@ package
          this.PlaceB();
          if(this._countdownBuild.Get() > 0)
          {
-            if(this._prefab)
+            if(this._prefab) // Comment: Instantly builds a building
             {
                this._hasResources = true;
                this._hasWorker = true;
             }
-            else if(QUEUE.Add("building" + this._id,this))
+            else if(QUEUE.Add("building" + this._id,this)) // Comment: Resources needed to build a building
             {
                this._hasResources = true;
             }
             else
             {
-               this.RecycleC();
+               this.RecycleC(); // Comment: Deletes the building
             }
          }
          else if(this._countdownUpgrade.Get() > 0)
@@ -4401,63 +4403,5 @@ package
          graphic.removeEventListener(Event.ENTER_FRAME,this.onEnterFrame);
          graphic.removeEventListener(Event.REMOVED_FROM_STAGE,this.removedFromStage);
       }
-   }
-}
-
-final class ImageCallbackHelper
-{
-    
-   
-   private var _ref:Function;
-   
-   private var _state:String;
-   
-   private var _level:int;
-   
-   private var _imageDataA:Object;
-   
-   private var _imageDataB:Object;
-   
-   public function ImageCallbackHelper(ref:Function, state:String, level:int, imageDataA:Object, imageDataB:Object)
-   {
-      super();
-      this._ref = ref;
-      this._state = state;
-      this._level = level;
-      this._imageDataA = imageDataA;
-      this._imageDataB = imageDataB;
-   }
-   
-   public function get ref() : Function
-   {
-      return this._ref;
-   }
-   
-   public function get state() : String
-   {
-      return this._state;
-   }
-   
-   public function get level() : int
-   {
-      return this._level;
-   }
-   
-   public function get imageDataA() : Object
-   {
-      return this._imageDataA;
-   }
-   
-   public function get imageDataB() : Object
-   {
-      return this._imageDataB;
-   }
-   
-   public function clear() : void
-   {
-      this._ref = null;
-      this._state = null;
-      this._imageDataA = null;
-      this._imageDataB = null;
    }
 }
