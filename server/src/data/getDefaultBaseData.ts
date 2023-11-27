@@ -216,7 +216,7 @@ export const getDefaultBaseData = (user?: User) => {
     gifts: [],
     sentinvites: [],
     sentgifts: [],
-    purchase: {},
+    purchase: [],
     attackcreatures: {},
     attackloot: {},
     lootreport: {},

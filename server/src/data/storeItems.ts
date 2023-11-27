@@ -1,4 +1,13 @@
-export const storeItems = {
+interface StoreItem {
+  t: string; // Title
+  d: string; // Description
+  du: number; // Duration
+  c: number[]; // Costs
+  i: number; // Index
+  a: number; // unknown
+}
+
+export const storeItems: { [key: string]: StoreItem }  = {
   BEW: {
     t: "1 Extra Worker",
     d: "One extra worker to help you build and upgrade your village.",
