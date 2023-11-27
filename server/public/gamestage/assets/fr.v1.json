@@ -1,0 +1,851 @@
+{
+    "discord": {
+        "earn": "Rejoignez la communauté Discord de <b>Backyard Monsters Refitted</b> pour gagner des Shiny et plus!"
+    },
+    "disabled": {
+        "gifts": "Les cadeaux sont actuellement désactivés sur Backyard Monster Refitted.",
+        "mail": "Les mails sont actuellement désactivés sur Backyard Monster Refitted.",
+        "daveclub": "Le Dave Club est actuellement désactivé sur Backyard Monster Refitted.",
+        "addshiny": "Désolé... Vous ne pouvez pas ajouter de Shiny sur Backyard Monster Refitted. Pour en savoir plus, visitez notre <b>Discord.</b>"
+    },
+    "requirements": {
+        "notmet": "Conditions non remplies."
+    },
+    "msg": {
+        "loading": "Chargement... ",
+        "rendering": "Chargement du rendu en cours... ",
+        "crunching": "Croquer ",
+        "nojuicer": "Broyeur de Monstre non construit",
+        "juicegoo": "Broyer {v1} monstres pour {v2} de Gelée?",
+        "finishqueue": "Finir tous les monstres dans la liste d'attente?",
+        "stopconstructionconfirm": "Êtes-vous certain de vouloir arrêter la construction et détruire ce bâtiment?<b>Ceci ne peut pas être annulé</b>",
+        "upgradecancelconfirm": "Êtes-vous certain de vouloir annuler l'amélioration de ce bâtiment?",
+        "recycleconfirm": "Êtes-vous certain de vouloir recycler ce bâtiment? <b>Ceci ne peut pas être annulé</b>",
+        "destroybuilding": {
+            "btn": "Détruire le bâtiment"
+        },
+        "stopupgrading": {
+            "btn": "Arrêter l'amélioration"
+        },
+        "recyclebuilding": {
+            "btn": "Recycler le bâtiment"
+        },
+        "purchase": {
+            "complete": "Achat réussi."
+        },
+        "housingfull": "Enclos plein!",
+        "dontpanic": "Pas de panique!",
+        "inactiveupgrade": "Amélioration inactive",
+        "cantrecycleth": "Vous ne pouvez pas recycler votre QG."
+    },
+    "th": {
+        "willunlockthe": "<b>Vous débloquerez:</b><br>{v1}",
+        "willbuildmore": "Vous pourrez construire:",
+        "willupgrade": "Vous pourrez améliorer:",
+        "recycledesc": "Vous êtes sur le point de recycler votre QG."
+    },
+    "newmap": {
+        "opening": "Chargement de la Carte..."
+    },
+    "map": {
+        "msg": {
+            "disabled": "La Salle des cartes est actuellement <b>désactivée</b> dans Backyard Monsters Refitted. Pour en savoir plus, visitez notre discord."
+        }
+    },
+    "inferno": {
+        "msg": {
+            "disabled": "L'Enfer est actuellement <b>désactivé</b> dans Backyard Monsters Refitted. Pour en savoir plus, visitez notre discord."
+        }
+    },
+    "base": {
+        "uperr": {
+            "buildings": "Niveau {v1} requis.",
+            "bdgpart1": "{v1}",
+            "bdgpart2": "{v1} {v2}",
+            "bdgpart3": "{v1} {v2}",
+            "bdgpart4": "{v1} {v2} {v3}"
+        },
+        "forterr": {
+            "buildings": "Niveau {v1} requis.",
+            "bdgpart1": "{v1}",
+            "bdgpart2": "{v1} {v2}",
+            "bdgpart3": "{v1} {v2}",
+            "bdgpart4": "{v1} {v2} {v3}"
+        },
+        "builderr": {
+            "thlevelreqd": "Niveau {v1} du QG requis."
+        }
+    },
+    "map_cannot_recycle_map_room3": "Vous ne pouvez pas recycler la Salle des cartes dans le Nouveau Monde. Si vous voulez déménager votre Cour, cliquez sur votre QG et sélectionnez Relocaliser.",
+    "fp_radiotower": "Nerveux à l'idée de laisser votre Cour vulnérable? Construisez une Tour Radio pour être averti des attaques pendant votre absence.",
+    "fp": {
+        "radiotower": {
+            "title": "Vous me recevez?"
+        }
+    },
+    "pm": {
+        "juiceall": {
+            "popup": {
+                "title": "<b>Broyer tous les monstres?</b>",
+                "body": "Êtes-vous sûr de vouloir broyer tous les monstres?"
+            }
+        }
+    },
+    "pop": {
+        "questcollected": {
+            "body": "{v1} Quête obtenue!"
+        },
+        "noshiny": {
+            "title": "pas assez de Shiny.",
+            "body": "Vous pouvez acheter plus de Shiny au magasin."
+        },
+        "unlock": {
+            "start": "<b>Le déblocage {v1}</b><br>sera terminé dans {v2}",
+            "complete": "<b>{v1} Débloqué dans la Couveuse</b>"
+        },
+        "levelup": {
+            "title": "Félicitations!",
+            "headline": "Vous êtes maintenant <b>Niveau {v1}</b>",
+            "body": "Continuez comme ça et n'oubliez pas de vous en vanter."
+        },
+        "goldenmushroom": {
+            "title": "Votre ouvrier a trouvé de l'or!",
+            "desc": "vous avez cueilli un champignon d'or qui vaut {v1} Shiny. <b>Les champignons repoussent tous les jours.</b>"
+        },
+        "mushroom": {
+            "msg1": "J'ai trouvé {v1} Shiny!",
+            "msg2": "Un simple champignon.",
+            "msg3": "Mmmm, une soupe aux champignons.",
+            "msg4": "Ils poussent comme de la mauvaise herbe."
+        },
+        "oops": {
+            "title": "Ooups, quelque chose ne va pas!",
+            "body": "Les raisons de ces erreurs comprennent (mais ne s'y limite pas):<br>* Le jeu est ouvert plus d'une fois.<br>* Connexion à internet perdue.<br>* Votre ordinateur est trop lent.<br><br><b>We&apos;ve l'erreur a bien été enregistrée, veuillez recharger pour continuer.</b>"
+        },
+        "hireanother": {
+            "title": "Tous les ouvriers sont occupés."
+        },
+        "resource2": "{v1}",
+        "experiencebar": "Vous avez <b>{v1} points d'expérience</b> et avez besoin de <b>{v2}</b> points de plus pour le <b>Niveau {v3}</b>",
+        "sendgifts": "Envoyer des cadeaux",
+        "mailbox": "Boite aux lettres",
+        "alerts": "Alerte",
+        "afk": {
+            "title": "Il y a quelqu'un?",
+            "body": "Hmm.. Il semble que vous soyez dans la lune."
+        },
+        "timeout": {
+            "title": "Oops.. temps écoulé!",
+            "body": "Il semblerai que le jeu soit inactif depuis trop longtemps, et ce soit arrêté. Veuillez redémarrer le jeu."
+        }
+    },
+    "popup": {
+        "label": {
+            "reward": "Récompense:"
+        }
+    },
+    "ui": {
+        "topbuildings": "Bâtiments",
+        "topquests": "Quêtes",
+        "topstore": "magasin",
+        "topmap": "Carte",
+        "topaddshiny": "Ajouter",
+        "building": "<b>Construction<br><br>{v1}</b><br>Accélérer pour finir.",
+        "upgrading": "<b>Amélioration<br><br>{v1}</b><br>Accélérer pour finir.",
+        "repairing": "<b>En réparation<br><br>{v1}</b><br>Accélérer pour finir.",
+        "worker": {
+            "hire": "Embaucher",
+            "idle": "Inactif",
+            "walking": "En déplacement",
+            "hireicon": "EMBAUCHER",
+            "assign1": "Je m'en occupe!",
+            "assign2": "En un clin d'oeil",
+            "assign3": "Au travail",
+            "assign4": "Je peux le faire",
+            "assign5": "En route",
+            "assign6": "Pas de problème!",
+            "doneconstruct1": "J'espère que ça vous plait",
+            "doneconstruct2": "C'était facile",
+            "doneconstruct3": "Parfait",
+            "doneconstruct4": "Terminé!",
+            "doneconstruct5": "Terminé Chef",
+            "doneconstruct6": "Un travail ordinaire",
+            "doneconstruct7": "ça a l'air bien!",
+            "doneconstruct8": "Travail terminé!",
+            "doneupgrade1": "Travail terminé!",
+            "doneupgrade2": "Terminé!",
+            "doneupgrade3": "Un travail ordinaire",
+            "doneupgrade4": "J'espère que ça vous plait",
+            "doneupgrade5": "ça a l'air bien!",
+            "donerepair1": "Réparation terminée.",
+            "donerepair2": "Terminé!"
+        },
+        "producing": "<b>En production<br>{v1}<br><br>{v2}</b><br>{v3}% PLEIN",
+        "buildingfull": "<b>PLEIN</b><br /><br /> Production interrompue, encaisser les ressources pour continuer la production",
+        "needmoreroom": "<b>Pas assez de place.</b><br/>Améliorez ou construisez plus de silos de stockage"
+    },
+    "uitop": {
+        "backyardmonsters": "BACKYARD MONSTERS"
+    },
+    "worker": {
+        "speedup": "Accélérez le travail d'un ouvrier pour {v1} Shiny."
+    },
+    "btn": {
+        "build": "Construire",
+        "buildnow": "Construire maintenant",
+        "viewmap": "Ouvrir la Carte",
+        "brag": "Vantez-vous auprès de vos amis",
+        "pick": "Ramasser",
+        "yes": "Oui",
+        "nothanks": "Non merci",
+        "fullscreen": "Plein écran",
+        "relocateYard": "Déménager",
+        "upgrade": "Améliorer",
+        "move": "Déplacer",
+        "more": "Plus...",
+        "openstore": "Ouvrir le magasin",
+        "collect": "Collecter",
+        "fortify": "Fortifier",
+        "bank": "Collecter {v1}",
+        "bankall": "Collecter tout",
+        "speedup": "Accélérer",
+        "earn": "Obtenir",
+        "stopbuild": "Stopper la construction",
+        "useshiny": "Utiliser {v1} Shiny",
+        "resources": "Ressources",
+        "buildings": "Structures",
+        "defensive": "Défenses",
+        "decorations": "Décorations",
+        "evil": "Maléfique",
+        "plants": "Plantes",
+        "good": "Les biens",
+        "flags": "Drapeaux",
+        "premium": "Premium",
+        "getresources": "Obtenir des Ressources",
+        "stopupgrade": "Arrêter l'amélioration",
+        "recycle": "Recycler",
+        "openradio": "Ovrir la Radio",
+        "viewhousing": "Voir l'Enclos",
+        "viewhatchery": "Voir la Couveuse",
+        "previous": "Précédent",
+        "prev": "Préc.",
+        "next": "Suiv.",
+        "ascendmonsters": "Transférer les Monstres",
+        "clear": "Effacer",
+        "juicemonsters": "Broyer les Monstres",
+        "openlocker": "Ouvrir le Casier de Monstre",
+        "unlockinstantly": "Débloquer instantanément pour {v1} Shiny",
+        "startunlocking": "Commencer la Recherche",
+        "warnyourfriends": "Prévenez vos amis",
+        "cancel": "Annuler",
+        "housing": {
+            "heal": {
+                "all": "Guérir instantanément pour {v1} Shiny."
+            }
+        },
+        "mh": {
+            "heal": "Guérir"
+        }
+    },
+    "bunker": {
+        "btn": {
+            "juice": "Broyer"
+        }
+    },
+    "townhall": {
+        "desc": "Le centre de toute grande Cour et aussi le premier bâtiment à construire. Améliorez le QG pour débloquer de nouveaux bâtiments, caractéristiques et vous permet d'améliorer les autres bâtiments."
+    },
+    "snipertower": {
+        "desc": "Longue portée, gros dégâts, mais un temps de rechargement longs. Cette tour élimine les monstres ennemis avant même qu'ils ne s'approchent. Protégez une grande zone avec cette tour."
+    },
+    "cannontower": {
+        "desc": "Petite portée mais gros dégâts, les munitions de cette tour explosent à l'impacte, excellent pour éliminer les groupes d'énnemis."
+    },
+    "twigsnapper": {
+        "desc": "Produit des brindilles. Utilisé pour la construction des bâtiments."
+    },
+    "pebbleshiner": {
+        "desc": "Produit des cailloux. Utilisé pour la construction des bâtiments."
+    },
+    "goofactory": {
+        "desc": "Produit de la Gelée. La Gelée est utilisée dans la <b>Couveuse</b> pour produire des monstres."
+    },
+    "puttysquisher": {
+        "desc": "Produit du Mastic. Utilisé pour la construction des bâtiments"
+    },
+    "storagesilo": {
+        "desc": "Augmente votre capacité de stockage des brindilles, cailloux, mastics et Gelées."
+    },
+    "monsterlocker": {
+        "desc": "Permet de rechercher et débloquer de nouveaux monstres à produire dans la Couveuse."
+    },
+    "housing": {
+        "desc": "Regroupe les créatures produites depuis la Couveuse, améliorez ou construisez en plus pour augmenter la capacité."
+    },
+    "flinger": {
+        "desc": "Le Lanceur de monstre envoie vos monstres au combat. Ce bâtiment est indispensable si vous voulez attaquer une autre base. Utilisez la Salle des cartes pour trouver et cibler la Cour d'un ennemi."
+    },
+    "maproom": {
+        "desc": "Observez les alentours, trouvez et aidez vos amis et sélectionnez d'autres Cour de joueurs à attaquer."
+    },
+    "monsteracademy": {
+        "desc": "Grâce à un programme exigeant de chimie, philosophie et d'éducation physique, vos monstres obtiendront leur doctorat en destruction avancée. À défaut, nous disposons d'une grande quantité de stéroïdes."
+    },
+    "hatchery": {
+        "desc": "Convertissez la Gelée produite à la Fabrique de Gelée en monstres que vous avez dévérouillé grâce au Casier de Monstres."
+    },
+    "hcc": {
+        "desc": "Contrôle toutes les Couveuses depuis un seul bâtiment. Vous ajoutez des monstres à la file d'attente et celle-ci envoie les instructions aux Couveuses disponibles en priorité."
+    },
+    "catapult": {
+        "desc": "Un engin de siège, la Catapulte lance les brindilles à la base ennemie pour endommager les bâtiments. Améliorez là pour augmenter sa puissance de frappe."
+    },
+    "monsterlab": {
+        "desc": "Recherchez des capacités top secrètes pour vos monstres. En temps de guerre, c'est la science qui domine!"
+    },
+    "wildmonsterbaiter": {
+        "desc": "L'Appât pour monstre sauvage vaporise dans l'air un musc auquel les monstres sauvages ne peuvent résister, ce qui les fait affluer vers votre base, un excellent moyen de tester vos défenses. Si vous en avez trop, le bâtiment est équipé d'une sirène que vous pouvez utiliser pour les faire fuir."
+    },
+    "yardplanner": {
+        "desc": "Déplacez rapidement quelques éléments ou remodelez complètement votre Cour ! Ce bâtiment vous permet d'avoir une vue d'ensemble de votre cour et de placer les bâtiments en un clin d'œil."
+    },
+    "monsterjuicer": {
+        "desc": "Vous avez des monstres que vous ne voulez plus dans votre Enclos ? Vous voulez faire de la place pour des monstres plus forts ? Vous voulez faire un sacrifice aux Dieux de la Cour ? Alors ce bâtiment est fait pour vous ! Recyclez les monstres en Gelée avec un minimum de souffrance."
+    },
+    "generalstore": {
+        "desc": "Dépensez vos Shinys dans les accélérateurs d'améliorations."
+    },
+    "boobytrap": {
+        "desc": "Invisible pour les ennemis. Déclenché lorsqu'un monstre marche dessus, fait de gros dégâts dans une petite zone. Placez-les près des bâtiments ou utilisez les murs pour regrouper les ennemis dans un endroit restreint."
+    },
+    "woodenblock": {
+        "desc": "Un simple bloque marron, utilisé pour protéger les bâtiments en formant un mur et en couloir pour attirer les ennemis dans des pièges ou proches des tours. Peut être améliorer de bois à la pierre au métal à l'or et au diamant noir!"
+    },
+    "teslatower": {
+        "desc": "En parlant de science maléfique, cette tour à haute tension grille tout les ennemis à sa portée. L'améliorer lui permettra d'augmenter son nombre de coup par charge, ses dégâts ainsi que sa portée."
+    },
+    "lasertower": {
+        "desc": "Mortellement efficace, cette tour à énergie plasma pulvérise tout ennemi à la vitesse de la lumière. Efficace contre les groupes de monstres."
+    },
+    "railguntower": {
+        "desc": "Un canon électrique qui projète un objet à très haute vitesse le long d'une paire de rails. Le Railgun compense sa lenteur de rechargement par des dégâts importants et une ligne de tir infinie."
+    },
+    "flaktower": {
+        "desc": "Un canon à tir rapide conçu pour annihiler les forces aériennes ennemies."
+    },
+    "monsterbunker": {
+        "desc": "Structure défensive qui permet à vos monstres de se battre jusqu'à la mort pour défendre votre base."
+    },
+    "monstercage": {
+        "desc": "Faites naître et évoluer un Champion qui défendra votre base et attaquera celle de vos ennemis."
+    },
+    "championchamber": {
+        "desc": "Ce bâtiment vous permet de remplacer votre Champion actuel par un autre, tout en le mettant en sécurité dans une couche de glace jusqu'à ce que vous l'appeliez à nouveau. (Les champions gelés sont invulnérables, même si la Chambre des champions est détruite.)"
+    },
+    "heavytrap": {
+        "desc": "Tout comme le piège de base, invisible aux yeux de l'ennemi. Le piège lourd se déclenche uniquement au contacte des puissants ennemis mais affecte tout ennemi dans ça zone."
+    },
+    "bi": {
+        "spurtzcannon": {
+            "desc": "Votre propre fusil à pompe! Ce canon envoie une milice de Spurtz pour exécuter vos ordres. Exactement ce qu'il vous faut pour repousser les groupes d'ennemis."
+        },
+        "blackspurtzcannon": {
+            "desc": "cette version en Diamant Noir offre une meilleure durabilité et un temps de recharge réduit. Vos ennemis auront besoin d'un miracle pour la passer!"
+        }
+    },
+    "radio": {
+        "tTitle": "TOUR RADIO",
+        "build": {
+            "desc": "Ne soyez plus jamais pris au dépourvu! Recevez des alertes par e-mails lorsque vous n'êtes plus dans votre Cour."
+        },
+        "desc": "Ne soyez plus jamais pris au dépourvu! Recevez des alertes par e-mails lorsque vous n'êtes plus dans votre Cour.",
+        "cbNews": "Actualités",
+        "cbAttack": "Attaques",
+        "tEmail": "Envoyez votre email",
+        "enterValidEmail": "Entrez un e-mail valide",
+        "tfEmail": "Email",
+        "bSave": "Sauvegarder",
+        "bSaving": "Savegarde en cours",
+        "noSubscribe": "Vous ne voulez pas vous abonner?",
+        "noSubscribeN": "Non merci",
+        "noSubscribeY": "Oui s'il vous plait",
+        "saveFail": "<b>Hmm.. Il semble que le signal soit perturbé.</b><br><br>Le canal n'est pas disponible sur Backyard Monsters Refitted.",
+        "recycledesc": "<b>Recycler:</b>"
+    },
+    "hatcherypopup": {
+        "level": "Niveau {v1}"
+    },
+    "hat_producing": "En cours de production {v1}.",
+    "hat": {
+        "nothinginproduction": "Rien en production.",
+        "notenoughgoo": "Pas assez de Gelée.",
+        "needhousing": "Pas assez d'espace dans l'Enclos.",
+        "producing": {
+            "message": "Sélectionnez les monstres ci-dessous pour les ajouter dans la file."
+        },
+        "status": {
+            "waiting": "En attente"
+        },
+        "slot": {
+            "upgrade": "Améliorer la Couveuse pour le débloquer"
+        },
+        "unlockinlocker": "Débloquez {v1} dans le Casier de Monstre."
+    },
+    "mh": {
+        "title": "ENCLOS À MONSTRE",
+        "housing": {
+            "section": {
+                "label": "ENCLOS"
+            }
+        },
+        "healing": {
+            "section": {
+                "label": "GUÉRISON"
+            }
+        },
+        "bunkers": {
+            "section": {
+                "label": "BUNKERS"
+            }
+        },
+        "cancel": {
+            "btn": "Annuler"
+        },
+        "juicemonsterX": {
+            "btn": "Broyer {v1} monstre"
+        },
+        "juicemonstersX": {
+            "btn": "Broyer {v1} monstres"
+        },
+        "ascension": {
+            "noinf": "Enfer non découvert."
+        },
+        "capacity": {
+            "desc": "Capacité totale des Enclos",
+            "column": {
+                "label": "CAPACITÉ"
+            }
+        },
+        "health": {
+            "column": {
+                "label": "SANTÉ"
+            }
+        },
+        "nomonsters": {
+            "btn": "Aucun monstres sélectionnés"
+        },
+        "juicing": {
+            "txt": "<b>Broyer les monstres:</b><br>Broyez les monstres sélectionnés de votre enclos."
+        }
+    },
+    "moni": {
+        "att": {
+            "cost": "Prix"
+        }
+    },
+    "mon": {
+        "pokeydesc": "Semblable à un essaim de fourmis, une meute de Pokeys peut dévorer une vache adulte en moins de cinq minutes.<br><b>Cible préférée:</b> Tout",
+        "octooozedesc": "Octo-ooze, monstre visqueux qui absorbe les attaques comme une éponge pour permettre aux autres monstres de semer le chaos.<br><b>Cible préférée:</b> Les défenses",
+        "boltdesc": "Bolt est aussi rapide que l'éclair, fonce sur les bâtiments ennemis pour les découper à l'aide de ses dents acérées.<br><b>Cibles préférées:</b> Ressources, QG et Silos",
+        "finkdesc": "Trouvé au plus profond de l'Amazonie, les chimiorécepteurs de Fink rendent ses attaques mortellement précises.<br><b>Cible préférée:</b> Tout",
+        "eyeradesc": "Avertissement: La composition chimique d'Eye-ra est hautement explosive, très efficace contre les murs.<br><b>Cible préférée:</b> Les murs",
+        "ichidesc": "Découvert au sommet du Mont Fuji, Ichi est l'un des monstres les plus mortels et peut résister à de lourds dégâts causés par les défenses ennemies.<br><b>Cible préférée:</b> Les défenses",
+        "banditodesc": "La musculature et la précision implacable de Bandito en font le monstre expert en assassinat.<br><b>Cible préférée:</b> Tout",
+        "fangdesc": "La morsure de Fang libère une toxine qui liquéfie toutes cibles à sa portée.<br><b>Cible préférée:</b> Tout",
+        "braindesc": "Rusé et avide, l'intélligence exceptionelle de Brain le rend parfait lors de pillage des ressources.<br><b>Cibles préférées:</b> Ressources, QG et Silos",
+        "crabatrondesc": "À l'aide de ses pinces, Crabatron réduit les défenses adverses en miette et sème la terreur parmis ses ennemis.<br><b>Cible préféré:</b> Les défense",
+        "projectxdesc": "Résultat d'une expérience gouvernementale qui a mal tournée, Projet X est programmé pour attaquer les défenses ennemies.<br><b>Cible préférée:</b> Les défenses",
+        "zafreetidesc": "Venant des profondeurs du Sahara, le pouvoir mystique de Zafreeti permet de soigner vos monstres.<br><b>Cibles préférées:</b> Vos Monstres (soin), Zafreeti ne peut pas soigner d'autres Vorgs ou Zafreetis",
+        "teratorndesc": "Grâce à ses puissantes ailes et son souffle ardent, Teratorn fait pleuvoir la mort depuis le ciel.<br><b>Cible préférée:</b> Tout",
+        "wormzerdesc": "Pouvant creuser pour se déplacer, Wormzer peut faire des attaques surprises et ainsi passer les murs sans difficulté.<br><b>Cible préférée:</b> Tout",
+        "davedesc": "D.A.V.E n'écoute que son maître et a pour habitude de raser les bases ennemies.<br><b>Cible préférée:</b> Tout",
+        "slimeattikusdesc": "Né dans les marais de Bangweulu en Zambie, Slimeattikus peut dissoudre ses ennemis au simple contacte avec son corps et peut se dédoubler quand il est attaqué.<br><b>Cible préférée:</b> Tout",
+        "vorgdesc": "Né dans des ruches géantes au coeur de la ceinture d'astéroïdes, les Vorgs sont des aliens volant espiègles pouvant guérir vos monstres  <br><b>Cibles préférées:</b> Vos Monstres (soin)",
+        "att": {
+            "speed": "Vitesse",
+            "health": "Santé",
+            "damage": "Dégâts",
+            "cost": "Prix en Gelée",
+            "housing": "Enclos",
+            "time": "Temps",
+            "costvalue": "{v1} {v2}",
+            "housingvalue": "{v1} capacités"
+        },
+        "statsspeed": "{v1} km/h",
+        "statsstorage": "{v1} capacités",
+        "unlocked": "Débloqué",
+        "locked": "Bloqué",
+        "infounlocked": "<b>Débloqué</b><br>Produit à la Couveuse ou entraîné à l'Académie des Monstres.",
+        "infotounlock": "<b>Pour le débloquer:</b><br><b>Temps:</b> {v1}<br>",
+        "infolockerlevelrequired": "<b>Niveau du Casier du Monstre:</b> {v1}",
+        "confirmcancel": "êtes-vous sûr de vouloir arrêter la recherche <b>{v1}?</b>",
+        "infounlocking": "<b>Recherche en cours</b><br>Appuyer sur \"Accélérer\" pour réduire le temps restant.",
+        "upgradelocker": "{v1} niveau {v2} requis.",
+        "alreadyunlocking": "Vous recherchez déjà ce monstre.",
+        "needputty": "Pas assez de mastic."
+    },
+    "cloc": {
+        "prodstats": {
+            "label": "<b>Statistiques de production<br>(une fois déverrouillé)</b>"
+        }
+    },
+    "bdg": {
+        "tower": {
+            "rangeupgrade": "<b>distance:</b> Augmente de {v1} à {v2}",
+            "damageupgrade": "<b>Dégâts:</b> Augmente de {v1} dps à {v2} dps"
+        },
+        "state": {
+            "building": "EN CONSTRUCTION",
+            "upgrading": "AMÉLIORATION EN COURS",
+            "repairing": "EN RÉPARATION"
+        },
+        "infopop": {
+            "levelnum": "Niveau {v1}"
+        },
+        "housing": {
+            "capacitydesc": "Augmente la capacité de {v1} à {v2}."
+        },
+        "fullyupgraded": "Totalement amélioré!",
+        "buildingrequirement": "Niveau {v1} {v2}",
+        "upgradedesc": "<b>Améliore votre {v1} au niveau {v2}</b><br>{v3}<br>",
+        "upgraderequirements": "<b>Prérequis</b><br>{v1}",
+        "resource": {
+            "upproduction": "<b>Production:</b> Augmente de {v1} à {v2}/heure",
+            "upcapacity": "<b>Capacité:</b> Augmente de{v1} à {v2}"
+        },
+        "more": "<b>{v1} niveau {v2}</b><br><br>{v3}<br><br><b>Recycler:</b>{v4}",
+        "morenolevel": "<b>{v1}</b><br>{v2}<br><br><br>{v3}"
+    },
+    "str": {
+        "finishnow": "Finir maintenant",
+        "heal": "Santé",
+        "getmore": {
+            "btn": "Obtenez plus de Shiny"
+        },
+        "prob": {
+            "alreadyhave": "Vous avez déjà construit ce bâtiment."
+        }
+    },
+    "quests": {
+        "title": "Quêtes"
+    },
+    "q": {
+        "construction": "Construction",
+        "monsters": "Monstres",
+        "attacking": "Attaqué",
+        "good": "Bien",
+        "evil": "Maléfique",
+        "ui": {
+            "completed": "Accomplie. Cliquer sur \"Collecter\""
+        },
+        "u1": {
+            "name": "Niveau suivant",
+            "description": "Améliorer n'importe quel structure au niveau 2"
+        },
+        "bk1": {
+            "name": "Soupe au champignon",
+            "description": "Cueillir 5 champignons"
+        },
+        "t1": {
+            "name": "Tour Sniper",
+            "description": "Construire une Tour Sniper"
+        },
+        "t2": {
+            "name": "Mortier",
+            "description": "Construire un Mortier"
+        },
+        "t3": {
+            "name": "Tour Tesla",
+            "description": "Construire une Tour Tesla"
+        },
+        "cr2": {
+            "name": "Élevage",
+            "description": "Construire une Couveuse"
+        },
+        "cr3": {
+            "name": "Home Sweet Home",
+            "description": "Construire un Enclos"
+        },
+        "c3": {
+            "name": "Niveau suivant 2",
+            "description": "Améliorer n'importe quelle usine de ressource au niveau 2"
+        },
+        "c4": {
+            "name": "Brindille niveau 4",
+            "description": "Améliorer votre Fabrique de Brindille au niveau 4"
+        },
+        "c5": {
+            "name": "Cailloux au niveau 4",
+            "description": "Améliorer la Fabrique de Cailloux au niveau 4"
+        },
+        "c6": {
+            "name": "Mastic niveau 4",
+            "description": "Améliorer la Fabrique de Mastic au niveau 4"
+        },
+        "c7": {
+            "name": "Gelée niveau 4",
+            "description": "Améliorer la Fabrique de Gelée au niveau 4"
+        },
+        "c9": {
+            "name": "Brindille niveau 3",
+            "description": "Améliorer votre Fabrique de Brindille au niveau 3"
+        },
+        "c10": {
+            "name": "Cailloux au niveau 3",
+            "description": "Améliorer la Fabrique de Cailloux au niveau 3"
+        },
+        "c11": {
+            "name": "Mastic niveau 3",
+            "description": "Améliorer la Fabrique de Mastic au niveau 3"
+        },
+        "c12": {
+            "name": "Gelée niveau 3",
+            "description": "Améliorer la Fabrique de Gelée au niveau 3"
+        },
+        "c13": {
+            "name": "QG niveau 2",
+            "description": "Améliorer votre QG au niveau 2"
+        },
+        "c14": {
+            "name": "QG niveau 3",
+            "description": "Améliorer votre QG au niveau 3"
+        },
+        "c15": {
+            "name": "QG niveau 4",
+            "description": "Améliorer votre QG au niveau 4"
+        },
+        "c16": {
+            "name": "QG niveau 5",
+            "description": "Améliorer votre QG au niveau 5"
+        },
+        "c17": {
+            "name": "Le monde des monstres",
+            "description": "Construire une Salle des Cartes"
+        },
+        "c18": {
+            "name": "Lancer!",
+            "description": "Construire un... Lanceur de Monstre?"
+        },
+        "ga1": {
+            "name": "Fin du silence radio",
+            "description": "Construire une Tour Radio et recevoir les alertes par e-mail"
+        },
+        "d1": {
+            "name": "Premier Sang",
+            "description": "Défendez votre Cour face aux monstres sauvages"
+        },
+        "s1": {
+            "name": "Silo de stockage",
+            "description": "Construire un Silo de stockage"
+        },
+        "s2": {
+            "name": "Silo de stockage niveau 2",
+            "description": "Améliorer le Silo au niveau 2"
+        },
+        "s3": {
+            "name": "Silo de stockage niveau 3",
+            "description": "Améliorer le Silo au niveau 3"
+        },
+        "s4": {
+            "name": "Silo de stockage niveau 4",
+            "description": "Améliorer le Silo au niveau 4"
+        },
+        "s5": {
+            "name": "Silo de stockage niveau 5",
+            "description": "Améliorer le Silo au niveau 5"
+        }
+    },
+    "settings": {
+        "zoomout": "Dézoomer",
+        "zoomin": "Zoomer",
+        "fullscreenenter": "Plein écran",
+        "fullscreenexit": "Mode fenêtré",
+        "soundon": "Son On",
+        "soundoff": "Son Off",
+        "musicon": "Musique On",
+        "musicoff": "Musique Off",
+        "saved": "Enregistré",
+        "saving": "Enregistrement en cours"
+    },
+    "#r": {
+        "twigs#": "Brindilles",
+        "pebbles#": "Cailloux",
+        "putty#": "Mastic",
+        "goo#": "Gelée",
+        "shiny#": "Shiny",
+        "time#": "Temps"
+    },
+    "#b": {
+        "townhall#": "QG",
+        "twigsnapper#": "Fabrique de Brindille",
+        "pebbleshiner#": "Fabrique de Cailloux",
+        "puttysquisher#": "Fabrique de Mastic",
+        "goofactory#": "Fabrique de Gelée",
+        "generalstore#": "Centre Commercial",
+        "storagesilo#": "Silo de Stockage",
+        "shiny#": "Shiny",
+        "snipertower#": "Tour Sniper",
+        "cannontower#": "Mortier",
+        "teslatower#": "Tour Tesla",
+        "lasertower#": "Tour Laser",
+        "flaktower#": "Canon Antiaérien",
+        "railguntower#": "Railgun",
+        "monsterbunker#": "Bunker",
+        "monstercage#": "Cage du Champion",
+        "boobytrap#": "Piège",
+        "heavytrap#": "Piège Lourd",
+        "championchamber#": "Chambre du Champion",
+        "woodenblock#": "Bloc",
+        "hatchery#": "Couveuse",
+        "housing#": "Enclos",
+        "monsterlocker#": "Casier du Monstre",
+        "flinger#": "Lanceur de Monstre",
+        "maproom#": "Salle des Cartes",
+        "monsterjuicer#": "Broyeur de Monstre",
+        "monsteracademy#": "Academie de Monstre",
+        "catapult#": "Catapulte",
+        "wildmonsterbaiter#": "Appâteur de Monstre Sauvage",
+        "monsterlab#": "Laboratoire",
+        "yardplanner#": "Station de Réorganisation",
+        "hcc#": "Centre de Contrôle des Couveuses",
+        "radio#": "Tour Radio",
+        "mushroom#": "Champignon"
+    },
+    "#bi": {
+        "spurtzcannon#": "Canon à Spurtz",
+        "blackspurtzcannon#": "Canon à Spurtz en Diamant Noir",
+        "quaketower#": "Tour Sismique",
+        "magmatower#": "Tour Magma"
+    },
+    "#m": {
+        "pokey#": "Pokey",
+        "octoooze#": "Octoooze",
+        "bolt#": "Bolt",
+        "fink#": "Fink",
+        "eyera#": "Eyera",
+        "ichi#": "Ichi",
+        "bandito#": "Bandito",
+        "fang#": "Fang",
+        "brain#": "Brain",
+        "crabatron#": "Crabatron",
+        "projectx#": "Project X",
+        "zafreeti#": "Zafreeti",
+        "teratorn#": "Teratorn",
+        "wormzer#": "Wormzer",
+        "dave#": "Dave"
+    },
+    "tut": {
+        "1b": "Salut <b>{v1},<br><br>Bienvenue sur Backyard Monsters!</b><br>Cliquez sur Plein écran pour visualiser la totalité de votre Cour.",
+        "NWM": {
+            "Step2": "Construisons une Tour Sniper pour défendre votre Cour.<br><br>Cliquez sur <b>Bâtiments</b> .",
+            "Step3": "Ici vous pouvez voir les différents types de bâtiments que vous pouvez construire.<br><br>Cliquez sur <b>Défenses</b> .",
+            "Step4": "Séléctionnez la \"Tour Sniper\" .",
+            "Step5": "Ici vous pouvez voir la déscription, prérequis et prix de la Tour Sniper. Cliquez sur <b>Construire.</b>",
+            "Step6": "Maintenant placez-la en cliquant sur l'herbe.",
+            "Step7": "Sélectionnez la Tour Sniper et cliquez sur <b>Accélérer</b> .",
+            "Step8": "Achetez \"Il était Temps\" pour terminer instantanément l'amélioration.<br><br>L'accélérateur \"Il était Temps\" est gratuit pour les 5 dernières minutes de l'amélioration ou construction.",
+            "Step9": "Votre Tour Sniper est maintenant terminée et tirera sur les intrus attaquant votre base. Collectez votre récompense!",
+            "Step10": "WHOA! Juste à temps, des Monstres Sauvages arrivent!<br><br>Pas d'inquiètude, la Tour Sniper va s'en occuper, <b>asseyez-vous et regardez-la en action.</b>",
+            "Step11": "Oooh, on dirait que vous venez d'accomplir une quête sanglante pour défendre votre Cour. N'oubliez pas de collecter votre récompense en cliquant sur <b>Quêtes</b> .",
+            "Step12": "L'attaque vient d'une tribu voisine: <b>La Légion des Monstres Sauvages.</b> Contre-attaquons avant qu'ils ne reviennent avec plus de troupe",
+            "Step13": "D'abord nous devons construire un Enclos pour votre armée de Monstres. Cliquez sur <b>Bâtiments</b> .",
+            "Step14": "Sélectionnez l'onglet <b>Structures</b> .",
+            "Step15": "Sélectionnez \"Enclos\" .",
+            "Step16": "Maintenant cliquez sur <b>Construire</b> .",
+            "Step17": "Placez-le n'importe où dans votre terrain.<br><br>Déplacez-vous dans votre terrain en cliquant et déplaçant votre souris pour trouver un bon endroit où construire.",
+            "Step18": "Sélectionnez votre Enclos, puis cliquez sur <b>Accélérer</b> .",
+            "Step19": "Achetez \"Il était Temps\" .",
+            "Step20": "Nous avons recruté des Pokeys pour vous aider. Les Pokeys sont petits et lents mais leur nombre fait leur force!<br><br>Collectez votre réompense.",
+            "Step21": "Maintenant construisons un Lanceur de monstre, de cette manière nous pourrons lancer nos Pokeys dans la base ennemie. Cliquez sur <b>Bâtiments</b> .",
+            "Step22": "Sélectionnez le \"Lanceur de monstre\"",
+            "Step23": "Cliquez sur <b>Construire</b>",
+            "Step24": "Placez-le quelque part sur votre terrain (souvenez-vous, vous pouvez vous déplacer à l'aide de la souris en cliquer/glisser).",
+            "Step25": "Cliquez sur le Lanceur de monstre puis sur <b>Accélérer</b> .",
+            "Step26": "Une fois que la construction du Lanceur de monstre atteint les 5 minutes, achetez l'accélérateur \"Finir la construction MAINTENANT!\" .",
+            "Step27": "Maintenant construisez la Salle des Cartes et nous pourrons trouver la Tribu des Monstres Sauvages. Cliquez sur <b>Bâtiments</b> .",
+            "Step28": "Sélectionnez la \"Salle des Cartes\"",
+            "Step29": "Press <b>Build</b>",
+            "Step30": "Place-la sur votre terrain.",
+            "Step31": "Cliquez sur la Salle des Cartes et cliquez sur <b>Accélérer</b> .",
+            "Step32": "Achetez \"Finir la construction MAINTENANT!\"",
+            "Step33": "Maintenant utilisons la Salle des Cartes pour trouver la Tribu des Monstres Sauvages qui vous ont attaqué et contre-attaquer avec notre armée de Pokeys!<br><br>Cliquez sur la <b>Carte</b> ."
+        },
+        "98": "Achetez \"Finir la construction MAINTENANT!\"",
+        "99": "Il est temps de récolter les récompenses!",
+        "next": {
+            "btn": "Suivant"
+        }
+    },
+    "ai": {
+        "popupwarning": {
+            "title": "ALERTE MONSTRE SAUVAGE"
+        },
+        "kozu": {
+            "name": "La Tribu de Kozu",
+            "taunt": "Nous reviendront pour prendre vos os!"
+        },
+        "legionnaire": {
+            "name": "La Tribu de Légionnaire",
+            "taunt": "Nous reviendront pour prendre vos os!"
+        },
+        "abunakki": {
+            "name": "La Tribu d'Abunakki",
+            "taunt": "Nous reviendront pour prendre vos os!"
+        },
+        "preparedefenses": {
+            "btn": "Preparez vos Défenses"
+        },
+        "engage": {
+            "btn": "À l'attaque"
+        },
+        "eta": "{v1}",
+        "monsterbar": {
+            "title": "Préparez-vous pour l'attaque...",
+            "sendnow": {
+                "btn": "Je suis prêt"
+            }
+        },
+        "tribe": "{v1}",
+        "gooddefense": "Vous avez défendu avec succès votre base contre {v1}",
+        "settings": {
+            "title": "ATTAQUE REPOUSSÉE",
+            "more": {
+                "btn": "Soyez plus nombreux la prochaine fois."
+            },
+            "same": {
+                "btn": "Je vous attends"
+            },
+            "less": {
+                "btn": "On ne peut pas s'entendre?"
+            }
+        }
+    },
+    "mail": {
+        "disabled": "Boîte mail désactivée."
+    },
+    "global_days": "jours",
+    "global_hours": "heures",
+    "global_minutes": "minutes",
+    "global_days_short": "j",
+    "global_hours_short": "h",
+    "global_minutes_short": "m",
+    "global_seconds_short": "s",
+    "global": {
+        "day": "jour",
+        "hour": "hr",
+        "minute": "min"
+    },
+    "buildoptions": {
+        "shiny": "Utiliser {v1} Shiny",
+        "buildinstant": "Conservez vos ressources et achetez instantanément!",
+        "upgradeinstant": "Conservez vos ressources et améliorez instantanément!",
+        "fortifyinstant": "Conservez vos ressources et fortifiez instantanément!",
+        "resources": "Utiliser les ressources",
+        "err": {
+            "moreresources": "<b>Vous avez besoin de {v1} ressources supplémentaires pour construire.</b><br><br>Obtenez des ressources et commencez la construction pour {v2} Shiny?",
+            "moreresourcesupgrade": "<b>Vous avez besoin de {v1} ressources supplémentaires pour l'améliorer.</b><br><br>Obtenez des ressources et commencez l'amélioration pour {v2} Shiny?",
+            "moresilosupgrade": "Améliorez vos Silos de stockage pour augmenter votre capacité de ressource.",
+            "moresilos": "Construisez plus de Silos de stockage pour augmenter votre stock de ressource."
+        }
+    }
+}
