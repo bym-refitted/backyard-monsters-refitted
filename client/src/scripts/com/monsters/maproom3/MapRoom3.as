@@ -1,6 +1,6 @@
 package com.monsters.maproom3
 {
-   import com.brokenfunction.json.decodeJson;
+   
    import com.monsters.mailbox.FriendPicker;
    import com.monsters.maproom3.bookmarks.BookmarksManager;
    import com.monsters.maproom3.data.MapRoom3Data;
@@ -109,7 +109,7 @@ package com.monsters.maproom3
       
       public function OnHeightMapLoaded(param1:Event) : void
       {
-         var serverData:Object = decodeJson(this.m_HeightMapLoader.data);
+         var serverData:Object = JSON.decode(this.m_HeightMapLoader.data);
          this.m_MapRoom3Data = new MapRoom3Data(serverData);
       }
       

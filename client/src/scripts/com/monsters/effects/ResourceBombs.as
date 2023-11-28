@@ -1,6 +1,6 @@
 package com.monsters.effects
 {
-   import com.brokenfunction.json.encodeJson;
+   
    import com.cc.utils.SecNum;
    import com.monsters.alliances.ALLIANCES;
    import com.monsters.display.ImageCache;
@@ -460,7 +460,7 @@ package com.monsters.effects
                _loc1_.push(_bombs[_loc3_].speedlength);
             }
          }
-         return md5(encodeJson(_loc1_));
+         return md5(JSON.encode(_loc1_));
       }
    }
 }

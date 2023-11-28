@@ -1,6 +1,6 @@
 package com.monsters.maproom3
 {
-   import com.brokenfunction.json.encodeJson;
+   
    import com.cc.tests.ABTest;
    import com.monsters.debug.Console;
    import com.monsters.enums.EnumBaseRelationship;
@@ -403,7 +403,7 @@ package com.monsters.maproom3
       {
          PLEASEWAIT.Show(KEYS.Get("msg_loading"));
          var _loc2_:int = MapRoomManager.instance.CalculateCellId(this.cellX,this.cellY);
-         var _loc3_:Array = [["cellids",encodeJson([_loc2_])]];
+         var _loc3_:Array = [["cellids",JSON.encode([_loc2_])]];
          new URLLoaderApi().load(MapRoom3Data.GetCellsRequestURL(),_loc3_,param1);
       }
       

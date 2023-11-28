@@ -5,7 +5,7 @@ package
    import flash.net.URLRequest;
    import flash.events.Event;
    import flash.events.IOErrorEvent;
-   import com.brokenfunction.json.decodeJson;
+   
 
    public class KEYS
    {
@@ -54,7 +54,7 @@ package
       private static function handleSucc(param1:Event):void
       {
          var rawData:String = param1.target.data;
-         jsonData = decodeJson(rawData);
+         jsonData = JSON.decode(rawData);
          cbf();
       }
 
@@ -125,7 +125,7 @@ package
       // {
       // var _loc3_:String = null;
       // var _loc4_:String = null;
-      // _keys = decodeJson(param1.target.data);
+      // _keys = JSON.decode(param1.target.data);
       // var _loc2_:Number = 0;
       // for(_loc3_ in _keys)
       // {
@@ -325,7 +325,7 @@ package
 
       // public static function Dump() : String
       // {
-      // return encodeJson(_keys);
+      // return JSON.encode(_keys);
       // }
 
       // public static function getStringB(param1:String) : String

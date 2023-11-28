@@ -1,6 +1,6 @@
 package
 {
-   import com.brokenfunction.json.encodeJson;
+   
    import com.cc.utils.SecNum;
    import com.monsters.enums.EnumYardType;
    import com.monsters.maproom_manager.MapRoomManager;
@@ -170,7 +170,7 @@ package
          }
          _ascensionData = null;
          loader = new URLLoaderApi();
-         loader.load(GLOBAL._infBaseURL + "infernomonsters",[["type","set"],["imonsters",encodeJson(result)]],onLoad,onError);
+         loader.load(GLOBAL._infBaseURL + "infernomonsters",[["type","set"],["imonsters",JSON.encode(result)]],onLoad,onError);
       }
       
       private static function destroyCreep(param1:String, param2:int) : void

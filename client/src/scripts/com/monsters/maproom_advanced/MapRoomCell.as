@@ -1,6 +1,6 @@
 package com.monsters.maproom_advanced
 {
-   import com.brokenfunction.json.encodeJson;
+   
    import com.cc.utils.SecNum;
    import com.monsters.alliances.*;
    import com.monsters.maproom_manager.IMapRoomCell;
@@ -1192,11 +1192,11 @@ package com.monsters.maproom_advanced
             }
             if(this._hpMonsterData)
             {
-               _loc2_ += " monsterdata " + encodeJson(this._hpMonsterData);
+               _loc2_ += " monsterdata " + JSON.encode(this._hpMonsterData);
             }
             if(this._hpResources)
             {
-               _loc2_ += " resources " + encodeJson(this._hpResources);
+               _loc2_ += " resources " + JSON.encode(this._hpResources);
             }
          }
          MapRoom.TransferMonstersB(this);

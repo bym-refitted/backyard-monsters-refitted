@@ -1,6 +1,6 @@
 package
 {
-   import com.brokenfunction.json.decodeJson;
+   
    import com.monsters.configs.BYMDevConfig;
    import com.monsters.display.ImageCache;
    import com.monsters.frontPage.FrontPageGraphic;
@@ -831,7 +831,7 @@ package
          {
             if(o)
             {
-               obj = decodeJson(o);
+               obj = JSON.decode(o);
                BASE._credits.Set(int(obj.credits));
                BASE._hpCredits = int(obj.credits);
                GLOBAL._credits.Set(int(obj.credits));

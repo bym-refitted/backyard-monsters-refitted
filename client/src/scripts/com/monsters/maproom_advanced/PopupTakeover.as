@@ -1,6 +1,6 @@
 package com.monsters.maproom_advanced
 {
-   import com.brokenfunction.json.encodeJson;
+   
    import com.cc.utils.SecNum;
    import com.monsters.display.ImageCache;
    import com.monsters.enums.EnumYardType;
@@ -211,7 +211,7 @@ package com.monsters.maproom_advanced
                GLOBAL.Message(KEYS.Get("newmap_take4"));
                return;
             }
-            takeoverVars = [["baseid",this._cell._baseID],["resources",encodeJson({
+            takeoverVars = [["baseid",this._cell._baseID],["resources",JSON.encode({
                "r1":this._resourceCost.Get(),
                "r2":this._resourceCost.Get(),
                "r3":this._resourceCost.Get(),

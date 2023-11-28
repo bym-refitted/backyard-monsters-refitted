@@ -1,6 +1,6 @@
 package com.monsters.maproom3.bookmarks
 {
-   import com.brokenfunction.json.encodeJson;
+   
    import com.monsters.enums.EnumYardType;
    import com.monsters.maproom3.MapRoom3Cell;
    import com.monsters.maproom3.data.MapRoom3Data;
@@ -109,7 +109,7 @@ package com.monsters.maproom3.bookmarks
          _loc1_[BOOKMARKS_FRIENDS_SAVE_DATA_FIELD] = this.SaveBookmarksOfType(TYPE_FRIENDS);
          MapRoomManager.instance.bookmarkData = _loc1_;
          var _loc2_:* = GLOBAL._apiURL + "player/savebookmarks";
-         var _loc3_:Array = [["bookmarks",encodeJson(_loc1_)]];
+         var _loc3_:Array = [["bookmarks",JSON.encode(_loc1_)]];
          new URLLoaderApi().load(_loc2_,_loc3_,this.OnBookmarksSaved,this.OnBookmarksSavedError);
       }
       

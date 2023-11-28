@@ -35,7 +35,7 @@ package
    import flash.geom.Matrix;
    import flash.geom.Point;
    import flash.geom.Rectangle;
-   import com.brokenfunction.json.decodeJson;
+   
    
    public class BFOUNDATION extends GameObject
    {

@@ -1,6 +1,6 @@
 package
 {
-   import com.brokenfunction.json.decodeJson;
+   
    import flash.events.Event;
    import flash.events.HTTPStatusEvent;
    import flash.events.IOErrorEvent;
@@ -399,8 +399,8 @@ package
          var _loc4_:String = "{\"h\":" + hasKeyArray.pop();
          reqData = hasKeyArray.join(",\"h\":") + "}";
          var stringifiedReqData:String = String(reqData);
-         var decodedReqData:Object = decodeJson(reqData);
-         var _loc7_:Object = decodeJson(_loc4_);
+         var decodedReqData:Object = JSON.decode(reqData);
+         var _loc7_:Object = JSON.decode(_loc4_);
          var _loc8_:Boolean;
          if(_loc8_ = false)
          {

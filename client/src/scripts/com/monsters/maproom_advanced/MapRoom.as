@@ -1,6 +1,6 @@
 package com.monsters.maproom_advanced
 {
-   import com.brokenfunction.json.encodeJson;
+   
    import com.cc.utils.SecNum;
    import com.monsters.alliances.ALLIANCES;
    import com.monsters.chat.Chat;
@@ -316,7 +316,7 @@ package com.monsters.maproom_advanced
                   GLOBAL.Message(KEYS.Get("map_rel_res"));
                   return;
                }
-               loadvars.push(["resources",encodeJson({
+               loadvars.push(["resources",JSON.encode({
                   "r1":RESOURCECOST.Get(),
                   "r2":RESOURCECOST.Get(),
                   "r3":RESOURCECOST.Get(),
@@ -505,7 +505,7 @@ package com.monsters.maproom_advanced
             LOGGER.Log("err","MapRoom.BookmarksSave HTTP");
          };
          var url:String = GLOBAL._apiURL + "player/savebookmarks";
-         var loadvars:Array = [["bookmarks",encodeJson(_bookmarkData)]];
+         var loadvars:Array = [["bookmarks",JSON.encode(_bookmarkData)]];
          new URLLoaderApi().load(url,loadvars,handleBMSaveSuccessful,handleBMSaveError);
       }
       
@@ -926,11 +926,11 @@ package com.monsters.maproom_advanced
                   }
                   if(!targetCell.Check())
                   {
-                     LOGGER.Log("err","BASE.Save:  transfer target Cell " + targetCell.X + "," + targetCell.Y + "does not check out before doing monster transfer!  " + encodeJson(targetCell._hpMonsterData));
+                     LOGGER.Log("err","BASE.Save:  transfer target Cell " + targetCell.X + "," + targetCell.Y + "does not check out before doing monster transfer!  " + JSON.encode(targetCell._hpMonsterData));
                   }
                   if(!_monsterSource.Check())
                   {
-                     LOGGER.Log("err","BASE.Save:  transfer source Cell " + _monsterSource.X + "," + _monsterSource.Y + "does not check out before doing monster transfer!  " + encodeJson(_monsterSource._hpMonsterData));
+                     LOGGER.Log("err","BASE.Save:  transfer source Cell " + _monsterSource.X + "," + _monsterSource.Y + "does not check out before doing monster transfer!  " + JSON.encode(_monsterSource._hpMonsterData));
                   }
                   srcMonsterData = {
                      "hcc":_monsterSource._hpMonsterData.hcc,
@@ -948,7 +948,7 @@ package com.monsters.maproom_advanced
                      "hstage":targetCell._hpMonsterData.hstage,
                      "saved":GLOBAL.Timestamp()
                   };
-                  transferVars = [["frombaseid",_monsterSource._baseID],["tobaseid",targetCell._baseID],["monsters",encodeJson([srcMonsterData,targetMonsterData])]];
+                  transferVars = [["frombaseid",_monsterSource._baseID],["tobaseid",targetCell._baseID],["monsters",JSON.encode([srcMonsterData,targetMonsterData])]];
                   new URLLoaderApi().load(GLOBAL._mapURL + "transferassets",transferVars,transferSuccessful,transferError);
                   return "";
                }

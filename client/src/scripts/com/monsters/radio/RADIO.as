@@ -1,7 +1,7 @@
 package com.monsters.radio
 {
-   import com.brokenfunction.json.decodeJson;
-   import com.brokenfunction.json.encodeJson;
+   
+   
    import flash.display.StageDisplayState;
    
    public class RADIO
@@ -69,7 +69,7 @@ package com.monsters.radio
       public static function setProp(param1:String, param2:*) : void
       {
          _settings[param1] = param2;
-         var _loc3_:String = encodeJson(_settings);
+         var _loc3_:String = JSON.encode(_settings);
          new URLLoaderApi().load(GLOBAL._apiURL + "player/updateemail",[["settings",_loc3_]],handleSettingsSaveSucc,handleSettingsSaveFail);
          _isSaving = true;
          _mc.bSaveToggle();
@@ -86,7 +86,7 @@ package com.monsters.radio
          }
          else
          {
-            LOGGER.Log("err","|RADIO| - handleSettingsSaveSucc - Fail" + encodeJson(param1));
+            LOGGER.Log("err","|RADIO| - handleSettingsSaveSucc - Fail" + JSON.encode(param1));
             GLOBAL.Message(KEYS.Get("radio_saveFail"),null,null,null);
          }
       }
@@ -99,7 +99,7 @@ package com.monsters.radio
       
       public static function TwitterCallback(param1:String) : void
       {
-         var _loc2_:Object = decodeJson(param1);
+         var _loc2_:Object = JSON.decode(param1);
          if(_loc2_.error)
          {
             if(_loc2_.error != "noname")
@@ -132,7 +132,7 @@ package com.monsters.radio
          var removeEmail:Function = function(param1:String, param2:*):void
          {
             _settings[param1] = param2;
-            var _loc3_:String = encodeJson(_settings);
+            var _loc3_:String = JSON.encode(_settings);
             new URLLoaderApi().load(GLOBAL._apiURL + "player/updateemail",[["settings",_loc3_]],handleRemoveSucc,handleRemoveFail);
             _isSaving = true;
          };
@@ -146,7 +146,7 @@ package com.monsters.radio
             }
             else
             {
-               LOGGER.Log("err","|RADIO| - handleSettingsSaveSucc - Fail" + encodeJson(param1));
+               LOGGER.Log("err","|RADIO| - handleSettingsSaveSucc - Fail" + JSON.encode(param1));
                GLOBAL.Message(KEYS.Get("radio_recycleConfirm"),null,null,null);
             }
          };

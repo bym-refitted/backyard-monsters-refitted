@@ -2,7 +2,7 @@ package
 {
    import com.monsters.enums.EnumYardType;
    import flash.events.IOErrorEvent;
-   import com.brokenfunction.json.encodeJson;
+   
 
    public class LOGGER
    {
@@ -46,15 +46,15 @@ package
       }
    
       /*public static function DebugQAdd(logMessage:String, debugVars:Object): void {
-         logQueue.push({logMessage: logMessage, debugVars: encodeJson(debugVars)});
+         logQueue.push({logMessage: logMessage, debugVars: JSON.encode(debugVars)});
       }
 
       public static function DebugQPost(trace: Error = null) : void
       {
-         var logger:Array = [["key", "logType"], ["message", encodeJson(logQueue)], ["saveid", BASE._lastSaveID] ];
+         var logger:Array = [["key", "logType"], ["message", JSON.encode(logQueue)], ["saveid", BASE._lastSaveID] ];
 
          if (trace){
-            logger.push(["error", encodeJson(trace.getStackTrace())]);
+            logger.push(["error", JSON.encode(trace.getStackTrace())]);
          }
          new URLLoaderApi().load(GLOBAL._apiURL + "player/recorddebugdata", logger, handleLoadSuccessful, handleLoadError);
       }*/
@@ -869,7 +869,7 @@ package
                   arg = {};
                   arg["train_" + monsternames[data[1] - 1]] = 1;
             }
-            arrArg = [encodeJson(arg)];
+            arrArg = [JSON.encode(arg)];
             GLOBAL.CallJS("cc.kg_statsUpdate",[arg],false);
          }
          catch(e:Error)

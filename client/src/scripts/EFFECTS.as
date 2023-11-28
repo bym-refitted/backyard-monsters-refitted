@@ -1,6 +1,6 @@
 package
 {
-   import com.brokenfunction.json.encodeJson;
+   
    import com.monsters.effects.LASERS;
    import com.monsters.effects.ResourceBombs;
    import com.monsters.effects.particles.Particles;
@@ -247,7 +247,7 @@ package
             }
             _loc2_++;
          }
-         _effectsJSON = encodeJson(_effects);
+         _effectsJSON = JSON.encode(_effects);
       }
       
       public static function SnapShot(param1:Object) : void
@@ -301,7 +301,7 @@ package
          if(_switcher % 2 == 0)
          {
             _effects.push(param1);
-            _effectsJSON = encodeJson(_effects);
+            _effectsJSON = JSON.encode(_effects);
             if(_effects.length > _effectsLimit)
             {
                _effects.shift();

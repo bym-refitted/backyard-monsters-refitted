@@ -1,6 +1,6 @@
 package com.monsters.maproom3.data
 {
-   import com.brokenfunction.json.encodeJson;
+   
    import com.monsters.enums.EnumYardType;
    import com.monsters.maproom3.MapRoom3;
    import com.monsters.maproom3.MapRoom3Cell;
@@ -224,7 +224,7 @@ package com.monsters.maproom3.data
             }
             _loc7_++;
          }
-         var _loc8_:Array = [["cellids",encodeJson(_loc2_)]];
+         var _loc8_:Array = [["cellids",JSON.encode(_loc2_)]];
          if(DEBUG_WORLD_ID)
          {
             _loc8_.push(["worldid",DEBUG_WORLD_ID]);
@@ -310,7 +310,7 @@ package com.monsters.maproom3.data
          {
             return;
          }
-         var _loc6_:Array = [["cellids",encodeJson(_loc2_)]];
+         var _loc6_:Array = [["cellids",JSON.encode(_loc2_)]];
          if(DEBUG_WORLD_ID)
          {
             _loc6_.push(["worldid",DEBUG_WORLD_ID]);
@@ -370,7 +370,7 @@ package com.monsters.maproom3.data
          {
             return;
          }
-         var _loc12_:Array = [["cellids",encodeJson(_loc2_)]];
+         var _loc12_:Array = [["cellids",JSON.encode(_loc2_)]];
          if(DEBUG_WORLD_ID)
          {
             _loc12_.push(["worldid",DEBUG_WORLD_ID]);

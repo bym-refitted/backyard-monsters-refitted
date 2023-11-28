@@ -1,6 +1,6 @@
 package
 {
-   import com.brokenfunction.json.encodeJson;
+   
    import com.cc.utils.SecNum;
    import com.monsters.configs.BYMConfig;
    import com.monsters.interfaces.ITargetable;
@@ -489,7 +489,7 @@ package
             Push(i);
             i++;
          }
-         return md5(encodeJson(tmpArray));
+         return md5(JSON.encode(tmpArray));
       }
       
       public static function getGuardianSpawnClass(param1:int) : Class

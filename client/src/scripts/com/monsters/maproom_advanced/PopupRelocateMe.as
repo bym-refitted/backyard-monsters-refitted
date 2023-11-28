@@ -1,6 +1,6 @@
 package com.monsters.maproom_advanced
 {
-   import com.brokenfunction.json.encodeJson;
+   
    import com.cc.utils.SecNum;
    import com.monsters.maproom_manager.MapRoomManager;
    import flash.display.*;
@@ -236,7 +236,7 @@ package com.monsters.maproom_advanced
                GLOBAL.Message(KEYS.Get("map_relocate_notenoughresources"));
                return;
             }
-            relocateVars.push(["resources",encodeJson({
+            relocateVars.push(["resources",JSON.encode({
                "r1":this.RESOURCECOST.Get(),
                "r2":this.RESOURCECOST.Get(),
                "r3":this.RESOURCECOST.Get(),

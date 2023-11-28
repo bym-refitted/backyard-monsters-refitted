@@ -1,6 +1,6 @@
 package
 {
-   import com.brokenfunction.json.encodeJson;
+   
    import com.monsters.maproom_manager.MapRoomManager;
    import com.monsters.missions.*;
    import com.monsters.siege.SiegeWeapons;
@@ -2136,7 +2136,7 @@ package
             }
             _loc2_++;
          }
-         return md5(encodeJson(_loc1_));
+         return md5(JSON.encode(_loc1_));
       }
       
       public static function Completed() : void

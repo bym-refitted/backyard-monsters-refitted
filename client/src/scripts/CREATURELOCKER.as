@@ -1,6 +1,6 @@
 package
 {
-   import com.brokenfunction.json.encodeJson;
+   
    import com.monsters.creep_types.CreepTypeManager;
    import com.monsters.maproom_manager.MapRoomManager;
    import com.monsters.monsters.creeps.Bandito;
@@ -1144,7 +1144,7 @@ package
             Push("IC" + i);
             i++;
          }
-         return md5(encodeJson(tmpArray));
+         return md5(JSON.encode(tmpArray));
       }
       
       public static function GetAppropriateCreatures() : Object
