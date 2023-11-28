@@ -90,7 +90,7 @@ api.get("/", (ctx: Context) => (ctx.body = {}));
 
   app.listen(port, () => {
     logging(`
-    ${ascii_node} Admin dashboard: http://localhost:${port}
+    ${ascii_node} Server running on: http://localhost:${port}
     `);
   });
 })().catch((e) => errorLog(e));

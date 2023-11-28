@@ -1,10 +1,11 @@
+@import url(https://db.onlinewebfonts.com/c/e48298e8aea37d29dd5ad484ba7dbce9?family=GROBOLDpro);
+@import url(https://db.onlinewebfonts.com/c/ec12e7aac950d20b15f9c39febdaffe7?family=Graveblade+W00+Regular);
+
 /* Variables */
 $black: #000;
 $white: #fff;
 $green: #20853b;
 $orange: #e3b129;
-$background-color: #f5f5f5;
-$box-shadow: 0px 2px 12px 2px rgba(0, 0, 0, 0.063);
 
 /* Webkit-based browsers */
 ::-webkit-scrollbar {
@@ -27,104 +28,27 @@ $box-shadow: 0px 2px 12px 2px rgba(0, 0, 0, 0.063);
 
 /* Global styles */
 body {
-  font-family: Arial, sans-serif;
-  background-color: $background-color;
+  background-color: $white;
   color: #333;
-}
-
-a {
-  color: $black;
-  text-decoration: none;
-}
-
-ul {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-i {
-  font-size: 22px;
-}
-
-pre {
-  margin: 0;
-  display: none;
-}
-
-code {
-  border-radius: 6px;
 }
 
 /* Header styles */
 header {
   color: $black;
+  height: 100vh;
+
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
+  justify-content: center;
   align-items: center;
-  padding: 20px;
 
   h1 {
     margin: 0;
+    font-size: 4rem;
+    font-family: 'Graveblade W00 Regular';
   }
-
-  nav {
-    ul {
-      display: flex;
-    }
-
-    li {
-      margin-right: 20px;
-    }
-  }
-}
-
-/* Mixins */
-@mixin badge($color) {
-  margin-left: auto;
-  padding: 10px 25px;
-  background-color: $color;
-  border-radius: 4px;
-
-  > p {
-    margin: 0;
-    color: $white;
-    font-weight: bold;
-    text-transform: uppercase;
-  }
-}
-
-/* Main styles */
-main {
-  padding: 60px 50px 0px 50px;
-
-  .card {
-    width: 80%;
-    border-radius: 8px;
-    padding: 0 20px;
-    margin-bottom: 25px;
-    background-color: $white;
-    box-shadow: $box-shadow;
-    cursor: pointer;
-
-    .route-item {
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      gap: 20px;
-
-      .route {
-        font-size: 22px;
-        font-weight: bold;
-      }
-
-      .get {
-        @include badge($green);
-      }
-
-      .config {
-        @include badge($orange);
-      }
-    }
+  p {
+    font-size: 1.2rem;
+    font-family: Arial, sans-serif;
   }
 }
