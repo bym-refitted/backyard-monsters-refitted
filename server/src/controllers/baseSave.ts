@@ -3,6 +3,7 @@ import { User } from "../models/user.model";
 import { ORMContext } from "../server";
 import { FilterFrontendKeys } from "../utils/FrontendKey";
 import { KoaController } from "../utils/KoaController";
+import { getCurrentDateTime } from "../utils/getCurrentDateTime";
 import { logging } from "../utils/logger";
 
 export const baseSave: KoaController = async (ctx) => {
@@ -45,6 +46,8 @@ export const baseSave: KoaController = async (ctx) => {
     save.storedata = storeData;
   }
 
+  // Update the save timestamp
+  save.savetime = getCurrentDateTime();
   // Equivalent to Object.assign() - merges second object onto entity
   ORMContext.em.assign(save, ctx.request.body);
   await ORMContext.em.persistAndFlush(save);
