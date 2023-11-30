@@ -172,10 +172,6 @@ export class Save {
   @Property()
   relationship!: number;
 
-  @FrontendKey
-  @Property()
-  currenttime!: number;
-
   // Client save primitives
   @FrontendKey
   @Property()

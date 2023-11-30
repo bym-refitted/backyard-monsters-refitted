@@ -2,8 +2,7 @@ import { gameConfig } from "../config/GameSettings";
 import { User } from "../models/user.model";
 import { endGameBase } from "../sample/endGameBase";
 import { midGameBase } from "../sample/midGameBase";
-
-const currentTimeInSeconds: number = Math.floor(new Date().getTime() / 1000);
+import { getCurrentDateTime } from "../utils/getCurrentDateTime";
 
 export const getDefaultBaseData = (user?: User) => {
   // This allows us to work with example bases
@@ -16,11 +15,11 @@ export const getDefaultBaseData = (user?: User) => {
     type: "main",
     userid: 101, // Generate
     wmid: 0,
-    createtime: 0,
-    savetime: 0,
     seed: 0,
     saveuserid: 0,
     bookmarked: 0,
+    createtime: getCurrentDateTime(),
+    savetime: 0, // This needs to be updated in the DB every time a save occurs on the client
     fan: 0,
     emailshared: 1,
     unreadmessages: 0,
@@ -52,7 +51,6 @@ export const getDefaultBaseData = (user?: User) => {
     chatenabled: 0,
     relationship: 0,
     error: 0,
-    currenttime: currentTimeInSeconds,
     user,
 
     // Objects

@@ -8,8 +8,9 @@ import { User } from "../models/user.model";
 import { getDefaultBaseData } from "../data/getDefaultBaseData";
 import { FilterFrontendKeys } from "../utils/FrontendKey";
 import { flags } from "../data/flags";
+import { getCurrentDateTime } from "../utils/getCurrentDateTime";
 
-export const baseLoad: KoaController = async ctx => {
+export const baseLoad: KoaController = async (ctx) => {
   // Try find an already existing save
   const user: User = ctx.authUser;
   await ORMContext.em.populate(user, ["save"]);
@@ -40,9 +41,10 @@ export const baseLoad: KoaController = async ctx => {
   ctx.body = {
     flags,
     error: 0,
+    currenttime: getCurrentDateTime(),
     basename: "testBase",
     pic_square: "https://apprecs.org/ios/images/app-icons/256/df/634186975.jpg",
-    storeitems: { ...storeItems},
+    storeitems: { ...storeItems },
     ...filteredSave,
     id: filteredSave.basesaveid,
     tutorialstage: isTutorialEnabled,
