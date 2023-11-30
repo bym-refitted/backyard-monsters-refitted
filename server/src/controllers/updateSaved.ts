@@ -1,6 +1,5 @@
 import { flags } from "../data/flags";
 import { Save } from "../models/save.model";
-import { User } from "../models/user.model";
 import { ORMContext } from "../server";
 import { FilterFrontendKeys } from "../utils/FrontendKey";
 import { KoaController } from "../utils/KoaController";

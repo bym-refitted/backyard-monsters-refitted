@@ -191,7 +191,9 @@
             "donerepair1": "Finished repair.",
             "donerepair2": "All done!",
             "xbusy": "All {v1} workers are currently busy.",
-            "5busy": "All 5 workers are currently busy."
+            "5busy": "All 5 workers are currently busy.",
+            "waitforfinish": "Please wait for a worker to finish their task.",
+            "impatient": "<b>Please be patient.</b>"
         },
         "producing": "<b>Producing<br>{v1}<br><br>{v2}</b><br>{v3}% FULL",
         "buildingfull": "<b>FULL</b><br /><br /> Production paused, bank to resume production",
