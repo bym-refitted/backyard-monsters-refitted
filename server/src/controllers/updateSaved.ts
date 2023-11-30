@@ -7,8 +7,8 @@ import { KoaController } from "../utils/KoaController";
 import { getCurrentDateTime } from "../utils/getCurrentDateTime";
 
 export const updateSaved: KoaController = async (ctx) => {
-  const user: User = ctx.authUser;
-  let save = user.save;
+  const basesaveid = ctx.session.basesaveid;
+  let save = await ORMContext.em.findOne(Save, { basesaveid });
 
   if (!save) {
     ctx.status = 404;
