@@ -13,7 +13,5 @@ export const generateID = (length: number, prefix?: number): number => {
     const randomNumber = Math.floor(Math.random() * 10);
     numericID = numericID * 10 + randomNumber;
   }
-
-  if (prefix === undefined) return numericID;
-  return parseInt(prefix.toString() + numericID.toString(), 10);
+  return prefix != undefined ? prefix * Math.pow(10, length) + numericID : numericID;
 };
