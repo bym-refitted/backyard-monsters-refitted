@@ -17,6 +17,9 @@ export const updateSaved: KoaController = async (ctx) => {
 
   // Update the save timestamp
   save.savetime = getCurrentDateTime();
+  // Set the id field (_lastSaveID) to be the same as savetime, client expects this.
+  save.id = save.savetime;
+
   await ORMContext.em.persistAndFlush(save);
 
   const filteredSave = FilterFrontendKeys(save);

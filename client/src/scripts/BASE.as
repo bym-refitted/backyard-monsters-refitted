@@ -4130,6 +4130,7 @@ package
                {
                   UPDATES.Process(serverData.updates);
                }
+               // Comment: ToDo: this needs to be fixed on the server
                if(serverData.buildingresources)
                {
                   _rawGIP = serverData.buildingresources;

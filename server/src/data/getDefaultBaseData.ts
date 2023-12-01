@@ -2,6 +2,7 @@ import { gameConfig } from "../config/GameSettings";
 import { User } from "../models/user.model";
 import { endGameBase } from "../sample/endGameBase";
 import { midGameBase } from "../sample/midGameBase";
+import { generateID } from "../utils/generateID";
 import { getCurrentDateTime } from "../utils/getCurrentDateTime";
 
 export const getDefaultBaseData = (user?: User) => {
@@ -13,24 +14,24 @@ export const getDefaultBaseData = (user?: User) => {
   return {
     baseid: "0",
     type: "main",
-    userid: 101, // Generate
+    userid: generateID(8),
     wmid: 0,
     seed: 0,
     saveuserid: 0,
     bookmarked: 0,
     createtime: getCurrentDateTime(),
-    savetime: 0, // This needs to be updated in the DB every time a save occurs on the client
+    savetime: 0, // Updates each time a save is triggered
     fan: 0,
     emailshared: 1,
     unreadmessages: 0,
     giftsentcount: 0,
-    id: 0, // Generate
+    id: 0, // Same value as savetime
     canattack: false,
-    cellid: 0, // Generate
+    cellid: generateID(6),
     baseid_inferno: 0,
-    fbid: "67879",
+    fbid: "100002268912813",
     fortifycellid: 0,
-    name: "name",
+    name: "name", // ToDo: Should be dynamically set
     level: 1,
     catapult: 0,
     flinger: 0,
@@ -42,11 +43,11 @@ export const getDefaultBaseData = (user?: User) => {
     protected: 1,
     lastupdate: 0,
     usemap: 1,
-    homebaseid: 0, // Generate
+    homebaseid: generateID(7, 220),
     credits: 8000,
     champion: "null",
     empiredestroyed: 1,
-    worldid: "0", // Generate
+    worldid: generateID(3, 2).toString(),
     event_score: 0,
     chatenabled: 0,
     relationship: 0,

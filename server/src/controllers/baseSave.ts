@@ -48,6 +48,9 @@ export const baseSave: KoaController = async (ctx) => {
 
   // Update the save timestamp
   save.savetime = getCurrentDateTime();
+  // Set the id field (_lastSaveID) to be the same as savetime, client expects this.
+  save.id = save.savetime;
+
   // Equivalent to Object.assign() - merges second object onto entity
   ORMContext.em.assign(save, ctx.request.body);
   await ORMContext.em.persistAndFlush(save);
