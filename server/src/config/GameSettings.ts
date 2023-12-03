@@ -2,6 +2,6 @@
 export const gameConfig = {
   logMissingAssets: false,
   skipTutorial: true, 
-  loadFinishedBase: true,
+  loadFinishedBase: false,
   loadMidBase: false
 };
