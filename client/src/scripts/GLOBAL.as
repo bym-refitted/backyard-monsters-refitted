@@ -1383,96 +1383,96 @@ package
          }
       }
       
-      public static function ToTime(param1:int, param2:Boolean = false, param3:Boolean = true, param4:Boolean = true, param5:Boolean = false) : String
+      public static function ToTime(totalSeconds:int, includeDays:Boolean = false, includeHours:Boolean = true, includeMinutes:Boolean = true, includeSeconds:Boolean = false) : String
       {
-         var _loc6_:int = 0;
-         var _loc7_:int = 0;
-         var _loc8_:int = 0;
-         var _loc9_:int = 0;
-         if(param1 < 0)
+         var days:int = 0;
+         var hours:int = 0;
+         var minutes:int = 0;
+         var seconds:int = 0;
+         if(totalSeconds < 0)
          {
-            param1 = 0;
+            totalSeconds = 0;
          }
-         if(param1 >= 86400)
+         if(totalSeconds >= 86400)
          {
-            _loc6_ = Math.floor(param1 / 86400);
-            param1 -= _loc6_ * 86400;
+            days = Math.floor(totalSeconds / 86400);
+            totalSeconds -= days * 86400;
          }
-         if(param1 >= 3600)
+         if(totalSeconds >= 3600)
          {
-            _loc7_ = Math.floor(param1 / 3600);
-            param1 -= _loc7_ * 3600;
+            hours = Math.floor(totalSeconds / 3600);
+            totalSeconds -= hours * 3600;
          }
-         if(param1 >= 60)
+         if(totalSeconds >= 60)
          {
-            _loc8_ = Math.floor(param1 / 60);
-            param1 -= _loc8_ * 60;
+            minutes = Math.floor(totalSeconds / 60);
+            totalSeconds -= minutes * 60;
          }
-         _loc9_ = param1;
-         var _loc10_:* = "";
-         if(param2)
+         seconds = totalSeconds;
+         var formattedDuration:String = "";
+         if(includeDays)
          {
-            if(_loc6_)
+            if(days)
             {
-               _loc10_ = _loc6_ + KEYS.Get("global_days_short") + " ";
+               formattedDuration = days + KEYS.Get("global_days_short") + " ";
             }
-            if(Boolean(_loc7_) || Boolean(_loc6_) || param5)
+            if(Boolean(hours) || Boolean(days) || includeSeconds)
             {
-               _loc10_ += DoubleDigit(_loc7_) + KEYS.Get("global_hours_short") + " ";
+               formattedDuration += DoubleDigit(hours) + KEYS.Get("global_hours_short") + " ";
             }
-            if(Boolean(_loc8_) || Boolean(_loc7_) || Boolean(_loc6_) || param5)
+            if(Boolean(minutes) || Boolean(hours) || Boolean(days) || includeSeconds)
             {
-               _loc10_ += DoubleDigit(_loc8_) + KEYS.Get("global_minutes_short") + " ";
+               formattedDuration += DoubleDigit(minutes) + KEYS.Get("global_minutes_short") + " ";
             }
-            if(param3 || _loc6_ + _loc7_ + _loc8_ == 0 || param5)
+            if(includeHours || days + hours + minutes == 0 || includeSeconds)
             {
-               _loc10_ += DoubleDigit(_loc9_) + KEYS.Get("global_seconds_short");
+               formattedDuration += DoubleDigit(seconds) + KEYS.Get("global_seconds_short");
             }
          }
          else
          {
-            if(_loc6_)
+            if(days)
             {
-               if(_loc6_ > 1)
+               if(days > 1)
                {
-                  _loc10_ += _loc6_ + KEYS.Get("global_days") + " ";
+                  formattedDuration += days + KEYS.Get("global_days") + " ";
                }
                else
                {
-                  _loc10_ += _loc6_ + KEYS.Get("global_day") + " ";
+                  formattedDuration += days + KEYS.Get("global_day") + " ";
                }
             }
-            if(Boolean(_loc7_) || Boolean(_loc6_) || param5)
+            if(Boolean(hours) || Boolean(days) || includeSeconds)
             {
-               if(_loc7_ > 1)
+               if(hours > 1)
                {
-                  _loc10_ += _loc7_ + KEYS.Get("global_hours") + " ";
+                  formattedDuration += hours + KEYS.Get("global_hours") + " ";
                }
                else
                {
-                  _loc10_ += _loc7_ + KEYS.Get("global_hour") + " ";
+                  formattedDuration += hours + KEYS.Get("global_hour") + " ";
                }
             }
-            if(Boolean(_loc8_) || Boolean(_loc7_) || Boolean(_loc6_) || param5)
+            if(Boolean(minutes) || Boolean(hours) || Boolean(days) || includeSeconds)
             {
-               if(_loc8_ > 1)
+               if(minutes > 1)
                {
-                  _loc10_ += _loc8_ + KEYS.Get("global_minutes") + " ";
+                  formattedDuration += minutes + KEYS.Get("global_minutes") + " ";
                }
                else
                {
-                  _loc10_ += _loc8_ + KEYS.Get("global_minute") + " ";
+                  formattedDuration += minutes + KEYS.Get("global_minute") + " ";
                }
             }
-            if(_loc8_ > 0 || _loc7_ > 0 || _loc6_ == 0 || param5)
+            if(minutes > 0 || hours > 0 || days == 0 || includeSeconds)
             {
-               if(_loc9_ > 0 && (param3 || _loc6_ + _loc7_ + _loc8_ == 0))
+               if(seconds > 0 && (includeHours || days + hours + minutes == 0))
                {
-                  _loc10_ += dd(_loc9_) + KEYS.Get("global_seconds_short");
+                  formattedDuration += dd(seconds) + KEYS.Get("global_seconds_short");
                }
             }
          }
-         return _loc10_;
+         return formattedDuration;
       }
       
       public static function ToTimeVague(param1:int) : String

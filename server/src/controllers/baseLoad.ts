@@ -42,7 +42,7 @@ export const baseLoad: KoaController = async (ctx) => {
     flags,
     error: 0,
     currenttime: getCurrentDateTime(),
-    basename: "testBase",
+    basename: "basename",
     pic_square: "https://apprecs.org/ios/images/app-icons/256/df/634186975.jpg",
     storeitems: { ...storeItems },
     ...filteredSave,

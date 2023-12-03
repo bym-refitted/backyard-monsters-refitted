@@ -6111,35 +6111,6 @@ export const endGameBase = {
   },
   error: 0,
   currenttime: 1599666811,
-  powerups: [], // ToDo: add to DB
-  attpowerups: [], // ToDo: add to DB
-
-  // Client saves | not returned
-  version: 128,
-  baseseed: 4520,
-  healtime: 0,
-  empirevalue: 0,
-  clienttime: 0,
-  timeplayed: 0,
-  achieved: [],
-  monsterupdate: {},
-  basename: "basename",
-  attackreport: "",
-  over: 1,
-  protect: 0,
-  attackid: 0,
-  attacks: [],
-  gifts: [],
-  sentinvites: [],
-  sentgifts: [],
-  purchase: {},
-  attackcreatures: {},
-  attackloot: {},
-  lootreport: {},
-  attackerchampion: "null", // []
-  attackersiege: {},
-  purchasecomplete: 0,
-  fbpromos: [],
   h: "55d0f481ab01fe911f68fd5501111fcb",
   hn: 5316467,
 };

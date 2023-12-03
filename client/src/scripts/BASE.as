@@ -3127,6 +3127,7 @@ package
          return _loc1_;
       }
       
+      // Comment: This is where we send the calculated resources to the server
       private static function getResourceSaveData() : Object
       {
          return {

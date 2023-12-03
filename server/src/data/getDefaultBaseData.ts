@@ -187,7 +187,7 @@ export const getDefaultBaseData = (user?: User) => {
     },
 
     // Arrays
-    updates: [], // Important: is this [] or "[]"
+    updates: [],
     effects: [],
     homebase: [],
     outposts: [],
@@ -197,7 +197,7 @@ export const getDefaultBaseData = (user?: User) => {
     powerups: [], // ToDo: add to DB
     attpowerups: [], // ToDo: add to DB
 
-    // Client saves | not returned
+    // These properties do not get rerturned in base load, why are they here?
     version: 128,
     baseseed: 4520,
     healtime: 0,
@@ -219,7 +219,7 @@ export const getDefaultBaseData = (user?: User) => {
     attackcreatures: {},
     attackloot: {},
     lootreport: {},
-    attackerchampion: "null", // []
+    attackerchampion: "null",
     attackersiege: {},
     purchasecomplete: 0,
     fbpromos: [],

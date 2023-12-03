@@ -59,7 +59,7 @@
     },
     "map": {
         "msg": {
-            "disabled": "The Map Room is currently <b>disabled</b> in Backyard Monsters Refitted. For more information visit out discord."
+            "disabled": "The Map Room is currently <b>disabled</b> in Backyard Monsters Refitted.<br><br>We are aiming to get this working for our <b>beta</b> release.<br><br>For more information join our discord."
         }
     },
     "inferno": {
@@ -190,6 +190,7 @@
             "doneupgrade5": "Lookin' good!",
             "donerepair1": "Finished repair.",
             "donerepair2": "All done!",
+            "busy": "Your worker is currently busy.",
             "xbusy": "All {v1} workers are currently busy.",
             "5busy": "All 5 workers are currently busy.",
             "waitforfinish": "Please wait for a worker to finish their task.",
