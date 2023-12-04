@@ -4,7 +4,7 @@ import { ORMContext } from "../server";
 import { FilterFrontendKeys } from "../utils/FrontendKey";
 import { KoaController } from "../utils/KoaController";
 import { getCurrentDateTime } from "../utils/getCurrentDateTime";
-import { logging } from "../utils/logger";
+import { errorLog, logging } from "../utils/logger";
 
 export const baseSave: KoaController = async (ctx) => {
   const user: User = ctx.authUser;
@@ -17,13 +17,21 @@ export const baseSave: KoaController = async (ctx) => {
 
   // update the save with the values from the request
   for (const key of Save.jsonKeys) {
-    try {
-      ctx.request.body[key] = JSON.parse(ctx.request.body[key]);
-    } catch (error) {
-      // errorLog(`Error parsing JSON for key '${key}': ${error.message}`);
+    const requestBodyValue = ctx.request.body[key];
+  
+    if (requestBodyValue !== undefined) {
+      try {
+        if (Array.isArray(requestBodyValue)) {
+          ctx.request.body[key] = requestBodyValue;
+        } else {
+          ctx.request.body[key] = JSON.parse(requestBodyValue);
+        }
+      } catch (error) {
+        errorLog(`Error parsing JSON for key '${key}': ${error.message}`);
+      }
     }
   }
-
+  
   // Update store data with the new quantity provided the user has funds
   const purchaseString: [string, number] | undefined = (
     ctx.request.body as { purchase?: [string, number] }
