@@ -18,11 +18,8 @@ export const baseSave: KoaController = async (ctx) => {
   // Update the save with the values from the request
   for (const key of Save.jsonKeys) {
     const requestBodyValue = ctx.request.body[key];
-
     if (requestBodyValue) {
-      if (Array.isArray(requestBodyValue)) {
-        ctx.request.body[key] = requestBodyValue;
-      } else {
+      if (!Array.isArray(requestBodyValue)) {
         ctx.request.body[key] = JSON.parse(requestBodyValue);
       }
     }
