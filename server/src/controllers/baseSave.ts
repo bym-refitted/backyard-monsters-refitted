@@ -13,15 +13,29 @@ export const baseSave: KoaController = async (ctx) => {
   await ORMContext.em.populate(user, ["save"]);
   let save = user.save;
 
+  // Parse all the keys in the request
+  for (const key of Save.jsonKeys) {
+    if (ctx.request.body[key] === undefined) {
+      continue;
+    }
+
+    ctx.request.body[key] = JSON.parse(ctx.request.body[key]);
+  }
+
+  // Copy the basesaveid
   ctx.session.basesaveid = save.basesaveid;
 
-  // update the save with the values from the request
-  for (const key of Save.jsonKeys) {
-    try {
-      ctx.request.body[key] = JSON.parse(ctx.request.body[key]);
-    } catch (error) {
-      // errorLog(`Error parsing JSON for key '${key}': ${error.message}`);
-    }
+  // Update resources with the delta sent from the client 
+  if (ctx.request.body['resources'] !== undefined) {
+    const storeResources = save.resources;
+    const clientResources = ctx.request.body['resources'];
+
+    storeResources['r1'] += clientResources['r1'];
+    storeResources['r2'] += clientResources['r2'];
+    storeResources['r3'] += clientResources['r3'];
+    storeResources['r4'] += clientResources['r4'];
+
+    delete ctx.request.body['resources'];
   }
 
   // Update store data with the new quantity provided the user has funds
@@ -61,6 +75,8 @@ export const baseSave: KoaController = async (ctx) => {
     basesaveid: save.basesaveid,
     installsgenerated: 42069,
   };
+
+  // filteredSave.credits = 6969;
 
   ctx.status = 200;
   ctx.body = {

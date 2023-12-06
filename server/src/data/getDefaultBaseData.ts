@@ -145,8 +145,8 @@ export const getDefaultBaseData = (user?: User) => {
     coords: {},
     quests: {},
     resources: {
-      r1: 1600,
-      r2: 1600,
+      r1: 0,
+      r2: 0,
       r3: 0,
       r4: 0,
       r1max: 10000,
