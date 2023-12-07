@@ -37,6 +37,11 @@ export const baseSave: KoaController = async (ctx) => {
     storeResources['r2'] += clientResources['r2'];
     storeResources['r3'] += clientResources['r3'];
     storeResources['r4'] += clientResources['r4'];
+    
+    storeResources['r1max'] = clientResources['r1max'];
+    storeResources['r2max'] = clientResources['r2max'];
+    storeResources['r3max'] = clientResources['r3max'];
+    storeResources['r4max'] = clientResources['r4max'];
 
     delete ctx.request.body['resources'];
   }
