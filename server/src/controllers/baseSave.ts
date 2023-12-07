@@ -4,7 +4,7 @@ import { ORMContext } from "../server";
 import { FilterFrontendKeys } from "../utils/FrontendKey";
 import { KoaController } from "../utils/KoaController";
 import { getCurrentDateTime } from "../utils/getCurrentDateTime";
-import { logging } from "../utils/logger";
+import { logging, errorLog } from "../utils/logger";
 
 export const baseSave: KoaController = async (ctx) => {
   const user: User = ctx.authUser;
@@ -82,6 +82,8 @@ export const baseSave: KoaController = async (ctx) => {
     // Process purchase cost for shiny usage
     switch (item)
     {
+      // Note: we we should check for negative quantity in each of these cases
+
       // Instant Build
       case "IB":
         logging(`Player purchased Instant Build (cost: ${quantity})`);
@@ -122,6 +124,28 @@ export const baseSave: KoaController = async (ctx) => {
             break;
         }
 
+        break;
+
+      // Mushroom with 3 shiny
+      case "MUSHROOM1":
+        logging(`Player picked MUSHROOM1 (3 shiny)`);
+
+        if (quantity !== 1) {
+          errorLog(`Unusual mushroom quantity! Found: ${quantity}. Possible hack?`);
+        }
+
+        save.credits += 3;
+        break;
+
+      // Mushroom with 8 shiny
+      case "MUSHROOM2":
+        logging(`Player picked MUSHROOM2 (8 shiny)`);
+
+        if (quantity !== 1) {
+          errorLog(`Unusual mushroom quantity! Found: ${quantity}. Possible hack?`);
+        }
+
+        save.credits += 8;
         break;
 
       default:
