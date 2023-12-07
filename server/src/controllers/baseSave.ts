@@ -12,14 +12,15 @@ export const baseSave: KoaController = async (ctx) => {
 
   await ORMContext.em.populate(user, ["save"]);
   let save = user.save;
-
-  // Parse all the keys in the request
+  
+  // Update the save with the values from the request
   for (const key of Save.jsonKeys) {
-    if (ctx.request.body[key] === undefined) {
-      continue;
+    const requestBodyValue = ctx.request.body[key];
+    if (requestBodyValue) {
+      if (!Array.isArray(requestBodyValue)) {
+        ctx.request.body[key] = JSON.parse(requestBodyValue);
+      }
     }
-
-    ctx.request.body[key] = JSON.parse(ctx.request.body[key]);
   }
 
   // Copy the basesaveid
@@ -38,24 +39,19 @@ export const baseSave: KoaController = async (ctx) => {
     delete ctx.request.body['resources'];
   }
 
-  // Update store data with the new quantity provided the user has funds
-  const purchaseString: [string, number] | undefined = (
-    ctx.request.body as { purchase?: [string, number] }
-  )?.purchase;
-
+  // Update 'storedata' with the new purchased item & quantity
+  const purchaseString: string | undefined = (ctx.request.body as any)
+    ?.purchase;
+  
   if (purchaseString) {
-    const purchase: [string, number] = purchaseString;
+    const purchaseArray: [string, number] = JSON.parse(purchaseString);
+    const [item, quantity] = purchaseArray;
 
-    const [item, quantity] = purchase;
     const storeData = save.storedata || {};
 
-    if (storeData[item]) {
-      storeData[item].q += quantity;
-    } else {
-      storeData[item] = {
-        q: quantity,
-      };
-    }
+    storeData[item] = {
+      q: (storeData[item]?.q || 0) + quantity,
+    };
 
     save.storedata = storeData;
   }

@@ -64,7 +64,7 @@
     },
     "inferno": {
         "msg": {
-            "disabled": "Inferno is currently <b>disabled</b> in Backyard Monsters Refitted. For more information visit out discord."
+            "disabled": "Inferno is currently <b>disabled</b> in Backyard Monsters Refitted. For more information visit our discord."
         }
     },
     "base": {
@@ -111,7 +111,7 @@
         },
         "unlock": {
             "start": "<b>Unlocking {v1}</b><br>Will be completed in {v2}",
-            "complete": "<b>{v1} unlocked in Hatchery</b>"
+            "complete": "<b>{v1} unlocked in {v2}</b>"
         },
         "levelup": {
             "title": "Congratulations!",
