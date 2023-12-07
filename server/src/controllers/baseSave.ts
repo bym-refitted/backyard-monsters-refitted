@@ -12,7 +12,7 @@ export const baseSave: KoaController = async (ctx) => {
 
   await ORMContext.em.populate(user, ["save"]);
   let save = user.save;
-  
+
   // Update the save with the values from the request
   for (const key of Save.jsonKeys) {
     const requestBodyValue = ctx.request.body[key];
@@ -22,6 +22,8 @@ export const baseSave: KoaController = async (ctx) => {
       }
     }
   }
+
+  logging(`Base save data: ${JSON.stringify(ctx.request.body)}`);
 
   // Copy the basesaveid
   ctx.session.basesaveid = save.basesaveid;
@@ -39,6 +41,28 @@ export const baseSave: KoaController = async (ctx) => {
     delete ctx.request.body['resources'];
   }
 
+  // Update building health data with data sent from the client 
+  if (ctx.request.body['buildinghealthdata'] === undefined) {
+    if (save.buildinghealthdata !== undefined) {
+      delete save.buildinghealthdata
+    }
+  } 
+  else {
+    save.buildinghealthdata = ctx.request.body['buildinghealthdata'];
+  }
+
+  // Update buiding upgrade data with data sent from the client 
+  if (ctx.request.body['buildingdata'] !== undefined) {
+    save.buildingdata = ctx.request.body['buildingdata'];
+  }
+
+  // Update AI attack data
+  if (ctx.request.body['aiattacks'] !== undefined) {
+    save.aiattacks = ctx.request.body['aiattacks'];
+
+    delete ctx.request.body['aiattacks'];
+  }
+
   // Update 'storedata' with the new purchased item & quantity
   const purchaseString: string | undefined = (ctx.request.body as any)
     ?.purchase;
@@ -54,6 +78,56 @@ export const baseSave: KoaController = async (ctx) => {
     };
 
     save.storedata = storeData;
+
+    // Process purchase cost for shiny usage
+    switch (item)
+    {
+      // Instant Build
+      case "IB":
+        logging(`Player purchased Instant Build (cost: ${quantity})`);
+        save.credits -= quantity;
+        break;
+
+      // Instant Upgrade
+      case "IU":
+        logging(`Player purchased Instant Upgrade (cost: ${quantity})`);
+        save.credits -= quantity;
+        break;
+
+      // Instant Fortify
+      case "IF":
+        logging(`Player purchased Instant Fortify (cost: ${quantity})`);
+        save.credits -= quantity;
+        break;
+
+      // SP4 (SPeed 4?)
+
+      // Workers
+      case "BEW":
+        var new_worker_count = (save.storedata['BEW'] !== undefined) ? (save.storedata['BEW']['q'] + 1) : 1;
+        logging(`Player purchased worker ${new_worker_count}`);
+
+        switch (new_worker_count) {
+          case 2:
+            save.credits -= 250;
+            break;
+          case 3:
+            save.credits -= 500;
+            break;
+          case 4:
+            save.credits -= 1000;
+            break;
+          case 5:
+            save.credits -= 2000;
+            break;
+        }
+
+        break;
+
+      default:
+        logging(`Unhandled purchase! Item: ${item}, quantity: ${quantity}`);
+        break;
+    }
   }
 
   // Update the save timestamp
@@ -71,8 +145,6 @@ export const baseSave: KoaController = async (ctx) => {
     basesaveid: save.basesaveid,
     installsgenerated: 42069,
   };
-
-  // filteredSave.credits = 6969;
 
   ctx.status = 200;
   ctx.body = {
