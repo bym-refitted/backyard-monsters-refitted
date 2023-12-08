@@ -1,5 +1,6 @@
 import { Save } from "../models/save.model";
-import { logging } from "../utils/logger";
+import { errorLog } from "../utils/logger";
+import { storeItems } from "./storeItems";
 
 /**
  *  Keeps track of shiny (credits) spent and obtained.
@@ -8,65 +9,47 @@ import { logging } from "../utils/logger";
  * @param {number} quantity - The quantity of the item affecting credit changes.
  */
 export const updatedCredits = (save: Save, item: string, quantity: number) => {
-  switch (item) {
-    case "IB":
-    case "IU":
-    case "IF":
-      save.credits -= quantity;
-      break;
-
-    case "BEW":
-      const purchaseWorker = (save.storedata["BEW"]?.q || 0) + quantity;
-      switch (purchaseWorker) {
-        case 2:
-          save.credits -= 250;
-          break;
-        case 3:
-          save.credits -= 500;
-          break;
-        case 4:
-          save.credits -= 1000;
-          break;
-        case 5:
-          save.credits -= 2000;
-          break;
-      }
-      break;
-
-    case "ENL":
-      const purchaseExpansion = (save.storedata["ENL"]?.q || 0) + quantity;
-      switch (purchaseExpansion) {
-        case 2:
-          save.credits -= 50;
-          break;
-        case 3:
-          save.credits -= 100;
-          break;
-        case 4:
-          save.credits -= 150;
-          break;
-        case 5:
-          save.credits -= 200;
-          break;
-        case 6:
-          save.credits -= 250;
-          break;
-        case 7:
-          save.credits -= 300;
-          break;
-      }
-      break;
-
-    case "MUSHROOM1":
-      save.credits += 25;
-      break;
-
-    case "MUSHROOM2":
-      save.credits += 50;
-      break;
-
-    default:
-      logging(`Unhandled purchase! Item: ${item}, quantity: ${quantity}`);
-      break;
+  if (quantity <= 0) {
+    errorLog(`PLayer tried to purchase an invalid quantity! Name: ${item}, quantity: ${quantity}`);
+    return;
   }
+
+  /* Manual handling for mushrooms, since they aren't in the store */
+  if (item == "MUSHROOM1") {
+    save.credits += 25;
+    return;
+  }
+
+  if (item == "MUSHROOM2") {
+    save.credits += 50;
+    return;
+  }
+
+  /* XXX: Aren't in storeItems for some reason? Should we add them? */
+  if (item == "IU" ||
+      item == "IF") {
+    save.credits -= quantity;
+    return;
+  }
+
+  const storeItem = storeItems[item];
+
+  if (storeItem === undefined) {
+    errorLog(`Player tried to purchase an unknown item! Name: ${item}, quantity: ${quantity}`);
+    return;
+  }
+
+  var itemCost = storeItem.c[0];
+
+  if (storeItem.c.length > 1) {
+    /* The item has a scaling cost depending on how many of that item the player currently owns */
+    /* We subtract 1 here since the item will've been already added to the player's save by the caller */
+    var currentQuantity = save.storedata[item].q - 1;
+    itemCost = storeItem.c[currentQuantity];
+  }
+
+  /* Multiply the cost by the quantity purchased */
+  itemCost *= quantity;
+
+  save.credits -= itemCost;
 };
