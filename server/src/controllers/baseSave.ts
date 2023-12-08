@@ -19,17 +19,22 @@ export const baseSave: KoaController = async (ctx) => {
   // Update the save with the values from the request
   for (const key of Save.jsonKeys) {
     const requestBodyValue = ctx.request.body[key];
-    if (requestBodyValue) {
-      if (!Array.isArray(requestBodyValue)) {
-        ctx.request.body[key] = JSON.parse(requestBodyValue);
-      }
+    
+    if (requestBodyValue === undefined) {
+      continue;
     }
+
+    if (Array.isArray(requestBodyValue)) {
+      continue;
+    }
+    
+    ctx.request.body[key] = JSON.parse(requestBodyValue);
   }
 
   // Update 'storedata' with the new purchased item & quantity
   const purchaseString: string | undefined = (ctx.request.body as any)?.purchase;
   if (purchaseString) {
-    const [item, quantity]: [string, number] = JSON.parse(purchaseString);;
+    const [item, quantity]: [string, number] = JSON.parse(purchaseString);
 
     const storeData: FieldData = save.storedata || {};
     storeData[item] = {
