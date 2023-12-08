@@ -7,6 +7,7 @@ interface StoreItem {
   a: number; // unknown
 }
 
+// ToDo: update duration and other related values dynamically
 export const storeItems: { [key: string]: StoreItem }  = {
   BEW: {
     t: "1 Extra Worker",
