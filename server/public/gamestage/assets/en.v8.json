@@ -259,6 +259,10 @@
         "feednow": "Feed Now",
         "dailyfeed": "Daily Feed",
         "juiceguardian": "Juice Champion",
+        "krallen": "Krallen",
+        "openchamber": "Open Chamber",
+        "thawname": "Thaw {v1}",
+        "freezename": "Freeze {v1}",
         "housing": {
             "heal": {
                 "all": "Heal All Instantly - {v1} Shiny"
@@ -283,6 +287,11 @@
         "msgFullBuff": "Your champion is fully buffed!",
         "instantBuffAdd": "Add another buff instantly with Shiny!",
         "feedBuffDesc": "Each day you feed your Champion Monster will further improve his abilities, up to a maximum of three times. Careful though, if he's not fed everyday, he will weaken."
+    },
+    "chamber": {
+        "title": "CHAMPION CHAMBER",
+        "level": "Level {v1}",
+        "thawstreamdesc": "Awakened from an icy slumber,<br>{v1} is ready to do some damage."
     },
     "bunker": {
         "btn": {
@@ -377,7 +386,8 @@
         "desc": "Hatch and Evolve a Champion Monster to attack enemies and defend your base."
     },
     "championchamber": {
-        "desc": "This building allows you to change out your active champ, keeping inactive ones safe on ice until you call them forth again. (Frozen champs aren't hurt even when the Champion Chamber is completely destroyed.)"
+        "desc": "This building allows you to change out your active champion, keeping inactive ones safe on ice until you call them forth again. (Frozen champs aren't hurt even when the Champion Chamber is completely destroyed.)",
+        "alreadyfrozen": "<b>{v1}</b> is already frozen in your <b>Champion Chamber.</b>"
     },
     "heavytrap": {
         "desc": "Invisible to your enemies until it's too late, Heavy Traps use a specialized trigger that only fires when the most powerful monsters step on it, but cause splash damage to all nearby units."
@@ -480,6 +490,23 @@
             "cost": "Cost"
         }
     },
+    "koth": {
+        "bardesc": {
+            "time": "Completed",
+            "loot": "Looted"
+        }
+    },
+    "krallen": {
+        "desc": "<b>Hunt for Krallen:</b><br>Krallen is quite particular about who wields the power -- he only obeys top looters. Hit your resource looting quota each week to keep him happy, or he'll leave you for the next powerful player he can find. Impress him by going above and beyond with your looting, and he'll learn a special ability. Hold him for consecutive weeks, and he'll only grow stronger and more rabid for loot.",
+        "looted": "Resources Looted:",
+        "remaining": "Time Remaining:"
+    },
+    "krallenquota1": {
+        "tooltip": "Krallen: {v1}"
+    },
+    "krallenquota2": {
+        "tooltip": "Krallen: {v1}"
+    },
     "mon": {
         "drulltitle": "DRULL<br>High Attack",
         "gorgotitle": "GORGO<br>High Defense",
@@ -489,6 +516,7 @@
         "gorgodesc": "Discovered inside the Bermuda Triangle, Gorgo is a powerful 'tank' monster of simian origin.",
         "fomordesc": "Known in the nothern isles as the 'Flying Frog of Death', Fomor's presence provides a 'buff' to your monster army, granting armor and speed to nearby monsters.",
         "korathdesc": "Spawned in the magma pits of Inferno, Korath uses his massive body and fiery core to eliminate enemies.",
+        "krallendesc": "Born in the blood-soaked grasslands of southeast Asia, Krallen can survive in any climate - wet or dry. He thinks only of his next kill.",
         "pokeydesc": "Like a swarm of ants, a roaming pack of Pokeys can devour a grown cow in less than five minutes.<br><b>Favorite Target:</b> Anything",
         "octooozedesc": "The slimy octo-ooze soaks up fire power like a sponge so other monsters can wreak havoc.<br><b>Favorite Target:</b> Defensive Towers",
         "boltdesc": "Bolt is fast as lightning and can run ahead of your other monsters to munch on buildings with its razor sharp teeth.<br><b>Favorite Target:</b> Harvesters, Town Halls and Silos",
@@ -549,6 +577,9 @@
         },
         "housing": {
             "capacitydesc": "Increases housing capacity from {v1} to {v2}."
+        },
+        "chamber": {
+            "recycle": "You cannot recycle your Champion Chamber since it has frozen champions inside."
         },
         "fullyupgraded": "Fully Upgraded!",
         "buildingrequirement": "Level {v1} {v2}",
