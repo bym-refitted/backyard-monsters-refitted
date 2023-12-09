@@ -1,4 +1,4 @@
-interface StoreItem {
+export interface StoreItem {
   t: string; // Title
   d: string; // Description
   du: number; // Duration

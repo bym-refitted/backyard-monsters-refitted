@@ -13,8 +13,8 @@ export interface Resources {
 
 /**
  * Updates the resources with the delta sent from the client.
- * @param {Resources} resources The request body containing the resources.
- * @param {FieldData} saveResources The existing saved resources.
+ * @param {Resources} resources - The request body containing the resources.
+ * @param {FieldData} saveResources - The existing saved resources.
  * @returns Updated resources after applying the delta.
  */
 export const updateResources = (resources: Resources, saveResources: FieldData) => {

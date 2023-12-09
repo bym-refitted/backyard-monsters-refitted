@@ -1,4 +1,4 @@
-import { updatedCredits } from "../data/updateCredits";
+import { updateCredits } from "../data/updateCredits";
 import { Resources, updateResources } from "../data/updateResources";
 import { FieldData, Save } from "../models/save.model";
 import { User } from "../models/user.model";
@@ -19,16 +19,10 @@ export const baseSave: KoaController = async (ctx) => {
   // Update the save with the values from the request
   for (const key of Save.jsonKeys) {
     const requestBodyValue = ctx.request.body[key];
-    
-    if (requestBodyValue === undefined) {
-      continue;
-    }
 
-    if (Array.isArray(requestBodyValue)) {
-      continue;
+    if (requestBodyValue && !Array.isArray(requestBodyValue)) {
+      ctx.request.body[key] = JSON.parse(requestBodyValue);
     }
-    
-    ctx.request.body[key] = JSON.parse(requestBodyValue);
   }
 
   // Update 'storedata' with the new purchased item & quantity
@@ -42,12 +36,15 @@ export const baseSave: KoaController = async (ctx) => {
     };
 
     save.storedata = storeData;
-    updatedCredits(save, item, quantity);
+    updateCredits(save, item, quantity);
   }
 
   // Update resources with the delta sent from the client
   const resources: Resources | undefined = (ctx.request.body as any)?.resources;
-  const savedResources: FieldData = updateResources(resources, save.resources || {});
+  const savedResources: FieldData = updateResources(
+    resources,
+    save.resources || {}
+  );
   save.resources = savedResources;
   delete (ctx.request.body as any)?.resources;
 
