@@ -21,6 +21,7 @@ import { recordDebugData } from "./controllers/debug/recordDebugData";
 const router = new Router();
 
 // Init route
+router.get("/api/bm/getnewmap", debugDataLog("Posting to new maproom"), getNewMap);
 router.post("/api/bm/getnewmap", debugDataLog("Posting to new maproom"), getNewMap);
 
 // Auth

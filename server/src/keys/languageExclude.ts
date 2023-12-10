@@ -9,4 +9,12 @@ export const exclusionList = [
   "hat_producing",
   "fp_radiotower",
   "map_cannot_recycle_map_room3",
+  "str_top_fill_label",
+  "str_top_10pct_noroom",
+  "str_top_50pct_noroom",
+  "str_30minutes_desc",
+  "str_60minutes_desc",
+  "str_finishnow",
+  "str_closeenough_desc_ok",
+  "str_closeenough"
 ];
