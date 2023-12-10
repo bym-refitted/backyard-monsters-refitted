@@ -586,13 +586,45 @@
         "ui": {
             "completed": "Completed. Click \"Collect\""
         },
+		"unlock": {
+			"name": "Unlock {v1}",
+			"description": "Unlock {v1} in the Monster Locker"
+		},
         "u1": {
             "name": "Next Level",
             "description": "Upgrade any building to Level 2"
         },
+		"bl1": {
+			"name": "Monster Juice",
+			"description": "Blend 10 monsters"
+		},
+		"bl2": {
+			"name": "Monster Smoothie",
+			"description": "Blend 100 monsters"
+		},
+		"bl3": {
+			"name": "Monster Milkshake",
+			"description": "Blend 1000 monsters"
+		},
+		"bl4": {
+			"name": "Monster Margarita",
+			"description": "Blend 5000 monsters"
+		},
         "bk1": {
-            "name": "Mushroom Soup",
-            "description": "Pick 5 Mushrooms"
+            "name": "Resource Gatherer",
+            "description": "Bank 1,000 Resources with a single click."
+        },
+        "bk2": {
+            "name": "Resource Collector",
+            "description": "Bank 20,000 Resources with a single click."
+        },
+        "bk3": {
+            "name": "Resource Trader",
+            "description": "Bank 100,000 Resources with a single click."
+        },
+        "bk4": {
+            "name": "Resource Mogul",
+            "description": "Bank 500,000 Resources with a single click."
         },
         "t1": {
             "name": "Sniper Tower",
@@ -606,6 +638,10 @@
             "name": "Tesla Tower",
             "description": "Build a Tesla Tower"
         },
+		"cr1": {
+			"name": "Monster Locker",
+			"description": "Build a Monster Locker"
+		},
         "cr2": {
             "name": "Start Hatching",
             "description": "Build a Hatchery"
@@ -614,6 +650,30 @@
             "name": "Home Sweet Home",
             "description": "Build Monster Housing"
         },
+        "cm1": {
+            "name": "Hatch Gorgo",
+            "description": "Hatch Gorgo in the Champion Cage"
+        },
+        "cm2": {
+            "name": "Gorgo the Great",
+            "description": "Evolve Gorgo to level 6 in the Champion Cage"
+        },
+		"cm3": {
+			"name": "Hatch Drull",
+			"description": "Hatch Drull in the Champion Cage"
+		},
+		"cm4": {
+			"name": "Drull the Destroyer",
+			"description": "Evolve Drull to level 6 in the Champion Cage"
+		},
+		"cm5": {
+			"name": "Hatch Fomor",
+			"description": "Hatch Fomor in the Champion Cage"
+		},
+		"cm6": {
+			"name": "Fomor the Fearless",
+			"description": "Evolve Fomor to level 6 in the Champion Cage"
+		},
         "c3": {
             "name": "Next Level II",
             "description": "Upgrade one of each resource building to level 2"
@@ -643,8 +703,8 @@
             "description": "Upgrade your Pebble Shiner to Level 3"
         },
         "c11": {
-            "name": "Level 3 Putty Squiser",
-            "description": "Upgrade your Putty Squiser to Level 3"
+            "name": "Level 3 Putty Squisher",
+            "description": "Upgrade your Putty Squisher to Level 3"
         },
         "c12": {
             "name": "Level 3 Goo Factory",
@@ -674,9 +734,21 @@
             "name": "Flinger",
             "description": "Build a Flinger"
         },
+		"c51": {
+			"name": "Catapult",
+			"description": "Build a Catapult"
+		},
         "ga1": {
-            "name": "End Radio Silence",
-            "description": "Build the Radio Tower to get email alerts"
+            "name": "The Gift of Giving",
+            "description": "Have 5 gifts accepted by your friends"
+        },
+        "ga2": {
+            "name": "Monster Gifts",
+            "description": "Have 25 gift accepted by your friends"
+        },
+        "ga3": {
+            "name": "Santa Monster",
+            "description": "Have 50 gifts accepted by your friends"
         },
         "d1": {
             "name": "First Blood",
@@ -701,7 +773,55 @@
         "s5": {
             "name": "Storage Silo Level 5",
             "description": "Upgrade your Storage Silo to Level 5"
-        }
+        },
+		"wm1": {
+			"name": "Junior Destroyer",
+			"description": "Destroy the Legionnnaire Tribe's Town Hall"
+		},
+		"wm2": {
+			"name": "Novice Destroyer",
+			"description": "Destroy the Kozu Tribe's Town Hall"
+		},
+		"wm3": {
+			"name": "Savage Destroyer",
+			"description": "Destroy the Abunakki Tribe's Town Hall"
+		},
+		"wm4": {
+			"name": "Dread Destroyer",
+			"description": "Destroy the Dreadnaut Tribe's Town Hall"
+		},
+		"unlockweapon": {
+			"name": "Unlock {v1}",
+			"desc": "Unlock {v1} in the Chaos Lab"
+		},
+		"upgradeweapon": {
+			"name": "Upgrade {v1}",
+			"desc": "Upgrade {v1} to level {v2}"
+		},
+		"m1": {
+			"name": "Mushroom Soup",
+			"description": "Pick 5 Mushrooms"
+		},
+		"m2": {
+			"name": "Mushroom Pizza",
+			"description": "Pick 100 Mushrooms"
+		},
+		"m3": {
+			"name": "Mushroom Burger",
+			"description": "Pick 200 Mushrooms"
+		},
+		"m4": {
+			"name": "Golden Mushroom Booty",
+			"description": "Pick 5 Golden Mushrooms"
+		},
+		"m5": {
+			"name": "Golden Mushroom Bling",
+			"description": "Pick 20 Golden Mushrooms"
+		},
+		"m6": {
+			"name": "Golden Mushroom Jackpot",
+			"description": "Pick 50 Golden Mushrooms"
+		}
     },
     "settings": {
         "zoomout": "Zoom Out",
