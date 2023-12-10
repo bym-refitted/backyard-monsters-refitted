@@ -4721,6 +4721,8 @@ export const midGameBase = {
   },
   error: 0,
   currenttime: 1599673608,
+
+  // The game needs these from baseLoad, but it was never originally used??
   version: 128,
   baseseed: 4520,
   healtime: 0,
@@ -4738,14 +4740,17 @@ export const midGameBase = {
   gifts: [],
   sentinvites: [],
   sentgifts: [],
+  powerups: [],
+  attpowerups: [],
   purchase: {},
   attackcreatures: {},
   attackloot: {},
   lootreport: {},
-  attackerchampion: "null", // []
+  attackerchampion: "null",
   attackersiege: {},
   purchasecomplete: 0,
   fbpromos: [],
+
   h: "ae97913c98ef788e15ad6009f5658fc7",
   hn: 3884747,
 };

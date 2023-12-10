@@ -3,6 +3,7 @@ import { Save } from "../models/save.model";
 import { ORMContext } from "../server";
 import { FilterFrontendKeys } from "../utils/FrontendKey";
 import { KoaController } from "../utils/KoaController";
+import { getCurrentDateTime } from "../utils/getCurrentDateTime";
 
 export const updateSaved: KoaController = async (ctx) => {
   const basesaveid = ctx.session.basesaveid;
@@ -13,6 +14,13 @@ export const updateSaved: KoaController = async (ctx) => {
     ctx.body = { message: "Save not updated" };
     return;
   }
+
+  // Update the save timestamp
+  save.savetime = getCurrentDateTime();
+  // Set the id field (_lastSaveID) to be the same as savetime, client expects this.
+  save.id = save.savetime;
+
+  await ORMContext.em.persistAndFlush(save);
 
   const filteredSave = FilterFrontendKeys(save);
 

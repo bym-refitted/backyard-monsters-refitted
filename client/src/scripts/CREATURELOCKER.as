@@ -974,9 +974,10 @@ package
                   mc.bSpeedup.addEventListener(MouseEvent.CLICK,StreamPost(KEYS.Get(creature.stream[0]),_body,img));
                   mc.bSpeedup.Highlight = true;
                   mc.bAction.visible = false;
+                  var buildingPropsName = GLOBAL._bHatchery ? GLOBAL._bHatchery._buildingProps.name : KEYS.Get("#b_hatchery#");
                   mc.tText.htmlText = KEYS.Get("pop_unlock_complete",{
                      "v1":KEYS.Get(CREATURELOCKER._creatures[_unlocking].name),
-                     "v2":GLOBAL._bHatchery._buildingProps.name
+                     "v2": buildingPropsName ? buildingPropsName : KEYS.Get("#b_hatchery#")
                   });
                   POPUPS.Push(mc,null,null,null,_unlocking + "-150.png");
                }

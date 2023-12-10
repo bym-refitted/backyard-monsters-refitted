@@ -1,8 +1,11 @@
-import { Save } from "../models/save.model";
+import { updateCredits } from "../data/updateCredits";
+import { Resources, updateResources } from "../data/updateResources";
+import { FieldData, Save } from "../models/save.model";
 import { User } from "../models/user.model";
 import { ORMContext } from "../server";
 import { FilterFrontendKeys } from "../utils/FrontendKey";
 import { KoaController } from "../utils/KoaController";
+import { getCurrentDateTime } from "../utils/getCurrentDateTime";
 import { logging } from "../utils/logger";
 
 export const baseSave: KoaController = async (ctx) => {
@@ -11,41 +14,69 @@ export const baseSave: KoaController = async (ctx) => {
 
   await ORMContext.em.populate(user, ["save"]);
   let save = user.save;
-
   ctx.session.basesaveid = save.basesaveid;
 
-  // update the save with the values from the request
+  // Update the save with the values from the request
   for (const key of Save.jsonKeys) {
-    try {
-      ctx.request.body[key] = JSON.parse(ctx.request.body[key]);
-    } catch (error) {
-      // errorLog(`Error parsing JSON for key '${key}': ${error.message}`);
+    const requestBodyValue = ctx.request.body[key];
+
+    if (requestBodyValue && !Array.isArray(requestBodyValue)) {
+      ctx.request.body[key] = JSON.parse(requestBodyValue);
     }
   }
 
-  // Update store data with the new quantity provided the user has funds
-  const purchaseString: [string, number] | undefined = (
-    ctx.request.body as { purchase?: [string, number] }
-  )?.purchase;
-
+  // Update 'storedata' with the new purchased item & quantity
+  const purchaseString: string | undefined = (ctx.request.body as any)?.purchase;
   if (purchaseString) {
-    const purchase: [string, number] = purchaseString;
+    const [item, quantity]: [string, number] = JSON.parse(purchaseString);
 
-    const [item, quantity] = purchase;
-    const storeData = save.storedata || {};
-
-    if (storeData[item]) {
-      storeData[item].q += quantity;
-    } else {
-      storeData[item] = {
-        q: quantity,
-      };
-    }
+    const storeData: FieldData = save.storedata || {};
+    storeData[item] = {
+      q: (storeData[item]?.q || 0) + quantity,
+    };
 
     save.storedata = storeData;
+    updateCredits(save, item, quantity);
   }
 
-  // Equivalent to Object.assign() - merges second object onto entity
+  // Update resources with the delta sent from the client
+  const resources: Resources | undefined = (ctx.request.body as any)?.resources;
+  const savedResources: FieldData = updateResources(
+    resources,
+    save.resources || {}
+  );
+  save.resources = savedResources;
+  delete (ctx.request.body as any)?.resources;
+
+  // Update building health data with data sent from the client
+  if (ctx.request.body["buildinghealthdata"] === undefined) {
+    if (save.buildinghealthdata !== undefined) {
+      delete save.buildinghealthdata;
+    }
+  } else {
+    save.buildinghealthdata = ctx.request.body["buildinghealthdata"];
+  }
+
+  // Update buiding data with data sent from the client
+  if (ctx.request.body["buildingdata"] !== undefined) {
+    save.buildingdata = ctx.request.body["buildingdata"];
+  }
+
+  // Update AI attack data
+  if (ctx.request.body["aiattacks"] !== undefined) {
+    save.aiattacks = ctx.request.body["aiattacks"];
+
+    delete ctx.request.body["aiattacks"];
+  }
+
+  // Update the save timestamp
+  save.savetime = getCurrentDateTime();
+  // Set the id field (_lastSaveID) to be the same as savetime, client expects this.
+  save.id = save.savetime;
+
+  // ToDo: This needs to be revisted, we should not be merging these objects for everything
+  // e.g. the client deletes certain properties on an object, however it never gets deleted properly here
+  // because we merge instead of replace.
   ORMContext.em.assign(save, ctx.request.body);
   await ORMContext.em.persistAndFlush(save);
 

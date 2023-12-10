@@ -839,6 +839,7 @@ package
             _lastProcessed = int(serverData.savetime);
             GLOBAL.t = _lastProcessed;
             _currentTime = int(serverData.currenttime);
+            // Comment: If the _lastProcessed time is older than 2 days from the current time, it updates _lastProcessed to be 2 days before the current time. 
             if(_lastProcessed < _currentTime - 60 * 60 * 24 * 2)
             {
                _lastProcessed = _currentTime - 60 * 60 * 24 * 2;
@@ -1009,7 +1010,7 @@ package
             {
                UPDATES._lastUpdateID = 0;
             }
-            serverData.mushrooms = {} // Reminder: This is not real
+            
             if(serverData.mushrooms.l)
             {
                _mushroomList = serverData.mushrooms.l;
@@ -2126,6 +2127,7 @@ package
          _bankedValue = 0;
          GLOBAL.t = _lastProcessed;
          _lastProcessedB = _lastProcessed;
+         // Comment: This is used for if the Flash Player window is out of focus and becomes suspended, on resume, catch-up to the current time
          _catchupTime = _currentTime - _lastProcessed;
          if(!isInfernoMainYardOrOutpost && !MapRoomManager.instance.isInMapRoom3)
          {
@@ -3125,6 +3127,7 @@ package
          return _loc1_;
       }
       
+      // Comment: This is where we send the calculated resources to the server
       private static function getResourceSaveData() : Object
       {
          return {
@@ -4128,6 +4131,7 @@ package
                {
                   UPDATES.Process(serverData.updates);
                }
+               // Comment: ToDo: this needs to be fixed on the server
                if(serverData.buildingresources)
                {
                   _rawGIP = serverData.buildingresources;

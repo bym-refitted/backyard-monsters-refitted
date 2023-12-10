@@ -1,4 +1,4 @@
-interface StoreItem {
+export interface StoreItem {
   t: string; // Title
   d: string; // Description
   du: number; // Duration
@@ -7,6 +7,7 @@ interface StoreItem {
   a: number; // unknown
 }
 
+// ToDo: update duration and other related values dynamically
 export const storeItems: { [key: string]: StoreItem }  = {
   BEW: {
     t: "1 Extra Worker",

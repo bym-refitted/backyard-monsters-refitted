@@ -76,12 +76,12 @@
     },
     "map": {
         "msg": {
-            "disabled": "The Map Room is currently <b>disabled</b> in Backyard Monsters Refitted. For more information visit out discord."
+            "disabled": "The Map Room is currently <b>disabled</b> in Backyard Monsters Refitted.<br><br>We are aiming to get this working for our <b>beta</b> release.<br><br>For more information join our discord."
         }
     },
     "inferno": {
         "msg": {
-            "disabled": "Inferno is currently <b>disabled</b> in Backyard Monsters Refitted. For more information visit out discord."
+            "disabled": "Inferno is currently <b>disabled</b> in Backyard Monsters Refitted. For more information visit our discord."
         }
     },
     "base": {
@@ -126,7 +126,7 @@
         },
         "unlock": {
             "start": "<b>Unlocking {v1}</b><br>Will be completed in {v2}",
-            "complete": "<b>{v1} unlocked in Hatchery</b>"
+            "complete": "<b>{v1} unlocked in {v2}</b>"
         },
         "levelup": {
             "title": "Congratulations!",
@@ -205,8 +205,11 @@
             "doneupgrade5": "Lookin' good!",
             "donerepair1": "Finished repair.",
             "donerepair2": "All done!",
+            "busy": "Your worker is currently busy.",
             "xbusy": "All {v1} workers are currently busy.",
-            "5busy": "All 5 workers are currently busy."
+            "5busy": "All 5 workers are currently busy.",
+            "waitforfinish": "Please wait for a worker to finish their task.",
+            "impatient": "<b>Please be patient.</b>"
         },
         "producing": "<b>Producing<br>{v1}<br><br>{v2}</b><br>{v3}% FULL",
         "buildingfull": "<b>FULL</b><br /><br /> Production paused, bank to resume production",

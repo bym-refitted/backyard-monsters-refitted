@@ -172,10 +172,6 @@ export class Save {
   @Property()
   relationship!: number;
 
-  @FrontendKey
-  @Property()
-  currenttime!: number;
-
   // Client save primitives
   @FrontendKey
   @Property()
@@ -343,10 +339,6 @@ export class Save {
   // Client save objects
   @FrontendKey
   @Property({ type: "json", nullable: true })
-  purchase?: FieldData;
-
-  @FrontendKey
-  @Property({ type: "json", nullable: true })
   attackcreatures?: FieldData;
 
   @FrontendKey
@@ -446,7 +438,6 @@ export class Save {
     "krallen",
     "siege",
     "buildingresources",
-    "purchase",
     "attackcreatures",
     "attackloot",
     "lootreport",
