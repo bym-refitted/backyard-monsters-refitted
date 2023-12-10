@@ -3,8 +3,8 @@ export interface StoreItem {
   d: string; // Description
   du: number; // Duration
   c: number[]; // Costs
-  i: number; // Index
-  a: number; // unknown
+  i: number; // Inactive
+  a: number; // Active
 }
 
 // ToDo: update duration and other related values dynamically

@@ -659,7 +659,8 @@
             "cooldown": "Cooldown {v1}",
             "xtimes": "You can purchase this up to {v1} times",
             "free": "<b>BUY</b>",
-            "once": "Buy once"
+            "once": "Buy once",
+            "xtimesof": "You have purchased this {v1} out of {v2} times."
         },
         "buyoften": "You can buy this as often as you like",
         "code": {
