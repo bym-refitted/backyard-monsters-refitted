@@ -637,18 +637,18 @@
         },
         "t1": {
             "name": "Sniper Tower",
-            "description": "Build a Sniper Rower",
-            "hint": "Defensive buildings can be built from the 'Defensive' tab."
+            "description": "Build a Sniper Tower",
+            "hint": "The Sniper Tower can be found in the Building Manager under the 'Buildings' button."
         },
         "t2": {
             "name": "Cannon Tower",
             "description": "Build a Cannon Tower",
-            "hint": "Defensive buildings can be built from the 'Defensive' tab."
+            "hint": "The Cannon Tower can be found in the Building Manager under the 'Buildings' button."
         },
         "t3": {
             "name": "Tesla Tower",
             "description": "Build a Tesla Tower",
-            "hint": "Defensive buildings can be built from the 'Defensive' tab."
+            "hint": "The Tesla Tower can be found in the Building Manager under the 'Buildings' button."
         },
         "cm1": {
             "name": "Hatch Gorgo",
@@ -683,17 +683,17 @@
         "cr1": {
             "name": "Monster Locker",
             "description": "Build a Monster Locker",
-            "hint": "Buildings can be built from the 'Buildings' tab."
+            "hint": "The Monster Locker can be found in the Building Manager under the 'Buildings' button."
         },
         "cr2": {
             "name": "Start Hatching",
             "description": "Build a Hatchery",
-            "hint": "Buildings can be built from the 'Buildings' tab."
+            "hint": "The Hatching can be found in the Building Manager under the 'Buildings' button."
         },
         "cr3": {
             "name": "Home Sweet Home",
             "description": "Build Monster Housing",
-            "hint": "Buildings can be built from the 'Buildings' tab."
+            "hint": "The Monster Housing can be found in the Building Manager under the 'Buildings' button."
         },
         "c3": {
             "name": "Next Level II",
@@ -763,17 +763,17 @@
         "c17": {
             "name": "Monster Maps",
             "description": "Build a Map Room",
-            "hint": "Buildings can be built from the 'Buildings' tab."
+            "hint": "The Map Room can be found in the Building Manager under the 'Buildings' button."
         },
         "c18": {
             "name": "Flinger",
             "description": "Build a Flinger",
-            "hint": "Buildings can be built from the 'Buildings' tab."
+            "hint": "The Flinger can be found in the Building Manager under the 'Buildings' button."
         },
         "c51": {
             "name": "Catapult",
             "description": "Build a Catapult",
-            "hint": "Buildings can be built from the 'Buildings' tab."
+            "hint": "The Catapult can be found in the Building Manager under the 'Buildings' button."
         },
         "d1": {
             "name": "First Blood",
