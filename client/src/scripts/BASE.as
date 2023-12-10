@@ -1010,7 +1010,7 @@ package
             {
                UPDATES._lastUpdateID = 0;
             }
-            serverData.mushrooms = {} // Reminder: This is not real
+            
             if(serverData.mushrooms.l)
             {
                _mushroomList = serverData.mushrooms.l;
