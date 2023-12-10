@@ -52,7 +52,7 @@
         "willunlockthe": "<b>You will unlock:</b><br>{v1}",
         "willbuildmore": "You will be able to build more:",
         "willupgrade": "You will be able to upgrade your:",
-        "recycledesc": " You are about to recyle your Town Hall."
+        "recycledesc": "&nbsp;You are about to recyle your Town Hall."
     },
     "newmap": {
         "opening": "Opening Map..."
@@ -252,7 +252,7 @@
         "warnyourfriends": "Warn your friends",
         "cancel": "Cancel",
         "opencage": "Open Cage",
-        "raisechampion":"Raise {v1}",
+        "raisechampion": "Raise {v1}",
         "champion": "Champion",
         "evolution": "Evolution",
         "healchampion": "Heal Champion",
@@ -280,7 +280,7 @@
         "labelSpeed": "Speed",
         "labelBuff": "Buff",
         "day": "Bonus",
-        "feedsFromEvo": " Feeds from Evolution",
+        "feedsFromEvo": "&nbsp;Feeds from Evolution",
         "nextFeedIn": "Feed Me In",
         "instantEvolve": "Evolve your Champion instantly!",
         "msgNotHungry": "Your champion is not hungry.",
@@ -612,123 +612,321 @@
         "good": "Good",
         "evil": "Evil",
         "ui": {
+            "hint": "Hint:",
             "completed": "Completed. Click \"Collect\""
+        },
+        "unlockweapon": {
+            "name": "Unlock {v1}",
+            "desc": "Unlock {v1} in the Chaos Lab",
+            "hint": "You can unlock chaos weapons in the Chaos Lab."
+        },
+        "upgradeweapon": {
+            "name": "Upgrade {v1}",
+            "desc": "Upgrade {v1} in the Chaos Lab",
+            "hint": "You can upgrade chaos weapons in the Chaos Lab."
+        },
+        "unlock": {
+            "name": "Unlock {v1}",
+            "description": "Unlock {v1} in the Monster Locker",
+            "hint": "You can unlock monsters in the Monster Locker."
         },
         "u1": {
             "name": "Next Level",
-            "description": "Upgrade any building to Level 2"
-        },
-        "bk1": {
-            "name": "Mushroom Soup",
-            "description": "Pick 5 Mushrooms"
+            "description": "Upgrade any building to Level 2",
+            "hint": "Upgrade buildings by gathering enough resources or purchase with shiny."
         },
         "t1": {
             "name": "Sniper Tower",
-            "description": "Build a Sniper Rower"
+            "description": "Build a Sniper Rower",
+            "hint": "Defensive buildings can be built from the 'Defensive' tab."
         },
         "t2": {
             "name": "Cannon Tower",
-            "description": "Build a Cannon Tower"
+            "description": "Build a Cannon Tower",
+            "hint": "Defensive buildings can be built from the 'Defensive' tab."
         },
         "t3": {
             "name": "Tesla Tower",
-            "description": "Build a Tesla Tower"
+            "description": "Build a Tesla Tower",
+            "hint": "Defensive buildings can be built from the 'Defensive' tab."
+        },
+        "cm1": {
+            "name": "Hatch Gorgo",
+            "description": "Hatch Gorgo in the Champion Cage",
+            "hint": "Champions can be raised from the Champion Cage."
+        },
+        "cm2": {
+            "name": "Gorgo the Great",
+            "description": "Evolve Gorgo to level 6 in the Champion Cage",
+            "hint": "Feed your champions daily to evolve them to their next level."
+        },
+        "cm3": {
+            "name": "Hatch Drull",
+            "description": "Hatch Drull in the Champion Cage",
+            "hint": "Champions can be raised from the Champion Cage."
+        },
+        "cm4": {
+            "name": "Drull the Destroyer",
+            "description": "Evolve Drull to level 6 in the Champion Cage",
+            "hint": "Feed your champions daily to evolve them to their next level."
+        },
+        "cm5": {
+            "name": "Hatch Fomor",
+            "description": "Hatch Fomor in the Champion Cage",
+            "hint": "Champions can be raised from the Champion Cage."
+        },
+        "cm6": {
+            "name": "Fomor the Fearless",
+            "description": "Evolve Fomor to level 6 in the Champion Cage",
+            "hint": "Feed your champions daily to evolve them to their next level."
+        },
+        "cr1": {
+            "name": "Monster Locker",
+            "description": "Build a Monster Locker",
+            "hint": "Buildings can be built from the 'Buildings' tab."
         },
         "cr2": {
             "name": "Start Hatching",
-            "description": "Build a Hatchery"
+            "description": "Build a Hatchery",
+            "hint": "Buildings can be built from the 'Buildings' tab."
         },
         "cr3": {
             "name": "Home Sweet Home",
-            "description": "Build Monster Housing"
+            "description": "Build Monster Housing",
+            "hint": "Buildings can be built from the 'Buildings' tab."
         },
         "c3": {
             "name": "Next Level II",
-            "description": "Upgrade one of each resource building to level 2"
+            "description": "Upgrade one of each resource building to level 2",
+            "hint": "Upgrade buildings by gathering enough resources or purchase with shiny."
         },
         "c4": {
             "name": "Level 4 Twig Snapper",
-            "description": "Upgrade your Twig Snapper to Level 4"
+            "description": "Upgrade your Twig Snapper to Level 4",
+            "hint": "Upgrade buildings by gathering enough resources or purchase with shiny."
         },
         "c5": {
             "name": "Level 4 Pebble Shiner",
-            "description": "Upgrade your Pebble Shiner to Level 4"
+            "description": "Upgrade your Pebble Shiner to Level 4",
+            "hint": "Upgrade buildings by gathering enough resources or purchase with shiny."
         },
         "c6": {
             "name": "Level 4 Putty Squisher",
-            "description": "Upgrade your Putty Squisher to Level 4"
+            "description": "Upgrade your Putty Squisher to Level 4",
+            "hint": "Upgrade buildings by gathering enough resources or purchase with shiny."
         },
         "c7": {
             "name": "Level 4 Goo Factory",
-            "description": "Upgrade your Goo Factory to Level 4"
+            "description": "Upgrade your Goo Factory to Level 4",
+            "hint": "Upgrade buildings by gathering enough resources or purchase with shiny."
         },
         "c9": {
             "name": "Level 3 Twig Snapper",
-            "description": "Upgrade your Twig Snapper to Level 3"
+            "description": "Upgrade your Twig Snapper to Level 3",
+            "hint": "Upgrade buildings by gathering enough resources or purchase with shiny."
         },
         "c10": {
             "name": "Level 3 Pebble Shiner",
-            "description": "Upgrade your Pebble Shiner to Level 3"
+            "description": "Upgrade your Pebble Shiner to Level 3",
+            "hint": "Upgrade buildings by gathering enough resources or purchase with shiny."
         },
         "c11": {
             "name": "Level 3 Putty Squiser",
-            "description": "Upgrade your Putty Squiser to Level 3"
+            "description": "Upgrade your Putty Squiser to Level 3",
+            "hint": "Upgrade buildings by gathering enough resources or purchase with shiny."
         },
         "c12": {
             "name": "Level 3 Goo Factory",
-            "description": "Upgrade your Goo Factory to Level 3"
+            "description": "Upgrade your Goo Factory to Level 3",
+            "hint": "Upgrade buildings by gathering enough resources or purchase with shiny."
         },
         "c13": {
             "name": "Town Hall Level 2",
-            "description": "Upgrade your Town Hall to Level 2"
+            "description": "Upgrade your Town Hall to Level 2",
+            "hint": "Upgrade the Town Hall by gathering enough resources or purchase with shiny."
         },
         "c14": {
             "name": "Town Hall Level 3",
-            "description": "Upgrade your Town Hall to Level 3"
+            "description": "Upgrade your Town Hall to Level 3",
+            "hint": "Upgrade the Town Hall by gathering enough resources or purchase with shiny."
         },
         "c15": {
             "name": "Town Hall Level 4",
-            "description": "Upgrade your Town Hall to Level 4"
+            "description": "Upgrade your Town Hall to Level 4",
+            "hint": "Upgrade the Town Hall by gathering enough resources or purchase with shiny."
         },
         "c16": {
             "name": "Town Hall Level 5",
-            "description": "Upgrade your Town Hall to Level 5"
+            "description": "Upgrade your Town Hall to Level 5",
+            "hint": "Upgrade the Town Hall by gathering enough resources or purchase with shiny."
         },
         "c17": {
             "name": "Monster Maps",
-            "description": "Build a Map Room"
+            "description": "Build a Map Room",
+            "hint": "Buildings can be built from the 'Buildings' tab."
         },
         "c18": {
             "name": "Flinger",
-            "description": "Build a Flinger"
+            "description": "Build a Flinger",
+            "hint": "Buildings can be built from the 'Buildings' tab."
         },
-        "ga1": {
-            "name": "End Radio Silence",
-            "description": "Build the Radio Tower to get email alerts"
+        "c51": {
+            "name": "Catapult",
+            "description": "Build a Catapult",
+            "hint": "Buildings can be built from the 'Buildings' tab."
         },
         "d1": {
             "name": "First Blood",
-            "description": "Defend your yard from a Wild Monster attack"
+            "description": "Defend your yard from a Wild Monster attack",
+            "hint": "Wild Monsters can attack your yard without warning, defend it."
         },
         "s1": {
             "name": "Storage Silo",
-            "description": "Build a Storage Silo"
+            "description": "Build a Storage Silo",
+            "hint": "Resource buildings can be built from the 'Resources' tab."
         },
         "s2": {
             "name": "Storage Silo Level 2",
-            "description": "Upgrade your Storage Silo to Level 2"
+            "description": "Upgrade your Storage Silo to Level 2",
+            "hint": "Upgrade buildings by gathering enough resources or purchase with shiny."
         },
         "s3": {
             "name": "Storage Silo Level 3",
-            "description": "Upgrade your Storage Silo to Level 3"
+            "description": "Upgrade your Storage Silo to Level 3",
+            "hint": "Upgrade buildings by gathering enough resources or purchase with shiny."
         },
         "s4": {
             "name": "Storage Silo Level 4",
-            "description": "Upgrade your Storage Silo to Level 4"
+            "description": "Upgrade your Storage Silo to Level 4",
+            "hint": "Upgrade buildings by gathering enough resources or purchase with shiny."
         },
         "s5": {
             "name": "Storage Silo Level 5",
-            "description": "Upgrade your Storage Silo to Level 5"
+            "description": "Upgrade your Storage Silo to Level 5",
+            "hint": "Upgrade buildings by gathering enough resources or purchase with shiny."
+        },
+        "m1": {
+            "name": "Mushroom Soup",
+            "description": "Pick 5 Mushrooms"
+        },
+        "m2": {
+            "name": "Mushroom Pizza",
+            "description": "Pick 100 Mushrooms"
+        },
+        "m3": {
+            "name": "Mushroom Burger",
+            "description": "Pick 200 Mushrooms"
+        },
+        "m4": {
+            "name": "Golden Mushroom Booty",
+            "description": "Pick 5 Golden Mushrooms"
+        },
+        "m5": {
+            "name": "Golden Mushroom Bling",
+            "description": "Pick 20 Golden Mushrooms"
+        },
+        "m6": {
+            "name": "Golden Mushroom Jackpot",
+            "description": "Pick 50 Golden Mushrooms"
+        },
+        "m7": {
+            "name": "Golden Mushroom Jackpot",
+            "description": "Pick 50 Golden Mushrooms"
+        },
+        "bk1": {
+            "name": "Resource Gatherer",
+            "description": "Bank 1,000 Resources with a single click.",
+            "hint": "Upgrade your harvesters to hold more resources and upgrade your Storage Silos for more capacity."
+        },
+        "bk2": {
+            "name": "Resource Collector",
+            "description": "Bank 20,000 Resources with a single click.",
+            "hint": "Upgrade your harvesters to hold more resources and upgrade your Storage Silos for more capacity."
+        },
+        "bk3": {
+            "name": "Resource Trader",
+            "description": "Bank 100,000 Resources with a single click.",
+            "hint": "Upgrade your harvesters to hold more resources and upgrade your Storage Silos for more capacity."
+        },
+        "bk4": {
+            "name": "Resource Mogul",
+            "description": "Bank 500,000 Resources with a single click.",
+            "hint": "Upgrade your harvesters to hold more resources and upgrade your Storage Silos for more capacity."
+        },
+        "ga1": {
+            "name": "The Gift of Giving",
+            "description": "Have 5 gifts accepted by your friends",
+            "hint": "Send gifts to your friends."
+        },
+        "ga2": {
+            "name": "Monster Gifts",
+            "description": "Have 25 gifts accepted by your friends",
+            "hint": "Send gifts to your friends."
+        },
+        "ga3": {
+            "name": "Santa Monster",
+            "description": "Have 50 gifts accepted by your friends",
+            "hint": "Send gifts to your friends."
+        },
+        "wm1": {
+            "name": "Junior Destroyer",
+            "description": "Destroy the Legionnaire Tribe's Town Hall",
+            "hint": "Attack a Wild Monster Tribe to get revenge."
+        },
+        "em1": {
+            "name": "End Radio Silence",
+            "description": "Build the Radio Tower to get email alerts.",
+            "hint": "The Radio Tower can be found in the Building Manager under the 'Buildings' button."
+        },
+        "wm2": {
+            "name": "Novice Destroyer",
+            "description": "Destroy the Kozu Tribe's Town Hall",
+            "hint": "Attack a Wild Monster Tribe to get revenge."
+        },
+        "wm3": {
+            "name": "Savage Destroyer",
+            "description": "Destroy the Abunakki Tribe's Town Hall",
+            "hint": "Attack a Wild Monster Tribe to get revenge."
+        },
+        "wm4": {
+            "name": "Dread Destroyer",
+            "description": "Destroy the Dreadnaut Tribe's Town Hall",
+            "hint": "Attack a Wild Monster Tribe to get revenge."
+        },
+        "invite1": {
+            "name": "Friendly Monster",
+            "description": "Get 1 friend to start playing.",
+            "hint": "Invite a friend to play Backyard Monsters."
+        },
+        "invite5": {
+            "name": "Band of Monsters",
+            "description": "Get 5 friends to start playing.",
+            "hint": "Invite friends to play Backyard Monsters."
+        },
+        "invite10": {
+            "name": "Monster Party",
+            "description": "Get 10 friends to start playing.",
+            "hint": "Invite friends to play Backyard Monsters."
+        },
+        "bl1": {
+            "name": "Monster Juice",
+            "description": "Blend 10 Monsters",
+            "hint": "The Monster Juicer can be found in the Building Manager under the 'Buildings' button."
+        },
+        "bl2": {
+            "name": "Monster Smoothie",
+            "description": "Blend 100 Monsters",
+            "hint": "The Monster Juicer can be found in the Building Manager under the 'Buildings' button."
+        },
+        "bl3": {
+            "name": "Monster Milkshake",
+            "description": "Blend 1000 Monsters",
+            "hint": "The Monster Juicer can be found in the Building Manager under the 'Buildings' button."
+        },
+        "bl4": {
+            "name": "Monster Margarita",
+            "description": "Blend 5000 Monsters",
+            "hint": "The Monster Juicer can be found in the Building Manager under the 'Buildings' button."
         }
     },
     "settings": {
@@ -742,6 +940,11 @@
         "musicoff": "Music Off",
         "saved": "Saved",
         "saving": "Saving"
+    },
+    "#w": {
+        "decoy#": "Marilyn Monstroe",
+        "vacuum#": "Loot-O-Tron 5000",
+        "jars#": "Candy Jars"
     },
     "#r": {
         "twigs#": "Twigs",
