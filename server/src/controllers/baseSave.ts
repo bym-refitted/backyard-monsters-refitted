@@ -38,7 +38,7 @@ export const baseSave: KoaController = async (ctx) => {
 
     // Determine expiry if the item has a duration 
     let storeItem = storeItems[item];
-    if (storeItem.du > 0) {
+    if (storeItem?.du ?? 0 > 0) {
       storeData[item].e = getCurrentDateTime() + storeItem.du;
     }
 
