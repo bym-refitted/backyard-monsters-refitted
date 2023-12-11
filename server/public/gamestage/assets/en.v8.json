@@ -6,10 +6,11 @@
     "global_hours_short": "h",
     "global_minutes_short": "m",
     "global_seconds_short": "s",
-    "map_cannot_recycle_map_room3": "You cannot recycle your Map Room in the New World Map. If you want to relocate your yard, click on your Town Hall and choose Relocate.",    "str_finishnow": "Finish now",
+    "map_cannot_recycle_map_room3": "You cannot recycle your Map Room in the New World Map. If you want to relocate your yard, click on your Town Hall and choose Relocate.",
+    "str_finishnow": "Finish now",
     "str_closeenough": "Close Enough",
     "str_top_fill_label": "Fill your {v1}",
-    "str_top_10pct_noroom":"Your {v1} capacity is full. Build or upgrade your storage silos.",
+    "str_top_10pct_noroom": "Your {v1} capacity is full. Build or upgrade your storage silos.",
     "str_top_50pct_noroom": "Your {v1} capacity is full. Build or upgrade your storage silos.",
     "str_30minutes_desc": "Reduce the build time of the {v2} by 1 hour.",
     "str_60minutes_desc": "Reduce the build time of the {v2} by 2 hour.",
@@ -156,8 +157,8 @@
         "mailbox": "Mailbox",
         "alerts": "Alert",
         "afk": {
-            "title": "Anyone home?",
-            "body": "Hmm.. it seems like you may be ideal."
+            "title": "Is anyone home?",
+            "body": "It seems you may have been away from the game for some time, we're just checking in to make sure you are still there. Your army awaits!"
         },
         "timeout": {
             "title": "Oops.. timeout!",
@@ -693,6 +694,34 @@
             "hod3": {
                 "title2": "Hatchery Overdrive Stage 3",
                 "body2": "10x the speed of all Hatcheries for 1 hour. Does not stack with other overdrives."
+            },
+            "pro1": {
+                "title2": "Daily Protection",
+                "body2": "Gives you 24 hours protection in this yard from Player and Wild Monster attacks. Removed if you attack anyone."
+            },
+            "pro2": {
+                "title2": "Weekly Protection",
+                "body2": "Gives you 7 days of protection in this yard from Player and Wild Monster attacks. Removed if you attack anyone."
+            },
+            "pro3": {
+                "title2": "Ultimate Protection",
+                "body2": "Gives you 28 days of protection in this yard from Player and Wild Monster attacks. Removed if you attack anyone."
+            },
+            "mod": {
+                "title": "Monster Dust",
+                "body": "CHOMP! This power-up increases the amount of damage your monsters inflict by 25% for 24 hours"
+            },
+            "mdod": {
+                "title": "Beast Mode",
+                "body": "Reduces damage inflicted to your monsters by 30% for 24 hours."
+            },
+            "msod": {
+                "title": "Hyper Speed",
+                "body": "Increases the speed of your monsters by 50% for 24 hours"
+            },
+            "tod": {
+                "title": "Tower Overdrive",
+                "body": "BOOM! This power-up increases the amount of damage defense towers inflict by 25% for 24 hours."
             }
         },
         "top": {
@@ -711,7 +740,6 @@
         "goldwalls": "Instantly upgrades {v1} of your blocks to Gold, saving you {v2} resources.",
         "blackwalls": "Instantly upgrades {v1} of your blocks to Black Diamond, saving you {v2} resources.",
         "repairbdgs": "Instantly repair the {v1} damaged buildings in this yard now (buildings under 5 minutes are still free)."
-
     },
     "upgradeth": "Upgrade your Town Hall to level {v1}",
     "quests": {
