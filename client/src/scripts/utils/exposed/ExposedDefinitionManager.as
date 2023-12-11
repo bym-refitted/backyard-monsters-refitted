@@ -4,7 +4,7 @@ package utils.exposed
    import flash.utils.getDefinitionByName;
    import flash.utils.getQualifiedClassName;
    import flash.utils.getQualifiedSuperclassName;
-   
+   import config.singletonlock.SingletonLock;
    public class ExposedDefinitionManager
    {
       
@@ -17,7 +17,7 @@ package utils.exposed
       
       private var m_ExposedDefinitions:Dictionary;
       
-      public function ExposedDefinitionManager(param1:SingletonLock)
+      public function ExposedDefinitionManager(param1:config.singletonlock.SingletonLock)
       {
          this.m_ExposedPrimitives = new Dictionary();
          this.m_ExposedDefinitions = new Dictionary();
@@ -31,7 +31,7 @@ package utils.exposed
       
       public static function get instance() : ExposedDefinitionManager
       {
-         return s_Instance = s_Instance || new ExposedDefinitionManager(new SingletonLock());
+         return s_Instance = s_Instance || new ExposedDefinitionManager(new config.singletonlock.SingletonLock());
       }
       
       internal function IsPrimitiveType(param1:String) : Boolean
@@ -69,15 +69,5 @@ package utils.exposed
       {
          return getDefinitionByName(getQualifiedSuperclassName(param1)) as Class;
       }
-   }
-}
-
-class SingletonLock
-{
-    
-   
-   public function SingletonLock()
-   {
-      super();
    }
 }

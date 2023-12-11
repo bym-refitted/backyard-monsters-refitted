@@ -6,7 +6,7 @@ package com.monsters.maproom3
    import flash.geom.Point;
    import flash.geom.Rectangle;
    import flash.utils.Dictionary;
-   
+   import config.singletonlock.SingletonLock;
    public class MapRoom3AssetCache
    {
       
@@ -147,14 +147,14 @@ package com.monsters.maproom3
       
       private var m_AreAssetsLoaded:Boolean = false;
       
-      public function MapRoom3AssetCache(param1:SingletonLock)
+      public function MapRoom3AssetCache(param1:config.singletonlock.SingletonLock)
       {
          super();
       }
       
       public static function get instance() : MapRoom3AssetCache
       {
-         return s_Instance = s_Instance || new MapRoom3AssetCache(new SingletonLock());
+         return s_Instance = s_Instance || new MapRoom3AssetCache(new config.singletonlock.SingletonLock());
       }
       
       public function get areAssetsLoaded() : Boolean
@@ -275,15 +275,5 @@ package com.monsters.maproom3
          var _loc2_:int = Math.min(Math.floor(DAMAGE_BAR_NUM_SEGMENTS * param1),this.m_DamageBarSegments.length - 1);
          return this.m_DamageBarSegments[_loc2_];
       }
-   }
-}
-
-class SingletonLock
-{
-    
-   
-   public function SingletonLock()
-   {
-      super();
    }
 }

@@ -6,6 +6,8 @@ package com.monsters.maproom3.bookmarks
    import com.monsters.maproom3.data.MapRoom3Data;
    import com.monsters.maproom_manager.MapRoomManager;
    import flash.events.IOErrorEvent;
+   import config.singletonlock.SingletonLock;
+
    
    public class BookmarksManager
    {
@@ -47,7 +49,7 @@ package com.monsters.maproom3.bookmarks
       
       private var m_PlayerStrongholdBookmarks:Vector.<Bookmark>;
       
-      public function BookmarksManager(param1:SingletonLock)
+      public function BookmarksManager(param1:config.singletonlock.SingletonLock)
       {
          this.m_CustomBookmarks = new Vector.<Bookmark>();
          this.m_EnemyBookmarks = new Vector.<Bookmark>();
@@ -59,7 +61,7 @@ package com.monsters.maproom3.bookmarks
       
       public static function get instance() : BookmarksManager
       {
-         return s_Instance = s_Instance || new BookmarksManager(new SingletonLock());
+         return s_Instance = s_Instance || new BookmarksManager(new config.singletonlock.SingletonLock());
       }
       
       public function Setup(param1:Object, param2:MapRoom3Data) : void
@@ -318,15 +320,5 @@ package com.monsters.maproom3.bookmarks
                return null;
          }
       }
-   }
-}
-
-class SingletonLock
-{
-    
-   
-   public function SingletonLock()
-   {
-      super();
    }
 }

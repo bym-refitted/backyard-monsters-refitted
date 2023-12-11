@@ -2,7 +2,7 @@ package com.monsters.maproom3.popups
 {
    import com.monsters.maproom_manager.MapRoomManager;
    import flash.events.MouseEvent;
-   
+   import config.singletonlock.SingletonLock;
    public class MapRoom3ConfirmMigrationPopup extends popup_new_map_confirm
    {
       
@@ -11,14 +11,14 @@ package com.monsters.maproom3.popups
       
       private var m_IsShowing:Boolean = false;
       
-      public function MapRoom3ConfirmMigrationPopup(param1:SingletonLock)
+      public function MapRoom3ConfirmMigrationPopup(param1:config.singletonlock.SingletonLock)
       {
          super();
       }
       
       public static function get instance() : MapRoom3ConfirmMigrationPopup
       {
-         return s_Instance = s_Instance || new MapRoom3ConfirmMigrationPopup(new SingletonLock());
+         return s_Instance = s_Instance || new MapRoom3ConfirmMigrationPopup(new config.singletonlock.SingletonLock());
       }
       
       public function Show(param1:Boolean = false) : void
@@ -71,15 +71,5 @@ package com.monsters.maproom3.popups
       {
          this.Hide();
       }
-   }
-}
-
-class SingletonLock
-{
-    
-   
-   public function SingletonLock()
-   {
-      super();
    }
 }

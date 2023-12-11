@@ -4,7 +4,8 @@ package com.monsters.maproom3.popups
    import com.monsters.maproom3.data.MapRoom3FriendData;
    import com.monsters.maproom_manager.MapRoomManager;
    import flash.events.MouseEvent;
-   
+   import config.singletonlock.SingletonLock;
+
    public class MapRoom3RelocatePopup extends MapRoom3RelocateMainYardPopup
    {
       
@@ -21,7 +22,7 @@ package com.monsters.maproom3.popups
       
       private var m_IsShowing:Boolean = false;
       
-      public function MapRoom3RelocatePopup(param1:SingletonLock)
+      public function MapRoom3RelocatePopup(param1:config.singletonlock.SingletonLock)
       {
          super();
          titleText.htmlText = KEYS.Get("mr3_relocate_main_yard_title");
@@ -39,7 +40,7 @@ package com.monsters.maproom3.popups
       
       public static function get instance() : MapRoom3RelocatePopup
       {
-         return s_Instance = s_Instance || new MapRoom3RelocatePopup(new SingletonLock());
+         return s_Instance = s_Instance || new MapRoom3RelocatePopup(new config.singletonlock.SingletonLock());
       }
       
       public function Show() : void
@@ -146,15 +147,5 @@ package com.monsters.maproom3.popups
          GLOBAL.ErrorMessage("Error relocating main base, MapRoom3RelocatePopup::OnRelocationFailed");
          LOGGER.Log("err","Error relocating main base, MapRoom3RelocatePopup::OnRelocationFailed " + param1.error);
       }
-   }
-}
-
-class SingletonLock
-{
-    
-   
-   public function SingletonLock()
-   {
-      super();
    }
 }

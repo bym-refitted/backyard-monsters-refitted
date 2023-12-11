@@ -2,7 +2,7 @@ package com.monsters.display
 {
    import flash.display.BitmapData;
    import flash.utils.Dictionary;
-   
+   import config.singletonlock.SingletonLock;
    public class CreepSkinManager
    {
       
@@ -11,7 +11,7 @@ package com.monsters.display
       
       private var m_CreepSkinPairs:Dictionary;
       
-      public function CreepSkinManager(param1:SingletonLock)
+      public function CreepSkinManager(param1:config.singletonlock.SingletonLock)
       {
          super();
          s_Instance = this;
@@ -20,7 +20,7 @@ package com.monsters.display
       
       public static function get instance() : CreepSkinManager
       {
-         return !!s_Instance ? s_Instance : new CreepSkinManager(new SingletonLock());
+         return !!s_Instance ? s_Instance : new CreepSkinManager(new config.singletonlock.SingletonLock());
       }
       
       public function SetupSkins(param1:String) : void
@@ -46,15 +46,5 @@ package com.monsters.display
          var _loc8_:String = !!param7 ? param7 : (!!this.m_CreepSkinPairs[param2] ? String(this.m_CreepSkinPairs[param2]) : param2);
          return SPRITES.GetSprite(param1,_loc8_,param3,param4,param5,param6);
       }
-   }
-}
-
-class SingletonLock
-{
-    
-   
-   public function SingletonLock()
-   {
-      super();
    }
 }

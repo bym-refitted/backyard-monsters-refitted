@@ -7,6 +7,7 @@ package com.monsters.event_store
    import flash.display.DisplayObject;
    import flash.display.Sprite;
    import flash.events.MouseEvent;
+   import config.singletonlock.SingletonLock;
    
    public class EventStorePopup extends EventStorePopupMC
    {
@@ -26,7 +27,7 @@ package com.monsters.event_store
       
       private var m_IsShowing:Boolean = false;
       
-      public function EventStorePopup(param1:SingletonLock)
+      public function EventStorePopup(param1:config.singletonlock.SingletonLock)
       {
          super();
          this.m_TitleImage = new Bitmap();
@@ -51,7 +52,7 @@ package com.monsters.event_store
       
       public static function get instance() : EventStorePopup
       {
-         return s_Instance = s_Instance || new EventStorePopup(new SingletonLock());
+         return s_Instance = s_Instance || new EventStorePopup(new config.singletonlock.SingletonLock());
       }
       
       public function Show(param1:uint = 1) : void
@@ -132,15 +133,5 @@ package com.monsters.event_store
             _loc3_++;
          }
       }
-   }
-}
-
-class SingletonLock
-{
-    
-   
-   public function SingletonLock()
-   {
-      super();
    }
 }

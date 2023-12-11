@@ -1,5 +1,6 @@
 package com.monsters.creep_types
 {
+   import config.singletonlock.SingletonLock;
    public class CreepTypeManager
    {
       
@@ -8,7 +9,7 @@ package com.monsters.creep_types
       
       private var m_CreepTypes:Vector.<CreepType>;
       
-      public function CreepTypeManager(param1:SingletonLock)
+      public function CreepTypeManager(param1:config.singletonlock.SingletonLock)
       {
          this.m_CreepTypes = new Vector.<CreepType>();
          super();
@@ -16,7 +17,7 @@ package com.monsters.creep_types
       
       public static function get instance() : CreepTypeManager
       {
-         return s_Instance = s_Instance || new CreepTypeManager(new SingletonLock());
+         return s_Instance = s_Instance || new CreepTypeManager(new config.singletonlock.SingletonLock());
       }
       
       internal function RegisterCreepType(param1:CreepType) : void
@@ -57,15 +58,5 @@ package com.monsters.creep_types
             _loc3_++;
          }
       }
-   }
-}
-
-class SingletonLock
-{
-    
-   
-   public function SingletonLock()
-   {
-      super();
    }
 }
