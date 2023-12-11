@@ -914,6 +914,7 @@ package
          var img:String = null;
          var mc:popup_monster = null;
          var _body:String = null;
+         var hatcheryName:String = null;
          _unlocking = null;
          for(i in _lockerData)
          {
@@ -974,10 +975,10 @@ package
                   mc.bSpeedup.addEventListener(MouseEvent.CLICK,StreamPost(KEYS.Get(creature.stream[0]),_body,img));
                   mc.bSpeedup.Highlight = true;
                   mc.bAction.visible = false;
-                  var buildingPropsName = GLOBAL._bHatchery ? GLOBAL._bHatchery._buildingProps.name : KEYS.Get("#b_hatchery#");
+                  hatcheryName = hatcheryName = !!GLOBAL._bHatchery ? String(GLOBAL._bHatchery._buildingProps.name) : String(GLOBAL._buildingProps[12].name);
                   mc.tText.htmlText = KEYS.Get("pop_unlock_complete",{
                      "v1":KEYS.Get(CREATURELOCKER._creatures[_unlocking].name),
-                     "v2": buildingPropsName ? buildingPropsName : KEYS.Get("#b_hatchery#")
+                     "v2":KEYS.Get(hatcheryName)
                   });
                   POPUPS.Push(mc,null,null,null,_unlocking + "-150.png");
                }

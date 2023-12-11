@@ -510,7 +510,7 @@ package
                hatcheryName = !!GLOBAL._bHatchery ? String(GLOBAL._bHatchery._buildingProps.name) : String(GLOBAL._buildingProps[12].name);
                mc.tText.htmlText = KEYS.Get("pop_unlock_complete",{
                   "v1":KEYS.Get(CREATURELOCKER._creatures[this._creatureID].name),
-                  "v2":hatcheryName
+                  "v2":KEYS.Get(hatcheryName)
                });
             }
             image = this._creatureID + "-150.png";
