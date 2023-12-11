@@ -1697,7 +1697,8 @@ package
       }
          catch (error:Error)
          {
-            GLOBAL.Message("Whoops... we encountered an issue loading your base.\n\nReport: " + error);
+            GLOBAL.Message(KEYS.Get("err_loading_base"));
+            LOGGER.Log("err", "Failed to load user base with error: " + error.getStackTrace());
          }
       }
       

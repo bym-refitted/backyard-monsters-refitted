@@ -29,6 +29,11 @@
     "requirements": {
         "notmet": "Requirements not met."
     },
+    "err": {
+        "loading": {
+            "base": "Whoops... it looks like we ran into an issue trying to load your base. Please report this error in our <b>discord</b> with your username."
+        }
+    },
     "msg": {
         "loading": "Loading... ",
         "rendering": "Rendering... ",
