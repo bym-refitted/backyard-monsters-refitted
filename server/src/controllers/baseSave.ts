@@ -33,6 +33,7 @@ export const baseSave: KoaController = async (ctx) => {
     const storeData: FieldData = save.storedata || {};
     storeData[item] = {
       q: (storeData[item]?.q || 0) + quantity,
+      e: getCurrentDateTime(),
     };
 
     save.storedata = storeData;
