@@ -7,6 +7,7 @@ import { FilterFrontendKeys } from "../utils/FrontendKey";
 import { KoaController } from "../utils/KoaController";
 import { getCurrentDateTime } from "../utils/getCurrentDateTime";
 import { logging } from "../utils/logger";
+import { storeItems } from "../data/storeItems";
 
 export const baseSave: KoaController = async (ctx) => {
   const user: User = ctx.authUser;
@@ -32,8 +33,14 @@ export const baseSave: KoaController = async (ctx) => {
 
     const storeData: FieldData = save.storedata || {};
     storeData[item] = {
-      q: (storeData[item]?.q || 0) + quantity,
+      q: (storeData[item]?.q || 0) + quantity
     };
+
+    // Determine expiry if the item has a duration 
+    let storeItem = storeItems[item];
+    if (storeItem.du > 0) {
+      storeData[item].e = getCurrentDateTime() + storeItem.du;
+    }
 
     save.storedata = storeData;
     updateCredits(save, item, quantity);
