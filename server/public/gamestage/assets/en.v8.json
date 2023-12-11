@@ -39,6 +39,9 @@
         "stopconstructionconfirm": "Are you sure you want to stop construction and destroy this building? <b>This can not be un-done</b>",
         "upgradecancelconfirm": "Are you sure you want to stop upgrading this building?",
         "recycleconfirm": "Are you sure you want to recycle this building? <b>This can not be un-done</b>",
+        "quest": {
+            "housing": "You need to build a Monster Housing to claim this reward."
+        },
         "champion": {
             "fed": "Champion has already been fed."
         },

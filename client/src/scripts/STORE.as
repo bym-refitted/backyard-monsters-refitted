@@ -260,15 +260,15 @@ package
             {
                mainStoreItems.c = [Math.ceil(Math.pow(Math.sqrt(reourceMax / 2),0.75))];
                mainStoreItems.d = KEYS.Get("str_top_10pct",{
-                  "v1":GLOBAL._resourceNames[resourceIndex - 1],
-                  "v2":GLOBAL._resourceNames[resourceIndex - 1],
+                  "v1":KEYS.Get(GLOBAL._resourceNames[resourceIndex - 1]),
+                  "v2":KEYS.Get(GLOBAL._resourceNames[resourceIndex - 1]),
                   "v3":GLOBAL.FormatNumber(BASE._resources["r" + resourceIndex].Get() + reourceMax)
                });
                mainStoreItems.quantity = reourceMax;
             }
             else
             { 
-               mainStoreItems.d = KEYS.Get("str_top_10pct_noroom",{"v1":GLOBAL._resourceNames[resourceIndex - 1]});
+               mainStoreItems.d = KEYS.Get("str_top_10pct_noroom",{"v1":KEYS.Get(GLOBAL._resourceNames[resourceIndex - 1])});
                mainStoreItems.c = [0];
                mainStoreItems.quantity = 0;
             }
@@ -317,15 +317,15 @@ package
             {
                mainStoreItems.c = [Math.ceil(Math.pow(Math.sqrt(reourceMax / 2),0.75))];
                mainStoreItems.d = KEYS.Get("str_top_50pct",{
-                  "v1":GLOBAL._resourceNames[resourceIndex - 1],
-                  "v2":GLOBAL._resourceNames[resourceIndex - 1],
+                  "v1":KEYS.Get(GLOBAL._resourceNames[resourceIndex - 1]),
+                  "v2":KEYS.Get(GLOBAL._resourceNames[resourceIndex - 1]),
                   "v3":GLOBAL.FormatNumber(BASE._resources["r" + resourceIndex].Get() + reourceMax)
                });
                mainStoreItems.quantity = reourceMax;
             }
             else
             {
-               mainStoreItems.d = KEYS.Get("str_top_50pct_noroom",{"v1":GLOBAL._resourceNames[resourceIndex - 1]});
+               mainStoreItems.d = KEYS.Get("str_top_50pct_noroom",{"v1":KEYS.Get(GLOBAL._resourceNames[resourceIndex - 1])});
                mainStoreItems.c = [0];
                mainStoreItems.quantity = 0;
             }
@@ -361,14 +361,14 @@ package
                mainStoreItems = _storeItems["BR" + resourceIndex + "3"];
                infernoStoreItems = _storeItems["BR" + resourceIndex + "3I"];
             }
-            mainStoreItems.t = KEYS.Get("str_top_fill_label",{"v1":GLOBAL._resourceNames[resourceIndex - 1]});
+            mainStoreItems.t = KEYS.Get("str_top_fill_label",{"v1":KEYS.Get(GLOBAL._resourceNames[resourceIndex - 1])});
             if(BASE._resources["r" + resourceIndex + "max"] > BASE._resources["r" + resourceIndex].Get())
             {
                reourceMax = BASE._resources["r" + resourceIndex + "max"] - BASE._resources["r" + resourceIndex].Get();
                mainStoreItems.c = [Math.ceil(Math.pow(Math.sqrt(reourceMax / 2),0.75))];
                mainStoreItems.d = KEYS.Get("str_top_fill",{
                   "v1":GLOBAL.FormatNumber(reourceMax),
-                  "v2":GLOBAL._resourceNames[resourceIndex - 1]
+                  "v2":KEYS.Get(GLOBAL._resourceNames[resourceIndex - 1])
                });
                mainStoreItems.quantity = reourceMax;
             }
