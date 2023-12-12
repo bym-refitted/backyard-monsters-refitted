@@ -17,6 +17,8 @@
     "str_closeenough_desc_ok": "There is less than 5 minutes remaining, you can finish building the {v2} for free.",
     "hat_producing": "Producing {v1}.",
     "fp_radiotower": "Nervous about leaving your Yard vulnerable? Build a Radio Tower and get attack alerts while you're away.",
+    "mr3_relocate_main_yard_title": "Relocate Yard",
+    "mr3_relocate_confirmation_yes": "Yes, relocate.",
     "discord": {
         "earn": "Join the <b>Backyard Monsters Refitted Discord</b> community to earn Shiny and more!"
     },
@@ -127,6 +129,93 @@
         }
     },
     "pop": {
+        "hatbuilt": {
+            "title": "Hatchery Constructed",
+            "body": "You can now convert Goo into Monsters and start to build your Monster army!"
+        },
+        "hccbuilt": {
+            "title": "Hatchery Control Center Constructed",
+            "body": "Control all of your Hatcheries from a single building. You add monsters to one build queue and it sends instructions to whichever Hatchery becomes available first."
+        },
+        "catapultbuilt": {
+            "title": "Catapult Constructed",
+            "body": "A siege weapon, the Catapult hurls twigs at enemy bases to damage buildings. Upgrade to increase firepower."
+        },
+        "planner": {
+            "title": "Yard Planner Constructed",
+            "body": "Quickly move some things around or completely remodel your layout! This building gives you a birds-eye view of your yard and makes moving buildings a snap."
+        },
+        "acadbuilt": {
+            "title": "Monster Academy Constructed",
+            "body": "Through a demanding curriculum of physics, philosophy and physical education, your monsters will earn their PhD in Advanced Destruction. Failing that, we have a large supply of steroids."
+        },
+        "baiterbuilt": {
+            "title": "Monster Baiter Constructed",
+            "body": "Sprays a musk into the air that Wild Monsters can't resist causing them to flock to your base, a great way to test your defenses."
+        },
+        "juicerbuilt": {
+            "title": "Monster Juicer Loosener Constructed",
+            "body": "Got some unwanted monsters in your Housing? Want to make some space for bigger and better things? Want to make a sacrifice to the Backyard Gods? Then this is the building for you! Recycle Monsters back into Goo with minimal suffering."
+        },
+        "labbuilt": {
+            "title": "Monster Lab Constructed",
+            "body": "Research top secret abilities for your monsters. In war, science rules."
+        },
+        "clocbuilt": {
+            "title": "Monster Locker Constructed"
+        },
+        "laserbuilt": {
+            "title": "Laser Tower Constructed",
+            "body": "Deadly and fast, this plasma energy tower zaps any invading enemy at the speed of light. Great for taking out packed groups of monsters."
+        },
+        "aabuilt": {
+            "title": "Flak Tower Constructed",
+            "body": "Fast-firing cannon designed to nullify or reduce the effectiveness of hostile air action."
+        },
+        "railgunbuilt": {
+            "title": "Railgun Constructed",
+            "body": "An electrical gun that accelerates a conductive projectile along a pair of rails, the Railgun tower makes up for its slow reload with high damage and an infinite line of fire."
+        },
+        "bunkerbuilt": {
+            "title": "Monster Bunker Constructed",
+            "body": "This defensive housing allows monsters to fight to death defending your base."
+        },
+        "housingupgraded": {
+            "title": "Housing Upgraded",
+            "body": "Congratulations, you've finished upgrading your Monster Housing to level {v1}."
+        },
+        "hatupgraded": {
+            "title": "Hatchery Upgraded",
+            "body": "Congratulations, you've finished upgrading your Hatchery to level {v1}."
+        },
+        "baitupgraded": {
+            "title": "Monster Baiter Upgraded",
+            "body": "Congratulations, you've finished upgrading your Wild Monster Baiter to level {v1}."
+        },
+        "flingerupgraded": {
+            "title": "Flinger Upgraded",
+            "body": "Congratulations, you've finished upgrading your Flinger to level {v1}."
+        },
+        "juicerupgraded": {
+            "title": "Monster Juicer Upgraded",
+            "body": "Congratulations, you've finished upgrading your Monster Juicer to level {v1}."
+        },
+        "catapultupgraded": {
+            "title": "Catapult Upgraded",
+            "body": "Congratulations, you've finished upgrading your Catapult to level {v1}."
+        },
+        "bunkerupgraded": {
+            "title": "Monster Bunker Upgraded",
+            "body": "Congratulations, you've finished upgrading your Monster Bunker to level {v1}."
+        },
+        "siloupgraded": {
+            "title": "Storage Silo Upgraded",
+            "body": "Congratulations, you've finished upgrading your Storage Silo to level {v1}."
+        },
+        "tupgraded": {
+            "title": "{v1} Level {v2}",
+            "body": "Congratulations, you've finished upgrading your {v1}."
+        },
         "questcollected": {
             "body": "{v1} Quest Collected!"
         },
@@ -254,6 +343,7 @@
         "upgrade": "Upgrade",
         "move": "Move",
         "more": "More...",
+        "random": "Random",
         "openstore": "Open Store",
         "openbaiter": "Open Baiter",
         "entercavern": "Enter Cavern",
@@ -269,6 +359,10 @@
         "buildings": "Buildings",
         "defensive": "Defensive",
         "decorations": "Decorations",
+        "yardplanner": "Open Planner",
+        "openacademy": "Open Academy",
+        "openhcc": "Open HCC",
+        "openlab": "Open Lab",
         "evil": "Evil",
         "plants": "Plants",
         "good": "Good",
@@ -611,12 +705,19 @@
     "cloc": {
         "prodstats": {
             "label": "<b>Production Stats<br>(once unlocked)</b>"
+        },
+        "popupgrade": {
+            "ta": "Monster Locker Upgraded",
+            "tb": "Congratulations, you've finished upgrading your Monster Locker to level {v1}"
         }
     },
     "bdg": {
         "tower": {
             "rangeupgrade": "<b>Range:</b> Increases from {v1} to {v2}",
             "damageupgrade": "<b>Damage:</b> Increases from {v1} dps to {v2} dps"
+        },
+        "fortified": {
+            "level": "Fortified Level {v1}"
         },
         "state": {
             "building": "BUILDING",
@@ -634,6 +735,7 @@
         },
         "fullyupgraded": "Fully Upgraded!",
         "buildingrequirement": "Level {v1} {v2}",
+        "buildingsrequirement": "{v3} Hatcheries all at least level {v1}",
         "upgradedesc": "<b>Upgrade your {v1} to Level {v2}</b><br>{v3}<br>",
         "upgraderequirements": "<b>Requirements</b><br>{v1}",
         "resource": {
@@ -1308,6 +1410,25 @@
         "upgrade": {
             "title": "<b>What's New:</b>",
             "body": "<b>Something's Emerging!</b><br>Your backyard is crumbling! What's happening? It looks like something is trying to break through. You should investigate but make sure your Town Hall is <b>Level 5</b> and you feel your ready to take on whatever's down there."
+        }
+    },
+    "mr3": {
+        "relocate": {
+            "confirmation": "Are you sure you want to relocate your main yard? Relocating will cause you to lose your current outposts if you move to a new world. You will keep your outposts if you relocate within the same world.",
+            "main": {
+                "yard": {
+                    "title": {
+                        "level": "Level",
+                        "name": "Name",
+                        "world": "World"
+                    },
+                    "or": "OR",
+                    "description": {
+                        "select": "Select a friend you would like to move near on the World Map:",
+                        "random": "Relocate your base to random world."
+                    }
+                }
+            }
         }
     },
     "global": {

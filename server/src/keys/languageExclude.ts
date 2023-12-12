@@ -16,5 +16,7 @@ export const exclusionList = [
   "str_60minutes_desc",
   "str_finishnow",
   "str_closeenough_desc_ok",
-  "str_closeenough"
+  "str_closeenough",
+  "mr3_relocate_main_yard_title",
+  "mr3_relocate_confirmation_yes"
 ];
