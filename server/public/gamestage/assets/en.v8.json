@@ -35,6 +35,7 @@
         }
     },
     "msg": {
+        "building": "Building",
         "loading": "Loading... ",
         "rendering": "Rendering... ",
         "crunching": "Crunching ",
@@ -230,6 +231,16 @@
     "worker": {
         "speedup": "Speed-up a worker's task for {v1} Shiny."
     },
+    "upgrade": {
+        "monster": {
+            "baiter": "Upgrade the Wild Monster Baiter to increase size of attack"
+        }
+    },
+    "size": {
+        "of": {
+            "attack": "Size of Attack"
+        }
+    },
     "btn": {
         "build": "Build",
         "buildnow": "Build Now",
@@ -244,6 +255,8 @@
         "move": "Move",
         "more": "More...",
         "openstore": "Open Store",
+        "openbaiter": "Open Baiter",
+        "entercavern": "Enter Cavern",
         "collect": "Collect",
         "fortify": "Fortify",
         "bank": "Bank {v1}",
@@ -299,6 +312,17 @@
         "mh": {
             "heal": "Heal"
         }
+    },
+    "bait": {
+        "title": "WILD MONSTER BAITER",
+        "scareaway": "Scare Away",
+        "clear": {
+            "btn": "Clear All"
+        },
+        "start": {
+            "btn": "Start Spraying!"
+        },
+        "sending": "Sending {v1}"
     },
     "gcage": {
         "title": "CHAMPION CAGE",
@@ -1159,7 +1183,15 @@
         "zafreeti#": "Zafreeti",
         "teratorn#": "Teratorn",
         "wormzer#": "Wormzer",
-        "dave#": "Dave"
+        "dave#": "Dave",
+        "spurtz#": "Spurtz",
+        "zagnoid#": "Zagnoid",
+        "valgos#": "Valgos",
+        "sabnox#": "Sabnox",
+        "malphus#": "Malphus",
+        "grokus#": "Grokus",
+        "balthazar#": "Balthazar",
+        "kingwormzer#": "King Wormzer"
     },
     "tut": {
         "1b": "Hey <b>{v1},<br><br>Welcome to Backyard Monsters!</b><br>Click Full Screen to view more of your Yard.",
@@ -1203,6 +1235,9 @@
             "btn": "Next"
         }
     },
+    "entercavern": {
+        "popup": "Moloch has fled back to his lair, and now you can take the war to him. Use the Skull of Doom to enter the underground realm of Inferno and battle Moloch's network of bases. You can use any monsters you have in your arsenal, but catapults are too big to fit through the entrance. Can you drive that annoying demon out of his own territory?"
+    },
     "ai": {
         "popupwarning": {
             "title": "WILD MONSTER ALERT"
@@ -1219,6 +1254,24 @@
             "name": "Abunakki Tribe",
             "taunt": "We'll be back for your bones!"
         },
+        "dread": {
+            "name": "Dreadnaught Tribe",
+            "taunt": "We'll be back for your bones!"
+        },
+        "moloch": {
+            "intro": "Your reign over the backyard has come to an end! I am Moloch, Lord of Inferno, and I'm here to shake up your pathetic little world! Prepare to meet your doom!",
+            "taunt1": "Gloat all you want! I'm simply testing your defenses. I'll be back with more minions soon. Your days are numbered!",
+            "taunt2": "You may think you've beaten me, but I'm just biding my time. Wait and see!",
+            "taunt3": "Don't get too comfortable! Once my Skull of Doom has penetrated the outer crust, you'll wish you had submitted to me from the start.",
+            "taunt4": "Your puny yard is more of an annoyance than a challenge. Once my Skull of Doom emerges and you're faced with the full power of Inferno, your monsters will quake with fear and flee my wraith.",
+            "taunt5": "My Skull of Doom is complete! The doorway to Inferno is open. Now I can come and go as I please. Wait a minute. That means you can too. I shouldn't have said that. Forget I said that!"
+        },
+        "inferno": {
+            "popupwarning": {
+                "title": "INFERNO MONSTER ALERT"
+            }
+        },
+        "caverndefense": "You successfully defended your yard from an attack from Moloch",
         "preparedefenses": {
             "btn": "Prepare Defenses"
         },
@@ -1249,6 +1302,13 @@
     },
     "mail": {
         "disabled": "Mailbox is disabled."
+    },
+    "emerge": {
+        "earthquake": "EARTHQUAKE!",
+        "upgrade": {
+            "title": "<b>What's New:</b>",
+            "body": "<b>Something's Emerging!</b><br>Your backyard is crumbling! What's happening? It looks like something is trying to break through. You should investigate but make sure your Town Hall is <b>Level 5</b> and you feel your ready to take on whatever's down there."
+        }
     },
     "global": {
         "day": "day",
