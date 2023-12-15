@@ -139,6 +139,7 @@
         "injured": {
             "title": "Call the doctor!"
         },
+        "areyousure": "ARE YOU SURE?",
         "hatbuilt": {
             "title": "Hatchery Constructed",
             "body": "You can now convert Goo into Monsters and start to build your Monster army!"
@@ -452,6 +453,39 @@
         "title": "CHAMPION CHAMBER",
         "level": "Level {v1}",
         "thawstreamdesc": "Awakened from an icy slumber,<br>{v1} is ready to do some damage."
+    },
+    "basePlanner": {
+        "explorerHeader": "YARD PLANNER",
+        "catDefensive": "Defense",
+        "catBuilding": "Buildings",
+        "catResource": "Resources",
+        "catDecoration": "Decorations",
+        "catTrap": "Traps",
+        "catWall": "Walls",
+        "catMisc": "Misc",
+        "btnSave": "Save",
+        "btnLoad": "Load",
+        "btnApply": "Apply",
+        "btnClear": "Clear",
+        "btnDiscard": "Discard Changes",
+        "buildingLevel": "Level:",
+        "groundrange": "Ground Range",
+        "aerialrange": "Aerial Range",
+        "minerange": "Trap Range",
+        "moreinfo": "Show Levels",
+        "loadTool": "Load - Click to view and edit a saved layout.",
+        "saveTool": "Save - Click to save this layout.",
+        "clearTool": "Clear - Click to place all buildings in your Inventory.",
+        "applyTool": "Apply - Click to use this layout in your Yard.",
+        "moveTool": "Move - Click to drag and drop buildings.",
+        "storageTool": "Storage - Click to store buildings in your Inventory.",
+        "expandTool": "Expand - Click to expand your Yard further.",
+        "savetitle": "SAVE YARD LAYOUT",
+        "loadtitle": "LOAD YARD LAYOUT",
+        "unsaved": "You have unsaved changes. Are you sure you want to continue?",
+        "slot": {
+            "label": "Slot {v1}:"
+        }
     },
     "academy": {
         "traininstantly": "Keep your resources and train instantly!"
@@ -1360,7 +1394,8 @@
         "yardplanner#": "Yard Planner",
         "hcc#": "Hatchery Control Center",
         "radio#": "Radio Tower",
-        "mushroom#": "Mushroom"
+        "mushroom#": "Mushroom",
+        "infernoentrance#": "Inferno Cavern"
     },
     "#bi": {
         "spurtzcannon#": "Spurtz Cannon",
