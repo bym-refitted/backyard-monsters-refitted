@@ -38,6 +38,9 @@
             "base": "Whoops... it looks like we ran into an issue trying to load your base. Please report this error in our <b>discord</b> with your username."
         }
     },
+    "flag": {
+        "desc": "A decoration visible to your friends and foes, a great way to represent your country in battle and alligence!"
+    },
     "msg": {
         "building": "Building",
         "loading": "Loading... ",
@@ -323,7 +326,10 @@
         },
         "producing": "<b>Producing<br>{v1}<br><br>{v2}</b><br>{v3}% FULL",
         "buildingfull": "<b>FULL</b><br /><br /> Production paused, bank to resume production",
-        "needmoreroom": "<b>Not enough room.</b><br/>Build more or upgrade existing storage silos"
+        "needmoreroom": "<b>Not enough room.</b><br/>Build more or upgrade existing storage silos",
+        "sale": {
+            "on": "On sale"
+        }
     },
     "uitop": {
         "backyardmonsters": "BACKYARD MONSTERS"
@@ -413,6 +419,7 @@
         "openchamber": "Open Chamber",
         "thawname": "Thaw {v1}",
         "freezename": "Freeze {v1}",
+        "topup2": "Top Up",
         "housing": {
             "heal": {
                 "all": "Heal All Instantly - {v1} Shiny"
@@ -527,7 +534,6 @@
         "projectxdesc": {
             "main": "Adds the ability to unleash acid when the Project X dies.",
             "upgrade": "Increases the damage of the toxic acid."
-
         },
         "wormzername": "Splash Damage",
         "wormzerdesc": {
@@ -641,6 +647,11 @@
         "desc": "Converts Goo produced by the Goo Factory into the monsters you have unlocked in the Monster Locker."
     },
     "hcc": {
+        "title": "HATCHERY CONTROL CENTER",
+        "hatcherynum": "Hatchery {v1}",
+        "goousage": "Goo used",
+        "housingspace": "Housing Space:",
+        "queuedup": "Queued",
         "desc": "Control all of your Hatcheries from a single building. You add monsters to one build queue and it sends instructions to whichever Hatchery becomes available first."
     },
     "catapult": {
@@ -730,6 +741,7 @@
         "nothinginproduction": "Nothing in production.",
         "notenoughgoo": "Not enough Goo.",
         "needhousing": "Not enough housing space.",
+        "gooremaining": "Goo remaining: {v1}",
         "producing": {
             "message": "Select monsters from below to add to the queue."
         },
@@ -737,7 +749,8 @@
             "waiting": "Waiting"
         },
         "slot": {
-            "upgrade": "Upgrade Hatchery to unlock"
+            "upgrade": "Upgrade Hatchery to unlock",
+            "buildanother": "Build another Hatchery to unlock."
         },
         "unlockinlocker": "Unlock {v1} in the Monster Locker."
     },
@@ -903,7 +916,211 @@
             "upcapacity": "<b>Capcity:</b> Increases from {v1} to {v2}"
         },
         "more": "<b>{v1} level {v2}</b><br><br>{v3}<br><br><b>Recycle:</b>{v4}",
-        "morenolevel": "<b>{v1}</b><br>{v2}<br><br><br>{v3}"
+        "morenolevel": "<b>{v1}</b><br>{v2}<br><br><br>{v3}",
+        "numinstorage": "{v1} in Storage",
+        "gnome": {
+            "desc": "\"The Garden Gnome's cheery demeanor wards off evil spirits.\""
+        },
+        "monsterskull": {
+            "title": "Monster Skull",
+            "desc": "\"No backyard warlord's yard is complete without a skull on a stick!\""
+        },
+        "pokeyhead": {
+            "title": "Dead Pokey",
+            "desc": "\"A warning to any Pokey thinking of attacking your yard.\""
+        },
+        "octohead": {
+            "title": "Dead Octo-Ooze",
+            "desc": "\"A warning to any Octo-Ooze thinking of attacking your yard.\""
+        },
+        "bolthead": {
+            "title": "Dead Bolt",
+            "desc": "\"A warning to any Bolt thinking of attacking your yard.\""
+        },
+        "banditohead": {
+            "title": "Dead Bandito",
+            "desc": "\"A warning to any Bandito thinking of attacking your yard.\""
+        },
+        "brainhead": {
+            "title": "Dead Brain",
+            "desc": "\"A warning to any Brain thinking of attacking your yard.\""
+        },
+        "crabhead": {
+            "title": "Dead Crabatron",
+            "desc": "\"A warning to any Crabatron thinking of attacking your yard.\""
+        },
+        "eyerahead": {
+            "title": "Dead Eyera",
+            "desc": "\"A warning to any Eyera thinking of attacking your yard.\""
+        },
+        "fanghead": {
+            "title": "Dead Fang",
+            "desc": "\"A warning to any Fang thinking of attacking your yard.\""
+        },
+        "finkhead": {
+            "title": "Dead Fink",
+            "desc": "\"A warning to any Fink thinking of attacking your yard.\""
+        },
+        "ichihead": {
+            "title": "Dead Ichi",
+            "desc": "\"A warning to any Ichi thinking of attacking your yard.\""
+        },
+        "projectxhead": {
+            "title": "Dead Project X",
+            "desc": "\"A warning to any Project X thinking of attacking your yard.\""
+        },
+        "davehead": {
+            "title": "Dead D.A.V.E",
+            "desc": "\"A warning to any D.A.V.E thinking of attacking your yard.\""
+        },
+        "tombstone": {
+            "title": "Tombstone",
+            "desc": "\"Ashes to goo, goo to goo\""
+        },
+        "acorn": {
+            "title": "Acorn",
+            "desc": "\"Stock up for the winter in case there's a backyard cold snap.\""
+        },
+        "pinecone": {
+            "title": "Pinecone",
+            "desc": "\"The perfect autumn turf decoration.\""
+        },
+        "walnut": {
+            "title": "Walnut",
+            "desc": "\"Every monsters favorite nut.\""
+        },
+        "pinkflowers": {
+            "title": "Pink Flowers",
+            "desc": "\"Add a little color to your backyard with some pink flowers.\""
+        },
+        "purpleflowers": {
+            "title": "Purple Flowers",
+            "desc": "\"Add a little color to your backyard with some purple flowers.\""
+        },
+        "whiteflowers": {
+            "title": "White Flowers",
+            "desc": "\"Add a little color to your backyard with some white flowers.\""
+        },
+        "yellowflowers": {
+            "title": "Yellow Flowers",
+            "desc": "\"Add a little color to your backyard with some yellow flowers.\""
+        },
+        "redflowers": {
+            "title": "Red Flowers",
+            "desc": "\"Add a little color to your backyard with some red flowers.\""
+        },
+        "beehive": {
+            "title": "Beehive",
+            "desc": "\"Don't be afraid! There's no bees here. But there's no honey... It's only a decoration.\""
+        },
+        "thorns": {
+            "title": "Thorns",
+            "desc": "\"Watch your step\""
+        },
+        "blackberrybush": {
+            "title": "Blackberry Bush",
+            "desc": "\"Every monster's favorite berry.\""
+        },
+        "cactus": {
+            "title": "Cactus",
+            "desc": "\"No need to water this desert plant.\""
+        },
+        "flytrap": {
+            "title": "Monster Fly trap",
+            "desc": "\"Feed me. FEEED MEEE!\""
+        },
+        "bonsaitree": {
+            "title": "Bonsai Tree",
+            "desc": "\"Little tree, huge creativity\""
+        },
+        "birdhous": {
+            "title": "Bird House",
+            "desc": "\"Every bird watcher's dream.\""
+        },
+        "outhouse": {
+            "title": "Outhouse",
+            "desc": "\"Don't make your monsters go in the yard - it's embarrasing.\""
+        },
+        "hammock": {
+            "title": "Hammock",
+            "desc": "\"Perfect for a weekend snooze\""
+        },
+        "lawnchair": {
+            "title": "Lawn Chair",
+            "desc": "\"Stretch out and relax\""
+        },
+        "tikitorch": {
+            "title": "Tiki Torch",
+            "desc": "\"Turn your backyard into a luau. Mai Tai's not included.\""
+        },
+        "rubikunsolved": {
+            "title": "Rubik Unsolved",
+            "desc": "\"Monsters love a good puzzle\""
+        },
+        "rubiksolved": {
+            "title": "Rubik Solved",
+            "desc": "\"Reserved for monsters with an IQ over 160.\""
+        },
+        "bluegnome": {
+            "title": "Blue Gnome"
+        },
+        "greengnome": {
+            "title": "Green Gnome"
+        },
+        "redgnome": {
+            "title": "Red Gnome"
+        },
+        "pool": {
+            "title": "Swimming Pool",
+            "desc": "\"Take a dip in the pool and cool off\""
+        },
+        "pond": {
+            "title": "Pond",
+            "desc": "\"Gone Fishin'.\""
+        },
+        "scaleelectric": {
+            "title": "Toy Raceway",
+            "desc": "\"At the top of every monster's Christmas list.\""
+        },
+        "zengarden": {
+            "title": "Zen Garden",
+            "desc": "\"Be master of mind rather than mastered by mind.\""
+        },
+        "fountain": {
+            "title": "Fountain",
+            "desc": "\"Let the sound of running water wash away your worries.\""
+        },
+        "teagarden": {
+            "title": "Tea Garden",
+            "desc": "\"Stroll the grounds while sipping a cup of soothing monster tea.\""
+        },
+        "baseballstatue": {
+            "title": "Baseball Trophy",
+            "desc": "\"Hit a homerun with this shiny trophy.\""
+        },
+        "footballstatue": {
+            "title": "Football Trophy",
+            "desc": "\"Score a touchdown with this shiny trophy.\""
+        },
+        "soccerstatue": {
+            "title": "Soccer Trophy",
+            "desc": "\"Score a goal with this shiny trophy.\""
+        },
+        "libertystatue": {
+            "title": "Statue of Liberty",
+            "desc": "\"New York state of mind.\""
+        },
+        "eiffelstatue": {
+            "title": "Eiffel Tower",
+            "desc": "\"We'll always have Paris.\""
+        },
+        "bigben": {
+            "title": "Big Ben",
+            "desc": "\"God save the queen\""
+        },
+        "dave": {
+            "trophy": "D.A.V.E Trophy"
+        }
     },
     "store": {
         "rebuy": "Purchase again in {v1}",
@@ -1456,7 +1673,30 @@
         "hcc#": "Hatchery Control Center",
         "radio#": "Radio Tower",
         "mushroom#": "Mushroom",
-        "infernoentrance#": "Inferno Cavern"
+        "infernoentrance#": "Inferno Cavern",
+        "pirateflag#": "Pirate Flag",
+        "peaceflag#": "Peace Flag",
+        "americanflag#": "American Flag",
+        "britishflag#": "British Flag",
+        "australianflag#": "Australian Flag",
+        "brazilianflag#": "Brazilian Flag",
+        "frenchflag#": "French Flag",
+        "indonesianflag#": "Indonesian Flag",
+        "italianflag#": "Italian Flag",
+        "malaysianflag#": "Malaysian Flag",
+        "dutchflag#": "Dutch Flag",
+        "newzealandflag#": "Newzealand Flag",
+        "norwegianflag#": "Norwegian Flag",
+        "polishflag#": "Polish Flag",
+        "swedishflag#": "Swedish Flag",
+        "turkishflag#": "Turkish Flag",
+        "canadianflag#": "Canadian Flag",
+        "danishflag#": "Danish Flag",
+        "germanflag#": "German Flag",
+        "filipinoflag#": "Filipino Flag",
+        "singaporeanflag#": "Singaporean Flag",
+        "austrianflag#": "Austrian Flag",
+        "europeanflag#": "European Flag"
     },
     "#bi": {
         "spurtzcannon#": "Spurtz Cannon",
