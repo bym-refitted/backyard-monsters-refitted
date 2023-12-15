@@ -18,5 +18,7 @@ export const exclusionList = [
   "str_closeenough_desc_ok",
   "str_closeenough",
   "mr3_relocate_main_yard_title",
-  "mr3_relocate_confirmation_yes"
+  "mr3_relocate_confirmation_yes",
+  "acad_confirmcancel_btn",
+  "pop_injured"
 ];

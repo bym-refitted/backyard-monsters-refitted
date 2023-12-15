@@ -19,6 +19,8 @@
     "fp_radiotower": "Nervous about leaving your Yard vulnerable? Build a Radio Tower and get attack alerts while you're away.",
     "mr3_relocate_main_yard_title": "Relocate Yard",
     "mr3_relocate_confirmation_yes": "Yes, relocate.",
+    "acad_confirmcancel_btn": "Confirm",
+    "pop_injured": "<b>You have {1} injured monsters.</b><br>Injured monsters cannot be used in an attack.",
     "discord": {
         "earn": "Join the <b>Backyard Monsters Refitted Discord</b> community to earn Shiny and more!"
     },
@@ -47,6 +49,11 @@
         "stopconstructionconfirm": "Are you sure you want to stop construction and destroy this building? <b>This can not be un-done</b>",
         "upgradecancelconfirm": "Are you sure you want to stop upgrading this building?",
         "recycleconfirm": "Are you sure you want to recycle this building? <b>This can not be un-done</b>",
+        "wallsstone": "All walls have been upgraded to stone.",
+        "wallsmetal": "All walls have been upgraded to metal.",
+        "wallsgold": "All walls have been upgraded to gold.",
+        "wallsblackdiamond": "All walls have been upgraded to black diamond.",
+        "moreresourcesheal": "You need <b>{v1}</b> more Goo to heal <b>{v2}</b> monsters.",
         "quest": {
             "housing": "You need to build a Monster Housing to claim this reward."
         },
@@ -129,6 +136,9 @@
         }
     },
     "pop": {
+        "injured": {
+            "title": "Call the doctor!"
+        },
         "hatbuilt": {
             "title": "Hatchery Constructed",
             "body": "You can now convert Goo into Monsters and start to build your Monster army!"
@@ -341,16 +351,20 @@
         "fullscreen": "Full Screen",
         "relocateYard": "Relocate Yard",
         "upgrade": "Upgrade",
+        "upgradeall": "Upgrade All",
         "move": "Move",
         "more": "More...",
         "random": "Random",
         "openstore": "Open Store",
+        "openbunker": "Open Bunker",
         "openbaiter": "Open Baiter",
         "entercavern": "Enter Cavern",
         "collect": "Collect",
         "fortify": "Fortify",
         "bank": "Bank {v1}",
         "bankall": "Bank All",
+        "startheal": "Start Healing",
+        "healnow": "Heal All",
         "speedup": "Speed Up",
         "earn": "Earn",
         "stopbuild": "STOP Build",
@@ -439,7 +453,55 @@
         "level": "Level {v1}",
         "thawstreamdesc": "Awakened from an icy slumber,<br>{v1} is ready to do some damage."
     },
+    "academy": {
+        "traininstantly": "Keep your resources and train instantly!"
+    },
+    "acad": {
+        "status": {
+            "level": "Level {v1}"
+        },
+        "mon": {
+            "name": "Name:",
+            "status": "Status:"
+        },
+        "att": {
+            "before": "Before",
+            "after": "After",
+            "speed": "Movement Speed",
+            "health": "Health",
+            "damage": "Damage",
+            "cost": "Cost",
+            "housing": "Housing",
+            "time": "Time"
+        },
+        "starttraining": {
+            "btn": "Start training"
+        },
+        "pop": {
+            "complete": "{v1} Upgraded."
+        },
+        "confirmcancel": "Are you sure you want to stop upgrading <b>{v1}?</b>",
+        "err": {
+            "putty": "Not enough putty",
+            "trainingstatus": "Level {v1} in {v2}",
+            "locked": "Locked",
+            "upgrade": "Upgrade Academy",
+            "lfullytrained": "Level {v1} Fully Trained.",
+            "fullytrained": "Fully Trained"
+        }
+    },
     "bunker": {
+        "title": "MONSTER BUNKER",
+        "capacity2": "Bunker Capacity",
+        "word": "",
+        "housed": "Housed",
+        "bunkered": "Bunkered",
+        "full": {
+            "2": "<b>Bunker Full</b>"
+        },
+        "all": {
+            "monsters": "All"
+        },
         "btn": {
             "juice": "Juice"
         }
@@ -569,6 +631,7 @@
         "level": "Level {v1}"
     },
     "hat": {
+        "xoverdrive": "{v1}x Overdrive  {v2}",
         "nothinginproduction": "Nothing in production.",
         "notenoughgoo": "Not enough Goo.",
         "needhousing": "Not enough housing space.",
@@ -686,6 +749,7 @@
             "cost": "Goo Cost",
             "housing": "Housing",
             "time": "Time",
+            "speedvalue": "{v1} kph",
             "costvalue": "{v1} {v2}",
             "housingvalue": "{v1} spaces"
         },
@@ -733,6 +797,7 @@
         "chamber": {
             "recycle": "You cannot recycle your Champion Chamber since it has frozen champions inside."
         },
+        "25%boost": "25% Boost",
         "fullyupgraded": "Fully Upgraded!",
         "buildingrequirement": "Level {v1} {v2}",
         "buildingsrequirement": "{v3} Hatcheries all at least level {v1}",
@@ -806,39 +871,56 @@
                 "body2": "One extra worker to help you build and upgrade your village."
             },
             "bst": {
+                "title": "Sharper tools",
                 "title2": "Sharper tools",
+                "body": "Succesfully activated power-up Sharper Tools.",
                 "body2": "Upgrades started while this is active get a 20% head start (your workers get yellow hats)."
             },
             "enl": {
+                "title": "Yard Expanded",
+                "body": "Your yard has been successfully expanded.",
                 "title2": "More Yardage",
                 "body2": "Increase the size of your yard by 10% to make room for more stuff."
             },
             "bip": {
                 "title": "Improved packing skills",
+                "body": "Capacity of all resources increased by 10%",
                 "body2": "Improves the capacity of all resources by 10%"
             },
             "hod": {
+                "title": "Hatchery Overdrive",
                 "title2": "Hatchery Overdrive Stage 1",
+                "body": "Succesfully activated Hatchery Overdrive 1",
                 "body2": "Need to rebuild your monster army in a hurry? 4x the speed of all Hatcheries for 1 hour."
             },
             "hod2": {
+                "title": "Hatchery Overdrive",
                 "title2": "Hatchery Overdrive Stage 2",
+                "body": "Succesfully activated Hatchery Overdrive 2",
                 "body2": "6x the speed of all Hatcheries for 1 hour. Does not stack with other overdrives."
             },
             "hod3": {
+                "title": "Hatchery Overdrive",
                 "title2": "Hatchery Overdrive Stage 3",
+                "body": "Succesfully activated Hatchery Overdrive 3",
                 "body2": "10x the speed of all Hatcheries for 1 hour. Does not stack with other overdrives."
             },
             "pro1": {
+                "title": "Daily Protection",
                 "title2": "Daily Protection",
+                "body": "Succesfully activated Daily Protection",
                 "body2": "Gives you 24 hours protection in this yard from Player and Wild Monster attacks. Removed if you attack anyone."
             },
             "pro2": {
+                "title": "Weekly Protection",
                 "title2": "Weekly Protection",
+                "body": "Succesfully activated Weekly Protection",
                 "body2": "Gives you 7 days of protection in this yard from Player and Wild Monster attacks. Removed if you attack anyone."
             },
             "pro3": {
+                "title": "Ultimate Protection",
                 "title2": "Ultimate Protection",
+                "body": "Succesfully activated Ultimate Protection",
                 "body2": "Gives you 28 days of protection in this yard from Player and Wild Monster attacks. Removed if you attack anyone."
             },
             "mod": {
@@ -867,6 +949,22 @@
         "purchased": {
             "xtimes": "You have purchased this {v1} out of {v2} times"
         }
+    },
+    "mod": {
+        "title": "Monster Dust",
+        "body": "Monster damage increased by 25% for 24 hours."
+    },
+    "mdod": {
+        "title": "Beast Mode",
+        "body": "Monster health increased by 30% for 24 hours."
+    },
+    "msod": {
+        "title": "Hyper Speed",
+        "body": "Monster speed increased by 50% for 24 hours."
+    },
+    "tod": {
+        "title2": "Tower Overdrive",
+        "body": "Defense towers damage increased by 25% for 24 hours."
     },
     "desc": {
         "stonewalls": "Instantly upgrades {v1} of your blocks to Stone, saving you {v2} resources.",
@@ -1285,6 +1383,8 @@
         "zafreeti#": "Zafreeti",
         "teratorn#": "Teratorn",
         "wormzer#": "Wormzer",
+        "vorg#": "Vorg",
+        "slimeattikus#": "Slimeattikus",
         "dave#": "Dave",
         "spurtz#": "Spurtz",
         "zagnoid#": "Zagnoid",
@@ -1413,6 +1513,9 @@
         }
     },
     "mr3": {
+        "bunker": {
+            "empty": "The Monster Bunker is empty."
+        },
         "relocate": {
             "confirmation": "Are you sure you want to relocate your main yard? Relocating will cause you to lose your current outposts if you move to a new world. You will keep your outposts if you relocate within the same world.",
             "main": {
