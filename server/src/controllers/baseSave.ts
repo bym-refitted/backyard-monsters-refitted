@@ -55,7 +55,7 @@ export const baseSave: KoaController = async (ctx) => {
   save.resources = savedResources;
   delete (ctx.request.body as any)?.resources;
 
-  // Update building health data with data sent from the client
+  // Update building health data
   if (ctx.request.body["buildinghealthdata"] === undefined) {
     if (save.buildinghealthdata !== undefined) {
       delete save.buildinghealthdata;
@@ -64,7 +64,7 @@ export const baseSave: KoaController = async (ctx) => {
     save.buildinghealthdata = ctx.request.body["buildinghealthdata"];
   }
 
-  // Update buiding data with data sent from the client
+  // Update buiding data
   if (ctx.request.body["buildingdata"] !== undefined) {
     save.buildingdata = ctx.request.body["buildingdata"];
   }
@@ -74,6 +74,23 @@ export const baseSave: KoaController = async (ctx) => {
     save.aiattacks = ctx.request.body["aiattacks"];
 
     delete ctx.request.body["aiattacks"];
+  }
+
+  // Update monster academy data
+  let academyData = ctx.request.body["academy"];
+  if (academyData !== undefined) {
+    for (var item in academyData) {
+      logging(`Found monster ${item}`);
+
+      if (academyData[item]["time"] === undefined &&
+          save.academy[item]["time"] !== undefined) {
+        delete save.academy[item]["time"];
+      }
+      if (academyData[item]["duration"] === undefined &&
+          save.academy[item]["duration"] !== undefined) {
+        delete save.academy[item]["duration"];
+      }
+    }
   }
 
   // Update the save timestamp
