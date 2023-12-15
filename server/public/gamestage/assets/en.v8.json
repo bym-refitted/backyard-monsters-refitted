@@ -267,7 +267,7 @@
         "alerts": "Alert",
         "afk": {
             "title": "Is anyone home?",
-            "body": "It seems you may have been away from the game for some time, we're just checking in to make sure you are still there. Your army awaits!"
+            "body": "It seems you may have been away from the game for some time, we're just checking in with you!"
         },
         "timeout": {
             "title": "Oops.. timeout!",
@@ -483,8 +483,66 @@
         "savetitle": "SAVE YARD LAYOUT",
         "loadtitle": "LOAD YARD LAYOUT",
         "unsaved": "You have unsaved changes. Are you sure you want to continue?",
+        "cantApply": "You must place down all available buildings to apply changes.",
         "slot": {
             "label": "Slot {v1}:"
+        }
+    },
+    "lab": {
+        "powerup": {
+            "complete": "{v1} Level {v2} Completed."
+        },
+        "selectability": "No ability is currently being researched.<br>Select an Ability to research from the list to the left.",
+        "boltname": "Teleportation",
+        "boltdesc": {
+            "main": "Adds the ability to blink increasing speed.",
+            "upgrade": "Increases the effectiveness of the teleportation ability."
+        },
+        "finkname": "Claws",
+        "finkdesc": {
+            "main": "Attacks multiple enemies and buildings around him.",
+            "upgrade": "Increases the amount of enemies that can be attacked."
+        },
+        "banditoname": "Whirlwind",
+        "banditodesc": {
+            "main": "Attacks multiple enemies around him (does not work on buildings).",
+            "upgrade": "Increases the effectiveness and damage of the whirlwind effect."
+        },
+        "fangname": "Venom",
+        "fangdesc": {
+            "main": "Injects venom into enemies, causing the enemy to constantly lose health after bitten.",
+            "upgrade": "Increases the damage inflicted to poisoned monsters."
+        },
+        "eyeraname": "Airburst",
+        "eyeradesc": {
+            "main": "Jumps into air doing partial damage to air units and increased splash range and damage to ground targets.",
+            "upgrade": "Increases the effectiveness and splash range of the airburst."
+        },
+        "brainname": "Invisibility",
+        "braindesc": {
+            "main": "Gives the Brain the ability to turn invisible, causing towers and monsters not to attack it.",
+            "upgrade": "Increases the duration of invisibility for the Brain."
+        },
+        "projectxname": "Acid Spores",
+        "projectxdesc": {
+            "main": "Adds the ability to unleash acid when the Project X dies.",
+            "upgrade": "Increases the damage of the toxic acid."
+
+        },
+        "wormzername": "Splash Damage",
+        "wormzerdesc": {
+            "main": "Adds the ability to do extra splash damage when Wormzer pops up.",
+            "upgrade": "Increases the splash damage of the Wormzer."
+        },
+        "teratornname": "Ricochet",
+        "teratorndesc": {
+            "main": "Adds the ability for attacks to bounce off of the nearest buildings, doing damage to multiple targets.",
+            "upgrade": "Increases the amount of buildings which get targets by the attack ricochet."
+        },
+        "davename": "Rockets",
+        "davedesc": {
+            "main": "Gives D.A.V.E. the ability to fire rockets, increasing the damage he does. Also enables D.A.V.E. to hit air targets.",
+            "upgrade": "Increases the range of DAVES Rockets."
         }
     },
     "academy": {
@@ -589,7 +647,10 @@
         "desc": "A siege weapon, the Catapult hurls twigs at enemy bases to damage buildings. Upgrade to increase firepower."
     },
     "monsterlab": {
-        "desc": "Research top secret abilities for your monsters. In war, science rules."
+        "title": "MONSTER LABORATORY",
+        "desc": "Research top secret abilities for your monsters. In war, science rules.",
+        "requiredlevel": "Monster Lab Level {v1} required.",
+        "requiredlevel2": "{v1} Level {v2} required"
     },
     "wildmonsterbaiter": {
         "desc": "The Wild Monster Baiter sprays a musk into the air that Wild Monsters can't resist, causing them to flock to your base, a great way to test your defenses. If it gets too much for you the building has a siren you can use to scare them off."
