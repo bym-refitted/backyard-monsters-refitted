@@ -797,6 +797,7 @@
         }
     },
     "krallen": {
+        "nogcage": "You must build a Champion Cage.",
         "desc": "<b>Hunt for Krallen:</b><br>Krallen is quite particular about who wields the power -- he only obeys top looters. Hit your resource looting quota each week to keep him happy, or he'll leave you for the next powerful player he can find. Impress him by going above and beyond with your looting, and he'll learn a special ability. Hold him for consecutive weeks, and he'll only grow stronger and more rabid for loot.",
         "looted": "Resources Looted:",
         "remaining": "Time Remaining:"
