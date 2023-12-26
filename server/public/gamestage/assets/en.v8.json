@@ -479,6 +479,7 @@
         "powerup": {
             "complete": "{v1} Level {v2} Completed."
         },
+        "level": "Lab level required: {v1}",
         "selectability": "No ability is currently being researched.<br>Select an Ability to research from the list to the left.",
         "boltname": "Teleportation",
         "boltdesc": {
@@ -642,7 +643,8 @@
         "title": "MONSTER LABORATORY",
         "desc": "Research top secret abilities for your monsters. In war, science rules.",
         "requiredlevel": "Monster Lab Level {v1} required.",
-        "requiredlevel2": "{v1} Level {v2} required"
+        "requiredlevel2": "{v1} Level {v2} required",
+        "currentlyresearching": "Researching: <b>{v1}</b>"
     },
     "wildmonsterbaiter": {
         "desc": "The Wild Monster Baiter sprays a musk into the air that Wild Monsters can't resist, causing them to flock to your base, a great way to test your defenses. If it gets too much for you the building has a siren you can use to scare them off."
