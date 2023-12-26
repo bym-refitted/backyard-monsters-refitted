@@ -25,7 +25,7 @@ package com.monsters.maproom3.popups
       public function MapRoom3RelocatePopup(param1:config.singletonlock.SingletonLock)
       {
          super();
-         titleText.htmlText = KEYS.Get("mr3_relocate_main_yard_title");
+         titleText.htmlText = KEYS.Get("mr3_relocate_main_yard_titlemain");
          selectDescriptionText.htmlText = KEYS.Get("mr3_relocate_main_yard_description_select");
          randomDescriptionText.htmlText = KEYS.Get("mr3_relocate_main_yard_description_random");
          orText.htmlText = KEYS.Get("mr3_relocate_main_yard_or");
@@ -111,7 +111,7 @@ package com.monsters.maproom3.popups
          }
          else if(GLOBAL._flags.nwm_relocate == "1")
          {
-            GLOBAL.Message(KEYS.Get("mr3_relocate_confirmation"),KEYS.Get("mr3_relocate_confirmation_yes"),this.ConfirmRelocation,[param1]);
+            GLOBAL.Message(KEYS.Get("mr3_relocate_confirmation"),KEYS.Get("mr3_relocate_confirmationyes"),this.ConfirmRelocation,[param1]);
          }
       }
       

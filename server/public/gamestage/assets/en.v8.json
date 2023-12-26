@@ -1,26 +1,4 @@
 {
-    "global_days": "days",
-    "global_hours": "hours",
-    "global_minutes": "minutes",
-    "global_days_short": "d",
-    "global_hours_short": "h",
-    "global_minutes_short": "m",
-    "global_seconds_short": "s",
-    "map_cannot_recycle_map_room3": "You cannot recycle your Map Room in the New World Map. If you want to relocate your yard, click on your Town Hall and choose Relocate.",
-    "str_finishnow": "Finish now",
-    "str_closeenough": "Close Enough",
-    "str_top_fill_label": "Fill your {v1}",
-    "str_top_10pct_noroom": "Your {v1} capacity is full. Build or upgrade your storage silos.",
-    "str_top_50pct_noroom": "Your {v1} capacity is full. Build or upgrade your storage silos.",
-    "str_30minutes_desc": "Reduce the build time of the {v2} by 1 hour.",
-    "str_60minutes_desc": "Reduce the build time of the {v2} by 2 hour.",
-    "str_closeenough_desc_ok": "There is less than 5 minutes remaining, you can finish building the {v2} for free.",
-    "hat_producing": "Producing {v1}.",
-    "fp_radiotower": "Nervous about leaving your Yard vulnerable? Build a Radio Tower and get attack alerts while you're away.",
-    "mr3_relocate_main_yard_title": "Relocate Yard",
-    "mr3_relocate_confirmation_yes": "Yes, relocate.",
-    "acad_confirmcancel_btn": "Confirm",
-    "pop_injured": "<b>You have {1} injured monsters.</b><br>Injured monsters cannot be used in an attack.",
     "discord": {
         "earn": "Join the <b>Backyard Monsters Refitted Discord</b> community to earn Shiny and more!"
     },
@@ -99,7 +77,8 @@
     "map": {
         "msg": {
             "disabled": "The Map Room is currently <b>disabled</b> in Backyard Monsters Refitted.<br><br>We are aiming to get this working for our <b>beta</b> release.<br><br>For more information join our discord."
-        }
+        },
+        "norecycle": "You cannot recycle your Map Room in the New World Map. If you want to relocate your yard, click on your Town Hall and choose Relocate."
     },
     "inferno": {
         "msg": {
@@ -125,11 +104,6 @@
             "thlevelreqd": "Town Hall Level {v1} required."
         }
     },
-    "fp": {
-        "radiotower": {
-            "title": "Can You Hear Me Now?"
-        }
-    },
     "pm": {
         "juiceall": {
             "popup": {
@@ -140,7 +114,8 @@
     },
     "pop": {
         "injured": {
-            "title": "Call the doctor!"
+            "title": "Call the doctor!",
+            "monsters": "<b>You have {1} injured monsters.</b><br>Injured monsters cannot be used in an attack."
         },
         "areyousure": "ARE YOU SURE?",
         "hatbuilt": {
@@ -584,6 +559,7 @@
             "complete": "{v1} Upgraded."
         },
         "confirmcancel": "Are you sure you want to stop upgrading <b>{v1}?</b>",
+        "confirmcancelbtn": "Confirm",
         "err": {
             "putty": "Not enough putty",
             "trainingstatus": "Level {v1} in {v2}",
@@ -748,6 +724,7 @@
         "needhousing": "Not enough housing space.",
         "gooremaining": "Goo remaining: {v1}",
         "producing": {
+            "monsters": "Producing {v1}.",
             "message": "Select monsters from below to add to the queue."
         },
         "status": {
@@ -1135,12 +1112,15 @@
         }
     },
     "str": {
+        "finishnowmain": "Finish now",
         "finishnow": {
             "desc": "Finish build NOW",
             "timesave": "Save {v1} - Finish building the {v3} now."
         },
+        "closeenoughmain": "Close Enough",
         "closeenough": {
-            "desc": "When there's less than 5 minutes remaining you can finish building the {v2} for free."
+            "desc": "When there's less than 5 minutes remaining you can finish building the {v2} for free.",
+            "descok": "There is less than 5 minutes remaining, you can finish building the {v2} for free."
         },
         "construction": "Construction",
         "resources": "Resources",
@@ -1153,7 +1133,9 @@
         "goldwalls": "Gold Walls",
         "blackwalls": "Black Diamond",
         "30minutes": "Reduce by 1 hour",
+        "str_30minutesdesc": "Reduce the build time of the {v2} by 1 hour.",
         "60minutes": "Reduce by 2 hour",
+        "str_60minutesdesc": "Reduce the build time of the {v2} by 2 hour.",
         "repairbdgs": "Repair All Buildings",
         "resourcesfull": "Your {v1} resources are full.",
         "getmore": {
@@ -1258,10 +1240,13 @@
             }
         },
         "top": {
+            "label": "Fill your {v1}",
             "extra": "{v1} extra {v2}",
             "fill": "Gives you {v1} extra {v2} which takes you to 100% capacity.",
             "10pct": "Gives you 10% of your {v1} capacity taking your total {v2} to {v3}",
-            "50pct": "Gives you 50% of your {v1} capacity taking your total {v2} to {v3}"
+            "10pctnoroom": "Your {v1} capacity is full. Build or upgrade your storage silos.",
+            "50pct": "Gives you 50% of your {v1} capacity taking your total {v2} to {v3}",
+            "50pctnoroom": "Your {v1} capacity is full. Build or upgrade your storage silos."
         },
         "purchased": {
             "xtimes": "You have purchased this {v1} out of {v2} times"
@@ -1858,9 +1843,11 @@
             "empty": "The Monster Bunker is empty."
         },
         "relocate": {
+            "confirmationyes": "Yes, relocate.",
             "confirmation": "Are you sure you want to relocate your main yard? Relocating will cause you to lose your current outposts if you move to a new world. You will keep your outposts if you relocate within the same world.",
             "main": {
                 "yard": {
+                    "titlemain": "Relocate Yard",
                     "title": {
                         "level": "Level",
                         "name": "Name",
@@ -1876,9 +1863,24 @@
         }
     },
     "global": {
-        "day": "day",
-        "hour": "hr",
-        "minute": "min"
+        "days": {
+            "long": "days",
+            "short": "d",
+            "single": "day"
+        },
+        "hours": {
+            "long": "hours",
+            "short": "h",
+            "single": "hr"
+        },
+        "minutes": {
+            "long": "minutes",
+            "short": "m",
+            "single": "min"
+        },
+        "seconds": {
+            "short": "s"
+        }
     },
     "buildoptions": {
         "shiny": "Use {v1} Shiny",

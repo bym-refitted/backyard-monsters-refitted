@@ -1,8 +1,6 @@
-import { Next } from "koa";
-import { Context } from "vm";
+import { Context, Next } from "koa";
 import fs from "fs/promises";
 import { errorLog } from "../utils/logger";
-import { exclusionList } from "../keys/languageExclude";
 
 const languageFilePath = "./public/gamestage/assets/en.v8.json";
 
@@ -12,7 +10,7 @@ export const processLanguagesFile = async (ctx: Context, next: Next) => {
       const rawData = await fs.readFile(languageFilePath, "utf8");
       const data = JSON.parse(rawData);
 
-      ctx.body = { data, exclusionList };
+      ctx.body = { data };
       ctx.type = "application/json";
     } catch (error) {
       ctx.status = 500;

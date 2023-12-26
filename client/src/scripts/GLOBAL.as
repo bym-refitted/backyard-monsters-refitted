@@ -1435,33 +1435,33 @@ package
             {
                if(days > 1)
                {
-                  formattedDuration += days + KEYS.Get("global_days") + " ";
+                  formattedDuration += days + KEYS.Get("global_days_long") + " ";
                }
                else
                {
-                  formattedDuration += days + KEYS.Get("global_day") + " ";
+                  formattedDuration += days + KEYS.Get("global_days_single") + " ";
                }
             }
             if(Boolean(hours) || Boolean(days) || includeSeconds)
             {
                if(hours > 1)
                {
-                  formattedDuration += hours + KEYS.Get("global_hours") + " ";
+                  formattedDuration += hours + KEYS.Get("global_hours_long") + " ";
                }
                else
                {
-                  formattedDuration += hours + KEYS.Get("global_hour") + " ";
+                  formattedDuration += hours + KEYS.Get("global_hours_single") + " ";
                }
             }
             if(Boolean(minutes) || Boolean(hours) || Boolean(days) || includeSeconds)
             {
                if(minutes > 1)
                {
-                  formattedDuration += minutes + KEYS.Get("global_minutes") + " ";
+                  formattedDuration += minutes + KEYS.Get("global_minutes_long") + " ";
                }
                else
                {
-                  formattedDuration += minutes + KEYS.Get("global_minute") + " ";
+                  formattedDuration += minutes + KEYS.Get("global_minutes_single") + " ";
                }
             }
             if(minutes > 0 || hours > 0 || days == 0 || includeSeconds)
@@ -1483,15 +1483,15 @@ package
          var _loc3_:Number = Math.ceil(_loc2_ / 86400);
          if(_loc3_ > 1)
          {
-            _loc4_ = _loc3_ + " " + KEYS.Get("global_days");
+            _loc4_ = _loc3_ + " " + KEYS.Get("global_days_long");
          }
          else if((_loc5_ = Math.ceil(_loc2_ / 3600)) > 1)
          {
-            _loc4_ = _loc5_ + " " + KEYS.Get("global_hours");
+            _loc4_ = _loc5_ + " " + KEYS.Get("global_hours_long");
          }
          else
          {
-            _loc4_ = "&lt; 1 " + KEYS.Get("global_hour");
+            _loc4_ = "&lt; 1 " + KEYS.Get("global_hours_single");
          }
          return _loc4_;
       }

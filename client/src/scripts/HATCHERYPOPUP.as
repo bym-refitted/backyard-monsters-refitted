@@ -49,7 +49,7 @@ package
             bSpeedup.addEventListener(MouseEvent.CLICK,STORE.Show(3,2,["HODI","HOD2I","HOD3I"]));
          }
          bSpeedup.buttonMode = true;
-         bFinish.tName.htmlText = "<b>" + KEYS.Get("str_finishnow") + "</b>";
+         bFinish.tName.htmlText = "<b>" + KEYS.Get("str_finishnowmain") + "</b>";
          bFinish.mouseChildren = false;
          bFinish.addEventListener(MouseEvent.CLICK,this.FinishNow);
          bFinish.buttonMode = true;
@@ -509,7 +509,7 @@ package
             }
             else
             {
-               _loc2_ = [1,"<b>" + KEYS.Get("hat_producing",{"v1":KEYS.Get(CREATURELOCKER._creatures[this._hatchery._inProduction].name)}) + "</b>"];
+               _loc2_ = [1,"<b>" + KEYS.Get("hat_producing_monsters",{"v1":KEYS.Get(CREATURELOCKER._creatures[this._hatchery._inProduction].name)}) + "</b>"];
                _loc4_ = true;
                if(_loc1_.length < _loc3_)
                {
@@ -613,14 +613,14 @@ package
                   GLOBAL.Message(KEYS.Get("msg_finishqueue",{
                      "v1":GLOBAL.Array2String(_loc2_),
                      "v2":this._hatchery._finishCost.Get()
-                  }),KEYS.Get("str_finishnow"),this.DoFinish);
+                  }),KEYS.Get("str_finishnowmain"),this.DoFinish);
                }
                else
                {
                   GLOBAL.Message(KEYS.Get("msg_fillhousing",{
                      "v1":GLOBAL.Array2String(_loc2_),
                      "v2":this._hatchery._finishCost.Get()
-                  }),KEYS.Get("str_finishnow"),this.DoFinish);
+                  }),KEYS.Get("str_finishnowmain"),this.DoFinish);
                }
             }
             else

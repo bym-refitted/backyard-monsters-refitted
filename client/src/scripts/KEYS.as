@@ -5,7 +5,6 @@ package
    import flash.net.URLRequest;
    import flash.events.Event;
    import flash.events.IOErrorEvent;
-   
 
    public class KEYS
    {
@@ -65,22 +64,12 @@ package
       public static function Get(jsonKeyPath:String, placeholders:Object = null):String
       {
          var jsonValue:Object = jsonData.data;
-         var excludeList:Array = jsonData.exclusionList;
 
-         if (excludeList && excludeList.indexOf(jsonKeyPath) !== -1)
-         {
-            // Exlucde
-            var excludedValue:String = jsonValue.hasOwnProperty(jsonKeyPath) ? jsonValue[jsonKeyPath] as String : "";
-            return replacePlaceholders(excludedValue, placeholders);
-         }
-         else
-         {
-            // Split
-            var keyPath:Array = jsonKeyPath.split("_");
-            jsonValue = createChildKeys(jsonValue, keyPath);
-         }
+         // Split
+         var keyPath:Array = jsonKeyPath.split("_");
+         jsonValue = createChildKeys(jsonValue, keyPath);
+
          var jsonString:String = jsonValue as String;
-
          if (placeholders != null && jsonString != null)
          {
             // Replace
