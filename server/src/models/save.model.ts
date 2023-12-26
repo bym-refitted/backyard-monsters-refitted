@@ -330,6 +330,10 @@ export class Save {
   @Property({ type: "json", nullable: true })
   frontpage?: FieldData;
 
+  @FrontendKey
+  @Property({ type: "json", nullable: true})
+  savetemplate?: FieldData;
+
   @Property()
   createdAt: Date = new Date();
 
@@ -380,7 +384,7 @@ export class Save {
 
   @FrontendKey
   @Property({ type: "json", nullable: true })
-  chatservers: string[];
+  chatservers: string[]; 
 
   // Client save arrays
   @FrontendKey

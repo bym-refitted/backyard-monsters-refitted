@@ -76,22 +76,23 @@ export const baseSave: KoaController = async (ctx) => {
     delete ctx.request.body["aiattacks"];
   }
 
+  // WARNING: This is currently breaking wild monster attacks, cannot read property of undefined 'time'
   // Update monster academy data
-  let academyData = ctx.request.body["academy"];
-  if (academyData !== undefined) {
-    for (var item in academyData) {
-      logging(`Found monster ${item}`);
+  // let academyData = ctx.request.body["academy"];
+  // if (academyData !== undefined) {
+  //   for (var item in academyData) {
+  //     logging(`Found monster ${item}`);
 
-      if (academyData[item]["time"] === undefined &&
-          save.academy[item]["time"] !== undefined) {
-        delete save.academy[item]["time"];
-      }
-      if (academyData[item]["duration"] === undefined &&
-          save.academy[item]["duration"] !== undefined) {
-        delete save.academy[item]["duration"];
-      }
-    }
-  }
+  //     if (academyData[item]["time"] === undefined &&
+  //         save.academy[item]["time"] !== undefined) {
+  //       delete save.academy[item]["time"];
+  //     }
+  //     if (academyData[item]["duration"] === undefined &&
+  //         save.academy[item]["duration"] !== undefined) {
+  //       delete save.academy[item]["duration"];
+  //     }
+  //   }
+  // }
 
   // Update the save timestamp
   save.savetime = getCurrentDateTime();
