@@ -14,9 +14,9 @@ import { getNewMap } from "./controllers/maproom/getNewMap";
 import { auth } from "./middleware/auth";
 import { relocate } from "./controllers/maproom/relocate";
 import { infernoMonsters } from "./controllers/inferno/infernoMonsters";
-
-import { Context } from "koa";
 import { recordDebugData } from "./controllers/debug/recordDebugData";
+import { getTemplates } from "./controllers/yardplanner/getTemplates";
+import { saveTemplate } from "./controllers/yardplanner/saveTemplate";
 
 const router = new Router();
 
@@ -34,6 +34,10 @@ router.post("/base/load", auth, debugDataLog("Base load data"), baseLoad);
 // Save
 router.post("/base/save", auth, debugDataLog("Base save data"), baseSave);
 router.post("/base/updatesaved", auth, debugDataLog("Base updated save"), updateSaved);
+
+// Yard Planner
+router.post("/api/bm/yardplanner/gettemplates", auth, debugDataLog("Get templates"), getTemplates);
+router.post("/api/bm/yardplanner/savetemplate", auth, debugDataLog("Saving template"), saveTemplate);
 
 // Inferno
 router.post("/api/bm/base/load", auth, debugDataLog("Inferno load data"), baseLoad);
