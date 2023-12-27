@@ -355,6 +355,10 @@ export class Save {
 
   // Arrays
   @FrontendKey
+  @Property({ type: "json", nullable: true})
+  savetemplate: any[];
+
+  @FrontendKey
   @Property({ type: "json", nullable: true })
   updates: any[];
 
@@ -380,7 +384,7 @@ export class Save {
 
   @FrontendKey
   @Property({ type: "json", nullable: true })
-  chatservers: string[];
+  chatservers: string[]; 
 
   // Client save arrays
   @FrontendKey

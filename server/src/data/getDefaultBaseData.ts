@@ -187,6 +187,7 @@ export const getDefaultBaseData = (user?: User) => {
     },
 
     // Arrays
+    savetemplate: [],
     updates: [],
     effects: [],
     homebase: [],
