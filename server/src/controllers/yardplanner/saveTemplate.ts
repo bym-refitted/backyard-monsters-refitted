@@ -2,14 +2,10 @@ import { User } from "../../models/user.model";
 import { ORMContext } from "../../server";
 import { KoaController } from "../../utils/KoaController";
 
-interface Template {
+interface RequestBody {
   slotid: number;
   name: string;
   data: Record<string, {}>;
-}
-
-interface RequestBody {
-  templates?: Template[];
   h?: string;
 }
 
@@ -19,9 +15,19 @@ export const saveTemplate: KoaController = async (ctx) => {
   let save = user.save;
 
   delete requestBody.h;
-  const templates = { templates: { ...requestBody } };
+  await ORMContext.em.populate(user, ["save"]);
 
-  save.savetemplate = templates;
+  const existingSlotIndex = save.savetemplate.findIndex(
+    (template) => template.slotid === requestBody.slotid
+  );
+
+  if (existingSlotIndex !== -1) {
+    // Overwrite the existing layout
+    save.savetemplate[existingSlotIndex] = { ...requestBody };
+  } else {
+    // Insert new layout if slotid doesn't exist
+    save.savetemplate.push({ ...requestBody });
+  }
   await ORMContext.em.persistAndFlush(save);
 
   ctx.status = 200;

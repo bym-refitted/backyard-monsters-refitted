@@ -330,10 +330,6 @@ export class Save {
   @Property({ type: "json", nullable: true })
   frontpage?: FieldData;
 
-  @FrontendKey
-  @Property({ type: "json", nullable: true})
-  savetemplate?: FieldData;
-
   @Property()
   createdAt: Date = new Date();
 
@@ -358,6 +354,10 @@ export class Save {
   attackersiege?: FieldData;
 
   // Arrays
+  @FrontendKey
+  @Property({ type: "json", nullable: true})
+  savetemplate: any[];
+
   @FrontendKey
   @Property({ type: "json", nullable: true })
   updates: any[];
