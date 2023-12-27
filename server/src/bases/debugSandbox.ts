@@ -1,4 +1,4 @@
-export const endGameBase = {
+export const debugSandbox = {
   baseid: "0",
   type: "main",
   userid: 8933978,

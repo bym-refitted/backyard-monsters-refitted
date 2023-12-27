@@ -1,4 +1,4 @@
-export const devBase = {
+export const devSandbox = {
   basesaveid: 2,
   baseid: "0",
   type: "main",
