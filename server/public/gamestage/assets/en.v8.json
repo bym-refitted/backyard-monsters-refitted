@@ -101,7 +101,8 @@
             "bdgpart4": "{v1} {v2} {v3}"
         },
         "builderr": {
-            "thlevelreqd": "Town Hall Level {v1} required."
+            "thlevelreqd": "Town Hall Level {v1} required.",
+            "onlybuildx": "You can only build {v1} of these."
         }
     },
     "pm": {
@@ -113,6 +114,10 @@
         }
     },
     "pop": {
+        "rupgraded": {
+            "title": "{v1} Level {v2}",
+            "body": "Congratulations, you've finished upgrading your {v1}. It will produce {v2} at a faster rate and increase capacity."
+        },
         "injured": {
             "title": "Call the doctor!",
             "monsters": "<b>You have {1} injured monsters.</b><br>Injured monsters cannot be used in an attack."
@@ -239,7 +244,7 @@
             "title": "All Workers Are Busy"
         },
         "resource2": "{v1}",
-        "experiencebar": "You have <b>{v1} experience points</b> and need <b>{v2}</b> more to reach <b>Level {v3}</b>",
+        "experiencebar": "You have <b>{v1} empire points</b> and need <b>{v2}</b> more to reach <b>Level {v3}</b>",
         "sendgifts": "Send Gifts",
         "mailbox": "Mailbox",
         "alerts": "Alert",
