@@ -1,4 +1,4 @@
-import { gameConfig } from "../config/GameSettings";
+import { devConfig } from "../config/DevSettings";
 import { User } from "../models/user.model";
 import { endGameBase } from "../sample/endGameBase";
 import { devBase } from "../sample/devBase";
@@ -7,8 +7,8 @@ import { getCurrentDateTime } from "../utils/getCurrentDateTime";
 
 export const getDefaultBaseData = (user?: User) => {
   // These flags allow us to work with debug dev bases
-  if (gameConfig.devSandbox) return devBase;
-  if (gameConfig.debugSandbox) return endGameBase;
+  if (devConfig.devSandbox) return devBase;
+  if (devConfig.debugSandbox) return endGameBase;
 
   return {
     baseid: "0",

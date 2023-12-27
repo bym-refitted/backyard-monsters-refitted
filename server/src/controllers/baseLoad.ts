@@ -1,4 +1,4 @@
-import { gameConfig } from "../config/GameSettings";
+import { devConfig } from "../config/DevSettings";
 import { Save } from "../models/save.model";
 import { ORMContext } from "../server";
 import { KoaController } from "../utils/KoaController";
@@ -35,7 +35,7 @@ export const baseLoad: KoaController = async (ctx) => {
   }
   const filteredSave = FilterFrontendKeys(save);
 
-  const isTutorialEnabled = gameConfig.skipTutorial ? 205 : 0;
+  const isTutorialEnabled = devConfig.skipTutorial ? 205 : 0;
 
   ctx.status = 200;
   ctx.body = {
