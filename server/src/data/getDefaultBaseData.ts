@@ -1,15 +1,14 @@
 import { gameConfig } from "../config/GameSettings";
 import { User } from "../models/user.model";
 import { endGameBase } from "../sample/endGameBase";
-import { midGameBase } from "../sample/midGameBase";
+import { devBase } from "../sample/devBase";
 import { generateID } from "../utils/generateID";
 import { getCurrentDateTime } from "../utils/getCurrentDateTime";
 
 export const getDefaultBaseData = (user?: User) => {
-  // This allows us to work with example bases
-  // Which are at the half-way and end-game mark in terms of progress.
-  if (gameConfig.loadFinishedBase) return endGameBase;
-  if (gameConfig.loadMidBase) return midGameBase;
+  // These flags allow us to work with debug dev bases
+  if (gameConfig.devSandbox) return devBase;
+  if (gameConfig.debugSandbox) return endGameBase;
 
   return {
     baseid: "0",
