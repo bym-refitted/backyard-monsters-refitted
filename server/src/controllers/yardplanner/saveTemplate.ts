@@ -6,7 +6,6 @@ interface RequestBody {
   slotid: number;
   name: string;
   data: Record<string, {}>;
-  h?: string;
 }
 
 export const saveTemplate: KoaController = async (ctx) => {
@@ -14,7 +13,6 @@ export const saveTemplate: KoaController = async (ctx) => {
   const user: User = ctx.authUser;
   let save = user.save;
 
-  delete requestBody.h;
   await ORMContext.em.populate(user, ["save"]);
 
   const existingSlotIndex = save.savetemplate.findIndex(
