@@ -4,8 +4,6 @@ export const infernoMonsters: KoaController = async ctx => {
     ctx.status = 200;
     ctx.body = {
       error: 0,
-      imonsters: {},
-      
-      h: "someHashValue"
+      imonsters: {}
     };
 }

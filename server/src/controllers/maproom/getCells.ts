@@ -28,7 +28,6 @@ export const getMapRoomCells: KoaController = async (ctx) => {
         t: 0,
         fbid: "",
       },
-    ],
-    h: "someHashValue",
+    ]
   };
 };

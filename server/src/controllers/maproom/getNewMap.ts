@@ -19,8 +19,7 @@ export const getNewMap: KoaController = async (ctx) => {
       mapheaderurl: "http://localhost:3001/api/bm/getnewmap", // Reminder: put in ENV
       width: 500,
       height: 500,
-      data: cells,
-      h: "someHashValue",
+      data: cells
     };
   
     ctx.status = 200;

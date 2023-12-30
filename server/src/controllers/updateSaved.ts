@@ -27,8 +27,7 @@ export const updateSaved: KoaController = async (ctx) => {
   const baseUpdateSave = {
     error: 0,
     flags,
-    ...filteredSave,
-    h: "someHashValue",
+    ...filteredSave
   };
 
   ctx.status = 200;

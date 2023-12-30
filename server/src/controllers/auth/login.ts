@@ -47,8 +47,7 @@ export const login: KoaController = async (ctx) => {
       tpid: "",
       currency_url: "",
       language: "en",
-      settings: {},
-      h: "someHashValue",
+      settings: {}
     };
   } else {
     const user = await ORMContext.em.findOne(User, { email });
@@ -80,8 +79,7 @@ export const login: KoaController = async (ctx) => {
         tpid: "",
         currency_url: "",
         language: "en",
-        settings: {},
-        h: "someHashValue",
+        settings: {}
       };
     } else throw authFailureError;
   }

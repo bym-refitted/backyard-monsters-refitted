@@ -27,7 +27,7 @@ export const register: KoaController = async (ctx) => {
     const filteredUser = FilterFrontendKeys(user);
 
     ctx.status = 200;
-    ctx.body = { user: filteredUser, h: "someHashValue" };
+    ctx.body = { user: filteredUser };
   } catch (err) {
     throw authFailureError;
   }

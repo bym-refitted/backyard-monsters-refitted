@@ -394,37 +394,9 @@ package
          {
             return;
          }
-         var reqData:Object = this._req.data;
-         var hasKeyArray:Array = reqData.split(",\"h\":");
-         var _loc4_:String = "{\"h\":" + hasKeyArray.pop();
-         reqData = hasKeyArray.join(",\"h\":") + "}";
-         var stringifiedReqData:String = String(reqData);
-         var decodedReqData:Object = JSON.decode(reqData);
-         var _loc7_:Object = JSON.decode(_loc4_);
-         var _loc8_:Boolean;
-         if(_loc8_ = false)
-         {
-            if(GLOBAL._reloadonerror)
-            {
-               GLOBAL.CallJS("reloadPage");
-            }
-            else
-            {
-               if(_loc7_.h)
-               {
-               }
-               LOGGER.Log("err",this._url + " -- " + stringifiedReqData + " -- " + this._status + " --");
-               if(_loc7_.h)
-               {
-                  GLOBAL.ErrorMessage("URLLoaderAPI hash mismatch");
-               }
-               else
-               {
-                  GLOBAL.ErrorMessage("URLLoaderAPI no hash received: " + this._req.data);
-               }
-            }
-         }
-         else if(Boolean(this._onComplete))
+         
+        var decodedReqData:Object = JSON.decode(this._req.data);
+        if(Boolean(this._onComplete))
          {
             if(decodedReqData)
             {
@@ -436,5 +408,55 @@ package
             }
          }
       }
+
+      // -------------- OLD IMPLEMENTATION ----------------------
+      // private function fireComplete(param1:Event) : void
+      // {
+      //    if(this._onComplete === null)
+      //    {
+      //       return;
+      //    }
+      //    var reqData:Object = this._req.data;
+      //    var hasKeyArray:Array = reqData.split(",\"h\":");
+      //    var _loc4_:String = "{\"h\":" + hasKeyArray.pop();
+      //    reqData = hasKeyArray.join(",\"h\":") + "}";
+      //    var stringifiedReqData:String = String(reqData);
+      //    var decodedReqData:Object = JSON.decode(reqData);
+      //    var _loc7_:Object = JSON.decode(_loc4_);
+      //    var _loc8_:Boolean;
+      //    if(_loc8_ = false)
+      //    {
+      //       if(GLOBAL._reloadonerror)
+      //       {
+      //          GLOBAL.CallJS("reloadPage");
+      //       }
+      //       else
+      //       {
+      //          if(_loc7_.h)
+      //          {
+      //          }
+      //          //LOGGER.Log("err",this._url + " -- " + stringifiedReqData + " -- " + this._status + " --");
+      //          if(_loc7_.h)
+      //          {
+      //             GLOBAL.ErrorMessage("URLLoaderAPI hash mismatch");
+      //          }
+      //          else
+      //          {
+      //             GLOBAL.ErrorMessage("URLLoaderAPI no hash received: " + this._req.data);
+      //          }
+      //       }
+      //    }
+      //   if(Boolean(this._onComplete))
+      //    {
+      //       if(decodedReqData)
+      //       {
+      //          this._onComplete(decodedReqData);
+      //       }
+      //       else
+      //       {
+      //          print("no jdata?!" + decodedReqData,true);
+      //       }
+      //    }
+      // }
    }
 }

@@ -12,7 +12,6 @@ export const getTemplates: KoaController = async (ctx) => {
   ctx.status = 200;
   ctx.body = {
     error: 0,
-    ...template,
-    h: "someHashValue",
+    ...template
   };
 };

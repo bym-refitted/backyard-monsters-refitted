@@ -36,7 +36,7 @@ export const recordDebugData: KoaController = async (ctx) => {
     }
 
     ctx.status = 200;
-    ctx.body = { error: 0, h: "someHashValue" };
+    ctx.body = { error: 0 };
   } catch (err) {
     throw debugClientErr;
   }

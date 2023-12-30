@@ -116,6 +116,5 @@ export const baseSave: KoaController = async (ctx) => {
   ctx.body = {
     ...baseSaveData,
     ...filteredSave,
-    h: "someHashValue",
   };
 };

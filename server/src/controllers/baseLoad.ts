@@ -48,8 +48,5 @@ export const baseLoad: KoaController = async (ctx) => {
     ...filteredSave,
     id: filteredSave.basesaveid,
     tutorialstage: isTutorialEnabled,
-    // Important: 'h' must always be at the end of the payload, as the client checks for this
-    h: "someHashValue",
-    hn: 0,
   };
 };

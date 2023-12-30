@@ -33,7 +33,6 @@ export const saveTemplate: KoaController = async (ctx) => {
   ctx.status = 200;
   ctx.body = {
     error: 0,
-    ...save.savetemplate,
-    h: "someHashValue",
+    ...save.savetemplate
   };
 };
