@@ -1,5 +1,5 @@
 <p align="center">
-  <img width="50%" src="./server/public/assets/readme/refitted-large.png">
+  <img width="80%" src="./server/public/assets/popups/base-destroyed.png">
 </p>
 
 <br />
@@ -20,9 +20,10 @@ This repository contains the entire modified SWF (Shockwave Flash) client files,
 <br>
 
 ## 🚀 How to Play
-We recommend to run the game in the native Flash Player 32, included in the root of this repository. However, you can also play by using [Ruffle](https://ruffle.rs/) for either Web or Desktop.
+We recommend to run the game in the native Flash Player projector, which is included in the root of this repository [here](./flashplayer_32.exe). Once you have downloaded and opened the Flash Player, click on `File > Open` and select the game file. You can find the game file under our [latest releases](/monkey-patch/backyard-monsters-refitted/releases).
 
 <br>
+
 
 ## Server setup
 
@@ -46,6 +47,10 @@ git clone http://178.32.125.55:25590/monkey-patch/backyard-monsters-refitted
 
 <br />
 
-## Releases
-
-You can find the most recent release of the game here: [backyard-monsters-refitted-stable](/monkey-patch/backyard-monsters-refitted/releases)
+## Preservation of digital heritage
+- [Exemption to PCCPSACT](https://www.federalregister.gov/documents/2018/10/26/2018-23241/exemption-to-prohibition-on-circumvention-of-copyright-protection-systems-for-access-control), exemptions to the provision of the Digital Millennium Copyright Act (“DMCA”).
+- [EFGAMP](https://efgamp.eu/), the European Federation of Video Game Archives, Museums and Preservation projects.
+- [UNESCO PERSIST Programme](https://unescopersist.org/), helps ensure that digital information can continue to be accessed in the future.
+- [The Internet Archive](https://archive.org/), a digital library of Internet sites and other cultural artifacts in digital form.
+- [Flashpoint Archive](https://flashpointarchive.org/), the webgame preservation project.
+- [Adobe Flash Player Archive](https://archive.org/download/flashplayerarchive/), the Adobe Inc. archive.org Flash Player Archive.
