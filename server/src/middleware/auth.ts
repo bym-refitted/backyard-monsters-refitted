@@ -1,7 +1,8 @@
 import { ORMContext } from "../server";
 import { User } from "../models/user.model";
-import { authFailureError, verifyJwtToken } from "../utils/verifyJwtToken";
+import { verifyJwtToken } from "../utils/verifyJwtToken";
 import { Context, Next } from "koa";
+import { authFailureErr } from "../errors/errorCodes.";
 
 /**
  * This middleware enforces authentication for protected routes. It checks
@@ -12,7 +13,7 @@ import { Context, Next } from "koa";
 export const auth = async (ctx: Context, next: Next) => {
   const authHeader = ctx.headers.authorization;
 
-  if (!authHeader || !authHeader.startsWith("Bearer ")) throw authFailureError;
+  if (!authHeader || !authHeader.startsWith("Bearer ")) throw authFailureErr;
 
   const token = authHeader.replace("Bearer ", "");
 
@@ -20,6 +21,6 @@ export const auth = async (ctx: Context, next: Next) => {
     userid: verifyJwtToken(token).userId,
   });
 
-  if (!ctx.authUser) throw authFailureError;
+  if (!ctx.authUser) throw authFailureErr;
   await next();
 };

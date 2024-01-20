@@ -1,4 +1,5 @@
 import { flags } from "../data/flags";
+import { saveFailureErr } from "../errors/errorCodes.";
 import { Save } from "../models/save.model";
 import { ORMContext } from "../server";
 import { FilterFrontendKeys } from "../utils/FrontendKey";
@@ -9,14 +10,9 @@ export const updateSaved: KoaController = async (ctx) => {
   const basesaveid = ctx.session.basesaveid;
   let save = await ORMContext.em.findOne(Save, { basesaveid });
 
-  if (!save) {
-    ctx.status = 404;
-    ctx.body = { message: "Save not updated" };
-    return;
-  }
-
-  // Update the save timestamp
+  if (!save) throw saveFailureErr;
   save.savetime = getCurrentDateTime();
+  
   // Set the id field (_lastSaveID) to be the same as savetime, client expects this.
   save.id = save.savetime;
 
@@ -27,7 +23,7 @@ export const updateSaved: KoaController = async (ctx) => {
   const baseUpdateSave = {
     error: 0,
     flags,
-    ...filteredSave
+    ...filteredSave,
   };
 
   ctx.status = 200;

@@ -6,6 +6,8 @@
  * @param {number} [prefix] - Optional prefix to be added to the ID.
  * @returns {number} The generated numeric ID.
  */
+
+// ToDo new: Replace random number with uuid instead as Math.random is not 'random'
 export const generateID = (length: number, prefix?: number): number => {
   let numericID = 0;
 

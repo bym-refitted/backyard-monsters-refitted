@@ -1,4 +1,4 @@
-import { ClientSafeError } from "../../middleware/clientSafeError";
+import { debugClientErr } from "../../errors/errorCodes.";
 import { KoaController } from "../../utils/KoaController";
 import { errorLog, logging } from "../../utils/logger";
 
@@ -11,13 +11,6 @@ interface DebugData {
   saveid: string;
   value: string;
 }
-
-const debugClientErr = new ClientSafeError({
-  message: "Sorry, it appears this cannot be found.",
-  status: 404,
-  code: "DEBUG_ERROR",
-  data: null,
-});
 
 export const recordDebugData: KoaController = async (ctx) => {
   try {

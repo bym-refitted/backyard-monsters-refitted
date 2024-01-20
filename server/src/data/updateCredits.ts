@@ -27,14 +27,17 @@ export const updateCredits = (save: Save, item: string, quantity: number) => {
   }
 
   // Handle non-store purchases
-  const nonStoreItem: string[] = ["IU", "IF"];
-  if (nonStoreItem.includes(item)) {
+  const nonStoreItem = new Set(["IU", "IF", "ITR", "IUN", "IPU"]);
+  if (nonStoreItem.has(item)) {
     save.credits -= quantity;
     return;
   }
 
   // Handle store purchases
   const storeItem: StoreItem = storeItems[item];
+  if (!storeItem.c) {
+    errorLog("Not a store item! Add to non-store items list", item);
+  }
   let itemCost: number = storeItem.c[0];
   if (storeItem.c.length > 1) {
     // The item has a scaling cost depending on how many of that item the player currently owns
@@ -43,6 +46,5 @@ export const updateCredits = (save: Save, item: string, quantity: number) => {
     itemCost = storeItem.c[currentQuantity];
   }
 
-  itemCost *= quantity;
-  save.credits -= itemCost;
+  save.credits -= itemCost * quantity;
 };

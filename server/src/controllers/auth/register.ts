@@ -4,7 +4,7 @@ import { KoaController } from "../../utils/KoaController";
 import { ORMContext } from "../../server";
 import { User } from "../../models/user.model";
 import { FilterFrontendKeys } from "../../utils/FrontendKey";
-import { authFailureError } from "../../utils/verifyJwtToken";
+import { authFailureErr } from "../../errors/errorCodes.";
 
 const UserRegisterSchema = z.object({
   username: z.string(),
@@ -13,6 +13,8 @@ const UserRegisterSchema = z.object({
   last_name: z.string(),
   pic_square: z.string(),
 });
+
+// ToDo new: add to website
 
 export const register: KoaController = async (ctx) => {
   try {
@@ -29,6 +31,6 @@ export const register: KoaController = async (ctx) => {
     ctx.status = 200;
     ctx.body = { user: filteredUser };
   } catch (err) {
-    throw authFailureError;
+    throw authFailureErr;
   }
 };

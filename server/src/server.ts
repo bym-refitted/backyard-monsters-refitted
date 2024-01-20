@@ -5,7 +5,6 @@ import Koa, { Context, Next } from "koa";
 import session from "koa-session";
 import Router from "@koa/router";
 import bodyParser from "koa-bodyparser";
-import fs from "fs/promises";
 import serve from "koa-static";
 import ormConfig from "./mikro-orm.config";
 import router from "./app.routes";

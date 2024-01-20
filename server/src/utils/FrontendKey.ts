@@ -2,11 +2,11 @@ import 'reflect-metadata';
 
 const FrontendKeyMetadataKey = Symbol('FrontendKey');
 
-export function FrontendKey(target: any, propertyKey: string) {
+export const FrontendKey = (target: any, propertyKey: string) => {
     Reflect.defineMetadata(FrontendKeyMetadataKey, true, target, propertyKey);
 }
   
-export function FilterFrontendKeys<T>(instance: T): Partial<T> {
+export const FilterFrontendKeys = <T>(instance: T): Partial<T> => {
     const filteredObject: Partial<T> = {};
     
     for (const key in instance) {

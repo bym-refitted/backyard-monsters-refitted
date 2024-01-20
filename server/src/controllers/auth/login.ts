@@ -6,7 +6,8 @@ import z from "zod";
 import bcrypt from "bcrypt";
 import JWT from "jsonwebtoken";
 import { Context } from "koa";
-import { authFailureError, verifyJwtToken } from "../../utils/verifyJwtToken";
+import { verifyJwtToken } from "../../utils/verifyJwtToken";
+import { authFailureErr } from "../../errors/errorCodes.";
 
 const UserLoginSchema = z.object({
   email: z.string().optional(),
@@ -21,7 +22,7 @@ const authenticateWithToken = async (ctx: Context) => {
     userid: verifyJwtToken(token).userId,
   });
 
-  if (!user) throw authFailureError;
+  if (!user) throw authFailureErr;
   return user;
 };
 
@@ -51,7 +52,7 @@ export const login: KoaController = async (ctx) => {
     };
   } else {
     const user = await ORMContext.em.findOne(User, { email });
-    if (!user) throw authFailureError;
+    if (!user) throw authFailureErr;
 
     const isMatch = await bcrypt.compare(password, user.password);
 
@@ -81,6 +82,6 @@ export const login: KoaController = async (ctx) => {
         language: "en",
         settings: {}
       };
-    } else throw authFailureError;
+    } else throw authFailureErr;
   }
 };
