@@ -2,6 +2,6 @@
 export const devConfig = {
   logMissingAssets: false,
   skipTutorial: true, 
-  devSandbox: true,
+  devSandbox: false,
   debugSandbox: false
 };

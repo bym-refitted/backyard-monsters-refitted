@@ -17,7 +17,7 @@ export const baseSave: KoaController = async (ctx) => {
   let save = user.save;
   ctx.session.basesaveid = save.basesaveid;
 
-  // ToDo new: take another look at this
+  // ToDo: Beta clean this shit up
   // Update the save with the values from the request
   for (const key of Save.jsonKeys) {
     const requestBodyValue = ctx.request.body[key];

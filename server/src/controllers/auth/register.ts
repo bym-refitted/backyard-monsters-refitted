@@ -14,8 +14,6 @@ const UserRegisterSchema = z.object({
   pic_square: z.string(),
 });
 
-// ToDo new: add to website
-
 export const register: KoaController = async (ctx) => {
   try {
     const userInput = UserRegisterSchema.parse(ctx.request.body);

@@ -122,7 +122,7 @@ export const getDefaultBaseData = (user?: User) => {
     powerups: [], // ToDo: add to DB
     attpowerups: [], // ToDo: add to DB
 
-    // These properties do not get rerturned in base load, why are they here?
+    // These properties do not get returned in base load, why are they here?
     version: 128,
     baseseed: 4520,
     healtime: 0,
