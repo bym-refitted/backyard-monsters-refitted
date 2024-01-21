@@ -3,9 +3,9 @@ package com.smartfoxserver.v2.entities.match
    public class LogicOperator
    {
       
-      public static const AND:com.smartfoxserver.v2.entities.match.LogicOperator = new com.smartfoxserver.v2.entities.match.LogicOperator("AND");
+      public static const AND:LogicOperator = new LogicOperator("AND");
       
-      public static const OR:com.smartfoxserver.v2.entities.match.LogicOperator = new com.smartfoxserver.v2.entities.match.LogicOperator("OR");
+      public static const OR:LogicOperator = new LogicOperator("OR");
        
       
       private var _id:String;

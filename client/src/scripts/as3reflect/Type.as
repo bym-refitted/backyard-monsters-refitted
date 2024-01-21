@@ -6,11 +6,11 @@ package as3reflect
    public class Type extends MetaDataContainer
    {
       
-      public static const UNTYPED:as3reflect.Type = new as3reflect.Type();
+      public static const UNTYPED:Type = new Type();
       
-      public static const PRIVATE:as3reflect.Type = new as3reflect.Type();
+      public static const PRIVATE:Type = new Type();
       
-      public static const VOID:as3reflect.Type = new as3reflect.Type();
+      public static const VOID:Type = new Type();
       
       private static var _cache:Object = {};
        
@@ -53,22 +53,22 @@ package as3reflect
          _fields = new Array();
       }
       
-      public static function forName(param1:String) : as3reflect.Type
+      public static function forName(param1:String) : Type
       {
-         var result:as3reflect.Type = null;
+         var result:Type = null;
          var name:String = param1;
          switch(name)
          {
             case "void":
-               result = as3reflect.Type.VOID;
+               result = Type.VOID;
                break;
             case "*":
-               result = as3reflect.Type.UNTYPED;
+               result = Type.UNTYPED;
                break;
             default:
                try
                {
-                  result = as3reflect.Type.forClass(Class(getDefinitionByName(name)));
+                  result = Type.forClass(Class(getDefinitionByName(name)));
                }
                catch(e:ReferenceError)
                {
@@ -78,20 +78,20 @@ package as3reflect
          return result;
       }
       
-      public static function forInstance(param1:*) : as3reflect.Type
+      public static function forInstance(param1:*) : Type
       {
-         var _loc2_:as3reflect.Type = null;
+         var _loc2_:Type = null;
          var _loc3_:Class = ClassUtils.forInstance(param1);
          if(_loc3_ != null)
          {
-            _loc2_ = as3reflect.Type.forClass(_loc3_);
+            _loc2_ = Type.forClass(_loc3_);
          }
          return _loc2_;
       }
       
-      public static function forClass(param1:Class) : as3reflect.Type
+      public static function forClass(param1:Class) : Type
       {
-         var _loc2_:as3reflect.Type = null;
+         var _loc2_:Type = null;
          var _loc4_:XML = null;
          var _loc3_:String = ClassUtils.getFullyQualifiedName(param1);
          if(_cache[_loc3_])
@@ -101,7 +101,7 @@ package as3reflect
          else
          {
             _loc4_ = describeType(param1);
-            _loc2_ = new as3reflect.Type();
+            _loc2_ = new Type();
             _cache[_loc3_] = _loc2_;
             _loc2_.fullName = _loc3_;
             _loc2_.name = ClassUtils.getNameFromFullyQualifiedName(_loc3_);

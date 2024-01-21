@@ -35,7 +35,7 @@ package com.monsters.subscriptions
       
       public static const REACTIVATE:String = "reactiveSubscription";
       
-      private static var _instance:com.monsters.subscriptions.SubscriptionHandler;
+      private static var _instance:SubscriptionHandler;
       
       public static var ignoreAB:Boolean = false;
        
@@ -48,7 +48,7 @@ package com.monsters.subscriptions
       
       private var _icon:SubscriptionResourceIcon;
       
-      private var _service:com.monsters.subscriptions.SubscriptionService;
+      private var _service:SubscriptionService;
       
       private var _subscriptionID:Number;
       
@@ -58,12 +58,12 @@ package com.monsters.subscriptions
          super();
       }
       
-      public static function get instance() : com.monsters.subscriptions.SubscriptionHandler
+      public static function get instance() : SubscriptionHandler
       {
          if(!_instance)
          {
-            _instance = new com.monsters.subscriptions.SubscriptionHandler();
-            _instance._service = new com.monsters.subscriptions.SubscriptionService();
+            _instance = new SubscriptionHandler();
+            _instance._service = new SubscriptionService();
          }
          return _instance;
       }
@@ -105,7 +105,7 @@ package com.monsters.subscriptions
          return this._expirationDate;
       }
       
-      public function get service() : com.monsters.subscriptions.SubscriptionService
+      public function get service() : SubscriptionService
       {
          return _instance._service;
       }
@@ -117,7 +117,7 @@ package com.monsters.subscriptions
       
       public function initialize(param1:Object = null) : void
       {
-         if(!com.monsters.subscriptions.SubscriptionHandler.isEnabledForAll && !ABTest.isInTestGroup("davesclub108",64) && !this.specialUser() || !GLOBAL.isAtHome() || !GLOBAL._flags["subscriptions"] || GLOBAL.isNoob())
+         if(!SubscriptionHandler.isEnabledForAll && !ABTest.isInTestGroup("davesclub108",64) && !this.specialUser() || !GLOBAL.isAtHome() || !GLOBAL._flags["subscriptions"] || GLOBAL.isNoob())
          {
             return;
          }
@@ -145,7 +145,7 @@ package com.monsters.subscriptions
          {
             _loc1_.canBeShown = true;
          }
-         else if(_loc2_ && ABTest.isInTestGroup("davesclub108",64) && com.monsters.subscriptions.SubscriptionHandler.isEnabledForAll)
+         else if(_loc2_ && ABTest.isInTestGroup("davesclub108",64) && SubscriptionHandler.isEnabledForAll)
          {
             _loc2_.canBeShown = true;
          }
@@ -174,7 +174,7 @@ package com.monsters.subscriptions
          {
             DAVEStatueReward.unlockTeaserInformation(this.showPromoPopup);
          }
-         if(com.monsters.subscriptions.SubscriptionHandler.isEnabledForAll)
+         if(SubscriptionHandler.isEnabledForAll)
          {
             BasePlanner.maxNumberOfSlots = 10;
          }
@@ -195,7 +195,7 @@ package com.monsters.subscriptions
          }
          else
          {
-            this.showPromoPopup();
+            GLOBAL.Message(KEYS.Get("disabled_daveclub"));
          }
       }
       

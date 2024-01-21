@@ -1,28 +1,26 @@
 import { ORMContext } from "../server";
 import { User } from "../models/user.model";
-import { KoaController } from "../utils/KoaController";
-import * as jwt from "jsonwebtoken";
+import { verifyJwtToken } from "../utils/verifyJwtToken";
+import { Context, Next } from "koa";
+import { authFailureErr } from "../errors/errorCodes.";
 
-export const auth: KoaController = async (ctx, next) => {
-  const rawToken = ctx.cookies.get("x-bym-refitted");
-  if (!rawToken) {
-    ctx.status = 500;
-    ctx.body = null;
-    return;
-  }
+/**
+ * This middleware enforces authentication for protected routes. It checks
+ * for the presence of a valid Bearer token in the Authorization header,
+ * verifies the token's authenticity, and loads the associated user from the
+ * database.
+ */
+export const auth = async (ctx: Context, next: Next) => {
+  const authHeader = ctx.headers.authorization;
 
-  const { userId } = <jwt.UserIDJwtPayload>(
-    jwt.verify(rawToken, process.env.SECRET_KEY || "MISSING_SECRET")
-  );
+  if (!authHeader || !authHeader.startsWith("Bearer ")) throw authFailureErr;
 
-  // Load user from database, or we can just use the userid
-  ctx.authUser = await ORMContext.em.findOne(User, { userid: userId });
+  const token = authHeader.replace("Bearer ", "");
 
-  if (!ctx.authUser) {
-    ctx.status = 500;
-    ctx.body = null;
-    return;
-  }
+  ctx.authUser = await ORMContext.em.findOne(User, {
+    userid: verifyJwtToken(token).userId,
+  });
 
+  if (!ctx.authUser) throw authFailureErr;
   await next();
 };

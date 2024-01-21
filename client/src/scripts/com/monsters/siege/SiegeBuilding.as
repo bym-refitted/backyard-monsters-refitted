@@ -14,7 +14,7 @@ package com.monsters.siege
       
       public static const INSTANT:String = "siegeBuildingInstant";
       
-      private static var _popup:com.monsters.siege.SiegeBuildingPopup;
+      private static var _popup:SiegeBuildingPopup;
        
       
       public var unlockingWeapons:Object;
@@ -33,7 +33,7 @@ package com.monsters.siege
       {
          if(!_popup)
          {
-            _popup = new com.monsters.siege.SiegeBuildingPopup(param1,param2);
+            _popup = new SiegeBuildingPopup(param1,param2);
             GLOBAL.BlockerAdd();
             GLOBAL._layerWindows.addChild(_popup);
             POPUPSETTINGS.AlignToCenter(_popup);

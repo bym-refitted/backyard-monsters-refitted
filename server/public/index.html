@@ -2,126 +2,18 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Backyard Monsters Server</title>
+    <title>Backyard Monsters Refitted</title>
     <link rel="stylesheet" href="main.css" />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-    />
-    <link
-      rel="stylesheet"
-      href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/default.min.css"
-    />
   </head>
   <body>
     <header>
-      <h1>Backyard Monsters Server</h1>
+      <h1>Backyard Monsters Refitted</h1>
+      <p>Your server is now running, check your console for logs...</p>
       <nav>
         <ul></ul>
       </nav>
     </header>
-    <main>
-      <h2>Routes</h2>
-      <div onclick="getRoute('base/load')" class="card">
-        <div class="route-item">
-          <i class="fa-solid fa-cube"></i>
-          <p class="route">/base/load</p>
-          <div class="get">
-            <p>Get</p>
-          </div>
-        </div>
-        <pre class="prebase">
-          <code id="base/load" class="language-json"></code>
-        </pre>
-      </div>
-      <div onclick="getRoute('base/save')" class="card">
-        <div class="route-item">
-          <i class="fa-solid fa-cube"></i>
-          <p class="route">/base/save</p>
-          <div class="get">
-            <p>Get</p>
-          </div>
-        </div>
-        <pre>
-          <code id="base/save/" class="language-json"></code>
-        </pre>
-      </div>
-      <div onclick="getRoute('base/updatesaved')" class="card">
-        <div class="route-item">
-          <i class="fa-solid fa-cube"></i>
-          <p class="route">/base/updatesaved</p>
-          <div class="get">
-            <p>Get</p>
-          </div>
-        </div>
-        <pre>
-          <code id="base/updatesaved/" class="language-json"></code>
-        </pre>
-      </div>
-      <div onclick="getRoute('worldmapv3/setmapversion')" class="card">
-        <div class="route-item">
-          <i class="fa-solid fa-cube"></i>
-          <p class="route">/worldmapv3/setmapversion</p>
-          <div class="get">
-            <p>Get</p>
-          </div>
-        </div>
-        <pre>
-          <code id="worldmapv3/setmapversion/" class="language-json"></code>
-        </pre>
-      </div>
-      <div onclick="getRoute('worldmapv3/initworldmap')" class="card">
-        <div class="route-item">
-          <i class="fa-solid fa-cube"></i>
-          <p class="route">/worldmapv3/initworldmap</p>
-          <div class="get">
-            <p>Get</p>
-          </div>
-        </div>
-        <pre>
-          <code id="worldmapv3/initworldmap/" class="language-json"></code>
-        </pre>
-      </div>
-      <div onclick="getRoute('worldmapv3/getcells')" class="card">
-        <div class="route-item">
-          <i class="fa-solid fa-cube"></i>
-          <p class="route">/worldmapv3/getcells</p>
-          <div class="get">
-            <p>Get</p>
-          </div>
-        </div>
-        <pre>
-          <code id="worldmapv3/getcells/" class="language-json"></code>
-        </pre>
-      </div>
-    </main>
-    <main>
-      <h2>Config</h2>
-      <a href="/crossdomain.xml" target="_blank">
-        <div class="card">
-          <div class="route-item">
-            <i class="fa-solid fa-gear"></i>
-            <p class="route">/crossdomain.xml</p>
-            <div class="config">
-              <p>Config</p>
-            </div>
-          </div>
-        </div>
-      </a>
-    </main>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
   </body>
 </html>
 
-<script>
-  const getRoute = async (route) => {
-    const response = await fetch(`http://localhost:3001/${route}`);
-    const data = await response.json();
-    const snippet = document.getElementById(route);
-
-    snippet.innerHTML = `${JSON.stringify(data, null, 2)}`;
-    snippet.parentElement.style.display = "block";
-
-    hljs.highlightAll();
-  };
-</script>
+<script></script>

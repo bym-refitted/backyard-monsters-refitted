@@ -3,7 +3,7 @@ package de.polygonal.ds
    public class HashKey
    {
       
-      public static var _counter:int = 0;
+      public static var _counter:int;
        
       
       public function HashKey()

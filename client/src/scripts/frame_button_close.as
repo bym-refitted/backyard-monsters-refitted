@@ -2,6 +2,7 @@ package
 {
    import flash.display.BitmapData;
    
+   [Embed(source="/_assets/2050_frame_button_close_frame_button_close.png")]
    public dynamic class frame_button_close extends BitmapData
    {
        

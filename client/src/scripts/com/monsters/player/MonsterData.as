@@ -8,7 +8,7 @@ package com.monsters.player
       public static const kHealID:int = 1;
        
       
-      public var m_creeps:Vector.<com.monsters.player.CreepInfo>;
+      public var m_creeps:Vector.<CreepInfo>;
       
       public var m_creatureID:String;
       
@@ -20,7 +20,7 @@ package com.monsters.player
       {
          super();
          this.m_creatureID = "";
-         this.m_creeps = new Vector.<com.monsters.player.CreepInfo>();
+         this.m_creeps = new Vector.<CreepInfo>();
          this.m_level = 0;
          this.m_maxHealth = 0;
       }
@@ -84,7 +84,7 @@ package com.monsters.player
       
       public function get numHealthyHousedCreeps() : int
       {
-         var _loc3_:com.monsters.player.CreepInfo = null;
+         var _loc3_:CreepInfo = null;
          var _loc1_:int = int(this.m_creeps.length);
          var _loc2_:int = _loc1_;
          var _loc4_:int = 0;
@@ -102,7 +102,7 @@ package com.monsters.player
       
       public function get numTotalHealthyCreeps() : int
       {
-         var _loc3_:com.monsters.player.CreepInfo = null;
+         var _loc3_:CreepInfo = null;
          var _loc1_:int = int(this.m_creeps.length);
          var _loc2_:int = _loc1_;
          var _loc4_:int = 0;
@@ -120,7 +120,7 @@ package com.monsters.player
       
       public function numHealingCreeps(param1:int = 0) : int
       {
-         var _loc3_:com.monsters.player.CreepInfo = null;
+         var _loc3_:CreepInfo = null;
          var _loc2_:int = int(this.m_creeps.length);
          var _loc4_:int = _loc2_ - 1;
          while(_loc4_ >= 0)
@@ -164,7 +164,7 @@ package com.monsters.player
       
       public function getHighestTimeWithHousingSplit(param1:int = 0) : int
       {
-         var _loc6_:com.monsters.player.CreepInfo = null;
+         var _loc6_:CreepInfo = null;
          var _loc2_:int = BASE.getNumHousingHealsPerTick();
          var _loc3_:int = this.numCreepsByHouse(param1,true);
          var _loc4_:int = int(this.m_creeps.length);
@@ -194,13 +194,13 @@ package com.monsters.player
          return _loc5_[_loc7_];
       }
       
-      private function timeLeftToHealCreep(param1:com.monsters.player.CreepInfo) : int
+      private function timeLeftToHealCreep(param1:CreepInfo) : int
       {
          var _loc2_:Number = CREATURES.GetProperty(this.m_creatureID,"hTime",this.m_level);
          return (this.m_maxHealth - param1.health) / (this.m_maxHealth / _loc2_);
       }
       
-      private function healthSort(param1:com.monsters.player.CreepInfo, param2:com.monsters.player.CreepInfo) : Number
+      private function healthSort(param1:CreepInfo, param2:CreepInfo) : Number
       {
          if(param1.health == param2.health)
          {
@@ -275,7 +275,7 @@ package com.monsters.player
       
       public function heal(param1:int = 0) : Boolean
       {
-         var _loc6_:com.monsters.player.CreepInfo = null;
+         var _loc6_:CreepInfo = null;
          var _loc12_:int = 0;
          var _loc13_:int = 0;
          var _loc14_:int = 0;
@@ -283,10 +283,10 @@ package com.monsters.player
          var _loc3_:Number = this.m_maxHealth / _loc2_;
          var _loc4_:int = int(this.m_creeps.length);
          var _loc5_:Boolean = true;
-         var _loc7_:com.monsters.player.CreepInfo = null;
+         var _loc7_:CreepInfo = null;
          var _loc8_:int = -1;
          var _loc9_:int = BASE.getNumHousingHealsPerTick();
-         var _loc10_:Vector.<com.monsters.player.CreepInfo> = new Vector.<com.monsters.player.CreepInfo>();
+         var _loc10_:Vector.<CreepInfo> = new Vector.<CreepInfo>();
          var _loc11_:int = 0;
          while(_loc11_ < _loc9_)
          {
@@ -339,7 +339,7 @@ package com.monsters.player
          return !_loc10_.length;
       }
       
-      private function checkAlreadyInList(param1:com.monsters.player.CreepInfo, param2:Vector.<com.monsters.player.CreepInfo>) : Boolean
+      private function checkAlreadyInList(param1:CreepInfo, param2:Vector.<CreepInfo>) : Boolean
       {
          var _loc3_:int = int(param2.length);
          var _loc4_:int = 0;
@@ -410,13 +410,13 @@ package com.monsters.player
       {
          var _loc4_:int = 0;
          var _loc5_:int = 0;
-         var _loc6_:com.monsters.player.CreepInfo = null;
+         var _loc6_:CreepInfo = null;
          if(param1 > 0)
          {
             _loc4_ = 0;
             while(_loc4_ < param1)
             {
-               this.m_creeps.push(new com.monsters.player.CreepInfo(0,int.MAX_VALUE,param2));
+               this.m_creeps.push(new CreepInfo(0,int.MAX_VALUE,param2));
                _loc4_++;
             }
          }
@@ -473,13 +473,13 @@ package com.monsters.player
          }
       }
       
-      public function getOwnedCreeps(param1:int = 0) : Vector.<com.monsters.player.CreepInfo>
+      public function getOwnedCreeps(param1:int = 0) : Vector.<CreepInfo>
       {
          if(param1 == 0)
          {
             print("lol, you silly person. You can\'t do this with housing... for no good reason");
          }
-         var _loc2_:Vector.<com.monsters.player.CreepInfo> = new Vector.<com.monsters.player.CreepInfo>();
+         var _loc2_:Vector.<CreepInfo> = new Vector.<CreepInfo>();
          var _loc3_:int = int(this.m_creeps.length);
          var _loc4_:int = 0;
          var _loc5_:int = 0;
@@ -539,7 +539,7 @@ package com.monsters.player
          }
       }
       
-      public function reserve(param1:uint) : com.monsters.player.CreepInfo
+      public function reserve(param1:uint) : CreepInfo
       {
          var _loc2_:int = int(this.m_creeps.length);
          var _loc3_:int = 0;
@@ -559,7 +559,7 @@ package com.monsters.player
          return null;
       }
       
-      public function release(param1:uint) : com.monsters.player.CreepInfo
+      public function release(param1:uint) : CreepInfo
       {
          var _loc2_:int = int(this.m_creeps.length);
          var _loc3_:int = 0;

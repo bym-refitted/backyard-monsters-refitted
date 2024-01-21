@@ -2,6 +2,7 @@ package
 {
    import flash.display.BitmapData;
    
+   [Embed(source="/_assets/1706_bmp_progressbarlarge_bmp_progressbarlarge.png")]
    public dynamic class bmp_progressbarlarge extends BitmapData
    {
        

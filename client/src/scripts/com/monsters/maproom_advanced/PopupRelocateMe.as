@@ -1,5 +1,6 @@
 package com.monsters.maproom_advanced
 {
+   
    import com.cc.utils.SecNum;
    import com.monsters.maproom_manager.MapRoomManager;
    import flash.display.*;
@@ -8,13 +9,13 @@ package com.monsters.maproom_advanced
    import flash.events.MouseEvent;
    import flash.geom.Point;
    
-   internal class PopupRelocateMe extends PopupRelocateMe_CLIP
+   public class PopupRelocateMe extends PopupRelocateMe_CLIP
    {
        
       
-      private var _cell:com.monsters.maproom_advanced.MapRoomCell;
+      private var _cell:MapRoomCell;
       
-      private var _oldCell:com.monsters.maproom_advanced.MapRoomCell;
+      private var _oldCell:MapRoomCell;
       
       private var RESOURCECOST:SecNum;
       
@@ -27,11 +28,11 @@ package com.monsters.maproom_advanced
          super();
       }
       
-      public function Setup(param1:com.monsters.maproom_advanced.MapRoomCell, param2:String = "outpost") : void
+      public function Setup(param1:MapRoomCell, param2:String = "outpost") : void
       {
          var i:int;
          var resource:MovieClip = null;
-         var cell:com.monsters.maproom_advanced.MapRoomCell = param1;
+         var cell:MapRoomCell = param1;
          var mode:String = param2;
          this._cell = cell;
          if(!MapRoom._open)

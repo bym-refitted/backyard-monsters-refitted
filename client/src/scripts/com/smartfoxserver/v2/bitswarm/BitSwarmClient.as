@@ -27,7 +27,7 @@ package com.smartfoxserver.v2.bitswarm
       
       private var _bbClient:BBClient;
       
-      private var _ioHandler:com.smartfoxserver.v2.bitswarm.IoHandler;
+      private var _ioHandler:IoHandler;
       
       private var _controllers:Object;
       
@@ -55,7 +55,7 @@ package com.smartfoxserver.v2.bitswarm
       
       private var _extController:ExtensionController;
       
-      private var _udpManager:com.smartfoxserver.v2.bitswarm.IUDPManager;
+      private var _udpManager:IUDPManager;
       
       private var _controllersInited:Boolean = false;
       
@@ -88,12 +88,12 @@ package com.smartfoxserver.v2.bitswarm
          return this._connectionMode;
       }
       
-      public function get ioHandler() : com.smartfoxserver.v2.bitswarm.IoHandler
+      public function get ioHandler() : IoHandler
       {
          return this._ioHandler;
       }
       
-      public function set ioHandler(param1:com.smartfoxserver.v2.bitswarm.IoHandler) : void
+      public function set ioHandler(param1:IoHandler) : void
       {
          if(this._ioHandler != null)
          {
@@ -314,12 +314,12 @@ package com.smartfoxserver.v2.bitswarm
          this.onSocketClose(new Event(Event.CLOSE));
       }
       
-      public function get udpManager() : com.smartfoxserver.v2.bitswarm.IUDPManager
+      public function get udpManager() : IUDPManager
       {
          return this._udpManager;
       }
       
-      public function set udpManager(param1:com.smartfoxserver.v2.bitswarm.IUDPManager) : void
+      public function set udpManager(param1:IUDPManager) : void
       {
          this._udpManager = param1;
       }

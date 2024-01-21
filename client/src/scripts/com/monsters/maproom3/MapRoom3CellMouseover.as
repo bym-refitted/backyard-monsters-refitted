@@ -52,19 +52,19 @@ package com.monsters.maproom3
       
       private var m_TextDisplay:Sprite;
       
-      private var m_ScoutAttackButton:com.monsters.maproom3.MapRoom3CellMouseoverButton;
+      private var m_ScoutAttackButton:MapRoom3CellMouseoverButton;
       
-      private var m_EnterOwnedCellButton:com.monsters.maproom3.MapRoom3CellMouseoverButton;
+      private var m_EnterOwnedCellButton:MapRoom3CellMouseoverButton;
       
-      private var m_AddBookmarkButton:com.monsters.maproom3.MapRoom3CellMouseoverButton;
+      private var m_AddBookmarkButton:MapRoom3CellMouseoverButton;
       
-      private var m_RemoveBookmarkButton:com.monsters.maproom3.MapRoom3CellMouseoverButton;
+      private var m_RemoveBookmarkButton:MapRoom3CellMouseoverButton;
       
-      private var m_SendMessageButton:com.monsters.maproom3.MapRoom3CellMouseoverButton;
+      private var m_SendMessageButton:MapRoom3CellMouseoverButton;
       
-      private var m_InviteToAllianceButton:com.monsters.maproom3.MapRoom3CellMouseoverButton;
+      private var m_InviteToAllianceButton:MapRoom3CellMouseoverButton;
       
-      private var m_RequestTruceButton:com.monsters.maproom3.MapRoom3CellMouseoverButton;
+      private var m_RequestTruceButton:MapRoom3CellMouseoverButton;
       
       private var m_Portrait:Sprite;
       
@@ -88,7 +88,7 @@ package com.monsters.maproom3
       
       private var m_InfoTextBuff2:TextField;
       
-      private var m_SelectedCell:com.monsters.maproom3.MapRoom3Cell = null;
+      private var m_SelectedCell:MapRoom3Cell = null;
       
       private var m_MailboxMessage:Message = null;
       
@@ -107,19 +107,19 @@ package com.monsters.maproom3
          this.m_ButtonDisplay = new Sprite();
          this.m_ButtonDisplay.mouseEnabled = false;
          addChild(this.m_ButtonDisplay);
-         this.m_ScoutAttackButton = new com.monsters.maproom3.MapRoom3CellMouseoverButton(MapRoom3AssetCache.instance.GetAsset(MapRoom3AssetCache.MOUSEOVER_BUTTON_SCOUT_ATTACK),MapRoom3AssetCache.instance.GetAsset(MapRoom3AssetCache.MOUSEOVER_BUTTON_SCOUT_ATTACK_ROLLOVER),"mr3_scout_attack_tool_tip");
+         this.m_ScoutAttackButton = new MapRoom3CellMouseoverButton(MapRoom3AssetCache.instance.GetAsset(MapRoom3AssetCache.MOUSEOVER_BUTTON_SCOUT_ATTACK),MapRoom3AssetCache.instance.GetAsset(MapRoom3AssetCache.MOUSEOVER_BUTTON_SCOUT_ATTACK_ROLLOVER),"mr3_scout_attack_tool_tip");
          this.m_ScoutAttackButton.addEventListener(MouseEvent.CLICK,this.OnScoutAttackClicked);
-         this.m_EnterOwnedCellButton = new com.monsters.maproom3.MapRoom3CellMouseoverButton(MapRoom3AssetCache.instance.GetAsset(MapRoom3AssetCache.MOUSEOVER_BUTTON_ENTER),MapRoom3AssetCache.instance.GetAsset(MapRoom3AssetCache.MOUSEOVER_BUTTON_ENTER_ROLLOVER),"mr3_enter_owned_base_tool_tip");
+         this.m_EnterOwnedCellButton = new MapRoom3CellMouseoverButton(MapRoom3AssetCache.instance.GetAsset(MapRoom3AssetCache.MOUSEOVER_BUTTON_ENTER),MapRoom3AssetCache.instance.GetAsset(MapRoom3AssetCache.MOUSEOVER_BUTTON_ENTER_ROLLOVER),"mr3_enter_owned_base_tool_tip");
          this.m_EnterOwnedCellButton.addEventListener(MouseEvent.CLICK,this.OnEnterOwnedCellClicked);
-         this.m_AddBookmarkButton = new com.monsters.maproom3.MapRoom3CellMouseoverButton(MapRoom3AssetCache.instance.GetAsset(MapRoom3AssetCache.MOUSEOVER_BUTTON_BOOKMARK_ADD),MapRoom3AssetCache.instance.GetAsset(MapRoom3AssetCache.MOUSEOVER_BUTTON_BOOKMARK_ADD_ROLLOVER),"mr3_add_bookmark_tool_tip");
+         this.m_AddBookmarkButton = new MapRoom3CellMouseoverButton(MapRoom3AssetCache.instance.GetAsset(MapRoom3AssetCache.MOUSEOVER_BUTTON_BOOKMARK_ADD),MapRoom3AssetCache.instance.GetAsset(MapRoom3AssetCache.MOUSEOVER_BUTTON_BOOKMARK_ADD_ROLLOVER),"mr3_add_bookmark_tool_tip");
          this.m_AddBookmarkButton.addEventListener(MouseEvent.CLICK,this.OnAddBookmarkClicked);
-         this.m_RemoveBookmarkButton = new com.monsters.maproom3.MapRoom3CellMouseoverButton(MapRoom3AssetCache.instance.GetAsset(MapRoom3AssetCache.MOUSEOVER_BUTTON_BOOKMARK_REMOVE),MapRoom3AssetCache.instance.GetAsset(MapRoom3AssetCache.MOUSEOVER_BUTTON_BOOKMARK_REMOVE_ROLLOVER),"mr3_remove_bookmark_tool_tip");
+         this.m_RemoveBookmarkButton = new MapRoom3CellMouseoverButton(MapRoom3AssetCache.instance.GetAsset(MapRoom3AssetCache.MOUSEOVER_BUTTON_BOOKMARK_REMOVE),MapRoom3AssetCache.instance.GetAsset(MapRoom3AssetCache.MOUSEOVER_BUTTON_BOOKMARK_REMOVE_ROLLOVER),"mr3_remove_bookmark_tool_tip");
          this.m_RemoveBookmarkButton.addEventListener(MouseEvent.CLICK,this.OnRemoveBookmarkClicked);
-         this.m_SendMessageButton = new com.monsters.maproom3.MapRoom3CellMouseoverButton(MapRoom3AssetCache.instance.GetAsset(MapRoom3AssetCache.MOUSEOVER_BUTTON_SEND_MESSAGE),MapRoom3AssetCache.instance.GetAsset(MapRoom3AssetCache.MOUSEOVER_BUTTON_SEND_MESSAGE_ROLLOVER),"mr3_send_message_tool_tip");
+         this.m_SendMessageButton = new MapRoom3CellMouseoverButton(MapRoom3AssetCache.instance.GetAsset(MapRoom3AssetCache.MOUSEOVER_BUTTON_SEND_MESSAGE),MapRoom3AssetCache.instance.GetAsset(MapRoom3AssetCache.MOUSEOVER_BUTTON_SEND_MESSAGE_ROLLOVER),"mr3_send_message_tool_tip");
          this.m_SendMessageButton.addEventListener(MouseEvent.CLICK,this.OnSendMessageClicked);
-         this.m_InviteToAllianceButton = new com.monsters.maproom3.MapRoom3CellMouseoverButton(MapRoom3AssetCache.instance.GetAsset(MapRoom3AssetCache.MOUSEOVER_BUTTON_INVITE_TO_ALLIANCE),MapRoom3AssetCache.instance.GetAsset(MapRoom3AssetCache.MOUSEOVER_BUTTON_INVITE_TO_ALLIANCE_ROLLOVER),"mr3_invite_to_alliance_tool_tip");
+         this.m_InviteToAllianceButton = new MapRoom3CellMouseoverButton(MapRoom3AssetCache.instance.GetAsset(MapRoom3AssetCache.MOUSEOVER_BUTTON_INVITE_TO_ALLIANCE),MapRoom3AssetCache.instance.GetAsset(MapRoom3AssetCache.MOUSEOVER_BUTTON_INVITE_TO_ALLIANCE_ROLLOVER),"mr3_invite_to_alliance_tool_tip");
          this.m_InviteToAllianceButton.addEventListener(MouseEvent.CLICK,this.OnInviteToAllianceClicked);
-         this.m_RequestTruceButton = new com.monsters.maproom3.MapRoom3CellMouseoverButton(MapRoom3AssetCache.instance.GetAsset(MapRoom3AssetCache.MOUSEOVER_BUTTON_REQUEST_TRUCE),MapRoom3AssetCache.instance.GetAsset(MapRoom3AssetCache.MOUSEOVER_BUTTON_REQUEST_TRUCE_ROLLOVER),"mr3_request_truce_tool_tip");
+         this.m_RequestTruceButton = new MapRoom3CellMouseoverButton(MapRoom3AssetCache.instance.GetAsset(MapRoom3AssetCache.MOUSEOVER_BUTTON_REQUEST_TRUCE),MapRoom3AssetCache.instance.GetAsset(MapRoom3AssetCache.MOUSEOVER_BUTTON_REQUEST_TRUCE_ROLLOVER),"mr3_request_truce_tool_tip");
          this.m_RequestTruceButton.addEventListener(MouseEvent.CLICK,this.OnRequestTruceClicked);
          this.m_Portrait = new Sprite();
          this.m_Portrait.x = PORTRAIT_OFFSET_X;
@@ -204,12 +204,12 @@ package com.monsters.maproom3
          return "http://graph.facebook.com/" + param1 + "/picture";
       }
       
-      public function get selectedCell() : com.monsters.maproom3.MapRoom3Cell
+      public function get selectedCell() : MapRoom3Cell
       {
          return this.m_SelectedCell;
       }
       
-      public function get scoutAttackButton() : com.monsters.maproom3.MapRoom3CellMouseoverButton
+      public function get scoutAttackButton() : MapRoom3CellMouseoverButton
       {
          return this.m_ScoutAttackButton;
       }
@@ -258,7 +258,7 @@ package com.monsters.maproom3
          removeChild(this.m_InfoDisplay);
       }
       
-      public function Show(param1:com.monsters.maproom3.MapRoom3Cell, param2:Number, param3:Number, param4:Boolean) : void
+      public function Show(param1:MapRoom3Cell, param2:Number, param3:Number, param4:Boolean) : void
       {
          this.SetInfo(param1);
          this.SetPosition(param2,param3);
@@ -317,7 +317,7 @@ package com.monsters.maproom3
          }
       }
       
-      private function SetInfo(param1:com.monsters.maproom3.MapRoom3Cell) : void
+      private function SetInfo(param1:MapRoom3Cell) : void
       {
          var _loc6_:DisplayObject = null;
          var _loc11_:* = null;
@@ -326,7 +326,7 @@ package com.monsters.maproom3
          var _loc14_:Number = NaN;
          var _loc15_:uint = 0;
          var _loc16_:uint = 0;
-         var _loc17_:com.monsters.maproom3.MapRoom3Cell = null;
+         var _loc17_:MapRoom3Cell = null;
          var _loc18_:int = 0;
          this.ClearInfo();
          this.m_SelectedCell = param1;

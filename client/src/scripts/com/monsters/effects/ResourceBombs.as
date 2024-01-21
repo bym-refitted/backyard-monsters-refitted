@@ -1,5 +1,6 @@
 package com.monsters.effects
 {
+   
    import com.cc.utils.SecNum;
    import com.monsters.alliances.ALLIANCES;
    import com.monsters.display.ImageCache;
@@ -392,7 +393,7 @@ package com.monsters.effects
       public static function Tick() : void
       {
          var _loc1_:String = null;
-         var _loc3_:ResourceBomb = null;
+         var _loc3_:* = null;
          var _loc4_:Vector.<Object> = null;
          var _loc5_:BFOUNDATION = null;
          var _loc2_:int = 0;

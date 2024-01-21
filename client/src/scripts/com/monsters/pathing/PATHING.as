@@ -31,9 +31,9 @@ package com.monsters.pathing
       
       private static var _clicked:Boolean = false;
       
-      private static var _poolPathing:Vector.<com.monsters.pathing.PATHINGobject>;
+      private static var _poolPathing:Vector.<PATHINGobject>;
       
-      private static var _poolPathingB:Vector.<com.monsters.pathing.PATHINGobject>;
+      private static var _poolPathingB:Vector.<PATHINGobject>;
       
       private static var _poolPathingLength:int;
       
@@ -57,7 +57,7 @@ package com.monsters.pathing
       
       public static function Setup() : void
       {
-         var _loc2_:com.monsters.pathing.PATHINGobject = null;
+         var _loc2_:PATHINGobject = null;
          var _loc3_:int = 0;
          var _loc4_:int = 0;
          var _loc5_:int = 0;
@@ -69,7 +69,7 @@ package com.monsters.pathing
             while(_loc5_ < _gridHeight)
             {
                _loc3_ = _loc4_ * 1000 + _loc5_;
-               _loc2_ = new com.monsters.pathing.PATHINGobject();
+               _loc2_ = new PATHINGobject();
                _loc2_.pointX = _loc4_;
                _loc2_.pointY = _loc5_;
                _loc2_.cost = 10;
@@ -78,8 +78,8 @@ package com.monsters.pathing
             }
             _loc4_ += 1;
          }
-         _poolPathing = new Vector.<com.monsters.pathing.PATHINGobject>();
-         _poolPathingB = new Vector.<com.monsters.pathing.PATHINGobject>();
+         _poolPathing = new Vector.<PATHINGobject>();
+         _poolPathingB = new Vector.<PATHINGobject>();
          _poolPathingLength = 0;
       }
       
@@ -155,7 +155,7 @@ package com.monsters.pathing
       public static function Tick() : void
       {
          var _loc5_:Point = null;
-         var _loc6_:com.monsters.pathing.PATHINGobject = null;
+         var _loc6_:PATHINGobject = null;
          var _loc7_:int = 0;
          var _loc8_:int = 0;
          var _loc9_:int = 0;
@@ -247,9 +247,9 @@ package com.monsters.pathing
          var _loc21_:int = 0;
          var _loc22_:PATHINGfloodobject = null;
          var _loc23_:int = 0;
-         var _loc24_:com.monsters.pathing.PATHINGobject = null;
-         var _loc25_:com.monsters.pathing.PATHINGobject = null;
-         var _loc26_:com.monsters.pathing.PATHINGobject = null;
+         var _loc24_:PATHINGobject = null;
+         var _loc25_:PATHINGobject = null;
+         var _loc26_:PATHINGobject = null;
          RenderCosts();
          param1.x = int(param1.x);
          param1.y = int(param1.y);
@@ -300,15 +300,15 @@ package com.monsters.pathing
                _loc23_ = 0;
                while(_loc23_ < param2.height)
                {
-                  (_loc24_ = new com.monsters.pathing.PATHINGobject()).pointX = param2.x + _loc21_;
+                  (_loc24_ = new PATHINGobject()).pointX = param2.x + _loc21_;
                   _loc24_.pointY = param2.y + _loc23_;
                   _loc24_.depth = 0;
                   _loc18_[param2.x + _loc21_ * 1000 + param2.y + _loc23_] = _loc24_;
-                  (_loc25_ = new com.monsters.pathing.PATHINGobject()).pointX = param2.x + _loc21_;
+                  (_loc25_ = new PATHINGobject()).pointX = param2.x + _loc21_;
                   _loc25_.pointY = param2.y + _loc23_;
                   _loc25_.depth = 0;
                   _loc19_[param2.x + _loc21_ * 1000 + param2.y + _loc23_] = _loc25_;
-                  (_loc26_ = new com.monsters.pathing.PATHINGobject()).pointX = param2.x + _loc21_;
+                  (_loc26_ = new PATHINGobject()).pointX = param2.x + _loc21_;
                   _loc26_.pointY = param2.y + _loc23_;
                   _loc26_.depth = 0;
                   _loc20_[param2.x + _loc21_ * 1000 + param2.y + _loc23_] = _loc26_;
@@ -336,10 +336,10 @@ package com.monsters.pathing
       
       private static function ProcessFlood(param1:Event = null) : void
       {
-         var _loc4_:com.monsters.pathing.PATHINGobject = null;
+         var _loc4_:PATHINGobject = null;
          var _loc5_:int = 0;
          var _loc6_:int = 0;
-         var _loc7_:com.monsters.pathing.PATHINGobject = null;
+         var _loc7_:PATHINGobject = null;
          var _loc8_:int = 0;
          var _loc9_:int = 0;
          var _loc10_:int = 0;
@@ -398,7 +398,7 @@ package com.monsters.pathing
                                        if(_costs[_loc8_])
                                        {
                                           _loc11_ += 1;
-                                          (_loc7_ = new com.monsters.pathing.PATHINGobject()).pointX = _loc9_;
+                                          (_loc7_ = new PATHINGobject()).pointX = _loc9_;
                                           _loc7_.pointY = _loc10_;
                                           _loc17_ = int(_costs[_loc8_].cost);
                                           if(_loc18_.ignoreWalls)

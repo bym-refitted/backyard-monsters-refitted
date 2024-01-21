@@ -218,7 +218,7 @@ package
          {
             if(MapRoomManager.instance.isInMapRoom3 && !GLOBAL._aiDesignMode)
             {
-               GLOBAL.Message(KEYS.Get("map_cannot_recycle_map_room3"));
+               GLOBAL.Message(KEYS.Get("map_norecycle"));
                return;
             }
             GLOBAL.Message(KEYS.Get("newmap_recycle2"),KEYS.Get("btn_recycle"),this.RecycleD);

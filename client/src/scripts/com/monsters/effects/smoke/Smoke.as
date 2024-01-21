@@ -16,7 +16,7 @@ package com.monsters.effects.smoke
       
       private static var _tmpPoint:Point;
       
-      private static var _tmpSmokeParticle:com.monsters.effects.smoke.SmokeParticle;
+      private static var _tmpSmokeParticle:SmokeParticle;
       
       private static var _noiseBMD:BitmapData;
       
@@ -30,9 +30,9 @@ package com.monsters.effects.smoke
       
       private static var lastProcessTime:Number;
       
-      private static var _particles:Vector.<com.monsters.effects.smoke.SmokeParticle> = new Vector.<com.monsters.effects.smoke.SmokeParticle>();
+      private static var _particles:Vector.<SmokeParticle> = new Vector.<SmokeParticle>();
       
-      private static var _sources:Vector.<com.monsters.effects.smoke.SmokeSystem> = new Vector.<com.monsters.effects.smoke.SmokeSystem>();
+      private static var _sources:Vector.<SmokeSystem> = new Vector.<SmokeSystem>();
       
       private static var _enabled:Boolean = false;
       
@@ -80,8 +80,8 @@ package com.monsters.effects.smoke
             _mc.x = -_rect.width;
             _mc.y = -_rect.height;
             _mc.scaleX = _mc.scaleY = 2;
-            _sources = new Vector.<com.monsters.effects.smoke.SmokeSystem>();
-            _particles = new Vector.<com.monsters.effects.smoke.SmokeParticle>();
+            _sources = new Vector.<SmokeSystem>();
+            _particles = new Vector.<SmokeParticle>();
             _bmd.fillRect(_bmd.rect,0);
          }
          catch(e:Error)
@@ -127,8 +127,8 @@ package com.monsters.effects.smoke
             return;
          }
          param1 = new Point(param1.x * 0.5,param1.y * 0.5).add(new Point(_rect.width * 0.5,_rect.height * 0.5));
-         var _loc6_:com.monsters.effects.smoke.SmokeSystem;
-         (_loc6_ = new com.monsters.effects.smoke.SmokeSystem()).id = _sourceID = _sourceID + 1;
+         var _loc6_:SmokeSystem;
+         (_loc6_ = new SmokeSystem()).id = _sourceID = _sourceID + 1;
          _loc6_.position = param1;
          _loc6_.life = param2;
          _loc6_.density = param3;
@@ -156,7 +156,7 @@ package com.monsters.effects.smoke
          _loc2_ = 0;
          while(_loc2_ < _loc3_)
          {
-            if((_sources[_loc2_] as com.monsters.effects.smoke.SmokeSystem).id == param1)
+            if((_sources[_loc2_] as SmokeSystem).id == param1)
             {
                _sources.splice(_loc2_,1);
                return;
@@ -169,8 +169,8 @@ package com.monsters.effects.smoke
       {
          var _loc2_:int = 0;
          var _loc4_:int = 0;
-         var _loc5_:com.monsters.effects.smoke.SmokeSystem = null;
-         var _loc6_:com.monsters.effects.smoke.SmokeParticle = null;
+         var _loc5_:SmokeSystem = null;
+         var _loc6_:SmokeParticle = null;
          var _loc7_:int = 0;
          var _loc8_:int = 0;
          var _loc9_:int = 0;
@@ -214,7 +214,7 @@ package com.monsters.effects.smoke
                      _loc2_ = 0;
                      while(_loc2_ < _loc5_.density)
                      {
-                        (_loc6_ = new com.monsters.effects.smoke.SmokeParticle()).position = new Point(_loc5_.position.x - _loc11_ + Math.random() * _loc5_.basesize,_loc5_.position.y - _loc11_ + Math.random() * _loc5_.basesize);
+                        (_loc6_ = new SmokeParticle()).position = new Point(_loc5_.position.x - _loc11_ + Math.random() * _loc5_.basesize,_loc5_.position.y - _loc11_ + Math.random() * _loc5_.basesize);
                         _loc6_.position.x += Math.random() * _loc5_.basesize - _loc5_.basesize * 0.5;
                         _loc6_.position.y += (Math.random() * _loc5_.basesize - _loc5_.basesize * 0.5) * 0.5;
                         _loc6_.speed = 2 + Math.random();

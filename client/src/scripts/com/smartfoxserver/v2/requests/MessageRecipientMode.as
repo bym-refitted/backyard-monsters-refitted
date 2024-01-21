@@ -12,7 +12,7 @@ package com.smartfoxserver.v2.requests
       public static const TO_ZONE:int = 3;
        
       
-      private var _target;
+      private var _target:*;
       
       private var _mode:int;
       

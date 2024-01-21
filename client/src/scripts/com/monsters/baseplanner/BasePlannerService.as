@@ -1,85 +1,85 @@
 package com.monsters.baseplanner
 {
+
    import com.monsters.baseplanner.events.BasePlannerServiceEvent;
    import flash.events.EventDispatcher;
-   
+
    public class BasePlannerService extends EventDispatcher
    {
-       
-      
+
       public function BasePlannerService()
       {
          super();
       }
-      
-      public function callServerMethod(param1:String, param2:Array, param3:Function = null) : void
+
+      public function callServerMethod(url:String, keyValue:Array, onComplete:Function = null):void
       {
-         var _loc4_:URLLoaderApi;
-         (_loc4_ = new URLLoaderApi()).load(GLOBAL._apiURL + "bm/yardplanner/" + param1,param2,param3);
+         var urlLoader:URLLoaderApi;
+         (urlLoader = new URLLoaderApi()).load(GLOBAL._apiURL + "bm/yardplanner/" + url, keyValue, onComplete);
       }
-      
-      public function saveTemplate(param1:BaseTemplate, param2:uint) : void
+
+      public function saveTemplate(baseTemplate:BaseTemplate, slotId:uint):void
       {
-         var _loc3_:Object = JSON.encode(param1.exportData());
-         this.callServerMethod("savetemplate",[["slotid",param2],["name",param1.name],["data",_loc3_]],this.savedTemplate);
-         print("saving \'" + param1.name + "\' in slot " + param2);
+         var _loc3_:Object = JSON.encode(baseTemplate.exportData());
+         this.callServerMethod("savetemplate", [["slotid", slotId], ["name", baseTemplate.name], ["data", _loc3_]], this.savedTemplate);
+         print("saving '" + baseTemplate.name + "' in slot " + slotId);
       }
-      
-      private function savedTemplate(param1:Object) : void
+
+      private function savedTemplate(serverData:Object):void
       {
-         if(param1.error)
+         if (serverData.error)
          {
-            print(param1.error);
+            print(serverData.error);
             return;
          }
-         this.loadedTemplates(param1);
+         this.loadedTemplates(serverData);
       }
-      
-      public function loadTemplates() : void
+
+      public function loadTemplates():void
       {
-         this.callServerMethod("gettemplates",null,this.loadedTemplates);
+         this.callServerMethod("gettemplates", null, this.loadedTemplates);
          print("loading template list from the server");
       }
-      
-      private function loadedTemplates(param1:Object) : void
+
+      private function loadedTemplates(serverData:Object):void
       {
-         var _loc3_:Object = null;
-         var _loc4_:int = 0;
-         var _loc5_:BaseTemplate = null;
-         var _loc6_:uint = 0;
-         var _loc2_:Vector.<BaseTemplate> = new Vector.<BaseTemplate>(BasePlanner.slots,true);
-         for each(_loc3_ in param1)
+         var template:Object = null;
+         var slotIndex:int = 0;
+         var slotId:uint = 0;
+         var baseTemplate:BaseTemplate = null;
+         var baseTemplateList:Vector.<BaseTemplate> = new Vector.<BaseTemplate>(BasePlanner.slots, true);
+         for each (template in serverData)
          {
-            if(!(_loc3_ is Number))
+            if (!(template is Number))
             {
-               _loc5_ = new BaseTemplate();
-               _loc6_ = uint(_loc3_.slotid);
-               _loc5_.name = _loc3_.name;
-               _loc5_.slot = _loc6_;
-               _loc5_.importData(JSON.decode(_loc3_.data));
-               if(_loc6_ < _loc2_.length)
+               baseTemplate = new BaseTemplate();
+               slotId = uint(template.slotid);
+               baseTemplate.name = template.name;
+               baseTemplate.slot = slotId;
+               baseTemplate.importData(JSON.decode(template.data));
+               if (slotId < baseTemplateList.length)
                {
-                  _loc2_[_loc6_] = _loc5_;
+                  baseTemplateList[slotId] = baseTemplate;
                }
             }
          }
-         _loc4_ = int(_loc2_.length - 1);
-         while(_loc4_ >= 0)
+         slotIndex = int(baseTemplateList.length - 1);
+         while (slotIndex >= 0)
          {
-            if(!_loc2_[_loc4_])
+            if (!baseTemplateList[slotIndex])
             {
-               _loc2_[_loc4_] = new BaseTemplate("Slot" + (_loc4_ + 1).toString());
+               baseTemplateList[slotIndex] = new BaseTemplate("Slot" + (slotIndex + 1).toString());
             }
-            _loc4_--;
+            slotIndex--;
          }
-         print("new template list is " + _loc2_);
-         dispatchEvent(new BasePlannerServiceEvent(BasePlannerServiceEvent.LOADED_TEMPLATES_LIST,_loc2_));
+         print("new template list is " + baseTemplateList);
+         dispatchEvent(new BasePlannerServiceEvent(BasePlannerServiceEvent.LOADED_TEMPLATES_LIST, baseTemplateList));
       }
-      
-      public function clearSlot(param1:uint) : void
+
+      public function clearSlot(slotIndex:uint):void
       {
-         this.callServerMethod("deletetemplate",[["slotid",param1]]);
-         print("deleting \'blah\' at slot index of " + param1);
+         this.callServerMethod("deletetemplate", [["slotid", slotIndex]]);
+         print("deleting 'blah' at slot index of " + slotIndex);
       }
    }
 }

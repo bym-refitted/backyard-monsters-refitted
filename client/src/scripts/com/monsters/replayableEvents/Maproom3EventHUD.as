@@ -21,7 +21,7 @@ package com.monsters.replayableEvents
       
       private var m_state:uint;
       
-      private var m_event:com.monsters.replayableEvents.ReplayableEvent;
+      private var m_event:ReplayableEvent;
       
       private var m_HUDImage:Bitmap;
       
@@ -48,7 +48,7 @@ package com.monsters.replayableEvents
          return this;
       }
       
-      public function setup(param1:com.monsters.replayableEvents.ReplayableEvent) : void
+      public function setup(param1:ReplayableEvent) : void
       {
          this.m_event = param1;
          bInfo.Setup(KEYS.Get("btn_info"));

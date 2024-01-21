@@ -1,5 +1,6 @@
 package
 {
+   
    import com.monsters.creep_types.CreepTypeManager;
    import com.monsters.maproom_manager.MapRoomManager;
    import com.monsters.monsters.creeps.Bandito;
@@ -913,6 +914,7 @@ package
          var img:String = null;
          var mc:popup_monster = null;
          var _body:String = null;
+         var hatcheryName:String = null;
          _unlocking = null;
          for(i in _lockerData)
          {
@@ -973,9 +975,10 @@ package
                   mc.bSpeedup.addEventListener(MouseEvent.CLICK,StreamPost(KEYS.Get(creature.stream[0]),_body,img));
                   mc.bSpeedup.Highlight = true;
                   mc.bAction.visible = false;
+                  hatcheryName = hatcheryName = !!GLOBAL._bHatchery ? String(GLOBAL._bHatchery._buildingProps.name) : String(GLOBAL._buildingProps[12].name);
                   mc.tText.htmlText = KEYS.Get("pop_unlock_complete",{
                      "v1":KEYS.Get(CREATURELOCKER._creatures[_unlocking].name),
-                     "v2":GLOBAL._bHatchery._buildingProps.name
+                     "v2":KEYS.Get(hatcheryName)
                   });
                   POPUPS.Push(mc,null,null,null,_unlocking + "-150.png");
                }

@@ -18,7 +18,7 @@ package com.monsters.effects.particles
       
       public static var _frame:int = 0;
       
-      private static var _pool:Vector.<com.monsters.effects.particles.ParticlesObject> = new Vector.<com.monsters.effects.particles.ParticlesObject>();
+      private static var _pool:Vector.<ParticlesObject> = new Vector.<ParticlesObject>();
        
       
       public function Particles()
@@ -28,7 +28,7 @@ package com.monsters.effects.particles
       
       public static function Clear() : void
       {
-         var particle:com.monsters.effects.particles.ParticlesObject = null;
+         var particle:ParticlesObject = null;
          var g:String = null;
          try
          {
@@ -53,22 +53,22 @@ package com.monsters.effects.particles
          }
       }
       
-      public static function PoolGet(param1:int, param2:Point, param3:Point, param4:int, param5:Number, param6:Number) : com.monsters.effects.particles.ParticlesObject
+      public static function PoolGet(param1:int, param2:Point, param3:Point, param4:int, param5:Number, param6:Number) : ParticlesObject
       {
-         var _loc7_:com.monsters.effects.particles.ParticlesObject = null;
+         var _loc7_:ParticlesObject = null;
          if(_pool.length)
          {
             _loc7_ = _pool.pop();
          }
          else
          {
-            (_loc7_ = new com.monsters.effects.particles.ParticlesObject()).gotoAndStop(int(Math.random() * 3) + 1);
+            (_loc7_ = new ParticlesObject()).gotoAndStop(int(Math.random() * 3) + 1);
          }
          _loc7_.init(param1,param2,param3,param4,param5,param6);
          return _loc7_;
       }
       
-      public static function PoolSet(param1:com.monsters.effects.particles.ParticlesObject) : void
+      public static function PoolSet(param1:ParticlesObject) : void
       {
          _pool.push(param1);
       }
@@ -110,7 +110,7 @@ package com.monsters.effects.particles
       
       public static function Remove(param1:*) : void
       {
-         var _loc2_:com.monsters.effects.particles.ParticlesObject = _particles[param1];
+         var _loc2_:ParticlesObject = _particles[param1];
          --_tmpParticleCount;
          try
          {
@@ -124,7 +124,7 @@ package com.monsters.effects.particles
          }
       }
       
-      public static function SnapShot(param1:int, param2:int, param3:Number, param4:com.monsters.effects.particles.ParticlesObject) : void
+      public static function SnapShot(param1:int, param2:int, param3:Number, param4:ParticlesObject) : void
       {
          var _loc5_:BitmapData = null;
          var _loc6_:Matrix = null;

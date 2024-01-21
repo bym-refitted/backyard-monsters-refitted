@@ -9,13 +9,13 @@ package de.polygonal.ds
       
       public var val:Object;
       
-      public var prev:de.polygonal.ds.DLLNode;
+      public var prev:DLLNode;
       
-      public var next:de.polygonal.ds.DLLNode;
+      public var next:DLLNode;
       
-      public var _list:de.polygonal.ds.DLL;
+      public var _list:DLL;
       
-      public function DLLNode(param1:Object = undefined, param2:de.polygonal.ds.DLL = undefined)
+      public function DLLNode(param1:Object = undefined, param2:DLL = undefined)
       {
          if(Boot.skip_constructor)
          {
@@ -25,7 +25,7 @@ package de.polygonal.ds
          _list = param2;
       }
       
-      public function unlink() : de.polygonal.ds.DLLNode
+      public function unlink() : DLLNode
       {
          null;
          return _list.unlink(this);
@@ -42,7 +42,7 @@ package de.polygonal.ds
          return prev.val;
       }
       
-      public function prependTo(param1:de.polygonal.ds.DLLNode) : de.polygonal.ds.DLLNode
+      public function prependTo(param1:DLLNode) : DLLNode
       {
          null;
          null;
@@ -55,7 +55,7 @@ package de.polygonal.ds
          return this;
       }
       
-      public function prepend(param1:de.polygonal.ds.DLLNode) : de.polygonal.ds.DLLNode
+      public function prepend(param1:DLLNode) : DLLNode
       {
          null;
          null;
@@ -93,7 +93,7 @@ package de.polygonal.ds
          return next != null;
       }
       
-      public function getList() : de.polygonal.ds.DLL
+      public function getList() : DLL
       {
          return _list;
       }
@@ -106,7 +106,7 @@ package de.polygonal.ds
          _list = null;
       }
       
-      public function appendTo(param1:de.polygonal.ds.DLLNode) : de.polygonal.ds.DLLNode
+      public function appendTo(param1:DLLNode) : DLLNode
       {
          null;
          null;
@@ -119,7 +119,7 @@ package de.polygonal.ds
          return this;
       }
       
-      public function append(param1:de.polygonal.ds.DLLNode) : de.polygonal.ds.DLLNode
+      public function append(param1:DLLNode) : DLLNode
       {
          null;
          null;
@@ -129,9 +129,9 @@ package de.polygonal.ds
          return param1;
       }
       
-      public function _unlink() : de.polygonal.ds.DLLNode
+      public function _unlink() : DLLNode
       {
-         var _loc1_:de.polygonal.ds.DLLNode = next;
+         var _loc1_:DLLNode = next;
          if(prev != null)
          {
             prev.next = next;
@@ -144,7 +144,7 @@ package de.polygonal.ds
          return _loc1_;
       }
       
-      public function _insertBefore(param1:de.polygonal.ds.DLLNode) : void
+      public function _insertBefore(param1:DLLNode) : void
       {
          param1.next = this;
          param1.prev = prev;
@@ -155,7 +155,7 @@ package de.polygonal.ds
          prev = param1;
       }
       
-      public function _insertAfter(param1:de.polygonal.ds.DLLNode) : void
+      public function _insertAfter(param1:DLLNode) : void
       {
          param1.next = next;
          param1.prev = this;

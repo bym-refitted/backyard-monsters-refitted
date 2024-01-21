@@ -4,6 +4,7 @@ package
    import flash.display.SimpleButton;
    import flash.text.TextField;
    
+   [Embed(source="/_assets/assets.swf", symbol="WildMonsterBaseInferno_CLIP")]
    public dynamic class WildMonsterBaseInferno_CLIP extends MovieClip
    {
        

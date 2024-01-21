@@ -18,9 +18,9 @@ package com.monsters.maproom
       public static var BRIDGE:Object = {};
        
       
-      public var players:com.monsters.maproom.PlayerLayer;
+      public var players:PlayerLayer;
       
-      public var miniMap:com.monsters.maproom.MiniMap;
+      public var miniMap:MiniMap;
       
       public var mv:MapView;
       
@@ -50,7 +50,7 @@ package com.monsters.maproom
          top.addChild(mvBtn);
          top.addChild(lvBtn);
          addChild(top);
-         this.players = new com.monsters.maproom.PlayerLayer();
+         this.players = new PlayerLayer();
          if(BRIDGE.TUTORIAL._stage < this._tutorialModeThresh)
          {
             this.players._wmbToDisplay = 1;

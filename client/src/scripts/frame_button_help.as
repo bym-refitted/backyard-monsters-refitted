@@ -2,6 +2,7 @@ package
 {
    import flash.display.BitmapData;
    
+   [Embed(source="/_assets/1699_frame_button_help_frame_button_help.png")]
    public dynamic class frame_button_help extends BitmapData
    {
        

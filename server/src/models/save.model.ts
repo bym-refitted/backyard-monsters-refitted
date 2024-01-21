@@ -7,6 +7,10 @@ export interface FieldData {
 
 @Entity()
 export class Save {
+
+  // basesaveid is probably for your own personal save data
+  // baseid is probably for loading your opponent's data
+
   // Primatives
   @FrontendKey
   @PrimaryKey()
@@ -167,10 +171,6 @@ export class Save {
   @FrontendKey
   @Property()
   relationship!: number;
-
-  @FrontendKey
-  @Property()
-  currenttime!: number;
 
   // Client save primitives
   @FrontendKey
@@ -339,10 +339,6 @@ export class Save {
   // Client save objects
   @FrontendKey
   @Property({ type: "json", nullable: true })
-  purchase?: FieldData;
-
-  @FrontendKey
-  @Property({ type: "json", nullable: true })
   attackcreatures?: FieldData;
 
   @FrontendKey
@@ -358,6 +354,10 @@ export class Save {
   attackersiege?: FieldData;
 
   // Arrays
+  @FrontendKey
+  @Property({ type: "json", nullable: true})
+  savetemplate: any[];
+
   @FrontendKey
   @Property({ type: "json", nullable: true })
   updates: any[];
@@ -384,7 +384,7 @@ export class Save {
 
   @FrontendKey
   @Property({ type: "json", nullable: true })
-  chatservers: string[];
+  chatservers: string[]; 
 
   // Client save arrays
   @FrontendKey
@@ -442,7 +442,6 @@ export class Save {
     "krallen",
     "siege",
     "buildingresources",
-    "purchase",
     "attackcreatures",
     "attackloot",
     "lootreport",
@@ -461,5 +460,6 @@ export class Save {
     "sentgifts",
     "attackerchampion",
     "fbpromos",
+    "purchase"
   ];
 }

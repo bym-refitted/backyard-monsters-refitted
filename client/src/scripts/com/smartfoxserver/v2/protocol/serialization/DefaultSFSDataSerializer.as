@@ -23,7 +23,7 @@ package com.smartfoxserver.v2.protocol.serialization
       
       private static const FIELD_VALUE_KEY:String = "V";
       
-      private static var _instance:com.smartfoxserver.v2.protocol.serialization.DefaultSFSDataSerializer;
+      private static var _instance:DefaultSFSDataSerializer;
       
       private static var _lock:Boolean = true;
        
@@ -37,12 +37,12 @@ package com.smartfoxserver.v2.protocol.serialization
          }
       }
       
-      public static function getInstance() : com.smartfoxserver.v2.protocol.serialization.DefaultSFSDataSerializer
+      public static function getInstance() : DefaultSFSDataSerializer
       {
          if(_instance == null)
          {
             _lock = false;
-            _instance = new com.smartfoxserver.v2.protocol.serialization.DefaultSFSDataSerializer();
+            _instance = new DefaultSFSDataSerializer();
             _lock = true;
          }
          return _instance;

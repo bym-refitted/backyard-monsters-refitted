@@ -2,6 +2,7 @@ package
 {
    import flash.display.BitmapData;
    
+   [Embed(source="/_assets/2176_isograss7_isograss7.png")]
    public dynamic class isograss7 extends BitmapData
    {
        

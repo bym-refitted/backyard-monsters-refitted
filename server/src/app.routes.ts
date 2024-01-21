@@ -12,62 +12,45 @@ import {
 import { getMapRoomCells } from "./controllers/maproom/getCells";
 import { getNewMap } from "./controllers/maproom/getNewMap";
 import { auth } from "./middleware/auth";
-
-interface LogProps {
-  logMessage: string;
-  debugVars: Object;
-}
+import { relocate } from "./controllers/maproom/relocate";
+import { infernoMonsters } from "./controllers/inferno/infernoMonsters";
+import { recordDebugData } from "./controllers/debug/recordDebugData";
+import { getTemplates } from "./controllers/yardplanner/getTemplates";
+import { saveTemplate } from "./controllers/yardplanner/saveTemplate";
 
 const router = new Router();
+
+// Init route
+router.get("/api/bm/getnewmap", debugDataLog("Posting to new maproom"), getNewMap);
+router.post("/api/bm/getnewmap", debugDataLog("Posting to new maproom"), getNewMap);
 
 // Auth
 router.post("/api/player/getinfo", debugDataLog("User login attempt"), login);
 router.post("/api/player/register", debugDataLog("Registering user"), register);
 
-// Save
-router.post("/base/save", auth, debugDataLog("Base save data"), baseSave);
-router.post(
-  "/base/updatesaved",
-  debugDataLog("Base updated save"),
-  updateSaved
-);
-
 // Load
 router.post("/base/load", auth, debugDataLog("Base load data"), baseLoad);
 
+// Save
+router.post("/base/save", auth, debugDataLog("Base save data"), baseSave);
+router.post("/base/updatesaved", auth, debugDataLog("Base updated save"), updateSaved);
+
+// Yard Planner
+router.post("/api/bm/yardplanner/gettemplates", auth, debugDataLog("Get templates"), getTemplates);
+router.post("/api/bm/yardplanner/savetemplate", auth, debugDataLog("Saving template"), saveTemplate);
+
+// Inferno
+router.post("/api/bm/base/load", auth, debugDataLog("Inferno load data"), baseLoad);
+router.post("/api/bm/base/infernomonsters", auth, debugDataLog("Load inferno monsters"), infernoMonsters);
+router.post("/api/bm/base/save", auth, debugDataLog("Inferno save data"), baseSave);
+
 // Worldmap
-router.post(
-  "/worldmapv3/setmapversion",
-  debugDataLog("Set maproom version"),
-  mapRoomVersion
-);
-router.post(
-  "/worldmapv3/initworldmap",
-  debugDataLog("Init maproom data"),
-  initMapRoom
-);
-router.post(
-  "/worldmapv3/getcells",
-  debugDataLog("Get maproom cells"),
-  getMapRoomCells
-);
-router.post(
-  "/api/bm/getnewmap",
-  debugDataLog("Posting to new maproom"),
-  getNewMap
-);
+router.post("/worldmapv3/setmapversion", auth, debugDataLog("Set maproom version"), mapRoomVersion);
+router.post("/worldmapv3/initworldmap", auth, debugDataLog("Init maproom data"), initMapRoom);
+router.post("/worldmapv3/getcells", auth, debugDataLog("Get maproom cells"), getMapRoomCells);
+router.post("/worldmapv3/relocate", auth, debugDataLog("Relocating base"), relocate);
 
 // Logging routes
-// router.post(
-//     "/api/player/recorddebugdata",
-//     async (ctx: Context) => {
-//       logging(`=========== NEW RUN ${randomUUID()} ===========`);
-//       const requestLog = ctx.request.body as { message: string };
-
-//       JSON.parse(requestLog.message).forEach((element: LogProps) => {
-//         logging(`${element.logMessage}`, element.debugVars);
-//       });
-//     }
-//   );
+router.post("/api/player/recorddebugdata", recordDebugData);
 
 export default router;

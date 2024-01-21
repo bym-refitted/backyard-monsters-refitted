@@ -3,7 +3,7 @@ package com.monsters.chat
    public class Channel
    {
       
-      public static const ADMIN:com.monsters.chat.Channel = new com.monsters.chat.Channel("admin","system");
+      public static const ADMIN:Channel = new Channel("admin","system");
        
       
       private var name:String;

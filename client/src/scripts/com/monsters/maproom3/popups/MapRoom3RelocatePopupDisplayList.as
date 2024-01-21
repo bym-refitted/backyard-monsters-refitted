@@ -10,7 +10,7 @@ package com.monsters.maproom3.popups
       
       private var m_FriendsToDisplay:Vector.<MapRoom3FriendData>;
       
-      private var m_FriendItemDisplays:Vector.<com.monsters.maproom3.popups.MapRoom3RelocatePopupItemDisplay>;
+      private var m_FriendItemDisplays:Vector.<MapRoom3RelocatePopupItemDisplay>;
       
       private var m_Container:Sprite;
       
@@ -63,18 +63,18 @@ package com.monsters.maproom3.popups
       
       private function CreateFriendDisplays() : void
       {
-         var _loc4_:com.monsters.maproom3.popups.MapRoom3RelocatePopupItemDisplay = null;
+         var _loc4_:MapRoom3RelocatePopupItemDisplay = null;
          if(this.m_FriendsToDisplay == null)
          {
             return;
          }
          var _loc1_:int = 0;
          var _loc2_:uint = this.m_FriendsToDisplay.length;
-         this.m_FriendItemDisplays = new Vector.<com.monsters.maproom3.popups.MapRoom3RelocatePopupItemDisplay>(_loc2_);
+         this.m_FriendItemDisplays = new Vector.<MapRoom3RelocatePopupItemDisplay>(_loc2_);
          var _loc3_:uint = 0;
          while(_loc3_ < _loc2_)
          {
-            _loc4_ = new com.monsters.maproom3.popups.MapRoom3RelocatePopupItemDisplay(this.m_FriendsToDisplay[_loc3_]);
+            _loc4_ = new MapRoom3RelocatePopupItemDisplay(this.m_FriendsToDisplay[_loc3_]);
             this.m_FriendItemDisplays[_loc3_] = _loc4_;
             this.m_Container.addChild(_loc4_);
             _loc4_.x = 0;
@@ -86,7 +86,7 @@ package com.monsters.maproom3.popups
       
       private function ClearFriendDisplays() : void
       {
-         var _loc3_:com.monsters.maproom3.popups.MapRoom3RelocatePopupItemDisplay = null;
+         var _loc3_:MapRoom3RelocatePopupItemDisplay = null;
          if(this.m_FriendItemDisplays == null)
          {
             return;

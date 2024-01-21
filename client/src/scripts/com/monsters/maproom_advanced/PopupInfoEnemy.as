@@ -1,5 +1,6 @@
 package com.monsters.maproom_advanced
 {
+   
    import com.cc.utils.SecNum;
    import com.monsters.alliances.*;
    import com.monsters.display.ImageCache;
@@ -18,7 +19,7 @@ package com.monsters.maproom_advanced
    import flash.geom.Point;
    import flash.net.URLRequest;
    
-   internal class PopupInfoEnemy extends PopupInfoEnemy_CLIP
+   public class PopupInfoEnemy extends PopupInfoEnemy_CLIP
    {
       
       private static var _takeoverCost:SecNum;
@@ -40,7 +41,7 @@ package com.monsters.maproom_advanced
       private static var _protectedInRange:Boolean;
        
       
-      private var _cell:com.monsters.maproom_advanced.MapRoomCell;
+      private var _cell:MapRoomCell;
       
       private var _mcMonsters:MovieClip;
       
@@ -147,14 +148,14 @@ package com.monsters.maproom_advanced
          MapRoom._mc.HideInfoEnemy();
       }
       
-      public function Setup(param1:com.monsters.maproom_advanced.MapRoomCell, param2:Boolean = false) : void
+      public function Setup(param1:MapRoomCell, param2:Boolean = false) : void
       {
          var _loc5_:CellData = null;
          var _loc6_:int = 0;
          var _loc7_:int = 0;
          var _loc8_:* = null;
          var _loc9_:* = null;
-         var _loc10_:com.monsters.maproom_advanced.MapRoomCell = null;
+         var _loc10_:MapRoomCell = null;
          var _loc11_:int = 0;
          var _loc12_:int = 0;
          this._cell = param1;
@@ -170,7 +171,7 @@ package com.monsters.maproom_advanced
          this.bAlliance.visible = true;
          for each(_loc5_ in GLOBAL._attackerCellsInRange)
          {
-            _loc10_ = _loc5_.cell as com.monsters.maproom_advanced.MapRoomCell;
+            _loc10_ = _loc5_.cell as MapRoomCell;
             _loc11_ = _loc5_.range;
             if(_loc10_ && _loc10_._mine && _loc10_._flingerRange.Get() + _loc4_ >= _loc11_)
             {
@@ -700,7 +701,7 @@ package com.monsters.maproom_advanced
                MapRoomManager.instance.Hide();
                GLOBAL._attackerCellsInRange = new Vector.<CellData>(0,true);
                GLOBAL._currentCell = _cell;
-               (GLOBAL._currentCell as com.monsters.maproom_advanced.MapRoomCell).baseType = 3;
+               (GLOBAL._currentCell as MapRoomCell).baseType = 3;
                BASE.yardType = EnumYardType.OUTPOST;
                GLOBAL.BlockerRemove();
                BASE.LoadBase(null,0,_cell._baseID,GLOBAL.e_BASE_MODE.BUILD,false,EnumYardType.OUTPOST);

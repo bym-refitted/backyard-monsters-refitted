@@ -6,11 +6,11 @@ package de.polygonal.ds
    {
        
       
-      public var _walker:de.polygonal.ds.SLLNode;
+      public var _walker:SLLNode;
       
-      public var _f:de.polygonal.ds.SLL;
+      public var _f:SLL;
       
-      public function SLLIterator(param1:de.polygonal.ds.SLL = undefined)
+      public function SLLIterator(param1:SLL = undefined)
       {
          if(Boot.skip_constructor)
          {
@@ -37,7 +37,7 @@ package de.polygonal.ds
          return _walker != null;
       }
       
-      public function __head(param1:Object) : de.polygonal.ds.SLLNode
+      public function __head(param1:Object) : SLLNode
       {
          return param1.head;
       }

@@ -55,6 +55,8 @@ package
    import gs.*;
    import gs.easing.*;
    
+   
+   
    public class BASE
    {
       
@@ -837,6 +839,7 @@ package
             _lastProcessed = int(serverData.savetime);
             GLOBAL.t = _lastProcessed;
             _currentTime = int(serverData.currenttime);
+            // Comment: If the _lastProcessed time is older than 2 days from the current time, it updates _lastProcessed to be 2 days before the current time. 
             if(_lastProcessed < _currentTime - 60 * 60 * 24 * 2)
             {
                _lastProcessed = _currentTime - 60 * 60 * 24 * 2;
@@ -1007,7 +1010,7 @@ package
             {
                UPDATES._lastUpdateID = 0;
             }
-            serverData.mushrooms = {} // Reminder: This is not real
+            
             if(serverData.mushrooms.l)
             {
                _mushroomList = serverData.mushrooms.l;
@@ -1694,8 +1697,8 @@ package
       }
          catch (error:Error)
          {
-            // Move logger back here later
-            // LOGGER.DebugQPost(error);
+            GLOBAL.Message(KEYS.Get("err_loading_base"));
+            LOGGER.Log("err", "Failed to load user base with error: " + error.getStackTrace());
          }
       }
       
@@ -2125,6 +2128,7 @@ package
          _bankedValue = 0;
          GLOBAL.t = _lastProcessed;
          _lastProcessedB = _lastProcessed;
+         // Comment: This is used for if the Flash Player window is out of focus and becomes suspended, on resume, catch-up to the current time
          _catchupTime = _currentTime - _lastProcessed;
          if(!isInfernoMainYardOrOutpost && !MapRoomManager.instance.isInMapRoom3)
          {
@@ -2504,7 +2508,7 @@ package
                popupMCCreepDamaged = new popup_damaged();
                popupMCCreepDamaged.mcFrame.Setup(false);
                popupMCCreepDamaged.title.htmlText = "<b>" + KEYS.Get("pop_injured_title") + "</b>";
-               popupMCCreepDamaged.tA.htmlText = KEYS.Get("pop_injured",{"1":numCreepsDamaged});
+               popupMCCreepDamaged.tA.htmlText = KEYS.Get("pop_injured_monsters",{"1":numCreepsDamaged});
                popupMCCreepDamaged.bAction.SetupKey("btn_startheal");
                popupMCCreepDamaged.bAction.addEventListener(MouseEvent.CLICK,StartHealAll);
                popupMCCreepDamaged.bAction2.SetupKey("btn_healnow");
@@ -3124,6 +3128,7 @@ package
          return _loc1_;
       }
       
+      // Comment: This is where we send the calculated resources to the server
       private static function getResourceSaveData() : Object
       {
          return {
@@ -4481,7 +4486,7 @@ package
             if(_loc18_ < _loc17_.length)
             {
                _loc4_ = true;
-               _loc5_ = "Requirements not met.";
+               _loc5_ = KEYS.Get("requirements_notmet");
             }
          }
          if(!_loc4_ && !param2)

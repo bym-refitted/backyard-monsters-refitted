@@ -2,6 +2,7 @@ package
 {
    import flash.display.BitmapData;
    
+   [Embed(source="/_assets/2165_inferno_lava4_inferno_lava4.jpg")]
    public dynamic class inferno_lava4 extends BitmapData
    {
        

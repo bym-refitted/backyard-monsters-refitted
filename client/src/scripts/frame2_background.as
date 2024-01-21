@@ -2,6 +2,7 @@ package
 {
    import flash.display.BitmapData;
    
+   [Embed(source="/_assets/2052_frame2_background_frame2_background.png")]
    public dynamic class frame2_background extends BitmapData
    {
        

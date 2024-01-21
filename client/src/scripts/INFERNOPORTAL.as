@@ -1,5 +1,6 @@
 package
 {
+   
    import com.cc.utils.SecNum;
    import com.monsters.enums.EnumYardType;
    import com.monsters.maproom_manager.MapRoomManager;
@@ -53,8 +54,17 @@ package
       
       public static function EnterPortal(param1:Boolean = false) : void
       {
-         if(MAPROOM_DESCENT.DescentPassed)
+         if(GLOBAL._flags.inferno != 1)
          {
+            GLOBAL.Message(KEYS.Get("inferno_msg_disabled"));
+         }
+         else if(MAPROOM_DESCENT.DescentPassed)
+         {
+            if(GLOBAL._flags.inferno != 1)
+            {
+               GLOBAL.Message(KEYS.Get("inferno_msg_disabled"));
+               return;
+            }
             ToggleYard();
          }
          else
@@ -68,19 +78,19 @@ package
          var loader:URLLoaderApi;
          var onLoad:Function = null;
          var onError:Function = null;
-         onLoad = function(param1:Object):void
+         onLoad = function(serverData:Object):void
          {
-            var _loc2_:String = null;
+            var monster:String = null;
             PLEASEWAIT.Hide();
-            _ogInfernoData = param1.imonsters;
+            _ogInfernoData = serverData.imonsters;
             _ascensionData = {};
             _ogAscensionData = {};
-            for(_loc2_ in param1.imonsters)
+            for(monster in serverData.imonsters)
             {
-               if(_loc2_.substr(0,2) == "IC")
+               if(monster.substr(0,2) == "IC")
                {
-                  _ascensionData[_loc2_] = new SecNum(int(param1.imonsters[_loc2_] is Number ? param1.imonsters[_loc2_] : numHealthyCreeps(_loc2_,param1.imonsters[_loc2_])));
-                  _ogAscensionData[_loc2_] = _ascensionData[_loc2_].Get();
+                  _ascensionData[monster] = new SecNum(int(serverData.imonsters[monster] is Number ? serverData.imonsters[monster] : numHealthyCreeps(monster,serverData.imonsters[monster])));
+                  _ogAscensionData[monster] = _ascensionData[monster].Get();
                }
             }
             ShowAscendMonstersDialog();

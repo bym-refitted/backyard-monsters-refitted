@@ -42,7 +42,7 @@ export class ClientSafeError extends Error {
       code: this.code,
       status: this.status,
       data: this.data,
-      internalInfo: this.internalInfo.stack, // This should be removed in Prod
+      internalInfo: this.internalInfo?.stack, // This should be removed in Prod
     };
   }
 }

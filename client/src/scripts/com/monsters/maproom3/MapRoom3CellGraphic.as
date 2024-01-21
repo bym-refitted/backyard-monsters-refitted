@@ -44,7 +44,7 @@ package com.monsters.maproom3
       public static var DRAW_CONNECTING_LINES_ON_MOUSEOVER:Boolean = false;
        
       
-      private var m_Cell:com.monsters.maproom3.MapRoom3Cell;
+      private var m_Cell:MapRoom3Cell;
       
       private var m_TileBitmap:Bitmap;
       
@@ -155,7 +155,7 @@ package com.monsters.maproom3
          param1.endFill();
       }
       
-      public function get cell() : com.monsters.maproom3.MapRoom3Cell
+      public function get cell() : MapRoom3Cell
       {
          return this.m_Cell;
       }
@@ -554,49 +554,49 @@ package com.monsters.maproom3
       
       private function GetFortificationIconToDisplay() : Bitmap
       {
-         var _loc3_:com.monsters.maproom3.MapRoom3Cell = null;
+         var _loc3_:MapRoom3Cell = null;
          var _loc4_:int = 0;
          var _loc5_:int = 0;
          var _loc1_:int = this.m_Cell.cellX;
          var _loc2_:int = this.m_Cell.cellY;
          _loc4_ = _loc1_ + 1;
          _loc5_ = _loc2_;
-         _loc3_ = MapRoomManager.instance.FindCell(_loc4_,_loc5_) as com.monsters.maproom3.MapRoom3Cell;
+         _loc3_ = MapRoomManager.instance.FindCell(_loc4_,_loc5_) as MapRoom3Cell;
          if(this.m_Cell.DoesFortify(_loc3_))
          {
             return new Bitmap(MapRoom3AssetCache.instance.GetAsset(MapRoom3AssetCache.CELL_ICON_FORTIFICATION_EAST));
          }
          _loc4_ = _loc1_ - 1;
          _loc5_ = _loc2_;
-         _loc3_ = MapRoomManager.instance.FindCell(_loc4_,_loc5_) as com.monsters.maproom3.MapRoom3Cell;
+         _loc3_ = MapRoomManager.instance.FindCell(_loc4_,_loc5_) as MapRoom3Cell;
          if(this.m_Cell.DoesFortify(_loc3_))
          {
             return new Bitmap(MapRoom3AssetCache.instance.GetAsset(MapRoom3AssetCache.CELL_ICON_FORTIFICATION_WEST));
          }
          _loc4_ = !!(_loc2_ % 2) ? _loc1_ + 1 : _loc1_;
          _loc5_ = _loc2_ - 1;
-         _loc3_ = MapRoomManager.instance.FindCell(_loc4_,_loc5_) as com.monsters.maproom3.MapRoom3Cell;
+         _loc3_ = MapRoomManager.instance.FindCell(_loc4_,_loc5_) as MapRoom3Cell;
          if(this.m_Cell.DoesFortify(_loc3_))
          {
             return new Bitmap(MapRoom3AssetCache.instance.GetAsset(MapRoom3AssetCache.CELL_ICON_FORTIFICATION_NORTH_EAST));
          }
          _loc4_ = !!(_loc2_ % 2) ? _loc1_ : _loc1_ - 1;
          _loc5_ = _loc2_ - 1;
-         _loc3_ = MapRoomManager.instance.FindCell(_loc4_,_loc5_) as com.monsters.maproom3.MapRoom3Cell;
+         _loc3_ = MapRoomManager.instance.FindCell(_loc4_,_loc5_) as MapRoom3Cell;
          if(this.m_Cell.DoesFortify(_loc3_))
          {
             return new Bitmap(MapRoom3AssetCache.instance.GetAsset(MapRoom3AssetCache.CELL_ICON_FORTIFICATION_NORTH_WEST));
          }
          _loc4_ = !!(_loc2_ % 2) ? _loc1_ + 1 : _loc1_;
          _loc5_ = _loc2_ + 1;
-         _loc3_ = MapRoomManager.instance.FindCell(_loc4_,_loc5_) as com.monsters.maproom3.MapRoom3Cell;
+         _loc3_ = MapRoomManager.instance.FindCell(_loc4_,_loc5_) as MapRoom3Cell;
          if(this.m_Cell.DoesFortify(_loc3_))
          {
             return new Bitmap(MapRoom3AssetCache.instance.GetAsset(MapRoom3AssetCache.CELL_ICON_FORTIFICATION_SOUTH_EAST));
          }
          _loc4_ = !!(_loc2_ % 2) ? _loc1_ : _loc1_ - 1;
          _loc5_ = _loc2_ + 1;
-         _loc3_ = MapRoomManager.instance.FindCell(_loc4_,_loc5_) as com.monsters.maproom3.MapRoom3Cell;
+         _loc3_ = MapRoomManager.instance.FindCell(_loc4_,_loc5_) as MapRoom3Cell;
          if(this.m_Cell.DoesFortify(_loc3_))
          {
             return new Bitmap(MapRoom3AssetCache.instance.GetAsset(MapRoom3AssetCache.CELL_ICON_FORTIFICATION_SOUTH_WEST));
@@ -606,49 +606,49 @@ package com.monsters.maproom3
       
       private function IsFullyFortified() : Boolean
       {
-         var _loc3_:com.monsters.maproom3.MapRoom3Cell = null;
+         var _loc3_:MapRoom3Cell = null;
          var _loc4_:int = 0;
          var _loc5_:int = 0;
          var _loc1_:int = this.m_Cell.cellX;
          var _loc2_:int = this.m_Cell.cellY;
          _loc4_ = _loc1_ + 1;
          _loc5_ = _loc2_;
-         _loc3_ = MapRoomManager.instance.FindCell(_loc4_,_loc5_) as com.monsters.maproom3.MapRoom3Cell;
+         _loc3_ = MapRoomManager.instance.FindCell(_loc4_,_loc5_) as MapRoom3Cell;
          if(_loc3_ != null && _loc3_.DoesFortify(this.m_Cell) == false)
          {
             return false;
          }
          _loc4_ = _loc1_ - 1;
          _loc5_ = _loc2_;
-         _loc3_ = MapRoomManager.instance.FindCell(_loc4_,_loc5_) as com.monsters.maproom3.MapRoom3Cell;
+         _loc3_ = MapRoomManager.instance.FindCell(_loc4_,_loc5_) as MapRoom3Cell;
          if(_loc3_ != null && _loc3_.DoesFortify(this.m_Cell) == false)
          {
             return false;
          }
          _loc4_ = !!(_loc2_ % 2) ? _loc1_ + 1 : _loc1_;
          _loc5_ = _loc2_ - 1;
-         _loc3_ = MapRoomManager.instance.FindCell(_loc4_,_loc5_) as com.monsters.maproom3.MapRoom3Cell;
+         _loc3_ = MapRoomManager.instance.FindCell(_loc4_,_loc5_) as MapRoom3Cell;
          if(_loc3_ != null && _loc3_.DoesFortify(this.m_Cell) == false)
          {
             return false;
          }
          _loc4_ = !!(_loc2_ % 2) ? _loc1_ : _loc1_ - 1;
          _loc5_ = _loc2_ - 1;
-         _loc3_ = MapRoomManager.instance.FindCell(_loc4_,_loc5_) as com.monsters.maproom3.MapRoom3Cell;
+         _loc3_ = MapRoomManager.instance.FindCell(_loc4_,_loc5_) as MapRoom3Cell;
          if(_loc3_ != null && _loc3_.DoesFortify(this.m_Cell) == false)
          {
             return false;
          }
          _loc4_ = !!(_loc2_ % 2) ? _loc1_ + 1 : _loc1_;
          _loc5_ = _loc2_ + 1;
-         _loc3_ = MapRoomManager.instance.FindCell(_loc4_,_loc5_) as com.monsters.maproom3.MapRoom3Cell;
+         _loc3_ = MapRoomManager.instance.FindCell(_loc4_,_loc5_) as MapRoom3Cell;
          if(_loc3_ != null && _loc3_.DoesFortify(this.m_Cell) == false)
          {
             return false;
          }
          _loc4_ = !!(_loc2_ % 2) ? _loc1_ : _loc1_ - 1;
          _loc5_ = _loc2_ + 1;
-         _loc3_ = MapRoomManager.instance.FindCell(_loc4_,_loc5_) as com.monsters.maproom3.MapRoom3Cell;
+         _loc3_ = MapRoomManager.instance.FindCell(_loc4_,_loc5_) as MapRoom3Cell;
          if(_loc3_ != null && _loc3_.DoesFortify(this.m_Cell) == false)
          {
             return false;
@@ -695,7 +695,7 @@ package com.monsters.maproom3
       
       private function DrawBuffedEffect() : void
       {
-         var _loc6_:com.monsters.maproom3.MapRoom3Cell = null;
+         var _loc6_:MapRoom3Cell = null;
          var _loc1_:Boolean = false;
          var _loc2_:Boolean = false;
          var _loc3_:uint = this.m_Cell.inRangeOfStrongholds.length;
@@ -738,7 +738,7 @@ package com.monsters.maproom3
       
       private function DrawConnectingLines() : void
       {
-         var _loc3_:com.monsters.maproom3.MapRoom3Cell = null;
+         var _loc3_:MapRoom3Cell = null;
          if(DRAW_CONNECTING_LINES_ON_MOUSEOVER == false)
          {
             return;
@@ -775,7 +775,7 @@ package com.monsters.maproom3
          this.m_LineLayer.y = y;
       }
       
-      private function DrawConnectingLineTo(param1:com.monsters.maproom3.MapRoom3Cell, param2:uint) : void
+      private function DrawConnectingLineTo(param1:MapRoom3Cell, param2:uint) : void
       {
          var _loc3_:Number = param1.cellX * MapRoom3CellGraphic.HEX_WIDTH + (!!(param1.cellY % 2) ? MapRoom3CellGraphic.HEX_WIDTH * 0.5 : 0);
          var _loc4_:Number = param1.cellY * MapRoom3CellGraphic.HEX_HEIGHT_OVERLAP;
@@ -859,7 +859,7 @@ package com.monsters.maproom3
          }
       }
       
-      public function setMapCell(param1:com.monsters.maproom3.MapRoom3Cell) : void
+      public function setMapCell(param1:MapRoom3Cell) : void
       {
          if(this.m_Cell != null && this.m_Cell.cellGraphic == this)
          {

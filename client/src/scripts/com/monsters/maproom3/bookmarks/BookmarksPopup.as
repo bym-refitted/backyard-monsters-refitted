@@ -6,7 +6,7 @@ package com.monsters.maproom3.bookmarks
       private static const MAX_BOOKMARKS_DISPLAY_LIST_LENGTH:uint = 10;
        
       
-      private var m_BookmarkDisplayList:com.monsters.maproom3.bookmarks.BookmarksDisplayList;
+      private var m_BookmarkDisplayList:BookmarksDisplayList;
       
       public function BookmarksPopup()
       {
@@ -19,7 +19,7 @@ package com.monsters.maproom3.bookmarks
       public function Show(param1:Vector.<Bookmark>) : void
       {
          this.Hide();
-         this.m_BookmarkDisplayList = new com.monsters.maproom3.bookmarks.BookmarksDisplayList(param1,this.CreateNewBookmarksPopupMenuItem,MAX_BOOKMARKS_DISPLAY_LIST_LENGTH);
+         this.m_BookmarkDisplayList = new BookmarksDisplayList(param1,this.CreateNewBookmarksPopupMenuItem,MAX_BOOKMARKS_DISPLAY_LIST_LENGTH);
          contentsContainer.addChild(this.m_BookmarkDisplayList);
          POPUPS.Push(this);
       }

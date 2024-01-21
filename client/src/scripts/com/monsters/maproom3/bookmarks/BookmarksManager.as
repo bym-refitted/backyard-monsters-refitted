@@ -1,15 +1,18 @@
 package com.monsters.maproom3.bookmarks
 {
+   
    import com.monsters.enums.EnumYardType;
    import com.monsters.maproom3.MapRoom3Cell;
    import com.monsters.maproom3.data.MapRoom3Data;
    import com.monsters.maproom_manager.MapRoomManager;
    import flash.events.IOErrorEvent;
+   import config.singletonlock.SingletonLock;
+
    
    public class BookmarksManager
    {
       
-      private static var s_Instance:com.monsters.maproom3.bookmarks.BookmarksManager = null;
+      private static var s_Instance:BookmarksManager = null;
       
       private static const BOOKMARKS_VERSION_SAVE_DATA_VALUE:String = "mr3";
       
@@ -36,29 +39,29 @@ package com.monsters.maproom3.bookmarks
       public static const TYPE_PLAYER_STRONGHOLDS:int = 4;
        
       
-      private var m_CustomBookmarks:Vector.<com.monsters.maproom3.bookmarks.Bookmark>;
+      private var m_CustomBookmarks:Vector.<Bookmark>;
       
-      private var m_EnemyBookmarks:Vector.<com.monsters.maproom3.bookmarks.Bookmark>;
+      private var m_EnemyBookmarks:Vector.<Bookmark>;
       
-      private var m_FriendBookmarks:Vector.<com.monsters.maproom3.bookmarks.Bookmark>;
+      private var m_FriendBookmarks:Vector.<Bookmark>;
       
-      private var m_PlayerResourceBookmarks:Vector.<com.monsters.maproom3.bookmarks.Bookmark>;
+      private var m_PlayerResourceBookmarks:Vector.<Bookmark>;
       
-      private var m_PlayerStrongholdBookmarks:Vector.<com.monsters.maproom3.bookmarks.Bookmark>;
+      private var m_PlayerStrongholdBookmarks:Vector.<Bookmark>;
       
-      public function BookmarksManager(param1:SingletonLock)
+      public function BookmarksManager(param1:config.singletonlock.SingletonLock)
       {
-         this.m_CustomBookmarks = new Vector.<com.monsters.maproom3.bookmarks.Bookmark>();
-         this.m_EnemyBookmarks = new Vector.<com.monsters.maproom3.bookmarks.Bookmark>();
-         this.m_FriendBookmarks = new Vector.<com.monsters.maproom3.bookmarks.Bookmark>();
-         this.m_PlayerResourceBookmarks = new Vector.<com.monsters.maproom3.bookmarks.Bookmark>();
-         this.m_PlayerStrongholdBookmarks = new Vector.<com.monsters.maproom3.bookmarks.Bookmark>();
+         this.m_CustomBookmarks = new Vector.<Bookmark>();
+         this.m_EnemyBookmarks = new Vector.<Bookmark>();
+         this.m_FriendBookmarks = new Vector.<Bookmark>();
+         this.m_PlayerResourceBookmarks = new Vector.<Bookmark>();
+         this.m_PlayerStrongholdBookmarks = new Vector.<Bookmark>();
          super();
       }
       
-      public static function get instance() : com.monsters.maproom3.bookmarks.BookmarksManager
+      public static function get instance() : BookmarksManager
       {
-         return s_Instance = s_Instance || new com.monsters.maproom3.bookmarks.BookmarksManager(new SingletonLock());
+         return s_Instance = s_Instance || new BookmarksManager(new config.singletonlock.SingletonLock());
       }
       
       public function Setup(param1:Object, param2:MapRoom3Data) : void
@@ -127,9 +130,9 @@ package com.monsters.maproom3.bookmarks
       
       private function SaveBookmarksOfType(param1:int) : Array
       {
-         var _loc3_:com.monsters.maproom3.bookmarks.Bookmark = null;
+         var _loc3_:Bookmark = null;
          var _loc4_:Object = null;
-         var _loc2_:Vector.<com.monsters.maproom3.bookmarks.Bookmark> = this.GetBookmarksOfType(param1);
+         var _loc2_:Vector.<Bookmark> = this.GetBookmarksOfType(param1);
          if(_loc2_ == null)
          {
             return [];
@@ -159,10 +162,10 @@ package com.monsters.maproom3.bookmarks
          var _loc5_:int = 0;
          var _loc6_:int = 0;
          var _loc7_:String = null;
-         var _loc8_:com.monsters.maproom3.bookmarks.Bookmark = null;
+         var _loc8_:Bookmark = null;
          var _loc9_:Object = null;
          var _loc10_:MapRoom3Cell = null;
-         var _loc4_:Vector.<com.monsters.maproom3.bookmarks.Bookmark>;
+         var _loc4_:Vector.<Bookmark>;
          if((_loc4_ = this.GetBookmarksOfType(param3)) == null)
          {
             return;
@@ -178,7 +181,7 @@ package com.monsters.maproom3.bookmarks
                if((_loc10_ = param2.GetMapRoom3Cell(_loc5_,_loc6_)) != null)
                {
                   _loc7_ = String(_loc9_.n);
-                  _loc8_ = new com.monsters.maproom3.bookmarks.Bookmark(_loc10_,_loc7_);
+                  _loc8_ = new Bookmark(_loc10_,_loc7_);
                   _loc4_.push(_loc8_);
                }
             }
@@ -197,7 +200,7 @@ package com.monsters.maproom3.bookmarks
       
       public function AddBookmark(param1:MapRoom3Cell, param2:int = 0, param3:Boolean = true) : void
       {
-         var _loc4_:Vector.<com.monsters.maproom3.bookmarks.Bookmark>;
+         var _loc4_:Vector.<Bookmark>;
          if((_loc4_ = this.GetBookmarksOfType(param2)) == null)
          {
             return;
@@ -212,7 +215,7 @@ package com.monsters.maproom3.bookmarks
             GLOBAL.Message(KEYS.Get("mr3_bookmarks_full_message",{"v1":_loc5_}));
             return;
          }
-         var _loc6_:com.monsters.maproom3.bookmarks.Bookmark = new com.monsters.maproom3.bookmarks.Bookmark(param1);
+         var _loc6_:Bookmark = new Bookmark(param1);
          _loc4_.unshift(_loc6_);
          if(param3)
          {
@@ -226,12 +229,12 @@ package com.monsters.maproom3.bookmarks
       
       public function RemoveBookmark(param1:MapRoom3Cell, param2:int = 0, param3:Boolean = true) : void
       {
-         var _loc4_:Vector.<com.monsters.maproom3.bookmarks.Bookmark>;
+         var _loc4_:Vector.<Bookmark>;
          if((_loc4_ = this.GetBookmarksOfType(param2)) == null)
          {
             return;
          }
-         var _loc5_:com.monsters.maproom3.bookmarks.Bookmark;
+         var _loc5_:Bookmark;
          if((_loc5_ = this.FindBookmark(param1,param2)) == null)
          {
             return;
@@ -254,7 +257,7 @@ package com.monsters.maproom3.bookmarks
       
       public function ClearBookmarks(param1:int = 0, param2:Boolean = false) : void
       {
-         var _loc3_:Vector.<com.monsters.maproom3.bookmarks.Bookmark> = this.GetBookmarksOfType(param1);
+         var _loc3_:Vector.<Bookmark> = this.GetBookmarksOfType(param1);
          if(_loc3_ == null)
          {
             return;
@@ -278,10 +281,10 @@ package com.monsters.maproom3.bookmarks
          return this.FindBookmark(param1,param2) != null;
       }
       
-      private function FindBookmark(param1:MapRoom3Cell, param2:int = 0) : com.monsters.maproom3.bookmarks.Bookmark
+      private function FindBookmark(param1:MapRoom3Cell, param2:int = 0) : Bookmark
       {
-         var _loc4_:com.monsters.maproom3.bookmarks.Bookmark = null;
-         var _loc3_:Vector.<com.monsters.maproom3.bookmarks.Bookmark> = this.GetBookmarksOfType(param2);
+         var _loc4_:Bookmark = null;
+         var _loc3_:Vector.<Bookmark> = this.GetBookmarksOfType(param2);
          if(_loc3_ == null)
          {
             return null;
@@ -299,7 +302,7 @@ package com.monsters.maproom3.bookmarks
          return null;
       }
       
-      public function GetBookmarksOfType(param1:int) : Vector.<com.monsters.maproom3.bookmarks.Bookmark>
+      public function GetBookmarksOfType(param1:int) : Vector.<Bookmark>
       {
          switch(param1)
          {
@@ -317,15 +320,5 @@ package com.monsters.maproom3.bookmarks
                return null;
          }
       }
-   }
-}
-
-class SingletonLock
-{
-    
-   
-   public function SingletonLock()
-   {
-      super();
    }
 }

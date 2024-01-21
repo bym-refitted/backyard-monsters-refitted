@@ -1,5 +1,6 @@
 package com.monsters.maproom3
 {
+   
    import com.monsters.mailbox.FriendPicker;
    import com.monsters.maproom3.bookmarks.BookmarksManager;
    import com.monsters.maproom3.data.MapRoom3Data;
@@ -17,9 +18,9 @@ package com.monsters.maproom3
    public class MapRoom3 implements IMapRoom
    {
       
-      private static var m_MapRoom3Window:com.monsters.maproom3.MapRoom3Window;
+      private static var m_MapRoom3Window:MapRoom3Window;
       
-      private static var m_MapRoom3WindowHUD:com.monsters.maproom3.MapRoom3WindowHUD;
+      private static var m_MapRoom3WindowHUD:MapRoom3WindowHUD;
        
       
       private var m_HeightMapLoader:URLLoader;
@@ -48,12 +49,12 @@ package com.monsters.maproom3
          }
       }
       
-      public static function get mapRoom3Window() : com.monsters.maproom3.MapRoom3Window
+      public static function get mapRoom3Window() : MapRoom3Window
       {
          return m_MapRoom3Window;
       }
       
-      public static function get mapRoom3WindowHUD() : com.monsters.maproom3.MapRoom3WindowHUD
+      public static function get mapRoom3WindowHUD() : MapRoom3WindowHUD
       {
          return m_MapRoom3WindowHUD;
       }
@@ -109,7 +110,6 @@ package com.monsters.maproom3
       public function OnHeightMapLoaded(param1:Event) : void
       {
          var serverData:Object = JSON.decode(this.m_HeightMapLoader.data);
-         // Comment: Here is were we pass in the data we get from 'api/bm/getnewmap' into our maproom
          this.m_MapRoom3Data = new MapRoom3Data(serverData);
       }
       
@@ -125,15 +125,12 @@ package com.monsters.maproom3
       }
       
       public function ReadyToShow() : Boolean
-      {  
-         var areAllCellsCreated = this.m_MapRoom3Data.areAllCellsCreated;
-         var isInitialCellDataLoaded = this.m_MapRoom3Data.isInitialCellDataLoaded;
-         var areAssetsLoaded = MapRoom3AssetCache.instance.areAssetsLoaded; // false: can't load all required assets
-         var isCurrentTileSetAndBackgroundLoaded = MapRoom3TileSetManager.instance.isCurrentTileSetAndBackgroundLoaded // false: can't load worldmap/background.jpg
-
-         // Comment: Attempt to load the map anyway without assets
-         //return this.m_MapRoom3Data && areAllCellsCreated && isInitialCellDataLoaded && areAssetsLoaded && isCurrentTileSetAndBackgroundLoaded;
-         return this.m_MapRoom3Data && areAllCellsCreated && isInitialCellDataLoaded;
+      {
+         var areAllCellsCreated:* = this.m_MapRoom3Data.areAllCellsCreated;
+         var isInitialCellDataLoaded:* = this.m_MapRoom3Data.isInitialCellDataLoaded;
+         var areAssetsLoaded:* = MapRoom3AssetCache.instance.areAssetsLoaded;
+         var isCurrentTileSetAndBackgroundLoaded:* = MapRoom3TileSetManager.instance.isCurrentTileSetAndBackgroundLoaded;
+         return this.m_MapRoom3Data && areAllCellsCreated && isInitialCellDataLoaded && isCurrentTileSetAndBackgroundLoaded;
       }
       
       public function ShowDelayed(param1:Boolean = false) : void
@@ -151,12 +148,8 @@ package com.monsters.maproom3
          this.m_MapRoom3Data.ParseInitialCellData();
          BookmarksManager.instance.Setup(this.m_CurrentBookmarkData,this.m_MapRoom3Data);
          this.m_MapRoom3Data.LoadBookmarkedCells(BookmarksManager.instance.GetBookmarksOfType(BookmarksManager.TYPE_CUSTOM));
-
-         // Comment: MapRoom3WindowHUD is missing assets, remember to enable for HUD
-         m_MapRoom3Window = new com.monsters.maproom3.MapRoom3Window(this.m_MapRoom3Data);
-         //m_MapRoom3WindowHUD = new com.monsters.maproom3.MapRoom3WindowHUD();
+         m_MapRoom3Window = new MapRoom3Window(this.m_MapRoom3Data);
          GLOBAL._layerUI.addChild(m_MapRoom3Window);
-         //GLOBAL._layerUI.addChild(m_MapRoom3WindowHUD);
          UI2.SetupHUD();
          if(GLOBAL._currentCell == null)
          {

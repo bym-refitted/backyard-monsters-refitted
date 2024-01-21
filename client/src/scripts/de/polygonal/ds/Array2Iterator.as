@@ -10,11 +10,11 @@ package de.polygonal.ds
       
       public var _i:int;
       
-      public var _f:de.polygonal.ds.Array2;
+      public var _f:Array2;
       
       public var _a:Array;
       
-      public function Array2Iterator(param1:de.polygonal.ds.Array2 = undefined)
+      public function Array2Iterator(param1:Array2 = undefined)
       {
          if(Boot.skip_constructor)
          {

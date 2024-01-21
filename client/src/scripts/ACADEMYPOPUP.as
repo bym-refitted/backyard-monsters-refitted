@@ -498,7 +498,7 @@ package
       
       public function CancelMonsterUpgrade(param1:MouseEvent) : void
       {
-         GLOBAL.Message(KEYS.Get("acad_confirmcancel",{"v1":CREATURELOCKER._creatures[_monsterID].name}),KEYS.Get("acad_confirmcancel_btn"),this.CancelMonsterUpgradeB);
+         GLOBAL.Message(KEYS.Get("acad_confirmcancel",{"v1":KEYS.Get(CREATURELOCKER._creatures[_monsterID].name)}),KEYS.Get("acad_confirmcancelbtn"),this.CancelMonsterUpgradeB);
       }
       
       public function CancelMonsterUpgradeB() : void

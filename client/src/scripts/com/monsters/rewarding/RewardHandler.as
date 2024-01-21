@@ -11,22 +11,22 @@ package com.monsters.rewarding
       
       public static const k_UPDATE_VALUE:String = "RV";
       
-      private static var _instance:com.monsters.rewarding.RewardHandler;
+      private static var _instance:RewardHandler;
        
       
-      public var rewards:Vector.<com.monsters.rewarding.Reward>;
+      public var rewards:Vector.<Reward>;
       
       public function RewardHandler()
       {
-         this.rewards = new Vector.<com.monsters.rewarding.Reward>();
+         this.rewards = new Vector.<Reward>();
          super();
       }
       
-      public static function get instance() : com.monsters.rewarding.RewardHandler
+      public static function get instance() : RewardHandler
       {
          if(!_instance)
          {
-            _instance = new com.monsters.rewarding.RewardHandler();
+            _instance = new RewardHandler();
          }
          return _instance;
       }
@@ -36,7 +36,7 @@ package com.monsters.rewarding
          return "rewards";
       }
       
-      public function addReward(param1:com.monsters.rewarding.Reward) : Boolean
+      public function addReward(param1:Reward) : Boolean
       {
          if(this.getRewardByID(param1.id))
          {
@@ -46,7 +46,7 @@ package com.monsters.rewarding
          return true;
       }
       
-      public function addAndApplyReward(param1:com.monsters.rewarding.Reward, param2:Boolean = false) : void
+      public function addAndApplyReward(param1:Reward, param2:Boolean = false) : void
       {
          if(this.addReward(param1) || param2)
          {
@@ -54,7 +54,7 @@ package com.monsters.rewarding
          }
       }
       
-      public function applyReward(param1:com.monsters.rewarding.Reward) : void
+      public function applyReward(param1:Reward) : void
       {
          param1.applyReward();
       }
@@ -69,9 +69,9 @@ package com.monsters.rewarding
          }
       }
       
-      public function getRewardByID(param1:String) : com.monsters.rewarding.Reward
+      public function getRewardByID(param1:String) : Reward
       {
-         var _loc3_:com.monsters.rewarding.Reward = null;
+         var _loc3_:Reward = null;
          var _loc2_:int = 0;
          while(_loc2_ < this.rewards.length)
          {
@@ -87,14 +87,14 @@ package com.monsters.rewarding
       
       public function removeRewardByID(param1:String) : void
       {
-         var _loc2_:com.monsters.rewarding.Reward = this.getRewardByID(param1);
+         var _loc2_:Reward = this.getRewardByID(param1);
          if(_loc2_)
          {
             this.removeReward(_loc2_);
          }
       }
       
-      public function removeReward(param1:com.monsters.rewarding.Reward) : void
+      public function removeReward(param1:Reward) : void
       {
          var _loc2_:int = this.rewards.indexOf(param1);
          if(_loc2_ >= 0)
@@ -135,7 +135,7 @@ package com.monsters.rewarding
       
       public function exportData() : Object
       {
-         var _loc3_:com.monsters.rewarding.Reward = null;
+         var _loc3_:Reward = null;
          if(GLOBAL.mode != GLOBAL.e_BASE_MODE.BUILD || BASE.isInfernoMainYardOrOutpost)
          {
             return null;
@@ -154,7 +154,7 @@ package com.monsters.rewarding
       public function importData(param1:Object) : void
       {
          var _loc2_:String = null;
-         var _loc3_:com.monsters.rewarding.Reward = null;
+         var _loc3_:Reward = null;
          for(_loc2_ in param1)
          {
             _loc3_ = RewardLibrary.getRewardByID(_loc2_);
@@ -166,9 +166,9 @@ package com.monsters.rewarding
          }
       }
       
-      public function updateExistingOrAddNewReward(param1:String, param2:* = null) : com.monsters.rewarding.Reward
+      public function updateExistingOrAddNewReward(param1:String, param2:* = null) : Reward
       {
-         var _loc3_:com.monsters.rewarding.Reward = this.getRewardByID(param1);
+         var _loc3_:Reward = this.getRewardByID(param1);
          if(!_loc3_)
          {
             _loc3_ = RewardLibrary.getRewardByID(param1);
@@ -186,34 +186,34 @@ package com.monsters.rewarding
       
       public function processUpdate(param1:Object) : Boolean
       {
-         var _loc2_:com.monsters.rewarding.Reward = null;
+         var _loc2_:Reward = null;
          switch(param1.data[1])
          {
             case k_UPDATE_ADD:
                _loc2_ = RewardLibrary.getRewardByID(param1.data[2]);
                if(_loc2_)
                {
-                  com.monsters.rewarding.RewardHandler.instance.addAndApplyReward(_loc2_);
+                  RewardHandler.instance.addAndApplyReward(_loc2_);
                }
                break;
             case k_UPDATE_REMOVE:
-               com.monsters.rewarding.RewardHandler.instance.removeRewardByID(param1.data[2]);
+               RewardHandler.instance.removeRewardByID(param1.data[2]);
                break;
             case k_UPDATE_VALUE:
-               _loc2_ = com.monsters.rewarding.RewardHandler.instance.getRewardByID(param1.data[2]);
+               _loc2_ = RewardHandler.instance.getRewardByID(param1.data[2]);
                if(_loc2_)
                {
                   _loc2_.value = param1.data[3];
-                  com.monsters.rewarding.RewardHandler.instance.addAndApplyReward(_loc2_,true);
+                  RewardHandler.instance.addAndApplyReward(_loc2_,true);
                }
                BASE.Save(0,false,true);
                break;
             case k_UPDATE_VALUE:
-               _loc2_ = com.monsters.rewarding.RewardHandler.instance.getRewardByID(param1.data[2]);
+               _loc2_ = RewardHandler.instance.getRewardByID(param1.data[2]);
                if(_loc2_)
                {
                   _loc2_.value = param1.data[3];
-                  com.monsters.rewarding.RewardHandler.instance.addAndApplyReward(_loc2_,true);
+                  RewardHandler.instance.addAndApplyReward(_loc2_,true);
                }
                BASE.Save(0,false,true);
          }

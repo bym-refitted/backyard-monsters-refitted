@@ -6,7 +6,7 @@ package com.monsters.chat
    {
        
       
-      private var user:com.monsters.chat.UserRecord;
+      private var user:UserRecord;
       
       private var password:String = null;
       
@@ -14,7 +14,7 @@ package com.monsters.chat
       
       private const SALT_SEED:String = "073c187f8a02f626210bbcb7f55a4cee";
       
-      public function AS_Login(param1:com.monsters.chat.UserRecord)
+      public function AS_Login(param1:UserRecord)
       {
          super();
          this.user = param1;
@@ -30,7 +30,7 @@ package com.monsters.chat
          return true;
       }
       
-      public function get User() : com.monsters.chat.UserRecord
+      public function get User() : UserRecord
       {
          return this.user;
       }

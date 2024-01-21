@@ -4,8 +4,7 @@ export const mapRoomVersion: KoaController = async (ctx) => {
   ctx.status = 200;
   ctx.body = {
     error: 0,
-    version: 3,
-    h: "someHashValue",
+    version: 3
   };
 };
 
@@ -18,7 +17,6 @@ export const initMapRoom: KoaController = async (ctx) => {
         x: 500,
         y: 500,
       },
-    ],
-    h: "someHashValue",
+    ]
   };
 };

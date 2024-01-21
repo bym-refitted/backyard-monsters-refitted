@@ -2,6 +2,7 @@ package
 {
    import flash.display.MovieClip;
    
+   [Embed(source="/_assets/assets.swf", symbol="FBPROMO_711_CLIP")]
    public dynamic class FBPROMO_711_CLIP extends MovieClip
    {
        

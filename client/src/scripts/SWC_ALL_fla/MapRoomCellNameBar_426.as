@@ -3,6 +3,7 @@ package SWC_ALL_fla
    import flash.display.MovieClip;
    import flash.text.TextField;
    
+   [Embed(source="/_assets/assets.swf", symbol="SWC_ALL_fla.MapRoomCellNameBar_426")]
    public dynamic class MapRoomCellNameBar_426 extends MovieClip
    {
        

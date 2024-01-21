@@ -52,13 +52,13 @@ package com.monsters.maproom
       
       public var popUp:MapBasePopup;
       
-      public var handler:com.monsters.maproom.PlayerHandler;
+      public var handler:PlayerHandler;
       
       public var loader:Loader;
       
       public var imageLoadState:uint = 0;
       
-      public var info_mc:com.monsters.maproom.WildMonsterBaseInfo;
+      public var info_mc:WildMonsterBaseInfo;
       
       public function WildMonsterBase()
       {
@@ -68,7 +68,7 @@ package com.monsters.maproom
          this.popUp.x = 21;
          this.popUp.y = 40;
          this.addChild(this.popUp);
-         this.info_mc = new com.monsters.maproom.WildMonsterBaseInfo();
+         this.info_mc = new WildMonsterBaseInfo();
          this.info_mc.x = 22;
          this.info_mc.y = 10;
          this.addChild(this.info_mc);
@@ -116,7 +116,7 @@ package com.monsters.maproom
          this.mouseTimer = new Timer(400);
          this.mouseTimer.addEventListener(TimerEvent.TIMER,this.onTimer);
          this.mouseTimer.start();
-         new com.monsters.maproom.PlayerHandler().configure(this);
+         new PlayerHandler().configure(this);
       }
       
       public function setState(param1:String) : void

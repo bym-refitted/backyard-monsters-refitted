@@ -2,6 +2,7 @@ package
 {
    import flash.display.MovieClip;
    
+   [Embed(source="/_assets/assets.swf", symbol="BUILDINGSPOPUP_CLIP")]
    public dynamic class BUILDINGSPOPUP_CLIP extends MovieClip
    {
        

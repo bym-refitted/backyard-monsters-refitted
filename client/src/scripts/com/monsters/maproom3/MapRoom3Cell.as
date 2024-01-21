@@ -1,5 +1,6 @@
 package com.monsters.maproom3
 {
+   
    import com.cc.tests.ABTest;
    import com.monsters.debug.Console;
    import com.monsters.enums.EnumBaseRelationship;
@@ -52,7 +53,7 @@ package com.monsters.maproom3
       
       private var m_CellData:MapRoom3CellData = null;
       
-      private var m_CellGraphic:com.monsters.maproom3.MapRoom3CellGraphic = null;
+      private var m_CellGraphic:MapRoom3CellGraphic = null;
       
       private var m_CellHeaderBitField:uint = 0;
       
@@ -75,8 +76,8 @@ package com.monsters.maproom3
          var _loc4_:int = 0;
          var _loc5_:int = 0;
          var _loc6_:int = 0;
-         _loc3_ = param1.cellY;
-         _loc4_ = param2.cellY;
+         _loc3_ = int(param1.cellY);
+         _loc4_ = int(param2.cellY);
          _loc5_ = param1.cellX - Math.floor(_loc3_ * 0.5);
          var _loc7_:int = (_loc6_ = param2.cellX - Math.floor(_loc4_ * 0.5)) - _loc5_;
          var _loc8_:int = _loc4_ - _loc3_;
@@ -112,12 +113,12 @@ package com.monsters.maproom3
          return this.cellType;
       }
       
-      public function get cellGraphic() : com.monsters.maproom3.MapRoom3CellGraphic
+      public function get cellGraphic() : MapRoom3CellGraphic
       {
          return this.m_CellGraphic;
       }
       
-      public function set cellGraphic(param1:com.monsters.maproom3.MapRoom3CellGraphic) : void
+      public function set cellGraphic(param1:MapRoom3CellGraphic) : void
       {
          this.m_CellGraphic = param1;
       }

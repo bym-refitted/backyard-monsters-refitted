@@ -2,6 +2,7 @@ package
 {
    import com.monsters.enums.EnumYardType;
    import flash.events.IOErrorEvent;
+   
 
    public class LOGGER
    {
@@ -14,7 +15,7 @@ package
       
       public static const STAT_MEM:uint = 99;
       
-      public static var logQueue:Array  = [];
+      //public static var logQueue:Array  = [];
       
       public function LOGGER()
       {
@@ -44,19 +45,19 @@ package
          }
       }
    
-      public static function DebugQAdd(logMessage:String, debugVars:Object): void {
+      /*public static function DebugQAdd(logMessage:String, debugVars:Object): void {
          logQueue.push({logMessage: logMessage, debugVars: JSON.encode(debugVars)});
       }
 
       public static function DebugQPost(trace: Error = null) : void
       {
-         var logger:Array = [["key", "logType"], ["message", JSON.encode(logQueue)], ["saveid", "BASE._lastSaveID"] ];
+         var logger:Array = [["key", "logType"], ["message", JSON.encode(logQueue)], ["saveid", BASE._lastSaveID] ];
 
          if (trace){
             logger.push(["error", JSON.encode(trace.getStackTrace())]);
          }
          new URLLoaderApi().load(GLOBAL._apiURL + "player/recorddebugdata", logger, handleLoadSuccessful, handleLoadError);
-      }
+      }*/
       
       public static function info(param1:String) : void
       {

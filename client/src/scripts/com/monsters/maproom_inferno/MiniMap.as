@@ -10,7 +10,7 @@ package com.monsters.maproom_inferno
    public class MiniMap extends MovieClip
    {
       
-      private static var instance:com.monsters.maproom_inferno.MiniMap;
+      private static var instance:MiniMap;
       
       private static const COLOR1:uint = 65280;
       
@@ -25,9 +25,9 @@ package com.monsters.maproom_inferno
       private static const MINIMAPINFERNO:String = "minimap_inferno";
        
       
-      public var playerLayer:com.monsters.maproom_inferno.PlayerLayer;
+      public var playerLayer:PlayerLayer;
       
-      public var largeMap:com.monsters.maproom_inferno.MapRoom;
+      public var largeMap:MapRoom;
       
       public var selector:Sprite;
       
@@ -64,17 +64,17 @@ package com.monsters.maproom_inferno
          addChild(this._mc);
       }
       
-      public static function getInstance() : com.monsters.maproom_inferno.MiniMap
+      public static function getInstance() : MiniMap
       {
          if(!instance)
          {
             if(MAPROOM_DESCENT.DescentPassed)
             {
-               instance = new com.monsters.maproom_inferno.MiniMap(new MiniMapInferno_CLIP());
+               instance = new MiniMap(new MiniMapInferno_CLIP());
             }
             else
             {
-               instance = new com.monsters.maproom_inferno.MiniMap(new MiniMapDescent_CLIP());
+               instance = new MiniMap(new MiniMapDescent_CLIP());
             }
          }
          return instance;

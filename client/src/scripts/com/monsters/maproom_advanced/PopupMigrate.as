@@ -9,7 +9,7 @@ package com.monsters.maproom_advanced
    public class PopupMigrate extends MapRoomPopup_Migrate_CLIP
    {
       
-      private static var instance:com.monsters.maproom_advanced.PopupMigrate;
+      private static var instance:PopupMigrate;
        
       
       private var _closeHandler:Function;
@@ -57,7 +57,7 @@ package com.monsters.maproom_advanced
          {
             Hide();
          }
-         instance = new com.monsters.maproom_advanced.PopupMigrate(param1);
+         instance = new PopupMigrate(param1);
          GLOBAL._layerWindows.addChild(instance);
          POPUPSETTINGS.AlignToCenter(instance);
          POPUPSETTINGS.ScaleUp(instance);
@@ -79,7 +79,7 @@ package com.monsters.maproom_advanced
          {
             this._closeHandler();
          }
-         com.monsters.maproom_advanced.PopupMigrate.Hide();
+         PopupMigrate.Hide();
       }
       
       private function onAssetLoaded(param1:String, param2:BitmapData) : void

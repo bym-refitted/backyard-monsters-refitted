@@ -7,6 +7,8 @@ package com.smartfoxserver.v2.entities.managers
    import de.polygonal.ds.HashMap;
    import de.polygonal.ds.Itr;
    
+   use namespace kernel;
+   
    public class SFSUserManager implements IUserManager
    {
        

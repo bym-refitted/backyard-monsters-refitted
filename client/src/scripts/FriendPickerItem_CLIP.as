@@ -3,6 +3,7 @@ package
    import flash.display.MovieClip;
    import flash.text.TextField;
    
+   [Embed(source="/_assets/assets.swf", symbol="FriendPickerItem_CLIP")]
    public dynamic class FriendPickerItem_CLIP extends MovieClip
    {
        

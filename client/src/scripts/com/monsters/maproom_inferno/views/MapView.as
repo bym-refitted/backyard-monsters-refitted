@@ -18,7 +18,7 @@ package com.monsters.maproom_inferno.views
    public class MapView extends MapView_CLIP
    {
       
-      private static var instance:com.monsters.maproom_inferno.views.MapView;
+      private static var instance:MapView;
       
       private static const _MAPSIZE:Rectangle = new Rectangle(0,0,1600,1200);
        
@@ -60,11 +60,11 @@ package com.monsters.maproom_inferno.views
          this.bases = [].concat();
       }
       
-      public static function getInstance() : com.monsters.maproom_inferno.views.MapView
+      public static function getInstance() : MapView
       {
          if(!instance)
          {
-            return new com.monsters.maproom_inferno.views.MapView();
+            return new MapView();
          }
          return instance;
       }

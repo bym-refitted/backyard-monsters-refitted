@@ -7,7 +7,7 @@ package com.computus.model
    public class Timekeeper
    {
       
-      private static var _instance:com.computus.model.Timekeeper;
+      private static var _instance:Timekeeper;
        
       
       protected var time:Number;

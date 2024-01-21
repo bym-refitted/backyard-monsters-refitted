@@ -1,5 +1,6 @@
 package com.monsters.maproom3.data
 {
+   
    import com.monsters.enums.EnumYardType;
    import com.monsters.maproom3.MapRoom3;
    import com.monsters.maproom3.MapRoom3Cell;
@@ -160,10 +161,10 @@ package com.monsters.maproom3.data
             {
                index = this.GetCellIndex(this.m_CellCreationIndexX,this.m_CellCreationIndexY);
                cellData = this.m_CreatingMapData.data[index];
-               this.m_MapRoom3Cells[index] = new MapRoom3Cell(this.m_CellCreationIndexX,this.m_CellCreationIndexY,cellData.h,cellData.t); // 0, 0, 0, 100
+               this.m_MapRoom3Cells[index] = new MapRoom3Cell(this.m_CellCreationIndexX,this.m_CellCreationIndexY,cellData.h,cellData.t);
                if(getTimer() - timer > CELL_CREATION_LOOP_TIMEOUT)
                {
-                 return;
+                  return;
                }
                ++this.m_CellCreationIndexY;
             }
@@ -204,7 +205,7 @@ package com.monsters.maproom3.data
          this.m_InitialPlayerCellData = initworldmapData;
          if(this.m_InitialCentrePoint == null)
          {
-            this.m_InitialCentrePoint = new Point(initworldmapData.celldata[0].x,initworldmapData.celldata[0].y); // X and Y coordinates from server
+            this.m_InitialCentrePoint = new Point(initworldmapData.celldata[0].x,initworldmapData.celldata[0].y);
          }
          var _loc2_:Array = [];
          var _loc3_:int = Math.max(0,this.m_InitialCentrePoint.x - CELL_LOAD_BUFFER_X);
@@ -375,7 +376,7 @@ package com.monsters.maproom3.data
             _loc12_.push(["worldid",DEBUG_WORLD_ID]);
          }
          this.m_PendingCellDataRequest = _loc12_;
-         new URLLoaderApi().load(GetCellsRequestURL(),_loc12_,this.OnCellDataLoaded);  // worldmapv3/getcells endpoint called
+         new URLLoaderApi().load(GetCellsRequestURL(),_loc12_,this.OnCellDataLoaded);
       }
       
       private function OnCellDataLoaded(getcellsData:Object) : void
@@ -398,14 +399,12 @@ package com.monsters.maproom3.data
          var timer:int = getTimer();
          var cellDataArrayLength:uint = cellDataArray.length;
          var index:int = 0;
-         
          while(index < cellDataArrayLength)
          {
             cellData = cellDataArray[index];
-            (mapRoomCell = this.GetMapRoom3Cell(cellData.x,cellData.y)).Setup(cellData); // Comment: Here is were we pass in our cellData from 'worldmapv3/getcells' to mapRoom3Cell
-            cellID = MapRoomManager.instance.CalculateCellId(mapRoomCell.cellX, mapRoomCell.cellY);
+            (mapRoomCell = this.GetMapRoom3Cell(cellData.x,cellData.y)).Setup(cellData);
+            cellID = MapRoomManager.instance.CalculateCellId(mapRoomCell.cellX,mapRoomCell.cellY);
             this.m_ExpiryTimeByCellId[cellID] = timer + DEFAULT_CELL_EXPIRIY_TIME;
-
             if(mapRoomCell.isOwnedByPlayer)
             {
                this.m_ExpiryTimeByCellId[cellID] = timer + PLAYER_CELL_EXPIRIY_TIME;

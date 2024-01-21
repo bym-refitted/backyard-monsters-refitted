@@ -2,6 +2,7 @@ package
 {
    import flash.display.BitmapData;
    
+   [Embed(source="/_assets/2655_screenshot_border2_screenshot_border2.png")]
    public dynamic class screenshot_border2 extends BitmapData
    {
        

@@ -1,15 +1,16 @@
-import { gameConfig } from "../config/GameSettings";
+import { devConfig } from "../config/DevSettings";
 import { Save } from "../models/save.model";
 import { ORMContext } from "../server";
 import { KoaController } from "../utils/KoaController";
 import { logging } from "../utils/logger";
-import { storeKeys } from "../keys/generalStore";
+import { storeItems } from "../data/storeItems";
 import { User } from "../models/user.model";
 import { getDefaultBaseData } from "../data/getDefaultBaseData";
 import { FilterFrontendKeys } from "../utils/FrontendKey";
 import { flags } from "../data/flags";
+import { getCurrentDateTime } from "../utils/getCurrentDateTime";
 
-export const baseLoad: KoaController = async ctx => {
+export const baseLoad: KoaController = async (ctx) => {
   // Try find an already existing save
   const user: User = ctx.authUser;
   await ORMContext.em.populate(user, ["save"]);
@@ -34,44 +35,18 @@ export const baseLoad: KoaController = async ctx => {
   }
   const filteredSave = FilterFrontendKeys(save);
 
-  const storeObject = {
-    t: "title_val",
-    d: "desc_val",
-    c: [0],
-    i: "",
-    q: 0,
-    du: 0,
-  };
-
-  const quantities = {};
-  storeKeys.forEach((key) => {
-    quantities[key] = 100;
-  });
-
-  const storeItems = {};
-  storeKeys.forEach((key) => {
-    if (quantities[key]) {
-      storeItems[key] = { ...storeObject, quantity: quantities[key] };
-    } else {
-      storeItems[key] = { ...storeObject };
-    }
-  });
-
-  const isTutorialEnabled = gameConfig.skipTutorial ? 205 : 0;
+  const isTutorialEnabled = devConfig.skipTutorial ? 205 : 0;
 
   ctx.status = 200;
   ctx.body = {
     flags,
     error: 0,
-    basename: "testBase",
+    currenttime: getCurrentDateTime(),
+    basename: "basename",
     pic_square: "https://apprecs.org/ios/images/app-icons/256/df/634186975.jpg",
     storeitems: { ...storeItems },
     ...filteredSave,
     id: filteredSave.basesaveid,
     tutorialstage: isTutorialEnabled,
-    iresources: filteredSave.resources,
-    // Important: 'h' must always be at the end of the payload, as the client checks for this
-    h: "someHashValue",
-    hn: 0,
   };
 };

@@ -8,7 +8,7 @@ package de.polygonal.ds
       
       public var val:Object;
       
-      public var next:de.polygonal.ds.LinkedQueueNode;
+      public var next:LinkedQueueNode;
       
       public function LinkedQueueNode(param1:Object = undefined)
       {

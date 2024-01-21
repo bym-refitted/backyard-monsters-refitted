@@ -3,6 +3,7 @@ package
    import flash.display.MovieClip;
    import flash.text.TextField;
    
+   [Embed(source="/_assets/assets.swf", symbol="bubble_selecttarget")]
    public dynamic class bubble_selecttarget extends MovieClip
    {
        

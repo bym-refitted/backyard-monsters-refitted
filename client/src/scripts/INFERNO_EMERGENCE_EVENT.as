@@ -109,7 +109,9 @@ package
             TweenLite.delayedCall(_FOCUS_DELAY,FocusOnPortal);
             isGoingToAttack = true;
          }
-         else if(Boolean(ns::ShouldUpgradePortal(_lastLevel)) && isBaseReadyForAttack())
+         // Comment: This was commented out as it could not find the function using namespace
+         // else if(Boolean(ns::ShouldUpgradePortal(_lastLevel)) && isBaseReadyForAttack())
+         else if(Boolean(ShouldUpgradePortal(_lastLevel)) && isBaseReadyForAttack())
          {
             TweenLite.delayedCall(_FOCUS_DELAY,FocusOnPortal);
             isGoingToAttack = true;
@@ -123,7 +125,8 @@ package
          BASE.Save(0,false,true);
       }
       
-      internal static function ShouldUpgradePortal(param1:uint) : Boolean
+      // Comment: This function name was changed from ShouldUpgradePortal, due to conflicting namespace
+      public static function IsBelowMaxLevel(param1:uint) : Boolean
       {
          var _loc2_:Number = GLOBAL.StatGet(_LAST_TIME_LABEL);
          if(_currentDate.time / 1000 - _loc2_ >= _intermissionDuration)
@@ -135,25 +138,26 @@ package
          }
          return false;
       }
-      // Comment: For some reason there was two functions with the same namespace? Check which one is suitable.
-      // internal static function ShouldUpgradePortal(param1:uint) : Boolean
-      // {
-      //    return ShouldUpgradePortal(param1);
-      // }
+
+      internal static function ShouldUpgradePortal(param1:uint) : Boolean
+      {
+         return IsBelowMaxLevel(param1);
+      }
       
-      internal static function GetUpgradeLevel() : Number
+      // Comment: This function name was changed from GetUpgradeLevel, due to conflicting namespace
+      internal static function GetLastLevelLevel() : Number
       {
          return _lastLevel + 1;
       }
-      // Comment: For some reason there was two functions with the same namespace? Check which one is suitable.
-      // internal static function GetUpgradeLevel() : Number
-      // {
-      //    if(isLastDay())
-      //    {
-      //       return _maxLevel;
-      //    }
-      //    return GetUpgradeLevel();
-      // }
+
+      internal static function GetUpgradeLevel() : Number
+      {
+         if(isLastDay())
+         {
+            return _maxLevel;
+         }
+         return GetLastLevelLevel();
+      }
       
       public static function FocusOnPortal() : void
       {
@@ -197,7 +201,9 @@ package
          }
          var _loc2_:INFERNOPORTAL = INFERNOPORTAL.building;
          _loc2_.Show();
-         _loc2_.SetLevel(ns::GetUpgradeLevel());
+         // Comment: This was commented out as it could not find the function using namespace
+         // _loc2_.SetLevel(ns::GetUpgradeLevel());
+         _loc2_.SetLevel(GetUpgradeLevel());
          Save();
          if(!isBaseReadyForAttack())
          {
@@ -222,6 +228,7 @@ package
       
       public static function TriggerAttack(param1:Event) : void
       {
+         SOUNDS.PlayMusic("musicpanic");
          INFERNO_PORTAL_ATTACK.SpawnAttack();
       }
       

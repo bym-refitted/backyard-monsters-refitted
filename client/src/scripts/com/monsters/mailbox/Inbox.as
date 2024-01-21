@@ -17,7 +17,7 @@ package com.monsters.mailbox
       
       public static var all:Array;
       
-      public static var _instance:com.monsters.mailbox.Inbox;
+      public static var _instance:Inbox;
        
       
       public var config:Array;
@@ -411,7 +411,7 @@ package com.monsters.mailbox
                "subject":mess.subject_txt.text,
                "messagecount":1
             });
-            com.monsters.mailbox.Inbox.pushNewMessage(_loc2_);
+            Inbox.pushNewMessage(_loc2_);
             reversed = false;
             currentSorter = null;
             currentSort = null;

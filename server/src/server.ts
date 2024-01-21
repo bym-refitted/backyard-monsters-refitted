@@ -2,9 +2,9 @@ import "reflect-metadata";
 import "dotenv/config";
 
 import Koa, { Context, Next } from "koa";
+import session from "koa-session";
 import Router from "@koa/router";
 import bodyParser from "koa-bodyparser";
-import fs from "fs/promises";
 import serve from "koa-static";
 import ormConfig from "./mikro-orm.config";
 import router from "./app.routes";
@@ -12,11 +12,12 @@ import router from "./app.routes";
 import { SqliteDriver } from "@mikro-orm/sqlite";
 import { EntityManager, MikroORM, RequestContext } from "@mikro-orm/core";
 import { errorLog, logging } from "./utils/logger.js";
+import { firstRunEnv } from "./utils/firstRunEnv.js"
 import { ascii_node } from "./utils/ascii_art.js";
 import { ErrorInterceptor } from "./middleware/clientSafeError.js";
-import { registerDevUser } from "./database/seeds/dev.user";
 import { processLanguagesFile } from "./middleware/processLanguageFile";
 import { logMissingAssets, morganLogging } from "./middleware/morganLogging";
+import { SESSION_CONFIG } from "./config/SessionConfig";
 
 export const ORMContext = {} as {
   orm: MikroORM;
@@ -31,6 +32,12 @@ const api = new Router();
 api.get("/", (ctx: Context) => (ctx.body = {}));
 
 (async () => {
+  await firstRunEnv();
+
+  // Sessions
+  app.keys = [process.env.SECRET_KEY];
+  app.use(session(SESSION_CONFIG, app));
+
   ORMContext.orm = await MikroORM.init<SqliteDriver>(ormConfig);
   ORMContext.em = ORMContext.orm.em;
 
@@ -42,10 +49,6 @@ api.get("/", (ctx: Context) => (ctx.body = {}));
     })
   );
 
-  // Register a dev user
-  const em = ORMContext.em.fork();
-  registerDevUser(em);
-
   app.use((_, next: Next) =>
     RequestContext.createAsync(ORMContext.orm.em, next)
   );
@@ -56,19 +59,23 @@ api.get("/", (ctx: Context) => (ctx.body = {}));
 
   app.use(processLanguagesFile);
 
-  app.use(serve("./public"));
-  app.use(serve(__dirname + "/public"));
+  app.use(serve("public/"));
 
   process.on("unhandledRejection", (reason, promise) => {
-    console.error("Unhandled Rejection at:", promise, "reason:", reason);
-    // Handle the error or exit gracefully
+    errorLog(`Unhandled Rejection at: ${promise} reason: ${reason}`);
   });
 
   app.use(async (ctx, next) => {
+    // Dynamic crossdomain.xml
     if (ctx.path === "/crossdomain.xml") {
-      ctx.type = "text/xml";
-      const crossdomain = await fs.readFile("./crossdomain.xml", "utf-8");
-      ctx.body = crossdomain;
+      ctx.type = "application/xml";
+      ctx.body = `<?xml version="1.0"?>
+                  <!DOCTYPE cross-domain-policy SYSTEM "http://www.adobe.com/xml/dtds/cross-domain-policy.dtd">
+                  <cross-domain-policy>
+                      <site-control permitted-cross-domain-policies="master-only" />
+                      <allow-access-from domain="*" to-ports="${port}" secure="false" />
+                      <allow-http-request-headers-from domain="*" headers="Authorization" secure="false" />
+                  </cross-domain-policy>`;
     } else {
       await next();
     }
@@ -82,7 +89,7 @@ api.get("/", (ctx: Context) => (ctx.body = {}));
 
   app.listen(port, () => {
     logging(`
-    ${ascii_node} Admin dashboard: http://localhost:${port}
+    ${ascii_node} Server running on: http://localhost:${port}
     `);
   });
 })().catch((e) => errorLog(e));

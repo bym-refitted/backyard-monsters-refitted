@@ -52,7 +52,7 @@ package
          }
          tName.htmlText = "<b>" + KEYS.Get(this._buildingProps.name) + "</b>";
          mcSale.visible = this._buildingProps.sale == 1;
-         mcSale.t.htmlText = "<b>" + KEYS.Get("ui_building_sale") + "</b>";
+         mcSale.t.htmlText = "<b>" + KEYS.Get("ui_sale_on") + "</b>";
          mcNew.t.htmlText = "<b>" + KEYS.Get("str_new_caps") + "</b>";
          var _loc3_:int = GLOBAL.GetBuildingTownHallLevel(this._buildingProps);
          var _loc4_:int = _loc3_ < this._buildingProps.quantity.length ? int(this._buildingProps.quantity[_loc3_]) : int(this._buildingProps.quantity[this._buildingProps.quantity.length - 1]);

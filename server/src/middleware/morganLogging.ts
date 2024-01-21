@@ -1,5 +1,5 @@
 import { Context } from "vm";
-import { gameConfig } from "../config/GameSettings";
+import { devConfig } from "../config/DevSettings";
 import { errorLog } from "../utils/logger";
 import morgan from "koa-morgan";
 import { Next } from "koa";
@@ -9,7 +9,7 @@ export const logMissingAssets = async (ctx: Context, next: Next) => {
 
   const assetURI = ctx.url.startsWith("/assets");
 
-  if (assetURI && ctx.status === 404 && gameConfig.logMissingAssets) {
+  if (assetURI && ctx.status === 404 && devConfig.logMissingAssets) {
     errorLog(`${`Missing Asset:`.toUpperCase()} ${ctx.status} ${ctx.url}`);
   }
 };

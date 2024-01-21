@@ -43,13 +43,13 @@ package com.smartfoxserver.v2.requests
       public static const KEY_ROOM_TO_LEAVE:String = "rl";
        
       
-      private var _settings:com.smartfoxserver.v2.requests.RoomSettings;
+      private var _settings:RoomSettings;
       
       private var _autoJoin:Boolean;
       
       private var _roomToLeave:Room;
       
-      public function CreateRoomRequest(param1:com.smartfoxserver.v2.requests.RoomSettings, param2:Boolean = false, param3:Room = null)
+      public function CreateRoomRequest(param1:RoomSettings, param2:Boolean = false, param3:Room = null)
       {
          super(BaseRequest.CreateRoom);
          this._settings = param1;

@@ -3,6 +3,7 @@ package
    import flash.display.MovieClip;
    import flash.text.TextField;
    
+   [Embed(source="/_assets/assets.swf", symbol="HellRaisersBattleSummary_CLIP")]
    public dynamic class HellRaisersBattleSummary_CLIP extends MovieClip
    {
        

@@ -2,11 +2,12 @@ package com.monsters.maproom_inferno
 {
    import flash.display.MovieClip;
    
+   [Embed(source="/_assets/assets.swf", symbol="com.monsters.maproom_inferno.MiniMapDescent_CLIP")]
    public dynamic class MiniMapDescent_CLIP extends MovieClip
    {
        
       
-      public var background_mc:com.monsters.maproom_inferno.MiniMapBackgroundDescent_CLIP;
+      public var background_mc:MiniMapBackgroundDescent_CLIP;
       
       public var mask_mc:MovieClip;
       

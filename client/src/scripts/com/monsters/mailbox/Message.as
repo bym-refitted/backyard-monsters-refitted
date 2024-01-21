@@ -29,7 +29,7 @@ package com.monsters.mailbox
       
       private var timer:Timer;
       
-      public var picker:com.monsters.mailbox.FriendPicker;
+      public var picker:FriendPicker;
       
       public var baseID:int = 0;
       
@@ -37,7 +37,7 @@ package com.monsters.mailbox
       {
          super();
          (mcFrame as frame).Setup(true,this.closeDown);
-         this.picker = new com.monsters.mailbox.FriendPicker(param1);
+         this.picker = new FriendPicker(param1);
          this.picker.x = 238;
          this.picker.y = 65;
          this.baseID = 0;

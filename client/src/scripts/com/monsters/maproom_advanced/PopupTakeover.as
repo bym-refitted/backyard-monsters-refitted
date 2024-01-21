@@ -1,5 +1,6 @@
 package com.monsters.maproom_advanced
 {
+   
    import com.cc.utils.SecNum;
    import com.monsters.display.ImageCache;
    import com.monsters.enums.EnumYardType;
@@ -9,7 +10,7 @@ package com.monsters.maproom_advanced
    import flash.events.MouseEvent;
    import flash.geom.Point;
    
-   internal class PopupTakeover extends MapRoomPopup_takeover_CLIP
+   public class PopupTakeover extends MapRoomPopup_takeover_CLIP
    {
       
       private static const TAKEOVER_CAP:int = 65000000;
@@ -21,9 +22,9 @@ package com.monsters.maproom_advanced
       
       private var _costGap:int;
       
-      private var _cell:com.monsters.maproom_advanced.MapRoomCell;
+      private var _cell:MapRoomCell;
       
-      public function PopupTakeover(param1:com.monsters.maproom_advanced.MapRoomCell)
+      public function PopupTakeover(param1:MapRoomCell)
       {
          var cellValue:Number;
          var WMBASE:Boolean;
@@ -40,7 +41,7 @@ package com.monsters.maproom_advanced
          var bonusStr:String = null;
          var costMC:MovieClip = null;
          var colorString:String = null;
-         var cell:com.monsters.maproom_advanced.MapRoomCell = param1;
+         var cell:MapRoomCell = param1;
          super();
          ImageLoaded = function(param1:String, param2:BitmapData):void
          {
@@ -51,9 +52,9 @@ package com.monsters.maproom_advanced
          ImageCache.GetImageWithCallBack("popups/outpost-takeover.png",ImageLoaded,true,1);
          this._costGap = 0;
          this._resourceCost = new SecNum(1000000);
-         cellValue = this._cell._value;
+         cellValue = Number(this._cell._value);
          WMBASE = this._cell._base == 1;
-         WMLEVEL = this._cell._level;
+         WMLEVEL = int(this._cell._level);
          slope = WMBASE ? 562500 : 15820570.7;
          intercept = WMBASE ? -14750000 : -227080916.9;
          roundTo = 250000;
@@ -178,7 +179,7 @@ package com.monsters.maproom_advanced
                MapRoomManager.instance.Hide();
                GLOBAL._attackerCellsInRange = new Vector.<CellData>(0,true);
                GLOBAL._currentCell = _cell;
-               (GLOBAL._currentCell as com.monsters.maproom_advanced.MapRoomCell).baseType = 3;
+               (GLOBAL._currentCell as MapRoomCell).baseType = 3;
                BASE.yardType = EnumYardType.OUTPOST;
                BASE.LoadBase(null,0,_cell._baseID,GLOBAL.e_BASE_MODE.BUILD,false,EnumYardType.OUTPOST);
                LOGGER.Stat([37,BASE._takeoverFirstOpen]);

@@ -1,5 +1,6 @@
 package
 {
+   
    import com.monsters.enums.EnumYardType;
    import com.monsters.managers.InstanceManager;
    import com.monsters.maproom3.MapRoom3Cell;
@@ -228,7 +229,7 @@ package
       public function Attack(param1:MouseEvent) : void
       {
          var _loc2_:MapRoomCell = GLOBAL._currentCell as MapRoomCell;
-         if(_loc2_)
+         if(!_loc2_)
          {
          }
          if(Boolean(_loc2_) && _loc2_.isLocked)

@@ -7,13 +7,13 @@ package as3reflect
       
       private static const READ_WRITE_VALUE:String = "readwrite";
       
-      public static const READ_ONLY:as3reflect.AccessorAccess = new as3reflect.AccessorAccess(READ_ONLY_VALUE);
+      public static const READ_ONLY:AccessorAccess = new AccessorAccess(READ_ONLY_VALUE);
       
-      public static const READ_WRITE:as3reflect.AccessorAccess = new as3reflect.AccessorAccess(READ_WRITE_VALUE);
+      public static const READ_WRITE:AccessorAccess = new AccessorAccess(READ_WRITE_VALUE);
       
       private static const WRITE_ONLY_VALUE:String = "writeonly";
       
-      public static const WRITE_ONLY:as3reflect.AccessorAccess = new as3reflect.AccessorAccess(WRITE_ONLY_VALUE);
+      public static const WRITE_ONLY:AccessorAccess = new AccessorAccess(WRITE_ONLY_VALUE);
        
       
       private var _name:String;
@@ -24,9 +24,9 @@ package as3reflect
          _name = param1;
       }
       
-      public static function fromString(param1:String) : as3reflect.AccessorAccess
+      public static function fromString(param1:String) : AccessorAccess
       {
-         var _loc2_:as3reflect.AccessorAccess = null;
+         var _loc2_:AccessorAccess = null;
          switch(param1)
          {
             case READ_ONLY_VALUE:

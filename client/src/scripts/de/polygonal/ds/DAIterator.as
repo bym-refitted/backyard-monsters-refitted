@@ -10,11 +10,11 @@ package de.polygonal.ds
       
       public var _i:int;
       
-      public var _f:de.polygonal.ds.DA;
+      public var _f:DA;
       
       public var _a:Array;
       
-      public function DAIterator(param1:de.polygonal.ds.DA = undefined)
+      public function DAIterator(param1:DA = undefined)
       {
          if(Boot.skip_constructor)
          {

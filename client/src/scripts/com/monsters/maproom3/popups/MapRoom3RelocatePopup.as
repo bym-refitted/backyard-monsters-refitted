@@ -4,11 +4,12 @@ package com.monsters.maproom3.popups
    import com.monsters.maproom3.data.MapRoom3FriendData;
    import com.monsters.maproom_manager.MapRoomManager;
    import flash.events.MouseEvent;
-   
+   import config.singletonlock.SingletonLock;
+
    public class MapRoom3RelocatePopup extends MapRoom3RelocateMainYardPopup
    {
       
-      private static var s_Instance:com.monsters.maproom3.popups.MapRoom3RelocatePopup = null;
+      private static var s_Instance:MapRoom3RelocatePopup = null;
       
       public static const k_RELOCATE_BUTTONINFO:String = "btn_relocateYard";
       
@@ -17,14 +18,14 @@ package com.monsters.maproom3.popups
       
       private var m_LoadedFriendData:Vector.<MapRoom3FriendData>;
       
-      private var m_DisplayList:com.monsters.maproom3.popups.MapRoom3RelocatePopupDisplayList;
+      private var m_DisplayList:MapRoom3RelocatePopupDisplayList;
       
       private var m_IsShowing:Boolean = false;
       
-      public function MapRoom3RelocatePopup(param1:SingletonLock)
+      public function MapRoom3RelocatePopup(param1:config.singletonlock.SingletonLock)
       {
          super();
-         titleText.htmlText = KEYS.Get("mr3_relocate_main_yard_title");
+         titleText.htmlText = KEYS.Get("mr3_relocate_main_yard_titlemain");
          selectDescriptionText.htmlText = KEYS.Get("mr3_relocate_main_yard_description_select");
          randomDescriptionText.htmlText = KEYS.Get("mr3_relocate_main_yard_description_random");
          orText.htmlText = KEYS.Get("mr3_relocate_main_yard_or");
@@ -37,9 +38,9 @@ package com.monsters.maproom3.popups
          contentsMask.mouseEnabled = false;
       }
       
-      public static function get instance() : com.monsters.maproom3.popups.MapRoom3RelocatePopup
+      public static function get instance() : MapRoom3RelocatePopup
       {
-         return s_Instance = s_Instance || new com.monsters.maproom3.popups.MapRoom3RelocatePopup(new SingletonLock());
+         return s_Instance = s_Instance || new MapRoom3RelocatePopup(new config.singletonlock.SingletonLock());
       }
       
       public function Show() : void
@@ -72,7 +73,7 @@ package com.monsters.maproom3.popups
             this.m_LoadedFriendData[_loc3_] = new MapRoom3FriendData(param1.friends[_loc3_]);
             _loc3_++;
          }
-         this.m_DisplayList = new com.monsters.maproom3.popups.MapRoom3RelocatePopupDisplayList(this.m_LoadedFriendData,k_MAX_FRIEND_ITEMS_TO_DISPLAY);
+         this.m_DisplayList = new MapRoom3RelocatePopupDisplayList(this.m_LoadedFriendData,k_MAX_FRIEND_ITEMS_TO_DISPLAY);
          contentsContainer.addChild(this.m_DisplayList);
       }
       
@@ -110,7 +111,7 @@ package com.monsters.maproom3.popups
          }
          else if(GLOBAL._flags.nwm_relocate == "1")
          {
-            GLOBAL.Message(KEYS.Get("mr3_relocate_confirmation"),KEYS.Get("mr3_relocate_confirmation_yes"),this.ConfirmRelocation,[param1]);
+            GLOBAL.Message(KEYS.Get("mr3_relocate_confirmation"),KEYS.Get("mr3_relocate_confirmationyes"),this.ConfirmRelocation,[param1]);
          }
       }
       
@@ -146,15 +147,5 @@ package com.monsters.maproom3.popups
          GLOBAL.ErrorMessage("Error relocating main base, MapRoom3RelocatePopup::OnRelocationFailed");
          LOGGER.Log("err","Error relocating main base, MapRoom3RelocatePopup::OnRelocationFailed " + param1.error);
       }
-   }
-}
-
-class SingletonLock
-{
-    
-   
-   public function SingletonLock()
-   {
-      super();
    }
 }

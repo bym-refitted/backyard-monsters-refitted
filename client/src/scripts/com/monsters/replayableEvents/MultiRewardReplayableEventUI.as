@@ -22,7 +22,7 @@ package com.monsters.replayableEvents
       public static const k_PROGRESS_COLOR:uint = 8567294;
        
       
-      private var _event:com.monsters.replayableEvents.ReplayableEvent;
+      private var _event:ReplayableEvent;
       
       private var m_progressBarFill:Shape;
       
@@ -41,7 +41,7 @@ package com.monsters.replayableEvents
          return this;
       }
       
-      public function setup(param1:com.monsters.replayableEvents.ReplayableEvent) : void
+      public function setup(param1:ReplayableEvent) : void
       {
          var _loc2_:uint = 0;
          var _loc3_:int = 0;

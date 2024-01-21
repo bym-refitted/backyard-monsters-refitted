@@ -7,18 +7,19 @@ package com.monsters.event_store
    import flash.display.DisplayObject;
    import flash.display.Sprite;
    import flash.events.MouseEvent;
+   import config.singletonlock.SingletonLock;
    
    public class EventStorePopup extends EventStorePopupMC
    {
       
-      private static var s_Instance:com.monsters.event_store.EventStorePopup = null;
+      private static var s_Instance:EventStorePopup = null;
        
       
       private var m_TabButtons:Vector.<ButtonBrown>;
       
       private var m_TabDisplays:Vector.<DisplayObject>;
       
-      private var m_EventStoreDisplayGrid:com.monsters.event_store.EventStoreDisplayGrid;
+      private var m_EventStoreDisplayGrid:EventStoreDisplayGrid;
       
       private var m_TitleImage:Bitmap = null;
       
@@ -26,7 +27,7 @@ package com.monsters.event_store
       
       private var m_IsShowing:Boolean = false;
       
-      public function EventStorePopup(param1:SingletonLock)
+      public function EventStorePopup(param1:config.singletonlock.SingletonLock)
       {
          super();
          this.m_TitleImage = new Bitmap();
@@ -44,14 +45,14 @@ package com.monsters.event_store
          (_loc4_ = tabButton2 as ButtonBrown).SetupKey("event_store_prizes_tab");
          _loc4_.addEventListener(MouseEvent.CLICK,this.OnTabButtonClicked);
          this.m_TabButtons.push(_loc4_);
-         this.m_EventStoreDisplayGrid = new com.monsters.event_store.EventStoreDisplayGrid(displayContainer);
+         this.m_EventStoreDisplayGrid = new EventStoreDisplayGrid(displayContainer);
          this.m_TabDisplays.push(this.m_EventStoreDisplayGrid);
          displayContainer.addChild(this.m_EventStoreDisplayGrid);
       }
       
-      public static function get instance() : com.monsters.event_store.EventStorePopup
+      public static function get instance() : EventStorePopup
       {
-         return s_Instance = s_Instance || new com.monsters.event_store.EventStorePopup(new SingletonLock());
+         return s_Instance = s_Instance || new EventStorePopup(new config.singletonlock.SingletonLock());
       }
       
       public function Show(param1:uint = 1) : void
@@ -132,15 +133,5 @@ package com.monsters.event_store
             _loc3_++;
          }
       }
-   }
-}
-
-class SingletonLock
-{
-    
-   
-   public function SingletonLock()
-   {
-      super();
    }
 }

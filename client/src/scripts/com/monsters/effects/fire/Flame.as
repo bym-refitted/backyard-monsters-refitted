@@ -72,7 +72,7 @@ package com.monsters.effects.fire
       
       private var _particleCount:int;
       
-      private var _particleFirst:com.monsters.effects.fire.Particle;
+      private var _particleFirst:Particle;
       
       private var _sparkLife:int;
       
@@ -80,8 +80,8 @@ package com.monsters.effects.fire
       
       public function Flame(param1:DisplayObject, param2:int, param3:int)
       {
-         var _loc9_:com.monsters.effects.fire.Particle = null;
-         var _loc10_:com.monsters.effects.fire.Particle = null;
+         var _loc9_:Particle = null;
+         var _loc10_:Particle = null;
          super();
          this._emitter = param1;
          this._width = param2;
@@ -124,7 +124,7 @@ package com.monsters.effects.fire
          _loc8_ = 0;
          while(_loc8_ < this._particleCount)
          {
-            _loc9_ = new com.monsters.effects.fire.Particle(Math.random() * this._width,Math.random() * this._height);
+            _loc9_ = new Particle(Math.random() * this._width,Math.random() * this._height);
             if(this._particleFirst == null)
             {
                _loc10_ = this._particleFirst = _loc9_;
@@ -209,7 +209,7 @@ package com.monsters.effects.fire
          var _loc2_:* = 0;
          var _loc3_:int = 0;
          var _loc1_:Rectangle = this._emitter.getRect(this._emitter);
-         var _loc4_:com.monsters.effects.fire.Particle = this._particleFirst;
+         var _loc4_:Particle = this._particleFirst;
          var _loc5_:Matrix;
          (_loc5_ = new Matrix()).translate(10,60);
          this._greyBmd.lock();

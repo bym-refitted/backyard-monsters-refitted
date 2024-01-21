@@ -51,13 +51,13 @@ package com.monsters.maproom_inferno
       
       public var popUp:DescentBasePopup;
       
-      public var handler:com.monsters.maproom_inferno.PlayerHandler;
+      public var handler:PlayerHandler;
       
       public var loader:Loader;
       
       public var imageLoadState:uint = 0;
       
-      public var info_mc:com.monsters.maproom_inferno.DescentBaseInfo;
+      public var info_mc:DescentBaseInfo;
       
       public const popupCoordMap:Array = [[-145,-215],[15,-225],[-170,-210],[40,-200],[-170,-225],[50,-240],[-60,-280]];
       
@@ -69,7 +69,7 @@ package com.monsters.maproom_inferno
          this.popUp.x = 20;
          this.popUp.y = -250;
          this.addChild(this.popUp);
-         this.info_mc = new com.monsters.maproom_inferno.DescentBaseInfo();
+         this.info_mc = new DescentBaseInfo();
          this.info_mc.x = 22;
          this.info_mc.y = 10;
          this.addChild(this.info_mc);
@@ -113,7 +113,7 @@ package com.monsters.maproom_inferno
          this.mouseTimer = new Timer(400);
          this.mouseTimer.addEventListener(TimerEvent.TIMER,this.onTimer);
          this.mouseTimer.start();
-         new com.monsters.maproom_inferno.PlayerHandler().configure(this);
+         new PlayerHandler().configure(this);
          stop();
          this.SetLevelArt();
       }

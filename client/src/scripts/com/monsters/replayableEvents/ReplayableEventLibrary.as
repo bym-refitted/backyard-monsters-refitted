@@ -16,7 +16,7 @@ package com.monsters.replayableEvents
       
       public static const BRUKKARG_EVENT:BrukkargWarEvent = new BrukkargWarEvent();
       
-      public static const EVENTS:Vector.<com.monsters.replayableEvents.ReplayableEvent> = Vector.<com.monsters.replayableEvents.ReplayableEvent>([BATTLE_TOADS,MONSTER_BLITZKRIEG,BRUKKARG_EVENT,HELL_RAISERS]);
+      public static const EVENTS:Vector.<ReplayableEvent> = Vector.<ReplayableEvent>([BATTLE_TOADS,MONSTER_BLITZKRIEG,BRUKKARG_EVENT,HELL_RAISERS]);
        
       
       public function ReplayableEventLibrary()
@@ -24,9 +24,9 @@ package com.monsters.replayableEvents
          super();
       }
       
-      public static function getEventByName(param1:String) : com.monsters.replayableEvents.ReplayableEvent
+      public static function getEventByName(param1:String) : ReplayableEvent
       {
-         var _loc3_:com.monsters.replayableEvents.ReplayableEvent = null;
+         var _loc3_:ReplayableEvent = null;
          var _loc2_:int = 0;
          while(_loc2_ < EVENTS.length)
          {
@@ -40,9 +40,9 @@ package com.monsters.replayableEvents
          return null;
       }
       
-      public static function getEventByID(param1:uint) : com.monsters.replayableEvents.ReplayableEvent
+      public static function getEventByID(param1:uint) : ReplayableEvent
       {
-         var _loc3_:com.monsters.replayableEvents.ReplayableEvent = null;
+         var _loc3_:ReplayableEvent = null;
          var _loc2_:int = 0;
          while(_loc2_ < EVENTS.length)
          {

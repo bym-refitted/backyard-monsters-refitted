@@ -98,8 +98,8 @@ package
          }
          catch(e:Error)
          {
-            return 0;
          }
+         return 0;
       }
       
       public static function Tick() : void

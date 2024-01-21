@@ -2,6 +2,7 @@ package
 {
    import flash.display.MovieClip;
    
+   [Embed(source="/_assets/assets.swf", symbol="FACEBOOK_NCP_CLIP")]
    public dynamic class FACEBOOK_NCP_CLIP extends MovieClip
    {
        

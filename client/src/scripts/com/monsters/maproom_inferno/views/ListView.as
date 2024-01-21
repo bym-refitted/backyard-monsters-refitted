@@ -23,9 +23,9 @@ package com.monsters.maproom_inferno.views
       
       private var shell:Sprite;
       
-      public var bNext:com.monsters.maproom_inferno.views.ListViewArrow;
+      public var bNext:ListViewArrow;
       
-      public var bPrevious:com.monsters.maproom_inferno.views.ListViewArrow;
+      public var bPrevious:ListViewArrow;
       
       private var currentSort:String;
       
@@ -57,13 +57,13 @@ package com.monsters.maproom_inferno.views
             _loc1_.useHandCursor = true;
             _loc1_.buttonMode = true;
          }
-         this.bPrevious = new com.monsters.maproom_inferno.views.ListViewArrow();
+         this.bPrevious = new ListViewArrow();
          this.bPrevious.rotation = 180;
          this.bPrevious.x = -20;
          this.bPrevious.y = 190;
          this.bPrevious.Trigger();
          addChild(this.bPrevious);
-         this.bNext = new com.monsters.maproom_inferno.views.ListViewArrow();
+         this.bNext = new ListViewArrow();
          this.bNext.x = 720;
          this.bNext.y = 190;
          this.bNext.Trigger();

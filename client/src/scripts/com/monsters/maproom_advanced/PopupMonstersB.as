@@ -8,7 +8,7 @@ package com.monsters.maproom_advanced
    {
        
       
-      private var _cell:com.monsters.maproom_advanced.MapRoomCell;
+      private var _cell:MapRoomCell;
       
       private var _transfer:Object;
       
@@ -39,7 +39,7 @@ package com.monsters.maproom_advanced
          this.bCancel.addEventListener(MouseEvent.CLICK,this.Hide);
       }
       
-      public function Setup(param1:Object, param2:com.monsters.maproom_advanced.MapRoomCell) : void
+      public function Setup(param1:Object, param2:MapRoomCell) : void
       {
          var _loc3_:int = 0;
          var _loc4_:int = 0;

@@ -7,13 +7,13 @@ package de.polygonal.ds
    public class IntIntHashTable implements Map
    {
       
-      public static var KEY_ABSENT:int = -2147483648;
+      public static var KEY_ABSENT:int;
       
-      public static var VAL_ABSENT:int = -2147483648;
+      public static var VAL_ABSENT:int;
       
-      public static var EMPTY_SLOT:int = -1;
+      public static var EMPTY_SLOT:int;
       
-      public static var NULL_POINTER:int = -1;
+      public static var NULL_POINTER:int;
        
       
       public var slotCount:int;

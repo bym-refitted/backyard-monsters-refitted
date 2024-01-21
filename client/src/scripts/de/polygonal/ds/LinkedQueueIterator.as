@@ -6,11 +6,11 @@ package de.polygonal.ds
    {
        
       
-      public var _walker:de.polygonal.ds.LinkedQueueNode;
+      public var _walker:LinkedQueueNode;
       
-      public var _f:de.polygonal.ds.LinkedQueue;
+      public var _f:LinkedQueue;
       
-      public function LinkedQueueIterator(param1:de.polygonal.ds.LinkedQueue = undefined)
+      public function LinkedQueueIterator(param1:LinkedQueue = undefined)
       {
          if(Boot.skip_constructor)
          {
@@ -37,7 +37,7 @@ package de.polygonal.ds
          return _walker != null;
       }
       
-      public function __head(param1:Object) : de.polygonal.ds.LinkedQueueNode
+      public function __head(param1:Object) : LinkedQueueNode
       {
          return param1._head;
       }

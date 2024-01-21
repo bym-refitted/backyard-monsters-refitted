@@ -3,6 +3,7 @@ package
    import flash.display.MovieClip;
    import flash.text.TextField;
    
+   [Embed(source="/_assets/assets.swf", symbol="bubble_acceptInvite")]
    public dynamic class bubble_acceptInvite extends MovieClip
    {
        

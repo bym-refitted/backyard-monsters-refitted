@@ -3,6 +3,7 @@ package
    import flash.display.MovieClip;
    import flash.text.TextField;
    
+   [Embed(source="/_assets/assets.swf", symbol="ResourceBar2")]
    public dynamic class ResourceBar2 extends MovieClip
    {
        

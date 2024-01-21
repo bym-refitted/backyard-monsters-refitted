@@ -10,11 +10,11 @@ package com.monsters.creep_types
       
       private var m_UpgradeTime:uint;
       
-      private var m_UpgradeProps:com.monsters.creep_types.CreepProps;
+      private var m_UpgradeProps:CreepProps;
       
       public function CreepUpgrade()
       {
-         this.m_UpgradeProps = new com.monsters.creep_types.CreepProps();
+         this.m_UpgradeProps = new CreepProps();
          super();
       }
       
@@ -38,12 +38,12 @@ package com.monsters.creep_types
          this.m_UpgradeTime = param1;
       }
       
-      public function get upgradeProps() : com.monsters.creep_types.CreepProps
+      public function get upgradeProps() : CreepProps
       {
          return this.m_UpgradeProps;
       }
       
-      public function set upgradeProps(param1:com.monsters.creep_types.CreepProps) : void
+      public function set upgradeProps(param1:CreepProps) : void
       {
          this.m_UpgradeProps = param1;
       }

@@ -3,21 +3,21 @@ package com.monsters.maproom3.popups
    import com.monsters.maproom_manager.MapRoomManager;
    import flash.events.Event;
    import flash.events.MouseEvent;
-   
+   import config.singletonlock.SingletonLock;
    public class MapRoom3AttackFinishedPopup extends popup_attackend_CLIP
    {
       
-      private static var s_Instance:com.monsters.maproom3.popups.MapRoom3AttackFinishedPopup = null;
+      private static var s_Instance:MapRoom3AttackFinishedPopup = null;
        
       
-      public function MapRoom3AttackFinishedPopup(param1:SingletonLock)
+      public function MapRoom3AttackFinishedPopup(param1:config.singletonlock.SingletonLock)
       {
          super();
       }
       
-      public static function get instance() : com.monsters.maproom3.popups.MapRoom3AttackFinishedPopup
+      public static function get instance() : MapRoom3AttackFinishedPopup
       {
-         return s_Instance = s_Instance || new com.monsters.maproom3.popups.MapRoom3AttackFinishedPopup(new SingletonLock());
+         return s_Instance = s_Instance || new MapRoom3AttackFinishedPopup(new config.singletonlock.SingletonLock());
       }
       
       public function Show(param1:Boolean) : void
@@ -62,15 +62,5 @@ package com.monsters.maproom3.popups
          MapRoomManager.instance.SetupAndShow();
          POPUPS.Next();
       }
-   }
-}
-
-class SingletonLock
-{
-    
-   
-   public function SingletonLock()
-   {
-      super();
    }
 }

@@ -3,6 +3,7 @@ package
    import flash.display.MovieClip;
    import flash.text.TextField;
    
+   [Embed(source="/_assets/assets.swf", symbol="MapRoomPopup_Migrate_CLIP")]
    public dynamic class MapRoomPopup_Migrate_CLIP extends MovieClip
    {
        
