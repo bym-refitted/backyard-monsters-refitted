@@ -39,11 +39,9 @@ package
    import gs.TweenLite;
    import gs.easing.Cubic;
    
-   
-   
    public class GLOBAL
    {
-      public static var serverUrl:String = "http://localhost:3001/"; // Configure for prod
+      public static var serverUrl:String = "https://api.bymrefitted.com/";
 
       public static var _local:Boolean = false;
       

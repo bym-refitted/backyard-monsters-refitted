@@ -3,9 +3,9 @@
 		"warnings": false,
 		"strict": false,
 		"output": "swf/bym-refit.swf",
-		"source-path": ["client/src/scripts"]
+		"source-path": ["client/scripts"]
 	},
 	"copySourcePathAssets": true,
 	"config": "flex",
-	"files": ["client/src/scripts/GAME.as"]
+	"files": ["client/scripts/GAME.as"]
 }
