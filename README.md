@@ -20,7 +20,7 @@ This repository contains the entire modified SWF (Shockwave Flash) client files,
 <br>
 
 ## 🚀 How to Play
-We recommend to run the game in the native Flash Player projector, which is included in the root of this repository [here](./flashplayer_32.exe). Once you have downloaded and opened the Flash Player, click on `File > Open` and select the game file. You can find the game file under our [latest releases](/monkey-patch/backyard-monsters-refitted/releases).
+We recommend to run the game in the native Flash Player projector, which is included in the root of this repository [here](./flashplayer_32.exe). Once you have downloaded and opened the Flash Player, click on `File > Open` and select the game file. You can find the game file under our [latest releases](https://github.com/bym-refitted/backyard-monsters-refitted/releases).
 
 <br>
 
@@ -30,18 +30,18 @@ We recommend to run the game in the native Flash Player projector, which is incl
 1. Clone this repository and checkout the develop branch:
 
 ```bash
-git clone http://178.32.125.55:25590/monkey-patch/backyard-monsters-refitted
+git clone https://github.com/bym-refitted/backyard-monsters-refitted
 ```
 
 <br />
 
-2. Follow the instructions carefully on our [server setup & configuration](/monkey-patch/backyard-monsters-refitted/wiki/Server-%26-Database-Setup) Wiki page.
+2. Follow the instructions carefully on our [server setup & configuration](https://github.com/bym-refitted/backyard-monsters-refitted/wiki/Server-&-Database-Setup) Wiki page.
 
 <br />
 
 ## Client Setup
 
-1. Follow the instructions carefully on our [client setup & configuration](/monkey-patch/backyard-monsters-refitted/wiki/Client-Setup%2C-IntelliSense-%26-Configuration) Wiki page.
+1. Follow the instructions carefully on our [client setup & configuration](https://github.com/bym-refitted/backyard-monsters-refitted/wiki/Client-Setup,-IntelliSense-&-Configuration) Wiki page.
 
 2. To contribute you will need to copy your changes to the src directory. If you are wondering why we are using this horrible workflow please see [CONTRIBUTING.md](./CONTRIBUTING.md) for more information. If you are able to figure out how to compile directly to swf without unlinking all assets, please let us know.
 
