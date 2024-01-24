@@ -18,7 +18,7 @@ export const flags = {
   splituserid: 14619212,
   efl: 200,
   sal: 0,
-  numchatrooms: 20,
+  numchatrooms: 0,
   savedelay: 3,
   fb_api_curl_timeout: 2,
   pageinterval: 25,
@@ -33,7 +33,7 @@ export const flags = {
   leaderboard: 1,
   fanfriendbookmarkquests: 1,
   ticker: 0,
-  chat: 2,
+  chat: 0, // Disable chat
   event1: 1,
   event2: 0,
   invasionpop: 6,
