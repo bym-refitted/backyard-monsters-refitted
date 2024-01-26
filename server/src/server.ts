@@ -32,7 +32,7 @@ const api = new Router();
 api.get("/", (ctx: Context) => (ctx.body = {}));
 
 (async () => {
-  await firstRunEnv();
+ // await firstRunEnv();
 
   // Sessions
   app.keys = [process.env.SECRET_KEY];
