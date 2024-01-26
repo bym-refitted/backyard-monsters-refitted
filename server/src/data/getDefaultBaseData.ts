@@ -43,7 +43,7 @@ export const getDefaultBaseData = (user?: User) => {
     lastupdate: 0,
     usemap: 1,
     homebaseid: generateID(7, 220),
-    credits: 8000,
+    credits: 2500,
     champion: "null",
     empiredestroyed: 1,
     worldid: generateID(3, 2).toString(),
@@ -69,10 +69,10 @@ export const getDefaultBaseData = (user?: User) => {
     coords: {},
     quests: {},
     resources: {
-      r1: 0,
-      r2: 0,
-      r3: 0,
-      r4: 0,
+      r1: 78400,
+      r2: 78400,
+      r3: 80000,
+      r4: 80000,
       r1max: 10000,
       r2max: 10000,
       r3max: 10000,
@@ -88,15 +88,15 @@ export const getDefaultBaseData = (user?: User) => {
     events: {},
     rewards: {
       // Reminder: Remove contents
-      spurtzCannonReward2: {
-        id: "spurtzCannonReward2",
-      },
-      spurtzCannonReward: {
-        id: "spurtzCannonReward",
-      },
-      spurtzCannonReward3: {
-        id: "spurtzCannonReward3",
-      },
+      // spurtzCannonReward2: {
+      //   id: "spurtzCannonReward2",
+      // },
+      // spurtzCannonReward: {
+      //   id: "spurtzCannonReward",
+      // },
+      // spurtzCannonReward3: {
+      //   id: "spurtzCannonReward3",
+      // },
     },
     takeover: {},
     iresources: {
