@@ -36,7 +36,7 @@ router.post("/base/save", auth, debugDataLog("Base save data"), baseSave);
 router.post("/base/updatesaved", auth, debugDataLog("Base updated save"), updateSaved);
 
 // Yard Planner
-router.post("/api/bm/yardplanner/gettemplates", auth, debugDataLog("Get templates"), getTemplates);
+router.get("/api/bm/yardplanner/gettemplates", auth, debugDataLog("Get templates"), getTemplates);
 router.post("/api/bm/yardplanner/savetemplate", auth, debugDataLog("Saving template"), saveTemplate);
 
 // Inferno
