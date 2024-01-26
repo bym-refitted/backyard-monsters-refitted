@@ -5,7 +5,7 @@
   "main": "dist/server.ts",
   "scripts": {
     "compile-sass": "sass --no-source-map --watch styles/main.scss public/main.css",
-    "build": "rimraf dist && npx tsc && pnpm sentry:sourcemaps",
+    "build": "rimraf dist && npx tsc",
     "prestart": "npm run build",
     "start": "node dist/server.js",
     "preserve": "npm run build",
