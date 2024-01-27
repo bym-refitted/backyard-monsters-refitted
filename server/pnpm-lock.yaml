@@ -10,7 +10,10 @@ dependencies:
     version: 12.0.1
   '@mikro-orm/core':
     specifier: ^5.7.12
-    version: 5.9.7(@mikro-orm/migrations@5.9.7)(@mikro-orm/sqlite@5.9.7)
+    version: 5.9.7(@mikro-orm/mariadb@5.9.7)(@mikro-orm/migrations@5.9.7)(@mikro-orm/sqlite@5.9.7)
+  '@mikro-orm/mariadb':
+    specifier: 5.9.7
+    version: 5.9.7(@mikro-orm/core@5.9.7)(@mikro-orm/migrations@5.9.7)
   '@mikro-orm/sqlite':
     specifier: ^5.7.12
     version: 5.9.7(@mikro-orm/core@5.9.7)(@mikro-orm/migrations@5.9.7)
@@ -69,7 +72,7 @@ dependencies:
 devDependencies:
   '@mikro-orm/cli':
     specifier: ^5.7.12
-    version: 5.9.7(@mikro-orm/migrations@5.9.7)(@mikro-orm/sqlite@5.9.7)
+    version: 5.9.7(@mikro-orm/mariadb@5.9.7)(@mikro-orm/migrations@5.9.7)(@mikro-orm/sqlite@5.9.7)
   '@mikro-orm/migrations':
     specifier: ^5.7.12
     version: 5.9.7(@mikro-orm/core@5.9.7)
@@ -194,7 +197,7 @@ packages:
       - encoding
       - supports-color
 
-  /@mikro-orm/cli@5.9.7(@mikro-orm/migrations@5.9.7)(@mikro-orm/sqlite@5.9.7):
+  /@mikro-orm/cli@5.9.7(@mikro-orm/mariadb@5.9.7)(@mikro-orm/migrations@5.9.7)(@mikro-orm/sqlite@5.9.7):
     resolution: {integrity: sha512-RHMep4lOFRqniz3m97/JXl5DNFhZbGMpTtjw6C1ITYI9ZwWsSZbfBUTGy+PQTZKl9OinFoyR6E/Os/gj8y+NUg==}
     engines: {node: '>= 14.0.0'}
     hasBin: true
@@ -232,8 +235,9 @@ packages:
         optional: true
     dependencies:
       '@jercle/yargonaut': 1.1.5
-      '@mikro-orm/core': 5.9.7(@mikro-orm/migrations@5.9.7)(@mikro-orm/sqlite@5.9.7)
+      '@mikro-orm/core': 5.9.7(@mikro-orm/mariadb@5.9.7)(@mikro-orm/migrations@5.9.7)(@mikro-orm/sqlite@5.9.7)
       '@mikro-orm/knex': 5.9.7(@mikro-orm/core@5.9.7)(@mikro-orm/migrations@5.9.7)(sqlite3@5.1.6)
+      '@mikro-orm/mariadb': 5.9.7(@mikro-orm/core@5.9.7)(@mikro-orm/migrations@5.9.7)
       '@mikro-orm/migrations': 5.9.7(@mikro-orm/core@5.9.7)
       '@mikro-orm/sqlite': 5.9.7(@mikro-orm/core@5.9.7)(@mikro-orm/migrations@5.9.7)
       fs-extra: 11.1.1
@@ -251,7 +255,7 @@ packages:
       - tedious
     dev: true
 
-  /@mikro-orm/core@5.9.7(@mikro-orm/migrations@5.9.7)(@mikro-orm/sqlite@5.9.7):
+  /@mikro-orm/core@5.9.7(@mikro-orm/mariadb@5.9.7)(@mikro-orm/migrations@5.9.7)(@mikro-orm/sqlite@5.9.7):
     resolution: {integrity: sha512-VzbpJPQlwuK6Q/4FkppWNGKvzyYL31Gsw/qskr/GCa/010yLO8u3RQio/Q1EKRi+tNsjhqTPGA1b7OOM+DvpiQ==}
     engines: {node: '>= 14.0.0'}
     peerDependencies:
@@ -287,6 +291,7 @@ packages:
       '@mikro-orm/sqlite':
         optional: true
     dependencies:
+      '@mikro-orm/mariadb': 5.9.7(@mikro-orm/core@5.9.7)(@mikro-orm/migrations@5.9.7)
       '@mikro-orm/migrations': 5.9.7(@mikro-orm/core@5.9.7)
       '@mikro-orm/sqlite': 5.9.7(@mikro-orm/core@5.9.7)(@mikro-orm/migrations@5.9.7)
       acorn-loose: 8.3.0
@@ -328,7 +333,7 @@ packages:
       sqlite3:
         optional: true
     dependencies:
-      '@mikro-orm/core': 5.9.7(@mikro-orm/migrations@5.9.7)(@mikro-orm/sqlite@5.9.7)
+      '@mikro-orm/core': 5.9.7(@mikro-orm/mariadb@5.9.7)(@mikro-orm/migrations@5.9.7)(@mikro-orm/sqlite@5.9.7)
       '@mikro-orm/migrations': 5.9.7(@mikro-orm/core@5.9.7)
       fs-extra: 11.1.1
       knex: 2.5.1(sqlite3@5.1.6)
@@ -339,13 +344,44 @@ packages:
       - supports-color
       - tedious
 
+  /@mikro-orm/mariadb@5.9.7(@mikro-orm/core@5.9.7)(@mikro-orm/migrations@5.9.7):
+    resolution: {integrity: sha512-9A+HjTUyd5bhI0WqdFcUAfhrvCBYCe4gvMH+/2SR+7V4fFPWzQcc17BXgdDq39cE5wLOgesUf3jAR5tZSXCPHA==}
+    engines: {node: '>= 14.0.0'}
+    peerDependencies:
+      '@mikro-orm/core': ^5.0.0
+      '@mikro-orm/entity-generator': ^5.0.0
+      '@mikro-orm/migrations': ^5.0.0
+      '@mikro-orm/seeder': ^5.0.0
+    peerDependenciesMeta:
+      '@mikro-orm/entity-generator':
+        optional: true
+      '@mikro-orm/migrations':
+        optional: true
+      '@mikro-orm/seeder':
+        optional: true
+    dependencies:
+      '@mikro-orm/core': 5.9.7(@mikro-orm/mariadb@5.9.7)(@mikro-orm/migrations@5.9.7)(@mikro-orm/sqlite@5.9.7)
+      '@mikro-orm/knex': 5.9.7(@mikro-orm/core@5.9.7)(@mikro-orm/migrations@5.9.7)(sqlite3@5.1.6)
+      '@mikro-orm/migrations': 5.9.7(@mikro-orm/core@5.9.7)
+      mariadb: 2.5.6
+    transitivePeerDependencies:
+      - better-sqlite3
+      - mssql
+      - mysql
+      - mysql2
+      - pg
+      - pg-native
+      - sqlite3
+      - supports-color
+      - tedious
+
   /@mikro-orm/migrations@5.9.7(@mikro-orm/core@5.9.7):
     resolution: {integrity: sha512-5CFVIwmGMxN7p7Rs3KRQmYlDVy47DN2MJQqtDOSVG9ww0xzOP0suCLDA/yRG1uFcPnTn/Ru6lwAH6nllqV75FQ==}
     engines: {node: '>= 14.0.0'}
     peerDependencies:
       '@mikro-orm/core': ^5.0.0
     dependencies:
-      '@mikro-orm/core': 5.9.7(@mikro-orm/migrations@5.9.7)(@mikro-orm/sqlite@5.9.7)
+      '@mikro-orm/core': 5.9.7(@mikro-orm/mariadb@5.9.7)(@mikro-orm/migrations@5.9.7)(@mikro-orm/sqlite@5.9.7)
       '@mikro-orm/knex': 5.9.7(@mikro-orm/core@5.9.7)(@mikro-orm/migrations@5.9.7)(sqlite3@5.1.6)
       fs-extra: 11.1.1
       knex: 2.5.1(sqlite3@5.1.6)
@@ -378,7 +414,7 @@ packages:
       '@mikro-orm/seeder':
         optional: true
     dependencies:
-      '@mikro-orm/core': 5.9.7(@mikro-orm/migrations@5.9.7)(@mikro-orm/sqlite@5.9.7)
+      '@mikro-orm/core': 5.9.7(@mikro-orm/mariadb@5.9.7)(@mikro-orm/migrations@5.9.7)(@mikro-orm/sqlite@5.9.7)
       '@mikro-orm/knex': 5.9.7(@mikro-orm/core@5.9.7)(@mikro-orm/migrations@5.9.7)(sqlite3@5.1.6)
       '@mikro-orm/migrations': 5.9.7(@mikro-orm/core@5.9.7)
       fs-extra: 11.1.1
@@ -659,6 +695,9 @@ packages:
       '@types/serve-static': 1.15.5
     dev: true
 
+  /@types/geojson@7946.0.13:
+    resolution: {integrity: sha512-bmrNrgKMOhM3WsafmbGmC+6dsF2Z308vLFsQ3a/bT8X8Sv5clVYpPars/UPq+sAaJP+5OoLAYgwbkS5QEJdLUQ==}
+
   /@types/http-assert@1.5.5:
     resolution: {integrity: sha512-4+tE/lwdAahgZT1g30Jkdm9PzFRde0xwxBNUyRsCitRvCQB90iuA2uJYdUnhnANRcqGXaWOGY4FEoxeElNAK2g==}
     dev: true
@@ -748,6 +787,9 @@ packages:
     dependencies:
       '@types/node': 18.19.8
     dev: true
+
+  /@types/node@17.0.45:
+    resolution: {integrity: sha512-w+tIMs3rq2afQdsPJlODhoUEKzFP1ayaoyl1CcnwtIlsVe7K7bA1NGm4s3PraqTLlXnbIN84zuBlxBWo1u9BLw==}
 
   /@types/node@18.19.8:
     resolution: {integrity: sha512-g1pZtPhsvGVTwmeVoexWZLTQaOvXwoSq//pTL0DHeNzUDrFnir4fgETdhjhIxjVnN+hKOuh98+E1eMLnUXstFg==}
@@ -1222,6 +1264,10 @@ packages:
   /delegates@1.0.0:
     resolution: {integrity: sha512-bd2L678uiWATM6m5Z1VzNCErI3jiGzt6HGY8OVICs40JQq/HALfbyNJmp0UDakEY4pMMaN0Ly5om/B1VI/+xfQ==}
 
+  /denque@2.1.0:
+    resolution: {integrity: sha512-HVQE3AAb/pxF8fQAoiqpvg9i3evqug3hoiwakOyZAwJm+6vZehbkYXZ0l4JxS+I3QxM97v5aaRNhj8v5oBhekw==}
+    engines: {node: '>=0.10'}
+
   /depd@1.1.2:
     resolution: {integrity: sha512-7emPTl6Dpo6JRXOXjLRxck+FlLRX5847cLKEn00PLAgc3g2hTZZgr+e4c2v6QpSmLeFP3n5yUo7ft6avBK/5jQ==}
     engines: {node: '>= 0.6'}
@@ -1639,7 +1685,6 @@ packages:
     requiresBuild: true
     dependencies:
       safer-buffer: 2.1.2
-    optional: true
 
   /ieee754@1.2.1:
     resolution: {integrity: sha512-dcyqhDvX1C46lXZcVqCpK+FtMRQVdIMN6/Df5js2zouUsqG7I6sFxitIC+7KYK29KdXOLHdu9zL4sFnoVQnqaA==}
@@ -1989,6 +2034,9 @@ packages:
   /lodash@4.17.21:
     resolution: {integrity: sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==}
 
+  /long@5.2.3:
+    resolution: {integrity: sha512-lcHwpNoggQTObv5apGNCTdJrO69eHOZMi4BNC+rTLER8iHAqGrUVeLh/irVIM7zTw2bOXA8T6uNPeujwOLg/2Q==}
+
   /lru-cache@10.1.0:
     resolution: {integrity: sha512-/1clY/ui8CzjKFyjdvwPWJUYKiFVXG2I2cY0ssG7h4+hwk+XOIX7ZSG9Q7TW8TW3Kp3BUSqgFWBLgL4PJ+Blag==}
     engines: {node: 14 || >=16.14}
@@ -2035,6 +2083,18 @@ packages:
       - bluebird
       - supports-color
     optional: true
+
+  /mariadb@2.5.6:
+    resolution: {integrity: sha512-zBx7loYY5GzLl8Y6AKxGXfY9DUYIIdGrmEORPOK9FEu0pg5ZLBKCGJuucHwKADxTBxKY7eM4rxndqxRcnMZKIw==}
+    engines: {node: '>= 10.13'}
+    dependencies:
+      '@types/geojson': 7946.0.13
+      '@types/node': 17.0.45
+      denque: 2.1.0
+      iconv-lite: 0.6.3
+      long: 5.2.3
+      moment-timezone: 0.5.44
+      please-upgrade-node: 3.2.0
 
   /media-typer@0.3.0:
     resolution: {integrity: sha512-dq+qelQ9akHpcOl/gUVRTxVIOkAJ1wR3QAvb4RsVjS8oVoFjDGTc679wJYmUmknUF5HwMLOgb5O+a3KxfWapPQ==}
@@ -2169,6 +2229,14 @@ packages:
     resolution: {integrity: sha512-vVqVZQyf3WLx2Shd0qJ9xuvqgAyKPLAiqITEtqW0oIUjzo3PePDd6fW9iFz30ef7Ysp/oiWqbhszeGWW2T6Gzw==}
     engines: {node: '>=10'}
     hasBin: true
+
+  /moment-timezone@0.5.44:
+    resolution: {integrity: sha512-nv3YpzI/8lkQn0U6RkLd+f0W/zy/JnoR5/EyPz/dNkPTBjA2jNLCVxaiQ8QpeLymhSZvX0wCL5s27NQWdOPwAw==}
+    dependencies:
+      moment: 2.30.1
+
+  /moment@2.30.1:
+    resolution: {integrity: sha512-uEmtNhbDOrWPFS+hdjFCBfy9f2YoyzRpwcl+DqpC6taX21FzsTLQVbMV/W7PzNSX6x/bhC1zA3c2UQ5NzH6how==}
 
   /morgan@1.10.0:
     resolution: {integrity: sha512-AbegBVI4sh6El+1gNwvD5YIck7nSA36weD7xvIxG4in80j/UoK8AEGaWnnz8v1GxonMCltmlNs5ZKbGvl9b1XQ==}
@@ -2435,6 +2503,11 @@ packages:
       thread-stream: 2.4.1
     dev: false
 
+  /please-upgrade-node@3.2.0:
+    resolution: {integrity: sha512-gQR3WpIgNIKwBMVLkpMUeR3e1/E1y42bqDQZfql+kDeXd8COYfM8PQA4X6y7a8u9Ua9FHmsrrmirW2vHs45hWg==}
+    dependencies:
+      semver-compare: 1.0.0
+
   /pony-cause@2.1.10:
     resolution: {integrity: sha512-3IKLNXclQgkU++2fSi93sQ6BznFuxSLB11HdvZQ6JW/spahf/P1pAHBQEahr20rs0htZW0UDkM1HmA+nZkXKsw==}
     engines: {node: '>=12.0.0'}
@@ -2647,6 +2720,9 @@ packages:
   /secure-json-parse@2.7.0:
     resolution: {integrity: sha512-6aU+Rwsezw7VR8/nyvKTx8QpWH9FrcYiXXlqC4z5d5XQBDRqtbfsRjnwGyqbi3gddNtWHuEk9OANUotL26qKUw==}
     dev: false
+
+  /semver-compare@1.0.0:
+    resolution: {integrity: sha512-YM3/ITh2MJ5MtzaM429anh+x2jiLVjqILF4m4oyQB18W7Ggea7BfqdH/wGMK7dDiMghv/6WG7znWMwUDzJiXow==}
 
   /semver@5.7.2:
     resolution: {integrity: sha512-cBznnQ9KjJqU67B52RMC65CMarK2600WFnbkcaiwWq3xy/5haFJlshgnpjovMVJ+Hff49d8GEn0b87C5pDQ10g==}

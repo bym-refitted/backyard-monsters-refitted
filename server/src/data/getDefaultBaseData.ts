@@ -42,7 +42,7 @@ export const getDefaultBaseData = (user?: User) => {
     protected: 1,
     lastupdate: 0,
     usemap: 1,
-    homebaseid: generateID(7, 220),
+    homebaseid: generateID(9),
     credits: 2500,
     champion: "null",
     empiredestroyed: 1,

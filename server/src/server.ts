@@ -1,10 +1,6 @@
 import "reflect-metadata";
 import "dotenv/config";
 
-import * as Sentry from "@sentry/node";
-import { ProfilingIntegration } from "@sentry/profiling-node";
-import { stripUrlQueryAndFragment } from "@sentry/utils";
-
 import Koa, { Context, Next } from "koa";
 import session from "koa-session";
 import Router from "@koa/router";
@@ -12,8 +8,9 @@ import bodyParser from "koa-bodyparser";
 import serve from "koa-static";
 import ormConfig from "./mikro-orm.config";
 import router from "./app.routes";
+import * as Sentry from "@sentry/node";
 
-import { SqliteDriver } from "@mikro-orm/sqlite";
+import { MariaDbDriver } from '@mikro-orm/mariadb';
 import { EntityManager, MikroORM, RequestContext } from "@mikro-orm/core";
 import { errorLog, logging } from "./utils/logger.js";
 import { firstRunEnv } from "./utils/firstRunEnv.js"
@@ -22,100 +19,24 @@ import { ErrorInterceptor } from "./middleware/clientSafeError.js";
 import { processLanguagesFile } from "./middleware/processLanguageFile";
 import { logMissingAssets, morganLogging } from "./middleware/morganLogging";
 import { SESSION_CONFIG } from "./config/SessionConfig";
-
-// Sentry.init({
-//   dsn: process.env.SENTRY_KEY,
-//   integrations: [
-//     // Automatically instrument Node.js libraries and frameworks
-//     ...Sentry.autoDiscoverNodePerformanceMonitoringIntegrations(),
-//     new ProfilingIntegration(),
-//   ],
-//   // Performance Monitoring
-//   tracesSampleRate: 1.0, //  Capture 100% of the transactions
-//   // Set sampling rate for profiling - this is relative to tracesSampleRate
-//   profilesSampleRate: 1.0,
-// });
+import { requestHandler, tracingMiddleWare } from "./sentry/init";
 
 export const app = new Koa();
 
-// const requestHandler = (ctx: Context, next: Next) => {
-//   return new Promise<void>((resolve, reject) => {
-//     Sentry.runWithAsyncContext(async () => {
-//       const hub = Sentry.getCurrentHub();
-//       hub.configureScope((scope) =>
-//         scope.addEventProcessor((event) =>
-//           Sentry.addRequestDataToEvent(event, ctx.request, {
-//             include: {
-//               user: false,
-//             },
-//           })
-//         )
-//       );
+// Server logs get passed to Sentry
+if (process.env.ENV === "production") {
+  app.use(requestHandler);
+  app.use(tracingMiddleWare);
 
-//       try {
-//         await next();
-//       } catch (err) {
-//         reject(err);
-//       }
-//       resolve();
-//     });
-//   });
-// };
-
-// // This tracing middleware creates a transaction per request
-// const tracingMiddleWare = async (ctx, next) => {
-//   const reqMethod = (ctx.method || "").toUpperCase();
-//   const reqUrl = ctx.url && stripUrlQueryAndFragment(ctx.url);
-
-//   // Connect to trace of upstream app
-//   let traceparentData;
-//   if (ctx.request.get("sentry-trace")) {
-//     traceparentData = Sentry.extractTraceparentData(
-//       ctx.request.get("sentry-trace")
-//     );
-//   }
-
-//   const transaction = Sentry.startTransaction({
-//     name: `${reqMethod} ${reqUrl}`,
-//     op: "http.server",
-//     ...traceparentData,
-//   });
-
-//   ctx.__sentry_transaction = transaction;
-
-//   // We put the transaction on the scope so users can attach children to it
-//   Sentry.getCurrentHub().configureScope((scope) => {
-//     scope.setSpan(transaction);
-//   });
-
-//   ctx.res.on("finish", () => {
-//     // Push `transaction.finish` to the next event loop so open spans have a chance to finish before the transaction closes
-//     setImmediate(() => {
-//       // If you're using koa router, set the matched route as transaction name
-//       if (ctx._matchedRoute) {
-//         const mountPath = ctx.mountPath || "";
-//         transaction.setName(`${reqMethod} ${mountPath}${ctx._matchedRoute}`);
-//       }
-//       transaction.setHttpStatus(ctx.status);
-//       transaction.finish();
-//     });
-//   });
-
-//   await next();
-// };
-
-// app.use(requestHandler);
-// app.use(tracingMiddleWare);
-
-// // Send errors to Sentry
-// app.on("error", (err, ctx) => {
-//   Sentry.withScope((scope) => {
-//     scope.addEventProcessor((event) => {
-//       return Sentry.addRequestDataToEvent(event, ctx.request);
-//     });
-//     Sentry.captureException(err);
-//   });
-// });
+  app.on("error", (err: Error, ctx: Context) => {
+    Sentry.withScope((scope) => {
+      scope.addEventProcessor((event) => {
+        return Sentry.addRequestDataToEvent(event, ctx.request);
+      });
+      Sentry.captureException(err);
+    });
+  });
+}
 
 export const ORMContext = {} as {
   orm: MikroORM;
@@ -129,13 +50,13 @@ const api = new Router();
 api.get("/", (ctx: Context) => (ctx.body = {}));
 
 (async () => {
- // await firstRunEnv();
+ await firstRunEnv();
 
   // Sessions
   app.keys = [process.env.SECRET_KEY];
   app.use(session(SESSION_CONFIG, app));
 
-  ORMContext.orm = await MikroORM.init<SqliteDriver>(ormConfig);
+  ORMContext.orm = await MikroORM.init<MariaDbDriver>(ormConfig);
   ORMContext.em = ORMContext.orm.em;
 
   app.use(
