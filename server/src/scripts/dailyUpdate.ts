@@ -1,10 +1,10 @@
 import ormConfig from "../mikro-orm.config";
 import { MikroORM } from "@mikro-orm/core";
-import { SqliteDriver } from "@mikro-orm/sqlite";
+import { MariaDbDriver } from '@mikro-orm/mariadb';
 import { Resources } from "../data/updateResources";
 
 (async () => {
-  const orm = await MikroORM.init<SqliteDriver>(ormConfig);
+  const orm = await MikroORM.init<MariaDbDriver>(ormConfig);
   const shinyIncreaseAmount = 200;
   const resourceIncrements: Resources = {
     r1: 50000,

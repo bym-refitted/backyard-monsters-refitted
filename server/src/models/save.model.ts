@@ -1,9 +1,10 @@
-import { Entity, Property, PrimaryKey } from "@mikro-orm/core";
+import { Entity, Property, PrimaryKey, BigIntType } from "@mikro-orm/core";
 import { FrontendKey } from "../utils/FrontendKey";
 
 export interface FieldData {
   [key: string | number]: any;
 }
+
 
 @Entity()
 export class Save {
