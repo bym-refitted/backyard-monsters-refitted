@@ -17,16 +17,22 @@ import { infernoMonsters } from "./controllers/inferno/infernoMonsters";
 import { recordDebugData } from "./controllers/debug/recordDebugData";
 import { getTemplates } from "./controllers/yardplanner/getTemplates";
 import { saveTemplate } from "./controllers/yardplanner/saveTemplate";
-
+import {RateLimit}  from "koa2-ratelimit"
 const router = new Router();
 
 // Init route
 router.get("/api/bm/getnewmap", debugDataLog("Posting to new maproom"), getNewMap);
 router.post("/api/bm/getnewmap", debugDataLog("Posting to new maproom"), getNewMap);
 
+
+const getUserLimiter = RateLimit.middleware({
+  interval: 60*1000, // 15 minutes
+  max: 10, 
+});
+
 // Auth
-router.post("/api/player/getinfo", debugDataLog("User login attempt"), login);
-router.post("/api/player/register", debugDataLog("Registering user"), register);
+router.post("/api/player/getinfo", getUserLimiter, debugDataLog("User login attempt"), login);
+router.post("/api/player/register",getUserLimiter, debugDataLog("Registering user"), register);
 
 // Load
 router.post("/base/load", auth, debugDataLog("Base load data"), baseLoad);
