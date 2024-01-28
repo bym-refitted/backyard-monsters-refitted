@@ -90,8 +90,8 @@ api.get("/", (ctx: Context) => (ctx.body = {}));
       ctx.body = `<?xml version="1.0"?>
                   <!DOCTYPE cross-domain-policy SYSTEM "http://www.adobe.com/xml/dtds/cross-domain-policy.dtd">
                   <cross-domain-policy>
-                      <site-control permitted-cross-domain-policies="master-only" />
-                      <allow-access-from domain="*" to-ports="${port}" secure="false" />
+                      <site-control permitted-cross-domain-policies="all" />
+                      <allow-access-from domain="*" secure="false" />
                       <allow-http-request-headers-from domain="*" headers="Authorization" secure="false" />
                   </cross-domain-policy>`;
     } else {
