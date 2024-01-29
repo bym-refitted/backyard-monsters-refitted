@@ -35,6 +35,7 @@ package
       {
          var urls:Object = null;
          var serverUrl:String = GLOBAL.serverUrl;
+         var cdnUrl:String = GLOBAL.cdnUrl;
          super();
          _instance = this;
          GLOBAL._local = !ExternalInterface.available;
@@ -52,8 +53,8 @@ package
                urls.map3url = serverUrl + "worldmapv3/";
                urls._allianceURL = serverUrl + "alliance/";
                urls.languageurl = serverUrl + "gamestage/assets/";
-               urls._storageURL = serverUrl + "assets/";
-               urls._soundPathURL = serverUrl + "assets/sounds/";
+               urls._storageURL = cdnUrl + "assets/";
+               urls._soundPathURL = cdnUrl + "assets/sounds/";
                urls._gameURL = serverUrl + "";
                urls._appid = serverUrl + "";
                urls._tpid = serverUrl + "";
