@@ -536,7 +536,7 @@
     "hat_needgoo": "<b>Production paused<\/b> Not enough Goo to start.",
     "hat_needhousing": "<b>Production paused<\/b>, Not enough room in your Housing.",
     "hat_nothinginproduction": "Nothing in production.",
-    "hat_producing": "Producing #v1#.",
+    "hat_producing_monsters": "Producing #v1#.",
     "hat_producing_message": "Select monsters from below to add to the queue.",
     "hat_queuefull": "<font color=\"#CC0000\"><b>Queue is full<\/b><\/font>; click slots to remove monsters or wait.",
     "hat_status_waiting": "Waiting",
