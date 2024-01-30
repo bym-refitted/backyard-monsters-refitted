@@ -2508,7 +2508,7 @@ package
                popupMCCreepDamaged = new popup_damaged();
                popupMCCreepDamaged.mcFrame.Setup(false);
                popupMCCreepDamaged.title.htmlText = "<b>" + KEYS.Get("pop_injured_title") + "</b>";
-               popupMCCreepDamaged.tA.htmlText = KEYS.Get("pop_injured_monsters",{"1":numCreepsDamaged});
+               popupMCCreepDamaged.tA.htmlText = KEYS.Get("pop_injured",{"1":numCreepsDamaged});
                popupMCCreepDamaged.bAction.SetupKey("btn_startheal");
                popupMCCreepDamaged.bAction.addEventListener(MouseEvent.CLICK,StartHealAll);
                popupMCCreepDamaged.bAction2.SetupKey("btn_healnow");

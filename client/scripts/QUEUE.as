@@ -197,7 +197,7 @@ package
 
          var test = CanDo();
          if(test.error){
-            GLOBAL.Message("QUEUE.as - CanDo: " + test.errormessage);
+            // GLOBAL.Message("QUEUE.as - CanDo: " + test.errormessage);
          }// test.errorMessage
          if(!test.error)
          {
