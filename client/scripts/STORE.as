@@ -268,7 +268,7 @@ package
             }
             else
             { 
-               mainStoreItems.d = KEYS.Get("str_top_10pctnoroom",{"v1":KEYS.Get(GLOBAL._resourceNames[resourceIndex - 1])});
+               mainStoreItems.d = KEYS.Get("str_top_10pct_noroom",{"v1":KEYS.Get(GLOBAL._resourceNames[resourceIndex - 1])});
                mainStoreItems.c = [0];
                mainStoreItems.quantity = 0;
             }
@@ -325,7 +325,7 @@ package
             }
             else
             {
-               mainStoreItems.d = KEYS.Get("str_top_50pctnoroom",{"v1":KEYS.Get(GLOBAL._resourceNames[resourceIndex - 1])});
+               mainStoreItems.d = KEYS.Get("str_top_50pct_noroom",{"v1":KEYS.Get(GLOBAL._resourceNames[resourceIndex - 1])});
                mainStoreItems.c = [0];
                mainStoreItems.quantity = 0;
             }
@@ -347,7 +347,7 @@ package
                }
                else
                {
-                  infernoStoreItems.d = KEYS.Get("str_top_50pctnoroom",{"v1":GLOBAL.iresourceNames[resourceIndex - 1]});
+                  infernoStoreItems.d = KEYS.Get("str_top_50pct_noroom",{"v1":GLOBAL.iresourceNames[resourceIndex - 1]});
                   infernoStoreItems.c = [0];
                   infernoStoreItems.quantity = 0;
                }
@@ -361,7 +361,7 @@ package
                mainStoreItems = _storeItems["BR" + resourceIndex + "3"];
                infernoStoreItems = _storeItems["BR" + resourceIndex + "3I"];
             }
-            mainStoreItems.t = KEYS.Get("str_top_label",{"v1":KEYS.Get(GLOBAL._resourceNames[resourceIndex - 1])});
+            mainStoreItems.t = KEYS.Get("str_top_fill_label",{"v1":KEYS.Get(GLOBAL._resourceNames[resourceIndex - 1])});
             if(BASE._resources["r" + resourceIndex + "max"] > BASE._resources["r" + resourceIndex].Get())
             {
                reourceMax = BASE._resources["r" + resourceIndex + "max"] - BASE._resources["r" + resourceIndex].Get();
@@ -380,7 +380,7 @@ package
             }
             if(infernoStoreItems)
             {
-               infernoStoreItems.t = KEYS.Get("str_top_label",{"v1":GLOBAL.iresourceNames[resourceIndex - 1]});
+               infernoStoreItems.t = KEYS.Get("str_top_fill_label",{"v1":GLOBAL.iresourceNames[resourceIndex - 1]});
             }
             if(BASE._iresources["r" + resourceIndex + "max"] > BASE._iresources["r" + resourceIndex].Get())
             {
@@ -817,7 +817,7 @@ package
                      _streamline.mcInstant.gCoin.visible = false;
                      _streamline.mcInstant.gArrow.visible = false;
                      _streamline.mcStoreIcon.visible = false;
-                     _streamline.mcInstant.bAction.Setup(KEYS.Get("str_finishnowmain"));
+                     _streamline.mcInstant.bAction.Setup(KEYS.Get("str_finishnow"));
                   }
                   else
                   {
@@ -844,7 +844,7 @@ package
                      {
                         if(param1 == "SP1")
                         {
-                           _streamline.tTitle.htmlText = KEYS.Get("str_closeenoughmain");
+                           _streamline.tTitle.htmlText = KEYS.Get("str_closeenough");
                            _streamline.tDescription.htmlText = KEYS.Get("str_closeenough_unlock",{"v1":_loc4_});
                            if(_loc3_ <= 60 * 5)
                            {
@@ -882,7 +882,7 @@ package
                      {
                         if(param1 == "SP1")
                         {
-                           _streamline.tTitle.htmlText = KEYS.Get("str_closeenoughmain");
+                           _streamline.tTitle.htmlText = KEYS.Get("str_closeenough");
                            _streamline.tDescription.htmlText = KEYS.Get("str_closeenough_traindesc",{"v1":_loc4_});
                            if(_loc3_ <= 60 * 5)
                            {
@@ -921,7 +921,7 @@ package
                      {
                         if(param1 == "SP1")
                         {
-                           _streamline.tTitle.htmlText = KEYS.Get("str_closeenoughmain");
+                           _streamline.tTitle.htmlText = KEYS.Get("str_closeenough");
                            _streamline.tDescription.htmlText = KEYS.Get("str_closeenough_powerupdesc",{
                               "v1":_loc4_,
                               "v2":_loc6_
@@ -964,7 +964,7 @@ package
                }
                if(_loc3_ <= 60 * 5)
                {
-                  _streamline.mcInstant.bAction.Setup(KEYS.Get("str_finishnowmain"));
+                  _streamline.mcInstant.bAction.Setup(KEYS.Get("str_finishnow"));
                }
                else
                {
@@ -1643,7 +1643,7 @@ package
             {
                if(item == "SP1")
                {
-                  storeItemObject.t = KEYS.Get("str_closeenoughmain");
+                  storeItemObject.t = KEYS.Get("str_closeenough");
                }
                else if(item.substr(0,3) == "SP2")
                {
@@ -1655,7 +1655,7 @@ package
                }
                else if(item.substr(0,3) == "SP4")
                {
-                  storeItemObject.t = KEYS.Get("str_finishnowmain");
+                  storeItemObject.t = KEYS.Get("str_finishnow");
                }
                storeItemObject.d = KEYS.Get("str_speedup_na");
                if(_loc28_)
@@ -1686,7 +1686,7 @@ package
                      }
                      if(item == "SP1")
                      {
-                        storeItemObject.t = KEYS.Get("str_closeenoughmain");
+                        storeItemObject.t = KEYS.Get("str_closeenough");
                         storeItemObject.d = KEYS.Get("str_closeenough_desc",{
                            "v1":_loc27_,
                            "v2":_loc28_._buildingProps.name
@@ -1736,7 +1736,7 @@ package
                         {
                            if(item == "SP1")
                            {
-                              storeItemObject.t = KEYS.Get("str_closeenoughmain");
+                              storeItemObject.t = KEYS.Get("str_closeenough");
                               storeItemObject.d = KEYS.Get("str_closeenough_unlock",{"v1":_loc25_});
                               if(_loc24_ <= 60 * 5)
                               {
@@ -1774,7 +1774,7 @@ package
                         {
                            if(item == "SP1")
                            {
-                              storeItemObject.t = KEYS.Get("str_closeenoughmain");
+                              storeItemObject.t = KEYS.Get("str_closeenough");
                               storeItemObject.d = KEYS.Get("str_closeenough_traindesc",{"v1":_loc25_});
                               if(_loc24_ <= 60 * 5)
                               {
@@ -1813,7 +1813,7 @@ package
                         {
                            if(item == "SP1")
                            {
-                              storeItemObject.t = KEYS.Get("str_closeenoughmain");
+                              storeItemObject.t = KEYS.Get("str_closeenough");
                               storeItemObject.d = KEYS.Get("str_closeenough_powerupdesc",{
                                  "v1":_loc25_,
                                  "v2":_loc35_

@@ -134,10 +134,8 @@ package
             startY = centerY;
 
             loader = new Loader();
-            var context:LoaderContext = new LoaderContext();
-            context.checkPolicyFile = true;
             loader.contentLoaderInfo.addEventListener(Event.COMPLETE, onImageLoaded);
-            loader.load(new URLRequest(GLOBAL.serverUrl + "assets/bym-refitted-assets/refitted-logo.png"), context);
+            loader.load(new URLRequest(GLOBAL.serverUrl + "assets/bym-refitted-assets/refitted-logo.png"), new LoaderContext(true));
             loader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, handleNetworkError);
 
             usernameInput = createBlock(0, 0, "Username");
@@ -441,7 +439,7 @@ package
                     if (isUsernameValid)
                     {
                         var newUser:Array = [["username", usernameValue], ["email", emailValue], ["password", passwordValue], ["last_name", ""], ["pic_square", ""]];
-                        new URLLoaderApi().load(GLOBAL._apiURL + "player/register", newUser, registerNewUser, handleNetworkError);
+                        new URLLoaderApi().load(GLOBAL._apiURL + "player/register", newUser, registerNewUser, handleRegisterFailure);
                     }
                     else
                     {
@@ -485,6 +483,11 @@ package
         public function handleNetworkError(event:Event):void
         {
             GLOBAL.Message("Hmm.. it seems we cannot connect you to the server at this time. Please try again later or check our server status.");
+        }
+
+        public function handleRegisterFailure(event:Event):void
+        {
+            GLOBAL.Message("It seems this account already exists. Please try to login.");
         }
 
         private function isValidUsername(username:String):Boolean
