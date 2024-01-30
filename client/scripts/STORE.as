@@ -1689,13 +1689,13 @@ package
                         storeItemObject.t = KEYS.Get("str_closeenough");
                         storeItemObject.d = KEYS.Get("str_closeenough_desc",{
                            "v1":_loc27_,
-                           "v2":_loc28_._buildingProps.name
+                           "v2":KEYS.Get(_loc28_._buildingProps.name)
                         });
                         if(_loc24_ <= 60 * 5)
                         {
                            storeItemObject.d = KEYS.Get("str_closeenough_descok",{
                               "v1":_loc27_,
-                              "v2":_loc28_._buildingProps.name
+                              "v2":KEYS.Get(_loc28_._buildingProps.name)
                            });
                         }
                      }
@@ -1704,7 +1704,7 @@ package
                         storeItemObject.t = KEYS.Get("str_30minutes");
                         storeItemObject.d = KEYS.Get("str_30minutesdesc",{
                            "v1":_loc26_,
-                           "v2":_loc28_._buildingProps.name
+                           "v2":KEYS.Get(_loc28_._buildingProps.name)
                         });
                      }
                      else if(item.substr(0,3) == "SP3")
@@ -1712,7 +1712,7 @@ package
                         storeItemObject.t = KEYS.Get("str_60minutes");
                         storeItemObject.d = KEYS.Get("str_60minutesdesc",{
                            "v1":_loc26_,
-                           "v2":_loc28_._buildingProps.name
+                           "v2":KEYS.Get(_loc28_._buildingProps.name)
                         });
                      }
                      else if(item.substr(0,3) == "SP4")
@@ -1721,7 +1721,7 @@ package
                         storeItemObject.d = KEYS.Get("str_finishnow_timesave",{
                            "v1":GLOBAL.ToTime(_loc24_,false,false),
                            "v2":_loc27_,
-                           "v3":_loc28_._buildingProps.name
+                           "v3":KEYS.Get(_loc28_._buildingProps.name)
                         });
                      }
                   }
