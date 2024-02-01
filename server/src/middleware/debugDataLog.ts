@@ -29,6 +29,6 @@ export const debugDataLog =
           `${logMessage.toUpperCase()}: ${JSON.stringify(ctx.request.body)}`
         );
       }
-      await next();
     }
+    await next();
   };
