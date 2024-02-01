@@ -51,7 +51,7 @@ router.post("/api/bm/base/save", auth, debugDataLog("Inferno save data"), baseSa
 
 // Worldmap
 router.post("/worldmapv3/setmapversion", auth, debugDataLog("Set maproom version"), mapRoomVersion);
-router.post("/worldmapv3/initworldmap", auth, debugDataLog("Init maproom data"), initMapRoom);
+router.get("/worldmapv3/initworldmap", auth, debugDataLog("Init maproom data"), initMapRoom);
 router.post("/worldmapv3/getcells", auth, debugDataLog("Get maproom cells"), getMapRoomCells);
 router.post("/worldmapv3/relocate", auth, debugDataLog("Relocating base"), relocate);
 
