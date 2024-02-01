@@ -66,7 +66,6 @@ package
                urls._countryCode = serverUrl + "us";
             }
             this.Data(urls, false);
-            this.ServerConnectionTest();
          }
       }
 
@@ -274,87 +273,6 @@ package
       public function onStageRollOut(param1:MouseEvent = null):void
       {
          GAME.enableWindowScroll();
-      }
-
-      // Function which outputs connection issues between the client and server when the client gets initialized
-      public function ServerConnectionTest():void
-      {
-         this.loader = new Loader();
-         this.loader.load(new URLRequest(GLOBAL.serverUrl));
-
-         // Connected
-         this.loader.contentLoaderInfo.addEventListener(Event.COMPLETE, function(event:Event)
-            {
-               LOGGER.Log("log", "User connected successfully to the server.");
-            });
-
-         // Network Failure
-         this.loader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, function(err:IOErrorEvent)
-            {
-               var loaderInfo:LoaderInfo = err.currentTarget as LoaderInfo;
-
-               GLOBAL.Message("<b>Report: Server connection failed.</b><br><br>" +
-                     "<b>Error Message:</b> " + err.text + "<br><br>" +
-                     "<b>URL Inaccessible:</b> " + loaderInfo.isURLInaccessible + "<br><br>" +
-                     "<b>Current Target:</b> " + loaderInfo.loaderURL + "<br><br>" +
-                     "<b>Bytes Loaded:</b> " + loaderInfo.bytesLoaded
-                  );
-
-            });
-
-         // Security Failure
-         this.loader.contentLoaderInfo.addEventListener(SecurityErrorEvent.SECURITY_ERROR, function(event:SecurityErrorEvent)
-            {
-               GLOBAL.Message("<b>Report: A security error has occurred.</b><br><br>" +
-                     "<b>Error Message:</b> " + event.text + "<br><br>");
-            });
-
-         // HTTP Failures
-         this.loader.contentLoaderInfo.addEventListener(HTTPStatusEvent.HTTP_STATUS, function(event:HTTPStatusEvent)
-            {
-               var statusCode:int = event.status;
-               switch (event.status)
-               {
-                  case 404:
-                     GLOBAL.Message("HTTP status code<b> " + statusCode + " </b> - Not Found");
-                     break;
-                  case 401:
-                     GLOBAL.Message("HTTP status code<b> " + statusCode + " </b> - Unauthorized");
-                     break;
-                  case 403:
-                     GLOBAL.Message("HTTP status code<b> " + statusCode + " </b> - Forbidden");
-                     break;
-                  case 405:
-                     GLOBAL.Message("HTTP status code<b> " + statusCode + " </b> - Method Not Allowed");
-                     break;
-                  case 406:
-                     GLOBAL.Message("HTTP status code<b> " + statusCode + " </b> - Not Acceptable");
-                     break;
-                  case 407:
-                     GLOBAL.Message("HTTP status code<b> " + statusCode + " </b> - Proxy Authentication Required");
-                     break;
-                  case 408:
-                     GLOBAL.Message("HTTP status code<b> " + statusCode + " </b> - Request Timeout");
-                     break;
-                  case 500:
-                     GLOBAL.Message("HTTP status code<b> " + statusCode + " </b> - Internal Server Error");
-                     break;
-                  case 501:
-                     GLOBAL.Message("HTTP status code<b> " + statusCode + " </b> - Not Implemented");
-                     break;
-                  case 502:
-                     GLOBAL.Message("HTTP status code<b> " + statusCode + " </b> - Bad Gateway");
-                     break;
-                  case 503:
-                     GLOBAL.Message("HTTP status code<b> " + statusCode + " </b> - Service Unavailable");
-                     break;
-                  default:
-                     if (this._status > 400)
-                     {
-                        GLOBAL.Message("HTTP status code<b> " + statusCode + " </b> - Other status");
-                     }
-               }
-            });
       }
    }
 }
