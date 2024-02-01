@@ -15,16 +15,20 @@ export const debugDataLog =
     if (chalk) {
       const highlight = chalk.default.yellow.bold;
 
-      logging(
-        `${highlight(`${logMessage.toUpperCase()}:`)} ${JSON.stringify(
-          ctx.request.body
-        )}`
-      );
+      if (process.env.ENV === "local") {
+        logging(
+          `${highlight(`${logMessage.toUpperCase()}:`)} ${JSON.stringify(
+            ctx.request.body
+          )}`
+        );
+      }
     } else {
-      // If chalk import fails, continue with normal log format
-      logging(
-        `${logMessage.toUpperCase()}: ${JSON.stringify(ctx.request.body)}`
-      );
+      if (process.env.ENV === "local") {
+        // If chalk import fails, continue with normal log format
+        logging(
+          `${logMessage.toUpperCase()}: ${JSON.stringify(ctx.request.body)}`
+        );
+      }
     }
     await next();
   };
