@@ -27,7 +27,16 @@ export const updateCredits = (save: Save, item: string, quantity: number) => {
   }
 
   // Handle non-store purchases
-  const nonStoreItem = new Set(["IU", "IF", "ITR", "IUN", "IPU", "BRTOPUP"]);
+  const nonStoreItem = new Set([
+    "IU",
+    "IF",
+    "ITR",
+    "IUN",
+    "IPU",
+    "BRTOPUP",
+    "IEV",
+    "HSM",
+  ]);
   if (nonStoreItem.has(item)) {
     save.credits -= quantity;
     return;
