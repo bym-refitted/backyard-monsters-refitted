@@ -8,6 +8,7 @@ import JWT from "jsonwebtoken";
 import { Context } from "koa";
 import { verifyJwtToken } from "../../utils/verifyJwtToken";
 import { authFailureErr } from "../../errors/errorCodes.";
+import { logging } from "../../utils/logger";
 
 const UserLoginSchema = z.object({
   email: z.string().optional(),
@@ -64,6 +65,8 @@ export const login: KoaController = async (ctx) => {
       });
 
       const filteredUser = FilterFrontendKeys(user);
+      logging(`User ${filteredUser.username} successful login | ID: ${filteredUser.userid} | Email: ${filteredUser.email}`);
+
       ctx.session.userid = filteredUser.userid;
 
       ctx.status = 200;

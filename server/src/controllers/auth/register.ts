@@ -5,6 +5,7 @@ import { ORMContext } from "../../server";
 import { User } from "../../models/user.model";
 import { FilterFrontendKeys } from "../../utils/FrontendKey";
 import { authFailureErr } from "../../errors/errorCodes.";
+import { logging } from "../../utils/logger";
 
 const UserRegisterSchema = z.object({
   username: z.string(),
@@ -25,6 +26,7 @@ export const register: KoaController = async (ctx) => {
     });
     await ORMContext.em.persistAndFlush(user);
     const filteredUser = FilterFrontendKeys(user);
+    logging(`User ${filteredUser.username} registered successfully | ID: ${filteredUser.userid} | Email: ${filteredUser.email}`);
 
     ctx.status = 200;
     ctx.body = { user: filteredUser };
