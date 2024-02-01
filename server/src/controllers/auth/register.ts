@@ -26,7 +26,7 @@ export const register: KoaController = async (ctx) => {
     });
     await ORMContext.em.persistAndFlush(user);
     const filteredUser = FilterFrontendKeys(user);
-    logging(`User successfully registered: ${filteredUser.username} (${filteredUser.email})`);
+    logging(`User ${filteredUser.username} registered successfully | ID: ${filteredUser.userid} | Email: ${filteredUser.email}`);
 
     ctx.status = 200;
     ctx.body = { user: filteredUser };

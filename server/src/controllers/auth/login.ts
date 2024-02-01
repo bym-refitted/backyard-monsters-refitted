@@ -65,7 +65,8 @@ export const login: KoaController = async (ctx) => {
       });
 
       const filteredUser = FilterFrontendKeys(user);
-      logging(`User login attempt: ${email || 'Token authentication'}`);
+      logging(`User ${filteredUser.username} successful login | ID: ${filteredUser.userid} | Email: ${filteredUser.email}`);
+
       ctx.session.userid = filteredUser.userid;
 
       ctx.status = 200;
