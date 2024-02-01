@@ -35,7 +35,7 @@ export const updateCredits = (save: Save, item: string, quantity: number) => {
 
   // Handle store purchases
   const storeItem: StoreItem = storeItems[item];
-  if (!storeItem.c) {
+  if (!storeItem?.c) {
     errorLog("Not a store item! Add to non-store items list", item);
   }
   let itemCost: number = storeItem.c[0];
