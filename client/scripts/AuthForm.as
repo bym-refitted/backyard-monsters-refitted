@@ -137,9 +137,7 @@ package
             this.loader = new Loader();
             this.loader.load(new URLRequest(GLOBAL.serverUrl + "assets/bym-refitted-assets/refitted-logo.png"), new LoaderContext(true));
             this.loader.contentLoaderInfo.addEventListener(Event.COMPLETE, onImageLoaded);
-            this.loader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, function(event:Event)
-                {
-                });
+            this.loader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, handleNetworkError);
 
             usernameInput = createBlock(0, 0, "Username");
             emailInput = createBlock(350, 35, "Email");
