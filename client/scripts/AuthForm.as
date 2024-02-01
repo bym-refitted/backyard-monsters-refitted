@@ -133,10 +133,13 @@ package
             // Calculate starting y position to center content
             startY = centerY;
 
-            loader = new Loader();
-            loader.contentLoaderInfo.addEventListener(Event.COMPLETE, onImageLoaded);
-            loader.load(new URLRequest(GLOBAL.serverUrl + "assets/bym-refitted-assets/refitted-logo.png"), new LoaderContext(true));
-            loader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, handleNetworkError);
+
+            this.loader = new Loader();
+            this.loader.load(new URLRequest(GLOBAL.serverUrl + "assets/bym-refitted-assets/refitted-logo.png"), new LoaderContext(true));
+            this.loader.contentLoaderInfo.addEventListener(Event.COMPLETE, onImageLoaded);
+            this.loader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, function(event:Event)
+                {
+                });
 
             usernameInput = createBlock(0, 0, "Username");
             emailInput = createBlock(350, 35, "Email");
@@ -480,7 +483,7 @@ package
             updateUI();
         }
 
-        public function handleNetworkError(event:Event):void
+        public function handleNetworkError(event:IOErrorEvent):void
         {
             GLOBAL.Message("Hmm.. it seems we cannot connect you to the server at this time. Please try again later or check our server status.");
         }
