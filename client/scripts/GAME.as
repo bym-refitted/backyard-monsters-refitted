@@ -353,10 +353,6 @@ package
                      {
                         GLOBAL.Message("HTTP status code<b> " + statusCode + " </b> - Other status");
                      }
-                     else
-                     {
-                        GLOBAL.Message("HTTP status code<b> " + statusCode + " </b> - it ain't looking good fellas");
-                     }
                }
             });
       }
