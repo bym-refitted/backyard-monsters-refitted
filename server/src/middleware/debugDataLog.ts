@@ -12,19 +12,21 @@ export const debugDataLog =
       errorLog("Failed to import chalk: ", error);
     }
 
-    if (chalk) {
-      const highlight = chalk.default.yellow.bold;
+    if (process.env.ENV === "local") {
+      if (chalk) {
+        const highlight = chalk.default.yellow.bold;
 
-      logging(
-        `${highlight(`${logMessage.toUpperCase()}:`)} ${JSON.stringify(
-          ctx.request.body
-        )}`
-      );
-    } else {
-      // If chalk import fails, continue with normal log format
-      logging(
-        `${logMessage.toUpperCase()}: ${JSON.stringify(ctx.request.body)}`
-      );
+        logging(
+          `${highlight(`${logMessage.toUpperCase()}:`)} ${JSON.stringify(
+            ctx.request.body
+          )}`
+        );
+      } else {
+        // If chalk import fails, continue with normal log format
+        logging(
+          `${logMessage.toUpperCase()}: ${JSON.stringify(ctx.request.body)}`
+        );
+      }
+      await next();
     }
-    await next();
   };

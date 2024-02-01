@@ -18,7 +18,9 @@ export const baseLoad: KoaController = async (ctx) => {
   let save = user.save;
   logging(`Loading base for user: ${ctx.authUser.username}`);
   if (save) {
-    logging(`Base loaded:`, JSON.stringify(save, null, 2));
+    if (process.env.ENV === "local") {
+      logging(`Base loaded:`, JSON.stringify(save, null, 2));
+    }
   } else {
     // There was no existing save, create one with some defaults
     logging(`Base not found, creating a new save`);
