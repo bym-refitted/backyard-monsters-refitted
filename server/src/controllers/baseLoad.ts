@@ -16,7 +16,7 @@ export const baseLoad: KoaController = async (ctx) => {
   await ORMContext.em.populate(user, ["save"]);
 
   let save = user.save;
-  logging(`Loading base for user: ${ctx.authUser.username}`);
+  logging(`Loading base for user: ${ctx.authUser.username} | IP Address: ${ctx.ip}`);
   if (save) {
     if (process.env.ENV === "local") {
       logging(`Base loaded:`, JSON.stringify(save, null, 2));

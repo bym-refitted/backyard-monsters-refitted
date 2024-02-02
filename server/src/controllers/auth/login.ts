@@ -49,7 +49,7 @@ export const login: KoaController = async (ctx) => {
       tpid: "",
       currency_url: "",
       language: "en",
-      settings: {}
+      settings: {},
     };
   } else {
     const user = await ORMContext.em.findOne(User, { email });
@@ -65,7 +65,9 @@ export const login: KoaController = async (ctx) => {
       });
 
       const filteredUser = FilterFrontendKeys(user);
-      logging(`User ${filteredUser.username} successful login | ID: ${filteredUser.userid} | Email: ${filteredUser.email}`);
+      logging(
+        `User ${filteredUser.username} successful login | ID: ${filteredUser.userid} | Email: ${filteredUser.email} | IP Address: ${ctx.ip}`
+      );
 
       ctx.session.userid = filteredUser.userid;
 
@@ -83,7 +85,7 @@ export const login: KoaController = async (ctx) => {
         tpid: "",
         currency_url: "",
         language: "en",
-        settings: {}
+        settings: {},
       };
     } else throw authFailureErr;
   }
