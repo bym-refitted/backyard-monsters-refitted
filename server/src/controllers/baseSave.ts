@@ -11,7 +11,7 @@ import { storeItems } from "../data/storeItems";
 
 export const baseSave: KoaController = async (ctx) => {
   const user: User = ctx.authUser;
-  logging(`Saving the base! user: ${user.username}`);
+  logging(`Saving user's base: ${user.username} | IP Address: ${ctx.ip}`);
 
   await ORMContext.em.populate(user, ["save"]);
   let save = user.save;
