@@ -33,8 +33,10 @@ export const updateCredits = (save: Save, item: string, quantity: number) => {
     "ITR",
     "IUN",
     "IPU",
-    "BRTOPUP",
     "IEV",
+    "IHE",
+    "BRTOPUP",
+    "MHTOPUP",
     "HSM",
     "QWM1"
   ]);
