@@ -55,7 +55,7 @@ export const flags = {
   autoban_validate_fail: 0,
   autoban_client: 0,
   yp_version: 2,
-  ers: 0,
+  ers: 1, // Used for enabling canScheduleNewEvent() in ReplayableEventHandler
   krallen: 1,
   subscriptions: 1,
   krallen_duration: 7,
