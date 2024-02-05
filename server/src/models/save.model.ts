@@ -466,6 +466,7 @@ export class Save {
     "gifts",
     "sentinvites",
     "sentgifts",
+    "champion",
     "attackerchampion",
     "fbpromos",
     "purchase",
