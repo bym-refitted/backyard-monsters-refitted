@@ -1,16 +1,23 @@
-import { Entity, Property, PrimaryKey, BigIntType } from "@mikro-orm/core";
+import { Entity, Property, PrimaryKey, BeforeUpdate } from "@mikro-orm/core";
 import { FrontendKey } from "../utils/FrontendKey";
 
 export interface FieldData {
   [key: string | number]: any;
 }
 
-
 @Entity()
 export class Save {
+  @BeforeUpdate()
+  checkForNegativeInteger(): void {
+    // Handle negative values for credits & resources
+    this.credits = Math.max(0, this.credits);
 
-  // basesaveid is probably for your own personal save data
-  // baseid is probably for loading your opponent's data
+    if (this.resources) {
+      Object.keys(this.resources).forEach((resource) => {
+        this.resources[resource] = Math.max(0, this.resources[resource]);
+      });
+    }
+  }
 
   // Primatives
   @FrontendKey
@@ -356,7 +363,7 @@ export class Save {
 
   // Arrays
   @FrontendKey
-  @Property({ type: "json", nullable: true})
+  @Property({ type: "json", nullable: true })
   savetemplate: any[];
 
   @FrontendKey
@@ -385,7 +392,7 @@ export class Save {
 
   @FrontendKey
   @Property({ type: "json", nullable: true })
-  chatservers: string[]; 
+  chatservers: string[];
 
   // Client save arrays
   @FrontendKey
@@ -461,6 +468,6 @@ export class Save {
     "sentgifts",
     "attackerchampion",
     "fbpromos",
-    "purchase"
+    "purchase",
   ];
 }
