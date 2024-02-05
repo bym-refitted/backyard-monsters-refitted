@@ -158,7 +158,7 @@ export class Save {
 
   @FrontendKey
   @Property()
-  champion!: string;
+  champion?: string;
 
   @FrontendKey
   @Property()
