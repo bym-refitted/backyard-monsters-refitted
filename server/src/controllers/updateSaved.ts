@@ -5,10 +5,13 @@ import { ORMContext } from "../server";
 import { FilterFrontendKeys } from "../utils/FrontendKey";
 import { KoaController } from "../utils/KoaController";
 import { getCurrentDateTime } from "../utils/getCurrentDateTime";
+import {User} from "../models/user.model";
 
 export const updateSaved: KoaController = async (ctx) => {
-  const basesaveid = ctx.session.basesaveid;
-  let save = await ORMContext.em.findOne(Save, { basesaveid });
+  const user: User = ctx.authUser;
+
+  await ORMContext.em.populate(user, ["save"]);
+  let save = user.save;
 
   if (!save) throw saveFailureErr;
   save.savetime = getCurrentDateTime();
