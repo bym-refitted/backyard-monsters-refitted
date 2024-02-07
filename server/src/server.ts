@@ -67,8 +67,8 @@ api.get("/", (ctx: Context) => (ctx.body = {}));
     })
   );
 
-  app.use((_, next: Next) =>
-    RequestContext.createAsync(ORMContext.orm.em, next)
+  app.use(async (_, next: Next) =>
+    await RequestContext.create(ORMContext.orm.em, next)
   );
 
   // Logs
