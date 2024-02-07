@@ -20,6 +20,8 @@ import { processLanguagesFile } from "./middleware/processLanguageFile";
 import { logMissingAssets, morganLogging } from "./middleware/morganLogging";
 import { SESSION_CONFIG } from "./config/SessionConfig";
 import { requestHandler, tracingMiddleWare } from "./sentry/init";
+import { newSocketServer } from "./socket-server";
+import { createRedisClient, redisClient } from "./utils/redis";
 
 export const app = new Koa();
 
@@ -44,14 +46,16 @@ export const ORMContext = {} as {
 };
 
 const port = process.env.PORT || 3001;
+const tcp_host = process.env.TCP_HOST || "0.0.0.0";
 
 // Entry point for all modules.
 const api = new Router();
 api.get("/", (ctx: Context) => (ctx.body = {}));
 
 (async () => {
- await firstRunEnv();
+  await firstRunEnv();
 
+  const redis = await createRedisClient();
   // Sessions
   app.keys = [process.env.SECRET_KEY];
   app.use(session(SESSION_CONFIG, app));
@@ -109,5 +113,8 @@ api.get("/", (ctx: Context) => (ctx.body = {}));
     logging(`
     ${ascii_node} Server running on: http://localhost:${port}
     `);
+
   });
+
+  newSocketServer(tcp_host, parseInt(String(port)) + 1)
 })().catch((e) => errorLog(e));

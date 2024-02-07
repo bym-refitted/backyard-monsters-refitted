@@ -426,7 +426,8 @@ package
       private static var tickables:Vector.<ITickable>;
       
       private static var fastTickables:Vector.<ITickable>;
-       
+
+      public static var SOCKET_CONN:TCPConnection = new TCPConnection(); 
       
       public function GLOBAL()
       {
@@ -1772,6 +1773,7 @@ package
             else if(Timestamp() - _afktimer.Get() > 60 * 10)
             {
                POPUPS.Timeout();
+               SOCKET_CONN.disconnect();
             }
          }
       }
