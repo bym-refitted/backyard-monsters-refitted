@@ -3935,7 +3935,8 @@ package
          else
          {
             // Comment: save route triggered
-            new URLLoaderApi().load(GLOBAL._baseURL + "save",saveDataList,handleLoadSuccessful,handleLoadError);
+            // new URLLoaderApi().load(GLOBAL._baseURL + "save",saveDataList,handleLoadSuccessful,handleLoadError);
+            GLOBAL.SOCKET.send(OPCODES.BASE_SAVE,saveData,handleLoadSuccessful,handleLoadError);
          }
          if(_saveOver)
          {
@@ -4303,7 +4304,8 @@ package
          else
          {
             // Comment: updatedsaved route triggered
-            new URLLoaderApi().load(GLOBAL._baseURL + "updatesaved",[["baseid",BASE._loadedBaseID],["version",GLOBAL._version.Get()],["lastupdate",UPDATES._lastUpdateID],["type",tmpMode]],handleLoadSuccessful,handleLoadError);
+            // new URLLoaderApi().load(GLOBAL._baseURL + "updatesaved",[["baseid",BASE._loadedBaseID],["version",GLOBAL._version.Get()],["lastupdate",UPDATES._lastUpdateID],["type",tmpMode]],handleLoadSuccessful,handleLoadError);
+            GLOBAL.SOCKET.send(OPCODES.UPDATE_SAVE, {"version": GLOBAL._version.Get(), "lastupdate": UPDATES._lastUpdateID, "type": tmpMode}, handleLoadSuccessful, handleLoadError)
          }
       }
       

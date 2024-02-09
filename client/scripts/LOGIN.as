@@ -196,7 +196,7 @@ package
             GLOBAL.player.picture = serverData.pic_square;
             GLOBAL.player.timePlayed = serverData.timeplayed;
             GLOBAL.player.email = serverData.email;
-            GLOBAL.SOCKET_CONN.startConnection(serverData.userid)
+            GLOBAL.SOCKET.connect(serverData.userid)
             _playerID = serverData.userid;
             _playerName = serverData.username;
             _playerLastName = serverData.last_name;

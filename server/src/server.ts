@@ -20,8 +20,8 @@ import { processLanguagesFile } from "./middleware/processLanguageFile";
 import { logMissingAssets, morganLogging } from "./middleware/morganLogging";
 import { SESSION_CONFIG } from "./config/SessionConfig";
 import { requestHandler, tracingMiddleWare } from "./sentry/init";
-import { newSocketServer } from "./socket-server";
-import { createRedisClient, redisClient } from "./utils/redis";
+import { newSocketServer } from "./socket/socket-server";
+import websockify from '@maximegris/node-websockify'
 
 export const app = new Koa();
 
@@ -54,8 +54,6 @@ api.get("/", (ctx: Context) => (ctx.body = {}));
 
 (async () => {
   await firstRunEnv();
-
-  const redis = await createRedisClient();
   // Sessions
   app.keys = [process.env.SECRET_KEY];
   app.use(session(SESSION_CONFIG, app));
@@ -117,4 +115,5 @@ api.get("/", (ctx: Context) => (ctx.body = {}));
   });
 
   newSocketServer(tcp_host, parseInt(String(port)) + 1)
+  websockify({ source: `${tcp_host}:${parseInt(String(port)) + 2}`, target: `${tcp_host}:${parseInt(String(port)) + 1}` })
 })().catch((e) => errorLog(e));

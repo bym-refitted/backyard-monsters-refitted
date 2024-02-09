@@ -9,7 +9,6 @@ import { Context } from "koa";
 import { verifyJwtToken } from "../../utils/verifyJwtToken";
 import { authFailureErr } from "../../errors/errorCodes.";
 import { logging } from "../../utils/logger";
-import { getUserIDCache, setUserIDCache } from "../../utils/redis";
 
 const UserLoginSchema = z.object({
   email: z.string().optional(),
@@ -34,11 +33,7 @@ export const login: KoaController = async (ctx) => {
   if (token) {
     const user = await authenticateWithToken(ctx);
     const filteredUser = FilterFrontendKeys(user);
-    const idCache = await getUserIDCache(filteredUser.userid);
-    if (idCache) throw authFailureErr;
-
     ctx.session.userid = filteredUser.userid;
-    await setUserIDCache(filteredUser.userid)
 
     ctx.body = {
       error: 0,
@@ -69,14 +64,10 @@ export const login: KoaController = async (ctx) => {
       });
 
       const filteredUser = FilterFrontendKeys(user);
-      const idCache = await getUserIDCache(filteredUser.userid);
-      if (idCache) throw authFailureErr;
-
       logging(
       `User ${filteredUser.username} successful login | ID: ${filteredUser.userid} | Email: ${filteredUser.email} | IP Address: ${ctx.ip}`
       );
       ctx.session.userid = filteredUser.userid;
-      await setUserIDCache(filteredUser.userid)
 
       ctx.status = 200;
       ctx.body = {

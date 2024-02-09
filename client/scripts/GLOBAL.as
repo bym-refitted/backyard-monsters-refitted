@@ -427,7 +427,7 @@ package
       
       private static var fastTickables:Vector.<ITickable>;
 
-      public static var SOCKET_CONN:TCPConnection = new TCPConnection(); 
+      public static var SOCKET:SOCKET_API = new SOCKET_API(); 
       
       public function GLOBAL()
       {
