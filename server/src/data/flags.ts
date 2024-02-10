@@ -1,11 +1,13 @@
+import { devConfig } from "../config/DevSettings";
+
 export const flags = {
   // Platform
   viximo: 0,
   kongregate: 1,
 
   // settings
-  maproom2: 0, // Enable | Disable Map Room
-  inferno: 0, // Enable | Disable Inferno
+  maproom2: devConfig.maproom ? 1 : 0,
+  inferno: devConfig.inferno ? 1 : 0, 
   showProgressBar: 0,
   gamestats: 0,
   logfps: 0,
