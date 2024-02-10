@@ -7,6 +7,7 @@ package com.monsters.display
    import flash.events.IOErrorEvent;
    import flash.events.TimerEvent;
    import flash.net.URLRequest;
+   import flash.system.LoaderContext;
    import flash.utils.Timer;
    
    public class ImageCache
@@ -208,7 +209,7 @@ package com.monsters.display
          var l:Loadable = queue;
          l.loadState = LOADING;
          req_str = l.shouldPrepend ? prependImagePath + l.key : l.key;
-         l.loader.load(new URLRequest(req_str));
+         l.loader.load(new URLRequest(req_str), new LoaderContext(true));
          l.loader.contentLoaderInfo.addEventListener(Event.COMPLETE,function(param1:Event):void
          {
             onAssetComplete(l);
