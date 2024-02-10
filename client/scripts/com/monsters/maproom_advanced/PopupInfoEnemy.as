@@ -19,7 +19,7 @@ package com.monsters.maproom_advanced
    import flash.geom.Point;
    import flash.net.URLRequest;
    
-   public class PopupInfoEnemy extends PopupInfoEnemy_CLIP
+   internal class PopupInfoEnemy extends PopupInfoEnemy_CLIP
    {
       
       private static var _takeoverCost:SecNum;
@@ -684,10 +684,10 @@ package com.monsters.maproom_advanced
          var empire:Object = null;
          var takeoverSuccessful:Function = null;
          var takeoverError:Function = null;
-         takeoverSuccessful = function(param1:Object):void
+         takeoverSuccessful = function(serverData:Object):void
          {
             PLEASEWAIT.Hide();
-            if(param1.error == 0)
+            if(serverData.error == 0)
             {
                BASE._takeoverFirstOpen = _cell._base == 1 ? 1 : 2;
                BASE._takeoverPreviousOwnersName = _cell._name;
@@ -709,7 +709,7 @@ package com.monsters.maproom_advanced
             }
             else
             {
-               GLOBAL.Message(KEYS.Get("err_takeoverproblem") + param1.error);
+               GLOBAL.Message(KEYS.Get("err_takeoverproblem") + serverData.error);
             }
          };
          takeoverError = function(param1:IOErrorEvent):void

@@ -317,7 +317,7 @@ package com.monsters.maproom_advanced
          this._dirty = param1;
       }
       
-      public function Setup(param1:Object) : void
+      public function Setup(serverData:Object) : void
       {
          var _loc3_:int = 0;
          var _loc4_:int = 0;
@@ -325,8 +325,8 @@ package com.monsters.maproom_advanced
          this._dataAge = 10;
          this._updated = true;
          this._processed = false;
-         this._base = param1.b;
-         if(param1.bid)
+         this._base = serverData.b;
+         if(serverData.bid)
          {
             if(this._baseID != 0 && this._baseID == GLOBAL._homeBaseID)
             {
@@ -336,12 +336,12 @@ package com.monsters.maproom_advanced
             {
                MapRoom._homeCell = this;
             }
-            this._baseID = param1.bid;
+            this._baseID = serverData.bid;
          }
-         this._value = param1.v;
-         if(param1.aid)
+         this._value = serverData.v;
+         if(serverData.aid)
          {
-            this._allianceID = param1.aid;
+            this._allianceID = serverData.aid;
          }
          else
          {
@@ -359,63 +359,63 @@ package com.monsters.maproom_advanced
             mc.mcPlayer.mcFlag.visible = false;
          }
          mc.mcPlayer.mcLevel.visible = false;
-         this._height = param1.i;
+         this._height = serverData.i;
          this._water = this._height < 100;
-         this._mine = param1.mine;
-         if(param1.f)
+         this._mine = serverData.mine;
+         if(serverData.f)
          {
-            this._flingerLevel = new SecNum(param1.f);
-            this._flingerRange = new SecNum(BUILDING5.getFlingerRange(param1.f,this.isMainBase));
+            this._flingerLevel = new SecNum(serverData.f);
+            this._flingerRange = new SecNum(BUILDING5.getFlingerRange(serverData.f,this.isMainBase));
          }
          else
          {
             this._flingerRange = new SecNum(0);
             this._flingerLevel = new SecNum(0);
          }
-         if(param1.c)
+         if(serverData.c)
          {
-            this._catapult = new SecNum(param1.c);
+            this._catapult = new SecNum(serverData.c);
          }
          else
          {
             this._catapult = new SecNum(0);
          }
-         this._userID = param1.uid;
-         this._facebookID = param1.fbid;
-         this._truce = param1.t;
-         this._name = param1.n;
-         this._friend = param1.fr;
-         this._online = param1.on;
-         this._protected = param1.p;
-         if(param1.pi)
+         this._userID = serverData.uid;
+         this._facebookID = serverData.fbid;
+         this._truce = serverData.t;
+         this._name = serverData.n;
+         this._friend = serverData.fr;
+         this._online = serverData.on;
+         this._protected = serverData.p;
+         if(serverData.pi)
          {
-            this._invitePendingID = param1.pi;
+            this._invitePendingID = serverData.pi;
          }
          else
          {
             this._invitePendingID = 0;
          }
-         if(param1.r)
+         if(serverData.r)
          {
             this._hpResources = {
-               "r1":int(param1.r.r1),
-               "r2":int(param1.r.r2),
-               "r3":int(param1.r.r3),
-               "r4":int(param1.r.r4),
-               "r1max":int(param1.r.r1max),
-               "r2max":int(param1.r.r2max),
-               "r3max":int(param1.r.r3max),
-               "r4max":int(param1.r.r4max)
+               "r1":int(serverData.r.r1),
+               "r2":int(serverData.r.r2),
+               "r3":int(serverData.r.r3),
+               "r4":int(serverData.r.r4),
+               "r1max":int(serverData.r.r1max),
+               "r2max":int(serverData.r.r2max),
+               "r3max":int(serverData.r.r3max),
+               "r4max":int(serverData.r.r4max)
             };
             this._resources = {
-               "r1":new SecNum(int(param1.r.r1)),
-               "r2":new SecNum(int(param1.r.r2)),
-               "r3":new SecNum(int(param1.r.r3)),
-               "r4":new SecNum(int(param1.r.r4)),
-               "r1max":int(param1.r.r1max),
-               "r2max":int(param1.r.r2max),
-               "r3max":int(param1.r.r3max),
-               "r4max":int(param1.r.r4max)
+               "r1":new SecNum(int(serverData.r.r1)),
+               "r2":new SecNum(int(serverData.r.r2)),
+               "r3":new SecNum(int(serverData.r.r3)),
+               "r4":new SecNum(int(serverData.r.r4)),
+               "r1max":int(serverData.r.r1max),
+               "r2max":int(serverData.r.r2max),
+               "r3max":int(serverData.r.r3max),
+               "r4max":int(serverData.r.r4max)
             };
          }
          else
@@ -442,9 +442,9 @@ package com.monsters.maproom_advanced
             };
          }
          this._dirty = false;
-         if(param1.m && param1.m.hcc != null && param1.m.h != null && param1.m.overdrivepower != null && param1.m.housed != null)
+         if(serverData.m && serverData.m.hcc != null && serverData.m.h != null && serverData.m.overdrivepower != null && serverData.m.housed != null)
          {
-            this._hpMonsterData = param1.m;
+            this._hpMonsterData = serverData.m;
             if(!this._hpMonsterData.overdrivetime)
             {
                this._hpMonsterData.overdrivetime = 0;
@@ -486,39 +486,39 @@ package com.monsters.maproom_advanced
          {
             this._hpMonsters = this._hpMonsterData.housed;
          }
-         this._level = param1.l;
-         if(param1.d)
+         this._level = serverData.l;
+         if(serverData.d)
          {
-            this._destroyed = param1.d;
+            this._destroyed = serverData.d;
          }
          else
          {
             this._destroyed = 0;
          }
-         if(param1.lo)
+         if(serverData.lo)
          {
-            this._locked = param1.lo;
+            this._locked = serverData.lo;
          }
          else
          {
             this._locked = 0;
          }
          this._ticks = 0;
-         if(param1.dm)
+         if(serverData.dm)
          {
-            this._damage = param1.dm;
+            this._damage = serverData.dm;
          }
          else
          {
             this._damage = 0;
          }
-         if(param1.pic_square)
+         if(serverData.pic_square)
          {
-            this._pic_square = param1.pic_square;
+            this._pic_square = serverData.pic_square;
          }
-         if(param1.im)
+         if(serverData.im)
          {
-            this._pic_square = param1.im;
+            this._pic_square = serverData.im;
          }
          this.Update();
          var _loc2_:int = getTimer();

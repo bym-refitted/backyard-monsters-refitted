@@ -66,7 +66,7 @@ export const getDefaultBaseData = (user?: User) => {
     monsterbaiter: {},
     loot: {},
     storedata: {},
-    coords: {},
+    coords: { x: 0, y: 0 }, // Check this
     quests: {},
     resources: {
       r1: 78400,
@@ -100,8 +100,8 @@ export const getDefaultBaseData = (user?: User) => {
     },
     takeover: {},
     iresources: {
-      r1: 1600,
-      r2: 1600,
+      r1: 0,
+      r2: 0,
       r3: 0,
       r4: 0,
       r1max: 10000,
@@ -114,8 +114,8 @@ export const getDefaultBaseData = (user?: User) => {
     savetemplate: [],
     updates: [],
     effects: [],
-    homebase: [],
-    outposts: [],
+    homebase: ["0", "0"], // ToDo: This should be randomly generated per user, within the range of the map room grid
+    outposts: [[2, 1, 600024]], // Dummy outposts
     worldsize: [500, 500],
     wmstatus: [],
     chatservers: ["bym-chat.kixeye.com"],
