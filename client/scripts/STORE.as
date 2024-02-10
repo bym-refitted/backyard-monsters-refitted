@@ -839,7 +839,7 @@ package
                   {
                      _loc3_ = 0;
                      _loc3_ = CREATURELOCKER._lockerData[CREATURELOCKER._unlocking].e - GLOBAL.Timestamp();
-                     _loc4_ = String(CREATURELOCKER._creatures[CREATURELOCKER._unlocking].name);
+                     _loc4_ = KEYS.Get(CREATURELOCKER._creatures[CREATURELOCKER._unlocking].name);
                      if(_loc3_ > 0)
                      {
                         if(param1 == "SP1")
@@ -1731,7 +1731,7 @@ package
                      {
                         _loc24_ = 0;
                         _loc24_ = CREATURELOCKER._lockerData[CREATURELOCKER._unlocking].e - GLOBAL.Timestamp();
-                        _loc25_ = String(CREATURELOCKER._creatures[CREATURELOCKER._unlocking].name);
+                        _loc25_ = KEYS.Get(CREATURELOCKER._creatures[CREATURELOCKER._unlocking].name);
                         if(_loc24_ > 0)
                         {
                            if(item == "SP1")

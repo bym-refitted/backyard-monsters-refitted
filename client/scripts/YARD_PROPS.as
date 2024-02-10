@@ -7330,7 +7330,11 @@ package
             "1":{
                "top":["top.1.v3.png",new Point(-75,-23)],
                "topdamaged":["top.1.damaged.v3.png",new Point(-75,-88)],
-               "topdestroyed":["top.1.destroyed.png",new Point(-75,-48)]
+               "topdestroyed":["top.1.destroyed.png",new Point(-75,-48)],
+               "anim":["anim.1.v2.png",new Rectangle(-58,-99,129,77),35]
+               //"shadow":["shadow.1.jpg",new Point(-29,14)],
+               //"shadowdamaged":["shadow.1.jpg",new Point(-29,14)],
+               //"shadowdestroyed":["shadow.1.jpg",new Point(-29,14)]
             }
          },
          "buildingbuttons":["seige_factory"],
@@ -7436,6 +7440,12 @@ package
                "top":["top.1.v6.png",new Point(-69,-68)],
                "topdamaged":["top.1.damaged.v4.png",new Point(-66,-98)],
                "topdestroyed":["top.1.destroyed.png",new Point(-57,-44)]
+               //"anim":["anim1.v4.png",new Rectangle(-54,22,43,39),60],
+               //"anim2":["anim2.v3.png",new Rectangle(-24,-92,59,100),60],
+               //"anim3":["anim3.v3.png",new Rectangle(19,11,38,40),60]
+               //"shadow":["shadow.1.jpg",new Point(-50,4)],
+               //"shadowdamaged":["shadow.1.jpg",new Point(-50,4)],
+               //"shadowdestroyed":["shadow.1.jpg",new Point(-50,4)]
             }
          },
          "stats":[{

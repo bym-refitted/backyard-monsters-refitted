@@ -43,6 +43,8 @@ package
    {
       public static var serverUrl:String = "https://api.bymrefitted.com/";
 
+      public static var cdnUrl:String = "https://api.bymrefitted.com/";
+
       public static var _local:Boolean = false;
       
       public static var _save:Boolean = true;
