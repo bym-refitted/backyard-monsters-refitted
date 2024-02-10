@@ -77,7 +77,7 @@ export const login: KoaController = async (ctx) => {
         ...filteredUser,
         version: 128,
         token,
-        mapversion: 3,
+        mapversion: 2,
         mailversion: 1,
         soundversion: 1,
         languageversion: 8,

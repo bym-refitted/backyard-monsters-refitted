@@ -12,24 +12,27 @@ interface Cell {
 
 export const getArea: KoaController = async (ctx) => {
   const requestBody: Cell = ctx.request.body;
+  console.log("HERE GETTING AREA")
 
   for (const key in requestBody) {
     requestBody[key] = parseInt(requestBody[key], 10) || 0;
   }
 
-  const x = requestBody.x;
-  const y = requestBody.y;
+  const currentX = requestBody.x || 0;
+  const currentY = requestBody.y || 0;
+  const width = requestBody.width || 10;
+  const height = requestBody.height || 10;
 
   // Creates {maxX} x {maxY} grid from point 0 x 0
-  const maxX = 100;
-  const maxY = 100;
+  const maxX = currentX + width;
+  const maxY = currentY + height;
 
   let cells = {};
 
-  for (let x = 0; x < maxX; x++) {
+  for (let x = currentX; x < maxX; x++) {
     cells[x] = {};
 
-    for (let y = 0; y < maxY; y++) {
+    for (let y = currentY; y < maxY; y++) {
       cells[x][y] = await wildMonsterCell();
 
       // Testing - Hardcoded co-ordinates to load base types
@@ -46,8 +49,8 @@ export const getArea: KoaController = async (ctx) => {
   ctx.status = 200;
   ctx.body = {
     error: 0,
-    x,
-    y,
+    x: currentX,
+    y: currentY,
     data: cells,
     // resources
     // alliancedata
