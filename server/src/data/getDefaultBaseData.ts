@@ -39,7 +39,7 @@ export const getDefaultBaseData = (user?: User) => {
     locked: 0,
     points: 5,
     basevalue: 20,
-    protected: 1,
+    protected: 0,
     lastupdate: 0,
     usemap: 1,
     homebaseid: generateID(9),
