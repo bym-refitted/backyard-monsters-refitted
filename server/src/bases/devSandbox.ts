@@ -810,7 +810,7 @@ export const devSandbox = {
   savetemplate:[],
   updates: [],
   effects: [],
-  homebase: [],
+  homebase: ["0", "0"],
   outposts: [],
   worldsize: [500, 500],
   wmstatus: [],

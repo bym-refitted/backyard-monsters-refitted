@@ -493,15 +493,23 @@ package
          };
       }
       
-      public static function LoadBase(param1:String = null, param2:Number = 0, param3:Number = 0, param4:String = "build", param5:Boolean = false, param6:int = -1, param7:Number = 0, param8:Array = null) : Boolean
+      public static function LoadBase(
+         url:String = null, 
+         userId:Number = 0, 
+         baseId:Number = 0, 
+         baseMode:String = "build", 
+         isError:Boolean = false, 
+         baseType:int = -1, 
+         cellId:Number = 0, 
+         keyValuePairs:Array = null) : Boolean
       {
-         if(isNaN(param3))
+         if(isNaN(baseId))
          {
-            param3 = 0;
+            baseId = 0;
          }
-         if(isNaN(param2))
+         if(isNaN(userId))
          {
-            param2 = 0;
+            userId = 0;
          }
          if(MapRoomManager.instance.isInMapRoom2or3 && MapRoomManager.instance.isOpen)
          {
@@ -515,37 +523,37 @@ package
          {
             MAPROOM.Hide();
          }
-         if(!MapRoomManager.instance.isInMapRoom2or3 && (param4 == GLOBAL.e_BASE_MODE.ATTACK || param4 == GLOBAL.e_BASE_MODE.IATTACK) && (GLOBAL.mode != GLOBAL.e_BASE_MODE.BUILD && GLOBAL.mode != GLOBAL.e_BASE_MODE.IBUILD))
+         if(!MapRoomManager.instance.isInMapRoom2or3 && (baseMode == GLOBAL.e_BASE_MODE.ATTACK || baseMode == GLOBAL.e_BASE_MODE.IATTACK) && (GLOBAL.mode != GLOBAL.e_BASE_MODE.BUILD && GLOBAL.mode != GLOBAL.e_BASE_MODE.IBUILD))
          {
             return false;
          }
          if(!_loading)
          {
-            GLOBAL._reloadonerror = param5;
-            if(param3 == 0 && param2 == 0)
+            GLOBAL._reloadonerror = isError;
+            if(baseId == 0 && userId == 0)
             {
-               if(param4 != GLOBAL.e_BASE_MODE.IBUILD)
+               if(baseMode != GLOBAL.e_BASE_MODE.IBUILD)
                {
-                  param4 = GLOBAL.e_BASE_MODE.BUILD;
+                  baseMode = GLOBAL.e_BASE_MODE.BUILD;
                }
             }
-            if((param4 == GLOBAL.e_BASE_MODE.ATTACK || param4 == GLOBAL.e_BASE_MODE.WMATTACK) && (!MapRoomManager.instance.isInMapRoom2or3 && (!GLOBAL._bFlinger || !GLOBAL._bFlinger._canFunction) && !isInfernoMainYardOrOutpost))
+            if((baseMode == GLOBAL.e_BASE_MODE.ATTACK || baseMode == GLOBAL.e_BASE_MODE.WMATTACK) && (!MapRoomManager.instance.isInMapRoom2or3 && (!GLOBAL._bFlinger || !GLOBAL._bFlinger._canFunction) && !isInfernoMainYardOrOutpost))
             {
                LOGGER.Log("err","Impossible fling");
                GLOBAL.ErrorMessage("BASE.LoadBase impossible fling");
                return false;
             }
-            _loadBase = [param1,param2,param3,param4,param6,param7];
-            if(!MapRoomManager.instance.isInMapRoom2or3 && (param4 == GLOBAL.e_BASE_MODE.ATTACK || param4 == GLOBAL.e_BASE_MODE.WMATTACK || param4 == GLOBAL.e_BASE_MODE.IATTACK || param4 == GLOBAL.e_BASE_MODE.IWMATTACK))
+            _loadBase = [url,userId,baseId,baseMode,baseType,cellId];
+            if(!MapRoomManager.instance.isInMapRoom2or3 && (baseMode == GLOBAL.e_BASE_MODE.ATTACK || baseMode == GLOBAL.e_BASE_MODE.WMATTACK || baseMode == GLOBAL.e_BASE_MODE.IATTACK || baseMode == GLOBAL.e_BASE_MODE.IWMATTACK))
             {
                PLEASEWAIT.Show(KEYS.Get("msg_preparing"));
                Save(0,false,true);
             }
             else if(!_saving)
             {
-               if(param8)
+               if(keyValuePairs)
                {
-                  _addtionalLoadArguments.push(param8);
+                  _addtionalLoadArguments.push(keyValuePairs);
                }
                LoadBaseB();
                _addtionalLoadArguments = [];
@@ -558,36 +566,36 @@ package
       {
          print("|BASE| - LoadBaseB() _loadBase:" + JSON.encode(_loadBase));
          GLOBAL._baseURL2 = _loadBase[0];
-         var _loc1_:Number = Number(_loadBase[1]);
-         var _loc2_:Number = Number(_loadBase[2]);
-         var _loc3_:String = String(_loadBase[3]);
-         var _loc4_:int = int(_loadBase[4]);
-         var _loc5_:int = int(_loadBase[5]);
+         var userId:Number = Number(_loadBase[1]);
+         var baseId:Number = Number(_loadBase[2]);
+         var baseMode:String = String(_loadBase[3]);
+         var baseType:int = int(_loadBase[4]);
+         var cellId:int = int(_loadBase[5]);
          _loadBase = [];
-         GLOBAL.Setup(_loc3_);
-         Load(GLOBAL._baseURL2,_loc1_,_loc2_,_loc4_,_loc5_);
+         GLOBAL.Setup(baseMode);
+         Load(GLOBAL._baseURL2,userId,baseId,baseType,cellId);
       }
       
-      public static function Load(param1:String = null, param2:Number = 0, param3:Number = 0, param4:int = -1, param5:Number = 0) : void
+      public static function Load(url:String = null, userId:Number = 0, baseId:Number = 0, baseType:int = -1, cellId:Number = 0) : void
       {
          var _loc15_:int = 0;
          GLOBAL._baseLoads += 1;
          var _loc6_:int = getTimer();
          _loading = true;
-         _baseID = param3;
+         _baseID = baseId;
          _baseLevel = 0;
          _saveOver = 0;
          _returnHome = false;
          _saveProtect = 0;
          PLEASEWAIT.Hide();
          Cleanup();
-         if(MapRoomManager.instance.isInMapRoom3 && param4 != -1)
+         if(MapRoomManager.instance.isInMapRoom3 && baseType != -1)
          {
-            m_yardType = param4;
+            m_yardType = baseType;
          }
-         else if(param4 >= EnumYardType.MAIN_YARD)
+         else if(baseType >= EnumYardType.MAIN_YARD)
          {
-            m_yardType = param4;
+            m_yardType = baseType;
          }
          if(isMainYardOrInfernoMainYard)
          {
@@ -644,17 +652,17 @@ package
          {
             MAPROOM.Hide();
          }
-         var _loc8_:Array;
-         (_loc8_ = []).push(["userid",param2 > 0 ? param2 : ""]);
-         if(param5)
+         var requestData:Array;
+         (requestData = []).push(["userid",userId > 0 ? userId : ""]);
+         if(cellId)
          {
-            _loc8_.push(["cellid",param5]);
+            requestData.push(["cellid",cellId]);
          }
-         _loc8_.push(["baseid",_baseID]);
-         _loc8_.push(["type",_loc7_]);
+         requestData.push(["baseid",_baseID]);
+         requestData.push(["type",_loc7_]);
          if(MapRoomManager.instance.viewOnly && (GLOBAL.mode == GLOBAL.e_BASE_MODE.VIEW || GLOBAL.mode == GLOBAL.e_BASE_MODE.WMVIEW))
          {
-            _loc8_.push(["worldid",MapRoomManager.instance.worldID]);
+            requestData.push(["worldid",MapRoomManager.instance.worldID]);
          }
          var _loc9_:int = 0;
          var _loc10_:int = int(LOGIN._digits[LOGIN._digits.length - 1]);
@@ -690,14 +698,14 @@ package
          }
          if(GLOBAL._checkPromo == 1 && _loc9_ != 0)
          {
-            _loc8_.push(["checkpromotion",1]);
+            requestData.push(["checkpromotion",1]);
          }
          if(_addtionalLoadArguments)
          {
             _loc15_ = 0;
             while(_loc15_ < _addtionalLoadArguments.length)
             {
-               _loc8_.push(_addtionalLoadArguments[_loc15_]);
+               requestData.push(_addtionalLoadArguments[_loc15_]);
                _loc15_++;
             }
          }
@@ -705,18 +713,18 @@ package
          {
             ExternalInterface.call("cc.recordStats","basestart");
          }
-         if(param1)
+         if(url)
          {
-            new URLLoaderApi().load(param1 + "load",_loc8_,handleBaseLoadSuccessful,handleBaseLoadError);
+            new URLLoaderApi().load(url + "load",requestData,handleBaseLoadSuccessful,handleBaseLoadError);
          }
          else if(isInfernoMainYardOrOutpost || isEventBaseId(_baseID) && GLOBAL.mode == GLOBAL.e_BASE_MODE.WMATTACK)
          {
-            new URLLoaderApi().load(GLOBAL._infBaseURL + "load",_loc8_,handleBaseLoadSuccessful,handleBaseLoadError);
+            new URLLoaderApi().load(GLOBAL._infBaseURL + "load",requestData,handleBaseLoadSuccessful,handleBaseLoadError);
          }
          else
          {
             // Comment: load route triggered
-            new URLLoaderApi().load(GLOBAL._baseURL + "load",_loc8_,handleBaseLoadSuccessful,handleBaseLoadError);
+            new URLLoaderApi().load(GLOBAL._baseURL + "load",requestData,handleBaseLoadSuccessful,handleBaseLoadError);
          }
       }
       
@@ -854,7 +862,7 @@ package
             }
             _lastSaveID = serverData.id;
             _baseSeed = serverData.baseseed;
-            _loadedBaseID = serverData.baseid;
+            _loadedBaseID = serverData.baseid; // Comment: IMPORTANT - this seems to always be "0" for user base, but not for other base types??
             if(GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD)
             {
                _loadedFriendlyBaseID = serverData.baseid;

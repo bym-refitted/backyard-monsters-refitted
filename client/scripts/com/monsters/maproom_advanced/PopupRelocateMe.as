@@ -9,7 +9,7 @@ package com.monsters.maproom_advanced
    import flash.events.MouseEvent;
    import flash.geom.Point;
    
-   public class PopupRelocateMe extends PopupRelocateMe_CLIP
+   internal class PopupRelocateMe extends PopupRelocateMe_CLIP
    {
        
       

@@ -33,7 +33,8 @@ export const baseSave: KoaController = async (ctx) => {
         save.resources = savedResources;
         break;
       case "buildinghealthdata":
-        save.buildinghealthdata = JSON.parse(requestBodyValue);
+        if (requestBodyValue)
+          save.buildinghealthdata = JSON.parse(requestBodyValue);
         break;
       case "purchase":
         // Update 'storedata' with the new purchased item & quantity
@@ -58,13 +59,13 @@ export const baseSave: KoaController = async (ctx) => {
         break;
       case "academy":
         let academyData = JSON.parse(requestBodyValue);
-        for(const [monster, monsterData] of Object.entries<any>(academyData)){
-          if(monsterData?.level > 6){
+        for (const [monster, monsterData] of Object.entries<any>(academyData)) {
+          if (monsterData?.level > 6) {
             academyData[monster].level = 6;
           }
         }
         save.academy = academyData;
-        break
+        break;
       default:
         if (
           requestBodyValue &&

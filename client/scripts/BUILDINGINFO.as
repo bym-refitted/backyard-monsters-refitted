@@ -210,11 +210,12 @@ package
                      }
                      else if(_props.id == 11 || _props.id == 5 || _props.id == 51)
                      {
-                        if(MapRoomManager.instance.isInMapRoom3 === false)
-                        {
-                           _loc1_.push(["btn_joinnwm",30,_loc12_]);
-                           _loc12_ = false;
-                        }
+                        // Comment: This is where we disable the button for MR3
+                        // if(MapRoomManager.instance.isInMapRoom3 === false)
+                        // {
+                        //    _loc1_.push(["btn_joinnwm",30,_loc12_]);
+                        //    _loc12_ = false;
+                        // }
                         _loc1_.push(["btn_viewmap",30,_loc12_]);
                      }
                      else if(_props.id == 12)

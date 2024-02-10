@@ -658,13 +658,13 @@ package
          }
       }
       
-      public static function Setup(param1:String = "build") : void
+      public static function Setup(baseMode:String = "build") : void
       {
          player = new Player();
-         _loadmode = param1;
-         if(isValidMode(param1))
+         _loadmode = baseMode;
+         if(isValidMode(baseMode))
          {
-            setMode(infernoToDefaultMode(param1));
+            setMode(infernoToDefaultMode(baseMode));
          }
          _fps = 40;
          _FPSframecount = 0;
@@ -728,7 +728,7 @@ package
             {
                ATTACK._countdown = 60 * 7;
             }
-            if(MapRoomManager.instance.isInMapRoom3 && (param1 == GLOBAL.e_BASE_MODE.ATTACK || param1 == GLOBAL.e_BASE_MODE.WMATTACK || param1 == GLOBAL.e_BASE_MODE.VIEW || param1 == GLOBAL.e_BASE_MODE.WMVIEW))
+            if(MapRoomManager.instance.isInMapRoom3 && (baseMode == GLOBAL.e_BASE_MODE.ATTACK || baseMode == GLOBAL.e_BASE_MODE.WMATTACK || baseMode == GLOBAL.e_BASE_MODE.VIEW || baseMode == GLOBAL.e_BASE_MODE.WMVIEW))
             {
                GLOBAL._attackersResources = {
                   "r1":new SecNum(GLOBAL._resources.r1.Get()),
@@ -745,7 +745,7 @@ package
             }
             else if(_mode == _loadmode)
             {
-               if(MapRoomManager.instance.isInMapRoom2 && (param1 == GLOBAL.e_BASE_MODE.ATTACK || param1 == GLOBAL.e_BASE_MODE.WMATTACK || param1 == GLOBAL.e_BASE_MODE.VIEW || param1 == GLOBAL.e_BASE_MODE.WMVIEW))
+               if(MapRoomManager.instance.isInMapRoom2 && (baseMode == GLOBAL.e_BASE_MODE.ATTACK || baseMode == GLOBAL.e_BASE_MODE.WMATTACK || baseMode == GLOBAL.e_BASE_MODE.VIEW || baseMode == GLOBAL.e_BASE_MODE.WMVIEW))
                {
                   if(_attackerMapResources.catapult)
                   {

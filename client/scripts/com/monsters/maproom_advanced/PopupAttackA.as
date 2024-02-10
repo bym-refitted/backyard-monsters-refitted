@@ -20,7 +20,7 @@ package com.monsters.maproom_advanced
    import flash.events.MouseEvent;
    import flash.net.URLRequest;
    
-   public class PopupAttackA extends PopupAttackA_CLIP
+   internal class PopupAttackA extends PopupAttackA_CLIP
    {
        
       

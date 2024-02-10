@@ -1,20 +1,19 @@
-import { KoaController } from "../../utils/KoaController";
+import { KoaController } from "../../../utils/KoaController";
 
-export const getMapRoomCells: KoaController = async (ctx) => {
+export const initialPlayerCellData: KoaController = async (ctx) => {
   const uid = ctx.session.userid || 0;
 
   ctx.status = 200;
   ctx.body = {
     error: 0,
-    // We need to configure this correctly
     celldata: [
       {
-        n: "Placeholder name",
+        n: "Anonymous",
         uid,
         bid: 1234, // base ID
         tid: 0, // wild monster tribe ID
-        x: 500, // base x-coord
-        y: 500, // base y-coord
+        x: 50, // base x-coord
+        y: 50, // base y-coord
         aid: 0,
         l: 0,
         pl: 0,
@@ -27,7 +26,10 @@ export const getMapRoomCells: KoaController = async (ctx) => {
         d: 0,
         t: 0,
         fbid: "",
+        // Investigate 'b' and 'i' called in MapRoom3Cell - Setup()
+        b: 50,
+        i: 50,
       },
-    ]
+    ],
   };
 };

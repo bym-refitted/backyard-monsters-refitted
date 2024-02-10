@@ -11,7 +11,7 @@ package com.monsters.maproom_advanced
    import flash.events.MouseEvent;
    import flash.net.URLRequest;
    
-   public class PopupInfoViewOnly extends PopupInfoViewOnly_CLIP
+   internal class PopupInfoViewOnly extends PopupInfoViewOnly_CLIP
    {
        
       

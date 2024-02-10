@@ -579,17 +579,17 @@ package com.monsters.maproom_advanced
          };
       }
       
-      private static function RequestData(param1:Point, param2:Boolean = false) : void
+      private static function RequestData(point:Point, hasForce:Boolean = false) : void
       {
          var z:objZone = null;
          var loadvars:Array = null;
          var dataRequest:Object = null;
          var handleLoadSuccessful:Function = null;
          var handleLoadError:Function = null;
-         var zonePoint:Point = param1;
-         var force:Boolean = param2;
+         var zonePoint:Point = point;
+         var force:Boolean = hasForce;
          var zoneID:int = zonePoint.x * 10000 + zonePoint.y;
-         var url:String = GLOBAL._mapURL + "getarea";
+         var getAreaURL:String = GLOBAL._mapURL + "getarea";
          var t:int = getTimer();
          var getResources:int = 0;
          if(force || GLOBAL.Timestamp() > _resourceCounter + 20)
@@ -609,50 +609,50 @@ package com.monsters.maproom_advanced
          }
          if(force || GLOBAL.Timestamp() - z.updated > 30)
          {
-            handleLoadSuccessful = function(param1:Object):void
+            handleLoadSuccessful = function(serverData:Object):void
             {
-               var _loc3_:Object = null;
-               var _loc4_:int = 0;
-               var _loc5_:int = 0;
-               var _loc6_:Array = null;
-               var _loc7_:Object = null;
+               var getCellData:Object = null;
+               var zoneId:int = 0;
+               var resourceIndex:int = 0;
+               var allianceData:Array = null;
+               var cell:Object = null;
                var _loc2_:Object = _pendingMapCellDataRequests.shift();
                if(_loc2_ == null)
                {
                }
                if(_pendingMapCellDataRequests.length > 0)
                {
-                  _loc3_ = _pendingMapCellDataRequests[0];
-                  new URLLoaderApi().load(_loc3_.url,_loc3_.loadvars,handleLoadSuccessful,handleLoadError);
+                  getCellData = _pendingMapCellDataRequests[0];
+                  new URLLoaderApi().load(getCellData.url,getCellData.loadvars,handleLoadSuccessful,handleLoadError);
                }
                if(!_open && !BASE._needCurrentCell)
                {
                   return;
                }
-               if(param1 && !param1.error && Boolean(param1.data))
+               if(serverData && !serverData.error && Boolean(serverData.data))
                {
-                  _loc4_ = param1.x * 10000 + param1.y;
-                  if(!_zones[_loc4_])
+                  zoneId = serverData.x * 10000 + serverData.y;
+                  if(!_zones[zoneId])
                   {
-                     _zones[_loc4_] = new objZone();
+                     _zones[zoneId] = new objZone();
                   }
-                  _zones[_loc4_].data = param1.data;
-                  if(param1.resources)
+                  _zones[zoneId].data = serverData.data;
+                  if(serverData.resources)
                   {
-                     _loc5_ = 1;
-                     while(_loc5_ < 5)
+                     resourceIndex = 1;
+                     while(resourceIndex < 5)
                      {
-                        GLOBAL._resources["r" + _loc5_].Set(param1.resources["r" + _loc5_]);
-                        GLOBAL._hpResources["r" + _loc5_] = GLOBAL._resources["r" + _loc5_].Get();
-                        GLOBAL._resources["r" + _loc5_ + "max"] = param1.resources["r" + _loc5_ + "max"];
-                        GLOBAL._hpResources["r" + _loc5_ + "max"] = param1.resources["r" + _loc5_ + "max"];
-                        _loc5_++;
+                        GLOBAL._resources["r" + resourceIndex].Set(serverData.resources["r" + resourceIndex]);
+                        GLOBAL._hpResources["r" + resourceIndex] = GLOBAL._resources["r" + resourceIndex].Get();
+                        GLOBAL._resources["r" + resourceIndex + "max"] = serverData.resources["r" + resourceIndex + "max"];
+                        GLOBAL._hpResources["r" + resourceIndex + "max"] = serverData.resources["r" + resourceIndex + "max"];
+                        resourceIndex++;
                      }
                   }
-                  if(param1.alliancedata)
+                  if(serverData.alliancedata)
                   {
-                     _loc6_ = param1.alliancedata;
-                     ALLIANCES.ProcessAlliances(_loc6_);
+                     allianceData = serverData.alliancedata;
+                     ALLIANCES.ProcessAlliances(allianceData);
                   }
                   if(MapRoom._open)
                   {
@@ -660,24 +660,24 @@ package com.monsters.maproom_advanced
                   }
                   else if(BASE._needCurrentCell)
                   {
-                     if(_zones && _zones[_loc4_] && Boolean(_zones[_loc4_].data) && Boolean(_zones[_loc4_].data[BASE._currentCellLoc.x]))
+                     if(_zones && _zones[zoneId] && Boolean(_zones[zoneId].data) && Boolean(_zones[zoneId].data[BASE._currentCellLoc.x]))
                      {
-                        _loc7_ = _zones[_loc4_].data[BASE._currentCellLoc.x][BASE._currentCellLoc.y];
+                        cell = _zones[zoneId].data[BASE._currentCellLoc.x][BASE._currentCellLoc.y];
                         GLOBAL._currentCell = new MapRoomCell();
-                        (GLOBAL._currentCell as MapRoomCell).Setup(_loc7_);
+                        (GLOBAL._currentCell as MapRoomCell).Setup(cell);
                         (GLOBAL._currentCell as MapRoomCell).cellX = BASE._currentCellLoc.x;
                         (GLOBAL._currentCell as MapRoomCell).cellY = BASE._currentCellLoc.y;
                         _zones = {};
                      }
                   }
                }
-               else if(Boolean(param1) && !param1.data)
+               else if(Boolean(serverData) && !serverData.data)
                {
                   LOGGER.Log("err","MapRoom.Data NO DATA");
                }
                else
                {
-                  LOGGER.Log("err","MapRoom.Data",param1.error);
+                  LOGGER.Log("err","MapRoom.Data",serverData.error);
                }
             };
             handleLoadError = function(param1:IOErrorEvent):void
@@ -697,25 +697,25 @@ package com.monsters.maproom_advanced
                loadvars.push(["worldid",_worldID]);
             }
             dataRequest = {
-               "url":url,
+               "url":getAreaURL,
                "loadvars":loadvars
             };
             _pendingMapCellDataRequests.push(dataRequest);
             if(_pendingMapCellDataRequests.length == 1)
             {
-               new URLLoaderApi().load(url,loadvars,handleLoadSuccessful,handleLoadError);
+               new URLLoaderApi().load(getAreaURL,loadvars,handleLoadSuccessful,handleLoadError);
             }
          }
       }
       
-      internal static function GetCell(param1:int, param2:int, param3:Boolean = false) : Object
+      internal static function GetCell(cellX:int, cellY:int, param3:Boolean = false) : Object
       {
-         var _loc4_:Point;
-         var _loc5_:int = (_loc4_ = new Point(int(param1 / _zoneWidth) * _zoneWidth,int(param2 / _zoneHeight) * _zoneHeight)).x * 10000 + _loc4_.y;
-         RequestData(_loc4_,param3);
-         if(_zones && _zones[_loc5_] && Boolean(_zones[_loc5_].data) && Boolean(_zones[_loc5_].data[param1]))
+         var point:Point;
+         var zoneId:int = (point = new Point(int(cellX / _zoneWidth) * _zoneWidth,int(cellY / _zoneHeight) * _zoneHeight)).x * 10000 + point.y;
+         RequestData(point,param3);
+         if(_zones && _zones[zoneId] && Boolean(_zones[zoneId].data) && Boolean(_zones[zoneId].data[cellX]))
          {
-            return _zones[_loc5_].data[param1][param2];
+            return _zones[zoneId].data[cellX][cellY];
          }
          return null;
       }
