@@ -380,7 +380,7 @@ export class Save {
 
   @FrontendKey
   @Property({ type: "json", nullable: true })
-  outposts: string[][];
+  outposts: number[][];
 
   @FrontendKey
   @Property({ type: "json", nullable: true })

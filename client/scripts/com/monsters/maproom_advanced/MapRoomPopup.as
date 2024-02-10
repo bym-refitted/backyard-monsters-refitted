@@ -17,7 +17,7 @@ package com.monsters.maproom_advanced
    import flash.net.URLRequest;
    import flash.utils.getTimer;
    
-   internal class MapRoomPopup extends MapRoomPopup_CLIP
+   class MapRoomPopup extends MapRoomPopup_CLIP
    {
        
       
@@ -127,8 +127,10 @@ package com.monsters.maproom_advanced
          mcInfo.x = mcFrame2.x + 20;
          mcInfo.y = mcFrame2.y + 270;
          mcInfo.visible = false;
-         (mcFrame as frame1).Setup(true,true,true,0,0);
-         (mcFrame2 as frame).Setup(false);
+         // (mcFrame as frame1).Setup(true,true,true,0,0);
+         // (mcFrame2 as frame).Setup(false);
+         mcFrame.Setup(true,true,true,0,0);
+         mcFrame2.Setup(false);
          mcMask.mcMask.mouseEnabled = false;
          this._bubble = new bubblepopup3();
          this._popupInfoMine = new PopupInfoMine();
@@ -673,20 +675,21 @@ package com.monsters.maproom_advanced
       
       private function GenerateCells(param1:Point) : void
       {
-         var _loc4_:int = 0;
-         var _loc6_:int = 0;
-         var _loc7_:MapRoomCell = null;
-         var _loc2_:int = GLOBAL._ROOT.stage.stageWidth;
-         var _loc3_:int = GLOBAL.GetGameHeight();
-         if(_loc2_ > 1024)
+         var cellIndex:int = 0;
+         var rowIndex:int = 0;
+         var mapRoomCell:MapRoomCell = null;
+         var stageWidth:int = GLOBAL._ROOT.stage.stageWidth;
+         var stageHeight:int = GLOBAL.GetGameHeight();
+         LOGGER.Log("log", "val of param1: " + param1);
+         if(stageWidth > 1024)
          {
-            _loc2_ = 1024;
+            stageWidth = 1024;
          }
-         if(_loc3_ > 768)
+         if(stageHeight > 768)
          {
-            _loc3_ = 768;
+            stageHeight = 768;
          }
-         var _loc5_:Rectangle = new Rectangle(0 - (_loc2_ - 760) / 2,0 - (_loc3_ - 520) / 2,_loc2_,_loc3_);
+         var _loc5_:Rectangle = new Rectangle(0 - (stageWidth - 760) / 2,0 - (stageHeight - 520) / 2,stageWidth,stageHeight);
          if(this._cellContainer)
          {
             while(this._cellContainer.numChildren > 0)
@@ -703,12 +706,12 @@ package com.monsters.maproom_advanced
          }
          if(this._cells)
          {
-            _loc4_ = int(this._cells.length - 1);
-            _loc4_ = int(this._cells.length - 1);
-            while(_loc4_ >= 0)
+            cellIndex = int(this._cells.length - 1);
+            cellIndex = int(this._cells.length - 1);
+            while(cellIndex >= 0)
             {
-               delete this._cells[_loc4_];
-               _loc4_--;
+               delete this._cells[cellIndex];
+               cellIndex--;
             }
          }
          this._cells = [];
@@ -724,62 +727,62 @@ package com.monsters.maproom_advanced
             this._cellCountX = 16;
             this._cellCountY = 14;
          }
-         _loc3_ = 0;
-         while(_loc3_ < this._cellCountX)
+         stageHeight = 0;
+         while(stageHeight < this._cellCountX)
          {
-            _loc6_ = 0;
-            while(_loc6_ < this._cellCountY)
+            rowIndex = 0;
+            while(rowIndex < this._cellCountY)
             {
-               (_loc7_ = new MapRoomCell()).x = int(_loc3_ * (this._cellWidth * 0.75) - this._cellWidth * 0.75 * 4);
-               _loc7_.y = int(_loc6_ * this._cellHeight - this._cellHeight * 5);
-               _loc7_.X = _loc3_;
-               _loc7_.Y = _loc6_;
-               _loc7_.cacheAsBitmap = true;
-               _loc7_.mc.gotoAndStop(1);
-               _loc7_.mc.mcPlayer.visible = false;
-               if(_loc3_ % 2 == 0)
+               (mapRoomCell = new MapRoomCell()).x = int(stageHeight * (this._cellWidth * 0.75) - this._cellWidth * 0.75 * 4);
+               mapRoomCell.y = int(rowIndex * this._cellHeight - this._cellHeight * 5);
+               mapRoomCell.X = stageHeight;
+               mapRoomCell.Y = rowIndex;
+               mapRoomCell.cacheAsBitmap = true;
+               mapRoomCell.mc.gotoAndStop(1);
+               mapRoomCell.mc.mcPlayer.visible = false;
+               if(stageHeight % 2 == 0)
                {
-                  _loc7_.y += this._cellHeight * 0.5;
+                  mapRoomCell.y += this._cellHeight * 0.5;
                }
-               this._cells.push(_loc7_);
-               _loc7_.depth = _loc7_.y * 1000 + _loc7_.x;
-               this._sortArray.push(_loc7_);
-               this._cellContainer.addChild(_loc7_);
+               this._cells.push(mapRoomCell);
+               mapRoomCell.depth = mapRoomCell.y * 1000 + mapRoomCell.x;
+               this._sortArray.push(mapRoomCell);
+               this._cellContainer.addChild(mapRoomCell);
                if(GLOBAL._ROOT.stage.displayState == StageDisplayState.FULL_SCREEN)
                {
-                  _loc7_.Y += param1.y - 8;
+                  mapRoomCell.Y += param1.y - 8;
                   if(param1.x % 2)
                   {
-                     _loc7_.X += param1.x - 8;
+                     mapRoomCell.X += param1.x - 8;
                      this._cellContainer.x = -125;
                      this._cellContainer.y = 18;
                   }
                   else
                   {
-                     _loc7_.X += param1.x - 7;
+                     mapRoomCell.X += param1.x - 7;
                      this._cellContainer.x = -9;
                      this._cellContainer.y = 54;
                   }
                }
                else
                {
-                  _loc7_.Y += param1.y - 7;
+                  mapRoomCell.Y += param1.y - 7;
                   if(param1.x % 2)
                   {
-                     _loc7_.X += param1.x - 4;
+                     mapRoomCell.X += param1.x - 4;
                      this._cellContainer.x = 209;
                      this._cellContainer.y = 7;
                   }
                   else
                   {
-                     _loc7_.X += param1.x - 5;
+                     mapRoomCell.X += param1.x - 5;
                      this._cellContainer.x = 101;
                      this._cellContainer.y = 40;
                   }
                }
-               _loc6_++;
+               rowIndex++;
             }
-            _loc3_++;
+            stageHeight++;
          }
          this._fallbackHomeCell = new MapRoomCell();
          this._fallbackHomeCell.X = GLOBAL._mapHome.x;
