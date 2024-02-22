@@ -6082,21 +6082,13 @@ export const debugSandbox = {
     debugDate: 1599666605475,
   },
   rewards: {
-    spurtzCannonReward2: {
-      id: "spurtzCannonReward2",
-    },
-    spurtzCannonReward: {
-      id: "spurtzCannonReward",
-    },
-    spurtzCannonReward3: {
-      id: "spurtzCannonReward3",
-    },
-    unblockSlimeattikus: {
-      id: "unblockSlimeattikus",
-    },
-    unblockVorg: {
-      id: "unblockVorg",
-    },
+    spurtzCannonReward2: { id: "spurtzCannonReward2" },
+    spurtzCannonReward: { id: "spurtzCannonReward" },
+    spurtzCannonReward3: { id: "spurtzCannonReward3"},
+    unlockRezghul: { id: "unlockRezghul" },
+    KorathReward: { id: "KorathReward" },
+    unblockSlimeattikus: { id: "unblockSlimeattikus" },
+    unblockVorg: { id: "unblockVorg" }
   },
   relationship: 0,
   iresources: {

@@ -86,18 +86,18 @@ export const getDefaultBaseData = (user?: User) => {
     buildingresources: {},
     frontpage: {},
     events: {},
-    rewards: {
-      // Reminder: Remove contents
-      // spurtzCannonReward2: {
-      //   id: "spurtzCannonReward2",
-      // },
-      // spurtzCannonReward: {
-      //   id: "spurtzCannonReward",
-      // },
-      // spurtzCannonReward3: {
-      //   id: "spurtzCannonReward3",
-      // },
-    },
+    rewards: devConfig.unlockAllEventRewards
+      ? {
+          // Unique event reward unlockables
+          spurtzCannonReward2: { id: "spurtzCannonReward2" },
+          spurtzCannonReward: { id: "spurtzCannonReward" },
+          spurtzCannonReward3: { id: "spurtzCannonReward3" },
+          unlockRezghul: { id: "unlockRezghul" },
+          KorathReward: { id: "KorathReward" },
+          unblockSlimeattikus: { id: "unblockSlimeattikus" },
+          unblockVorg: { id: "unblockVorg" },
+        }
+      : {},
     takeover: {},
     iresources: {
       r1: 0,
