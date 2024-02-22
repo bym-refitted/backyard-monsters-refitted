@@ -72,6 +72,7 @@ export const takeoverCell: KoaController = async (ctx) => {
                 save.wmid = 0;
                 save.name = authSave.name
                 save.basename = authSave.basename;
+                save.protected = 1;
                 cell.base_type = 3;
                 cell.uid = user.userid;
                 if (authSave.outposts === null) {
