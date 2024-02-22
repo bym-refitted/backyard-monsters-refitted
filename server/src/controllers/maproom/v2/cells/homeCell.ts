@@ -23,7 +23,7 @@ export const homeCell = async (ctx: Context, cell: WorldMapCell) => {
    */
 
   const online = isOnline(save.savetime);
-  const locked = online ? 1 : save.locked;
+  const locked = mine ? save.locked : (online ? 1 : save.locked);
   let bProtect = save.damage > 69 // noice
   if (save.type === "outpost" && bProtect) {
     bProtect = false;
