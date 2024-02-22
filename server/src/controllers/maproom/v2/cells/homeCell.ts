@@ -23,6 +23,7 @@ export const homeCell = async (ctx: Context, cell: WorldMapCell) => {
    */
 
   const online = isOnline(save.savetime);
+  const locked = online ? 1 : save.locked;
   let bProtect = save.damage > 69 // noice
   if (save.type === "outpost" && bProtect) {
     bProtect = false;
@@ -50,7 +51,7 @@ export const homeCell = async (ctx: Context, cell: WorldMapCell) => {
       m: save.monsters,
       l: 1, // ToDo
       d: save.damage > 90,
-      lo: save.locked,
+      lo: locked,
       dm: save.damage,
       pic_square: `https://api.dicebear.com/7.x/adventurer/png?backgroundType=solid&backgroundColor=b6e3f4,c0aede,d1d4f9&seed=${user.username}`,
       im: `https://api.dicebear.com/7.x/adventurer/png?backgroundType=solid&backgroundColor=b6e3f4,c0aede,d1d4f9&seed=${user.username}`,
