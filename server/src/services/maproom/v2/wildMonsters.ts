@@ -18,7 +18,7 @@ export const getWildMonsterSave = (baseid: number): Save => {
     const world_level = 10;
     const wmid = (tribe * 10) + 1
 
-    const defaultSave = Savefiles[0][world_level]
+    const defaultSave = Savefiles[tribe][world_level]
     const save = fork.create(Save, {
         ...defaultSave,
         basename: "",
