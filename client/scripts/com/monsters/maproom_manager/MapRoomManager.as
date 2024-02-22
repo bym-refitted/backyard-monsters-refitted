@@ -325,7 +325,7 @@ package com.monsters.maproom_manager
          }
          if(MapRoomManager.instance.isInMapRoom2 == false)
          {
-            MapRoom3ConfirmMigrationPopup.instance.Show(true);
+            // MapRoom3ConfirmMigrationPopup.instance.Show(true);
          }
       }
    }

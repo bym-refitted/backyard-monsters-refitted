@@ -471,4 +471,8 @@ export class Save {
     "fbpromos",
     "purchase",
   ];
+
+  public static nonJsonKeys: (keyof FieldData)[] = [
+    "level", "catapult", "flinger", "destroyed", "damage", "locked", "points", "basevalue", "protected", "champion", "empirevalue", "over", "usemap"
+  ]
 }

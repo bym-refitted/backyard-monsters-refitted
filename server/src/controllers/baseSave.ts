@@ -8,14 +8,23 @@ import { KoaController } from "../utils/KoaController";
 import { getCurrentDateTime } from "../utils/getCurrentDateTime";
 import { logging } from "../utils/logger";
 import { storeItems } from "../data/storeItems";
+import { saveFailureErr } from "../errors/errorCodes.";
 
 export const baseSave: KoaController = async (ctx) => {
   const user: User = ctx.authUser;
+  await ORMContext.em.populate(user, ["save"])
+  const authSave = user.save;
   logging(`Saving user's base: ${user.username} | IP Address: ${ctx.ip}`);
 
-  await ORMContext.em.populate(user, ["save"]);
-  let save = user.save;
-  ctx.session.basesaveid = save.basesaveid;
+  const basesaveid = ctx.request.body["basesaveid"]
+  if (!basesaveid) throw saveFailureErr
+
+  const save = await ORMContext.em.findOne(Save, {
+    basesaveid: parseInt(basesaveid)
+  })
+
+  const isOutpost = save.saveuserid === user.userid && save.homebaseid != save.basesaveid;
+
 
   // ToDo: Beta clean this shit up
   // Update the save with the values from the request
@@ -26,11 +35,16 @@ export const baseSave: KoaController = async (ctx) => {
       case "resources":
         // Update resources with the delta sent from the client
         const resources: Resources | undefined = JSON.parse(requestBodyValue);
+        let sr = isOutpost ? authSave.resources : save.resources;
         const savedResources: FieldData = updateResources(
           resources,
-          save.resources || {}
+          sr || {}
         );
-        save.resources = savedResources;
+        if (isOutpost) {
+          authSave.resources = savedResources;
+        } else {
+          save.resources = savedResources;
+        }
         break;
       case "buildinghealthdata":
         if (requestBodyValue)
@@ -54,7 +68,7 @@ export const baseSave: KoaController = async (ctx) => {
           }
 
           save.storedata = storeData;
-          updateCredits(save, item, quantity);
+          updateCredits(isOutpost ? authSave : save, item, quantity);
         }
         break;
       case "academy":
@@ -75,12 +89,61 @@ export const baseSave: KoaController = async (ctx) => {
           save[key] = JSON.parse(requestBodyValue);
         }
     }
+
+    if (key === "buildingresources" && isOutpost) {
+      authSave.buildingresources[`b${save.baseid}`] = save.buildingresources[`b${save.baseid}`];
+    }
   }
+
+  for (const key in <object>ctx.request.body) {
+    if (Save.nonJsonKeys.includes(key) && !Save.jsonKeys.includes(key)) {
+      let data = ctx.request.body[key];
+      save[key] = data;
+    }
+  }
+
+  /*
+    Assume that base save is in attack mode
+    Save attacker data
+  */
+  if (save.basesaveid !== authSave.basesaveid && (save.attackid != 0) && save.saveuserid !== user.userid) {
+    if (ctx.request.body.hasOwnProperty("attackerchampion")) {
+      authSave.champion = ctx.request.body["attackerchampion"];
+    }
+    if (save.monsterupdate.length > 0) {
+      const monsters = save.monsterupdate[0];
+      authSave.monsters = monsters.m;
+    }
+    const resources = <Resources>save.attackloot;
+    const savedResources: FieldData = updateResources(
+      resources,
+      authSave.resources || {}
+    );
+    authSave.resources = savedResources;
+    await ORMContext.em.persistAndFlush(authSave)
+  }
+
+  save.attackid = ctx.request.body['over'] ? 0 : save.attackid;
+  if (ctx.request.body.hasOwnProperty('over')) {
+    save.protected = ctx.request.body['destroyed'];
+  }
+
   // Update the save timestamp
   save.savetime = getCurrentDateTime();
   // Set the id field (_lastSaveID) to be the same as savetime, client expects this.
   save.id = save.savetime;
   await ORMContext.em.persistAndFlush(save);
+
+  if (isOutpost) {
+    authSave.savetime = getCurrentDateTime();
+    authSave.id = authSave.savetime;
+    await ORMContext.em.persistAndFlush(authSave);
+
+    save.credits = authSave.credits;
+    save.resources = authSave.resources;
+    save.outposts = authSave.outposts;
+    save.buildingresources = authSave.buildingresources;
+  }
 
   const filteredSave = FilterFrontendKeys(save);
   const baseSaveData = {
