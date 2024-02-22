@@ -40,11 +40,13 @@ export const loadBuildBase = async (ctx: Context, baseid: string): Promise<Save>
             baseid: baseid
         })
 
-        if (save.saveuserid === user.userid) {
-            save.credits = authSave.credits;
-            save.resources = authSave.resources;
-            save.outposts = authSave.outposts;
-            save.buildingresources = authSave.buildingresources;
+        if (save) {
+            if (save.saveuserid === user.userid) {
+                save.credits = authSave.credits;
+                save.resources = authSave.resources;
+                save.outposts = authSave.outposts;
+                save.buildingresources = authSave.buildingresources;
+            }
         }
     }
 
