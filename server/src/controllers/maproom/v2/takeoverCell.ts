@@ -65,8 +65,7 @@ export const takeoverCell: KoaController = async (ctx) => {
                     }
                 }
 
-                const hb = save.homebase;
-                const outposts = [parseInt(hb[0]), parseInt(hb[1]), parseInt(save.baseid)];
+                const outposts = [cell.x, cell.y, parseInt(save.baseid)];
                 save.saveuserid = user.userid;
                 save.type = "outpost"
                 save.resources = {}
