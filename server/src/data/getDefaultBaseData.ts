@@ -93,9 +93,10 @@ export const getDefaultBaseData = (user?: User) => {
           spurtzCannonReward: { id: "spurtzCannonReward" },
           spurtzCannonReward3: { id: "spurtzCannonReward3" },
           unlockRezghul: { id: "unlockRezghul" },
-          KorathReward: { id: "KorathReward" },
           unblockSlimeattikus: { id: "unblockSlimeattikus" },
           unblockVorg: { id: "unblockVorg" },
+          korathReward: { id: "korathReward" },
+          krallenReward: { id: "krallenReward" }
         }
       : {},
     takeover: {},

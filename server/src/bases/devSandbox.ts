@@ -685,11 +685,12 @@ export const devSandbox = {
   rewards: {
     spurtzCannonReward2: { id: "spurtzCannonReward2" },
     spurtzCannonReward: { id: "spurtzCannonReward" },
-    spurtzCannonReward3: { id: "spurtzCannonReward3"},
+    spurtzCannonReward3: { id: "spurtzCannonReward3" },
     unlockRezghul: { id: "unlockRezghul" },
-    KorathReward: { id: "KorathReward" },
     unblockSlimeattikus: { id: "unblockSlimeattikus" },
-    unblockVorg: { id: "unblockVorg" }
+    unblockVorg: { id: "unblockVorg" },
+    korathReward: { id: "korathReward" },
+    krallenReward: { id: "krallenReward" }
   },
   aiattacks: {
     attackPreference: 1,
