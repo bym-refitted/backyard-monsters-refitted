@@ -1,25 +1,31 @@
 import { KoaController } from "../../../utils/KoaController";
 import { wildMonsterCell } from "./cells/wildMonsterCell";
 import { homeCell } from "./cells/homeCell";
-import { outpostCell } from "./cells/outpostCell";
+import { User } from "../../../models/user.model";
+import { WorldMapCell } from "../../../models/worldmapcell.model";
+import { ORMContext } from "../../../server";
 
 interface Cell {
   x?: number;
   y?: number;
   width?: number;
   height?: number;
+  sendresources?: number
 }
 
 export const getArea: KoaController = async (ctx) => {
+  const user: User = ctx.authUser;
   const requestBody: Cell = ctx.request.body;
-  console.log("HERE GETTING AREA")
+  await ORMContext.em.populate(user, ["save"])
+  const save = user.save
 
   for (const key in requestBody) {
     requestBody[key] = parseInt(requestBody[key], 10) || 0;
   }
 
-  const currentX = requestBody.x || 0;
-  const currentY = requestBody.y || 0;
+  const sendresources = requestBody.sendresources || 0;
+  const currentX = requestBody.x
+  const currentY = requestBody.y
   const width = requestBody.width || 10;
   const height = requestBody.height || 10;
 
@@ -27,22 +33,51 @@ export const getArea: KoaController = async (ctx) => {
   const maxX = currentX + width;
   const maxY = currentY + height;
 
+  const wCells = await ORMContext.em.find(WorldMapCell, {
+    x: {
+      $gte: currentX,
+      $lte: maxX,
+    },
+    y: {
+      $gte: currentY,
+      $lte: maxY,
+    },
+    world_id: "1", // ToDo: implement a world table?
+  })
+
+  const worldMap = wCells.reduce<{ [x: number]: { [y: number]: WorldMapCell } }>((acc, obj) => {
+    const { x, y } = obj;
+    if (!acc[x]) {
+      acc[x] = {};
+    }
+    acc[x][y] = obj;
+    return acc;
+  }, {});
+
   let cells = {};
 
   for (let x = currentX; x < maxX; x++) {
     cells[x] = {};
 
     for (let y = currentY; y < maxY; y++) {
-      cells[x][y] = await wildMonsterCell();
-
-      // Testing - Hardcoded co-ordinates to load base types
-      if (x === 0 && y === 0) {
-        cells[x][y] = await homeCell(ctx);
+      if (worldMap.hasOwnProperty(x)) {
+        if (worldMap[x].hasOwnProperty(y)) {
+          const cell = worldMap[x][y];
+          if (cell.base_type != 1) {
+            cells[x][y] = await homeCell(ctx, cell)
+          } else {
+            cells[x][y] = await wildMonsterCell(cell)
+          }
+          continue
+        }
       }
 
-      if (x === 2 && y === 1) {
-        cells[x][y] = await outpostCell(ctx);
-      }
+      const cell = new WorldMapCell();
+      cell.x = x;
+      cell.y = y;
+      cell.base_id = 0;
+      cell.world_id = save.worldid;
+      cells[x][y] = await wildMonsterCell(cell);
     }
   }
 
@@ -52,7 +87,14 @@ export const getArea: KoaController = async (ctx) => {
     x: currentX,
     y: currentY,
     data: cells,
-    // resources
+    // resources: save.resources,
     // alliancedata
   };
+
+  if (sendresources === 1) {
+    ctx.body['resources'] = save.resources
+    ctx.body["credits"] = save.credits;
+  }
 };
+
+
