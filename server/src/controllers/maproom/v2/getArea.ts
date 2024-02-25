@@ -2,6 +2,7 @@ import { KoaController } from "../../../utils/KoaController";
 import { wildMonsterCell } from "./cells/wildMonsterCell";
 import { homeCell } from "./cells/homeCell";
 import { outpostCell } from "./cells/outpostCell";
+import { devConfig } from "../../../config/DevSettings";
 
 interface Cell {
   x?: number;
@@ -12,7 +13,6 @@ interface Cell {
 
 export const getArea: KoaController = async (ctx) => {
   const requestBody: Cell = ctx.request.body;
-  console.log("HERE GETTING AREA")
 
   for (const key in requestBody) {
     requestBody[key] = parseInt(requestBody[key], 10) || 0;
@@ -46,13 +46,18 @@ export const getArea: KoaController = async (ctx) => {
     }
   }
 
-  ctx.status = 200;
-  ctx.body = {
-    error: 0,
-    x: currentX,
-    y: currentY,
-    data: cells,
-    // resources
-    // alliancedata
-  };
+  if (devConfig.maproom) {
+    ctx.status = 200;
+    ctx.body = {
+      error: 0,
+      x: currentX,
+      y: currentY,
+      data: cells,
+      // resources
+      // alliancedata
+    };
+  } else {
+    ctx.status = 404;
+    ctx.body = { message: "MapRoom is not enabled on this server", error: 1 };
+  }
 };
