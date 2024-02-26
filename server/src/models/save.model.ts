@@ -472,6 +472,19 @@ export class Save {
   ];
 
   public static nonJsonKeys: (keyof FieldData)[] = [
-    "level", "catapult", "flinger", "destroyed", "damage", "locked", "points", "basevalue", "protected", "champion", "empirevalue", "over", "usemap"
+    "level",
+    "catapult",
+    "flinger",
+    "destroyed",
+    "damage",
+    "locked",
+    "protected",
+    "champion",
+    "over",
+    "usemap",
+    "basevalue",
+    "empirevalue",
+    "points",
+    "attackreport"
   ]
 }
