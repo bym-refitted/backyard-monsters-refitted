@@ -1,6 +1,6 @@
-import { User } from "@sentry/node";
 import { KoaController } from "../../../utils/KoaController";
 import { ORMContext } from "../../../server";
+import { User } from "../../../models/user.model";
 
 export const saveBookmarks: KoaController = async (ctx) => {
   const user: User = ctx.authUser;
