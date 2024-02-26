@@ -8,8 +8,6 @@ import bodyParser from "koa-bodyparser";
 import serve from "koa-static";
 import ormConfig from "./mikro-orm.config";
 import router from "./app.routes";
-import * as Sentry from "@sentry/node";
-
 import { MariaDbDriver } from '@mikro-orm/mariadb';
 import { EntityManager, MikroORM, RequestContext } from "@mikro-orm/core";
 import { errorLog, logging } from "./utils/logger.js";
@@ -19,24 +17,8 @@ import { ErrorInterceptor } from "./middleware/clientSafeError.js";
 import { processLanguagesFile } from "./middleware/processLanguageFile";
 import { logMissingAssets, morganLogging } from "./middleware/morganLogging";
 import { SESSION_CONFIG } from "./config/SessionConfig";
-import { requestHandler, tracingMiddleWare } from "./sentry/init";
 
 export const app = new Koa();
-
-// Server logs get passed to Sentry
-if (process.env.ENV === "production") {
-  app.use(requestHandler);
-  app.use(tracingMiddleWare);
-
-  app.on("error", (err: Error, ctx: Context) => {
-    Sentry.withScope((scope) => {
-      scope.addEventProcessor((event) => {
-        return Sentry.addRequestDataToEvent(event, ctx.request);
-      });
-      Sentry.captureException(err);
-    });
-  });
-}
 
 export const ORMContext = {} as {
   orm: MikroORM;
