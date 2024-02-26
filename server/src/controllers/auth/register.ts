@@ -10,7 +10,7 @@ import { logging } from "../../utils/logger";
 const UserRegisterSchema = z.object({
   username: z.string(),
   password: z.string(),
-  email: z.string().email(),
+  email: z.string().email().toLowerCase(),
   last_name: z.string(),
   pic_square: z.string(),
 });
