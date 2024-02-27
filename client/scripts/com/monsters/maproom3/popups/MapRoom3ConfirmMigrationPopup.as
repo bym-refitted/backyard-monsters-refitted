@@ -23,7 +23,7 @@ package com.monsters.maproom3.popups
       
       public function Show(param1:Boolean = false) : void
       {
-         if(this.m_IsShowing == true)
+         if(this.m_IsShowing == true || GLOBAL._flags.maproom2)
          {
             return;
          }
