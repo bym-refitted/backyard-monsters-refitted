@@ -27,12 +27,17 @@ export const takeoverCell: KoaController = async (ctx) => {
 
         if (save.saveuserid === 0) {
             save.buildingdata = {}
+            save.buildinghealthdata = {};
+            save.researchdata = {};
             save.stats = {};
             save.champion = "null";
             save.flinger = 0;
             save.credits = 0;
             save.catapult = 0;
             save.storedata = {};
+            save.points = 0;
+            save.basevalue = 0;
+            save.level = 1;
         }
 
         if (request.resources) {

@@ -14,7 +14,7 @@ export const getWMDefaultBase = (wmid: number, level: number) => {
     const saves = tribes[wmid];
     // ToDo: add level randomness base on auth save level
     // ToDo: add randomness on resources base on level and cell x,y
-    const s_lvl = level < 20 ? 10 : (level < 35 ? 20 : 30);
+    const s_lvl = level < 20 ? 10 : (level < 30 ? 20 : 30);
     const res = {
         level: s_lvl,
         save: null

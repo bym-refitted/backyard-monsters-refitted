@@ -97,8 +97,10 @@ export const baseSave: KoaController = async (ctx) => {
 
   for (const key in <object>ctx.request.body) {
     if (Save.nonJsonKeys.includes(key) && !Save.jsonKeys.includes(key)) {
-      let data = ctx.request.body[key];
-      save[key] = data;
+      if (ctx.request.body[key] !== null) {
+        let data = ctx.request.body[key];
+        save[key] = data;
+      }
     }
   }
 

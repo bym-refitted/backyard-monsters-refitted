@@ -80,7 +80,7 @@ export const getArea: KoaController = async (ctx) => {
       cell.y = y;
       cell.base_id = 0;
       cell.world_id = save.worldid;
-      const s_lvl = baseLevel < 20 ? 10 : (baseLevel < 35 ? 20 : 30); // ToDo: add level randomness base on auth save level
+      const s_lvl = baseLevel < 20 ? 10 : (baseLevel < 30 ? 20 : 30); // ToDo: add level randomness base on auth save level
       cells[x][y] = await wildMonsterCell(cell, s_lvl);
     }
   }
