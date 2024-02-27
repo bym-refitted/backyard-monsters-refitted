@@ -4,9 +4,14 @@ import { Save } from "../../models/save.model";
 import { getWildMonsterSave } from "../maproom/v2/wildMonsters";
 import { User } from "../../models/user.model";
 import { logging } from "../../utils/logger";
+import { calculateBaseLevel } from "./calculateBaseLevel";
 
-export const loadViewBase = async (baseid: string): Promise<Save> => {
+export const loadViewBase = async (ctx: Context, baseid: string): Promise<Save> => {
     const fork = ORMContext.em.fork();
+    const user: User = ctx.authUser;
+    await fork.populate(user, ["save"]);
+    const authSave: Save = user.save;
+
 
     let save = await fork.findOne(Save, {
         baseid: baseid,
@@ -22,7 +27,8 @@ export const loadViewBase = async (baseid: string): Promise<Save> => {
 
     if (!save) {
         logging("Loading wild monster default base")
-        save = getWildMonsterSave(parseInt(baseid));
+        const baseLevel = calculateBaseLevel(authSave.points, authSave.basevalue);
+        save = getWildMonsterSave(parseInt(baseid), baseLevel);
     }
 
     return save;

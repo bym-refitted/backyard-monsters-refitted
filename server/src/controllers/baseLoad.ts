@@ -37,7 +37,7 @@ export const baseLoad: KoaController = async (ctx) => {
   if (requestBody.type === "build") {
     save = await loadBuildBase(ctx, requestBody.baseid);
   } else {
-    save = await loadViewBase(requestBody.baseid)
+    save = await loadViewBase(ctx, requestBody.baseid)
   }
 
   logging(

@@ -4,6 +4,7 @@ import { homeCell } from "./cells/homeCell";
 import { User } from "../../../models/user.model";
 import { WorldMapCell } from "../../../models/worldmapcell.model";
 import { ORMContext } from "../../../server";
+import { calculateBaseLevel } from "../../../services/base/calculateBaseLevel";
 
 interface Cell {
   x?: number;
@@ -45,6 +46,8 @@ export const getArea: KoaController = async (ctx) => {
     world_id: "1", // ToDo: implement a world table?
   })
 
+  const baseLevel = calculateBaseLevel(save.points, save.basevalue);
+
   const worldMap = wCells.reduce<{ [x: number]: { [y: number]: WorldMapCell } }>((acc, obj) => {
     const { x, y } = obj;
     if (!acc[x]) {
@@ -77,7 +80,8 @@ export const getArea: KoaController = async (ctx) => {
       cell.y = y;
       cell.base_id = 0;
       cell.world_id = save.worldid;
-      cells[x][y] = await wildMonsterCell(cell);
+      const s_lvl = baseLevel < 20 ? 10 : (baseLevel < 35 ? 20 : 30); // ToDo: add level randomness base on auth save level
+      cells[x][y] = await wildMonsterCell(cell, s_lvl);
     }
   }
 
