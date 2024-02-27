@@ -57,8 +57,7 @@ export const takeoverCell: KoaController = async (ctx) => {
             })
             if (cell) {
                 /**
-                 * Add checking if base is owned
-                 * Delete outpost record for the owner
+                 * Delete outpost record from the owner save
                  */
                 if (save.saveuserid !== 0) {
                     const owner = await ORMContext.em.findOne(Save, {
@@ -67,6 +66,7 @@ export const takeoverCell: KoaController = async (ctx) => {
                     if (owner) {
                         owner.outposts = owner.outposts.filter(o => o[2] != parseInt(save.baseid))
                         delete owner.buildingresources[`b${save.baseid}`]
+                        await ORMContext.em.persistAndFlush(owner);
                     }
                 }
 
@@ -87,6 +87,7 @@ export const takeoverCell: KoaController = async (ctx) => {
                 save.outposts = authSave.outposts;
                 save.homebase = authSave.homebase;
                 save.homebaseid = authSave.homebaseid
+
                 await Promise.all([
                     ORMContext.em.persistAndFlush(cell),
                     ORMContext.em.persistAndFlush(save),
