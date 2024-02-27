@@ -161,7 +161,7 @@ package com.monsters.maproom_advanced
          }
          if(this._cell._base > 1)
          {
-            if(GLOBAL._flags.kongregate)
+            if(GLOBAL._flags.kongregate) // Comment: Previously viximo
             {
                this._profilePic.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR,LoadImageError,false,0,true);
                this._profilePic.contentLoaderInfo.addEventListener(Event.COMPLETE,onImageLoad);
