@@ -3,6 +3,7 @@ import { User } from "../../../../models/user.model";
 import { ORMContext } from "../../../../server";
 import { WorldMapCell } from "../../../../models/worldmapcell.model";
 import { Save } from "../../../../models/save.model";
+import { calculateBaseLevel } from "../../../../services/base/calculateBaseLevel";
 
 export const homeCell = async (ctx: Context, cell: WorldMapCell) => {
   let user: User = ctx.authUser;
@@ -49,7 +50,7 @@ export const homeCell = async (ctx: Context, cell: WorldMapCell) => {
       p: bProtect,
       r: save.resources,
       m: save.monsters,
-      l: 1, // ToDo
+      l: calculateBaseLevel(save.points, save.basevalue),
       d: save.damage > 90,
       lo: locked,
       dm: save.damage,

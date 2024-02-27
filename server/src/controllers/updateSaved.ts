@@ -20,7 +20,7 @@ export const updateSaved: KoaController = async (ctx) => {
   if (type === "build") {
     save = await loadBuildBase(ctx, baseid);
   } else {
-    save = await loadViewBase(baseid);
+    save = await loadViewBase(ctx, baseid);
   }
 
   if (!save) throw saveFailureErr;

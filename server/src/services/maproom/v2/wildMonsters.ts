@@ -7,10 +7,10 @@
 
 import { Save } from "../../../models/save.model";
 import { ORMContext } from "../../../server";
-import Savefiles from "../../../data/savefiles";
+import Savefiles, { getWMDefaultBase } from "../../../data/savefiles";
 import { getXPosition, getYPosition } from "./world";
 
-export const getWildMonsterSave = (baseid: number): Save => {
+export const getWildMonsterSave = (baseid: number, level: number = 10): Save => {
     const fork = ORMContext.em.fork();
     const x = getXPosition(baseid);
     const y = getYPosition(baseid);
@@ -18,7 +18,7 @@ export const getWildMonsterSave = (baseid: number): Save => {
     const world_level = 10;
     const wmid = (tribe * 10) + 1
 
-    const defaultSave = Savefiles[tribe][world_level]
+    const {save: defaultSave, level: wm_level} = getWMDefaultBase(tribe, level)
     const save = fork.create(Save, {
         ...defaultSave,
         basename: "",
@@ -30,6 +30,7 @@ export const getWildMonsterSave = (baseid: number): Save => {
     save.basesaveid = baseid;
     save.baseid = baseid.toString();
     save.wmid = wmid;
+    save.level = wm_level;
 
     return save;
 }

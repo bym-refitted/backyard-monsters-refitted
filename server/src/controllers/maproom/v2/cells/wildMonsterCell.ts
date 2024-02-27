@@ -4,7 +4,7 @@ import { Save } from "../../../../models/save.model";
 import { generateBaseID } from "../../../../services/maproom/v2/world";
 const tribes = ["Legionnaire", "Kozu", "Abunakki", "Dreadnaut",];
 
-export const wildMonsterCell = async (cell?: WorldMapCell) => {
+export const wildMonsterCell = async (cell?: WorldMapCell, level: number = 32) => {
   // const randomIndex = Math.floor(Math.random() * tribes.length);
   const tribe = (cell.x + cell.y) % tribes.length;
   const tribeName = tribes[tribe];
@@ -37,7 +37,7 @@ export const wildMonsterCell = async (cell?: WorldMapCell) => {
     p: 0,
     r: save?.resources || 0,
     m: save?.monsters || 0,
-    l: save?.level || 32, // ToDo
+    l: save?.level || level, // ToDo
     d: save?.destroyed || 0,
     lo: save?.locked || 0,
     dm: save?.damage || 0,
