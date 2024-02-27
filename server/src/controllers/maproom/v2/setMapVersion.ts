@@ -3,9 +3,10 @@ import { ORMContext } from "../../../server";
 import { deleteOutposts, deleteWorldMapBase, joinWorldMap } from "../../../services/maproom/v2";
 import { Save } from "../../../models/save.model";
 import { FilterFrontendKeys } from "../../../utils/FrontendKey";
+import { User } from "../../../models/user.model";
 
 export const setMapVersion: KoaController = async (ctx) => {
-    const user = ctx.authUser;
+    const user: User = ctx.authUser;
     const version = ctx.request.body["version"]
     await ORMContext.em.populate(user, ["save"]);
     let save: Save = user.save;
@@ -30,7 +31,7 @@ export const setMapVersion: KoaController = async (ctx) => {
     ctx.status = 200;
     ctx.body = {
         error: 0,
-        baseurl: `${process.env.URL}/base/`,
+        baseurl: `${process.env.BASE_URL}:${process.env.PORT}/base/`,
         ...filteredSave,
         id: filteredSave.basesaveid,
     }

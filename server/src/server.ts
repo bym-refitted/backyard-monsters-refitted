@@ -25,7 +25,8 @@ export const ORMContext = {} as {
   em: EntityManager;
 };
 
-const port = process.env.PORT || 3001;
+const PORT = process.env.PORT || 3001;
+const BASE_URL = process.env.BASE_URL;
 
 // Entry point for all modules.
 const api = new Router();
@@ -87,9 +88,9 @@ api.get("/", (ctx: Context) => (ctx.body = {}));
   app.use(router.routes());
   app.use(router.allowedMethods());
 
-  app.listen(port, () => {
+  app.listen(PORT, () => {
     logging(`
-    ${ascii_node} Server running on: http://localhost:${port}
+    ${ascii_node} Server running on: ${BASE_URL}:${PORT}
     `);
   });
 })().catch((e) => errorLog(e));
