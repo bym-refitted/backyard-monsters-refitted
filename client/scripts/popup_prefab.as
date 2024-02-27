@@ -1,6 +1,5 @@
 package
 {
-   
    import com.cc.utils.SecNum;
    import com.monsters.display.ImageCache;
    import com.monsters.managers.InstanceManager;
@@ -9,11 +8,10 @@ package
    import flash.display.BitmapData;
    import flash.events.Event;
    import flash.events.MouseEvent;
+   import com.monsters.kits.Kit;
    
    public class popup_prefab extends popup_prefab_CLIP
    {
-       
-      
       private var _KITS:Vector.<Kit>;
       
       private var _triggered:Boolean = false;
@@ -365,24 +363,5 @@ package
             "costs":_loc3_
          };
       }
-   }
-}
-
-class Kit
-{
-    
-   
-   public var build:Object;
-   
-   public var resourceWorth:Number;
-   
-   public var shinyWorth:uint;
-   
-   public function Kit(param1:Object)
-   {
-      super();
-      this.build = param1;
-      this.resourceWorth = popup_prefab.getResourceCostFromBuild(param1);
-      this.shinyWorth = popup_prefab.getShinyWorthFromResources(this.resourceWorth);
    }
 }
