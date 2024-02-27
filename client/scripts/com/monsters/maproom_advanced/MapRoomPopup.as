@@ -304,7 +304,7 @@ package com.monsters.maproom_advanced
             mcInfo.mcAlliancePic.mcImage.removeChildAt(_loc2_);
          }
          mcInfo.mcAlliancePic.visible = false;
-         if(GLOBAL._flags.viximo)
+         if(GLOBAL._flags.kongregate)
          {
             if(param1._base > 1 && Boolean(param1._pic_square))
             {
