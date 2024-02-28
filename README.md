@@ -54,3 +54,13 @@ git clone https://github.com/bym-refitted/backyard-monsters-refitted
 - [The Internet Archive](https://archive.org/), a digital library of Internet sites and other cultural artifacts in digital form.
 - [Flashpoint Archive](https://flashpointarchive.org/), the webgame preservation project.
 - [Adobe Flash Player Archive](https://archive.org/download/flashplayerarchive/), the Adobe Inc. archive.org Flash Player Archive.
+
+<br />
+
+## License [![GPL v3](https://img.shields.io/badge/GPL%20v3-blue)](http://www.gnu.org/licenses/gpl-3.0)
+
+```
+Backyard Monsters preservation project.
+Copyright (C) 2024 | The Backyard Monsters Refitted team
+See the GNU General Public License <https://www.gnu.org/licenses/>.
+```
