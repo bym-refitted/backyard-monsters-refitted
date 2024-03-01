@@ -81,7 +81,12 @@ export const getDefaultBaseData = (user?: User) => {
     inventory: {},
     monsters: {},
     player: {},
-    krallen: {},
+    krallen: devConfig.unlockAllEventRewards ? {
+      countdown: 443189,
+      wins: 1,
+      tier: 5,
+      loot: 0,
+    } : {},
     siege: {},
     buildingresources: {},
     frontpage: {},
@@ -96,7 +101,7 @@ export const getDefaultBaseData = (user?: User) => {
           unblockSlimeattikus: { id: "unblockSlimeattikus" },
           unblockVorg: { id: "unblockVorg" },
           korathReward: { id: "korathReward" },
-          krallenReward: { id: "krallenReward" }
+          krallenReward: { id: "krallenReward" },
         }
       : {},
     takeover: {},
