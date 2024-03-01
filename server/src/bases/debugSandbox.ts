@@ -6002,10 +6002,10 @@ export const debugSandbox = {
   },
   empiredestroyed: 1,
   krallen: {
-    countdown: 443189,
-    wins: 0,
-    tier: 0,
-    loot: 1417549289,
+    ountdown: 443189,
+    wins: 5,
+    tier: 5,
+    loot: 750000000000,
   },
   worldid: "2140",
   event_score: 0,
@@ -6088,8 +6088,6 @@ export const debugSandbox = {
     unlockRezghul: { id: "unlockRezghul" },
     unblockSlimeattikus: { id: "unblockSlimeattikus" },
     unblockVorg: { id: "unblockVorg" },
-    korathReward: { id: "korathReward" },
-    krallenReward: { id: "krallenReward" }
   },
   relationship: 0,
   iresources: {
