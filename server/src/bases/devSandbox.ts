@@ -689,8 +689,6 @@ export const devSandbox = {
     unlockRezghul: { id: "unlockRezghul" },
     unblockSlimeattikus: { id: "unblockSlimeattikus" },
     unblockVorg: { id: "unblockVorg" },
-    korathReward: { id: "korathReward" },
-    krallenReward: { id: "krallenReward" }
   },
   aiattacks: {
     attackPreference: 1,
@@ -761,7 +759,12 @@ export const devSandbox = {
     C51: 1,
   },
   player: {},
-  krallen: {},
+  krallen: {
+    countdown: 443189, // ToDo: Hardcoded stats
+    wins: 5,
+    tier: 5,
+    loot: 750000000000,
+  },
   siege: null,
   buildingresources: {},
   mushrooms: { l: [], s: 1703676475 },
