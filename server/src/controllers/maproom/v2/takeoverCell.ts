@@ -4,6 +4,7 @@ import { ORMContext } from "../../../server";
 import { Save } from "../../../models/save.model";
 import { subtractResources, updateResources } from "../../../data/updateResources";
 import { WorldMapCell } from "../../../models/worldmapcell.model";
+import { calculateBaseLevel } from "../../../services/base/calculateBaseLevel";
 
 interface TakeoverCellRequest {
     baseid: string
@@ -35,9 +36,6 @@ export const takeoverCell: KoaController = async (ctx) => {
             save.credits = 0;
             save.catapult = 0;
             save.storedata = {};
-            save.points = 0;
-            save.basevalue = 0;
-            save.level = 1;
         }
 
         if (request.resources) {
@@ -87,6 +85,9 @@ export const takeoverCell: KoaController = async (ctx) => {
                 save.outposts = authSave.outposts;
                 save.homebase = authSave.homebase;
                 save.homebaseid = authSave.homebaseid
+                save.points = authSave.points;
+                save.basevalue = authSave.basevalue;
+                save.level = calculateBaseLevel(authSave.points, authSave.basevalue);
 
                 await Promise.all([
                     ORMContext.em.persistAndFlush(cell),
