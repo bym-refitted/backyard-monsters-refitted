@@ -4,7 +4,7 @@
 export const devConfig = {
   logMissingAssets: false,
   skipTutorial: true,
-  unlockAllEventRewards: true,
+  unlockAllEventRewards: false,
   maproom: false,
   inferno: false,
   devSandbox: false,
