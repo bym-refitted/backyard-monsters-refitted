@@ -9,6 +9,7 @@ import { getCurrentDateTime } from "../utils/getCurrentDateTime";
 import { logging } from "../utils/logger";
 import { storeItems } from "../data/storeItems";
 import { saveFailureErr } from "../errors/errorCodes.";
+import { monsterUpdateBases } from "../services/base/monster";
 
 export const baseSave: KoaController = async (ctx) => {
   const user: User = ctx.authUser;
@@ -113,8 +114,15 @@ export const baseSave: KoaController = async (ctx) => {
       authSave.champion = ctx.request.body["attackerchampion"];
     }
     if (save.monsterupdate.length > 0) {
-      const monsters = save.monsterupdate[0];
-      authSave.monsters = monsters.m;
+      const authMonsters = save.monsterupdate.find(({ baseid }) => baseid == authSave.baseid);
+      const monsterUpdates = save.monsterupdate.filter(({ baseid }) => baseid != authSave.baseid);
+      if (authMonsters) {
+        authSave.monsters = authMonsters.m;
+      }
+      if (monsterUpdates.length > 0) {
+        await monsterUpdateBases(monsterUpdates)
+      }
+
     }
     const resources = <Resources>save.attackloot;
     const savedResources: FieldData = updateResources(

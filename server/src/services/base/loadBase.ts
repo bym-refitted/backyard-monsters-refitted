@@ -57,6 +57,8 @@ export const loadBuildBase = async (ctx: Context, baseid: string): Promise<Save>
                 save.lockerdata = authSave.lockerdata;
                 save.academy = authSave.academy;
                 save.researchdata = authSave.researchdata;
+                save.quests = authSave.quests;
+                save.rewards = authSave.rewards;
             }
         }
     }
