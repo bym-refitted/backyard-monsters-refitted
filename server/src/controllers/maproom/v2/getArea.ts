@@ -5,30 +5,38 @@ import { User } from "../../../models/user.model";
 import { WorldMapCell } from "../../../models/worldmapcell.model";
 import { ORMContext } from "../../../server";
 import { calculateBaseLevel } from "../../../services/base/calculateBaseLevel";
+import { generateMapTerrain } from "./generateTerrain";
 
 interface Cell {
   x?: number;
   y?: number;
   width?: number;
   height?: number;
-  sendresources?: number
+  sendresources?: number;
 }
 
 export const getArea: KoaController = async (ctx) => {
   const user: User = ctx.authUser;
   const requestBody: Cell = ctx.request.body;
-  await ORMContext.em.populate(user, ["save"])
-  const save = user.save
+  await ORMContext.em.populate(user, ["save"]);
+  const save = user.save;
 
   for (const key in requestBody) {
     requestBody[key] = parseInt(requestBody[key], 10) || 0;
   }
 
-  const sendresources = requestBody.sendresources || 0;
-  const currentX = requestBody.x
-  const currentY = requestBody.y
   const width = requestBody.width || 10;
   const height = requestBody.height || 10;
+  const currentX = requestBody.x;
+  const currentY = requestBody.y;
+  const sendresources = requestBody.sendresources || 0;
+
+  const terrainMap = generateMapTerrain(height, height);
+  
+  // Converts terrain map to a map of terrain types represented as numbers
+  const terrainTypeValues: number[][] = terrainMap.map((row) =>
+    row.map(cell => cell)
+  );
 
   // Creates {maxX} x {maxY} grid from point 0 x 0
   const maxX = currentX + width;
@@ -44,11 +52,13 @@ export const getArea: KoaController = async (ctx) => {
       $lte: maxY,
     },
     world_id: "1", // ToDo: implement a world table?
-  })
+  });
 
   const baseLevel = calculateBaseLevel(save.points, save.basevalue);
 
-  const worldMap = wCells.reduce<{ [x: number]: { [y: number]: WorldMapCell } }>((acc, obj) => {
+  const worldMap = wCells.reduce<{
+    [x: number]: { [y: number]: WorldMapCell };
+  }>((acc, obj) => {
     const { x, y } = obj;
     if (!acc[x]) {
       acc[x] = {};
@@ -63,15 +73,17 @@ export const getArea: KoaController = async (ctx) => {
     cells[x] = {};
 
     for (let y = currentY; y < maxY; y++) {
+      const terrainType = terrainTypeValues[x - currentX][y - currentY];
+
       if (worldMap.hasOwnProperty(x)) {
         if (worldMap[x].hasOwnProperty(y)) {
           const cell = worldMap[x][y];
           if (cell.base_type != 1) {
-            cells[x][y] = await homeCell(ctx, cell)
+            cells[x][y] = await homeCell(ctx, cell);
           } else {
-            cells[x][y] = await wildMonsterCell(cell)
+            cells[x][y] = await wildMonsterCell(terrainType, cell);
           }
-          continue
+          continue;
         }
       }
 
@@ -80,8 +92,8 @@ export const getArea: KoaController = async (ctx) => {
       cell.y = y;
       cell.base_id = 0;
       cell.world_id = save.worldid;
-      const s_lvl = baseLevel < 20 ? 10 : (baseLevel < 30 ? 20 : 30); // ToDo: add level randomness base on auth save level
-      cells[x][y] = await wildMonsterCell(cell, s_lvl);
+      const s_lvl = baseLevel < 20 ? 10 : baseLevel < 30 ? 20 : 30; // ToDo: add level randomness base on auth save level
+      cells[x][y] = await wildMonsterCell(terrainType, cell, s_lvl);
     }
   }
 
@@ -96,9 +108,7 @@ export const getArea: KoaController = async (ctx) => {
   };
 
   if (sendresources === 1) {
-    ctx.body['resources'] = save.resources
+    ctx.body["resources"] = save.resources;
     ctx.body["credits"] = save.credits;
   }
 };
-
-
