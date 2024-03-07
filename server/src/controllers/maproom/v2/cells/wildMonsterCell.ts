@@ -2,10 +2,14 @@ import { WorldMapCell } from "../../../../models/worldmapcell.model";
 import { ORMContext } from "../../../../server";
 import { Save } from "../../../../models/save.model";
 import { generateBaseID } from "../../../../services/maproom/v2/world";
-const tribes = ["Legionnaire", "Kozu", "Abunakki", "Dreadnaut",];
 
-export const wildMonsterCell = async (cell?: WorldMapCell, level: number = 32) => {
-  // const randomIndex = Math.floor(Math.random() * tribes.length);
+const tribes = ["Legionnaire", "Kozu", "Abunakki", "Dreadnaut"];
+
+export const wildMonsterCell = async (
+  terrainType: number,
+  cell?: WorldMapCell,
+  level: number = 32
+) => {
   const tribe = (cell.x + cell.y) % tribes.length;
   const tribeName = tribes[tribe];
 
@@ -15,8 +19,8 @@ export const wildMonsterCell = async (cell?: WorldMapCell, level: number = 32) =
       baseid: cell?.base_id.toString(),
       wmid: {
         $ne: 0,
-      }
-    })
+      },
+    });
   }
 
   return {
@@ -26,7 +30,7 @@ export const wildMonsterCell = async (cell?: WorldMapCell, level: number = 32) =
     pi: 0,
     bid: generateBaseID(parseInt(cell.world_id), cell.x, cell.y),
     aid: 0,
-    i: 139,
+    i: terrainType,
     mine: 0,
     f: save?.flinger || 0,
     c: save?.catapult || 0,
@@ -43,5 +47,5 @@ export const wildMonsterCell = async (cell?: WorldMapCell, level: number = 32) =
     dm: save?.damage || 0,
     pic_square: "",
     im: "",
-  }
+  };
 };
