@@ -25,13 +25,22 @@ export const homeCell = async (ctx: Context, cell: WorldMapCell) => {
 
   const online = isOnline(save.savetime);
   const locked = mine ? save.locked : (online ? 1 : save.locked);
-  let bProtect = save.damage > 69 // noice
-  if (save.type === "outpost" && bProtect) {
-    bProtect = false;
+  let bProtect = save.protected
+  if (save.type === 'main' && save.damage > 69) {
+    bProtect = 1;
   }
+
+  // ? true : save.damage > 69 // noice
+  // if (save.type === "outpost" && bProtect) {
+  //   bProtect = false;
+  // }
 
   let base = null;
   if (save && user) {
+    if(user) {
+      await ORMContext.em.populate(user, ['save']);
+    }
+    const userSave = user.save;
     base = {
       uid: user.userid, // ToDo: Why do we have a userId for both user and save table? Fix
       b: cell.base_type,
@@ -48,7 +57,7 @@ export const homeCell = async (ctx: Context, cell: WorldMapCell) => {
       fr: 0,
       on: online, // ToDo
       p: bProtect,
-      r: save.resources,
+      r: userSave.resources,
       m: save.monsters,
       l: calculateBaseLevel(save.points, save.basevalue),
       d: save.damage > 90,
