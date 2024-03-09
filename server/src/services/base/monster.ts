@@ -14,7 +14,7 @@ export const monsterUpdateBases = async (monsterupdates: Array<MonsterUpdate>) =
 
     const queries = [];
     for (const update of monsterupdates) {
-        queries.push(k.raw("UPDATE save SET monsters = ? WHERE baseid = ?", [update.m, update.baseid]))
+        queries.push(k.raw("UPDATE save SET protected = 0, monsters = ? WHERE baseid = ?", [update.m, update.baseid]))
     }
     await Promise.all(queries)
 }
