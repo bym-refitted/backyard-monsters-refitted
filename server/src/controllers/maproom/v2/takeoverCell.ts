@@ -23,19 +23,14 @@ export const takeoverCell: KoaController = async (ctx) => {
     })
 
     let error = 1;
-    if (save) {
+    if (save && save.type != 'main') {
         error = 0;
 
         if (save.saveuserid === 0) {
             save.buildingdata = {}
             save.buildinghealthdata = {};
-            save.researchdata = {};
-            save.stats = {};
-            save.champion = "null";
             save.flinger = 0;
-            save.credits = 0;
             save.catapult = 0;
-            save.storedata = {};
         }
 
         if (request.resources) {
@@ -88,6 +83,11 @@ export const takeoverCell: KoaController = async (ctx) => {
                 save.points = authSave.points;
                 save.basevalue = authSave.basevalue;
                 save.level = calculateBaseLevel(authSave.points, authSave.basevalue);
+                save.researchdata = {};
+                save.stats = {};
+                save.champion = "null";
+                save.credits = 0;
+                save.storedata = {};
 
                 await Promise.all([
                     ORMContext.em.persistAndFlush(cell),

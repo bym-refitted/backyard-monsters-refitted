@@ -36,12 +36,15 @@ export const baseLoad: KoaController = async (ctx) => {
 
   if (requestBody.type === "build") {
     save = await loadBuildBase(ctx, requestBody.baseid);
+    if(save && save.saveuserid !== user.userid) {
+      throw saveFailureErr;
+    }
   } else {
     save = await loadViewBase(ctx, requestBody.baseid)
   }
 
   logging(
-    `Loading base for user: ${ctx.authUser.username} | IP Address: ${ctx.ip}`
+    `Loading base for user: ${ctx.authUser.username} | IP Address: ${ctx.ip} | Base ID: ${requestBody.baseid}`
   );
   if (save) {
     if (process.env.ENV === "local") {
