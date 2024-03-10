@@ -5,7 +5,8 @@ import { User } from "../../../models/user.model";
 import { WorldMapCell } from "../../../models/worldmapcell.model";
 import { ORMContext } from "../../../server";
 import { calculateBaseLevel } from "../../../services/base/calculateBaseLevel";
-import { Terrain, generateMapTerrain } from "./generateTerrain";
+import { generateTerrain } from "./terrain/generateTerrain";
+import { Terrain } from "./terrain/Terrain";
 
 interface Cell {
   x?: number;
@@ -31,7 +32,7 @@ export const getArea: KoaController = async (ctx) => {
   const currentY = requestBody.y;
   const sendresources = requestBody.sendresources || 0;
 
-  const terrainMap = generateMapTerrain(height, height);
+  const terrainMap = generateTerrain(height, height);
   
   // Converts terrain map to a map of terrain types represented as numbers
   const terrainTypeValues: number[][] = terrainMap.map((row) =>

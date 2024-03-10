@@ -1,18 +1,6 @@
-export enum Terrain {
-  WATER1 = 79,
-  WATER2 = 89,
-  WATER3 = 99,
-  SAND1 = 104,
-  SAND2 = 109,
-  LAND1 = 119,
-  LAND2 = 139,
-  LAND3 = 159,
-  LAND4 = 169,
-  ROCK = 174,
-  LAND6 = 176,
-}
+import { Terrain } from "./Terrain";
 
-export const generateMapTerrain = (width: number, height: number) => {
+export const generateTerrain = (width: number, height: number) => {
   const terrain: Terrain[][] = [];
   const waterTerrain: boolean[][] = [];
 
