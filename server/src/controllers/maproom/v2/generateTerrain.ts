@@ -12,63 +12,87 @@ enum TerrainType {
   LAND6 = 176,
 }
 
-interface Terrain {
-  terrain: TerrainType;
-  threshold: number;
-  probability?: number;
-}
+export const generateMapTerrain = (width: number, height: number) => {
+  const terrain: TerrainType[][] = [];
+  const waterTerrain: boolean[][] = [];
 
-const terrains: Terrain[] = [
-  { terrain: TerrainType.SAND1, threshold: 105 },
-  { terrain: TerrainType.SAND2, threshold: 110 },
-  { terrain: TerrainType.LAND1, threshold: 120 },
-  { terrain: TerrainType.LAND2, threshold: 140 },
-  { terrain: TerrainType.LAND3, threshold: 160 },
-  { terrain: TerrainType.LAND4, threshold: 170 },
-  { terrain: TerrainType.ROCK, threshold: 175 },
-  { terrain: TerrainType.LAND6, threshold: Infinity },
-];
-
-const waterTerrains: Terrain[] = [
-  { terrain: TerrainType.WATER1, threshold: 80, probability: 0.05 },
-  { terrain: TerrainType.WATER2, threshold: 90 },
-  { terrain: TerrainType.WATER3, threshold: 100 },
-];
-
-export const generateMapTerrain = (
-  width: number,
-  height: number
-): TerrainType[][] => {
-  const map: TerrainType[][] = [];
-
-  // Generates random heights for each cell
+  // Create a default terrain
   for (let rowIndex = 0; rowIndex < height; rowIndex++) {
     const row: TerrainType[] = [];
     for (let colIndex = 0; colIndex < width; colIndex++) {
-      const cellHeight = Math.floor(Math.random() * 200); // Heights (0-200)
-      row.push(generateTerrain(cellHeight));
+      row.push(TerrainType.LAND6);
     }
-    map.push(row);
+    terrain.push(row);
   }
 
-  return map;
+  // Create a water terrain
+  for (let rowIndex = 0; rowIndex < height; rowIndex++) {
+    const row: boolean[] = [];
+    for (let colIndex = 0; colIndex < width; colIndex++) {
+      row.push(false);
+    }
+    waterTerrain.push(row);
+  }
+
+  // Water grid: [w: 2-6] [h: 2-5]
+  const waterGridWidth = Math.floor(Math.random() * 5) + 2;
+  const waterGridHeight = Math.floor(Math.random() * 4) + 2;
+
+  const waterStartX = Math.floor(Math.random() * (width - waterGridWidth + 1));
+  const waterStartY = Math.floor(
+    Math.random() * (height - waterGridHeight + 1)
+  );
+
+  // Generate water grid
+  for (let y = waterStartY; y < waterStartY + waterGridHeight; y++) {
+    for (let x = waterStartX; x < waterStartX + waterGridWidth; x++) {
+      terrain[y][x] = getRandomWaterTerrain();
+      waterTerrain[y][x] = true;
+    }
+  }
+
+  // Fill the rest of the map with non-water terrains
+  for (let rowIndex = 0; rowIndex < height; rowIndex++) {
+    for (let colIndex = 0; colIndex < width; colIndex++) {
+      if (!waterTerrain[rowIndex][colIndex]) {
+        terrain[rowIndex][colIndex] = getRandomLandTerrain();
+      }
+    }
+  }
+  return terrain;
 };
 
-const generateTerrain = (height: number): TerrainType => {
-  const randomNumber = Math.random();
+const getRandomWaterTerrain = (): TerrainType => {
+  const randomIndex = Math.floor(Math.random() * 3);
+  switch (randomIndex) {
+    case 0:
+      return TerrainType.WATER1;
+    case 1:
+      return TerrainType.WATER2;
+    default:
+      return TerrainType.WATER3;
+  }
+};
 
-  // Check if the random number falls within the water probability range
-  // If within water probability range, select water terrain
-  if (randomNumber < waterTerrains[0].probability) {
-    for (const { terrain, threshold } of waterTerrains) {
-      if (height < threshold) return terrain;
-    }
-    return TerrainType.WATER3;
-  } else {
-    // Select other terrains
-    for (const { terrain, threshold } of terrains) {
-      if (height < threshold) return terrain;
-    }
-    return TerrainType.LAND6;
+
+const getRandomLandTerrain = (): TerrainType => {
+  const randomIndex = Math.floor(Math.random() * 8);
+  switch (randomIndex) {
+    case 0:
+      return TerrainType.SAND1;
+    case 1:
+      return TerrainType.SAND2;
+    case 2:
+      return TerrainType.LAND1;
+    case 3:
+      return TerrainType.LAND2;
+    case 4:
+      return TerrainType.LAND3;
+    case 5:
+      return TerrainType.LAND4;
+    case 6:
+      return TerrainType.ROCK;
+    default:
+      return TerrainType.LAND6;
   }
 };
