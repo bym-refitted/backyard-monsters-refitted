@@ -1,4 +1,4 @@
-enum TerrainType {
+export enum Terrain {
   WATER1 = 79,
   WATER2 = 89,
   WATER3 = 99,
@@ -13,14 +13,14 @@ enum TerrainType {
 }
 
 export const generateMapTerrain = (width: number, height: number) => {
-  const terrain: TerrainType[][] = [];
+  const terrain: Terrain[][] = [];
   const waterTerrain: boolean[][] = [];
 
   // Create a default terrain
   for (let rowIndex = 0; rowIndex < height; rowIndex++) {
-    const row: TerrainType[] = [];
+    const row: Terrain[] = [];
     for (let colIndex = 0; colIndex < width; colIndex++) {
-      row.push(TerrainType.LAND6);
+      row.push(Terrain.LAND6);
     }
     terrain.push(row);
   }
@@ -46,7 +46,13 @@ export const generateMapTerrain = (width: number, height: number) => {
   // Generate water grid
   for (let y = waterStartY; y < waterStartY + waterGridHeight; y++) {
     for (let x = waterStartX; x < waterStartX + waterGridWidth; x++) {
-      terrain[y][x] = getRandomWaterTerrain();
+      const isWatersEdge =
+        y === waterStartY ||
+        y === waterStartY + waterGridHeight - 1 ||
+        x === waterStartX ||
+        x === waterStartX + waterGridWidth - 1;
+
+      terrain[y][x] = getRandomWaterTerrain(isWatersEdge);
       waterTerrain[y][x] = true;
     }
   }
@@ -62,37 +68,36 @@ export const generateMapTerrain = (width: number, height: number) => {
   return terrain;
 };
 
-const getRandomWaterTerrain = (): TerrainType => {
-  const randomIndex = Math.floor(Math.random() * 3);
+const getRandomWaterTerrain = (isWatersEdge: boolean): Terrain => {
+  if (isWatersEdge) return Terrain.WATER3;
+
+  const randomIndex = Math.floor(Math.random() * 2);
   switch (randomIndex) {
     case 0:
-      return TerrainType.WATER1;
-    case 1:
-      return TerrainType.WATER2;
+      return Terrain.WATER1;
     default:
-      return TerrainType.WATER3;
+      return Terrain.WATER2;
   }
 };
 
-
-const getRandomLandTerrain = (): TerrainType => {
+const getRandomLandTerrain = (): Terrain => {
   const randomIndex = Math.floor(Math.random() * 8);
   switch (randomIndex) {
     case 0:
-      return TerrainType.SAND1;
+      return Terrain.SAND1;
     case 1:
-      return TerrainType.SAND2;
+      return Terrain.SAND2;
     case 2:
-      return TerrainType.LAND1;
+      return Terrain.LAND1;
     case 3:
-      return TerrainType.LAND2;
+      return Terrain.LAND2;
     case 4:
-      return TerrainType.LAND3;
+      return Terrain.LAND3;
     case 5:
-      return TerrainType.LAND4;
+      return Terrain.LAND4;
     case 6:
-      return TerrainType.ROCK;
+      return Terrain.ROCK;
     default:
-      return TerrainType.LAND6;
+      return Terrain.LAND6;
   }
 };

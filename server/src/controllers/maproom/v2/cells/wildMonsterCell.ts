@@ -7,7 +7,7 @@ const tribes = ["Legionnaire", "Kozu", "Abunakki", "Dreadnaut"];
 
 export const wildMonsterCell = async (
   terrainType: number,
-  cell?: WorldMapCell,
+  cell: WorldMapCell,
   level: number = 32
 ) => {
   const tribe = (cell.x + cell.y) % tribes.length;
