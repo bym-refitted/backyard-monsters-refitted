@@ -5,7 +5,7 @@ import { User } from "../../../models/user.model";
 import { WorldMapCell } from "../../../models/worldmapcell.model";
 import { ORMContext } from "../../../server";
 import { calculateBaseLevel } from "../../../services/base/calculateBaseLevel";
-import { generateMapTerrain } from "./generateTerrain";
+import { Terrain, generateMapTerrain } from "./generateTerrain";
 
 interface Cell {
   x?: number;
@@ -73,16 +73,14 @@ export const getArea: KoaController = async (ctx) => {
     cells[x] = {};
 
     for (let y = currentY; y < maxY; y++) {
-      const terrainType = terrainTypeValues[x - currentX][y - currentY];
+      const terrain = terrainTypeValues[x - currentX][y - currentY];
 
       if (worldMap.hasOwnProperty(x)) {
         if (worldMap[x].hasOwnProperty(y)) {
           const cell = worldMap[x][y];
           if (cell.base_type != 1) {
             cells[x][y] = await homeCell(ctx, cell);
-          } else {
-            cells[x][y] = await wildMonsterCell(terrainType, cell);
-          }
+          } 
           continue;
         }
       }
@@ -93,7 +91,13 @@ export const getArea: KoaController = async (ctx) => {
       cell.base_id = 0;
       cell.world_id = save.worldid;
       const s_lvl = baseLevel < 20 ? 10 : baseLevel < 30 ? 20 : 30; // ToDo: add level randomness base on auth save level
-      cells[x][y] = await wildMonsterCell(terrainType, cell, s_lvl);
+
+      if (terrain === Terrain.WATER1 || terrain === Terrain.WATER2 || terrain === Terrain.WATER3) {
+        cells[x][y] = { i: terrain }
+        continue;
+      }
+
+      cells[x][y] = await wildMonsterCell(terrain, cell, s_lvl);
     }
   }
 
