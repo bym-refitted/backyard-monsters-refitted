@@ -57,7 +57,10 @@ export const generateTerrain = (width: number, height: number) => {
 };
 
 const getRandomWaterTerrain = (isWatersEdge: boolean): Terrain => {
-  if (isWatersEdge) return Terrain.WATER3;
+  if (isWatersEdge) {
+    const randomIndex = Math.random();
+    return randomIndex < 0.5 ? Terrain.WATER3 : Terrain.WATER2;
+  }
 
   const randomIndex = Math.floor(Math.random() * 2);
   switch (randomIndex) {
