@@ -7,19 +7,13 @@ export const generateTerrain = (width: number, height: number) => {
   // Create a default terrain
   for (let rowIndex = 0; rowIndex < height; rowIndex++) {
     const row: Terrain[] = [];
+    const waterRow: boolean[] = [];
     for (let colIndex = 0; colIndex < width; colIndex++) {
       row.push(Terrain.LAND6);
+      waterRow.push(false);
     }
     terrain.push(row);
-  }
-
-  // Create a water terrain
-  for (let rowIndex = 0; rowIndex < height; rowIndex++) {
-    const row: boolean[] = [];
-    for (let colIndex = 0; colIndex < width; colIndex++) {
-      row.push(false);
-    }
-    waterTerrain.push(row);
+    waterTerrain.push(waterRow);
   }
 
   // Water grid: [w: 2-6] [h: 2-5]
