@@ -43,7 +43,8 @@ export const generateTerrain = (width: number, height: number) => {
   for (let rowIndex = 0; rowIndex < height; rowIndex++) {
     for (let colIndex = 0; colIndex < width; colIndex++) {
       if (!waterTerrain[rowIndex][colIndex]) {
-        terrain[rowIndex][colIndex] = getRandomLandTerrain();
+        const terrainBesideWater = isAdjacentToWater(waterTerrain, rowIndex, colIndex);
+        terrain[rowIndex][colIndex] = getNextTerrain(terrainBesideWater);
       }
     }
   }
@@ -65,24 +66,61 @@ const getRandomWaterTerrain = (isWatersEdge: boolean): Terrain => {
   }
 };
 
-const getRandomLandTerrain = (): Terrain => {
-  const randomIndex = Math.floor(Math.random() * 8);
-  switch (randomIndex) {
-    case 0:
-      return Terrain.SAND1;
-    case 1:
-      return Terrain.SAND2;
-    case 2:
-      return Terrain.LAND1;
-    case 3:
-      return Terrain.LAND2;
-    case 4:
-      return Terrain.LAND3;
-    case 5:
-      return Terrain.LAND4;
-    case 6:
-      return Terrain.ROCK;
-    default:
-      return Terrain.LAND6;
+const getNextTerrain = (isAdjacentToWater: boolean): Terrain => {
+  if (isAdjacentToWater) {
+    const randomIndex = Math.floor(Math.random() * 4);
+    switch (randomIndex) {
+      case 0:
+        return Terrain.SAND1;
+      case 1:
+        return Terrain.SAND2;
+      case 2:
+        return Terrain.LAND1;
+      default:
+        return Terrain.LAND2;
+    }
+  } else {
+    const randomIndex = Math.floor(Math.random() * 8);
+    switch (randomIndex) {
+      case 0:
+        return Terrain.SAND1;
+      case 1:
+        return Terrain.SAND2;
+      case 2:
+        return Terrain.LAND1;
+      case 3:
+        return Terrain.LAND2;
+      case 4:
+        return Terrain.LAND3;
+      // case 5:
+      //   return Terrain.LAND4; // Leave these commented out for now until we figure out basics
+      // case 6:
+      //   return Terrain.ROCK;
+      default:
+        return Terrain.LAND2; // should be LAND6
+    }
   }
+};
+
+// This doesn't work 100% fuck
+const isAdjacentToWater = (waterTerrain: boolean[][], rowIndex: number, colIndex: number) => {
+  const neighborOffsets = [
+    [-1, 0],   // Up
+    [1, 0],    // Down
+    [0, -1],   // Left
+    [0, 1],    // Right
+  ];
+
+  for (const [rowOffset, colOffset] of neighborOffsets) {
+    const neighborRow = rowIndex + rowOffset;
+    const neighborCol = colIndex + colOffset;
+    
+    if (neighborRow >= 0 && neighborRow < waterTerrain.length && 
+        neighborCol >= 0 && neighborCol < waterTerrain[0].length) {
+      if (waterTerrain[neighborRow][neighborCol]) {
+        return true;
+      }
+    }
+  }
+  return false;
 };
