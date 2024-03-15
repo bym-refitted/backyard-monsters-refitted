@@ -35,7 +35,6 @@ const getUserLimiter = RateLimit.middleware({
 // Auth
 router.post("/api/player/getinfo", getUserLimiter, debugDataLog("User login attempt"), login);
 router.post("/api/player/register", debugDataLog("Registering user"), register);
-router.post("/api/player/savebookmarks", auth, debugDataLog("MR2 save bookmarks"), saveBookmarks);
 
 
 // Load
@@ -59,8 +58,9 @@ router.post("/api/bm/base/save", auth, debugDataLog("Inferno save data"), baseSa
 // Worldmap v2
 router.post("/worldmapv2/getarea", auth, debugDataLog("MR2 get area"), getArea);
 router.post("/worldmapv2/setmapversion", auth, debugDataLog("Set maproom version"), setMapVersion);
-router.post('/worldmapv2/takeoverCell', auth, debugDataLog("Taking over cell"), takeoverCell)
-router.post('/worldmapv2/transferassets', auth, debugDataLog("Transferring assets"), transferAssets)
+router.post('/worldmapv2/takeoverCell', auth, debugDataLog("Taking over cell"), takeoverCell);
+router.post('/worldmapv2/transferassets', auth, debugDataLog("Transferring assets"), transferAssets);
+router.post("/api/player/savebookmarks", auth, debugDataLog("MR2 save bookmarks"), saveBookmarks);
 
 // Worldmap v3
 router.post("/worldmapv3/initworldmap", auth, debugDataLog("Posting MR3 init data"), initialPlayerCellData);
