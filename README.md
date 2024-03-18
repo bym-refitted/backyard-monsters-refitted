@@ -20,10 +20,18 @@ This repository contains the entire modified SWF (Shockwave Flash) client files,
 <br>
 
 ## 🚀 How to Play
-We recommend to run the game in the native Flash Player projector, which is included in the root of this repository [here](./flashplayer_32.exe). Once you have downloaded and opened the Flash Player, click on `File > Open` and select the game file. You can find the game file under our [latest releases](https://github.com/bym-refitted/backyard-monsters-refitted/releases).
+
+### Linux
+You can use [this](./launcher.sh) script to automatically set-up the game for you: It checks for the latest release and automatically downloads the Flash Player if not found.
+
+### Manual Installation
+We recommend running the game in the native Flash Player projector, which is linked below. Once you have downloaded and opened the Flash Player, click on `File > Open` and select the game file. You can find the game file under our [latest releases](https://github.com/bym-refitted/backyard-monsters-refitted/releases).
+
+[Flash Player for Windows](./flashplayer_32.exe)
+
+[Flash Player for Mac/Linux](https://archive.org/download/flashplayer32_0r0_363_win_sa)
 
 <br>
-
 
 ## Server setup
 
