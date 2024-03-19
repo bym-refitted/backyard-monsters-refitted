@@ -2,11 +2,11 @@
 /** https://github.com/bym-refitted/backyard-monsters-refitted/wiki/Dev-Settings-%E2%80%90-Configuration */
 
 export const devConfig = {
-  logMissingAssets: false,
+  logMissingAssets: true,
   skipTutorial: true,
   unlockAllEventRewards: false,
   maproom: true,
-  inferno: false,
+  inferno: true,
   devSandbox: false,
   debugSandbox: false,
 };

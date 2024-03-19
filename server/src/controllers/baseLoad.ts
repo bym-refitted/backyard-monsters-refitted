@@ -27,7 +27,7 @@ interface BaseLoadRequest {
 // The 'baseid' should be used to lookup & return a base in the database with the corresponding id
 export const baseLoad: KoaController = async (ctx) => {
   const requestBody: BaseLoadRequest = <BaseLoadRequest>ctx.request.body
-// console.log("LOADING BASE", ctx.request.body)
+  //console.log("LOADING BASE", ctx.request.body)
 
   const user: User = ctx.authUser;
   await ORMContext.em.populate(user, ["save"]);
@@ -89,6 +89,15 @@ export const baseLoad: KoaController = async (ctx) => {
       save.homebaseid = save.basesaveid;
       save.cellid = cell.cell_id;
       save.worldid = cell.world_id;
+    }
+    await ORMContext.em.persistAndFlush(save);
+  }
+
+  if (requestBody.type === "idescent") {
+    //[201,202,203,204,205,206,207] - inferno base IDs
+    save.wmstatus = user.save.wmstatus;
+    if (save.wmstatus.length == 0) {
+      save.wmstatus = [[201,1,0],[202,2,0],[203,3,0],[204,4,0],[205,5,0],[206,6,0],[207,7,0]];
     }
     await ORMContext.em.persistAndFlush(save);
   }
