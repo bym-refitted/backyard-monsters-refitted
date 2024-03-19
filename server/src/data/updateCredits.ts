@@ -38,7 +38,10 @@ export const updateCredits = (save: Save, item: string, quantity: number) => {
     "BRTOPUP",
     "MHTOPUP",
     "HSM",
-    "QWM1"
+    "QWM1",
+    "IFD",
+    "BUNK",
+    "KIT"
   ]);
   if (nonStoreItem.has(item)) {
     save.credits -= quantity;

@@ -10,13 +10,15 @@ export const getDefaultBaseData = (user?: User) => {
   if (devConfig.devSandbox) return devSandbox;
   if (devConfig.debugSandbox) return debugSandbox;
 
+  const baseid = generateID(9)
+
   return {
-    baseid: "0",
+    baseid: baseid.toString(10),
     type: "main",
     userid: generateID(8),
     wmid: 0,
     seed: 0,
-    saveuserid: 0,
+    saveuserid: user.userid,
     bookmarked: 0,
     createtime: getCurrentDateTime(),
     savetime: 0, // Updates each time a save is triggered
@@ -41,12 +43,12 @@ export const getDefaultBaseData = (user?: User) => {
     basevalue: 20,
     protected: 0,
     lastupdate: 0,
-    usemap: 1,
-    homebaseid: generateID(9),
-    credits: 2500,
+    usemap: 0,
+    homebaseid: baseid,
+    credits: process.env.SHINY ? parseInt(process.env.SHINY)  : 2500,
     champion: "null",
     empiredestroyed: 1,
-    worldid: generateID(3, 2).toString(),
+    worldid: "",
     event_score: 0,
     chatenabled: 0,
     relationship: 0,
@@ -118,8 +120,8 @@ export const getDefaultBaseData = (user?: User) => {
     savetemplate: [],
     updates: [],
     effects: [],
-    homebase: ["0", "0"], // ToDo: This should be randomly generated per user, within the range of the map room grid
-    outposts: [[2, 1, 600024]], // Dummy outposts
+    homebase: null, // ToDo: This should be randomly generated per user, within the range of the map room grid
+    outposts: null, // Dummy outposts
     worldsize: [500, 500],
     wmstatus: [],
     chatservers: ["bym-chat.kixeye.com"],
