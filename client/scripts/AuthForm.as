@@ -43,10 +43,6 @@ package
 
         private var passwordErrorText:TextField;
 
-        private var checkbox:Checkbox;
-
-        private var rememberText:TextField;
-
         private var submitButton:Sprite;
 
         private var hasAccountText:TextField;
@@ -99,8 +95,6 @@ package
             emailErrorText = new TextField();
             buttonText = new TextField();
             passwordErrorText = new TextField();
-            rememberText = new TextField();
-            checkbox = new Checkbox();
             hasAccountText = new TextField();
 
             var formWidth:Number = 450;
@@ -133,7 +127,6 @@ package
             // Calculate starting y position to center content
             startY = centerY;
 
-
             this.loader = new Loader();
             this.loader.load(new URLRequest(GLOBAL.serverUrl + "assets/bym-refitted-assets/refitted-logo.png"), new LoaderContext(true));
             this.loader.contentLoaderInfo.addEventListener(Event.COMPLETE, onImageLoaded);
@@ -142,27 +135,6 @@ package
             usernameInput = createBlock(0, 0, "Username");
             emailInput = createBlock(350, 35, "Email");
             passwordInput = createBlock(350, 35, "Password", true);
-
-            // Create Checkbox & Remember Me text
-            checkbox.x = 60;
-            checkbox.y = startY + 3;
-            formContainer.addChild(checkbox);
-            checkbox.addEventListener(Checkbox.CHECK_EVENT, onRememberUser);
-            checkbox.buttonMode = true;
-            checkbox.useHandCursor = true;
-            checkbox.mouseChildren = false;
-            onMouseHoverEffect(checkbox);
-
-            rememberText.x = 80;
-            rememberText.y = startY;
-
-            var rememberMeFormat:TextFormat = new TextFormat();
-            rememberMeFormat.size = 14;
-            rememberMeFormat.color = BLACK;
-            rememberText.defaultTextFormat = rememberMeFormat;
-            rememberText.text = "Remember Me?";
-            formContainer.addChild(rememberText);
-            updateCheckboxVisibility();
 
             // Create button
             submitButton = createButton();
@@ -173,19 +145,6 @@ package
 
             // Link
             createLink();
-        }
-
-        private function onRememberUser(event:Event):void
-        {
-            if (checkbox.Checked)
-            {
-                GLOBAL.Message("<b>Reminder:</b> checking this box will keep you logged into your account, however, it is considered <b>less secure.</b>");
-                LOGIN.sharedObject.data.remembered = true;
-            }
-            else
-            {
-                LOGIN.sharedObject.data.remembered = false;
-            }
         }
 
         private function onImageLoaded(event:Event):void
@@ -398,20 +357,6 @@ package
             button.graphics.endFill();
         }
 
-        private function updateCheckboxVisibility():void
-        {
-            if (isRegisterForm)
-            {
-                checkbox.visible = false;
-                rememberText.visible = false;
-            }
-            else
-            {
-                checkbox.visible = true;
-                rememberText.visible = true;
-            }
-        }
-
         private function onMouseHoverEffect(element:Sprite):void
         {
             element.addEventListener(MouseEvent.ROLL_OVER, function(e:MouseEvent):void
@@ -541,7 +486,6 @@ package
             updateFormFields();
             updateButtonText();
             updateButtonColor();
-            updateCheckboxVisibility();
             updateLinkText();
             updateLinkColour();
         }
@@ -550,14 +494,12 @@ package
         {
             // Remove event listeners
             submitButton.removeEventListener(MouseEvent.CLICK, submitButtonClickHandler);
-            checkbox.Remove();
 
             // Remove display objects
             formContainer.removeChild(submitButton);
             formContainer.removeChild(emailInput);
             formContainer.removeChild(passwordInput);
             formContainer.removeChild(image);
-            formContainer.removeChild(checkbox);
             removeChild(formContainer);
 
             // Clean up resources

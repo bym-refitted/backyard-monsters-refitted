@@ -1,4 +1,4 @@
-import { Entity, Property, PrimaryKey, OneToOne } from "@mikro-orm/core";
+import { Entity, Property, PrimaryKey, OneToOne, Index } from "@mikro-orm/core";
 import { FieldData, Save } from "./save.model";
 import { FrontendKey } from "../utils/FrontendKey";
 
@@ -21,6 +21,7 @@ export class User {
 
   @FrontendKey
   @Property({ unique: true })
+  @Index()
   email!: string;
 
   @Property()

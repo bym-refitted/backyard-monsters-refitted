@@ -11,9 +11,7 @@ package
    import flash.system.Capabilities;
    import flash.text.TextField;
    import flash.text.TextFormat;
-   import flash.net.SharedObject;
    import com.monsters.radio.RADIO;
-   
 
    public class LOGIN
    {
@@ -44,7 +42,7 @@ package
 
       public static var authForm:AuthForm;
 
-      public static var sharedObject:SharedObject = SharedObject.getLocal("bym_refitted_local_data", "/");
+      public static var token:String;
 
       public function LOGIN()
       {
@@ -53,20 +51,8 @@ package
 
       public static function Login():void
       {
-         if (sharedObject.data.token && sharedObject.data.remembered)
-         {
-            PLEASEWAIT.Show("Logging in...");
-            new URLLoaderApi().load(GLOBAL._apiURL + "bm/getnewmap", null,
-                  function(serverData:Object)
-                  {
-                     LOGIN.OnGetNewMap(serverData, [["token", sharedObject.data.token]]);
-                  });
-         }
-         else
-         {
-            authForm = new AuthForm();
-            GLOBAL._layerTop.addChild(authForm);
-         }
+         authForm = new AuthForm();
+         GLOBAL._layerTop.addChild(authForm);
       }
 
       public static function OnGetNewMap(serverData:Object, authInfo:Array):void
@@ -90,17 +76,7 @@ package
                {
                   if (GLOBAL._local)
                   {
-                     try
-                     {
-                        // No access to browser - save user details to SharedObjects;
-                        sharedObject.data.userid = serverData.userid;
-                        sharedObject.data.token = serverData.token;
-                        sharedObject.flush();
-                     }
-                     catch (err:Error)
-                     {
-                        GLOBAL.Message("Error saving SharedObject");
-                     }
+                     token = serverData.token;
                      LOGIN.Process(serverData);
                   }
                   else
@@ -116,20 +92,7 @@ package
             };
             handleLoadError = function(error:IOErrorEvent):void
             {
-               // ToDo: Can we get error codes from server rather than this IOErrorEvent?
-               // If token is malformed or expired - improve, right now it's an assumption based on conditions
-               if (sharedObject.data.token && sharedObject.data.remembered)
-               {
-                  sharedObject.data.remembered = false;
-                  PLEASEWAIT.Hide();
-                  authForm = new AuthForm();
-                  GLOBAL._layerTop.addChild(authForm);
-                  GLOBAL._layerTop.addChild(GLOBAL.Message("Your session has expired. Please <b>login</b> again."));
-               }
-               else
-               {
-                  GLOBAL._layerTop.addChild(GLOBAL.Message("Hmm.. it seems this email and password combination does not match any account or there was an issue connecting."));
-               }
+               GLOBAL._layerTop.addChild(GLOBAL.Message("Hmm.. it seems this email and password combination does not match any account or there was an issue connecting."));
             };
             new URLLoaderApi().load(GLOBAL._apiURL + "player/getinfo", [["version", GLOBAL._version.Get()]].concat(authInfo), handleLoadSuccessful, handleLoadError);
          }
@@ -183,7 +146,7 @@ package
 
       private static function handleUserLogin(serverData:Object):void
       {
-         if (!sharedObject.data.userid && authForm)
+         if (authForm)
          {
             authForm.disposeUI();
          }
