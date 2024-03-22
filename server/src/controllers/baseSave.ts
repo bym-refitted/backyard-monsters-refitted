@@ -115,18 +115,37 @@ export const baseSave: KoaController = async (ctx) => {
 
   if (descentBases.includes(save.basesaveid)) {
     logging(save.destroyed + "");
-    if (save.destroyed == 1) {
+    try {
+      if (save.destroyed == 1) {
+        /*
+        The idea: 
+          the typical WMStatus will break the WMBASE.CheckQuests() function
+          [[201,1,0],[202,2,0],[203,3,0],[204,4,0],[205,5,0],[206,6,0],[207,7,0]]
+          so we create a new table with only 2 fields: userid and wmstatus, where 
+          userid is a user's ID, and wmstatus by default being the descent bases
+
+          so we're trying something silly here: using this separate table to stand-in base
+          IDs for descent bases when the game wants to access them, since they're only really 
+          useful specifically when the player is in the descent. 
+
+          There are possible problems here, but I feel like this is a viable method?
+        */
         let baseIndex = descentBases.indexOf(save.basesaveid)
         let userDescentBases = await ORMContext.em.findOne(DescentStatus, {
           userid: authSave.userid,
         })
         if (userDescentBases) {
-          let stored_base = userDescentBases[baseIndex];
+          logging(userDescentBases.userid + ": " + userDescentBases.wmstatus);
+          let stored_base = userDescentBases.wmstatus[baseIndex];
           stored_base[2] = 1;
           userDescentBases[baseIndex] = stored_base;
           await ORMContext.em.persistAndFlush(userDescentBases);
         }
+      }
+    } catch(error) {
+      logging("wtf happened?: " + error);
     }
+   
   }
   /*
     Assume that base save is in attack mode
