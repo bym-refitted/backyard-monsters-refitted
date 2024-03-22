@@ -7,9 +7,9 @@ import { json } from "body-parser";
 export class DescentStatus {
     @FrontendKey
     @PrimaryKey()
-    userid: number
+    userid!: number
 
     @FrontendKey
     @Property({type: "json", nullable: true})
-    wmstatus: number[][]
+    wmstatus!: number[][]
 }
