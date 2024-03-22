@@ -10,6 +10,7 @@ import { logging } from "../utils/logger";
 import { storeItems } from "../data/storeItems";
 import { saveFailureErr } from "../errors/errorCodes.";
 import { monsterUpdateBases } from "../services/base/monster";
+import { DescentStatus } from "../models/descentstatus.model";
 
 export const baseSave: KoaController = async (ctx) => {
   const user: User = ctx.authUser;
@@ -27,12 +28,14 @@ export const baseSave: KoaController = async (ctx) => {
   if (!save) throw saveFailureErr;
 
   const isOutpost = save.saveuserid === user.userid && save.homebaseid != save.basesaveid;
+  const descentBases = [201,202,203,204,205,206,207];
 
-
+  //logging(Save.jsonKeys.toString());
   // ToDo: Beta clean this shit up
   // Update the save with the values from the request
   for (const key of Save.jsonKeys) {
     const requestBodyValue = ctx.request.body[key];
+    //logging(key + ": " + requestBodyValue);
 
     switch (key) {
       case "resources":
@@ -83,6 +86,9 @@ export const baseSave: KoaController = async (ctx) => {
         }
         save.academy = academyData;
         break;
+      case "type":
+        
+        break;
       default:
         if (
           requestBodyValue &&
@@ -107,6 +113,21 @@ export const baseSave: KoaController = async (ctx) => {
     }
   }
 
+  if (descentBases.includes(save.basesaveid)) {
+    logging(save.destroyed + "");
+    if (save.destroyed == 1) {
+        let baseIndex = descentBases.indexOf(save.basesaveid)
+        let userDescentBases = await ORMContext.em.findOne(DescentStatus, {
+          userid: authSave.userid,
+        })
+        if (userDescentBases) {
+          let stored_base = userDescentBases[baseIndex];
+          stored_base[2] = 1;
+          userDescentBases[baseIndex] = stored_base;
+          await ORMContext.em.persistAndFlush(userDescentBases);
+        }
+    }
+  }
   /*
     Assume that base save is in attack mode
     Save attacker data
