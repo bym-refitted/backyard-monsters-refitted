@@ -14,6 +14,7 @@ import { generateID } from "../utils/generateID";
 import { loadBuildBase, loadViewBase } from "../services/base/loadBase";
 import { saveFailureErr } from "../errors/errorCodes.";
 import { removeBaseProtection } from "../services/maproom/v2";
+import { DescentStatus } from "../models/descentstatus.model";
 
 
 interface BaseLoadRequest {
@@ -48,7 +49,7 @@ export const baseLoad: KoaController = async (ctx) => {
   );
   if (save) {
     if (process.env.ENV === "local") {
-      logging(`Base loaded:`, JSON.stringify(save, null, 2));
+      //logging(`Base loaded:`, JSON.stringify(save, null, 2));
     }
   } else if (requestBody.baseid && requestBody.baseid === "0") {
     // There was no existing save, create one with some defaults
@@ -90,6 +91,29 @@ export const baseLoad: KoaController = async (ctx) => {
       save.cellid = cell.cell_id;
       save.worldid = cell.world_id;
     }
+    await ORMContext.em.persistAndFlush(save);
+  }
+
+  if (requestBody.type === "idescent") {
+    //[201,202,203,204,205,206,207] - inferno base IDs
+    //save.wmstatus = user.save.wmstatus;
+    //if (user.save.wmstatus.length == 0) {
+      //save.wmstatus = [[201,1,0],[202,2,0],[203,3,0],[204,4,0],[205,5,0],[206,6,0],[207,7,0]];
+      //user.save.wmstatus = save.wmstatus;
+      //await ORMContext.em.persistAndFlush(user);
+    //}
+    const descentBases = [[201,1,0],[202,2,0],[203,3,0],[204,4,0],[205,5,0],[206,6,0],[207,7,0]];
+    let descentStatus = await ORMContext.em.findOne(DescentStatus, {
+       userid: authSave.userid,
+      })
+    if (!descentStatus) {
+      descentStatus = ORMContext.em.create(DescentStatus, {
+        userid: authSave.userid,
+        wmstatus: descentBases,
+      })
+      await ORMContext.em.persistAndFlush(descentStatus);
+    }
+    save.wmstatus = descentStatus.wmstatus;
     await ORMContext.em.persistAndFlush(save);
   }
 
