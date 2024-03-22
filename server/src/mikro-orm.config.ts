@@ -11,7 +11,7 @@ import { DescentStatus } from './models/descentstatus.model';
 export default {
   type: "mariadb",
   allowGlobalContext: false,
-  debug: false,
+  debug: true,
   entities: [Save, User, WorldMapCell, DescentStatus],
   dbName: process.env.DB_NAME,
   port: Number(process.env.DB_PORT),
