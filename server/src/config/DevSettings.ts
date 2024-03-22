@@ -6,7 +6,7 @@ export const devConfig = {
   skipTutorial: true,
   unlockAllEventRewards: false,
   maproom: true,
-  inferno: false,
+  inferno: true,
   devSandbox: false,
   debugSandbox: false,
 };
