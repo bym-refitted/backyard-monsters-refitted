@@ -40,7 +40,7 @@ package
          var authHeader:URLRequestHeader;
          var currentIndex:int = 0;
          var currentPair:Array = null;
-         var token:* = LOGIN.sharedObject.data.token;
+         var token:String = LOGIN.token;
          this._onComplete = onComplete;
          this._onError = onFail;
          this._baseUrl = baseUrl;
