@@ -1,6 +1,5 @@
 package
 {
-   
    import com.monsters.ai.TRIBES;
    import com.monsters.ai.WMBASE;
    import com.monsters.mailbox.Message;
@@ -21,6 +20,8 @@ package
       public static var _lastView:int = 0;
       
       public static var _lastSort:int = 3;
+      
+      public static var _initFinishedMR:Boolean = true;
       
       public static var _lastSortReversed:int = 0;
       
@@ -45,6 +46,7 @@ package
          _open = false;
          if(GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD)
          {
+            _initFinishedMR = false;
             _visitingFriend = false;
             bridge_obj = {
                "Timestamp":GLOBAL.Timestamp,
@@ -110,7 +112,7 @@ package
                }
                if(GLOBAL._bMap)
                {
-                  if(GLOBAL._bMap._canFunction)
+                  if(GLOBAL._bMap._canFunction && _initFinishedMR)
                   {
                      GLOBAL.BlockerAdd();
                      SOUNDS.Play("click1");
@@ -125,6 +127,10 @@ package
                      {
                         ShowB();
                      }
+                  }
+                  else if(!_initFinishedMR)
+                  {
+                     GLOBAL.Message(KEYS.Get("The Maproom is still initializing. Please wait a moment before opening it."));
                   }
                   else
                   {
