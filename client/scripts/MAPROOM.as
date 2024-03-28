@@ -130,7 +130,7 @@ package
                   }
                   else if(!_initFinishedMR)
                   {
-                     GLOBAL.Message(KEYS.Get("The Maproom is still initializing. Please wait a moment before opening it."));
+                     GLOBAL.Message(KEYS.Get("newmap_init_setup"));
                   }
                   else
                   {
