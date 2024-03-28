@@ -147,7 +147,6 @@ package
          if (!_setup)
          {
             _setup = true;
-            _muted = 0;
             if (_mutedMusic == 0)
             {
                _musicVolume = 0.7;
