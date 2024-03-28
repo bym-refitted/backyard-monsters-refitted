@@ -28,7 +28,7 @@ export const baseSave: KoaController = async (ctx) => {
   if (!save) throw saveFailureErr;
 
   const isOutpost = save.saveuserid === user.userid && save.homebaseid != save.basesaveid;
-  const descentBases = [201,202,203,204,205,206,207];
+  const descentBases: number[] = [201,202,203,204,205,206,207];
 
   //logging(Save.jsonKeys.toString());
   // ToDo: Beta clean this shit up
@@ -113,7 +113,9 @@ export const baseSave: KoaController = async (ctx) => {
     }
   }
 
-  if (descentBases.includes(save.basesaveid)) {
+  
+  if (descentBases.includes(parseInt(basesaveid))) {
+    logging("hello");
     logging(save.destroyed + "");
     try {
       if (save.destroyed == 1) {

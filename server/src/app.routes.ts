@@ -54,6 +54,7 @@ router.post("/api/bm/yardplanner/savetemplate", auth, debugDataLog("Saving templ
 router.post("/api/bm/base/load", auth, debugDataLog("Inferno load data"), baseLoad);
 router.post("/api/bm/base/infernomonsters", auth, debugDataLog("Load inferno monsters"), infernoMonsters);
 router.post("/api/bm/base/save", auth, debugDataLog("Inferno save data"), baseSave);
+router.post("/api/bm/base/updatesaved", auth, debugDataLog("Inferno Updated Save"), updateSaved);
 
 // Worldmap v2
 router.post("/worldmapv2/getarea", auth, debugDataLog("MR2 get area"), getArea);

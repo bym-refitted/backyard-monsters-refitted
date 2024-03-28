@@ -2,12 +2,13 @@ import abunaki from "./abunaki";
 import kozu from "./kozu";
 import legionnaire from "./legionnaire";
 import dreadnaught from "./dreadnaught";
+import descent from "./descent";
 
 /**
  * Implement more base save and levels
  */
 
-export default [legionnaire, kozu, abunaki, dreadnaught]
+export default [legionnaire, kozu, abunaki, dreadnaught, descent]
 
 export const getWMDefaultBase = (wmid: number, level: number) => {
     const tribes = [legionnaire, kozu, abunaki, dreadnaught];
@@ -27,4 +28,17 @@ export const getWMDefaultBase = (wmid: number, level: number) => {
     }
 
     return res;
+}
+
+export const getIWMDescentBase = (iwmid: number) => {
+    let save = null;
+    switch (iwmid) {
+        case 201:
+            save = descent[1];
+            break;
+        default:
+            save = descent[1];
+            break;
+    }
+    return save;
 }

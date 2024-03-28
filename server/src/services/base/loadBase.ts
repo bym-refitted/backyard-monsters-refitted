@@ -29,6 +29,7 @@ export const loadViewBase = async (ctx: Context, baseid: string): Promise<Save> 
         logging("Loading wild monster default base")
         const baseLevel = calculateBaseLevel(authSave.points, authSave.basevalue);
         save = getWildMonsterSave(parseInt(baseid), baseLevel);
+        logging(JSON.stringify(save));
     }
 
     return save;
@@ -47,6 +48,7 @@ export const loadBuildBase = async (ctx: Context, baseid: string): Promise<Save>
         })
 
         if (save) {
+            //logging("has save");
             if (save.saveuserid === user.userid) {
                 save.credits = authSave.credits;
                 save.resources = authSave.resources;

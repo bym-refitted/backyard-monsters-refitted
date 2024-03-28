@@ -7,11 +7,28 @@
 
 import { Save } from "../../../models/save.model";
 import { ORMContext } from "../../../server";
-import Savefiles, { getWMDefaultBase } from "../../../data/savefiles";
+import Savefiles, { getWMDefaultBase, getIWMDescentBase } from "../../../data/savefiles";
 import { getXPosition, getYPosition } from "./world";
+import { logging } from "../../../utils/logger";
+
+const iwm_descent = [201,202,203,204,205,206,207];
 
 export const getWildMonsterSave = (baseid: number, level: number = 10): Save => {
     const fork = ORMContext.em.fork();
+    if (iwm_descent.includes(baseid)){
+        //logging(baseid.toString());
+        const defaultSave = getIWMDescentBase(baseid);
+        const save = fork.create(Save, {
+            ...defaultSave,
+            basename: "",
+        });
+        save.type = "iwm";
+        save.baseid = "0";
+        save.basesaveid = baseid;
+        save.level = iwm_descent.indexOf(baseid) + 1;
+        //logging(JSON.stringify(save));
+        return save;
+    }
     const x = getXPosition(baseid);
     const y = getYPosition(baseid);
     const tribe = (x + y) % 4;

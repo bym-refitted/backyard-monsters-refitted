@@ -34,7 +34,7 @@ export const baseLoad: KoaController = async (ctx) => {
   await ORMContext.em.populate(user, ["save"]);
   const authSave = user.save;
   let save: Save = null;
-
+  logging(requestBody.type);
   if (requestBody.type === "build") {
     save = await loadBuildBase(ctx, requestBody.baseid);
     if(save && save.saveuserid !== user.userid) {
@@ -50,6 +50,7 @@ export const baseLoad: KoaController = async (ctx) => {
   if (save) {
     if (process.env.ENV === "local") {
       //logging(`Base loaded:`, JSON.stringify(save, null, 2));
+      logging("base found: " + save.basesaveid);
     }
   } else if (requestBody.baseid && requestBody.baseid === "0") {
     // There was no existing save, create one with some defaults
@@ -91,6 +92,11 @@ export const baseLoad: KoaController = async (ctx) => {
       save.cellid = cell.cell_id;
       save.worldid = cell.world_id;
     }
+    await ORMContext.em.persistAndFlush(save);
+  }
+
+  if (requestBody.type == "iwmattack") {
+    //logging(JSON.stringify(save));
     await ORMContext.em.persistAndFlush(save);
   }
 
