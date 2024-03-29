@@ -17,7 +17,7 @@ import { ErrorInterceptor } from "./middleware/clientSafeError.js";
 import { processLanguagesFile } from "./middleware/processLanguageFile";
 import { logMissingAssets, morganLogging } from "./middleware/morganLogging";
 import { SESSION_CONFIG } from "./config/SessionConfig";
-import { getLatestSwfFromGithub } from "./utils/github";
+import { getLatestSwfFromGithub } from "./utils/getLatestSwfFromGithub";
 
 /**
  * Frontend handle error
@@ -95,7 +95,7 @@ api.get("/", (ctx: Context) => (ctx.body = {}));
 
     app.use(async (ctx, next) => {
       ctx.globalApiVersion = globalApiVersion;
-      console.log("Global API Version:", ctx.globalApiVersion);
+      logging(`Global API Version: ${ctx.globalApiVersion}`);
       return next();
     });
   }

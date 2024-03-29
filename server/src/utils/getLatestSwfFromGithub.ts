@@ -16,16 +16,19 @@ export const getLatestSwfFromGithub = async () => {
       },
     }
   );
+
   const latestRelease = releases[0];
   const asset = latestRelease.assets.find(
     (asset) => asset && asset.name.startsWith("bymr-stable")
   );
   if (!asset) console.error("No asset found for the latest release"); // TODO: handle this better
   const newFileName = asset.name;
+  console.log(`ASSET ${JSON.stringify(asset)}`);
   const newVersionTag = newFileName.match(/bymr-stable-(.*).swf/)[1];
 
   // Create a folder to store the api versioning files if not exists
-  const folderPath = process.env.API_VERSIONING_FOLDER_PATH || "../api-versioning";
+  const folderPath =
+    process.env.API_VERSIONING_FOLDER_PATH || "../api-versioning";
   if (!fs.existsSync(folderPath)) {
     fs.mkdirSync(folderPath, { recursive: true });
   }

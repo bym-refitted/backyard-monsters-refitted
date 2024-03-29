@@ -9,6 +9,7 @@ import { getDefaultBaseData } from "../data/getDefaultBaseData";
 import { FilterFrontendKeys } from "../utils/FrontendKey";
 import { flags } from "../data/flags";
 import { getCurrentDateTime } from "../utils/getCurrentDateTime";
+import { ENV } from "../enums/Env";
 
 // MR2 ToDo: The client sends this data to the server: {"baseid":"1234","type":"view","userid":""}
 // In this example, the baseid '1234' is a hardcoded value in wildMonsterCell.ts for a tribe's base,
@@ -23,7 +24,7 @@ export const baseLoad: KoaController = async (ctx) => {
     `Loading base for user: ${ctx.authUser.username} | IP Address: ${ctx.ip}`
   );
   if (save) {
-    if (process.env.ENV === "local") {
+    if (process.env.ENV === ENV.LOCAL) {
       logging(`Base loaded:`, JSON.stringify(save, null, 2));
     }
   } else {

@@ -1,8 +1,7 @@
 import { Context, Next } from "koa";
 
 
-export const apiVersioningMiddleware = async (ctx: Context, next: Next) => {
-    // Write me a middleware that will check the version of the API from :apiVersion in the URL
+export const apiVersion = async (ctx: Context, next: Next) => {
     const apiVersion = ctx.params.apiVersion;
     // console.log("apiVersion from params",apiVersion);
     // console.log("apiVersion from ctx",ctx.globalApiVersion);
