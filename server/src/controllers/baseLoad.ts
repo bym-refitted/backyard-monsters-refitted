@@ -97,7 +97,7 @@ export const baseLoad: KoaController = async (ctx) => {
 
   if (requestBody.type == "iwmattack") {
     //logging(JSON.stringify(save));
-    await ORMContext.em.persistAndFlush(save);
+    //await ORMContext.em.persistAndFlush(save);
   }
 
   if (requestBody.type === "idescent") {
