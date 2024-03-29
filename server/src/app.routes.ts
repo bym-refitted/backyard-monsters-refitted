@@ -17,11 +17,13 @@ import {RateLimit}  from "koa2-ratelimit"
 import { Context } from "koa";
 import { getArea } from "./controllers/maproom/v2/getArea";
 import { initialPlayerCellData } from "./controllers/maproom/v3/initialPlayerCellData";
+import { apiVersioningMiddleware } from "./middleware/apiVersioning";
+import { githubWebhookHandler } from "./controllers/github/githubWebhookHandler";
 const router = new Router();
 
 // Init route
-router.get("/api/bm/getnewmap", debugDataLog("Getting new maproom"), getNewMap);
-router.post("/api/bm/getnewmap", debugDataLog("Posting to new maproom"), getNewMap);
+router.get("/api/:apiVersion/bm/getnewmap",apiVersioningMiddleware, debugDataLog("Getting new maproom"), getNewMap);
+router.post("/api/:apiVersion/bm/getnewmap",apiVersioningMiddleware, debugDataLog("Posting to new maproom"), getNewMap);
 
 const getUserLimiter = RateLimit.middleware({
   interval: 60*1000, // 15 minutes
@@ -29,8 +31,8 @@ const getUserLimiter = RateLimit.middleware({
 });
 
 // Auth
-router.post("/api/player/getinfo", getUserLimiter, debugDataLog("User login attempt"), login);
-router.post("/api/player/register", debugDataLog("Registering user"), register);
+router.post("/api/:apiVersion/player/getinfo",apiVersioningMiddleware, getUserLimiter, debugDataLog("User login attempt"), login);
+router.post("/api/:apiVersion/player/register",apiVersioningMiddleware, debugDataLog("Registering user"), register);
 
 // Load
 router.post("/base/load", auth, debugDataLog("Base load data"), baseLoad);
@@ -40,17 +42,17 @@ router.post("/base/save", auth, debugDataLog("Base save data"), baseSave);
 router.post("/base/updatesaved", auth, debugDataLog("Base updated save"), updateSaved);
 
 // Yard Planner
-router.get("/api/bm/yardplanner/gettemplates", auth, debugDataLog("Get templates"), getTemplates);
-router.post("/api/bm/yardplanner/savetemplate", auth, debugDataLog("Saving template"), saveTemplate);
+router.get("/api/:apiVersion/bm/yardplanner/gettemplates",apiVersioningMiddleware, auth, debugDataLog("Get templates"), getTemplates);
+router.post("/api/:apiVersion/bm/yardplanner/savetemplate",apiVersioningMiddleware, auth, debugDataLog("Saving template"), saveTemplate);
 
 // Inferno
-router.post("/api/bm/base/load", auth, debugDataLog("Inferno load data"), baseLoad);
-router.post("/api/bm/base/infernomonsters", auth, debugDataLog("Load inferno monsters"), infernoMonsters);
-router.post("/api/bm/base/save", auth, debugDataLog("Inferno save data"), baseSave);
+router.post("/api/:apiVersion/bm/base/load",apiVersioningMiddleware, auth, debugDataLog("Inferno load data"), baseLoad);
+router.post("/api/:apiVersion/bm/base/infernomonsters",apiVersioningMiddleware, auth, debugDataLog("Load inferno monsters"), infernoMonsters);
+router.post("/api/:apiVersion/bm/base/save",apiVersioningMiddleware, auth, debugDataLog("Inferno save data"), baseSave);
 
 // Worldmap v2
 router.post("/worldmapv2/getarea", auth, debugDataLog("MR2 get area"), getArea);
-router.post("/api/player/savebookmarks", auth, debugDataLog("MR2 save bookmarks"), getArea);
+router.post("/api/:apiVersion/player/savebookmarks", auth, debugDataLog("MR2 save bookmarks"), getArea);
 
 // Worldmap v3
 router.post("/worldmapv3/initworldmap", auth, debugDataLog("Posting MR3 init data"), initialPlayerCellData);
@@ -63,6 +65,9 @@ router.post("/worldmapv3/setmapversion", auth, debugDataLog("Set maproom version
 });
 
 // Logging routes
-router.post("/api/player/recorddebugdata", recordDebugData);
+router.post("/api/:apiVersion/player/recorddebugdata",apiVersioningMiddleware, recordDebugData);
+
+// GitHub
+router.post('/gh-release-webhook', githubWebhookHandler);
 
 export default router;
