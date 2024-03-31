@@ -21,12 +21,18 @@ package com.auth
     import flash.system.LoaderContext;
     import flash.events.IOErrorEvent;
 
+    // DISCLAIMER: This is far from my best work, actually, it's quite miserable, but it works.
+    // I don't really have the time, nor the patience to look deprecated best practices for
+    // creating a UI with Flash/AS3. But, if you do, then by all means please spare my
+    // sanity and make this better and seperate it out. Thanks.
     public class AuthForm extends Sprite
     {
 
         private var isRegisterForm:Boolean = false;
 
         private var formContainer:Sprite;
+
+        private var borderContainer:Sprite;
 
         private var navContainer:Sprite;
 
@@ -106,13 +112,12 @@ package com.auth
             var formWidth:Number = 450;
             var formHeight:Number = 600;
 
-            Navbar(); // Initial setup
-            addChild(navContainer); // Add navContainer to the stage
+            HeaderTitle();
+            addChild(navContainer);
 
             formContainer.graphics.drawRect(0, 0, formWidth, formHeight);
             formContainer.x = (stage.stageWidth - formContainer.width) / 2;
             formContainer.y = (stage.stageHeight - formContainer.height) / 2;
-
             addChild(formContainer);
 
             // Get center point of stage
@@ -122,6 +127,7 @@ package com.auth
             // Calculate starting y position to center content
             startY = centerY;
 
+            // Get image asset
             this.loader = new Loader();
             this.loader.load(new URLRequest(GLOBAL.serverUrl + "assets/popups/C5-LAB-150.png"), new LoaderContext(true));
             this.loader.contentLoaderInfo.addEventListener(Event.COMPLETE, onImageLoaded);
@@ -130,6 +136,8 @@ package com.auth
             usernameInput = createBlock(0, 0, "Username");
             emailInput = createBlock(350, 35, "Email");
             passwordInput = createBlock(350, 35, "Password", true);
+            CreateBorder(emailInput);
+            CreateBorder(passwordInput);
 
             // Create button
             submitButton = createButton();
@@ -139,10 +147,10 @@ package com.auth
             submitButton.addEventListener(MouseEvent.CLICK, submitButtonClickHandler);
 
             // Link
-            createLink();
+            FormNavigate();
         }
 
-        private function Navbar():void
+        private function HeaderTitle():void
         {
             var navWidth:Number = 800;
             var navHeight:Number = 50;
@@ -151,37 +159,31 @@ package com.auth
             navContainer.x = (stage.stageWidth - navWidth) / 2;
             navContainer.y = 50; // Margin top
 
-            // Create a Sprite to hold the texts
             var textContainer:Sprite = new Sprite();
             navContainer.addChild(textContainer);
 
-            // First text: "Backyard Monsters:"
-            var text1:TextField = createRichText("Backyard Monsters:", WHITE);
-            textContainer.addChild(text1);
+            var titlePrefix:TextField = createRichText("Backyard Monsters:", WHITE);
+            textContainer.addChild(titlePrefix);
 
-            // Second text: "Refitted"
-            var text2:TextField = createRichText("Refitted", SECONDARY);
-            textContainer.addChild(text2);
-            text2.x = text1.x + text1.width; // Position text2 next to text1
+            var titleSuffix:TextField = createRichText("Refitted", SECONDARY);
+            textContainer.addChild(titleSuffix);
+            titleSuffix.x = titlePrefix.x + titlePrefix.width;
 
-            // Center the textContainer horizontally within the navContainer
             textContainer.x = (navWidth - textContainer.width) / 2;
-
-            // Center the textContainer vertically within the navContainer
             textContainer.y = (navHeight - textContainer.height) / 2;
         }
 
-        // Function to create a TextField with common styling
+        // Essentially creates a 'span' element.
         private function createRichText(text:String, color:String):TextField
         {
             var textField:TextField = new TextField();
             var textFormat:TextFormat = new TextFormat();
             textFormat.font = "Groboldov";
             textFormat.size = 32;
-            textFormat.color = color; // Text color (you can change this)
+            textFormat.color = color;
             textField.embedFonts = true;
             textField.antiAliasType = AntiAliasType.NORMAL;
-            textField.autoSize = TextFieldAutoSize.LEFT; // Adjust width automatically based on text size
+            textField.autoSize = TextFieldAutoSize.LEFT;
             textField.defaultTextFormat = textFormat;
             textField.text = text;
             return textField;
@@ -236,20 +238,14 @@ package com.auth
             input.background = true;
             input.backgroundColor = BACKGROUND;
             input.type = TextFieldType.INPUT;
-            input.border = true;
-            input.borderColor = 0xDDDDDD;
             input.width = width;
             input.height = height;
-
-            var inputMargin:Number = 10;
 
             // Normal input
             var inputTextFormat:TextFormat = new TextFormat();
             inputTextFormat.font = "Verdana";
             inputTextFormat.size = 14;
             inputTextFormat.color = WHITE;
-            inputTextFormat.leftMargin = inputMargin;
-            inputTextFormat.rightMargin = inputMargin;
 
             input.embedFonts = true;
             input.antiAliasType = AntiAliasType.NORMAL;
@@ -259,9 +255,7 @@ package com.auth
             var placeholderTextFormat:TextFormat = new TextFormat();
             placeholderTextFormat.font = "Verdana";
             placeholderTextFormat.size = 14;
-            placeholderTextFormat.color = LIGHT_GRAY;
-            placeholderTextFormat.leftMargin = inputMargin;
-            placeholderTextFormat.rightMargin = inputMargin;
+            placeholderTextFormat.color = WHITE;
 
             input.text = placeholder;
             input.setTextFormat(placeholderTextFormat);
@@ -293,6 +287,19 @@ package com.auth
             }
 
             return input;
+        }
+
+        private function CreateBorder(input:TextField):Sprite
+        {
+            borderContainer = new Sprite();
+            borderContainer.graphics.lineStyle(1, WHITE);
+            borderContainer.graphics.moveTo(0, 2);
+            borderContainer.graphics.lineTo(input.width, 2);
+            borderContainer.x = input.x;
+            borderContainer.y = input.y + input.height;
+
+            formContainer.addChild(borderContainer);
+            return borderContainer;
         }
 
         private function createButton():Sprite
@@ -330,7 +337,7 @@ package com.auth
             return button;
         }
 
-        private function createLink():void
+        private function FormNavigate():void
         {
             var linkContainer:Sprite = new Sprite();
             linkContainer.buttonMode = true;
@@ -351,14 +358,14 @@ package com.auth
 
             // Position the text container beneath the button
             linkContainer.x = (formContainer.width - linkContainer.width) / 2;
-            linkContainer.y = submitButton.y + submitButton.height + 15; // Adjust the vertical position
+            linkContainer.y = submitButton.y + submitButton.height + 15; // Vertical position
             onMouseHoverEffect(linkContainer);
 
             formContainer.addChild(linkContainer);
             linkContainer.addEventListener(MouseEvent.CLICK, function(event:Event)
                 {
                     isRegisterForm = !isRegisterForm;
-                    updateUI();
+                    updateState();
                 });
         }
 
@@ -370,11 +377,13 @@ package com.auth
                 usernameInput.height = 35;
                 usernameInput.x = 50;
                 usernameInput.y = emailInput.y - usernameInput.height - 20;
+                CreateBorder(usernameInput);
             }
             else
             {
                 usernameInput.width = 0;
                 usernameInput.height = 0;
+                formContainer.removeChild(borderContainer);
             }
         }
 
@@ -387,7 +396,7 @@ package com.auth
 
         private function updateLinkColour():void
         {
-            hasAccountFormat.color = isRegisterForm ? BLACK : PRIMARY;
+            hasAccountFormat.color = isRegisterForm ? SECONDARY : PRIMARY;
             hasAccountFormat.font = "Verdana";
             hasAccountText.defaultTextFormat = hasAccountFormat;
             hasAccountText.setTextFormat(hasAccountFormat);
@@ -395,14 +404,13 @@ package com.auth
 
         private function updateButtonText():void
         {
-            button.graphics.beginFill(isRegisterForm ? PRIMARY : BLACK);
+            button.graphics.beginFill(isRegisterForm ? PRIMARY : SECONDARY);
             buttonText.text = isRegisterForm ? "Register".toUpperCase() : "Login".toUpperCase();
         }
 
         private function updateButtonColor():void
         {
-            // button.graphics.clear();
-            button.graphics.beginFill(isRegisterForm ? BLACK : PRIMARY);
+            button.graphics.beginFill(isRegisterForm ? SECONDARY : PRIMARY);
             button.graphics.drawRoundRect(0, 0, 350, 50, 12);
             button.graphics.endFill();
         }
@@ -473,7 +481,7 @@ package com.auth
         {
             GLOBAL.Message("<b>Congratulations!</b> Your account has been successfully created, you can now login.<br><br>As a new member of Backyard Monsters Refitted, we're excited to have you on board!");
             isRegisterForm = false;
-            updateUI();
+            updateState();
         }
 
         public function handleNetworkError(event:IOErrorEvent):void
@@ -531,7 +539,7 @@ package com.auth
             }
         }
 
-        public function updateUI():void
+        public function updateState():void
         {
             updateFormFields();
             updateButtonText();
@@ -550,6 +558,7 @@ package com.auth
             formContainer.removeChild(emailInput);
             formContainer.removeChild(passwordInput);
             formContainer.removeChild(image);
+            formContainer.removeChild(borderContainer);
             removeChild(formContainer);
 
             // Clean up resources
