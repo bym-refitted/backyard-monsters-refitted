@@ -479,7 +479,7 @@ package com.auth
 
         private function registerNewUser(serverData:Object):void
         {
-            GLOBAL.Message("<b>Congratulations!</b> Your account has been successfully created, you can now login.<br><br>As a new member of Backyard Monsters Refitted, we're excited to have you on board!");
+            GLOBAL.Message("<b>Congratulations!</b> Your account has been successfully created, you can now login.");
             isRegisterForm = false;
             updateState();
         }
@@ -558,7 +558,6 @@ package com.auth
             formContainer.removeChild(emailInput);
             formContainer.removeChild(passwordInput);
             formContainer.removeChild(image);
-            formContainer.removeChild(borderContainer);
             removeChild(formContainer);
 
             // Clean up resources
