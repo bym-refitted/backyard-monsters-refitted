@@ -1,10 +1,11 @@
-package
+package com.auth
 {
     import flash.display.Sprite;
     import flash.text.TextField;
     import flash.text.TextFormatAlign;
     import flash.text.TextFieldType;
     import flash.text.TextFieldAutoSize;
+    import flash.text.AntiAliasType;
     import flash.events.MouseEvent;
     import flash.events.Event;
     import flash.ui.MouseCursor;
@@ -26,6 +27,8 @@ package
         private var isRegisterForm:Boolean = false;
 
         private var formContainer:Sprite;
+
+        private var navContainer:Sprite;
 
         private var usernameInput:TextField;
 
@@ -71,11 +74,13 @@ package
 
         private var RED:uint = 0xFF0000;
 
-        private var STAGE_BG:uint = 0xF5F5F5;
+        private var BACKGROUND:uint = 0x1D232A;
 
         private var LIGHT_GRAY = 0xC9C9C9;
 
-        private var PRIMARY:uint = 0xE9D34F;
+        private var PRIMARY:uint = 0x004DE5;
+
+        private var SECONDARY:uint = 0x00CDB8;
 
         public function AuthForm()
         {
@@ -85,9 +90,10 @@ package
         public function formAddedToStageHandler(event:Event):void
         {
             removeEventListener(Event.ADDED_TO_STAGE, formAddedToStageHandler);
-            stage.color = STAGE_BG;
+            stage.color = BACKGROUND;
 
             // Global Initialization
+            navContainer = new Sprite();
             formContainer = new Sprite();
             usernameInput = new TextField();
             emailInput = new TextField();
@@ -99,24 +105,13 @@ package
 
             var formWidth:Number = 450;
             var formHeight:Number = 600;
-            var formRadius:Number = 16;
 
-            formContainer.graphics.beginFill(WHITE);
-            formContainer.graphics.drawRoundRect(0, 0, formWidth, formHeight, formRadius, formRadius);
-            formContainer.graphics.endFill();
+            Navbar(); // Initial setup
+            addChild(navContainer); // Add navContainer to the stage
+
+            formContainer.graphics.drawRect(0, 0, formWidth, formHeight);
             formContainer.x = (stage.stageWidth - formContainer.width) / 2;
             formContainer.y = (stage.stageHeight - formContainer.height) / 2;
-
-            // Create a drop shadow filter
-            var dropShadow:DropShadowFilter = new DropShadowFilter();
-            dropShadow.color = BLACK;
-            dropShadow.angle = 45;
-            dropShadow.distance = 5;
-            dropShadow.blurX = dropShadow.blurY = 14;
-            dropShadow.alpha = 0.15;
-            dropShadow.quality = 1;
-
-            formContainer.filters = [dropShadow];
 
             addChild(formContainer);
 
@@ -128,7 +123,7 @@ package
             startY = centerY;
 
             this.loader = new Loader();
-            this.loader.load(new URLRequest(GLOBAL.serverUrl + "assets/bym-refitted-assets/refitted-logo.png"), new LoaderContext(true));
+            this.loader.load(new URLRequest(GLOBAL.serverUrl + "assets/popups/C5-LAB-150.png"), new LoaderContext(true));
             this.loader.contentLoaderInfo.addEventListener(Event.COMPLETE, onImageLoaded);
             this.loader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, handleNetworkError);
 
@@ -147,14 +142,59 @@ package
             createLink();
         }
 
+        private function Navbar():void
+        {
+            var navWidth:Number = 800;
+            var navHeight:Number = 50;
+
+            navContainer.graphics.drawRect(0, 0, navWidth, navHeight);
+            navContainer.x = (stage.stageWidth - navWidth) / 2;
+            navContainer.y = 50; // Margin top
+
+            // Create a Sprite to hold the texts
+            var textContainer:Sprite = new Sprite();
+            navContainer.addChild(textContainer);
+
+            // First text: "Backyard Monsters:"
+            var text1:TextField = createRichText("Backyard Monsters:", WHITE);
+            textContainer.addChild(text1);
+
+            // Second text: "Refitted"
+            var text2:TextField = createRichText("Refitted", SECONDARY);
+            textContainer.addChild(text2);
+            text2.x = text1.x + text1.width; // Position text2 next to text1
+
+            // Center the textContainer horizontally within the navContainer
+            textContainer.x = (navWidth - textContainer.width) / 2;
+
+            // Center the textContainer vertically within the navContainer
+            textContainer.y = (navHeight - textContainer.height) / 2;
+        }
+
+        // Function to create a TextField with common styling
+        private function createRichText(text:String, color:String):TextField
+        {
+            var textField:TextField = new TextField();
+            var textFormat:TextFormat = new TextFormat();
+            textFormat.font = "Groboldov";
+            textFormat.size = 32;
+            textFormat.color = color; // Text color (you can change this)
+            textField.embedFonts = true;
+            textField.antiAliasType = AntiAliasType.NORMAL;
+            textField.autoSize = TextFieldAutoSize.LEFT; // Adjust width automatically based on text size
+            textField.defaultTextFormat = textFormat;
+            textField.text = text;
+            return textField;
+        }
+
         private function onImageLoaded(event:Event):void
         {
             image = Bitmap(loader.content);
 
-            image.x = (formContainer.width - image.width) / 2 + 160;
-            image.y = 20;
-            image.scaleX = 0.5;
-            image.scaleY = 0.5;
+            image.x = 150;
+            image.y = 150;
+            image.scaleX = 1;
+            image.scaleY = 1;
             formContainer.addChild(image);
         }
 
@@ -194,7 +234,7 @@ package
             var input:TextField = new TextField();
 
             input.background = true;
-            input.backgroundColor = WHITE;
+            input.backgroundColor = BACKGROUND;
             input.type = TextFieldType.INPUT;
             input.border = true;
             input.borderColor = 0xDDDDDD;
@@ -205,16 +245,20 @@ package
 
             // Normal input
             var inputTextFormat:TextFormat = new TextFormat();
-            inputTextFormat.size = 16;
-            inputTextFormat.color = BLACK;
+            inputTextFormat.font = "Verdana";
+            inputTextFormat.size = 14;
+            inputTextFormat.color = WHITE;
             inputTextFormat.leftMargin = inputMargin;
             inputTextFormat.rightMargin = inputMargin;
 
+            input.embedFonts = true;
+            input.antiAliasType = AntiAliasType.NORMAL;
             input.defaultTextFormat = inputTextFormat;
 
             // Placeholder
             var placeholderTextFormat:TextFormat = new TextFormat();
-            placeholderTextFormat.size = 16;
+            placeholderTextFormat.font = "Verdana";
+            placeholderTextFormat.size = 14;
             placeholderTextFormat.color = LIGHT_GRAY;
             placeholderTextFormat.leftMargin = inputMargin;
             placeholderTextFormat.rightMargin = inputMargin;
@@ -253,6 +297,7 @@ package
 
         private function createButton():Sprite
         {
+            var formRadius:Number = 16;
             button = new Sprite();
             updateButtonColor();
             button.buttonMode = true;
@@ -268,8 +313,10 @@ package
 
             // Set alignment properties
             var textFormat:TextFormat = new TextFormat();
+            textFormat.font = "Groboldov";
             textFormat.size = 16;
             textFormat.align = TextFormatAlign.CENTER;
+            buttonText.embedFonts = true;
             buttonText.defaultTextFormat = textFormat;
             updateButtonText();
 
@@ -295,7 +342,7 @@ package
             hasAccountText.x = linkContainer.width / 2;
 
             hasAccountFormat = new TextFormat();
-            hasAccountFormat.size = 14;
+            hasAccountFormat.size = 16;
             updateLinkColour();
             updateLinkText();
 
@@ -333,12 +380,15 @@ package
 
         private function updateLinkText():void
         {
+            hasAccountText.embedFonts = true;
+            hasAccountText.antiAliasType = AntiAliasType.NORMAL;
             hasAccountText.text = isRegisterForm ? "Already have an account? Login here." : "Don't have an account? Register here.";
         }
 
         private function updateLinkColour():void
         {
             hasAccountFormat.color = isRegisterForm ? BLACK : PRIMARY;
+            hasAccountFormat.font = "Verdana";
             hasAccountText.defaultTextFormat = hasAccountFormat;
             hasAccountText.setTextFormat(hasAccountFormat);
         }
@@ -353,7 +403,7 @@ package
         {
             // button.graphics.clear();
             button.graphics.beginFill(isRegisterForm ? BLACK : PRIMARY);
-            button.graphics.drawRect(0, 0, 350, 50);
+            button.graphics.drawRoundRect(0, 0, 350, 50, 12);
             button.graphics.endFill();
         }
 
