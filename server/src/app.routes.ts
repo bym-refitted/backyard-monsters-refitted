@@ -17,6 +17,7 @@ import {RateLimit}  from "koa2-ratelimit"
 import { Context } from "koa";
 import { getArea } from "./controllers/maproom/v2/getArea";
 import { initialPlayerCellData } from "./controllers/maproom/v3/initialPlayerCellData";
+import { discordAuth } from "./controllers/auth/oauth/discordAuth";
 const router = new Router();
 
 // Init route
@@ -31,6 +32,7 @@ const getUserLimiter = RateLimit.middleware({
 // Auth
 router.post("/api/player/getinfo", getUserLimiter, debugDataLog("User login attempt"), login);
 router.post("/api/player/register", debugDataLog("Registering user"), register);
+router.get("/api/auth/discord/redirect", discordAuth);
 
 // Load
 router.post("/base/load", auth, debugDataLog("Base load data"), baseLoad);
