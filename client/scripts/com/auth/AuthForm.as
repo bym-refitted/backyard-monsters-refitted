@@ -113,8 +113,8 @@ package com.auth
             {
                 checkContentLoadedTimer.stop();
                 checkContentLoadedTimer.removeEventListener(TimerEvent.TIMER, checkContentLoaded);
-                handleContentLoaded();
                 removeChild(loadingContainer);
+                handleContentLoaded();
             }
             else
             {
@@ -136,8 +136,8 @@ package com.auth
             else
             {
                 // If text content is already loaded, proceed with UI setup
-                handleContentLoaded();
                 removeChild(loadingContainer);
+                handleContentLoaded();
             }
         }
 
@@ -221,8 +221,7 @@ package com.auth
             loadingDesc.htmlText = "<font color='#ffffff'>Taking a while? Check our </font><font color='#00CDB8'>#server-status</font><font color='#ffffff'> on our Discord.</font>";
             loadingDesc.selectable = false;
             loadingDesc.mouseEnabled = true;
-            loadingDesc.addEventListener(MouseEvent.MOUSE_OVER, function(event:MouseEvent) { Mouse.cursor = MouseCursor.BUTTON });
-            loadingDesc.addEventListener(MouseEvent.MOUSE_OUT, function(event:MouseEvent) { Mouse.cursor = MouseCursor.AUTO });
+            onMouseHoverEffect(loadingDesc);
             loadingDesc.addEventListener(MouseEvent.CLICK, DiscordLink);
 
             loadingContainer.addChild(titlePrefix);
@@ -502,7 +501,7 @@ package com.auth
             button.graphics.endFill();
         }
 
-        private function onMouseHoverEffect(element:Sprite):void
+        private function onMouseHoverEffect(element:*):void
         {
             element.addEventListener(MouseEvent.ROLL_OVER, function(e:MouseEvent):void
                 {
