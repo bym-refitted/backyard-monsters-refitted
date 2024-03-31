@@ -20,6 +20,8 @@ package com.auth
     import flash.text.TextFormatAlign;
     import flash.system.LoaderContext;
     import flash.events.IOErrorEvent;
+    import flash.utils.Timer;
+    import flash.events.TimerEvent;
 
     // DISCLAIMER: This is far from my best work, actually, it's quite miserable, but it works.
     // I don't really have the time, nor the patience to look deprecated best practices for
@@ -33,6 +35,8 @@ package com.auth
         private var formContainer:Sprite;
 
         private var borderContainer:Sprite;
+
+        private var loadingContainer:Sprite;
 
         private var navContainer:Sprite;
 
@@ -88,9 +92,34 @@ package com.auth
 
         private var SECONDARY:uint = 0x00CDB8;
 
+        private var checkContentLoadedTimer:Timer;
+
         public function AuthForm()
         {
             addEventListener(Event.ADDED_TO_STAGE, formAddedToStageHandler);
+            KEYS._storageURL = GLOBAL.languageUrl;
+            KEYS._logFunction = LOGGER.Log;
+            KEYS.Setup();
+
+            // Start a timer every second to check if text content is loaded from the server
+            checkContentLoadedTimer = new Timer(1000);
+            checkContentLoadedTimer.addEventListener(TimerEvent.TIMER, checkContentLoaded);
+            checkContentLoadedTimer.start();
+        }
+
+        private function checkContentLoaded(event:TimerEvent):void
+        {
+            if (GLOBAL.textContentLoaded)
+            {
+                checkContentLoadedTimer.stop();
+                checkContentLoadedTimer.removeEventListener(TimerEvent.TIMER, checkContentLoaded);
+                handleContentLoaded();
+                removeChild(loadingContainer);
+            }
+            else
+            {
+                Loading();
+            }
         }
 
         public function formAddedToStageHandler(event:Event):void
@@ -98,6 +127,22 @@ package com.auth
             removeEventListener(Event.ADDED_TO_STAGE, formAddedToStageHandler);
             stage.color = BACKGROUND;
 
+            // Set this flag to true once we receive the language file from the server
+            // This also let's us know whether a connection has been established.
+            if (!GLOBAL.textContentLoaded)
+            {
+                Loading();
+            }
+            else
+            {
+                // If text content is already loaded, proceed with UI setup
+                handleContentLoaded();
+                removeChild(loadingContainer);
+            }
+        }
+
+        private function handleContentLoaded():void
+        {
             // Global Initialization
             navContainer = new Sprite();
             formContainer = new Sprite();
@@ -133,9 +178,9 @@ package com.auth
             this.loader.contentLoaderInfo.addEventListener(Event.COMPLETE, onImageLoaded);
             this.loader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, handleNetworkError);
 
-            usernameInput = createBlock(0, 0, "Username");
-            emailInput = createBlock(350, 35, "Email");
-            passwordInput = createBlock(350, 35, "Password", true);
+            usernameInput = createBlock(0, 0, KEYS.Get("auth_username"));
+            emailInput = createBlock(350, 35, KEYS.Get("auth_email"));
+            passwordInput = createBlock(350, 35, KEYS.Get("auth_password", true));
             CreateBorder(emailInput);
             CreateBorder(passwordInput);
 
@@ -150,6 +195,48 @@ package com.auth
             FormNavigate();
         }
 
+        private function Loading():void
+        {
+            var navWidth:Number = stage.stageWidth;
+            var navHeight:Number = stage.stageHeight;
+            var loadingDesc:TextField = new TextField();
+            var loadingDescStyle:TextFormat = new TextFormat();
+
+            loadingContainer = new Sprite();
+            addChild(loadingContainer);
+
+            var titlePrefix:TextField = createRichText("Connecting to the server...", WHITE);
+
+            loadingDescStyle.font = "Verdana";
+            loadingDescStyle.size = 14;
+            loadingDescStyle.leftMargin = 10;
+            loadingDescStyle.color = WHITE;
+
+            loadingDesc.x = titlePrefix.x;
+            loadingDesc.y = titlePrefix.y + titlePrefix.height + 15;
+            loadingDesc.width = titlePrefix.width + 5;
+            loadingDesc.embedFonts = true;
+            loadingDesc.antiAliasType = AntiAliasType.NORMAL;
+            loadingDesc.defaultTextFormat = loadingDescStyle;
+            loadingDesc.htmlText = "<font color='#ffffff'>Taking a while? Check our </font><font color='#00CDB8'>#server-status</font><font color='#ffffff'> on our Discord.</font>";
+            loadingDesc.selectable = false;
+            loadingDesc.mouseEnabled = true;
+            loadingDesc.addEventListener(MouseEvent.MOUSE_OVER, function(event:MouseEvent) { Mouse.cursor = MouseCursor.BUTTON });
+            loadingDesc.addEventListener(MouseEvent.MOUSE_OUT, function(event:MouseEvent) { Mouse.cursor = MouseCursor.AUTO });
+            loadingDesc.addEventListener(MouseEvent.CLICK, DiscordLink);
+
+            loadingContainer.addChild(titlePrefix);
+            loadingContainer.addChild(loadingDesc);
+
+            loadingContainer.x = (navWidth - loadingContainer.width) / 2;
+            loadingContainer.y = (navHeight - loadingContainer.height) / 2;
+        }
+
+        public static function DiscordLink(param1:Event = null):void
+        {
+            GLOBAL.gotoURL("https://discord.com/invite/bym");
+        }
+
         private function HeaderTitle():void
         {
             var navWidth:Number = 800;
@@ -162,10 +249,10 @@ package com.auth
             var textContainer:Sprite = new Sprite();
             navContainer.addChild(textContainer);
 
-            var titlePrefix:TextField = createRichText("Backyard Monsters:", WHITE);
+            var titlePrefix:TextField = createRichText(KEYS.Get("auth_header_prefix"), WHITE);
             textContainer.addChild(titlePrefix);
 
-            var titleSuffix:TextField = createRichText("Refitted", SECONDARY);
+            var titleSuffix:TextField = createRichText(KEYS.Get("auth_header_suffix"), SECONDARY);
             textContainer.addChild(titleSuffix);
             titleSuffix.x = titlePrefix.x + titlePrefix.width;
 
@@ -391,7 +478,7 @@ package com.auth
         {
             hasAccountText.embedFonts = true;
             hasAccountText.antiAliasType = AntiAliasType.NORMAL;
-            hasAccountText.text = isRegisterForm ? "Already have an account? Login here." : "Don't have an account? Register here.";
+            hasAccountText.text = isRegisterForm ? KEYS.Get("auth_login_link") : KEYS.Get("auth_register_link");
         }
 
         private function updateLinkColour():void
@@ -405,7 +492,7 @@ package com.auth
         private function updateButtonText():void
         {
             button.graphics.beginFill(isRegisterForm ? PRIMARY : SECONDARY);
-            buttonText.text = isRegisterForm ? "Register".toUpperCase() : "Login".toUpperCase();
+            buttonText.text = isRegisterForm ? KEYS.Get("auth_register_btn").toUpperCase() : KEYS.Get("auth_login_btn").toUpperCase();
         }
 
         private function updateButtonColor():void

@@ -25,7 +25,7 @@ package
 
       public static var _storageURL:String = "";
 
-      public static var _languageVersion:int;
+      public static var _languageVersion:int = 8;
 
       public static var _language:String = "en";
 
@@ -36,25 +36,32 @@ package
          super();
       }
 
-      public static function Setup(param1:Function):void
+      public static function Setup():void
       {
          if (_setup)
          {
             return;
          }
          _setup = true;
-         cbf = param1;
+         // cbf = param1;
          var _loc2_:URLLoader = new URLLoader();
          _loc2_.load(new URLRequest(_storageURL + _language + ".v" + _languageVersion + ".json"));
          _loc2_.addEventListener(Event.COMPLETE, handleSucc);
-         _loc2_.addEventListener(IOErrorEvent.IO_ERROR, GLOBAL.handleLoadError);
+         _loc2_.addEventListener(IOErrorEvent.IO_ERROR, handleLoadError);
       }
 
       private static function handleSucc(param1:Event):void
       {
          var rawData:String = param1.target.data;
          jsonData = JSON.decode(rawData);
-         cbf();
+         // cbf();
+         GLOBAL.textContentLoaded = true;
+      }
+
+      private static function handleLoadError(param1:IOErrorEvent):void
+      {
+         var _loc2_:String = param1.text;
+         GLOBAL.Message("Failed to get text content: " + _loc2_);
       }
 
       // Processes the JSON language file from the server
@@ -63,6 +70,9 @@ package
       // Replaces placeholders within JSON with dynamic values e.g. {v1} with 20
       public static function Get(jsonKeyPath:String, placeholders:Object = null):String
       {
+         if (jsonData == null || jsonData.data == null)
+            return jsonKeyPath;
+
          var jsonValue:Object = jsonData.data;
 
          if (jsonValue.hasOwnProperty(jsonKeyPath))
