@@ -49,7 +49,9 @@ package
       
       public static var _save:Boolean = true;
 
-      public static var textContentLoaded = false;
+      public static var textContentLoaded:Boolean = false;
+
+      public static var supportedLangsLoaded:Boolean = false;
       
       public static var _localMode:int = BYMConfig.k_sLOCAL_MODE_PREVIEW;
       

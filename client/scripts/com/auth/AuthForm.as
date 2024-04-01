@@ -40,6 +40,8 @@ package com.auth
 
         private var navContainer:Sprite;
 
+        private var dropdownMenu:Sprite;
+
         private var usernameInput:TextField;
 
         private var emailInput:TextField;
@@ -59,6 +61,8 @@ package com.auth
         private var submitButton:Sprite;
 
         private var hasAccountText:TextField;
+
+        private var defaultText:TextField;
 
         private var hasAccountFormat:TextFormat;
 
@@ -99,7 +103,8 @@ package com.auth
             addEventListener(Event.ADDED_TO_STAGE, formAddedToStageHandler);
             KEYS._storageURL = GLOBAL.languageUrl;
             KEYS._logFunction = LOGGER.Log;
-            KEYS.Setup();
+            //KEYS.GetAvailableLanguages();
+            KEYS.Setup("en");
 
             // Start a timer every second to check if text content is loaded from the server
             checkContentLoadedTimer = new Timer(1000);
@@ -157,6 +162,12 @@ package com.auth
             var formWidth:Number = 450;
             var formHeight:Number = 600;
 
+            var options:Array = ["English", "French", "German"];
+            var selectInput:Sprite = createSelectInput(options);
+            addChild(selectInput);
+            selectInput.x = 20;
+            selectInput.y = 10;
+
             HeaderTitle();
             addChild(navContainer);
 
@@ -178,9 +189,9 @@ package com.auth
             this.loader.contentLoaderInfo.addEventListener(Event.COMPLETE, onImageLoaded);
             this.loader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, handleNetworkError);
 
-            usernameInput = createBlock(0, 0, KEYS.Get("auth_username"));
-            emailInput = createBlock(350, 35, KEYS.Get("auth_email"));
-            passwordInput = createBlock(350, 35, KEYS.Get("auth_password", true));
+            usernameInput = createBlock(0, 0, "Username");
+            emailInput = createBlock(350, 35, "Email");
+            passwordInput = createBlock(350, 35, "Password", true);
             CreateBorder(emailInput);
             CreateBorder(passwordInput);
 
@@ -373,6 +384,91 @@ package com.auth
             }
 
             return input;
+        }
+
+        function createSelectInput(options:Array, defaultOption:String = "English"):Sprite
+        {
+            // Create a Sprite to act as the select input field
+            var selectField:Sprite = new Sprite();
+            var selectWidth:Number = 80;
+            var selectHeight:Number = 30;
+            selectField.graphics.lineStyle(1, WHITE);
+            selectField.graphics.drawRect(0, 0, selectWidth, selectHeight);
+
+            // Create a TextField to display the selected option
+            defaultText = new TextField();
+            var defaultTextStyle:TextFormat = new TextFormat();
+            defaultTextStyle.font = "Groboldov";
+            defaultTextStyle.size = 13;
+
+            defaultText.textColor = WHITE;
+            defaultText.embedFonts = true;
+            defaultText.defaultTextFormat = defaultTextStyle;
+            defaultText.text = defaultOption.toLocaleUpperCase();
+            defaultText.x = (selectWidth - defaultText.textWidth) / 2; // Center horizontally
+            defaultText.y = (selectHeight - defaultText.textHeight) / 2; // Center vertically
+            selectField.addChild(defaultText);
+
+            // Create the dropdown menu
+            dropdownMenu = new Sprite();
+            dropdownMenu.visible = false;
+            selectField.addChild(dropdownMenu);
+
+            // Populate the dropdown menu with options
+            for (var i:int = 0; i < options.length; i++)
+            {
+                var optionText:TextField = new TextField();
+                var optionTextStyle:TextFormat = new TextFormat();
+                optionTextStyle.font = "Groboldov";
+                optionTextStyle.size = 13;
+
+                optionText.embedFonts = true;
+                optionText.textColor = WHITE;
+                optionText.defaultTextFormat = optionTextStyle;
+                optionText.text = options[i].toLocaleUpperCase();
+                optionText.y = i * 30;
+                optionText.selectable = false;
+                optionText.antiAliasType = AntiAliasType.NORMAL;
+                optionText.addEventListener(MouseEvent.CLICK, optionClickHandler);
+                dropdownMenu.addChild(optionText);
+            }
+
+            // Handle click events to toggle the dropdown menu visibility
+            selectField.addEventListener(MouseEvent.CLICK, function(event:MouseEvent):void
+                {
+                    dropdownMenu.visible = !dropdownMenu.visible;
+                });
+
+            // Position the dropdown menu below the select field
+            dropdownMenu.y = 50;
+
+            return selectField;
+        }
+
+        // Function to handle option click events
+        private function optionClickHandler(event:MouseEvent):void
+        {
+            selectOption(event.currentTarget.text);
+
+            switch (event.currentTarget.text.toLocaleLowerCase())
+            {
+                case "english":
+                    KEYS.Setup("en");
+                    break;
+                case "french":
+                    KEYS.Setup("fr");
+                    break;
+                default:
+                    KEYS.Setup("en");
+                    break;
+            }
+        }
+
+        // Create a function to handle option selection
+        private function selectOption(option:String):void
+        {
+            defaultText.text = option.toLocaleUpperCase();
+            dropdownMenu.visible = false;
         }
 
         private function CreateBorder(input:TextField):Sprite

@@ -217,13 +217,8 @@ package
             {
                GLOBAL._fbcncp = serverData.ncpCandidate;
             }
-            // KEYS._storageURL = GLOBAL.languageUrl;
-            // KEYS._logFunction = LOGGER.Log;
-            // KEYS._languageVersion = GLOBAL._languageVersion;
-            KEYS._language = serverData.language;
             POPUPS.Setup();
             Digits(_playerID);
-            //KEYS.Setup(Done);
             Done();
          }
       }

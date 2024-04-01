@@ -1,0 +1,13 @@
+{
+    "auth_header_prefix": "Backyard Monsters:",
+    "auth_header_suffix": "Refitted",
+    "auth_login_btn": "Se connecter",
+    "auth_register_btn": "Registre",
+    "auth_login_link": "Vous avez déjà un compte? Connectez-vous ici.",
+    "auth_register_link": "Vous n'avez pas de compte ? Inscrivez-vous ici.",
+    "ui_topbuildings": "Bâtiments",
+    "ui_topquests": "Quêtes",
+    "ui_topstore": "Magasin",
+    "ui_topmap": "Carte",
+    "msg_loading": "Chargement..."
+}
