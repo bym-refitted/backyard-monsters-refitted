@@ -9,61 +9,63 @@ package
    public class KEYS
    {
 
-      public static var _keys:Object;
-
-      public static var _delimiters:Object = [];
-
-      public static var _gibberish:Boolean = false;
-
       public static var _setup:Boolean = false;
-
-      private static var _ignore:Array = ["#fname#", "#collected#", "#mushroomspicked#", "#questname#", "#giftssent#", "#installsgenerated#"];
-
-      private static var cbf:Function;
-
-      public static var _logFunction:Function;
 
       public static var _storageURL:String = "";
 
-      public static var _languageVersion:int;
+      public static var languageFileJson:Object;
 
-      public static var _language:String = "en";
-
-      public static var jsonData:Object;
+      public static var supportedLanguagesJson:Object;
 
       public function KEYS()
       {
          super();
       }
 
-      public static function Setup(param1:Function):void
+      public static function Setup(language:String = "english"):void
       {
-         if (_setup)
-         {
-            return;
-         }
          _setup = true;
-         cbf = param1;
-         var _loc2_:URLLoader = new URLLoader();
-         _loc2_.load(new URLRequest(_storageURL + _language + ".v" + _languageVersion + ".json"));
-         _loc2_.addEventListener(Event.COMPLETE, handleSucc);
-         _loc2_.addEventListener(IOErrorEvent.IO_ERROR, GLOBAL.handleLoadError);
+         var languageFile:URLLoader = new URLLoader();
+         languageFile.load(new URLRequest(_storageURL + language + ".json"));
+         languageFile.addEventListener(Event.COMPLETE, handleLangFileSucc);
+         languageFile.addEventListener(IOErrorEvent.IO_ERROR, handleLoadError);
       }
 
-      private static function handleSucc(param1:Event):void
+      public static function GetSupportedLanguages()
+      {
+         var languages:URLLoader = new URLLoader();
+         languages.load(new URLRequest(GLOBAL._apiURL + "supportedLangs"));
+         languages.addEventListener(Event.COMPLETE, handleSupportedLangsSucc);
+         languages.addEventListener(IOErrorEvent.IO_ERROR, handleLoadError);
+      }
+
+      private static function handleLangFileSucc(param1:Event):void
       {
          var rawData:String = param1.target.data;
-         jsonData = JSON.decode(rawData);
-         cbf();
+         languageFileJson = JSON.decode(rawData);
+         GLOBAL.textContentLoaded = true;
+      }
+
+      private static function handleLoadError(param1:IOErrorEvent):void
+      {
+         GLOBAL.Message("Failed to retrieve content from the server.");
+      }
+
+      private static function handleSupportedLangsSucc(param1:Event):void
+      {
+         var rawData:String = param1.target.data;
+         supportedLanguagesJson = JSON.decode(rawData);
+         GLOBAL.supportedLangsLoaded = true;
       }
 
       // Processes the JSON language file from the server
-      // Does not split the key if it is part of the exclusion list
-      // Else splits the key for every occurrence of '_' to create child properties
-      // Replaces placeholders within JSON with dynamic values e.g. {v1} with 20
+      // Replaces #placeholders# within JSON with dynamic values
       public static function Get(jsonKeyPath:String, placeholders:Object = null):String
       {
-         var jsonValue:Object = jsonData.data;
+         if (languageFileJson == null || languageFileJson.data == null)
+            return jsonKeyPath;
+
+         var jsonValue:Object = languageFileJson.data;
 
          if (jsonValue.hasOwnProperty(jsonKeyPath))
          {

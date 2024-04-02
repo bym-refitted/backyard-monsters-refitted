@@ -1,10 +1,11 @@
-package
+package com.auth
 {
     import flash.display.Sprite;
     import flash.text.TextField;
     import flash.text.TextFormatAlign;
     import flash.text.TextFieldType;
     import flash.text.TextFieldAutoSize;
+    import flash.text.AntiAliasType;
     import flash.events.MouseEvent;
     import flash.events.Event;
     import flash.ui.MouseCursor;
@@ -19,13 +20,29 @@ package
     import flash.text.TextFormatAlign;
     import flash.system.LoaderContext;
     import flash.events.IOErrorEvent;
+    import flash.utils.Timer;
+    import flash.events.TimerEvent;
 
+    // DISCLAIMER: This is far from my best work, actually, it's quite miserable, but it works.
+    // I don't really have the time, nor the patience to look deprecated best practices for
+    // creating a UI with Flash/AS3. But, if you do, then by all means please spare my
+    // sanity and make this better and seperate it out. Thanks.
     public class AuthForm extends Sprite
     {
 
         private var isRegisterForm:Boolean = false;
 
         private var formContainer:Sprite;
+
+        private var borderContainer:Sprite;
+
+        private var loadingContainer:Sprite;
+
+        private var navContainer:Sprite;
+
+        private var selectField:Sprite;
+
+        private var dropdownMenu:Sprite;
 
         private var usernameInput:TextField;
 
@@ -46,6 +63,8 @@ package
         private var submitButton:Sprite;
 
         private var hasAccountText:TextField;
+
+        private var defaultText:TextField;
 
         private var hasAccountFormat:TextFormat;
 
@@ -71,23 +90,69 @@ package
 
         private var RED:uint = 0xFF0000;
 
-        private var STAGE_BG:uint = 0xF5F5F5;
+        private var BACKGROUND:uint = 0x1D232A;
 
         private var LIGHT_GRAY = 0xC9C9C9;
 
-        private var PRIMARY:uint = 0xE9D34F;
+        private var PRIMARY:uint = 0x004DE5;
+
+        private var SECONDARY:uint = 0x00CDB8;
+
+        private var checkContentLoadedTimer:Timer;
+
+        private var languages:Array;
 
         public function AuthForm()
         {
             addEventListener(Event.ADDED_TO_STAGE, formAddedToStageHandler);
+            KEYS._storageURL = GLOBAL.languageUrl;
+            KEYS.GetSupportedLanguages();
+            KEYS.Setup("english");
+
+            // Start a timer every second to check if text content and supported languages are loaded from the server
+            checkContentLoadedTimer = new Timer(1000);
+            checkContentLoadedTimer.addEventListener(TimerEvent.TIMER, checkContentLoaded);
+            checkContentLoadedTimer.start();
+        }
+
+        private function checkContentLoaded(event:TimerEvent):void
+        {
+            // True: Once we receive the language file and supported languages from the server
+            // This also let's us know whether a connection has been established.
+            if (GLOBAL.textContentLoaded && GLOBAL.supportedLangsLoaded)
+            {
+                checkContentLoadedTimer.stop();
+                checkContentLoadedTimer.removeEventListener(TimerEvent.TIMER, checkContentLoaded);
+                removeChild(loadingContainer);
+                handleContentLoaded();
+            }
+            else
+            {
+                Loading();
+            }
         }
 
         public function formAddedToStageHandler(event:Event):void
         {
             removeEventListener(Event.ADDED_TO_STAGE, formAddedToStageHandler);
-            stage.color = STAGE_BG;
+            stage.color = BACKGROUND;
 
+            if (!GLOBAL.textContentLoaded && !GLOBAL.supportedLangsLoaded)
+            {
+                Loading();
+            }
+            else
+            {
+                // If text content is already loaded, proceed with UI setup
+                removeChild(loadingContainer);
+                handleContentLoaded();
+            }
+        }
+
+        private function handleContentLoaded():void
+        {
             // Global Initialization
+            navContainer = new Sprite();
             formContainer = new Sprite();
             usernameInput = new TextField();
             emailInput = new TextField();
@@ -99,25 +164,19 @@ package
 
             var formWidth:Number = 450;
             var formHeight:Number = 600;
-            var formRadius:Number = 16;
 
-            formContainer.graphics.beginFill(WHITE);
-            formContainer.graphics.drawRoundRect(0, 0, formWidth, formHeight, formRadius, formRadius);
-            formContainer.graphics.endFill();
+            languages = KEYS.supportedLanguagesJson;
+            var selectInput:Sprite = createSelectInput();
+            addChild(selectInput);
+            selectInput.x = 20;
+            selectInput.y = 10;
+
+            HeaderTitle();
+            addChild(navContainer);
+
+            formContainer.graphics.drawRect(0, 0, formWidth, formHeight);
             formContainer.x = (stage.stageWidth - formContainer.width) / 2;
             formContainer.y = (stage.stageHeight - formContainer.height) / 2;
-
-            // Create a drop shadow filter
-            var dropShadow:DropShadowFilter = new DropShadowFilter();
-            dropShadow.color = BLACK;
-            dropShadow.angle = 45;
-            dropShadow.distance = 5;
-            dropShadow.blurX = dropShadow.blurY = 14;
-            dropShadow.alpha = 0.15;
-            dropShadow.quality = 1;
-
-            formContainer.filters = [dropShadow];
-
             addChild(formContainer);
 
             // Get center point of stage
@@ -127,14 +186,17 @@ package
             // Calculate starting y position to center content
             startY = centerY;
 
+            // Get image asset
             this.loader = new Loader();
-            this.loader.load(new URLRequest(GLOBAL.serverUrl + "assets/bym-refitted-assets/refitted-logo.png"), new LoaderContext(true));
+            this.loader.load(new URLRequest(GLOBAL.serverUrl + "assets/popups/C5-LAB-150.png"), new LoaderContext(true));
             this.loader.contentLoaderInfo.addEventListener(Event.COMPLETE, onImageLoaded);
             this.loader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, handleNetworkError);
 
             usernameInput = createBlock(0, 0, "Username");
             emailInput = createBlock(350, 35, "Email");
             passwordInput = createBlock(350, 35, "Password", true);
+            CreateBorder(emailInput);
+            CreateBorder(passwordInput);
 
             // Create button
             submitButton = createButton();
@@ -144,17 +206,97 @@ package
             submitButton.addEventListener(MouseEvent.CLICK, submitButtonClickHandler);
 
             // Link
-            createLink();
+            FormNavigate();
+        }
+
+        private function Loading():void
+        {
+            var navWidth:Number = stage.stageWidth;
+            var navHeight:Number = stage.stageHeight;
+            var loadingDesc:TextField = new TextField();
+            var loadingDescStyle:TextFormat = new TextFormat();
+
+            loadingContainer = new Sprite();
+            addChild(loadingContainer);
+
+            var titlePrefix:TextField = createRichText("Connecting to the server...", WHITE);
+
+            loadingDescStyle.font = "Verdana";
+            loadingDescStyle.size = 14;
+            loadingDescStyle.leftMargin = 10;
+            loadingDescStyle.color = WHITE;
+
+            loadingDesc.x = titlePrefix.x;
+            loadingDesc.y = titlePrefix.y + titlePrefix.height + 15;
+            loadingDesc.width = titlePrefix.width + 5;
+            loadingDesc.embedFonts = true;
+            loadingDesc.antiAliasType = AntiAliasType.NORMAL;
+            loadingDesc.defaultTextFormat = loadingDescStyle;
+            loadingDesc.htmlText = "<font color='#ffffff'>Taking a while? Check our </font><font color='#00CDB8'>#server-status</font><font color='#ffffff'> on our Discord.</font>";
+            loadingDesc.selectable = false;
+            loadingDesc.mouseEnabled = true;
+            mousePointerCursor(loadingDesc);
+            loadingDesc.addEventListener(MouseEvent.CLICK, DiscordLink);
+
+            loadingContainer.addChild(titlePrefix);
+            loadingContainer.addChild(loadingDesc);
+
+            loadingContainer.x = (navWidth - loadingContainer.width) / 2;
+            loadingContainer.y = (navHeight - loadingContainer.height) / 2;
+        }
+
+        public static function DiscordLink(param1:Event = null):void
+        {
+            GLOBAL.gotoURL("https://discord.com/invite/bym");
+        }
+
+        private function HeaderTitle():void
+        {
+            var navWidth:Number = 800;
+            var navHeight:Number = 50;
+
+            navContainer.graphics.drawRect(0, 0, navWidth, navHeight);
+            navContainer.x = (stage.stageWidth - navWidth) / 2;
+            navContainer.y = 50; // Margin top
+
+            var textContainer:Sprite = new Sprite();
+            navContainer.addChild(textContainer);
+
+            var titlePrefix:TextField = createRichText(KEYS.Get("auth_header_prefix"), WHITE);
+            textContainer.addChild(titlePrefix);
+
+            var titleSuffix:TextField = createRichText(KEYS.Get("auth_header_suffix"), SECONDARY);
+            textContainer.addChild(titleSuffix);
+            titleSuffix.x = titlePrefix.x + titlePrefix.width;
+
+            textContainer.x = (navWidth - textContainer.width) / 2;
+            textContainer.y = (navHeight - textContainer.height) / 2 + 30;
+        }
+
+        // Essentially creates a 'span' element.
+        private function createRichText(text:String, color:String):TextField
+        {
+            var textField:TextField = new TextField();
+            var textFormat:TextFormat = new TextFormat();
+            textFormat.font = "Groboldov";
+            textFormat.size = 32;
+            textFormat.color = color;
+            textField.embedFonts = true;
+            textField.antiAliasType = AntiAliasType.NORMAL;
+            textField.autoSize = TextFieldAutoSize.LEFT;
+            textField.defaultTextFormat = textFormat;
+            textField.text = text;
+            return textField;
         }
 
         private function onImageLoaded(event:Event):void
         {
             image = Bitmap(loader.content);
 
-            image.x = (formContainer.width - image.width) / 2 + 160;
-            image.y = 20;
-            image.scaleX = 0.5;
-            image.scaleY = 0.5;
+            image.x = 150;
+            image.y = 150;
+            image.scaleX = 1;
+            image.scaleY = 1;
             formContainer.addChild(image);
         }
 
@@ -194,30 +336,26 @@ package
             var input:TextField = new TextField();
 
             input.background = true;
-            input.backgroundColor = WHITE;
+            input.backgroundColor = BACKGROUND;
             input.type = TextFieldType.INPUT;
-            input.border = true;
-            input.borderColor = 0xDDDDDD;
             input.width = width;
             input.height = height;
 
-            var inputMargin:Number = 10;
-
             // Normal input
             var inputTextFormat:TextFormat = new TextFormat();
-            inputTextFormat.size = 16;
-            inputTextFormat.color = BLACK;
-            inputTextFormat.leftMargin = inputMargin;
-            inputTextFormat.rightMargin = inputMargin;
+            inputTextFormat.font = "Verdana";
+            inputTextFormat.size = 14;
+            inputTextFormat.color = WHITE;
 
+            input.embedFonts = true;
+            input.antiAliasType = AntiAliasType.NORMAL;
             input.defaultTextFormat = inputTextFormat;
 
             // Placeholder
             var placeholderTextFormat:TextFormat = new TextFormat();
-            placeholderTextFormat.size = 16;
-            placeholderTextFormat.color = LIGHT_GRAY;
-            placeholderTextFormat.leftMargin = inputMargin;
-            placeholderTextFormat.rightMargin = inputMargin;
+            placeholderTextFormat.font = "Verdana";
+            placeholderTextFormat.size = 14;
+            placeholderTextFormat.color = WHITE;
 
             input.text = placeholder;
             input.setTextFormat(placeholderTextFormat);
@@ -251,8 +389,109 @@ package
             return input;
         }
 
+        function createSelectInput(defaultOption:String = "English"):Sprite
+        {
+            selectField = new Sprite();
+            var selectWidth:Number = 80;
+            var selectHeight:Number = 30;
+            selectField.graphics.lineStyle(1, WHITE);
+            selectField.graphics.drawRect(0, 0, selectWidth, selectHeight);
+
+            defaultText = new TextField();
+            var defaultTextStyle:TextFormat = new TextFormat();
+            defaultTextStyle.font = "Groboldov";
+            defaultTextStyle.size = 13;
+
+            defaultText.textColor = WHITE;
+            defaultText.embedFonts = true;
+            defaultText.defaultTextFormat = defaultTextStyle;
+            defaultText.text = defaultOption.toLocaleUpperCase();
+            defaultText.x = (selectWidth - defaultText.textWidth) / 2;
+            defaultText.y = (selectHeight - defaultText.textHeight) / 2;
+            mousePointerCursor(defaultText);
+            selectField.addChild(defaultText);
+
+            // Create the dropdown menu
+            dropdownMenu = new Sprite();
+            dropdownMenu.visible = false;
+            selectField.addChild(dropdownMenu);
+
+            // Populate the dropdown menu with options
+            for (var index:int = 0; index < languages.length; index++)
+            {
+                var langSelectText:TextField = new TextField();
+                var langSelectTextStyle:TextFormat = new TextFormat();
+                langSelectTextStyle.font = "Groboldov";
+                langSelectTextStyle.size = 13;
+
+                langSelectText.embedFonts = true;
+                langSelectText.textColor = WHITE;
+                langSelectText.defaultTextFormat = langSelectTextStyle;
+                langSelectText.text = languages[index].toLocaleUpperCase();
+                langSelectText.y = index * 30;
+                langSelectText.width = 200;
+                langSelectText.selectable = false;
+                langSelectText.antiAliasType = AntiAliasType.NORMAL;
+                langSelectText.addEventListener(MouseEvent.CLICK, langSelectClickHandler);
+                mousePointerCursor(langSelectText);
+                dropdownMenu.addChild(langSelectText);
+            }
+
+            // Handle click events to toggle the dropdown menu visibility
+            selectField.addEventListener(MouseEvent.CLICK, function(event:MouseEvent):void
+                {
+                    dropdownMenu.visible = !dropdownMenu.visible;
+                });
+
+            dropdownMenu.y = 50;
+
+            return selectField;
+        }
+
+        // Function to handle language select event
+        private function langSelectClickHandler(event:MouseEvent):void
+        {
+            var selectedLanguage = event.currentTarget.text;
+            defaultText.text = selectedLanguage;
+            defaultText.width = 200;
+            dropdownMenu.visible = true;
+
+            var textWidth:Number = defaultText.textWidth;
+            var newSelectWidth:Number = textWidth + 23;
+
+            selectField.graphics.clear();
+            selectField.graphics.lineStyle(1, WHITE);
+            selectField.graphics.drawRect(0, 0, newSelectWidth, 30);
+
+            // Iterate over the supported languages and pass them to KEYS.Setup()
+            // to grab available language file.
+            for each (var language:String in languages)
+            {
+                if (selectedLanguage.toLocaleLowerCase() === language.toLocaleLowerCase())
+                {
+                    KEYS.Setup(language.toLowerCase());
+                    return;
+                }
+            }
+            KEYS.Setup("english");
+        }
+
+        private function CreateBorder(input:TextField):Sprite
+        {
+            borderContainer = new Sprite();
+            borderContainer.graphics.lineStyle(1, WHITE);
+            borderContainer.graphics.moveTo(0, 2);
+            borderContainer.graphics.lineTo(input.width, 2);
+            borderContainer.x = input.x;
+            borderContainer.y = input.y + input.height;
+
+            formContainer.addChild(borderContainer);
+            return borderContainer;
+        }
+
         private function createButton():Sprite
         {
+            var formRadius:Number = 16;
             button = new Sprite();
             updateButtonColor();
             button.buttonMode = true;
@@ -266,24 +505,25 @@ package
             buttonText.selectable = false;
             buttonText.mouseEnabled = false;
 
-            // Set alignment properties
             var textFormat:TextFormat = new TextFormat();
+            textFormat.font = "Groboldov";
             textFormat.size = 16;
             textFormat.align = TextFormatAlign.CENTER;
+            buttonText.embedFonts = true;
             buttonText.defaultTextFormat = textFormat;
             updateButtonText();
 
             buttonText.autoSize = TextFieldAutoSize.CENTER;
             buttonText.x = (button.width - buttonText.width) / 2;
             buttonText.y = (button.height - buttonText.height) / 2;
-            onMouseHoverEffect(button);
+            mousePointerCursor(button);
 
             button.addChild(buttonText);
 
             return button;
         }
 
-        private function createLink():void
+        private function FormNavigate():void
         {
             var linkContainer:Sprite = new Sprite();
             linkContainer.buttonMode = true;
@@ -295,23 +535,22 @@ package
             hasAccountText.x = linkContainer.width / 2;
 
             hasAccountFormat = new TextFormat();
-            hasAccountFormat.size = 14;
+            hasAccountFormat.size = 16;
             updateLinkColour();
             updateLinkText();
 
             hasAccountText.y = 0;
             linkContainer.addChild(hasAccountText);
 
-            // Position the text container beneath the button
             linkContainer.x = (formContainer.width - linkContainer.width) / 2;
-            linkContainer.y = submitButton.y + submitButton.height + 15; // Adjust the vertical position
-            onMouseHoverEffect(linkContainer);
+            linkContainer.y = submitButton.y + submitButton.height + 15;
+            mousePointerCursor(linkContainer);
 
             formContainer.addChild(linkContainer);
             linkContainer.addEventListener(MouseEvent.CLICK, function(event:Event)
                 {
                     isRegisterForm = !isRegisterForm;
-                    updateUI();
+                    updateState();
                 });
         }
 
@@ -323,41 +562,45 @@ package
                 usernameInput.height = 35;
                 usernameInput.x = 50;
                 usernameInput.y = emailInput.y - usernameInput.height - 20;
+                CreateBorder(usernameInput);
             }
             else
             {
                 usernameInput.width = 0;
                 usernameInput.height = 0;
+                formContainer.removeChild(borderContainer);
             }
         }
 
         private function updateLinkText():void
         {
-            hasAccountText.text = isRegisterForm ? "Already have an account? Login here." : "Don't have an account? Register here.";
+            hasAccountText.embedFonts = true;
+            hasAccountText.antiAliasType = AntiAliasType.NORMAL;
+            hasAccountText.text = isRegisterForm ? KEYS.Get("auth_login_link") : KEYS.Get("auth_register_link");
         }
 
         private function updateLinkColour():void
         {
-            hasAccountFormat.color = isRegisterForm ? BLACK : PRIMARY;
+            hasAccountFormat.color = isRegisterForm ? SECONDARY : PRIMARY;
+            hasAccountFormat.font = "Verdana";
             hasAccountText.defaultTextFormat = hasAccountFormat;
             hasAccountText.setTextFormat(hasAccountFormat);
         }
 
         private function updateButtonText():void
         {
-            button.graphics.beginFill(isRegisterForm ? PRIMARY : BLACK);
-            buttonText.text = isRegisterForm ? "Register".toUpperCase() : "Login".toUpperCase();
+            button.graphics.beginFill(isRegisterForm ? PRIMARY : SECONDARY);
+            buttonText.text = isRegisterForm ? KEYS.Get("auth_register_btn").toUpperCase() : KEYS.Get("auth_login_btn").toUpperCase();
         }
 
         private function updateButtonColor():void
         {
-            // button.graphics.clear();
-            button.graphics.beginFill(isRegisterForm ? BLACK : PRIMARY);
-            button.graphics.drawRect(0, 0, 350, 50);
+            button.graphics.beginFill(isRegisterForm ? SECONDARY : PRIMARY);
+            button.graphics.drawRoundRect(0, 0, 350, 50, 12);
             button.graphics.endFill();
         }
 
-        private function onMouseHoverEffect(element:Sprite):void
+        private function mousePointerCursor(element:*):void
         {
             element.addEventListener(MouseEvent.ROLL_OVER, function(e:MouseEvent):void
                 {
@@ -421,9 +664,9 @@ package
 
         private function registerNewUser(serverData:Object):void
         {
-            GLOBAL.Message("<b>Congratulations!</b> Your account has been successfully created, you can now login.<br><br>As a new member of Backyard Monsters Refitted, we're excited to have you on board!");
+            GLOBAL.Message("<b>Congratulations!</b> Your account has been successfully created, you can now login.");
             isRegisterForm = false;
-            updateUI();
+            updateState();
         }
 
         public function handleNetworkError(event:IOErrorEvent):void
@@ -481,7 +724,7 @@ package
             }
         }
 
-        public function updateUI():void
+        public function updateState():void
         {
             updateFormFields();
             updateButtonText();
