@@ -98,15 +98,16 @@ package com.auth
 
         private var checkContentLoadedTimer:Timer;
 
+        private var languages:Array
+
         public function AuthForm()
         {
             addEventListener(Event.ADDED_TO_STAGE, formAddedToStageHandler);
             KEYS._storageURL = GLOBAL.languageUrl;
-            KEYS._logFunction = LOGGER.Log;
-            //KEYS.GetAvailableLanguages();
-            KEYS.Setup("en");
+            KEYS.GetSupportedLanguages();
+            KEYS.Setup("english");
 
-            // Start a timer every second to check if text content is loaded from the server
+            // Start a timer every second to check if text content and supported languages are loaded from the server
             checkContentLoadedTimer = new Timer(1000);
             checkContentLoadedTimer.addEventListener(TimerEvent.TIMER, checkContentLoaded);
             checkContentLoadedTimer.start();
@@ -114,7 +115,9 @@ package com.auth
 
         private function checkContentLoaded(event:TimerEvent):void
         {
-            if (GLOBAL.textContentLoaded)
+            // True: Once we receive the language file and supported languages from the server
+            // This also let's us know whether a connection has been established.
+            if (GLOBAL.textContentLoaded && GLOBAL.supportedLangsLoaded)
             {
                 checkContentLoadedTimer.stop();
                 checkContentLoadedTimer.removeEventListener(TimerEvent.TIMER, checkContentLoaded);
@@ -132,9 +135,7 @@ package com.auth
             removeEventListener(Event.ADDED_TO_STAGE, formAddedToStageHandler);
             stage.color = BACKGROUND;
 
-            // Set this flag to true once we receive the language file from the server
-            // This also let's us know whether a connection has been established.
-            if (!GLOBAL.textContentLoaded)
+            if (!GLOBAL.textContentLoaded && !GLOBAL.supportedLangsLoaded)
             {
                 Loading();
             }
@@ -162,8 +163,8 @@ package com.auth
             var formWidth:Number = 450;
             var formHeight:Number = 600;
 
-            var options:Array = ["English", "French", "German"];
-            var selectInput:Sprite = createSelectInput(options);
+            languages = KEYS.supportedLanguagesJson;
+            var selectInput:Sprite = createSelectInput();
             addChild(selectInput);
             selectInput.x = 20;
             selectInput.y = 10;
@@ -386,16 +387,14 @@ package com.auth
             return input;
         }
 
-        function createSelectInput(options:Array, defaultOption:String = "English"):Sprite
+        function createSelectInput(defaultOption:String = "English"):Sprite
         {
-            // Create a Sprite to act as the select input field
             var selectField:Sprite = new Sprite();
             var selectWidth:Number = 80;
             var selectHeight:Number = 30;
             selectField.graphics.lineStyle(1, WHITE);
             selectField.graphics.drawRect(0, 0, selectWidth, selectHeight);
 
-            // Create a TextField to display the selected option
             defaultText = new TextField();
             var defaultTextStyle:TextFormat = new TextFormat();
             defaultTextStyle.font = "Groboldov";
@@ -405,8 +404,8 @@ package com.auth
             defaultText.embedFonts = true;
             defaultText.defaultTextFormat = defaultTextStyle;
             defaultText.text = defaultOption.toLocaleUpperCase();
-            defaultText.x = (selectWidth - defaultText.textWidth) / 2; // Center horizontally
-            defaultText.y = (selectHeight - defaultText.textHeight) / 2; // Center vertically
+            defaultText.x = (selectWidth - defaultText.textWidth) / 2;
+            defaultText.y = (selectHeight - defaultText.textHeight) / 2;
             selectField.addChild(defaultText);
 
             // Create the dropdown menu
@@ -415,22 +414,22 @@ package com.auth
             selectField.addChild(dropdownMenu);
 
             // Populate the dropdown menu with options
-            for (var i:int = 0; i < options.length; i++)
+            for (var index:int = 0; index < languages.length; index++)
             {
-                var optionText:TextField = new TextField();
-                var optionTextStyle:TextFormat = new TextFormat();
-                optionTextStyle.font = "Groboldov";
-                optionTextStyle.size = 13;
+                var langSelectText:TextField = new TextField();
+                var langSelectTextStyle:TextFormat = new TextFormat();
+                langSelectTextStyle.font = "Groboldov";
+                langSelectTextStyle.size = 13;
 
-                optionText.embedFonts = true;
-                optionText.textColor = WHITE;
-                optionText.defaultTextFormat = optionTextStyle;
-                optionText.text = options[i].toLocaleUpperCase();
-                optionText.y = i * 30;
-                optionText.selectable = false;
-                optionText.antiAliasType = AntiAliasType.NORMAL;
-                optionText.addEventListener(MouseEvent.CLICK, optionClickHandler);
-                dropdownMenu.addChild(optionText);
+                langSelectText.embedFonts = true;
+                langSelectText.textColor = WHITE;
+                langSelectText.defaultTextFormat = langSelectTextStyle;
+                langSelectText.text = languages[index].toLocaleUpperCase();
+                langSelectText.y = index * 30;
+                langSelectText.selectable = false;
+                langSelectText.antiAliasType = AntiAliasType.NORMAL;
+                langSelectText.addEventListener(MouseEvent.CLICK, langSelectClickHandler);
+                dropdownMenu.addChild(langSelectText);
             }
 
             // Handle click events to toggle the dropdown menu visibility
@@ -439,36 +438,29 @@ package com.auth
                     dropdownMenu.visible = !dropdownMenu.visible;
                 });
 
-            // Position the dropdown menu below the select field
             dropdownMenu.y = 50;
 
             return selectField;
         }
 
-        // Function to handle option click events
-        private function optionClickHandler(event:MouseEvent):void
+        // Function to handle language select event
+        private function langSelectClickHandler(event:MouseEvent):void
         {
-            selectOption(event.currentTarget.text);
-
-            switch (event.currentTarget.text.toLocaleLowerCase())
-            {
-                case "english":
-                    KEYS.Setup("en");
-                    break;
-                case "french":
-                    KEYS.Setup("fr");
-                    break;
-                default:
-                    KEYS.Setup("en");
-                    break;
-            }
-        }
-
-        // Create a function to handle option selection
-        private function selectOption(option:String):void
-        {
-            defaultText.text = option.toLocaleUpperCase();
+            var selectedLanguage = event.currentTarget.text;
+            defaultText.text = selectedLanguage;
             dropdownMenu.visible = false;
+
+            // Iterate over the supported languages and pass them to KEYS.Setup()
+            // to grab available language file.
+            for each (var language:String in languages)
+            {
+                if (selectedLanguage.toLocaleLowerCase() === language.toLocaleLowerCase())
+                {
+                    KEYS.Setup(language.toLowerCase());
+                    return;
+                }
+            }
+            KEYS.Setup("english");
         }
 
         private function CreateBorder(input:TextField):Sprite
@@ -500,7 +492,6 @@ package com.auth
             buttonText.selectable = false;
             buttonText.mouseEnabled = false;
 
-            // Set alignment properties
             var textFormat:TextFormat = new TextFormat();
             textFormat.font = "Groboldov";
             textFormat.size = 16;
@@ -538,9 +529,8 @@ package com.auth
             hasAccountText.y = 0;
             linkContainer.addChild(hasAccountText);
 
-            // Position the text container beneath the button
             linkContainer.x = (formContainer.width - linkContainer.width) / 2;
-            linkContainer.y = submitButton.y + submitButton.height + 15; // Vertical position
+            linkContainer.y = submitButton.y + submitButton.height + 15;
             onMouseHoverEffect(linkContainer);
 
             formContainer.addChild(linkContainer);

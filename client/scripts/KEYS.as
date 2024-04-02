@@ -11,13 +11,7 @@ package
 
       public static var _setup:Boolean = false;
 
-      public static var _logFunction:Function;
-
       public static var _storageURL:String = "";
-
-      public static var _languageVersion:int = 8;
-
-      public static var _language:String;
 
       public static var languageFileJson:Object;
 
@@ -28,16 +22,24 @@ package
          super();
       }
 
-      public static function Setup(language:String = "en"):void
+      public static function Setup(language:String = "english"):void
       {
          _setup = true;
          var languageFile:URLLoader = new URLLoader();
-         languageFile.load(new URLRequest(_storageURL + language + ".v" + _languageVersion + ".json"));
-         languageFile.addEventListener(Event.COMPLETE, handleLangFileSuccessful);
+         languageFile.load(new URLRequest(_storageURL + language + ".json"));
+         languageFile.addEventListener(Event.COMPLETE, handleLangFileSucc);
          languageFile.addEventListener(IOErrorEvent.IO_ERROR, handleLoadError);
       }
 
-      private static function handleLangFileSuccessful(param1:Event):void
+      public static function GetSupportedLanguages()
+      {
+         var languages:URLLoader = new URLLoader();
+         languages.load(new URLRequest(GLOBAL._apiURL + "supportedLangs"));
+         languages.addEventListener(Event.COMPLETE, handleSupportedLangsSucc);
+         languages.addEventListener(IOErrorEvent.IO_ERROR, handleLoadError);
+      }
+
+      private static function handleLangFileSucc(param1:Event):void
       {
          var rawData:String = param1.target.data;
          languageFileJson = JSON.decode(rawData);
@@ -46,18 +48,10 @@ package
 
       private static function handleLoadError(param1:IOErrorEvent):void
       {
-         GLOBAL.Message("Failed to get content from the server.");
+         GLOBAL.Message("Failed to retrieve content from the server.");
       }
 
-      public static function GetAvailableLanguages()
-      {
-         var languages:URLLoader = new URLLoader();
-         languages.load(new URLRequest(GLOBAL._apiURL + "availableLanguages"));
-         languages.addEventListener(Event.COMPLETE, handleAvailableLangsSuccessful);
-         languages.addEventListener(IOErrorEvent.IO_ERROR, handleLoadError);
-      }
-
-      private static function handleAvailableLangsSuccessful(param1:Event):void
+      private static function handleSupportedLangsSucc(param1:Event):void
       {
          var rawData:String = param1.target.data;
          supportedLanguagesJson = JSON.decode(rawData);

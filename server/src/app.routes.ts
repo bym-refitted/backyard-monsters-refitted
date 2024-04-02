@@ -16,7 +16,11 @@ import { saveTemplate } from "./controllers/yardplanner/saveTemplate";
 import { Context } from "koa";
 import { getArea } from "./controllers/maproom/v2/getArea";
 import { initialPlayerCellData } from "./controllers/maproom/v3/initialPlayerCellData";
+import { supportedLangs } from "./controllers/supportedLangs";
 const router = new Router();
+
+// Supported Languages
+router.get("/api/supportedLangs", debugDataLog("Getting supported languages"), supportedLangs);
 
 // Init route
 router.get("/api/bm/getnewmap", debugDataLog("Getting new maproom"), getNewMap);
