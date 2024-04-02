@@ -40,6 +40,8 @@ package com.auth
 
         private var navContainer:Sprite;
 
+        private var selectField:Sprite;
+
         private var dropdownMenu:Sprite;
 
         private var usernameInput:TextField;
@@ -98,7 +100,7 @@ package com.auth
 
         private var checkContentLoadedTimer:Timer;
 
-        private var languages:Array
+        private var languages:Array;
 
         public function AuthForm()
         {
@@ -233,7 +235,7 @@ package com.auth
             loadingDesc.htmlText = "<font color='#ffffff'>Taking a while? Check our </font><font color='#00CDB8'>#server-status</font><font color='#ffffff'> on our Discord.</font>";
             loadingDesc.selectable = false;
             loadingDesc.mouseEnabled = true;
-            onMouseHoverEffect(loadingDesc);
+            mousePointerCursor(loadingDesc);
             loadingDesc.addEventListener(MouseEvent.CLICK, DiscordLink);
 
             loadingContainer.addChild(titlePrefix);
@@ -268,7 +270,7 @@ package com.auth
             titleSuffix.x = titlePrefix.x + titlePrefix.width;
 
             textContainer.x = (navWidth - textContainer.width) / 2;
-            textContainer.y = (navHeight - textContainer.height) / 2;
+            textContainer.y = (navHeight - textContainer.height) / 2 + 30;
         }
 
         // Essentially creates a 'span' element.
@@ -389,7 +391,7 @@ package com.auth
 
         function createSelectInput(defaultOption:String = "English"):Sprite
         {
-            var selectField:Sprite = new Sprite();
+            selectField = new Sprite();
             var selectWidth:Number = 80;
             var selectHeight:Number = 30;
             selectField.graphics.lineStyle(1, WHITE);
@@ -406,6 +408,7 @@ package com.auth
             defaultText.text = defaultOption.toLocaleUpperCase();
             defaultText.x = (selectWidth - defaultText.textWidth) / 2;
             defaultText.y = (selectHeight - defaultText.textHeight) / 2;
+            mousePointerCursor(defaultText);
             selectField.addChild(defaultText);
 
             // Create the dropdown menu
@@ -426,9 +429,11 @@ package com.auth
                 langSelectText.defaultTextFormat = langSelectTextStyle;
                 langSelectText.text = languages[index].toLocaleUpperCase();
                 langSelectText.y = index * 30;
+                langSelectText.width = 200;
                 langSelectText.selectable = false;
                 langSelectText.antiAliasType = AntiAliasType.NORMAL;
                 langSelectText.addEventListener(MouseEvent.CLICK, langSelectClickHandler);
+                mousePointerCursor(langSelectText);
                 dropdownMenu.addChild(langSelectText);
             }
 
@@ -448,7 +453,15 @@ package com.auth
         {
             var selectedLanguage = event.currentTarget.text;
             defaultText.text = selectedLanguage;
+            defaultText.width = 200;
             dropdownMenu.visible = true;
+
+            var textWidth:Number = defaultText.textWidth;
+            var newSelectWidth:Number = textWidth + 23;
+
+            selectField.graphics.clear();
+            selectField.graphics.lineStyle(1, WHITE);
+            selectField.graphics.drawRect(0, 0, newSelectWidth, 30);
 
             // Iterate over the supported languages and pass them to KEYS.Setup()
             // to grab available language file.
@@ -503,7 +516,7 @@ package com.auth
             buttonText.autoSize = TextFieldAutoSize.CENTER;
             buttonText.x = (button.width - buttonText.width) / 2;
             buttonText.y = (button.height - buttonText.height) / 2;
-            onMouseHoverEffect(button);
+            mousePointerCursor(button);
 
             button.addChild(buttonText);
 
@@ -531,7 +544,7 @@ package com.auth
 
             linkContainer.x = (formContainer.width - linkContainer.width) / 2;
             linkContainer.y = submitButton.y + submitButton.height + 15;
-            onMouseHoverEffect(linkContainer);
+            mousePointerCursor(linkContainer);
 
             formContainer.addChild(linkContainer);
             linkContainer.addEventListener(MouseEvent.CLICK, function(event:Event)
@@ -587,7 +600,7 @@ package com.auth
             button.graphics.endFill();
         }
 
-        private function onMouseHoverEffect(element:*):void
+        private function mousePointerCursor(element:*):void
         {
             element.addEventListener(MouseEvent.ROLL_OVER, function(e:MouseEvent):void
                 {
