@@ -448,7 +448,7 @@ package com.auth
         {
             var selectedLanguage = event.currentTarget.text;
             defaultText.text = selectedLanguage;
-            dropdownMenu.visible = false;
+            dropdownMenu.visible = true;
 
             // Iterate over the supported languages and pass them to KEYS.Setup()
             // to grab available language file.
