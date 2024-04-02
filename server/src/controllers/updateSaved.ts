@@ -17,7 +17,7 @@ export const updateSaved: KoaController = async (ctx) => {
   const authSave = user.save;
   let save: Save;
 
-  if (type === "build") {
+  if (type === "build" || type === "ibuild") {
     save = await loadBuildBase(ctx, baseid);
   } else {
     save = await loadViewBase(ctx, baseid);
@@ -29,7 +29,7 @@ export const updateSaved: KoaController = async (ctx) => {
   // Set the id field (_lastSaveID) to be the same as savetime, client expects this.
   save.id = save.savetime;
 
-  if (save.baseid !== "0" && type === "build") {
+  if (save.baseid !== "0" && type === "build" || type === "ibuild") {
     await ORMContext.em.persistAndFlush(save);
   }
 

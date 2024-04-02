@@ -49,7 +49,11 @@ export const loadBuildBase = async (ctx: Context, baseid: string): Promise<Save>
         if (save) {
             if (save.saveuserid === user.userid) {
                 save.credits = authSave.credits;
-                save.resources = authSave.resources;
+                if (save.type === "inferno"){
+                    save.resources = authSave.iresources;
+                } else {
+                    save.resources = authSave.resources;
+                }
                 save.outposts = authSave.outposts;
                 save.buildingresources = authSave.buildingresources;
                 save.points = authSave.points;

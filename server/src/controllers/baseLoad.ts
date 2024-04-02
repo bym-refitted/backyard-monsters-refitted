@@ -35,9 +35,16 @@ export const baseLoad: KoaController = async (ctx) => {
   const authSave = user.save;
   let save: Save = null;
   logging(requestBody.type);
+
   if (requestBody.type === "build") {
     save = await loadBuildBase(ctx, requestBody.baseid);
     if(save && save.saveuserid !== user.userid) {
+      throw saveFailureErr;
+    }
+  } else if (requestBody.type === "ibuild") {
+    logging("building inferno base: " + requestBody.baseid);
+    save = await loadBuildBase(ctx, authSave.baseid_inferno.toString());
+    if (save && save.saveuserid !== user.userid) {
       throw saveFailureErr;
     }
   } else {
@@ -58,13 +65,21 @@ export const baseLoad: KoaController = async (ctx) => {
 
     save = ORMContext.em.create(Save, getDefaultBaseData(user));
 
+    if (requestBody.type === "ibuild") {
+      save.type = "inferno",
+      save.baseid = authSave.baseid_inferno.toString();
+      save.credits = authSave.credits;
+      save.resources = authSave.iresources;
+    }
+
     // Add the save to the database
     await ORMContext.em.persistAndFlush(save);
 
-    user.save = save;
-
-    // Update user base save
-    await ORMContext.em.persistAndFlush(user);
+    if (requestBody.type !== "ibuild") {
+      user.save = save;
+      // Update user base save || ONLY IF WE DIDNT JUST CREATE AN INFERNO BASE
+      await ORMContext.em.persistAndFlush(user);
+    }
   }
 
   if (!save) throw saveFailureErr;

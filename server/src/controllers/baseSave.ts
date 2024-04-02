@@ -11,6 +11,7 @@ import { storeItems } from "../data/storeItems";
 import { saveFailureErr } from "../errors/errorCodes.";
 import { monsterUpdateBases } from "../services/base/monster";
 import { DescentStatus } from "../models/descentstatus.model";
+import { auth } from "../middleware/auth";
 
 export const baseSave: KoaController = async (ctx) => {
   
@@ -46,8 +47,26 @@ export const baseSave: KoaController = async (ctx) => {
             stored_base[2] = 1;
             // insert back into database
             userDescentBases[baseIndex] = stored_base;
+
             await ORMContext.em.persistAndFlush(userDescentBases);
           }
+
+          let iloot = JSON.parse(ctx.request.body["lootreport"]);
+          logging(iloot);
+          logging(iloot["r1"])
+
+          let lootIResources: Resources = {
+            r1: iloot["r1"],
+            r2: iloot["r2"],
+            r3: iloot["r3"],
+            r4: iloot["r4"],
+          }
+          const savedLootIResources: FieldData = updateResources(
+            lootIResources,
+            authSave.iresources || {}
+          );
+          authSave.iresources = savedLootIResources;
+          ORMContext.em.persistAndFlush(authSave);
         }
         
         // send 200 status so the game doesn't kill itself 
@@ -64,6 +83,9 @@ export const baseSave: KoaController = async (ctx) => {
   } 
   else {
     const isOutpost = save.saveuserid === user.userid && save.homebaseid != save.basesaveid;
+    const isInferno = save.type === "inferno"
+
+    logging(isInferno + "");
 
     //logging(Save.jsonKeys.toString());
     // ToDo: Beta clean this shit up
@@ -71,22 +93,24 @@ export const baseSave: KoaController = async (ctx) => {
     for (const key of Save.jsonKeys) {
       const requestBodyValue = ctx.request.body[key];
       //logging(key + ": " + requestBodyValue);
-
       switch (key) {
         case "resources":
           // Update resources with the delta sent from the client
           const resources: Resources | undefined = JSON.parse(requestBodyValue);
-          let sr = isOutpost ? authSave.resources : save.resources;
+          let sr;
+          if (!isInferno) {
+            sr = isOutpost ? authSave.resources : save.resources;
+          } else {
+            sr = save.resources;
+          }
           const savedResources: FieldData = updateResources(
             resources,
             sr || {}
           );
-          if (isOutpost) {
-            authSave.resources = savedResources;
-          } else {
-            save.resources = savedResources;
-          }
+          save.resources = savedResources;
+          if (isInferno) authSave.iresources = save.resources;
           break;
+      
         case "buildinghealthdata":
           if (requestBodyValue)
             save.buildinghealthdata = JSON.parse(requestBodyValue);
@@ -120,9 +144,6 @@ export const baseSave: KoaController = async (ctx) => {
             }
           }
           save.academy = academyData;
-          break;
-        case "type":
-          
           break;
         default:
           if (
@@ -187,7 +208,7 @@ export const baseSave: KoaController = async (ctx) => {
     save.id = save.savetime;
     await ORMContext.em.persistAndFlush(save);
 
-    if (isOutpost) {
+    if (isOutpost && !isInferno) {
       authSave.savetime = getCurrentDateTime();
       authSave.id = authSave.savetime;
       await ORMContext.em.persistAndFlush(authSave);
