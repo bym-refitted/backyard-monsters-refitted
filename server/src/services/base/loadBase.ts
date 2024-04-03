@@ -49,22 +49,20 @@ export const loadBuildBase = async (ctx: Context, baseid: string): Promise<Save>
         if (save) {
             if (save.saveuserid === user.userid) {
                 save.credits = authSave.credits;
-                if (save.type === "inferno"){
-                    save.resources = authSave.iresources;
-                } else {
+                if (save.type !== "inferno") {
                     save.resources = authSave.resources;
+                    save.lockerdata = authSave.lockerdata;
                 }
                 save.outposts = authSave.outposts;
                 save.buildingresources = authSave.buildingresources;
                 save.points = authSave.points;
                 save.basevalue = authSave.basevalue;
-                save.lockerdata = authSave.lockerdata;
                 save.academy = authSave.academy;
                 save.researchdata = authSave.researchdata;
                 save.quests = authSave.quests;
                 save.rewards = authSave.rewards;
-                save.id = authSave.id
-                save.savetime = authSave.savetime
+                save.id = authSave.id;
+                save.savetime = authSave.savetime;
             }
         }
     }

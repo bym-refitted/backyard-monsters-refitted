@@ -108,7 +108,6 @@ export const baseSave: KoaController = async (ctx) => {
             sr || {}
           );
           save.resources = savedResources;
-          if (isInferno) authSave.iresources = save.resources;
           break;
       
         case "buildinghealthdata":

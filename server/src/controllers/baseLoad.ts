@@ -42,7 +42,6 @@ export const baseLoad: KoaController = async (ctx) => {
       throw saveFailureErr;
     }
   } else if (requestBody.type === "ibuild") {
-    logging("building inferno base: " + requestBody.baseid);
     save = await loadBuildBase(ctx, authSave.baseid_inferno.toString());
     if (save && save.saveuserid !== user.userid) {
       throw saveFailureErr;
@@ -57,7 +56,6 @@ export const baseLoad: KoaController = async (ctx) => {
   if (save) {
     if (process.env.ENV === "local") {
       //logging(`Base loaded:`, JSON.stringify(save, null, 2));
-      logging("base found: " + save.basesaveid);
     }
   } else if (requestBody.baseid && requestBody.baseid === "0") {
     // There was no existing save, create one with some defaults
@@ -117,12 +115,6 @@ export const baseLoad: KoaController = async (ctx) => {
 
   if (requestBody.type === "idescent") {
     //[201,202,203,204,205,206,207] - inferno base IDs
-    //save.wmstatus = user.save.wmstatus;
-    //if (user.save.wmstatus.length == 0) {
-      //save.wmstatus = [[201,1,0],[202,2,0],[203,3,0],[204,4,0],[205,5,0],[206,6,0],[207,7,0]];
-      //user.save.wmstatus = save.wmstatus;
-      //await ORMContext.em.persistAndFlush(user);
-    //}
     const descentBases = [[201,1,0],[202,2,0],[203,3,0],[204,4,0],[205,5,0],[206,6,0],[207,7,0]];
     let descentStatus = await ORMContext.em.findOne(DescentStatus, {
        userid: authSave.userid,
