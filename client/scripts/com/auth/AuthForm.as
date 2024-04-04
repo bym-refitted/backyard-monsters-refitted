@@ -117,12 +117,17 @@ package com.auth
             checkContentLoadedTimer.addEventListener(TimerEvent.TIMER, checkContentLoaded);
             checkContentLoadedTimer.start();
 
-            KEYS.addSecurityErrorListener(noConnection);
+            KEYS.securityErrorListener(noConnection);
+            KEYS.ioErrorListener(errorEvent);
         }
 
         private function noConnection(event:SecurityErrorEvent):void
         {
-            // Update the errMessage text
+            errMessage.text = KEYS.errorMessage;
+        }
+
+        private function errorEvent(event:IOErrorEvent):void
+        {
             errMessage.text = KEYS.errorMessage;
         }
 
