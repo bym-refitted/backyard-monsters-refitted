@@ -5,6 +5,8 @@ package
    import flash.net.URLRequest;
    import flash.events.Event;
    import flash.events.IOErrorEvent;
+   import flash.events.SecurityErrorEvent;
+   import flash.events.EventDispatcher;
 
    public class KEYS
    {
@@ -16,6 +18,10 @@ package
       public static var languageFileJson:Object;
 
       public static var supportedLanguagesJson:Object;
+
+      public static var errorMessage:String = "";
+
+      private static var dispatcher:EventDispatcher = new EventDispatcher();
 
       public function KEYS()
       {
@@ -29,33 +35,48 @@ package
          languageFile.load(new URLRequest(_storageURL + language + ".json"));
          languageFile.addEventListener(Event.COMPLETE, handleLangFileSucc);
          languageFile.addEventListener(IOErrorEvent.IO_ERROR, handleLoadError);
+         languageFile.addEventListener(SecurityErrorEvent.SECURITY_ERROR, noConnection);
       }
 
-      public static function GetSupportedLanguages()
+      public static function GetSupportedLanguages():void
       {
          var languages:URLLoader = new URLLoader();
          languages.load(new URLRequest(GLOBAL._apiURL + "supportedLangs"));
          languages.addEventListener(Event.COMPLETE, handleSupportedLangsSucc);
          languages.addEventListener(IOErrorEvent.IO_ERROR, handleLoadError);
+         languages.addEventListener(SecurityErrorEvent.SECURITY_ERROR, function(event:SecurityErrorEvent)
+            {
+            });
       }
 
-      private static function handleLangFileSucc(param1:Event):void
+      private static function handleLangFileSucc(data:Event):void
       {
-         var rawData:String = param1.target.data;
+         var rawData:String = data.target.data;
          languageFileJson = JSON.decode(rawData);
          GLOBAL.textContentLoaded = true;
       }
 
-      private static function handleLoadError(param1:IOErrorEvent):void
+      private static function handleSupportedLangsSucc(data:Event):void
+      {
+         var rawData:String = data.target.data;
+         supportedLanguagesJson = JSON.decode(rawData);
+         GLOBAL.supportedLangsLoaded = true;
+      }
+
+      private static function handleLoadError(error:IOErrorEvent):void
       {
          GLOBAL.Message("Failed to retrieve content from the server.");
       }
 
-      private static function handleSupportedLangsSucc(param1:Event):void
+      public static function noConnection(error:SecurityErrorEvent):void
       {
-         var rawData:String = param1.target.data;
-         supportedLanguagesJson = JSON.decode(rawData);
-         GLOBAL.supportedLangsLoaded = true;
+         errorMessage = "We could not establish a connection with the server.";
+         dispatcher.dispatchEvent(new SecurityErrorEvent(SecurityErrorEvent.SECURITY_ERROR));
+      }
+
+      public static function addSecurityErrorListener(listener:Function):void
+      {
+         dispatcher.addEventListener(SecurityErrorEvent.SECURITY_ERROR, listener);
       }
 
       // Processes the JSON language file from the server

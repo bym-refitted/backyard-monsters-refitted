@@ -22,6 +22,7 @@ package com.auth
     import flash.events.IOErrorEvent;
     import flash.utils.Timer;
     import flash.events.TimerEvent;
+    import flash.events.SecurityErrorEvent;
 
     // DISCLAIMER: This is far from my best work, actually, it's quite miserable, but it works.
     // I don't really have the time, nor the patience to look deprecated best practices for
@@ -59,6 +60,8 @@ package com.auth
         private var emailErrorText:TextField;
 
         private var passwordErrorText:TextField;
+
+        private var errMessage:TextField;
 
         private var submitButton:Sprite;
 
@@ -113,6 +116,14 @@ package com.auth
             checkContentLoadedTimer = new Timer(1000);
             checkContentLoadedTimer.addEventListener(TimerEvent.TIMER, checkContentLoaded);
             checkContentLoadedTimer.start();
+
+            KEYS.addSecurityErrorListener(noConnection);
+        }
+
+        private function noConnection(event:SecurityErrorEvent):void
+        {
+            // Update the errMessage text
+            errMessage.text = KEYS.errorMessage;
         }
 
         private function checkContentLoaded(event:TimerEvent):void
@@ -128,7 +139,10 @@ package com.auth
             }
             else
             {
-                Loading();
+                if (!loadingContainer.parent)
+                {
+                    Loading();
+                }
             }
         }
 
@@ -215,20 +229,27 @@ package com.auth
             var navHeight:Number = stage.stageHeight;
             var loadingDesc:TextField = new TextField();
             var loadingDescStyle:TextFormat = new TextFormat();
+            errMessage = new TextField();
+            var errMessageStyle:TextFormat = new TextFormat();
 
             loadingContainer = new Sprite();
             addChild(loadingContainer);
 
-            var titlePrefix:TextField = createRichText("Connecting to the server...", WHITE);
+            var loadingTitle:TextField = createRichText("Connecting to the server...", WHITE);
 
             loadingDescStyle.font = "Verdana";
             loadingDescStyle.size = 14;
             loadingDescStyle.leftMargin = 10;
             loadingDescStyle.color = WHITE;
 
-            loadingDesc.x = titlePrefix.x;
-            loadingDesc.y = titlePrefix.y + titlePrefix.height + 15;
-            loadingDesc.width = titlePrefix.width + 5;
+            errMessageStyle.font = "Verdana";
+            errMessageStyle.size = 14;
+            errMessageStyle.leftMargin = 30;
+            errMessageStyle.color = WHITE;
+
+            loadingDesc.x = loadingTitle.x;
+            loadingDesc.y = loadingTitle.y + loadingTitle.height + 15;
+            loadingDesc.width = loadingTitle.width + 5;
             loadingDesc.embedFonts = true;
             loadingDesc.antiAliasType = AntiAliasType.NORMAL;
             loadingDesc.defaultTextFormat = loadingDescStyle;
@@ -238,8 +259,17 @@ package com.auth
             mousePointerCursor(loadingDesc);
             loadingDesc.addEventListener(MouseEvent.CLICK, DiscordLink);
 
-            loadingContainer.addChild(titlePrefix);
+            errMessage.x = loadingTitle.x;
+            errMessage.y = loadingDesc.x + loadingDesc.height + 50;
+            errMessage.width = loadingTitle.width + 5;
+            errMessage.embedFonts = true;
+            errMessage.antiAliasType = AntiAliasType.NORMAL;
+            errMessage.defaultTextFormat = errMessageStyle;
+            errMessage.htmlText = KEYS.errorMessage;
+
+            loadingContainer.addChild(loadingTitle);
             loadingContainer.addChild(loadingDesc);
+            loadingContainer.addChild(errMessage);
 
             loadingContainer.x = (navWidth - loadingContainer.width) / 2;
             loadingContainer.y = (navHeight - loadingContainer.height) / 2;
