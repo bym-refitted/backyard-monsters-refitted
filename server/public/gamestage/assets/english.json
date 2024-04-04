@@ -1,4 +1,10 @@
 {
+    "auth_header_prefix": "Backyard Monsters:",
+    "auth_header_suffix": "Refitted",
+    "auth_login_btn": "Login",
+    "auth_register_btn": "Register",
+    "auth_login_link": "Already have an account? Login here.",
+    "auth_register_link": "Don't have an account? Register here.",
     "discord_earn": "Join the <b>Backyard Monsters Refitted Discord</b> community to earn Shiny and more!",
     "disabled_gifts": "Gifts are currently disabled on Backyard Monster Refitted.",
     "disabled_mail": "Mail is currently disabled on Backyard Monster Refitted.",
