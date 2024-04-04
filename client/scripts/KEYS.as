@@ -65,7 +65,8 @@ package
 
       private static function handleLoadError(error:IOErrorEvent):void
       {
-         GLOBAL.Message("Failed to retrieve content from the server.");
+         errorMessage = "Failed to retrieve required content from the server.";
+         dispatcher.dispatchEvent(new IOErrorEvent(IOErrorEvent.IO_ERROR));
       }
 
       public static function noConnection(error:SecurityErrorEvent):void
@@ -74,9 +75,14 @@ package
          dispatcher.dispatchEvent(new SecurityErrorEvent(SecurityErrorEvent.SECURITY_ERROR));
       }
 
-      public static function addSecurityErrorListener(listener:Function):void
+      public static function securityErrorListener(listener:Function):void
       {
          dispatcher.addEventListener(SecurityErrorEvent.SECURITY_ERROR, listener);
+      }
+
+      public static function ioErrorListener(listener:Function):void
+      {
+         dispatcher.addEventListener(IOErrorEvent.IO_ERROR, listener);
       }
 
       // Processes the JSON language file from the server
