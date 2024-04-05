@@ -36,7 +36,13 @@ export const baseSave: KoaController = async (ctx) => {
       //logging("is Destroyed?: " + ctx.request.body["destroyed"]);
       try {
         if (parseInt(ctx.request.body["destroyed"]) === 1) {
-          let baseIndex = descentBases.indexOf(parseInt(basesaveid));
+          let baseIndex = 0;
+          if (basesaveid === 0) {
+            let baseIndex = descentBases.indexOf(parseInt(JSON.parse(ctx.request.body["baseid"])))
+          } else {
+            let baseIndex = descentBases.indexOf(parseInt(basesaveid));
+          }
+          
           let userDescentBases = await ORMContext.em.findOne(DescentStatus, {
             userid: authSave.userid,
           });
@@ -50,23 +56,26 @@ export const baseSave: KoaController = async (ctx) => {
 
             await ORMContext.em.persistAndFlush(userDescentBases);
           }
+          try {
+              let iloot = JSON.parse(ctx.request.body["lootreport"]);
+            logging(iloot);
+            logging(iloot["r1"])
 
-          let iloot = JSON.parse(ctx.request.body["lootreport"]);
-          logging(iloot);
-          logging(iloot["r1"])
-
-          let lootIResources: Resources = {
-            r1: iloot["r1"],
-            r2: iloot["r2"],
-            r3: iloot["r3"],
-            r4: iloot["r4"],
+            let lootIResources: Resources = {
+              r1: iloot["r1"],
+              r2: iloot["r2"],
+              r3: iloot["r3"],
+              r4: iloot["r4"],
+            }
+            const savedLootIResources: FieldData = updateResources(
+              lootIResources,
+              authSave.iresources || {}
+            );
+            authSave.iresources = savedLootIResources;
+            ORMContext.em.persistAndFlush(authSave);
+          } catch (error) {
+            logging("something went wrong saving loot: " + error)
           }
-          const savedLootIResources: FieldData = updateResources(
-            lootIResources,
-            authSave.iresources || {}
-          );
-          authSave.iresources = savedLootIResources;
-          ORMContext.em.persistAndFlush(authSave);
         }
         
         // send 200 status so the game doesn't kill itself 
