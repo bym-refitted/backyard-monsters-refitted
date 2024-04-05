@@ -32,7 +32,7 @@ export const baseSave: KoaController = async (ctx) => {
     /* Before, if there is no save, we threw an error.
       Now, we check if the ID matches a descent base 
     */
-    if (descentBases.includes(parseInt(basesaveid))) {
+    if (descentBases.includes(parseInt(basesaveid)) || descentBases.includes(parseInt(JSON.parse(ctx.request.body["baseid"])))) {
       //logging("is Destroyed?: " + ctx.request.body["destroyed"]);
       try {
         if (parseInt(ctx.request.body["destroyed"]) === 1) {
@@ -75,7 +75,7 @@ export const baseSave: KoaController = async (ctx) => {
           error: 0
         }
       } catch (error) {
-        logging(error);
+        logging("WTF Happened: " + error);
       }
     } else {
       throw saveFailureErr;
