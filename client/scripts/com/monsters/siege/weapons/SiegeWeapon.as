@@ -59,7 +59,8 @@ package com.monsters.siege.weapons
          this._properties = {};
          this.image = _IMAGE_FOLDER_URL + this.weaponID + ".png";
          this.icon = _ICON_FOLDER_URL + "siege_icon_" + this.weaponID + ".png";
-         this.video = "assets/videos/" + this.weaponID + "400x175.flv";
+         // formerly "assets/videos/", changed to be simply "videos/" for the sake of consistency
+         this.video = "videos/" + this.weaponID + "400x175.flv";
          this.videopreview = "videos/" + this.weaponID + "_preview" + ".png";
          this.name = KEYS.Get("#w_" + this.weaponID + "#");
          this.description = KEYS.Get("w_" + this.weaponID + "desc");
