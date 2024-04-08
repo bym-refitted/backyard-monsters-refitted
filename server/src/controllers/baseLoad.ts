@@ -68,6 +68,8 @@ export const baseLoad: KoaController = async (ctx) => {
       save.baseid = authSave.baseid_inferno.toString();
       save.credits = authSave.credits;
       save.resources = authSave.iresources;
+      authSave.stats["other"]["underhalLevel"] = 1;
+      await ORMContext.em.persistAndFlush(authSave);
     }
 
     // Add the save to the database

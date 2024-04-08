@@ -21,9 +21,11 @@ export const getWildMonsterSave = (baseid: number, level: number = 10): Save => 
         const save = fork.create(Save, {
             ...defaultSave,
             basename: "",
+            baseid: baseid.toString(),
+            basesaveid: baseid,
         });
         save.type = "iwm";
-        save.baseid = "0";
+        save.baseid = baseid.toString();
         save.basesaveid = baseid;
         save.level = iwm_descent.indexOf(baseid) + 1;
         //logging(JSON.stringify(save));

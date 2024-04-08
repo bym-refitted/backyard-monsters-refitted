@@ -10,12 +10,11 @@ import { logging } from "../utils/logger";
 import { storeItems } from "../data/storeItems";
 import { saveFailureErr } from "../errors/errorCodes.";
 import { monsterUpdateBases } from "../services/base/monster";
-import { DescentStatus } from "../models/descentstatus.model";
-import { auth } from "../middleware/auth";
+import { ProcessDescentBase, descentBases } from "../services/inferno/processDescentBase";
 
 export const baseSave: KoaController = async (ctx) => {
   
-  const descentBases: number[] = [201,202,203,204,205,206,207];
+  
   const user: User = ctx.authUser;
   await ORMContext.em.populate(user, ["save"])
   const authSave = user.save;
@@ -34,57 +33,20 @@ export const baseSave: KoaController = async (ctx) => {
     */
     if (descentBases.includes(parseInt(basesaveid)) || descentBases.includes(parseInt(JSON.parse(ctx.request.body["baseid"])))) {
       //logging("is Destroyed?: " + ctx.request.body["destroyed"]);
-      try {
-        if (parseInt(ctx.request.body["destroyed"]) === 1) {
-          let baseIndex = 0;
-          if (basesaveid === 0) {
-            let baseIndex = descentBases.indexOf(parseInt(JSON.parse(ctx.request.body["baseid"])))
-          } else {
-            let baseIndex = descentBases.indexOf(parseInt(basesaveid));
-          }
-          
-          let userDescentBases = await ORMContext.em.findOne(DescentStatus, {
-            userid: authSave.userid,
-          });
-          if (userDescentBases) {
-            // find the corresponding WM status descent base
-            let stored_base = userDescentBases.wmstatus[baseIndex];
-            // set it to be destroyed
-            stored_base[2] = 1;
-            // insert back into database
-            userDescentBases[baseIndex] = stored_base;
-
-            await ORMContext.em.persistAndFlush(userDescentBases);
-          }
-          try {
-              let iloot = JSON.parse(ctx.request.body["lootreport"]);
-            logging(iloot);
-            logging(iloot["r1"])
-
-            let lootIResources: Resources = {
-              r1: iloot["r1"],
-              r2: iloot["r2"],
-              r3: iloot["r3"],
-              r4: iloot["r4"],
-            }
-            const savedLootIResources: FieldData = updateResources(
-              lootIResources,
-              authSave.iresources || {}
-            );
-            authSave.iresources = savedLootIResources;
-            ORMContext.em.persistAndFlush(authSave);
-          } catch (error) {
-            logging("something went wrong saving loot: " + error)
-          }
-        }
-        
-        // send 200 status so the game doesn't kill itself 
-        ctx.status = 200;
-        ctx.body = {
-          error: 0
-        }
-      } catch (error) {
-        logging("WTF Happened: " + error);
+      let descentData = await ProcessDescentBase(ctx, 
+        parseInt(basesaveid), 
+        ctx.request.body["baseid"], 
+        authSave.userid, 
+        authSave.iresources
+      );
+      authSave.iresources = descentData[0];
+      authSave.champion = descentData[1];
+      authSave.monsters = descentData[2];
+      await ORMContext.em.persistAndFlush(authSave);
+      // send 200 status so the game doesn't kill itself 
+      ctx.status = 200;
+      ctx.body = {
+        error: 0
       }
     } else {
       throw saveFailureErr;
@@ -94,7 +56,31 @@ export const baseSave: KoaController = async (ctx) => {
     const isOutpost = save.saveuserid === user.userid && save.homebaseid != save.basesaveid;
     const isInferno = save.type === "inferno"
 
-    logging(isInferno + "");
+    if (!isInferno && ctx.request.body.hasOwnProperty("iresources"))
+    {
+      logging("Main Yard:" + save.baseid + " wants to use inferno resources");
+      const iResources: Resources = JSON.parse(ctx.request.body["iresources"]);
+      // Save iresources -> inferno.resources
+      let infSave: Save = await ORMContext.em.findOne(Save, {
+        type: "inferno",
+        saveuserid: authSave.saveuserid
+      });
+
+      if (infSave) {
+        logging("Using resources from Inferno Yard: " + infSave.baseid);
+        const savedIResources: FieldData = updateResources(
+          iResources,
+          authSave.iresources
+        );
+
+        logging ("Saving updated resources: " + JSON.stringify(savedIResources) + " to main and inferno yards.")
+
+        save.iresources = savedIResources;
+
+        infSave.resources = savedIResources;
+        await ORMContext.em.persistAndFlush(infSave);
+      }
+    }
 
     //logging(Save.jsonKeys.toString());
     // ToDo: Beta clean this shit up
@@ -117,6 +103,7 @@ export const baseSave: KoaController = async (ctx) => {
             sr || {}
           );
           save.resources = savedResources;
+          if (isInferno) authSave.iresources = savedResources;
           break;
       
         case "buildinghealthdata":
@@ -141,7 +128,13 @@ export const baseSave: KoaController = async (ctx) => {
             }
 
             save.storedata = storeData;
-            updateCredits(isOutpost ? authSave : save, item, quantity);
+            if (!isInferno) {
+              updateCredits(isOutpost ? authSave : save, item, quantity);
+            }
+            else {
+              updateCredits(save, item, quantity);
+              updateCredits(authSave, item, quantity);
+            }
           }
           break;
         case "academy":
@@ -152,12 +145,21 @@ export const baseSave: KoaController = async (ctx) => {
             }
           }
           save.academy = academyData;
+          if (isInferno) authSave.academy = academyData;
+          break;
+        case "lockerdata":
+          let lockerData = JSON.parse(requestBodyValue);
+          save.lockerdata = lockerData;
+          if (isInferno) {
+            authSave.lockerdata = lockerData;
+          }
           break;
         default:
           if (
             requestBodyValue &&
             !Array.isArray(requestBodyValue) &&
-            requestBodyValue !== undefined
+            requestBodyValue !== undefined &&
+            key !== "iresources"
           ) {
             save[key] = JSON.parse(requestBodyValue);
           }
@@ -185,6 +187,17 @@ export const baseSave: KoaController = async (ctx) => {
       if (ctx.request.body.hasOwnProperty("attackerchampion")) {
         authSave.champion = ctx.request.body["attackerchampion"];
       }
+
+      if (ctx.request.body.hasOwnProperty("attackcreatures")) {
+        logging(ctx.request.body["attackcreatures"]);
+        authSave.monsters = JSON.parse(ctx.request.body["attackcreatures"]);
+      }
+
+      // Same as with saving Champion data, we save siege data
+      if (ctx.request.body.hasOwnProperty("attackersiege")) {
+        authSave.siege = JSON.parse(ctx.request.body["attackersiege"]);
+      }
+
       if (save.monsterupdate.length > 0) {
         const authMonsters = save.monsterupdate.find(({ baseid }) => baseid == authSave.baseid);
         const monsterUpdates = save.monsterupdate.filter(({ baseid }) => baseid != authSave.baseid);
