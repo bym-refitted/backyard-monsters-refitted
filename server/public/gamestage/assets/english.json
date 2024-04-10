@@ -759,7 +759,7 @@
     "msg_cantbuild": "<b>You can't build this right now<\/b><br>#v1#",
     "msg_crunching": "Crunching... ",
     "msg_err_purchase": "There was a problem with your purchase, no shiny was affected in this error so please just reload and try again.",
-    "msg_cantrecycleth": "You can not Recycle your #v1#",
+    "msg_cantrecycleth": "You can not Recycle your Town Hall",
     "msg_dontpanic": "Don't Panic!",
     "msg_stopconstructionconfirm": "Are you sure you want to stop construction and destroy this building? <b>This can not be un-done<\/b>",
     "msg_destroybuilding_btn": "Destroy Building",
