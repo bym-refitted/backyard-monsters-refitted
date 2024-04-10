@@ -260,18 +260,22 @@ package com.monsters.ai
       
       public static function CheckQuests() : void
       {
-         var _loc2_:String = null;
-         var _loc3_:int = 0;
-         var _loc1_:Array = ChooseBase();
-         for(_loc2_ in _loc1_)
+         var base:String = null;
+         var index:int = 0;
+         var bases:Array = ChooseBase();
+         for (base in bases)
          {
-            if(_loc1_[_loc2_].destroyed == 1)
+            if (bases[base].destroyed == 1)
             {
-               if(GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD)
+               if (GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD)
                {
-                  _loc3_ = 0;
-                  _loc3_ = int(_loc1_[_loc2_].tribe.id);
-                  QUESTS.Check("destroy_tribe" + _loc3_,1);
+                  index = 0;
+                  // Comment: Added this null check, since it could try to access a non-existent tribe 
+                  if (bases[base].tribe && bases[base].tribe.id !== undefined)
+                  {
+                     index = int(bases[base].tribe.id);
+                  }
+                  QUESTS.Check("destroy_tribe" + index, 1);
                }
             }
          }
