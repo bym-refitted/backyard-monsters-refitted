@@ -289,10 +289,17 @@ package com.monsters.subscriptions
       
       public function showPromoPopup() : void
       {
-         var _loc1_:SubscriptionJoinPopup = new SubscriptionJoinPopup();
-         POPUPS.Push(_loc1_);
-         _loc1_.addEventListener(JOIN,this.clickedJoin);
-         _loc1_.addEventListener(Event.CLOSE,this.clickedClose);
+         if (this.isSubscriptionActive) 
+         {
+            var _loc1_:SubscriptionJoinPopup = new SubscriptionJoinPopup();
+            POPUPS.Push(_loc1_);
+            _loc1_.addEventListener(JOIN,this.clickedJoin);
+            _loc1_.addEventListener(Event.CLOSE,this.clickedClose);
+         }
+         else
+         {
+            GLOBAL.Message(KEYS.Get("disabled_daveclub"));
+         }
       }
       
       protected function clickedJoin(param1:Event) : void

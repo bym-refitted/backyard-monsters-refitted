@@ -747,7 +747,11 @@ package
                   {
                      _mc.tShinyBalance.visible = true;
                      _mc.bAdd.SetupKey("ui_topaddshiny");
-                     _mc.bAdd.addEventListener(MouseEvent.MOUSE_DOWN,BUY.Show);
+                     //_mc.bAdd.addEventListener(MouseEvent.MOUSE_DOWN,BUY.Show);
+                     _mc.bAdd.addEventListener(MouseEvent.CLICK,function(event:MouseEvent):void
+                     {
+                        GLOBAL.Message(KEYS.Get("disabled_addshiny"));
+                     });
                      if(BASE._credits.Get() <= 250)
                      {
                         _mc.bAdd.Highlight = true;
