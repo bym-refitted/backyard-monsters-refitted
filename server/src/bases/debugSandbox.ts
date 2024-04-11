@@ -6087,6 +6087,8 @@ export const debugSandbox = {
     unlockRezghul: { id: "unlockRezghul" },
     unblockSlimeattikus: { id: "unblockSlimeattikus" },
     unblockVorg: { id: "unblockVorg" },
+    KorathReward: { id: "KorathReward", value: 3 },
+    krallenReward: { id: "krallenReward", value: 1 }
   },
   relationship: 0,
   iresources: {

@@ -100,6 +100,8 @@ export const getDefaultBaseData = (user?: User) => {
           unlockRezghul: { id: "unlockRezghul" },
           unblockSlimeattikus: { id: "unblockSlimeattikus" },
           unblockVorg: { id: "unblockVorg" },
+          KorathReward: { id: "KorathReward", value: 3 },
+          krallenReward: { id: "krallenReward", value: 1 }
         }
       : {},
     takeover: {},
