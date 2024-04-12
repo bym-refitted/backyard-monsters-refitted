@@ -3,10 +3,11 @@ package com.monsters.event_store
    import com.monsters.display.ImageCache;
    import com.monsters.replayableEvents.ReplayableEventHandler;
    import com.monsters.rewarding.RewardHandler;
+   import config.singletonlock.SingletonLock;
    import flash.display.Bitmap;
    import flash.display.BitmapData;
    import flash.events.MouseEvent;
-   import config.singletonlock.SingletonLock;
+   
    public class EventStoreItemSelectedPopup extends EventStoreItemSelectedPopupMC
    {
       
@@ -19,7 +20,7 @@ package com.monsters.event_store
       
       private var m_PreviewImage:Bitmap = null;
       
-      public function EventStoreItemSelectedPopup(param1:config.singletonlock.SingletonLock)
+      public function EventStoreItemSelectedPopup(param1:SingletonLock)
       {
          super();
          this.m_TitleImage = new Bitmap();
@@ -30,7 +31,7 @@ package com.monsters.event_store
       
       public static function get instance() : EventStoreItemSelectedPopup
       {
-         return s_Instance = s_Instance || new EventStoreItemSelectedPopup(new config.singletonlock.SingletonLock());
+         return s_Instance = s_Instance || new EventStoreItemSelectedPopup(new SingletonLock());
       }
       
       public function Show(param1:EventStorePrize) : void

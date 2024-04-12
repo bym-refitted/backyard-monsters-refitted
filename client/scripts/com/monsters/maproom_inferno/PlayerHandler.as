@@ -25,7 +25,7 @@ package com.monsters.maproom_inferno
       private static const MODE_IVIEW:String = "iview";
        
       
-      private var player;
+      private var player:*;
       
       private var data:BaseObject;
       

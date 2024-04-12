@@ -1,3 +1,12 @@
+
+{
+   var _loc1_:* = Array.prototype;
+   _loc1_.setPropertyIsEnumerable("copy",false);
+   _loc1_.setPropertyIsEnumerable("insert",false);
+   _loc1_.setPropertyIsEnumerable("remove",false);
+   _loc1_.setPropertyIsEnumerable("iterator",false);
+}
+
 package flash
 {
    import flash.display.MovieClip;
@@ -18,7 +27,7 @@ package flash
       
       public static var lastError:Error;
       
-      public static var skip_constructor:Boolean = false;
+      public static var skip_constructor:Boolean;
        
       
       public function Boot()

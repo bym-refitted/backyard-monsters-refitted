@@ -17,8 +17,6 @@ package
    import flash.geom.Rectangle;
    import flash.net.*;
    
-   
-   
    public class STORE
    {
       
@@ -267,7 +265,7 @@ package
                mainStoreItems.quantity = reourceMax;
             }
             else
-            { 
+            {
                mainStoreItems.d = KEYS.Get("str_top_10pct_noroom",{"v1":KEYS.Get(GLOBAL._resourceNames[resourceIndex - 1])});
                mainStoreItems.c = [0];
                mainStoreItems.quantity = 0;
@@ -1597,7 +1595,7 @@ package
          }
          if(_customPage)
          {
-            groupArray = _customPage; 
+            groupArray = _customPage;
          }
          else if(param1 == 5)
          {
@@ -2632,7 +2630,7 @@ package
             else if(_loc15_._type == 116)
             {
                _loc8_ = 0;
-               if((Boolean(_loc19_ = GLOBAL._bLab as MONSTERLAB)) && _loc19_._upgrading != null)
+               if(Boolean(_loc19_ = GLOBAL._bLab as MONSTERLAB) && _loc19_._upgrading != null)
                {
                   _loc19_._upgradeFinishTime.Add(-_loc16_);
                   if(param1.substr(2,1) == "4" || _loc19_._upgradeFinishTime.Get() < GLOBAL.Timestamp())

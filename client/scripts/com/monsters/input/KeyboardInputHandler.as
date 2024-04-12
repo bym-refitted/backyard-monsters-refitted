@@ -1,8 +1,9 @@
 package com.monsters.input
 {
    import com.cc.screenshot.screenshot;
-   import flash.events.KeyboardEvent;
    import config.singletonlock.SingletonLock;
+   import flash.events.KeyboardEvent;
+   
    public class KeyboardInputHandler
    {
       
@@ -11,19 +12,19 @@ package com.monsters.input
       private static var keyunlock:int = 0;
        
       
-      public function KeyboardInputHandler(param1:config.singletonlock.SingletonLock)
+      public function KeyboardInputHandler(param1:SingletonLock)
       {
          super();
       }
       
-      protected static function get singletonLock() : config.singletonlock.SingletonLock
+      protected static function get singletonLock() : SingletonLock
       {
-         return new config.singletonlock.SingletonLock();
+         return new SingletonLock();
       }
       
       public static function get instance() : KeyboardInputHandler
       {
-         s_Instance = s_Instance || new KeyboardInputHandler(singletonLock);
+         s_Instance ||= new KeyboardInputHandler(singletonLock);
          return s_Instance;
       }
       

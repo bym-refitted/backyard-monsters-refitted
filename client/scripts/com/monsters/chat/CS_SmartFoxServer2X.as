@@ -37,9 +37,9 @@ package com.monsters.chat
       private static const EXT_REQ_STRING:String = "backyardmonsters";
        
       
-      private var m_user:com.monsters.chat.UserRecord = null;
+      private var m_user:UserRecord = null;
       
-      private var m_login:com.monsters.chat.AS_Login = null;
+      private var m_login:AS_Login = null;
       
       private var sfs:SmartFox;
       
@@ -55,7 +55,7 @@ package com.monsters.chat
       
       private var _isLoggingOut:Boolean = false;
       
-      private var join_channel:com.monsters.chat.Channel = null;
+      private var join_channel:Channel = null;
       
       private var keepAliveTimer:Timer;
       
@@ -117,7 +117,7 @@ package com.monsters.chat
          var _loc2_:Boolean = false;
          var _loc3_:Dictionary = new Dictionary();
          _loc3_["user"] = "Logger";
-         _loc3_["channel"] = new com.monsters.chat.Channel("World","system");
+         _loc3_["channel"] = new Channel("World","system");
          _loc3_["message"] = param1.params.message;
          dispatchEvent(new ChatEvent(ChatEvent.SAY,_loc2_,_loc3_));
       }
@@ -268,7 +268,7 @@ package com.monsters.chat
          var _loc2_:Boolean = true;
          var _loc3_:Dictionary = new Dictionary();
          _loc3_["user"] = "Administrator";
-         _loc3_["channel"] = new com.monsters.chat.Channel(this.m_user.Name,"private");
+         _loc3_["channel"] = new Channel(this.m_user.Name,"private");
          _loc3_["message"] = param1.params.message;
          dispatchEvent(new ChatEvent(ChatEvent.SAY,_loc2_,_loc3_));
       }
@@ -278,7 +278,7 @@ package com.monsters.chat
          var _loc2_:Boolean = true;
          var _loc3_:Dictionary = new Dictionary();
          _loc3_["user"] = "Moderator";
-         _loc3_["channel"] = new com.monsters.chat.Channel(this.m_user.Name,"private");
+         _loc3_["channel"] = new Channel(this.m_user.Name,"private");
          _loc3_["message"] = param1.params.message;
          dispatchEvent(new ChatEvent(ChatEvent.SAY,_loc2_,_loc3_));
       }
@@ -345,7 +345,7 @@ package com.monsters.chat
       
       public function login(param1:IAuthenticationSystem) : void
       {
-         var _loc2_:com.monsters.chat.AS_Login = param1 as com.monsters.chat.AS_Login;
+         var _loc2_:AS_Login = param1 as AS_Login;
          this.m_login = _loc2_;
          this.m_user = _loc2_.User;
          var _loc3_:String = _loc2_.Password;
@@ -418,7 +418,7 @@ package com.monsters.chat
          }
       }
       
-      public function join(param1:com.monsters.chat.Channel, param2:String = null, param3:Boolean = true) : void
+      public function join(param1:Channel, param2:String = null, param3:Boolean = true) : void
       {
          var _loc4_:int = 0;
          var _loc5_:JoinRoomRequest = null;
@@ -461,14 +461,13 @@ package com.monsters.chat
       
       private function onUserVarsUpdate(param1:SFSEvent) : void
       {
-         // Comment: Obfuscated code
-         // §§pop();
+         §§pop();
       }
       
-      public function updateDisplayName(param1:com.monsters.chat.Channel, param2:String, param3:String) : void
+      public function updateDisplayName(param1:Channel, param2:String, param3:String) : void
       {
          var extensionRequest:ExtensionRequest;
-         var channel:com.monsters.chat.Channel = param1;
+         var channel:Channel = param1;
          var userId:String = param2;
          var displayName:String = param3;
          var params:SFSObject = new SFSObject();
@@ -488,10 +487,10 @@ package com.monsters.chat
          }
       }
       
-      public function updateDisplayNameDirect(param1:com.monsters.chat.Channel, param2:String, param3:String, param4:String) : void
+      public function updateDisplayNameDirect(param1:Channel, param2:String, param3:String, param4:String) : void
       {
          var extensionRequest:ExtensionRequest;
-         var channel:com.monsters.chat.Channel = param1;
+         var channel:Channel = param1;
          var recipientId:String = param2;
          var userId:String = param3;
          var displayName:String = param4;
@@ -548,12 +547,12 @@ package com.monsters.chat
       {
       }
       
-      public function leave(param1:com.monsters.chat.Channel, param2:Boolean = true) : void
+      public function leave(param1:Channel, param2:Boolean = true) : void
       {
          var leaveRoomRequest:LeaveRoomRequest;
          var success:Boolean;
          var params:Dictionary;
-         var channel:com.monsters.chat.Channel = param1;
+         var channel:Channel = param1;
          var autocleanup:Boolean = param2;
          if(this.roomMap == null)
          {
@@ -604,7 +603,7 @@ package com.monsters.chat
          this.sfs.send(_loc3_);
       }
       
-      public function say(param1:com.monsters.chat.Channel, param2:String) : void
+      public function say(param1:Channel, param2:String) : void
       {
          var _loc4_:SFSObject = null;
          var _loc5_:User = null;
@@ -671,7 +670,7 @@ package com.monsters.chat
          var _loc3_:Dictionary = new Dictionary();
          var _loc4_:SFSObject = param1.params.data;
          _loc3_["user"] = param1.params.sender.name;
-         _loc3_["channel"] = new com.monsters.chat.Channel(_loc4_.getUtfString("receiver"),"private");
+         _loc3_["channel"] = new Channel(_loc4_.getUtfString("receiver"),"private");
          _loc3_["message"] = param1.params.message;
          dispatchEvent(new ChatEvent(ChatEvent.SAY,_loc2_,_loc3_));
       }
@@ -681,7 +680,7 @@ package com.monsters.chat
          var _loc2_:Boolean = true;
          var _loc3_:Dictionary = new Dictionary();
          _loc3_["user"] = param1.params.sender.name;
-         _loc3_["channel"] = new com.monsters.chat.Channel(param1.params.room.name,"system");
+         _loc3_["channel"] = new Channel(param1.params.room.name,"system");
          _loc3_["message"] = param1.params.message;
          dispatchEvent(new ChatEvent(ChatEvent.SAY,_loc2_,_loc3_));
       }
@@ -712,7 +711,7 @@ package com.monsters.chat
          dispatchEvent(new ChatEvent(ChatEvent.LIST,_loc2_,_loc3_));
       }
       
-      public function members(param1:com.monsters.chat.Channel) : void
+      public function members(param1:Channel) : void
       {
          var _loc2_:Boolean = true;
          var _loc3_:Dictionary = new Dictionary();
