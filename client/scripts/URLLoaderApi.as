@@ -40,7 +40,7 @@ package
          var authHeader:URLRequestHeader;
          var currentIndex:int = 0;
          var currentPair:Array = null;
-         var token:String = LOGIN.token;
+         var token:* = LOGIN.token;
          this._onComplete = onComplete;
          this._onError = onFail;
          this._baseUrl = baseUrl;
@@ -145,7 +145,6 @@ package
          {
             return;
          }
-
          var decodedReqData:Object = JSON.decode(this._req.data);
          if (Boolean(this._onComplete))
          {

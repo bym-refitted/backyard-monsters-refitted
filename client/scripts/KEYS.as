@@ -1,12 +1,11 @@
 package
 {
    import flash.events.Event;
-   import flash.net.URLLoader;
-   import flash.net.URLRequest;
-   import flash.events.Event;
+   import flash.events.EventDispatcher;
    import flash.events.IOErrorEvent;
    import flash.events.SecurityErrorEvent;
-   import flash.events.EventDispatcher;
+   import flash.net.URLLoader;
+   import flash.net.URLRequest;
 
    public class KEYS
    {
@@ -44,21 +43,21 @@ package
          languages.load(new URLRequest(GLOBAL._apiURL + "supportedLangs"));
          languages.addEventListener(Event.COMPLETE, handleSupportedLangsSucc);
          languages.addEventListener(IOErrorEvent.IO_ERROR, handleLoadError);
-         languages.addEventListener(SecurityErrorEvent.SECURITY_ERROR, function(event:SecurityErrorEvent)
+         languages.addEventListener(SecurityErrorEvent.SECURITY_ERROR, function(event:SecurityErrorEvent):void
             {
             });
       }
 
       private static function handleLangFileSucc(data:Event):void
       {
-         var rawData:String = data.target.data;
+         var rawData:String = String(data.target.data);
          languageFileJson = JSON.decode(rawData);
          GLOBAL.textContentLoaded = true;
       }
 
       private static function handleSupportedLangsSucc(data:Event):void
       {
-         var rawData:String = data.target.data;
+         var rawData:String = String(data.target.data);
          supportedLanguagesJson = JSON.decode(rawData);
          GLOBAL.supportedLangsLoaded = true;
       }
@@ -90,39 +89,30 @@ package
       public static function Get(jsonKeyPath:String, placeholders:Object = null):String
       {
          if (languageFileJson == null || languageFileJson.data == null)
+         {
             return jsonKeyPath;
-
+         }
          var jsonValue:Object = languageFileJson.data;
-
          if (jsonValue.hasOwnProperty(jsonKeyPath))
          {
             var value:* = jsonValue[jsonKeyPath];
-
             if (value is String)
             {
                var jsonString:String = value as String;
-
                if (placeholders != null && jsonString != null)
                {
                   jsonString = replacePlaceholders(jsonString, placeholders);
                }
-
                return jsonString;
             }
-            else
-            {
-               return String(value);
-            }
+            return String(value);
          }
-         else
-         {
-            return jsonKeyPath;
-         }
+         return jsonKeyPath;
       }
 
       private static function replacePlaceholders(input:String, placeholders:Object):String
       {
-         for (var key:String in placeholders)
+         for (var key in placeholders)
          {
             if (placeholders.hasOwnProperty(key))
             {

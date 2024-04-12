@@ -2,9 +2,10 @@ package com.monsters.maproom3.tiles
 {
    import com.monsters.display.ImageCache;
    import com.monsters.maproom3.MapRoom3Cell;
+   import config.singletonlock.SingletonLock;
    import flash.display.BitmapData;
    import flash.utils.Dictionary;
-   import config.singletonlock.SingletonLock;
+   
    public class MapRoom3TileSetManager
    {
       
@@ -201,7 +202,7 @@ package com.monsters.maproom3.tiles
       
       private var m_CurrentBackground:BitmapData = null;
       
-      public function MapRoom3TileSetManager(param1:config.singletonlock.SingletonLock)
+      public function MapRoom3TileSetManager(param1:SingletonLock)
       {
          this.m_TileSetsInUse = new Dictionary();
          super();
@@ -209,7 +210,7 @@ package com.monsters.maproom3.tiles
       
       public static function get instance() : MapRoom3TileSetManager
       {
-         return s_Instance = s_Instance || new MapRoom3TileSetManager(new config.singletonlock.SingletonLock());
+         return s_Instance = s_Instance || new MapRoom3TileSetManager(new SingletonLock());
       }
       
       public function get currentBackground() : BitmapData

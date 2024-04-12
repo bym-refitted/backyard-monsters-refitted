@@ -77,7 +77,7 @@ package com.monsters.ai
             return;
          }
          var _loc4_:Object;
-         if((Boolean(_loc4_ = TRIBES.TribeForBaseID(BASE._wmID))) && _loc4_.behaviour == "juice")
+         if(Boolean(_loc4_ = TRIBES.TribeForBaseID(BASE._wmID)) && _loc4_.behaviour == "juice")
          {
             GLOBAL._hatcheryOverdrivePower = new SecNum(10);
          }
@@ -263,11 +263,11 @@ package com.monsters.ai
          var base:String = null;
          var index:int = 0;
          var bases:Array = ChooseBase();
-         for (base in bases)
+         for(base in bases)
          {
-            if (bases[base].destroyed == 1)
+            if(bases[base].destroyed == 1)
             {
-               if (GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD)
+               if(GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD)
                {
                   index = 0;
                   // Comment: Added this null check, since it could try to access a non-existent tribe 
@@ -275,7 +275,7 @@ package com.monsters.ai
                   {
                      index = int(bases[base].tribe.id);
                   }
-                  QUESTS.Check("destroy_tribe" + index, 1);
+                  QUESTS.Check("destroy_tribe" + index,1);
                }
             }
          }

@@ -1,18 +1,16 @@
 package
 {
+   import com.auth.AuthForm;
    import com.cc.utils.SecNum;
    import com.monsters.configs.BYMDevConfig;
    import com.monsters.enums.EnumYardType;
    import com.monsters.maproom_manager.MapRoomManager;
    import com.monsters.player.Player;
+   import com.monsters.radio.RADIO;
    import flash.events.*;
    import flash.external.ExternalInterface;
    import flash.net.*;
    import flash.system.Capabilities;
-   import flash.text.TextField;
-   import flash.text.TextFormat;
-   import com.monsters.radio.RADIO;
-   import com.auth.AuthForm;
 
    public class LOGIN
    {
@@ -67,7 +65,6 @@ package
          var handleLoadError:Function;
          var onMapRoom3:Boolean = newmap;
          var mapRoom3HeaderURL:String = mapheaderurl;
-
          MapRoomManager.instance.init(onMapRoom3, mapRoom3HeaderURL);
          if (GLOBAL._local)
          {
@@ -321,7 +318,7 @@ package
          var _loc5_:* = JSON.decode(param1);
          var _loc6_:* = JSON.decode(_loc3_);
          var _loc7_:String;
-         if ((_loc7_ = md5(getSalt() + _loc4_ + getNum(_loc6_.hn))) !== _loc6_.h)
+         if ((_loc7_ = String(md5(getSalt() + _loc4_ + getNum(_loc6_.hn)))) !== _loc6_.h)
          {
             return false;
          }

@@ -29,7 +29,7 @@ package com.monsters.maproom_manager
       
       private var m_AttackCostMultiplier:CModifiableProperty;
       
-      public function MapRoomManager(param1:config.singletonlock.SingletonLock)
+      public function MapRoomManager(param1:SingletonLock)
       {
          this.m_AttackCostMultiplier = new CModifiableProperty(Number.MAX_VALUE,Number.MIN_VALUE,1);
          super();
@@ -37,7 +37,7 @@ package com.monsters.maproom_manager
       
       public static function get instance() : MapRoomManager
       {
-         return s_Instance = s_Instance || new MapRoomManager(new config.singletonlock.SingletonLock());
+         return s_Instance = s_Instance || new MapRoomManager(new SingletonLock());
       }
       
       public function get currentMapRoom() : IMapRoom
