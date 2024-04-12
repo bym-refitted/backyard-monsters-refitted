@@ -2,10 +2,14 @@
 	"compilerOptions": {
 		"warnings": false,
 		"strict": false,
-		"output": "swf/bym-refit.swf",
-		"source-path": ["client/scripts"]
+		"output": "swf/bymr-compiled.swf",
+		"source-path": ["client/scripts"],
+		"target-player": "16",
+		"default-size": { "width": 760, "height": 670},
+		"default-frame-rate": 24,
+		"default-background-color": "#1D232A"
 	},
-	"copySourcePathAssets": true,
+	"copySourcePathAssets": false,
 	"config": "flex",
 	"files": ["client/scripts/GAME.as"]
 }

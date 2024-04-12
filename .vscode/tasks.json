@@ -1,0 +1,26 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "actionscript",
+			"debug": true,
+			"group": "build",
+			"problemMatcher": [],
+			"label": "ActionScript: compile debug - asconfig.json"
+		},
+		{
+			"type": "actionscript",
+			"clean": true,
+			"group": "build",
+			"problemMatcher": [],
+			"label": "ActionScript: clean - asconfig.json"
+		},
+		{
+			"type": "actionscript",
+			"debug": false,
+			"group": "build",
+			"problemMatcher": [],
+			"label": "ActionScript: compile release - asconfig.json"
+		}
+	]
+}
