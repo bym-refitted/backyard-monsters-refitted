@@ -32,7 +32,7 @@
 			"command": "start",
 			"args": [
 				"",
-				"bin/bymr-recompiled.swf"
+				"bin/bymr-stable.swf"
 			],
 			"group": {
 				"kind": "build",
@@ -47,7 +47,7 @@
 			"command": "start",
 			"args": [
 				"",
-				"bin/bymr-recompiled.swf"
+				"bin/bymr-stable.swf"
 			],
 			"group": {
 				"kind": "build",

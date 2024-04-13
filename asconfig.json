@@ -5,7 +5,7 @@
  	"compilerOptions": {
 		"strict": false,
 		"warnings": false,
-		"output": "bin/bymr-recompiled.swf",
+		"output": "bin/bymr-stable.swf",
 		"source-path": [
 			"client/scripts"
 		],
