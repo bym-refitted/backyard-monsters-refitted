@@ -56,7 +56,7 @@ router.post("/api/:apiVersion/bm/base/save", apiVersion, auth, debugDataLog("Inf
 
 // Worldmap v2
 router.post("/worldmapv2/getarea", auth, debugDataLog("MR2 get area"), getArea);
-router.post("/api/:apiVersion/player/savebookmarks", auth, debugDataLog("MR2 save bookmarks"), getArea);
+router.post("/api/:apiVersion/player/savebookmarks",apiVersion, auth, debugDataLog("MR2 save bookmarks"), getArea);
 
 // Worldmap v3
 router.post("/worldmapv3/initworldmap", auth, debugDataLog("Posting MR3 init data"), initialPlayerCellData);

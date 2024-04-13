@@ -10,7 +10,7 @@ import { ENV } from "./enums/Env";
 export default {
   type: "mariadb",
   allowGlobalContext: false,
-  debug: process.env.ENV !== ENV.PROD ? true : false,
+  debug: process.env.ENV !== ENV.PROD,
   entities: [Save, User],
   dbName: process.env.DB_NAME,
   port: Number(process.env.DB_PORT),
