@@ -2,25 +2,59 @@
 	"version": "2.0.0",
 	"tasks": [
 		{
+			"label": "Compile (Debug)",
 			"type": "actionscript",
 			"debug": true,
 			"group": "build",
 			"problemMatcher": [],
-			"label": "ActionScript: compile debug - asconfig.json"
+			"dependsOrder": "sequence",
+			"dependsOn": "Clean"
 		},
 		{
+			"label": "Clean",
 			"type": "actionscript",
 			"clean": true,
 			"group": "build",
-			"problemMatcher": [],
-			"label": "ActionScript: clean - asconfig.json"
+			"problemMatcher": []
 		},
 		{
+			"label": "Compile (Release)",
 			"type": "actionscript",
 			"debug": false,
 			"group": "build",
 			"problemMatcher": [],
-			"label": "ActionScript: compile release - asconfig.json"
+			"dependsOrder": "sequence",
+			"dependsOn": "Clean"
+		},
+		{
+			"label": "Build & Run: BYMR | Debug",
+			"type": "shell",
+			"command": "start",
+			"args": [
+				"",
+				"bin/bymr-recompiled.swf"
+			],
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			},
+			"dependsOrder": "sequence",
+			"dependsOn": "Compile (Debug)"
+		},
+		{
+			"label": "Build & Run: BYMR | Release",
+			"type": "shell",
+			"command": "start",
+			"args": [
+				"",
+				"bin/bymr-recompiled.swf"
+			],
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			},
+			"dependsOrder": "sequence",
+			"dependsOn": "Compile (Release)"
 		}
 	]
 }
