@@ -1,15 +1,30 @@
 {
+	"config": "flex",
+	"type": "app",
+	"files": [
+		"client/scripts/GAME.as"
+	],
 	"compilerOptions": {
 		"warnings": false,
 		"strict": false,
 		"output": "swf/bymr-compiled.swf",
-		"source-path": ["client/scripts"],
-		"target-player": "16",
-		"default-size": { "width": 760, "height": 670},
+		"source-path": [
+			"client/scripts"
+		],
+		"swf-version": 11,
+		"target-player": "11",
+		"default-size": {
+			"width": 760,
+			"height": 670
+		},
+		"library-path": [
+			"./playerglobal.swc"
+		],
+		"external-library-path": [
+			"./playerglobal.swc"
+		],
 		"default-frame-rate": 24,
-		"default-background-color": "#1D232A"
-	},
-	"copySourcePathAssets": false,
-	"config": "flex",
-	"files": ["client/scripts/GAME.as"]
+		"default-background-color": "#1D232A",
+		"static-link-runtime-shared-libraries": true
+	}
 }
