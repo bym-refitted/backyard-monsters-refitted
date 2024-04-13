@@ -30,6 +30,7 @@ export const updateCredits = (save: Save, item: string, quantity: number) => {
   const nonStoreItem = new Set([
     "IU",
     "IF",
+    "IFD",
     "ITR",
     "IUN",
     "IPU",
