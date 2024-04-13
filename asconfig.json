@@ -1,30 +1,26 @@
 {
 	"config": "flex",
 	"type": "app",
-	"files": [
-		"client/scripts/GAME.as"
-	],
-	"compilerOptions": {
-		"warnings": false,
+	"mainClass": "GAME",
+ 	"compilerOptions": {
 		"strict": false,
+		"warnings": false,
 		"output": "swf/bymr-compiled.swf",
 		"source-path": [
 			"client/scripts"
 		],
+		"default-background-color": "#1D232A",
 		"swf-version": 11,
-		"target-player": "16",
+		"target-player": "16.0",
+		"default-frame-rate": 24,
 		"default-size": {
 			"width": 760,
 			"height": 670
 		},
 		"library-path": [
-			"./playerglobal.swc"
+			"playerglobal.swc"
 		],
-		"external-library-path": [
-			"./playerglobal.swc"
-		],
-		"default-frame-rate": 24,
-		"default-background-color": "#1D232A",
+		"use-network": true,
 		"static-link-runtime-shared-libraries": true
 	}
 }
