@@ -12,7 +12,7 @@
 			"client/scripts"
 		],
 		"swf-version": 11,
-		"target-player": "11",
+		"target-player": "16",
 		"default-size": {
 			"width": 760,
 			"height": 670
