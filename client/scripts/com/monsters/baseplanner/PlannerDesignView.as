@@ -791,46 +791,86 @@ package com.monsters.baseplanner
          }
       }
       
-      private function drawRanges() : void
+      // This original function was causing performance issues and triggering the default script execution
+      // timeout of 15 seconds - it has been rewritten to avoid this bottleneck. Old implementation is below it.
+      private function drawRanges():void
       {
-         var _loc2_:BuildingItem = null;
-         var _loc3_:Boolean = false;
-         var _loc1_:Sprite = new Sprite();
-         var _loc4_:int = 0;
-         while(_loc4_ < this._layerSetBuildings.numChildren)
+         for (var buildingIndex:int = 0; buildingIndex < this._layerSetBuildings.numChildren; buildingIndex++)
          {
-            _loc3_ = false;
-            _loc2_ = this._layerSetBuildings.getChildAt(_loc4_) as BuildingItem;
-            if(Boolean(this.rangeCheckboxesFlags & 1 << CHECKBOX_TRAP) && _loc2_.category == BuildingItem.TYPE_TRAP)
+            var buildingItem:BuildingItem = this._layerSetBuildings.getChildAt(buildingIndex) as BuildingItem;
+            var shouldDrawRange:Boolean = false;
+
+            // Check if the buildingItem meets range conditions
+            if (Boolean(this.rangeCheckboxesFlags & 1 << CHECKBOX_TRAP) && buildingItem.category == BuildingItem.TYPE_TRAP)
             {
-               _loc3_ = true;
-               continue;
+               shouldDrawRange = true;
             }
-            if(!_loc2_.rangeCategory())
+            else if (buildingItem.rangeCategory() && buildingItem.rangeCategory() !== 3)
             {
-               continue;
+               // We perform boolean operation only once and store result in a variable
+               var rangeFlag:uint = 1 << buildingItem.rangeCategory() - 1;
+               shouldDrawRange = Boolean(this.rangeCheckboxesFlags & rangeFlag);
             }
-            switch(_loc2_.rangeCategory())
+            else if (buildingItem.rangeCategory() === 3)
             {
-               case 1:
-               case 2:
-                  _loc3_ = Boolean(this.rangeCheckboxesFlags & 1 << _loc2_.rangeCategory() - 1);
-                  break;
-               case 3:
-                  _loc3_ = Boolean(this.rangeCheckboxesFlags & 1 << CHECKBOX_GROUND || this.rangeCheckboxesFlags & 1 << CHECKBOX_AIR);
-                  break;
+               shouldDrawRange = Boolean(this.rangeCheckboxesFlags & (1 << CHECKBOX_GROUND) || this.rangeCheckboxesFlags & (1 << CHECKBOX_AIR));
             }
-            if(_loc3_)
+
+            if (shouldDrawRange)
             {
-               _loc1_.mouseEnabled = false;
-               _loc1_.graphics.lineStyle(3,16777215,0.25);
-               _loc1_.graphics.beginFill(16711680,0.1);
-               _loc1_.graphics.drawCircle(_loc2_.x + _loc2_.widthsize / 2,_loc2_.y + _loc2_.widthsize / 2,_loc2_.node.range * _loc2_.scale);
-               this._layerSetRanges.addChild(_loc1_);
-               _loc1_.graphics.endFill();
+               var rangeSprite:Sprite = new Sprite();
+               rangeSprite.mouseEnabled = false;
+               rangeSprite.graphics.lineStyle(3, 0xFFFFFF, 0.25);
+               rangeSprite.graphics.beginFill(0xFF0000, 0.1);
+               rangeSprite.graphics.drawCircle(buildingItem.x + buildingItem.widthsize / 2, buildingItem.y + buildingItem.widthsize / 2, buildingItem.node.range * buildingItem.scale);
+               rangeSprite.graphics.endFill();
+
+               this._layerSetRanges.addChild(rangeSprite);
             }
-            _loc4_++;
          }
       }
+   
+      // ---------- OLD IMPLEMENTATION ---------- //
+      // private function drawRanges() : void
+      // {
+      //    var _loc2_:BuildingItem = null;
+      //    var _loc3_:Boolean = false;
+      //    var _loc1_:Sprite = new Sprite();
+      //    var _loc4_:int = 0;
+      //    while(_loc4_ < this._layerSetBuildings.numChildren)
+      //    {
+      //       _loc3_ = false;
+      //       _loc2_ = this._layerSetBuildings.getChildAt(_loc4_) as BuildingItem;
+      //       if(Boolean(this.rangeCheckboxesFlags & 1 << CHECKBOX_TRAP) && _loc2_.category == BuildingItem.TYPE_TRAP)
+      //       {
+      //          _loc3_ = true;
+      //          continue;
+      //       }
+      //       if(!_loc2_.rangeCategory())
+      //       {
+      //          continue;
+      //       }
+      //       switch(_loc2_.rangeCategory())
+      //       {
+      //          case 1:
+      //          case 2:
+      //             _loc3_ = Boolean(this.rangeCheckboxesFlags & 1 << _loc2_.rangeCategory() - 1);
+      //             break;
+      //          case 3:
+      //             _loc3_ = Boolean(this.rangeCheckboxesFlags & 1 << CHECKBOX_GROUND || this.rangeCheckboxesFlags & 1 << CHECKBOX_AIR);
+      //             break;
+      //       }
+      //       if(_loc3_)
+      //       {
+      //          _loc1_.mouseEnabled = false;
+      //          _loc1_.graphics.lineStyle(3,16777215,0.25);
+      //          _loc1_.graphics.beginFill(16711680,0.1);
+      //          _loc1_.graphics.drawCircle(_loc2_.x + _loc2_.widthsize / 2,_loc2_.y + _loc2_.widthsize / 2,_loc2_.node.range * _loc2_.scale);
+      //          this._layerSetRanges.addChild(_loc1_);
+      //          _loc1_.graphics.endFill();
+      //       }
+      //       _loc4_++;
+      //    }
+      // }
    }
 }

@@ -46,7 +46,7 @@ package
          _positionSet = false;
          _building = param1;
          _props = GLOBAL._buildingProps[_building._type - 1];
-         _mc = MAP._BUILDINGINFO.addChild(new buildingInfo()) as MovieClip;
+         _mc = MAP._BUILDINGINFO.addChild(new buildingInfoData()) as MovieClip;
          _mc.tName.autoSize = TextFieldAutoSize.CENTER;
          var _loc2_:* = "<b>" + KEYS.Get(_props.name) + "</b>";
          if(_building._lvl.Get() > 0 && _props.costs && _props.costs.length > 1)

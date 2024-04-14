@@ -1,11 +1,26 @@
 {
-	"compilerOptions": {
-		"warnings": false,
-		"strict": false,
-		"output": "swf/bym-refit.swf",
-		"source-path": ["client/scripts"]
-	},
-	"copySourcePathAssets": true,
 	"config": "flex",
-	"files": ["client/scripts/GAME.as"]
+	"type": "app",
+	"mainClass": "GAME",
+ 	"compilerOptions": {
+		"strict": false,
+		"warnings": false,
+		"output": "bin/bymr-stable.swf",
+		"source-path": [
+			"client/scripts"
+		],
+		"default-background-color": "#1D232A",
+		"swf-version": 11,
+		"target-player": "16.0",
+		"default-frame-rate": 24,
+		"default-size": {
+			"width": 760,
+			"height": 670
+		},
+		"library-path": [
+			"playerglobal.swc"
+		],
+		"use-network": true,
+		"static-link-runtime-shared-libraries": true
+	}
 }

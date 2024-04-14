@@ -436,29 +436,29 @@ package
       
       public static function getBuildingSaveData() : Vector.<Object>
       {
-         var _loc6_:Object = null;
+         var exportBuildingData:Object = null;
          var buildingData:BFOUNDATION = null;
-         var _loc8_:Boolean = false;
-         var _loc1_:Vector.<Object> = new Vector.<Object>();
-         var _loc2_:Vector.<Object> = InstanceManager.getInstancesByClass(BFOUNDATION);
-         var _loc3_:Object = {};
-         var _loc4_:Object = {};
-         var _loc5_:String = "";
-         _loc1_[0] = _loc4_;
-         _loc1_[1] = _loc3_;
+         var hasTownHall:Boolean = false;
+         var saveData:Vector.<Object> = new Vector.<Object>();
+         var building:Vector.<Object> = InstanceManager.getInstancesByClass(BFOUNDATION);
+         var buildingHealthData:Object = {};
+         var buildingDataByID:Object = {};
+         var hashString:String = "";
+         saveData[0] = buildingDataByID;
+         saveData[1] = buildingHealthData;
          s_totalBuildingHP = s_totalBuildingMaxHP = 0;
-         for each(buildingData in _loc2_)
+         for each(buildingData in building)
          {
             if(!(buildingData is BMUSHROOM))
             {
                if(buildingData is ICoreBuilding)
                {
-                  _loc8_ = true;
+                  hasTownHall = true;
                }
                if(buildingData is BTRAP && buildingData._fired || buildingData._type == 53 && buildingData._expireTime < GLOBAL.Timestamp())
                {
                   Console.warning("Ignored Building" + buildingData + buildingData._type + buildingData._expireTime + " setting buildinghealthdata to 0");
-                  _loc3_[buildingData._id] = 0;
+                  buildingHealthData[buildingData._id] = 0;
                }
                else
                {
@@ -476,24 +476,26 @@ package
                   }
                   if(buildingData.health < buildingData.maxHealth)
                   {
-                     _loc3_[buildingData._id] = int(buildingData.health);
+                     buildingHealthData[buildingData._id] = int(buildingData.health);
                   }
-                  if(_loc6_ = buildingData.Export())
+                  if(exportBuildingData = buildingData.Export())
                   {
-                     _loc4_[buildingData._id] = _loc6_;
-                     _loc5_ += (_loc6_.X + _loc6_.Y).toString();
+                     buildingDataByID[buildingData._id] = exportBuildingData;
+                     hashString += (exportBuildingData.X + exportBuildingData.Y).toString();
                   }
                }
             }
          }
-         if(!_loc8_)
+         if(!hasTownHall)
          {
             LOGGER.Log("err","User missing TownHall upon save");
             Console.warning("BFOUNDATION::getBuildingSaveData(TownHall missing upon save)");
          }
          BASE._percentDamaged = 100 - 100 / s_totalBuildingMaxHP * s_totalBuildingHP;
-         _loc1_[2] = md5(_loc5_);
-         return _loc1_;
+         // Comment: This gives an out-of-range index error. The md5.as class is malformed
+         //saveData[2] = md5(hashString);
+         saveData[2] = hashString;
+         return saveData;
       }
       
       override public function get width() : Number
