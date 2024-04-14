@@ -41,9 +41,9 @@ package
    
    public class GLOBAL
    {
-      public static var serverUrl:String = "https://api.bymrefitted.com/";
+      public static var serverUrl:String = "http://localhost:3001/";
 
-      public static var cdnUrl:String = "https://api.bymrefitted.com/";
+      public static var cdnUrl:String = "http://localhost:3001/";
 
       public static var _local:Boolean = false;
       
