@@ -14,33 +14,30 @@ import { generateID } from "../utils/generateID";
 import { loadBuildBase, loadViewBase } from "../services/base/loadBase";
 import { saveFailureErr } from "../errors/errorCodes.";
 import { removeBaseProtection } from "../services/maproom/v2";
-
+import { BaseMode } from "../enums/BaseMode";
 
 interface BaseLoadRequest {
-  type: string
-  userid: string
-  baseid: string
-  cellid: string
+  type: string;
+  userid: string;
+  baseid: string;
+  cellid: string;
 }
-// MR2 ToDo: The client sends this data to the server: {"baseid":"1234","type":"view","userid":""}
-// In this example, the baseid '1234' is a hardcoded value in wildMonsterCell.ts for a tribe's base,
-// The 'baseid' should be used to lookup & return a base in the database with the corresponding id
+
 export const baseLoad: KoaController = async (ctx) => {
-  const requestBody: BaseLoadRequest = <BaseLoadRequest>ctx.request.body
-// console.log("LOADING BASE", ctx.request.body)
+  const requestBody: BaseLoadRequest = <BaseLoadRequest>ctx.request.body;
 
   const user: User = ctx.authUser;
   await ORMContext.em.populate(user, ["save"]);
   const authSave = user.save;
   let save: Save = null;
 
-  if (requestBody.type === "build") {
+  if (requestBody.type === BaseMode.BUILD) {
     save = await loadBuildBase(ctx, requestBody.baseid);
-    if(save && save.saveuserid !== user.userid) {
+    if (save && save.saveuserid !== user.userid) {
       throw saveFailureErr;
     }
   } else {
-    save = await loadViewBase(ctx, requestBody.baseid)
+    save = await loadViewBase(ctx, requestBody.baseid);
   }
 
   logging(
@@ -67,13 +64,13 @@ export const baseLoad: KoaController = async (ctx) => {
 
   if (!save) throw saveFailureErr;
 
-  if (requestBody.type === "attack") {
-    await removeBaseProtection(user, save.homebase)
-    save.attackid = generateID(5)
+  if (requestBody.type === BaseMode.ATTACK) {
+    await removeBaseProtection(user, save.homebase);
+    save.attackid = generateID(5);
     if (save.homebaseid === 0) {
       let cell = await ORMContext.em.findOne(WorldMapCell, {
         base_id: save.basesaveid,
-      })
+      });
       if (!cell) {
         // Create a cell record when attacking tribe bases
         cell = ORMContext.em.create(WorldMapCell, {
@@ -83,7 +80,7 @@ export const baseLoad: KoaController = async (ctx) => {
           base_id: save.basesaveid,
           uid: save.saveuserid,
           base_type: 1,
-        })
+        });
       }
       await ORMContext.em.persistAndFlush(cell);
       save.homebaseid = save.basesaveid;
@@ -108,5 +105,4 @@ export const baseLoad: KoaController = async (ctx) => {
     id: filteredSave.basesaveid,
     tutorialstage: isTutorialEnabled,
   };
-  
 };
