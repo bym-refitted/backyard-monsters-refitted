@@ -67,7 +67,6 @@ api.get("/", (ctx: Context) => (ctx.body = {}));
   });
 
   app.use(async (ctx, next) => {
-    // Dynamic crossdomain.xml
     if (ctx.path === "/crossdomain.xml") {
       ctx.type = "application/xml";
       ctx.body = `<?xml version="1.0"?>

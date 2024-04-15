@@ -685,11 +685,12 @@ export const devSandbox = {
   rewards: {
     spurtzCannonReward2: { id: "spurtzCannonReward2" },
     spurtzCannonReward: { id: "spurtzCannonReward" },
-    spurtzCannonReward3: { id: "spurtzCannonReward3"},
+    spurtzCannonReward3: { id: "spurtzCannonReward3" },
     unlockRezghul: { id: "unlockRezghul" },
-    KorathReward: { id: "KorathReward" },
     unblockSlimeattikus: { id: "unblockSlimeattikus" },
-    unblockVorg: { id: "unblockVorg" }
+    unblockVorg: { id: "unblockVorg" },
+    KorathReward: { id: "KorathReward", value: 3 },
+    krallenReward: { id: "krallenReward", value: 1 }
   },
   aiattacks: {
     attackPreference: 1,
@@ -760,7 +761,12 @@ export const devSandbox = {
     C51: 1,
   },
   player: {},
-  krallen: {},
+  krallen: {
+    countdown: 443189, // ToDo: Hardcoded stats
+    wins: 5,
+    tier: 5,
+    loot: 750000000000,
+  },
   siege: null,
   buildingresources: {},
   mushrooms: { l: [], s: 1703676475 },

@@ -1,8 +1,5 @@
 package
 {
-   import com.monsters.display.ImageCache;
-   import com.monsters.siege.weapons.Decoy;
-   import com.monsters.siege.weapons.Jars;
    import flash.events.Event;
    import flash.events.MouseEvent;
    import flash.media.Sound;
@@ -10,10 +7,10 @@ package
    import flash.media.SoundMixer;
    import flash.media.SoundTransform;
    import flash.net.URLRequest;
-   import flash.events.IOErrorEvent;
 
    public class SOUNDS
    {
+
       public static var _muted:int = 0;
 
       public static var _mutedMusic:int = 0;
@@ -38,10 +35,15 @@ package
 
       // Sound directories
       public static var attacksounds:String = "attacksounds/";
+
       public static var othersounds:String = "othersounds/";
+
       public static var uisounds:String = "uisounds/";
+
       public static var infernosounds:String = "infernosounds/";
+
       public static var mainmusic:String = "music/";
+
       public static var infernomusic:String = "infernomusic/";
 
       public static var _sounds:Object = {
@@ -144,10 +146,10 @@ package
 
       public static function Setup():void
       {
+         var key:String;
          if (!_setup)
          {
             _setup = true;
-            _muted = 0;
             if (_mutedMusic == 0)
             {
                _musicVolume = 0.7;
@@ -166,7 +168,7 @@ package
             }
             try
             {
-               for (var key:String in _sounds)
+               for (key in _sounds)
                {
                   if (key == "click1")
                      continue;
@@ -241,7 +243,6 @@ package
          {
             _concurrent[param1] = 1;
          }
-
          if (_concurrent[param1] <= 2)
          {
             _concurrent[param1] += 1;
@@ -279,9 +280,10 @@ package
 
                // Retrieve sound from preloaded assets
                var sound:Sound = _sounds[soundPath] as Sound;
-
                if (sound)
+               {
                   return sound.play(0, loop, new SoundTransform(volume, pan));
+               }
             }
          }
          return null;
@@ -289,14 +291,13 @@ package
 
       public static function Tick():void
       {
-         for (var soundName:String in _concurrent)
+         for (var soundName in _concurrent)
          {
             if (_concurrent[soundName] > 0)
             {
                _concurrent[soundName]--;
             }
          }
-
          if (_currentMusic != _queuedMusic)
          {
             if (_currentMusic)

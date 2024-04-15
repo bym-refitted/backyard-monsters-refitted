@@ -10,9 +10,9 @@ import { logging } from "../../utils/logger";
 const UserRegisterSchema = z.object({
   username: z.string(),
   password: z.string(),
-  email: z.string().email(),
+  email: z.string().email().toLowerCase(),
   last_name: z.string(),
-  pic_square: z.string(),
+  pic_square: z.string(), // TODO: WHYYYYYY?? Should not be from user input thats fucking mental
 });
 
 export const register: KoaController = async (ctx) => {
@@ -33,6 +33,6 @@ export const register: KoaController = async (ctx) => {
     ctx.status = 200;
     ctx.body = { user: filteredUser };
   } catch (err) {
-    throw authFailureErr;
+    throw authFailureErr();
   }
 };

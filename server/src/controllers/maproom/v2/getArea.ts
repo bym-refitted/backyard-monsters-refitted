@@ -7,6 +7,8 @@ import { ORMContext } from "../../../server";
 import { calculateBaseLevel } from "../../../services/base/calculateBaseLevel";
 import { generateTerrain } from "./terrain/generateTerrain";
 import { Terrain } from "./terrain/Terrain";
+import { outpostCell } from "./cells/outpostCell";
+import { devConfig } from "../../../config/DevSettings";
 
 interface Cell {
   x?: number;
@@ -33,10 +35,10 @@ export const getArea: KoaController = async (ctx) => {
   const sendresources = requestBody.sendresources || 0;
 
   const terrainMap = generateTerrain(height, height);
-  
+
   // Converts terrain map to a map of terrain types represented as numbers
   const terrainTypeValues: number[][] = terrainMap.map((row) =>
-    row.map(cell => cell)
+    row.map((cell) => cell)
   );
 
   // Creates {maxX} x {maxY} grid from point 0 x 0
@@ -81,7 +83,7 @@ export const getArea: KoaController = async (ctx) => {
           const cell = worldMap[x][y];
           if (cell.base_type != 1) {
             cells[x][y] = await homeCell(ctx, cell);
-          } 
+          }
           continue;
         }
       }
@@ -93,8 +95,12 @@ export const getArea: KoaController = async (ctx) => {
       cell.world_id = save.worldid;
       const s_lvl = baseLevel < 20 ? 10 : baseLevel < 30 ? 20 : 30; // ToDo: add level randomness base on auth save level
 
-      if (terrain === Terrain.WATER1 || terrain === Terrain.WATER2 || terrain === Terrain.WATER3) {
-        cells[x][y] = { i: terrain }
+      if (
+        terrain === Terrain.WATER1 ||
+        terrain === Terrain.WATER2 ||
+        terrain === Terrain.WATER3
+      ) {
+        cells[x][y] = { i: terrain };
         continue;
       }
 
@@ -102,18 +108,23 @@ export const getArea: KoaController = async (ctx) => {
     }
   }
 
-  ctx.status = 200;
-  ctx.body = {
-    error: 0,
-    x: currentX,
-    y: currentY,
-    data: cells,
-    // resources: save.resources,
-    // alliancedata
-  };
+  if (devConfig.maproom) {
+    ctx.status = 200;
+    ctx.body = {
+      error: 0,
+      x: currentX,
+      y: currentY,
+      data: cells,
+      // resources: save.resources,
+      // alliancedata
+    };
 
-  if (sendresources === 1) {
-    ctx.body["resources"] = save.resources;
-    ctx.body["credits"] = save.credits;
+    if (sendresources === 1) {
+      ctx.body["resources"] = save.resources;
+      ctx.body["credits"] = save.credits;
+    }
+  } else {
+    ctx.status = 404;
+    ctx.body = { message: "MapRoom is not enabled on this server", error: 1 };
   }
 };

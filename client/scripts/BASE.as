@@ -55,8 +55,6 @@ package
    import gs.*;
    import gs.easing.*;
    
-   
-   
    public class BASE
    {
       
@@ -493,15 +491,7 @@ package
          };
       }
       
-      public static function LoadBase(
-         url:String = null, 
-         userId:Number = 0, 
-         baseId:Number = 0, 
-         baseMode:String = "build", 
-         isError:Boolean = false, 
-         baseType:int = -1, 
-         cellId:Number = 0, 
-         keyValuePairs:Array = null) : Boolean
+      public static function LoadBase(url:String = null, userId:Number = 0, baseId:Number = 0, baseMode:String = "build", isError:Boolean = false, baseType:int = -1, cellId:Number = 0, keyValuePairs:Array = null) : Boolean
       {
          if(isNaN(baseId))
          {
@@ -782,931 +772,926 @@ package
          var promoID:Array = null;
          var promoGifts:Array = null;
          var serverData:Object = data;
-       try
+         try
          {
-         if(serverData.error == 0)
-         {
-            if(parseBaseLoadMessages(serverData))
+            if(serverData.error == 0)
             {
-               return;
-            }
-            loadObject = serverData;
-            if(serverData && serverData.player && Boolean(serverData.player.buffs))
-            {
-               s_resourceCells = serverData.player.buffs.resources;
-            }
-            if(MapRoomManager.instance.isInMapRoom3)
-            {
-               _baseID = loadObject.baseid;
-            }
-            firstLoad = false;
-            if(!_loadedSomething)
-            {
-               if(ExternalInterface.available)
+               if(parseBaseLoadMessages(serverData))
                {
-                  ExternalInterface.call("cc.recordStats","baseend");
+                  return;
                }
-               firstLoad = true;
-               _loadedSomething = true;
-               GAME._firstLoadComplete = true;
-            }
-            else
-            {
-               _firstBaseLoaded = false;
-            }
-            if(GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD || GLOBAL.mode == GLOBAL.e_BASE_MODE.IBUILD)
-            {
-               GLOBAL._openBase = null;
-            }
-            MapRoomManager.instance.worldID = 0;
-            GLOBAL.SetFlags(serverData.flags);
-            QUESTS.Setup();
-            GLOBAL._reloadonerror = false;
-            if(TUTORIAL.hasFinished)
-            {
-               _isProtected = int(serverData["protected"]);
-            }
-            _isFan = int(serverData.fan);
-            _isFan = int(0);
-            _isBookmarked = int(serverData.bookmarked);
-            _isBookmarked = int(0);
-            _installsGenerated = int(42069);
-            if(serverData.fan)
-            {
-               QUESTS._global.bonus_fan = 1;
-            }
-            if(serverData.bookmarked)
-            {
-               QUESTS._global.bonus_bookmark = 1;
-            }
-            if(serverData.giftsentcount)
-            {
-               QUESTS._global.bonus_gifts = serverData.giftsentcount;
-            }
-            QUESTS._global.bonus_invites = _installsGenerated;
-            _lastProcessed = int(serverData.savetime);
-            GLOBAL.t = _lastProcessed;
-            _currentTime = int(serverData.currenttime);
-            // Comment: If the _lastProcessed time is older than 2 days from the current time, it updates _lastProcessed to be 2 days before the current time. 
-            if(_lastProcessed < _currentTime - 60 * 60 * 24 * 2)
-            {
-               _lastProcessed = _currentTime - 60 * 60 * 24 * 2;
-            }
-            if(serverData.chatservers != null)
-            {
-               Chat._chatServers = serverData.chatservers;
-            }
-            else
-            {
-               Chat._chatServers = new Array();
-            }
-            _lastSaveID = serverData.id;
-            _baseSeed = serverData.baseseed;
-            _loadedBaseID = serverData.baseid; // Comment: IMPORTANT - this seems to always be "0" for user base, but not for other base types??
-            if(GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD)
-            {
-               _loadedFriendlyBaseID = serverData.baseid;
-               _loadedYardType = m_yardType;
-            }
-            _loadedFBID = serverData.fbid;
-            _userID = serverData.userid;
-            idstr = _userID.toString();
-            _userDigits = [];
-            ix = 0;
-            while(ix < idstr.length)
-            {
-               _userDigits.push(int(idstr.charAt(ix)));
-               ix++;
-            }
-            if(GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD && isMainYard)
-            {
-               if(serverData.alliancedata)
+               loadObject = serverData;
+               if(serverData && serverData.player && Boolean(serverData.player.buffs))
                {
-                  _allianceID = int(serverData.alliancedata.alliance_id);
-                  if(_userID == LOGIN._playerID)
+                  s_resourceCells = serverData.player.buffs.resources;
+               }
+               if(MapRoomManager.instance.isInMapRoom3)
+               {
+                  _baseID = loadObject.baseid;
+               }
+               firstLoad = false;
+               if(!_loadedSomething)
+               {
+                  if(ExternalInterface.available)
                   {
-                     ALLIANCES._allianceID = int(serverData.alliancedata.alliance_id);
-                     ALLIANCES._myAlliance = ALLIANCES.SetAlliance(serverData.alliancedata);
-                     ACHIEVEMENTS.Check("alliance",1);
+                     ExternalInterface.call("cc.recordStats","baseend");
                   }
-               }
-               else if(_userID == LOGIN._playerID && (ALLIANCES._allianceID || ALLIANCES._myAlliance))
-               {
-                  ALLIANCES.Clear();
-               }
-            }
-            if(serverData.powerups)
-            {
-               POWERUPS.Setup(serverData.powerups,null,true);
-            }
-            if(serverData.attpowerups)
-            {
-               POWERUPS.Setup(null,serverData.attpowerups,true);
-            }
-            _attackID = int(serverData.attackid);
-            if(serverData.worldsize)
-            {
-               MapRoomManager.instance.mapWidth = serverData.worldsize[0];
-               MapRoomManager.instance.mapHeight = serverData.worldsize[1];
-            }
-            if(serverData.usemap)
-            {
-               if(isInfernoMainYardOrOutpost)
-               {
-                  MapRoomManager.instance.mapRoomVersion = MapRoomManager.instance.currentMapRoom is MapRoom3 ? MapRoomManager.MAP_ROOM_VERSION_3 : MapRoomManager.MAP_ROOM_VERSION_1;
+                  firstLoad = true;
+                  _loadedSomething = true;
+                  GAME._firstLoadComplete = true;
                }
                else
                {
-                  MapRoomManager.instance.mapRoomVersion = MapRoomManager.instance.currentMapRoom is MapRoom3 ? MapRoomManager.MAP_ROOM_VERSION_3 : MapRoomManager.MAP_ROOM_VERSION_2;
+                  _firstBaseLoaded = false;
                }
-            }
-            if(MapRoomManager.instance.isInMapRoom2)
-            {
+               if(GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD || GLOBAL.mode == GLOBAL.e_BASE_MODE.IBUILD)
+               {
+                  GLOBAL._openBase = null;
+               }
+               MapRoomManager.instance.worldID = 0;
+               GLOBAL.SetFlags(serverData.flags);
+               QUESTS.Setup();
+               GLOBAL._reloadonerror = false;
+               if(TUTORIAL.hasFinished)
+               {
+                  _isProtected = int(serverData["protected"]);
+               }
+               _isFan = int(serverData.fan);
+               _isFan = int(0);
+               _isBookmarked = int(serverData.bookmarked);
+               _isBookmarked = int(0);
+               _installsGenerated = int(42069);
+               if(serverData.fan)
+               {
+                  QUESTS._global.bonus_fan = 1;
+               }
+               if(serverData.bookmarked)
+               {
+                  QUESTS._global.bonus_bookmark = 1;
+               }
+               if(serverData.giftsentcount)
+               {
+                  QUESTS._global.bonus_gifts = serverData.giftsentcount;
+               }
+               QUESTS._global.bonus_invites = _installsGenerated;
+               _lastProcessed = int(serverData.savetime);
+               GLOBAL.t = _lastProcessed;
+               _currentTime = int(serverData.currenttime);
+               if(_lastProcessed < _currentTime - 60 * 60 * 24 * 2)
+               {
+                  _lastProcessed = _currentTime - 60 * 60 * 24 * 2;
+               }
+               if(serverData.chatservers != null)
+               {
+                  Chat._chatServers = serverData.chatservers;
+               }
+               else
+               {
+                  Chat._chatServers = new Array();
+               }
+               _lastSaveID = serverData.id;
+               _baseSeed = serverData.baseseed;
+               _loadedBaseID = serverData.baseid; // Comment: IMPORTANT - this seems to always be "0" for user base, but not for other base types??
                if(GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD)
                {
-                  if(serverData.homebaseid)
+                  _loadedFriendlyBaseID = serverData.baseid;
+                  _loadedYardType = m_yardType;
+               }
+               _loadedFBID = serverData.fbid;
+               _userID = serverData.userid;
+               idstr = _userID.toString();
+               _userDigits = [];
+               ix = 0;
+               while(ix < idstr.length)
+               {
+                  _userDigits.push(int(idstr.charAt(ix)));
+                  ix++;
+               }
+               if(GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD && isMainYard)
+               {
+                  if(serverData.alliancedata)
                   {
-                     GLOBAL._homeBaseID = serverData.homebaseid;
-                  }
-                  if(serverData.homebase)
-                  {
-                     if(serverData.homebase.length == 2 && serverData.homebase[0] > -1 && serverData.homebase[1] > -1)
+                     _allianceID = int(serverData.alliancedata.alliance_id);
+                     if(_userID == LOGIN._playerID)
                      {
-                        if(serverData.outposts)
+                        ALLIANCES._allianceID = int(serverData.alliancedata.alliance_id);
+                        ALLIANCES._myAlliance = ALLIANCES.SetAlliance(serverData.alliancedata);
+                        ACHIEVEMENTS.Check("alliance",1);
+                     }
+                  }
+                  else if(_userID == LOGIN._playerID && (ALLIANCES._allianceID || ALLIANCES._myAlliance))
+                  {
+                     ALLIANCES.Clear();
+                  }
+               }
+               if(serverData.powerups)
+               {
+                  POWERUPS.Setup(serverData.powerups,null,true);
+               }
+               if(serverData.attpowerups)
+               {
+                  POWERUPS.Setup(null,serverData.attpowerups,true);
+               }
+               _attackID = int(serverData.attackid);
+               if(serverData.worldsize)
+               {
+                  MapRoomManager.instance.mapWidth = serverData.worldsize[0];
+                  MapRoomManager.instance.mapHeight = serverData.worldsize[1];
+               }
+               if(serverData.usemap)
+               {
+                  if(isInfernoMainYardOrOutpost)
+                  {
+                     MapRoomManager.instance.mapRoomVersion = MapRoomManager.instance.currentMapRoom is MapRoom3 ? MapRoomManager.MAP_ROOM_VERSION_3 : MapRoomManager.MAP_ROOM_VERSION_1;
+                  }
+                  else
+                  {
+                     MapRoomManager.instance.mapRoomVersion = MapRoomManager.instance.currentMapRoom is MapRoom3 ? MapRoomManager.MAP_ROOM_VERSION_3 : MapRoomManager.MAP_ROOM_VERSION_2;
+                  }
+               }
+               if(MapRoomManager.instance.isInMapRoom2)
+               {
+                  if(GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD)
+                  {
+                     if(serverData.homebaseid)
+                     {
+                        GLOBAL._homeBaseID = serverData.homebaseid;
+                     }
+                     if(serverData.homebase)
+                     {
+                        if(serverData.homebase.length == 2 && serverData.homebase[0] > -1 && serverData.homebase[1] > -1)
                         {
-                           GLOBAL._mapOutpost = [];
-                           GLOBAL._mapOutpostIDs = [];
-                           ix = 0;
-                           while(ix < serverData.outposts.length)
+                           if(serverData.outposts)
                            {
-                              if(serverData.outposts[ix].length == 3)
+                              GLOBAL._mapOutpost = [];
+                              GLOBAL._mapOutpostIDs = [];
+                              ix = 0;
+                              while(ix < serverData.outposts.length)
                               {
-                                 GLOBAL._mapOutpost.push(new Point(serverData.outposts[ix][0],serverData.outposts[ix][1]));
-                                 GLOBAL._mapOutpostIDs.push(serverData.outposts[ix][2]);
+                                 if(serverData.outposts[ix].length == 3)
+                                 {
+                                    GLOBAL._mapOutpost.push(new Point(serverData.outposts[ix][0],serverData.outposts[ix][1]));
+                                    GLOBAL._mapOutpostIDs.push(serverData.outposts[ix][2]);
+                                 }
+                                 ix++;
                               }
-                              ix++;
                            }
+                           GLOBAL._mapHome = new Point(serverData.homebase[0],serverData.homebase[1]);
                         }
-                        GLOBAL._mapHome = new Point(serverData.homebase[0],serverData.homebase[1]);
+                        else
+                        {
+                           LOGGER.Log("err","BASE.Process Invalid home base coordinate. " + serverData.homebase);
+                        }
+                     }
+                     if(serverData.empiredestroyed)
+                     {
+                        GLOBAL._empireDestroyed = serverData.empiredestroyed;
                      }
                      else
                      {
-                        LOGGER.Log("err","BASE.Process Invalid home base coordinate. " + serverData.homebase);
+                        GLOBAL._empireDestroyed = 0;
                      }
                   }
-                  if(serverData.empiredestroyed)
-                  {
-                     GLOBAL._empireDestroyed = serverData.empiredestroyed;
-                  }
-                  else
-                  {
-                     GLOBAL._empireDestroyed = 0;
-                  }
                }
-            }
-            else if(MapRoomManager.instance.isInMapRoom3 && Boolean(serverData.homebase))
-            {
-               GLOBAL._mapHome = new Point(serverData.homebase[0],serverData.homebase[1]);
-            }
-            GLOBAL._unreadMessages = serverData.unreadmessages;
-            resources = serverData.resources;
-            if(resources == null)
-            {
-               _resources.r1 = 1000;
-               _resources.r2 = 1000;
-               _resources.r3 = 1000;
-               _resources.r4 = 1000;
-               _resources.r1max = 10000;
-               _resources.r2max = 10000;
-               _resources.r3max = 10000;
-               _resources.r4max = 10000;
-            }
-            else
-            {
-               _resources ||= {};
-               _resources.r1 = new SecNum(Math.floor(resources.r1));
-               _resources.r2 = new SecNum(Math.floor(resources.r2));
-               _resources.r3 = new SecNum(Math.floor(resources.r3));
-               _resources.r4 = new SecNum(Math.floor(resources.r4));
-               _resources.r1bonus = resources.r1bonus;
-               _resources.r2bonus = resources.r2bonus;
-               _resources.r3bonus = resources.r3bonus;
-               _resources.r4bonus = resources.r4bonus;
-
-            }
-            if(serverData.iresources)
-            {
-               iresources = serverData.iresources;
-               _iresources.r1 = new SecNum(Math.floor(iresources.r1));
-               _iresources.r2 = new SecNum(Math.floor(iresources.r2));
-               _iresources.r3 = new SecNum(Math.floor(iresources.r3));
-               _iresources.r4 = new SecNum(Math.floor(iresources.r4));
-               _iresources.r1max = int(iresources.r1max);
-               _iresources.r2max = int(iresources.r2max);
-               _iresources.r3max = int(iresources.r3max);
-               _iresources.r4max = int(iresources.r4max);
-            }
-            if(Boolean(serverData.updates) && serverData.updates.length > 0)
-            {
-               UPDATES.Process(serverData.updates);
-            }
-            else if(serverData.lastupdate)
-            {
-               UPDATES._lastUpdateID = Number(serverData.lastupdate);
-            }
-            else
-            {
-               UPDATES._lastUpdateID = 0;
-            }
-            
-            if(serverData.mushrooms.l)
-            {
-               _mushroomList = serverData.mushrooms.l;
-            }
-            if(serverData.mushrooms.s)
-            {
-               _lastSpawnedMushroom = int(serverData.mushrooms.s);
-            }
-            
-            _buildingHealthData = serverData.buildinghealthdata;
-            _buildingData = serverData.buildingdata;
-            if(!MapRoomManager.instance.isInMapRoom3)
-            {
-               for each(building in _buildingData)
+               else if(MapRoomManager.instance.isInMapRoom3 && Boolean(serverData.homebase))
                {
-                  if(building.t == 14)
-                  {
-                     if(isOutpost && (GLOBAL._currentCell && GLOBAL._currentCell.baseType == EnumYardType.INFERNO_OUTPOST))
-                     {
-                        LOGGER.Log("err","Base ID " + _loadedBaseID + " outpost w TH bdg");
-                        GLOBAL.ErrorMessage("BASE.Process outpost w TH");
-                     }
-                     break;
-                  }
-                  if(building.t == 112)
-                  {
-                     if(isMainYardOrInfernoMainYard && (GLOBAL._currentCell && GLOBAL._currentCell.baseType != EnumYardType.INFERNO_OUTPOST))
-                     {
-                        LOGGER.Log("err","Base ID " + _loadedBaseID + " yard w OP bdg");
-                        GLOBAL.ErrorMessage("BASE.Process yard w outpost");
-                     }
-                     break;
-                  }
+                  GLOBAL._mapHome = new Point(serverData.homebase[0],serverData.homebase[1]);
                }
-            }
-            _rawGIP = serverData.buildingresources;
-            _processedGIP = {};
-            _GIP = {
-               "r1":new SecNum(0),
-               "r2":new SecNum(0),
-               "r3":new SecNum(0),
-               "r4":new SecNum(0)
-            };
-            _lastProcessedGIP = AutoBankManager.updateLoadData(_rawGIP,_GIP,_processedGIP,_lastProcessed,_lastProcessedGIP);
-            _baseName = serverData.basename;
-            _baseValue = uint(serverData.basevalue);
-            _basePoints = Number(serverData.points);
-            if(!_outpostValue)
-            {
-               _outpostValue = 0;
-            }
-            if(!_basePoints)
-            {
-               _basePoints = 0;
-            }
-            _credits = new SecNum(int(serverData.credits));
-            GLOBAL._credits = new SecNum(int(serverData.credits));
-            _hpCredits = int(serverData.credits);
-            _tempLoot = serverData.loot;
-            GLOBAL.SetBuildingProps();
-            _buildingsStored = {};
-            for(researchdata in serverData.researchdata)
-            {
-               if(serverData.researchdata[researchdata])
+               GLOBAL._unreadMessages = serverData.unreadmessages;
+               resources = serverData.resources;
+               if(resources == null)
                {
-                  _buildingsStored[researchdata] = new SecNum(serverData.researchdata[researchdata]);
-               }
-            }
-            _hpResources = {
-               "r1":_resources.r1.Get(),
-               "r2":_resources.r2.Get(),
-               "r3":_resources.r3.Get(),
-               "r4":_resources.r4.Get()
-            };
-            if(GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD)
-            {
-               kx = 1;
-               while(kx < 5)
-               {
-                  GLOBAL._resources["r" + kx] = new SecNum(_resources["r" + kx].Get());
-                  GLOBAL._hpResources["r" + kx] = _resources["r" + kx].Get();
-                  kx++;
-               }
-            }
-            if(serverData.stats.mp)
-            {
-               QUESTS._global.mushroomspicked = serverData.stats.mp;
-            }
-            if(serverData.stats.mg)
-            {
-               QUESTS._global.goldmushroomspicked = serverData.stats.mg;
-            }
-            if(serverData.stats.mob)
-            {
-               QUESTS._global.monstersblended = serverData.stats.mob;
-            }
-            if(serverData.stats.mobg)
-            {
-               QUESTS._global.monstersblendedgoo = serverData.stats.mobg;
-            }
-            if(serverData.stats.moga)
-            {
-               QUESTS._global.gift_accept = serverData.stats.moga;
-            }
-            NewPopupSystem.instance.Setup(serverData.stats.popupdata);
-            if(serverData.stats.updateid)
-            {
-               GLOBAL._whatsnewid = serverData.stats.updateid;
-            }
-            if(serverData.stats.updateid_mr2 != null)
-            {
-               GLOBAL._mr2TutorialId = Math.max(GLOBAL._mr2TutorialId,serverData.stats.updateid_mr2);
-            }
-            else
-            {
-               GLOBAL._mr2TutorialId = Math.max(GLOBAL._mr2TutorialId,MapRoomManager.instance.isInMapRoom2 ? 1 : 0);
-            }
-            MapRoom3Tutorial.instance.importData(serverData);
-            GLOBAL._otherStats = {"s":1};
-            if(serverData.stats.other)
-            {
-               GLOBAL._otherStats = serverData.stats.other;
-            }
-            if(GLOBAL.StatGet(BUILDING11.CHANGED_TO_MR2) == 1)
-            {
-               LOGGER.StatB({
-                  "st1":"world_map",
-                  "st2":"enter"
-               },MapRoomManager.instance.worldID);
-               GLOBAL.StatSet(BUILDING11.CHANGED_TO_MR2,2);
-            }
-            if(serverData.wmid)
-            {
-               _wmID = serverData.wmid;
-            }
-            if(GLOBAL._otherStats && GLOBAL._otherStats.descentLvl && GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD)
-            {
-               if(Boolean(WMBASE._descentBases) && WMBASE._descentBases.length > 0)
-               {
-                  if(MAPROOM_DESCENT.DescentLevel > 1)
-                  {
-                     MAPROOM_DESCENT._descentLvl = MAPROOM_DESCENT.DescentLevel;
-                     GLOBAL.StatSet("descentLvl",MAPROOM_DESCENT._descentLvl);
-                  }
-               }
-               else if(MAPROOM_DESCENT._descentLvl < serverData.stats.other.descentLvl)
-               {
-                  MAPROOM_DESCENT._descentLvl = serverData.stats.other.descentLvl;
-               }
-            }
-            GLOBAL.player.importAcademyData(serverData.academy);
-            if(GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD && isMainYardOrInfernoMainYard)
-            {
-               SiegeWeapons.importWeapons(serverData.siege);
-            }
-            else
-            {
-               _oldSiegeData = serverData.siege;
-            }
-            EFFECTS.Setup(serverData.effects);
-            if(Boolean(serverData.monsters) && Boolean(serverData.monsters.housed))
-            {
-               GLOBAL.player.fillMonsterData(serverData.monsters.housed);
-            }
-            else if(serverData.monsters)
-            {
-               GLOBAL.player.fillMonsterData(serverData.monsters);
-            }
-            _rawMonsters = serverData.monsters;
-            TRIBES.Setup();
-            if(serverData.wmstatus)
-            {
-               WMBASE.Data(serverData.wmstatus);
-            }
-            else
-            {
-               WMBASE.Clear();
-            }
-            WMATTACK.Setup(serverData.aiattacks);
-            if(GLOBAL.mode == GLOBAL.e_BASE_MODE.WMATTACK || GLOBAL.mode == GLOBAL.e_BASE_MODE.WMVIEW || GLOBAL.mode == GLOBAL.e_BASE_MODE.IWMATTACK)
-            {
-               WMBASE.Setup();
-            }
-            TUTORIAL.Setup();
-            if(GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD)
-            {
-               if(BASE.isInfernoMainYardOrOutpost)
-               {
-                  TUTORIAL._stage = TUTORIAL._endstage;
+                  _resources.r1 = 1000;
+                  _resources.r2 = 1000;
+                  _resources.r3 = 1000;
+                  _resources.r4 = 1000;
+                  _resources.r1max = 10000;
+                  _resources.r2max = 10000;
+                  _resources.r3max = 10000;
+                  _resources.r4max = 10000;
                }
                else
                {
-                  TUTORIAL._stage = int(serverData.tutorialstage);
+                  _resources ||= {};
+                  _resources.r1 = new SecNum(Math.floor(resources.r1));
+                  _resources.r2 = new SecNum(Math.floor(resources.r2));
+                  _resources.r3 = new SecNum(Math.floor(resources.r3));
+                  _resources.r4 = new SecNum(Math.floor(resources.r4));
+                  _resources.r1bonus = resources.r1bonus;
+                  _resources.r2bonus = resources.r2bonus;
+                  _resources.r3bonus = resources.r3bonus;
+                  _resources.r4bonus = resources.r4bonus;
                }
-               TUTORIAL.Tick();
-            }
-            WORKERS.Setup();
-            QUEUE.Setup();
-            STORE.Data(serverData.storeitems,serverData.storedata,serverData.inventory);
-            CREATURELOCKER.Data(serverData.lockerdata);
-            QUESTS.Data(serverData.quests);
-            MONSTERBAITER.Setup(serverData.monsterbaiter);
-            if(serverData.chatenabled != null)
-            {
-               Chat._chatEnabled = serverData.chatenabled;
-               if(Chat.flagsShouldChatExist())
+               if(serverData.iresources)
                {
-                  Chat.initChat();
+                  iresources = serverData.iresources;
+                  _iresources.r1 = new SecNum(Math.floor(iresources.r1));
+                  _iresources.r2 = new SecNum(Math.floor(iresources.r2));
+                  _iresources.r3 = new SecNum(Math.floor(iresources.r3));
+                  _iresources.r4 = new SecNum(Math.floor(iresources.r4));
+                  _iresources.r1max = int(iresources.r1max);
+                  _iresources.r2max = int(iresources.r2max);
+                  _iresources.r3max = int(iresources.r3max);
+                  _iresources.r4max = int(iresources.r4max);
                }
-            }
-            if(serverData.stats.achievements)
-            {
-               ACHIEVEMENTS.Data(serverData.stats.achievements);
-               ACHIEVEMENTS.CheckRetroactiveAchievments();
-            }
-            else if(serverData.quests)
-            {
+               if(Boolean(serverData.updates) && serverData.updates.length > 0)
+               {
+                  UPDATES.Process(serverData.updates);
+               }
+               else if(serverData.lastupdate)
+               {
+                  UPDATES._lastUpdateID = Number(serverData.lastupdate);
+               }
+               else
+               {
+                  UPDATES._lastUpdateID = 0;
+               }
+               if(serverData.mushrooms.l)
+               {
+                  _mushroomList = serverData.mushrooms.l;
+               }
+               if(serverData.mushrooms.s)
+               {
+                  _lastSpawnedMushroom = int(serverData.mushrooms.s);
+               }
+               _buildingHealthData = serverData.buildinghealthdata;
+               _buildingData = serverData.buildingdata;
+               if(!MapRoomManager.instance.isInMapRoom3)
+               {
+                  for each(building in _buildingData)
+                  {
+                     if(building.t == 14)
+                     {
+                        if(isOutpost && (GLOBAL._currentCell && GLOBAL._currentCell.baseType == EnumYardType.INFERNO_OUTPOST))
+                        {
+                           LOGGER.Log("err","Base ID " + _loadedBaseID + " outpost w TH bdg");
+                           GLOBAL.ErrorMessage("BASE.Process outpost w TH");
+                        }
+                        break;
+                     }
+                     if(building.t == 112)
+                     {
+                        if(isMainYardOrInfernoMainYard && (GLOBAL._currentCell && GLOBAL._currentCell.baseType != EnumYardType.INFERNO_OUTPOST))
+                        {
+                           LOGGER.Log("err","Base ID " + _loadedBaseID + " yard w OP bdg");
+                           GLOBAL.ErrorMessage("BASE.Process yard w outpost");
+                        }
+                        break;
+                     }
+                  }
+               }
+               _rawGIP = serverData.buildingresources;
+               _processedGIP = {};
+               _GIP = {
+                  "r1":new SecNum(0),
+                  "r2":new SecNum(0),
+                  "r3":new SecNum(0),
+                  "r4":new SecNum(0)
+               };
+               _lastProcessedGIP = AutoBankManager.updateLoadData(_rawGIP,_GIP,_processedGIP,_lastProcessed,_lastProcessedGIP);
+               _baseName = serverData.basename;
+               _baseValue = uint(serverData.basevalue);
+               _basePoints = Number(serverData.points);
+               if(!_outpostValue)
+               {
+                  _outpostValue = 0;
+               }
+               if(!_basePoints)
+               {
+                  _basePoints = 0;
+               }
+               _credits = new SecNum(int(serverData.credits));
+               GLOBAL._credits = new SecNum(int(serverData.credits));
+               _hpCredits = int(serverData.credits);
+               _tempLoot = serverData.loot;
+               GLOBAL.SetBuildingProps();
+               _buildingsStored = {};
+               for(researchdata in serverData.researchdata)
+               {
+                  if(serverData.researchdata[researchdata])
+                  {
+                     _buildingsStored[researchdata] = new SecNum(serverData.researchdata[researchdata]);
+                  }
+               }
+               _hpResources = {
+                  "r1":_resources.r1.Get(),
+                  "r2":_resources.r2.Get(),
+                  "r3":_resources.r3.Get(),
+                  "r4":_resources.r4.Get()
+               };
                if(GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD)
                {
-                  ACHIEVEMENTS._stats.upgrade_champ1 = QUESTS._global.upgrade_champ1;
-                  ACHIEVEMENTS._stats.upgrade_champ2 = QUESTS._global.upgrade_champ2;
-                  ACHIEVEMENTS._stats.upgrade_champ3 = QUESTS._global.upgrade_champ3;
-                  ACHIEVEMENTS._stats.monstersblended = QUESTS._global.monstersblended;
-                  ACHIEVEMENTS._stats.wm2hall = QUESTS._global.destroy_tribe2;
-                  if(serverData.alliancedata)
+                  kx = 1;
+                  while(kx < 5)
                   {
-                     if(serverData.alliancedata.alliance_id)
+                     GLOBAL._resources["r" + kx] = new SecNum(_resources["r" + kx].Get());
+                     GLOBAL._hpResources["r" + kx] = _resources["r" + kx].Get();
+                     kx++;
+                  }
+               }
+               if(serverData.stats.mp)
+               {
+                  QUESTS._global.mushroomspicked = serverData.stats.mp;
+               }
+               if(serverData.stats.mg)
+               {
+                  QUESTS._global.goldmushroomspicked = serverData.stats.mg;
+               }
+               if(serverData.stats.mob)
+               {
+                  QUESTS._global.monstersblended = serverData.stats.mob;
+               }
+               if(serverData.stats.mobg)
+               {
+                  QUESTS._global.monstersblendedgoo = serverData.stats.mobg;
+               }
+               if(serverData.stats.moga)
+               {
+                  QUESTS._global.gift_accept = serverData.stats.moga;
+               }
+               NewPopupSystem.instance.Setup(serverData.stats.popupdata);
+               if(serverData.stats.updateid)
+               {
+                  GLOBAL._whatsnewid = serverData.stats.updateid;
+               }
+               if(serverData.stats.updateid_mr2 != null)
+               {
+                  GLOBAL._mr2TutorialId = Math.max(GLOBAL._mr2TutorialId,serverData.stats.updateid_mr2);
+               }
+               else
+               {
+                  GLOBAL._mr2TutorialId = Math.max(GLOBAL._mr2TutorialId,MapRoomManager.instance.isInMapRoom2 ? 1 : 0);
+               }
+               MapRoom3Tutorial.instance.importData(serverData);
+               GLOBAL._otherStats = {"s":1};
+               if(serverData.stats.other)
+               {
+                  GLOBAL._otherStats = serverData.stats.other;
+               }
+               if(GLOBAL.StatGet(BUILDING11.CHANGED_TO_MR2) == 1)
+               {
+                  LOGGER.StatB({
+                     "st1":"world_map",
+                     "st2":"enter"
+                  },MapRoomManager.instance.worldID);
+                  GLOBAL.StatSet(BUILDING11.CHANGED_TO_MR2,2);
+               }
+               if(serverData.wmid)
+               {
+                  _wmID = serverData.wmid;
+               }
+               if(GLOBAL._otherStats && GLOBAL._otherStats.descentLvl && GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD)
+               {
+                  if(Boolean(WMBASE._descentBases) && WMBASE._descentBases.length > 0)
+                  {
+                     if(MAPROOM_DESCENT.DescentLevel > 1)
                      {
-                        ACHIEVEMENTS._stats.alliance = 1;
+                        MAPROOM_DESCENT._descentLvl = MAPROOM_DESCENT.DescentLevel;
+                        GLOBAL.StatSet("descentLvl",MAPROOM_DESCENT._descentLvl);
                      }
                   }
-                  ACHIEVEMENTS.Check();
-               }
-            }
-            _guardianData.length = 0;
-            if(serverData.champion)
-            {
-               if(serverData.champion != "\"null\"" && serverData.champion != "null")
-               {
-                  champion = JSON.decode(serverData.champion);
-                  size = 0;
-                  if(champion.t)
+                  else if(MAPROOM_DESCENT._descentLvl < serverData.stats.other.descentLvl)
                   {
-                     size = 1;
-                     champion = [champion];
+                     MAPROOM_DESCENT._descentLvl = serverData.stats.other.descentLvl;
+                  }
+               }
+               GLOBAL.player.importAcademyData(serverData.academy);
+               if(GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD && isMainYardOrInfernoMainYard)
+               {
+                  SiegeWeapons.importWeapons(serverData.siege);
+               }
+               else
+               {
+                  _oldSiegeData = serverData.siege;
+               }
+               EFFECTS.Setup(serverData.effects);
+               if(Boolean(serverData.monsters) && Boolean(serverData.monsters.housed))
+               {
+                  GLOBAL.player.fillMonsterData(serverData.monsters.housed);
+               }
+               else if(serverData.monsters)
+               {
+                  GLOBAL.player.fillMonsterData(serverData.monsters);
+               }
+               _rawMonsters = serverData.monsters;
+               TRIBES.Setup();
+               if(serverData.wmstatus)
+               {
+                  WMBASE.Data(serverData.wmstatus);
+               }
+               else
+               {
+                  WMBASE.Clear();
+               }
+               WMATTACK.Setup(serverData.aiattacks);
+               if(GLOBAL.mode == GLOBAL.e_BASE_MODE.WMATTACK || GLOBAL.mode == GLOBAL.e_BASE_MODE.WMVIEW || GLOBAL.mode == GLOBAL.e_BASE_MODE.IWMATTACK)
+               {
+                  WMBASE.Setup();
+               }
+               TUTORIAL.Setup();
+               if(GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD)
+               {
+                  if(BASE.isInfernoMainYardOrOutpost)
+                  {
+                     TUTORIAL._stage = TUTORIAL._endstage;
                   }
                   else
                   {
-                     size = int(champion.length);
+                     TUTORIAL._stage = int(serverData.tutorialstage);
                   }
-                  existingGuardians = new Dictionary();
-                  playerGuardianIndex = 0;
-                  guardianIndex = 0;
-                  addedGuardian = false;
-                  unfrozenFound = false;
-                  j = 0;
-                  while(j < size)
+                  TUTORIAL.Tick();
+               }
+               WORKERS.Setup();
+               QUEUE.Setup();
+               STORE.Data(serverData.storeitems,serverData.storedata,serverData.inventory);
+               CREATURELOCKER.Data(serverData.lockerdata);
+               QUESTS.Data(serverData.quests);
+               MONSTERBAITER.Setup(serverData.monsterbaiter);
+               if(serverData.chatenabled != null)
+               {
+                  Chat._chatEnabled = serverData.chatenabled;
+                  if(Chat.flagsShouldChatExist())
                   {
-                     try
+                     Chat.initChat();
+                  }
+               }
+               if(serverData.stats.achievements)
+               {
+                  ACHIEVEMENTS.Data(serverData.stats.achievements);
+                  ACHIEVEMENTS.CheckRetroactiveAchievments();
+               }
+               else if(serverData.quests)
+               {
+                  if(GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD)
+                  {
+                     ACHIEVEMENTS._stats.upgrade_champ1 = QUESTS._global.upgrade_champ1;
+                     ACHIEVEMENTS._stats.upgrade_champ2 = QUESTS._global.upgrade_champ2;
+                     ACHIEVEMENTS._stats.upgrade_champ3 = QUESTS._global.upgrade_champ3;
+                     ACHIEVEMENTS._stats.monstersblended = QUESTS._global.monstersblended;
+                     ACHIEVEMENTS._stats.wm2hall = QUESTS._global.destroy_tribe2;
+                     if(serverData.alliancedata)
                      {
-                        if(Boolean(champion[j].t) && !existingGuardians[champion[j].t])
+                        if(serverData.alliancedata.alliance_id)
                         {
-                           existingGuardians[champion[j].t] = true;
-                           _guardianData[guardianIndex] = {};
-                           addedGuardian = true;
-                           if(champion[j].nm)
-                           {
-                              _guardianData[guardianIndex].nm = champion[j].nm;
-                           }
-                           _guardianData[guardianIndex].t = champion[j].t;
-                           if(champion[j].ft)
-                           {
-                              _guardianData[guardianIndex].ft = champion[j].ft;
-                           }
-                           if(champion[j].fd)
-                           {
-                              _guardianData[guardianIndex].fd = champion[j].fd;
-                           }
-                           else
-                           {
-                              _guardianData[guardianIndex].fd = 0;
-                           }
-                           if(champion[j].l)
-                           {
-                              _guardianData[guardianIndex].l = new SecNum(champion[j].l);
-                           }
-                           else
-                           {
-                              _guardianData[guardianIndex].l = new SecNum(0);
-                           }
-                           if(champion[j].hp)
-                           {
-                              _guardianData[guardianIndex].hp = new SecNum(champion[j].hp);
-                           }
-                           else
-                           {
-                              _guardianData[guardianIndex].hp = new SecNum(0);
-                           }
-                           if(champion[j].fb)
-                           {
-                              _guardianData[guardianIndex].fb = new SecNum(champion[j].fb);
-                           }
-                           else
-                           {
-                              _guardianData[guardianIndex].fb = new SecNum(0);
-                           }
-                           if(champion[j].pl)
-                           {
-                              _guardianData[guardianIndex].pl = new SecNum(champion[j].pl);
-                           }
-                           else
-                           {
-                              _guardianData[guardianIndex].pl = new SecNum(0);
-                           }
-                           if(champion[j].status is int)
-                           {
-                              _guardianData[guardianIndex].status = champion[j].status;
-                           }
-                           else
-                           {
-                              _guardianData[guardianIndex].status = ChampionBase.k_CHAMPION_STATUS_NORMAL;
-                           }
-                           if(champion[j].log)
-                           {
-                              _guardianData[guardianIndex].log = champion[j].log;
-                           }
-                           else
-                           {
-                              _guardianData[guardianIndex].log = String(_guardianData[guardianIndex].status).toString();
-                           }
-                           if(_guardianData[guardianIndex].t != 5)
-                           {
-                              if(unfrozenFound && _guardianData[guardianIndex].status == ChampionBase.k_CHAMPION_STATUS_NORMAL)
-                              {
-                                 _guardianData[guardianIndex].status = ChampionBase.k_CHAMPION_STATUS_FROZEN;
-                                 _guardianData[guardianIndex].log += "," + ChampionBase.k_CHAMPION_STATUS_FROZEN.toString();
-                              }
-                              else if(!unfrozenFound && _guardianData[guardianIndex].status == ChampionBase.k_CHAMPION_STATUS_NORMAL)
-                              {
-                                 unfrozenFound = true;
-                              }
-                           }
+                           ACHIEVEMENTS._stats.alliance = 1;
                         }
                      }
-                     catch(e:Error)
+                     ACHIEVEMENTS.Check();
+                  }
+               }
+               _guardianData.length = 0;
+               if(serverData.champion)
+               {
+                  if(serverData.champion != "\"null\"" && serverData.champion != "null")
+                  {
+                     champion = JSON.decode(serverData.champion);
+                     size = 0;
+                     if(champion.t)
                      {
-                        championString = JSON.decode(serverData.champion) as String;
-                        _guardianData[j] = JSON.decode(championString);
-                        Console.warning("Base::handleBaseLoadSuccessful - Error thrown on champion, champion data is - " + championString,true);
-                        continue;
+                        size = 1;
+                        champion = [champion];
                      }
-                     if(GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD && isMainYard && Boolean(_guardianData[j]))
+                     else
                      {
-                        GLOBAL._playerGuardianData[j] = _guardianData[j];
+                        size = int(champion.length);
                      }
-                     if(addedGuardian)
-                     {
-                        guardianIndex++;
-                     }
+                     existingGuardians = new Dictionary();
+                     playerGuardianIndex = 0;
+                     guardianIndex = 0;
                      addedGuardian = false;
-                     j++;
-                  }
-               }
-            }
-            _attackerArray = [];
-            _attackerNameArray = [];
-            if(GLOBAL.mode != GLOBAL.e_BASE_MODE.WMATTACK && GLOBAL.mode != GLOBAL.e_BASE_MODE.WMVIEW && Boolean(serverData.attacks))
-            {
-               TauntB = function(param1:int, param2:int):Function
-               {
-                  var n:int = param1;
-                  var fbid:int = param2;
-                  return function(param1:MouseEvent):void
-                  {
-                     GLOBAL.CallJS("sendFeed",["tauntB",KEYS.Get("js_attackedmyyard"),KEYS.Get("js_tauned"),"taunt" + n + ".png",fbid]);
-                     POPUPS.Next();
-                  };
-               };
-               attacksArr = serverData.attacks;
-               attackCount = 0;
-               for each(attackObj in attacksArr)
-               {
-                  attackCount++;
-                  found = false;
-                  for each(listed in _attackerArray)
-                  {
-                     if(listed.fbid == attackObj.fbid)
+                     unfrozenFound = false;
+                     j = 0;
+                     while(j < size)
                      {
-                        found = true;
-                        ++listed.count;
-                        listed.lastTime = attackObj.starttime;
+                        try
+                        {
+                           if(Boolean(champion[j].t) && !existingGuardians[champion[j].t])
+                           {
+                              existingGuardians[champion[j].t] = true;
+                              _guardianData[guardianIndex] = {};
+                              addedGuardian = true;
+                              if(champion[j].nm)
+                              {
+                                 _guardianData[guardianIndex].nm = champion[j].nm;
+                              }
+                              _guardianData[guardianIndex].t = champion[j].t;
+                              if(champion[j].ft)
+                              {
+                                 _guardianData[guardianIndex].ft = champion[j].ft;
+                              }
+                              if(champion[j].fd)
+                              {
+                                 _guardianData[guardianIndex].fd = champion[j].fd;
+                              }
+                              else
+                              {
+                                 _guardianData[guardianIndex].fd = 0;
+                              }
+                              if(champion[j].l)
+                              {
+                                 _guardianData[guardianIndex].l = new SecNum(champion[j].l);
+                              }
+                              else
+                              {
+                                 _guardianData[guardianIndex].l = new SecNum(0);
+                              }
+                              if(champion[j].hp)
+                              {
+                                 _guardianData[guardianIndex].hp = new SecNum(champion[j].hp);
+                              }
+                              else
+                              {
+                                 _guardianData[guardianIndex].hp = new SecNum(0);
+                              }
+                              if(champion[j].fb)
+                              {
+                                 _guardianData[guardianIndex].fb = new SecNum(champion[j].fb);
+                              }
+                              else
+                              {
+                                 _guardianData[guardianIndex].fb = new SecNum(0);
+                              }
+                              if(champion[j].pl)
+                              {
+                                 _guardianData[guardianIndex].pl = new SecNum(champion[j].pl);
+                              }
+                              else
+                              {
+                                 _guardianData[guardianIndex].pl = new SecNum(0);
+                              }
+                              if(champion[j].status is int)
+                              {
+                                 _guardianData[guardianIndex].status = champion[j].status;
+                              }
+                              else
+                              {
+                                 _guardianData[guardianIndex].status = ChampionBase.k_CHAMPION_STATUS_NORMAL;
+                              }
+                              if(champion[j].log)
+                              {
+                                 _guardianData[guardianIndex].log = champion[j].log;
+                              }
+                              else
+                              {
+                                 _guardianData[guardianIndex].log = String(_guardianData[guardianIndex].status).toString();
+                              }
+                              if(_guardianData[guardianIndex].t != 5)
+                              {
+                                 if(unfrozenFound && _guardianData[guardianIndex].status == ChampionBase.k_CHAMPION_STATUS_NORMAL)
+                                 {
+                                    _guardianData[guardianIndex].status = ChampionBase.k_CHAMPION_STATUS_FROZEN;
+                                    _guardianData[guardianIndex].log += "," + ChampionBase.k_CHAMPION_STATUS_FROZEN.toString();
+                                 }
+                                 else if(!unfrozenFound && _guardianData[guardianIndex].status == ChampionBase.k_CHAMPION_STATUS_NORMAL)
+                                 {
+                                    unfrozenFound = true;
+                                 }
+                              }
+                           }
+                        }
+                        catch(e:Error)
+                        {
+                           championString = JSON.decode(serverData.champion) as String;
+                           _guardianData[j] = JSON.decode(championString);
+                           Console.warning("Base::handleBaseLoadSuccessful - Error thrown on champion, champion data is - " + championString,true);
+                           continue;
+                        }
+                        if(GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD && isMainYard && Boolean(_guardianData[j]))
+                        {
+                           GLOBAL._playerGuardianData[j] = _guardianData[j];
+                        }
+                        if(addedGuardian)
+                        {
+                           guardianIndex++;
+                        }
+                        addedGuardian = false;
+                        j++;
                      }
                   }
-                  if(!found)
-                  {
-                     _attackerNameArray.push([0,attackObj.name]);
-                     _attackerArray.push({
-                        "fbid":attackObj.fbid,
-                        "name":attackObj.name,
-                        "pic":attackObj.pic_square,
-                        "friend":attackObj.friend,
-                        "count":1,
-                        "lastTime":attackObj.starttime
-                     });
-                  }
                }
-               for each(attackObj in _attackerArray)
+               _attackerArray = [];
+               _attackerNameArray = [];
+               if(GLOBAL.mode != GLOBAL.e_BASE_MODE.WMATTACK && GLOBAL.mode != GLOBAL.e_BASE_MODE.WMVIEW && Boolean(serverData.attacks))
                {
-                  popupMC = new popup_attackedme();
-                  popupMC.gotoAndStop(1);
-                  if(attackObj.count == 1)
+                  TauntB = function(param1:int, param2:int):Function
                   {
-                     popupMC.tA.htmlText = KEYS.Get("pop_attackedyou",{
-                        "v1":attackObj.name,
-                        "v2":GLOBAL.ToTime(_currentTime - int(attackObj.lastTime),true)
-                     });
-                  }
-                  else
-                  {
-                     popupMC.tA.htmlText = KEYS.Get("pop_attackedyouxtimes",{
-                        "v1":attackObj.name,
-                        "v2":attackObj.count,
-                        "v3":GLOBAL.ToTime(_currentTime - int(attackObj.lastTime),true)
-                     });
-                  }
-                  if(attackObj.pic)
-                  {
-                     onImageLoad = function(param1:Event):void
+                     var n:int = param1;
+                     var fbid:int = param2;
+                     return function(param1:MouseEvent):void
                      {
-                        loader.width = loader.height = 50;
+                        GLOBAL.CallJS("sendFeed",["tauntB",KEYS.Get("js_attackedmyyard"),KEYS.Get("js_tauned"),"taunt" + n + ".png",fbid]);
+                        POPUPS.Next();
                      };
-                     LoadImageError = function(param1:IOErrorEvent):void
-                     {
-                     };
-                     loader = new Loader();
-                     loader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR,LoadImageError,false,0,true);
-                     loader.contentLoaderInfo.addEventListener(Event.COMPLETE,onImageLoad);
-                     popupMC.mcPic.mcBG.addChild(loader);
-                     loader.load(new URLRequest(attackObj.pic));
-                  }
-                  if(attackObj.friend == 1)
+                  };
+                  attacksArr = serverData.attacks;
+                  attackCount = 0;
+                  for each(attackObj in attacksArr)
                   {
-                     popupMC.bShare.SetupKey("btn_talktrash");
-                     popupMC.bShare.Highlight = true;
-                     popupMC.bShare.addEventListener(MouseEvent.CLICK,function TauntA(param1:MouseEvent):void
+                     attackCount++;
+                     found = false;
+                     for each(listed in _attackerArray)
                      {
-                        var _loc2_:MovieClip = param1.target.parent;
-                        _loc2_.gotoAndStop(2);
-                        var _loc3_:int = 1;
-                        while(_loc3_ < 4)
+                        if(listed.fbid == attackObj.fbid)
                         {
-                           _loc2_["b" + _loc3_].gotoAndStop(_loc3_);
-                           _loc2_["b" + _loc3_].buttonMode = true;
-                           _loc2_["b" + _loc3_].addEventListener(MouseEvent.CLICK,TauntB(_loc3_,attackObj.fbid));
-                           _loc3_++;
+                           found = true;
+                           ++listed.count;
+                           listed.lastTime = attackObj.starttime;
                         }
-                     });
-                  }
-                  else
-                  {
-                     popupMC.bShare.visible = false;
-                  }
-                  POPUPS.Push(popupMC);
-               }
-            }
-            _ownerName = GLOBAL.mode == GLOBAL.e_BASE_MODE.WMATTACK || GLOBAL.mode == GLOBAL.e_BASE_MODE.WMVIEW ? String(TRIBES.TribeForBaseID(_wmID).name) : String(serverData.name);
-            _ownerPic = GLOBAL.mode == GLOBAL.e_BASE_MODE.WMATTACK || GLOBAL.mode == GLOBAL.e_BASE_MODE.WMVIEW ? String(TRIBES.TribeForBaseID(_wmID).profilepic) : String(serverData.pic_square);
-            if(!GLOBAL._flags.viximo && !GLOBAL._flags.kongregate)
-            {
-               GLOBAL.Message("If this function runs, the world is fucked.");
-               if(serverData.promotiontimer)
-               {
-                  if(serverData.promotiontimer is int)
-                  {
-                     promoTimer = int(serverData.promotiontimer);
-                     GLOBAL._flags.hasPromo = 1;
-                  }
-                  else if(serverData.promotiontimer is String && serverData.promotiontimer == "purchasereceive")
-                  {
-                     if(serverData.purchasereceive)
+                     }
+                     if(!found)
                      {
-                        promoItemsArr = serverData.purchasereceive;
-                        BUY.purchaseProcess(promoItemsArr);
-                        BUY.purchaseComplete(serverData.promotiontimer);
+                        _attackerNameArray.push([0,attackObj.name]);
+                        _attackerArray.push({
+                           "fbid":attackObj.fbid,
+                           "name":attackObj.name,
+                           "pic":attackObj.pic_square,
+                           "friend":attackObj.friend,
+                           "count":1,
+                           "lastTime":attackObj.starttime
+                        });
+                     }
+                  }
+                  for each(attackObj in _attackerArray)
+                  {
+                     popupMC = new popup_attackedme();
+                     popupMC.gotoAndStop(1);
+                     if(attackObj.count == 1)
+                     {
+                        popupMC.tA.htmlText = KEYS.Get("pop_attackedyou",{
+                           "v1":attackObj.name,
+                           "v2":GLOBAL.ToTime(_currentTime - int(attackObj.lastTime),true)
+                        });
+                     }
+                     else
+                     {
+                        popupMC.tA.htmlText = KEYS.Get("pop_attackedyouxtimes",{
+                           "v1":attackObj.name,
+                           "v2":attackObj.count,
+                           "v3":GLOBAL.ToTime(_currentTime - int(attackObj.lastTime),true)
+                        });
+                     }
+                     if(attackObj.pic)
+                     {
+                        onImageLoad = function(param1:Event):void
+                        {
+                           loader.width = loader.height = 50;
+                        };
+                        LoadImageError = function(param1:IOErrorEvent):void
+                        {
+                        };
+                        loader = new Loader();
+                        loader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR,LoadImageError,false,0,true);
+                        loader.contentLoaderInfo.addEventListener(Event.COMPLETE,onImageLoad);
+                        popupMC.mcPic.mcBG.addChild(loader);
+                        loader.load(new URLRequest(attackObj.pic));
+                     }
+                     if(attackObj.friend == 1)
+                     {
+                        popupMC.bShare.SetupKey("btn_talktrash");
+                        popupMC.bShare.Highlight = true;
+                        popupMC.bShare.addEventListener(MouseEvent.CLICK,function TauntA(param1:MouseEvent):void
+                        {
+                           var _loc2_:MovieClip = param1.target.parent;
+                           _loc2_.gotoAndStop(2);
+                           var _loc3_:int = 1;
+                           while(_loc3_ < 4)
+                           {
+                              _loc2_["b" + _loc3_].gotoAndStop(_loc3_);
+                              _loc2_["b" + _loc3_].buttonMode = true;
+                              _loc2_["b" + _loc3_].addEventListener(MouseEvent.CLICK,TauntB(_loc3_,attackObj.fbid));
+                              _loc3_++;
+                           }
+                        });
+                     }
+                     else
+                     {
+                        popupMC.bShare.visible = false;
+                     }
+                     POPUPS.Push(popupMC);
+                  }
+               }
+               _ownerName = GLOBAL.mode == GLOBAL.e_BASE_MODE.WMATTACK || GLOBAL.mode == GLOBAL.e_BASE_MODE.WMVIEW ? String(TRIBES.TribeForBaseID(_wmID).name) : String(serverData.name);
+               _ownerPic = GLOBAL.mode == GLOBAL.e_BASE_MODE.WMATTACK || GLOBAL.mode == GLOBAL.e_BASE_MODE.WMVIEW ? String(TRIBES.TribeForBaseID(_wmID).profilepic) : String(serverData.pic_square);
+               if(!GLOBAL._flags.viximo && !GLOBAL._flags.kongregate)
+               {
+                  GLOBAL.Message("If this function runs, the world is fucked.");
+                  if(serverData.promotiontimer)
+                  {
+                     if(serverData.promotiontimer is int)
+                     {
+                        promoTimer = int(serverData.promotiontimer);
+                        GLOBAL._flags.hasPromo = 1;
+                     }
+                     else if(serverData.promotiontimer is String && serverData.promotiontimer == "purchasereceive")
+                     {
+                        if(serverData.purchasereceive)
+                        {
+                           promoItemsArr = serverData.purchasereceive;
+                           BUY.purchaseProcess(promoItemsArr);
+                           BUY.purchaseComplete(serverData.promotiontimer);
+                           GLOBAL._flags.hasPromo = 1;
+                        }
+                     }
+                  }
+               }
+               if(!GLOBAL._flags.viximo && !GLOBAL._flags.kongregate)
+               {
+                  if(serverData.fbpromos)
+                  {
+                     promoID = [];
+                     promoGifts = [];
+                     if(serverData.fbpromos)
+                     {
+                        if(serverData.fbpromos.ids)
+                        {
+                           promoID = serverData.fbpromos.ids;
+                        }
+                        if(promoGifts)
+                        {
+                           promoGifts = serverData.fbpromos.items;
+                        }
+                        if(Boolean(promoID) && Boolean(promoGifts))
+                        {
+                           _pendingFBPromo = 1;
+                           GLOBAL._flags.hasFBPromo = 1;
+                           if(promoGifts)
+                           {
+                              BUY.purchaseProcess(promoGifts);
+                              BUY.purchaseComplete("biggulp");
+                           }
+                           if(promoID)
+                           {
+                              _pendingFBPromoIDs = promoID;
+                           }
+                        }
                         GLOBAL._flags.hasPromo = 1;
                      }
                   }
                }
-            }
-            if(!GLOBAL._flags.viximo && !GLOBAL._flags.kongregate)
-            {
-               if(serverData.fbpromos)
+               _tempGifts = serverData.gifts;
+               if(serverData.sentgifts)
                {
-                  promoID = [];
-                  promoGifts = [];
-                  if(serverData.fbpromos)
-                  {
-                     if(serverData.fbpromos.ids)
-                     {
-                        promoID = serverData.fbpromos.ids;
-                     }
-                     if(promoGifts)
-                     {
-                        promoGifts = serverData.fbpromos.items;
-                     }
-                     if(Boolean(promoID) && Boolean(promoGifts))
-                     {
-                        _pendingFBPromo = 1;
-                        GLOBAL._flags.hasFBPromo = 1;
-                        if(promoGifts)
-                        {
-                           BUY.purchaseProcess(promoGifts);
-                           BUY.purchaseComplete("biggulp");
-                        }
-                        if(promoID)
-                        {
-                           _pendingFBPromoIDs = promoID;
-                        }
-                     }
-                     GLOBAL._flags.hasPromo = 1;
-                  }
+                  _tempSentGifts = serverData.sentgifts;
                }
+               if(serverData.sentinvites)
+               {
+                  _tempSentInvites = serverData.sentinvites;
+               }
+               else
+               {
+                  _tempSentInvites = [];
+               }
+               Build();
+               WMBASE.CheckQuests();
             }
-            _tempGifts = serverData.gifts;
-            if(serverData.sentgifts)
+            else if(GLOBAL._reloadonerror)
             {
-               _tempSentGifts = serverData.sentgifts;
+               GLOBAL.CallJS("reloadPage");
             }
-            if(serverData.sentinvites)
+            else if(GLOBAL._local && serverData.error == "Incorrect map version")
             {
-               _tempSentInvites = serverData.sentinvites;
+               switch(GLOBAL._localMode)
+               {
+                  case 1:
+                     if(GLOBAL._baseURL == "http://bym-fb-trunk.dev.kixeye.com/base/")
+                     {
+                        GLOBAL._baseURL = "http://bym-fb-trunk.dev.kixeye.com/api/bm/base/";
+                     }
+                     else
+                     {
+                        GLOBAL._baseURL = "http://bym-fb-trunk.dev.kixeye.com/base/";
+                     }
+                     break;
+                  case 2:
+                     if(GLOBAL._baseURL == "http://bym-ko-halbvip1.dc.kixeye.com/base/")
+                     {
+                        GLOBAL._baseURL = "http://bym-ko-halbvip1.dc.kixeye.com/api/bm/base/";
+                     }
+                     else
+                     {
+                        GLOBAL._baseURL = "http://bym-ko-halbvip1.dc.kixeye.com/base/";
+                     }
+                     break;
+                  case 3:
+                     if(GLOBAL._baseURL == "http://bmdev.vx.casualcollective.com/base/")
+                     {
+                        GLOBAL._baseURL = "http://bmdev.vx.casualcollective.com/api/bm/base/";
+                     }
+                     else
+                     {
+                        GLOBAL._baseURL = "http://bmdev.vx.casualcollective.com/base/";
+                     }
+                     break;
+                  case 4:
+                     if(GLOBAL._baseURL == "http://bym-vx2-vip.sjc.kixeye.com/base/")
+                     {
+                        GLOBAL._baseURL = "http://bym-vx2-vip.sjc.kixeye.com/api/bm/base/";
+                     }
+                     else
+                     {
+                        GLOBAL._baseURL = "http://bym-vx2-vip.sjc.kixeye.com/base/";
+                     }
+                     break;
+                  case 5:
+                     if(GLOBAL._baseURL == "http://bym-fb-inferno.dev.kixeye.com/base/")
+                     {
+                        GLOBAL._baseURL = "http://bym-fb-inferno.dev.kixeye.com/api/bm/base/";
+                     }
+                     else
+                     {
+                        GLOBAL._baseURL = "http://bym-fb-inferno.dev.kixeye.com/base/";
+                     }
+                     break;
+                  case 6:
+                     if(GLOBAL._baseURL == "https://bym-fb-lbns.dc.kixeye.com/base/")
+                     {
+                        GLOBAL._baseURL = "https://bym-fb-lbns.dc.kixeye.com/api/bm/base/";
+                     }
+                     else
+                     {
+                        GLOBAL._baseURL = "https://bym-fb-lbns.dc.kixeye.com/base/";
+                     }
+                     break;
+                  case 7:
+                     if(GLOBAL._baseURL == "http://bym-vx-web.stage.kixeye.com/base/")
+                     {
+                        GLOBAL._baseURL = "http://bym-vx-web.stage.kixeye.com/api/bm/base/";
+                     }
+                     else
+                     {
+                        GLOBAL._baseURL = "http://bym-vx-web.stage.kixeye.com/base/";
+                     }
+                     break;
+                  case 8:
+                     if(GLOBAL._baseURL == "http://bym-fb-alex.dev.kixeye.com/base/")
+                     {
+                        GLOBAL._baseURL = "http://bym-fb-alex.dev.kixeye.com/api/bm/base/";
+                     }
+                     else
+                     {
+                        GLOBAL._baseURL = "http://bym-fb-alex.dev.kixeye.com/base/";
+                     }
+                     break;
+                  case 9:
+                     if(GLOBAL._baseURL == "http://bym-fb-nmoore.dev.kixeye.com/base/")
+                     {
+                        GLOBAL._baseURL = "http://bym-fb-nmoore.dev.kixeye.com/api/bm/base/";
+                     }
+                     else
+                     {
+                        GLOBAL._baseURL = "http://bym-fb-nmoore.dev.kixeye.com/base/";
+                     }
+                     break;
+                  case 10:
+                     if(GLOBAL._baseURL == "http://bm-kg-web2.dev.casualcollective.com/base/")
+                     {
+                        GLOBAL._baseURL = "http://bm-kg-web2.dev.casualcollective.com/api/bm/base/";
+                     }
+                     else
+                     {
+                        GLOBAL._baseURL = "http://bm-kg-web2.dev.casualcollective.com/base/";
+                     }
+                     break;
+                  case 11:
+                     if(GLOBAL._baseURL == "http://bym-ko-web1.stage.com/base/")
+                     {
+                        GLOBAL._baseURL = "http://bym-ko-web1.stage.com/api/bm/base/";
+                     }
+                     else
+                     {
+                        GLOBAL._baseURL = "http://bym-ko-web1.stage.kixeye.com/api/bm/base/";
+                     }
+                     break;
+                  default:
+                     if(GLOBAL._baseURL == "http://bym-fb-web1.stage.kixeye.com/base/")
+                     {
+                        GLOBAL._baseURL = "http://bym-fb-web1.stage.kixeye.com/api/bm/base/";
+                     }
+                     else
+                     {
+                        GLOBAL._baseURL = "http://bym-fb-web1.stage.kixeye.com/base/";
+                     }
+               }
+               BASE.Load();
             }
             else
             {
-               _tempSentInvites = [];
+               GLOBAL.ErrorMessage(serverData.error,GLOBAL.ERROR_ORANGE_BOX_ONLY);
+               PLEASEWAIT.Hide();
             }
-            Build();
-            WMBASE.CheckQuests();
-         }
-         else if(GLOBAL._reloadonerror)
-         {
-            GLOBAL.CallJS("reloadPage");
-         }
-         else if(GLOBAL._local && serverData.error == "Incorrect map version")
-         {
-            switch(GLOBAL._localMode)
+            LOGGER.StatB({
+               "st1":MapRoomManager.instance.mapRoomVersion + "_loadmode",
+               "st2":BASE.yardType
+            },GLOBAL.mode);
+            if(Boolean(LOGIN._playerID) && int(LOGIN._playerID % 100) == 0)
             {
-               case 1:
-                  if(GLOBAL._baseURL == "http://bym-fb-trunk.dev.kixeye.com/base/")
-                  {
-                     GLOBAL._baseURL = "http://bym-fb-trunk.dev.kixeye.com/api/bm/base/";
-                  }
-                  else
-                  {
-                     GLOBAL._baseURL = "http://bym-fb-trunk.dev.kixeye.com/base/";
-                  }
-                  break;
-               case 2:
-                  if(GLOBAL._baseURL == "http://bym-ko-halbvip1.dc.kixeye.com/base/")
-                  {
-                     GLOBAL._baseURL = "http://bym-ko-halbvip1.dc.kixeye.com/api/bm/base/";
-                  }
-                  else
-                  {
-                     GLOBAL._baseURL = "http://bym-ko-halbvip1.dc.kixeye.com/base/";
-                  }
-                  break;
-               case 3:
-                  if(GLOBAL._baseURL == "http://bmdev.vx.casualcollective.com/base/")
-                  {
-                     GLOBAL._baseURL = "http://bmdev.vx.casualcollective.com/api/bm/base/";
-                  }
-                  else
-                  {
-                     GLOBAL._baseURL = "http://bmdev.vx.casualcollective.com/base/";
-                  }
-                  break;
-               case 4:
-                  if(GLOBAL._baseURL == "http://bym-vx2-vip.sjc.kixeye.com/base/")
-                  {
-                     GLOBAL._baseURL = "http://bym-vx2-vip.sjc.kixeye.com/api/bm/base/";
-                  }
-                  else
-                  {
-                     GLOBAL._baseURL = "http://bym-vx2-vip.sjc.kixeye.com/base/";
-                  }
-                  break;
-               case 5:
-                  if(GLOBAL._baseURL == "http://bym-fb-inferno.dev.kixeye.com/base/")
-                  {
-                     GLOBAL._baseURL = "http://bym-fb-inferno.dev.kixeye.com/api/bm/base/";
-                  }
-                  else
-                  {
-                     GLOBAL._baseURL = "http://bym-fb-inferno.dev.kixeye.com/base/";
-                  }
-                  break;
-               case 6:
-                  if(GLOBAL._baseURL == "https://bym-fb-lbns.dc.kixeye.com/base/")
-                  {
-                     GLOBAL._baseURL = "https://bym-fb-lbns.dc.kixeye.com/api/bm/base/";
-                  }
-                  else
-                  {
-                     GLOBAL._baseURL = "https://bym-fb-lbns.dc.kixeye.com/base/";
-                  }
-                  break;
-               case 7:
-                  if(GLOBAL._baseURL == "http://bym-vx-web.stage.kixeye.com/base/")
-                  {
-                     GLOBAL._baseURL = "http://bym-vx-web.stage.kixeye.com/api/bm/base/";
-                  }
-                  else
-                  {
-                     GLOBAL._baseURL = "http://bym-vx-web.stage.kixeye.com/base/";
-                  }
-                  break;
-               case 8:
-                  if(GLOBAL._baseURL == "http://bym-fb-alex.dev.kixeye.com/base/")
-                  {
-                     GLOBAL._baseURL = "http://bym-fb-alex.dev.kixeye.com/api/bm/base/";
-                  }
-                  else
-                  {
-                     GLOBAL._baseURL = "http://bym-fb-alex.dev.kixeye.com/base/";
-                  }
-                  break;
-               case 9:
-                  if(GLOBAL._baseURL == "http://bym-fb-nmoore.dev.kixeye.com/base/")
-                  {
-                     GLOBAL._baseURL = "http://bym-fb-nmoore.dev.kixeye.com/api/bm/base/";
-                  }
-                  else
-                  {
-                     GLOBAL._baseURL = "http://bym-fb-nmoore.dev.kixeye.com/base/";
-                  }
-                  break;
-               case 10:
-                  if(GLOBAL._baseURL == "http://bm-kg-web2.dev.casualcollective.com/base/")
-                  {
-                     GLOBAL._baseURL = "http://bm-kg-web2.dev.casualcollective.com/api/bm/base/";
-                  }
-                  else
-                  {
-                     GLOBAL._baseURL = "http://bm-kg-web2.dev.casualcollective.com/base/";
-                  }
-                  break;
-               case 11:
-                  if(GLOBAL._baseURL == "http://bym-ko-web1.stage.com/base/")
-                  {
-                     GLOBAL._baseURL = "http://bym-ko-web1.stage.com/api/bm/base/";
-                  }
-                  else
-                  {
-                     GLOBAL._baseURL = "http://bym-ko-web1.stage.kixeye.com/api/bm/base/";
-                  }
-                  break;
-               default:
-                  if(GLOBAL._baseURL == "http://bym-fb-web1.stage.kixeye.com/base/")
-                  {
-                     GLOBAL._baseURL = "http://bym-fb-web1.stage.kixeye.com/api/bm/base/";
-                  }
-                  else
-                  {
-                     GLOBAL._baseURL = "http://bym-fb-web1.stage.kixeye.com/base/";
-                  }
+               LOGGER.Stat([LOGGER.STAT_MEM,"loadbase",(System.totalMemory / 1024 / 1024).toString(),int(getTimer() * 0.001).toString()]);
             }
-            BASE.Load();
          }
-         else
-         {
-            GLOBAL.ErrorMessage(serverData.error,GLOBAL.ERROR_ORANGE_BOX_ONLY);
-            PLEASEWAIT.Hide();
-         }
-         LOGGER.StatB({
-            "st1":MapRoomManager.instance.mapRoomVersion + "_loadmode",
-            "st2":BASE.yardType
-         },GLOBAL.mode);
-         if(Boolean(LOGIN._playerID) && int(LOGIN._playerID % 100) == 0)
-         {
-            LOGGER.Stat([LOGGER.STAT_MEM,"loadbase",(System.totalMemory / 1024 / 1024).toString(),int(getTimer() * 0.001).toString()]);
-         }
-      
-      }
-         catch (error:Error)
+         catch(error:Error)
          {
             GLOBAL.Message(KEYS.Get("err_loading_base"));
-            LOGGER.Log("err", "Failed to load user base with error: " + error.getStackTrace());
+            LOGGER.Log("err","Failed to load user base with error: " + error.getStackTrace());
          }
       }
       
@@ -1876,7 +1861,6 @@ package
                }
             }
          }
-
          BFOUNDATION.redrawAllShadowData();
          _buildingHealthData = null;
          _buildingData = null;
@@ -4029,7 +4013,7 @@ package
             }
             if(_loadBase.length > 0)
             {
-               LoadBaseB(); // Comment: What is LoadBaseB?
+               LoadBaseB();
             }
             if(ATTACK.waitingForSaveToComplete)
             {

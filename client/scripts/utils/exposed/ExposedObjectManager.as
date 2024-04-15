@@ -1,8 +1,9 @@
 package utils.exposed
 {
+   import config.singletonlock.SingletonLock;
    import flash.utils.Dictionary;
    import utils.debug.Warning;
-   import config.singletonlock.SingletonLock;
+   
    public class ExposedObjectManager
    {
       
@@ -15,7 +16,7 @@ package utils.exposed
       
       private var m_ReferenceLoadingBlockCounter:int = 0;
       
-      public function ExposedObjectManager(param1:config.singletonlock.SingletonLock)
+      public function ExposedObjectManager(param1:SingletonLock)
       {
          this.m_ReferenceableObjects = new Dictionary();
          this.m_ReferencesToResolve = new Vector.<ExposedReference>();
@@ -24,7 +25,7 @@ package utils.exposed
       
       public static function get instance() : ExposedObjectManager
       {
-         return s_Instance = s_Instance || new ExposedObjectManager(new config.singletonlock.SingletonLock());
+         return s_Instance = s_Instance || new ExposedObjectManager(new SingletonLock());
       }
       
       public function LoadExposedCollection(param1:XML, param2:XML = null) : ExposedCollection

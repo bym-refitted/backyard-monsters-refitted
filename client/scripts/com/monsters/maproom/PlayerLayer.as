@@ -29,7 +29,7 @@ package com.monsters.maproom
       
       private var divisor:uint = 85;
       
-      public var lastOpened:com.monsters.maproom.ForeignBase;
+      public var lastOpened:ForeignBase;
       
       private var _frameNumber:int = 0;
       
@@ -41,7 +41,7 @@ package com.monsters.maproom
       
       public var mapWidth:uint = 1500;
       
-      public var player:com.monsters.maproom.PlayerBase;
+      public var player:PlayerBase;
       
       public var _wmbToDisplay:int = 3;
       
@@ -56,7 +56,7 @@ package com.monsters.maproom
          this.baseData = [].concat();
          this.basesAll = [].concat();
          this.basesWM = [].concat();
-         this.player = new com.monsters.maproom.PlayerBase(MapRoom.BRIDGE.playerBaseID,MapRoom.BRIDGE.playerBaseSeed);
+         this.player = new PlayerBase(MapRoom.BRIDGE.playerBaseID,MapRoom.BRIDGE.playerBaseSeed);
          this.player.addEventListener(MouseEvent.MOUSE_OVER,this.sortToTop);
          this.basesAll.push(this.player);
          addChild(this.player);
@@ -220,7 +220,7 @@ package com.monsters.maproom
          var _loc6_:uint = 0;
          var _loc7_:uint = 0;
          var _loc8_:WildMonsterBase = null;
-         var _loc9_:com.monsters.maproom.ForeignBase = null;
+         var _loc9_:ForeignBase = null;
          var _loc3_:Boolean = false;
          if(this.basesForeign == null)
          {
@@ -306,7 +306,7 @@ package com.monsters.maproom
                   if(!_loc3_)
                   {
                      _loc5_ = new BaseObject(_loc2_);
-                     (_loc9_ = new com.monsters.maproom.ForeignBase()).Setup(_loc5_);
+                     (_loc9_ = new ForeignBase()).Setup(_loc5_);
                      _loc9_.useHandCursor = true;
                      _loc9_.buttonMode = true;
                      _loc9_.addEventListener("over",this.onBaseStateChange);
@@ -330,7 +330,7 @@ package com.monsters.maproom
       
       private function onBaseStateChange(param1:Event) : void
       {
-         var _loc2_:com.monsters.maproom.ForeignBase = param1.target as com.monsters.maproom.ForeignBase;
+         var _loc2_:ForeignBase = param1.target as ForeignBase;
          if(this.lastOpened && this.lastOpened.state != "off" && this.lastOpened != _loc2_)
          {
             this.lastOpened.setState("off");

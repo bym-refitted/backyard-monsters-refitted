@@ -19,38 +19,37 @@ package de.polygonal.core.util
          switch(int(param2.length))
          {
             case 0:
+               return new param1();
             case 1:
+               return new param1(param2[0]);
             case 2:
+               return new param1(param2[0],param2[1]);
             case 3:
+               return new param1(param2[0],param2[1],param2[2]);
             case 4:
+               return new param1(param2[0],param2[1],param2[2],param2[3]);
             case 5:
+               return new param1(param2[0],param2[1],param2[2],param2[3],param2[4]);
             case 6:
+               return new param1(param2[0],param2[1],param2[2],param2[3],param2[4],param2[5]);
             case 7:
+               return new param1(param2[0],param2[1],param2[2],param2[3],param2[4],param2[5],param2[6]);
             case 8:
+               return new param1(param2[0],param2[1],param2[2],param2[3],param2[4],param2[5],param2[6],param2[7]);
             case 9:
+               return new param1(param2[0],param2[1],param2[2],param2[3],param2[4],param2[5],param2[6],param2[7],param2[8]);
             case 10:
+               return new param1(param2[0],param2[1],param2[2],param2[3],param2[4],param2[5],param2[6],param2[7],param2[8],param2[9]);
             case 11:
+               return new param1(param2[0],param2[1],param2[2],param2[3],param2[4],param2[5],param2[6],param2[7],param2[8],param2[9],param2[10]);
             case 12:
+               return new param1(param2[0],param2[1],param2[2],param2[3],param2[4],param2[5],param2[6],param2[7],param2[8],param2[9],param2[10],param2[11]);
             case 13:
+               return new param1(param2[0],param2[1],param2[2],param2[3],param2[4],param2[5],param2[6],param2[7],param2[8],param2[9],param2[10],param2[11],param2[12]);
             case 14:
-               break;
+               return new param1(param2[0],param2[1],param2[2],param2[3],param2[4],param2[5],param2[6],param2[7],param2[8],param2[9],param2[10],param2[11],param2[12],param2[13]);
             default:
                Boot.lastError = new Error();
-               new param1();
-               new param1(param2[0]);
-               new param1(param2[0],param2[1]);
-               new param1(param2[0],param2[1],param2[2]);
-               new param1(param2[0],param2[1],param2[2],param2[3]);
-               new param1(param2[0],param2[1],param2[2],param2[3],param2[4]);
-               new param1(param2[0],param2[1],param2[2],param2[3],param2[4],param2[5]);
-               new param1(param2[0],param2[1],param2[2],param2[3],param2[4],param2[5],param2[6]);
-               new param1(param2[0],param2[1],param2[2],param2[3],param2[4],param2[5],param2[6],param2[7]);
-               new param1(param2[0],param2[1],param2[2],param2[3],param2[4],param2[5],param2[6],param2[7],param2[8]);
-               new param1(param2[0],param2[1],param2[2],param2[3],param2[4],param2[5],param2[6],param2[7],param2[8],param2[9]);
-               new param1(param2[0],param2[1],param2[2],param2[3],param2[4],param2[5],param2[6],param2[7],param2[8],param2[9],param2[10]);
-               new param1(param2[0],param2[1],param2[2],param2[3],param2[4],param2[5],param2[6],param2[7],param2[8],param2[9],param2[10],param2[11]);
-               new param1(param2[0],param2[1],param2[2],param2[3],param2[4],param2[5],param2[6],param2[7],param2[8],param2[9],param2[10],param2[11],param2[12]);
-               new param1(param2[0],param2[1],param2[2],param2[3],param2[4],param2[5],param2[6],param2[7],param2[8],param2[9],param2[10],param2[11],param2[12],param2[13]);
                throw "too many arguments";
          }
          // Comment: Obfuscated code, returning empty obj instead

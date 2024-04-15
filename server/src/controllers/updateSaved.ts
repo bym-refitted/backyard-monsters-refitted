@@ -23,7 +23,7 @@ export const updateSaved: KoaController = async (ctx) => {
     save = await loadViewBase(ctx, baseid);
   }
 
-  if (!save) throw saveFailureErr;
+  if (!save) throw saveFailureErr();
   save.savetime = getCurrentDateTime();
 
   // Set the id field (_lastSaveID) to be the same as savetime, client expects this.

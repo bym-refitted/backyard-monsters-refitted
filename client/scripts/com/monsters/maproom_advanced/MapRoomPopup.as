@@ -17,7 +17,7 @@ package com.monsters.maproom_advanced
    import flash.net.URLRequest;
    import flash.utils.getTimer;
    
-   class MapRoomPopup extends MapRoomPopup_CLIP
+   internal class MapRoomPopup extends MapRoomPopup_CLIP
    {
        
       
@@ -680,7 +680,7 @@ package com.monsters.maproom_advanced
          var mapRoomCell:MapRoomCell = null;
          var stageWidth:int = GLOBAL._ROOT.stage.stageWidth;
          var stageHeight:int = GLOBAL.GetGameHeight();
-         LOGGER.Log("log", "val of param1: " + param1);
+         LOGGER.Log("log","val of param1: " + param1);
          if(stageWidth > 1024)
          {
             stageWidth = 1024;
@@ -1050,7 +1050,7 @@ package com.monsters.maproom_advanced
                _loc4_ = this.GetCellsInRange(param1.X,param1.Y,param2);
                for each(_loc3_ in _loc4_)
                {
-                  if((Boolean(_loc5_ = _loc3_.cell as MapRoomCell)) && !_loc5_._water)
+                  if(Boolean(_loc5_ = _loc3_.cell as MapRoomCell) && !_loc5_._water)
                   {
                      if(!_loc5_._over)
                      {

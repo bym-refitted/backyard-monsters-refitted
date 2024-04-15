@@ -5,7 +5,7 @@ package com.gskinner.utils
    public class Rndm
    {
       
-      protected static var _instance:com.gskinner.utils.Rndm;
+      protected static var _instance:Rndm;
        
       
       protected var _seed:uint = 0;
@@ -23,11 +23,11 @@ package com.gskinner.utils
          this.bmpd = new BitmapData(1000,200);
       }
       
-      public static function get instance() : com.gskinner.utils.Rndm
+      public static function get instance() : Rndm
       {
          if(_instance == null)
          {
-            _instance = new com.gskinner.utils.Rndm();
+            _instance = new Rndm();
          }
          return _instance;
       }

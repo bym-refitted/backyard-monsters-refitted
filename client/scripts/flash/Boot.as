@@ -18,7 +18,7 @@ package flash
       
       public static var lastError:Error;
       
-      public static var skip_constructor:Boolean = false;
+      public static var skip_constructor:Boolean;
        
       
       public function Boot()

@@ -1,99 +1,118 @@
 package
 {
    import flash.events.Event;
+   import flash.events.EventDispatcher;
+   import flash.events.IOErrorEvent;
+   import flash.events.SecurityErrorEvent;
    import flash.net.URLLoader;
    import flash.net.URLRequest;
-   import flash.events.Event;
-   import flash.events.IOErrorEvent;
 
    public class KEYS
    {
 
-      public static var _keys:Object;
-
-      public static var _delimiters:Object = [];
-
-      public static var _gibberish:Boolean = false;
-
       public static var _setup:Boolean = false;
-
-      private static var _ignore:Array = ["#fname#", "#collected#", "#mushroomspicked#", "#questname#", "#giftssent#", "#installsgenerated#"];
-
-      private static var cbf:Function;
-
-      public static var _logFunction:Function;
 
       public static var _storageURL:String = "";
 
-      public static var _languageVersion:int;
+      public static var languageFileJson:Object;
 
-      public static var _language:String = "en";
+      public static var supportedLanguagesJson:Object;
 
-      public static var jsonData:Object;
+      public static var errorMessage:String = "";
+
+      private static var dispatcher:EventDispatcher = new EventDispatcher();
 
       public function KEYS()
       {
          super();
       }
 
-      public static function Setup(param1:Function):void
+      public static function Setup(language:String = "english"):void
       {
-         if (_setup)
-         {
-            return;
-         }
          _setup = true;
-         cbf = param1;
-         var _loc2_:URLLoader = new URLLoader();
-         _loc2_.load(new URLRequest(_storageURL + _language + ".v" + _languageVersion + ".json"));
-         _loc2_.addEventListener(Event.COMPLETE, handleSucc);
-         _loc2_.addEventListener(IOErrorEvent.IO_ERROR, GLOBAL.handleLoadError);
+         var languageFile:URLLoader = new URLLoader();
+         languageFile.load(new URLRequest(_storageURL + language + ".json"));
+         languageFile.addEventListener(Event.COMPLETE, handleLangFileSucc);
+         languageFile.addEventListener(IOErrorEvent.IO_ERROR, handleLoadError);
+         languageFile.addEventListener(SecurityErrorEvent.SECURITY_ERROR, noConnection);
       }
 
-      private static function handleSucc(param1:Event):void
+      public static function GetSupportedLanguages():void
       {
-         var rawData:String = param1.target.data;
-         jsonData = JSON.decode(rawData);
-         cbf();
+         var languages:URLLoader = new URLLoader();
+         languages.load(new URLRequest(GLOBAL._apiURL + "supportedLangs"));
+         languages.addEventListener(Event.COMPLETE, handleSupportedLangsSucc);
+         languages.addEventListener(IOErrorEvent.IO_ERROR, handleLoadError);
+         languages.addEventListener(SecurityErrorEvent.SECURITY_ERROR, function(event:SecurityErrorEvent):void
+            {
+            });
+      }
+
+      private static function handleLangFileSucc(data:Event):void
+      {
+         var rawData:String = String(data.target.data);
+         languageFileJson = JSON.decode(rawData);
+         GLOBAL.textContentLoaded = true;
+      }
+
+      private static function handleSupportedLangsSucc(data:Event):void
+      {
+         var rawData:String = String(data.target.data);
+         supportedLanguagesJson = JSON.decode(rawData);
+         GLOBAL.supportedLangsLoaded = true;
+      }
+
+      private static function handleLoadError(error:IOErrorEvent):void
+      {
+         errorMessage = "Failed to retrieve required content from the server.";
+         dispatcher.dispatchEvent(new IOErrorEvent(IOErrorEvent.IO_ERROR));
+      }
+
+      public static function noConnection(error:SecurityErrorEvent):void
+      {
+         errorMessage = "We could not establish a connection with the server.";
+         dispatcher.dispatchEvent(new SecurityErrorEvent(SecurityErrorEvent.SECURITY_ERROR));
+      }
+
+      public static function securityErrorListener(listener:Function):void
+      {
+         dispatcher.addEventListener(SecurityErrorEvent.SECURITY_ERROR, listener);
+      }
+
+      public static function ioErrorListener(listener:Function):void
+      {
+         dispatcher.addEventListener(IOErrorEvent.IO_ERROR, listener);
       }
 
       // Processes the JSON language file from the server
-      // Does not split the key if it is part of the exclusion list
-      // Else splits the key for every occurrence of '_' to create child properties
-      // Replaces placeholders within JSON with dynamic values e.g. {v1} with 20
+      // Replaces #placeholders# within JSON with dynamic values
       public static function Get(jsonKeyPath:String, placeholders:Object = null):String
       {
-         var jsonValue:Object = jsonData.data;
-
+         if (languageFileJson == null || languageFileJson.data == null)
+         {
+            return jsonKeyPath;
+         }
+         var jsonValue:Object = languageFileJson.data;
          if (jsonValue.hasOwnProperty(jsonKeyPath))
          {
             var value:* = jsonValue[jsonKeyPath];
-
             if (value is String)
             {
                var jsonString:String = value as String;
-
                if (placeholders != null && jsonString != null)
                {
                   jsonString = replacePlaceholders(jsonString, placeholders);
                }
-
                return jsonString;
             }
-            else
-            {
-               return String(value);
-            }
+            return String(value);
          }
-         else
-         {
-            return jsonKeyPath;
-         }
+         return jsonKeyPath;
       }
 
       private static function replacePlaceholders(input:String, placeholders:Object):String
       {
-         for (var key:String in placeholders)
+         for (var key in placeholders)
          {
             if (placeholders.hasOwnProperty(key))
             {

@@ -138,7 +138,7 @@ package
          }
          return false;
       }
-
+      
       internal static function ShouldUpgradePortal(param1:uint) : Boolean
       {
          return IsBelowMaxLevel(param1);
@@ -149,7 +149,7 @@ package
       {
          return _lastLevel + 1;
       }
-
+      
       internal static function GetUpgradeLevel() : Number
       {
          if(isLastDay())
