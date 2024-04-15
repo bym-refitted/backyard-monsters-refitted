@@ -14,7 +14,8 @@ import { generateID } from "../utils/generateID";
 import { loadBuildBase, loadViewBase } from "../services/base/loadBase";
 import { saveFailureErr } from "../errors/errorCodes.";
 import { removeBaseProtection } from "../services/maproom/v2";
-import { BaseMode } from "../enums/BaseMode";
+import { BASE_MODE } from "../enums/BaseMode";
+import { ENV } from "../enums/Env";
 
 interface BaseLoadRequest {
   type: string;
@@ -31,7 +32,7 @@ export const baseLoad: KoaController = async (ctx) => {
   const authSave = user.save;
   let save: Save = null;
 
-  if (requestBody.type === BaseMode.BUILD) {
+  if (requestBody.type === BASE_MODE.BUILD) {
     save = await loadBuildBase(ctx, requestBody.baseid);
     if (save && save.saveuserid !== user.userid) {
       throw saveFailureErr;
@@ -43,8 +44,9 @@ export const baseLoad: KoaController = async (ctx) => {
   logging(
     `Loading base for user: ${ctx.authUser.username} | IP Address: ${ctx.ip} | Base ID: ${requestBody.baseid}`
   );
+
   if (save) {
-    if (process.env.ENV === "local") {
+    if (process.env.ENV === ENV.LOCAL) {
       logging(`Base loaded:`, JSON.stringify(save, null, 2));
     }
   } else if (requestBody.baseid && requestBody.baseid === "0") {
@@ -64,7 +66,7 @@ export const baseLoad: KoaController = async (ctx) => {
 
   if (!save) throw saveFailureErr;
 
-  if (requestBody.type === BaseMode.ATTACK) {
+  if (requestBody.type === BASE_MODE.ATTACK) {
     await removeBaseProtection(user, save.homebase);
     save.attackid = generateID(5);
     if (save.homebaseid === 0) {
