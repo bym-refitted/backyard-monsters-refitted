@@ -77,12 +77,15 @@ export const getArea: KoaController = async (ctx) => {
 
     for (let y = currentY; y < maxY; y++) {
       const terrain = terrainTypeValues[x - currentX][y - currentY];
+      const s_lvl = baseLevel < 20 ? 10 : baseLevel < 30 ? 20 : 30; // ToDo: add level randomness base on auth save level
 
       if (worldMap.hasOwnProperty(x)) {
         if (worldMap[x].hasOwnProperty(y)) {
           const cell = worldMap[x][y];
           if (cell.base_type != 1) {
             cells[x][y] = await homeCell(ctx, cell);
+          } else {
+            cells[x][y] = await wildMonsterCell(terrain, cell, s_lvl);
           }
           continue;
         }
@@ -93,7 +96,6 @@ export const getArea: KoaController = async (ctx) => {
       cell.y = y;
       cell.base_id = 0;
       cell.world_id = save.worldid;
-      const s_lvl = baseLevel < 20 ? 10 : baseLevel < 30 ? 20 : 30; // ToDo: add level randomness base on auth save level
 
       if (
         terrain === Terrain.WATER1 ||
