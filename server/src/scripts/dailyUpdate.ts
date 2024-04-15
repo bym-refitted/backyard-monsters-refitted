@@ -5,12 +5,12 @@ import { Resources } from "../data/updateResources";
 
 (async () => {
   const orm = await MikroORM.init<MariaDbDriver>(ormConfig);
-  const shinyIncreaseAmount = 200;
+  const shinyIncreaseAmount = 600;
   const resourceIncrements: Resources = {
-    r1: 50000,
-    r2: 50000,
-    r3: 50000,
-    r4: 50000,
+    r1: 100000,
+    r2: 100000,
+    r3: 100000,
+    r4: 100000,
   };
 
   await orm.em

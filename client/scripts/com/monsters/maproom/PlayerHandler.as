@@ -13,7 +13,7 @@ package com.monsters.maproom
       public static var currentBase:BaseObject;
        
       
-      private var player;
+      private var player:*;
       
       private var data:BaseObject;
       

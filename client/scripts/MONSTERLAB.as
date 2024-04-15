@@ -375,7 +375,11 @@ package
          var popupMC:popup_monster = null;
          var wasUpgrading:String = _upgrading;
          this._upgradeFinishTime = new SecNum(0);
-         GLOBAL.player.m_upgrades[_upgrading].powerup = this._upgradeLevel;
+         // Comment: Safe fix. Tries to access .powerup which doesn't exist on certain monsters
+         if (GLOBAL.player && GLOBAL.player.m_upgrades && GLOBAL.player.m_upgrades[_upgrading]) 
+         {
+            GLOBAL.player.m_upgrades[_upgrading].powerup = this._upgradeLevel;
+         }
          LOGGER.Stat([50,_upgrading.substr(1),this._upgradeLevel]);
          if(GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD)
          {

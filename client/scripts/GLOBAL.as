@@ -41,13 +41,17 @@ package
    
    public class GLOBAL
    {
-      public static var serverUrl:String = "https://api.bymrefitted.com/";
+      public static var serverUrl:String = "http://localhost:3001/";
 
-      public static var cdnUrl:String = "https://api.bymrefitted.com/";
+      public static var cdnUrl:String = "http://localhost:3001/";
 
       public static var _local:Boolean = false;
       
       public static var _save:Boolean = true;
+      
+      public static var textContentLoaded:Boolean = false;
+      
+      public static var supportedLangsLoaded:Boolean = false;
       
       public static var _localMode:int = BYMConfig.k_sLOCAL_MODE_PREVIEW;
       
@@ -1160,12 +1164,12 @@ package
          var _loc15_:BFOUNDATION = null;
          if(!_halt)
          {
-            _loc2_ = getTimer();
+            _loc2_ = int(getTimer());
             SOUNDS.Tick();
             MapRoomManager.instance.TickFast();
             if(_render)
             {
-               _loc3_ = getTimer();
+               _loc3_ = Number(getTimer());
                if((_loc4_ = _loc3_ - lastTime) > TIME_ELAPSED_THRESHHOLD && !_aiDesignMode)
                {
                   LOGGER.Log("err","TimeHax");
@@ -1190,7 +1194,7 @@ package
                   _loops = 2;
                }
                lastTime = _loc3_;
-               _loc5_ = getTimer();
+               _loc5_ = int(getTimer());
                if(!MapRoomManager.instance.isOpen)
                {
                   _loc7_ = 0;
@@ -1259,7 +1263,7 @@ package
                   }
                }
                ++_frameNumber;
-               _loc2_ = getTimer();
+               _loc2_ = int(getTimer());
                if(!MapRoomManager.instance.isOpen)
                {
                   WORKERS.Tick();
@@ -1571,7 +1575,7 @@ package
          _loc2_ = _loc2_.split(",\"h\":\"" + _loc4_ + "\"").join("");
          _loc2_ = _loc2_.split(",\"hid\":" + _loc5_).join("");
          var _loc6_:String;
-         if((_loc6_ = md5("ilevbioghv890347ho3nrkljebv" + _loc2_ + _loc5_ * (_loc5_ % 11))) == _loc4_)
+         if((_loc6_ = String(md5("ilevbioghv890347ho3nrkljebv" + _loc2_ + _loc5_ * (_loc5_ % 11)))) == _loc4_)
          {
             return true;
          }
@@ -1985,8 +1989,8 @@ package
       public static function RefreshScreen() : void
       {
          var _loc3_:Rectangle = null;
-         var _loc1_:int = GLOBAL._ROOT.stage.stageWidth;
-         var _loc2_:int = GLOBAL.GetGameHeight();
+         var _loc1_:int = int(GLOBAL._ROOT.stage.stageWidth);
+         var _loc2_:int = int(GLOBAL.GetGameHeight());
          var _loc4_:int = UI2._wildMonsterBar != null ? 40 : 0;
          if(!_SCREEN || !_SCREEN.x || !_SCREEN.y || !_SCREEN.width || !_SCREEN.height)
          {
@@ -2203,7 +2207,7 @@ package
          {
             _loc8_.x = _loc9_._mc.x;
             _loc8_.y = _loc9_._mc.y;
-            if((_loc10_ = GLOBAL.QuickDistanceSquared(_loc8_,param2)) <= param1 && (param3 || _loc9_._movement != "flying"))
+            if((_loc10_ = Number(GLOBAL.QuickDistanceSquared(_loc8_,param2))) <= param1 && (param3 || _loc9_._movement != "flying"))
             {
                _loc5_.push(_loc9_);
                if(_loc5_.length >= param4)
@@ -2240,10 +2244,10 @@ package
          var _loc7_:String = null;
          var _loc8_:int = 0;
          var _loc3_:String = LOGIN._playerID.toString();
-         var _loc4_:String = md5(param1 + _loc3_);
+         var _loc4_:String = String(md5(param1 + _loc3_));
          var _loc5_:int = param2;
          var _loc6_:int = 0;
-         for(; _loc5_ > 0; _loc8_ = int(_loc7_),_loc6_ += _loc8_,_loc5_--)
+         while(_loc5_ > 0)
          {
             _loc7_ = _loc4_.substr(_loc4_.length - 1,1);
             _loc8_ = 0;
@@ -2260,13 +2264,13 @@ package
                   _loc8_ = 13;
                case "e":
                   _loc8_ = 14;
-                  break;
                case "f":
+                  _loc8_ = 15;
                   break;
-               default:
-                  continue;
             }
-            _loc8_ = 15;
+            _loc8_ = int(_loc7_);
+            _loc6_ += _loc8_;
+            _loc5_--;
          }
          return _loc6_;
       }

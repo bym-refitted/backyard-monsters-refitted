@@ -195,7 +195,7 @@ package
             "building":buildingFoundation
          };
 
-         var test = CanDo();
+         var test:Object = CanDo();
          if(test.error){
             // GLOBAL.Message("QUEUE.as - CanDo: " + test.errormessage);
          }// test.errorMessage
@@ -264,7 +264,7 @@ package
             while(i < _stack.length)
             {
                s = _stack[i];
-               if(!STORE._storeData.BST)
+               if(STORE._storeData.BST)
                {
                }
                if(s.active)
