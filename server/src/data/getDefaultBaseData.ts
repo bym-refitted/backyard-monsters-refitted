@@ -7,10 +7,10 @@ import { getCurrentDateTime } from "../utils/getCurrentDateTime";
 
 export const getDefaultBaseData = (user?: User) => {
   // These flags allow us to work with debug dev bases
-  if (devConfig.devSandbox) return devSandbox;
-  if (devConfig.debugSandbox) return debugSandbox;
+  if (devConfig.devSandbox) return devSandbox(user);
+  if (devConfig.debugSandbox) return debugSandbox(user);
 
-  const baseid = generateID(9)
+  const baseid = generateID(9);
 
   return {
     baseid: baseid.toString(10),
@@ -45,7 +45,7 @@ export const getDefaultBaseData = (user?: User) => {
     lastupdate: 0,
     usemap: 0,
     homebaseid: baseid,
-    credits: process.env.SHINY ? parseInt(process.env.SHINY)  : 2500,
+    credits: process.env.SHINY ? parseInt(process.env.SHINY) : 2500,
     champion: "null",
     empiredestroyed: 1,
     worldid: "",
@@ -83,12 +83,14 @@ export const getDefaultBaseData = (user?: User) => {
     inventory: {},
     monsters: {},
     player: {},
-    krallen: devConfig.unlockAllEventRewards ? { 
-      countdown: 443189,
-      wins: 5,
-      tier: 5,
-      loot: 750000000000,
-    } : {},
+    krallen: devConfig.unlockAllEventRewards
+      ? {
+          countdown: 443189,
+          wins: 5,
+          tier: 5,
+          loot: 750000000000,
+        }
+      : {},
     siege: {},
     buildingresources: {},
     frontpage: {},
@@ -103,7 +105,7 @@ export const getDefaultBaseData = (user?: User) => {
           unblockSlimeattikus: { id: "unblockSlimeattikus" },
           unblockVorg: { id: "unblockVorg" },
           KorathReward: { id: "KorathReward", value: 3 },
-          krallenReward: { id: "krallenReward", value: 1 }
+          krallenReward: { id: "krallenReward", value: 1 },
         }
       : {},
     takeover: {},
