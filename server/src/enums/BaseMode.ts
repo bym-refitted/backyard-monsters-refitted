@@ -1,5 +1,5 @@
 /** Base mode types for processing base states */
-export enum BaseMode {
+export enum BASE_MODE {
     // Main Yard
     BUILD = "build",        // Build main yard
     ATTACK = "attack",      // Attack main yard
