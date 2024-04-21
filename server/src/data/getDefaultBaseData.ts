@@ -7,16 +7,18 @@ import { getCurrentDateTime } from "../utils/getCurrentDateTime";
 
 export const getDefaultBaseData = (user?: User) => {
   // These flags allow us to work with debug dev bases
-  if (devConfig.devSandbox) return devSandbox;
-  if (devConfig.debugSandbox) return debugSandbox;
+  if (devConfig.devSandbox) return devSandbox(user);
+  if (devConfig.debugSandbox) return debugSandbox(user);
+
+  const baseid = generateID(9);
 
   return {
-    baseid: "0",
+    baseid: baseid.toString(10),
     type: "main",
     userid: generateID(8),
     wmid: 0,
     seed: 0,
-    saveuserid: 0,
+    saveuserid: user.userid,
     bookmarked: 0,
     createtime: getCurrentDateTime(),
     savetime: 0, // Updates each time a save is triggered
@@ -41,12 +43,12 @@ export const getDefaultBaseData = (user?: User) => {
     basevalue: 20,
     protected: 0,
     lastupdate: 0,
-    usemap: 1,
-    homebaseid: generateID(9),
-    credits: 2500,
+    usemap: 0,
+    homebaseid: baseid,
+    credits: process.env.SHINY ? parseInt(process.env.SHINY) : 2500,
     champion: "null",
     empiredestroyed: 1,
-    worldid: generateID(3, 2).toString(),
+    worldid: "",
     event_score: 0,
     chatenabled: 0,
     relationship: 0,
@@ -81,12 +83,14 @@ export const getDefaultBaseData = (user?: User) => {
     inventory: {},
     monsters: {},
     player: {},
-    krallen: devConfig.unlockAllEventRewards ? { 
-      countdown: 443189,
-      wins: 5,
-      tier: 5,
-      loot: 750000000000,
-    } : {},
+    krallen: devConfig.unlockAllEventRewards
+      ? {
+          countdown: 443189,
+          wins: 5,
+          tier: 5,
+          loot: 750000000000,
+        }
+      : {},
     siege: {},
     buildingresources: {},
     frontpage: {},
@@ -101,7 +105,7 @@ export const getDefaultBaseData = (user?: User) => {
           unblockSlimeattikus: { id: "unblockSlimeattikus" },
           unblockVorg: { id: "unblockVorg" },
           KorathReward: { id: "KorathReward", value: 3 },
-          krallenReward: { id: "krallenReward", value: 1 }
+          krallenReward: { id: "krallenReward", value: 1 },
         }
       : {},
     takeover: {},
@@ -120,8 +124,8 @@ export const getDefaultBaseData = (user?: User) => {
     savetemplate: [],
     updates: [],
     effects: [],
-    homebase: ["0", "0"], // ToDo: This should be randomly generated per user, within the range of the map room grid
-    outposts: [[2, 1, 600024]], // Dummy outposts
+    homebase: null, // ToDo: This should be randomly generated per user, within the range of the map room grid
+    outposts: null, // Dummy outposts
     worldsize: [500, 500],
     wmstatus: [],
     chatservers: ["bym-chat.kixeye.com"],

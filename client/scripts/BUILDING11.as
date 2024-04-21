@@ -27,6 +27,7 @@ package
       
       override public function Tick(param1:int) : void
       {
+         _initFinishedMR = true;
          if(_countdownBuild.Get() > 0 || health < maxHealth * 0.5)
          {
             _canFunction = false;
@@ -43,9 +44,9 @@ package
          {
             if(_lvl.Get() < 2 && GLOBAL.StatGet("mrl") == 2)
             {
-               GLOBAL.StatSet("mrl",1);
+               GLOBAL.StatSet("mrl",2); // Comment: Previously set to 1
             }
-            if(GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD && _lvl.Get() == 2 && GLOBAL.StatGet("mrl") != 2 && BASE._saveCounterA == BASE._saveCounterB && !BASE._saving)
+            if(GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD && _lvl.Get() == 1 && GLOBAL.StatGet("mrl") != 2 && BASE._saveCounterA == BASE._saveCounterB && !BASE._saving)
             {
                this.NewWorld();
             }
@@ -62,7 +63,6 @@ package
          var _loc1_:Array = null;
          if(!MapRoomManager.instance.isInMapRoom3 && GLOBAL.mode == GLOBAL._loadmode)
          {
-            PLEASEWAIT.Show(KEYS.Get("wait_newworld"));
             ACHIEVEMENTS.Check("map2",1);
             if(this.callPending)
             {
@@ -239,7 +239,7 @@ package
             return;
          }
          new URLLoaderApi().load(GLOBAL._mapURL + "setmapversion",_loc1_,this.RecycleDSuccess,this.RecycleDFail);
-         PLEASEWAIT.Show(KEYS.Get("wait_processing"));
+         // PLEASEWAIT.Show(KEYS.Get("wait_processing"));
       }
       
       private function RecycleDSuccess(param1:Object) : void
