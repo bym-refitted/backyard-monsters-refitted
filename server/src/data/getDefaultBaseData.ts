@@ -7,10 +7,10 @@ import { getCurrentDateTime } from "../utils/getCurrentDateTime";
 
 export const getDefaultBaseData = (user?: User) => {
   // These flags allow us to work with debug dev bases
-  if (devConfig.devSandbox) return devSandbox(user);
-  if (devConfig.debugSandbox) return debugSandbox(user);
+  if (devConfig.devSandbox) return devSandbox;
+  if (devConfig.debugSandbox) return debugSandbox;
 
-  const baseid = generateID(9);
+  const baseid = generateID(9)
 
   return {
     baseid: baseid.toString(10),
@@ -29,7 +29,7 @@ export const getDefaultBaseData = (user?: User) => {
     id: 0, // Gets set as same value as savetime when save is triggered
     canattack: false,
     cellid: generateID(6),
-    baseid_inferno: 0,
+    baseid_inferno: generateID(8),
     fbid: "100002268912813",
     fortifycellid: 0,
     name: user.username || "Anonymous",
@@ -45,7 +45,7 @@ export const getDefaultBaseData = (user?: User) => {
     lastupdate: 0,
     usemap: 0,
     homebaseid: baseid,
-    credits: process.env.SHINY ? parseInt(process.env.SHINY) : 2500,
+    credits: process.env.SHINY ? parseInt(process.env.SHINY)  : 2500,
     champion: "null",
     empiredestroyed: 1,
     worldid: "",
@@ -83,14 +83,7 @@ export const getDefaultBaseData = (user?: User) => {
     inventory: {},
     monsters: {},
     player: {},
-    krallen: devConfig.unlockAllEventRewards
-      ? {
-          countdown: 443189,
-          wins: 5,
-          tier: 5,
-          loot: 750000000000,
-        }
-      : {},
+    krallen: {},
     siege: {},
     buildingresources: {},
     frontpage: {},
@@ -102,10 +95,9 @@ export const getDefaultBaseData = (user?: User) => {
           spurtzCannonReward: { id: "spurtzCannonReward" },
           spurtzCannonReward3: { id: "spurtzCannonReward3" },
           unlockRezghul: { id: "unlockRezghul" },
+          KorathReward: { id: "KorathReward" },
           unblockSlimeattikus: { id: "unblockSlimeattikus" },
           unblockVorg: { id: "unblockVorg" },
-          KorathReward: { id: "KorathReward", value: 3 },
-          krallenReward: { id: "krallenReward", value: 1 },
         }
       : {},
     takeover: {},
