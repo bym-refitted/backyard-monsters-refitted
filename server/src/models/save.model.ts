@@ -157,7 +157,7 @@ export class Save {
   credits!: number;
 
   @FrontendKey
-  @Property()
+  @Property({ type: "json", nullable: true })
   champion?: string;
 
   @FrontendKey
