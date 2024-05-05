@@ -13,7 +13,7 @@ export const updateSaved: KoaController = async (ctx) => {
   await ORMContext.em.populate(user, ["save"]);
   let save = user.save;
 
-  if (!save) throw saveFailureErr;
+  if (!save) throw saveFailureErr();
   save.savetime = getCurrentDateTime();
   
   // Set the id field (_lastSaveID) to be the same as savetime, client expects this.

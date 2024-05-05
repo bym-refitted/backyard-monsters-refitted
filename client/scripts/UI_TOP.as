@@ -165,6 +165,7 @@ package
          mc.mcR5.bAdd.txtAdd.htmlText = KEYS.Get("ui_topaddshiny");
          mc.mcR5.bAdd.mcBG.width = mc.mcR5.bAdd.txtAdd.width + 11;
          mc.mcR5.mcBG.width = 82 + mc.mcR5.bAdd.width;
+         // mc.mcR5.bAdd.addEventListener(MouseEvent.CLICK,BUY.Show);
          mc.mcR5.bAdd.addEventListener(MouseEvent.CLICK,function(event:MouseEvent):void
          {
             GLOBAL.Message(KEYS.Get("disabled_addshiny"));

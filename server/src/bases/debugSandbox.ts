@@ -5992,8 +5992,7 @@ export const debugSandbox = {
     [950, 50, 0],
   ],
   credits: 2000,
-  champion:
-    '[{"ft":1517329445,"status":1,"l":1,"hp":40000,"log":"0,1,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,1,0,1,0,1,0,0,1,0,0,1,0,0,2,2,2,1,0,0,1,0,0,2,0,2,1","fd":0,"t":1,"fb":0,"pl":1},{"ft":82704,"status":1,"l":1,"hp":12000,"log":"1,0,0,1,0,0,2,2,2,0,2,2,0,2,2,0,2,1,0,0,1,0,0,1,0,2,1,0,0,2,0,2,0,2,1,0,1","fd":0,"t":2,"fb":0,"pl":1},{"ft":1599748286,"status":0,"l":6,"hp":40000,"log":"1,0,0,1,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,2,0,2,2,1,0,0,2,1,0,0,1,0,0,1,0,0,1,0,0,1,0,1,0,1,0,1,0","fd":0,"t":3,"fb":0,"pl":1},{"ft":1516899499,"status":2,"l":6,"hp":184642,"log":"0,2,2,0,2,1,0,0,1,0,0,1,0,0,2","fd":0,"t":4,"fb":3,"pl":1}]',
+  champion:"null",
   player: {
     buffs: {
       "5": 0,
@@ -6088,6 +6087,8 @@ export const debugSandbox = {
     unlockRezghul: { id: "unlockRezghul" },
     unblockSlimeattikus: { id: "unblockSlimeattikus" },
     unblockVorg: { id: "unblockVorg" },
+    KorathReward: { id: "KorathReward", value: 3 },
+    krallenReward: { id: "krallenReward", value: 1 }
   },
   relationship: 0,
   iresources: {

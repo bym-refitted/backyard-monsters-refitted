@@ -5,57 +5,57 @@ package de.polygonal.core.fmt
    public class Sprintf
    {
       
-      public static var BIT_MINUS:int = 1;
+      public static var BIT_MINUS:int;
       
-      public static var BIT_PLUS:int = 2;
+      public static var BIT_PLUS:int;
       
-      public static var BIT_SPACE:int = 4;
+      public static var BIT_SPACE:int;
       
-      public static var BIT_SHARP:int = 8;
+      public static var BIT_SHARP:int;
       
-      public static var BIT_ZERO:int = 16;
+      public static var BIT_ZERO:int;
       
-      public static var BIT_h:int = 32;
+      public static var BIT_h:int;
       
-      public static var BIT_l:int = 64;
+      public static var BIT_l:int;
       
-      public static var BIT_L:int = 128;
+      public static var BIT_L:int;
       
-      public static var BIT_c:int = 256;
+      public static var BIT_c:int;
       
-      public static var BIT_d:int = 512;
+      public static var BIT_d:int;
       
-      public static var BIT_i:int = 1024;
+      public static var BIT_i:int;
       
-      public static var BIT_e:int = 2048;
+      public static var BIT_e:int;
       
-      public static var BIT_E:int = 4096;
+      public static var BIT_E:int;
       
-      public static var BIT_f:int = 8192;
+      public static var BIT_f:int;
       
-      public static var BIT_g:int = 16384;
+      public static var BIT_g:int;
       
-      public static var BIT_G:int = 32768;
+      public static var BIT_G:int;
       
-      public static var BIT_o:int = 65536;
+      public static var BIT_o:int;
       
-      public static var BIT_s:int = 131072;
+      public static var BIT_s:int;
       
-      public static var BIT_u:int = 262144;
+      public static var BIT_u:int;
       
-      public static var BIT_x:int = 524288;
+      public static var BIT_x:int;
       
-      public static var BIT_X:int = 1048576;
+      public static var BIT_X:int;
       
-      public static var BIT_p:int = 2097152;
+      public static var BIT_p:int;
       
-      public static var BIT_n:int = 4194304;
+      public static var BIT_n:int;
       
-      public static var BIT_b:int = 8388608;
+      public static var BIT_b:int;
       
-      public static var MASK_SPECIFIERS:int = 16776960;
+      public static var MASK_SPECIFIERS:int;
       
-      public static var _I:de.polygonal.core.fmt.Sprintf = null;
+      public static var _I:Sprintf;
        
       
       public var _bits:Array;
@@ -85,22 +85,22 @@ package de.polygonal.core.fmt
          }
       }
       
-      public static function get() : de.polygonal.core.fmt.Sprintf
+      public static function get() : Sprintf
       {
-         if(de.polygonal.core.fmt.Sprintf._I == null)
+         if(Sprintf._I == null)
          {
-            de.polygonal.core.fmt.Sprintf._I = new de.polygonal.core.fmt.Sprintf();
+            Sprintf._I = new Sprintf();
          }
-         return de.polygonal.core.fmt.Sprintf._I;
+         return Sprintf._I;
       }
       
       public static function format(param1:String, param2:Array) : String
       {
-         if(de.polygonal.core.fmt.Sprintf._I == null)
+         if(Sprintf._I == null)
          {
-            de.polygonal.core.fmt.Sprintf._I = new de.polygonal.core.fmt.Sprintf();
+            Sprintf._I = new Sprintf();
          }
-         return de.polygonal.core.fmt.Sprintf._I._format(param1,param2);
+         return Sprintf._I._format(param1,param2);
       }
       
       public function cca(param1:String, param2:int) : int

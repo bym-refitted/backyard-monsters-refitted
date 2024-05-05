@@ -17,6 +17,7 @@ import { Context } from "koa";
 import { getArea } from "./controllers/maproom/v2/getArea";
 import { initialPlayerCellData } from "./controllers/maproom/v3/initialPlayerCellData";
 import { apiVersion } from "./middleware/apiVersioning";
+import { supportedLangs } from "./controllers/supportedLangs";
 import { releasesWebhook } from "./controllers/github/releasesWebhook";
 
 const router = new Router();
@@ -31,6 +32,9 @@ router.post("/api/:apiVersion/bm/getnewmap", apiVersion, debugDataLog("Posting t
 // Auth
 router.post("/api/:apiVersion/player/getinfo", apiVersion, debugDataLog("User login attempt"), login);
 router.post("/api/:apiVersion/player/register", apiVersion, debugDataLog("Registering user"), register);
+
+// Supported Languages
+router.get("/api/:apiVersion/supportedLangs", debugDataLog("Getting supported languages"), supportedLangs);
 
 // Load
 router.post("/base/load", auth, debugDataLog("Base load data"), baseLoad);

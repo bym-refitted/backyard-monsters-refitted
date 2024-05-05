@@ -23,6 +23,7 @@ export const baseLoad: KoaController = async (ctx) => {
   logging(
     `Loading base for user: ${ctx.authUser.username} | IP Address: ${ctx.ip}`
   );
+
   if (save) {
     if (process.env.ENV === ENV.LOCAL) {
       logging(`Base loaded:`, JSON.stringify(save, null, 2));
