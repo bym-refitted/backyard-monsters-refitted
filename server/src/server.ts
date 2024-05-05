@@ -8,15 +8,23 @@ import bodyParser from "koa-bodyparser";
 import serve from "koa-static";
 import ormConfig from "./mikro-orm.config";
 import router from "./app.routes";
-import { MariaDbDriver } from '@mikro-orm/mariadb';
+import { MariaDbDriver } from "@mikro-orm/mariadb";
 import { EntityManager, MikroORM, RequestContext } from "@mikro-orm/core";
 import { errorLog, logging } from "./utils/logger.js";
-import { firstRunEnv } from "./utils/firstRunEnv.js"
+import { firstRunEnv } from "./utils/firstRunEnv.js";
 import { ascii_node } from "./utils/ascii_art.js";
 import { ErrorInterceptor } from "./middleware/clientSafeError.js";
 import { processLanguagesFile } from "./middleware/processLanguageFile";
 import { logMissingAssets, morganLogging } from "./middleware/morganLogging";
 import { SESSION_CONFIG } from "./config/SessionConfig";
+import { getLatestSwfFromGithub } from "./utils/getLatestSwfFromGithub";
+
+/**
+ * ToDos:
+ * Frontend handle error
+ * Error handling for the download
+ * Fix https
+ */
 
 export const app = new Koa();
 
@@ -32,7 +40,7 @@ const api = new Router();
 api.get("/", (ctx: Context) => (ctx.body = {}));
 
 (async () => {
- await firstRunEnv();
+  await firstRunEnv();
 
   // Sessions
   app.keys = [process.env.SECRET_KEY];
@@ -82,11 +90,21 @@ api.get("/", (ctx: Context) => (ctx.body = {}));
 
   app.use(ErrorInterceptor);
 
+  if (process.env.USE_VERSION_MANAGEMENT === "enabled") {
+    const globalApiVersion =  await getLatestSwfFromGithub();
+
+    app.use(async (ctx, next) => {
+      ctx.globalApiVersion = globalApiVersion;
+      logging(`Global API Version: ${ctx.globalApiVersion}`);
+      return next();
+    });
+  }
+
   // Routes
   app.use(router.routes());
   app.use(router.allowedMethods());
 
-  app.listen(port, () => {
+  return app.listen(port, () => {
     logging(`
     ${ascii_node} Server running on: http://localhost:${port}
     `);
