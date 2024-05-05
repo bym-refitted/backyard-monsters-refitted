@@ -33,7 +33,7 @@ export const getLatestSwfFromGithub = async (): Promise<string> => {
   const releaseVersion = releaseName.match(/bymr-stable-(.*).swf/)[1];
 
   // Create a folder to store the api versioning files if not exists
-  const folderPath = process.env.API_VERSIONING_FOLDER_PATH || "../api-versioning";
+  const folderPath = process.env.LAUNCHER_ASSETS_PATH || "../api-versioning";
   
   if (!fs.existsSync(folderPath)) fs.mkdirSync(folderPath, { recursive: true });
 
