@@ -20,8 +20,8 @@ import { SESSION_CONFIG } from "./config/SessionConfig";
 import { getLatestSwfFromGithub } from "./utils/getLatestSwfFromGithub";
 
 /**
+ * ToDos:
  * Frontend handle error
- * Fix the linux path
  * Error handling for the download
  * Fix https
  */
