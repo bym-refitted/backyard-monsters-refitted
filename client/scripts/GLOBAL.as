@@ -45,7 +45,7 @@ package
 
       public static var cdnUrl:String = "https://api.bymrefitted.com/";
 
-      public static var apiVersionSuffix:String = "v0.2.4-alpha/";
+      public static var apiVersionSuffix:String = "v0.2.5-alpha/";
 
       public static var _local:Boolean = false;
       
