@@ -36,6 +36,9 @@ export const ORMContext = {} as {
 let globalApiVersion: string;
 
 export const setApiVersion = (version: string) => {
+  logging(
+    `Updating latest client version, server is using: ${globalApiVersion}`
+  );
   globalApiVersion = version;
 };
 
@@ -64,11 +67,11 @@ api.get("/", (ctx: Context) => (ctx.body = {}));
       formLimit: "50mb",
     })
   );
-  
+
   app.use((_, next: Next) =>
-  RequestContext.createAsync(ORMContext.orm.em, next)
+    RequestContext.createAsync(ORMContext.orm.em, next)
   );
-  
+
   app.use(ErrorInterceptor);
 
   // Logs
@@ -98,12 +101,14 @@ api.get("/", (ctx: Context) => (ctx.body = {}));
     }
   });
 
-  if (process.env.USE_VERSION_MANAGEMENT === "enabled") {
-    globalApiVersion = await getLatestSwfFromGithub();
-    logging(
-      `Register version middleware, because we love it: ${globalApiVersion}`
-    );
-  }
+  /**
+   * This sets the initial client version to the latest version from github
+   *
+   * This value can also be set by the github webhook
+   */
+  if (process.env.USE_VERSION_MANAGEMENT === "enabled")
+    setApiVersion(await getLatestSwfFromGithub());
+
   // Routes
   app.use(router.routes());
   app.use(router.allowedMethods());
