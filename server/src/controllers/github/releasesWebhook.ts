@@ -2,6 +2,7 @@ import { ENV } from "../../enums/Env";
 import { KoaController } from "../../utils/KoaController";
 import { getLatestSwfFromGithub } from "../../utils/getLatestSwfFromGithub";
 import { createHmac } from "crypto";
+import { setApiVersion } from "../../server";
 
 interface ReleasePayload {
   release: {
@@ -33,7 +34,7 @@ export const releasesWebhook: KoaController = async (ctx) => {
   if (ctx.request.headers["x-github-event"] === "release") {
     // Handle the release event
     console.log(`New release published: ${payload.release.tag_name}`);
-    ctx.globalApiVersion = await getLatestSwfFromGithub();
+    setApiVersion(await getLatestSwfFromGithub());
   }
 
   ctx.status = 200;
