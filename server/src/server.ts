@@ -95,8 +95,8 @@ api.get("/", (ctx: Context) => (ctx.body = {}));
 
     app.use(async (ctx, next) => {
       ctx.globalApiVersion = globalApiVersion;
-      logging(`Global API Version: ${ctx.globalApiVersion}`); // ToDo: Why is this running a million times on prod???
-      return next();
+      logging(`Global API Version: ${ctx.globalApiVersion}`);
+      await next();
     });
   }
 
