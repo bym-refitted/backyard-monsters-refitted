@@ -33,6 +33,12 @@ export const ORMContext = {} as {
   em: EntityManager;
 };
 
+let globalApiVersion: string;
+
+export const setApiVersion = (version: string) => {
+  globalApiVersion = version;
+};
+
 const port = process.env.PORT || 3001;
 
 // Entry point for all modules.
@@ -56,10 +62,12 @@ api.get("/", (ctx: Context) => (ctx.body = {}));
       formLimit: "50mb",
     })
   );
-
+  
   app.use((_, next: Next) =>
-    RequestContext.createAsync(ORMContext.orm.em, next)
+  RequestContext.createAsync(ORMContext.orm.em, next)
   );
+  
+  app.use(ErrorInterceptor);
 
   // Logs
   app.use(logMissingAssets);
@@ -88,18 +96,19 @@ api.get("/", (ctx: Context) => (ctx.body = {}));
     }
   });
 
-  app.use(ErrorInterceptor);
-
   if (process.env.USE_VERSION_MANAGEMENT === "enabled") {
-    const globalApiVersion =  await getLatestSwfFromGithub();
-
+    globalApiVersion = await getLatestSwfFromGithub();
+    logging(
+      `Register version middleware, because we love it: ${globalApiVersion}`
+    );
     app.use(async (ctx, next) => {
       ctx.globalApiVersion = globalApiVersion;
-      logging(`Global API Version: ${ctx.globalApiVersion}`);
+      logging(
+        `Global API Version: ${ctx.globalApiVersion}, IP: ${ctx.request.ip}, URL: ${ctx.request.url}`
+      );
       await next();
     });
   }
-
   // Routes
   app.use(router.routes());
   app.use(router.allowedMethods());
