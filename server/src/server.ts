@@ -39,6 +39,8 @@ export const setApiVersion = (version: string) => {
   globalApiVersion = version;
 };
 
+export const getApiVersion = () => globalApiVersion;
+
 const port = process.env.PORT || 3001;
 
 // Entry point for all modules.
@@ -101,13 +103,6 @@ api.get("/", (ctx: Context) => (ctx.body = {}));
     logging(
       `Register version middleware, because we love it: ${globalApiVersion}`
     );
-    app.use(async (ctx, next) => {
-      ctx.globalApiVersion = globalApiVersion;
-      logging(
-        `Global API Version: ${ctx.globalApiVersion}, IP: ${ctx.request.ip}, URL: ${ctx.request.url}`
-      );
-      await next();
-    });
   }
   // Routes
   app.use(router.routes());
