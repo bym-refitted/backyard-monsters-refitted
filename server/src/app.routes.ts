@@ -34,7 +34,7 @@ router.post("/api/:apiVersion/player/getinfo", apiVersion, debugDataLog("User lo
 router.post("/api/:apiVersion/player/register", apiVersion, debugDataLog("Registering user"), register);
 
 // Supported Languages
-router.get("/api/:apiVersion/supportedLangs", debugDataLog("Getting supported languages"), supportedLangs);
+router.get("/api/:apiVersion/supportedLangs", apiVersion, debugDataLog("Getting supported languages"), supportedLangs);
 
 // Load
 router.post("/base/load", auth, debugDataLog("Base load data"), baseLoad);
