@@ -13,7 +13,6 @@ import { infernoMonsters } from "./controllers/inferno/infernoMonsters";
 import { recordDebugData } from "./controllers/debug/recordDebugData";
 import { getTemplates } from "./controllers/yardplanner/getTemplates";
 import { saveTemplate } from "./controllers/yardplanner/saveTemplate";
-import { RateLimit } from "koa2-ratelimit"
 import { getArea } from "./controllers/maproom/v2/getArea";
 import { initialPlayerCellData } from "./controllers/maproom/v3/initialPlayerCellData";
 import { apiVersion } from "./middleware/apiVersioning";
@@ -29,11 +28,6 @@ router.post('/gh-release-webhook', releasesWebhook);
 router.get("/api/:apiVersion/bm/getnewmap", apiVersion, debugDataLog("Getting new maproom"), getNewMap);
 router.post("/api/:apiVersion/bm/getnewmap", apiVersion, debugDataLog("Posting to new maproom"), getNewMap);
 
-const getUserLimiter = RateLimit.middleware({
-  interval: 60 * 1000, // 15 minutes
-  max: 30,
-});
-
 // Auth
 router.post("/api/:apiVersion/player/getinfo", apiVersion, debugDataLog("User login attempt"), login);
 router.post("/api/:apiVersion/player/register", apiVersion, debugDataLog("Registering user"), register);
@@ -48,7 +42,7 @@ router.post("/base/load", auth, debugDataLog("Base load data"), baseLoad);
 // Save
 router.post("/base/save", auth, debugDataLog("Base save data"), baseSave);
 router.post("/base/updatesaved", auth, debugDataLog("Base updated save"), updateSaved);
-router.post('/base/migrate', auth, debugDataLog("Base migrate data"), migrateBase)
+//router.post('/base/migrate', auth, debugDataLog("Base migrate data"), migrateBase)
 
 // Yard Planner
 router.get("/api/:apiVersion/bm/yardplanner/gettemplates", apiVersion, auth, debugDataLog("Get templates"), getTemplates);
@@ -69,7 +63,7 @@ router.post("/worldmapv3/initworldmap", auth, debugDataLog("Posting MR3 init dat
 router.get("/worldmapv3/initworldmap", auth, debugDataLog("Getting MR3 init data"), initialPlayerCellData);
 router.post("/worldmapv3/getcells", auth, debugDataLog("Get MR3 cells"), getMapRoomCells);
 router.post("/worldmapv3/relocate", auth, debugDataLog("Relocating MR3 base"), relocate);
-router.all("/worldmapv3/setmapversion", auth, debugDataLog("Set maproom version"), setMapVersion);
+//router.all("/worldmapv3/setmapversion", auth, debugDataLog("Set maproom version"), setMapVersion);
 
 // Logging routes
 router.post("/api/:apiVersion/player/recorddebugdata", apiVersion, recordDebugData);

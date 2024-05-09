@@ -115,7 +115,7 @@ api.get("/", (ctx: Context) => (ctx.body = {}));
 
   return app.listen(port, () => {
     logging(`
-    ${ascii_node} Server running on: ${BASE_URL}:${PORT}
+    ${ascii_node} Server running on: http://localhost:${port}
     `);
   });
 })().catch((e) => errorLog(e));
