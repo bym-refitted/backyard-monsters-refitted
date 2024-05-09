@@ -35,6 +35,7 @@ package
       {
          var urls:Object = null;
          var serverUrl:String = GLOBAL.serverUrl;
+         var apiVersionSuffix:String = GLOBAL.apiVersionSuffix;
          var cdnUrl:String = GLOBAL.cdnUrl;
          super();
          _instance = this;
@@ -46,7 +47,7 @@ package
             if (serverUrl)
             {
                urls._baseURL = serverUrl + "base/";
-               urls._apiURL = serverUrl + "api/";
+               urls._apiURL = serverUrl + "api/" + apiVersionSuffix;
                urls.infbaseurl = urls._apiURL + "bm/base/";
                urls._statsURL = serverUrl + "recordstats.php";
                urls._mapURL = serverUrl + "worldmapv2/";
