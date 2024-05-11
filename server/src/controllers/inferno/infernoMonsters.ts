@@ -13,7 +13,7 @@ export const infernoMonsters: KoaController = async ctx => {
 
     // We get our Inferno save using the AuthSave basesaveID
     const infSave: Save = await fork.findOne(Save, {
-      saveuserid: user.save.basesaveid,
+      saveuserid: user.userid,
       type: "inferno",
     })
 

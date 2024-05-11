@@ -7,6 +7,7 @@ import { KoaController } from "../utils/KoaController";
 import { getCurrentDateTime } from "../utils/getCurrentDateTime";
 import { User } from "../models/user.model";
 import { loadBuildBase, loadViewBase } from "../services/base/loadBase";
+import { logging } from "../utils/logger";
 
 export const updateSaved: KoaController = async (ctx) => {
   const user: User = ctx.authUser;
@@ -19,6 +20,7 @@ export const updateSaved: KoaController = async (ctx) => {
 
   if (type === "build" || type === "ibuild") {
     save = await loadBuildBase(ctx, baseid);
+    
   } else {
     save = await loadViewBase(ctx, baseid);
   }
