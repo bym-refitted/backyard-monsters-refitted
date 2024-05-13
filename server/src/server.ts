@@ -44,7 +44,8 @@ export const setApiVersion = (version: string) => {
 
 export const getApiVersion = () => globalApiVersion;
 
-const port = process.env.PORT || 3001;
+const PORT = process.env.PORT || 3001;
+const BASE_URL = process.env.BASE_URL;
 
 // Entry point for all modules.
 const api = new Router();
@@ -106,14 +107,15 @@ api.get("/", (ctx: Context) => (ctx.body = {}));
    *
    * This value can also be set by the github webhook
    */
-  if (process.env.USE_VERSION_MANAGEMENT === "enabled")
+  if (process.env.USE_VERSION_MANAGEMENT === "enabled") {
     setApiVersion(await getLatestSwfFromGithub());
+  }
 
   // Routes
   app.use(router.routes());
   app.use(router.allowedMethods());
 
-  return app.listen(port, () => {
+  app.listen(PORT, () => {
     logging(`
     ${ascii_node} Server running on: http://localhost:${port}
     `);
