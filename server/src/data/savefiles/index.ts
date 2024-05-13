@@ -36,6 +36,9 @@ export const getIWMDescentBase = (iwmid: number) => {
         case 201:
             save = descent[1];
             break;
+        case 202:
+            save = descent[2];
+            break;
         default:
             save = descent[1];
             break;

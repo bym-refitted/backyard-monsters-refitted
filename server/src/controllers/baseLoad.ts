@@ -119,7 +119,7 @@ export const baseLoad: KoaController = async (ctx) => {
 
   if (requestBody.type === "idescent") {
     //[201,202,203,204,205,206,207] - inferno base IDs
-    const descentBases = [[201,1,0],[202,2,0],[203,3,0],[204,4,0],[205,5,0],[206,6,0],[207,7,0]];
+    const descentBases = [[201,1,0],[202,2,0],[203,3,0],[204,4,0],[205,5,0],[206,6,0],[207,7,0],[208,8,0],[209,9,0],[210,10,0],[211,11,0],[212,12,0],[213,13,0]];
     let descentStatus = await ORMContext.em.findOne(DescentStatus, {
        userid: authSave.userid,
       })

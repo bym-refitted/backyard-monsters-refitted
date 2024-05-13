@@ -5,7 +5,7 @@ import { Save, FieldData } from "../../models/save.model";
 import { Resources, updateResources } from "../../data/updateResources";
 
 
-export const descentBases: number[] = [201,202,203,204,205,206,207];
+export const descentBases: number[] = [201,202,203,204,205,206,207,208,209,210,211,212,213];
 
 export const ProcessDescentBase = async (ctx, basesaveid: number, baseid:string, userid:number, iresources:{}) => {
     //logging("basesaveid: " + parseInt(basesaveid));

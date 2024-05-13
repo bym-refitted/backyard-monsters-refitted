@@ -59,7 +59,7 @@ package com.monsters.maproom_inferno
       
       public var info_mc:DescentBaseInfo;
       
-      public const popupCoordMap:Array = [[-145,-215],[15,-225],[-170,-210],[40,-200],[-170,-225],[50,-240],[-60,-280]];
+      public const popupCoordMap:Array = [[15,-230],[-145,-215],[15,-225],[15,-225],[40,-215],[-170,-210],[-170,-215],[40,-200],[-170,-225],[30,-230],[50,-240],[-170,-220],[-60,-280]];
       
       public function DescentMonsterBase()
       {
@@ -142,35 +142,36 @@ package com.monsters.maproom_inferno
          {
             _loc2_ = int(DescentMapRoom.BRIDGE.MAPROOM.DescentLevel);
          }
+         //setting the base sprites for each base on the descent map.
          switch(_loc1_)
          {
             case 1:
+            case 2:
                _loc3_ = "base1";
                break;
-            case 2:
+            case 3:
+            case 4:
                _loc3_ = "base2";
                break;
-            case 3:
+            case 5:
+            case 6:
                _loc3_ = "base3";
                break;
-            case 4:
+            case 7:
+            case 8:
                _loc3_ = "base4";
                break;
-            case 5:
-               _loc3_ = "base5";
-               break;
-            case 6:
-               _loc3_ = "base6";
-               break;
-            case 7:
-               _loc3_ = "base7";
-               break;
-            case 8:
             case 9:
             case 10:
+               _loc3_ = "base5";
+               break;
             case 11:
             case 12:
+               _loc3_ = "base6";
+               break;
             case 13:
+               _loc3_ = "base7";
+               break;
             default:
                _loc3_ = "base1";
          }

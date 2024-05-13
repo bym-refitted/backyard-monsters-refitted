@@ -9,7 +9,7 @@ package com.monsters.maproom_inferno.views
    {
        
       
-      public var maxDepth:int = 7;
+      public var maxDepth:int = 13; // Set this to 13, we are no longer using the ""new"" 7base
       
       public var _t:Timer;
       
@@ -37,24 +37,30 @@ package com.monsters.maproom_inferno.views
       public function setDepth(param1:int) : void
       {
          this.currLvl = param1;
+         /* We have to re-arrange the order of levels so the depth bar actually does something. */
          switch(this.currLvl)
          {
-            case 5:
+            case 9:
+            case 10:
                this.depthTxt = KEYS.Get("descent_depthBar");
                this.depthTxt2 = KEYS.Get("descent_depthBarWarn1");
                break;
-            case 6:
+            case 11:
+            case 12:
                this.depthTxt = KEYS.Get("descent_depthBar");
                this.depthTxt2 = KEYS.Get("descent_depthBarWarn2");
                break;
-            case 7:
+            case 13:
                this.depthTxt = KEYS.Get("descent_depthBar");
                this.depthTxt2 = KEYS.Get("descent_depthBarWarn3");
-               break;
             case 1:
             case 2:
             case 3:
             case 4:
+            case 5:
+            case 6:
+            case 7:
+            case 8:
             default:
                this.depthTxt = KEYS.Get("descent_depthBar");
                this.depthTxt2 = "";
