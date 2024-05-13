@@ -45,6 +45,8 @@ package
 
       public static var cdnUrl:String = "http://localhost:3001/";
 
+      public static var apiVersionSuffix:String = "v0.2.6-alpha/";
+
       public static var _local:Boolean = false;
       
       public static var _save:Boolean = true;

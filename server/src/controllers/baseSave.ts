@@ -83,6 +83,12 @@ export const baseSave: KoaController = async (ctx) => {
         }
         save.academy = academyData;
         break;
+      case "champion":
+        // Parse and stringify the champion data
+        if (requestBodyValue) {
+          save.champion = JSON.stringify(JSON.parse(requestBodyValue));
+        }
+        break;
       default:
         if (
           requestBodyValue &&
