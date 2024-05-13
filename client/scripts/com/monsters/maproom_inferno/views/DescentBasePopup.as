@@ -10,6 +10,7 @@ package com.monsters.maproom_inferno.views
        
       
       public var maxDepth:int = 13; // Set this to 13, we are no longer using the ""new"" 7base
+      // public var maxDepth:int = 7;
       
       public var _t:Timer;
       
@@ -69,6 +70,38 @@ package com.monsters.maproom_inferno.views
          depthBar.mcBar.width = Math.max(_loc2_,1);
          this.DepthCheck();
       }
+
+      // ----------- OLD IMPLEMENTATION ----------- //
+      // Comment: March 2012 pre-patch 7 Descent base co-ordinates
+      // public function setDepth(param1:int) : void
+      // {
+      //    this.currLvl = param1;
+      //    switch(this.currLvl)
+      //    {
+      //       case 5:
+      //          this.depthTxt = KEYS.Get("descent_depthBar");
+      //          this.depthTxt2 = KEYS.Get("descent_depthBarWarn1");
+      //          break;
+      //       case 6:
+      //          this.depthTxt = KEYS.Get("descent_depthBar");
+      //          this.depthTxt2 = KEYS.Get("descent_depthBarWarn2");
+      //          break;
+      //       case 7:
+      //          this.depthTxt = KEYS.Get("descent_depthBar");
+      //          this.depthTxt2 = KEYS.Get("descent_depthBarWarn3");
+      //          break;
+      //       case 1:
+      //       case 2:
+      //       case 3:
+      //       case 4:
+      //       default:
+      //          this.depthTxt = KEYS.Get("descent_depthBar");
+      //          this.depthTxt2 = "";
+      //    }
+      //    var _loc2_:Number = 100 / this.maxDepth * param1;
+      //    depthBar.mcBar.width = Math.max(_loc2_,1);
+      //    this.DepthCheck();
+      // }
       
       public function Show(param1:int = 0, param2:int = 0, param3:int = 0) : void
       {
