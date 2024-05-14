@@ -11,7 +11,7 @@ import Savefiles, { getWMDefaultBase, getIWMDescentBase } from "../../../data/sa
 import { getXPosition, getYPosition } from "./world";
 import { logging } from "../../../utils/logger";
 
-const iwm_descent = [201,202,203,204,205,206,207];
+const iwm_descent = [201,202,203,204,205,206,207,208,209,210,211,212,213];
 
 export const getWildMonsterSave = (baseid: number, level: number = 10): Save => {
     const fork = ORMContext.em.fork();
