@@ -20,6 +20,9 @@ package
       
       public static var _descentLvl:int = 0;
       
+      // Comment: March 2012 pre-patch 7 Descent base config
+      // public static const _descentLvlMax:int = 8;
+
       public static const _descentLvlMax:int = 14;
       
       public static var _bases:Array = [];
