@@ -770,7 +770,7 @@
     "msg_building": "Construction...",
     "msg_updatedgame": "Nous avons mis à jour le jeu. Veuillez recharger.",
     "msg_processing": "Traitement en cours...",
-    "msg_rendering": "Chargement du rendu en cours...",
+    "msg_rendering": "Chargement du rendu...",
     "msg_resourcesforshiny": "<b>Acheter #v1# de ressources supplémentaires pour #v2# Shiny ?<\/b>",
     "msg_trucealreadyrequested": "Tu as récemment fait une demande de paix avec ce joueur, tu ne peux pas lui envoyer une autre demande avant 2 jours.",
     "pebbleshiner_desc": "Produit des cailloux. Utilisé pour la construction des bâtiments.",
