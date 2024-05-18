@@ -21,8 +21,8 @@ package
    import com.monsters.monsters.components.CModifiableProperty;
    import com.monsters.pathing.PATHING;
    import com.monsters.rendering.RasterData;
-   import com.monsters.utils.MovieClipUtils;
    import com.monsters.utils.ImageCallbackHelper;
+   import com.monsters.utils.MovieClipUtils;
    import flash.display.Bitmap;
    import flash.display.BitmapData;
    import flash.display.BlendMode;
@@ -35,7 +35,6 @@ package
    import flash.geom.Matrix;
    import flash.geom.Point;
    import flash.geom.Rectangle;
-   
    
    public class BFOUNDATION extends GameObject
    {
@@ -437,29 +436,29 @@ package
       
       public static function getBuildingSaveData() : Vector.<Object>
       {
-         var _loc6_:Object = null;
+         var exportBuildingData:Object = null;
          var buildingData:BFOUNDATION = null;
-         var _loc8_:Boolean = false;
-         var _loc1_:Vector.<Object> = new Vector.<Object>();
-         var _loc2_:Vector.<Object> = InstanceManager.getInstancesByClass(BFOUNDATION);
-         var _loc3_:Object = {};
-         var _loc4_:Object = {};
-         var _loc5_:String = "";
-         _loc1_[0] = _loc4_;
-         _loc1_[1] = _loc3_;
+         var hasTownHall:Boolean = false;
+         var saveData:Vector.<Object> = new Vector.<Object>();
+         var building:Vector.<Object> = InstanceManager.getInstancesByClass(BFOUNDATION);
+         var buildingHealthData:Object = {};
+         var buildingDataByID:Object = {};
+         var hashString:String = "";
+         saveData[0] = buildingDataByID;
+         saveData[1] = buildingHealthData;
          s_totalBuildingHP = s_totalBuildingMaxHP = 0;
-         for each(buildingData in _loc2_)
+         for each(buildingData in building)
          {
             if(!(buildingData is BMUSHROOM))
             {
                if(buildingData is ICoreBuilding)
                {
-                  _loc8_ = true;
+                  hasTownHall = true;
                }
                if(buildingData is BTRAP && buildingData._fired || buildingData._type == 53 && buildingData._expireTime < GLOBAL.Timestamp())
                {
                   Console.warning("Ignored Building" + buildingData + buildingData._type + buildingData._expireTime + " setting buildinghealthdata to 0");
-                  _loc3_[buildingData._id] = 0;
+                  buildingHealthData[buildingData._id] = 0;
                }
                else
                {
@@ -477,24 +476,26 @@ package
                   }
                   if(buildingData.health < buildingData.maxHealth)
                   {
-                     _loc3_[buildingData._id] = int(buildingData.health);
+                     buildingHealthData[buildingData._id] = int(buildingData.health);
                   }
-                  if(_loc6_ = buildingData.Export())
+                  if(exportBuildingData = buildingData.Export())
                   {
-                     _loc4_[buildingData._id] = _loc6_;
-                     _loc5_ += (_loc6_.X + _loc6_.Y).toString();
+                     buildingDataByID[buildingData._id] = exportBuildingData;
+                     hashString += (exportBuildingData.X + exportBuildingData.Y).toString();
                   }
                }
             }
          }
-         if(!_loc8_)
+         if(!hasTownHall)
          {
             LOGGER.Log("err","User missing TownHall upon save");
             Console.warning("BFOUNDATION::getBuildingSaveData(TownHall missing upon save)");
          }
          BASE._percentDamaged = 100 - 100 / s_totalBuildingMaxHP * s_totalBuildingHP;
-         _loc1_[2] = md5(_loc5_);
-         return _loc1_;
+         // Comment: This gives an out-of-range index error. The md5.as class is malformed
+         //saveData[2] = md5(hashString);
+         saveData[2] = hashString;
+         return saveData;
       }
       
       override public function get width() : Number
@@ -1105,7 +1106,7 @@ package
                               _offsets[_RASTERDATA_FORTFRONT].y = fortImageDataB["front"][1].y;
                               _rasterPt[_RASTERDATA_FORTFRONT].x = _mc.x + _offsets[_RASTERDATA_FORTFRONT].x - MAP.instance.offset.x;
                               _rasterPt[_RASTERDATA_FORTFRONT].y = _mc.y + _offsets[_RASTERDATA_FORTFRONT].y - MAP.instance.offset.y;
-                              _rasterData[_RASTERDATA_FORTFRONT] = _rasterData[_RASTERDATA_FORTFRONT] || new RasterData(_loc5_,_rasterPt[_RASTERDATA_FORTFRONT],int.MAX_VALUE);
+                              _rasterData[_RASTERDATA_FORTFRONT] ||= new RasterData(_loc5_,_rasterPt[_RASTERDATA_FORTFRONT],int.MAX_VALUE);
                            }
                         }
                         else if(Boolean(fortImageDataB["back"]) && fortImageDataA.baseurl + fortImageDataB["back"][0] == _loc4_)
@@ -1123,7 +1124,7 @@ package
                               _offsets[_RASTERDATA_FORTBACK].y = fortImageDataB["back"][1].y;
                               _rasterPt[_RASTERDATA_FORTBACK].x = _mc.x + _offsets[_RASTERDATA_FORTBACK].x - MAP.instance.offset.x;
                               _rasterPt[_RASTERDATA_FORTBACK].y = _mc.y + _offsets[_RASTERDATA_FORTBACK].y - MAP.instance.offset.y;
-                              _rasterData[_RASTERDATA_FORTBACK] = _rasterData[_RASTERDATA_FORTBACK] || new RasterData(_loc5_,_rasterPt[_RASTERDATA_FORTBACK],int.MAX_VALUE);
+                              _rasterData[_RASTERDATA_FORTBACK] ||= new RasterData(_loc5_,_rasterPt[_RASTERDATA_FORTBACK],int.MAX_VALUE);
                            }
                         }
                      }
@@ -1250,7 +1251,7 @@ package
                      this._rasterPt[_RASTERDATA_SHADOW].x = _mc.x + this._offsets[_RASTERDATA_SHADOW].x - MAP.instance.offset.x;
                      this._rasterPt[_RASTERDATA_SHADOW].y = _mc.y + this._offsets[_RASTERDATA_SHADOW].y - MAP.instance.offset.y;
                      this.redrawShadowData();
-                     this._rasterData[_RASTERDATA_SHADOW] = this._rasterData[_RASTERDATA_SHADOW] || new RasterData(imageBitmapData,this._rasterPt[_RASTERDATA_SHADOW],MAP.DEPTH_SHADOW,BlendMode.MULTIPLY,true);
+                     this._rasterData[_RASTERDATA_SHADOW] ||= new RasterData(imageBitmapData,this._rasterPt[_RASTERDATA_SHADOW],MAP.DEPTH_SHADOW,BlendMode.MULTIPLY,true);
                   }
                }
                else if(Boolean(imageDataB[_IMAGE_NAMES[_RASTERDATA_TOP] + state]) && imageDataA.baseurl + imageDataB[_IMAGE_NAMES[_RASTERDATA_TOP] + state][0] == _loc13_)
@@ -1426,7 +1427,7 @@ package
          {
             this._rasterPt[param1].x = _mc.x + this._offsets[param1].x - MAP.instance.offset.x;
             this._rasterPt[param1].y = _mc.y + this._offsets[param1].y - MAP.instance.offset.y;
-            this._rasterData[param1] = this._rasterData[param1] || new RasterData(param5,this._rasterPt[param1],int.MAX_VALUE);
+            this._rasterData[param1] ||= new RasterData(param5,this._rasterPt[param1],int.MAX_VALUE);
             this._rasterData[param1].data = param5;
             this._rasterData[param1].visible = _mc.visible;
             this._sources[param1] = param3;
@@ -1483,7 +1484,7 @@ package
                   this.m_footprintBMD.fillRect(this.m_footprintBMD.rect,0);
                   this.m_footprintBMD.draw(this._mcFootprint,new Matrix(1,0,0,1,this._mcFootprint.width * 0.5,0));
                }
-               this._rasterData[_RASTERDATA_FOOTPRINT] = this._rasterData[_RASTERDATA_FOOTPRINT] || new RasterData(this.m_footprintBMD,this._rasterPt[_RASTERDATA_FOOTPRINT],MAP.DEPTH_SHADOW + 1);
+               this._rasterData[_RASTERDATA_FOOTPRINT] ||= new RasterData(this.m_footprintBMD,this._rasterPt[_RASTERDATA_FOOTPRINT],MAP.DEPTH_SHADOW + 1);
                if(param2)
                {
                   this._rasterData[_RASTERDATA_FOOTPRINT].data = this.m_footprintBMD;
@@ -2369,7 +2370,7 @@ package
          this._hasWorker = true;
          if(this._countdownBuild.Get() + this._countdownUpgrade.Get() + this._countdownFortify.Get() > 0)
          {
-            _loc1_ = BASE.isInfernoBuilding(this._type) || BASE.isInfernoMainYardOrOutpost ? 5 : 1;
+            _loc1_ = uint(BASE.isInfernoBuilding(this._type) || BASE.isInfernoMainYardOrOutpost ? 5 : 1);
             _loc2_ = 1;
             while(_loc2_ < 5)
             {
@@ -2852,7 +2853,7 @@ package
          var a:int;
          try
          {
-            if(!Math.max(this._countdownUpgrade.Get(),0))
+            if(Math.max(this._countdownUpgrade.Get(),0))
             {
             }
             this._countdownUpgrade.Set(0);

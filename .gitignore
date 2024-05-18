@@ -1,9 +1,10 @@
 .env
 node_modules/
 dist/
-.vscode
+bin
 main.css
 server/src/database/bym-db*
 server/src/database/migrations/.snapshot*
 server/data
 .idea
+api-versioning

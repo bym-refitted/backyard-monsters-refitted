@@ -41,7 +41,7 @@ package com.smartfoxserver.v2.requests
       
       protected var _params:ISFSObject;
       
-      protected var _recipient;
+      protected var _recipient:*;
       
       protected var _sendMode:int = -1;
       

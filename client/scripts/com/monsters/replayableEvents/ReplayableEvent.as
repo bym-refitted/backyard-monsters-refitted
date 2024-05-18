@@ -52,6 +52,7 @@ package com.monsters.replayableEvents
       
       public function ReplayableEvent()
       {
+         this._maxScore = 1.7976931348623157e+308;
          super();
          if(this._rewardMessage)
          {

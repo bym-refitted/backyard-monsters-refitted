@@ -2,11 +2,12 @@ package com.monsters.maproom3
 {
    import com.monsters.display.ImageCache;
    import com.monsters.display.SpriteData;
+   import config.singletonlock.SingletonLock;
    import flash.display.BitmapData;
    import flash.geom.Point;
    import flash.geom.Rectangle;
    import flash.utils.Dictionary;
-   import config.singletonlock.SingletonLock;
+   
    public class MapRoom3AssetCache
    {
       
@@ -147,14 +148,14 @@ package com.monsters.maproom3
       
       private var m_AreAssetsLoaded:Boolean = false;
       
-      public function MapRoom3AssetCache(param1:config.singletonlock.SingletonLock)
+      public function MapRoom3AssetCache(param1:SingletonLock)
       {
          super();
       }
       
       public static function get instance() : MapRoom3AssetCache
       {
-         return s_Instance = s_Instance || new MapRoom3AssetCache(new config.singletonlock.SingletonLock());
+         return s_Instance = s_Instance || new MapRoom3AssetCache(new SingletonLock());
       }
       
       public function get areAssetsLoaded() : Boolean

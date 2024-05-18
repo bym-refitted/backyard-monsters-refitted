@@ -25,15 +25,15 @@ package
    {
       
       private static var _targetFlyerMode:Object = {
-         20:0,
-         21:1,
-         23:0,
-         25:1,
-         115:2,
-         118:0,
-         129:0,
-         130:0,
-         132:1
+         "20":0,
+         "21":1,
+         "23":0,
+         "25":1,
+         "115":2,
+         "118":0,
+         "129":0,
+         "130":0,
+         "132":1
       };
        
       
@@ -149,8 +149,8 @@ package
             _loc4_ = int(_loc2_.range);
             if(BASE.isOutpost)
             {
-               _loc3_ = BTOWER.AdjustTowerRange(GLOBAL._currentCell,_loc3_);
-               _loc4_ = BTOWER.AdjustTowerRange(GLOBAL._currentCell,_loc4_);
+               _loc3_ = int(BTOWER.AdjustTowerRange(GLOBAL._currentCell,_loc3_));
+               _loc4_ = int(BTOWER.AdjustTowerRange(GLOBAL._currentCell,_loc4_));
             }
             if(_loc1_.range < _loc2_.range)
             {

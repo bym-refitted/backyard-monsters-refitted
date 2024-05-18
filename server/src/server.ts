@@ -8,15 +8,23 @@ import bodyParser from "koa-bodyparser";
 import serve from "koa-static";
 import ormConfig from "./mikro-orm.config";
 import router from "./app.routes";
-import { MariaDbDriver } from '@mikro-orm/mariadb';
+import { MariaDbDriver } from "@mikro-orm/mariadb";
 import { EntityManager, MikroORM, RequestContext } from "@mikro-orm/core";
 import { errorLog, logging } from "./utils/logger.js";
-import { firstRunEnv } from "./utils/firstRunEnv.js"
+import { firstRunEnv } from "./utils/firstRunEnv.js";
 import { ascii_node } from "./utils/ascii_art.js";
 import { ErrorInterceptor } from "./middleware/clientSafeError.js";
 import { processLanguagesFile } from "./middleware/processLanguageFile";
 import { logMissingAssets, morganLogging } from "./middleware/morganLogging";
 import { SESSION_CONFIG } from "./config/SessionConfig";
+import { getLatestSwfFromGithub } from "./utils/getLatestSwfFromGithub";
+
+/**
+ * ToDos:
+ * Frontend handle error
+ * Error handling for the download
+ * Fix https
+ */
 
 export const app = new Koa();
 
@@ -25,6 +33,17 @@ export const ORMContext = {} as {
   em: EntityManager;
 };
 
+let globalApiVersion: string;
+
+export const setApiVersion = (version: string) => {
+  logging(
+    `Updating latest client version, server is using: ${globalApiVersion}`
+  );
+  globalApiVersion = version;
+};
+
+export const getApiVersion = () => globalApiVersion;
+
 const port = process.env.PORT || 3001;
 
 // Entry point for all modules.
@@ -32,7 +51,7 @@ const api = new Router();
 api.get("/", (ctx: Context) => (ctx.body = {}));
 
 (async () => {
- await firstRunEnv();
+  await firstRunEnv();
 
   // Sessions
   app.keys = [process.env.SECRET_KEY];
@@ -52,6 +71,8 @@ api.get("/", (ctx: Context) => (ctx.body = {}));
   app.use((_, next: Next) =>
     RequestContext.createAsync(ORMContext.orm.em, next)
   );
+
+  app.use(ErrorInterceptor);
 
   // Logs
   app.use(logMissingAssets);
@@ -80,13 +101,19 @@ api.get("/", (ctx: Context) => (ctx.body = {}));
     }
   });
 
-  app.use(ErrorInterceptor);
+  /**
+   * This sets the initial client version to the latest version from github
+   *
+   * This value can also be set by the github webhook
+   */
+  if (process.env.USE_VERSION_MANAGEMENT === "enabled")
+    setApiVersion(await getLatestSwfFromGithub());
 
   // Routes
   app.use(router.routes());
   app.use(router.allowedMethods());
 
-  app.listen(port, () => {
+  return app.listen(port, () => {
     logging(`
     ${ascii_node} Server running on: http://localhost:${port}
     `);

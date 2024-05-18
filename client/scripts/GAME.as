@@ -2,7 +2,6 @@ package
 {
    import com.flashdynamix.utils.SWFProfiler;
    import com.monsters.alliances.ALLIANCES;
-   import com.monsters.configs.BYMConfig;
    import com.monsters.debug.Console;
    import com.monsters.enums.EnumYardType;
    import com.monsters.maproom_manager.MapRoomManager;
@@ -16,10 +15,6 @@ package
    import flash.external.ExternalInterface;
    import flash.geom.Rectangle;
    import flash.system.Security;
-   import flash.net.URLRequest;
-   import flash.events.IOErrorEvent;
-   import flash.events.SecurityErrorEvent;
-   import flash.events.HTTPStatusEvent;
 
    public class GAME extends Sprite
    {
@@ -28,11 +23,11 @@ package
 
       public static var _contained:Boolean;
 
-      public var loader:Loader;
-
       public static var _isSmallSize:Boolean = true;
 
       public static var _firstLoadComplete:Boolean = false;
+
+      public var loader:Loader;
 
       private var _checkScreenSize:Boolean = true;
 
@@ -40,6 +35,7 @@ package
       {
          var urls:Object = null;
          var serverUrl:String = GLOBAL.serverUrl;
+         var apiVersionSuffix:String = GLOBAL.apiVersionSuffix;
          var cdnUrl:String = GLOBAL.cdnUrl;
          super();
          _instance = this;
@@ -51,7 +47,7 @@ package
             if (serverUrl)
             {
                urls._baseURL = serverUrl + "base/";
-               urls._apiURL = serverUrl + "api/";
+               urls._apiURL = serverUrl + "api/" + apiVersionSuffix;
                urls.infbaseurl = urls._apiURL + "bm/base/";
                urls._statsURL = serverUrl + "recordstats.php";
                urls._mapURL = serverUrl + "worldmapv2/";
@@ -111,7 +107,6 @@ package
          GLOBAL._fbdata = urls;
          GLOBAL._monetized = urls.monetized;
          MarketingRecapture.instance.importData(urls.urlparams);
-
          GLOBAL._ROOT = new MovieClip();
          addChild(GLOBAL._ROOT);
          GLOBAL._layerMap = GLOBAL._ROOT.addChild(new Sprite()) as Sprite;

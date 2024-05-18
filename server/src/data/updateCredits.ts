@@ -30,6 +30,7 @@ export const updateCredits = (save: Save, item: string, quantity: number) => {
   const nonStoreItem = new Set([
     "IU",
     "IF",
+    "IFD",
     "ITR",
     "IUN",
     "IPU",
@@ -38,7 +39,8 @@ export const updateCredits = (save: Save, item: string, quantity: number) => {
     "BRTOPUP",
     "MHTOPUP",
     "HSM",
-    "QWM1"
+    "QWM1",
+    "BUNK"
   ]);
   if (nonStoreItem.has(item)) {
     save.credits -= quantity;

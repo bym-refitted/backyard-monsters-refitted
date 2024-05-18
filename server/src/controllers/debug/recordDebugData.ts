@@ -16,7 +16,7 @@ export const recordDebugData: KoaController = async (ctx) => {
   try {
     const body = ctx.request.body as DebugData;
 
-    if (!body.key || !body.saveid || !body.value) throw debugClientErr;
+    if (!body.key || !body.saveid || !body.value) throw debugClientErr();
 
     if (body.key === LOG_LEVEL.ERROR) {
       errorLog(
@@ -31,6 +31,6 @@ export const recordDebugData: KoaController = async (ctx) => {
     ctx.status = 200;
     ctx.body = { error: 0 };
   } catch (err) {
-    throw debugClientErr;
+    throw debugClientErr();
   }
 };
