@@ -4,12 +4,10 @@ import { MariaDbDriver } from "@mikro-orm/mariadb";
 import { errorLog, logging } from "../utils/logger";
 
 (async () => {
-  let orm: MikroORM<MariaDbDriver>;
+  let orm: MikroORM<MariaDbDriver> = await MikroORM.init<MariaDbDriver>(ormConfig);;
 
   try {
-    orm = await MikroORM.init<MariaDbDriver>(ormConfig);
     const shinyIncreaseAmount = 600;
-
     await orm.em
       .getConnection()
       .execute(`UPDATE Save SET credits = credits + ?`, [shinyIncreaseAmount]);
