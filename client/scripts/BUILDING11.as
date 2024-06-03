@@ -61,7 +61,7 @@ package
       private function NewWorld() : void
       {
          var _loc1_:Array = null;
-         if(!MapRoomManager.instance.isInMapRoom3 && GLOBAL.mode == GLOBAL._loadmode)
+         if(!MapRoomManager.instance.isInMapRoom3 && GLOBAL.mode == GLOBAL._loadmode && GLOBAL._flags.maproom2)
          {
             ACHIEVEMENTS.Check("map2",1);
             if(this.callPending)
