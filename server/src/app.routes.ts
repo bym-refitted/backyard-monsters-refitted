@@ -40,6 +40,7 @@ router.post("/api/:apiVersion/player/register", apiVersion, debugDataLog("Regist
 // Supported Languages
 router.get("/api/:apiVersion/supportedLangs", apiVersion, debugDataLog("Getting supported languages"), supportedLangs);
 
+
 // Load
 router.post("/base/load", auth, debugDataLog("Base load data"), baseLoad);
 
@@ -52,10 +53,12 @@ router.post('/base/migrate', auth, debugDataLog("Base migrate data"), migrateBas
 router.get("/api/:apiVersion/bm/yardplanner/gettemplates", apiVersion, auth, debugDataLog("Get templates"), getTemplates);
 router.post("/api/:apiVersion/bm/yardplanner/savetemplate", apiVersion, auth, debugDataLog("Saving template"), saveTemplate);
 
+
 // Inferno
 router.post("/api/:apiVersion/bm/base/load", apiVersion, auth, debugDataLog("Inferno load data"), baseLoad);
 router.post("/api/:apiVersion/bm/base/infernomonsters", apiVersion, auth, debugDataLog("Load inferno monsters"), infernoMonsters);
 router.post("/api/:apiVersion/bm/base/save", apiVersion, auth, debugDataLog("Inferno save data"), baseSave);
+router.post("/api/:apiVersion/bm/base/updatesaved", auth, debugDataLog("Base updated save"), updateSaved);
 
 // Worldmap v2
 router.post("/worldmapv2/getarea", auth, debugDataLog("MR2 get area"), getArea);
