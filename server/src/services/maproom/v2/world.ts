@@ -162,8 +162,8 @@ const generateNewWorld = async (): Promise<string> => {
         world_id = (parseInt(latestWorld.world_id) + 1).toString(10);
     }
 
-    const maxX = 500;
-    const maxY = 500;
+    const maxX = 800;
+    const maxY = 800;
 
     const cells: WorldMapCell[] = []
 
@@ -185,7 +185,7 @@ const generateNewWorld = async (): Promise<string> => {
 }
 
 export const getBounds = (x: number, y: number, width: number = 10) => {
-    const mapSize = 500;
+    const mapSize = 800;
     const halfWidth = Math.floor(width / 2);
     let minX = x - halfWidth;
     let minY = y - halfWidth;
