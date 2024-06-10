@@ -10,6 +10,7 @@ export const wildMonsterCell = async (
   cell: WorldMapCell,
   level: number = 32
 ) => {
+  // Q: Is this a pseudo-random tribe assignment?
   const tribe = (cell.x + cell.y) % tribes.length;
   const tribeName = tribes[tribe];
 
