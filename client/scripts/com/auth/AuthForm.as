@@ -79,10 +79,6 @@ package com.auth
 
         private var loader:Loader;
 
-        private var centerX:Number;
-
-        private var centerY:Number;
-
         private var startY:Number;
 
         private var verticalSpacingBetweenBlocks:Number = 0;
@@ -194,16 +190,12 @@ package com.auth
             addChild(navContainer);
 
             formContainer.graphics.drawRect(0, 0, formWidth, formHeight);
-            formContainer.x = (stage.stageWidth - formContainer.width) / 2;
-            formContainer.y = (stage.stageHeight - formContainer.height) / 2;
+            formContainer.x = 155;
+            formContainer.y = 45;
             addChild(formContainer);
 
-            // Get center point of stage
-            centerX = stage.stageWidth / 2;
-            centerY = stage.stageHeight / 2;
-
-            // Calculate starting y position to center content
-            startY = centerY;
+            // Y-position for the first input field
+            startY = 345;
 
             // Get image asset
             this.loader = new Loader();
@@ -291,7 +283,7 @@ package com.auth
             var navHeight:Number = 50;
 
             navContainer.graphics.drawRect(0, 0, navWidth, navHeight);
-            navContainer.x = (stage.stageWidth - navWidth) / 2;
+            navContainer.x = -20;
             navContainer.y = 50; // Margin top
 
             var textContainer:Sprite = new Sprite();
@@ -770,6 +762,8 @@ package com.auth
 
         public function disposeUI():void
         {
+            // Reset stage color
+            stage.color = WHITE;
             // Remove event listeners
             submitButton.removeEventListener(MouseEvent.CLICK, submitButtonClickHandler);
 
