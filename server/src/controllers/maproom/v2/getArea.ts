@@ -8,9 +8,6 @@ import { calculateBaseLevel } from "../../../services/base/calculateBaseLevel";
 import { Terrain } from "./terrain/Terrain";
 import { outpostCell } from "./cells/outpostCell";
 import { devConfig } from "../../../config/DevSettings";
-import Alea from "alea";
-
-import { NoiseFunction2D, createNoise2D } from "simplex-noise";
 import { generateBaseID } from "../../../services/maproom/v2/world";
 import { ValueNoise } from "value-noise-js";
 
@@ -26,6 +23,7 @@ export const getArea: KoaController = async (ctx) => {
   const user: User = ctx.authUser;
   const requestBody: Cell = ctx.request.body;
   await ORMContext.em.populate(user, ["save"]);
+  
   const save = user.save;
   const seed = "1"; // save.worldid
 
@@ -52,21 +50,21 @@ export const getArea: KoaController = async (ctx) => {
     for (let y = 0; y < height; y++) {
       const cellY = currentY + y;
       const noise = new ValueNoise(seed, undefined, "perlin");
-      // const terrainHeight = Math.round( + 1) * 150);
       const noiseScale = 3;
       const terrainScale = 83;
+
       /**
-       * The noise function is used to generate the terrain height
-       * 1 is added to get rid of the negative values
-       * We multiply by the terrain scale to get the desired height
+       * The noise function is used to generate the terrain height.
+       * +1 is added to get rid of the negative values.
+       * We multiply by the terrain scale to get the desired height.
        *
-       * To get more mountains, increase the terrain scale
-       * more water, decrease the terrain scale
+       * Higher terrain: increase the terrain scale.
+       * Lower terrain: decrease the terrain scale.
        *
-       * Smoother terrain over a larger area, increase the noise scale
-       * Rougher terrain, decrease the noise scale
+       * Smoother terrain over a larger area, increase the noise scale.
+       * Rougher terrain, decrease the noise scale.
        */
-      let terrainHeight = Math.round(
+      const terrainHeight = Math.round(
         (noise.evalXY(cellX / noiseScale, cellY / noiseScale) + 1) *
           terrainScale
       );
