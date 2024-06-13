@@ -10,18 +10,12 @@ import { FilterFrontendKeys } from "../utils/FrontendKey";
 import { flags } from "../data/flags";
 import { getCurrentDateTime } from "../utils/getCurrentDateTime";
 import { ENV } from "../enums/Env";
-import { authFailureErr, saveFailureErr } from "../errors/errorCodes.";
 
-/**
- * Controller for handling the loading of a user's base.
- * Attempts to find an existing save for the user.
- * If a save is found, return it.
- * If no save is found, create a new save with default data, add it to the DB, update the user's save, and return.
- * Filters the save for frontend keys, and sets the response status and body.
- */
+// MR2 ToDo: The client sends this data to the server: {"baseid":"1234","type":"view","userid":""}
+// In this example, the baseid '1234' is a hardcoded value in wildMonsterCell.ts for a tribe's base,
+// The 'baseid' should be used to lookup & return a base in the database with the corresponding id
 export const baseLoad: KoaController = async (ctx) => {
-  if (!ctx.authUser || !(ctx.authUser instanceof User)) throw authFailureErr();
-
+  // Try find an already existing save
   const user: User = ctx.authUser;
   await ORMContext.em.populate(user, ["save"]);
 
@@ -30,23 +24,26 @@ export const baseLoad: KoaController = async (ctx) => {
     `Loading base for user: ${ctx.authUser.username} | IP Address: ${ctx.ip}`
   );
 
-  if (save && process.env.ENV === ENV.LOCAL) {
-    logging(`Base loaded:`, JSON.stringify(save, null, 2));
+  if (save) {
+    if (process.env.ENV === ENV.LOCAL) {
+      logging(`Base loaded:`, JSON.stringify(save, null, 2));
+    }
   } else {
+    // There was no existing save, create one with some defaults
     logging(`Base not found, creating a new save`);
 
-    try {
-      save = ORMContext.em.create(Save, getDefaultBaseData(user));
-      await ORMContext.em.persistAndFlush(save);
+    save = ORMContext.em.create(Save, getDefaultBaseData(user));
 
-      user.save = save;
-      await ORMContext.em.persistAndFlush(user);
-    } catch (error) {
-      throw saveFailureErr();
-    }
+    // Add the save to the database
+    await ORMContext.em.persistAndFlush(save);
+
+    user.save = save;
+
+    // Update user base save
+    await ORMContext.em.persistAndFlush(user);
   }
-
   const filteredSave = FilterFrontendKeys(save);
+
   const isTutorialEnabled = devConfig.skipTutorial ? 205 : 0;
 
   ctx.status = 200;
@@ -55,7 +52,7 @@ export const baseLoad: KoaController = async (ctx) => {
     error: 0,
     currenttime: getCurrentDateTime(),
     basename: "basename",
-    pic_square: "",
+    pic_square: "https://apprecs.org/ios/images/app-icons/256/df/634186975.jpg",
     storeitems: { ...storeItems },
     ...filteredSave,
     id: filteredSave.basesaveid,
