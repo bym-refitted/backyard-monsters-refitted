@@ -30,3 +30,17 @@ export const updateResources = (resources: Resources, saveResources: FieldData) 
   }
   return saveResources;
 };
+
+export const subtractResources = (resources: Resources, saveResources: FieldData) => {
+  if (resources) {
+    Object.keys(resources).forEach((key) => {
+      const resourceKey = key as keyof Resources;
+      if (key.endsWith("max")) {
+        saveResources[resourceKey] = resources[key];
+      } else {
+        saveResources[resourceKey] -= resources[key];
+      }
+    });
+  }
+  return saveResources;
+}

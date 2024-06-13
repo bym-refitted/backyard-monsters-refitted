@@ -466,9 +466,25 @@ export class Save {
     "gifts",
     "sentinvites",
     "sentgifts",
-    "champion",
     "attackerchampion",
     "fbpromos",
     "purchase",
   ];
+
+  public static nonJsonKeys: (keyof FieldData)[] = [
+    "level",
+    "catapult",
+    "flinger",
+    "destroyed",
+    "damage",
+    "locked",
+    "protected",
+    "champion",
+    "over",
+    "usemap",
+    "basevalue",
+    "empirevalue",
+    "points",
+    "attackreport"
+  ]
 }
