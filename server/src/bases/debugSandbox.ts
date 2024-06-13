@@ -5744,7 +5744,7 @@ export const debugSandbox = (user?: User) => {
     usemap: 0, // 1
     homebase: null, // ["218", "285"]
     outposts: null, // []
-    worldsize: [500, 500],
+    worldsize: [800, 800],
     homebaseid: baseid, // 2209501577
     wmstatus: [
       [41, 0, 0],
