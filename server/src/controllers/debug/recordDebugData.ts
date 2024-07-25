@@ -1,3 +1,4 @@
+import { STATUS } from "../../enums/StatusCodes";
 import { debugClientErr } from "../../errors/errorCodes.";
 import { KoaController } from "../../utils/KoaController";
 import { errorLog, logging } from "../../utils/logger";
@@ -28,7 +29,7 @@ export const recordDebugData: KoaController = async (ctx) => {
       );
     }
 
-    ctx.status = 200;
+    ctx.status = STATUS.OK;
     ctx.body = { error: 0 };
   } catch (err) {
     throw debugClientErr();

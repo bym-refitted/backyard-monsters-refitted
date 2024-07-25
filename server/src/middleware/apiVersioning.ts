@@ -1,5 +1,6 @@
 import { Context, Next } from "koa";
 import {getApiVersion} from "../server";
+import { STATUS } from "../enums/StatusCodes";
 
 export const apiVersion = async (ctx: Context, next: Next) => {
     const apiVersion = ctx.params.apiVersion;
@@ -7,7 +8,7 @@ export const apiVersion = async (ctx: Context, next: Next) => {
     // console.log("apiVersion from ctx", expectedApiVersion);
     // Check if the apiVersion is valid
     if (process.env.USE_VERSION_MANAGEMENT === "enabled" && apiVersion !== expectedApiVersion) {
-        ctx.status = 400;
+        ctx.status = STATUS.BAD_REQUEST;
         ctx.body = { error: `Invalid API version. Expected: ${expectedApiVersion}, Recieved: ${apiVersion}` };
         return;
     }

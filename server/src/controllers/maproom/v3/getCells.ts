@@ -1,9 +1,10 @@
+import { STATUS } from "../../../enums/StatusCodes";
 import { KoaController } from "../../../utils/KoaController";
 
 export const getMapRoomCells: KoaController = async (ctx) => {
   const uid = ctx.session.userid || 0;
 
-  ctx.status = 200;
+  ctx.status = STATUS.OK;
   ctx.body = {
     error: 0,
     celldata: [

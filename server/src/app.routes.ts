@@ -19,6 +19,7 @@ import { initialPlayerCellData } from "./controllers/maproom/v3/initialPlayerCel
 import { apiVersion } from "./middleware/apiVersioning";
 import { supportedLangs } from "./controllers/supportedLangs";
 import { releasesWebhook } from "./controllers/github/releasesWebhook";
+import { STATUS } from "./enums/StatusCodes";
 
 const router = new Router();
 
@@ -62,7 +63,7 @@ router.get("/worldmapv3/initworldmap", auth, debugDataLog("Getting MR3 init data
 router.post("/worldmapv3/getcells", auth, debugDataLog("Get MR3 cells"), getMapRoomCells);
 router.post("/worldmapv3/relocate", auth, debugDataLog("Relocating MR3 base"), relocate);
 router.post("/worldmapv3/setmapversion", auth, debugDataLog("Set maproom version"), async (ctx: Context) => { 
-  ctx.status = 200,
+  ctx.status = STATUS.OK,
   ctx.body = { version: 3 }
 });
 

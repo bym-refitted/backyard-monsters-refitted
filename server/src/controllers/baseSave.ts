@@ -8,6 +8,7 @@ import { KoaController } from "../utils/KoaController";
 import { getCurrentDateTime } from "../utils/getCurrentDateTime";
 import { logging } from "../utils/logger";
 import { storeItems } from "../data/storeItems";
+import { STATUS } from "../enums/StatusCodes";
 
 export const baseSave: KoaController = async (ctx) => {
   const user: User = ctx.authUser;
@@ -95,7 +96,7 @@ export const baseSave: KoaController = async (ctx) => {
     installsgenerated: 42069,
   };
 
-  ctx.status = 200;
+  ctx.status = STATUS.OK;
   ctx.body = {
     ...baseSaveData,
     ...filteredSave,

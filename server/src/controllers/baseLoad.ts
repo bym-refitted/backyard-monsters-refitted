@@ -10,6 +10,7 @@ import { FilterFrontendKeys } from "../utils/FrontendKey";
 import { flags } from "../data/flags";
 import { getCurrentDateTime } from "../utils/getCurrentDateTime";
 import { ENV } from "../enums/Env";
+import { STATUS } from "../enums/StatusCodes";
 
 // MR2 ToDo: The client sends this data to the server: {"baseid":"1234","type":"view","userid":""}
 // In this example, the baseid '1234' is a hardcoded value in wildMonsterCell.ts for a tribe's base,
@@ -46,7 +47,7 @@ export const baseLoad: KoaController = async (ctx) => {
 
   const isTutorialEnabled = devConfig.skipTutorial ? 205 : 0;
 
-  ctx.status = 200;
+  ctx.status = STATUS.OK;
   ctx.body = {
     flags,
     error: 0,
