@@ -1,5 +1,6 @@
 import { Entity, Property, PrimaryKey, BeforeUpdate } from "@mikro-orm/core";
 import { FrontendKey } from "../utils/FrontendKey";
+import { MapRoomSettings } from "../config/MapRoomSettings";
 
 export interface FieldData {
   [key: string | number]: any;
@@ -382,9 +383,12 @@ export class Save {
   @Property({ type: "json", nullable: true })
   outposts: number[][];
 
+  // TODO: convert other generated properties to not persist
   @FrontendKey
-  @Property({ type: "json", nullable: true })
-  worldsize: number[];
+  @Property({ persist: false })
+  get worldsize():number[] {
+    return [MapRoomSettings.worldMaxHeight, MapRoomSettings.worldMaxWidth];
+  }
 
   @FrontendKey
   @Property({ type: "json", nullable: true })
@@ -485,6 +489,6 @@ export class Save {
     "basevalue",
     "empirevalue",
     "points",
-    "attackreport"
-  ]
+    "attackreport",
+  ];
 }

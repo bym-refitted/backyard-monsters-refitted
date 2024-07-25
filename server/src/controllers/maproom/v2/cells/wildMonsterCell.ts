@@ -27,7 +27,7 @@ export const wildMonsterCell = async (
   return {
     uid: cell?.uid || 0, // ToDo: Why do we have a userId for both user and save table? Fix
     b: 1,
-    fbid: save?.fbid,
+    fbid: "",
     pi: 0,
     bid: generateBaseID(parseInt(cell.world_id), cell.x, cell.y),
     aid: 0,
