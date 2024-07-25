@@ -50,6 +50,7 @@
     "@types/koa-session": "^6.4.5",
     "@types/koa-static": "^4.0.4",
     "@types/node": "^18.15.11",
+    "@types/uuid": "^9.0.8",
     "concurrently": "^8.0.1",
     "nodemon": "^2.0.22",
     "rimraf": "^4.4.1",

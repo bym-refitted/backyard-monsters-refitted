@@ -1,5 +1,5 @@
 export const MapRoomSettings = {
-    worldMaxPlayer: 10000,
-    worldMaxWidth: 800,
-    worldMaxHeight: 800
-}
+  worldMaxPlayer: 500,
+  worldMaxWidth: 800,
+  worldMaxHeight: 800,
+} as const;

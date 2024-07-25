@@ -3,8 +3,6 @@ import { WorldMapCell } from "../../../models/worldmapcell.model";
 import { EntityManager } from "@mikro-orm/mariadb";
 import { MapRoomSettings } from "../../../config/MapRoomSettings";
 import { logging } from "../../../utils/logger";
-import Savefiles from "../../../data/savefiles";
-import { Save } from "../../../models/save.model";
 
 interface FreeXY {
     x: number,
