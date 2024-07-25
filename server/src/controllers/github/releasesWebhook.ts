@@ -3,6 +3,7 @@ import { KoaController } from "../../utils/KoaController";
 import { getLatestSwfFromGithub } from "../../utils/getLatestSwfFromGithub";
 import { createHmac } from "crypto";
 import { setApiVersion } from "../../server";
+import { STATUS } from "../../enums/StatusCodes";
 
 interface ReleasePayload {
   release: {
@@ -26,7 +27,7 @@ export const releasesWebhook: KoaController = async (ctx) => {
         .digest("hex");
 
     if (receivedSig !== computedSig) {
-      ctx.status = 401;
+      ctx.status = STATUS.UNAUTHORIZED;
       ctx.body = { error: "Mismatched signatures" };
       return;
     }
@@ -37,5 +38,5 @@ export const releasesWebhook: KoaController = async (ctx) => {
     setApiVersion(await getLatestSwfFromGithub());
   }
 
-  ctx.status = 200;
+  ctx.status = STATUS.OK;
 };

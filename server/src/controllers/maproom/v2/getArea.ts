@@ -3,6 +3,7 @@ import { wildMonsterCell } from "./cells/wildMonsterCell";
 import { homeCell } from "./cells/homeCell";
 import { outpostCell } from "./cells/outpostCell";
 import { devConfig } from "../../../config/DevSettings";
+import { STATUS } from "../../../enums/StatusCodes";
 
 interface Cell {
   x?: number;
@@ -47,7 +48,7 @@ export const getArea: KoaController = async (ctx) => {
   }
 
   if (devConfig.maproom) {
-    ctx.status = 200;
+    ctx.status = STATUS.OK;
     ctx.body = {
       error: 0,
       x: currentX,
@@ -57,7 +58,7 @@ export const getArea: KoaController = async (ctx) => {
       // alliancedata
     };
   } else {
-    ctx.status = 404;
+    ctx.status = STATUS.NOT_FOUND;
     ctx.body = { message: "MapRoom is not enabled on this server", error: 1 };
   }
 };

@@ -6,6 +6,7 @@ import { FilterFrontendKeys } from "../utils/FrontendKey";
 import { KoaController } from "../utils/KoaController";
 import { getCurrentDateTime } from "../utils/getCurrentDateTime";
 import {User} from "../models/user.model";
+import { STATUS } from "../enums/StatusCodes";
 
 export const updateSaved: KoaController = async (ctx) => {
   const user: User = ctx.authUser;
@@ -29,6 +30,6 @@ export const updateSaved: KoaController = async (ctx) => {
     ...filteredSave,
   };
 
-  ctx.status = 200;
+  ctx.status = STATUS.OK;
   ctx.body = baseUpdateSave;
 };
