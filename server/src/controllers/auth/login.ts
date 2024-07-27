@@ -11,8 +11,8 @@ import { BymJwtPayload } from "../../middleware/auth";
 import { STATUS } from "../../enums/StatusCodes";
 
 const UserLoginSchema = z.object({
-  email: z.string().optional(),
-  password: z.string().optional(),
+  email: z.string().email().toLowerCase(),
+  password: z.string()
 });
 
 export const login: KoaController = async (ctx) => {
