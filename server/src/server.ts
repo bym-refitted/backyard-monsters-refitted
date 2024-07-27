@@ -18,11 +18,13 @@ import { processLanguagesFile } from "./middleware/processLanguageFile";
 import { logMissingAssets, morganLogging } from "./middleware/morganLogging";
 import { SESSION_CONFIG } from "./config/SessionConfig";
 import { getLatestSwfFromGithub } from "./utils/getLatestSwfFromGithub";
+import { STATUS } from "./enums/StatusCodes";
 
 /**
  * ToDos:
- * Frontend handle error
+ * Frontend should be able to set the latest client version & errors
  * Error handling for the download
+ * Handle CORS better
  * Fix https
  */
 
@@ -67,6 +69,22 @@ api.get("/", (ctx: Context) => (ctx.body = {}));
       formLimit: "50mb",
     })
   );
+
+  // CORS
+  app.use(async (ctx, next) => {
+    // Allow all origins
+    ctx.set("Access-Control-Allow-Origin", "*");
+    ctx.set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+    ctx.set("Access-Control-Allow-Headers", "Content-Type, Authorization");
+
+    // Handle preflight requests
+    if (ctx.method === "OPTIONS") {
+      ctx.status = STATUS.NO_CONTENT;
+      return;
+    }
+
+    await next();
+  });
 
   app.use((_, next: Next) =>
     RequestContext.createAsync(ORMContext.orm.em, next)
