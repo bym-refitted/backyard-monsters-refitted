@@ -26,6 +26,7 @@ interface BaseLoadRequest {
 
 export const baseLoad: KoaController = async (ctx) => {
   const requestBody: BaseLoadRequest = <BaseLoadRequest>ctx.request.body;
+  console.log("HIT: Loading view base", requestBody.baseid);
 
   const user: User = ctx.authUser;
   await ORMContext.em.populate(user, ["save"]);
@@ -38,6 +39,7 @@ export const baseLoad: KoaController = async (ctx) => {
       throw saveFailureErr;
     }
   } else {
+    console.log("Loading view base", requestBody.baseid);
     save = await loadViewBase(ctx, requestBody.baseid);
   }
 
