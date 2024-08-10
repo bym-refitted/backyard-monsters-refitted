@@ -2,7 +2,7 @@ import { ORMContext } from "../../../server";
 import { WorldMapCell } from "../../../models/worldmapcell.model";
 import { User } from "../../../models/user.model";
 import { Save } from "../../../models/save.model";
-import { getBounds, getFreeCell, getFreeWorld } from "./world";
+import { getBounds, getFreeCell } from "./world";
 import { logging } from "../../../utils/logger";
 import { World } from "../../../models/world.model";
 import { MapRoomSettings } from "../../../config/MapRoomSettings";
@@ -14,6 +14,7 @@ export const joinOrCreateWorldMap = async (
   save: Save,
   isMigratingWorlds: Boolean = false
 ): Promise<void> => {
+  
   //   if (migrate) {
   //     const cell = await getFreeCell(homeBase.world_id, true)
   //     homeBase.x = cell.x;
@@ -41,11 +42,8 @@ export const joinOrCreateWorldMap = async (
   save.worldid = world.uuid;
   world.playerCount += 1;
 
-  const worldId = save.worldid;
   ORMContext.em.persist(world);
   ORMContext.em.persist(save);
-
-  // Generate
 
   await ORMContext.em.flush();
 
@@ -67,24 +65,11 @@ export const joinOrCreateWorldMap = async (
     base_type: 0,
   });
 
-  //   if (homeBase) {
-
-  // return homeBase;
-  // }
-  // const world_id = await getFreeWorld();
-  // player =1,  800 / 8
-  // const chunkForHomeBase =
-  // (MapRoomSettings.worldMaxPlayer / MapRoomSettings.worldMaxHeight) *
-  // world.playerCount;
-  // const cell = await getFreeCell(worldId);
-  // logging(`USER ${user.userid} | Joining world: ${world_id} | ${cell.x}-${cell.y}`, cell)
-
   homebaseCell.uid = user.userid;
   homebaseCell.base_type = 2;
   homebaseCell.base_id = parseInt(save.baseid);
   ORMContext.em.persist(homebaseCell);
 
-  // await fork.persistAndFlush(cell)
   save.cellid = homebaseCell.cell_id;
   save.worldid = world.uuid;
   save.homebase = [homebaseCell.x.toString(), homebaseCell.y.toString()];

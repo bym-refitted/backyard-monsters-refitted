@@ -9,32 +9,6 @@ interface FreeXY {
     y: number
 }
 
-export const getFreeWorld = async (): Promise<string> => {
-    const fork = ORMContext.em.fork() as EntityManager;
-    const k = fork.getKnex()
-
-    /**
-     * Get world population;
-     */
-    const [worlds] = await k.raw("SELECT count(world_id) as population, world_id " +
-        "FROM world_map_cell " +
-        "WHERE base_type = 2 " +
-        "GROUP BY world_id " +
-        `HAVING population <= ${MapRoomSettings.worldMaxPlayer} ` +
-        "ORDER BY population");
-
-    if (worlds.length > 0) {
-        return worlds[0].world_id;
-    }
-
-    /**
-     * implement generation of new world
-     */
-
-    return "1";
-    // return await generateNewWorld();
-}
-
 export const getFreeCell = async (world_id: string, migrate = false): Promise<WorldMapCell> => {
 
     const coordinates = migrate ? await generateRandomCoordinates(world_id) : await getRandomXY(world_id);
@@ -203,7 +177,7 @@ export const getBounds = (x: number, y: number, width: number = 10) => {
 
 
 export const generateBaseID = (worldID: number, x: number, y: number) => {
-    return worldID * 1000000 + y * 1000 + x;
+    return (worldID+1) * 1000000 + (y+1) * 1000 + (x+1);
 }
 
 export const getWorldID = (cellID: number) => {

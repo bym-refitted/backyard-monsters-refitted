@@ -1,6 +1,6 @@
 import { Context, Next } from "koa";
-import { errorLog, logging } from "../utils/logger.js";
-import { ENV } from "../enums/Env.js";
+import { errorLog, logging } from "../utils/logger";
+import { ENV } from "../enums/Env";
 
 export const debugDataLog =
   (logMessage: string = "Request body") =>

@@ -1,6 +1,6 @@
 import fs, { FileHandle } from "fs/promises";
 import { randomBytes } from "crypto";
-import { logging, errorLog } from "./logger.js";
+import { logging, errorLog } from "./logger";
 
 /**
  * Check if `.env` file exists, if not, copy `env.example` contents
