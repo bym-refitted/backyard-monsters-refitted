@@ -3,6 +3,7 @@ import { User } from "../../../../models/user.model";
 import { ORMContext } from "../../../../server";
 import { WorldMapCell } from "../../../../models/worldmapcell.model";
 import { calculateBaseLevel } from "../../../../services/base/calculateBaseLevel";
+import { BASE_TYPE } from "../../../../enums/Base";
 
 export const homeCell = async (ctx: Context, cell: WorldMapCell) => {
   const currentUser: User = ctx.authUser;
@@ -17,19 +18,17 @@ export const homeCell = async (ctx: Context, cell: WorldMapCell) => {
   await ORMContext.em.populate(cellOwner, ["save"]);
   if (!cellOwner.save) throw new Error("User save not found");
 
-  // if home base
-  // - do waht we are already doing, populate user save
-  // Otherwise - get the outpost save 
-
+  // if homebase
+  // - do what we are already doing, populate user save
+  // - otherwise get the outpost save
   const save = cellOwner.save;
 
-  const online = isOnline(cellOwner.save.savetime);
-  const locked = online ? 1 : cellOwner.save.locked;
-  let isCellProtected = cellOwner.save.protected;
+  const isOnline = Date.now() / 1000 - save.savetime < 30;
+  const locked = isOnline ? 1 : save.locked;
+  let isCellProtected = save.protected;
 
-  if (cellOwner.save.type === "main" && cellOwner.save.damage > 69) {
-    isCellProtected = 1;
-  }
+  /** TODO: https://backyardmonsters.fandom.com/wiki/Damage_Protection */
+  if (save.type === BASE_TYPE.MAIN && save.damage >= 50) isCellProtected = 1;
 
   return {
     uid: cellOwner.userid,
@@ -45,7 +44,7 @@ export const homeCell = async (ctx: Context, cell: WorldMapCell) => {
     t: 0,
     n: cellOwner.username,
     fr: 0,
-    on: online,
+    on: isOnline,
     p: isCellProtected,
     r: save.resources,
     m: save.monsters,
@@ -57,5 +56,3 @@ export const homeCell = async (ctx: Context, cell: WorldMapCell) => {
     im: `https://api.dicebear.com/7.x/adventurer/png?backgroundType=solid&backgroundColor=b6e3f4,c0aede,d1d4f9&seed=${cellOwner.username}`,
   };
 };
-
-const isOnline = (timestamp = 0) => Date.now() / 1000 - timestamp < 30;
