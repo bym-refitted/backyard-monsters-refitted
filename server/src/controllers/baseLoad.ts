@@ -14,7 +14,7 @@ import { generateID } from "../utils/generateID";
 import { loadBuildBase, loadViewBase } from "../services/base/loadBase";
 import { saveFailureErr } from "../errors/errorCodes.";
 import { removeBaseProtection } from "../services/maproom/v2/joinOrCreateWorldMap";
-import { BASE_MODE } from "../enums/BaseMode";
+import { BASE_MODE } from "../enums/Base";
 import { ENV } from "../enums/Env";
 
 interface BaseLoadRequest {
