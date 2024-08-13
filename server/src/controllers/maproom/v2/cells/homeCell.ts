@@ -52,7 +52,7 @@ export const homeCell = async (ctx: Context, cell: WorldMapCell) => {
     d: save.damage > 90,
     lo: locked,
     dm: save.damage,
-    pic_square: `https://api.dicebear.com/7.x/adventurer/png?backgroundType=solid&backgroundColor=b6e3f4,c0aede,d1d4f9&seed=${cellOwner.username}`,
-    im: `https://api.dicebear.com/7.x/adventurer/png?backgroundType=solid&backgroundColor=b6e3f4,c0aede,d1d4f9&seed=${cellOwner.username}`,
+    pic_square: `https://api.dicebear.com/9.x/miniavs/png?seed=${cellOwner.username}`,
+    im: `https://api.dicebear.com/9.x/miniavs/png?seed=${cellOwner.username}`
   };
 };
