@@ -103,7 +103,7 @@ export const baseLoad: KoaController = async (ctx) => {
     flags,
     error: 0,
     currenttime: getCurrentDateTime(),
-    pic_square: `https://api.dicebear.com/7.x/adventurer/png?backgroundType=solid&backgroundColor=b6e3f4,c0aede,d1d4f9&seed=${save.name}`,
+    pic_square: `https://api.dicebear.com/9.x/miniavs/png?seed=${save.name}`,
     storeitems: { ...storeItems },
     ...filteredSave,
     id: filteredSave.basesaveid,
