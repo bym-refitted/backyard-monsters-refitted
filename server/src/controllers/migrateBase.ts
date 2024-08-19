@@ -2,8 +2,8 @@ import { KoaController } from "../utils/KoaController";
 import { User } from "../models/user.model";
 import { ORMContext } from "../server";
 import { Save } from "../models/save.model";
-import { joinOrCreateWorldMap } from "../services/maproom/v2/joinOrCreateWorldMap";
-import { subtractResources, updateResources } from "../data/updateResources";
+import { joinOrCreateWorld } from "../services/maproom/v2/joinOrCreateWorld";
+import { subtractResources } from "../data/updateResources";
 import { WorldMapCell } from "../models/worldmapcell.model";
 
 interface MigrateBaseRequest {
@@ -57,7 +57,7 @@ export const migrateBase: KoaController = async (ctx) => {
             ])
         }
     } else {
-        await joinOrCreateWorldMap(user, save, true)
+        await joinOrCreateWorld(user, save, true)
     }
 
     //

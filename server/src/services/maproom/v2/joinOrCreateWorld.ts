@@ -5,16 +5,15 @@ import { Save } from "../../../models/save.model";
 import { getBounds, getFreeCell } from "./world";
 import { logging } from "../../../utils/logger";
 import { World } from "../../../models/world.model";
-import { MapRoomSettings } from "../../../config/MapRoomSettings";
 import { generateFullMap } from "../../../controllers/maproom/v2/getArea";
 import { Terrain } from "../../../controllers/maproom/v2/terrain/Terrain";
+import { MAPROOM } from "../../../enums/MapRoom";
 
-export const joinOrCreateWorldMap = async (
+export const joinOrCreateWorld = async (
   user: User,
   save: Save,
   isMigratingWorlds: Boolean = false
 ): Promise<void> => {
-  
   //   if (migrate) {
   //     const cell = await getFreeCell(homeBase.world_id, true)
   //     homeBase.x = cell.x;
@@ -25,10 +24,9 @@ export const joinOrCreateWorldMap = async (
   // }
 
   // Find if there is a world already
-
   let world = await ORMContext.em.findOne(World, {
     playerCount: {
-      $lte: MapRoomSettings.worldMaxPlayer,
+      $lte: MAPROOM.MAX_PLAYERS,
     },
   });
 

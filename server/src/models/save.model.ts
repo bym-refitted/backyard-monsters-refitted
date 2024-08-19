@@ -1,7 +1,6 @@
 import { Entity, Property, PrimaryKey, BeforeUpdate } from "@mikro-orm/core";
 import { FrontendKey } from "../utils/FrontendKey";
-import { MapRoomSettings } from "../config/MapRoomSettings";
-
+import { MAPROOM } from "../enums/MapRoom";
 export interface FieldData {
   [key: string | number]: any;
 }
@@ -386,8 +385,8 @@ export class Save {
   // TODO: convert other generated properties to not persist
   @FrontendKey
   @Property({ persist: false })
-  get worldsize():number[] {
-    return [MapRoomSettings.worldMaxHeight, MapRoomSettings.worldMaxWidth];
+  get worldsize(): number[] {
+    return [MAPROOM.HEIGHT, MAPROOM.WIDTH];
   }
 
   @FrontendKey
