@@ -3,12 +3,12 @@ import { ORMContext } from "../../../server";
 import {
   deleteOutposts,
   deleteWorldMapBase,
-  joinOrCreateWorldMap,
-} from "../../../services/maproom/v2/joinOrCreateWorldMap";
+  joinOrCreateWorld,
+} from "../../../services/maproom/v2/joinOrCreateWorld";
 import { Save } from "../../../models/save.model";
 import { FilterFrontendKeys } from "../../../utils/FrontendKey";
 import { User } from "../../../models/user.model";
-import { MapVersion } from "../../../enums/MapVersion";
+import { MAPROOM_VERSION } from "../../../enums/MapRoom";
 
 export const setMapVersion: KoaController = async (ctx) => {
   const user: User = ctx.authUser;
@@ -17,9 +17,9 @@ export const setMapVersion: KoaController = async (ctx) => {
   let save: Save = user.save;
   const { version } = ctx.request.body as { version: string };
 
-  if (version === MapVersion.V2) {
+  if (version === MAPROOM_VERSION.V2) {
     save.usemap = 1;
-    await joinOrCreateWorldMap(user, save);
+    await joinOrCreateWorld(user, save);
   } else {
     save.usemap = 0;
     await removePlayerFromWorld(user, save);

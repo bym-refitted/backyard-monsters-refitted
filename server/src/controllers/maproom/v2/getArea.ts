@@ -9,8 +9,8 @@ import { Terrain } from "./terrain/Terrain";
 import { devConfig } from "../../../config/DevSettings";
 import { generateBaseID } from "../../../services/maproom/v2/world";
 import { ValueNoise } from "value-noise-js";
-import { MapRoomSettings } from "../../../config/MapRoomSettings";
 import { World } from "../../../models/world.model";
+import { MAPROOM } from "../../../enums/MapRoom";
 
 interface Cell {
   x?: number;
@@ -116,28 +116,28 @@ export const generateFullMap = async (
   const cells = {};
   const tribes = ["Legionnaire", "Kozu", "Abunakki", "Dreadnaut"];
 
-  for (let x = 0; x < MapRoomSettings.worldMaxWidth; x++) {
+  for (let x = 0; x < MAPROOM.WIDTH; x++) {
     const cellX = x;
     cells[cellX] = {};
 
-    for (let y = 0; y < MapRoomSettings.worldMaxHeight; y++) {
+    for (let y = 0; y < MAPROOM.HEIGHT; y++) {
       const cellY = y;
-      // Use the uuid as the seed
-      const noise = new ValueNoise(world.uuid, undefined, "perlin");
+      const noise = new ValueNoise(world.uuid, undefined, "perlin"); // Use the uuid as the seed
+
       const noiseScale = 3;
       const terrainScale = 83;
 
-      // /**
-      //  * The noise function is used to generate the terrain height.
-      //  * +1 is added to get rid of the negative values.
-      //  * We multiply by the terrain scale to get the desired height.
-      //  *
-      //  * Higher terrain: increase the terrain scale.
-      //  * Lower terrain: decrease the terrain scale.
-      //  *
-      //  * Smoother terrain over a larger area, increase the noise scale.
-      //  * Rougher terrain, decrease the noise scale.
-      //  */
+      /**
+       * The noise function is used to generate the terrain height.
+       * +1 is added to get rid of the negative values.
+       * We multiply by the terrain scale to get the desired height.
+       *
+       * Higher terrain: increase the terrain scale.
+       * Lower terrain: decrease the terrain scale.
+       *
+       * Smoother terrain over a larger area, increase the noise scale.
+       * Rougher terrain, decrease the noise scale.
+       */
       const terrainHeight = Math.round(
         (noise.evalXY(cellX / noiseScale, cellY / noiseScale) + 1) *
           terrainScale
@@ -168,7 +168,7 @@ export const generateFullMap = async (
       // cells[cellX][cellY] = monsterCell;
     }
     if (x % 100 === 0) {
-      console.log("Persisting world down the jacks");
+      console.log(`Seeding world: ${world.uuid} into database.`);
       await context.em.persistAndFlush(world);
     }
   }
