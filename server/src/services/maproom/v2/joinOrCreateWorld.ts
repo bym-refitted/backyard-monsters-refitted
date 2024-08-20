@@ -2,11 +2,9 @@ import { ORMContext } from "../../../server";
 import { WorldMapCell } from "../../../models/worldmapcell.model";
 import { User } from "../../../models/user.model";
 import { Save } from "../../../models/save.model";
-import { getBounds, getFreeCell } from "./world";
+import { getBounds } from "./world";
 import { logging } from "../../../utils/logger";
 import { World } from "../../../models/world.model";
-import { generateFullMap } from "../../../controllers/maproom/v2/getArea";
-import { Terrain } from "../../../controllers/maproom/v2/terrain/Terrain";
 import { MAPROOM } from "../../../enums/MapRoom";
 
 export const joinOrCreateWorld = async (
@@ -33,10 +31,14 @@ export const joinOrCreateWorld = async (
   if (!world) {
     logging("All worlds full, creating new world");
     world = ORMContext.em.create(World, {});
-    world = await generateFullMap(world, ORMContext);
   } else {
     logging(`World found with ${world.playerCount} players`);
   }
+
+  // Make sure in future that we clear the save id when you leave a world
+  // or I will be leaving my sanity
+  if (save.worldid === world.uuid) return;
+
   save.worldid = world.uuid;
   world.playerCount += 1;
 
@@ -53,15 +55,12 @@ export const joinOrCreateWorld = async (
   //   }
   // const cell = await getFreeCell(world.uuid, true);
 
-  // getArea()
-
-  const homebaseCell = await ORMContext.em.findOne(WorldMapCell, {
-    terrainHeight: {
-      $gte: Terrain.SAND1,
-    },
-    uid: 0,
-    base_type: 0,
-  });
+  const homebaseCell = new WorldMapCell(
+    world,
+    world.playerCount - 1,
+    world.playerCount - 1,
+    159
+  );
 
   homebaseCell.uid = user.userid;
   homebaseCell.base_type = 2;

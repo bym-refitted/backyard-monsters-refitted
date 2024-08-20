@@ -16,6 +16,8 @@ import { saveFailureErr } from "../errors/errorCodes.";
 import { removeBaseProtection } from "../services/maproom/v2/joinOrCreateWorld";
 import { BASE_MODE } from "../enums/Base";
 import { ENV } from "../enums/Env";
+import { getNoise, getTerrainHeight } from "../config/WorldGenSettings";
+import { World } from "../models/world.model";
 
 interface BaseLoadRequest {
   type: string;
@@ -26,7 +28,6 @@ interface BaseLoadRequest {
 
 export const baseLoad: KoaController = async (ctx) => {
   const requestBody: BaseLoadRequest = <BaseLoadRequest>ctx.request.body;
-  console.log("HIT: Loading view base", requestBody.baseid);
 
   const user: User = ctx.authUser;
   await ORMContext.em.populate(user, ["save"]);
@@ -77,19 +78,32 @@ export const baseLoad: KoaController = async (ctx) => {
       });
       if (!cell) {
         // Create a cell record when attacking tribe bases
-        cell = ORMContext.em.create(WorldMapCell, {
-          world_id: authSave.worldid,
-          x: parseInt(save.homebase[0]),
-          y: parseInt(save.homebase[1]),
-          base_id: save.basesaveid,
-          uid: save.saveuserid,
-          base_type: 1,
+        const world = await ORMContext.em.findOne(World, {
+          uuid: authSave.worldid,
         });
+
+        if (!world) throw new Error("No world found.");
+
+        const baseIdSplit = [...`${requestBody.baseid}`];
+        const cellX = parseInt(baseIdSplit.slice(1, 4).join(""));
+        const cellY = parseInt(baseIdSplit.slice(4).join(""));
+        const cell = new WorldMapCell(
+          world,
+          cellX,
+          cellY,
+          getTerrainHeight(getNoise(authSave.worldid), cellX, cellY),
+          {
+            base_id: parseInt(baseIdSplit.join()),
+            uid: save.saveuserid,
+            base_type: 1,
+          }
+        );
+
+        await ORMContext.em.persistAndFlush(cell);
+        save.homebaseid = parseInt(baseIdSplit.join());
+        save.cellid = cell.cell_id;
+        save.worldid = world.uuid;
       }
-      await ORMContext.em.persistAndFlush(cell);
-      save.homebaseid = save.basesaveid;
-      save.cellid = cell.cell_id;
-      save.worldid = cell.world_id;
     }
     await ORMContext.em.persistAndFlush(save);
   }
