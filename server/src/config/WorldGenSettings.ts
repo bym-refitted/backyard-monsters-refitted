@@ -24,12 +24,10 @@ export const TERRAIN_SCALE: number = 83;
  * Calculates the terrain height at a given cell based on noise values.
  * The noise value is scaled by NOISE_SCALE and then adjusted to fit within the range defined by TERRAIN_SCALE.
  * +1 is added to get rid of the negative values.
+ * 
  * Higher terrain: increase the terrain scale.
  * Lower terrain: decrease the terrain scale.
- *
- * Smoother terrain over a larger area, increase the noise scale.
- * Rougher terrain, decrease the noise scale.
- *
+ * 
  * @param {ValueNoise} noise - The noise generator instance.
  * @param {number} cellX - The x-coordinate of the cell.
  * @param {number} cellY - The y-coordinate of the cell.
