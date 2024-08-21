@@ -17,7 +17,7 @@ interface Cell {
   sendresources?: number;
 }
 
-// We ignore whats requested by the client as the fronend is hardcoded to 10x10
+// We ignore what's requested by the client as it's already hardcoded to 10x10
 const width = 10;
 const height = 10;
 
@@ -51,8 +51,9 @@ export const getArea: KoaController = async (ctx) => {
   });
 
   /**
-   * First we get the cells which have been stored in the database
-   * These are cells such as home cells, attacked wild monster cells, outposts etc. which require persistance
+   * First, we get the cells which have been stored in the database.
+   * These cells include: homebase, attacked wild monsters, and outposts.
+   * All of which require persistance.
    */
   const cells = {};
   for (const cell of dbCells) {
@@ -61,7 +62,7 @@ export const getArea: KoaController = async (ctx) => {
   }
 
   /**
-   * Fills in the remaining cells in memory, without persisting to the database
+   * Then, we fill the remaining cells in-memory, without persisting to the database.
    */
   const noise = getNoise(user.save.worldid);
   for (let cellX = currentX; cellX <= currentX + width; cellX++) {

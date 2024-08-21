@@ -31,7 +31,7 @@ export const baseLoad: KoaController = async (ctx) => {
 
   const user: User = ctx.authUser;
   await ORMContext.em.populate(user, ["save"]);
-  const authSave = user.save;
+  const userSave = user.save;
   let save: Save = null;
 
   if (requestBody.type === BASE_MODE.BUILD) {
@@ -79,7 +79,7 @@ export const baseLoad: KoaController = async (ctx) => {
       if (!cell) {
         // Create a cell record when attacking tribe bases
         const world = await ORMContext.em.findOne(World, {
-          uuid: authSave.worldid,
+          uuid: userSave.worldid,
         });
 
         if (!world) throw new Error("No world found.");
@@ -91,7 +91,7 @@ export const baseLoad: KoaController = async (ctx) => {
           world,
           cellX,
           cellY,
-          getTerrainHeight(getNoise(authSave.worldid), cellX, cellY),
+          getTerrainHeight(getNoise(userSave.worldid), cellX, cellY),
           {
             base_id: parseInt(baseIdSplit.join()),
             uid: save.saveuserid,
