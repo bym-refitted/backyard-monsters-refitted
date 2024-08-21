@@ -42,8 +42,6 @@ export const login: KoaController = async (ctx) => {
     `User ${filteredUser.username} successful login | ID: ${filteredUser.userid} | Email: ${filteredUser.email} | IP Address: ${ctx.ip}`
   );
 
-  ctx.session.userid = filteredUser.userid;
-
   ctx.status = 200;
   ctx.body = {
     error: 0,
