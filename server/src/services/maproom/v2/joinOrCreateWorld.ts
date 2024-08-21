@@ -74,33 +74,6 @@ export const joinOrCreateWorld = async (
   return ORMContext.em.flush();
 };
 
-export const deleteWorldMapBase = async (user: User) => {
-  const fork = ORMContext.em.fork();
-  const homeBase = await fork.findOne(WorldMapCell, {
-    uid: user.userid,
-  });
-
-  if (homeBase) {
-    ORMContext.em.remove(homeBase);
-  }
-};
-
-export const deleteOutposts = async (user: User) => {
-  const fork = ORMContext.em.fork();
-
-  const cells = await fork.find(WorldMapCell, {
-    uid: user.userid,
-  });
-
-  const outposts = await fork.find(Save, {
-    saveuserid: user.userid,
-    type: "outpost",
-  });
-
-  await fork.removeAndFlush(cells);
-  await fork.removeAndFlush(outposts);
-};
-
 export const removeBaseProtection = async (
   user: User,
   homebase: Array<string>
