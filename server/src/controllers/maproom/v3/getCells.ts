@@ -1,7 +1,9 @@
+import { User } from "../../../models/user.model";
 import { KoaController } from "../../../utils/KoaController";
 
 export const getMapRoomCells: KoaController = async (ctx) => {
-  const uid = ctx.session.userid || 0;
+  const user : User = ctx.authUser;
+  const uid = user.userid;
 
   ctx.status = 200;
   ctx.body = {

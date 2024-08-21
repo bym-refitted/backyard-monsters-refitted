@@ -2,7 +2,6 @@ import "reflect-metadata";
 import "dotenv/config";
 
 import Koa, { Context, Next } from "koa";
-import session from "koa-session";
 import Router from "@koa/router";
 import bodyParser from "koa-bodyparser";
 import serve from "koa-static";
@@ -16,7 +15,6 @@ import { ascii_node } from "./utils/ascii_art";
 import { ErrorInterceptor } from "./middleware/clientSafeError";
 import { processLanguagesFile } from "./middleware/processLanguageFile";
 import { logMissingAssets, morganLogging } from "./middleware/morganLogging";
-import { SESSION_CONFIG } from "./config/SessionConfig";
 import { getLatestSwfFromGithub } from "./utils/getLatestSwfFromGithub";
 
 /**
@@ -53,10 +51,6 @@ api.get("/", (ctx: Context) => (ctx.body = {}));
 
 (async () => {
   await firstRunEnv();
-
-  // Sessions
-  app.keys = [process.env.SECRET_KEY];
-  app.use(session(SESSION_CONFIG, app));
 
   ORMContext.orm = await MikroORM.init<MariaDbDriver>(ormConfig);
   ORMContext.em = ORMContext.orm.em;
