@@ -124,8 +124,8 @@ export const getDefaultBaseData = (user?: User) => {
     savetemplate: [],
     updates: [],
     effects: [],
-    homebase: null, // ToDo: This should be randomly generated per user, within the range of the map room grid
-    outposts: null, // Dummy outposts
+    homebase: null,
+    outposts: null,
     // worldsize: [800, 800],
     wmstatus: [],
     chatservers: ["bym-chat.kixeye.com"],
