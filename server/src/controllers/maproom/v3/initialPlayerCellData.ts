@@ -1,11 +1,12 @@
 import { User } from "../../../models/user.model";
+import { STATUS } from "../../../enums/StatusCodes";
 import { KoaController } from "../../../utils/KoaController";
 
 export const initialPlayerCellData: KoaController = async (ctx) => {
   const user : User = ctx.authUser;
   const uid = user.userid;
 
-  ctx.status = 200;
+  ctx.status = STATUS.OK;
   ctx.body = {
     error: 0,
     celldata: [
