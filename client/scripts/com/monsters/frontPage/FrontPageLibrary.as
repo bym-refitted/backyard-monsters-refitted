@@ -58,7 +58,7 @@ package com.monsters.frontPage
          NEWS.addMessage(new News04Slimeattikus());
          NEWS.addMessage(new News05YardPlanner2());
          NEWS.addMessage(new News06TownHallLevel10());
-         PROMOTIONS.addMessage(new Maproom3OptInPopup());
+         // PROMOTIONS.addMessage(new Maproom3OptInPopup()); Disable Map Room 3 popups
          PROMOTIONS.addMessage(new Promo01DaveClub());
          PROMOTIONS.addMessage(new Promo02DaveClub());
          PROMOTIONS.addMessage(new Promo03RecapturedGorgo());
