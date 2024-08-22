@@ -8,6 +8,7 @@ import {
   getNoise,
   getTerrainHeight,
 } from "../../../config/WorldGenSettings";
+import { STATUS } from "../../../enums/StatusCodes";
 
 interface Cell {
   x?: number;
@@ -84,7 +85,7 @@ export const getArea: KoaController = async (ctx) => {
   }
 
   if (devConfig.maproom) {
-    ctx.status = 200;
+    ctx.status = STATUS.OK;
     ctx.body = {
       error: 0,
       x: currentX,
@@ -97,7 +98,7 @@ export const getArea: KoaController = async (ctx) => {
       ctx.body["credits"] = save.credits;
     }
   } else {
-    ctx.status = 404;
+    ctx.status = STATUS.NOT_FOUND;
     ctx.body = { message: "MapRoom is not enabled on this server", error: 1 };
   }
 };

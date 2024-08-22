@@ -1,4 +1,5 @@
 import { MAPROOM } from "../../../enums/MapRoom";
+import { STATUS } from "../../../enums/StatusCodes";
 import { KoaController } from "../../../utils/KoaController";
 
 export const getNewMap: KoaController = async (ctx) => {
@@ -24,6 +25,6 @@ export const getNewMap: KoaController = async (ctx) => {
     data: cells,
   };
 
-  ctx.status = 200;
+  ctx.status = STATUS.OK;
   ctx.body = response;
 };

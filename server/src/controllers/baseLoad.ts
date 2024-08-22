@@ -18,6 +18,7 @@ import { BASE_MODE } from "../enums/Base";
 import { ENV } from "../enums/Env";
 import { getNoise, getTerrainHeight } from "../config/WorldGenSettings";
 import { World } from "../models/world.model";
+import { STATUS } from "../enums/StatusCodes";
 
 interface BaseLoadRequest {
   type: string;
@@ -107,12 +108,11 @@ export const baseLoad: KoaController = async (ctx) => {
     }
     await ORMContext.em.persistAndFlush(save);
   }
-
   const filteredSave = FilterFrontendKeys(save);
 
   const isTutorialEnabled = devConfig.skipTutorial ? 205 : 0;
 
-  ctx.status = 200;
+  ctx.status = STATUS.OK;
   ctx.body = {
     flags,
     error: 0,
