@@ -3,7 +3,7 @@ import { WorldMapCell } from "../../../models/worldmapcell.model";
 import { Context } from "koa";
 import { Terrain } from "../../../enums/MapRoom";
 import { homeCell } from "../../../controllers/maproom/v2/cells/homeCell";
-import { Tribes } from "../../../enums/Tribes";
+import { wildMonsterCell } from "../../../controllers/maproom/v2/cells/wildMonsterCell";
 
 /**
  * Constructs the necessary data object of a cell on the world map.
@@ -18,20 +18,9 @@ export const createCellData = async (
 ) => {
   if (cell.terrainHeight <= Terrain.WATER3) return { i: cell.terrainHeight };
 
-  // If it's a homebase cell or outpost
+  // If it's a homebase cell
   if (cell.base_type >= 2) return await homeCell(ctx, cell);
 
-  const tribeIndex = (cell.x + cell.y) % Tribes.length;
-  let baseId = 1000000 + cell.y + cell.x * 1000;
-
-  return {
-    uid: baseId,
-    b: 1,
-    i: cell.terrainHeight,
-    bid: baseId,
-    n: Tribes[tribeIndex],
-    l: 40,
-    dm: 0,
-    d: 0,
-  };
+  // Otherwise, return a wild monster cell
+  return await wildMonsterCell(cell);
 };
