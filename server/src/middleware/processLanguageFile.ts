@@ -1,7 +1,7 @@
 import { Context, Next } from "koa";
 import fs from "fs/promises";
 import { errorLog } from "../utils/logger";
-import { STATUS } from "../enums/StatusCodes";
+import { Status } from "../enums/StatusCodes";
 
 export const processLanguagesFile = async (ctx: Context, next: Next) => {
   const matchLanguage = /^\/gamestage\/assets\/([a-zA-Z]+)\.json$/;
@@ -18,7 +18,7 @@ export const processLanguagesFile = async (ctx: Context, next: Next) => {
       ctx.body = { data };
       ctx.type = "application/json";
     } catch (error) {
-      ctx.status = STATUS.INTERNAL_SERVER_ERROR;
+      ctx.status = Status.INTERNAL_SERVER_ERROR;
       ctx.body = "Error processing JSON data";
       errorLog(error);
     }

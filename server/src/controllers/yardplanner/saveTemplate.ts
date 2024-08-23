@@ -1,4 +1,4 @@
-import { STATUS } from "../../enums/StatusCodes";
+import { Status } from "../../enums/StatusCodes";
 import { User } from "../../models/user.model";
 import { ORMContext } from "../../server";
 import { KoaController } from "../../utils/KoaController";
@@ -29,7 +29,7 @@ export const saveTemplate: KoaController = async (ctx) => {
   }
   await ORMContext.em.persistAndFlush(save);
 
-  ctx.status = STATUS.OK;
+  ctx.status = Status.OK;
   ctx.body = {
     error: 0,
     ...save.savetemplate

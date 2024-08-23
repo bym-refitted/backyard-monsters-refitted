@@ -23,7 +23,7 @@ import { transferAssets } from "./controllers/maproom/v2/transferAssets";
 import { apiVersion } from "./middleware/apiVersioning";
 import { supportedLangs } from "./controllers/supportedLangs";
 import { releasesWebhook } from "./controllers/github/releasesWebhook";
-import { STATUS } from "./enums/StatusCodes";
+import { Status } from "./enums/StatusCodes";
 
 const router = new Router();
 

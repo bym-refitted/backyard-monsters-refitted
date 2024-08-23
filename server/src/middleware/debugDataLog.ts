@@ -1,6 +1,6 @@
 import { Context, Next } from "koa";
 import { errorLog, logging } from "../utils/logger";
-import { ENV } from "../enums/Env";
+import { Env } from "../enums/Env";
 
 export const debugDataLog =
   (logMessage: string = "Request body") =>
@@ -16,7 +16,7 @@ export const debugDataLog =
     if (chalk) {
       const highlight = chalk.default.yellow.bold;
 
-      if (process.env.ENV === ENV.LOCAL) {
+      if (process.env.ENV === Env.LOCAL) {
         logging(
           `${highlight(`${logMessage.toUpperCase()}:`)} ${JSON.stringify(
             ctx.request.body
@@ -24,7 +24,7 @@ export const debugDataLog =
         );
       }
     } else {
-      if (process.env.ENV === ENV.LOCAL) {
+      if (process.env.ENV === Env.LOCAL) {
         // If chalk import fails, continue with normal log format
         logging(
           `${logMessage.toUpperCase()}: ${JSON.stringify(ctx.request.body)}`

@@ -5,7 +5,7 @@ import { Save } from "../../../models/save.model";
 import { getBounds } from "./world";
 import { logging } from "../../../utils/logger";
 import { World } from "../../../models/world.model";
-import { MAPROOM } from "../../../enums/MapRoom";
+import { MapRoom } from "../../../enums/MapRoom";
 
 export const joinOrCreateWorld = async (
   user: User,
@@ -24,7 +24,7 @@ export const joinOrCreateWorld = async (
   // Find if there is a world already
   let world = await ORMContext.em.findOne(World, {
     playerCount: {
-      $lte: MAPROOM.MAX_PLAYERS,
+      $lte: MapRoom.MAX_PLAYERS,
     },
   });
 

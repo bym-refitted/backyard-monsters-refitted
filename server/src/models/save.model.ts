@@ -1,6 +1,6 @@
 import { Entity, Property, PrimaryKey, BeforeUpdate } from "@mikro-orm/core";
 import { FrontendKey } from "../utils/FrontendKey";
-import { MAPROOM } from "../enums/MapRoom";
+import { MapRoom } from "../enums/MapRoom";
 export interface FieldData {
   [key: string | number]: any;
 }
@@ -386,7 +386,7 @@ export class Save {
   @FrontendKey
   @Property({ persist: false })
   get worldsize(): number[] {
-    return [MAPROOM.HEIGHT, MAPROOM.WIDTH];
+    return [MapRoom.HEIGHT, MapRoom.WIDTH];
   }
 
   @FrontendKey

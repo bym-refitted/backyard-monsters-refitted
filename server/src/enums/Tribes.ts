@@ -1,5 +1,5 @@
 /**
- * Enum representing the different tribes.
+ * Enum representing the different wild monster tribes.
  * @enum {string}
  */
 export enum Tribe {
@@ -10,10 +10,10 @@ export enum Tribe {
 }
 
 /**
- * Array of all tribes.
+ * Array of all wild monster tribes.
  * @type {Tribe[]}
  */
-export const TRIBES: Tribe[] = [
+export const Tribes: Tribe[] = [
   Tribe.LEGIONNAIRE,
   Tribe.KOZU,
   Tribe.ABUNAKKI,

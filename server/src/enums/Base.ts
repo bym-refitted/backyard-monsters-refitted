@@ -1,13 +1,14 @@
-/** Base mode types for processing base states */
-export enum BASE_MODE {
-  // Main Yard
+/**
+ * Enum representing Base mode types for processing base states
+ * @enum {string}
+ */
+export enum BaseMode {
   BUILD = "build",              // Build main yard
   ATTACK = "attack",            // Attack main yard
   WMATTACK = "wmattack",        // Wild monster attack
   VIEW = "view",                // Viewing main yard
   HELP = "help",                // Main yard help
 
-  // Inferno Yard
   IBUILD = "ibuild",            // Build inferno yard
   IATTACK = "iattack",          // Attack inferno yard
   IWMATTACK = "iwmattack",      // Inferno wild monster attack
@@ -15,13 +16,15 @@ export enum BASE_MODE {
   IVIEW = "iview",              // Viewing inferno yard
   IHELP = "ihelp",              // Inferno help
 
-  // Wild Monster
   WMVIEW = "wmview",            // Viewing wild monsters
   IWMVIEW = "iwmview"           // Viewing wild monsters in the inferno
 }
 
-/** Base types */
-export enum BASE_TYPE {
+/** 
+ * Enum representing base types 
+ * @enum {string}
+ */
+export enum BaseType {
   MAIN = "main",                // Main yard
   OUTPOST = "outpost",          // Outpost yard
   WILDMONSTER = "wildmonster",  // Wild monster yard

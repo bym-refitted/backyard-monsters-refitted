@@ -1,4 +1,4 @@
-import { STATUS } from "../../enums/StatusCodes";
+import { Status } from "../../enums/StatusCodes";
 import { User } from "../../models/user.model";
 import { ORMContext } from "../../server";
 import { KoaController } from "../../utils/KoaController";
@@ -10,7 +10,7 @@ export const getTemplates: KoaController = async (ctx) => {
   await ORMContext.em.populate(user, ["save"]);
   const template = save.savetemplate;
 
-  ctx.status = STATUS.OK;
+  ctx.status = Status.OK;
   ctx.body = {
     error: 0,
     ...template

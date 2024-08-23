@@ -6,7 +6,7 @@ import { User } from "../../models/user.model";
 import { FilterFrontendKeys } from "../../utils/FrontendKey";
 import { authFailureErr } from "../../errors/errorCodes.";
 import { logging } from "../../utils/logger";
-import { STATUS } from "../../enums/StatusCodes";
+import { Status } from "../../enums/StatusCodes";
 
 const UserRegisterSchema = z.object({
   username: z.string(),
@@ -31,7 +31,7 @@ export const register: KoaController = async (ctx) => {
       `User ${filteredUser.username} registered successfully | ID: ${filteredUser.userid} | Email: ${filteredUser.email} | IP Address: ${ctx.ip}`
     );
 
-    ctx.status = STATUS.OK;
+    ctx.status = Status.OK;
     ctx.body = { user: filteredUser };
   } catch (err) {
     throw authFailureErr();

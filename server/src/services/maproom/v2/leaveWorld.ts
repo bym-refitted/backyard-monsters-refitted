@@ -1,4 +1,4 @@
-import { BASE_TYPE } from "../../../enums/Base";
+import { BaseType } from "../../../enums/Base";
 import { Save } from "../../../models/save.model";
 import { User } from "../../../models/user.model";
 import { WorldMapCell } from "../../../models/worldmapcell.model";
@@ -29,7 +29,7 @@ const removeUserCells = async (user: User) => {
 
   const outposts = await ORMContext.em.find(Save, {
     saveuserid: user.userid,
-    type: BASE_TYPE.OUTPOST,
+    type: BaseType.OUTPOST,
   });
 
   if (outposts.length > 0) await ORMContext.em.removeAndFlush(outposts);
