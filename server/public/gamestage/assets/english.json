@@ -1652,7 +1652,7 @@
     "msg_cantrecycleoutpost": "You can not Recycle your Outpost",
     "newmap_opening": "Opening Map...",
     "newmap_bm_name": "Please enter a name for this bookmark.",
-    "newmap_init_setup": "Please wait a moment while we set up the MapRoom. This should only take a few seconds.",
+    "newmap_init_setup": "Please wait a moment while we set up the Map Room. This should only take a few seconds. You can close this message and try again.",
     "newmap_bm_long": "This bookmark name is too long.",
     "newmap_bm_full": "You have too many bookmarks. Please remove one and try again.",
     "newmap_bm_done": "You have already bookmarked this location.",

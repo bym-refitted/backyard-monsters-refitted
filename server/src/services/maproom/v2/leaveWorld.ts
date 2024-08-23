@@ -17,6 +17,7 @@ export const leaveWorld = async (user: User, save: Save) => {
   save.cellid = null;
   save.homebase = null;
   save.outposts = null;
+  save.usemap = 0;
 
   await removeUserCells(user);
   await ORMContext.em.persistAndFlush(save);

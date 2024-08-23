@@ -39,6 +39,7 @@ export const joinOrCreateWorld = async (
   // or I will be leaving my sanity
   if (save.worldid === world.uuid) return;
 
+  save.usemap = 1;
   save.worldid = world.uuid;
   world.playerCount += 1;
 
