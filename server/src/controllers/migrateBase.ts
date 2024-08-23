@@ -5,6 +5,7 @@ import { Save } from "../models/save.model";
 import { joinOrCreateWorld } from "../services/maproom/v2/joinOrCreateWorld";
 import { subtractResources } from "../data/updateResources";
 import { WorldMapCell } from "../models/worldmapcell.model";
+import { STATUS } from "../enums/StatusCodes";
 
 interface MigrateBaseRequest {
     shiny?: string,
@@ -73,7 +74,7 @@ export const migrateBase: KoaController = async (ctx) => {
     // Update outposts homebase
     await ORMContext.em.persistAndFlush(outposts);
 
-    ctx.status = 200;
+    ctx.status = STATUS.OK;
     ctx.body = {
         error: error,
         resources: save.resources

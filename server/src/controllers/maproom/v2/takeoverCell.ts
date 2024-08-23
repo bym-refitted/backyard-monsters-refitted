@@ -5,6 +5,7 @@ import { Save } from "../../../models/save.model";
 import { subtractResources, updateResources } from "../../../data/updateResources";
 import { WorldMapCell } from "../../../models/worldmapcell.model";
 import { calculateBaseLevel } from "../../../services/base/calculateBaseLevel";
+import { STATUS } from "../../../enums/StatusCodes";
 
 interface TakeoverCellRequest {
     baseid: string
@@ -98,7 +99,7 @@ export const takeoverCell: KoaController = async (ctx) => {
         }
     }
 
-    ctx.status = 200;
+    ctx.status = STATUS.OK;
     ctx.body = {
         error: error,
     };

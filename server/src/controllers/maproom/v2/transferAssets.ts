@@ -1,6 +1,7 @@
 import { KoaController } from "../../../utils/KoaController";
 import { ORMContext } from "../../../server";
 import { Save } from "../../../models/save.model";
+import { STATUS } from "../../../enums/StatusCodes";
 
 interface TransferAssetsRequest {
     frombaseid: string
@@ -34,7 +35,7 @@ export const transferAssets: KoaController = async (ctx) => {
         }
     }
 
-    ctx.status = 200
+    ctx.status = STATUS.OK;
     ctx.body = {
         error,
     }
