@@ -6,6 +6,7 @@ import { joinOrCreateWorld } from "../../../services/maproom/v2/joinOrCreateWorl
 import { leaveWorld } from "../../../services/maproom/v2/leaveWorld";
 import { FilterFrontendKeys } from "../../../utils/FrontendKey";
 import { MAPROOM_VERSION } from "../../../enums/MapRoom";
+import { STATUS } from "../../../enums/StatusCodes";
 
 /**
  * Map version controller for Map Room 2 .
@@ -24,7 +25,7 @@ export const setMapVersion: KoaController = async (ctx) => {
 
   const filteredSave = FilterFrontendKeys(save);
 
-  ctx.status = 200;
+  ctx.status = STATUS.OK;
   ctx.body = {
     error: 0,
     id: filteredSave.basesaveid,
