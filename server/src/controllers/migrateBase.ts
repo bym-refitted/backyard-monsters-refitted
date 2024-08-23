@@ -3,7 +3,7 @@ import { User } from "../models/user.model";
 import { ORMContext } from "../server";
 import { Save } from "../models/save.model";
 import { joinOrCreateWorld } from "../services/maproom/v2/joinOrCreateWorld";
-import { subtractResources } from "../data/updateResources";
+import { subtractResources } from "../services/base/updateResources";
 import { WorldMapCell } from "../models/worldmapcell.model";
 import { Status } from "../enums/StatusCodes";
 

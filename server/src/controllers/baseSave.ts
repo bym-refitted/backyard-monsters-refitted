@@ -1,5 +1,5 @@
-import { updateCredits } from "../data/updateCredits";
-import { Resources, updateResources } from "../data/updateResources";
+import { updateCredits } from "../services/base/updateCredits";
+import { Resources, updateResources } from "../services/base/updateResources";
 import { FieldData, Save } from "../models/save.model";
 import { User } from "../models/user.model";
 import { ORMContext } from "../server";
