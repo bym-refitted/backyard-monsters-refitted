@@ -25,6 +25,7 @@ export const homeCell = async (ctx: Context, cell: WorldMapCell) => {
 
   const isOnline = Date.now() / 1000 - save.savetime < 30;
   const locked = isOnline ? 1 : save.locked;
+  const baseLevel =  calculateBaseLevel(save.points, save.basevalue);
   let isCellProtected = save.protected;
 
   /** TODO: https://backyardmonsters.fandom.com/wiki/Damage_Protection */
@@ -48,7 +49,7 @@ export const homeCell = async (ctx: Context, cell: WorldMapCell) => {
     p: isCellProtected,
     r: save.resources,
     m: save.monsters,
-    l: calculateBaseLevel(save.points, save.basevalue),
+    l: baseLevel,
     d: save.damage > 90,
     lo: locked,
     dm: save.damage,

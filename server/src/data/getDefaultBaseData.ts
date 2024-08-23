@@ -1,7 +1,7 @@
 import { devConfig } from "../config/DevSettings";
 import { User } from "../models/user.model";
-import { debugSandbox } from "../bases/debugSandbox";
-import { devSandbox } from "../bases/devSandbox";
+import { debugSandbox } from "../dev/debugSandbox";
+import { devSandbox } from "../dev/devSandbox";
 import { generateID } from "../utils/generateID";
 import { getCurrentDateTime } from "../utils/getCurrentDateTime";
 
