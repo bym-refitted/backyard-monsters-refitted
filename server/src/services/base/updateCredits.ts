@@ -1,6 +1,6 @@
-import { Save } from "../models/save.model";
-import { errorLog } from "../utils/logger";
-import { StoreItem, storeItems } from "./storeItems";
+import { Save } from "../../models/save.model";
+import { errorLog } from "../../utils/logger";
+import { StoreItem, storeItems } from "../../data/storeItems";
 
 interface Mushrooms {
   MUSHROOM1: number;

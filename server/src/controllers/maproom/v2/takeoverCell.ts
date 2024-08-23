@@ -2,7 +2,7 @@ import { KoaController } from "../../../utils/KoaController";
 import { User } from "../../../models/user.model";
 import { ORMContext } from "../../../server";
 import { Save } from "../../../models/save.model";
-import { subtractResources, updateResources } from "../../../data/updateResources";
+import { subtractResources, updateResources } from "../../../services/base/updateResources";
 import { WorldMapCell } from "../../../models/worldmapcell.model";
 import { calculateBaseLevel } from "../../../services/base/calculateBaseLevel";
 import { Status } from "../../../enums/StatusCodes";

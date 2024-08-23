@@ -1,4 +1,4 @@
-import { FieldData } from "../models/save.model";
+import { FieldData } from "../../models/save.model";
 
 export interface Resources {
   r1: number;
