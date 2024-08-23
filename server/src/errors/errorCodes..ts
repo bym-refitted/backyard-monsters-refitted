@@ -1,4 +1,4 @@
-import { STATUS } from "../enums/StatusCodes";
+import { Status } from "../enums/StatusCodes";
 import { ClientSafeError } from "../middleware/clientSafeError";
 
 enum ErrorCodes {
@@ -10,7 +10,7 @@ enum ErrorCodes {
 export const authFailureErr = () =>
   new ClientSafeError({
     message: "Could not authenticate",
-    status: STATUS.UNAUTHORIZED,
+    status: Status.UNAUTHORIZED,
     code: ErrorCodes.AUTH_ERROR,
     data: null,
   });
@@ -18,7 +18,7 @@ export const authFailureErr = () =>
 export const debugClientErr = () =>
   new ClientSafeError({
     message: "Sorry, it appears this cannot be found.",
-    status: STATUS.NOT_FOUND,
+    status: Status.NOT_FOUND,
     code: ErrorCodes.DEBUG_ERROR,
     data: null,
   });
@@ -26,7 +26,7 @@ export const debugClientErr = () =>
 export const saveFailureErr = () =>
   new ClientSafeError({
     message: "We encountered an unexpected error",
-    status: STATUS.INTERNAL_SERVER_ERROR,
+    status: Status.INTERNAL_SERVER_ERROR,
     code: ErrorCodes.SAVE_ERROR,
     data: null,
   });

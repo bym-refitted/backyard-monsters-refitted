@@ -3,7 +3,7 @@ import { User } from "../../../../models/user.model";
 import { ORMContext } from "../../../../server";
 import { WorldMapCell } from "../../../../models/worldmapcell.model";
 import { calculateBaseLevel } from "../../../../services/base/calculateBaseLevel";
-import { BASE_TYPE } from "../../../../enums/Base";
+import { BaseType } from "../../../../enums/Base";
 
 export const homeCell = async (ctx: Context, cell: WorldMapCell) => {
   const currentUser: User = ctx.authUser;
@@ -28,7 +28,7 @@ export const homeCell = async (ctx: Context, cell: WorldMapCell) => {
   let isCellProtected = save.protected;
 
   /** TODO: https://backyardmonsters.fandom.com/wiki/Damage_Protection */
-  if (save.type === BASE_TYPE.MAIN && save.damage >= 50) isCellProtected = 1;
+  if (save.type === BaseType.MAIN && save.damage >= 50) isCellProtected = 1;
 
   return {
     uid: cellOwner.userid,

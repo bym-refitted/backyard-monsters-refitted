@@ -7,7 +7,7 @@ import { KoaController } from "../utils/KoaController";
 import { getCurrentDateTime } from "../utils/getCurrentDateTime";
 import { User } from "../models/user.model";
 import { loadBuildBase, loadViewBase } from "../services/base/loadBase";
-import { STATUS } from "../enums/StatusCodes";
+import { Status } from "../enums/StatusCodes";
 
 export const updateSaved: KoaController = async (ctx) => {
   const user: User = ctx.authUser;
@@ -47,6 +47,6 @@ export const updateSaved: KoaController = async (ctx) => {
     ...filteredSave,
   };
 
-  ctx.status = STATUS.OK;
+  ctx.status = Status.OK;
   ctx.body = baseUpdateSave;
 };

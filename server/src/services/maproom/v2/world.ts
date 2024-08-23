@@ -2,7 +2,7 @@ import { ORMContext } from "../../../server";
 import { WorldMapCell } from "../../../models/worldmapcell.model";
 import { EntityManager } from "@mikro-orm/mariadb";
 import { logging } from "../../../utils/logger";
-import { MAPROOM } from "../../../enums/MapRoom";
+import { MapRoom } from "../../../enums/MapRoom";
 
 interface FreeXY {
   x: number;
@@ -31,9 +31,9 @@ export const getFreeCell = async (
 const generateRandomCoordinates = async (world_id: string): Promise<FreeXY> => {
   const fork = ORMContext.em.fork() as EntityManager;
   const minX = 0; // Define your map's min X value
-  const maxX = MAPROOM.WIDTH - 1; // Define your map's max X value
+  const maxX = MapRoom.WIDTH - 1; // Define your map's max X value
   const minY = 0; // Define your map's min Y value
-  const maxY = MAPROOM.HEIGHT - 1; // Define your map's max Y value
+  const maxY = MapRoom.HEIGHT - 1; // Define your map's max Y value
 
   // Generate random x and y within the map's range
   const randomX = Math.floor(Math.random() * (maxX - minX + 1)) + minX;

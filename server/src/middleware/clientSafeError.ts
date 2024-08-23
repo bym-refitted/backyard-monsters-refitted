@@ -1,6 +1,6 @@
 import { Context, Next } from "koa";
 import { errorLog } from "../utils/logger";
-import { STATUS } from "../enums/StatusCodes";
+import { Status } from "../enums/StatusCodes";
 
 interface ConstructorParams {
   code: string;
@@ -23,7 +23,7 @@ export class ClientSafeError extends Error {
 
   constructor({
     message = "Something went wrong, please contact support.",
-    status = STATUS.INTERNAL_SERVER_ERROR,
+    status = Status.INTERNAL_SERVER_ERROR,
     code = "INTERNAL_ERROR",
     data = {},
     internalInfo,

@@ -1,12 +1,12 @@
 import { User } from "../../../models/user.model";
-import { STATUS } from "../../../enums/StatusCodes";
+import { Status } from "../../../enums/StatusCodes";
 import { KoaController } from "../../../utils/KoaController";
 
 export const getMapRoomCells: KoaController = async (ctx) => {
   const user : User = ctx.authUser;
   const uid = user.userid;
 
-  ctx.status = STATUS.OK;
+  ctx.status = Status.OK;
   ctx.body = {
     error: 0,
     celldata: [

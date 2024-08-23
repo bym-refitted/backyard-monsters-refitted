@@ -14,11 +14,11 @@ import { generateID } from "../utils/generateID";
 import { loadBuildBase, loadViewBase } from "../services/base/loadBase";
 import { saveFailureErr } from "../errors/errorCodes.";
 import { removeBaseProtection } from "../services/maproom/v2/joinOrCreateWorld";
-import { BASE_MODE } from "../enums/Base";
-import { ENV } from "../enums/Env";
-import { getNoise, getTerrainHeight } from "../config/WorldGenSettings";
+import { BaseMode } from "../enums/Base";
+import { Env } from "../enums/Env";
+import { generateNoise, getTerrainHeight } from "../config/WorldGenSettings";
 import { World } from "../models/world.model";
-import { STATUS } from "../enums/StatusCodes";
+import { Status } from "../enums/StatusCodes";
 
 interface BaseLoadRequest {
   type: string;
@@ -35,7 +35,7 @@ export const baseLoad: KoaController = async (ctx) => {
   const userSave = user.save;
   let save: Save = null;
 
-  if (requestBody.type === BASE_MODE.BUILD) {
+  if (requestBody.type === BaseMode.BUILD) {
     save = await loadBuildBase(ctx, requestBody.baseid);
     if (save && save.saveuserid !== user.userid) {
       throw saveFailureErr;
@@ -50,7 +50,7 @@ export const baseLoad: KoaController = async (ctx) => {
   );
 
   if (save) {
-    if (process.env.ENV === ENV.LOCAL) {
+    if (process.env.ENV === Env.LOCAL) {
       logging(`Base loaded:`, JSON.stringify(save, null, 2));
     }
   } else if (requestBody.baseid && requestBody.baseid === "0") {
@@ -70,7 +70,7 @@ export const baseLoad: KoaController = async (ctx) => {
 
   if (!save) throw saveFailureErr;
 
-  if (requestBody.type === BASE_MODE.ATTACK) {
+  if (requestBody.type === BaseMode.ATTACK) {
     await removeBaseProtection(user, save.homebase);
     save.attackid = generateID(5);
     if (save.homebaseid === 0) {
@@ -92,7 +92,7 @@ export const baseLoad: KoaController = async (ctx) => {
           world,
           cellX,
           cellY,
-          getTerrainHeight(getNoise(userSave.worldid), cellX, cellY),
+          getTerrainHeight(generateNoise(userSave.worldid), cellX, cellY),
           {
             base_id: parseInt(baseIdSplit.join()),
             uid: save.saveuserid,
@@ -112,7 +112,7 @@ export const baseLoad: KoaController = async (ctx) => {
 
   const isTutorialEnabled = devConfig.skipTutorial ? 205 : 0;
 
-  ctx.status = STATUS.OK;
+  ctx.status = Status.OK;
   ctx.body = {
     flags,
     error: 0,

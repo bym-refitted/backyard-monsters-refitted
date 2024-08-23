@@ -10,7 +10,7 @@ import { logging } from "../utils/logger";
 import { storeItems } from "../data/storeItems";
 import { saveFailureErr } from "../errors/errorCodes.";
 import { monsterUpdateBases } from "../services/base/monster";
-import { STATUS } from "../enums/StatusCodes";
+import { Status } from "../enums/StatusCodes";
 
 export const baseSave: KoaController = async (ctx) => {
   const user: User = ctx.authUser;
@@ -171,7 +171,7 @@ export const baseSave: KoaController = async (ctx) => {
     installsgenerated: 42069,
   };
 
-  ctx.status = STATUS.OK;
+  ctx.status = Status.OK;
   ctx.body = {
     ...baseSaveData,
     ...filteredSave,
