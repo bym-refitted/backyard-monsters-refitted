@@ -7,7 +7,7 @@
  * @returns {number} The generated numeric ID.
  */
 
-// ToDo beta: Replace random number with uuid instead as Math.random is not 'random'
+// TODO: Replace random number with uuid instead as Math.random is not 'random'
 export const generateID = (length: number, prefix?: number): number => {
   let numericID = 0;
 
