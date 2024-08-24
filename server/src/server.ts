@@ -16,6 +16,8 @@ import { ErrorInterceptor } from "./middleware/clientSafeError";
 import { processLanguagesFile } from "./middleware/processLanguageFile";
 import { logMissingAssets, morganLogging } from "./middleware/morganLogging";
 import { getLatestSwfFromGithub } from "./utils/getLatestSwfFromGithub";
+import { STATUS_CODES } from "http";
+import { Status } from "./enums/StatusCodes";
 
 /**
  * ToDos:
@@ -83,7 +85,7 @@ api.get("/", (ctx: Context) => (ctx.body = {}));
 
   app.use(async (ctx, next) => {
     if (ctx.path === "/crossdomain.xml") {
-      ctx.type = "application/xml";
+      ctx.status = Status.OK
       ctx.body = `<?xml version="1.0"?>
                   <!DOCTYPE cross-domain-policy SYSTEM "http://www.adobe.com/xml/dtds/cross-domain-policy.dtd">
                   <cross-domain-policy>
@@ -91,6 +93,7 @@ api.get("/", (ctx: Context) => (ctx.body = {}));
                       <allow-access-from domain="*" secure="false" />
                       <allow-http-request-headers-from domain="*" headers="Authorization" secure="false" />
                   </cross-domain-policy>`;
+      ctx.type = "application/xml";
     } else {
       await next();
     }

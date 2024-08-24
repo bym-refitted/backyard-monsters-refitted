@@ -11,10 +11,13 @@ interface ReleasePayload {
   };
 }
 
-/** Webhook event which authenticates & subscribes to GitHub Releases  
+/** Webhook event which authenticates & subscribes to GitHub Releases
  * + downloads the latest version of client files
  * + updates the global API version based on the file version
-*/
+ *
+ * @param {Context} ctx - The Koa context object.
+ * @returns {Promise<void>} - A promise that resolves when the controller is complete.
+ */
 export const releasesWebhook: KoaController = async (ctx) => {
   const payload = ctx.request.body as ReleasePayload;
 

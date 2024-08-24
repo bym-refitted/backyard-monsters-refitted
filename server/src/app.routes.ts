@@ -23,56 +23,292 @@ import { transferAssets } from "./controllers/maproom/v2/transferAssets";
 import { apiVersion } from "./middleware/apiVersioning";
 import { supportedLangs } from "./controllers/supportedLangs";
 import { releasesWebhook } from "./controllers/github/releasesWebhook";
-import { Status } from "./enums/StatusCodes";
 
+/**
+ * All applcation routes
+ */
 const router = new Router();
 
-// GitHub - Get latest client releases
-router.post('/gh-release-webhook', releasesWebhook);
+/**
+ * GitHub - Get latest client releases
+ * @name POST /gh-release-webhook
+ */
+router.post("/gh-release-webhook", releasesWebhook);
 
-// Init route
-router.get("/api/:apiVersion/bm/getnewmap", apiVersion, debugDataLog("Getting new maproom"), getNewMap);
-router.post("/api/:apiVersion/bm/getnewmap", apiVersion, debugDataLog("Posting to new maproom"), getNewMap);
+/**
+ * Init route
+ * @name GET /api/:apiVersion/bm/getnewmap
+ */
+router.get(
+  "/api/:apiVersion/bm/getnewmap",
+  apiVersion,
+  debugDataLog("Getting new maproom"),
+  getNewMap
+);
 
-// Auth
-router.post("/api/:apiVersion/player/getinfo", apiVersion, debugDataLog("User login attempt"), login);
-router.post("/api/:apiVersion/player/register", apiVersion, debugDataLog("Registering user"), register);
+/**
+ * Init route
+ * @name POST /api/:apiVersion/bm/getnewmap
+ */
+router.post(
+  "/api/:apiVersion/bm/getnewmap",
+  apiVersion,
+  debugDataLog("Posting to new maproom"),
+  getNewMap
+);
 
-// Supported Languages
-router.get("/api/:apiVersion/supportedLangs", apiVersion, debugDataLog("Getting supported languages"), supportedLangs);
+/**
+ * Login route
+ * @name POST /api/:apiVersion/player/getinfo
+ */
+router.post(
+  "/api/:apiVersion/player/getinfo",
+  apiVersion,
+  debugDataLog("User login attempt"),
+  login
+);
 
-// Load
+/**
+ * Register route
+ * @name POST /api/:apiVersion/player/register
+ */
+router.post(
+  "/api/:apiVersion/player/register",
+  apiVersion,
+  debugDataLog("Registering user"),
+  register
+);
+
+/**
+ * Supported Languages
+ * @name GET /api/:apiVersion/supportedLangs
+ */
+router.get(
+  "/api/:apiVersion/supportedLangs",
+  apiVersion,
+  debugDataLog("Getting supported languages"),
+  supportedLangs
+);
+
+/**
+ * Load base data
+ * @name POST /base/load
+ */
 router.post("/base/load", auth, debugDataLog("Base load data"), baseLoad);
 
-// Save
+/**
+ * Save base data
+ * @name POST /base/save
+ */
 router.post("/base/save", auth, debugDataLog("Base save data"), baseSave);
-router.post("/base/updatesaved", auth, debugDataLog("Base updated save"), updateSaved);
-router.post('/base/migrate', auth, debugDataLog("Base migrate data"), migrateBase)
 
-// Yard Planner
-router.get("/api/:apiVersion/bm/yardplanner/gettemplates", apiVersion, auth, debugDataLog("Get templates"), getTemplates);
-router.post("/api/:apiVersion/bm/yardplanner/savetemplate", apiVersion, auth, debugDataLog("Saving template"), saveTemplate);
+/**
+ * Update saved base data
+ * @name POST /base/updatesaved
+ */
+router.post(
+  "/base/updatesaved",
+  auth,
+  debugDataLog("Base updated save"),
+  updateSaved
+);
 
-// Inferno
-router.post("/api/:apiVersion/bm/base/load", apiVersion, auth, debugDataLog("Inferno load data"), baseLoad);
-router.post("/api/:apiVersion/bm/base/infernomonsters", apiVersion, auth, debugDataLog("Load inferno monsters"), infernoMonsters);
-router.post("/api/:apiVersion/bm/base/save", apiVersion, auth, debugDataLog("Inferno save data"), baseSave);
+/**
+ * Migrate base data
+ * @name POST /base/migrate
+ */
+router.post(
+  "/base/migrate",
+  auth,
+  debugDataLog("Base migrate data"),
+  migrateBase
+);
 
-// Worldmap v2
+/**
+ * Yard Planner retrieve templates
+ * @name GET /api/:apiVersion/bm/yardplanner/gettemplates
+ */
+router.get(
+  "/api/:apiVersion/bm/yardplanner/gettemplates",
+  apiVersion,
+  auth,
+  debugDataLog("Get templates"),
+  getTemplates
+);
+
+/**
+ * Yard Planner save template
+ * @name POST /api/:apiVersion/bm/yardplanner/savetemplate
+ */
+router.post(
+  "/api/:apiVersion/bm/yardplanner/savetemplate",
+  apiVersion,
+  auth,
+  debugDataLog("Saving template"),
+  saveTemplate
+);
+
+/**
+ * Inferno load base data
+ * @name POST /api/:apiVersion/bm/base/load
+ */
+router.post(
+  "/api/:apiVersion/bm/base/load",
+  apiVersion,
+  auth,
+  debugDataLog("Inferno load data"),
+  baseLoad
+);
+
+/**
+ * Inferno save base data
+ * @name POST /api/:apiVersion/bm/base/save
+ */
+router.post(
+  "/api/:apiVersion/bm/base/save",
+  apiVersion,
+  auth,
+  debugDataLog("Inferno save data"),
+  baseSave
+);
+
+/**
+ * Inferno load monsters data
+ * @name POST /api/:apiVersion/bm/base/infernomonsters
+ */
+router.post(
+  "/api/:apiVersion/bm/base/infernomonsters",
+  apiVersion,
+  auth,
+  debugDataLog("Load inferno monsters"),
+  infernoMonsters
+);
+
+/**
+ * Worldmap v2 get area data
+ * @name POST /worldmapv2/getarea
+ */
 router.post("/worldmapv2/getarea", auth, debugDataLog("MR2 get area"), getArea);
-router.post("/worldmapv2/setmapversion", auth, debugDataLog("Set maproom version"), setMapVersion);
-router.post('/worldmapv2/takeoverCell', auth, debugDataLog("Taking over cell"), takeoverCell);
-router.post('/worldmapv2/transferassets', auth, debugDataLog("Transferring assets"), transferAssets);
-router.post("/api/:apiVersion/player/savebookmarks",apiVersion, auth, debugDataLog("MR2 save bookmarks"), saveBookmarks);
 
-// Worldmap v3
-router.post("/worldmapv3/initworldmap", auth, debugDataLog("Posting MR3 init data"), initialPlayerCellData);
-router.get("/worldmapv3/initworldmap", auth, debugDataLog("Getting MR3 init data"), initialPlayerCellData);
-router.post("/worldmapv3/getcells", auth, debugDataLog("Get MR3 cells"), getMapRoomCells);
-router.post("/worldmapv3/relocate", auth, debugDataLog("Relocating MR3 base"), relocate);
-router.all("/worldmapv3/setmapversion", auth, debugDataLog("Set maproom version"), setMapVersion);
+/**
+ * Worldmap v2 set map version
+ * @name POST /worldmapv2/setmapversion
+ */
+router.post(
+  "/worldmapv2/setmapversion",
+  auth,
+  debugDataLog("Set maproom version"),
+  setMapVersion
+);
 
-// Logging routes
-router.post("/api/:apiVersion/player/recorddebugdata", apiVersion, recordDebugData);
+/**
+ * Worldmap v2 takeover cell
+ * @name POST /worldmapv2/takeoverCell
+ */
+router.post(
+  "/worldmapv2/takeoverCell",
+  auth,
+  debugDataLog("Taking over cell"),
+  takeoverCell
+);
+
+/**
+ * Worldmap v2 transfer assets
+ * @name POST /worldmapv2/transferassets
+ */
+router.post(
+  "/worldmapv2/transferassets",
+  auth,
+  debugDataLog("Transferring assets"),
+  transferAssets
+);
+
+/**
+ * Worldmap v2 save bookmarks
+ * @name POST /api/:apiVersion/player/savebookmarks
+ */
+router.post(
+  "/api/:apiVersion/player/savebookmarks",
+  apiVersion,
+  auth,
+  debugDataLog("MR2 save bookmarks"),
+  saveBookmarks
+);
+
+/**
+ * Worldmap v3 init route
+ * @name POST /worldmapv3/initworldmap
+ */
+router.post(
+  "/worldmapv3/initworldmap",
+  auth,
+  debugDataLog("Posting MR3 init data"),
+  initialPlayerCellData
+);
+
+/**
+ * Worldmap v3 init route
+ * @name GET /worldmapv3/initworldmap
+ */
+router.get(
+  "/worldmapv3/initworldmap",
+  auth,
+  debugDataLog("Getting MR3 init data"),
+  initialPlayerCellData
+);
+
+/**
+ * Worldmap v3 get cells
+ * @name POST /worldmapv3/getcells
+ */
+router.post(
+  "/worldmapv3/getcells",
+  auth,
+  debugDataLog("Get MR3 cells"),
+  getMapRoomCells
+);
+
+/**
+ * Worldmap v3 relocate base
+ * @name POST /worldmapv3/relocate
+ */
+router.post(
+  "/worldmapv3/relocate",
+  auth,
+  debugDataLog("Relocating MR3 base"),
+  relocate
+);
+
+/**
+ * Worldmap v3 set map version
+ * @name GET /worldmapv3/setmapversion
+ */
+router.get(
+  "/worldmapv3/setmapversion",
+  auth,
+  debugDataLog("Set maproom version"),
+  setMapVersion
+);
+
+/**
+ * Worldmap v3 set map version
+ * @name POST /worldmapv3/setmapversion
+ */
+router.post(
+  "/worldmapv3/setmapversion",
+  auth,
+  debugDataLog("Set maproom version"),
+  setMapVersion
+);
+
+/**
+ * Logging routes
+ * @name POST /api/:apiVersion/player/recorddebugdata
+ */
+router.post(
+  "/api/:apiVersion/player/recorddebugdata",
+  apiVersion,
+  recordDebugData
+);
 
 export default router;

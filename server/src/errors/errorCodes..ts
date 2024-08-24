@@ -1,12 +1,12 @@
+import { ErrorCodes } from "../enums/ErrorCodes";
 import { Status } from "../enums/StatusCodes";
 import { ClientSafeError } from "../middleware/clientSafeError";
 
-enum ErrorCodes {
-  AUTH_ERROR = "AUTH_ERROR",
-  DEBUG_ERROR = "DEBUG_ERROR",
-  SAVE_ERROR = "SAVE_ERROR",
-}
-
+/**
+ * Creates a new instance of `ClientSafeError` with the specified properties.
+ *
+ * @returns A new `ClientSafeError` instance.
+ */
 export const authFailureErr = () =>
   new ClientSafeError({
     message: "Could not authenticate",
