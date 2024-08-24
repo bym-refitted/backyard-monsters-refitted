@@ -11,7 +11,9 @@ import { Status } from "../../../enums/StatusCodes";
 /**
  * Map version controller for Map Room 2 .
  * If the version is V2, the user will join a world. Otherwise, the user will leave the world.
- * @param ctx - Koa context object
+ *
+ * @param {Context} ctx - The Koa context object
+ * @returns {Promise<void>} - A promise that resolves when the controller is complete.
  */
 export const setMapVersion: KoaController = async (ctx) => {
   const user: User = ctx.authUser;

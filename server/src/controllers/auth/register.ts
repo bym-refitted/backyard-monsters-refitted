@@ -16,6 +16,17 @@ const UserRegisterSchema = z.object({
   pic_square: z.string(), // TODO: WHYYYYYY?? Should not be from user input thats fucking mental
 });
 
+/**
+ * Controller to handle user registration.
+ *
+ * This controller registers a new user based on the provided input. It hashes the user's
+ * password, saves the user to the database, and returns the filtered user information.
+ * If registration fails, it throws an authentication failure error.
+ *
+ * @param {Context} ctx - The Koa context object.
+ * @returns {Promise<void>} - A promise that resolves when the controller is complete.
+ * @throws {Error} - Throws an error if registration fails or if the request body is invalid.
+ */
 export const register: KoaController = async (ctx) => {
   try {
     const userInput = UserRegisterSchema.parse(ctx.request.body);

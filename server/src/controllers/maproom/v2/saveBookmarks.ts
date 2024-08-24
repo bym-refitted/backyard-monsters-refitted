@@ -7,6 +7,11 @@ interface Bookmark { bookmarks: string };
 
 /**
  * Controller to save bookmarks on the Map Room for a user.
+ * Updates the user's bookmarks in the database and returns a success response.
+ * 
+ * @param {Context} ctx - The Koa context object
+ * @returns {Promise<void>} - A promise that resolves when the controller is complete.
+ * @throws {Error} - Throws an error if bookmarks are not found in the request body.
  */
 export const saveBookmarks: KoaController = async (ctx) => {
   const user: User = ctx.authUser;

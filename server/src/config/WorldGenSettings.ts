@@ -1,10 +1,4 @@
-import { Loaded } from "@mikro-orm/core";
 import { ValueNoise } from "value-noise-js/dist/value-noise";
-import { WorldMapCell } from "../models/worldmapcell.model";
-import { homeCell } from "../controllers/maproom/v2/cells/homeCell";
-import { Context } from "koa";
-import { Tribes } from "../enums/Tribes";
-import { Terrain } from "../enums/MapRoom";
 
 /**
  * The scale factor for noise generation. This value determines the frequency of the noise.

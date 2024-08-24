@@ -7,9 +7,15 @@ import { WorldMapCell } from "./models/worldmapcell.model";
 import { World } from "./models/world.model";
 import { Env } from "./enums/Env";
 
-// The configuration for the ORM - Any Entities added need to be put in here, other than that probably doesn't need to be touched
-// tslint:disable-next-line: no-object-literal-type-assertion
-export default {
+/**
+ * Configuration for MikroORM.
+ * 
+ * This configuration sets up the ORM to use MariaDB as the database driver.
+ * Additional Entities must be added to the `entities` array.
+ * 
+ * @type {Options<MariaDbDriver> | Configuration<MariaDbDriver>}
+ */
+const mikroOrmConfig = {
   type: "mariadb",
   allowGlobalContext: false,
   entities: [User, Save, World, WorldMapCell],
@@ -24,3 +30,5 @@ export default {
     pattern: /^[\w-]+\d+\.[j]s$/,
   },
 } as Parameters<typeof MikroORM.init<MariaDbDriver>>[0];
+
+export default mikroOrmConfig;
