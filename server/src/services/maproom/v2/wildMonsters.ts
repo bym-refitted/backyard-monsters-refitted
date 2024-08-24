@@ -7,7 +7,7 @@
 
 import { Save } from "../../../models/save.model";
 import { ORMContext } from "../../../server";
-import Savefiles, { getWMDefaultBase } from "../../../data/savefiles";
+import { getWMDefaultBase } from "../../../data/tribes";
 import { getXPosition, getYPosition } from "./world";
 
 export const getWildMonsterSave = (baseid: number, level: number = 10): Save => {

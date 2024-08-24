@@ -5,8 +5,14 @@ import { devSandbox } from "../dev/devSandbox";
 import { generateID } from "../utils/generateID";
 import { getCurrentDateTime } from "../utils/getCurrentDateTime";
 
+/**
+ * Generates the default base data object for a new save.
+ *
+ * @param {User} [user] - The user for whom the base data is being generated.
+ * @returns {object} - The default base data object.
+ */
 export const getDefaultBaseData = (user?: User) => {
-  // These flags allow us to work with debug dev bases
+  // Load sandbox data if dev flags are enabled. View DevSettings.ts for flags & Wiki details.
   if (devConfig.devSandbox) return devSandbox(user);
   if (devConfig.debugSandbox) return debugSandbox(user);
 
