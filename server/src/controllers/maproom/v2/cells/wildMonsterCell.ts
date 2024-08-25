@@ -11,8 +11,8 @@ export const wildMonsterCell = async (cell: WorldMapCell) => {
     i: cell.terrainHeight,
     bid: baseId,
     n: Tribes[tribeIndex],
-    l: 40, // TODO: Implement level
-    dm: 0, // TODO: Implement damage
-    d: 0, // TODO: Implement Base destroyed
+    l: 40,        // TODO: Implement level
+    dm: 0,        // TODO: Implement damage
+    d: 0,         // TODO: Implement Base destroyed
   };
 };
