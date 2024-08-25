@@ -19,9 +19,3 @@ export const generateID = (length: number, prefix?: number): number => {
     ? prefix * Math.pow(10, length) + numericID
     : numericID;
 };
-
-export const worldIdToNumber = (worldId: string) => {
-  let utf8Encode = new TextEncoder();
-  let test = utf8Encode.encode(worldId);
-  return [...test.values()].reduce((val, res) => val + res, 0);
-};

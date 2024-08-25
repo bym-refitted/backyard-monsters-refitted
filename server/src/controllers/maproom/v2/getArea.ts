@@ -9,6 +9,7 @@ import {
 } from "../../../config/WorldGenSettings";
 import { Status } from "../../../enums/StatusCodes";
 import { createCellData } from "../../../services/maproom/v2/createCellData";
+import { Save } from "../../../models/save.model";
 
 interface Cell {
   x?: number;
@@ -27,7 +28,8 @@ export const getArea: KoaController = async (ctx) => {
   const requestBody: Cell = ctx.request.body;
   await ORMContext.em.populate(user, ["save"]);
 
-  const save = user.save;
+  const save: Save = user.save;
+  const worldid = save.worldid;
 
   // TODO: Use zod to sort this out
   for (const key in requestBody)
@@ -51,13 +53,13 @@ export const getArea: KoaController = async (ctx) => {
       $gte: currentY,
       $lte: currentY + height,
     },
-    world_id: save.worldid,
+    world_id: worldid,
   });
 
   const cells = {};
   for (const cell of dbCells) {
     if (!cells[cell.x]) cells[cell.x] = {};
-    cells[cell.x][cell.y] = await createCellData(cell, user.save.worldid, ctx);
+    cells[cell.x][cell.y] = await createCellData(cell, worldid, ctx);
   }
 
   /**
@@ -78,11 +80,7 @@ export const getArea: KoaController = async (ctx) => {
         cellY,
         terrainHeight
       );
-      cells[cellX][cellY] = await createCellData(
-        inMemoryCell,
-        user.save.worldid,
-        ctx
-      );
+      cells[cellX][cellY] = await createCellData(inMemoryCell, worldid, ctx);
     }
   }
 

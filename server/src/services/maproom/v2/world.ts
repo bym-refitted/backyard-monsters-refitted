@@ -9,6 +9,7 @@ interface FreeXY {
   y: number;
 }
 
+// TODO: This file is not in use, and should be removed after review.
 export const getFreeCell = async (
   world_id: string,
   migrate = false
