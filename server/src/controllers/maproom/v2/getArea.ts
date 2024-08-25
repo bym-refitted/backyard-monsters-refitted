@@ -57,7 +57,7 @@ export const getArea: KoaController = async (ctx) => {
   const cells = {};
   for (const cell of dbCells) {
     if (!cells[cell.x]) cells[cell.x] = {};
-    cells[cell.x][cell.y] = await createCellData(cell, ctx);
+    cells[cell.x][cell.y] = await createCellData(cell, user.save.worldid, ctx);
   }
 
   /**
@@ -78,7 +78,11 @@ export const getArea: KoaController = async (ctx) => {
         cellY,
         terrainHeight
       );
-      cells[cellX][cellY] = await createCellData(inMemoryCell, ctx);
+      cells[cellX][cellY] = await createCellData(
+        inMemoryCell,
+        user.save.worldid,
+        ctx
+      );
     }
   }
 

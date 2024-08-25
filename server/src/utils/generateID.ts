@@ -15,5 +15,13 @@ export const generateID = (length: number, prefix?: number): number => {
     const randomNumber = Math.floor(Math.random() * 10);
     numericID = numericID * 10 + randomNumber;
   }
-  return prefix != undefined ? prefix * Math.pow(10, length) + numericID : numericID;
+  return prefix != undefined
+    ? prefix * Math.pow(10, length) + numericID
+    : numericID;
+};
+
+export const worldIdToNumber = (worldId: string) => {
+  let utf8Encode = new TextEncoder();
+  let test = utf8Encode.encode(worldId);
+  return [...test.values()].reduce((val, res) => val + res, 0);
 };

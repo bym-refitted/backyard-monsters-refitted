@@ -1,6 +1,17 @@
-import { Entity, Property, PrimaryKey, BeforeUpdate } from "@mikro-orm/core";
+import {
+  Entity,
+  Property,
+  PrimaryKey,
+  BeforeUpdate,
+  EntityManager,
+  Connection,
+  IDatabaseDriver,
+} from "@mikro-orm/core";
 import { FrontendKey } from "../utils/FrontendKey";
 import { MapRoom } from "../enums/MapRoom";
+import { ORMContext } from "../server";
+import { getDefaultBaseData } from "../data/getDefaultBaseData";
+import { User } from "./user.model";
 export interface FieldData {
   [key: string | number]: any;
 }
@@ -490,4 +501,17 @@ export class Save {
     "points",
     "attackreport",
   ];
+
+  public static createDefaultUserSave = async (
+    em: EntityManager<IDatabaseDriver<Connection>>,
+    user: User
+  ) => {
+    const baseSave = em.create(Save, getDefaultBaseData(user));
+    // Add the save to the database
+    await em.persistAndFlush(baseSave);
+    user.save = baseSave;
+    // Update user base save
+    await em.persistAndFlush(user);
+    return baseSave;
+  };
 }

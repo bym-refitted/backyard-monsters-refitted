@@ -27,8 +27,7 @@ export const loadViewBase = async (ctx: Context, baseid: string): Promise<Save> 
 
     if (!save) {
         logging("Loading wild monster default base")
-        const baseLevel = calculateBaseLevel(authSave.points, authSave.basevalue);
-        save = getWildMonsterSave(parseInt(baseid), baseLevel);
+        save = getWildMonsterSave(parseInt(baseid), user.save.worldid);
     }
 
     return save;
