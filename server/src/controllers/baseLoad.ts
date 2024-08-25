@@ -13,12 +13,12 @@ import { WorldMapCell } from "../models/worldmapcell.model";
 import { generateID } from "../utils/generateID";
 import { loadBuildBase, loadViewBase } from "../services/base/loadBase";
 import { saveFailureErr } from "../errors/errorCodes.";
-import { removeBaseProtection } from "../services/maproom/v2/joinOrCreateWorld";
 import { BaseMode } from "../enums/Base";
 import { Env } from "../enums/Env";
 import { generateNoise, getTerrainHeight } from "../config/WorldGenSettings";
 import { World } from "../models/world.model";
 import { Status } from "../enums/StatusCodes";
+import { removeDamageProtection } from "../services/maproom/v2/damageProtection";
 
 interface BaseLoadRequest {
   type: string;
@@ -71,7 +71,7 @@ export const baseLoad: KoaController = async (ctx) => {
   if (!save) throw saveFailureErr;
 
   if (requestBody.type === BaseMode.ATTACK) {
-    await removeBaseProtection(user, save.homebase);
+    await removeDamageProtection(user, save.homebase);
     save.attackid = generateID(5);
     if (save.homebaseid === 0) {
       let cell = await ORMContext.em.findOne(WorldMapCell, {

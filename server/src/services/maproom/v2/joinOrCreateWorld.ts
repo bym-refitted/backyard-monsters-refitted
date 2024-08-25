@@ -2,7 +2,6 @@ import { ORMContext } from "../../../server";
 import { WorldMapCell } from "../../../models/worldmapcell.model";
 import { User } from "../../../models/user.model";
 import { Save } from "../../../models/save.model";
-import { getBounds } from "./world";
 import { logging } from "../../../utils/logger";
 import { World } from "../../../models/world.model";
 import { MapRoom } from "../../../enums/MapRoom";
@@ -21,7 +20,7 @@ export const joinOrCreateWorld = async (
   //     await fork.persistAndFlush(save)
   // }
 
-  // Find if there is a world already
+  // Find an existing world with space
   let world = await ORMContext.em.findOne(World, {
     playerCount: {
       $lte: MapRoom.MAX_PLAYERS,
@@ -35,8 +34,6 @@ export const joinOrCreateWorld = async (
     logging(`World found with ${world.playerCount} players`);
   }
 
-  // Make sure in future that we clear the save id when you leave a world
-  // or I will be leaving my sanity
   if (save.worldid === world.uuid) return;
 
   save.usemap = 1;
@@ -60,7 +57,7 @@ export const joinOrCreateWorld = async (
     world,
     world.playerCount - 1,
     world.playerCount - 1,
-    159
+    159 // TODO: Should not be hardcoded
   );
 
   homebaseCell.uid = user.userid;
@@ -73,49 +70,4 @@ export const joinOrCreateWorld = async (
   save.homebase = [homebaseCell.x.toString(), homebaseCell.y.toString()];
   ORMContext.em.persist(save);
   return ORMContext.em.flush();
-};
-
-export const removeBaseProtection = async (
-  user: User,
-  homebase: Array<string>
-) => {
-  const fork = ORMContext.em.fork();
-  await fork.populate(user, ["save"]);
-  const authSave = user.save;
-  const [x, y] = homebase;
-
-  const width = 3;
-  const currentX = parseInt(x);
-  const currentY = parseInt(y);
-  const { minX, minY, maxX, maxY } = getBounds(currentX, currentY, width);
-
-  const wCells = await fork.find(WorldMapCell, {
-    x: {
-      $gte: minX,
-      $lte: maxX,
-    },
-    y: {
-      $gte: minY,
-      $lte: maxY,
-    },
-    world_id: "1", // ToDo: implement a world table?
-    uid: user.userid,
-  });
-
-  const baseids = wCells.map((cell) => cell.base_id.toString(10));
-
-  const bases = await fork.find(Save, {
-    baseid: {
-      $in: baseids,
-    },
-  });
-
-  bases.map((base) => {
-    base.protected = 0;
-    return base;
-  });
-
-  authSave.protected = 0;
-  await fork.persistAndFlush(bases);
-  await fork.persistAndFlush(authSave);
 };

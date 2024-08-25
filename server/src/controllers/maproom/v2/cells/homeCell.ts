@@ -5,15 +5,23 @@ import { WorldMapCell } from "../../../../models/worldmapcell.model";
 import { calculateBaseLevel } from "../../../../services/base/calculateBaseLevel";
 import { BaseType } from "../../../../enums/Base";
 
+/**
+ * Handles the user's homecell data on the world map.
+ *
+ * Retrives the current user's homecell details if the cell belongs to them.
+ * Otherwise, retrieves the homecell details of all other users on the world map.
+ *
+ * @param {Context} ctx - The Koa context object.
+ * @param {WorldMapCell} cell - The world map cell object.
+ */
 export const homeCell = async (ctx: Context, cell: WorldMapCell) => {
   const currentUser: User = ctx.authUser;
   const mine = currentUser.userid === cell.uid;
 
+  // Get the cell owner, either the current user or another user
   const cellOwner = mine
     ? currentUser
-    : await ORMContext.em.findOne(User, {
-        userid: cell.uid,
-      });
+    : await ORMContext.em.findOne(User, { userid: cell.uid });
 
   await ORMContext.em.populate(cellOwner, ["save"]);
   if (!cellOwner.save) throw new Error("User save not found");
@@ -25,7 +33,7 @@ export const homeCell = async (ctx: Context, cell: WorldMapCell) => {
 
   const isOnline = Date.now() / 1000 - save.savetime < 30;
   const locked = isOnline ? 1 : save.locked;
-  const baseLevel =  calculateBaseLevel(save.points, save.basevalue);
+  const baseLevel = calculateBaseLevel(save.points, save.basevalue);
   let isCellProtected = save.protected;
 
   /** TODO: https://backyardmonsters.fandom.com/wiki/Damage_Protection */
@@ -54,6 +62,6 @@ export const homeCell = async (ctx: Context, cell: WorldMapCell) => {
     lo: locked,
     dm: save.damage,
     pic_square: `https://api.dicebear.com/9.x/miniavs/png?seed=${cellOwner.username}`,
-    im: `https://api.dicebear.com/9.x/miniavs/png?seed=${cellOwner.username}`
+    im: `https://api.dicebear.com/9.x/miniavs/png?seed=${cellOwner.username}`,
   };
 };
