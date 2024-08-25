@@ -14,7 +14,7 @@ import { wildMonsterCell } from "../../../controllers/maproom/v2/cells/wildMonst
  */
 export const createCellData = async (
   cell: Loaded<WorldMapCell, never>,
-  worldID:string,
+  worldid: string,
   ctx: Context
 ) => {
   if (cell.terrainHeight <= Terrain.WATER3) return { i: cell.terrainHeight };
@@ -23,5 +23,5 @@ export const createCellData = async (
   if (cell.base_type >= 2) return await homeCell(ctx, cell);
 
   // Otherwise, return a wild monster cell
-  return await wildMonsterCell(cell,worldID);
+  return await wildMonsterCell(cell, worldid);
 };
