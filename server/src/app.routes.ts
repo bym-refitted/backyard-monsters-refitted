@@ -1,10 +1,10 @@
 import Router from "@koa/router";
 import { debugDataLog } from "./middleware/debugDataLog";
-import { baseSave } from "./controllers/baseSave";
+import { baseSave } from "./controllers/base/save/baseSave";
 import { login } from "./controllers/auth/login";
 import { register } from "./controllers/auth/register";
-import { baseLoad } from "./controllers/baseLoad";
-import { updateSaved } from "./controllers/updateSaved";
+import { baseLoad } from "./controllers/base/load/baseLoad";
+import { updateSaved } from "./controllers/base/save/updateSaved";
 import { getMapRoomCells } from "./controllers/maproom/v3/getCells";
 import { getNewMap } from "./controllers/maproom/getNewMap";
 import { auth } from "./middleware/auth";
@@ -18,7 +18,7 @@ import { initialPlayerCellData } from "./controllers/maproom/v3/initialPlayerCel
 import { setMapVersion } from "./controllers/maproom/v2/setMapVersion";
 import { saveBookmarks } from "./controllers/maproom/v2/saveBookmarks";
 import { takeoverCell } from "./controllers/maproom/v2/takeoverCell";
-import { migrateBase } from "./controllers/migrateBase";
+import { migrateBase } from "./controllers/maproom/v2/migrateBase";
 import { transferAssets } from "./controllers/maproom/v2/transferAssets";
 import { apiVersion } from "./middleware/apiVersioning";
 import { supportedLangs } from "./controllers/supportedLangs";
