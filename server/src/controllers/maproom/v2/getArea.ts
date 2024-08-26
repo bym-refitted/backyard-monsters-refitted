@@ -98,6 +98,6 @@ export const getArea: KoaController = async (ctx) => {
     };
   } else {
     ctx.status = Status.NOT_FOUND;
-    ctx.body = { message: "MapRoom is not enabled on this server", error: 1 };
+    ctx.body = { message: "Map Room is not enabled on this server", error: 1 };
   }
 };
