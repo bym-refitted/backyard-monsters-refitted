@@ -4,9 +4,9 @@ import { BASE_URL, PORT } from "../../server";
 import { KoaController } from "../../utils/KoaController";
 
 /**
- * Sets the map version on the server.
+ * Sets the Map Room version on the server.
  */
-const CURRENT_MAP_VERSION = MapRoomVersion.V2 as MapRoomVersion;
+const CURRENT_MAPROOM_VERSION = MapRoomVersion.V2 as MapRoomVersion;
 
 /**
  * Controller to get Map Room details.
@@ -22,7 +22,7 @@ export const getNewMap: KoaController = async (ctx) => {
   const cellX = MapRoom.WIDTH;
   const cellY = MapRoom.HEIGHT;
 
-  if (CURRENT_MAP_VERSION === MapRoomVersion.V3) {
+  if (CURRENT_MAPROOM_VERSION === MapRoomVersion.V3) {
     for (let x = 0; x < cellX; x++) {
       for (let y = 0; y < cellY; y++) {
         cells.push({ h: 0, t: 100 });

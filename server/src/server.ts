@@ -15,9 +15,8 @@ import { ascii_node } from "./utils/ascii_art";
 import { ErrorInterceptor } from "./middleware/clientSafeError";
 import { processLanguagesFile } from "./middleware/processLanguageFile";
 import { logMissingAssets, morganLogging } from "./middleware/morganLogging";
-import { getLatestSwfFromGithub } from "./utils/getLatestSwfFromGithub";
-import { STATUS_CODES } from "http";
 import { Status } from "./enums/StatusCodes";
+import { getLatestSwfFromGithub } from "./controllers/github/getLatestSwfFromGithub";
 
 /**
  * ToDos:

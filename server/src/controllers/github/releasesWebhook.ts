@@ -1,9 +1,9 @@
 import { Env } from "../../enums/Env";
 import { KoaController } from "../../utils/KoaController";
-import { getLatestSwfFromGithub } from "../../utils/getLatestSwfFromGithub";
 import { createHmac } from "crypto";
 import { setApiVersion } from "../../server";
 import { Status } from "../../enums/StatusCodes";
+import { getLatestSwfFromGithub } from "./getLatestSwfFromGithub";
 
 interface ReleasePayload {
   release: {

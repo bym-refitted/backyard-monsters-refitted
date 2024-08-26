@@ -52,13 +52,10 @@ export const baseLoad: KoaController = async (ctx) => {
   switch (baseLoadMode) {
     case BaseMode.BUILD:
       baseSave = await loadBuildBase(ctx, baseId);
-      if (baseSave && baseSave.saveuserid !== user.userid) throw saveFailureErr;
-      // if there is no save, crete the default save for the current user
-      // Only do this if its the current user
-      const isCurrentUsersSave = baseSave.saveuserid === user.userid;
-      if (!baseSave && isCurrentUsersSave) {
+      if (baseSave && baseSave.saveuserid !== user.userid) throw saveFailureErr();
+      // If there is no save, create the default save
+      if (!baseSave)
         baseSave = await Save.createDefaultUserSave(ORMContext.em, user);
-      }
       break;
     case BaseMode.VIEW:
       console.log("Loading view base", baseId);
