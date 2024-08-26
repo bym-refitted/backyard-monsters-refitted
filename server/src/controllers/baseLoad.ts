@@ -35,10 +35,9 @@ export const baseLoad: KoaController = async (ctx) => {
   const requestBody: BaseLoadRequest = <BaseLoadRequest>ctx.request.body;
   const user: User = ctx.authUser;
   await ORMContext.em.populate(user, ["save"]);
-  const userSave = user.save;
   let baseSave: Save = null;
-
-  // What is the base load type?
+  
+  const userSave = user.save;
   const baseLoadMode = requestBody.type;
   const baseId = requestBody.baseid;
 
@@ -52,9 +51,10 @@ export const baseLoad: KoaController = async (ctx) => {
   switch (baseLoadMode) {
     case BaseMode.BUILD:
       baseSave = await loadBuildBase(ctx, baseId);
-      if (baseSave && baseSave.saveuserid !== user.userid) throw saveFailureErr();
-      // If there is no save, create the default save
-      if (!baseSave)
+      if (baseSave && baseSave.saveuserid !== user.userid)
+        throw saveFailureErr();
+      
+      if (!baseSave) // If there is no save, create one with default values
         baseSave = await Save.createDefaultUserSave(ORMContext.em, user);
       break;
     case BaseMode.VIEW:
@@ -78,7 +78,7 @@ export const baseLoad: KoaController = async (ctx) => {
 
           if (!world) throw new Error("No world found.");
 
-          const baseIdSplit = [...`${requestBody.baseid}`];
+          const baseIdSplit = [...`${baseId}`];
           const cellX = parseInt(baseIdSplit.slice(1, 4).join(""));
           const cellY = parseInt(baseIdSplit.slice(4).join(""));
           const cell = new WorldMapCell(
