@@ -393,13 +393,6 @@ export class Save {
   @Property({ type: "json", nullable: true })
   outposts: number[][];
 
-  // TODO: convert other generated properties to not persist
-  @FrontendKey
-  @Property({ persist: false })
-  get worldsize(): number[] {
-    return [MapRoom.HEIGHT, MapRoom.WIDTH];
-  }
-
   @FrontendKey
   @Property({ type: "json", nullable: true })
   wmstatus: number[][];

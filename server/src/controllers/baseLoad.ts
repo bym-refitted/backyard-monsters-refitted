@@ -2,10 +2,8 @@ import { devConfig } from "../config/DevSettings";
 import { Save } from "../models/save.model";
 import { ORMContext } from "../server";
 import { KoaController } from "../utils/KoaController";
-import { logging } from "../utils/logger";
 import { storeItems } from "../data/storeItems";
 import { User } from "../models/user.model";
-import { getDefaultBaseData } from "../data/getDefaultBaseData";
 import { FilterFrontendKeys } from "../utils/FrontendKey";
 import { flags } from "../data/flags";
 import { getCurrentDateTime } from "../utils/getCurrentDateTime";
@@ -14,8 +12,7 @@ import { generateID } from "../utils/generateID";
 import { loadBuildBase, loadViewBase } from "../services/base/loadBase";
 import { saveFailureErr } from "../errors/errorCodes.";
 import { BaseMode } from "../enums/Base";
-import { Env } from "../enums/Env";
-import { generateNoise, getTerrainHeight } from "../config/WorldGenSettings";
+import { generateNoise, getTerrainHeight, WORLD_SIZE } from "../config/WorldGenSettings";
 import { World } from "../models/world.model";
 import { Status } from "../enums/StatusCodes";
 import { removeDamageProtection } from "../services/maproom/v2/damageProtection";
@@ -106,18 +103,18 @@ export const baseLoad: KoaController = async (ctx) => {
   }
 
   const filteredSave = FilterFrontendKeys(baseSave);
-
   const isTutorialEnabled = devConfig.skipTutorial ? 205 : 0;
 
   ctx.status = Status.OK;
   ctx.body = {
-    flags,
-    error: 0,
-    currenttime: getCurrentDateTime(),
-    pic_square: `https://api.dicebear.com/9.x/miniavs/png?seed=${baseSave.name}`,
-    storeitems: { ...storeItems },
     ...filteredSave,
+    flags,
+    worldsize: WORLD_SIZE,
+    error: 0,
     id: filteredSave.basesaveid,
+    storeitems: { ...storeItems },
     tutorialstage: isTutorialEnabled,
+    currenttime: getCurrentDateTime(),
+    pic_square: `https://api.dicebear.com/9.x/miniavs/png?seed=${baseSave.name}`
   };
 };
