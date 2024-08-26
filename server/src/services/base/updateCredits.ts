@@ -20,7 +20,7 @@ export const updateCredits = (save: Save, item: string, quantity: number) => {
   }
 
   // Handle mushrooms
-  const mushroomCredits: Mushrooms = { MUSHROOM1: 25, MUSHROOM2: 50 };
+  const mushroomCredits: Mushrooms = { MUSHROOM1: 3, MUSHROOM2: 8 };
   if (item in mushroomCredits) {
     save.credits += mushroomCredits[item];
     return;
