@@ -19,13 +19,13 @@ export const baseSave: KoaController = async (ctx) => {
   const basesaveid = ctx.request.body["basesaveid"]
   logging(`Saving user's base: ${user.username} | IP Address: ${ctx.ip} | Base ID: ${basesaveid}`);
 
-  if (!basesaveid) throw saveFailureErr
+  if (!basesaveid) throw saveFailureErr();
 
   const save = await ORMContext.em.findOne(Save, {
     basesaveid: parseInt(basesaveid)
   })
 
-  if (!save) throw saveFailureErr;
+  if (!save) throw saveFailureErr();
 
   const isOutpost = save.saveuserid === user.userid && save.homebaseid != save.basesaveid;
 

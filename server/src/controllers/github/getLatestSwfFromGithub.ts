@@ -1,6 +1,6 @@
-import { Octokit } from "octokit";
-import { errorLog, logging } from "./logger";
 import fs from "fs";
+import { Octokit } from "octokit";
+import { errorLog, logging } from "../../utils/logger";
 
 interface LaunchMetadata {
   currentGameVersion: string;
