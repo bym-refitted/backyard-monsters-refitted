@@ -43,9 +43,8 @@ export const setApiVersion = (version: string) => {
 };
 
 export const getApiVersion = () => globalApiVersion;
-
-const PORT = process.env.PORT || 3001;
-const BASE_URL = process.env.BASE_URL;
+export const PORT = process.env.PORT || 3001;
+export const BASE_URL = process.env.BASE_URL;
 
 // Entry point for all modules.
 const api = new Router();

@@ -6,7 +6,7 @@ import { register } from "./controllers/auth/register";
 import { baseLoad } from "./controllers/baseLoad";
 import { updateSaved } from "./controllers/updateSaved";
 import { getMapRoomCells } from "./controllers/maproom/v3/getCells";
-import { getNewMap } from "./controllers/maproom/v3/getNewMap";
+import { getNewMap } from "./controllers/maproom/getNewMap";
 import { auth } from "./middleware/auth";
 import { relocate } from "./controllers/maproom/v3/relocate";
 import { infernoMonsters } from "./controllers/inferno/infernoMonsters";
