@@ -34,5 +34,5 @@ const removeUserCells = async (user: User) => {
   });
 
   if (outposts.length > 0) await ORMContext.em.removeAndFlush(outposts);
-  await ORMContext.em.removeAndFlush(homeBase);
+  if (homeBase) await ORMContext.em.removeAndFlush(homeBase);
 };
