@@ -44,17 +44,21 @@ export const getArea: KoaController = async (ctx) => {
    * These cells include: homebase, attacked wild monsters, and outposts.
    * All of which require persistance.
    */
-  const dbCells = await ORMContext.em.find(WorldMapCell, {
-    x: {
-      $gte: currentX,
-      $lte: currentX + width,
+  const dbCells = await ORMContext.em.find(
+    WorldMapCell,
+    {
+      x: {
+        $gte: currentX,
+        $lte: currentX + width,
+      },
+      y: {
+        $gte: currentY,
+        $lte: currentY + height,
+      },
+      world_id: worldid,
     },
-    y: {
-      $gte: currentY,
-      $lte: currentY + height,
-    },
-    world_id: worldid,
-  });
+    { populate: ["save"] }
+  );
 
   const cells = {};
   for (const cell of dbCells) {

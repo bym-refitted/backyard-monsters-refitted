@@ -65,7 +65,7 @@ export const joinOrCreateWorld = async (
   homebaseCell.base_id = parseInt(save.baseid);
   ORMContext.em.persist(homebaseCell);
 
-  save.cellid = homebaseCell.cellid;
+  save.cell = homebaseCell;
   save.worldid = world.uuid;
   save.homebase = [homebaseCell.x.toString(), homebaseCell.y.toString()];
   ORMContext.em.persist(save);

@@ -14,7 +14,7 @@ import { ORMContext } from "../../../server";
  */
 export const leaveWorld = async (user: User, save: Save) => {
   save.worldid = "";
-  save.cellid = 0;
+  save.cell = null;
   save.homebase = null;
   save.outposts = null;
   save.usemap = 0;

@@ -96,7 +96,7 @@ export const baseLoad: KoaController = async (ctx) => {
 
             await ORMContext.em.persistAndFlush(cell);
             baseSave.homebaseid = parseInt(baseIdSplit.join());
-            baseSave.cellid = cell.cellid;
+            baseSave.cell = cell;
             baseSave.worldid = world.uuid;
           }
         }

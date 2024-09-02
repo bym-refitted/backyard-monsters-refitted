@@ -1,6 +1,13 @@
-import { Entity, ManyToOne, PrimaryKey, Property } from "@mikro-orm/core";
+import {
+  Entity,
+  ManyToOne,
+  OneToOne,
+  PrimaryKey,
+  Property,
+} from "@mikro-orm/core";
 import { FrontendKey } from "../utils/FrontendKey";
 import { World } from "./world.model";
+import { Save } from "./save.model";
 
 @Entity()
 export class WorldMapCell {
@@ -55,4 +62,7 @@ export class WorldMapCell {
 
   @ManyToOne(() => World)
   world!: World;
+
+  @OneToOne({ mappedBy: "cell", nullable:true, entity: () => Save })
+  save: Save;
 }

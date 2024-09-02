@@ -6,12 +6,12 @@ import {
   EntityManager,
   Connection,
   IDatabaseDriver,
+  OneToOne,
 } from "@mikro-orm/core";
 import { FrontendKey } from "../utils/FrontendKey";
-import { MapRoom } from "../enums/MapRoom";
-import { ORMContext } from "../server";
 import { getDefaultBaseData } from "../data/getDefaultBaseData";
 import { User } from "./user.model";
+import { WorldMapCell } from "./worldmapcell.model";
 export interface FieldData {
   [key: string | number]: any;
 }
@@ -95,9 +95,13 @@ export class Save {
   @Property()
   canattack!: boolean;
 
-  @FrontendKey
-  @Property({})
-  cellid!: number;
+  @OneToOne({
+    nullable: true,
+    orphanRemoval: true,
+    inversedBy: "save",
+    entity: () => WorldMapCell,
+  })
+  cell: WorldMapCell;
 
   @FrontendKey
   @Property()
