@@ -84,7 +84,7 @@ const getRandomXY = async (
     },
     {
       orderBy: {
-        cell_id: "desc",
+        cellid: "desc",
       },
     }
   );

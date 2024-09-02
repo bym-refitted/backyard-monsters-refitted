@@ -34,7 +34,7 @@ export const getDefaultBaseData = (user?: User) => {
     giftsentcount: 0,
     id: 0, // Gets set as same value as savetime when save is triggered
     canattack: false,
-    cellid: generateID(6),
+    cellid: -1,
     baseid_inferno: 0,
     fbid: "",
     fortifycellid: 0,

@@ -23,7 +23,7 @@ export class WorldMapCell {
 
   @FrontendKey
   @PrimaryKey()
-  cell_id!: number;
+  cellid!: number;
 
   @FrontendKey
   @Property()

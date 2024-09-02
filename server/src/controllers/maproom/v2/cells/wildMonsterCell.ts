@@ -8,7 +8,7 @@ export const wildMonsterCell = async (cell: WorldMapCell, worldId: string) => {
 
   let baseId = 1000000 + cell.y + cell.x * 1000;
   const level = calculateTribeLevel(cell.x, cell.y, worldId, tribe);
-
+  
   return {
     uid: baseId,
     b: 1,
