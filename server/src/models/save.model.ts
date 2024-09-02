@@ -96,7 +96,7 @@ export class Save {
   canattack!: boolean;
 
   @FrontendKey
-  @Property()
+  @Property({})
   cellid!: number;
 
   @FrontendKey

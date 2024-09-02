@@ -10,7 +10,7 @@ export class Migration20240211081127 extends Migration {
     this.addSql('alter table `user` add unique `user_username_unique`(`username`);');
     this.addSql('alter table `user` add unique `user_email_unique`(`email`);');
 
-    this.addSql('create table `world_map_cell` (`cell_id` int unsigned not null auto_increment primary key, `world_id` varchar(255) not null, `x` int not null, `y` int not null, `uid` int not null, `base_type` int not null, `base_id` int not null) default character set utf8mb4 engine = InnoDB;');
+    this.addSql('create table `world_map_cell` (`cellid` int unsigned not null auto_increment primary key, `world_id` varchar(255) not null, `x` int not null, `y` int not null, `uid` int not null, `base_type` int not null, `base_id` int not null) default character set utf8mb4 engine = InnoDB;');
 
     this.addSql('alter table `user` add constraint `user_save_basesaveid_foreign` foreign key (`save_basesaveid`) references `save` (`basesaveid`) on update cascade on delete set null;');
   }
