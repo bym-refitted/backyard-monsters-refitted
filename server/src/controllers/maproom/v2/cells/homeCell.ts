@@ -15,52 +15,46 @@ import { BaseType } from "../../../../enums/Base";
  * @param {WorldMapCell} cell - The world map cell object.
  */
 export const homeCell = async (ctx: Context, cell: WorldMapCell) => {
+  if (!cell.save) throw new Error("There is no save for the user cell");
   const currentUser: User = ctx.authUser;
   const mine = currentUser.userid === cell.uid;
 
-  // Get the cell owner, either the current user or another user
+  // // Get the cell owner, either the current user or another user
   const cellOwner = mine
     ? currentUser
     : await ORMContext.em.findOne(User, { userid: cell.uid });
 
-  await ORMContext.em.populate(cellOwner, ["save"]);
-  if (!cellOwner.save) throw new Error("User save not found");
-
-  // if homebase
-  // - do what we are already doing, populate user save
-  // - otherwise get the outpost save
-  const save = cellOwner.save;
-
-  const isOnline = Date.now() / 1000 - save.savetime < 30;
-  const locked = isOnline ? 1 : save.locked;
-  const baseLevel = calculateBaseLevel(save.points, save.basevalue);
-  let isCellProtected = save.protected;
+  const isOnline = Date.now() / 1000 - cell.save.savetime < 30;
+  const locked = isOnline ? 1 : cell.save.locked;
+  const baseLevel = calculateBaseLevel(cell.save.points, cell.save.basevalue);
+  let isCellProtected = cell.save.protected;
 
   /** TODO: https://backyardmonsters.fandom.com/wiki/Damage_Protection */
-  if (save.type === BaseType.MAIN && save.damage >= 50) isCellProtected = 1;
+  if (cell.save.type === BaseType.MAIN && cell.save.damage >= 50)
+    isCellProtected = 1;
 
   return {
     uid: cellOwner.userid,
     b: cell.base_type,
-    fbid: save.fbid,
+    fbid: cell.save.fbid,
     pi: 0,
     bid: cell.base_id,
     aid: 0,
     i: cell.terrainHeight,
     mine: mine ? 1 : 0,
-    f: save.flinger,
-    c: save.catapult,
+    f: cell.save.flinger,
+    c: cell.save.catapult,
     t: 0,
     n: cellOwner.username,
     fr: 0,
     on: isOnline,
     p: isCellProtected,
-    r: save.resources,
-    m: save.monsters,
+    r: cell.save.resources,
+    m: cell.save.monsters,
     l: baseLevel,
-    d: save.damage > 90,
+    d: cell.save.damage > 90,
     lo: locked,
-    dm: save.damage,
+    dm: cell.save.damage,
     pic_square: `https://api.dicebear.com/9.x/miniavs/png?seed=${cellOwner.username}`,
     im: `https://api.dicebear.com/9.x/miniavs/png?seed=${cellOwner.username}`,
   };
