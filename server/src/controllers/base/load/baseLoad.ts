@@ -9,7 +9,7 @@ import { flags } from "../../../data/flags";
 import { getCurrentDateTime } from "../../../utils/getCurrentDateTime";
 import { WorldMapCell } from "../../../models/worldmapcell.model";
 import { generateID } from "../../../utils/generateID";
-import { loadFailureErr } from "../../../errors/errorCodes.";
+import { loadFailureErr } from "../../../errors/errors";
 import { BaseMode } from "../../../enums/Base";
 import {
   generateNoise,
