@@ -7,4 +7,5 @@ export enum ErrorCodes {
   AUTH_ERROR = "AUTH_ERROR",
   DEBUG_ERROR = "DEBUG_ERROR",
   SAVE_ERROR = "SAVE_ERROR",
+  LOAD_ERROR = "LOAD_ERROR",
 }

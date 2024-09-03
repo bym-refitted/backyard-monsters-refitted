@@ -13,6 +13,7 @@ interface TakeoverCellRequest {
     shiny?: string
 }
 
+// TODO: Rewrite
 export const takeoverCell: KoaController = async (ctx) => {
     const user: User = ctx.authUser;
     await ORMContext.em.populate(user, ["save"]);

@@ -4,7 +4,7 @@ import { WorldMapCell } from "../../../models/worldmapcell.model";
 import { ORMContext } from "../../../server";
 import { getBounds } from "./world";
 
-// TODO: Rewrite & optimize
+// TODO: Rewrite
 export const removeDamageProtection = async (
   user: User,
   homebase: Array<string>

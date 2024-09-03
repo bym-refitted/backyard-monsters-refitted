@@ -63,6 +63,6 @@ export class WorldMapCell {
   @ManyToOne(() => World)
   world!: World;
 
-  @OneToOne({ mappedBy: "cell", nullable:true, entity: () => Save })
+  @OneToOne({ mappedBy: "cell", nullable: true, entity: () => Save })
   save: Save;
 }

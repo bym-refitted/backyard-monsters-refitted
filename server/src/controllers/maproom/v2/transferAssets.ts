@@ -9,6 +9,7 @@ interface TransferAssetsRequest {
     monsters: string
 }
 
+// TODO: Rewrite
 export const transferAssets: KoaController = async (ctx) => {
     const request = <TransferAssetsRequest>ctx.request.body;
     const monsters = JSON.parse(request.monsters)
