@@ -1,13 +1,15 @@
 import { flags } from "../../../data/flags";
+import { BaseMode } from "../../../enums/Base";
 import { Status } from "../../../enums/StatusCodes";
 import { saveFailureErr } from "../../../errors/errorCodes.";
 import { Save } from "../../../models/save.model";
 import { User } from "../../../models/user.model";
 import { ORMContext } from "../../../server";
-import { loadBuildBase, loadViewBase } from "../../../services/base/loadBase";
 import { FilterFrontendKeys } from "../../../utils/FrontendKey";
 import { getCurrentDateTime } from "../../../utils/getCurrentDateTime";
 import { KoaController } from "../../../utils/KoaController";
+import { buildBase } from "../load/modes/buildBase";
+import { viewBase } from "../load/modes/viewBase";
 
 export const updateSaved: KoaController = async (ctx) => {
   const user: User = ctx.authUser;
@@ -18,10 +20,11 @@ export const updateSaved: KoaController = async (ctx) => {
   const authSave = user.save;
   let save: Save;
 
-  if (type === "build") {
-    save = await loadBuildBase(ctx, baseid);
+  // TODO: Rewrite, why do this?
+  if (type === BaseMode.BUILD) {
+    save = await buildBase(ctx, baseid);
   } else {
-    save = await loadViewBase(ctx, baseid);
+    save = await viewBase(ctx, baseid);
   }
 
   if (!save) throw saveFailureErr();
