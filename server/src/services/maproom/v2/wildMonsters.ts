@@ -11,6 +11,7 @@ import { getXPosition, getYPosition } from "./world";
 import { Tribes } from "../../../enums/Tribes";
 import { calculateTribeLevel } from "./calculateTribeLevel";
 
+// TODO: Rewrite
 export const getWildMonsterSave = (baseid: number, worldId: string): Save => {
   const fork = ORMContext.em.fork();
   const x = getXPosition(baseid);
