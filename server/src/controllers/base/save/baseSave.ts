@@ -17,7 +17,7 @@ export const baseSave: KoaController = async (ctx) => {
   await ORMContext.em.populate(user, ["save"])
   const authSave = user.save;
   const basesaveid = ctx.request.body["basesaveid"]
-  logging(`Saving user's base: ${user.username} | IP Address: ${ctx.ip} | Base ID: ${basesaveid}`);
+  logging(`Saving user's base: ${user.username} | Base ID: ${basesaveid}`);
 
   if (!basesaveid) throw saveFailureErr();
 

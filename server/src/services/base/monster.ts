@@ -6,6 +6,7 @@ interface MonsterUpdate {
     m: any,
 }
 
+// TODO: Rewrite
 export const monsterUpdateBases = async (monsterupdates: Array<MonsterUpdate>) => {
     console.log("monsterupdates");
     const fork = ORMContext.em.fork() as EntityManager;

@@ -9,8 +9,7 @@ import { flags } from "../../../data/flags";
 import { getCurrentDateTime } from "../../../utils/getCurrentDateTime";
 import { WorldMapCell } from "../../../models/worldmapcell.model";
 import { generateID } from "../../../utils/generateID";
-import { loadBuildBase, loadViewBase } from "../../../services/base/loadBase";
-import { saveFailureErr } from "../../../errors/errorCodes.";
+import { loadFailureErr } from "../../../errors/errorCodes.";
 import { BaseMode } from "../../../enums/Base";
 import {
   generateNoise,
@@ -22,8 +21,10 @@ import { Status } from "../../../enums/StatusCodes";
 import { removeDamageProtection } from "../../../services/maproom/v2/damageProtection";
 import { getWildMonsterSave } from "../../../services/maproom/v2/wildMonsters";
 import z from "zod";
+import { viewBase } from "./modes/viewBase";
+import { buildBase } from "./modes/buildBase";
 
-const BaseLoadRequestSchema = z.object({
+const BaseLoadSchema = z.object({
   type: z.string(),
   userid: z.string(),
   baseid: z.string(),
@@ -31,38 +32,35 @@ const BaseLoadRequestSchema = z.object({
 
 export const baseLoad: KoaController = async (ctx) => {
   try {
-    const { type: baseLoadMode, baseid: baseId } = BaseLoadRequestSchema.parse(
-      ctx.request.body
-    );
-
+    const { baseid, type } = BaseLoadSchema.parse(ctx.request.body);
     const user: User = ctx.authUser;
     await ORMContext.em.populate(user, ["save"]);
-    let baseSave: Save = null;
 
     const userSave = user.save;
+    let baseSave: Save = null;
 
     const getRequestedBase = async () => {
-      const requestedBaseSave = await loadViewBase(ctx, baseId);
+      const requestedBaseSave = await viewBase(ctx, baseid);
       if (!requestedBaseSave)
-        getWildMonsterSave(parseInt(baseId), user.save.worldid);
+        getWildMonsterSave(parseInt(baseid), user.save.worldid);
       return requestedBaseSave;
     };
 
-    switch (baseLoadMode) {
+    switch (type) {
       case BaseMode.BUILD:
-        baseSave = await loadBuildBase(ctx, baseId);
+        baseSave = await buildBase(ctx, baseid);
         if (baseSave && baseSave.saveuserid !== user.userid)
-          throw saveFailureErr();
+          throw loadFailureErr();
 
         if (!baseSave)
           // If there is no save, create one with default values
           baseSave = await Save.createDefaultUserSave(ORMContext.em, user);
         break;
       case BaseMode.VIEW:
-        console.log("Loading view base", baseId);
         baseSave = await getRequestedBase();
         break;
       case BaseMode.ATTACK:
+        // TODO: Revisit
         baseSave = await getRequestedBase();
         // You lose your damage protection on your first attack
         await removeDamageProtection(user, baseSave.homebase);
@@ -79,7 +77,7 @@ export const baseLoad: KoaController = async (ctx) => {
 
             if (!world) throw new Error("No world found.");
 
-            const baseIdSplit = [...`${baseId}`];
+            const baseIdSplit = [...`${baseid}`];
             const cellX = parseInt(baseIdSplit.slice(1, 4).join(""));
             const cellY = parseInt(baseIdSplit.slice(4).join(""));
             const cell = new WorldMapCell(
@@ -103,7 +101,7 @@ export const baseLoad: KoaController = async (ctx) => {
         await ORMContext.em.persistAndFlush(baseSave);
         break;
       default:
-        throw new Error(`Base type not handled ${baseLoadMode}. Fix me`);
+        throw new Error(`Base type not handled, type: ${type}.`);
     }
 
     const filteredSave = FilterFrontendKeys(baseSave);
@@ -122,9 +120,6 @@ export const baseLoad: KoaController = async (ctx) => {
       pic_square: `https://api.dicebear.com/9.x/miniavs/png?seed=${baseSave.name}`,
     };
   } catch (error) {
-    console.log("Error loading base", error);
-    ctx.status = 400;
-    ctx.body = { error: "Invalid request body", details: error.errors };
-    return;
+    throw loadFailureErr();
   }
 };

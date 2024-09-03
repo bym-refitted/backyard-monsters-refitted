@@ -30,3 +30,11 @@ export const saveFailureErr = () =>
     code: ErrorCodes.SAVE_ERROR,
     data: null,
   });
+
+  export const loadFailureErr = () =>
+    new ClientSafeError({
+      message: "We could not load the requested data",
+      status: Status.NOT_FOUND,
+      code: ErrorCodes.LOAD_ERROR,
+      data: null,
+    });

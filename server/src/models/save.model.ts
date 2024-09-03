@@ -469,7 +469,6 @@ export class Save {
     "effects",
     "homebase",
     "outposts",
-    "worldsize",
     "wmstatus",
     "chatservers",
     "achieved",
