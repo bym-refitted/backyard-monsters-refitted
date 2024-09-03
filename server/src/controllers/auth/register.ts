@@ -4,7 +4,7 @@ import { KoaController } from "../../utils/KoaController";
 import { ORMContext } from "../../server";
 import { User } from "../../models/user.model";
 import { FilterFrontendKeys } from "../../utils/FrontendKey";
-import { authFailureErr } from "../../errors/errorCodes.";
+import { authFailureErr } from "../../errors/errors";
 import { logging } from "../../utils/logger";
 import { Status } from "../../enums/StatusCodes";
 

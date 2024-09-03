@@ -1,7 +1,7 @@
 import { flags } from "../../../data/flags";
 import { BaseMode } from "../../../enums/Base";
 import { Status } from "../../../enums/StatusCodes";
-import { saveFailureErr } from "../../../errors/errorCodes.";
+import { saveFailureErr } from "../../../errors/errors";
 import { Save } from "../../../models/save.model";
 import { User } from "../../../models/user.model";
 import { ORMContext } from "../../../server";

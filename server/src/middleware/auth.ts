@@ -1,7 +1,7 @@
 import { ORMContext } from "../server";
 import { User } from "../models/user.model";
 import { Context, Next } from "koa";
-import { authFailureErr } from "../errors/errorCodes.";
+import { authFailureErr } from "../errors/errors";
 import JWT, { JwtPayload } from "jsonwebtoken";
 
 /**

@@ -5,7 +5,7 @@ import { KoaController } from "../../utils/KoaController";
 import z from "zod";
 import bcrypt from "bcrypt";
 import JWT from "jsonwebtoken";
-import { authFailureErr } from "../../errors/errorCodes.";
+import { authFailureErr } from "../../errors/errors";
 import { logging } from "../../utils/logger";
 import { BymJwtPayload } from "../../middleware/auth";
 import { Status } from "../../enums/StatusCodes";

@@ -8,7 +8,7 @@ import { KoaController } from "../../../utils/KoaController";
 import { getCurrentDateTime } from "../../../utils/getCurrentDateTime";
 import { logging } from "../../../utils/logger";
 import { storeItems } from "../../../data/storeItems";
-import { saveFailureErr } from "../../../errors/errorCodes.";
+import { saveFailureErr } from "../../../errors/errors";
 import { monsterUpdateBases } from "../../../services/base/monster";
 import { Status } from "../../../enums/StatusCodes";
 

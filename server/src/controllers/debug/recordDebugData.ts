@@ -1,5 +1,5 @@
 import { Status } from "../../enums/StatusCodes";
-import { debugClientErr } from "../../errors/errorCodes.";
+import { debugClientErr } from "../../errors/errors";
 import { KoaController } from "../../utils/KoaController";
 import { errorLog, logging } from "../../utils/logger";
 
