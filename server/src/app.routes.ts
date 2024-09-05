@@ -26,6 +26,9 @@ const router = new Router();
 // GitHub - Get latest client releases
 router.post('/gh-release-webhook', releasesWebhook);
 
+// Connection route
+router.get("/connection", (ctx) => (ctx.status = 200));
+
 // Init route
 router.get("/api/:apiVersion/bm/getnewmap", apiVersion, debugDataLog("Getting new maproom"), getNewMap);
 router.post("/api/:apiVersion/bm/getnewmap", apiVersion, debugDataLog("Posting to new maproom"), getNewMap);
