@@ -18,13 +18,6 @@ import { logMissingAssets, morganLogging } from "./middleware/morganLogging";
 import { Status } from "./enums/StatusCodes";
 import { getLatestSwfFromGithub } from "./controllers/github/getLatestSwfFromGithub";
 
-/**
- * ToDos:
- * Frontend handle error
- * Error handling for the download
- * Fix https
- */
-
 export const app = new Koa();
 
 export const ORMContext = {} as {
@@ -44,6 +37,17 @@ export const setApiVersion = (version: string) => {
 export const getApiVersion = () => globalApiVersion;
 export const PORT = process.env.PORT || 3001;
 export const BASE_URL = process.env.BASE_URL;
+
+// Cache control middleware
+// Apply no-cache headers to all routes except static files
+app.use(async (ctx, next) => {
+  if (!ctx.path.startsWith("/public")) {
+    ctx.set("Cache-Control", "no-cache, no-store, must-revalidate");
+    ctx.set("Pragma", "no-cache");
+    ctx.set("Expires", "0");
+  }
+  await next();
+});
 
 // Entry point for all modules.
 const api = new Router();
@@ -83,7 +87,7 @@ api.get("/", (ctx: Context) => (ctx.body = {}));
 
   app.use(async (ctx, next) => {
     if (ctx.path === "/crossdomain.xml") {
-      ctx.status = Status.OK
+      ctx.status = Status.OK;
       ctx.body = `<?xml version="1.0"?>
                   <!DOCTYPE cross-domain-policy SYSTEM "http://www.adobe.com/xml/dtds/cross-domain-policy.dtd">
                   <cross-domain-policy>

@@ -41,7 +41,7 @@ git clone https://github.com/bym-refitted/backyard-monsters-refitted
 
 ## Client Setup
 
-1. Follow the instructions carefully on our [client setup & configuration](https://github.com/bym-refitted/backyard-monsters-refitted/wiki/Client-Setup,-IntelliSense-&-Configuration) Wiki page.
+1. Follow the instructions carefully on our [client setup & configuration](https://github.com/bym-refitted/backyard-monsters-refitted/wiki/Client-Setup-&-Compilation) Wiki page.
 
 2. To contribute you will need to copy your changes to the src directory. If you are wondering why we are using this horrible workflow please see [CONTRIBUTING.md](./CONTRIBUTING.md) for more information. If you are able to figure out how to compile directly to swf without unlinking all assets, please let us know.
 
