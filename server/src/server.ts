@@ -1,8 +1,8 @@
 import "reflect-metadata";
 import "dotenv/config";
+import session from "koa-session";
 
 import Koa, { Context, Next } from "koa";
-import session from "koa-session";
 import Router from "@koa/router";
 import bodyParser from "koa-bodyparser";
 import serve from "koa-static";
@@ -10,21 +10,14 @@ import ormConfig from "./mikro-orm.config";
 import router from "./app.routes";
 import { MariaDbDriver } from "@mikro-orm/mariadb";
 import { EntityManager, MikroORM, RequestContext } from "@mikro-orm/core";
-import { errorLog, logging } from "./utils/logger.js";
-import { firstRunEnv } from "./utils/firstRunEnv.js";
-import { ascii_node } from "./utils/ascii_art.js";
-import { ErrorInterceptor } from "./middleware/clientSafeError.js";
+import { errorLog, logging } from "./utils/logger";
+import { firstRunEnv } from "./utils/firstRunEnv";
+import { ascii_node } from "./utils/ascii_art";
+import { ErrorInterceptor } from "./middleware/clientSafeError";
 import { processLanguagesFile } from "./middleware/processLanguageFile";
 import { logMissingAssets, morganLogging } from "./middleware/morganLogging";
-import { SESSION_CONFIG } from "./config/SessionConfig";
 import { getLatestSwfFromGithub } from "./utils/getLatestSwfFromGithub";
-
-/**
- * ToDos:
- * Frontend handle error
- * Error handling for the download
- * Fix https
- */
+import { SESSION_CONFIG } from "./config/SessionConfig";
 
 export const app = new Koa();
 
@@ -43,8 +36,19 @@ export const setApiVersion = (version: string) => {
 };
 
 export const getApiVersion = () => globalApiVersion;
+export const PORT = process.env.PORT || 3001;
+export const BASE_URL = process.env.BASE_URL;
 
-const port = process.env.PORT || 3001;
+// Cache control middleware
+// Apply no-cache headers to all routes except static files
+app.use(async (ctx, next) => {
+  if (!ctx.path.startsWith("/public")) {
+    ctx.set("Cache-Control", "no-cache, no-store, must-revalidate");
+    ctx.set("Pragma", "no-cache");
+    ctx.set("Expires", "0");
+  }
+  await next();
+});
 
 // Entry point for all modules.
 const api = new Router();
@@ -88,7 +92,7 @@ api.get("/", (ctx: Context) => (ctx.body = {}));
 
   app.use(async (ctx, next) => {
     if (ctx.path === "/crossdomain.xml") {
-      ctx.type = "application/xml";
+      ctx.status = 200;
       ctx.body = `<?xml version="1.0"?>
                   <!DOCTYPE cross-domain-policy SYSTEM "http://www.adobe.com/xml/dtds/cross-domain-policy.dtd">
                   <cross-domain-policy>
@@ -96,6 +100,7 @@ api.get("/", (ctx: Context) => (ctx.body = {}));
                       <allow-access-from domain="*" secure="false" />
                       <allow-http-request-headers-from domain="*" headers="Authorization" secure="false" />
                   </cross-domain-policy>`;
+      ctx.type = "application/xml";
     } else {
       await next();
     }
@@ -106,16 +111,17 @@ api.get("/", (ctx: Context) => (ctx.body = {}));
    *
    * This value can also be set by the github webhook
    */
-  if (process.env.USE_VERSION_MANAGEMENT === "enabled")
+  if (process.env.USE_VERSION_MANAGEMENT === "enabled") {
     setApiVersion(await getLatestSwfFromGithub());
+  }
 
   // Routes
   app.use(router.routes());
   app.use(router.allowedMethods());
 
-  return app.listen(port, () => {
+  app.listen(PORT, () => {
     logging(`
-    ${ascii_node} Server running on: http://localhost:${port}
+    ${ascii_node} Server running on: ${BASE_URL}:${PORT}
     `);
   });
 })().catch((e) => errorLog(e));
