@@ -23,6 +23,7 @@ import { transferAssets } from "./controllers/maproom/v2/transferAssets";
 import { apiVersion } from "./middleware/apiVersioning";
 import { supportedLangs } from "./controllers/supportedLangs";
 import { releasesWebhook } from "./controllers/github/releasesWebhook";
+import { Status } from "./enums/StatusCodes";
 
 /**
  * All applcation routes
@@ -45,6 +46,12 @@ router.get(
   debugDataLog("Getting new maproom"),
   getNewMap
 );
+
+/**
+ * Connection route
+ * @name POST /connection
+ */
+router.get("/connection", (ctx) => (ctx.status = Status.OK));
 
 /**
  * Init route
