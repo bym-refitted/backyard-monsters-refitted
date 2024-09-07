@@ -1,6 +1,17 @@
-import { Entity, Property, PrimaryKey, BeforeUpdate } from "@mikro-orm/core";
+import {
+  Entity,
+  Property,
+  PrimaryKey,
+  BeforeUpdate,
+  EntityManager,
+  Connection,
+  IDatabaseDriver,
+  OneToOne,
+} from "@mikro-orm/core";
 import { FrontendKey } from "../utils/FrontendKey";
-
+import { getDefaultBaseData } from "../data/getDefaultBaseData";
+import { User } from "./user.model";
+import { WorldMapCell } from "./worldmapcell.model";
 export interface FieldData {
   [key: string | number]: any;
 }
@@ -84,9 +95,13 @@ export class Save {
   @Property()
   canattack!: boolean;
 
-  @FrontendKey
-  @Property()
-  cellid!: number;
+  @OneToOne({
+    nullable: true,
+    orphanRemoval: true,
+    inversedBy: "save",
+    entity: () => WorldMapCell,
+  })
+  cell: WorldMapCell;
 
   @FrontendKey
   @Property()
@@ -384,10 +399,6 @@ export class Save {
 
   @FrontendKey
   @Property({ type: "json", nullable: true })
-  worldsize: number[];
-
-  @FrontendKey
-  @Property({ type: "json", nullable: true })
   wmstatus: number[][];
 
   @FrontendKey
@@ -458,7 +469,6 @@ export class Save {
     "effects",
     "homebase",
     "outposts",
-    "worldsize",
     "wmstatus",
     "chatservers",
     "achieved",
@@ -466,9 +476,38 @@ export class Save {
     "gifts",
     "sentinvites",
     "sentgifts",
-    "champion",
     "attackerchampion",
     "fbpromos",
     "purchase",
   ];
+
+  public static nonJsonKeys: (keyof FieldData)[] = [
+    "level",
+    "catapult",
+    "flinger",
+    "destroyed",
+    "damage",
+    "locked",
+    "protected",
+    "champion",
+    "over",
+    "usemap",
+    "basevalue",
+    "empirevalue",
+    "points",
+    "attackreport",
+  ];
+
+  public static createDefaultUserSave = async (
+    em: EntityManager<IDatabaseDriver<Connection>>,
+    user: User
+  ) => {
+    const baseSave = em.create(Save, getDefaultBaseData(user));
+    // Add the save to the database
+    await em.persistAndFlush(baseSave);
+    user.save = baseSave;
+    // Update user base save
+    await em.persistAndFlush(user);
+    return baseSave;
+  };
 }

@@ -1,14 +1,17 @@
 export interface StoreItem {
-  t: string; // Title
-  d: string; // Description
-  du: number; // Duration
-  c: number[]; // Costs
-  i: number; // Inactive
-  a: number; // Active
+  t: string;      // Title
+  d: string;      // Description
+  du: number;     // Duration
+  c: number[];    // Costs
+  i: number;      // Inactive
+  a: number;      // Active
 }
 
-// ToDo: update duration and other related values dynamically
-export const storeItems: { [key: string]: StoreItem }  = {
+/**
+ * Collection of available store items for purchase.
+ * @type {{ [key: string]: StoreItem }}
+ */
+export const storeItems: { [key: string]: StoreItem } = {
   BEW: {
     t: "1 Extra Worker",
     d: "One extra worker to help you build and upgrade your village.",

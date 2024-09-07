@@ -45,7 +45,11 @@ package
 
       public static var cdnUrl:String = "http://localhost:3001/";
 
-      public static var apiVersionSuffix:String = "v0.2.8-alpha/";
+      public static var apiVersionSuffix:String = "v0.2.9-alpha/";
+
+      public static var connectionCounter:int;
+    
+      public static var connectionLost:Boolean = false;
 
       public static var _local:Boolean = false;
       
@@ -668,6 +672,7 @@ package
       {
          player = new Player();
          _loadmode = baseMode;
+         connectionCounter = 0;
          if(isValidMode(baseMode))
          {
             setMode(infernoToDefaultMode(baseMode));
@@ -992,6 +997,39 @@ package
          }
       }
       
+      // This function is used to check for an available network connection
+      // It makes a request to the endpoint /connection on the server
+      public static function CheckNetworkConnection(event:TimerEvent): void {
+         var url:String = serverUrl + "connection";
+         var request:URLRequest = new URLRequest(url);
+         request.method = URLRequestMethod.GET;
+         
+         var loader:URLLoader = new URLLoader();
+
+         var onComplete:Function = function(event:Event):void {
+            loader.removeEventListener(Event.COMPLETE, onComplete);
+            loader.removeEventListener(IOErrorEvent.IO_ERROR, onError);
+            connectionLost = false;
+         };
+
+         var onError:Function = function(event:IOErrorEvent):void {
+            loader.removeEventListener(Event.COMPLETE, onComplete);
+            loader.removeEventListener(IOErrorEvent.IO_ERROR, onError);
+            connectionLost = true;
+            POPUPS.NoConnection();
+         };
+
+         loader.addEventListener(Event.COMPLETE, onComplete);
+         loader.addEventListener(IOErrorEvent.IO_ERROR, onError);
+
+         try {
+            loader.load(request);
+         } catch (error:Error) {
+            connectionLost = true;
+            POPUPS.NoConnection();
+         }
+      }
+      
       public static function Tick() : void
       {
          var _loc1_:int = 0;
@@ -1004,6 +1042,12 @@ package
          var _loc8_:int = 0;
          var _loc9_:int = 0;
          var _loc10_:int = 0;
+
+         // Poll the server every 5 ticks to check for network connection
+         connectionCounter += 1;
+         if (connectionCounter % 5 == 0) {
+            CheckNetworkConnection(null);
+         }
          if(!_halt && !GLOBAL._catchup)
          {
             t += 1;

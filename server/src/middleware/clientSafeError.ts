@@ -1,6 +1,6 @@
 import { Context, Next } from "koa";
 import { errorLog } from "../utils/logger";
-import { STATUS } from "../enums/StatusCodes";
+import { Status } from "../enums/StatusCodes";
 
 interface ConstructorParams {
   code: string;
@@ -12,7 +12,6 @@ interface ConstructorParams {
 
 /**
  * Error which is marked and formatted to be safe for the client
- *
  * Removes internal details while logging them for debugging on our end
  */
 export class ClientSafeError extends Error {
@@ -23,7 +22,7 @@ export class ClientSafeError extends Error {
 
   constructor({
     message = "Something went wrong, please contact support.",
-    status = STATUS.INTERNAL_SERVER_ERROR,
+    status = Status.INTERNAL_SERVER_ERROR,
     code = "INTERNAL_ERROR",
     data = {},
     internalInfo,
@@ -37,7 +36,7 @@ export class ClientSafeError extends Error {
   }
 
   // Create the json to return safely to client
-  public toSafeJson() {
+  toSafeJson() {
     return {
       message: this.message,
       code: this.code,
@@ -49,9 +48,10 @@ export class ClientSafeError extends Error {
 }
 
 /**
- *  This middleware intercepts errors that are thrown and hides them from the user unless the are specifically thrown as clientSafeErrors
+ * Middleware to intercept errors and hide them from the user unless they are specifically thrown as ClientSafeErrors.
  *
- *
+ * @param {Context} ctx - The Koa context object.
+ * @param {Next} next - The Koa next middleware function.
  */
 export const ErrorInterceptor = async (ctx: Context, next: Next) => {
   try {

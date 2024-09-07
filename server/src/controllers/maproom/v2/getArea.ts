@@ -1,64 +1,107 @@
 import { KoaController } from "../../../utils/KoaController";
-import { wildMonsterCell } from "./cells/wildMonsterCell";
-import { homeCell } from "./cells/homeCell";
-import { outpostCell } from "./cells/outpostCell";
+import { User } from "../../../models/user.model";
+import { WorldMapCell } from "../../../models/worldmapcell.model";
+import { ORMContext } from "../../../server";
 import { devConfig } from "../../../config/DevSettings";
-import { STATUS } from "../../../enums/StatusCodes";
+import {
+  generateNoise,
+  getTerrainHeight,
+} from "../../../config/WorldGenSettings";
+import { Status } from "../../../enums/StatusCodes";
+import { createCellData } from "../../../services/maproom/v2/createCellData";
+import { Save } from "../../../models/save.model";
 
 interface Cell {
   x?: number;
   y?: number;
   width?: number;
   height?: number;
+  sendresources?: number;
 }
 
-export const getArea: KoaController = async (ctx) => {
-  const requestBody: Cell = ctx.request.body;
+// We ignore what's requested by the client as it's already hardcoded to 10x10
+const width = 10;
+const height = 10;
 
-  for (const key in requestBody) {
+export const getArea: KoaController = async (ctx) => {
+  const user: User = ctx.authUser;
+  const requestBody: Cell = ctx.request.body;
+  await ORMContext.em.populate(user, ["save"]);
+
+  const save: Save = user.save;
+  const worldid = save.worldid;
+
+  // TODO: Use zod to sort this out
+  for (const key in requestBody)
     requestBody[key] = parseInt(requestBody[key], 10) || 0;
+
+  const currentX = requestBody.x;
+  const currentY = requestBody.y;
+  const sendresources = requestBody.sendresources;
+
+  /**
+   * First, we get the cells which have been stored in the database.
+   * These cells include: homebase, attacked wild monsters, and outposts.
+   * All of which require persistance.
+   */
+  const dbCells = await ORMContext.em.find(
+    WorldMapCell,
+    {
+      x: {
+        $gte: currentX,
+        $lte: currentX + width,
+      },
+      y: {
+        $gte: currentY,
+        $lte: currentY + height,
+      },
+      world_id: worldid,
+    },
+    { populate: ["save"] }
+  );
+
+  const cells = {};
+  for (const cell of dbCells) {
+    if (!cells[cell.x]) cells[cell.x] = {};
+    cells[cell.x][cell.y] = await createCellData(cell, worldid, ctx);
   }
 
-  const currentX = requestBody.x || 0;
-  const currentY = requestBody.y || 0;
-  const width = requestBody.width || 10;
-  const height = requestBody.height || 10;
-
-  // Creates {maxX} x {maxY} grid from point 0 x 0
-  const maxX = currentX + width;
-  const maxY = currentY + height;
-
-  let cells = {};
-
-  for (let x = currentX; x < maxX; x++) {
-    cells[x] = {};
-
-    for (let y = currentY; y < maxY; y++) {
-      cells[x][y] = await wildMonsterCell();
-
-      // Testing - Hardcoded co-ordinates to load base types
-      if (x === 0 && y === 0) {
-        cells[x][y] = await homeCell(ctx);
-      }
-
-      if (x === 2 && y === 1) {
-        cells[x][y] = await outpostCell(ctx);
-      }
+  /**
+   * Then, we fill the remaining cells in-memory, without persisting to the database.
+   */
+  const noise = generateNoise(user.save.worldid);
+  for (let cellX = currentX; cellX <= currentX + width; cellX++) {
+    // Ensure the cellX object exists in the cells map to append the cellY object to it
+    if (!cells[cellX]) cells[cellX] = {};
+    for (let cellY = currentY; cellY <= currentY + height; cellY++) {
+      // The cell already exists, skip it
+      if (cells[cellX][cellY]) continue;
+      const terrainHeight = getTerrainHeight(noise, cellX, cellY);
+      // Create a cell in-memory, skip the world being defined for memory efficency
+      const inMemoryCell = new WorldMapCell(
+        undefined,
+        cellX,
+        cellY,
+        terrainHeight
+      );
+      cells[cellX][cellY] = await createCellData(inMemoryCell, worldid, ctx);
     }
   }
 
   if (devConfig.maproom) {
-    ctx.status = STATUS.OK;
+    ctx.status = Status.OK;
     ctx.body = {
       error: 0,
       x: currentX,
       y: currentY,
       data: cells,
-      // resources
-      // alliancedata
+      ...(sendresources === 1 && {
+        resources: save.resources,
+        credits: save.credits,
+      }),
     };
   } else {
-    ctx.status = STATUS.NOT_FOUND;
-    ctx.body = { message: "MapRoom is not enabled on this server", error: 1 };
+    ctx.status = Status.NOT_FOUND;
+    ctx.body = { message: "Map Room is not enabled on this server", error: 1 };
   }
 };

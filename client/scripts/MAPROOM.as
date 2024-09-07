@@ -1,6 +1,5 @@
 package
 {
-   
    import com.monsters.ai.TRIBES;
    import com.monsters.ai.WMBASE;
    import com.monsters.mailbox.Message;
@@ -25,6 +24,8 @@ package
       public static var _lastSortReversed:int = 0;
       
       public static var _visitingFriend:Boolean = false;
+
+      public static var initMaproomSetup:Boolean;
       
       private static var loadState:int;
       
@@ -32,7 +33,6 @@ package
       
       private static var bridge_obj:Object;
        
-      
       public function MAPROOM()
       {
          super();
@@ -42,6 +42,7 @@ package
       {
          _mc = null;
          loadState = 0;
+         initMaproomSetup = false;
          _open = false;
          if(GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD)
          {
@@ -110,13 +111,15 @@ package
                }
                if(GLOBAL._bMap)
                {
-                  if(GLOBAL._bMap._canFunction)
+                  if(GLOBAL._bMap._canFunction && initMaproomSetup)
                   {
                      GLOBAL.BlockerAdd();
                      SOUNDS.Play("click1");
                      _open = true;
-                     if(loadState != 2 && loadState != 1)
+                     if([1, 2].indexOf(loadState) === -1)
                      {
+                        // Loads Map Room 1
+                        // This can be triggered if save.usemap on the server is not set or 0
                         _mc = new MapRoom();
                         _mc.init(bridge_obj);
                         GLOBAL._layerTop.addChild(_mc);
@@ -125,6 +128,10 @@ package
                      {
                         ShowB();
                      }
+                  }
+                  else if(!initMaproomSetup)
+                  {
+                     GLOBAL.Message(KEYS.Get("newmap_init_setup"));
                   }
                   else
                   {
