@@ -8,12 +8,10 @@ import { authFailureErr } from "../../errors/errors";
 import { logging } from "../../utils/logger";
 import { Status } from "../../enums/StatusCodes";
 
-const UserRegisterSchema = z.object({
-  username: z.string(),
-  password: z.string(),
+const UserRegistrationSchema = z.object({
+  username: z.string().min(2).max(12),
   email: z.string().email().toLowerCase(),
-  last_name: z.string(),
-  pic_square: z.string(), // TODO: WHYYYYYY?? Should not be from user input thats fucking mental
+  password: z.string().min(8)
 });
 
 /**
@@ -29,11 +27,11 @@ const UserRegisterSchema = z.object({
  */
 export const register: KoaController = async (ctx) => {
   try {
-    const userInput = UserRegisterSchema.parse(ctx.request.body);
-    const hash = await bcrypt.hash(userInput.password, 10);
+    const registeredUser = UserRegistrationSchema.parse(ctx.request.body);
+    const hash = await bcrypt.hash(registeredUser.password, 10);
 
     const user = ORMContext.em.create(User, {
-      ...userInput,
+      ...registeredUser,
       password: hash,
     });
     await ORMContext.em.persistAndFlush(user);

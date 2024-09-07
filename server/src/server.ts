@@ -17,6 +17,7 @@ import { processLanguagesFile } from "./middleware/processLanguageFile";
 import { logMissingAssets, morganLogging } from "./middleware/morganLogging";
 import { Status } from "./enums/StatusCodes";
 import { getLatestSwfFromGithub } from "./controllers/github/getLatestSwfFromGithub";
+import { corsCacheControl } from "./middleware/corsCacheControlSetup";
 
 export const app = new Koa();
 
@@ -38,16 +39,8 @@ export const getApiVersion = () => globalApiVersion;
 export const PORT = process.env.PORT || 3001;
 export const BASE_URL = process.env.BASE_URL;
 
-// Cache control middleware
-// Apply no-cache headers to all routes except static files
-app.use(async (ctx, next) => {
-  if (!ctx.path.startsWith("/public")) {
-    ctx.set("Cache-Control", "no-cache, no-store, must-revalidate");
-    ctx.set("Pragma", "no-cache");
-    ctx.set("Expires", "0");
-  }
-  await next();
-});
+// CORS & Cache Control
+app.use(corsCacheControl);
 
 // Entry point for all modules.
 const api = new Router();
