@@ -3946,7 +3946,7 @@ export const devSandbox = (user?: User) => {
     updates: [],
     effects: [],
     homebase: null,
-    outposts: null,
+    outposts: [],
     worldsize: [800, 800],
     wmstatus: [],
     chatservers: ["bym-chat.kixeye.com"],

@@ -16,7 +16,7 @@ export const leaveWorld = async (user: User, save: Save) => {
   save.worldid = "";
   save.cell = null;
   save.homebase = null;
-  save.outposts = null;
+  save.outposts = [];
   save.usemap = 0;
 
   await removeUserCells(user);

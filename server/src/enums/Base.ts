@@ -27,6 +27,6 @@ export enum BaseMode {
 export enum BaseType {
   MAIN = "main",                // Main yard
   OUTPOST = "outpost",          // Outpost yard
-  WILDMONSTER = "wildmonster",  // Wild monster yard
+  TRIBE = "tribe",  // Wild monster yard
   INFERNO = "inferno"           // Inferno yard
 }

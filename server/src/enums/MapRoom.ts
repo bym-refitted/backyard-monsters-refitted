@@ -10,6 +10,16 @@ export enum MapRoom {
 }
 
 /**
+ * Enum representing the different types of cells in the Map Room.
+ * @enum {number}
+ */
+export enum MapRoomCell {
+  WM = 1,
+  HOMECELL = 2,
+  OUTPOST = 3,
+}
+
+/**
  * Enum representing the different versions of the Map Room.
  * 
  * @enum {string}

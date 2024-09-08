@@ -6,7 +6,7 @@ import { calculateBaseLevel } from "../../../../services/base/calculateBaseLevel
 import { BaseType } from "../../../../enums/Base";
 
 /**
- * Handles the user's homecell data on the world map.
+ * Handles the user's homecell & outpost data on the world map.
  *
  * Retrives the current user's homecell details if the cell belongs to them.
  * Otherwise, retrieves the homecell details of all other users on the world map.
@@ -15,7 +15,7 @@ import { BaseType } from "../../../../enums/Base";
  * @param {Context} ctx - The Koa context object.
  * @param {WorldMapCell} cell - The world map cell object.
  */
-export const homeCell = async (ctx: Context, cell: WorldMapCell) => {
+export const userCell = async (ctx: Context, cell: WorldMapCell) => {
   const { save } = cell;
   if (!save) throw new Error("This cell does not have a user save.");
 

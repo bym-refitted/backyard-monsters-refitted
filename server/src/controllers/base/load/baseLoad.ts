@@ -42,7 +42,7 @@ export const baseLoad: KoaController = async (ctx) => {
     const getRequestedBase = async () => {
       const requestedBaseSave = await viewBase(ctx, baseid);
       if (!requestedBaseSave)
-        getWildMonsterSave(parseInt(baseid), user.save.worldid);
+        getWildMonsterSave(parseInt(baseid), userSave.worldid);
       return requestedBaseSave;
     };
 
@@ -92,7 +92,9 @@ export const baseLoad: KoaController = async (ctx) => {
               }
             );
 
+            cell.base_id = parseInt(baseSave.baseid); // Revisit
             await ORMContext.em.persistAndFlush(cell);
+            
             baseSave.homebaseid = parseInt(baseIdSplit.join());
             baseSave.cell = cell;
             baseSave.worldid = world.uuid;
