@@ -131,7 +131,7 @@ export const getDefaultBaseData = (user?: User) => {
     updates: [],
     effects: [],
     homebase: null,
-    outposts: null,
+    outposts: [],
     wmstatus: [],
     chatservers: ["bym-chat.kixeye.com"],
     powerups: [], // ToDo: add to DB

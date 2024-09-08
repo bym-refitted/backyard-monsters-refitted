@@ -3,9 +3,9 @@ import { User } from "../../../models/user.model";
 import { ORMContext } from "../../../server";
 import { Save } from "../../../models/save.model";
 import { joinOrCreateWorld } from "../../../services/maproom/v2/joinOrCreateWorld";
-import { subtractResources } from "../../../services/base/updateResources";
 import { WorldMapCell } from "../../../models/worldmapcell.model";
 import { Status } from "../../../enums/StatusCodes";
+import { Operation, updateResources } from "../../../services/base/updateResources";
 
 interface MigrateBaseRequest {
     shiny?: string,
@@ -22,7 +22,7 @@ export const migrateBase: KoaController = async (ctx) => {
     let error = 0;
 
     if (request.resources) {
-        save.resources = subtractResources(JSON.parse(request.resources), save.resources || {});
+        save.resources = updateResources(JSON.parse(request.resources), save.resources || {}, Operation.SUBTRACT);
     } else if (request.shiny) {
         const credits = parseInt(request.shiny)
         if (save.credits - credits < 0) {

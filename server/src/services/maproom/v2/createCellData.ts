@@ -2,7 +2,7 @@ import { Loaded } from "@mikro-orm/core";
 import { WorldMapCell } from "../../../models/worldmapcell.model";
 import { Context } from "koa";
 import { Terrain } from "../../../enums/MapRoom";
-import { homeCell } from "../../../controllers/maproom/v2/cells/homeCell";
+import { userCell } from "../../../controllers/maproom/v2/cells/userCell";
 import { wildMonsterCell } from "../../../controllers/maproom/v2/cells/wildMonsterCell";
 
 /**
@@ -19,8 +19,8 @@ export const createCellData = async (
 ) => {
   if (cell.terrainHeight <= Terrain.WATER3) return { i: cell.terrainHeight };
 
-  // If it's a homebase cell
-  if (cell.base_type >= 2) return await homeCell(ctx, cell);
+  // If it's a homebase cell or outpost
+  if (cell.base_type >= 2) return await userCell(ctx, cell);
 
   // Otherwise, return a wild monster cell
   return await wildMonsterCell(cell, worldid);
