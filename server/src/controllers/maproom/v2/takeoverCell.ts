@@ -1,20 +1,16 @@
 import z from "zod";
-import _ from "lodash";
 
 import { KoaController } from "../../../utils/KoaController";
 import { User } from "../../../models/user.model";
 import { ORMContext } from "../../../server";
-import { Save } from "../../../models/save.model";
+import { WorldMapCell } from "../../../models/worldmapcell.model";
+import { Status } from "../../../enums/StatusCodes";
+import { BaseType } from "../../../enums/Base";
+import { MapRoomCell } from "../../../enums/MapRoom";
 import {
   Operation,
   updateResources,
 } from "../../../services/base/updateResources";
-import { WorldMapCell } from "../../../models/worldmapcell.model";
-import { calculateBaseLevel } from "../../../services/base/calculateBaseLevel";
-import { Status } from "../../../enums/StatusCodes";
-import { BaseType } from "../../../enums/Base";
-import { logging } from "../../../utils/logger";
-import { MapRoomCell } from "../../../enums/MapRoom";
 
 const TakeoverCellSchema = z.object({
   baseid: z.string().transform((baseid) => parseInt(baseid)),
@@ -22,18 +18,26 @@ const TakeoverCellSchema = z.object({
   shiny: z.string().transform((shiny) => parseInt(shiny)).optional(),
 });
 
+/**
+ * Controller to handle the takeover of a cell on the world map via shiny or resources.
+ *
+ * Retrieve the cell that is being taken over, by querying it with the baseid from the client.
+ * To transfer ownership, update properties on the user, user's save, the cell and the associated cell save. 
+ * @param {Context} ctx - The Koa context object.
+ * @throws Will throw an error if the base or base type is invalid.
+ */
 export const takeoverCell: KoaController = async (ctx) => {
   const { baseid, resources, shiny } = TakeoverCellSchema.parse(ctx.request.body);
-  
-  const user: User = ctx.authUser;
-  await ORMContext.em.populate(user, ["save"]);
 
-  let { credits, outposts, resources: savedResources } = user.save;
+  const currentUser: User = ctx.authUser;
+  await ORMContext.em.populate(currentUser, ["save"]);
+
+  const userSave = currentUser.save;
 
   const cell = await ORMContext.em.findOne(
     WorldMapCell,
     {
-      base_id: baseid, // The baseId is being set to 1 for some reason in worldmapcell??
+      base_id: baseid,
     },
     { populate: ["save"] }
   );
@@ -44,28 +48,32 @@ export const takeoverCell: KoaController = async (ctx) => {
     throw new Error(`Invalid base or base type. Base ID: ${baseid}`);
   }
 
-  const { save } = cell;
-  if (shiny) credits = credits - shiny;
-  if (resources) savedResources = updateResources(resources, savedResources, Operation.SUBTRACT);
+  const { save: cellSave } = cell;
 
-  // Update Save
-  save.saveuserid = user.userid;
-  save.name = user.username;
+  if (shiny) userSave.credits = userSave.credits - shiny;
+  if (resources) 
+    userSave.resources = updateResources(resources, userSave.resources, Operation.SUBTRACT);
 
-  if (save.type === BaseType.TRIBE) {
-    save.type = BaseType.OUTPOST;
-    save.buildingdata = {};
+  // Update save
+  cellSave.saveuserid = currentUser.userid;
+  cellSave.name = currentUser.username;
+  cellSave.homebaseid = userSave.homebaseid;
+  cellSave.homebase = userSave.homebase;
+
+  if (cellSave.type === BaseType.TRIBE) {
+    cellSave.type = BaseType.OUTPOST;
+    cellSave.buildingdata = {};
   }
 
-  // Update Cell
+  // Update cell
+  cell.uid = currentUser.userid;
   cell.base_type = MapRoomCell.OUTPOST;
-  cell.uid = user.userid;
 
-  // Update User
-  outposts.push([cell.x, cell.y, baseid]);
+  // Update user
+  userSave.outposts.push([cell.x, cell.y, baseid]);
 
-  ORMContext.em.persistAndFlush(save);
-  ORMContext.em.persistAndFlush(user);
+  ORMContext.em.persistAndFlush(cellSave);
+  ORMContext.em.persistAndFlush(currentUser);
 
   ctx.status = Status.OK;
   ctx.body = { error: 0 };
