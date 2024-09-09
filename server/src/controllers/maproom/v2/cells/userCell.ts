@@ -28,7 +28,9 @@ export const userCell = async (ctx: Context, cell: WorldMapCell) => {
     : await ORMContext.em.findOne(User, { userid: cell.uid });
 
   const isOnline = Date.now() / 1000 - save.savetime < 30;
-  const locked = isOnline ? 1 : save.locked;
+
+   // Only lock the cell if it's not the current user's base
+  const locked = mine ? 0 : (isOnline ? 1 : save.locked);
   const baseLevel = calculateBaseLevel(save.points, save.basevalue);
   let isCellProtected = save.protected;
 
