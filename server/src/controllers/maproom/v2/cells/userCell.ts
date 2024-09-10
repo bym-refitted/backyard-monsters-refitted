@@ -29,8 +29,8 @@ export const userCell = async (ctx: Context, cell: WorldMapCell) => {
 
   const isOnline = Date.now() / 1000 - save.savetime < 30;
 
-   // Only lock the cell if it's not the current user's base
-  const locked = mine ? 0 : (isOnline ? 1 : save.locked);
+  /** TODO: Cell should be locked when a player is getting attacked, not when online */
+  const locked = mine ? 0 : isOnline ? 1 : save.locked;
   const baseLevel = calculateBaseLevel(save.points, save.basevalue);
   let isCellProtected = save.protected;
 
