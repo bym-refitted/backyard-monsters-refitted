@@ -148,7 +148,7 @@ export class Save {
   points!: number;
 
   @FrontendKey
-  @Property()
+  @Property({ default: 0 })
   tutorialstage!: number;
 
   @FrontendKey
