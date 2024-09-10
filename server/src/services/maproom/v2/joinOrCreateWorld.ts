@@ -57,7 +57,7 @@ export const joinOrCreateWorld = async (
     world,
     world.playerCount - 1,
     world.playerCount - 1,
-    159 // TODO: Should not be hardcoded
+    119 // TODO: Should not be hardcoded
   );
 
   homebaseCell.uid = user.userid;
