@@ -149,6 +149,10 @@ export class Save {
 
   @FrontendKey
   @Property()
+  tutorialstage!: number;
+
+  @FrontendKey
+  @Property()
   basevalue!: number;
 
   @FrontendKey
@@ -441,6 +445,7 @@ export class Save {
     "stats",
     "rewards",
     // "takeover",
+    "tutorialstage",
     "aiattacks",
     "monsters",
     "resources",
@@ -481,6 +486,7 @@ export class Save {
     "purchase",
   ];
 
+  // What is this?
   public static nonJsonKeys: (keyof FieldData)[] = [
     "level",
     "catapult",
@@ -495,6 +501,7 @@ export class Save {
     "basevalue",
     "empirevalue",
     "points",
+    "tutorialstage",
     "attackreport",
   ];
 

@@ -18,18 +18,19 @@ export const leaveWorld = async (user: User, save: Save) => {
   save.homebase = null;
   save.outposts = [];
   save.usemap = 0;
+  user.bookmarks = null;
 
   await removeUserCells(user);
   await ORMContext.em.persistAndFlush(save);
+  await ORMContext.em.persistAndFlush(user);
 };
 
 const removeUserCells = async (user: User) => {
-  const homeBase = await ORMContext.em.findOne(WorldMapCell, {
-    uid: user.userid,
-  });
+  const { userid } = user;
+  const homeBase = await ORMContext.em.findOne(WorldMapCell, { uid: userid });
 
   const outposts = await ORMContext.em.find(Save, {
-    saveuserid: user.userid,
+    saveuserid: userid,
     type: BaseType.OUTPOST,
   });
 
