@@ -46,6 +46,7 @@ export const getDefaultBaseData = (user?: User) => {
     damage: 0,
     locked: 0,
     points: 0,
+    tutorialstage: 0,
     basevalue: 20,
     protected: 0,
     lastupdate: 0,

@@ -107,7 +107,7 @@ export const baseLoad: KoaController = async (ctx) => {
     }
 
     const filteredSave = FilterFrontendKeys(baseSave);
-    const isTutorialEnabled = devConfig.skipTutorial ? 205 : 0;
+    const isTutorialEnabled = devConfig.skipTutorial ? 205 : filteredSave.tutorialstage;
 
     ctx.status = Status.OK;
     ctx.body = {
