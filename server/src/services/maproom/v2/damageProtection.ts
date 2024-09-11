@@ -1,51 +1,31 @@
+import { BaseMode, BaseType } from "../../../enums/Base";
 import { Save } from "../../../models/save.model";
-import { User } from "../../../models/user.model";
-import { WorldMapCell } from "../../../models/worldmapcell.model";
 import { ORMContext } from "../../../server";
-import { getBounds } from "./world";
 
-// TODO: Rewrite
-export const removeDamageProtection = async (
-  user: User,
-  homebase: Array<string>
-) => {
-  const fork = ORMContext.em.fork();
-  await fork.populate(user, ["save"]);
-  const authSave = user.save;
-  const [x, y] = homebase;
+/**
+ * TODO: Implement Damage Protection for Main Yards and Outposts
+ * Wiki: https://backyardmonsters.fandom.com/wiki/Damage_Protection
+ * */
+export const damageProtection = async (save: Save, mode?: BaseMode) => {
+  const { type, damage } = save;
+  let isCellProtected = save.protected;
 
-  const width = 3;
-  const currentX = parseInt(x);
-  const currentY = parseInt(y);
-  const { minX, minY, maxX, maxY } = getBounds(currentX, currentY, width);
+  if (mode === BaseMode.ATTACK) isCellProtected = 0;
+  else {
+    switch (type) {
+      case BaseType.MAIN:
+        if (damage >= 50) isCellProtected = 1;
+        break;
+      case BaseType.OUTPOST:
+        if (damage >= 25) isCellProtected = 1;
+        break;
+      default:
+        break;
+    }
+  }
 
-  const wCells = await fork.find(WorldMapCell, {
-    x: {
-      $gte: minX,
-      $lte: maxX,
-    },
-    y: {
-      $gte: minY,
-      $lte: maxY,
-    },
-    world_id: "1", // ToDo: implement a world table?
-    uid: user.userid,
-  });
+  save.protected = isCellProtected;
+  await ORMContext.em.persistAndFlush(save);
 
-  const baseids = wCells.map((cell) => cell.base_id.toString(10));
-
-  const bases = await fork.find(Save, {
-    baseid: {
-      $in: baseids,
-    },
-  });
-
-  bases.map((base) => {
-    base.protected = 0;
-    return base;
-  });
-
-  authSave.protected = 0;
-  await fork.persistAndFlush(bases);
-  await fork.persistAndFlush(authSave);
+  return isCellProtected;
 };
