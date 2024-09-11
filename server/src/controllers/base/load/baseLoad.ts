@@ -18,7 +18,7 @@ import {
 } from "../../../config/WorldGenSettings";
 import { World } from "../../../models/world.model";
 import { Status } from "../../../enums/StatusCodes";
-import { removeDamageProtection } from "../../../services/maproom/v2/damageProtection";
+import { damageProtection } from "../../../services/maproom/v2/damageProtection";
 import { getWildMonsterSave } from "../../../services/maproom/v2/wildMonsters";
 import z from "zod";
 import { viewBase } from "./modes/viewBase";
@@ -59,16 +59,15 @@ export const baseLoad: KoaController = async (ctx) => {
       case BaseMode.VIEW:
         baseSave = await getRequestedBase();
         break;
-      case BaseMode.ATTACK:
-        // TODO: Revisit
+      case BaseMode.ATTACK: // TODO: Rewrite
+        await damageProtection(userSave, BaseMode.ATTACK);
         baseSave = await getRequestedBase();
-        // You lose your damage protection on your first attack
-        await removeDamageProtection(user, baseSave.homebase);
         baseSave.attackid = generateID(5);
         if (baseSave.homebaseid === 0) {
           let cell = await ORMContext.em.findOne(WorldMapCell, {
             base_id: baseSave.basesaveid,
           });
+
           if (!cell) {
             // Create a cell record when attacking tribe bases
             const world = await ORMContext.em.findOne(World, {

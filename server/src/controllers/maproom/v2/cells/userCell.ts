@@ -4,6 +4,7 @@ import { ORMContext } from "../../../../server";
 import { WorldMapCell } from "../../../../models/worldmapcell.model";
 import { calculateBaseLevel } from "../../../../services/base/calculateBaseLevel";
 import { BaseType } from "../../../../enums/Base";
+import { damageProtection } from "../../../../services/maproom/v2/damageProtection";
 
 /**
  * Handles the user's homecell & outpost data on the world map.
@@ -32,10 +33,8 @@ export const userCell = async (ctx: Context, cell: WorldMapCell) => {
   /** TODO: Cell should be locked when a player is getting attacked, not when online */
   const locked = mine ? 0 : isOnline ? 1 : save.locked;
   const baseLevel = calculateBaseLevel(save.points, save.basevalue);
-  let isCellProtected = save.protected;
 
-  /** TODO: https://backyardmonsters.fandom.com/wiki/Damage_Protection */
-  if (save.type === BaseType.MAIN && save.damage >= 50) isCellProtected = 1;
+  let isCellProtected = await damageProtection(save);
 
   return {
     uid: cellOwner.userid,
