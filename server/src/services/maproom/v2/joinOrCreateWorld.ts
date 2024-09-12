@@ -1,4 +1,3 @@
-import { ORMContext } from "../../../server";
 import { WorldMapCell } from "../../../models/worldmapcell.model";
 import { User } from "../../../models/user.model";
 import { Save } from "../../../models/save.model";
@@ -9,11 +8,14 @@ import {
   generateNoise,
   getTerrainHeight,
 } from "../../../config/WorldGenSettings";
+import { EntityManager } from "@mikro-orm/core";
+import { ORMContext } from "../../../server";
 
 export const joinOrCreateWorld = async (
   user: User,
   save: Save,
-  isMigratingWorlds: Boolean = false
+  em: EntityManager = ORMContext.em,
+  isMigratingWorlds: Boolean = false,
 ): Promise<void> => {
   //   if (migrate) {
   //     const cell = await getFreeCell(homeBase.world_id, true)
@@ -25,15 +27,15 @@ export const joinOrCreateWorld = async (
   // }
 
   // Find an existing world with space
-  let world = await ORMContext.em.findOne(World, {
+  let world = await em.findOne(World, {
     playerCount: {
-      $lt: MapRoom.MAX_PLAYERS,
+      $lte: MapRoom.MAX_PLAYERS,
     },
   });
 
   if (!world) {
     logging("All worlds full, creating new world");
-    world = ORMContext.em.create(World, {});
+    world = em.create(World, {});
   } else {
     logging(`World found with ${world.playerCount} players`);
   }
@@ -52,9 +54,17 @@ export const joinOrCreateWorld = async (
   //   }
   // const cell = await getFreeCell(world.uuid, true);
 
+  // TODO: Improve algorithm
+  // Calculate grid size
+  const gridSize = Math.ceil(Math.sqrt(MapRoom.MAX_PLAYERS));
+  const spacingFactor = Math.floor(MapRoom.WIDTH / gridSize);
+
+  // Calculate coordinates with spacing
+  const cellX = ((world.playerCount - 1) % gridSize) * spacingFactor;
+  const cellY = Math.floor((world.playerCount - 1) / gridSize) * spacingFactor;
+
+  // Generate noise based on the world's seed
   const noise = generateNoise(world.uuid);
-  const cellX = world.playerCount - 1;
-  const cellY = world.playerCount - 1;
   const terrainHeight = getTerrainHeight(noise, cellX, cellY);
 
   const homebaseCell = new WorldMapCell(world, cellX, cellY, terrainHeight);
@@ -67,5 +77,5 @@ export const joinOrCreateWorld = async (
   save.worldid = world.uuid;
   save.homebase = [homebaseCell.x.toString(), homebaseCell.y.toString()];
 
-  await ORMContext.em.persistAndFlush([world, homebaseCell, save]);
+  await em.persistAndFlush([world, homebaseCell, save]);
 };
