@@ -21,8 +21,7 @@ export const leaveWorld = async (user: User, save: Save) => {
   user.bookmarks = null;
 
   await removeUserCells(user);
-  await ORMContext.em.persistAndFlush(save);
-  await ORMContext.em.persistAndFlush(user);
+  await ORMContext.em.persistAndFlush([save, user]);
 };
 
 const removeUserCells = async (user: User) => {
