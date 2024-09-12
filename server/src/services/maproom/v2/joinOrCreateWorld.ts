@@ -27,7 +27,7 @@ export const joinOrCreateWorld = async (
   // Find an existing world with space
   let world = await ORMContext.em.findOne(World, {
     playerCount: {
-      $lte: MapRoom.MAX_PLAYERS,
+      $lt: MapRoom.MAX_PLAYERS,
     },
   });
 
