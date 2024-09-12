@@ -40,11 +40,6 @@ export const joinOrCreateWorld = async (
   save.worldid = world.uuid;
   world.playerCount += 1;
 
-  ORMContext.em.persist(world);
-  ORMContext.em.persist(save);
-
-  await ORMContext.em.flush();
-
   // We need to put the base on the map?
   //   if (world.playerCount === 1) {
   //     // Put the base on 0,0
@@ -63,11 +58,10 @@ export const joinOrCreateWorld = async (
   homebaseCell.uid = user.userid;
   homebaseCell.base_type = 2;
   homebaseCell.base_id = parseInt(save.baseid);
-  ORMContext.em.persist(homebaseCell);
 
   save.cell = homebaseCell;
   save.worldid = world.uuid;
   save.homebase = [homebaseCell.x.toString(), homebaseCell.y.toString()];
-  ORMContext.em.persist(save);
-  return ORMContext.em.flush();
+
+  await ORMContext.em.persistAndFlush([world, save, homebaseCell]);
 };

@@ -505,11 +505,8 @@ export class Save {
     user: User
   ) => {
     const baseSave = em.create(Save, getDefaultBaseData(user));
-    // Add the save to the database
-    await em.persistAndFlush(baseSave);
-    user.save = baseSave;
-    // Update user base save
-    await em.persistAndFlush(user);
+    // Add the user &save to the database
+    await em.persistAndFlush([baseSave, user]);
     return baseSave;
   };
 }

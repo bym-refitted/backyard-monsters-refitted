@@ -71,9 +71,7 @@ export const takeoverCell: KoaController = async (ctx) => {
 
   // Update user
   userSave.outposts.push([cell.x, cell.y, baseid]);
-
-  ORMContext.em.persistAndFlush(cellSave);
-  ORMContext.em.persistAndFlush(currentUser);
+  ORMContext.em.persistAndFlush([cellSave, currentUser]);
 
   ctx.status = Status.OK;
   ctx.body = { error: 0 };
