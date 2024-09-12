@@ -58,7 +58,7 @@ export const migrateBase: KoaController = async (ctx) => {
             ])
         }
     } else {
-        await joinOrCreateWorld(user, save, true)
+        await joinOrCreateWorld(user, save, ORMContext.em, true);
     }
 
     //
