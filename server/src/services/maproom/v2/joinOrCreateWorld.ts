@@ -4,7 +4,11 @@ import { User } from "../../../models/user.model";
 import { Save } from "../../../models/save.model";
 import { logging } from "../../../utils/logger";
 import { World } from "../../../models/world.model";
-import { MapRoom } from "../../../enums/MapRoom";
+import { MapRoom, MapRoomCell } from "../../../enums/MapRoom";
+import {
+  generateNoise,
+  getTerrainHeight,
+} from "../../../config/WorldGenSettings";
 
 export const joinOrCreateWorld = async (
   user: User,
@@ -48,20 +52,20 @@ export const joinOrCreateWorld = async (
   //   }
   // const cell = await getFreeCell(world.uuid, true);
 
-  const homebaseCell = new WorldMapCell(
-    world,
-    world.playerCount - 1,
-    world.playerCount - 1,
-    119 // TODO: Should not be hardcoded
-  );
+  const noise = generateNoise(world.uuid);
+  const cellX = world.playerCount - 1;
+  const cellY = world.playerCount - 1;
+  const terrainHeight = getTerrainHeight(noise, cellX, cellY);
+
+  const homebaseCell = new WorldMapCell(world, cellX, cellY, terrainHeight);
 
   homebaseCell.uid = user.userid;
-  homebaseCell.base_type = 2;
+  homebaseCell.base_type = MapRoomCell.HOMECELL;
   homebaseCell.base_id = parseInt(save.baseid);
 
   save.cell = homebaseCell;
   save.worldid = world.uuid;
   save.homebase = [homebaseCell.x.toString(), homebaseCell.y.toString()];
 
-  await ORMContext.em.persistAndFlush([world, save, homebaseCell]);
+  await ORMContext.em.persistAndFlush([world, homebaseCell, save]);
 };
