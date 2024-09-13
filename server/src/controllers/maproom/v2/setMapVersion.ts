@@ -9,6 +9,11 @@ import { MapRoomVersion } from "../../../enums/MapRoom";
 import { Status } from "../../../enums/StatusCodes";
 
 /**
+ * Sets the Map Room version on the server.
+ */
+export const CURRENT_MAPROOM_VERSION = MapRoomVersion.V2 as MapRoomVersion;
+
+/**
  * Map version controller for Map Room 2 .
  * If the version is V2, the user will join a world. Otherwise, the user will leave the world.
  *

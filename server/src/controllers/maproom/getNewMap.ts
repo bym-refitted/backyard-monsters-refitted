@@ -2,11 +2,7 @@ import { MapRoom, MapRoomVersion } from "../../enums/MapRoom";
 import { Status } from "../../enums/StatusCodes";
 import { BASE_URL, PORT } from "../../server";
 import { KoaController } from "../../utils/KoaController";
-
-/**
- * Sets the Map Room version on the server.
- */
-const CURRENT_MAPROOM_VERSION = MapRoomVersion.V2 as MapRoomVersion;
+import { CURRENT_MAPROOM_VERSION } from "./v2/setMapVersion";
 
 /**
  * Controller to get Map Room details.
