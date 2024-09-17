@@ -15,6 +15,7 @@ package
    import flash.external.ExternalInterface;
    import flash.geom.Rectangle;
    import flash.system.Security;
+   import flash.net.SharedObject;
 
    public class GAME extends Sprite
    {
@@ -27,7 +28,9 @@ package
 
       public static var _firstLoadComplete:Boolean = false;
 
-      public var loader:Loader;
+      public static var sharedObj:SharedObject;
+
+      public static var token:String = "";
 
       private var _checkScreenSize:Boolean = true;
 
@@ -37,6 +40,7 @@ package
          var serverUrl:String = GLOBAL.serverUrl;
          var apiVersionSuffix:String = GLOBAL.apiVersionSuffix;
          var cdnUrl:String = GLOBAL.cdnUrl;
+         var loader:Object = this.loaderInfo.parameters;
          super();
          _instance = this;
          GLOBAL._local = !ExternalInterface.available;
@@ -63,6 +67,13 @@ package
                urls._countryCode = serverUrl + "us";
             }
             this.Data(urls, false);
+         }
+         sharedObj = SharedObject.getLocal("bymr_data", "/");
+         if (loader.token)
+         {
+            token = loader.token;
+            sharedObj.data.token = token;
+            sharedObj.flush();
          }
       }
 
