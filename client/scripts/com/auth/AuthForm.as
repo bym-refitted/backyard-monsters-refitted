@@ -104,9 +104,7 @@ package com.auth
         public function AuthForm()
         {
             addEventListener(Event.ADDED_TO_STAGE, formAddedToStageHandler);
-            KEYS._storageURL = GLOBAL.languageUrl;
-            KEYS.GetSupportedLanguages();
-            KEYS.Setup("english");
+            GLOBAL.LanguageSetup();
 
             // Start a timer every second to check if text content and supported languages are loaded from the server
             checkContentLoadedTimer = new Timer(1000);
