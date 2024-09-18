@@ -18,6 +18,17 @@ const UserLoginSchema = z.object({
   token: z.string().optional(),
 });
 
+/**
+ * Authenticates a user using a JWT token.
+ *
+ * This function verifies the provided JWT token and retrieves the associated user record
+ * from the database. If the token is valid and the user exists, it returns the user record.
+ * If the token is invalid or the user does not exist, it throws an authentication failure error.
+ *
+ * @param {Context} ctx - The Koa context object.
+ * @returns {Promise<User>} - A promise that resolves to the authenticated user record.
+ * @throws {Error} - Throws an error if the token is invalid or the user does not exist.
+ */
 const authenticateWithToken = async (ctx: Context) => {
   const { token } = UserLoginSchema.parse(ctx.request.body);
 
@@ -67,7 +78,7 @@ export const login: KoaController = async (ctx) => {
 
   // Generate and set the token
   const sessionLifeTime = process.env.SESSION_LIFETIME || "30d";
-  token = JWT.sign(
+  const newToken = JWT.sign(
     {
       user: {
         email: user.email,
@@ -89,7 +100,7 @@ export const login: KoaController = async (ctx) => {
     error: 0,
     ...filteredUser,
     version: 128,
-    token,
+    token: newToken,
     mapversion: 2,
     mailversion: 1,
     soundversion: 1,
