@@ -50,14 +50,13 @@ package
 
       public static function Login():void
       {
-         GLOBAL.Message("Token: " + GAME.token);
          if (GAME.token)
          {
             PLEASEWAIT.Show("Logging in...");
             new URLLoaderApi().load(GLOBAL._apiURL + "bm/getnewmap", null,
                   function(serverData:Object)
                   {
-                     GLOBAL.Message("token: " + GAME.sharedObj.data.token);
+                     // KEYS.Setup();
                      LOGIN.OnGetNewMap(serverData, [["token", GAME.sharedObj.data.token]]);
                   });
          }
