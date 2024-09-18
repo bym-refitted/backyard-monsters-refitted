@@ -444,6 +444,12 @@ package
       {
          super();
       }
+
+      public static function LanguageSetup(): void {
+         KEYS._storageURL = GLOBAL.languageUrl;
+         KEYS.GetSupportedLanguages();
+         KEYS.Setup("english");
+      }
       
       public static function get townHall() : BFOUNDATION
       {
