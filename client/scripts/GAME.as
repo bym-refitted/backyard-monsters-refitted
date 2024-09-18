@@ -40,7 +40,6 @@ package
          var serverUrl:String = GLOBAL.serverUrl;
          var apiVersionSuffix:String = GLOBAL.apiVersionSuffix;
          var cdnUrl:String = GLOBAL.cdnUrl;
-         var loader:Object = this.loaderInfo.parameters;
          super();
          _instance = this;
          GLOBAL._local = !ExternalInterface.available;
@@ -68,13 +67,6 @@ package
             }
             this.Data(urls, false);
          }
-         sharedObj = SharedObject.getLocal("bymr_data", "/");
-         if (loader.token)
-         {
-            token = loader.token;
-            sharedObj.data.token = token;
-            sharedObj.flush();
-         }
       }
 
       public static function disableWindowScroll(param1:Event = null):void
@@ -87,13 +79,32 @@ package
          GLOBAL.CallJS("cc.enableMouseWheel");
       }
 
+      public function setTokenFromLoader()
+      {
+         var loader:Object = this.loaderInfo.parameters;
+
+         try
+         {
+            sharedObj = SharedObject.getLocal("bymr_data", "/");
+            if (loader.token)
+            {
+               token = loader.token;
+               sharedObj.data.token = token;
+               sharedObj.flush();
+            }
+         }
+         catch (e:Error)
+         {
+            LOGGER.Log("err", "Error setting token from loader: " + e.message);
+         }
+      }
+
       public function Data(urls:Object, isContained:Boolean = false):void
       {
-         // var u:String;
          var contained:Boolean = isContained;
+         setTokenFromLoader();
          loaderInfo.uncaughtErrorEvents.addEventListener(UncaughtErrorEvent.UNCAUGHT_ERROR, this.uncaughtErrorThrown);
          GLOBAL._baseURL = urls._baseURL;
-         // u = String(GLOBAL._baseURL.split("/")[2]);
          Security.allowDomain("*");
          SWFProfiler.init(stage, null);
          Console.initialize(stage);
