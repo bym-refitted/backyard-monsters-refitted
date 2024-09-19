@@ -32,6 +32,8 @@ package
 
       public static var token:String = "";
 
+      public static var language:String = "";
+
       private var _checkScreenSize:Boolean = true;
 
       public function GAME()
@@ -79,13 +81,19 @@ package
          GLOBAL.CallJS("cc.enableMouseWheel");
       }
 
-      public function setTokenFromLoader()
+      public function setLauncherVars()
       {
          var loader:Object = this.loaderInfo.parameters;
 
          try
          {
             sharedObj = SharedObject.getLocal("bymr_data", "/");
+            if (loader.language)
+            {
+               language = loader.language;
+               sharedObj.data.language = language;
+               sharedObj.flush();
+            }
             if (loader.token)
             {
                token = loader.token;
@@ -102,7 +110,7 @@ package
       public function Data(urls:Object, isContained:Boolean = false):void
       {
          var contained:Boolean = isContained;
-         setTokenFromLoader();
+         setLauncherVars();
          loaderInfo.uncaughtErrorEvents.addEventListener(UncaughtErrorEvent.UNCAUGHT_ERROR, this.uncaughtErrorThrown);
          GLOBAL._baseURL = urls._baseURL;
          Security.allowDomain("*");
