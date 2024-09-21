@@ -24,6 +24,7 @@ import { apiVersion } from "./middleware/apiVersioning";
 import { supportedLangs } from "./controllers/supportedLangs";
 import { releasesWebhook } from "./controllers/github/releasesWebhook";
 import { Status } from "./enums/StatusCodes";
+import { forgotPassword } from "./controllers/auth/forgotPassword";
 
 /**
  * All applcation routes
@@ -95,6 +96,16 @@ router.get(
   apiVersion,
   debugDataLog("Getting supported languages"),
   supportedLangs
+);
+
+/**
+ * Forgot password
+ * @name POST /player/forgotpassword
+ */
+router.post(
+  "/api/:apiVersion/player/forgotPassword",
+  apiVersion,
+  forgotPassword
 );
 
 /**
