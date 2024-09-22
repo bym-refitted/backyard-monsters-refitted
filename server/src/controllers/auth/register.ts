@@ -4,14 +4,20 @@ import { KoaController } from "../../utils/KoaController";
 import { ORMContext } from "../../server";
 import { User } from "../../models/user.model";
 import { FilterFrontendKeys } from "../../utils/FrontendKey";
-import { authFailureErr } from "../../errors/errors";
+import {
+  authFailureErr,
+  emailUniqueErr,
+  usernameUniqueErr,
+} from "../../errors/errors";
 import { logging } from "../../utils/logger";
 import { Status } from "../../enums/StatusCodes";
+import { ClientSafeError } from "../../middleware/clientSafeError";
+import { ErrorCodes } from "../../enums/ErrorCodes";
 
 const UserRegistrationSchema = z.object({
   username: z.string().min(2).max(12),
   email: z.string().email().toLowerCase(),
-  password: z.string().min(8)
+  password: z.string().min(8),
 });
 
 /**
@@ -28,12 +34,32 @@ const UserRegistrationSchema = z.object({
 export const register: KoaController = async (ctx) => {
   try {
     const registeredUser = UserRegistrationSchema.parse(ctx.request.body);
+
+    // Find user by username or email
+    const existingUser = await ORMContext.em.findOne(User, {
+      $or: [
+        { username: registeredUser.username },
+        { email: registeredUser.email },
+      ],
+    });
+
+    // If user exists, check if username or email is already taken
+    if (existingUser) {
+      const isUsernameTaken = existingUser.username === registeredUser.username;
+      const isEmailTaken = existingUser.email === registeredUser.email;
+
+      if (isUsernameTaken) throw usernameUniqueErr();
+      if (isEmailTaken) throw emailUniqueErr();
+    }
+
     const hash = await bcrypt.hash(registeredUser.password, 10);
 
+    // Create new user record
     const user = ORMContext.em.create(User, {
       ...registeredUser,
       password: hash,
     });
+
     await ORMContext.em.persistAndFlush(user);
     const filteredUser = FilterFrontendKeys(user);
     logging(
@@ -43,6 +69,9 @@ export const register: KoaController = async (ctx) => {
     ctx.status = Status.OK;
     ctx.body = { user: filteredUser };
   } catch (err) {
-    throw authFailureErr();
+    if (err instanceof ClientSafeError) {
+      ctx.status = err.status;
+      ctx.body = { message: err.message, code: err.code };
+    } else throw authFailureErr();
   }
 };

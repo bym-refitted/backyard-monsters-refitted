@@ -15,6 +15,31 @@ export const authFailureErr = () =>
     data: null,
   });
 
+export const emailPasswordErr = () =>
+  new ClientSafeError({
+    message:
+      "Your login credentials are incorrect. Please check and try again. If you forgot your password, you can reset it by clicking on 'Forgot Password'.",
+    status: Status.CONFLICT,
+    code: ErrorCodes.INVALID_CREDENTIALS,
+    data: null,
+  });
+
+export const usernameUniqueErr = () =>
+  new ClientSafeError({
+    message: "An account with this username already exists.",
+    status: Status.CONFLICT,
+    code: ErrorCodes.USERNAME_EXISTS,
+    data: null,
+  });
+
+export const emailUniqueErr = () =>
+  new ClientSafeError({
+    message: "An account with this email address already exists.",
+    status: Status.CONFLICT,
+    code: ErrorCodes.EMAIL_EXISTS,
+    data: null,
+  });
+
 export const debugClientErr = () =>
   new ClientSafeError({
     message: "Sorry, it appears this cannot be found.",
@@ -31,10 +56,10 @@ export const saveFailureErr = () =>
     data: null,
   });
 
-  export const loadFailureErr = () =>
-    new ClientSafeError({
-      message: "We could not load the requested data",
-      status: Status.NOT_FOUND,
-      code: ErrorCodes.LOAD_ERROR,
-      data: null,
-    });
+export const loadFailureErr = () =>
+  new ClientSafeError({
+    message: "We could not load the requested data",
+    status: Status.NOT_FOUND,
+    code: ErrorCodes.LOAD_ERROR,
+    data: null,
+  });
