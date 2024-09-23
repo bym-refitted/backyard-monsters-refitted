@@ -27,6 +27,10 @@ export class User {
   @FrontendKey
   last_name?: string;
 
+  @Property({ default: "" })
+  @FrontendKey
+  resetToken?: string;
+
   @FrontendKey
   @Property({ nullable: true })
   pic_square?: string;
