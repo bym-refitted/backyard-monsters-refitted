@@ -82,7 +82,7 @@ export const forgotPassword: KoaController = async (ctx) => {
     ctx.body = { message: "Password reset email sent successfully." };
   } catch (error) {
     errorLog(`Error in forgotPassword controller: ${error}`);
-    ctx.status = Status.INTERNAL_SERVER_ERROR;
+    ctx.status = Status.BAD_REQUEST;
     ctx.body = {
       message: "An error occurred while attempting to send an email.",
     };
