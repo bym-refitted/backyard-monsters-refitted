@@ -25,6 +25,7 @@ import { supportedLangs } from "./controllers/supportedLangs";
 import { releasesWebhook } from "./controllers/github/releasesWebhook";
 import { Status } from "./enums/StatusCodes";
 import { forgotPassword } from "./controllers/auth/forgotPassword";
+import { resetPassword } from "./controllers/auth/resetPassword";
 
 /**
  * All applcation routes
@@ -107,6 +108,12 @@ router.post(
   apiVersion,
   forgotPassword
 );
+
+/**
+ * Reset password
+ * @name POST /player/reset-password
+ */
+router.post("/api/player/reset-password", resetPassword);
 
 /**
  * Load base data
