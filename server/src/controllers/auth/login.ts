@@ -7,7 +7,7 @@ import { FilterFrontendKeys } from "../../utils/FrontendKey";
 import { KoaController } from "../../utils/KoaController";
 import { authFailureErr, emailPasswordErr } from "../../errors/errors";
 import { logging } from "../../utils/logger";
-import { BymJwtPayload } from "../../middleware/auth";
+import { BymJwtPayload, verifyJwtToken } from "../../middleware/auth";
 import { Status } from "../../enums/StatusCodes";
 import { Context } from "koa";
 import { ClientSafeError } from "../../middleware/clientSafeError";
@@ -26,14 +26,9 @@ import { UserLoginSchema } from "./validation";
  */
 const authenticateWithToken = async (ctx: Context) => {
   const { token } = UserLoginSchema.parse(ctx.request.body);
-
-  const { user } = JWT.verify(
-    token,
-    process.env.SECRET_KEY || "MISSING_SECRET"
-  ) as BymJwtPayload;
+  const { user } = verifyJwtToken(token);
 
   let userRecord = await ORMContext.em.findOne(User, { email: user.email });
-
   if (!userRecord) throw emailPasswordErr();
 
   return userRecord;

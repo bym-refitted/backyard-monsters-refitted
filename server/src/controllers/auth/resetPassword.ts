@@ -8,6 +8,7 @@ import { ORMContext } from "../../server";
 import { User } from "../../models/user.model";
 import { errorLog } from "../../utils/logger";
 import { ResetPasswordSchema } from "./validation";
+import { verifyJwtToken } from "../../middleware/auth";
 
 /**
  * Controller to handle password reset requests.
@@ -24,10 +25,7 @@ export const resetPassword: KoaController = async (ctx) => {
     const { password, token } = ResetPasswordSchema.parse(ctx.request.body);
 
     // Verify the token
-    const { email } = JWT.verify(
-      token,
-      process.env.SECRET_KEY || "MISSING_SECRET"
-    ) as { email: string };
+    const { email } = verifyJwtToken(token).user;
 
     const user = await ORMContext.em.findOne(User, { email });
     if (!user || user.resetToken !== token) throw authFailureErr();

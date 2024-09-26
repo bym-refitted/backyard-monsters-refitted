@@ -46,16 +46,14 @@ export interface BymJwtPayload extends DisgustingJwtPayloadHack {
 
 /**
  * Verifies a JWT token and returns the decoded payload.
- * 
+ *
  * @param {string} token - The JWT token to verify.
  * @returns {BymJwtPayload} The decoded JWT payload.
  * @throws Will throw an error if the token is invalid or verification fails.
  */
 export const verifyJwtToken = (token: string): BymJwtPayload => {
   try {
-    return <BymJwtPayload>(
-      JWT.verify(token, process.env.SECRET_KEY || "MISSING_SECRET")
-    );
+    return <BymJwtPayload>JWT.verify(token, process.env.SECRET_KEY);
   } catch (err) {
     throw authFailureErr();
   }
