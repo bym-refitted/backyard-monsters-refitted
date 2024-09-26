@@ -1,4 +1,3 @@
-import z from "zod";
 import bcrypt from "bcrypt";
 import JWT from "jsonwebtoken";
 
@@ -12,12 +11,7 @@ import { BymJwtPayload } from "../../middleware/auth";
 import { Status } from "../../enums/StatusCodes";
 import { Context } from "koa";
 import { ClientSafeError } from "../../middleware/clientSafeError";
-
-const UserLoginSchema = z.object({
-  email: z.string().email().toLowerCase().optional(),
-  password: z.string().optional(),
-  token: z.string().optional(),
-});
+import { UserLoginSchema } from "./validation";
 
 /**
  * Authenticates a user using a JWT token.
