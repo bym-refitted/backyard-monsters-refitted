@@ -1,4 +1,3 @@
-import { z } from "zod";
 import bcrypt from "bcrypt";
 import { KoaController } from "../../utils/KoaController";
 import { ORMContext } from "../../server";
@@ -12,13 +11,7 @@ import {
 import { logging } from "../../utils/logger";
 import { Status } from "../../enums/StatusCodes";
 import { ClientSafeError } from "../../middleware/clientSafeError";
-import { ErrorCodes } from "../../enums/ErrorCodes";
-
-const UserRegistrationSchema = z.object({
-  username: z.string().min(2).max(12),
-  email: z.string().email().toLowerCase(),
-  password: z.string().min(8),
-});
+import { UserRegistrationSchema } from "./validation";
 
 /**
  * Controller to handle user registration.

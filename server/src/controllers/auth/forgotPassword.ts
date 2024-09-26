@@ -1,33 +1,15 @@
-import z from "zod";
-import nodemailer from "nodemailer";
 import path from "path";
 import JWT from "jsonwebtoken";
 
 import { Status } from "../../enums/StatusCodes";
 import { KoaController } from "../../utils/KoaController";
 import { errorLog } from "../../utils/logger";
-import { Env } from "../../enums/Env";
 import { promises as fs } from "fs";
 import { ORMContext } from "../../server";
 import { User } from "../../models/user.model";
 import { authFailureErr } from "../../errors/errors";
-
-const ForgotPasswordSchema = z.object({
-  email: z.string().email().toLowerCase(),
-});
-
-/** SMTP transporter configuration */
-const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST,
-  port: parseInt(process.env.SMTP_PORT),
-  auth: {
-    user: process.env.SMTP_USER,
-    pass: process.env.SMTP_PASSWORD,
-  },
-  tls: { rejectUnauthorized: false },
-  secure: process.env.ENV === Env.PROD,
-  connectionTimeout: 30000,
-});
+import { ForgotPasswordSchema } from "./validation";
+import { transporter } from "../../config/MailSettings";
 
 /**
  * Controller to handle forgot password functionality.
