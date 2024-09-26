@@ -28,11 +28,9 @@ export const forgotPassword: KoaController = async (ctx) => {
     const { email } = ForgotPasswordSchema.parse(ctx.request.body);
 
     // Generate a short-lived JWT token
-    const token = JWT.sign(
-      { email },
-      process.env.SECRET_KEY,
-      { expiresIn: "10m" }
-    );
+    const token = JWT.sign({ email }, process.env.SECRET_KEY, {
+      expiresIn: "10m",
+    });
 
     // Store the token in the database associated with the user's email
     const user = await ORMContext.em.findOne(User, { email });
@@ -66,7 +64,7 @@ export const forgotPassword: KoaController = async (ctx) => {
     errorLog(`Error in forgotPassword controller: ${error}`);
     ctx.status = Status.BAD_REQUEST;
     ctx.body = {
-      message: "An error occurred while attempting to send an email.",
+      message: "Failed to send email. Please try again later.",
     };
   }
 };
