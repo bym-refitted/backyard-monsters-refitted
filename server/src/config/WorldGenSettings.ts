@@ -78,8 +78,9 @@ export const getTerrainHeight = (
   height += 18;
 
   // Adjust height based on terrain thresholds
-  if (height === Terrain.RESERVED) {height = Terrain.SAND1;
-  } else height += 10;
+  // if (height < Terrain.WATER1) height = Terrain.WATER1; // Removed WATER1
+  if (height === Terrain.RESERVED) height = Terrain.SAND1;
+  else height += 10;
   
   return height;
 };
