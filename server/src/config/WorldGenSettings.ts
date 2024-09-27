@@ -1,5 +1,6 @@
 import alea from "alea";
-import { createNoise2D, NoiseFunction2D } from "simplex-noise";
+
+import { createNoise2D, NoiseFunction2D as Noise } from "simplex-noise";
 import { MapRoom, Terrain } from "../enums/MapRoom";
 
 /**
@@ -25,15 +26,16 @@ export const TERRAIN_SCALE = 95;
 /**
  * Smooths the height value by averaging the values of the surrounding cells.
  *
- * @param {NoiseFunction2D} noise - The noise generator instance.
+ * @param {Noise} noise - The noise generator instance.
  * @param {number} cellX - The x-coordinate.
  * @param {number} cellY - The y-coordinate.
  * @returns {number} - The smoothed height value.
  */
-const smoothHeight = (noise: NoiseFunction2D, cellX: number, cellY: number) => {
+const smoothHeight = (noise: Noise, cellX: number, cellY: number) => {
   const scale = NOISE_SCALE;
   const noiseAt = (dx: number, dy: number) => noise(dx / scale, dy / scale);
 
+  // Average the noise values of the surrounding cells
   const sides =
     (noiseAt(cellX - 1, cellY) +
       noiseAt(cellX + 1, cellY) +
@@ -51,27 +53,18 @@ const smoothHeight = (noise: NoiseFunction2D, cellX: number, cellY: number) => {
  * The noise value is scaled by NOISE_SCALE and then adjusted to fit within the range defined by TERRAIN_SCALE.
  * +1 is added to remove negative values.
  *
- * Higher terrain: increase the terrain scale.
- * Lower terrain: decrease the terrain scale.
- *
- * @param {NoiseFunction2D} noise - The noise generator instance.
+ * @param {Noise} noise - The noise generator instance.
  * @param {number} cellX - The x-coordinate of the cell.
  * @param {number} cellY - The y-coordinate of the cell.
  * @returns {number} - The calculated terrain height for the cell.
  */
-export const getTerrainHeight = (
-  noise: NoiseFunction2D,
-  cellX: number,
-  cellY: number
-) => {
-  const smoothedNoiseValue = smoothHeight(noise, cellX, cellY);
-  let height = Math.round((smoothedNoiseValue + 1) * TERRAIN_SCALE);
+export const getTerrainHeight = (noise: Noise, cellX: number, cellY: number) => {
+  const smoothNoise = smoothHeight(noise, cellX, cellY);
+  let height = Math.round((smoothNoise + 1) * TERRAIN_SCALE);
 
   // Decrease the base height to lower the overall terrain
   height += 18;
 
-  // Adjust height based on terrain thresholds
-  // if (height < Terrain.WATER1) height = Terrain.WATER1; // Removed WATER1
   if (height === Terrain.RESERVED) height = Terrain.SAND1;
   else height += 10;
 
@@ -81,6 +74,6 @@ export const getTerrainHeight = (
 /**
  * Generates simplex noise based on a given seed.
  * @param {string} seed - The seed for the noise generator.
- * @returns {NoiseFunction2D} - The noise generator instance.
+ * @returns {Noise} - The noise generator instance.
  */
 export const generateNoise = (seed: string) => createNoise2D(alea(seed));
