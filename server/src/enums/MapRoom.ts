@@ -1,6 +1,6 @@
 /**
  * Enum representing the size and player capacity of the Map Room.
- * 
+ *
  * @enum {number}
  */
 export enum MapRoom {
@@ -21,7 +21,7 @@ export enum MapRoomCell {
 
 /**
  * Enum representing the different versions of the Map Room.
- * 
+ *
  * @enum {string}
  */
 export enum MapRoomVersion {
@@ -32,19 +32,20 @@ export enum MapRoomVersion {
 
 /**
  * Enum representing different types of terrain in the Map Room.
- * 
+ *
  * @enum {number}
  */
 export enum Terrain {
-  WATER1 = 79,
-  WATER2 = 89,
+  WATER1 = 80,
+  WATER2 = 90,
   WATER3 = 99,
-  SAND1 = 104,
-  SAND2 = 109,
-  LAND1 = 119,
-  LAND2 = 139,
-  LAND3 = 159,
-  LAND4 = 169,
-  ROCK = 174,
+  RESERVED = 100,
+  SAND1 = 105,
+  SAND2 = 110,
+  LAND1 = 120,
+  LAND2 = 140,
+  LAND3 = 160,
+  LAND4 = 170,
+  ROCK = 175,
   LAND6 = 176,
 }

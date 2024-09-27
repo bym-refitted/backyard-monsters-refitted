@@ -1,5 +1,6 @@
-import { ValueNoise } from "value-noise-js/dist/value-noise";
-import { MapRoom } from "../enums/MapRoom";
+import alea from "alea";
+import { createNoise2D, NoiseFunction2D } from "simplex-noise";
+import { MapRoom, Terrain } from "../enums/MapRoom";
 
 /**
  * Represents the size of the world map.
@@ -12,14 +13,45 @@ export const WORLD_SIZE = [MapRoom.HEIGHT, MapRoom.WIDTH];
  * A higher value results in larger, more spread-out features, while a lower value results in smaller, more detailed features.
  * @constant {number}
  */
-export const NOISE_SCALE = 3;
+export const NOISE_SCALE = 12;
 
 /**
  * The scale factor for terrain height. This value determines the range of terrain heights.
  * A higher value results in taller terrain features, while a lower value results in flatter terrain.
  * @constant {number}
  */
-export const TERRAIN_SCALE = 83;
+export const TERRAIN_SCALE = 95;
+
+/**
+ * Smooths the height value by averaging the values of the surrounding cells.
+ * 
+ * @param {NoiseFunction2D} noise - The noise generator instance.
+ * @param {number} cellX - The x-coordinate.
+ * @param {number} cellY - The y-coordinate.
+ * @returns {number} - The smoothed height value.
+ */
+const smoothHeight = (noise: NoiseFunction2D, cellX: number, cellY: number): number => {
+  const scale = NOISE_SCALE;
+  const noiseAt = (dx: number, dy: number) => noise(dx / scale, dy / scale);
+
+  const corners =
+    (noiseAt(cellX - 1, cellY - 1) +
+      noiseAt(cellX + 1, cellY - 1) +
+      noiseAt(cellX - 1, cellY + 1) +
+      noiseAt(cellX + 1, cellY + 1)) /
+    16;
+
+  const sides =
+    (noiseAt(cellX - 1, cellY) +
+      noiseAt(cellX + 1, cellY) +
+      noiseAt(cellX, cellY - 1) +
+      noiseAt(cellX, cellY + 1)) /
+    8;
+
+  const center = noiseAt(cellX, cellY) / 4;
+
+  return corners + sides + center;
+};
 
 /**
  * Calculates the terrain height of a cell based on noise values.
@@ -29,23 +61,34 @@ export const TERRAIN_SCALE = 83;
  * Higher terrain: increase the terrain scale.
  * Lower terrain: decrease the terrain scale.
  *
- * @param {ValueNoise} noise - The noise generator instance.
+ * @param {NoiseFunction2D} noise - The noise generator instance.
  * @param {number} cellX - The x-coordinate of the cell.
  * @param {number} cellY - The y-coordinate of the cell.
  * @returns {number} - The calculated terrain height for the cell.
  */
 export const getTerrainHeight = (
-  noise: ValueNoise,
+  noise: NoiseFunction2D,
   cellX: number,
   cellY: number
-) =>
-  Math.round(
-    (noise.evalXY(cellX / NOISE_SCALE, cellY / NOISE_SCALE) + 1) * TERRAIN_SCALE
-  );
+) => {
+  const smoothedNoiseValue = smoothHeight(noise, cellX, cellY);
+  let height = Math.round((smoothedNoiseValue + 1) * TERRAIN_SCALE);
+
+  // Decrease the base height to lower the overall terrain
+  height += 18;
+
+  // Adjust height based on terrain thresholds
+  if (height < Terrain.WATER1) height = Terrain.WATER1;
+  else if (height <= Terrain.WATER1) height += 3;
+  else if (height <= Terrain.WATER3) height += 5;
+  else if (height === Terrain.RESERVED) height = Terrain.SAND1;
+
+  return height;
+};
 
 /**
- * Generates perlin noise based on a given seed.
+ * Generates simplex noise based on a given seed.
  * @param {string} seed - The seed for the noise generator.
- * @returns {ValueNoise} - The noise generator instance.
+ * @returns {NoiseFunction2D} - The noise generator instance.
  */
-export const generateNoise = (seed: string) => new ValueNoise(seed, undefined, "perlin");
+export const generateNoise = (seed: string) => createNoise2D(alea(seed));
