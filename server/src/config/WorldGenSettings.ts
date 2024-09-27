@@ -24,22 +24,15 @@ export const TERRAIN_SCALE = 95;
 
 /**
  * Smooths the height value by averaging the values of the surrounding cells.
- * 
+ *
  * @param {NoiseFunction2D} noise - The noise generator instance.
  * @param {number} cellX - The x-coordinate.
  * @param {number} cellY - The y-coordinate.
  * @returns {number} - The smoothed height value.
  */
-const smoothHeight = (noise: NoiseFunction2D, cellX: number, cellY: number): number => {
+const smoothHeight = (noise: NoiseFunction2D, cellX: number, cellY: number) => {
   const scale = NOISE_SCALE;
   const noiseAt = (dx: number, dy: number) => noise(dx / scale, dy / scale);
-
-  const corners =
-    (noiseAt(cellX - 1, cellY - 1) +
-      noiseAt(cellX + 1, cellY - 1) +
-      noiseAt(cellX - 1, cellY + 1) +
-      noiseAt(cellX + 1, cellY + 1)) /
-    16;
 
   const sides =
     (noiseAt(cellX - 1, cellY) +
@@ -50,7 +43,7 @@ const smoothHeight = (noise: NoiseFunction2D, cellX: number, cellY: number): num
 
   const center = noiseAt(cellX, cellY) / 4;
 
-  return corners + sides + center;
+  return sides + center;
 };
 
 /**
@@ -81,7 +74,7 @@ export const getTerrainHeight = (
   // if (height < Terrain.WATER1) height = Terrain.WATER1; // Removed WATER1
   if (height === Terrain.RESERVED) height = Terrain.SAND1;
   else height += 10;
-  
+
   return height;
 };
 
