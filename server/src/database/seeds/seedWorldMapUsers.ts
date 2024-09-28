@@ -1,8 +1,7 @@
 import bcrypt from "bcrypt";
 
-import { EntityManager, MikroORM } from "@mikro-orm/core";
+import { EntityManager } from "@mikro-orm/core";
 import { getDefaultBaseData } from "../../data/getDefaultBaseData";
-import mikroOrmConfig from "../../mikro-orm.config";
 import { Save } from "../../models/save.model";
 import { User } from "../../models/user.model";
 import { joinOrCreateWorld } from "../../services/maproom/v2/joinOrCreateWorld";
@@ -13,7 +12,11 @@ export const seedWorldMapUsers = async (em: EntityManager) => {
   // Check if users already exist
   const existingUsers = await em.count(User, {});
   if (existingUsers > 0) {
-    logging("Users already exist, skipping seeding.");
+    errorLog(`
+      There are users already in the database. Run the following commands first before seeding:
+      - npm run db:drop
+      - npm run db:init
+    `);
     return;
   }
 
@@ -40,5 +43,6 @@ export const seedWorldMapUsers = async (em: EntityManager) => {
       joinOrCreateWorld(user, save, em),
       em.persistAndFlush(save),
     ]);
+    logging("Seeding completed successfully. 🌱");
   }
 };
