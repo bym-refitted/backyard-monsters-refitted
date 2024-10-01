@@ -24,7 +24,7 @@ export const seedWorldMapUsers = async (em: EntityManager) => {
   const users = Array.from({ length: MapRoom.MAX_PLAYERS }, (_, i) => ({
     username: `user${i + 1}`,
     email: `user${i + 1}@test.com`,
-    password: "dev12345",
+    password: "Dev12345!",
   }));
 
   // Insert users and their saves into the database

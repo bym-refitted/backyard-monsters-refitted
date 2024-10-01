@@ -19,10 +19,11 @@ import {
 import { World } from "../../../models/world.model";
 import { Status } from "../../../enums/StatusCodes";
 import { damageProtection } from "../../../services/maproom/v2/damageProtection";
-import { getWildMonsterSave } from "../../../services/maproom/v2/wildMonsters";
 import z from "zod";
-import { viewBase } from "./modes/viewBase";
-import { buildBase } from "./modes/buildBase";
+import { baseModeView } from "./modes/baseModeView";
+import { baseModeBuild } from "./modes/baseModeBuild";
+import { MapRoomCell } from "../../../enums/MapRoom";
+import { errorLog } from "../../../utils/logger";
 
 const BaseLoadSchema = z.object({
   type: z.string(),
@@ -39,29 +40,19 @@ export const baseLoad: KoaController = async (ctx) => {
     const userSave = user.save;
     let baseSave: Save = null;
 
-    const getRequestedBase = async () => {
-      const requestedBaseSave = await viewBase(ctx, baseid);
-      if (!requestedBaseSave)
-        getWildMonsterSave(parseInt(baseid), userSave.worldid);
-      return requestedBaseSave;
-    };
-
     switch (type) {
       case BaseMode.BUILD:
-        baseSave = await buildBase(ctx, baseid);
-        if (baseSave && baseSave.saveuserid !== user.userid)
-          throw loadFailureErr();
+        baseSave = await baseModeBuild(ctx, baseid);
+        break;
 
-        if (!baseSave)
-          // If there is no save, create one with default values
-          baseSave = await Save.createDefaultUserSave(ORMContext.em, user);
-        break;
       case BaseMode.VIEW:
-        baseSave = await getRequestedBase();
+        baseSave = await baseModeView(ctx, baseid);
         break;
-      case BaseMode.ATTACK: // TODO: Rewrite
+
+      // TODO: Rewrite
+      case BaseMode.ATTACK:
         await damageProtection(userSave, BaseMode.ATTACK);
-        baseSave = await getRequestedBase();
+        baseSave = await baseModeView(ctx, baseid);
         baseSave.attackid = generateID(5);
         if (baseSave.homebaseid === 0) {
           let cell = await ORMContext.em.findOne(WorldMapCell, {
@@ -81,6 +72,7 @@ export const baseLoad: KoaController = async (ctx) => {
             const cellY = parseInt(baseIdSplit.slice(4).join(""));
             const noise = generateNoise(world.uuid);
 
+            // Why are we generating terrain for an attack??
             const cell = new WorldMapCell(
               world,
               cellX,
@@ -89,7 +81,7 @@ export const baseLoad: KoaController = async (ctx) => {
               {
                 base_id: parseInt(baseIdSplit.join()),
                 uid: baseSave.saveuserid,
-                base_type: 1,
+                base_type: MapRoomCell.WM,
               }
             );
 
@@ -125,6 +117,7 @@ export const baseLoad: KoaController = async (ctx) => {
       pic_square: `https://api.dicebear.com/9.x/miniavs/png?seed=${baseSave.name}`,
     };
   } catch (error) {
+    errorLog(`Error loading base: ${error.message}`);
     throw loadFailureErr();
   }
 };

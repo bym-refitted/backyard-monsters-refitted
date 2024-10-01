@@ -8,8 +8,8 @@ import { ORMContext } from "../../../server";
 import { FilterFrontendKeys } from "../../../utils/FrontendKey";
 import { getCurrentDateTime } from "../../../utils/getCurrentDateTime";
 import { KoaController } from "../../../utils/KoaController";
-import { buildBase } from "../load/modes/buildBase";
-import { viewBase } from "../load/modes/viewBase";
+import { baseModeBuild } from "../load/modes/baseModeBuild";
+import { baseModeView } from "../load/modes/baseModeView";
 
 export const updateSaved: KoaController = async (ctx) => {
   const user: User = ctx.authUser;
@@ -22,9 +22,9 @@ export const updateSaved: KoaController = async (ctx) => {
 
   // TODO: Rewrite, why do this?
   if (type === BaseMode.BUILD) {
-    save = await buildBase(ctx, baseid);
+    save = await baseModeBuild(ctx, baseid);
   } else {
-    save = await viewBase(ctx, baseid);
+    save = await baseModeView(ctx, baseid);
   }
 
   if (!save) throw saveFailureErr();
