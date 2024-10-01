@@ -79,11 +79,13 @@ export const baseLoad: KoaController = async (ctx) => {
             const baseIdSplit = [...`${baseid}`];
             const cellX = parseInt(baseIdSplit.slice(1, 4).join(""));
             const cellY = parseInt(baseIdSplit.slice(4).join(""));
+            const noise = generateNoise(world.uuid);
+
             const cell = new WorldMapCell(
               world,
               cellX,
               cellY,
-              getTerrainHeight(generateNoise(userSave.worldid), cellX, cellY),
+              getTerrainHeight(noise, userSave.worldid, cellX, cellY),
               {
                 base_id: parseInt(baseIdSplit.join()),
                 uid: baseSave.saveuserid,
@@ -93,7 +95,7 @@ export const baseLoad: KoaController = async (ctx) => {
 
             cell.base_id = parseInt(baseSave.baseid); // Revisit
             await ORMContext.em.persistAndFlush(cell);
-            
+
             baseSave.homebaseid = parseInt(baseIdSplit.join());
             baseSave.cell = cell;
             baseSave.worldid = world.uuid;
@@ -106,7 +108,9 @@ export const baseLoad: KoaController = async (ctx) => {
     }
 
     const filteredSave = FilterFrontendKeys(baseSave);
-    const isTutorialEnabled = devConfig.skipTutorial ? 205 : filteredSave.tutorialstage;
+    const isTutorialEnabled = devConfig.skipTutorial
+      ? 205
+      : filteredSave.tutorialstage;
 
     ctx.status = Status.OK;
     ctx.body = {

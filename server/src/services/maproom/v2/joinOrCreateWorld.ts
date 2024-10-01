@@ -15,7 +15,7 @@ export const joinOrCreateWorld = async (
   user: User,
   save: Save,
   em: EntityManager = ORMContext.em,
-  isMigratingWorlds: Boolean = false,
+  isMigratingWorlds: Boolean = false
 ): Promise<void> => {
   //   if (migrate) {
   //     const cell = await getFreeCell(homeBase.world_id, true)
@@ -65,7 +65,7 @@ export const joinOrCreateWorld = async (
 
   // Generate noise based on the world's seed
   const noise = generateNoise(world.uuid);
-  const terrainHeight = getTerrainHeight(noise, cellX, cellY);
+  const terrainHeight = getTerrainHeight(noise, world.uuid, cellX, cellY);
 
   const homebaseCell = new WorldMapCell(world, cellX, cellY, terrainHeight);
 

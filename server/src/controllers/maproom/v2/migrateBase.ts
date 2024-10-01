@@ -7,6 +7,7 @@ import { WorldMapCell } from "../../../models/worldmapcell.model";
 import { Status } from "../../../enums/StatusCodes";
 import { Operation, updateResources } from "../../../services/base/updateResources";
 
+// TODO: Rewrite
 interface MigrateBaseRequest {
     shiny?: string,
     baseid: string,
