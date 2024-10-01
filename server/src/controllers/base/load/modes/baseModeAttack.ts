@@ -1,4 +1,3 @@
-import { Context } from "koa";
 import {
   generateNoise,
   getTerrainHeight,
@@ -12,15 +11,14 @@ import { damageProtection } from "../../../../services/maproom/v2/damageProtecti
 import { generateID } from "../../../../utils/generateID";
 import { baseModeView } from "./baseModeView";
 import { Save } from "../../../../models/save.model";
+import { User } from "../../../../models/user.model";
 
 // TODO: Rewrite
-export const baseModeAttack = async (
-  ctx: Context,
-  baseid: string,
-  userSave: Save
-) => {
+export const baseModeAttack = async (user: User, baseid: string) => {
+  const userSave: Save = user.save;
+
   await damageProtection(userSave, BaseMode.ATTACK);
-  let baseSave = await baseModeView(ctx, baseid);
+  let baseSave = await baseModeView(user, baseid);
   baseSave.attackid = generateID(5);
   if (baseSave.homebaseid === 0) {
     let cell = await ORMContext.em.findOne(WorldMapCell, {

@@ -24,28 +24,31 @@ const BaseLoadSchema = z.object({
   baseid: z.string(),
 });
 
+/**
+ * Controller responsible for loading base modes based on the user's request.
+ *
+ * @param {Context} ctx - The Koa context object.
+ * @returns {Promise<void>} A promise that resolves when the base load process is complete.
+ * @throws Will throw an error if the base load process fails.
+ */
 export const baseLoad: KoaController = async (ctx) => {
   try {
     const { baseid, type } = BaseLoadSchema.parse(ctx.request.body);
     const user: User = ctx.authUser;
     await ORMContext.em.populate(user, ["save"]);
 
-    const userSave = user.save;
     let baseSave: Save = null;
 
     switch (type) {
       case BaseMode.BUILD:
-        baseSave = await baseModeBuild(ctx, baseid);
+        baseSave = await baseModeBuild(user, baseid);
         break;
-
       case BaseMode.VIEW:
-        baseSave = await baseModeView(ctx, baseid);
+        baseSave = await baseModeView(user, baseid);
         break;
-
       case BaseMode.ATTACK:
-        baseSave = await baseModeAttack(ctx, baseid, userSave);
+        baseSave = await baseModeAttack(user, baseid);
         break;
-
       default:
         throw new Error(`Base type not handled, type: ${type}.`);
     }
