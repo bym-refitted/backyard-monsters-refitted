@@ -13,8 +13,8 @@ import { baseModeView } from "../load/modes/baseModeView";
 
 export const updateSaved: KoaController = async (ctx) => {
   const user: User = ctx.authUser;
-  const baseid = ctx.request.body['baseid'];
-  const type = ctx.request.body['type'];
+  const baseid = ctx.request.body["baseid"];
+  const type = ctx.request.body["type"];
 
   await ORMContext.em.populate(user, ["save"]);
   const authSave = user.save;
@@ -22,9 +22,9 @@ export const updateSaved: KoaController = async (ctx) => {
 
   // TODO: Rewrite, why do this?
   if (type === BaseMode.BUILD) {
-    save = await baseModeBuild(ctx, baseid);
+    save = await baseModeBuild(user, baseid);
   } else {
-    save = await baseModeView(ctx, baseid);
+    save = await baseModeView(user, baseid);
   }
 
   if (!save) throw saveFailureErr();
@@ -42,7 +42,7 @@ export const updateSaved: KoaController = async (ctx) => {
     ORMContext.em.persist(authSave);
   }
 
-  const filteredSave = FilterFrontendKeys(save)
+  const filteredSave = FilterFrontendKeys(save);
 
   const baseUpdateSave = {
     error: 0,

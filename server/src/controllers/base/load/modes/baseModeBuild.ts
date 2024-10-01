@@ -1,4 +1,3 @@
-import { Context } from "koa";
 import { Save } from "../../../../models/save.model";
 import { User } from "../../../../models/user.model";
 import { ORMContext } from "../../../../server";
@@ -11,14 +10,11 @@ import { errorLog, logging } from "../../../../utils/logger";
  * Otherwise, it attempts to find and load the requested base.
  * If no save is found for the baseid, return null.
  *
- * @param {Context} ctx - The Koa context containing the authenticated user.
+ * @param {User} user - The authenticated user object.
  * @param {string} baseid - The base identifier for the requested save.
  * @returns {Promise<Save>} The user's save object or a newly created save if no match is found.
  */
-export const baseModeBuild = async (ctx: Context, baseid: string) => {
-  const user: User = ctx.authUser;
-
-  await ORMContext.em.populate(user, ["save"]);
+export const baseModeBuild = async (user: User, baseid: string) => {
   const userSave: Save = user.save;
 
   if (!userSave) {
