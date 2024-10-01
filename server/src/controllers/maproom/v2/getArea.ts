@@ -69,14 +69,14 @@ export const getArea: KoaController = async (ctx) => {
   /**
    * Then, we fill the remaining cells in-memory, without persisting to the database.
    */
-  const noise = generateNoise(user.save.worldid);
+  const noise = generateNoise(save.worldid);
   for (let cellX = currentX; cellX <= currentX + width; cellX++) {
     // Ensure the cellX object exists in the cells map to append the cellY object to it
     if (!cells[cellX]) cells[cellX] = {};
     for (let cellY = currentY; cellY <= currentY + height; cellY++) {
       // The cell already exists, skip it
       if (cells[cellX][cellY]) continue;
-      const terrainHeight = getTerrainHeight(noise, cellX, cellY);
+      const terrainHeight = getTerrainHeight(noise, save.worldid, cellX, cellY);
       // Create a cell in-memory, skip the world being defined for memory efficency
       const inMemoryCell = new WorldMapCell(
         undefined,
