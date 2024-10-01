@@ -2,6 +2,7 @@ import { Save } from "../../../../models/save.model";
 import { User } from "../../../../models/user.model";
 import { ORMContext } from "../../../../server";
 import { getWildMonsterSave } from "../../../../services/maproom/v2/wildMonsters";
+import { getCurrentDateTime } from "../../../../utils/getCurrentDateTime";
 
 /**
  * The expiration time for a wild monster save in seconds.
@@ -24,7 +25,7 @@ export const baseModeView = async (user: User, baseid: string) => {
   if (!save) save = getWildMonsterSave(parseInt(baseid), userSave.worldid);
 
   if (save && save.wmid !== 0) {
-    const currentTimestamp = Math.floor(Date.now() / 1000);
+    const currentTimestamp = getCurrentDateTime();
 
     if (currentTimestamp - save.savetime > WILD_MONSTER_EXPIRATION) {
       await ORMContext.em.removeAndFlush(save);
