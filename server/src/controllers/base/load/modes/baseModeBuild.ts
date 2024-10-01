@@ -30,12 +30,8 @@ export const baseModeBuild = async (ctx: Context, baseid: string) => {
     return userSave;
 
   const save = await ORMContext.em.findOne(Save, { baseid });
-
-  // If the save belongs to the user, merge and return the user's data into it
-  if (save && save.saveuserid === user.userid) {
-    Object.assign(save, userSave);
-    return save;
-  }
+  // If the save belongs to the user, return it.
+  if (save && save.saveuserid === user.userid) return save;
 
   errorLog("No valid save found.");
   return null;
