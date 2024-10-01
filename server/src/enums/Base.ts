@@ -17,7 +17,9 @@ export enum BaseMode {
   IHELP = "ihelp",              // Inferno help
 
   WMVIEW = "wmview",            // Viewing wild monsters
-  IWMVIEW = "iwmview"           // Viewing wild monsters in the inferno
+  IWMVIEW = "iwmview",          // Viewing wild monsters in the inferno
+
+  DEFAULT = "0"               // Default yard
 }
 
 /** 
@@ -27,6 +29,6 @@ export enum BaseMode {
 export enum BaseType {
   MAIN = "main",                // Main yard
   OUTPOST = "outpost",          // Outpost yard
-  TRIBE = "tribe",  // Wild monster yard
+  TRIBE = "tribe",              // Wild monster yard
   INFERNO = "inferno"           // Inferno yard
 }

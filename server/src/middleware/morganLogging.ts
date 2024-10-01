@@ -1,8 +1,7 @@
-import { Context } from "vm";
 import { devConfig } from "../config/DevSettings";
 import { errorLog } from "../utils/logger";
 import morgan from "koa-morgan";
-import { Next } from "koa";
+import { Context, Next } from "koa";
 
 /**
  * Middleware to log missing assets.
