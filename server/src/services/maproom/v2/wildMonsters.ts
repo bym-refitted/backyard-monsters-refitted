@@ -12,10 +12,11 @@ import { Tribes } from "../../../enums/Tribes";
 import { calculateTribeLevel } from "./calculateTribeLevel";
 
 // TODO: Rewrite
-export const getWildMonsterSave = (baseid: number, worldId: string): Save => {
+export const wildMonsterSave = (baseid: string, worldId: string): Save => {
+  const baseidInt = parseInt(baseid);
   const fork = ORMContext.em.fork();
-  const x = getXPosition(baseid);
-  const y = getYPosition(baseid);
+  const x = getXPosition(baseidInt);
+  const y = getYPosition(baseidInt);
   const tribeIndex = (x + y) % Tribes.length;
   const world_level = 10;
   const wmid = tribeIndex * 10 + 1;
@@ -33,7 +34,7 @@ export const getWildMonsterSave = (baseid: number, worldId: string): Save => {
     createdAt: new Date(),
     homebase: [x.toString(), y.toString()],
   });
-  save.basesaveid = baseid;
+  save.basesaveid = baseidInt;
   save.baseid = baseid.toString();
   save.wmid = wmid;
   save.level = wm_level;

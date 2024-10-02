@@ -1,7 +1,7 @@
 import { Save } from "../../../../models/save.model";
 import { User } from "../../../../models/user.model";
 import { ORMContext } from "../../../../server";
-import { getWildMonsterSave } from "../../../../services/maproom/v2/wildMonsters";
+import { wildMonsterSave } from "../../../../services/maproom/v2/wildMonsters";
 import { getCurrentDateTime } from "../../../../utils/getCurrentDateTime";
 
 /**
@@ -22,14 +22,14 @@ export const baseModeView = async (user: User, baseid: string) => {
   const userSave: Save = user.save;
   let save = await ORMContext.em.findOne(Save, { baseid });
 
-  if (!save) save = getWildMonsterSave(parseInt(baseid), userSave.worldid);
+  if (!save) save = wildMonsterSave(baseid, userSave.worldid);
 
   if (save && save.wmid !== 0) {
     const currentTimestamp = getCurrentDateTime();
 
     if (currentTimestamp - save.savetime > WILD_MONSTER_EXPIRATION) {
       await ORMContext.em.removeAndFlush(save);
-      save = getWildMonsterSave(parseInt(baseid), userSave.worldid);
+      save = wildMonsterSave(baseid, userSave.worldid);
     }
   }
 
