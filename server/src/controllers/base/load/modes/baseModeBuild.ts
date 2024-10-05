@@ -19,7 +19,7 @@ export const baseModeBuild = async (user: User, baseid: string) => {
 
   if (!userSave) {
     logging("User save not found; creating a default save.");
-    return Save.createDefaultUserSave(ORMContext.em, user);
+    return await Save.createDefaultUserSave(ORMContext.em, user);
   }
 
   if (baseid === BaseMode.DEFAULT || baseid === userSave.baseid)
