@@ -6,12 +6,12 @@ import { ORMContext } from "../../../server";
 import { WorldMapCell } from "../../../models/worldmapcell.model";
 import { Status } from "../../../enums/StatusCodes";
 import { BaseType } from "../../../enums/Base";
+import { errorLog } from "../../../utils/logger";
 import {
   Operation,
   updateResources,
 } from "../../../services/base/updateResources";
 import { getCurrentDateTime } from "../../../utils/getCurrentDateTime";
-import { errorLog, logging } from "../../../utils/logger";
 
 const MigrateBaseSchema = z.object({
   type: z.string(),
@@ -20,7 +20,7 @@ const MigrateBaseSchema = z.object({
   shiny: z.string().transform((shiny) => parseInt(shiny)).optional(),
 });
 
- // 24 hours
+// 24 hours
 const COOLDOWN_PERIOD = 24 * 60 * 60; 
 
 // Wiki: https://backyardmonsters.fandom.com/wiki/Jumping
@@ -68,8 +68,7 @@ export const migrateBase: KoaController = async (ctx) => {
 
     // TODO: Handle relocate logic
     // await joinOrCreateWorld(currentUser, userSave, ORMContext.em, true);
-    if (type != BaseType.OUTPOST)
-      throw new Error("Relocate logic not implemented");
+    if (type != BaseType.OUTPOST) throw new Error("Relocate logic not implemented");
 
     // Fetch the user's homecell
     const homeCell = await ORMContext.em.findOne(WorldMapCell, {
@@ -82,6 +81,7 @@ export const migrateBase: KoaController = async (ctx) => {
       throw new Error("Invalid home cell");
     }
 
+    // Set the migration cooldown period before the user can move again
     userSave.cantmovetill = currentTime + COOLDOWN_PERIOD;
 
     // Update user's homebase and coordinates to the outpost cell
