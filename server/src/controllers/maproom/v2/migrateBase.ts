@@ -11,7 +11,7 @@ import {
   updateResources,
 } from "../../../services/base/updateResources";
 import { getCurrentDateTime } from "../../../utils/getCurrentDateTime";
-import { errorLog } from "../../../utils/logger";
+import { errorLog, logging } from "../../../utils/logger";
 
 const MigrateBaseSchema = z.object({
   type: z.string(),
@@ -19,6 +19,9 @@ const MigrateBaseSchema = z.object({
   resources: z.string().transform((res) => JSON.parse(res)).optional(),
   shiny: z.string().transform((shiny) => parseInt(shiny)).optional(),
 });
+
+ // 24 hours
+const COOLDOWN_PERIOD = 24 * 60 * 60; 
 
 // Wiki: https://backyardmonsters.fandom.com/wiki/Jumping
 export const migrateBase: KoaController = async (ctx) => {
@@ -31,6 +34,18 @@ export const migrateBase: KoaController = async (ctx) => {
     await ORMContext.em.populate(currentUser, ["save"]);
 
     const userSave = currentUser.save;
+    const currentTime = getCurrentDateTime();
+
+    // Check if the user is within the 24-hour cooldown period
+    if (userSave.cantmovetill > currentTime) {
+      ctx.status = Status.OK;
+      ctx.body = {
+        error: 0,
+        cantMoveTill: userSave.cantmovetill,
+        currenttime: currentTime,
+      };
+      return;
+    }
 
     // Fetch the outpost cell which the user is migrating to
     const outpostCell = await ORMContext.em.findOne(
@@ -41,9 +56,7 @@ export const migrateBase: KoaController = async (ctx) => {
       { populate: ["save"] }
     );
 
-    // Error migrating user base: Error: Invalid base or base type. Base ID: 1005799
-    // Steps: "You have moved your main yard already" popup, then try again
-    if (!outpostCell ||!outpostCell.save) {
+    if (!outpostCell || !outpostCell.save) {
       ctx.status = Status.BAD_REQUEST;
       ctx.body = { error: 1 };
       throw new Error(`Invalid base or base type. Base ID: ${baseid}`);
@@ -69,6 +82,8 @@ export const migrateBase: KoaController = async (ctx) => {
       throw new Error("Invalid home cell");
     }
 
+    userSave.cantmovetill = currentTime + COOLDOWN_PERIOD;
+
     // Update user's homebase and coordinates to the outpost cell
     userSave.homebase = [outpostCell.x.toString(), outpostCell.y.toString()];
     homeCell.x = outpostCell.x;
@@ -81,21 +96,16 @@ export const migrateBase: KoaController = async (ctx) => {
     delete userSave.buildingresources[`b${outpostCell.save.baseid}`];
 
     await Promise.all([
-      ORMContext.em.removeAndFlush([outpostCell, outpostCell.save]),
+      ORMContext.em.removeAndFlush([outpostCell.save, outpostCell]),
       ORMContext.em.persistAndFlush([homeCell, userSave]),
     ]);
-
-    const currentTime = getCurrentDateTime();
-    const cantMoveTill = currentTime + 24 * 60 * 60; // 24 hours
 
     // TODO: Notify homecell and all outposts that outpost has been removed
     // TODO: Look at PopupLostMainBase.as and the properties it expects
     ctx.status = Status.OK;
     ctx.body = {
       error: 0,
-      resources: userSave.resources,
-      // currenttime: currentTime,
-      // cantMoveTill,
+      resources: userSave.resources
     };
   } catch (error) {
     ctx.status = Status.BAD_REQUEST;
