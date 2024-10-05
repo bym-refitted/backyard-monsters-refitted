@@ -16,48 +16,46 @@ import { damageProtection } from "../../../../services/maproom/v2/damageProtecti
  * @param {WorldMapCell} cell - The world map cell object.
  */
 export const userCell = async (ctx: Context, cell: WorldMapCell) => {
+  const cellSave = cell.save;
   const currentUser: User = ctx.authUser;
   await ORMContext.em.populate(currentUser, ["save"]);
 
-  const { save, userid } = currentUser;
-
-  const mine = userid === cell.uid;
+  const mine = currentUser.userid === cell.uid;
 
   // Get the cell owner, either the current user or another user
   const cellOwner = mine
     ? currentUser
     : await ORMContext.em.findOne(User, { userid: cell.uid });
 
-  const isOnline = Date.now() / 1000 - save.savetime < 30;
+  const isOnline = Date.now() / 1000 - cellOwner.save.savetime < 30;
 
   /** TODO: Cell should be locked when a player is getting attacked, not when online */
-  const locked = mine ? 0 : isOnline ? 1 : save.locked;
-  const baseLevel = calculateBaseLevel(save.points, save.basevalue);
+  const locked = mine ? 0 : isOnline ? 1 : cellOwner.save.locked;
+  const baseLevel = calculateBaseLevel(cellOwner.save.points, cellOwner.save.basevalue);
 
-  let isCellProtected = await damageProtection(save);
+  let isCellProtected = await damageProtection(cellOwner.save);
 
   return {
     uid: cellOwner.userid,
     b: cell.base_type,
-    fbid: save.fbid,
     pi: 0,
     bid: cell.base_id,
     aid: 0,
     i: cell.terrainHeight,
     mine: mine ? 1 : 0,
-    f: save.flinger,
-    c: save.catapult,
+    f: cellSave.flinger,
+    c: cellSave.catapult,
     t: 0,
     n: cellOwner.username,
     fr: 0,
     on: isOnline,
     p: isCellProtected,
-    r: save.resources,
-    m: save.monsters,
+    r: cellOwner.save.resources,
+    m: cellSave.monsters,
     l: baseLevel,
-    d: save.destroyed || save.damage > 90,
+    d: cellSave.damage >= 90 ? 1 : 0,
     lo: locked,
-    dm: save.damage,
+    dm: cellSave.damage,
     pic_square: `https://api.dicebear.com/9.x/miniavs/png?seed=${cellOwner.username}`,
     im: `https://api.dicebear.com/9.x/miniavs/png?seed=${cellOwner.username}`,
   };
