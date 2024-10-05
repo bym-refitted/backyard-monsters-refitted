@@ -77,8 +77,6 @@ export const takeoverCell: KoaController = async (ctx) => {
     userSave.outposts.push([cell.x, cell.y, baseid]);
     ORMContext.em.persistAndFlush([cellSave, currentUser]);
 
-    // TODO: Notify homecell and all outposts that outpost has been added
-
     ctx.status = Status.OK;
     ctx.body = { error: 0 };
   } catch (error) {

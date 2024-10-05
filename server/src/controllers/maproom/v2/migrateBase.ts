@@ -6,12 +6,12 @@ import { ORMContext } from "../../../server";
 import { WorldMapCell } from "../../../models/worldmapcell.model";
 import { Status } from "../../../enums/StatusCodes";
 import { BaseType } from "../../../enums/Base";
+import { getCurrentDateTime } from "../../../utils/getCurrentDateTime";
 import { errorLog } from "../../../utils/logger";
 import {
   Operation,
   updateResources,
 } from "../../../services/base/updateResources";
-import { getCurrentDateTime } from "../../../utils/getCurrentDateTime";
 
 // Wiki: https://backyardmonsters.fandom.com/wiki/Jumping
 
@@ -26,7 +26,7 @@ const MigrateBaseSchema = z.object({
 const COOLDOWN_PERIOD = 24 * 60 * 60; 
 
 // This is currently really buggy 
-// Look at PopupRelocateMe.as to see wtf is going on
+// TODO: Look at PopupRelocateMe.as/PopupLostMainBase.as to see wtf is going on
 export const migrateBase: KoaController = async (ctx) => {
   try {
     const { baseid, resources, shiny, type } = MigrateBaseSchema.parse(
@@ -103,8 +103,6 @@ export const migrateBase: KoaController = async (ctx) => {
       ORMContext.em.persistAndFlush([homeCell, userSave]),
     ]);
 
-    // TODO: Notify homecell and all outposts that outpost has been removed
-    // TODO: Look at PopupLostMainBase.as and the properties it expects
     ctx.status = Status.OK;
     ctx.body = {
       error: 0,
