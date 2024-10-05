@@ -13,6 +13,8 @@ import {
 } from "../../../services/base/updateResources";
 import { getCurrentDateTime } from "../../../utils/getCurrentDateTime";
 
+// Wiki: https://backyardmonsters.fandom.com/wiki/Jumping
+
 const MigrateBaseSchema = z.object({
   type: z.string(),
   baseid: z.string().transform((baseid) => parseInt(baseid)),
@@ -23,7 +25,8 @@ const MigrateBaseSchema = z.object({
 // 24 hours
 const COOLDOWN_PERIOD = 24 * 60 * 60; 
 
-// Wiki: https://backyardmonsters.fandom.com/wiki/Jumping
+// This is currently really buggy 
+// Look at PopupRelocateMe.as to see wtf is going on
 export const migrateBase: KoaController = async (ctx) => {
   try {
     const { baseid, resources, shiny, type } = MigrateBaseSchema.parse(

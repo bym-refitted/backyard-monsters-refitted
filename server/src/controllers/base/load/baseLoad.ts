@@ -67,6 +67,7 @@ export const baseLoad: KoaController = async (ctx) => {
       id: filteredSave.basesaveid,
       storeitems: { ...storeItems },
       tutorialstage: isTutorialEnabled,
+      outposts: user.save.outposts,
       currenttime: getCurrentDateTime(),
       pic_square: `https://api.dicebear.com/9.x/miniavs/png?seed=${baseSave.name}`,
     };
