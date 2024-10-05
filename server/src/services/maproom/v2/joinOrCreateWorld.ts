@@ -15,9 +15,9 @@ export const joinOrCreateWorld = async (
   user: User,
   save: Save,
   em: EntityManager = ORMContext.em,
-  isMigratingWorlds: Boolean = false
-): Promise<void> => {
-  //   if (migrate) {
+  relocate: Boolean = false
+) => {
+  //   if (relocate) {
   //     const cell = await getFreeCell(homeBase.world_id, true)
   //     homeBase.x = cell.x;
   //     homeBase.y = cell.y;
