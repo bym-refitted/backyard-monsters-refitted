@@ -248,6 +248,10 @@ export class Save {
   @Property()
   purchasecomplete!: number;
 
+  @FrontendKey
+  @Property({ nullable: true })
+  cantmovetill?: number | null;
+
   // Objects
   @FrontendKey
   @Property({ type: "json", nullable: true })
