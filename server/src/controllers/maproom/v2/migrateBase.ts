@@ -43,19 +43,20 @@ export const migrateBase: KoaController = async (ctx) => {
 
     // Error migrating user base: Error: Invalid base or base type. Base ID: 1005799
     // Steps: "You have moved your main yard already" popup, then try again
-    if (!outpostCell || !outpostCell.save) {
+    if (!outpostCell ||!outpostCell.save) {
       ctx.status = Status.BAD_REQUEST;
       ctx.body = { error: 1 };
       throw new Error(`Invalid base or base type. Base ID: ${baseid}`);
     }
 
     if (shiny) userSave.credits = userSave.credits - shiny;
-    if (resources) 
-        userSave.resources = updateResources(resources, userSave.resources, Operation.SUBTRACT);
+    if (resources)
+      userSave.resources = updateResources(resources, userSave.resources, Operation.SUBTRACT);
 
     // TODO: Handle relocate logic
     // await joinOrCreateWorld(currentUser, userSave, ORMContext.em, true);
-    if (type != BaseType.OUTPOST) throw new Error("Relocate logic not implemented");
+    if (type != BaseType.OUTPOST)
+      throw new Error("Relocate logic not implemented");
 
     // Fetch the user's homecell
     const homeCell = await ORMContext.em.findOne(WorldMapCell, {
@@ -74,16 +75,14 @@ export const migrateBase: KoaController = async (ctx) => {
     homeCell.y = outpostCell.y;
 
     // Remove the outpost from the user's save, 3rd element in the array is the baseid
-    userSave.outposts = userSave.outposts.filter(
-      (outpost) => outpost[2] !== baseid
-    );
+    userSave.outposts = userSave.outposts.filter((outpost) => outpost[2] !== baseid);
 
     // Remove baseid from building resources object
     delete userSave.buildingresources[`b${outpostCell.save.baseid}`];
 
     await Promise.all([
-      ORMContext.em.removeAndFlush(outpostCell),
-      ORMContext.em.persistAndFlush(userSave),
+      ORMContext.em.removeAndFlush([outpostCell, outpostCell.save]),
+      ORMContext.em.persistAndFlush([homeCell, userSave]),
     ]);
 
     const currentTime = getCurrentDateTime();
@@ -95,8 +94,8 @@ export const migrateBase: KoaController = async (ctx) => {
     ctx.body = {
       error: 0,
       resources: userSave.resources,
-      currenttime: currentTime,
-      cantMoveTill,
+      // currenttime: currentTime,
+      // cantMoveTill,
     };
   } catch (error) {
     ctx.status = Status.BAD_REQUEST;
