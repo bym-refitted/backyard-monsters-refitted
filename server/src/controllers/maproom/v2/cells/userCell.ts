@@ -3,7 +3,6 @@ import { User } from "../../../../models/user.model";
 import { ORMContext } from "../../../../server";
 import { WorldMapCell } from "../../../../models/worldmapcell.model";
 import { calculateBaseLevel } from "../../../../services/base/calculateBaseLevel";
-import { BaseType } from "../../../../enums/Base";
 import { damageProtection } from "../../../../services/maproom/v2/damageProtection";
 
 /**
@@ -17,11 +16,12 @@ import { damageProtection } from "../../../../services/maproom/v2/damageProtecti
  * @param {WorldMapCell} cell - The world map cell object.
  */
 export const userCell = async (ctx: Context, cell: WorldMapCell) => {
-  const { save } = cell;
-  if (!save) throw new Error("This cell does not have a user save.");
-
   const currentUser: User = ctx.authUser;
-  const mine = currentUser.userid === cell.uid;
+  await ORMContext.em.populate(currentUser, ["save"]);
+
+  const { save, userid } = currentUser;
+
+  const mine = userid === cell.uid;
 
   // Get the cell owner, either the current user or another user
   const cellOwner = mine
@@ -55,7 +55,7 @@ export const userCell = async (ctx: Context, cell: WorldMapCell) => {
     r: save.resources,
     m: save.monsters,
     l: baseLevel,
-    d: save.damage > 90,
+    d: save.destroyed || save.damage > 90,
     lo: locked,
     dm: save.damage,
     pic_square: `https://api.dicebear.com/9.x/miniavs/png?seed=${cellOwner.username}`,

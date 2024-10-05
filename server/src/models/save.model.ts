@@ -230,10 +230,6 @@ export class Save {
 
   @FrontendKey
   @Property()
-  attackreport!: string;
-
-  @FrontendKey
-  @Property()
   over!: number;
 
   @FrontendKey
@@ -308,6 +304,10 @@ export class Save {
   @FrontendKey
   @Property({ type: "json", nullable: true })
   loot?: FieldData;
+
+  @FrontendKey
+  @Property({ type: "json", nullable: true })
+  attackreport!: FieldData;
 
   @FrontendKey
   @Property({ type: "json", nullable: true })
