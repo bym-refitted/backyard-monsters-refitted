@@ -19,7 +19,7 @@ import { setMapVersion } from "./controllers/maproom/v2/setMapVersion";
 import { saveBookmarks } from "./controllers/maproom/v2/saveBookmarks";
 import { takeoverCell } from "./controllers/maproom/v2/takeoverCell";
 import { migrateBase } from "./controllers/maproom/v2/migrateBase";
-import { transferAssets } from "./controllers/maproom/v2/transferAssets";
+import { transferMonsters } from "./controllers/maproom/v2/transferMonsters";
 import { apiVersion } from "./middleware/apiVersioning";
 import { supportedLangs } from "./controllers/supportedLangs";
 import { releasesWebhook } from "./controllers/github/releasesWebhook";
@@ -245,7 +245,7 @@ router.post(
   "/worldmapv2/transferassets",
   auth,
   debugDataLog("Transferring assets"),
-  transferAssets
+  transferMonsters
 );
 
 /**
