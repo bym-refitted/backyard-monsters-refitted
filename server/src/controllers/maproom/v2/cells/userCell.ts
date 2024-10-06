@@ -62,7 +62,7 @@ export const userCell = async (ctx: Context, cell: WorldMapCell) => {
     d: cellSave?.damage >= 90 ? 1 : 0 || 0,
     lo: locked,
     dm: cellSave?.damage || 0,
-    pic_square: `${process.env.AVATAR_URL}/png?seed=${currentUser.username}`,
-    im: `${process.env.AVATAR_URL}/png?seed=${currentUser.username}`,
+    pic_square: `${process.env.AVATAR_URL}?seed=${currentUser.username}`,
+    im: `${process.env.AVATAR_URL}?seed=${currentUser.username}`,
   };
 };
