@@ -17,6 +17,8 @@ export const joinOrCreateWorld = async (
   em: EntityManager = ORMContext.em,
   relocate: Boolean = false
 ) => {
+  if (relocate) throw new Error("Relocation not implemented");
+  
   //   if (relocate) {
   //     const cell = await getFreeCell(homeBase.world_id, true)
   //     homeBase.x = cell.x;
