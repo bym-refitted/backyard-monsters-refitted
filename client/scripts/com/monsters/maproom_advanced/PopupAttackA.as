@@ -556,7 +556,7 @@ package com.monsters.maproom_advanced
             this._profilePic = new Loader();
             this._profilePic.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR,LoadImageError,false,0,true);
             this._profilePic.contentLoaderInfo.addEventListener(Event.COMPLETE,onImageLoad);
-            if(Boolean(GLOBAL._flags.kongregate) && Boolean(this._cell._pic_square)) // Comment: Previously viximo
+            if(Boolean(!GLOBAL._flags.viximo) && Boolean(this._cell._pic_square))
             {
                this._profilePic.load(new URLRequest(this._cell._pic_square));
             }

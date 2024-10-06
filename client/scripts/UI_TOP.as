@@ -646,7 +646,7 @@ package
             {
                loader.load(new URLRequest(GLOBAL._storageURL + BASE._ownerPic));
             }
-            else if(Boolean(GLOBAL._flags.viximo) || Boolean(GLOBAL._flags.kongregate))
+            else if(Boolean(!GLOBAL._flags.viximo) || Boolean(!GLOBAL._flags.kongregate))
             {
                loader.load(new URLRequest(BASE._ownerPic));
             }
