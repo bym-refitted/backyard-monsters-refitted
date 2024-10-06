@@ -23,6 +23,13 @@ export const baseModeBuild = async (user: User, baseid: string) => {
     return await Save.createDefaultUserSave(ORMContext.em, user);
   }
 
-  // Otherwise, return the user's save.
+  // Fetch base based on the provided baseid.
+  if (baseid !== BaseMode.DEFAULT && baseid !== userSave.baseid) {
+    let baseSave = await ORMContext.em.findOne(Save, { baseid });
+
+    if (!baseSave) throw new Error(`Base save not found for baseid: ${baseid}`);
+    return baseSave;
+  }
+
   return userSave;
 };
