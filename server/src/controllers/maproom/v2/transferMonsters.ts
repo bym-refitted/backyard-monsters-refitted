@@ -33,6 +33,7 @@ export const transferMonsters: KoaController = async (ctx) => {
 
   const [fromMonsters, toMonsters]: MonstersTransfer = monsters;
 
+  // Fetch the bases to transfer the monsters between
   const [fromBase, toBase] = await ORMContext.em.find(Save, {
     baseid: { $in: [frombaseid, tobaseid] },
   });
@@ -49,7 +50,5 @@ export const transferMonsters: KoaController = async (ctx) => {
   await ORMContext.em.persistAndFlush([fromBase, toBase]);
 
   ctx.status = Status.OK;
-  ctx.body = {
-    error: 0,
-  };
+  ctx.body = { error: 0 };
 };

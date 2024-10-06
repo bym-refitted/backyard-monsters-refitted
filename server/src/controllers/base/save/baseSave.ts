@@ -9,7 +9,7 @@ import { getCurrentDateTime } from "../../../utils/getCurrentDateTime";
 import { logging } from "../../../utils/logger";
 import { storeItems } from "../../../data/storeItems";
 import { saveFailureErr } from "../../../errors/errors";
-import { monsterUpdateBases } from "../../../services/base/monster";
+import { updateMonsters } from "../../../services/base/updateMonsters";
 import { Status } from "../../../enums/StatusCodes";
 
 // TODO: Rewrite 
@@ -130,7 +130,7 @@ export const baseSave: KoaController = async (ctx) => {
         authSave.monsters = authMonsters.m;
       }
       if (monsterUpdates.length > 0) {
-        await monsterUpdateBases(monsterUpdates)
+        await updateMonsters(monsterUpdates)
       }
 
     }
