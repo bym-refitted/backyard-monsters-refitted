@@ -24,7 +24,7 @@ export const devSandbox = (user?: User) => {
     baseid_inferno: 0,
     fbid: "100002268912813",
     fortifycellid: 0,
-    name: "name",
+    name: user.username || "Anonymous",
     level: 1,
     catapult: 1,
     flinger: 1,
