@@ -1474,7 +1474,6 @@ package
                _ownerPic = GLOBAL.mode == GLOBAL.e_BASE_MODE.WMATTACK || GLOBAL.mode == GLOBAL.e_BASE_MODE.WMVIEW ? String(TRIBES.TribeForBaseID(_wmID).profilepic) : String(serverData.pic_square);
                if(!GLOBAL._flags.viximo && !GLOBAL._flags.kongregate)
                {
-                  GLOBAL.Message("If this function runs, the world is fucked.");
                   if(serverData.promotiontimer)
                   {
                      if(serverData.promotiontimer is int)
