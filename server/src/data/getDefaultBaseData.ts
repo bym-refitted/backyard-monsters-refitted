@@ -4,6 +4,7 @@ import { debugSandbox } from "../dev/debugSandbox";
 import { devSandbox } from "../dev/devSandbox";
 import { generateID } from "../utils/generateID";
 import { getCurrentDateTime } from "../utils/getCurrentDateTime";
+import { Reward } from "../enums/Rewards";
 
 /**
  * Generates the default base data object for a new save.
@@ -104,14 +105,10 @@ export const getDefaultBaseData = (user?: User) => {
     rewards: devConfig.unlockAllEventRewards
       ? {
           // Unique event reward unlockables
-          spurtzCannonReward2: { id: "spurtzCannonReward2" },
-          spurtzCannonReward: { id: "spurtzCannonReward" },
-          spurtzCannonReward3: { id: "spurtzCannonReward3" },
-          unlockRezghul: { id: "unlockRezghul" },
-          unblockSlimeattikus: { id: "unblockSlimeattikus" },
-          unblockVorg: { id: "unblockVorg" },
-          KorathReward: { id: "KorathReward", value: 3 },
-          krallenReward: { id: "krallenReward", value: 1 },
+          unlockRezghul: { id: Reward.REZGHUL },
+          unblockSlimeattikus: { id: Reward.SLIMEATTIKUS },
+          unblockVorg: { id: Reward.VORG },
+          krallenReward: { id: Reward.KRALLEN, value: 1 },
         }
       : {},
     takeover: {},
