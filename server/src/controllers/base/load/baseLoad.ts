@@ -69,7 +69,7 @@ export const baseLoad: KoaController = async (ctx) => {
       tutorialstage: isTutorialEnabled,
       outposts: user.save.outposts,
       currenttime: getCurrentDateTime(),
-      pic_square: `https://api.dicebear.com/9.x/miniavs/png?seed=${baseSave.name}`,
+      pic_square: `${process.env.AVATAR_URL}/png?seed=${user.username}`,
     };
   } catch (error) {
     errorLog(`Error loading base: ${error.message}`);
