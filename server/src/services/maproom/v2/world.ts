@@ -1,7 +1,6 @@
 import { ORMContext } from "../../../server";
 import { WorldMapCell } from "../../../models/worldmapcell.model";
 import { EntityManager } from "@mikro-orm/mariadb";
-import { logging } from "../../../utils/logger";
 import { MapRoom } from "../../../enums/MapRoom";
 
 interface FreeXY {
@@ -130,69 +129,6 @@ const getRandomXY = async (
   throw new Error(
     `Failed to generate a random coordinate after ${max_retry} retries`
   );
-};
-
-const generateNewWorld = async (): Promise<string> => {
-  logging("Generating new world...");
-  const fork = ORMContext.em.fork();
-  const latestWorld = await fork.findOne(WorldMapCell, null, {
-    orderBy: {
-      world_id: "desc",
-    },
-  });
-
-  let world_id = "1";
-  if (latestWorld) {
-    world_id = (parseInt(latestWorld.world_id) + 1).toString(10);
-  }
-
-  const maxX = 800;
-  const maxY = 800;
-
-  const cells: WorldMapCell[] = [];
-
-  for (let x = 0; x < maxX; x++) {
-    for (let y = 0; y < maxY; y++) {
-      const cell = new WorldMapCell();
-      cell.world_id = world_id;
-      cell.x = x;
-      cell.y = y;
-      cell.uid = 0;
-      cell.base_type = 1;
-      cell.base_id = 0;
-      cells.push(cell);
-    }
-  }
-
-  await fork.persistAndFlush(cells);
-  return world_id;
-};
-
-export const getBounds = (x: number, y: number, width: number = 10) => {
-  const mapSize = 800;
-  const halfWidth = Math.floor(width / 2);
-  let minX = x - halfWidth;
-  let minY = y - halfWidth;
-  let maxX = x + halfWidth;
-  let maxY = y + halfWidth;
-
-  // Adjust minX and minY if they go beyond 0
-  if (minX < 0) minX = 0;
-  if (minY < 0) minY = 0;
-
-  // Adjust maxX and maxY if they exceed mapSize
-  if (maxX >= mapSize) maxX = mapSize;
-  if (maxY >= mapSize) maxY = mapSize;
-
-  return { minX, minY, maxX, maxY };
-};
-
-export const generateBaseID = (worldID: number, x: number, y: number) => {
-  return (worldID + 1) * 1000000 + (y + 1) * 1000 + (x + 1);
-};
-
-export const getWorldID = (cellID: number) => {
-  return Math.floor(cellID / 1000000);
 };
 
 export const getXPosition = (cellID: number) => {

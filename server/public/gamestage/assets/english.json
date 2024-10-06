@@ -1469,6 +1469,7 @@
     "twigsnapper_desc": "Produces Twigs. Used in the construction of buildings",
     "ui_building": "<b>Building<\/b><br><br><font size=\"11\"><b>#v1#<\/b><\/font><br>Speed up to finish",
     "ui_building_sale": "SALE",
+    "ui_sale_on": "ON SALE",
     "ui_buildingfull": "<font size=\"11\"><b>FULL<\/b><\/font><br><br>Production paused, bank to resume production",
     "ui_producing": "<b>Producing<br>#v1#<\/b><br><br><font size=\"11\"><b>#v2#<\/b><\/font><br>#v3#% FULL",
     "ui_repairing": "<b>Repairing<\/b><br><br><font size=\"11\"><b>#v1#<\/b><\/font><br>Speed up to finish",

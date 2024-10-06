@@ -17,17 +17,8 @@ export const joinOrCreateWorld = async (
   em: EntityManager = ORMContext.em,
   relocate: Boolean = false
 ) => {
-  if (relocate) throw new Error("Relocation not implemented");
+  if (relocate) throw new Error("Relocation not implemented"); // getFreeCell
   
-  //   if (relocate) {
-  //     const cell = await getFreeCell(homeBase.world_id, true)
-  //     homeBase.x = cell.x;
-  //     homeBase.y = cell.y;
-  //     await fork.persistAndFlush(homeBase)
-  //     save.homebase = [cell.x.toString(), cell.y.toString()]
-  //     await fork.persistAndFlush(save)
-  // }
-
   // Find an existing world with space
   let world = await em.findOne(World, {
     playerCount: {

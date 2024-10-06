@@ -7,7 +7,7 @@ import { devConfig } from "../config/DevSettings";
 export const flags = {
   // Platforms:
   viximo: 0,
-  kongregate: 1,
+  kongregate: 0,
 
   // Settings:
   maproom2: devConfig.maproom ? 1 : 0,
