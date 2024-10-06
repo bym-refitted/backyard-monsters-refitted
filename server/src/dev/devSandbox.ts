@@ -5,7 +5,6 @@ const baseid = generateID(9);
 
 export const devSandbox = (user?: User) => {
   return {
-    basesaveid: 2,
     baseid: baseid.toString(10),
     type: "main",
     userid: 6214693,

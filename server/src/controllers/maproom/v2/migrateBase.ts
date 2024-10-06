@@ -12,6 +12,7 @@ import {
   Operation,
   updateResources,
 } from "../../../services/base/updateResources";
+import { joinOrCreateWorld } from "../../../services/maproom/v2/joinOrCreateWorld";
 
 // Wiki: https://backyardmonsters.fandom.com/wiki/Jumping
 
@@ -50,6 +51,11 @@ export const migrateBase: KoaController = async (ctx) => {
       return;
     }
 
+    // Empire destroyed relocation
+    if (type !== BaseType.OUTPOST) {
+      await joinOrCreateWorld(currentUser, userSave, ORMContext.em, true);
+    }
+
     // Fetch the outpost cell which the user is migrating to
     const outpostCell = await ORMContext.em.findOne(
       WorldMapCell,
@@ -68,10 +74,6 @@ export const migrateBase: KoaController = async (ctx) => {
     if (shiny) userSave.credits = userSave.credits - shiny;
     if (resources)
       userSave.resources = updateResources(resources, userSave.resources, Operation.SUBTRACT);
-
-    // TODO: Handle relocate logic
-    // await joinOrCreateWorld(currentUser, userSave, ORMContext.em, true);
-    if (type != BaseType.OUTPOST) throw new Error("Relocate logic not implemented");
 
     // Fetch the user's homecell
     const homeCell = await ORMContext.em.findOne(WorldMapCell, {

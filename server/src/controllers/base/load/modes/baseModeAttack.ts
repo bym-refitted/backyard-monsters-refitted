@@ -23,7 +23,7 @@ export const baseModeAttack = async (user: User, baseid: string) => {
   // Remove damage protection
   await damageProtection(userSave, BaseMode.ATTACK);
 
-  // if (save.homebaseid === 0) {
+  if (save.homebaseid === 0) {
   const cell = await ORMContext.em.findOne(WorldMapCell, {
     base_id: save.basesaveid,
   });
@@ -61,7 +61,7 @@ export const baseModeAttack = async (user: User, baseid: string) => {
     save.cell = cell;
     save.worldid = world.uuid;
   }
-  // }
+  }
   await ORMContext.em.persistAndFlush(save);
   return save;
 };

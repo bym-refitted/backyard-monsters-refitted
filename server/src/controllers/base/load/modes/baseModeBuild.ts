@@ -12,23 +12,17 @@ import { errorLog, logging } from "../../../../utils/logger";
  *
  * @param {User} user - The authenticated user object.
  * @param {string} baseid - The base identifier for the requested save.
- * @returns {Promise<Save>} The user's save object or a newly created save if no match is found.
+ * @returns {Promise<Save | null>} The user's save object or null if not found.
  */
 export const baseModeBuild = async (user: User, baseid: string) => {
-  const userSave: Save = user.save;
+  let userSave: Save = user.save;
 
+  // If no user save is found, create a default save for the user.
   if (!userSave) {
     logging("User save not found; creating a default save.");
     return await Save.createDefaultUserSave(ORMContext.em, user);
   }
 
-  if (baseid === BaseMode.DEFAULT || baseid === userSave.baseid)
-    return userSave;
-
-  const save = await ORMContext.em.findOne(Save, { baseid });
-  // If the save belongs to the user, return it.
-  if (save && save.saveuserid === user.userid) return save;
-
-  errorLog("No valid save found.");
-  return null;
+  // Otherwise, return the user's save.
+  return userSave;
 };
