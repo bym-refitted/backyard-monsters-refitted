@@ -7,7 +7,7 @@ import { WorldMapCell } from "../../../models/worldmapcell.model";
 import { Status } from "../../../enums/StatusCodes";
 import { BaseType } from "../../../enums/Base";
 import { getCurrentDateTime } from "../../../utils/getCurrentDateTime";
-import { errorLog } from "../../../utils/logger";
+import { errorLog, logging } from "../../../utils/logger";
 import {
   Operation,
   updateResources,
@@ -85,20 +85,21 @@ export const migrateBase: KoaController = async (ctx) => {
       ctx.body = { error: 1 };
       throw new Error("Invalid home cell");
     }
-
+    
     // Set the migration cooldown period before the user can move again
     userSave.cantmovetill = currentTime + COOLDOWN_PERIOD;
-
-    // Update user's homebase and coordinates to the outpost cell
-    userSave.homebase = [outpostCell.x.toString(), outpostCell.y.toString()];
-    homeCell.x = outpostCell.x;
-    homeCell.y = outpostCell.y;
 
     // Remove the outpost from the user's save, 3rd element in the array is the baseid
     userSave.outposts = userSave.outposts.filter((outpost) => outpost[2] !== baseid);
 
     // Remove baseid from building resources object
     delete userSave.buildingresources[`b${outpostCell.save.baseid}`];
+    
+    // Update user's homebase and coordinates to the outpost cell
+    userSave.homebase = [outpostCell.x.toString(), outpostCell.y.toString()];
+
+    homeCell.x = outpostCell.x;
+    homeCell.y = outpostCell.y;
 
     await Promise.all([
       ORMContext.em.removeAndFlush([outpostCell.save, outpostCell]),
