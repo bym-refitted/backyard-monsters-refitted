@@ -458,6 +458,7 @@ export class Save {
     "frontpage",
     "academy",
     "loot",
+    "attackreport",
     "storedata",
     "coords",
     "quests",
@@ -485,7 +486,7 @@ export class Save {
     "purchase",
   ];
 
-  // What is this?
+  // TODO: What is this?
   public static nonJsonKeys: (keyof FieldData)[] = [
     "level",
     "catapult",

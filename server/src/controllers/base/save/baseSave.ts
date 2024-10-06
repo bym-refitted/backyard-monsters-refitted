@@ -12,6 +12,7 @@ import { saveFailureErr } from "../../../errors/errors";
 import { monsterUpdateBases } from "../../../services/base/monster";
 import { Status } from "../../../enums/StatusCodes";
 
+// TODO: Rewrite 
 export const baseSave: KoaController = async (ctx) => {
   const user: User = ctx.authUser;
   await ORMContext.em.populate(user, ["save"])

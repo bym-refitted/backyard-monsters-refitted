@@ -4,6 +4,7 @@ import { ORMContext } from "../../../../server";
 import { WorldMapCell } from "../../../../models/worldmapcell.model";
 import { calculateBaseLevel } from "../../../../services/base/calculateBaseLevel";
 import { damageProtection } from "../../../../services/maproom/v2/damageProtection";
+import { errorLog } from "../../../../utils/logger";
 
 /**
  * Handles the user's homecell & outpost data on the world map.
@@ -31,9 +32,14 @@ export const userCell = async (ctx: Context, cell: WorldMapCell) => {
 
   /** TODO: Cell should be locked when a player is getting attacked, not when online */
   const locked = mine ? 0 : isOnline ? 1 : cellOwner.save.locked;
-  const baseLevel = calculateBaseLevel(cellOwner.save.points, cellOwner.save.basevalue);
+  const baseLevel = calculateBaseLevel(
+    cellOwner.save.points,
+    cellOwner.save.basevalue
+  );
 
   let isCellProtected = await damageProtection(cellOwner.save);
+
+  if (!cellSave) errorLog("Cell save data is missing.");
 
   return {
     uid: cellOwner.userid,
@@ -43,19 +49,19 @@ export const userCell = async (ctx: Context, cell: WorldMapCell) => {
     aid: 0,
     i: cell.terrainHeight,
     mine: mine ? 1 : 0,
-    f: cellSave.flinger,
-    c: cellSave.catapult,
+    f: cellSave?.flinger || 0,
+    c: cellSave?.catapult || 0,
     t: 0,
     n: cellOwner.username,
     fr: 0,
     on: isOnline,
     p: isCellProtected,
     r: cellOwner.save.resources,
-    m: cellSave.monsters,
+    m: cellSave?.monsters || {},
     l: baseLevel,
-    d: cellSave.damage >= 90 ? 1 : 0,
+    d: cellSave?.damage >= 90 ? 1 : 0 || 0,
     lo: locked,
-    dm: cellSave.damage,
+    dm: cellSave?.damage || 0,
     pic_square: `https://api.dicebear.com/9.x/miniavs/png?seed=${cellOwner.username}`,
     im: `https://api.dicebear.com/9.x/miniavs/png?seed=${cellOwner.username}`,
   };
