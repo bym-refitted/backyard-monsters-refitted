@@ -458,7 +458,6 @@ export class Save {
     "frontpage",
     "academy",
     "loot",
-    "attackreport",
     "storedata",
     "coords",
     "quests",
