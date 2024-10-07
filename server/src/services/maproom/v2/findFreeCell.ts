@@ -9,7 +9,7 @@ import {
 } from "../../../config/WorldGenSettings";
 
 /**
- * Interface representing a cell's coordinates and terrain height.
+ * Interface representing a single cell
  */
 interface Cell {
   x: number | null;
@@ -37,10 +37,10 @@ export const findFreeCell = async (world: World, em: EntityManager) => {
 
     // Generate noise based on the world's seed
     const noise = generateNoise(world.uuid);
-    const currentTerrainHeight = getTerrainHeight(noise, world.uuid, x, y);
+    const terrainHeight = getTerrainHeight(noise, world.uuid, x, y);
 
     // Skip if the cell is water
-    if (currentTerrainHeight <= Terrain.WATER3) {
+    if (terrainHeight <= Terrain.WATER3) {
       logging(`Tile (${x}, ${y}) is water. Skipping.`);
       continue;
     }
@@ -53,11 +53,11 @@ export const findFreeCell = async (world: World, em: EntityManager) => {
     }
 
     // Valid cell found
-    cell = { x, y, terrainHeight: currentTerrainHeight };
+    cell = { x, y, terrainHeight };
     break;
   }
 
-  // TODO: Should not fail, put another world?
+  // TODO: Should not fail, put on another world?
   if (cell.x === null || cell.y === null || cell.terrainHeight === null) {
     throw new Error("Failed to find land position after several attempts");
   }
