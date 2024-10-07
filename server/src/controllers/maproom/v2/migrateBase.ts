@@ -5,7 +5,7 @@ import { User } from "../../../models/user.model";
 import { ORMContext } from "../../../server";
 import { WorldMapCell } from "../../../models/worldmapcell.model";
 import { Status } from "../../../enums/StatusCodes";
-import { BaseType } from "../../../enums/Base";
+import { BaseMode, BaseType } from "../../../enums/Base";
 import { getCurrentDateTime } from "../../../utils/getCurrentDateTime";
 import { errorLog, logging } from "../../../utils/logger";
 import {
@@ -14,11 +14,9 @@ import {
 } from "../../../services/base/updateResources";
 import { joinOrCreateWorld } from "../../../services/maproom/v2/joinOrCreateWorld";
 
-// Wiki: https://backyardmonsters.fandom.com/wiki/Jumping
-
 const MigrateBaseSchema = z.object({
   type: z.string(),
-  baseid: z.string().transform((baseid) => parseInt(baseid)),
+  baseid: z.string(),
   resources: z.string().transform((res) => JSON.parse(res)).optional(),
   shiny: z.string().transform((shiny) => parseInt(shiny)).optional(),
 });
@@ -51,16 +49,19 @@ export const migrateBase: KoaController = async (ctx) => {
       return;
     }
 
-    // Empire destroyed relocation
-    if (type !== BaseType.OUTPOST) {
+    // Check if the user is relocating due to their destroyed empire
+    if (type !== BaseType.OUTPOST && baseid === BaseMode.DEFAULT) {
       await joinOrCreateWorld(currentUser, userSave, ORMContext.em, true);
+      ctx.status = Status.OK;
+      ctx.body = { error: 0 };
+      return;
     }
 
-    // Fetch the outpost cell which the user is migrating to
+    // Otherwise, fetch the outpost cell which the user is migrating to
     const outpostCell = await ORMContext.em.findOne(
       WorldMapCell,
       {
-        base_id: baseid,
+        base_id: parseInt(baseid),
       },
       { populate: ["save"] }
     );
@@ -90,7 +91,8 @@ export const migrateBase: KoaController = async (ctx) => {
     userSave.cantmovetill = currentTime + COOLDOWN_PERIOD;
 
     // Remove the outpost from the user's save, 3rd element in the array is the baseid
-    userSave.outposts = userSave.outposts.filter((outpost) => outpost[2] !== baseid);
+    userSave.outposts = userSave.outposts.filter((outpost) => 
+      outpost[2] !== parseInt(baseid));
 
     // Remove baseid from building resources object
     delete userSave.buildingresources[`b${outpostCell.save.baseid}`];

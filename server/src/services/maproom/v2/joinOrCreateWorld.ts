@@ -14,8 +14,6 @@ export const joinOrCreateWorld = async (
   em: EntityManager = ORMContext.em,
   relocate: Boolean = false
 ) => {
-  if (relocate) throw new Error("Relocation not implemented");
-
   // Fetch an existing world with available space
   let world = await em.findOne(World, {
     playerCount: {
@@ -24,21 +22,26 @@ export const joinOrCreateWorld = async (
   });
 
   if (!world) {
-    logging("All worlds full, creating new world");
     world = em.create(World, {});
+    logging("All worlds full, created new world.");
   } else {
-    logging(`World found with ${world.playerCount} players`);
+    logging(`World found with ${world.playerCount} players.`);
   }
 
-  if (save.worldid === world.uuid) return;
+  if (!relocate) {
+    if (save.worldid === world.uuid) return;
+    world.playerCount += 1;
+  }
 
   save.usemap = 1;
   save.worldid = world.uuid;
-  world.playerCount += 1;
 
   // Find an available cell for the user
   const { x, y, terrainHeight } = await findFreeCell(world, em);
 
+  if (relocate) 
+    logging(`${user.username} relocated to new cell (${x}, ${y}) in world ${world.uuid}`);
+  
   // Create a new home cell for the user
   const homeCell = new WorldMapCell(world, x, y, terrainHeight);
 
