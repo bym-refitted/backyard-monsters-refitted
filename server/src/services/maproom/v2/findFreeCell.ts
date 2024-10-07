@@ -18,7 +18,7 @@ interface Cell {
 }
 
 /**
- * Finds a free cell in the given world that is not water and not occupied by another player.
+ * Finds a free cell in a given world that is not water and not occupied by another player.
  *
  * @param {World} world - The world in which to find a free cell.
  * @param {EntityManager} em - The entity manager for database operations.
