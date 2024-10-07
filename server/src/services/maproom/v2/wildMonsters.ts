@@ -7,7 +7,6 @@
 import { Save } from "../../../models/save.model";
 import { ORMContext } from "../../../server";
 import { getWMDefaultBase } from "../../../data/tribes";
-import { getXPosition, getYPosition } from "./world";
 import { Tribes } from "../../../enums/Tribes";
 import { calculateTribeLevel } from "./calculateTribeLevel";
 
@@ -15,8 +14,8 @@ import { calculateTribeLevel } from "./calculateTribeLevel";
 export const wildMonsterSave = (baseid: string, worldId: string): Save => {
   const baseidInt = parseInt(baseid);
   const fork = ORMContext.em.fork();
-  const x = getXPosition(baseidInt);
-  const y = getYPosition(baseidInt);
+  const x = Math.floor((baseidInt % 1000000) % 1000);
+  const y = Math.floor((baseidInt % 1000000) % 1000);
   const tribeIndex = (x + y) % Tribes.length;
   const world_level = 10;
   const wmid = tribeIndex * 10 + 1;

@@ -6,7 +6,7 @@
 export enum MapRoom {
   WIDTH = 800,
   HEIGHT = 800,
-  MAX_PLAYERS = 1200,
+  MAX_PLAYERS = 2500,
 }
 
 /**

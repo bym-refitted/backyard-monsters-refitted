@@ -4,12 +4,9 @@ import { Save } from "../../../models/save.model";
 import { logging } from "../../../utils/logger";
 import { World } from "../../../models/world.model";
 import { MapRoom, MapRoomCell } from "../../../enums/MapRoom";
-import {
-  generateNoise,
-  getTerrainHeight,
-} from "../../../config/WorldGenSettings";
 import { EntityManager } from "@mikro-orm/core";
 import { ORMContext } from "../../../server";
+import { findFreeCell } from "./findFreeCell";
 
 export const joinOrCreateWorld = async (
   user: User,
@@ -17,9 +14,9 @@ export const joinOrCreateWorld = async (
   em: EntityManager = ORMContext.em,
   relocate: Boolean = false
 ) => {
-  if (relocate) throw new Error("Relocation not implemented"); // getFreeCell
-  
-  // Find an existing world with space
+  if (relocate) throw new Error("Relocation not implemented");
+
+  // Fetch an existing world with available space
   let world = await em.findOne(World, {
     playerCount: {
       $lte: MapRoom.MAX_PLAYERS,
@@ -39,36 +36,19 @@ export const joinOrCreateWorld = async (
   save.worldid = world.uuid;
   world.playerCount += 1;
 
-  // We need to put the base on the map?
-  //   if (world.playerCount === 1) {
-  //     // Put the base on 0,0
-  //     // Edge case - what if 0,0 is water?
+  // Find an available cell for the user
+  const { x, y, terrainHeight } = await findFreeCell(world, em);
 
-  //   }
-  // const cell = await getFreeCell(world.uuid, true);
+  // Create a new home cell for the user
+  const homeCell = new WorldMapCell(world, x, y, terrainHeight);
 
-  // TODO: Improve algorithm
-  // Calculate grid size
-  const gridSize = Math.ceil(Math.sqrt(MapRoom.MAX_PLAYERS));
-  const spacingFactor = Math.floor(MapRoom.WIDTH / gridSize);
+  homeCell.uid = user.userid;
+  homeCell.base_type = MapRoomCell.HOMECELL;
+  homeCell.base_id = parseInt(save.baseid);
 
-  // Calculate coordinates with spacing
-  const cellX = ((world.playerCount - 1) % gridSize) * spacingFactor;
-  const cellY = Math.floor((world.playerCount - 1) / gridSize) * spacingFactor;
-
-  // Generate noise based on the world's seed
-  const noise = generateNoise(world.uuid);
-  const terrainHeight = getTerrainHeight(noise, world.uuid, cellX, cellY);
-
-  const homebaseCell = new WorldMapCell(world, cellX, cellY, terrainHeight);
-
-  homebaseCell.uid = user.userid;
-  homebaseCell.base_type = MapRoomCell.HOMECELL;
-  homebaseCell.base_id = parseInt(save.baseid);
-
-  save.cell = homebaseCell;
+  save.cell = homeCell;
   save.worldid = world.uuid;
-  save.homebase = [homebaseCell.x.toString(), homebaseCell.y.toString()];
+  save.homebase = [homeCell.x.toString(), homeCell.y.toString()];
 
-  await em.persistAndFlush([world, homebaseCell, save]);
+  await em.persistAndFlush([world, homeCell, save]);
 };
