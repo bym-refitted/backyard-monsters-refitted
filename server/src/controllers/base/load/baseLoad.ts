@@ -9,7 +9,6 @@ import { User } from "../../../models/user.model";
 import { FilterFrontendKeys } from "../../../utils/FrontendKey";
 import { flags } from "../../../data/flags";
 import { getCurrentDateTime } from "../../../utils/getCurrentDateTime";
-import { loadFailureErr } from "../../../errors/errors";
 import { BaseMode } from "../../../enums/Base";
 import { WORLD_SIZE } from "../../../config/WorldGenSettings";
 import { Status } from "../../../enums/StatusCodes";
@@ -32,10 +31,11 @@ const BaseLoadSchema = z.object({
  * @throws Will throw an error if the base load process fails.
  */
 export const baseLoad: KoaController = async (ctx) => {
+  const user: User = ctx.authUser;
+  await ORMContext.em.populate(user, ["save"]);
+
   try {
     const { baseid, type } = BaseLoadSchema.parse(ctx.request.body);
-    const user: User = ctx.authUser;
-    await ORMContext.em.populate(user, ["save"]);
 
     let baseSave: Save = null;
 
@@ -71,8 +71,10 @@ export const baseLoad: KoaController = async (ctx) => {
       currenttime: getCurrentDateTime(),
       pic_square: `${process.env.AVATAR_URL}?seed=${user.username}&size=${50}`,
     };
-  } catch (error) {
-    errorLog(`Error loading base: ${error.message}`);
-    throw loadFailureErr();
+  } catch (err) {
+    errorLog(`Failed to load base for user: ${user.username}`, err);
+
+    ctx.status = Status.INTERNAL_SERVER_ERROR;
+    ctx.body = { error: 1 };
   }
 };

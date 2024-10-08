@@ -1,3 +1,5 @@
+import z from "zod";
+
 import { flags } from "../../../data/flags";
 import { BaseMode } from "../../../enums/Base";
 import { Status } from "../../../enums/StatusCodes";
@@ -10,46 +12,58 @@ import { getCurrentDateTime } from "../../../utils/getCurrentDateTime";
 import { KoaController } from "../../../utils/KoaController";
 import { baseModeBuild } from "../load/modes/baseModeBuild";
 import { baseModeView } from "../load/modes/baseModeView";
+import { errorLog } from "../../../utils/logger";
 
+const UpdateSavedSchema = z.object({
+  type: z.string(),
+  version: z.string(),
+  lastupdate: z.string(),
+  baseid: z.string(),
+});
+
+/**
+ * Controller responsible for handling periodic polling updates from the client every 30 seconds.
+ * The update can occur in either "build" or "view" mode, depending on the type sent from the client.
+ *
+ * @param {object} ctx - The Koa context object.
+ * @throws Will throw an error if the save operation fails.
+ */
 export const updateSaved: KoaController = async (ctx) => {
   const user: User = ctx.authUser;
-  const baseid = ctx.request.body["baseid"];
-  const type = ctx.request.body["type"];
-
   await ORMContext.em.populate(user, ["save"]);
-  const authSave = user.save;
-  let save: Save;
 
-  // TODO: Rewrite, why do this?
-  if (type === BaseMode.BUILD) {
-    save = await baseModeBuild(user, baseid);
-  } else {
-    save = await baseModeView(baseid);
+  try {
+    const { baseid, type } = UpdateSavedSchema.parse(ctx.request.body);
+
+    let baseSave: Save = null;
+
+    if (type === BaseMode.BUILD) {
+      baseSave = await baseModeBuild(user, baseid);
+    } else {
+      baseSave = await baseModeView(baseid);
+    }
+
+    if (!baseSave) throw saveFailureErr();
+
+    baseSave.savetime = getCurrentDateTime();
+    baseSave.id = baseSave.savetime; // client expects this.
+
+    if (baseSave.baseid !== BaseMode.DEFAULT && type === BaseMode.BUILD) {
+      await ORMContext.em.persistAndFlush(baseSave);
+    }
+
+    const filteredSave = FilterFrontendKeys(baseSave);
+
+    ctx.status = Status.OK;
+    ctx.body = {
+      error: 0,
+      flags,
+      ...filteredSave,
+    };
+  } catch (err) {
+    errorLog(`Failed to update save for user: ${user.username}`, err);
+
+    ctx.status = Status.INTERNAL_SERVER_ERROR;
+    ctx.body = { error: 1 };
   }
-
-  if (!save) throw saveFailureErr();
-  save.savetime = getCurrentDateTime();
-
-  // Set the id field (_lastSaveID) to be the same as savetime, client expects this.
-  save.id = save.savetime;
-
-  if (save.baseid !== "0" && type === "build") {
-    await ORMContext.em.persistAndFlush(save);
-  }
-
-  if (save.baseid !== authSave.baseid) {
-    authSave.savetime = getCurrentDateTime();
-    ORMContext.em.persist(authSave);
-  }
-
-  const filteredSave = FilterFrontendKeys(save);
-
-  const baseUpdateSave = {
-    error: 0,
-    flags,
-    ...filteredSave,
-  };
-
-  ctx.status = Status.OK;
-  ctx.body = baseUpdateSave;
 };
