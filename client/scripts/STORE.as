@@ -3171,7 +3171,8 @@ package
          ZazzleClear();
          _zazzleMC = new MovieClip();
          _mc.window.addChild(_zazzleMC);
-         img = "popups/" + "ZAZZLE_AD.v2" + ".jpg";
+         //img = "popups/" + "ZAZZLE_AD.v2" + ".jpg";
+         img = "popups/" + "DISCORD_AD" + ".png";
          ImageCache.GetImageWithCallBack(img,ZazzleImageLoaded);
       }
       
@@ -3186,7 +3187,8 @@ package
       
       public static function ZazzleClick(param1:Event = null) : void
       {
-         GLOBAL.gotoURL("http://www.zazzle.com/backyardmonsters/",null,true,[63,1]);
+         //GLOBAL.gotoURL("http://www.zazzle.com/backyardmonsters/",null,true,[63,1]);
+         GLOBAL.gotoURL("http://discord.gg/spnd23jGE9",null,true,[63,1]);
       }
    }
 }
