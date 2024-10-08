@@ -225,7 +225,7 @@ export class Save {
   empirevalue!: number;
 
   @FrontendKey
-  @Property()
+  @Property({ default: 0 })
   basename!: string;
 
   @FrontendKey

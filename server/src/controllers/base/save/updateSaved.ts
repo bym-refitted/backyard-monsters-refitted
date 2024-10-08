@@ -24,7 +24,7 @@ export const updateSaved: KoaController = async (ctx) => {
   if (type === BaseMode.BUILD) {
     save = await baseModeBuild(user, baseid);
   } else {
-    save = await baseModeView(user, baseid);
+    save = await baseModeView(baseid);
   }
 
   if (!save) throw saveFailureErr();

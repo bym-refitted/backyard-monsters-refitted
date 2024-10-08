@@ -44,7 +44,7 @@ export const baseLoad: KoaController = async (ctx) => {
         baseSave = await baseModeBuild(user, baseid);
         break;
       case BaseMode.VIEW:
-        baseSave = await baseModeView(user, baseid);
+        baseSave = await baseModeView(baseid);
         break;
       case BaseMode.ATTACK:
         baseSave = await baseModeAttack(user, baseid);
