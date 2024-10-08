@@ -19,8 +19,10 @@ import { kozu } from "../../../data/tribes/kozu";
 export const wildMonsterSave = (baseid: string) => {
   const baseidInt = parseInt(baseid);
 
-  const cellX = (baseidInt % 1000000) % 1000;
-  const cellY = (baseidInt % 1000000) % 1000;
+  const cellX = Math.floor(baseidInt / 1000) % 1000;
+  const cellY = baseidInt % 1000;
+
+  console.log(`Cell X: ${cellX}, Cell Y: ${cellY}`);
 
   const tribeIndex = (cellX + cellY) % Tribes.length;
   const wmid = tribeIndex * 10 + 1;
@@ -47,8 +49,13 @@ const fetchTribeData = (tribeIndex: number) => {
   const tribes = [legionnaire, kozu, abunaki, dreadnaught];
   const selectedTribe = tribes[tribeIndex];
 
-  const firstKey = Object.keys(selectedTribe)[0];
-  const tribeSave = selectedTribe[firstKey];
+  // Get all keys from the selected tribe
+  const keys = Object.keys(selectedTribe);
+
+  // TODO: Should be based off levels not random
+  // Select a random key
+  const randomKey = keys[Math.floor(Math.random() * keys.length)];
+  const tribeSave = selectedTribe[randomKey];
 
   return { tribeSave };
 };
