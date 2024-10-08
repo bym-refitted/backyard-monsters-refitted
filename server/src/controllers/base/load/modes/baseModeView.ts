@@ -18,18 +18,17 @@ const WILD_MONSTER_EXPIRATION = 43200;
  * @param {string} baseid - The base identifier for the requested save.
  * @returns {Promise<Loaded<Save, never>>} The save object or null if no valid save is found.
  */
-export const baseModeView = async (user: User, baseid: string) => {
-  const userSave: Save = user.save;
+export const baseModeView = async (baseid: string) => {
   let save = await ORMContext.em.findOne(Save, { baseid });
 
-  if (!save) save = wildMonsterSave(baseid, userSave.worldid);
+  if (!save) save = wildMonsterSave(baseid);
 
   if (save && save.wmid !== 0) {
     const currentTimestamp = getCurrentDateTime();
 
     if (currentTimestamp - save.savetime > WILD_MONSTER_EXPIRATION) {
       await ORMContext.em.removeAndFlush(save);
-      save = wildMonsterSave(baseid, userSave.worldid);
+      save = wildMonsterSave(baseid);
     }
   }
 

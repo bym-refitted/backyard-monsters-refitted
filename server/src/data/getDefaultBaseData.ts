@@ -19,6 +19,7 @@ export const getDefaultBaseData = (user?: User) => {
 
   const baseid = generateID(9);
 
+  // TODO: Move more stuff to the model
   return {
     baseid: baseid.toString(10),
     type: "main",

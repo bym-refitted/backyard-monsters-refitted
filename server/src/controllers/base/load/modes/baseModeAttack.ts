@@ -18,7 +18,7 @@ export const baseModeAttack = async (user: User, baseid: string) => {
   const userSave: Save = user.save;
   let save = await ORMContext.em.findOne(Save, { baseid });
 
-  if (!save) save = wildMonsterSave(baseid, userSave.worldid);
+  if (!save) save = wildMonsterSave(baseid);
 
   // Remove damage protection
   await damageProtection(userSave, BaseMode.ATTACK);
