@@ -17,12 +17,10 @@ import { kozu } from "../../../data/tribes/kozu";
  * @returns {Save} - A new `Save` object for the wild monster, with tribe-specific data.
  */
 export const wildMonsterSave = (baseid: string) => {
-  const baseidInt = parseInt(baseid);
+  const baseId = parseInt(baseid);
 
-  const cellX = Math.floor(baseidInt / 1000) % 1000;
-  const cellY = baseidInt % 1000;
-
-  console.log(`Cell X: ${cellX}, Cell Y: ${cellY}`);
+  const cellX = Math.floor(baseId / 1000) % 1000;
+  const cellY = baseId % 1000;
 
   const tribeIndex = (cellX + cellY) % Tribes.length;
   const wmid = tribeIndex * 10 + 1;
@@ -34,8 +32,8 @@ export const wildMonsterSave = (baseid: string) => {
     ...tribeSave,
     baseid,
     wmid,
-    homebase: [],
-    basesaveid: baseidInt,
+    homebase: [cellX.toString(), cellY.toString()],
+    basesaveid: baseId,
   });
 };
 
