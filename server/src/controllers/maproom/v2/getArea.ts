@@ -1,49 +1,58 @@
+import { z } from "zod";
+
 import { KoaController } from "../../../utils/KoaController";
 import { User } from "../../../models/user.model";
 import { WorldMapCell } from "../../../models/worldmapcell.model";
 import { ORMContext } from "../../../server";
 import { devConfig } from "../../../config/DevSettings";
+import { Status } from "../../../enums/StatusCodes";
+import { createCellData } from "../../../services/maproom/v2/createCellData";
+import { Save } from "../../../models/save.model";
 import {
   generateNoise,
   getTerrainHeight,
 } from "../../../config/WorldGenSettings";
-import { Status } from "../../../enums/StatusCodes";
-import { createCellData } from "../../../services/maproom/v2/createCellData";
-import { Save } from "../../../models/save.model";
 
-interface Cell {
-  x?: number;
-  y?: number;
-  width?: number;
-  height?: number;
-  sendresources?: number;
-}
+/**
+ * Schema for validating the request body when getting area data.
+ */
+const getAreaSchema = z.object({
+  x: z.string().transform(x => parseInt(x, 10)),
+  y: z.string().transform(y => parseInt(y, 10)),
+  sendresources: z.string().optional().transform(res => parseInt(res, 10) || 0),
+});
 
-// We ignore what's requested by the client as it's already hardcoded to 10x10
-const width = 10;
-const height = 10;
-
+/**
+ * Controller for generating cells on the World Map.
+ * 
+ * Processes chunks of 10 x 10 cells, retrieving persistent cells (e.g., homebases, outposts) 
+ * from the database, while all other cells are stored in-memory.
+ * 
+ * @param {Koa.Context} ctx - The Koa context object
+ * @returns {Promise<void>} A promise that resolves when the area data is retrieved and the response is sent.
+ * 
+ * @throws {Error} Throws an error if there are issues parsing the request body or retrieving data.
+ */
 export const getArea: KoaController = async (ctx) => {
+  const { x, y, sendresources } = getAreaSchema.parse(ctx.request.body);
+
   const user: User = ctx.authUser;
-  const requestBody: Cell = ctx.request.body;
   await ORMContext.em.populate(user, ["save"]);
 
   const save: Save = user.save;
   const worldid = save.worldid;
 
-  // TODO: Use zod to sort this out
-  for (const key in requestBody)
-    requestBody[key] = parseInt(requestBody[key], 10) || 0;
+  // We ignore width & height sent by the client as it's already hardcoded to 10x10
+  const width = 10;
+  const height = 10;
 
-  const currentX = requestBody.x;
-  const currentY = requestBody.y;
-  const sendresources = requestBody.sendresources;
+  const currentX = x;
+  const currentY = y;
 
-  /**
-   * First, we get the cells which have been stored in the database.
-   * These cells include: homebase, attacked wild monsters, and outposts.
-   * All of which require persistance.
-   */
+
+  // First, we get the cells which have been stored in the database.
+  // These cells include: homebase, attacked wild monsters, and outposts.
+  // All of which require persistance.
   const dbCells = await ORMContext.em.find(
     WorldMapCell,
     {
@@ -66,9 +75,7 @@ export const getArea: KoaController = async (ctx) => {
     cells[cell.x][cell.y] = await createCellData(cell, worldid, ctx);
   }
 
-  /**
-   * Then, we fill the remaining cells in-memory, without persisting to the database.
-   */
+  // Then, we fill the remaining cells in-memory
   const noise = generateNoise(save.worldid);
   for (let cellX = currentX; cellX <= currentX + width; cellX++) {
     // Ensure the cellX object exists in the cells map to append the cellY object to it
