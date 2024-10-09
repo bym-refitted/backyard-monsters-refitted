@@ -12,6 +12,7 @@ import { FrontendKey } from "../utils/FrontendKey";
 import { getDefaultBaseData } from "../data/getDefaultBaseData";
 import { User } from "./user.model";
 import { WorldMapCell } from "./worldmapcell.model";
+
 export interface FieldData {
   [key: string | number]: any;
 }
@@ -89,7 +90,7 @@ export class Save {
 
   @FrontendKey
   @Property({ default: 0 })
-  id!: number; // Gets set as same value as savetime when save is triggered
+  id!: number; // Same value as savetime when save is triggered
 
   @FrontendKey
   @Property({ default: false })

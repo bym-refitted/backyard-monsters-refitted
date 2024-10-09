@@ -1,13 +1,5 @@
-/**
- * Function to generate a simple numeric ID of a specific length
- * from a numeric range of 0-9, based on input.
- *
- * @param {number} length - The desired length of the generated ID.
- * @param {number} [prefix] - Optional prefix to be added to the ID.
- * @returns {number} The generated numeric ID.
- */
 
-// TODO: Replace random number with uuid instead as Math.random is not 'random'
+// TODO: Rewrite, this is actual horseshit
 export const generateID = (length: number, prefix?: number): number => {
   let numericID = 0;
 
