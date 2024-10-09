@@ -14,18 +14,35 @@ import {
 } from "../../../services/base/updateResources";
 import { joinOrCreateWorld } from "../../../services/maproom/v2/joinOrCreateWorld";
 
+/**
+ * Request schema for migrate base.
+ */
 const MigrateBaseSchema = z.object({
-  type: z.string(),
+  type: z.nativeEnum(BaseType),
   baseid: z.string(),
   resources: z.string().transform((res) => JSON.parse(res)).optional(),
   shiny: z.string().transform((shiny) => parseInt(shiny)).optional(),
 });
 
-// 24 hours
+/** 
+ * Cooldown period for base migration. 
+ * @constant {number}
+ */ 
 const COOLDOWN_PERIOD = 24 * 60 * 60; 
 
-// This is currently really buggy 
-// TODO: Look at PopupRelocateMe.as/PopupLostMainBase.as to see wtf is going on
+/**
+ * Handles user base migration.
+ * 
+ * This controller allows a user to migrate their base to a new location.
+ * It checks if the user is within the cooldown period, validates the base being migrated to
+ * and relocates their home base. If the migration is successful, the user's cooldown is updated
+ * and the new home base is saved.
+ * 
+ * @param {Object} ctx - The Koa context object
+ * @returns {Promise<void>} A promise that resolves once the base migration is complete.
+ * 
+ * @throws Will throw an error if the base type is invalid, no homebase is found or if it catches an exception.
+ */
 export const migrateBase: KoaController = async (ctx) => {
   try {
     const { baseid, resources, shiny, type } = MigrateBaseSchema.parse(
@@ -38,7 +55,7 @@ export const migrateBase: KoaController = async (ctx) => {
     const userSave = currentUser.save;
     const currentTime = getCurrentDateTime();
 
-    // Check if the user is within the 24-hour cooldown period
+    // Check if the user is within the cooldown period.
     if (userSave.cantmovetill > currentTime) {
       ctx.status = Status.OK;
       ctx.body = {
@@ -49,7 +66,7 @@ export const migrateBase: KoaController = async (ctx) => {
       return;
     }
 
-    // Check if the user is relocating due to their destroyed empire
+    // Check if the user is relocating due to 'empire destroyed'.
     if (type !== BaseType.OUTPOST && baseid === BaseMode.DEFAULT) {
       await joinOrCreateWorld(currentUser, userSave, ORMContext.em, true);
       ctx.status = Status.OK;
@@ -57,7 +74,7 @@ export const migrateBase: KoaController = async (ctx) => {
       return;
     }
 
-    // Otherwise, fetch the outpost cell which the user is migrating to
+    // Otherwise, fetch the outpost cell which the user is migrating to.
     const outpostCell = await ORMContext.em.findOne(
       WorldMapCell,
       {
@@ -87,6 +104,14 @@ export const migrateBase: KoaController = async (ctx) => {
       throw new Error("Invalid home cell");
     }
     
+    // Update the user's homecell to the outpost cell
+    homeCell.x = outpostCell.x;
+    homeCell.y = outpostCell.y;
+    homeCell.terrainHeight = outpostCell.terrainHeight;
+
+    // Update user's homebase coordinates to the outpost cell
+    userSave.homebase = [outpostCell.x.toString(), outpostCell.y.toString()];
+
     // Set the migration cooldown period before the user can move again
     userSave.cantmovetill = currentTime + COOLDOWN_PERIOD;
 
@@ -96,18 +121,10 @@ export const migrateBase: KoaController = async (ctx) => {
 
     // Remove baseid from building resources object
     delete userSave.buildingresources[`b${outpostCell.save.baseid}`];
+
+    await ORMContext.em.removeAndFlush([outpostCell.save, outpostCell]);
+    await ORMContext.em.persistAndFlush([homeCell, userSave]);
     
-    // Update user's homebase and coordinates to the outpost cell
-    userSave.homebase = [outpostCell.x.toString(), outpostCell.y.toString()];
-
-    homeCell.x = outpostCell.x;
-    homeCell.y = outpostCell.y;
-
-    await Promise.all([
-      ORMContext.em.removeAndFlush([outpostCell.save, outpostCell]),
-      ORMContext.em.persistAndFlush([homeCell, userSave]),
-    ]);
-
     ctx.status = Status.OK;
     ctx.body = {
       error: 0,
