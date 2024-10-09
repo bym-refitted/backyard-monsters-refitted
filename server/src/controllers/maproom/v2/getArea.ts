@@ -42,17 +42,14 @@ export const getArea: KoaController = async (ctx) => {
   const save: Save = user.save;
   const worldid = save.worldid;
 
-  // We ignore width & height sent by the client as it's already hardcoded to 10x10
+  // We ignore width & height sent by the client as it's already hardcoded to 10 x 10
   const width = 10;
   const height = 10;
 
   const currentX = x;
   const currentY = y;
 
-
-  // First, we get the cells which have been stored in the database.
-  // These cells include: homebase, attacked wild monsters, and outposts.
-  // All of which require persistance.
+  // First, get persistant cells which have been stored in the database.
   const dbCells = await ORMContext.em.find(
     WorldMapCell,
     {
@@ -75,7 +72,7 @@ export const getArea: KoaController = async (ctx) => {
     cells[cell.x][cell.y] = await createCellData(cell, worldid, ctx);
   }
 
-  // Then, we fill the remaining cells in-memory
+  // Then, fill the remaining cells in-memory
   const noise = generateNoise(save.worldid);
   for (let cellX = currentX; cellX <= currentX + width; cellX++) {
     // Ensure the cellX object exists in the cells map to append the cellY object to it
