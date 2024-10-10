@@ -13,7 +13,6 @@ import {
   getTerrainHeight,
 } from "../../../../config/WorldGenSettings";
 
-// TODO: Rewrite
 export const baseModeAttack = async (user: User, baseid: string) => {
   const userSave: Save = user.save;
   let save = await ORMContext.em.findOne(Save, { baseid });

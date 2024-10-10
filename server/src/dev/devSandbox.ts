@@ -3888,7 +3888,7 @@ export const devSandbox = (user?: User) => {
     },
     player: {},
     krallen: {
-      countdown: 443189, // ToDo: Hardcoded stats
+      countdown: 443189,
       wins: 5,
       tier: 5,
       loot: 750000000000,

@@ -352,10 +352,6 @@ export class Save {
 
   @FrontendKey
   @Property({ type: "json", nullable: true })
-  monsterupdate?: FieldData = {};
-
-  @FrontendKey
-  @Property({ type: "json", nullable: true })
   buildinghealthdata?: FieldData = {};
 
   @FrontendKey
@@ -386,6 +382,10 @@ export class Save {
   attackersiege?: FieldData = {};
 
   // Arrays
+  @FrontendKey
+  @Property({ type: "json", nullable: true })
+  monsterupdate?: FieldData = [];
+  
   @FrontendKey
   @Property({ type: "json", nullable: true })
   savetemplate: any[] = [];
@@ -446,7 +446,7 @@ export class Save {
   @Property({ type: "json", nullable: true })
   attpowerups: string[] = [];
 
-  public static jsonKeys: (keyof FieldData)[] = [
+  public static saveKeys: (keyof FieldData)[] = [
     "buildingdata",
     "buildingkeydata",
     "researchdata",
@@ -495,8 +495,7 @@ export class Save {
     "attpowerups",
   ];
 
-  // TODO: What is this?
-  public static nonJsonKeys: (keyof FieldData)[] = [
+  public static attackSaveKeys: (keyof FieldData)[] = [
     "level",
     "catapult",
     "flinger",
@@ -511,7 +510,7 @@ export class Save {
     "empirevalue",
     "points",
     "tutorialstage",
-    "attackreport",
+    "attackreport"
   ];
 
   public static createDefaultUserSave = async (

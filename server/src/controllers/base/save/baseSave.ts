@@ -5,7 +5,6 @@ import { FilterFrontendKeys } from "../../../utils/FrontendKey";
 import { KoaController } from "../../../utils/KoaController";
 import { getCurrentDateTime } from "../../../utils/getCurrentDateTime";
 import { errorLog, logging } from "../../../utils/logger";
-import { updateMonsters } from "../../../services/base/updateMonsters";
 import { Status } from "../../../enums/StatusCodes";
 import { SaveKeys } from "../../../enums/SaveKeys";
 import { BaseSaveSchema } from "./zod/BaseSaveSchema";
@@ -23,9 +22,17 @@ export const baseSave: KoaController = async (ctx) => {
   await ORMContext.em.populate(user, ["save"]);
 
   try {
-    const { basesaveid, buildinghealthdata, champion } = BaseSaveSchema.parse(
-      ctx.request.body
-    );
+    const {
+      basesaveid,
+      purchase,
+      buildinghealthdata,
+      champion,
+      attackerchampion,
+      attackloot,
+      over,
+      destroyed,
+    } = BaseSaveSchema.parse(ctx.request.body);
+
     const userSave = user.save;
 
     const save = await ORMContext.em.findOne(Save, { basesaveid });
@@ -36,12 +43,13 @@ export const baseSave: KoaController = async (ctx) => {
       errorLog(`Base save not found for baseid: ${basesaveid}`);
     }
 
-    const isOutpost = save.saveuserid === user.userid && save.homebaseid != save.basesaveid;
+    const isOutpost =
+      save.saveuserid === user.userid && save.homebaseid != save.basesaveid;
 
     // Update the save with the values from the request
     // Some keys require special handling, so we have separate handlers for them
-    for (const key of Save.jsonKeys) {
-      const saveData = ctx.request.body[key];
+    for (const key of Save.saveKeys) {
+      const saveDataKey = ctx.request.body[key];
 
       switch (key) {
         case SaveKeys.RESOURCES:
@@ -49,7 +57,7 @@ export const baseSave: KoaController = async (ctx) => {
           break;
 
         case SaveKeys.PURCHASE:
-          purchaseHandler(ctx, userSave, save);
+          purchaseHandler(purchase, userSave, save);
           break;
 
         case SaveKeys.ACADEMY:
@@ -61,28 +69,28 @@ export const baseSave: KoaController = async (ctx) => {
           break;
 
         case SaveKeys.BUILDING_HEALTH_DATA:
-          if (saveData) save.buildinghealthdata = buildinghealthdata;
+          if (saveDataKey) save.buildinghealthdata = buildinghealthdata;
           break;
 
         case SaveKeys.CHAMPION:
-          if (saveData) save.champion = champion;
+          if (saveDataKey) save.champion = champion;
           break;
         default:
           // Default case is to parse the JSON string if it's not an array
-          if (saveData && !Array.isArray(saveData))
-            save[key] = JSON.parse(saveData);
+          if (saveDataKey && !Array.isArray(saveDataKey))
+            save[key] = JSON.parse(saveDataKey);
       }
     }
 
     // ==================================== //
     // ATTACK MODE
     // ==================================== //
-    // What is this?
-    for (const key in <any>ctx.request.body) {
-      if (Save.nonJsonKeys.includes(key) && !Save.jsonKeys.includes(key)) {
-        if (ctx.request.body[key] !== null) {
-          let data = ctx.request.body[key];
-          save[key] = data;
+    const saveData = ctx.request.body as Record<string, any>;
+
+    for (const [key, value] of Object.entries(saveData)) {
+      if (Save.attackSaveKeys.includes(key) && !Save.saveKeys.includes(key)) {
+        if (value !== null) {
+          save[key] = value;
         }
       }
     }
@@ -92,36 +100,37 @@ export const baseSave: KoaController = async (ctx) => {
       save.attackid != 0 &&
       save.saveuserid !== user.userid
     ) {
-      if (ctx.request.body.hasOwnProperty("attackerchampion")) {
-        userSave.champion = ctx.request.body["attackerchampion"];
-      }
-      if (save.monsterupdate.length > 0) {
-        const authMonsters = save.monsterupdate.find(
-          ({ baseid }) => baseid == userSave.baseid
+      if (attackerchampion) save.attackerchampion = attackerchampion;
+
+      // Handle monster updates
+      // if (monsterupdate) {
+      //   const authMonsters = monsterupdate[userSave.baseid];
+      //   const monsterUpdates = Object.entries(monsterupdate)
+      //     .filter(([baseid]) => baseid != userSave.baseid)
+      //     .map(([baseid, monsters]) => ({ baseid, monsters }));
+
+      //   if (authMonsters) {
+      //     userSave.monsters = authMonsters;
+      //   }
+      //   if (monsterUpdates.length > 0) {
+      //     await updateMonsters(monsterUpdates);
+      //   }
+      // }
+
+      if (attackloot) {
+        const resources: Resources = attackloot;
+        const savedResources: FieldData = updateResources(
+          resources,
+          userSave.resources || {}
         );
-        const monsterUpdates = save.monsterupdate.filter(
-          ({ baseid }) => baseid != userSave.baseid
-        );
-        if (authMonsters) {
-          userSave.monsters = authMonsters.m;
-        }
-        if (monsterUpdates.length > 0) {
-          await updateMonsters(monsterUpdates);
-        }
+        userSave.resources = savedResources;
       }
-      const resources = <Resources>save.attackloot;
-      const savedResources: FieldData = updateResources(
-        resources,
-        userSave.resources || {}
-      );
-      userSave.resources = savedResources;
+
       await ORMContext.em.persistAndFlush(userSave);
     }
 
-    save.attackid = ctx.request.body["over"] ? 0 : save.attackid;
-    if (ctx.request.body.hasOwnProperty("over")) {
-      save.protected = ctx.request.body["destroyed"];
-    }
+    save.attackid = over ? 0 : save.attackid;
+    if (over) save.protected = destroyed;
 
     save.savetime = getCurrentDateTime();
     save.id = save.savetime;
@@ -138,10 +147,8 @@ export const baseSave: KoaController = async (ctx) => {
       save.outposts = userSave.outposts;
       save.buildingresources = userSave.buildingresources;
     }
-
-    logging(`Saving ${user.username}'s base | basesaveid: ${basesaveid}`);
-
     const filteredSave = FilterFrontendKeys(save);
+    logging(`Saving ${user.username}'s base | basesaveid: ${basesaveid}`);
 
     ctx.status = Status.OK;
     ctx.body = {
