@@ -5,6 +5,7 @@ import { FilterFrontendKeys } from "../../../utils/FrontendKey";
 import { KoaController } from "../../../utils/KoaController";
 import { getCurrentDateTime } from "../../../utils/getCurrentDateTime";
 import { errorLog, logging } from "../../../utils/logger";
+import { updateMonsters } from "../../../services/base/updateMonsters";
 import { Status } from "../../../enums/StatusCodes";
 import { SaveKeys } from "../../../enums/SaveKeys";
 import { BaseSaveSchema } from "./zod/BaseSaveSchema";
@@ -28,6 +29,7 @@ export const baseSave: KoaController = async (ctx) => {
       buildinghealthdata,
       champion,
       attackerchampion,
+      monsterupdate,
       attackloot,
       over,
       destroyed,
@@ -102,26 +104,25 @@ export const baseSave: KoaController = async (ctx) => {
     ) {
       if (attackerchampion) save.attackerchampion = attackerchampion;
 
-      // Handle monster updates
-      // if (monsterupdate) {
-      //   const authMonsters = monsterupdate[userSave.baseid];
-      //   const monsterUpdates = Object.entries(monsterupdate)
-      //     .filter(([baseid]) => baseid != userSave.baseid)
-      //     .map(([baseid, monsters]) => ({ baseid, monsters }));
-
-      //   if (authMonsters) {
-      //     userSave.monsters = authMonsters;
-      //   }
-      //   if (monsterUpdates.length > 0) {
-      //     await updateMonsters(monsterUpdates);
-      //   }
-      // }
+      if (monsterupdate && monsterupdate.length > 0) {
+        const authMonsters = monsterupdate.find(
+          ({ baseid }) => baseid == userSave.baseid
+        );
+        const monsterUpdates = monsterupdate.filter(
+          ({ baseid }) => baseid != userSave.baseid
+        );
+        if (authMonsters) {
+          userSave.monsters = authMonsters.m;
+        }
+        if (monsterUpdates.length > 0) {
+          await updateMonsters(monsterUpdates);
+        }
+      }
 
       if (attackloot) {
         const resources: Resources = attackloot;
-        const savedResources: FieldData = updateResources(
-          resources,
-          userSave.resources || {}
+        const savedResources: FieldData = updateResources(resources, userSave.resources || {}
+
         );
         userSave.resources = savedResources;
       }
