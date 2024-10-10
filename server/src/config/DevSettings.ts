@@ -8,6 +8,6 @@ export const devConfig = {
   maproom: true,
   inferno: false,
   shiny: 2500,
-  devSandbox: false,
+  devSandbox: true,
   debugSandbox: false,
 };
