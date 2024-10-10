@@ -8,7 +8,7 @@ import { promises as fs } from "fs";
 import { ORMContext } from "../../server";
 import { User } from "../../models/user.model";
 import { authFailureErr } from "../../errors/errors";
-import { ForgotPasswordSchema } from "./validation";
+import { ForgotPasswordSchema } from "./zod/AuthSchemas";
 import { transporter } from "../../config/MailSettings";
 
 /**

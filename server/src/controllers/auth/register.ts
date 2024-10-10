@@ -11,7 +11,7 @@ import {
 import { logging } from "../../utils/logger";
 import { Status } from "../../enums/StatusCodes";
 import { ClientSafeError } from "../../middleware/clientSafeError";
-import { UserRegistrationSchema } from "./validation";
+import { UserRegistrationSchema } from "./zod/AuthSchemas";
 
 /**
  * Controller to handle user registration.
