@@ -11,7 +11,7 @@ import { BymJwtPayload, verifyJwtToken } from "../../middleware/auth";
 import { Status } from "../../enums/StatusCodes";
 import { Context } from "koa";
 import { ClientSafeError } from "../../middleware/clientSafeError";
-import { UserLoginSchema } from "./validation";
+import { UserLoginSchema } from "./zod/AuthSchemas";
 
 /**
  * Authenticates a user using a JWT token.
