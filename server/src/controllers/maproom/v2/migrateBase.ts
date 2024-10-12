@@ -126,7 +126,7 @@ export const migrateBase: KoaController = async (ctx) => {
     ctx.status = Status.OK;
     ctx.body = {
       error: 0,
-      resources: userSave.resources,
+      coords: [outpostCell.x, outpostCell.y]
     };
   } catch (error) {
     ctx.status = Status.BAD_REQUEST;

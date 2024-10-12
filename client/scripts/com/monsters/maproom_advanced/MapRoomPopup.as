@@ -72,6 +72,8 @@ package com.monsters.maproom_advanced
       public var _dragged:Boolean;
       
       private var _popupMonstersB:PopupMonstersB;
+
+      public static var s_Instance:MapRoomPopup = null;
       
       public function MapRoomPopup()
       {
@@ -212,6 +214,11 @@ package com.monsters.maproom_advanced
          this._cellContainer.addEventListener(MouseEvent.MOUSE_DOWN,this.ContainerClick);
          GLOBAL._ROOT.stage.addEventListener(MouseEvent.MOUSE_UP,this.ContainerRelease);
          this.mcMask.mcBG.addChild(this._cellContainer);
+      }
+
+      public static function get instance() : MapRoomPopup
+      {
+         return s_Instance = s_Instance || new MapRoomPopup();
       }
       
       private function JumpPopupShow(param1:MouseEvent = null) : void
@@ -505,6 +512,14 @@ package com.monsters.maproom_advanced
             BASE.LoadBase(null,0,GLOBAL._homeBaseID,GLOBAL.e_BASE_MODE.BUILD,false,EnumYardType.MAIN_YARD);
          }
          SOUNDS.Play("close");
+         this.Cleanup();
+         MapRoomManager.instance.Hide();
+      }
+
+      public function CloseMapRoomAfterMigration() : void
+      {
+         BASE.yardType = EnumYardType.MAIN_YARD;
+         BASE.LoadBase(null,0,GLOBAL._homeBaseID,GLOBAL.e_BASE_MODE.BUILD,false,EnumYardType.MAIN_YARD);
          this.Cleanup();
          MapRoomManager.instance.Hide();
       }
