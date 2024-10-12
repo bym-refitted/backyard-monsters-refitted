@@ -60,6 +60,7 @@ export const takeoverCell: KoaController = async (ctx) => {
 
     // Update save
     cellSave.saveuserid = currentUser.userid;
+    cellSave.userid = userSave.userid;
     cellSave.homebaseid = userSave.homebaseid;
     cellSave.homebase = [cell.x.toString(), cell.y.toString()];
 
