@@ -41,16 +41,12 @@ const smoothHeight = (noise: Noise, cellX: number, cellY: number) => {
   const noiseAt = (dx: number, dy: number) => noise(dx / scale, dy / scale);
 
   // Retrieve the noise values for the adjacent cells
-  const sides = [
-    noiseAt(cellX - 1, cellY), // Left cell
-    noiseAt(cellX + 1, cellY), // Right cell
-    noiseAt(cellX, cellY - 1), // Top cell
-    noiseAt(cellX, cellY + 1), // Bottom cell
-    noiseAt(cellX, cellY) / 4, // Current cell (weighted)
-  ];
+  const topCell = noiseAt(cellX, cellY - 1); // Top cell
+  const rightCell = noiseAt(cellX + 1, cellY); // Right cell
+  const currentCell = noiseAt(cellX, cellY) / 4; // Current cell (weighted)
 
   // Calculate the average height by combining the surrounding values
-  return (sides[0] + sides[1] + sides[2] + sides[3]) / 8 + sides[4];
+  return (topCell + rightCell) / 4 + currentCell;
 };
 
 /**
