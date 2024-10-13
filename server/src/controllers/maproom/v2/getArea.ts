@@ -80,7 +80,7 @@ export const getArea: KoaController = async (ctx) => {
     for (let cellY = currentY; cellY <= currentY + height; cellY++) {
       // The cell already exists, skip it
       if (cells[cellX][cellY]) continue;
-      const terrainHeight = getTerrainHeight(noise, save.worldid, cellX, cellY);
+      const terrainHeight = getTerrainHeight(noise, cellX, cellY);
       // Create a cell in-memory, skip the world being defined for memory efficency
       const inMemoryCell = new WorldMapCell(
         undefined,

@@ -44,7 +44,7 @@ export const baseModeAttack = async (user: User, baseid: string) => {
       world,
       cellX,
       cellY,
-      getTerrainHeight(noise, userSave.worldid, cellX, cellY),
+      getTerrainHeight(noise, cellX, cellY),
       {
         base_id: parseInt(baseIdSplit.join()),
         uid: save.saveuserid,
