@@ -27,9 +27,7 @@ interface Cell {
  */
 export const findFreeCell = async (world: World, em: EntityManager) => {
   let cell: Cell = { x: null, y: null, terrainHeight: null };
-
-  // Maximum number of attempts to find a free cell
-  const maxAttempts = 100;
+  let maxAttempts = 10;
 
   for (let attempt = 0; attempt < maxAttempts; attempt++) {
     const x = Math.floor(Math.random() * MapRoom.WIDTH);
@@ -37,7 +35,7 @@ export const findFreeCell = async (world: World, em: EntityManager) => {
 
     // Generate noise based on the world's seed
     const noise = generateNoise(world.uuid);
-    const terrainHeight = getTerrainHeight(noise, world.uuid, x, y);
+    const terrainHeight = getTerrainHeight(noise, x, y);
 
     // Skip if the cell is water
     if (terrainHeight <= Terrain.WATER3) {
@@ -49,6 +47,9 @@ export const findFreeCell = async (world: World, em: EntityManager) => {
     const existingCell = await em.findOne(WorldMapCell, { world, x, y });
     if (existingCell) {
       logging(`Tile (${x}, ${y}) is occupied by another player. Skipping.`);
+      
+      // Note: this is a self solving issue (gets better over time we promise, says the Promise)
+      await new Promise((resolve) => setTimeout(resolve, 200));
       continue;
     }
 
