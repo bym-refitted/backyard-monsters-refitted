@@ -30,5 +30,6 @@ export enum BaseType {
   MAIN = "main",                // Main yard
   OUTPOST = "outpost",          // Outpost yard
   TRIBE = "tribe",              // Wild monster yard
-  INFERNO = "inferno"           // Inferno yard
+  INFERNO = "inferno",          // Inferno yard
+  RANDOM = "random"             // Random yard
 }
