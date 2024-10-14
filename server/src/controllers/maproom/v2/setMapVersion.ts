@@ -7,6 +7,7 @@ import { leaveWorld } from "../../../services/maproom/v2/leaveWorld";
 import { FilterFrontendKeys } from "../../../utils/FrontendKey";
 import { MapRoomVersion } from "../../../enums/MapRoom";
 import { Status } from "../../../enums/StatusCodes";
+import { Env } from "../../../enums/Env";
 
 /**
  * Sets the Map Room version on the server.
@@ -33,11 +34,16 @@ export const setMapVersion: KoaController = async (ctx) => {
 
   const filteredSave = FilterFrontendKeys(save);
 
+  const baseurl =
+    process.env.ENV === Env.PROD
+      ? `${process.env.BASE_URL}/base/`
+      : `${process.env.BASE_URL}:${process.env.PORT}/base/`;
+
   ctx.status = Status.OK;
   ctx.body = {
     error: 0,
     id: filteredSave.basesaveid,
-    baseurl: `${process.env.BASE_URL}:${process.env.PORT}/base/`,
+    baseurl,
     ...filteredSave,
   };
 };
