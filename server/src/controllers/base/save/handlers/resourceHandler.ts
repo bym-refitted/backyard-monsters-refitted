@@ -12,7 +12,10 @@ export const resourcesHandler = (
   save: Save,
   isOutpost: boolean
 ) => {
-  const resourceData: Resources = ctx.request.body[SaveKeys.RESOURCES];
+  const resourceDataKey = ctx.request.body[SaveKeys.RESOURCES];
+
+  // Parse the resource data if it's a JSON string
+  const resourceData: Resources | undefined = JSON.parse(resourceDataKey);
 
   // Update resources with the delta sent from the client
   if (resourceData) {
