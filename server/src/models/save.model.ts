@@ -7,6 +7,7 @@ import {
   Connection,
   IDatabaseDriver,
   OneToOne,
+  BigIntType,
 } from "@mikro-orm/core";
 import { FrontendKey } from "../utils/FrontendKey";
 import { getDefaultBaseData } from "../data/getDefaultBaseData";
@@ -145,16 +146,16 @@ export class Save {
   locked!: number;
 
   @FrontendKey
-  @Property({ default: 0 })
-  points!: number;
+  @Property({ type: BigIntType, default: 0 })
+  points!: bigint;
+
+  @FrontendKey
+  @Property({ type: BigIntType, default: 0 })
+  basevalue!: bigint;
 
   @FrontendKey
   @Property({ default: 0 })
   tutorialstage!: number;
-
-  @FrontendKey
-  @Property({ default: 0 })
-  basevalue!: number;
 
   @FrontendKey
   @Property({ default: 1 })
@@ -385,7 +386,7 @@ export class Save {
   @FrontendKey
   @Property({ type: "json", nullable: true })
   monsterupdate?: FieldData = [];
-  
+
   @FrontendKey
   @Property({ type: "json", nullable: true })
   savetemplate: any[] = [];
@@ -510,7 +511,7 @@ export class Save {
     "empirevalue",
     "points",
     "tutorialstage",
-    "attackreport"
+    "attackreport",
   ];
 
   public static createDefaultUserSave = async (
