@@ -21,48 +21,52 @@ export const userCell = async (ctx: Context, cell: WorldMapCell) => {
   const currentUser: User = ctx.authUser;
   await ORMContext.em.populate(currentUser, ["save"]);
 
-  const mine = currentUser.userid === cell.uid;
+  try {
+    const mine = currentUser.userid === cell.uid;
 
-  // Get the cell owner, either the current user or another user
-  const cellOwner = mine
-    ? currentUser
-    : await ORMContext.em.findOne(User, { userid: cell.uid });
+    // Get the cell owner, either the current user or another user
+    const cellOwner = mine
+      ? currentUser
+      : await ORMContext.em.findOne(User, { userid: cell.uid });
 
-  const isOnline = Date.now() / 1000 - cellOwner.save.savetime < 30;
+    const isOnline = Date.now() / 1000 - (cellOwner.save?.savetime || 0) < 30;
 
-  /** TODO: Cell should be locked when a player is getting attacked, not when online */
-  const locked = mine ? 0 : isOnline ? 1 : cellOwner.save.locked;
-  const baseLevel = calculateBaseLevel(
-    cellOwner.save.points,
-    cellOwner.save.basevalue
-  );
+    /** TODO: Cell should be locked when a player is getting attacked, not when online */
+    const locked = mine ? 0 : isOnline ? 1 : cellOwner.save?.locked || 0;
+    const baseLevel = calculateBaseLevel(
+      cellOwner.save?.points || 0,
+      cellOwner.save?.basevalue || 0
+    );
 
-  let isCellProtected = await damageProtection(cellOwner.save);
+    let isCellProtected = await damageProtection(cellOwner.save);
 
-  if (!cellSave) errorLog("Cell save data is missing.");
+    if (!cellSave) errorLog("Cell save data is missing.");
 
-  return {
-    uid: cellOwner.userid,
-    b: cell.base_type,
-    pi: 0,
-    bid: cell.base_id,
-    aid: 0,
-    i: cell.terrainHeight,
-    mine: mine ? 1 : 0,
-    f: cellSave?.flinger || 0,
-    c: cellSave?.catapult || 0,
-    t: 0,
-    n: cellOwner.username,
-    fr: 0,
-    on: isOnline,
-    p: isCellProtected,
-    r: cellOwner.save.resources,
-    m: cellSave?.monsters || {},
-    l: baseLevel,
-    d: cellSave?.damage >= 90 ? 1 : 0 || 0,
-    lo: locked,
-    dm: cellSave?.damage || 0,
-    pic_square: `${process.env.AVATAR_URL}?seed=${cellOwner.username}`,
-    im: `${process.env.AVATAR_URL}?seed=${cellOwner.username}`,
-  };
+    return {
+      uid: cellOwner.userid,
+      b: cell.base_type,
+      pi: 0,
+      bid: cell.base_id,
+      aid: 0,
+      i: cell.terrainHeight,
+      mine: mine ? 1 : 0,
+      f: cellSave?.flinger || 0,
+      c: cellSave?.catapult || 0,
+      t: 0,
+      n: cellOwner.username,
+      fr: 0,
+      on: isOnline,
+      p: isCellProtected,
+      r: cellOwner.save.resources,
+      m: cellSave?.monsters || {},
+      l: baseLevel,
+      d: cellSave?.damage >= 90 ? 1 : 0 || 0,
+      lo: locked,
+      dm: cellSave?.damage || 0,
+      pic_square: `${process.env.AVATAR_URL}?seed=${cellOwner.username}`,
+      im: `${process.env.AVATAR_URL}?seed=${cellOwner.username}`,
+    };
+  } catch (error) {
+    errorLog("Error fetching user cell data", error);
+  }
 };
