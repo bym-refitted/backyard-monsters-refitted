@@ -1050,7 +1050,7 @@ package
                };
                _lastProcessedGIP = AutoBankManager.updateLoadData(_rawGIP,_GIP,_processedGIP,_lastProcessed,_lastProcessedGIP);
                _baseName = serverData.basename;
-               _baseValue = uint(serverData.basevalue);
+               _baseValue = Number(serverData.basevalue);
                _basePoints = Number(serverData.points);
                if(!_outpostValue)
                {
