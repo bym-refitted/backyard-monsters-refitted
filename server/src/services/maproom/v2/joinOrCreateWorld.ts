@@ -63,7 +63,7 @@ export const joinOrCreateWorld = async (
   const homeCell = new WorldMapCell(world, x, y, terrainHeight);
   homeCell.uid = user.userid;
   homeCell.base_type = MapRoomCell.HOMECELL;
-  homeCell.base_id = parseInt(save.baseid);
+  homeCell.base_id = BigInt(save.baseid);
 
   // Update the user save data with the new home cell
   save.cell = homeCell;

@@ -2,7 +2,6 @@ import { devConfig } from "../config/DevSettings";
 import { User } from "../models/user.model";
 import { debugSandbox } from "../dev/debugSandbox";
 import { devSandbox } from "../dev/devSandbox";
-import { generateID } from "../utils/generateID";
 import { getCurrentDateTime } from "../utils/getCurrentDateTime";
 import { Reward } from "../enums/Rewards";
 
@@ -17,15 +16,10 @@ export const getDefaultBaseData = (user?: User) => {
   if (devConfig.devSandbox) return devSandbox(user);
   if (devConfig.debugSandbox) return debugSandbox(user);
 
-  const baseid = generateID(9);
-
   return {
-    baseid: baseid.toString(10),
     saveuserid: user.userid,
     userid: user.userid,
     cellid: -1,
-    homebaseid: baseid,
-    baseid_inferno: 0,
     name: user.username,
     credits: devConfig.shiny || 1000,
     createtime: getCurrentDateTime(),

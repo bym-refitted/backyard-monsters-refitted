@@ -18,6 +18,8 @@ export interface FieldData {
   [key: string | number]: any;
 }
 
+type Outpost = [number, number, bigint];
+
 @Entity()
 export class Save {
   @BeforeUpdate()
@@ -32,26 +34,43 @@ export class Save {
     }
   }
 
-  // Primatives
+  // IDs
   @FrontendKey
-  @PrimaryKey()
-  basesaveid!: number;
+  @PrimaryKey({ autoincrement: true })
+  basesaveid!: bigint;
 
   @FrontendKey
-  @Property()
-  baseid!: string;
+  @Property({ default: 0 })
+  baseid!: bigint;
 
   @FrontendKey
-  @Property({ default: "main" })
-  type!: string;
+  @Property({ default: 0 })
+  homebaseid!: bigint;
 
   @FrontendKey
   @Property()
   userid!: number;
 
   @FrontendKey
+  @Property()
+  saveuserid!: number;
+
+  @FrontendKey
+  @Property({ default: 0 })
+  id!: number;
+
+  @FrontendKey
+  @Property({ default: 0 })
+  baseid_inferno!: number;
+
+  @FrontendKey
   @Property({ default: 0 })
   wmid!: number;
+
+  // Primatives
+  @FrontendKey
+  @Property({ default: "main" })
+  type!: string;
 
   @FrontendKey
   @Property()
@@ -64,10 +83,6 @@ export class Save {
   @FrontendKey
   @Property({ default: 0 })
   seed!: number;
-
-  @FrontendKey
-  @Property()
-  saveuserid!: number;
 
   @FrontendKey
   @Property({ default: 0 })
@@ -90,10 +105,6 @@ export class Save {
   giftsentcount!: number;
 
   @FrontendKey
-  @Property({ default: 0 })
-  id!: number; // Same value as savetime when save is triggered
-
-  @FrontendKey
   @Property({ default: false })
   canattack!: boolean;
 
@@ -104,10 +115,6 @@ export class Save {
     entity: () => WorldMapCell,
   })
   cell: WorldMapCell;
-
-  @FrontendKey
-  @Property()
-  baseid_inferno!: number;
 
   @FrontendKey
   @Property({ nullable: true })
@@ -168,10 +175,6 @@ export class Save {
   @FrontendKey
   @Property({ default: 0 })
   usemap!: number;
-
-  @FrontendKey
-  @Property()
-  homebaseid!: number;
 
   @FrontendKey
   @Property()
@@ -405,7 +408,7 @@ export class Save {
 
   @FrontendKey
   @Property({ type: "json", nullable: true })
-  outposts: number[][] = [];
+  outposts: Outpost[] = [];
 
   @FrontendKey
   @Property({ type: "json", nullable: true })
@@ -519,11 +522,17 @@ export class Save {
     user: User
   ) => {
     const baseSave = em.create(Save, getDefaultBaseData(user));
-    // Add the save to the database
+    // Persist the entity to generate basesaveid
     await em.persistAndFlush(baseSave);
+
+    // Update the baseid and homebase to match the basesaveid
+    baseSave.baseid = baseSave.basesaveid;
+    baseSave.homebaseid = baseSave.basesaveid;
+    await em.persistAndFlush(baseSave);
+
     user.save = baseSave;
-    // Update user base save
     await em.persistAndFlush(user);
+
     return baseSave;
   };
 }

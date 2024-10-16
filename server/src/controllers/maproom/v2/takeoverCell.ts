@@ -14,7 +14,7 @@ import {
 import { errorLog } from "../../../utils/logger";
 
 const TakeoverCellSchema = z.object({
-  baseid: z.string().transform((baseid) => parseInt(baseid)),
+  baseid: z.string().transform((baseid) => BigInt(baseid)),
   resources: z.string().transform((res) => JSON.parse(res)).optional(),
   shiny: z.string().transform((shiny) => parseInt(shiny)).optional(),
 });

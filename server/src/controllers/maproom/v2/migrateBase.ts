@@ -7,7 +7,7 @@ import { WorldMapCell } from "../../../models/worldmapcell.model";
 import { Status } from "../../../enums/StatusCodes";
 import { BaseMode, BaseType } from "../../../enums/Base";
 import { getCurrentDateTime } from "../../../utils/getCurrentDateTime";
-import { errorLog, logging } from "../../../utils/logger";
+import { errorLog } from "../../../utils/logger";
 import {
   Operation,
   updateResources,
@@ -81,12 +81,12 @@ export const migrateBase: KoaController = async (ctx) => {
     const cells = await ORMContext.em.find(
       WorldMapCell,
       {
-        base_id: { $in: [parseInt(baseid), userSave.homebaseid] },
+        base_id: { $in: [BigInt(baseid), userSave.homebaseid] },
       },
       { populate: ["save"] }
     );
 
-    const outpostCell = cells.find((cell) => cell.base_id === parseInt(baseid));
+    const outpostCell = cells.find((cell) => cell.base_id === BigInt(baseid));
     const homeCell = cells.find((cell) => cell.base_id === userSave.homebaseid);
 
     if (!outpostCell || !outpostCell.save) {
@@ -114,7 +114,7 @@ export const migrateBase: KoaController = async (ctx) => {
 
     // Remove the outpost from the user's save, 3rd element in the array is the baseid
     userSave.outposts = userSave.outposts.filter((outpost) => 
-      outpost[2] !== parseInt(baseid)
+      outpost[2] !== BigInt(baseid)
     );
 
     // Remove baseid from building resources object
