@@ -1,15 +1,12 @@
 import { User } from "../models/user.model";
-import { generateID } from "../utils/generateID";
-
-const baseid = generateID(9);
 
 export const devSandbox = (user?: User) => {
   return {
-    baseid: baseid.toString(10),
     type: "main",
     saveuserid: user.userid,
     userid: user.userid,
-    homebaseid: baseid,
+    baseid: BigInt(1),
+    homebaseid: BigInt(1),
     wmid: 0,
     createtime: 1703675351,
     savetime: 1703682844,
@@ -36,7 +33,7 @@ export const devSandbox = (user?: User) => {
     basevalue: BigInt(0),
     protected: 1,
     lastupdate: 0,
-    usemap: 0,
+    usemap: 1,
     credits: 980412,
     champion:
       '[{"status":0,"ft":1717491583,"pl":2,"fd":0,"hp":62000,"log":"0","fb":0,"l":5,"t":5},{"status":0,"ft":1717491639,"pl":1,"fd":0,"hp":40000,"log":"0","fb":0,"l":6,"t":3}]',

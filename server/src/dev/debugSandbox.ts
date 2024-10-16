@@ -1,14 +1,12 @@
 import { User } from "../models/user.model";
-import { generateID } from "../utils/generateID";
-
-const baseid = generateID(9);
 
 export const debugSandbox = (user?: User) => {
   return {
-    baseid: baseid.toString(10), // "0"
     type: "main",
     userid: 8933978,
     wmid: 0,
+    baseid: BigInt(1),
+    homebaseid: BigInt(1),
     createtime: 1358431200,
     savetime: 1599666755,
     seed: 0,
@@ -5741,11 +5739,10 @@ export const debugSandbox = (user?: User) => {
     protected: 0,
     updates: [],
     lastupdate: 0,
-    usemap: 0, // 1
-    homebase: null, // ["218", "285"]
+    usemap: 1,
+    homebase: null,
     outposts: [],
     worldsize: [800, 800],
-    homebaseid: baseid, // 2209501577
     wmstatus: [
       [41, 0, 0],
       [42, 0, 0],

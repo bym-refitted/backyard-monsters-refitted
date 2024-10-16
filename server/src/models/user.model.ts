@@ -5,7 +5,7 @@ import { FrontendKey } from "../utils/FrontendKey";
 @Entity()
 export class User {
   @FrontendKey
-  @PrimaryKey()
+  @PrimaryKey({ autoincrement: true })
   userid!: number;
 
   @OneToOne(() => Save, { nullable: true })

@@ -16,7 +16,7 @@ export class WorldMapCell {
     x?: number,
     y?: number,
     terrainHeight?: number,
-    optional = { base_type: 0, base_id: 0, uid: 0 }
+    optional = { base_id: BigInt(0), uid: 0, base_type: 0 }
   ) {
     this.world = world;
     this.world_id = world?.uuid;
@@ -34,7 +34,15 @@ export class WorldMapCell {
 
   @FrontendKey
   @Property()
+  base_id!: bigint;
+
+  @FrontendKey
+  @Property()
   world_id!: string;
+
+  @FrontendKey
+  @Property()
+  uid!: number;
 
   @FrontendKey
   @Property()
@@ -46,15 +54,7 @@ export class WorldMapCell {
 
   @FrontendKey
   @Property()
-  uid!: number;
-
-  @FrontendKey
-  @Property()
   base_type!: number;
-
-  @FrontendKey
-  @Property()
-  base_id!: number;
 
   @FrontendKey
   @Property()

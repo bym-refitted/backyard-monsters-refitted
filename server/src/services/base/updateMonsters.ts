@@ -2,11 +2,10 @@ import { Save } from "../../models/save.model";
 import { ORMContext } from "../../server";
 
 interface MonsterUpdate {
-  baseid: string;
+  baseid: bigint;
   m: any;
 }
 
-// This needs to be tested, how do we trigger this?
 export const updateMonsters = async (monsterupdates: MonsterUpdate[]) => {
   console.log("Monster Update Bases", monsterupdates);
   
