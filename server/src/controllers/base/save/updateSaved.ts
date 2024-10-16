@@ -48,7 +48,7 @@ export const updateSaved: KoaController = async (ctx) => {
     baseSave.savetime = getCurrentDateTime();
     baseSave.id = baseSave.savetime; // client expects this.
 
-    if (baseSave.baseid !== BaseMode.DEFAULT && type === BaseMode.BUILD) {
+    if (baseid !== BaseMode.DEFAULT && type === BaseMode.BUILD) {
       await ORMContext.em.persistAndFlush(baseSave);
     }
 
