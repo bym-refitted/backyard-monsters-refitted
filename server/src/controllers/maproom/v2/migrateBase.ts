@@ -86,8 +86,13 @@ export const migrateBase: KoaController = async (ctx) => {
       { populate: ["save"] }
     );
 
-    const outpostCell = cells.find((cell) => cell.base_id === BigInt(baseid));
-    const homeCell = cells.find((cell) => cell.base_id === userSave.homebaseid);
+    const outpostCell = cells.find(
+      (cell) => BigInt(cell.base_id) === BigInt(baseid)
+    );
+
+    const homeCell = cells.find(
+      (cell) => BigInt(cell.base_id) === BigInt(userSave.homebaseid)
+    );
 
     if (!outpostCell || !outpostCell.save) {
       ctx.status = Status.BAD_REQUEST;
@@ -113,8 +118,8 @@ export const migrateBase: KoaController = async (ctx) => {
     userSave.cantmovetill = currentTime + COOLDOWN_PERIOD;
 
     // Remove the outpost from the user's save, 3rd element in the array is the baseid
-    userSave.outposts = userSave.outposts.filter((outpost) => 
-      outpost[2] !== BigInt(baseid)
+    userSave.outposts = userSave.outposts.filter(
+      (outpost) => outpost[2] !== baseid
     );
 
     // Remove baseid from building resources object

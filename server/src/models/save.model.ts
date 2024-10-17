@@ -18,7 +18,7 @@ export interface FieldData {
   [key: string | number]: any;
 }
 
-type Outpost = [number, number, bigint];
+type Outpost = [number, number, string];
 
 @Entity()
 export class Save {

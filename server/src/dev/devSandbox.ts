@@ -5,8 +5,6 @@ export const devSandbox = (user?: User) => {
     type: "main",
     saveuserid: user.userid,
     userid: user.userid,
-    baseid: BigInt(1),
-    homebaseid: BigInt(1),
     wmid: 0,
     createtime: 1703675351,
     savetime: 1703682844,

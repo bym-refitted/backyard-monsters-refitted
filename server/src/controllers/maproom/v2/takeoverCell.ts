@@ -14,7 +14,7 @@ import {
 import { errorLog } from "../../../utils/logger";
 
 const TakeoverCellSchema = z.object({
-  baseid: z.string().transform((baseid) => BigInt(baseid)),
+  baseid: z.string(),
   resources: z.string().transform((res) => JSON.parse(res)).optional(),
   shiny: z.string().transform((shiny) => parseInt(shiny)).optional(),
 });
@@ -41,7 +41,7 @@ export const takeoverCell: KoaController = async (ctx) => {
     const cell = await ORMContext.em.findOne(
       WorldMapCell,
       {
-        base_id: baseid,
+        base_id: BigInt(baseid),
       },
       { populate: ["save"] }
     );
@@ -76,7 +76,7 @@ export const takeoverCell: KoaController = async (ctx) => {
 
     // Update user
     userSave.outposts.push([cell.x, cell.y, baseid]);
-    ORMContext.em.persistAndFlush([cellSave, currentUser]);
+    await ORMContext.em.persistAndFlush([cellSave, currentUser]);
 
     ctx.status = Status.OK;
     ctx.body = { error: 0 };
