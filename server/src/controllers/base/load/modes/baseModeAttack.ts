@@ -6,7 +6,6 @@ import { ORMContext } from "../../../../server";
 import { damageProtection } from "../../../../services/maproom/v2/damageProtection";
 import { Save } from "../../../../models/save.model";
 import { User } from "../../../../models/user.model";
-import { randomInt } from "crypto";
 import { wildMonsterSave } from "../../../../services/maproom/v2/wildMonsters";
 import {
   generateNoise,
@@ -58,7 +57,8 @@ export const baseModeAttack = async (user: User, baseid: string) => {
     cell.base_id = BigInt(save.baseid);
     await ORMContext.em.persistAndFlush(cell);
 
-    save.attackid = BigInt(randomInt(1, Number.MAX_SAFE_INTEGER));
+    // I hate this.
+    save.attackid = Math.floor(Math.random() * 99999) + 1;
     save.cell = cell;
     save.worldid = world.uuid;
   }
