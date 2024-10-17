@@ -50,7 +50,6 @@ export const devSandbox = (user?: User) => {
     attackreport: "",
     over: 1,
     protect: 0,
-    attackid: 0,
     purchasecomplete: 0,
     buildingdata: {
       "0": {
