@@ -33,7 +33,6 @@ export const wildMonsterSave = (baseid: string) => {
     baseid,
     wmid,
     homebase: [cellX.toString(), cellY.toString()],
-    basesaveid: baseId,
   });
 };
 

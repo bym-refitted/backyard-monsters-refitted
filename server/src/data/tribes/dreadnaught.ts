@@ -1,7 +1,5 @@
 export const dreadnaught = {
   0: {
-    basesaveid: 0,
-    baseid: "0",
     type: "tribe",
     userid: 0,
     wmid: 0,
@@ -32,7 +30,6 @@ export const dreadnaught = {
     protected: 1,
     lastupdate: 0,
     usemap: 1,
-    homebaseid: 0,
     credits: 0,
     champion: "null",
     empiredestroyed: 1,
@@ -1301,8 +1298,6 @@ export const dreadnaught = {
     attackersiege: null,
   },
   1: {
-    basesaveid: 0,
-    baseid: "0",
     type: "tribe",
     userid: 0,
     wmid: 0,
@@ -1333,7 +1328,6 @@ export const dreadnaught = {
     protected: 1,
     lastupdate: 0,
     usemap: 1,
-    homebaseid: 0,
     credits: 0,
     champion: "null",
     empiredestroyed: 1,

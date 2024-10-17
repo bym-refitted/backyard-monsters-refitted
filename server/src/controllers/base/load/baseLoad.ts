@@ -72,7 +72,7 @@ export const baseLoad: KoaController = async (ctx) => {
       pic_square: `${process.env.AVATAR_URL}?seed=${user.username}&size=${50}`,
     };
   } catch (err) {
-    errorLog(`Failed to load base for user: ${user.username}`, err);
+    errorLog(`Failed to load base`, err);
 
     ctx.status = Status.INTERNAL_SERVER_ERROR;
     ctx.body = { error: 1 };
