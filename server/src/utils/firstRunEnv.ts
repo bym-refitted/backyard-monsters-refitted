@@ -1,10 +1,14 @@
 import fs, { FileHandle } from "fs/promises";
 import { randomBytes } from "crypto";
-import { logging, errorLog } from "./logger.js";
+import { logging, errorLog } from "./logger";
 
 /**
  * Check if `.env` file exists, if not, copy `env.example` contents
  * to `.env` and auto-generate random secret key
+ *
+ * @async
+ * @returns {Promise<void>} A promise that resolves when the operation is complete.
+ * @throws Will log an error if there is an unexpected error during the file operations.
  */
 export const firstRunEnv = async () => {
   try {
@@ -21,7 +25,6 @@ export const firstRunEnv = async () => {
       !process.env.SECRET_KEY && (process.env.SECRET_KEY = secretKey),
       fh.close(),
     ]);
-    
   } catch (err) {
     if (err.code === "EEXIST") {
       logging(".env file already exists.");

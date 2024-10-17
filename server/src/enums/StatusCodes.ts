@@ -1,4 +1,10 @@
-export enum STATUS {
+/**
+ * Enum representing HTTP status codes.
+ * These status codes are used to indicate the result of a HTTP request.
+ * 
+ * @enum {number}
+ */
+export enum Status {
   OK = 200,
   CREATED = 201,
   NO_CONTENT = 204,
