@@ -6118,7 +6118,6 @@ export const debugSandbox = (user?: User) => {
     attackreport: "",
     over: 1,
     protect: 0,
-    attackid: 0,
     attacks: [],
     gifts: [],
     sentinvites: [],

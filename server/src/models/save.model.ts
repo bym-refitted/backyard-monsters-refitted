@@ -57,6 +57,10 @@ export class Save {
 
   @FrontendKey
   @Property({ default: 0 })
+  attackid!: bigint;
+
+  @FrontendKey
+  @Property({ default: 0 })
   id!: number;
 
   @FrontendKey
@@ -244,10 +248,6 @@ export class Save {
   @FrontendKey
   @Property({ default: 0 })
   protect!: number;
-
-  @FrontendKey
-  @Property({ default: 0 })
-  attackid!: number;
 
   @FrontendKey
   @Property({ default: 0 })
