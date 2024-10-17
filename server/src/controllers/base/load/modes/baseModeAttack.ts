@@ -21,44 +21,45 @@ export const baseModeAttack = async (user: User, baseid: string) => {
   // Remove damage protection
   await damageProtection(userSave, BaseMode.ATTACK);
 
-  if (save.homebaseid === BigInt(0)) {
-    const cell = await ORMContext.em.findOne(WorldMapCell, {
-      base_id: BigInt(save.baseid),
+  const cell = await ORMContext.em.findOne(WorldMapCell, {
+    base_id: BigInt(save.baseid),
+  });
+
+  if (!cell) {
+    // Create a cell record when attacking tribe bases
+    const world = await ORMContext.em.findOne(World, {
+      uuid: userSave.worldid,
     });
 
-    if (!cell) {
-      // Create a cell record when attacking tribe bases
-      const world = await ORMContext.em.findOne(World, {
-        uuid: userSave.worldid,
-      });
+    if (!world) throw new Error("No world found.");
 
-      if (!world) throw new Error("No world found.");
+    const baseIdBigInt = BigInt(baseid);
+    const baseIdStr = baseIdBigInt.toString();
 
-      const baseIdSplit = [...`${baseid}`];
-      const cellX = parseInt(baseIdSplit.slice(1, 4).join(""));
-      const cellY = parseInt(baseIdSplit.slice(4).join(""));
-      const noise = generateNoise(world.uuid);
+    // Derive cellX and cellY from specific positions (based on the structure of baseid)
+    const cellX = parseInt(baseIdStr.slice(1, 4));
+    const cellY = parseInt(baseIdStr.slice(4));
 
-      const cell = new WorldMapCell(
-        world,
-        cellX,
-        cellY,
-        getTerrainHeight(noise, cellX, cellY),
-        {
-          base_id: BigInt(baseIdSplit.join()),
-          uid: save.saveuserid,
-          base_type: MapRoomCell.WM,
-        }
-      );
+    const noise = generateNoise(world.uuid);
 
-      cell.base_id = BigInt(save.baseid);
-      await ORMContext.em.persistAndFlush(cell);
+    const cell = new WorldMapCell(
+      world,
+      cellX,
+      cellY,
+      getTerrainHeight(noise, cellX, cellY),
+      {
+        base_id: baseIdBigInt,
+        uid: save.saveuserid,
+        base_type: MapRoomCell.WM,
+      }
+    );
 
-      save.attackid = Math.floor(Math.random() * Number.MAX_SAFE_INTEGER);
-      save.homebaseid = BigInt(baseIdSplit.join());
-      save.cell = cell;
-      save.worldid = world.uuid;
-    }
+    cell.base_id = BigInt(save.baseid);
+    await ORMContext.em.persistAndFlush(cell);
+
+    save.attackid = Math.floor(Math.random() * Number.MAX_SAFE_INTEGER);
+    save.cell = cell;
+    save.worldid = world.uuid;
   }
   await ORMContext.em.persistAndFlush(save);
   return save;
