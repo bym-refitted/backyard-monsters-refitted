@@ -17,6 +17,7 @@ import {
   Resources,
   updateResources,
 } from "../../../services/base/updateResources";
+import { mapUserSaveData } from "../mapUserSaveData";
 
 export const baseSave: KoaController = async (ctx) => {
   const user: User = ctx.authUser;
@@ -156,6 +157,7 @@ export const baseSave: KoaController = async (ctx) => {
       error: 0,
       basesaveid: save.basesaveid,
       ...filteredSave,
+      ...mapUserSaveData(userSave),
     };
   } catch (err) {
     logging(`Failed to save base for user: ${user.username}`, err);
