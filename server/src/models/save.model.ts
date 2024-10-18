@@ -34,7 +34,7 @@ export class Save {
     }
   }
 
-  // IDs
+  // IDs & Foreign Keys
   @FrontendKey
   @PrimaryKey({ autoincrement: true })
   basesaveid!: bigint;
@@ -42,6 +42,14 @@ export class Save {
   @FrontendKey
   @Property({ default: 0 })
   baseid!: bigint;
+
+  @OneToOne({
+    nullable: true,
+    orphanRemoval: true,
+    inversedBy: "save",
+    entity: () => WorldMapCell,
+  })
+  cell: WorldMapCell;
 
   @FrontendKey
   @Property({ default: 0 })
@@ -112,14 +120,6 @@ export class Save {
   @Property({ default: false })
   canattack!: boolean;
 
-  @OneToOne({
-    nullable: true,
-    orphanRemoval: true,
-    inversedBy: "save",
-    entity: () => WorldMapCell,
-  })
-  cell: WorldMapCell;
-
   @FrontendKey
   @Property({ nullable: true })
   fbid?: string;
@@ -157,12 +157,12 @@ export class Save {
   locked!: number;
 
   @FrontendKey
-  @Property({ type: BigIntType, default: 0 })
-  points!: bigint;
+  @Property({ default: 0 })
+  points!: number;
 
   @FrontendKey
-  @Property({ type: BigIntType, default: 0 })
-  basevalue!: bigint;
+  @Property({ default: 0 })
+  basevalue!: number;
 
   @FrontendKey
   @Property({ default: 0 })
