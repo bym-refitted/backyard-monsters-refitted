@@ -35,8 +35,6 @@ export const baseLoad: KoaController = async (ctx) => {
   const user: User = ctx.authUser;
   await ORMContext.em.populate(user, ["save"]);
 
-  const userSave = user.save;
-
   try {
     const { baseid, type } = BaseLoadSchema.parse(ctx.request.body);
 
@@ -61,10 +59,8 @@ export const baseLoad: KoaController = async (ctx) => {
       ? 205
       : filteredSave.tutorialstage;
 
-    ctx.status = Status.OK;
-    ctx.body = {
+    const responseBody = {
       ...filteredSave,
-      ...mapUserSaveData(userSave),
       flags,
       worldsize: WORLD_SIZE,
       error: 0,
@@ -72,8 +68,16 @@ export const baseLoad: KoaController = async (ctx) => {
       storeitems: { ...storeItems },
       tutorialstage: isTutorialEnabled,
       currenttime: getCurrentDateTime(),
-      pic_square: `${process.env.AVATAR_URL}?seed=${user.username}&size=${50}`,
+      pic_square: `${process.env.AVATAR_URL}?seed=${filteredSave.name}&size=${50}`,
     };
+
+    // Only include user save data if the base belongs to the current user
+    if (user.userid === filteredSave.userid) {
+      Object.assign(responseBody, mapUserSaveData(user));
+    }
+
+    ctx.status = Status.OK;
+    ctx.body = responseBody;
   } catch (err) {
     errorLog(`Failed to load base`, err);
 

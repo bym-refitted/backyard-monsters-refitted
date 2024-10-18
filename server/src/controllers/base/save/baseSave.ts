@@ -122,8 +122,9 @@ export const baseSave: KoaController = async (ctx) => {
 
       if (attackloot) {
         const resources: Resources = attackloot;
-        const savedResources: FieldData = updateResources(resources, userSave.resources || {}
-
+        const savedResources: FieldData = updateResources(
+          resources,
+          userSave.resources || {}
         );
         userSave.resources = savedResources;
       }
@@ -152,13 +153,18 @@ export const baseSave: KoaController = async (ctx) => {
     const filteredSave = FilterFrontendKeys(save);
     logging(`Saving ${user.username}'s base | basesaveid: ${basesaveid}`);
 
-    ctx.status = Status.OK;
-    ctx.body = {
+    const responseBody = {
       error: 0,
       basesaveid: save.basesaveid,
       ...filteredSave,
-      ...mapUserSaveData(userSave),
     };
+
+    if (user.userid === filteredSave.userid) {
+      Object.assign(responseBody, mapUserSaveData(user));
+    }
+
+    ctx.status = Status.OK;
+    ctx.body = responseBody;
   } catch (err) {
     logging(`Failed to save base for user: ${user.username}`, err);
 
