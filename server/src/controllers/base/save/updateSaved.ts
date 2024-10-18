@@ -13,6 +13,7 @@ import { KoaController } from "../../../utils/KoaController";
 import { baseModeBuild } from "../load/modes/baseModeBuild";
 import { baseModeView } from "../load/modes/baseModeView";
 import { errorLog } from "../../../utils/logger";
+import { mapUserSaveData } from "../mapUserSaveData";
 
 const UpdateSavedSchema = z.object({
   type: z.string(),
@@ -31,6 +32,8 @@ const UpdateSavedSchema = z.object({
 export const updateSaved: KoaController = async (ctx) => {
   const user: User = ctx.authUser;
   await ORMContext.em.populate(user, ["save"]);
+
+  const userSave = user.save;
 
   try {
     const { baseid, type } = UpdateSavedSchema.parse(ctx.request.body);
@@ -59,6 +62,7 @@ export const updateSaved: KoaController = async (ctx) => {
       error: 0,
       flags,
       ...filteredSave,
+      ...mapUserSaveData(userSave),
     };
   } catch (err) {
     errorLog(`Failed to update save for user: ${user.username}`, err);

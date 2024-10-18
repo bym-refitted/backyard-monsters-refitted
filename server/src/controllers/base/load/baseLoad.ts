@@ -16,6 +16,7 @@ import { baseModeView } from "./modes/baseModeView";
 import { baseModeBuild } from "./modes/baseModeBuild";
 import { errorLog } from "../../../utils/logger";
 import { baseModeAttack } from "./modes/baseModeAttack";
+import { mapUserSaveData } from "../mapUserSaveData";
 
 const BaseLoadSchema = z.object({
   type: z.string(),
@@ -33,6 +34,8 @@ const BaseLoadSchema = z.object({
 export const baseLoad: KoaController = async (ctx) => {
   const user: User = ctx.authUser;
   await ORMContext.em.populate(user, ["save"]);
+
+  const userSave = user.save;
 
   try {
     const { baseid, type } = BaseLoadSchema.parse(ctx.request.body);
@@ -61,13 +64,13 @@ export const baseLoad: KoaController = async (ctx) => {
     ctx.status = Status.OK;
     ctx.body = {
       ...filteredSave,
+      ...mapUserSaveData(userSave),
       flags,
       worldsize: WORLD_SIZE,
       error: 0,
       id: filteredSave.basesaveid,
       storeitems: { ...storeItems },
       tutorialstage: isTutorialEnabled,
-      outposts: user.save.outposts,
       currenttime: getCurrentDateTime(),
       pic_square: `${process.env.AVATAR_URL}?seed=${user.username}&size=${50}`,
     };
