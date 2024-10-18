@@ -57,13 +57,18 @@ export const updateSaved: KoaController = async (ctx) => {
 
     const filteredSave = FilterFrontendKeys(baseSave);
 
-    ctx.status = Status.OK;
-    ctx.body = {
+    const responseBody = {
       error: 0,
       flags,
       ...filteredSave,
-      ...mapUserSaveData(userSave),
     };
+
+    if (user.userid === filteredSave.userid) {
+      Object.assign(responseBody, mapUserSaveData(user));
+    }
+
+    ctx.status = Status.OK;
+    ctx.body = responseBody;
   } catch (err) {
     errorLog(`Failed to update save for user: ${user.username}`, err);
 
