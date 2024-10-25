@@ -33,7 +33,6 @@ export const baseModeBuild = async (user: User, baseid: string) => {
     if (!baseSave) throw new Error(`Base save not found for baseid: ${baseid}`);
     return baseSave;
   }
-
   // Add reward for Diamond Spurtz Cannons & Korath at Town Hall 6.
   const townHall = userSave.buildingdata["0"];
 

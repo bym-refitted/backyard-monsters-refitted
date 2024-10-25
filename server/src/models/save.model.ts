@@ -78,6 +78,13 @@ export class Save {
   @Property({ default: 0 })
   wmid!: number;
 
+  // Timer checks
+  @Property({ default: false })
+  initialProtectionOver!: boolean;
+
+  @Property({ default: false })
+  initialOutpostProtectionOver!: boolean;
+
   // Primatives
   @FrontendKey
   @Property({ default: "main" })
