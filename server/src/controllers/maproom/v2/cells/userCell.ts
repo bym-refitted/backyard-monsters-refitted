@@ -38,7 +38,7 @@ export const userCell = async (ctx: Context, cell: WorldMapCell) => {
       cellOwner.save?.basevalue || 1
     );
 
-    let isCellProtected = await damageProtection(cellOwner.save);
+    let isCellProtected = await damageProtection(cellSave);
 
     if (!cellSave) errorLog("Cell save data is missing.");
 
