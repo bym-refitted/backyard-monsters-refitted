@@ -17,6 +17,7 @@ import { baseModeBuild } from "./modes/baseModeBuild";
 import { errorLog } from "../../../utils/logger";
 import { baseModeAttack } from "./modes/baseModeAttack";
 import { mapUserSaveData } from "../mapUserSaveData";
+import { damageProtection } from "../../../services/maproom/v2/damageProtection";
 
 const BaseLoadSchema = z.object({
   type: z.string(),
@@ -43,6 +44,7 @@ export const baseLoad: KoaController = async (ctx) => {
     switch (type) {
       case BaseMode.BUILD:
         baseSave = await baseModeBuild(user, baseid);
+        await damageProtection(baseSave, BaseMode.BUILD);
         break;
       case BaseMode.VIEW:
         baseSave = await baseModeView(baseid);

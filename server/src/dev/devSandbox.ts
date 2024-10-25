@@ -1,4 +1,5 @@
 import { User } from "../models/user.model";
+import { getCurrentDateTime } from "../utils/getCurrentDateTime";
 
 export const devSandbox = (user?: User) => {
   return {
@@ -6,8 +7,8 @@ export const devSandbox = (user?: User) => {
     saveuserid: user.userid,
     userid: user.userid,
     wmid: 0,
-    createtime: 1703675351,
-    savetime: 1703682844,
+    createtime: getCurrentDateTime(),
+    savetime: 0,
     seed: 0,
     bookmarked: 0,
     fan: 0,

@@ -1,12 +1,13 @@
 import { User } from "../models/user.model";
+import { getCurrentDateTime } from "../utils/getCurrentDateTime";
 
 export const debugSandbox = (user?: User) => {
   return {
     type: "main",
     userid: 8933978,
     wmid: 0,
-    createtime: 1358431200,
-    savetime: 1599666755,
+    createtime: getCurrentDateTime(),
+    savetime: 0,
     seed: 0,
     saveuserid: user.userid,
     buildingdata: {
