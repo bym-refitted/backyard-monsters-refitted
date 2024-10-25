@@ -12,6 +12,7 @@ import {
   updateResources,
 } from "../../../services/base/updateResources";
 import { errorLog } from "../../../utils/logger";
+import { getCurrentDateTime } from "../../../utils/getCurrentDateTime";
 
 const TakeoverCellSchema = z.object({
   baseid: z.string(),
@@ -84,6 +85,7 @@ export const takeoverCell: KoaController = async (ctx) => {
     cellSave.homebaseid = userSave.homebaseid;
     cellSave.homebase = [cell.x.toString(), cell.y.toString()];
     cellSave.name = userSave.name;
+    cellSave.createtime = getCurrentDateTime();
 
     if (cellSave.type === BaseType.TRIBE) {
       cellSave.type = BaseType.OUTPOST;
