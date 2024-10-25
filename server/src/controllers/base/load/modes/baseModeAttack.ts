@@ -21,8 +21,8 @@ export const baseModeAttack = async (user: User, baseid: string) => {
   // Remove damage protection
   await damageProtection(userSave, BaseMode.ATTACK);
 
-  const cell = await ORMContext.em.findOne(WorldMapCell, {
-    base_id: BigInt(save.baseid),
+  let cell = await ORMContext.em.findOne(WorldMapCell, {
+    base_id: BigInt(baseid),
   });
 
   if (!cell) {
@@ -42,7 +42,7 @@ export const baseModeAttack = async (user: User, baseid: string) => {
 
     const noise = generateNoise(world.uuid);
 
-    const cell = new WorldMapCell(
+    cell = new WorldMapCell(
       world,
       cellX,
       cellY,
@@ -55,13 +55,12 @@ export const baseModeAttack = async (user: User, baseid: string) => {
     );
 
     cell.base_id = BigInt(save.baseid);
-    await ORMContext.em.persistAndFlush(cell);
-
-    // I hate this.
-    save.attackid = Math.floor(Math.random() * 99999) + 1;
-    save.cell = cell;
-    save.worldid = world.uuid;
   }
-  await ORMContext.em.persistAndFlush(save);
+  save.cell = cell;
+  save.worldid = userSave.worldid;
+  save.attackid = Math.floor(Math.random() * 99999) + 1; // I hate this.
+
+  await ORMContext.em.persistAndFlush([cell, save]);
+
   return save;
 };

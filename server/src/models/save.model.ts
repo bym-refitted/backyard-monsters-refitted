@@ -7,7 +7,6 @@ import {
   Connection,
   IDatabaseDriver,
   OneToOne,
-  BigIntType,
 } from "@mikro-orm/core";
 import { FrontendKey } from "../utils/FrontendKey";
 import { getDefaultBaseData } from "../data/getDefaultBaseData";

@@ -132,8 +132,9 @@ export const baseSave: KoaController = async (ctx) => {
       await ORMContext.em.persistAndFlush(userSave);
     }
 
+    // TODO: Revisit this, likely causing issues
     save.attackid = over ? 0 : save.attackid;
-    if (over) save.protected = destroyed;
+    //if (over) save.protected = isNaN(destroyed) ? 0 : destroyed;
 
     save.savetime = getCurrentDateTime();
     save.id = save.savetime;
