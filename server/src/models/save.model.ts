@@ -78,7 +78,7 @@ export class Save {
   @Property({ default: 0 })
   wmid!: number;
 
-  // Timer checks
+  // Flag timer checks
   @Property({ default: false })
   initialProtectionOver!: boolean;
 
@@ -392,6 +392,9 @@ export class Save {
   attackersiege?: FieldData = {};
 
   // Arrays
+  @Property({ type: "json" })
+  attackTimestamps: number[] = [];
+
   @FrontendKey
   @Property({ type: "json", nullable: true })
   monsterupdate?: FieldData = [];

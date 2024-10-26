@@ -5,6 +5,7 @@ import { WorldMapCell } from "../../../../models/worldmapcell.model";
 import { calculateBaseLevel } from "../../../../services/base/calculateBaseLevel";
 import { damageProtection } from "../../../../services/maproom/v2/damageProtection";
 import { errorLog } from "../../../../utils/logger";
+import { getCurrentDateTime } from "../../../../utils/getCurrentDateTime";
 
 /**
  * Handles the user's homecell & outpost data on the world map.
@@ -29,7 +30,7 @@ export const userCell = async (ctx: Context, cell: WorldMapCell) => {
       ? currentUser
       : await ORMContext.em.findOne(User, { userid: cell.uid });
 
-    const isOnline = Date.now() / 1000 - (cellOwner.save?.savetime || 0) < 30;
+    const isOnline = getCurrentDateTime() - (cellOwner.save?.savetime || 0) <= 60;
 
     /** TODO: Cell should be locked when a player is getting attacked, not when online */
     const locked = mine ? 0 : isOnline ? 1 : cellOwner.save?.locked || 0;
