@@ -78,12 +78,15 @@ export class Save {
   @Property({ default: 0 })
   wmid!: number;
 
-  // Flag timer checks
+  // Damage Protection
   @Property({ default: false })
   initialProtectionOver!: boolean;
 
   @Property({ default: false })
   initialOutpostProtectionOver!: boolean;
+
+  @Property({ nullable: true })
+  protectionSetTime: number | null;
 
   // Primatives
   @FrontendKey
