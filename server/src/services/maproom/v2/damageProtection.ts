@@ -11,17 +11,21 @@ export const damageProtection = async (save: Save, mode?: BaseMode) => {
   let {
     type,
     damage,
-    protected: protection,
     createtime,
     initialProtectionOver,
     initialOutpostProtectionOver,
     attackTimestamps,
+    protectionSetTime,
   } = save;
 
+  let protection = save.protected;
+
   const currentTime = getCurrentDateTime();
-  const oneHourAgo = currentTime - 3600;
   const sevenDays = 7 * 24 * 60 * 60;
   const twelveHours = 12 * 60 * 60;
+
+  const thirtySixHoursAgo = currentTime - 36 * 60 * 60;
+  const oneHourAgo = currentTime - 3600;
 
   // Check if 7 days have passed since account creation
   const isFirstWeekOver = currentTime - createtime > sevenDays;
@@ -33,12 +37,17 @@ export const damageProtection = async (save: Save, mode?: BaseMode) => {
   else {
     switch (type) {
       case BaseType.MAIN:
-        // 1. First week of the game = 7d
+        // ======================================
+        // First week of the game = 7 DAYS
+        // ======================================
         if (isFirstWeekOver && !initialProtectionOver) {
           protection = 0;
           save.initialProtectionOver = true;
         }
-        // 2. Four attacks in 1 hour = 1hr
+
+        // ======================================
+        // 4 attacks in 1 hour = 1 HOUR
+        // ======================================
         const recentAttacks = attackTimestamps.filter(
           (timestamp) => timestamp > oneHourAgo
         );
@@ -46,27 +55,38 @@ export const damageProtection = async (save: Save, mode?: BaseMode) => {
         if (recentAttacks.length >= 4) {
           protection = 1;
 
-          // Check if the last timestamp is older than one hour, if so, reset the attack timestamps
           if (recentAttacks[recentAttacks.length - 1] <= oneHourAgo) {
             save.attackTimestamps = [];
           } else {
             save.attackTimestamps = recentAttacks;
           }
-        } else {
-          protection = 0;
-          save.attackTimestamps = recentAttacks;
         }
 
-        // 3. 50% and 75% or more damage = 36h
-        if (damage >= 50) protection = 1;
+        // ======================================
+        // 50% and 75% or more damage = 36 HOURS
+        // ======================================
+        if (protectionSetTime <= thirtySixHoursAgo) {
+          protection = 0;
+          protectionSetTime = null;
+        }
+
+        if (damage >= 50) {
+          protection = 1;
+          protectionSetTime = currentTime;                             
+        }
         break;
       case BaseType.OUTPOST:
-        // 1. First takeover = 12h
+        // ======================================
+        // Outpost takeover = 12 HOURS
+        // ======================================
         if (isOutpostProtectionOver && !initialOutpostProtectionOver) {
           protection = 0;
           save.initialOutpostProtectionOver = true;
         }
-        // 2. 25% damage in 2-3 attacks, instant protection on third attack = 8h
+
+        // ======================================
+        // 25% damage in 2-3 attacks, instant protection on third attack = 8 HOURS
+        // ======================================
         if (damage >= 25) protection = 1;
         break;
       default:
@@ -75,6 +95,7 @@ export const damageProtection = async (save: Save, mode?: BaseMode) => {
   }
 
   save.protected = protection;
+  save.protectionSetTime = protectionSetTime;
   await ORMContext.em.persistAndFlush(save);
 
   return protection;
