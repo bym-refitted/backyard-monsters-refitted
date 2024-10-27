@@ -4,9 +4,8 @@ import { ORMContext } from "../../../server";
 import { getCurrentDateTime } from "../../../utils/getCurrentDateTime";
 
 /**
- * TODO: Currently damage protection is only tracked when a user logs in, e.g. triggers baseLoad.
  * Wiki: https://backyardmonsters.fandom.com/wiki/Damage_Protection
- * */
+ */
 export const damageProtection = async (save: Save, mode?: BaseMode) => {
   let {
     type,
@@ -15,16 +14,18 @@ export const damageProtection = async (save: Save, mode?: BaseMode) => {
     initialProtectionOver,
     initialOutpostProtectionOver,
     attackTimestamps,
-    protectionSetTime,
+    outpostProtectionTime,
+    mainProtectionTime,
   } = save;
 
   let protection = save.protected;
-
   const currentTime = getCurrentDateTime();
+
   const sevenDays = 7 * 24 * 60 * 60;
   const twelveHours = 12 * 60 * 60;
 
   const thirtySixHoursAgo = currentTime - 36 * 60 * 60;
+  const eightHoursAgo = currentTime - 8 * 60 * 60;
   const oneHourAgo = currentTime - 3600;
 
   // Check if 7 days have passed since account creation
@@ -33,8 +34,10 @@ export const damageProtection = async (save: Save, mode?: BaseMode) => {
   // Check if 12 hours have passed since outpost takeover
   const isOutpostProtectionOver = currentTime - createtime > twelveHours;
 
-  if (mode === BaseMode.ATTACK) protection = 0;
-  else {
+  if (mode === BaseMode.ATTACK) {
+    protection = 0;
+    if (mainProtectionTime) mainProtectionTime = null;
+  } else {
     switch (type) {
       case BaseType.MAIN:
         // ======================================
@@ -65,14 +68,14 @@ export const damageProtection = async (save: Save, mode?: BaseMode) => {
         // ======================================
         // 50% and 75% or more damage = 36 HOURS
         // ======================================
-        if (protectionSetTime <= thirtySixHoursAgo) {
+        if (mainProtectionTime && mainProtectionTime <= thirtySixHoursAgo) {
           protection = 0;
-          protectionSetTime = null;
+          mainProtectionTime = null;
         }
 
         if (damage >= 50) {
           protection = 1;
-          protectionSetTime = currentTime;                             
+          mainProtectionTime = currentTime;
         }
         break;
       case BaseType.OUTPOST:
@@ -87,7 +90,25 @@ export const damageProtection = async (save: Save, mode?: BaseMode) => {
         // ======================================
         // 25% damage in 2-3 attacks, instant protection on third attack = 8 HOURS
         // ======================================
-        if (damage >= 25) protection = 1;
+        if (damage >= 25) {
+          if (outpostProtectionTime && outpostProtectionTime <= eightHoursAgo) {
+            protection = 0;
+          } else {
+            protection = 1;
+            outpostProtectionTime = currentTime;
+          }
+
+          // If there are new attacks after the 8-hour protection period
+          // has ended, apply protection again.
+          const recentOutpostAttacks = attackTimestamps.filter(
+            (timestamp) => timestamp > eightHoursAgo
+          );
+
+          if (recentOutpostAttacks.length > 0) {
+            protection = 1;
+            outpostProtectionTime = currentTime;
+          }
+        }
         break;
       default:
         break;
@@ -95,7 +116,8 @@ export const damageProtection = async (save: Save, mode?: BaseMode) => {
   }
 
   save.protected = protection;
-  save.protectionSetTime = protectionSetTime;
+  save.mainProtectionTime = mainProtectionTime;
+  save.outpostProtectionTime = outpostProtectionTime;
   await ORMContext.em.persistAndFlush(save);
 
   return protection;
