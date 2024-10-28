@@ -9,7 +9,7 @@ export const devConfig = {
   unlockAllEventRewards: true,
   maproom: true,
   inferno: false,
-  shiny: 2500,
-  devSandbox: true,
+  shiny: 1000,
+  devSandbox: false,
   debugSandbox: false,
 };
