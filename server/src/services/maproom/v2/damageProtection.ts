@@ -6,6 +6,10 @@ import { getCurrentDateTime } from "../../../utils/getCurrentDateTime";
 /**
  * Wiki: https://backyardmonsters.fandom.com/wiki/Damage_Protection
  */
+
+// Current broken scenarios:
+// 1. When a base gets attacked 4 times or more, then protection is reset, attacked again, user comes and repairs the base => protection is stuck at 1
+// 2. Outposts are similar to the above, after taking over someone's outpost, protection is stuck at 1
 export const damageProtection = async (save: Save, mode?: BaseMode) => {
   let {
     type,
@@ -55,6 +59,8 @@ export const damageProtection = async (save: Save, mode?: BaseMode) => {
           (timestamp) => timestamp > oneHourAgo
         );
 
+        console.log("Checker: Recent attacks", recentAttacks.length);
+
         if (recentAttacks.length >= 4) {
           protection = 1;
 
@@ -68,14 +74,24 @@ export const damageProtection = async (save: Save, mode?: BaseMode) => {
         // ======================================
         // 50% and 75% or more damage = 36 HOURS
         // ======================================
-        if (mainProtectionTime && mainProtectionTime <= thirtySixHoursAgo) {
-          protection = 0;
-          mainProtectionTime = null;
-        }
-
         if (damage >= 50) {
-          protection = 1;
-          mainProtectionTime = currentTime;
+          if (mainProtectionTime && mainProtectionTime <= thirtySixHoursAgo) {
+            protection = 0;
+          } else {
+            protection = 1;
+            mainProtectionTime = currentTime;
+          }
+
+          // If there are new attacks after the 36-hour protection period
+          // has ended, apply protection again.
+          const recentYardAttacks = attackTimestamps.filter(
+            (timestamp) => timestamp > thirtySixHoursAgo
+          );
+
+          if (recentYardAttacks.length > 0) {
+            protection = 1;
+            mainProtectionTime = currentTime;
+          }
         }
         break;
       case BaseType.OUTPOST:
