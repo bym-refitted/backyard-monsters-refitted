@@ -1,6 +1,5 @@
 import "reflect-metadata";
 import "dotenv/config";
-import session from "koa-session";
 
 import Koa, { Context, Next } from "koa";
 import Router from "@koa/router";
@@ -16,8 +15,9 @@ import { ascii_node } from "./utils/ascii_art";
 import { ErrorInterceptor } from "./middleware/clientSafeError";
 import { processLanguagesFile } from "./middleware/processLanguageFile";
 import { logMissingAssets, morganLogging } from "./middleware/morganLogging";
-import { getLatestSwfFromGithub } from "./utils/getLatestSwfFromGithub";
-import { SESSION_CONFIG } from "./config/SessionConfig";
+import { Status } from "./enums/StatusCodes";
+import { getLatestSwfFromGithub } from "./controllers/github/getLatestSwfFromGithub";
+import { corsCacheControl } from "./middleware/corsCacheControlSetup";
 
 export const app = new Koa();
 
@@ -39,16 +39,8 @@ export const getApiVersion = () => globalApiVersion;
 export const PORT = process.env.PORT || 3001;
 export const BASE_URL = process.env.BASE_URL;
 
-// Cache control middleware
-// Apply no-cache headers to all routes except static files
-app.use(async (ctx, next) => {
-  if (!ctx.path.startsWith("/public")) {
-    ctx.set("Cache-Control", "no-cache, no-store, must-revalidate");
-    ctx.set("Pragma", "no-cache");
-    ctx.set("Expires", "0");
-  }
-  await next();
-});
+// CORS & Cache Control
+app.use(corsCacheControl);
 
 // Entry point for all modules.
 const api = new Router();
@@ -56,10 +48,6 @@ api.get("/", (ctx: Context) => (ctx.body = {}));
 
 (async () => {
   await firstRunEnv();
-
-  // Sessions
-  app.keys = [process.env.SECRET_KEY];
-  app.use(session(SESSION_CONFIG, app));
 
   ORMContext.orm = await MikroORM.init<MariaDbDriver>(ormConfig);
   ORMContext.em = ORMContext.orm.em;
@@ -92,7 +80,7 @@ api.get("/", (ctx: Context) => (ctx.body = {}));
 
   app.use(async (ctx, next) => {
     if (ctx.path === "/crossdomain.xml") {
-      ctx.status = 200;
+      ctx.status = Status.OK;
       ctx.body = `<?xml version="1.0"?>
                   <!DOCTYPE cross-domain-policy SYSTEM "http://www.adobe.com/xml/dtds/cross-domain-policy.dtd">
                   <cross-domain-policy>

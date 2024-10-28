@@ -50,8 +50,22 @@ package
 
       public static function Login():void
       {
-         authForm = new AuthForm();
-         GLOBAL._layerTop.addChild(authForm);
+         if (GAME.token)
+         {
+            PLEASEWAIT.Show("Logging in...");
+            GLOBAL.LanguageSetup();
+
+            new URLLoaderApi().load(GLOBAL._apiURL + "bm/getnewmap", null,
+               function(serverData:Object)
+               {
+                  LOGIN.OnGetNewMap(serverData, [["token", GAME.sharedObj.data.token]]);
+               });
+         }
+         else
+         {
+            authForm = new AuthForm();
+            GLOBAL._layerTop.addChild(authForm);
+         }
       }
 
       public static function OnGetNewMap(serverData:Object, authInfo:Array):void

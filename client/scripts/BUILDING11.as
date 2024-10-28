@@ -27,7 +27,6 @@ package
       
       override public function Tick(param1:int) : void
       {
-         _initFinishedMR = true;
          if(_countdownBuild.Get() > 0 || health < maxHealth * 0.5)
          {
             _canFunction = false;
@@ -35,6 +34,7 @@ package
          else
          {
             _canFunction = true;
+            MAPROOM.initMaproomSetup = true;
          }
          if(MapRoomManager.instance.isInMapRoom3)
          {

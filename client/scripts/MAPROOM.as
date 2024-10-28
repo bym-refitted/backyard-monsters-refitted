@@ -21,11 +21,11 @@ package
       
       public static var _lastSort:int = 3;
       
-      public static var _initFinishedMR:Boolean = true;
-      
       public static var _lastSortReversed:int = 0;
       
       public static var _visitingFriend:Boolean = false;
+
+      public static var initMaproomSetup:Boolean;
       
       private static var loadState:int;
       
@@ -33,7 +33,6 @@ package
       
       private static var bridge_obj:Object;
        
-      
       public function MAPROOM()
       {
          super();
@@ -43,10 +42,10 @@ package
       {
          _mc = null;
          loadState = 0;
+         initMaproomSetup = false;
          _open = false;
          if(GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD)
          {
-            _initFinishedMR = false;
             _visitingFriend = false;
             bridge_obj = {
                "Timestamp":GLOBAL.Timestamp,
@@ -112,13 +111,15 @@ package
                }
                if(GLOBAL._bMap)
                {
-                  if(GLOBAL._bMap._canFunction && _initFinishedMR)
+                  if(GLOBAL._bMap._canFunction && initMaproomSetup)
                   {
                      GLOBAL.BlockerAdd();
                      SOUNDS.Play("click1");
                      _open = true;
-                     if(loadState != 2 && loadState != 1)
+                     if([1, 2].indexOf(loadState) === -1)
                      {
+                        // Loads Map Room 1
+                        // This can be triggered if save.usemap on the server is not set or 0
                         _mc = new MapRoom();
                         _mc.init(bridge_obj);
                         GLOBAL._layerTop.addChild(_mc);
@@ -128,7 +129,7 @@ package
                         ShowB();
                      }
                   }
-                  else if(!_initFinishedMR)
+                  else if(!initMaproomSetup)
                   {
                      GLOBAL.Message(KEYS.Get("newmap_init_setup"));
                   }
