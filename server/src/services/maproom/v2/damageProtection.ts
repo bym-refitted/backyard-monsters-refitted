@@ -28,7 +28,7 @@ export const damageProtection = async (save: Save, mode?: BaseMode) => {
   const sevenDays = 7 * 24 * 60 * 60;
   const twelveHours = 12 * 60 * 60;
 
-  const thirtySixHoursAgo = currentTime - 36 * 60 * 60;
+  const thirtySixHoursAgo = currentTime - 60 * 36 * 60;
   const eightHoursAgo = currentTime - 8 * 60 * 60;
   const oneHourAgo = currentTime - 3600;
 
@@ -40,89 +40,86 @@ export const damageProtection = async (save: Save, mode?: BaseMode) => {
 
   if (mode === BaseMode.ATTACK) {
     protection = 0;
+    save.initialProtectionOver = true;
+    save.initialOutpostProtectionOver = true;
     if (mainProtectionTime) mainProtectionTime = null;
   } else {
     switch (type) {
       case BaseType.MAIN:
-        // ======================================
-        // First week of the game = 7 DAYS
-        // ======================================
-        if (isFirstWeekOver && !initialProtectionOver) {
-          protection = 0;
-          save.initialProtectionOver = true;
-        }
-
-        // ======================================
-        // 4 attacks in 1 hour = 1 HOUR
-        // ======================================
-        const recentAttacks = attackTimestamps.filter(
+        const attacksInLastHour = attackTimestamps.filter(
           (timestamp) => timestamp > oneHourAgo
         );
+        // If there are new attacks after the 36-hour protection period
+        // has ended, apply protection again.
+        const attacksInLast36Hours = attackTimestamps.filter(
+          (timestamp) => timestamp > thirtySixHoursAgo
+        );
 
-        console.log("Checker: Recent attacks", recentAttacks.length);
-
-        if (recentAttacks.length >= 4) {
+        const setProtection = () => {
           protection = 1;
+          mainProtectionTime = currentTime;
+        };
 
-          if (recentAttacks[recentAttacks.length - 1] <= oneHourAgo) {
-            save.attackTimestamps = [];
-          } else {
-            save.attackTimestamps = recentAttacks;
+        const removeProtection = () => {
+          protection = 0;
+          mainProtectionTime = null;
+          save.initialProtectionOver = true;
+        };
+
+        if (protection) {
+          // Should never happen
+          if (!mainProtectionTime) removeProtection();
+
+          // First week of the game = 7 DAYS
+          if (isFirstWeekOver && !initialProtectionOver) removeProtection();
+
+          // If the protection time was set over 36 hours ago, remove protection
+          if (mainProtectionTime <= thirtySixHoursAgo) removeProtection();
+        } else {
+          // 4 attacks in 1 hour = 1 HOUR
+          if (attacksInLastHour.length >= 4) {
+            setProtection();
+            save.attackTimestamps = save.attackTimestamps.slice(-3);
           }
-        }
 
-        // ======================================
-        // 50% and 75% or more damage = 36 HOURS
-        // ======================================
-        if (damage >= 50) {
-          if (mainProtectionTime && mainProtectionTime <= thirtySixHoursAgo) {
-            protection = 0;
-          } else {
-            protection = 1;
-            mainProtectionTime = currentTime;
-          }
-
-          // If there are new attacks after the 36-hour protection period
-          // has ended, apply protection again.
-          const recentYardAttacks = attackTimestamps.filter(
-            (timestamp) => timestamp > thirtySixHoursAgo
-          );
-
-          if (recentYardAttacks.length > 0) {
-            protection = 1;
-            mainProtectionTime = currentTime;
+          // 50% and 75% or more damage = 36 HOURS
+          if (damage >= 50 && attacksInLast36Hours.length !== 0) {
+            setProtection();
           }
         }
         break;
       case BaseType.OUTPOST:
-        // ======================================
-        // Outpost takeover = 12 HOURS
-        // ======================================
-        if (isOutpostProtectionOver && !initialOutpostProtectionOver) {
+        const setOutpostProtection = () => {
+          protection = 1;
+          outpostProtectionTime = currentTime;
+        };
+        
+        const removeOutpostProtection = () => {
           protection = 0;
+          outpostProtectionTime = null;
           save.initialOutpostProtectionOver = true;
-        }
+        };
 
-        // ======================================
-        // 25% damage in 2-3 attacks, instant protection on third attack = 8 HOURS
-        // ======================================
-        if (damage >= 25) {
-          if (outpostProtectionTime && outpostProtectionTime <= eightHoursAgo) {
-            protection = 0;
-          } else {
-            protection = 1;
-            outpostProtectionTime = currentTime;
+        // If there are new attacks after the 8-hour protection period
+        // has ended, apply protection again.
+        const attacksInLast8Hours = attackTimestamps.filter(
+          (timestamp) => timestamp > eightHoursAgo
+        );
+
+        if (protection) {
+          // Should never happen
+          if (!outpostProtectionTime) removeProtection();
+
+          // Outpost takeover = 12 HOURS
+          if (isOutpostProtectionOver && !initialOutpostProtectionOver) {
+            removeOutpostProtection();
           }
-
-          // If there are new attacks after the 8-hour protection period
-          // has ended, apply protection again.
-          const recentOutpostAttacks = attackTimestamps.filter(
-            (timestamp) => timestamp > eightHoursAgo
-          );
-
-          if (recentOutpostAttacks.length > 0) {
-            protection = 1;
-            outpostProtectionTime = currentTime;
+          // If the protection time was set over 8 hours ago, remove protection
+          if (mainProtectionTime <= eightHoursAgo) removeProtection();
+        } else {
+          // 25% or more damage = 8 HOURS
+          if (damage >= 25 && attacksInLast8Hours.length !== 0) {
+            setOutpostProtection();
           }
         }
         break;
