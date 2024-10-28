@@ -1,19 +1,14 @@
 import { ORMContext } from "../server";
 import { User } from "../models/user.model";
 import { Context, Next } from "koa";
-import { authFailureErr } from "../errors/errors";
+import { authFailureErr } from "../errors/errorCodes.";
 import JWT, { JwtPayload } from "jsonwebtoken";
 
 /**
- * Middleware to enforce authentication for protected routes.
- *
- * This middleware checks for the presence of a valid Bearer token in the
- * Authorization header, verifies the token's authenticity, and loads the
- * associated user from the database.
- *
- * @param {Context} ctx - The Koa context object.
- * @param {Next} next - The Koa next middleware function.
- * @throws Will throw an error if the Authorization header is missing or invalid, or if the user cannot be found.
+ * This middleware enforces authentication for protected routes. It checks
+ * for the presence of a valid Bearer token in the Authorization header,
+ * verifies the token's authenticity, and loads the associated user from the
+ * database.
  */
 export const auth = async (ctx: Context, next: Next) => {
   const authHeader = ctx.headers.authorization;
@@ -31,8 +26,8 @@ export const auth = async (ctx: Context, next: Next) => {
 };
 
 /**
- * A temporary type definition to work around issues with the JWT library types.
- * This type should be removed in the future if the JWT library types are fixed. */
+ * This is a disgusting hack because the JWT library types are awful. please remove in future if this is fixed
+ */
 type DisgustingJwtPayloadHack = Pick<
   JwtPayload,
   "iss" | "sub" | "aud" | "exp" | "nbf" | "iat" | "jti"
@@ -44,16 +39,11 @@ export interface BymJwtPayload extends DisgustingJwtPayloadHack {
   };
 }
 
-/**
- * Verifies a JWT token and returns the decoded payload.
- *
- * @param {string} token - The JWT token to verify.
- * @returns {BymJwtPayload} The decoded JWT payload.
- * @throws Will throw an error if the token is invalid or verification fails.
- */
 export const verifyJwtToken = (token: string): BymJwtPayload => {
   try {
-    return <BymJwtPayload>JWT.verify(token, process.env.SECRET_KEY);
+    return <BymJwtPayload>(
+      JWT.verify(token, process.env.SECRET_KEY || "MISSING_SECRET")
+    );
   } catch (err) {
     throw authFailureErr();
   }

@@ -104,7 +104,9 @@ package com.auth
         public function AuthForm()
         {
             addEventListener(Event.ADDED_TO_STAGE, formAddedToStageHandler);
-            GLOBAL.LanguageSetup();
+            KEYS._storageURL = GLOBAL.languageUrl;
+            KEYS.GetSupportedLanguages();
+            KEYS.Setup("english");
 
             // Start a timer every second to check if text content and supported languages are loaded from the server
             checkContentLoadedTimer = new Timer(1000);
@@ -657,7 +659,7 @@ package com.auth
                     }
                     else
                     {
-                        GLOBAL.Message("<b>Usernames must be:</b><br><br>• At least 2 characters long.<br>• No longer than 12 characters.<br>• Can only include numbers and letters.");
+                        GLOBAL.Message("<b>Usernames must be:</b><br><br>• At least 2 characters long.<br>• No longer than 15 characters.<br>• Can only include numbers, letters, and underscores.");
                     }
                 }
                 else
@@ -669,15 +671,15 @@ package com.auth
             {
                 if (!isEmailValid)
                 {
-                    showErrorMessage(emailInput, "Please enter a valid email address");
+                    showErrorMessage(emailInput, "Invalid email format");
                 }
                 if (!isPasswordValid)
                 {
-                    showErrorMessage(passwordInput, "Password must be at least 8 characters long, contain at least 1 uppercase\nletter, and 1 special character");
+                    showErrorMessage(passwordInput, "Password must be at least 8 characters");
                 }
                 if (!isUsernameValid && isRegisterForm)
                 {
-                    GLOBAL.Message("<b>Usernames must be:</b><br><br>• At least 2 characters long.<br>• No longer than 12 characters.<br>• Can only include numbers and letters.");
+                    GLOBAL.Message("<b>Usernames must be:</b><br><br>• At least 2 characters long.<br>• No longer than 15 characters.<br>• Can only include numbers, letters, and underscores.");
                 }
             }
         }
@@ -689,7 +691,7 @@ package com.auth
 
         private function registerNewUser(serverData:Object):void
         {
-            GLOBAL.Message("You have successfully registered an account. Please login to continue.");
+            GLOBAL.Message("<b>Congratulations!</b> Your account has been successfully created, you can now login.");
             isRegisterForm = false;
             updateState();
         }
@@ -707,7 +709,7 @@ package com.auth
         private function isValidUsername(username:String):Boolean
         {
             var pattern:RegExp = /^[a-zA-Z0-9_]+$/;
-            return username.length >= 2 && username.length <= 12 && pattern.test(username);
+            return username.length >= 2 && username.length <= 15 && pattern.test(username);
         }
 
         private function isValidEmail(email:String):Boolean
@@ -718,8 +720,7 @@ package com.auth
 
         private function isValidPassword(password:String):Boolean
         {
-            var passwordRegex:RegExp = /^(?=.*[A-Z])(?=.*[\W_])(?=.{8,})/;
-            return passwordRegex.test(password);
+            return password.length >= 8;
         }
 
         private function clearErrorMessages():void
@@ -731,13 +732,13 @@ package com.auth
         private function showErrorMessage(inputField:TextField, errorMessage:String):void
         {
             var errorText:TextField = new TextField();
-            errorText.htmlText = errorMessage;
+            errorText.text = errorMessage;
             errorText.textColor = RED;
             errorText.x = inputField.x;
             ;
-            errorText.y = inputField.y + inputField.height + 5;
-            errorText.width = inputField.width + 100;
-            errorText.height = 40;
+            errorText.y = inputField.y + inputField.height;
+            errorText.width = inputField.width;
+            errorText.height = errorText.textHeight + 3;
             formContainer.addChild(errorText);
 
             if (inputField == emailInput)

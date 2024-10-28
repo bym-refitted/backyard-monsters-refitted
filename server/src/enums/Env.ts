@@ -1,8 +1,4 @@
-/**
- * Enum representing the executing environment
- * @enum {string}
- */
-export enum Env {
-  LOCAL = "local",
-  PROD = "production",
+export enum ENV {
+    LOCAL = "local",
+    PROD = "production"
 }

@@ -270,10 +270,10 @@ package
             }
             BASE.Purchase("MUSHROOM" + _loc5_,1,"MUSHROOMS");
             // Comment: Updated mushroom values to produce higher shiny.
-            _loc6_ = 3; // MUSHROOM1
+            _loc6_ = 25; // MUSHROOM1
             if(_loc5_ == 2)
             {
-               _loc6_ = 8; // MUSHROOM2
+               _loc6_ = 50; // MUSHROOM2
             }
             _loc3_ = KEYS.Get("pop_mushroom_msg1",{"v1":_loc6_});
             (_loc7_ = new popup_mushroomshiny()).tTitle.htmlText = "<b>" + KEYS.Get("pop_goldenmushroom_title") + "</b>";

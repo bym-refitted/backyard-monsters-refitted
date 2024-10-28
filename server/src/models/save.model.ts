@@ -1,23 +1,9 @@
-import {
-  Entity,
-  Property,
-  PrimaryKey,
-  BeforeUpdate,
-  EntityManager,
-  Connection,
-  IDatabaseDriver,
-  OneToOne,
-} from "@mikro-orm/core";
+import { Entity, Property, PrimaryKey, BeforeUpdate } from "@mikro-orm/core";
 import { FrontendKey } from "../utils/FrontendKey";
-import { getDefaultBaseData } from "../data/getDefaultBaseData";
-import { User } from "./user.model";
-import { WorldMapCell } from "./worldmapcell.model";
 
 export interface FieldData {
   [key: string | number]: any;
 }
-
-type Outpost = [number, number, string];
 
 @Entity()
 export class Save {
@@ -33,26 +19,18 @@ export class Save {
     }
   }
 
-  // IDs & Foreign Keys
+  // Primatives
   @FrontendKey
-  @PrimaryKey({ autoincrement: true })
-  basesaveid!: bigint;
+  @PrimaryKey()
+  basesaveid!: number;
 
   @FrontendKey
-  @Property({ default: 0 })
-  baseid!: bigint;
-
-  @OneToOne({
-    nullable: true,
-    orphanRemoval: true,
-    inversedBy: "save",
-    entity: () => WorldMapCell,
-  })
-  cell: WorldMapCell;
+  @Property()
+  baseid!: string;
 
   @FrontendKey
-  @Property({ default: 0 })
-  homebaseid!: bigint;
+  @Property()
+  type!: string;
 
   @FrontendKey
   @Property()
@@ -60,84 +38,66 @@ export class Save {
 
   @FrontendKey
   @Property()
-  saveuserid!: number;
-
-  @FrontendKey
-  @Property({ default: 0 })
-  attackid!: number;
-
-  @FrontendKey
-  @Property({ default: 0 })
-  id!: number;
-
-  @FrontendKey
-  @Property({ default: 0 })
-  baseid_inferno!: number;
-
-  @FrontendKey
-  @Property({ default: 0 })
   wmid!: number;
-
-  // Damage Protection
-  @Property({ nullable: true })
-  mainProtectionTime: number | null;
-
-  @Property({ nullable: true })
-  outpostProtectionTime: number | null;
-
-  @Property({ default: false })
-  initialProtectionOver!: boolean;
-
-  @Property({ default: false })
-  initialOutpostProtectionOver!: boolean;
-
-  // Primatives
-  @FrontendKey
-  @Property({ default: "main" })
-  type!: string;
 
   @FrontendKey
   @Property()
   createtime!: number;
 
   @FrontendKey
-  @Property({ default: 0 })
-  savetime!: number; // Updates each time a save is triggered
+  @Property()
+  savetime!: number;
 
   @FrontendKey
-  @Property({ default: 0 })
+  @Property()
   seed!: number;
 
   @FrontendKey
-  @Property({ default: 0 })
+  @Property()
+  saveuserid!: number;
+
+  @FrontendKey
+  @Property()
   bookmarked!: number;
 
   @FrontendKey
-  @Property({ default: 0 })
+  @Property()
   fan!: number;
 
   @FrontendKey
-  @Property({ default: 0 })
+  @Property()
   emailshared!: number;
 
   @FrontendKey
-  @Property({ default: 0 })
+  @Property()
   unreadmessages!: number;
 
   @FrontendKey
-  @Property({ default: 0 })
+  @Property()
   giftsentcount!: number;
 
   @FrontendKey
-  @Property({ default: false })
+  @Property()
+  id!: number;
+
+  @FrontendKey
+  @Property()
   canattack!: boolean;
 
   @FrontendKey
-  @Property({ nullable: true })
-  fbid?: string;
+  @Property()
+  cellid!: number;
 
   @FrontendKey
-  @Property({ default: 0 })
+  @Property()
+  baseid_inferno!: number;
+
+  @FrontendKey
+  @Property()
+  fbid!: string;
+
+  @FrontendKey
+  @Property()
   fortifycellid!: number;
 
   @FrontendKey
@@ -145,162 +105,166 @@ export class Save {
   name!: string;
 
   @FrontendKey
-  @Property({ default: 1 })
+  @Property()
   level!: number;
 
   @FrontendKey
-  @Property({ default: 0 })
+  @Property()
   catapult!: number;
 
   @FrontendKey
-  @Property({ default: 0 })
+  @Property()
   flinger!: number;
 
   @FrontendKey
-  @Property({ default: 0 })
+  @Property()
   destroyed!: number;
 
   @FrontendKey
-  @Property({ default: 0 })
+  @Property()
   damage!: number;
 
   @FrontendKey
-  @Property({ default: 0 })
+  @Property()
   locked!: number;
 
   @FrontendKey
-  @Property({ default: 0 })
+  @Property()
   points!: number;
 
   @FrontendKey
-  @Property({ default: 0 })
+  @Property()
   basevalue!: number;
 
   @FrontendKey
-  @Property({ default: 0 })
-  tutorialstage!: number;
-
-  @FrontendKey
-  @Property({ default: 1 })
+  @Property()
   protected!: number;
 
   @FrontendKey
-  @Property({ default: 0 })
+  @Property()
   lastupdate!: number;
 
   @FrontendKey
-  @Property({ default: 0 })
+  @Property()
   usemap!: number;
+
+  @FrontendKey
+  @Property()
+  homebaseid!: number;
 
   @FrontendKey
   @Property()
   credits!: number;
 
   @FrontendKey
-  @Property({ type: "json", nullable: true, default: "null" })
+  @Property({ type: "json", nullable: true })
   champion?: string;
 
   @FrontendKey
-  @Property({ type: "json", nullable: true, default: "null" })
-  attackerchampion: string;
-
-  @FrontendKey
-  @Property({ default: 0 })
+  @Property()
   empiredestroyed!: number;
 
   @FrontendKey
-  @Property({ nullable: true })
-  worldid?: string;
+  @Property()
+  worldid!: string;
 
   @FrontendKey
-  @Property({ default: 0 })
+  @Property()
   event_score!: number;
 
   @FrontendKey
-  @Property({ default: 0 })
+  @Property()
   chatenabled!: number;
 
   @FrontendKey
-  @Property({ default: 0 })
+  @Property()
   relationship!: number;
 
   // Client save primitives
   @FrontendKey
-  @Property({ default: 0 })
+  @Property()
   timeplayed!: number;
 
   @FrontendKey
-  @Property({ default: 128 })
+  @Property()
   version!: number;
 
   @FrontendKey
-  @Property({ default: 0 })
+  @Property()
   clienttime!: number;
 
   @FrontendKey
-  @Property({ default: 0 })
+  @Property()
   baseseed!: number;
 
   @FrontendKey
-  @Property({ default: 0 })
+  @Property()
   healtime!: number;
 
   @FrontendKey
-  @Property({ default: 0 })
+  @Property()
   empirevalue!: number;
 
   @FrontendKey
-  @Property({ default: "basename" })
+  @Property()
   basename!: string;
 
   @FrontendKey
-  @Property({ default: 0 })
+  @Property()
+  attackreport!: string;
+
+  @FrontendKey
+  @Property()
   over!: number;
 
   @FrontendKey
-  @Property({ default: 0 })
+  @Property()
   protect!: number;
 
   @FrontendKey
-  @Property({ default: 0 })
-  purchasecomplete!: number;
+  @Property()
+  attackid!: number;
 
   @FrontendKey
-  @Property({ nullable: true })
-  cantmovetill?: number | null;
+  @Property()
+  purchasecomplete!: number;
 
   // Objects
   @FrontendKey
   @Property({ type: "json", nullable: true })
-  buildingdata?: FieldData = {};
+  buildingdata?: FieldData;
 
   @FrontendKey
   @Property({ type: "json", nullable: true })
-  buildingkeydata?: FieldData = {};
+  buildingkeydata?: FieldData;
 
   @FrontendKey
   @Property({ type: "json", nullable: true })
-  researchdata?: FieldData = {};
+  researchdata?: FieldData;
 
   @FrontendKey
   @Property({ type: "json", nullable: true })
-  stats?: FieldData = {};
+  stats?: FieldData;
 
   @FrontendKey
   @Property({ type: "json", nullable: true })
-  academy?: FieldData = {};
+  academy?: FieldData;
 
   @FrontendKey
   @Property({ type: "json", nullable: true })
-  rewards?: FieldData = {};
+  rewards?: FieldData;
+
+  // @FrontendKey
+  // @Property({ type: "json", nullable: true })
+  // takeover?: FieldData; // this creates an in-game popup that can't be dismissed until maproom is fixed
 
   @FrontendKey
   @Property({ type: "json", nullable: true })
-  aiattacks?: FieldData = {};
+  aiattacks?: FieldData;
 
   @FrontendKey
   @Property({ type: "json", nullable: true })
-  monsters?: FieldData = {};
+  monsters?: FieldData;
 
   @FrontendKey
   @Property({ type: "json", nullable: true })
@@ -308,71 +272,71 @@ export class Save {
 
   @FrontendKey
   @Property({ type: "json", nullable: true })
+  lockerdata?: FieldData;
+
+  @FrontendKey
+  @Property({ type: "json", nullable: true })
+  events?: FieldData;
+
+  @FrontendKey
+  @Property({ type: "json", nullable: true })
+  inventory?: FieldData;
+
+  @FrontendKey
+  @Property({ type: "json", nullable: true })
+  monsterbaiter?: FieldData;
+
+  @FrontendKey
+  @Property({ type: "json", nullable: true })
+  loot?: FieldData;
+
+  @FrontendKey
+  @Property({ type: "json", nullable: true })
+  storedata?: FieldData;
+
+  @FrontendKey
+  @Property({ type: "json", nullable: true })
+  coords?: FieldData;
+
+  @FrontendKey
+  @Property({ type: "json", nullable: true })
+  quests?: FieldData;
+
+  @FrontendKey
+  @Property({ type: "json", nullable: true })
+  player?: FieldData;
+
+  @FrontendKey
+  @Property({ type: "json", nullable: true })
+  krallen?: FieldData;
+
+  @FrontendKey
+  @Property({ type: "json", nullable: true })
+  siege?: FieldData;
+
+  @FrontendKey
+  @Property({ type: "json", nullable: true })
+  buildingresources?: FieldData;
+
+  @FrontendKey
+  @Property({ type: "json", nullable: true })
+  mushrooms?: FieldData;
+
+  @FrontendKey
+  @Property({ type: "json", nullable: true })
   iresources?: FieldData;
 
   @FrontendKey
   @Property({ type: "json", nullable: true })
-  lockerdata?: FieldData = {};
+  monsterupdate?: FieldData;
 
   @FrontendKey
   @Property({ type: "json", nullable: true })
-  events?: FieldData = {};
+  buildinghealthdata?: FieldData;
 
   @FrontendKey
   @Property({ type: "json", nullable: true })
-  inventory?: FieldData = {};
-
-  @FrontendKey
-  @Property({ type: "json", nullable: true })
-  monsterbaiter?: FieldData = {};
-
-  @FrontendKey
-  @Property({ type: "json", nullable: true })
-  loot?: FieldData = {};
-
-  @FrontendKey
-  @Property({ type: "json", nullable: true })
-  attackreport!: FieldData;
-
-  @FrontendKey
-  @Property({ type: "json", nullable: true })
-  storedata?: FieldData = {};
-
-  @FrontendKey
-  @Property({ type: "json", nullable: true })
-  coords?: FieldData = {};
-
-  @FrontendKey
-  @Property({ type: "json", nullable: true })
-  quests?: FieldData = {};
-
-  @FrontendKey
-  @Property({ type: "json", nullable: true })
-  player?: FieldData = {};
-
-  @FrontendKey
-  @Property({ type: "json", nullable: true })
-  krallen?: FieldData = {};
-
-  @FrontendKey
-  @Property({ type: "json", nullable: true })
-  siege?: FieldData = {};
-
-  @FrontendKey
-  @Property({ type: "json", nullable: true })
-  buildingresources?: FieldData = {};
-
-  @FrontendKey
-  @Property({ type: "json", nullable: true })
-  mushrooms?: FieldData = {};
-
-  @FrontendKey
-  @Property({ type: "json", nullable: true })
-  buildinghealthdata?: FieldData = {};
-
-  @FrontendKey
-  @Property({ type: "json", nullable: true })
-  frontpage?: FieldData = {};
+  frontpage?: FieldData;
 
   @Property()
   createdAt: Date = new Date();
@@ -383,95 +347,89 @@ export class Save {
   // Client save objects
   @FrontendKey
   @Property({ type: "json", nullable: true })
-  attackcreatures?: FieldData = {};
+  attackcreatures?: FieldData;
 
   @FrontendKey
   @Property({ type: "json", nullable: true })
-  attackloot?: FieldData = {};
+  attackloot?: FieldData;
 
   @FrontendKey
   @Property({ type: "json", nullable: true })
-  lootreport?: FieldData = {};
+  lootreport?: FieldData;
 
   @FrontendKey
   @Property({ type: "json", nullable: true })
-  attackersiege?: FieldData = {};
+  attackersiege?: FieldData;
 
   // Arrays
-  @Property({ type: "json" })
-  attackTimestamps: number[] = [];
+  @FrontendKey
+  @Property({ type: "json", nullable: true })
+  savetemplate: any[];
 
   @FrontendKey
   @Property({ type: "json", nullable: true })
-  monsterupdate?: FieldData = [];
+  updates: any[];
 
   @FrontendKey
   @Property({ type: "json", nullable: true })
-  savetemplate: any[] = [];
+  effects: (string | number)[][];
 
   @FrontendKey
   @Property({ type: "json", nullable: true })
-  updates: any[] = [];
+  homebase: string[];
 
   @FrontendKey
   @Property({ type: "json", nullable: true })
-  effects: (string | number)[][] = [];
+  outposts: number[][];
 
   @FrontendKey
   @Property({ type: "json", nullable: true })
-  homebase: string[] = [];
+  worldsize: number[];
 
   @FrontendKey
   @Property({ type: "json", nullable: true })
-  outposts: Outpost[] = [];
+  wmstatus: number[][];
 
   @FrontendKey
   @Property({ type: "json", nullable: true })
-  wmstatus: number[][] = [];
+  chatservers: string[];
+
+  // Client save arrays
+  @FrontendKey
+  @Property({ type: "json", nullable: true })
+  achieved: any[];
 
   @FrontendKey
   @Property({ type: "json", nullable: true })
-  chatservers: string[] = ["bym-chat.kixeye.com"];
+  attacks: any[];
 
   @FrontendKey
   @Property({ type: "json", nullable: true })
-  achieved: any[] = [];
+  gifts: any[];
 
   @FrontendKey
   @Property({ type: "json", nullable: true })
-  attacks: any[] = [];
+  sentinvites: any[];
 
   @FrontendKey
   @Property({ type: "json", nullable: true })
-  gifts: any[] = [];
+  sentgifts: any[];
 
   @FrontendKey
   @Property({ type: "json", nullable: true })
-  sentinvites: any[] = [];
+  attackerchampion: any[];
 
   @FrontendKey
   @Property({ type: "json", nullable: true })
-  sentgifts: any[] = [];
+  fbpromos: any[];
 
-  @FrontendKey
-  @Property({ type: "json", nullable: true })
-  fbpromos: any[] = [];
-
-  @FrontendKey
-  @Property({ type: "json", nullable: true })
-  powerups: string[] = [];
-
-  @FrontendKey
-  @Property({ type: "json", nullable: true })
-  attpowerups: string[] = [];
-
-  public static saveKeys: (keyof FieldData)[] = [
+  public static jsonKeys: (keyof FieldData)[] = [
     "buildingdata",
     "buildingkeydata",
     "researchdata",
     "stats",
     "rewards",
-    "tutorialstage",
+    // "takeover",
     "aiattacks",
     "monsters",
     "resources",
@@ -500,6 +458,7 @@ export class Save {
     "effects",
     "homebase",
     "outposts",
+    "worldsize",
     "wmstatus",
     "chatservers",
     "achieved",
@@ -507,47 +466,9 @@ export class Save {
     "gifts",
     "sentinvites",
     "sentgifts",
+    "champion",
     "attackerchampion",
     "fbpromos",
     "purchase",
-    "powerups",
-    "attpowerups",
   ];
-
-  public static attackSaveKeys: (keyof FieldData)[] = [
-    "level",
-    "catapult",
-    "flinger",
-    "destroyed",
-    "damage",
-    "locked",
-    "protected",
-    "champion",
-    "over",
-    "usemap",
-    "basevalue",
-    "empirevalue",
-    "points",
-    "tutorialstage",
-    "attackreport",
-  ];
-
-  public static createDefaultUserSave = async (
-    em: EntityManager<IDatabaseDriver<Connection>>,
-    user: User
-  ) => {
-    const baseSave = em.create(Save, getDefaultBaseData(user));
-    // Persist the entity to generate basesaveid
-    await em.persistAndFlush(baseSave);
-
-    // Update the baseid and homebase to match the basesaveid
-    baseSave.baseid = baseSave.basesaveid;
-    baseSave.homebaseid = baseSave.basesaveid;
-    await em.persistAndFlush(baseSave);
-
-    user.save = baseSave;
-    await em.persistAndFlush(user);
-
-    return baseSave;
-  };
 }
