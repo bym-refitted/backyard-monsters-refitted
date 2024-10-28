@@ -47,6 +47,15 @@ git clone https://github.com/bym-refitted/backyard-monsters-refitted
 
 <br />
 
+## Android Setup
+
+1. `keytool -genkeypair -v -keystore src/my-release-key.keystore -keyalg RSA -keysize 2048 -validity 138920 -alias my-key-alias\n`
+2. add password for the keystore
+3. make sure you have installed adt
+4. put the newest swf to bin/bymr-stable.swf
+5. `adt -package -target apk-captive-runtime -storetype pkcs12 -keystore src/my-release-key.keystore bin/BYMR.apk src/BYMR.xml bin/bymr-stable.swf src/assets/icon36.png src/assets/icon48.png src/assets/icon72.png`
+6. the generated apk will be on bin/BYMR.apk
+
 ## Preservation of digital heritage
 - [Exemption to PCCPSACT](https://www.federalregister.gov/documents/2018/10/26/2018-23241/exemption-to-prohibition-on-circumvention-of-copyright-protection-systems-for-access-control), exemptions to the provision of the Digital Millennium Copyright Act (“DMCA”).
 - [EFGAMP](https://efgamp.eu/), the European Federation of Video Game Archives, Museums and Preservation projects.

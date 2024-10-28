@@ -268,7 +268,7 @@ package
       
       public static var _takeoverPreviousOwnersName:String;
       
-      public static var _guardianData:Vector.<Object> = new Vector.<Object>(null);
+      public static var _guardianData:Vector.<Object> = new Vector.<Object>();
       
       public static var s_eventBases:Vector.<Number> = new Vector.<Number>();
       

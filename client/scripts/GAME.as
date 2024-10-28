@@ -34,8 +34,6 @@ package
 
       public static var language:String = "";
 
-      private var _checkScreenSize:Boolean = true;
-
       public function GAME()
       {
          var urls:Object = null;
@@ -113,7 +111,7 @@ package
          setLauncherVars();
          loaderInfo.uncaughtErrorEvents.addEventListener(UncaughtErrorEvent.UNCAUGHT_ERROR, this.uncaughtErrorThrown);
          GLOBAL._baseURL = urls._baseURL;
-         Security.allowDomain("*");
+
          SWFProfiler.init(stage, null);
          Console.initialize(stage);
          _contained = contained;
@@ -160,8 +158,8 @@ package
          }
          addEventListener(Event.ENTER_FRAME, GLOBAL.TickFast);
          LOGIN.Login();
-         stage.scaleMode = StageScaleMode.NO_SCALE;
-         stage.addEventListener(Event.RESIZE, GLOBAL.ResizeGame);
+         stage.scaleMode = StageScaleMode.SHOW_ALL;
+         // stage.addEventListener(Event.RESIZE, GLOBAL.ResizeGame);
          stage.showDefaultContextMenu = false;
          if (ExternalInterface.available)
          {
@@ -257,17 +255,15 @@ package
                   GLOBAL.ShowMap();
                });
          }
-         if (this._checkScreenSize)
+         
+         GLOBAL._SCREENINIT = new Rectangle(0, 0, stage.stageWidth, stage.stageHeight);
+         if (_isSmallSize)
          {
-            GLOBAL._SCREENINIT = new Rectangle(0, 0, stage.stageWidth, stage.stageHeight);
-            if (_isSmallSize)
-            {
-               GLOBAL._SCREENINIT = new Rectangle(0, 0, 760, 670);
-            }
-            else
-            {
-               GLOBAL._SCREENINIT = new Rectangle(0, 0, 760, 750);
-            }
+            GLOBAL._SCREENINIT = new Rectangle(0, 0, 760, 670);
+         }
+         else
+         {
+            GLOBAL._SCREENINIT = new Rectangle(0, 0, 760, 750);
          }
       }
 
