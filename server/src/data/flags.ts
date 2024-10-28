@@ -1,13 +1,17 @@
 import { devConfig } from "../config/DevSettings";
 
+/**
+ * Configuration flags for game settings.
+ * These flags are used to enable/disable features in game.
+ */
 export const flags = {
-  // Platform
+  // Platforms:
   viximo: 0,
-  kongregate: 1,
+  kongregate: 0,
 
-  // settings
+  // Settings:
   maproom2: devConfig.maproom ? 1 : 0,
-  inferno: devConfig.inferno ? 1 : 0, 
+  inferno: devConfig.inferno ? 1 : 0,
   showProgressBar: 0,
   gamestats: 0,
   logfps: 0,
@@ -46,7 +50,7 @@ export const flags = {
   chatblacklist: 0,
   welcome_email: 1,
   email_reengagement: 1,
-  countrycodeblacklist: "ph,my,id",
+  countrycodeblacklist: "",
   radio: 1,
   plinko: 0,
   midgameIncentive: 0,
@@ -57,7 +61,7 @@ export const flags = {
   autoban_validate_fail: 0,
   autoban_client: 0,
   yp_version: 2,
-  ers: 1, // Used for enabling canScheduleNewEvent() in ReplayableEventHandler
+  ers: 0, // Used for enabling canScheduleNewEvent() in ReplayableEventHandler.as on client
   krallen: 1,
   subscriptions: 1,
   krallen_duration: 7,
