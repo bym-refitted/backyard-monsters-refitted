@@ -5,7 +5,7 @@ import { FrontendKey } from "../utils/FrontendKey";
 @Entity()
 export class User {
   @FrontendKey
-  @PrimaryKey({ autoincrement: true })
+  @PrimaryKey()
   userid!: number;
 
   @OneToOne(() => Save, { nullable: true })
@@ -15,6 +15,10 @@ export class User {
   @FrontendKey
   username!: string;
 
+  @Property()
+  @FrontendKey
+  last_name!: string;
+
   @FrontendKey
   @Property({ unique: true })
   @Index()
@@ -22,14 +26,6 @@ export class User {
 
   @Property()
   password!: string;
-
-  @Property({ default: "" })
-  @FrontendKey
-  last_name?: string;
-
-  @Property({ default: "" })
-  @FrontendKey
-  resetToken?: string;
 
   @FrontendKey
   @Property({ nullable: true })
