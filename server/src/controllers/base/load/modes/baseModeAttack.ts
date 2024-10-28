@@ -21,6 +21,9 @@ export const baseModeAttack = async (user: User, baseid: string) => {
 
   // Record the timestamp of the attack
   const currentTimestamp = getCurrentDateTime();
+  if (save.attackTimestamps.length > 10)
+    save.attackTimestamps = save.attackTimestamps.slice(-9);
+  
   save.attackTimestamps.push(currentTimestamp);
 
   // Remove damage protection
@@ -61,6 +64,7 @@ export const baseModeAttack = async (user: User, baseid: string) => {
 
     cell.base_id = BigInt(save.baseid);
   }
+  
   save.cell = cell;
   save.worldid = userSave.worldid;
   save.attackid = Math.floor(Math.random() * 99999) + 1; // I hate this.
