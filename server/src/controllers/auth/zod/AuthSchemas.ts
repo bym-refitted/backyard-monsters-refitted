@@ -12,10 +12,13 @@ const passwordError = "Password must contain at least one uppercase letter and o
  * - Must contain at least one uppercase letter.
  * - Must contain at least one special character.
  */
-const passwordSchema = z
-  .string()
-  .min(8, passwordLengthError)
-  .regex(passwordRegex, passwordError);
+const passwordSchema = z.preprocess((arg) => {
+  if (typeof arg === "string" && arg === "") {
+    return undefined;
+  } else {
+    return arg;
+  }
+}, z.string().min(8, passwordLengthError).regex(passwordRegex, passwordError).optional());
 
 /**
  * Schema to validate email addresses.
