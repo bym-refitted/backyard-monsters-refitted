@@ -1030,7 +1030,7 @@ package
             _loc1_.changeModeRetreat();
          }
          SiegeWeapons.deactivateWeapon();
-         if(MapRoomManager.instance.isInMapRoom2or3 && BASE.isMainYardOrInfernoMainYard && (GLOBAL.mode == GLOBAL.e_BASE_MODE.ATTACK || GLOBAL.mode == GLOBAL.e_BASE_MODE.WMATTACK))
+         if(MapRoomManager.instance.isInMapRoom3 && BASE.isMainYardOrInfernoMainYard && (GLOBAL.mode == GLOBAL.e_BASE_MODE.ATTACK || GLOBAL.mode == GLOBAL.e_BASE_MODE.WMATTACK))
          {
             _logOpen = false;
             ShowLog();
