@@ -6,7 +6,7 @@ import { ORMContext } from "../../server";
 import { FilterFrontendKeys } from "../../utils/FrontendKey";
 import { KoaController } from "../../utils/KoaController";
 import { authFailureErr, emailPasswordErr } from "../../errors/errors";
-import { logging } from "../../utils/logger";
+import { errorLog, logging } from "../../utils/logger";
 import { BymJwtPayload, verifyJwtToken } from "../../middleware/auth";
 import { Status } from "../../enums/StatusCodes";
 import { Context } from "koa";
@@ -104,6 +104,9 @@ export const login: KoaController = async (ctx) => {
     if (err instanceof ClientSafeError) {
       ctx.status = err.status;
       ctx.body = { message: err.message, code: err.code };
-    } else throw authFailureErr();
+    } else {
+      errorLog(`Authentication Error: ${err}`);
+      throw authFailureErr();
+    }
   }
 };
