@@ -718,7 +718,7 @@ package com.auth
 
         private function isValidPassword(password:String):Boolean
         {
-            var passwordRegex:RegExp = /^(?=.*[A-Z])(?=.*[!@#$%^&*])(?=.{8,})/;
+            var passwordRegex:RegExp = /^(?=.*[A-Z])(?=.*[\W_])(?=.{8,})/;
             return passwordRegex.test(password);
         }
 
