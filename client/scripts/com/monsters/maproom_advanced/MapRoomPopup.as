@@ -72,6 +72,8 @@ package com.monsters.maproom_advanced
       public var _dragged:Boolean;
       
       private var _popupMonstersB:PopupMonstersB;
+
+      public static var s_Instance:MapRoomPopup = null;
       
       public function MapRoomPopup()
       {
@@ -213,6 +215,11 @@ package com.monsters.maproom_advanced
          GLOBAL._ROOT.stage.addEventListener(MouseEvent.MOUSE_UP,this.ContainerRelease);
          this.mcMask.mcBG.addChild(this._cellContainer);
       }
+
+      public static function get instance() : MapRoomPopup
+      {
+         return s_Instance = s_Instance || new MapRoomPopup();
+      }
       
       private function JumpPopupShow(param1:MouseEvent = null) : void
       {
@@ -304,7 +311,7 @@ package com.monsters.maproom_advanced
             mcInfo.mcAlliancePic.mcImage.removeChildAt(_loc2_);
          }
          mcInfo.mcAlliancePic.visible = false;
-         if(GLOBAL._flags.kongregate) // Comment: Previously viximo
+         if(!GLOBAL._flags.viximo)
          {
             if(param1._base > 1 && Boolean(param1._pic_square))
             {
@@ -505,6 +512,14 @@ package com.monsters.maproom_advanced
             BASE.LoadBase(null,0,GLOBAL._homeBaseID,GLOBAL.e_BASE_MODE.BUILD,false,EnumYardType.MAIN_YARD);
          }
          SOUNDS.Play("close");
+         this.Cleanup();
+         MapRoomManager.instance.Hide();
+      }
+
+      public function CloseMapRoomAfterMigration() : void
+      {
+         BASE.yardType = EnumYardType.MAIN_YARD;
+         BASE.LoadBase(null,0,GLOBAL._homeBaseID,GLOBAL.e_BASE_MODE.BUILD,false,EnumYardType.MAIN_YARD);
          this.Cleanup();
          MapRoomManager.instance.Hide();
       }
