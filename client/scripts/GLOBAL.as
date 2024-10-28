@@ -444,23 +444,6 @@ package
       {
          super();
       }
-
-      public static function LanguageSetup(): void {
-
-         var token:String = GAME.sharedObj.data.token;
-         var language:String = GAME.sharedObj.data.language;
-         KEYS._storageURL = GLOBAL.languageUrl;
-         KEYS.GetSupportedLanguages();
-
-         if (token) 
-         {
-            KEYS.Setup(language);
-         } 
-         else 
-         {
-            KEYS.Setup("english");
-         }
-      }
       
       public static function get townHall() : BFOUNDATION
       {

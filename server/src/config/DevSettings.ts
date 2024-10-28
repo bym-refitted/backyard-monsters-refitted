@@ -1,15 +1,12 @@
-import { Env } from "../enums/Env";
+/** Check the Wiki to get more information on each of these flags. */
+/** https://github.com/bym-refitted/backyard-monsters-refitted/wiki/Dev-Settings-%E2%80%90-Configuration */
 
-/** Visit our Wiki to get more information on each flag.
- * Wiki: https://github.com/bym-refitted/backyard-monsters-refitted/wiki/Dev-Settings-%E2%80%90-Configuration
- */
 export const devConfig = {
   logMissingAssets: false,
-  skipTutorial: process.env.ENV !== Env.PROD,
-  unlockAllEventRewards: true,
-  maproom: true,
+  skipTutorial: true,
+  unlockAllEventRewards: false,
+  maproom: false,
   inferno: false,
-  shiny: 2500,
-  devSandbox: true,
+  devSandbox: false,
   debugSandbox: false,
 };

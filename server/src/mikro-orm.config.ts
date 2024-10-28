@@ -3,23 +3,15 @@ import { MariaDbDriver } from "@mikro-orm/mariadb";
 import path from "path";
 import { Save } from "./models/save.model";
 import { User } from "./models/user.model";
-import { WorldMapCell } from "./models/worldmapcell.model";
-import { World } from "./models/world.model";
-import { Env } from "./enums/Env";
+import { ENV } from "./enums/Env";
 
-/**
- * Configuration for MikroORM.
- * 
- * This configuration sets up the ORM to use MariaDB as the database driver.
- * Additional Entities must be added to the `entities` array.
- * 
- * @type {Options<MariaDbDriver> | Configuration<MariaDbDriver>}
- */
-const mikroOrmConfig = {
+// The configuration for the ORM - Any Entities added need to be put in here, other than that probably doesn't need to be touched
+// tslint:disable-next-line: no-object-literal-type-assertion
+export default {
   type: "mariadb",
   allowGlobalContext: false,
-  entities: [User, Save, World, WorldMapCell],
-  debug: process.env.ENV !== Env.PROD,
+  debug: process.env.ENV !== ENV.PROD,
+  entities: [Save, User],
   dbName: process.env.DB_NAME,
   port: Number(process.env.DB_PORT),
   host: process.env.DB_HOST,
@@ -30,5 +22,3 @@ const mikroOrmConfig = {
     pattern: /^[\w-]+\d+\.[j]s$/,
   },
 } as Parameters<typeof MikroORM.init<MariaDbDriver>>[0];
-
-export default mikroOrmConfig;
