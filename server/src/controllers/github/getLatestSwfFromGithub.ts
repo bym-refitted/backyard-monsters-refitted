@@ -24,13 +24,13 @@ export const getLatestSwfFromGithub = async (): Promise<string> => {
   );
 
   const latestRelease = releases[0].assets.find(
-    (asset) => asset && asset.name.startsWith("bymr-stable")
+    (asset) => asset && asset.name.startsWith("bymr")
   );
 
   if (!latestRelease) errorLog("No latest release found."); // TODO: handle this better
 
   const releaseName = latestRelease.name;
-  const releaseVersion = releaseName.match(/bymr-stable-(.*).swf/)[1];
+  const releaseVersion = releaseName.match(/bymr-(.*).swf/)[1];
 
   // Create a folder to store the api versioning files if not exists
   const folderPath = process.env.LAUNCHER_ASSETS_PATH || "../api-versioning";
