@@ -38,11 +38,34 @@ export const damageProtection = async (save: Save, mode?: BaseMode) => {
   // Check if 12 hours have passed since outpost takeover
   const isOutpostProtectionOver = currentTime - createtime > twelveHours;
 
+  const setProtection = () => {
+    protection = 1;
+    mainProtectionTime = currentTime;
+  };
+
+  const removeProtection = () => {
+    protection = 0;
+    mainProtectionTime = null;
+    save.initialProtectionOver = true;
+  };
+
+  const setOutpostProtection = () => {
+    protection = 1;
+    outpostProtectionTime = currentTime;
+  };
+
+  const removeOutpostProtection = () => {
+    protection = 0;
+    outpostProtectionTime = null;
+    save.initialOutpostProtectionOver = true;
+  };
+
   if (mode === BaseMode.ATTACK) {
     protection = 0;
     save.initialProtectionOver = true;
     save.initialOutpostProtectionOver = true;
     if (mainProtectionTime) mainProtectionTime = null;
+    if (outpostProtectionTime) outpostProtectionTime = null;
   } else {
     switch (type) {
       case BaseType.MAIN:
@@ -54,17 +77,6 @@ export const damageProtection = async (save: Save, mode?: BaseMode) => {
         const attacksInLast36Hours = attackTimestamps.filter(
           (timestamp) => timestamp > thirtySixHoursAgo
         );
-
-        const setProtection = () => {
-          protection = 1;
-          mainProtectionTime = currentTime;
-        };
-
-        const removeProtection = () => {
-          protection = 0;
-          mainProtectionTime = null;
-          save.initialProtectionOver = true;
-        };
 
         if (protection) {
           // Should never happen
@@ -89,17 +101,6 @@ export const damageProtection = async (save: Save, mode?: BaseMode) => {
         }
         break;
       case BaseType.OUTPOST:
-        const setOutpostProtection = () => {
-          protection = 1;
-          outpostProtectionTime = currentTime;
-        };
-        
-        const removeOutpostProtection = () => {
-          protection = 0;
-          outpostProtectionTime = null;
-          save.initialOutpostProtectionOver = true;
-        };
-
         // If there are new attacks after the 8-hour protection period
         // has ended, apply protection again.
         const attacksInLast8Hours = attackTimestamps.filter(

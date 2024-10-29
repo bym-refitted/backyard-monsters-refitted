@@ -10,6 +10,6 @@ export const devConfig = {
   maproom: true,
   inferno: false,
   shiny: 1000,
-  devSandbox: false,
+  devSandbox: true,
   debugSandbox: false,
 };
