@@ -17,6 +17,7 @@ export const mapUserSaveData = (user: User) => {
     lockerdata: userSave.lockerdata,
     academy: userSave.academy,
     outposts: userSave.outposts,
+    quests: userSave.quests,
     points: userSave.points,
     basevalue: userSave.basevalue,
   };
