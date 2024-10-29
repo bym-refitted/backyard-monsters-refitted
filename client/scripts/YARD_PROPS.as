@@ -1817,7 +1817,7 @@ package
             "2":{"img":"17.2.png"},
             "3":{"img":"17.3.png"},
             "4":{"img":"17.4.png"},
-            "4":{"img":"17.5.png"}
+            "5":{"img":"17.5.png"}
          },
          "quantity":[0,0,30,60,120,200,220,280,300,340,400],
          "hp":[1000,2300,5750,18000,27000],
@@ -2460,7 +2460,7 @@ package
                "topdamaged":["top.1.damaged.png",new Point(-45,-8)],
                "shadowdamaged":["shadow.1.damaged.jpg",new Point(-66,5)],
                "topdestroyed":["top.1.destroyed.png",new Point(-50,4)],
-               "shadowdamaged":["shadow.1.destroyed.jpg",new Point(-61,14)]
+               "shadowdestroyed":["shadow.1.destroyed.jpg",new Point(-61,14)]
             }
          },
          "upgradeImgData":{
@@ -3211,7 +3211,6 @@ package
             "r3":0,
             "r4":0,
             "r5":150,
-            "r4":0,
             "time":0,
             "re":[]
          }],
@@ -3790,7 +3789,6 @@ package
             "r3":0,
             "r4":0,
             "r5":250,
-            "r4":0,
             "time":0,
             "re":[]
          }],
@@ -3825,7 +3823,6 @@ package
             "r3":0,
             "r4":0,
             "r5":250,
-            "r4":0,
             "time":0,
             "re":[]
          }],
