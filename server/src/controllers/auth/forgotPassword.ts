@@ -40,9 +40,8 @@ export const forgotPassword: KoaController = async (ctx) => {
     await ORMContext.em.persistAndFlush(user);
 
     // Read the HTML template
-    const templatePath = "../../templates/forgot-password.html";
-    const template = path.join(__dirname, templatePath);
-    const html = await fs.readFile(template, "utf-8");
+    const templatePath = path.resolve("../../templates/forgot-password.html");
+    const html = await fs.readFile(templatePath, "utf-8");
 
     // Send user token in email
     const resetLink = `${process.env.WEB_URL}/reset-password?token=${token}`;
