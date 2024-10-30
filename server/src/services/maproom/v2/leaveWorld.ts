@@ -21,7 +21,7 @@ export const leaveWorld = async (user: User, save: Save) => {
   world.playerCount -= 1;
 
   // Reset the user's save data
-  save.worldid = "";
+  save.worldid = null;
   save.usemap = 0;
   save.cell = null;
   save.homebase = null;
