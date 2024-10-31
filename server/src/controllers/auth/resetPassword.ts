@@ -24,18 +24,8 @@ export const resetPassword: KoaController = async (ctx) => {
   try {
     const { password, token } = ResetPasswordSchema.parse(ctx.request.body);
 
-    const decodedToken = verifyJwtToken(token);
-
-    if (!decodedToken || !decodedToken.user || !decodedToken.user.email) {
-      ctx.status = Status.UNAUTHORIZED;
-      ctx.body = {
-        message:
-          "The provided token is invalid. Please request a new password reset.",
-      };
-    }
-
     // Verify the token
-    const { email } = decodedToken.user;
+    const { email } = verifyJwtToken(token).user;
 
     const user = await ORMContext.em.findOne(User, { email });
     if (!user || user.resetToken !== token) throw authFailureErr();
