@@ -10,7 +10,10 @@ import { Status } from "../enums/StatusCodes";
  */
 export const corsCacheControl = async (ctx: Context, next: Next) => {
   // Allow all origins
-  ctx.set("Access-Control-Allow-Origin", "*");
+  if (!ctx.response.headers['access-control-allow-origin']) {
+    ctx.set("Access-Control-Allow-Origin", "*");
+  }
+  
   ctx.set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
   ctx.set("Access-Control-Allow-Headers", "Content-Type, Authorization");
 
