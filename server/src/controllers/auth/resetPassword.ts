@@ -34,7 +34,7 @@ export const resetPassword: KoaController = async (ctx) => {
 
     // Update the user's password
     user.password = hashedPassword;
-    user.resetToken = null;
+    user.resetToken = "";
     await ORMContext.em.persistAndFlush(user);
 
     ctx.status = Status.OK;
