@@ -26,10 +26,11 @@ export const resetPassword: KoaController = async (ctx) => {
 
     const decodedToken = verifyJwtToken(token);
 
-    if (!decodedToken || !decodedToken.user) {
+    if (!decodedToken || !decodedToken.user || !decodedToken.user.email) {
       ctx.status = Status.UNAUTHORIZED;
       ctx.body = {
-        message: "The provided token is invalid. Please request a new password reset.",
+        message:
+          "The provided token is invalid. Please request a new password reset.",
       };
     }
 
