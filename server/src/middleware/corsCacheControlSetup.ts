@@ -9,6 +9,9 @@ import { Status } from "../enums/StatusCodes";
  * @returns {Promise<void>} - A promise that resolves when the middleware is complete.
  */
 export const corsCacheControl = async (ctx: Context, next: Next) => {
+  // Allow all origins
+  ctx.set("Access-Control-Allow-Origin", "*");
+  
   ctx.set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
   ctx.set("Access-Control-Allow-Headers", "Content-Type, Authorization");
 
