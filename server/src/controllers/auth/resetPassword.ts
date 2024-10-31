@@ -24,11 +24,15 @@ export const resetPassword: KoaController = async (ctx) => {
   try {
     const { password, token } = ResetPasswordSchema.parse(ctx.request.body);
 
+    const decodedToken = verifyJwtToken(token);
+
     // Verify the token
-    const { email } = verifyJwtToken(token).user;
+    const { email } = decodedToken.user;
 
     const user = await ORMContext.em.findOne(User, { email });
-    if (!user || user.resetToken !== token) throw authFailureErr();
+    if (!user || user.resetToken !== token){
+      console.log("User not found or token mismatch");
+    }
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
