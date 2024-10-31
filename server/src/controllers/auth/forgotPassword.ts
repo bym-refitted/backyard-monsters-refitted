@@ -34,7 +34,11 @@ export const forgotPassword: KoaController = async (ctx) => {
 
     // Store the token in the database associated with the user's email
     const user = await ORMContext.em.findOne(User, { email });
-    if (!user) authFailureErr();
+    
+    if (!user) {
+      errorLog(`ForgotPassword: User not found for email: ${email}`);
+      throw authFailureErr();
+    }
 
     user.resetToken = token;
     await ORMContext.em.persistAndFlush(user);
