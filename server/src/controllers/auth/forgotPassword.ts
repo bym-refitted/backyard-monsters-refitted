@@ -28,7 +28,7 @@ export const forgotPassword: KoaController = async (ctx) => {
     const { email } = ForgotPasswordSchema.parse(ctx.request.body);
 
     // Generate a short-lived JWT token
-    const token = JWT.sign({ email }, process.env.SECRET_KEY, {
+    const token = JWT.sign({ user: { email } }, process.env.SECRET_KEY, {
       expiresIn: "10m",
     });
 
@@ -40,7 +40,10 @@ export const forgotPassword: KoaController = async (ctx) => {
     await ORMContext.em.persistAndFlush(user);
 
     // Read the HTML template
-    const templatePath = path.resolve(__dirname, "../../../public/templates/forgot-password.html");
+    const templatePath = path.resolve(
+      __dirname,
+      "../../../public/templates/forgot-password.html"
+    );
     const html = await fs.readFile(templatePath, "utf-8");
 
     // Send user token in email
