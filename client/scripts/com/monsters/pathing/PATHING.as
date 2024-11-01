@@ -3,14 +3,13 @@ package com.monsters.pathing
    import com.monsters.managers.InstanceManager;
    import flash.display.BitmapData;
    import flash.display.DisplayObject;
-   import flash.display.MovieClip;
    import flash.events.Event;
    import flash.events.MouseEvent;
    import flash.geom.Point;
    import flash.geom.Rectangle;
    import flash.utils.getTimer;
    
-   public class PATHING extends MovieClip
+   public class PATHING
    {
       
       private static const PI:Number = Math.PI;
