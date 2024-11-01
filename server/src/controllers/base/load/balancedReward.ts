@@ -4,7 +4,7 @@ import { ORMContext } from "../../../server";
 
 /**
  * Adds balanced rewards to the user's save data based on their town hall level.
- * 
+ *
  * Town Hall Level 6: Korath
  * Town Hall Level 7: Krallen
  * Town Hall Level 8: Diamond Spurtz
@@ -23,35 +23,35 @@ export const balancedReward = async (userSave: Save) => {
   }
 
   if (townHall && townHall.l >= 7) {
-    userSave.krallen = {
-      countdown: 443189,
-      wins: 5,
-      tier: 5,
-      loot: 750000000000,
-    };
-
-    userSave.rewards = {
-      [Reward.KRALLEN]: { id: Reward.KRALLEN, value: 1 },
-      ...userSave.rewards,
-    };
-
     let championData = JSON.parse(userSave.champion || "[]");
 
-    const krallen = {
-      fb: 0,
-      l: 5,
-      pl: 2,
-      status: 0,
-      log: "0",
-      t: 5,
-      ft: 1730563770,
-      fd: 0,
-      hp: 62000,
-    };
+    if (Object.keys(userSave.krallen).length === 0) {
+      const krallen = {
+        fb: 0,
+        l: 5,
+        pl: 2,
+        status: 0,
+        log: "0",
+        t: 5,
+        ft: 1730563770,
+        fd: 0,
+        hp: 62000,
+      };
 
-    if (championData.length < 2) {
       championData.push(krallen);
       userSave.champion = JSON.stringify(championData);
+
+      userSave.krallen = {
+        countdown: 443189,
+        wins: 5,
+        tier: 5,
+        loot: 750000000000,
+      };
+
+      userSave.rewards = {
+        [Reward.KRALLEN]: { id: Reward.KRALLEN, value: 1 },
+        ...userSave.rewards,
+      };
     }
   }
 
