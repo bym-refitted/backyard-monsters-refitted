@@ -45,22 +45,14 @@ export const getDefaultBaseData = (user?: User) => {
       r3max: 10000,
       r4max: 10000,
     },
-    krallen: devConfig.unlockAllEventRewards
-      ? {
-          countdown: 443189,
-          wins: 5,
-          tier: 5,
-          loot: 750000000000,
-        }
-      : {},
+    krallen: {},
     rewards: devConfig.unlockAllEventRewards
       ? {
           // Unique event reward unlockables
           unlockRezghul: { id: Reward.REZGHUL },
           unblockSlimeattikus: { id: Reward.SLIMEATTIKUS },
           unblockVorg: { id: Reward.VORG },
-          krallenReward: { id: Reward.KRALLEN, value: 1 },
         }
-      : {}
+      : {},
   };
 };
