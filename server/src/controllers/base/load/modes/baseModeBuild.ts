@@ -4,6 +4,7 @@ import { ORMContext } from "../../../../server";
 import { BaseMode } from "../../../../enums/Base";
 import { logging } from "../../../../utils/logger";
 import { KorathReward, Reward } from "../../../../enums/Rewards";
+import { balancedReward } from "../balancedReward";
 
 /**
  * Retrieves the save data for the user based on the provided `baseid`.
@@ -33,16 +34,7 @@ export const baseModeBuild = async (user: User, baseid: string) => {
     if (!baseSave) throw new Error(`Base save not found for baseid: ${baseid}`);
     return baseSave;
   }
-  // Add reward for Diamond Spurtz Cannons & Korath at Town Hall 6.
-  const townHall = userSave.buildingdata["0"];
 
-  if (townHall && townHall.l >= 6) {
-    userSave.rewards = {
-      [Reward.DIAMOND_SPURTZ]: { id: Reward.DIAMOND_SPURTZ },
-      [Reward.KORATH]: { id: Reward.KORATH, value: KorathReward.FISTS_OF_DOOM },
-      ...userSave.rewards,
-    };
-  }
-
+  await balancedReward(userSave);
   return userSave;
 };
