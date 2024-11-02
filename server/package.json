@@ -16,7 +16,6 @@
     "migration:up": "npm run build && mikro-orm migration:up",
     "db:init": "npm run build && mikro-orm migration:create && mikro-orm schema:create -r",
     "db:seed": "ts-node src/seed.ts",
-    "db:champ": "ts-node src/championSeed.ts",
     "db:drop": "mikro-orm schema:drop --drop-db -r"
   },
   "author": "React-X-",

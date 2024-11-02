@@ -13,15 +13,17 @@ export const resourcesHandler = (
   isOutpost: boolean
 ) => {
   const resourceDataKey = ctx.request.body[SaveKeys.RESOURCES];
+
+  // Parse the resource data if it's a JSON string
   const resourceData: Resources | undefined = JSON.parse(resourceDataKey);
 
   if (resourceData) {
-    const clientResources: Resources = resourceData;
+    const resources: Resources = resourceData;
 
-    if (isOutpost) {
-      userSave.resources = updateResources(clientResources, userSave.resources);
-    } else {
-      save.resources = userSave.resources;
-    }
+    let saveResources = isOutpost ? userSave.resources : save.resources;
+
+    const savedResources = updateResources(resources, saveResources);
+    if (isOutpost) userSave.resources = savedResources;
+    else save.resources = savedResources;
   }
 };
