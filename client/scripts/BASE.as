@@ -57,11 +57,6 @@ package
    
    public class BASE
    {
-      
-      public static var _ideltaResources:Object = null;
-      
-      public static var _iresources:Object = null;
-      
       public static var _baseID:Number;
       
       public static var _wmID:int;
@@ -95,8 +90,6 @@ package
       public static var _rawGIP:Object;
       
       public static var _lastProcessedGIP:int;
-      
-      public static var _allianceArmamentTime:SecNum = new SecNum(0);
       
       public static var _credits:SecNum;
       
@@ -170,8 +163,6 @@ package
       
       public static var _buildingsStored:Object;
       
-      private static var s_resourceCells:Object = {};
-      
       public static var buildings:Vector.<BFOUNDATION>;
       
       public static var _rawMonsters:Object;
@@ -188,11 +179,7 @@ package
       
       public static var _loadedFriendlyBaseID:int;
       
-      public static var _loadedYardType:int = 0;
-      
       public static var _loadedFBID:Number;
-      
-      private static var m_yardType:int = EnumYardType.MAIN_YARD;
       
       public static var _baseLevel:int;
       
@@ -223,8 +210,6 @@ package
       public static var _tempSentGifts:Array;
       
       public static var _tempSentInvites:Array;
-      
-      protected static var _firstBaseLoaded:Boolean = true;
       
       public static var _isProtected:int;
       
@@ -260,13 +245,35 @@ package
       
       public static var _allianceID:int;
       
-      public static var _userDigits:Array = [];
-      
       public static var _damagedBaseWarnTime:Number;
       
       public static var _takeoverFirstOpen:int;
       
       public static var _takeoverPreviousOwnersName:String;
+      
+      private static var s_processing:Boolean;
+      
+      private static var _tmpPercent:Number;
+      
+      private static var _oldSiegeData:Object;
+      
+      public static var loadObject:Object;
+      
+      public static var _ideltaResources:Object = null;
+      
+      public static var _iresources:Object = null;
+      
+      public static var _allianceArmamentTime:SecNum = new SecNum(0);
+      
+      private static var s_resourceCells:Object = {};
+      
+      public static var _loadedYardType:int = 0;
+      
+      private static var m_yardType:int = EnumYardType.MAIN_YARD;
+      
+      protected static var _firstBaseLoaded:Boolean = true;
+      
+      public static var _userDigits:Array = [];
       
       public static var _guardianData:Vector.<Object> = new Vector.<Object>(null);
       
@@ -278,20 +285,13 @@ package
       
       public static var _currentCellLoc:Point = null;
       
-      private static const s_levels:Array = [0,900,3500,5000,7500,10500,14700,20580,28812,40337,56472,79060,110684,154958,216941,303717,425204,595286,833401,1166761,1633465,2286851,3201591,4482228,6275119,8785167,12299234,17218927,24106498,33749097,47248736,66148230,92607522,129650530,181510743,254115040,355761056,498065478,697291669,976208337,1366691671,1913368339,2678715675,3750201945,5250282723,7350395812,10290554137,14406775792,20169486109,28237280553,39532192774,55345069884,77483097838,108476336973,151866871762,212613620467,297659068653,357190880000,428629050000,514354860000,617225830000,740670990000,888805180000,1066566210000,1279879450000,1535853400000,1843026400000,2211631680000,2653958010000,3184749610000,3821699530000,4586039430000,5503247310000,6603896770000,7924676120000,9509611340000,11411533600000,13693840320000,16432608380000,19719130050000,23662956060000,28395547270000,34074656720000,40889588060000,49067505670000,58881006800000,70657208160000,84788649790000,101746379740000,122095655680000,146514786810000,175817744170000,210981293000000,253177551600000,303813061920000,364575674300000,437490809160000,524988970990000,629986765180000,755984118210000];
-      
-      private static var s_processing:Boolean;
-      
-      private static var _tmpPercent:Number;
+      private static const s_levels:Array = [0,900,3500,5000,7500,10500,14700,20580,28812,40337,56472,79060,110684,154958,216941,303717,425204,595286,833401,1166761,1633465,2286851,3201591,4482228,6275119,8785167,12299234,17218927,24106498,33749097,47248736,66148230,92607522,129650530,181510743,254115040,355761056,498065478,697291669,976208337,1366691671,1913368339,2678715675,3750201945,5250282723,7350395812,10290554137,14406775792,20169486109,28237280553,39532192774,55345069884,77483097838,108476336973,151866871762,212613620467
+      ,297659068653,357190880000,428629050000,514354860000,617225830000,740670990000,888805180000,1066566210000,1279879450000,1535853400000,1843026400000,2211631680000,2653958010000,3184749610000,3821699530000,4586039430000,5503247310000,6603896770000,7924676120000,9509611340000,11411533600000,13693840320000,16432608380000,19719130050000,23662956060000,28395547270000,34074656720000,40889588060000,49067505670000,58881006800000,70657208160000,84788649790000,101746379740000,122095655680000,146514786810000
+      ,175817744170000,210981293000000,253177551600000,303813061920000,364575674300000,437490809160000,524988970990000,629986765180000,755984118210000];
       
       private static var _loadedSomething:Boolean = false;
       
-      private static var _oldSiegeData:Object;
-      
-      public static var loadObject:Object;
-      
       private static var _addtionalLoadArguments:Array = [];
-       
       
       public function BASE()
       {
@@ -642,8 +642,8 @@ package
          {
             MAPROOM.Hide();
          }
-         var requestData:Array;
-         (requestData = []).push(["userid",userId > 0 ? userId : ""]);
+         var requestData:Array = [];
+         requestData.push(["userid",userId > 0 ? userId : ""]);
          if(cellId)
          {
             requestData.push(["cellid",cellId]);
@@ -657,8 +657,8 @@ package
          var _loc9_:int = 0;
          var _loc10_:int = int(LOGIN._digits[LOGIN._digits.length - 1]);
          var _loc11_:int = int(LOGIN._digits[LOGIN._digits.length - 2]);
-         var _loc12_:int;
-         var _loc13_:int = ((_loc12_ = int(LOGIN._digits[LOGIN._digits.length - 3])) + _loc10_) % 10;
+         var _loc12_:int = int(LOGIN._digits[LOGIN._digits.length - 3]);
+         var _loc13_:int = (_loc12_ + _loc10_) % 10;
          var _loc14_:int = (_loc11_ + _loc10_) % 10;
          if(_loc13_ <= 7)
          {
@@ -713,7 +713,6 @@ package
          }
          else
          {
-            // Comment: load route triggered
             new URLLoaderApi().load(GLOBAL._baseURL + "load",requestData,handleBaseLoadSuccessful,handleBaseLoadError);
          }
       }
@@ -851,7 +850,7 @@ package
                }
                _lastSaveID = serverData.id;
                _baseSeed = serverData.baseseed;
-               _loadedBaseID = serverData.baseid; // Comment: IMPORTANT - this seems to always be "0" for user base, but not for other base types??
+               _loadedBaseID = serverData.baseid;
                if(GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD)
                {
                   _loadedFriendlyBaseID = serverData.baseid;
@@ -972,7 +971,7 @@ package
                }
                else
                {
-                  _resources ||= {};
+                  _resources = _resources || {};
                   _resources.r1 = new SecNum(Math.floor(resources.r1));
                   _resources.r2 = new SecNum(Math.floor(resources.r2));
                   _resources.r3 = new SecNum(Math.floor(resources.r3));
@@ -1434,7 +1433,8 @@ package
                      {
                         onImageLoad = function(param1:Event):void
                         {
-                           loader.width = loader.height = 50;
+                           loader.height = 50;
+                           loader.width = 50;
                         };
                         LoadImageError = function(param1:IOErrorEvent):void
                         {
@@ -1555,111 +1555,89 @@ package
                      if(GLOBAL._baseURL == "http://bym-fb-trunk.dev.kixeye.com/base/")
                      {
                         GLOBAL._baseURL = "http://bym-fb-trunk.dev.kixeye.com/api/bm/base/";
+                        break;
                      }
-                     else
-                     {
-                        GLOBAL._baseURL = "http://bym-fb-trunk.dev.kixeye.com/base/";
-                     }
+                     GLOBAL._baseURL = "http://bym-fb-trunk.dev.kixeye.com/base/";
                      break;
                   case 2:
                      if(GLOBAL._baseURL == "http://bym-ko-halbvip1.dc.kixeye.com/base/")
                      {
                         GLOBAL._baseURL = "http://bym-ko-halbvip1.dc.kixeye.com/api/bm/base/";
+                        break;
                      }
-                     else
-                     {
-                        GLOBAL._baseURL = "http://bym-ko-halbvip1.dc.kixeye.com/base/";
-                     }
+                     GLOBAL._baseURL = "http://bym-ko-halbvip1.dc.kixeye.com/base/";
                      break;
                   case 3:
                      if(GLOBAL._baseURL == "http://bmdev.vx.casualcollective.com/base/")
                      {
                         GLOBAL._baseURL = "http://bmdev.vx.casualcollective.com/api/bm/base/";
+                        break;
                      }
-                     else
-                     {
-                        GLOBAL._baseURL = "http://bmdev.vx.casualcollective.com/base/";
-                     }
+                     GLOBAL._baseURL = "http://bmdev.vx.casualcollective.com/base/";
                      break;
                   case 4:
                      if(GLOBAL._baseURL == "http://bym-vx2-vip.sjc.kixeye.com/base/")
                      {
                         GLOBAL._baseURL = "http://bym-vx2-vip.sjc.kixeye.com/api/bm/base/";
+                        break;
                      }
-                     else
-                     {
-                        GLOBAL._baseURL = "http://bym-vx2-vip.sjc.kixeye.com/base/";
-                     }
+                     GLOBAL._baseURL = "http://bym-vx2-vip.sjc.kixeye.com/base/";
                      break;
                   case 5:
                      if(GLOBAL._baseURL == "http://bym-fb-inferno.dev.kixeye.com/base/")
                      {
                         GLOBAL._baseURL = "http://bym-fb-inferno.dev.kixeye.com/api/bm/base/";
+                        break;
                      }
-                     else
-                     {
-                        GLOBAL._baseURL = "http://bym-fb-inferno.dev.kixeye.com/base/";
-                     }
+                     GLOBAL._baseURL = "http://bym-fb-inferno.dev.kixeye.com/base/";
                      break;
                   case 6:
                      if(GLOBAL._baseURL == "https://bym-fb-lbns.dc.kixeye.com/base/")
                      {
                         GLOBAL._baseURL = "https://bym-fb-lbns.dc.kixeye.com/api/bm/base/";
+                        break;
                      }
-                     else
-                     {
-                        GLOBAL._baseURL = "https://bym-fb-lbns.dc.kixeye.com/base/";
-                     }
+                     GLOBAL._baseURL = "https://bym-fb-lbns.dc.kixeye.com/base/";
                      break;
                   case 7:
                      if(GLOBAL._baseURL == "http://bym-vx-web.stage.kixeye.com/base/")
                      {
                         GLOBAL._baseURL = "http://bym-vx-web.stage.kixeye.com/api/bm/base/";
+                        break;
                      }
-                     else
-                     {
-                        GLOBAL._baseURL = "http://bym-vx-web.stage.kixeye.com/base/";
-                     }
+                     GLOBAL._baseURL = "http://bym-vx-web.stage.kixeye.com/base/";
                      break;
                   case 8:
                      if(GLOBAL._baseURL == "http://bym-fb-alex.dev.kixeye.com/base/")
                      {
                         GLOBAL._baseURL = "http://bym-fb-alex.dev.kixeye.com/api/bm/base/";
+                        break;
                      }
-                     else
-                     {
-                        GLOBAL._baseURL = "http://bym-fb-alex.dev.kixeye.com/base/";
-                     }
+                     GLOBAL._baseURL = "http://bym-fb-alex.dev.kixeye.com/base/";
                      break;
                   case 9:
                      if(GLOBAL._baseURL == "http://bym-fb-nmoore.dev.kixeye.com/base/")
                      {
                         GLOBAL._baseURL = "http://bym-fb-nmoore.dev.kixeye.com/api/bm/base/";
+                        break;
                      }
-                     else
-                     {
-                        GLOBAL._baseURL = "http://bym-fb-nmoore.dev.kixeye.com/base/";
-                     }
+                     GLOBAL._baseURL = "http://bym-fb-nmoore.dev.kixeye.com/base/";
                      break;
                   case 10:
                      if(GLOBAL._baseURL == "http://bm-kg-web2.dev.casualcollective.com/base/")
                      {
                         GLOBAL._baseURL = "http://bm-kg-web2.dev.casualcollective.com/api/bm/base/";
+                        break;
                      }
-                     else
-                     {
-                        GLOBAL._baseURL = "http://bm-kg-web2.dev.casualcollective.com/base/";
-                     }
+                     GLOBAL._baseURL = "http://bm-kg-web2.dev.casualcollective.com/base/";
                      break;
                   case 11:
                      if(GLOBAL._baseURL == "http://bym-ko-web1.stage.com/base/")
                      {
                         GLOBAL._baseURL = "http://bym-ko-web1.stage.com/api/bm/base/";
+                        break;
                      }
-                     else
-                     {
-                        GLOBAL._baseURL = "http://bym-ko-web1.stage.kixeye.com/api/bm/base/";
-                     }
+                     GLOBAL._baseURL = "http://bym-ko-web1.stage.kixeye.com/api/bm/base/";
                      break;
                   default:
                      if(GLOBAL._baseURL == "http://bym-fb-web1.stage.kixeye.com/base/")
@@ -1734,7 +1712,8 @@ package
          var mapIndex:int = GLOBAL._layerMap.numChildren - 1;
          while(mapIndex >= 0)
          {
-            if((displayObject = GLOBAL._layerMap.getChildAt(mapIndex)).parent)
+            displayObject = GLOBAL._layerMap.getChildAt(mapIndex);
+            if(displayObject.parent)
             {
                displayObject.parent.removeChild(displayObject);
             }
@@ -1766,6 +1745,13 @@ package
          {
             _buildingData = null;
          }
+
+         // Always ensure that the main yard has a town hall
+         if (isMainYard && _buildingData.hasOwnProperty("0"))
+         {
+            _buildingData["0"].t = 14;
+         }
+
          var buildingTypeCounts:Dictionary = new Dictionary();
          for each(building in _buildingData)
          {
@@ -1791,7 +1777,8 @@ package
                   {
                      counter++;
                   }
-                  if(buildingFoundation = addBuildingC(building.t))
+                  buildingFoundation = addBuildingC(building.t);
+                  if(buildingFoundation)
                   {
                      foundationType = buildingFoundation._type;
                   }
@@ -1867,7 +1854,8 @@ package
          {
             if(isOutpost && !MapRoom3Tutorial.instance.isStarted)
             {
-               (buildingFoundation = addBuildingC(112)).Setup({
+               buildingFoundation = addBuildingC(112);
+               buildingFoundation.Setup({
                   "X":0,
                   "Y":-50,
                   "id":buildingCount++,
@@ -1877,35 +1865,40 @@ package
             }
             else if(BASE.isInfernoMainYardOrOutpost)
             {
-               (buildingFoundation = addBuildingC(14)).Setup({
+               buildingFoundation = addBuildingC(14);
+               buildingFoundation.Setup({
                   "X":-100,
                   "Y":0,
                   "id":buildingCount++,
                   "t":14,
                   "l":1
                });
-               (buildingFoundation = addBuildingC(1)).Setup({
+               buildingFoundation = addBuildingC(1);
+               buildingFoundation.Setup({
                   "X":60,
                   "Y":0,
                   "id":buildingCount++,
                   "t":1,
                   "l":1
                });
-               (buildingFoundation = addBuildingC(2)).Setup({
+               buildingFoundation = addBuildingC(2);
+               buildingFoundation.Setup({
                   "X":60,
                   "Y":70,
                   "id":buildingCount++,
                   "t":2,
                   "l":1
                });
-               (buildingFoundation = addBuildingC(6)).Setup({
+               buildingFoundation = addBuildingC(6);
+               buildingFoundation.Setup({
                   "X":130,
                   "Y":0,
                   "id":buildingCount++,
                   "t":6,
                   "l":3
                });
-               (buildingFoundation = addBuildingC(6)).Setup({
+               buildingFoundation = addBuildingC(6);
+               buildingFoundation.Setup({
                   "X":130,
                   "Y":80,
                   "id":buildingCount++,
@@ -1916,14 +1909,16 @@ package
             }
             else
             {
-               (buildingFoundation = addBuildingC(14)).Setup({
+               buildingFoundation = addBuildingC(14);
+               buildingFoundation.Setup({
                   "X":-70,
                   "Y":0,
                   "id":buildingCount++,
                   "t":14,
                   "l":1
                });
-               (buildingFoundation = addBuildingC(1)).Setup({
+               buildingFoundation = addBuildingC(1);
+               buildingFoundation.Setup({
                   "X":60,
                   "Y":0,
                   "id":buildingCount++,
@@ -1932,14 +1927,16 @@ package
                });
                buildingFoundation._stored.Set(200);
                buildingFoundation._hpStored = 200;
-               (buildingFoundation = addBuildingC(2)).Setup({
+               buildingFoundation = addBuildingC(2);
+               buildingFoundation.Setup({
                   "X":60,
                   "Y":70,
                   "id":buildingCount++,
                   "t":2,
                   "l":1
                });
-               (buildingFoundation = addBuildingC(12)).Setup({
+               buildingFoundation = addBuildingC(12);
+               buildingFoundation.Setup({
                   "X":60,
                   "Y":-70,
                   "id":buildingCount++,
@@ -1978,7 +1975,8 @@ package
                   foundationIndex = int(bFoundation.length - 1);
                   while(foundationIndex >= 0)
                   {
-                     if(buildingFoundation = bFoundation[foundationIndex] as BFOUNDATION)
+                     buildingFoundation = bFoundation[foundationIndex] as BFOUNDATION;
+                     if(buildingFoundation)
                      {
                         if(buildingFoundation._type == props.id)
                         {
@@ -2119,7 +2117,6 @@ package
          _bankedValue = 0;
          GLOBAL.t = _lastProcessed;
          _lastProcessedB = _lastProcessed;
-         // Comment: This is used for if the Flash Player window is out of focus and becomes suspended, on resume, catch-up to the current time
          _catchupTime = _currentTime - _lastProcessed;
          if(!isInfernoMainYardOrOutpost && !MapRoomManager.instance.isInMapRoom3)
          {
@@ -2160,96 +2157,95 @@ package
       
       public static function ProcessC(param1:int) : void
       {
-         var _loc4_:Vector.<Object> = null;
-         var _loc5_:int = 0;
-         var _loc6_:BFOUNDATION = null;
+         var _loc3_:Vector.<Object> = null;
+         var _loc4_:int = 0;
+         var _loc5_:BFOUNDATION = null;
+         var _loc6_:int = 0;
          var _loc7_:int = 0;
          var _loc8_:int = 0;
-         var _loc9_:BFOUNDATION = null;
-         var _loc10_:int = 0;
+         var _loc9_:Vector.<Object> = null;
+         var _loc10_:Vector.<Object> = null;
          var _loc11_:Vector.<Object> = null;
-         var _loc12_:Vector.<Object> = null;
-         var _loc13_:Vector.<Object> = null;
-         var _loc14_:BFOUNDATION = null;
-         var _loc15_:BTRAP = null;
-         var _loc16_:Bunker = null;
-         var _loc17_:int = 0;
-         var _loc18_:Number = NaN;
+         var _loc12_:BFOUNDATION = null;
+         var _loc13_:BTRAP = null;
+         var _loc14_:Bunker = null;
+         var _loc15_:int = 0;
+         var _loc16_:Number = NaN;
          var _loc2_:int = 0;
-         var _loc3_:int = 0;
          if(_lastProcessed < param1)
          {
             GLOBAL.t = _lastProcessed;
-            _loc5_ = param1 - _lastProcessed;
+            _loc4_ = param1 - _lastProcessed;
             if(CREEPS._creepCount > 0)
             {
-               _loc5_ = 1;
+               _loc4_ = 1;
             }
             else
             {
-               _loc4_ ||= InstanceManager.getInstancesByClass(BFOUNDATION);
-               for each(_loc6_ in _loc4_)
+               _loc3_ ||= InstanceManager.getInstancesByClass(BFOUNDATION);
+               for each(_loc5_ in _loc3_)
                {
-                  if((_loc10_ = int(_loc6_.tickLimit)) < _loc5_)
+                  _loc8_ = int(_loc5_.tickLimit);
+                  if(_loc8_ < _loc4_)
                   {
-                     _loc5_ = _loc10_;
+                     _loc4_ = _loc8_;
                   }
-                  if(_loc10_ <= 1)
+                  if(_loc8_ <= 1)
                   {
                   }
                }
                if(CREATURES._guardian)
                {
-                  _loc5_ = Math.min(_loc5_,CREATURES._guardian.tickLimit);
+                  _loc4_ = Math.min(_loc4_,CREATURES._guardian.tickLimit);
                }
-               if(_loc5_ < 1)
+               if(_loc4_ < 1)
                {
-                  _loc5_ = 1;
+                  _loc4_ = 1;
                }
-               else if(_loc5_ > 3000)
+               else if(_loc4_ > 3000)
                {
-                  _loc5_ = 3000;
+                  _loc4_ = 3000;
                }
             }
             WMATTACK.Tick();
             if(WMATTACK._inProgress)
             {
-               _loc5_ = 1;
+               _loc4_ = 1;
             }
-            _loc7_ = int(_lastProcessed / 60) - int((_lastProcessed + _loc5_) / 60);
-            while(_loc7_ >= 0)
+            _loc6_ = int(_lastProcessed / 60) - int((_lastProcessed + _loc4_) / 60);
+            while(_loc6_ >= 0)
             {
                STORE.ProcessPurchases();
-               _loc7_--;
+               _loc6_--;
             }
-            _loc3_ = 0;
-            _loc4_ ||= InstanceManager.getInstancesByClass(BFOUNDATION);
-            for each(_loc6_ in _loc4_)
+            _loc2_ = 0;
+            _loc3_ ||= InstanceManager.getInstancesByClass(BFOUNDATION);
+            for each(_loc5_ in _loc3_)
             {
-               _loc6_.Tick(_loc5_);
-               _loc3_++;
+               _loc5_.Tick(_loc4_);
+               _loc2_++;
             }
-            HOUSING.catchupTick(_loc5_);
-            _loc8_ = 0;
-            while(_loc8_ < CREATURES._guardianList.length)
+            HOUSING.catchupTick(_loc4_);
+            _loc7_ = 0;
+            while(_loc7_ < CREATURES._guardianList.length)
             {
-               if(Boolean(CREATURES._guardianList[_loc8_]) && CREATURES._guardianList[_loc8_].tick(_loc5_))
+               if(Boolean(CREATURES._guardianList[_loc7_]) && CREATURES._guardianList[_loc7_].tick(_loc4_))
                {
                   if(!BYMConfig.instance.RENDERER_ON)
                   {
-                     MAP._BUILDINGTOPS.removeChild(CREATURES._guardianList[_loc8_].graphic);
+                     MAP._BUILDINGTOPS.removeChild(CREATURES._guardianList[_loc7_].graphic);
                   }
-                  CREATURES._guardianList[_loc8_].clearRasterData();
-                  if(CREATURES._guardianList[_loc8_] == CREATURES._guardian)
+                  CREATURES._guardianList[_loc7_].clearRasterData();
+                  if(CREATURES._guardianList[_loc7_] == CREATURES._guardian)
                   {
                      CREATURES._guardian = null;
                   }
                   else
                   {
-                     CREATURES._guardianList.splice(_loc8_,1);
+                     CREATURES._guardianList.splice(_loc7_,1);
                   }
                }
-               _loc8_++;
+               _loc7_++;
             }
             if(isMainYard)
             {
@@ -2260,34 +2256,34 @@ package
             {
                GLOBAL._render = true;
                PATHING.Tick();
-               _loc3_++;
-               _loc11_ = InstanceManager.getInstancesByClass(BTOWER);
-               _loc12_ = InstanceManager.getInstancesByClass(BTRAP);
-               _loc13_ = InstanceManager.getInstancesByClass(Bunker);
-               _loc17_ = 0;
-               while(_loc17_ < 80)
+               _loc2_++;
+               _loc9_ = InstanceManager.getInstancesByClass(BTOWER);
+               _loc10_ = InstanceManager.getInstancesByClass(BTRAP);
+               _loc11_ = InstanceManager.getInstancesByClass(Bunker);
+               _loc15_ = 0;
+               while(_loc15_ < 80)
                {
                   CREEPS.Tick();
                   CREATURES.Tick();
+                  for each(_loc12_ in _loc9_)
+                  {
+                     _loc12_.TickAttack();
+                  }
+                  for each(_loc13_ in _loc10_)
+                  {
+                     _loc13_.TickAttack();
+                  }
                   for each(_loc14_ in _loc11_)
                   {
                      _loc14_.TickAttack();
                   }
-                  for each(_loc15_ in _loc12_)
-                  {
-                     _loc15_.TickAttack();
-                  }
-                  for each(_loc16_ in _loc13_)
-                  {
-                     _loc16_.TickAttack();
-                  }
                   PROJECTILES.Tick();
                   FIREBALLS.Tick();
-                  _loc17_++;
+                  _loc15_++;
                }
             }
-            _loc7_ = 0;
-            while(_loc7_ < _loc5_)
+            _loc6_ = 0;
+            while(_loc6_ < _loc4_)
             {
                EFFECTS.Tick();
                UPDATES.Check();
@@ -2299,14 +2295,14 @@ package
                {
                   WMBASE.Tick();
                }
-               _loc7_++;
+               _loc6_++;
             }
-            _lastProcessed += _loc5_;
+            _lastProcessed += _loc4_;
          }
          if(CREEPS._creepCount == 0)
          {
-            _loc18_ = (_lastProcessed - _lastProcessedB) / (param1 - _lastProcessedB);
-            PLEASEWAIT.Update(KEYS.Get("msg_rendering") + int(100 * _loc18_) + "% ");
+            _loc16_ = (_lastProcessed - _lastProcessedB) / (param1 - _lastProcessedB);
+            PLEASEWAIT.Update(KEYS.Get("msg_rendering") + int(100 * _loc16_) + "% ");
          }
          else
          {
@@ -2806,7 +2802,8 @@ package
          while(_loc10_ < _loc3_)
          {
             _loc7_ = _loc1_.monsterList[_loc10_].m_creatureID;
-            if(_loc4_ = _loc1_.getResourceCostByID(_loc7_) - _loc1_.getResourceCostByID(_loc7_,true))
+            _loc4_ = _loc1_.getResourceCostByID(_loc7_) - _loc1_.getResourceCostByID(_loc7_,true);
+            if(_loc4_)
             {
                _loc2_[_loc8_] = _loc7_;
                _loc8_++;
@@ -2828,7 +2825,8 @@ package
             while(_loc10_ < _loc3_)
             {
                _loc7_ = "B" + _loc11_[_loc10_]._id;
-               if(_loc4_ = GLOBAL.player.getResourceCostByID(_loc7_) - GLOBAL.player.getResourceCostByID(_loc7_,true))
+               _loc4_ = GLOBAL.player.getResourceCostByID(_loc7_) - GLOBAL.player.getResourceCostByID(_loc7_,true);
+               if(_loc4_)
                {
                   var _loc17_:*;
                   _loc2_[_loc17_ = _loc8_++] = _loc7_;
@@ -2970,9 +2968,8 @@ package
                   SaveB();
                }
             }
-            else if(GLOBAL.Timestamp() - _lastSaveRequest >= saveDelay || _pendingPurchase.length > 0 || _loadBase.length > 0 && BASE._saveOver != 1) // Comment: first condition is true
+            else if(GLOBAL.Timestamp() - _lastSaveRequest >= saveDelay || _pendingPurchase.length > 0 || _loadBase.length > 0 && BASE._saveOver != 1)
             {
-               // Comment: Resolves here
                SaveB();
             }
             if(GLOBAL.mode == GLOBAL.e_BASE_MODE.ATTACK || GLOBAL.mode == GLOBAL.e_BASE_MODE.WMATTACK)
@@ -3119,7 +3116,6 @@ package
          return _loc1_;
       }
       
-      // Comment: This is where we send the calculated resources to the server
       private static function getResourceSaveData() : Object
       {
          return {
@@ -3137,42 +3133,41 @@ package
       private static function getHousingSaveData() : Object
       {
          var _loc1_:int = 0;
-         var _loc2_:BFOUNDATION = null;
-         var _loc9_:BUILDING13 = null;
-         var _loc10_:Object = null;
-         var _loc3_:Object = {};
-         var _loc4_:int = 0;
+         var _loc8_:BUILDING13 = null;
+         var _loc9_:Object = null;
+         var _loc2_:Object = {};
+         var _loc3_:int = 0;
+         var _loc4_:Array = [];
          var _loc5_:Array = [];
          var _loc6_:Array = [];
-         var _loc7_:Array = [];
          if(WORKERS._workers && WORKERS._workers.length > 0 && Boolean(WORKERS._workers[0].task))
          {
             _loc1_ = GLOBAL.Timestamp() + WORKERS._workers[0].task._countdownBuild.Get() + WORKERS._workers[0].task._countdownUpgrade.Get() + WORKERS._workers[0].task._countdownFortify.Get();
          }
-         var _loc8_:Vector.<Object> = InstanceManager.getInstancesByClass(BUILDING13);
-         for each(_loc9_ in _loc8_)
+         var _loc7_:Vector.<Object> = InstanceManager.getInstancesByClass(BUILDING13);
+         for each(_loc8_ in _loc7_)
          {
-            _loc5_[_loc4_] = [_loc9_._inProduction,_loc9_._countdownProduce.Get()];
-            _loc6_[_loc4_] = _loc9_._productionStage.Get();
-            _loc7_[_loc4_] = _loc9_._id;
-            if(_loc9_._monsterQueue)
+            _loc4_[_loc3_] = [_loc8_._inProduction,_loc8_._countdownProduce.Get()];
+            _loc5_[_loc3_] = _loc8_._productionStage.Get();
+            _loc6_[_loc3_] = _loc8_._id;
+            if(_loc8_._monsterQueue)
             {
-               _loc5_[_loc4_].push(_loc9_._monsterQueue);
+               _loc4_[_loc3_].push(_loc8_._monsterQueue);
             }
-            _loc4_++;
+            _loc3_++;
          }
-         _loc3_ = GLOBAL.player.exportMonsters();
+         _loc2_ = GLOBAL.player.exportMonsters();
          if(GLOBAL._bHatcheryCC)
          {
-            _loc10_ = {
+            _loc9_ = {
                "saved":GLOBAL.Timestamp(),
-               "housed":_loc3_,
+               "housed":_loc2_,
                "space":HOUSING._housingCapacity.Get(),
-               "hcount":_loc4_,
+               "hcount":_loc3_,
                "hcc":GLOBAL._bHatcheryCC._monsterQueue,
-               "h":_loc5_,
-               "hid":_loc7_,
-               "hstage":_loc6_,
+               "h":_loc4_,
+               "hid":_loc6_,
+               "hstage":_loc5_,
                "overdrivepower":GLOBAL._hatcheryOverdrivePower.Get(),
                "overdrivetime":GLOBAL._hatcheryOverdrive,
                "finishtime":_loc1_
@@ -3180,21 +3175,21 @@ package
          }
          else
          {
-            _loc10_ = {
+            _loc9_ = {
                "saved":GLOBAL.Timestamp(),
-               "housed":_loc3_,
+               "housed":_loc2_,
                "space":HOUSING._housingCapacity.Get(),
-               "hcount":_loc4_,
+               "hcount":_loc3_,
                "hcc":[],
-               "h":_loc5_,
-               "hid":_loc7_,
-               "hstage":_loc6_,
+               "h":_loc4_,
+               "hid":_loc6_,
+               "hstage":_loc5_,
                "overdrivepower":GLOBAL._hatcheryOverdrivePower.Get(),
                "overdrivetime":GLOBAL._hatcheryOverdrive,
                "finishtime":_loc1_
             };
          }
-         return _loc10_;
+         return _loc9_;
       }
       
       private static function getStoredBuildingsSaveData() : Object
@@ -3534,11 +3529,13 @@ package
          };
          for each(_loc3_ in GLOBAL._attackerCellsInRange)
          {
-            if((_loc5_ = _loc3_.cell) && _loc5_.mine && Boolean(_loc5_.resources))
+            _loc5_ = _loc3_.cell;
+            if(_loc5_ && _loc5_.mine && Boolean(_loc5_.resources))
             {
                if(_loc5_.flingerRange.Get())
                {
-                  if((_loc6_ = POWERUPS.Apply(POWERUPS.ALLIANCE_DECLAREWAR,[_loc5_.flingerRange.Get()])) >= _loc3_.range)
+                  _loc6_ = POWERUPS.Apply(POWERUPS.ALLIANCE_DECLAREWAR,[_loc5_.flingerRange.Get()]);
+                  if(_loc6_ >= _loc3_.range)
                   {
                      for(_loc7_ in GLOBAL._attackerMapCreaturesStart)
                      {
@@ -3594,7 +3591,8 @@ package
                }
             }
          }
-         if((_loc4_ = MapRoom.homeCell as MapRoomCell) && _loc4_.isProtected && (guardianFlung() || SiegeWeapons.didActivatWeapon || ResourceBombs.launchedBomb))
+         _loc4_ = MapRoom.homeCell as MapRoomCell;
+         if(_loc4_ && _loc4_.isProtected && (guardianFlung() || SiegeWeapons.didActivatWeapon || ResourceBombs.launchedBomb))
          {
             _loc4_.isProtected = 0;
             _loc9_ = {
@@ -3670,7 +3668,8 @@ package
       
       private static function getOrderedSaveVariablesFromObject(param1:Object) : Array
       {
-         var _loc2_:Array = ["baseid","lastupdate","resources","academy","stats","mushrooms","basename","baseseed","buildingdata","researchdata","lockerdata","quests","basevalue","points","tutorialstage","basesaveid","clienttime","monsters","attacks","monsterbaiter","version","attackreport","over","protect","monsterupdate","attackid","aiattacks","effects","catapult","flinger","gifts","sentgifts","sentinvites","purchase","inventory","timeplayed","destroyed","damage","type","attackcreatures","attackloot","lootreport","empirevalue","champion","attackerchampion","attackersiege","purchasecomplete","achieved","fbpromos","iresources","siege","buildingresources","frontpage","events","buildinghealthdata","healtime"];
+         var _loc2_:Array = ["baseid","lastupdate","resources","academy","stats","mushrooms","basename","baseseed","buildingdata","researchdata","lockerdata","quests","basevalue","points","tutorialstage","basesaveid","clienttime","monsters","attacks","monsterbaiter","version","attackreport","over","protect","monsterupdate","attackid","aiattacks","effects","catapult","flinger","gifts","sentgifts","sentinvites","purchase","inventory","timeplayed","destroyed","damage","type","attackcreatures","attackloot","lootreport"
+         ,"empirevalue","champion","attackerchampion","attackersiege","purchasecomplete","achieved","fbpromos","iresources","siege","buildingresources","frontpage","events","buildinghealthdata","healtime"];
          var _loc3_:int = int(GLOBAL.player.handlers.length);
          var _loc4_:int = 0;
          while(_loc4_ < _loc3_)
@@ -3694,8 +3693,6 @@ package
       
       public static function SaveB() : Boolean
       {
-         //var _loc2_:Object = null;
-         //var _loc1_:int = getTimer();
          var handler:IHandler = null;
          var exportedData:Object = null;
          var updateAutoBank:Object = null;
@@ -3724,7 +3721,6 @@ package
          CalcBaseValue();
          CalcResources();
          SaveDeltaResources();
-         // _loc1_ = getTimer();
          var saveData:Object = {};
          if(MapRoomManager.instance.isInMapRoom3 && !BASE.isInfernoMainYardOrOutpost)
          {
@@ -3762,7 +3758,7 @@ package
          saveData["siege"] = JSON.encode(GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD && isMainYardOrInfernoMainYard ? SiegeWeapons.exportWeapons() : _oldSiegeData);
          saveData["attackersiege"] = JSON.encode(GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD && isMainYardOrInfernoMainYard ? null : SiegeWeapons.exportWeapons());
          saveData["baseid"] = _baseID;
-         saveData["lastupdate"] = !!isNaN(UPDATES._lastUpdateID) ? 0 : UPDATES._lastUpdateID; // Comment: Revisit
+         saveData["lastupdate"] = !!isNaN(UPDATES._lastUpdateID) ? 0 : UPDATES._lastUpdateID;
          saveData["academy"] = JSON.encode(GLOBAL.player.exportAcademyData());
          saveData["baseseed"] = _baseSeed;
          saveData["lockerdata"] = JSON.encode(CREATURELOCKER._lockerData);
@@ -3778,31 +3774,36 @@ package
          saveData["empirevalue"] = CalcBaseValue();
          saveData["inventory"] = STORE.InventoryExport();
          saveData["achieved"] = JSON.encode(ACHIEVEMENTS.Report());
-         var frontpageData:Object;
-         if(frontpageData = FrontPageHandler.export())
+         var frontpageData:Object = FrontPageHandler.export();
+         if(frontpageData)
          {
             saveData["frontpage"] = JSON.encode(frontpageData);
          }
-         if(frontpageData = ReplayableEventHandler.exportData())
+         frontpageData = ReplayableEventHandler.exportData();
+         if(frontpageData)
          {
             saveData["events"] = JSON.encode(frontpageData);
          }
          var counter:int = 0;
          while(counter < GLOBAL.player.handlers.length)
          {
-            if(exportedData = (handler = GLOBAL.player.handlers[counter]).exportData())
+            handler = GLOBAL.player.handlers[counter];
+            exportedData = handler.exportData();
+            if(exportedData)
             {
                saveData[handler.name] = JSON.encode(exportedData);
             }
             counter++;
          }
-         if(frontpageData = getInfernoResourcesSaveData())
+         frontpageData = getInfernoResourcesSaveData();
+         if(frontpageData)
          {
             saveData["iresources"] = JSON.encode(frontpageData);
          }
          if(MapRoomManager.instance.isInMapRoom2or3)
          {
-            if(updateAutoBank = AutoBankManager.updateSaveData())
+            updateAutoBank = AutoBankManager.updateSaveData();
+            if(updateAutoBank)
             {
                updateAutoBank = JSON.encode(updateAutoBank);
             }
@@ -3844,7 +3845,8 @@ package
                saveData.attackcreatures = JSON.encode(GLOBAL.attackingPlayer.exportMonsters());
             }
             saveData.attackloot = JSON.encode(getAttackerDeltaResourcesSaveData());
-            if(attackerChampion = getAttackingPlayerGuardianSaveData())
+            attackerChampion = getAttackingPlayerGuardianSaveData();
+            if(attackerChampion)
             {
                saveData.attackerchampion = JSON.encode(attackerChampion);
             }
@@ -3925,7 +3927,6 @@ package
          }
          else
          {
-            // Comment: save route triggered
             new URLLoaderApi().load(GLOBAL._baseURL + "save",saveDataList,handleLoadSuccessful,handleLoadError);
          }
          if(_saveOver)
@@ -4170,7 +4171,8 @@ package
                               }
                               else
                               {
-                                 if(_loc6_ = int(_rawGIP[_loc4_]["height"]))
+                                 _loc6_ = int(_rawGIP[_loc4_]["height"]);
+                                 if(_loc6_)
                                  {
                                     delete _loc5_["height"];
                                  }
@@ -4293,7 +4295,6 @@ package
          }
          else
          {
-            // Comment: updatedsaved route triggered
             new URLLoaderApi().load(GLOBAL._baseURL + "updatesaved",[["baseid",BASE._loadedBaseID],["version",GLOBAL._version.Get()],["lastupdate",UPDATES._lastUpdateID],["type",tmpMode]],handleLoadSuccessful,handleLoadError);
          }
       }
@@ -4490,7 +4491,8 @@ package
             _loc25_ = 0;
             if(GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD || GLOBAL.mode == "ibuild")
             {
-               _loc27_ = (_loc26_ = Boolean(BASE.isInfernoBuilding(param1))) ? BASE._iresources : BASE._resources;
+               _loc26_ = Boolean(BASE.isInfernoBuilding(param1));
+               _loc27_ = _loc26_ ? BASE._iresources : BASE._resources;
                if(_loc19_ > _loc27_.r1.Get())
                {
                   _loc24_ = 1;
@@ -4909,7 +4911,8 @@ package
          }
          if(_loc3_)
          {
-            if(!(_loc4_ = CanBuild(param1,param2)).error)
+            _loc4_ = CanBuild(param1,param2);
+            if(!_loc4_.error)
             {
                BASE.BuildingDeselect();
                ShowFootprints();
@@ -4950,7 +4953,6 @@ package
          return param1;
       }
       
-      // Theory - this function returns the building to where it was before it failed to move in building B
       public static function addBuildingC(buildingNum:int) : BFOUNDATION
       {
          var buildingFoundation:BFOUNDATION = null;
@@ -5615,13 +5617,12 @@ package
       {
          var _loc1_:Number = NaN;
          var _loc2_:int = 0;
-         var _loc3_:String = null;
+         var _loc3_:int = 0;
          var _loc4_:int = 0;
-         var _loc5_:int = 0;
-         var _loc6_:Vector.<Object> = null;
-         var _loc7_:BFOUNDATION = null;
-         var _loc8_:ResourceCapacityBaseBuff = null;
-         var _loc9_:int = 0;
+         var _loc5_:Vector.<Object> = null;
+         var _loc6_:BFOUNDATION = null;
+         var _loc7_:ResourceCapacityBaseBuff = null;
+         var _loc8_:int = 0;
          if(isOutpostOrInfernoOutpost)
          {
             if(GLOBAL.mode != GLOBAL.e_BASE_MODE.BUILD || MapRoomManager.instance.isInMapRoom3)
@@ -5644,82 +5645,83 @@ package
          _resources.r2Rate = 0;
          _resources.r3Rate = 0;
          _resources.r4Rate = 0;
-         _loc6_ = InstanceManager.getInstancesByClass(BRESOURCE);
-         for each(_loc7_ in _loc6_)
+         _loc5_ = InstanceManager.getInstancesByClass(BRESOURCE);
+         for each(_loc6_ in _loc5_)
          {
-            _loc4_ = int(_loc7_._type);
-            _loc5_ = _loc7_._lvl.Get();
+            _loc3_ = int(_loc6_._type);
+            _loc4_ = _loc6_._lvl.Get();
             if(isOutpost && Boolean(GLOBAL._currentCell))
             {
-               if(Boolean(_loc7_._countdownUpgrade) && _loc7_._countdownUpgrade.Get() > 0)
+               if(Boolean(_loc6_._countdownUpgrade) && _loc6_._countdownUpgrade.Get() > 0)
                {
-                  _loc5_++;
+                  _loc4_++;
                }
             }
-            switch(_loc4_)
+            switch(_loc3_)
             {
                case 1:
                   if(isOutpost && Boolean(GLOBAL._currentCell))
                   {
-                     _resources.r1Rate += int(BRESOURCE.AdjustProduction(GLOBAL._currentCell,GLOBAL._buildingProps[_loc4_ - 1].produce[_loc5_ - 1]) / GLOBAL._buildingProps[_loc4_ - 1].cycleTime[_loc5_ - 1] * 60 * 60);
+                     _resources.r1Rate += int(BRESOURCE.AdjustProduction(GLOBAL._currentCell,GLOBAL._buildingProps[_loc3_ - 1].produce[_loc4_ - 1]) / GLOBAL._buildingProps[_loc3_ - 1].cycleTime[_loc4_ - 1] * 60 * 60);
                   }
                   else
                   {
-                     _resources.r1Rate += int(GLOBAL._buildingProps[_loc4_ - 1].produce[_loc5_ - 1] / GLOBAL._buildingProps[_loc4_ - 1].cycleTime[_loc5_ - 1] * 60 * 60);
+                     _resources.r1Rate += int(GLOBAL._buildingProps[_loc3_ - 1].produce[_loc4_ - 1] / GLOBAL._buildingProps[_loc3_ - 1].cycleTime[_loc4_ - 1] * 60 * 60);
                   }
                   break;
                case 2:
                   if(isOutpost && Boolean(GLOBAL._currentCell))
                   {
-                     _resources.r2Rate += int(BRESOURCE.AdjustProduction(GLOBAL._currentCell,GLOBAL._buildingProps[_loc4_ - 1].produce[_loc5_ - 1]) / GLOBAL._buildingProps[_loc4_ - 1].cycleTime[_loc5_ - 1] * 60 * 60);
+                     _resources.r2Rate += int(BRESOURCE.AdjustProduction(GLOBAL._currentCell,GLOBAL._buildingProps[_loc3_ - 1].produce[_loc4_ - 1]) / GLOBAL._buildingProps[_loc3_ - 1].cycleTime[_loc4_ - 1] * 60 * 60);
                   }
                   else
                   {
-                     _resources.r2Rate += int(GLOBAL._buildingProps[_loc4_ - 1].produce[_loc5_ - 1] / GLOBAL._buildingProps[_loc4_ - 1].cycleTime[_loc5_ - 1] * 60 * 60);
+                     _resources.r2Rate += int(GLOBAL._buildingProps[_loc3_ - 1].produce[_loc4_ - 1] / GLOBAL._buildingProps[_loc3_ - 1].cycleTime[_loc4_ - 1] * 60 * 60);
                   }
                   break;
                case 3:
                   if(isOutpost && Boolean(GLOBAL._currentCell))
                   {
-                     _resources.r3Rate += int(BRESOURCE.AdjustProduction(GLOBAL._currentCell,GLOBAL._buildingProps[_loc4_ - 1].produce[_loc5_ - 1]) / GLOBAL._buildingProps[_loc4_ - 1].cycleTime[_loc5_ - 1] * 60 * 60);
+                     _resources.r3Rate += int(BRESOURCE.AdjustProduction(GLOBAL._currentCell,GLOBAL._buildingProps[_loc3_ - 1].produce[_loc4_ - 1]) / GLOBAL._buildingProps[_loc3_ - 1].cycleTime[_loc4_ - 1] * 60 * 60);
                   }
                   else
                   {
-                     _resources.r3Rate += int(GLOBAL._buildingProps[_loc4_ - 1].produce[_loc5_ - 1] / GLOBAL._buildingProps[_loc4_ - 1].cycleTime[_loc5_ - 1] * 60 * 60);
+                     _resources.r3Rate += int(GLOBAL._buildingProps[_loc3_ - 1].produce[_loc4_ - 1] / GLOBAL._buildingProps[_loc3_ - 1].cycleTime[_loc4_ - 1] * 60 * 60);
                   }
                   break;
                case 4:
                   if(isOutpost && Boolean(GLOBAL._currentCell))
                   {
-                     _resources.r4Rate += int(BRESOURCE.AdjustProduction(GLOBAL._currentCell,GLOBAL._buildingProps[_loc4_ - 1].produce[_loc5_ - 1]) / GLOBAL._buildingProps[_loc4_ - 1].cycleTime[_loc5_ - 1] * 60 * 60);
+                     _resources.r4Rate += int(BRESOURCE.AdjustProduction(GLOBAL._currentCell,GLOBAL._buildingProps[_loc3_ - 1].produce[_loc4_ - 1]) / GLOBAL._buildingProps[_loc3_ - 1].cycleTime[_loc4_ - 1] * 60 * 60);
                   }
                   else
                   {
-                     _resources.r4Rate += int(GLOBAL._buildingProps[_loc4_ - 1].produce[_loc5_ - 1] / GLOBAL._buildingProps[_loc4_ - 1].cycleTime[_loc5_ - 1] * 60 * 60);
+                     _resources.r4Rate += int(GLOBAL._buildingProps[_loc3_ - 1].produce[_loc4_ - 1] / GLOBAL._buildingProps[_loc3_ - 1].cycleTime[_loc4_ - 1] * 60 * 60);
                   }
                   break;
             }
          }
-         _loc6_ = InstanceManager.getInstancesByClass(BUILDING6);
-         for each(_loc7_ in _loc6_)
+         _loc5_ = InstanceManager.getInstancesByClass(BUILDING6);
+         for each(_loc6_ in _loc5_)
          {
-            if(_loc7_._lvl.Get() >= 1 && isMainYardOrInfernoMainYard)
+            if(_loc6_._lvl.Get() >= 1 && isMainYardOrInfernoMainYard)
             {
-               _loc4_ = _loc7_._type;
-               _resources.r1max += GLOBAL._buildingProps[_loc4_ - 1].capacity[_loc7_._lvl.Get() - 1];
-               _resources.r2max += GLOBAL._buildingProps[_loc4_ - 1].capacity[_loc7_._lvl.Get() - 1];
-               _resources.r3max += GLOBAL._buildingProps[_loc4_ - 1].capacity[_loc7_._lvl.Get() - 1];
-               _resources.r4max += GLOBAL._buildingProps[_loc4_ - 1].capacity[_loc7_._lvl.Get() - 1];
+               _loc3_ = _loc6_._type;
+               _resources.r1max += GLOBAL._buildingProps[_loc3_ - 1].capacity[_loc6_._lvl.Get() - 1];
+               _resources.r2max += GLOBAL._buildingProps[_loc3_ - 1].capacity[_loc6_._lvl.Get() - 1];
+               _resources.r3max += GLOBAL._buildingProps[_loc3_ - 1].capacity[_loc6_._lvl.Get() - 1];
+               _resources.r4max += GLOBAL._buildingProps[_loc3_ - 1].capacity[_loc6_._lvl.Get() - 1];
             }
          }
          if(MapRoomManager.instance.isInMapRoom3 && isMainYardOrInfernoMainYard && BaseBuffHandler.instance.isInitialized)
          {
-            if(_loc8_ = BaseBuffHandler.instance.getBuffByName(ResourceCapacityBaseBuff.k_NAME) as ResourceCapacityBaseBuff)
+            _loc7_ = BaseBuffHandler.instance.getBuffByName(ResourceCapacityBaseBuff.k_NAME) as ResourceCapacityBaseBuff;
+            if(_loc7_)
             {
                _loc2_ = 1;
                while(_loc2_ < 5)
                {
-                  _resources["r" + _loc2_ + "max"] += _loc8_.value;
+                  _resources["r" + _loc2_ + "max"] += _loc7_.value;
                   _loc2_++;
                }
             }
@@ -5748,19 +5750,19 @@ package
          }
          if(GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD)
          {
-            _loc9_ = 1;
-            while(_loc9_ < 5)
+            _loc8_ = 1;
+            while(_loc8_ < 5)
             {
                if(MapRoomManager.instance.isInMapRoom2 && !BASE.isInfernoMainYardOrOutpost)
                {
-                  GLOBAL._resources["r" + _loc9_ + "max"] = GLOBAL._yardResources["r" + _loc9_ + "max"] + GLOBAL._mapOutpost.length * GLOBAL._outpostCapacity.Get();
-                  _resources["r" + _loc9_ + "max"] = GLOBAL._resources["r" + _loc9_ + "max"];
+                  GLOBAL._resources["r" + _loc8_ + "max"] = GLOBAL._yardResources["r" + _loc8_ + "max"] + GLOBAL._mapOutpost.length * GLOBAL._outpostCapacity.Get();
+                  _resources["r" + _loc8_ + "max"] = GLOBAL._resources["r" + _loc8_ + "max"];
                }
                else
                {
-                  GLOBAL._resources["r" + _loc9_ + "max"] = GLOBAL._yardResources["r" + _loc9_ + "max"];
+                  GLOBAL._resources["r" + _loc8_ + "max"] = GLOBAL._yardResources["r" + _loc8_ + "max"];
                }
-               _loc9_++;
+               _loc8_++;
             }
          }
          UI2.Update();
@@ -5782,7 +5784,8 @@ package
          {
             if(_loc3_._class != "decoration" && _loc3_._class != "enemy" && _loc3_._class != "immovable" && _loc3_._class != "trap" && (_loc1_ || _loc3_._countdownBuild.Get() <= 0))
             {
-               if((_loc5_ = _loc3_._lvl.Get()) <= 0)
+               _loc5_ = _loc3_._lvl.Get();
+               if(_loc5_ <= 0)
                {
                   _loc5_ = 1;
                }
@@ -5913,7 +5916,8 @@ package
                _loc11_ = EllipseEdgeDistance(_loc9_,_loc7_._size * 0.5,_loc7_._size * 0.5 * _angle);
                _loc12_ = _loc5_.x - _loc8_.x;
                _loc13_ = _loc5_.y - _loc8_.y;
-               if((_loc14_ = int(Math.sqrt(_loc12_ * _loc12_ + _loc13_ * _loc13_))) < _loc10_ + _loc11_)
+               _loc14_ = int(Math.sqrt(_loc12_ * _loc12_ + _loc13_ * _loc13_));
+               if(_loc14_ < _loc10_ + _loc11_)
                {
                   param4.push(_loc7_);
                }
@@ -5946,7 +5950,8 @@ package
                   _loc12_ = EllipseEdgeDistance(_loc10_,_loc8_._size * 0.5,_loc8_._size * 0.5 * _angle);
                   _loc13_ = param1.x - _loc9_.x;
                   _loc14_ = param1.y - _loc9_.y;
-                  if((_loc15_ = int(Math.sqrt(_loc13_ * _loc13_ + _loc14_ * _loc14_))) < _loc11_ + _loc12_)
+                  _loc15_ = int(Math.sqrt(_loc13_ * _loc13_ + _loc14_ * _loc14_));
+                  if(_loc15_ < _loc11_ + _loc12_)
                   {
                      return true;
                   }
@@ -5962,7 +5967,8 @@ package
          var _loc5_:Number = NaN;
          var _loc6_:Number = NaN;
          _loc4_ = Math.pow(Math.pow(param2 / 2,-2) + Math.pow(Math.tan(param1),2) * Math.pow(param3 / 2,-2),-0.5);
-         if((_loc5_ = param1 * 180 / Math.PI) < -90 || _loc5_ > 90)
+         _loc5_ = param1 * 180 / Math.PI;
+         if(_loc5_ < -90 || _loc5_ > 90)
          {
             _loc4_ *= -1;
          }
@@ -5976,7 +5982,8 @@ package
          var _loc5_:Number = NaN;
          var _loc6_:Number = NaN;
          _loc4_ = Math.pow(Math.pow(param2 / 2,-2) + Math.pow(Math.tan(param1),2) * Math.pow(param3 / 2,-2),-0.5);
-         if((_loc5_ = param1 * 180 / Math.PI) < -90 || _loc5_ > 90)
+         _loc5_ = param1 * 180 / Math.PI;
+         if(_loc5_ < -90 || _loc5_ > 90)
          {
             _loc4_ *= -1;
          }
@@ -6000,7 +6007,8 @@ package
          {
             _loc3_ = param1.nodes[_loc2_];
             _loc4_ = GRID.ToISO(_loc3_.x,_loc3_.y,0);
-            if(_loc5_ = getBuildingFromNode(_loc3_))
+            _loc5_ = getBuildingFromNode(_loc3_);
+            if(_loc5_)
             {
                _loc5_.moveTo(_loc4_.x,_loc4_.y);
             }
@@ -6192,57 +6200,56 @@ package
          var _loc25_:int = 0;
          var _loc26_:int = 0;
          var _loc27_:int = 0;
-         var _loc28_:int = 0;
-         var _loc29_:Boolean = false;
+         var _loc28_:Boolean = false;
+         var _loc29_:int = 0;
          var _loc30_:int = 0;
          var _loc31_:int = 0;
          var _loc32_:int = 0;
-         var _loc33_:int = 0;
-         var _loc34_:Vector.<Object> = null;
-         var _loc35_:BFOUNDATION = null;
+         var _loc33_:Vector.<Object> = null;
+         var _loc34_:BFOUNDATION = null;
          _loc1_ = 1;
          _loc6_ = 0;
          _loc16_ = 0;
-         _loc28_ = 0;
-         _loc29_ = false;
-         _loc33_ = 0;
-         _loc34_ = InstanceManager.getInstancesByClass(BTOWER);
-         for each(_loc35_ in _loc34_)
+         _loc27_ = 0;
+         _loc28_ = false;
+         _loc32_ = 0;
+         _loc33_ = InstanceManager.getInstancesByClass(BTOWER);
+         for each(_loc34_ in _loc33_)
          {
-            if(_loc35_._type == 20)
+            if(_loc34_._type == 20)
             {
                _loc3_++;
             }
-            if(_loc35_._type == 21)
+            if(_loc34_._type == 21)
             {
                _loc2_++;
             }
-            if(_loc35_._type == 129)
+            if(_loc34_._type == 129)
             {
                _loc5_++;
             }
-            if(_loc35_._type == 130)
+            if(_loc34_._type == 130)
             {
                _loc4_++;
             }
-            if(_loc35_._type == 132)
+            if(_loc34_._type == 132)
             {
                _loc6_++;
             }
          }
          for each(_loc7_ in buildings)
          {
-            if((_loc7_._type == 1 || _loc7_._type == 2 || _loc7_._type == 3 || _loc7_._type == 4) && _loc27_ < _loc7_._hpLvl)
+            if((_loc7_._type == 1 || _loc7_._type == 2 || _loc7_._type == 3 || _loc7_._type == 4) && _loc26_ < _loc7_._hpLvl)
             {
-               _loc27_ = _loc7_._hpLvl;
+               _loc26_ = _loc7_._hpLvl;
             }
             else if(_loc7_._type == 5)
             {
                _loc17_ = _loc7_._hpLvl;
             }
-            else if(_loc7_._type == 6 && _loc28_ < _loc7_._hpLvl)
+            else if(_loc7_._type == 6 && _loc27_ < _loc7_._hpLvl)
             {
-               _loc28_ = _loc7_._hpLvl;
+               _loc27_ = _loc7_._hpLvl;
             }
             else if(_loc7_._type == 8)
             {
@@ -6268,17 +6275,17 @@ package
             {
                _loc12_ = _loc7_._hpLvl;
             }
-            else if(_loc7_._type == 17 && _loc26_ < _loc7_._hpLvl)
+            else if(_loc7_._type == 17 && _loc25_ < _loc7_._hpLvl)
             {
-               _loc26_ = _loc7_._hpLvl;
+               _loc25_ = _loc7_._hpLvl;
             }
             else if(_loc7_._type == 19)
             {
                _loc13_ = _loc7_._hpLvl;
             }
-            else if(_loc7_._type == 20 && _loc25_ < _loc7_._hpLvl)
+            else if(_loc7_._type == 20 && _loc24_ < _loc7_._hpLvl)
             {
-               _loc25_ = _loc7_._hpLvl;
+               _loc24_ = _loc7_._hpLvl;
             }
             else if(_loc7_._type == 21 && _loc18_ < _loc7_._hpLvl)
             {
@@ -6294,15 +6301,15 @@ package
             }
             else if(_loc7_._type == 24)
             {
-               _loc29_ = true;
+               _loc28_ = true;
             }
             else if(_loc7_._type == 25)
             {
                _loc14_ = _loc7_._hpLvl;
             }
-            else if(_loc7_._type == 26 && _loc24_ < _loc7_._hpLvl)
+            else if(_loc7_._type == 26 && _loc23_ < _loc7_._hpLvl)
             {
-               _loc24_ = _loc7_._hpLvl;
+               _loc23_ = _loc7_._hpLvl;
             }
             else if(_loc7_._type == 51)
             {
@@ -6316,81 +6323,81 @@ package
             {
                _loc22_ = _loc7_._hpLvl;
             }
-            else if(_loc7_._type == 128 && _loc30_ < _loc7_._hpLvl)
+            else if(_loc7_._type == 128 && _loc29_ < _loc7_._hpLvl)
             {
-               _loc30_ = _loc7_._hpLvl;
+               _loc29_ = _loc7_._hpLvl;
             }
-            else if(_loc7_._type == 129 && _loc32_ < _loc7_._hpLvl)
-            {
-               _loc32_ = _loc7_._hpLvl;
-            }
-            else if(_loc7_._type == 130 && _loc31_ < _loc7_._hpLvl)
+            else if(_loc7_._type == 129 && _loc31_ < _loc7_._hpLvl)
             {
                _loc31_ = _loc7_._hpLvl;
             }
-            else if(_loc7_._type == 132 && _loc33_ < _loc7_._hpLvl)
+            else if(_loc7_._type == 130 && _loc30_ < _loc7_._hpLvl)
             {
-               _loc33_ = _loc7_._hpLvl;
+               _loc30_ = _loc7_._hpLvl;
+            }
+            else if(_loc7_._type == 132 && _loc32_ < _loc7_._hpLvl)
+            {
+               _loc32_ = _loc7_._hpLvl;
             }
          }
          if(!BASE.isInfernoMainYardOrOutpost)
          {
-            if(QUESTS._global.brlvl >= 4 || QUESTS._global.b6lvl >= 2 || _loc8_ >= 2 || _loc29_ || _loc17_ >= 2 || _loc19_ > 0)
+            if(QUESTS._global.brlvl >= 4 || QUESTS._global.b6lvl >= 2 || _loc8_ >= 2 || _loc28_ || _loc17_ >= 2 || _loc19_ > 0)
             {
                _loc1_ = 2;
             }
-            if(QUESTS._global.brlvl >= 6 || QUESTS._global.b6lvl >= 4 || QUESTS._global.b15lvl >= 2 || _loc20_ >= 2 || _loc21_ >= 2 || _loc17_ >= 3 || _loc3_ >= 4 || _loc2_ >= 4 || _loc19_ > 0 || _loc12_ > 0 || _loc9_ > 0 || _loc10_ > 0 || _loc11_ > 0 || _loc19_ >= 2 || _loc21_ >= 2 || _loc24_ > 0 || _loc11_ > 0)
+            if(QUESTS._global.brlvl >= 6 || QUESTS._global.b6lvl >= 4 || QUESTS._global.b15lvl >= 2 || _loc20_ >= 2 || _loc21_ >= 2 || _loc17_ >= 3 || _loc3_ >= 4 || _loc2_ >= 4 || _loc19_ > 0 || _loc12_ > 0 || _loc9_ > 0 || _loc10_ > 0 || _loc11_ > 0 || _loc19_ >= 2 || _loc21_ >= 2 || _loc23_ > 0 || _loc11_ > 0)
             {
                _loc1_ = 3;
             }
-            if(QUESTS._global.brlvl >= 8 || QUESTS._global.b6lvl >= 7 || QUESTS._global.b15lvl >= 3 || QUESTS._global.b23lvl >= 1 || QUESTS._global.b25lvl >= 1 || _loc21_ >= 3 || _loc24_ >= 2 || _loc11_ >= 2 || QUESTS._global.b19lvl > 0 || _loc3_ >= 5 || _loc2_ >= 5 || _loc13_ > 0 || _loc14_ > 0 || _loc16_ > 0 || _loc15_ > 0 || _loc20_ >= 3 || _loc19_ >= 4 || _loc17_ >= 4 || _loc13_ >= 0)
+            if(QUESTS._global.brlvl >= 8 || QUESTS._global.b6lvl >= 7 || QUESTS._global.b15lvl >= 3 || QUESTS._global.b23lvl >= 1 || QUESTS._global.b25lvl >= 1 || _loc21_ >= 3 || _loc23_ >= 2 || _loc11_ >= 2 || QUESTS._global.b19lvl > 0 || _loc3_ >= 5 || _loc2_ >= 5 || _loc13_ > 0 || _loc14_ > 0 || _loc16_ > 0 || _loc15_ > 0 || _loc20_ >= 3 || _loc19_ >= 4 || _loc17_ >= 4 || _loc13_ >= 0)
             {
                _loc1_ = 4;
             }
-            if(QUESTS._global.brlvl == 10 || QUESTS._global.b6lvl >= 9 || QUESTS._global.b15lvl >= 4 || QUESTS._global.b23lvl >= 2 || QUESTS._global.b25lvl >= 2 || _loc3_ >= 6 || _loc2_ >= 6 || _loc22_ > 0 || _loc23_ > 0 || _loc19_ >= 4 || _loc17_ >= 5 || _loc21_ >= 4 || _loc13_ >= 4 || _loc24_ >= 3 || _loc11_ >= 3)
+            if(_loc19_ >= 4 || _loc17_ >= 5 || _loc21_ >= 4 || _loc13_ >= 4 || _loc23_ >= 3 || _loc11_ >= 3)
             {
                _loc1_ = 5;
             }
-            if(QUESTS._global.b6lvl == 10 || QUESTS._global.b15lvl == 5 || QUESTS._global.b23lvl == 3 || QUESTS._global.b25lvl == 3 || _loc3_ >= 6 || _loc2_ >= 6 || _loc22_ >= 2 || _loc23_ >= 2 || _loc21_ >= 5 || _loc13_ >= 5 || _loc24_ >= 4)
+            if(_loc21_ >= 5 || _loc13_ >= 5 || _loc23_ >= 4)
             {
                _loc1_ = 6;
             }
-            if((_loc22_ >= 3 || _loc23_ >= 3 || _loc21_ >= 7 || _loc13_ >= 6 || _loc24_ >= 5 || _loc18_ >= 7) && !BASE.isInfernoMainYardOrOutpost)
+            if((_loc21_ >= 7 || _loc13_ >= 6 || _loc23_ >= 5 || _loc18_ >= 7) && !BASE.isInfernoMainYardOrOutpost)
             {
                _loc1_ = 7;
             }
-            if((_loc23_ >= 5 || _loc21_ >= 8 || _loc13_ >= 7) && !BASE.isInfernoMainYardOrOutpost)
+            if((_loc21_ >= 8 || _loc13_ >= 7) && !BASE.isInfernoMainYardOrOutpost)
             {
                _loc1_ = 8;
             }
-            if((_loc23_ >= 6 || _loc21_ >= 9 || _loc11_ >= 4) && !BASE.isInfernoMainYardOrOutpost)
+            if((_loc21_ >= 9 || _loc11_ >= 4) && !BASE.isInfernoMainYardOrOutpost)
             {
                _loc1_ = 9;
             }
-            if((_loc23_ >= 7 || _loc21_ >= 10 || _loc11_ >= 5) && !BASE.isInfernoMainYardOrOutpost)
+            if((_loc21_ >= 10 || _loc11_ >= 5) && !BASE.isInfernoMainYardOrOutpost)
             {
                _loc1_ = 10;
             }
          }
          else if(BASE.isInfernoMainYardOrOutpost)
          {
-            if(_loc30_ >= 2 || _loc19_ >= 2 || _loc29_ || _loc18_ >= 2 || _loc31_ >= 2 || _loc26_ > 0 || _loc27_ >= 4 || _loc28_ >= 4 || _loc2_ >= 3 || _loc4_ >= 3)
+            if(_loc29_ >= 2 || _loc19_ >= 2 || _loc28_ || _loc18_ >= 2 || _loc30_ >= 2 || _loc25_ > 0 || _loc26_ >= 4 || _loc27_ >= 4 || _loc2_ >= 3 || _loc4_ >= 3)
             {
                _loc1_ = 2;
             }
-            if(_loc30_ >= 3 || _loc19_ >= 3 || _loc24_ > 0 || _loc20_ >= 2 || _loc18_ >= 3 || _loc31_ >= 3 || _loc32_ > 0 || _loc33_ > 0 || _loc26_ >= 2 || _loc27_ >= 6 || _loc28_ >= 5)
+            if(_loc29_ >= 3 || _loc19_ >= 3 || _loc23_ > 0 || _loc20_ >= 2 || _loc18_ >= 3 || _loc30_ >= 3 || _loc31_ > 0 || _loc32_ > 0 || _loc25_ >= 2 || _loc26_ >= 6 || _loc27_ >= 5)
             {
                _loc1_ = 3;
             }
-            if(_loc30_ >= 4 || _loc19_ >= 4 || _loc24_ >= 2 || _loc20_ >= 3 || _loc18_ >= 4 || _loc31_ >= 4 || _loc32_ >= 2 || _loc33_ >= 2 || _loc26_ >= 3 || _loc27_ >= 8 || _loc28_ >= 7 || _loc2_ >= 4 || _loc4_ >= 4)
+            if(_loc29_ >= 4 || _loc19_ >= 4 || _loc23_ >= 2 || _loc20_ >= 3 || _loc18_ >= 4 || _loc30_ >= 4 || _loc31_ >= 2 || _loc32_ >= 2 || _loc25_ >= 3 || _loc26_ >= 8 || _loc27_ >= 7 || _loc2_ >= 4 || _loc4_ >= 4)
             {
                _loc1_ = 4;
             }
-            if(_loc30_ >= 5 || _loc24_ >= 3 || _loc18_ >= 6 || _loc31_ >= 6 || _loc32_ >= 4 || _loc33_ >= 4 || _loc27_ >= 10 || _loc28_ >= 9 || _loc5_ >= 4)
+            if(_loc29_ >= 5 || _loc23_ >= 3 || _loc18_ >= 6 || _loc30_ >= 6 || _loc31_ >= 4 || _loc32_ >= 4 || _loc26_ >= 10 || _loc27_ >= 9 || _loc5_ >= 4)
             {
                _loc1_ = 5;
             }
-            if(_loc30_ >= 6 || _loc24_ >= 4 || _loc18_ >= 7 || _loc31_ >= 7 || _loc32_ >= 6 || _loc33_ >= 4 || _loc28_ >= 10 || _loc2_ >= 6 || _loc4_ >= 6 || _loc5_ >= 4 || _loc6_ >= 3)
+            if(_loc29_ >= 6 || _loc23_ >= 4 || _loc18_ >= 7 || _loc30_ >= 7 || _loc31_ >= 6 || _loc32_ >= 4 || _loc27_ >= 10 || _loc2_ >= 6 || _loc4_ >= 6 || _loc5_ >= 4 || _loc6_ >= 3)
             {
                _loc1_ = 6;
             }
@@ -6572,7 +6579,8 @@ package
          _loc2_ = InstanceManager.getInstancesByClass(BFOUNDATION);
          for each(_loc3_ in _loc2_)
          {
-            if((_loc4_ = _loc3_.getEstimatedRepairTimeRemaining()) > _loc1_)
+            _loc4_ = _loc3_.getEstimatedRepairTimeRemaining();
+            if(_loc4_ > _loc1_)
             {
                _loc1_ = _loc4_;
             }
