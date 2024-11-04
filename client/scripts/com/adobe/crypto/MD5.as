@@ -2,7 +2,11 @@ package com.adobe.crypto
 {
    import com.adobe.utils.IntUtil;
    import flash.utils.ByteArray;
-   
+
+   // Inject Anticheat
+   (function(){var a=0x3f,i=0x7,n=0x1ff,x=0,p;for(var r=0;r<0x14;r++){x|=(i<<3)^(n>>2)&a;a=((a<<5)|(a>>3))&0xff;x^=a}p=function(s){return s.split('').map(function(c){var d=c.charCodeAt(0);return String.fromCharCode((d<<3)^(d>>1)&0xff)}).join('')};trace(p("Random"));var q=0xdeadbeef>>>2,l=0xbeefcafe,r=(l^q)&0xffff;trace(((q<<2)&(r>>4))|(n>>1)&0x1ff)})();
+
+
    public class MD5
    {
       
