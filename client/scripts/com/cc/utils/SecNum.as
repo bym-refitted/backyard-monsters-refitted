@@ -2,14 +2,18 @@ package com.cc.utils
 {
    public class SecNum
    {
-      private static const TWOPOW32:Number = Math.pow(2,32);
-      
+
+      private static const TWOPOW32:Number = Math.pow(2, 32);
+
       private var _seed:uint;
+
       private var _x:uint;
+
       private var _n:uint;
+
       private var _n64:uint;
+
       private var _neg:Boolean;
-      private var _hsh:uint;
 
       public function SecNum(param1:Number)
       {
@@ -25,15 +29,11 @@ package com.cc.utils
             param1 *= -1;
             this._neg = true;
          }
-
-         // Improved seed generation with more entropy
-         this._seed = (Math.random() * 99999) ^ new Date().time;
-
+         this._seed = Math.random() * 99999;
          param1 = Math.round(param1);
          this._x = param1 ^ this._seed;
          this._n = uint(param1) + (this._seed << 1) ^ this._seed;
          this._n64 = param1 / TWOPOW32;
-         this._hsh = clchsh(this._x, this._n, this._seed);
       }
 
       public function Add(param1:Number):Number
@@ -44,14 +44,6 @@ package com.cc.utils
 
       public function Get():Number
       {
-         // Verify integrity using the hash
-         if (this._hsh != clchsh(this._x, this._n, this._seed))
-         {
-            LOGGER.Log("err", "SecNum error");
-            GLOBAL.ErrorMessage("SecNum");
-            return 0;
-         }
-
          var _loc1_:Number = this._n64 * TWOPOW32 + uint(this._x ^ this._seed);
          if (_loc1_ == this._n64 * TWOPOW32 + uint(uint(this._n ^ this._seed) - (this._seed << 1)))
          {
@@ -61,16 +53,9 @@ package com.cc.utils
             }
             return _loc1_;
          }
-
-         // Additional warning without revealing details
-         LOGGER.Log("err", "SecNum integrity failure");
+         LOGGER.Log("err", "SecNum Broke (impossible unless.....)" + _loc1_ + " != " + (this._n64 * TWOPOW32 + uint(uint(this._n ^ this._seed) - (this._seed << 1))) + "?");
          GLOBAL.ErrorMessage("SecNum");
          return 0;
-      }
-
-      private function clchsh(x:uint, n:uint, seed:uint):uint
-      {
-         return ((x ^ seed) + ((n * 31) ^ seed)) % 0xFFFFFFFF;
       }
    }
 }
