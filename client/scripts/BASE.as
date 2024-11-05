@@ -1747,9 +1747,15 @@ package
          }
 
          // Always ensure that the main yard has a town hall
-         if (isMainYard && _buildingData.hasOwnProperty("0"))
+         if (isMainYard && _buildingData.hasOwnProperty("0") && _buildingData["0"].t !== 14)
          {
             _buildingData["0"].t = 14;
+         }
+
+         // Always ensure that the outpost has an outpost building
+         if(isOutpost && _buildingData.hasOwnProperty("0") && _buildingData["0"].t !== 112)
+         {
+            _buildingData["0"].t = 112;
          }
 
          var buildingTypeCounts:Dictionary = new Dictionary();
