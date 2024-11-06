@@ -22,6 +22,8 @@ package
 
       private static var dispatcher:EventDispatcher = new EventDispatcher();
 
+      public static var LANGUAGE_FILE_LOADED:String = "languageFileLoaded";
+
       public function KEYS()
       {
          super();
@@ -53,6 +55,7 @@ package
          var rawData:String = String(data.target.data);
          languageFileJson = JSON.decode(rawData);
          GLOBAL.textContentLoaded = true;
+         GLOBAL.eventDispatcher.dispatchEvent(new Event(LANGUAGE_FILE_LOADED));
       }
 
       private static function handleSupportedLangsSucc(data:Event):void
