@@ -58,7 +58,7 @@ package
                urls._mapURL = serverUrl + "worldmapv2/";
                urls.map3url = serverUrl + "worldmapv3/";
                urls._allianceURL = serverUrl + "alliance/";
-               urls.languageurl = serverUrl + "gamestage/assets/";
+               urls.languageurl = cdnUrl + "gamestage/assets/";
                urls._storageURL = cdnUrl + "assets/";
                urls._soundPathURL = cdnUrl + "assets/sounds/";
                urls._gameURL = serverUrl + "";

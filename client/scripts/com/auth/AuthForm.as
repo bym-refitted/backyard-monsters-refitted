@@ -197,7 +197,7 @@ package com.auth
 
             // Get image asset
             this.loader = new Loader();
-            this.loader.load(new URLRequest(GLOBAL.serverUrl + "assets/popups/C5-LAB-150.png"), new LoaderContext(true));
+            this.loader.load(new URLRequest(GLOBAL.serverUrl + "assets/popups/C5-LAB-150.png"));
             this.loader.contentLoaderInfo.addEventListener(Event.COMPLETE, onImageLoaded);
             this.loader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, handleNetworkError);
 
@@ -770,9 +770,13 @@ package com.auth
             formContainer.removeChild(submitButton);
             formContainer.removeChild(emailInput);
             formContainer.removeChild(passwordInput);
-            formContainer.removeChild(image);
             removeChild(formContainer);
 
+            if (image)
+            {
+                image.bitmapData.dispose();
+                formContainer.removeChild(image);
+            }
             // Clean up resources
             loader.unload();
             loader.contentLoaderInfo.removeEventListener(Event.COMPLETE, onImageLoaded);
