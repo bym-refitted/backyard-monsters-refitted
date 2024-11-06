@@ -91,11 +91,11 @@ package
       // Replaces #placeholders# within JSON with dynamic values
       public static function Get(jsonKeyPath:String, placeholders:Object = null):String
       {
-         if (languageFileJson == null || languageFileJson.data == null)
+         if (languageFileJson == null)
          {
             return jsonKeyPath;
          }
-         var jsonValue:Object = languageFileJson.data;
+         var jsonValue:Object = languageFileJson;
          if (jsonValue.hasOwnProperty(jsonKeyPath))
          {
             var value:* = jsonValue[jsonKeyPath];

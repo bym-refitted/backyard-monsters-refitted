@@ -27,7 +27,7 @@ export const processLanguagesFile = async (ctx: Context, next: Next) => {
     const data = JSON.parse(rawData);
 
     ctx.status = Status.OK;
-    ctx.body = { data };
+    ctx.body = data ;
     ctx.type = "application/json";
   } catch (error) {
     ctx.status = Status.INTERNAL_SERVER_ERROR;
