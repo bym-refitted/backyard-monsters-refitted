@@ -28,7 +28,6 @@ export class User {
   last_name?: string;
 
   @Property({ default: "" })
-  @FrontendKey
   resetToken?: string;
 
   @FrontendKey
