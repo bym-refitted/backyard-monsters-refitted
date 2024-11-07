@@ -23,7 +23,8 @@ services:
     ports:
       - 3001:3001
     depends_on:
-      - db
+      db:
+        condition: service_healthy
   db:
     image: mariadb:lts
     environment:
@@ -37,6 +38,14 @@ services:
       - bymr
     volumes:
       - db:/var/lib/mysql
+    healthcheck:
+      # test: mariadb-admin ping -h 127.0.0.1 --password=$MARIADB_ROOT_PASSWORD
+      test: mariadb-admin ping -h 127.0.0.1
+      start_period: 20s
+      start_interval: 1s
+      interval: 30s
+      timeout: 5s
+      retries: 30
   phpmyadmin:
     image: phpmyadmin:5
     environment:
