@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # READ ME!
 # This script is meant to run inside the web container of the docker-compose runtime. 
@@ -16,15 +16,29 @@ function sql {
 
 function tbl_exists {
     tbl=$1
-    return sql "SELECT 1 as 'Exists' FROM $tbl LIMIT 1" > /dev/null
+    sql "SELECT 1 as 'Exists' FROM $tbl LIMIT 1" > /dev/null
+    res=$?
+    if [[ res -eq 0 ]] then
+        echo "Table $tbl exists"
+        return 0
+    else
+        echo "Table $tbl does not exist!"
+        return 1
+    fi
+    return $res
 }
 
-# perform the check
-ok=$(tbl_exists user && tbl_exists save && echo 1 || echo 0)
+echo "==== Checking if database needs to be initialized ===="
 
-if [[ $ok = "0" ]]; then
+# add tables in this command chain
+tbl_exists user && tbl_exists save && DB_INITIALIZED=1 || DB_INITIALIZED=0
+
+if [[ $DB_INITIALIZED -eq 0 ]]; then
     echo "Initializing DB"
     npm run db:init
 else
     echo "Database already initialized"
 fi
+
+echo "==== Check finished ===="
+echo ""
