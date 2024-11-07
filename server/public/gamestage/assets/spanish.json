@@ -2452,7 +2452,7 @@
     "building_juicer_conversion": "Increases the conversion back into Goo from #v1# to #v2#% ",
     "bdg_fortified_level": "Fortified Level #v1#",
     "bdg_25%boost": "(25% boost)",
-    "building_wall_upgrade": "Increases hit points from #v1# to #v2# ( #v3#%).",
+    "building_wall_upgrade": "Increases hit points from #v1# to #v2# (#v3#%).",
     "msg_juicechampion_confirm": "¿Realmente quieres exprimir a tu campeón? <b>Esto no se puede deshacer.<\/b>",
     "msg_juicechampion_yes": "Sí, exprime a mi Campeón.",
     "msg_champion_fed": "Tu Campeón ya se ha alimentado.  La próxima vez que se alimente será en #v1#.",

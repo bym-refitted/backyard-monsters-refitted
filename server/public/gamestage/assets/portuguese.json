@@ -2446,7 +2446,7 @@
     "building_juicer_conversion": "Aumenta a conversão de volta para Gooleca de #v1# para #v2#% ",
     "bdg_fortified_level": "Fortificação Nível #v1#",
     "bdg_25%boost": "(25% aumentado)",
-    "building_wall_upgrade": "Aumenta os pontos atingidos de #v1# para #v2# ( #v3#%).",
+    "building_wall_upgrade": "Aumenta os pontos atingidos de #v1# para #v2# (#v3#%).",
     "msg_juicechampion_confirm": "Você realmente quer triturar seu campeão? <b>Isso não pode ser desfeito.<\/b>",
     "msg_juicechampion_yes": "Sim, triture meu campeão.",
     "msg_champion_fed": "Seu Campeão está alimentado agora. A próxima refeição será em #v1#.",
