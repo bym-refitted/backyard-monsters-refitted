@@ -18,10 +18,17 @@ services:
       - DB_PORT=3306
       - DB_USER=bymr
       - DB_PASSWORD=bymr
+      # DO NOT USE THIS IN PRODUCTION!
+      - SECRET_KEY=178fd6594da164eac2e78d7ead343f8971c74df3910a36dd03da4cf6e1ae615e
     networks:
       - bymr
     ports:
       - 3001:3001
+    develop:
+      watch:
+        - action: sync
+          path: server
+          target: /app
     depends_on:
       db:
         condition: service_healthy
