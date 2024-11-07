@@ -312,7 +312,7 @@ package
             if(!BASE.isOutpost)
             {
                _upgradeDescription += KEYS.Get("bdg_resource_upcapacity",{
-                  "v1":GLOBAL.FormatNumber(this.productionCapacity),
+                  "v1":GLOBAL.FormatNumber(_buildingProps.capacity[_lvl.Get() - 1]),
                   "v2":GLOBAL.FormatNumber(_buildingProps.capacity[_lvl.Get()])
                });
             }
