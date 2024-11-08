@@ -305,7 +305,7 @@ package
       
       public static var _wmCreatureLevels:Array = new Array();
       
-      public static var _playerGuardianData:Vector.<Object> = new Vector.<Object>(null);
+      public static var _playerGuardianData:Vector.<Object> = new Vector.<Object>();
       
       public static var _playerCatapultLevel:SecNum = new SecNum(0);
       
