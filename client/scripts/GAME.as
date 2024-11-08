@@ -16,9 +16,6 @@ package
    import flash.geom.Rectangle;
    import flash.system.Security;
    import flash.net.SharedObject;
-   import com.zoom.PinchZoom;
-   import flash.events.TouchEvent;
-   import flash.geom.Point;
    import flash.ui.Multitouch;
    import flash.ui.MultitouchInputMode;
    import flash.events.TransformGestureEvent;
@@ -40,8 +37,6 @@ package
       public static var language:String = "";
 
       private var _checkScreenSize:Boolean = true;
-
-      private var _activeTouches:Array;
 
       private var _previousDistance:Number = 0;
 
@@ -171,13 +166,11 @@ package
          }
          addEventListener(Event.ENTER_FRAME, GLOBAL.TickFast);
 
-         // Touch shit
+         // Gesture events
          Multitouch.inputMode = MultitouchInputMode.GESTURE;
-
          stage.addEventListener(TransformGestureEvent.GESTURE_ZOOM, onZoom);
 
          LOGIN.Login();
-         _activeTouches = [];
          stage.scaleMode = StageScaleMode.NO_SCALE;
          stage.addEventListener(Event.RESIZE, GLOBAL.ResizeGame);
          stage.showDefaultContextMenu = false;
