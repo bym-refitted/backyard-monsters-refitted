@@ -3,3 +3,7 @@
 Dockerfile*
 
 example.env
+
+# enforce recompile inside the container
+node_modules/
+dist/
