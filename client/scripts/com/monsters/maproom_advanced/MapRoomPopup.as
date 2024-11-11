@@ -1103,7 +1103,7 @@ package com.monsters.maproom_advanced
                   if(visited[new_x + "," + new_y] != undefined)
                      continue;
                   visited[new_x + "," + new_y] = true;
-                  var cell:Object = this.GetCell(new_x, new_y);
+                  var cell:MapRoomCell = this.GetCell(new_x, new_y);
                   var cell_data = new CellData(cell,dist);
                   cells.push(cell_data);
                }
