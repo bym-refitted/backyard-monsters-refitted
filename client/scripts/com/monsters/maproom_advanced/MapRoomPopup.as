@@ -1098,10 +1098,11 @@ package com.monsters.maproom_advanced
          q+r+s = 0. Axial coordinates are the same as cube, but s in implicit.
       */
       public function GetCellsInRange(hexX:int, hexY: int, range:int) : Vector.<CellData>{
-         var cells:Vector.<CellData> = new Vector.<CellData>;
+         var cells:Vector.<CellData> = new Vector.<CellData>(3 * range * (range + 1),true);
          // We convert to axial coordinates for easier calculations
          var axialQ: int = hexX;
          var axialR: int = hexY - (hexX - (hexX&1))/2;
+         var index:int = 0;
          for(var dq:int = -range; dq <= range; dq++){
             for(var dr:int = Math.max(-range, -dq - range); dr <= Math.min(range, -dq + range); dr++){
                //Skip the origin
@@ -1120,7 +1121,8 @@ package com.monsters.maproom_advanced
                var newY:int = newR + (newQ - (newQ&1))/2;
                var cell:MapRoomCell = this.GetCell(newX,newY);
                var cellData = new CellData(cell,distance);
-               cells.push(cellData);
+               cells[index] = cellData;
+               index += 1;
             }
          }
          return cells;
