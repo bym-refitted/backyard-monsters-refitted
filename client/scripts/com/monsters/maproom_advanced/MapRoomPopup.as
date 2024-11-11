@@ -1103,18 +1103,38 @@ package com.monsters.maproom_advanced
          var axialQ: int = hexX;
          var axialR: int = hexY - (hexX - (hexX&1))/2;
          var index:int = 0;
+
+         //Special case to skip constantly checking to not
+         // add (0,0)
+         for(var dr = 1; dr <= range; dr++){
+            // Q doesn't change
+            var newQ:int = axialQ;
+            var newR:int = axialR + dr;
+            
+            var newX:int = newQ;
+            var newY:int = newR + (newQ - (newQ&1))/2;
+            var cell:MapRoomCell = this.GetCell(newX,newY);
+            var cellData = new CellData(cell,dr);
+            cells[index] = cellData;
+            //We also add the negative       
+            newR = axialR - dr;
+            newY = newR + (newQ - (newQ&1))/2;
+            cell= this.GetCell(newX,newY);
+            cellData = new CellData(cell,dr);
+            cells[index+1] = cellData;
+            index += 2;   
+         }
+
          for(var dq:int = -range; dq <= range; dq++){
+            // We already checked for dq = 0
+            if(!dq)
+               continue;
             for(var dr:int = Math.max(-range, -dq - range); dr <= Math.min(range, -dq + range); dr++){
-               //Skip the origin
-               if(dq == 0 && dr == 0)
-                  continue;
                //Sum in axial 
                var newQ:int = axialQ + dq;
                var newR:int = axialR + dr;
-               // In cube coordinates, the distance is always the 
+               // In cube and axial, the distance is always the 
                // biggest absolute value of the three coordinates
-               // axial's the same, but we need to calculate s as -q-r
-               // All systems measure the same distance
                var distance:int = Math.max(Math.abs(dq),Math.abs(dr), Math.abs(-dq-dr));
                // Convert back to offsetted
                var newX:int = newQ;
