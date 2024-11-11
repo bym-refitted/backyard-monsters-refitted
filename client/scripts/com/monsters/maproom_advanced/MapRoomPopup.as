@@ -1097,62 +1097,61 @@ package com.monsters.maproom_advanced
          Cube coordinates in hexagonal grid consists of three components q,r and s that mantain the property
          q+r+s = 0. Axial coordinates are the same as cube, but s in implicit.
       */
-      public function GetCellsInRange(hex_x:int, hex_y: int, range:int) : Vector.<CellData>{
+      public function GetCellsInRange(hexX:int, hexY: int, range:int) : Vector.<CellData>{
          var cells:Vector.<CellData> = new Vector.<CellData>;
          // We convert to axial coordinates for easier calculations
-         var axial_q: int = hex_x;
-         var axial_r: int = hex_y - (hex_x - (hex_x&1))/2;
-         var visited = new Dictionary();
-
-         for(var dist = 1; dist <= range; dist++){
-            for(var dq:int = -dist; dq <= dist; dq++){
-               for(var dr:int = Math.max(-dist, -dq - dist); dr <= Math.min(dist, -dq + dist); dr++){
-                  if(dq == 0 && dr == 0)
-                     continue;
-                  var new_q:int = axial_q + dq;
-                  var new_r:int = axial_r + dr;
-                  // I know this is pointless and i could just use new_q, 
-                  // but it looks cleaner this way 
-                  var new_x:int = new_q
-                  var new_y:int = new_r + (new_q - (new_q&1))/2;
-                  if(visited[new_x + "," + new_y] != undefined)
-                     continue;
-                  visited[new_x + "," + new_y] = true;
-                  var cell:MapRoomCell = this.GetCell(new_x, new_y);
-                  var cell_data = new CellData(cell,dist);
-                  cells.push(cell_data);
-               }
+         var axialQ: int = hexX;
+         var axialR: int = hexY - (hexX - (hexX&1))/2;
+         for(var dq:int = -range; dq <= range; dq++){
+            for(var dr:int = Math.max(-range, -dq - range); dr <= Math.min(range, -dq + range); dr++){
+               //Skip the origin
+               if(dq == 0 && dr == 0)
+                  continue;
+               //Sum in axial 
+               var newQ:int = axialQ + dq;
+               var newR:int = axialR + dr;
+               // In cube coordinates, the distance is always the 
+               // biggest absolute value of the three coordinates
+               // axial's the same, but we need to calculate s as -q-r
+               // All systems measure the same distance
+               var distance:int = Math.max(Math.abs(dq),Math.abs(dr), Math.abs(-dq-dr));
+               // Convert back to offsetted
+               var newX:int = newQ;
+               var newY:int = newR + (newQ - (newQ&1))/2;
+               var cell:MapRoomCell = this.GetCell(newX,newY);
+               var cellData = new CellData(cell,distance);
+               cells.push(cellData);
             }
          }
          return cells;
       }
       
-      private function GetCell(hex_x:int, hex_y:int) : MapRoomCell
+      private function GetCell(hexX:int, hexY:int) : MapRoomCell
       {
-         if(hex_x >= MapRoom._mapWidth)
+         if(hexX >= MapRoom._mapWidth)
          {
-            hex_x -= MapRoom._mapWidth;
+            hexX -= MapRoom._mapWidth;
          }
-         else if(hex_x < 0)
+         else if(hexX < 0)
          {
-            hex_x = MapRoom._mapWidth + hex_x;
+            hexX = MapRoom._mapWidth + hexX;
          }
-         if(hex_y >= MapRoom._mapHeight)
+         if(hexY >= MapRoom._mapHeight)
          {
-            hex_y -= MapRoom._mapHeight;
+            hexY -= MapRoom._mapHeight;
          }
-         else if(hex_y < 0)
+         else if(hexY < 0)
          {
-            hex_y = MapRoom._mapHeight + hex_y;
+            hexY = MapRoom._mapHeight + hexY;
          }
          for each(var cell in this._cells)
          {
-            if(cell.X == hex_x && cell.Y == hex_y)
+            if(cell.X == hexX && cell.Y == hexY)
             {
                return cell;
             }
          }
-         if(this._fallbackHomeCell.X == hex_x && this._fallbackHomeCell.Y == hex_y)
+         if(this._fallbackHomeCell.X == hexX && this._fallbackHomeCell.Y == hexY)
          {
             return this._fallbackHomeCell;
          }
