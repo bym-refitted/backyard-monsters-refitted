@@ -15,7 +15,10 @@ package
    import flash.external.ExternalInterface;
    import flash.geom.Rectangle;
    import flash.system.Security;
-
+   import flash.net.SharedObject;
+   import flash.ui.Multitouch;
+   import flash.ui.MultitouchInputMode;
+   import flash.events.TransformGestureEvent;
    public class GAME extends Sprite
    {
 
@@ -27,9 +30,17 @@ package
 
       public static var _firstLoadComplete:Boolean = false;
 
-      public var loader:Loader;
+      public static var sharedObj:SharedObject;
+
+      public static var token:String = "";
+
+      public static var language:String = "";
 
       private var _checkScreenSize:Boolean = true;
+
+      private var _previousDistance:Number = 0;
+
+      private var _scaleFactor:Number = 1;
 
       public function GAME()
       {
@@ -53,7 +64,7 @@ package
                urls._mapURL = serverUrl + "worldmapv2/";
                urls.map3url = serverUrl + "worldmapv3/";
                urls._allianceURL = serverUrl + "alliance/";
-               urls.languageurl = serverUrl + "gamestage/assets/";
+               urls.languageurl = cdnUrl + "gamestage/assets/";
                urls._storageURL = cdnUrl + "assets/";
                urls._soundPathURL = cdnUrl + "assets/sounds/";
                urls._gameURL = serverUrl + "";
@@ -76,14 +87,39 @@ package
          GLOBAL.CallJS("cc.enableMouseWheel");
       }
 
+      public function setLauncherVars()
+      {
+         var loader:Object = this.loaderInfo.parameters;
+
+         try
+         {
+            sharedObj = SharedObject.getLocal("bymr_data", "/");
+            if (loader.language)
+            {
+               language = loader.language;
+               sharedObj.data.language = language;
+               sharedObj.flush();
+            }
+            if (loader.token)
+            {
+               token = loader.token;
+               sharedObj.data.token = token;
+               sharedObj.flush();
+            }
+         }
+         catch (e:Error)
+         {
+            LOGGER.Log("err", "Error setting token from loader: " + e.message);
+         }
+      }
+
       public function Data(urls:Object, isContained:Boolean = false):void
       {
-         // var u:String;
          var contained:Boolean = isContained;
+         setLauncherVars();
          loaderInfo.uncaughtErrorEvents.addEventListener(UncaughtErrorEvent.UNCAUGHT_ERROR, this.uncaughtErrorThrown);
          GLOBAL._baseURL = urls._baseURL;
-         // u = String(GLOBAL._baseURL.split("/")[2]);
-         Security.allowDomain("*");
+
          SWFProfiler.init(stage, null);
          Console.initialize(stage);
          _contained = contained;
@@ -129,10 +165,16 @@ package
             GLOBAL._openBase = null;
          }
          addEventListener(Event.ENTER_FRAME, GLOBAL.TickFast);
+
+         // Gesture events
+         Multitouch.inputMode = MultitouchInputMode.GESTURE;
+         stage.addEventListener(TransformGestureEvent.GESTURE_ZOOM, onZoom);
+
          LOGIN.Login();
          stage.scaleMode = StageScaleMode.NO_SCALE;
          stage.addEventListener(Event.RESIZE, GLOBAL.ResizeGame);
          stage.showDefaultContextMenu = false;
+
          if (ExternalInterface.available)
          {
             ExternalInterface.addCallback("openbase", function(param1:String):void
@@ -239,6 +281,20 @@ package
                GLOBAL._SCREENINIT = new Rectangle(0, 0, 760, 750);
             }
          }
+      }
+
+      private function onZoom(event:TransformGestureEvent):void
+      {
+         _scaleFactor *= event.scaleX;
+
+         const MIN_SCALE:Number = 1.0;
+         const MAX_SCALE:Number = 3.5;
+
+         // Constrain the scale factor within the specified range
+         _scaleFactor = Math.max(MIN_SCALE, Math.min(MAX_SCALE, _scaleFactor));
+
+         this.scaleX = _scaleFactor;
+         this.scaleY = _scaleFactor;
       }
 
       protected function uncaughtErrorThrown(param1:UncaughtErrorEvent):void

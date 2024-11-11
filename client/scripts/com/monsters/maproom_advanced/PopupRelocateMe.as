@@ -205,6 +205,11 @@ package com.monsters.maproom_advanced
                   PLEASEWAIT.Show(KEYS.Get("wait_packingyard"));
                   addEventListener(Event.ENTER_FRAME,RelocateComplete);
                   MapRoomManager.instance.Tick();
+
+                  if (MapRoomPopup.instance) 
+                  {
+                     MapRoomPopup.instance.CloseMapRoomAfterMigration();
+                  }
                }
             }
             else

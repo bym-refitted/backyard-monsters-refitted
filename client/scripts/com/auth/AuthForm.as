@@ -79,10 +79,6 @@ package com.auth
 
         private var loader:Loader;
 
-        private var centerX:Number;
-
-        private var centerY:Number;
-
         private var startY:Number;
 
         private var verticalSpacingBetweenBlocks:Number = 0;
@@ -108,9 +104,7 @@ package com.auth
         public function AuthForm()
         {
             addEventListener(Event.ADDED_TO_STAGE, formAddedToStageHandler);
-            KEYS._storageURL = GLOBAL.languageUrl;
-            KEYS.GetSupportedLanguages();
-            KEYS.Setup("english");
+            GLOBAL.LanguageSetup();
 
             // Start a timer every second to check if text content and supported languages are loaded from the server
             checkContentLoadedTimer = new Timer(1000);
@@ -194,20 +188,16 @@ package com.auth
             addChild(navContainer);
 
             formContainer.graphics.drawRect(0, 0, formWidth, formHeight);
-            formContainer.x = (stage.stageWidth - formContainer.width) / 2;
-            formContainer.y = (stage.stageHeight - formContainer.height) / 2;
+            formContainer.x = 155;
+            formContainer.y = 45;
             addChild(formContainer);
 
-            // Get center point of stage
-            centerX = stage.stageWidth / 2;
-            centerY = stage.stageHeight / 2;
-
-            // Calculate starting y position to center content
-            startY = centerY;
+            // Y-position for the first input field
+            startY = 345;
 
             // Get image asset
             this.loader = new Loader();
-            this.loader.load(new URLRequest(GLOBAL.serverUrl + "assets/popups/C5-LAB-150.png"), new LoaderContext(true));
+            this.loader.load(new URLRequest(GLOBAL.serverUrl + "assets/popups/C5-LAB-150.png"));
             this.loader.contentLoaderInfo.addEventListener(Event.COMPLETE, onImageLoaded);
             this.loader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, handleNetworkError);
 
@@ -291,7 +281,7 @@ package com.auth
             var navHeight:Number = 50;
 
             navContainer.graphics.drawRect(0, 0, navWidth, navHeight);
-            navContainer.x = (stage.stageWidth - navWidth) / 2;
+            navContainer.x = -20;
             navContainer.y = 50; // Margin top
 
             var textContainer:Sprite = new Sprite();
@@ -667,7 +657,7 @@ package com.auth
                     }
                     else
                     {
-                        GLOBAL.Message("<b>Usernames must be:</b><br><br>• At least 2 characters long.<br>• No longer than 15 characters.<br>• Can only include numbers, letters, and underscores.");
+                        GLOBAL.Message("<b>Usernames must be:</b><br><br>• At least 2 characters long.<br>• No longer than 12 characters.<br>• Can only include numbers and letters.");
                     }
                 }
                 else
@@ -679,15 +669,15 @@ package com.auth
             {
                 if (!isEmailValid)
                 {
-                    showErrorMessage(emailInput, "Invalid email format");
+                    showErrorMessage(emailInput, "Please enter a valid email address");
                 }
                 if (!isPasswordValid)
                 {
-                    showErrorMessage(passwordInput, "Password must be at least 8 characters");
+                    showErrorMessage(passwordInput, "Password must be at least 8 characters long, contain at least 1 uppercase\nletter, and 1 special character");
                 }
                 if (!isUsernameValid && isRegisterForm)
                 {
-                    GLOBAL.Message("<b>Usernames must be:</b><br><br>• At least 2 characters long.<br>• No longer than 15 characters.<br>• Can only include numbers, letters, and underscores.");
+                    GLOBAL.Message("<b>Usernames must be:</b><br><br>• At least 2 characters long.<br>• No longer than 12 characters.<br>• Can only include numbers and letters.");
                 }
             }
         }
@@ -699,7 +689,7 @@ package com.auth
 
         private function registerNewUser(serverData:Object):void
         {
-            GLOBAL.Message("<b>Congratulations!</b> Your account has been successfully created, you can now login.");
+            GLOBAL.Message("You have successfully registered an account. Please login to continue.");
             isRegisterForm = false;
             updateState();
         }
@@ -717,7 +707,7 @@ package com.auth
         private function isValidUsername(username:String):Boolean
         {
             var pattern:RegExp = /^[a-zA-Z0-9_]+$/;
-            return username.length >= 2 && username.length <= 15 && pattern.test(username);
+            return username.length >= 2 && username.length <= 12 && pattern.test(username);
         }
 
         private function isValidEmail(email:String):Boolean
@@ -728,7 +718,8 @@ package com.auth
 
         private function isValidPassword(password:String):Boolean
         {
-            return password.length >= 8;
+            var passwordRegex:RegExp = /^(?=.*[A-Z])(?=.*[\W_])(?=.{8,})/;
+            return passwordRegex.test(password);
         }
 
         private function clearErrorMessages():void
@@ -740,13 +731,13 @@ package com.auth
         private function showErrorMessage(inputField:TextField, errorMessage:String):void
         {
             var errorText:TextField = new TextField();
-            errorText.text = errorMessage;
+            errorText.htmlText = errorMessage;
             errorText.textColor = RED;
             errorText.x = inputField.x;
             ;
-            errorText.y = inputField.y + inputField.height;
-            errorText.width = inputField.width;
-            errorText.height = errorText.textHeight + 3;
+            errorText.y = inputField.y + inputField.height + 5;
+            errorText.width = inputField.width + 100;
+            errorText.height = 40;
             formContainer.addChild(errorText);
 
             if (inputField == emailInput)
@@ -770,6 +761,8 @@ package com.auth
 
         public function disposeUI():void
         {
+            // Reset stage color
+            stage.color = WHITE;
             // Remove event listeners
             submitButton.removeEventListener(MouseEvent.CLICK, submitButtonClickHandler);
 
@@ -777,9 +770,13 @@ package com.auth
             formContainer.removeChild(submitButton);
             formContainer.removeChild(emailInput);
             formContainer.removeChild(passwordInput);
-            formContainer.removeChild(image);
             removeChild(formContainer);
 
+            if (image)
+            {
+                image.bitmapData.dispose();
+                formContainer.removeChild(image);
+            }
             // Clean up resources
             loader.unload();
             loader.contentLoaderInfo.removeEventListener(Event.COMPLETE, onImageLoaded);

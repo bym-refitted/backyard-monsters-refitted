@@ -49,7 +49,11 @@ package com.monsters.configs
       
       public function get RENDERER_ON() : Boolean
       {
-         return false;
+         // Originally set to false
+         // Apparently, it is more performant to have this enabled
+         // RENDERER_ON true = graphics are rendered using a bitmap approach
+         // RENDERER_ON false = graphics are rendered using a vector approach / display list approach
+         return true;
       }
       
       public function get OPTIMIZED_SHADOWS() : Boolean

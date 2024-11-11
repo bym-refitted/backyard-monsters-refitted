@@ -382,6 +382,25 @@ package
             _loc1_++;
          }
       }
+
+      public static function NoConnection() : void {
+         var movie:MovieClip = null;
+         SOUNDS.StopAll();
+         _mcBG = GLOBAL._layerTop.addChild(new popup_bg2()) as popup_bg2;
+         _mcBG.x = GLOBAL._SCREEN.x;
+         _mcBG.y = GLOBAL._SCREEN.y;
+         _mcBG.width = GLOBAL._SCREEN.width;
+         _mcBG.height = GLOBAL._SCREEN.height;
+         _mcBG.cacheAsBitmap = true;
+         movie = new popup_timeout();
+         movie.tA.htmlText = "<b>" + KEYS.Get("pop_noconnect_title") + "</b>";
+         movie.tB.htmlText = KEYS.Get("pop_noconnect_body");
+         movie.bGift.visible = false;
+         movie.x = GLOBAL._SCREENCENTER.x;
+         movie.y = GLOBAL._SCREENCENTER.y;
+         GLOBAL._layerTop.addChild(movie);
+         GLOBAL._halt = true;
+      }
       
       public static function Timeout() : void
       {

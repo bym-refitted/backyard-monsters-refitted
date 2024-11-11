@@ -1,63 +1,111 @@
+import { z } from "zod";
+
 import { KoaController } from "../../../utils/KoaController";
-import { wildMonsterCell } from "./cells/wildMonsterCell";
-import { homeCell } from "./cells/homeCell";
-import { outpostCell } from "./cells/outpostCell";
+import { User } from "../../../models/user.model";
+import { WorldMapCell } from "../../../models/worldmapcell.model";
+import { ORMContext } from "../../../server";
 import { devConfig } from "../../../config/DevSettings";
+import { Status } from "../../../enums/StatusCodes";
+import { createCellData } from "../../../services/maproom/v2/createCellData";
+import { Save } from "../../../models/save.model";
+import {
+  generateNoise,
+  getTerrainHeight,
+} from "../../../config/WorldGenSettings";
 
-interface Cell {
-  x?: number;
-  y?: number;
-  width?: number;
-  height?: number;
-}
+/**
+ * Schema for validating the request body when getting area data.
+ */
+const getAreaSchema = z.object({
+  x: z.string().transform(x => parseInt(x, 10)),
+  y: z.string().transform(y => parseInt(y, 10)),
+  sendresources: z.string().optional().transform(res => parseInt(res, 10) || 0),
+});
 
+/**
+ * Controller for generating cells on the World Map.
+ * 
+ * Processes chunks of 10 x 10 cells, retrieving persistent cells (e.g., homebases, outposts) 
+ * from the database, while all other cells are stored in-memory.
+ * 
+ * @param {Koa.Context} ctx - The Koa context object
+ * @returns {Promise<void>} A promise that resolves when the area data is retrieved and the response is sent.
+ * 
+ * @throws {Error} Throws an error if there are issues parsing the request body or retrieving data.
+ */
 export const getArea: KoaController = async (ctx) => {
-  const requestBody: Cell = ctx.request.body;
+  const { x, y, sendresources } = getAreaSchema.parse(ctx.request.body);
 
-  for (const key in requestBody) {
-    requestBody[key] = parseInt(requestBody[key], 10) || 0;
+  const user: User = ctx.authUser;
+  await ORMContext.em.populate(user, ["save"]);
+
+  const save: Save = user.save;
+  const worldid = save.worldid;
+
+  // We ignore width & height sent by the client as it's already hardcoded to 10 x 10
+  const width = 10;
+  const height = 10;
+
+  const currentX = x;
+  const currentY = y;
+
+  // First, get persistant cells which have been stored in the database.
+  const dbCells = await ORMContext.em.find(
+    WorldMapCell,
+    {
+      x: {
+        $gte: currentX,
+        $lte: currentX + width,
+      },
+      y: {
+        $gte: currentY,
+        $lte: currentY + height,
+      },
+      world_id: worldid,
+    },
+    { populate: ["save"] }
+  );
+
+  const cells = {};
+  for (const cell of dbCells) {
+    if (!cells[cell.x]) cells[cell.x] = {};
+    cells[cell.x][cell.y] = await createCellData(cell, worldid, ctx);
   }
 
-  const currentX = requestBody.x || 0;
-  const currentY = requestBody.y || 0;
-  const width = requestBody.width || 10;
-  const height = requestBody.height || 10;
-
-  // Creates {maxX} x {maxY} grid from point 0 x 0
-  const maxX = currentX + width;
-  const maxY = currentY + height;
-
-  let cells = {};
-
-  for (let x = currentX; x < maxX; x++) {
-    cells[x] = {};
-
-    for (let y = currentY; y < maxY; y++) {
-      cells[x][y] = await wildMonsterCell();
-
-      // Testing - Hardcoded co-ordinates to load base types
-      if (x === 0 && y === 0) {
-        cells[x][y] = await homeCell(ctx);
-      }
-
-      if (x === 2 && y === 1) {
-        cells[x][y] = await outpostCell(ctx);
-      }
+  // Then, fill the remaining cells in-memory
+  const noise = generateNoise(save.worldid);
+  for (let cellX = currentX; cellX <= currentX + width; cellX++) {
+    // Ensure the cellX object exists in the cells map to append the cellY object to it
+    if (!cells[cellX]) cells[cellX] = {};
+    for (let cellY = currentY; cellY <= currentY + height; cellY++) {
+      // The cell already exists, skip it
+      if (cells[cellX][cellY]) continue;
+      const terrainHeight = getTerrainHeight(noise, cellX, cellY);
+      // Create a cell in-memory, skip the world being defined for memory efficency
+      const inMemoryCell = new WorldMapCell(
+        undefined,
+        cellX,
+        cellY,
+        terrainHeight
+      );
+      cells[cellX][cellY] = await createCellData(inMemoryCell, worldid, ctx);
     }
   }
 
   if (devConfig.maproom) {
-    ctx.status = 200;
+    ctx.status = Status.OK;
     ctx.body = {
       error: 0,
       x: currentX,
       y: currentY,
       data: cells,
-      // resources
-      // alliancedata
+      ...(sendresources === 1 && {
+        resources: save.resources,
+        credits: save.credits,
+      }),
     };
   } else {
-    ctx.status = 404;
-    ctx.body = { message: "MapRoom is not enabled on this server", error: 1 };
+    ctx.status = Status.NOT_FOUND;
+    ctx.body = { message: "Map Room is not enabled on this server", error: 1 };
   }
 };

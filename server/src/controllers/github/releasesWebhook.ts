@@ -1,8 +1,9 @@
-import { ENV } from "../../enums/Env";
+import { Env } from "../../enums/Env";
 import { KoaController } from "../../utils/KoaController";
-import { getLatestSwfFromGithub } from "../../utils/getLatestSwfFromGithub";
 import { createHmac } from "crypto";
 import { setApiVersion } from "../../server";
+import { Status } from "../../enums/StatusCodes";
+import { getLatestSwfFromGithub } from "./getLatestSwfFromGithub";
 
 interface ReleasePayload {
   release: {
@@ -10,14 +11,17 @@ interface ReleasePayload {
   };
 }
 
-/** Webhook event which authenticates & subscribes to GitHub Releases  
+/** Webhook event which authenticates & subscribes to GitHub Releases
  * + downloads the latest version of client files
  * + updates the global API version based on the file version
-*/
+ *
+ * @param {Context} ctx - The Koa context object.
+ * @returns {Promise<void>} - A promise that resolves when the controller is complete.
+ */
 export const releasesWebhook: KoaController = async (ctx) => {
   const payload = ctx.request.body as ReleasePayload;
 
-  if (process.env.ENV !== ENV.LOCAL) {
+  if (process.env.ENV !== Env.LOCAL) {
     const receivedSig = ctx.request.headers["x-hub-signature"];
     const computedSig =
       "sha1=" +
@@ -26,7 +30,7 @@ export const releasesWebhook: KoaController = async (ctx) => {
         .digest("hex");
 
     if (receivedSig !== computedSig) {
-      ctx.status = 401;
+      ctx.status = Status.UNAUTHORIZED;
       ctx.body = { error: "Mismatched signatures" };
       return;
     }
@@ -37,5 +41,5 @@ export const releasesWebhook: KoaController = async (ctx) => {
     setApiVersion(await getLatestSwfFromGithub());
   }
 
-  ctx.status = 200;
+  ctx.status = Status.OK;
 };

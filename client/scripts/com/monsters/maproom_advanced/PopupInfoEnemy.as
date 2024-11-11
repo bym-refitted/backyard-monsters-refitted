@@ -494,7 +494,7 @@ package com.monsters.maproom_advanced
          if(this._cell._base > 1)
          {
             this._profilePic = new Loader();
-            if(GLOBAL._flags.viximo)
+            if(!GLOBAL._flags.viximo)
             {
                this._profilePic.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR,LoadImageError,false,0,true);
                this._profilePic.contentLoaderInfo.addEventListener(Event.COMPLETE,onImageLoad);
