@@ -1089,7 +1089,7 @@ package com.monsters.maproom_advanced
          var axial_r: int = hex_y - (hex_x - (hex_x&1))/2;
          var visited = new Dictionary();
 
-         for(var dist = -range; dist <= range; dist++){
+         for(var dist = 1; dist <= range; dist++){
             for(var dq:int = -dist; dq <= dist; dq++){
                for(var dr:int = Math.max(-dist, -dq - dist); dr <= Math.min(dist, -dq + dist); dr++){
                   if(dq == 0 && dr == 0)
