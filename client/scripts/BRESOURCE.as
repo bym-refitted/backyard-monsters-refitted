@@ -293,6 +293,10 @@ package
          if(_lvl.Get() < _buildingProps.costs.length)
          {
             _loc9_ = _buildingProps.produce[_lvl.Get()] / _buildingProps.cycleTime[_lvl.Get()] * 60 * 60;
+            if(BASE.isOutpost)
+            {
+               _loc9_ = AdjustProduction(GLOBAL._currentCell,_loc9_);
+            }
             _loc10_ = _loc4_;
             _loc2_ = int(_buildingProps.capacity[_lvl.Get()]);
             if(BASE.isOutpost)
