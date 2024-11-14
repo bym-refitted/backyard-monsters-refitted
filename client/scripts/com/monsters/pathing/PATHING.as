@@ -11,6 +11,21 @@ package com.monsters.pathing
    
    public class PATHING
    {
+      private static var _poolPathing:Vector.<PATHINGobject>;
+      
+      private static var _poolPathingB:Vector.<PATHINGobject>;
+      
+      private static var _poolPathingLength:int;
+      
+      public static var floodDisplay:DisplayObject;
+      
+      public static var floodBMD:BitmapData;
+      
+      public static var costDisplay:DisplayObject;
+      
+      public static var costBMD:BitmapData;
+      
+      public static var pathmc:DisplayObject;
       
       private static const PI:Number = Math.PI;
       
@@ -30,24 +45,7 @@ package com.monsters.pathing
       
       private static var _clicked:Boolean = false;
       
-      private static var _poolPathing:Vector.<PATHINGobject>;
-      
-      private static var _poolPathingB:Vector.<PATHINGobject>;
-      
-      private static var _poolPathingLength:int;
-      
       private static var _resetRequested:Boolean = false;
-      
-      public static var floodDisplay:DisplayObject;
-      
-      public static var floodBMD:BitmapData;
-      
-      public static var costDisplay:DisplayObject;
-      
-      public static var costBMD:BitmapData;
-      
-      public static var pathmc:DisplayObject;
-       
       
       public function PATHING()
       {
@@ -95,7 +93,8 @@ package com.monsters.pathing
          _loc4_.x += param2.x;
          _loc4_.y += param2.y;
          _loc5_ = GlobalLocal(_loc4_);
-         _loc7_ = (_loc9_ = new Rectangle(_loc5_.x,_loc5_.y,param2.width * 0.1,param2.height * 0.1)).x;
+         _loc9_ = new Rectangle(_loc5_.x,_loc5_.y,param2.width * 0.1,param2.height * 0.1);
+         _loc7_ = _loc9_.x;
          while(_loc7_ < _loc9_.x + _loc9_.width)
          {
             _loc8_ = _loc9_.y;
@@ -154,13 +153,11 @@ package com.monsters.pathing
       public static function Tick() : void
       {
          var _loc5_:Point = null;
-         var _loc6_:PATHINGobject = null;
+         var _loc6_:int = 0;
          var _loc7_:int = 0;
-         var _loc8_:int = 0;
-         var _loc9_:int = 0;
-         var _loc10_:BFOUNDATION = null;
-         var _loc11_:Array = null;
-         var _loc12_:Vector.<Object> = null;
+         var _loc8_:BFOUNDATION = null;
+         var _loc9_:Array = null;
+         var _loc10_:Vector.<Object> = null;
          var _loc1_:int = getTimer();
          var _loc2_:int = 0;
          var _loc3_:int = 0;
@@ -170,28 +167,28 @@ package com.monsters.pathing
             _resetRequested = false;
             _loc5_ = new Point(0,0);
             Clear();
-            _loc8_ = 0;
-            while(_loc8_ < _gridWidth)
+            _loc6_ = 0;
+            while(_loc6_ < _gridWidth)
             {
-               _loc9_ = 0;
-               while(_loc9_ < _gridHeight)
+               _loc7_ = 0;
+               while(_loc7_ < _gridHeight)
                {
-                  _costs[_loc8_ * 1000 + _loc9_].cost = 10;
-                  _loc9_ += 1;
+                  _costs[_loc6_ * 1000 + _loc7_].cost = 10;
+                  _loc7_ += 1;
                }
-               _loc8_ += 1;
+               _loc6_ += 1;
             }
             _loc2_ = getTimer() - _loc1_;
-            _loc12_ = InstanceManager.getInstancesByClass(BFOUNDATION);
-            for each(_loc10_ in _loc12_)
+            _loc10_ = InstanceManager.getInstancesByClass(BFOUNDATION);
+            for each(_loc8_ in _loc10_)
             {
-               if(Boolean(_loc10_._gridCost) && (_loc10_.health > 0 || _loc10_ is BMUSHROOM))
+               if(Boolean(_loc8_._gridCost) && (_loc8_.health > 0 || _loc8_ is BMUSHROOM))
                {
-                  for each(_loc11_ in _loc10_._gridCost)
+                  for each(_loc9_ in _loc8_._gridCost)
                   {
-                     _loc5_.x = _loc10_.x;
-                     _loc5_.y = _loc10_.y;
-                     PATHING.Cost(_loc5_,_loc11_[0],_loc11_[1]);
+                     _loc5_.x = _loc8_.x;
+                     _loc5_.y = _loc8_.y;
+                     PATHING.Cost(_loc5_,_loc9_[0],_loc9_[1]);
                   }
                }
             }
@@ -216,7 +213,8 @@ package com.monsters.pathing
          param2.y = int(param2.y);
          _loc6_ = FromISO(param1);
          _loc8_ = FromISO(new Point(param2.x,param2.y));
-         (_loc7_ = param2).x = _loc8_.x;
+         _loc7_ = param2;
+         _loc7_.x = _loc8_.x;
          _loc7_.y = _loc8_.y;
          _loc6_ = GlobalLocal(_loc6_);
          _loc8_ = GlobalLocal(new Point(_loc7_.x,_loc7_.y));
@@ -232,19 +230,15 @@ package com.monsters.pathing
       {
          var _loc8_:int = 0;
          var _loc9_:int = 0;
-         var _loc10_:int = 0;
+         var _loc10_:Number = NaN;
          var _loc11_:Number = NaN;
          var _loc12_:Number = NaN;
-         var _loc13_:Number = NaN;
-         var _loc14_:int = 0;
-         var _loc15_:Point = null;
-         var _loc16_:Rectangle = null;
-         var _loc17_:Point = null;
-         var _loc18_:Object = null;
-         var _loc19_:Object = null;
-         var _loc20_:Object = null;
-         var _loc21_:int = 0;
-         var _loc22_:PATHINGfloodobject = null;
+         var _loc13_:int = 0;
+         var _loc14_:Object = null;
+         var _loc15_:Object = null;
+         var _loc16_:Object = null;
+         var _loc17_:int = 0;
+         var _loc18_:PATHINGfloodobject = null;
          var _loc23_:int = 0;
          var _loc24_:PATHINGobject = null;
          var _loc25_:PATHINGobject = null;
@@ -254,31 +248,31 @@ package com.monsters.pathing
          param1.y = int(param1.y);
          param2.x = int(param2.x);
          param2.y = int(param2.y);
-         _loc10_ = param1.x * 1000 + param1.y;
-         _loc9_ = param2.x * 1000 + param2.y;
-         if(!_costs[_loc10_] && !_costs[_loc9_])
+         _loc9_ = param1.x * 1000 + param1.y;
+         _loc8_ = param2.x * 1000 + param2.y;
+         if(!_costs[_loc9_] && !_costs[_loc8_])
          {
             param5([param3,param4],param7);
             RenderPath([param3,param4]);
             return;
          }
-         if(!_costs[_loc10_])
+         if(!_costs[_loc9_])
          {
-            _loc11_ = 90 - Math.atan2(param2.y - param1.y,param2.x - param1.x) * 57.2957795;
-            _loc12_ = Math.sin(_loc11_ * 0.0174532925) * 5;
-            _loc13_ = Math.cos(_loc11_ * 0.0174532925) * 5;
-            _loc14_ = 0;
-            while(!_costs[_loc10_] && _loc14_ < 2000)
+            _loc10_ = 90 - Math.atan2(param2.y - param1.y,param2.x - param1.x) * 57.2957795;
+            _loc11_ = Math.sin(_loc10_ * 0.0174532925) * 5;
+            _loc12_ = Math.cos(_loc10_ * 0.0174532925) * 5;
+            _loc13_ = 0;
+            while(!_costs[_loc9_] && _loc13_ < 2000)
             {
-               _loc14_ += 1;
-               param1.x += _loc12_;
-               param1.y += _loc13_;
-               _loc10_ = int(param1.x) * 1000 + int(param1.y);
+               _loc13_ += 1;
+               param1.x += _loc11_;
+               param1.y += _loc12_;
+               _loc9_ = int(param1.x) * 1000 + int(param1.y);
             }
             param1.x = int(param1.x);
             param1.y = int(param1.y);
          }
-         if(!_costs[_loc9_])
+         if(!_costs[_loc8_])
          {
             param5([param3,param4],param7);
             RenderPath([param3,param4]);
@@ -286,51 +280,55 @@ package com.monsters.pathing
          }
          if(param6)
          {
-            _loc9_ += 1000000;
+            _loc8_ += 1000000;
          }
-         if(!_floods[_loc9_])
+         if(!_floods[_loc8_])
          {
-            _loc18_ = {};
-            _loc19_ = {};
-            _loc20_ = {};
-            _loc21_ = 0;
-            while(_loc21_ < param2.width)
+            _loc14_ = {};
+            _loc15_ = {};
+            _loc16_ = {};
+            _loc17_ = 0;
+            while(_loc17_ < param2.width)
             {
                _loc23_ = 0;
                while(_loc23_ < param2.height)
                {
-                  (_loc24_ = new PATHINGobject()).pointX = param2.x + _loc21_;
+                  _loc24_ = new PATHINGobject();
+                  _loc24_.pointX = param2.x + _loc17_;
                   _loc24_.pointY = param2.y + _loc23_;
                   _loc24_.depth = 0;
-                  _loc18_[param2.x + _loc21_ * 1000 + param2.y + _loc23_] = _loc24_;
-                  (_loc25_ = new PATHINGobject()).pointX = param2.x + _loc21_;
+                  _loc14_[param2.x + _loc17_ * 1000 + param2.y + _loc23_] = _loc24_;
+                  _loc25_ = new PATHINGobject();
+                  _loc25_.pointX = param2.x + _loc17_;
                   _loc25_.pointY = param2.y + _loc23_;
                   _loc25_.depth = 0;
-                  _loc19_[param2.x + _loc21_ * 1000 + param2.y + _loc23_] = _loc25_;
-                  (_loc26_ = new PATHINGobject()).pointX = param2.x + _loc21_;
+                  _loc15_[param2.x + _loc17_ * 1000 + param2.y + _loc23_] = _loc25_;
+                  _loc26_ = new PATHINGobject();
+                  _loc26_.pointX = param2.x + _loc17_;
                   _loc26_.pointY = param2.y + _loc23_;
                   _loc26_.depth = 0;
-                  _loc20_[param2.x + _loc21_ * 1000 + param2.y + _loc23_] = _loc26_;
+                  _loc16_[param2.x + _loc17_ * 1000 + param2.y + _loc23_] = _loc26_;
                   _loc23_ += 1;
                }
-               _loc21_ += 1;
+               _loc17_ += 1;
             }
-            (_loc22_ = new PATHINGfloodobject()).flood = _loc19_;
-            _loc22_.edge = _loc18_;
-            _loc22_.start = _loc20_;
-            _loc22_.ignoreWalls = param6;
-            _floods[_loc9_] = _loc22_;
+            _loc18_ = new PATHINGfloodobject();
+            _loc18_.flood = _loc15_;
+            _loc18_.edge = _loc14_;
+            _loc18_.start = _loc16_;
+            _loc18_.ignoreWalls = param6;
+            _floods[_loc8_] = _loc18_;
          }
-         if(!_floods[_loc9_].startpoints[_loc10_])
+         if(!_floods[_loc8_].startpoints[_loc9_])
          {
-            _floods[_loc9_].startpoints[_loc10_] = {
-               "startID":_loc10_,
+            _floods[_loc8_].startpoints[_loc9_] = {
+               "startID":_loc9_,
                "callbackfunctions":[],
                "startPoint":param1
             };
          }
-         _floods[_loc9_].startpoints[_loc10_].callbackfunctions.push([param5,param6,param7,param4]);
-         _floods[_loc9_].pending += 1;
+         _floods[_loc8_].startpoints[_loc9_].callbackfunctions.push([param5,param6,param7,param4]);
+         _floods[_loc8_].pending += 1;
       }
       
       private static function ProcessFlood(param1:Event = null) : void
@@ -359,7 +357,8 @@ package com.monsters.pathing
                _loc16_ += 1;
             }
          }
-         if((_loc15_ = 25 / _loc16_) < 5)
+         _loc15_ = 25 / _loc16_;
+         if(_loc15_ < 5)
          {
             _loc15_ = 5;
          }
@@ -397,7 +396,8 @@ package com.monsters.pathing
                                        if(_costs[_loc8_])
                                        {
                                           _loc11_ += 1;
-                                          (_loc7_ = new PATHINGobject()).pointX = _loc9_;
+                                          _loc7_ = new PATHINGobject();
+                                          _loc7_.pointX = _loc9_;
                                           _loc7_.pointY = _loc10_;
                                           _loc17_ = int(_costs[_loc8_].cost);
                                           if(_loc18_.ignoreWalls)
@@ -528,7 +528,8 @@ package com.monsters.pathing
                         {
                            if(_costs[_loc12_])
                            {
-                              if(_loc18_ = _costs[_loc12_].building)
+                              _loc18_ = _costs[_loc12_].building;
+                              if(_loc18_)
                               {
                                  if(_loc18_.health > 0)
                                  {
@@ -675,7 +676,7 @@ package com.monsters.pathing
          var _loc7_:int = 0;
          var _loc8_:int = 0;
          var _loc9_:BFOUNDATION = null;
-         var _loc17_:int = 0;
+         var _loc16_:int = 0;
          var _loc18_:int = 0;
          var _loc10_:Point = GlobalLocal(FromISO(new Point(param1,param2)));
          var _loc11_:Point = GlobalLocal(FromISO(new Point(param3,param4)));
@@ -687,18 +688,18 @@ package com.monsters.pathing
          var _loc13_:Number = param4 - param2;
          var _loc14_:Number = Math.atan2(_loc13_,_loc12_) * c180PI;
          var _loc15_:Number = Math.sqrt(_loc12_ * _loc12_ + _loc13_ * _loc13_);
-         var _loc16_:int = 10;
          _loc7_ = 0;
          while(_loc7_ < _loc15_)
          {
-            _loc17_ = param1 + Math.cos(_loc14_ * cPI180) * _loc7_;
+            _loc16_ = param1 + Math.cos(_loc14_ * cPI180) * _loc7_;
             _loc18_ = param2 + Math.sin(_loc14_ * cPI180) * _loc7_;
-            _loc8_ = _loc17_ * 1000 + _loc18_;
+            _loc8_ = _loc16_ * 1000 + _loc18_;
             if(!_costs[_loc8_])
             {
                return true;
             }
-            if((Boolean(_loc9_ = _costs[_loc8_].building)) && _loc9_.health > 0)
+            _loc9_ = _costs[_loc8_].building;
+            if(Boolean(_loc9_) && _loc9_.health > 0)
             {
                if(!(Boolean(param5) && _loc9_ == param5))
                {
@@ -804,10 +805,9 @@ package com.monsters.pathing
       
       public static function ToISO(param1:Point, param2:int) : Point
       {
-         var _loc3_:int = 0;
-         var _loc4_:int = (param1.x + param1.y) * 0.5 - param2;
+         var _loc3_:int = (param1.x + param1.y) * 0.5 - param2;
          var _loc5_:int = param1.x - param1.y;
-         return new Point(_loc5_,_loc4_);
+         return new Point(_loc5_,_loc3_);
       }
       
       public static function FromISO(param1:Point) : Point
@@ -829,3 +829,4 @@ package com.monsters.pathing
       }
    }
 }
+
