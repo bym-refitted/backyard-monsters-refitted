@@ -331,117 +331,177 @@ package com.monsters.pathing
          _floods[_loc8_].pending += 1;
       }
 
+      /**
+       * Processes the flood fill pathfinding for all pending flood objects.
+       *
+       * Purpose:
+       * _______________________________________________________________
+       *
+       * - The `ProcessFlood` function iterates through all flood fill objects in `_floods`.
+       * - It performs pathfinding calculations on those marked as "pending," expanding the flood area step by step.
+       * - The function adjusts processing time based on the number of pending floods to maintain a balance in performance.
+       *
+       * Steps:
+       * _______________________________________________________________
+       *
+       * 1. Determine the number of pending flood objects and calculate the time slice (`timeSliceLimit`) allocated for processing each one.
+       *    - Ensures a minimum processing time to prevent resource starvation.
+       *
+       * 2. Iterate over each flood fill object (`currentFloodObject`) marked as pending.
+       *
+       * 3. For each pending flood object:
+       *    - Initialize processing variables such as `expandedPointsCount`, `pointsAddedCount`, and `newEdge`.
+       *    - Begin expanding the flood fill area by iterating over the current "edge" of the flood (`currentFloodObject.edge`).
+       *    - Evaluate neighboring points (`neighborX`, `neighborY`) for potential expansion.
+       *    - If a neighboring point (`neighborKey`) is not already part of the flood (`currentFloodObject.flood`):
+       *        - Calculate its movement cost (`movementCost`), considering factors like diagonal movement and wall ignoring.
+       *        - Create a new flood point (`newFloodPoint`) and update its depth based on the current point's depth and movement cost.
+       *        - Add the new flood point to the flood (`currentFloodObject.flood`) and include it in the edge for further expansion.
+       *        - Track the total number of points added (`pointsAddedCount`) and update `minDepth` if necessary.
+       *    - Update the flood's edge (`newEdge`) and adjust the minimum depth (`minDepth`).
+       *
+       * 4. Set the updated edge back to `currentFloodObject.edge` and check if the start point has been reached using `CheckStartReached`.
+       */
+
       private static function ProcessFlood(param1:Event = null):void
       {
-         var _loc4_:PATHINGobject = null;
-         var _loc5_:int = 0;
-         var _loc6_:int = 0;
-         var _loc7_:PATHINGobject = null;
-         var _loc8_:int = 0;
-         var _loc9_:int = 0;
-         var _loc10_:int = 0;
-         var _loc11_:int = 0;
-         var _loc12_:Object = null;
-         var _loc13_:int = 0;
-         var _loc14_:int = 0;
-         var _loc15_:int = 0;
-         var _loc16_:int = 0;
-         var _loc17_:int = 0;
-         var _loc18_:PATHINGfloodobject = null;
-         var _loc2_:int = getTimer();
-         var _loc3_:int = getTimer();
-         for each (_loc18_ in _floods)
+         var currentEdgePoint:PATHINGobject = null;
+         var currentX:int = 0;
+         var currentY:int = 0;
+         var newFloodPoint:PATHINGobject = null;
+         var neighborX:int = 0;
+         var neighborY:int = 0;
+         var neighborKey:int = 0;
+         var expandedPointsCount:int = 0;
+         var newEdge:Object = null;
+         var minDepth:int = 0;
+         var pointsAddedCount:int = 0;
+         var timeSliceLimit:int = 0;
+         var pendingFloodCount:int = 0;
+         var movementCost:int = 0;
+         var currentFloodObject:PATHINGfloodobject = null;
+         var startTimer:int = getTimer();
+         var timeSliceStart:int = getTimer();
+
+         // Count the number of pending flood objects
+         for each (currentFloodObject in _floods)
          {
-            if (_loc18_.pending)
+            if (currentFloodObject.pending)
             {
-               _loc16_ += 1;
+               pendingFloodCount += 1;
             }
          }
-         _loc15_ = 25 / _loc16_;
-         if (_loc15_ < 5)
+
+         // Determine the time slice limit based on the number of pending flood fills
+         timeSliceLimit = 25 / pendingFloodCount;
+         if (timeSliceLimit < 5)
          {
-            _loc15_ = 5;
+            timeSliceLimit = 5;
          }
-         for each (_loc18_ in _floods)
+
+         // Process each flood object
+         for each (currentFloodObject in _floods)
          {
-            if (_loc18_.pending)
+            if (currentFloodObject.pending)
             {
-               _loc3_ = getTimer();
-               _loc11_ = 0;
-               _loc14_ = 0;
-               while (getTimer() - _loc3_ < _loc15_ && _loc18_.pending > 0)
+               timeSliceStart = getTimer();
+               expandedPointsCount = 0;
+               pointsAddedCount = 0;
+
+               // Continue processing within the allowed time slice
+               while (getTimer() - timeSliceStart < timeSliceLimit && currentFloodObject.pending > 0)
                {
-                  _loc12_ = {};
-                  _loc13_ = 9999999;
-                  _loc18_.edgeLength = 0;
-                  for each (_loc4_ in _loc18_.edge)
+                  newEdge = {};
+                  minDepth = 9999999;
+                  currentFloodObject.edgeLength = 0;
+
+                  // Expand the current edge of the flood fill
+                  for each (currentEdgePoint in currentFloodObject.edge)
                   {
-                     if (_loc4_.depth <= _loc18_.minDepth)
+                     if (currentEdgePoint.depth <= currentFloodObject.minDepth)
                      {
-                        _loc5_ = _loc4_.pointX;
-                        _loc6_ = _loc4_.pointY;
-                        _loc9_ = _loc5_ - 1;
-                        while (_loc9_ < _loc5_ + 2)
+                        currentX = currentEdgePoint.pointX;
+                        currentY = currentEdgePoint.pointY;
+                        neighborY = currentX - 1;
+
+                        // Check all neighboring points
+                        while (neighborY < currentX + 2)
                         {
-                           _loc10_ = _loc6_ - 1;
-                           while (_loc10_ < _loc6_ + 2)
+                           neighborKey = currentY - 1;
+                           while (neighborKey < currentY + 2)
                            {
-                              if (!(_loc9_ == _loc5_ && _loc10_ == _loc6_))
+                              // Skip the current point itself
+                              if (!(neighborY == currentX && neighborKey == currentY))
                               {
-                                 _loc8_ = _loc9_ * 1000 + _loc10_;
-                                 if (!_loc18_.flood[_loc8_])
+                                 neighborX = neighborY * 1000 + neighborKey;
+
+                                 // Check if the neighbor is already part of the flood
+                                 if (!currentFloodObject.flood[neighborX])
                                  {
-                                    if (!_loc12_[_loc8_])
+
+                                    // If the neighbor hasn't been added yet, evaluate it
+                                    if (!newEdge[neighborX])
                                     {
-                                       if (_costs[_loc8_])
+                                       if (_costs[neighborX])
                                        {
-                                          _loc11_ += 1;
-                                          _loc7_ = new PATHINGobject();
-                                          _loc7_.pointX = _loc9_;
-                                          _loc7_.pointY = _loc10_;
-                                          _loc17_ = int(_costs[_loc8_].cost);
-                                          if (_loc18_.ignoreWalls)
+                                          expandedPointsCount += 1;
+                                          newFloodPoint = new PATHINGobject();
+                                          newFloodPoint.pointX = neighborY;
+                                          newFloodPoint.pointY = neighborKey;
+
+                                          // Calculate movement cost
+                                          movementCost = int(_costs[neighborX].cost);
+                                          if (currentFloodObject.ignoreWalls)
                                           {
-                                             if (_costs[_loc8_].building)
+                                             if (_costs[neighborX].building)
                                              {
-                                                _loc17_ = 20;
+                                                movementCost = 20;
                                              }
                                           }
-                                          if (_loc9_ != _loc4_.pointX && _loc10_ != _loc4_.pointY)
+
+                                          // Increase cost for diagonal movement
+                                          if (neighborY != currentEdgePoint.pointX && neighborKey != currentEdgePoint.pointY)
                                           {
-                                             _loc17_ *= 1.5;
+                                             movementCost *= 1.5;
                                           }
-                                          _loc7_.depth = _loc4_.depth + _loc17_;
-                                          if (_loc7_.depth < _loc13_)
+
+                                          // Set the depth for the new flood point
+                                          newFloodPoint.depth = currentEdgePoint.depth + movementCost;
+                                          if (newFloodPoint.depth < minDepth)
                                           {
-                                             _loc13_ = _loc7_.depth;
+                                             minDepth = newFloodPoint.depth;
                                           }
-                                          _loc12_[_loc8_] = _loc7_;
-                                          _loc18_.flood[_loc8_] = _loc7_;
-                                          _loc18_.edgeLength += 1;
-                                          _loc14_ += 1;
+
+                                          // Add the new point to the flood and edge
+                                          newEdge[neighborX] = newFloodPoint;
+                                          currentFloodObject.flood[neighborX] = newFloodPoint;
+                                          currentFloodObject.edgeLength += 1;
+                                          pointsAddedCount += 1;
                                        }
                                     }
                                  }
                               }
-                              _loc10_ += 1;
+                              neighborKey += 1;
                            }
-                           _loc9_ += 1;
+                           neighborY += 1;
                         }
                      }
                      else
                      {
-                        _loc12_[_loc4_.pointID] = _loc4_;
-                        _loc18_.edgeLength += 1;
-                        if (_loc4_.depth < _loc13_)
+                        newEdge[currentEdgePoint.pointID] = currentEdgePoint;
+                        currentFloodObject.edgeLength += 1;
+                        if (currentEdgePoint.depth < minDepth)
                         {
-                           _loc13_ = _loc4_.depth;
+                           minDepth = currentEdgePoint.depth;
                         }
                      }
                   }
-                  _loc18_.edge = _loc12_;
-                  _loc18_.minDepth = _loc13_;
-                  CheckStartReached(_loc18_);
+                  // Update the current edge and minimum depth
+                  currentFloodObject.edge = newEdge;
+                  currentFloodObject.minDepth = minDepth;
+
+                  // Check if the flood fill has reached the start point
+                  CheckStartReached(currentFloodObject);
                }
             }
          }
@@ -626,37 +686,72 @@ package com.monsters.pathing
          return null;
       }
 
+      /*
+      * Clears all existing flood fill pathfinding data and invokes any collected callback functions.
+      * 
+      * Purpose:
+      * _______________________________________________________________
+      *
+      * - The `Clear` function is responsible for resetting the flood fill objects stored in the `_floods` collection.
+      * - It collects any callback functions that were registered for flood fill pathfinding tasks.
+      * - These callback functions are then invoked with an empty path and `null` as the building parameter, indicating a reset or cancellation.
+      * 
+      * Steps:
+      * _______________________________________________________________
+      * 
+      * 1. Iterates through each flood fill object in the `_floods` collection.
+      *
+      * 2. For each flood fill object, it goes through its `startpoints` to gather any associated callback functions.
+      *
+      * 3. Collects all the callback functions into an array (`collectedCallbacks`).
+      *
+      * 4. Clears the `_floods` collection to remove all existing flood fill data.
+      *
+      * 5. Invokes each collected callback function with an empty path (`[]`), `null` for the building parameter, 
+      *    and a `true` flag to indicate the process has been cleared or cancelled.
+      * 
+      * Note:
+      * - This function is typically called when a reset or cleanup of flood fill pathfinding data is needed
+      */
       public static function Clear():void
       {
-         var _loc3_:PATHINGfloodobject = null;
-         var _loc4_:int = 0;
-         var _loc5_:Object = null;
-         var _loc6_:Array = null;
-         var _loc7_:int = 0;
-         var _loc1_:Array = [];
-         var _loc2_:int = getTimer();
-         for each (_loc3_ in _floods)
+         var floodObject:PATHINGfloodobject = null;
+         var callbackIndex:int = 0;
+         var startPoint:Object = null;
+         var callbackFunctions:Array = null;
+         var functionIndex:int = 0;
+         var collectedCallbacks:Array = [];
+         var startTime:int = getTimer();
+
+         // Iterate over each flood fill object in the _floods object
+         for each (floodObject in _floods)
          {
-            for each (_loc5_ in _loc3_.startpoints)
+
+            // Iterate over the start points in the flood fill object
+            for each (startPoint in floodObject.startpoints)
             {
-               if (_loc5_.callbackfunctions)
+               // Check if there are callback functions associated with the start point
+               if (startPoint.callbackfunctions)
                {
-                  _loc6_ = _loc5_.callbackfunctions;
-                  _loc7_ = 0;
-                  while (_loc7_ < _loc6_.length)
+                  callbackFunctions = startPoint.callbackfunctions;
+                  functionIndex = 0;
+                  // Add each callback function to the collectedCallbacks array
+                  while (functionIndex < callbackFunctions.length)
                   {
-                     _loc1_.push(_loc6_[_loc7_][0]);
-                     _loc7_++;
+                     collectedCallbacks.push(callbackFunctions[functionIndex][0]);
+                     functionIndex++;
                   }
                }
             }
          }
          _floods = {};
-         _loc4_ = 0;
-         while (_loc4_ < _loc1_.length)
+
+         // Invoke each callback function with an empty path and null as the building parameter
+         callbackIndex = 0;
+         while (callbackIndex < collectedCallbacks.length)
          {
-            _loc1_[_loc4_]([], null, true);
-            _loc4_++;
+            collectedCallbacks[callbackIndex]([], null, true);
+            callbackIndex++;
          }
       }
 
