@@ -120,7 +120,7 @@ package
          loaderInfo.uncaughtErrorEvents.addEventListener(UncaughtErrorEvent.UNCAUGHT_ERROR, this.uncaughtErrorThrown);
          GLOBAL._baseURL = urls._baseURL;
 
-         SWFProfiler.init(stage, null);
+         SWFProfiler.init(stage, this);
          Console.initialize(stage);
          _contained = contained;
          GLOBAL._infBaseURL = urls.infbaseurl;
