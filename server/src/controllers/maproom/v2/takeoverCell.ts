@@ -76,6 +76,13 @@ export const takeoverCell: KoaController = async (ctx) => {
         ([x, y, id]) => !(x === cell.x && y === cell.y && id === baseid)
       );
 
+      // Remove the `buildingresources` entry for this outpost
+      const buildingresources = previousOwner.save.buildingresources;
+
+      if (buildingresources && buildingresources[`b${baseid}`]) {
+        delete buildingresources[`b${baseid}`];
+      }
+
       await ORMContext.em.persistAndFlush(previousOwner);
     }
 
