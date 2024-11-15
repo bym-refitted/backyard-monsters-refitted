@@ -26,6 +26,7 @@ export const leaveWorld = async (user: User, save: Save) => {
   save.cell = null;
   save.homebase = null;
   save.outposts = [];
+  save.buildingresources = {};
   user.bookmarks = {};
 
   // Remove user's cells from the world
