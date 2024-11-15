@@ -16,6 +16,7 @@ package com.monsters.maproom_advanced
    import flash.geom.Rectangle;
    import flash.net.URLRequest;
    import flash.utils.getTimer;
+   import flash.utils.Dictionary;
    
    internal class MapRoomPopup extends MapRoomPopup_CLIP
    {
@@ -1084,423 +1085,61 @@ package com.monsters.maproom_advanced
             }
          }
       }
-      
-      public function GetCellsInRange(param1:int, param2:int, param3:int) : Vector.<CellData>
-      {
-         var _loc6_:int = 0;
-         var _loc7_:int = 0;
-         var _loc8_:int = 0;
-         var _loc4_:Vector.<CellData> = new Vector.<CellData>(3 * param3 * (param3 + 1),true);
-         var _loc5_:int = 0;
-         if(param1 % 2 != 0)
-         {
-            if(param3 >= 1)
-            {
-               _loc4_[0] = new CellData(this.GetCell(param1 - 1,param2),1);
-               _loc4_[1] = new CellData(this.GetCell(param1,param2 - 1),1);
-               _loc4_[2] = new CellData(this.GetCell(param1 + 1,param2 + 1),1);
-               _loc4_[3] = new CellData(this.GetCell(param1 - 1,param2 + 1),1);
-               _loc4_[4] = new CellData(this.GetCell(param1,param2 + 1),1);
-               _loc4_[5] = new CellData(this.GetCell(param1 + 1,param2),1);
-            }
-            if(param3 >= 2)
-            {
-               _loc4_[6] = new CellData(this.GetCell(param1,param2 - 2),2);
-               _loc4_[7] = new CellData(this.GetCell(param1 + 1,param2 - 1),2);
-               _loc4_[8] = new CellData(this.GetCell(param1 + 2,param2 - 1),2);
-               _loc4_[9] = new CellData(this.GetCell(param1 + 2,param2),2);
-               _loc4_[10] = new CellData(this.GetCell(param1 + 2,param2 + 1),2);
-               _loc4_[11] = new CellData(this.GetCell(param1 + 1,param2 + 2),2);
-               _loc4_[12] = new CellData(this.GetCell(param1,param2 + 2),2);
-               _loc4_[13] = new CellData(this.GetCell(param1 - 1,param2 + 2),2);
-               _loc4_[14] = new CellData(this.GetCell(param1 - 2,param2 + 1),2);
-               _loc4_[15] = new CellData(this.GetCell(param1 - 2,param2),2);
-               _loc4_[16] = new CellData(this.GetCell(param1 - 2,param2 - 1),2);
-               _loc4_[17] = new CellData(this.GetCell(param1 - 1,param2 - 1),2);
-            }
-            if(param3 >= 3)
-            {
-               _loc4_[18] = new CellData(this.GetCell(param1,param2 - 3),3);
-               _loc4_[19] = new CellData(this.GetCell(param1 + 1,param2 - 2),3);
-               _loc4_[20] = new CellData(this.GetCell(param1 + 2,param2 - 2),3);
-               _loc4_[21] = new CellData(this.GetCell(param1 + 3,param2 - 1),3);
-               _loc4_[22] = new CellData(this.GetCell(param1 + 3,param2),3);
-               _loc4_[23] = new CellData(this.GetCell(param1 + 3,param2 + 1),3);
-               _loc4_[24] = new CellData(this.GetCell(param1 + 3,param2 + 2),3);
-               _loc4_[25] = new CellData(this.GetCell(param1 + 2,param2 + 2),3);
-               _loc4_[26] = new CellData(this.GetCell(param1 + 1,param2 + 3),3);
-               _loc4_[27] = new CellData(this.GetCell(param1,param2 + 3),3);
-               _loc4_[28] = new CellData(this.GetCell(param1 - 1,param2 + 3),3);
-               _loc4_[29] = new CellData(this.GetCell(param1 - 2,param2 + 2),3);
-               _loc4_[30] = new CellData(this.GetCell(param1 - 3,param2 + 2),3);
-               _loc4_[31] = new CellData(this.GetCell(param1 - 3,param2 + 1),3);
-               _loc4_[32] = new CellData(this.GetCell(param1 - 3,param2),3);
-               _loc4_[33] = new CellData(this.GetCell(param1 - 3,param2 - 1),3);
-               _loc4_[34] = new CellData(this.GetCell(param1 - 2,param2 - 2),3);
-               _loc4_[35] = new CellData(this.GetCell(param1 - 1,param2 - 2),3);
-            }
-            if(param3 >= 4)
-            {
-               _loc4_[36] = new CellData(this.GetCell(param1,param2 - 4),4);
-               _loc4_[37] = new CellData(this.GetCell(param1 - 1,param2 - 3),4);
-               _loc4_[38] = new CellData(this.GetCell(param1 - 2,param2 - 3),4);
-               _loc4_[39] = new CellData(this.GetCell(param1 - 3,param2 - 2),4);
-               _loc4_[40] = new CellData(this.GetCell(param1 - 4,param2 - 2),4);
-               _loc4_[41] = new CellData(this.GetCell(param1 - 4,param2 - 1),4);
-               _loc4_[42] = new CellData(this.GetCell(param1 - 4,param2),4);
-               _loc4_[43] = new CellData(this.GetCell(param1 - 4,param2 + 1),4);
-               _loc4_[44] = new CellData(this.GetCell(param1 - 4,param2 + 2),4);
-               _loc4_[45] = new CellData(this.GetCell(param1 - 3,param2 + 3),4);
-               _loc4_[46] = new CellData(this.GetCell(param1 - 2,param2 + 3),4);
-               _loc4_[47] = new CellData(this.GetCell(param1 - 1,param2 + 4),4);
-               _loc4_[48] = new CellData(this.GetCell(param1,param2 + 4),4);
-               _loc4_[49] = new CellData(this.GetCell(param1 + 1,param2 + 4),4);
-               _loc4_[50] = new CellData(this.GetCell(param1 + 2,param2 + 3),4);
-               _loc4_[51] = new CellData(this.GetCell(param1 + 3,param2 + 3),4);
-               _loc4_[52] = new CellData(this.GetCell(param1 + 4,param2 + 2),4);
-               _loc4_[53] = new CellData(this.GetCell(param1 + 4,param2 + 1),4);
-               _loc4_[54] = new CellData(this.GetCell(param1 + 4,param2),4);
-               _loc4_[55] = new CellData(this.GetCell(param1 + 4,param2 - 1),4);
-               _loc4_[56] = new CellData(this.GetCell(param1 + 4,param2 - 2),4);
-               _loc4_[57] = new CellData(this.GetCell(param1 + 3,param2 - 2),4);
-               _loc4_[58] = new CellData(this.GetCell(param1 + 2,param2 - 3),4);
-               _loc4_[59] = new CellData(this.GetCell(param1 + 1,param2 - 3),4);
-            }
-            if(param3 >= 5)
-            {
-               _loc4_[60] = new CellData(this.GetCell(param1 + 0,param2 - 5),5);
-               _loc4_[61] = new CellData(this.GetCell(param1 - 1,param2 - 4),5);
-               _loc4_[62] = new CellData(this.GetCell(param1 - 2,param2 - 4),5);
-               _loc4_[63] = new CellData(this.GetCell(param1 - 3,param2 - 3),5);
-               _loc4_[64] = new CellData(this.GetCell(param1 - 4,param2 - 3),5);
-               _loc4_[65] = new CellData(this.GetCell(param1 - 5,param2 - 2),5);
-               _loc4_[66] = new CellData(this.GetCell(param1 - 5,param2 - 1),5);
-               _loc4_[67] = new CellData(this.GetCell(param1 - 5,param2 + 0),5);
-               _loc4_[68] = new CellData(this.GetCell(param1 - 5,param2 + 1),5);
-               _loc4_[69] = new CellData(this.GetCell(param1 - 5,param2 + 2),5);
-               _loc4_[70] = new CellData(this.GetCell(param1 - 5,param2 + 3),5);
-               _loc4_[71] = new CellData(this.GetCell(param1 - 4,param2 + 3),5);
-               _loc4_[72] = new CellData(this.GetCell(param1 - 3,param2 + 4),5);
-               _loc4_[73] = new CellData(this.GetCell(param1 - 2,param2 + 4),5);
-               _loc4_[74] = new CellData(this.GetCell(param1 - 1,param2 + 5),5);
-               _loc4_[75] = new CellData(this.GetCell(param1 + 0,param2 + 5),5);
-               _loc4_[76] = new CellData(this.GetCell(param1 + 1,param2 + 5),5);
-               _loc4_[77] = new CellData(this.GetCell(param1 + 2,param2 + 4),5);
-               _loc4_[78] = new CellData(this.GetCell(param1 + 3,param2 + 4),5);
-               _loc4_[79] = new CellData(this.GetCell(param1 + 4,param2 + 3),5);
-               _loc4_[80] = new CellData(this.GetCell(param1 + 5,param2 + 3),5);
-               _loc4_[81] = new CellData(this.GetCell(param1 + 5,param2 + 2),5);
-               _loc4_[82] = new CellData(this.GetCell(param1 + 5,param2 + 1),5);
-               _loc4_[83] = new CellData(this.GetCell(param1 + 5,param2 + 0),5);
-               _loc4_[84] = new CellData(this.GetCell(param1 + 5,param2 - 1),5);
-               _loc4_[85] = new CellData(this.GetCell(param1 + 5,param2 - 2),5);
-               _loc4_[86] = new CellData(this.GetCell(param1 + 4,param2 - 3),5);
-               _loc4_[87] = new CellData(this.GetCell(param1 + 3,param2 - 3),5);
-               _loc4_[88] = new CellData(this.GetCell(param1 + 2,param2 - 4),5);
-               _loc4_[89] = new CellData(this.GetCell(param1 + 1,param2 - 4),5);
-            }
-            if(param3 >= 6)
-            {
-               _loc4_[90] = new CellData(this.GetCell(param1 + 0,param2 - 6),6);
-               _loc4_[91] = new CellData(this.GetCell(param1 - 1,param2 - 5),6);
-               _loc4_[92] = new CellData(this.GetCell(param1 - 2,param2 - 5),6);
-               _loc4_[93] = new CellData(this.GetCell(param1 - 3,param2 - 4),6);
-               _loc4_[94] = new CellData(this.GetCell(param1 - 4,param2 - 4),6);
-               _loc4_[95] = new CellData(this.GetCell(param1 - 5,param2 - 3),6);
-               _loc4_[96] = new CellData(this.GetCell(param1 - 6,param2 - 3),6);
-               _loc4_[97] = new CellData(this.GetCell(param1 - 6,param2 - 2),6);
-               _loc4_[98] = new CellData(this.GetCell(param1 - 6,param2 - 1),6);
-               _loc4_[99] = new CellData(this.GetCell(param1 - 6,param2 + 0),6);
-               _loc4_[100] = new CellData(this.GetCell(param1 - 6,param2 + 1),6);
-               _loc4_[101] = new CellData(this.GetCell(param1 - 6,param2 + 2),6);
-               _loc4_[102] = new CellData(this.GetCell(param1 - 6,param2 + 3),6);
-               _loc4_[103] = new CellData(this.GetCell(param1 - 5,param2 + 4),6);
-               _loc4_[104] = new CellData(this.GetCell(param1 - 4,param2 + 4),6);
-               _loc4_[105] = new CellData(this.GetCell(param1 - 3,param2 + 5),6);
-               _loc4_[106] = new CellData(this.GetCell(param1 - 2,param2 + 5),6);
-               _loc4_[107] = new CellData(this.GetCell(param1 - 1,param2 + 6),6);
-               _loc4_[108] = new CellData(this.GetCell(param1 + 0,param2 + 6),6);
-               _loc4_[109] = new CellData(this.GetCell(param1 + 1,param2 + 6),6);
-               _loc4_[110] = new CellData(this.GetCell(param1 + 2,param2 + 5),6);
-               _loc4_[111] = new CellData(this.GetCell(param1 + 3,param2 + 5),6);
-               _loc4_[112] = new CellData(this.GetCell(param1 + 4,param2 + 4),6);
-               _loc4_[113] = new CellData(this.GetCell(param1 + 5,param2 + 4),6);
-               _loc4_[114] = new CellData(this.GetCell(param1 + 6,param2 + 3),6);
-               _loc4_[115] = new CellData(this.GetCell(param1 + 6,param2 + 2),6);
-               _loc4_[116] = new CellData(this.GetCell(param1 + 6,param2 + 1),6);
-               _loc4_[117] = new CellData(this.GetCell(param1 + 6,param2 + 0),6);
-               _loc4_[118] = new CellData(this.GetCell(param1 + 6,param2 - 1),6);
-               _loc4_[119] = new CellData(this.GetCell(param1 + 6,param2 - 2),6);
-               _loc4_[120] = new CellData(this.GetCell(param1 + 6,param2 - 3),6);
-               _loc4_[121] = new CellData(this.GetCell(param1 + 5,param2 - 3),6);
-               _loc4_[122] = new CellData(this.GetCell(param1 + 4,param2 - 4),6);
-               _loc4_[123] = new CellData(this.GetCell(param1 + 3,param2 - 4),6);
-               _loc4_[124] = new CellData(this.GetCell(param1 + 2,param2 - 5),6);
-               _loc4_[125] = new CellData(this.GetCell(param1 + 1,param2 - 5),6);
-            }
-            _loc6_ = 7;
-            _loc5_ = 126;
-            while(_loc6_ <= param3)
-            {
-               _loc8_ = (_loc7_ = param2 + Math.ceil(-_loc6_ / 2)) + _loc6_;
-               while(_loc7_ < _loc8_)
-               {
-                  var _loc9_:*;
-                  _loc4_[_loc9_ = _loc5_++] = new CellData(this.GetCell(param1 + _loc6_,_loc7_),_loc6_);
-                  _loc7_++;
-               }
-               _loc8_ = (_loc7_ = param2 + Math.ceil(_loc6_ / 2)) - _loc6_;
-               while(_loc7_ > _loc8_)
-               {
-                  _loc4_[_loc9_ = _loc5_++] = new CellData(this.GetCell(param1 - _loc6_,_loc7_),_loc6_);
-                  _loc7_--;
-               }
-               _loc7_ = 0;
-               while(_loc7_ < _loc6_)
-               {
-                  _loc4_[_loc9_ = _loc5_++] = new CellData(this.GetCell(param1 - _loc6_ + _loc7_,param2 + Math.ceil(-(_loc6_ + _loc7_) / 2)),_loc6_);
-                  _loc7_++;
-               }
-               _loc7_ = 0;
-               while(_loc7_ < _loc6_)
-               {
-                  _loc4_[_loc9_ = _loc5_++] = new CellData(this.GetCell(param1 + _loc7_,param2 - _loc6_ + Math.ceil(_loc7_ / 2)),_loc6_);
-                  _loc7_++;
-               }
-               _loc7_ = 0;
-               while(_loc7_ < _loc6_)
-               {
-                  _loc4_[_loc9_ = _loc5_++] = new CellData(this.GetCell(param1 + _loc6_ - _loc7_,param2 + Math.ceil((_loc6_ + _loc7_) / 2)),_loc6_);
-                  _loc7_++;
-               }
-               _loc7_ = 0;
-               while(_loc7_ < _loc6_)
-               {
-                  _loc4_[_loc9_ = _loc5_++] = new CellData(this.GetCell(param1 - _loc7_,param2 + _loc6_ + Math.ceil(-_loc7_ / 2)),_loc6_);
-                  _loc7_++;
-               }
-               _loc6_++;
+            
+      public function GetCellsInRange(hexX:int, hexY: int, range:int) : Vector.<CellData>{
+         var cells:Vector.<CellData> = new Vector.<CellData>(3 * range * (range + 1),true);
+         // We convert to axial coordinates for easier calculations
+         var axialQ: int = hexX;
+         var axialR: int = hexY - (hexX - (hexX&1))/2;
+         var index:int = 0;
+         for(var dq:int = -range; dq <= range; dq++){
+            for(var dr:int = Math.max(-range, -dq - range); dr <= Math.min(range, -dq + range); dr++){
+               //Skip the origin
+               if(dq == 0 && dr == 0)
+                  continue;
+               //Sum in axial 
+               var newQ:int = axialQ + dq;
+               var newR:int = axialR + dr;
+               // Measure the distance as the maximum absolute value between q, r and s.
+               var distance:int = Math.max(Math.abs(dq),Math.abs(dr), Math.abs(-dq-dr));
+               // Convert back to offsetted
+               var newX:int = newQ;
+               var newY:int = newR + (newQ - (newQ&1))/2;
+               var cell:MapRoomCell = this.GetCell(newX,newY);
+               var cellData = new CellData(cell,distance);
+               cells[index] = cellData;
+               index += 1;
             }
          }
-         else
-         {
-            if(param3 >= 1)
-            {
-               _loc4_[0] = new CellData(this.GetCell(param1 - 1,param2 - 1),1);
-               _loc4_[1] = new CellData(this.GetCell(param1,param2 - 1),1);
-               _loc4_[2] = new CellData(this.GetCell(param1 + 1,param2 - 1),1);
-               _loc4_[3] = new CellData(this.GetCell(param1 - 1,param2),1);
-               _loc4_[4] = new CellData(this.GetCell(param1,param2 + 1),1);
-               _loc4_[5] = new CellData(this.GetCell(param1 + 1,param2),1);
-            }
-            if(param3 >= 2)
-            {
-               _loc4_[6] = new CellData(this.GetCell(param1,param2 - 2),2);
-               _loc4_[7] = new CellData(this.GetCell(param1 + 1,param2 - 2),2);
-               _loc4_[8] = new CellData(this.GetCell(param1 + 2,param2 - 1),2);
-               _loc4_[9] = new CellData(this.GetCell(param1 + 2,param2),2);
-               _loc4_[10] = new CellData(this.GetCell(param1 + 2,param2 + 1),2);
-               _loc4_[11] = new CellData(this.GetCell(param1 + 1,param2 + 1),2);
-               _loc4_[12] = new CellData(this.GetCell(param1,param2 + 2),2);
-               _loc4_[13] = new CellData(this.GetCell(param1 - 1,param2 + 1),2);
-               _loc4_[14] = new CellData(this.GetCell(param1 - 2,param2 + 1),2);
-               _loc4_[15] = new CellData(this.GetCell(param1 - 2,param2),2);
-               _loc4_[16] = new CellData(this.GetCell(param1 - 2,param2 - 1),2);
-               _loc4_[17] = new CellData(this.GetCell(param1 - 1,param2 - 2),2);
-            }
-            if(param3 >= 3)
-            {
-               _loc4_[18] = new CellData(this.GetCell(param1,param2 - 3),3);
-               _loc4_[19] = new CellData(this.GetCell(param1 + 1,param2 - 3),3);
-               _loc4_[20] = new CellData(this.GetCell(param1 + 2,param2 - 2),3);
-               _loc4_[21] = new CellData(this.GetCell(param1 + 3,param2 - 2),3);
-               _loc4_[22] = new CellData(this.GetCell(param1 + 3,param2 - 1),3);
-               _loc4_[23] = new CellData(this.GetCell(param1 + 3,param2),3);
-               _loc4_[24] = new CellData(this.GetCell(param1 + 3,param2 + 1),3);
-               _loc4_[25] = new CellData(this.GetCell(param1 + 2,param2 + 2),3);
-               _loc4_[26] = new CellData(this.GetCell(param1 + 1,param2 + 2),3);
-               _loc4_[27] = new CellData(this.GetCell(param1,param2 + 3),3);
-               _loc4_[28] = new CellData(this.GetCell(param1 - 1,param2 + 2),3);
-               _loc4_[29] = new CellData(this.GetCell(param1 - 2,param2 + 2),3);
-               _loc4_[30] = new CellData(this.GetCell(param1 - 3,param2 + 1),3);
-               _loc4_[31] = new CellData(this.GetCell(param1 - 3,param2),3);
-               _loc4_[32] = new CellData(this.GetCell(param1 - 3,param2 - 1),3);
-               _loc4_[33] = new CellData(this.GetCell(param1 - 3,param2 - 2),3);
-               _loc4_[34] = new CellData(this.GetCell(param1 - 2,param2 - 2),3);
-               _loc4_[35] = new CellData(this.GetCell(param1 - 1,param2 - 3),3);
-            }
-            if(param3 >= 4)
-            {
-               _loc4_[36] = new CellData(this.GetCell(param1,param2 - 4),4);
-               _loc4_[37] = new CellData(this.GetCell(param1 - 1,param2 - 4),4);
-               _loc4_[38] = new CellData(this.GetCell(param1 - 2,param2 - 3),4);
-               _loc4_[39] = new CellData(this.GetCell(param1 - 3,param2 - 3),4);
-               _loc4_[40] = new CellData(this.GetCell(param1 - 4,param2 - 2),4);
-               _loc4_[41] = new CellData(this.GetCell(param1 - 4,param2 - 1),4);
-               _loc4_[42] = new CellData(this.GetCell(param1 - 4,param2 - 0),4);
-               _loc4_[43] = new CellData(this.GetCell(param1 - 4,param2 + 1),4);
-               _loc4_[44] = new CellData(this.GetCell(param1 - 4,param2 + 2),4);
-               _loc4_[45] = new CellData(this.GetCell(param1 - 3,param2 + 2),4);
-               _loc4_[46] = new CellData(this.GetCell(param1 - 2,param2 + 3),4);
-               _loc4_[47] = new CellData(this.GetCell(param1 - 1,param2 + 3),4);
-               _loc4_[48] = new CellData(this.GetCell(param1,param2 + 4),4);
-               _loc4_[49] = new CellData(this.GetCell(param1 + 1,param2 + 3),4);
-               _loc4_[50] = new CellData(this.GetCell(param1 + 2,param2 + 3),4);
-               _loc4_[51] = new CellData(this.GetCell(param1 + 3,param2 + 2),4);
-               _loc4_[52] = new CellData(this.GetCell(param1 + 4,param2 + 2),4);
-               _loc4_[53] = new CellData(this.GetCell(param1 + 4,param2 + 1),4);
-               _loc4_[54] = new CellData(this.GetCell(param1 + 4,param2),4);
-               _loc4_[55] = new CellData(this.GetCell(param1 + 4,param2 - 1),4);
-               _loc4_[56] = new CellData(this.GetCell(param1 + 4,param2 - 2),4);
-               _loc4_[57] = new CellData(this.GetCell(param1 + 3,param2 - 3),4);
-               _loc4_[58] = new CellData(this.GetCell(param1 + 2,param2 - 3),4);
-               _loc4_[59] = new CellData(this.GetCell(param1 + 1,param2 - 4),4);
-            }
-            if(param3 >= 5)
-            {
-               _loc4_[60] = new CellData(this.GetCell(param1 + 0,param2 - 5),5);
-               _loc4_[61] = new CellData(this.GetCell(param1 - 1,param2 - 5),5);
-               _loc4_[62] = new CellData(this.GetCell(param1 - 2,param2 - 4),5);
-               _loc4_[63] = new CellData(this.GetCell(param1 - 3,param2 - 4),5);
-               _loc4_[64] = new CellData(this.GetCell(param1 - 4,param2 - 3),5);
-               _loc4_[65] = new CellData(this.GetCell(param1 - 5,param2 - 3),5);
-               _loc4_[66] = new CellData(this.GetCell(param1 - 5,param2 - 2),5);
-               _loc4_[67] = new CellData(this.GetCell(param1 - 5,param2 - 1),5);
-               _loc4_[68] = new CellData(this.GetCell(param1 - 5,param2 + 0),5);
-               _loc4_[69] = new CellData(this.GetCell(param1 - 5,param2 + 1),5);
-               _loc4_[70] = new CellData(this.GetCell(param1 - 5,param2 + 2),5);
-               _loc4_[71] = new CellData(this.GetCell(param1 - 4,param2 + 3),5);
-               _loc4_[72] = new CellData(this.GetCell(param1 - 3,param2 + 3),5);
-               _loc4_[73] = new CellData(this.GetCell(param1 - 2,param2 + 4),5);
-               _loc4_[74] = new CellData(this.GetCell(param1 - 1,param2 + 4),5);
-               _loc4_[75] = new CellData(this.GetCell(param1 + 0,param2 + 5),5);
-               _loc4_[76] = new CellData(this.GetCell(param1 + 1,param2 + 4),5);
-               _loc4_[77] = new CellData(this.GetCell(param1 + 2,param2 + 4),5);
-               _loc4_[78] = new CellData(this.GetCell(param1 + 3,param2 + 3),5);
-               _loc4_[79] = new CellData(this.GetCell(param1 + 4,param2 + 3),5);
-               _loc4_[80] = new CellData(this.GetCell(param1 + 5,param2 + 2),5);
-               _loc4_[81] = new CellData(this.GetCell(param1 + 5,param2 + 1),5);
-               _loc4_[82] = new CellData(this.GetCell(param1 + 5,param2 + 0),5);
-               _loc4_[83] = new CellData(this.GetCell(param1 + 5,param2 - 1),5);
-               _loc4_[84] = new CellData(this.GetCell(param1 + 5,param2 - 2),5);
-               _loc4_[85] = new CellData(this.GetCell(param1 + 5,param2 - 3),5);
-               _loc4_[86] = new CellData(this.GetCell(param1 + 4,param2 - 3),5);
-               _loc4_[87] = new CellData(this.GetCell(param1 + 3,param2 - 4),5);
-               _loc4_[88] = new CellData(this.GetCell(param1 + 2,param2 - 4),5);
-               _loc4_[89] = new CellData(this.GetCell(param1 + 1,param2 - 5),5);
-            }
-            if(param3 >= 6)
-            {
-               _loc4_[90] = new CellData(this.GetCell(param1 + 0,param2 - 6),6);
-               _loc4_[91] = new CellData(this.GetCell(param1 - 1,param2 - 6),6);
-               _loc4_[92] = new CellData(this.GetCell(param1 - 2,param2 - 5),6);
-               _loc4_[93] = new CellData(this.GetCell(param1 - 3,param2 - 5),6);
-               _loc4_[94] = new CellData(this.GetCell(param1 - 4,param2 - 4),6);
-               _loc4_[95] = new CellData(this.GetCell(param1 - 5,param2 - 4),6);
-               _loc4_[96] = new CellData(this.GetCell(param1 - 6,param2 - 3),6);
-               _loc4_[97] = new CellData(this.GetCell(param1 - 6,param2 - 2),6);
-               _loc4_[98] = new CellData(this.GetCell(param1 - 6,param2 - 1),6);
-               _loc4_[99] = new CellData(this.GetCell(param1 - 6,param2 + 0),6);
-               _loc4_[100] = new CellData(this.GetCell(param1 - 6,param2 + 1),6);
-               _loc4_[101] = new CellData(this.GetCell(param1 - 6,param2 + 2),6);
-               _loc4_[102] = new CellData(this.GetCell(param1 - 6,param2 + 3),6);
-               _loc4_[103] = new CellData(this.GetCell(param1 - 5,param2 + 3),6);
-               _loc4_[104] = new CellData(this.GetCell(param1 - 4,param2 + 4),6);
-               _loc4_[105] = new CellData(this.GetCell(param1 - 3,param2 + 4),6);
-               _loc4_[106] = new CellData(this.GetCell(param1 - 2,param2 + 5),6);
-               _loc4_[107] = new CellData(this.GetCell(param1 - 1,param2 + 5),6);
-               _loc4_[108] = new CellData(this.GetCell(param1 + 0,param2 + 6),6);
-               _loc4_[109] = new CellData(this.GetCell(param1 + 1,param2 + 5),6);
-               _loc4_[110] = new CellData(this.GetCell(param1 + 2,param2 + 5),6);
-               _loc4_[111] = new CellData(this.GetCell(param1 + 3,param2 + 4),6);
-               _loc4_[112] = new CellData(this.GetCell(param1 + 4,param2 + 4),6);
-               _loc4_[113] = new CellData(this.GetCell(param1 + 5,param2 + 3),6);
-               _loc4_[114] = new CellData(this.GetCell(param1 + 6,param2 + 3),6);
-               _loc4_[115] = new CellData(this.GetCell(param1 + 6,param2 + 2),6);
-               _loc4_[116] = new CellData(this.GetCell(param1 + 6,param2 + 1),6);
-               _loc4_[117] = new CellData(this.GetCell(param1 + 6,param2 + 0),6);
-               _loc4_[118] = new CellData(this.GetCell(param1 + 6,param2 - 1),6);
-               _loc4_[119] = new CellData(this.GetCell(param1 + 6,param2 - 2),6);
-               _loc4_[120] = new CellData(this.GetCell(param1 + 6,param2 - 3),6);
-               _loc4_[121] = new CellData(this.GetCell(param1 + 5,param2 - 4),6);
-               _loc4_[122] = new CellData(this.GetCell(param1 + 4,param2 - 4),6);
-               _loc4_[123] = new CellData(this.GetCell(param1 + 3,param2 - 5),6);
-               _loc4_[124] = new CellData(this.GetCell(param1 + 2,param2 - 5),6);
-               _loc4_[125] = new CellData(this.GetCell(param1 + 1,param2 - 6),6);
-            }
-            _loc6_ = 7;
-            _loc5_ = 126;
-            while(_loc6_ <= param3)
-            {
-               _loc8_ = (_loc7_ = param2 + Math.floor(-_loc6_ / 2)) + _loc6_;
-               while(_loc7_ < _loc8_)
-               {
-                  _loc4_[_loc9_ = _loc5_++] = new CellData(this.GetCell(param1 + _loc6_,_loc7_),_loc6_);
-                  _loc7_++;
-               }
-               _loc8_ = (_loc7_ = param2 + Math.floor(_loc6_ / 2)) - _loc6_;
-               while(_loc7_ > _loc8_)
-               {
-                  _loc4_[_loc9_ = _loc5_++] = new CellData(this.GetCell(param1 - _loc6_,_loc7_),_loc6_);
-                  _loc7_--;
-               }
-               _loc7_ = 0;
-               while(_loc7_ < _loc6_)
-               {
-                  _loc4_[_loc9_ = _loc5_++] = new CellData(this.GetCell(param1 - _loc6_ + _loc7_,param2 + Math.floor(-(_loc6_ + _loc7_) / 2)),_loc6_);
-                  _loc7_++;
-               }
-               _loc7_ = 0;
-               while(_loc7_ < _loc6_)
-               {
-                  _loc4_[_loc9_ = _loc5_++] = new CellData(this.GetCell(param1 + _loc7_,param2 - _loc6_ + Math.floor(_loc7_ / 2)),_loc6_);
-                  _loc7_++;
-               }
-               _loc7_ = 0;
-               while(_loc7_ < _loc6_)
-               {
-                  _loc4_[_loc9_ = _loc5_++] = new CellData(this.GetCell(param1 + _loc6_ - _loc7_,param2 + Math.floor((_loc6_ + _loc7_) / 2)),_loc6_);
-                  _loc7_++;
-               }
-               _loc7_ = 0;
-               while(_loc7_ < _loc6_)
-               {
-                  _loc4_[_loc9_ = _loc5_++] = new CellData(this.GetCell(param1 - _loc7_,param2 + _loc6_ + Math.floor(-_loc7_ / 2)),_loc6_);
-                  _loc7_++;
-               }
-               _loc6_++;
-            }
-         }
-         return _loc4_;
+         return cells;
       }
       
-      private function GetCell(param1:int, param2:int) : MapRoomCell
+      private function GetCell(hexX:int, hexY:int) : MapRoomCell
       {
-         var _loc3_:MapRoomCell = null;
-         if(param1 >= MapRoom._mapWidth)
+         if(hexX >= MapRoom._mapWidth)
          {
-            param1 -= MapRoom._mapWidth;
+            hexX -= MapRoom._mapWidth;
          }
-         else if(param1 < 0)
+         else if(hexX < 0)
          {
-            param1 = MapRoom._mapWidth + param1;
+            hexX = MapRoom._mapWidth + hexX;
          }
-         if(param2 >= MapRoom._mapHeight)
+         if(hexY >= MapRoom._mapHeight)
          {
-            param2 -= MapRoom._mapHeight;
+            hexY -= MapRoom._mapHeight;
          }
-         else if(param2 < 0)
+         else if(hexY < 0)
          {
-            param2 = MapRoom._mapHeight + param2;
+            hexY = MapRoom._mapHeight + hexY;
          }
-         for each(_loc3_ in this._cells)
+         for each(var cell in this._cells)
          {
-            if(_loc3_.X == param1 && _loc3_.Y == param2)
+            if(cell.X == hexX && cell.Y == hexY)
             {
-               return _loc3_;
+               return cell;
             }
          }
-         if(this._fallbackHomeCell.X == param1 && this._fallbackHomeCell.Y == param2)
+         if(this._fallbackHomeCell.X == hexX && this._fallbackHomeCell.Y == hexY)
          {
             return this._fallbackHomeCell;
          }
