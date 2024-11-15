@@ -16,7 +16,6 @@ package com.monsters.maproom_advanced
    import flash.geom.Rectangle;
    import flash.net.URLRequest;
    import flash.utils.getTimer;
-   import flash.utils.Dictionary;
    
    internal class MapRoomPopup extends MapRoomPopup_CLIP
    {
