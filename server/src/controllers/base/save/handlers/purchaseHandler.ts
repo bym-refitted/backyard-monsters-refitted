@@ -1,6 +1,7 @@
 import { storeItems } from "../../../../data/storeItems";
 import { Save, FieldData } from "../../../../models/save.model";
 import { updateCredits } from "../../../../services/base/updateCredits";
+import { getCurrentDateTime } from "../../../../utils/getCurrentDateTime";
 
 export const purchaseHandler = (
   purchaseData: [string, number],
@@ -19,7 +20,7 @@ export const purchaseHandler = (
     // Determine expiry if the item has a duration
     const storeItem = storeItems[item];
     if ((storeItem?.du ?? 0) > 0) {
-      storeData[item].e = Date.now() + storeItem.du;
+      storeData[item].e = getCurrentDateTime() + storeItem.du;
     }
 
     save.storedata = storeData;

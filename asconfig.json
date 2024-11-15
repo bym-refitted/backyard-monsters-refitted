@@ -21,6 +21,7 @@
 			"playerglobal.swc"
 		],
 		"use-network": true,
-		"static-link-runtime-shared-libraries": true
+		"static-link-runtime-shared-libraries": true,
+		"advanced-telemetry": true
 	}
 }
