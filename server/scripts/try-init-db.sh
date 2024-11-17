@@ -18,7 +18,7 @@ function tbl_exists {
     tbl=$1
     sql "SELECT 1 as 'Exists' FROM $tbl LIMIT 1" > /dev/null
     res=$?
-    if [[ res -eq 0 ]] then
+    if [[ res -eq 0 ]]; then
         echo "Table $tbl exists"
         return 0
     else
