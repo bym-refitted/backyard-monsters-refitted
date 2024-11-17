@@ -46,13 +46,11 @@ services:
     volumes:
       - db:/var/lib/mysql
     healthcheck:
-      # test: mariadb-admin ping -h 127.0.0.1 --password=$MARIADB_ROOT_PASSWORD
-      test: mariadb-admin ping -h 127.0.0.1
-      start_period: 20s
-      start_interval: 1s
-      interval: 30s
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      start_period: 10s
+      interval: 10s
       timeout: 5s
-      retries: 30
+      retries: 3
   phpmyadmin:
     image: phpmyadmin:5
     environment:
