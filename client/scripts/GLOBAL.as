@@ -45,7 +45,7 @@ package
 
       public static var cdnUrl:String = "http://localhost:3001/";
 
-      public static var apiVersionSuffix:String = "v1.0.6-beta/";
+      public static var apiVersionSuffix:String = "v1.0.7-beta/";
 
       public static var connectionCounter:int;
     
@@ -305,7 +305,7 @@ package
       
       public static var _wmCreatureLevels:Array = new Array();
       
-      public static var _playerGuardianData:Vector.<Object> = new Vector.<Object>(null);
+      public static var _playerGuardianData:Vector.<Object> = new Vector.<Object>();
       
       public static var _playerCatapultLevel:SecNum = new SecNum(0);
       

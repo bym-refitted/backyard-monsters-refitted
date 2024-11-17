@@ -16,7 +16,9 @@ package
    import flash.geom.Rectangle;
    import flash.system.Security;
    import flash.net.SharedObject;
-
+   import flash.ui.Multitouch;
+   import flash.ui.MultitouchInputMode;
+   import flash.events.TransformGestureEvent;
    public class GAME extends Sprite
    {
 
@@ -35,6 +37,10 @@ package
       public static var language:String = "";
 
       private var _checkScreenSize:Boolean = true;
+
+      private var _previousDistance:Number = 0;
+
+      private var _scaleFactor:Number = 1;
 
       public function GAME()
       {
@@ -113,8 +119,8 @@ package
          setLauncherVars();
          loaderInfo.uncaughtErrorEvents.addEventListener(UncaughtErrorEvent.UNCAUGHT_ERROR, this.uncaughtErrorThrown);
          GLOBAL._baseURL = urls._baseURL;
-         Security.allowDomain("*");
-         SWFProfiler.init(stage, null);
+
+         SWFProfiler.init(stage, this);
          Console.initialize(stage);
          _contained = contained;
          GLOBAL._infBaseURL = urls.infbaseurl;
@@ -159,10 +165,16 @@ package
             GLOBAL._openBase = null;
          }
          addEventListener(Event.ENTER_FRAME, GLOBAL.TickFast);
+
+         // Gesture events
+         Multitouch.inputMode = MultitouchInputMode.GESTURE;
+         stage.addEventListener(TransformGestureEvent.GESTURE_ZOOM, onZoom);
+
          LOGIN.Login();
          stage.scaleMode = StageScaleMode.NO_SCALE;
          stage.addEventListener(Event.RESIZE, GLOBAL.ResizeGame);
          stage.showDefaultContextMenu = false;
+
          if (ExternalInterface.available)
          {
             ExternalInterface.addCallback("openbase", function(param1:String):void
@@ -269,6 +281,20 @@ package
                GLOBAL._SCREENINIT = new Rectangle(0, 0, 760, 750);
             }
          }
+      }
+
+      private function onZoom(event:TransformGestureEvent):void
+      {
+         _scaleFactor *= event.scaleX;
+
+         const MIN_SCALE:Number = 1.0;
+         const MAX_SCALE:Number = 3.5;
+
+         // Constrain the scale factor within the specified range
+         _scaleFactor = Math.max(MIN_SCALE, Math.min(MAX_SCALE, _scaleFactor));
+
+         this.scaleX = _scaleFactor;
+         this.scaleY = _scaleFactor;
       }
 
       protected function uncaughtErrorThrown(param1:UncaughtErrorEvent):void

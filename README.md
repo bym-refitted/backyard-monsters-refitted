@@ -25,7 +25,7 @@ We recommend to download our game launcher which can be installed from our websi
 <br>
 
 
-## Server setup
+## 🗄️ Server setup
 
 1. Clone this repository and checkout the develop branch:
 
@@ -39,11 +39,16 @@ git clone https://github.com/bym-refitted/backyard-monsters-refitted
 
 <br />
 
-## Client Setup
+## 💻 Client Setup
 
 1. Follow the instructions carefully on our [client setup & configuration](https://github.com/bym-refitted/backyard-monsters-refitted/wiki/Client-Setup-&-Compilation) Wiki page.
 
 2. To contribute you will need to copy your changes to the src directory. If you are wondering why we are using this horrible workflow please see [CONTRIBUTING.md](./CONTRIBUTING.md) for more information. If you are able to figure out how to compile directly to swf without unlinking all assets, please let us know.
+
+<br />
+
+## 📱 Android Setup
+1. To compile an APK for Android follow our [Android Application Setup](https://github.com/bym-refitted/backyard-monsters-refitted/wiki/Android-Application-Setup) Wiki page.
 
 <br />
 

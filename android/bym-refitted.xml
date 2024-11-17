@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<application xmlns="http://ns.adobe.com/air/application/50.2"> 
+    <id>com.bymrefitted</id> 
+    <versionNumber>1.0.6</versionNumber> 
+    <filename>BYM Refitted</filename> 
+    <versionLabel>1.0.6</versionLabel>
+    <supportedProfiles>mobileDevice</supportedProfiles>
+    <customUpdateUI>false</customUpdateUI>
+    <allowBrowserInvocation>false</allowBrowserInvocation>
+
+    <initialWindow>
+        <content>android/apk/bymr-android.swf</content>
+        <systemChrome>standard</systemChrome>
+        <fullScreen>true</fullScreen>
+        <aspectRatio>landscape</aspectRatio>
+        <!-- <autoOrients>true</autoOrients> -->
+        <visible>true</visible>
+        <width>720</width>
+        <height>1280</height>
+        <maximizable>true</maximizable>
+        <minimizable>true</minimizable>
+        <resizable>true</resizable>
+        <allowLowQuality>true</allowLowQuality>
+        <renderMode>direct</renderMode> <!-- cpu -->
+    </initialWindow> 
+    <icon>
+        <image36x36>android/icons/icon36.png</image36x36>
+        <image48x48>android/icons/icon48.png</image48x48>
+        <image72x72>android/icons/icon72.png</image72x72>
+    </icon> 
+    <android>
+       <manifestAdditions>
+        <![CDATA[
+        <manifest android:installLocation="auto">
+           <uses-permission android:name="android.permission.INTERNET"/>
+           <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+           <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+           <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
+           <uses-permission android:name="android.permission.WAKE_LOCK" />
+           <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+           <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+           <supports-screens android:normalScreens="true"/>
+           <uses-feature android:required="true" android:name="android.hardware.touchscreen.multitouch"/>
+           <application android:enabled="true" android:hardwareAccelerated="true" android:targetSdkVersion="35">
+               <activity android:excludeFromRecents="false">
+                   <intent-filter>
+                       <action android:name="android.intent.action.MAIN"/>
+                       <category android:name= "android.intent.category.LAUNCHER"/>
+                   </intent-filter>
+               </activity>
+           </application>
+        </manifest>
+        ]]>
+        </manifestAdditions>
+   </android>
+</application>
