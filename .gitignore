@@ -8,4 +8,3 @@ server/src/database/migrations/.snapshot*
 server/data
 .idea
 api-versioning
-/.vscode/settings.json
