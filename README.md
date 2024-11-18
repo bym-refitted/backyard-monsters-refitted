@@ -27,15 +27,46 @@ We recommend to download our game launcher which can be installed from our websi
 
 ## 🗄️ Server setup
 
-1. Clone this repository and checkout the develop branch:
+It is possible to run the server manually or to deploy it using Docker Compose.
+
+### Repository Setup
+
+Start by cloning the repository and switching to the develop branch:
 
 ```bash
 git clone https://github.com/bym-refitted/backyard-monsters-refitted
+cd backyard-monsters-refitted
+git switch develop
 ```
 
-<br />
+### 🐳 Docker Deployment
 
-2. Follow the instructions carefully on our [server setup & configuration](https://github.com/bym-refitted/backyard-monsters-refitted/wiki/Server-&-Database-Setup) Wiki page.
+You can deploy the server locally using Docker with our docker-compose file.
+
+**Important**: Do *NOT* use the `docker-compose.yml` file as is for production. It contains hardcoded secret keys as well as weak database credentials meant for local use only.
+
+#### Deployment Components
+
+The deployment includes the following containers:
+  - 🎮 **Game Server**: Runs a web server based on a custom Docker image built from server/Dockerfile.
+  - 💿 **MariaDB**: Provides the database backend.
+  - 📄 **phpMyAdmin**: Allows you to manage and inspect the database.
+
+#### Setting It Up
+1.	**Install Docker**
+2.	**Navigate to the cloned repository in your terminal**
+3.	**Start the deployment**:
+  ```bash
+  docker compose up
+  ```
+4.	**Verify that services are running**:
+    - **Game Server**: Visit http://localhost:3001 to confirm the API is online.
+    -	**phpMyAdmin**: Access http://localhost:8080. Use the default credentials (username: bymr, password: bymr) or update them in docker-compose.yml.
+5.	**Connect to the server**: Use the latest release of the SWF file or compile it manually (instructions provided below).
+
+### 🛠️ Manual Deployment
+
+Follow the instructions carefully on our [server setup & configuration](https://github.com/bym-refitted/backyard-monsters-refitted/wiki/Server-&-Database-Setup) Wiki page.
 
 <br />
 
