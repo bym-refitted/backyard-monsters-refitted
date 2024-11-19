@@ -34,9 +34,10 @@ export const userCell = async (ctx: Context, cell: WorldMapCell) => {
 
     /** TODO: Cell should be locked when a player is getting attacked, not when online */
     const locked = mine ? 0 : isOnline ? 1 : cellOwner.save?.locked || 0;
+
     const baseLevel = calculateBaseLevel(
-      cellOwner.save?.points || 1,
-      cellOwner.save?.basevalue || 1
+      BigInt(cellOwner.save?.points) || BigInt(1),
+      BigInt(cellOwner.save?.basevalue) || BigInt(1)
     );
 
     let isCellProtected = await damageProtection(cellSave);

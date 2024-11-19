@@ -170,11 +170,11 @@ export class Save {
 
   @FrontendKey
   @Property({ default: 0 })
-  points!: number;
+  points!: bigint;
 
   @FrontendKey
   @Property({ default: 0 })
-  basevalue!: number;
+  basevalue!: bigint;
 
   @FrontendKey
   @Property({ default: 0 })
