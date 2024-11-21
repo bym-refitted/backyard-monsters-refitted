@@ -38,26 +38,32 @@ export const damageProtection = async (save: Save, mode?: BaseMode) => {
   // Check if 12 hours have passed since outpost takeover
   const isOutpostProtectionOver = currentTime - createtime > twelveHours;
 
+  let persist = false;
+
   const setProtection = () => {
     protection = 1;
     mainProtectionTime = currentTime;
+    persist = true;
   };
 
   const removeProtection = () => {
     protection = 0;
     mainProtectionTime = null;
     save.initialProtectionOver = true;
+    persist = true
   };
 
   const setOutpostProtection = () => {
     protection = 1;
     outpostProtectionTime = currentTime;
+    persist = true;
   };
 
   const removeOutpostProtection = () => {
     protection = 0;
     outpostProtectionTime = null;
     save.initialOutpostProtectionOver = true;
+    persist = true
   };
 
   if (mode === BaseMode.ATTACK) {
@@ -66,6 +72,7 @@ export const damageProtection = async (save: Save, mode?: BaseMode) => {
     save.initialOutpostProtectionOver = true;
     if (mainProtectionTime) mainProtectionTime = null;
     if (outpostProtectionTime) outpostProtectionTime = null;
+    persist = true;
   } else {
     switch (type) {
       case BaseType.MAIN:
@@ -129,10 +136,12 @@ export const damageProtection = async (save: Save, mode?: BaseMode) => {
     }
   }
 
-  save.protected = protection;
-  save.mainProtectionTime = mainProtectionTime;
-  save.outpostProtectionTime = outpostProtectionTime;
-  await ORMContext.em.persistAndFlush(save);
+  if (persist) {
+    save.protected = protection;
+    save.mainProtectionTime = mainProtectionTime;
+    save.outpostProtectionTime = outpostProtectionTime;
+    await ORMContext.em.persistAndFlush(save);
+  }
 
   return protection;
 };
