@@ -105,7 +105,7 @@ export const baseSave: KoaController = async (ctx) => {
       save.attackid != 0 &&
       save.saveuserid !== user.userid
     ) {
-      if (attackerchampion) save.attackerchampion = attackerchampion;
+      if (attackerchampion) userSave.champion = attackerchampion;
 
       if (monsterupdate && monsterupdate.length > 0) {
         const authMonsters = monsterupdate.find(
