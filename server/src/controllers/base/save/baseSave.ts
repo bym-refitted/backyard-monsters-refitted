@@ -82,6 +82,8 @@ export const baseSave: KoaController = async (ctx) => {
       if (key === SaveKeys.BUILDING_RESOURCES && isOutpost) {
         userSave.buildingresources[`b${save.baseid}`] =
           save.buildingresources[`b${save.baseid}`];
+
+        userSave.buildingresources['t'] = getCurrentDateTime()
       }
     }
 
@@ -103,7 +105,7 @@ export const baseSave: KoaController = async (ctx) => {
       save.attackid != 0 &&
       save.saveuserid !== user.userid
     ) {
-      if (attackerchampion) save.attackerchampion = attackerchampion;
+      if (attackerchampion) userSave.champion = attackerchampion;
 
       if (monsterupdate && monsterupdate.length > 0) {
         const authMonsters = monsterupdate.find(
@@ -142,8 +144,6 @@ export const baseSave: KoaController = async (ctx) => {
     await ORMContext.em.persistAndFlush(save);
 
     if (isOutpost) {
-      userSave.savetime = getCurrentDateTime();
-      userSave.id = userSave.savetime;
       await ORMContext.em.persistAndFlush(userSave);
 
       save.credits = userSave.credits;

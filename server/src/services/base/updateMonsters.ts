@@ -16,7 +16,7 @@ export const updateMonsters = async (monsterupdates: MonsterUpdate[]) => {
   // Iterate over the saves and apply the updates
   for (const save of saves) {
     const monsterUpdate = monsterupdates.find(
-      (update) => update.baseid === save.baseid
+      (update) => BigInt(update.baseid) === BigInt(save.baseid)
     );
 
     if (monsterUpdate) {
