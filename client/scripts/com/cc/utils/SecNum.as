@@ -1,88 +1,61 @@
 package com.cc.utils
 {
-   import flash.utils.ByteArray;
-   import flash.utils.Endian;
-
    public class SecNum
    {
-      private var _value:Number;
+
+      private static const TWOPOW32:Number = Math.pow(2, 32);
+
+      private var _seed:uint;
+
+      private var _x:uint;
+
+      private var _n:uint;
+
+      private var _n64:uint;
+
       private var _neg:Boolean;
-      private var _hash:String;
-      private var _secretSeed:String;
 
-      /**
-       * Constructor for SecNum, initializes with an optional value.
-       * @param initialValue The initial number to store securely.
-       */
-      public function SecNum(initialValue:Number = 0)
+      public function SecNum(param1:Number)
       {
-         this._secretSeed = this.generateRandomSeed();
-         this.Set(initialValue); // Initialize with the provided value
+         super();
+         this.Set(param1);
       }
 
-      /**
-       * Getter for retrieving the stored value securely.
-       */
-      public function Get():Number
-      {
-         if (this._hash === this.computeHash(this._value, this._secretSeed))
-         {
-            return this._value;
-         }
-         else
-         {
-            GLOBAL.ErrorMessage("SecNum integrity failure.");
-            return NaN;
-         }
-      }
-
-      /**
-       * Setter for securely setting a new value.
-       * @param value The new number to securely store.
-       */
-      public function Set(value:Number):void
+      public function Set(param1:Number):void
       {
          this._neg = false;
-         if (value < 0)
+         if (param1 < 0)
          {
-            value *= -1; // Convert to positive, what is this shit?
+            param1 *= -1;
             this._neg = true;
          }
-         this._value = value;
-         this._hash = this.computeHash(value, this._secretSeed);
+         this._seed = Math.random() * 99999;
+         param1 = Math.round(param1);
+         this._x = param1 ^ this._seed;
+         this._n = uint(param1) + (this._seed << 1) ^ this._seed;
+         this._n64 = param1 / TWOPOW32;
       }
 
-      /**
-       * Computes a simple hash using the number and a seed.
-       * @param value The number to hash.
-       * @param seed The secret seed for hashing.
-       * @return A hash string of the combined value and seed.
-       */
-      private function computeHash(value:Number, seed:String):String
+      public function Add(param1:Number):Number
       {
-         var byteArray:ByteArray = new ByteArray();
-         byteArray.endian = Endian.LITTLE_ENDIAN;
+         this.Set(param1 = param1 + this.Get());
+         return param1;
+      }
 
-         byteArray.writeDouble(value);
-         byteArray.writeUTFBytes(seed);
-
-         var hash:uint = 0;
-         byteArray.position = 0;
-         while (byteArray.bytesAvailable)
+      public function Get():Number
+      {
+         var _loc1_:Number = this._n64 * TWOPOW32 + uint(this._x ^ this._seed);
+         if (_loc1_ == this._n64 * TWOPOW32 + uint(uint(this._n ^ this._seed) - (this._seed << 1)))
          {
-            hash ^= byteArray.readUnsignedByte();
+            if (this._neg)
+            {
+               _loc1_ *= -1;
+            }
+            return _loc1_;
          }
-
-         return hash.toString(16);
-      }
-
-      /**
-       * Generates a random seed string for additional security.
-       * @return A random seed string.
-       */
-      private function generateRandomSeed():String
-      {
-         return Math.random().toString(36).substr(2, 10);
+         LOGGER.Log("err", "SecNum Broke (impossible unless.....)" + _loc1_ + " != " + (this._n64 * TWOPOW32 + uint(uint(this._n ^ this._seed) - (this._seed << 1))) + "?");
+         GLOBAL.ErrorMessage("SecNum");
+         return 0;
       }
    }
 }
