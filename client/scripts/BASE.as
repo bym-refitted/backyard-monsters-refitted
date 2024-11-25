@@ -1758,7 +1758,6 @@ package
             _buildingData["0"].t = 112;
          }
 
-         GLOBAL.Message("BUILD() #1");
          var buildingTypeCounts:Dictionary = new Dictionary();
          for each(building in _buildingData)
          {
@@ -1784,7 +1783,7 @@ package
                   {
                      counter++;
                   }
-                  buildingFoundation = addBuildingC(building.t); // FUCKED
+                  buildingFoundation = addBuildingC(building.t);
                   if(buildingFoundation)
                   {
                      foundationType = buildingFoundation._type;
@@ -1822,7 +1821,6 @@ package
                            }
                            else
                            {
-                              GLOBAL.Message("building.mq");
                               building.mq = [];
                            }
                            building.saved = _rawMonsters.saved;
@@ -1855,7 +1853,6 @@ package
                }
             }
          }
-         GLOBAL.Message("BUILD() #2");
          BFOUNDATION.redrawAllShadowData();
          _buildingHealthData = null;
          _buildingData = null;
@@ -2039,7 +2036,6 @@ package
          }
          Process();
          RADIO.Setup();
-         GLOBAL.Message("BUILD() #3");
       }
       
       public static function Process() : void
