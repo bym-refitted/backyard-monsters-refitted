@@ -7,6 +7,8 @@ import { damageProtection } from "../../../../services/maproom/v2/damageProtecti
 import { errorLog } from "../../../../utils/logger";
 import { getCurrentDateTime } from "../../../../utils/getCurrentDateTime";
 
+/** TODO: cellOwner.save is null in many cases here */
+
 /**
  * Handles the user's homecell & outpost data on the world map.
  *
@@ -35,10 +37,10 @@ export const userCell = async (ctx: Context, cell: WorldMapCell) => {
     /** TODO: Cell should be locked when a player is getting attacked, not when online */
     const locked = mine ? 0 : isOnline ? 1 : cellOwner.save?.locked || 0;
 
-    const baseLevel = calculateBaseLevel(
-      BigInt(cellOwner.save?.points) || BigInt(1),
-      BigInt(cellOwner.save?.basevalue) || BigInt(1)
-    );
+    const points = cellOwner.save?.points ? BigInt(cellOwner.save.points) : BigInt(1);
+    const basevalue = cellOwner.save?.basevalue ? BigInt(cellOwner.save.basevalue) : BigInt(1);
+
+    const baseLevel = calculateBaseLevel(points, basevalue);
 
     let isCellProtected = await damageProtection(cellSave);
 
