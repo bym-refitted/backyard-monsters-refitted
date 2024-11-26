@@ -28,6 +28,10 @@ function parseTownhallFromBuildingData(buildingData: FieldData) {
   return null;
 }
 
+/**
+ * Parses the champing data object from the player save. The champion object may not be a string but rather an object already.
+ * This function only parses the rawChampionData when it is actually a string.
+ */
 function parseChampionData(rawChampionData:any) {
   // sometimes the champion variable is an object instead of a string,
   // so the JSON.parse call runs into an error that "[object Object]" is not valid JSON.
@@ -48,13 +52,13 @@ function parseChampionData(rawChampionData:any) {
  * @returns {Promise<void>} A promise that resolves when the balanced rewards are added.
  */
 export const balancedReward = async (userSave: Save) => {
-  // return early if all rewards have been given already
   let rewards = userSave.rewards;
   if (rewards) {
     let korath = rewards[Reward.KORATH];
     let krallen = rewards[Reward.KRALLEN];
     let diamondSpurtz = rewards[Reward.DIAMOND_SPURTZ];
 
+    // return early if all rewards have been given already
     if (korath && krallen && diamondSpurtz) return;
   }
 
