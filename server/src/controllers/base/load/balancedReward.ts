@@ -1,3 +1,4 @@
+import { isNullOrUndefined } from "util";
 import { KorathReward, Reward } from "../../../enums/Rewards";
 import { FieldData, Save } from "../../../models/save.model";
 import { ORMContext } from "../../../server";
@@ -24,7 +25,16 @@ function parseTownhallFromBuildingData(buildingData: FieldData) {
     }
   }
 
-  throw new Error("Cannot find townhall in payload")
+  return null;
+}
+
+function parseChampionData(rawChampionData:any) {
+  // sometimes the champion variable is an object instead of a string,
+  // so the JSON.parse call runs into an error that "[object Object]" is not valid JSON.
+  if (typeof rawChampionData === "string") {
+    return JSON.parse(rawChampionData || "[]");
+  }
+  return rawChampionData;
 }
 
 /**
@@ -38,26 +48,32 @@ function parseTownhallFromBuildingData(buildingData: FieldData) {
  * @returns {Promise<void>} A promise that resolves when the balanced rewards are added.
  */
 export const balancedReward = async (userSave: Save) => {
+  // return early if all rewards have been given already
+  let rewards = userSave.rewards;
+  if (rewards) {
+    let korath = rewards[Reward.KORATH];
+    let krallen = rewards[Reward.KRALLEN];
+    let diamondSpurtz = rewards[Reward.DIAMOND_SPURTZ];
+
+    if (korath && krallen && diamondSpurtz) return;
+  }
+
   const townHall = parseTownhallFromBuildingData(userSave.buildingdata);
 
-  if (townHall && townHall.l >= 6) {
+  // If the save has no town hall, it could be an outpost.
+  if (!townHall) return;
+
+  let level = townHall.l;
+
+  if (level >= 6) {
     userSave.rewards = {
       [Reward.KORATH]: { id: Reward.KORATH, value: KorathReward.FISTS_OF_DOOM },
       ...userSave.rewards,
     };
   }
 
-  if (townHall && townHall.l >= 7) {
-    // sometimes the champion variable is an object instead of a string,
-    // so the JSON.parse call runs into an error that "[object Object]" is not valid JSON.
-    let championRawData = userSave.champion;
-    let championData = [];
-    if (typeof championRawData === "string") {
-      championData = JSON.parse(userSave.champion || "[]");
-    }
-    else {
-      championData = championRawData;
-    }
+  if (level >= 7) {
+    let championData = parseChampionData(userSave.champion);
 
     if (Object.keys(userSave.krallen).length === 0) {
       const krallen = {
@@ -89,7 +105,7 @@ export const balancedReward = async (userSave: Save) => {
     }
   }
 
-  if (townHall && townHall.l >= 8) {
+  if (level >= 8) {
     userSave.rewards = {
       [Reward.DIAMOND_SPURTZ]: { id: Reward.DIAMOND_SPURTZ },
       ...userSave.rewards,
