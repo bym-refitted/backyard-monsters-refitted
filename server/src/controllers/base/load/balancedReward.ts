@@ -42,8 +42,6 @@ function parseTownhallFromBuildingData(buildingData: FieldData) {
  * @returns {Promise<void>} A promise that resolves when the balanced rewards are added.
  */
 export const balancedReward = async (userSave: Save) => {
-  // TODO: For some reason, the townhall in some rare cases is not the first building ("0") in the buildingdata object.
-  // Instead it can be identifed by the "t" property in the buildingdata object being 14.
   const townHall = parseTownhallFromBuildingData(userSave.buildingdata);
 
   if (townHall && townHall.l >= 6) {
