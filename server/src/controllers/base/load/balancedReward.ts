@@ -54,13 +54,15 @@ export const balancedReward = async (userSave: Save) => {
   }
 
   if (townHall && townHall.l >= 7) {
-    let champ = userSave.champion;
+    // sometimes the champion variable is an object instead of a string,
+    // so the JSON.parse call runs into an error that "[object Object]" is not valid JSON.
+    let championRawData = userSave.champion;
     let championData = [];
-    if(typeof champ === "string") {
+    if(typeof championRawData === "string") {
       championData = JSON.parse(userSave.champion || "[]");
     }
     else {
-      championData = champ;
+      championData = championRawData;
     }
 
     if (Object.keys(userSave.krallen).length === 0) {
