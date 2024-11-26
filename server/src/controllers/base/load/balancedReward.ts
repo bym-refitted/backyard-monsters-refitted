@@ -2,7 +2,6 @@ import { KorathReward, Reward } from "../../../enums/Rewards";
 import { FieldData, Save } from "../../../models/save.model";
 import { ORMContext } from "../../../server";
 
-
 /**
  * Returns the Town Hall building object contained in the given buildingData object.
  * Throws an error if the town hall cannot be found.
@@ -16,17 +15,14 @@ import { ORMContext } from "../../../server";
  */
 function parseTownhallFromBuildingData(buildingData: FieldData) {
   let townHall: any = null;
-  for(const key in buildingData) {
-    const building = buildingData[key];
-    if(!building) {
-      continue;
-    }
-    if (building.t !== 14) continue;
 
-    townHall = building;
-    break;
+  for (const key in buildingData) {
+    const building = buildingData[key];
+
+    if (building && building.t === 14) {
+      return building;
+    }
   }
-  if (townHall) return townHall;
 
   throw new Error("Cannot find townhall in payload")
 }
@@ -56,7 +52,7 @@ export const balancedReward = async (userSave: Save) => {
     // so the JSON.parse call runs into an error that "[object Object]" is not valid JSON.
     let championRawData = userSave.champion;
     let championData = [];
-    if(typeof championRawData === "string") {
+    if (typeof championRawData === "string") {
       championData = JSON.parse(userSave.champion || "[]");
     }
     else {
