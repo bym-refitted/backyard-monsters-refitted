@@ -15,8 +15,6 @@ import { ORMContext } from "../../../server";
  * @throws Error when townHall Object cannot be found
  */
 function parseTownhallFromBuildingData(buildingData: FieldData) {
-  let townHall: any = null;
-
   for (const key in buildingData) {
     const building = buildingData[key];
 
@@ -24,7 +22,6 @@ function parseTownhallFromBuildingData(buildingData: FieldData) {
       return building;
     }
   }
-
   return null;
 }
 
