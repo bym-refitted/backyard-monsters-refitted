@@ -1,6 +1,42 @@
+import { isNullOrUndefined } from "util";
 import { KorathReward, Reward } from "../../../enums/Rewards";
-import { Save } from "../../../models/save.model";
+import { FieldData, Save } from "../../../models/save.model";
 import { ORMContext } from "../../../server";
+
+/**
+ * Returns the Town Hall building object contained in the given buildingData object.
+ * Throws an error if the town hall cannot be found.
+ * 
+ * The object is identified by checking the `t` (type) variable on the child objects. 
+ * If `t` is equal to 14, then it is considered a town hall.
+ * 
+ * @param buildingData the buildingData object to search
+ * @returns the townHall object found
+ * @throws Error when townHall Object cannot be found
+ */
+const parseTownhallFromBuildingData = (buildingData: FieldData) => {
+  for (const key in buildingData) {
+    const building = buildingData[key];
+
+    if (building && building.t === 14) {
+      return building;
+    }
+  }
+  return null;
+}
+
+/**
+ * Parses the champing data object from the player save. The champion object may not be a string but rather an object already.
+ * This function only parses the rawChampionData when it is actually a string.
+ */
+const parseChampionData = (rawChampionData:any) => {
+  // sometimes the champion variable is an object instead of a string,
+  // so the JSON.parse call runs into an error that "[object Object]" is not valid JSON.
+  if (typeof rawChampionData === "string") {
+    return JSON.parse(rawChampionData || "[]");
+  }
+  return rawChampionData;
+}
 
 /**
  * Adds balanced rewards to the user's save data based on their town hall level.
@@ -12,20 +48,33 @@ import { ORMContext } from "../../../server";
  * @param {Save} userSave - The user's save data.
  * @returns {Promise<void>} A promise that resolves when the balanced rewards are added.
  */
-export const balancedReward = async (userSave: Save) => {
-  // TODO: For some reason, the townhall in some rare cases is not the first building ("0") in the buildingdata object.
-  // Instead it can be identifed by the "t" property in the buildingdata object being 14.
-  const townHall = userSave.buildingdata["0"];
+export const balancedReward = async (userSave: Save): Promise<void> => {
+  let rewards = userSave.rewards;
+  if (rewards) {
+    let korath = rewards[Reward.KORATH];
+    let krallen = rewards[Reward.KRALLEN];
+    let diamondSpurtz = rewards[Reward.DIAMOND_SPURTZ];
 
-  if (townHall && townHall.l >= 6) {
+    // return early if all rewards have been given already
+    if (korath && krallen && diamondSpurtz) return;
+  }
+
+  const townHall = parseTownhallFromBuildingData(userSave.buildingdata);
+
+  // If the save has no town hall, it could be an outpost.
+  if (!townHall) return;
+
+  let level = townHall.l;
+
+  if (level >= 6) {
     userSave.rewards = {
       [Reward.KORATH]: { id: Reward.KORATH, value: KorathReward.FISTS_OF_DOOM },
       ...userSave.rewards,
     };
   }
 
-  if (townHall && townHall.l >= 7) {
-    let championData = JSON.parse(userSave.champion || "[]");
+  if (level >= 7) {
+    let championData = parseChampionData(userSave.champion);
 
     if (Object.keys(userSave.krallen).length === 0) {
       const krallen = {
@@ -57,7 +106,7 @@ export const balancedReward = async (userSave: Save) => {
     }
   }
 
-  if (townHall && townHall.l >= 8) {
+  if (level >= 8) {
     userSave.rewards = {
       [Reward.DIAMOND_SPURTZ]: { id: Reward.DIAMOND_SPURTZ },
       ...userSave.rewards,
