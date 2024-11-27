@@ -14,7 +14,7 @@ import { ORMContext } from "../../../server";
  * @returns the townHall object found
  * @throws Error when townHall Object cannot be found
  */
-function parseTownhallFromBuildingData(buildingData: FieldData) {
+const parseTownhallFromBuildingData = (buildingData: FieldData) => {
   for (const key in buildingData) {
     const building = buildingData[key];
 
@@ -29,7 +29,7 @@ function parseTownhallFromBuildingData(buildingData: FieldData) {
  * Parses the champing data object from the player save. The champion object may not be a string but rather an object already.
  * This function only parses the rawChampionData when it is actually a string.
  */
-function parseChampionData(rawChampionData:any) {
+const parseChampionData = (rawChampionData:any) => {
   // sometimes the champion variable is an object instead of a string,
   // so the JSON.parse call runs into an error that "[object Object]" is not valid JSON.
   if (typeof rawChampionData === "string") {
@@ -48,7 +48,7 @@ function parseChampionData(rawChampionData:any) {
  * @param {Save} userSave - The user's save data.
  * @returns {Promise<void>} A promise that resolves when the balanced rewards are added.
  */
-export const balancedReward = async (userSave: Save) => {
+export const balancedReward = async (userSave: Save): Promise<void> => {
   let rewards = userSave.rewards;
   if (rewards) {
     let korath = rewards[Reward.KORATH];
