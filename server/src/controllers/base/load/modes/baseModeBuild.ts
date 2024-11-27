@@ -27,7 +27,7 @@ export const baseModeBuild = async (user: User, baseid: string) => {
 
   if (baseid === BaseMode.DEFAULT) {
     await balancedReward(userSave);
-    return;
+    return userSave;
   }
 
   if (BigInt(baseid) !== BigInt(userSave.baseid)) {
@@ -36,6 +36,7 @@ export const baseModeBuild = async (user: User, baseid: string) => {
     });
 
     if (!baseSave) throw new Error(`Base save not found for baseid: ${baseid}`);
+    
     return baseSave;
   }
 
