@@ -31,12 +31,12 @@ export const baseModeBuild = async (user: User, baseid: string) => {
   }
 
   if (BigInt(baseid) !== BigInt(userSave.baseid)) {
-    let baseSave = await ORMContext.em.findOne(Save, {
+    const baseSave = await ORMContext.em.findOne(Save, {
       baseid: BigInt(baseid),
     });
 
     if (!baseSave) throw new Error(`Base save not found for baseid: ${baseid}`);
-    
+
     return baseSave;
   }
 
