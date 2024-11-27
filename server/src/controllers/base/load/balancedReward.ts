@@ -20,7 +20,7 @@ export const balancedReward = async (userSave: Save) => {
   if (rewards[KORATH] && rewards[KRALLEN] && rewards[DIAMOND_SPURTZ]) return;
 
   const townHall = extractTownHall(userSave.buildingdata);
-  if (!townHall) return;
+  if (!townHall || !townHall.l) return;
 
   let townHallLevel = townHall.l;
 
