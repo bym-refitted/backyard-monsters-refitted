@@ -20,7 +20,7 @@ This repository contains the entire modified SWF (Shockwave Flash) client files,
 <br>
 
 ## 🚀 How to Play
-We recommend to download our game launcher which can be installed from our website's [download page](https://bymrefitted.com/downloads/launcher). This will allow you to seamlessly manage what build versions of the client you play, all from one place, without worrying about manually downloading new versions. The launcher currently supports Windows (64-bit) and Linux.
+We recommend to download our game launcher which can be installed from our website's [download page](https://bymrefitted.com/downloads). This will allow you to seamlessly manage what build versions of the client you play, all from one place, without worrying about manually downloading new versions. The launcher currently supports Windows (64-bit) and Linux.
 
 <br>
 
