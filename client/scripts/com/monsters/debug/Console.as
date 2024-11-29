@@ -29,6 +29,17 @@ package com.monsters.debug
       
       public static function initialize(param1:Stage) : void
       {
+         if(!GLOBAL._aiDesignMode)
+         {
+            return;
+         }
+         view = new ConsoleView();
+         _commands = new Dictionary();
+         param1.addChild(view);
+         param1.tabChildren = false;
+         view.deactivate();
+         param1.addEventListener(KeyboardEvent.KEY_UP,onKeyDown);
+         ConsoleCommands.initialize();
       }
       
       protected static function onKeyDown(param1:KeyboardEvent) : void
