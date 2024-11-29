@@ -17,8 +17,11 @@ import { ORMContext } from "../../../server";
 export const leaveWorld = async (user: User, save: Save) => {
   const world = await ORMContext.em.findOne(World, { uuid: save.worldid });
 
-  // Decrement the player count
-  world.playerCount -= 1;
+  if (world) {
+    // Decrement the player count
+    world.playerCount -= 1;
+    await ORMContext.em.persistAndFlush(world);
+  }
 
   // Reset the user's save data
   save.worldid = null;
@@ -26,11 +29,12 @@ export const leaveWorld = async (user: User, save: Save) => {
   save.cell = null;
   save.homebase = null;
   save.outposts = [];
+  save.buildingresources = {};
   user.bookmarks = {};
 
   // Remove user's cells from the world
   await removeUserCells(user);
-  await ORMContext.em.persistAndFlush([world, save, user]);
+  await ORMContext.em.persistAndFlush([save, user]);
 };
 
 const removeUserCells = async (user: User) => {

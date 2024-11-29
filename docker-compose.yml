@@ -1,0 +1,64 @@
+volumes:
+  db:
+  phpmyadmin:
+
+
+networks:
+  bymr:
+
+
+services:
+  web:
+    build: ./server
+    environment:
+      - BASE_URL=localhost
+      - PORT=3001
+      - DB_NAME=bymr
+      - DB_HOST=db
+      - DB_PORT=3306
+      - DB_USER=bymr
+      - DB_PASSWORD=bymr
+      # DO NOT USE THIS IN PRODUCTION!
+      - SECRET_KEY=178fd6594da164eac2e78d7ead343f8971c74df3910a36dd03da4cf6e1ae615e
+    networks:
+      - bymr
+    ports:
+      - 3001:3001
+    develop:
+      watch:
+        - action: sync
+          path: server
+          target: /app
+    depends_on:
+      db:
+        condition: service_healthy
+  db:
+    image: mariadb:lts
+    environment:
+      - MARIADB_ROOT_PASSWORD=root
+      - MARIADB_USER=bymr
+      - MARIADB_PASSWORD=bymr
+      - MARIADB_DATABASE=bymr
+    ports:
+      - 3306:3306
+    networks:
+      - bymr
+    volumes:
+      - db:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      start_period: 10s
+      interval: 10s
+      timeout: 5s
+      retries: 3
+  phpmyadmin:
+    image: phpmyadmin:5
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - PMA_HOST=db
+    ports:
+      - 8080:80
+    networks:
+      - bymr
+    depends_on:
+      - db

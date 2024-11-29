@@ -71,7 +71,8 @@ package
          _sprites.G2_6 = new SpriteData("monsters/dragon_6.png",171,125,26,36);
          _sprites.G3_1 = new SpriteData("monsters/fly_1.png",53,40,26,36);
          _sprites.G3_2 = new SpriteData("monsters/fly_2.png",63,46,26,36);
-         _sprites.G3_3 = new SpriteData("monsters/fly_3.png",98,81,26,36);
+         // _sprites.G3_3 = new SpriteData("monsters/fly_3.png",98,81,26,36); // FOMOR 3 MISSING
+         _sprites.G3_3 = new SpriteData("monsters/fly_3.png",120,92,26,36);
          _sprites.G3_4 = new SpriteData("monsters/fly_4.png",120,92,26,36);
          _sprites.G3_5 = new SpriteData("monsters/fly_5.png",133,105,26,36);
          _sprites.G3_6 = new SpriteData("monsters/fly_6.png",124,105,26,36);
