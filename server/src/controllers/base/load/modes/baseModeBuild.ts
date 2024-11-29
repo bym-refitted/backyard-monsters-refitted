@@ -25,16 +25,20 @@ export const baseModeBuild = async (user: User, baseid: string) => {
     return await Save.createDefaultUserSave(ORMContext.em, user);
   }
 
-  // Fetch base based on the provided baseid.
-  if (baseid !== BaseMode.DEFAULT && BigInt(baseid) !== userSave.baseid) {
-    let baseSave = await ORMContext.em.findOne(Save, {
+  if (baseid === BaseMode.DEFAULT) {
+    await balancedReward(userSave);
+    return userSave;
+  }
+
+  if (BigInt(baseid) !== BigInt(userSave.baseid)) {
+    const baseSave = await ORMContext.em.findOne(Save, {
       baseid: BigInt(baseid),
     });
 
     if (!baseSave) throw new Error(`Base save not found for baseid: ${baseid}`);
+
     return baseSave;
   }
 
-  await balancedReward(userSave);
   return userSave;
 };

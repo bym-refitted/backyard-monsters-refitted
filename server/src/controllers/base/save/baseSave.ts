@@ -12,7 +12,6 @@ import { BaseSaveSchema } from "./zod/BaseSaveSchema";
 import { resourcesHandler } from "./handlers/resourceHandler";
 import { purchaseHandler } from "./handlers/purchaseHandler";
 import { academyHandler } from "./handlers/academyHandler";
-import { buildingResourcesHandler } from "./handlers/buildResourcesHandler";
 import {
   Resources,
   updateResources,
@@ -67,10 +66,6 @@ export const baseSave: KoaController = async (ctx) => {
           academyHandler(ctx, save);
           break;
 
-        case SaveKeys.BUILDING_RESOURCES:
-          buildingResourcesHandler(save, userSave, isOutpost);
-          break;
-
         case SaveKeys.BUILDING_HEALTH_DATA:
           if (saveDataKey) save.buildinghealthdata = buildinghealthdata;
           break;
@@ -82,6 +77,13 @@ export const baseSave: KoaController = async (ctx) => {
           // Default case is to parse the JSON string if it's not an array
           if (saveDataKey && !Array.isArray(saveDataKey))
             save[key] = JSON.parse(saveDataKey);
+      }
+
+      if (key === SaveKeys.BUILDING_RESOURCES && isOutpost) {
+        userSave.buildingresources[`b${save.baseid}`] =
+          save.buildingresources[`b${save.baseid}`];
+
+        userSave.buildingresources['t'] = getCurrentDateTime()
       }
     }
 
@@ -103,7 +105,7 @@ export const baseSave: KoaController = async (ctx) => {
       save.attackid != 0 &&
       save.saveuserid !== user.userid
     ) {
-      if (attackerchampion) save.attackerchampion = attackerchampion;
+      if (attackerchampion) userSave.champion = attackerchampion;
 
       if (monsterupdate && monsterupdate.length > 0) {
         const authMonsters = monsterupdate.find(
@@ -142,8 +144,6 @@ export const baseSave: KoaController = async (ctx) => {
     await ORMContext.em.persistAndFlush(save);
 
     if (isOutpost) {
-      userSave.savetime = getCurrentDateTime();
-      userSave.id = userSave.savetime;
       await ORMContext.em.persistAndFlush(userSave);
 
       save.credits = userSave.credits;

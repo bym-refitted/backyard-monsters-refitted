@@ -76,6 +76,13 @@ export const takeoverCell: KoaController = async (ctx) => {
         ([x, y, id]) => !(x === cell.x && y === cell.y && id === baseid)
       );
 
+      // Remove the `buildingresources` entry for this outpost
+      const buildingresources = previousOwner.save.buildingresources;
+
+      if (buildingresources && buildingresources[`b${baseid}`]) {
+        delete buildingresources[`b${baseid}`];
+      }
+
       await ORMContext.em.persistAndFlush(previousOwner);
     }
 
@@ -89,6 +96,7 @@ export const takeoverCell: KoaController = async (ctx) => {
 
     cellSave.protected = 1;
     cellSave.attackTimestamps = [];
+    cellSave.resources = {};
 
     if (cellSave.type === BaseType.TRIBE) {
       cellSave.type = BaseType.OUTPOST;

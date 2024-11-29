@@ -1,5 +1,6 @@
 import {
   Entity,
+  Index,
   ManyToOne,
   OneToOne,
   PrimaryKey,
@@ -9,6 +10,8 @@ import { FrontendKey } from "../utils/FrontendKey";
 import { World } from "./world.model";
 import { Save } from "./save.model";
 
+// Composite index on world_id, x, and y
+@Index({ properties: ["world_id", "x", "y"] })
 @Entity()
 export class WorldMapCell {
   constructor(
