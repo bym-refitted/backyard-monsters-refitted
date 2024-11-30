@@ -61,6 +61,7 @@ export const userCell = async (ctx: Context, cell: WorldMapCell) => {
       bid: cell.base_id,
       aid: 0,
       i: cell.terrainHeight,
+      v: cellSave?.empirevalue || 1,
       mine: mine ? 1 : 0,
       f: cellSave?.flinger || 0,
       c: cellSave?.catapult || 0,
