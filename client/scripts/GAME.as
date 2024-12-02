@@ -119,9 +119,8 @@ package
          setLauncherVars();
          loaderInfo.uncaughtErrorEvents.addEventListener(UncaughtErrorEvent.UNCAUGHT_ERROR, this.uncaughtErrorThrown);
          GLOBAL._baseURL = urls._baseURL;
-
          SWFProfiler.init(stage, this);
-         Console.initialize(stage);
+         GLOBAL.init();
          _contained = contained;
          GLOBAL._infBaseURL = urls.infbaseurl;
          GLOBAL._apiURL = urls._apiURL;
