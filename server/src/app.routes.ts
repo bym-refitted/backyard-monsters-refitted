@@ -43,15 +43,10 @@ router.post("/gh-release-webhook", releasesWebhook);
  * Init route
  * @name GET /api/:apiVersion/bm/getnewmap
  */
-router.get(
-  "/init",
-  apiVersion,
-  debugDataLog("Initilizing game client"),
-  (ctx) => {
-    ctx.status = Status.OK;
-    ctx.body = { debugMode: devConfig.debugMode };
-  }
-);
+router.get("/init", debugDataLog("Initilizing game client"), (ctx) => {
+  ctx.status = Status.OK;
+  ctx.body = { debugMode: devConfig.debugMode };
+});
 
 /**
  * MapRoom setup
