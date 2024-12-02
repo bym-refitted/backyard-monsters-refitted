@@ -26,6 +26,7 @@ import { releasesWebhook } from "./controllers/github/releasesWebhook";
 import { Status } from "./enums/StatusCodes";
 import { forgotPassword } from "./controllers/auth/forgotPassword";
 import { resetPassword } from "./controllers/auth/resetPassword";
+import { devConfig } from "./config/DevSettings";
 
 /**
  * All applcation routes
@@ -40,6 +41,20 @@ router.post("/gh-release-webhook", releasesWebhook);
 
 /**
  * Init route
+ * @name GET /api/:apiVersion/bm/getnewmap
+ */
+router.get(
+  "/init",
+  apiVersion,
+  debugDataLog("Initilizing game client"),
+  (ctx) => {
+    ctx.status = Status.OK;
+    ctx.body = { debugMode: devConfig.debugMode };
+  }
+);
+
+/**
+ * MapRoom setup
  * @name GET /api/:apiVersion/bm/getnewmap
  */
 router.get(
