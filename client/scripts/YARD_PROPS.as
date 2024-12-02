@@ -6984,7 +6984,7 @@ package
             "baseurl":"buildings/iquaketower/",
             "1":{
                "anim":["anim.1.png",new Rectangle(-37,-75,75,132),33],
-               "shadow":["shadow.1.v2.png",new Point(-37,28)],
+               "shadow":["shadow.1.v2.jpg",new Point(-37,28)],
                "topdamaged":["top.1.damaged.png",new Point(-40,-75)],
                "animdamaged":["anim.1.damaged.png",new Rectangle(-40,-75,84,133),33],
                "shadowdamaged":["shadow.1.v2.png",new Point(-37,28)],
@@ -7265,15 +7265,14 @@ package
          "imageData":{
             "baseurl":"buildings/imagmatower/",
             "1":{
-               // "anim":["anim.1.v2.png",new Rectangle(-26,-50,54,42),31],
-               "anim":["anim.1.v2.png",new Rectangle(-26,-40,54,42),31],
+               "anim":["anim.1.v2.png",new Rectangle(-26,-50,54,42),31],
                "anim2":["anim.2.v2.png",new Rectangle(-17,26,38,19),31],
                "top":["top.1.v2.png",new Point(-34,-30)],
-               // "shadow":["shadow.1.v2.jpg",new Point(-31,10)],
+               "shadow":["shadow.1.v2.jpg",new Point(-31,10)],
                // "animdamaged":["anim.1.damaged.v2.png",new Rectangle(-28.6,-47.6,52,43),31],
                // "animdamaged2":["anim.2.damaged.v2.png",new Rectangle(-21,28,38,19),31],
                "topdamaged":["top.1.damaged.v2.png",new Point(-38,-4)],
-               // "shadowdamaged":["shadow.1.v2.jpg",new Point(-38,16)],
+               "shadowdamaged":["shadow.1.v2.jpg",new Point(-38,16)],
                "topdestroyed":["top.1.destroyed.v2.png",new Point(-36,6)]
                // "shadowdestroyed":["shadow.1.destroyed.v2.jpg",new Point(-36,22)]
             }
@@ -7337,10 +7336,10 @@ package
                "top":["top.1.v3.png",new Point(-75,-23)],
                "topdamaged":["top.1.damaged.v3.png",new Point(-75,-88)],
                "topdestroyed":["top.1.destroyed.png",new Point(-75,-48)],
-               "anim":["anim.1.v2.png",new Rectangle(-58,-99,129,77),35]
-               //"shadow":["shadow.1.jpg",new Point(-29,14)],
-               //"shadowdamaged":["shadow.1.jpg",new Point(-29,14)],
-               //"shadowdestroyed":["shadow.1.jpg",new Point(-29,14)]
+               "anim":["anim.1.v2.png",new Rectangle(-58,-99,129,77),35],
+               "shadow":["shadow.1.jpg",new Point(-29,14)],
+               "shadowdamaged":["shadow.1.jpg",new Point(-29,14)],
+               "shadowdestroyed":["shadow.1.jpg",new Point(-29,14)]
             }
          },
          "buildingbuttons":["seige_factory"],
@@ -7445,13 +7444,13 @@ package
             "1":{
                "top":["top.1.v6.png",new Point(-69,-68)],
                "topdamaged":["top.1.damaged.v4.png",new Point(-66,-98)],
-               "topdestroyed":["top.1.destroyed.png",new Point(-57,-44)]
-               //"anim":["anim1.v4.png",new Rectangle(-54,22,43,39),60],
-               //"anim2":["anim2.v3.png",new Rectangle(-24,-92,59,100),60],
-               //"anim3":["anim3.v3.png",new Rectangle(19,11,38,40),60]
-               //"shadow":["shadow.1.jpg",new Point(-50,4)],
-               //"shadowdamaged":["shadow.1.jpg",new Point(-50,4)],
-               //"shadowdestroyed":["shadow.1.jpg",new Point(-50,4)]
+               "topdestroyed":["top.1.destroyed.png",new Point(-57,-44)],
+               "anim":["anim1.v4.png",new Rectangle(-54,22,43,39),60],
+               "anim2":["anim2.v3.png",new Rectangle(-24,-92,59,100),60],
+               "anim3":["anim3.v3.png",new Rectangle(19,11,38,40),60],
+               "shadow":["shadow.1.jpg",new Point(-50,4)],
+               "shadowdamaged":["shadow.1.jpg",new Point(-50,4)],
+               "shadowdestroyed":["shadow.1.jpg",new Point(-50,4)]
             }
          },
          "stats":[{
@@ -7639,9 +7638,12 @@ package
             "1":{
                "anim":["top-normal-anim.v2.png",new Rectangle(-27,-60,54,42),31],
                "top":["normal_base.png",new Point(-39,-50)],
+               "shadow":["normal_damaged_shadow.jpg",new Point(-31,10)],
                "animdamaged":["top-damaged-anim.v2.png",new Rectangle(-27,-60,54,42),31],
                "topdamaged":["damaged_base.png",new Point(-39,-50)],
+               "shadowdamaged":["normal_damaged_shadow.jpg",new Point(-38,16)],
                "topdestroyed":["destroyed_base.png",new Point(-39,-13)]
+               //"shadowdestroyed":["destroyed_shadow.jpg",new Point(-36,22)]
             }
          },
          "buildingbuttons":["spurtz_tower_button"],
@@ -7748,6 +7750,7 @@ package
             "1":{
                "anim":["top-normal-anim.v2.png",new Rectangle(-27,-60,54,42),31],
                "top":["normal_base.png",new Point(-39,-50)],
+               "shadow":["normal_damaged_shadow.jpg",new Point(-31,10)],
                "animdamaged":["top-damaged-anim.v2.png",new Rectangle(-27,-60,54,42),31],
                "topdamaged":["damaged_base.png",new Point(-39,-50)],
                "topdestroyed":["destroyed_base.png",new Point(-39,-13)]
