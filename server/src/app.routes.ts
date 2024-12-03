@@ -40,6 +40,15 @@ const router = new Router();
 router.post("/gh-release-webhook", releasesWebhook);
 
 /**
+ * Connection route
+ * @name POST /connection
+ */
+router.get("/connection", (ctx) => {
+  ctx.status = Status.OK;
+  ctx.body = { message: "Connection successful" };
+});
+
+/**
  * Init route
  * @name GET /api/:apiVersion/bm/getnewmap
  */
@@ -58,12 +67,6 @@ router.get(
   debugDataLog("Getting new maproom"),
   getNewMap
 );
-
-/**
- * Connection route
- * @name POST /connection
- */
-router.get("/connection", (ctx) => (ctx.status = Status.OK));
 
 /**
  * Init route
