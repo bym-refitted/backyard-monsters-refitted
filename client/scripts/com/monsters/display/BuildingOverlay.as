@@ -148,21 +148,21 @@ package com.monsters.display
                   _loc11_ = 0;
                   while(_loc11_ < param1._prefab)
                   {
-                     _loc10_ += GLOBAL._buildingProps[param1._type - 1].costs[_loc11_].time;
+                     _loc10_ += GLOBAL._buildingProps[param1._type - 1].costs[_loc11_].time.Get();
                      _loc11_++;
                   }
                   _loc6_ = _loc10_;
                }
                else
                {
-                  _loc6_ = int(param1._buildingProps.costs[param1._lvl.Get()].time);
+                  _loc6_ = int(param1._buildingProps.costs[param1._lvl.Get()].time.Get());
                }
                _loc3_ = 49 / _loc6_ * (_loc6_ - param1._countdownBuild.Get());
                _loc4_ = "building";
             }
             else if(param1._countdownUpgrade.Get() > 0)
             {
-               _loc6_ = int(param1._buildingProps.costs[param1._lvl.Get()].time);
+               _loc6_ = int(param1._buildingProps.costs[param1._lvl.Get()].time.Get());
                _loc3_ = 49 / _loc6_ * (_loc6_ - param1._countdownUpgrade.Get());
                _loc4_ = "upgrading";
             }
@@ -170,7 +170,7 @@ package com.monsters.display
             {
                if(param1._buildingProps.fortify_costs[param1._fortification.Get()])
                {
-                  _loc6_ = int(param1._buildingProps.fortify_costs[param1._fortification.Get()].time);
+                  _loc6_ = int(param1._buildingProps.fortify_costs[param1._fortification.Get()].time.Get());
                   _loc3_ = 49 / _loc6_ * (_loc6_ - param1._countdownFortify.Get());
                   _loc4_ = "fortifying";
                }
