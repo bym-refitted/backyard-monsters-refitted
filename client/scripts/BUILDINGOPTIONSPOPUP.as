@@ -198,7 +198,8 @@ package
                   "r2":0,
                   "r3":0,
                   "r4":0,
-                  "r5":0
+                  "r5":0,
+                  "time":new SecNum(_loc3_.time.Get())
                };
             }
             this.toggleCheckbox(true);
@@ -434,7 +435,7 @@ package
             }
             if(this._doStreamPost && BASE.isMainYard)
             {
-               if(_loc3_.time > 600)
+               if(_loc3_.time.Get() > 600)
                {
                   this.streampost_cb.Enabled = true;
                   mcCBBG.alpha = 1;
@@ -515,7 +516,7 @@ package
                "r2":0,
                "r3":0,
                "r4":0,
-               "time":_loc6_.time,
+               "time":new SecNum(_loc6_.time.Get()),
                "re":_loc6_.re
             };
          }
@@ -729,7 +730,7 @@ package
          }
          else
          {
-            if((_loc7_ = int(_loc6_.time)) <= 300)
+            if((_loc7_ = int(_loc6_.time.Get())) <= 300)
             {
                _loc7_ = 0;
             }

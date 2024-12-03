@@ -4559,7 +4559,7 @@ package
             "r2":0,
             "r3":0,
             "r4":0,
-            "time":0
+            "time":new SecNum(0)
          };
          var _loc4_:Boolean = false;
          var _loc5_:String = "";
@@ -4744,7 +4744,7 @@ package
             "r2":0,
             "r3":0,
             "r4":0,
-            "time":0
+            "time":new SecNum(0)
          };
          _loc4_ = false;
          _loc5_ = "";
@@ -4906,7 +4906,7 @@ package
          var _loc3_:* = false;
          var _loc4_:Object = null;
          BuildingDeselect();
-         _loc3_ = GLOBAL._buildingProps[param1 - 1].costs[0].time == 0;
+         _loc3_ = GLOBAL._buildingProps[param1 - 1].costs[0].time.Get() == 0;
          if(!_loc3_)
          {
             _loc3_ = QUEUE.CanDo().error == false;
@@ -5798,7 +5798,7 @@ package
                if(Boolean(_loc6_ = GLOBAL._buildingProps[_loc3_._type - 1]) && Boolean(_loc6_.costs[_loc5_ - 1]))
                {
                   _loc7_ = _loc6_.costs[_loc5_ - 1];
-                  _loc4_ += _loc7_.time + _loc7_.r1 + _loc7_.r2 + _loc7_.r3 + _loc7_.r4;
+                  _loc4_ += _loc7_.time.Get() + _loc7_.r1 + _loc7_.r2 + _loc7_.r3 + _loc7_.r4;
                }
             }
          }
