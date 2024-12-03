@@ -402,7 +402,7 @@ package
          var _loc11_:int = 0;
          if(_loc3_)
          {
-            _loc13_ = int(_loc3_.time);
+            _loc13_ = int(_loc3_.time.Get());
             _loc14_ = 1;
             while(_loc14_ < 5)
             {
@@ -423,7 +423,7 @@ package
                _loc14_++;
             }
             (_loc15_ = this.mcResources.mcTime).gotoAndStop(BASE.isInfernoBuilding(this._building._type) || BASE.isInfernoMainYardOrOutpost ? 12 : 6);
-            if(TUTORIAL._stage >= 200 && _loc3_.time > 0)
+            if(TUTORIAL._stage >= 200 && _loc3_.time.Get() > 0)
             {
                _loc15_.visible = true;
                _loc15_.tTitle.htmlText = "<b>" + KEYS.Get(_loc18_[5]) + "</b>";
