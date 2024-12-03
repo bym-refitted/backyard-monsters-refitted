@@ -3097,7 +3097,8 @@ package
             "r2":0,
             "r3":0,
             "r4":0,
-            "r5":0
+            "r5":0,
+            "time":new SecNum(0)
          };
          if(GLOBAL._buildingProps[this._type - 1].rewarded)
          {
@@ -3109,7 +3110,7 @@ package
             _loc1_.r2 += this._buildingProps.costs[0].r2;
             _loc1_.r3 += this._buildingProps.costs[0].r3;
             _loc1_.r4 += this._buildingProps.costs[0].r4;
-            _loc1_.r5 += this._buildingProps.costs[0].r5;
+            _loc1_.r5 += this._buildingProps.costs[0].r5;            
          }
          else
          {
