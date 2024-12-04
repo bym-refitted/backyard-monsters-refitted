@@ -1,5 +1,6 @@
 package
 {
+   import com.cc.utils.SecNum;
    import flash.display.Loader;
    import flash.display.MovieClip;
    import flash.events.Event;
@@ -41,7 +42,7 @@ package
          {
             _loc2_ = param1._buildingProps.costs[0];
             _loc3_ = _loc2_.r5 != undefined ? int(_loc2_.r5) : 0;
-            UPDATES.CreateB(["BE",BASE._loadedBaseID,_loc2_.r1,_loc2_.r2,_loc2_.r3,_loc2_.r4,_loc3_],0,-1);
+            UPDATES.CreateB(["BE",BASE._loadedBaseID,_loc2_.r1.Get(),_loc2_.r2.Get(),_loc2_.r3.Get(),_loc2_.r4.Get(),_loc3_],0,-1);
          }
       }
       
