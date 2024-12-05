@@ -82,12 +82,12 @@ export const baseSave: KoaController = async (ctx) => {
       if (isOutpost) {
         if (key === SaveKeys.BUILDING_RESOURCES) {
           userSave.buildingresources[`b${save.baseid}`] =
-              save.buildingresources[`b${save.baseid}`];
+            save.buildingresources[`b${save.baseid}`];
 
-          userSave.buildingresources['t'] = getCurrentDateTime()
-        } else if (key === "quests") {
-          userSave.quests = save.quests;
+          userSave.buildingresources["t"] = getCurrentDateTime();
         }
+
+        if (key === SaveKeys.QUESTS) userSave.quests = save.quests;
       }
     }
 
