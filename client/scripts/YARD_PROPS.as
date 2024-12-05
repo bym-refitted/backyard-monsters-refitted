@@ -105,7 +105,7 @@ package
                "shadowdestroyed":["shadow.destroyed.jpg",new Point(-31,20)]
             },
             "3":{
-               "anim":["anim.3.png",new Rectangle(0),6,23,30,34],
+               "anim":["anim.3.png",new Rectangle(0,6,23,30),34],
                "top":["top.3.png",new Point(-32,-40)],
                "shadow":["shadow.3.jpg",new Point(-38,11)],
                "topdamaged":["top.3.damaged.png",new Point(-33,-37)],
