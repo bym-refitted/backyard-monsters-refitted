@@ -10,4 +10,5 @@ export enum SaveKeys {
   PURCHASE = "purchase",
   ACADEMY = "academy",
   CHAMPION = "champion",
+  QUESTS = "quests",
 }
