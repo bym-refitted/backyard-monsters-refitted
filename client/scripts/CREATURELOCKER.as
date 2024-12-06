@@ -129,8 +129,8 @@ package
                "trainingCosts":[[new SecNum(4000),new SecNum(60 * 60 * 2)],[new SecNum(8000),new SecNum(60 * 60 * 3)],[new SecNum(12000),new SecNum(60 * 60 * 5)],[new SecNum(16000),new SecNum(60 * 60 * 8)],[new SecNum(22000),new SecNum(60 * 60 * 12)]],
                "props":{
                   "speed":[1.2],
-                  "health":[200,220,240,260,280,300],
-                  "damage":[60,65,70,75,80,85],
+                  "health":[new SecNum(200),new SecNum(220),new SecNum(240),new SecNum(260),new SecNum(280),new SecNum(300)],
+                  "damage":[new SecNum(60),new SecNum(65),new SecNum(70),new SecNum(75),new SecNum(80),new SecNum(85)],
                   "cTime":[15,10,8,7,6,5],
                   "cResource":[250,450,675,800,1000,1250],
                   "cStorage":[10,10,10,9,8,7],
@@ -153,8 +153,8 @@ package
                "trainingCosts":[[new SecNum(8000),new SecNum(60 * 60 * 4)],[new SecNum(16000),new SecNum(60 * 60 * 6)],[new SecNum(24000),new SecNum(60 * 60 * 10)],[new SecNum(48000),new SecNum(60 * 60 * 16)],[new SecNum(64000),new SecNum(60 * 60 * 24)]],
                "props":{
                   "speed":[1.4],
-                  "health":[1000,1100,1300,1450,1600,1800],
-                  "damage":[15,15,20,25,30,35],
+                  "health":[new SecNum(1000),new SecNum(1100),new SecNum(1300),new SecNum(1450),new SecNum(1600),new SecNum(1800)],
+                  "damage":[new SecNum(15),new SecNum(15),new SecNum(20),new SecNum(25),new SecNum(30),new SecNum(35)],
                   "cTime":[15,16],
                   "cResource":[500,900,1350,1800,2100,2500],
                   "cStorage":[10],
@@ -178,8 +178,8 @@ package
                "trainingCosts":[[new SecNum(16000),new SecNum(60 * 60 * 4)],[new SecNum(32000),new SecNum(60 * 60 * 6)],[new SecNum(48000),new SecNum(60 * 60 * 8)],[new SecNum(96000),new SecNum(60 * 60 * 12)],[new SecNum(144000),new SecNum(60 * 60 * 16)]],
                "props":{
                   "speed":[2.5,2.55,2.6,2.8,3,3.2],
-                  "health":[150],
-                  "damage":[15,20,25,35,45,55],
+                  "health":[new SecNum(150)],
+                  "damage":[new SecNum(15),new SecNum(20),new SecNum(25),new SecNum(35),new SecNum(45),new SecNum(55)],
                   "cTime":[23],
                   "cResource":[350,675,1015,1400,1800,2400],
                   "cStorage":[15],
@@ -203,8 +203,8 @@ package
                "trainingCosts":[[new SecNum(32000),new SecNum(60 * 60 * 8)],[new SecNum(64000),new SecNum(60 * 60 * 12)],[new SecNum(96000),new SecNum(60 * 60 * 18)],[new SecNum(128000),new SecNum(60 * 60 * 24)],[new SecNum(160000),new SecNum(60 * 60 * 30)]],
                "props":{
                   "speed":[1.3],
-                  "health":[200,200,200,200,220,240],
-                  "damage":[300,330,380,430,470,520],
+                  "health":[new SecNum(200),new SecNum(200),new SecNum(200),new SecNum(200),new SecNum(220),new SecNum(240)],
+                  "damage":[new SecNum(300),new SecNum(330),new SecNum(380),new SecNum(430),new SecNum(470),new SecNum(520)],
                   "cTime":[100,100,100,100,90,90],
                   "cResource":[1500,2250,3375,4800,7200,10000],
                   "cStorage":[20],
@@ -228,8 +228,8 @@ package
                "trainingCosts":[[new SecNum(64000),new SecNum(60 * 60 * 5)],[new SecNum(128000),new SecNum(60 * 60 * 7)],[new SecNum(192000),new SecNum(60 * 60 * 12)],[new SecNum(384000),new SecNum(60 * 60 * 24)],[new SecNum(512000),new SecNum(60 * 60 * 36)]],
                "props":{
                   "speed":[2,2.2,2.4,2.6,2.8,3],
-                  "health":[600,900,1200,1600,2000,2400],
-                  "damage":[4000,8000,12000,16000,20000,24000],
+                  "health":[new SecNum(600),new SecNum(900),new SecNum(1200),new SecNum(1600),new SecNum(2000),new SecNum(2400)],
+                  "damage":[new SecNum(4000),new SecNum(8000),new SecNum(12000),new SecNum(16000),new SecNum(20000),new SecNum(24000)],
                   "cTime":[1500],
                   "cResource":[5000,15000,30000,45000,60000,80000],
                   "cStorage":[60],
@@ -253,8 +253,8 @@ package
                "trainingCosts":[[new SecNum(128000),new SecNum(60 * 60 * 12)],[new SecNum(256000),new SecNum(60 * 60 * 18)],[new SecNum(409600),new SecNum(60 * 60 * 24)],[new SecNum(640000),new SecNum(60 * 60 * 48)],[new SecNum(820000),new SecNum(60 * 60 * 72)]],
                "props":{
                   "speed":[1.2],
-                  "health":[2000,2100,2200,2300,2500,2800],
-                  "damage":[50,60,70,80,95,110],
+                  "health":[new SecNum(2000),new SecNum(2100),new SecNum(2200),new SecNum(2300),new SecNum(2500),new SecNum(2800)],
+                  "damage":[new SecNum(50),new SecNum(60),new SecNum(70),new SecNum(80),new SecNum(95),new SecNum(110)],
                   "cTime":[100,100,90],
                   "cResource":[5000,5625,8440,11200,16000,24000],
                   "cStorage":[20],
@@ -278,8 +278,8 @@ package
                "trainingCosts":[[new SecNum(256000),new SecNum(60 * 60 * 12)],[new SecNum(512000),new SecNum(60 * 60 * 16)],[new SecNum(756000),new SecNum(60 * 60 * 24)],[new SecNum(1024000),new SecNum(60 * 60 * 36)],[new SecNum(1440000),new SecNum(60 * 60 * 48)]],
                "props":{
                   "speed":[1],
-                  "health":[500,550,600,650,750,900],
-                  "damage":[200,250,300,350,400,450],
+                  "health":[new SecNum(500),new SecNum(550),new SecNum(600),new SecNum(650),new SecNum(750),new SecNum(900)],
+                  "damage":[new SecNum(200),new SecNum(250),new SecNum(300),new SecNum(350),new SecNum(400),new SecNum(450)],
                   "cTime":[225,225,225,225,180,180],
                   "cResource":[2500,4500,6750,8750,11200,14400],
                   "cStorage":[20],
@@ -303,8 +303,8 @@ package
                "trainingCosts":[[new SecNum(512000),new SecNum(60 * 60 * 12)],[new SecNum(512000),new SecNum(60 * 60 * 16)],[new SecNum(756000),new SecNum(60 * 60 * 24)],[new SecNum(1024000),new SecNum(60 * 60 * 36)],[new SecNum(1440000),new SecNum(60 * 60 * 48)]],
                "props":{
                   "speed":[1.1,1.2,1.3,1.4,1.5,1.6],
-                  "health":[400],
-                  "damage":[600,600,620,660,720,800],
+                  "health":[new SecNum(400)],
+                  "damage":[new SecNum(600),new SecNum(600),new SecNum(620),new SecNum(660),new SecNum(720),new SecNum(800)],
                   "cTime":[450,350,250,225,195,195],
                   "cResource":[18000,27000,40500,60500,80000,100000],
                   "cStorage":[30],
@@ -328,8 +328,8 @@ package
                "trainingCosts":[[new SecNum(1024000),new SecNum(60 * 60 * 12)],[new SecNum(2056000),new SecNum(60 * 60 * 16)],[new SecNum(2870000),new SecNum(60 * 60 * 20)],[new SecNum(4500000),new SecNum(60 * 60 * 40)],[new SecNum(6000000),new SecNum(60 * 60 * 60)]],
                "props":{
                   "speed":[2,2,2,2,2.1,2.2],
-                  "health":[600,700,750,800,1100,1400],
-                  "damage":[100,100,200,250,300,350],
+                  "health":[new SecNum(600),new SecNum(700),new SecNum(750),new SecNum(800),new SecNum(1100),new SecNum(1400)],
+                  "damage":[new SecNum(100),new SecNum(100),new SecNum(200),new SecNum(250),new SecNum(300),new SecNum(350)],
                   "cTime":[342],
                   "cResource":[12000,20250,30375,35000,50000,75000],
                   "cStorage":[30],
@@ -352,8 +352,8 @@ package
                "trainingCosts":[[new SecNum(2048000),new SecNum(60 * 60 * 12)],[new SecNum(3000000),new SecNum(60 * 60 * 18)],[new SecNum(4400000),new SecNum(60 * 60 * 24)],[new SecNum(6000000),new SecNum(60 * 60 * 48)],[new SecNum(7500000),new SecNum(60 * 60 * 72)]],
                "props":{
                   "speed":[1,1,1,1.2,1.4,1.5],
-                  "health":[4000,4000,4300,4400,4600,4800],
-                  "damage":[100,120,130,140,150,170],
+                  "health":[new SecNum(4000),new SecNum(4000),new SecNum(4300),new SecNum(4400),new SecNum(4600),new SecNum(4800)],
+                  "damage":[new SecNum(100),new SecNum(120),new SecNum(130),new SecNum(140),new SecNum(150),new SecNum(170)],
                   "cTime":[750],
                   "cResource":[30000,45000,67500,75000,90000,120000],
                   "cStorage":[40],
@@ -377,8 +377,8 @@ package
                "trainingCosts":[[new SecNum(4096000),new SecNum(60 * 60 * 24)],[new SecNum(7000000),new SecNum(60 * 60 * 36)],[new SecNum(12000000),new SecNum(60 * 60 * 48)],[new SecNum(18000000),new SecNum(60 * 60 * 96)],[new SecNum(24000000),new SecNum(60 * 60 * 128)]],
                "props":{
                   "speed":[0.9,0.9,1,1.2,1.2,1.3],
-                  "health":[800,900,950,1000,1100,1200],
-                  "damage":[1200,1400,1600,1800,2000,2200],
+                  "health":[new SecNum(800),new SecNum(900),new SecNum(950),new SecNum(1000),new SecNum(1100),new SecNum(1200)],
+                  "damage":[new SecNum(1200),new SecNum(1400),new SecNum(1600),new SecNum(1800),new SecNum(2000),new SecNum(2200)],
                   "cTime":[1384],
                   "cResource":[60000,90000,135000,180000,234000,280000],
                   "cStorage":[70],
@@ -402,8 +402,8 @@ package
                "trainingCosts":[[new SecNum(8192000),new SecNum(60 * 60 * 48)],[new SecNum(10000000),new SecNum(60 * 60 * 72)],[new SecNum(12200000),new SecNum(60 * 60 * 96)],[new SecNum(19200000),new SecNum(60 * 60 * 144)],[new SecNum(28000000),new SecNum(60 * 60 * 192)]],
                "props":{
                   "speed":[0.8,0.85,0.9,1,1.1,1.2],
-                  "health":[8000,9100,10000,12000,16500,21000],
-                  "damage":[1500,1500,1600,1700,1800,1900],
+                  "health":[new SecNum(8000),new SecNum(9100),new SecNum(10000),new SecNum(12000),new SecNum(16500),new SecNum(21000)],
+                  "damage":[new SecNum(1500),new SecNum(1500),new SecNum(1600),new SecNum(1700),new SecNum(1800),new SecNum(1900)],
                   "cTime":[3600],
                   "cResource":[150000,225000,337500,440000,600000,800000],
                   "cStorage":[160],
@@ -429,8 +429,8 @@ package
                "pathing":"direct",
                "props":{
                   "speed":[3,4],
-                  "health":[600,800,1100,1300,1500,1700],
-                  "damage":[300,400,550,600,650,700],
+                  "health":[new SecNum(600),new SecNum(800),new SecNum(1100),new SecNum(1300),new SecNum(1500),new SecNum(1700)],
+                  "damage":[new SecNum(300),new SecNum(400),new SecNum(550),new SecNum(600),new SecNum(650),new SecNum(700)],
                   "cTime":[1384],
                   "cResource":[20000,25000,30000,35000,40000,47500],
                   "cStorage":[70],
@@ -458,8 +458,8 @@ package
                   "range":[150],
                   "attackDelay":[90],
                   "speed":[2.5,2.75,3,3.25,3.5],
-                  "health":[1600,1900,2400,3000,3600,4200],
-                  "damage":[300,350,400,500,600,700],
+                  "health":[new SecNum(1600),new SecNum(1900),new SecNum(2400),new SecNum(3000),new SecNum(3600),new SecNum(4200)],
+                  "damage":[new SecNum(300),new SecNum(350),new SecNum(400),new SecNum(500),new SecNum(600),new SecNum(700)],
                   "cTime":[1800,1920,2040,2160,2280,2400],
                   "cResource":[70000,95000,145000,200000,300000,400000],
                   "cStorage":[70],
@@ -488,8 +488,8 @@ package
                   "range":[150],
                   "attackDelay":[20],
                   "speed":[0.75,0.8,0.85,0.9,0.95],
-                  "health":[8000],
-                  "damage":[-400,-550,-700,-850,-1000],
+                  "health":[new SecNum(8000)],
+                  "damage":[new SecNum(-400),new SecNum(-550),new SecNum(-700),new SecNum(-850),new SecNum(-1000)],
                   "cTime":[2400],
                   "cResource":[120000,180000,256000,324000,468000],
                   "cStorage":[200],
@@ -520,8 +520,8 @@ package
                   "range":[150],
                   "attackDelay":[10],
                   "speed":[1.5,1.75,2,2.25,2.5],
-                  "health":[750],
-                  "damage":[-60,-70,-80,-90,-100,-110],
+                  "health":[new SecNum(750)],
+                  "damage":[new SecNum(-60),new SecNum(-70),new SecNum(-80),new SecNum(-90),new SecNum(-100),new SecNum(-110)],
                   "cTime":[1200],
                   "cResource":[16000,25000,38500,62500,75000,90000],
                   "cStorage":[60],
@@ -546,8 +546,8 @@ package
                "blocked":true,
                "props":{
                   "speed":[1,1.1,1.2,1.3,1.4,1.5],
-                  "health":[700,725,750,800,900,1000],
-                  "damage":[850,850,900,1000,1200,1400],
+                  "health":[new SecNum(700),new SecNum(725),new SecNum(750),new SecNum(800),new SecNum(900),new SecNum(1000)],
+                  "damage":[new SecNum(850),new SecNum(850),new SecNum(900),new SecNum(1000),new SecNum(1200),new SecNum(1400)],
                   "cTime":[500,450,400,350,300,250],
                   "cResource":[27000,40500,60750,90000,125000,150000],
                   "cStorage":[40],
@@ -575,8 +575,8 @@ package
                "dependent":"C17",
                "props":{
                   "speed":[1.5,1.6,1.7,1.8,1.9,2],
-                  "health":[250],
-                  "damage":[310,320,330,340,350],
+                  "health":[new SecNum(250)],
+                  "damage":[new SecNum(310),new SecNum(320),new SecNum(330),new SecNum(340),new SecNum(350)],
                   "cTime":[500,450,400,350,300,250],
                   "cResource":[27000,40500,60750,90000,125000,150000],
                   "cStorage":[40],
@@ -600,8 +600,8 @@ package
                "props":{
                   "range":[200],
                   "speed":[0.8,0.9,1,1.1,1.2,1.3],
-                  "health":[7000,7500,8000,8500,9000,10000],
-                  "damage":[700,800,900,1000,1100,1200],
+                  "health":[new SecNum(7000),new SecNum(7500),new SecNum(8000),new SecNum(8500),new SecNum(9000),new SecNum(10000)],
+                  "damage":[new SecNum(700),new SecNum(800),new SecNum(900),new SecNum(1000),new SecNum(1100),new SecNum(1200)],
                   "cTime":[225 / 3],
                   "cResource":[3000000 / 3],
                   "cStorage":[250],
@@ -627,8 +627,8 @@ package
                "trainingCosts":[[new SecNum(2400),new SecNum(3600)],[new SecNum(4800),new SecNum(7200)],[new SecNum(7200),new SecNum(10800)],[new SecNum(9600),new SecNum(14400)],[new SecNum(14400),new SecNum(21600)]],
                "props":{
                   "speed":[1.2],
-                  "health":[400,425,450,475,510,550],
-                  "damage":[160,200,200,250,300,350],
+                  "health":[new SecNum(400),new SecNum(425),new SecNum(450),new SecNum(475),new SecNum(510),new SecNum(550)],
+                  "damage":[new SecNum(160),new SecNum(200),new SecNum(200),new SecNum(250),new SecNum(300),new SecNum(350)],
                   "cTime":[15,10,8,7,6,5],
                   "cResource":[500,1000,2000,4000,6000,10000],
                   "cStorage":[15],
@@ -651,8 +651,8 @@ package
                "trainingCosts":[[new SecNum(4800),new SecNum(14400)],[new SecNum(9600),new SecNum(28800)],[new SecNum(14400),new SecNum(43200)],[new SecNum(19200),new SecNum(57600)],[new SecNum(28800),new SecNum(86400)]],
                "props":{
                   "speed":[1.8],
-                  "health":[1500,1820,2300,2800,3350,3600],
-                  "damage":[80,85,90,95,100,110],
+                  "health":[new SecNum(1500),new SecNum(1820),new SecNum(2300),new SecNum(2800),new SecNum(3350),new SecNum(3600)],
+                  "damage":[new SecNum(80),new SecNum(85),new SecNum(90),new SecNum(95),new SecNum(100),new SecNum(110)],
                   "cTime":[15,16,16,16,16,16],
                   "cResource":[2500,4000,8000,12000,16000,20000],
                   "cStorage":[15],
@@ -677,8 +677,8 @@ package
                "pathing":"direct",
                "props":{
                   "speed":[2,2,2,2,2,2],
-                  "health":[2000,2400,2800,3200,3600,4000],
-                  "damage":[490,530,580,645,700,775],
+                  "health":[new SecNum(2000),new SecNum(2400),new SecNum(2800),new SecNum(3200),new SecNum(3600),new SecNum(4000)],
+                  "damage":[new SecNum(490),new SecNum(530),new SecNum(580),new SecNum(645),new SecNum(700),new SecNum(775)],
                   "cTime":[450,350,250,225,195,195],
                   "cResource":[31000,35000,39000,44000,50000,55000],
                   "cStorage":[30],
@@ -702,8 +702,8 @@ package
                "movement":"jump",
                "props":{
                   "speed":[3.2],
-                  "health":[450,470,500,540,580,620],
-                  "damage":[100,105,110,120,130,140],
+                  "health":[new SecNum(450),new SecNum(470),new SecNum(500),new SecNum(540),new SecNum(580),new SecNum(620)],
+                  "damage":[new SecNum(100),new SecNum(105),new SecNum(110),new SecNum(120),new SecNum(130),new SecNum(140)],
                   "cTime":[100,100,90,90,90,90],
                   "cResource":[3000,3500,4100,4800,5500,7000],
                   "cStorage":[15],
@@ -729,8 +729,8 @@ package
                "pathing":"direct",
                "props":{
                   "speed":[4.5],
-                  "health":[3200,3600,4000,4500,5000,5600],
-                  "damage":[600,665,730,795,860,930],
+                  "health":[new SecNum(3200),new SecNum(3600),new SecNum(4000),new SecNum(4500),new SecNum(5000),new SecNum(5600)],
+                  "damage":[new SecNum(600),new SecNum(665),new SecNum(730),new SecNum(795),new SecNum(860),new SecNum(930)],
                   "cTime":[1800,1920,2040,2160,2280,2400],
                   "cResource":[88000,104000,161000,249000,327000,487000],
                   "cStorage":[40],
@@ -753,8 +753,8 @@ package
                "trainingCosts":[[new SecNum(1228800),new SecNum(86400)],[new SecNum(2457600),new SecNum(172800)],[new SecNum(3686400),new SecNum(259200)],[new SecNum(4915200),new SecNum(345600)],[new SecNum(7372800),new SecNum(518400)]],
                "props":{
                   "speed":[1.3,1.3,1.4,1.4,1.5,1.6],
-                  "health":[7600,8750,9900,10100,11300,12500],
-                  "damage":[400,425,450,475,500,550],
+                  "health":[new SecNum(7600),new SecNum(8750),new SecNum(9900),new SecNum(10100),new SecNum(11300),new SecNum(12500)],
+                  "damage":[new SecNum(400),new SecNum(425),new SecNum(450),new SecNum(475),new SecNum(500),new SecNum(550)],
                   "cTime":[1800,1800,1800,1800,1800,1800],
                   "cResource":[80000,105000,135000,175000,210000,325000],
                   "cStorage":[50],
@@ -779,8 +779,8 @@ package
                "props":{
                   "range":[240],
                   "speed":[1.7,1.8,1.9,2,2.1,2.2],
-                  "health":[1120,1260,1400,1650,1900,2200],
-                  "damage":[700,825,950,1075,1200,1350],
+                  "health":[new SecNum(1120),new SecNum(1260),new SecNum(1400),new SecNum(1650),new SecNum(1900),new SecNum(2200)],
+                  "damage":[new SecNum(700),new SecNum(825),new SecNum(950),new SecNum(1075),new SecNum(1200),new SecNum(1350)],
                   "cTime":[1384,1384,1384,1384,1384,1384],
                   "cResource":[60000,90000,145000,200000,330000,450000],
                   "cStorage":[80],
@@ -807,8 +807,8 @@ package
                "pathing":"direct",
                "props":{
                   "speed":[2.5,2.6,2.7,2.8,2.9,3],
-                  "health":[6200,7600,8700,10900,13100,16000],
-                  "damage":[1200,1360,1630,1920,2220,2500],
+                  "health":[new SecNum(6200),new SecNum(7600),new SecNum(8700),new SecNum(10900),new SecNum(13100),new SecNum(16000)],
+                  "damage":[new SecNum(1200),new SecNum(1360),new SecNum(1630),new SecNum(1920),new SecNum(2220),new SecNum(2500)],
                   "cTime":[2700],
                   "cResource":[425000,476000,580000,700000,910000,1204000],
                   "cStorage":[100],
@@ -823,8 +823,8 @@ package
                "blocked":true,
                "props":{
                   "speed":[3],
-                  "health":[200],
-                  "damage":[20],
+                  "health":[new SecNum(200)],
+                  "damage":[new SecNum(20)],
                   "cTime":[10],
                   "cResource":[10],
                   "cStorage":[10],
@@ -1136,6 +1136,14 @@ package
             {
                _loc2_.trainingCosts[temp][0] = int(_loc2_.trainingCosts[temp][0].Get())
                _loc2_.trainingCosts[temp][1] = int(_loc2_.trainingCosts[temp][1].Get())
+            }
+            for (var temp = 0; temp < _loc3_.health.length; temp++)
+            {
+               _loc3_.health[temp] = int(_loc3_.health[temp].Get())
+            }
+            for (var temp = 0; temp < _loc3_.damage.length; temp++)
+            {
+               _loc3_.damage[temp] = int(_loc3_.damage[temp].Get())
             }
             tmpArray.push([_loc2_.page,_loc2_.resource.Get(),_loc2_.time.Get(),_loc2_.level,_loc2_.trainingCosts,_loc3_.speed,_loc3_.health,_loc3_.damage,_loc3_.armor,_loc3_.accuracy,_loc3_.cTime,_loc3_.cResource,_loc3_.cStorage,_loc3_.bucket,_loc3_.size]);
          };

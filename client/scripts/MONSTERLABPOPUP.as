@@ -258,19 +258,19 @@ package
                _loc9_ = _loc8_.effect[_unlockLevel - 1] + "x speed " + _loc8_.ability;
                break;
             case "C8":
-               _loc9_ = CREATURELOCKER._creatures[_creatureID].props.damage[_unlockLevel - 1] * _loc8_.effect[_unlockLevel - 1] + " " + _loc8_.ability;
+               _loc9_ = CREATURELOCKER._creatures[_creatureID].props.damage[_unlockLevel - 1].Get() * _loc8_.effect[_unlockLevel - 1] + " " + _loc8_.ability;
                break;
             case "C9":
                _loc9_ = String(_loc8_.effect[_unlockLevel - 1] + _loc8_.ability);
                break;
             case "C11":
-               _loc9_ = CREATURELOCKER._creatures[_creatureID].props.damage[_unlockLevel - 1] * _loc8_.effect[_unlockLevel - 1] + " " + _loc8_.ability;
+               _loc9_ = CREATURELOCKER._creatures[_creatureID].props.damage[_unlockLevel - 1].Get() * _loc8_.effect[_unlockLevel - 1] + " " + _loc8_.ability;
                break;
             case "C12":
                _loc9_ = _loc8_.effect[_unlockLevel - 1] + " " + _loc8_.ability;
                break;
             case "C13":
-               _loc9_ = CREATURELOCKER._creatures[_creatureID].props.damage[_unlockLevel - 1] * _loc8_.effect[_unlockLevel - 1] + " " + _loc8_.ability;
+               _loc9_ = CREATURELOCKER._creatures[_creatureID].props.damage[_unlockLevel - 1].Get() * _loc8_.effect[_unlockLevel - 1] + " " + _loc8_.ability;
                break;
             case "C14":
                _loc9_ = _unlockLevel + " " + _loc8_.ability;
@@ -419,7 +419,7 @@ package
          }
          var _loc14_:* = (_loc14_ = (_loc14_ = "<b>" + KEYS.Get("acad_mon_name") + "</b> " + KEYS.Get(CREATURELOCKER._creatures[_creatureID].name) + "<br>") + ("<b>" + KEYS.Get("acad_mon_status") + "</b> " + _loc5_.status)) + ("<br>" + KEYS.Get(CREATURELOCKER._creatures[_creatureID].description));
          var _loc15_:int;
-         if((_loc15_ = CREATURES.GetProperty(_creatureID,"damage",0,true)) > 0)
+         if((_loc15_ = CREATURES.GetProperty(_creatureID,"damage",0,true).Get()) > 0)
          {
             _loc16_ = false;
          }
