@@ -87,7 +87,7 @@ package
             "re":[[14,1,4]]
          },{
             "r1":new SecNum(0),
-            "r2":new SecNum(6000000),
+            "r2":new SecNum(600000),
             "r3":new SecNum(0),
             "r4":new SecNum(0),
             "time":new SecNum(259200),
