@@ -79,6 +79,9 @@ export const login: KoaController = async (ctx) => {
       }
     );
 
+    user.token = newToken;
+    await ORMContext.em.persistAndFlush(user);
+
     const filteredUser = FilterFrontendKeys(user);
     logging(
       `User ${filteredUser.username} successful login | ID: ${filteredUser.userid} | Email: ${filteredUser.email} | IP Address: ${ctx.ip}`
