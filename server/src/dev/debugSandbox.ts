@@ -5733,8 +5733,6 @@ export const debugSandbox = (user?: User) => {
         },
       ],
     },
-    points: BigInt(0),
-    basevalue: BigInt(0),
     protected: 0,
     updates: [],
     lastupdate: 0,
