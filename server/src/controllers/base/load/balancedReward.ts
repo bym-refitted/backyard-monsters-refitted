@@ -111,5 +111,5 @@ const parseChampionData = (rawChampionData: any) => {
   if (typeof rawChampionData === "string")
     return JSON.parse(rawChampionData || "[]");
 
-  return rawChampionData;
+  return rawChampionData || [];
 };
