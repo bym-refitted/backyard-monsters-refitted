@@ -472,10 +472,10 @@ package
                Add(2,BOBBOTTOMLEFTLOW,KEYS.Get("tut_NWM_Step4"),new Point(166,242),["mc",BUILDINGS._mc as BUILDINGSPOPUP as MovieClip,new Point(160,247),150],false,false,ConditionBuildingsSniper,ConditionRewindBuildingsClosed);
                break;
             case 34:
-               BASE.Fund(1,Math.max(GLOBAL._buildingProps[20].costs[0].r1 - BASE._resources.r1.Get(),0),false,null,false,false);
-               BASE.Fund(2,Math.max(GLOBAL._buildingProps[20].costs[0].r2 - BASE._resources.r2.Get(),0),false,null,false,false);
-               BASE.Fund(3,Math.max(GLOBAL._buildingProps[20].costs[0].r3 - BASE._resources.r3.Get(),0),false,null,false,false);
-               BASE.Fund(4,Math.max(GLOBAL._buildingProps[20].costs[0].r4 - BASE._resources.r4.Get(),0),false,null,false,false);
+               BASE.Fund(1,Math.max(GLOBAL._buildingProps[20].costs[0].r1.Get() - BASE._resources.r1.Get(),0),false,null,false,false);
+               BASE.Fund(2,Math.max(GLOBAL._buildingProps[20].costs[0].r2.Get() - BASE._resources.r2.Get(),0),false,null,false,false);
+               BASE.Fund(3,Math.max(GLOBAL._buildingProps[20].costs[0].r3.Get() - BASE._resources.r3.Get(),0),false,null,false,false);
+               BASE.Fund(4,Math.max(GLOBAL._buildingProps[20].costs[0].r4.Get() - BASE._resources.r4.Get(),0),false,null,false,false);
                Add(2,BOBBOTTOMLEFTLOW,KEYS.Get("tut_NWM_Step5"),new Point(595,430 + _isSmallSizeOffset * 0.7),["mc",BUILDINGOPTIONS._do as BUILDINGOPTIONSPOPUP as MovieClip,new Point(500,230),-50],false,false,ConditionNewBuilding,ConditionRewindBuildingsDeselect21);
                break;
             case 35:
@@ -573,10 +573,10 @@ package
                Add(6,BOBBOTTOMLEFTLOW,KEYS.Get("tut_NWM_Step14"),new Point(322,51),["mc",_loc4_,new Point(60,22),160],false,false,ConditionBuildingsBuildings,ConditionRewindBuildingsClosedB);
                break;
             case 52:
-               BASE.Fund(1,Math.max(GLOBAL._buildingProps[14].costs[0].r1 - BASE._resources.r1.Get(),0),false,null,false,false);
-               BASE.Fund(2,Math.max(GLOBAL._buildingProps[14].costs[0].r2 - BASE._resources.r2.Get(),0),false,null,false,false);
-               BASE.Fund(3,Math.max(GLOBAL._buildingProps[14].costs[0].r3 - BASE._resources.r3.Get(),0),false,null,false,false);
-               BASE.Fund(4,Math.max(GLOBAL._buildingProps[14].costs[0].r4 - BASE._resources.r4.Get(),0),false,null,false,false);
+               BASE.Fund(1,Math.max(GLOBAL._buildingProps[14].costs[0].r1.Get() - BASE._resources.r1.Get(),0),false,null,false,false);
+               BASE.Fund(2,Math.max(GLOBAL._buildingProps[14].costs[0].r2.Get() - BASE._resources.r2.Get(),0),false,null,false,false);
+               BASE.Fund(3,Math.max(GLOBAL._buildingProps[14].costs[0].r3.Get() - BASE._resources.r3.Get(),0),false,null,false,false);
+               BASE.Fund(4,Math.max(GLOBAL._buildingProps[14].costs[0].r4.Get() - BASE._resources.r4.Get(),0),false,null,false,false);
                Add(6,BOBBOTTOMLEFTLOW,KEYS.Get("tut_NWM_Step15"),ARROW_BUILDINGS_HOUSING,["mc",BUILDINGS._mc as BUILDINGSPOPUP as MovieClip,new Point(500,240),-120],false,false,ConditionBuildingsHousing,ConditionRewindBuildingsClosedB);
                break;
             case 53:
@@ -728,10 +728,10 @@ package
                }
                else
                {
-                  BASE.Fund(1,Math.max(GLOBAL._buildingProps[4].costs[0].r1 - BASE._resources.r1.Get(),0),false,null,false,false);
-                  BASE.Fund(2,Math.max(GLOBAL._buildingProps[4].costs[0].r2 - BASE._resources.r2.Get(),0),false,null,false,false);
-                  BASE.Fund(3,Math.max(GLOBAL._buildingProps[4].costs[0].r3 - BASE._resources.r3.Get(),0),false,null,false,false);
-                  BASE.Fund(4,Math.max(GLOBAL._buildingProps[4].costs[0].r4 - BASE._resources.r4.Get(),0),false,null,false,false);
+                  BASE.Fund(1,Math.max(GLOBAL._buildingProps[4].costs[0].r1.Get() - BASE._resources.r1.Get(),0),false,null,false,false);
+                  BASE.Fund(2,Math.max(GLOBAL._buildingProps[4].costs[0].r2.Get() - BASE._resources.r2.Get(),0),false,null,false,false);
+                  BASE.Fund(3,Math.max(GLOBAL._buildingProps[4].costs[0].r3.Get() - BASE._resources.r3.Get(),0),false,null,false,false);
+                  BASE.Fund(4,Math.max(GLOBAL._buildingProps[4].costs[0].r4.Get() - BASE._resources.r4.Get(),0),false,null,false,false);
                   Add(6,BOBBOTTOMLEFTLOW,KEYS.Get("tut_NWM_Step22"),ARROW_BUILDINGS_FLINGER,["mc",BUILDINGS._mc as BUILDINGSPOPUP as MovieClip,new Point(225,330),-30],false,false,ConditionBuildingsFlinger,ConditionRewindBuildingsClosedC);
                }
                break;
@@ -836,10 +836,10 @@ package
                }
                else
                {
-                  BASE.Fund(1,Math.max(GLOBAL._buildingProps[10].costs[0].r1 - BASE._resources.r1.Get(),0),false,null,false,false);
-                  BASE.Fund(2,Math.max(GLOBAL._buildingProps[10].costs[0].r2 - BASE._resources.r2.Get(),0),false,null,false,false);
-                  BASE.Fund(3,Math.max(GLOBAL._buildingProps[10].costs[0].r3 - BASE._resources.r3.Get(),0),false,null,false,false);
-                  BASE.Fund(4,Math.max(GLOBAL._buildingProps[10].costs[0].r4 - BASE._resources.r4.Get(),0),false,null,false,false);
+                  BASE.Fund(1,Math.max(GLOBAL._buildingProps[10].costs[0].r1.Get() - BASE._resources.r1.Get(),0),false,null,false,false);
+                  BASE.Fund(2,Math.max(GLOBAL._buildingProps[10].costs[0].r2.Get() - BASE._resources.r2.Get(),0),false,null,false,false);
+                  BASE.Fund(3,Math.max(GLOBAL._buildingProps[10].costs[0].r3.Get() - BASE._resources.r3.Get(),0),false,null,false,false);
+                  BASE.Fund(4,Math.max(GLOBAL._buildingProps[10].costs[0].r4.Get() - BASE._resources.r4.Get(),0),false,null,false,false);
                   if(GAME._isSmallSize)
                   {
                      Add(6,BOBBOTTOMLEFTLOW,KEYS.Get("tut_NWM_Step28"),ARROW_BUILDINGS_MAPROOM,["mc",BUILDINGS._mc as BUILDINGSPOPUP as MovieClip,new Point(480,340),-30],false,false,ConditionBuildingsMapRoom,ConditionRewindBuildingsDeselectBuildingsD);
