@@ -45,7 +45,7 @@ package
 
       public static var cdnUrl:String = "http://localhost:3001/";
 
-      public static var apiVersionSuffix:String = "v1.0.8-beta/";
+      public static var apiVersionSuffix:String = "v1.0.9-beta/";
 
       public static var connectionCounter:int;
 
@@ -473,20 +473,35 @@ package
        * @param event - The TimerEvent that triggers this function.
        * @return void
        */
-      public static function CheckNetworkConnection(event:TimerEvent):void
-      {
-         var onComplete:Function = function(serverData:Object):void
-         {
+      public static function CheckNetworkConnection(event:TimerEvent): void {
+         var url:String = serverUrl + "connection";
+         var request:URLRequest = new URLRequest(url);
+         request.method = URLRequestMethod.GET;
+         
+         var loader:URLLoader = new URLLoader();
+
+         var onComplete:Function = function(event:Event):void {
+            loader.removeEventListener(Event.COMPLETE, onComplete);
+            loader.removeEventListener(IOErrorEvent.IO_ERROR, onError);
             connectionLost = false;
          };
 
-         var onError:Function = function(event:IOErrorEvent):void
-         {
+         var onError:Function = function(event:IOErrorEvent):void {
+            loader.removeEventListener(Event.COMPLETE, onComplete);
+            loader.removeEventListener(IOErrorEvent.IO_ERROR, onError);
             connectionLost = true;
             POPUPS.NoConnection();
          };
 
-         new URLLoaderApi().load(serverUrl + "connection", null, onComplete, onError);
+         loader.addEventListener(Event.COMPLETE, onComplete);
+         loader.addEventListener(IOErrorEvent.IO_ERROR, onError);
+
+         try {
+            loader.load(request);
+         } catch (error:Error) {
+            connectionLost = true;
+            POPUPS.NoConnection();
+         }
       }
 
       /*
