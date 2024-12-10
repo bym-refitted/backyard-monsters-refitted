@@ -84,8 +84,10 @@ const addKrallenData = (userSave: Save) => {
       hp: 62000,
     };
 
-    championData.push(krallen);
-    userSave.champion = JSON.stringify(championData);
+    if (Array.isArray(championData)) {
+      championData.push(krallen);
+      userSave.champion = JSON.stringify(championData);
+    }
 
     userSave.krallen = {
       countdown: 443189,
@@ -111,5 +113,5 @@ const parseChampionData = (rawChampionData: any) => {
   if (typeof rawChampionData === "string")
     return JSON.parse(rawChampionData || "[]");
 
-  return rawChampionData;
+  return rawChampionData || [];
 };
