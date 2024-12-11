@@ -43,6 +43,7 @@ export const baseSave: KoaController = async (ctx) => {
       ctx.status = Status.BAD_REQUEST;
       ctx.body = { error: 1 };
       errorLog(`Base save not found for baseid: ${basesaveid}`);
+      return;
     }
 
     const isOutpost =
