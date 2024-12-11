@@ -1084,35 +1084,56 @@ package com.monsters.maproom_advanced
             }
          }
       }
-            
-      public function GetCellsInRange(hexX:int, hexY: int, range:int) : Vector.<CellData>{
-         var cells:Vector.<CellData> = new Vector.<CellData>(3 * range * (range + 1),true);
+
+      /* This function has been rewritten.
+       *
+       * @author: Mateo-os
+       * 
+       * @description: calculate neighbors by first converting the hexagonal grid coordinates 
+       * from the offset 'odd-q' system to axial coordinates, making the calculations in that system 
+       * and then converting it back. The conversion is done because not only is not expensive at all, 
+       * but also it is very difficult to make distance and adjacency calculations in any offseted 
+       * coordinate system.
+       * 
+       * @param hexX: the x coordinate of the cell
+       * @param hexY: the y coordinate of the cell
+       * @param range: the range of the cells to be calculated
+       * @return: a vector of CellData objects containing the cells in range and their distance to the origin
+      */      
+      public function GetCellsInRange(startOffsetX:int, startOffsetY:int, range:int):Vector.<CellData>
+      {
+         var cells:Vector.<CellData> = new Vector.<CellData>(3 * range * (range + 1), true);
+         var cellIndex:int = 0;
+
          // We convert to axial coordinates for easier calculations
-         var axialQ: int = hexX;
-         var axialR: int = hexY - (hexX - (hexX&1))/2;
-         var index:int = 0;
-         for(var dq:int = -range; dq <= range; dq++){
-            for(var dr:int = Math.max(-range, -dq - range); dr <= Math.min(range, -dq + range); dr++){
-               //Skip the origin
-               if(dq == 0 && dr == 0)
-                  continue;
-               //Sum in axial 
-               var newQ:int = axialQ + dq;
-               var newR:int = axialR + dr;
+         var startAxialQ:int = startOffsetX;
+         var startAxialR:int = startOffsetY - (startOffsetX - (startOffsetX & 1)) / 2;
+
+         for (var deltaQ:int = -range; deltaQ <= range; deltaQ++)
+         {
+            for (var deltaR:int = Math.max(-range, -deltaQ - range); deltaR <= Math.min(range, -deltaQ + range); deltaR++)
+            {
+               if (deltaQ == 0 && deltaR == 0) continue; // Skip the origin
+
+               var currentAxialQ:int = startAxialQ + deltaQ;
+               var currentAxialR:int = startAxialR + deltaR;
+            
                // Measure the distance as the maximum absolute value between q, r and s.
-               var distance:int = Math.max(Math.abs(dq),Math.abs(dr), Math.abs(-dq-dr));
+               var distance:int = Math.max(Math.abs(deltaQ), Math.abs(deltaR), Math.abs(-deltaQ - deltaR));
+
                // Convert back to offsetted
-               var newX:int = newQ;
-               var newY:int = newR + (newQ - (newQ&1))/2;
-               var cell:MapRoomCell = this.GetCell(newX,newY);
-               var cellData = new CellData(cell,distance);
-               cells[index] = cellData;
-               index += 1;
+               var currentOffsetX:int = currentAxialQ;
+               var currentOffsetY:int = currentAxialR + (currentAxialQ - (currentAxialQ & 1)) / 2;
+
+               var cell:MapRoomCell = this.GetCell(currentOffsetX, currentOffsetY);
+
+               cells[cellIndex] = new CellData(cell, distance);
+               cellIndex += 1;
             }
          }
          return cells;
       }
-      
+
       private function GetCell(hexX:int, hexY:int) : MapRoomCell
       {
          if(hexX >= MapRoom._mapWidth)
