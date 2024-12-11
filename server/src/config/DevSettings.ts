@@ -8,7 +8,7 @@ export const devConfig = {
   inferno: false,
   shiny: 1000,
   debugMode: false,
-  devSandbox: true,
+  devSandbox: false,
   debugSandbox: false,
   logMissingAssets: false,
   unlockAllEventRewards: true,
