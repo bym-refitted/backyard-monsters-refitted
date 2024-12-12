@@ -97,4 +97,6 @@ export const BaseSaveSchema = z.object({
     .string()
     .optional()
     .transform((data) => parseInt(data, 10)),
+
+    attackid: z.string().optional(),
 });
