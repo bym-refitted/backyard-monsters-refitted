@@ -4489,10 +4489,10 @@ package
          }
          if(!_loc4_ && !param2)
          {
-            _loc19_ = int(_loc3_.costs[0].r1);
-            _loc20_ = int(_loc3_.costs[0].r2);
-            _loc21_ = int(_loc3_.costs[0].r3);
-            _loc22_ = int(_loc3_.costs[0].r4);
+            _loc19_ = int(_loc3_.costs[0].r1.Get());
+            _loc20_ = int(_loc3_.costs[0].r2.Get());
+            _loc21_ = int(_loc3_.costs[0].r3.Get());
+            _loc22_ = int(_loc3_.costs[0].r4.Get());
             _loc23_ = 0;
             _loc25_ = 0;
             if(GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD || GLOBAL.mode == "ibuild")
@@ -4740,10 +4740,10 @@ package
          }
          _loc2_ = {};
          _loc3_ = {
-            "r1":0,
-            "r2":0,
-            "r3":0,
-            "r4":0,
+            "r1":new SecNum(0),
+            "r2":new SecNum(0),
+            "r3":new SecNum(0),
+            "r4":new SecNum(0),
             "time":new SecNum(0)
          };
          _loc4_ = false;
@@ -4847,25 +4847,25 @@ package
                   if(!_loc4_)
                   {
                      _loc15_ = 0;
-                     if(_loc3_.r1 > BASE._resources.r1.Get())
+                     if(_loc3_.r1.Get() > BASE._resources.r1.Get())
                      {
                         _loc14_ = 1;
-                        _loc15_ = _loc3_.r1 - BASE._resources.r1.Get();
+                        _loc15_ = _loc3_.r1.Get() - BASE._resources.r1.Get();
                      }
-                     if(_loc3_.r2 > BASE._resources.r2.Get())
+                     if(_loc3_.r2.Get() > BASE._resources.r2.Get())
                      {
                         _loc14_ = 2;
-                        _loc15_ = _loc3_.r2 - BASE._resources.r2.Get();
+                        _loc15_ = _loc3_.r2.Get() - BASE._resources.r2.Get();
                      }
-                     if(_loc3_.r3 > BASE._resources.r3.Get())
+                     if(_loc3_.r3.Get() > BASE._resources.r3.Get())
                      {
                         _loc14_ = 3;
-                        _loc15_ = _loc3_.r3 - BASE._resources.r3.Get();
+                        _loc15_ = _loc3_.r3.Get() - BASE._resources.r3.Get();
                      }
-                     if(_loc3_.r4 > BASE._resources.r4.Get())
+                     if(_loc3_.r4.Get() > BASE._resources.r4.Get())
                      {
                         _loc14_ = 4;
-                        _loc15_ = _loc3_.r4 - BASE._resources.r4.Get();
+                        _loc15_ = _loc3_.r4.Get() - BASE._resources.r4.Get();
                      }
                      if(_loc14_ > 0)
                      {
@@ -5798,7 +5798,7 @@ package
                if(Boolean(_loc6_ = GLOBAL._buildingProps[_loc3_._type - 1]) && Boolean(_loc6_.costs[_loc5_ - 1]))
                {
                   _loc7_ = _loc6_.costs[_loc5_ - 1];
-                  _loc4_ += _loc7_.time.Get() + _loc7_.r1 + _loc7_.r2 + _loc7_.r3 + _loc7_.r4;
+                  _loc4_ += _loc7_.time.Get() + _loc7_.r1.Get() + _loc7_.r2.Get() + _loc7_.r3.Get() + _loc7_.r4.Get();
                }
             }
          }

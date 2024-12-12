@@ -588,68 +588,68 @@ package
       private static function changeNotMaproom3SpecificBuildings():void
       {
          _buildingProps[8].costs = [{
-            "r1":1000000,
-            "r2":1000000,
-            "r3":1000000,
-            "r4":0,
+            "r1":new SecNum(1000000),
+            "r2":new SecNum(1000000),
+            "r3":new SecNum(1000000),
+            "r4":new SecNum(0),
             "time":new SecNum(43200),
             "re":[[14,1,3],[15,1,1]]
          },{
-            "r1":250000,
-            "r2":250000,
-            "r3":0,
-            "r4":0,
+            "r1":new SecNum(250000),
+            "r2":new SecNum(250000),
+            "r3":new SecNum(0),
+            "r4":new SecNum(0),
             "time":new SecNum(21600),
             "re":[[14,1,3],[15,1,1]]
          },{
-            "r1":500000,
-            "r2":500000,
-            "r3":0,
-            "r4":0,
+            "r1":new SecNum(500000),
+            "r2":new SecNum(500000),
+            "r3":new SecNum(0),
+            "r4":new SecNum(0),
             "time":new SecNum(43200),
             "re":[[14,1,3],[15,1,1]]
          }];
          _buildingProps[8].quantity = [0,0,0,1,1,1,1,1,1,1,1];
          _buildingProps[14].costs = [{
-            "r1":2160,
-            "r2":2160,
-            "r3":0,
-            "r4":0,
+            "r1":new SecNum(2160),
+            "r2":new SecNum(2160),
+            "r3":new SecNum(0),
+            "r4":new SecNum(0),
             "time":new SecNum(300),
             "re":[[14,1,1]]
          },{
-            "r1":8640,
-            "r2":8640,
-            "r3":0,
-            "r4":0,
+            "r1":new SecNum(8640),
+            "r2":new SecNum(8640),
+            "r3":new SecNum(0),
+            "r4":new SecNum(0),
             "time":new SecNum(4500),
             "re":[[14,1,3],[8,1,1]]
          },{
-            "r1":34560,
-            "r2":34560,
-            "r3":0,
-            "r4":0,
+            "r1":new SecNum(34560),
+            "r2":new SecNum(34560),
+            "r3":new SecNum(0),
+            "r4":new SecNum(0),
             "time":new SecNum(10800),
             "re":[[14,1,4],[8,1,1]]
          },{
-            "r1":138240,
-            "r2":138240,
-            "r3":0,
-            "r4":0,
+            "r1":new SecNum(138240),
+            "r2":new SecNum(138240),
+            "r3":new SecNum(0),
+            "r4":new SecNum(0),
             "time":new SecNum(28800),
             "re":[[14,1,5],[8,1,1]]
          },{
-            "r1":552960,
-            "r2":552960,
-            "r3":0,
-            "r4":0,
+            "r1":new SecNum(552960),
+            "r2":new SecNum(552960),
+            "r3":new SecNum(0),
+            "r4":new SecNum(0),
             "time":new SecNum(72000),
             "re":[[14,1,6],[8,1,1]]
          },{
-            "r1":2211840,
-            "r2":2211840,
-            "r3":0,
-            "r4":0,
+            "r1":new SecNum(2211840),
+            "r2":new SecNum(2211840),
+            "r3":new SecNum(0),
+            "r4":new SecNum(0),
             "time":new SecNum(144000),
             "re":[[14,1,6],[8,1,1]]
          }];
@@ -658,38 +658,38 @@ package
          _buildingProps[14].repairTime = [100,200,300,400,500,600];
          _buildingProps[21].capacity = [380,450,540,660,800];
          _buildingProps[4].costs = [{
-            "r1":1000,
-            "r2":1000,
-            "r3":500,
-            "r4":0,
+            "r1":new SecNum(1000),
+            "r2":new SecNum(1000),
+            "r3":new SecNum(500),
+            "r4":new SecNum(0),
             "time":new SecNum(900),
             "re":[[14,1,1]]
          },{
-            "r1":64300,
-            "r2":64300,
-            "r3":32150,
-            "r4":0,
+            "r1":new SecNum(64300),
+            "r2":new SecNum(64300),
+            "r3":new SecNum(32150),
+            "r4":new SecNum(0),
             "time":new SecNum(10800),
             "re":[[14,1,3],[11,1,1]]
          },{
-            "r1":283600,
-            "r2":283600,
-            "r3":141800,
-            "r4":0,
+            "r1":new SecNum(283600),
+            "r2":new SecNum(283600),
+            "r3":new SecNum(141800),
+            "r4":new SecNum(0),
             "time":new SecNum(32400),
             "re":[[14,1,4],[11,1,1]]
          },{
-            "r1":1247840,
-            "r2":1247840,
-            "r3":623920,
-            "r4":0,
+            "r1":new SecNum(1247840),
+            "r2":new SecNum(1247840),
+            "r3":new SecNum(623920),
+            "r4":new SecNum(0),
             "time":new SecNum(97200),
             "re":[[14,1,4],[11,1,1]]
          },{
-            "r1":1247840,
-            "r2":1247840,
-            "r3":623920,
-            "r4":0,
+            "r1":new SecNum(1247840),
+            "r2":new SecNum(1247840),
+            "r3":new SecNum(623920),
+            "r4":new SecNum(0),
             "time":new SecNum(97200),
             "re":[[14,1,4],[11,1,1]]
          }];
@@ -1703,10 +1703,10 @@ package
                   _loc3_ = 0;
                   while (_loc3_ < _loc4_.length)
                   {
-                     tmpArray.push(_loc4_[_loc3_].r1);
-                     tmpArray.push(_loc4_[_loc3_].r2);
-                     tmpArray.push(_loc4_[_loc3_].r3);
-                     tmpArray.push(_loc4_[_loc3_].r4);
+                     tmpArray.push(_loc4_[_loc3_].r1.Get());
+                     tmpArray.push(_loc4_[_loc3_].r2.Get());
+                     tmpArray.push(_loc4_[_loc3_].r3.Get());
+                     tmpArray.push(_loc4_[_loc3_].r4.Get());
                      tmpArray.push(_loc4_[_loc3_].r5);
                      tmpArray.push(_loc4_[_loc3_].time.Get());
                      tmpArray.push(_loc4_[_loc3_].re);
@@ -1719,10 +1719,10 @@ package
                   _loc3_ = 0;
                   while (_loc3_ < _loc5_.length)
                   {
-                     tmpArray.push(_loc5_[_loc3_].r1);
-                     tmpArray.push(_loc5_[_loc3_].r2);
-                     tmpArray.push(_loc5_[_loc3_].r3);
-                     tmpArray.push(_loc5_[_loc3_].r4);
+                     tmpArray.push(_loc5_[_loc3_].r1.Get());
+                     tmpArray.push(_loc5_[_loc3_].r2.Get());
+                     tmpArray.push(_loc5_[_loc3_].r3.Get());
+                     tmpArray.push(_loc5_[_loc3_].r4.Get());
                      tmpArray.push(_loc5_[_loc3_].r5);
                      tmpArray.push(_loc5_[_loc3_].time.Get());
                      tmpArray.push(_loc5_[_loc3_].re);
