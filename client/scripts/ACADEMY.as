@@ -190,7 +190,7 @@ package
          {
             GLOBAL.player.monsterListByID(monsterID).level = GLOBAL.player.m_upgrades[monsterID].level;
          }
-         stat = CREATURELOCKER._creatures[monsterID].props.cResource;
+         stat = CREATURELOCKER._creatures[monsterID].props.cResource.Get();
          if(Boolean(stat) && GLOBAL.player.m_upgrades[monsterID].level == stat.length - 1)
          {
             LOGGER.KongStat([5,monsterID.substr(1)]);

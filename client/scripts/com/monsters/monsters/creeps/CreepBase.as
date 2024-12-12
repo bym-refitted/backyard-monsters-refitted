@@ -88,7 +88,7 @@ package com.monsters.monsters.creeps
             setHealth(param6);
          }
          damageProperty.set(int(CREATURES.GetProperty(_creatureID,"damage",param5,_friendly).Get() * param10));
-         _goo = CREATURES.GetProperty(_creatureID,"cResource",param5,_friendly);
+         _goo = CREATURES.GetProperty(_creatureID,"cResource",param5,_friendly).Get();
          _targetPosition = param3;
          _targetCenter = param7;
          graphic.x = _targetPosition.x;

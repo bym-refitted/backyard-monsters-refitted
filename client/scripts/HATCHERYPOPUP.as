@@ -159,13 +159,13 @@ package
             {
                _loc6_ = CREATURES.GetProperty(_loc10_,"damage").Get();
             }
-            if(CREATURES.GetProperty(_loc10_,"cTime") > _loc7_)
+            if(CREATURES.GetProperty(_loc10_,"cTime").Get() > _loc7_)
             {
-               _loc7_ = CREATURES.GetProperty(_loc10_,"cTime");
+               _loc7_ = CREATURES.GetProperty(_loc10_,"cTime").Get();
             }
-            if(CREATURES.GetProperty(_loc10_,"cResource") > _loc8_)
+            if(CREATURES.GetProperty(_loc10_,"cResource").Get() > _loc8_)
             {
-               _loc8_ = CREATURES.GetProperty(_loc10_,"cResource");
+               _loc8_ = CREATURES.GetProperty(_loc10_,"cResource").Get();
             }
             if(CREATURES.GetProperty(_loc10_,"cStorage") > _loc9_)
             {
@@ -189,12 +189,12 @@ package
             "delay":0.1
          });
          TweenLite.to(mcMonsterInfo.bTime.mcBar,0.4,{
-            "width":100 / _loc7_ * CREATURES.GetProperty(_loc2_,"cTime"),
+            "width":100 / _loc7_ * CREATURES.GetProperty(_loc2_,"cTime").Get(),
             "ease":Circ.easeInOut,
             "delay":0.15
          });
          TweenLite.to(mcMonsterInfo.bResource.mcBar,0.4,{
-            "width":100 / _loc8_ * CREATURES.GetProperty(_loc2_,"cResource"),
+            "width":100 / _loc8_ * CREATURES.GetProperty(_loc2_,"cResource").Get(),
             "ease":Circ.easeInOut,
             "delay":0.2
          });
@@ -214,11 +214,11 @@ package
             mcMonsterInfo.tDamage.htmlText = -_loc11_ + " (" + KEYS.Get("str_heal") + ")";
          }
          mcMonsterInfo.tResource.htmlText = KEYS.Get("mon_att_costvalue",{
-            "v1":GLOBAL.FormatNumber(CREATURES.GetProperty(_loc2_,"cResource")),
+            "v1":GLOBAL.FormatNumber(CREATURES.GetProperty(_loc2_,"cResource").Get()),
             "v2":KEYS.Get(BRESOURCE.GetResourceNameKey(3))
          });
          mcMonsterInfo.tStorage.htmlText = KEYS.Get("mon_att_housingvalue",{"v1":CREATURES.GetProperty(_loc2_,"cStorage")});
-         mcMonsterInfo.tTime.htmlText = GLOBAL.ToTime(CREATURES.GetProperty(_loc2_,"cTime"),true);
+         mcMonsterInfo.tTime.htmlText = GLOBAL.ToTime(CREATURES.GetProperty(_loc2_,"cTime").Get(),true);
          var _loc12_:int = 1;
          if(Boolean(GLOBAL.player.m_upgrades[_loc2_]) && GLOBAL.player.m_upgrades[_loc2_].level > 1)
          {
@@ -260,7 +260,7 @@ package
             var _loc2_:* = BASE.isInfernoMainYardOrOutpost ? "I" : "";
             _loc2_ += "C" + n;
             var _loc3_:* = 1 + _hatchery._lvl.Get();
-            if(!BASE.Charge(4,CREATURES.GetProperty(_loc2_,"cResource"),true))
+            if(!BASE.Charge(4,CREATURES.GetProperty(_loc2_,"cResource").Get(),true))
             {
                if(BASE.isInfernoMainYardOrOutpost)
                {
@@ -328,8 +328,8 @@ package
       
       private function Charge(param1:String) : void
       {
-         BASE.Charge(4,CREATURES.GetProperty(param1,"cResource"));
-         ResourcePackages.Create(BASE.isInfernoMainYardOrOutpost ? 8 : 4,this._hatchery,CREATURES.GetProperty(param1,"cResource"),true);
+         BASE.Charge(4,CREATURES.GetProperty(param1,"cResource").Get());
+         ResourcePackages.Create(BASE.isInfernoMainYardOrOutpost ? 8 : 4,this._hatchery,CREATURES.GetProperty(param1,"cResource").Get(),true);
          BASE.Save();
       }
       
@@ -351,7 +351,7 @@ package
                   {
                      _loc3_.splice(n - 1,1);
                   }
-                  BASE.Fund(4,CREATURES.GetProperty(_loc2_,"cResource"));
+                  BASE.Fund(4,CREATURES.GetProperty(_loc2_,"cResource").Get());
                   BASE.Save();
                }
                else
@@ -361,7 +361,7 @@ package
             }
             else if(_hatchery._inProduction != "")
             {
-               BASE.Fund(4,CREATURES.GetProperty(_hatchery._inProduction,"cResource"));
+               BASE.Fund(4,CREATURES.GetProperty(_hatchery._inProduction,"cResource").Get());
                _hatchery.StartProduction();
             }
             RenderQueue();
@@ -404,7 +404,7 @@ package
             bFinish.gotoAndStop(2);
             bFinish.Enabled = true;
             ImageCache.GetImageWithCallBack("monsters/" + this._hatchery._inProduction + "-medium.jpg",this.IconLoaded,true,1,"",[this.slot0]);
-            _loc4_ = CREATURES.GetProperty(this._hatchery._inProduction,"cTime");
+            _loc4_ = CREATURES.GetProperty(this._hatchery._inProduction,"cTime").Get();
             if((_loc5_ = 100 / _loc4_ * this._hatchery._countdownProduce.Get()) < 0)
             {
                _loc5_ = 0;

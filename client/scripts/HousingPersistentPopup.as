@@ -558,7 +558,7 @@ package
                {
                   _loc7_ = 1;
                }
-               _loc4_ += Math.ceil(CREATURES.GetProperty(_loc2_,"cResource") * _loc7_) * this._juiceList[_loc2_];
+               _loc4_ += Math.ceil(CREATURES.GetProperty(_loc2_,"cResource").Get() * _loc7_) * this._juiceList[_loc2_];
             }
             if(_loc3_ > 0)
             {
@@ -699,11 +699,11 @@ package
                      _loc4_--;
                      if(_loc10_.substr(0,1) == "I")
                      {
-                        _loc6_ += CREATURES.GetProperty(_loc10_,"cResource") * (_loc9_[_loc13_].health / CREATURES.GetProperty(_loc10_,"health").Get());
+                        _loc6_ += CREATURES.GetProperty(_loc10_,"cResource").Get() * (_loc9_[_loc13_].health / CREATURES.GetProperty(_loc10_,"health").Get());
                      }
                      else
                      {
-                        _loc5_ += CREATURES.GetProperty(_loc10_,"cResource") * (_loc9_[_loc13_].health / CREATURES.GetProperty(_loc10_,"health").Get());
+                        _loc5_ += CREATURES.GetProperty(_loc10_,"cResource").Get() * (_loc9_[_loc13_].health / CREATURES.GetProperty(_loc10_,"health").Get());
                      }
                   }
                }

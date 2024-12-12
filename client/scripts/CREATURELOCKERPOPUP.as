@@ -296,13 +296,13 @@ package
             {
                maxDamage = CREATURES.GetProperty(c,"damage").Get();
             }
-            if(CREATURES.GetProperty(c,"cTime") > maxTime)
+            if(CREATURES.GetProperty(c,"cTime").Get() > maxTime)
             {
-               maxTime = CREATURES.GetProperty(c,"cTime");
+               maxTime = CREATURES.GetProperty(c,"cTime").Get();
             }
-            if(CREATURES.GetProperty(c,"cResource") > maxResource)
+            if(CREATURES.GetProperty(c,"cResource").Get() > maxResource)
             {
-               maxResource = CREATURES.GetProperty(c,"cResource");
+               maxResource = CREATURES.GetProperty(c,"cResource").Get();
             }
             if(CREATURES.GetProperty(c,"cStorage") > maxStorage)
             {
@@ -325,7 +325,7 @@ package
             "delay":0.1
          });
          TweenLite.to(bResource.mcBar,0.4,{
-            "width":100 / maxResource * CREATURES.GetProperty(this._creatureID,"cResource"),
+            "width":100 / maxResource * CREATURES.GetProperty(this._creatureID,"cResource").Get(),
             "ease":Circ.easeInOut,
             "delay":0.15
          });
@@ -335,7 +335,7 @@ package
             "delay":0.2
          });
          TweenLite.to(bTime.mcBar,0.4,{
-            "width":100 / maxTime * CREATURES.GetProperty(this._creatureID,"cTime"),
+            "width":100 / maxTime * CREATURES.GetProperty(this._creatureID,"cTime").Get(),
             "ease":Circ.easeInOut,
             "delay":0.25
          });
@@ -350,9 +350,9 @@ package
          {
             tDamage.htmlText = -dam + " (" + KEYS.Get("str_heal") + ")";
          }
-         tResource.htmlText = CREATURES.GetProperty(this._creatureID,"cResource") + " " + KEYS.Get(GLOBAL._resourceNames[3]);
+         tResource.htmlText = CREATURES.GetProperty(this._creatureID,"cResource").Get() + " " + KEYS.Get(GLOBAL._resourceNames[3]);
          tStorage.htmlText = KEYS.Get("mon_statsstorage",{"v1":CREATURES.GetProperty(this._creatureID,"cStorage")});
-         tTime.htmlText = GLOBAL.ToTime(CREATURES.GetProperty(this._creatureID,"cTime"),true);
+         tTime.htmlText = GLOBAL.ToTime(CREATURES.GetProperty(this._creatureID,"cTime").Get(),true);
          if(CREATURELOCKER._lockerData[this._creatureID])
          {
             if(CREATURELOCKER._lockerData[this._creatureID].t == 2)

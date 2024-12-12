@@ -68,7 +68,7 @@ package
          }
          else
          {
-            _loc4_ = CREATURES.GetProperty(param1,"cResource") / 100;
+            _loc4_ = CREATURES.GetProperty(param1,"cResource").Get() / 100;
          }
          if(_loc4_ > 5 && param1.substr(0,1) != "G")
          {
