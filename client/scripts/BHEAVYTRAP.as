@@ -70,7 +70,7 @@ package
                _loc8_++;
                _loc4_ = Number(_loc1_.dist);
                _loc5_ = _loc1_.pos;
-               _loc2_.modifyHealth(-(_buildingProps.damage[0] / _buildingProps.size * (_buildingProps.size - _loc4_ * 0.5)));
+               _loc2_.modifyHealth(-(_buildingProps.damage[0].Get() / _buildingProps.size * (_buildingProps.size - _loc4_ * 0.5)));
                if(_loc2_.health <= 0)
                {
                   _loc9_++;
@@ -88,7 +88,7 @@ package
                _loc8_++;
                _loc4_ = Number(_loc1_.dist);
                _loc5_ = _loc1_.pos;
-               _loc2_.modifyHealth(-(_buildingProps.damage[0] * 0.5 / _buildingProps.size * (_buildingProps.size - _loc4_ * 0.5)));
+               _loc2_.modifyHealth(-(_buildingProps.damage[0].Get() * 0.5 / _buildingProps.size * (_buildingProps.size - _loc4_ * 0.5)));
                if(_loc2_.health <= 0)
                {
                   _loc9_++;
