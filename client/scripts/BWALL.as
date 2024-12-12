@@ -26,8 +26,8 @@ package
          super.Description();
          if(_lvl.Get() < _buildingProps.hp.length)
          {
-            _loc1_ = int(_buildingProps.hp[_lvl.Get() - 1]);
-            _loc2_ = int(_buildingProps.hp[_lvl.Get()]);
+            _loc1_ = int(_buildingProps.hp[_lvl.Get() - 1].Get());
+            _loc2_ = int(_buildingProps.hp[_lvl.Get()].Get());
             _upgradeDescription = KEYS.Get("building_wall_upgrade",{
                "v1":GLOBAL.FormatNumber(_loc1_),
                "v2":GLOBAL.FormatNumber(_loc2_),

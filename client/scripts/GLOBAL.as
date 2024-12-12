@@ -45,7 +45,7 @@ package
 
       public static var cdnUrl:String = "http://localhost:3001/";
 
-      public static var apiVersionSuffix:String = "v1.0.9-beta/";
+      public static var apiVersionSuffix:String = "v1.0.8-beta/";
 
       public static var connectionCounter:int;
 
@@ -654,7 +654,7 @@ package
             "re":[[14,1,6],[8,1,1]]
          }];
          _buildingProps[14].capacity = [200,260,320,380,450,540];
-         _buildingProps[14].hp = [4000,14000,25000,43000,75000,130000];
+         _buildingProps[14].hp = [new SecNum(4000),new SecNum(14000),new SecNum(25000),new SecNum(43000),new SecNum(75000),new SecNum(130000)];
          _buildingProps[14].repairTime = [100,200,300,400,500,600];
          _buildingProps[21].capacity = [380,450,540,660,800];
          _buildingProps[4].costs = [{
@@ -693,7 +693,7 @@ package
             "time":new SecNum(97200),
             "re":[[14,1,4],[11,1,1]]
          }];
-         _buildingProps[4].hp = [4000,8000,16000,28000,28000];
+         _buildingProps[4].hp = [new SecNum(4000),new SecNum(8000),new SecNum(16000),new SecNum(28000),new SecNum(28000)];
          _buildingProps[4].capacity = [500,1000,1750,2250,3000,4000,4000];
       }
 
@@ -1692,6 +1692,10 @@ package
             var _loc2_:Object = _buildingProps[param1];
             if (_loc2_.group != 999)
             {
+               for (var temp = 0; temp < _loc2_.hp.length; temp++)
+               {
+                  _loc2_.hp[temp] = _loc2_.hp[temp].Get()
+               }
                tmpArray.push([_loc2_.id, _loc2_.type, _loc2_.size, _loc2_.cycle, _loc2_.attackgroup, _loc2_.quantity, _loc2_.produce, _loc2_.cycleTime, _loc2_.hp, _loc2_.repairTime]);
                if (_loc2_.capacity)
                {
