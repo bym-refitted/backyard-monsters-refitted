@@ -194,10 +194,10 @@ package
             if(GLOBAL._buildingProps[this._building._type - 1].rewarded)
             {
                _loc3_ = {
-                  "r1":new SecNum(0),
-                  "r2":new SecNum(0),
-                  "r3":new SecNum(0),
-                  "r4":new SecNum(0),
+                  "r1":0,
+                  "r2":0,
+                  "r3":0,
+                  "r4":0,
                   "r5":0,
                   "time":new SecNum(_loc3_.time.Get())
                };
@@ -411,8 +411,8 @@ package
                _loc18_ = _loc16_ ? GLOBAL.iresourceNames : GLOBAL._resourceNames;
                _loc15_.gotoAndStop(_loc16_ || BASE.isInfernoMainYardOrOutpost ? _loc14_ + 6 : _loc14_);
                _loc15_.tTitle.htmlText = "<b>" + KEYS.Get(_loc18_[_loc14_ - 1]) + "</b>";
-               _loc15_.tValue.htmlText = "<b><font color=\"#" + (_loc3_["r" + _loc14_].Get() > _loc17_["r" + _loc14_].Get() && (param1 == "upgrade" || param1 == "build" || param1 == "fortify") ? "FF0000" : "000000") + "\">" + GLOBAL.FormatNumber(_loc3_["r" + _loc14_].Get()) + "</font></b>";
-               if(Boolean(_loc3_["r" + _loc14_].Get()) && _loc3_["r" + _loc14_].Get() > 0)
+               _loc15_.tValue.htmlText = "<b><font color=\"#" + (_loc3_["r" + _loc14_] > _loc17_["r" + _loc14_].Get() && (param1 == "upgrade" || param1 == "build" || param1 == "fortify") ? "FF0000" : "000000") + "\">" + GLOBAL.FormatNumber(_loc3_["r" + _loc14_]) + "</font></b>";
+               if(Boolean(_loc3_["r" + _loc14_]) && _loc3_["r" + _loc14_] > 0)
                {
                   _loc15_.alpha = 1;
                }
@@ -512,10 +512,10 @@ package
          if(GLOBAL._buildingProps[this._building._type - 1].rewarded)
          {
             _loc6_ = {
-               "r1":new SecNum(0),
-               "r2":new SecNum(0),
-               "r3":new SecNum(0),
-               "r4":new SecNum(0),
+               "r1":0,
+               "r2":0,
+               "r3":0,
+               "r4":0,
                "time":new SecNum(_loc6_.time.Get()),
                "re":_loc6_.re
             };
@@ -560,16 +560,16 @@ package
                _loc9_ = 1;
                while(_loc9_ < 5)
                {
-                  if(_loc6_["r" + _loc9_].Get() > 0)
+                  if(_loc6_["r" + _loc9_] > 0)
                   {
-                     if(_loc6_["r" + _loc9_].Get() > _loc8_["r" + _loc9_ + "max"])
+                     if(_loc6_["r" + _loc9_] > _loc8_["r" + _loc9_ + "max"])
                      {
                         _loc2_ = true;
                         break;
                      }
-                     if(_loc6_["r" + _loc9_].Get() > _loc8_["r" + _loc9_].Get())
+                     if(_loc6_["r" + _loc9_] > _loc8_["r" + _loc9_].Get())
                      {
-                        _loc3_ += _loc6_["r" + _loc9_].Get() - _loc8_["r" + _loc9_].Get();
+                        _loc3_ += _loc6_["r" + _loc9_] - _loc8_["r" + _loc9_].Get();
                      }
                   }
                   _loc9_++;
@@ -615,15 +615,15 @@ package
             _loc9_ = 1;
             while(_loc9_ < 5)
             {
-               if(_loc8_["r" + _loc9_].Get() > 0)
+               if(_loc8_["r" + _loc9_] > 0)
                {
-                  if(_loc8_["r" + _loc9_].Get() > _loc7_["r" + _loc9_ + "max"])
+                  if(_loc8_["r" + _loc9_] > _loc7_["r" + _loc9_ + "max"])
                   {
                      _loc2_ = true;
                   }
-                  else if(_loc8_["r" + _loc9_].Get() > _loc7_["r" + _loc9_].Get())
+                  else if(_loc8_["r" + _loc9_] > _loc7_["r" + _loc9_].Get())
                   {
-                     _loc3_ += _loc8_["r" + _loc9_].Get() - _loc7_["r" + _loc9_].Get();
+                     _loc3_ += _loc8_["r" + _loc9_] - _loc7_["r" + _loc9_].Get();
                   }
                }
                _loc9_++;
@@ -680,15 +680,15 @@ package
             _loc7_ = 1;
             while(_loc7_ < 5)
             {
-               if(_loc6_["r" + _loc7_].Get() > 0)
+               if(_loc6_["r" + _loc7_] > 0)
                {
-                  if(_loc6_["r" + _loc7_].Get() > BASE._resources["r" + _loc7_ + "max"])
+                  if(_loc6_["r" + _loc7_] > BASE._resources["r" + _loc7_ + "max"])
                   {
                      _loc2_ = true;
                   }
-                  else if(_loc6_["r" + _loc7_].Get() > BASE._resources["r" + _loc7_].Get())
+                  else if(_loc6_["r" + _loc7_] > BASE._resources["r" + _loc7_].Get())
                   {
-                     _loc3_ += _loc6_["r" + _loc7_].Get() - BASE._resources["r" + _loc7_].Get();
+                     _loc3_ += _loc6_["r" + _loc7_] - BASE._resources["r" + _loc7_].Get();
                   }
                }
                _loc7_++;
@@ -734,7 +734,7 @@ package
             {
                _loc7_ = 0;
             }
-            _loc8_ = _loc6_.r1.Get() + _loc6_.r2.Get() + _loc6_.r3.Get();
+            _loc8_ = _loc6_.r1 + _loc6_.r2 + _loc6_.r3;
             _loc9_ = Math.ceil(Math.pow(Math.sqrt(_loc8_ / 2),0.75));
             _loc10_ = STORE.GetTimeCost(_loc7_);
             _loc11_ = _loc9_ + _loc10_;
@@ -794,15 +794,15 @@ package
          _loc8_ = 1;
          while(_loc8_ < 5)
          {
-            if(_loc7_["r" + _loc8_].Get() > 0)
+            if(_loc7_["r" + _loc8_] > 0)
             {
-               if(_loc7_["r" + _loc8_].Get() > _loc6_["r" + _loc8_ + "max"])
+               if(_loc7_["r" + _loc8_] > _loc6_["r" + _loc8_ + "max"])
                {
                   _loc3_ = true;
                }
-               else if(_loc7_["r" + _loc8_].Get() > _loc6_["r" + _loc8_].Get())
+               else if(_loc7_["r" + _loc8_] > _loc6_["r" + _loc8_].Get())
                {
-                  _loc2_ += _loc7_["r" + _loc8_].Get() - _loc6_["r" + _loc8_].Get();
+                  _loc2_ += _loc7_["r" + _loc8_] - _loc6_["r" + _loc8_].Get();
                }
             }
             _loc8_++;
@@ -823,9 +823,9 @@ package
                _loc8_ = 1;
                while(_loc8_ < 5)
                {
-                  if(_loc7_["r" + _loc8_].Get() > 0 && _loc7_["r" + _loc8_].Get() > _loc6_["r" + _loc8_].Get())
+                  if(_loc7_["r" + _loc8_] > 0 && _loc7_["r" + _loc8_] > _loc6_["r" + _loc8_].Get())
                   {
-                     BASE.Fund(_loc8_,_loc7_["r" + _loc8_].Get() - _loc6_["r" + _loc8_].Get(),false,null,_loc5_);
+                     BASE.Fund(_loc8_,_loc7_["r" + _loc8_] - _loc6_["r" + _loc8_].Get(),false,null,_loc5_);
                   }
                   _loc8_++;
                }
@@ -857,15 +857,15 @@ package
          var _loc7_:int = 1;
          while(_loc7_ < 5)
          {
-            if(_loc2_["r" + _loc7_].Get() > 0)
+            if(_loc2_["r" + _loc7_] > 0)
             {
-               if(_loc2_["r" + _loc7_].Get() > _loc4_["r" + _loc7_ + "max"])
+               if(_loc2_["r" + _loc7_] > _loc4_["r" + _loc7_ + "max"])
                {
                   _loc6_ = true;
                }
-               else if(_loc2_["r" + _loc7_].Get() > _loc4_["r" + _loc7_].Get())
+               else if(_loc2_["r" + _loc7_] > _loc4_["r" + _loc7_].Get())
                {
-                  _loc5_ += _loc2_["r" + _loc7_].Get() - _loc4_["r" + _loc7_].Get();
+                  _loc5_ += _loc2_["r" + _loc7_] - _loc4_["r" + _loc7_].Get();
                }
             }
             _loc7_++;
@@ -885,9 +885,9 @@ package
             _loc7_ = 1;
             while(_loc7_ < 5)
             {
-               if(_loc2_["r" + _loc7_].Get() > 0 && _loc2_["r" + _loc7_].Get() > _loc4_["r" + _loc7_].Get())
+               if(_loc2_["r" + _loc7_] > 0 && _loc2_["r" + _loc7_] > _loc4_["r" + _loc7_].Get())
                {
-                  BASE.Fund(_loc7_,_loc2_["r" + _loc7_].Get() - _loc4_["r" + _loc7_].Get(),false,null,_loc3_);
+                  BASE.Fund(_loc7_,_loc2_["r" + _loc7_] - _loc4_["r" + _loc7_].Get(),false,null,_loc3_);
                }
                _loc7_++;
             }
@@ -905,15 +905,15 @@ package
          _loc6_ = 1;
          while(_loc6_ < 5)
          {
-            if(_loc5_["r" + _loc6_].Get() > 0)
+            if(_loc5_["r" + _loc6_] > 0)
             {
-               if(_loc5_["r" + _loc6_].Get() > BASE._resources["r" + _loc6_ + "max"])
+               if(_loc5_["r" + _loc6_] > BASE._resources["r" + _loc6_ + "max"])
                {
                   _loc3_ = true;
                }
-               else if(_loc5_["r" + _loc6_].Get() > BASE._resources["r" + _loc6_].Get())
+               else if(_loc5_["r" + _loc6_] > BASE._resources["r" + _loc6_].Get())
                {
-                  _loc2_ += _loc5_["r" + _loc6_].Get() - BASE._resources["r" + _loc6_].Get();
+                  _loc2_ += _loc5_["r" + _loc6_] - BASE._resources["r" + _loc6_].Get();
                }
             }
             _loc6_++;
@@ -934,9 +934,9 @@ package
                _loc6_ = 1;
                while(_loc6_ < 5)
                {
-                  if(_loc5_["r" + _loc6_].Get() > 0 && _loc5_["r" + _loc6_].Get() > BASE._resources["r" + _loc6_].Get())
+                  if(_loc5_["r" + _loc6_] > 0 && _loc5_["r" + _loc6_] > BASE._resources["r" + _loc6_].Get())
                   {
-                     BASE.Fund(_loc6_,_loc5_["r" + _loc6_].Get() - BASE._resources["r" + _loc6_].Get());
+                     BASE.Fund(_loc6_,_loc5_["r" + _loc6_] - BASE._resources["r" + _loc6_].Get());
                   }
                   _loc6_++;
                }
