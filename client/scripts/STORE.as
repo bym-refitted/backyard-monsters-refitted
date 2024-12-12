@@ -172,7 +172,7 @@ package
       
       public static function GetInstantBuyCost(param1:Object) : int
       {
-         return GetTimeCost(param1.time.Get()) + GetResourceCost([param1.r1.Get(),param1.r2.Get(),param1.r3.Get(),param1.r4.Get()]);
+         return GetTimeCost(param1.time.Get()) + GetResourceCost([param1.r1,param1.r2,param1.r3,param1.r4]);
       }
       
       public static function GetTimeCost(param1:int, param2:Boolean = true) : int
