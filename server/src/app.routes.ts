@@ -43,10 +43,7 @@ router.post("/gh-release-webhook", releasesWebhook);
  * Connection route
  * @name POST /connection
  */
-router.get("/connection", (ctx) => {
-  ctx.status = Status.OK;
-  ctx.body = { message: "Connection successful" };
-});
+router.get("/connection", (ctx) => (ctx.status = Status.OK));
 
 /**
  * Init route

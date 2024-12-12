@@ -22,9 +22,12 @@ export const auth = async (ctx: Context, next: Next) => {
 
   const token = authHeader.replace("Bearer ", "");
 
-  ctx.authUser = await ORMContext.em.findOne(User, {
-    email: verifyJwtToken(token).user.email,
-  });
+  const decodedToken = verifyJwtToken(token);
+  const user = await ORMContext.em.findOne(User, { email: decodedToken.user.email });
+
+  if (!user || user.token !== token) throw authFailureErr();
+
+  ctx.authUser = user;
 
   if (!ctx.authUser) throw authFailureErr();
   await next();

@@ -884,37 +884,37 @@ package
          {
             this._upgradeCosts = "";
             _loc2_ = this._buildingProps.costs[this._lvl.Get()];
-            if(_loc2_.r1.Get() > 0)
+            if(_loc2_.r1 > 0)
             {
-               if(_loc2_.r1.Get() > BASE._resources.r1.Get())
+               if(_loc2_.r1 > BASE._resources.r1.Get())
                {
                   this._upgradeCosts += "<font color=\"#FF0000\">";
                }
-               this._upgradeCosts += GLOBAL.FormatNumber(_loc2_.r1.Get()) + " " + GLOBAL._resourceNames[0] + "</font> - ";
+               this._upgradeCosts += GLOBAL.FormatNumber(_loc2_.r1) + " " + GLOBAL._resourceNames[0] + "</font> - ";
             }
-            if(_loc2_.r2.Get() > 0)
+            if(_loc2_.r2 > 0)
             {
-               if(_loc2_.r2.Get() > BASE._resources.r2.Get())
+               if(_loc2_.r2 > BASE._resources.r2.Get())
                {
                   this._upgradeCosts += "<font color=\"#FF0000\">";
                }
-               this._upgradeCosts += GLOBAL.FormatNumber(_loc2_.r2.Get()) + " " + GLOBAL._resourceNames[1] + "</font> - ";
+               this._upgradeCosts += GLOBAL.FormatNumber(_loc2_.r2) + " " + GLOBAL._resourceNames[1] + "</font> - ";
             }
-            if(_loc2_.r3.Get() > 0)
+            if(_loc2_.r3 > 0)
             {
-               if(_loc2_.r3.Get() > BASE._resources.r3.Get())
+               if(_loc2_.r3 > BASE._resources.r3.Get())
                {
                   this._upgradeCosts += "<font color=\"#FF0000\">";
                }
-               this._upgradeCosts += GLOBAL.FormatNumber(_loc2_.r3.Get()) + " " + GLOBAL._resourceNames[2] + "</font> - ";
+               this._upgradeCosts += GLOBAL.FormatNumber(_loc2_.r3) + " " + GLOBAL._resourceNames[2] + "</font> - ";
             }
-            if(_loc2_.r4.Get() > 0)
+            if(_loc2_.r4 > 0)
             {
-               if(_loc2_.r4.Get() > BASE._resources.r4.Get())
+               if(_loc2_.r4 > BASE._resources.r4.Get())
                {
                   this._upgradeCosts += "<font color=\"#FF0000\">";
                }
-               this._upgradeCosts += GLOBAL.FormatNumber(_loc2_.r4.Get()) + " " + GLOBAL._resourceNames[3] + "</font> - ";
+               this._upgradeCosts += GLOBAL.FormatNumber(_loc2_.r4) + " " + GLOBAL._resourceNames[3] + "</font> - ";
             }
             this._upgradeCosts += GLOBAL.ToTime(_loc2_.time.Get());
             this._upgradeDescription = "";
@@ -1964,10 +1964,10 @@ package
                if(!this._buildInstant)
                {
                   isInfernoBuilding = BASE.isInfernoBuilding(this._type);
-                  BASE.Charge(1,this._buildingProps.costs[0].r1.Get(),false,isInfernoBuilding);
-                  BASE.Charge(2,this._buildingProps.costs[0].r2.Get(),false,isInfernoBuilding);
-                  BASE.Charge(3,this._buildingProps.costs[0].r3.Get(),false,isInfernoBuilding);
-                  BASE.Charge(4,this._buildingProps.costs[0].r4.Get(),false,isInfernoBuilding);
+                  BASE.Charge(1,this._buildingProps.costs[0].r1,false,isInfernoBuilding);
+                  BASE.Charge(2,this._buildingProps.costs[0].r2,false,isInfernoBuilding);
+                  BASE.Charge(3,this._buildingProps.costs[0].r3,false,isInfernoBuilding);
+                  BASE.Charge(4,this._buildingProps.costs[0].r4,false,isInfernoBuilding);
                   if(STORE._storeItems["BUILDING" + this._type])
                   {
                      BASE.Purchase("BUILDING" + this._type,1,"building");
@@ -2429,7 +2429,7 @@ package
          {
             _loc2_ = 0;
          }
-         var _loc3_:int = _loc1_.r1.Get() + _loc1_.r2.Get() + _loc1_.r3.Get();
+         var _loc3_:int = _loc1_.r1 + _loc1_.r2 + _loc1_.r3;
          var _loc4_:int = Math.ceil(Math.pow(Math.sqrt(_loc3_ / 2),0.75));
          var _loc5_:int = STORE.GetTimeCost(_loc2_);
          var _loc6_:int = _loc4_ + _loc5_;
@@ -2448,7 +2448,7 @@ package
          {
             _loc2_ = 0;
          }
-         var _loc3_:int = _loc1_.r1.Get() + _loc1_.r2.Get() + _loc1_.r3.Get();
+         var _loc3_:int = _loc1_.r1 + _loc1_.r2 + _loc1_.r3;
          var _loc4_:int = Math.ceil(Math.pow(Math.sqrt(_loc3_ / 2),0.75));
          var _loc5_:int = STORE.GetTimeCost(_loc2_);
          var _loc6_:int = _loc4_ + _loc5_;
@@ -2467,7 +2467,7 @@ package
          {
             _loc2_ = 0;
          }
-         var _loc3_:int = _loc1_.r1.Get() + _loc1_.r2.Get() + _loc1_.r3.Get();
+         var _loc3_:int = _loc1_.r1 + _loc1_.r2 + _loc1_.r3;
          var _loc4_:int = Math.ceil(Math.pow(Math.sqrt(_loc3_ / 2),0.75));
          var _loc5_:int = STORE.GetTimeCost(_loc2_);
          var _loc6_:int = _loc4_ + _loc5_;
@@ -2540,21 +2540,21 @@ package
             if(!_loc1_.error)
             {
                _loc2_ = this.FortifyCost();
-               if(_loc2_.r1.Get() > 0)
+               if(_loc2_.r1 > 0)
                {
-                  BASE.Charge(1,_loc2_.r1.Get());
+                  BASE.Charge(1,_loc2_.r1);
                }
-               if(_loc2_.r2.Get() > 0)
+               if(_loc2_.r2 > 0)
                {
-                  BASE.Charge(2,_loc2_.r2.Get());
+                  BASE.Charge(2,_loc2_.r2);
                }
-               if(_loc2_.r3.Get() > 0)
+               if(_loc2_.r3 > 0)
                {
-                  BASE.Charge(3,_loc2_.r3.Get());
+                  BASE.Charge(3,_loc2_.r3);
                }
-               if(_loc2_.r4.Get() > 0)
+               if(_loc2_.r4 > 0)
                {
-                  BASE.Charge(4,_loc2_.r4.Get());
+                  BASE.Charge(4,_loc2_.r4);
                }
                _loc3_ = int(this._buildingProps.fortify_costs[this._fortification.Get()].time.Get() * GLOBAL._buildTime);
                this._countdownFortify.Set(_loc3_);
@@ -2601,21 +2601,21 @@ package
             QUEUE.Remove("building" + this._id,false,this);
             this._countdownFortify.Set(0);
             _loc1_ = this.FortifyCost();
-            if(_loc1_.r1.Get() > 0)
+            if(_loc1_.r1 > 0)
             {
-               BASE.Fund(1,int(_loc1_.r1.Get()));
+               BASE.Fund(1,int(_loc1_.r1));
             }
-            if(_loc1_.r2.Get() > 0)
+            if(_loc1_.r2 > 0)
             {
-               BASE.Fund(2,int(_loc1_.r2.Get()));
+               BASE.Fund(2,int(_loc1_.r2));
             }
-            if(_loc1_.r3.Get() > 0)
+            if(_loc1_.r3 > 0)
             {
-               BASE.Fund(3,int(_loc1_.r3.Get()));
+               BASE.Fund(3,int(_loc1_.r3));
             }
-            if(_loc1_.r4.Get() > 0)
+            if(_loc1_.r4 > 0)
             {
-               BASE.Fund(4,int(_loc1_.r4.Get()));
+               BASE.Fund(4,int(_loc1_.r4));
             }
             BASE.Save();
          }
@@ -2664,21 +2664,21 @@ package
             {
                o = this.UpgradeCost();
                isInfernoBuilding = BASE.isInfernoBuilding(this._type);
-               if(o.r1.Get() > 0)
+               if(o.r1 > 0)
                {
-                  BASE.Charge(1,o.r1.Get(),false,isInfernoBuilding);
+                  BASE.Charge(1,o.r1,false,isInfernoBuilding);
                }
-               if(o.r2.Get() > 0)
+               if(o.r2 > 0)
                {
-                  BASE.Charge(2,o.r2.Get(),false,isInfernoBuilding);
+                  BASE.Charge(2,o.r2,false,isInfernoBuilding);
                }
-               if(o.r3.Get() > 0)
+               if(o.r3 > 0)
                {
-                  BASE.Charge(3,o.r3.Get(),false,isInfernoBuilding);
+                  BASE.Charge(3,o.r3,false,isInfernoBuilding);
                }
-               if(o.r4.Get() > 0)
+               if(o.r4 > 0)
                {
-                  BASE.Charge(4,o.r4.Get(),false,isInfernoBuilding);
+                  BASE.Charge(4,o.r4,false,isInfernoBuilding);
                }
                tmpUpgradeTime = int(this._buildingProps.costs[this._lvl.Get()].time.Get() * GLOBAL._buildTime);
                this._countdownUpgrade.Set(tmpUpgradeTime);
@@ -2827,21 +2827,21 @@ package
             this._countdownUpgrade.Set(0);
             _loc1_ = this.UpgradeCost();
             _loc2_ = BASE.isInfernoBuilding(this._type);
-            if(_loc1_.r1.Get())
+            if(_loc1_.r1)
             {
-               BASE.Fund(1,int(_loc1_.r1.Get()),false,null,_loc2_);
+               BASE.Fund(1,int(_loc1_.r1),false,null,_loc2_);
             }
-            if(_loc1_.r2.Get())
+            if(_loc1_.r2)
             {
-               BASE.Fund(2,int(_loc1_.r2.Get()),false,null,_loc2_);
+               BASE.Fund(2,int(_loc1_.r2),false,null,_loc2_);
             }
-            if(_loc1_.r3.Get())
+            if(_loc1_.r3)
             {
-               BASE.Fund(3,int(_loc1_.r3.Get()),false,null,_loc2_);
+               BASE.Fund(3,int(_loc1_.r3),false,null,_loc2_);
             }
-            if(_loc1_.r4.Get())
+            if(_loc1_.r4)
             {
-               BASE.Fund(4,int(_loc1_.r4.Get()),false,null,_loc2_);
+               BASE.Fund(4,int(_loc1_.r4),false,null,_loc2_);
             }
             BASE.Save();
          }
@@ -2874,7 +2874,7 @@ package
          QUESTS.Check("b" + this._type + "lvl",this._lvl.Get());
          BASE.CalcResources();
          c = this._buildingProps.costs[this._lvl.Get() - 2];
-         a = Math.floor((int(c.time.Get()) + int(c.r1.Get()) + int(c.r2.Get()) + int(c.r3.Get()) + int(c.r4.Get())) / 3);
+         a = Math.floor((int(c.time.Get()) + int(c.r1) + int(c.r2) + int(c.r3) + int(c.r4)) / 3);
          BASE.PointsAdd(a);
          this.Description();
          QUEUE.Remove("building" + this._id,true,this);
@@ -2930,7 +2930,7 @@ package
          }
          BASE.CalcResources();
          c = this._buildingProps.fortify_costs[this._fortification.Get() - 1];
-         a = Math.floor((int(c.time.Get()) + int(c.r1.Get()) + int(c.r2.Get()) + int(c.r3.Get()) + int(c.r4.Get())) / 3);
+         a = Math.floor((int(c.time.Get()) + int(c.r1) + int(c.r2) + int(c.r3) + int(c.r4)) / 3);
          BASE.PointsAdd(a);
          this.Description();
          QUEUE.Remove("building" + this._id,true,this);
@@ -3002,21 +3002,21 @@ package
                this._recycled = true;
                _loc2_ = this.RecycleCost();
                _loc3_ = BASE.isInfernoBuilding(this._type);
-               if(_loc2_.r1.Get())
+               if(_loc2_.r1)
                {
-                  BASE.Fund(1,int(_loc2_.r1.Get()),false,null,_loc3_);
+                  BASE.Fund(1,int(_loc2_.r1),false,null,_loc3_);
                }
-               if(_loc2_.r2.Get())
+               if(_loc2_.r2)
                {
-                  BASE.Fund(2,int(_loc2_.r2.Get()),false,null,_loc3_);
+                  BASE.Fund(2,int(_loc2_.r2),false,null,_loc3_);
                }
-               if(_loc2_.r3.Get())
+               if(_loc2_.r3)
                {
-                  BASE.Fund(3,int(_loc2_.r3.Get()),false,null,_loc3_);
+                  BASE.Fund(3,int(_loc2_.r3),false,null,_loc3_);
                }
-               if(_loc2_.r4.Get())
+               if(_loc2_.r4)
                {
-                  BASE.Fund(4,int(_loc2_.r4.Get()),false,null,_loc3_);
+                  BASE.Fund(4,int(_loc2_.r4),false,null,_loc3_);
                }
                this.RecycleC();
                LOGGER.Stat([40,this._type,this._lvl.Get()]);
@@ -3093,10 +3093,10 @@ package
          var _loc2_:int = 0;
          var _loc3_:Object = null;
          var _loc1_:Object = {
-            "r1":new SecNum(0),
-            "r2":new SecNum(0),
-            "r3":new SecNum(0),
-            "r4":new SecNum(0),
+            "r1":0,
+            "r2":0,
+            "r3":0,
+            "r4":0,
             "r5":0,
             "time":new SecNum(0)
          };
@@ -3106,11 +3106,11 @@ package
          }
          if(this._lvl.Get() == 0)
          {
-            _loc1_.r1.Add(this._buildingProps.costs[0].r1.Get());
-            _loc1_.r2.Add(this._buildingProps.costs[0].r2.Get());
-            _loc1_.r3.Add(this._buildingProps.costs[0].r3.Get());
-            _loc1_.r4.Add(this._buildingProps.costs[0].r4.Get());
-            _loc1_.r5 += this._buildingProps.costs[0].r5;
+            _loc1_.r1 += this._buildingProps.costs[0].r1;
+            _loc1_.r2 += this._buildingProps.costs[0].r2;
+            _loc1_.r3 += this._buildingProps.costs[0].r3;
+            _loc1_.r4 += this._buildingProps.costs[0].r4;
+            _loc1_.r5 += this._buildingProps.costs[0].r5;            
          }
          else
          {
@@ -3120,18 +3120,18 @@ package
                _loc3_ = this._buildingProps.costs[_loc2_];
                if(_loc3_)
                {
-                  _loc1_.r1.Add(_loc3_.r1.Get());
-                  _loc1_.r2.Add(_loc3_.r2.Get());
-                  _loc1_.r3.Add(_loc3_.r3.Get());
-                  _loc1_.r4.Add(_loc3_.r4.Get());
+                  _loc1_.r1 += _loc3_.r1;
+                  _loc1_.r2 += _loc3_.r2;
+                  _loc1_.r3 += _loc3_.r3;
+                  _loc1_.r4 += _loc3_.r4;
                   _loc1_.r5 += _loc3_.r5;
                }
                _loc2_++;
             }
-            _loc1_.r1.Set(int(_loc1_.r1.Get() * 0.5));
-            _loc1_.r2.Set(int(_loc1_.r2.Get() * 0.5));
-            _loc1_.r3.Set(int(_loc1_.r3.Get() * 0.5));
-            _loc1_.r4.Set(int(_loc1_.r4.Get() * 0.5));
+            _loc1_.r1 = int(_loc1_.r1 * 0.5);
+            _loc1_.r2 = int(_loc1_.r2 * 0.5);
+            _loc1_.r3 = int(_loc1_.r3 * 0.5);
+            _loc1_.r4 = int(_loc1_.r4 * 0.5);
             _loc1_.r5 = int(_loc1_.r5 * 0.5);
          }
          return _loc1_;
@@ -3145,29 +3145,29 @@ package
          {
             _loc1_ = {
                "time":new SecNum(0),
-               "r1":new SecNum(this._buildingProps.costs[this._lvl.Get()].r1.Get()),
-               "r2":new SecNum(this._buildingProps.costs[this._lvl.Get()].r2.Get()),
-               "r3":new SecNum(this._buildingProps.costs[this._lvl.Get()].r3.Get()),
-               "r4":new SecNum(this._buildingProps.costs[this._lvl.Get()].r4.Get()),
+               "r1":this._buildingProps.costs[this._lvl.Get()].r1,
+               "r2":this._buildingProps.costs[this._lvl.Get()].r2,
+               "r3":this._buildingProps.costs[this._lvl.Get()].r3,
+               "r4":this._buildingProps.costs[this._lvl.Get()].r4,
                "r1over":false,
                "r2over":false,
                "r3over":false,
                "r4over":false
             };
             _loc2_ = this._buildingProps.costs[this._lvl.Get()];
-            if(BASE._resources.r1.Get() < _loc2_.r1.Get())
+            if(BASE._resources.r1.Get() < _loc2_.r1)
             {
                _loc1_.r1over = true;
             }
-            if(BASE._resources.r2.Get() < _loc2_.r2.Get())
+            if(BASE._resources.r2.Get() < _loc2_.r2)
             {
                _loc1_.r2over = true;
             }
-            if(BASE._resources.r3.Get() < _loc2_.r3.Get())
+            if(BASE._resources.r3.Get() < _loc2_.r3)
             {
                _loc1_.r3over = true;
             }
-            if(BASE._resources.r4.Get() < _loc2_.r4.Get())
+            if(BASE._resources.r4.Get() < _loc2_.r4)
             {
                _loc1_.r4over = true;
             }
@@ -3189,29 +3189,29 @@ package
          {
             _loc1_ = {
                "time":new SecNum(0),
-               "r1":new SecNum(this._buildingProps.fortify_costs[this._fortification.Get()].r1.Get()),
-               "r2":new SecNum(this._buildingProps.fortify_costs[this._fortification.Get()].r2.Get()),
-               "r3":new SecNum(this._buildingProps.fortify_costs[this._fortification.Get()].r3.Get()),
-               "r4":new SecNum(this._buildingProps.fortify_costs[this._fortification.Get()].r4.Get()),
+               "r1":this._buildingProps.fortify_costs[this._fortification.Get()].r1,
+               "r2":this._buildingProps.fortify_costs[this._fortification.Get()].r2,
+               "r3":this._buildingProps.fortify_costs[this._fortification.Get()].r3,
+               "r4":this._buildingProps.fortify_costs[this._fortification.Get()].r4,
                "r1over":false,
                "r2over":false,
                "r3over":false,
                "r4over":false
             };
             _loc2_ = this._buildingProps.fortify_costs[this._fortification.Get()];
-            if(BASE._resources.r1.Get() < _loc2_.r1.Get())
+            if(BASE._resources.r1.Get() < _loc2_.r1)
             {
                _loc1_.r1over = true;
             }
-            if(BASE._resources.r2.Get() < _loc2_.r2.Get())
+            if(BASE._resources.r2.Get() < _loc2_.r2)
             {
                _loc1_.r2over = true;
             }
-            if(BASE._resources.r3.Get() < _loc2_.r3.Get())
+            if(BASE._resources.r3.Get() < _loc2_.r3)
             {
                _loc1_.r3over = true;
             }
-            if(BASE._resources.r4.Get() < _loc2_.r4.Get())
+            if(BASE._resources.r4.Get() < _loc2_.r4)
             {
                _loc1_.r4over = true;
             }
@@ -3437,7 +3437,7 @@ package
             QUESTS.Check("brlvl",this._lvl.Get());
          }
          var _loc1_:Object = this._buildingProps.costs[0];
-         var _loc2_:int = Math.floor(_loc1_.time.Get() / 2 + (int(_loc1_.r1.Get()) + int(_loc1_.r2.Get()) + int(_loc1_.r3.Get()) + int(_loc1_.r4.Get())) / 10);
+         var _loc2_:int = Math.floor(_loc1_.time.Get() / 2 + (int(_loc1_.r1) + int(_loc1_.r2) + int(_loc1_.r3) + int(_loc1_.r4)) / 10);
          if(this._type == 14)
          {
             _loc2_ += 100;
