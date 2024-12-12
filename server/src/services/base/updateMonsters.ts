@@ -6,9 +6,7 @@ interface MonsterUpdate {
   m: any;
 }
 
-export const updateMonsters = async (monsterupdates: MonsterUpdate[]) => {
-  console.log("Monster Update Bases", monsterupdates);
-  
+export const updateMonsters = async (monsterupdates: MonsterUpdate[]) => {  
   // Fetch all bases that match the provided base IDs in one go
   const baseIds = monsterupdates.map((update) => update.baseid);
   const saves = await ORMContext.em.find(Save, { baseid: { $in: baseIds } });

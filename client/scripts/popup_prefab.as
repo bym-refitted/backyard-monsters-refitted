@@ -68,10 +68,10 @@ package
             {
                _loc5_ = uint(_loc3_.l);
                _loc7_ = (_loc6_ = GLOBAL._buildingProps[_loc4_ - 1]).costs[_loc5_];
-               _loc2_ += _loc7_.r1.Get();
-               _loc2_ += _loc7_.r2.Get();
-               _loc2_ += _loc7_.r3.Get();
-               _loc2_ += _loc7_.r4.Get();
+               _loc2_ += _loc7_.r1;
+               _loc2_ += _loc7_.r2;
+               _loc2_ += _loc7_.r3;
+               _loc2_ += _loc7_.r4;
             }
          }
          return _loc2_;
