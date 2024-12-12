@@ -4678,25 +4678,25 @@ package
                   {
                      _loc18_ = 0;
                      _loc19_ = _loc11_ ? BASE._iresources : BASE._resources;
-                     if(_loc3_.r1 > _loc19_.r1.Get())
+                     if(_loc3_.r1.Get() > _loc19_.r1.Get())
                      {
                         _loc17_ = 1;
-                        _loc18_ = _loc3_.r1 - _loc19_.r1.Get();
+                        _loc18_ = _loc3_.r1.Get() - _loc19_.r1.Get();
                      }
-                     if(_loc3_.r2 > _loc19_.r2.Get())
+                     if(_loc3_.r2.Get() > _loc19_.r2.Get())
                      {
                         _loc17_ = 2;
-                        _loc18_ = _loc3_.r2 - _loc19_.r2.Get();
+                        _loc18_ = _loc3_.r2.Get() - _loc19_.r2.Get();
                      }
-                     if(_loc3_.r3 > _loc19_.r3.Get())
+                     if(_loc3_.r3.Get() > _loc19_.r3.Get())
                      {
                         _loc17_ = 3;
-                        _loc18_ = _loc3_.r3 - _loc19_.r3.Get();
+                        _loc18_ = _loc3_.r3.Get() - _loc19_.r3.Get();
                      }
-                     if(_loc3_.r4 > _loc19_.r4.Get())
+                     if(_loc3_.r4.Get() > _loc19_.r4.Get())
                      {
                         _loc17_ = 4;
-                        _loc18_ = _loc3_.r4 - _loc19_.r4.Get();
+                        _loc18_ = _loc3_.r4.Get() - _loc19_.r4.Get();
                      }
                      if(_loc17_ > 0)
                      {
