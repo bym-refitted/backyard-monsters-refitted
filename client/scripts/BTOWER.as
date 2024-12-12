@@ -113,7 +113,7 @@ package
             {
                super._range = GLOBAL._buildingProps[_type - 1].stats[_lvl.Get() - 1].range;
             }
-            damageProperty.value = GLOBAL._buildingProps[_type - 1].stats[_lvl.Get() - 1].damage;
+            damageProperty.value = GLOBAL._buildingProps[_type - 1].stats[_lvl.Get() - 1].damage.Get();
             super._rate = GLOBAL._buildingProps[_type - 1].stats[_lvl.Get() - 1].rate;
             super._splash = GLOBAL._buildingProps[_type - 1].stats[_lvl.Get() - 1].splash;
             super._speed = GLOBAL._buildingProps[_type - 1].stats[_lvl.Get() - 1].speed;
@@ -159,11 +159,11 @@ package
                   "v2":_loc4_
                }) + "<br>";
             }
-            if(_loc1_.damage * (40 / _loc1_.rate) < _loc2_.damage * (40 / _loc2_.rate))
+            if(_loc1_.damage.Get() * (40 / _loc1_.rate) < _loc2_.damage.Get() * (40 / _loc2_.rate))
             {
                _upgradeDescription += KEYS.Get("bdg_tower_damageupgrade",{
-                  "v1":int(_loc1_.damage * (40 / _loc1_.rate)),
-                  "v2":int(_loc2_.damage * (40 / _loc2_.rate))
+                  "v1":int(_loc1_.damage.Get() * (40 / _loc1_.rate)),
+                  "v2":int(_loc2_.damage.Get() * (40 / _loc2_.rate))
                }) + "<br>";
             }
             if(_loc1_.splash < _loc2_.splash)
