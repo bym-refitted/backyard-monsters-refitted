@@ -1,6 +1,5 @@
 import { devConfig } from "../config/DevSettings";
 import { User } from "../models/user.model";
-import { debugSandbox } from "../dev/debugSandbox";
 import { devSandbox } from "../dev/devSandbox";
 import { getCurrentDateTime } from "../utils/getCurrentDateTime";
 import { Reward } from "../enums/Rewards";
@@ -12,9 +11,8 @@ import { Reward } from "../enums/Rewards";
  * @returns {object} - The default base data object.
  */
 export const getDefaultBaseData = (user?: User) => {
-  // Load sandbox data if dev flags are enabled. View DevSettings.ts for flags & Wiki details.
+  // Inserts a sandbox test base into the database if enabled.
   if (devConfig.devSandbox) return devSandbox(user);
-  if (devConfig.debugSandbox) return debugSandbox(user);
 
   return {
     saveuserid: user.userid,

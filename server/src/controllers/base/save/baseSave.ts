@@ -32,7 +32,7 @@ export const baseSave: KoaController = async (ctx) => {
       monsterupdate,
       attackloot,
       over,
-      destroyed,
+      attackid,
     } = BaseSaveSchema.parse(ctx.request.body);
 
     const userSave = user.save;
@@ -43,10 +43,19 @@ export const baseSave: KoaController = async (ctx) => {
       ctx.status = Status.BAD_REQUEST;
       ctx.body = { error: 1 };
       errorLog(`Base save not found for baseid: ${basesaveid}`);
+      return;
     }
 
-    const isOutpost =
-      save.saveuserid === user.userid && save.homebaseid != save.basesaveid;
+    const isOwner = save.saveuserid === user.userid;
+    const isOutpost = isOwner && save.homebaseid !== save.basesaveid;
+
+    // Validate that the user is the owner of the base or it is an attack
+    if (!isOwner && !attackid) {
+      ctx.status = Status.FORBIDDEN;
+      ctx.body = { error: 1, message: "You do not have permission to access this base." };
+      errorLog(`Unauthorized access attempt by user: ${user.userid} to base: ${basesaveid}`);
+      return;
+    }
 
     // Update the save with the values from the request
     // Some keys require special handling, so we have separate handlers for them
