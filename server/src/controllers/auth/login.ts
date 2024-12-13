@@ -90,6 +90,7 @@ export const login: KoaController = async (ctx) => {
     ctx.status = Status.OK;
     ctx.body = {
       error: 0,
+      userId: filteredUser.userid,
       ...filteredUser,
       version: 128,
       token: newToken,
