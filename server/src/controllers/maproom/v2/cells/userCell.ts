@@ -30,7 +30,7 @@ export const userCell = async (ctx: Context, cell: WorldMapCell) => {
     // Get the cell owner, either the current user or another user
     const cellOwner = mine
       ? currentUser
-      : await ORMContext.em.findOne(User, { userid: cell.uid });
+      : await ORMContext.em.findOne(User, { userid: cell.uid }, { populate: ["save"] });
 
     if (!cellOwner || !cellOwner.save) {
       errorLog(`Cell owner save data is missing. Save: ${cellOwner.save}`);
