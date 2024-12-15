@@ -7,7 +7,7 @@ export const devConfig = {
   /*
    * Enable or disable the MapRoom on the server.
    */
-  maproom: true,
+  maproom: false,
 
   /*
    * Enable or disable Inferno on the server.
@@ -30,7 +30,7 @@ export const devConfig = {
    * Inserts a sandbox test base into the database, with all buildings placed.
    * Must be set before creating creating a new record.
    */
-  devSandbox: false,
+  devSandbox: true,
 
   /*
    * Logs all missing assets and their paths to the server console.
