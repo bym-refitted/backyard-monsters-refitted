@@ -18,6 +18,7 @@ import { logMissingAssets, morganLogging } from "./middleware/morganLogging";
 import { Status } from "./enums/StatusCodes";
 import { getLatestSwfFromGithub } from "./controllers/github/getLatestSwfFromGithub";
 import { corsCacheControl } from "./middleware/corsCacheControlSetup";
+import { createClient } from "redis";
 
 export const app = new Koa();
 
@@ -28,6 +29,9 @@ export const ORMContext = {} as {
 
 let globalApiVersion: string;
 
+export const redisClient = createClient();
+
+
 export const setApiVersion = (version: string) => {
   logging(
     `Updating latest client version, server is using: ${globalApiVersion}`
@@ -35,7 +39,7 @@ export const setApiVersion = (version: string) => {
   globalApiVersion = version;
 };
 
-export const getApiVersion = () => globalApiVersion;
+export const getApiVersion = () => "v1.1.0-beta";
 export const PORT = process.env.PORT || 3001;
 export const BASE_URL = process.env.BASE_URL;
 
@@ -51,6 +55,10 @@ api.get("/", (ctx: Context) => (ctx.body = {}));
 
   ORMContext.orm = await MikroORM.init<MariaDbDriver>(ormConfig);
   ORMContext.em = ORMContext.orm.em;
+  await redisClient.on('error', err => console.log('Error ' + err));
+
+  await redisClient.connect(); 
+
 
   app.use(
     bodyParser({
@@ -91,6 +99,7 @@ api.get("/", (ctx: Context) => (ctx.body = {}));
       await next();
     }
   });
+
 
   /**
    * This sets the initial client version to the latest version from github

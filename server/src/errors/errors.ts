@@ -16,6 +16,25 @@ export const authFailureErr = () =>
     isNiceError: true,
   });
 
+  export const tokenAuthFailureErr = () =>
+    new ClientSafeError({
+      message: "Could not authenticate, with token",
+      status: Status.UNAUTHORIZED,
+      code: ErrorCodes.AUTH_ERROR,
+      data: null,
+      isNiceError: true,
+    });
+
+  export const noEmailErr = () =>
+    new ClientSafeError({
+      message:
+        "You need to fill in your email",
+      status: Status.BAD_REQUEST,
+      code: ErrorCodes.INVALID_CREDENTIALS,
+      data: null,
+      isNiceError: true,
+    });
+
 export const emailPasswordErr = () =>
   new ClientSafeError({
     message:
@@ -50,6 +69,7 @@ export const debugClientErr = () =>
     status: Status.NOT_FOUND,
     code: ErrorCodes.DEBUG_ERROR,
     data: null,
+    isNiceError: true,
   });
 
 export const saveFailureErr = () =>
@@ -58,6 +78,7 @@ export const saveFailureErr = () =>
     status: Status.INTERNAL_SERVER_ERROR,
     code: ErrorCodes.SAVE_ERROR,
     data: null,
+    isNiceError: true,
   });
 
 export const loadFailureErr = () =>
@@ -66,6 +87,7 @@ export const loadFailureErr = () =>
     status: Status.NOT_FOUND,
     code: ErrorCodes.LOAD_ERROR,
     data: null,
+    isNiceError: true,
   });
 
 export const yourBannedError = () =>

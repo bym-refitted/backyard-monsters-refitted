@@ -78,6 +78,7 @@ export const ErrorInterceptor = async (ctx: Context, next: Next) => {
           status: Status.INTERNAL_SERVER_ERROR,
           data: {},
           internalInfo: err,
+          isNiceError: true,
         });
     const errorObj = clientError.toSafeJson();
     if (!isSafe) errorLog(`${JSON.stringify(errorObj)}`);
