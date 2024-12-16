@@ -15,6 +15,9 @@ export class User {
   @FrontendKey
   username!: string;
 
+  @Property({ default: false })
+  emailVerified!: boolean;
+
   @FrontendKey
   @Property({ unique: true })
   @Index()
@@ -32,6 +35,9 @@ export class User {
 
   @Property({ default: "" })
   resetToken?: string;
+
+  @Property({ nullable: true })
+  verificationToken?: string;
 
   @FrontendKey
   @Property({ nullable: true })

@@ -1,13 +1,16 @@
 import bcrypt from "bcrypt";
-import { KoaController } from "../../utils/KoaController";
-import { ORMContext } from "../../server";
-import { User } from "../../models/user.model";
-import { FilterFrontendKeys } from "../../utils/FrontendKey";
+import JWT from "jsonwebtoken";
+
 import {
   authFailureErr,
   emailUniqueErr,
   usernameUniqueErr,
 } from "../../errors/errors";
+
+import { KoaController } from "../../utils/KoaController";
+import { ORMContext } from "../../server";
+import { User } from "../../models/user.model";
+import { FilterFrontendKeys } from "../../utils/FrontendKey";
 import { logging } from "../../utils/logger";
 import { Status } from "../../enums/StatusCodes";
 import { ClientSafeError } from "../../middleware/clientSafeError";
@@ -47,13 +50,28 @@ export const register: KoaController = async (ctx) => {
 
     const hash = await bcrypt.hash(registeredUser.password, 10);
 
+    // Generate a short-lived JWT token
+    const verificationToken = JWT.sign(
+      { user: { email: registeredUser.email } },
+      process.env.SECRET_KEY,
+      {
+        expiresIn: "20m",
+      }
+    );
+
     // Create new user record
     const user = ORMContext.em.create(User, {
       ...registeredUser,
       password: hash,
+      verificationToken,
+      emailVerified: false,
+      
     });
 
     await ORMContext.em.persistAndFlush(user);
+
+    
+
     const filteredUser = FilterFrontendKeys(user);
     logging(
       `User ${filteredUser.username} registered successfully | ID: ${filteredUser.userid} | Email: ${filteredUser.email} | IP Address: ${ctx.ip}`
