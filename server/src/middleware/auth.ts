@@ -1,4 +1,4 @@
-import { ORMContext } from "../server";
+import { ORMContext, redisClient } from "../server";
 import { User } from "../models/user.model";
 import { Context, Next } from "koa";
 import { authFailureErr, discordNotOldEnough } from "../errors/errors";
@@ -23,9 +23,12 @@ export const auth = async (ctx: Context, next: Next) => {
   const token = authHeader.replace("Bearer ", "");
 
   const decodedToken = verifyJwtToken(token);
+  const storedToken = await redisClient.get(`user-token:${decodedToken.user.email}`)
+  if(storedToken !== token) throw authFailureErr()
+
   const user = await ORMContext.em.findOne(User, { email: decodedToken.user.email });
 
-  if (!user || user.token !== token || user.banned) throw authFailureErr();
+  if (!user || user.banned) throw authFailureErr();
 
   ctx.authUser = user;
   ctx.meetsDiscordAgeCheck = decodedToken.user.meetsDiscordAgeCheck;
