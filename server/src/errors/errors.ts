@@ -13,6 +13,7 @@ export const authFailureErr = () =>
     status: Status.UNAUTHORIZED,
     code: ErrorCodes.AUTH_ERROR,
     data: null,
+    isNiceError: true,
   });
 
 export const emailPasswordErr = () =>
@@ -22,6 +23,7 @@ export const emailPasswordErr = () =>
     status: Status.CONFLICT,
     code: ErrorCodes.INVALID_CREDENTIALS,
     data: null,
+    isNiceError: true,
   });
 
 export const usernameUniqueErr = () =>
@@ -30,6 +32,7 @@ export const usernameUniqueErr = () =>
     status: Status.CONFLICT,
     code: ErrorCodes.USERNAME_EXISTS,
     data: null,
+    isNiceError: true,
   });
 
 export const emailUniqueErr = () =>
@@ -38,6 +41,7 @@ export const emailUniqueErr = () =>
     status: Status.CONFLICT,
     code: ErrorCodes.EMAIL_EXISTS,
     data: null,
+    isNiceError: true,
   });
 
 export const debugClientErr = () =>
@@ -63,3 +67,27 @@ export const loadFailureErr = () =>
     code: ErrorCodes.LOAD_ERROR,
     data: null,
   });
+
+export const yourBannedError = () =>
+  new ClientSafeError({
+    message: "Your banned, please get a life and stop exploiting a 15 year old flash game.",
+    status: Status.FORBIDDEN,
+    code: ErrorCodes.LOAD_ERROR,
+    data: null,
+  });
+
+export const noDiscordVerificationError = () =>
+  new ClientSafeError({
+    message: "Please claim your account on discord to log in.",
+    status: Status.UNAUTHORIZED,
+    code: ErrorCodes.LOAD_ERROR,
+    data: null,
+  });
+
+  export const discordNotOldEnough = () =>
+    new ClientSafeError({
+      message: "Discord account is not a week old",
+      status: Status.UNAUTHORIZED,
+      code: ErrorCodes.LOAD_ERROR,
+      data: null,
+    });

@@ -1,7 +1,7 @@
 import { ORMContext } from "../server";
 import { User } from "../models/user.model";
 import { Context, Next } from "koa";
-import { authFailureErr } from "../errors/errors";
+import { authFailureErr, discordNotOldEnough } from "../errors/errors";
 import JWT, { JwtPayload } from "jsonwebtoken";
 
 /**
@@ -25,11 +25,21 @@ export const auth = async (ctx: Context, next: Next) => {
   const decodedToken = verifyJwtToken(token);
   const user = await ORMContext.em.findOne(User, { email: decodedToken.user.email });
 
-  if (!user || user.token !== token) throw authFailureErr();
+  if (!user || user.token !== token || user.banned) throw authFailureErr();
 
   ctx.authUser = user;
+  ctx.meetsDiscordAgeCheck = decodedToken.user.meetsDiscordAgeCheck;
 
   if (!ctx.authUser) throw authFailureErr();
+  await next();
+};
+
+export const multiplayerCheck = async (ctx: Context, next: Next) => {
+  const authHeader = ctx.headers.authorization;
+  if (!authHeader || !authHeader.startsWith("Bearer ")) throw authFailureErr();
+  const token = authHeader.replace("Bearer ", "");
+  const decodedToken = verifyJwtToken(token);
+  if (!decodedToken.user.meetsDiscordAgeCheck) throw discordNotOldEnough();
   await next();
 };
 
@@ -44,6 +54,8 @@ type DisgustingJwtPayloadHack = Pick<
 export interface BymJwtPayload extends DisgustingJwtPayloadHack {
   user: {
     email: string;
+    discordId?: string;
+    meetsDiscordAgeCheck?: boolean;
   };
 }
 
