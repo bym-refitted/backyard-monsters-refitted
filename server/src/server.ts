@@ -64,8 +64,6 @@ api.get("/", (ctx: Context) => (ctx.body = {}));
     RequestContext.createAsync(ORMContext.orm.em, next)
   );
 
-  app.use(ErrorInterceptor);
-
   // Logs
   app.use(logMissingAssets);
   app.use(morganLogging);
@@ -102,6 +100,8 @@ api.get("/", (ctx: Context) => (ctx.body = {}));
   if (process.env.USE_VERSION_MANAGEMENT === "enabled") {
     setApiVersion(await getLatestSwfFromGithub());
   }
+
+  app.use(ErrorInterceptor);
 
   // Routes
   app.use(router.routes());

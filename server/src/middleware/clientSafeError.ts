@@ -8,6 +8,7 @@ interface ConstructorParams {
   data: object;
   internalInfo?: Error;
   message: string;
+  isNiceError?: boolean;
 }
 
 /**
@@ -19,6 +20,8 @@ export class ClientSafeError extends Error {
   status: number;
   data: object;
   internalInfo?: Error;
+  error: string;
+  isGorgeusError: boolean;
 
   constructor({
     message = "Something went wrong, please contact support.",
@@ -26,6 +29,7 @@ export class ClientSafeError extends Error {
     code = "INTERNAL_ERROR",
     data = {},
     internalInfo,
+    isNiceError = false,
   }: ConstructorParams) {
     super(message);
     this.name = "ClientSafeError";
@@ -33,17 +37,24 @@ export class ClientSafeError extends Error {
     this.status = status;
     this.data = data;
     this.internalInfo = internalInfo;
+    this.error = message;
+    this.isGorgeusError = isNiceError;
   }
 
   // Create the json to return safely to client
   toSafeJson() {
-    return {
-      message: this.message,
+    const responseBody = {
+      error: undefined as string | undefined,
       code: this.code,
       status: this.status,
       data: this.data,
-      internalInfo: this.internalInfo?.stack, // This should be removed in Prod
+      internalInfo: this.internalInfo?.stack, // This should be removed from the codebase
+      message: this.message,
     };
+
+    if (!this.isGorgeusError) responseBody.error = this.message;
+
+    return responseBody;
   }
 }
 
@@ -64,13 +75,16 @@ export const ErrorInterceptor = async (ctx: Context, next: Next) => {
       : new ClientSafeError({
           message: "Something went wrong, please contact support.",
           code: "INTERNAL_ERROR",
-          status: 500,
+          status: Status.INTERNAL_SERVER_ERROR,
           data: {},
           internalInfo: err,
         });
     const errorObj = clientError.toSafeJson();
     if (!isSafe) errorLog(`${JSON.stringify(errorObj)}`);
-    ctx.status = errorObj.status;
-    ctx.body = { error: errorObj };
+
+    // Put me in jail for my sins (mount joy)
+    console.error("Fuck off: " + errorObj.error + errorObj.status);
+    ctx.status = errorObj.error ? Status.OK : errorObj.status;
+    ctx.body = { error: errorObj.error, errorDetails: errorObj };
   }
 };

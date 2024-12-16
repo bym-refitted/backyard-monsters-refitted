@@ -17,6 +17,7 @@ import {
   updateResources,
 } from "../../../services/base/updateResources";
 import { mapUserSaveData } from "../mapUserSaveData";
+import { discordNotOldEnough } from "../../../errors/errors";
 
 export const baseSave: KoaController = async (ctx) => {
   const user: User = ctx.authUser;
@@ -52,8 +53,13 @@ export const baseSave: KoaController = async (ctx) => {
     // Validate that the user is the owner of the base or it is an attack
     if (!isOwner && !attackid) {
       ctx.status = Status.FORBIDDEN;
-      ctx.body = { error: 1, message: "You do not have permission to access this base." };
-      errorLog(`Unauthorized access attempt by user: ${user.userid} to base: ${basesaveid}`);
+      ctx.body = {
+        error: 1,
+        message: "You do not have permission to access this base.",
+      };
+      errorLog(
+        `Unauthorized access attempt by user: ${user.userid} to base: ${basesaveid}`
+      );
       return;
     }
 
@@ -103,6 +109,11 @@ export const baseSave: KoaController = async (ctx) => {
     // ==================================== //
     // ATTACK MODE
     // ==================================== //
+    if (!ctx.meetsDiscordAgeCheck) {
+      console.log("Hacker attempting to attack without being old enough");
+      throw discordNotOldEnough();
+    }
+    
     const saveData = ctx.request.body as Record<string, any>;
 
     for (const [key, value] of Object.entries(saveData)) {

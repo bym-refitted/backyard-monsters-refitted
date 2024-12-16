@@ -7,7 +7,7 @@ import { baseLoad } from "./controllers/base/load/baseLoad";
 import { updateSaved } from "./controllers/base/save/updateSaved";
 import { getMapRoomCells } from "./controllers/maproom/v3/getCells";
 import { getNewMap } from "./controllers/maproom/getNewMap";
-import { auth } from "./middleware/auth";
+import { auth, multiplayerCheck } from "./middleware/auth";
 import { relocate } from "./controllers/maproom/v3/relocate";
 import { infernoMonsters } from "./controllers/inferno/infernoMonsters";
 import { recordDebugData } from "./controllers/debug/recordDebugData";
@@ -223,7 +223,7 @@ router.post(
  * Worldmap v2 get area data
  * @name POST /worldmapv2/getarea
  */
-router.post("/worldmapv2/getarea", auth, debugDataLog("MR2 get area"), getArea);
+router.post("/worldmapv2/getarea", auth, multiplayerCheck, debugDataLog("MR2 get area"), getArea);
 
 /**
  * Worldmap v2 set map version
@@ -231,7 +231,8 @@ router.post("/worldmapv2/getarea", auth, debugDataLog("MR2 get area"), getArea);
  */
 router.post(
   "/worldmapv2/setmapversion",
-  auth,
+  auth, 
+  multiplayerCheck,
   debugDataLog("Set maproom version"),
   setMapVersion
 );
@@ -242,6 +243,7 @@ router.post(
  */
 router.post(
   "/worldmapv2/takeoverCell",
+  multiplayerCheck,
   auth,
   debugDataLog("Taking over cell"),
   takeoverCell
@@ -254,6 +256,7 @@ router.post(
 router.post(
   "/worldmapv2/transferassets",
   auth,
+  multiplayerCheck,
   debugDataLog("Transferring assets"),
   transferMonsters
 );
@@ -266,6 +269,7 @@ router.post(
   "/api/:apiVersion/player/savebookmarks",
   apiVersion,
   auth,
+  multiplayerCheck,
   debugDataLog("MR2 save bookmarks"),
   saveBookmarks
 );
@@ -277,6 +281,7 @@ router.post(
 router.post(
   "/worldmapv3/initworldmap",
   auth,
+  multiplayerCheck,
   debugDataLog("Posting MR3 init data"),
   initialPlayerCellData
 );
@@ -288,6 +293,7 @@ router.post(
 router.get(
   "/worldmapv3/initworldmap",
   auth,
+  multiplayerCheck,
   debugDataLog("Getting MR3 init data"),
   initialPlayerCellData
 );
@@ -299,6 +305,7 @@ router.get(
 router.post(
   "/worldmapv3/getcells",
   auth,
+  multiplayerCheck,
   debugDataLog("Get MR3 cells"),
   getMapRoomCells
 );
@@ -310,6 +317,7 @@ router.post(
 router.post(
   "/worldmapv3/relocate",
   auth,
+  multiplayerCheck,
   debugDataLog("Relocating MR3 base"),
   relocate
 );
@@ -321,6 +329,7 @@ router.post(
 router.get(
   "/worldmapv3/setmapversion",
   auth,
+  multiplayerCheck,
   debugDataLog("Set maproom version"),
   setMapVersion
 );
@@ -332,6 +341,7 @@ router.get(
 router.post(
   "/worldmapv3/setmapversion",
   auth,
+  multiplayerCheck,
   debugDataLog("Set maproom version"),
   setMapVersion
 );

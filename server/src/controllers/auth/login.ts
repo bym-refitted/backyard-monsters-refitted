@@ -5,13 +5,17 @@ import { User } from "../../models/user.model";
 import { ORMContext } from "../../server";
 import { FilterFrontendKeys } from "../../utils/FrontendKey";
 import { KoaController } from "../../utils/KoaController";
-import { authFailureErr, emailPasswordErr } from "../../errors/errors";
-import { errorLog, logging } from "../../utils/logger";
+import {
+  emailPasswordErr,
+  noDiscordVerificationError,
+  yourBannedError,
+} from "../../errors/errors";
+import { logging } from "../../utils/logger";
 import { BymJwtPayload, verifyJwtToken } from "../../middleware/auth";
 import { Status } from "../../enums/StatusCodes";
 import { Context } from "koa";
-import { ClientSafeError } from "../../middleware/clientSafeError";
 import { UserLoginSchema } from "./zod/AuthSchemas";
+import { Env } from "../../enums/Env";
 
 /**
  * Authenticates a user using a JWT token.
@@ -47,70 +51,100 @@ const authenticateWithToken = async (ctx: Context) => {
  * @throws {Error} - Throws an error if authentication fails or if the request body is invalid.
  */
 export const login: KoaController = async (ctx) => {
-  try {
-    let { email, password, token } = UserLoginSchema.parse(ctx.request.body);
-    let user: User | null = null;
+  let { email, password, token } = UserLoginSchema.parse(ctx.request.body);
+  let user: User | null = null;
+  let isVerified = false;
 
-    if (token) {
-      try {
-        user = await authenticateWithToken(ctx);
-      } catch (err) {}
-    }
-
-    if (!user) {
-      user = await ORMContext.em.findOne(User, { email });
-      if (!user) throw emailPasswordErr();
-
-      const isMatch = await bcrypt.compare(password, user.password);
-      if (!isMatch) throw emailPasswordErr();
-    }
-
-    // Generate and set the token
-    const sessionLifeTime = process.env.SESSION_LIFETIME || "30d";
-    const newToken = JWT.sign(
-      {
-        user: {
-          email: user.email,
-        },
-      } satisfies BymJwtPayload,
-      process.env.SECRET_KEY,
-      {
-        expiresIn: sessionLifeTime,
-      }
-    );
-
-    user.token = newToken;
-    await ORMContext.em.persistAndFlush(user);
-
-    const filteredUser = FilterFrontendKeys(user);
-    logging(
-      `User ${filteredUser.username} successful login | ID: ${filteredUser.userid} | Email: ${filteredUser.email} | IP Address: ${ctx.ip}`
-    );
-
-    ctx.status = Status.OK;
-    ctx.body = {
-      error: 0,
-      userId: filteredUser.userid,
-      ...filteredUser,
-      version: 128,
-      token: newToken,
-      mapversion: 2,
-      mailversion: 1,
-      soundversion: 1,
-      languageversion: 8,
-      app_id: "",
-      tpid: "",
-      currency_url: "",
-      language: "en",
-      settings: {},
-    };
-  } catch (err) {
-    if (err instanceof ClientSafeError) {
-      ctx.status = err.status;
-      ctx.body = { message: err.message, code: err.code };
-    } else {
-      errorLog(`Authentication Error: ${err}`);
-      throw authFailureErr();
-    }
+  if (token) {
+    try {
+      user = await authenticateWithToken(ctx);
+    } catch (err) {}
   }
+
+  if (!user) {
+    user = await ORMContext.em.findOne(User, { email });
+    if (!user) throw emailPasswordErr();
+
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) throw emailPasswordErr();
+  }
+
+  if (user.banned) throw yourBannedError();
+
+  // Generate and set the token
+  const sessionLifeTime = process.env.SESSION_LIFETIME || "30d";
+  let discordId: string;
+
+  // Gack! This is a temporary hack to get the discord user verification.
+  if (process.env.ENV === Env.PROD) {
+    const connection = ORMContext.em.getConnection();
+
+    const result = await connection.execute(
+      "SELECT * from bym_discord.users u WHERE userid = ?",
+      [user.userid]
+    );
+
+    isVerified = result.length > 0;
+    if (!isVerified) throw noDiscordVerificationError();
+
+    discordId = result[0].discord_id;
+  }
+  
+  const isOlderThanOneWeek = (snowflakeId: string) => {
+    // Discord's epoch starts at 2015-01-01T00:00:00 UTC
+    const discordEpoch = 1420070400000;
+
+    // Extract the timestamp from the Snowflake ID (first 42 bits)
+    const timestamp = Number(BigInt(snowflakeId) >> 22n) + discordEpoch;
+
+    // Convert the timestamp to a JavaScript Date object
+    const creationDate = new Date(timestamp);
+
+    // Get the date one week ago
+    const oneWeekAgo = new Date();
+    oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+
+    // Check if the creation date is older than one week
+    return creationDate < oneWeekAgo;
+  };
+
+  const newToken = JWT.sign(
+    {
+      user: {
+        email: user.email,
+        discordId,
+        meetsDiscordAgeCheck: process.env.ENV !== Env.PROD || isOlderThanOneWeek(discordId),
+      },
+    } satisfies BymJwtPayload,
+    process.env.SECRET_KEY,
+    {
+      expiresIn: sessionLifeTime,
+    }
+  );
+
+  user.token = newToken;
+  await ORMContext.em.persistAndFlush(user);
+
+  const filteredUser = FilterFrontendKeys(user);
+  logging(
+    `User ${filteredUser.username} successful login | ID: ${filteredUser.userid} | Email: ${filteredUser.email} | IP Address: ${ctx.ip}`
+  );
+
+  ctx.status = Status.OK;
+  ctx.body = {
+    error: 0,
+    userId: filteredUser.userid,
+    ...filteredUser,
+    version: 128,
+    token: newToken,
+    mapversion: 2,
+    mailversion: 1,
+    soundversion: 1,
+    languageversion: 8,
+    app_id: "",
+    tpid: "",
+    currency_url: "",
+    language: "en",
+    settings: {},
+  };
 };

@@ -15,6 +15,9 @@ export class User {
   @FrontendKey
   username!: string;
 
+  @Property({ default: false })
+  banned?: boolean;
+
   @FrontendKey
   @Property({ unique: true })
   @Index()
