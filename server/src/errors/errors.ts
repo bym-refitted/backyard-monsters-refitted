@@ -81,7 +81,8 @@ export const userPermaBannedErr = () =>
 
 export const discordVerifyErr = () =>
   new ClientSafeError({
-    message: "Please claim your account on discord to log in.",
+    message:
+      "In order to continue, you must verify your account on our Discord server, in the #claim-acount channel.",
     status: Status.UNAUTHORIZED,
     data: null,
   });
