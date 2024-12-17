@@ -82,7 +82,7 @@ export const userPermaBannedErr = () =>
 export const discordVerifyErr = () =>
   new ClientSafeError({
     message:
-      "In order to continue, you must verify your account on our Discord server, in the #claim-acount channel.",
+      "In order to continue, you must verify your account on our Discord server, in the #claim-account channel.",
     status: Status.UNAUTHORIZED,
     data: null,
   });
