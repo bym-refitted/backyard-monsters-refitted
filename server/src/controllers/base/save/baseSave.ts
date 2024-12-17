@@ -17,7 +17,6 @@ import {
   updateResources,
 } from "../../../services/base/updateResources";
 import { mapUserSaveData } from "../mapUserSaveData";
-import { discordNotOldEnough } from "../../../errors/errors";
 
 export const baseSave: KoaController = async (ctx) => {
   const user: User = ctx.authUser;

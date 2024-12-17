@@ -7,9 +7,9 @@ import { FilterFrontendKeys } from "../../utils/FrontendKey";
 import { KoaController } from "../../utils/KoaController";
 import {
   emailPasswordErr,
-  noDiscordVerificationError,
+  discordVerifyErr,
   tokenAuthFailureErr,
-  yourBannedError,
+  userPermaBannedErr,
 } from "../../errors/errors";
 import { logging } from "../../utils/logger";
 import { BymJwtPayload, verifyJwtToken } from "../../middleware/auth";
@@ -32,8 +32,10 @@ import { Env } from "../../enums/Env";
 const authenticateWithToken = async (ctx: Context) => {
   const { token } = UserLoginSchema.parse(ctx.request.body);
   const { user } = verifyJwtToken(token);
-  const storedToken = await redisClient.get(`user-token:${user.email}`)
-  if(storedToken !== token) throw tokenAuthFailureErr()
+
+  const storedToken = await redisClient.get(`user-token:${user.email}`);
+  if (storedToken !== token) throw tokenAuthFailureErr();
+
   let userRecord = await ORMContext.em.findOne(User, { email: user.email });
   if (!userRecord) throw emailPasswordErr();
 
@@ -56,7 +58,6 @@ export const login: KoaController = async (ctx) => {
   let { email, password, token } = UserLoginSchema.parse(ctx.request.body);
   let user: User | null = null;
   let isVerified = false;
-  // if(!email || !password ) throw noEmailErr() 
   if (token) {
     try {
       user = await authenticateWithToken(ctx);
@@ -64,24 +65,20 @@ export const login: KoaController = async (ctx) => {
   }
 
   if (!user) {
-  console.log(`finding: ${email}`)
-  user = await ORMContext.em.findOne(User, { email });
-  if (!user) throw emailPasswordErr();
-  console.log(`found: ${email}`)
+    user = await ORMContext.em.findOne(User, { email });
+    if (!user) throw emailPasswordErr();
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) throw emailPasswordErr();
   }
 
-  console.log(`pw matched: ${email}`)
-
-  if (user.banned) throw yourBannedError();
+  if (user.banned) throw userPermaBannedErr();
 
   // Generate and set the token
   const sessionLifeTime = process.env.SESSION_LIFETIME || "30d";
   let discordId: string;
 
-  // Gack! This is a temporary hack to get the discord user verification.
+  // TODO: This is a temporary hack to get the discord user verification. This should be refactored.
   if (process.env.ENV === Env.PROD) {
     const connection = ORMContext.em.getConnection();
 
@@ -91,11 +88,11 @@ export const login: KoaController = async (ctx) => {
     );
 
     isVerified = result.length > 0;
-    if (!isVerified) throw noDiscordVerificationError();
+    if (!isVerified) throw discordVerifyErr();
 
     discordId = result[0].discord_id;
   }
-  
+
   const isOlderThanOneWeek = (snowflakeId: string) => {
     // Discord's epoch starts at 2015-01-01T00:00:00 UTC
     const discordEpoch = 1420070400000;
@@ -103,14 +100,11 @@ export const login: KoaController = async (ctx) => {
     // Extract the timestamp from the Snowflake ID (first 42 bits)
     const timestamp = Number(BigInt(snowflakeId) >> 22n) + discordEpoch;
 
-    // Convert the timestamp to a JavaScript Date object
     const creationDate = new Date(timestamp);
-
-    // Get the date one week ago
     const oneWeekAgo = new Date();
+
     oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
 
-    // Check if the creation date is older than one week
     return creationDate < oneWeekAgo;
   };
 
@@ -119,7 +113,8 @@ export const login: KoaController = async (ctx) => {
       user: {
         email: user.email,
         discordId,
-        meetsDiscordAgeCheck: process.env.ENV !== Env.PROD || isOlderThanOneWeek(discordId),
+        meetsDiscordAgeCheck:
+          process.env.ENV !== Env.PROD || isOlderThanOneWeek(discordId),
       },
     } satisfies BymJwtPayload,
     process.env.SECRET_KEY,
@@ -128,9 +123,7 @@ export const login: KoaController = async (ctx) => {
     }
   );
 
-  // Run this async?
-  await redisClient.set(`user-token:${user.email}`, newToken)
-
+  await redisClient.set(`user-token:${user.email}`, newToken);
   await ORMContext.em.persistAndFlush(user);
 
   const filteredUser = FilterFrontendKeys(user);
