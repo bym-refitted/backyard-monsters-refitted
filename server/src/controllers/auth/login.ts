@@ -83,8 +83,8 @@ export const login: KoaController = async (ctx) => {
     const connection = ORMContext.em.getConnection();
 
     const result = await connection.execute(
-      "SELECT * from bym_discord.users u WHERE userid = ?",
-      [user.userid]
+      "SELECT * from bym_discord.users WHERE email = ?",
+      [user.email]
     );
 
     isVerified = result.length > 0;
