@@ -109,10 +109,12 @@ export const baseSave: KoaController = async (ctx) => {
     // ==================================== //
     // ATTACK MODE
     // ==================================== //
-    if (!ctx.meetsDiscordAgeCheck) {
-      console.log("Hacker attempting to attack without being old enough");
-      throw discordNotOldEnough();
-    }
+    
+    // TODO: Revisit this
+    // if (!ctx.meetsDiscordAgeCheck) {
+    //   console.log("Hacker attempting to attack without being old enough");
+    //   throw discordNotOldEnough();
+    // }
     
     const saveData = ctx.request.body as Record<string, any>;
 
