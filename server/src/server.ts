@@ -7,6 +7,8 @@ import bodyParser from "koa-bodyparser";
 import serve from "koa-static";
 import ormConfig from "./mikro-orm.config";
 import router from "./app.routes";
+
+import { createClient } from "redis";
 import { MariaDbDriver } from "@mikro-orm/mariadb";
 import { EntityManager, MikroORM, RequestContext } from "@mikro-orm/core";
 import { errorLog, logging } from "./utils/logger";
@@ -18,7 +20,6 @@ import { logMissingAssets, morganLogging } from "./middleware/morganLogging";
 import { Status } from "./enums/StatusCodes";
 import { getLatestSwfFromGithub } from "./controllers/github/getLatestSwfFromGithub";
 import { corsCacheControl } from "./middleware/corsCacheControlSetup";
-import { createClient } from "redis";
 
 export const app = new Koa();
 
@@ -29,8 +30,13 @@ export const ORMContext = {} as {
 
 let globalApiVersion: string;
 
-export const redisClient = createClient();
+export const redisClient = createClient({
+  url: process.env.REDIS_URL || "redis://localhost:6379",
+});
 
+redisClient.on("connect", () => console.log("Redis client connected"));
+redisClient.on("ready", () => console.log("Redis client ready"));
+redisClient.on("error", (err) => console.error("Redis Client Error:", err));
 
 export const setApiVersion = (version: string) => {
   logging(
@@ -55,10 +61,8 @@ api.get("/", (ctx: Context) => (ctx.body = {}));
 
   ORMContext.orm = await MikroORM.init<MariaDbDriver>(ormConfig);
   ORMContext.em = ORMContext.orm.em;
-  await redisClient.on('error', err => console.log('Error ' + err));
 
-  await redisClient.connect(); 
-
+  await redisClient.connect();
 
   app.use(
     bodyParser({
@@ -99,7 +103,6 @@ api.get("/", (ctx: Context) => (ctx.body = {}));
       await next();
     }
   });
-
 
   /**
    * This sets the initial client version to the latest version from github
