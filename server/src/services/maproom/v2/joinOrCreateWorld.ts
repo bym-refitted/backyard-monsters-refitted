@@ -67,7 +67,7 @@ export const joinOrCreateWorld = async (
 
   // Update the user save data with the new home cell
   save.cell = homeCell;
-  save.worldid = world.uuid;
+  save.worldid = ""; // Until the hacking situation is fixed
   save.homebase = [homeCell.x.toString(), homeCell.y.toString()];
 
   await em.persistAndFlush([world, homeCell, save]);

@@ -1,7 +1,7 @@
-import { ORMContext } from "../server";
+import { ORMContext, redisClient } from "../server";
 import { User } from "../models/user.model";
 import { Context, Next } from "koa";
-import { authFailureErr } from "../errors/errors";
+import { authFailureErr, discordAgeErr, tokenAuthFailureErr } from "../errors/errors";
 import JWT, { JwtPayload } from "jsonwebtoken";
 
 /**
@@ -23,13 +23,47 @@ export const auth = async (ctx: Context, next: Next) => {
   const token = authHeader.replace("Bearer ", "");
 
   const decodedToken = verifyJwtToken(token);
-  const user = await ORMContext.em.findOne(User, { email: decodedToken.user.email });
+  const storedToken = await redisClient.get(
+    `user-token:${decodedToken.user.email}`
+  );
 
-  if (!user || user.token !== token) throw authFailureErr();
+  if (storedToken !== token) throw authFailureErr();
+
+  const user = await ORMContext.em.findOne(User, {
+    email: decodedToken.user.email,
+  });
+
+  if (!user || user.banned) throw authFailureErr();
 
   ctx.authUser = user;
+  ctx.meetsDiscordAgeCheck = decodedToken.user.meetsDiscordAgeCheck;
 
   if (!ctx.authUser) throw authFailureErr();
+  await next();
+};
+
+/**
+ * Middleware to validate a user's eligibility for multiplayer access.
+ *
+ * This middleware checks for the presence of a valid Bearer token in the
+ * Authorization header, verifies the token, and ensures the user meets
+ * the Discord account age requirement.
+ *
+ * @param {Context} ctx - The Koa context object.
+ * @param {Next} next - The Koa next middleware function.
+ * @throws {Error} Throws `tokenAuthFailureErr` if the Authorization header is missing or invalid.
+ * @throws {Error} Throws `discordAgeErr` if the user's Discord account creation date does not meet the requirement.
+ */
+export const verifyAccountStatus = async (ctx: Context, next: Next) => {
+  const authHeader = ctx.headers.authorization;
+
+  if (!authHeader || !authHeader.startsWith("Bearer ")) throw tokenAuthFailureErr();
+
+  const token = authHeader.replace("Bearer ", "");
+  const decodedToken = verifyJwtToken(token);
+
+  if (!decodedToken.user.meetsDiscordAgeCheck) throw discordAgeErr();
+
   await next();
 };
 
@@ -44,6 +78,8 @@ type DisgustingJwtPayloadHack = Pick<
 export interface BymJwtPayload extends DisgustingJwtPayloadHack {
   user: {
     email: string;
+    discordId?: string;
+    meetsDiscordAgeCheck?: boolean;
   };
 }
 
