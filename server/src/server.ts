@@ -7,6 +7,8 @@ import bodyParser from "koa-bodyparser";
 import serve from "koa-static";
 import ormConfig from "./mikro-orm.config";
 import router from "./app.routes";
+
+import { createClient } from "redis";
 import { MariaDbDriver } from "@mikro-orm/mariadb";
 import { EntityManager, MikroORM, RequestContext } from "@mikro-orm/core";
 import { errorLog, logging } from "./utils/logger";
@@ -28,6 +30,14 @@ export const ORMContext = {} as {
 
 let globalApiVersion: string;
 
+export const redisClient = createClient({
+  url: process.env.REDIS_URL || "redis://localhost:6379",
+});
+
+redisClient.on("connect", () => console.log("Redis client connected"));
+redisClient.on("ready", () => console.log("Redis client ready"));
+redisClient.on("error", (err) => console.error("Redis Client Error:", err));
+
 export const setApiVersion = (version: string) => {
   logging(
     `Updating latest client version, server is using: ${globalApiVersion}`
@@ -35,7 +45,7 @@ export const setApiVersion = (version: string) => {
   globalApiVersion = version;
 };
 
-export const getApiVersion = () => globalApiVersion;
+export const getApiVersion = () => "v1.1.0-beta";
 export const PORT = process.env.PORT || 3001;
 export const BASE_URL = process.env.BASE_URL;
 
@@ -52,6 +62,8 @@ api.get("/", (ctx: Context) => (ctx.body = {}));
   ORMContext.orm = await MikroORM.init<MariaDbDriver>(ormConfig);
   ORMContext.em = ORMContext.orm.em;
 
+  await redisClient.connect();
+
   app.use(
     bodyParser({
       enableTypes: ["json", "form"],
@@ -63,8 +75,6 @@ api.get("/", (ctx: Context) => (ctx.body = {}));
   app.use((_, next: Next) =>
     RequestContext.createAsync(ORMContext.orm.em, next)
   );
-
-  app.use(ErrorInterceptor);
 
   // Logs
   app.use(logMissingAssets);
@@ -102,6 +112,8 @@ api.get("/", (ctx: Context) => (ctx.body = {}));
   if (process.env.USE_VERSION_MANAGEMENT === "enabled") {
     setApiVersion(await getLatestSwfFromGithub());
   }
+
+  app.use(ErrorInterceptor);
 
   // Routes
   app.use(router.routes());
