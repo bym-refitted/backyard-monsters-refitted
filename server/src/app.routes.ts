@@ -56,6 +56,17 @@ router.post("/init", debugDataLog("Initilizing game client"), (ctx) => {
 
 /**
  * MapRoom setup
+ * @name GET /api/:apiVersion/bm/getnewmap
+ */
+router.get(
+  "/api/:apiVersion/bm/getnewmap",
+  apiVersion,
+  debugDataLog("Getting new maproom"),
+  getNewMap
+);
+
+/**
+ * MapRoom setup
  * @name POST /api/:apiVersion/bm/getnewmap
  */
 router.post(
