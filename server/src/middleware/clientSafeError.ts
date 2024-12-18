@@ -78,7 +78,7 @@ export const ErrorInterceptor = async (ctx: Context, next: Next) => {
     if (!isSafe) errorLog(`${JSON.stringify(errorObj)}`);
 
     console.error(
-      `ErrorInterceptor error: ${errorObj.error} | status: ${errorObj.status}`
+      `ErrorInterceptor error: ${errorObj.message} | status: ${errorObj.status}`
     );
 
     // Put me in jail for my sins - this is bad to accomdate for the client
