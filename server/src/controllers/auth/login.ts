@@ -58,6 +58,7 @@ export const login: KoaController = async (ctx) => {
   let { email, password, token } = UserLoginSchema.parse(ctx.request.body);
   let user: User | null = null;
   let isVerified = false;
+  
   if (token) {
     try {
       user = await authenticateWithToken(ctx);
