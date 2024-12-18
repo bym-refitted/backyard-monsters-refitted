@@ -2374,7 +2374,7 @@ package
             _loc2_ = 1;
             while(_loc2_ < 5)
             {
-               _loc3_ = !!this._buildingProps.costs[this._lvl.Get()] ? uint(this._buildingProps.costs[this._lvl.Get()]["r" + _loc2_]) : 0;
+               _loc3_ = !!this._buildingProps.costs[this._lvl.Get()] ? uint(this._buildingProps.costs[this._lvl.Get()]["r" + _loc2_].Get()) : 0;
                if(_loc3_)
                {
                   ResourcePackages.Create(_loc1_,this,_loc3_,true);

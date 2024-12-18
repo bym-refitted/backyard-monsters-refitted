@@ -7,7 +7,7 @@ import { baseLoad } from "./controllers/base/load/baseLoad";
 import { updateSaved } from "./controllers/base/save/updateSaved";
 import { getMapRoomCells } from "./controllers/maproom/v3/getCells";
 import { getNewMap } from "./controllers/maproom/getNewMap";
-import { auth } from "./middleware/auth";
+import { auth, verifyAccountStatus } from "./middleware/auth";
 import { relocate } from "./controllers/maproom/v3/relocate";
 import { infernoMonsters } from "./controllers/inferno/infernoMonsters";
 import { recordDebugData } from "./controllers/debug/recordDebugData";
@@ -49,7 +49,7 @@ router.get("/connection", (ctx) => (ctx.status = Status.OK));
  * Init route
  * @name GET /api/:apiVersion/bm/getnewmap
  */
-router.get("/init", debugDataLog("Initilizing game client"), (ctx) => {
+router.post("/init", debugDataLog("Initilizing game client"), (ctx) => {
   ctx.status = Status.OK;
   ctx.body = { debugMode: devConfig.debugMode };
 });
@@ -66,7 +66,7 @@ router.get(
 );
 
 /**
- * Init route
+ * MapRoom setup
  * @name POST /api/:apiVersion/bm/getnewmap
  */
 router.post(
@@ -223,7 +223,13 @@ router.post(
  * Worldmap v2 get area data
  * @name POST /worldmapv2/getarea
  */
-router.post("/worldmapv2/getarea", auth, debugDataLog("MR2 get area"), getArea);
+router.post(
+  "/worldmapv2/getarea",
+  auth,
+  verifyAccountStatus,
+  debugDataLog("MR2 get area"),
+  getArea
+);
 
 /**
  * Worldmap v2 set map version
@@ -232,6 +238,7 @@ router.post("/worldmapv2/getarea", auth, debugDataLog("MR2 get area"), getArea);
 router.post(
   "/worldmapv2/setmapversion",
   auth,
+  verifyAccountStatus,
   debugDataLog("Set maproom version"),
   setMapVersion
 );
@@ -242,6 +249,7 @@ router.post(
  */
 router.post(
   "/worldmapv2/takeoverCell",
+  verifyAccountStatus,
   auth,
   debugDataLog("Taking over cell"),
   takeoverCell
@@ -254,6 +262,7 @@ router.post(
 router.post(
   "/worldmapv2/transferassets",
   auth,
+  verifyAccountStatus,
   debugDataLog("Transferring assets"),
   transferMonsters
 );
@@ -266,6 +275,7 @@ router.post(
   "/api/:apiVersion/player/savebookmarks",
   apiVersion,
   auth,
+  verifyAccountStatus,
   debugDataLog("MR2 save bookmarks"),
   saveBookmarks
 );
@@ -277,6 +287,7 @@ router.post(
 router.post(
   "/worldmapv3/initworldmap",
   auth,
+  verifyAccountStatus,
   debugDataLog("Posting MR3 init data"),
   initialPlayerCellData
 );
@@ -288,6 +299,7 @@ router.post(
 router.get(
   "/worldmapv3/initworldmap",
   auth,
+  verifyAccountStatus,
   debugDataLog("Getting MR3 init data"),
   initialPlayerCellData
 );
@@ -299,6 +311,7 @@ router.get(
 router.post(
   "/worldmapv3/getcells",
   auth,
+  verifyAccountStatus,
   debugDataLog("Get MR3 cells"),
   getMapRoomCells
 );
@@ -310,6 +323,7 @@ router.post(
 router.post(
   "/worldmapv3/relocate",
   auth,
+  verifyAccountStatus,
   debugDataLog("Relocating MR3 base"),
   relocate
 );
@@ -321,6 +335,7 @@ router.post(
 router.get(
   "/worldmapv3/setmapversion",
   auth,
+  verifyAccountStatus,
   debugDataLog("Set maproom version"),
   setMapVersion
 );
@@ -332,6 +347,7 @@ router.get(
 router.post(
   "/worldmapv3/setmapversion",
   auth,
+  verifyAccountStatus,
   debugDataLog("Set maproom version"),
   setMapVersion
 );
