@@ -49,24 +49,13 @@ router.get("/connection", (ctx) => (ctx.status = Status.OK));
  * Init route
  * @name GET /api/:apiVersion/bm/getnewmap
  */
-router.get("/init", debugDataLog("Initilizing game client"), (ctx) => {
+router.post("/init", debugDataLog("Initilizing game client"), (ctx) => {
   ctx.status = Status.OK;
   ctx.body = { debugMode: devConfig.debugMode };
 });
 
 /**
  * MapRoom setup
- * @name GET /api/:apiVersion/bm/getnewmap
- */
-router.get(
-  "/api/:apiVersion/bm/getnewmap",
-  apiVersion,
-  debugDataLog("Getting new maproom"),
-  getNewMap
-);
-
-/**
- * Init route
  * @name POST /api/:apiVersion/bm/getnewmap
  */
 router.post(
