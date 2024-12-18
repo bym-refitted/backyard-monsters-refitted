@@ -83,6 +83,6 @@ export const ErrorInterceptor = async (ctx: Context, next: Next) => {
 
     // Put me in jail for my sins - this is bad to accomdate for the client
     ctx.status = errorObj.error ? Status.OK : errorObj.status;
-    ctx.body = { error: errorObj.error, errorDetails: errorObj };
+    ctx.body = { error: errorObj.message, errorDetails: errorObj };
   }
 };
