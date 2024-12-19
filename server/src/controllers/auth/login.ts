@@ -133,15 +133,13 @@ export const login: KoaController = async (ctx) => {
     `User ${filteredUser.username} successful login | ID: ${filteredUser.userid} | Email: ${filteredUser.email} | IP Address: ${ctx.ip}`
   );
 
-  const userToken = await redisClient.get(`user-token:${user.email}`);
-
   ctx.status = Status.OK;
   ctx.body = {
     error: 0,
     userId: filteredUser.userid,
     ...filteredUser,
     version: 128,
-    token: userToken,
+    token: await redisClient.get(`user-token:${user.email}`),
     mapversion: 2,
     mailversion: 1,
     soundversion: 1,
