@@ -306,7 +306,7 @@ package
             return this._monsters[param1];
          }
          _loc2_ = this.numMonsters(param1);
-         _loc3_ = CREATURES.GetProperty(param1,"health",0,true);
+         _loc3_ = CREATURES.GetProperty(param1,"health",0,true).Get();
          _loc4_ = _loc2_ - 1;
          while(_loc4_ >= 0)
          {
@@ -329,7 +329,7 @@ package
             return null;
          }
          _loc2_ = int(this._monsters[param1].length);
-         _loc3_ = CREATURES.GetProperty(param1,"health",0,true);
+         _loc3_ = CREATURES.GetProperty(param1,"health",0,true).Get();
          _loc4_ = 0;
          while(_loc4_ < _loc2_)
          {
