@@ -6,12 +6,9 @@
   "scripts": {
     "compile-sass": "sass --no-source-map --watch styles/main.scss public/main.css",
     "build": "rimraf dist && npx tsc ",
-    "prestart": "npm run build",
     "start": "node dist/server.js",
     "preserve": "npm run build",
-    "serve": "nodemon src/server.ts",
-    "debug": "nodemon --watch src src/server.ts -r ts-node/register --inspect",
-    "tsServe": "nodemon src/server.ts -- --inspect=9229",
+    "serve": "concurrently \"npx tsc -w\" \"npm run compile-sass\" \"nodemon dist/server.js\"",
     "migration:create": "npm run build && mikro-orm migration:create",
     "migration:up": "npm run build && mikro-orm migration:up",
     "db:init": "npm run build && mikro-orm migration:create && mikro-orm schema:create -r",

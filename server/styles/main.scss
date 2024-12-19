@@ -28,14 +28,14 @@ $orange: #e3b129;
 
 /* Global styles */
 body {
-  background-color: $white;
+  background-color: hsl(212 18.3% 13.9%);
   color: #333;
 }
 
 /* Header styles */
 header {
   color: $black;
-  height: 100vh;
+  height: 90vh;
 
   display: flex;
   flex-direction: column;
@@ -44,11 +44,13 @@ header {
 
   h1 {
     margin: 0;
+    color: $white;
     font-size: 4rem;
     font-family: 'Graveblade W00 Regular';
   }
   p {
     font-size: 1.2rem;
+    color: $white;
     font-family: Arial, sans-serif;
   }
 }
