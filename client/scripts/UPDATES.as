@@ -382,7 +382,7 @@ package
             refundBuff = 0;
             refundID = "G" + refundType;
             refundName = CHAMPIONCAGE.GetGuardianProperty(refundID,refundLevel,"name");
-            refundHealth = CHAMPIONCAGE.GetGuardianProperty(refundID,refundLevel,"health");
+            refundHealth = CHAMPIONCAGE.GetGuardianProperty(refundID,refundLevel,"health").Get();
             refundFeedtime = GLOBAL.Timestamp();
             if(CREATURES._guardian && CREATURES._guardian.graphic.parent == MAP._BUILDINGTOPS && !BYMConfig.instance.RENDERER_ON)
             {

@@ -60,7 +60,7 @@ package
          {
             if(_powerupProps[param1])
             {
-               return _powerupProps[param1].costs[param2 - 1][0];
+               return int(_powerupProps[param1].costs[param2 - 1][0].Get());
             }
          }
          return 0;
@@ -72,7 +72,7 @@ package
          {
             if(_powerupProps[param1])
             {
-               return _powerupProps[param1].costs[param2 - 1][1];
+               return int(_powerupProps[param1].costs[param2 - 1][1].Get());
             }
          }
          return 0;
@@ -97,7 +97,7 @@ package
                "upgrade_description":"lab_boltdesc_u",
                "stream":["lab_boltstream","lab_boltstream_unlock","lab_boltstream_upgrade"],
                "streampic":"lab_bolt.png",
-               "costs":[[48000,60 * 60 * 24],[72000,60 * 60 * 24],[108000,60 * 60 * 24]],
+               "costs":[[new SecNum(48000),new SecNum(60 * 60 * 24)],[new SecNum(72000),new SecNum(60 * 60 * 24)],[new SecNum(108000),new SecNum(60 * 60 * 24)]],
                "effect":[150,300,450]
             },
             "C4":{
@@ -108,7 +108,7 @@ package
                "upgrade_description":"lab_finkdesc_u",
                "stream":["lab_finkstream","lab_finkstream_unlock","lab_finkstream_upgrade"],
                "streampic":"lab_fink5.png",
-               "costs":[[96000,60 * 60 * 30],[128000,60 * 60 * 30],[144000,60 * 60 * 30]],
+               "costs":[[new SecNum(96000),new SecNum(60 * 60 * 30)],[new SecNum(128000),new SecNum(60 * 60 * 30)],[new SecNum(144000),new SecNum(60 * 60 * 30)]],
                "effect":[1,2,3]
             },
             "C7":{
@@ -119,7 +119,7 @@ package
                "upgrade_description":"lab_banditodesc_u",
                "stream":["lab_banditostream","lab_banditostream_unlock","lab_banditostream_upgrade"],
                "streampic":"lab_bandito.png",
-               "costs":[[1000000,60 * 60 * 32],[1500000,60 * 60 * 32],[2000000,60 * 60 * 32]],
+               "costs":[[new SecNum(1000000),new SecNum(60 * 60 * 32)],[new SecNum(1500000),new SecNum(60 * 60 * 32)],[new SecNum(2000000),new SecNum(60 * 60 * 32)]],
                "effect":[1,1.5,2]
             },
             "C8":{
@@ -130,7 +130,7 @@ package
                "upgrade_description":"lab_fangdesc_u",
                "stream":["lab_fangstream","lab_fangstream_unlock","lab_fangstream_upgrade"],
                "streampic":"lab_fang5.png",
-               "costs":[[2000000,60 * 60 * 36],[3000000,60 * 60 * 36],[4500000,60 * 60 * 36]],
+               "costs":[[new SecNum(2000000),new SecNum(60 * 60 * 36)],[new SecNum(3000000),new SecNum(60 * 60 * 36)],[new SecNum(4500000),new SecNum(60 * 60 * 36)]],
                "effect":[0.1,0.2,0.3]
             },
             "C5":{
@@ -141,7 +141,7 @@ package
                "upgrade_description":"lab_eyeradesc_u",
                "stream":["lab_eyerastream","lab_eyerastream_unlock","lab_eyerastream_upgrade"],
                "streampic":"lab_eyera5.png",
-               "costs":[[3560000,60 * 60 * 48],[4120000,60 * 60 * 54],[5120000,60 * 60 * 60]],
+               "costs":[[new SecNum(3560000),new SecNum(60 * 60 * 48)],[new SecNum(4120000),new SecNum(60 * 60 * 54)],[new SecNum(5120000),new SecNum(60 * 60 * 60)]],
                "effect":[0.2,0.3,0.4]
             },
             "C9":{
@@ -152,7 +152,7 @@ package
                "upgrade_description":"lab_braindesc_u",
                "stream":["lab_brainstream","lab_brainstream_unlock","lab_brainstream_upgrade"],
                "streampic":"lab_brain.png",
-               "costs":[[3000000,60 * 60 * 48],[4500000,60 * 60 * 48],[6000000,60 * 60 * 48]],
+               "costs":[[new SecNum(3000000),new SecNum(60 * 60 * 48)],[new SecNum(4500000),new SecNum(60 * 60 * 48)],[new SecNum(6000000),new SecNum(60 * 60 * 48)]],
                "effect":[0,4,8]
             },
             "C11":{
@@ -163,7 +163,7 @@ package
                "upgrade_description":"lab_projectxdesc_u",
                "stream":["lab_projxstream","lab_projxstream_unlock","lab_projxstream_upgrade"],
                "streampic":"lab_projectx.png",
-               "costs":[[8000000,60 * 60 * 72],[12000000,60 * 60 * 72],[18000000,60 * 60 * 72]],
+               "costs":[[new SecNum(8000000),new SecNum(60 * 60 * 72)],[new SecNum(12000000),new SecNum(60 * 60 * 72)],[new SecNum(18000000),new SecNum(60 * 60 * 72)]],
                "effect":[1,2,3]
             },
             "C12":{
@@ -174,7 +174,7 @@ package
                "upgrade_description":"lab_davedesc_u",
                "stream":["lab_davestream","lab_davestream_unlock","lab_davestream_upgrade"],
                "streampic":"lab_dave.png",
-               "costs":[[15000000,60 * 60 * 144],[22500000,60 * 60 * 144],[33750000,60 * 60 * 144]],
+               "costs":[[new SecNum(15000000),new SecNum(60 * 60 * 144)],[new SecNum(22500000),new SecNum(60 * 60 * 144)],[new SecNum(33750000),new SecNum(60 * 60 * 144)]],
                "effect":[140,180,220]
             },
             "C13":{
@@ -185,7 +185,7 @@ package
                "upgrade_description":"lab_wormzerdesc_u",
                "stream":["lab_wormstream","lab_wormstream_unlock","lab_wormstream_upgrade"],
                "streampic":"lab_wormzer.png",
-               "costs":[[10000000,60 * 60 * 96],[15000000,60 * 60 * 96],[22500000,60 * 60 * 96]],
+               "costs":[[new SecNum(10000000),new SecNum(60 * 60 * 96)],[new SecNum(15000000),new SecNum(60 * 60 * 96)],[new SecNum(22500000),new SecNum(60 * 60 * 96)]],
                "effect":[1,2,3]
             },
             "C14":{
@@ -196,7 +196,7 @@ package
                "upgrade_description":"lab_teratorndesc_u",
                "stream":["lab_terastream","lab_terastream_unlock","lab_terastream_upgrade"],
                "streampic":"lab_teratorn.png",
-               "costs":[[12000000,60 * 60 * 120],[18000000,60 * 60 * 120],[27000000,60 * 60 * 120]],
+               "costs":[[new SecNum(12000000),new SecNum(60 * 60 * 120)],[new SecNum(18000000),new SecNum(60 * 60 * 120)],[new SecNum(27000000),new SecNum(60 * 60 * 120)]],
                "effect":[1,2,3]
             }
          };
@@ -343,7 +343,7 @@ package
                "errorString":"Needs Training"
             };
          }
-         if(!BASE.Charge(3,_powerupProps[param1].costs[param2 - 1][0],true))
+         if(!BASE.Charge(3,_powerupProps[param1].costs[param2 - 1][0].Get(),true))
          {
             return {
                "error":true,

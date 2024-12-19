@@ -234,13 +234,13 @@ package
             {
                _loc5_ = CREATURES.GetProperty(_loc11_,"speed");
             }
-            if(CREATURES.GetProperty(_loc11_,"health") > _loc6_)
+            if(CREATURES.GetProperty(_loc11_,"health").Get() > _loc6_)
             {
-               _loc6_ = CREATURES.GetProperty(_loc11_,"health");
+               _loc6_ = CREATURES.GetProperty(_loc11_,"health").Get();
             }
-            if(CREATURES.GetProperty(_loc11_,"damage") > _loc7_)
+            if(CREATURES.GetProperty(_loc11_,"damage").Get() > _loc7_)
             {
-               _loc7_ = CREATURES.GetProperty(_loc11_,"damage");
+               _loc7_ = CREATURES.GetProperty(_loc11_,"damage").Get();
             }
             if(CREATURES.GetProperty(_loc11_,"cTime") > _loc8_)
             {
@@ -255,14 +255,14 @@ package
                _loc10_ = CREATURES.GetProperty(_loc11_,"cStorage");
             }
          }
-         _loc12_ = CREATURES.GetProperty(_loc3_,"damage");
+         _loc12_ = CREATURES.GetProperty(_loc3_,"damage").Get();
          TweenLite.to(mcMonsterInfo.bSpeed.mcBar,0.4,{
             "width":100 / _loc5_ * CREATURES.GetProperty(_loc3_,"speed"),
             "ease":Circ.easeInOut,
             "delay":0
          });
          TweenLite.to(mcMonsterInfo.bHealth.mcBar,0.4,{
-            "width":100 / _loc6_ * CREATURES.GetProperty(_loc3_,"health"),
+            "width":100 / _loc6_ * CREATURES.GetProperty(_loc3_,"health").Get(),
             "ease":Circ.easeInOut,
             "delay":0.05
          });
@@ -287,7 +287,7 @@ package
             "delay":0.25
          });
          mcMonsterInfo.tSpeed.htmlText = KEYS.Get("mon_statsspeed",{"v1":CREATURES.GetProperty(_loc3_,"speed")});
-         mcMonsterInfo.tHealth.htmlText = GLOBAL.FormatNumber(CREATURES.GetProperty(_loc3_,"health"));
+         mcMonsterInfo.tHealth.htmlText = GLOBAL.FormatNumber(CREATURES.GetProperty(_loc3_,"health").Get());
          if(_loc12_ > 0)
          {
             mcMonsterInfo.tDamage.htmlText = _loc12_;

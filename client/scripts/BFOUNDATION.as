@@ -847,7 +847,7 @@ package
                   {
                      this._upgradeDescription = KEYS.Get("building_stats",{
                         "v1":this._buildingProps.stats[this._lvl.Get()].range,
-                        "v2":this._buildingProps.stats[this._lvl.Get()].damage,
+                        "v2":this._buildingProps.stats[this._lvl.Get()].damage.Get(),
                         "v3":this._buildingProps.stats[this._lvl.Get()].splash,
                         "v4":int(40 / this._buildingProps.stats[this._lvl.Get()].rate * 10) / 10
                      });
@@ -1940,7 +1940,7 @@ package
                tmpBuildTime -= tmpBuildTime * 0.2;
             }
             this._countdownBuild.Set(tmpBuildTime);
-            setHealth(this._buildingProps.hp[0]);
+            setHealth(this._buildingProps.hp[0].Get());
             maxHealthProperty.value = health;
             this.PlaceB();
             if(_mc.contains(this._mcHit))
@@ -2289,7 +2289,7 @@ package
          if(!this._destroyed)
          {
             this._destroyed = true;
-            ATTACK.Damage(_mc.x,_mc.y,this._buildingProps.hp[this._lvl.Get() - 1]);
+            ATTACK.Damage(_mc.x,_mc.y,this._buildingProps.hp[this._lvl.Get() - 1].Get());
             if(this._repairing == 1)
             {
                this._repairing = 0;
@@ -2301,7 +2301,7 @@ package
             }
             else if(this._countdownBuild.Get() > 0)
             {
-               ATTACK.Damage(_mc.x,_mc.y,this._buildingProps.hp[this._lvl.Get()]);
+               ATTACK.Damage(_mc.x,_mc.y,this._buildingProps.hp[this._lvl.Get()].Get());
                ATTACK.Log("b" + this._id,"<font color=\"#FF0000\">" + KEYS.Get("attack_log_downed_buildcancel",{
                   "v1":this._lvl.Get(),
                   "v2":KEYS.Get(this._buildingProps.name)
@@ -2309,7 +2309,7 @@ package
             }
             else if(this._countdownUpgrade.Get())
             {
-               ATTACK.Damage(_mc.x,_mc.y,this._buildingProps.hp[this._lvl.Get()]);
+               ATTACK.Damage(_mc.x,_mc.y,this._buildingProps.hp[this._lvl.Get()].Get());
                _loc2_ = int(this._buildingProps.costs[this._lvl.Get()].time.Get() * GLOBAL._buildTime);
                _loc3_ = (_loc2_ - this._countdownUpgrade.Get()) * 0.5;
                if(_loc3_ > 60 * 60 * 8)
@@ -2859,7 +2859,7 @@ package
             this._countdownUpgrade.Set(0);
             this._lvl.Add(1);
             ++this._hpLvl;
-            maxHealthProperty.value = this._buildingProps.hp[this._lvl.Get() - 1];
+            maxHealthProperty.value = this._buildingProps.hp[this._lvl.Get() - 1].Get();
             setHealth(maxHealth);
          }
          catch(e:Error)
@@ -2900,7 +2900,7 @@ package
             this._countdownUpgrade.Set(0);
             this._lvl.Add(-1);
             --this._hpLvl;
-            maxHealthProperty.value = this._buildingProps.hp[this._lvl.Get() - 1];
+            maxHealthProperty.value = this._buildingProps.hp[this._lvl.Get() - 1].Get();
             setHealth(maxHealth);
          }
          catch(e:Error)
@@ -3697,12 +3697,12 @@ package
          this._hpLvl = this._lvl.Get();
          if(this._lvl.Get() == 0)
          {
-            maxHealthProperty.value = this._buildingProps.hp[0];
+            maxHealthProperty.value = this._buildingProps.hp[0].Get();
          }
          else
          {
             _loc5_ = this._lvl.Get();
-            _loc6_ = int(this._buildingProps.hp[_loc5_ - 1]);
+            _loc6_ = int(this._buildingProps.hp[_loc5_ - 1].Get());
             maxHealthProperty.value = _loc6_;
          }
          if(building.hp == null)
