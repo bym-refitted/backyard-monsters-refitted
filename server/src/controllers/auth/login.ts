@@ -33,9 +33,6 @@ const authenticateWithToken = async (ctx: Context) => {
   const { token } = UserLoginSchema.parse(ctx.request.body);
   const { user } = verifyJwtToken(token);
 
-  const storedToken = await redisClient.get(`user-token:${user.email}`);
-  if (storedToken !== token) throw tokenAuthFailureErr();
-
   let userRecord = await ORMContext.em.findOne(User, { email: user.email });
   if (!userRecord) throw emailPasswordErr();
 
