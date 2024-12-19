@@ -56,9 +56,10 @@ const authenticateWithToken = async (ctx: Context) => {
  */
 export const login: KoaController = async (ctx) => {
   let { email, password, token } = UserLoginSchema.parse(ctx.request.body);
+
   let user: User | null = null;
   let isVerified = false;
-  
+
   if (token) {
     try {
       user = await authenticateWithToken(ctx);
@@ -132,13 +133,15 @@ export const login: KoaController = async (ctx) => {
     `User ${filteredUser.username} successful login | ID: ${filteredUser.userid} | Email: ${filteredUser.email} | IP Address: ${ctx.ip}`
   );
 
+  const userToken = await redisClient.get(`user-token:${user.email}`);
+
   ctx.status = Status.OK;
   ctx.body = {
     error: 0,
     userId: filteredUser.userid,
     ...filteredUser,
     version: 128,
-    token: newToken,
+    token: userToken,
     mapversion: 2,
     mailversion: 1,
     soundversion: 1,
