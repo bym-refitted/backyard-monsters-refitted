@@ -49,7 +49,7 @@ router.get("/connection", (ctx) => (ctx.status = Status.OK));
  * Init route
  * @name GET /api/:apiVersion/bm/getnewmap
  */
-router.post("/init", debugDataLog("Initilizing game client"), (ctx) => {
+router.get("/init", debugDataLog("Initilizing game client"), (ctx) => {
   ctx.status = Status.OK;
   ctx.body = { debugMode: devConfig.debugMode };
 });
