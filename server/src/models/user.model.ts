@@ -29,7 +29,7 @@ export class User {
   @Property({ default: false })
   discordVerified: boolean;
 
-  @Property({ unique: true })
+  @Property({ nullable: true })
   discord_id: string;
 
   @Property()
