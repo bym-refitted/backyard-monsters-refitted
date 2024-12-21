@@ -84,17 +84,19 @@ export const login: KoaController = async (ctx) => {
   const isOlderThanOneWeek = (snowflakeId: string) => {
     // Discord's epoch starts at 2015-01-01T00:00:00 UTC
     const discordEpoch = 1420070400000;
-
+    
     // Extract the timestamp from the Snowflake ID (first 42 bits)
     const timestamp = Number(BigInt(snowflakeId) >> 22n) + discordEpoch;
-
+    
     const creationDate = new Date(timestamp);
-    const oneWeekAgo = new Date();
-
-    oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
-
-    return creationDate < oneWeekAgo;
-  };
+    const threeYearsAgo = new Date();
+    
+    threeYearsAgo.setFullYear(threeYearsAgo.getFullYear() - 15);
+    
+    const result = creationDate < threeYearsAgo;
+    console.log(`isOlderThanThreeYears(${snowflakeId}) = ${result}`);
+    return result;
+    };
 
   const newToken = JWT.sign(
     {
