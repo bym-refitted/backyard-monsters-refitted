@@ -7,7 +7,7 @@ import { baseLoad } from "./controllers/base/load/baseLoad";
 import { updateSaved } from "./controllers/base/save/updateSaved";
 import { getMapRoomCells } from "./controllers/maproom/v3/getCells";
 import { getNewMap } from "./controllers/maproom/getNewMap";
-import { auth, verifyAccountStatus } from "./middleware/auth";
+import { verifyUserAuth, verifyAccountStatus } from "./middleware/auth";
 import { relocate } from "./controllers/maproom/v3/relocate";
 import { infernoMonsters } from "./controllers/inferno/infernoMonsters";
 import { recordDebugData } from "./controllers/debug/recordDebugData";
@@ -129,13 +129,23 @@ router.post("/api/player/reset-password", resetPassword);
  * Load base data
  * @name POST /base/load
  */
-router.post("/base/load", auth, debugDataLog("Base load data"), baseLoad);
+router.post(
+  "/base/load",
+  verifyUserAuth,
+  debugDataLog("Base load data"),
+  baseLoad
+);
 
 /**
  * Save base data
  * @name POST /base/save
  */
-router.post("/base/save", auth, debugDataLog("Base save data"), baseSave);
+router.post(
+  "/base/save",
+  verifyUserAuth,
+  debugDataLog("Base save data"),
+  baseSave
+);
 
 /**
  * Update saved base data
@@ -143,7 +153,7 @@ router.post("/base/save", auth, debugDataLog("Base save data"), baseSave);
  */
 router.post(
   "/base/updatesaved",
-  auth,
+  verifyUserAuth,
   debugDataLog("Base updated save"),
   updateSaved
 );
@@ -154,7 +164,7 @@ router.post(
  */
 router.post(
   "/base/migrate",
-  auth,
+  verifyUserAuth,
   debugDataLog("Base migrate data"),
   migrateBase
 );
@@ -166,7 +176,7 @@ router.post(
 router.get(
   "/api/:apiVersion/bm/yardplanner/gettemplates",
   apiVersion,
-  auth,
+  verifyUserAuth,
   debugDataLog("Get templates"),
   getTemplates
 );
@@ -178,7 +188,7 @@ router.get(
 router.post(
   "/api/:apiVersion/bm/yardplanner/savetemplate",
   apiVersion,
-  auth,
+  verifyUserAuth,
   debugDataLog("Saving template"),
   saveTemplate
 );
@@ -190,7 +200,7 @@ router.post(
 router.post(
   "/api/:apiVersion/bm/base/load",
   apiVersion,
-  auth,
+  verifyUserAuth,
   debugDataLog("Inferno load data"),
   baseLoad
 );
@@ -202,7 +212,7 @@ router.post(
 router.post(
   "/api/:apiVersion/bm/base/save",
   apiVersion,
-  auth,
+  verifyUserAuth,
   debugDataLog("Inferno save data"),
   baseSave
 );
@@ -214,7 +224,7 @@ router.post(
 router.post(
   "/api/:apiVersion/bm/base/infernomonsters",
   apiVersion,
-  auth,
+  verifyUserAuth,
   debugDataLog("Load inferno monsters"),
   infernoMonsters
 );
@@ -225,7 +235,7 @@ router.post(
  */
 router.post(
   "/worldmapv2/getarea",
-  auth,
+  verifyUserAuth,
   verifyAccountStatus,
   debugDataLog("MR2 get area"),
   getArea
@@ -237,7 +247,7 @@ router.post(
  */
 router.post(
   "/worldmapv2/setmapversion",
-  auth,
+  verifyUserAuth,
   verifyAccountStatus,
   debugDataLog("Set maproom version"),
   setMapVersion
@@ -250,7 +260,7 @@ router.post(
 router.post(
   "/worldmapv2/takeoverCell",
   verifyAccountStatus,
-  auth,
+  verifyUserAuth,
   debugDataLog("Taking over cell"),
   takeoverCell
 );
@@ -261,7 +271,7 @@ router.post(
  */
 router.post(
   "/worldmapv2/transferassets",
-  auth,
+  verifyUserAuth,
   verifyAccountStatus,
   debugDataLog("Transferring assets"),
   transferMonsters
@@ -274,7 +284,7 @@ router.post(
 router.post(
   "/api/:apiVersion/player/savebookmarks",
   apiVersion,
-  auth,
+  verifyUserAuth,
   verifyAccountStatus,
   debugDataLog("MR2 save bookmarks"),
   saveBookmarks
@@ -286,7 +296,7 @@ router.post(
  */
 router.post(
   "/worldmapv3/initworldmap",
-  auth,
+  verifyUserAuth,
   verifyAccountStatus,
   debugDataLog("Posting MR3 init data"),
   initialPlayerCellData
@@ -298,7 +308,7 @@ router.post(
  */
 router.get(
   "/worldmapv3/initworldmap",
-  auth,
+  verifyUserAuth,
   verifyAccountStatus,
   debugDataLog("Getting MR3 init data"),
   initialPlayerCellData
@@ -310,7 +320,7 @@ router.get(
  */
 router.post(
   "/worldmapv3/getcells",
-  auth,
+  verifyUserAuth,
   verifyAccountStatus,
   debugDataLog("Get MR3 cells"),
   getMapRoomCells
@@ -322,7 +332,7 @@ router.post(
  */
 router.post(
   "/worldmapv3/relocate",
-  auth,
+  verifyUserAuth,
   verifyAccountStatus,
   debugDataLog("Relocating MR3 base"),
   relocate
@@ -334,7 +344,7 @@ router.post(
  */
 router.get(
   "/worldmapv3/setmapversion",
-  auth,
+  verifyUserAuth,
   verifyAccountStatus,
   debugDataLog("Set maproom version"),
   setMapVersion
@@ -346,7 +356,7 @@ router.get(
  */
 router.post(
   "/worldmapv3/setmapversion",
-  auth,
+  verifyUserAuth,
   verifyAccountStatus,
   debugDataLog("Set maproom version"),
   setMapVersion
