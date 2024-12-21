@@ -10,7 +10,7 @@
     "disabled_mail": "Mail is currently disabled on Backyard Monster Refitted.",
     "disabled_daveclub": "Dave Club is currently disabled on Backyard Monster Refitted.",
     "disabled_addshiny": "Sorry... you cannot add Shiny on Backyard Monsters Refitted. To find out more please visit our <b>Discord.</b>",
-    "inferno_msg_disabled": "Inferno is currently <b>disabled</b> in Backyard Monsters Refitted. It is missing a significant amount of assets, and we are working hard to put it back together with what we have. Please be patient while the development is underway.<br><br><b>Help:</b><br>We are looking for people who can help us by searching through data on their old hardrives, to find missing assets. Please visit our discord if you believe you have some old data.<br><br>- The Backyard Monsters Refitted Team",
+    "inferno_msg_disabled": "Inferno is currently <b>disabled</b> in Backyard Monsters Refitted. Our team are working hard to implement it! It will be available in the near future.<br><br>- The Backyard Monsters Refitted Team",
     "requirements_notmet": "Requirements not met.",
     "err_loading_base": "Whoops... it looks like we ran into an issue trying to load your base. Please report this error in our <b>discord</b> with your username.",
     "#b_americanflag#": "American Flag",
