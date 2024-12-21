@@ -128,6 +128,8 @@ package
                      {
                         ShowB();
                      }
+                  } else if(!GLOBAL._flags.discordOldEnough) {
+                     GLOBAL.Message(KEYS.Get("map_msg_damaged"));
                   }
                   else if(!initMaproomSetup)
                   {
