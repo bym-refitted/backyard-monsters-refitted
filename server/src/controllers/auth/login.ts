@@ -77,7 +77,7 @@ export const login: KoaController = async (ctx) => {
 
   // Check if the user has verified their Discord account
   if (process.env.ENV === Env.PROD) {
-    if (!user.discordVerified) throw discordVerifyErr();
+    if (!user.discord_verified) throw discordVerifyErr();
     discordId = user.discord_id;
   }
 
