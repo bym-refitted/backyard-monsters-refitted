@@ -1647,6 +1647,7 @@
     "newmap_opening": "Abrindo o mapa...",
     "newmap_bm_name": "Por favor, digite um nome para este marcador.",
     "newmap_init_setup": "<b>Finding your place in the world...</b><br><br>Hang tight! We're locating the perfect spot for you on the World Map. With so many players out there, it might take a moment. Feel free to close this message and give it another try if needed.",
+    "newmap_discord_age": "Your Discord account must be at least <b>1 week old</b> to use this feature.",
     "newmap_bm_long": "Este nome de marcador é muito longo.",
     "newmap_bm_full": "Você tem muitos marcadores. Por favor, remova um e tente novamente.",
     "newmap_bm_done": "Você já marcou este local.",
