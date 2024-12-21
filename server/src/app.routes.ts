@@ -248,7 +248,6 @@ router.post(
 router.post(
   "/worldmapv2/setmapversion",
   verifyUserAuth,
-  verifyAccountStatus,
   debugDataLog("Set maproom version"),
   setMapVersion
 );
