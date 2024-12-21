@@ -27,7 +27,7 @@ export class User {
   password!: string;
 
   @Property({ default: false })
-  discordVerified: boolean;
+  discord_verified: boolean;
 
   @Property({ nullable: true })
   discord_id: string;
