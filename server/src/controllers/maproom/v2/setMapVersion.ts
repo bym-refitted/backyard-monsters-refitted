@@ -22,25 +22,27 @@ export const CURRENT_MAPROOM_VERSION = MapRoomVersion.V2 as MapRoomVersion;
  * @returns {Promise<void>} - A promise that resolves when the controller is complete.
  */
 export const setMapVersion: KoaController = async (ctx) => {
-  // Check if the user's Discord account is at least a week old
-  if (!ctx.meetsDiscordAgeCheck) {
-    ctx.status = Status.FORBIDDEN;
-    ctx.body = {
-      error:
-        "Discord account must be at least a week old to access this route.",
-    };
-    return;
-  }
-
   const user: User = ctx.authUser;
   await ORMContext.em.populate(user, ["save"]);
 
   let save: Save = user.save;
   const { version } = ctx.request.body as { version: string };
 
-  version === MapRoomVersion.V2
-    ? await joinOrCreateWorld(user, save)
-    : await leaveWorld(user, save);
+  if (version === MapRoomVersion.V2) {
+    // Check if the user's Discord account is at least a week old
+    if (!ctx.meetsDiscordAgeCheck) {
+      ctx.status = Status.OK;
+      ctx.body = {
+        error: 0,
+        message: "Discord account is not old enough",
+      };
+      return;
+    }
+
+    await joinOrCreateWorld(user, save);
+  } else {
+    await leaveWorld(user, save);
+  }
 
   const filteredSave = FilterFrontendKeys(save);
 
