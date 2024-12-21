@@ -32,7 +32,7 @@ export class User {
   @Property({ nullable: true })
   discord_id: string;
 
-  @Property()
+  @Property({ nullable: true })
   discord_tag: string;
 
   @Property({ default: "" })
