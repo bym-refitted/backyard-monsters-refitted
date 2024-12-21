@@ -8,7 +8,6 @@ import { KoaController } from "../../utils/KoaController";
 import {
   emailPasswordErr,
   discordVerifyErr,
-  tokenAuthFailureErr,
   userPermaBannedErr,
 } from "../../errors/errors";
 import { logging } from "../../utils/logger";
@@ -42,10 +41,11 @@ const authenticateWithToken = async (ctx: Context) => {
 /**
  * Controller to handle user login.
  *
- * This controller authenticates a user based on the provided email & password.
- * If the authentication is successful, it generates a JWT token and returns the
- * user information along with the token. If authentication fails, it throws an
- * authentication failure error.
+ * This controller authenticates a user based on either their email & password, or token.
+ * The token is stored in Redis for each login request, to later be validated in the middleware.
+ * Additionally, the controller checks if the user is banned or has verified their Discord account.
+ * The token signature is then constructed with the user's email and Discord ID, along with a flag 
+ * indicating if the user meets the Discord age check requirement.
  *
  * @param {Context} ctx - The Koa context object.
  * @returns {Promise<void>} - A promise that resolves when the controller is complete.
@@ -54,8 +54,7 @@ const authenticateWithToken = async (ctx: Context) => {
 export const login: KoaController = async (ctx) => {
   let { email, password, token } = UserLoginSchema.parse(ctx.request.body);
   let user: User | null = null;
-  let isVerified = false;
-  
+
   if (token) {
     try {
       user = await authenticateWithToken(ctx);
@@ -76,19 +75,10 @@ export const login: KoaController = async (ctx) => {
   const sessionLifeTime = process.env.SESSION_LIFETIME || "30d";
   let discordId: string;
 
-  // TODO: This is a temporary hack to get the discord user verification. This should be refactored.
+  // Check if the user has verified their Discord account
   if (process.env.ENV === Env.PROD) {
-    const connection = ORMContext.em.getConnection();
-
-    const result = await connection.execute(
-      "SELECT * from bym_discord.users WHERE email = ?",
-      [user.email]
-    );
-
-    isVerified = result.length > 0;
-    if (!isVerified) throw discordVerifyErr();
-
-    discordId = result[0].discord_id;
+    if (!user.discordVerified) throw discordVerifyErr();
+    discordId = user.discord_id;
   }
 
   const isOlderThanOneWeek = (snowflakeId: string) => {
