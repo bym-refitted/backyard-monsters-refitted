@@ -151,13 +151,13 @@ package
             {
                _loc4_ = CREATURES.GetProperty(_loc10_,"speed");
             }
-            if(CREATURES.GetProperty(_loc10_,"health") > _loc5_)
+            if(CREATURES.GetProperty(_loc10_,"health").Get() > _loc5_)
             {
-               _loc5_ = CREATURES.GetProperty(_loc10_,"health");
+               _loc5_ = CREATURES.GetProperty(_loc10_,"health").Get();
             }
-            if(CREATURES.GetProperty(_loc10_,"damage") > _loc6_)
+            if(CREATURES.GetProperty(_loc10_,"damage").Get() > _loc6_)
             {
-               _loc6_ = CREATURES.GetProperty(_loc10_,"damage");
+               _loc6_ = CREATURES.GetProperty(_loc10_,"damage").Get();
             }
             if(CREATURES.GetProperty(_loc10_,"cTime") > _loc7_)
             {
@@ -172,14 +172,14 @@ package
                _loc9_ = CREATURES.GetProperty(_loc10_,"cStorage");
             }
          }
-         _loc11_ = CREATURES.GetProperty(_loc2_,"damage");
+         _loc11_ = CREATURES.GetProperty(_loc2_,"damage").Get();
          TweenLite.to(mcMonsterInfo.bSpeed.mcBar,0.4,{
             "width":100 / _loc4_ * CREATURES.GetProperty(_loc2_,"speed"),
             "ease":Circ.easeInOut,
             "delay":0
          });
          TweenLite.to(mcMonsterInfo.bHealth.mcBar,0.4,{
-            "width":100 / _loc5_ * CREATURES.GetProperty(_loc2_,"health"),
+            "width":100 / _loc5_ * CREATURES.GetProperty(_loc2_,"health").Get(),
             "ease":Circ.easeInOut,
             "delay":0.05
          });
@@ -204,7 +204,7 @@ package
             "delay":0.25
          });
          mcMonsterInfo.tSpeed.htmlText = KEYS.Get("mon_statsspeed",{"v1":CREATURES.GetProperty(_loc2_,"speed")});
-         mcMonsterInfo.tHealth.htmlText = GLOBAL.FormatNumber(CREATURES.GetProperty(_loc2_,"health"));
+         mcMonsterInfo.tHealth.htmlText = GLOBAL.FormatNumber(CREATURES.GetProperty(_loc2_,"health").Get());
          if(_loc11_ > 0)
          {
             mcMonsterInfo.tDamage.htmlText = _loc11_;
