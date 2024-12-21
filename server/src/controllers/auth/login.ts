@@ -16,7 +16,6 @@ import { Status } from "../../enums/StatusCodes";
 import { Context } from "koa";
 import { UserLoginSchema } from "./zod/AuthSchemas";
 import { Env } from "../../enums/Env";
-import { DiscordVerified } from "../../models/discord.model";
 
 /**
  * Authenticates a user using a JWT token.
@@ -78,12 +77,8 @@ export const login: KoaController = async (ctx) => {
 
   // Check if the user has verified their Discord account
   if (process.env.ENV === Env.PROD) {
-    const discordVerified = await ORMContext.em.findOne(DiscordVerified, {
-      email: user.email,
-    });
-
-    if (!discordVerified) throw discordVerifyErr();
-    discordId = discordVerified.discord_id;
+    if (!user.discordVerified) throw discordVerifyErr();
+    discordId = user.discord_id;
   }
 
   const isOlderThanOneWeek = (snowflakeId: string) => {
