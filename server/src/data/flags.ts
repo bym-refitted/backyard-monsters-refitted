@@ -8,6 +8,7 @@ export const flags = {
   // Platforms:
   viximo: 0,
   kongregate: 0,
+  discordOldEnough: false,
 
   // Settings:
   maproom2: devConfig.maproom ? 1 : 0,

@@ -33,8 +33,7 @@ export const setMapVersion: KoaController = async (ctx) => {
     if (!ctx.meetsDiscordAgeCheck) {
       ctx.status = Status.OK;
       ctx.body = {
-        error: 0,
-        message: "Discord account is not old enough",
+        error: "Discord account is not old enough.",
       };
       return;
     }
