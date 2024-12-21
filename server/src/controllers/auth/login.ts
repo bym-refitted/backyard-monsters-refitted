@@ -44,7 +44,7 @@ const authenticateWithToken = async (ctx: Context) => {
  * This controller authenticates a user based on either their email & password, or token.
  * The token is stored in Redis for each login request, to later be validated in the middleware.
  * Additionally, the controller checks if the user is banned or has verified their Discord account.
- * The token signature is then constructed with the user's email and Discord ID, along with a flag 
+ * The token signature is then constructed with the user's email and Discord ID, along with a flag
  * indicating if the user meets the Discord age check requirement.
  *
  * @param {Context} ctx - The Koa context object.
@@ -84,19 +84,17 @@ export const login: KoaController = async (ctx) => {
   const isOlderThanOneWeek = (snowflakeId: string) => {
     // Discord's epoch starts at 2015-01-01T00:00:00 UTC
     const discordEpoch = 1420070400000;
-    
+
     // Extract the timestamp from the Snowflake ID (first 42 bits)
     const timestamp = Number(BigInt(snowflakeId) >> 22n) + discordEpoch;
-    
+
     const creationDate = new Date(timestamp);
-    const threeYearsAgo = new Date();
-    
-    threeYearsAgo.setFullYear(threeYearsAgo.getFullYear() - 15);
-    
-    const result = creationDate < threeYearsAgo;
-    console.log(`isOlderThanThreeYears(${snowflakeId}) = ${result}`);
-    return result;
-    };
+    const sevenDaysAgo = new Date();
+
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+
+    return creationDate < sevenDaysAgo;
+  };
 
   const newToken = JWT.sign(
     {
@@ -139,4 +137,3 @@ export const login: KoaController = async (ctx) => {
     settings: {},
   };
 };
-

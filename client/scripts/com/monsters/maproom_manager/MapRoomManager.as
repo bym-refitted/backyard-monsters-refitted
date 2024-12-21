@@ -175,6 +175,11 @@ package com.monsters.maproom_manager
          {
             return;
          }
+         if(!GLOBAL._flags.discordOldEnough) 
+         {
+            GLOBAL.Message(KEYS.Get("newmap_discord_age"));
+            return;
+         }
          if(GLOBAL._flags.maproom2 != 1)
          {
             GLOBAL.Message(KEYS.Get("map_msg_disabled"));
