@@ -128,8 +128,10 @@ package
          }
          else
          {
-            LOGGER.Log("err",param1.error);
-            GLOBAL.ErrorMessage("BUILDING11 2");
+            this.callPending = true;
+            GLOBAL._flags.discordOldEnough = false;
+            //LOGGER.Log("err",param1.error);
+            //GLOBAL.ErrorMessage("BUILDING11 2");
          }
          this.callPending = false;
          PLEASEWAIT.Hide();

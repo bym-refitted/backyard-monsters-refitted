@@ -25,7 +25,7 @@ export const tokenAuthFailureErr = () =>
 export const emailPasswordErr = () =>
   new ClientSafeError({
     message:
-      "Your login credentials are incorrect. Please check and try again. If you forgot your password, you can reset it by clicking on 'Forgot Password'.",
+      "Your login credentials are incorrect. Please check and try again. If you forgot your password, you can reset it by clicking on forgot password.",
     status: Status.CONFLICT,
     data: null,
     isClientFriendly: true,
@@ -77,14 +77,16 @@ export const userPermaBannedErr = () =>
       "Your account has been permanently banned. If you believe this is an error, please contact support.",
     status: Status.FORBIDDEN,
     data: null,
+    isClientFriendly: true
   });
 
 export const discordVerifyErr = () =>
   new ClientSafeError({
     message:
-      "<b>In order to continue, you must verify your account on our Discord server, in the #claim-account channel</b>.",
+      "In order to continue, you must verify your account on our Discord server, in the #claim-account channel.",
     status: Status.UNAUTHORIZED,
     data: null,
+    isClientFriendly: true
   });
 
 export const discordAgeErr = () =>
