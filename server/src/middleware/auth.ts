@@ -15,7 +15,7 @@ import JWT, { JwtPayload } from "jsonwebtoken";
  * @param {Next} next - The Koa next middleware function.
  * @throws Will throw an error if the Authorization header is missing or invalid, or if the user cannot be found.
  */
-export const auth = async (ctx: Context, next: Next) => {
+export const verifyUserAuth = async (ctx: Context, next: Next) => {
   const authHeader = ctx.headers.authorization;
 
   if (!authHeader || !authHeader.startsWith("Bearer ")) throw authFailureErr();
@@ -79,7 +79,7 @@ export interface BymJwtPayload extends DisgustingJwtPayloadHack {
   user: {
     email: string;
     discordId?: string;
-    meetsDiscordAgeCheck?: boolean;
+    meetsDiscordAgeCheck: boolean;
   };
 }
 
@@ -94,6 +94,6 @@ export const verifyJwtToken = (token: string): BymJwtPayload => {
   try {
     return <BymJwtPayload>JWT.verify(token, process.env.SECRET_KEY);
   } catch (err) {
-    throw authFailureErr();
+    throw tokenAuthFailureErr();
   }
 };
