@@ -26,6 +26,15 @@ export class User {
   @Property()
   password!: string;
 
+  @Property({ default: false })
+  discord_verified: boolean;
+
+  @Property({ nullable: true })
+  discord_id: string;
+
+  @Property({ nullable: true })
+  discord_tag: string;
+
   @Property({ default: "" })
   @FrontendKey
   last_name?: string;

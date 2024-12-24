@@ -28,9 +28,20 @@ export const setMapVersion: KoaController = async (ctx) => {
   let save: Save = user.save;
   const { version } = ctx.request.body as { version: string };
 
-  version === MapRoomVersion.V2
-    ? await joinOrCreateWorld(user, save)
-    : await leaveWorld(user, save);
+  if (version === MapRoomVersion.V2) {
+    // Check if the user's Discord account is at least a week old
+    if (!ctx.meetsDiscordAgeCheck) {
+      ctx.status = Status.OK;
+      ctx.body = {
+        error: "Discord account is not old enough.",
+      };
+      return;
+    }
+
+    await joinOrCreateWorld(user, save);
+  } else {
+    await leaveWorld(user, save);
+  }
 
   const filteredSave = FilterFrontendKeys(save);
 
