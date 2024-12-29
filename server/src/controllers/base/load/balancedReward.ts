@@ -2,6 +2,16 @@ import { KorathReward, Reward } from "../../../enums/Rewards";
 import { FieldData, Save } from "../../../models/save.model";
 import { ORMContext } from "../../../server";
 
+interface TownHall {
+  id: number;
+  l: number;
+  x: number;
+  y: number;
+  t: number;
+  fort: number;
+  cU: number;
+}
+
 /**
  * Adds rewards to the user's save data based on their Town Hall level.
  *
@@ -19,7 +29,7 @@ export const balancedReward = async (userSave: Save) => {
   // Early return if all rewards are already assigned
   if (rewards[KORATH] && rewards[KRALLEN] && rewards[DIAMOND_SPURTZ]) return;
 
-  const townHall = extractTownHall(userSave.buildingdata);
+  const townHall: TownHall = extractTownHall(userSave.buildingdata);
   if (!townHall || !townHall.l) return;
 
   let townHallLevel = townHall.l;
@@ -51,10 +61,10 @@ export const balancedReward = async (userSave: Save) => {
  * If `t` is equal to 14, then it is considered a Town Hall.
  *
  * @param buildingData the buildingData object to search
- * @returns the townHall object found
+ * @returns the townHall object found or null if not found
  * @throws Error when townHall Object cannot be found
  */
-const extractTownHall = (buildingData: FieldData) => {
+export const extractTownHall = (buildingData: FieldData): TownHall | null => {
   for (const key in buildingData) {
     const building = buildingData[key];
 
