@@ -57,7 +57,7 @@ export const flags = {
   midgameIncentive: 0,
   showFBCEarn: 1,
   trialpayDealspot: 1,
-  showFBCDaily: 0,
+  showFBCDaily: 1,
   validate_percent: 0,
   autoban_validate_fail: 0,
   autoban_client: 0,
