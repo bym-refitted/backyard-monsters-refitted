@@ -11,5 +11,5 @@
     "esModuleInterop": true,
     "inlineSources": true,
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*", "scripts/anticheat"],
 }

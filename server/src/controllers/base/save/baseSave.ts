@@ -18,6 +18,7 @@ import {
 } from "../../../services/base/updateResources";
 import { mapUserSaveData } from "../mapUserSaveData";
 
+// TODO: Rewrite this
 export const baseSave: KoaController = async (ctx) => {
   const user: User = ctx.authUser;
   await ORMContext.em.populate(user, ["save"]);
@@ -49,6 +50,7 @@ export const baseSave: KoaController = async (ctx) => {
     const isOwner = save.saveuserid === user.userid;
     const isOutpost = isOwner && save.homebaseid !== save.basesaveid;
 
+    // Does not work, awful validation
     // Validate that the user is the owner of the base or it is an attack
     if (!isOwner && !attackid) {
       ctx.status = Status.FORBIDDEN;
