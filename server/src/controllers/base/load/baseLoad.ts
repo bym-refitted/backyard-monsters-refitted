@@ -17,6 +17,7 @@ import { baseModeBuild } from "./modes/baseModeBuild";
 import { errorLog } from "../../../utils/logger";
 import { baseModeAttack } from "./modes/baseModeAttack";
 import { mapUserSaveData } from "../mapUserSaveData";
+import { discordAgeErr } from "../../../errors/errors";
 
 const BaseLoadSchema = z.object({
   type: z.string(),
@@ -48,6 +49,7 @@ export const baseLoad: KoaController = async (ctx) => {
         baseSave = await baseModeView(baseid);
         break;
       case BaseMode.ATTACK:
+        if (!ctx.meetsDiscordAgeCheck) throw discordAgeErr();
         baseSave = await baseModeAttack(user, baseid);
         break;
       default:

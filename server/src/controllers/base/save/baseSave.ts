@@ -4,183 +4,118 @@ import { ORMContext } from "../../../server";
 import { FilterFrontendKeys } from "../../../utils/FrontendKey";
 import { KoaController } from "../../../utils/KoaController";
 import { getCurrentDateTime } from "../../../utils/getCurrentDateTime";
-import { errorLog, logging } from "../../../utils/logger";
-import { updateMonsters } from "../../../services/base/updateMonsters";
+import { logging } from "../../../utils/logger";
 import { Status } from "../../../enums/StatusCodes";
 import { SaveKeys } from "../../../enums/SaveKeys";
 import { BaseSaveSchema } from "./zod/BaseSaveSchema";
 import { resourcesHandler } from "./handlers/resourceHandler";
 import { purchaseHandler } from "./handlers/purchaseHandler";
 import { academyHandler } from "./handlers/academyHandler";
-import {
-  Resources,
-  updateResources,
-} from "../../../services/base/updateResources";
 import { mapUserSaveData } from "../mapUserSaveData";
+import { BaseType } from "../../../enums/Base";
+import { saveFailureErr } from "../../../errors/errors";
+import { attackLootHandler } from "./handlers/attackLootHandler";
+import { monsterUpdateHandler } from "./handlers/monsterUpdateHandler";
 
-// TODO: Rewrite this
 export const baseSave: KoaController = async (ctx) => {
   const user: User = ctx.authUser;
+  const userSave = user.save;
   await ORMContext.em.populate(user, ["save"]);
 
   try {
-    const {
-      basesaveid,
-      purchase,
-      buildinghealthdata,
-      champion,
-      attackerchampion,
-      monsterupdate,
-      attackloot,
-      over,
-      attackid,
-    } = BaseSaveSchema.parse(ctx.request.body);
+    const saveData = BaseSaveSchema.parse(ctx.request.body);
 
-    const userSave = user.save;
+    const baseSave = await ORMContext.em.findOne(Save, {
+      basesaveid: saveData.basesaveid,
+    });
 
-    const save = await ORMContext.em.findOne(Save, { basesaveid });
+    if (!baseSave) throw saveFailureErr();
 
-    if (!save) {
-      ctx.status = Status.BAD_REQUEST;
-      ctx.body = { error: 1 };
-      errorLog(`Base save not found for baseid: ${basesaveid}`);
-      return;
-    }
+    const isOwner = baseSave.saveuserid === user.userid;
+    const isOutpost = isOwner && baseSave.type === BaseType.OUTPOST;
 
-    const isOwner = save.saveuserid === user.userid;
-    const isOutpost = isOwner && save.homebaseid !== save.basesaveid;
-
-    // Does not work, awful validation
-    // Validate that the user is the owner of the base or it is an attack
-    if (!isOwner && !attackid) {
-      ctx.status = Status.FORBIDDEN;
-      ctx.body = {
-        error: 1,
-        message: "You do not have permission to access this base.",
-      };
-      errorLog(
-        `Unauthorized access attempt by user: ${user.userid} to base: ${basesaveid}`
-      );
-      return;
-    }
-
-    // Update the save with the values from the request
-    // Some keys require special handling, so we have separate handlers for them
+    // Standard save logic
     for (const key of Save.saveKeys) {
-      const saveDataKey = ctx.request.body[key];
+      const value = ctx.request.body[key];
 
       switch (key) {
         case SaveKeys.RESOURCES:
-          resourcesHandler(ctx, userSave, save, isOutpost);
+          resourcesHandler(ctx, userSave, baseSave, isOutpost);
           break;
 
         case SaveKeys.PURCHASE:
-          purchaseHandler(purchase, userSave, save);
+          purchaseHandler(saveData.purchase, userSave, baseSave);
           break;
 
         case SaveKeys.ACADEMY:
-          academyHandler(ctx, save);
+          academyHandler(ctx, baseSave);
           break;
 
         case SaveKeys.BUILDING_HEALTH_DATA:
-          if (saveDataKey) save.buildinghealthdata = buildinghealthdata;
+          if (value) baseSave.buildinghealthdata = saveData.buildinghealthdata;
           break;
 
         case SaveKeys.CHAMPION:
-          if (saveDataKey) save.champion = champion;
+          if (value) baseSave.champion = saveData.champion;
           break;
+
         default:
-          // Default case is to parse the JSON string if it's not an array
-          if (saveDataKey && !Array.isArray(saveDataKey))
-            save[key] = JSON.parse(saveDataKey);
+          if (value) {
+            try {
+              baseSave[key] = JSON.parse(value);
+            } catch (_) {
+              baseSave[key] = value;
+            }
+          }
       }
 
-      if (isOutpost) {
-        if (key === SaveKeys.BUILDING_RESOURCES) {
-          userSave.buildingresources[`b${save.baseid}`] =
-            save.buildingresources[`b${save.baseid}`];
-
-          userSave.buildingresources["t"] = getCurrentDateTime();
-        }
-
-        if (key === SaveKeys.QUESTS) userSave.quests = save.quests;
-      }
+      if (isOutpost) updateOutposts(userSave, baseSave, key);
     }
 
-    // ==================================== //
-    // ATTACK MODE
-    // ==================================== //
-    
-    // TODO: Revisit this
-    // if (!ctx.meetsDiscordAgeCheck) throw discordNotOldEnough();
-    
-    const saveData = ctx.request.body as Record<string, any>;
+    // Attack save logic
+    const isAttack =
+      baseSave.attackid !== 0 && baseSave.saveuserid !== user.userid;
 
-    for (const [key, value] of Object.entries(saveData)) {
-      if (Save.attackSaveKeys.includes(key) && !Save.saveKeys.includes(key)) {
-        if (value !== null) {
-          save[key] = value;
+    if (isAttack) {
+      for (const key of Object.keys(saveData)) {
+        const value = saveData[key];
+
+        switch (key) {
+          case SaveKeys.ATTACKERCHAMPION:
+            if (value) userSave.attackerchampion = value;
+            break;
+
+          case SaveKeys.MONSTERUPDATE:
+            await monsterUpdateHandler(value, userSave);
+            break;
+
+          case SaveKeys.ATTACKLOOT:
+            attackLootHandler(value, userSave);
+            break;
+
+          default:
+            break;
         }
       }
-    }
-
-    if (
-      save.basesaveid !== userSave.basesaveid &&
-      save.attackid != 0 &&
-      save.saveuserid !== user.userid
-    ) {
-      if (attackerchampion) userSave.champion = attackerchampion;
-
-      if (monsterupdate && monsterupdate.length > 0) {
-        const authMonsters = monsterupdate.find(
-          ({ baseid }) => baseid == userSave.baseid
-        );
-        const monsterUpdates = monsterupdate.filter(
-          ({ baseid }) => baseid != userSave.baseid
-        );
-        if (authMonsters) {
-          userSave.monsters = authMonsters.m;
-        }
-        if (monsterUpdates.length > 0) {
-          await updateMonsters(monsterUpdates);
-        }
-      }
-
-      if (attackloot) {
-        const resources: Resources = attackloot;
-        const savedResources: FieldData = updateResources(
-          resources,
-          userSave.resources || {}
-        );
-        userSave.resources = savedResources;
-      }
-
       await ORMContext.em.persistAndFlush(userSave);
     }
 
-    // TODO: Revisit this, likely causing issues
-    save.attackid = over ? 0 : save.attackid;
-    //if (over) save.protected = isNaN(destroyed) ? 0 : destroyed;
+    baseSave.attackid = saveData.over ? 0 : baseSave.attackid;
+    // if (over) save.protected = isNaN(destroyed) ? 0 : destroyed;
 
-    save.savetime = getCurrentDateTime();
-    save.id = save.savetime;
+    baseSave.id = baseSave.savetime;
+    baseSave.savetime = getCurrentDateTime();
+    await ORMContext.em.persistAndFlush(baseSave);
 
-    await ORMContext.em.persistAndFlush(save);
+    const filteredSave = FilterFrontendKeys(baseSave);
 
-    if (isOutpost) {
-      await ORMContext.em.persistAndFlush(userSave);
-
-      save.credits = userSave.credits;
-      save.resources = userSave.resources;
-      save.outposts = userSave.outposts;
-      save.buildingresources = userSave.buildingresources;
-    }
-    const filteredSave = FilterFrontendKeys(save);
-    logging(`Saving ${user.username}'s base | basesaveid: ${basesaveid}`);
+    logging(
+      `Saving ${user.username}'s base | basesaveid: ${saveData.basesaveid}`
+    );
 
     const responseBody = {
       error: 0,
-      basesaveid: save.basesaveid,
+      basesaveid: baseSave.basesaveid,
       ...filteredSave,
     };
 
@@ -192,8 +127,22 @@ export const baseSave: KoaController = async (ctx) => {
     ctx.body = responseBody;
   } catch (err) {
     logging(`Failed to save base for user: ${user.username}`, err);
+    throw saveFailureErr();
+  }
+};
 
-    ctx.status = Status.INTERNAL_SERVER_ERROR;
-    ctx.body = { error: 1 };
+const updateOutposts = (
+  userSave: Save,
+  baseSave: Save,
+  key: keyof FieldData
+) => {
+  if (key === SaveKeys.BUILDING_RESOURCES) {
+    userSave.buildingresources[`b${baseSave.baseid}`] =
+      baseSave.buildingresources[`b${baseSave.baseid}`];
+    userSave.buildingresources["t"] = getCurrentDateTime();
+  }
+
+  if (key === SaveKeys.QUESTS) {
+    userSave.quests = baseSave.quests;
   }
 };
