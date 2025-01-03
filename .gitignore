@@ -10,4 +10,4 @@ server/data
 api-versioning
 android/bymr.keystore
 android/apk/BYMRefitted.apk
-server/scripts/anticheat
+server/src/scripts/anticheat
