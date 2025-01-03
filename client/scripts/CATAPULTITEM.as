@@ -100,7 +100,7 @@ package
          {
             _loc1_ += "<br>" + KEYS.Get(this._props.description,{
                "v1":this._props.speed * 100 + "%",
-               "v2":this._props.damageMult * 100 + "%",
+               "v2":Math.round((1 - this._props.damageMult) * 100) + "%",
                "v3":this._props.speedlength
             });
          }
