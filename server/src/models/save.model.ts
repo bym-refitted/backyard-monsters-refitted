@@ -512,9 +512,6 @@ export class Save {
     "purchase",
     "powerups",
     "attpowerups",
-  ];
-
-  public static attackSaveKeys: (keyof FieldData)[] = [
     "level",
     "catapult",
     "flinger",
@@ -529,7 +526,7 @@ export class Save {
     "empirevalue",
     "points",
     "tutorialstage",
-    "attackreport",
+    "attackreport"
   ];
 
   public static createDefaultUserSave = async (
