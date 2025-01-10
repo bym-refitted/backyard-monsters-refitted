@@ -34,8 +34,16 @@ export const baseSave: KoaController = async (ctx) => {
     const isOwner = baseSave.saveuserid === user.userid;
     const isOutpost = isOwner && baseSave.type === BaseType.OUTPOST;
 
+    const isAttack = !isOwner && baseSave.attackid !== 0;
+    if (baseSave.attackid) console.log("This is actually set???");
+    // if you are not the owner and not attacking what are you doing here>>>>>> throw error
+    // if (!isOwner && baseSave.attackid === 0) throw new Error("Why the fuck are we editing other peoples bases when its not an attack");
+    // add validation here on what keys are sent once an attack is over
+    // Next step - log the difference between whats on server and what is sent with attackId 0
+    // From that we can see what keys we need to read
+
     // Standard save logic
-    for (const key of Save.saveKeys) {
+    for (const key of isAttack ? Save.attackSaveKeys : Save.saveKeys) {
       const value = ctx.request.body[key];
 
       switch (key) {
@@ -59,6 +67,35 @@ export const baseSave: KoaController = async (ctx) => {
           if (value) baseSave.champion = saveData.champion;
           break;
 
+        case SaveKeys.BUILDING_DATA:
+          if (value && isAttack) {
+            const newBuildingData = JSON.parse(value);
+            // console.log(newBuildingData, baseSave[SaveKeys.BUILDING_DATA]);
+            // if (
+            //   Object.keys(newBuildingData).length !==
+            //   Object.keys(baseSave[SaveKeys.BUILDING_DATA]).length
+            // ) {
+            //   throw new Error("Building length changed??/");
+            // }
+
+            // Object.keys(newBuildingData).forEach((key) => {
+            //   baseSave[SaveKeys.BUILDING_DATA][key].hp =
+            //     newBuildingData[key].hp;
+            // });
+            // baseSave[SaveKeys.BUILDING_DATA]
+            // baseSave[SaveKeys.BUILDING_DATA] = newBuildingData;
+
+            // For every item in building data -> if landmine it can be deleted, check if the count of types have changed
+
+            // We get the original counts of database
+            // If building type !== deleteable
+            // get a list of all the noDeleteBuildingIds from database
+            // Check that they are still on the request
+            // otherwise throw error
+          }
+          baseSave[key] = JSON.parse(value);
+          break;
+
         default:
           if (value) {
             try {
@@ -71,10 +108,6 @@ export const baseSave: KoaController = async (ctx) => {
 
       if (isOutpost) updateOutposts(userSave, baseSave, key);
     }
-
-    // Attack save logic
-    const isAttack =
-      baseSave.attackid !== 0 && baseSave.saveuserid !== user.userid;
 
     if (isAttack) {
       for (const key of Object.keys(saveData)) {

@@ -3,7 +3,6 @@ import { User } from "../../../../models/user.model";
 import { ORMContext } from "../../../../server";
 import { BaseMode } from "../../../../enums/Base";
 import { logging } from "../../../../utils/logger";
-import { KorathReward, Reward } from "../../../../enums/Rewards";
 import { balancedReward } from "../balancedReward";
 
 /**
@@ -36,6 +35,13 @@ export const baseModeBuild = async (user: User, baseid: string) => {
     });
 
     if (!baseSave) throw new Error(`Base save not found for baseid: ${baseid}`);
+    
+    if (baseSave.userid !== user.userid) {
+      // Could log this user id somewhere?
+      throw new Error(
+        `Unauthorized access to baseid: ${baseid} from user ${user.username}`
+      );
+    }
 
     return baseSave;
   }
