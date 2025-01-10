@@ -529,6 +529,28 @@ export class Save {
     "attackreport"
   ];
 
+  public static attackSaveKeys: (keyof FieldData)[] = [
+    "level",
+    "catapult",
+    "flinger",
+    "destroyed",
+    "damage",
+    "locked",
+    "protected",
+    "champion",
+    "over",
+    "usemap",
+    "basevalue",
+    "empirevalue",
+    "points",
+    "tutorialstage",
+    "attackreport",
+    'buildinghealthdata',
+    'buildingresources',
+    'attackersiege',
+    'buildingdata',
+  ];
+
   public static createDefaultUserSave = async (
     em: EntityManager<IDatabaseDriver<Connection>>,
     user: User
