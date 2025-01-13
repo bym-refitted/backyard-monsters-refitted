@@ -4,7 +4,7 @@ import { ORMContext } from "../../../server";
 import { FilterFrontendKeys } from "../../../utils/FrontendKey";
 import { KoaController } from "../../../utils/KoaController";
 import { getCurrentDateTime } from "../../../utils/getCurrentDateTime";
-import { logging } from "../../../utils/logger";
+import { errorLog, logging } from "../../../utils/logger";
 import { Status } from "../../../enums/StatusCodes";
 import { SaveKeys } from "../../../enums/SaveKeys";
 import { BaseSaveSchema } from "./zod/BaseSaveSchema";
@@ -13,9 +13,10 @@ import { purchaseHandler } from "./handlers/purchaseHandler";
 import { academyHandler } from "./handlers/academyHandler";
 import { mapUserSaveData } from "../mapUserSaveData";
 import { BaseType } from "../../../enums/Base";
-import { saveFailureErr } from "../../../errors/errors";
+import { permissionErr, saveFailureErr } from "../../../errors/errors";
 import { attackLootHandler } from "./handlers/attackLootHandler";
 import { monsterUpdateHandler } from "./handlers/monsterUpdateHandler";
+import { ClientSafeError } from "../../../middleware/clientSafeError";
 
 export const baseSave: KoaController = async (ctx) => {
   const user: User = ctx.authUser;
@@ -32,12 +33,12 @@ export const baseSave: KoaController = async (ctx) => {
     if (!baseSave) throw saveFailureErr();
 
     const isOwner = baseSave.saveuserid === user.userid;
-    const isOutpost = isOwner && baseSave.type === BaseType.OUTPOST;
-
+    const isOutpostOwner = isOwner && baseSave.type === BaseType.OUTPOST;
     const isAttack = !isOwner && baseSave.attackid !== 0;
-    if (baseSave.attackid) console.log("This is actually set???");
-    // if you are not the owner and not attacking what are you doing here>>>>>> throw error
-    // if (!isOwner && baseSave.attackid === 0) throw new Error("Why the fuck are we editing other peoples bases when its not an attack");
+
+    // Not the owner and not in an attack
+    if (!isOwner && baseSave.attackid === 0) throw permissionErr();
+
     // add validation here on what keys are sent once an attack is over
     // Next step - log the difference between whats on server and what is sent with attackId 0
     // From that we can see what keys we need to read
@@ -48,7 +49,7 @@ export const baseSave: KoaController = async (ctx) => {
 
       switch (key) {
         case SaveKeys.RESOURCES:
-          resourcesHandler(ctx, userSave, baseSave, isOutpost);
+          resourcesHandler(ctx, userSave, baseSave, isOutpostOwner);
           break;
 
         case SaveKeys.PURCHASE:
@@ -59,10 +60,6 @@ export const baseSave: KoaController = async (ctx) => {
           academyHandler(ctx, baseSave);
           break;
 
-        case SaveKeys.BUILDING_HEALTH_DATA:
-          if (value) baseSave.buildinghealthdata = saveData.buildinghealthdata;
-          break;
-
         case SaveKeys.CHAMPION:
           if (value) baseSave.champion = saveData.champion;
           break;
@@ -70,22 +67,19 @@ export const baseSave: KoaController = async (ctx) => {
         case SaveKeys.BUILDING_DATA:
           if (value && isAttack) {
             const newBuildingData = JSON.parse(value);
-            // console.log(newBuildingData, baseSave[SaveKeys.BUILDING_DATA]);
-            // if (
-            //   Object.keys(newBuildingData).length !==
-            //   Object.keys(baseSave[SaveKeys.BUILDING_DATA]).length
-            // ) {
-            //   throw new Error("Building length changed??/");
-            // }
+            const originalBuildingData = baseSave[SaveKeys.BUILDING_DATA];
 
-            // Object.keys(newBuildingData).forEach((key) => {
-            //   baseSave[SaveKeys.BUILDING_DATA][key].hp =
-            //     newBuildingData[key].hp;
-            // });
-            // baseSave[SaveKeys.BUILDING_DATA]
-            // baseSave[SaveKeys.BUILDING_DATA] = newBuildingData;
+            if (
+              Object.keys(newBuildingData).length !==
+              Object.keys(originalBuildingData).length
+            ) {
+              throw permissionErr();
+            }
+            // Persist the new building data if validation passes
+            baseSave[SaveKeys.BUILDING_DATA] = newBuildingData;
 
-            // For every item in building data -> if landmine it can be deleted, check if the count of types have changed
+            // For every item in building data -> if landmine it can be deleted,
+            // check if the count of types have changed
 
             // We get the original counts of database
             // If building type !== deleteable
@@ -106,7 +100,7 @@ export const baseSave: KoaController = async (ctx) => {
           }
       }
 
-      if (isOutpost) updateOutposts(userSave, baseSave, key);
+      if (isOutpostOwner) updateOutposts(userSave, baseSave, key);
     }
 
     if (isAttack) {
@@ -133,18 +127,16 @@ export const baseSave: KoaController = async (ctx) => {
       await ORMContext.em.persistAndFlush(userSave);
     }
 
+    // Set the attackid to 0 if the attack is over
     baseSave.attackid = saveData.over ? 0 : baseSave.attackid;
-    // if (over) save.protected = isNaN(destroyed) ? 0 : destroyed;
+    //if (over) save.protected = isNaN(destroyed) ? 0 : destroyed;
 
     baseSave.id = baseSave.savetime;
     baseSave.savetime = getCurrentDateTime();
     await ORMContext.em.persistAndFlush(baseSave);
 
     const filteredSave = FilterFrontendKeys(baseSave);
-
-    logging(
-      `Saving ${user.username}'s base | basesaveid: ${saveData.basesaveid}`
-    );
+    logging(`Saving ${user.username}'s base`);
 
     const responseBody = {
       error: 0,
@@ -159,8 +151,10 @@ export const baseSave: KoaController = async (ctx) => {
     ctx.status = Status.OK;
     ctx.body = responseBody;
   } catch (err) {
-    logging(`Failed to save base for user: ${user.username}`, err);
-    throw saveFailureErr();
+    errorLog(`Failed to save base for user: ${user.username}`, err);
+
+    if (err instanceof ClientSafeError) throw err;
+    throw new Error("An unexpected error occurred while saving this base.");
   }
 };
 

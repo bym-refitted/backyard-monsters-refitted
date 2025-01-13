@@ -269,14 +269,20 @@ export class Save {
   @Property({ nullable: true })
   cantmovetill?: number | null;
 
+  // MR3 specific Objects
+  @FrontendKey
+  @Property({ type: "json", nullable: true })
+  buildingkeydata?: FieldData = {};
+
+  @FrontendKey
+  @Property({ type: "json", nullable: true })
+  buildinghealthdata?: FieldData = {};
+
   // Objects
   @FrontendKey
   @Property({ type: "json", nullable: true })
   buildingdata?: FieldData = {};
 
-  @FrontendKey
-  @Property({ type: "json", nullable: true })
-  buildingkeydata?: FieldData = {};
 
   @FrontendKey
   @Property({ type: "json", nullable: true })
@@ -365,10 +371,6 @@ export class Save {
   @FrontendKey
   @Property({ type: "json", nullable: true })
   mushrooms?: FieldData = {};
-
-  @FrontendKey
-  @Property({ type: "json", nullable: true })
-  buildinghealthdata?: FieldData = {};
 
   @FrontendKey
   @Property({ type: "json", nullable: true })

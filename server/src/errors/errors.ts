@@ -57,7 +57,7 @@ export const debugClientErr = () =>
 
 export const saveFailureErr = () =>
   new ClientSafeError({
-    message: "We encountered an unexpected error",
+    message: "We encountered an error while saving",
     status: Status.INTERNAL_SERVER_ERROR,
     data: null,
     isClientFriendly: true,
@@ -95,4 +95,13 @@ export const discordAgeErr = () =>
       "Your discord account must be at least 1 week old in order to access this feature.",
     status: Status.UNAUTHORIZED,
     data: null,
+  });
+
+export const permissionErr = () =>
+  new ClientSafeError({
+    message:
+      "You do not have permission to complete this operation.",
+    status: Status.FORBIDDEN,
+    data: null,
+    isClientFriendly: true,
   });
