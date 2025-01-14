@@ -527,30 +527,21 @@ export class Save {
     "basevalue",
     "empirevalue",
     "points",
-    "tutorialstage",
-    "attackreport"
+    "tutorialstage"
   ];
 
   public static attackSaveKeys: (keyof FieldData)[] = [
-    "level",
-    "catapult",
-    "flinger",
     "destroyed",
     "damage",
     "locked",
     "protected",
     "champion",
     "over",
-    "usemap",
-    "basevalue",
-    "empirevalue",
-    "points",
-    "tutorialstage",
+    "buildinghealthdata",
+    "buildingresources",
     "attackreport",
-    'buildinghealthdata',
-    'buildingresources',
-    'attackersiege',
-    'buildingdata',
+    "attackersiege",
+    "attackerchampion"
   ];
 
   public static createDefaultUserSave = async (

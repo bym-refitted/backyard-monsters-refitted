@@ -17,6 +17,7 @@ import { permissionErr, saveFailureErr } from "../../../errors/errors";
 import { attackLootHandler } from "./handlers/attackLootHandler";
 import { monsterUpdateHandler } from "./handlers/monsterUpdateHandler";
 import { ClientSafeError } from "../../../middleware/clientSafeError";
+import { championHandler } from "./handlers/championHandler";
 
 export const baseSave: KoaController = async (ctx) => {
   const user: User = ctx.authUser;
@@ -61,33 +62,11 @@ export const baseSave: KoaController = async (ctx) => {
           break;
 
         case SaveKeys.CHAMPION:
-          if (value) baseSave.champion = saveData.champion;
-          break;
-
-        case SaveKeys.BUILDING_DATA:
-          if (value && isAttack) {
-            const newBuildingData = JSON.parse(value);
-            const originalBuildingData = baseSave[SaveKeys.BUILDING_DATA];
-
-            if (
-              Object.keys(newBuildingData).length !==
-              Object.keys(originalBuildingData).length
-            ) {
-              throw permissionErr();
-            }
-            // Persist the new building data if validation passes
-            baseSave[SaveKeys.BUILDING_DATA] = newBuildingData;
-
-            // For every item in building data -> if landmine it can be deleted,
-            // check if the count of types have changed
-
-            // We get the original counts of database
-            // If building type !== deleteable
-            // get a list of all the noDeleteBuildingIds from database
-            // Check that they are still on the request
-            // otherwise throw error
+          if (isAttack) {
+            championHandler(value, baseSave);
+          } else {
+            baseSave[SaveKeys.CHAMPION] = saveData.champion;
           }
-          baseSave[key] = JSON.parse(value);
           break;
 
         default:
