@@ -7,7 +7,7 @@ export const devConfig = {
   /*
    * Enable or disable the MapRoom on the server.
    */
-  maproom: false,
+  maproom: true,
 
   /*
    * Enable or disable Inferno on the server.

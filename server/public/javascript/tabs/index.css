@@ -1,0 +1,1447 @@
+body {
+  font-family: "lucida grande", tahoma, verdana, arial, sans-serif;
+  font-size: 11px;
+}
+.clear {
+  clear: both;
+}
+.clearfix:before,
+.clearfix:after {
+  content: "\0020";
+  display: block;
+  overflow: hidden;
+  visibility: hidden;
+  width: 0;
+  height: 0;
+}
+.clearfix:after {
+  clear: both;
+}
+.clearfix {
+  zoom: 1;
+}
+#content {
+  position: relative;
+}
+.kixeye-top {
+  position: absolute;
+  top: 0;
+  right: 20px;
+  display: block;
+}
+.mmenu {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  height: 19px;
+  border-bottom: 1px solid #898989;
+}
+.mmenu li {
+  float: left;
+}
+.mmenu li.first {
+}
+.mmenu li.right {
+  float: right;
+}
+.mmenu li a {
+  float: left;
+  height: 13px;
+  position: relative;
+  display: block;
+  border: 1px solid #898989;
+  border-bottom: 0;
+  border-left-width: 0;
+  background-color: #f1f1f1;
+  color: #333;
+  text-decoration: none;
+  padding: 2px 9px 3px 8px;
+  font-weight: bold;
+}
+.mmenu li.first a {
+  border-left-width: 1px;
+}
+.mmenu li a:hover {
+  text-decoration: underline;
+}
+.mmenu li a.selected {
+  border-color: #3b5998 #5973a9;
+  background-color: #6d84b4;
+  color: #fff;
+}
+.mmenu li a img {
+  border: 0;
+  margin-top: 1px;
+}
+.mmenu li a.wimg {
+  padding-right: 24px;
+}
+.mmenu li.right {
+  float: right;
+}
+.mmenu li.right a {
+  border-right-width: 0;
+}
+.mmenu li.last {
+  margin-right: 10px;
+}
+.mmenu li.last a {
+  border-right-width: 1px;
+}
+.mmenu li.right a {
+  border-left-width: 1px;
+}
+#languages {
+  width: 155px;
+  margin: 0 auto;
+}
+#languages a > div:hover {
+  text-decoration: underline;
+}
+#languages a > div.go-button {
+  border-color: #3b5998 #5973a9;
+  background-color: #6d84b4;
+  color: #fff;
+  width: 50px;
+  height: 18px;
+  line-height: 20px;
+}
+#languages > * {
+  float: left;
+  margin-left: 5px;
+}
+.tu-top {
+  background: url("http://cdn-bm-fb.casualcollective.com/images/topup/ppbg.png")
+    no-repeat;
+  width: 750px;
+  height: 242px;
+  position: relative;
+  margin-top: 20px;
+}
+.tu-top2 form {
+  position: relative;
+} /* Images */ /* .tu-top2 .split-5 img.best-value{position:absolute;top:97px;left:141px;}*/ /* .tu-top2 .split-5 img.most-popular{position:absolute;top:136px;left:119px;}*/ /* .tu-top2 .split-6 img.best-value{position:absolute;top:97px;left:141px;}*/ /* .tu-top2 .split-7 img.most-popular{position:absolute;top:117px;left:119px;}*/
+.tu-top2 .split-14 img.most-popular {
+  position: absolute;
+  top: 137px;
+  left: 119px;
+}
+.tu-top2 .split-17 img.most-popular {
+  position: absolute;
+  top: 157px;
+  left: 119px;
+} /* .tu-top2 .split-15 img.best-value{position:absolute;top:97px;left:141px;}*/ /* .tu-top2 .split-15 img.most-popular{position:absolute;top:137px;left:119px;}*/ /* .tu-top2 .split-16 img.most-popular{position:absolute;top:137px;left:119px;}*/ /* .tu-top2 .split-19 img.best-value{position:absolute;top:97px;left:141px;}*/
+.kgtu-top2 form {
+  position: relative;
+}
+.kgtu-top2 {
+  height: 323px;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  margin-top: 20px;
+  width: 500px;
+}
+.kgtu-top2 .tu-options {
+  left: 220px !important;
+  left: -40px;
+  top: 120px !important;
+  line-height: 20px !important;
+  width: 350px;
+}
+.kgtu-top2 .tu-options label {
+  font-size: 14pt;
+  line-height: 25px !important;
+}
+.tu-options {
+  position: absolute;
+  left: 145px;
+  top: 109px;
+  text-align: left;
+}
+.tu-options label {
+  color: #000 !important;
+  font-family: "lucida grande", tahoma, verdana, arial, sans-serif;
+  font-size: 11pt;
+  font-weight: bold;
+  vertical-align: middle;
+  cursor: pointer;
+  line-height: 10px;
+}
+.tu-options label span {
+  margin-top: 2px;
+  margin-right: 7px;
+  float: left;
+  display: block;
+}
+.tu-options label span.shiny {
+  width: 107px;
+  text-align: right;
+}
+.tu-options label span.cost {
+  width: 95px;
+  clear: right;
+}
+.tu-options label input {
+  float: left;
+}
+.tu-options label.ph span,
+.tu-options label.ph i {
+  float: left;
+  display: block;
+  margin-right: 7px;
+}
+.tu-options label.ph i {
+  margin-top: 3px;
+  width: 132px;
+  font-weight: normal;
+  font-size: 10pt;
+}
+.tu-options label.ph i span {
+  width: 50px;
+  text-align: right;
+  margin-top: 0;
+}
+.tu-options label.ph span.shiny {
+  width: 95px;
+  text-align: right;
+}
+.tu-options label.ph span.cost {
+  width: 57px;
+}
+.tu-options label.ph span.smaller {
+  margin: 2px 7px 0 139px;
+}
+.tu-options label.split-4 span {
+  margin-top: 2px;
+  margin-right: 7px;
+  float: left;
+  display: block;
+}
+.tu-options label.split-4 span.shiny {
+  width: 113px;
+  text-align: right;
+}
+.tu-options label.split-4 span.cost {
+  width: 95px;
+  clear: right;
+}
+.tu-options label.split-44 span.shiny {
+  width: 120px;
+}
+.tu-fbbutton {
+  position: absolute;
+  top: 160px;
+  right: 30px;
+  cursor: pointer;
+}
+.tu-ppbutton {
+  position: absolute;
+  top: 80px /*110px*/;
+  right: 30px;
+}
+.tu-creditbutton {
+  position: absolute;
+  top: 135px /*169px*/;
+  right: 30px;
+}
+.tu-divider {
+  margin: 30px 0;
+  border-top: 1px solid #567821;
+  position: relative;
+}
+.tu-divider-inner {
+  font-family: lucida grande, tahoma, verdana, arial, sans-serif;
+  color: #333;
+  text-align: center;
+  position: absolute;
+  font-weight: bold;
+  background-color: #fff;
+  font-size: 11pt;
+  width: 400px;
+  left: 180px;
+  top: -12px;
+}
+.tu-divider-inner-mobile {
+  font-family: lucida grande, tahoma, verdana, arial, sans-serif;
+  color: #333;
+  text-align: center;
+  position: absolute;
+  font-weight: bold;
+  background-color: #fff;
+  font-size: 11pt;
+  width: 225px;
+  left: 265px;
+  top: -12px;
+}
+.tu-offerwall {
+  border: 1px solid #898989;
+}
+.tu-center {
+  position: absolute;
+  left: 271px;
+  top: 210px;
+}
+.tu-left {
+  position: absolute;
+  left: 160px;
+  top: 210px;
+}
+.tu-right {
+  position: absolute;
+  right: 160px;
+  top: 210px;
+}
+.tu-lgo {
+  cursor: pointer;
+}
+.tu-left-4,
+.tu-left-5,
+.tu-left-9 {
+  position: absolute;
+  left: 160px;
+  top: 223px;
+}
+.tu-right-4,
+.tu-right-5,
+.tu-right-9 {
+  position: absolute;
+  right: 160px;
+  top: 223px;
+}
+.tu-center button,
+.tu-left button,
+.tu-right button {
+  *width: 205px;
+}
+.tu-top2 {
+  background: url("http://cdn-bm-fb.casualcollective.com/images/topup/ppbg5.png")
+    no-repeat;
+  width: 750px;
+  height: 323px;
+  position: relative;
+  margin-top: 20px;
+}
+.tu-top3 {
+  background: url("http://cdn-bm-fb.casualcollective.com/images/topup/ppbg3.png")
+    no-repeat;
+  width: 750px;
+  height: 323px;
+  position: relative;
+  margin-top: 20px;
+}
+.tu-top4 {
+  background: url("http://cdn-bm-fb.casualcollective.com/images/topup/ppbg4.png")
+    no-repeat;
+  width: 750px;
+  height: 362px;
+  position: relative;
+  margin-top: 20px;
+}
+.tu-top2 .tu-options {
+  left: 270px !important;
+  top: 98px !important;
+  line-height: 20px !important;
+}
+.tu-top4 .tu-options {
+  left: 240px !important;
+  top: 98px !important;
+  line-height: 20px !important;
+}
+.tu-fbbutton2 {
+  position: absolute;
+  top: 210px;
+  left: 160px;
+  cursor: pointer;
+}
+.tu-ppbutton2 {
+  position: absolute;
+  top: 210px;
+  right: 160px;
+} /* Custom split CSS */
+.tu-top2 .tu-options-4 {
+  left: 256px !important;
+}
+.tu-fbclick {
+  position: absolute;
+  top: 268px;
+  left: 160px;
+  width: 199px;
+}
+.tu-ppclick {
+  position: absolute;
+  top: 268px;
+  right: 157px;
+  *width: 205px;
+}
+.tu-options2 {
+  position: absolute;
+  left: 263px;
+  top: 124px;
+  text-align: center;
+  background-color: #44b740;
+  border: 1px solid #007e12;
+  padding: 8px;
+}
+.tu-options2 select {
+  font-size: 16px;
+} /* SPLIT 4 */
+.tu-continue {
+  position: absolute;
+  top: 210px;
+  left: 280px;
+  cursor: pointer;
+} /* SPLIT 5 */
+.tu-ppclick2 {
+  position: absolute;
+  top: 268px;
+  left: 277px;
+  *width: 205px;
+}
+.tu-ppbutton3 {
+  position: absolute;
+  top: 210px;
+  left: 280px;
+  cursor: pointer;
+} /* SPLIT 6 */
+.tu-ppbutton4 {
+  position: absolute;
+  top: 210px;
+  left: 170px;
+}
+.tu-ppbutton5 {
+  position: absolute;
+  top: 210px;
+  right: 170px;
+  cursor: pointer;
+}
+.tu-ppclick3 {
+  position: absolute;
+  top: 268px;
+  left: 175px;
+  width: 190px;
+}
+.tu-ppclick4 {
+  position: absolute;
+  top: 268px;
+  right: 175px;
+  width: 190px;
+}
+.tu-fbclick2 {
+  position: absolute;
+  top: 268px;
+  left: 287px;
+  *width: 205px;
+}
+.tu-zong {
+  position: relative;
+}
+.tu-zong .zong-purchase {
+  text-align: center;
+}
+.tu-zong .tu-zong-dialog {
+  font-family: Tahoma;
+  background-color: #f0f0f0;
+  background-color: rgba(0, 0, 0, 0.65);
+  border-radius: 5px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  padding: 10px;
+  position: absolute;
+  top: -150px;
+  left: 100px;
+  width: 495px;
+  z-index: 10;
+}
+.tu-zong-dialog .heading h2 {
+  padding: 20px;
+  margin: 0;
+  border-bottom: 1px solid #d8d8d8;
+  background-color: #fff;
+}
+.tu-zong-dialog .border {
+  position: relative;
+  padding: 2px;
+  background-color: #f0f0f0;
+}
+.tu-zong-dialog .close-dialog {
+  font-weight: bold;
+  padding: 5px;
+  float: right;
+  color: #000;
+}
+.tu-zong-dialog form {
+  padding: 20px;
+  border: 1px solid #d7d7d7;
+  background-color: #fff;
+}
+.tu-zong ul {
+  list-style: none;
+  margin-left: 0;
+  padding: 0;
+}
+.tu-zong li {
+  margin-left: 0;
+  padding-left: 0;
+  font-size: 12px;
+}
+.tu-zong li:hover {
+  background-color: #c8c8c8;
+}
+.tu-zong li a {
+  color: #000;
+  display: block;
+  padding: 3px 5px;
+  text-decoration: none;
+}
+.tu-zong li a:visited {
+  color: #000;
+}
+.tu-zong .select-amount {
+  float: left;
+  width: 255px;
+}
+.tu-zong #zong-iframe {
+  float: left;
+  width: 490px;
+}
+.attacklog {
+  font-family: "lucida grande", tahoma, verdana, arial, sans-serif;
+  position: relative;
+  color: #333;
+  font-size: 11px;
+}
+.attacklog table {
+  border-spacing: 1px;
+  background-color: #ccc;
+  width: 100%;
+}
+.attacklog th,
+.attacklog td {
+  background-color: #fff;
+  padding: 3px 6px;
+}
+.attacklog td {
+  font-weight: bold;
+  font-size: 12px;
+}
+.al-row1 td {
+  background-color: #e6e6fa !important;
+}
+.al-rowog td {
+  background-color: #e5ffec !important;
+}
+.al-rowic td {
+  background-color: #ffece5 !important;
+}
+.al-img {
+  height: 50px;
+  width: 50px;
+  padding: 0 !important;
+}
+.al-img img {
+  vertical-align: bottom;
+}
+.al-battlereport {
+  display: none;
+}
+.al-menu {
+  list-style: none;
+}
+.al-menu a {
+  text-decoration: none;
+  color: #3b5998;
+}
+.attacklog ul {
+  font-size: 13px;
+  font-weight: bold;
+  height: 22px;
+  margin: 5px;
+  padding: 0;
+}
+.attacklog li {
+  float: left;
+  margin-right: 16px;
+  cursor: pointer;
+}
+.attacklog li a:hover {
+  text-decoration: none;
+}
+.al-brlink {
+  color: #3b5998;
+  cursor: pointer;
+} /* Friend Selector */
+#fs-selector {
+  width: 760px;
+  margin-left: 10px;
+  margin-top: 15px;
+  height: 280px;
+}
+#fs-selector ul {
+  list-style: none;
+  margin: 0;
+  padding: 3px 5px;
+}
+#fs-selector li {
+  display: block;
+}
+#fs-selector li a {
+  text-decoration: none;
+  color: #333;
+  font-size: 13px;
+}
+#fs-selector li a:hover {
+  color: #000;
+}
+.fs-haspic {
+  float: left;
+  width: 150px;
+  margin: 4px 4px 0 0;
+  cursor: pointer;
+}
+.fs-unselected {
+  border: 1px solid #f1f1f1;
+}
+.fs-unselected:hover {
+  background-color: #e7ebf5;
+  border: 1px solid #cad3e6;
+}
+.fs-pic,
+.fs-name {
+  float: left;
+}
+.fs-name {
+  margin-left: 4px;
+  width: 95px;
+}
+.fs-selected {
+  background-color: #526ea6;
+  border: 1px solid #145c9a;
+}
+.fs-selected a {
+  color: #fff !important;
+}
+#fs-send {
+  background-color: #3b5998;
+  border-color: #d9dfea #0e1f5b #0e1f5b #d9dfea;
+  border-style: solid;
+  border-width: 1px;
+  color: #ffffff;
+  float: left;
+  font-family: "lucida grande", tahoma, verdana, arial, sans-serif;
+  font-size: 12px;
+  padding: 5px 8px;
+  text-align: center;
+  text-decoration: none;
+  margin-right: 4px;
+}
+#fs-selector .skip {
+  float: left;
+  cursor: default;
+  background-color: #ddd;
+  border-color: #bbb #333 #555 #bbb;
+  border-style: solid;
+  border-width: 1px;
+  color: #333;
+  font-family: "lucida grande", tahoma, verdana, arial, sans-serif;
+  font-size: 12px;
+  padding: 5px;
+  text-decoration: none;
+}
+#fs-unselected,
+#fs-selected {
+  height: 200px;
+  overflow: auto;
+}
+#fs-selected {
+  border-top: 0 !important;
+}
+#fs-selector .buttons {
+  height: 25px;
+  margin: 3px 0;
+} /* MooDialog */
+.MooDialog {
+  background: #eef5f8;
+  color: black;
+  padding: 10px;
+  border-radius: 7px;
+  -moz-border-radius: 7px;
+  -webkit-border-radius: 7px;
+  border-radius: 7px;
+  -moz-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.8);
+  -webkit-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.8);
+  box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.8);
+  font-family: Tahoma;
+  font-size: 11px;
+}
+.MooDialogTitle {
+  padding-top: 30px;
+}
+.MooDialog .title {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: 3px 20px;
+  background: #b7c4dc;
+  border-bottom: 1px solid #a1aec5;
+  font-weight: bold;
+  text-shadow: 1px 1px 0 #fff;
+  color: black;
+  border-radius: 7px;
+  -moz-border-radius: 7px;
+  -webkit-border-radius: 7px;
+}
+.MooDialog .close {
+  background: url("http://cdn-bm-fb.casualcollective.com/images/moodialog/dialog-close.png")
+    no-repeat;
+  width: 16px;
+  height: 16px;
+  display: block;
+  cursor: pointer;
+  top: -5px;
+  left: -5px;
+  position: absolute;
+}
+.MooDialog .buttons {
+  text-align: right;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+}
+.MooDialog .MooDialogAlert,
+.MooDialog .MooDialogConfirm,
+.MooDialog .MooDialogPromt,
+.MooDialog .MooDialogError {
+  background: url(http://cdn-bm-fb.casualcollective.com/images/moodialog/dialog-warning.png)
+    no-repeat;
+  padding-left: 40px;
+  min-height: 40px;
+}
+.MooDialog .MooDialogConfirm,
+.MooDialog .MooDialogPromt {
+  background: url(http://cdn-bm-fb.casualcollective.com/images/moodialog/dialog-question.png)
+    no-repeat;
+}
+.MooDialog .MooDialogError {
+  background: url(http://cdn-bm-fb.casualcollective.com/images/moodialog/dialog-error.png)
+    no-repeat;
+}
+.MooDialog ul {
+  padding: 0 0 0 20px;
+}
+.footer {
+  width: 100%;
+  height: 40px;
+  position: relative;
+  margin-top: 20px;
+  clear: both;
+}
+.footer ul {
+  position: absolute;
+  bottom: 0px;
+  right: 10px;
+  list-style: none;
+}
+.footer li {
+  border-right: 1px solid #333333;
+  color: #333333;
+  float: left;
+  margin-right: 6px;
+  padding-right: 6px;
+  height: 14px;
+}
+.footer li.last {
+  border: 0;
+}
+.footer img {
+  float: left;
+  margin-right: 5px;
+}
+.footer a {
+  color: #333;
+}
+.footer-like {
+  margin: 8px auto;
+  width: 450px;
+}
+.hidden {
+  visibility: hidden;
+}
+#topuppopup {
+  background: url("http://cdn-bm-fb.casualcollective.com/images/topup/popup.png")
+    no-repeat;
+  width: 689px;
+  height: 320px;
+  position: absolute;
+  top: 10px;
+  left: 125px;
+  display: none;
+  z-index: 999;
+}
+.tu-hide {
+  background: url("http://cdn-bm-fb.casualcollective.com/images/close.png")
+    no-repeat;
+  width: 34px;
+  height: 34px;
+  position: absolute;
+  right: 15px;
+  top: 8px;
+  cursor: pointer;
+}
+#topuppopup ul {
+  font-size: 14px;
+  font-weight: bold;
+  left: 160px;
+  line-height: 23px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  position: absolute;
+  text-align: right;
+  top: 119px;
+}
+#topuppopup label {
+  cursor: pointer;
+}
+#topuppopup a.buynow {
+  background: url("http://cdn-bm-fb.casualcollective.com/images/topup/buynow.png")
+    no-repeat;
+  position: absolute;
+  top: 135px;
+  right: 40px;
+  width: 198px;
+  height: 70px;
+}
+#topuppopup a.on {
+  background-position: 0 -70px;
+}
+#topuppopup a.buynow span {
+  display: none;
+}
+#topuppopup .funds {
+  display: none;
+  position: absolute;
+  top: 120px;
+  right: 30px;
+  width: 210px;
+  font-size: 15px;
+}
+.fd-container {
+  _height: 600px;
+}
+.acceptgift {
+  width: 712px;
+  padding: 20px;
+  height: 400px;
+  position: relative;
+  margin-top: 20px;
+  border: 1px solid #777;
+}
+.acceptgift h1 {
+  font-size: 280%;
+  left: 0;
+  line-height: 30px;
+  position: absolute;
+  text-align: center;
+  top: 20px;
+  color: #3b599a;
+  width: 752px;
+  padding: 0;
+  margin: 0;
+}
+.ag-links {
+  right: 112px;
+  position: absolute;
+  top: 285px;
+}
+.acceptgift .butlink {
+  float: left;
+  margin-right: 30px;
+  width: 200px !important;
+  clear: both;
+}
+.acceptgift h2 {
+  color: #333333;
+  font-family: "lucida grande", tahoma, verdana, arial, sans-serif;
+  font-size: 13px;
+  font-weight: normal !important;
+  margin: 0;
+  padding: 0;
+}
+.ag-img {
+  position: absolute;
+  top: 80px;
+  left: 60px;
+}
+.ag-pic {
+  position: absolute;
+  top: 120px;
+  right: 200px;
+  background: url("http://cdn-bm-fb.casualcollective.com/images/gift/picbox.png")
+    no-repeat;
+  width: 50px;
+  height: 50px;
+  padding: 25px 33px 33px 25px;
+}
+.ag-from {
+  left: 385px;
+  position: absolute;
+  text-align: center;
+  top: 240px;
+  width: 220px;
+}
+.ag-info {
+  bottom: 10px;
+  left: 0;
+  position: absolute;
+  text-align: center;
+  width: 752px;
+} /* Button Links */
+.butlink {
+  background-color: #3c599a;
+  border-color: #cacaca #666666 #666666 #cacaca;
+  border-style: solid;
+  border-width: 2px;
+  color: #ffffff;
+  display: block;
+  font-size: 130%;
+  font-weight: normal;
+  margin-bottom: 4px;
+  padding: 6px 10px;
+  text-align: center;
+  width: 170px;
+  text-decoration: none;
+  cursor: default;
+}
+.butlink:hover {
+  text-decoration: underline;
+}
+.dialog-small {
+  position: absolute;
+  top: 10px;
+  left: 55px;
+  width: 658px;
+  height: 342px;
+  background: url("http://cdn-bm-fb.casualcollective.com/images/dialog-small.png")
+    no-repeat;
+}
+.dialog-large {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  width: 732px;
+  height: 483px;
+  background: url("http://cdn-bm-fb.casualcollective.com/images/dialog-large.png")
+    no-repeat;
+}
+.dialog-content {
+  padding: 10px 20px 10px 10px;
+}
+.dialog-content {
+  position: relative;
+}
+.dialog-close {
+  cursor: pointer;
+  height: 33px;
+  position: absolute;
+  right: 8px;
+  top: 2px;
+  width: 33px;
+}
+.dialog-close span {
+  display: none;
+} /* Gift Shiny */
+.gs-selector {
+  float: left;
+  width: 500px;
+  border: 1px solid #c1c1c1;
+  background-color: #f7f7f7;
+  margin-top: 14px;
+}
+.gs-selector h2 {
+  font-size: 14px;
+  margin: 0;
+  padding: 6px 10px;
+  color: #333;
+}
+.gs-summary {
+  float: left;
+  margin-left: 10px;
+  text-align: center;
+  width: 240px;
+}
+.gs-summary h1 {
+  font-size: 16px;
+  line-height: 25px;
+  margin: 20px 0;
+}
+.gs-summary button {
+  *width: 210px;
+}
+.gs-list {
+  height: 230px !important;
+}
+.gs-top {
+  background: url("http://cdn-bm-fb.casualcollective.com/images/topup/giftshinybg2.png")
+    no-repeat;
+  width: 750px;
+  height: 224px;
+  position: relative;
+  margin-top: 20px;
+}
+.gs-top .tu-options {
+  left: 270px !important;
+  top: 98px !important;
+  line-height: 20px !important;
+}
+.sendgift {
+  background: #dbb47c;
+  width: 693px;
+  height: 446px;
+}
+.sendgift h1 {
+  font-size: 20pt;
+  text-align: center;
+  color: #000;
+  padding: 20px 0;
+  margin: 0;
+}
+.sendgift h2 {
+  font-size: 12px;
+  margin: 3px 0;
+}
+.sendgift h2.imgtxt {
+  font-size: 16px;
+  left: 50px;
+  position: absolute;
+  top: 80px;
+  width: 230px;
+}
+.sendgift .scontainer {
+  float: right;
+  background-color: #fff;
+  margin-right: 40px;
+  border: 1px solid #555;
+  padding: 10px;
+  width: 290px;
+}
+#sg-selector {
+  padding-bottom: 10px;
+}
+#sg-selector ul {
+  border: 1px solid #333;
+  list-style: none;
+  margin: 0;
+  padding: 3px 5px;
+}
+#sg-selector li {
+  display: block;
+}
+#sg-selector li a {
+  text-decoration: none;
+  color: #333;
+  font-size: 13px;
+}
+#sg-selector li a:hover {
+  text-decoration: underline;
+  color: #000;
+}
+#sg-send {
+  background-color: #3b5998;
+  border-color: #d9dfea #0e1f5b #0e1f5b #d9dfea;
+  border-style: solid;
+  border-width: 1px;
+  color: #ffffff;
+  float: left;
+  font-family: "lucida grande", tahoma, verdana, arial, sans-serif;
+  font-size: 12px;
+  padding: 5px 8px;
+  text-align: center;
+  text-decoration: none;
+  margin-right: 4px;
+}
+#sg-selector .skip {
+  float: left;
+  cursor: default;
+  background-color: #ddd;
+  border-color: #bbb #333 #555 #bbb;
+  border-style: solid;
+  border-width: 1px;
+  color: #333;
+  font-family: "lucida grande", tahoma, verdana, arial, sans-serif;
+  font-size: 12px;
+  padding: 5px;
+  text-decoration: none;
+}
+#sg-unselected,
+#sg-selected {
+  height: 100px;
+  overflow: auto;
+}
+#sg-selected {
+  border-top: 0 !important;
+}
+#sg-selector .buttons {
+  height: 25px;
+  margin: 3px 0;
+}
+.sendgift .sg-x {
+  font-weight: bold;
+  color: #999;
+  font-size: 13px;
+  display: none;
+}
+.sendgift .info {
+  color: #444444;
+  width: 265px;
+}
+.sendgift .info span {
+  color: #3b5998;
+}
+.feeddialog {
+  position: absolute;
+  overflow: visible;
+  background: url("http://cdn-bm-fb.casualcollective.com/game/assets/images/feeddialog/border.png")
+    no-repeat -8px -10px;
+  height: 496px;
+  left: 13px;
+  top: 10px;
+  width: 747px;
+  z-index: 2;
+}
+.fd-mask {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 900px;
+  z-index: 1;
+  background-color: #000;
+}
+.fd-wrapper {
+  height: 446px;
+  position: absolute;
+  width: 697px;
+  z-index: 3;
+}
+.fd-content {
+  height: 446px;
+  left: 14px;
+  position: absolute;
+  top: 12px;
+  width: 697px;
+  z-index: 4;
+}
+.fd-close {
+  width: 52px;
+  height: 51px;
+  cursor: pointer;
+  position: absolute;
+  right: 7px;
+  top: -13px;
+  z-index: 9;
+}
+.fd-invite-head {
+  color: #fff;
+  font-size: 14px;
+  font-weight: bold;
+  position: absolute;
+  left: 353px;
+  top: 72px;
+}
+.fd-invite-text {
+  color: #fff;
+  font-size: 14px;
+  position: absolute;
+  left: 353px;
+  top: 112px;
+  width: 230px;
+}
+.fd-invite-button {
+  position: absolute;
+  width: 230px;
+  height: 26px;
+  background-position: left top;
+  cursor: pointer;
+  left: 353px;
+  top: 287px;
+  z-index: 9;
+}
+.fd-invite-disabled {
+  height: 26px;
+  left: 353px;
+  position: absolute;
+  top: 287px;
+  width: 230px;
+}
+.fd-gift-head {
+  color: #fff;
+  font-size: 14px;
+  font-weight: bold;
+  position: absolute;
+  left: 365px;
+  top: 82px;
+}
+.fd-gift-text {
+  color: #fff;
+  font-size: 14px;
+  position: absolute;
+  left: 365px;
+  top: 122px;
+  width: 210px;
+}
+.fd-gift-button {
+  position: absolute;
+  width: 230px;
+  height: 26px;
+  background-position: left top;
+  cursor: pointer;
+  left: 363px;
+  top: 280px;
+  z-index: 9;
+}
+.fd-gift-disabled {
+  height: 26px;
+  left: 365px;
+  position: absolute;
+  top: 280px;
+  width: 230px;
+}
+.sg-button {
+  background-color: #f00 !important;
+  color: #fff !important;
+}
+.sg-s-title {
+  font-size: 36px;
+  left: 110px;
+  margin: 0;
+  padding: 0;
+  position: absolute;
+  top: 28px;
+}
+.sg-s-dave {
+  left: 90px;
+  position: absolute;
+  top: 100px;
+}
+.sg-s-text {
+  font-family: arial;
+  font-size: 24px;
+  position: absolute;
+  right: 80px;
+  text-align: center;
+  top: 115px;
+  width: 300px;
+}
+.sg-s-targets {
+  background-color: #ffffff;
+  border: 1px solid #888888;
+  left: 100px;
+  padding: 20px;
+  position: absolute;
+  top: 300px;
+  width: 480px;
+}
+.sg-s-target {
+  float: left;
+  margin-right: 5px;
+  text-align: center;
+  cursor: pointer;
+}
+.sg-s-pic {
+  padding: 3px;
+  border: 1px solid #c1c1c1;
+}
+.sg-s-pic img {
+  display: block;
+}
+.sg-s-share {
+  margin-top: 3px;
+}
+.sg-r-title {
+  color: #d80c0c;
+  font-family: arial;
+  font-size: 31px;
+  margin: 0;
+  padding: 0;
+  position: absolute;
+  right: 70px;
+  top: 60px;
+}
+.sg-r-text {
+  font-family: arial;
+  font-size: 19px;
+  position: absolute;
+  right: 40px;
+  text-align: center;
+  top: 110px;
+  width: 300px;
+}
+.sg-r-text span {
+  font-size: 25px;
+}
+.sg-r-dave {
+  left: 70px;
+  position: absolute;
+  top: 70px;
+}
+.sg-r-thanks {
+  position: absolute;
+  right: 90px;
+  top: 220px;
+}
+.infotext {
+  margin: 5px 0 10px;
+  text-align: center;
+  font-weight: bold;
+}
+.it-green {
+  color: green;
+}
+.it-red {
+  color: red;
+}
+#cflink {
+  display: none;
+}
+#cflink a {
+  font-size: 14px;
+  margin-bottom: 14px;
+}
+#cflink a span {
+  font-size: 15px;
+}
+div.banner {
+  width: 728px;
+  height: 130px;
+  margin: 0 auto;
+}
+.scores-weekly {
+  position: relative;
+  width: 760px;
+}
+.scores-weekly h3 {
+  margin: 0;
+  padding: 0;
+  position: absolute;
+  top: 94px;
+  right: 5px;
+  color: #333;
+  text-shadow: 1px 1px 1px #999;
+}
+.scores-weekly img {
+  padding: 0;
+  margin: 0 0 5px 0;
+}
+.sw-list {
+  margin-bottom: 30px;
+  border-top: 1px solid #ccc;
+}
+.l-container {
+  clear: both;
+  border: 1px solid #ccc;
+  border-top: 0;
+  background-color: #e1fdd3;
+  height: 58px;
+}
+.l-container div {
+  float: left;
+}
+.l-pic {
+  height: 50px;
+  overflow: hidden;
+  margin-top: 4px;
+  margin-left: 3px;
+}
+.l-score {
+  float: right !important;
+  width: 200px;
+  text-align: center;
+  font-weight: bold;
+  padding: 17px 0;
+  color: #333;
+  font-size: 120%;
+}
+.l-name {
+  font-size: 150%;
+  padding: 17px 10px;
+  margin-left: 32px;
+}
+.l-pos {
+  font-size: 150%;
+  font-weight: bold;
+  padding: 19px 0;
+  width: 66px;
+  text-align: center;
+}
+.l-mine {
+  background-color: #feff9f !important;
+}
+.l-top3 {
+  height: 70px !important;
+  background-color: #d7fcbb;
+}
+.l-top3 .l-pic {
+  margin: 0;
+  background: url("http://cdn-bm-fb.casualcollective.com/images/leaderboard/picframe.png")
+    no-repeat;
+  width: 60px;
+  height: 60px;
+  padding: 9px 0 0 9px;
+}
+.l-top3 span {
+  display: none;
+}
+.l-top3 .l-name,
+.l-top3 .l-score {
+  padding-top: 25px;
+}
+.l-top3 .l-name {
+  margin-left: 20px;
+}
+.l-top3 .l-pos {
+  margin: 0 12px;
+  width: 37px;
+  height: 63px;
+  padding: 0 !important;
+}
+.l-pos1 .l-pos {
+  background: url("http://cdn-bm-fb.casualcollective.com/images/leaderboard/gold1.png")
+    no-repeat;
+}
+.l-pos2 .l-pos {
+  background: url("http://cdn-bm-fb.casualcollective.com/images/leaderboard/silver1.png")
+    no-repeat;
+}
+.l-pos3 .l-pos {
+  background: url("http://cdn-bm-fb.casualcollective.com/images/leaderboard/bronze1.png")
+    no-repeat;
+}
+.l-top3 .l-score {
+  font-size: 160%;
+  text-shadow: 1px 1px 1px #999;
+}
+.l-runnerup {
+  background: url("http://cdn-bm-fb.casualcollective.com/images/leaderboard/runnerup1.png")
+    no-repeat 6px 0;
+}
+.l-runnerup span {
+  display: none;
+}
+#lb-toggle {
+  margin-top: 10px;
+  border-bottom: 0 !important;
+}
+#languages > a {
+  color: #338033;
+}
+#languages {
+  text-align: center;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+.zong-purchase img {
+  cursor: pointer;
+}
