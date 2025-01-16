@@ -1,6 +1,10 @@
-body {
+html, body {
   font-family: "lucida grande", tahoma, verdana, arial, sans-serif;
   font-size: 11px;
+  height: 100%;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
 }
 .clear {
   clear: both;
@@ -21,7 +25,9 @@ body {
   zoom: 1;
 }
 #content {
-  position: relative;
+  /* position: relative; */
+  flex: 1;
+  overflow: auto;
 }
 .kixeye-top {
   position: absolute;
@@ -30,6 +36,8 @@ body {
   display: block;
 }
 .mmenu {
+  display: flex;
+  justify-content: center;
   list-style: none;
   padding: 0;
   margin: 0;
