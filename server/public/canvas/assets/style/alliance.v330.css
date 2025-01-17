@@ -1,0 +1,1287 @@
+.hideDialog {
+	display: none;
+}
+
+.redx {
+	width: 29px;
+	height: 28px;
+	cursor: pointer;
+	position: absolute;
+	top: 1px;
+	right: 1px;
+	z-index: 9;
+}
+
+.modalRedX {
+	width: 29px;
+	height: 28px;
+	cursor: pointer;
+	position: absolute;
+	top: 1px;
+	right: 11px;
+	z-index: 9;
+}
+
+.bluequestion {
+	width: 30px;
+	height: 29px;
+	cursor: pointer;
+	position: absolute;
+	top: 0px;
+	right: 33px;
+	z-index: 10;
+}
+
+#alliance-feed-content {
+	position: absolute;
+	width: 735px;
+	height: 505px;
+}
+
+#tabs {
+	position: absolute;
+	height: 440px;
+	font-family: Verdana;
+	margin-top: 25px;
+	margin-left: 28px;
+	margin-right: 25px;
+	border-style: none;
+	background-color: transparent;
+}
+
+#alliance-tabs-nav {
+	line-height: 17px;
+	border-style: none;
+	background-color: transparent;
+}
+
+#alliance-tabs-nav li {
+	padding-left: 7px;
+	padding-right: 7px;
+	background-color: transparent;
+}
+
+#tabs-browse p {
+	font-size: 12px;
+}
+
+#tabs-browse #search-bar-div {
+	position:absolute;
+	top: 41px;
+	left: 14px;
+	width: 651px;
+	height: 31px;
+	
+	font-size: 11px;
+}
+
+input[type=text] {
+	font-size: 9px;
+	height: 16px;
+	font-family: Verdana;
+	font-weight: bold;
+	border-style: solid;
+	border-width: 1px;
+	border-color: #c3b580;
+	
+	padding: 5px;
+}
+
+#search-bar-div button {
+	font-size: 9px;
+	line-height: 28px;
+	height: 28px;
+	width: 115px;
+}
+
+#search-bar-div #allButton {
+	position: absolute;
+	top: 0px;
+}
+
+#search-bar-div #worldButton {
+	position: absolute;
+	top: 0px;
+	left: 100px;
+}
+
+#tabs-browse #search-bar-div #createButton {
+	position:absolute;
+	top: 0px;
+	left: 200px;
+}
+
+#search-bar-div #search-input {
+	position:absolute;
+	width: 190px;
+	height: 17px;
+	top:1px;
+	right: 100px;
+}
+
+#tabs-browse #search-bar-div #searchButton {
+	position:absolute;
+	right: 0px;
+}
+
+#search-indicator {
+	position:absolute;
+	height: 27px;
+	line-height: 28px;
+	
+	font-family: Verdana;
+	font-weight: bold;
+	font-size: 10px;
+	
+	left: 0px;
+	top: 339px;
+}
+
+.fixed-cell {
+	float: left;
+	position:relative;
+	height: 100%;
+	line-height: 28px;
+	padding: 0px;
+	margin: 0px;
+	white-space: nowrap;
+	overflow-x: hidden;
+}
+
+.tabs-background {
+	position:absolute;
+	border-style: solid;
+	border-color: #a28c74;
+	border-width: 1px;
+	background-color: #efd9c1;
+	left:3px;
+	top:32px;
+	width: 669px;
+	height: 375px;
+	z-index: -1;
+}
+
+#tabs-browse #search-results {
+	position:absolute;
+	top: 79px;
+	left: 14px;
+	width: 650px;
+	height: 304px;
+}
+
+#tabs-browse #search-results #search-results-paging {
+	position: absolute;
+	
+	width: 400px;
+	height: 27px;
+	left: 260px;
+	top: 341px;
+	
+	text-align: right;
+}
+
+#tabs-browse #search-results #search-results-paging button {
+	margin-left: 4px;
+	margin-right: 0px;
+}
+
+#tabs-browse #search-results #search-results-paging .ui-button-text-only .ui-button-text { padding: 0px; }
+#tabs-browse #search-results #search-results-paging .ui-button-text-only .ui-button-text { padding: 0px; }
+#tabs-browse #search-results #search-results-paging .ui-button-icon-only .ui-button-text, .ui-button-icons-only .ui-button-text { padding: 0px; }
+#tabs-browse #search-results #search-results-paging .ui-button-text-icon-primary .ui-button-text, .ui-button-text-icons .ui-button-text { padding: 0px; }
+#tabs-browse #search-results #search-results-paging .ui-button-text-icon-secondary .ui-button-text, .ui-button-text-icons .ui-button-text { padding: 0px; }
+#tabs-browse #search-results #search-results-paging .ui-button-text-icons .ui-button-text { padding: 0px; }
+
+
+#tabs-browse #search-results #search-results-table {
+	position: relative;
+	
+	width: 650px;
+
+	border-width: 1px;
+	border-spacing: 0px;
+	border-style: solid;
+	border-color: #949493;
+	border-collapse: collapse;
+}
+
+#tabs-browse #search-results #search-results-table th {
+	border-width: 1px;
+	padding-left: 5px;
+	padding-right: 5px;
+	border-style: inset;
+	border-color: #4d4d4d;
+	
+	text-align: center;
+	
+	font-family: Verdana;
+	font-weight: bold;
+	font-size: 10px;
+}
+
+
+#tabs-browse #search-results #search-results-table tr {
+	width: 650px;
+	font-family: Verdana;
+	font-weight: normal;
+	font-size: 10px;
+}
+
+#tabs-browse #search-results #search-results-table td {
+	border-width: 1px;
+	padding-left: 5px;
+	padding-right: 5px;
+	padding-bottom: 0px;
+	padding-top: 0px;
+	margin: 0px;
+	border-style: inset;
+	border-color: #4d4d4d;
+}
+
+tr.header {
+	background-color: #caa276;
+	height: 19px;
+}
+
+tr.alternating0 {
+	background-color: #f7ece0;
+	height: 28px;
+}
+
+tr.alternating-me {
+	background-color: #faf082;
+	height: 28px;
+}
+
+tr.alternating1 {
+	background-color: #efd9c1;
+	height: 28px;
+}
+
+td.noResults {
+	text-align:center;
+	background-color:#ffffff;
+	font-weight:bold;
+	height: 27px;
+}
+
+#tabs-my-alliance {
+	font-size: 14px;
+	color: #000000;
+}
+
+#tabs-my-alliance #alliance-name {
+	position:absolute;
+	left: 25px;
+	top: 48px;
+	
+	font-family: Verdana;
+	font-size: 12px;
+	font-weight: bold;
+}
+
+.myAlliancelabel {
+	position: absolute;
+	top:0px;
+	left: 0px;
+	
+	font-family: Verdana;
+	font-size: 10px;
+	font-weight: normal;
+	width: 65px;
+}
+
+.myAllianceValue {
+	position: absolute;
+	top: 0px;
+	left: 65px;
+	
+	font-family: Verdana;
+	font-size: 10px;
+	font-weight: bold;
+}
+
+
+#tabs-my-alliance #alliance-rank {
+	position:absolute;
+	left: 25px;
+	top: 71px;
+}
+
+#tabs-my-alliance #alliance-level {
+	position:absolute;
+	left: 25px;
+	top: 91px;
+}
+
+#tabs-my-alliance #alliance-leader {
+	position:absolute;
+	left: 25px;
+	top: 111px;
+}
+
+#tabs-my-alliance #alliance-members {
+	position:absolute;
+	left: 25px;
+	top: 131px;
+}
+
+#tabs-my-alliance #alliance-description {
+	position:absolute;
+	left: 25px;
+	top: 164px;
+	width: 228px;
+	height: 128px;
+	
+	padding-top: 15px;
+	padding-bottom: 15px;
+	padding-left: 10px;
+	padding-right: 10px;
+	
+	background-color: #ffffff;
+	border: 1px solid #333333;
+	border-radius: 4px;
+	-moz-border-radius: 4px; 
+	-webkit-border-radius: 4px; 
+	-khtml-border-radius: 4px;
+	
+	font-family: Verdana;
+	font-size: 11px;
+	font-weight: normal;
+	
+	word-wrap: break-word;
+}
+
+#tabs-my-alliance #my-alliance-actions {
+	position:absolute;
+	top: 347px;
+	left: 25px;
+	width: 250px;
+	
+	font-size: 11px;
+	
+	height: 25px;
+}
+
+#tabs-my-alliance #my-alliance-actions button {
+	font-size: 9px;
+	line-height: 28px;
+	height: 28px;
+	width: 115px;
+}
+
+.largeGrayButton {
+	font-size: 9px;
+	line-height: 28px;
+	height: 28px;
+	width: 115px;
+	font-weight: bold;
+	font-family: Verdana;
+}
+
+.smallGrayButton {
+	width:80px;
+	font-size:9px;
+	line-height:25px;
+	height:25px;
+	font-weight:bold;
+	font-family: Verdana;
+}
+
+#tabs-my-alliance #my-alliance-actions #edit-button {
+	position:absolute;
+	left: 0px;
+}
+
+#tabs-my-alliance #my-alliance-actions #leave-button {
+	position:absolute;
+	right: 0px;
+}
+
+#tabs-my-alliance #alliance-image {
+	position:absolute;
+	top: 52px;
+	left: 179px;
+	width: 96px;
+	height: 96px;
+	
+}
+
+#tabs-my-alliance #alliance-shoutbox {
+	position:absolute;
+	top: 43px;
+	left: 292px;
+	width: 369px;
+	height: 389px;
+	
+	background-color: #dddddd;
+	
+	border-width: 1px;
+	border-style: solid;
+	border-color: #4d4d4d;
+}
+
+#tabs-my-alliance #alliance-shoutbox #shouts {
+	position: absolute;
+	
+	top: 0px;
+	left: 0px;
+	width: 369px;
+	height: 339px;
+	
+	overflow: auto;
+	overflow-x: hidden;
+}
+
+#tabs-my-alliance #alliance-shoutbox #shout-post-bar {
+	position: absolute;
+	
+	border-width: 1px;
+	border-style: solid;
+	border-color: #4d4d4d;
+	background-color: #af7f53;
+	
+	padding: 10px;
+	top: 338px;
+	left: -1px;
+	width: 349px;
+	height: 30px;
+	
+	font-size: 11px;
+}
+
+#shout-input {
+	width:205px;
+	float:left;
+	height: 17px;
+	margin-top: 1px;
+	
+	font-size: 9px;
+	font-family: Verdana;
+	font-weight: bold;
+}
+
+.tooltip{
+   position: absolute;
+   padding: 8px 11px;
+   z-index: 3;
+   
+   color: #000000;
+   background-color: #d1fc82;
+   border: 1px solid #000000;
+   
+   font-family: sans-serif;
+   font-size: 12px;
+   line-height: 18px;
+}
+
+#actionsBox {
+	position: absolute;
+	display: inline;
+	padding: 5px;
+	top: 0px;
+	left: 0px;
+	
+	background-color: #af7f53;
+	border: 1px solid #4d4d4d;
+	border-radius: 3px;
+	-moz-border-radius: 3px; 
+	-webkit-border-radius: 3px; 
+	-khtml-border-radius: 3px;
+	z-index: 99999;
+
+	font-size: 10px;
+	
+	width: 103px;
+}
+
+#actionsBox button {
+	position: relative;
+	width: 103px;
+	font-size: 9px;
+	line-height:25px;
+	height: 25px;
+	font-weight:bold;
+}
+
+.relationship-friendly {
+	float: left;
+	position:relative;
+	
+	width: 25px;
+	height: 25px;
+	padding: 2px;
+	margin-right: 5px;
+	
+	border-right-width: 1px;
+	border-right-color: #4d4d4d;
+	border-right-style: solid;
+	
+	background-color: #13dd05;
+}
+.relationship-neutral {
+  	float: left;
+	position:relative;
+	
+	width: 25px;
+	height: 25px;
+	padding: 2px;
+	margin-right: 5px;
+	
+	border-right-width: 1px;
+	border-right-color: #4d4d4d;
+	border-right-style: solid;
+	
+	background-color: #ffff00;
+}
+.relationship-hostile {
+	float: left;
+	position:relative;
+	
+	width: 25px;
+	height: 25px;
+	padding: 2px;
+	margin-right: 5px;
+	
+	border-right-width: 1px;
+	border-right-color: #4d4d4d;
+	border-right-style: solid;
+	
+	background-color: #ff4628;
+}
+
+/* Used for own alliance and perhaps friends alliances in the future */
+.relationship-friend {
+	float: left;
+	position:relative;
+	
+	width: 25px;
+	height: 25px;
+	padding: 2px;
+	margin-right: 5px;
+	
+	border-right-width: 1px;
+	border-right-color: #4d4d4d;
+	border-right-style: solid;
+	
+	background-color: #00a0db;
+}
+
+#relationshipsHover {
+	position: absolute;
+	display: none;
+	padding: 5px;
+	z-index: 99998;
+	
+	background-color: #af7f53;
+	border: 1px solid #4d4d4d;
+	border-radius: 3px;
+	-moz-border-radius: 3px; 
+	-webkit-border-radius: 3px; 
+	-khtml-border-radius: 3px;
+	
+	width: 83px;
+	height: 25px;
+	
+	font-size: 11px;
+}
+
+#tabs-members {
+	font-size: 12px;
+	color: #000000;
+}
+
+#all-members-container {
+	position: absolute;
+	left:14px;
+	top:33px;
+	
+	width: 659px;
+	height: 400px;
+	padding-right: 0px;
+	margin-right: 0px;
+	padding-top: 10px;
+	overflow: auto;
+	overflow-x: hidden;
+}
+
+.members-header {
+	position: relative;
+	width: 644px;
+	height: 30px;
+	margin-top: 5px;
+	margin-bottom: 6px;
+	
+	font-size: 11px;
+	line-height: 28px;
+}
+
+.members-header .members-header-text {
+	position: relative;
+	
+	float: left;
+	
+	font-size: 16px;
+	font-weight: bold;
+	color: #000000;
+}
+
+#ask-join-button {
+	position: relative;
+	
+	float: right;
+}
+
+.members {
+	position: relative;
+	
+	width: 643px;
+	margin-bottom: 8px;
+}
+
+.members-table {
+	position: relative;
+
+	width: 643px;
+
+	border-width: 1px;
+	border-spacing: 0px;
+	border-style: solid;
+	border-color: #949493;
+	border-collapse: collapse;
+}
+
+.members-table th {
+	border-width: 1px;
+	padding-left: 5px;
+	padding-right: 5px;
+	border-style: inset;
+	border-color: #4d4d4d;
+	
+	text-align: center;
+	
+	font-family: Verdana;
+	font-weight: bold;
+	font-size: 10px;
+}
+
+
+.members-table tr {
+	width: 643px;
+	
+	font-family: Verdana;
+	font-weight: normal;
+	font-size: 10px;
+}
+
+.members-table td {
+	border-width: 1px;
+	padding-left: 5px;
+	padding-right: 5px;
+	padding-bottom: 0px;
+	padding-top: 1px;
+	margin: 0px;
+	border-style: inset;
+	border-color: #5f7d42;
+}
+
+/* Create Alliance UI */
+/* 442 347 */
+#create-alliance-header {
+	position: absolute;
+	width: 442px;
+	left: 0px;
+	top: 0px;
+
+	text-align: center;
+}
+
+#alliance-image-selection {
+	position: absolute;
+	
+	left: 4px;
+	top: 37px;
+	width: 240px;
+	height: 303px;
+	
+	background-color: #efd9c1;
+	
+	border-color: #4d4d4d;
+	border-width: 1px;
+	border-style: solid;
+	
+	overflow: auto;
+}
+
+#create-alliance-desc {
+	position: absolute;
+
+	left: 258px;
+	top: 36px;
+	width: 185px;
+	
+	font-size: 12px;
+}
+
+#create-alliance-selected-image-display {
+	position: absolute;
+	
+	left: 258px;
+	top: 130px;
+	width: 180px;
+	height: 50px;
+	
+	overflow: hidden;
+}
+
+#create-alliance-form {
+	position: absolute;
+	
+	left: 258px;
+	top: 189px;
+	width: 187px;
+	height: 118px;
+	
+	font-size: 12px;
+}
+
+.defaultText { 
+	font-family: Verdana;
+	font-weight: normal;
+	font-size: 10px;
+}
+
+.defaultTextActive { 
+	font-style: italic; 
+}
+
+#create-alliance-form #create-alliance-input-name {
+	position: absolute;
+	
+	left: 0px;
+	top: 0px;
+	width: 168px;
+	
+	border-color: #4d4d4d;
+	font-weight: normal;
+	font-size: 10px;
+}
+
+#create-alliance-form #create-alliance-input-desc {
+	position: absolute;
+	
+	left: 0px;
+	top: 37px;
+	width: 168px;
+	height: 66px;
+	
+	font-family: Verdana;
+	font-weight: normal;
+	font-size: 10px;
+	
+	border-style: solid;
+	border-width: 1px;
+	border-color: #4d4d4d;
+	
+	padding: 5px;
+	
+	resize: none;
+}
+
+#create-alliance-form #create-alliance-button-div {
+	position: absolute;
+	
+	text-align: center;
+	left: 0px;
+	top: 125px;
+	width: 180px;
+}
+
+#tabs-messages {
+	font-size: 12px;
+	color: #000000;
+}
+
+#all-messages-container {
+	position: absolute;
+	left:14px;
+	top:33px;
+	
+	width: 659px;
+	height: 400px;
+	padding-right: 0px;
+	margin-right: 0px;
+	padding-top: 10px;
+	overflow: auto;
+	overflow-x: hidden;
+}
+
+#tabs-messages #message-bar-div {
+	position: relative;
+	width: 644px;
+	height: 30px;
+	margin-top: 5px;
+	margin-bottom: 6px;
+	
+	font-size: 11px;
+	line-height: 28px;
+}
+
+#tabs-messages #message-bar-div #delete-messages {
+	margin-left: 5px;
+}
+
+#tabs-messages #messages {
+	position: relative;
+	
+	width: 643px;
+	margin-bottom: 8px;
+}
+
+#tabs-messages #messages #messages-table {
+	position: relative;
+	
+	width: 643px;
+
+	border-width: 1px;
+	border-spacing: 0px;
+	border-style: solid;
+	border-color: #949493;
+	border-collapse: collapse;
+}
+
+#tabs-messages #messages #messages-table th {
+	border-width: 1px;
+	padding-left: 5px;
+	padding-right: 5px;
+	border-style: inset;
+	border-color: #949493;
+	
+	text-align: center
+}
+
+
+#tabs-messages #messages #messages-table tr {
+	width: 643px;
+}
+
+#tabs-messages #messages #messages-table td {
+	border-width: 1px;
+	padding-left: 5px;
+	padding-right: 5px;
+	padding-bottom: 0px;
+	padding-top: 1px;
+	margin: 0px;
+	border-style: inset;
+	border-color: #5f7d42;
+}
+
+#allianceNotifications {
+	display: none;
+
+	position:absolute;
+	left: 417px;
+	top: 16px;
+	width: 20px;
+	height: 20px;
+
+	background-repeat: no-repeat;
+	
+	z-index: 20;
+	
+	text-align: center;
+	font-size: 11px;
+	color: #fff;
+	font-weight: bold;
+	
+	line-height: 20px;	
+}
+
+#message-dialog {
+	position: absolute;
+	
+	top: 0px;
+	left: 0px;
+	width: 362px;
+	height: 162px;
+	padding: 0px;
+	
+	font-size: 12px;
+	font-family: Verdana;
+	color: #000000;
+	text-align: center;
+}
+
+#message-dialog #header {
+	position:absolute;
+	
+	left: 0px;
+	top: 0px;
+	width: 363px;
+	
+	font-size: 18px;
+	font-family: Verdana;
+	font-weight: bold;
+	
+	text-align: center;
+}
+
+#message-dialog #message {
+	position:absolute;
+	
+	padding: 10px;
+	
+	left: 1px;
+	top: 36px;
+	width: 341px;
+	height: 133px;
+	
+	background-color: #ffffff;
+	border: 1px solid #333333;
+	border-radius: 4px;
+	-moz-border-radius: 4px; 
+	-webkit-border-radius: 4px; 
+	-khtml-border-radius: 4px;
+	
+	font-family: Verdana;
+	font-size: 12px;
+	font-weight: normal;
+	text-align: left;
+}
+
+/* from subject text */
+
+#message-dialog #message #from {
+	position:absolute;
+	
+	top: 10px;
+	width: 280px;
+	height: 28px;
+	overflow-x: hidden;
+	white-space: nowrap;
+}
+
+#message-dialog #message #date {
+	position:absolute;
+	
+	top: 10px;
+	right: 10px;
+	width: 60px;
+	
+	text-align: right;
+}
+
+#message-dialog #message #subject {
+	position:absolute;
+	
+	top: 35px;
+	width: 330px;
+	height: 26px;
+	overflow-x: hidden;
+	white-space: nowrap;
+}
+
+#message-dialog #message #text {
+	position:absolute;
+	
+	top: 68px;
+	width: 330px;
+	height: 75px;
+	overflow: hidden;
+}
+
+#message-dialog #buttons {
+	position: absolute;
+	
+	left: 0px;
+	top: 203px;
+	width: 363px;
+	
+	font-size: 10px;
+	text-align: right;
+}
+
+#message-dialog #buttons button {
+	margin-left: 10px;
+}
+
+.shout-alternating0 {
+	background-color: #ccdfbe;
+}
+
+.shout-alternating1 {
+	background-color: #e6efdf;
+}
+
+.shout-gold {
+	background-color: #fbf39d;
+}
+
+.shout-message {
+	position: relative;
+	
+	border-width: 1px;
+	border-bottom-style: solid;
+	border-color: #949493;
+	
+	min-height: 40px;
+}
+
+.user-pic {
+	position: absolute;
+	
+	left: 5px;
+	top: 5px;
+}
+
+.message-time {
+	position: absolute;
+
+	right: 5px;
+	top: 5px;
+	
+	font-family: Verdana;
+	font-weight: normal;
+	font-size: 9px;
+}
+
+#user-shout-message #user-name {
+	position: absolute;
+	
+	left: 38px;
+	top: 5px;
+	
+	font-family: Verdana;
+	font-weight: bold;
+	font-size: 10px;
+}
+
+#user-shout-message #message {
+	position: absolute;
+	
+	left: 38px;
+	top: 25px;
+	width: 310px;
+	
+	font-family: Verdana;
+	font-weight: normal;
+	font-size: 10px;
+	
+	word-wrap: break-word;
+}
+
+.system-message {
+	position: absolute;
+	
+	left: 38px;
+	top: 22px;
+	width: 310px;
+	
+	text-align: center;
+	
+	font-family: Verdana;
+	font-weight: bold;
+	font-size: 10px;
+	
+	word-wrap: break-word;
+}
+
+#system-shout-relationship-message #relationship-pic {
+	position: absolute;
+	
+	left: 35px;
+	top: 5px;
+}
+
+#powerups-container {
+	position: absolute;
+	
+	left:14px;
+	top: 44px;
+	width: 648px;
+	height: 391px;
+}
+
+.powerup {
+	position: relative;
+	
+	width: 646px;
+	height: 80px;
+	
+	background-color: #ffffff;
+	border-color: #4d4d4d;
+	border-style: solid;
+	border-width: 1px;
+}
+
+.powerup #icon {
+	position: absolute;
+	
+	left: 5px;
+	top: 5px;
+	width: 70px;
+	height: 70px;
+}
+
+.powerup #main {
+	position: absolute;
+	
+	left: 86px;
+	top: 4px;
+	width: 430px;
+	height: 70px;
+}
+
+.powerup #main #name {
+	position: absolute;
+	
+	left: 0px;
+	top: 0px;
+	width: 430px;
+	
+	font-family: Verdana;
+	font-size: 11px;
+	font-weight: bold;
+}
+.powerup #main #description {
+	position: absolute;
+	
+	left: 0px;
+	top: 14px;
+	width: 430px;
+	height: 35px;
+	
+	word-wrap: break-word;
+	
+	font-family: Verdana;
+	font-size: 11px;
+	font-weight: normal;
+}
+.powerup #main #progress-bar {
+	position: absolute;
+	
+	left: 0px;
+	top: 53px;
+	width: 428px;
+	height: 16px;
+	
+	background-color: #999999;
+	
+	border-color: #000000;
+	border-style: solid;
+	border-width: 1px;
+	
+	text-align: center;
+	
+	font-family: Verdana;
+	font-weight: bold;
+	font-size: 11px;
+	
+	color: #000000;
+}
+
+.powerup #main #progress-bar #progress-color {
+	position: absolute;
+	
+	left: 0px;
+	top: 0px;
+	width: 428px;
+	height: 16px;
+}
+
+.powerup #main #progress-bar #progress-text {
+	position: absolute;
+	
+	left: 0px;
+	top: 0px;
+	width: 428px;
+	height: 16px;
+}
+
+.powerup #actions {
+	position: absolute;
+	
+	left: 526px;
+	top: 47px;
+	width: 115px;
+	
+	font-family: Verdana;
+	font-size: 9px;
+	font-weight: bold;
+}
+
+#speedup-powerup-dialog {
+	position: absolute;
+	
+	top: 0px;
+	left: 0px;
+	width: 362px;
+	height: 230px;
+	padding: 0px;
+	
+	font-size: 12px;
+	font-family: Verdana;
+	color: #000000;
+}
+
+#speedup-powerup-dialog #header {
+	position:absolute;
+	
+	left: 0px;
+	top: 0px;
+	width: 363px;
+	
+	font-size: 18px;
+	font-family: Verdana;
+	font-weight: bold;
+	
+	text-align: center;
+}
+
+#speedup-powerup-dialog #selection {
+	position:absolute;
+	
+	padding: 10px;
+	
+	left: 1px;
+	top: 22px;
+	width: 341px;
+	height: 133px;
+
+	font-family: Verdana;
+	font-size: 12px;
+	font-weight: normal;
+	text-align: left;
+}
+
+#speedup-powerup-dialog #selection .checkbox-row {
+	position:relative;
+	
+	float: left;
+	
+	padding-left: 10px;
+	padding-top: 3px;
+	padding-bottom: 3px;
+	padding-right: 10px;
+	
+	width: 320px;
+
+	font-family: Verdana;
+	font-size: 12px;
+	font-weight: normal;
+	text-align: left;
+}
+
+#speedup-powerup-dialog #buy-button-div {
+	position:absolute;
+	
+	left: 0px;
+	top: 190px;
+	width: 363px;
+	
+	font-size: 9px;
+	font-family: Verdana;
+	font-weight: bold;
+	
+	text-align: center;
+}
