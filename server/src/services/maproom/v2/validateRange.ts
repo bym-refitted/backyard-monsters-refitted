@@ -10,17 +10,18 @@ interface OwnedOutpost {
 }
 
 /**
- * Validates if the target cell is within the attack range of the user's main base or any of their outposts.
+ * Validates if the target is within the attack range of the user's main base or any of their outposts.
  *
  * Invalidates an attack if:
- * 1. The attack cell is not found.
- * 2. No outposts are owned and the main base is out of range.
- * 3. The closest outpost is not found.
- * 4. The target is out of attack range.
+ * 1| The target is not found
+ * 2| The nearest outpost is not found
+ * 3| The target is out of attack range
+ * 4| No outpost save is found
+ * 5| No outposts are owned and the main base is out of range
  *
- * @param {User} user - The user object containing the save data.
- * @param {string} baseid - The ID of the base under attack.
- * @throws {Error} - attack invalidation error.
+ * @param {User} user - The user object containing the save data
+ * @param {string} baseid - The baseid of the target
+ * @throws {Error} - attack invalidation error
  */
 export const validateRange = async (user: User, baseid: string) => {
   const { homebase, outposts, flinger } = user.save;
@@ -41,7 +42,7 @@ export const validateRange = async (user: User, baseid: string) => {
 
   if (distanceFromMain <= mainYardRange) return;
 
-  // Otherwise, we determine the closest outpost to the target cell
+  // Otherwise, we determine the nearest outpost to the target cell
   if (outposts.length > 0) {
     let nearestOutpost: OwnedOutpost | null = null;
     let nearestDistance = Infinity;
@@ -56,9 +57,9 @@ export const validateRange = async (user: User, baseid: string) => {
       }
     }
 
-    if (!nearestOutpost) throw new Error("Could not find the closest outpost.");
+    if (!nearestOutpost) throw new Error("Could not find the nearest outpost.");
 
-    // Retrieve the closest outpost and validate it's range
+    // Retrieve the outpost's save and validate it's range
     const outpostSave = await ORMContext.em.findOne(Save, {
       baseid: BigInt(nearestOutpost.baseid),
     });
