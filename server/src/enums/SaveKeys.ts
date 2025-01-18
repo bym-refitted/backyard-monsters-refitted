@@ -11,7 +11,6 @@ export enum SaveKeys {
   ACADEMY = "academy",
   CHAMPION = "champion",
   QUESTS = "quests",
-  ATTACKERCHAMPION = "attackerchampion",
   MONSTERUPDATE = "monsterupdate",
   ATTACKLOOT = "attackloot",
 }
