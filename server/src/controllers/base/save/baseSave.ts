@@ -63,7 +63,7 @@ export const baseSave: KoaController = async (ctx) => {
 
         case SaveKeys.CHAMPION:
           if (isAttack) {
-            championHandler(value, baseSave);
+            championHandler(saveData.attackerchampion, userSave);
           } else {
             baseSave[SaveKeys.CHAMPION] = saveData.champion;
           }
@@ -85,12 +85,10 @@ export const baseSave: KoaController = async (ctx) => {
     if (isAttack) {
       for (const key of Object.keys(saveData)) {
         const value = saveData[key];
-
+        // These keys are used for calculations on the server to update other fields
+        // but should not be persisted to the database (Remove in the future).
+        // Figure out what they are used for.
         switch (key) {
-          case SaveKeys.ATTACKERCHAMPION:
-            if (value) userSave.attackerchampion = value;
-            break;
-
           case SaveKeys.MONSTERUPDATE:
             await monsterUpdateHandler(value, userSave);
             break;

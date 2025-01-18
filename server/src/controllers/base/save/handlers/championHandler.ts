@@ -4,41 +4,45 @@ import { Save } from "../../../../models/save.model";
 import { parseChampionData } from "../../../../utils/parseChampionData";
 
 /**
- * Handles the champion data validation and update.
+ * Handler for champion data validation during an attack.
  *
- * @param {any} value - The new champion data to be validated and saved.
- * @param {Save} baseSave - The current save data from the database.
+ * The client tracks champion stats during an attack using the `attackerchampion` property.
+ *
+ * @param {string} rawChampionData - The updated raw champion data to be validated and saved.
+ * @param {Save} userSave - The user save from the database to access the original champion data.
  * @throws an error if the validation fails.
  */
-export const championHandler = async (value: any, baseSave: Save) => {
-  if (!value) throw permissionErr();
+export const championHandler = async (rawChampionData: string,userSave: Save) => {
+  if (!rawChampionData) throw permissionErr();
 
-  const championData = parseChampionData(value);
-  const originalChampionData = parseChampionData(baseSave[SaveKeys.CHAMPION]);
+  const championData = parseChampionData(rawChampionData);
+  const originalChampionData = parseChampionData(userSave[SaveKeys.CHAMPION]);
 
   if (originalChampionData === null) {
-    if (value !== "null") throw permissionErr();
-    baseSave[SaveKeys.CHAMPION] = value;
+    if (rawChampionData !== "null") throw permissionErr();
+    userSave[SaveKeys.CHAMPION] = rawChampionData;
     return;
   }
 
-  if (!Array.isArray(championData)) throw permissionErr();
+  if (championData) {
+    if (!Array.isArray(championData)) throw permissionErr();
 
-  if (championData.length !== originalChampionData.length)
-    throw permissionErr();
+    if (championData.length !== originalChampionData.length)
+      throw permissionErr();
 
-  for (let i = 0; i < championData.length; i++) {
-    const champion = championData[i];
-    const originalChampion = originalChampionData[i];
+    for (let i = 0; i < championData.length; i++) {
+      const champion = championData[i];
+      const originalChampion = originalChampionData[i];
 
-    for (const key in champion) {
-      const isStatModified =
-        key !== "hp" && champion[key] !== originalChampion[key];
+      for (const key in champion) {
+        const isStatModified =
+          key !== "hp" && champion[key] !== originalChampion[key];
 
-      if (isStatModified) throw permissionErr();
+        if (isStatModified) throw permissionErr();
+      }
     }
-  }
 
-  // Persist the new champion data if validation passes
-  baseSave[SaveKeys.CHAMPION] = JSON.stringify(championData);
+    // Persist the new champion data if validation passes
+    userSave[SaveKeys.CHAMPION] = JSON.stringify(championData);
+  }
 };

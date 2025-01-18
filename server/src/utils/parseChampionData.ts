@@ -24,9 +24,14 @@ interface ChampionData {
  * @param {string} rawChampionData - The raw champion data from the user's save.
  * @returns {ChampionData[] | null} The parsed champion data as an array of objects.
  */
-export const parseChampionData = (rawChampionData: string): ChampionData[] | string | null => {
-  
-  if (typeof rawChampionData === "string") return JSON.parse(rawChampionData);
+export const parseChampionData = (rawChampionData: string): ChampionData[] | null => {
+  try {
+    const parsedChampionData = JSON.parse(rawChampionData);
 
-  return rawChampionData || [];
+    if (Array.isArray(parsedChampionData)) return parsedChampionData;
+
+    return null;
+  } catch (_) {
+    return null;
+  }
 };

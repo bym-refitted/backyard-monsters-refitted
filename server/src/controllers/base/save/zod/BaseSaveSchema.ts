@@ -35,7 +35,7 @@ export const BaseSaveSchema = z.object({
   champion: z
     .string()
     .optional()
-    .transform((data) => (data ? JSON.stringify(JSON.parse(data)) : undefined)),
+    .transform((data) => (data ? JSON.stringify(JSON.parse(data)) : null)),
 
   /**
    * The attacker champion data, transformed from a JSON string.
