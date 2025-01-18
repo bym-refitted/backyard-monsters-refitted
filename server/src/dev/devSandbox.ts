@@ -3947,7 +3947,6 @@ export const devSandbox = (user?: User) => {
     gifts: [],
     sentinvites: [],
     sentgifts: [],
-    attackerchampion: "null",
     fbpromos: [],
   };
 };
