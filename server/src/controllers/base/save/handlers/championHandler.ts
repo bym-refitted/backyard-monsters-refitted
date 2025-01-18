@@ -12,7 +12,7 @@ import { parseChampionData } from "../../../../utils/parseChampionData";
  * @param {Save} userSave - The user save from the database to access the original champion data.
  * @throws an error if the validation fails.
  */
-export const championHandler = async (rawChampionData: string,userSave: Save) => {
+export const championHandler = async (rawChampionData: string, userSave: Save) => {
   if (!rawChampionData) throw permissionErr();
 
   const championData = parseChampionData(rawChampionData);
@@ -21,6 +21,7 @@ export const championHandler = async (rawChampionData: string,userSave: Save) =>
   if (originalChampionData === null) {
     if (rawChampionData !== "null") throw permissionErr();
     userSave[SaveKeys.CHAMPION] = rawChampionData;
+    
     return;
   }
 
