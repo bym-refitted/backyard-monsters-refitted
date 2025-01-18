@@ -201,10 +201,6 @@ export class Save {
   champion?: string;
 
   @FrontendKey
-  @Property({ type: "json", nullable: true, default: "null" })
-  attackerchampion: string;
-
-  @FrontendKey
   @Property({ default: 0 })
   empiredestroyed!: number;
 
@@ -509,7 +505,6 @@ export class Save {
     "gifts",
     "sentinvites",
     "sentgifts",
-    "attackerchampion",
     "fbpromos",
     "purchase",
     "powerups",
@@ -540,8 +535,7 @@ export class Save {
     "buildinghealthdata",
     "buildingresources",
     "attackreport",
-    "attackersiege",
-    "attackerchampion"
+    "attackersiege"
   ];
 
   public static createDefaultUserSave = async (
