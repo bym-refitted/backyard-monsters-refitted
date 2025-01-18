@@ -81,10 +81,6 @@ export const baseSave: KoaController = async (ctx) => {
         const value = saveData[key];
 
         switch (key) {
-          case SaveKeys.ATTACKERCHAMPION:
-            if (value) userSave.attackerchampion = value;
-            break;
-
           case SaveKeys.MONSTERUPDATE:
             await monsterUpdateHandler(value, userSave);
             break;
