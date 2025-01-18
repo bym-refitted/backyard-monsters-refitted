@@ -19,6 +19,13 @@ import { monsterUpdateHandler } from "./handlers/monsterUpdateHandler";
 import { ClientSafeError } from "../../../middleware/clientSafeError";
 import { championHandler } from "./handlers/championHandler";
 
+/**
+ * Controller responsible for saving the user's base data.
+ *
+ * @param {Context} ctx - The Koa context object.
+ * @returns {Promise<void>} A promise that resolves when the base save process is complete.
+ * @throws Will throw an error if the save operation fails.
+ */
 export const baseSave: KoaController = async (ctx) => {
   const user: User = ctx.authUser;
   const userSave = user.save;
@@ -39,10 +46,6 @@ export const baseSave: KoaController = async (ctx) => {
 
     // Not the owner and not in an attack
     if (!isOwner && baseSave.attackid === 0) throw permissionErr();
-
-    // add validation here on what keys are sent once an attack is over
-    // Next step - log the difference between whats on server and what is sent with attackId 0
-    // From that we can see what keys we need to read
 
     // Standard save logic
     for (const key of isAttack ? Save.attackSaveKeys : Save.saveKeys) {
