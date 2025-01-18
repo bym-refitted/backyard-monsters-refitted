@@ -3,53 +3,71 @@ import { User } from "../../../models/user.model";
 import { WorldMapCell } from "../../../models/worldmapcell.model";
 import { ORMContext } from "../../../server";
 
-// TODO: [WIP] Outpost range is fucked
+interface OwnedOutpost {
+  x: number;
+  y: number;
+  baseid: string;
+}
+
+/**
+ * Validates if the target cell is within the attack range of the user's main base or any of their outposts.
+ *
+ * Invalidates an attack if:
+ * 1. The attack cell is not found.
+ * 2. No outposts are owned and the main base is out of range.
+ * 3. The closest outpost is not found.
+ * 4. The target is out of attack range.
+ *
+ * @param {User} user - The user object containing the save data.
+ * @param {string} baseid - The ID of the base under attack.
+ * @throws {Error} - attack invalidation error.
+ */
 export const validateRange = async (user: User, baseid: string) => {
   const { homebase, outposts, flinger } = user.save;
 
-  // Get the target cell under attack
-  const targetCell = await ORMContext.em.findOne(WorldMapCell, {
+  // Retrieve the cell under attack
+  const attackCell = await ORMContext.em.findOne(WorldMapCell, {
     base_id: BigInt(baseid),
   });
 
-  if (!targetCell) throw new Error("Target cell not found.");
+  if (!attackCell) throw new Error("Attack cell not found.");
 
-  const [cellX, cellY] = [targetCell.x, targetCell.y];
-
-  // First, we check if the main yard is within range
+  const [cellX, cellY] = [attackCell.x, attackCell.y];
   const [homeX, homeY] = homebase.map(Number);
-  const mainDistance = calculateDistance(cellX, cellY, homeX, homeY);
-  const mainYardRange = getMainYardRange(flinger) + 1;
 
-  if (mainDistance <= mainYardRange) return;
+  // First, we determine if the main yard is within range
+  const mainYardRange = getMainYardRange(flinger);
+  const distanceFromMain = calculateDistance(cellX, cellY, homeX, homeY);
 
-  // Otherwise, we check if any outposts are within range
+  if (distanceFromMain <= mainYardRange) return;
+
+  // Otherwise, we determine the closest outpost to the target cell
   if (outposts.length > 0) {
-    let closestOutpost = null;
-    let closestDistance = Infinity;
+    let nearestOutpost: OwnedOutpost | null = null;
+    let nearestDistance = Infinity;
 
     for (const outpost of outposts) {
-      const [outpostX, outpostY] = outpost;
+      const [outpostX, outpostY, baseid] = outpost;
       const distance = calculateDistance(cellX, cellY, outpostX, outpostY);
 
-      if (distance < closestDistance) {
-        closestDistance = distance;
-        closestOutpost = outpost;
+      if (distance < nearestDistance) {
+        nearestDistance = distance;
+        nearestOutpost = { x: outpostX, y: outpostY, baseid };
       }
     }
 
-    if (!closestOutpost) throw new Error("Could not find the closest outpost.");
+    if (!nearestOutpost) throw new Error("Could not find the closest outpost.");
 
-    // Validate the closest outpost's range
+    // Retrieve the closest outpost and validate it's range
     const outpostSave = await ORMContext.em.findOne(Save, {
-      baseid: BigInt(closestOutpost[2]),
+      baseid: BigInt(nearestOutpost.baseid),
     });
 
     if (!outpostSave) throw new Error("Outpost save not found.");
 
-    const outpostRange = getOutpostRange(outpostSave.flinger) + 1;
+    const outpostRange = getOutpostRange(outpostSave.flinger);
 
-    if (closestDistance > outpostRange)
+    if (nearestDistance > outpostRange)
       throw new Error("Target is out of attack range.");
   } else {
     throw new Error("No outposts owned, and main base is out of range.");
@@ -61,7 +79,10 @@ const calculateDistance = (
   cellY: number,
   baseX: number,
   baseY: number
-) => Math.sqrt(Math.pow(baseX - cellX, 2) + Math.pow(baseY - cellY, 2));
+) =>
+  Math.round(
+    Math.sqrt(Math.pow(baseX - cellX, 2) + Math.pow(baseY - cellY, 2))
+  );
 
 const getMainYardRange = (flinger: number) => {
   switch (flinger) {
