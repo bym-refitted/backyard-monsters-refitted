@@ -11,6 +11,7 @@ interface OwnedOutpost {
 
 /**
  * Validates if the target is within the attack range of the user's main base or any of their outposts.
+ * Wiki: https://backyardmonsters.fandom.com/wiki/Flinger
  *
  * Invalidates an attack if:
  * 1| The target is not found
