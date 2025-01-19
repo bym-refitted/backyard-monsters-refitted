@@ -19,7 +19,7 @@ export interface FieldData {
 
 type Outpost = [number, number, string];
 
-@Entity()
+@Entity({ tableName: "save" })
 export class Save {
   @BeforeUpdate()
   checkForNegativeInteger(): void {
