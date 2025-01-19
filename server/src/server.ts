@@ -44,7 +44,7 @@ export const setApiVersion = (version: string) => {
   globalApiVersion = version;
 };
 
-export const getApiVersion = () => "v1.1.1-beta";
+export const getApiVersion = () => "v1.1.2-beta";
 export const PORT = process.env.PORT || 3001;
 export const BASE_URL = process.env.BASE_URL;
 

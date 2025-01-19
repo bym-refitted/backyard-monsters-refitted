@@ -4,7 +4,7 @@ import { ORMContext } from "../../../server";
 import { FilterFrontendKeys } from "../../../utils/FrontendKey";
 import { KoaController } from "../../../utils/KoaController";
 import { getCurrentDateTime } from "../../../utils/getCurrentDateTime";
-import { logging } from "../../../utils/logger";
+import { errorLog, logging } from "../../../utils/logger";
 import { Status } from "../../../enums/StatusCodes";
 import { SaveKeys } from "../../../enums/SaveKeys";
 import { BaseSaveSchema } from "./zod/BaseSaveSchema";
@@ -13,10 +13,19 @@ import { purchaseHandler } from "./handlers/purchaseHandler";
 import { academyHandler } from "./handlers/academyHandler";
 import { mapUserSaveData } from "../mapUserSaveData";
 import { BaseType } from "../../../enums/Base";
-import { saveFailureErr } from "../../../errors/errors";
+import { permissionErr, saveFailureErr } from "../../../errors/errors";
 import { attackLootHandler } from "./handlers/attackLootHandler";
 import { monsterUpdateHandler } from "./handlers/monsterUpdateHandler";
+import { ClientSafeError } from "../../../middleware/clientSafeError";
+import { championHandler } from "./handlers/championHandler";
 
+/**
+ * Controller responsible for saving the user's base data.
+ *
+ * @param {Context} ctx - The Koa context object.
+ * @returns {Promise<void>} A promise that resolves when the base save process is complete.
+ * @throws Will throw an error if the save operation fails.
+ */
 export const baseSave: KoaController = async (ctx) => {
   const user: User = ctx.authUser;
   const userSave = user.save;
@@ -32,15 +41,19 @@ export const baseSave: KoaController = async (ctx) => {
     if (!baseSave) throw saveFailureErr();
 
     const isOwner = baseSave.saveuserid === user.userid;
-    const isOutpost = isOwner && baseSave.type === BaseType.OUTPOST;
+    const isOutpostOwner = isOwner && baseSave.type === BaseType.OUTPOST;
+    const isAttack = !isOwner && baseSave.attackid !== 0;
+
+    // Not the owner and not in an attack
+    if (!isOwner && baseSave.attackid === 0) throw permissionErr();
 
     // Standard save logic
-    for (const key of Save.saveKeys) {
+    for (const key of isAttack ? Save.attackSaveKeys : Save.saveKeys) {
       const value = ctx.request.body[key];
 
       switch (key) {
         case SaveKeys.RESOURCES:
-          resourcesHandler(ctx, userSave, baseSave, isOutpost);
+          resourcesHandler(ctx, userSave, baseSave, isOutpostOwner);
           break;
 
         case SaveKeys.PURCHASE:
@@ -51,12 +64,12 @@ export const baseSave: KoaController = async (ctx) => {
           academyHandler(ctx, baseSave);
           break;
 
-        case SaveKeys.BUILDING_HEALTH_DATA:
-          if (value) baseSave.buildinghealthdata = saveData.buildinghealthdata;
-          break;
-
         case SaveKeys.CHAMPION:
-          if (value) baseSave.champion = saveData.champion;
+          if (isAttack) {
+            championHandler(saveData.attackerchampion, userSave);
+          } else {
+            baseSave[SaveKeys.CHAMPION] = saveData.champion;
+          }
           break;
 
         default:
@@ -69,17 +82,15 @@ export const baseSave: KoaController = async (ctx) => {
           }
       }
 
-      if (isOutpost) updateOutposts(userSave, baseSave, key);
+      if (isOutpostOwner) updateOutposts(userSave, baseSave, key);
     }
-
-    // Attack save logic
-    const isAttack =
-      baseSave.attackid !== 0 && baseSave.saveuserid !== user.userid;
 
     if (isAttack) {
       for (const key of Object.keys(saveData)) {
         const value = saveData[key];
-
+        // These keys are used for calculations on the server to update other fields
+        // but should not be persisted to the database (Remove in the future).
+        // Figure out what they are used for.
         switch (key) {
           case SaveKeys.MONSTERUPDATE:
             await monsterUpdateHandler(value, userSave);
@@ -96,18 +107,16 @@ export const baseSave: KoaController = async (ctx) => {
       await ORMContext.em.persistAndFlush(userSave);
     }
 
+    // Set the attackid to 0 if the attack is over
     baseSave.attackid = saveData.over ? 0 : baseSave.attackid;
-    // if (over) save.protected = isNaN(destroyed) ? 0 : destroyed;
+    //if (over) save.protected = isNaN(destroyed) ? 0 : destroyed;
 
     baseSave.id = baseSave.savetime;
     baseSave.savetime = getCurrentDateTime();
     await ORMContext.em.persistAndFlush(baseSave);
 
     const filteredSave = FilterFrontendKeys(baseSave);
-
-    logging(
-      `Saving ${user.username}'s base | basesaveid: ${saveData.basesaveid}`
-    );
+    logging(`Saving ${user.username}'s base`);
 
     const responseBody = {
       error: 0,
@@ -122,8 +131,10 @@ export const baseSave: KoaController = async (ctx) => {
     ctx.status = Status.OK;
     ctx.body = responseBody;
   } catch (err) {
-    logging(`Failed to save base for user: ${user.username}`, err);
-    throw saveFailureErr();
+    errorLog(`Failed to save base for user: ${user.username}`, err);
+
+    if (err instanceof ClientSafeError) throw err;
+    throw new Error("An unexpected error occurred while saving this base.");
   }
 };
 

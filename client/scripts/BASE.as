@@ -3737,11 +3737,14 @@ package
          {
             saveData["buildingdata"] = JSON.encode(buildingSaveData[0]);
          }
-         if(MapRoomManager.instance.isInMapRoom3 && !BASE.isInfernoMainYardOrOutpost)
-         {
-            saveData["buildinghealthdata"] = JSON.encode(buildingSaveData[1]);
-            saveData["buildingkeydata"] = JSON.encode(buildingSaveData[2]);
-         }
+         // Old implementation - was specific to MapRoom3, should have been for every map room.
+         // if(MapRoomManager.instance.isInMapRoom3 && !BASE.isInfernoMainYardOrOutpost)
+         // {
+         //    saveData["buildinghealthdata"] = JSON.encode(buildingSaveData[1]);
+         //    saveData["buildingkeydata"] = JSON.encode(buildingSaveData[2]);
+         // }
+         saveData["buildinghealthdata"] = JSON.encode(buildingSaveData[1]);
+         saveData["buildingkeydata"] = JSON.encode(buildingSaveData[2]);
          saveData["stats"] = JSON.encode(getStatsSaveData());
          saveData["resources"] = JSON.encode(getResourceSaveData());
          if(MapRoomManager.instance.isInMapRoom2)

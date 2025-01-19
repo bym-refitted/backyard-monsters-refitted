@@ -12,6 +12,7 @@ import {
   getTerrainHeight,
 } from "../../../../config/WorldGenSettings";
 import { getCurrentDateTime } from "../../../../utils/getCurrentDateTime";
+import { validateRange } from "../../../../services/maproom/v2/validateRange";
 
 export const baseModeAttack = async (user: User, baseid: string) => {
   const userSave: Save = user.save;
@@ -70,6 +71,7 @@ export const baseModeAttack = async (user: User, baseid: string) => {
   save.attackid = Math.floor(Math.random() * 99999) + 1; // I hate this.
 
   await ORMContext.em.persistAndFlush([cell, save]);
+  await validateRange(user, baseid);
 
   return save;
 };
