@@ -82,6 +82,7 @@ export const validateRange = async (user: User, baseid: string) => {
         timestamp: new Date().toISOString(),
       };
 
+      await ORMContext.em.persistAndFlush(incidentReport);
       throw new Error("Target is out of attack range.");
     }
   } else {
@@ -95,7 +96,7 @@ export const validateRange = async (user: User, baseid: string) => {
       baseid,
       timestamp: new Date().toISOString(),
     };
-
+    await ORMContext.em.persistAndFlush(incidentReport);
     throw new Error("No outposts owned, and main base is out of range.");
   }
 };
