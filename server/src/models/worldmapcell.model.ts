@@ -12,7 +12,7 @@ import { Save } from "./save.model";
 
 // Composite index on world_id, x, and y
 @Index({ properties: ["world_id", "x", "y"] })
-@Entity()
+@Entity({ tableName: "world_map_cell" })
 export class WorldMapCell {
   constructor(
     world?: World,
