@@ -18,6 +18,7 @@ import { attackLootHandler } from "./handlers/attackLootHandler";
 import { monsterUpdateHandler } from "./handlers/monsterUpdateHandler";
 import { ClientSafeError } from "../../../middleware/clientSafeError";
 import { championHandler } from "./handlers/championHandler";
+import { anticheat } from "../../../scripts/anticheat/anticheat";
 
 /**
  * Controller responsible for saving the user's base data.
@@ -46,6 +47,8 @@ export const baseSave: KoaController = async (ctx) => {
 
     // Not the owner and not in an attack
     if (!isOwner && baseSave.attackid === 0) throw permissionErr();
+
+    await anticheat(ctx, async () => {});
 
     // Standard save logic
     for (const key of isAttack ? Save.attackSaveKeys : Save.saveKeys) {
