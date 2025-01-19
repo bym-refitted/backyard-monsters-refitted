@@ -1,3 +1,4 @@
+import { IncidentReport } from "../../../models/incidentreport";
 import { Save } from "../../../models/save.model";
 import { User } from "../../../models/user.model";
 import { WorldMapCell } from "../../../models/worldmapcell.model";
@@ -69,9 +70,32 @@ export const validateRange = async (user: User, baseid: string) => {
 
     const outpostRange = getOutpostRange(outpostSave.flinger);
 
-    if (nearestDistance > outpostRange)
+    if (nearestDistance > outpostRange) {
+      const incidentReport = new IncidentReport();
+
+      incidentReport.userid = user.userid;
+      incidentReport.username = user.username;
+      incidentReport.discord_tag = user.discord_tag;
+      incidentReport.report = {
+        message: `User ${user.username} attempted to attack out of range target ${baseid}`,
+        baseid,
+        timestamp: new Date().toISOString(),
+      };
+
       throw new Error("Target is out of attack range.");
+    }
   } else {
+    const incidentReport = new IncidentReport();
+
+    incidentReport.userid = user.userid;
+    incidentReport.username = user.username;
+    incidentReport.discord_tag = user.discord_tag;
+    incidentReport.report = {
+      message: `User ${user.username} attempted to attack out of range target ${baseid}`,
+      baseid,
+      timestamp: new Date().toISOString(),
+    };
+
     throw new Error("No outposts owned, and main base is out of range.");
   }
 };

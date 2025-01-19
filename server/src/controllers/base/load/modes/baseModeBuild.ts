@@ -4,6 +4,7 @@ import { ORMContext } from "../../../../server";
 import { BaseMode } from "../../../../enums/Base";
 import { logging } from "../../../../utils/logger";
 import { balancedReward } from "../balancedReward";
+import { IncidentReport } from "../../../../models/incidentreport";
 
 /**
  * Retrieves the save data for the user based on the provided `baseid`.
@@ -37,6 +38,19 @@ export const baseModeBuild = async (user: User, baseid: string) => {
     if (!baseSave) throw new Error(`Base save not found for baseid: ${baseid}`);
     
     if (baseSave.userid !== user.userid) {
+      const incidentReport = new IncidentReport();
+      
+      incidentReport.userid = user.userid;
+      incidentReport.username = user.username;
+      incidentReport.discord_tag = user.discord_tag;
+      incidentReport.report = {
+        message: `Unauthorized access to baseid: ${baseid} from user ${user.username}`,
+        baseid,
+        timestamp: new Date().toISOString(),
+      };
+
+      await ORMContext.em.persistAndFlush(incidentReport);
+      
       // Could log this user id somewhere?
       throw new Error(
         `Unauthorized access to baseid: ${baseid} from user ${user.username}`
