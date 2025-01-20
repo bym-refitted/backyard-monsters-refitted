@@ -15,5 +15,5 @@ export const logReport = async (
     timestamp: new Date().toISOString(),
   };
 
-  await ORMContext.em.persistAndFlush(incidentReport);
+  await ORMContext.em.upsert(incidentReport);
 };
