@@ -16,7 +16,7 @@ export const devConfig = {
   
   /*
    * Set the default amount of shiny on the user's account.
-   * Must be set before creating creating a new record.
+   * Must be set before creating a new record.
    */
   shiny: 1500,
 
@@ -28,7 +28,7 @@ export const devConfig = {
 
   /*
    * Inserts a sandbox test base into the database, with all buildings placed.
-   * Must be set before creating creating a new record.
+   * Must be set before creating a new record.
    */
   devSandbox: false,
 
@@ -39,7 +39,7 @@ export const devConfig = {
 
   /*
    * Sets whether the user's account should receive all unlockable event rewards.
-   * Must be set before creating creating a new record.
+   * Must be set before creating a new record.
    */
   unlockAllEventRewards: true,
 

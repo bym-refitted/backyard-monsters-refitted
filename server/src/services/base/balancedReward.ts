@@ -1,16 +1,8 @@
-import { KorathReward, Reward } from "../../../enums/Rewards";
-import { FieldData, Save } from "../../../models/save.model";
-import { ORMContext } from "../../../server";
-
-interface TownHall {
-  id: number;
-  l: number;
-  x: number;
-  y: number;
-  t: number;
-  fort: number;
-  cU: number;
-}
+import { KorathReward, Reward } from "../../enums/Rewards";
+import { Save } from "../../models/save.model";
+import { ORMContext } from "../../server";
+import { extractTownHall, TownHall } from "../../utils/extractTownHall";
+import { parseChampionData } from "../../utils/parseChampionData";
 
 /**
  * Adds rewards to the user's save data based on their Town Hall level.
@@ -53,25 +45,7 @@ export const balancedReward = async (userSave: Save) => {
   ORMContext.em.persistAndFlush(userSave);
 };
 
-/**
- * Returns the Town Hall building object contained in the given buildingData object.
- * Throws an error if the town hall cannot be found.
- *
- * The object is identified by checking the `t` (type) variable on the child objects.
- * If `t` is equal to 14, then it is considered a Town Hall.
- *
- * @param buildingData the buildingData object to search
- * @returns the townHall object found or null if not found
- * @throws Error when townHall Object cannot be found
- */
-export const extractTownHall = (buildingData: FieldData): TownHall | null => {
-  for (const key in buildingData) {
-    const building = buildingData[key];
 
-    if (building && building.t === 14) return building;
-  }
-  return null;
-};
 
 /**
  * Adds Krallen data to the user's save, including champion data and reward metadata.
@@ -106,22 +80,4 @@ const addKrallenData = (userSave: Save) => {
       loot: 750000000000,
     };
   }
-};
-
-/**
- * Parses the champion data from the user's save.
- *
- * The function ensures compatibility with different formats of the `champion` field:
- * - If the `champion` field is a string, it parses it into an object/array.
- * - If the `champion` field is already an object/array, it is returned as-is.
- * - Defaults to an empty array if the `champion` field is null or undefined.
- *
- * @param {string | object | null | undefined} rawChampionData - The raw champion data from the user's save.
- * @returns {object[]} The parsed champion data as an array of objects.
- */
-const parseChampionData = (rawChampionData: any) => {
-  if (typeof rawChampionData === "string")
-    return JSON.parse(rawChampionData || "[]");
-
-  return rawChampionData || [];
 };
