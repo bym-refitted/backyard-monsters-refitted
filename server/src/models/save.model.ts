@@ -19,7 +19,7 @@ export interface FieldData {
 
 type Outpost = [number, number, string];
 
-@Entity()
+@Entity({ tableName: "save" })
 export class Save {
   @BeforeUpdate()
   checkForNegativeInteger(): void {
@@ -201,10 +201,6 @@ export class Save {
   champion?: string;
 
   @FrontendKey
-  @Property({ type: "json", nullable: true, default: "null" })
-  attackerchampion: string;
-
-  @FrontendKey
   @Property({ default: 0 })
   empiredestroyed!: number;
 
@@ -269,14 +265,20 @@ export class Save {
   @Property({ nullable: true })
   cantmovetill?: number | null;
 
+  // MR3 specific Objects
+  @FrontendKey
+  @Property({ type: "json", nullable: true })
+  buildingkeydata?: FieldData = {};
+
+  @FrontendKey
+  @Property({ type: "json", nullable: true })
+  buildinghealthdata?: FieldData = {};
+
   // Objects
   @FrontendKey
   @Property({ type: "json", nullable: true })
   buildingdata?: FieldData = {};
 
-  @FrontendKey
-  @Property({ type: "json", nullable: true })
-  buildingkeydata?: FieldData = {};
 
   @FrontendKey
   @Property({ type: "json", nullable: true })
@@ -365,10 +367,6 @@ export class Save {
   @FrontendKey
   @Property({ type: "json", nullable: true })
   mushrooms?: FieldData = {};
-
-  @FrontendKey
-  @Property({ type: "json", nullable: true })
-  buildinghealthdata?: FieldData = {};
 
   @FrontendKey
   @Property({ type: "json", nullable: true })
@@ -507,7 +505,6 @@ export class Save {
     "gifts",
     "sentinvites",
     "sentgifts",
-    "attackerchampion",
     "fbpromos",
     "purchase",
     "powerups",
@@ -525,8 +522,20 @@ export class Save {
     "basevalue",
     "empirevalue",
     "points",
-    "tutorialstage",
-    "attackreport"
+    "tutorialstage"
+  ];
+
+  public static attackSaveKeys: (keyof FieldData)[] = [
+    "destroyed",
+    "damage",
+    "locked",
+    "protected",
+    "champion",
+    "over",
+    "buildinghealthdata",
+    "buildingresources",
+    "attackreport",
+    "attackersiege"
   ];
 
   public static createDefaultUserSave = async (
