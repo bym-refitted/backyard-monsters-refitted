@@ -1,8 +1,8 @@
-import { KorathReward, Reward } from "../../../enums/Rewards";
-import { Save } from "../../../models/save.model";
-import { ORMContext } from "../../../server";
-import { extractTownHall, TownHall } from "../../../utils/extractTownHall";
-import { parseChampionData } from "../../../utils/parseChampionData";
+import { KorathReward, Reward } from "../../enums/Rewards";
+import { Save } from "../../models/save.model";
+import { ORMContext } from "../../server";
+import { extractTownHall, TownHall } from "../../utils/extractTownHall";
+import { parseChampionData } from "../../utils/parseChampionData";
 
 /**
  * Adds rewards to the user's save data based on their Town Hall level.
