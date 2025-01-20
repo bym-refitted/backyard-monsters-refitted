@@ -2,7 +2,7 @@ import { Entity, Property, PrimaryKey, OneToOne, Index } from "@mikro-orm/core";
 import { FieldData, Save } from "./save.model";
 import { FrontendKey } from "../utils/FrontendKey";
 
-@Entity()
+@Entity({ tableName: "user" })
 export class User {
   @FrontendKey
   @PrimaryKey({ autoincrement: true })

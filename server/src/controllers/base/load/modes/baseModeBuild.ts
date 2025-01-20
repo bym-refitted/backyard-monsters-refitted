@@ -3,8 +3,9 @@ import { User } from "../../../../models/user.model";
 import { ORMContext } from "../../../../server";
 import { BaseMode } from "../../../../enums/Base";
 import { logging } from "../../../../utils/logger";
-import { KorathReward, Reward } from "../../../../enums/Rewards";
-import { balancedReward } from "../balancedReward";
+import { balancedReward } from "../../../../services/base/balancedReward";
+import { IncidentReport } from "../../../../models/incidentreport";
+import { logReport } from "../../../../utils/logReport";
 
 /**
  * Retrieves the save data for the user based on the provided `baseid`.
@@ -36,6 +37,12 @@ export const baseModeBuild = async (user: User, baseid: string) => {
     });
 
     if (!baseSave) throw new Error(`Base save not found for baseid: ${baseid}`);
+    
+    if (baseSave.userid !== user.userid) {
+      const message = `${user.username} attempted to access unauthorized baseid: ${baseid}`;
+      await logReport(user, new IncidentReport(), message);
+      throw new Error(message);
+    }
 
     return baseSave;
   }
