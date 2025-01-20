@@ -3,7 +3,7 @@ import { User } from "../../../../models/user.model";
 import { ORMContext } from "../../../../server";
 import { BaseMode } from "../../../../enums/Base";
 import { logging } from "../../../../utils/logger";
-import { balancedReward } from "../balancedReward";
+import { balancedReward } from "../../../../services/base/balancedReward";
 import { IncidentReport } from "../../../../models/incidentreport";
 import { logReport } from "../../../../utils/logReport";
 
