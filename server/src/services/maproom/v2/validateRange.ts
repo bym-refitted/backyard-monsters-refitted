@@ -26,7 +26,7 @@ interface OwnedOutpost {
  * @param {string} baseid - The baseid of the target
  * @throws {Error} - attack invalidation error
  */
-export const validateRange = async (user: User, baseid: string) => {
+export const validateRange = async (user: User, save: Save, baseid: string): Promise<Save> => {
   const { homebase, outposts, flinger } = user.save;
   const message = `${user.username} attempted to attack out of range target ${baseid}`;
 
@@ -44,7 +44,7 @@ export const validateRange = async (user: User, baseid: string) => {
   const mainYardRange = getMainYardRange(flinger);
   const distanceFromMain = calculateDistance(cellX, cellY, homeX, homeY);
 
-  if (distanceFromMain <= mainYardRange) return;
+  if (distanceFromMain <= mainYardRange) return save;
 
   // Otherwise, we determine the nearest outpost to the target cell
   if (outposts.length > 0) {
@@ -80,6 +80,8 @@ export const validateRange = async (user: User, baseid: string) => {
     await logReport(user, new IncidentReport(), message);
     throw new Error("No outposts owned, and main base is out of range.");
   }
+
+  return save;
 };
 
 const calculateDistance = (

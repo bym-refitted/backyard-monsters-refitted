@@ -69,9 +69,7 @@ export const baseModeAttack = async (user: User, baseid: string) => {
   save.cell = cell;
   save.worldid = userSave.worldid;
   save.attackid = Math.floor(Math.random() * 99999) + 1; // I hate this.
-
   await ORMContext.em.persistAndFlush([cell, save]);
-  await validateRange(user, baseid);
 
-  return save;
+  return await validateRange(user, save, baseid);
 };
