@@ -1,3 +1,4 @@
+import { MapRoom } from "../../../enums/MapRoom";
 import { IncidentReport } from "../../../models/incidentreport";
 import { Save } from "../../../models/save.model";
 import { User } from "../../../models/user.model";
@@ -89,10 +90,18 @@ const calculateDistance = (
   cellY: number,
   baseX: number,
   baseY: number
-) =>
-  Math.round(
-    Math.sqrt(Math.pow(baseX - cellX, 2) + Math.pow(baseY - cellY, 2))
-  );
+) => {
+  // Calculate the straight-line distances
+  const deltaX = Math.abs(baseX - cellX);
+  const deltaY = Math.abs(baseY - cellY);
+
+  // Wrap-around distances (for toroidal map)
+  const wrappedDeltaX = Math.min(deltaX, MapRoom.WIDTH - deltaX);
+  const wrappedDeltaY = Math.min(deltaY, MapRoom.HEIGHT - deltaY);
+
+  // Use the smaller wrapped distances to calculate true distance
+  return Math.round(Math.sqrt(wrappedDeltaX ** 2 + wrappedDeltaY ** 2));
+};
 
 const getMainYardRange = (flinger: number) => {
   switch (flinger) {

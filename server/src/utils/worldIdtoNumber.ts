@@ -4,8 +4,8 @@
  * @param {string} worldId - The world ID to be converted.
  * @returns {number} The numerical representation of the world ID.
  */
-export const worldIdToNumber = (worldId: string) => {
-  let utf8Encode = new TextEncoder();
-  let test = utf8Encode.encode(worldId);
-  return [...test.values()].reduce((val, res) => val + res, 0);
+export const worldIdToNumber = (worldId: string): number => {
+  return new TextEncoder()
+    .encode(worldId)
+    .reduce((sum, byte) => sum + byte, 0);
 };
