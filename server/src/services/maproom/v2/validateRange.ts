@@ -6,30 +6,24 @@ import { WorldMapCell } from "../../../models/worldmapcell.model";
 import { ORMContext } from "../../../server";
 import { logReport } from "../../../utils/logReport";
 
-interface OwnedOutpost {
-  x: number;
-  y: number;
-  baseid: string;
-}
-
 /**
  * Validates if the target is within the attack range of the user's main base or any of their outposts.
  * Wiki: https://backyardmonsters.fandom.com/wiki/Flinger
  *
  * Invalidates an attack if:
- * 1| The target is not found
- * 2| The nearest outpost is not found
+ * 1| No attack cell is found
+ * 2| No outpost save is found
  * 3| The target is out of attack range
- * 4| No outpost save is found
- * 5| No outposts are owned and the main base is out of range
+ * 4| No outposts are owned and the main base is out of range
  *
  * @param {User} user - The user object containing the save data
+ * @param {Save} save - The save object containing the user's base and outposts
  * @param {string} baseid - The baseid of the target
  * @throws {Error} - attack invalidation error
+ * @returns {Promise<Save>} - The save object if the attack is valid
  */
-export const validateRange = async (user: User, save: Save, baseid: string): Promise<Save> => {
+export const validateRange = async (user: User, save: Save, baseid: string) => {
   const { homebase, outposts, flinger } = user.save;
-  const message = `${user.username} attempted to attack out of range target ${baseid}`;
 
   // Retrieve the cell under attack
   const attackCell = await ORMContext.em.findOne(WorldMapCell, {
@@ -47,42 +41,39 @@ export const validateRange = async (user: User, save: Save, baseid: string): Pro
 
   if (distanceFromMain <= mainYardRange) return save;
 
-  // Otherwise, we determine the nearest outpost to the target cell
+  // Otherwise, we check if any outposts are within a 4-cell square area around the attack cell
   if (outposts.length > 0) {
-    let nearestOutpost: OwnedOutpost | null = null;
-    let nearestDistance = Infinity;
+    for (let dx = -4; dx <= 4; dx++) {
+      for (let dy = -4; dy <= 4; dy++) {
+        const neighborX = (cellX + dx + MapRoom.WIDTH) % MapRoom.WIDTH;
+        const neighborY = (cellY + dy + MapRoom.HEIGHT) % MapRoom.HEIGHT;
 
-    for (const outpost of outposts) {
-      const [outpostX, outpostY, baseid] = outpost;
-      const distance = calculateDistance(cellX, cellY, outpostX, outpostY);
+        // Check if the outpost is owned by the user
+        const outpost = outposts.find(
+          ([outpostX, outpostY]) =>
+            outpostX === neighborX && outpostY === neighborY
+        );
 
-      if (distance < nearestDistance) {
-        nearestDistance = distance;
-        nearestOutpost = { x: outpostX, y: outpostY, baseid };
+        if (outpost) {
+          // Retrieve the outpost's save and validate its flinger range
+          const outpostSave = await ORMContext.em.findOne(Save, {
+            baseid: BigInt(outpost[2]),
+          });
+
+          if (!outpostSave) throw new Error("Outpost save not found.");
+
+          const outpostRange = getOutpostRange(outpostSave.flinger);
+
+          if (Math.abs(dx) <= outpostRange && Math.abs(dy) <= outpostRange)
+            return save;
+        }
       }
     }
 
-    if (!nearestOutpost) throw new Error("Could not find the nearest outpost.");
-
-    // Retrieve the outpost's save and validate it's range
-    const outpostSave = await ORMContext.em.findOne(Save, {
-      baseid: BigInt(nearestOutpost.baseid),
-    });
-
-    if (!outpostSave) throw new Error("Outpost save not found.");
-
-    const outpostRange = getOutpostRange(outpostSave.flinger);
-
-    if (nearestDistance > outpostRange) {
-      await logReport(user, new IncidentReport(), message);
-      throw new Error("Target is out of attack range.");
-    }
+    throw new Error("Target is out of attack range.");
   } else {
-    await logReport(user, new IncidentReport(), message);
     throw new Error("No outposts owned, and main base is out of range.");
   }
-
-  return save;
 };
 
 const calculateDistance = (
