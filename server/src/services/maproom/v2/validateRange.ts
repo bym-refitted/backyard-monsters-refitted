@@ -1,3 +1,4 @@
+import { Loaded } from "@mikro-orm/core";
 import { MapRoom } from "../../../enums/MapRoom";
 import { IncidentReport } from "../../../models/incidentreport";
 import { Save } from "../../../models/save.model";
@@ -22,13 +23,21 @@ import { logReport } from "../../../utils/logReport";
  * @throws {Error} - attack invalidation error
  * @returns {Promise<Save>} - The save object if the attack is valid
  */
-export const validateRange = async (user: User, save: Save, baseid: string) => {
+export const validateRange = async (
+  user: User,
+  save: Save,
+  options: { baseid?: string; attackCell?: Loaded<WorldMapCell, never> }
+) => {
   const { homebase, outposts, flinger } = user.save;
 
-  // Retrieve the cell under attack
-  const attackCell = await ORMContext.em.findOne(WorldMapCell, {
-    base_id: BigInt(baseid),
-  });
+  let attackCell = options?.attackCell;
+
+  if (!attackCell && options?.baseid) {
+    // Retrieve the cell under attack
+    attackCell = await ORMContext.em.findOne(WorldMapCell, {
+      base_id: BigInt(options.baseid),
+    });
+  }
 
   if (!attackCell) throw new Error("Attack cell not found.");
 

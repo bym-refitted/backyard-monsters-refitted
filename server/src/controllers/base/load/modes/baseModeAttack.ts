@@ -61,5 +61,5 @@ export const baseModeAttack = async (user: User, baseid: string) => {
   save.attackid = Math.floor(Math.random() * 99999) + 1;
   await ORMContext.em.persistAndFlush([cell, save]);
 
-  return await validateRange(user, save, baseid);
+  return await validateRange(user, save, { baseid });
 };
