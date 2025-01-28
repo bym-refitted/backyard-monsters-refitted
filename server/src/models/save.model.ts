@@ -7,6 +7,7 @@ import {
   Connection,
   IDatabaseDriver,
   OneToOne,
+  Index,
 } from "@mikro-orm/core";
 import { FrontendKey } from "../utils/FrontendKey";
 import { getDefaultBaseData } from "../data/getDefaultBaseData";
@@ -21,6 +22,7 @@ type Outpost = [number, number, string];
 
 @Entity({ tableName: "save" })
 export class Save {
+  // TODO: Remove this and just make credits a unsigned int
   @BeforeUpdate()
   checkForNegativeInteger(): void {
     // Handle negative values for credits & resources
@@ -38,6 +40,7 @@ export class Save {
   @PrimaryKey({ autoincrement: true })
   basesaveid!: bigint;
 
+  @Index()
   @FrontendKey
   @Property({ default: 0 })
   baseid!: bigint;
