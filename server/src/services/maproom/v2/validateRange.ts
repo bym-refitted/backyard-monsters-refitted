@@ -1,11 +1,9 @@
 import { Loaded } from "@mikro-orm/core";
 import { MapRoom } from "../../../enums/MapRoom";
-import { IncidentReport } from "../../../models/incidentreport";
 import { Save } from "../../../models/save.model";
 import { User } from "../../../models/user.model";
 import { WorldMapCell } from "../../../models/worldmapcell.model";
 import { ORMContext } from "../../../server";
-import { logReport } from "../../../utils/logReport";
 
 /**
  * Validates if the target is within the attack range of the user's main base or any of their outposts.
@@ -50,39 +48,42 @@ export const validateRange = async (
 
   if (distanceFromMain <= mainYardRange) return save;
 
-  // Otherwise, we check if any outposts are within a 4-cell square area around the attack cell
-  if (outposts.length > 0) {
-    for (let dx = -4; dx <= 4; dx++) {
-      for (let dy = -4; dy <= 4; dy++) {
-        const neighborX = (cellX + dx + MapRoom.WIDTH) % MapRoom.WIDTH;
-        const neighborY = (cellY + dy + MapRoom.HEIGHT) % MapRoom.HEIGHT;
+  if (outposts.length === 0)
+    throw new Error("No outposts owned, and main base is out of range.");
 
-        // Check if the outpost is owned by the user
-        const outpost = outposts.find(
-          ([outpostX, outpostY]) =>
-            outpostX === neighborX && outpostY === neighborY
-        );
+  const outpostMap = new Map(outposts.map(([x, y, id]) => [`${x}${y}`, id]));
+  const outpostCandidates: { id: bigint; dx: number; dy: number }[] = [];
 
-        if (outpost) {
-          // Retrieve the outpost's save and validate its flinger range
-          const outpostSave = await ORMContext.em.findOne(Save, {
-            baseid: BigInt(outpost[2]),
-          });
+  // Otherwise, we collect the baseid's of outposts
+  // within a 4-cell square area around the attack cell
+  for (let dx = -4; dx <= 4; dx++) {
+    for (let dy = -4; dy <= 4; dy++) {
+      const neighborX = (cellX + dx + MapRoom.WIDTH) % MapRoom.WIDTH;
+      const neighborY = (cellY + dy + MapRoom.HEIGHT) % MapRoom.HEIGHT;
 
-          if (!outpostSave) throw new Error("Outpost save not found.");
+      const outpost = outpostMap.get(`${neighborX}${neighborY}`);
+      if (outpost) outpostCandidates.push({ id: BigInt(outpost), dx, dy });
+    }
+  }
 
-          const outpostRange = getOutpostRange(outpostSave.flinger);
+  if (outpostCandidates.length === 0) throw new Error("No outpost save found.");
 
-          if (Math.abs(dx) <= outpostRange && Math.abs(dy) <= outpostRange)
-            return save;
-        }
+  // Query the database for relevant outpost saves
+  const outpostSaves = await ORMContext.em.find(Save, {
+    baseid: { $in: outpostCandidates.map((candidate) => candidate.id) },
+  });
+
+  for (const outpostSave of outpostSaves) {
+    const outpostRange = getOutpostRange(outpostSave.flinger);
+
+    for (const { dx, dy } of outpostCandidates) {
+      if (Math.abs(dx) <= outpostRange && Math.abs(dy) <= outpostRange) {
+        return save;
       }
     }
-
-    throw new Error("Target is out of attack range.");
-  } else {
-    throw new Error("No outposts owned, and main base is out of range.");
   }
+
+  throw new Error("Target is out of attack range.");
 };
 
 const calculateDistance = (
