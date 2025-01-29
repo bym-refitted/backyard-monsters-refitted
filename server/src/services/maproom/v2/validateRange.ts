@@ -11,13 +11,16 @@ import { ORMContext } from "../../../server";
  *
  * Invalidates an attack if:
  * 1| No attack cell is found
- * 2| No outpost save is found
- * 3| The target is out of attack range
- * 4| No outposts are owned and the main base is out of range
+ * 2| No outposts are owned and the main base is out of range
+ * 3| No outposts near attack cell
+ * 4| No outposts are within attack range
  *
  * @param {User} user - The user object containing the save data
  * @param {Save} save - The save object containing the user's base and outposts
- * @param {string} baseid - The baseid of the target
+ * @param {Object} options - The options object
+ * @param {string} [options.baseid] - The baseid of the target
+ * @param {Loaded<WorldMapCell, never>} [options.attackCell] - The cell under attack
+ *
  * @throws {Error} - attack invalidation error
  * @returns {Promise<Save>} - The save object if the attack is valid
  */
@@ -27,11 +30,10 @@ export const validateRange = async (
   options: { baseid?: string; attackCell?: Loaded<WorldMapCell, never> }
 ) => {
   const { homebase, outposts, flinger } = user.save;
-
   let attackCell = options?.attackCell;
 
+  // First, retrieve the cell under attack
   if (!attackCell && options?.baseid) {
-    // Retrieve the cell under attack
     attackCell = await ORMContext.em.findOne(WorldMapCell, {
       base_id: BigInt(options.baseid),
     });
@@ -42,7 +44,7 @@ export const validateRange = async (
   const [cellX, cellY] = [attackCell.x, attackCell.y];
   const [homeX, homeY] = homebase.map(Number);
 
-  // First, we determine if the main yard is within range
+  // Then, we determine if the main yard is within range
   const mainYardRange = getMainYardRange(flinger);
   const distanceFromMain = getDistanceFromMain(cellX, cellY, homeX, homeY);
 
@@ -68,9 +70,9 @@ export const validateRange = async (
   if (outpostsInRange.length === 0)
     throw new Error("No outposts near attack cell.");
 
-  // Query the database for relevant outpost saves
+  // Query the database for the in-range outposts
   const outpostSaves = await ORMContext.em.find(Save, {
-    baseid: { $in: outpostsInRange.map((candidate) => candidate.id) },
+    baseid: { $in: outpostsInRange.map((outpost) => outpost.id) },
   });
 
   for (const outpostSave of outpostSaves) {
@@ -87,7 +89,7 @@ export const validateRange = async (
 };
 
 // TODO: This is not perfect, it creates a square range instead of a diamond range.
-// Using 'Manhattan distance' seems to also not be perfect, 
+// Using 'Manhattan distance' seems to also not be perfect,
 // as it doesn't account for the diagonal distance.
 const getDistanceFromMain = (
   cellX: number,
