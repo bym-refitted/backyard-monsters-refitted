@@ -46,9 +46,6 @@ export const validateRange = async (
   const mainYardRange = getMainYardRange(flinger);
   const distanceFromMain = getDistanceFromMain(cellX, cellY, homeX, homeY);
 
-  console.log(`Main Yard Range: ${mainYardRange}`);
-  console.log(`Distance from Main Base: ${distanceFromMain}`);
-
   if (distanceFromMain <= mainYardRange) return save;
 
   if (outposts.length === 0)
@@ -89,6 +86,9 @@ export const validateRange = async (
   throw new Error("No outposts are within attack range.");
 };
 
+// TODO: This is not perfect, it creates a square range instead of a diamond range.
+// Using 'Manhattan distance' seems to also not be perfect, 
+// as it doesn't account for the diagonal distance.
 const getDistanceFromMain = (
   cellX: number,
   cellY: number,
