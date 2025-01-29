@@ -45,6 +45,8 @@ const COOLDOWN_PERIOD = 24 * 60 * 60;
  */
 export const migrateBase: KoaController = async (ctx) => {
   try {
+    throw("This controller is currently not working correctly.");
+
     const { baseid, resources, shiny, type } = MigrateBaseSchema.parse(
       ctx.request.body
     );
