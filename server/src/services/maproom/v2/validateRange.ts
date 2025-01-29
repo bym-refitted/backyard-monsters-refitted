@@ -44,49 +44,52 @@ export const validateRange = async (
 
   // First, we determine if the main yard is within range
   const mainYardRange = getMainYardRange(flinger);
-  const distanceFromMain = calculateDistance(cellX, cellY, homeX, homeY);
+  const distanceFromMain = getDistanceFromMain(cellX, cellY, homeX, homeY);
+
+  console.log(`Main Yard Range: ${mainYardRange}`);
+  console.log(`Distance from Main Base: ${distanceFromMain}`);
 
   if (distanceFromMain <= mainYardRange) return save;
 
   if (outposts.length === 0)
     throw new Error("No outposts owned, and main base is out of range.");
 
-  const outpostMap = new Map(outposts.map(([x, y, id]) => [`${x}${y}`, id]));
-  const outpostCandidates: { id: bigint; dx: number; dy: number }[] = [];
+  const userOutposts = new Map(outposts.map(([x, y, id]) => [`${x}${y}`, id]));
+  const outpostsInRange: { id: bigint; dx: number; dy: number }[] = [];
 
-  // Otherwise, we collect the baseid's of outposts
-  // within a 4-cell square area around the attack cell
+  // Otherwise, we collect the baseid's of outposts within a 4-cell square area of the attack cell
   for (let dx = -4; dx <= 4; dx++) {
     for (let dy = -4; dy <= 4; dy++) {
       const neighborX = (cellX + dx + MapRoom.WIDTH) % MapRoom.WIDTH;
       const neighborY = (cellY + dy + MapRoom.HEIGHT) % MapRoom.HEIGHT;
 
-      const outpost = outpostMap.get(`${neighborX}${neighborY}`);
-      if (outpost) outpostCandidates.push({ id: BigInt(outpost), dx, dy });
+      const outpostId = userOutposts.get(`${neighborX}${neighborY}`);
+      if (outpostId) outpostsInRange.push({ id: BigInt(outpostId), dx, dy });
     }
   }
 
-  if (outpostCandidates.length === 0) throw new Error("No outpost save found.");
+  if (outpostsInRange.length === 0)
+    throw new Error("No outposts near attack cell.");
 
   // Query the database for relevant outpost saves
   const outpostSaves = await ORMContext.em.find(Save, {
-    baseid: { $in: outpostCandidates.map((candidate) => candidate.id) },
+    baseid: { $in: outpostsInRange.map((candidate) => candidate.id) },
   });
 
   for (const outpostSave of outpostSaves) {
     const outpostRange = getOutpostRange(outpostSave.flinger);
 
-    for (const { dx, dy } of outpostCandidates) {
+    for (const { dx, dy } of outpostsInRange) {
       if (Math.abs(dx) <= outpostRange && Math.abs(dy) <= outpostRange) {
         return save;
       }
     }
   }
 
-  throw new Error("Target is out of attack range.");
+  throw new Error("No outposts are within attack range.");
 };
 
-const calculateDistance = (
+const getDistanceFromMain = (
   cellX: number,
   cellY: number,
   baseX: number,
@@ -100,8 +103,8 @@ const calculateDistance = (
   const wrappedDeltaX = Math.min(deltaX, MapRoom.WIDTH - deltaX);
   const wrappedDeltaY = Math.min(deltaY, MapRoom.HEIGHT - deltaY);
 
-  // Use the smaller wrapped distances to calculate true distance
-  return Math.round(Math.sqrt(wrappedDeltaX ** 2 + wrappedDeltaY ** 2));
+  // Use the maximum wrapped distance to calculate square range distance
+  return Math.max(wrappedDeltaX, wrappedDeltaY);
 };
 
 const getMainYardRange = (flinger: number) => {
