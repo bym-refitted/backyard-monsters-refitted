@@ -57,22 +57,15 @@ export const takeoverCell: KoaController = async (ctx) => {
     }
 
     const cellSave = cell.save;
-    
+
     if (cellSave.damage < 90)
       throw new Error("Cell is not damaged enough to be taken over.");
 
-    //  Validate flinger & update save
-    await validateRange(currentUser, userSave, {
-      attackCell: cell,
-    });
+    await validateRange(currentUser, userSave, { attackCell: cell });
 
     if (shiny) userSave.credits = userSave.credits - shiny;
-    if (resources)
-      userSave.resources = updateResources(
-        resources,
-        userSave.resources,
-        Operation.SUBTRACT
-      );
+    if (resources) 
+      userSave.resources = updateResources(resources, userSave.resources, Operation.SUBTRACT);
 
     // Find the previous owner
     const previousOwner = await ORMContext.em.findOne(
