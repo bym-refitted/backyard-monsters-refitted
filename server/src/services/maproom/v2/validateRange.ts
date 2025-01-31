@@ -4,6 +4,8 @@ import { Save } from "../../../models/save.model";
 import { User } from "../../../models/user.model";
 import { WorldMapCell } from "../../../models/worldmapcell.model";
 import { ORMContext } from "../../../server";
+import { logReport } from "../../../utils/logReport";
+import { IncidentReport } from "../../../models/incidentreport";
 
 /**
  * Validates if the target is within the attack range of the user's main base or any of their outposts.
@@ -84,6 +86,9 @@ export const validateRange = async (
       }
     }
   }
+
+  const message = `${user.username} attacked out of range base: ${attackCell.base_id}`;
+  await logReport(user, new IncidentReport(), message);
 
   throw new Error("No outposts are within attack range.");
 };

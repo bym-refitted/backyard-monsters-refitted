@@ -57,9 +57,6 @@ export const migrateBase: KoaController = async (ctx) => {
     const userSave = currentUser.save;
     const currentTime = getCurrentDateTime();
 
-    if (shiny) userSave.credits = userSave.credits - shiny;
-    if (resources) userSave.resources = updateResources(resources, userSave.resources, Operation.SUBTRACT);
-
     // Check if the user is within the cooldown period.
     if (userSave.cantmovetill > currentTime) {
       ctx.status = Status.OK;
@@ -126,6 +123,10 @@ export const migrateBase: KoaController = async (ctx) => {
 
     // Remove baseid from building resources object
     delete userSave.buildingresources[`b${outpostCell.save.baseid}`];
+
+    if (shiny) userSave.credits = userSave.credits - shiny;
+    if (resources) 
+      userSave.resources = updateResources(resources, userSave.resources, Operation.SUBTRACT);
 
     await ORMContext.em.removeAndFlush([outpostCell.save, outpostCell]);
     await ORMContext.em.persistAndFlush([homeCell, userSave]);
