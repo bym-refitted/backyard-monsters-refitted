@@ -175,9 +175,9 @@ package
       
       public static var _baseSeed:int;
       
-      public static var _loadedBaseID:int;
+      public static var _loadedBaseID:Number;
       
-      public static var _loadedFriendlyBaseID:int;
+      public static var _loadedFriendlyBaseID:Number;
       
       public static var _loadedFBID:Number;
       
