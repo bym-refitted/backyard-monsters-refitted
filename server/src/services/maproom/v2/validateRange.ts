@@ -1,98 +1,118 @@
-import { IncidentReport } from "../../../models/incidentreport";
+import { Loaded } from "@mikro-orm/core";
+import { MapRoom } from "../../../enums/MapRoom";
 import { Save } from "../../../models/save.model";
 import { User } from "../../../models/user.model";
 import { WorldMapCell } from "../../../models/worldmapcell.model";
 import { ORMContext } from "../../../server";
 import { logReport } from "../../../utils/logReport";
-
-interface OwnedOutpost {
-  x: number;
-  y: number;
-  baseid: string;
-}
+import { IncidentReport } from "../../../models/incidentreport";
 
 /**
  * Validates if the target is within the attack range of the user's main base or any of their outposts.
  * Wiki: https://backyardmonsters.fandom.com/wiki/Flinger
  *
  * Invalidates an attack if:
- * 1| The target is not found
- * 2| The nearest outpost is not found
- * 3| The target is out of attack range
- * 4| No outpost save is found
- * 5| No outposts are owned and the main base is out of range
+ * 1| No attack cell is found
+ * 2| No outposts are owned and the main base is out of range
+ * 3| No outposts near attack cell
+ * 4| No outposts are within attack range
  *
  * @param {User} user - The user object containing the save data
- * @param {string} baseid - The baseid of the target
+ * @param {Save} save - The save object containing the user's base and outposts
+ * @param {Object} options - The options object
+ * @param {string} [options.baseid] - The baseid of the target
+ * @param {Loaded<WorldMapCell, never>} [options.attackCell] - The cell under attack
+ *
  * @throws {Error} - attack invalidation error
+ * @returns {Promise<Save>} - The save object if the attack is valid
  */
-export const validateRange = async (user: User, save: Save, baseid: string): Promise<Save> => {
+export const validateRange = async (
+  user: User,
+  save: Save,
+  options: { baseid?: string; attackCell?: Loaded<WorldMapCell, never> }
+) => {
   const { homebase, outposts, flinger } = user.save;
-  const message = `${user.username} attempted to attack out of range target ${baseid}`;
+  let attackCell = options?.attackCell;
 
-  // Retrieve the cell under attack
-  const attackCell = await ORMContext.em.findOne(WorldMapCell, {
-    base_id: BigInt(baseid),
-  });
+  // First, retrieve the cell under attack
+  if (!attackCell && options?.baseid) {
+    attackCell = await ORMContext.em.findOne(WorldMapCell, {
+      base_id: BigInt(options.baseid),
+    });
+  }
 
   if (!attackCell) throw new Error("Attack cell not found.");
 
   const [cellX, cellY] = [attackCell.x, attackCell.y];
   const [homeX, homeY] = homebase.map(Number);
 
-  // First, we determine if the main yard is within range
+  // Then, we determine if the main yard is within range
   const mainYardRange = getMainYardRange(flinger);
-  const distanceFromMain = calculateDistance(cellX, cellY, homeX, homeY);
+  const distanceFromMain = getDistanceFromMain(cellX, cellY, homeX, homeY);
 
   if (distanceFromMain <= mainYardRange) return save;
 
-  // Otherwise, we determine the nearest outpost to the target cell
-  if (outposts.length > 0) {
-    let nearestOutpost: OwnedOutpost | null = null;
-    let nearestDistance = Infinity;
-
-    for (const outpost of outposts) {
-      const [outpostX, outpostY, baseid] = outpost;
-      const distance = calculateDistance(cellX, cellY, outpostX, outpostY);
-
-      if (distance < nearestDistance) {
-        nearestDistance = distance;
-        nearestOutpost = { x: outpostX, y: outpostY, baseid };
-      }
-    }
-
-    if (!nearestOutpost) throw new Error("Could not find the nearest outpost.");
-
-    // Retrieve the outpost's save and validate it's range
-    const outpostSave = await ORMContext.em.findOne(Save, {
-      baseid: BigInt(nearestOutpost.baseid),
-    });
-
-    if (!outpostSave) throw new Error("Outpost save not found.");
-
-    const outpostRange = getOutpostRange(outpostSave.flinger);
-
-    if (nearestDistance > outpostRange) {
-      await logReport(user, new IncidentReport(), message);
-      throw new Error("Target is out of attack range.");
-    }
-  } else {
-    await logReport(user, new IncidentReport(), message);
+  if (outposts.length === 0)
     throw new Error("No outposts owned, and main base is out of range.");
+
+  const userOutposts = new Map(outposts.map(([x, y, id]) => [`${x}${y}`, id]));
+  const outpostsInRange: { id: bigint; dx: number; dy: number }[] = [];
+
+  // Otherwise, we collect the baseid's of outposts within a 4-cell square area of the attack cell
+  for (let dx = -4; dx <= 4; dx++) {
+    for (let dy = -4; dy <= 4; dy++) {
+      const neighborX = (cellX + dx + MapRoom.WIDTH) % MapRoom.WIDTH;
+      const neighborY = (cellY + dy + MapRoom.HEIGHT) % MapRoom.HEIGHT;
+
+      const outpostId = userOutposts.get(`${neighborX}${neighborY}`);
+      if (outpostId) outpostsInRange.push({ id: BigInt(outpostId), dx, dy });
+    }
   }
 
-  return save;
+  if (outpostsInRange.length === 0)
+    throw new Error("No outposts near attack cell.");
+
+  // Query the database for the in-range outposts
+  const outpostSaves = await ORMContext.em.find(Save, {
+    baseid: { $in: outpostsInRange.map((outpost) => outpost.id) },
+  });
+
+  for (const outpostSave of outpostSaves) {
+    const outpostRange = getOutpostRange(outpostSave.flinger);
+
+    for (const { dx, dy } of outpostsInRange) {
+      if (Math.abs(dx) <= outpostRange && Math.abs(dy) <= outpostRange) {
+        return save;
+      }
+    }
+  }
+
+  const message = `${user.username} attacked out of range base: ${attackCell.base_id}`;
+  await logReport(user, new IncidentReport(), message);
+
+  throw new Error("No outposts are within attack range.");
 };
 
-const calculateDistance = (
+// TODO: This is not perfect, it creates a square range instead of a diamond range.
+// Using 'Manhattan distance' seems to also not be perfect,
+// as it doesn't account for the diagonal distance.
+const getDistanceFromMain = (
   cellX: number,
   cellY: number,
   baseX: number,
   baseY: number
-) =>
-  Math.round(
-    Math.sqrt(Math.pow(baseX - cellX, 2) + Math.pow(baseY - cellY, 2))
-  );
+) => {
+  // Calculate the straight-line distances
+  const deltaX = Math.abs(baseX - cellX);
+  const deltaY = Math.abs(baseY - cellY);
+
+  // Wrap-around distances (for toroidal map)
+  const wrappedDeltaX = Math.min(deltaX, MapRoom.WIDTH - deltaX);
+  const wrappedDeltaY = Math.min(deltaY, MapRoom.HEIGHT - deltaY);
+
+  // Use the maximum wrapped distance to calculate square range distance
+  return Math.max(wrappedDeltaX, wrappedDeltaY);
+};
 
 const getMainYardRange = (flinger: number) => {
   switch (flinger) {
