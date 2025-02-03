@@ -50,7 +50,7 @@ export const damageProtection = async (save: Save, mode?: BaseMode) => {
     protection = 0;
     mainProtectionTime = null;
     save.initialProtectionOver = true;
-    persist = true
+    persist = true;
   };
 
   const setOutpostProtection = () => {
@@ -63,7 +63,7 @@ export const damageProtection = async (save: Save, mode?: BaseMode) => {
     protection = 0;
     outpostProtectionTime = null;
     save.initialOutpostProtectionOver = true;
-    persist = true
+    persist = true;
   };
 
   if (mode === BaseMode.ATTACK) {
@@ -122,8 +122,9 @@ export const damageProtection = async (save: Save, mode?: BaseMode) => {
           if (isOutpostProtectionOver && !initialOutpostProtectionOver) {
             removeOutpostProtection();
           }
+
           // If the protection time was set over 8 hours ago, remove protection
-          if (mainProtectionTime <= eightHoursAgo) removeProtection();
+          if (outpostProtectionTime <= eightHoursAgo) removeProtection();
         } else {
           // 25% or more damage = 8 HOURS
           if (damage >= 25 && attacksInLast8Hours.length !== 0) {
