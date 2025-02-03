@@ -4,12 +4,12 @@ import { ORMContext } from "../../../server";
 import { getCurrentDateTime } from "../../../utils/getCurrentDateTime";
 
 /**
+ * Handles the damage protection for the user's base.
  * Wiki: https://backyardmonsters.fandom.com/wiki/Damage_Protection
+ *
+ * @param {Save} save - The save data object.
+ * @param {BaseMode} [mode] - The mode of the base (optional).
  */
-
-// Current broken scenarios:
-// 1. When a base gets attacked 4 times or more, then protection is reset, attacked again, user comes and repairs the base => protection is stuck at 1
-// 2. Outposts are similar to the above, after taking over someone's outpost, protection is stuck at 1
 export const damageProtection = async (save: Save, mode?: BaseMode) => {
   let {
     type,
@@ -116,7 +116,7 @@ export const damageProtection = async (save: Save, mode?: BaseMode) => {
 
         if (protection) {
           // Should never happen
-          if (!outpostProtectionTime) removeProtection();
+          if (!outpostProtectionTime) removeOutpostProtection();
 
           // Outpost takeover = 12 HOURS
           if (isOutpostProtectionOver && !initialOutpostProtectionOver) {
@@ -124,7 +124,7 @@ export const damageProtection = async (save: Save, mode?: BaseMode) => {
           }
 
           // If the protection time was set over 8 hours ago, remove protection
-          if (outpostProtectionTime <= eightHoursAgo) removeProtection();
+          if (outpostProtectionTime <= eightHoursAgo) removeOutpostProtection();
         } else {
           // 25% or more damage = 8 HOURS
           if (damage >= 25 && attacksInLast8Hours.length !== 0) {
@@ -143,6 +143,4 @@ export const damageProtection = async (save: Save, mode?: BaseMode) => {
     save.outpostProtectionTime = outpostProtectionTime;
     await ORMContext.em.persistAndFlush(save);
   }
-
-  return protection;
 };
