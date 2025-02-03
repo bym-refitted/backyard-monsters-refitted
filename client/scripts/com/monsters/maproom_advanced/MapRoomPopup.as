@@ -80,19 +80,12 @@ package com.monsters.maproom_advanced
          var w:int;
          var h:int;
          var r:Rectangle;
+         var rec:Rectangle;
          var i:int;
          this._sortArray = [];
          super();
          w = GLOBAL._ROOT.stage.stageWidth;
-         h = GLOBAL.GetGameHeight();
-         if(w > 1024)
-         {
-            w = 1024;
-         }
-         if(h > 768)
-         {
-            h = 768;
-         }
+         h = GLOBAL.GetGameHeight();         
          r = new Rectangle(0 - (w - 760) / 2,0 - (h - 720) / 2,w,h);
          if(GLOBAL._ROOT.stage.displayState == StageDisplayState.FULL_SCREEN)
          {
@@ -113,16 +106,17 @@ package com.monsters.maproom_advanced
          else
          {
             this._fullScreen = false;
-            mcFrame.x = 190;
-            mcFrame.y = 20;
-            mcFrame.width = 760 - 20 - 190;
-            mcFrame.height = 520 - 40;
+            rec = new Rectangle(0 - Math.round((w - GLOBAL._SCREENINIT.width) / 2.0),0 - Math.round((h - GLOBAL._SCREENINIT.height) / 2.0),w,h);
+            mcFrame.x = rec.x + 190;
+            mcFrame.y = rec.y + 20;
+            mcFrame.width = rec.width - 210;
+            mcFrame.height = rec.height - 40;
             mcMask.x = mcFrame.x;
             mcMask.y = mcFrame.y;
             mcMask.mcMask.width = mcFrame.width;
             mcMask.mcMask.height = mcFrame.height;
-            mcFrame2.x = 20;
-            mcFrame2.y = 20;
+            mcFrame2.x = rec.x + 20;
+            mcFrame2.y = rec.y + 20;
             mcBuffHolder.x = mcMask.width + mcMask.x - 70;
             mcBuffHolder.y = mcMask.y + 30;
          }
@@ -734,13 +728,13 @@ package com.monsters.maproom_advanced
          this._sortArray = [];
          if(GLOBAL._ROOT.stage.displayState == StageDisplayState.FULL_SCREEN)
          {
-            this._cellCountX = 18;
-            this._cellCountY = 15;
+            this._cellCountX = 23;
+            this._cellCountY = 18;
          }
          else
          {
-            this._cellCountX = 16;
-            this._cellCountY = 14;
+            this._cellCountX = 23;
+            this._cellCountY = 18;
          }
          stageHeight = 0;
          while(stageHeight < this._cellCountX)
@@ -1034,6 +1028,7 @@ package com.monsters.maproom_advanced
             this.bBookmarks.Enabled = false;
          }
          this.DisplayBuffs();
+         this.Resize();
       }
       
       public function ShowBubble(param1:MapRoomCell) : void
@@ -1649,6 +1644,9 @@ package com.monsters.maproom_advanced
       public function Resize() : void
       {
          var _loc1_:Boolean = false;
+         var _loc2_:int = GLOBAL._ROOT.stage.stageWidth;
+         var _loc3_:int = GLOBAL.GetGameHeight();
+         var rec:Rectangle;
          if(GLOBAL._ROOT.stage.displayState == StageDisplayState.FULL_SCREEN)
          {
             if(this._fullScreen != true)
@@ -1664,6 +1662,37 @@ package com.monsters.maproom_advanced
          {
             MapRoomManager.instance.ResizeHandler();
          }
+
+         rec = new Rectangle(0 - Math.round((_loc2_ - GLOBAL._SCREENINIT.width) / 2.0),0 - Math.round((_loc3_ - GLOBAL._SCREENINIT.height) / 2.0),_loc2_,_loc3_);
+         mcFrame.x = rec.x + 190;
+         mcFrame.y = rec.y + 20;
+         mcFrame.width = rec.width - 210;
+         mcFrame.height = rec.height - 40;
+         mcMask.x = mcFrame.x;
+         mcMask.y = mcFrame.y;
+         mcMask.mcMask.width = mcFrame.width;
+         mcMask.mcMask.height = mcFrame.height;
+         mcFrame2.x = rec.x + 20;
+         mcFrame2.y = rec.y + 20;
+         mcBuffHolder.x = mcMask.width + mcMask.x - 70;
+         mcBuffHolder.y = mcMask.y + 30;
+         mcInfo.x = mcFrame2.x + 20;
+         mcInfo.y = mcFrame2.y + 270;
+         mcFrame.Setup(true,true,true,0,0);
+         mcFrame2.Setup(false);
+         this._popupAttackA.x = rec.x + 380;
+         this._popupAttackA.y = rec.y + 260;
+         this._popupBookmarkAdd.x = rec.x + 380;
+         this._popupBookmarkAdd.y = rec.y + 260;
+         this._popupBookmarkMenu.x = rec.x + 380;
+         this._popupBookmarkMenu.y = rec.y + 260;
+         this.bHome.x = mcFrame2.x + 20;
+         this.bHome.y = mcFrame2.y + 200;
+         this.bJump.x = mcFrame2.x + 80;
+         this.bJump.y = mcFrame2.y + 200;
+         this.bBookmarks.x = mcFrame2.x + 20;
+         this.bBookmarks.y = mcFrame2.y + 235;
+         this.UpdateResourceDisplay();
       }
    }
 }
