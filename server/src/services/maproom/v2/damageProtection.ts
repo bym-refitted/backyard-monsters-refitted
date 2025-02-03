@@ -17,7 +17,7 @@ export const damageProtection = async (save: Save, mode?: BaseMode) => {
     createtime,
     initialProtectionOver,
     initialOutpostProtectionOver,
-    attackTimestamps,
+    attacks,
     outpostProtectionTime,
     mainProtectionTime,
   } = save;
@@ -76,13 +76,13 @@ export const damageProtection = async (save: Save, mode?: BaseMode) => {
   } else {
     switch (type) {
       case BaseType.MAIN:
-        const attacksInLastHour = attackTimestamps.filter(
-          (timestamp) => timestamp > oneHourAgo
+        // Filter attacks after the 1-hour protection period
+        const attacksInLastHour = attacks.filter(
+          (attack) => attack.starttime > oneHourAgo
         );
-        // If there are new attacks after the 36-hour protection period
-        // has ended, apply protection again.
-        const attacksInLast36Hours = attackTimestamps.filter(
-          (timestamp) => timestamp > thirtySixHoursAgo
+        // Filter attacks after the 36-hour protection period
+        const attacksInLast36Hours = attacks.filter(
+          (attack) => attack.starttime > thirtySixHoursAgo
         );
 
         if (protection) {
@@ -95,11 +95,11 @@ export const damageProtection = async (save: Save, mode?: BaseMode) => {
           // If the protection time was set over 36 hours ago, remove protection
           if (mainProtectionTime <= thirtySixHoursAgo) removeProtection();
         } else {
+          // TODO: Check if the user attacks within the first week to invalidate
+          if (!isFirstWeekOver) setProtection();
+
           // 4 attacks in 1 hour = 1 HOUR
-          if (attacksInLastHour.length >= 4) {
-            setProtection();
-            save.attackTimestamps = save.attackTimestamps.slice(-3);
-          }
+          if (attacksInLastHour.length >= 4) setProtection();
 
           // 50% and 75% or more damage = 36 HOURS
           if (damage >= 50 && attacksInLast36Hours.length !== 0) {
@@ -110,8 +110,8 @@ export const damageProtection = async (save: Save, mode?: BaseMode) => {
       case BaseType.OUTPOST:
         // If there are new attacks after the 8-hour protection period
         // has ended, apply protection again.
-        const attacksInLast8Hours = attackTimestamps.filter(
-          (timestamp) => timestamp > eightHoursAgo
+        const attacksInLast8Hours = attacks.filter(
+          (attack) => attack.starttime > eightHoursAgo
         );
 
         if (protection) {

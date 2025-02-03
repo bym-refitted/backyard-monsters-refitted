@@ -71,8 +71,8 @@ export const userCell = async (ctx: Context, cell: WorldMapCell) => {
       d: cellSave.damage >= 90 ? 1 : 0,
       lo: locked,
       dm: cellSave.damage,
-      pic_square: `${process.env.AVATAR_URL}?seed=${cellOwner.username}`,
-      im: `${process.env.AVATAR_URL}?seed=${cellOwner.username}`,
+      pic_square: currentUser.pic_square,
+      im: currentUser.pic_square,
     };
   } catch (error) {
     errorLog("Error fetching user cell data", error);

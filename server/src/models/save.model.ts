@@ -13,6 +13,7 @@ import { FrontendKey } from "../utils/FrontendKey";
 import { getDefaultBaseData } from "../data/getDefaultBaseData";
 import { User } from "./user.model";
 import { WorldMapCell } from "./worldmapcell.model";
+import { AttackDetails } from "../controllers/base/load/modes/baseModeAttack";
 
 export interface FieldData {
   [key: string | number]: any;
@@ -268,6 +269,11 @@ export class Save {
   @Property({ nullable: true })
   cantmovetill?: number | null;
 
+  // Attack Objects
+  @FrontendKey
+  @Property({ type: "json" })
+  attacks: AttackDetails[] = [];
+
   // MR3 specific Objects
   @FrontendKey
   @Property({ type: "json", nullable: true })
@@ -281,7 +287,6 @@ export class Save {
   @FrontendKey
   @Property({ type: "json", nullable: true })
   buildingdata?: FieldData = {};
-
 
   @FrontendKey
   @Property({ type: "json", nullable: true })
@@ -399,9 +404,6 @@ export class Save {
   attackersiege?: FieldData = {};
 
   // Arrays
-  @Property({ type: "json" })
-  attackTimestamps: number[] = [];
-
   @FrontendKey
   @Property({ type: "json", nullable: true })
   monsterupdate?: FieldData = [];
@@ -437,10 +439,6 @@ export class Save {
   @FrontendKey
   @Property({ type: "json", nullable: true })
   achieved: any[] = [];
-
-  @FrontendKey
-  @Property({ type: "json", nullable: true })
-  attacks: any[] = [];
 
   @FrontendKey
   @Property({ type: "json", nullable: true })
