@@ -104,6 +104,7 @@ export const takeoverCell: KoaController = async (ctx) => {
     cellSave.attackTimestamps = [];
     cellSave.resources = {};
     cellSave.tutorialstage = 205;
+    cellSave.monsters = {};
 
     if (cellSave.type === BaseType.TRIBE) {
       cellSave.type = BaseType.OUTPOST;

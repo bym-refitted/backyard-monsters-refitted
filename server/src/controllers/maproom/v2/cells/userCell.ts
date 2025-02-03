@@ -22,7 +22,6 @@ import { getCurrentDateTime } from "../../../../utils/getCurrentDateTime";
 export const userCell = async (ctx: Context, cell: WorldMapCell) => {
   const cellSave = cell.save;
   const currentUser: User = ctx.authUser;
-  await ORMContext.em.populate(currentUser, ["save"]);
 
   try {
     const mine = currentUser.userid === cell.uid;
@@ -30,29 +29,25 @@ export const userCell = async (ctx: Context, cell: WorldMapCell) => {
     // Get the cell owner, either the current user or another user
     const cellOwner = mine
       ? currentUser
-      : await ORMContext.em.findOne(User, { userid: cell.uid }, { populate: ["save"] });
+      : await ORMContext.em.findOne(
+          User,
+          { userid: cell.uid },
+          { populate: ["save"] }
+        );
 
-    if (!cellOwner || !cellOwner.save) {
-      errorLog(`Cell owner save data is missing. Save: ${cellOwner.save}`);
-    }
+    if (!cellOwner) errorLog(`Cell owner save data is missing.`);
 
-    const isOnline = getCurrentDateTime() - (cellOwner.save?.savetime || 0) <= 60;
+    const online = getCurrentDateTime() - cellSave.savetime <= 60;
 
     /** TODO: Cell should be locked when a player is getting attacked, not when online */
-    const locked = mine ? 0 : isOnline ? 1 : cellOwner.save?.locked || 0;
+    const locked = mine ? 0 : online ? 1 : cellSave.locked || 0;
 
-    const points = cellOwner.save?.points
-      ? BigInt(cellOwner.save.points)
-      : BigInt(1);
-    const basevalue = cellOwner.save?.basevalue
-      ? BigInt(cellOwner.save.basevalue)
-      : BigInt(1);
+    const points = BigInt(cellSave.points);
+    const basevalue = BigInt(cellSave.basevalue);
 
     const baseLevel = calculateBaseLevel(points, basevalue);
 
-    let isCellProtected = await damageProtection(cellSave);
-
-    if (!cellSave) errorLog("Cell save data is missing.");
+    await damageProtection(cellSave);
 
     return {
       uid: cellOwner.userid,
@@ -61,21 +56,21 @@ export const userCell = async (ctx: Context, cell: WorldMapCell) => {
       bid: cell.base_id,
       aid: 0,
       i: cell.terrainHeight,
-      v: cellSave?.empirevalue || 1,
+      v: cellSave.empirevalue,
       mine: mine ? 1 : 0,
-      f: cellSave?.flinger || 0,
-      c: cellSave?.catapult || 0,
+      f: cellSave.flinger,
+      c: cellSave.catapult,
       t: 0,
       n: cellOwner.username,
       fr: 0,
-      on: isOnline,
-      p: isCellProtected,
-      r: cellOwner.save.resources,
-      m: cellSave?.monsters || {},
+      on: online,
+      p: cellSave.protected,
+      r: cellSave.resources,
+      m: cellSave.monsters || {},
       l: baseLevel,
-      d: cellSave?.damage >= 90 ? 1 : 0 || 0,
+      d: cellSave.damage >= 90 ? 1 : 0,
       lo: locked,
-      dm: cellSave?.damage || 0,
+      dm: cellSave.damage,
       pic_square: `${process.env.AVATAR_URL}?seed=${cellOwner.username}`,
       im: `${process.env.AVATAR_URL}?seed=${cellOwner.username}`,
     };
