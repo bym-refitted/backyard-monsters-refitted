@@ -13,6 +13,7 @@ import {
 } from "../../../services/base/updateResources";
 import { errorLog } from "../../../utils/logger";
 import { getCurrentDateTime } from "../../../utils/getCurrentDateTime";
+import { validateRange } from "../../../services/maproom/v2/validateRange";
 
 const TakeoverCellSchema = z.object({
   baseid: z.string(),
@@ -57,11 +58,14 @@ export const takeoverCell: KoaController = async (ctx) => {
 
     const cellSave = cell.save;
 
-    if (shiny) userSave.credits = userSave.credits - shiny;
-    if (resources) userSave.resources = updateResources(resources, userSave.resources, Operation.SUBTRACT);
-
-    if (cellSave.damage < 90) 
+    if (cellSave.damage < 90)
       throw new Error("Cell is not damaged enough to be taken over.");
+
+    await validateRange(currentUser, userSave, { attackCell: cell });
+
+    if (shiny) userSave.credits = userSave.credits - shiny;
+    if (resources) 
+      userSave.resources = updateResources(resources, userSave.resources, Operation.SUBTRACT);
 
     // Find the previous owner
     const previousOwner = await ORMContext.em.findOne(

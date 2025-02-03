@@ -13,6 +13,7 @@ import {
   updateResources,
 } from "../../../services/base/updateResources";
 import { joinOrCreateWorld } from "../../../services/maproom/v2/joinOrCreateWorld";
+import { MapRoomCell } from "../../../enums/MapRoom";
 
 /**
  * Request schema for migrate base.
@@ -55,9 +56,6 @@ export const migrateBase: KoaController = async (ctx) => {
     const userSave = currentUser.save;
     const currentTime = getCurrentDateTime();
 
-    if (shiny) userSave.credits = userSave.credits - shiny;
-    if (resources) userSave.resources = updateResources(resources, userSave.resources, Operation.SUBTRACT);
-
     // Check if the user is within the cooldown period.
     if (userSave.cantmovetill > currentTime) {
       ctx.status = Status.OK;
@@ -81,7 +79,7 @@ export const migrateBase: KoaController = async (ctx) => {
     const cells = await ORMContext.em.find(
       WorldMapCell,
       {
-        base_id: { $in: [BigInt(baseid), userSave.homebaseid] },
+        base_id: { $in: [BigInt(baseid), BigInt(userSave.baseid)] },
       },
       { populate: ["save"] }
     );
@@ -91,7 +89,9 @@ export const migrateBase: KoaController = async (ctx) => {
     );
 
     const homeCell = cells.find(
-      (cell) => BigInt(cell.base_id) === BigInt(userSave.homebaseid)
+      (cell) =>
+        BigInt(cell.base_id) === BigInt(userSave.baseid) &&
+        cell.base_type === MapRoomCell.HOMECELL
     );
 
     if (!outpostCell || !outpostCell.save) {
@@ -106,13 +106,20 @@ export const migrateBase: KoaController = async (ctx) => {
       throw new Error("Invalid home cell");
     }
 
+    // Store outpost details before removing it
+    const [outpostX, outpostY] = [outpostCell.x, outpostCell.y];
+    const outpostHeight = outpostCell.terrainHeight;
+    const outpostBaseId = outpostCell.save.baseid;
+
+    await ORMContext.em.removeAndFlush([outpostCell.save, outpostCell]);
+
     // Update the user's homecell coordinates to the outpost cell
-    homeCell.x = outpostCell.x;
-    homeCell.y = outpostCell.y;
-    homeCell.terrainHeight = outpostCell.terrainHeight;
+    homeCell.x = outpostX;
+    homeCell.y = outpostY;
+    homeCell.terrainHeight = outpostHeight;
 
     // Update user's homebase coordinates to the outpost cell
-    userSave.homebase = [outpostCell.x.toString(), outpostCell.y.toString()];
+    userSave.homebase = [outpostX.toString(), outpostY.toString()];
 
     // Set the migration cooldown period before the user can move again
     userSave.cantmovetill = currentTime + COOLDOWN_PERIOD;
@@ -123,15 +130,18 @@ export const migrateBase: KoaController = async (ctx) => {
     );
 
     // Remove baseid from building resources object
-    delete userSave.buildingresources[`b${outpostCell.save.baseid}`];
+    delete userSave.buildingresources[`b${outpostBaseId}`];
 
-    await ORMContext.em.removeAndFlush([outpostCell.save, outpostCell]);
+    if (shiny) userSave.credits = userSave.credits - shiny;
+    if (resources) 
+      userSave.resources = updateResources(resources, userSave.resources, Operation.SUBTRACT);
+
     await ORMContext.em.persistAndFlush([homeCell, userSave]);
 
     ctx.status = Status.OK;
     ctx.body = {
       error: 0,
-      coords: [outpostCell.x, outpostCell.y]
+      coords: [outpostX, outpostY]
     };
   } catch (error) {
     ctx.status = Status.BAD_REQUEST;

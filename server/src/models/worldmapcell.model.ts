@@ -14,21 +14,13 @@ import { Save } from "./save.model";
 @Index({ properties: ["world_id", "x", "y"] })
 @Entity({ tableName: "world_map_cell" })
 export class WorldMapCell {
-  constructor(
-    world?: World,
-    x?: number,
-    y?: number,
-    terrainHeight?: number,
-    optional = { base_id: BigInt(0), uid: 0, base_type: 0 }
-  ) {
+  
+  constructor(world?: World, x?: number, y?: number, terrainHeight?: number) {
     this.world = world;
     this.world_id = world?.uuid;
     this.x = x;
     this.y = y;
     this.terrainHeight = terrainHeight;
-    this.base_type = optional.base_type;
-    this.base_id = optional.base_id;
-    this.uid = optional.uid;
   }
 
   @FrontendKey
