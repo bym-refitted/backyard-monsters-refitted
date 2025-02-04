@@ -20,6 +20,7 @@ import { logMissingAssets, morganLogging } from "./middleware/morganLogging";
 import { Status } from "./enums/StatusCodes";
 import { getLatestSwfFromGithub } from "./controllers/github/getLatestSwfFromGithub";
 import { corsCacheControl } from "./middleware/corsCacheControlSetup";
+import { Descent } from "./models/descent.model";
 
 export const app = new Koa();
 
@@ -60,6 +61,7 @@ api.get("/", (ctx: Context) => (ctx.body = {}));
 
   ORMContext.orm = await MikroORM.init<MariaDbDriver>(ormConfig);
   ORMContext.em = ORMContext.orm.em;
+  await Descent.createDescentTribes(ORMContext.em);
 
   await redisClient.connect();
 

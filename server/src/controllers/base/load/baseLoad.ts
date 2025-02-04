@@ -18,6 +18,8 @@ import { errorLog } from "../../../utils/logger";
 import { baseModeAttack } from "./modes/baseModeAttack";
 import { mapUserSaveData } from "../mapUserSaveData";
 import { discordAgeErr } from "../../../errors/errors";
+import { baseModeDescent } from "./modes/baseModeDescent";
+import { Descent } from "../../../models/descent.model";
 
 const BaseLoadSchema = z.object({
   type: z.string(),
@@ -45,12 +47,24 @@ export const baseLoad: KoaController = async (ctx) => {
       case BaseMode.BUILD:
         baseSave = await baseModeBuild(user, baseid);
         break;
+
       case BaseMode.VIEW:
         baseSave = await baseModeView(baseid);
         break;
+
       case BaseMode.ATTACK:
         if (!ctx.meetsDiscordAgeCheck) throw discordAgeErr();
         baseSave = await baseModeAttack(user, baseid);
+        break;
+
+      case BaseMode.IDESCENT:
+        baseSave = await baseModeDescent(user);
+        break;
+        
+      case BaseMode.IWMVIEW:
+        baseSave = await ORMContext.em.findOne(Descent, {
+          basesaveid: BigInt(baseid),
+        });
         break;
       default:
         throw new Error(`Base type not handled, type: ${type}.`);
