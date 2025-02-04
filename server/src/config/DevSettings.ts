@@ -12,7 +12,7 @@ export const devConfig = {
   /*
    * Enable or disable Inferno on the server.
    */
-  inferno: false,
+  inferno: true,
   
   /*
    * Set the default amount of shiny on the user's account.
