@@ -159,6 +159,17 @@ router.post(
 );
 
 /**
+ * Update Inferno saved base data
+ * @name POST /base/updatesaved
+ */
+router.post(
+  "/api/:apiVersion/bm/base/updatesaved",
+  verifyUserAuth,
+  debugDataLog("Inferno updated save"),
+  updateSaved
+);
+
+/**
  * Migrate base data
  * @name POST /base/migrate
  */
