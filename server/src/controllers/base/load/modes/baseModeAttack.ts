@@ -14,18 +14,37 @@ import {
 import { getCurrentDateTime } from "../../../../utils/getCurrentDateTime";
 import { validateRange } from "../../../../services/maproom/v2/validateRange";
 
+export interface AttackDetails {
+  fbid: string;
+  name: string;
+  pic_square: string;
+  friend: number;
+  count: number;
+  starttime: number;
+}
+
 export const baseModeAttack = async (user: User, baseid: string) => {
   const userSave: Save = user.save;
   let save = await ORMContext.em.findOne(Save, { baseid: BigInt(baseid) });
 
   if (!save) save = wildMonsterSave(baseid);
 
-  // Record the timestamp of the attack
-  const currentTimestamp = getCurrentDateTime();
-  if (save.attackTimestamps.length > 10)
-    save.attackTimestamps = save.attackTimestamps.slice(-9);
-  
-  save.attackTimestamps.push(currentTimestamp);
+  // Store the 100 most recent attacks
+  if (save.attacks.length > 100) {
+    save.attacks = save.attacks.slice(-99);
+  }
+
+  // Track the details of the attack
+  const attackDetails: AttackDetails = {
+    fbid: userSave.fbid,
+    name: user.username,
+    pic_square: user.pic_square,
+    friend: 0,
+    count: 1,
+    starttime: getCurrentDateTime(),
+  };
+
+  save.attacks.push(attackDetails);
 
   // Remove damage protection
   await damageProtection(userSave, BaseMode.ATTACK);
