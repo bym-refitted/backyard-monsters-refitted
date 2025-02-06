@@ -2,7 +2,7 @@ import { Save } from "../../../../models/save.model";
 import { User } from "../../../../models/user.model";
 import { ORMContext } from "../../../../server";
 
-export const baseModeDescent = async (user: User) => {
+export const infernoModeDescent = async (user: User) => {
   const { userid } = user.save;
   let baseSave = await ORMContext.em.findOne(Save, { userid });
 

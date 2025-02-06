@@ -4,7 +4,7 @@ import { Save } from "../../../../models/save.model";
 import { User } from "../../../../models/user.model";
 import { ORMContext } from "../../../../server";
 
-export const infernoModeView = async (user: User, baseId: string) => {
+export const infernoModeAttack = async (user: User, baseId: string) => {
   const baseid = BigInt(baseId);
 
   const userSave = await ORMContext.em.findOne(Save, { baseid });

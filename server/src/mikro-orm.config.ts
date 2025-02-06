@@ -1,12 +1,14 @@
+import path from "path";
+
 import { MikroORM } from "@mikro-orm/core";
 import { MariaDbDriver } from "@mikro-orm/mariadb";
-import path from "path";
 import { Save } from "./models/save.model";
 import { User } from "./models/user.model";
 import { WorldMapCell } from "./models/worldmapcell.model";
 import { World } from "./models/world.model";
 import { Env } from "./enums/Env";
 import { IncidentReport } from "./models/incidentreport";
+import { MapRoom1 } from "./models/maproom1.model";
 
 /**
  * Configuration for MikroORM.
@@ -19,7 +21,7 @@ import { IncidentReport } from "./models/incidentreport";
 const mikroOrmConfig = {
   type: "mariadb",
   allowGlobalContext: false,
-  entities: [User, Save, World, WorldMapCell, IncidentReport],
+  entities: [User, Save, World, WorldMapCell, IncidentReport, MapRoom1],
   debug: process.env.ENV !== Env.PROD,
   dbName: process.env.DB_NAME,
   port: Number(process.env.DB_PORT),

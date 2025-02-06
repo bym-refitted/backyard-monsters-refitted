@@ -18,8 +18,9 @@ import { errorLog } from "../../../utils/logger";
 import { baseModeAttack } from "./modes/baseModeAttack";
 import { mapUserSaveData } from "../mapUserSaveData";
 import { discordAgeErr } from "../../../errors/errors";
-import { baseModeDescent } from "./modes/baseModeDescent";
+import { infernoModeDescent } from "./modes/infernoModeDescent";
 import { infernoModeView } from "./modes/infernoModeView";
+import { infernoModeAttack } from "./modes/infernoModeAttack";
 
 const BaseLoadSchema = z.object({
   type: z.string(),
@@ -58,13 +59,15 @@ export const baseLoad: KoaController = async (ctx) => {
         break;
 
       case BaseMode.IDESCENT:
-        baseSave = await baseModeDescent(user);
+        baseSave = await infernoModeDescent(user);
         break;
 
       case BaseMode.IWMVIEW:
-        baseSave = await infernoModeView(baseid);
+        baseSave = await infernoModeView(user, baseid);
       break;
+
       case BaseMode.IWMATTACK:
+        baseSave = await infernoModeAttack(user, baseid);
         break;
       default:
         throw new Error(`Base type not handled, type: ${type}.`);
