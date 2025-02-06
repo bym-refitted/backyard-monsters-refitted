@@ -1659,11 +1659,11 @@ package
                "anim":["anim.1.v2.png",new Rectangle(-38,-53,74,64),30],
                "animdamaged":["anim.1.damaged.v2.png",new Rectangle(-38,-53,74,64),30],
                "top":["top.1.v2.png",new Point(-38,11)],
-               //"shadow":["shadow.1.v2.jpg",new Point(-48,11)],
+               "shadow":["shadow.1.v2.jpg",new Point(-48,11)],
                "topdamaged":["top.1.damaged.v2.png",new Point(-38,11)],
-               //"shadowdamaged":["shadow.1.v2.jpg",new Point(-48,11)],
-               "topdestroyed":["top.1.destroyed.v2.png",new Point(-57,-18)]
-               //"shadowdestroyed":["shadow.1.v2.jpg",new Point(-55,8)]
+               "shadowdamaged":["shadow.1.v2.jpg",new Point(-48,11)],
+               "topdestroyed":["top.1.destroyed.v2.png",new Point(-57,-18)],
+               "shadowdestroyed":["shadow.1.v2.jpg",new Point(-55,8)]
             }
          },
          "upgradeImgData":{
@@ -6347,11 +6347,11 @@ package
                "anim":["anim.1.v2.png",new Rectangle(-38,-53,74,64),30],
                "animdamaged":["anim.1.damaged.v2.png",new Rectangle(-38,-53,74,64),30],
                "top":["top.1.v2.png",new Point(-38,11)],
-               "shadow":["shadow.1.v2.jpg",new Point(-48,11)],
+               //"shadow":["shadow.1.v2.jpg",new Point(-48,11)],
                "topdamaged":["top.1.damaged.v2.png",new Point(-38,11)],
-               "shadowdamaged":["shadow.1.v2.jpg",new Point(-48,11)],
-               "topdestroyed":["top.1.destroyed.v2.png",new Point(-38,11)],
-               "shadowdestroyed":["shadow.1.v2.jpg",new Point(-48,11)]
+               //"shadowdamaged":["shadow.1.v2.jpg",new Point(-48,11)],
+               "topdestroyed":["top.1.destroyed.v2.png",new Point(-38,11)]
+               //"shadowdestroyed":["shadow.1.v2.jpg",new Point(-48,11)]
             }
          },
          "buildingbuttons":["canon_tower.v2"],
