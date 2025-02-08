@@ -12368,14 +12368,7 @@ export const molochTribes = [
       IC8: 10,
       IC5: 3,
     },
-    r1: 10000,
-    r2: 10000,
-    r3: 10000,
-    r4: 10000,
-    r1max: 10000,
-    r2max: 10000,
-    r3max: 10000,
-    r4max: 10000,
+    resources: {},
     lockerdata: {
       IC2: {
         t: 2,
