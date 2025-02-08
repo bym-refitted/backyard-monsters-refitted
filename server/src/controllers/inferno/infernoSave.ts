@@ -18,12 +18,12 @@ export const infernoSave: KoaController = async (ctx) => {
 
   try {
     const saveData = BaseSaveSchema.parse(ctx.request.body);
+    const baseid = BigInt(saveData.baseid);
+
     let tribeSave: Save = null;
 
     // Attempt to find the save data for the inferno base
-    const infernoSave = await ORMContext.em.findOne(Save, {
-      baseid: saveData.baseid,
-    });
+    const infernoSave = await ORMContext.em.findOne(Save, { baseid });
 
     // Otherwise, retrieve a moloch base
     if (!infernoSave) {
@@ -32,16 +32,20 @@ export const infernoSave: KoaController = async (ctx) => {
       });
 
       let existingTribe = maproom1.tribedata.find(
-        (tribe) => BigInt(tribe.baseid) === saveData.baseid
+        (tribe) => BigInt(tribe.baseid) === baseid
       );
 
       if (!existingTribe) throw saveFailureErr();
 
+      // Update the existing tribe's health data
       existingTribe.tribeHealthData = saveData.buildinghealthdata;
 
-      const tribeData = molochTribes.find(
-        (tribe) => tribe.baseid === saveData.baseid
-      );
+      // Update the wild monster status on the user save
+      userSave.wmstatus.forEach((tribe) => {
+        if (tribe[0] === saveData.baseid) tribe[2] = saveData.destroyed;
+      });
+
+      const tribeData = molochTribes.find((tribe) => tribe.baseid === baseid);
 
       tribeSave = Object.assign(new Save(), {
         ...tribeData,
@@ -53,10 +57,7 @@ export const infernoSave: KoaController = async (ctx) => {
     }
 
     if (infernoSave) await ORMContext.em.persistAndFlush(infernoSave);
-
-    const filteredSave = FilterFrontendKeys(
-      tribeSave ? tribeSave : infernoSave
-    );
+    const filteredSave = FilterFrontendKeys(tribeSave ?? infernoSave);
 
     ctx.status = Status.OK;
     ctx.body = {
