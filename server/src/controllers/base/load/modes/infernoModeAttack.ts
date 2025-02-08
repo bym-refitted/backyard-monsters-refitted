@@ -14,17 +14,17 @@ export const infernoModeAttack = async (user: User, baseId: string) => {
     userid: user.userid,
   });
 
-  // Find existing tribe data, otherwise create a new one
   let existingTribe = maproom1.tribedata.find(
     (tribe) => BigInt(tribe.baseid) === baseid
   );
 
   if (!existingTribe) {
-    maproom1.tribedata.push({ baseid: Number(baseid), tribeHealthData: {} });
+    const newTribe = { baseid: Number(baseid), tribeHealthData: {}}; 
+    
+    maproom1.tribedata.push(newTribe);
     await ORMContext.em.persistAndFlush(maproom1);
   }
 
-  // Find the tribe from static tribe data
   const tribeData = molochTribes.find((tribe) => tribe.baseid === baseid);
 
   return Object.assign(new Save(), {

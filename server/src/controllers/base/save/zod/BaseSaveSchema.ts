@@ -13,7 +13,7 @@ export const BaseSaveSchema = z.object({
    * The baseid of the save, transformed from a string to a bigint.
    * @type {bigint}
    */
-  baseid: z.string().transform((id) => BigInt(id)),
+  baseid: z.string().transform((id) => Number(id)),
 
   /**
    * The basesaveid of the save, transformed from a string to a bigint.
