@@ -38,7 +38,7 @@ export const baseLoad: KoaController = async (ctx) => {
 
   try {
     const { baseid, type } = BaseLoadSchema.parse(ctx.request.body);
-    
+
     let baseSave: Save = null;
 
     switch (type) {
