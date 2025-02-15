@@ -1,5 +1,3 @@
-import { Context } from "koa";
-import { SaveKeys } from "../../../../enums/SaveKeys";
 import {
   Resources,
   updateResources,
@@ -7,15 +5,13 @@ import {
 import { Save } from "../../../../models/save.model";
 
 export const resourcesHandler = (
-  ctx: Context,
+  resourceVal: any,
   userSave: Save,
   save: Save,
-  isOutpost: boolean
+  isOutpost?: boolean
 ) => {
-  const resourceDataKey = ctx.request.body[SaveKeys.RESOURCES];
-
   // Parse the resource data if it's a JSON string
-  const resourceData: Resources | undefined = JSON.parse(resourceDataKey);
+  const resourceData: Resources | undefined = JSON.parse(resourceVal);
 
   if (resourceData) {
     const resources: Resources = resourceData;

@@ -1,4 +1,6 @@
 import { molochTribes } from "../../data/tribes/molochTribes";
+import { BaseType } from "../../enums/Base";
+import { SaveKeys } from "../../enums/SaveKeys";
 import { Status } from "../../enums/StatusCodes";
 import { saveFailureErr } from "../../errors/errors";
 import { ClientSafeError } from "../../middleware/clientSafeError";
@@ -9,6 +11,7 @@ import { ORMContext } from "../../server";
 import { FilterFrontendKeys } from "../../utils/FrontendKey";
 import { KoaController } from "../../utils/KoaController";
 import { errorLog } from "../../utils/logger";
+import { resourcesHandler } from "../base/save/handlers/resourceHandler";
 import { BaseSaveSchema } from "../base/save/zod/BaseSaveSchema";
 
 export const infernoSave: KoaController = async (ctx) => {
@@ -23,10 +26,14 @@ export const infernoSave: KoaController = async (ctx) => {
     let tribeSave: Save = null;
 
     // Attempt to find the save data for the inferno base
-    const infernoSave = await ORMContext.em.findOne(Save, { baseid });
+    const infernoSave = await ORMContext.em.findOne(Save, {
+      userid: user.userid,
+      type: BaseType.INFERNO,
+    });
 
     // Otherwise, retrieve a moloch base
     if (!infernoSave) {
+      console.log("No inferno save found, retrieving moloch base");
       const maproom1 = await ORMContext.em.findOne(MapRoom1, {
         userid: user.userid,
       });
@@ -54,6 +61,36 @@ export const infernoSave: KoaController = async (ctx) => {
       });
 
       await ORMContext.em.persistAndFlush(maproom1);
+    }
+
+    const isOwner = infernoSave.saveuserid === user.userid;
+    const isAttack = !isOwner && infernoSave.attackid !== 0;
+
+    for (const key of isAttack ? Save.attackSaveKeys : Save.saveKeys) {
+      const value = ctx.request.body[key];
+
+      switch (key) {
+        // case SaveKeys.IRESOURCES:
+        //   resourcesHandler(value, userSave, infernoSave);
+        //   break;
+
+        // case SaveKeys.PURCHASE:
+        //   purchaseHandler(saveData.purchase, userSave, baseSave);
+        //   break;
+
+        // case SaveKeys.ACADEMY:
+        //   academyHandler(ctx, baseSave);
+        //   break;
+
+        default:
+          if (value) {
+            try {
+              infernoSave[key] = JSON.parse(value);
+            } catch (_) {
+              infernoSave[key] = value;
+            }
+          }
+      }
     }
 
     if (infernoSave) await ORMContext.em.persistAndFlush(infernoSave);
