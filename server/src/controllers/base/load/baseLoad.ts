@@ -21,6 +21,7 @@ import { discordAgeErr } from "../../../errors/errors";
 import { infernoModeDescent } from "./modes/infernoModeDescent";
 import { infernoModeView } from "./modes/infernoModeView";
 import { infernoModeAttack } from "./modes/infernoModeAttack";
+import { infernoModeBuild } from "./modes/infernoModeBuild";
 
 const BaseLoadSchema = z.object({
   type: z.string(),
@@ -60,6 +61,10 @@ export const baseLoad: KoaController = async (ctx) => {
 
       case BaseMode.IDESCENT:
         baseSave = await infernoModeDescent(user);
+        break;
+
+      case BaseMode.IBUILD:
+        baseSave = await infernoModeBuild(user, baseid);
         break;
 
       case BaseMode.IWMVIEW:
