@@ -5,6 +5,7 @@
  */
 export enum SaveKeys {
   RESOURCES = "resources",
+  IRESOURCES = "iresources",
   BUILDING_RESOURCES = "buildingresources",
   PURCHASE = "purchase",
   ACADEMY = "academy",

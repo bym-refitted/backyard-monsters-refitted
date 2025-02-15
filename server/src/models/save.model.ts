@@ -475,6 +475,7 @@ export class Save {
     "aiattacks",
     "monsters",
     "resources",
+    "iresources",
     "lockerdata",
     "events",
     "inventory",
