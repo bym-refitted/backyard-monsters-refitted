@@ -14,6 +14,7 @@ import { getDefaultBaseData } from "../data/getDefaultBaseData";
 import { User } from "./user.model";
 import { WorldMapCell } from "./worldmapcell.model";
 import { AttackDetails } from "../controllers/base/load/modes/baseModeAttack";
+import { BaseType } from "../enums/Base";
 
 export interface FieldData {
   [key: string | number]: any;
@@ -556,5 +557,20 @@ export class Save {
     await em.persistAndFlush(user);
 
     return baseSave;
+  };
+
+  public static createInfernoSave = async (
+    em: EntityManager<IDatabaseDriver<Connection>>,
+    user: User
+  ) => {
+    const infernoSave = em.create(Save, getDefaultBaseData(user));
+    await em.persistAndFlush(infernoSave);
+
+    infernoSave.type = BaseType.INFERNO;
+    infernoSave.baseid = infernoSave.basesaveid;
+    infernoSave.homebaseid = infernoSave.basesaveid;
+    await em.persistAndFlush(infernoSave);
+
+    return infernoSave;
   };
 }
