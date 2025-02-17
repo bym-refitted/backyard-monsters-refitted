@@ -157,12 +157,12 @@ export class Save {
   locked!: number;
 
   @FrontendKey
-  @Property({ default: 0 })
-  points!: bigint;
+  @Property({ default: "0" })
+  points!: string;
 
   @FrontendKey
-  @Property({ default: 0 })
-  basevalue!: bigint;
+  @Property({ default: "0" })
+  basevalue!: string;
 
   @FrontendKey
   @Property({ default: 0 })
