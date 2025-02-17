@@ -2,7 +2,6 @@ import {
   Entity,
   Property,
   PrimaryKey,
-  BeforeUpdate,
   EntityManager,
   Connection,
   IDatabaseDriver,
@@ -19,27 +18,12 @@ export interface FieldData {
   [key: string | number]: any;
 }
 
-type Outpost = [number, number, string];
-
 @Entity({ tableName: "save" })
 export class Save {
-  // TODO: Remove this and just make credits a unsigned int
-  @BeforeUpdate()
-  checkForNegativeInteger(): void {
-    // Handle negative values for credits & resources
-    this.credits = Math.max(0, this.credits);
-
-    if (this.resources) {
-      Object.keys(this.resources).forEach((resource) => {
-        this.resources[resource] = Math.max(0, this.resources[resource]);
-      });
-    }
-  }
-
   // IDs & Foreign Keys
   @FrontendKey
   @PrimaryKey({ autoincrement: true })
-  basesaveid!: bigint;
+  basesaveid!: number;
 
   @Index()
   @FrontendKey
@@ -56,7 +40,7 @@ export class Save {
 
   @FrontendKey
   @Property({ default: 0 })
-  homebaseid!: bigint;
+  homebaseid!: number;
 
   @FrontendKey
   @Property()
@@ -426,7 +410,7 @@ export class Save {
 
   @FrontendKey
   @Property({ type: "json", nullable: true })
-  outposts: Outpost[] = [];
+  outposts: [number, number, string][] = [];
 
   @FrontendKey
   @Property({ type: "json", nullable: true })
@@ -548,7 +532,7 @@ export class Save {
     await em.persistAndFlush(baseSave);
 
     // Update the baseid and homebase to match the basesaveid
-    baseSave.baseid = baseSave.basesaveid;
+    baseSave.baseid = BigInt(baseSave.basesaveid);
     baseSave.homebaseid = baseSave.basesaveid;
     await em.persistAndFlush(baseSave);
 

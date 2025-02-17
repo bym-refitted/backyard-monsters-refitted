@@ -10,10 +10,10 @@ import { Resources } from "../../../../services/base/updateResources";
  */
 export const BaseSaveSchema = z.object({
   /**
-   * The ID of the base save, transformed from a string to a bigint.
+   * The ID of the base save, transformed from a string to a number.
    * @type {bigint}
    */
-  basesaveid: z.string().transform((id) => BigInt(id)),
+  basesaveid: z.string().transform((id) => parseInt(id)),
 
   /**
    * The purchase data, transformed from a JSON string to an array.
@@ -86,7 +86,7 @@ export const BaseSaveSchema = z.object({
   over: z
     .string()
     .optional()
-    .transform((data) => parseInt(data, 10)),
+    .transform((data) => parseInt(data)),
 
   /**
    * The destroyed state, transformed from a string to a number, or undefined.
@@ -96,7 +96,7 @@ export const BaseSaveSchema = z.object({
   destroyed: z
     .string()
     .optional()
-    .transform((data) => parseInt(data, 10)),
+    .transform((data) => parseInt(data)),
 
   /**
    * The attack ID, transformed from a string to a number, or undefined.
