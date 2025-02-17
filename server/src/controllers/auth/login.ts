@@ -1,5 +1,6 @@
 import bcrypt from "bcrypt";
 import JWT from "jsonwebtoken";
+import type { StringValue } from "ms";
 
 import { User } from "../../models/user.model";
 import { ORMContext, redisClient } from "../../server";
@@ -72,7 +73,6 @@ export const login: KoaController = async (ctx) => {
   if (user.banned) throw userPermaBannedErr();
 
   // Generate and set the token
-  const sessionLifeTime = process.env.SESSION_LIFETIME || "30d";
   let discordId: string;
 
   // Check if the user has verified their Discord account
@@ -96,6 +96,8 @@ export const login: KoaController = async (ctx) => {
     return creationDate < sevenDaysAgo;
   };
 
+  const sessionLifeTime = process.env.SESSION_LIFETIME || "30d";
+
   const newToken = JWT.sign(
     {
       user: {
@@ -104,10 +106,10 @@ export const login: KoaController = async (ctx) => {
         meetsDiscordAgeCheck:
           process.env.ENV !== Env.PROD || isOlderThanOneWeek(discordId),
       },
-    } satisfies BymJwtPayload,
+    },
     process.env.SECRET_KEY,
     {
-      expiresIn: sessionLifeTime,
+      expiresIn: sessionLifeTime as StringValue,
     }
   );
 
