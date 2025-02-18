@@ -50,7 +50,7 @@
     "@types/koa-bodyparser": "5.0.2",
     "@types/koa-morgan": "1.0.8",
     "@types/koa-static": "4.0.4",
-    "@types/node": "18.19.68",
+    "@types/node": "22.13.4",
     "@types/nodemailer": "6.4.17",
     "@types/uuid": "10.0.0",
     "concurrently": "9.1.2",

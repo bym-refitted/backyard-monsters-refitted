@@ -65,6 +65,7 @@ export const baseLoad: KoaController = async (ctx) => {
 
     const responseBody = {
       ...filteredSave,
+      baseid: filteredSave.basesaveid.toString(),
       flags,
       worldsize: WORLD_SIZE,
       error: 0,

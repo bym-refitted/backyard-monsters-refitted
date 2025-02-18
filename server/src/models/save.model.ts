@@ -342,7 +342,7 @@ export class Save {
 
   @FrontendKey
   @Property({ type: "json", nullable: true })
-  player?: FieldData = {};
+  player?: FieldData;
 
   @FrontendKey
   @Property({ type: "json", nullable: true })
