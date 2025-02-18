@@ -19,7 +19,7 @@ const WILD_MONSTER_EXPIRATION = 43200;
  * @returns {Promise<Loaded<Save, never>>} The save object or null if no valid save is found.
  */
 export const baseModeView = async (baseid: string) => {
-  let save = await ORMContext.em.findOne(Save, { baseid: BigInt(baseid) });
+  let save = await ORMContext.em.findOne(Save, { baseid });
 
   if (!save) save = wildMonsterSave(baseid);
 

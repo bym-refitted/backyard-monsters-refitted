@@ -37,7 +37,7 @@ export const validateRange = async (
   // First, retrieve the cell under attack
   if (!attackCell && options?.baseid) {
     attackCell = await ORMContext.em.findOne(WorldMapCell, {
-      base_id: BigInt(options.baseid),
+      baseid: options.baseid,
     });
   }
 
@@ -56,7 +56,7 @@ export const validateRange = async (
     throw new Error("No outposts owned, and main base is out of range.");
 
   const userOutposts = new Map(outposts.map(([x, y, id]) => [`${x}${y}`, id]));
-  const outpostsInRange: { id: bigint; dx: number; dy: number }[] = [];
+  const outpostsInRange: { baseid: string; dx: number; dy: number }[] = [];
 
   // Otherwise, we collect the baseid's of outposts within a 4-cell square area of the attack cell
   for (let dx = -4; dx <= 4; dx++) {
@@ -65,7 +65,7 @@ export const validateRange = async (
       const neighborY = (cellY + dy + MapRoom.HEIGHT) % MapRoom.HEIGHT;
 
       const outpostId = userOutposts.get(`${neighborX}${neighborY}`);
-      if (outpostId) outpostsInRange.push({ id: BigInt(outpostId), dx, dy });
+      if (outpostId) outpostsInRange.push({ baseid: outpostId, dx, dy });
     }
   }
 
@@ -74,7 +74,7 @@ export const validateRange = async (
 
   // Query the database for the in-range outposts
   const outpostSaves = await ORMContext.em.find(Save, {
-    baseid: { $in: outpostsInRange.map((outpost) => outpost.id) },
+    baseid: { $in: outpostsInRange.map((outpost) => outpost.baseid) },
   });
 
   for (const outpostSave of outpostSaves) {
@@ -87,7 +87,7 @@ export const validateRange = async (
     }
   }
 
-  const message = `${user.username} attacked out of range base: ${attackCell.base_id}`;
+  const message = `${user.username} attacked out of range base: ${attackCell.baseid}`;
   await logReport(user, new IncidentReport(), message);
 
   throw new Error("No outposts are within attack range.");
