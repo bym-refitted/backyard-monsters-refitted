@@ -22,7 +22,6 @@ import { migrateBase } from "./controllers/maproom/v2/migrateBase";
 import { transferMonsters } from "./controllers/maproom/v2/transferMonsters";
 import { apiVersion } from "./middleware/apiVersioning";
 import { supportedLangs } from "./controllers/supportedLangs";
-import { releasesWebhook } from "./controllers/github/releasesWebhook";
 import { Status } from "./enums/StatusCodes";
 import { forgotPassword } from "./controllers/auth/forgotPassword";
 import { resetPassword } from "./controllers/auth/resetPassword";
@@ -32,12 +31,6 @@ import { devConfig } from "./config/DevSettings";
  * All applcation routes
  */
 const router = new Router();
-
-/**
- * GitHub - Get latest client releases
- * @name POST /gh-release-webhook
- */
-router.post("/gh-release-webhook", releasesWebhook);
 
 /**
  * Connection route
