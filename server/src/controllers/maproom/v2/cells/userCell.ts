@@ -42,8 +42,8 @@ export const userCell = async (ctx: Context, cell: WorldMapCell) => {
     // Everytime a user cell is attacked, it trigger this for 60 seconds
     const locked = mine ? 0 : online ? 1 : cellSave.locked || 0;
 
-    const points = BigInt(cellOwner.save.points);
-    const basevalue = BigInt(cellOwner.save.basevalue);
+    const points = cellOwner.save.points;
+    const basevalue = cellOwner.save.basevalue;
     const baseLevel = calculateBaseLevel(points, basevalue);
 
     await damageProtection(cellSave);
@@ -52,7 +52,7 @@ export const userCell = async (ctx: Context, cell: WorldMapCell) => {
       uid: cellOwner.userid,
       b: cell.base_type,
       pi: 0,
-      bid: cell.base_id,
+      bid: cell.baseid,
       aid: 0,
       i: cell.terrainHeight,
       v: cellSave.empirevalue,

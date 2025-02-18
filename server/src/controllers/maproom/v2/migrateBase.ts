@@ -21,8 +21,14 @@ import { MapRoomCell } from "../../../enums/MapRoom";
 const MigrateBaseSchema = z.object({
   type: z.nativeEnum(BaseType),
   baseid: z.string(),
-  resources: z.string().transform((res) => JSON.parse(res)).optional(),
-  shiny: z.string().transform((shiny) => parseInt(shiny)).optional(),
+  resources: z
+    .string()
+    .transform((res) => JSON.parse(res))
+    .optional(),
+  shiny: z
+    .string()
+    .transform((shiny) => parseInt(shiny))
+    .optional(),
 });
 
 /**
@@ -79,18 +85,16 @@ export const migrateBase: KoaController = async (ctx) => {
     const cells = await ORMContext.em.find(
       WorldMapCell,
       {
-        base_id: { $in: [BigInt(baseid), BigInt(userSave.baseid)] },
+        baseid: { $in: [baseid, userSave.baseid] },
       },
       { populate: ["save"] }
     );
 
-    const outpostCell = cells.find(
-      (cell) => BigInt(cell.base_id) === BigInt(baseid)
-    );
+    const outpostCell = cells.find((cell) => cell.baseid === baseid);
 
     const homeCell = cells.find(
       (cell) =>
-        BigInt(cell.base_id) === BigInt(userSave.baseid) &&
+        cell.baseid === userSave.baseid &&
         cell.base_type === MapRoomCell.HOMECELL
     );
 
@@ -133,15 +137,19 @@ export const migrateBase: KoaController = async (ctx) => {
     delete userSave.buildingresources[`b${outpostBaseId}`];
 
     if (shiny) userSave.credits = userSave.credits - shiny;
-    if (resources) 
-      userSave.resources = updateResources(resources, userSave.resources, Operation.SUBTRACT);
+    if (resources)
+      userSave.resources = updateResources(
+        resources,
+        userSave.resources,
+        Operation.SUBTRACT
+      );
 
     await ORMContext.em.persistAndFlush([homeCell, userSave]);
 
     ctx.status = Status.OK;
     ctx.body = {
       error: 0,
-      coords: [outpostX, outpostY]
+      coords: [outpostX, outpostY],
     };
   } catch (error) {
     ctx.status = Status.BAD_REQUEST;
