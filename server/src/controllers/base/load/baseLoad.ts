@@ -72,7 +72,9 @@ export const baseLoad: KoaController = async (ctx) => {
       storeitems: { ...storeItems },
       tutorialstage: isTutorialEnabled,
       currenttime: getCurrentDateTime(),
-      pic_square: user.pic_square,
+      pic_square: `${process.env.AVATAR_URL}?seed=${
+        filteredSave.name
+      }&size=${50}`,
     };
 
     // Only include user save data if the base belongs to the current user
