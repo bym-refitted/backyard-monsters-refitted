@@ -15,8 +15,8 @@ interface Monster {
 type MonstersTransfer = [Monster[], Monster[]];
 
 const TransferMonstersScema = z.object({
-  frombaseid: z.string().transform((id) => BigInt(id)),
-  tobaseid: z.string().transform((id) => BigInt(id)),
+  frombaseid: z.string(),
+  tobaseid: z.string(),
   monsters: z.string().transform((monsters) => JSON.parse(monsters)),
 });
 

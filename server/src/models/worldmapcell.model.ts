@@ -29,7 +29,7 @@ export class WorldMapCell {
 
   @FrontendKey
   @Property()
-  base_id!: bigint;
+  baseid!: string;
 
   @FrontendKey
   @Property()

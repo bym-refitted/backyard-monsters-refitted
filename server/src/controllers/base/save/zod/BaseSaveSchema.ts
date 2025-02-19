@@ -19,7 +19,7 @@ export const BaseSaveSchema = z.object({
    * The basesaveid of the save, transformed from a string to a bigint.
    * @type {bigint}
    */
-  basesaveid: z.string().transform((id) => BigInt(id)),
+  basesaveid: z.string().transform((id) => parseInt(id)),
 
   /**
    * The purchase data, transformed from a JSON string to an array.

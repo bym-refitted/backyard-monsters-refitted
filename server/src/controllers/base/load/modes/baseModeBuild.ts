@@ -34,13 +34,11 @@ export const baseModeBuild = async (user: User, baseid: string) => {
     return userSave;
   }
 
-  if (BigInt(baseid) !== BigInt(userSave.baseid)) {
-    const baseSave = await ORMContext.em.findOne(Save, {
-      baseid: BigInt(baseid),
-    });
+  if (baseid !== userSave.baseid) {
+    const baseSave = await ORMContext.em.findOne(Save, { baseid });
 
     if (!baseSave) throw new Error(`Base save not found for baseid: ${baseid}`);
-    
+
     if (baseSave.userid !== user.userid) {
       const message = `${user.username} attempted to access unauthorized baseid: ${baseid}`;
       await logReport(user, new IncidentReport(), message);
