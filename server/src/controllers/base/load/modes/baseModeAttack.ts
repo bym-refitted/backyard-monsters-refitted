@@ -25,7 +25,7 @@ export interface AttackDetails {
 
 export const baseModeAttack = async (user: User, baseid: string) => {
   const userSave: Save = user.save;
-  let save = await ORMContext.em.findOne(Save, { baseid: BigInt(baseid) });
+  let save = await ORMContext.em.findOne(Save, { baseid });
 
   if (!save) save = wildMonsterSave(baseid);
 
@@ -49,9 +49,7 @@ export const baseModeAttack = async (user: User, baseid: string) => {
   // Remove damage protection
   await damageProtection(userSave, BaseMode.ATTACK);
 
-  let cell = await ORMContext.em.findOne(WorldMapCell, {
-    base_id: BigInt(baseid),
-  });
+  let cell = await ORMContext.em.findOne(WorldMapCell, { baseid });
 
   if (!cell) {
     // Find the existing world record
@@ -72,7 +70,7 @@ export const baseModeAttack = async (user: User, baseid: string) => {
     cell = new WorldMapCell(world, cellX, cellY, terrainHeight);
     cell.uid = save.saveuserid;
     cell.base_type = MapRoomCell.WM;
-    cell.base_id = BigInt(baseid);
+    cell.baseid = baseid;
   }
 
   save.cell = cell;
