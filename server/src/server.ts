@@ -18,17 +18,19 @@ import { ErrorInterceptor } from "./middleware/clientSafeError";
 import { processLanguagesFile } from "./middleware/processLanguageFile";
 import { logMissingAssets, morganLogging } from "./middleware/morganLogging";
 import { Status } from "./enums/StatusCodes";
-import { getLatestSwfFromGithub } from "./controllers/github/getLatestSwfFromGithub";
 import { corsCacheControl } from "./middleware/corsCacheControlSetup";
 
 export const app = new Koa();
+
+export const PORT = process.env.PORT || 3001;
+export const BASE_URL = process.env.BASE_URL;
+
+export const getApiVersion = () => "v1.1.3-beta";
 
 export const ORMContext = {} as {
   orm: MikroORM;
   em: EntityManager;
 };
-
-let globalApiVersion: string;
 
 export const redisClient = createClient({
   url: process.env.REDIS_URL || "redis://localhost:6379",
@@ -36,17 +38,6 @@ export const redisClient = createClient({
 
 redisClient.on("connect", () => logging("Connected to Redis client."));
 redisClient.on("error", (err) => errorLog("Redis client error:", err));
-
-export const setApiVersion = (version: string) => {
-  logging(
-    `Updating latest client version, server is using: ${globalApiVersion}`
-  );
-  globalApiVersion = version;
-};
-
-export const getApiVersion = () => "v1.1.3-beta";
-export const PORT = process.env.PORT || 3001;
-export const BASE_URL = process.env.BASE_URL;
 
 // CORS & Cache Control
 app.use(corsCacheControl);
@@ -102,15 +93,6 @@ api.get("/", (ctx: Context) => (ctx.body = {}));
       await next();
     }
   });
-
-  /**
-   * This sets the initial client version to the latest version from github
-   *
-   * This value can also be set by the github webhook
-   */
-  if (process.env.USE_VERSION_MANAGEMENT === "enabled") {
-    setApiVersion(await getLatestSwfFromGithub());
-  }
 
   app.use(ErrorInterceptor);
 
