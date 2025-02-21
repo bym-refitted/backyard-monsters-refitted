@@ -9,7 +9,7 @@ import {
 import { User } from "./user.model";
 
 interface Tribedata {
-  baseid: bigint | number;
+  baseid: string;
   tribeHealthData: any;
 }
 
