@@ -21,8 +21,6 @@ export const infernoSave: KoaController = async (ctx) => {
 
   try {
     const saveData = BaseSaveSchema.parse(ctx.request.body);
-    const baseid = BigInt(saveData.baseid);
-
     let tribeSave: Save = null;
 
     // Attempt to find the save data for the inferno base
@@ -39,7 +37,7 @@ export const infernoSave: KoaController = async (ctx) => {
       });
 
       let existingTribe = maproom1.tribedata.find(
-        (tribe) => BigInt(tribe.baseid) === baseid
+        (tribe) => tribe.baseid === saveData.baseid
       );
 
       if (!existingTribe) throw saveFailureErr();
@@ -49,15 +47,17 @@ export const infernoSave: KoaController = async (ctx) => {
 
       // Update the wild monster status on the user save
       userSave.wmstatus.forEach((tribe) => {
-        if (tribe[0] === saveData.baseid) tribe[2] = saveData.destroyed;
+        if (tribe[0] === Number(saveData.baseid)) tribe[2] = saveData.destroyed;
       });
 
-      const tribeData = molochTribes.find((tribe) => tribe.baseid === baseid);
+      const tribeData = molochTribes.find(
+        (tribe) => tribe.baseid === saveData.baseid
+      );
 
       tribeSave = Object.assign(new Save(), {
         ...tribeData,
+        baseid: saveData.baseid,
         buildinghealthdata: existingTribe?.tribeHealthData || {},
-        baseid: saveData.baseid.toString(),
       });
 
       await ORMContext.em.persistAndFlush(maproom1);

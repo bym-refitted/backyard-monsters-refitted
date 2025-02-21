@@ -552,7 +552,7 @@ export class Save {
     await em.persistAndFlush(infernoSave);
 
     infernoSave.type = BaseType.INFERNO;
-    infernoSave.baseid = infernoSave.basesaveid;
+    infernoSave.baseid = infernoSave.basesaveid.toString();
     infernoSave.homebaseid = infernoSave.basesaveid;
     await em.persistAndFlush(infernoSave);
 

@@ -1,6 +1,6 @@
 export const molochTribes = [
   {
-    baseid: BigInt(201),
+    baseid: "201",
     type: "iwm",
     userid: 0,
     wmid: 0,
@@ -1592,7 +1592,7 @@ export const molochTribes = [
     fbpromos: [],
   },
   {
-    baseid: BigInt(202),
+    baseid: "202",
     type: "iwm",
     userid: 0,
     wmid: 0,
@@ -3137,7 +3137,7 @@ export const molochTribes = [
     fbpromos: [],
   },
   {
-    baseid: BigInt(203),
+    baseid: "203",
     type: "iwm",
     userid: 0,
     wmid: 0,
@@ -6954,7 +6954,7 @@ export const molochTribes = [
     fbpromos: [],
   },
   {
-    baseid: BigInt(204),
+    baseid: "204",
     type: "iwm",
     userid: 0,
     wmid: 0,
@@ -9528,7 +9528,7 @@ export const molochTribes = [
   },
   // TODO: Implement base 205
   {
-    baseid: BigInt(205),
+    baseid: "205",
     type: "iwm",
     userid: 0,
     wmid: 0,
@@ -9634,7 +9634,7 @@ export const molochTribes = [
   },
   // TODO: Implement base 206
   {
-    baseid: BigInt(206),
+    baseid: "206",
     type: "iwm",
     userid: 0,
     wmid: 0,
@@ -9740,7 +9740,7 @@ export const molochTribes = [
   },
   // TODO: Implement base 207
   {
-    baseid: BigInt(207),
+    baseid: "207",
     type: "iwm",
     userid: 0,
     wmid: 0,
@@ -9846,7 +9846,7 @@ export const molochTribes = [
   },
   // TODO: Implement base 208
   {
-    baseid: BigInt(208),
+    baseid: "208",
     type: "iwm",
     userid: 0,
     wmid: 0,
@@ -9952,7 +9952,7 @@ export const molochTribes = [
   },
   // TODO: Implement base 209
   {
-    baseid: BigInt(209),
+    baseid: "209",
     type: "iwm",
     userid: 0,
     wmid: 0,
@@ -10058,7 +10058,7 @@ export const molochTribes = [
   },
   // TODO: Implement base 210
   {
-    baseid: BigInt(210),
+    baseid: "210",
     type: "iwm",
     userid: 0,
     wmid: 0,
@@ -10164,7 +10164,7 @@ export const molochTribes = [
   },
   // TODO: Implement base 211
   {
-    baseid: BigInt(211),
+    baseid: "211",
     type: "iwm",
     userid: 0,
     wmid: 0,
@@ -10270,7 +10270,7 @@ export const molochTribes = [
   },
   // TODO: Implement base 212
   {
-    baseid: BigInt(212),
+    baseid: "212",
     type: "iwm",
     userid: 0,
     wmid: 0,
@@ -10375,7 +10375,7 @@ export const molochTribes = [
     fbpromos: [],
   },
   {
-    baseid: BigInt(213),
+    baseid: "213",
     type: "iwm",
     userid: 0,
     wmid: 0,

@@ -4,10 +4,9 @@ import { Save } from "../../../../models/save.model";
 import { User } from "../../../../models/user.model";
 import { ORMContext } from "../../../../server";
 
-export const infernoModeAttack = async (user: User, baseId: string) => {
-  const baseid = BigInt(baseId);
-
+export const infernoModeAttack = async (user: User, baseid: string) => {
   const userSave = await ORMContext.em.findOne(Save, { baseid });
+
   if (userSave) return userSave;
 
   const maproom1 = await ORMContext.em.findOne(MapRoom1, {
@@ -15,12 +14,12 @@ export const infernoModeAttack = async (user: User, baseId: string) => {
   });
 
   let existingTribe = maproom1.tribedata.find(
-    (tribe) => BigInt(tribe.baseid) === baseid
+    (tribe) => tribe.baseid === baseid
   );
 
   if (!existingTribe) {
-    const newTribe = { baseid: Number(baseid), tribeHealthData: {}}; 
-    
+    const newTribe = { baseid, tribeHealthData: {} };
+
     maproom1.tribedata.push(newTribe);
     await ORMContext.em.persistAndFlush(maproom1);
   }
@@ -29,7 +28,7 @@ export const infernoModeAttack = async (user: User, baseId: string) => {
 
   return Object.assign(new Save(), {
     ...tribeData,
+    baseid,
     buildinghealthdata: existingTribe?.tribeHealthData || {},
-    baseid: baseId,
   });
 };

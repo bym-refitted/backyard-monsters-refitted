@@ -10,14 +10,14 @@ import { Resources } from "../../../../services/base/updateResources";
  */
 export const BaseSaveSchema = z.object({
   /**
-   * The baseid of the save, transformed from a string to a bigint.
-   * @type {bigint}
+   * The baseid of the save.
+   * @type {string}
    */
-  baseid: z.string().transform((id) => Number(id)),
+  baseid: z.string(),
 
   /**
-   * The basesaveid of the save, transformed from a string to a bigint.
-   * @type {bigint}
+   * The basesaveid of the save, transformed from a string to a number.
+   * @type {number}
    */
   basesaveid: z.string().transform((id) => parseInt(id)),
 
