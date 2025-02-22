@@ -41,8 +41,6 @@ export const balancedReward = async (userSave: Save) => {
   if (townHallLevel >= 8 && !rewards[DIAMOND_SPURTZ]) {
     rewards[DIAMOND_SPURTZ] = { id: DIAMOND_SPURTZ };
   }
-
-  ORMContext.em.persistAndFlush(userSave);
 };
 
 
