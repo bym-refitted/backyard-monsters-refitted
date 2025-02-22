@@ -31,10 +31,9 @@ export const baseModeBuild = async (user: User, baseid: string) => {
   if (baseid === BaseMode.DEFAULT) {
     await balancedReward(userSave);
 
-    // Return attacks less than 48 hours old
+    // Remove attacks less than 48 hours old
     userSave.attacks = userSave.attacks.filter((attack) => {
-      const attackTime = new Date(attack.starttime).getTime() / 1000;    
-      return getCurrentDateTime() - attackTime < 48 * 60 * 60;
+      return getCurrentDateTime() - attack.starttime < 48 * 60 * 60;
     });
 
     await ORMContext.em.persistAndFlush(userSave);
