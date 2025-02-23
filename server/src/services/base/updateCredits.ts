@@ -56,7 +56,15 @@ export const updateCredits = (save: Save, item: string, quantity: number) => {
   const storeItem: StoreItem = storeItems[item];
   if (!storeItem?.c) {
     errorLog("Not a store item! Add to non-store items list", item);
+    return;
   }
+
+  // Ensure store item exists in storedata
+  if (!save.storedata[item]) save.storedata[item] = { q: 0 };
+
+  // Now that we are sure it exists, update its quantity
+  save.storedata[item].q += quantity;
+
   let itemCost: number = storeItem.c[0];
   if (storeItem.c.length > 1) {
     // The item has a scaling cost depending on how many of that item the player currently owns

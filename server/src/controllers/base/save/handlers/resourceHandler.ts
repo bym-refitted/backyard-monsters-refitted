@@ -6,8 +6,8 @@ import { Save } from "../../../../models/save.model";
 
 export const resourcesHandler = (
   resourceVal: any,
-  userSave: Save,
   save: Save,
+  userSave?: Save,
   isOutpost?: boolean
 ) => {
   // Parse the resource data if it's a JSON string
