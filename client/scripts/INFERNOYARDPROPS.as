@@ -2349,8 +2349,8 @@ package
          "imageData":{
             "baseurl":"buildings/iacademy/",
             1:{
-               "anim":["anim1.1.png",new Rectangle(11,-2,22,17),44],
-               "anim2":["anim2.1.png",new Rectangle(-32,-49,53,84),44],
+               //"anim":["anim1.1.png",new Rectangle(11,-2,22,17),44],
+               //"anim2":["anim2.1.png",new Rectangle(-32,-49,53,84),44],
                "top":["top.1.png",new Point(-50,-27)],
                //"shadow":["shadow.1.jpg",new Point(-50,23)],
                "topdamaged":["top.1.damaged.png",new Point(-48,-49)],
@@ -2359,8 +2359,8 @@ package
                //"shadowdestroyed":["shadow.1.jpg",new Point(-50,23)]
             },
             2:{
-               "anim":["anim1.2.png",new Rectangle(1,-18,44,26),47],
-               "anim2":["anim2.2.png",new Rectangle(-39,-96,67,117),47],
+               //"anim":["anim1.2.png",new Rectangle(1,-18,44,26),47],
+               //"anim2":["anim2.2.png",new Rectangle(-39,-96,67,117),47],
                "top":["top.2.png",new Point(-56,-43)],
                //"shadow":["shadow.2.jpg",new Point(-60,10)],
                "topdamaged":["top.2.damaged.png",new Point(-61,-91)],

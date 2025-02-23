@@ -7,6 +7,8 @@ import { logReport } from "../../../../utils/logReport";
 
 // Inferno seems to always return baseid 0 for the current user from the client
 export const infernoModeBuild = async (user: User, baseid: string) => {
+  const userSave = user.save;
+
   let infernoSave = await ORMContext.em.findOne(Save, {
     userid: user.userid,
     type: BaseType.INFERNO,
@@ -23,6 +25,9 @@ export const infernoModeBuild = async (user: User, baseid: string) => {
     await logReport(user, new IncidentReport(), message);
     throw new Error(message);
   }
+
+  userSave.stats["other"]["underhalLevel"] = infernoSave.stats["other"]["underhalLevel"];
+  await ORMContext.em.persistAndFlush(user.save);
 
   return infernoSave;
 };

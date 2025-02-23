@@ -100,6 +100,7 @@ export const infernoSave: KoaController = async (ctx) => {
     ctx.body = {
       error: 0,
       ...filteredSave,
+      credits: userSave.credits
     };
   } catch (err) {
     errorLog(`Failed to save inferno base for user: ${user.username}`, err);

@@ -554,6 +554,8 @@ export class Save {
     infernoSave.type = BaseType.INFERNO;
     infernoSave.baseid = infernoSave.basesaveid.toString();
     infernoSave.homebaseid = infernoSave.basesaveid;
+    infernoSave.stats = user.save.stats
+    infernoSave.credits = 0;
     await em.persistAndFlush(infernoSave);
 
     return infernoSave;
