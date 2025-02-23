@@ -1,4 +1,4 @@
-import { BaseMode } from "../../../../enums/Base";
+import { BaseMode, BaseType } from "../../../../enums/Base";
 import { MapRoomCell } from "../../../../enums/MapRoom";
 import { World } from "../../../../models/world.model";
 import { WorldMapCell } from "../../../../models/worldmapcell.model";
@@ -44,7 +44,7 @@ export const baseModeAttack = async (user: User, baseid: string) => {
     starttime: getCurrentDateTime(),
   };
 
-  save.attacks.push(attackDetails);
+  if (save.type != BaseType.TRIBE) save.attacks.push(attackDetails);
 
   // Remove damage protection
   await damageProtection(userSave, BaseMode.ATTACK);
