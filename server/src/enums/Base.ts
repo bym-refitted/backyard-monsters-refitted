@@ -19,7 +19,7 @@ export enum BaseMode {
   WMVIEW = "wmview",            // Viewing wild monsters
   IWMVIEW = "iwmview",          // Viewing wild monsters in the inferno
 
-  DEFAULT = "0"               // Default yard
+  DEFAULT = "0"                 // Default yard
 }
 
 /** 
@@ -32,5 +32,7 @@ export enum BaseType {
   TRIBE = "tribe",              // Wild monster yard
   INFERNO = "inferno",          // Inferno yard
   INFERNO_TRIBE = "iwm",        // Inferno wild monster yard
-  RANDOM = "random"             // Random yard
+  RANDOM = "random",            // Random yard
+  GET = "get",                  // Get monsters
+  SET = "set",                  // Set monsters
 }

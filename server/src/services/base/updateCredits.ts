@@ -9,11 +9,11 @@ interface Mushrooms {
 
 /**
  *  Keeps track of shiny (credits) spent and obtained.
- * @param {Save} save - The object representing the user's save data.
+ * @param {Save} userSave - The object representing the user's save data.
  * @param {string} item - The item identifier for which credits are spent or obtained.
  * @param {number} quantity - The quantity of the item affecting credit changes.
  */
-export const updateCredits = (save: Save, item: string, quantity: number) => {
+export const updateCredits = (userSave: Save, item: string, quantity: number) => {
   if (quantity <= 0) {
     errorLog(`Invalid purchase quantity! Item: ${item}, quantity: ${quantity}`);
     return;
@@ -22,7 +22,7 @@ export const updateCredits = (save: Save, item: string, quantity: number) => {
   // Handle mushrooms
   const mushroomCredits: Mushrooms = { MUSHROOM1: 3, MUSHROOM2: 8 };
   if (item in mushroomCredits) {
-    save.credits += mushroomCredits[item];
+    userSave.credits += mushroomCredits[item];
     return;
   }
 
@@ -48,7 +48,7 @@ export const updateCredits = (save: Save, item: string, quantity: number) => {
     "QINVITE10"
   ]);
   if (nonStoreItem.has(item)) {
-    save.credits -= quantity;
+    userSave.credits -= quantity;
     return;
   }
 
@@ -60,18 +60,18 @@ export const updateCredits = (save: Save, item: string, quantity: number) => {
   }
 
   // Ensure store item exists in storedata
-  if (!save.storedata[item]) save.storedata[item] = { q: 0 };
+  if (!userSave.storedata[item]) userSave.storedata[item] = { q: 0 };
 
   // Now that we are sure it exists, update its quantity
-  save.storedata[item].q += quantity;
+  userSave.storedata[item].q += quantity;
 
   let itemCost: number = storeItem.c[0];
   if (storeItem.c.length > 1) {
     // The item has a scaling cost depending on how many of that item the player currently owns
     // We subtract 1 here since the item would've been already added to the player's save by the caller
-    const currentQuantity: number = save.storedata[item].q - 1;
+    const currentQuantity: number = userSave.storedata[item].q - 1;
     itemCost = storeItem.c[currentQuantity];
   }
 
-  save.credits -= itemCost * quantity;
+  userSave.credits -= itemCost * quantity;
 };
