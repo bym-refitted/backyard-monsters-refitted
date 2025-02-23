@@ -1,5 +1,6 @@
 import { molochTribes } from "../../data/tribes/molochTribes";
 import { BaseType } from "../../enums/Base";
+import { SaveKeys } from "../../enums/SaveKeys";
 import { Status } from "../../enums/StatusCodes";
 import { saveFailureErr } from "../../errors/errors";
 import { ClientSafeError } from "../../middleware/clientSafeError";
@@ -10,6 +11,9 @@ import { ORMContext } from "../../server";
 import { FilterFrontendKeys } from "../../utils/FrontendKey";
 import { KoaController } from "../../utils/KoaController";
 import { errorLog } from "../../utils/logger";
+import { academyHandler } from "../base/save/handlers/academyHandler";
+import { purchaseHandler } from "../base/save/handlers/purchaseHandler";
+import { resourcesHandler } from "../base/save/handlers/resourceHandler";
 import { BaseSaveSchema } from "../base/save/zod/BaseSaveSchema";
 
 export const infernoSave: KoaController = async (ctx) => {
@@ -69,17 +73,17 @@ export const infernoSave: KoaController = async (ctx) => {
         const value = ctx.request.body[key];
 
         switch (key) {
-          // case SaveKeys.IRESOURCES:
-          //   resourcesHandler(value, userSave, infernoSave);
-          //   break;
+          case SaveKeys.RESOURCES:
+            resourcesHandler(value, infernoSave);
+            break;
 
-          // case SaveKeys.PURCHASE:
-          //   purchaseHandler(saveData.purchase, userSave, baseSave);
-          //   break;
+          case SaveKeys.PURCHASE:
+            purchaseHandler(saveData.purchase, userSave, infernoSave);
+            break;
 
-          // case SaveKeys.ACADEMY:
-          //   academyHandler(ctx, baseSave);
-          //   break;
+          case SaveKeys.ACADEMY:
+            academyHandler(ctx, infernoSave);
+            break;
 
           default:
             if (value) {

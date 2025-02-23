@@ -9,7 +9,7 @@ import { User } from "../../../models/user.model";
 import { FilterFrontendKeys } from "../../../utils/FrontendKey";
 import { flags } from "../../../data/flags";
 import { getCurrentDateTime } from "../../../utils/getCurrentDateTime";
-import { BaseMode } from "../../../enums/Base";
+import { BaseMode, BaseType } from "../../../enums/Base";
 import { WORLD_SIZE } from "../../../config/WorldGenSettings";
 import { Status } from "../../../enums/StatusCodes";
 import { baseModeView } from "./modes/baseModeView";
@@ -100,7 +100,8 @@ export const baseLoad: KoaController = async (ctx) => {
     };
 
     // Only include user save data if the base belongs to the current user
-    if (user.userid === filteredSave.userid) {
+    // and is not an inferno base
+    if (baseSave.type !== BaseType.INFERNO && user.userid === filteredSave.userid) {
       Object.assign(responseBody, mapUserSaveData(user));
     }
 
