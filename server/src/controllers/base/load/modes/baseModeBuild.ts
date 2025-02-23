@@ -7,6 +7,7 @@ import { balancedReward } from "../../../../services/base/balancedReward";
 import { IncidentReport } from "../../../../models/incidentreport";
 import { logReport } from "../../../../utils/logReport";
 import { MapRoom1 } from "../../../../models/maproom1.model";
+import { getCurrentDateTime } from "../../../../utils/getCurrentDateTime";
 
 /**
  * Retrieves the save data for the user based on the provided `baseid`.
@@ -29,8 +30,16 @@ export const baseModeBuild = async (user: User, baseid: string) => {
     return await Save.createDefaultUserSave(ORMContext.em, user);
   }
 
+  // Default mode only runs once on initial base load
   if (baseid === BaseMode.DEFAULT) {
     await balancedReward(userSave);
+
+    // Remove attacks less than 48 hours old
+    userSave.attacks = userSave.attacks.filter((attack) => {
+      return getCurrentDateTime() - attack.starttime < 48 * 60 * 60;
+    });
+
+    await ORMContext.em.persistAndFlush(userSave);
     return userSave;
   }
 

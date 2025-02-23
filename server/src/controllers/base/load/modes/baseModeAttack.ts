@@ -1,4 +1,4 @@
-import { BaseMode } from "../../../../enums/Base";
+import { BaseMode, BaseType } from "../../../../enums/Base";
 import { MapRoomCell } from "../../../../enums/MapRoom";
 import { World } from "../../../../models/world.model";
 import { WorldMapCell } from "../../../../models/worldmapcell.model";
@@ -30,8 +30,8 @@ export const baseModeAttack = async (user: User, baseid: string) => {
   if (!save) save = wildMonsterSave(baseid);
 
   // Store the 100 most recent attacks
-  if (save.attacks.length > 100) {
-    save.attacks = save.attacks.slice(-99);
+  if (save.attacks.length > 3) {
+    save.attacks = save.attacks.slice(-2);
   }
 
   // Track the details of the attack
@@ -44,7 +44,7 @@ export const baseModeAttack = async (user: User, baseid: string) => {
     starttime: getCurrentDateTime(),
   };
 
-  save.attacks.push(attackDetails);
+  if (save.type != BaseType.TRIBE) save.attacks.push(attackDetails);
 
   // Remove damage protection
   await damageProtection(userSave, BaseMode.ATTACK);
