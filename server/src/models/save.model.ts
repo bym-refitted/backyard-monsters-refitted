@@ -529,7 +529,7 @@ export class Save {
     em: EntityManager<IDatabaseDriver<Connection>>,
     user: User
   ) => {
-    const baseSave = em.create(Save, getDefaultBaseData(user));
+    const baseSave = em.create(Save, getDefaultBaseData(user, BaseType.MAIN));
     // Persist the entity to generate basesaveid
     await em.persistAndFlush(baseSave);
 
@@ -548,7 +548,7 @@ export class Save {
     em: EntityManager<IDatabaseDriver<Connection>>,
     user: User
   ) => {
-    const infernoSave = em.create(Save, getDefaultBaseData(user));
+    const infernoSave = em.create(Save, getDefaultBaseData(user, BaseType.INFERNO));
     await em.persistAndFlush(infernoSave);
 
     infernoSave.type = BaseType.INFERNO;
