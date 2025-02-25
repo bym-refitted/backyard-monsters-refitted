@@ -12,7 +12,7 @@ export const devConfig = {
   /*
    * Enable or disable Inferno on the server.
    */
-  inferno: false,
+  inferno: true,
   
   /*
    * Set the default amount of shiny on the user's account.
@@ -31,6 +31,12 @@ export const devConfig = {
    * Must be set before creating a new record.
    */
   devSandbox: false,
+
+    /*
+   * Inserts an Inferno sandbox test base into the database, with all buildings placed.
+   * Must be set before creating a new record.
+   */
+  infernoSandbox: false,
 
   /*
    * Logs all missing assets and their paths to the server console.
