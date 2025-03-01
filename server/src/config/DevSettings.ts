@@ -30,13 +30,13 @@ export const devConfig = {
    * Inserts a sandbox test base into the database, with all buildings placed.
    * Must be set before creating a new record.
    */
-  devSandbox: false,
+  devSandbox: true,
 
     /*
    * Inserts an Inferno sandbox test base into the database, with all buildings placed.
    * Must be set before creating a new record.
    */
-  infernoSandbox: false,
+  infernoSandbox: true,
 
   /*
    * Logs all missing assets and their paths to the server console.
