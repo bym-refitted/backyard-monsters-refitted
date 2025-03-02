@@ -29263,14 +29263,14 @@ export const molochTribes = [
         st: 720,
       },
       "3": {
-        l: 3,
+        l: 10,
         X: -205,
         Y: 125,
         t: 6,
         id: 3,
       },
       "4": {
-        l: 3,
+        l: 10,
         X: 115,
         Y: 125,
         t: 6,
@@ -30817,12 +30817,14 @@ export const molochTribes = [
         id: 234,
       },
       "235": {
+        l: 10,
         X: -205,
         Y: -195,
         t: 6,
         id: 235,
       },
       "237": {
+        l: 10,
         X: 115,
         Y: -195,
         t: 6,
@@ -30869,18 +30871,19 @@ export const molochTribes = [
         st: 720,
       },
       "262": {
-        l: 3,
+        l: 6,
         X: -85,
         Y: -275,
         t: 128,
         id: 262,
       },
       "263": {
-        rCP: 446,
         X: -225,
         Y: -50,
-        t: 13,
+        l: 3,
         id: 263,
+        rCP: 446,
+        t: 13,
       },
       "268": {
         l: 4,
@@ -30890,72 +30893,84 @@ export const molochTribes = [
         id: 268,
       },
       "272": {
+        l: 5,
         X: -230,
         Y: -290,
         t: 21,
         id: 272,
       },
       "275": {
+        l: 6,
         X: 215,
         Y: -215,
         t: 21,
         id: 275,
       },
       "276": {
+        l: 5,
         X: 155,
         Y: 225,
         t: 21,
         id: 276,
       },
       "277": {
+        l: 6,
         X: -295,
         Y: 155,
         t: 21,
         id: 277,
       },
       "278": {
+        l: 5,
         X: 145,
         Y: -285,
         t: 130,
         id: 278,
       },
       "279": {
+        l: 6,
         X: 215,
         Y: 155,
         t: 130,
         id: 279,
       },
       "280": {
+        l: 5,
         X: -200,
         Y: 230,
         t: 130,
         id: 280,
       },
       "283": {
+        l: 6,
         X: -295,
         Y: -215,
         t: 130,
         id: 283,
       },
       "284": {
+        l: 6,
         X: 0,
         Y: 130,
         t: 129,
         id: 284,
       },
       "286": {
+        l: 6,
         X: -80,
         Y: 130,
         t: 129,
         id: 286,
       },
       "288": {
+        l: 6,
         X: -300,
         Y: -30,
         t: 132,
         id: 288,
       },
       "290": {
+        l: 6,
         X: 215,
         Y: -30,
         t: 132,
@@ -32715,7 +32730,32 @@ export const molochTribes = [
     buildingkeydata: {},
     researchdata: {},
     stats: {},
-    academy: {},
+    academy: {
+      IC1: {
+        level: 1,
+      },
+      IC2: {
+        level: 1,
+      },
+      IC3: {
+        level: 5,
+      },
+      IC4: {
+        level: 5,
+      },
+      IC5: {
+        level: 1,
+      },
+      IC6: {
+        level: 1,
+      },
+      IC7: {
+        level: 1,
+      },
+      IC8: {
+        level: 1,
+      },
+    },
     rewards: {},
     aiattacks: {},
     monsters: {
@@ -37648,66 +37688,6 @@ export const molochTribes = [
     researchdata: {},
     stats: {},
     academy: {
-      IC7: {
-        level: 1,
-      },
-      C3: {
-        level: 1,
-      },
-      IC8: {
-        level: 1,
-      },
-      C4: {
-        level: 1,
-      },
-      C12: {
-        level: 1,
-      },
-      C5: {
-        level: 1,
-      },
-      C6: {
-        level: 1,
-      },
-      C17: {
-        level: 1,
-      },
-      C7: {
-        level: 1,
-      },
-      C18: {
-        level: 1,
-      },
-      C8: {
-        level: 1,
-      },
-      C9: {
-        level: 1,
-      },
-      C10: {
-        level: 1,
-      },
-      C200: {
-        level: 1,
-      },
-      C11: {
-        level: 1,
-      },
-      C13: {
-        level: 1,
-      },
-      C14: {
-        level: 1,
-      },
-      C15: {
-        level: 1,
-      },
-      C16: {
-        level: 1,
-      },
-      C19: {
-        level: 1,
-      },
       IC1: {
         level: 1,
       },
@@ -37723,13 +37703,13 @@ export const molochTribes = [
       IC5: {
         level: 5,
       },
-      C1: {
-        level: 1,
-      },
       IC6: {
         level: 5,
       },
-      C2: {
+      IC7: {
+        level: 1,
+      },
+      IC8: {
         level: 1,
       },
     },
@@ -39684,66 +39664,6 @@ export const molochTribes = [
     researchdata: {},
     stats: {},
     academy: {
-      IC7: {
-        level: 1,
-      },
-      C3: {
-        level: 1,
-      },
-      IC8: {
-        level: 5,
-      },
-      C4: {
-        level: 1,
-      },
-      C12: {
-        level: 1,
-      },
-      C5: {
-        level: 1,
-      },
-      C6: {
-        level: 1,
-      },
-      C17: {
-        level: 1,
-      },
-      C7: {
-        level: 1,
-      },
-      C18: {
-        level: 1,
-      },
-      C8: {
-        level: 1,
-      },
-      C9: {
-        level: 1,
-      },
-      C10: {
-        level: 1,
-      },
-      C200: {
-        level: 1,
-      },
-      C11: {
-        level: 1,
-      },
-      C13: {
-        level: 1,
-      },
-      C14: {
-        level: 1,
-      },
-      C15: {
-        level: 1,
-      },
-      C16: {
-        level: 1,
-      },
-      C19: {
-        level: 1,
-      },
       IC1: {
         level: 1,
       },
@@ -39759,14 +39679,14 @@ export const molochTribes = [
       IC5: {
         level: 5,
       },
-      C1: {
-        level: 1,
-      },
       IC6: {
         level: 1,
       },
-      C2: {
+      IC7: {
         level: 1,
+      },
+      IC8: {
+        level: 5,
       },
     },
     rewards: {},
