@@ -19,6 +19,7 @@ import { monsterUpdateHandler } from "./handlers/monsterUpdateHandler";
 import { ClientSafeError } from "../../../middleware/clientSafeError";
 import { championHandler } from "./handlers/championHandler";
 import { anticheat } from "../../../scripts/anticheat/anticheat";
+import { updateResources } from "../../../services/base/updateResources";
 
 /**
  * Controller responsible for saving the user's base data.
@@ -56,7 +57,15 @@ export const baseSave: KoaController = async (ctx) => {
 
       switch (key) {
         case SaveKeys.RESOURCES:
-          resourcesHandler(ctx, userSave, baseSave, isOutpostOwner);
+          resourcesHandler(baseSave, value);
+          if (isOutpostOwner) {
+            const resources = JSON.parse(value);
+            userSave.resources = updateResources(resources, userSave.resources);
+          }
+          break;
+
+        case SaveKeys.IRESOURCES:
+          resourcesHandler(baseSave, value, SaveKeys.IRESOURCES);
           break;
 
         case SaveKeys.PURCHASE:

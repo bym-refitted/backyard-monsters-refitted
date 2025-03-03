@@ -2472,7 +2472,7 @@ package
 
       public static function isAtHome():Boolean
       {
-         return _mode == "build" && BASE.isMainYard;
+         return _mode == "build" && BASE.isMainYardOrInfernoMainYard;
       }
 
       public static function isAtHomeOrInOutpost():Boolean

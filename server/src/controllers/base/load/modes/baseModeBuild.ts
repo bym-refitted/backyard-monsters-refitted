@@ -6,6 +6,7 @@ import { logging } from "../../../../utils/logger";
 import { balancedReward } from "../../../../services/base/balancedReward";
 import { IncidentReport } from "../../../../models/incidentreport";
 import { logReport } from "../../../../utils/logReport";
+import { MapRoom1 } from "../../../../models/maproom1.model";
 import { getCurrentDateTime } from "../../../../utils/getCurrentDateTime";
 
 /**
@@ -21,10 +22,12 @@ import { getCurrentDateTime } from "../../../../utils/getCurrentDateTime";
 export const baseModeBuild = async (user: User, baseid: string) => {
   let userSave: Save = user.save;
 
-  // If no user save is found, create a default save for the user.
+  // If no user save is found, setup MR1 & create a default save for the user.
   if (!userSave) {
     logging("User save not found; creating a default save.");
-    return await Save.createDefaultUserSave(ORMContext.em, user);
+    await MapRoom1.setupMapRoom1Data(ORMContext.em, user);
+
+    return await Save.createMainSave(ORMContext.em, user);
   }
 
   // Default mode only runs once on initial base load
