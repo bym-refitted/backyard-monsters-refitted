@@ -57,7 +57,7 @@ export const baseSave: KoaController = async (ctx) => {
 
       switch (key) {
         case SaveKeys.RESOURCES:
-          resourcesHandler(value, baseSave);
+          resourcesHandler(baseSave, value);
           if (isOutpostOwner) {
             const resources = JSON.parse(value);
             userSave.resources = updateResources(resources, userSave.resources);
@@ -65,7 +65,7 @@ export const baseSave: KoaController = async (ctx) => {
           break;
 
         case SaveKeys.IRESOURCES:
-          resourcesHandler(value, baseSave, SaveKeys.IRESOURCES);
+          resourcesHandler(baseSave, value, SaveKeys.IRESOURCES);
           break;
 
         case SaveKeys.PURCHASE:

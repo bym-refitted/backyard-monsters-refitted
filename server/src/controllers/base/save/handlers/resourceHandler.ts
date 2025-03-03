@@ -6,12 +6,12 @@ import { Save } from "../../../../models/save.model";
 import { SaveKeys } from "../../../../enums/SaveKeys";
 
 export const resourcesHandler = (
-  resourceVal: any,
   save: Save,
+  resourceVal: string | undefined,
   resourceKey: SaveKeys.RESOURCES | SaveKeys.IRESOURCES = SaveKeys.RESOURCES
 ) => {
-  let resourceData: Resources | undefined;
-
+  let resourceData: Resources | null = null;
+  
   if (resourceVal) resourceData = JSON.parse(resourceVal);
 
   if (resourceData) 
