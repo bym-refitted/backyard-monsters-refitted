@@ -29,7 +29,7 @@
 		{
 			"label": "Build & Run: BYMR | Debug",
 			"type": "shell",
-			"command": "start",
+			"command": "${workspaceFolder}/archived/flashplayers/flashplayer_debug.exe",
 			"args": [
 				"",
 				"bin/bymr-stable.swf"
@@ -44,7 +44,7 @@
 		{
 			"label": "Build & Run: BYMR | Release",
 			"type": "shell",
-			"command": "start",
+			"command": "${workspaceFolder}/archived/flashplayers/flashplayer.exe",
 			"args": [
 				"",
 				"bin/bymr-stable.swf"
