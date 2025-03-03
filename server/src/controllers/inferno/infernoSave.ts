@@ -2,7 +2,7 @@ import { molochTribes } from "../../data/tribes/molochTribes";
 import { BaseType } from "../../enums/Base";
 import { SaveKeys } from "../../enums/SaveKeys";
 import { Status } from "../../enums/StatusCodes";
-import { saveFailureErr } from "../../errors/errors";
+import { permissionErr, saveFailureErr } from "../../errors/errors";
 import { ClientSafeError } from "../../middleware/clientSafeError";
 import { MapRoom1 } from "../../models/maproom1.model";
 import { Save } from "../../models/save.model";
@@ -69,6 +69,8 @@ export const infernoSave: KoaController = async (ctx) => {
     if (infernoSave) {
       const isOwner = infernoSave.saveuserid === user.userid;
       const isAttack = !isOwner && infernoSave.attackid !== 0;
+
+      if (!isOwner && infernoSave.attackid === 0) throw permissionErr();
 
       for (const key of isAttack ? Save.attackSaveKeys : Save.saveKeys) {
         const value = ctx.request.body[key];
