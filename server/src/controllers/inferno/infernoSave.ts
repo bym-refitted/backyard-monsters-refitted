@@ -64,6 +64,15 @@ export const infernoSave: KoaController = async (ctx) => {
       });
 
       await ORMContext.em.persistAndFlush(maproom1);
+
+      // Keep track of monsters & champions during an attack on a tribe
+      const attackCreatures = ctx.request.body[SaveKeys.ATTACKCREATURES];
+      const attackerChampion = ctx.request.body[SaveKeys.ATTACKERCHAMPION];
+  
+      userSave.monsters = JSON.parse(attackCreatures);
+
+      if (attackerChampion) userSave.champion = attackerChampion;
+      await ORMContext.em.persistAndFlush(userSave);
     }
 
     if (infernoSave) {
@@ -78,7 +87,7 @@ export const infernoSave: KoaController = async (ctx) => {
         switch (key) {
           case SaveKeys.RESOURCES:
             resourcesHandler(infernoSave, value);
-            userSave.iresources  = infernoSave.resources;
+            userSave.iresources = infernoSave.resources;
             break;
 
           case SaveKeys.PURCHASE:

@@ -374,10 +374,6 @@ export class Save {
   // Client save objects
   @FrontendKey
   @Property({ type: "json", nullable: true })
-  attackcreatures?: FieldData = {};
-
-  @FrontendKey
-  @Property({ type: "json", nullable: true })
   attackloot?: FieldData = {};
 
   @FrontendKey
@@ -477,7 +473,6 @@ export class Save {
     "krallen",
     "siege",
     "buildingresources",
-    "attackcreatures",
     "attackloot",
     "lootreport",
     "attackersiege",
