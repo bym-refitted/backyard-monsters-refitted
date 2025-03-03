@@ -525,7 +525,7 @@ export class Save {
     "attackersiege"
   ];
 
-  public static createDefaultUserSave = async (
+  public static createMainSave = async (
     em: EntityManager<IDatabaseDriver<Connection>>,
     user: User
   ) => {
@@ -554,10 +554,16 @@ export class Save {
     infernoSave.type = BaseType.INFERNO;
     infernoSave.baseid = infernoSave.basesaveid.toString();
     infernoSave.homebaseid = infernoSave.basesaveid;
-    infernoSave.stats = user.save.stats
+    infernoSave.stats = user.save.stats;
     infernoSave.credits = 0;
-    await em.persistAndFlush(infernoSave);
+    infernoSave.resources = {
+      r1: 59168,
+      r2: 60090,
+      r3: 59849,
+      r4: 55864,
+    }
 
+    await em.persistAndFlush(infernoSave);
     return infernoSave;
   };
 }
