@@ -26,6 +26,7 @@ import { Status } from "./enums/StatusCodes";
 import { forgotPassword } from "./controllers/auth/forgotPassword";
 import { resetPassword } from "./controllers/auth/resetPassword";
 import { devConfig } from "./config/DevSettings";
+import { infernoSave } from "./controllers/inferno/infernoSave";
 
 /**
  * All applcation routes
@@ -152,6 +153,17 @@ router.post(
 );
 
 /**
+ * Update Inferno saved base data
+ * @name POST /base/updatesaved
+ */
+router.post(
+  "/api/:apiVersion/bm/base/updatesaved",
+  verifyUserAuth,
+  debugDataLog("Inferno updated save"),
+  updateSaved
+);
+
+/**
  * Migrate base data
  * @name POST /base/migrate
  */
@@ -207,7 +219,7 @@ router.post(
   apiVersion,
   verifyUserAuth,
   debugDataLog("Inferno save data"),
-  baseSave
+  infernoSave
 );
 
 /**

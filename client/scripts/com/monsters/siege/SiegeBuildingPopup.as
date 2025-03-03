@@ -249,7 +249,10 @@ package com.monsters.siege
                {
                   this._videoStream.close();
                   this._currentVideoURL = this._currentWeapon.video;
-                  this._videoStream.play(this._currentWeapon.video);
+                  // this._videoStream.play(this._currentWeapon.video);
+
+                  // Comment: Added this so the game looks for the video hosted on the server instead of locally
+                  this._videoStream.play(GLOBAL._storageURL + this._currentWeapon.video);
                }
             }
             else if(this._currentPreviewUrl != this._currentWeapon.videopreview)
