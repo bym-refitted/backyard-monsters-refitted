@@ -610,7 +610,7 @@
     "map_mybase": "YOU",
     "map_msg_damaged": "Your Map Room is more than 50% damaged from an attack, please repair it to gain access.",
     "map_msg_notbuilt": "You need to build a \"Map Room\" first, click on \"Buildings\" at the bottom.",
-    "map_msg_disabled": "The Map Room is currently <b>disabled</b> in Backyard Monsters Refitted.<br><br>The development team are working on implementing an improved detection system to counter exploit abusers and cheaters. We want all players to have an enjoyable and fair experience while playing, please bear with us while we work on it, there is currently no ETA on this.<br><br>- The Backyard Monsters Refitted team.",
+    "map_msg_disabled": "The Map Room is currently <b>disabled</b> in Backyard Monsters Refitted.<br><br>- The Backyard Monsters Refitted team.",
     "map_msg_attackconfirm": "Are you sure you want to attack #v1#?",
     "map_msg_attackfriend": "Really?! You want to attack #v1#? We thought you were friends.",
     "map_msg_attackingdisabled": "<b>Attacking disabled - pending game update<\/b><br>We are about to update the game! Updates sometimes cause errors for those playing, for this reason we have paused the ability to start attacks to prevent you wasting your monsters.<br><br>After the update you can check the forum (press \"Discuss\" above the game) for the list of changes.",
