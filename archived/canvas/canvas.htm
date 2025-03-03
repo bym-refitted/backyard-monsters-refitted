@@ -1,0 +1,1287 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:fb="http://www.facebook.com/2008/fbml"
+>
+  <head>
+    <script type="text/javascript">
+      var canvasInitTime = new Date().getTime();
+      // AVG (Anti-Virus) can redefine the Function prototype.  This sets it back.
+      Function.prototype.constructor = Function;
+    </script>
+    <title>CC Facebook</title>
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="assets/style/bym-fb-lbns.dc.v343.css"
+    />
+
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="assets/style/alliance.v343.css"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="assets/style/jquery-ui-1.8.14.v343.css"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="assets/style/alliance-buttons-css.php?assetversion=320"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="assets/style/alliance-modal-css.php?assetversion=320"
+    />
+  </head>
+  <body id="body" style="margin: 0px">
+    <script
+      src="https://ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js"
+      type="text/javascript"
+    ></script>
+    <script
+      src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"
+      type="text/javascript"
+    ></script>
+    <script>
+      //no conflict jquery
+      jQuery.noConflict();
+    </script>
+
+    <script
+      src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.14/jquery-ui.min.js"
+      type="text/javascript"
+    ></script>
+    <script
+      src="assets/script/underscore-min.v343.js"
+      type="text/javascript"
+    ></script>
+    <script
+      src="assets/script/json2.min.v343.js"
+      type="text/javascript"
+    ></script>
+    <script
+      src="assets/script/jquery-plugins.v343.js"
+      type="text/javascript"
+    ></script>
+
+    <script
+      type="text/javascript"
+      src="assets/script/flash_detect_min.js"
+    ></script>
+    <script type="text/javascript" src="assets/script/srdialog.js"></script>
+
+    <div id="fb-root"></div>
+    <script src="https://connect.facebook.net/en_US/all.js"></script>
+    <script>
+      var NEW_FB = true;
+      FB.init({
+        appId: "342684208824",
+        status: true, // check login status
+        cookie: true, // enable cookies to allow the server to access the session
+        xfbml: true, // parse XFBML
+        oauth: true, // new OAuth param (9/30/2011)
+      });
+    </script>
+    <script
+      type="text/javascript"
+      src="https://ajax.googleapis.com/ajax/libs/mootools/1.3.2/mootools-yui-compressed.js"
+    ></script>
+    <script type="text/javascript" src="assets/script/mtmore.v343.js"></script>
+    <script
+      type="text/javascript"
+      src="https://s-assets.tp-cdn.com/static3/js/api/payment_overlay.js"
+    ></script>
+
+    <script type="text/javascript">
+      var baseurl = "http://apps.facebook.com/backyardmonsters/";
+      var localurl = "http://bym-fb-lbns.dc.kixeye.com/";
+      var cdnurl = "http://cdn-bm-fb.casualcollective.com/";
+      var logurl = "";
+      var gamename = "Backyard Monsters";
+      var user = {
+        ip: "174.17.211.242",
+        uid: 1844802714,
+        fbid: 1844802714,
+        id: 11372269,
+      };
+      var fbdata =
+        "signed_request=DEJUnRaJmE0Paqnyr48IBg1UmvDpUoyqR_qez7Tc5Do.eyJhbGdvcml0aG0iOiJITUFDLVNIQTI1NiIsImV4cGlyZXMiOjEzMjM4MDY0MDAsImlzc3VlZF9hdCI6MTMyMzgwMjU4MSwib2F1dGhfdG9rZW4iOiJBQUFBQVQ4bVNEcmdCQU1rZzNPRXlaQWJON21LQUt2dWJtYWtPcHNQQk1yMUFPZ2c5THV5V0RNdlNUWFk5M3B6Q0pZQnVJUUtWWEtZR3hLYzBQTnZqeWhZcnpXVWZjYmk4M1pBRllXaU5TZ1VNaWVFNXBDIiwidXNlciI6eyJjb3VudHJ5IjoidXMiLCJsb2NhbGUiOiJlbl9VUyIsImFnZSI6eyJtaW4iOjIxfX0sInVzZXJfaWQiOiIxODQ0ODAyNzE0In0&access_token=AAAAAT8mSDrgBAMkg3OEyZAbN7mKAKvubmakOpsPBMr1AOgg9LuyWDMvSTXY93pzCJYBuIQKVXKYGxKc0PNvjyhYrzWUfcbi83ZAFYWiNSgUMieE5pC";
+    </script>
+    <script type="text/javascript" src="assets/script/fb.v343.js"></script>
+    <script
+      type="text/javascript"
+      src="assets/script/cc-framework.v343.js"
+    ></script>
+    <script type="text/javascript">
+      var cc = null;
+
+      //used when we want to auto-open the alliance dialog on launch and select a tab
+      window.initAllianceDialog = function () {};
+
+      window.addEvent("domready", function () {
+        var loadDiff = new Date().getTime() - canvasInitTime;
+        var ccdata = {
+          integ: "fbg",
+          game: "bm",
+          baseurl: baseurl,
+          localurl: localurl,
+          gamenamesh: "Bm",
+          twitterurl: "http://message1.dc.casualcollective.com/twitter/",
+          app_id: "342684208824",
+          jflashvars: {
+            signed_request:
+              "DEJUnRaJmE0Paqnyr48IBg1UmvDpUoyqR_qez7Tc5Do.eyJhbGdvcml0aG0iOiJITUFDLVNIQTI1NiIsImV4cGlyZXMiOjEzMjM4MDY0MDAsImlzc3VlZF9hdCI6MTMyMzgwMjU4MSwib2F1dGhfdG9rZW4iOiJBQUFBQVQ4bVNEcmdCQU1rZzNPRXlaQWJON21LQUt2dWJtYWtPcHNQQk1yMUFPZ2c5THV5V0RNdlNUWFk5M3B6Q0pZQnVJUUtWWEtZR3hLYzBQTnZqeWhZcnpXVWZjYmk4M1pBRllXaU5TZ1VNaWVFNXBDIiwidXNlciI6eyJjb3VudHJ5IjoidXMiLCJsb2NhbGUiOiJlbl9VUyIsImFnZSI6eyJtaW4iOjIxfX0sInVzZXJfaWQiOiIxODQ0ODAyNzE0In0",
+            access_token:
+              "AAAAAT8mSDrgBAMkg3OEyZAbN7mKAKvubmakOpsPBMr1AOgg9LuyWDMvSTXY93pzCJYBuIQKVXKYGxKc0PNvjyhYrzWUfcbi83ZAFYWiNSgUMieE5pC",
+            apiurl: "http:\/\/bym-fb-lbns.dc.kixeye.com\/api\/",
+            baseurl: "http:\/\/bym-fb-lbns.dc.kixeye.com\/base\/",
+            logurl: "",
+            cdnurl: "http:\/\/cdn-bm-fb.casualcollective.com\/",
+            gameurl: "http:\/\/cdn-bm-fb.casualcollective.com\/game\/",
+            statsurl:
+              "http:\/\/ec2-174-129-95-173.compute-1.amazonaws.com\/recordstats.php",
+            currency: "Coins",
+            ccode: "us",
+            allianceurl: "http:\/\/bym-fb-lbns.dc.kixeye.com\/alliance\/",
+            languageversion: "484",
+            userid: 11372269,
+            jstimeout: 3,
+            mapurl: "http:\/\/bym-fb-lbns.dc.kixeye.com\/worldmapv2\/",
+          },
+          jflashvarsf: {
+            signed_request:
+              "DEJUnRaJmE0Paqnyr48IBg1UmvDpUoyqR_qez7Tc5Do.eyJhbGdvcml0aG0iOiJITUFDLVNIQTI1NiIsImV4cGlyZXMiOjEzMjM4MDY0MDAsImlzc3VlZF9hdCI6MTMyMzgwMjU4MSwib2F1dGhfdG9rZW4iOiJBQUFBQVQ4bVNEcmdCQU1rZzNPRXlaQWJON21LQUt2dWJtYWtPcHNQQk1yMUFPZ2c5THV5V0RNdlNUWFk5M3B6Q0pZQnVJUUtWWEtZR3hLYzBQTnZqeWhZcnpXVWZjYmk4M1pBRllXaU5TZ1VNaWVFNXBDIiwidXNlciI6eyJjb3VudHJ5IjoidXMiLCJsb2NhbGUiOiJlbl9VUyIsImFnZSI6eyJtaW4iOjIxfX0sInVzZXJfaWQiOiIxODQ0ODAyNzE0In0",
+            access_token:
+              "AAAAAT8mSDrgBAMkg3OEyZAbN7mKAKvubmakOpsPBMr1AOgg9LuyWDMvSTXY93pzCJYBuIQKVXKYGxKc0PNvjyhYrzWUfcbi83ZAFYWiNSgUMieE5pC",
+            apiurl: "http:\/\/bym-fb-lbns.dc.kixeye.com\/api\/",
+            baseurl: "http:\/\/bym-fb-lbns.dc.kixeye.com\/base\/",
+            logurl: "",
+            cdnurl: "http:\/\/cdn-bm-fb.casualcollective.com\/",
+            gameurl: "http:\/\/cdn-bm-fb.casualcollective.com\/game\/",
+            statsurl:
+              "http:\/\/ec2-174-129-95-173.compute-1.amazonaws.com\/recordstats.php",
+            currency: "Coins",
+            ccode: "us",
+            allianceurl: "http:\/\/bym-fb-lbns.dc.kixeye.com\/alliance\/",
+            languageversion: "484",
+            userid: 11372269,
+            jstimeout: 3,
+            mapurl: "http:\/\/bym-fb-lbns.dc.kixeye.com\/worldmapv2\/",
+            visitBtn: "Visit",
+            homeBtn: "Home",
+            inviteBtn: "Invite a friend",
+          },
+          game_width: "100%",
+          game_height: "670",
+          fswf_height: 150,
+          fswfversion: 14,
+          user: user,
+          cdnurl: cdnurl,
+          assetsurl: "http://cdn-bm-fb.casualcollective.com/game/assets/",
+          kontagent_url: "http://api.geo.kontagent.net/",
+          kontagent_api_key: "cf938c112909470baac12a1655e4d705",
+          kontagent_api_version: "1",
+          kx_logger_url: "http://bi-vip.sjc.kixeye.com/kx/www/log.php",
+          kx_logger_key: "qwerty",
+          kx_logger_st: "",
+          giftredir: 0,
+          fbdata: fbdata,
+          logurl: logurl,
+          logsessionid: "",
+          log_h: "",
+          log_hn: "",
+          canvas_init_time: canvasInitTime,
+          canvas_load_time: loadDiff,
+          sourcestr: "",
+          fb_access_token: "",
+          fromstr: "",
+          liked: 1,
+          bookmarked: 1,
+        };
+        cc = new CCFramework(ccdata);
+      });
+    </script>
+
+    <script type="text/javascript">
+      window.addEvent("domready", function () {
+        cc.noInit();
+      });
+    </script>
+
+    <div
+      style="margin: 5px 0 10px; text-align: center"
+      id="above-game-message"
+    ></div>
+    <script
+      type="text/javascript"
+      src="assets/script/message-sauce.v343.js?t=1323802585"
+    ></script>
+
+    <!-- temporarily turn off the kixeye logo on fb for the 7-11 promo -->
+
+    <div id="allianceNotifications" style="display: none">2</div>
+
+    <div style="margin-bottom: -18px">
+      <a target="_blank" href="http://on.fb.me/mTMRnd">
+        <img
+          src="http://cdn-bm-fb.casualcollective.com/images/bym_promo2.jpg"
+          border="0"
+        />
+      </a>
+    </div>
+
+    <ul id="mmenu" class="mmenu" style="margin-top: 26px">
+      <li class="first">
+        <a href="#" onclick="cc.showFeedDialog('gift');return false;"
+          >Free Gifts</a
+        >
+      </li>
+      <li>
+        <a
+          href="http://apps.facebook.com/backyardmonsters/?r=t"
+          class="selected"
+          target="_top"
+          >Play</a
+        >
+      </li>
+
+      <li>
+        <a
+          href="http://apps.facebook.com/backyardmonsters/attacklog?r=t"
+          target="_top"
+          >Attack Log</a
+        >
+      </li>
+
+      <li>
+        <a href="#" onclick="cc.showFeedDialog('invite');return false;"
+          >Invite Friends</a
+        >
+      </li>
+
+      <li>
+        <a
+          href="http://forums.kixeye.com/forums/2-Backyard-Monsters"
+          target="_blank"
+          >Discuss</a
+        >
+      </li>
+
+      <li>
+        <a href="#" onclick="cc.showTopup();return false;" target="_top"
+          >Get More Shiny</a
+        >
+      </li>
+
+      <li>
+        <a
+          href="http://apps.facebook.com/backyardmonsters/giftshiny"
+          target="_top"
+          >Gift Shiny</a
+        >
+      </li>
+
+      <li>
+        <a
+          href="http://apps.facebook.com/backyardmonsters/leaderboard"
+          target="_top"
+          >Leaderboard</a
+        >
+      </li>
+
+      <li id="alliance_menu_item">
+        <a href="#" onclick="alliances.showAlliancesDialog();return false;"
+          >Alliances</a
+        >
+      </li>
+    </ul>
+    <div class="clear"></div>
+
+    <div id="content">
+      <div id="game"></div>
+      <div id="friends"></div>
+
+      <div id="languages">
+        <select id="language-selector" onchange="onChangeLocale();">
+          <option
+            onclick="cc.redirect(cc.options.baseurl+'?v_locale=en');"
+            value="en"
+            selected
+          >
+            English
+          </option>
+          <option
+            onclick="cc.redirect(cc.options.baseurl+'?v_locale=es');"
+            value="es"
+          >
+            Espa&ntilde;ol
+          </option>
+          <option
+            onclick="cc.redirect(cc.options.baseurl+'?v_locale=de');"
+            value="de"
+          >
+            Deutsch
+          </option>
+          <option
+            onclick="cc.redirect(cc.options.baseurl+'?v_locale=pt');"
+            value="pt"
+          >
+            Portugu&ecirc;s
+          </option>
+        </select>
+        <a id="lang-select-button" href="#"><div class="go-button">Go</div></a>
+      </div>
+
+      <script type="text/javaScript">
+        window.addEvent('domready',function(){
+            if(!cc.checkFlashVersion(10)) $('game').set('html','<h2 style="font-size: 14pt;text-align:center;margin:30px;font-family:Tahoma;">Backyard Monsters requires Flash Player 10 or greater.<br /><a href="http://get.adobe.com/flashplayer/" target="_blank">Click here to download the latest flash player</a></h2>');
+            else
+            {
+                cc.loadGame($('game'),{'gameurl':'http://cdn-bm-fb.casualcollective.com/game/','loaderversion':1024,'gameversion':120,'softversion':1055,'game_width':'100%','game_height':'670'});
+                cc.setCounter(0);
+            }
+
+                    document.getElementById("language-selector").onchange = function(){ onChangeLocale(); };
+            document.getElementById("lang-select-button").onclick = function(){ onChangeLocale(); };
+                });
+
+        function onChangeLocale()
+        {
+            var localeVal = document.getElementById('language-selector').value;
+            cc.redirect(cc.options.baseurl+'?v_locale='+localeVal);
+            return false;
+        }
+      </script>
+      <div id="fb-root"></div>
+
+      <div style="clear: both">
+        <b> Your User ID is: 0</b>
+      </div>
+
+      <!-- Alliance related code to be included in the CanvasIFrame -->
+      <div
+        id="alliance-dialog-wrapper"
+        style="
+          position: absolute;
+          top: 0px;
+          left: 0px;
+          width: 100%;
+          z-index: 13;
+          display: none;
+        "
+      >
+        <div
+          style="
+            background-color: #000000;
+            opacity: 0.4;
+            position: absolute;
+            top: 0px;
+            left: 0px;
+            width: 100%;
+            height: 750px;
+          "
+        ></div>
+        <div
+          style="
+            position: absolute;
+            top: 0px;
+            left: 0px;
+            width: 100%;
+            height: 750px;
+          "
+        >
+          <div id="alliance-feed-dialog" class="hideDialog">
+            <div class="redx">
+              <img
+                src="assets/images/alliances/redx.png"
+                alt="X"
+              />
+            </div>
+
+            <div class="bluequestion" style="display: none">
+              <img
+                src="assets/images/alliances/bluequestion.png"
+                width="30"
+                height="29"
+                alt="?"
+              />
+            </div>
+
+            <div id="alliance-feed-content" style="display: none">
+              <div id="tabs" class="ui-tabs">
+                <ul
+                  id="alliance-tabs-nav"
+                  class="ui-tabs-nav"
+                  style="z-index: 10"
+                >
+                  <li><a href="#tabs-browse">Browse Alliances</a></li>
+                  <li><a href="#tabs-my-alliance">My Alliance</a></li>
+                  <li id="headquarters-tab-li">
+                    <a href="#tabs-headquarters">Power-Ups</a>
+                  </li>
+                  <li id="members-tab-li" style="display: inline">
+                    <a href="#tabs-members" id="members-tab-link">Members</a>
+                  </li>
+                  <li id="suggested-members-tab-li" style="display: inline">
+                    <a
+                      href="#tabs-suggested-members"
+                      id="suggested-members-tab-link"
+                      >Suggested</a
+                    >
+                  </li>
+                  <li>
+                    <a href="#tabs-messages" id="messages-tab-link">Invites</a>
+                  </li>
+                </ul>
+
+                <div id="tabs-browse" style="z-index: 9">
+                  <div class="tabs-background"></div>
+
+                  <div id="search-bar-div" class="gray">
+                    <a
+                      href="javascript:void(0);"
+                      class="buttonSearchBar enabledButton"
+                      id="allButton"
+                      >All</a
+                    >
+                    <a
+                      href="javascript:void(0);"
+                      class="buttonSearchBar disabledButton"
+                      id="worldButton"
+                      >This World</a
+                    >
+                    <a
+                      href="javascript:void(0);"
+                      class="createButton enabledButton"
+                      id="createButton"
+                      >Create Alliance</a
+                    >
+                    <input id="search-input" type="text" name="search-name" />
+                    <a
+                      href="javascript:void(0);"
+                      class="buttonSearchBar enabledButton"
+                      id="searchButton"
+                      >Search</a
+                    >
+                  </div>
+
+                  <div id="search-results">
+                    <table id="search-results-table">
+                      <tr class="header">
+                        <th style="width: 40px; text-align: center">Rank</th>
+                        <th style="width: 230px; text-align: left">Name</th>
+                        <th style="width: 65px; text-align: center">Members</th>
+                        <th style="width: 95px; text-align: center">
+                          Empire Points
+                        </th>
+                        <th style="width: 110px; text-align: left">Leader</th>
+                        <th style="width: 90px; text-align: center">Actions</th>
+                      </tr>
+                    </table>
+
+                    <div id="search-results-paging"></div>
+
+                    <div id="search-indicator">Searching...</div>
+                  </div>
+                </div>
+
+                <div id="tabs-my-alliance" class="ui-tabs-hide">
+                  <div class="tabs-background" style="height: 411px"></div>
+
+                  <div id="alliance-name"></div>
+                  <div id="alliance-rank">
+                    <div class="myAlliancelabel">Rank:</div>
+                    <div class="myAllianceValue"></div>
+                  </div>
+                  <div id="alliance-level">
+                    <div class="myAlliancelabel">Level:</div>
+                    <div class="myAllianceValue"></div>
+                  </div>
+                  <div id="alliance-leader">
+                    <div class="myAlliancelabel">Leader:</div>
+                    <div class="myAllianceValue"></div>
+                  </div>
+                  <div id="alliance-members">
+                    <div class="myAlliancelabel">Members:</div>
+                    <div class="myAllianceValue"></div>
+                  </div>
+                  <div id="alliance-description"></div>
+
+                  <div id="my-alliance-actions">
+                    <a
+                      href="javascript:void(0);"
+                      class="buttonMyAlliance enabledButton"
+                      id="edit-button"
+                    >
+                      Edit
+                    </a>
+                    <a
+                      href="javascript:void(0);"
+                      class="buttonMyAlliance enabledButton"
+                      id="leave-button"
+                    >
+                      Leave Alliance
+                    </a>
+                  </div>
+
+                  <div id="alliance-image"></div>
+
+                  <div id="alliance-shoutbox">
+                    <div id="shouts"></div>
+                    <div id="shout-post-bar">
+                      <input
+                        id="shout-input"
+                        type="text"
+                        name="shout-message"
+                        maxlength="140"
+                      />
+                      <a
+                        href="javascript:void(0);"
+                        class="buttonMyAlliance enabledButton"
+                        id="shout-post"
+                        style="float: right"
+                      >
+                        Post Message
+                      </a>
+                    </div>
+                  </div>
+                </div>
+
+                <div id="tabs-headquarters" class="ui-tabs-hide">
+                  <div class="tabs-background" style="height: 411px"></div>
+
+                  <div id="powerups-container"></div>
+                </div>
+
+                <div id="tabs-members" class="ui-tabs-hide">
+                  <div class="tabs-background" style="height: 411px"></div>
+
+                  <div id="all-members-container">
+                    <div class="members-header gray">
+                      <img
+                        src="assets/images/alliances/current_members.png"
+                        style="
+                          vertical-align: middle;
+                          margin-top: 1px;
+                          float: left;
+                        "
+                      />
+                    </div>
+
+                    <div class="members">
+                      <table id="members-table" class="members-table">
+                        <tr class="header">
+                          <th style="width: 45px; text-align: center">Level</th>
+                          <th style="width: 165px; text-align: left">Name</th>
+                          <th style="width: 60px; text-align: center">
+                            Status
+                          </th>
+                          <th style="width: 100px; text-align: center">
+                            Empire Points
+                          </th>
+                          <th style="width: 130px; text-align: left">
+                            Last Attacker
+                          </th>
+                          <th style="width: 100px; text-align: center">
+                            Actions
+                          </th>
+                        </tr>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+
+                <div id="tabs-suggested-members" class="ui-tabs-hide">
+                  <div class="tabs-background" style="height: 411px"></div>
+
+                  <div id="all-members-container">
+                    <div class="members-header" id="suggested-members-header">
+                      <img
+                        src="assets/images/alliances/suggested_members.png"
+                        style="vertical-align: middle; margin-top: 1px"
+                      />
+                    </div>
+
+                    <div class="members" id="suggested-members">
+                      <table id="suggested-members-table" class="members-table">
+                        <tr class="header">
+                          <th style="width: 45px; text-align: center">Level</th>
+                          <th style="width: 165px; text-align: left">Name</th>
+                          <th style="width: 60px; text-align: center">
+                            Status
+                          </th>
+                          <th style="width: 100px; text-align: center">
+                            Empire Points
+                          </th>
+                          <th style="width: 130px; text-align: left">
+                            Last Attacker
+                          </th>
+                          <th style="width: 100px; text-align: center">
+                            Actions
+                          </th>
+                        </tr>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+
+                <div id="tabs-messages" class="ui-tabs-hide">
+                  <div class="tabs-background" style="height: 411px"></div>
+
+                  <div id="all-messages-container">
+                    <div id="message-bar-div">
+                      <a
+                        href="javascript:void(0);"
+                        class="buttonMessages enabledButton"
+                        id="check-all-messages"
+                        style="float: left"
+                      >
+                        Check All
+                      </a>
+                      <a
+                        href="javascript:void(0);"
+                        class="buttonMessages enabledButton"
+                        id="delete-messages"
+                        style="float: left"
+                      >
+                        Delete
+                      </a>
+                    </div>
+
+                    <div id="messages">
+                      <table id="messages-table">
+                        <tr class="header">
+                          <th style="width: 35px; text-align: center"></th>
+                          <th style="width: 170px; text-align: left">From</th>
+                          <th style="width: 325px; text-align: left">
+                            Subject
+                          </th>
+                          <th style="width: 100px; text-align: center">Date</th>
+                        </tr>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- start of the alliance templates -->
+
+      <script type="text/template" id="message-header-template">
+        <tr class="header">
+        	<th style="width:35px;text-align:center;"></th>
+        	<th style="width:170px;text-align:left;">From</th>
+        	<th style="width:325px;text-align:left;">Subject</th>
+        	<th style="width:100px;text-align:center;">Date</th>
+        </tr>
+      </script>
+
+      <script type="text/template" id="message-row-template">
+        <tr class="<%= row_class %>">
+        	<td style="width:35px;text-align:center;">
+        		<input type="checkbox" name="messages[]" value="<%= invite_id %>" id="<%= checkbox_guid %>" />
+        	</td>
+        	<td style="width:170px;" id="from">
+        		<img src="<%= pic_square %>" width="24" height="24" style="padding:0px;margin:0px;float:left;margin-right:5px;">
+        		<div class="fixed-cell" style="cursor:pointer;width:125px;float:left;">
+        			<%= from %>
+        		</div>
+        	</td>
+        	<td style="width:325px" id="subject">
+        		<div class="fixed-cell" style="cursor:pointer;width:305px;">
+        			<%= subject %>
+        		</div>
+        	</td>
+        	<td style="width:100px;text-align:center;" id="date" style="cursor:pointer;">
+        		<%= date %>
+        	</td>
+        </tr>
+      </script>
+
+      <script type="text/template" id="member-header-template">
+        <tr class="header">
+        	<th style="width:45px;text-align:center;">Level</th>
+        	<th style="width:165px;text-align:left;">Name</th>
+        	<th style="width:60px;text-align:center;">Status</th>
+        	<th style="width:100px;text-align:center;">Empire Points</th>
+        	<th style="width:130px;text-align:left;">Last Attacker</th>
+        	<th style="width:100px;text-align:center;">Actions</th>
+        </tr>
+      </script>
+
+      <script type="text/template" id="member-row-template">
+        <tr class="<%= row_class %>">
+        	<td style="width:45px;text-align:center;">
+        		<%= level %>
+        	</td>
+        	<td style="width:165px;text-align:left;">
+        		<img src="<%= pic_square %>" width="25" height="25" style="padding:0px;margin:0px;float:left;margin-right:5px;">
+        		<div class="fixed-cell">
+        			<%= display_name %>
+        		</div>
+        	</td>
+        	<td style="width:60px;text-align:center;">
+        		<%= status_icons %>
+        	</td>
+        	<td style="width:100px;text-align:center;">
+        		<%= points %>
+        	</td>
+        	<td style="width:130px;text-align:left;">
+        		<%= last_attacker %>
+        	</td>
+        	<td style="width:100px;text-align:center;">
+        		<a href="javascript:void(0);" class="enabledButton25 actionsButton97x25" id="<%= actions_id %>">
+        			Actions			</a>
+        	</td>
+        </tr>
+      </script>
+
+      <script type="text/template" id="alliance-row-template">
+        <tr class="<%= row_class %>">
+        	<td style="width:40px;text-align:center;">
+        		<%= rank %>
+        	</td>
+        	<td style="width:230px;padding-left:0px;padding-right:0px;">
+        		<div id="<%= relationship_id %>" class="<%= relation_div_class %>">
+        			<%= image_tag %>
+        		</div>
+
+        		<div class="fixed-cell" id="<%= name_id %>" style="width:175px;"></div>
+        	</td>
+        	<td style="width:65px;text-align:center;">
+        		<%= number_of_members %>
+        	</td>
+        	<td style="width:95px;text-align:center;">
+        		<%= points %>
+        	</td>
+        	<td style="width:100px">
+        		<div class="fixed-cell" id="<%= leader_name_id %>"></div>
+        	</td>
+        	<td style="width:90px;text-align:center;">
+        		<a href="javascript:void(0);" class="enabledButton25 actionsButton97x25" id="<%= actions_id %>">
+        			Actions			</a>
+        	</td>
+        </tr>
+      </script>
+
+      <script type="text/template" id="alliance-header-template">
+        <tr class="header">
+        	<th style="width:40px;text-align:center;">Rank</th>
+        	<th style="width:230px;text-align:left;">Name</th>
+        	<th style="width:65px;text-align:center;">Members</th>
+        	<th style="width:95px;text-align:center;">Empire Points</th>
+        	<th style="width:110px;text-align:left;">Leader</th>
+        	<th style="width:90px;text-align:center;">Actions</th>
+        </tr>
+      </script>
+
+      <script type="text/template" id="browse-alliance-actions">
+        <div id="actionsBox">
+        	<a href="javascript:void(0);" class="enabledButton25 actionsBoxButton" style="margin-bottom:3px;" id="visit-button">
+        		Visit Leader		</a>
+        	<a href="javascript:void(0);" class="enabledButton25 actionsBoxButton" style="margin-bottom:3px;" id="request-button">
+        		Request to Join		</a>
+        </div>
+      </script>
+
+      <script type="text/template" id="leader-browse-alliance-actions">
+        <div id="actionsBox">
+        	<a href="javascript:void(0);" class="enabledButton25 actionsBoxButton" style="margin-bottom:3px;" id="visit-button">
+        		Visit Leader		</a>
+        	<a href="javascript:void(0);" class="enabledButton25 actionsBoxButton" style="margin-bottom:3px;" id="request-button">
+        		Request to Join		</a>
+
+        	<div id="relationships" style="margin-top:4px;">
+        		<div class="relationship-hostile relationship-hover" style="border-style:solid;border-color:#4d4d4d;border-width:1px;cursor:pointer;" title="Foe" >
+        			<%= image_tag %>
+        		</div>
+        		<div class="relationship-neutral relationship-hover" style="border-style:solid;border-color:#4d4d4d;border-width:1px;cursor:pointer;" title="Neutral">
+        			<%= image_tag %>
+        		</div>
+        		<div class="relationship-friendly relationship-hover" style="border-style:solid;border-color:#4d4d4d;border-width:1px;cursor:pointer;margin-right:0px;" title="Ally">
+        			<%= image_tag %>
+        		</div>
+        	</div>
+        </div>
+      </script>
+
+      <script type="text/template" id="members-actions">
+        <div id="actionsBox">
+        	<a href="javascript:void(0);" class="enabledButton25 actionsBoxButton" style="margin-bottom:3px;" id="visit-button">
+        		Visit Base		</a>
+        </div>
+      </script>
+
+      <script type="text/template" id="leader-members-actions">
+        <div id="actionsBox" class="gray">
+        	<a href="javascript:void(0);" class="enabledButton25 actionsBoxButton" style="margin-bottom:3px;" id="visit-button">
+        		Visit Base		</a>
+        	<a href="javascript:void(0);" class="enabledButton25 actionsBoxButton" style="margin-bottom:3px;" id="kick-button">
+        		Kick		</a>
+        	<a href="javascript:void(0);" class="enabledButton25 actionsBoxButton" id="promote-button">
+        		Promote		</a>
+        </div>
+      </script>
+
+      <script type="text/template" id="suggested-members-actions">
+        <div id="actionsBox" class="gray">
+        	<a href="javascript:void(0);" class="enabledButton25 actionsBoxButton" style="margin-bottom:3px;" id="visit-button">
+        		Visit Base		</a>
+        	<a href="javascript:void(0);" class="enabledButton25 actionsBoxButton" style="margin-bottom:3px;" id="invite-button">
+        		Invite		</a>
+        </div>
+      </script>
+
+      <script type="text/template" id="change-relationship-actions">
+        <div id="relationshipsHover">
+        	<img id="hostile" src="assets/images/alliances/relationship/hostile.png" width="25" height="25">
+        	<img id="neutral" src="assets/images/alliances/relationship/neutral.png" width="25" height="25">
+        	<img id="friendly" src="assets/images/alliances/relationship/friendly.png" width="25" height="25">
+        </div>
+      </script>
+
+      <script type="text/template" id="create-alliance-ui">
+        <div id="create-alliance-header">
+        	<img src="assets/images/alliances/create_an_alliance.png" style="vertical-align:middle;">
+        </div>
+        <div id="alliance-image-selection"></div>
+        <div id="create-alliance-desc">
+        	Alliances are groups of players who have sworn to protect one another, form truces with other Alliances and attack rivals who get in their way. Create your own Alliance now!	</div>
+        <div id="create-alliance-selected-image-display">
+        </div>
+        <div id="create-alliance-form">
+        	<input id="create-alliance-input-name" maxlength="30" type="text" title="Alliance Name" class="defaultText">
+        	<textarea id="create-alliance-input-desc" maxlength="255" title="Alliance Description" class="defaultText"></textarea>
+        	<div id="create-alliance-button-div">
+        		<a href="javascript:void(0);" class="standardButton enabledButton" id="create-alliance-button" style="margin:auto;">
+        			Create an Alliance			</a>
+        	</div>
+        </div>
+      </script>
+
+      <script type="text/template" id="message-dialog-template">
+        <div id="message-dialog">
+        	<div id="header"><%= header %></div>
+        	<div id="message"><%= message %></div>
+        </div>
+      </script>
+
+      <script type="text/template" id="message-text-template">
+        <div id="from"><b>From:</b>&nbsp; <%= name %> </div>
+        <div id="date"><%= date %></div>
+        <div id="subject"><b>Subject:</b>&nbsp; <%= subject %></div>
+        <div id="text"><%= text %></div>
+      </script>
+
+      <script type="text/template" id="user-shout-message-template">
+        <div id="user-shout-message" class="<%= row_class %> shout-message">
+        	<img class="user-pic" src="<%= user_pic %>" width="25" height="25">
+        	<div id="user-name"><%= user_display_name %></div>
+        	<div class="message-time"><%= time %></div>
+        	<div id="message"></div>
+        </div>
+      </script>
+
+      <script type="text/template" id="system-shout-message-template">
+        <div id="system-shout-message" class="<%= row_class %> shout-message">
+        	<img class="user-pic" src="<%= target_user_pic %>" width="25" height="25">
+        	<div class="message-time"><%= time %></div>
+        	<div id="message" class="system-message"></div>
+        </div>
+      </script>
+
+      <script type="text/template" id="system-shout-relationship-message">
+        <div id="system-shout-relationship-message" class="<%= row_class %> shout-message">
+        	<img class="user-pic" src="<%= target_alliance_pic %>" width="25" height="25">
+        	<div class="message-time"><%= time %></div>
+        	<div id="message" class="system-message"></div>
+        </div>
+      </script>
+
+      <script type="text/template" id="powerup-template">
+        <div class="powerup">
+        	<div id="icon"></div>
+        	<div id="main">
+        		<div id="name"></div>
+        		<div id="description"></div>
+        		<div id="progress-bar">
+        			<div id="progress-color"></div>
+        			<div id="progress-text"></div>
+        		</div>
+        	</div>
+        	<div id="actions"></div>
+        </div>
+      </script>
+
+      <script type="text/template" id="speedup-powerup-dialog-template">
+        <div id="speedup-powerup-dialog">
+        	<div id="header"></div>
+        	<div id="selection"></div>
+        	<div id="buy-button-div">
+        		<a href="javascript:void(0);" class="goldButton enabledButton" id="buy-button" style="margin:auto;">
+        			Buy			</a>
+        	</div>
+        </div>
+      </script>
+
+      <script
+        type="text/javascript"
+        src="assets/script/alliances.min.v343.js"
+      ></script>
+
+      <script type="text/javascript">
+        window.addEvent("domready", function () {
+          alliances.userData.strings = {
+            error_name_too_long: "The alliance name is too long.",
+            error_name_too_short: "The alliance name is too short.",
+            error_name_banned: "The alliance name is not allowed.",
+            error_name_taken: "The alliance name is already taken.",
+            error_description_too_long: "The alliance description is too long.",
+            error_description_too_short:
+              "The alliance description is too short.",
+            error_description_banned:
+              "The alliance description is not allowed.",
+            error_invalid_image: "The image selected is invalid.",
+            error_cannot_kick: "You cannot kick members.",
+            error_user_must_leave_alliance:
+              "You must leave your alliance to join another.",
+            error_user_must_leave_alliance_invite:
+              "You must leave your current alliance before accepting the invite.",
+            error_request_pending: "You already have a request pending.",
+            error_cannot_invite: "You cannot invite users.",
+            error_cannot_change_request_status:
+              "You cannot accept or decline users.",
+            error_user_already_in_your_alliance:
+              "The user is already in your alliance.",
+            error_user_already_in_an_alliance:
+              "User is already in an alliance.",
+            error_invite_pending: "They already have an invite pending.",
+            error_invite_not_pending: "Invite has already been ",
+            error_alliance_full: "The alliance is already full.",
+            error_user_cannot_join_alliances: "You cannot join at this time.",
+            error_user_cannot_create_alliances:
+              "You cannot create an alliance.",
+            error_cannot_change_relationship:
+              "You cannot change relationship statuses.",
+            error_cannot_edit_alliance: "You cannot edit an alliance.",
+            error_cannot_promote: "You cannot promote members.",
+            error_shout_too_long: "The message is too long.",
+            error_shout_too_short: "The message is too short.",
+            error_leader_cannot_leave:
+              "Since you're the fearless leader of the <%= alliance %> Alliance, you need to elect someone to succeed you before you go.  Go to the Members Tab and promote a current member to leader before you depart.",
+            error_cannot_view_alliances_yet:
+              "You can join and create Alliances as part of the World Map experience. Upgrade your Map Room to Level 2 and see what all the fuss is about.",
+            error_cannot_invite_outside_world:
+              "<%= name %> is too far away to join your Alliance. Invite them to move to one of your close-by Outposts.",
+            error_generic_error: "Sorry, something has gone wrong.",
+            accepted: "accepted",
+            declined: "declined",
+            accept: "Accept",
+            decline: "Decline",
+            join: "Join",
+            hostile: "Foe",
+            neutral: "Neutral",
+            friendly: "Ally",
+            shout_promoted: " has been promoted to leader.",
+            shout_user_added_to_alliance: " has been added to the Alliance!",
+            shout_kicked: " has been removed from the alliance.",
+            shout_user_left_alliance: " has now left the Alliance.",
+            shout_user_created_alliance: " has created the Alliance!",
+            shout_have_flagged: "have been flagged as ",
+            shout_has_flagged: "has been flagged as ",
+            tab_browse_alliances: "Browse Alliances",
+            tab_my_alliance: "My Alliance",
+            tab_members: "Members",
+            tab_suggested_members: "Suggested",
+            tab_messages: "Invites",
+            button_search: "Search",
+            button_create_alliance: "Create Alliance",
+            button_edit: "Edit",
+            button_leave: "Leave Alliance",
+            button_post_message: "Post Message",
+            button_ask_friends: "Ask Your Friends to Join",
+            button_check_all: "Check All",
+            button_delete: "Delete",
+            button_actions: "Actions",
+            button_visit_leader: "Visit Leader",
+            button_request_join: "Request to Join",
+            button_visit_base: "Visit Base",
+            button_kick: "Kick",
+            button_promote: "Promote",
+            button_invite: "Invite",
+            button_open_map: "Open Map",
+            button_all: "All",
+            button_this_world: "This World",
+            create_an_alliance: "Create an Alliance",
+            button_kick_user: "Kick User",
+            button_promote_user: "Promote User",
+            button_edit_alliance: "Edit Alliance",
+            leave_alliance: "Leave Alliance",
+            button_upgrade_now: "Upgrade Now!",
+            table_header_rank: "Rank",
+            table_header_name: "Name",
+            table_header_relation: "Relation",
+            table_header_members: "Members",
+            table_header_game_stat: "Empire Points",
+            table_header_leader: "Leader",
+            table_header_actions: "Actions",
+            table_header_level: "Level",
+            table_header_status: "Status",
+            table_header_last_attacker: "Last Attacker",
+            table_header_from: "From",
+            table_header_subject: "Subject",
+            table_header_date: "Date",
+            my_alliance_rank: "Rank:",
+            my_alliance_level: "Level:",
+            my_alliance_leader: "Leader:",
+            my_alliance_members: "Members:",
+            header_image_current_members:
+              "images\/alliances\/current_members.png",
+            header_image_suggested_members:
+              "images\/alliances\/suggested_members.png",
+            header_image_create_an_alliance:
+              "images\/alliances\/create_an_alliance.png",
+            header_image_error: "images\/alliances\/error.png",
+            header_image_invite_sent: "images\/alliances\/invite_sent.png",
+            header_image_are_you_sure: "images\/alliances\/are_you_sure.png",
+            header_image_booted: "images\/alliances\/booted.png",
+            header_image_promoted: "images\/alliances\/promoted.png",
+            header_image_join_request_sent:
+              "images\/alliances\/join_request_sent.png",
+            header_image_alliance_invitation:
+              "images\/alliances\/alliance_invitation.png",
+            header_image_request_to_join:
+              "images\/alliances\/request_to_join.png",
+            header_image_invite_accepted:
+              "images\/alliances\/invite_accepted.png",
+            header_image_request_accepted:
+              "images\/alliances\/request_accepted.png",
+            header_image_invite_declined:
+              "images\/alliances\/invite_declined.png",
+            header_image_request_declined:
+              "images\/alliances\/request_declined.png",
+            header_image_edit_alliance: "images\/alliances\/edit_alliance.png",
+            header_image_join_the_fellowship:
+              "images\/alliances\/join_the_fellowship.png",
+            header_sticks_and_stones:
+              "images\/alliances\/sticks_and_stones.png",
+            header_united_we_stand: "images\/alliances\/united_we_stand.png",
+            header_name_your_successor:
+              "images\/alliances\/name_your_successor.png",
+            header_double_checking: "images\/alliances\/double_checking.png",
+            header_cant_invite: "images\/alliances\/cant_invite.png",
+            status_searching: "Searching...",
+            status_no_results: "No Results!",
+            status_online: "online",
+            status_offline: "offline",
+            status_damage_protection: "damage protection",
+            create_alliance_description:
+              "Alliances are groups of players who have sworn to protect one another, form truces with other Alliances and attack rivals who get in their way. Create your own Alliance now!",
+            alliance_name_field: "Alliance Name",
+            alliance_desc_field: "Alliance Description",
+            error_not_in_alliance_create:
+              "Alliances are groups of players who have sworn to protect one another, form truces, and attack rivals who get in their way. Either request to join an existing Alliance, or create your own.",
+            leave_alliance_description:
+              "Leaving an Alliance can't be undone.  You'll have to ask the leader of the <%= alliance %> Alliance to take you back if you leave.  Once you leave however, You'll be free to join a new Alliance or create your own.",
+            disband_alliance_description:
+              'Leaving an Alliance can\'t be undone. You are the last member of "<%= alliance %>", are you sure you want to leave?',
+            invite_sent: "Your invite has been successfully sent.",
+            join_request_sent: "Your join request has been successfully sent.",
+            kick_confirmation: "Are you sure you want to kick <%= name %>?",
+            kick_response: "<%= name %> has been removed from <%= alliance %>.",
+            promote_confirmation:
+              "Are you sure you want to promote <%= name %>? If you proceed you will no longer be the leader.",
+            promote_response:
+              "<%= name %> has been promoted to leader of <%= alliance %>.",
+            message_subject_invite:
+              "<%= invited_by_name %> has invited you to join <%= invited_by_alliance %>.",
+            message_subject_request:
+              "<%= name %> has requested to join <%= alliance %>.",
+            message_subject_accepted: "Request to join Accepted!",
+            message_subject_declined: "Request to join Declined.",
+            message_subject_invite_accepted: "Invitation to join Accepted!",
+            message_subject_invite_declined: "Invitation to join Declined.",
+            message_dialog_from: "From:",
+            message_dialog_subject: "Subject:",
+            message_dialog_subject_invite: "Invitation to Join ",
+            message_dialog_body_invite:
+              "<%= invited_by_name %>, the leader of the <%= alliance %> Alliance has invited you to join their Alliance.",
+            message_dialog_subject_request: "Let's Join Forces",
+            message_dialog_body_request:
+              "<%= name %> would like to join your Alliance.",
+            message_dialog_subject_invite_accepted:
+              "Invitation to join accepted",
+            message_dialog_body_invite_accepted: "Invitation to join accepted!",
+            message_dialog_subject_request_accepted:
+              "Your request to join has been accepted",
+            message_dialog_body_request_accepted:
+              "<%= invited_by_name %> of the <%= alliance %> Alliance has accepted your request.  Prepare to bust some heads!",
+            message_dialog_subject_invite_declined:
+              "Invitation to join declined",
+            message_dialog_body_invite_declined: "Invitation to join declined.",
+            message_dialog_subject_request_declined:
+              "Your request to join has been declined",
+            message_dialog_body_request_declined:
+              "Thanks for your interest in the <%= alliance %> Alliance, but at this time we have all the help we need.",
+            edit_alliance_description:
+              "Edit your icon or description.  NOTE - You can't edit your alliance name.",
+            relationship_change_hostile_text:
+              'Change your relationship status with "<%= alliance %>" to "Foe."  Your Alliance will take the hint that it\'s open season on anyone in "<%= alliance %>".',
+            relationship_change_friendly_text:
+              'Change your relationship status with "<%= alliance %>" and flag them as "Ally."  Your Alliance will take the hint and cut anyone in "<%= alliance %>" some slack.',
+            button_ok: "Ok",
+            tab_headquarters: "Power-Ups",
+            error_alliance_powerup_running: "This Power-Up is already active.",
+            error_alliance_powerup_ready: "This Power-Up is currently ready.",
+            error_cannot_activate_powerup:
+              "This Power-Up cannot be activated at this time.",
+            error_alliance_powerup_not_ready:
+              "This Power-Up is not ready to activate.",
+            ap_armament_icon: "images\/alliances\/ap_armament_icon.jpg",
+            ap_armament_name: "Armament",
+            ap_armament_description:
+              "All Alliance members receive an increase to all Tower and Block hit points, as well as increased damage from Booby Traps. Lasts 12 hours.",
+            header_image_purchase_ap_armament:
+              "images\/alliances\/speed_up_armament.png",
+            shout_ap_armament_activated: " activated the Armament Power-Up!",
+            ap_conquest_icon: "images\/alliances\/ap_conquest_icon.jpg",
+            ap_conquest_name: "Conquest",
+            ap_conquest_description:
+              "All Alliance members receive a 25% discount on Outpost takeovers.  Lasts 6 hours.",
+            header_image_purchase_ap_conquest:
+              "images\/alliances\/speed_up_conquest.png",
+            shout_ap_conquest_activated: " activated the Conquest Power-Up!",
+            ap_declarewar_icon: "images\/alliances\/ap_declarewar_icon.jpg",
+            ap_declarewar_name: "Declare War",
+            ap_declarewar_description:
+              "All Alliance members' Flingers have an increased range, capacity, and target lock time.  Lasts 12 hours.",
+            header_image_purchase_ap_declarewar:
+              "images\/alliances\/speed_up_declare_war.png",
+            shout_ap_declarewar_activated:
+              " activated the Declare War Power-Up!",
+            powerup_ready_in: "Charging, ready in:",
+            powerup_active: "Active!",
+            powerup_ready: "Ready!",
+            powerup_remaining: "remaining.",
+            button_speed_up: "Speed Up",
+            button_activate: "Activate",
+            button_buy: "Buy",
+            button_get_more_shiny: "Get More Shiny",
+            reduce_cooldown_time_hour:
+              "Reduce time by <b><%= hours %><\/b> hour for <b><%= cost %><\/b>",
+            reduce_cooldown_time_hours:
+              "Reduce time by <b><%= hours %><\/b> hours for <b><%= cost %><\/b>",
+            finish_now: "Finish now for <b><%= cost %><\/b>",
+            error_only_leaders_can_activate:
+              "Only the leader of the Alliance can activate a Power-Up.",
+            shout_powerup_purchase_made:
+              "<%= playername %> has reduced the <%= powerup %> Power-Up by <%= hours %>.",
+            header_image_purchase_successful:
+              "images\/alliances\/charge_time_reduced.png",
+            button_purchase_successful: "See Shouts",
+            message_purchase_successful:
+              "You have reduced the charging time for the <%= powerup %> Power-Up! Your Alliance has been notified of your contributions.",
+            button_image_all: "images\/alliances\/buttons\/all-button.png",
+            button_image_world: "images\/alliances\/buttons\/world-button.png",
+            button_image_create:
+              "images\/alliances\/buttons\/create-button.png",
+            button_image_search:
+              "images\/alliances\/buttons\/search-button.png",
+          };
+          alliances.useImageTabButtons = false;
+          alliances.headquartersEnabled = true;
+          alliances.initializeUI();
+        });
+      </script>
+      <!-- end of alliance code -->
+    </div>
+
+    <div class="footer">
+      <a href="http://www.kixeye.com/" target="_blank" class="kixeye-foot">
+        <img
+          src="http://cdn-bm-fb.casualcollective.com/images/footer2.gif"
+          width="135"
+          height="40"
+          alt="KIXEYE"
+          border="0"
+        />
+      </a>
+      <ul>
+        <li>
+          <a
+            href="http://www.facebook.com/apps/application.php?id=342684208824"
+            target="_blank"
+            >Become a Fan</a
+          >
+        </li>
+        <li>
+          <img
+            src="http://cdn-bm-fb.casualcollective.com/images/twitter_icon.png"
+            width="16"
+            height="16"
+            alt="Twitter"
+            border="0"
+          />
+          <a href="http://twitter.com/backyardmonster" target="_blank"
+            >Twitter</a
+          >
+        </li>
+        <li>
+          <a href="http://www.kixeye.com/help/tos" target="_blank">Terms</a>
+        </li>
+        <li class="last">
+          <a href="http://www.kixeye.com/help/privacypolicy" target="_blank"
+            >Privacy Policy</a
+          >
+        </li>
+        <li class="last">&copy; 2011 KIXEYE. All rights reserved.</li>
+      </ul>
+    </div>
+
+    <script type="text/javascript">
+      window.addEvent("domready", function () {
+        cc.recordKontagent("pgr", { u: null, s: 1844802714 });
+        cc.recordKontagent("evt", {
+          n: "pageview",
+          st1: "pageview",
+          st2: null,
+          s: 1844802714,
+        });
+      });
+    </script>
+
+    <script type="text/javascript">
+      window.addEvent("domready", function () {
+        //            cc.callUrl("https://bidsystem.adknowledge.com/conversion.php?cid=e8912035-30de-4fe8-a7ad-1803cc1add4f");
+        cc.callUrl("https://rya.rockyou.com/ams/dot.php?d=pmcasual1");
+
+        //cc.callUrl("https://ads.ad4game.com/www/delivery/ti.php?trackerid=322");
+      });
+    </script>
+
+    <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(["_setAccount", "UA-24801595-1"]);
+      _gaq.push(["_trackPageview"]);
+
+      (function () {
+        var ga = document.createElement("script");
+        ga.type = "text/javascript";
+        ga.async = true;
+        ga.src =
+          ("https:" == document.location.protocol
+            ? "https://ssl"
+            : "http://www") + ".google-analytics.com/ga.js";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+  </body>
+</html>
