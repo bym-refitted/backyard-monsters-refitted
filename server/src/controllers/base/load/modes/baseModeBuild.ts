@@ -25,8 +25,6 @@ export const baseModeBuild = async (user: User, baseid: string) => {
   // If no user save is found, setup MR1 & create a default save for the user.
   if (!userSave) {
     logging("User save not found; creating a default save.");
-    await MapRoom1.setupMapRoom1Data(ORMContext.em, user);
-
     return await Save.createMainSave(ORMContext.em, user);
   }
 
