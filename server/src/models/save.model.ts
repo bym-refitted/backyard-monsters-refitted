@@ -556,7 +556,7 @@ export class Save {
     infernoSave.homebaseid = infernoSave.basesaveid;
     infernoSave.stats = user.save.stats;
     infernoSave.credits = 0;
-    infernoSave.resources = {
+    user.save.iresources = {
       r1: 59168,
       r2: 60090,
       r3: 59849,

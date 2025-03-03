@@ -3,23 +3,17 @@ import {
   updateResources,
 } from "../../../../services/base/updateResources";
 import { Save } from "../../../../models/save.model";
+import { SaveKeys } from "../../../../enums/SaveKeys";
 
 export const resourcesHandler = (
   resourceVal: any,
   save: Save,
-  userSave?: Save,
-  isOutpost?: boolean
+  resourceKey: SaveKeys.RESOURCES | SaveKeys.IRESOURCES = SaveKeys.RESOURCES
 ) => {
-  // Parse the resource data if it's a JSON string
-  const resourceData: Resources | undefined = JSON.parse(resourceVal);
+  let resourceData: Resources | undefined;
 
-  if (resourceData) {
-    const resources: Resources = resourceData;
+  if (resourceVal) resourceData = JSON.parse(resourceVal);
 
-    let saveResources = isOutpost ? userSave.resources : save.resources;
-
-    const savedResources = updateResources(resources, saveResources);
-    if (isOutpost) userSave.resources = savedResources;
-    else save.resources = savedResources;
-  }
+  if (resourceData) 
+    save[resourceKey] = updateResources(resourceData, save[resourceKey]);
 };
