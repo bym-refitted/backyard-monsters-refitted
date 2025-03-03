@@ -77,7 +77,7 @@ export const infernoSave: KoaController = async (ctx) => {
 
         switch (key) {
           case SaveKeys.RESOURCES:
-            resourcesHandler(value, infernoSave);
+            resourcesHandler(infernoSave, value);
             userSave.iresources  = infernoSave.resources;
             break;
 
