@@ -9,6 +9,7 @@ import { Save } from "../../models/save.model";
 import { User } from "../../models/user.model";
 import { ORMContext } from "../../server";
 import { FilterFrontendKeys } from "../../utils/FrontendKey";
+import { getCurrentDateTime } from "../../utils/getCurrentDateTime";
 import { KoaController } from "../../utils/KoaController";
 import { errorLog } from "../../utils/logger";
 import { academyHandler } from "../base/save/handlers/academyHandler";
@@ -97,8 +98,11 @@ export const infernoSave: KoaController = async (ctx) => {
         }
       }
 
+      infernoSave.id = infernoSave.savetime;
+      infernoSave.savetime = getCurrentDateTime();
       await ORMContext.em.persistAndFlush(infernoSave);
     }
+    
     const filteredSave = FilterFrontendKeys(tribeSave ?? infernoSave);
 
     ctx.status = Status.OK;

@@ -27,7 +27,7 @@ export const baseModeBuild = async (user: User, baseid: string) => {
     logging("User save not found; creating a default save.");
     await MapRoom1.setupMapRoom1Data(ORMContext.em, user);
 
-    return await Save.createDefaultUserSave(ORMContext.em, user);
+    return await Save.createMainSave(ORMContext.em, user);
   }
 
   // Default mode only runs once on initial base load
