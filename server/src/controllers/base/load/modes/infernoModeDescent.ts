@@ -1,3 +1,4 @@
+import { BaseType } from "../../../../enums/Base";
 import { MapRoom1 } from "../../../../models/maproom1.model";
 import { Save } from "../../../../models/save.model";
 import { User } from "../../../../models/user.model";
@@ -5,7 +6,11 @@ import { ORMContext } from "../../../../server";
 
 export const infernoModeDescent = async (user: User) => {
   const { userid } = user.save;
-  let baseSave = await ORMContext.em.findOne(Save, { userid });
+  
+  let baseSave = await ORMContext.em.findOne(Save, {
+    userid,
+    type: BaseType.MAIN,
+  });
 
   const maproom1 = await ORMContext.em.findOne(MapRoom1, { userid });
 
