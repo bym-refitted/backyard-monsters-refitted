@@ -43,10 +43,12 @@ export class Save {
   @Property({ default: 0 })
   homebaseid!: number;
 
+  @Index()
   @FrontendKey
   @Property()
   userid!: number;
 
+  @Index()
   @FrontendKey
   @Property()
   saveuserid!: number;
@@ -81,6 +83,7 @@ export class Save {
   initialOutpostProtectionOver!: boolean;
 
   // Primatives
+  @Index()
   @FrontendKey
   @Property({ default: "main" })
   type!: string;
