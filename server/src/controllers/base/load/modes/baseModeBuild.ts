@@ -6,7 +6,6 @@ import { logging } from "../../../../utils/logger";
 import { balancedReward } from "../../../../services/base/balancedReward";
 import { IncidentReport } from "../../../../models/incidentreport";
 import { logReport } from "../../../../utils/logReport";
-import { MapRoom1 } from "../../../../models/maproom1.model";
 import { getCurrentDateTime } from "../../../../utils/getCurrentDateTime";
 
 /**
