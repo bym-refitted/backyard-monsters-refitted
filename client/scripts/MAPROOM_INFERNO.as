@@ -101,6 +101,10 @@ package
          bridge_obj._lastSort = _lastSort;
          bridge_obj._lastSortReversed = _lastSortReversed;
          andShow = true;
+         if(GLOBAL._flags.infernoMapBlocked == 0) {
+            GLOBAL.Message(KEYS.Get("map_msg_disabled"));
+            return;
+         }
          if(GLOBAL._flags.maproom == 1)
          {
             GLOBAL.BlockerAdd();

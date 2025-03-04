@@ -11,9 +11,10 @@ export const flags = {
   discordOldEnough: 0,
 
   // Settings:
-  maproom: devConfig.infernoMaproom ? 1 : 0,
+  maproom: 1,
   maproom2: devConfig.maproom ? 1 : 0,
   inferno: devConfig.inferno ? 1 : 0,
+  infernoMapBlocked: devConfig.infernoMaproom ? 1 : 0,
   showProgressBar: 0,
   gamestats: 0,
   logfps: 0,
