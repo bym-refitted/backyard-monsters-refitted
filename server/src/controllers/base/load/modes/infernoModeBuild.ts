@@ -26,6 +26,7 @@ export const infernoModeBuild = async (user: User, baseid: string) => {
     throw new Error(message);
   }
 
+  infernoSave.credits = userSave.credits;
   infernoSave.resources = userSave.iresources;
   userSave.stats["other"]["underhalLevel"] = infernoSave.stats["other"]["underhalLevel"];
   await ORMContext.em.persistAndFlush(userSave);
