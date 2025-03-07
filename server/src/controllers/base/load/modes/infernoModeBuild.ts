@@ -30,7 +30,15 @@ export const infernoModeBuild = async (user: User, baseid: string) => {
   infernoSave.resources = userSave.iresources;
 
   userSave.stats["other"]["underhalLevel"] = infernoSave.stats["other"]["underhalLevel"];
-  userSave.academy = { ...infernoSave.academy, ...userSave.academy };
+  
+  // TODO: Optimise this
+  const iMonsters = ["IC1", "IC2", "IC3", "IC4", "IC5", "IC6", "IC7"];
+
+  iMonsters.forEach(key => {
+    if (infernoSave.academy[key]) {
+      userSave.academy[key] = infernoSave.academy[key];
+    }
+  });
 
   await ORMContext.em.persistAndFlush(userSave);
   return infernoSave;
