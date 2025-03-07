@@ -1,3 +1,4 @@
+import { devConfig } from "../../../../config/DevSettings";
 import { BaseType } from "../../../../enums/Base";
 import { MapRoom1 } from "../../../../models/maproom1.model";
 import { Save } from "../../../../models/save.model";
@@ -21,6 +22,9 @@ export const infernoModeDescent = async (user: User) => {
 
   // Otherwise, create an array of 13 descent tribes, client expects IDs between 201-213.
   const tribes = Array.from({ length: 13 }, (_, i) => [201 + i, i + 1, 0]);
+
+  // Skip descent if the devConfig flag is set.
+  if (devConfig.skipDescent) tribes.forEach((tribe) => (tribe[2] = 1));
 
   baseSave.wmstatus = tribes;
   await ORMContext.em.persistAndFlush(baseSave);
