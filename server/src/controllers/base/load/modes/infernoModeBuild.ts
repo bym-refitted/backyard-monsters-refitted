@@ -28,8 +28,10 @@ export const infernoModeBuild = async (user: User, baseid: string) => {
 
   infernoSave.credits = userSave.credits;
   infernoSave.resources = userSave.iresources;
-  userSave.stats["other"]["underhalLevel"] = infernoSave.stats["other"]["underhalLevel"];
-  await ORMContext.em.persistAndFlush(userSave);
 
+  userSave.stats["other"]["underhalLevel"] = infernoSave.stats["other"]["underhalLevel"];
+  userSave.academy = { ...userSave.academy, ...infernoSave.academy };
+
+  await ORMContext.em.persistAndFlush(userSave);
   return infernoSave;
 };
