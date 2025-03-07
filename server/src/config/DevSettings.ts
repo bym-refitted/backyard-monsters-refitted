@@ -37,7 +37,7 @@ export const devConfig = {
    */
   devSandbox: false,
 
-    /*
+  /*
    * Inserts an Inferno sandbox test base into the database, with all buildings placed.
    * Must be set before creating a new record.
    */
@@ -53,6 +53,11 @@ export const devConfig = {
    * Must be set before creating a new record.
    */
   unlockAllEventRewards: true,
+
+  /*
+   * Sets whether the descent into Inferno should be enabled or disabled.
+   */
+  skipDescent: false,
 
   /*
    * Sets whether the tutorial phase of the game is enabled or disabled.
