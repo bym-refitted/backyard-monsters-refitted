@@ -69,7 +69,7 @@ export const baseSave: KoaController = async (ctx) => {
           break;
 
         case SaveKeys.PURCHASE:
-          purchaseHandler(saveData.purchase, userSave, baseSave);
+          purchaseHandler(ctx, saveData.purchase, userSave);
           break;
 
         case SaveKeys.ACADEMY:

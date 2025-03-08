@@ -2,6 +2,8 @@ import { Save } from "../../models/save.model";
 import { errorLog } from "../../utils/logger";
 import { StoreItem, storeItems } from "../../data/store/storeItems";
 import { purchaseKeys } from "../../data/store/purchaseKeys";
+import { User } from "../../models/user.model";
+import { Context } from "koa";
 
 interface Mushrooms {
   MUSHROOM1: number;
@@ -14,7 +16,10 @@ interface Mushrooms {
  * @param {string} item - The item identifier for which credits are spent or obtained.
  * @param {number} quantity - The quantity of the item affecting credit changes.
  */
-export const updateCredits = (save: Save, item: string, quantity: number) => {
+export const updateCredits = (ctx: Context, save: Save, item: string, quantity: number) => {
+  const user: User = ctx.authUser;
+  const userSave = user.save;
+
   if (quantity <= 0) {
     errorLog(`Invalid purchase quantity! Item: ${item}, quantity: ${quantity}`);
     return;
@@ -23,13 +28,13 @@ export const updateCredits = (save: Save, item: string, quantity: number) => {
   // Handle mushrooms
   const mushroomCredits: Mushrooms = { MUSHROOM1: 3, MUSHROOM2: 8 };
   if (item in mushroomCredits) {
-    save.credits += mushroomCredits[item];
+    userSave.credits += mushroomCredits[item];
     return;
   }
 
   // Handle purchases not in the store
   if (purchaseKeys.has(item)) {
-    save.credits -= quantity;
+    userSave.credits -= quantity;
     return;
   }
 
@@ -48,5 +53,5 @@ export const updateCredits = (save: Save, item: string, quantity: number) => {
     itemCost = storeItem.c[currentQuantity];
   }
 
-  save.credits -= itemCost * quantity;
+  userSave.credits -= itemCost * quantity;
 };
