@@ -1,3 +1,4 @@
+import { inferoMonsters } from "../../../../data/monsterKeys";
 import { BaseType } from "../../../../enums/Base";
 import { IncidentReport } from "../../../../models/incidentreport";
 import { Save } from "../../../../models/save.model";
@@ -14,11 +15,8 @@ export const infernoModeBuild = async (user: User, baseid: string) => {
     type: BaseType.INFERNO,
   });
 
-  if (!infernoSave) {
+  if (!infernoSave)
     infernoSave = await Save.createInfernoSave(ORMContext.em, user);
-  }
-
-  // TODO: Add loading another user's inferno base
 
   if (infernoSave.userid !== user.userid) {
     const message = `${user.username} attempted to access unauthorized inferno base: ${baseid}`;
@@ -28,18 +26,16 @@ export const infernoModeBuild = async (user: User, baseid: string) => {
 
   infernoSave.credits = userSave.credits;
   infernoSave.resources = userSave.iresources;
-
   userSave.stats["other"]["underhalLevel"] = infernoSave.stats["other"]["underhalLevel"];
-  
-  // TODO: Optimise this
-  const iMonsters = ["IC1", "IC2", "IC3", "IC4", "IC5", "IC6", "IC7"];
 
-  iMonsters.forEach(key => {
-    if (infernoSave.academy[key]) {
-      userSave.academy[key] = infernoSave.academy[key];
-    }
+  // Persist Inferno monster levels to overworld only if the values differ
+  inferoMonsters.forEach((key) => {
+    const acdemyLevel = infernoSave.academy[key];
+
+    if (acdemyLevel && userSave.academy[key] !== acdemyLevel)
+      userSave.academy[key] = acdemyLevel;
   });
 
-  await ORMContext.em.persistAndFlush(userSave);
+  await ORMContext.em.flush();
   return infernoSave;
 };
