@@ -4,7 +4,7 @@ import { devConfig } from "../../../config/DevSettings";
 import { Save } from "../../../models/save.model";
 import { ORMContext } from "../../../server";
 import { KoaController } from "../../../utils/KoaController";
-import { storeItems } from "../../../data/storeItems";
+import { storeItems } from "../../../data/store/storeItems";
 import { User } from "../../../models/user.model";
 import { FilterFrontendKeys } from "../../../utils/FrontendKey";
 import { flags } from "../../../data/flags";
