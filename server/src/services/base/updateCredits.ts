@@ -1,6 +1,7 @@
 import { Save } from "../../models/save.model";
 import { errorLog } from "../../utils/logger";
-import { StoreItem, storeItems } from "../../data/storeItems";
+import { StoreItem, storeItems } from "../../data/store/storeItems";
+import { purchaseKeys } from "../../data/store/purchaseKeys";
 
 interface Mushrooms {
   MUSHROOM1: number;
@@ -26,38 +27,20 @@ export const updateCredits = (save: Save, item: string, quantity: number) => {
     return;
   }
 
-  // Handle non-store purchases
-  const nonStoreItem = new Set([
-    "IU",
-    "IF",
-    "IFD",
-    "ITR",
-    "IUN",
-    "IPU",
-    "IEV",
-    "IHE",
-    "BRTOPUP",
-    "MHTOPUP",
-    "HSM",
-    "QWM1",
-    "IFD",
-    "BUNK",
-    "KIT",
-    "QINVITE1",
-    "QINVITE5",
-    "QINVITE10"
-  ]);
-  if (nonStoreItem.has(item)) {
+  // Handle purchases not in the store
+  if (purchaseKeys.has(item)) {
     save.credits -= quantity;
     return;
   }
 
   // Handle store purchases
   const storeItem: StoreItem = storeItems[item];
-  if (!storeItem?.c) {
+  
+  if (!storeItem?.c) 
     errorLog("Not a store item! Add to non-store items list", item);
-  }
+  
   let itemCost: number = storeItem.c[0];
+
   if (storeItem.c.length > 1) {
     // The item has a scaling cost depending on how many of that item the player currently owns
     // We subtract 1 here since the item would've been already added to the player's save by the caller

@@ -1,4 +1,4 @@
-import { storeItems } from "../../../../data/storeItems";
+import { storeItems } from "../../../../data/store/storeItems";
 import { Save, FieldData } from "../../../../models/save.model";
 import { updateCredits } from "../../../../services/base/updateCredits";
 import { getCurrentDateTime } from "../../../../utils/getCurrentDateTime";
