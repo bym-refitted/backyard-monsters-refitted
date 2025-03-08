@@ -1,13 +1,10 @@
+import { Context } from "koa";
 import { storeItems } from "../../../../data/store/storeItems";
 import { Save, FieldData } from "../../../../models/save.model";
 import { updateCredits } from "../../../../services/base/updateCredits";
 import { getCurrentDateTime } from "../../../../utils/getCurrentDateTime";
 
-export const purchaseHandler = (
-  purchaseData: [string, number],
-  userSave: Save,
-  save: Save
-) => {
+export const purchaseHandler = (ctx: Context, purchaseData: [string, number], save: Save) => {
   // Update 'storedata' with the new purchased item & quantity
   if (purchaseData) {
     const [item, quantity] = purchaseData;
@@ -24,6 +21,6 @@ export const purchaseHandler = (
     }
 
     save.storedata = storeData;
-    updateCredits(userSave, item, quantity);
+    updateCredits(ctx, save, item, quantity);
   }
 };

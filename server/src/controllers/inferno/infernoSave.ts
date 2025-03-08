@@ -92,7 +92,7 @@ export const infernoSave: KoaController = async (ctx) => {
 
           case SaveKeys.PURCHASE:
             // Awful arguments, fix
-            purchaseHandler(saveData.purchase, infernoSave, infernoSave);
+            purchaseHandler(ctx, saveData.purchase, infernoSave);
             break;
 
           case SaveKeys.ACADEMY:
