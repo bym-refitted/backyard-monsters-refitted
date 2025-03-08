@@ -30,10 +30,10 @@ export const infernoModeBuild = async (user: User, baseid: string) => {
 
   // Persist Inferno monster levels to overworld only if the values differ
   inferoMonsters.forEach((key) => {
-    const acdemyLevel = infernoSave.academy[key];
+    const acdaemyLevel = infernoSave.academy[key];
 
-    if (acdemyLevel && userSave.academy[key] !== acdemyLevel)
-      userSave.academy[key] = acdemyLevel;
+    if (acdaemyLevel && userSave.academy[key] !== acdaemyLevel)
+      userSave.academy[key] = acdaemyLevel;
   });
 
   await ORMContext.em.flush();
