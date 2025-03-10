@@ -29,11 +29,23 @@
 		{
 			"label": "Build & Run: BYMR | Debug",
 			"type": "shell",
-			"command": "${workspaceFolder}/archived/flashplayers/flashplayer_debug.exe",
+			"command": "${workspaceFolder}/archived/flashplayers/windows/flashplayer_debug.exe",
 			"args": [
 				"",
 				"bin/bymr-stable.swf"
 			],
+			"linux": {
+				"args": [
+					"${workspaceFolder}/bin/bymr-stable.swf"
+				],
+				"command": "${workspaceFolder}/archived/flashplayers/linux/flashplayerdebugger"
+			},
+			"osx": {
+				"args": [
+					"${workspaceFolder}/bin/bymr-stable.swf"
+				],
+				"command": "${workspaceFolder}/archived/flashplayers/FlashPlayerDebugger.app/Contents/MacOS/Flash Player Debugger",
+			},
 			"group": {
 				"kind": "build",
 				"isDefault": true
@@ -44,11 +56,23 @@
 		{
 			"label": "Build & Run: BYMR | Release",
 			"type": "shell",
-			"command": "${workspaceFolder}/archived/flashplayers/flashplayer.exe",
+			"command": "${workspaceFolder}/archived/flashplayers/windows/flashplayer.exe",
 			"args": [
 				"",
 				"bin/bymr-stable.swf"
 			],
+			"linux": {
+				"args": [
+					"${workspaceFolder}/bin/bymr-stable.swf"
+				],
+				"command": "${workspaceFolder}/archived/flashplayers/linux/flashplayerdebugger"
+			},
+			"osx": {
+				"args": [
+					"${workspaceFolder}/bin/bymr-stable.swf"
+				],
+				"command": "${workspaceFolder}/archived/flashplayers/FlashPlayerDebugger.app/Contents/MacOS/Flash Player Debugger",
+			},
 			"group": {
 				"kind": "build",
 				"isDefault": true
