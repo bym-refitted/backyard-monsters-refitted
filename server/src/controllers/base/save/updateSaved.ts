@@ -1,7 +1,7 @@
 import z from "zod";
 
 import { flags } from "../../../data/flags";
-import { BaseMode } from "../../../enums/Base";
+import { BaseMode, BaseType } from "../../../enums/Base";
 import { Status } from "../../../enums/StatusCodes";
 import { saveFailureErr } from "../../../errors/errors";
 import { Save } from "../../../models/save.model";
@@ -34,7 +34,7 @@ export const updateSaved: KoaController = async (ctx) => {
   await ORMContext.em.populate(user, ["save"]);
 
   const userSave = user.save;
-
+  
   try {
     const { baseid, type } = UpdateSavedSchema.parse(ctx.request.body);
 
@@ -61,9 +61,10 @@ export const updateSaved: KoaController = async (ctx) => {
       error: 0,
       flags,
       ...filteredSave,
+      credits: userSave.credits
     };
 
-    if (user.userid === filteredSave.userid) {
+    if (baseSave.type !== BaseType.INFERNO && user.userid === filteredSave.userid) {
       Object.assign(responseBody, mapUserSaveData(user));
     }
 

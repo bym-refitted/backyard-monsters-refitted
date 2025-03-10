@@ -13,6 +13,7 @@ import { getDefaultBaseData } from "../data/getDefaultBaseData";
 import { User } from "./user.model";
 import { WorldMapCell } from "./worldmapcell.model";
 import { AttackDetails } from "../controllers/base/load/modes/baseModeAttack";
+import { BaseType } from "../enums/Base";
 
 export interface FieldData {
   [key: string | number]: any;
@@ -42,10 +43,12 @@ export class Save {
   @Property({ default: 0 })
   homebaseid!: number;
 
+  @Index()
   @FrontendKey
   @Property()
   userid!: number;
 
+  @Index()
   @FrontendKey
   @Property()
   saveuserid!: number;
@@ -80,6 +83,7 @@ export class Save {
   initialOutpostProtectionOver!: boolean;
 
   // Primatives
+  @Index()
   @FrontendKey
   @Property({ default: "main" })
   type!: string;
@@ -373,10 +377,6 @@ export class Save {
   // Client save objects
   @FrontendKey
   @Property({ type: "json", nullable: true })
-  attackcreatures?: FieldData = {};
-
-  @FrontendKey
-  @Property({ type: "json", nullable: true })
   attackloot?: FieldData = {};
 
   @FrontendKey
@@ -458,6 +458,7 @@ export class Save {
     "aiattacks",
     "monsters",
     "resources",
+    "iresources",
     "lockerdata",
     "events",
     "inventory",
@@ -475,7 +476,6 @@ export class Save {
     "krallen",
     "siege",
     "buildingresources",
-    "attackcreatures",
     "attackloot",
     "lootreport",
     "attackersiege",
@@ -523,11 +523,11 @@ export class Save {
     "attackersiege"
   ];
 
-  public static createDefaultUserSave = async (
+  public static createMainSave = async (
     em: EntityManager<IDatabaseDriver<Connection>>,
     user: User
   ) => {
-    const baseSave = em.create(Save, getDefaultBaseData(user));
+    const baseSave = em.create(Save, getDefaultBaseData(user, BaseType.MAIN));
     // Persist the entity to generate basesaveid
     await em.persistAndFlush(baseSave);
 
@@ -540,5 +540,28 @@ export class Save {
     await em.persistAndFlush(user);
 
     return baseSave;
+  };
+
+  public static createInfernoSave = async (
+    em: EntityManager<IDatabaseDriver<Connection>>,
+    user: User
+  ) => {
+    const infernoSave = em.create(Save, getDefaultBaseData(user, BaseType.INFERNO));
+    await em.persistAndFlush(infernoSave);
+
+    infernoSave.type = BaseType.INFERNO;
+    infernoSave.baseid = infernoSave.basesaveid.toString();
+    infernoSave.homebaseid = infernoSave.basesaveid;
+    infernoSave.stats = user.save.stats;
+    infernoSave.credits = 0;
+    user.save.iresources = {
+      r1: 59168,
+      r2: 60090,
+      r3: 59849,
+      r4: 55864,
+    }
+
+    await em.persistAndFlush(infernoSave);
+    return infernoSave;
   };
 }
