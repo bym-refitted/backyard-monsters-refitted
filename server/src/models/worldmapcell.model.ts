@@ -27,6 +27,7 @@ export class WorldMapCell {
   @PrimaryKey()
   cellid!: number;
 
+  @Index()
   @FrontendKey
   @Property()
   baseid!: string;
