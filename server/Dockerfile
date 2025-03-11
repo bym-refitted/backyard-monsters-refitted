@@ -1,5 +1,5 @@
 # FROM node:22-alpine
-FROM node:22-bookworm
+FROM node:18-bookworm
 
 RUN mkdir /app
 
