@@ -44,7 +44,7 @@
 				"args": [
 					"${workspaceFolder}/bin/bymr-stable.swf"
 				],
-				"command": "${workspaceFolder}/archived/flashplayers/FlashPlayerDebugger.app/Contents/MacOS/Flash Player Debugger",
+				"command": "${workspaceFolder}/archived/flashplayers/osx/FlashPlayerDebugger.app/Contents/MacOS/Flash Player Debugger",
 			},
 			"group": {
 				"kind": "build",
@@ -71,7 +71,7 @@
 				"args": [
 					"${workspaceFolder}/bin/bymr-stable.swf"
 				],
-				"command": "${workspaceFolder}/archived/flashplayers/FlashPlayerDebugger.app/Contents/MacOS/Flash Player Debugger",
+				"command": "${workspaceFolder}/archived/flashplayers/osx/FlashPlayerDebugger.app/Contents/MacOS/Flash Player Debugger",
 			},
 			"group": {
 				"kind": "build",
