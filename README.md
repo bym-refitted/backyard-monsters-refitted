@@ -42,28 +42,37 @@ git switch develop
 
 ### 🐳 Docker Deployment
 
-You can deploy the server locally using Docker with our docker-compose file.
+You can deploy the server **locally** using Docker with our docker-compose file.
 
-**Important**: Do *NOT* use the `docker-compose.yml` file as is for production. It contains hardcoded secret keys as well as weak database credentials meant for local use only.
+**Important**: This docker-compose deployment is intended for testing and local development. Do *NOT* use the `docker-compose.yml` file as is for production. It is not considered stable yet.
 
 #### Deployment Components
 
 The deployment includes the following containers:
   - 🎮 **Game Server**: Runs a web server based on a custom Docker image built from server/Dockerfile.
   - 💿 **MariaDB**: Provides the database backend.
+  - 💿 **Redis**: Provides the caching backend
   - 📄 **phpMyAdmin**: Allows you to manage and inspect the database.
 
 #### Setting It Up
 1.	**Install Docker**
 2.	**Navigate to the cloned repository in your terminal**
-3.	**Start the deployment**:
+3.  **Create your `.env` environment file from `docker-example.env`**
+  ```bash
+  cp docker-example.env .env
+  ```
+The `.env` file is populated with default values. Again, these are *NOT* safe to use in production.
+
+If you wish to customize your installation, change the values in your `.env` file and note the descriptions above each entry.
+
+4.	**Start the deployment**:
   ```bash
   docker compose up
   ```
-4.	**Verify that services are running**:
-    - **Game Server**: Visit http://localhost:3001 to confirm the API is online.
-    -	**phpMyAdmin**: Access http://localhost:8080. Use the default credentials (username: bymr, password: bymr) or update them in docker-compose.yml.
-5.	**Connect to the server**: Use the latest release of the SWF file or compile it manually (instructions provided below).
+5.	**Verify that services are running** (values may differ if customized):
+  - **Game Server**: Visit http://localhost:3001 to confirm the API is online.
+  -	**phpMyAdmin**: Access http://localhost:8080. Use the default credentials (username: bymr, password: bymr) or update them in docker-compose.yml.
+6.	**Connect to the server**: Use the latest release of the SWF file or compile it manually (instructions provided below).
 
 ### 🛠️ Manual Deployment
 
