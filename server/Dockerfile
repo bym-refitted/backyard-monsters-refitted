@@ -1,4 +1,3 @@
-# FROM node:22-alpine
 FROM node:18-bookworm
 
 RUN mkdir /app
@@ -15,4 +14,3 @@ RUN chmod u+x src/scripts/*.sh
 RUN apt-get update && apt-get install -y mariadb-client
 
 ENTRYPOINT ["src/scripts/docker-start-web.sh"]
-# ENTRYPOINT ["npm", "run", "serve"]

@@ -1,7 +1,5 @@
 .git
-
 Dockerfile*
-
 example.env
 .env
 # enforce recompile inside the container

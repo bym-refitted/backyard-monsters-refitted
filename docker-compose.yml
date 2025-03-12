@@ -2,10 +2,8 @@ volumes:
   db:
   phpmyadmin:
 
-
 networks:
   bymr:
-
 
 services:
   web:
@@ -50,7 +48,7 @@ services:
     volumes:
       - db:/var/lib/mysql
     healthcheck:
-      test: [ "CMD", "healthcheck.sh", "--connect", "--innodb_initialized" ]
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
       start_period: 10s
       interval: 10s
       timeout: 5s
@@ -74,8 +72,7 @@ services:
       - bymr
     restart: unless-stopped
     healthcheck:
-      test: [ "CMD", "redis-cli", "ping" ]
+      test: ["CMD", "redis-cli", "ping"]
       interval: 5s
       timeout: 3s
       retries: 3
-
