@@ -11,6 +11,7 @@ services:
   web:
     build: ./server
     environment:
+      - ENV=${ENV}
       - BASE_URL=${BASE_URL}
       - PORT=3001
       - DB_NAME=${DB_NAME}
