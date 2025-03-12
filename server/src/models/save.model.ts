@@ -14,6 +14,8 @@ import { User } from "./user.model";
 import { WorldMapCell } from "./worldmapcell.model";
 import { AttackDetails } from "../controllers/base/load/modes/baseModeAttack";
 import { BaseType } from "../enums/Base";
+import { ChampionData } from "../controllers/base/save/zod/ChampionDataSchema";
+
 
 export interface FieldData {
   [key: string | number]: any;
@@ -189,8 +191,8 @@ export class Save {
   credits!: number;
 
   @FrontendKey
-  @Property({ type: "json", nullable: true, default: "null" })
-  champion?: string;
+  @Property({ type: "json", nullable: true })
+  champion?: ChampionData[];
 
   @FrontendKey
   @Property({ default: 0 })

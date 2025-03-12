@@ -32,8 +32,7 @@ export const devSandbox = (user?: User) => {
     lastupdate: 0,
     usemap: 1,
     credits: 980412,
-    champion:
-      '[{"status":0,"ft":1717491583,"pl":2,"fd":0,"hp":62000,"log":"0","fb":0,"l":5,"t":5},{"status":0,"ft":1717491639,"pl":1,"fd":0,"hp":40000,"log":"0","fb":0,"l":6,"t":3}]',
+    champion: [{"status":0,"ft":1717491583,"pl":2,"fd":0,"hp":62000,"log":"0","fb":0,"l":5,"t":5},{"status":0,"ft":1717491639,"pl":1,"fd":0,"hp":40000,"log":"0","fb":0,"l":6,"t":3}],
     empiredestroyed: 1,
     worldid: "",
     event_score: 0,
