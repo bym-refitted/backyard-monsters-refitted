@@ -16,6 +16,7 @@ export const championAttackHandler = (championData: ChampionData[], userSave: Sa
 
   const originalChampionData = userSave[SaveKeys.CHAMPION];
 
+  // FIXME: This code makes no sense anymore. This function throws an error if either the userSave or the request body are null
   if (originalChampionData === null) {
     if (championData !== null) throw permissionErr();
     userSave[SaveKeys.CHAMPION] = championData;
