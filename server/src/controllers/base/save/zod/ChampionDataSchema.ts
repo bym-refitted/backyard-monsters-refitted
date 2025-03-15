@@ -1,5 +1,6 @@
 import z from "zod";
 import {ChampionStatus, ChampionType} from "../../../../enums/Champions";
+import {preprocessChampionData} from "../../../../utils/preprocessChampionData";
 
 /**
  * A champion object containing the important information.
@@ -65,6 +66,8 @@ export const ChampionDataSchema = z.object({
 /**
  * An array of champions, as it is saved in the database as well as sent and received by the client.
  */
-export const ChampionDataListSchema = z.array(ChampionDataSchema);
+export const ChampionDataListSchema =
+    z.preprocess(preprocessChampionData, z.array(ChampionDataSchema).optional().nullable()
+    );
 
 export interface ChampionData extends z.infer<typeof ChampionDataSchema> {}

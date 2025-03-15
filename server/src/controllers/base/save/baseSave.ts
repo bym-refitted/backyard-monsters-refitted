@@ -17,7 +17,7 @@ import { permissionErr, saveFailureErr } from "../../../errors/errors";
 import { attackLootHandler } from "./handlers/attackLootHandler";
 import { monsterUpdateHandler } from "./handlers/monsterUpdateHandler";
 import { ClientSafeError } from "../../../middleware/clientSafeError";
-import { championHandler } from "./handlers/championHandler";
+import { championAttackHandler } from "./handlers/championAttackHandler";
 import { anticheat } from "../../../scripts/anticheat/anticheat";
 import { updateResources } from "../../../services/base/updateResources";
 
@@ -78,7 +78,7 @@ export const baseSave: KoaController = async (ctx) => {
 
         case SaveKeys.CHAMPION:
           if (isAttack) {
-            championHandler(saveData.attackerchampion, userSave);
+            championAttackHandler(saveData.attackerchampion, userSave);
           } else {
             baseSave[SaveKeys.CHAMPION] = saveData.champion;
           }

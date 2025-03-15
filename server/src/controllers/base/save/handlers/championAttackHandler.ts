@@ -1,32 +1,28 @@
 import { SaveKeys } from "../../../../enums/SaveKeys";
 import { permissionErr } from "../../../../errors/errors";
 import { Save } from "../../../../models/save.model";
-import { parseChampionData } from "../../../../utils/parseChampionData";
-
+import { ChampionData } from "../zod/ChampionDataSchema";
 /**
  * Handler for champion data validation during an attack.
  *
  * The client tracks champion stats during an attack using the `attackerchampion` property.
  *
- * @param {string} rawChampionData - The updated raw champion data to be validated and saved.
+ * @param {string} championData - The updated raw champion data to be validated and saved.
  * @param {Save} userSave - The user save from the database to access the original champion data.
  * @throws an error if the validation fails.
  */
-export const championHandler = async (rawChampionData: string, userSave: Save) => {
-  if (!rawChampionData) throw permissionErr();
+export const championAttackHandler = (championData: ChampionData[], userSave: Save) => {
+  if (!championData) throw permissionErr();
 
-  const championData = parseChampionData(rawChampionData);
-  const originalChampionData = parseChampionData(userSave[SaveKeys.CHAMPION]);
+  const originalChampionData = userSave[SaveKeys.CHAMPION];
 
   if (originalChampionData === null) {
-    if (rawChampionData !== "null") throw permissionErr();
-    userSave[SaveKeys.CHAMPION] = rawChampionData;
-    
+    if (championData !== null) throw permissionErr();
+    userSave[SaveKeys.CHAMPION] = championData;
     return;
   }
 
   if (championData) {
-    if (!Array.isArray(championData)) throw permissionErr();
 
     if (championData.length !== originalChampionData.length)
       throw permissionErr();
@@ -44,6 +40,6 @@ export const championHandler = async (rawChampionData: string, userSave: Save) =
     }
 
     // Persist the new champion data if validation passes
-    userSave[SaveKeys.CHAMPION] = JSON.stringify(championData);
+    userSave[SaveKeys.CHAMPION] = championData;
   }
 };
