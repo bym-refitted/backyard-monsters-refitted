@@ -7,40 +7,37 @@ import { ChampionData } from "../zod/ChampionDataSchema";
  *
  * The client tracks champion stats during an attack using the `attackerchampion` property.
  *
- * @param {string} championData - The updated raw champion data to be validated and saved.
+ * @param {string} updatedChampionData - The updated champion data to be validated and saved.
  * @param {Save} userSave - The user save from the database to access the original champion data.
  * @throws an error if the validation fails.
  */
-export const championAttackHandler = (championData: ChampionData[], userSave: Save) => {
-  if (!championData) throw permissionErr();
+export const championAttackHandler = (updatedChampionData: ChampionData[], userSave: Save) => {
+  if (!updatedChampionData) return;
 
   const originalChampionData = userSave[SaveKeys.CHAMPION];
 
-  // FIXME: This code makes no sense anymore. This function throws an error if either the userSave or the request body are null
+  // if the user has no champion data in their save,
+  // but sent data during an attack, they are probably cheating
   if (originalChampionData === null) {
-    if (championData !== null) throw permissionErr();
-    userSave[SaveKeys.CHAMPION] = championData;
-    return;
+    throw permissionErr();
   }
 
-  if (championData) {
+  if (updatedChampionData.length !== originalChampionData.length)
+    // user has more or less champions than they had in their save,
+    throw permissionErr();
 
-    if (championData.length !== originalChampionData.length)
-      throw permissionErr();
+  for (let i = 0; i < updatedChampionData.length; i++) {
+    const champion = updatedChampionData[i];
+    const originalChampion = originalChampionData[i];
 
-    for (let i = 0; i < championData.length; i++) {
-      const champion = championData[i];
-      const originalChampion = originalChampionData[i];
+    for (const key in champion) {
+      const isStatModified =
+        key !== "hp" && champion[key] !== originalChampion[key];
 
-      for (const key in champion) {
-        const isStatModified =
-          key !== "hp" && champion[key] !== originalChampion[key];
-
-        if (isStatModified) throw permissionErr();
-      }
+      if (isStatModified) throw permissionErr();
     }
-
-    // Persist the new champion data if validation passes
-    userSave[SaveKeys.CHAMPION] = championData;
   }
+
+  // Persist the new champion data if validation passes
+  userSave[SaveKeys.CHAMPION] = updatedChampionData;
 };
