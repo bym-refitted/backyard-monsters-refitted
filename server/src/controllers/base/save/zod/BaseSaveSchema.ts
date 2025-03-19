@@ -1,5 +1,6 @@
 import z from "zod";
 import { Resources } from "../../../../services/base/updateResources";
+import { ChampionDataListSchema } from "./ChampionDataSchema";
 
 /**
  * Schema for validating and transforming base save data.
@@ -36,22 +37,18 @@ export const BaseSaveSchema = z.object({
   /**
    * The champion data, transformed from a JSON string to a stringified JSON object.
    * This property is optional.
-   * @type {string | undefined}
+   * @type {ChampionDataListSchema | undefined}
    */
-  champion: z
-    .string()
-    .optional()
-    .transform((data) => (data ? JSON.stringify(JSON.parse(data)) : null)),
+  champion: ChampionDataListSchema
+    .optional(),
 
   /**
    * The attacker champion data, transformed from a JSON string.
    * This property is optional.
-   * @type {string | undefined}
+   * @type {ChampionDataListSchema | undefined}
    */
-  attackerchampion: z
-    .string()
-    .optional()
-    .transform((data) => (data ? JSON.stringify(JSON.parse(data)) : undefined)),
+  attackerchampion: ChampionDataListSchema
+    .optional(),
 
   /**
    * The building health data, transformed from a JSON string to an object.
