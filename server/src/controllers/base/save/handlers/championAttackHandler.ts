@@ -2,6 +2,7 @@ import { SaveKeys } from "../../../../enums/SaveKeys";
 import { permissionErr } from "../../../../errors/errors";
 import { Save } from "../../../../models/save.model";
 import { ChampionData } from "../zod/ChampionDataSchema";
+import {errorLog} from "../../../../utils/logger";
 /**
  * Handler for champion data validation during an attack.
  *
@@ -19,12 +20,15 @@ export const championAttackHandler = (updatedChampionData: ChampionData[], userS
   // if the user has no champion data in their save,
   // but sent data during an attack, they are probably cheating
   if (originalChampionData === null) {
+    errorLog(`User ${userSave.name} reported champion data during an attack despite their save having none! Reported champion data: ${JSON.stringify(updatedChampionData)}`);
     throw permissionErr();
   }
 
-  if (updatedChampionData.length !== originalChampionData.length)
+  if (updatedChampionData.length !== originalChampionData.length) {
+    errorLog(`User ${userSave.name} has reported unequal amount of champions than in their save! Original save: ${JSON.stringify(originalChampionData)} | Updated save: ${JSON.stringify(updatedChampionData)}`);
     // user has more or less champions than they had in their save,
     throw permissionErr();
+  }
 
   for (let i = 0; i < updatedChampionData.length; i++) {
     const champion = updatedChampionData[i];
@@ -34,7 +38,10 @@ export const championAttackHandler = (updatedChampionData: ChampionData[], userS
       const isStatModified =
         key !== "hp" && champion[key] !== originalChampion[key];
 
-      if (isStatModified) throw permissionErr();
+      if (isStatModified) {
+        errorLog(`User ${userSave.name} has reported a modified champion stat! Stat ${key} is different. Original Data: ${JSON.stringify(originalChampion)} | Received Data: ${JSON.stringify(champion)}`)
+        throw permissionErr();
+      }
     }
   }
 

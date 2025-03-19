@@ -1,4 +1,5 @@
 import {logging} from "./logger";
+import {type ChampionData} from "../controllers/base/save/zod/ChampionDataSchema";
 
 /**
  * Parses the champion data from the user's save.
@@ -11,9 +12,8 @@ import {logging} from "./logger";
  * @param {string} rawChampionData - The raw champion data from the user's save.
  * @returns {ChampionData[] | null} The parsed champion data as an array of objects.
  */
-export const preprocessChampionData = (rawChampionData) => {
+export const preprocessChampionData = (rawChampionData: string): ChampionData[] | null => {
     try {
-        logging("Preprocessing champion data:", rawChampionData);
         if (typeof rawChampionData === "string") {
             return JSON.parse(rawChampionData);
         }

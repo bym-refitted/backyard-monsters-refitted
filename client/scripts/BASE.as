@@ -3932,8 +3932,6 @@ package
          }
          else
          {
-            LOGGER.info("BaseURL: " + GLOBAL._baseURL);
-            LOGGER.info("BaseURL2: " + GLOBAL._baseURL2);
             new URLLoaderApi().load(GLOBAL._baseURL + "save",saveDataList,handleLoadSuccessful,handleLoadError);
          }
          if(_saveOver)
