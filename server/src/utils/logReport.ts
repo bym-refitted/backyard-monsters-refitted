@@ -1,10 +1,10 @@
-import { IncidentReport } from "../models/incidentreport";
+import { Report } from "../models/report.model";
 import { User } from "../models/user.model";
 import { ORMContext } from "../server";
 
 export const logReport = async (
   user: User,
-  incidentReport: IncidentReport,
+  incidentReport: Report,
   message: string
 ) => {
   incidentReport.userid = user.userid;

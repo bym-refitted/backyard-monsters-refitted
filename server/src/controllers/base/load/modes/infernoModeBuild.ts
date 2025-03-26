@@ -1,6 +1,6 @@
 import { inferoMonsters } from "../../../../data/monsterKeys";
 import { BaseType } from "../../../../enums/Base";
-import { IncidentReport } from "../../../../models/incidentreport";
+import { Report } from "../../../../models/report.model";
 import { Save } from "../../../../models/save.model";
 import { User } from "../../../../models/user.model";
 import { ORMContext } from "../../../../server";
@@ -20,7 +20,7 @@ export const infernoModeBuild = async (user: User, baseid: string) => {
 
   if (infernoSave.userid !== user.userid) {
     const message = `${user.username} attempted to access unauthorized inferno base: ${baseid}`;
-    await logReport(user, new IncidentReport(), message);
+    await logReport(user, new Report(), message);
     throw new Error(message);
   }
 

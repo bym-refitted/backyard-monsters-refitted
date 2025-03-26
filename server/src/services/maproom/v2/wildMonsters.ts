@@ -1,10 +1,11 @@
 import { Save } from "../../../models/save.model";
 import { ORMContext } from "../../../server";
-import { Tribes } from "../../../enums/Tribes";
+import { Tribe, Tribes } from "../../../enums/Tribes";
 import { legionnaire } from "../../../data/tribes/legionnaire";
 import { abunaki } from "../../../data/tribes/abunaki";
 import { dreadnaught } from "../../../data/tribes/dreadnaught";
 import { kozu } from "../../../data/tribes/kozu";
+import { calculateTribeLevel, minimumTribeLevels } from "./calculateTribeLevel";
 
 /**
  * Generates a save for a wild monster based on the given base ID.
@@ -23,14 +24,18 @@ export const wildMonsterSave = (baseid: string) => {
   const cellY = baseId % 1000;
 
   const tribeIndex = (cellX + cellY) % Tribes.length;
+  const tribe = Tribes[tribeIndex] as Tribe;
   const wmid = tribeIndex * 10 + 1;
 
-  const { tribeSave } = fetchTribeData(tribeIndex);
+  const level = calculateTribeLevel(cellX, cellY, tribe);
+
+  const { tribeSave } = fetchTribeData(tribeIndex, level);
 
   // Return a new save for the wild monster.
   return ORMContext.em.create(Save, {
     ...tribeSave,
     baseid,
+    level,
     wmid,
     homebase: [cellX.toString(), cellY.toString()],
   });
@@ -40,19 +45,34 @@ export const wildMonsterSave = (baseid: string) => {
  * Fetches the tribe data based on the given tribe index.
  *
  * @param {number} tribeIndex - The tribe index.
+ * @param {number} level - The level of the wild monster.
  * @returns {object} - An object containing the tribe save data.
  */
-const fetchTribeData = (tribeIndex: number) => {
-  const tribes = [legionnaire, kozu, abunaki, dreadnaught];
-  const selectedTribe = tribes[tribeIndex];
+const fetchTribeData = (tribeIndex: number, level: number) => {
+  const tribeData = [legionnaire, kozu, abunaki, dreadnaught];
 
-  // Get all keys from the selected tribe
+  // Get the selected tribe
+  const selectedTribe = tribeData[tribeIndex];
+  const tribe = Tribes[tribeIndex] as Tribe;
+
+  // Sort keys from selected tribe
   const keys = Object.keys(selectedTribe);
+  const sortedKeys = keys.sort((a, b) => parseInt(a) - parseInt(b));
 
-  // TODO: Should be based off levels not random
-  // Select a random key
-  const randomKey = keys[Math.floor(Math.random() * keys.length)];
-  const tribeSave = selectedTribe[randomKey];
+  // Get level range for this tribe
+  const lowerLimit = minimumTribeLevels[tribe];
+  const higherLimit = 45;
+  const levelRange = higherLimit - lowerLimit;
+
+  // Find the appropriate key based on the level
+  const levelsPerKey = Math.ceil(levelRange / sortedKeys.length);
+  let keyIndex = Math.floor((level - lowerLimit) / levelsPerKey);
+
+  // Safety bounds
+  keyIndex = Math.max(0, Math.min(keyIndex, sortedKeys.length - 1));
+
+  const selectedKey = sortedKeys[keyIndex];
+  const tribeSave = selectedTribe[selectedKey];
 
   return { tribeSave };
 };
