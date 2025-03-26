@@ -1,11 +1,10 @@
 import { Tribe } from "../../../enums/Tribes";
-import { worldIdToNumber } from "../../../utils/worldIdtoNumber";
 
 /**
  * Object mapping each tribe to its minimum level.
  * @type {Object.<Tribe, number>}
  */
-const minimumTribeLevels = {
+export const minimumTribeLevels = {
   [Tribe.LEGIONNAIRE]: 25,
   [Tribe.KOZU]: 29,
   [Tribe.ABUNAKKI]: 25,
@@ -27,13 +26,12 @@ const minimumTribeLevels = {
 export const calculateTribeLevel = (
   cellX: number,
   cellY: number,
-  worldId: string,
   tribe: Tribe
 ) => {
-  const worldIdVal = worldIdToNumber(worldId);
-  const cellHashNumber = cellX + cellY + worldIdVal;
+  const cellHashNumber = cellX + cellY;
   const lowerLimit = minimumTribeLevels[tribe];
   const higherLimit = 45;
   const differnce = higherLimit - lowerLimit;
+
   return (cellHashNumber % differnce) + lowerLimit;
 };
