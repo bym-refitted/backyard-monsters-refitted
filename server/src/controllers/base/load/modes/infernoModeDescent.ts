@@ -1,6 +1,6 @@
 import { devConfig } from "../../../../config/DevSettings";
 import { BaseType } from "../../../../enums/Base";
-import { MapRoom1 } from "../../../../models/maproom1.model";
+import { InfernoMaproom } from "../../../../models/infernomaproom.model";
 import { Save } from "../../../../models/save.model";
 import { User } from "../../../../models/user.model";
 import { ORMContext } from "../../../../server";
@@ -13,9 +13,9 @@ export const infernoModeDescent = async (user: User) => {
     type: BaseType.MAIN,
   });
 
-  const maproom1 = await ORMContext.em.findOne(MapRoom1, { userid });
+  const maproom1 = await ORMContext.em.findOne(InfernoMaproom, { userid });
 
-  if (!maproom1) await MapRoom1.setupMapRoom1Data(ORMContext.em, user);
+  if (!maproom1) await InfernoMaproom.setupMapRoom1Data(ORMContext.em, user);
 
   // Otherwise, create an array of 13 descent tribes, client expects IDs between 201-213.
   const tribes = Array.from({ length: 13 }, (_, i) => [201 + i, i + 1, 0]);

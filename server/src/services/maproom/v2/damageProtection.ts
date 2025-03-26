@@ -61,6 +61,7 @@ export const damageProtection = async (save: Save, mode?: BaseMode) => {
 
   const removeOutpostProtection = () => {
     protection = 0;
+    save.damage = 0;
     outpostProtectionTime = null;
     save.initialOutpostProtectionOver = true;
     persist = true;

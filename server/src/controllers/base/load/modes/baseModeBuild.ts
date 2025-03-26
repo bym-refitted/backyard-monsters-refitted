@@ -4,7 +4,7 @@ import { ORMContext } from "../../../../server";
 import { BaseMode } from "../../../../enums/Base";
 import { logging } from "../../../../utils/logger";
 import { balancedReward } from "../../../../services/base/balancedReward";
-import { IncidentReport } from "../../../../models/incidentreport";
+import { Report } from "../../../../models/report.model";
 import { logReport } from "../../../../utils/logReport";
 import { getCurrentDateTime } from "../../../../utils/getCurrentDateTime";
 
@@ -47,7 +47,7 @@ export const baseModeBuild = async (user: User, baseid: string) => {
 
     if (baseSave.userid !== user.userid) {
       const message = `${user.username} attempted to access unauthorized baseid: ${baseid}`;
-      await logReport(user, new IncidentReport(), message);
+      await logReport(user, new Report(), message);
       throw new Error(message);
     }
 

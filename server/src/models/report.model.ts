@@ -3,8 +3,8 @@ import { Entity, PrimaryKey, Property } from "@mikro-orm/core";
 import { FrontendKey } from "../utils/FrontendKey";
 import { FieldData } from "./save.model";
 
-@Entity({ tableName: "incident_report" })
-export class IncidentReport {
+@Entity({ tableName: "report" })
+export class Report {
   @PrimaryKey()
   userid!: number;
 
