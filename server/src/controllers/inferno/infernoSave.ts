@@ -4,7 +4,7 @@ import { SaveKeys } from "../../enums/SaveKeys";
 import { Status } from "../../enums/StatusCodes";
 import { permissionErr, saveFailureErr } from "../../errors/errors";
 import { ClientSafeError } from "../../middleware/clientSafeError";
-import { MapRoom1 } from "../../models/maproom1.model";
+import { InfernoMaproom } from "../../models/infernomaproom.model";
 import { Save } from "../../models/save.model";
 import { User } from "../../models/user.model";
 import { ORMContext } from "../../server";
@@ -35,7 +35,7 @@ export const infernoSave: KoaController = async (ctx) => {
     // Otherwise, retrieve a moloch base
     if (!infernoSave) {
       console.log("No inferno save found, retrieving moloch base");
-      const maproom1 = await ORMContext.em.findOne(MapRoom1, {
+      const maproom1 = await ORMContext.em.findOne(InfernoMaproom, {
         userid: user.userid,
       });
 

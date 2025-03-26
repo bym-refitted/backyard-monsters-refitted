@@ -1,5 +1,5 @@
 import { molochTribes } from "../../../../data/tribes/molochTribes";
-import { MapRoom1 } from "../../../../models/maproom1.model";
+import { InfernoMaproom } from "../../../../models/infernomaproom.model";
 import { Save } from "../../../../models/save.model";
 import { User } from "../../../../models/user.model";
 import { ORMContext } from "../../../../server";
@@ -9,7 +9,7 @@ export const infernoModeAttack = async (user: User, baseid: string) => {
 
   if (userSave) return userSave;
 
-  const maproom1 = await ORMContext.em.findOne(MapRoom1, {
+  const maproom1 = await ORMContext.em.findOne(InfernoMaproom, {
     userid: user.userid,
   });
 

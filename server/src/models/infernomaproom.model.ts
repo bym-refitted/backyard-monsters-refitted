@@ -13,8 +13,8 @@ interface Tribedata {
   tribeHealthData: any;
 }
 
-@Entity({ tableName: "maproom1" })
-export class MapRoom1 {
+@Entity({ tableName: "inferno_maproom" })
+export class InfernoMaproom {
   @PrimaryKey()
   userid!: number;
 
@@ -31,7 +31,7 @@ export class MapRoom1 {
     em: EntityManager<IDatabaseDriver<Connection>>,
     user: User
   ) => {
-    const maproom = em.create(MapRoom1, {
+    const maproom = em.create(InfernoMaproom, {
       userid: user.userid,
     });
 
