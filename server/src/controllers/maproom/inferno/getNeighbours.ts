@@ -1,22 +1,11 @@
 import { KoaController } from "../../../utils/KoaController";
 import { Status } from "../../../enums/StatusCodes";
 
-// bases = real players
-// wmbases = inferno wild monsters
+// Tribes scale with the player's current level.
+// The 'wmstatus' field on the inferno save is used to fetch the tribe data.
+// TODO: Figure out the baseid for these tribes, due to conflicts with real player bases
 export const getNeighbours: KoaController = async (ctx) => {
-  const wmbases = [
-    {
-      baseid: 1,
-      level: 10,
-      type: "iwm",
-      description: "Inferno Base",
-      wm: 1,
-      friend: 0,
-      pic: "",
-      basename: "Moloch's Minions",
-    },
-  ];
-
+  // TODO: Create a system for getting a group of real player bases
   const bases = [
     {
       baseid: 2,
@@ -34,7 +23,7 @@ export const getNeighbours: KoaController = async (ctx) => {
   ctx.status = Status.OK;
   ctx.body = {
     error: 0,
-    wmbases,
-    bases,
+    wmbases: [],
+    bases: [],
   };
 };
