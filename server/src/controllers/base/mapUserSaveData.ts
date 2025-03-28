@@ -23,6 +23,6 @@ export const mapUserSaveData = (user: User) => {
     buildingresources: userSave.buildingresources,
     researchdata: userSave.researchdata,
     rewards: userSave.rewards,
-    savetime: userSave.savetime,
+    // savetime: userSave.savetime,
   };
 };
