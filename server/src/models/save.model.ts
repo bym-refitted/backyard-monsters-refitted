@@ -517,6 +517,7 @@ export class Save {
     "protected",
     "champion",
     "over",
+    "buildingdata",
     "buildinghealthdata",
     "buildingresources",
     "attackreport",
