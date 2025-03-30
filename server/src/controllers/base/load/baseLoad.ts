@@ -64,7 +64,7 @@ export const baseLoad: KoaController = async (ctx) => {
         break;
 
       case BaseMode.IBUILD:
-        baseSave = await infernoModeBuild(user, baseid);
+        baseSave = await infernoModeBuild(user);
         break;
 
       case BaseMode.IWMVIEW:
