@@ -42,8 +42,8 @@ export const infernoModeBuild = async (user: User) => {
   const { level, points, basevalue } = infernoSave;
   infernoSave.level = calculateBaseLevel(points, basevalue);
 
-  if (infernoSave.wmstatus.length === 0)
-    infernoSave.wmstatus = createScaledTribes(level);
+  // Create Inferno tribes based on the user's current level
+  infernoSave.wmstatus = createScaledTribes(level);
 
   infernoSave.credits = userSave.credits;
   infernoSave.resources = userSave.iresources;
