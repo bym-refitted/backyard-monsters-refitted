@@ -28,6 +28,11 @@ import { resetPassword } from "./controllers/auth/resetPassword";
 import { devConfig } from "./config/DevSettings";
 import { infernoSave } from "./controllers/inferno/infernoSave";
 
+import { getMessageTargets } from "./controllers/mail/getMessageTargets";
+import { getMessageThreads } from "./controllers/mail/getMessageThreads";
+import { getMessageThread } from "./controllers/mail/getMessageThread";
+import { sendMessage } from "./controllers/mail/sendMessage";
+
 /**
  * All applcation routes
  */
@@ -376,4 +381,35 @@ router.post(
   recordDebugData
 );
 
+router.get(
+  "/api/:apiVersion/player/getmessagetargets",
+  apiVersion,
+  verifyUserAuth,
+  debugDataLog("load message"),
+  getMessageTargets
+);
+
+router.get(
+  "/api/:apiVersion/player/getmessagethreads",
+  apiVersion,
+  verifyUserAuth,
+  debugDataLog("load threads"),
+  getMessageThreads
+);
+
+router.post(
+  "/api/:apiVersion/player/getmessagethread",
+  apiVersion,
+  verifyUserAuth,
+  debugDataLog("load thread"),
+  getMessageThread
+);
+
+router.post(
+  "/api/:apiVersion/player/sendmessage",
+  apiVersion,
+  verifyUserAuth,
+  debugDataLog("send message"),
+  sendMessage
+);
 export default router;

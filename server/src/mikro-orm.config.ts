@@ -9,6 +9,7 @@ import { World } from "./models/world.model";
 import { Env } from "./enums/Env";
 import { Report } from "./models/report.model";
 import { InfernoMaproom } from "./models/infernomaproom.model";
+import { Message } from "./models/message.model";
 
 /**
  * Configuration for MikroORM.
@@ -21,7 +22,7 @@ import { InfernoMaproom } from "./models/infernomaproom.model";
 const mikroOrmConfig = {
   type: "mariadb",
   allowGlobalContext: false,
-  entities: [User, Save, World, WorldMapCell, Report, InfernoMaproom],
+  entities: [User, Save, World, WorldMapCell, Report, InfernoMaproom, Message],
   debug: process.env.ENV !== Env.PROD,
   dbName: process.env.DB_NAME,
   port: Number(process.env.DB_PORT),
