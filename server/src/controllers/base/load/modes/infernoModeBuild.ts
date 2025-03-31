@@ -1,5 +1,6 @@
 import { inferoMonsters } from "../../../../data/monsterKeys";
 import { BaseType } from "../../../../enums/Base";
+import { INFERNO_TRIBES } from "../../../../enums/Tribes";
 import { Report } from "../../../../models/report.model";
 import { Save } from "../../../../models/save.model";
 import { User } from "../../../../models/user.model";
@@ -39,11 +40,11 @@ export const infernoModeBuild = async (user: User) => {
     throw new Error(message);
   }
 
-  const { level, points, basevalue } = infernoSave;
+  const { points, basevalue } = infernoSave;
   infernoSave.level = calculateBaseLevel(points, basevalue);
 
   // Create Inferno tribes based on the user's current level
-  infernoSave.wmstatus = createScaledTribes(level);
+  infernoSave.wmstatus = createScaledTribes(infernoSave.level, INFERNO_TRIBES);
 
   infernoSave.credits = userSave.credits;
   infernoSave.resources = userSave.iresources;
