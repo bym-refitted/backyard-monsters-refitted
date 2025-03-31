@@ -28,13 +28,12 @@ export const infernoSave: KoaController = async (ctx) => {
 
     // Attempt to find the save data for the inferno base
     let infernoSave = await ORMContext.em.findOne(Save, {
-      userid: user.userid,
+      basesaveid: saveData.basesaveid,
       type: BaseType.INFERNO,
     });
 
     // Otherwise, retrieve a moloch base
     if (!infernoSave) {
-      console.log("No inferno save found, retrieving moloch base");
       const maproom1 = await ORMContext.em.findOne(InfernoMaproom, {
         userid: user.userid,
       });
