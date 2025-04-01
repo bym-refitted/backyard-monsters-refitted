@@ -37,9 +37,8 @@ export const baseSave: KoaController = async (ctx) => {
   try {
     const saveData = BaseSaveSchema.parse(ctx.request.body);
 
-    const baseSave = await ORMContext.em.findOne(Save, {
-      basesaveid: saveData.basesaveid,
-    });
+    const { basesaveid } = saveData;
+    const baseSave = await ORMContext.em.findOne(Save, { basesaveid });
 
     if (!baseSave) throw saveFailureErr();
 

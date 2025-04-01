@@ -5,9 +5,9 @@ import { User } from "../../../../models/user.model";
 import { ORMContext } from "../../../../server";
 
 export const infernoModeView = async (user: User, baseid: string) => {
-  const userSave = await ORMContext.em.findOne(Save, { baseid });
+  const save = await ORMContext.em.findOne(Save, { baseid });
 
-  if (userSave) return userSave;
+  if (save) return save;
 
   const maproom1 = await ORMContext.em.findOne(InfernoMaproom, {
     userid: user.userid,
