@@ -20,20 +20,19 @@ import { BaseSaveSchema } from "../base/save/zod/BaseSaveSchema";
 export const infernoSave: KoaController = async (ctx) => {
   const user: User = ctx.authUser;
   const userSave = user.save;
-  await ORMContext.em.populate(user, ["save"]);
+  const userInfernoSave = user.infernoSave;
+  await ORMContext.em.populate(user, ["save", "infernoSave"]);
 
   try {
     const saveData = BaseSaveSchema.parse(ctx.request.body);
+    const currentSave: Save = userInfernoSave || userSave;
     let tribeSave: Save = null;
 
-    // Attempt to find the save data for the inferno base
-    let infernoSave = await ORMContext.em.findOne(Save, {
-      basesaveid: saveData.basesaveid,
-      type: BaseType.INFERNO,
-    });
+    const { basesaveid } = saveData;
+    let baseSave = await ORMContext.em.findOne(Save, { basesaveid });
 
-    // Otherwise, retrieve a moloch base
-    if (!infernoSave) {
+    // Retrieve a moloch tribe when no base save is found
+    if (!baseSave) {
       const maproom1 = await ORMContext.em.findOne(InfernoMaproom, {
         userid: user.userid,
       });
@@ -48,7 +47,7 @@ export const infernoSave: KoaController = async (ctx) => {
       existingTribe.tribeHealthData = saveData.buildinghealthdata;
 
       // Update the wild monster status on the user save
-      userSave.wmstatus.forEach((tribe) => {
+      currentSave.wmstatus.forEach((tribe) => {
         if (tribe[0] === Number(saveData.baseid)) tribe[2] = saveData.destroyed;
       });
 
@@ -67,59 +66,60 @@ export const infernoSave: KoaController = async (ctx) => {
       // Keep track of monsters & champions during an attack on a tribe
       const attackCreatures = ctx.request.body[SaveKeys.ATTACKCREATURES];
       const attackerChampion = ctx.request.body[SaveKeys.ATTACKERCHAMPION];
-  
-      userSave.monsters = JSON.parse(attackCreatures);
 
+      currentSave.monsters = JSON.parse(attackCreatures);
       if (attackerChampion) userSave.champion = attackerChampion;
+
       await ORMContext.em.persistAndFlush(userSave);
     }
 
-    if (infernoSave) {
-      const isOwner = infernoSave.saveuserid === user.userid;
-      const isAttack = !isOwner && infernoSave.attackid !== 0;
+    // Standard save logic for user or attacking another user
+    if (baseSave) {
+      const isOwner = baseSave.saveuserid === user.userid;
+      const isAttack = !isOwner && baseSave.attackid !== 0;
 
-      if (!isOwner && infernoSave.attackid === 0) throw permissionErr();
+      if (!isOwner && baseSave.attackid === 0) throw permissionErr();
 
       for (const key of isAttack ? Save.attackSaveKeys : Save.saveKeys) {
         const value = ctx.request.body[key];
 
         switch (key) {
           case SaveKeys.RESOURCES:
-            resourcesHandler(infernoSave, value);
-            userSave.iresources = infernoSave.resources;
+            resourcesHandler(baseSave, value);
+            userSave.iresources = baseSave.resources;
             break;
 
           case SaveKeys.PURCHASE:
-            purchaseHandler(ctx, saveData.purchase, infernoSave);
+            purchaseHandler(ctx, saveData.purchase, baseSave);
             break;
 
           case SaveKeys.ACADEMY:
-            academyHandler(ctx, infernoSave);
+            academyHandler(ctx, baseSave);
             break;
 
           default:
             if (value) {
               try {
-                infernoSave[key] = JSON.parse(value);
+                baseSave[key] = JSON.parse(value);
               } catch (_) {
-                infernoSave[key] = value;
+                baseSave[key] = value;
               }
             }
         }
       }
 
-      infernoSave.id = infernoSave.savetime;
-      infernoSave.savetime = getCurrentDateTime();
-      await ORMContext.em.persistAndFlush(infernoSave);
+      baseSave.id = baseSave.savetime;
+      baseSave.savetime = getCurrentDateTime();
+      await ORMContext.em.persistAndFlush(baseSave);
     }
-    
-    const filteredSave = FilterFrontendKeys(tribeSave ?? infernoSave);
+
+    const filteredSave = FilterFrontendKeys(tribeSave ?? baseSave);
 
     ctx.status = Status.OK;
     ctx.body = {
       error: 0,
       ...filteredSave,
-      credits: userSave.credits
+      credits: userSave.credits,
     };
   } catch (err) {
     errorLog(`Failed to save inferno base for user: ${user.username}`, err);

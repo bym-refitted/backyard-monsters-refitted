@@ -25,39 +25,35 @@ import { logReport } from "../../../../utils/logReport";
  */
 export const infernoModeBuild = async (user: User) => {
   const userSave = user.save;
+  let userInfernoSave = user.infernoSave;
 
-  let infernoSave = await ORMContext.em.findOne(Save, {
-    userid: user.userid,
-    type: BaseType.INFERNO,
-  });
+  if (!userInfernoSave)
+    userInfernoSave = await Save.createInfernoSave(ORMContext.em, user);
 
-  if (!infernoSave)
-    infernoSave = await Save.createInfernoSave(ORMContext.em, user);
-
-  if (infernoSave.userid !== user.userid) {
+  if (userInfernoSave.userid !== user.userid) {
     const message = `${user.username} attempted to access unauthorized inferno base}`;
     await logReport(user, new Report(), message);
     throw new Error(message);
   }
 
-  const { points, basevalue } = infernoSave;
-  infernoSave.level = calculateBaseLevel(points, basevalue);
+  const { points, basevalue } = userInfernoSave;
+  userInfernoSave.level = calculateBaseLevel(points, basevalue);
 
   // Create Inferno tribes based on the user's current level
-  infernoSave.wmstatus = createScaledTribes(infernoSave.level, INFERNO_TRIBES);
+  userInfernoSave.wmstatus = createScaledTribes(userInfernoSave.level, INFERNO_TRIBES);
 
-  infernoSave.credits = userSave.credits;
-  infernoSave.resources = userSave.iresources;
-  userSave.stats["other"]["underhalLevel"] = infernoSave.stats["other"]["underhalLevel"];
+  userInfernoSave.credits = userSave.credits;
+  userInfernoSave.resources = userSave.iresources;
+  userSave.stats["other"]["underhalLevel"] = userInfernoSave.stats["other"]["underhalLevel"];
 
   // Persist Inferno monster levels to overworld only if the values differ
   inferoMonsters.forEach((key) => {
-    const acdaemyLevel = infernoSave.academy[key];
+    const acdaemyLevel = userInfernoSave.academy[key];
 
     if (acdaemyLevel && userSave.academy[key] !== acdaemyLevel)
       userSave.academy[key] = acdaemyLevel;
   });
 
   await ORMContext.em.flush();
-  return infernoSave;
+  return userInfernoSave;
 };

@@ -38,7 +38,7 @@ const BaseLoadSchema = z.object({
  */
 export const baseLoad: KoaController = async (ctx) => {
   const user: User = ctx.authUser;
-  await ORMContext.em.populate(user, ["save"]);
+  await ORMContext.em.populate(user, ["save", "infernoSave"]);
 
   try {
     const { baseid, type } = BaseLoadSchema.parse(ctx.request.body);
