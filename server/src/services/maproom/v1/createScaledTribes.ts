@@ -20,7 +20,7 @@ export type TribeScaleConfig = Record<TribeScale, TribeDetails>;
  * `molochTribes.ts`
  *
  * Notes: The client only ever displays 7 tribes at a time, and has a filter
- * to only shows tribes within less than a 10 level range.
+ * to only show tribes within a range of 10 levels.
  *
  * @param {number} level - the player's current level
  * @param {TribeScaleConfig} tribes - scaling configuration for tribes
