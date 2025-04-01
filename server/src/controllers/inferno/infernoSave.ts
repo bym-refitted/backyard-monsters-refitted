@@ -1,13 +1,11 @@
-import { molochTribes } from "../../data/tribes/molochTribes";
-import { BaseType } from "../../enums/Base";
 import { SaveKeys } from "../../enums/SaveKeys";
 import { Status } from "../../enums/StatusCodes";
-import { permissionErr, saveFailureErr } from "../../errors/errors";
+import { permissionErr } from "../../errors/errors";
 import { ClientSafeError } from "../../middleware/clientSafeError";
-import { InfernoMaproom } from "../../models/infernomaproom.model";
 import { Save } from "../../models/save.model";
 import { User } from "../../models/user.model";
 import { ORMContext } from "../../server";
+import { scaledTribes } from "../../services/maproom/v1/scaledTribes";
 import { FilterFrontendKeys } from "../../utils/FrontendKey";
 import { getCurrentDateTime } from "../../utils/getCurrentDateTime";
 import { KoaController } from "../../utils/KoaController";
@@ -21,70 +19,17 @@ import { BaseSaveSchema } from "../base/save/zod/BaseSaveSchema";
 export const infernoSave: KoaController = async (ctx) => {
   const user: User = ctx.authUser;
   const userSave = user.save;
-  const userInfernoSave = user.infernoSave;
   await ORMContext.em.populate(user, ["save", "infernoSave"]);
 
   try {
     const saveData = BaseSaveSchema.parse(ctx.request.body);
-    const currentSave: Save = userInfernoSave || userSave;
     let tribeSave: Save = null;
 
     const { basesaveid } = saveData;
     let baseSave = await ORMContext.em.findOne(Save, { basesaveid });
 
-    // Retrieve a moloch tribe when no base save is found
-    // Tribe save logic
-    if (!baseSave) {
-      const maproom1 = await ORMContext.em.findOne(InfernoMaproom, {
-        userid: user.userid,
-      });
-
-      let existingTribe = maproom1.tribedata.find(
-        (tribe) => tribe.baseid === saveData.baseid
-      );
-
-      if (!existingTribe) throw saveFailureErr();
-
-      // Update the existing tribe's health data
-      existingTribe.tribeHealthData = saveData.buildinghealthdata;
-
-      // Update the wild monster status on the user save
-      currentSave.wmstatus.forEach((tribe) => {
-        if (tribe[0] === Number(saveData.baseid)) tribe[2] = saveData.destroyed;
-      });
-
-      const tribeData = molochTribes.find(
-        (tribe) => tribe.baseid === saveData.baseid
-      );
-
-      tribeSave = Object.assign(new Save(), {
-        ...tribeData,
-        baseid: saveData.baseid,
-        buildinghealthdata: existingTribe?.tribeHealthData || {},
-      });
-
-      await ORMContext.em.persistAndFlush(maproom1);
-
-      for (const key of Object.keys(saveData)) {
-        const value = saveData[key];
-
-        switch (key) {
-          case SaveKeys.ATTACKCREATURES:
-            currentSave.monsters = value;
-            break;
-
-          case SaveKeys.ATTACKERCHAMPION:
-            userSave.champion = saveData.attackerchampion;
-            break;
-
-          case SaveKeys.ATTACKLOOT:
-            if (userInfernoSave) 
-              resourcesHandler(userSave, value, SaveKeys.IRESOURCES);
-            break;
-        }
-      }
-      await ORMContext.em.persistAndFlush(userSave);
-    }
+    // Tribe save logic, retrieve a moloch tribe when no base save is found
+    if (!baseSave) tribeSave = await scaledTribes(user, saveData);
 
     // Standard save logic for user or attacking another user
     if (baseSave) {
