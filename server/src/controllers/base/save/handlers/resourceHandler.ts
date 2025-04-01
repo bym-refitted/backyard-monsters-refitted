@@ -7,13 +7,19 @@ import { SaveKeys } from "../../../../enums/SaveKeys";
 
 export const resourcesHandler = (
   save: Save,
-  resourceVal: string | undefined,
+  resourceVal: Resources | string | undefined,
   resourceKey: SaveKeys.RESOURCES | SaveKeys.IRESOURCES = SaveKeys.RESOURCES
 ) => {
   let resourceData: Resources | null = null;
-  
-  if (resourceVal) resourceData = JSON.parse(resourceVal);
 
-  if (resourceData) 
+  if (resourceVal) {
+    try {
+      resourceData = JSON.parse(resourceVal as string);
+    } catch {
+      resourceData = resourceVal as Resources;
+    }
+  }
+
+  if (resourceData)
     save[resourceKey] = updateResources(resourceData, save[resourceKey]);
 };

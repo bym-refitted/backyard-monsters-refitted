@@ -92,6 +92,16 @@ export const BaseSaveSchema = z.object({
     .transform((data) => (data ? (JSON.parse(data) as Resources) : undefined)),
 
   /**
+   * The attack creatures data, transformed from a JSON string to an object.
+   * This property is optional.
+   * @type {object | undefined}
+   */
+  attackcreatures: z
+    .string()
+    .optional()
+    .transform((data) => (data ? JSON.parse(data) : undefined)),
+
+  /**
    * The 'over' property, which indicates a state.
    * This property is optional and remains as a string.
    * @type {number | undefined}

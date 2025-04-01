@@ -13,6 +13,7 @@ import { getCurrentDateTime } from "../../utils/getCurrentDateTime";
 import { KoaController } from "../../utils/KoaController";
 import { errorLog } from "../../utils/logger";
 import { academyHandler } from "../base/save/handlers/academyHandler";
+import { buildingDataHandler } from "../base/save/handlers/buildingDataHandler";
 import { purchaseHandler } from "../base/save/handlers/purchaseHandler";
 import { resourcesHandler } from "../base/save/handlers/resourceHandler";
 import { BaseSaveSchema } from "../base/save/zod/BaseSaveSchema";
@@ -32,6 +33,7 @@ export const infernoSave: KoaController = async (ctx) => {
     let baseSave = await ORMContext.em.findOne(Save, { basesaveid });
 
     // Retrieve a moloch tribe when no base save is found
+    // Tribe save logic
     if (!baseSave) {
       const maproom1 = await ORMContext.em.findOne(InfernoMaproom, {
         userid: user.userid,
@@ -63,13 +65,24 @@ export const infernoSave: KoaController = async (ctx) => {
 
       await ORMContext.em.persistAndFlush(maproom1);
 
-      // Keep track of monsters & champions during an attack on a tribe
-      const attackCreatures = ctx.request.body[SaveKeys.ATTACKCREATURES];
-      const attackerChampion = ctx.request.body[SaveKeys.ATTACKERCHAMPION];
+      for (const key of Object.keys(saveData)) {
+        const value = saveData[key];
 
-      currentSave.monsters = JSON.parse(attackCreatures);
-      if (attackerChampion) userSave.champion = attackerChampion;
+        switch (key) {
+          case SaveKeys.ATTACKCREATURES:
+            currentSave.monsters = value;
+            break;
 
+          case SaveKeys.ATTACKERCHAMPION:
+            userSave.champion = saveData.attackerchampion;
+            break;
+
+          case SaveKeys.ATTACKLOOT:
+            if (userInfernoSave) 
+              resourcesHandler(userSave, value, SaveKeys.IRESOURCES);
+            break;
+        }
+      }
       await ORMContext.em.persistAndFlush(userSave);
     }
 
@@ -96,6 +109,13 @@ export const infernoSave: KoaController = async (ctx) => {
           case SaveKeys.ACADEMY:
             academyHandler(ctx, baseSave);
             break;
+
+          case SaveKeys.BUILDINGDATA:
+            if (isAttack) {
+              buildingDataHandler(saveData.buildingdata, baseSave);
+            } else {
+              baseSave[SaveKeys.BUILDINGDATA] = saveData.buildingdata;
+            }
 
           default:
             if (value) {
