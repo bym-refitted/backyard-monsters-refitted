@@ -25,58 +25,57 @@ export const infernoSave: KoaController = async (ctx) => {
     const saveData = BaseSaveSchema.parse(ctx.request.body);
     let tribeSave: Save = null;
 
+    // Fist attempt to find a user's Inferno base save
     const { basesaveid } = saveData;
     let baseSave = await ORMContext.em.findOne(Save, { basesaveid });
 
-    // Tribe save logic, retrieve a moloch tribe when no base save is found
+    // Otherwise, retrieve a moloch tribe and handle tribe save logic
     if (!baseSave) tribeSave = await scaledTribes(user, saveData);
 
     // Standard save logic for user or attacking another user
-    if (baseSave) {
-      const isOwner = baseSave.saveuserid === user.userid;
-      const isAttack = !isOwner && baseSave.attackid !== 0;
+    const isOwner = baseSave.saveuserid === user.userid;
+    const isAttack = !isOwner && baseSave.attackid !== 0;
 
-      if (!isOwner && baseSave.attackid === 0) throw permissionErr();
+    if (!isOwner && baseSave.attackid === 0) throw permissionErr();
 
-      for (const key of isAttack ? Save.attackSaveKeys : Save.saveKeys) {
-        const value = ctx.request.body[key];
+    for (const key of isAttack ? Save.attackSaveKeys : Save.saveKeys) {
+      const value = ctx.request.body[key];
 
-        switch (key) {
-          case SaveKeys.RESOURCES:
-            resourcesHandler(baseSave, value);
-            userSave.iresources = baseSave.resources;
-            break;
+      switch (key) {
+        case SaveKeys.RESOURCES:
+          resourcesHandler(baseSave, value);
+          userSave.iresources = baseSave.resources;
+          break;
 
-          case SaveKeys.PURCHASE:
-            purchaseHandler(ctx, saveData.purchase, baseSave);
-            break;
+        case SaveKeys.PURCHASE:
+          purchaseHandler(ctx, saveData.purchase, baseSave);
+          break;
 
-          case SaveKeys.ACADEMY:
-            academyHandler(ctx, baseSave);
-            break;
+        case SaveKeys.ACADEMY:
+          academyHandler(ctx, baseSave);
+          break;
 
-          case SaveKeys.BUILDINGDATA:
-            if (isAttack) {
-              buildingDataHandler(saveData.buildingdata, baseSave);
-            } else {
-              baseSave[SaveKeys.BUILDINGDATA] = saveData.buildingdata;
+        case SaveKeys.BUILDINGDATA:
+          if (isAttack) {
+            buildingDataHandler(saveData.buildingdata, baseSave);
+          } else {
+            baseSave[SaveKeys.BUILDINGDATA] = saveData.buildingdata;
+          }
+
+        default:
+          if (value) {
+            try {
+              baseSave[key] = JSON.parse(value);
+            } catch (_) {
+              baseSave[key] = value;
             }
-
-          default:
-            if (value) {
-              try {
-                baseSave[key] = JSON.parse(value);
-              } catch (_) {
-                baseSave[key] = value;
-              }
-            }
-        }
+          }
       }
-
-      baseSave.id = baseSave.savetime;
-      baseSave.savetime = getCurrentDateTime();
-      await ORMContext.em.persistAndFlush(baseSave);
     }
+
+    baseSave.id = baseSave.savetime;
+    baseSave.savetime = getCurrentDateTime();
+    await ORMContext.em.persistAndFlush(baseSave);
 
     const filteredSave = FilterFrontendKeys(tribeSave ?? baseSave);
 
