@@ -35,7 +35,7 @@ export const devConfig = {
    * Inserts a sandbox test base into the database, with all buildings placed.
    * Must be set before creating a new record.
    */
-  devSandbox: process.env.ENV === Env.PROD ? false : true,
+  devSandbox: process.env.ENV === Env.PROD ? false : false,
 
   /*
    * Inserts an Inferno sandbox test base into the database, with all buildings placed.
@@ -57,7 +57,7 @@ export const devConfig = {
   /*
    * Sets whether the descent into Inferno should be enabled or disabled.
    */
-  skipDescent: process.env.ENV === Env.PROD ? false : true,
+  skipDescent: process.env.ENV === Env.PROD ? false : false,
 
   /*
    * Sets whether the tutorial phase of the game is enabled or disabled.
