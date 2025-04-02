@@ -40,7 +40,7 @@ export const createScaledTribes = async (save: Save, tribes: TribeScaleConfig) =
   const playerLevel = Math.max(1, level);
   const levelPattern = [-2, -1, 0, 0, 0, 1, 3];
 
-  const twoHours = 2 * 60 * 60;
+  const oneHour = 1 * 60 * 60;
   const currentTime = getCurrentDateTime();
 
   let scale: TribeScale;
@@ -68,7 +68,7 @@ export const createScaledTribes = async (save: Save, tribes: TribeScaleConfig) =
   );
 
   for (const tribe of maproom.tribedata) {
-    const canRespawn = tribe.destroyedAt && (currentTime - tribe.destroyedAt > twoHours);
+    const canRespawn = tribe.destroyedAt && (currentTime - tribe.destroyedAt > oneHour);
 
     if (tribe.destroyed && canRespawn) {
       const status = wmstatus.findIndex(

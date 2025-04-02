@@ -25,7 +25,7 @@ import { logReport } from "../../../../utils/logReport";
  */
 export const infernoModeBuild = async (user: User) => {
   const userSave = user.save;
-  let infernoSave = user.infernoSave;
+  let infernoSave = user.infernosave;
 
   if (!infernoSave)
     infernoSave = await Save.createInfernoSave(ORMContext.em, user);

@@ -562,7 +562,7 @@ export class Save {
       r4: 55864,
     }
 
-    user.infernoSave = infernoSave;
+    user.infernosave = infernoSave;
     await em.persistAndFlush(infernoSave);
     return infernoSave;
   };
