@@ -44,6 +44,7 @@ export const createScaledTribes = async (save: Save, tribes: TribeScaleConfig) =
   const currentTime = getCurrentDateTime();
 
   let scale: TribeScale;
+  let persist = false;
 
   if (playerLevel <= tribes[TribeScale.LOW].maxLevel) {
     scale = TribeScale.LOW;
@@ -60,12 +61,13 @@ export const createScaledTribes = async (save: Save, tribes: TribeScaleConfig) =
   if (!maproom) throw loadFailureErr();
 
   const tribeIdSet = new Set(tribeIds);
-  let persist = false;
+
+  // Only store tribedata within the user's current level range
+  const currentTribes = maproom.tribedata.filter(tribe => 
+    tribeIdSet.has(Number(tribe.baseid))
+  );
 
   for (const tribe of maproom.tribedata) {
-    //  Only tribes relevant to the current player level are processed
-    if (!tribeIdSet.has(Number(tribe.baseid))) continue;
-
     const canRespawn = tribe.destroyedAt && (currentTime - tribe.destroyedAt > twoHours);
 
     if (tribe.destroyed && canRespawn) {
@@ -83,6 +85,7 @@ export const createScaledTribes = async (save: Save, tribes: TribeScaleConfig) =
     }
   }
 
+  maproom.tribedata = currentTribes
   if (persist) await ORMContext.em.persistAndFlush(maproom);
 
   return tribeIds.map((tribeId, i) => {

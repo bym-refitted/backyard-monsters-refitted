@@ -21,9 +21,6 @@ export const infernoModeAttack = async (user: User, baseid: string) => {
     const newTribe: TribeData = { baseid, tribeHealthData: {} };
 
     maproom1.tribedata.push(newTribe);
-
-    if (maproom1.tribedata.length > 2) maproom1.tribedata.shift();
-
     await ORMContext.em.persistAndFlush(maproom1);
   }
 
