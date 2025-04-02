@@ -19,7 +19,7 @@ import { BaseSaveSchema } from "../base/save/zod/BaseSaveSchema";
 export const infernoSave: KoaController = async (ctx) => {
   const user: User = ctx.authUser;
   const userSave = user.save;
-  await ORMContext.em.populate(user, ["save", "infernoSave"]);
+  await ORMContext.em.populate(user, ["save", "infernosave"]);
 
   try {
     const saveData = BaseSaveSchema.parse(ctx.request.body);

@@ -14,7 +14,7 @@ type BaseSaveData = TypeOf<typeof BaseSaveSchema>;
 
 export const scaledTribes = async (user: User, saveData: BaseSaveData) => {
   const userSave = user.save;
-  const userInfernoSave = user.infernoSave;
+  const userInfernoSave = user.infernosave;
   const currentSave = userInfernoSave || userSave;
 
   const maproom1 = await ORMContext.em.findOne(InfernoMaproom, {
