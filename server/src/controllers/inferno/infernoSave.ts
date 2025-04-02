@@ -1,18 +1,17 @@
-import { molochTribes } from "../../data/tribes/molochTribes";
-import { BaseType } from "../../enums/Base";
 import { SaveKeys } from "../../enums/SaveKeys";
 import { Status } from "../../enums/StatusCodes";
-import { permissionErr, saveFailureErr } from "../../errors/errors";
+import { permissionErr } from "../../errors/errors";
 import { ClientSafeError } from "../../middleware/clientSafeError";
-import { InfernoMaproom } from "../../models/infernomaproom.model";
 import { Save } from "../../models/save.model";
 import { User } from "../../models/user.model";
 import { ORMContext } from "../../server";
+import { scaledTribes } from "../../services/maproom/v1/scaledTribes";
 import { FilterFrontendKeys } from "../../utils/FrontendKey";
 import { getCurrentDateTime } from "../../utils/getCurrentDateTime";
 import { KoaController } from "../../utils/KoaController";
 import { errorLog } from "../../utils/logger";
 import { academyHandler } from "../base/save/handlers/academyHandler";
+import { buildingDataHandler } from "../base/save/handlers/buildingDataHandler";
 import { purchaseHandler } from "../base/save/handlers/purchaseHandler";
 import { resourcesHandler } from "../base/save/handlers/resourceHandler";
 import { BaseSaveSchema } from "../base/save/zod/BaseSaveSchema";
@@ -20,107 +19,79 @@ import { BaseSaveSchema } from "../base/save/zod/BaseSaveSchema";
 export const infernoSave: KoaController = async (ctx) => {
   const user: User = ctx.authUser;
   const userSave = user.save;
-  await ORMContext.em.populate(user, ["save"]);
+  await ORMContext.em.populate(user, ["save", "infernosave"]);
 
   try {
     const saveData = BaseSaveSchema.parse(ctx.request.body);
-    let tribeSave: Save = null;
 
-    // Attempt to find the save data for the inferno base
-    let infernoSave = await ORMContext.em.findOne(Save, {
-      userid: user.userid,
-      type: BaseType.INFERNO,
-    });
+    // Fist attempt to find a user's Inferno base save
+    const { basesaveid } = saveData;
+    let baseSave = await ORMContext.em.findOne(Save, { basesaveid });
 
-    // Otherwise, retrieve a moloch base
-    if (!infernoSave) {
-      console.log("No inferno save found, retrieving moloch base");
-      const maproom1 = await ORMContext.em.findOne(InfernoMaproom, {
-        userid: user.userid,
-      });
+    // Otherwise, retrieve a moloch tribe and handle tribe save logic
+    if (!baseSave) {
+      const tribeSave = await scaledTribes(user, saveData);
+      const filteredSave = FilterFrontendKeys(tribeSave);
 
-      let existingTribe = maproom1.tribedata.find(
-        (tribe) => tribe.baseid === saveData.baseid
-      );
-
-      if (!existingTribe) throw saveFailureErr();
-
-      // Update the existing tribe's health data
-      existingTribe.tribeHealthData = saveData.buildinghealthdata;
-
-      // Update the wild monster status on the user save
-      userSave.wmstatus.forEach((tribe) => {
-        if (tribe[0] === Number(saveData.baseid)) tribe[2] = saveData.destroyed;
-      });
-
-      const tribeData = molochTribes.find(
-        (tribe) => tribe.baseid === saveData.baseid
-      );
-
-      tribeSave = Object.assign(new Save(), {
-        ...tribeData,
-        baseid: saveData.baseid,
-        buildinghealthdata: existingTribe?.tribeHealthData || {},
-      });
-
-      await ORMContext.em.persistAndFlush(maproom1);
-
-      // Keep track of monsters & champions during an attack on a tribe
-      const attackCreatures = ctx.request.body[SaveKeys.ATTACKCREATURES];
-      const attackerChampion = ctx.request.body[SaveKeys.ATTACKERCHAMPION];
-  
-      userSave.monsters = JSON.parse(attackCreatures);
-
-      if (attackerChampion) userSave.champion = attackerChampion;
-      await ORMContext.em.persistAndFlush(userSave);
+      ctx.status = Status.OK;
+      ctx.body = {
+        error: 0,
+        ...filteredSave,
+      };
+      return;
     }
 
-    if (infernoSave) {
-      const isOwner = infernoSave.saveuserid === user.userid;
-      const isAttack = !isOwner && infernoSave.attackid !== 0;
+    // Standard save logic for user or attacking another user
+    const isOwner = baseSave.saveuserid === user.userid;
+    const isAttack = !isOwner && baseSave.attackid !== 0;
 
-      if (!isOwner && infernoSave.attackid === 0) throw permissionErr();
+    if (!isOwner && baseSave.attackid === 0) throw permissionErr();
 
-      for (const key of isAttack ? Save.attackSaveKeys : Save.saveKeys) {
-        const value = ctx.request.body[key];
+    for (const key of isAttack ? Save.attackSaveKeys : Save.saveKeys) {
+      const value = ctx.request.body[key];
 
-        switch (key) {
-          case SaveKeys.RESOURCES:
-            resourcesHandler(infernoSave, value);
-            userSave.iresources = infernoSave.resources;
-            break;
+      switch (key) {
+        case SaveKeys.RESOURCES:
+          resourcesHandler(baseSave, value);
+          userSave.iresources = baseSave.resources;
+          break;
 
-          case SaveKeys.PURCHASE:
-            purchaseHandler(ctx, saveData.purchase, infernoSave);
-            break;
+        case SaveKeys.PURCHASE:
+          purchaseHandler(ctx, saveData.purchase, baseSave);
+          break;
 
-          case SaveKeys.ACADEMY:
-            academyHandler(ctx, infernoSave);
-            break;
+        case SaveKeys.ACADEMY:
+          academyHandler(ctx, baseSave);
+          break;
 
-          default:
-            if (value) {
-              try {
-                infernoSave[key] = JSON.parse(value);
-              } catch (_) {
-                infernoSave[key] = value;
-              }
+        case SaveKeys.BUILDINGDATA:
+          if (isAttack) {
+            buildingDataHandler(saveData.buildingdata, baseSave);
+          } else {
+            baseSave[SaveKeys.BUILDINGDATA] = saveData.buildingdata;
+          }
+
+        default:
+          if (value) {
+            try {
+              baseSave[key] = JSON.parse(value);
+            } catch (_) {
+              baseSave[key] = value;
             }
-        }
+          }
       }
-
-      infernoSave.id = infernoSave.savetime;
-      infernoSave.savetime = getCurrentDateTime();
-      await ORMContext.em.persistAndFlush(infernoSave);
     }
-    
-    const filteredSave = FilterFrontendKeys(tribeSave ?? infernoSave);
+    baseSave.id = baseSave.savetime;
+    baseSave.savetime = getCurrentDateTime();
+    await ORMContext.em.persistAndFlush(baseSave);
+
+    const filteredSave = FilterFrontendKeys(baseSave);
 
     ctx.status = Status.OK;
     ctx.body = {
       error: 0,
       ...filteredSave,
-      credits: userSave.credits
+      credits: userSave.credits,
     };
   } catch (err) {
     errorLog(`Failed to save inferno base for user: ${user.username}`, err);

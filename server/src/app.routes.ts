@@ -27,6 +27,7 @@ import { forgotPassword } from "./controllers/auth/forgotPassword";
 import { resetPassword } from "./controllers/auth/resetPassword";
 import { devConfig } from "./config/DevSettings";
 import { infernoSave } from "./controllers/inferno/infernoSave";
+import { getNeighbours } from "./controllers/maproom/inferno/getNeighbours";
 
 /**
  * All applcation routes
@@ -220,6 +221,18 @@ router.post(
   verifyUserAuth,
   debugDataLog("Inferno save data"),
   infernoSave
+);
+
+/**
+ * Inferno get MapRoom neighbours
+ * @name POST /api/:apiVersion/bm/neighbours/get
+ */
+router.post(
+  "/api/:apiVersion/bm/neighbours/get",
+  apiVersion,
+  verifyUserAuth,
+  debugDataLog("Getting Inferno neighbours"),
+  getNeighbours
 );
 
 /**
