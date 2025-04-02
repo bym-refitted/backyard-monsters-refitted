@@ -8,11 +8,11 @@ import {
 } from "@mikro-orm/core";
 import { User } from "./user.model";
 
-interface Tribedata {
+interface TribeData {
   baseid: string;
   tribeHealthData: Record<string, number>;
-  destroyed: number;
-  destroyedAt: number;
+  destroyed?: number;
+  destroyedAt?: number;
 }
 
 @Entity({ tableName: "inferno_maproom" })
@@ -21,7 +21,7 @@ export class InfernoMaproom {
   userid!: number;
 
   @Property({ type: "json", nullable: true })
-  tribedata: Tribedata[] = [];
+  tribedata: TribeData[] = [];
 
   @Property()
   createdAt: Date = new Date();
