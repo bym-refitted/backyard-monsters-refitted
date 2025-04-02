@@ -23,14 +23,23 @@ export const infernoSave: KoaController = async (ctx) => {
 
   try {
     const saveData = BaseSaveSchema.parse(ctx.request.body);
-    let tribeSave: Save = null;
 
     // Fist attempt to find a user's Inferno base save
     const { basesaveid } = saveData;
     let baseSave = await ORMContext.em.findOne(Save, { basesaveid });
 
     // Otherwise, retrieve a moloch tribe and handle tribe save logic
-    if (!baseSave) tribeSave = await scaledTribes(user, saveData);
+    if (!baseSave) {
+      const tribeSave = await scaledTribes(user, saveData);
+      const filteredSave = FilterFrontendKeys(tribeSave);
+
+      ctx.status = Status.OK;
+      ctx.body = {
+        error: 0,
+        ...filteredSave,
+      };
+      return;
+    }
 
     // Standard save logic for user or attacking another user
     const isOwner = baseSave.saveuserid === user.userid;
@@ -72,12 +81,11 @@ export const infernoSave: KoaController = async (ctx) => {
           }
       }
     }
-
     baseSave.id = baseSave.savetime;
     baseSave.savetime = getCurrentDateTime();
     await ORMContext.em.persistAndFlush(baseSave);
 
-    const filteredSave = FilterFrontendKeys(tribeSave ?? baseSave);
+    const filteredSave = FilterFrontendKeys(baseSave);
 
     ctx.status = Status.OK;
     ctx.body = {

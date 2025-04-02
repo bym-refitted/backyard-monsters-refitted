@@ -25,35 +25,35 @@ import { logReport } from "../../../../utils/logReport";
  */
 export const infernoModeBuild = async (user: User) => {
   const userSave = user.save;
-  let userInfernoSave = user.infernoSave;
+  let infernoSave = user.infernoSave;
 
-  if (!userInfernoSave)
-    userInfernoSave = await Save.createInfernoSave(ORMContext.em, user);
+  if (!infernoSave)
+    infernoSave = await Save.createInfernoSave(ORMContext.em, user);
 
-  if (userInfernoSave.userid !== user.userid) {
+  if (infernoSave.userid !== user.userid) {
     const message = `${user.username} attempted to access unauthorized inferno base}`;
     await logReport(user, new Report(), message);
     throw new Error(message);
   }
 
-  const { points, basevalue } = userInfernoSave;
-  userInfernoSave.level = calculateBaseLevel(points, basevalue);
+  const { points, basevalue, stats } = infernoSave;
+  infernoSave.level = calculateBaseLevel(points, basevalue);
 
   // Create Inferno tribes based on the user's current level
-  userInfernoSave.wmstatus = createScaledTribes(userInfernoSave.level, INFERNO_TRIBES);
+  infernoSave.wmstatus = await createScaledTribes(infernoSave, INFERNO_TRIBES);
 
-  userInfernoSave.credits = userSave.credits;
-  userInfernoSave.resources = userSave.iresources;
-  userSave.stats["other"]["underhalLevel"] = userInfernoSave.stats["other"]["underhalLevel"];
+  infernoSave.credits = userSave.credits;
+  infernoSave.resources = userSave.iresources;
+  userSave.stats["other"]["underhalLevel"] = stats["other"]["underhalLevel"];
 
   // Persist Inferno monster levels to overworld only if the values differ
   inferoMonsters.forEach((key) => {
-    const acdaemyLevel = userInfernoSave.academy[key];
+    const acdaemyLevel = infernoSave.academy[key];
 
     if (acdaemyLevel && userSave.academy[key] !== acdaemyLevel)
       userSave.academy[key] = acdaemyLevel;
   });
 
   await ORMContext.em.flush();
-  return userInfernoSave;
+  return infernoSave;
 };
