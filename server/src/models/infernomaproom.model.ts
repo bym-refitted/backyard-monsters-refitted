@@ -10,7 +10,9 @@ import { User } from "./user.model";
 
 interface Tribedata {
   baseid: string;
-  tribeHealthData: any;
+  tribeHealthData: Record<string, number>;
+  destroyed: number;
+  destroyedAt: number;
 }
 
 @Entity({ tableName: "inferno_maproom" })

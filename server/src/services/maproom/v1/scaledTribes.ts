@@ -8,6 +8,7 @@ import { InfernoMaproom } from "../../../models/infernomaproom.model";
 import { Save } from "../../../models/save.model";
 import { User } from "../../../models/user.model";
 import { ORMContext } from "../../../server";
+import { getCurrentDateTime } from "../../../utils/getCurrentDateTime";
 
 type BaseSaveData = TypeOf<typeof BaseSaveSchema>;
 
@@ -28,7 +29,9 @@ export const scaledTribes = async (user: User, saveData: BaseSaveData) => {
 
   // Update the existing tribe's health data
   existingTribe.tribeHealthData = saveData.buildinghealthdata;
-
+  existingTribe.destroyed = saveData.destroyed;
+  existingTribe.destroyedAt = saveData.destroyed && getCurrentDateTime();
+  
   // Update the wild monster status on the user save
   currentSave.wmstatus.forEach((tribe) => {
     if (tribe[0] === Number(saveData.baseid)) tribe[2] = saveData.destroyed;
