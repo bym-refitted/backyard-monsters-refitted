@@ -1,5 +1,5 @@
 import { molochTribes } from "../../../../data/tribes/molochTribes";
-import { InfernoMaproom } from "../../../../models/infernomaproom.model";
+import { InfernoMaproom, TribeData } from "../../../../models/infernomaproom.model";
 import { Save } from "../../../../models/save.model";
 import { User } from "../../../../models/user.model";
 import { ORMContext } from "../../../../server";
@@ -18,7 +18,7 @@ export const infernoModeAttack = async (user: User, baseid: string) => {
   );
 
   if (!existingTribe) {
-    const newTribe = { baseid, tribeHealthData: {} };
+    const newTribe: TribeData = { baseid, tribeHealthData: {} };
 
     maproom1.tribedata.push(newTribe);
 

@@ -8,7 +8,7 @@ import {
 } from "@mikro-orm/core";
 import { User } from "./user.model";
 
-interface TribeData {
+export interface TribeData {
   baseid: string;
   tribeHealthData: Record<string, number>;
   destroyed?: number;
