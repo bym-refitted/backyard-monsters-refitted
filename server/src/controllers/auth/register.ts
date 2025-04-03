@@ -20,6 +20,12 @@ import { UserRegistrationSchema } from "./zod/AuthSchemas";
  * @throws {Error} - Throws an error if registration fails or if the request body is invalid.
  */
 export const register: KoaController = async (ctx) => {
+  if (process.env.REGISTER === "disabled") {
+    ctx.status = Status.FORBIDDEN;
+    ctx.body = { message: "User registration is currently disabled" };
+    return;
+  }
+
   const registeredUser = UserRegistrationSchema.parse(ctx.request.body);
 
   // Find user by username or email
