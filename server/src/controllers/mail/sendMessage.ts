@@ -10,22 +10,13 @@ import { Message } from "../../models/message.model";
 import { errorLog, logging } from "../../utils/logger";
 import { getCurrentDateTime } from "../../utils/getCurrentDateTime";
 
-const LOG_LEVEL = {
-  INFO: "info",
-  ERROR: "err",
-};
-interface DebugData {
-  key: string;
-  saveid: string;
-  value: string;
-}
-
-
 /**
- * Controller to record debug data.
+ * Controller to send message
  *
- * This controller logs debug information sent from the client. It logs either an
- * error or info message depending on the key provided by the client. 
+ * - request body with threadid 0 means it will create a new thread (via Compose / Message in Map Room)
+ * - a thread starter will have correct request body for targetid
+ * - another reply on a thread will always have request body for targetid set as current user, 
+ * so it need to be changed by getting up on the correct targetid when saved to DB
  *
  * @param {Context} ctx - The Koa context object, which includes the request body.
  * @returns {Promise<void>} - A promise that resolves when the controller is complete.

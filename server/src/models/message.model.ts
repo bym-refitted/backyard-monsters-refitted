@@ -1,4 +1,4 @@
-import { Entity, Index, PrimaryKey, Property, Formula } from "@mikro-orm/core";
+import { Entity, Index, PrimaryKey, Property } from "@mikro-orm/core";
 
 import { ORMContext } from "../server";
 import { FrontendKey } from "../utils/FrontendKey";

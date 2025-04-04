@@ -1,14 +1,12 @@
 import { Status } from "../../enums/StatusCodes";
 import { loadFailureErr } from "../../errors/errors";
 import { User } from "../../models/user.model";
-import { Message } from "../../models/message.model";
 import { KoaController } from "../../utils/KoaController";
 
 import { errorLog } from "../../utils/logger";
 import { createDictionary } from "../../utils/createDictionary";
 import { ORMContext } from "../../server";
 import { Thread } from "../../models/thread.model";
-import { getCurrentDateTime } from "../../utils/getCurrentDateTime";
 
 /**
  * Controller to get threads for MailBox.
@@ -31,6 +29,7 @@ export const getMessageThreads: KoaController = async (ctx) => {
       lastMessage.selectUnread(user.userid); 
       lastMessage.messageid = index.toString();
       lastMessage.messagecount = thread.messagecount;
+      lastMessage.userid = lastMessage.userid === user.userid ? lastMessage.targetid : lastMessage.userid
       return lastMessage;
     });
     ctx.body = {

@@ -1,12 +1,11 @@
 import { Status } from "../../enums/StatusCodes";
-import { debugClientErr, loadFailureErr } from "../../errors/errors";
+import { debugClientErr } from "../../errors/errors";
 import { User } from "../../models/user.model";
 import { KoaController } from "../../utils/KoaController";
 
 import { ORMContext } from "../../server";
 import { Message } from "../../models/message.model";
 import { createDictionary } from "../../utils/createDictionary";
-import { Save } from "../../models/save.model";
 import { GetMessageSchema } from "./zod/GetMessageSchema";
 
 /**

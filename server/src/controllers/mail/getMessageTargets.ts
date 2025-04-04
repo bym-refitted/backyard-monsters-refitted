@@ -4,17 +4,6 @@ import { Thread } from "../../models/thread.model";
 import { User } from "../../models/user.model";
 import { ORMContext } from "../../server";
 import { KoaController } from "../../utils/KoaController";
-import { errorLog, logging } from "../../utils/logger";
-
-const LOG_LEVEL = {
-  INFO: "info",
-  ERROR: "err",
-};
-interface DebugData {
-  key: string;
-  saveid: string;
-  value: string;
-}
 
 /**
  * Controller to get message targets for MailBox/FriendPicker.
