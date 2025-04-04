@@ -38,7 +38,7 @@ const BaseLoadSchema = z.object({
  */
 export const baseLoad: KoaController = async (ctx) => {
   const user: User = ctx.authUser;
-  await ORMContext.em.populate(user, ["save"]);
+  await ORMContext.em.populate(user, ["save", "infernosave"]);
 
   try {
     const { baseid, type } = BaseLoadSchema.parse(ctx.request.body);
@@ -64,7 +64,7 @@ export const baseLoad: KoaController = async (ctx) => {
         break;
 
       case BaseMode.IBUILD:
-        baseSave = await infernoModeBuild(user, baseid);
+        baseSave = await infernoModeBuild(user);
         break;
 
       case BaseMode.IWMVIEW:
