@@ -6359,7 +6359,7 @@ package
             {
                _loc1_ = 3;
             }
-            if(QUESTS._global.brlvl >= 8 || QUESTS._global.b6lvl >= 7 || QUESTS._global.b15lvl >= 3 || QUESTS._global.b23lvl >= 1 || QUESTS._global.b25lvl >= 1 || _loc21_ >= 3 || _loc23_ >= 2 || _loc11_ >= 2 || QUESTS._global.b19lvl > 0 || _loc3_ >= 5 || _loc2_ >= 5 || _loc13_ > 0 || _loc14_ > 0 || _loc16_ > 0 || _loc15_ > 0 || _loc20_ >= 3 || _loc19_ >= 4 || _loc17_ >= 4 || _loc13_ >= 0)
+            if(QUESTS._global.brlvl >= 8 || QUESTS._global.b6lvl >= 7 || QUESTS._global.b15lvl >= 3 || QUESTS._global.b23lvl >= 1 || QUESTS._global.b25lvl >= 1 || _loc21_ >= 3 || _loc23_ >= 2 || _loc11_ >= 2 || QUESTS._global.b19lvl > 0 || _loc3_ >= 5 || _loc2_ >= 5 || _loc13_ > 0 || _loc14_ > 0 || _loc16_ > 0 || _loc15_ > 0 || _loc20_ >= 3 || _loc19_ >= 4 || _loc17_ >= 4)
             {
                _loc1_ = 4;
             }
@@ -6406,7 +6406,7 @@ package
             {
                _loc1_ = 5;
             }
-            if(_loc29_ >= 6 || _loc23_ >= 4 || _loc18_ >= 7 || _loc30_ >= 7 || _loc31_ >= 6 || _loc32_ >= 4 || _loc27_ >= 10 || _loc2_ >= 6 || _loc4_ >= 6 || _loc5_ >= 4 || _loc6_ >= 3)
+            if(_loc29_ >= 6 || _loc23_ >= 4 || _loc18_ >= 7 || _loc30_ >= 7 || _loc31_ >= 6 || _loc32_ >= 6 || _loc27_ >= 10 || _loc2_ >= 6 || _loc4_ >= 6 || _loc6_ >= 3)
             {
                _loc1_ = 6;
             }
