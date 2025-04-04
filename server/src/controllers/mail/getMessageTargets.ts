@@ -1,6 +1,8 @@
 import { Status } from "../../enums/StatusCodes";
 import { debugClientErr } from "../../errors/errors";
+import { Thread } from "../../models/thread.model";
 import { User } from "../../models/user.model";
+import { ORMContext } from "../../server";
 import { KoaController } from "../../utils/KoaController";
 import { errorLog, logging } from "../../utils/logger";
 
@@ -26,37 +28,40 @@ interface DebugData {
 export const getMessageTargets: KoaController = async (ctx) => {
   try {
     const user: User = ctx.authUser;
-    console.log(user);
 
     ctx.status = Status.OK;
-    ctx.body = { 
-      targets: {
-        "67890": { 
+    const threads = await ORMContext.em.find(Thread, {
+          $or: [
+            { userid: user.userid },
+            { targetid: user.userid }
+          ]
+        }, { orderBy: { threadid: "DESC" } });
+    const userIds = new Set();
+    threads.forEach(thread => {
+      userIds.add(thread.userid);
+      userIds.add(thread.targetid);
+    });
+    userIds.delete(user.userid);
+    const userIdArray = Array.from(userIds) as number[];
+    const users = await ORMContext.em.find(User, {
+      userid: { $in: userIdArray }
+    }, {
+      fields: ['userid', 'username', 'last_name', 'pic_square']
+    });
+    const mappedTargets = users.reduce((dictionary, item) => {
+        const key = item.userid;
+        dictionary[key] = {
           friend: 0,
-          mapver: 2, 
-          first_name: "alpha",
-          last_name: "",
-          pic_square: "https://api.dicebear.com/9.x/bottts-neutral/jpg?seed=alpha&size=50"
-        },
-        "67891": { 
-          friend: 0, mapver: 2,
-          first_name: "beta",
-          last_name: "",
-          pic_square: "https://api.dicebear.com/9.x/bottts-neutral/jpg?seed=beta&size=50"
-        },
-        "67892": { 
-          friend: 1, mapver: 2,
-          first_name: "charlie",
-          last_name: "",
-          pic_square: "https://api.dicebear.com/9.x/bottts-neutral/jpg?seed=charlie&size=50"
-        },
-        "12345": { 
-          friend: 1, mapver: 2,
-          first_name: "delta",
-          last_name: "",
-          pic_square: "https://api.dicebear.com/9.x/bottts-neutral/jpg?seed=delta&size=50"
-        }
-      }
+          mapver: 2,
+          first_name: item.username,
+          last_name: item.last_name,
+          pic_square: item.pic_square
+        };
+        return dictionary;
+      }, {});
+
+    ctx.body = { 
+      targets: mappedTargets
     };
   } catch (err) {
     throw debugClientErr();

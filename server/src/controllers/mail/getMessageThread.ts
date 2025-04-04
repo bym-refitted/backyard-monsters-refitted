@@ -6,6 +6,8 @@ import { KoaController } from "../../utils/KoaController";
 import { ORMContext } from "../../server";
 import { Message } from "../../models/message.model";
 import { createDictionary } from "../../utils/createDictionary";
+import { Save } from "../../models/save.model";
+import { GetMessageSchema } from "./zod/GetMessageSchema";
 
 /**
  * Controller to get multiple messages with single threadid for MailBox.
@@ -19,7 +21,7 @@ import { createDictionary } from "../../utils/createDictionary";
 export const getMessageThread: KoaController = async (ctx) => {
   try {
     const user: User = ctx.authUser;
-    const { threadid }: any = ctx.request.body;
+    const { threadid } = GetMessageSchema.parse(ctx.request.body);
     if (!threadid) {
       ctx.body = {
         error: 1,
@@ -37,12 +39,22 @@ export const getMessageThread: KoaController = async (ctx) => {
     if (hasUnreadMessage) {
       await ORMContext.em.persistAndFlush(messages);
       if (user.save?.basesaveid) {
-        await ORMContext.em.getConnection().execute(
-          `UPDATE save SET unreadmessages = (
-          SELECT COUNT(*) FROM message 
-          WHERE targetid = ? AND messagecount > 0 AND target_unread = 1) WHERE basesaveid = ? AND unreadmessages > 0`,
-          [user.userid, user.save.basesaveid]
-        );
+        const count = await ORMContext.em.count(Message, {
+          $or: [
+            { 
+              userid: user.userid,
+              userUnread: 1
+            },
+            { 
+              targetid: user.userid,
+              targetUnread: 1
+            }
+          ]
+        });
+        await ORMContext.em.populate(user, ["save"]);
+        user.save.unreadmessages = count;
+
+        await ORMContext.em.flush();
       }
     }
     ctx.body = {

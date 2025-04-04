@@ -6,6 +6,9 @@ import { KoaController } from "../../utils/KoaController";
 
 import { errorLog } from "../../utils/logger";
 import { createDictionary } from "../../utils/createDictionary";
+import { ORMContext } from "../../server";
+import { Thread } from "../../models/thread.model";
+import { getCurrentDateTime } from "../../utils/getCurrentDateTime";
 
 /**
  * Controller to get threads for MailBox.
@@ -17,9 +20,21 @@ import { createDictionary } from "../../utils/createDictionary";
 export const getMessageThreads: KoaController = async (ctx) => {
   const user: User = ctx.authUser;
   try {
-    const threads = await Message.findUserMessages(user, { messagecount: { $exists: true, $gt: 0 } });
+    const threads = await ORMContext.em.find(Thread, {
+      $or: [
+        { userid: user.userid },
+        { targetid: user.userid }
+      ],
+    }, { populate: ["lastMessage"] });
+    const threadMessages = threads.map((thread, index) => {
+      const { lastMessage } = thread;
+      lastMessage.selectUnread(user.userid); 
+      lastMessage.messageid = index.toString();
+      lastMessage.messagecount = thread.messagecount;
+      return lastMessage;
+    });
     ctx.body = {
-      threads: createDictionary(threads, 'threadid')
+      threads: createDictionary(threadMessages, 'threadid')
     };
     ctx.status = Status.OK;
 

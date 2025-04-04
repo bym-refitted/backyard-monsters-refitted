@@ -32,6 +32,7 @@ import { getMessageTargets } from "./controllers/mail/getMessageTargets";
 import { getMessageThreads } from "./controllers/mail/getMessageThreads";
 import { getMessageThread } from "./controllers/mail/getMessageThread";
 import { sendMessage } from "./controllers/mail/sendMessage";
+import { reportMessageThread } from "./controllers/mail/reportMessageThread";
 
 /**
  * All applcation routes
@@ -385,7 +386,7 @@ router.get(
   "/api/:apiVersion/player/getmessagetargets",
   apiVersion,
   verifyUserAuth,
-  debugDataLog("load message"),
+  debugDataLog("load target"),
   getMessageTargets
 );
 
@@ -411,5 +412,13 @@ router.post(
   verifyUserAuth,
   debugDataLog("send message"),
   sendMessage
+);
+
+router.post(
+  "/api/:apiVersion/player/reportmessagethread",
+  apiVersion,
+  verifyUserAuth,
+  debugDataLog("report message"),
+  reportMessageThread
 );
 export default router;

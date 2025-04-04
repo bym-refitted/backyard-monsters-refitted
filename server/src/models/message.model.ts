@@ -2,26 +2,29 @@ import { Entity, Index, PrimaryKey, Property, Formula } from "@mikro-orm/core";
 
 import { ORMContext } from "../server";
 import { FrontendKey } from "../utils/FrontendKey";
+import { v4 } from "uuid";
 
 @Entity({ tableName: "message" })
-@Index({ properties: ['userid', 'targetid'] })
+@Index({ properties: ["userid", "userUnread"] })  // Optimizes unread count
+@Index({ properties: ["targetid", "targetUnread"] })  // Optimizes unread count
+@Index({ properties: ["userid", "createdAt"] })  // Optimizes message retrieval
+@Index({ properties: ["targetid", "createdAt"] })  // Optimizes message retrieval
 export class Message {
   @PrimaryKey()
   @Property()
+  id: string = v4();
+
+  @Property({ persist: false })
   @FrontendKey
-  messageid!: string;
+  messageid: string;
 
   @Property()
   @FrontendKey
   @Index()
   threadid!: string;
 
-  
-  @Property()
-  updatedAt: Date = new Date();
-
   @FrontendKey
-  @Formula(alias => `UNIX_TIMESTAMP(${alias}.updated_at)`)
+  @Property()
   updatetime!: number;
 
   @Property({ onCreate: () => new Date() })
@@ -48,10 +51,6 @@ export class Message {
   @FrontendKey
   @Property({ persist: false })
   unread: number;
-
-  @Property()
-  @FrontendKey
-  reportid!: string;
   
   @Property()
   @FrontendKey
@@ -61,9 +60,13 @@ export class Message {
   @FrontendKey
   subject!: string;
   
-  @Property()
+  @Property({ persist: false })
   @FrontendKey
   messagecount!: number;
+
+  @Property({ nullable: true})
+  @FrontendKey
+  reportid: string;
   
   @Property({ nullable: true })
   @FrontendKey
@@ -112,9 +115,15 @@ export class Message {
               { targetid: user.userid }
             ],
             ...additionalQuery
+          },
+          {
+            orderBy: { createdAt: 'ASC' }
           }
         );
-    messages.forEach(message => message.selectUnread(user.userId));
+    messages.forEach((message, index) => { 
+      message.selectUnread(user.userid); 
+      message.messageid = index.toString();
+    });
     return messages;
   }
 }
