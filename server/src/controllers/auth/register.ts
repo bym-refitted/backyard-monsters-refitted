@@ -21,7 +21,7 @@ import { Auth } from "../../enums/Env";
  * @throws {Error} - Throws an error if registration fails or if the request body is invalid.
  */
 export const register: KoaController = async (ctx) => {
-  if (process.env.REGISTER === Auth.DISABLED) {
+  if (process.env.AUTH === Auth.DISABLED) {
     ctx.status = Status.FORBIDDEN;
     ctx.body = { message: "User registration is currently disabled" };
     return;
