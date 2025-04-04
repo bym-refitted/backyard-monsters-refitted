@@ -5791,7 +5791,7 @@ package
          _loc4_ = 0;
          for each(_loc3_ in _loc2_)
          {
-            if(_loc3_._class != "decoration" && _loc3_._class != "enemy" && _loc3_._class != "immovable" && _loc3_._class != "trap" && (_loc1_ || _loc3_._countdownBuild.Get() <= 0))
+            if(_loc3_._class != "decoration" && _loc3_._class != "enemy" && _loc3_._class != "immovable" && _loc3_._class != "trap" && _loc3_ !== GLOBAL._newBuilding && (_loc1_ || _loc3_._countdownBuild.Get() <= 0))
             {
                _loc5_ = _loc3_._lvl.Get();
                if(_loc5_ <= 0)
