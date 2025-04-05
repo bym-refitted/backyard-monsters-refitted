@@ -405,7 +405,7 @@ package com.monsters.maproom_advanced
          var _loc1_:Contact = new Contact(String(this._cell._userID),{
             "first_name":this._cell._name,
             "last_name":"",
-            "pic_square":"http://graph.facebook.com/" + this._cell._facebookID + "/picture"
+            "pic_square":this._cell._pic_square
          });
          this._message = new Message("map2friends");
          this._message.requestType = "migraterequest";
