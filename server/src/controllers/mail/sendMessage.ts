@@ -1,5 +1,4 @@
 import { Status } from "../../enums/StatusCodes";
-import { saveFailureErr } from "../../errors/errors";
 import { User } from "../../models/user.model";
 import { KoaController } from "../../utils/KoaController";
 import { devConfig } from "../../config/DevSettings";
@@ -35,10 +34,7 @@ export const sendMessage: KoaController = async (ctx) => {
     
     logging(`check thread of ${threadid} with user of ${user.userid} to ${targetid}`);
     const newThread = await Thread.findOrCreateThread(threadid, user.userid, targetid);
-    let messageCount = 0;
-    if (threadid === 0 || newThread.threadid !== threadid) {
-      messageCount++;
-    }
+    
     const messageTargetId = user.userid === newThread.userid ? newThread.targetid : newThread.userid;
     logging(`send message from ${user.userid} to ${messageTargetId}`);
     const newMessage = await ORMContext.em.create(Message, {
@@ -56,18 +52,8 @@ export const sendMessage: KoaController = async (ctx) => {
     newThread.messagecount++;
     newThread.lastMessage = newMessage;
     await ORMContext.em.persistAndFlush(newThread);
-    const count = await ORMContext.em.count(Message, {
-      $or: [
-        {
-          userid: messageTargetId,
-          userUnread: 1
-        },
-        {
-          targetid: messageTargetId,
-          targetUnread: 1
-        }
-      ]
-    });
+    logging(`count unread of user ID: ${messageTargetId}`);
+    const count = await Message.countUnreadMessage(messageTargetId);
     const targetUser = await ORMContext.em.findOne(User, { userid: messageTargetId }, { populate: ["save"] });
     if (!targetUser) {
       ctx.status = Status.OK;

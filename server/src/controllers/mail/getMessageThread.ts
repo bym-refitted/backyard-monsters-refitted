@@ -7,6 +7,7 @@ import { ORMContext } from "../../server";
 import { Message } from "../../models/message.model";
 import { createDictionary } from "../../utils/createDictionary";
 import { GetMessageSchema } from "./zod/GetMessageSchema";
+import { logging } from "../../utils/logger";
 
 /**
  * Controller to get multiple messages with single threadid for MailBox.
@@ -38,18 +39,8 @@ export const getMessageThread: KoaController = async (ctx) => {
     if (hasUnreadMessage) {
       await ORMContext.em.persistAndFlush(messages);
       if (user.save?.basesaveid) {
-        const count = await ORMContext.em.count(Message, {
-          $or: [
-            { 
-              userid: user.userid,
-              userUnread: 1
-            },
-            { 
-              targetid: user.userid,
-              targetUnread: 1
-            }
-          ]
-        });
+        logging(`count unread of user ID: ${user.userid}`);
+        const count = await Message.countUnreadMessage(user.userid);
         await ORMContext.em.populate(user, ["save"]);
         user.save.unreadmessages = count;
 

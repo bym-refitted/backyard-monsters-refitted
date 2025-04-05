@@ -31,7 +31,7 @@ export class Thread {
   @OneToOne(() => Message, { nullable: true })
   lastMessage?: Message;
 
-  private static async findThread(threadId: number, userId: number, targetId: number) {
+  private static async findThread(threadId: number, userId: number) {
     if (threadId === 0) {
       return null;
     }
@@ -47,7 +47,7 @@ export class Thread {
   }
 
   public static async findOrCreateThread(threadId: number, userId: number, targetId: number): Promise<Thread> {
-    const foundedThread = await this.findThread(threadId, userId, targetId);
+    const foundedThread = await this.findThread(threadId, userId);
     if (foundedThread) {
       return foundedThread;
     }

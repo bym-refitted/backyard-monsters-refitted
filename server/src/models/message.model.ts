@@ -3,6 +3,7 @@ import { Entity, Index, PrimaryKey, Property } from "@mikro-orm/core";
 import { ORMContext } from "../server";
 import { FrontendKey } from "../utils/FrontendKey";
 import { v4 } from "uuid";
+import { User } from "./user.model";
 
 @Entity({ tableName: "message" })
 @Index({ properties: ["userid", "userUnread"] })  // Optimizes unread count
@@ -33,25 +34,25 @@ export class Message {
   @Property()
   @FrontendKey
   userid!: number;
-  
+
   @Property()
   @FrontendKey
   targetid!: number;
-  
+
   @Property()
   @FrontendKey
   messagetype!: string;
-  
+
   @Property()
   userUnread!: number; //shouldn't trigger updateAt & updatetime
-  
+
   @Property()
   targetUnread!: number; //shouldn't trigger updateAt & updatetime
-  
+
   @FrontendKey
   @Property({ persist: false })
   unread: number;
-  
+
   @Property()
   @FrontendKey
   message!: string;
@@ -59,15 +60,15 @@ export class Message {
   @Property()
   @FrontendKey
   subject!: string;
-  
+
   @Property({ persist: false })
   @FrontendKey
   messagecount!: number;
 
-  @Property({ nullable: true})
+  @Property({ nullable: true })
   @FrontendKey
   reportid: string;
-  
+
   @Property({ nullable: true })
   @FrontendKey
   truceid: string;
@@ -93,11 +94,11 @@ export class Message {
   baseid: string;
 
   selectUnread(currentUserId: number): void {
-    this.unread = this.userid === currentUserId ? this.userUnread: this.targetUnread
+    this.unread = this.userid === currentUserId ? this.userUnread : this.targetUnread
   }
 
   setAsRead(currentUserId: number): void {
-    if(this.userid === currentUserId) {
+    if (this.userid === currentUserId) {
       this.userUnread = 0;
       this.unread = this.userUnread;
       return;
@@ -106,22 +107,37 @@ export class Message {
     this.unread = this.targetUnread;
   }
 
-  public static async findUserMessages(user, additionalQuery) {
+  public static async countUnreadMessage(id: number) {
+    return ORMContext.em.count(Message, {
+      $or: [
+        {
+          userid: id,
+          userUnread: 1
+        },
+        {
+          targetid: id,
+          targetUnread: 1
+        }
+      ]
+    });
+  }
+
+  public static async findUserMessages(user: User, additionalQuery: object) {
     const messages = await ORMContext.em.find(
-          Message,
-          {
-            $or: [
-              { userid: user.userid },
-              { targetid: user.userid }
-            ],
-            ...additionalQuery
-          },
-          {
-            orderBy: { createdAt: 'ASC' }
-          }
-        );
-    messages.forEach((message, index) => { 
-      message.selectUnread(user.userid); 
+      Message,
+      {
+        $or: [
+          { userid: user.userid },
+          { targetid: user.userid }
+        ],
+        ...additionalQuery
+      },
+      {
+        orderBy: { createdAt: 'ASC' }
+      }
+    );
+    messages.forEach((message, index) => {
+      message.selectUnread(user.userid);
       message.messageid = index.toString();
     });
     return messages;

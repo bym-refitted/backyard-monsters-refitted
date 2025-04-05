@@ -410,6 +410,10 @@ router.post(
   recordDebugData
 );
 
+/**
+ * Get other user's data for message
+ * @name GET /api/:apiVersion/player/getmessagetargets
+ */
 router.get(
   "/api/:apiVersion/player/getmessagetargets",
   apiVersion,
@@ -418,6 +422,10 @@ router.get(
   getMessageTargets
 );
 
+/**
+ * Get message threads of current user
+ * @name GET /api/:apiVersion/player/getmessagethreads
+ */
 router.get(
   "/api/:apiVersion/player/getmessagethreads",
   apiVersion,
@@ -426,6 +434,10 @@ router.get(
   getMessageThreads
 );
 
+/**
+ * Get messages by thread id, and update the unread value
+ * @name POST /api/:apiVersion/player/getmessagethread
+ */
 router.post(
   "/api/:apiVersion/player/getmessagethread",
   apiVersion,
@@ -434,6 +446,10 @@ router.post(
   getMessageThread
 );
 
+/**
+ * Send message
+ * @name POST /api/:apiVersion/player/sendmessage
+ */
 router.post(
   "/api/:apiVersion/player/sendmessage",
   apiVersion,
@@ -442,6 +458,10 @@ router.post(
   sendMessage
 );
 
+/**
+ * Report thread
+ * @name POST /api/:apiVersion/player/reportmessagethread
+ */
 router.post(
   "/api/:apiVersion/player/reportmessagethread",
   apiVersion,
