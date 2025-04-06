@@ -3,11 +3,11 @@ import { User } from "../../models/user.model";
 import { KoaController } from "../../utils/KoaController";
 import { devConfig } from "../../config/DevSettings";
 import { SendMessageSchema } from "./zod/SendMessageSchema";
-import { Thread } from "../../models/thread.model";
 import { ORMContext } from "../../server";
 import { Message } from "../../models/message.model";
 import { errorLog, logging } from "../../utils/logger";
 import { getCurrentDateTime } from "../../utils/getCurrentDateTime";
+import { findOrCreateThread } from "../../services/mail/findOrCreateThread";
 
 /**
  * Controller to send message
@@ -27,14 +27,15 @@ export const sendMessage: KoaController = async (ctx) => {
     const { type, targetid, subject, message, threadid } = SendMessageSchema.parse(ctx.request.body);
     const isAllowedToSend = devConfig.allowedMessageType[type];
     if (!isAllowedToSend) {
+      errorLog(`type ${type} is not allowed`, {});
       ctx.status = Status.OK;
       ctx.body = { error: 1 };
       return;
     }
-    
+
     logging(`check thread of ${threadid} with user of ${user.userid} to ${targetid}`);
-    const newThread = await Thread.findOrCreateThread(threadid, user.userid, targetid);
-    
+    const newThread = await findOrCreateThread(threadid, user.userid, targetid);
+
     const messageTargetId = user.userid === newThread.userid ? newThread.targetid : newThread.userid;
     logging(`send message from ${user.userid} to ${messageTargetId}`);
     const newMessage = await ORMContext.em.create(Message, {
@@ -56,6 +57,7 @@ export const sendMessage: KoaController = async (ctx) => {
     const count = await Message.countUnreadMessage(messageTargetId);
     const targetUser = await ORMContext.em.findOne(User, { userid: messageTargetId }, { populate: ["save"] });
     if (!targetUser) {
+      errorLog(`Failed to find user ID: ${messageTargetId}`, {});
       ctx.status = Status.OK;
       ctx.body = { error: 1 };
       return;
@@ -64,13 +66,13 @@ export const sendMessage: KoaController = async (ctx) => {
 
     await ORMContext.em.persistAndFlush(targetUser);
     ctx.status = Status.OK;
-    ctx.body = { 
+    ctx.body = {
       error: 0,
       threadid: newThread.threadid,
       messageid: 0
     };
   } catch (err) {
-    errorLog(err);
+    errorLog('Failed to send message', err);
     ctx.status = Status.OK;
     ctx.body = { error: 1 };
   }

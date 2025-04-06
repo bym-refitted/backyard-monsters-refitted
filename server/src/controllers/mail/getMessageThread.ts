@@ -7,7 +7,7 @@ import { ORMContext } from "../../server";
 import { Message } from "../../models/message.model";
 import { createDictionary } from "../../utils/createDictionary";
 import { GetMessageSchema } from "./zod/GetMessageSchema";
-import { logging } from "../../utils/logger";
+import { errorLog, logging } from "../../utils/logger";
 
 /**
  * Controller to get multiple messages with single threadid for MailBox.
@@ -22,14 +22,16 @@ export const getMessageThread: KoaController = async (ctx) => {
   try {
     const user: User = ctx.authUser;
     const { threadid } = GetMessageSchema.parse(ctx.request.body);
+
     if (!threadid) {
+      errorLog(`thread id is required`, {});
       ctx.body = {
         error: 1,
         thread: {}
       };
+      ctx.status = Status.OK;
       return;
     }
-    ctx.status = Status.OK;
     const messages = await Message.findUserMessages(user, { threadid });
     const hasUnreadMessage = messages.some(message => message.unread === 1);
     messages.forEach(message => {
@@ -51,7 +53,7 @@ export const getMessageThread: KoaController = async (ctx) => {
       error: 0,
       thread: createDictionary(messages, 'messageid')
     };
-
+    ctx.status = Status.OK;
   } catch (err) {
     throw debugClientErr();
   }

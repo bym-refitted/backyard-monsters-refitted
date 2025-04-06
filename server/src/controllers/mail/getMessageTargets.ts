@@ -18,7 +18,6 @@ export const getMessageTargets: KoaController = async (ctx) => {
   try {
     const user: User = ctx.authUser;
 
-    ctx.status = Status.OK;
     const threads = await ORMContext.em.find(Thread, {
           $or: [
             { userid: user.userid },
@@ -52,6 +51,7 @@ export const getMessageTargets: KoaController = async (ctx) => {
     ctx.body = { 
       targets: mappedTargets
     };
+    ctx.status = Status.OK;
   } catch (err) {
     throw debugClientErr();
   }

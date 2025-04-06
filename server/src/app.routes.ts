@@ -418,7 +418,7 @@ router.get(
   "/api/:apiVersion/player/getmessagetargets",
   apiVersion,
   verifyUserAuth,
-  debugDataLog("load target"),
+  debugDataLog("get message targets"),
   getMessageTargets
 );
 
@@ -430,7 +430,7 @@ router.get(
   "/api/:apiVersion/player/getmessagethreads",
   apiVersion,
   verifyUserAuth,
-  debugDataLog("load threads"),
+  debugDataLog("get message threads"),
   getMessageThreads
 );
 
@@ -442,7 +442,7 @@ router.post(
   "/api/:apiVersion/player/getmessagethread",
   apiVersion,
   verifyUserAuth,
-  debugDataLog("load thread"),
+  debugDataLog("get message thread by threadid"),
   getMessageThread
 );
 
@@ -466,7 +466,7 @@ router.post(
   "/api/:apiVersion/player/reportmessagethread",
   apiVersion,
   verifyUserAuth,
-  debugDataLog("report message"),
+  debugDataLog("report message thread"),
   reportMessageThread
 );
 export default router;
