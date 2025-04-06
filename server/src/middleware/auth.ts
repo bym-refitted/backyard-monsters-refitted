@@ -62,7 +62,8 @@ export const verifyUserAuth = async (ctx: Context, next: Next) => {
 export const verifyAccountStatus = async (ctx: Context, next: Next) => {
   const authHeader = ctx.headers.authorization;
 
-  if (!authHeader || !authHeader.startsWith("Bearer ")) throw tokenAuthFailureErr();
+  if (!authHeader || !authHeader.startsWith("Bearer "))
+    throw tokenAuthFailureErr();
 
   const token = authHeader.replace("Bearer ", "");
   const decodedToken = verifyJwtToken(token);
@@ -84,13 +85,13 @@ export interface BymJwtPayload extends DisgustingJwtPayloadHack {
   user: {
     email: string;
     discordId?: string;
-    meetsDiscordAgeCheck?: boolean;
+    meetsDiscordAgeCheck: boolean;
   };
 }
 
 /**
  * Verifies a JWT token and returns the decoded payload.
- * 
+ *
  * For local development, we return a basic payload with the user's email.
  * In production, we introduce discord authentication.
  *
@@ -100,7 +101,12 @@ export interface BymJwtPayload extends DisgustingJwtPayloadHack {
  */
 export const verifyJwtToken = (token: string): BymJwtPayload => {
   if (process.env.ENV === Env.LOCAL) {
-    return { user: { email: (JWT.decode(token) as BymJwtPayload).user?.email }};
+    return {
+      user: {
+        email: (JWT.decode(token) as BymJwtPayload).user?.email,
+        meetsDiscordAgeCheck: true,
+      },
+    };
   }
 
   try {
