@@ -47,9 +47,9 @@ export class Message {
   @Property({ persist: false })
   unread: number;
 
-  @Property()
+  @Property({ nullable: true, length: 580 })
   @FrontendKey
-  message!: string;
+  message: string;
 
   @Property()
   @FrontendKey
