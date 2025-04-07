@@ -13,7 +13,7 @@ import { KoaController } from "../../utils/KoaController";
 export const reportMessageThread: KoaController = async (ctx) => {
   const user: User = ctx.authUser;
   ctx.body = {
-    error: 0
+    error: 0,
   };
   ctx.status = Status.OK;
 };

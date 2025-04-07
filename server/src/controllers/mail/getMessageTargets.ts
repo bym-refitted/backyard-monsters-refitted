@@ -18,38 +18,43 @@ export const getMessageTargets: KoaController = async (ctx) => {
   try {
     const user: User = ctx.authUser;
 
-    const threads = await ORMContext.em.find(Thread, {
-          $or: [
-            { userid: user.userid },
-            { targetid: user.userid }
-          ]
-        }, { orderBy: { threadid: "DESC" } });
+    const threads = await ORMContext.em.find(
+      Thread,
+      {
+        $or: [{ userid: user.userid }, { targetid: user.userid }],
+      },
+      { orderBy: { threadid: "DESC" } }
+    );
     const userIds = new Set();
-    threads.forEach(thread => {
+    threads.forEach((thread) => {
       userIds.add(thread.userid);
       userIds.add(thread.targetid);
     });
     userIds.delete(user.userid);
     const userIdArray = Array.from(userIds) as number[];
-    const users = await ORMContext.em.find(User, {
-      userid: { $in: userIdArray }
-    }, {
-      fields: ['userid', 'username', 'last_name', 'pic_square']
-    });
+    const users = await ORMContext.em.find(
+      User,
+      {
+        userid: { $in: userIdArray },
+      },
+      {
+        fields: ["userid", "username", "last_name", "pic_square"],
+      }
+    );
     const mappedTargets = users.reduce((dictionary, item) => {
-        const key = item.userid;
-        dictionary[key] = {
-          friend: 0,
-          mapver: 2,
-          first_name: item.username,
-          last_name: item.last_name,
-          pic_square: item.pic_square
-        };
-        return dictionary;
-      }, {});
+      const key = item.userid;
+      dictionary[key] = {
+        friend: 0,
+        mapver: 2,
+        first_name: item.username,
+        last_name: item.last_name,
+        pic_square: item.pic_square,
+      };
+      return dictionary;
+    }, {});
 
-    ctx.body = { 
-      targets: mappedTargets
+    ctx.body = {
+      targets: mappedTargets,
     };
     ctx.status = Status.OK;
   } catch (err) {

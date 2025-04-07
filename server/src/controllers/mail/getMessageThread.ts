@@ -28,14 +28,14 @@ export const getMessageThread: KoaController = async (ctx) => {
       errorLog(`thread id is required`, {});
       ctx.body = {
         error: 1,
-        thread: {}
+        thread: {},
       };
       ctx.status = Status.OK;
       return;
     }
     const messages = await findUserMessages(user, { threadid });
-    const hasUnreadMessage = messages.some(message => message.unread === 1);
-    messages.forEach(message => {
+    const hasUnreadMessage = messages.some((message) => message.unread === 1);
+    messages.forEach((message) => {
       message.setAsRead(user.userid);
     });
 
@@ -52,12 +52,10 @@ export const getMessageThread: KoaController = async (ctx) => {
     }
     ctx.body = {
       error: 0,
-      thread: createDictionary(messages, 'messageid')
+      thread: createDictionary(messages, "messageid"),
     };
     ctx.status = Status.OK;
   } catch (err) {
     throw debugClientErr();
   }
 };
-
-

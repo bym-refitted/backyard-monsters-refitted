@@ -18,25 +18,28 @@ import { Thread } from "../../models/thread.model";
 export const getMessageThreads: KoaController = async (ctx) => {
   const user: User = ctx.authUser;
   try {
-    const threads = await ORMContext.em.find(Thread, {
-      $or: [
-        { userid: user.userid },
-        { targetid: user.userid }
-      ],
-    }, { populate: ["lastMessage"] });
+    const threads = await ORMContext.em.find(
+      Thread,
+      {
+        $or: [{ userid: user.userid }, { targetid: user.userid }],
+      },
+      { populate: ["lastMessage"] }
+    );
     const threadMessages = threads.map((thread, index) => {
       const { lastMessage } = thread;
-      lastMessage.selectUnread(user.userid); 
+      lastMessage.selectUnread(user.userid);
       lastMessage.messageid = index.toString();
       lastMessage.messagecount = thread.messagecount;
-      lastMessage.userid = lastMessage.userid === user.userid ? lastMessage.targetid : lastMessage.userid
+      lastMessage.userid =
+        lastMessage.userid === user.userid
+          ? lastMessage.targetid
+          : lastMessage.userid;
       return lastMessage;
     });
     ctx.body = {
-      threads: createDictionary(threadMessages, 'threadid')
+      threads: createDictionary(threadMessages, "threadid"),
     };
     ctx.status = Status.OK;
-
   } catch (err) {
     errorLog(`Failed to get thread list for user:${user.userid}`, err);
     throw loadFailureErr();

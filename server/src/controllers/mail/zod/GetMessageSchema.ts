@@ -6,10 +6,9 @@ import z from "zod";
  * @type {z.ZodObject}
  */
 export const GetMessageSchema = z.object({
-
-    /**
-     * the id of the thread
-     * @type {number}
-     */
-    threadid: z.string().transform((id) => parseInt(id)),
+  /**
+   * the id of the thread
+   * @type {number}
+   */
+  threadid: z.string().transform((id) => parseInt(id)),
 });
