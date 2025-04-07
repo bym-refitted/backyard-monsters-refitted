@@ -1967,7 +1967,9 @@ package
          {
             LOGGER.Log("err","Town Hall Missing");
          }
-         RebuildTH();
+         // Comment: RebuildTH() is commented out as it's a dangerous bad-practice implementation from
+         // the original game, causing unintended behavior.
+         // RebuildTH();
          var bFoundation:Vector.<Object> = InstanceManager.getInstancesByClass(BFOUNDATION);
          if(GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD && GLOBAL.townHall && isMainYardOrInfernoMainYard && !GLOBAL._aiDesignMode)
          {
