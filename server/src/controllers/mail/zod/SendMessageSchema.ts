@@ -23,7 +23,7 @@ export const SendMessageSchema = z.object({
     /**
      * the content of the message
      */
-    message: z.string(),
+    message: z.string().max(580).min(1),
 
     /**
      * userid of the recipient of the message
