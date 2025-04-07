@@ -23,29 +23,29 @@ package com.monsters.monsters.champions
       
       public function Krallen(param1:String, param2:Point, param3:Number, param4:Point = null, param5:Boolean = false, param6:BFOUNDATION = null, param7:int = 1, param8:int = 0, param9:int = 0, param10:int = 1, param11:int = 20000, param12:int = 0, param13:int = 1)
       {
-         var _loc14_:Array = null;
-         var _loc17_:uint = 0;
-         var _loc18_:Class = null;
+         var abilities:Array = null;
+         var i:uint = 0;
          param13 = Math.min(param13,MAX_POWERLEVEL);
          super(param1,param2,param3,param4,param5,param6,param7,param8,param9,param10,param11,param12,param13);
-         _loc14_ = CHAMPIONCAGE.GetGuardianProperties(_creatureID,"abilities");
-         var _loc15_:Number = _powerLevel.Get();
-         var _loc16_:uint = _loc14_.length;
+         abilities = CHAMPIONCAGE.GetGuardianProperties(_creatureID,"abilities");
+         var powerLevel:Number = _powerLevel.Get();
+         var numAbilities:uint = abilities.length;
          this._lootMults = new Dictionary();
          this._lootMults[BRESOURCE] = new SecNum(2);
          this._lootMults[BSTORAGE] = new SecNum(3);
          _buff = CHAMPIONCAGE.GetGuardianProperty(_creatureID,_level.Get(),"buffs");
-         while(_loc17_ < _loc16_)
+         while(i < numAbilities)
          {
-            if(_loc15_ < _loc17_)
+            if(powerLevel < i)
             {
                break;
             }
-            if(_loc18_ = _loc14_[_loc17_] as Class)
+            var abilityClass:Class = abilities[i] as Class;
+            if(abilityClass)
             {
-               addComponent(new _loc18_());
+               addComponent(new abilityClass());
             }
-            _loc17_++;
+            i++;
          }
       }
       
@@ -66,204 +66,124 @@ package com.monsters.monsters.champions
       }
       
       override public function findTarget(param1:int = 0) : void
-      {
-         var _loc6_:Object = null;
-         var _loc7_:BFOUNDATION = null;
-         var _loc8_:BFOUNDATION = null;
-         var _loc9_:Point = null;
-         var _loc10_:Boolean = false;
-         var _loc11_:Point = null;
-         var _loc12_:Point = null;
-         var _loc13_:int = 0;
-         var _loc15_:Object = null;
-         var _loc16_:String = null;
-         var _loc17_:Boolean = false;
-         var _loc19_:int = 0;
-         var _loc20_:Point = null;
-         var _loc21_:int = 0;
-         var _loc22_:int = 0;
-         var _loc23_:int = 0;
-         var _loc24_:Number = NaN;
-         var _loc25_:int = 0;
-         var _loc26_:Point = null;
-         var _loc2_:Object = InstanceManager.getInstancesByClass(BFOUNDATION);
-         var _loc3_:Vector.<Object> = InstanceManager.getInstancesByClass(BTOWER);
-         var _loc4_:Vector.<Object> = InstanceManager.getInstancesByClass(Bunker);
-         var _loc5_:Vector.<Object> = InstanceManager.getInstancesByClass(MONSTERBUNKER);
-         var _loc14_:Array = [];
-         var _loc18_:Dictionary = new Dictionary();
+      {    
+         var targetDistance:Number = Number.MAX_VALUE;
+         var currentBuilding:BFOUNDATION = null;
+         var ownPosition:Point = null;
+         var buildingPosition:Point = null;
+         var distance:int = 0;
+         var lootedBuildingKey:String = null;
+         var targetFound:Boolean = false;
+         var buildings:Object = InstanceManager.getInstancesByClass(BFOUNDATION);
+         var defensiveBuildings:Vector.<Object> = InstanceManager.getInstancesByClass(BTOWER);
+         var bunkers:Vector.<Object> = InstanceManager.getInstancesByClass(Bunker);
+         var target:BFOUNDATION = null;
+         var lootedBuildings:Dictionary = new Dictionary();
          _looking = true;
-         _loc11_ = PATHING.FromISO(_tmpPoint);
-         for each(_loc7_ in _loc2_)
+         ownPosition = PATHING.FromISO(_tmpPoint);
+         for each(currentBuilding in buildings)
          {
-            if(_loc7_.health > 0 && _loc7_ is ILootable)
+            if(currentBuilding.health > 0 && currentBuilding is ILootable)
             {
-               if(!_loc7_._looted)
+               if(!currentBuilding._looted)
                {
-                  _loc12_ = GRID.FromISO(_loc7_._mc.x,_loc7_._mc.y + _loc7_._middle);
-                  _loc13_ = GLOBAL.QuickDistance(_loc11_,_loc12_) - _loc7_._middle;
-                  _loc14_.push({
-                     "building":_loc7_,
-                     "distance":_loc13_
-                  });
-                  _loc17_ = true;
+                  buildingPosition = GRID.FromISO(currentBuilding._mc.x,currentBuilding._mc.y + currentBuilding._middle);
+                  distance = GLOBAL.QuickDistance(ownPosition,buildingPosition) - currentBuilding._middle;
+                  if(distance < targetDistance)
+                  {
+                     target = currentBuilding;
+                     targetDistance = distance;
+                  }
+                  targetFound = true;
                }
                else
                {
-                  _loc18_[_loc7_] = true;
+                  lootedBuildings[currentBuilding] = true;
                }
             }
          }
-         if(!_loc17_)
+         if(!targetFound)
          {
-            for each(_loc7_ in _loc3_)
+            for each(currentBuilding in defensiveBuildings)
             {
-               if(_loc7_.health > 0 && !(_loc7_ as BTOWER).isJard)
+               if(currentBuilding.health > 0 && !(currentBuilding as BTOWER).isJard)
                {
-                  _loc12_ = GRID.FromISO(_loc7_._mc.x,_loc7_._mc.y + _loc7_._middle);
-                  _loc13_ = GLOBAL.QuickDistance(_loc11_,_loc12_) - _loc7_._middle;
-                  _loc14_.push({
-                     "building":_loc7_,
-                     "distance":_loc13_,
-                     "expand":false
-                  });
-                  _loc17_ = true;
-               }
-            }
-         }
-         if(!_loc17_)
-         {
-            for each(_loc7_ in _loc4_)
-            {
-               if((_loc15_ = _loc7_).health > 0 && (_loc15_._used > 0 || _loc15_._monstersDispatchedTotal > 0))
-               {
-                  _loc12_ = GRID.FromISO(_loc7_._mc.x,_loc7_._mc.y + _loc7_._middle);
-                  _loc13_ = GLOBAL.QuickDistance(_loc11_,_loc12_) - _loc7_._middle;
-                  _loc14_.push({
-                     "building":_loc7_,
-                     "distance":_loc13_,
-                     "expand":false
-                  });
-               }
-            }
-         }
-         if(!_loc17_)
-         {
-            for(_loc16_ in _loc18_)
-            {
-               if(_loc7_ = _loc18_[_loc16_] as BFOUNDATION)
-               {
-                  _loc12_ = GRID.FromISO(_loc7_._mc.x,_loc7_._mc.y + _loc7_._middle);
-                  _loc13_ = GLOBAL.QuickDistance(_loc11_,_loc12_) - _loc7_._middle;
-                  _loc14_.push({
-                     "building":_loc7_,
-                     "distance":_loc13_,
-                     "expand":true
-                  });
-                  _loc17_ = true;
-               }
-            }
-         }
-         if(_loc14_.length == 0)
-         {
-            for each(_loc7_ in BASE._buildingsMain)
-            {
-               if(_loc7_._class != "decoration" && _loc7_._class != "immovable" && _loc7_.health > 0 && _loc7_._class != "enemy")
-               {
-                  if(_loc7_._class == "tower" && !MONSTERBUNKER.isBunkerBuilding(_loc7_._type))
+                  buildingPosition = GRID.FromISO(currentBuilding._mc.x,currentBuilding._mc.y + currentBuilding._middle);
+                  distance = GLOBAL.QuickDistance(ownPosition,buildingPosition) - currentBuilding._middle;
+                  if(distance < targetDistance)
                   {
-                     if((_loc7_ as BTOWER).isJard)
+                     target = currentBuilding;
+                     targetDistance = distance;
+                  }
+                  targetFound = true;
+               }
+            }
+         }
+         if(!targetFound)
+         {
+            for each(currentBuilding in bunkers)
+            {
+               if(currentBuilding.health > 0 && (currentBuilding._used > 0 || currentBuilding._monstersDispatchedTotal > 0))
+               {
+                  buildingPosition = GRID.FromISO(currentBuilding._mc.x,currentBuilding._mc.y + currentBuilding._middle);
+                  distance = GLOBAL.QuickDistance(ownPosition,buildingPosition) - currentBuilding._middle;
+                  if(distance < targetDistance)
+                  {
+                     target = currentBuilding;
+                     targetDistance = distance;
+                  }
+                  targetFound = true;
+               }
+            }
+         }
+         if(!targetFound)
+         {
+            for(lootedBuildingKey in lootedBuildings)
+            {
+               if(currentBuilding = lootedBuildings[lootedBuildingKey] as BFOUNDATION)
+               {
+                  buildingPosition = GRID.FromISO(currentBuilding._mc.x,currentBuilding._mc.y + currentBuilding._middle);
+                  distance = GLOBAL.QuickDistance(ownPosition,buildingPosition) - currentBuilding._middle;
+                  if(distance < targetDistance)
+                  {
+                     target = currentBuilding;
+                     targetDistance = distance;
+                  }
+                  targetFound = true;
+               }
+            }
+         }
+         if(!targetFound)
+         {
+            for each(currentBuilding in BASE._buildingsMain)
+            {
+               if(currentBuilding._class != "decoration" && currentBuilding._class != "immovable" && currentBuilding.health > 0 && currentBuilding._class != "enemy")
+               {
+                  if(currentBuilding._class == "tower" && !MONSTERBUNKER.isBunkerBuilding(currentBuilding._type))
+                  {
+                     if((currentBuilding as BTOWER).isJard)
                      {
                         continue;
                      }
                   }
-                  _loc12_ = GRID.FromISO(_loc7_._mc.x,_loc7_._mc.y + _loc7_._middle);
-                  _loc13_ = GLOBAL.QuickDistance(_loc11_,_loc12_) - _loc7_._middle;
-                  _loc14_.push({
-                     "building":_loc7_,
-                     "distance":_loc13_,
-                     "expand":true
-                  });
+                  buildingPosition = GRID.FromISO(currentBuilding._mc.x,currentBuilding._mc.y + currentBuilding._middle);
+                  distance = GLOBAL.QuickDistance(ownPosition,buildingPosition) - currentBuilding._middle;
+                  if(distance < targetDistance)
+                  {
+                     target = currentBuilding;
+                     targetDistance = distance;
+                  }
+                  targetFound = true;
                }
             }
          }
-         if(_loc14_.length == 0)
+         if(!targetFound)
          {
             changeModeRetreat();
          }
          else
          {
-            _loc14_.sortOn("distance",Array.NUMERIC);
-            _loc19_ = 0;
-            if(_movement == "burrow")
-            {
-               _hasTarget = true;
-               _hasPath = true;
-               _loc20_ = GRID.FromISO(_loc14_[_loc19_].building._mc.x,_loc14_[_loc19_].building._mc.y);
-               _loc21_ = int(Math.random() * 4);
-               _loc22_ = int(_loc14_[_loc19_].building._footprint[0].height);
-               _loc23_ = int(_loc14_[_loc19_].building._footprint[0].width);
-               if(_loc21_ == 0)
-               {
-                  _loc20_.x += Math.random() * _loc22_;
-                  _loc20_.y += _loc23_;
-               }
-               else if(_loc21_ == 1)
-               {
-                  _loc20_.x += _loc22_;
-                  _loc20_.y += _loc23_;
-               }
-               else if(_loc21_ == 2)
-               {
-                  _loc20_.x += _loc22_ - Math.random() * _loc22_ / 2;
-                  _loc20_.y -= _loc23_ / 4;
-               }
-               else if(_loc21_ == 3)
-               {
-                  _loc20_.x -= _loc22_ / 4;
-                  _loc20_.y += _loc23_ - Math.random() * _loc23_ / 2;
-               }
-               _waypoints = [GRID.ToISO(_loc20_.x,_loc20_.y,0)];
-               _targetPosition = _waypoints[0];
-               _targetBuilding = _loc14_[_loc19_].building;
-            }
-            else if(_movement == "fly")
-            {
-               _hasTarget = true;
-               _hasPath = true;
-               _targetBuilding = _loc14_[_loc19_].building;
-               _targetCenter = _targetBuilding._position;
-               if(GLOBAL.QuickDistance(_tmpPoint,_targetCenter) < 170)
-               {
-                  _atTarget = true;
-                  _hasPath = true;
-                  _targetPosition = _targetCenter;
-               }
-               else
-               {
-                  _loc24_ = (_loc24_ = (_loc24_ = Math.atan2(_tmpPoint.y - _targetCenter.y,_tmpPoint.x - _targetCenter.x) * 57.2957795) + (Math.random() * 40 - 20)) / (180 / Math.PI);
-                  _loc25_ = 120 + Math.random() * 10;
-                  _loc26_ = new Point(_targetCenter.x + Math.cos(_loc24_) * _loc25_ * 1.7,_targetCenter.y + Math.sin(_loc24_) * _loc25_);
-                  _waypoints = [_loc26_];
-                  _targetPosition = _waypoints[0];
-               }
-            }
-            else if(GLOBAL._catchup)
-            {
-               WaypointTo(new Point(_loc14_[0].building._mc.x,_loc14_[0].building._mc.y),_loc14_[0].building);
-            }
-            else
-            {
-               _loc19_ = 0;
-               while(_loc19_ < 2)
-               {
-                  if(_loc14_.length > _loc19_)
-                  {
-                     WaypointTo(new Point(_loc14_[_loc19_].building._mc.x,_loc14_[_loc19_].building._mc.y),_loc14_[_loc19_].building);
-                  }
-                  _loc19_++;
-               }
-            }
+            WaypointTo(new Point(target._mc.x,target._mc.y),target);           
          }
       }
       
