@@ -1,8 +1,6 @@
 import { Entity, Index, PrimaryKey, Property } from "@mikro-orm/core";
-import { ORMContext } from "../server";
 import { FrontendKey } from "../utils/FrontendKey";
 import { v4 } from "uuid";
-import { User } from "./user.model";
 
 @Index({ properties: ["userid", "userUnread"] })
 @Index({ properties: ["targetid", "targetUnread"] })
@@ -98,45 +96,12 @@ export class Message {
   }
 
   setAsRead(currentUserId: number): void {
-    if (this.userid === currentUserId) {
+    if (this.userid === currentUserId) {  
       this.userUnread = 0;
       this.unread = this.userUnread;
       return;
     }
     this.targetUnread = 0;
     this.unread = this.targetUnread;
-  }
-
-  public static async countUnreadMessage(id: number) {
-    return ORMContext.em.count(Message, {
-      $or: [
-        {
-          userid: id,
-          userUnread: 1,
-        },
-        {
-          targetid: id,
-          targetUnread: 1,
-        },
-      ],
-    });
-  }
-
-  public static async findUserMessages(user: User, additionalQuery: object) {
-    const messages = await ORMContext.em.find(
-      Message,
-      {
-        $or: [{ userid: user.userid }, { targetid: user.userid }],
-        ...additionalQuery,
-      },
-      {
-        orderBy: { createdAt: "ASC" },
-      }
-    );
-    messages.forEach((message, index) => {
-      message.selectUnread(user.userid);
-      message.messageid = index.toString();
-    });
-    return messages;
   }
 }
