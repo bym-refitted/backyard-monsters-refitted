@@ -62,5 +62,19 @@ export const devConfig = {
   /*
    * Sets whether the tutorial phase of the game is enabled or disabled.
    */
-  skipTutorial: process.env.ENV !== Env.PROD
+  skipTutorial: process.env.ENV !== Env.PROD,
+
+  /**
+   * Sets whether allowed to send message based on message type
+   * 1. normal message: message
+   * 2. truce message: trucerequest, truceaccept, trucereject
+   * 3. migrate message: migraterequest
+   */
+  allowedMessageType: {
+    message: true,
+    trucerequest: false,
+    truceaccept: false,
+    trucereject: false,
+    migraterequest: false
+  }
 };
