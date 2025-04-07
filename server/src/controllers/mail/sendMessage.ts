@@ -8,6 +8,7 @@ import { Message } from "../../models/message.model";
 import { errorLog, logging } from "../../utils/logger";
 import { getCurrentDateTime } from "../../utils/getCurrentDateTime";
 import { findOrCreateThread } from "../../services/mail/findOrCreateThread";
+import { countUnreadMessage } from "../../services/mail/countUnreadMessage";
 
 /**
  * Controller to send message
@@ -54,7 +55,7 @@ export const sendMessage: KoaController = async (ctx) => {
     newThread.lastMessage = newMessage;
     await ORMContext.em.persistAndFlush(newThread);
     logging(`count unread of user ID: ${messageTargetId}`);
-    const count = await Message.countUnreadMessage(messageTargetId);
+    const count = await countUnreadMessage(messageTargetId);
     const targetUser = await ORMContext.em.findOne(User, { userid: messageTargetId }, { populate: ["save"] });
     if (!targetUser) {
       errorLog(`Failed to find user ID: ${messageTargetId}`, {});
