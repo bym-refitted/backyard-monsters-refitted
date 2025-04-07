@@ -1,8 +1,13 @@
 import { ORMContext, redisClient } from "../server";
 import { User } from "../models/user.model";
 import { Context, Next } from "koa";
-import { authFailureErr, discordAgeErr, tokenAuthFailureErr } from "../errors/errors";
+import {
+  authFailureErr,
+  discordAgeErr,
+  tokenAuthFailureErr,
+} from "../errors/errors";
 import JWT, { JwtPayload } from "jsonwebtoken";
+import { Env } from "../enums/Env";
 
 /**
  * Middleware to enforce authentication for protected routes.
@@ -57,7 +62,8 @@ export const verifyUserAuth = async (ctx: Context, next: Next) => {
 export const verifyAccountStatus = async (ctx: Context, next: Next) => {
   const authHeader = ctx.headers.authorization;
 
-  if (!authHeader || !authHeader.startsWith("Bearer ")) throw tokenAuthFailureErr();
+  if (!authHeader || !authHeader.startsWith("Bearer "))
+    throw tokenAuthFailureErr();
 
   const token = authHeader.replace("Bearer ", "");
   const decodedToken = verifyJwtToken(token);
@@ -86,11 +92,23 @@ export interface BymJwtPayload extends DisgustingJwtPayloadHack {
 /**
  * Verifies a JWT token and returns the decoded payload.
  *
+ * For local development, we return a basic payload with the user's email.
+ * In production, we introduce discord authentication.
+ *
  * @param {string} token - The JWT token to verify.
  * @returns {BymJwtPayload} The decoded JWT payload.
  * @throws Will throw an error if the token is invalid or verification fails.
  */
 export const verifyJwtToken = (token: string): BymJwtPayload => {
+  if (process.env.ENV === Env.LOCAL) {
+    return {
+      user: {
+        email: (JWT.decode(token) as BymJwtPayload).user?.email,
+        meetsDiscordAgeCheck: true,
+      },
+    };
+  }
+
   try {
     return <BymJwtPayload>JWT.verify(token, process.env.SECRET_KEY);
   } catch (err) {

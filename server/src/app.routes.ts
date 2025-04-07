@@ -27,6 +27,21 @@ import { forgotPassword } from "./controllers/auth/forgotPassword";
 import { resetPassword } from "./controllers/auth/resetPassword";
 import { devConfig } from "./config/DevSettings";
 import { infernoSave } from "./controllers/inferno/infernoSave";
+import { getNeighbours } from "./controllers/maproom/inferno/getNeighbours";
+import { Env } from "./enums/Env";
+
+const RateLimit = require("koa2-ratelimit").RateLimit;
+
+/**
+ * Rate limit for user registration
+ */
+const registerLimiter = RateLimit.middleware({
+  interval: { min: process.env.ENV === Env.PROD ? 60 : 1 },
+  delayAfter: 1,
+  timeWait: 3 * 1000,
+  max: 3,
+  message: "Too many accounts created from this IP.",
+});
 
 /**
  * All applcation routes
@@ -88,6 +103,7 @@ router.post(
 router.post(
   "/api/:apiVersion/player/register",
   apiVersion,
+  registerLimiter,
   debugDataLog("Registering user"),
   register
 );
@@ -220,6 +236,18 @@ router.post(
   verifyUserAuth,
   debugDataLog("Inferno save data"),
   infernoSave
+);
+
+/**
+ * Inferno get MapRoom neighbours
+ * @name POST /api/:apiVersion/bm/neighbours/get
+ */
+router.post(
+  "/api/:apiVersion/bm/neighbours/get",
+  apiVersion,
+  verifyUserAuth,
+  debugDataLog("Getting Inferno neighbours"),
+  getNeighbours
 );
 
 /**

@@ -20,6 +20,7 @@ import { ClientSafeError } from "../../../middleware/clientSafeError";
 import { championHandler } from "./handlers/championHandler";
 import { anticheat } from "../../../scripts/anticheat/anticheat";
 import { updateResources } from "../../../services/base/updateResources";
+import { buildingDataHandler } from "./handlers/buildingDataHandler";
 
 /**
  * Controller responsible for saving the user's base data.
@@ -36,9 +37,8 @@ export const baseSave: KoaController = async (ctx) => {
   try {
     const saveData = BaseSaveSchema.parse(ctx.request.body);
 
-    const baseSave = await ORMContext.em.findOne(Save, {
-      basesaveid: saveData.basesaveid,
-    });
+    const { basesaveid } = saveData;
+    const baseSave = await ORMContext.em.findOne(Save, { basesaveid });
 
     if (!baseSave) throw saveFailureErr();
 
@@ -75,6 +75,13 @@ export const baseSave: KoaController = async (ctx) => {
         case SaveKeys.ACADEMY:
           academyHandler(ctx, baseSave);
           break;
+
+        case SaveKeys.BUILDINGDATA:
+          if (isAttack) {
+            buildingDataHandler(saveData.buildingdata, baseSave);
+          } else {
+            baseSave[SaveKeys.BUILDINGDATA] = saveData.buildingdata;
+          }
 
         case SaveKeys.CHAMPION:
           if (isAttack) {

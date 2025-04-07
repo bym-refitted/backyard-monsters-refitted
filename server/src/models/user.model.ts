@@ -10,6 +10,9 @@ export class User {
 
   @OneToOne(() => Save, { nullable: true })
   save?: Save;
+  
+  @OneToOne(() => Save, { nullable: true })
+  infernosave?: Save;
 
   @Property({ unique: true })
   @FrontendKey
