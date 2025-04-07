@@ -96,7 +96,7 @@ export class Message {
   }
 
   setAsRead(currentUserId: number): void {
-    if (this.userid === currentUserId) {  
+    if (this.userid === currentUserId) {
       this.userUnread = 0;
       this.unread = this.userUnread;
       return;
