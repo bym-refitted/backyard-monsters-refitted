@@ -36,7 +36,7 @@ export const flags = {
   attacking: 1,
   gifts: 1,
   attacklog: 1,
-  messaging: 1,
+  messaging: devConfig.allowedMessageType.message ? 1: 0,
   sroverlay: 0,
   leaderboard: 1,
   fanfriendbookmarkquests: 1,
