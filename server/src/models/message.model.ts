@@ -1,15 +1,14 @@
 import { Entity, Index, PrimaryKey, Property } from "@mikro-orm/core";
-
 import { ORMContext } from "../server";
 import { FrontendKey } from "../utils/FrontendKey";
 import { v4 } from "uuid";
 import { User } from "./user.model";
 
+@Index({ properties: ["userid", "userUnread"] })
+@Index({ properties: ["targetid", "targetUnread"] })
+@Index({ properties: ["userid", "createdAt"] })
+@Index({ properties: ["targetid", "createdAt"] })
 @Entity({ tableName: "message" })
-@Index({ properties: ["userid", "userUnread"] })  // Optimizes unread count
-@Index({ properties: ["targetid", "targetUnread"] })  // Optimizes unread count
-@Index({ properties: ["userid", "createdAt"] })  // Optimizes message retrieval
-@Index({ properties: ["targetid", "createdAt"] })  // Optimizes message retrieval
 export class Message {
   @PrimaryKey()
   @Property()
@@ -19,17 +18,14 @@ export class Message {
   @FrontendKey
   messageid: string;
 
+  @Index()
   @Property()
   @FrontendKey
-  @Index()
   threadid!: string;
 
   @FrontendKey
   @Property()
   updatetime!: number;
-
-  @Property({ onCreate: () => new Date() })
-  createdAt: Date = new Date();
 
   @Property()
   @FrontendKey
@@ -44,10 +40,10 @@ export class Message {
   messagetype!: string;
 
   @Property()
-  userUnread!: number; //shouldn't trigger updateAt & updatetime
+  userUnread!: number;
 
   @Property()
-  targetUnread!: number; //shouldn't trigger updateAt & updatetime
+  targetUnread!: number;
 
   @FrontendKey
   @Property({ persist: false })
@@ -81,7 +77,7 @@ export class Message {
   @FrontendKey
   migratestate: string;
 
-  @Property({ nullable: true, type: 'json' })
+  @Property({ nullable: true, type: "json" })
   @FrontendKey
   coords: number[];
 
@@ -93,8 +89,12 @@ export class Message {
   @FrontendKey
   baseid: string;
 
+  @Property({ onCreate: () => new Date() })
+  createdAt: Date = new Date();
+
   selectUnread(currentUserId: number): void {
-    this.unread = this.userid === currentUserId ? this.userUnread : this.targetUnread
+    this.unread =
+      this.userid === currentUserId ? this.userUnread : this.targetUnread;
   }
 
   setAsRead(currentUserId: number): void {
@@ -112,13 +112,13 @@ export class Message {
       $or: [
         {
           userid: id,
-          userUnread: 1
+          userUnread: 1,
         },
         {
           targetid: id,
-          targetUnread: 1
-        }
-      ]
+          targetUnread: 1,
+        },
+      ],
     });
   }
 
@@ -126,14 +126,11 @@ export class Message {
     const messages = await ORMContext.em.find(
       Message,
       {
-        $or: [
-          { userid: user.userid },
-          { targetid: user.userid }
-        ],
-        ...additionalQuery
+        $or: [{ userid: user.userid }, { targetid: user.userid }],
+        ...additionalQuery,
       },
       {
-        orderBy: { createdAt: 'ASC' }
+        orderBy: { createdAt: "ASC" },
       }
     );
     messages.forEach((message, index) => {

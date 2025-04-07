@@ -18,7 +18,7 @@ export const devConfig = {
    * Enable or disable Inferno on the server.
    */
   inferno: true,
-  
+
   /*
    * Set the default amount of shiny on the user's account.
    * Must be set before creating a new record.
@@ -65,16 +65,13 @@ export const devConfig = {
   skipTutorial: process.env.ENV !== Env.PROD,
 
   /**
-   * Sets whether allowed to send message based on message type
-   * 1. normal message: message
-   * 2. truce message: trucerequest, truceaccept, trucereject
-   * 3. migrate message: migraterequest
+   * Sets the type of messages that are allowed to be sent by the client.
    */
   allowedMessageType: {
     message: true,
     trucerequest: false,
     truceaccept: false,
     trucereject: false,
-    migraterequest: false
-  }
+    migraterequest: false,
+  },
 };
