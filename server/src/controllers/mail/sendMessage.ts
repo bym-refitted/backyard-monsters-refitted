@@ -5,10 +5,10 @@ import { devConfig } from "../../config/DevSettings";
 import { SendMessageSchema } from "./zod/SendMessageSchema";
 import { ORMContext } from "../../server";
 import { Message } from "../../models/message.model";
-import { errorLog, logging } from "../../utils/logger";
 import { getCurrentDateTime } from "../../utils/getCurrentDateTime";
 import { findOrCreateThread } from "../../services/mail/findOrCreateThread";
 import { countUnreadMessage } from "../../services/mail/countUnreadMessage";
+import { mailboxErr } from "../../errors/errors";
 
 /**
  * Controller to send message
@@ -24,65 +24,63 @@ import { countUnreadMessage } from "../../services/mail/countUnreadMessage";
  */
 export const sendMessage: KoaController = async (ctx) => {
   try {
-    const user: User = ctx.authUser;
-    const { type, targetid, subject, message, threadid } =
-      SendMessageSchema.parse(ctx.request.body);
-    const isAllowedToSend = devConfig.allowedMessageType[type];
+    const { userid }: User = ctx.authUser;
+    const message = SendMessageSchema.parse(ctx.request.body);
+
+    const isAllowedToSend = devConfig.allowedMessageType[message.type];
+
     if (!isAllowedToSend) {
-      errorLog(`type ${type} is not allowed`, {});
       ctx.status = Status.OK;
-      ctx.body = { error: 1 };
+      ctx.body = { error: 1, message: "Message type disabled on server" };
       return;
     }
 
-    logging(
-      `check thread of ${threadid} with user of ${user.userid} to ${targetid}`
-    );
-    const newThread = await findOrCreateThread(threadid, user.userid, targetid);
+    const { threadid, targetid } = message;
+    const thread = await findOrCreateThread(threadid, targetid, userid);
 
-    const messageTargetId =
-      user.userid === newThread.userid ? newThread.targetid : newThread.userid;
-    logging(`send message from ${user.userid} to ${messageTargetId}`);
+    const isSender = thread.userid === userid;
+    const messageTargetId = isSender ? thread.targetid : thread.userid;
+
     const newMessage = await ORMContext.em.create(Message, {
-      threadid: newThread.threadid,
-      userid: user.userid,
+      threadid: thread.threadid,
+      userid,
       targetid: messageTargetId,
-      messagetype: type,
+      messagetype: message.type,
       userUnread: 0,
       targetUnread: 1,
-      subject,
-      message,
+      subject: message.subject,
+      message: message.message,
       updatetime: getCurrentDateTime(),
     });
 
-    newThread.messagecount++;
-    newThread.lastMessage = newMessage;
-    await ORMContext.em.persistAndFlush(newThread);
-    logging(`count unread of user ID: ${messageTargetId}`);
+    thread.messagecount++;
+    thread.lastMessage = newMessage;
+    await ORMContext.em.persistAndFlush(thread);
+
     const count = await countUnreadMessage(messageTargetId);
+
     const targetUser = await ORMContext.em.findOne(
       User,
       { userid: messageTargetId },
       { populate: ["save"] }
     );
+
     if (!targetUser) {
-      errorLog(`Failed to find user ID: ${messageTargetId}`, {});
       ctx.status = Status.OK;
       ctx.body = { error: 1 };
       return;
     }
-    targetUser.save.unreadmessages = count;
 
+    targetUser.save.unreadmessages = count;
     await ORMContext.em.persistAndFlush(targetUser);
+
     ctx.status = Status.OK;
     ctx.body = {
       error: 0,
-      threadid: newThread.threadid,
       messageid: 0,
+      threadid: thread.threadid,
     };
   } catch (err) {
-    errorLog("Failed to send message", err);
-    ctx.status = Status.OK;
-    ctx.body = { error: 1 };
+    throw mailboxErr();
   }
 };
