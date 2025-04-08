@@ -1,11 +1,4 @@
-import {
-  Entity,
-  Index,
-  OneToOne,
-  PrimaryKey,
-  Property,
-  Unique,
-} from "@mikro-orm/core";
+import { Entity, Index, OneToOne, PrimaryKey, Property } from "@mikro-orm/core";
 import { v4 } from "uuid";
 import { Message } from "./message.model";
 
