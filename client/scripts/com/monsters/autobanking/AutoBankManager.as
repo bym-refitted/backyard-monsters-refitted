@@ -334,7 +334,8 @@ package com.monsters.autobanking
                }
                _loc4_++;
             }
-            BASE.PointsAdd(Math.ceil(_loc5_.Get() * 0.375));
+            //Comented so autobank doesnt give you xp, main base resource production still gives you xp
+            //BASE.PointsAdd(Math.ceil(_loc5_.Get() * 0.375));
          }
          else if(MapRoomManager.instance.isInMapRoom3)
          {
