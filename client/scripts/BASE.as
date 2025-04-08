@@ -836,10 +836,6 @@ package
                _lastProcessed = int(serverData.savetime);
                GLOBAL.t = _lastProcessed;
                _currentTime = int(serverData.currenttime);
-               if(_lastProcessed < _currentTime - 60 * 60 * 24 * 2)
-               {
-                  _lastProcessed = _currentTime - 60 * 60 * 24 * 2;
-               }
                if(serverData.chatservers != null)
                {
                   Chat._chatServers = serverData.chatservers;
@@ -2170,7 +2166,6 @@ package
          var building:BFOUNDATION = null;
          var storeProcessAmount:int = 0;
          var guardianIndex:int = 0;
-         var buildingTickLimit:int = 0;
          var allTowers:Vector.<Object> = null;
          var allTraps:Vector.<Object> = null;
          var allBunkers:Vector.<Object> = null;
@@ -2193,14 +2188,7 @@ package
                allBuildings ||= InstanceManager.getInstancesByClass(BFOUNDATION);
                for each(building in allBuildings)
                {
-                  buildingTickLimit = int(building.tickLimit);
-                  if(buildingTickLimit < tickDelta)
-                  {
-                     tickDelta = buildingTickLimit;
-                  }
-                  if(buildingTickLimit <= 1)
-                  {
-                  }
+                  tickDelta = Math.min(tickDelta,building.tickLimit);
                }
                if(CREATURES._guardian)
                {
@@ -2209,10 +2197,6 @@ package
                if(tickDelta < 1)
                {
                   tickDelta = 1;
-               }
-               else if(tickDelta > 3000)
-               {
-                  tickDelta = 3000;
                }
             }
             WMATTACK.Tick();
@@ -2268,8 +2252,8 @@ package
                allTowers = InstanceManager.getInstancesByClass(BTOWER);
                allTraps = InstanceManager.getInstancesByClass(BTRAP);
                allBunkers = InstanceManager.getInstancesByClass(Bunker);
-               _loc15_ = 0;
-               while(_loc15_ < 80)
+               tickIteration = 0;
+               while(tickIteration < 80)
                {
                   CREEPS.Tick();
                   CREATURES.Tick();
@@ -2287,24 +2271,15 @@ package
                   }
                   PROJECTILES.Tick();
                   FIREBALLS.Tick();
-                  _loc15_++;
+                  EFFECTS.Tick();
+                  tickIteration++;
                }
             }
-            storeProcessAmount = 0;
-            while(storeProcessAmount < tickDelta)
+            if(GLOBAL.mode == GLOBAL.e_BASE_MODE.WMATTACK || GLOBAL.mode == GLOBAL.e_BASE_MODE.WMVIEW)
             {
-               EFFECTS.Tick();
-               UPDATES.Check();
-               if(isMainYard)
-               {
-                  MONSTERBAITER.Tick();
-               }
-               if(GLOBAL.mode == GLOBAL.e_BASE_MODE.WMATTACK || GLOBAL.mode == GLOBAL.e_BASE_MODE.WMVIEW)
-               {
-                  WMBASE.Tick();
-               }
-               storeProcessAmount++;
+               WMBASE.Tick();
             }
+            UPDATES.Check();
             _lastProcessed += tickDelta;
          }
          if(CREEPS._creepCount == 0)
