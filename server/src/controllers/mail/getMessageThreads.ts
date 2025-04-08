@@ -4,9 +4,10 @@ import { User } from "../../models/user.model";
 import { KoaController } from "../../utils/KoaController";
 
 import { errorLog } from "../../utils/logger";
-import { createDictionary } from "../../utils/createDictionary";
 import { ORMContext } from "../../server";
 import { Thread } from "../../models/thread.model";
+import { Message } from "../../models/message.model";
+import { FilterFrontendKeys } from "../../utils/FrontendKey";
 
 /**
  * Controller to get threads for MailBox.
@@ -25,6 +26,7 @@ export const getMessageThreads: KoaController = async (ctx) => {
       },
       { populate: ["lastMessage"] }
     );
+
     const threadMessages = threads.map((thread, index) => {
       const { lastMessage } = thread;
       lastMessage.selectUnread(user.userid);
@@ -36,10 +38,16 @@ export const getMessageThreads: KoaController = async (ctx) => {
           : lastMessage.userid;
       return lastMessage;
     });
-    ctx.body = {
-      threads: createDictionary(threadMessages, "threadid"),
-    };
+
+    const threadsList = Object.fromEntries(
+      threadMessages.map((thread: Thread) => [
+        thread.threadid,
+        FilterFrontendKeys(thread),
+      ])
+    );
+    
     ctx.status = Status.OK;
+    ctx.body = { error: 0, threads: threadsList };
   } catch (err) {
     errorLog(`Failed to get thread list for user:${user.userid}`, err);
     throw loadFailureErr();
