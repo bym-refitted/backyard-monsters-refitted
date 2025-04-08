@@ -105,3 +105,11 @@ export const permissionErr = () =>
     data: null,
     isClientFriendly: true,
   });
+
+  export const mailboxErr = () =>
+    new ClientSafeError({
+      message: "Mailbox failed with an error.",
+      status: Status.NOT_FOUND,
+      data: null,
+      isClientFriendly: true,
+    });
