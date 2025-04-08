@@ -22,12 +22,12 @@ export enum MapRoomCell {
 /**
  * Enum representing the different versions of the Map Room.
  *
- * @enum {string}
+ * @enum {number}
  */
 export enum MapRoomVersion {
-  V1 = "1",
-  V2 = "2",
-  V3 = "3",
+  V1 = 1,
+  V2 = 2,
+  V3 = 3,
 }
 
 /**
