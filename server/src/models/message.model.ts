@@ -19,7 +19,7 @@ export class Message {
   @Index()
   @Property()
   @FrontendKey
-  threadid!: string;
+  threadid!: number;
 
   @FrontendKey
   @Property()
@@ -90,18 +90,7 @@ export class Message {
   @Property({ onCreate: () => new Date() })
   createdAt: Date = new Date();
 
-  selectUnread(currentUserId: number): void {
-    this.unread =
-      this.userid === currentUserId ? this.userUnread : this.targetUnread;
-  }
-
-  setAsRead(currentUserId: number): void {
-    if (this.userid === currentUserId) {
-      this.userUnread = 0;
-      this.unread = this.userUnread;
-      return;
-    }
-    this.targetUnread = 0;
-    this.unread = this.targetUnread;
+  selectUnread(userid: number) {
+    this.unread = this.userid === userid ? this.userUnread : this.targetUnread;
   }
 }

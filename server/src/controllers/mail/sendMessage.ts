@@ -44,7 +44,7 @@ export const sendMessage: KoaController = async (ctx) => {
       user.userid === newThread.userid ? newThread.targetid : newThread.userid;
     logging(`send message from ${user.userid} to ${messageTargetId}`);
     const newMessage = await ORMContext.em.create(Message, {
-      threadid: newThread.threadid.toString(),
+      threadid: newThread.threadid,
       userid: user.userid,
       targetid: messageTargetId,
       messagetype: type,
