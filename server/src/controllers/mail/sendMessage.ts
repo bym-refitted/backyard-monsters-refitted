@@ -35,21 +35,27 @@ export const sendMessage: KoaController = async (ctx) => {
       return;
     }
 
+    // Profanity filter
+    const { Filter } = await import("bad-words");
+    const filter = new Filter();
+    const filteredSubject = filter.clean(message.subject);
+    const filteredMessage = filter.clean(message.message);
+
     const { threadid, targetid } = message;
     const thread = await findOrCreateThread(threadid, targetid, userid);
 
     const isSender = thread.userid === userid;
     const messageTargetId = isSender ? thread.targetid : thread.userid;
 
-    const newMessage = await ORMContext.em.create(Message, {
+    const newMessage = ORMContext.em.create(Message, {
       threadid: thread.threadid,
       userid,
       targetid: messageTargetId,
       messagetype: message.type,
       userUnread: 0,
       targetUnread: 1,
-      subject: message.subject,
-      message: message.message,
+      subject: filteredSubject,
+      message: filteredMessage,
       updatetime: getCurrentDateTime(),
     });
 
