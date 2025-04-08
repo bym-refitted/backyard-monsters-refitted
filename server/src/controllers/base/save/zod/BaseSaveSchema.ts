@@ -101,6 +101,11 @@ export const BaseSaveSchema = z.object({
     .optional()
     .transform((data) => (data ? JSON.parse(data) : undefined)),
 
+    attackersiege: z
+    .string()
+    .optional()
+    .transform((data) => (data ? JSON.parse(data) : undefined)),
+
   /**
    * The 'over' property, which indicates a state.
    * This property is optional and remains as a string.
