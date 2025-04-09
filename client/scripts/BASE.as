@@ -836,6 +836,12 @@ package
                _lastProcessed = int(serverData.savetime);
                GLOBAL.t = _lastProcessed;
                _currentTime = int(serverData.currenttime);
+               if(_lastProcessed < _currentTime - 60 * 60 * 24 * 60)
+               {
+                  // Limits the last known save time to 60 days ago at most, as this affects load times.
+                  // Practically, no single time-based action in a base will take longer than this.
+                  _lastProcessed = _currentTime - 60 * 60 * 24 * 60;
+               }
                if(serverData.chatservers != null)
                {
                   Chat._chatServers = serverData.chatservers;
@@ -2172,9 +2178,8 @@ package
          var tower:BFOUNDATION = null;
          var trap:BTRAP = null;
          var bunker:Bunker = null;
-         var _loc15_:int = 0;
+         var tickIteration:int = 0;
          var progress:Number = NaN;
-         var buildingsProcessed:int = 0;
          if(_lastProcessed < param1)
          {
             GLOBAL.t = _lastProcessed;
@@ -2210,12 +2215,10 @@ package
                STORE.ProcessPurchases();
                storeProcessAmount--;
             }
-            buildingsProcessed = 0;
             allBuildings ||= InstanceManager.getInstancesByClass(BFOUNDATION);
             for each(building in allBuildings)
             {
                building.Tick(tickDelta);
-               buildingsProcessed++;
             }
             HOUSING.catchupTick(tickDelta);
             guardianIndex = 0;
@@ -2248,7 +2251,6 @@ package
             {
                GLOBAL._render = true;
                PATHING.Tick();
-               buildingsProcessed++;
                allTowers = InstanceManager.getInstancesByClass(BTOWER);
                allTraps = InstanceManager.getInstancesByClass(BTRAP);
                allBunkers = InstanceManager.getInstancesByClass(Bunker);
