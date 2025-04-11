@@ -37,8 +37,6 @@ package
       
       private const _infernoFrameOffset:int = 6;
       
-      private const _infernoMaxMonsters:int = 9;
-      
       private var _portraitImage:DisplayObject;
       
       private var _guidePage:int = 1;
@@ -50,8 +48,8 @@ package
          if(BASE.isInfernoMainYardOrOutpost)
          {
             _monsterString = "IC";
-            _maxMonsters = this._infernoMaxMonsters;
-            if(_page > this._infernoMaxMonsters)
+            _maxMonsters = CREATURELOCKER.NUM_ICREEP_TYPE;
+            if(_page > _maxMonsters)
             {
                _page = 1;
             }
