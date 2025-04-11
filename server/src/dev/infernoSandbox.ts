@@ -32,7 +32,7 @@ export const infernoSandbox = (user?: User) => {
     lastupdate: 0,
     usemap: 1,
     credits: 980412,
-    champion: "null",
+    champion: null,
     worldid: "",
     event_score: 0,
     chatenabled: 0,
