@@ -16,6 +16,7 @@ import { Status } from "../../enums/StatusCodes";
 import { Context } from "koa";
 import { UserLoginSchema } from "./zod/AuthSchemas";
 import { Env } from "../../enums/Env";
+import type { StringValue } from "ms";
 
 /**
  * Authenticates a user using a JWT token.
@@ -107,7 +108,7 @@ export const login: KoaController = async (ctx) => {
     } satisfies BymJwtPayload,
     process.env.SECRET_KEY,
     {
-      expiresIn: sessionLifeTime,
+      expiresIn: sessionLifeTime as StringValue,
     }
   );
 
