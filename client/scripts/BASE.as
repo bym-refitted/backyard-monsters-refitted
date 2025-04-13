@@ -836,9 +836,9 @@ package
                _lastProcessed = int(serverData.savetime);
                GLOBAL.t = _lastProcessed;
                _currentTime = int(serverData.currenttime);
-               if(_lastProcessed < _currentTime - 60 * 60 * 24 * 60)
+               if(_lastProcessed < _currentTime - 60 * 60 * 24 * 30)
                {
-                  // Limits the last known save time to 60 days ago at most, as this affects load times.
+                  // Limits the last known save time to 30 days ago at most, as this affects load times.
                   // Practically, no single time-based action in a base will take longer than this.
                   _lastProcessed = _currentTime - 60 * 60 * 24 * 60;
                }
