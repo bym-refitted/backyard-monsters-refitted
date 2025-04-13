@@ -840,7 +840,7 @@ package
                {
                   // Limits the last known save time to 30 days ago at most, as this affects load times.
                   // Practically, no single time-based action in a base will take longer than this.
-                  _lastProcessed = _currentTime - 60 * 60 * 24 * 60;
+                  _lastProcessed = _currentTime - 60 * 60 * 24 * 30;
                }
                if (serverData.chatservers != null)
                {
