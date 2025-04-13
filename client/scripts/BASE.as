@@ -836,9 +836,11 @@ package
                _lastProcessed = int(serverData.savetime);
                GLOBAL.t = _lastProcessed;
                _currentTime = int(serverData.currenttime);
-               if(_lastProcessed < _currentTime - 60 * 60 * 24 * 2)
+               if(_lastProcessed < _currentTime - 60 * 60 * 24 * 60)
                {
-                  _lastProcessed = _currentTime - 60 * 60 * 24 * 2;
+                  // Limits the last known save time to 60 days ago at most, as this affects load times.
+                  // Practically, no single time-based action in a base will take longer than this.
+                  _lastProcessed = _currentTime - 60 * 60 * 24 * 60;
                }
                if(serverData.chatservers != null)
                {
@@ -2165,95 +2167,80 @@ package
       
       public static function ProcessC(param1:int) : void
       {
-         var _loc3_:Vector.<Object> = null;
-         var _loc4_:int = 0;
-         var _loc5_:BFOUNDATION = null;
-         var _loc6_:int = 0;
-         var _loc7_:int = 0;
-         var _loc8_:int = 0;
-         var _loc9_:Vector.<Object> = null;
-         var _loc10_:Vector.<Object> = null;
-         var _loc11_:Vector.<Object> = null;
-         var _loc12_:BFOUNDATION = null;
-         var _loc13_:BTRAP = null;
-         var _loc14_:Bunker = null;
-         var _loc15_:int = 0;
-         var _loc16_:Number = NaN;
-         var _loc2_:int = 0;
+         var allBuildings:Vector.<Object> = null;
+         var tickDelta:int = 0;
+         var building:BFOUNDATION = null;
+         var storeProcessAmount:int = 0;
+         var guardianIndex:int = 0;
+         var allTowers:Vector.<Object> = null;
+         var allTraps:Vector.<Object> = null;
+         var allBunkers:Vector.<Object> = null;
+         var tower:BFOUNDATION = null;
+         var trap:BTRAP = null;
+         var bunker:Bunker = null;
+         var tickIteration:int = 0;
+         var progress:Number = NaN;
          if(_lastProcessed < param1)
          {
             GLOBAL.t = _lastProcessed;
-            _loc4_ = param1 - _lastProcessed;
+            tickDelta = param1 - _lastProcessed;
             if(CREEPS._creepCount > 0)
             {
-               _loc4_ = 1;
+               tickDelta = 1;
             }
             else
             {
-               _loc3_ ||= InstanceManager.getInstancesByClass(BFOUNDATION);
-               for each(_loc5_ in _loc3_)
+               allBuildings ||= InstanceManager.getInstancesByClass(BFOUNDATION);
+               for each(building in allBuildings)
                {
-                  _loc8_ = int(_loc5_.tickLimit);
-                  if(_loc8_ < _loc4_)
-                  {
-                     _loc4_ = _loc8_;
-                  }
-                  if(_loc8_ <= 1)
-                  {
-                  }
+                  tickDelta = Math.min(tickDelta,building.tickLimit);
                }
                if(CREATURES._guardian)
                {
-                  _loc4_ = Math.min(_loc4_,CREATURES._guardian.tickLimit);
+                  tickDelta = Math.min(tickDelta,CREATURES._guardian.tickLimit);
                }
-               if(_loc4_ < 1)
+               if(tickDelta < 1)
                {
-                  _loc4_ = 1;
-               }
-               else if(_loc4_ > 3000)
-               {
-                  _loc4_ = 3000;
+                  tickDelta = 1;
                }
             }
             WMATTACK.Tick();
             if(WMATTACK._inProgress)
             {
-               _loc4_ = 1;
+               tickDelta = 1;
             }
-            _loc6_ = int(_lastProcessed / 60) - int((_lastProcessed + _loc4_) / 60);
-            while(_loc6_ >= 0)
+            storeProcessAmount = int(_lastProcessed / 60) - int((_lastProcessed + tickDelta) / 60);
+            while(storeProcessAmount >= 0)
             {
                STORE.ProcessPurchases();
-               _loc6_--;
+               storeProcessAmount--;
             }
-            _loc2_ = 0;
-            _loc3_ ||= InstanceManager.getInstancesByClass(BFOUNDATION);
-            for each(_loc5_ in _loc3_)
+            allBuildings ||= InstanceManager.getInstancesByClass(BFOUNDATION);
+            for each(building in allBuildings)
             {
-               _loc5_.Tick(_loc4_);
-               _loc2_++;
+               building.Tick(tickDelta);
             }
-            HOUSING.catchupTick(_loc4_);
-            _loc7_ = 0;
-            while(_loc7_ < CREATURES._guardianList.length)
+            HOUSING.catchupTick(tickDelta);
+            guardianIndex = 0;
+            while(guardianIndex < CREATURES._guardianList.length)
             {
-               if(Boolean(CREATURES._guardianList[_loc7_]) && CREATURES._guardianList[_loc7_].tick(_loc4_))
+               if(Boolean(CREATURES._guardianList[guardianIndex]) && CREATURES._guardianList[guardianIndex].tick(tickDelta))
                {
                   if(!BYMConfig.instance.RENDERER_ON)
                   {
-                     MAP._BUILDINGTOPS.removeChild(CREATURES._guardianList[_loc7_].graphic);
+                     MAP._BUILDINGTOPS.removeChild(CREATURES._guardianList[guardianIndex].graphic);
                   }
-                  CREATURES._guardianList[_loc7_].clearRasterData();
-                  if(CREATURES._guardianList[_loc7_] == CREATURES._guardian)
+                  CREATURES._guardianList[guardianIndex].clearRasterData();
+                  if(CREATURES._guardianList[guardianIndex] == CREATURES._guardian)
                   {
                      CREATURES._guardian = null;
                   }
                   else
                   {
-                     CREATURES._guardianList.splice(_loc7_,1);
+                     CREATURES._guardianList.splice(guardianIndex,1);
                   }
                }
-               _loc7_++;
+               guardianIndex++;
             }
             if(isMainYard)
             {
@@ -2264,53 +2251,43 @@ package
             {
                GLOBAL._render = true;
                PATHING.Tick();
-               _loc2_++;
-               _loc9_ = InstanceManager.getInstancesByClass(BTOWER);
-               _loc10_ = InstanceManager.getInstancesByClass(BTRAP);
-               _loc11_ = InstanceManager.getInstancesByClass(Bunker);
-               _loc15_ = 0;
-               while(_loc15_ < 80)
+               allTowers = InstanceManager.getInstancesByClass(BTOWER);
+               allTraps = InstanceManager.getInstancesByClass(BTRAP);
+               allBunkers = InstanceManager.getInstancesByClass(Bunker);
+               tickIteration = 0;
+               while(tickIteration < 80)
                {
                   CREEPS.Tick();
                   CREATURES.Tick();
-                  for each(_loc12_ in _loc9_)
+                  for each(tower in allTowers)
                   {
-                     _loc12_.TickAttack();
+                     tower.TickAttack();
                   }
-                  for each(_loc13_ in _loc10_)
+                  for each(trap in allTraps)
                   {
-                     _loc13_.TickAttack();
+                     trap.TickAttack();
                   }
-                  for each(_loc14_ in _loc11_)
+                  for each(bunker in allBunkers)
                   {
-                     _loc14_.TickAttack();
+                     bunker.TickAttack();
                   }
                   PROJECTILES.Tick();
                   FIREBALLS.Tick();
-                  _loc15_++;
+                  EFFECTS.Tick();
+                  tickIteration++;
                }
             }
-            _loc6_ = 0;
-            while(_loc6_ < _loc4_)
+            if(GLOBAL.mode == GLOBAL.e_BASE_MODE.WMATTACK || GLOBAL.mode == GLOBAL.e_BASE_MODE.WMVIEW)
             {
-               EFFECTS.Tick();
-               UPDATES.Check();
-               if(isMainYard)
-               {
-                  MONSTERBAITER.Tick();
-               }
-               if(GLOBAL.mode == GLOBAL.e_BASE_MODE.WMATTACK || GLOBAL.mode == GLOBAL.e_BASE_MODE.WMVIEW)
-               {
-                  WMBASE.Tick();
-               }
-               _loc6_++;
+               WMBASE.Tick();
             }
-            _lastProcessed += _loc4_;
+            UPDATES.Check();
+            _lastProcessed += tickDelta;
          }
          if(CREEPS._creepCount == 0)
          {
-            _loc16_ = (_lastProcessed - _lastProcessedB) / (param1 - _lastProcessedB);
-            PLEASEWAIT.Update(KEYS.Get("msg_rendering") + int(100 * _loc16_) + "% ");
+            progress = (_lastProcessed - _lastProcessedB) / (param1 - _lastProcessedB);
+            PLEASEWAIT.Update(KEYS.Get("msg_rendering") + int(100 * progress) + "% ");
          }
          else
          {
