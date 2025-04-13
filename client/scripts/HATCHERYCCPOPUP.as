@@ -222,16 +222,17 @@ package
       _loc12_ -> damageShown, idk why damage text is render in a different way than the other stats
       _loc2_ -> removed since it does nothing
       _loc4_ -> creatures
-      _loc3_ -> removed since it was not needed, changed to param1
+      _loc3_ -> removed since it was not needed, changed to param1 (creatureID)
       _loc13_ -> level
-      
+      param1 -> creatureID
+
       added v2 var so inferno monsters show their cost in magma not goo
       */
-      public function MonsterInfoB(param1:String) : void
+      public function MonsterInfoB(creatureID:String) : void
       {
          var currentCreature:String = null;
          var damageShown:int = 0;
-         var creature:Object = CREATURELOCKER._creatures[param1];
+         var creature:Object = CREATURELOCKER._creatures[creatureID];
          var speed:Number = 0;
          var health:int = 0;
          var damage:int = 0;
@@ -265,14 +266,14 @@ package
                cStorage = CREATURES.GetProperty(currentCreature,"cStorage");
             }
          }
-         damageShown = CREATURES.GetProperty(param1,"damage");
+         damageShown = CREATURES.GetProperty(creatureID,"damage");
          TweenLite.to(mcMonsterInfo.bSpeed.mcBar,0.4,{
-            "width":100 / speed * CREATURES.GetProperty(param1,"speed"),
+            "width":100 / speed * CREATURES.GetProperty(creatureID,"speed"),
             "ease":Circ.easeInOut,
             "delay":0
          });
          TweenLite.to(mcMonsterInfo.bHealth.mcBar,0.4,{
-            "width":100 / health * CREATURES.GetProperty(param1,"health"),
+            "width":100 / health * CREATURES.GetProperty(creatureID,"health"),
             "ease":Circ.easeInOut,
             "delay":0.05
          });
@@ -282,22 +283,22 @@ package
             "delay":0.1
          });
          TweenLite.to(mcMonsterInfo.bResource.mcBar,0.4,{
-            "width":100 / cResource * CREATURES.GetProperty(param1,"cResource"),
+            "width":100 / cResource * CREATURES.GetProperty(creatureID,"cResource"),
             "ease":Circ.easeInOut,
             "delay":0.15
          });
          TweenLite.to(mcMonsterInfo.bStorage.mcBar,0.4,{
-            "width":100 / cStorage * CREATURES.GetProperty(param1,"cStorage"),
+            "width":100 / cStorage * CREATURES.GetProperty(creatureID,"cStorage"),
             "ease":Circ.easeInOut,
             "delay":0.2
          });
          TweenLite.to(mcMonsterInfo.bTime.mcBar,0.4,{
-            "width":100 / cTime * CREATURES.GetProperty(param1,"cTime"),
+            "width":100 / cTime * CREATURES.GetProperty(creatureID,"cTime"),
             "ease":Circ.easeInOut,
             "delay":0.25
          });
-         mcMonsterInfo.tSpeed.htmlText = KEYS.Get("mon_statsspeed",{"v1":CREATURES.GetProperty(param1,"speed")});
-         mcMonsterInfo.tHealth.htmlText = GLOBAL.FormatNumber(CREATURES.GetProperty(param1,"health"));
+         mcMonsterInfo.tSpeed.htmlText = KEYS.Get("mon_statsspeed",{"v1":CREATURES.GetProperty(creatureID,"speed")});
+         mcMonsterInfo.tHealth.htmlText = GLOBAL.FormatNumber(CREATURES.GetProperty(creatureID,"health"));
          if(damageShown > 0)
          {
             mcMonsterInfo.tDamage.htmlText = damageShown;
@@ -310,24 +311,24 @@ package
                ? KEYS.Get(BRESOURCE.GetResourceNameKey(7)) 
                : KEYS.Get(BRESOURCE.GetResourceNameKey(3));
          mcMonsterInfo.tResource.htmlText = KEYS.Get("mon_att_costvalue",{
-            "v1":GLOBAL.FormatNumber(CREATURES.GetProperty(param1,"cResource")),
+            "v1":GLOBAL.FormatNumber(CREATURES.GetProperty(creatureID,"cResource")),
             "v2":v2
          });
-         mcMonsterInfo.tStorage.htmlText = KEYS.Get("mon_att_housingvalue",{"v1":CREATURES.GetProperty(param1,"cStorage")});
-         mcMonsterInfo.tTime.htmlText = GLOBAL.ToTime(CREATURES.GetProperty(param1,"cTime"),true);
+         mcMonsterInfo.tStorage.htmlText = KEYS.Get("mon_att_housingvalue",{"v1":CREATURES.GetProperty(creatureID,"cStorage")});
+         mcMonsterInfo.tTime.htmlText = GLOBAL.ToTime(CREATURES.GetProperty(creatureID,"cTime"),true);
          var level:int = 1;
-         if(Boolean(GLOBAL.player.m_upgrades[param1]) && GLOBAL.player.m_upgrades[param1].level > 1)
+         if(Boolean(GLOBAL.player.m_upgrades[creatureID]) && GLOBAL.player.m_upgrades[creatureID].level > 1)
          {
-            level = int(GLOBAL.player.m_upgrades[param1].level);
+            level = int(GLOBAL.player.m_upgrades[creatureID].level);
          }
          mcMonsterInfo.tDescription.htmlText = "<b>" + KEYS.Get("hatcherypopup_level",{"v1":level}) + " " + KEYS.Get(creature.name) + "</b><br>" + KEYS.Get(creature.description);
-         if(Boolean(CREATURELOCKER._lockerData[param1]) && CREATURELOCKER._lockerData[param1].t == 2)
+         if(Boolean(CREATURELOCKER._lockerData[creatureID]) && CREATURELOCKER._lockerData[creatureID].t == 2)
          {
             mcMonsterInfo.mcLocked.visible = false;
          }
          else
          {
-            mcMonsterInfo.mcLocked.tText.htmlText = "<b>" + KEYS.Get("hat_unlockinlocker",{"v1":KEYS.Get(CREATURELOCKER._creatures[param1].name)}) + "</b>";
+            mcMonsterInfo.mcLocked.tText.htmlText = "<b>" + KEYS.Get("hat_unlockinlocker",{"v1":KEYS.Get(CREATURELOCKER._creatures[creatureID].name)}) + "</b>";
             mcMonsterInfo.mcLocked.visible = true;
          }
          this.MonsterInfoShow();
