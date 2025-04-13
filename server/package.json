@@ -20,8 +20,8 @@
   "license": "ISC",
   "dependencies": {
     "@koa/router": "13.1.0",
-    "@mikro-orm/core": "^5.7.12",
-    "@mikro-orm/mariadb": "5.9.7",
+    "@mikro-orm/core": "5.9.8",
+    "@mikro-orm/mariadb": "5.9.8",
     "alea": "^1.0.1",
     "bad-words": "^4.0.0",
     "bcrypt": "^5.1.1",
