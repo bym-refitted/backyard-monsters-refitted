@@ -29,6 +29,11 @@ import { devConfig } from "./config/DevSettings";
 import { infernoSave } from "./controllers/inferno/infernoSave";
 import { getNeighbours } from "./controllers/maproom/inferno/getNeighbours";
 import { Env } from "./enums/Env";
+import { getMessageTargets } from "./controllers/mail/getMessageTargets";
+import { getMessageThreads } from "./controllers/mail/getMessageThreads";
+import { getMessageThread } from "./controllers/mail/getMessageThread";
+import { sendMessage } from "./controllers/mail/sendMessage";
+import { reportMessageThread } from "./controllers/mail/reportMessageThread";
 
 const RateLimit = require("koa2-ratelimit").RateLimit;
 
@@ -42,12 +47,6 @@ const registerLimiter = RateLimit.middleware({
   max: 3,
   message: "Too many accounts created from this IP.",
 });
-
-import { getMessageTargets } from "./controllers/mail/getMessageTargets";
-import { getMessageThreads } from "./controllers/mail/getMessageThreads";
-import { getMessageThread } from "./controllers/mail/getMessageThread";
-import { sendMessage } from "./controllers/mail/sendMessage";
-import { reportMessageThread } from "./controllers/mail/reportMessageThread";
 
 /**
  * All applcation routes
