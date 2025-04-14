@@ -234,7 +234,7 @@ package
          {
             level = int(GLOBAL.player.m_upgrades[creatureStringID].level);
          }
-         mcMonsterInfo.tDescription.htmlText = "<b>" + KEYS.Get("hatcherypopup_level",{"v1":level}) + " " + KEYS.Get(creature.name) + "</b><br>" + KEYS.Get(creature_.description);
+         mcMonsterInfo.tDescription.htmlText = "<b>" + KEYS.Get("hatcherypopup_level",{"v1":level}) + " " + KEYS.Get(creature.name) + "</b><br>" + KEYS.Get(creature.description);
          if(Boolean(CREATURELOCKER._lockerData[creatureStringID]) && CREATURELOCKER._lockerData[creatureStringID].t == 2)
          {
             mcMonsterInfo.mcLocked.visible = false;
