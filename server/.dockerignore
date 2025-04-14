@@ -1,9 +1,7 @@
 .git
-
 Dockerfile*
-
 example.env
-
+.env
 # enforce recompile inside the container
 node_modules/
 dist/

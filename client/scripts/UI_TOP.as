@@ -1352,7 +1352,7 @@ package
             {
                if(GLOBAL._flags.messaging == 1)
                {
-                  GLOBAL.Message(KEYS.Get("disabled_mail"));
+                  MAILBOX.Show();
                }
                else
                {
