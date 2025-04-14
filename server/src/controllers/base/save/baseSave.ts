@@ -91,6 +91,12 @@ export const baseSave: KoaController = async (ctx) => {
           }
           break;
 
+        case SaveKeys.ATTACKERSIEGE:
+          if (isAttack) {
+            userSave.siege = saveData.attackersiege;
+          }
+          break;
+
         default:
           if (value) {
             try {

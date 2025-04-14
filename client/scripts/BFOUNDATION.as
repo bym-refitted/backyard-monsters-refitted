@@ -39,7 +39,7 @@ package
    public class BFOUNDATION extends GameObject
    {
       
-      public static const TICK_LIMIT:int = 172800;
+      public static const TICK_LIMIT:int = 1209600;
       
       private static var s_totalBuildingHP:Number;
       
