@@ -8,18 +8,20 @@ import {
 } from "@mikro-orm/core";
 import { User } from "./user.model";
 
-interface Tribedata {
+export interface TribeData {
   baseid: string;
-  tribeHealthData: any;
+  tribeHealthData: Record<string, number>;
+  destroyed?: number;
+  destroyedAt?: number;
 }
 
-@Entity({ tableName: "maproom1" })
-export class MapRoom1 {
+@Entity({ tableName: "inferno_maproom" })
+export class InfernoMaproom {
   @PrimaryKey()
   userid!: number;
 
   @Property({ type: "json", nullable: true })
-  tribedata: Tribedata[] = [];
+  tribedata: TribeData[] = [];
 
   @Property()
   createdAt: Date = new Date();
@@ -31,7 +33,7 @@ export class MapRoom1 {
     em: EntityManager<IDatabaseDriver<Connection>>,
     user: User
   ) => {
-    const maproom = em.create(MapRoom1, {
+    const maproom = em.create(InfernoMaproom, {
       userid: user.userid,
     });
 

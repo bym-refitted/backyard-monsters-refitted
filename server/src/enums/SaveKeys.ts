@@ -7,6 +7,7 @@ export enum SaveKeys {
   RESOURCES = "resources",
   IRESOURCES = "iresources",
   BUILDING_RESOURCES = "buildingresources",
+  BUILDINGDATA = "buildingdata",
   PURCHASE = "purchase",
   ACADEMY = "academy",
   CHAMPION = "champion",
@@ -15,4 +16,5 @@ export enum SaveKeys {
   ATTACKLOOT = "attackloot",
   ATTACKCREATURES = "attackcreatures",
   ATTACKERCHAMPION = "attackerchampion",
+  ATTACKERSIEGE = "attackersiege",
 }

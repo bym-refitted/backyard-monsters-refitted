@@ -45,7 +45,7 @@ package
 
       public static var cdnUrl:String = "http://localhost:3001/";
 
-      public static var apiVersionSuffix:String = "v1.1.5-beta/";
+      public static var apiVersionSuffix:String = "v1.1.8-beta/";
 
       public static var connectionCounter:int;
 
