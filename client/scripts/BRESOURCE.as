@@ -338,10 +338,10 @@ package
          return super.tickLimit;
       }
       
-      override public function Tick(param1:int) : void
+      override public function Tick(seconds:int) : void
       {
-         var _loc2_:int = 0;
-         super.Tick(param1);
+         var secondsRemaining:int = seconds;
+         super.Tick(seconds);
          if(BASE.isOutpost)
          {
             _canFunction = health >= 0;
@@ -364,19 +364,35 @@ package
             {
                if(_producing)
                {
-                  _loc2_ = param1;
-                  while(_loc2_ > 0 && Boolean(_producing))
+                  if(health == maxHealth && secondsRemaining > _countdownProduce.Get())
                   {
-                     if(_countdownProduce.Get() <= _loc2_)
+                     secondsRemaining -= _countdownProduce.Get();
+                     _countdownProduce.Set(0);
+                     this.Produce();
+                     var leftover:int = secondsRemaining % productionTimeout;
+                     var totalIterations:int = (secondsRemaining - leftover) / productionTimeout;
+                     if (totalIterations > 0)
                      {
-                        _loc2_ -= _countdownProduce.Get();
                         _countdownProduce.Set(0);
-                        this.Produce();
+                        this.Produce(totalIterations);
                      }
-                     else
+                     _countdownProduce.Add(-leftover);
+                  }
+                  else
+                  {
+                     while(secondsRemaining > 0 && Boolean(_producing))
                      {
-                        _countdownProduce.Add(-_loc2_);
-                        _loc2_ = 0;
+                        if(_countdownProduce.Get() <= secondsRemaining)
+                        {
+                           secondsRemaining -= _countdownProduce.Get();
+                           _countdownProduce.Set(0);
+                           this.Produce();
+                        }
+                        else
+                        {
+                           _countdownProduce.Add(-secondsRemaining);
+                           secondsRemaining = 0;
+                        }
                      }
                   }
                }
@@ -460,7 +476,7 @@ package
          return param1;
       }
       
-      public function Produce() : void
+      public function Produce(totalIterations:int = 1) : void
       {
          if(_prefab)
          {
@@ -482,7 +498,7 @@ package
          }
          if(_producing)
          {
-            _stored.Set(Math.min(_stored.Get() + this.productionValue,this.productionCapacity));
+            _stored.Set(Math.min(_stored.Get() + (this.productionValue * totalIterations),this.productionCapacity));
             if(_stored.Get() >= this.productionCapacity)
             {
                _producing = 0;
