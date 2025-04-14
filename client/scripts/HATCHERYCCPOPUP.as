@@ -212,21 +212,15 @@ package
       }
 
       /* 
-      _loc5_ -> speed, also change to a Number since max speed its not an int
-      _loc6_ -> health
-      _loc7_ -> damage
-      _loc8_ -> cTime
-      _loc9_ -> cResource
-      _loc10_ -> cStorage
-      _loc11_ -> currentCreature
-      _loc12_ -> damageShown, idk why damage text is render in a different way than the other stats
-      _loc2_ -> removed since it does nothing
-      _loc4_ -> creatures
-      _loc3_ -> removed since it was not needed, changed to param1 (creatureID)
-      _loc13_ -> level
-      param1 -> creatureID
-
-      added v2 var so inferno monsters show their cost in magma not goo
+       * This function has been rewritten.
+       * 
+       * @autor: matiasbais
+       * 
+       * @changes: Renamed local registers to readable names and removed unused logic
+       * Added 'v2' variables to display magma/goo depending on monster type
+       * Updated speed variable to a Number type to be able to handle floting point values
+       * 
+       * @param {String} creatureID - the current creature's ID passed to MonsterInfoB
       */
       public function MonsterInfoB(creatureID:String) : void
       {
