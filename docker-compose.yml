@@ -2,45 +2,47 @@ volumes:
   db:
   phpmyadmin:
 
-
 networks:
   bymr:
-
 
 services:
   web:
     build: ./server
     environment:
-      - BASE_URL=localhost
+      - ENV=${ENV}
+      - BASE_URL=${BASE_URL}
       - PORT=3001
-      - DB_NAME=bymr
+      - DB_NAME=${DB_NAME}
       - DB_HOST=db
       - DB_PORT=3306
-      - DB_USER=bymr
-      - DB_PASSWORD=bymr
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
       # DO NOT USE THIS IN PRODUCTION!
-      - SECRET_KEY=178fd6594da164eac2e78d7ead343f8971c74df3910a36dd03da4cf6e1ae615e
+      - SECRET_KEY=${SECRET_KEY}
+      - REDIS_URL=redis://redis:6379
     networks:
       - bymr
     ports:
-      - 3001:3001
+      - ${API_PORT}:3001
     develop:
       watch:
         - action: sync
           path: server
           target: /app
     depends_on:
+      redis:
+        condition: service_healthy
       db:
         condition: service_healthy
   db:
-    image: mariadb:lts
+    image: mariadb:10.6
     environment:
-      - MARIADB_ROOT_PASSWORD=root
-      - MARIADB_USER=bymr
-      - MARIADB_PASSWORD=bymr
-      - MARIADB_DATABASE=bymr
+      - MARIADB_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
+      - MARIADB_USER=${DB_USER}
+      - MARIADB_PASSWORD=${DB_PASSWORD}
+      - MARIADB_DATABASE=${DB_NAME}
     ports:
-      - 3306:3306
+      - ${DB_PORT}:3306
     networks:
       - bymr
     volumes:
@@ -54,11 +56,23 @@ services:
   phpmyadmin:
     image: phpmyadmin:5
     environment:
-      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
       - PMA_HOST=db
     ports:
-      - 8080:80
+      - ${PHP_MY_ADMIN_PORT}:80
     networks:
       - bymr
     depends_on:
       - db
+  redis:
+    image: redis:8.0-M03-bookworm
+    ports:
+      - ${REDIS_PORT}:6379
+    networks:
+      - bymr
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 3

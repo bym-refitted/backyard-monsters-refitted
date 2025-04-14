@@ -517,6 +517,7 @@ export class Save {
     "protected",
     "champion",
     "over",
+    "buildingdata",
     "buildinghealthdata",
     "buildingresources",
     "attackreport",
@@ -561,6 +562,7 @@ export class Save {
       r4: 55864,
     }
 
+    user.infernosave = infernoSave;
     await em.persistAndFlush(infernoSave);
     return infernoSave;
   };

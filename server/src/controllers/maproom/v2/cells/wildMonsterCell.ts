@@ -17,7 +17,7 @@ export const wildMonsterCell = async (cell: WorldMapCell, worldId: string) => {
     .toString()
     .padStart(3, "0")}${cellY.toString().padStart(3, "0")}`;
 
-  const level = calculateTribeLevel(cell.x, cell.y, worldId, tribe);
+  const level = calculateTribeLevel(cell.x, cell.y, tribe);
 
   return {
     uid: 0,

@@ -27,6 +27,26 @@ import { forgotPassword } from "./controllers/auth/forgotPassword";
 import { resetPassword } from "./controllers/auth/resetPassword";
 import { devConfig } from "./config/DevSettings";
 import { infernoSave } from "./controllers/inferno/infernoSave";
+import { getNeighbours } from "./controllers/maproom/inferno/getNeighbours";
+import { Env } from "./enums/Env";
+import { getMessageTargets } from "./controllers/mail/getMessageTargets";
+import { getMessageThreads } from "./controllers/mail/getMessageThreads";
+import { getMessageThread } from "./controllers/mail/getMessageThread";
+import { sendMessage } from "./controllers/mail/sendMessage";
+import { reportMessageThread } from "./controllers/mail/reportMessageThread";
+
+const RateLimit = require("koa2-ratelimit").RateLimit;
+
+/**
+ * Rate limit for user registration
+ */
+const registerLimiter = RateLimit.middleware({
+  interval: { min: process.env.ENV === Env.PROD ? 60 : 1 },
+  delayAfter: 1,
+  timeWait: 3 * 1000,
+  max: 3,
+  message: "Too many accounts created from this IP.",
+});
 
 /**
  * All applcation routes
@@ -88,6 +108,7 @@ router.post(
 router.post(
   "/api/:apiVersion/player/register",
   apiVersion,
+  registerLimiter,
   debugDataLog("Registering user"),
   register
 );
@@ -220,6 +241,18 @@ router.post(
   verifyUserAuth,
   debugDataLog("Inferno save data"),
   infernoSave
+);
+
+/**
+ * Inferno get MapRoom neighbours
+ * @name POST /api/:apiVersion/bm/neighbours/get
+ */
+router.post(
+  "/api/:apiVersion/bm/neighbours/get",
+  apiVersion,
+  verifyUserAuth,
+  debugDataLog("Getting Inferno neighbours"),
+  getNeighbours
 );
 
 /**
@@ -376,4 +409,63 @@ router.post(
   recordDebugData
 );
 
+/**
+ * Get other user's data for message
+ * @name GET /api/:apiVersion/player/getmessagetargets
+ */
+router.get(
+  "/api/:apiVersion/player/getmessagetargets",
+  apiVersion,
+  verifyUserAuth,
+  debugDataLog("Get message targets"),
+  getMessageTargets
+);
+
+/**
+ * Get message threads of current user
+ * @name GET /api/:apiVersion/player/getmessagethreads
+ */
+router.get(
+  "/api/:apiVersion/player/getmessagethreads",
+  apiVersion,
+  verifyUserAuth,
+  debugDataLog("Get message threads"),
+  getMessageThreads
+);
+
+/**
+ * Get messages by thread id, and update the unread value
+ * @name POST /api/:apiVersion/player/getmessagethread
+ */
+router.post(
+  "/api/:apiVersion/player/getmessagethread",
+  apiVersion,
+  verifyUserAuth,
+  debugDataLog("Get message thread by threadid"),
+  getMessageThread
+);
+
+/**
+ * Send message
+ * @name POST /api/:apiVersion/player/sendmessage
+ */
+router.post(
+  "/api/:apiVersion/player/sendmessage",
+  apiVersion,
+  verifyUserAuth,
+  debugDataLog("Send message"),
+  sendMessage
+);
+
+/**
+ * Report thread
+ * @name POST /api/:apiVersion/player/reportmessagethread
+ */
+router.post(
+  "/api/:apiVersion/player/reportmessagethread",
+  apiVersion,
+  verifyUserAuth,
+  debugDataLog("Report message thread"),
+  reportMessageThread
+);
 export default router;

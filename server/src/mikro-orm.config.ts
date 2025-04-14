@@ -7,21 +7,38 @@ import { User } from "./models/user.model";
 import { WorldMapCell } from "./models/worldmapcell.model";
 import { World } from "./models/world.model";
 import { Env } from "./enums/Env";
-import { IncidentReport } from "./models/incidentreport";
-import { MapRoom1 } from "./models/maproom1.model";
+import { Report } from "./models/report.model";
+import { InfernoMaproom } from "./models/infernomaproom.model";
+import { Message } from "./models/message.model";
+import { Thread } from "./models/thread.model";
+
+/**
+ * List of entities to be used with MikroORM.
+ * These entities represent the database tables.
+ */
+const entities = [
+  User,
+  Save,
+  World,
+  WorldMapCell,
+  Report,
+  InfernoMaproom,
+  Message,
+  Thread,
+];
 
 /**
  * Configuration for MikroORM.
- * 
+ *
  * This configuration sets up the ORM to use MariaDB as the database driver.
  * Additional Entities must be added to the `entities` array.
- * 
+ *
  * @type {Options<MariaDbDriver> | Configuration<MariaDbDriver>}
  */
 const mikroOrmConfig = {
   type: "mariadb",
   allowGlobalContext: false,
-  entities: [User, Save, World, WorldMapCell, IncidentReport, MapRoom1],
+  entities,
   debug: process.env.ENV !== Env.PROD,
   dbName: process.env.DB_NAME,
   port: Number(process.env.DB_PORT),

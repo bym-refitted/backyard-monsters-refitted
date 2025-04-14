@@ -12,13 +12,13 @@ export const devConfig = {
   /*
    * Enable or disable the Inferno MapRoom on the server.
    */
-  infernoMaproom: false,
+  infernoMaproom: true,
 
   /*
    * Enable or disable Inferno on the server.
    */
   inferno: true,
-  
+
   /*
    * Set the default amount of shiny on the user's account.
    * Must be set before creating a new record.
@@ -62,5 +62,16 @@ export const devConfig = {
   /*
    * Sets whether the tutorial phase of the game is enabled or disabled.
    */
-  skipTutorial: process.env.ENV !== Env.PROD
+  skipTutorial: process.env.ENV !== Env.PROD,
+
+  /**
+   * Sets the type of messages that are allowed to be sent by the client.
+   */
+  allowedMessageType: {
+    message: true,
+    trucerequest: false,
+    truceaccept: false,
+    trucereject: false,
+    migraterequest: false,
+  },
 };
