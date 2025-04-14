@@ -68,6 +68,7 @@ package com.monsters.monsters.champions
       override public function findTarget(param1:int = 0) : void
       {    
          var targetDistance:Number = Number.MAX_VALUE;
+         var targetDistance2:Number = Number.MAX_VALUE;
          var currentBuilding:BFOUNDATION = null;
          var ownPosition:Point = null;
          var buildingPosition:Point = null;
@@ -78,6 +79,7 @@ package com.monsters.monsters.champions
          var defensiveBuildings:Vector.<Object> = InstanceManager.getInstancesByClass(BTOWER);
          var bunkers:Vector.<Object> = InstanceManager.getInstancesByClass(Bunker);
          var target:BFOUNDATION = null;
+         var target2:BFOUNDATION = null;
          var lootedBuildings:Dictionary = new Dictionary();
          _looking = true;
          ownPosition = PATHING.FromISO(_tmpPoint);
@@ -91,8 +93,16 @@ package com.monsters.monsters.champions
                   distance = GLOBAL.QuickDistance(ownPosition,buildingPosition) - currentBuilding._middle;
                   if(distance < targetDistance)
                   {
+                     target2 = target;
+                     targetDistance2 = targetDistance;
+
                      target = currentBuilding;
                      targetDistance = distance;
+                  }
+                  else if(distance<targetDistance2)
+                  {
+                     target2 = currentBuilding;
+                     targetDistance2 = distance;
                   }
                   targetFound = true;
                }
@@ -112,8 +122,16 @@ package com.monsters.monsters.champions
                   distance = GLOBAL.QuickDistance(ownPosition,buildingPosition) - currentBuilding._middle;
                   if(distance < targetDistance)
                   {
+                     target2 = target;
+                     targetDistance2 = targetDistance;
+
                      target = currentBuilding;
                      targetDistance = distance;
+                  }
+                  else if(distance<targetDistance2)
+                  {
+                     target2 = currentBuilding;
+                     targetDistance2 = distance;
                   }
                   targetFound = true;
                }
@@ -129,8 +147,16 @@ package com.monsters.monsters.champions
                   distance = GLOBAL.QuickDistance(ownPosition,buildingPosition) - currentBuilding._middle;
                   if(distance < targetDistance)
                   {
+                     target2 = target;
+                     targetDistance2 = targetDistance;
+
                      target = currentBuilding;
                      targetDistance = distance;
+                  }
+                  else if(distance<targetDistance2)
+                  {
+                     target2 = currentBuilding;
+                     targetDistance2 = distance;
                   }
                   targetFound = true;
                }
@@ -146,8 +172,16 @@ package com.monsters.monsters.champions
                   distance = GLOBAL.QuickDistance(ownPosition,buildingPosition) - currentBuilding._middle;
                   if(distance < targetDistance)
                   {
+                     target2 = target;
+                     targetDistance2 = targetDistance;
+
                      target = currentBuilding;
                      targetDistance = distance;
+                  }
+                  else if(distance<targetDistance2)
+                  {
+                     target2 = currentBuilding;
+                     targetDistance2 = distance;
                   }
                   targetFound = true;
                }
@@ -170,8 +204,16 @@ package com.monsters.monsters.champions
                   distance = GLOBAL.QuickDistance(ownPosition,buildingPosition) - currentBuilding._middle;
                   if(distance < targetDistance)
                   {
+                     target2 = target;
+                     targetDistance2 = targetDistance;
+
                      target = currentBuilding;
                      targetDistance = distance;
+                  }
+                  else if(distance<targetDistance2)
+                  {
+                     target2 = currentBuilding;
+                     targetDistance2 = distance;
                   }
                   targetFound = true;
                }
@@ -181,9 +223,14 @@ package com.monsters.monsters.champions
          {
             changeModeRetreat();
          }
+         else if(!GLOBAL._catchup && targetDistance2 != Number.MAX_VALUE)
+         {
+            WaypointTo(new Point(target._mc.x,target._mc.y),target);   
+            WaypointTo(new Point(target2._mc.x,target2._mc.y),target2);           
+         }
          else
          {
-            WaypointTo(new Point(target._mc.x,target._mc.y),target);           
+            WaypointTo(new Point(target._mc.x,target._mc.y),target);     
          }
       }
       
