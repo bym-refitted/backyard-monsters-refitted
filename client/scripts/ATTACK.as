@@ -106,8 +106,9 @@ package
       private static var m_lastAttackTime:int;
       
       public static var _curCreaturesAvailable:Array;
+
+      public static var attackMonsters:Array;
        
-      
       public function ATTACK()
       {
          super();
@@ -151,7 +152,7 @@ package
          var _loc1_:Player = null;
          var _loc2_:int = 0;
          var _loc3_:int = 0;
-         var _loc4_:String = null;
+         var creatureID:String = null;
          m_recentlyAttacked = new Dictionary();
          _flingerCooldown = 5;
          _flingerCooling = 0;
@@ -206,14 +207,22 @@ package
          }
          else if(GLOBAL.mode == GLOBAL.e_BASE_MODE.ATTACK || GLOBAL.mode == GLOBAL.e_BASE_MODE.WMATTACK)
          {
+            attackMonsters = [];
             GLOBAL._attackerMapCreaturesStart = {};
-            for(_loc4_ in ATTACK._curCreaturesAvailable)
+            for(creatureID in ATTACK._curCreaturesAvailable)
             {
-               GLOBAL._attackerMapCreaturesStart[_loc4_] = new SecNum(ATTACK._curCreaturesAvailable[_loc4_]);
+               GLOBAL._attackerMapCreaturesStart = new SecNum(ATTACK._curCreaturesAvailable[creatureID]);
+
+               attackMonsters.push({
+                  id: creatureID,
+                  count: ATTACK._curCreaturesAvailable[creatureID],
+                  stats: []
+               });
             }
+            new URLLoaderApi().load(GLOBAL._baseURL + "attack", [["attackMonsters", attackMonsters]]);
          }
       }
-      
+   
       public static function Tick() : void
       {
          var _loc4_:String = null;

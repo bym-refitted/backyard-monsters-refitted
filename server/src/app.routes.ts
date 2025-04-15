@@ -34,6 +34,7 @@ import { getMessageThreads } from "./controllers/mail/getMessageThreads";
 import { getMessageThread } from "./controllers/mail/getMessageThread";
 import { sendMessage } from "./controllers/mail/sendMessage";
 import { reportMessageThread } from "./controllers/mail/reportMessageThread";
+import { validateAttack } from "./controllers/base/validateAttack";
 
 const RateLimit = require("koa2-ratelimit").RateLimit;
 
@@ -160,6 +161,17 @@ router.post(
   verifyUserAuth,
   debugDataLog("Base save data"),
   baseSave
+);
+
+/**
+ * Validate attack data
+ * @name POST /api/:apiVersion/attack
+ */
+router.post(
+  "/base/attack",
+  verifyUserAuth,
+  debugDataLog("Base under attack"),
+  validateAttack
 );
 
 /**
