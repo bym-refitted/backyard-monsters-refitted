@@ -34,6 +34,7 @@ import { getMessageThreads } from "./controllers/mail/getMessageThreads";
 import { getMessageThread } from "./controllers/mail/getMessageThread";
 import { sendMessage } from "./controllers/mail/sendMessage";
 import { reportMessageThread } from "./controllers/mail/reportMessageThread";
+import { Context } from "koa";
 
 const RateLimit = require("koa2-ratelimit").RateLimit;
 
@@ -43,7 +44,13 @@ const RateLimit = require("koa2-ratelimit").RateLimit;
 const registerLimiter = RateLimit.middleware({
   interval: { min: process.env.ENV === Env.PROD ? 60 : 1 },
   max: 3,
-  message: "Too many accounts created from this IP.",
+  handler: async (ctx: Context) => {
+    ctx.status = Status.TOO_MANY_REQUESTS;
+    ctx.body = {
+      error:
+        "Too many requests where sent from this IP while creating an account. Please try again in 1 hour.",
+    };
+  },
 });
 
 /**
