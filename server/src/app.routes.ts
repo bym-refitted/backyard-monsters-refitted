@@ -42,8 +42,6 @@ const RateLimit = require("koa2-ratelimit").RateLimit;
  */
 const registerLimiter = RateLimit.middleware({
   interval: { min: process.env.ENV === Env.PROD ? 60 : 1 },
-  delayAfter: 1,
-  timeWait: 3 * 1000,
   max: 3,
   message: "Too many accounts created from this IP.",
 });
