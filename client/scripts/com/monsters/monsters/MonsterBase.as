@@ -1119,21 +1119,65 @@ package com.monsters.monsters
          this._atTarget = false;
          this._targetCreep = null;
       }
+
+      /*
+       * This function was created to assist in findTargeting
+       * 
+       * @autor: matiasbais
+       * 
+       * @reason: There was a lot of repeated logic in findTarget acrros MonsterBase, ChampionBase and Krallen
+       *          This atemps to make the code a little bit cleaner
+       * 
+       * @param {Object} buildingList - the buildings from which we need the closest ones.
+       *        {Function} condition  - extra conditions for the building to be elegible to be targetted
+       * 
+       * returns a two elements array with the to closest buildings [closestOne, secondClosestOne]
+       * 
+
+      */
+      public function getClosestBuildings(buildingList:Object, condition:Function):Array{
+         var currentBuilding:BFOUNDATION;
+         var buildingPosition:Point;
+         var distance:Number = Number.MAX_VALUE;
+         var targets:Array = [null, null];
+         var targetsDistance:Array = [Number.MAX_VALUE,Number.MAX_VALUE];
+         var ownPosition:Point = PATHING.FromISO(this._tmpPoint);
+
+         for each(currentBuilding in buildingList)
+         {
+            if(currentBuilding.health > 0 && condition(currentBuilding))
+            {
+               buildingPosition = GRID.FromISO(currentBuilding._mc.x, currentBuilding._mc.y + currentBuilding._middle);
+               distance = GLOBAL.QuickDistance(ownPosition, buildingPosition) - currentBuilding._middle;
+               if (distance < targetsDistance[0]) {
+                targets[1] = targets[0];
+                targetsDistance[1] = targetsDistance[0];
+
+                targets[0] = currentBuilding;
+                targetsDistance[0] = distance;
+               } 
+               else if (distance < targetsDistance[1]) 
+               {
+                  targets[1] = currentBuilding;
+                  targetsDistance[1] = distance;
+               }
+            }
+         }
+         return targets;
+      }
       
-      //targetGroup 1 targets all, 2 targets walls, 3 targets resorcers, 4 targets defenses, 5 heals, ¿6 are balthazars?
+      /*
+       * The following changes have been made to this function
+       * 
+       * @autor: matiasbais
+       * 
+       * @changes: Renamed local registers to readable variables names and removed unused logic
+       * Moved repeated logic about calculating the closest buildings to an auxiliary function (getClosestBuildings)
+       * 
+       * @param {int} targetGroup - specifies the targetting preference of the current monster
+      */
       public function findTarget(targetGroup:int = 0) : void
       {
-         var targetDistance:Number = Number.MAX_VALUE;
-         var targetDistance2:Number = Number.MAX_VALUE;
-         var distance:int = 0;
-         var target:BFOUNDATION = null;
-         var target2:BFOUNDATION = null;
-         var targetFound:Boolean = false;
-         var currentBuilding:BFOUNDATION = null;
-         var ownPosition:Point = null;
-         var buildingPosition:Point = null;
-         var bunker:Bunker = null;
-         var hasMonsters:Boolean = false;
          var burrowToPoint:Point = null;
          var movementSeed:int = 0;
          var deltaX:int = 0;
@@ -1142,6 +1186,7 @@ package com.monsters.monsters
          var flySeed:Number = NaN;
          var flyToPoint:Point = null;
          this._looking = true;
+         var targets:Array = [null,null];
          if(this._behaviour == k_sBHVR_HUNT && (CREATURES._creatureCount > 0 || CREATURES._guardian && CREATURES._guardian.health > 0))
          {
             this.findHuntingTargets();
@@ -1154,197 +1199,63 @@ package com.monsters.monsters
                this._targetCenter = this._targetCreep._tmpPoint;
             }
          }
-         ownPosition = PATHING.FromISO(this._tmpPoint);
-         if(targetGroup == 2)
-         {
-            for each(currentBuilding in BASE._buildingsWalls)
-            {
-               if(!currentBuilding._destroyed && currentBuilding.health > 0)
-               {
-                  buildingPosition = GRID.FromISO(currentBuilding._mc.x,currentBuilding._mc.y + currentBuilding._middle);
-                  distance = GLOBAL.QuickDistance(ownPosition,buildingPosition) - currentBuilding._middle;
-                  if(distance < targetDistance)
-                  {
-                     target2 = target;
-                     targetDistance2 = targetDistance;
-
-                     target = currentBuilding;
-                     targetDistance = distance;
-                  }
-                  else if(distance<targetDistance2)
-                  {
-                     target2 = currentBuilding;
-                     targetDistance2 = distance;
-                  }
-                  targetFound = true;
-               }
-            }
+         if(targetGroup == 2){
+            targets = getClosestBuildings(BASE._buildingsWalls, function(b:BFOUNDATION):Boolean{
+               return !b._destroyed;
+            });
          }
          else if(targetGroup == 3)
          {
-            for each(currentBuilding in BASE._buildingsMain)
-            {
-               if(currentBuilding.health > 0 && currentBuilding is ILootable && !currentBuilding._looted)
-               {
-                  buildingPosition = GRID.FromISO(currentBuilding._mc.x,currentBuilding._mc.y + currentBuilding._middle);
-                  distance = GLOBAL.QuickDistance(ownPosition,buildingPosition) - currentBuilding._middle;
-                  if(distance < targetDistance)
-                  {
-                     target2 = target;
-                     targetDistance2 = targetDistance;
-
-                     target = currentBuilding;
-                     targetDistance = distance;
-                  }
-                  else if(distance<targetDistance2)
-                  {
-                     target2 = currentBuilding;
-                     targetDistance2 = distance;
-                  }
-                  targetFound = true;
-               }
-            }
+            targets = getClosestBuildings(BASE._buildingsMain, function(b:BFOUNDATION):Boolean{
+               return(b is ILootable && !b._looted)
+            });
          }
          else if(targetGroup == 4)
          {
-            for each(currentBuilding in BASE._buildingsTowers)
-            {
-               if(MONSTERBUNKER.isBunkerBuilding(currentBuilding._type))
-               {
-                  if(currentBuilding.health > 0 && (currentBuilding._used > 0 || currentBuilding._monstersDispatchedTotal > 0))
-                  {
-                     buildingPosition = GRID.FromISO(currentBuilding._mc.x,currentBuilding._mc.y + currentBuilding._middle);
-                     distance = GLOBAL.QuickDistance(ownPosition,buildingPosition) - currentBuilding._middle;
-                  if(distance < targetDistance)
-                  {
-                     target2 = target;
-                     targetDistance2 = targetDistance;
-
-                     target = currentBuilding;
-                     targetDistance = distance;
-                  }
-                  else if(distance<targetDistance2)
-                  {
-                     target2 = currentBuilding;
-                     targetDistance2 = distance;
-                  }
-                  targetFound = true;
-                  }
-               }
-               else if(currentBuilding._class != "trap" && currentBuilding.health > 0 && !(currentBuilding as BTOWER).isJard)
-               {
-                  buildingPosition = GRID.FromISO(currentBuilding._mc.x,currentBuilding._mc.y + currentBuilding._middle);
-                  distance = GLOBAL.QuickDistance(ownPosition,buildingPosition) - currentBuilding._middle;
-                  if(distance < targetDistance)
-                  {
-                     target2 = target;
-                     targetDistance2 = targetDistance;
-
-                     target = currentBuilding;
-                     targetDistance = distance;
-                  }
-                  else if(distance<targetDistance2)
-                  {
-                     target2 = currentBuilding;
-                     targetDistance2 = distance;
-                  }
-                  targetFound = true;
-               }
-            }
+            targets = getClosestBuildings(BASE._buildingsTowers, function(b:BFOUNDATION):Boolean{
+               return( (MONSTERBUNKER.isBunkerBuilding(b._type) && (b._used > 0 || b._monstersDispatchedTotal > 0)) || (b._class != "trap" && (!(b is BTOWER) || !(b as BTOWER).isJard)))
+            });
          }
          else if(this._targetGroup == 6)
          {
-            for each(bunker in BASE._buildingsBunkers)
-            {
-               if(bunker.health > 0)
-               {
-                  hasMonsters = false;
-                  if(bunker._type == 22)
-                  {
-                     if(bunker._used > 0 || bunker._monstersDispatchedTotal > 0)
-                     {
-                        hasMonsters = true;
-                     }
-                  }
-                  if(bunker._type == 128)
-                  {
-                     if(HOUSING._housingUsed.Get() > 0)
-                     {
-                        hasMonsters = true;
-                     }
-                  }
-                  if(hasMonsters)
-                  {
-                     buildingPosition = GRID.FromISO(_loc13_._mc.x,_loc13_._mc.y + _loc13_._middle);
-                     distance = GLOBAL.QuickDistance(ownPosition,buildingPosition) - bunker._middle;
-                     if(distance < targetDistance)
-                     {
-                        target2 = target;
-                        targetDistance2 = targetDistance;
-
-                        target = currentBuilding;
-                        targetDistance = distance;
-                     }
-                     else if(distance<targetDistance2)
-                     {
-                        target2 = currentBuilding;
-                        targetDistance2 = distance;
-                     }
-                     targetFound = true;
-                  }
-               }
-            }
+            targets = getClosestBuildings(BASE._buildingsBunkers, function(b:BFOUNDATION):Boolean{
+               return( (b._type == 22 && (b._used > 0 || b._monstersDispatchedTotal > 0) ) || (b._type == 128 && HOUSING._housingUsed.Get() > 0 ) )
+            });
          }
-         if(!targetFound || targetGroup == 1)
+         if(targets[0]==null || targetGroup == 1)
          {
-            for each(currentBuilding in BASE._buildingsMain)
-            {
-               if(currentBuilding._class != "decoration" && currentBuilding._class != "immovable" && currentBuilding.health > 0 && currentBuilding._class != "enemy")
+            targets = getClosestBuildings(BASE._buildingsMain, function(b:BFOUNDATION):Boolean{
+               if(b._class != "decoration" && b._class != "immovable" && b._class != "enemy")
                {
                   if(this._targetGroup != 4)
                   {
                      this._targetGroup = 1;
                   }
-                  if(currentBuilding._class == "tower" && !MONSTERBUNKER.isBunkerBuilding(currentBuilding._type))
+                  if(b._class == "tower" && !MONSTERBUNKER.isBunkerBuilding(b._type))
                   {
-                     if((currentBuilding as BTOWER).isJard)
+                     if((b as BTOWER).isJard)
                      {
-                        continue;
+                        return false;
                      }
                   }
-                  buildingPosition = GRID.FromISO(currentBuilding._mc.x,currentBuilding._mc.y + currentBuilding._middle);
-                  distance = GLOBAL.QuickDistance(ownPosition,buildingPosition) - currentBuilding._middle;
-                  if(distance < targetDistance)
-                  {
-                     target2 = target;
-                     targetDistance2 = targetDistance;
-
-                     target = currentBuilding;
-                     targetDistance = distance;
-                  }
-                  else if(distance<targetDistance2)
-                  {
-                     target2 = currentBuilding;
-                     targetDistance2 = distance;
-                  }
-                  targetFound = true;
+                  return true;
                }
-            }
+            });
          }
-         if(!targetFound && !this._targetCreep)
+         if(targets[0]==null && !this._targetCreep)
          {
             this.changeModeRetreat();
          }
-         else if(targetFound)
+         else if(targets[0]!=null)
          {
             if(this._movement == "burrow")
             {
                this._hasTarget = true;
                this._hasPath = true;
-               burrowToPoint = GRID.FromISO(target._mc.x,target._mc.y);
+               burrowToPoint = GRID.FromISO(targets[0]._mc.x,targets[0]._mc.y);
                movementSeed = int(Math.random() * 4);
-               deltaX = int(target._footprint[0].height);
-               deltaY = int(target._footprint[0].width);
+               deltaX = int(targets[0]._footprint[0].height);
+               deltaY = int(targets[0]._footprint[0].width);
                if(movementSeed == 0)
                {
                   burrowToPoint.x += Math.random() * deltaX;
@@ -1367,13 +1278,13 @@ package com.monsters.monsters
                }
                this._waypoints = [GRID.ToISO(burrowToPoint.x,burrowToPoint.y,0)];
                this._targetPosition = this._waypoints[0];
-               this._targetBuilding = target;
+               this._targetBuilding = targets[0];
             }
             else if(this._movement == "fly" || this._movement == "fly_low")
             {
                this._hasTarget = true;
                this._hasPath = true;
-               this._targetBuilding = target
+               this._targetBuilding = targets[0]
                this._targetCenter = this._targetBuilding._position;
                if(this._creatureID == "IC5")
                {
@@ -1411,14 +1322,14 @@ package com.monsters.monsters
                   this._targetPosition = this._waypoints[0];
                }
             }
-            else if(!GLOBAL._catchup && targetDistance2 != Number.MAX_VALUE)
+            else if(!GLOBAL._catchup && targets[1]!=null)
             {
-               WaypointTo(new Point(target._mc.x,target._mc.y),target);   
-               WaypointTo(new Point(target2._mc.x,target2._mc.y),target2);           
+               WaypointTo(new Point(targets[0]._mc.x,targets[0]._mc.y),targets[0]);   
+               WaypointTo(new Point(targets[1]._mc.x,targets[1]._mc.y),targets[1]);           
             }
             else
             {
-               WaypointTo(new Point(target._mc.x,target._mc.y),target);     
+               WaypointTo(new Point(targets[0]._mc.x,targets[0]._mc.y),targets[0]);     
             }
          }
       }
