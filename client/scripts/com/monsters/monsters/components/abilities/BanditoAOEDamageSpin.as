@@ -13,7 +13,12 @@ package com.monsters.monsters.components.abilities
       {
          if(Boolean(owner._targetCreep) && owner._atTarget)
          {
+            owner._lockRotation = true;
             owner._targetRotation += owner.attackCooldown * (6 * (0.5 + owner.powerUpLevel() * 0.5));
+         }
+         else
+         {
+            owner._lockRotation = false;
          }
       }
       
