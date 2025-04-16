@@ -20,7 +20,7 @@ package com.monsters.monsters.components.abilities
       
       public function onAttack(target:IAttackable, damageDealt:Number, projectile:ITargetable = null) : Number
       {
-         if(GLOBAL.Timestamp() > this.m_timeAbilityIsRecharged)
+         if(GLOBAL.Timestamp() >= this.m_timeAbilityIsRecharged)
          {
             this.dealAOEDamage(damageDealt, target);
          }

@@ -2,7 +2,7 @@ package com.monsters.monsters.components.abilities
 {
    import com.monsters.interfaces.IAttackable;
    import com.monsters.monsters.components.Component;
-   import com.monsters.monsters.MonsterBase;
+   import com.monsters.monsters.creeps.CreepBase;
    import flash.geom.Point;
    
    public class AOEDamage extends Component
@@ -29,16 +29,41 @@ package com.monsters.monsters.components.abilities
          this.m_includeInitialTarget = includeInitialTarget;
       }
       
-      protected function dealAOEDamage(param1:Number, initialTarget:IAttackable = null) : void
+      protected function dealAOEDamage(damage:Number, initialTarget:IAttackable = null) : void
       {
-         var _loc2_:Point = new Point(owner.x,owner.y);
-         var _loc3_:Array = Targeting.getTargetsInRange(this.m_radius,_loc2_,this.m_targetFlags);
-         _loc3_.sortOn(["dist"],Array.NUMERIC);
-         if(_loc3_.length > this.m_maxTargets)
+         var ownerLocation:Point = new Point(owner.x,owner.y);
+         var allTargets:Array = getAllTargets(ownerLocation, initialTarget);
+         if(!allTargets || allTargets.length <= 0)
          {
-            _loc3_.length = this.m_maxTargets;
+            return;
          }
-         Targeting.DealLinearAEDamage(_loc2_,this.m_radius,param1,_loc3_,0);
+         allTargets.sortOn(["dist"],Array.NUMERIC);
+         if(allTargets.length > this.m_maxTargets)
+         {
+            allTargets.length = this.m_maxTargets;
+         }
+         Targeting.DealLinearAEDamage(ownerLocation,this.m_radiusOuter,Math.abs(damage),allTargets,m_radiusInner);
+      }
+
+      private function getAllTargets(ownerLocation:Point, initialTarget:IAttackable = null):Array
+      {
+         if(owner._friendly && initialTarget is CreepBase)
+         {
+            // Only gets creeps in this scase, so defending monsters don't friendly-fire their yard's buildings.
+            return Targeting.getCreepsInRange(this.m_radiusOuter,ownerLocation,this.m_targetFlags,this.m_includeInitialTarget ? null : initialTarget);
+         }
+         if(!this.m_includeInitialTarget)
+         {
+            if(initialTarget is CreepBase)
+            {
+               return Targeting.getTargetsInRange(this.m_radiusOuter,ownerLocation,this.m_targetFlags,initialTarget);
+            }
+            else if(initialTarget is BFOUNDATION)
+            {
+               return Targeting.getTargetsInRange(this.m_radiusOuter,ownerLocation,this.m_targetFlags,null,initialTarget);
+            }
+         }
+         return Targeting.getTargetsInRange(this.m_radiusOuter,ownerLocation,this.m_targetFlags);
       }
    }
 }
