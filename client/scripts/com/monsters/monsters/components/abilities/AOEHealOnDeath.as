@@ -1,5 +1,6 @@
 package com.monsters.monsters.components.abilities
 {
+   import com.monsters.interfaces.IAttackable;
    import flash.display.DisplayObject;
    import flash.display.MovieClip;
    
@@ -15,7 +16,7 @@ package com.monsters.monsters.components.abilities
          this.m_healAmount = param2;
       }
       
-      override protected function dealAOEDamage(param1:Number) : void
+      override protected function dealAOEDamage(param1:Number, initialTarget:IAttackable = null) : void
       {
          var _loc2_:Number = NaN;
          var _loc3_:Number = NaN;
@@ -27,7 +28,7 @@ package com.monsters.monsters.components.abilities
          var _loc10_:Number = NaN;
          _loc2_ = m_radius;
          _loc3_ = m_radius;
-         super.dealAOEDamage(this.m_healAmount);
+         super.dealAOEDamage(this.m_healAmount, initialTarget);
          var _loc4_:int = 0;
          while(_loc4_ < 10)
          {
