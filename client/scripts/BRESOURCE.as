@@ -326,13 +326,17 @@ package
       override public function get tickLimit() : int
       {
          var _loc1_:int = 0;
-         if(BASE.isOutpost)
+         if(BASE.isOutpost || !_canFunction)
          {
             return super.tickLimit;
          }
          _loc1_ = this.productionCapacity - _stored.Get();
          if(_loc1_ > 0)
          {
+            if(!_repairing)
+            {
+               return Math.min(Math.floor(this.productionCapacity / this.productionValue) * this.productionTimeout,super.tickLimit);
+            }
             return Math.min(this.productionValue * this.productionTimeout,super.tickLimit);
          }
          return super.tickLimit;
@@ -364,7 +368,7 @@ package
             {
                if(_producing)
                {
-                  if(health == maxHealth && secondsRemaining > _countdownProduce.Get())
+                  if(!_repairing && secondsRemaining > _countdownProduce.Get())
                   {
                      secondsRemaining -= _countdownProduce.Get();
                      _countdownProduce.Set(0);
