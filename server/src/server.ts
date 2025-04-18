@@ -25,7 +25,7 @@ export const app = new Koa();
 export const PORT = process.env.PORT || 3001;
 export const BASE_URL = process.env.BASE_URL;
 
-export const getApiVersion = () => "v1.1.8-beta";
+export const getApiVersion = () => "v1.1.9-beta";
 
 export const ORMContext = {} as {
   orm: MikroORM;
