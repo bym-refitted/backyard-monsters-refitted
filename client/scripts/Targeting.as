@@ -77,16 +77,16 @@ package
          }
       }
       
-      public static function getTargetsInRange(param1:Number, param2:Point, param3:int, param4:Vector.<int> = null) : Array
+      public static function getTargetsInRange(radius:Number, location:Point, targetFlags:int, ignoreCreep:MonsterBase = null, ignoreBuilding:BFOUNDATION = null) : Array
       {
          var _loc5_:Array = [];
-         if(Boolean(param3 & k_TARGETS_ATTACKERS) || Boolean(param3 & k_TARGETS_DEFENDERS))
+         if(Boolean(targetFlags & k_TARGETS_ATTACKERS) || Boolean(targetFlags & k_TARGETS_DEFENDERS))
          {
-            _loc5_ = _loc5_.concat(getCreepsInRange(param1,param2,param3));
+            _loc5_ = _loc5_.concat(getCreepsInRange(radius,location,targetFlags,ignoreCreep));
          }
-         if(param3 & k_TARGETS_BUILDINGS)
+         if(targetFlags & k_TARGETS_BUILDINGS)
          {
-            _loc5_ = _loc5_.concat(getBuildingsInRange(param1,param2,param4));
+            _loc5_ = _loc5_.concat(getBuildingsInRange(radius,location,ignoreBuilding));
          }
          return _loc5_;
       }
@@ -147,14 +147,14 @@ package
          return _loc8_;
       }
       
-      public static function getBuildingsInRange(param1:Number, param2:Point, param3:Vector.<int> = null) : Array
+      public static function getBuildingsInRange(param1:Number, param2:Point, param3:BFOUNDATION = null) : Array
       {
          var _loc5_:BFOUNDATION = null;
          var _loc6_:int = 0;
          var _loc4_:Array = [];
          for each(_loc5_ in BASE._buildingsAll)
          {
-            if(_loc5_.isTargetable)
+            if(_loc5_.isTargetable && _loc5_ != param3)
             {
                if((_loc6_ = int(GLOBAL.QuickDistanceSquared(param2,new Point(_loc5_.x,_loc5_.y)))) < param1 * param1)
                {

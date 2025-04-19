@@ -200,6 +200,8 @@ package com.monsters.monsters
       public var _movement:String = "";
       
       public var _pathing:String = "";
+
+      public var _lockRotation:Boolean = false;
       
       public var isDisposable:Boolean;
       
@@ -637,7 +639,10 @@ package com.monsters.monsters
          var _loc4_:int = 0;
          if(!GLOBAL._catchup)
          {
-            this._targetRotation = Math.atan2(this._yd,this._xd) * 57.2957795 - 90;
+            if (!this._lockRotation)
+            {
+               this._targetRotation = Math.atan2(this._yd,this._xd) * 57.2957795 - 90;
+            }
             _loc1_ = this.m_rotation - this._targetRotation;
             if(_loc1_ > 180)
             {
