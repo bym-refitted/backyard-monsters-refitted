@@ -33,7 +33,7 @@ package com.monsters.monsters.components.abilities
       {
          var ownerLocation:Point = new Point(owner.x,owner.y);
          var allTargets:Array = getAllTargets(ownerLocation, initialTarget);
-         if(!allTargets || allTargets.length <= 0)
+         if(allTargets.length <= 0)
          {
             return;
          }
@@ -47,23 +47,24 @@ package com.monsters.monsters.components.abilities
 
       private function getAllTargets(ownerLocation:Point, initialTarget:IAttackable = null):Array
       {
-         if(owner._friendly && initialTarget is CreepBase)
-         {
-            // Only gets creeps in this scase, so defending monsters don't friendly-fire their yard's buildings.
-            return Targeting.getCreepsInRange(this.m_radiusOuter,ownerLocation,this.m_targetFlags,this.m_includeInitialTarget ? null : initialTarget);
-         }
-         if(!this.m_includeInitialTarget)
-         {
-            if(initialTarget is CreepBase)
+         if(this.m_includeInitialTarget || !initialTarget || !(initialTarget is CreepBase || initialTarget is BFOUNDATION))
+		   {
+            if(owner._friendly && initialTarget is CreepBase)
             {
-               return Targeting.getTargetsInRange(this.m_radiusOuter,ownerLocation,this.m_targetFlags,initialTarget);
+               // Only get creeps for friendly/defending monsters, so they don't friendly-fire their yard's buildings.
+               return Targeting.getCreepsInRange(this.m_radiusOuter,ownerLocation,this.m_targetFlags);
             }
-            else if(initialTarget is BFOUNDATION)
+			   return Targeting.getTargetsInRange(this.m_radiusOuter,ownerLocation,this.m_targetFlags);
+		   }
+         if(initialTarget is CreepBase)
+         {
+            if(owner._friendly)
             {
-               return Targeting.getTargetsInRange(this.m_radiusOuter,ownerLocation,this.m_targetFlags,null,initialTarget);
+               return Targeting.getCreepsInRange(this.m_radiusOuter,ownerLocation,this.m_targetFlags,initialTarget);
             }
+            return Targeting.getTargetsInRange(this.m_radiusOuter,ownerLocation,this.m_targetFlags,initialTarget);
          }
-         return Targeting.getTargetsInRange(this.m_radiusOuter,ownerLocation,this.m_targetFlags);
+         return Targeting.getTargetsInRange(this.m_radiusOuter,ownerLocation,this.m_targetFlags,null,initialTarget);
       }
    }
 }
