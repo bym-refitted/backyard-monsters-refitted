@@ -219,7 +219,14 @@ package
                   stats: []
                });
             }
-            new URLLoaderApi().load(GLOBAL._baseURL + "attack", [["attackMonsters", attackMonsters]]);
+            
+            var request:URLRequest = new URLRequest(GLOBAL._baseURL + "attack");
+            request.method = URLRequestMethod.POST;
+            request.contentType = "application/json";
+            request.data = JSON.encode(attackMonsters);
+            
+            var loader:URLLoader = new URLLoader();
+            loader.load(request);
          }
       }
    

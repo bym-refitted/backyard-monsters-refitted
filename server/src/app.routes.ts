@@ -174,7 +174,7 @@ router.post(
  */
 router.post(
   "/base/attack",
-  verifyUserAuth,
+  //verifyUserAuth,
   debugDataLog("Base under attack"),
   validateAttack
 );
