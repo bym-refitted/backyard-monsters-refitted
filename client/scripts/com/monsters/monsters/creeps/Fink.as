@@ -8,12 +8,15 @@ package com.monsters.monsters.creeps
    {
        
       
-      public function Fink(param1:String, param2:String, param3:Point, param4:Number, param5:int = 0, param6:int = 2147483647, param7:Point = null, param8:Boolean = false, param9:BFOUNDATION = null, param10:Number = 1, param11:Boolean = false, param12:MonsterBase = null)
+      public function Fink(creatureID:String, behaviour:String, spawnPoint:Point, rotation:Number, level:int = 0, health:int = 2147483647, center:Point = null, friendly:Boolean = false, house:BFOUNDATION = null, damageMult:Number = 1, goEasy:Boolean = false, monster:MonsterBase = null)
       {
-         super(param1,param2,param3,param4,param5,param6,param7,param8,param9,param10,param11,param12);
+         var flags:* = 0;
+         super(creatureID,behaviour,spawnPoint,rotation,level,health,center,friendly,house,damageMult,goEasy,monster);
          if(poweredUp())
          {
-            addComponent(new AOEDamageOnAttack(60,(param8 ? Targeting.k_TARGETS_ATTACKERS : Targeting.k_TARGETS_DEFENDERS) & Targeting.k_TARGETS_GROUND & Targeting.k_TARGETS_BUILDINGS,powerUpLevel()));
+            flags = Targeting.k_TARGETS_BUILDINGS | Targeting.k_TARGETS_GROUND;
+            flags |= friendly ? Targeting.k_TARGETS_ATTACKERS : Targeting.k_TARGETS_DEFENDERS;
+            addComponent(new AOEDamageOnAttack(60,flags,powerUpLevel(),60,false));
          }
       }
    }

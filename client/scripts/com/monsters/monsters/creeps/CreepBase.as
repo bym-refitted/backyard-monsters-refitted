@@ -958,6 +958,10 @@ package com.monsters.monsters.creeps
          var _loc5_:Number = 1;
          if(health <= 0)
          {
+            if(_explode)
+            {
+               return Boolean(this.explode());
+            }
             return true;
          }
          if(_hasTarget)
@@ -1195,7 +1199,6 @@ package com.monsters.monsters.creeps
                   }
                   this._defenderRemoved = true;
                }
-               return true;
             }
             if(_explode)
             {
@@ -1315,10 +1318,10 @@ package com.monsters.monsters.creeps
                      return true;
                   }
                   targetFlags = _friendly ? Targeting.k_TARGETS_ATTACKERS : Targeting.k_TARGETS_DEFENDERS;
-                  targetFlags &= Targeting.k_TARGETS_GROUND;
+                  targetFlags |= Targeting.k_TARGETS_GROUND;
                   if(_explode)
                   {
-                     targetFlags &= Targeting.k_TARGETS_INVISIBLE;
+                     targetFlags |= Targeting.k_TARGETS_INVISIBLE;
                   }
                   _targetCreeps = Targeting.getCreepsInRange(90,_tmpPoint,targetFlags);
                   Targeting.DealLinearAEDamage(_tmpPoint,90,damage,_targetCreeps);

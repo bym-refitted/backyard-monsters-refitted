@@ -11,18 +11,18 @@ package com.monsters.monsters.components.abilities
       
       protected var m_damageMultiplier:Number;
       
-      public function AOEDamageOnAttackOncePerTarget(param1:uint, param2:int, param3:Number = 1, param4:uint = 4294967295, param5:int = 0)
+      public function AOEDamageOnAttackOncePerTarget(radiusOuter:uint, targetFlags:int, damageMultiplier:Number = 1, maxTargets:uint = 4294967295, radiusInner:uint = 0, includeInitialTarget:Boolean = true, rechargeDuration:int = 0)
       {
-         super(param1,param2,param4,param5);
-         this.m_damageMultiplier = param3;
+         super(radiusOuter,targetFlags,maxTargets,radiusInner,includeInitialTarget,rechargeDuration);
+         this.m_damageMultiplier = damageMultiplier;
       }
       
-      override public function onAttack(param1:IAttackable, param2:Number, param3:ITargetable = null) : Number
+      override public function onAttack(target:IAttackable, damageDealt:Number, projectile:ITargetable = null) : Number
       {
-         if(GLOBAL.Timestamp() > m_timeAbilityIsRecharged && param1 != this.m_lastTarget)
+         if(GLOBAL.Timestamp() > m_timeAbilityIsRecharged && target != this.m_lastTarget)
          {
-            dealAOEDamage(param2 * this.m_damageMultiplier);
-            this.m_lastTarget = param1;
+            dealAOEDamage(damageDealt * this.m_damageMultiplier, target);
+            this.m_lastTarget = target;
          }
          return 0;
       }
