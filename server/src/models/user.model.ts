@@ -38,9 +38,6 @@ export class User {
   @Property({ nullable: true })
   discord_tag: string;
 
-  @Property({ type: "json", nullable: true })
-  ban_report?: FieldData;
-
   @Property({ default: "" })
   @FrontendKey
   last_name?: string;

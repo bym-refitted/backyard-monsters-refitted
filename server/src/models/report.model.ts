@@ -18,6 +18,12 @@ export class Report {
   @Property({ type: "json", nullable: true })
   report?: FieldData;
 
+  @Property({ type: "json", nullable: true })
+  banReason?: FieldData;
+
+  @Property({ default: 0 })
+  violations: number;
+
   @Property()
   createdAt: Date = new Date();
 

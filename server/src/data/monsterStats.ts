@@ -1,4 +1,40 @@
-export const monsterStats = {
+type TrainingCost = [cost: number, time: number];
+
+export interface MonsterProps {
+  speed: number[];
+  health: number[];
+  damage: number[];
+  range?: number[];
+  zombieHealthMultiplier?: number[];
+  zombieSpeedMultiplier?: number[];
+  zombieDamageMultiplier?: number[];
+  resurrectCooldown?: number[];
+  splits?: number[];
+  explode?: number[];
+  attackDelay?: number[];
+  cTime: number[];
+  cResource: number[];
+  cStorage: number[];
+  bucket: number[];
+  targetGroup: number[];
+  hTime?: number[];
+  hResource?: number[];
+}
+
+interface MonsterStat {
+  resource: number;
+  movement?: string;
+  pathing?: string;
+  time: number;
+  trainingCosts: TrainingCost[];
+  props: MonsterProps;
+}
+
+interface MonsterStatsMap {
+  [key: string]: MonsterStat;
+}
+
+export const monsterStats: MonsterStatsMap = {
   // Pokey
   C1: {
     resource: 4000,
@@ -179,7 +215,6 @@ export const monsterStats = {
   C8: {
     resource: 512000,
     time: 40 * 60 * 60,
-    level: 2,
     trainingCosts: [
       [512000, 60 * 60 * 12],
       [512000, 60 * 60 * 16],
@@ -468,8 +503,6 @@ export const monsterStats = {
       [25000000, 60 * 60 * 60],
       [28000000, 60 * 60 * 72],
     ],
-    stream: ["", "", "quests/monster19.png"],
-    blocked: true,
     props: {
       range: [200],
       speed: [0.8, 0.9, 1, 1.1, 1.2, 1.3],
@@ -662,7 +695,7 @@ export const monsterStats = {
       hResource: [18000, 27000, 43500, 60000, 99000, 135000],
     },
   },
-  
+
   // King Wormzer
   IC8: {
     resource: 4915200,

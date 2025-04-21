@@ -46,7 +46,6 @@ package
       public static var _guardians:Object = {
          "length":5,
          "G1":{
-            "t":1,
             "name":"Gorgo",
             "description":"mon_gorgodesc",
             "title":"mon_gorgotitle",
@@ -90,7 +89,6 @@ package
             }
          },
          "G2":{
-            "t":2,
             "name":"Drull",
             "description":"mon_drulldesc",
             "title":"mon_drulltitle",
@@ -134,7 +132,6 @@ package
             }
          },
          "G3":{
-            "t":3,
             "name":"Fomor",
             "description":"mon_fomordesc",
             "title":"mon_fomortitle",
@@ -181,7 +178,6 @@ package
             }
          },
          "G4":{
-            "t":4,
             "name":"Korath",
             "description":"mon_korathdesc",
             "title":"mon_korathtitle",
@@ -227,7 +223,6 @@ package
             }
          },
          "G5":{
-            "t":5,
             "name":"Krallen",
             "description":"mon_krallendesc",
             "title":"mon_gorgotitle",
