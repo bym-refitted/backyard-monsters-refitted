@@ -169,17 +169,6 @@ router.post(
 );
 
 /**
- * Validate attack data
- * @name POST /api/:apiVersion/attack
- */
-router.post(
-  "/base/attack",
-  //verifyUserAuth,
-  debugDataLog("Base under attack"),
-  validateAttack
-);
-
-/**
  * Update saved base data
  * @name POST /base/updatesaved
  */

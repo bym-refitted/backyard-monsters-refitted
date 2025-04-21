@@ -33,6 +33,64 @@ package
          super();
       }
 
+      /**
+       * This function was created by the Refitted team to send data to the server in JSON format.
+       * It provides a more expressive, structured way for parsing and handling data on the server.
+       * 
+       * @param {String} url - the URL to send data to.
+       * @param {Object} data - the data to send in JSON format.
+       * @param {String} method - the HTTP method to use (default is POST).
+       * @param {Function} onComplete - a callback function to be called on successful completion of the request.
+       * @return {void}
+       */
+      public function invokeApiRequest(url:String, data:Object, method:String = URLRequestMethod.POST, onComplete:Function = null): void {
+         try {
+            var request:URLRequest = new URLRequest(url);
+            var loader:URLLoader = new URLLoader();
+            var errMessage = "";
+
+            request.method = method;
+            request.contentType = "application/json";
+            request.requestHeaders.push(new URLRequestHeader("Authorization", "Bearer " + LOGIN.token));
+
+            if (data == null || data == undefined) data = {};
+            if (method != URLRequestMethod.GET) request.data = JSON.encode(data);
+
+            // Send the request
+            loader.load(request);
+
+            // On success, decode JSON and invoke callback
+            loader.addEventListener(Event.COMPLETE, function(e:Event) : void {
+               var response:Object = JSON.decode(loader.data);
+               
+               if (onComplete != null) onComplete(response);
+            });
+
+            loader.addEventListener(IOErrorEvent.IO_ERROR, function(event:IOErrorEvent) : void {
+               errMessage = "IOError error event occurred while making the request"
+               GLOBAL.ErrorMessage(errMessage, GLOBAL.ERROR_ORANGE_BOX_ONLY);
+            });
+
+         } catch (error:Error) {
+            errMessage = "Error occurred while making the request: " + error.message;
+            GLOBAL.ErrorMessage(errMessage, GLOBAL.ERROR_ORANGE_BOX_ONLY);
+         }
+      }
+
+      /**
+       * This is the original networking function that was used to load data from the server by Kixeye,
+       * with some additons such as Bearer tokens in the header for authentication added by the Refitted team.
+       * 
+       * The majority of the client uses this to access and load data from the server.
+       * It uses key-value pairs to send data in application/x-www-form-urlencoded format
+       * e.g. keyValuePairs: [["key1", "value1"], ["key2", "value2"]].
+       * 
+       * @param {String} baseUrl - the URL to load data from.
+       * @param {Array} keyValuePairs - an array of key-value pairs to send in the request.
+       * @param {Function} onComplete - a callback function to be called on successful completion of the request.
+       * @param {Function} onFail - a callback function to be called on failure of the request.
+       * @return {void}
+       */
       public function load(baseUrl:String, keyValuePairs:Array = null, onComplete:Function = null, onFail:Function = null):void
       {
          var urlBuilder:URLRequest;

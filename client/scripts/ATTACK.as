@@ -106,8 +106,6 @@ package
       private static var m_lastAttackTime:int;
       
       public static var _curCreaturesAvailable:Array;
-
-      public static var attackMonsters:Array;
        
       public function ATTACK()
       {
@@ -207,27 +205,37 @@ package
          }
          else if(GLOBAL.mode == GLOBAL.e_BASE_MODE.ATTACK || GLOBAL.mode == GLOBAL.e_BASE_MODE.WMATTACK)
          {
-            attackMonsters = [];
             GLOBAL._attackerMapCreaturesStart = {};
-            for(creatureID in ATTACK._curCreaturesAvailable)
+            for(_loc4_ in ATTACK._curCreaturesAvailable)
             {
-               GLOBAL._attackerMapCreaturesStart = new SecNum(ATTACK._curCreaturesAvailable[creatureID]);
-
-               attackMonsters.push({
-                  id: creatureID,
-                  count: ATTACK._curCreaturesAvailable[creatureID],
-                  stats: []
-               });
+               GLOBAL._attackerMapCreaturesStart[_loc4_] = new SecNum(ATTACK._curCreaturesAvailable[_loc4_]);
             }
-            
-            var request:URLRequest = new URLRequest(GLOBAL._baseURL + "attack");
-            request.method = URLRequestMethod.POST;
-            request.contentType = "application/json";
-            request.data = JSON.encode(attackMonsters);
-            
-            var loader:URLLoader = new URLLoader();
-            loader.load(request);
          }
+      }
+
+      public static function AttackPayload() : Object {
+         var attackPayload:Object = { champions: [], monsters: [] };
+         
+         // Loop through attack champions
+         for (var i:int = 0; i < GLOBAL._playerGuardianData.length; i++) {
+            var guardianData:Object = GLOBAL._playerGuardianData[i];
+            var guardianKey:String = "G" + guardianData.t;
+
+            attackPayload.champions.push({
+               type: guardianKey,
+               stats: CHAMPIONCAGE._guardians[guardianKey].props
+            });
+         }
+
+         // Loop through attack monsters
+         for (var creatureID:String in _curCreaturesAvailable) {
+            attackPayload.monsters.push({
+               id: creatureID,
+               count: ATTACK._curCreaturesAvailable[creatureID],
+               stats: CREATURELOCKER._creatures[creatureID].props
+            });
+         }
+         return attackPayload;
       }
    
       public static function Tick() : void
