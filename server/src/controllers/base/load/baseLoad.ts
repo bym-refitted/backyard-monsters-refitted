@@ -19,7 +19,7 @@ import { infernoModeDescent } from "./modes/infernoModeDescent";
 import { infernoModeView } from "./modes/infernoModeView";
 import { infernoModeAttack } from "./modes/infernoModeAttack";
 import { infernoModeBuild } from "./modes/infernoModeBuild";
-import { validateAttack } from "../validateAttack";
+import { validateAttack } from "../../../services/maproom/validateAttack";
 import { BaseLoadSchema } from "./zod/BaseLoadSchema";
 
 /**

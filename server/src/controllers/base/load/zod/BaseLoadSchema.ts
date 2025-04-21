@@ -1,5 +1,5 @@
 import z from "zod";
-import { AttackPayload } from "../../validateAttack";
+import { AttackPayload } from "../../../../services/maproom/validateAttack";
 
 export const BaseLoadSchema = z.object({
   /**

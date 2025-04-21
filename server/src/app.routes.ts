@@ -35,7 +35,6 @@ import { getMessageThread } from "./controllers/mail/getMessageThread";
 import { sendMessage } from "./controllers/mail/sendMessage";
 import { reportMessageThread } from "./controllers/mail/reportMessageThread";
 import { Context } from "koa";
-import { validateAttack } from "./controllers/base/validateAttack";
 
 const RateLimit = require("koa2-ratelimit").RateLimit;
 
