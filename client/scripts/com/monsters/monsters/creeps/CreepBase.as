@@ -958,10 +958,6 @@ package com.monsters.monsters.creeps
          var _loc5_:Number = 1;
          if(health <= 0)
          {
-            if(_explode)
-            {
-               return Boolean(this.explode());
-            }
             return true;
          }
          if(_hasTarget)
