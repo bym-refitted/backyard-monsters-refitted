@@ -1,5 +1,5 @@
 import z from "zod";
-import { AttackPayload } from "../../../../services/maproom/validateAttack";
+import { AttackData } from "./AttackSchema";
 
 export const BaseLoadSchema = z.object({
   /**
@@ -22,12 +22,12 @@ export const BaseLoadSchema = z.object({
 
   /**
    * The attack payload, transformed from a JSON string to an AttackPayload object.
-   * @type {AttackPayload | undefined}
+   * @type {AttackData | undefined}
    */
-  attackPayload: z
+  attackData: z
     .string()
     .optional()
-    .transform((data): AttackPayload | undefined =>
+    .transform((data): AttackData | undefined =>
       data ? JSON.parse(data) : undefined
     ),
 });

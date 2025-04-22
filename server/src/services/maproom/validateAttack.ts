@@ -1,55 +1,34 @@
-import z from "zod";
-import { Context } from "koa";
 import { User } from "../../models/user.model";
-import { discordAgeErr, loadFailureErr } from "../../errors/errors";
+import { loadFailureErr } from "../../errors/errors";
 import { logBanReport, logReport } from "../base/reportManager";
 import { MonsterProps, monsterStats } from "../../data/monsterStats";
-
-const ChampionSchema = z.object({
-  type: z.string(),
-  stats: z.record(z.any()),
-});
-
-const MonsterSchema = z.object({
-  id: z.string(),
-  count: z.number(),
-  stats: z.record(z.any()),
-});
-
-const AttackSchema = z.object({
-  champions: z.array(ChampionSchema).optional(),
-  monsters: z.array(MonsterSchema).optional(),
-});
-
-export type AttackPayload = z.infer<typeof AttackSchema> | undefined;
+import { AttackData } from "../../zod/AttackSchema";
 
 // TODO:
 // 1. Validate  counts from flinger
-// 2. Validate champion with `championStats.ts` by getting level from db?
-export const validateAttack = async (ctx: Context, user: User, attackPayload: AttackPayload) => {
-  if (!ctx.meetsDiscordAgeCheck) throw discordAgeErr();
+// 2. Validate champion with `championStats.ts`
+export const validateAttack = async (user: User, attackData: AttackData) => {
+  const { champion } = user.save;
 
-  if (!attackPayload || Object.keys(attackPayload).length === 0) {
+  if (!attackData || Object.keys(attackData).length === 0) {
     const message = "Attack payload was missing. Client modified.";
     await logReport(user, message);
-
     throw loadFailureErr();
   }
 
-  const attackMonsters = attackPayload.monsters;
-  const attackChampions = attackPayload.champions;
+  const attackMonsters = attackData.monsters;
+  const attackChampions = attackData.champions;
 
   if (!attackChampions && !attackMonsters) {
     const message = "Attack payload structure changed. Client modified.";
     await logReport(user, message);
-
     throw loadFailureErr();
   }
 
-  // validate monsters
-  if (attackPayload.monsters.length > 0) {
-    for (const monster of attackPayload.monsters) {
-      const { id, stats } = monster;
+  // Validate monsters
+  if (attackData.monsters.length > 0) {
+    for (const monster of attackData.monsters) {
+      const { id, stats, count } = monster;
 
       if (!monsterStats[id]) {
         const message = `Invalid monster ID: ${id}. Client modified.`;
@@ -57,7 +36,6 @@ export const validateAttack = async (ctx: Context, user: User, attackPayload: At
         throw loadFailureErr();
       }
 
-      // Validate key stats against monsterStats
       const monsterProps: MonsterProps = monsterStats[id].props;
 
       for (const stat of Object.keys(monsterProps) as Array<keyof typeof monsterProps>) {

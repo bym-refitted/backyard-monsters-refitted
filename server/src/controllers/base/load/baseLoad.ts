@@ -20,7 +20,8 @@ import { infernoModeView } from "./modes/infernoModeView";
 import { infernoModeAttack } from "./modes/infernoModeAttack";
 import { infernoModeBuild } from "./modes/infernoModeBuild";
 import { validateAttack } from "../../../services/maproom/validateAttack";
-import { BaseLoadSchema } from "./zod/BaseLoadSchema";
+import { BaseLoadSchema } from "../../../zod/BaseLoadSchema";
+import { discordAgeErr } from "../../../errors/errors";
 
 /**
  * Controller responsible for loading base modes based on the user's request.
@@ -34,7 +35,7 @@ export const baseLoad: KoaController = async (ctx) => {
   await ORMContext.em.populate(user, ["save", "infernosave"]);
 
   try {
-    const { baseid, type, attackPayload } = BaseLoadSchema.parse(ctx.request.body);
+    const { baseid, type, attackData } = BaseLoadSchema.parse(ctx.request.body);
 
     let baseSave: Save = null;
 
@@ -48,7 +49,9 @@ export const baseLoad: KoaController = async (ctx) => {
         break;
 
       case BaseMode.ATTACK:
-        await validateAttack(ctx, user, attackPayload);
+        if (!ctx.meetsDiscordAgeCheck) throw discordAgeErr();
+        
+        await validateAttack(user, attackData);
         baseSave = await baseModeAttack(user, baseid);
         break;
 
@@ -65,7 +68,7 @@ export const baseLoad: KoaController = async (ctx) => {
       break;
 
       case BaseMode.IWMATTACK:
-        await validateAttack(ctx, user, attackPayload);
+        await validateAttack(user, attackData);
         baseSave = await infernoModeAttack(user, baseid);
         break;
       default:

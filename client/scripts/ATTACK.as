@@ -213,7 +213,7 @@ package
          }
       }
 
-      public static function AttackPayload() : Object {
+      public static function AttackData() : Object {
          var attackPayload:Object = { champions: [], monsters: [] };
          
          // Loop through attack champions
