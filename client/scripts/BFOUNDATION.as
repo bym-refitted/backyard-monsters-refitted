@@ -39,7 +39,7 @@ package
    public class BFOUNDATION extends GameObject
    {
       
-      public static const TICK_LIMIT:int = 172800;
+      public static const TICK_LIMIT:int = 1209600;
       
       private static var s_totalBuildingHP:Number;
       
@@ -449,7 +449,7 @@ package
          s_totalBuildingHP = s_totalBuildingMaxHP = 0;
          for each(buildingData in building)
          {
-            if(!(buildingData is BMUSHROOM))
+            if(!(buildingData is BMUSHROOM) && !(GLOBAL._newBuilding === buildingData))
             {
                if(buildingData is ICoreBuilding)
                {
@@ -2375,6 +2375,10 @@ package
             while(_loc2_ < 5)
             {
                _loc3_ = !!this._buildingProps.costs[this._lvl.Get()] ? uint(this._buildingProps.costs[this._lvl.Get()]["r" + _loc2_].Get()) : 0;
+               if (!_loc3_)
+               {
+                  _loc3_ = !!this._buildingProps.fortify_costs[this._fortification.Get()] ? uint(this._buildingProps.fortify_costs[this._fortification.Get()]["r" + _loc2_].Get()) : 0;
+               }
                if(_loc3_)
                {
                   ResourcePackages.Create(_loc1_,this,_loc3_,true);
@@ -3066,7 +3070,10 @@ package
          {
             MAP.SortDepth();
          }
-         QUEUE.Remove("building" + this._id,false,this);
+         if(this._type != 7)
+         {
+            QUEUE.Remove("building" + this._id,false,this);
+         }
          BASE.BuildingDeselect();
          if(this._class == "decoration")
          {

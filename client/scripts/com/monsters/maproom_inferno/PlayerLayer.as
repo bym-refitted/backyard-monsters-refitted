@@ -142,13 +142,13 @@ package com.monsters.maproom_inferno
             var ai:String = null;
             var _o:Object = null;
             var start:int = 0;
-            var obj:Object = param1;
+            var serverData:Object = param1;
             try
             {
                GLOBAL.WaitHide();
-               if(obj.error == 0)
+               if(serverData.error == 0)
                {
-                  obj.wmbases = [];
+                  serverData.wmbases = [];
                   aib = _BRIDGE.WMBASE._bases;
                   try
                   {
@@ -173,7 +173,7 @@ package com.monsters.maproom_inferno
                                     _o.basename = aib[ai].tribe.name;
                                     if(_o.level >= BASE._baseLevel - 10)
                                     {
-                                       obj.wmbases.push(_o);
+                                       serverData.wmbases.push(_o);
                                     }
                                  }
                               }
@@ -188,7 +188,7 @@ package com.monsters.maproom_inferno
                   try
                   {
                      start = getTimer();
-                     Create(obj);
+                     Create(serverData);
                      _getting = false;
                      _lastUpdated = GLOBAL.Timestamp() + int(Math.random() * 5);
                      dispatchEvent(new Event(Event.COMPLETE));
@@ -200,7 +200,7 @@ package com.monsters.maproom_inferno
                }
                else
                {
-                  LOGGER.Log("err","MAPROOMPOPUP.Get: " + obj.error);
+                  LOGGER.Log("err","MAPROOMPOPUP.Get: " + serverData.error);
                   GLOBAL.ErrorMessage("MAPROOMPOPUP.Get 1");
                }
                if(MiniMap.getInstance())
@@ -229,7 +229,7 @@ package com.monsters.maproom_inferno
          r.load(GLOBAL._apiURL + "bm/neighbours/get",loadVars,handleLoadSuccessful,handleLoadError);
       }
       
-      public function Create(param1:Object) : void
+      public function Create(serverData:Object) : void
       {
          var _loc2_:Object = null;
          var _loc4_:BaseObject = null;
@@ -255,14 +255,14 @@ package com.monsters.maproom_inferno
          {
             this.baseData = [];
          }
-         if(Boolean(param1) && Boolean(param1.wmbases))
+         if(Boolean(serverData) && Boolean(serverData.wmbases))
          {
             _loc7_ = 0;
-            while(_loc7_ < param1.wmbases.length)
+            while(_loc7_ < serverData.wmbases.length)
             {
                if(this.wmBasesUsed < this._wmbToDisplay)
                {
-                  _loc2_ = param1.wmbases[_loc7_];
+                  _loc2_ = serverData.wmbases[_loc7_];
                   _loc3_ = false;
                   for each(_loc4_ in this.baseData)
                   {
@@ -293,22 +293,22 @@ package com.monsters.maproom_inferno
                _loc7_ += 1;
             }
          }
-         if(this.basesForeign.length < this._playersLimit && param1 && Boolean(param1.bases))
+         if(this.basesForeign.length < this._playersLimit && serverData && Boolean(serverData.bases))
          {
-            if(this.basesForeign.length + param1.bases.length >= this._playersLimit)
+            if(this.basesForeign.length + serverData.bases.length >= this._playersLimit)
             {
                _loc6_ = uint(this._playersLimit - this.basesForeign.length);
             }
             else
             {
-               _loc6_ = uint(param1.bases.length);
+               _loc6_ = uint(serverData.bases.length);
             }
-            if(param1 && param1.bases && param1.bases.length > 0)
+            if(serverData && serverData.bases && serverData.bases.length > 0)
             {
                _loc7_ = 0;
                while(_loc7_ < _loc6_)
                {
-                  _loc2_ = param1.bases[_loc7_];
+                  _loc2_ = serverData.bases[_loc7_];
                   _loc3_ = false;
                   for each(_loc4_ in this.baseData)
                   {

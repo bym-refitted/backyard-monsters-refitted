@@ -7,8 +7,6 @@ import { damageProtection } from "../../../../services/maproom/v2/damageProtecti
 import { errorLog } from "../../../../utils/logger";
 import { getCurrentDateTime } from "../../../../utils/getCurrentDateTime";
 
-/** TODO: cellOwner.save is null in many cases here */
-
 /**
  * Handles the user's homecell & outpost data on the world map.
  *
@@ -30,54 +28,50 @@ export const userCell = async (ctx: Context, cell: WorldMapCell) => {
     // Get the cell owner, either the current user or another user
     const cellOwner = mine
       ? currentUser
-      : await ORMContext.em.findOne(User, { userid: cell.uid }, { populate: ["save"] });
+      : await ORMContext.em.findOne(
+          User,
+          { userid: cell.uid },
+          { populate: ["save"] }
+        );
 
-    if (!cellOwner || !cellOwner.save) {
-      errorLog(`Cell owner save data is missing. Save: ${cellOwner.save}`);
-    }
+    if (!cellOwner) errorLog(`Cell owner save data is missing.`);
 
-    const isOnline = getCurrentDateTime() - (cellOwner.save?.savetime || 0) <= 60;
+    const online = getCurrentDateTime() - cellSave.savetime <= 60;
 
-    /** TODO: Cell should be locked when a player is getting attacked, not when online */
-    const locked = mine ? 0 : isOnline ? 1 : cellOwner.save?.locked || 0;
+    // TODO: Cell should be locked when a player is getting attacked, not when online
+    // Everytime a user cell is attacked, it trigger this for 60 seconds
+    const locked = mine ? 0 : online ? 1 : cellSave.locked || 0;
 
-    const points = cellOwner.save?.points
-      ? BigInt(cellOwner.save.points)
-      : BigInt(1);
-    const basevalue = cellOwner.save?.basevalue
-      ? BigInt(cellOwner.save.basevalue)
-      : BigInt(1);
-
+    const points = cellOwner.save.points;
+    const basevalue = cellOwner.save.basevalue;
     const baseLevel = calculateBaseLevel(points, basevalue);
 
-    let isCellProtected = await damageProtection(cellSave);
-
-    if (!cellSave) errorLog("Cell save data is missing.");
+    await damageProtection(cellSave);
 
     return {
       uid: cellOwner.userid,
       b: cell.base_type,
       pi: 0,
-      bid: cell.base_id,
+      bid: cell.baseid,
       aid: 0,
       i: cell.terrainHeight,
-      v: cellSave?.empirevalue || 1,
+      v: cellSave.empirevalue,
       mine: mine ? 1 : 0,
-      f: cellSave?.flinger || 0,
-      c: cellSave?.catapult || 0,
+      f: cellSave.flinger,
+      c: cellSave.catapult,
       t: 0,
       n: cellOwner.username,
       fr: 0,
-      on: isOnline,
-      p: isCellProtected,
-      r: cellOwner.save.resources,
-      m: cellSave?.monsters || {},
+      on: online,
+      p: cellSave.protected,
+      r: cellSave.resources,
+      m: cellSave.monsters || {},
       l: baseLevel,
-      d: cellSave?.damage >= 90 ? 1 : 0 || 0,
+      d: cellSave.damage >= 90 ? 1 : 0,
       lo: locked,
-      dm: cellSave?.damage || 0,
-      pic_square: `${process.env.AVATAR_URL}?seed=${cellOwner.username}`,
-      im: `${process.env.AVATAR_URL}?seed=${cellOwner.username}`,
+      dm: cellSave.damage,
+      pic_square: cellOwner.pic_square,
+      im: cellOwner.pic_square
     };
   } catch (error) {
     errorLog("Error fetching user cell data", error);

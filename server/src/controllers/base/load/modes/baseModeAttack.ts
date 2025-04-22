@@ -1,4 +1,4 @@
-import { BaseMode } from "../../../../enums/Base";
+import { BaseMode, BaseType } from "../../../../enums/Base";
 import { MapRoomCell } from "../../../../enums/MapRoom";
 import { World } from "../../../../models/world.model";
 import { WorldMapCell } from "../../../../models/worldmapcell.model";
@@ -12,64 +12,71 @@ import {
   getTerrainHeight,
 } from "../../../../config/WorldGenSettings";
 import { getCurrentDateTime } from "../../../../utils/getCurrentDateTime";
+import { validateRange } from "../../../../services/maproom/v2/validateRange";
+
+export interface AttackDetails {
+  fbid: string;
+  name: string;
+  pic_square: string;
+  friend: number;
+  count: number;
+  starttime: number;
+}
 
 export const baseModeAttack = async (user: User, baseid: string) => {
   const userSave: Save = user.save;
-  let save = await ORMContext.em.findOne(Save, { baseid: BigInt(baseid) });
+  let save = await ORMContext.em.findOne(Save, { baseid });
 
   if (!save) save = wildMonsterSave(baseid);
 
-  // Record the timestamp of the attack
-  const currentTimestamp = getCurrentDateTime();
-  if (save.attackTimestamps.length > 10)
-    save.attackTimestamps = save.attackTimestamps.slice(-9);
-  
-  save.attackTimestamps.push(currentTimestamp);
+  // Store the 100 most recent attacks
+  if (save.attacks.length > 3) {
+    save.attacks = save.attacks.slice(-2);
+  }
+
+  // Track the details of the attack
+  const attackDetails: AttackDetails = {
+    fbid: userSave.fbid,
+    name: user.username,
+    pic_square: user.pic_square,
+    friend: 0,
+    count: 1,
+    starttime: getCurrentDateTime(),
+  };
+
+  if (save.type != BaseType.TRIBE) save.attacks.push(attackDetails);
 
   // Remove damage protection
   await damageProtection(userSave, BaseMode.ATTACK);
 
-  let cell = await ORMContext.em.findOne(WorldMapCell, {
-    base_id: BigInt(baseid),
-  });
+  let cell = await ORMContext.em.findOne(WorldMapCell, { baseid });
 
   if (!cell) {
-    // Create a cell record when attacking tribe bases
+    // Find the existing world record
     const world = await ORMContext.em.findOne(World, {
       uuid: userSave.worldid,
     });
 
     if (!world) throw new Error("No world found.");
 
-    const baseIdBigInt = BigInt(baseid);
-    const baseIdStr = baseIdBigInt.toString();
-
-    // Derive cellX and cellY from specific positions (based on the structure of baseid)
-    const cellX = parseInt(baseIdStr.slice(1, 4));
-    const cellY = parseInt(baseIdStr.slice(4));
+    // Derive cellX and cellY from baseid
+    const cellX = parseInt(baseid.slice(4, 7));
+    const cellY = parseInt(baseid.slice(7, 10));
 
     const noise = generateNoise(world.uuid);
+    const terrainHeight = getTerrainHeight(noise, cellX, cellY);
 
-    cell = new WorldMapCell(
-      world,
-      cellX,
-      cellY,
-      getTerrainHeight(noise, cellX, cellY),
-      {
-        base_id: baseIdBigInt,
-        uid: save.saveuserid,
-        base_type: MapRoomCell.WM,
-      }
-    );
-
-    cell.base_id = BigInt(save.baseid);
+    // Create a new cell record
+    cell = new WorldMapCell(world, cellX, cellY, terrainHeight);
+    cell.uid = save.saveuserid;
+    cell.base_type = MapRoomCell.WM;
+    cell.baseid = baseid;
   }
-  
+
   save.cell = cell;
   save.worldid = userSave.worldid;
-  save.attackid = Math.floor(Math.random() * 99999) + 1; // I hate this.
-
+  save.attackid = Math.floor(Math.random() * 99999) + 1;
   await ORMContext.em.persistAndFlush([cell, save]);
 
-  return save;
+  return await validateRange(user, save, { baseid });
 };

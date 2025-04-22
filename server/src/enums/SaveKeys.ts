@@ -5,10 +5,16 @@
  */
 export enum SaveKeys {
   RESOURCES = "resources",
+  IRESOURCES = "iresources",
   BUILDING_RESOURCES = "buildingresources",
-  BUILDING_HEALTH_DATA = "buildinghealthdata",
+  BUILDINGDATA = "buildingdata",
   PURCHASE = "purchase",
   ACADEMY = "academy",
   CHAMPION = "champion",
   QUESTS = "quests",
+  MONSTERUPDATE = "monsterupdate",
+  ATTACKLOOT = "attackloot",
+  ATTACKCREATURES = "attackcreatures",
+  ATTACKERCHAMPION = "attackerchampion",
+  ATTACKERSIEGE = "attackersiege",
 }
