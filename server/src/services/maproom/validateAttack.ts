@@ -5,21 +5,17 @@ import { MonsterProps, monsterStats } from "../../data/monsterStats";
 import { AttackData } from "../../zod/AttackSchema";
 
 // TODO:
-// 1. Validate  counts from flinger
+// 1. Validate monster count from flinger
+// 2, Validate in-memory monster & champion values
 // 2. Validate champion with `championStats.ts`
 export const validateAttack = async (user: User, attackData: AttackData) => {
-  const { champion } = user.save;
-
   if (!attackData || Object.keys(attackData).length === 0) {
     const message = "Attack payload was missing. Client modified.";
     await logReport(user, message);
     throw loadFailureErr();
   }
 
-  const attackMonsters = attackData.monsters;
-  const attackChampions = attackData.champions;
-
-  if (!attackChampions && !attackMonsters) {
+  if (!attackData.champions || !attackData.monsters) {
     const message = "Attack payload structure changed. Client modified.";
     await logReport(user, message);
     throw loadFailureErr();
@@ -28,7 +24,7 @@ export const validateAttack = async (user: User, attackData: AttackData) => {
   // Validate monsters
   if (attackData.monsters.length > 0) {
     for (const monster of attackData.monsters) {
-      const { id, stats, count } = monster;
+      const { id, stats } = monster;
 
       if (!monsterStats[id]) {
         const message = `Invalid monster ID: ${id}. Client modified.`;
