@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "skipLibCheck": true, // Skip type checking of all declaration files (*.d.ts).
     "module": "NodeNext",
     "moduleResolution": "nodenext",
     "target": "ES2020",
@@ -11,5 +12,5 @@
     "esModuleInterop": true,
     "inlineSources": true,
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*", "scripts/anticheat"],
 }

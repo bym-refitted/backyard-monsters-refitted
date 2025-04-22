@@ -7,6 +7,8 @@ import bodyParser from "koa-bodyparser";
 import serve from "koa-static";
 import ormConfig from "./mikro-orm.config";
 import router from "./app.routes";
+
+import { createClient } from "redis";
 import { MariaDbDriver } from "@mikro-orm/mariadb";
 import { EntityManager, MikroORM, RequestContext } from "@mikro-orm/core";
 import { errorLog, logging } from "./utils/logger";
@@ -16,28 +18,26 @@ import { ErrorInterceptor } from "./middleware/clientSafeError";
 import { processLanguagesFile } from "./middleware/processLanguageFile";
 import { logMissingAssets, morganLogging } from "./middleware/morganLogging";
 import { Status } from "./enums/StatusCodes";
-import { getLatestSwfFromGithub } from "./controllers/github/getLatestSwfFromGithub";
 import { corsCacheControl } from "./middleware/corsCacheControlSetup";
 
 export const app = new Koa();
+
+export const PORT = process.env.PORT || 3001;
+export const BASE_URL = process.env.BASE_URL;
+
+export const getApiVersion = () => "v1.2.0-beta";
 
 export const ORMContext = {} as {
   orm: MikroORM;
   em: EntityManager;
 };
 
-let globalApiVersion: string;
+export const redisClient = createClient({
+  url: process.env.REDIS_URL || "redis://localhost:6379",
+});
 
-export const setApiVersion = (version: string) => {
-  logging(
-    `Updating latest client version, server is using: ${globalApiVersion}`
-  );
-  globalApiVersion = version;
-};
-
-export const getApiVersion = () => globalApiVersion;
-export const PORT = process.env.PORT || 3001;
-export const BASE_URL = process.env.BASE_URL;
+redisClient.on("connect", () => logging("Connected to Redis client."));
+redisClient.on("error", (err) => errorLog("Redis client error:", err));
 
 // CORS & Cache Control
 app.use(corsCacheControl);
@@ -52,6 +52,8 @@ api.get("/", (ctx: Context) => (ctx.body = {}));
   ORMContext.orm = await MikroORM.init<MariaDbDriver>(ormConfig);
   ORMContext.em = ORMContext.orm.em;
 
+  await redisClient.connect();
+
   app.use(
     bodyParser({
       enableTypes: ["json", "form"],
@@ -63,8 +65,6 @@ api.get("/", (ctx: Context) => (ctx.body = {}));
   app.use((_, next: Next) =>
     RequestContext.createAsync(ORMContext.orm.em, next)
   );
-
-  app.use(ErrorInterceptor);
 
   // Logs
   app.use(logMissingAssets);
@@ -94,14 +94,7 @@ api.get("/", (ctx: Context) => (ctx.body = {}));
     }
   });
 
-  /**
-   * This sets the initial client version to the latest version from github
-   *
-   * This value can also be set by the github webhook
-   */
-  if (process.env.USE_VERSION_MANAGEMENT === "enabled") {
-    setApiVersion(await getLatestSwfFromGithub());
-  }
+  app.use(ErrorInterceptor);
 
   // Routes
   app.use(router.routes());

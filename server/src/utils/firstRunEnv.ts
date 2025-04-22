@@ -26,10 +26,7 @@ export const firstRunEnv = async () => {
       fh.close(),
     ]);
   } catch (err) {
-    if (err.code === "EEXIST") {
-      logging(".env file already exists.");
-    } else {
-      errorLog(`Unexpected env copying error, reason: ${err}`);
-    }
+    if (err.code === "EEXIST") logging(".env file already exists.");
+    else errorLog(`Unexpected env copying error, reason: ${err}`);
   }
 };

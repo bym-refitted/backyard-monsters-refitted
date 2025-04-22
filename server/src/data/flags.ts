@@ -8,10 +8,13 @@ export const flags = {
   // Platforms:
   viximo: 0,
   kongregate: 0,
+  discordOldEnough: 0,
 
   // Settings:
+  maproom: 1,
   maproom2: devConfig.maproom ? 1 : 0,
   inferno: devConfig.inferno ? 1 : 0,
+  infernoMapBlocked: devConfig.infernoMaproom ? 1 : 0,
   showProgressBar: 0,
   gamestats: 0,
   logfps: 0,
@@ -32,9 +35,8 @@ export const flags = {
   nwm_relocate: 1,
   attacking: 1,
   gifts: 1,
-  maproom: 1,
   attacklog: 1,
-  messaging: 1,
+  messaging: devConfig.allowedMessageType.message ? 1: 0,
   sroverlay: 0,
   leaderboard: 1,
   fanfriendbookmarkquests: 1,
@@ -56,7 +58,7 @@ export const flags = {
   midgameIncentive: 0,
   showFBCEarn: 1,
   trialpayDealspot: 1,
-  showFBCDaily: 0,
+  showFBCDaily: 1,
   validate_percent: 0,
   autoban_validate_fail: 0,
   autoban_client: 0,

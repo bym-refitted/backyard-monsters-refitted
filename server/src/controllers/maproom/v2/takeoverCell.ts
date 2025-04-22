@@ -13,11 +13,18 @@ import {
 } from "../../../services/base/updateResources";
 import { errorLog } from "../../../utils/logger";
 import { getCurrentDateTime } from "../../../utils/getCurrentDateTime";
+import { validateRange } from "../../../services/maproom/v2/validateRange";
 
 const TakeoverCellSchema = z.object({
   baseid: z.string(),
-  resources: z.string().transform((res) => JSON.parse(res)).optional(),
-  shiny: z.string().transform((shiny) => parseInt(shiny)).optional(),
+  resources: z
+    .string()
+    .transform((res) => JSON.parse(res))
+    .optional(),
+  shiny: z
+    .string()
+    .transform((shiny) => parseInt(shiny))
+    .optional(),
 });
 
 /**
@@ -26,7 +33,7 @@ const TakeoverCellSchema = z.object({
  * Retrieve the cell that is being taken over, by querying it with the baseid from the client.
  * To transfer ownership, update properties on the user, user's save, the cell and the associated cell save.
  * The previous owner's outposts are updated to reflect the takeover.
- * 
+ *
  * @param {Context} ctx - The Koa context object.
  * @throws Will throw an error if the base or base type is invalid.
  */
@@ -43,9 +50,7 @@ export const takeoverCell: KoaController = async (ctx) => {
 
     const cell = await ORMContext.em.findOne(
       WorldMapCell,
-      {
-        base_id: BigInt(baseid),
-      },
+      { baseid },
       { populate: ["save"] }
     );
 
@@ -57,9 +62,18 @@ export const takeoverCell: KoaController = async (ctx) => {
 
     const cellSave = cell.save;
 
+    if (cellSave.damage < 90)
+      throw new Error("Cell is not damaged enough to be taken over.");
+
+    await validateRange(currentUser, userSave, { attackCell: cell });
+
     if (shiny) userSave.credits = userSave.credits - shiny;
     if (resources)
-      userSave.resources = updateResources(resources, userSave.resources, Operation.SUBTRACT);
+      userSave.resources = updateResources(
+        resources,
+        userSave.resources,
+        Operation.SUBTRACT
+      );
 
     // Find the previous owner
     const previousOwner = await ORMContext.em.findOne(
@@ -93,10 +107,13 @@ export const takeoverCell: KoaController = async (ctx) => {
     cellSave.homebase = [cell.x.toString(), cell.y.toString()];
     cellSave.name = userSave.name;
     cellSave.createtime = getCurrentDateTime();
+    cellSave.outpostProtectionTime = getCurrentDateTime();
 
     cellSave.protected = 1;
-    cellSave.attackTimestamps = [];
+    cellSave.attacks = [];
     cellSave.resources = {};
+    cellSave.tutorialstage = 205;
+    cellSave.monsters = {};
 
     if (cellSave.type === BaseType.TRIBE) {
       cellSave.type = BaseType.OUTPOST;

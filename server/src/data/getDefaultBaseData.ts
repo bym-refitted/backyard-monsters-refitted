@@ -1,9 +1,10 @@
 import { devConfig } from "../config/DevSettings";
 import { User } from "../models/user.model";
-import { debugSandbox } from "../dev/debugSandbox";
 import { devSandbox } from "../dev/devSandbox";
 import { getCurrentDateTime } from "../utils/getCurrentDateTime";
 import { Reward } from "../enums/Rewards";
+import { BaseType } from "../enums/Base";
+import { infernoSandbox } from "../dev/infernoSandbox";
 
 /**
  * Generates the default base data object for a new save.
@@ -11,10 +12,13 @@ import { Reward } from "../enums/Rewards";
  * @param {User} [user] - The user for whom the base data is being generated.
  * @returns {object} - The default base data object.
  */
-export const getDefaultBaseData = (user?: User) => {
-  // Load sandbox data if dev flags are enabled. View DevSettings.ts for flags & Wiki details.
-  if (devConfig.devSandbox) return devSandbox(user);
-  if (devConfig.debugSandbox) return debugSandbox(user);
+export const getDefaultBaseData = (user: User, baseType: BaseType) => {
+  // Inserts a sandbox test base into the database if enabled.
+  if (baseType === BaseType.MAIN && devConfig.devSandbox)
+    return devSandbox(user);
+
+  if (baseType === BaseType.INFERNO && devConfig.infernoSandbox)
+    return infernoSandbox(user);
 
   return {
     saveuserid: user.userid,

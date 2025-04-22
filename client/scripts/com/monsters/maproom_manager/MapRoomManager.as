@@ -175,6 +175,11 @@ package com.monsters.maproom_manager
          {
             return;
          }
+         if(!GLOBAL._flags.discordOldEnough) 
+         {
+            GLOBAL.Message(KEYS.Get("newmap_discord_age"));
+            return;
+         }
          if(GLOBAL._flags.maproom2 != 1)
          {
             GLOBAL.Message(KEYS.Get("map_msg_disabled"));
@@ -325,7 +330,8 @@ package com.monsters.maproom_manager
          }
          if(MapRoomManager.instance.isInMapRoom2 == false)
          {
-            MapRoom3ConfirmMigrationPopup.instance.Show(true);
+            // Map Room 3 popup disabled
+            // MapRoom3ConfirmMigrationPopup.instance.Show(true);
          }
       }
    }

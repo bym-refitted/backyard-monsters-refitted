@@ -8,11 +8,19 @@ import { FilterFrontendKeys } from "../../../utils/FrontendKey";
 import { MapRoomVersion } from "../../../enums/MapRoom";
 import { Status } from "../../../enums/StatusCodes";
 import { Env } from "../../../enums/Env";
+import z from "zod";
 
 /**
  * Sets the Map Room version on the server.
  */
 export const CURRENT_MAPROOM_VERSION = MapRoomVersion.V2 as MapRoomVersion;
+
+/**
+ * Schema for validating the request body when setting the map version.
+ */
+const SetMapVersionSchema = z.object({
+  version: z.string().transform((version) => parseInt(version)),
+});
 
 /**
  * Map version controller for Map Room 2 .
@@ -26,11 +34,22 @@ export const setMapVersion: KoaController = async (ctx) => {
   await ORMContext.em.populate(user, ["save"]);
 
   let save: Save = user.save;
-  const { version } = ctx.request.body as { version: string };
+  const { version } = SetMapVersionSchema.parse(ctx.request.body);
 
-  version === MapRoomVersion.V2
-    ? await joinOrCreateWorld(user, save)
-    : await leaveWorld(user, save);
+  if (version === MapRoomVersion.V2) {
+    // Check if the user's Discord account is at least a week old
+    if (!ctx.meetsDiscordAgeCheck) {
+      ctx.status = Status.OK;
+      ctx.body = {
+        error: "Discord account is not old enough.",
+      };
+      return;
+    }
+
+    await joinOrCreateWorld(user, save);
+  } else {
+    await leaveWorld(user, save);
+  }
 
   const filteredSave = FilterFrontendKeys(save);
 

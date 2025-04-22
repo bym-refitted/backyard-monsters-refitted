@@ -7,7 +7,7 @@ import { baseLoad } from "./controllers/base/load/baseLoad";
 import { updateSaved } from "./controllers/base/save/updateSaved";
 import { getMapRoomCells } from "./controllers/maproom/v3/getCells";
 import { getNewMap } from "./controllers/maproom/getNewMap";
-import { auth } from "./middleware/auth";
+import { verifyUserAuth, verifyAccountStatus } from "./middleware/auth";
 import { relocate } from "./controllers/maproom/v3/relocate";
 import { infernoMonsters } from "./controllers/inferno/infernoMonsters";
 import { recordDebugData } from "./controllers/debug/recordDebugData";
@@ -22,22 +22,41 @@ import { migrateBase } from "./controllers/maproom/v2/migrateBase";
 import { transferMonsters } from "./controllers/maproom/v2/transferMonsters";
 import { apiVersion } from "./middleware/apiVersioning";
 import { supportedLangs } from "./controllers/supportedLangs";
-import { releasesWebhook } from "./controllers/github/releasesWebhook";
 import { Status } from "./enums/StatusCodes";
 import { forgotPassword } from "./controllers/auth/forgotPassword";
 import { resetPassword } from "./controllers/auth/resetPassword";
 import { devConfig } from "./config/DevSettings";
+import { infernoSave } from "./controllers/inferno/infernoSave";
+import { getNeighbours } from "./controllers/maproom/inferno/getNeighbours";
+import { Env } from "./enums/Env";
+import { getMessageTargets } from "./controllers/mail/getMessageTargets";
+import { getMessageThreads } from "./controllers/mail/getMessageThreads";
+import { getMessageThread } from "./controllers/mail/getMessageThread";
+import { sendMessage } from "./controllers/mail/sendMessage";
+import { reportMessageThread } from "./controllers/mail/reportMessageThread";
+import { Context } from "koa";
+
+const RateLimit = require("koa2-ratelimit").RateLimit;
+
+/**
+ * Rate limit for user registration
+ */
+const registerLimiter = RateLimit.middleware({
+  interval: { min: process.env.ENV === Env.PROD ? 60 : 1 },
+  max: 3,
+  handler: async (ctx: Context) => {
+    ctx.status = Status.TOO_MANY_REQUESTS;
+    ctx.body = {
+      error:
+        "Too many requests where sent from this IP while creating an account. Please try again in 1 hour.",
+    };
+  },
+});
 
 /**
  * All applcation routes
  */
 const router = new Router();
-
-/**
- * GitHub - Get latest client releases
- * @name POST /gh-release-webhook
- */
-router.post("/gh-release-webhook", releasesWebhook);
 
 /**
  * Connection route
@@ -66,7 +85,7 @@ router.get(
 );
 
 /**
- * Init route
+ * MapRoom setup
  * @name POST /api/:apiVersion/bm/getnewmap
  */
 router.post(
@@ -94,6 +113,7 @@ router.post(
 router.post(
   "/api/:apiVersion/player/register",
   apiVersion,
+  registerLimiter,
   debugDataLog("Registering user"),
   register
 );
@@ -129,13 +149,23 @@ router.post("/api/player/reset-password", resetPassword);
  * Load base data
  * @name POST /base/load
  */
-router.post("/base/load", auth, debugDataLog("Base load data"), baseLoad);
+router.post(
+  "/base/load",
+  verifyUserAuth,
+  debugDataLog("Base load data"),
+  baseLoad
+);
 
 /**
  * Save base data
  * @name POST /base/save
  */
-router.post("/base/save", auth, debugDataLog("Base save data"), baseSave);
+router.post(
+  "/base/save",
+  verifyUserAuth,
+  debugDataLog("Base save data"),
+  baseSave
+);
 
 /**
  * Update saved base data
@@ -143,8 +173,19 @@ router.post("/base/save", auth, debugDataLog("Base save data"), baseSave);
  */
 router.post(
   "/base/updatesaved",
-  auth,
+  verifyUserAuth,
   debugDataLog("Base updated save"),
+  updateSaved
+);
+
+/**
+ * Update Inferno saved base data
+ * @name POST /base/updatesaved
+ */
+router.post(
+  "/api/:apiVersion/bm/base/updatesaved",
+  verifyUserAuth,
+  debugDataLog("Inferno updated save"),
   updateSaved
 );
 
@@ -154,7 +195,7 @@ router.post(
  */
 router.post(
   "/base/migrate",
-  auth,
+  verifyUserAuth,
   debugDataLog("Base migrate data"),
   migrateBase
 );
@@ -166,7 +207,7 @@ router.post(
 router.get(
   "/api/:apiVersion/bm/yardplanner/gettemplates",
   apiVersion,
-  auth,
+  verifyUserAuth,
   debugDataLog("Get templates"),
   getTemplates
 );
@@ -178,7 +219,7 @@ router.get(
 router.post(
   "/api/:apiVersion/bm/yardplanner/savetemplate",
   apiVersion,
-  auth,
+  verifyUserAuth,
   debugDataLog("Saving template"),
   saveTemplate
 );
@@ -190,7 +231,7 @@ router.post(
 router.post(
   "/api/:apiVersion/bm/base/load",
   apiVersion,
-  auth,
+  verifyUserAuth,
   debugDataLog("Inferno load data"),
   baseLoad
 );
@@ -202,9 +243,21 @@ router.post(
 router.post(
   "/api/:apiVersion/bm/base/save",
   apiVersion,
-  auth,
+  verifyUserAuth,
   debugDataLog("Inferno save data"),
-  baseSave
+  infernoSave
+);
+
+/**
+ * Inferno get MapRoom neighbours
+ * @name POST /api/:apiVersion/bm/neighbours/get
+ */
+router.post(
+  "/api/:apiVersion/bm/neighbours/get",
+  apiVersion,
+  verifyUserAuth,
+  debugDataLog("Getting Inferno neighbours"),
+  getNeighbours
 );
 
 /**
@@ -214,7 +267,7 @@ router.post(
 router.post(
   "/api/:apiVersion/bm/base/infernomonsters",
   apiVersion,
-  auth,
+  verifyUserAuth,
   debugDataLog("Load inferno monsters"),
   infernoMonsters
 );
@@ -223,7 +276,13 @@ router.post(
  * Worldmap v2 get area data
  * @name POST /worldmapv2/getarea
  */
-router.post("/worldmapv2/getarea", auth, debugDataLog("MR2 get area"), getArea);
+router.post(
+  "/worldmapv2/getarea",
+  verifyUserAuth,
+  verifyAccountStatus,
+  debugDataLog("MR2 get area"),
+  getArea
+);
 
 /**
  * Worldmap v2 set map version
@@ -231,7 +290,7 @@ router.post("/worldmapv2/getarea", auth, debugDataLog("MR2 get area"), getArea);
  */
 router.post(
   "/worldmapv2/setmapversion",
-  auth,
+  verifyUserAuth,
   debugDataLog("Set maproom version"),
   setMapVersion
 );
@@ -242,7 +301,8 @@ router.post(
  */
 router.post(
   "/worldmapv2/takeoverCell",
-  auth,
+  verifyAccountStatus,
+  verifyUserAuth,
   debugDataLog("Taking over cell"),
   takeoverCell
 );
@@ -253,7 +313,8 @@ router.post(
  */
 router.post(
   "/worldmapv2/transferassets",
-  auth,
+  verifyUserAuth,
+  verifyAccountStatus,
   debugDataLog("Transferring assets"),
   transferMonsters
 );
@@ -265,7 +326,8 @@ router.post(
 router.post(
   "/api/:apiVersion/player/savebookmarks",
   apiVersion,
-  auth,
+  verifyUserAuth,
+  verifyAccountStatus,
   debugDataLog("MR2 save bookmarks"),
   saveBookmarks
 );
@@ -276,7 +338,8 @@ router.post(
  */
 router.post(
   "/worldmapv3/initworldmap",
-  auth,
+  verifyUserAuth,
+  verifyAccountStatus,
   debugDataLog("Posting MR3 init data"),
   initialPlayerCellData
 );
@@ -287,7 +350,8 @@ router.post(
  */
 router.get(
   "/worldmapv3/initworldmap",
-  auth,
+  verifyUserAuth,
+  verifyAccountStatus,
   debugDataLog("Getting MR3 init data"),
   initialPlayerCellData
 );
@@ -298,7 +362,8 @@ router.get(
  */
 router.post(
   "/worldmapv3/getcells",
-  auth,
+  verifyUserAuth,
+  verifyAccountStatus,
   debugDataLog("Get MR3 cells"),
   getMapRoomCells
 );
@@ -309,7 +374,8 @@ router.post(
  */
 router.post(
   "/worldmapv3/relocate",
-  auth,
+  verifyUserAuth,
+  verifyAccountStatus,
   debugDataLog("Relocating MR3 base"),
   relocate
 );
@@ -320,7 +386,8 @@ router.post(
  */
 router.get(
   "/worldmapv3/setmapversion",
-  auth,
+  verifyUserAuth,
+  verifyAccountStatus,
   debugDataLog("Set maproom version"),
   setMapVersion
 );
@@ -331,7 +398,8 @@ router.get(
  */
 router.post(
   "/worldmapv3/setmapversion",
-  auth,
+  verifyUserAuth,
+  verifyAccountStatus,
   debugDataLog("Set maproom version"),
   setMapVersion
 );
@@ -346,4 +414,63 @@ router.post(
   recordDebugData
 );
 
+/**
+ * Get other user's data for message
+ * @name GET /api/:apiVersion/player/getmessagetargets
+ */
+router.get(
+  "/api/:apiVersion/player/getmessagetargets",
+  apiVersion,
+  verifyUserAuth,
+  debugDataLog("Get message targets"),
+  getMessageTargets
+);
+
+/**
+ * Get message threads of current user
+ * @name GET /api/:apiVersion/player/getmessagethreads
+ */
+router.get(
+  "/api/:apiVersion/player/getmessagethreads",
+  apiVersion,
+  verifyUserAuth,
+  debugDataLog("Get message threads"),
+  getMessageThreads
+);
+
+/**
+ * Get messages by thread id, and update the unread value
+ * @name POST /api/:apiVersion/player/getmessagethread
+ */
+router.post(
+  "/api/:apiVersion/player/getmessagethread",
+  apiVersion,
+  verifyUserAuth,
+  debugDataLog("Get message thread by threadid"),
+  getMessageThread
+);
+
+/**
+ * Send message
+ * @name POST /api/:apiVersion/player/sendmessage
+ */
+router.post(
+  "/api/:apiVersion/player/sendmessage",
+  apiVersion,
+  verifyUserAuth,
+  debugDataLog("Send message"),
+  sendMessage
+);
+
+/**
+ * Report thread
+ * @name POST /api/:apiVersion/player/reportmessagethread
+ */
+router.post(
+  "/api/:apiVersion/player/reportmessagethread",
+  apiVersion,
+  verifyUserAuth,
+  debugDataLog("Report message thread"),
+  reportMessageThread
+);
 export default router;

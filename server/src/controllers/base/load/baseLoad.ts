@@ -4,12 +4,12 @@ import { devConfig } from "../../../config/DevSettings";
 import { Save } from "../../../models/save.model";
 import { ORMContext } from "../../../server";
 import { KoaController } from "../../../utils/KoaController";
-import { storeItems } from "../../../data/storeItems";
+import { storeItems } from "../../../data/store/storeItems";
 import { User } from "../../../models/user.model";
 import { FilterFrontendKeys } from "../../../utils/FrontendKey";
 import { flags } from "../../../data/flags";
 import { getCurrentDateTime } from "../../../utils/getCurrentDateTime";
-import { BaseMode } from "../../../enums/Base";
+import { BaseMode, BaseType } from "../../../enums/Base";
 import { WORLD_SIZE } from "../../../config/WorldGenSettings";
 import { Status } from "../../../enums/StatusCodes";
 import { baseModeView } from "./modes/baseModeView";
@@ -17,6 +17,11 @@ import { baseModeBuild } from "./modes/baseModeBuild";
 import { errorLog } from "../../../utils/logger";
 import { baseModeAttack } from "./modes/baseModeAttack";
 import { mapUserSaveData } from "../mapUserSaveData";
+import { discordAgeErr } from "../../../errors/errors";
+import { infernoModeDescent } from "./modes/infernoModeDescent";
+import { infernoModeView } from "./modes/infernoModeView";
+import { infernoModeAttack } from "./modes/infernoModeAttack";
+import { infernoModeBuild } from "./modes/infernoModeBuild";
 
 const BaseLoadSchema = z.object({
   type: z.string(),
@@ -33,7 +38,7 @@ const BaseLoadSchema = z.object({
  */
 export const baseLoad: KoaController = async (ctx) => {
   const user: User = ctx.authUser;
-  await ORMContext.em.populate(user, ["save"]);
+  await ORMContext.em.populate(user, ["save", "infernosave"]);
 
   try {
     const { baseid, type } = BaseLoadSchema.parse(ctx.request.body);
@@ -44,11 +49,30 @@ export const baseLoad: KoaController = async (ctx) => {
       case BaseMode.BUILD:
         baseSave = await baseModeBuild(user, baseid);
         break;
+
       case BaseMode.VIEW:
         baseSave = await baseModeView(baseid);
         break;
+
       case BaseMode.ATTACK:
+        if (!ctx.meetsDiscordAgeCheck) throw discordAgeErr();
         baseSave = await baseModeAttack(user, baseid);
+        break;
+
+      case BaseMode.IDESCENT:
+        baseSave = await infernoModeDescent(user);
+        break;
+
+      case BaseMode.IBUILD:
+        baseSave = await infernoModeBuild(user);
+        break;
+
+      case BaseMode.IWMVIEW:
+        baseSave = await infernoModeView(user, baseid);
+      break;
+
+      case BaseMode.IWMATTACK:
+        baseSave = await infernoModeAttack(user, baseid);
         break;
       default:
         throw new Error(`Base type not handled, type: ${type}.`);
@@ -59,6 +83,8 @@ export const baseLoad: KoaController = async (ctx) => {
       ? 205
       : filteredSave.tutorialstage;
 
+    flags.discordOldEnough = ctx.meetsDiscordAgeCheck;
+
     const responseBody = {
       ...filteredSave,
       flags,
@@ -68,11 +94,14 @@ export const baseLoad: KoaController = async (ctx) => {
       storeitems: { ...storeItems },
       tutorialstage: isTutorialEnabled,
       currenttime: getCurrentDateTime(),
-      pic_square: `${process.env.AVATAR_URL}?seed=${filteredSave.name}&size=${50}`,
+      pic_square: `${process.env.AVATAR_URL}?seed=${
+        filteredSave.name
+      }&size=${50}`,
     };
 
     // Only include user save data if the base belongs to the current user
-    if (user.userid === filteredSave.userid) {
+    // and is not an inferno base
+    if (baseSave.type !== BaseType.INFERNO && user.userid === filteredSave.userid) {
       Object.assign(responseBody, mapUserSaveData(user));
     }
 

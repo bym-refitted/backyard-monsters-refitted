@@ -45,7 +45,7 @@ package
 
       public static var cdnUrl:String = "http://localhost:3001/";
 
-      public static var apiVersionSuffix:String = "v1.0.8-beta/";
+      public static var apiVersionSuffix:String = "v1.2.0-beta/";
 
       public static var connectionCounter:int;
 
@@ -2476,7 +2476,7 @@ package
 
       public static function isAtHome():Boolean
       {
-         return _mode == "build" && BASE.isMainYard;
+         return _mode == "build" && BASE.isMainYardOrInfernoMainYard;
       }
 
       public static function isAtHomeOrInOutpost():Boolean

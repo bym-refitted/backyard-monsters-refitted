@@ -1,8 +1,13 @@
-import { ORMContext } from "../server";
+import { ORMContext, redisClient } from "../server";
 import { User } from "../models/user.model";
 import { Context, Next } from "koa";
-import { authFailureErr } from "../errors/errors";
+import {
+  authFailureErr,
+  discordAgeErr,
+  tokenAuthFailureErr,
+} from "../errors/errors";
 import JWT, { JwtPayload } from "jsonwebtoken";
+import { Env } from "../enums/Env";
 
 /**
  * Middleware to enforce authentication for protected routes.
@@ -15,7 +20,7 @@ import JWT, { JwtPayload } from "jsonwebtoken";
  * @param {Next} next - The Koa next middleware function.
  * @throws Will throw an error if the Authorization header is missing or invalid, or if the user cannot be found.
  */
-export const auth = async (ctx: Context, next: Next) => {
+export const verifyUserAuth = async (ctx: Context, next: Next) => {
   const authHeader = ctx.headers.authorization;
 
   if (!authHeader || !authHeader.startsWith("Bearer ")) throw authFailureErr();
@@ -23,13 +28,48 @@ export const auth = async (ctx: Context, next: Next) => {
   const token = authHeader.replace("Bearer ", "");
 
   const decodedToken = verifyJwtToken(token);
-  const user = await ORMContext.em.findOne(User, { email: decodedToken.user.email });
+  const storedToken = await redisClient.get(
+    `user-token:${decodedToken.user.email}`
+  );
 
-  if (!user || user.token !== token) throw authFailureErr();
+  if (storedToken !== token) throw authFailureErr();
+
+  const user = await ORMContext.em.findOne(User, {
+    email: decodedToken.user.email,
+  });
+
+  if (!user || user.banned) throw authFailureErr();
 
   ctx.authUser = user;
+  ctx.meetsDiscordAgeCheck = decodedToken.user.meetsDiscordAgeCheck;
 
   if (!ctx.authUser) throw authFailureErr();
+  await next();
+};
+
+/**
+ * Middleware to validate a user's eligibility for multiplayer access.
+ *
+ * This middleware checks for the presence of a valid Bearer token in the
+ * Authorization header, verifies the token, and ensures the user meets
+ * the Discord account age requirement.
+ *
+ * @param {Context} ctx - The Koa context object.
+ * @param {Next} next - The Koa next middleware function.
+ * @throws {Error} Throws `tokenAuthFailureErr` if the Authorization header is missing or invalid.
+ * @throws {Error} Throws `discordAgeErr` if the user's Discord account creation date does not meet the requirement.
+ */
+export const verifyAccountStatus = async (ctx: Context, next: Next) => {
+  const authHeader = ctx.headers.authorization;
+
+  if (!authHeader || !authHeader.startsWith("Bearer "))
+    throw tokenAuthFailureErr();
+
+  const token = authHeader.replace("Bearer ", "");
+  const decodedToken = verifyJwtToken(token);
+
+  if (!decodedToken.user.meetsDiscordAgeCheck) throw discordAgeErr();
+
   await next();
 };
 
@@ -44,20 +84,34 @@ type DisgustingJwtPayloadHack = Pick<
 export interface BymJwtPayload extends DisgustingJwtPayloadHack {
   user: {
     email: string;
+    discordId?: string;
+    meetsDiscordAgeCheck: boolean;
   };
 }
 
 /**
  * Verifies a JWT token and returns the decoded payload.
  *
+ * For local development, we return a basic payload with the user's email.
+ * In production, we introduce discord authentication.
+ *
  * @param {string} token - The JWT token to verify.
  * @returns {BymJwtPayload} The decoded JWT payload.
  * @throws Will throw an error if the token is invalid or verification fails.
  */
 export const verifyJwtToken = (token: string): BymJwtPayload => {
+  if (process.env.ENV === Env.LOCAL) {
+    return {
+      user: {
+        email: (JWT.decode(token) as BymJwtPayload).user?.email,
+        meetsDiscordAgeCheck: true,
+      },
+    };
+  }
+
   try {
     return <BymJwtPayload>JWT.verify(token, process.env.SECRET_KEY);
   } catch (err) {
-    throw authFailureErr();
+    throw tokenAuthFailureErr();
   }
 };

@@ -7,6 +7,7 @@ import { User } from "../../models/user.model";
 import { joinOrCreateWorld } from "../../services/maproom/v2/joinOrCreateWorld";
 import { errorLog, logging } from "../../utils/logger";
 import { MapRoom } from "../../enums/MapRoom";
+import { BaseType } from "../../enums/Base";
 
 export const seedWorldMapUsers = async (em: EntityManager) => {
   // Check if users already exist
@@ -34,7 +35,7 @@ export const seedWorldMapUsers = async (em: EntityManager) => {
     await em.persistAndFlush(user); // Persist user first to get the ID
 
     // Create a default save for the user
-    const saveData = getDefaultBaseData(user);
+    const saveData = getDefaultBaseData(user, BaseType.MAIN);
     const save = em.create(Save, { ...saveData, saveuserid: user.userid });
     user.save = save;
 
