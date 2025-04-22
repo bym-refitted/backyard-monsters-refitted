@@ -12,24 +12,24 @@ package com.monsters.monsters.components.abilities
       
       protected var m_timeAbilityIsRecharged:Number = 0;
       
-      public function AOEDamageOnAttack(param1:uint, param2:int, param3:uint = 4294967295, param4:int = 0)
+      public function AOEDamageOnAttack(radiusOuter:uint, targetFlags:int, maxTargets:uint = 4294967295, radiusInner:uint = 0, includeInitialTarget:Boolean = true, rechargeDuration:int = 0)
       {
-         super(param1,param2,param3);
-         this.m_rechargeDuration = param4;
+         super(radiusOuter,targetFlags,maxTargets,radiusInner,includeInitialTarget);
+         this.m_rechargeDuration = rechargeDuration;
       }
       
-      public function onAttack(param1:IAttackable, param2:Number, param3:ITargetable = null) : Number
+      public function onAttack(target:IAttackable, damageDealt:Number, projectile:ITargetable = null) : Number
       {
-         if(GLOBAL.Timestamp() > this.m_timeAbilityIsRecharged)
+         if(GLOBAL.Timestamp() >= this.m_timeAbilityIsRecharged)
          {
-            this.dealAOEDamage(param2);
+            this.dealAOEDamage(damageDealt, target);
          }
          return 0;
       }
       
-      override protected function dealAOEDamage(param1:Number) : void
+      override protected function dealAOEDamage(damage:Number, initialTarget:IAttackable = null) : void
       {
-         super.dealAOEDamage(param1);
+         super.dealAOEDamage(damage, initialTarget);
          this.m_timeAbilityIsRecharged = GLOBAL.Timestamp() + this.m_rechargeDuration;
       }
    }

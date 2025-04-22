@@ -7,6 +7,7 @@ import { emailUniqueErr, usernameUniqueErr } from "../../errors/errors";
 import { logging } from "../../utils/logger";
 import { Status } from "../../enums/StatusCodes";
 import { UserRegistrationSchema } from "./zod/AuthSchemas";
+import { Auth } from "../../enums/Env";
 
 /**
  * Controller to handle user registration.
@@ -44,6 +45,7 @@ export const register: KoaController = async (ctx) => {
   // Create new user record
   const user = ORMContext.em.create(User, {
     ...registeredUser,
+    pic_square: `${process.env.AVATAR_URL}?seed=${registeredUser.username}&size=50`,
     password: hash,
   });
 

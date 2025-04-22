@@ -97,20 +97,23 @@ package
             1:{
                "anim":["anim.1.v2.png",new Rectangle(-32,-33,65,80),47],
                "top":["top.1.v2.png",new Point(-48,-33)],
-               "shadow":["shadow.1.v4.jpg",new Point(-53,11)],
+               "shadow":["shadow.1.v4.jpg",new Point(-53,-1)],
+               //"shadow":["shadow.1.v4.jpg",new Point(-53,11)],
                "topdamaged":["top.1.damaged.v2.png",new Point(-41,-26)],
-               "shadowdamaged":["shadow.1.damaged.v2.jpg",new Point(-51,5)],
+                "shadowdamaged":["shadow.1.damaged.v2.jpg",new Point(-51,-2)],
+               //"shadowdamaged":["shadow.1.damaged.v2.jpg",new Point(-51,5)],
                "topdestroyed":["top.1.destroyed.v2.png",new Point(-45,0)],
-               "shadowdestroyed":["shadow.1.destroyed.v4.jpg",new Point(-46,4)]
+               "shadowdestroyed":["shadow.1.destroyed.v4.jpg",new Point(-46,-2)]
+               // "shadowdestroyed":["shadow.1.destroyed.v4.jpg",new Point(-46,4)]
             },
             3:{
                "anim":["anim.2.png",new Rectangle(-44,-38,90,97),50],
                "top":["top.2.png",new Point(-44,25)],
-               "shadow":["shadow.2.jpg",new Point(-39,16)],
+               //"shadow":["shadow.2.jpg",new Point(-39,16)],
                "topdamaged":["top.2.damaged.png",new Point(-37,-27)],
-               "shadowdamaged":["shadow.2.damaged.jpg",new Point(-39,19)],
-               "topdestroyed":["top.2.destroyed.png",new Point(-57,8)],
-               "shadowdestroyed":["shadow.2.destroyed.jpg",new Point(-60,19)]
+               //"shadowdamaged":["shadow.2.damaged.jpg",new Point(-39,19)],
+               "topdestroyed":["top.2.destroyed.png",new Point(-57,8)]
+               //"shadowdestroyed":["shadow.2.destroyed.jpg",new Point(-60,19)]
             }
          },
          "buildingbuttons":["bone_crusher.v2"],
@@ -467,14 +470,23 @@ package
                "shadowdestroyed":["shadow.1.destroyed.v2.jpg",new Point(-41,6)]
             },
             3:{
-               "anim":["anim.1.2.png",new Rectangle(-37,-66,59,52),49],
-               "anim2":["anim.2.2.png",new Rectangle(-1,-4,40,63),49],
-               "top":["top.2.png",new Point(-40,-15)],
-               "shadow":["shadow.2.jpg",new Point(-36,4)],
-               "topdamaged":["top.2.damaged.png",new Point(-48,-35)],
-               "shadowdamaged":["shadow.2.damaged.jpg",new Point(-38,23)],
-               "topdestroyed":["top.2.destroyed.png",new Point(-67,-8)],
-               "shadowdestroyed":["shadow.2.destroyed.jpg",new Point(-70,18)]
+               //"anim":["anim.1.2.png",new Rectangle(-37,-66,59,52),49],
+               //"anim2":["anim.2.2.png",new Rectangle(-1,-4,40,63),49],
+               //"top":["top.2.png",new Point(-40,-15)],
+               //"shadow":["shadow.2.jpg",new Point(-36,4)],
+               //"topdamaged":["top.2.damaged.png",new Point(-48,-35)],
+               //"shadowdamaged":["shadow.2.damaged.jpg",new Point(-38,23)],
+               //"topdestroyed":["top.2.destroyed.png",new Point(-67,-8)]
+               //"shadowdestroyed":["shadow.2.destroyed.jpg",new Point(-70,18)]
+               "anim":["anim.1.v2.png",new Rectangle(9.2,12.6,25,31),49],
+               "anim2":["anim.2.v2.png",new Rectangle(-32,9,36,26),49],
+               "anim3":["anim.3.v2.png",new Rectangle(-18,-60,34,58),49],
+               "top":["top.1.v2.png",new Point(-35,-15)],
+               "shadow":["shadow.1.v2.jpg",new Point(-36,4)],
+               "topdamaged":["top.1.damaged.v2.png",new Point(-39,-36)],
+               "shadowdamaged":["shadow.1.damaged.v2.jpg",new Point(-49,2)],
+               "topdestroyed":["top.1.destroyed.v2.png",new Point(-37,-2)],
+               "shadowdestroyed":["shadow.1.destroyed.v2.jpg",new Point(-41,6)]
             }
          },
          "buildingbuttons":["magma_producer.v2"],
@@ -788,11 +800,11 @@ package
             1:{
                "anim":["anim.1.v2.png",new Rectangle(-42,-41,86,88),31],
                "top":["top.1.v2.png",new Point(-56,8)],
-               "shadow":["shadow.1.v2.jpg",new Point(-81,10)],
+               //"shadow":["shadow.1.v2.jpg",new Point(-81,10)],
                "topdamaged":["top.1.damaged.v2.png",new Point(-56,-31)],
-               "shadowdamaged":["shadow.1.damaged.v2.jpg",new Point(-76,8)],
-               "topdestroyed":["top.1.destroyed.v2.png",new Point(-53,10)],
-               "shadowdestroyed":["shadow.1.destroyed.v2.jpg",new Point(-83,13)]
+               //"shadowdamaged":["shadow.1.damaged.v2.jpg",new Point(-76,8)],
+               "topdestroyed":["top.1.destroyed.v2.png",new Point(-53,10)]
+               //"shadowdestroyed":["shadow.1.destroyed.v2.jpg",new Point(-83,13)]
             }
          },
          "buildingbuttons":["monster_locker.v2"],
@@ -2349,24 +2361,25 @@ package
          "imageData":{
             "baseurl":"buildings/iacademy/",
             1:{
-               "anim":["anim1.1.png",new Rectangle(11,-2,22,17),44],
-               "anim2":["anim2.1.png",new Rectangle(-32,-49,53,84),44],
+               //"anim":["anim1.1.png",new Rectangle(11,-2,22,17),44],
+               //"anim2":["anim2.1.png",new Rectangle(-32,-49,53,84),44],
                "top":["top.1.png",new Point(-50,-27)],
-               "shadow":["shadow.1.jpg",new Point(-50,23)],
+               // "shadow":["shadow.1.jpg",new Point(-50,23)],
+               "shadow":["shadow.1.jpg",new Point(-50,2)],
                "topdamaged":["top.1.damaged.png",new Point(-48,-49)],
-               "shadowdamaged":["shadow.1.jpg",new Point(-50,23)],
-               "topdestroyed":["top.1.destroyed.png",new Point(-59,-10)],
-               "shadowdestroyed":["shadow.1.jpg",new Point(-50,23)]
+               //"shadowdamaged":["shadow.1.jpg",new Point(-50,23)],
+               "topdestroyed":["top.1.destroyed.png",new Point(-59,-10)]
+               //"shadowdestroyed":["shadow.1.jpg",new Point(-50,23)]
             },
             2:{
-               "anim":["anim1.2.png",new Rectangle(1,-18,44,26),47],
-               "anim2":["anim2.2.png",new Rectangle(-39,-96,67,117),47],
+               //"anim":["anim1.2.png",new Rectangle(1,-18,44,26),47],
+               //"anim2":["anim2.2.png",new Rectangle(-39,-96,67,117),47],
                "top":["top.2.png",new Point(-56,-43)],
                "shadow":["shadow.2.jpg",new Point(-60,10)],
                "topdamaged":["top.2.damaged.png",new Point(-61,-91)],
-               "shadowdamaged":["shadow.2.damaged.jpg",new Point(-58,8)],
-               "topdestroyed":["top.2.destroyed.png",new Point(-71,-56)],
-               "shadowdestroyed":["shadow.2.destroyed.jpg",new Point(-73,-17)]
+               //"shadowdamaged":["shadow.2.damaged.jpg",new Point(-58,8)],
+               "topdestroyed":["top.2.destroyed.png",new Point(-71,-56)]
+               //"shadowdestroyed":["shadow.2.destroyed.jpg",new Point(-73,-17)]
             }
          },
          "buildingbuttons":["inferno_monster_academy"],
@@ -6609,8 +6622,8 @@ package
                "animdamaged2":["anim.2.damaged.v2.png",new Rectangle(-21,28,38,19),31],
                "topdamaged":["top.1.damaged.v2.png",new Point(-38,-4)],
                "shadowdamaged":["shadow.1.v2.jpg",new Point(-38,16)],
-               "topdestroyed":["top.1.destroyed.v2.png",new Point(-36,6)],
-               "shadowdestroyed":["shadow.1.destroyed.v2.jpg",new Point(-36,22)]
+               "topdestroyed":["top.1.destroyed.v2.png",new Point(-36,6)]
+               //"shadowdestroyed":["shadow.1.destroyed.v2.jpg",new Point(-36,22)]
             }
          },
          "buildingbuttons":["magma_tower.v2"],

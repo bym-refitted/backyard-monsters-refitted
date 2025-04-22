@@ -22,22 +22,41 @@ import { migrateBase } from "./controllers/maproom/v2/migrateBase";
 import { transferMonsters } from "./controllers/maproom/v2/transferMonsters";
 import { apiVersion } from "./middleware/apiVersioning";
 import { supportedLangs } from "./controllers/supportedLangs";
-import { releasesWebhook } from "./controllers/github/releasesWebhook";
 import { Status } from "./enums/StatusCodes";
 import { forgotPassword } from "./controllers/auth/forgotPassword";
 import { resetPassword } from "./controllers/auth/resetPassword";
 import { devConfig } from "./config/DevSettings";
+import { infernoSave } from "./controllers/inferno/infernoSave";
+import { getNeighbours } from "./controllers/maproom/inferno/getNeighbours";
+import { Env } from "./enums/Env";
+import { getMessageTargets } from "./controllers/mail/getMessageTargets";
+import { getMessageThreads } from "./controllers/mail/getMessageThreads";
+import { getMessageThread } from "./controllers/mail/getMessageThread";
+import { sendMessage } from "./controllers/mail/sendMessage";
+import { reportMessageThread } from "./controllers/mail/reportMessageThread";
+import { Context } from "koa";
+
+const RateLimit = require("koa2-ratelimit").RateLimit;
+
+/**
+ * Rate limit for user registration
+ */
+const registerLimiter = RateLimit.middleware({
+  interval: { min: process.env.ENV === Env.PROD ? 60 : 1 },
+  max: 3,
+  handler: async (ctx: Context) => {
+    ctx.status = Status.TOO_MANY_REQUESTS;
+    ctx.body = {
+      error:
+        "Too many requests where sent from this IP while creating an account. Please try again in 1 hour.",
+    };
+  },
+});
 
 /**
  * All applcation routes
  */
 const router = new Router();
-
-/**
- * GitHub - Get latest client releases
- * @name POST /gh-release-webhook
- */
-router.post("/gh-release-webhook", releasesWebhook);
 
 /**
  * Connection route
@@ -94,6 +113,7 @@ router.post(
 router.post(
   "/api/:apiVersion/player/register",
   apiVersion,
+  registerLimiter,
   debugDataLog("Registering user"),
   register
 );
@@ -159,6 +179,17 @@ router.post(
 );
 
 /**
+ * Update Inferno saved base data
+ * @name POST /base/updatesaved
+ */
+router.post(
+  "/api/:apiVersion/bm/base/updatesaved",
+  verifyUserAuth,
+  debugDataLog("Inferno updated save"),
+  updateSaved
+);
+
+/**
  * Migrate base data
  * @name POST /base/migrate
  */
@@ -214,7 +245,19 @@ router.post(
   apiVersion,
   verifyUserAuth,
   debugDataLog("Inferno save data"),
-  baseSave
+  infernoSave
+);
+
+/**
+ * Inferno get MapRoom neighbours
+ * @name POST /api/:apiVersion/bm/neighbours/get
+ */
+router.post(
+  "/api/:apiVersion/bm/neighbours/get",
+  apiVersion,
+  verifyUserAuth,
+  debugDataLog("Getting Inferno neighbours"),
+  getNeighbours
 );
 
 /**
@@ -371,4 +414,63 @@ router.post(
   recordDebugData
 );
 
+/**
+ * Get other user's data for message
+ * @name GET /api/:apiVersion/player/getmessagetargets
+ */
+router.get(
+  "/api/:apiVersion/player/getmessagetargets",
+  apiVersion,
+  verifyUserAuth,
+  debugDataLog("Get message targets"),
+  getMessageTargets
+);
+
+/**
+ * Get message threads of current user
+ * @name GET /api/:apiVersion/player/getmessagethreads
+ */
+router.get(
+  "/api/:apiVersion/player/getmessagethreads",
+  apiVersion,
+  verifyUserAuth,
+  debugDataLog("Get message threads"),
+  getMessageThreads
+);
+
+/**
+ * Get messages by thread id, and update the unread value
+ * @name POST /api/:apiVersion/player/getmessagethread
+ */
+router.post(
+  "/api/:apiVersion/player/getmessagethread",
+  apiVersion,
+  verifyUserAuth,
+  debugDataLog("Get message thread by threadid"),
+  getMessageThread
+);
+
+/**
+ * Send message
+ * @name POST /api/:apiVersion/player/sendmessage
+ */
+router.post(
+  "/api/:apiVersion/player/sendmessage",
+  apiVersion,
+  verifyUserAuth,
+  debugDataLog("Send message"),
+  sendMessage
+);
+
+/**
+ * Report thread
+ * @name POST /api/:apiVersion/player/reportmessagethread
+ */
+router.post(
+  "/api/:apiVersion/player/reportmessagethread",
+  apiVersion,
+  verifyUserAuth,
+  debugDataLog("Report message thread"),
+  reportMessageThread
+);
 export default router;

@@ -2,45 +2,34 @@ import {
   Entity,
   Property,
   PrimaryKey,
-  BeforeUpdate,
   EntityManager,
   Connection,
   IDatabaseDriver,
   OneToOne,
+  Index,
 } from "@mikro-orm/core";
 import { FrontendKey } from "../utils/FrontendKey";
 import { getDefaultBaseData } from "../data/getDefaultBaseData";
 import { User } from "./user.model";
 import { WorldMapCell } from "./worldmapcell.model";
+import { AttackDetails } from "../controllers/base/load/modes/baseModeAttack";
+import { BaseType } from "../enums/Base";
 
 export interface FieldData {
   [key: string | number]: any;
 }
 
-type Outpost = [number, number, string];
-
-@Entity()
+@Entity({ tableName: "save" })
 export class Save {
-  @BeforeUpdate()
-  checkForNegativeInteger(): void {
-    // Handle negative values for credits & resources
-    this.credits = Math.max(0, this.credits);
-
-    if (this.resources) {
-      Object.keys(this.resources).forEach((resource) => {
-        this.resources[resource] = Math.max(0, this.resources[resource]);
-      });
-    }
-  }
-
   // IDs & Foreign Keys
   @FrontendKey
   @PrimaryKey({ autoincrement: true })
-  basesaveid!: bigint;
+  basesaveid!: number;
 
+  @Index()
   @FrontendKey
-  @Property({ default: 0 })
-  baseid!: bigint;
+  @Property({ default: "0" })
+  baseid!: string;
 
   @OneToOne({
     nullable: true,
@@ -52,12 +41,14 @@ export class Save {
 
   @FrontendKey
   @Property({ default: 0 })
-  homebaseid!: bigint;
+  homebaseid!: number;
 
+  @Index()
   @FrontendKey
   @Property()
   userid!: number;
 
+  @Index()
   @FrontendKey
   @Property()
   saveuserid!: number;
@@ -92,6 +83,7 @@ export class Save {
   initialOutpostProtectionOver!: boolean;
 
   // Primatives
+  @Index()
   @FrontendKey
   @Property({ default: "main" })
   type!: string;
@@ -169,12 +161,12 @@ export class Save {
   locked!: number;
 
   @FrontendKey
-  @Property({ default: 0 })
-  points!: bigint;
+  @Property({ default: "0" })
+  points!: string;
 
   @FrontendKey
-  @Property({ default: 0 })
-  basevalue!: bigint;
+  @Property({ default: "0" })
+  basevalue!: string;
 
   @FrontendKey
   @Property({ default: 0 })
@@ -199,10 +191,6 @@ export class Save {
   @FrontendKey
   @Property({ type: "json", nullable: true, default: "null" })
   champion?: string;
-
-  @FrontendKey
-  @Property({ type: "json", nullable: true, default: "null" })
-  attackerchampion: string;
 
   @FrontendKey
   @Property({ default: 0 })
@@ -269,14 +257,24 @@ export class Save {
   @Property({ nullable: true })
   cantmovetill?: number | null;
 
+  // Attack Objects
+  @FrontendKey
+  @Property({ type: "json" })
+  attacks: AttackDetails[] = [];
+
+  // MR3 specific Objects
+  @FrontendKey
+  @Property({ type: "json", nullable: true })
+  buildingkeydata?: FieldData = {};
+
+  @FrontendKey
+  @Property({ type: "json", nullable: true })
+  buildinghealthdata?: FieldData = {};
+
   // Objects
   @FrontendKey
   @Property({ type: "json", nullable: true })
   buildingdata?: FieldData = {};
-
-  @FrontendKey
-  @Property({ type: "json", nullable: true })
-  buildingkeydata?: FieldData = {};
 
   @FrontendKey
   @Property({ type: "json", nullable: true })
@@ -368,10 +366,6 @@ export class Save {
 
   @FrontendKey
   @Property({ type: "json", nullable: true })
-  buildinghealthdata?: FieldData = {};
-
-  @FrontendKey
-  @Property({ type: "json", nullable: true })
   frontpage?: FieldData = {};
 
   @Property()
@@ -381,10 +375,6 @@ export class Save {
   lastupdateAt: Date = new Date();
 
   // Client save objects
-  @FrontendKey
-  @Property({ type: "json", nullable: true })
-  attackcreatures?: FieldData = {};
-
   @FrontendKey
   @Property({ type: "json", nullable: true })
   attackloot?: FieldData = {};
@@ -398,9 +388,6 @@ export class Save {
   attackersiege?: FieldData = {};
 
   // Arrays
-  @Property({ type: "json" })
-  attackTimestamps: number[] = [];
-
   @FrontendKey
   @Property({ type: "json", nullable: true })
   monsterupdate?: FieldData = [];
@@ -423,7 +410,7 @@ export class Save {
 
   @FrontendKey
   @Property({ type: "json", nullable: true })
-  outposts: Outpost[] = [];
+  outposts: [number, number, string][] = [];
 
   @FrontendKey
   @Property({ type: "json", nullable: true })
@@ -436,10 +423,6 @@ export class Save {
   @FrontendKey
   @Property({ type: "json", nullable: true })
   achieved: any[] = [];
-
-  @FrontendKey
-  @Property({ type: "json", nullable: true })
-  attacks: any[] = [];
 
   @FrontendKey
   @Property({ type: "json", nullable: true })
@@ -475,6 +458,7 @@ export class Save {
     "aiattacks",
     "monsters",
     "resources",
+    "iresources",
     "lockerdata",
     "events",
     "inventory",
@@ -492,7 +476,6 @@ export class Save {
     "krallen",
     "siege",
     "buildingresources",
-    "attackcreatures",
     "attackloot",
     "lootreport",
     "attackersiege",
@@ -507,14 +490,10 @@ export class Save {
     "gifts",
     "sentinvites",
     "sentgifts",
-    "attackerchampion",
     "fbpromos",
     "purchase",
     "powerups",
     "attpowerups",
-  ];
-
-  public static attackSaveKeys: (keyof FieldData)[] = [
     "level",
     "catapult",
     "flinger",
@@ -528,20 +507,33 @@ export class Save {
     "basevalue",
     "empirevalue",
     "points",
-    "tutorialstage",
-    "attackreport",
+    "tutorialstage"
   ];
 
-  public static createDefaultUserSave = async (
+  public static attackSaveKeys: (keyof FieldData)[] = [
+    "destroyed",
+    "damage",
+    "locked",
+    "protected",
+    "champion",
+    "over",
+    "buildingdata",
+    "buildinghealthdata",
+    "buildingresources",
+    "attackreport",
+    "attackersiege"
+  ];
+
+  public static createMainSave = async (
     em: EntityManager<IDatabaseDriver<Connection>>,
     user: User
   ) => {
-    const baseSave = em.create(Save, getDefaultBaseData(user));
+    const baseSave = em.create(Save, getDefaultBaseData(user, BaseType.MAIN));
     // Persist the entity to generate basesaveid
     await em.persistAndFlush(baseSave);
 
     // Update the baseid and homebase to match the basesaveid
-    baseSave.baseid = baseSave.basesaveid;
+    baseSave.baseid = baseSave.basesaveid.toString();
     baseSave.homebaseid = baseSave.basesaveid;
     await em.persistAndFlush(baseSave);
 
@@ -549,5 +541,29 @@ export class Save {
     await em.persistAndFlush(user);
 
     return baseSave;
+  };
+
+  public static createInfernoSave = async (
+    em: EntityManager<IDatabaseDriver<Connection>>,
+    user: User
+  ) => {
+    const infernoSave = em.create(Save, getDefaultBaseData(user, BaseType.INFERNO));
+    await em.persistAndFlush(infernoSave);
+
+    infernoSave.type = BaseType.INFERNO;
+    infernoSave.baseid = infernoSave.basesaveid.toString();
+    infernoSave.homebaseid = infernoSave.basesaveid;
+    infernoSave.stats = user.save.stats;
+    infernoSave.credits = 0;
+    user.save.iresources = {
+      r1: 59168,
+      r2: 60090,
+      r3: 59849,
+      r4: 55864,
+    }
+
+    user.infernosave = infernoSave;
+    await em.persistAndFlush(infernoSave);
+    return infernoSave;
   };
 }

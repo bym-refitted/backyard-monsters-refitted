@@ -7,8 +7,8 @@ import { experiencePoints } from "../../data/experiencePoints";
  * @param {number} baseValue - The base value.
  * @returns {number} The calculated base level.
  */
-export const calculateBaseLevel = (basePoints: bigint, baseValue: bigint) => {
-  const points = basePoints + baseValue;
+export const calculateBaseLevel = (basePoints: string, baseValue: string) => {
+  const points = Number(basePoints) + Number(baseValue);
   let baseLevel = 1;
 
   for (let i = 0; i < experiencePoints.length; i++) {
