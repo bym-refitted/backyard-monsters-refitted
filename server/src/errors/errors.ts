@@ -57,7 +57,7 @@ export const debugClientErr = () =>
 
 export const saveFailureErr = () =>
   new ClientSafeError({
-    message: "We encountered an unexpected error",
+    message: "We encountered an error while saving",
     status: Status.INTERNAL_SERVER_ERROR,
     data: null,
     isClientFriendly: true,
@@ -96,3 +96,20 @@ export const discordAgeErr = () =>
     status: Status.UNAUTHORIZED,
     data: null,
   });
+
+export const permissionErr = () =>
+  new ClientSafeError({
+    message:
+      "You do not have permission to complete this operation.",
+    status: Status.FORBIDDEN,
+    data: null,
+    isClientFriendly: true,
+  });
+
+  export const mailboxErr = () =>
+    new ClientSafeError({
+      message: "Mailbox failed with an error.",
+      status: Status.NOT_FOUND,
+      data: null,
+      isClientFriendly: true,
+    });

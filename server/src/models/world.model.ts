@@ -2,7 +2,7 @@ import { Collection, Entity, OneToMany, PrimaryKey, Property } from "@mikro-orm/
 import { v4 } from "uuid";
 import { WorldMapCell } from "./worldmapcell.model";
 
-@Entity()
+@Entity({ tableName: "world" })
 export class World {
   @PrimaryKey()
   uuid = v4();

@@ -10,10 +10,16 @@ import { Resources } from "../../../../services/base/updateResources";
  */
 export const BaseSaveSchema = z.object({
   /**
-   * The ID of the base save, transformed from a string to a bigint.
-   * @type {bigint}
+   * The baseid of the save.
+   * @type {string}
    */
-  basesaveid: z.string().transform((id) => BigInt(id)),
+  baseid: z.string(),
+
+  /**
+   * The basesaveid of the save, transformed from a string to a number.
+   * @type {number}
+   */
+  basesaveid: z.string().transform((id) => parseInt(id)),
 
   /**
    * The purchase data, transformed from a JSON string to an array.
@@ -35,7 +41,7 @@ export const BaseSaveSchema = z.object({
   champion: z
     .string()
     .optional()
-    .transform((data) => (data ? JSON.stringify(JSON.parse(data)) : undefined)),
+    .transform((data) => (data ? JSON.stringify(JSON.parse(data)) : null)),
 
   /**
    * The attacker champion data, transformed from a JSON string.
@@ -46,6 +52,13 @@ export const BaseSaveSchema = z.object({
     .string()
     .optional()
     .transform((data) => (data ? JSON.stringify(JSON.parse(data)) : undefined)),
+
+  /**
+   * The building data, transformed from a JSON string to an object.
+   * This property is required.
+   * @type {object | undefined}
+   */
+  buildingdata: z.string().transform((data) => JSON.parse(data)),
 
   /**
    * The building health data, transformed from a JSON string to an object.
@@ -79,6 +92,21 @@ export const BaseSaveSchema = z.object({
     .transform((data) => (data ? (JSON.parse(data) as Resources) : undefined)),
 
   /**
+   * The attack creatures data, transformed from a JSON string to an object.
+   * This property is optional.
+   * @type {object | undefined}
+   */
+  attackcreatures: z
+    .string()
+    .optional()
+    .transform((data) => (data ? JSON.parse(data) : undefined)),
+
+    attackersiege: z
+    .string()
+    .optional()
+    .transform((data) => (data ? JSON.parse(data) : undefined)),
+
+  /**
    * The 'over' property, which indicates a state.
    * This property is optional and remains as a string.
    * @type {number | undefined}
@@ -98,5 +126,10 @@ export const BaseSaveSchema = z.object({
     .optional()
     .transform((data) => parseInt(data, 10)),
 
-    attackid: z.string().optional(),
+  /**
+   * The attack ID, transformed from a string to a number, or undefined.
+   * This property is optional.
+   * @type {number | undefined}
+   */
+  attackid: z.string().optional(),
 });
