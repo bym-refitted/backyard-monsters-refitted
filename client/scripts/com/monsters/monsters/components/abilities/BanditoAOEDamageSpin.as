@@ -4,16 +4,21 @@ package com.monsters.monsters.components.abilities
    {
        
       
-      public function BanditoAOEDamageSpin(param1:uint, param2:int, param3:uint = 4294967295, param4:int = 0)
+      public function BanditoAOEDamageSpin(radiusOuter:uint, targetFlags:int, radiusInner:uint = 0, includeInitialTarget:Boolean = true, maxTargets:uint = 4294967295, rechargeDuration:int = 0)
       {
-         super(param1,param2 & ~Targeting.k_TARGETS_BUILDINGS,param3,param4);
+         super(radiusOuter,targetFlags,maxTargets,radiusInner,includeInitialTarget,rechargeDuration);
       }
       
       override public function tick(param1:int = 1) : void
       {
          if(Boolean(owner._targetCreep) && owner._atTarget)
          {
+            owner._lockRotation = true;
             owner._targetRotation += owner.attackCooldown * (6 * (0.5 + owner.powerUpLevel() * 0.5));
+         }
+         else
+         {
+            owner._lockRotation = false;
          }
       }
       

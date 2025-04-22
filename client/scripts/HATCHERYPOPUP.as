@@ -131,108 +131,118 @@ package
             MonsterInfoB(n);
          };
       }
+
+      /* 
+       * This function has been rewritten.
+       * 
+       * @autor: matiasbais
+       * 
+       * @changes: Renamed local registers to readable names and removed unused logic
+       * 
+       * @param {String} creatureID - the current creature's ID passed to MonsterInfoB
+      */
       
-      public function MonsterInfoB(param1:int) : void
+      public function MonsterInfoB(creatureID:int) : void
       {
-         var _loc10_:String = null;
-         var _loc11_:int = 0;
-         var _loc2_:String = BASE.isInfernoMainYardOrOutpost ? "IC" + param1 : "C" + param1;
-         var _loc3_:Object = CREATURELOCKER._creatures[_loc2_];
-         ImageCache.GetImageWithCallBack("monsters/" + _loc2_ + "-portrait.jpg",this.IconLoaded,true,1,"",[this.portrait1]);
-         var _loc4_:Number = 0;
-         var _loc5_:int = 0;
-         var _loc6_:int = 0;
-         var _loc7_:int = 0;
-         var _loc8_:int = 0;
-         var _loc9_:int = 0;
-         for(_loc10_ in CREATURELOCKER._creatures)
+         var currentCreature:String = null;
+         var damageShown:int = 0;
+         var creatureStringID:String = BASE.isInfernoMainYardOrOutpost ? "IC" + creatureID : "C" + creatureID;
+         var creature:Object = CREATURELOCKER._creatures[creatureStringID];
+         ImageCache.GetImageWithCallBack("monsters/" + creatureStringID + "-portrait.jpg",this.IconLoaded,true,1,"",[this.portrait1]);
+         var speed:Number = 0;
+         var health:int = 0;
+         var damage:int = 0;
+         var cTime:int = 0;
+         var cResource:int = 0;
+         var cStorage:int = 0;
+         for(currentCreature in CREATURELOCKER._creatures)
          {
-            if(CREATURES.GetProperty(_loc10_,"speed") > _loc4_)
+            if(CREATURES.GetProperty(currentCreature,"speed") > speed)
             {
-               _loc4_ = CREATURES.GetProperty(_loc10_,"speed");
+               speed = CREATURES.GetProperty(currentCreature,"speed");
             }
-            if(CREATURES.GetProperty(_loc10_,"health") > _loc5_)
+            if(CREATURES.GetProperty(currentCreature,"health") > health)
             {
-               _loc5_ = CREATURES.GetProperty(_loc10_,"health");
+               health = CREATURES.GetProperty(currentCreature,"health");
             }
-            if(CREATURES.GetProperty(_loc10_,"damage") > _loc6_)
+            if(CREATURES.GetProperty(currentCreature,"damage") > damage)
             {
-               _loc6_ = CREATURES.GetProperty(_loc10_,"damage");
+               damage = CREATURES.GetProperty(currentCreature,"damage");
             }
-            if(CREATURES.GetProperty(_loc10_,"cTime") > _loc7_)
+            if(CREATURES.GetProperty(currentCreature,"cTime") > cTime)
             {
-               _loc7_ = CREATURES.GetProperty(_loc10_,"cTime");
+               cTime = CREATURES.GetProperty(currentCreature,"cTime");
             }
-            if(CREATURES.GetProperty(_loc10_,"cResource") > _loc8_)
+            if(CREATURES.GetProperty(currentCreature,"cResource") > cResource)
             {
-               _loc8_ = CREATURES.GetProperty(_loc10_,"cResource");
+               cResource = CREATURES.GetProperty(currentCreature,"cResource");
             }
-            if(CREATURES.GetProperty(_loc10_,"cStorage") > _loc9_)
+            if(CREATURES.GetProperty(currentCreature,"cStorage") > cStorage)
             {
-               _loc9_ = CREATURES.GetProperty(_loc10_,"cStorage");
+               cStorage = CREATURES.GetProperty(currentCreature,"cStorage");
             }
          }
-         _loc11_ = CREATURES.GetProperty(_loc2_,"damage");
+         damageShown = CREATURES.GetProperty(creatureStringID,"damage");
          TweenLite.to(mcMonsterInfo.bSpeed.mcBar,0.4,{
-            "width":100 / _loc4_ * CREATURES.GetProperty(_loc2_,"speed"),
+            "width":100 / speed * CREATURES.GetProperty(creatureStringID,"speed"),
             "ease":Circ.easeInOut,
             "delay":0
          });
          TweenLite.to(mcMonsterInfo.bHealth.mcBar,0.4,{
-            "width":100 / _loc5_ * CREATURES.GetProperty(_loc2_,"health"),
+            "width":100 / health * CREATURES.GetProperty(creatureStringID,"health"),
             "ease":Circ.easeInOut,
             "delay":0.05
          });
          TweenLite.to(mcMonsterInfo.bDamage.mcBar,0.4,{
-            "width":100 / _loc6_ * Math.abs(_loc11_),
+            "width":100 / damage * Math.abs(damageShown),
             "ease":Circ.easeInOut,
             "delay":0.1
          });
          TweenLite.to(mcMonsterInfo.bTime.mcBar,0.4,{
-            "width":100 / _loc7_ * CREATURES.GetProperty(_loc2_,"cTime"),
+            "width":100 / cTime * CREATURES.GetProperty(creatureStringID,"cTime"),
             "ease":Circ.easeInOut,
             "delay":0.15
          });
          TweenLite.to(mcMonsterInfo.bResource.mcBar,0.4,{
-            "width":100 / _loc8_ * CREATURES.GetProperty(_loc2_,"cResource"),
+            "width":100 / cResource * CREATURES.GetProperty(creatureStringID,"cResource"),
             "ease":Circ.easeInOut,
             "delay":0.2
          });
          TweenLite.to(mcMonsterInfo.bStorage.mcBar,0.4,{
-            "width":100 / _loc9_ * CREATURES.GetProperty(_loc2_,"cStorage"),
+            "width":100 / cStorage * CREATURES.GetProperty(creatureStringID,"cStorage"),
             "ease":Circ.easeInOut,
             "delay":0.25
          });
-         mcMonsterInfo.tSpeed.htmlText = KEYS.Get("mon_statsspeed",{"v1":CREATURES.GetProperty(_loc2_,"speed")});
-         mcMonsterInfo.tHealth.htmlText = GLOBAL.FormatNumber(CREATURES.GetProperty(_loc2_,"health"));
-         if(_loc11_ > 0)
+         mcMonsterInfo.tSpeed.htmlText = KEYS.Get("mon_statsspeed",{"v1":CREATURES.GetProperty(creatureStringID,"speed")});
+         mcMonsterInfo.tHealth.htmlText = GLOBAL.FormatNumber(CREATURES.GetProperty(creatureStringID,"health"));
+         if(damageShown > 0)
          {
-            mcMonsterInfo.tDamage.htmlText = _loc11_;
+            mcMonsterInfo.tDamage.htmlText = damageShown;
          }
          else
          {
-            mcMonsterInfo.tDamage.htmlText = -_loc11_ + " (" + KEYS.Get("str_heal") + ")";
+            mcMonsterInfo.tDamage.htmlText = -damageShown + " (" + KEYS.Get("str_heal") + ")";
          }
          mcMonsterInfo.tResource.htmlText = KEYS.Get("mon_att_costvalue",{
-            "v1":GLOBAL.FormatNumber(CREATURES.GetProperty(_loc2_,"cResource")),
+            "v1":GLOBAL.FormatNumber(CREATURES.GetProperty(creatureStringID,"cResource")),
             "v2":KEYS.Get(BRESOURCE.GetResourceNameKey(3))
          });
-         mcMonsterInfo.tStorage.htmlText = KEYS.Get("mon_att_housingvalue",{"v1":CREATURES.GetProperty(_loc2_,"cStorage")});
-         mcMonsterInfo.tTime.htmlText = GLOBAL.ToTime(CREATURES.GetProperty(_loc2_,"cTime"),true);
-         var _loc12_:int = 1;
-         if(Boolean(GLOBAL.player.m_upgrades[_loc2_]) && GLOBAL.player.m_upgrades[_loc2_].level > 1)
+         mcMonsterInfo.tStorage.htmlText = KEYS.Get("mon_att_housingvalue",{"v1":CREATURES.GetProperty(creatureStringID,"cStorage")});
+         mcMonsterInfo.tTime.htmlText = GLOBAL.ToTime(CREATURES.GetProperty(creatureStringID,"cTime"),true);
+         var level:int = 1;
+         if(Boolean(GLOBAL.player.m_upgrades[creatureStringID]) && GLOBAL.player.m_upgrades[creatureStringID].level > 1)
          {
-            _loc12_ = int(GLOBAL.player.m_upgrades[_loc2_].level);
+            level = int(GLOBAL.player.m_upgrades[creatureStringID].level);
          }
-         mcMonsterInfo.tDescription.htmlText = "<b>" + KEYS.Get("hatcherypopup_level",{"v1":_loc12_}) + " " + KEYS.Get(_loc3_.name) + "</b><br>" + KEYS.Get(_loc3_.description);
-         if(Boolean(CREATURELOCKER._lockerData[_loc2_]) && CREATURELOCKER._lockerData[_loc2_].t == 2)
+         mcMonsterInfo.tDescription.htmlText = "<b>" + KEYS.Get("hatcherypopup_level",{"v1":level}) + " " + KEYS.Get(creature.name) + "</b><br>" + KEYS.Get(creature.description);
+         if(Boolean(CREATURELOCKER._lockerData[creatureStringID]) && CREATURELOCKER._lockerData[creatureStringID].t == 2)
          {
             mcMonsterInfo.mcLocked.visible = false;
          }
          else
          {
             mcMonsterInfo.mcLocked.tText.htmlText = KEYS.Get(BASE.isInfernoMainYardOrOutpost ? "incubator_unlockinlocker" : "hat_unlockinlocker",{
-               "v1":KEYS.Get(CREATURELOCKER._creatures[_loc2_].name),
+               "v1":KEYS.Get(CREATURELOCKER._creatures[creatureStringID].name),
                "v2":KEYS.Get(GLOBAL._bHatchery._buildingProps.name)
             });
             mcMonsterInfo.mcLocked.visible = true;
