@@ -33,7 +33,7 @@ package
          super();
       }
 
-      /**
+      /*
        * This function was created by the Refitted team to send data to the server in JSON format.
        * It provides a more expressive, structured way for parsing and handling data on the server.
        * 
@@ -43,7 +43,7 @@ package
        * @param {Function} onComplete - a callback function to be called on successful completion of the request.
        * @return {void}
        */
-      public function invokeApiRequest(url:String, data:Object, method:String = URLRequestMethod.POST, onComplete:Function = null): void {
+      public function invokeApiRequest(url:String, data:Object, method:String = "POST", onComplete:Function = null): void {
          try {
             var request:URLRequest = new URLRequest(url);
             var loader:URLLoader = new URLLoader();
@@ -77,7 +77,7 @@ package
          }
       }
 
-      /**
+      /*
        * This is the original networking function that was used to load data from the server by Kixeye,
        * with some additons such as Bearer tokens in the header for authentication added by the Refitted team.
        * 
