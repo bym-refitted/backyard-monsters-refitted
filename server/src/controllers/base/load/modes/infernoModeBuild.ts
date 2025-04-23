@@ -7,7 +7,7 @@ import { User } from "../../../../models/user.model";
 import { ORMContext } from "../../../../server";
 import { calculateBaseLevel } from "../../../../services/base/calculateBaseLevel";
 import { createScaledTribes } from "../../../../services/maproom/v1/createScaledTribes";
-import { logReport } from "../../../../utils/logReport";
+import { logReport } from "../../../../services/base/reportManager";
 
 /**
  * Retrieves the save data for the user based on their Inferno mode request.
@@ -32,7 +32,7 @@ export const infernoModeBuild = async (user: User) => {
 
   if (infernoSave.userid !== user.userid) {
     const message = `${user.username} attempted to access unauthorized inferno base}`;
-    await logReport(user, new Report(), message);
+    await logReport(user, message);
     throw new Error(message);
   }
 

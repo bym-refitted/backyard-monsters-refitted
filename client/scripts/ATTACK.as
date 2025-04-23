@@ -107,7 +107,6 @@ package
       
       public static var _curCreaturesAvailable:Array;
        
-      
       public function ATTACK()
       {
          super();
@@ -151,7 +150,7 @@ package
          var _loc1_:Player = null;
          var _loc2_:int = 0;
          var _loc3_:int = 0;
-         var _loc4_:String = null;
+         var creatureID:String = null;
          m_recentlyAttacked = new Dictionary();
          _flingerCooldown = 5;
          _flingerCooling = 0;
@@ -213,7 +212,32 @@ package
             }
          }
       }
-      
+
+      public static function AttackData() : Object {
+         var attackPayload:Object = { champions: [], monsters: [] };
+         
+         // Loop through attack champions
+         for (var i:int = 0; i < GLOBAL._playerGuardianData.length; i++) {
+            var guardianData:Object = GLOBAL._playerGuardianData[i];
+            var guardianKey:String = "G" + guardianData.t;
+
+            attackPayload.champions.push({
+               type: guardianKey,
+               stats: CHAMPIONCAGE._guardians[guardianKey].props
+            });
+         }
+
+         // Loop through attack monsters
+         for (var creatureID:String in _curCreaturesAvailable) {
+            attackPayload.monsters.push({
+               id: creatureID,
+               count: ATTACK._curCreaturesAvailable[creatureID],
+               stats: CREATURELOCKER._creatures[creatureID].props
+            });
+         }
+         return attackPayload;
+      }
+   
       public static function Tick() : void
       {
          var _loc4_:String = null;

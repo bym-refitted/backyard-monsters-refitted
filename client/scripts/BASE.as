@@ -654,6 +654,11 @@ package
          {
             requestData.push(["worldid", MapRoomManager.instance.worldID]);
          }
+         if (_loc7_ == GLOBAL.e_BASE_MODE.ATTACK || _loc7_ == GLOBAL.e_BASE_MODE.WMATTACK || _loc7_ == GLOBAL.e_BASE_MODE.IATTACK || _loc7_ == GLOBAL.e_BASE_MODE.IWMATTACK)
+         {
+            var attackData:String = JSON.encode(ATTACK.AttackData());
+            requestData.push(["attackData", attackData]);
+         }
          var _loc9_:int = 0;
          var _loc10_:int = int(LOGIN._digits[LOGIN._digits.length - 1]);
          var _loc11_:int = int(LOGIN._digits[LOGIN._digits.length - 2]);

@@ -1,5 +1,3 @@
-import z from "zod";
-
 import { devConfig } from "../../../config/DevSettings";
 import { Save } from "../../../models/save.model";
 import { ORMContext } from "../../../server";
@@ -17,17 +15,13 @@ import { baseModeBuild } from "./modes/baseModeBuild";
 import { errorLog } from "../../../utils/logger";
 import { baseModeAttack } from "./modes/baseModeAttack";
 import { mapUserSaveData } from "../mapUserSaveData";
-import { discordAgeErr } from "../../../errors/errors";
 import { infernoModeDescent } from "./modes/infernoModeDescent";
 import { infernoModeView } from "./modes/infernoModeView";
 import { infernoModeAttack } from "./modes/infernoModeAttack";
 import { infernoModeBuild } from "./modes/infernoModeBuild";
-
-const BaseLoadSchema = z.object({
-  type: z.string(),
-  userid: z.string(),
-  baseid: z.string(),
-});
+import { validateAttack } from "../../../services/maproom/validateAttack";
+import { BaseLoadSchema } from "../../../zod/BaseLoadSchema";
+import { discordAgeErr } from "../../../errors/errors";
 
 /**
  * Controller responsible for loading base modes based on the user's request.
@@ -41,7 +35,7 @@ export const baseLoad: KoaController = async (ctx) => {
   await ORMContext.em.populate(user, ["save", "infernosave"]);
 
   try {
-    const { baseid, type } = BaseLoadSchema.parse(ctx.request.body);
+    const { baseid, type, attackData } = BaseLoadSchema.parse(ctx.request.body);
 
     let baseSave: Save = null;
 
@@ -56,6 +50,8 @@ export const baseLoad: KoaController = async (ctx) => {
 
       case BaseMode.ATTACK:
         if (!ctx.meetsDiscordAgeCheck) throw discordAgeErr();
+        
+        await validateAttack(user, attackData);
         baseSave = await baseModeAttack(user, baseid);
         break;
 
@@ -72,6 +68,7 @@ export const baseLoad: KoaController = async (ctx) => {
       break;
 
       case BaseMode.IWMATTACK:
+        await validateAttack(user, attackData);
         baseSave = await infernoModeAttack(user, baseid);
         break;
       default:

@@ -1,5 +1,5 @@
 import z from "zod";
-import { Resources } from "../../../../services/base/updateResources";
+import { Resources } from "../services/base/updateResources";
 
 /**
  * Schema for validating and transforming base save data.
