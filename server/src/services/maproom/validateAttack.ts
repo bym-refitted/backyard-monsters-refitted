@@ -6,9 +6,8 @@ import { AttackData } from "../../zod/AttackSchema";
 import { ChampionProps, championStats } from "../../data/championStats";
 
 // TODO:
-// 1. Validate monster count from flinger
-// 2. Validate in-memory monster & champion values
-type StatValue = number | number[] | string[];
+// Validate monster count from flinger
+type StatValue = number[] | string[];
 
 /**
  * Validates the attack data sent by the client.
@@ -104,37 +103,27 @@ const isMonsterStatsEqual = (arr1: number[], arr2: number[]) => {
 
 
 /**
- * Compares champion stat values (single number, number array, or string array) for equality.
+ * Compares champion stat values (number array, or string array) for equality.
  * 
  * @param {StatValue} val1 - First stat value.
  * @param {StatValue} val2 - Second stat value.
  * @returns {boolean} - True if values are considered equal, false otherwise.
  */
 const isChampionStatsEqual = (val1: StatValue, val2: StatValue) => {
-  if (val1 == null || val2 == null || typeof val1 !== typeof val2) 
+  if (!Array.isArray(val1) || !Array.isArray(val2) || val1.length !== val2.length) 
     return false;
 
-  if (Array.isArray(val1) && Array.isArray(val2)) {
-    if (val1.length !== val2.length) return false;
+  const isNumberArray = typeof val1[0] === "number";
+  const isStringArray = typeof val1[0] === "string";
 
-    // Numeric arrays
-    if (typeof val1[0] === "number" && typeof val2[0] === "number") {
-      return (val1 as number[]).every(
-        (num, i) => Number(num.toFixed(2)) === Number((val2 as number[])[i].toFixed(2))
-      );
-    }
-
-    // String arrays
-    if (typeof val1[0] === "string" && typeof val2[0] === "string") {
-      return val1.every((item, i) => item === val2[i]);
-    }
-
-    return false;
+  if (isNumberArray) {
+    return (val1 as number[]).every(
+      (num, i) => Number(num.toFixed(2)) === Number((val2 as number[])[i].toFixed(2))
+    );
   }
 
-  // Single numbers
-  if (typeof val1 === "number" && typeof val2 === "number") 
-    return val1 === val2;
+  if (isStringArray)
+    return (val1 as string[]).every((str, i) => str === (val2 as string[])[i]);
 
   return false;
 };

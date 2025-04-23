@@ -19,7 +19,6 @@ export interface ChampionProps {
   bonusRange: number[];
   bonusDamage: number[];
   bonusBuffs: number[];
-  powerLevel: number;
   bonusFeedShiny: number[];
   bonusFeedTime: number[];
   targetGroup: number[];
@@ -62,7 +61,6 @@ export const championStats: ChampionStatsMap = {
       bonusRange: [0, 0, 0],
       bonusDamage: [150, 330, 600],
       bonusBuffs: [0, 0, 0],
-      powerLevel: 1,
       bonusFeedShiny: [136, 136, 136],
       bonusFeedTime: [3600 * 24],
       targetGroup: [0],
@@ -92,7 +90,6 @@ export const championStats: ChampionStatsMap = {
       bonusRange: [0, 0, 0],
       bonusDamage: [400, 880, 1600],
       bonusBuffs: [0, 0, 0],
-      powerLevel: 1,
       bonusFeedShiny: [131, 131, 131],
       bonusFeedTime: [3600 * 24],
       targetGroup: [0],
@@ -122,7 +119,6 @@ export const championStats: ChampionStatsMap = {
       bonusRange: [3, 6, 10],
       bonusDamage: [3, 6, 10],
       bonusBuffs: [0.03, 0.06, 0.15],
-      powerLevel: 1,
       bonusFeedShiny: [96, 96, 96],
       bonusFeedTime: [3600 * 24],
       targetGroup: [0],
@@ -152,7 +148,6 @@ export const championStats: ChampionStatsMap = {
       bonusRange: [0, 0, 0],
       bonusDamage: [300, 600, 1000],
       bonusBuffs: [0],
-      powerLevel: 0,
       bonusFeedShiny: [96, 96, 96],
       bonusFeedTime: [3600 * 24],
       targetGroup: [0],
@@ -183,7 +178,6 @@ export const championStats: ChampionStatsMap = {
       bonusRange: [0, 0, 0],
       bonusDamage: [0, 0, 0],
       bonusBuffs: [0],
-      powerLevel: 0,
       bonusFeedShiny: [96, 96, 96],
       bonusFeedTime: [3600 * 24],
       targetGroup: [0],
