@@ -24,6 +24,9 @@ export class Report {
   @Property({ default: 0 })
   violations: number;
 
+  @Property({ default: 0 })
+  attackViolations: number;
+
   @Property()
   createdAt: Date = new Date();
 

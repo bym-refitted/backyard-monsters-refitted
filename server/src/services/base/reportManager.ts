@@ -28,6 +28,28 @@ export const logReport = async (user: User, message: string) => {
 };
 
 /**
+ * Logs an attack validation violation for a user.
+ * This is specifically used to track attack payload tampering from validateAttack.
+ *
+ * @param {User} user - The user with the attack violation.
+ * @param {string} message - The detailed message about the attack violation.
+ * @returns {Promise<void>}
+ */
+export const logAttackViolation = async (user: User, message: string) => {
+  const incident = await getOrCreateReport(user);
+
+  incident.attackViolations += 1;
+  
+  const newReport: ReportEntry = {
+    message: `ATTACK VIOLATION: ${message}`,
+    timestamp: new Date().toISOString(),
+  };
+  
+  incident.report.push(newReport);
+  await ORMContext.em.persistAndFlush(incident);
+};
+
+/**
  * Logs a ban report for a user with a message and timestamp.
  * Increments the user's violation count and sets the ban reason.
  *
@@ -65,6 +87,7 @@ const getOrCreateReport = async (user: User): Promise<Report> => {
     incident.username = username;
     incident.discord_tag = discord_tag;
     incident.violations = 0;
+    incident.attackViolations = 0;
     incident.report = [];
     incident.banReason = null;
   }

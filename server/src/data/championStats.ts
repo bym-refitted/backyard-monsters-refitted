@@ -1,4 +1,43 @@
-export const championStats = {
+export interface ChampionProps {
+  speed: number[];
+  health: number[];
+  healtime: number[];
+  range: number[];
+  damage: number[];
+  feedShiny: number[];
+  evolveShiny: number[];
+  feedCount: number[];
+  feedTime: number[];
+  buffs: number[];
+  movement: string[];
+  attack: string[];
+  bucket: number[];
+  offset_x: number[];
+  offset_y: number[];
+  bonusSpeed: number[];
+  bonusHealth: number[];
+  bonusRange: number[];
+  bonusDamage: number[];
+  bonusBuffs: number[];
+  powerLevel: number;
+  bonusFeedShiny: number[];
+  bonusFeedTime: number[];
+  targetGroup: number[];
+  buffRadius?: number[];
+}
+
+interface ChampionStat {
+  t: number;
+  name: string;
+  props: ChampionProps;
+}
+
+interface ChampionStatsMap {
+  [key: string]: ChampionStat;
+}
+
+
+export const championStats: ChampionStatsMap = {
   G1: {
     t: 1,
     name: "Gorgo",
@@ -8,19 +47,6 @@ export const championStats = {
       healtime: [3600, 7200, 14400, 28800, 57600, 115200],
       range: [35, 45, 55, 65, 70, 70],
       damage: [1000, 1200, 1500, 2000, 2500, 3000],
-      feeds: [
-        { C2: 8 },
-        {
-          C2: 5,
-          C6: 3,
-        },
-        { C6: 20 },
-        {
-          C6: 5,
-          C10: 5,
-        },
-        { C10: 10 },
-      ],
       feedShiny: [26, 44, 75, 111, 136],
       evolveShiny: [158, 530, 1358, 2664, 4076],
       feedCount: [3, 6, 9, 12, 15],
@@ -36,7 +62,6 @@ export const championStats = {
       bonusRange: [0, 0, 0],
       bonusDamage: [150, 330, 600],
       bonusBuffs: [0, 0, 0],
-      bonusFeeds: [{ C10: 10 }, { C10: 10 }, { C10: 10 }],
       powerLevel: 1,
       bonusFeedShiny: [136, 136, 136],
       bonusFeedTime: [3600 * 24],
@@ -52,19 +77,6 @@ export const championStats = {
       healtime: [3600, 7200, 14400, 28800, 57600, 115200],
       range: [35, 45, 55, 65, 85, 90],
       damage: [3000, 3600, 4200, 5500, 6500, 8000],
-      feeds: [
-        { C1: 15 },
-        {
-          C1: 10,
-          C4: 8,
-        },
-        { C7: 25 },
-        {
-          C7: 5,
-          C8: 18,
-        },
-        { C8: 15 },
-      ],
       feedShiny: [26, 44, 75, 105, 131],
       evolveShiny: [158, 530, 1358, 2530, 3918],
       feedCount: [3, 6, 9, 12, 15],
@@ -80,7 +92,6 @@ export const championStats = {
       bonusRange: [0, 0, 0],
       bonusDamage: [400, 880, 1600],
       bonusBuffs: [0, 0, 0],
-      bonusFeeds: [{ C8: 15 }, { C8: 15 }, { C8: 15 }],
       powerLevel: 1,
       bonusFeedShiny: [131, 131, 131],
       bonusFeedTime: [3600 * 24],
@@ -96,22 +107,6 @@ export const championStats = {
       healtime: [3600, 7200, 14400, 28800, 57600, 115200],
       range: [140, 140, 180, 190, 200, 210],
       damage: [70, 80, 90, 100, 110, 120],
-      feeds: [
-        { C3: 10 },
-        {
-          C3: 10,
-          C9: 1,
-        },
-        {
-          C3: 20,
-          C9: 3,
-        },
-        {
-          C3: 15,
-          C9: 5,
-        },
-        { C9: 10 },
-      ],
       feedShiny: [26, 45, 62, 76, 96],
       evolveShiny: [154, 537, 1116, 1822, 2891],
       feedCount: [3, 6, 9, 12, 15],
@@ -127,7 +122,6 @@ export const championStats = {
       bonusRange: [3, 6, 10],
       bonusDamage: [3, 6, 10],
       bonusBuffs: [0.03, 0.06, 0.15],
-      bonusFeeds: [{ C9: 10 }, { C9: 10 }, { C9: 10 }],
       powerLevel: 1,
       bonusFeedShiny: [96, 96, 96],
       bonusFeedTime: [3600 * 24],
@@ -143,19 +137,6 @@ export const championStats = {
       healtime: [3600, 7200, 14400, 28800, 57600, 115200],
       range: [35, 45, 55, 60, 65, 65],
       damage: [2000, 2400, 3000, 3800, 5000, 6500],
-      feeds: [
-        {
-          IC1: 10,
-          IC2: 5,
-        },
-        {
-          IC2: 5,
-          IC7: 1,
-        },
-        { IC7: 3 },
-        { IC7: 5 },
-        { IC8: 2 },
-      ],
       feedShiny: [26, 44, 75, 111, 136],
       evolveShiny: [158, 530, 1358, 2664, 4076],
       feedCount: [3, 6, 9, 12, 15],
@@ -171,7 +152,6 @@ export const championStats = {
       bonusRange: [0, 0, 0],
       bonusDamage: [300, 600, 1000],
       bonusBuffs: [0],
-      bonusFeeds: [{ IC8: 2 }, { IC8: 2 }, { IC8: 2 }],
       powerLevel: 0,
       bonusFeedShiny: [96, 96, 96],
       bonusFeedTime: [3600 * 24],
@@ -187,19 +167,6 @@ export const championStats = {
       healtime: [7200, 14400, 28800, 57600, 115200],
       range: [35, 45, 55, 60, 65],
       damage: [800, 850, 900, 1000, 1200],
-      feeds: [
-        {
-          IC1: 20,
-          IC2: 10,
-        },
-        {
-          IC2: 10,
-          IC7: 2,
-        },
-        { IC7: 6 },
-        { IC7: 10 },
-        { IC8: 3 },
-      ],
       feedShiny: [26, 44, 75, 111, 136],
       evolveShiny: [158, 530, 1358, 2664],
       feedCount: [3, 6, 9, 12, 15],
@@ -216,7 +183,6 @@ export const championStats = {
       bonusRange: [0, 0, 0],
       bonusDamage: [0, 0, 0],
       bonusBuffs: [0],
-      bonusFeeds: [{ IC8: 3 }, { IC8: 3 }, { IC8: 3 }],
       powerLevel: 0,
       bonusFeedShiny: [96, 96, 96],
       bonusFeedTime: [3600 * 24],
