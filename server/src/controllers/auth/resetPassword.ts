@@ -7,7 +7,7 @@ import { authFailureErr } from "../../errors/errors";
 import { ORMContext } from "../../server";
 import { User } from "../../models/user.model";
 import { errorLog } from "../../utils/logger";
-import { ResetPasswordSchema } from "./zod/AuthSchemas";
+import { ResetPasswordSchema } from "../../zod/AuthSchemas";
 import { verifyJwtToken } from "../../middleware/auth";
 
 /**

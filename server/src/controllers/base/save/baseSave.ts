@@ -7,7 +7,7 @@ import { getCurrentDateTime } from "../../../utils/getCurrentDateTime";
 import { errorLog, logging } from "../../../utils/logger";
 import { Status } from "../../../enums/StatusCodes";
 import { SaveKeys } from "../../../enums/SaveKeys";
-import { BaseSaveSchema } from "./zod/BaseSaveSchema";
+import { BaseSaveSchema } from "../../../zod/BaseSaveSchema";
 import { resourcesHandler } from "./handlers/resourceHandler";
 import { purchaseHandler } from "./handlers/purchaseHandler";
 import { academyHandler } from "./handlers/academyHandler";

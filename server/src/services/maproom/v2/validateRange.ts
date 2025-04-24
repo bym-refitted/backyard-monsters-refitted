@@ -4,7 +4,7 @@ import { Save } from "../../../models/save.model";
 import { User } from "../../../models/user.model";
 import { WorldMapCell } from "../../../models/worldmapcell.model";
 import { ORMContext } from "../../../server";
-import { logReport } from "../../../utils/logReport";
+import { logReport } from "../../base/reportManager";
 import { Report } from "../../../models/report.model";
 
 /**
@@ -88,7 +88,7 @@ export const validateRange = async (
   }
 
   const message = `${user.username} attacked out of range base: ${attackCell.baseid}`;
-  await logReport(user, new Report(), message);
+  await logReport(user, message);
 
   throw new Error("No outposts are within attack range.");
 };
