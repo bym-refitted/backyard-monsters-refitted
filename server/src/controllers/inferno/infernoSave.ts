@@ -10,11 +10,11 @@ import { FilterFrontendKeys } from "../../utils/FrontendKey";
 import { getCurrentDateTime } from "../../utils/getCurrentDateTime";
 import { KoaController } from "../../utils/KoaController";
 import { errorLog } from "../../utils/logger";
+import { BaseSaveSchema } from "../../zod/BaseSaveSchema";
 import { academyHandler } from "../base/save/handlers/academyHandler";
 import { buildingDataHandler } from "../base/save/handlers/buildingDataHandler";
 import { purchaseHandler } from "../base/save/handlers/purchaseHandler";
 import { resourcesHandler } from "../base/save/handlers/resourceHandler";
-import { BaseSaveSchema } from "../base/save/zod/BaseSaveSchema";
 
 export const infernoSave: KoaController = async (ctx) => {
   const user: User = ctx.authUser;
