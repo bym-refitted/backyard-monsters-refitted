@@ -1,6 +1,5 @@
 import { TypeOf } from "zod";
 import { resourcesHandler } from "../../../controllers/base/save/handlers/resourceHandler";
-import { BaseSaveSchema } from "../../../controllers/base/save/zod/BaseSaveSchema";
 import { molochTribes } from "../../../data/tribes/molochTribes";
 import { SaveKeys } from "../../../enums/SaveKeys";
 import { saveFailureErr } from "../../../errors/errors";
@@ -9,6 +8,7 @@ import { Save } from "../../../models/save.model";
 import { User } from "../../../models/user.model";
 import { ORMContext } from "../../../server";
 import { getCurrentDateTime } from "../../../utils/getCurrentDateTime";
+import { BaseSaveSchema } from "../../../zod/BaseSaveSchema";
 
 type BaseSaveData = TypeOf<typeof BaseSaveSchema>;
 
