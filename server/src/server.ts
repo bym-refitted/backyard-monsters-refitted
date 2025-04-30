@@ -72,26 +72,11 @@ api.get("/", (ctx: Context) => (ctx.body = {}));
 
   app.use(processLanguagesFile);
 
+  // Serve static files
   app.use(serve("public/"));
 
   process.on("unhandledRejection", (reason, promise) => {
     errorLog(`Unhandled Rejection at: ${promise} reason: ${reason}`);
-  });
-
-  app.use(async (ctx, next) => {
-    if (ctx.path === "/crossdomain.xml") {
-      ctx.status = Status.OK;
-      ctx.body = `<?xml version="1.0"?>
-                  <!DOCTYPE cross-domain-policy SYSTEM "http://www.adobe.com/xml/dtds/cross-domain-policy.dtd">
-                  <cross-domain-policy>
-                      <site-control permitted-cross-domain-policies="all" />
-                      <allow-access-from domain="*" secure="false" />
-                      <allow-http-request-headers-from domain="*" headers="Authorization" secure="false" />
-                  </cross-domain-policy>`;
-      ctx.type = "application/xml";
-    } else {
-      await next();
-    }
   });
 
   app.use(ErrorInterceptor);

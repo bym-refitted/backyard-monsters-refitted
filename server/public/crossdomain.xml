@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<!DOCTYPE cross-domain-policy SYSTEM "http://www.adobe.com/xml/dtds/cross-domain-policy.dtd">
+<cross-domain-policy>
+    <!-- This is the localhost configuration -->
+    <!-- For production set secure to true and allow access only from the domains you need -->
+    <site-control permitted-cross-domain-policies="master-only" />
+
+    <allow-access-from domain="*" secure="false" />
+
+    <allow-http-request-headers-from
+        domain="localhost"
+        headers="Authorization"
+        secure="false" />
+
+</cross-domain-policy>

@@ -15,7 +15,7 @@ import { getTemplates } from "./controllers/yardplanner/getTemplates";
 import { saveTemplate } from "./controllers/yardplanner/saveTemplate";
 import { getArea } from "./controllers/maproom/v2/getArea";
 import { initialPlayerCellData } from "./controllers/maproom/v3/initialPlayerCellData";
-import { setMapVersion } from "./controllers/maproom/v2/setMapVersion";
+import { setMapVersion } from "./controllers/maproom/setMapVersion";
 import { saveBookmarks } from "./controllers/maproom/v2/saveBookmarks";
 import { takeoverCell } from "./controllers/maproom/v2/takeoverCell";
 import { migrateBase } from "./controllers/maproom/v2/migrateBase";
