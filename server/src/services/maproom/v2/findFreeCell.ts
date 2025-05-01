@@ -3,7 +3,7 @@ import { World } from "../../../models/world.model";
 import { WorldMapCell } from "../../../models/worldmapcell.model";
 import { EntityManager } from "@mikro-orm/core";
 import { logging } from "../../../utils/logger";
-import { generateNoise, getTerrainHeight } from "../../../controllers/maproom/v2/generateMap";
+import { generateNoise, getTerrainHeight } from "./generateMap";
 
 /**
  * Interface representing a single cell

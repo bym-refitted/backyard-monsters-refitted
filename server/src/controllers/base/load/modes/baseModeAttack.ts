@@ -9,7 +9,7 @@ import { User } from "../../../../models/user.model";
 import { wildMonsterSave } from "../../../../services/maproom/v2/wildMonsters";
 import { getCurrentDateTime } from "../../../../utils/getCurrentDateTime";
 import { validateRange } from "../../../../services/maproom/v2/validateRange";
-import { generateNoise, getTerrainHeight } from "../../../maproom/v2/generateMap";
+import { generateNoise, getTerrainHeight } from "../../../../services/maproom/v2/generateMap";
 
 export interface AttackDetails {
   fbid: string;

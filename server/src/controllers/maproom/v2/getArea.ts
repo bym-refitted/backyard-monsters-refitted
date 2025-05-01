@@ -8,7 +8,7 @@ import { devConfig } from "../../../config/DevSettings";
 import { Status } from "../../../enums/StatusCodes";
 import { createCellData } from "../../../services/maproom/v2/createCellData";
 import { Save } from "../../../models/save.model";
-import { generateNoise, getTerrainHeight } from "./generateMap";
+import { generateNoise, getTerrainHeight } from "../../../services/maproom/v2/generateMap";
 
 /**
  * Schema for validating the request body when getting area data.

@@ -1,37 +1,22 @@
 import alea from "alea";
 
 import { createNoise2D, NoiseFunction2D as Noise } from "simplex-noise";
+import { MapRoom, Terrain } from "../../../enums/MapRoom";
+
 import {
   NOISE_SCALE,
   WORLD_SIZE,
   EDGE_TRANSITION_WIDTH,
   TERRAIN_SCALE,
 } from "../../../config/WorldGenSettings";
-import { MapRoom, Terrain } from "../../../enums/MapRoom";
 
 /**
- * Smooths the height value by averaging the values of the surrounding cells.
- *
- * @param {Noise} noise - The noise generator instance.
- * @param {number} cellX - The x-coordinate.
- * @param {number} cellY - The y-coordinate.
- * @returns {number} - The smoothed height value.
+ * Generates simplex noise based on a given seed.
+ * 
+ * @param {string} seed - The seed for the noise generator.
+ * @returns {Noise} - The noise generator instance.
  */
-const smoothHeight = (noise: Noise, cellX: number, cellY: number) => {
-  const scale = NOISE_SCALE;
-  const noiseAt = (dx: number, dy: number) => noise(dx / scale, dy / scale);
-
-  const topCellY = cellY - 1 < 0 ? MapRoom.HEIGHT - cellY - 1 : cellY - 1;
-  const rightCellX = cellX - 1 < 0 ? MapRoom.HEIGHT - cellX - 1 : cellX - 1;
-  let currentCell = noiseAt(cellX, cellY) / 4;
-
-  // Retrieve the noise values for the adjacent cells
-  const topCell = noiseAt(cellX, topCellY);
-  const rightCell = noiseAt(rightCellX, cellY);
-
-  // Calculate the average height by combining the surrounding values
-  return (topCell + rightCell) / 4 + currentCell;
-};
+export const generateNoise = (seed: string) => createNoise2D(alea(seed));
 
 /**
  * Calculates the terrain height of a cell based on noise values, with a smooth transition near the edges.
@@ -41,11 +26,7 @@ const smoothHeight = (noise: Noise, cellX: number, cellY: number) => {
  * @param {number} cellY - The y-coordinate of the cell.
  * @returns {number} - The calculated terrain height for the cell.
  */
-export const getTerrainHeight = (
-  noise: Noise,
-  cellX: number,
-  cellY: number
-) => {
+export const getTerrainHeight = (noise: Noise, cellX: number, cellY: number) => {
   // The distance of x from the far edge of the world
   const distanceXFromLimit = WORLD_SIZE[0] - 1 - cellX;
   const distanceYFromLimit = WORLD_SIZE[1] - 1 - cellY;
@@ -58,6 +39,7 @@ export const getTerrainHeight = (
   let smoothHeightNoise = smoothHeight(noise, cellX, cellY);
 
   if (edgeYDistance <= EDGE_TRANSITION_WIDTH) {
+    
     if (distanceYFromLimit > cellY) {
       edgeYDistance = edgeYDistance * -1;
     }
@@ -122,8 +104,25 @@ export const getTerrainHeight = (
 };
 
 /**
- * Generates simplex noise based on a given seed.
- * @param {string} seed - The seed for the noise generator.
- * @returns {Noise} - The noise generator instance.
+ * Smooths the height value by averaging the values of the surrounding cells.
+ *
+ * @param {Noise} noise - The noise generator instance.
+ * @param {number} cellX - The x-coordinate.
+ * @param {number} cellY - The y-coordinate.
+ * @returns {number} - The smoothed height value.
  */
-export const generateNoise = (seed: string) => createNoise2D(alea(seed));
+const smoothHeight = (noise: Noise, cellX: number, cellY: number) => {
+  const scale = NOISE_SCALE;
+  const noiseAt = (dx: number, dy: number) => noise(dx / scale, dy / scale);
+
+  const topCellY = cellY - 1 < 0 ? MapRoom.HEIGHT - cellY - 1 : cellY - 1;
+  const rightCellX = cellX - 1 < 0 ? MapRoom.HEIGHT - cellX - 1 : cellX - 1;
+  let currentCell = noiseAt(cellX, cellY) / 4;
+
+  // Retrieve the noise values for the adjacent cells
+  const topCell = noiseAt(cellX, topCellY);
+  const rightCell = noiseAt(rightCellX, cellY);
+
+  // Calculate the average height by combining the surrounding values
+  return (topCell + rightCell) / 4 + currentCell;
+};
