@@ -13,7 +13,7 @@ import z from "zod";
 /**
  * Sets the Map Room version on the server.
  */
-export const CURRENT_MAPROOM_VERSION = MapRoomVersion.V2 as MapRoomVersion;
+export const CURRENT_MAPROOM_VERSION = MapRoomVersion.V3 as MapRoomVersion;
 
 /**
  * Schema for validating the request body when setting the map version.
@@ -48,7 +48,7 @@ export const setMapVersion: KoaController = async (ctx) => {
 
     await joinOrCreateWorld(user, save);
   } else {
-    await leaveWorld(user, save);
+    // await leaveWorld(user, save);
   }
 
   const filteredSave = FilterFrontendKeys(save);
