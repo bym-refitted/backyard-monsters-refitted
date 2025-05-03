@@ -11,6 +11,11 @@ export enum Reward {
   SPURTZ1 = "spurtzCannonReward",
   SPURTZ2 = "spurtzCannonReward2",
   DIAMOND_SPURTZ = "spurtzCannonReward3",
+  GOLDEN_DAVE = "goldenDAVE",
+  DAVE_STATUE = "daveStatue",
+  IMPROVED_HCC="improvedHCC",
+  EXTRA_TILES = "extraTiles",
+  YARD_PLANNER_EXTRA_SLOTS = "yardPlannerExtraSlots",
 }
 
 /**

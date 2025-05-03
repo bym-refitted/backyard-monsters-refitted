@@ -1,7 +1,5 @@
 import { inferoMonsters } from "../../../../data/monsterKeys";
-import { BaseType } from "../../../../enums/Base";
 import { INFERNO_TRIBES } from "../../../../enums/Tribes";
-import { Report } from "../../../../models/report.model";
 import { Save } from "../../../../models/save.model";
 import { User } from "../../../../models/user.model";
 import { ORMContext } from "../../../../server";
@@ -52,6 +50,13 @@ export const infernoModeBuild = async (user: User) => {
 
     if (acdaemyLevel && userSave.academy[key] !== acdaemyLevel)
       userSave.academy[key] = acdaemyLevel;
+  });
+
+  // Persist lockerdata to overworld if key doesn't exist
+  Object.entries(infernoSave.lockerdata).forEach(([key, itemCount]) => {
+    if (userSave.lockerdata[key] === undefined) {
+      userSave.lockerdata[key] = itemCount;
+    }
   });
 
   await ORMContext.em.flush();

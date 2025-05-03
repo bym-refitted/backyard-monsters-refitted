@@ -52,10 +52,14 @@ export const getDefaultBaseData = (user: User, baseType: BaseType) => {
     krallen: {},
     rewards: devConfig.unlockAllEventRewards
       ? {
-          // Unique event reward unlockables
-          unlockRezghul: { id: Reward.REZGHUL },
+          // Default event rewards
           unblockSlimeattikus: { id: Reward.SLIMEATTIKUS },
           unblockVorg: { id: Reward.VORG },
+          goldenDAVE: { id: Reward.GOLDEN_DAVE },
+          improvedHCC: { id: Reward.IMPROVED_HCC },
+          extraTiles: { id: Reward.EXTRA_TILES },
+          yardPlannerExtraSlots: { id: Reward.YARD_PLANNER_EXTRA_SLOTS },
+          daveStatue: { id: Reward.DAVE_STATUE }
         }
       : {},
   };

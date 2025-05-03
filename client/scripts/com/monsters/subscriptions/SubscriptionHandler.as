@@ -92,7 +92,8 @@ package com.monsters.subscriptions
       
       public function get isSubscriptionActive() : Boolean
       {
-         return Boolean(this._renewalDate) || Boolean(this._expirationDate);
+         // return Boolean(this._renewalDate) || Boolean(this._expirationDate);
+         return true;
       }
       
       public function get renewalDate() : uint
