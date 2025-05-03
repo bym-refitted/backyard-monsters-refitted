@@ -3,7 +3,7 @@ import { Status } from "../../../enums/StatusCodes";
 import { KoaController } from "../../../utils/KoaController";
 import { ORMContext } from "../../../server";
 
-// This function is called when the client requests the initial player cell data
+// Used to get the data of the current player cell
 export const initialPlayerCellData: KoaController = async (ctx) => {
   const currentUser: User = ctx.authUser;
   await ORMContext.em.populate(currentUser, ["save"]);
@@ -14,13 +14,13 @@ export const initialPlayerCellData: KoaController = async (ctx) => {
     celldata: [
       {
         uid: currentUser.userid,
-        b: 1,
+        b: 3,
         bid: currentUser.save.baseid,
-        x: 50,
-        y: 50,
+        x: 10,
+        y: 10,
         aid: 0,
-        i: 50,
-        n: "Name",
+        i: 0,
+        n: "Me",
         tid: 0,
         l: 0,
         pl: 0,
