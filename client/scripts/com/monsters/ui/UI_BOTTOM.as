@@ -142,8 +142,9 @@ package com.monsters.ui
          {
             TUTORIAL.Resize();
          }
-         if(!MapRoom3.mapRoom3Window)
+         if(MapRoom3.mapRoom3Window)
          {
+            MapRoom3.mapRoom3WindowHUD.PositionRightMenuButtonsBar();
          }
       }
       
