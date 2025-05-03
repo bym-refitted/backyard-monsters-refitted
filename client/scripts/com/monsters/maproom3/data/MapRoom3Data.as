@@ -198,14 +198,14 @@ package com.monsters.maproom3.data
          new URLLoaderApi().load(MapRoomManager.instance.mapRoom3URL + "initworldmap",_loc2_,this.OnInitialPlayerCellDataLoaded);
       }
       
-      private function OnInitialPlayerCellDataLoaded(initworldmapData:Object) : void
+      private function OnInitialPlayerCellDataLoaded(serverData:Object) : void
       {
          var _loc9_:int = 0;
          var _loc10_:int = 0;
-         this.m_InitialPlayerCellData = initworldmapData;
+         this.m_InitialPlayerCellData = serverData;
          if(this.m_InitialCentrePoint == null)
          {
-            this.m_InitialCentrePoint = new Point(initworldmapData.celldata[0].x,initworldmapData.celldata[0].y);
+            this.m_InitialCentrePoint = new Point(serverData.celldata[0].x,serverData.celldata[0].y);
          }
          var _loc2_:Array = [];
          var _loc3_:int = Math.max(0,this.m_InitialCentrePoint.x - CELL_LOAD_BUFFER_X);
@@ -232,9 +232,9 @@ package com.monsters.maproom3.data
          new URLLoaderApi().load(GetCellsRequestURL(),_loc8_,this.OnInitialCellDataLoaded);
       }
       
-      private function OnInitialCellDataLoaded(param1:Object) : void
+      private function OnInitialCellDataLoaded(serverData:Object) : void
       {
-         this.m_InitialCellData = param1;
+         this.m_InitialCellData = serverData;
       }
       
       public function ParseInitialCellData() : void
@@ -389,13 +389,13 @@ package com.monsters.maproom3.data
          this.ParseCellData(getcellsData);
       }
       
-      private function ParseCellData(getcellsData:Object) : void
+      private function ParseCellData(serverData:Object) : void
       {
          var cellDataArray:Array = null;
          var cellData:Object = null;
          var mapRoomCell:MapRoom3Cell = null;
          var cellID:int = 0;
-         cellDataArray = getcellsData.celldata;
+         cellDataArray = serverData.celldata;
          var timer:int = getTimer();
          var cellDataArrayLength:uint = cellDataArray.length;
          var index:int = 0;
@@ -420,9 +420,9 @@ package com.monsters.maproom3.data
             }
             index++;
          }
-         if(getcellsData.alliancedata != null)
+         if(serverData.alliancedata != null)
          {
-            this.OnAllianceDataLoaded(getcellsData.alliancedata);
+            this.OnAllianceDataLoaded(serverData.alliancedata);
          }
          if(MapRoom3.mapRoom3Window != null)
          {
