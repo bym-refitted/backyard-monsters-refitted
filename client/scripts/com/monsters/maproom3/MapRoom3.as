@@ -1,6 +1,5 @@
 package com.monsters.maproom3
 {
-   
    import com.monsters.mailbox.FriendPicker;
    import com.monsters.maproom3.bookmarks.BookmarksManager;
    import com.monsters.maproom3.data.MapRoom3Data;
@@ -17,17 +16,15 @@ package com.monsters.maproom3
    
    public class MapRoom3 implements IMapRoom
    {
-      
       private static var m_MapRoom3Window:MapRoom3Window;
       
       private static var m_MapRoom3WindowHUD:MapRoom3WindowHUD;
-       
       
       private var m_HeightMapLoader:URLLoader;
       
       private var m_MapRoom3Data:MapRoom3Data;
       
-      private var m_CurrentBookmarkData:Object;
+      private var m_CurrentBookmarkData:Object = {};
       
       private var m_LastCenterPoint:Point = null;
       
@@ -37,7 +34,6 @@ package com.monsters.maproom3
       
       public function MapRoom3(headerUrl:String)
       {
-         this.m_CurrentBookmarkData = {};
          super();
          if(headerUrl != null)
          {
@@ -126,11 +122,7 @@ package com.monsters.maproom3
       
       public function ReadyToShow() : Boolean
       {
-         var areAllCellsCreated:* = this.m_MapRoom3Data.areAllCellsCreated;
-         var isInitialCellDataLoaded:* = this.m_MapRoom3Data.isInitialCellDataLoaded;
-         var areAssetsLoaded:* = MapRoom3AssetCache.instance.areAssetsLoaded;
-         var isCurrentTileSetAndBackgroundLoaded:* = MapRoom3TileSetManager.instance.isCurrentTileSetAndBackgroundLoaded;
-         return this.m_MapRoom3Data && areAllCellsCreated && isInitialCellDataLoaded && isCurrentTileSetAndBackgroundLoaded;
+         return this.m_MapRoom3Data && this.m_MapRoom3Data.areAllCellsCreated && this.m_MapRoom3Data.isInitialCellDataLoaded && MapRoom3AssetCache.instance.areAssetsLoaded && MapRoom3TileSetManager.instance.isCurrentTileSetAndBackgroundLoaded;
       }
       
       public function ShowDelayed(param1:Boolean = false) : void
@@ -149,7 +141,9 @@ package com.monsters.maproom3
          BookmarksManager.instance.Setup(this.m_CurrentBookmarkData,this.m_MapRoom3Data);
          this.m_MapRoom3Data.LoadBookmarkedCells(BookmarksManager.instance.GetBookmarksOfType(BookmarksManager.TYPE_CUSTOM));
          m_MapRoom3Window = new MapRoom3Window(this.m_MapRoom3Data);
+         m_MapRoom3WindowHUD = new MapRoom3WindowHUD();
          GLOBAL._layerUI.addChild(m_MapRoom3Window);
+         GLOBAL._layerUI.addChild(m_MapRoom3WindowHUD);
          UI2.SetupHUD();
          if(GLOBAL._currentCell == null)
          {
@@ -216,8 +210,8 @@ package com.monsters.maproom3
          {
             return new Vector.<MapRoom3Cell>();
          }
-         var _loc4_:MapRoom3Cell;
-         if((_loc4_ = this.m_MapRoom3Data.GetMapRoom3Cell(param1,param2)) == null)
+         var _loc4_:MapRoom3Cell = this.m_MapRoom3Data.GetMapRoom3Cell(param1,param2);
+         if(_loc4_ == null)
          {
             return new Vector.<MapRoom3Cell>();
          }
@@ -228,28 +222,27 @@ package com.monsters.maproom3
       {
          var _loc5_:Vector.<MapRoom3Cell> = null;
          var _loc6_:int = 0;
-         var _loc7_:int = 0;
          var _loc9_:MapRoom3Cell = null;
          var _loc10_:MapRoom3Cell = null;
          if(this.m_MapRoom3Data == null)
          {
             return null;
          }
-         var _loc4_:MapRoom3Cell;
-         if((_loc4_ = this.m_MapRoom3Data.GetMapRoom3Cell(param1,param2)) == null)
+         var _loc4_:MapRoom3Cell = this.m_MapRoom3Data.GetMapRoom3Cell(param1,param2);
+         if(_loc4_ == null)
          {
             return null;
          }
          _loc5_ = this.m_MapRoom3Data.GetHexCellsInRange(_loc4_,param3);
          var _loc8_:int = int.MAX_VALUE;
-         var _loc11_:int;
-         _loc6_ = (_loc11_ = int(_loc5_.length)) - 1;
+         var _loc11_:int = int(_loc5_.length);
+         _loc6_ = _loc11_ - 1;
          while(_loc6_ >= 0)
          {
             _loc9_ = _loc5_[_loc6_];
             if(MapRoom3Cell.GetHexDistanceBetween(_loc9_,_loc10_) < _loc8_)
             {
-               _loc8_ = _loc7_;
+               _loc8_ = 0;
                _loc10_ = _loc9_;
             }
             _loc6_--;

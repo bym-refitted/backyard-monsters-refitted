@@ -38,17 +38,16 @@ package com.monsters.maproom3
       private static const k_MAX_FILTER_TOTAL_SIZE:Number = 16777215;
       
       private static const k_MAX_FILTER_SIZE:Number = 8191;
-       
       
-      private var RANGE_GLOW_FILTER:GlowFilter;
+      private var RANGE_GLOW_FILTER:GlowFilter = new GlowFilter(RANGE_GLOW_COLOUR,0.5,RANGE_GLOW_BLUR_X,RANGE_GLOW_BLUR_Y,RANGE_GLOW_BLUR_STRENGTH,1,true,true);
       
-      private var MOUSEOVER_RANGE_GLOW_FILTER:GlowFilter;
+      private var MOUSEOVER_RANGE_GLOW_FILTER:GlowFilter = new GlowFilter(MOUSEOVER_RANGE_GLOW_COLOUR,0.5,RANGE_GLOW_BLUR_X,RANGE_GLOW_BLUR_Y,RANGE_GLOW_BLUR_STRENGTH,1,true,true);
       
       private var m_MapData:MapRoom3Data;
       
-      private var m_TileBuffer:Vector.<MapRoom3CellGraphic>;
+      private var m_TileBuffer:Vector.<MapRoom3CellGraphic> = new Vector.<MapRoom3CellGraphic>();
       
-      private var m_TileLookup:Array;
+      private var m_TileLookup:Array = new Array();
       
       private var m_BackgroundImage:BitmapData;
       
@@ -74,15 +73,15 @@ package com.monsters.maproom3
       
       private var m_InfoLayer:Sprite;
       
-      private var m_MouseoverInfo:MapRoom3CellMouseover;
+      private var m_MouseoverInfo:MapRoom3CellMouseover = new MapRoom3CellMouseover();
       
       private var m_MousedoverCellGraphic:MapRoom3CellGraphic = null;
       
       private var m_SelectedCellGraphic:MapRoom3CellGraphic = null;
       
-      private var m_CenterPoint:Point;
+      private var m_CenterPoint:Point = new Point();
       
-      private var m_CenterPointForLoading:Point;
+      private var m_CenterPointForLoading:Point = new Point();
       
       private var m_CenterPointForLoadingLocked:Boolean = false;
       
@@ -100,13 +99,6 @@ package com.monsters.maproom3
       
       public function MapRoom3Window(param1:MapRoom3Data)
       {
-         this.RANGE_GLOW_FILTER = new GlowFilter(RANGE_GLOW_COLOUR,0.5,RANGE_GLOW_BLUR_X,RANGE_GLOW_BLUR_Y,RANGE_GLOW_BLUR_STRENGTH,1,true,true);
-         this.MOUSEOVER_RANGE_GLOW_FILTER = new GlowFilter(MOUSEOVER_RANGE_GLOW_COLOUR,0.5,RANGE_GLOW_BLUR_X,RANGE_GLOW_BLUR_Y,RANGE_GLOW_BLUR_STRENGTH,1,true,true);
-         this.m_TileBuffer = new Vector.<MapRoom3CellGraphic>();
-         this.m_TileLookup = new Array();
-         this.m_MouseoverInfo = new MapRoom3CellMouseover();
-         this.m_CenterPoint = new Point();
-         this.m_CenterPointForLoading = new Point();
          super();
          this.m_MapData = param1;
          this.m_ScrollingCanvas = new Sprite();
@@ -560,7 +552,8 @@ package com.monsters.maproom3
             _loc9_ = int(_loc7_ / _loc2_);
             _loc10_ = _loc8_ + _loc5_;
             _loc11_ = _loc9_ + _loc6_;
-            _loc16_ = (_loc14_ = this.m_MapData.GetMapRoom3Cell(_loc10_,_loc11_)).inAttackRangeOfCells;
+            _loc14_ = this.m_MapData.GetMapRoom3Cell(_loc10_,_loc11_);
+            _loc16_ = _loc14_.inAttackRangeOfCells;
             _loc13_ = 0;
             while(_loc14_ != null)
             {
@@ -580,7 +573,8 @@ package com.monsters.maproom3
                   }
                   else
                   {
-                     (_loc15_ = new MapRoom3CellGraphic()).addEventListener(MouseEvent.CLICK,this.OnCellGraphicClicked);
+                     _loc15_ = new MapRoom3CellGraphic();
+                     _loc15_.addEventListener(MouseEvent.CLICK,this.OnCellGraphicClicked);
                      _loc15_.addEventListener(MouseEvent.ROLL_OVER,this.OnCellGraphicRollOver);
                      _loc15_.addEventListener(MouseEvent.ROLL_OUT,this.OnCellGraphicRollOut);
                   }
@@ -596,7 +590,8 @@ package com.monsters.maproom3
                   {
                      _loc21_ = (_loc19_ + _loc20_) * 0.5;
                      _loc22_ = _loc15_.x - this.m_TileLayer.getChildAt(_loc21_).x;
-                     if((_loc23_ = _loc15_.y - this.m_TileLayer.getChildAt(_loc21_).y) < 0 || _loc23_ == 0 && _loc22_ <= 0)
+                     _loc23_ = _loc15_.y - this.m_TileLayer.getChildAt(_loc21_).y;
+                     if(_loc23_ < 0 || _loc23_ == 0 && _loc22_ <= 0)
                      {
                         _loc20_ = _loc21_;
                      }
@@ -610,7 +605,8 @@ package com.monsters.maproom3
                _loc14_ = null;
                if(_loc16_ != null && _loc13_ < _loc16_.length)
                {
-                  _loc10_ = (_loc14_ = _loc16_[_loc13_++]).cellX;
+                  _loc14_ = _loc16_[_loc13_++];
+                  _loc10_ = _loc14_.cellX;
                   _loc11_ = _loc14_.cellY;
                }
             }
@@ -663,6 +659,7 @@ package com.monsters.maproom3
          }
          this.SetSelectedCellGraphic(null);
          this.SetMousedoverCellGraphic(_loc2_);
+         MapRoom3.mapRoom3WindowHUD.DisplayCoordinatesOfCell(_loc2_.cell);
       }
       
       private function OnCellGraphicRollOut(param1:MouseEvent) : void
