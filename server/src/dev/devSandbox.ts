@@ -1,3 +1,4 @@
+import { Reward } from "../enums/Rewards";
 import { User } from "../models/user.model";
 import { getCurrentDateTime } from "../utils/getCurrentDateTime";
 
@@ -3726,14 +3727,19 @@ export const devSandbox = (user?: User) => {
       },
     },
     rewards: {
-      spurtzCannonReward2: { id: "spurtzCannonReward2" },
-      spurtzCannonReward: { id: "spurtzCannonReward" },
-      spurtzCannonReward3: { id: "spurtzCannonReward3" },
-      unlockRezghul: { id: "unlockRezghul" },
-      unblockSlimeattikus: { id: "unblockSlimeattikus" },
-      unblockVorg: { id: "unblockVorg" },
-      KorathReward: { id: "KorathReward", value: 3 },
-      krallenReward: { id: "krallenReward", value: 1 },
+      spurtzCannonReward: { id: Reward.SPURTZ1 },
+      spurtzCannonReward2: { id: Reward.SPURTZ2 },
+      spurtzCannonReward3: { id: Reward.DIAMOND_SPURTZ},
+      unlockRezghul: { id: Reward.REZGHUL },
+      unblockSlimeattikus: { id: Reward.SLIMEATTIKUS },
+      unblockVorg: { id: Reward.VORG },
+      KorathReward: { id: Reward.KORATH, value: 3 },
+      krallenReward: { id: Reward.KRALLEN, value: 1 },
+      goldenDAVE: { id: Reward.GOLDEN_DAVE },
+      improvedHCC: { id: Reward.IMPROVED_HCC },
+      extraTiles: { id: Reward.EXTRA_TILES },
+      yardPlannerExtraSlots: { id: Reward.YARD_PLANNER_EXTRA_SLOTS },
+      daveStatue: { id: Reward.DAVE_STATUE },
     },
     aiattacks: {
       attackPreference: 1,
