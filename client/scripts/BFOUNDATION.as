@@ -2375,7 +2375,7 @@ package
             while(_loc2_ < 5)
             {
                _loc3_ = !!this._buildingProps.costs[this._lvl.Get()] ? uint(this._buildingProps.costs[this._lvl.Get()]["r" + _loc2_].Get()) : 0;
-               if (!_loc3_)
+               if (!_loc3_ && this._buildingProps.fortify_costs)
                {
                   _loc3_ = !!this._buildingProps.fortify_costs[this._fortification.Get()] ? uint(this._buildingProps.fortify_costs[this._fortification.Get()]["r" + _loc2_].Get()) : 0;
                }
