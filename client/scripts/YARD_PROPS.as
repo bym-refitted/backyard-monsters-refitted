@@ -7539,6 +7539,7 @@ package
          "description":"bdg_dave_trophy_desc",
          "block":true,
          "locked":true,
+         "cls":BDECORATION,
          "lockedButtonOverlay":"buildingbuttons/135locked.png",
          "costs":[{
             "r1":new SecNum(0),
