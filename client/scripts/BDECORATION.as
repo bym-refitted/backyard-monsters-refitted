@@ -35,7 +35,6 @@ package
       override public function Place(param1:MouseEvent = null) : void
       {
          super.Place(param1);
-         Constructed();
       }
       
       override public function TickFast(param1:Event = null) : void
