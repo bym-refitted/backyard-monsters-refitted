@@ -933,16 +933,26 @@ package com.monsters.maproom_advanced
                      LOGGER.Log("err","BASE.Save:  transfer source Cell " + _monsterSource.X + "," + _monsterSource.Y + "does not check out before doing monster transfer!  " + JSON.encode(_monsterSource._hpMonsterData));
                   }
                   srcMonsterData = {
+                     "hcount":_monsterSource._hpMonsterData.hcount,
+                     "overdrivepower":_monsterSource._monsterData.overdrivepower.Get(),
                      "hcc":_monsterSource._hpMonsterData.hcc,
+                     "space":_monsterSource._monsterData.space.Get(),
                      "h":_monsterSource._hpMonsterData.h,
+                     "finishtime":_monsterSource._hpMonsterData.finishtime,
+                     "overdrivetime":_monsterSource._monsterData.overdrivetime.Get(),
                      "housed":finalSrcMonsters,
                      "hid":_monsterSource._hpMonsterData.hid,
                      "hstage":_monsterSource._hpMonsterData.hstage,
                      "saved":GLOBAL.Timestamp()
                   };
                   targetMonsterData = {
+                     "hcount":targetCell._hpMonsterData.hcount,
+                     "overdrivepower":targetCell._monsterData.overdrivepower.Get(),
                      "hcc":targetCell._hpMonsterData.hcc,
+                     "space":targetCell._monsterData.space.Get(),
                      "h":targetCell._hpMonsterData.h,
+                     "finishtime":targetCell._hpMonsterData.finishtime,
+                     "overdrivetime":targetCell._monsterData.overdrivetime.Get(),
                      "housed":finalMonsters,
                      "hid":targetCell._hpMonsterData.hid,
                      "hstage":targetCell._hpMonsterData.hstage,
