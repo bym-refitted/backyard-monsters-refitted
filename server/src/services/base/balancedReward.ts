@@ -16,7 +16,7 @@ import { parseChampionData } from "../../utils/parseChampionData";
  */
 export const balancedReward = async (userSave: Save) => {
   let rewards = userSave.rewards;
-  const { KORATH, KRALLEN, DIAMOND_SPURTZ } = Reward;
+  const { KORATH, KRALLEN, REZGHUL, DIAMOND_SPURTZ } = Reward;
 
   // Early return if all rewards are already assigned
   if (rewards[KORATH] && rewards[KRALLEN] && rewards[DIAMOND_SPURTZ]) return;
@@ -38,7 +38,12 @@ export const balancedReward = async (userSave: Save) => {
   }
 
   // Town Hall Level 8
-  if (townHallLevel >= 8 && !rewards[DIAMOND_SPURTZ]) {
+  if (townHallLevel >= 8 && !rewards[REZGHUL]) {
+    rewards[REZGHUL] = { id: REZGHUL };
+  }
+
+  // Town Hall Level 9
+  if (townHallLevel >= 9 && !rewards[DIAMOND_SPURTZ]) {
     rewards[DIAMOND_SPURTZ] = { id: DIAMOND_SPURTZ };
   }
 };

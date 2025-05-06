@@ -6335,6 +6335,7 @@ package
          "block":true,
          "locked":true,
          "lockedButtonOverlay":"buildingbuttons/135locked.png",
+         "cls":BDECORATION,
          "costs":[{
             "r1":new SecNum(0),
             "r2":new SecNum(0),
