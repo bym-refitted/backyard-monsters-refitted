@@ -1,5 +1,3 @@
-import z from "zod";
-
 import { KoaController } from "../../../utils/KoaController";
 import { User } from "../../../models/user.model";
 import { ORMContext } from "../../../server";
@@ -14,18 +12,7 @@ import {
 import { errorLog } from "../../../utils/logger";
 import { getCurrentDateTime } from "../../../utils/getCurrentDateTime";
 import { validateRange } from "../../../services/maproom/v2/validateRange";
-
-const TakeoverCellSchema = z.object({
-  baseid: z.string(),
-  resources: z
-    .string()
-    .transform((res) => JSON.parse(res))
-    .optional(),
-  shiny: z
-    .string()
-    .transform((shiny) => parseInt(shiny))
-    .optional(),
-});
+import { TakeoverCellSchema } from "../../../zod/TakeoverCellSchema";
 
 /**
  * Controller to handle the takeover of a cell on the world map via shiny or resources.
@@ -114,6 +101,8 @@ export const takeoverCell: KoaController = async (ctx) => {
     cellSave.resources = {};
     cellSave.tutorialstage = 205;
     cellSave.monsters = {};
+    
+    cellSave.takeoverDate = new Date();
 
     if (cellSave.type === BaseType.TRIBE) {
       cellSave.type = BaseType.OUTPOST;
