@@ -7,12 +7,9 @@ import { damageProtection } from "../../../../services/maproom/v2/damageProtecti
 import { Save } from "../../../../models/save.model";
 import { User } from "../../../../models/user.model";
 import { wildMonsterSave } from "../../../../services/maproom/v2/wildMonsters";
-import {
-  generateNoise,
-  getTerrainHeight,
-} from "../../../../config/WorldGenSettings";
 import { getCurrentDateTime } from "../../../../utils/getCurrentDateTime";
 import { validateRange } from "../../../../services/maproom/v2/validateRange";
+import { generateNoise, getTerrainHeight } from "../../../../services/maproom/v2/generateMap";
 
 export interface AttackDetails {
   fbid: string;
