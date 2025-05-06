@@ -363,6 +363,8 @@ package com.monsters.maproom3
          if(Chat._bymChat != null && Chat._bymChat.chatBox != null && Chat._bymChat.chatBox.background != null)
          {
             this.m_LeftMenuButtonsBar.y = int(Chat._bymChat.y + Chat._bymChat.chatBox.y + Chat._bymChat.chatBox.background.y - this.m_LeftMenuButtonsContainerBackground.height);
+         } else {
+            this.m_LeftMenuButtonsBar.y = int(GLOBAL._SCREEN.y + GLOBAL._SCREEN.height - this.m_LeftMenuButtonsContainerBackground.height);
          }
       }
       
