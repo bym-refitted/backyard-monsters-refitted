@@ -369,6 +369,9 @@ export class Save {
   frontpage?: FieldData = {};
 
   @Property()
+  takeoverDate: Date = new Date();
+
+  @Property()
   createdAt: Date = new Date();
 
   @Property({ onUpdate: () => new Date() })
