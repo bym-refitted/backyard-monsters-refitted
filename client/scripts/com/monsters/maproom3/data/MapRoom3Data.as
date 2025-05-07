@@ -379,14 +379,14 @@ package com.monsters.maproom3.data
          new URLLoaderApi().load(GetCellsRequestURL(),_loc12_,this.OnCellDataLoaded);
       }
       
-      private function OnCellDataLoaded(getcellsData:Object) : void
+      private function OnCellDataLoaded(serverData:Object) : void
       {
          if(this.m_PendingCellDataRequest == null)
          {
             return;
          }
          this.m_PendingCellDataRequest = null;
-         this.ParseCellData(getcellsData);
+         this.ParseCellData(serverData);
       }
       
       private function ParseCellData(serverData:Object) : void

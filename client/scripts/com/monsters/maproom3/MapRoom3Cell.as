@@ -433,15 +433,15 @@ package com.monsters.maproom3
          }
       }
       
-      public function OnLoadedForBuild(param1:Object) : void
+      public function OnLoadedForBuild(serverData:Object) : void
       {
          PLEASEWAIT.Hide();
-         if(param1 == null || param1.celldata == null || param1.celldata is Array == false || param1.celldata.length == 0)
+         if(serverData == null || serverData.celldata == null || serverData.celldata is Array == false || serverData.celldata.length == 0)
          {
             GLOBAL.Message(KEYS.Get("mr3_base_locked_cannot_enter"),KEYS.Get("btn_ok"));
             return;
          }
-         this.Setup(param1.celldata[0]);
+         this.Setup(serverData.celldata[0]);
          if(this.isLocked || this.isOwnedByPlayer == false)
          {
             GLOBAL.Message(KEYS.Get("mr3_base_locked_cannot_enter"),KEYS.Get("btn_ok"));
