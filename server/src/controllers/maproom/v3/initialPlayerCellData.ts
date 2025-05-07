@@ -2,11 +2,16 @@ import { User } from "../../../models/user.model";
 import { Status } from "../../../enums/StatusCodes";
 import { KoaController } from "../../../utils/KoaController";
 import { ORMContext } from "../../../server";
+import { calculateBaseLevel } from "../../../services/base/calculateBaseLevel";
 
 // Used to get the data of the current player cell
 export const initialPlayerCellData: KoaController = async (ctx) => {
   const currentUser: User = ctx.authUser;
   await ORMContext.em.populate(currentUser, ["save"]);
+
+  const points = currentUser.save.points;
+  const basevalue = currentUser.save.basevalue;
+  const baseLevel = calculateBaseLevel(points, basevalue);
 
   ctx.status = Status.OK;
   ctx.body = {
@@ -22,7 +27,7 @@ export const initialPlayerCellData: KoaController = async (ctx) => {
         i: 0,
         n: "Me",
         tid: 0,
-        l: 0,
+        l: baseLevel,
         pl: 0,
         r: 0,
         dm: 0,
