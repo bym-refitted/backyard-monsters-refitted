@@ -22,6 +22,6 @@ export const mapUserSaveData = (user: User) => {
     basevalue: userSave.basevalue,
     buildingresources: userSave.buildingresources,
     rewards: userSave.rewards,
-    // savetime: userSave.savetime,
+    homebase: userSave.homebase,
   };
 };

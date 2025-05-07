@@ -36,8 +36,7 @@ export const wildMonsterSave = (baseid: string) => {
     ...tribeSave,
     baseid,
     level,
-    wmid,
-    homebase: [cellX.toString(), cellY.toString()],
+    wmid
   });
 };
 
