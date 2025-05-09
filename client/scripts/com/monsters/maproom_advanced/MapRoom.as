@@ -732,22 +732,22 @@ package com.monsters.maproom_advanced
       {
       }
       
-      internal static function TransferMonstersA(param1:MapRoomCell, param2:Object) : void
+      internal static function TransferMonstersA(cell:MapRoomCell, monsters:Object) : void
       {
-         var _loc4_:String = null;
+         var monsterId:String = null;
          _monsterTransfer = {};
-         var _loc3_:Boolean = false;
-         for(_loc4_ in param2)
+         var hasMonsters:Boolean = false;
+         for(monsterId in monsters)
          {
-            _monsterTransfer[_loc4_] = new SecNum(param2[_loc4_].Get());
-            if(param2[_loc4_].Get() > 0)
+            _monsterTransfer[monsterId] = new SecNum(monsters[monsterId].Get());
+            if(monsters[monsterId].Get() > 0)
             {
-               _loc3_ = true;
+               hasMonsters = true;
             }
          }
-         if(_loc3_)
+         if(hasMonsters)
          {
-            _monsterSource = param1;
+            _monsterSource = cell;
             if(_bubbleSelectTarget.parent)
             {
                _bubbleSelectTarget.parent.removeChild(_bubbleSelectTarget);
@@ -762,13 +762,13 @@ package com.monsters.maproom_advanced
          }
       }
       
-      internal static function TransferMonstersB(param1:MapRoomCell) : void
+      internal static function TransferMonstersB(cell:MapRoomCell) : void
       {
          if(_monsterTransferInProgress)
          {
-            if(param1._mine)
+            if(cell._mine)
             {
-               if(param1._baseID == _monsterSource._baseID)
+               if(cell._baseID == _monsterSource._baseID)
                {
                   if(_bubbleSelectTarget.parent)
                   {
@@ -777,7 +777,7 @@ package com.monsters.maproom_advanced
                   _mc.ShowMonstersA(_monsterSource,true);
                   return;
                }
-               _mc.ShowMonstersB(_monsterTransfer,param1);
+               _mc.ShowMonstersB(_monsterTransfer,cell);
             }
          }
       }
