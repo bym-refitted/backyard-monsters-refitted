@@ -37,6 +37,8 @@ export const joinOrCreateWorld = async (
 
   if (!world) {
     world = em.create(World, {});
+    world.name = "New World";
+    
     logging("All worlds full, created new world.");
   } else {
     logging(`World found with ${world.playerCount} players.`);
