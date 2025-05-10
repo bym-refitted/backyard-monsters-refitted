@@ -8,6 +8,9 @@ export class World {
   uuid = v4();
 
   @Property()
+  name: string = "";
+
+  @Property()
   playerCount: number = 0;
 
   @Property()
