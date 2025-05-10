@@ -488,12 +488,12 @@ router.post(
  * Get available worlds
  * @name GET /api/worlds
  */
-router.get("/api/worlds", leaderboardLimiter, getAvailableWorlds);
+router.get("/api/worlds", getAvailableWorlds);
 
 /**
  * Get leaderboards
  * @name GET /api/leaderboards
  */
-router.get("/api/leaderboards", leaderboardLimiter, getLeaderboards);
+router.get("/api/leaderboards", getLeaderboards);
 
 export default router;
