@@ -1,4 +1,5 @@
 import Router from "@koa/router";
+
 import { debugDataLog } from "./middleware/debugDataLog";
 import { baseSave } from "./controllers/base/save/baseSave";
 import { login } from "./controllers/auth/login";
@@ -37,6 +38,7 @@ import { reportMessageThread } from "./controllers/mail/reportMessageThread";
 import { Context } from "koa";
 import { getAvailableWorlds } from "./controllers/leaderboards/getAvailableWorlds";
 import { getLeaderboards } from "./controllers/leaderboards/getLeaderboards";
+import { getAttackLogs } from "./controllers/attacklogs/getAttackLogs";
 
 const RateLimit = require("koa2-ratelimit").RateLimit;
 
@@ -495,5 +497,11 @@ router.get("/api/worlds", getAvailableWorlds);
  * @name GET /api/leaderboards
  */
 router.get("/api/leaderboards", getLeaderboards);
+
+/**
+ * Get attack logs
+ * @name GET /api/attacklogs
+ */
+router.get("/api/attacklogs", getAttackLogs);
 
 export default router;

@@ -9,7 +9,11 @@ import { User } from "../../../../models/user.model";
 import { wildMonsterSave } from "../../../../services/maproom/v2/wildMonsters";
 import { getCurrentDateTime } from "../../../../utils/getCurrentDateTime";
 import { validateRange } from "../../../../services/maproom/v2/validateRange";
-import { generateNoise, getTerrainHeight } from "../../../../services/maproom/v2/generateMap";
+import {
+  generateNoise,
+  getTerrainHeight,
+} from "../../../../services/maproom/v2/generateMap";
+import { AttackLogs } from "../../../../models/attacklogs.model";
 
 export interface AttackDetails {
   fbid: string;
@@ -49,7 +53,6 @@ export const baseModeAttack = async (user: User, baseid: string) => {
   let cell = await ORMContext.em.findOne(WorldMapCell, { baseid });
 
   if (!cell) {
-    // Find the existing world record
     const world = await ORMContext.em.findOne(World, {
       uuid: userSave.worldid,
     });
@@ -75,5 +78,36 @@ export const baseModeAttack = async (user: User, baseid: string) => {
   save.attackid = Math.floor(Math.random() * 99999) + 1;
   await ORMContext.em.persistAndFlush([cell, save]);
 
+  if (save.type !== BaseType.TRIBE) {
+    const defender = await ORMContext.em.findOne(User, {
+      userid: save.saveuserid,
+    });
+
+    if (!defender) throw new Error("Defender user not found.");
+    await createAttackLog(user, defender, save);
+  }
+
   return await validateRange(user, save, { baseid });
+};
+
+const createAttackLog = async (attacker: User, defender: User, save: Save) => {
+  const attackLog = ORMContext.em.create(AttackLogs, {
+    attacker_userid: attacker.userid,
+    attacker_username: attacker.username,
+    attacker_pic_square: attacker.pic_square,
+
+    defender_userid: defender.userid,
+    defender_username: defender.username,
+    defender_pic_square: defender.pic_square,
+
+    type: save.type,
+    x: save.cell.x,
+    y: save.cell.y,
+
+    loot: {},
+    attackreport: {},
+    attacktime: new Date(),
+  });
+
+  await ORMContext.em.persistAndFlush(attackLog);
 };
