@@ -39,7 +39,7 @@ export const getLeaderboards: KoaController = async (ctx) => {
 
     const leaderboard = await ORMContext.em.getConnection().execute(
       `
-            SELECT u.username, u.discord_tag, u.pic_square, sub.outpost_count 
+            SELECT u.username, u.discord_tag, sub.outpost_count 
             FROM bym.user u
             JOIN (
                 SELECT s.userid, COUNT(*) AS outpost_count
