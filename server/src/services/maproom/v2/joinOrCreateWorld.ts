@@ -28,20 +28,21 @@ export const joinOrCreateWorld = async (
   em: EntityManager = ORMContext.em,
   relocate: Boolean = false
 ) => {
-  // Fetch an existing world with available space
-  let world = await em.findOne(World, {
-    playerCount: {
-      $lte: MapRoom.MAX_PLAYERS,
-    },
+  let world: World | null = null;
+
+  let availableWorlds = await em.find(World, {
+    playerCount: { $lt: MapRoom.MAX_PLAYERS },
   });
 
-  if (!world) {
+  const shuffledWorlds = availableWorlds.sort(() => Math.random() - 0.5);
+
+  if (shuffledWorlds.length > 0) {
+    world = shuffledWorlds[0];
+    logging(`User assigned to existing world: ${world.name}`);
+  } else {
     world = em.create(World, {});
     world.name = "New World";
-    
     logging("All worlds full, created new world.");
-  } else {
-    logging(`World found with ${world.playerCount} players.`);
   }
 
   // If not relocating, check if the user is already in the world
