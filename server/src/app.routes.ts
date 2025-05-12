@@ -490,18 +490,18 @@ router.post(
  * Get available worlds
  * @name GET /api/worlds
  */
-router.get("/api/worlds", getAvailableWorlds);
+router.get("/api/:apiVersion/worlds", getAvailableWorlds);
 
 /**
  * Get leaderboards
  * @name GET /api/leaderboards
  */
-router.get("/api/leaderboards", getLeaderboards);
+router.get("/api/:apiVersion/leaderboards", getLeaderboards);
 
 /**
  * Get attack logs
  * @name GET /api/attacklogs
  */
-router.get("/api/attacklogs", getAttackLogs);
+router.get("/api/:apiVersion/attacklogs", verifyUserAuth, getAttackLogs);
 
 export default router;

@@ -13,7 +13,7 @@ import {
   generateNoise,
   getTerrainHeight,
 } from "../../../../services/maproom/v2/generateMap";
-import { AttackLogs } from "../../../../models/attacklogs.model";
+import { createAttackLog } from "../../../../services/base/createAttackLog";
 
 export interface AttackDetails {
   fbid: string;
@@ -24,6 +24,13 @@ export interface AttackDetails {
   starttime: number;
 }
 
+/**
+ * Processes an attack from a user against a specific base
+ * 
+ * @param user - The attacking user
+ * @param baseid - ID of the base being attacked
+ * @returns Result of range validation check
+ */
 export const baseModeAttack = async (user: User, baseid: string) => {
   const userSave: Save = user.save;
   let save = await ORMContext.em.findOne(Save, { baseid });
@@ -78,6 +85,7 @@ export const baseModeAttack = async (user: User, baseid: string) => {
   save.attackid = Math.floor(Math.random() * 99999) + 1;
   await ORMContext.em.persistAndFlush([cell, save]);
 
+  // Create an attack log for the attack
   if (save.type !== BaseType.TRIBE) {
     const defender = await ORMContext.em.findOne(User, {
       userid: save.saveuserid,
@@ -88,26 +96,4 @@ export const baseModeAttack = async (user: User, baseid: string) => {
   }
 
   return await validateRange(user, save, { baseid });
-};
-
-const createAttackLog = async (attacker: User, defender: User, save: Save) => {
-  const attackLog = ORMContext.em.create(AttackLogs, {
-    attacker_userid: attacker.userid,
-    attacker_username: attacker.username,
-    attacker_pic_square: attacker.pic_square,
-
-    defender_userid: defender.userid,
-    defender_username: defender.username,
-    defender_pic_square: defender.pic_square,
-
-    type: save.type,
-    x: save.cell.x,
-    y: save.cell.y,
-
-    loot: {},
-    attackreport: {},
-    attacktime: new Date(),
-  });
-
-  await ORMContext.em.persistAndFlush(attackLog);
 };
