@@ -1,6 +1,8 @@
-import { Entity, PrimaryKey, Property } from "@mikro-orm/core";
+import { Entity, Index, PrimaryKey, Property } from "@mikro-orm/core";
 import { FieldData } from "./save.model";
 
+@Index({ properties: ['attacker_userid', 'attacktime'] })
+@Index({ properties: ['defender_userid', 'attacktime'] })
 @Entity({ tableName: "attack_logs" })
 export class AttackLogs {
   @PrimaryKey()
