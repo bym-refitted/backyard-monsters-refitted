@@ -155,7 +155,7 @@ router.post(
  * Reset password
  * @name POST /player/reset-password
  */
-router.post("/api/player/reset-password", resetPassword);
+router.post("/api/:apiVersion/player/reset-password", resetPassword);
 
 /**
  * Load base data
