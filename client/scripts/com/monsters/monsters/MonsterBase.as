@@ -1124,31 +1124,74 @@ package com.monsters.monsters
          this._atTarget = false;
          this._targetCreep = null;
       }
+
+      /*
+       * This function was created to assist in findTargeting
+       * 
+       * @autor: matiasbais
+       * 
+       * @reason: There was a lot of repeated logic in findTarget acrros MonsterBase, ChampionBase and Krallen
+       *          This atemps to make the code a little bit cleaner
+       * 
+       * @param {Object} buildingList - the buildings from which we need the closest ones.
+       *        {Function} condition  - extra conditions for the building to be elegible to be targetted
+       * 
+       * returns a two elements array with the to closest buildings [closestOne, secondClosestOne]
+       * 
+
+      */
+      public function getClosestBuildings(buildingList:Object, condition:Function):Array{
+         var currentBuilding:BFOUNDATION;
+         var buildingPosition:Point;
+         var distance:Number = Number.MAX_VALUE;
+         var targets:Array = [null, null];
+         var targetsDistance:Array = [Number.MAX_VALUE,Number.MAX_VALUE];
+         var ownPosition:Point = PATHING.FromISO(this._tmpPoint);
+
+         for each(currentBuilding in buildingList)
+         {
+            if(currentBuilding.health > 0 && condition(currentBuilding))
+            {
+               buildingPosition = GRID.FromISO(currentBuilding._mc.x, currentBuilding._mc.y + currentBuilding._middle);
+               distance = GLOBAL.QuickDistance(ownPosition, buildingPosition) - currentBuilding._middle;
+               if (distance < targetsDistance[0]) {
+                targets[1] = targets[0];
+                targetsDistance[1] = targetsDistance[0];
+
+                targets[0] = currentBuilding;
+                targetsDistance[0] = distance;
+               } 
+               else if (distance < targetsDistance[1]) 
+               {
+                  targets[1] = currentBuilding;
+                  targetsDistance[1] = distance;
+               }
+            }
+         }
+         return targets;
+      }
       
-      public function findTarget(param1:int = 0) : void
+      /*
+       * The following changes have been made to this function
+       * 
+       * @autor: matiasbais
+       * 
+       * @changes: Renamed local registers to readable variables names and removed unused logic
+       * Moved repeated logic about calculating the closest buildings to an auxiliary function (getClosestBuildings)
+       * 
+       * @param {int} targetGroup - specifies the targetting preference of the current monster
+      */
+      public function findTarget(targetGroup:int = 0) : void
       {
-         var _loc3_:Object = null;
-         var _loc4_:BFOUNDATION = null;
-         var _loc5_:BFOUNDATION = null;
-         var _loc6_:Point = null;
-         var _loc7_:Boolean = false;
-         var _loc8_:Point = null;
-         var _loc9_:Point = null;
-         var _loc10_:int = 0;
-         var _loc12_:* = undefined;
-         var _loc13_:Bunker = null;
-         var _loc14_:Boolean = false;
-         var _loc15_:int = 0;
-         var _loc16_:Point = null;
-         var _loc17_:int = 0;
-         var _loc18_:int = 0;
-         var _loc19_:int = 0;
-         var _loc20_:Number = NaN;
-         var _loc21_:Number = NaN;
-         var _loc22_:Point = null;
-         var _loc2_:int = getTimer();
-         var _loc11_:Array = [];
+         var burrowToPoint:Point = null;
+         var movementSeed:int = 0;
+         var deltaX:int = 0;
+         var deltaY:int = 0;
+         var flySeed2:Number = NaN;
+         var flySeed:Number = NaN;
+         var flyToPoint:Point = null;
          this._looking = true;
+         var targets:Array = [null,null];
          if(this._behaviour == k_sBHVR_HUNT && (CREATURES._creatureCount > 0 || CREATURES._guardian && CREATURES._guardian.health > 0))
          {
             this.findHuntingTargets();
@@ -1161,172 +1204,92 @@ package com.monsters.monsters
                this._targetCenter = this._targetCreep._tmpPoint;
             }
          }
-         _loc8_ = PATHING.FromISO(this._tmpPoint);
-         if(param1 == 2)
-         {
-            for each(_loc4_ in BASE._buildingsWalls)
-            {
-               if(!_loc4_._destroyed && _loc4_.health > 0)
-               {
-                  _loc9_ = GRID.FromISO(_loc4_._mc.x,_loc4_._mc.y + _loc4_._middle);
-                  _loc10_ = GLOBAL.QuickDistance(_loc8_,_loc9_) - _loc4_._middle;
-                  _loc11_.push({
-                     "building":_loc4_,
-                     "distance":_loc10_
-                  });
-               }
-            }
+         if(targetGroup == 2){
+            targets = getClosestBuildings(BASE._buildingsWalls, function(b:BFOUNDATION):Boolean{
+               return !b._destroyed;
+            });
          }
-         else if(param1 == 3)
+         else if(targetGroup == 3)
          {
-            for each(_loc4_ in BASE._buildingsMain)
-            {
-               if(_loc4_.health > 0 && _loc4_ is ILootable && !_loc4_._looted)
-               {
-                  _loc9_ = GRID.FromISO(_loc4_._mc.x,_loc4_._mc.y + _loc4_._middle);
-                  _loc10_ = GLOBAL.QuickDistance(_loc8_,_loc9_) - _loc4_._middle;
-                  _loc11_.push({
-                     "building":_loc4_,
-                     "distance":_loc10_
-                  });
-               }
-            }
+            targets = getClosestBuildings(BASE._buildingsMain, function(b:BFOUNDATION):Boolean{
+               return(b is ILootable && !b._looted)
+            });
          }
-         else if(param1 == 4)
+         else if(targetGroup == 4)
          {
-            for each(_loc4_ in BASE._buildingsTowers)
-            {
-               if(MONSTERBUNKER.isBunkerBuilding(_loc4_._type))
-               {
-                  if((_loc12_ = _loc4_).health > 0 && (_loc12_._used > 0 || _loc12_._monstersDispatchedTotal > 0))
-                  {
-                     _loc9_ = GRID.FromISO(_loc4_._mc.x,_loc4_._mc.y + _loc4_._middle);
-                     _loc10_ = GLOBAL.QuickDistance(_loc8_,_loc9_) - _loc4_._middle;
-                     _loc11_.push({
-                        "building":_loc4_,
-                        "distance":_loc10_,
-                        "expand":false
-                     });
-                  }
-               }
-               else if(_loc4_._class != "trap" && _loc4_.health > 0 && !(_loc4_ as BTOWER).isJard)
-               {
-                  _loc9_ = GRID.FromISO(_loc4_._mc.x,_loc4_._mc.y + _loc4_._middle);
-                  _loc10_ = GLOBAL.QuickDistance(_loc8_,_loc9_) - _loc4_._middle;
-                  _loc11_.push({
-                     "building":_loc4_,
-                     "distance":_loc10_,
-                     "expand":false
-                  });
-               }
-            }
+            targets = getClosestBuildings(BASE._buildingsTowers, function(b:BFOUNDATION):Boolean{
+               return( (MONSTERBUNKER.isBunkerBuilding(b._type) && (b._used > 0 || b._monstersDispatchedTotal > 0)) || (b._class != "trap" && (!(b is BTOWER) || !(b as BTOWER).isJard)))
+            });
          }
          else if(this._targetGroup == 6)
          {
-            for each(_loc13_ in BASE._buildingsBunkers)
-            {
-               if(_loc13_.health > 0)
-               {
-                  _loc14_ = false;
-                  if(_loc13_._type == 22)
-                  {
-                     if(_loc13_._used > 0 || _loc13_._monstersDispatchedTotal > 0)
-                     {
-                        _loc14_ = true;
-                     }
-                  }
-                  if(_loc13_._type == 128)
-                  {
-                     if(HOUSING._housingUsed.Get() > 0)
-                     {
-                        _loc14_ = true;
-                     }
-                  }
-                  if(_loc14_)
-                  {
-                     _loc9_ = GRID.FromISO(_loc13_._mc.x,_loc13_._mc.y + _loc13_._middle);
-                     _loc10_ = GLOBAL.QuickDistance(_loc8_,_loc9_) - _loc13_._middle;
-                     _loc11_.push({
-                        "building":_loc13_,
-                        "distance":_loc10_,
-                        "expand":false
-                     });
-                  }
-               }
-            }
+            targets = getClosestBuildings(BASE._buildingsBunkers, function(b:BFOUNDATION):Boolean{
+               return( (b._type == 22 && (b._used > 0 || b._monstersDispatchedTotal > 0) ) || (b._type == 128 && HOUSING._housingUsed.Get() > 0 ) )
+            });
          }
-         if(_loc11_.length == 0 || param1 == 1)
+         if(targets[0]==null || targetGroup == 1)
          {
-            for each(_loc4_ in BASE._buildingsMain)
-            {
-               if(_loc4_._class != "decoration" && _loc4_._class != "immovable" && _loc4_.health > 0 && _loc4_._class != "enemy")
+            targets = getClosestBuildings(BASE._buildingsMain, function(b:BFOUNDATION):Boolean{
+               if(b._class != "decoration" && b._class != "immovable" && b._class != "enemy")
                {
                   if(this._targetGroup != 4)
                   {
                      this._targetGroup = 1;
                   }
-                  if(_loc4_._class == "tower" && !MONSTERBUNKER.isBunkerBuilding(_loc4_._type))
+                  if(b._class == "tower" && !MONSTERBUNKER.isBunkerBuilding(b._type))
                   {
-                     if((_loc4_ as BTOWER).isJard)
+                     if((b as BTOWER).isJard)
                      {
-                        continue;
+                        return false;
                      }
                   }
-                  _loc9_ = GRID.FromISO(_loc4_._mc.x,_loc4_._mc.y + _loc4_._middle);
-                  _loc10_ = GLOBAL.QuickDistance(_loc8_,_loc9_) - _loc4_._middle;
-                  _loc11_.push({
-                     "building":_loc4_,
-                     "distance":_loc10_,
-                     "expand":true
-                  });
+                  return true;
                }
-            }
+            });
          }
-         if(_loc11_.length == 0 && !this._targetCreep)
+         if(targets[0]==null && !this._targetCreep)
          {
             this.changeModeRetreat();
          }
-         else
+         else if(targets[0]!=null)
          {
-            _loc11_.sortOn("distance",Array.NUMERIC);
-            _loc15_ = 0;
             if(this._movement == "burrow")
             {
                this._hasTarget = true;
                this._hasPath = true;
-               _loc16_ = GRID.FromISO(_loc11_[_loc15_].building._mc.x,_loc11_[_loc15_].building._mc.y);
-               _loc17_ = int(Math.random() * 4);
-               _loc18_ = int(_loc11_[_loc15_].building._footprint[0].height);
-               _loc19_ = int(_loc11_[_loc15_].building._footprint[0].width);
-               if(_loc17_ == 0)
+               burrowToPoint = GRID.FromISO(targets[0]._mc.x,targets[0]._mc.y);
+               movementSeed = int(Math.random() * 4);
+               deltaX = int(targets[0]._footprint[0].height);
+               deltaY = int(targets[0]._footprint[0].width);
+               if(movementSeed == 0)
                {
-                  _loc16_.x += Math.random() * _loc18_;
-                  _loc16_.y += _loc19_;
+                  burrowToPoint.x += Math.random() * deltaX;
+                  burrowToPoint.y += deltaY;
                }
-               else if(_loc17_ == 1)
+               else if(movementSeed == 1)
                {
-                  _loc16_.x += _loc18_;
-                  _loc16_.y += _loc19_;
+                  burrowToPoint.x += deltaX;
+                  burrowToPoint.y += deltaY;
                }
-               else if(_loc17_ == 2)
+               else if(movementSeed == 2)
                {
-                  _loc16_.x += _loc18_ - Math.random() * _loc18_ / 2;
-                  _loc16_.y -= _loc19_ / 4;
+                  burrowToPoint.x += deltaX - Math.random() * deltaX / 2;
+                  burrowToPoint.y -= deltaY / 4;
                }
-               else if(_loc17_ == 3)
+               else if(movementSeed == 3)
                {
-                  _loc16_.x -= _loc18_ / 4;
-                  _loc16_.y += _loc19_ - Math.random() * _loc19_ / 2;
+                  burrowToPoint.x -= deltaX / 4;
+                  burrowToPoint.y += deltaY - Math.random() * deltaY / 2;
                }
-               this._waypoints = [GRID.ToISO(_loc16_.x,_loc16_.y,0)];
+               this._waypoints = [GRID.ToISO(burrowToPoint.x,burrowToPoint.y,0)];
                this._targetPosition = this._waypoints[0];
-               this._targetBuilding = _loc11_[_loc15_].building;
+               this._targetBuilding = targets[0];
             }
             else if(this._movement == "fly" || this._movement == "fly_low")
             {
                this._hasTarget = true;
                this._hasPath = true;
-               this._targetBuilding = _loc11_[_loc15_].building;
+               this._targetBuilding = targets[0]
                this._targetCenter = this._targetBuilding._position;
                if(this._creatureID == "IC5")
                {
@@ -1341,10 +1304,10 @@ package com.monsters.monsters
                      else
                      {
                         this._movement = "fly";
-                        _loc20_ = (_loc20_ = (_loc20_ = Math.atan2(this._tmpPoint.y - this._targetCenter.y,this._tmpPoint.x - this._targetCenter.x) * 57.2957795) + (Math.random() * 40 - 20)) / (180 / Math.PI);
-                        _loc21_ = 30 + Math.random() * 10;
-                        _loc22_ = new Point(this._targetCenter.x + Math.cos(_loc20_) * _loc21_,this._targetCenter.y + Math.sin(_loc20_) * _loc21_);
-                        this._waypoints = [_loc22_];
+                        flySeed2 = (flySeed2 = (flySeed2 = Math.atan2(this._tmpPoint.y - this._targetCenter.y,this._tmpPoint.x - this._targetCenter.x) * 57.2957795) + (Math.random() * 40 - 20)) / (180 / Math.PI);
+                        flySeed = 30 + Math.random() * 10;
+                        flyToPoint = new Point(this._targetCenter.x + Math.cos(flySeed2) * flySeed,this._targetCenter.y + Math.sin(flySeed2) * flySeed);
+                        this._waypoints = [flyToPoint];
                         this._targetPosition = this._waypoints[0];
                      }
                   }
@@ -1357,28 +1320,21 @@ package com.monsters.monsters
                }
                else
                {
-                  _loc20_ = (_loc20_ = (_loc20_ = Math.atan2(this._tmpPoint.y - this._targetCenter.y,this._tmpPoint.x - this._targetCenter.x) * 57.2957795) + (Math.random() * 40 - 20)) / (180 / Math.PI);
-                  _loc21_ = 120 + Math.random() * 10;
-                  _loc22_ = new Point(this._targetCenter.x + Math.cos(_loc20_) * _loc21_ * 1.7,this._targetCenter.y + Math.sin(_loc20_) * _loc21_);
-                  this._waypoints = [_loc22_];
+                  flySeed2 = (flySeed2 = (flySeed2 = Math.atan2(this._tmpPoint.y - this._targetCenter.y,this._tmpPoint.x - this._targetCenter.x) * 57.2957795) + (Math.random() * 40 - 20)) / (180 / Math.PI);
+                  flySeed = 120 + Math.random() * 10;
+                  flyToPoint = new Point(this._targetCenter.x + Math.cos(flySeed2) * flySeed * 1.7,this._targetCenter.y + Math.sin(flySeed2) * flySeed);
+                  this._waypoints = [flyToPoint];
                   this._targetPosition = this._waypoints[0];
                }
             }
-            else if(GLOBAL._catchup)
+            else if(!GLOBAL._catchup && targets[1]!=null)
             {
-               this.WaypointTo(new Point(_loc11_[0].building._mc.x,_loc11_[0].building._mc.y),_loc11_[0].building);
+               WaypointTo(new Point(targets[0]._mc.x,targets[0]._mc.y),targets[0]);   
+               WaypointTo(new Point(targets[1]._mc.x,targets[1]._mc.y),targets[1]);           
             }
             else
             {
-               _loc15_ = 0;
-               while(_loc15_ < 2)
-               {
-                  if(_loc11_.length > _loc15_)
-                  {
-                     this.WaypointTo(new Point(_loc11_[_loc15_].building._mc.x,_loc11_[_loc15_].building._mc.y),_loc11_[_loc15_].building);
-                  }
-                  _loc15_++;
-               }
+               WaypointTo(new Point(targets[0]._mc.x,targets[0]._mc.y),targets[0]);     
             }
          }
       }
