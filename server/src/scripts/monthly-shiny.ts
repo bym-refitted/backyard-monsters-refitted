@@ -3,6 +3,7 @@ import mikroOrmConfig from "../mikro-orm.config";
 
 import { MikroORM } from "@mikro-orm/core";
 import { Save } from "../models/save.model";
+import { BaseType } from "../enums/Base";
 
 /**
  * This script is responsible for adding shiny to all main yard saves.
@@ -28,7 +29,7 @@ import { Save } from "../models/save.model";
     const orm = await MikroORM.init(mikroOrmConfig);
     const em = orm.em.fork();
 
-    const saves = await em.find(Save, { type: "main" });
+    const saves = await em.find(Save, { type: BaseType.MAIN });
 
     console.log(`Adding ${shinyAmount} credits to each save...`);
 
