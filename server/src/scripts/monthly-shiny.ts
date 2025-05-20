@@ -6,6 +6,7 @@ import { Save } from "../models/save.model";
 
 /**
  * This script is responsible for adding shiny to all main yard saves.
+ * Current configurations runs once a month on the 20th at 13:00 UTC.
  *
  * To run this script on a production server (using pm2):
  * 1) cd into the server directory
