@@ -190,6 +190,9 @@ export class Save {
   @Property()
   credits!: number;
 
+  @Property({ default: 0 })
+  monthly_credits: number;
+
   @FrontendKey
   @Property({ type: "json", nullable: true, default: "null" })
   champion?: string;
