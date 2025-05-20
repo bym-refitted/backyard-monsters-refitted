@@ -11,6 +11,7 @@ import { Report } from "./models/report.model";
 import { InfernoMaproom } from "./models/infernomaproom.model";
 import { Message } from "./models/message.model";
 import { Thread } from "./models/thread.model";
+import { AttackLogs } from "./models/attacklogs.model";
 
 /**
  * List of entities to be used with MikroORM.
@@ -25,6 +26,7 @@ const entities = [
   InfernoMaproom,
   Message,
   Thread,
+  AttackLogs
 ];
 
 /**

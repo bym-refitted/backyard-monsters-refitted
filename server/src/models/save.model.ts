@@ -19,6 +19,8 @@ export interface FieldData {
   [key: string | number]: any;
 }
 
+// Composite index on worldid, type, and userid
+@Index({ properties: ["worldid", "type", "userid"] })
 @Entity({ tableName: "save" })
 export class Save {
   // IDs & Foreign Keys
