@@ -15,6 +15,14 @@ import { Save } from "../models/save.model";
  */
 (async () => {
   try {
+    const now = new Date();
+    const utcDay = now.getUTCDate();
+
+    if (utcDay !== 20) {
+      console.log(`Exiting: Current UTC day is ${utcDay}, not the 20th.`);
+      process.exit(0);
+    }
+
     const shinyAmount = 400;
 
     const orm = await MikroORM.init(mikroOrmConfig);
