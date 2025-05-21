@@ -52,11 +52,9 @@ export const infernoModeBuild = async (user: User) => {
       userSave.academy[key] = acdaemyLevel;
   });
 
-  // Persist lockerdata to overworld if key doesn't exist
+  // Persist Inferno lockerdata to overworld
   Object.entries(infernoSave.lockerdata).forEach(([key, itemCount]) => {
-    if (userSave.lockerdata[key] === undefined) {
-      userSave.lockerdata[key] = itemCount;
-    }
+    userSave.lockerdata[key] = itemCount;
   });
 
   await ORMContext.em.flush();
