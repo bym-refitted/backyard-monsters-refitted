@@ -19,6 +19,7 @@ package
    import flash.ui.Multitouch;
    import flash.ui.MultitouchInputMode;
    import flash.events.TransformGestureEvent;
+   import flash.geom.Point;
    public class GAME extends Sprite
    {
 
@@ -284,16 +285,29 @@ package
 
       private function onZoom(event:TransformGestureEvent):void
       {
-         _scaleFactor *= event.scaleX;
-
          const MIN_SCALE:Number = 1.0;
          const MAX_SCALE:Number = 3.5;
 
-         // Constrain the scale factor within the specified range
+         var prevScale:Number = _scaleFactor;
+
+         _scaleFactor *= event.scaleX;
          _scaleFactor = Math.max(MIN_SCALE, Math.min(MAX_SCALE, _scaleFactor));
 
-         this.scaleX = _scaleFactor;
-         this.scaleY = _scaleFactor;
+         if (_scaleFactor == prevScale) return;
+
+         var globalPoint:Point = new Point(event.stageX, event.stageY);
+         var localBefore:Point = GLOBAL._layerMap.globalToLocal(globalPoint);
+
+         GLOBAL._layerMap.scaleX = _scaleFactor;
+         GLOBAL._layerMap.scaleY = _scaleFactor;
+
+         var localAfter:Point = GLOBAL._layerMap.globalToLocal(globalPoint);
+
+         var dx:Number = localAfter.x - localBefore.x;
+         var dy:Number = localAfter.y - localBefore.y;
+
+         GLOBAL._layerMap.x += dx * GLOBAL._layerMap.scaleX;
+         GLOBAL._layerMap.y += dy * GLOBAL._layerMap.scaleY;
       }
 
       protected function uncaughtErrorThrown(param1:UncaughtErrorEvent):void
