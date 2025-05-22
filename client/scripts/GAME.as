@@ -285,7 +285,7 @@ package
 
       private function onZoom(event:TransformGestureEvent):void
       {
-         const MIN_SCALE:Number = 1.0;
+         const MIN_SCALE:Number = 1.5;
          const MAX_SCALE:Number = 3.5;
 
          var prevScale:Number = _scaleFactor;
