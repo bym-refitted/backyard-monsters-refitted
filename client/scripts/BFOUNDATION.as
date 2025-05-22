@@ -3264,6 +3264,7 @@ package
             BASE.BuildingSelect(this,true);
             this.GridCost(false);
             this._moving = true;
+            GLOBAL._buildingMoving = true;
             this._stopMoveCount = 0;
             _mc.mouseEnabled = false;
             if(!PLANNER._open)
@@ -3305,6 +3306,7 @@ package
             if(this._moving)
             {
                this._moving = false;
+               GLOBAL._buildingMoving = false;
                if(BASE.BuildBlockers(this,this._class == "decoration") != "")
                {
                   _mc.x = this._oldPosition.x;
