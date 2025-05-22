@@ -172,7 +172,7 @@ package
 
          LOGIN.Login();
          stage.scaleMode = StageScaleMode.NO_SCALE;
-         stage.addEventListener(Event.RESIZE, GLOBAL.ResizeGame);
+         // stage.addEventListener(Event.RESIZE, GLOBAL.ResizeGame);
          stage.showDefaultContextMenu = false;
 
          if (ExternalInterface.available)
@@ -308,6 +308,22 @@ package
 
          GLOBAL._layerMap.x += dx * GLOBAL._layerMap.scaleX;
          GLOBAL._layerMap.y += dy * GLOBAL._layerMap.scaleY;
+
+         clampLayerMap();
+      }
+
+      private function clampLayerMap():void {
+         const viewWidth:Number = stage.stageWidth;
+         const viewHeight:Number = stage.stageHeight;
+
+         const contentWidth:Number = GLOBAL._layerMap.width * GLOBAL._layerMap.scaleX;
+         const contentHeight:Number = GLOBAL._layerMap.height * GLOBAL._layerMap.scaleY;
+
+         const minX:Number = Math.min(0, viewWidth - contentWidth);
+         const minY:Number = Math.min(0, viewHeight - contentHeight);
+
+         GLOBAL._layerMap.x = Math.min(0, Math.max(minX, GLOBAL._layerMap.x));
+         GLOBAL._layerMap.y = Math.min(0, Math.max(minY, GLOBAL._layerMap.y));
       }
 
       protected function uncaughtErrorThrown(param1:UncaughtErrorEvent):void
