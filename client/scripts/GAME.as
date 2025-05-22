@@ -16,10 +16,6 @@ package
    import flash.geom.Rectangle;
    import flash.system.Security;
    import flash.net.SharedObject;
-   import flash.ui.Multitouch;
-   import flash.ui.MultitouchInputMode;
-   import flash.events.TransformGestureEvent;
-   import flash.geom.Point;
    public class GAME extends Sprite
    {
 
@@ -166,10 +162,6 @@ package
          }
          addEventListener(Event.ENTER_FRAME, GLOBAL.TickFast);
 
-         // Gesture events
-         Multitouch.inputMode = MultitouchInputMode.GESTURE;
-         stage.addEventListener(TransformGestureEvent.GESTURE_ZOOM, onZoom);
-
          LOGIN.Login();
          stage.scaleMode = StageScaleMode.NO_SCALE;
          stage.addEventListener(Event.RESIZE, GLOBAL.ResizeGame);
@@ -281,33 +273,6 @@ package
                GLOBAL._SCREENINIT = new Rectangle(0, 0, 760, 750);
             }
          }
-      }
-
-      private function onZoom(event:TransformGestureEvent):void
-      {
-         const MIN_SCALE:Number = 1.0;
-         const MAX_SCALE:Number = 3.5;
-
-         var prevScale:Number = _scaleFactor;
-
-         _scaleFactor *= event.scaleX;
-         _scaleFactor = Math.max(MIN_SCALE, Math.min(MAX_SCALE, _scaleFactor));
-
-         if (_scaleFactor == prevScale) return;
-
-         var globalPoint:Point = new Point(event.stageX, event.stageY);
-         var localBefore:Point = GLOBAL._layerMap.globalToLocal(globalPoint);
-
-         GLOBAL._layerMap.scaleX = _scaleFactor;
-         GLOBAL._layerMap.scaleY = _scaleFactor;
-
-         var localAfter:Point = GLOBAL._layerMap.globalToLocal(globalPoint);
-
-         var dx:Number = localAfter.x - localBefore.x;
-         var dy:Number = localAfter.y - localBefore.y;
-
-         GLOBAL._layerMap.x += dx * GLOBAL._layerMap.scaleX;
-         GLOBAL._layerMap.y += dy * GLOBAL._layerMap.scaleY;
       }
 
       protected function uncaughtErrorThrown(param1:UncaughtErrorEvent):void
