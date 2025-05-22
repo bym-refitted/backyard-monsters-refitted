@@ -63,7 +63,11 @@ package com.monsters.maproom_advanced
       private static var _bubbleSelectTarget:bubble_selecttarget;
       
       private static var _monsterSource:MapRoomCell;
-      
+
+      private static var _monsterSourceRef:MapRoomCell;
+
+      private static var _monsterTarget:MapRoomCell;
+
       private static var _requestedZones:Array;
       
       private static var _showEnemyWait:Boolean = false;
@@ -747,7 +751,17 @@ package com.monsters.maproom_advanced
          }
          if(hasMonsters)
          {
-            _monsterSource = cell;
+            // Preserve map room cell
+            var foundCell:Object = GetCell(cell.X,cell.Y)
+            if (foundCell)
+            {
+               _monsterSource = new MapRoomCell();
+               _monsterSource.Setup(foundCell);
+               _monsterSource.Cleanup(); // remove event listeners
+               _monsterSource.cellX = cell.X;
+               _monsterSource.cellY = cell.Y;
+               _monsterSourceRef = cell;
+            }
             if(_bubbleSelectTarget.parent)
             {
                _bubbleSelectTarget.parent.removeChild(_bubbleSelectTarget);
@@ -782,7 +796,7 @@ package com.monsters.maproom_advanced
          }
       }
       
-      internal static function TransferMonstersC(param1:MapRoomCell) : String
+      internal static function TransferMonstersC(targetCell:MapRoomCell) : String
       {
          var transferSuccessful:Function;
          var transferError:Function;
@@ -798,14 +812,14 @@ package com.monsters.maproom_advanced
          var targetMonsterData:Object = null;
          var transferVars:Array = null;
          var cost:int = 0;
-         var targetCell:MapRoomCell = param1;
+         _monsterTarget = targetCell;
          if(_monsterTransferInProgress)
          {
-            if(targetCell._mine)
+            if(_monsterTarget._mine && _monsterSource._mine)
             {
                PLEASEWAIT.Show(KEYS.Get("wait_processing"));
                _mc.HideMonstersB();
-               if(targetCell._monsters && _monsterSource && targetCell._monsterData.space.Get() > 0)
+               if(_monsterTarget._monsters && _monsterSource && _monsterTarget._monsterData.space.Get() > 0)
                {
                   transferSuccessful = function(param1:Object):void
                   {
@@ -819,33 +833,41 @@ package com.monsters.maproom_advanced
                         else
                         {
                            GLOBAL.Message(KEYS.Get("newmap_tr_space",{"v1":_monstersTransferred}));
+                           if (_monstersTransferred == 0)
+                           {
+                              _monsterTransfer = {};
+                              return;
+                           }
                         }
+                        // update target cell monsters
                         for(dst in finalMonsters)
                         {
-                           if(targetCell._monsters[dst])
+                           if(_monsterTarget._monsters[dst])
                            {
-                              targetCell._monsters[dst].Set(finalMonsters[dst]);
-                              targetCell._hpMonsters[dst] = finalMonsters[dst];
+                              _monsterTarget._monsters[dst].Set(finalMonsters[dst]);
+                              _monsterTarget._hpMonsters[dst] = finalMonsters[dst];
                            }
                            else
                            {
-                              targetCell._monsters[dst] = new SecNum(finalMonsters[dst]);
-                              targetCell._hpMonsters[dst] = finalMonsters[dst];
+                              _monsterTarget._monsters[dst] = new SecNum(finalMonsters[dst]);
+                              _monsterTarget._hpMonsters[dst] = finalMonsters[dst];
                            }
                         }
-                        if(_monsterSource)
+                        // update source cell monsters
+                        if(_monsterSourceRef.cellX == _monsterSource.cellX && _monsterSourceRef.cellY == _monsterSource.cellY)
                         {
+                           // source cell is rendered on map
                            for(src in finalSrcMonsters)
                            {
                               if(finalSrcMonsters[src] > 0)
                               {
-                                 _monsterSource._monsters[src].Set(finalSrcMonsters[src]);
-                                 _monsterSource._hpMonsters[src] = finalSrcMonsters[src];
+                                 _monsterSourceRef._monsters[src].Set(finalSrcMonsters[src]);
+                                 _monsterSourceRef._hpMonsters[src] = finalSrcMonsters[src];
                               }
                               else
                               {
-                                 delete _monsterSource._monsters[src];
-                                 delete _monsterSource._hpMonsters[src];
+                                 delete _monsterSourceRef._monsters[src];
+                                 delete _monsterSourceRef._hpMonsters[src];
                               }
                            }
                         }
@@ -865,7 +887,7 @@ package com.monsters.maproom_advanced
                   actualTransfer = {};
                   finalMonsters = {};
                   finalSrcMonsters = {};
-                  spaceRemaining = int(targetCell._monsterData.space.Get());
+                  spaceRemaining = int(_monsterTarget._monsterData.space.Get());
                   baseUpdateFrom = ["BMU"];
                   baseUpdateTo = ["BMU"];
                   if(_bubbleSelectTarget.parent)
@@ -873,10 +895,10 @@ package com.monsters.maproom_advanced
                      _bubbleSelectTarget.parent.removeChild(_bubbleSelectTarget);
                   }
                   _monsterTransferInProgress = false;
-                  for(dst in targetCell._monsters)
+                  for(dst in _monsterTarget._monsters)
                   {
-                     finalMonsters[dst] = targetCell._monsters[dst].Get();
-                     spaceRemaining -= targetCell._monsters[dst].Get() * CREATURES.GetProperty(dst,"cStorage");
+                     finalMonsters[dst] = _monsterTarget._monsters[dst].Get();
+                     spaceRemaining -= _monsterTarget._monsters[dst].Get() * CREATURES.GetProperty(dst,"cStorage");
                   }
                   for(src in _monsterSource._monsters)
                   {
@@ -886,47 +908,50 @@ package com.monsters.maproom_advanced
                   _allMonstersTransferred = true;
                   for(src in _monsterTransfer)
                   {
-                     cost = CREATURES.GetProperty(src,"cStorage");
-                     if(spaceRemaining >= _monsterTransfer[src].Get() * cost)
+                     if (_monsterTransfer[src].Get() > 0)
                      {
-                        actualTransfer[src] = _monsterTransfer[src].Get();
-                        _monstersTransferred += _monsterTransfer[src].Get();
-                     }
-                     else
-                     {
-                        _allMonstersTransferred = false;
-                        actualTransfer[src] = int(spaceRemaining / cost);
-                        _monstersTransferred += int(spaceRemaining / cost);
-                     }
-                     if(targetCell._monsters[src])
-                     {
-                        finalMonsters[src] = targetCell._monsters[src].Get() + actualTransfer[src];
-                     }
-                     else
-                     {
-                        finalMonsters[src] = actualTransfer[src];
-                     }
-                     if(_monsterSource._monsters[src])
-                     {
-                        finalSrcMonsters[src] = _monsterSource._monsters[src].Get() - actualTransfer[src];
-                     }
-                     spaceRemaining -= actualTransfer[src] * cost;
-                     baseUpdateFrom.push({
-                        "creatureID":src,
-                        "count":actualTransfer[src]
-                     });
-                     baseUpdateTo.push({
-                        "creatureID":src,
-                        "count":-actualTransfer[src]
-                     });
-                     if(spaceRemaining <= 0)
-                     {
-                        break;
+                        cost = CREATURES.GetProperty(src,"cStorage");
+                        if(spaceRemaining >= _monsterTransfer[src].Get() * cost)
+                        {
+                           actualTransfer[src] = _monsterTransfer[src].Get();
+                           _monstersTransferred += _monsterTransfer[src].Get();
+                        }
+                        else
+                        {
+                           _allMonstersTransferred = false;
+                           actualTransfer[src] = int(spaceRemaining / cost);
+                           _monstersTransferred += int(spaceRemaining / cost);
+                        }
+                        if(_monsterTarget._monsters[src])
+                        {
+                           finalMonsters[src] = _monsterTarget._monsters[src].Get() + actualTransfer[src];
+                        }
+                        else
+                        {
+                           finalMonsters[src] = actualTransfer[src];
+                        }
+                        if(_monsterSource._monsters[src])
+                        {
+                           finalSrcMonsters[src] = _monsterSource._monsters[src].Get() - actualTransfer[src];
+                        }
+                        spaceRemaining -= actualTransfer[src] * cost;
+                        baseUpdateFrom.push({
+                           "creatureID":src,
+                           "count":actualTransfer[src]
+                        });
+                        baseUpdateTo.push({
+                           "creatureID":src,
+                           "count":-actualTransfer[src]
+                        });
+                        if(spaceRemaining <= 0)
+                        {
+                           break;
+                        }
                      }
                   }
-                  if(!targetCell.Check())
+                  if(!_monsterTarget.Check())
                   {
-                     LOGGER.Log("err","BASE.Save:  transfer target Cell " + targetCell.X + "," + targetCell.Y + "does not check out before doing monster transfer!  " + JSON.encode(targetCell._hpMonsterData));
+                     LOGGER.Log("err","BASE.Save:  transfer target Cell " + _monsterTarget.X + "," + _monsterTarget.Y + "does not check out before doing monster transfer!  " + JSON.encode(_monsterTarget._hpMonsterData));
                   }
                   if(!_monsterSource.Check())
                   {
@@ -946,23 +971,23 @@ package com.monsters.maproom_advanced
                      "saved":GLOBAL.Timestamp()
                   };
                   targetMonsterData = {
-                     "hcount":targetCell._hpMonsterData.hcount,
-                     "overdrivepower":targetCell._monsterData.overdrivepower.Get(),
-                     "hcc":targetCell._hpMonsterData.hcc,
-                     "space":targetCell._monsterData.space.Get(),
-                     "h":targetCell._hpMonsterData.h,
-                     "finishtime":targetCell._hpMonsterData.finishtime,
-                     "overdrivetime":targetCell._monsterData.overdrivetime.Get(),
+                     "hcount":_monsterTarget._hpMonsterData.hcount,
+                     "overdrivepower":_monsterTarget._monsterData.overdrivepower.Get(),
+                     "hcc":_monsterTarget._hpMonsterData.hcc,
+                     "space":_monsterTarget._monsterData.space.Get(),
+                     "h":_monsterTarget._hpMonsterData.h,
+                     "finishtime":_monsterTarget._hpMonsterData.finishtime,
+                     "overdrivetime":_monsterTarget._monsterData.overdrivetime.Get(),
                      "housed":finalMonsters,
-                     "hid":targetCell._hpMonsterData.hid,
-                     "hstage":targetCell._hpMonsterData.hstage,
+                     "hid":_monsterTarget._hpMonsterData.hid,
+                     "hstage":_monsterTarget._hpMonsterData.hstage,
                      "saved":GLOBAL.Timestamp()
                   };
-                  transferVars = [["frombaseid",_monsterSource._baseID],["tobaseid",targetCell._baseID],["monsters",JSON.encode([srcMonsterData,targetMonsterData])]];
+                  transferVars = [["frombaseid",_monsterSource._baseID],["tobaseid",_monsterTarget._baseID],["monsters",JSON.encode([srcMonsterData,targetMonsterData])]];
                   new URLLoaderApi().load(GLOBAL._mapURL + "transferassets",transferVars,transferSuccessful,transferError);
                   return "";
                }
-               if(targetCell._monsterData.space.Get() == 0)
+               if(_monsterTarget._monsterData.space.Get() == 0)
                {
                   GLOBAL.Message(KEYS.Get("newmap_tr_err1"));
                }
