@@ -439,6 +439,8 @@ package
 
       private static var fastTickables:Vector.<ITickable>;
 
+      public static var _buildingMoving:Boolean;
+
       public function GLOBAL()
       {
          super();

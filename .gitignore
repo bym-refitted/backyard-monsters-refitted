@@ -9,6 +9,6 @@ server/data
 .idea
 api-versioning
 android/bymr.keystore
-android/apk/BYMRefitted.apk
+android/apk/*
 
 .DS_Store
