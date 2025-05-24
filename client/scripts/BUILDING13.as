@@ -97,11 +97,11 @@ package
          {
             if(BASE.isInfernoCreep(_inProduction))
             {
-               _loc2_[1].Add(CREATURES.GetProperty(_inProduction,"cResource"));
+               _loc2_[1].Add(CREATURES.GetProperty(_inProduction,"cResource").Get());
             }
             else
             {
-               _loc2_[0].Add(CREATURES.GetProperty(_inProduction,"cResource"));
+               _loc2_[0].Add(CREATURES.GetProperty(_inProduction,"cResource").Get());
             }
             _inProduction = "";
          }
@@ -113,11 +113,11 @@ package
             {
                if(BASE.isInfernoCreep(_monsterQueue[_loc3_][0]))
                {
-                  _loc2_[1].Add(CREATURES.GetProperty(_monsterQueue[_loc3_][0],"cResource") * _monsterQueue[_loc3_][1]);
+                  _loc2_[1].Add(CREATURES.GetProperty(_monsterQueue[_loc3_][0],"cResource").Get() * _monsterQueue[_loc3_][1]);
                }
                else
                {
-                  _loc2_[0].Add(CREATURES.GetProperty(_monsterQueue[_loc3_][0],"cResource") * _monsterQueue[_loc3_][1]);
+                  _loc2_[0].Add(CREATURES.GetProperty(_monsterQueue[_loc3_][0],"cResource").Get() * _monsterQueue[_loc3_][1]);
                }
                _loc3_++;
             }
@@ -190,7 +190,7 @@ package
          }
          else if(_canFunction)
          {
-            if(CREATURES.GetProperty(_inProduction,"cResource") < BASE._resources.r3.Get() && _productionStage.Get() == 3)
+            if(CREATURES.GetProperty(_inProduction,"cResource").Get() < BASE._resources.r3.Get() && _productionStage.Get() == 3)
             {
                _specialDescription = "<font color=\"#CC0000\">" + KEYS.Get("building_hatchery_res",{"v1":GLOBAL._resourceNames[3]}) + "</font>";
             }
@@ -203,7 +203,7 @@ package
             }
             else if(_productionStage.Get() == 1)
             {
-               _loc1_ = CREATURES.GetProperty(_inProduction,"cTime");
+               _loc1_ = CREATURES.GetProperty(_inProduction,"cTime").Get();
                _loc2_ = 100 / _loc1_ * _countdownProduce.Get();
                if(_loc2_ < 0)
                {
@@ -357,7 +357,7 @@ package
                         _loc6_ = String(_monsterQueue[_loc5_][0]);
                         if(_loc2_ >= CREATURES.GetProperty(_loc6_,"cStorage") * _monsterQueue[_loc5_][1])
                         {
-                           _loc3_ += CREATURES.GetProperty(_loc6_,"cTime") * _monsterQueue[_loc5_][1];
+                           _loc3_ += CREATURES.GetProperty(_loc6_,"cTime").Get() * _monsterQueue[_loc5_][1];
                            _loc2_ -= CREATURES.GetProperty(_loc6_,"cStorage") * _monsterQueue[_loc5_][1];
                            if(_finishQueue[_loc6_])
                            {
@@ -370,7 +370,7 @@ package
                         }
                         else if(_loc2_ >= CREATURES.GetProperty(_loc6_,"cStorage"))
                         {
-                           _loc3_ += CREATURES.GetProperty(_loc6_,"cTime") * (_loc2_ / CREATURES.GetProperty(_loc6_,"cStorage"));
+                           _loc3_ += CREATURES.GetProperty(_loc6_,"cTime").Get() * (_loc2_ / CREATURES.GetProperty(_loc6_,"cStorage"));
                            if(_finishQueue[_loc6_])
                            {
                               _finishQueue[_loc6_] += _loc2_ / CREATURES.GetProperty(_loc6_,"cStorage");
@@ -428,7 +428,7 @@ package
                if(_productionStage.Get() == 4 && (_hasResources || !GLOBAL._render))
                {
                   _hasResources = true;
-                  _countdownProduce.Set(CREATURES.GetProperty(_inProduction,"cTime"));
+                  _countdownProduce.Set(CREATURES.GetProperty(_inProduction,"cTime").Get());
                   _productionStage.Set(1);
                   this.Tick(1);
                   return;
