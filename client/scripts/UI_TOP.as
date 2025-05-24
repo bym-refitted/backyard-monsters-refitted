@@ -1031,7 +1031,8 @@ package
                mc.mcR5.bAdd.visible = true;
             }
             mc.bEarn.visible = GLOBAL._flags.showFBCEarn == 1;
-            mc.bDailyDeal.visible = GLOBAL._flags.showFBCDaily == 1;
+            // mc.bDailyDeal.visible = GLOBAL._flags.showFBCDaily == 1;
+            mc.bDailyDeal.visible = false; // set this to false for mobile
             _loc1_ = 1;
             while(_loc1_ < 6)
             {
