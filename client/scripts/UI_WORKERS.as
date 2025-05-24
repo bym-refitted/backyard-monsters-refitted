@@ -52,6 +52,10 @@ package
             {
                _maxWorkers = 1;
             }
+ 
+            var iconScale:Number = 2;
+            _workerMCOffset = 90;
+
             _loc1_ = 0;
             while(_loc1_ < _maxWorkers)
             {
@@ -63,7 +67,10 @@ package
                {
                   _loc2_ = new icon_worker();
                }
-               _loc2_.y = 20 + _loc1_ * _workerMCOffset;
+
+               _loc2_.y = 80 + _loc1_ * _workerMCOffset;
+               _loc2_.scaleX = _loc2_.scaleY = iconScale;
+
                _loc2_.mouseChildren = false;
                _loc2_.addEventListener(MouseEvent.CLICK,MouseClicked(_loc1_));
                _loc2_.addEventListener(MouseEvent.MOUSE_OVER,MouseOver(_loc1_));
