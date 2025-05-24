@@ -448,13 +448,16 @@ package
       {
          var _loc2_:uint = 0;
          var _loc3_:uint = 0;
+         var buttonScale:Number = 2;
+
          x = param1.x + 10;
-         y = param1.y + 4;
+         y = param1.y + 15;
          mcProtected.x = param1.width - 125;
          mcReinforcements.x = param1.width - 125;
          mcSpecialEvent.x = param1.width - 125;
          mcBuffHolder.x = param1.width - 200;
-         if(GLOBAL.mode == GLOBAL.e_BASE_MODE.ATTACK || GLOBAL.mode == GLOBAL.e_BASE_MODE.WMATTACK)
+
+         if (GLOBAL.mode == GLOBAL.e_BASE_MODE.ATTACK || GLOBAL.mode == GLOBAL.e_BASE_MODE.WMATTACK)
          {
             mcZoom.x = param1.width - 38 - 24;
             mcFullscreen.x = param1.width - 38;
@@ -464,11 +467,17 @@ package
          }
          else
          {
-            mcZoom.x = param1.width - 130;
-            mcFullscreen.x = param1.width - 100;
-            mcSound.x = param1.width - 70;
-            mcMusic.x = param1.width - 40;
-            mcSave.x = param1.width - 160;
+            mcZoom.scaleX = mcZoom.scaleY = buttonScale;
+            mcFullscreen.scaleX = mcFullscreen.scaleY = buttonScale;
+            mcSound.scaleX = mcSound.scaleY = buttonScale;
+            mcMusic.scaleX = mcMusic.scaleY = buttonScale;
+            mcSave.scaleX = mcSave.scaleY = buttonScale;
+
+            mcMusic.x = param1.width - 90;
+            mcSound.x = param1.width - 150;
+            mcFullscreen.x = param1.width - 210;
+            mcZoom.x = param1.width - 270;
+            mcSave.x = param1.width - 330;
          }
          if(this._descentDebuff)
          {
@@ -1263,40 +1272,46 @@ package
          }
       }
       
-      public function SortButtonIcons(param1:int = 2, param2:int = 4, param3:int = 0) : void
+      public function SortButtonIcons(columnsNum:int = 2, rowsPerCol:int = 4, initialYOffset:int = 0) : void
       {
-         var _loc4_:int = 9;
-         var _loc5_:int = 195;
-         var _loc6_:int = param1;
-         var _loc7_:int = param2;
-         var _loc8_:int = 67;
-         var _loc9_:int = 55;
-         var _loc10_:int = param3;
-         var _loc11_:int = 0;
-         var _loc12_:int = 0;
-         var _loc13_:int = 0;
+         var startX:int = 9;
+         var startY:int = 195;
+         var columnsCount:int = columnsNum;
+         var rowsPerColumn:int = rowsPerCol;
+         var columnSpacing:int = 67;
+         var rowSpacing:int = 110;
+         var yOffset:int = initialYOffset;
+         var columnOffset:int = 0;
+         var columnIndex:int = 0;
+         var rowIndex:int = 0;
+         var buttonIndex:int = 0;
+         var buttonScale:Number = 2;
+
          if(MapRoomManager.instance.isInMapRoom2)
          {
-            _loc10_ += 35;
+            yOffset += 45;
          }
-         var _loc14_:int = 0;
-         while(_loc14_ < this._buttonIcons.length)
+         while(buttonIndex < this._buttonIcons.length)
          {
-            if(this._buttonIcons[_loc14_].visible)
+            if(this._buttonIcons[buttonIndex].visible)
             {
-               this._buttonIcons[_loc14_].x = _loc4_ + _loc11_;
-               this._buttonIcons[_loc14_].y = _loc5_ + _loc10_;
-               _loc13_++;
-               _loc10_ += _loc9_;
-               if(_loc13_ >= _loc7_)
+               this._buttonIcons[buttonIndex].x = startX + columnOffset;
+               this._buttonIcons[buttonIndex].y = startY + yOffset;
+
+               this._buttonIcons[buttonIndex].scaleX = buttonScale;
+               this._buttonIcons[buttonIndex].scaleY = buttonScale;
+
+               rowIndex++;
+               yOffset += rowSpacing;
+               if(rowIndex >= rowsPerColumn)
                {
-                  _loc13_ = 0;
-                  _loc12_++;
-                  _loc10_ = 0;
-                  _loc11_ += _loc8_;
+                  rowIndex = 0;
+                  columnIndex++;
+                  yOffset = 0;
+                  columnOffset += columnSpacing;
                }
             }
-            _loc14_++;
+            buttonIndex++;
          }
       }
       

@@ -12,6 +12,7 @@ package
    public class UI_MENU extends Sprite
    {
        
+      public var menuScale:Number = 1.8;
       
       public var woodmargin:int = 10;
       
@@ -59,6 +60,12 @@ package
                wood = new ScaleBitmap(param2.clone());
                wood.scale9Grid = new Rectangle(15,15,10,10);
                addChild(wood);
+
+               bBuild.scaleX = bBuild.scaleY = menuScale;
+               bQuests.scaleX = bQuests.scaleY = menuScale;
+               bStore.scaleX = bStore.scaleY = menuScale;
+               bMap.scaleX = bMap.scaleY = menuScale;
+
                addChild(bBuild);
                if(MapRoomManager.instance.isInMapRoom3 && !BASE.isMainYardOrInfernoMainYard)
                {
@@ -74,6 +81,8 @@ package
                {
                   addChild(bKits);
                }
+
+               wood.height = wood.height * menuScale;
                sortAll();
                _loaded = true;
                UI_BOTTOM.Resize();
@@ -115,6 +124,8 @@ package
          var _loc2_:StoneButton = null;
          var _loc3_:StoneButton = null;
          var _loc4_:Number = NaN;
+         this.buttonspacing = 5 * menuScale;
+
          if(BASE.isOutpostMapRoom2Only)
          {
             _loc1_ = [this.bKits,this.bBuild,this.bQuests,this.bStore,this.bMap];
@@ -139,12 +150,12 @@ package
             }
             else
             {
-               _loc3_.x = _loc2_.x + _loc2_.getButtonWidth() + this.buttonspacing;
+               _loc3_.x = _loc2_.x + (_loc2_.getButtonWidth() * menuScale) + this.buttonspacing;
             }
-            _loc3_.y = this.wood.height * 0.5 - _loc3_.getButtonHeight() * 0.5;
+            _loc3_.y = this.wood.height * 0.5 - (_loc3_.getButtonHeight() * menuScale) * 0.5;
             _loc2_ = _loc3_;
          }
-         _loc4_ = this.bMap.x + this.bMap.width + this.woodmargin;
+         _loc4_ = _loc2_.x + (_loc2_.getButtonWidth() * menuScale) + this.woodmargin;
          this.wood.setSize(_loc4_,this.wood.height);
          this._sorted = true;
          return true;
