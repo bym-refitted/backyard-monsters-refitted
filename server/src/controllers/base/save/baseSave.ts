@@ -141,7 +141,7 @@ export const baseSave: KoaController = async (ctx) => {
     await ORMContext.em.persistAndFlush(baseSave);
 
     const filteredSave = FilterFrontendKeys(baseSave);
-    logging(`Saving ${user.username}'s base`);
+    logging(`Saving ${user.username}'s base | IP: ${ctx.ip}`);
 
     const responseBody = {
       error: 0,

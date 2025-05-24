@@ -16,10 +16,8 @@ package
    import flash.geom.Rectangle;
    import flash.system.Security;
    import flash.net.SharedObject;
-   import flash.ui.Multitouch;
-   import flash.ui.MultitouchInputMode;
-   import flash.events.TransformGestureEvent;
    import flash.geom.Point;
+   import flash.events.TransformGestureEvent;
    public class GAME extends Sprite
    {
 
@@ -165,10 +163,6 @@ package
             GLOBAL._openBase = null;
          }
          addEventListener(Event.ENTER_FRAME, GLOBAL.TickFast);
-
-         // Gesture events
-         Multitouch.inputMode = MultitouchInputMode.GESTURE;
-         stage.addEventListener(TransformGestureEvent.GESTURE_ZOOM, onZoom);
 
          LOGIN.Login();
          stage.scaleMode = StageScaleMode.NO_SCALE;
