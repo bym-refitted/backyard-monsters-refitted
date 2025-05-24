@@ -33,7 +33,8 @@ package
    {
       
       public static const CREATUREBUTTONOVER:String = "creatureButtonOver";
-       
+      
+      private var _uiScale:Number = 1.8;
       
       public var _popupWarning:bubblepopup4;
       
@@ -139,11 +140,18 @@ package
       private function setupBuildMode() : void
       {
          var _loc1_:int = 0;
+
+         mc.mcPoints.scaleX = mc.mcPoints.scaleY = _uiScale;
+         
          mc.mcPoints.addEventListener(MouseEvent.MOUSE_OVER,this.InfoShow);
          mc.mcPoints.addEventListener(MouseEvent.MOUSE_OUT,this.InfoHide);
          _loc1_ = 1;
          while(_loc1_ < 5)
          {
+            mc["mcR" + _loc1_].scaleX = mc["mcR" + _loc1_].scaleY = _uiScale;
+            mc["mcR" + _loc1_].x *= _uiScale;
+            mc["mcR" + _loc1_].y *= _uiScale;
+
             mc["mcR" + _loc1_].mcHit.addEventListener(MouseEvent.MOUSE_OVER,this.StatsShow(_loc1_,false));
             mc["mcR" + _loc1_].mcHit.addEventListener(MouseEvent.MOUSE_OUT,this.StatsHide);
             mc["mcR" + _loc1_].bAdd.addEventListener(MouseEvent.CLICK,this.Topup(_loc1_));
@@ -152,6 +160,11 @@ package
             mc["mcR" + _loc1_].bAdd.mouseChildren = false;
             _loc1_++;
          }
+         
+         mc.mcR5.scaleX = mc.mcR5.scaleY = _uiScale;
+         mc.mcR5.x *= _uiScale;
+         mc.mcR5.y *= _uiScale;
+
          this._resourceUI = {};
          this._resourceUI.r1 = BASE._resources["r" + 1].Get();
          this._resourceUI.r2 = BASE._resources["r" + 2].Get();
@@ -166,6 +179,11 @@ package
          mc.mcR5.bAdd.mcBG.width = mc.mcR5.bAdd.txtAdd.width + 11;
          mc.mcR5.mcBG.width = 82 + mc.mcR5.bAdd.width;
          // mc.mcR5.bAdd.addEventListener(MouseEvent.CLICK,BUY.Show);
+
+         mc.mcOutposts.scaleX = mc.mcOutposts.scaleY = _uiScale;
+         mc.mcOutposts.x *= _uiScale;
+         mc.mcOutposts.y *= _uiScale;
+
          mc.mcR5.bAdd.addEventListener(MouseEvent.CLICK,function(event:MouseEvent):void
          {
             GLOBAL.Message(KEYS.Get("disabled_addshiny"));
@@ -178,6 +196,12 @@ package
          mc.mcOutposts.bNext.buttonMode = true;
          mc.mcOutposts.bNext.mouseEnabled = true;
          mc.mcOutposts.bNext.mouseChildren = false;
+
+         mc.bInvite.scaleX = mc.bInvite.scaleY = _uiScale;
+         mc.bGift.scaleX = mc.bGift.scaleY = _uiScale;
+         mc.bInbox.scaleX = mc.bInbox.scaleY = _uiScale;
+         mc.bAlert.scaleX = mc.bAlert.scaleY = _uiScale;
+
          mc.bInvite.buttonMode = true;
          mc.bInvite.mouseChildren = false;
          mc.bInvite.addEventListener(MouseEvent.CLICK,this.ButtonClick("invite"));
@@ -200,7 +224,10 @@ package
          mc.bAlert.addEventListener(MouseEvent.MOUSE_OUT,this.ButtonInfoHide);
          this._buttonIcons = [];
          this._buttonIcons = [mc.bInvite,mc.bGift,mc.bInbox,mc.bAlert];
+
+         mc.bEarn.scaleX = mc.bEarn.scaleY = _uiScale;
          mc.bEarn.bAction.tLabel.htmlText = KEYS.Get("btn_earn");
+         
          if(GLOBAL._flags.showFBCEarn == 1)
          {
             mc.bEarn.buttonMode = true;
@@ -215,6 +242,7 @@ package
             mc.bEarn.mouseEnabled = false;
             mc.bEarn.visible = false;
          }
+         mc.bDailyDeal.scaleX = mc.bDailyDeal.scaleY = _uiScale;
          mc.bDailyDeal.tLabel.htmlText = KEYS.Get("btn_dailydeal");
          if(GLOBAL._flags.showFBCDaily == 1)
          {
@@ -689,13 +717,15 @@ package
       {
          if(Boolean(mc) && GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD)
          {
-            param1.x = 222;
+            param1.scaleX = param1.scaleY = _uiScale;
+
+            param1.x = 222 * _uiScale;
             param1.y = 0;
             this._kothIcon = mc.addChild(param1);
-            mc.mcR5.x = 284;
-            mc.bEarn.x = 415;
-            mc.bDealSpot.x = 502;
-            mc.bDailyDeal.x = 493;
+            mc.mcR5.x = 284 * _uiScale; 
+            mc.bEarn.x = 415 * _uiScale;
+            mc.bDealSpot.x = 502 * _uiScale;
+            mc.bDailyDeal.x = 493 * _uiScale;
          }
       }
       
@@ -706,10 +736,10 @@ package
             mc.removeChild(param1);
             if(GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD)
             {
-               mc.mcR5.x = 227;
-               mc.bEarn.x = 358;
-               mc.bDailyDeal.x = 436;
-               mc.bDealSpot.x = 445;
+               mc.mcR5.x = 227 * _uiScale;
+               mc.bEarn.x = 358 * _uiScale;
+               mc.bDailyDeal.x = 436 * _uiScale;
+               mc.bDealSpot.x = 445 * _uiScale;
             }
          }
          if(this._kothIcon)
@@ -735,7 +765,9 @@ package
             {
                _loc2_ = mc.mcR4;
             }
-            param1.x = -4;
+            param1.scaleX = param1.scaleY = _uiScale;
+
+            param1.x = -4 * _uiScale;
             param1.y = _loc2_.y + 37;
             this._daveClub = mc.addChild(param1);
             ++this.extraResourceRows;
@@ -1091,6 +1123,8 @@ package
                   _loc10_ = CREATURES._krallen._level.Get();
                }
                (this._kothIcon as KOTHHUDGraphic).update(_loc9_,_loc10_);
+
+               this._kothIcon.scaleX = this._kothIcon.scaleY = _uiScale;
             }
             if(this._daveClub)
             {
@@ -1105,7 +1139,7 @@ package
                   _loc12_ = mc.mcR4;
                }
                this._daveClub.x = -4;
-               this._daveClub.y = _loc12_.y + 37;
+               this._daveClub.y = _loc12_.y + 68;
             }
          }
       }
@@ -1289,7 +1323,7 @@ package
 
          if(MapRoomManager.instance.isInMapRoom2)
          {
-            yOffset += 45;
+            yOffset += 250;
          }
          while(buttonIndex < this._buttonIcons.length)
          {
