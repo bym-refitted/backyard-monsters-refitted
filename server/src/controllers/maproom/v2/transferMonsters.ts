@@ -33,10 +33,13 @@ export const transferMonsters: KoaController = async (ctx) => {
 
   const [fromMonsters, toMonsters]: MonstersTransfer = monsters;
 
+  // Determine the order so the query always makes the source base the first result.
+  const orderBy = frombaseid > tobaseid ? { baseid: 'DESC' } : { baseid: 'ASC' };
+
   // Fetch the bases to transfer the monsters between
   const [fromBase, toBase] = await ORMContext.em.find(Save, {
     baseid: { $in: [frombaseid, tobaseid] },
-  });
+  }, { orderBy });
 
   if (!fromBase || !toBase) {
     ctx.status = Status.BAD_REQUEST;
