@@ -1326,6 +1326,11 @@ package
          {
             yOffset += 250;
          }
+
+         if (BASE.isMainYardInfernoOnly) {
+            yOffset += 180;
+         }
+
          while(buttonIndex < this._buttonIcons.length)
          {
             if(this._buttonIcons[buttonIndex].visible)
