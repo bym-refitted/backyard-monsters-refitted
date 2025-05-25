@@ -557,7 +557,7 @@ package com.monsters.missions
             this.frame.arrowDown.gotoAndStop("on" + this._skinTag);
             this.frame.arrowUp.buttonMode = true;
             this.frame.arrowDown.buttonMode = true;
-            GLOBAL.StatSet("missionmin",0);
+            GLOBAL.StatSet("missionmin",1);
          }
          else if(this._open)
          {
@@ -579,7 +579,7 @@ package com.monsters.missions
                this.frame.arrowDown.gotoAndStop("on" + this._skinTag);
                this.frame.arrowUp.buttonMode = true;
                this.frame.arrowDown.buttonMode = false;
-               GLOBAL.StatSet("missionmin",0);
+               GLOBAL.StatSet("missionmin",1);
             }
             else if(_loc3_)
             {
@@ -598,7 +598,7 @@ package com.monsters.missions
             this.frame.arrowDown.gotoAndStop("on" + this._skinTag);
             this.frame.arrowUp.buttonMode = true;
             this.frame.arrowDown.buttonMode = true;
-            GLOBAL.StatSet("missionmin",0);
+            GLOBAL.StatSet("missionmin",1);
          }
          if(_loc4_ == null)
          {
