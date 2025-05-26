@@ -69,7 +69,7 @@ package com.monsters.maproom_advanced
 
       private static var _monsterSourceRef:MapRoomCell;
 
-      private static var _monsterTarget:MapRoomCell;
+      private static var _monsterTargetRef:MapRoomCell;
 
       private static var _requestedZones:Array;
       
@@ -871,16 +871,16 @@ package com.monsters.maproom_advanced
          var cost:int = 0;
          var transferRetryTimer:Timer = null;
          var zoneSource:Object = GetCellZone(_monsterSource.cellX, _monsterSource.cellY);
-         _monsterTarget = targetCell;
-         var zoneTarget:Object = GetCellZone(_monsterTarget.cellX, _monsterTarget.cellY);
+         _monsterTargetRef = targetCell;
+         var zoneTarget:Object = GetCellZone(_monsterTargetRef.cellX, _monsterTargetRef.cellY);
          var addedToPriority:Boolean = false;
          if(_monsterTransferInProgress)
          {
-            if(_monsterTarget._mine && _monsterSource._mine)
+            if(_monsterTargetRef._mine && _monsterSource._mine)
             {
                PLEASEWAIT.Show(KEYS.Get("wait_processing"));
                _mc.HideMonstersB();
-               if(_monsterTarget._monsters && _monsterSource && _monsterTarget._monsterData.space.Get() > 0)
+               if(_monsterTargetRef._monsters && _monsterSource && _monsterTargetRef._monsterData.space.Get() > 0)
                {
                   transferSuccessful = function(param1:Object):void
                   {
@@ -904,15 +904,15 @@ package com.monsters.maproom_advanced
                         // update target cell monsters
                         for(dst in finalMonsters)
                         {
-                           if(_monsterTarget._monsters[dst])
+                           if(_monsterTargetRef._monsters[dst])
                            {
-                              _monsterTarget._monsters[dst].Set(finalMonsters[dst]);
-                              _monsterTarget._hpMonsters[dst] = finalMonsters[dst];
+                              _monsterTargetRef._monsters[dst].Set(finalMonsters[dst]);
+                              _monsterTargetRef._hpMonsters[dst] = finalMonsters[dst];
                            }
                            else
                            {
-                              _monsterTarget._monsters[dst] = new SecNum(finalMonsters[dst]);
-                              _monsterTarget._hpMonsters[dst] = finalMonsters[dst];
+                              _monsterTargetRef._monsters[dst] = new SecNum(finalMonsters[dst]);
+                              _monsterTargetRef._hpMonsters[dst] = finalMonsters[dst];
                            }
                         }
                         // update source cell monsters
@@ -946,7 +946,7 @@ package com.monsters.maproom_advanced
                            }
                            if(_zones[zoneTarget.id] && _zones[zoneTarget.id].data)
                            {
-                              _zones[zoneTarget.id].data[_monsterTarget.cellX][_monsterTarget.cellY].m.housed = finalMonsters;
+                              _zones[zoneTarget.id].data[_monsterTargetRef.cellX][_monsterTargetRef.cellY].m.housed = finalMonsters;
                            }
                            else
                            {
@@ -971,7 +971,7 @@ package com.monsters.maproom_advanced
                   actualTransfer = {};
                   finalMonsters = {};
                   finalSrcMonsters = {};
-                  spaceRemaining = int(_monsterTarget._monsterData.space.Get());
+                  spaceRemaining = int(_monsterTargetRef._monsterData.space.Get());
                   baseUpdateFrom = ["BMU"];
                   baseUpdateTo = ["BMU"];
                   if(_bubbleSelectTarget.parent)
@@ -979,10 +979,10 @@ package com.monsters.maproom_advanced
                      _bubbleSelectTarget.parent.removeChild(_bubbleSelectTarget);
                   }
                   _monsterTransferInProgress = false;
-                  for(dst in _monsterTarget._monsters)
+                  for(dst in _monsterTargetRef._monsters)
                   {
-                     finalMonsters[dst] = _monsterTarget._monsters[dst].Get();
-                     spaceRemaining -= _monsterTarget._monsters[dst].Get() * CREATURES.GetProperty(dst,"cStorage");
+                     finalMonsters[dst] = _monsterTargetRef._monsters[dst].Get();
+                     spaceRemaining -= _monsterTargetRef._monsters[dst].Get() * CREATURES.GetProperty(dst,"cStorage");
                   }
                   for(src in _monsterSource._monsters)
                   {
@@ -1006,9 +1006,9 @@ package com.monsters.maproom_advanced
                            actualTransfer[src] = int(spaceRemaining / cost);
                            _monstersTransferred += int(spaceRemaining / cost);
                         }
-                        if(_monsterTarget._monsters[src])
+                        if(_monsterTargetRef._monsters[src])
                         {
-                           finalMonsters[src] = _monsterTarget._monsters[src].Get() + actualTransfer[src];
+                           finalMonsters[src] = _monsterTargetRef._monsters[src].Get() + actualTransfer[src];
                         }
                         else
                         {
@@ -1033,9 +1033,9 @@ package com.monsters.maproom_advanced
                         }
                      }
                   }
-                  if(!_monsterTarget.Check())
+                  if(!_monsterTargetRef.Check())
                   {
-                     LOGGER.Log("err","BASE.Save:  transfer target Cell " + _monsterTarget.X + "," + _monsterTarget.Y + "does not check out before doing monster transfer!  " + JSON.encode(_monsterTarget._hpMonsterData));
+                     LOGGER.Log("err","BASE.Save:  transfer target Cell " + _monsterTargetRef.X + "," + _monsterTargetRef.Y + "does not check out before doing monster transfer!  " + JSON.encode(_monsterTargetRef._hpMonsterData));
                   }
                   if(!_monsterSource.Check())
                   {
@@ -1055,24 +1055,24 @@ package com.monsters.maproom_advanced
                      "saved":GLOBAL.Timestamp()
                   };
                   targetMonsterData = {
-                     "hcount":_monsterTarget._hpMonsterData.hcount,
-                     "overdrivepower":_monsterTarget._monsterData.overdrivepower.Get(),
-                     "hcc":_monsterTarget._hpMonsterData.hcc,
-                     "space":_monsterTarget._monsterData.space.Get(),
-                     "h":_monsterTarget._hpMonsterData.h,
-                     "finishtime":_monsterTarget._hpMonsterData.finishtime,
-                     "overdrivetime":_monsterTarget._monsterData.overdrivetime.Get(),
+                     "hcount":_monsterTargetRef._hpMonsterData.hcount,
+                     "overdrivepower":_monsterTargetRef._monsterData.overdrivepower.Get(),
+                     "hcc":_monsterTargetRef._hpMonsterData.hcc,
+                     "space":_monsterTargetRef._monsterData.space.Get(),
+                     "h":_monsterTargetRef._hpMonsterData.h,
+                     "finishtime":_monsterTargetRef._hpMonsterData.finishtime,
+                     "overdrivetime":_monsterTargetRef._monsterData.overdrivetime.Get(),
                      "housed":finalMonsters,
-                     "hid":_monsterTarget._hpMonsterData.hid,
-                     "hstage":_monsterTarget._hpMonsterData.hstage,
+                     "hid":_monsterTargetRef._hpMonsterData.hid,
+                     "hstage":_monsterTargetRef._hpMonsterData.hstage,
                      "saved":GLOBAL.Timestamp()
                   };
-                  transferVars = [["frombaseid",_monsterSource._baseID],["tobaseid",_monsterTarget._baseID],["monsters",JSON.encode([srcMonsterData,targetMonsterData])]];
+                  transferVars = [["frombaseid",_monsterSource._baseID],["tobaseid",_monsterTargetRef._baseID],["monsters",JSON.encode([srcMonsterData,targetMonsterData])]];
                   trySendTransfer = function():void
                   {
                      // send transfer request after any getarea requests containing the source/target cells finish, to ensure the cells are up-to-date.
                      var sourcePendingZoneIdx = GetPendingZoneRequestIndex(_monsterSource.cellX, _monsterSource.cellY);
-                     var targetPendingZoneIdx = zoneSource.id == zoneTarget.id ? sourcePendingZoneIdx : GetPendingZoneRequestIndex(_monsterTarget.cellX, _monsterTarget.cellY);
+                     var targetPendingZoneIdx = zoneSource.id == zoneTarget.id ? sourcePendingZoneIdx : GetPendingZoneRequestIndex(_monsterTargetRef.cellX, _monsterTargetRef.cellY);
                      if (sourcePendingZoneIdx == -1  && targetPendingZoneIdx == -1)
                      {
                         if (transferRetryTimer)
@@ -1111,7 +1111,7 @@ package com.monsters.maproom_advanced
                   trySendTransfer();
                   return "";
                }
-               if(_monsterTarget._monsterData.space.Get() == 0)
+               if(_monsterTargetRef._monsterData.space.Get() == 0)
                {
                   GLOBAL.Message(KEYS.Get("newmap_tr_err1"));
                }
@@ -1255,9 +1255,9 @@ package com.monsters.maproom_advanced
          {
             sourceZoneId = GetCellZone(_monsterSource.cellX, _monsterSource.cellY).id;
          }
-         if (_monsterTarget)
+         if (_monsterTargetRef)
          {
-            targetZoneId = GetCellZone(_monsterTarget.cellX, _monsterTarget.cellY).id;
+            targetZoneId = GetCellZone(_monsterTargetRef.cellX, _monsterTargetRef.cellY).id;
          }
          return (zoneId == sourceZoneId || zoneId == targetZoneId);
       }
