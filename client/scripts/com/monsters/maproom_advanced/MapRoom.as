@@ -21,6 +21,7 @@ package com.monsters.maproom_advanced
    import flash.geom.Point;
    import flash.utils.Dictionary;
    import flash.utils.getTimer;
+   import flash.utils.Timer;
    import flash.xml.XMLDocument;
    
    public class MapRoom implements IMapRoom
@@ -53,6 +54,8 @@ package com.monsters.maproom_advanced
       private static var _resourceTransfer:Object = {};
       
       internal static var _monsterTransfer:Object = {};
+
+      internal static var _pendingTransferRequest:Boolean = false;
       
       private static var _bookmarkData:Object = {};
       
@@ -102,6 +105,8 @@ package com.monsters.maproom_advanced
       
       private static var _pendingMapCellDataRequests:Array = [];
       
+      private static var _priorityMapCellsToRequest:Array = [];
+
       internal static var _smokeBMD:BitmapData;
       
       internal static var _smokeParticles:Array;
@@ -590,12 +595,14 @@ package com.monsters.maproom_advanced
          var dataRequest:Object = null;
          var handleLoadSuccessful:Function = null;
          var handleLoadError:Function = null;
+         var trySendRequest:Function = null;
+         var addRequest:Function = null;
          var zonePoint:Point = point;
          var force:Boolean = hasForce;
          var zoneID:int = zonePoint.x * 10000 + zonePoint.y;
          var getAreaURL:String = GLOBAL._mapURL + "getarea";
-         var t:int = getTimer();
          var getResources:int = 0;
+         var requestRetryTimer:Timer = null;
          if(force || GLOBAL.Timestamp() > _resourceCounter + 20)
          {
             getResources = 1;
@@ -615,19 +622,14 @@ package com.monsters.maproom_advanced
          {
             handleLoadSuccessful = function(serverData:Object):void
             {
-               var getCellData:Object = null;
                var zoneId:int = 0;
                var resourceIndex:int = 0;
                var allianceData:Array = null;
                var cell:Object = null;
-               var _loc2_:Object = _pendingMapCellDataRequests.shift();
-               if(_loc2_ == null)
-               {
-               }
+               _pendingMapCellDataRequests.shift();
                if(_pendingMapCellDataRequests.length > 0)
                {
-                  getCellData = _pendingMapCellDataRequests[0];
-                  new URLLoaderApi().load(getCellData.url,getCellData.loadvars,handleLoadSuccessful,handleLoadError);
+                  trySendRequest();
                }
                if(!_open && !BASE._needCurrentCell)
                {
@@ -693,33 +695,87 @@ package com.monsters.maproom_advanced
                   GLOBAL.ErrorMessage("WorldMapRoom.RequestData HTTP");
                }
             };
-            z.updated = GLOBAL.Timestamp() + int(Math.random() * 10);
-            loadvars = [["x",int(zonePoint.x)],["y",int(zonePoint.y)],["width",_zoneWidth],["height",_zoneHeight],["sendresources",getResources]];
-            _saveErrors = 0;
-            if(_viewOnly)
+            trySendRequest = function():void
             {
-               loadvars.push(["worldid",_worldID]);
-            }
-            dataRequest = {
-               "url":getAreaURL,
-               "loadvars":loadvars
+               // add any priority zones to the front of the request queue, so they can be loaded first.
+               while (_priorityMapCellsToRequest.length > 0)
+               {
+                  var point:Point = _priorityMapCellsToRequest[0];
+                  var pendingIndex:int = GetPendingZoneRequestIndex(point.x, point.y);
+                  var pendingRequest:Object = null;
+                  if (pendingIndex == -1)
+                  {
+                     addRequestToQueue(point, 0, true);
+                  }
+                  else if (pendingIndex > 0)
+                  {
+                     // moving existing request
+                     pendingRequest = _pendingMapCellDataRequests[pendingIndex].loadvars;
+                     _pendingMapCellDataRequests.splice(pendingIndex, 1);
+                     addRequestToQueue(point, pendingRequest[4][1], true);
+                  }
+                  _priorityMapCellsToRequest.shift();
+               }
+               // sending getarea request to server. if the zone has a cell undergoing a monster transfer, wait until it is finished first.
+               var getCellData:Object = _pendingMapCellDataRequests[0];
+               if (!ZoneHasPendingTransferRequest(getCellData.loadvars[0][1] * 10000 + getCellData.loadvars[1][1]))
+               {
+                  if (requestRetryTimer)
+                  {
+                     requestRetryTimer.stop();
+                     requestRetryTimer.removeEventListener(TimerEvent.TIMER, trySendRequest);
+                     requestRetryTimer = null;
+                  }
+                  new URLLoaderApi().load(getCellData.url,getCellData.loadvars,handleLoadSuccessful,handleLoadError);
+               }
+               else
+               {
+                  if (!requestRetryTimer)
+                  {
+                     requestRetryTimer = new Timer(200, 1);
+                     requestRetryTimer.addEventListener(TimerEvent.TIMER, trySendRequest);
+                  }
+                  requestRetryTimer.reset();
+                  requestRetryTimer.start();
+               }
             };
-            _pendingMapCellDataRequests.push(dataRequest);
+            addRequestToQueue = function(point:Point, resources:int, addToFront:Boolean = false):void
+            {
+               loadvars = [["x",int(point.x)],["y",int(point.y)],["width",_zoneWidth],["height",_zoneHeight],["sendresources",resources]];
+               if(_viewOnly)
+               {
+                  loadvars.push(["worldid",_worldID]);
+               }
+               dataRequest = {
+                  "url":getAreaURL,
+                  "loadvars":loadvars
+               };
+               if (addToFront)
+               {
+                  _pendingMapCellDataRequests.unshift(dataRequest);
+               }
+               else
+               {
+                  _pendingMapCellDataRequests.push(dataRequest);
+               }
+            };
+            z.updated = GLOBAL.Timestamp() + int(Math.random() * 10);
+            _saveErrors = 0;
+            addRequestToQueue(zonePoint, getResources);
             if(_pendingMapCellDataRequests.length == 1)
             {
-               new URLLoaderApi().load(getAreaURL,loadvars,handleLoadSuccessful,handleLoadError);
+               trySendRequest();
             }
          }
       }
       
       internal static function GetCell(cellX:int, cellY:int, param3:Boolean = false) : Object
       {
-         var point:Point;
-         var zoneId:int = (point = new Point(int(cellX / _zoneWidth) * _zoneWidth,int(cellY / _zoneHeight) * _zoneHeight)).x * 10000 + point.y;
-         RequestData(point,param3);
-         if(_zones && _zones[zoneId] && Boolean(_zones[zoneId].data) && Boolean(_zones[zoneId].data[cellX]))
+         var zone:Object = GetCellZone(cellX, cellY);
+         RequestData(zone.point,param3);
+         if(_zones && _zones[zone.id] && Boolean(_zones[zone.id].data) && Boolean(_zones[zone.id].data[cellX]))
          {
-            return _zones[zoneId].data[cellX][cellY];
+            return _zones[zone.id].data[cellX][cellY];
          }
          return null;
       }
@@ -800,6 +856,7 @@ package com.monsters.maproom_advanced
       {
          var transferSuccessful:Function;
          var transferError:Function;
+         var trySendTransfer:Function = null;
          var actualTransfer:Object = null;
          var finalMonsters:Object = null;
          var finalSrcMonsters:Object = null;
@@ -812,7 +869,11 @@ package com.monsters.maproom_advanced
          var targetMonsterData:Object = null;
          var transferVars:Array = null;
          var cost:int = 0;
+         var transferRetryTimer:Timer = null;
+         var zoneSource:Object = GetCellZone(_monsterSource.cellX, _monsterSource.cellY);
          _monsterTarget = targetCell;
+         var zoneTarget:Object = GetCellZone(_monsterTarget.cellX, _monsterTarget.cellY);
+         var addedToPriority:Boolean = false;
          if(_monsterTransferInProgress)
          {
             if(_monsterTarget._mine && _monsterSource._mine)
@@ -836,6 +897,7 @@ package com.monsters.maproom_advanced
                            if (_monstersTransferred == 0)
                            {
                               _monsterTransfer = {};
+                              _pendingTransferRequest = false;
                               return;
                            }
                         }
@@ -871,18 +933,40 @@ package com.monsters.maproom_advanced
                               }
                            }
                         }
+                        // update the cells within their zone data
+                        if (_zones)
+                        {
+                           if(_zones[zoneSource.id] && _zones[zoneSource.id].data)
+                           {
+                              _zones[zoneSource.id].data[_monsterSource.cellX][_monsterSource.cellY].m.housed = finalSrcMonsters;
+                           }
+                           else
+                           {
+                              _zones[zoneSource.id] = new objZone();
+                           }
+                           if(_zones[zoneTarget.id] && _zones[zoneTarget.id].data)
+                           {
+                              _zones[zoneTarget.id].data[_monsterTarget.cellX][_monsterTarget.cellY].m.housed = finalMonsters;
+                           }
+                           else
+                           {
+                              _zones[zoneTarget.id] = new objZone();
+                           }
+                        }
                      }
                      else
                      {
                         GLOBAL.Message(KEYS.Get("msg_err_transfer") + param1.error);
                      }
                      _monsterTransfer = {};
+                     _pendingTransferRequest = false;
                   };
                   transferError = function(param1:IOErrorEvent):void
                   {
                      PLEASEWAIT.Hide();
                      GLOBAL.Message(KEYS.Get("msg_err_transfer") + param1.text);
                      _monsterTransfer = {};
+                     _pendingTransferRequest = false;
                   };
                   actualTransfer = {};
                   finalMonsters = {};
@@ -984,7 +1068,47 @@ package com.monsters.maproom_advanced
                      "saved":GLOBAL.Timestamp()
                   };
                   transferVars = [["frombaseid",_monsterSource._baseID],["tobaseid",_monsterTarget._baseID],["monsters",JSON.encode([srcMonsterData,targetMonsterData])]];
-                  new URLLoaderApi().load(GLOBAL._mapURL + "transferassets",transferVars,transferSuccessful,transferError);
+                  trySendTransfer = function():void
+                  {
+                     // send transfer request after any getarea requests containing the source/target cells finish, to ensure the cells are up-to-date.
+                     var sourcePendingZoneIdx = GetPendingZoneRequestIndex(_monsterSource.cellX, _monsterSource.cellY);
+                     var targetPendingZoneIdx = zoneSource.id == zoneTarget.id ? sourcePendingZoneIdx : GetPendingZoneRequestIndex(_monsterTarget.cellX, _monsterTarget.cellY);
+                     if (sourcePendingZoneIdx == -1  && targetPendingZoneIdx == -1)
+                     {
+                        if (transferRetryTimer)
+                        {
+                           transferRetryTimer.stop();
+                           transferRetryTimer.removeEventListener(TimerEvent.TIMER, trySendTransfer);
+                           transferRetryTimer = null;
+                        }
+                        _pendingTransferRequest = true;
+                        new URLLoaderApi().load(GLOBAL._mapURL + "transferassets",transferVars,transferSuccessful,transferError);
+                     }
+                     else
+                     {
+                        if (!transferRetryTimer)
+                        {
+                           transferRetryTimer = new Timer(200, 1);
+                           transferRetryTimer.addEventListener(TimerEvent.TIMER, trySendTransfer);
+                        }
+                        transferRetryTimer.reset();
+                        transferRetryTimer.start();
+                        if (!addedToPriority)
+                        {
+                           // mark zones containing the source/target cell to be moved to the front of the _pendingMapCellDataRequests queue
+                           if (sourcePendingZoneIdx > 0)
+                           {
+                              _priorityMapCellsToRequest.push(zoneSource.point);
+                           }
+                           if (targetPendingZoneIdx > 0 && zoneSource.id != zoneTarget.id)
+                           {
+                              _priorityMapCellsToRequest.push(zoneTarget.point);
+                           }
+                           addedToPriority = true;
+                        }
+                     }
+                  };
+                  trySendTransfer();
                   return "";
                }
                if(_monsterTarget._monsterData.space.Get() == 0)
@@ -1012,6 +1136,7 @@ package com.monsters.maproom_advanced
          _monsterTransfer = {};
          _resourceTransferInProgress = false;
          _monsterTransferInProgress = false;
+         _pendingTransferRequest = false;
       }
       
       internal static function Resize() : void
@@ -1092,6 +1217,62 @@ package com.monsters.maproom_advanced
          }
       }
       
+      internal static function GetPendingZoneRequestIndex(cellX:int, cellY:int):int
+      {
+         if (_pendingMapCellDataRequests.length == 0)
+         {
+            return -1;
+         }
+         var idx:int = -1;
+         var req:Object = null;
+         var cellZone:Object = GetCellZone(cellX, cellY);
+         for each (req in _pendingMapCellDataRequests)
+         {
+            idx += 1;
+            if (req.loadvars)
+            {
+               var reqX:int = int(req.loadvars[0][1]);
+               var reqY:int = int(req.loadvars[1][1]);
+               var reqZoneID:int = reqX * 10000 + reqY;
+               if (reqZoneID == cellZone.id)
+               {
+                  return idx;
+               }
+            }
+         }
+         return -1;
+      }
+
+      internal static function ZoneHasPendingTransferRequest(zoneId:int):Boolean
+      {
+         if (!_pendingTransferRequest)
+         {
+            return false;
+         }
+         var sourceZoneId:int;
+         var targetZoneId:int;
+         if (_monsterSource)
+         {
+            sourceZoneId = GetCellZone(_monsterSource.cellX, _monsterSource.cellY).id;
+         }
+         if (_monsterTarget)
+         {
+            targetZoneId = GetCellZone(_monsterTarget.cellX, _monsterTarget.cellY).id;
+         }
+         return (zoneId == sourceZoneId || zoneId == targetZoneId);
+      }
+
+      internal static function GetCellZone(cellX:int, cellY:int):Object
+      {
+         var zonePoint:Point = new Point(int(cellX / _zoneWidth) * _zoneWidth,int(cellY / _zoneHeight) * _zoneHeight);
+         var zoneId:int = zonePoint.x * 10000 + zonePoint.y;
+         var zone:Object = {
+            point:zonePoint,
+            id:zoneId
+         };
+         return zone;
+      }
+
       public static function ShowInfoEnemy(param1:IMapRoomCell, param2:Boolean = false) : void
       {
          _mc.ShowInfoEnemy(param1 as MapRoomCell,param2);
