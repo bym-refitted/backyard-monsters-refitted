@@ -21,7 +21,7 @@ import { BaseType } from "../enums/Base";
 
     if (utcDay !== 20) {
       console.log(`Exiting: Current UTC day is ${utcDay}, not the 20th.`);
-      process.exit(0);
+      return;
     }
 
     const shinyAmount = 400;
