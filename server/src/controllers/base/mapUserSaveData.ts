@@ -18,10 +18,11 @@ export const mapUserSaveData = (user: User) => {
     academy: userSave.academy,
     outposts: userSave.outposts,
     quests: userSave.quests,
+    stats: userSave.stats,
     points: userSave.points,
     basevalue: userSave.basevalue,
     buildingresources: userSave.buildingresources,
     rewards: userSave.rewards,
-    // savetime: userSave.savetime,
+    homebase: userSave.homebase,
   };
 };

@@ -19,6 +19,8 @@ export interface FieldData {
   [key: string | number]: any;
 }
 
+// Composite index on worldid, type, and userid
+@Index({ properties: ["worldid", "type", "userid"] })
 @Entity({ tableName: "save" })
 export class Save {
   // IDs & Foreign Keys
@@ -187,6 +189,9 @@ export class Save {
   @FrontendKey
   @Property()
   credits!: number;
+
+  @Property({ default: 0 })
+  monthly_credits: number;
 
   @FrontendKey
   @Property({ type: "json", nullable: true, default: "null" })
