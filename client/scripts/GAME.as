@@ -16,9 +16,6 @@ package
    import flash.geom.Rectangle;
    import flash.system.Security;
    import flash.net.SharedObject;
-   import flash.ui.Multitouch;
-   import flash.ui.MultitouchInputMode;
-   import flash.events.TransformGestureEvent;
    public class GAME extends Sprite
    {
 
@@ -165,10 +162,6 @@ package
          }
          addEventListener(Event.ENTER_FRAME, GLOBAL.TickFast);
 
-         // Gesture events
-         Multitouch.inputMode = MultitouchInputMode.GESTURE;
-         stage.addEventListener(TransformGestureEvent.GESTURE_ZOOM, onZoom);
-
          LOGIN.Login();
          stage.scaleMode = StageScaleMode.NO_SCALE;
          stage.addEventListener(Event.RESIZE, GLOBAL.ResizeGame);
@@ -280,20 +273,6 @@ package
                GLOBAL._SCREENINIT = new Rectangle(0, 0, 760, 750);
             }
          }
-      }
-
-      private function onZoom(event:TransformGestureEvent):void
-      {
-         _scaleFactor *= event.scaleX;
-
-         const MIN_SCALE:Number = 1.0;
-         const MAX_SCALE:Number = 3.5;
-
-         // Constrain the scale factor within the specified range
-         _scaleFactor = Math.max(MIN_SCALE, Math.min(MAX_SCALE, _scaleFactor));
-
-         this.scaleX = _scaleFactor;
-         this.scaleY = _scaleFactor;
       }
 
       protected function uncaughtErrorThrown(param1:UncaughtErrorEvent):void
