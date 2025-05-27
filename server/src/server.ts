@@ -17,10 +17,10 @@ import { ascii_node } from "./utils/ascii_art";
 import { ErrorInterceptor } from "./middleware/clientSafeError";
 import { processLanguagesFile } from "./middleware/processLanguageFile";
 import { logMissingAssets, morganLogging } from "./middleware/morganLogging";
-import { Status } from "./enums/StatusCodes";
 import { corsCacheControl } from "./middleware/corsCacheControlSetup";
 
 export const app = new Koa();
+app.proxy = true;
 
 export const PORT = process.env.PORT || 3001;
 export const BASE_URL = process.env.BASE_URL;
