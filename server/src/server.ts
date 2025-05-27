@@ -25,7 +25,7 @@ app.proxy = true;
 export const PORT = process.env.PORT || 3001;
 export const BASE_URL = process.env.BASE_URL;
 
-export const getApiVersion = () => "v1.2.4-beta";
+export const getApiVersion = () => "v1.2.5-beta";
 
 export const ORMContext = {} as {
   orm: MikroORM;
