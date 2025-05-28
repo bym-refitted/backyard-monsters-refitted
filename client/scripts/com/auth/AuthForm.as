@@ -148,7 +148,16 @@ package com.auth
         public function formAddedToStageHandler(event:Event):void
         {
             removeEventListener(Event.ADDED_TO_STAGE, formAddedToStageHandler);
-            stage.color = BACKGROUND;
+            try
+            {
+                if (stage) stage.color = BACKGROUND;
+            }
+            catch (e:Error)
+            {
+                this.graphics.beginFill(BACKGROUND);
+                this.graphics.drawRect(0, 0, stage.stageWidth, stage.stageHeight);
+                this.graphics.endFill();
+            }
 
             if (!GLOBAL.textContentLoaded && !GLOBAL.supportedLangsLoaded)
             {
@@ -761,8 +770,6 @@ package com.auth
 
         public function disposeUI():void
         {
-            // Reset stage color
-            stage.color = WHITE;
             // Remove event listeners
             submitButton.removeEventListener(MouseEvent.CLICK, submitButtonClickHandler);
 

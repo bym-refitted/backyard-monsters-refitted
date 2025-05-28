@@ -4,6 +4,7 @@ import { KoaController } from "../../../utils/KoaController";
 import { ORMContext } from "../../../server";
 import { Save } from "../../../models/save.model";
 import { Status } from "../../../enums/StatusCodes";
+import { logging } from "../../../utils/logger";
 
 interface Monster {
   hid: number[];
@@ -33,15 +34,25 @@ export const transferMonsters: KoaController = async (ctx) => {
 
   const [fromMonsters, toMonsters]: MonstersTransfer = monsters;
 
+  // Determine the order so the query always makes the source base the first result.
+  const orderBy = frombaseid > tobaseid ? { baseid: 'DESC' } : { baseid: 'ASC' };
+
   // Fetch the bases to transfer the monsters between
   const [fromBase, toBase] = await ORMContext.em.find(Save, {
     baseid: { $in: [frombaseid, tobaseid] },
-  });
+  }, { orderBy });
 
   if (!fromBase || !toBase) {
     ctx.status = Status.BAD_REQUEST;
     ctx.body = { error: 1 };
     throw new Error(`One or both bases not found. From: ${frombaseid}, To: ${tobaseid}`);
+  }
+
+  // Verify that both bases belong to the same user
+  if (fromBase.saveuserid !== toBase.saveuserid) {
+    ctx.status = Status.FORBIDDEN;
+    ctx.body = { error: 1 };
+    throw new Error(`Bases belong to different users. From: ${frombaseid} with SaveId: ${fromBase.saveuserid}, To: ${tobaseid} with SaveId: ${toBase.saveuserid}`);
   }
 
   fromBase.monsters = fromMonsters;

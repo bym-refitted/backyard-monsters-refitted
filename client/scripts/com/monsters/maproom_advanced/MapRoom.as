@@ -21,6 +21,7 @@ package com.monsters.maproom_advanced
    import flash.geom.Point;
    import flash.utils.Dictionary;
    import flash.utils.getTimer;
+   import flash.utils.Timer;
    import flash.xml.XMLDocument;
    
    public class MapRoom implements IMapRoom
@@ -53,6 +54,8 @@ package com.monsters.maproom_advanced
       private static var _resourceTransfer:Object = {};
       
       internal static var _monsterTransfer:Object = {};
+
+      internal static var _pendingTransferRequest:Boolean = false;
       
       private static var _bookmarkData:Object = {};
       
@@ -63,7 +66,11 @@ package com.monsters.maproom_advanced
       private static var _bubbleSelectTarget:bubble_selecttarget;
       
       private static var _monsterSource:MapRoomCell;
-      
+
+      private static var _monsterSourceRef:MapRoomCell;
+
+      private static var _monsterTargetRef:MapRoomCell;
+
       private static var _requestedZones:Array;
       
       private static var _showEnemyWait:Boolean = false;
@@ -98,6 +105,8 @@ package com.monsters.maproom_advanced
       
       private static var _pendingMapCellDataRequests:Array = [];
       
+      private static var _priorityMapCellsToRequest:Array = [];
+
       internal static var _smokeBMD:BitmapData;
       
       internal static var _smokeParticles:Array;
@@ -586,12 +595,14 @@ package com.monsters.maproom_advanced
          var dataRequest:Object = null;
          var handleLoadSuccessful:Function = null;
          var handleLoadError:Function = null;
+         var trySendRequest:Function = null;
+         var addRequest:Function = null;
          var zonePoint:Point = point;
          var force:Boolean = hasForce;
          var zoneID:int = zonePoint.x * 10000 + zonePoint.y;
          var getAreaURL:String = GLOBAL._mapURL + "getarea";
-         var t:int = getTimer();
          var getResources:int = 0;
+         var requestRetryTimer:Timer = null;
          if(force || GLOBAL.Timestamp() > _resourceCounter + 20)
          {
             getResources = 1;
@@ -611,19 +622,14 @@ package com.monsters.maproom_advanced
          {
             handleLoadSuccessful = function(serverData:Object):void
             {
-               var getCellData:Object = null;
                var zoneId:int = 0;
                var resourceIndex:int = 0;
                var allianceData:Array = null;
                var cell:Object = null;
-               var _loc2_:Object = _pendingMapCellDataRequests.shift();
-               if(_loc2_ == null)
-               {
-               }
+               _pendingMapCellDataRequests.shift();
                if(_pendingMapCellDataRequests.length > 0)
                {
-                  getCellData = _pendingMapCellDataRequests[0];
-                  new URLLoaderApi().load(getCellData.url,getCellData.loadvars,handleLoadSuccessful,handleLoadError);
+                  trySendRequest();
                }
                if(!_open && !BASE._needCurrentCell)
                {
@@ -689,33 +695,87 @@ package com.monsters.maproom_advanced
                   GLOBAL.ErrorMessage("WorldMapRoom.RequestData HTTP");
                }
             };
-            z.updated = GLOBAL.Timestamp() + int(Math.random() * 10);
-            loadvars = [["x",int(zonePoint.x)],["y",int(zonePoint.y)],["width",_zoneWidth],["height",_zoneHeight],["sendresources",getResources]];
-            _saveErrors = 0;
-            if(_viewOnly)
+            trySendRequest = function():void
             {
-               loadvars.push(["worldid",_worldID]);
-            }
-            dataRequest = {
-               "url":getAreaURL,
-               "loadvars":loadvars
+               // add any priority zones to the front of the request queue, so they can be loaded first.
+               while (_priorityMapCellsToRequest.length > 0)
+               {
+                  var point:Point = _priorityMapCellsToRequest[0];
+                  var pendingIndex:int = GetPendingZoneRequestIndex(point.x, point.y);
+                  var pendingRequest:Object = null;
+                  if (pendingIndex == -1)
+                  {
+                     addRequestToQueue(point, 0, true);
+                  }
+                  else if (pendingIndex > 0)
+                  {
+                     // moving existing request
+                     pendingRequest = _pendingMapCellDataRequests[pendingIndex].loadvars;
+                     _pendingMapCellDataRequests.splice(pendingIndex, 1);
+                     addRequestToQueue(point, pendingRequest[4][1], true);
+                  }
+                  _priorityMapCellsToRequest.shift();
+               }
+               // sending getarea request to server. if the zone has a cell undergoing a monster transfer, wait until it is finished first.
+               var getCellData:Object = _pendingMapCellDataRequests[0];
+               if (!ZoneHasPendingTransferRequest(getCellData.loadvars[0][1] * 10000 + getCellData.loadvars[1][1]))
+               {
+                  if (requestRetryTimer)
+                  {
+                     requestRetryTimer.stop();
+                     requestRetryTimer.removeEventListener(TimerEvent.TIMER, trySendRequest);
+                     requestRetryTimer = null;
+                  }
+                  new URLLoaderApi().load(getCellData.url,getCellData.loadvars,handleLoadSuccessful,handleLoadError);
+               }
+               else
+               {
+                  if (!requestRetryTimer)
+                  {
+                     requestRetryTimer = new Timer(200, 1);
+                     requestRetryTimer.addEventListener(TimerEvent.TIMER, trySendRequest);
+                  }
+                  requestRetryTimer.reset();
+                  requestRetryTimer.start();
+               }
             };
-            _pendingMapCellDataRequests.push(dataRequest);
+            addRequestToQueue = function(point:Point, resources:int, addToFront:Boolean = false):void
+            {
+               loadvars = [["x",int(point.x)],["y",int(point.y)],["width",_zoneWidth],["height",_zoneHeight],["sendresources",resources]];
+               if(_viewOnly)
+               {
+                  loadvars.push(["worldid",_worldID]);
+               }
+               dataRequest = {
+                  "url":getAreaURL,
+                  "loadvars":loadvars
+               };
+               if (addToFront)
+               {
+                  _pendingMapCellDataRequests.unshift(dataRequest);
+               }
+               else
+               {
+                  _pendingMapCellDataRequests.push(dataRequest);
+               }
+            };
+            z.updated = GLOBAL.Timestamp() + int(Math.random() * 10);
+            _saveErrors = 0;
+            addRequestToQueue(zonePoint, getResources);
             if(_pendingMapCellDataRequests.length == 1)
             {
-               new URLLoaderApi().load(getAreaURL,loadvars,handleLoadSuccessful,handleLoadError);
+               trySendRequest();
             }
          }
       }
       
       internal static function GetCell(cellX:int, cellY:int, param3:Boolean = false) : Object
       {
-         var point:Point;
-         var zoneId:int = (point = new Point(int(cellX / _zoneWidth) * _zoneWidth,int(cellY / _zoneHeight) * _zoneHeight)).x * 10000 + point.y;
-         RequestData(point,param3);
-         if(_zones && _zones[zoneId] && Boolean(_zones[zoneId].data) && Boolean(_zones[zoneId].data[cellX]))
+         var zone:Object = GetCellZone(cellX, cellY);
+         RequestData(zone.point,param3);
+         if(_zones && _zones[zone.id] && Boolean(_zones[zone.id].data) && Boolean(_zones[zone.id].data[cellX]))
          {
-            return _zones[zoneId].data[cellX][cellY];
+            return _zones[zone.id].data[cellX][cellY];
          }
          return null;
       }
@@ -732,22 +792,32 @@ package com.monsters.maproom_advanced
       {
       }
       
-      internal static function TransferMonstersA(param1:MapRoomCell, param2:Object) : void
+      internal static function TransferMonstersA(cell:MapRoomCell, monsters:Object) : void
       {
-         var _loc4_:String = null;
+         var monsterId:String = null;
          _monsterTransfer = {};
-         var _loc3_:Boolean = false;
-         for(_loc4_ in param2)
+         var hasMonsters:Boolean = false;
+         for(monsterId in monsters)
          {
-            _monsterTransfer[_loc4_] = new SecNum(param2[_loc4_].Get());
-            if(param2[_loc4_].Get() > 0)
+            _monsterTransfer[monsterId] = new SecNum(monsters[monsterId].Get());
+            if(monsters[monsterId].Get() > 0)
             {
-               _loc3_ = true;
+               hasMonsters = true;
             }
          }
-         if(_loc3_)
+         if(hasMonsters)
          {
-            _monsterSource = param1;
+            // Preserve map room cell
+            var foundCell:Object = GetCell(cell.X,cell.Y)
+            if (foundCell)
+            {
+               _monsterSource = new MapRoomCell();
+               _monsterSource.Setup(foundCell);
+               _monsterSource.Cleanup(); // remove event listeners
+               _monsterSource.cellX = cell.X;
+               _monsterSource.cellY = cell.Y;
+               _monsterSourceRef = cell;
+            }
             if(_bubbleSelectTarget.parent)
             {
                _bubbleSelectTarget.parent.removeChild(_bubbleSelectTarget);
@@ -762,13 +832,13 @@ package com.monsters.maproom_advanced
          }
       }
       
-      internal static function TransferMonstersB(param1:MapRoomCell) : void
+      internal static function TransferMonstersB(cell:MapRoomCell) : void
       {
          if(_monsterTransferInProgress)
          {
-            if(param1._mine)
+            if(cell._mine)
             {
-               if(param1._baseID == _monsterSource._baseID)
+               if(cell._baseID == _monsterSource._baseID)
                {
                   if(_bubbleSelectTarget.parent)
                   {
@@ -777,15 +847,16 @@ package com.monsters.maproom_advanced
                   _mc.ShowMonstersA(_monsterSource,true);
                   return;
                }
-               _mc.ShowMonstersB(_monsterTransfer,param1);
+               _mc.ShowMonstersB(_monsterTransfer,cell);
             }
          }
       }
       
-      internal static function TransferMonstersC(param1:MapRoomCell) : String
+      internal static function TransferMonstersC(targetCell:MapRoomCell) : String
       {
          var transferSuccessful:Function;
          var transferError:Function;
+         var trySendTransfer:Function = null;
          var actualTransfer:Object = null;
          var finalMonsters:Object = null;
          var finalSrcMonsters:Object = null;
@@ -798,14 +869,18 @@ package com.monsters.maproom_advanced
          var targetMonsterData:Object = null;
          var transferVars:Array = null;
          var cost:int = 0;
-         var targetCell:MapRoomCell = param1;
+         var transferRetryTimer:Timer = null;
+         var zoneSource:Object = GetCellZone(_monsterSource.cellX, _monsterSource.cellY);
+         _monsterTargetRef = targetCell;
+         var zoneTarget:Object = GetCellZone(_monsterTargetRef.cellX, _monsterTargetRef.cellY);
+         var addedToPriority:Boolean = false;
          if(_monsterTransferInProgress)
          {
-            if(targetCell._mine)
+            if(_monsterTargetRef._mine && _monsterSource._mine)
             {
                PLEASEWAIT.Show(KEYS.Get("wait_processing"));
                _mc.HideMonstersB();
-               if(targetCell._monsters && _monsterSource && targetCell._monsterData.space.Get() > 0)
+               if(_monsterTargetRef._monsters && _monsterSource && _monsterTargetRef._monsterData.space.Get() > 0)
                {
                   transferSuccessful = function(param1:Object):void
                   {
@@ -819,34 +894,63 @@ package com.monsters.maproom_advanced
                         else
                         {
                            GLOBAL.Message(KEYS.Get("newmap_tr_space",{"v1":_monstersTransferred}));
+                           if (_monstersTransferred == 0)
+                           {
+                              _monsterTransfer = {};
+                              _pendingTransferRequest = false;
+                              return;
+                           }
                         }
+                        // update target cell monsters
                         for(dst in finalMonsters)
                         {
-                           if(targetCell._monsters[dst])
+                           if(_monsterTargetRef._monsters[dst])
                            {
-                              targetCell._monsters[dst].Set(finalMonsters[dst]);
-                              targetCell._hpMonsters[dst] = finalMonsters[dst];
+                              _monsterTargetRef._monsters[dst].Set(finalMonsters[dst]);
+                              _monsterTargetRef._hpMonsters[dst] = finalMonsters[dst];
                            }
                            else
                            {
-                              targetCell._monsters[dst] = new SecNum(finalMonsters[dst]);
-                              targetCell._hpMonsters[dst] = finalMonsters[dst];
+                              _monsterTargetRef._monsters[dst] = new SecNum(finalMonsters[dst]);
+                              _monsterTargetRef._hpMonsters[dst] = finalMonsters[dst];
                            }
                         }
-                        if(_monsterSource)
+                        // update source cell monsters
+                        if(_monsterSourceRef.cellX == _monsterSource.cellX && _monsterSourceRef.cellY == _monsterSource.cellY)
                         {
+                           // source cell is rendered on map
                            for(src in finalSrcMonsters)
                            {
                               if(finalSrcMonsters[src] > 0)
                               {
-                                 _monsterSource._monsters[src].Set(finalSrcMonsters[src]);
-                                 _monsterSource._hpMonsters[src] = finalSrcMonsters[src];
+                                 _monsterSourceRef._monsters[src].Set(finalSrcMonsters[src]);
+                                 _monsterSourceRef._hpMonsters[src] = finalSrcMonsters[src];
                               }
                               else
                               {
-                                 delete _monsterSource._monsters[src];
-                                 delete _monsterSource._hpMonsters[src];
+                                 delete _monsterSourceRef._monsters[src];
+                                 delete _monsterSourceRef._hpMonsters[src];
                               }
+                           }
+                        }
+                        // update the cells within their zone data
+                        if (_zones)
+                        {
+                           if(_zones[zoneSource.id] && _zones[zoneSource.id].data)
+                           {
+                              _zones[zoneSource.id].data[_monsterSource.cellX][_monsterSource.cellY].m.housed = finalSrcMonsters;
+                           }
+                           else
+                           {
+                              _zones[zoneSource.id] = new objZone();
+                           }
+                           if(_zones[zoneTarget.id] && _zones[zoneTarget.id].data)
+                           {
+                              _zones[zoneTarget.id].data[_monsterTargetRef.cellX][_monsterTargetRef.cellY].m.housed = finalMonsters;
+                           }
+                           else
+                           {
+                              _zones[zoneTarget.id] = new objZone();
                            }
                         }
                      }
@@ -855,17 +959,19 @@ package com.monsters.maproom_advanced
                         GLOBAL.Message(KEYS.Get("msg_err_transfer") + param1.error);
                      }
                      _monsterTransfer = {};
+                     _pendingTransferRequest = false;
                   };
                   transferError = function(param1:IOErrorEvent):void
                   {
                      PLEASEWAIT.Hide();
                      GLOBAL.Message(KEYS.Get("msg_err_transfer") + param1.text);
                      _monsterTransfer = {};
+                     _pendingTransferRequest = false;
                   };
                   actualTransfer = {};
                   finalMonsters = {};
                   finalSrcMonsters = {};
-                  spaceRemaining = int(targetCell._monsterData.space.Get());
+                  spaceRemaining = int(_monsterTargetRef._monsterData.space.Get());
                   baseUpdateFrom = ["BMU"];
                   baseUpdateTo = ["BMU"];
                   if(_bubbleSelectTarget.parent)
@@ -873,10 +979,10 @@ package com.monsters.maproom_advanced
                      _bubbleSelectTarget.parent.removeChild(_bubbleSelectTarget);
                   }
                   _monsterTransferInProgress = false;
-                  for(dst in targetCell._monsters)
+                  for(dst in _monsterTargetRef._monsters)
                   {
-                     finalMonsters[dst] = targetCell._monsters[dst].Get();
-                     spaceRemaining -= targetCell._monsters[dst].Get() * CREATURES.GetProperty(dst,"cStorage");
+                     finalMonsters[dst] = _monsterTargetRef._monsters[dst].Get();
+                     spaceRemaining -= _monsterTargetRef._monsters[dst].Get() * CREATURES.GetProperty(dst,"cStorage");
                   }
                   for(src in _monsterSource._monsters)
                   {
@@ -886,73 +992,126 @@ package com.monsters.maproom_advanced
                   _allMonstersTransferred = true;
                   for(src in _monsterTransfer)
                   {
-                     cost = CREATURES.GetProperty(src,"cStorage");
-                     if(spaceRemaining >= _monsterTransfer[src].Get() * cost)
+                     if (_monsterTransfer[src].Get() > 0)
                      {
-                        actualTransfer[src] = _monsterTransfer[src].Get();
-                        _monstersTransferred += _monsterTransfer[src].Get();
-                     }
-                     else
-                     {
-                        _allMonstersTransferred = false;
-                        actualTransfer[src] = int(spaceRemaining / cost);
-                        _monstersTransferred += int(spaceRemaining / cost);
-                     }
-                     if(targetCell._monsters[src])
-                     {
-                        finalMonsters[src] = targetCell._monsters[src].Get() + actualTransfer[src];
-                     }
-                     else
-                     {
-                        finalMonsters[src] = actualTransfer[src];
-                     }
-                     if(_monsterSource._monsters[src])
-                     {
-                        finalSrcMonsters[src] = _monsterSource._monsters[src].Get() - actualTransfer[src];
-                     }
-                     spaceRemaining -= actualTransfer[src] * cost;
-                     baseUpdateFrom.push({
-                        "creatureID":src,
-                        "count":actualTransfer[src]
-                     });
-                     baseUpdateTo.push({
-                        "creatureID":src,
-                        "count":-actualTransfer[src]
-                     });
-                     if(spaceRemaining <= 0)
-                     {
-                        break;
+                        cost = CREATURES.GetProperty(src,"cStorage");
+                        if(spaceRemaining >= _monsterTransfer[src].Get() * cost)
+                        {
+                           actualTransfer[src] = _monsterTransfer[src].Get();
+                           _monstersTransferred += _monsterTransfer[src].Get();
+                        }
+                        else
+                        {
+                           _allMonstersTransferred = false;
+                           actualTransfer[src] = int(spaceRemaining / cost);
+                           _monstersTransferred += int(spaceRemaining / cost);
+                        }
+                        if(_monsterTargetRef._monsters[src])
+                        {
+                           finalMonsters[src] = _monsterTargetRef._monsters[src].Get() + actualTransfer[src];
+                        }
+                        else
+                        {
+                           finalMonsters[src] = actualTransfer[src];
+                        }
+                        if(_monsterSource._monsters[src])
+                        {
+                           finalSrcMonsters[src] = _monsterSource._monsters[src].Get() - actualTransfer[src];
+                        }
+                        spaceRemaining -= actualTransfer[src] * cost;
+                        baseUpdateFrom.push({
+                           "creatureID":src,
+                           "count":actualTransfer[src]
+                        });
+                        baseUpdateTo.push({
+                           "creatureID":src,
+                           "count":-actualTransfer[src]
+                        });
+                        if(spaceRemaining <= 0)
+                        {
+                           break;
+                        }
                      }
                   }
-                  if(!targetCell.Check())
+                  if(!_monsterTargetRef.Check())
                   {
-                     LOGGER.Log("err","BASE.Save:  transfer target Cell " + targetCell.X + "," + targetCell.Y + "does not check out before doing monster transfer!  " + JSON.encode(targetCell._hpMonsterData));
+                     LOGGER.Log("err","BASE.Save:  transfer target Cell " + _monsterTargetRef.X + "," + _monsterTargetRef.Y + "does not check out before doing monster transfer!  " + JSON.encode(_monsterTargetRef._hpMonsterData));
                   }
                   if(!_monsterSource.Check())
                   {
                      LOGGER.Log("err","BASE.Save:  transfer source Cell " + _monsterSource.X + "," + _monsterSource.Y + "does not check out before doing monster transfer!  " + JSON.encode(_monsterSource._hpMonsterData));
                   }
                   srcMonsterData = {
+                     "hcount":_monsterSource._hpMonsterData.hcount,
+                     "overdrivepower":_monsterSource._monsterData.overdrivepower.Get(),
                      "hcc":_monsterSource._hpMonsterData.hcc,
+                     "space":_monsterSource._monsterData.space.Get(),
                      "h":_monsterSource._hpMonsterData.h,
+                     "finishtime":_monsterSource._hpMonsterData.finishtime,
+                     "overdrivetime":_monsterSource._monsterData.overdrivetime.Get(),
                      "housed":finalSrcMonsters,
                      "hid":_monsterSource._hpMonsterData.hid,
                      "hstage":_monsterSource._hpMonsterData.hstage,
                      "saved":GLOBAL.Timestamp()
                   };
                   targetMonsterData = {
-                     "hcc":targetCell._hpMonsterData.hcc,
-                     "h":targetCell._hpMonsterData.h,
+                     "hcount":_monsterTargetRef._hpMonsterData.hcount,
+                     "overdrivepower":_monsterTargetRef._monsterData.overdrivepower.Get(),
+                     "hcc":_monsterTargetRef._hpMonsterData.hcc,
+                     "space":_monsterTargetRef._monsterData.space.Get(),
+                     "h":_monsterTargetRef._hpMonsterData.h,
+                     "finishtime":_monsterTargetRef._hpMonsterData.finishtime,
+                     "overdrivetime":_monsterTargetRef._monsterData.overdrivetime.Get(),
                      "housed":finalMonsters,
-                     "hid":targetCell._hpMonsterData.hid,
-                     "hstage":targetCell._hpMonsterData.hstage,
+                     "hid":_monsterTargetRef._hpMonsterData.hid,
+                     "hstage":_monsterTargetRef._hpMonsterData.hstage,
                      "saved":GLOBAL.Timestamp()
                   };
-                  transferVars = [["frombaseid",_monsterSource._baseID],["tobaseid",targetCell._baseID],["monsters",JSON.encode([srcMonsterData,targetMonsterData])]];
-                  new URLLoaderApi().load(GLOBAL._mapURL + "transferassets",transferVars,transferSuccessful,transferError);
+                  transferVars = [["frombaseid",_monsterSource._baseID],["tobaseid",_monsterTargetRef._baseID],["monsters",JSON.encode([srcMonsterData,targetMonsterData])]];
+                  trySendTransfer = function():void
+                  {
+                     // send transfer request after any getarea requests containing the source/target cells finish, to ensure the cells are up-to-date.
+                     var sourcePendingZoneIdx = GetPendingZoneRequestIndex(_monsterSource.cellX, _monsterSource.cellY);
+                     var targetPendingZoneIdx = zoneSource.id == zoneTarget.id ? sourcePendingZoneIdx : GetPendingZoneRequestIndex(_monsterTargetRef.cellX, _monsterTargetRef.cellY);
+                     if (sourcePendingZoneIdx == -1  && targetPendingZoneIdx == -1)
+                     {
+                        if (transferRetryTimer)
+                        {
+                           transferRetryTimer.stop();
+                           transferRetryTimer.removeEventListener(TimerEvent.TIMER, trySendTransfer);
+                           transferRetryTimer = null;
+                        }
+                        _pendingTransferRequest = true;
+                        new URLLoaderApi().load(GLOBAL._mapURL + "transferassets",transferVars,transferSuccessful,transferError);
+                     }
+                     else
+                     {
+                        if (!transferRetryTimer)
+                        {
+                           transferRetryTimer = new Timer(200, 1);
+                           transferRetryTimer.addEventListener(TimerEvent.TIMER, trySendTransfer);
+                        }
+                        transferRetryTimer.reset();
+                        transferRetryTimer.start();
+                        if (!addedToPriority)
+                        {
+                           // mark zones containing the source/target cell to be moved to the front of the _pendingMapCellDataRequests queue
+                           if (sourcePendingZoneIdx > 0)
+                           {
+                              _priorityMapCellsToRequest.push(zoneSource.point);
+                           }
+                           if (targetPendingZoneIdx > 0 && zoneSource.id != zoneTarget.id)
+                           {
+                              _priorityMapCellsToRequest.push(zoneTarget.point);
+                           }
+                           addedToPriority = true;
+                        }
+                     }
+                  };
+                  trySendTransfer();
                   return "";
                }
-               if(targetCell._monsterData.space.Get() == 0)
+               if(_monsterTargetRef._monsterData.space.Get() == 0)
                {
                   GLOBAL.Message(KEYS.Get("newmap_tr_err1"));
                }
@@ -977,6 +1136,7 @@ package com.monsters.maproom_advanced
          _monsterTransfer = {};
          _resourceTransferInProgress = false;
          _monsterTransferInProgress = false;
+         _pendingTransferRequest = false;
       }
       
       internal static function Resize() : void
@@ -1057,6 +1217,62 @@ package com.monsters.maproom_advanced
          }
       }
       
+      internal static function GetPendingZoneRequestIndex(cellX:int, cellY:int):int
+      {
+         if (_pendingMapCellDataRequests.length == 0)
+         {
+            return -1;
+         }
+         var idx:int = -1;
+         var req:Object = null;
+         var cellZone:Object = GetCellZone(cellX, cellY);
+         for each (req in _pendingMapCellDataRequests)
+         {
+            idx += 1;
+            if (req.loadvars)
+            {
+               var reqX:int = int(req.loadvars[0][1]);
+               var reqY:int = int(req.loadvars[1][1]);
+               var reqZoneID:int = reqX * 10000 + reqY;
+               if (reqZoneID == cellZone.id)
+               {
+                  return idx;
+               }
+            }
+         }
+         return -1;
+      }
+
+      internal static function ZoneHasPendingTransferRequest(zoneId:int):Boolean
+      {
+         if (!_pendingTransferRequest)
+         {
+            return false;
+         }
+         var sourceZoneId:int;
+         var targetZoneId:int;
+         if (_monsterSource)
+         {
+            sourceZoneId = GetCellZone(_monsterSource.cellX, _monsterSource.cellY).id;
+         }
+         if (_monsterTargetRef)
+         {
+            targetZoneId = GetCellZone(_monsterTargetRef.cellX, _monsterTargetRef.cellY).id;
+         }
+         return (zoneId == sourceZoneId || zoneId == targetZoneId);
+      }
+
+      internal static function GetCellZone(cellX:int, cellY:int):Object
+      {
+         var zonePoint:Point = new Point(int(cellX / _zoneWidth) * _zoneWidth,int(cellY / _zoneHeight) * _zoneHeight);
+         var zoneId:int = zonePoint.x * 10000 + zonePoint.y;
+         var zone:Object = {
+            point:zonePoint,
+            id:zoneId
+         };
+         return zone;
+      }
+
       public static function ShowInfoEnemy(param1:IMapRoomCell, param2:Boolean = false) : void
       {
          _mc.ShowInfoEnemy(param1 as MapRoomCell,param2);
