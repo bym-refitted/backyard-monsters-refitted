@@ -111,12 +111,12 @@ package
          }
       }
 
+      // IMPORTANT: On Android Security.allowDomain("*"); is not allowed for Adobe AIR applications.
       public function Data(urls:Object, params:Object):void
       {
          loaderInfo.uncaughtErrorEvents.addEventListener(UncaughtErrorEvent.UNCAUGHT_ERROR, this.uncaughtErrorThrown);
          setLauncherVars(params);
          SWFProfiler.init(stage, this);
-         Security.allowDomain("*");
          GLOBAL.init();
          GLOBAL._baseURL = urls._baseURL;
          GLOBAL._infBaseURL = urls.infbaseurl;
