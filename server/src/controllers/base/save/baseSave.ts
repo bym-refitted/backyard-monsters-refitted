@@ -64,6 +64,14 @@ export const baseSave: KoaController = async (ctx) => {
           }
           break;
 
+        case SaveKeys.POINTS:
+          baseSave.points = value.toString();
+          break;
+
+        case SaveKeys.BASEVALUE:
+          baseSave.basevalue = value.toString();
+          break;
+
         case SaveKeys.IRESOURCES:
           resourcesHandler(baseSave, value, SaveKeys.IRESOURCES);
           break;
@@ -113,9 +121,6 @@ export const baseSave: KoaController = async (ctx) => {
     if (isAttack) {
       for (const key of Object.keys(saveData)) {
         const value = saveData[key];
-        // These keys are used for calculations on the server to update other fields
-        // but should not be persisted to the database (Remove in the future).
-        // Figure out what they are used for.
         switch (key) {
           case SaveKeys.MONSTERUPDATE:
             await monsterUpdateHandler(value, userSave);

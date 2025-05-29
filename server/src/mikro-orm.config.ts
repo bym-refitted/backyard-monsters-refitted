@@ -1,7 +1,6 @@
 import path from "path";
 
 import { MikroORM } from "@mikro-orm/core";
-import { MariaDbDriver } from "@mikro-orm/mariadb";
 import { Save } from "./models/save.model";
 import { User } from "./models/user.model";
 import { WorldMapCell } from "./models/worldmapcell.model";
@@ -12,6 +11,7 @@ import { InfernoMaproom } from "./models/infernomaproom.model";
 import { Message } from "./models/message.model";
 import { Thread } from "./models/thread.model";
 import { AttackLogs } from "./models/attacklogs.model";
+import { PostgreSqlDriver } from "@mikro-orm/postgresql";
 
 /**
  * List of entities to be used with MikroORM.
@@ -32,13 +32,13 @@ const entities = [
 /**
  * Configuration for MikroORM.
  *
- * This configuration sets up the ORM to use MariaDB as the database driver.
+ * This configuration sets up the ORM to use PostgreSql as the database driver.
  * Additional Entities must be added to the `entities` array.
  *
- * @type {Options<MariaDbDriver> | Configuration<MariaDbDriver>}
+ * @type {Options<PostgreSqlDriver> | Configuration<PostgreSqlDriver>}
  */
 const mikroOrmConfig = {
-  type: "mariadb",
+  type: "postgresql",
   allowGlobalContext: false,
   entities,
   debug: process.env.ENV !== Env.PROD,
@@ -51,6 +51,6 @@ const mikroOrmConfig = {
     path: path.join(__dirname, "../src/database/migrations"),
     pattern: /^[\w-]+\d+\.[j]s$/,
   },
-} as Parameters<typeof MikroORM.init<MariaDbDriver>>[0];
+} as Parameters<typeof MikroORM.init<PostgreSqlDriver>>[0];
 
 export default mikroOrmConfig;
