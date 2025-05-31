@@ -39,6 +39,7 @@ const entities = [
  */
 const mikroOrmConfig = {
   type: "postgresql",
+  schema: "bym",
   allowGlobalContext: false,
   entities,
   debug: process.env.ENV !== Env.PROD,
