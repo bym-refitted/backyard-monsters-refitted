@@ -61,7 +61,8 @@ export const updateSaved: KoaController = async (ctx) => {
       error: 0,
       flags,
       ...filteredSave,
-      credits: userSave.credits
+      credits: userSave.credits,
+      champion: JSON.parse(filteredSave.champion),
     };
 
     if (baseSave.type !== BaseType.INFERNO && user.userid === filteredSave.userid) {
