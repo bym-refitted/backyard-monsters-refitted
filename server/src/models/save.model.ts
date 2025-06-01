@@ -194,7 +194,7 @@ export class Save {
   monthly_credits: number;
 
   @FrontendKey
-  @Property({ type: "text", nullable: true, default: "null" })
+  @Property({ type: "json", nullable: true, default: "null" })
   champion?: string;
 
   @FrontendKey

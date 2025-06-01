@@ -152,6 +152,7 @@ export const baseSave: KoaController = async (ctx) => {
       error: 0,
       basesaveid: baseSave.basesaveid,
       ...filteredSave,
+      champion: JSON.stringify(filteredSave.champion),
     };
 
     if (user.userid === filteredSave.userid) {
