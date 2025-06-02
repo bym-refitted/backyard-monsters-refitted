@@ -191,11 +191,11 @@ package
                   "v2":_loc4_
                }) + "<br>";
             }
-            if(_loc1_.damage < _loc2_.damage)
+            if(_loc1_.damage.Get() < _loc2_.damage.Get())
             {
                _upgradeDescription += KEYS.Get("building_dpsincrease",{
-                  "v1":_loc1_.damage,
-                  "v2":_loc2_.damage
+                  "v1":_loc1_.damage.Get(),
+                  "v2":_loc2_.damage.Get()
                }) + "<br>";
             }
             if(_lvl.Get() > 1)
