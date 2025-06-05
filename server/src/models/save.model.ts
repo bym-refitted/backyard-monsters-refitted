@@ -334,7 +334,7 @@ export class Save {
   loot?: FieldData = {};
 
   @FrontendKey
-  @Property({ type: "json", nullable: true })
+  @Property({ type: "text", nullable: true })
   attackreport!: FieldData;
 
   @FrontendKey

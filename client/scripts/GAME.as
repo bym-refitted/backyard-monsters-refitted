@@ -21,8 +21,6 @@ package
 
       public static var _instance:GAME;
 
-      public static var _contained:Boolean;
-
       public static var _isSmallSize:Boolean = true;
 
       public static var _firstLoadComplete:Boolean = false;
@@ -70,7 +68,7 @@ package
                urls._currencyURL = serverUrl + "";
                urls._countryCode = serverUrl + "us";
             }
-            this.Data(urls, false);
+            this.Data(urls, new Object());
          }
       }
 
@@ -84,25 +82,24 @@ package
          GLOBAL.CallJS("cc.enableMouseWheel");
       }
 
-      public function setLauncherVars()
+      public function setLauncherVars(params:Object):void
       {
-         var loader:Object = this.loaderInfo.parameters;
-
          try
          {
             sharedObj = SharedObject.getLocal("bymr_data", "/");
-            if (loader.language)
+
+            if (params && params.language)
             {
-               language = loader.language;
+               language = params.language;
                sharedObj.data.language = language;
-               sharedObj.flush();
             }
-            if (loader.token)
+
+            if (params && params.token)
             {
-               token = loader.token;
+               token = params.token;
                sharedObj.data.token = token;
-               sharedObj.flush();
             }
+            sharedObj.flush();
          }
          catch (e:Error)
          {
@@ -110,15 +107,14 @@ package
          }
       }
 
-      public function Data(urls:Object, isContained:Boolean = false):void
+      public function Data(urls:Object, params:Object):void
       {
-         var contained:Boolean = isContained;
-         setLauncherVars();
          loaderInfo.uncaughtErrorEvents.addEventListener(UncaughtErrorEvent.UNCAUGHT_ERROR, this.uncaughtErrorThrown);
-         GLOBAL._baseURL = urls._baseURL;
+         setLauncherVars(params);
          SWFProfiler.init(stage, this);
+         Security.allowDomain("*");
          GLOBAL.init();
-         _contained = contained;
+         GLOBAL._baseURL = urls._baseURL;
          GLOBAL._infBaseURL = urls.infbaseurl;
          GLOBAL._apiURL = urls._apiURL;
          GLOBAL._gameURL = urls._gameURL;
@@ -163,6 +159,7 @@ package
          addEventListener(Event.ENTER_FRAME, GLOBAL.TickFast);
 
          LOGIN.Login();
+         stage.frameRate = 40;
          stage.scaleMode = StageScaleMode.NO_SCALE;
          stage.addEventListener(Event.RESIZE, GLOBAL.ResizeGame);
          stage.showDefaultContextMenu = false;
