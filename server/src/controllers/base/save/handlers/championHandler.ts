@@ -4,6 +4,10 @@ import { Save } from "../../../../models/save.model";
 import { parseChampionData } from "../../../../utils/parseChampionData";
 
 /**
+ * =================================
+ * NOT CURRENTLY IN USE 
+ * =================================
+ * 
  * Handler for champion data validation during an attack.
  *
  * The client tracks champion stats during an attack using the `attackerchampion` property.
