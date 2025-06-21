@@ -51,6 +51,12 @@ const COOLDOWN_PERIOD = 24 * 60 * 60;
  * @throws Will throw an error if the base type is invalid, no homebase is found or if it catches an exception.
  */
 export const migrateBase: KoaController = async (ctx) => {
+
+  // Temporarily disable base migration - this is buggy and needs a rewrite.
+  ctx.status = Status.INTERNAL_SERVER_ERROR;
+  ctx.body = { error: 1, message: "Base migration is temporarily disabled." };
+  return;
+
   try {
     const { baseid, resources, shiny, type } = MigrateBaseSchema.parse(
       ctx.request.body
