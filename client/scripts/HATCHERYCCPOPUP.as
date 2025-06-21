@@ -239,13 +239,13 @@ package
             {
                speed = CREATURES.GetProperty(currentCreature,"speed");
             }
-            if(CREATURES.GetProperty(currentCreature,"health") > health)
+            if(CREATURES.GetProperty(currentCreature,"health").Get() > health)
             {
-               health = CREATURES.GetProperty(currentCreature,"health");
+               health = CREATURES.GetProperty(currentCreature,"health").Get();
             }
-            if(CREATURES.GetProperty(currentCreature,"damage") > damage)
+            if(CREATURES.GetProperty(currentCreature,"damage").Get() > damage)
             {
-               damage = CREATURES.GetProperty(currentCreature,"damage");
+               damage = CREATURES.GetProperty(currentCreature,"damage").Get();
             }
             if(CREATURES.GetProperty(currentCreature,"cTime") > cTime)
             {
@@ -260,14 +260,14 @@ package
                cStorage = CREATURES.GetProperty(currentCreature,"cStorage");
             }
          }
-         damageShown = CREATURES.GetProperty(creatureID,"damage");
+         damageShown = CREATURES.GetProperty(creatureID,"damage").Get();
          TweenLite.to(mcMonsterInfo.bSpeed.mcBar,0.4,{
             "width":100 / speed * CREATURES.GetProperty(creatureID,"speed"),
             "ease":Circ.easeInOut,
             "delay":0
          });
          TweenLite.to(mcMonsterInfo.bHealth.mcBar,0.4,{
-            "width":100 / health * CREATURES.GetProperty(creatureID,"health"),
+            "width":100 / health * CREATURES.GetProperty(creatureID,"health").Get(),
             "ease":Circ.easeInOut,
             "delay":0.05
          });
@@ -291,8 +291,11 @@ package
             "ease":Circ.easeInOut,
             "delay":0.25
          });
+         mcMonsterInfo.tSpeed.htmlText = KEYS.Get("mon_statsspeed",{"v1":CREATURES.GetProperty(_loc3_,"speed")});
+         mcMonsterInfo.tHealth.htmlText = GLOBAL.FormatNumber(CREATURES.GetProperty(_loc3_,"health").Get());
+         if(_loc12_ > 0)
          mcMonsterInfo.tSpeed.htmlText = KEYS.Get("mon_statsspeed",{"v1":CREATURES.GetProperty(creatureID,"speed")});
-         mcMonsterInfo.tHealth.htmlText = GLOBAL.FormatNumber(CREATURES.GetProperty(creatureID,"health"));
+         mcMonsterInfo.tHealth.htmlText = GLOBAL.FormatNumber(CREATURES.GetProperty(creatureID,"health").Get());
          if(damageShown > 0)
          {
             mcMonsterInfo.tDamage.htmlText = damageShown;
