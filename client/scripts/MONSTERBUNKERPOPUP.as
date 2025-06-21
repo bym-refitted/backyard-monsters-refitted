@@ -547,7 +547,7 @@ package
          var _loc3_:String = LOGIN._playerID.toString();
          if(this._mode == "housing")
          {
-            return CREATURES.GetProperty(param1,"cResource",0,true) * 0.5 * param2;
+            return CREATURES.GetProperty(param1,"cResource",0,true).Get() * 0.5 * param2;
          }
          if(!this.BUYABLE_MONSTERS[param1])
          {
