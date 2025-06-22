@@ -1,23 +1,43 @@
-FROM node:22.14.0-bookworm-slim
+# ===============================
+# Build stage
+# ===============================
+FROM node:22.14.0-bookworm-slim AS builder
 
 WORKDIR /app
 
-# Copy package files first for better caching
+# Copy package files
 COPY package*.json ./
 
-# Install dependencies
+# Install ALL dependencies (including dev deps for building)
 RUN npm ci
 
-# Only install PostgreSQL client if your npm scripts need it
+# Install PostgreSQL client for build/migration scripts
 RUN apt-get update && apt-get install -y postgresql-client && \
     rm -rf /var/lib/apt/lists/* && \
     apt-get clean
 
-# Copy application code
+# Copy source code
 COPY . .
 
 # Build the application
 RUN npm run build
+
+# ===============================
+# Production stage
+# ===============================
+FROM node:22.14.0-alpine AS production
+
+WORKDIR /app
+
+# Copy package files
+COPY package*.json ./
+
+# Install ONLY production dependencies
+RUN npm ci --only=production && npm cache clean --force
+
+# Copy assets and built files from the builder stage
+COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/public ./public 
 
 EXPOSE 3001
 

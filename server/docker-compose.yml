@@ -12,7 +12,9 @@ networks:
 services:
   # Database initialization service (runs once)
   db-init:
-    build: .
+    build: 
+      context: .
+      target: builder
     environment:
       - DB_NAME=${DB_NAME}
       - DB_HOST=db
