@@ -128,7 +128,7 @@ package
          "produce":[2,4,7,11,16,22,29,37,46,56],
          "cycleTime":[10,10,10,10,10,10,10,10,10,10],
          "capacity":[720,2160,5670,13365,29160,60142,118918,227584,424414,775018],
-         "hp":[500,950,1800,3400,6500,12000,24000,45000,85000,165000],
+         "hp":[new SecNum(500),new SecNum(950),new SecNum(1800),new SecNum(3400),new SecNum(6500),new SecNum(12000),new SecNum(24000),new SecNum(45000),new SecNum(85000),new SecNum(165000)],
          "repairTime":[30,60,120,240,480,960,1920,3840,7680,15360]
       },{
          "id":2,
@@ -249,7 +249,7 @@ package
          "produce":[2,4,7,11,16,22,29,37,46,56],
          "cycleTime":[10,10,10,10,10,10,10,10,10,10],
          "capacity":[720,2160,5670,13365,29160,60142,118918,227584,424414,775018],
-         "hp":[500,950,1800,3400,6500,12000,24000,45000,85000,165000],
+         "hp":[new SecNum(500),new SecNum(950),new SecNum(1800),new SecNum(3400),new SecNum(6500),new SecNum(12000),new SecNum(24000),new SecNum(45000),new SecNum(85000),new SecNum(165000)],
          "repairTime":[30,60,120,240,480,960,1920,3840,7680,15360]
       },{
          "id":3,
@@ -370,7 +370,7 @@ package
          "produce":[2,4,7,11,16,22,29,37,46,56],
          "cycleTime":[10,10,10,10,10,10,10,10,10,10],
          "capacity":[720,2160,5670,13365,29160,60142,118918,227584,424414,775018],
-         "hp":[500,950,1800,3400,6500,12000,24000,45000,85000,165000],
+         "hp":[new SecNum(500),new SecNum(950),new SecNum(1800),new SecNum(3400),new SecNum(6500),new SecNum(12000),new SecNum(24000),new SecNum(45000),new SecNum(85000),new SecNum(165000)],
          "repairTime":[30,60,120,240,480,960,1920,3840,7680,15360]
       },{
          "id":4,
@@ -501,7 +501,7 @@ package
          "produce":[2,4,7,11,16,22,29,37,46,56],
          "cycleTime":[10,10,10,10,10,10,10,10,10,10],
          "capacity":[720,2160,5670,13365,29160,60142,118918,227584,424414,775018],
-         "hp":[500,950,1800,3400,6500,12000,24000,45000,85000,165000],
+         "hp":[new SecNum(500),new SecNum(950),new SecNum(1800),new SecNum(3400),new SecNum(6500),new SecNum(12000),new SecNum(24000),new SecNum(45000),new SecNum(85000),new SecNum(165000)],
          "repairTime":[30,60,120,240,480,960,1920,3840,7680,15360]
       },{
          "id":5,
@@ -596,7 +596,7 @@ package
          },
          "quantity":[0,1,1,1,1,1,1,1,1,1],
          "capacity":[200,300,520,640,1140,1820],
-         "hp":[4000,8000,16000,28000],
+         "hp":[new SecNum(4000),new SecNum(8000),new SecNum(16000),new SecNum(28000)],
          "repairTime":[100,300,600,900]
       },{
          "id":6,
@@ -731,7 +731,7 @@ package
          },
          "quantity":[0,2,2,3,4,5,5],
          "capacity":[7500,15000,30000,60000,120000,240000,480000,960000,1920000,3840000],
-         "hp":[750,1400,2550,4750,8800,16250,30000,55600,105000,190000],
+         "hp":[new SecNum(750),new SecNum(1400),new SecNum(2550),new SecNum(4750),new SecNum(8800),new SecNum(16250),new SecNum(30000),new SecNum(55600),new SecNum(105000),new SecNum(190000)],
          "repairTime":[30,60,120,240,480,960,1920,3840,7680,15360]
       },{
          "id":7,
@@ -751,7 +751,7 @@ package
             1:{"img":"7.png"}
          },
          "quantity":[0],
-         "hp":[10],
+         "hp":[new SecNum(10)],
          "repairTime":[10]
       },{
          "id":8,
@@ -816,7 +816,7 @@ package
             }
          },
          "quantity":[0,1,1,1,1,1,1,1,1,1],
-         "hp":[4000,16000,32000,64000],
+         "hp":[new SecNum(4000),new SecNum(16000),new SecNum(32000),new SecNum(64000)],
          "repairTime":[480,1920,3840,15360]
       },{
          "id":9,
@@ -874,7 +874,7 @@ package
             1:{"img":"9.png"}
          },
          "quantity":[0,0,0,1,1,1,1,1,1,1],
-         "hp":[16000,32000,64000],
+         "hp":[new SecNum(16000),new SecNum(32000),new SecNum(64000)],
          "repairTime":[480,1920,7680]
       },{
          "id":10,
@@ -918,7 +918,7 @@ package
             1:{"img":"10.png"}
          },
          "quantity":[0,0,0,1,1,1,1,1,1,1],
-         "hp":[16000],
+         "hp":[new SecNum(16000)],
          "repairTime":[3840]
       },{
          "id":11,
@@ -961,7 +961,7 @@ package
             1:{"img":"11.png"}
          },
          "quantity":[0,1,1,1,1,1,1,1,1,1],
-         "hp":[5000,10000],
+         "hp":[new SecNum(5000),new SecNum(10000)],
          "repairTime":[300,600]
       },{
          "id":12,
@@ -1004,7 +1004,7 @@ package
             1:{"img":"12.png"}
          },
          "quantity":[0,1,1,1,1,1,1,1,1,1],
-         "hp":[4000],
+         "hp":[new SecNum(4000)],
          "repairTime":[10]
       },{
          "id":13,
@@ -1062,7 +1062,7 @@ package
             }
          },
          "quantity":[0,1,2,3,4,5,5,5,5,5],
-         "hp":[4000,16000,32000],
+         "hp":[new SecNum(4000),new SecNum(16000),new SecNum(32000)],
          "repairTime":[60,150,300]
       },{
          "id":14,
@@ -1206,7 +1206,7 @@ package
             }
          },
          "quantity":[1,1,1,1,1,1,1,1,1,1],
-         "hp":[4000,8800,20000,42000,94000,200000],
+         "hp":[new SecNum(4000),new SecNum(8800),new SecNum(20000),new SecNum(42000),new SecNum(94000),new SecNum(200000)],
          "repairTime":[480,1920,3840,7680,15360,30720]
       },{
          "id":15,
@@ -1284,7 +1284,7 @@ package
          },
          "quantity":[0,0,0,0,0,0],
          "capacity":[200,260,320,380,450,540],
-         "hp":[4000,14000,25000,43000,75000,130000],
+         "hp":[new SecNum(4000),new SecNum(14000),new SecNum(25000),new SecNum(43000),new SecNum(75000),new SecNum(130000)],
          "repairTime":[100,200,300,400,500,600]
       },{
          "id":16,
@@ -1327,7 +1327,7 @@ package
             1:{"img":"16.png"}
          },
          "quantity":[0,0,0,0,0,0],
-         "hp":[64000],
+         "hp":[new SecNum(64000)],
          "repairTime":[300]
       },{
          "id":17,
@@ -1401,7 +1401,7 @@ package
             3:{"img":"steel_wall.v3.jpg"}
          },
          "quantity":[0,0,30,60,120,200,220],
-         "hp":[1000,2300,5750,18000,27000],
+         "hp":[new SecNum(1000),new SecNum(2300),new SecNum(5750),new SecNum(18000),new SecNum(27000)],
          "repairTime":[5,5,5,5,5]
       },{
          "id":18,
@@ -1440,7 +1440,7 @@ package
             1:{"img":"18.jpg"}
          },
          "quantity":[0,0,10,20,40,60,70,90,90,90],
-         "hp":[3600],
+         "hp":[new SecNum(3600)],
          "repairTime":[20]
       },{
          "id":19,
@@ -1528,7 +1528,7 @@ package
          "quantity":[0,0,0,0,0,0],
          "produce":[2,2,2,2,2,2,2],
          "capacity":[600,900,1200,1500,2100,3200,4800],
-         "hp":[1000,1500,2250,3375,5000,7500,12000],
+         "hp":[new SecNum(1000),new SecNum(1500),new SecNum(2250),new SecNum(3375),new SecNum(5000),new SecNum(7500),new SecNum(12000)],
          "repairTime":[120,240,480,960,1920,3840,7680]
       },{
          "id":20,
@@ -1545,43 +1545,43 @@ package
          "block":true,
          "stats":[{
             "range":160,
-            "damage":20,
+            "damage":new SecNum(20),
             "rate":40,
             "speed":5,
             "splash":30
          },{
             "range":170,
-            "damage":40,
+            "damage":new SecNum(40),
             "rate":40,
             "speed":6,
             "splash":35
          },{
             "range":180,
-            "damage":60,
+            "damage":new SecNum(60),
             "rate":40,
             "speed":7,
             "splash":40
          },{
             "range":190,
-            "damage":80,
+            "damage":new SecNum(80),
             "rate":40,
             "speed":8,
             "splash":45
          },{
             "range":200,
-            "damage":100,
+            "damage":new SecNum(100),
             "rate":40,
             "speed":8,
             "splash":50
          },{
             "range":210,
-            "damage":120,
+            "damage":new SecNum(120),
             "rate":40,
             "speed":8,
             "splash":55
          },{
             "range":220,
-            "damage":140,
+            "damage":new SecNum(140),
             "rate":40,
             "speed":8,
             "splash":60
@@ -1705,7 +1705,7 @@ package
             }
          },
          "quantity":[0,0,0,0,0,0],
-         "hp":[6000,9000,12600,17640,26460,34400,45000,58000,75500,98200],
+         "hp":[new SecNum(6000),new SecNum(9000),new SecNum(12600),new SecNum(17640),new SecNum(26460),new SecNum(34400),new SecNum(45000),new SecNum(58000),new SecNum(75500),new SecNum(98200)],
          "repairTime":[360,720,1440,2880,5760,11520,23000,46000,64800,86400]
       },{
          "id":21,
@@ -1721,43 +1721,43 @@ package
          "description":"bi_snipertower_desc",
          "stats":[{
             "range":300,
-            "damage":100,
+            "damage":new SecNum(100),
             "rate":80,
             "speed":10,
             "splash":0
          },{
             "range":308,
-            "damage":210,
+            "damage":new SecNum(210),
             "rate":80,
             "speed":10,
             "splash":0
          },{
             "range":316,
-            "damage":320,
+            "damage":new SecNum(320),
             "rate":80,
             "speed":10,
             "splash":0
          },{
             "range":324,
-            "damage":430,
+            "damage":new SecNum(430),
             "rate":80,
             "speed":12,
             "splash":0
          },{
             "range":332,
-            "damage":540,
+            "damage":new SecNum(540),
             "rate":80,
             "speed":15,
             "splash":0
          },{
             "range":340,
-            "damage":650,
+            "damage":new SecNum(650),
             "rate":80,
             "speed":17,
             "splash":0
          },{
             "range":348,
-            "damage":760,
+            "damage":new SecNum(760),
             "rate":80,
             "speed":18,
             "splash":0
@@ -1882,7 +1882,7 @@ package
             }
          },
          "quantity":[0,2,3,3,4,4,6],
-         "hp":[6000,9000,12600,17640,26460,34400,45000],
+         "hp":[new SecNum(6000),new SecNum(9000),new SecNum(12600),new SecNum(17640),new SecNum(26460),new SecNum(34400),new SecNum(45000)],
          "repairTime":[360,720,1440,2880,5760,11520,23000]
       },{
          "id":22,
@@ -1944,7 +1944,7 @@ package
          },
          "quantity":[0,0,0,0,0,0],
          "capacity":[380,450,540,640],
-         "hp":[10000,24500,52000,75000],
+         "hp":[new SecNum(10000),new SecNum(24500),new SecNum(52000),new SecNum(75000)],
          "repairTime":[120,240,480,960]
       },{
          "id":23,
@@ -1959,37 +1959,37 @@ package
          "block":true,
          "stats":[{
             "range":160,
-            "damage":120,
+            "damage":new SecNum(120),
             "rate":80,
             "speed":0,
             "splash":40
          },{
             "range":162,
-            "damage":150,
+            "damage":new SecNum(150),
             "rate":80,
             "speed":0,
             "splash":40
          },{
             "range":164,
-            "damage":180,
+            "damage":new SecNum(180),
             "rate":80,
             "speed":0,
             "splash":40
          },{
             "range":168,
-            "damage":200,
+            "damage":new SecNum(200),
             "rate":80,
             "speed":0,
             "splash":40
          },{
             "range":170,
-            "damage":220,
+            "damage":new SecNum(220),
             "rate":80,
             "speed":0,
             "splash":40
          },{
             "range":175,
-            "damage":240,
+            "damage":new SecNum(240),
             "rate":80,
             "speed":0,
             "splash":40
@@ -2108,7 +2108,7 @@ package
             }
          },
          "quantity":[0,0,0,0,0,0],
-         "hp":[9000,12600,17640,26460,34400,42200],
+         "hp":[new SecNum(9000),new SecNum(12600),new SecNum(17640),new SecNum(26460),new SecNum(34400),new SecNum(42200)],
          "repairTime":[1440,2880,5760,11520,23000,46000]
       },{
          "id":24,
@@ -2152,8 +2152,8 @@ package
             1:{"img":"24.png"}
          },
          "quantity":[0,0,8,15,20,28,35],
-         "damage":[1000],
-         "hp":[10],
+         "damage":[new SecNum(1000)],
+         "hp":[new SecNum(10)],
          "repairTime":[1]
       },{
          "id":25,
@@ -2168,37 +2168,37 @@ package
          "block":true,
          "stats":[{
             "range":250,
-            "damage":100,
+            "damage":new SecNum(100),
             "rate":10,
             "speed":10,
             "splash":0
          },{
             "range":270,
-            "damage":120,
+            "damage":new SecNum(120),
             "rate":15,
             "speed":10,
             "splash":0
          },{
             "range":300,
-            "damage":140,
+            "damage":new SecNum(140),
             "rate":20,
             "speed":10,
             "splash":0
          },{
             "range":320,
-            "damage":160,
+            "damage":new SecNum(160),
             "rate":25,
             "speed":10,
             "splash":0
          },{
             "range":340,
-            "damage":180,
+            "damage":new SecNum(180),
             "rate":25,
             "speed":10,
             "splash":0
          },{
             "range":360,
-            "damage":200,
+            "damage":new SecNum(200),
             "rate":30,
             "speed":10,
             "splash":0
@@ -2317,7 +2317,7 @@ package
             }
          },
          "quantity":[0,0,0,0,0,0],
-         "hp":[15000,22000,30000,48000,60000,72000],
+         "hp":[new SecNum(15000),new SecNum(22000),new SecNum(30000),new SecNum(48000),new SecNum(60000),new SecNum(72000)],
          "repairTime":[1920,3840,7680,9260,12000,18000]
       },{
          "id":26,
@@ -2392,7 +2392,7 @@ package
             2:{"img":"inferno_monster_academy.jpg"}
          },
          "quantity":[1,1,1,1,2,2,2],
-         "hp":[6000,10000,14000,20000],
+         "hp":[new SecNum(6000),new SecNum(10000),new SecNum(14000),new SecNum(20000)],
          "repairTime":[3800,7680,10640,21280]
       },{
          "id":27,
@@ -2426,8 +2426,8 @@ package
             }
          },
          "quantity":[1],
-         "damage":[1],
-         "hp":[1],
+         "damage":[new SecNum(1)],
+         "hp":[new SecNum(1)],
          "repairTime":[1]
       },{
          "id":28,
@@ -2461,7 +2461,7 @@ package
             }
          },
          "quantity":[0],
-         "hp":[100],
+         "hp":[new SecNum(100)],
          "repairTime":[1]
       },{
          "id":29,
@@ -2495,7 +2495,7 @@ package
             }
          },
          "quantity":[0],
-         "hp":[100],
+         "hp":[new SecNum(100)],
          "repairTime":[1]
       },{
          "id":30,
@@ -2529,7 +2529,7 @@ package
             }
          },
          "quantity":[0],
-         "hp":[100],
+         "hp":[new SecNum(100)],
          "repairTime":[1]
       },{
          "id":31,
@@ -2563,7 +2563,7 @@ package
             }
          },
          "quantity":[0],
-         "hp":[100],
+         "hp":[new SecNum(100)],
          "repairTime":[1]
       },{
          "id":32,
@@ -2598,7 +2598,7 @@ package
             }
          },
          "quantity":[0],
-         "hp":[100],
+         "hp":[new SecNum(100)],
          "repairTime":[1]
       },{
          "id":33,
@@ -2632,7 +2632,7 @@ package
             }
          },
          "quantity":[0],
-         "hp":[100],
+         "hp":[new SecNum(100)],
          "repairTime":[1]
       },{
          "id":34,
@@ -2666,7 +2666,7 @@ package
             }
          },
          "quantity":[0],
-         "hp":[100],
+         "hp":[new SecNum(100)],
          "repairTime":[1]
       },{
          "id":35,
@@ -2700,7 +2700,7 @@ package
             }
          },
          "quantity":[0],
-         "hp":[100],
+         "hp":[new SecNum(100)],
          "repairTime":[1]
       },{
          "id":36,
@@ -2734,7 +2734,7 @@ package
             }
          },
          "quantity":[0],
-         "hp":[100],
+         "hp":[new SecNum(100)],
          "repairTime":[1]
       },{
          "id":37,
@@ -2768,7 +2768,7 @@ package
             }
          },
          "quantity":[0],
-         "hp":[100],
+         "hp":[new SecNum(100)],
          "repairTime":[1]
       },{
          "id":38,
@@ -2802,7 +2802,7 @@ package
             }
          },
          "quantity":[0],
-         "hp":[100],
+         "hp":[new SecNum(100)],
          "repairTime":[1]
       },{
          "id":39,
@@ -2836,7 +2836,7 @@ package
             }
          },
          "quantity":[0],
-         "hp":[100],
+         "hp":[new SecNum(100)],
          "repairTime":[1]
       },{
          "id":40,
@@ -2870,7 +2870,7 @@ package
             }
          },
          "quantity":[0],
-         "hp":[100],
+         "hp":[new SecNum(100)],
          "repairTime":[1]
       },{
          "id":41,
@@ -2904,7 +2904,7 @@ package
             }
          },
          "quantity":[0],
-         "hp":[100],
+         "hp":[new SecNum(100)],
          "repairTime":[1]
       },{
          "id":42,
@@ -2938,7 +2938,7 @@ package
             }
          },
          "quantity":[0],
-         "hp":[100],
+         "hp":[new SecNum(100)],
          "repairTime":[1]
       },{
          "id":43,
@@ -2972,7 +2972,7 @@ package
             }
          },
          "quantity":[0],
-         "hp":[100],
+         "hp":[new SecNum(100)],
          "repairTime":[1]
       },{
          "id":44,
@@ -3006,7 +3006,7 @@ package
             }
          },
          "quantity":[0],
-         "hp":[100],
+         "hp":[new SecNum(100)],
          "repairTime":[1]
       },{
          "id":45,
@@ -3040,7 +3040,7 @@ package
             }
          },
          "quantity":[0],
-         "hp":[100],
+         "hp":[new SecNum(100)],
          "repairTime":[1]
       },{
          "id":46,
@@ -3074,7 +3074,7 @@ package
             }
          },
          "quantity":[0],
-         "hp":[100],
+         "hp":[new SecNum(100)],
          "repairTime":[1]
       },{
          "id":47,
@@ -3108,7 +3108,7 @@ package
             }
          },
          "quantity":[0],
-         "hp":[100],
+         "hp":[new SecNum(100)],
          "repairTime":[1]
       },{
          "id":48,
@@ -3142,7 +3142,7 @@ package
             }
          },
          "quantity":[0],
-         "hp":[100],
+         "hp":[new SecNum(100)],
          "repairTime":[1]
       },{
          "id":49,
@@ -3177,7 +3177,7 @@ package
             }
          },
          "quantity":[0],
-         "hp":[100],
+         "hp":[new SecNum(100)],
          "repairTime":[1]
       },{
          "id":50,
@@ -3212,7 +3212,7 @@ package
             }
          },
          "quantity":[0],
-         "hp":[100],
+         "hp":[new SecNum(100)],
          "repairTime":[1]
       },{
          "id":51,
@@ -3296,7 +3296,7 @@ package
             3:{"img":"51.3.png"}
          },
          "quantity":[0,0,0,0,0,0],
-         "hp":[4000,8000,16000,32000],
+         "hp":[new SecNum(4000),new SecNum(8000),new SecNum(16000),new SecNum(32000)],
          "repairTime":[120,240,480,960]
       },{
          "id":52,
@@ -3331,7 +3331,7 @@ package
             }
          },
          "quantity":[0],
-         "hp":[100],
+         "hp":[new SecNum(100)],
          "repairTime":[1]
       },{
          "id":53,
@@ -3347,7 +3347,7 @@ package
          "description":"Temporary pumpkin for picking",
          "block":true,
          "quantity":[0],
-         "hp":[10],
+         "hp":[new SecNum(10)],
          "repairTime":[10],
          "imageData":{
             "baseurl":"buildings/decorations/pumpkins/",
@@ -3370,7 +3370,7 @@ package
          "description":"Massive Pumpkin for the \"Event\"",
          "block":true,
          "quantity":[0],
-         "hp":[10],
+         "hp":[new SecNum(10)],
          "repairTime":[10],
          "imageData":{
             "baseurl":"buildings/decorations/pumpkins/",
@@ -3411,7 +3411,7 @@ package
             }
          },
          "quantity":[0],
-         "hp":[100],
+         "hp":[new SecNum(100)],
          "repairTime":[1]
       },{
          "id":56,
@@ -3444,7 +3444,7 @@ package
             }
          },
          "quantity":[0],
-         "hp":[100],
+         "hp":[new SecNum(100)],
          "repairTime":[1]
       },{
          "id":57,
@@ -3477,7 +3477,7 @@ package
             }
          },
          "quantity":[0],
-         "hp":[100],
+         "hp":[new SecNum(100)],
          "repairTime":[1]
       },{
          "id":58,
@@ -3510,7 +3510,7 @@ package
             }
          },
          "quantity":[0],
-         "hp":[100],
+         "hp":[new SecNum(100)],
          "repairTime":[1]
       },{
          "id":59,
@@ -3543,7 +3543,7 @@ package
             }
          },
          "quantity":[0],
-         "hp":[100],
+         "hp":[new SecNum(100)],
          "repairTime":[1]
       },{
          "id":60,
@@ -3576,7 +3576,7 @@ package
             }
          },
          "quantity":[0],
-         "hp":[100],
+         "hp":[new SecNum(100)],
          "repairTime":[1]
       },{
          "id":61,
@@ -3609,7 +3609,7 @@ package
             }
          },
          "quantity":[0],
-         "hp":[100],
+         "hp":[new SecNum(100)],
          "repairTime":[1]
       },{
          "id":62,
@@ -3642,7 +3642,7 @@ package
             }
          },
          "quantity":[0],
-         "hp":[100],
+         "hp":[new SecNum(100)],
          "repairTime":[1]
       },{
          "id":63,
@@ -3675,7 +3675,7 @@ package
             }
          },
          "quantity":[0],
-         "hp":[100],
+         "hp":[new SecNum(100)],
          "repairTime":[1]
       },{
          "id":64,
@@ -3708,7 +3708,7 @@ package
             }
          },
          "quantity":[0],
-         "hp":[100],
+         "hp":[new SecNum(100)],
          "repairTime":[1]
       },{
          "id":65,
@@ -3741,7 +3741,7 @@ package
             }
          },
          "quantity":[0],
-         "hp":[100],
+         "hp":[new SecNum(100)],
          "repairTime":[1]
       },{
          "id":66,
@@ -3774,7 +3774,7 @@ package
             }
          },
          "quantity":[0],
-         "hp":[100],
+         "hp":[new SecNum(100)],
          "repairTime":[1]
       },{
          "id":67,
@@ -3807,7 +3807,7 @@ package
             }
          },
          "quantity":[0],
-         "hp":[100],
+         "hp":[new SecNum(100)],
          "repairTime":[1]
       },{
          "id":68,
@@ -3840,7 +3840,7 @@ package
             }
          },
          "quantity":[0],
-         "hp":[100],
+         "hp":[new SecNum(100)],
          "repairTime":[1]
       },{
          "id":69,
@@ -3873,7 +3873,7 @@ package
             }
          },
          "quantity":[0],
-         "hp":[100],
+         "hp":[new SecNum(100)],
          "repairTime":[1]
       },{
          "id":70,
@@ -3906,7 +3906,7 @@ package
             }
          },
          "quantity":[0],
-         "hp":[100],
+         "hp":[new SecNum(100)],
          "repairTime":[1]
       },{
          "id":71,
@@ -3940,7 +3940,7 @@ package
             }
          },
          "quantity":[0],
-         "hp":[100],
+         "hp":[new SecNum(100)],
          "repairTime":[1]
       },{
          "id":72,
@@ -3973,7 +3973,7 @@ package
             }
          },
          "quantity":[0],
-         "hp":[100],
+         "hp":[new SecNum(100)],
          "repairTime":[1]
       },{
          "id":73,
@@ -4006,7 +4006,7 @@ package
             }
          },
          "quantity":[0],
-         "hp":[100],
+         "hp":[new SecNum(100)],
          "repairTime":[1]
       },{
          "id":74,
@@ -4039,7 +4039,7 @@ package
             }
          },
          "quantity":[0],
-         "hp":[100],
+         "hp":[new SecNum(100)],
          "repairTime":[1]
       },{
          "id":75,
@@ -4072,7 +4072,7 @@ package
             }
          },
          "quantity":[0],
-         "hp":[100],
+         "hp":[new SecNum(100)],
          "repairTime":[1]
       },{
          "id":76,
@@ -4105,7 +4105,7 @@ package
             }
          },
          "quantity":[0],
-         "hp":[100],
+         "hp":[new SecNum(100)],
          "repairTime":[1]
       },{
          "id":77,
@@ -4138,7 +4138,7 @@ package
             }
          },
          "quantity":[0],
-         "hp":[100],
+         "hp":[new SecNum(100)],
          "repairTime":[1]
       },{
          "id":78,
@@ -4171,7 +4171,7 @@ package
             }
          },
          "quantity":[0],
-         "hp":[100],
+         "hp":[new SecNum(100)],
          "repairTime":[1]
       },{
          "id":79,
@@ -4204,7 +4204,7 @@ package
             }
          },
          "quantity":[0],
-         "hp":[100],
+         "hp":[new SecNum(100)],
          "repairTime":[1]
       },{
          "id":80,
@@ -4237,7 +4237,7 @@ package
             }
          },
          "quantity":[0],
-         "hp":[100],
+         "hp":[new SecNum(100)],
          "repairTime":[1]
       },{
          "id":81,
@@ -4270,7 +4270,7 @@ package
             }
          },
          "quantity":[0],
-         "hp":[100],
+         "hp":[new SecNum(100)],
          "repairTime":[1]
       },{
          "id":82,
@@ -4303,7 +4303,7 @@ package
             }
          },
          "quantity":[0],
-         "hp":[100],
+         "hp":[new SecNum(100)],
          "repairTime":[1]
       },{
          "id":83,
@@ -4336,7 +4336,7 @@ package
             }
          },
          "quantity":[0],
-         "hp":[100],
+         "hp":[new SecNum(100)],
          "repairTime":[1]
       },{
          "id":84,
@@ -4369,7 +4369,7 @@ package
             }
          },
          "quantity":[0],
-         "hp":[100],
+         "hp":[new SecNum(100)],
          "repairTime":[1]
       },{
          "id":85,
@@ -4402,7 +4402,7 @@ package
             }
          },
          "quantity":[0],
-         "hp":[100],
+         "hp":[new SecNum(100)],
          "repairTime":[1]
       },{
          "id":86,
@@ -4432,7 +4432,7 @@ package
             1:{"top":["top.png",new Point(-25,-13)]}
          },
          "quantity":[0],
-         "hp":[100],
+         "hp":[new SecNum(100)],
          "repairTime":[1]
       },{
          "id":87,
@@ -4465,7 +4465,7 @@ package
             }
          },
          "quantity":[0],
-         "hp":[100],
+         "hp":[new SecNum(100)],
          "repairTime":[1]
       },{
          "id":88,
@@ -4498,7 +4498,7 @@ package
             }
          },
          "quantity":[0],
-         "hp":[100],
+         "hp":[new SecNum(100)],
          "repairTime":[1]
       },{
          "id":89,
@@ -4531,7 +4531,7 @@ package
             }
          },
          "quantity":[0],
-         "hp":[100],
+         "hp":[new SecNum(100)],
          "repairTime":[1]
       },{
          "id":90,
@@ -4564,7 +4564,7 @@ package
             }
          },
          "quantity":[0],
-         "hp":[100],
+         "hp":[new SecNum(100)],
          "repairTime":[1]
       },{
          "id":91,
@@ -4597,7 +4597,7 @@ package
             }
          },
          "quantity":[0],
-         "hp":[100],
+         "hp":[new SecNum(100)],
          "repairTime":[1]
       },{
          "id":92,
@@ -4630,7 +4630,7 @@ package
             }
          },
          "quantity":[0],
-         "hp":[100],
+         "hp":[new SecNum(100)],
          "repairTime":[1]
       },{
          "id":93,
@@ -4663,7 +4663,7 @@ package
             }
          },
          "quantity":[0],
-         "hp":[100],
+         "hp":[new SecNum(100)],
          "repairTime":[1]
       },{
          "id":94,
@@ -4696,7 +4696,7 @@ package
             }
          },
          "quantity":[0],
-         "hp":[100],
+         "hp":[new SecNum(100)],
          "repairTime":[1]
       },{
          "id":95,
@@ -4729,7 +4729,7 @@ package
             }
          },
          "quantity":[0],
-         "hp":[100],
+         "hp":[new SecNum(100)],
          "repairTime":[1]
       },{
          "id":96,
@@ -4763,7 +4763,7 @@ package
             }
          },
          "quantity":[0],
-         "hp":[100],
+         "hp":[new SecNum(100)],
          "repairTime":[1]
       },{
          "id":97,
@@ -4797,7 +4797,7 @@ package
             }
          },
          "quantity":[0],
-         "hp":[100],
+         "hp":[new SecNum(100)],
          "repairTime":[1]
       },{
          "id":98,
@@ -4831,7 +4831,7 @@ package
             }
          },
          "quantity":[0],
-         "hp":[100],
+         "hp":[new SecNum(100)],
          "repairTime":[1]
       },{
          "id":99,
@@ -4865,7 +4865,7 @@ package
             }
          },
          "quantity":[0],
-         "hp":[100],
+         "hp":[new SecNum(100)],
          "repairTime":[1]
       },{
          "id":100,
@@ -4899,7 +4899,7 @@ package
             }
          },
          "quantity":[0],
-         "hp":[100],
+         "hp":[new SecNum(100)],
          "repairTime":[1]
       },{
          "id":101,
@@ -4933,7 +4933,7 @@ package
             }
          },
          "quantity":[0],
-         "hp":[100],
+         "hp":[new SecNum(100)],
          "repairTime":[1]
       },{
          "id":102,
@@ -4966,7 +4966,7 @@ package
             }
          },
          "quantity":[0],
-         "hp":[100],
+         "hp":[new SecNum(100)],
          "repairTime":[1]
       },{
          "id":103,
@@ -4996,7 +4996,7 @@ package
             1:{"top":["top.png",new Point(-40,14)]}
          },
          "quantity":[0],
-         "hp":[100],
+         "hp":[new SecNum(100)],
          "repairTime":[1]
       },{
          "id":104,
@@ -5029,7 +5029,7 @@ package
             }
          },
          "quantity":[0],
-         "hp":[100],
+         "hp":[new SecNum(100)],
          "repairTime":[1]
       },{
          "id":105,
@@ -5062,7 +5062,7 @@ package
             }
          },
          "quantity":[0],
-         "hp":[100],
+         "hp":[new SecNum(100)],
          "repairTime":[1]
       },{
          "id":106,
@@ -5095,7 +5095,7 @@ package
             }
          },
          "quantity":[0],
-         "hp":[100],
+         "hp":[new SecNum(100)],
          "repairTime":[1]
       },{
          "id":107,
@@ -5128,7 +5128,7 @@ package
             }
          },
          "quantity":[0],
-         "hp":[100],
+         "hp":[new SecNum(100)],
          "repairTime":[1]
       },{
          "id":108,
@@ -5161,7 +5161,7 @@ package
             }
          },
          "quantity":[0],
-         "hp":[100],
+         "hp":[new SecNum(100)],
          "repairTime":[1]
       },{
          "id":109,
@@ -5194,7 +5194,7 @@ package
             }
          },
          "quantity":[0],
-         "hp":[100],
+         "hp":[new SecNum(100)],
          "repairTime":[1]
       },{
          "id":110,
@@ -5227,7 +5227,7 @@ package
             }
          },
          "quantity":[0],
-         "hp":[100],
+         "hp":[new SecNum(100)],
          "repairTime":[1]
       },{
          "id":111,
@@ -5260,7 +5260,7 @@ package
             }
          },
          "quantity":[6],
-         "hp":[100],
+         "hp":[new SecNum(100)],
          "repairTime":[1]
       },{
          "id":112,
@@ -5310,7 +5310,7 @@ package
             }
          },
          "quantity":[1,1,1,1,1,1,1,1,1,1],
-         "hp":[3400],
+         "hp":[new SecNum(3400)],
          "repairTime":[240]
       },{
          "id":114,
@@ -5343,7 +5343,7 @@ package
             }
          },
          "quantity":[0,0,0,0,0,0],
-         "hp":[10000],
+         "hp":[new SecNum(10000)],
          "repairTime":[1080]
       },{
          "id":115,
@@ -5359,37 +5359,37 @@ package
          "block":true,
          "stats":[{
             "range":300,
-            "damage":200,
+            "damage":new SecNum(200),
             "rate":60,
             "speed":20,
             "splash":180
          },{
             "range":320,
-            "damage":250,
+            "damage":new SecNum(250),
             "rate":60,
             "speed":24,
             "splash":185
          },{
             "range":340,
-            "damage":250,
+            "damage":new SecNum(250),
             "rate":60,
             "speed":28,
             "splash":190
          },{
             "range":360,
-            "damage":250,
+            "damage":new SecNum(250),
             "rate":60,
             "speed":32,
             "splash":195
          },{
             "range":380,
-            "damage":300,
+            "damage":new SecNum(300),
             "rate":60,
             "speed":36,
             "splash":200
          },{
             "range":400,
-            "damage":350,
+            "damage":new SecNum(350),
             "rate":60,
             "speed":40,
             "splash":215
@@ -5504,7 +5504,7 @@ package
             }
          },
          "quantity":[0,0,0,0,0,0],
-         "hp":[15000,22000,30000,48000,60000,72000],
+         "hp":[new SecNum(15000),new SecNum(22000),new SecNum(30000),new SecNum(48000),new SecNum(60000),new SecNum(72000)],
          "repairTime":[1920,3840,7680,9260,12000,18000]
       },{
          "id":116,
@@ -5559,7 +5559,7 @@ package
             1:{"img":"116.jpg"}
          },
          "quantity":[0,0,0,0,0,0],
-         "hp":[9000,16000,24000,32000],
+         "hp":[new SecNum(9000),new SecNum(16000),new SecNum(24000),new SecNum(32000)],
          "repairTime":[3800,7680,10640,15600]
       },{
          "id":117,
@@ -5600,8 +5600,8 @@ package
             }
          },
          "quantity":[0,0,0,0,0,0],
-         "damage":[10000],
-         "hp":[10],
+         "damage":[new SecNum(10000)],
+         "hp":[new SecNum(10)],
          "repairTime":[1]
       },{
          "id":118,
@@ -5618,37 +5618,37 @@ package
          "block":true,
          "stats":[{
             "range":300,
-            "damage":400,
+            "damage":new SecNum(400),
             "rate":160,
             "speed":20,
             "splash":0
          },{
             "range":315,
-            "damage":600,
+            "damage":new SecNum(600),
             "rate":160,
             "speed":20,
             "splash":0
          },{
             "range":330,
-            "damage":900,
+            "damage":new SecNum(900),
             "rate":160,
             "speed":20,
             "splash":0
          },{
             "range":345,
-            "damage":1200,
+            "damage":new SecNum(1200),
             "rate":160,
             "speed":20,
             "splash":0
          },{
             "range":360,
-            "damage":1600,
+            "damage":new SecNum(1600),
             "rate":160,
             "speed":20,
             "splash":0
          },{
             "range":380,
-            "damage":2000,
+            "damage":new SecNum(2000),
             "rate":160,
             "speed":20,
             "splash":0
@@ -5767,7 +5767,7 @@ package
             }
          },
          "quantity":[0,0,0,0,0,0],
-         "hp":[17640,34400,45000,58000,75500,90000],
+         "hp":[new SecNum(17640),new SecNum(34400),new SecNum(45000),new SecNum(58000),new SecNum(75500),new SecNum(90000)],
          "repairTime":[2880,5760,11520,23000,46000,69000]
       },{
          "id":119,
@@ -5809,7 +5809,7 @@ package
             }
          },
          "quantity":[0,0,0,0,0,0,0,0,0,0],
-         "hp":[16000],
+         "hp":[new SecNum(16000)],
          "repairTime":[3600]
       },{
          "id":120,
@@ -5989,8 +5989,8 @@ package
             }
          },
          "quantity":[0,1,1,1,1,1],
-         "damage":[1,1,1,1,1],
-         "hp":[1,1,1,1,1],
+         "damage":[new SecNum(1),new SecNum(1),new SecNum(1),new SecNum(1),new SecNum(1)],
+         "hp":[new SecNum(1),new SecNum(1),new SecNum(1),new SecNum(1),new SecNum(1)],
          "repairTime":[1,1,1,1,1]
       },{
          "id":128,
@@ -6066,7 +6066,7 @@ package
          },
          "quantity":[0,1,1,1,1,1,1],
          "capacity":[200,300,520,780,1140,1820],
-         "hp":[4000,14000,25000,43000,75000,130000],
+         "hp":[new SecNum(4000),new SecNum(14000),new SecNum(25000),new SecNum(43000),new SecNum(75000),new SecNum(130000)],
          "repairTime":[100,200,300,400,500,600]
       },{
          "id":129,
@@ -6083,27 +6083,27 @@ package
          "block":false,
          "stats":[{
             "range":160,
-            "damage":1100,
+            "damage":new SecNum(1100),
             "rate":15
          },{
             "range":170,
-            "damage":1680,
+            "damage":new SecNum(1680),
             "rate":15
          },{
             "range":180,
-            "damage":2220,
+            "damage":new SecNum(2220),
             "rate":15
          },{
             "range":190,
-            "damage":2880,
+            "damage":new SecNum(2880),
             "rate":15
          },{
             "range":200,
-            "damage":3640,
+            "damage":new SecNum(3640),
             "rate":15
          },{
             "range":210,
-            "damage":4400,
+            "damage":new SecNum(4400),
             "rate":15
          }],
          "costs":[{
@@ -6218,7 +6218,7 @@ package
             }
          },
          "quantity":[0,0,0,2,2,4,4],
-         "hp":[10000,16000,22000,28000,34000,48000],
+         "hp":[new SecNum(10000),new SecNum(16000),new SecNum(22000),new SecNum(28000),new SecNum(34000),new SecNum(48000)],
          "repairTime":[1440,2880,5760,11520,23000,46000]
       },{
          "id":130,
@@ -6234,43 +6234,43 @@ package
          "description":"bi_cannontower_desc",
          "stats":[{
             "range":160,
-            "damage":20,
+            "damage":new SecNum(20),
             "rate":40,
             "speed":5,
             "splash":30
          },{
             "range":170,
-            "damage":40,
+            "damage":new SecNum(40),
             "rate":40,
             "speed":6,
             "splash":35
          },{
             "range":180,
-            "damage":60,
+            "damage":new SecNum(60),
             "rate":40,
             "speed":7,
             "splash":40
          },{
             "range":190,
-            "damage":80,
+            "damage":new SecNum(80),
             "rate":40,
             "speed":8,
             "splash":45
          },{
             "range":200,
-            "damage":100,
+            "damage":new SecNum(100),
             "rate":40,
             "speed":8,
             "splash":50
          },{
             "range":210,
-            "damage":120,
+            "damage":new SecNum(120),
             "rate":40,
             "speed":8,
             "splash":55
          },{
             "range":220,
-            "damage":140,
+            "damage":new SecNum(140),
             "rate":40,
             "speed":8,
             "splash":60
@@ -6392,7 +6392,7 @@ package
             }
          },
          "quantity":[0,2,3,3,4,4,6],
-         "hp":[6000,9000,12600,17640,26460,34400,45000],
+         "hp":[new SecNum(6000),new SecNum(9000),new SecNum(12600),new SecNum(17640),new SecNum(26460),new SecNum(34400),new SecNum(45000)],
          "repairTime":[360,720,1440,2880,5760,11520,23000]
       },{
          "id":131,
@@ -6488,7 +6488,7 @@ package
             }
          },
          "quantity":[0],
-         "hp":[100,100,100,100,100,100],
+         "hp":[new SecNum(100),new SecNum(100),new SecNum(100),new SecNum(100),new SecNum(100),new SecNum(100)],
          "repairTime":[1,1,1,1,1,1,1]
       },{
          "id":132,
@@ -6504,37 +6504,37 @@ package
          "block":false,
          "stats":[{
             "range":180,
-            "damage":180,
+            "damage":new SecNum(180),
             "rate":20,
             "speed":14,
             "splash":0
          },{
             "range":190,
-            "damage":240,
+            "damage":new SecNum(240),
             "rate":20,
             "speed":15,
             "splash":0
          },{
             "range":200,
-            "damage":300,
+            "damage":new SecNum(300),
             "rate":20,
             "speed":16,
             "splash":0
          },{
             "range":210,
-            "damage":360,
+            "damage":new SecNum(360),
             "rate":20,
             "speed":17,
             "splash":0
          },{
             "range":220,
-            "damage":420,
+            "damage":new SecNum(420),
             "rate":20,
             "speed":18,
             "splash":0
          },{
             "range":230,
-            "damage":480,
+            "damage":new SecNum(480),
             "rate":20,
             "speed":19,
             "splash":0
@@ -6654,7 +6654,7 @@ package
             }
          },
          "quantity":[0,0,0,1,2,2,3],
-         "hp":[15000,22000,30000,49000,59000,70000],
+         "hp":[new SecNum(15000),new SecNum(22000),new SecNum(30000),new SecNum(49000),new SecNum(59000),new SecNum(70000)],
          "repairTime":[1440,2880,5760,11520,23000,46000,92000]
       },{
          "id":133,
@@ -6731,7 +6731,7 @@ package
             "radius":410
          }],
          "quantity":[1,1,1,1,1,1,1,1,1,1],
-         "hp":[100,100,100,100,100,100],
+         "hp":[new SecNum(100),new SecNum(100),new SecNum(100),new SecNum(100),new SecNum(100),new SecNum(100)],
          "repairTime":[1,1,1,1,1,1,1]
       },{
          "id":134,
@@ -6808,7 +6808,7 @@ package
             "radius":410
          }],
          "quantity":[1,1,1,1,1,1,1,1,1,1],
-         "hp":[100,100,100,100,100,100],
+         "hp":[new SecNum(100),new SecNum(100),new SecNum(100),new SecNum(100),new SecNum(100),new SecNum(100)],
          "repairTime":[1,1,1,1,1,1,1]
       },{
          "id":135,
@@ -6845,7 +6845,7 @@ package
             }
          },
          "quantity":[0],
-         "hp":[100],
+         "hp":[new SecNum(100)],
          "repairTime":[1]
       }];
       
