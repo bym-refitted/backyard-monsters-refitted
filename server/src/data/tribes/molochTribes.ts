@@ -39787,7 +39787,7 @@ export const molochTribes = [
         level: 1,
       },
       IC5: {
-        level: 5,
+        level: 2,
       },
       IC6: {
         level: 1,
@@ -39796,7 +39796,7 @@ export const molochTribes = [
         level: 1,
       },
       IC8: {
-        level: 5,
+        level: 1,
       },
     },
     rewards: {},
