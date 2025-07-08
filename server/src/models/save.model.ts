@@ -19,6 +19,8 @@ export interface FieldData {
   [key: string | number]: any;
 }
 
+// Composite index on worldid, type, and userid
+@Index({ properties: ["worldid", "type", "userid"] })
 @Entity({ tableName: "save" })
 export class Save {
   // IDs & Foreign Keys
@@ -185,8 +187,11 @@ export class Save {
   usemap!: number;
 
   @FrontendKey
-  @Property()
+  @Property({ check: "credits >= 0" })
   credits!: number;
+
+  @Property({ default: 0 })
+  monthly_credits: number;
 
   @FrontendKey
   @Property({ type: "json", nullable: true, default: "null" })
@@ -329,7 +334,7 @@ export class Save {
   loot?: FieldData = {};
 
   @FrontendKey
-  @Property({ type: "json", nullable: true })
+  @Property({ type: "text", nullable: true })
   attackreport!: FieldData;
 
   @FrontendKey

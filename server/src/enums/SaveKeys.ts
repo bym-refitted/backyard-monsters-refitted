@@ -5,6 +5,8 @@
  */
 export enum SaveKeys {
   RESOURCES = "resources",
+  POINTS = "points",
+  BASEVALUE = "basevalue",
   IRESOURCES = "iresources",
   BUILDING_RESOURCES = "buildingresources",
   BUILDINGDATA = "buildingdata",

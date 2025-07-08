@@ -9,7 +9,11 @@ import { User } from "../../../../models/user.model";
 import { wildMonsterSave } from "../../../../services/maproom/v2/wildMonsters";
 import { getCurrentDateTime } from "../../../../utils/getCurrentDateTime";
 import { validateRange } from "../../../../services/maproom/v2/validateRange";
-import { generateNoise, getTerrainHeight } from "../../../../services/maproom/v2/generateMap";
+import {
+  generateNoise,
+  getTerrainHeight,
+} from "../../../../services/maproom/v2/generateMap";
+import { createAttackLog } from "../../../../services/base/createAttackLog";
 
 export interface AttackDetails {
   fbid: string;
@@ -20,6 +24,13 @@ export interface AttackDetails {
   starttime: number;
 }
 
+/**
+ * Processes an attack from a user against a specific base
+ * 
+ * @param user - The attacking user
+ * @param baseid - ID of the base being attacked
+ * @returns Result of range validation check
+ */
 export const baseModeAttack = async (user: User, baseid: string) => {
   const userSave: Save = user.save;
   let save = await ORMContext.em.findOne(Save, { baseid });
@@ -49,7 +60,6 @@ export const baseModeAttack = async (user: User, baseid: string) => {
   let cell = await ORMContext.em.findOne(WorldMapCell, { baseid });
 
   if (!cell) {
-    // Find the existing world record
     const world = await ORMContext.em.findOne(World, {
       uuid: userSave.worldid,
     });
@@ -74,6 +84,16 @@ export const baseModeAttack = async (user: User, baseid: string) => {
   save.worldid = userSave.worldid;
   save.attackid = Math.floor(Math.random() * 99999) + 1;
   await ORMContext.em.persistAndFlush([cell, save]);
+
+  // Create an attack log for the attack
+  if (save.type !== BaseType.TRIBE) {
+    const defender = await ORMContext.em.findOne(User, {
+      userid: save.saveuserid,
+    });
+
+    if (!defender) throw new Error("Defender user not found.");
+    await createAttackLog(user, defender, save);
+  }
 
   return await validateRange(user, save, { baseid });
 };

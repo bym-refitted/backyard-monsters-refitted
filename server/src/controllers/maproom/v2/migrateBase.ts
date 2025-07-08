@@ -21,14 +21,8 @@ import { MapRoomCell } from "../../../enums/MapRoom";
 const MigrateBaseSchema = z.object({
   type: z.nativeEnum(BaseType),
   baseid: z.string(),
-  resources: z
-    .string()
-    .transform((res) => JSON.parse(res))
-    .optional(),
-  shiny: z
-    .string()
-    .transform((shiny) => parseInt(shiny))
-    .optional(),
+  resources: z.string().transform((res) => JSON.parse(res)).optional(),
+  shiny: z.string().transform((shiny) => parseInt(shiny)).optional(),
 });
 
 /**
@@ -109,13 +103,10 @@ export const migrateBase: KoaController = async (ctx) => {
       ctx.body = { error: 1 };
       throw new Error("Invalid home cell");
     }
-
     // Store outpost details before removing it
     const [outpostX, outpostY] = [outpostCell.x, outpostCell.y];
     const outpostHeight = outpostCell.terrainHeight;
     const outpostBaseId = outpostCell.save.baseid;
-
-    await ORMContext.em.removeAndFlush([outpostCell.save, outpostCell]);
 
     // Update the user's homecell coordinates to the outpost cell
     homeCell.x = outpostX;
@@ -138,13 +129,25 @@ export const migrateBase: KoaController = async (ctx) => {
 
     if (shiny) userSave.credits = userSave.credits - shiny;
     if (resources)
-      userSave.resources = updateResources(
-        resources,
-        userSave.resources,
-        Operation.SUBTRACT
-      );
+      userSave.resources = updateResources(resources, userSave.resources, Operation.SUBTRACT);
 
-    await ORMContext.em.persistAndFlush([homeCell, userSave]);
+    // We wrap this in a transaction to ensure atomicity
+    // If any part of this fails, the entire transaction will be rolled back.
+    await ORMContext.em.transactional(async (em) => {
+      await em.persistAndFlush([homeCell, userSave]);
+      await em.removeAndFlush([outpostCell.save, outpostCell]);
+
+      const homeCells = await em.find(WorldMapCell, {
+        baseid: userSave.baseid,
+        base_type: MapRoomCell.HOMECELL,
+      });
+
+      if (homeCells.length > 1) {
+        throw new Error(
+          `User ${currentUser.userid} would end up with multiple homecells.`
+        );
+      }
+    });
 
     ctx.status = Status.OK;
     ctx.body = {

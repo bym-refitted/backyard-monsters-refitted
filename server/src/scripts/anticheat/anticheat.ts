@@ -7,4 +7,4 @@ import { Context, Next } from "koa";
  * @param {Context} ctx - The Koa context object.
  * @param {Next} next - The next middleware function.
  */
-export const anticheat = async (ctx: Context, next: Next) => {}
+export const validateSave = async (ctx: Context, next: Next) => {}

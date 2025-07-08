@@ -88,6 +88,7 @@ export const baseLoad: KoaController = async (ctx) => {
       worldsize: WORLD_SIZE,
       error: 0,
       id: filteredSave.basesaveid,
+      champion: JSON.stringify(filteredSave.champion),
       storeitems: { ...storeItems },
       tutorialstage: isTutorialEnabled,
       currenttime: getCurrentDateTime(),

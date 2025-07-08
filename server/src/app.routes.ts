@@ -1,4 +1,5 @@
 import Router from "@koa/router";
+
 import { debugDataLog } from "./middleware/debugDataLog";
 import { baseSave } from "./controllers/base/save/baseSave";
 import { login } from "./controllers/auth/login";
@@ -35,6 +36,9 @@ import { getMessageThread } from "./controllers/mail/getMessageThread";
 import { sendMessage } from "./controllers/mail/sendMessage";
 import { reportMessageThread } from "./controllers/mail/reportMessageThread";
 import { Context } from "koa";
+import { getAvailableWorlds } from "./controllers/leaderboards/getAvailableWorlds";
+import { getLeaderboards } from "./controllers/leaderboards/getLeaderboards";
+import { getAttackLogs } from "./controllers/attacklogs/getAttackLogs";
 
 const RateLimit = require("koa2-ratelimit").RateLimit;
 
@@ -51,6 +55,14 @@ const registerLimiter = RateLimit.middleware({
         "Too many requests where sent from this IP while creating an account. Please try again in 1 hour.",
     };
   },
+});
+
+/**
+ * Rate limit for leaderboard
+ */
+const leaderboardLimiter = RateLimit.middleware({
+  interval: { min: process.env.ENV === Env.PROD ? 60 : 1 },
+  max: 25,
 });
 
 /**
@@ -143,7 +155,7 @@ router.post(
  * Reset password
  * @name POST /player/reset-password
  */
-router.post("/api/player/reset-password", resetPassword);
+router.post("/api/:apiVersion/player/reset-password", resetPassword);
 
 /**
  * Load base data
@@ -473,4 +485,23 @@ router.post(
   debugDataLog("Report message thread"),
   reportMessageThread
 );
+
+/**
+ * Get available worlds
+ * @name GET /api/worlds
+ */
+router.get("/api/:apiVersion/worlds", getAvailableWorlds);
+
+/**
+ * Get leaderboards
+ * @name GET /api/leaderboards
+ */
+router.get("/api/:apiVersion/leaderboards", getLeaderboards);
+
+/**
+ * Get attack logs
+ * @name GET /api/attacklogs
+ */
+router.get("/api/:apiVersion/attacklogs", verifyUserAuth, getAttackLogs);
+
 export default router;
