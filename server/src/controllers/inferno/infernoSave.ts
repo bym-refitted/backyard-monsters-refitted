@@ -56,6 +56,14 @@ export const infernoSave: KoaController = async (ctx) => {
           userSave.iresources = baseSave.resources;
           break;
 
+        case SaveKeys.POINTS:
+          baseSave.points = value.toString();
+          break;
+
+        case SaveKeys.BASEVALUE:
+          baseSave.basevalue = value.toString();
+          break;
+
         case SaveKeys.PURCHASE:
           purchaseHandler(ctx, saveData.purchase, baseSave);
           break;
