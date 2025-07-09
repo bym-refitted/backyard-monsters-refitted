@@ -1,0 +1,22 @@
+services:
+  web:
+    ports:
+      - "80:3001"
+    volumes: [] 
+    environment:
+      - ENV=production
+
+  db-init:
+    restart: "no"
+
+  db:
+    ports: []
+    profiles: []
+
+  redis:
+    ports: []
+    profiles: []
+    restart: unless-stopped
+
+  pgadmin:
+    profiles: [ "disabled" ]
