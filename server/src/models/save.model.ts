@@ -187,7 +187,7 @@ export class Save {
   usemap!: number;
 
   @FrontendKey
-  @Property()
+  @Property({ check: "credits >= 0" })
   credits!: number;
 
   @Property({ default: 0 })

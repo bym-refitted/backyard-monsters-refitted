@@ -1,0 +1,149 @@
+name: bymr
+
+volumes:
+  db:
+  pgadmin:
+
+
+networks:
+  bymr:
+
+
+services:
+  # Database initialization service (runs once)
+  db-init:
+    build: 
+      context: .
+      target: builder
+    environment:
+      - DB_NAME=${DB_NAME}
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+    networks:
+      - bymr
+    depends_on:
+      db:
+        condition: service_healthy
+    command: npm run db:init
+    restart: "no"
+
+  # API server
+  web:
+    build: .
+    container_name: bymr-api-server
+    environment:
+      - ENV=${ENV}
+      - BASE_URL=${BASE_URL}
+      - PORT=3001
+      - DB_NAME=${DB_NAME}
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - SECRET_KEY=${SECRET_KEY}
+      - REDIS_URL=redis://redis:6379
+    networks:
+      - bymr
+    ports:
+      - ${API_PORT:-3001}:3001
+    develop:
+      watch:
+        - action: sync
+          path: server
+          target: /app
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: '0.5'
+        reservations:
+          memory: 256M
+          cpus: '0.25'
+    depends_on:
+      redis:
+        condition: service_healthy
+      db:
+        condition: service_healthy
+      db-init:
+        condition: service_completed_successfully
+
+  # Database
+  db:
+    image: postgres:16
+    container_name: bymr-database
+    environment:
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+    ports:
+      - ${DB_PORT:-5432}:5432
+    profiles:
+      - dev
+    networks:
+      - bymr
+    volumes:
+      - db:/var/lib/postgresql/data
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+          cpus: '1.0'
+        reservations:
+          memory: 512M
+          cpus: '0.5'
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}" ]
+      start_period: 10s
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  # pgAdmin for database management
+  pgadmin:
+    image: dpage/pgadmin4:9.4
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=${PGADMIN_EMAIL:-admin@admin.com}
+      - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_PASSWORD:-admin}
+      - PGADMIN_CONFIG_SERVER_MODE=False
+    ports:
+      - ${PGADMIN_PORT:-8080}:80
+    networks:
+      - bymr
+    volumes:
+      - pgadmin:/var/lib/pgadmin
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+          cpus: '0.25'
+    depends_on:
+      - db
+    profiles:
+      - dev
+
+  # Redis cache
+  redis:
+    image: redis:8.0-M03-bookworm
+    container_name: bymr-redis-cache
+    ports:
+      - ${REDIS_PORT:-6379}:6379
+    profiles:
+      - dev
+    networks:
+      - bymr
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 128M
+          cpus: '0.25'
+        reservations:
+          memory: 64M
+          cpus: '0.1'
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 5s
+      timeout: 3s
+      retries: 3
