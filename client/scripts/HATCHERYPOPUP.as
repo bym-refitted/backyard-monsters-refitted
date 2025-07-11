@@ -161,13 +161,13 @@ package
             {
                speed = CREATURES.GetProperty(currentCreature,"speed");
             }
-            if(CREATURES.GetProperty(currentCreature,"health") > health)
+            if(CREATURES.GetProperty(currentCreature,"health").Get() > health)
             {
-               health = CREATURES.GetProperty(currentCreature,"health");
+               health = CREATURES.GetProperty(currentCreature,"health").Get();
             }
-            if(CREATURES.GetProperty(currentCreature,"damage") > damage)
+            if(CREATURES.GetProperty(currentCreature,"damage").Get() > damage)
             {
-               damage = CREATURES.GetProperty(currentCreature,"damage");
+               damage = CREATURES.GetProperty(currentCreature,"damage").Get();
             }
             if(CREATURES.GetProperty(currentCreature,"cTime") > cTime)
             {
@@ -182,14 +182,14 @@ package
                cStorage = CREATURES.GetProperty(currentCreature,"cStorage");
             }
          }
-         damageShown = CREATURES.GetProperty(creatureStringID,"damage");
+         damageShown = CREATURES.GetProperty(creatureStringID,"damage").Get();
          TweenLite.to(mcMonsterInfo.bSpeed.mcBar,0.4,{
             "width":100 / speed * CREATURES.GetProperty(creatureStringID,"speed"),
             "ease":Circ.easeInOut,
             "delay":0
          });
          TweenLite.to(mcMonsterInfo.bHealth.mcBar,0.4,{
-            "width":100 / health * CREATURES.GetProperty(creatureStringID,"health"),
+            "width":100 / health * CREATURES.GetProperty(creatureStringID,"health").Get(),
             "ease":Circ.easeInOut,
             "delay":0.05
          });
@@ -214,7 +214,7 @@ package
             "delay":0.25
          });
          mcMonsterInfo.tSpeed.htmlText = KEYS.Get("mon_statsspeed",{"v1":CREATURES.GetProperty(creatureStringID,"speed")});
-         mcMonsterInfo.tHealth.htmlText = GLOBAL.FormatNumber(CREATURES.GetProperty(creatureStringID,"health"));
+         mcMonsterInfo.tHealth.htmlText = GLOBAL.FormatNumber(CREATURES.GetProperty(creatureStringID,"health").Get());
          if(damageShown > 0)
          {
             mcMonsterInfo.tDamage.htmlText = damageShown;
