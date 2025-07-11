@@ -1122,7 +1122,7 @@ package
                if((_loc4_ = Point.distance(_loc5_,param2)) < _loc3_._range)
                {
                   _loc7_ = _loc3_;
-                  _loc6_ += _loc3_.damage / _loc3_._rate;
+                  _loc6_ += _loc3_.damage.Get() / _loc3_._rate;
                   param1.towersInPath.push(_loc3_);
                }
             }
