@@ -767,8 +767,8 @@ package
          _FPStimestamp = 0;
          ImageCache.prependImagePath = GLOBAL._storageURL;
          MapRoom3AssetCache.instance.Load();
-         var _loc2_:Array = MapRoom3TileSetManager.DEFAULT_TILE_SET;
-         MapRoom3TileSetManager.instance.SetCurrentTileSet(_loc2_);
+         var tileSet:Array = MapRoom3TileSetManager.DEFAULT_TILE_SET;
+         MapRoom3TileSetManager.instance.SetCurrentTileSet(tileSet);
          if (!_timekeeper)
          {
             _timekeeper = new Timekeeper();
