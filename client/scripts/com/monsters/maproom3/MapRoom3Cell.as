@@ -167,6 +167,11 @@ package com.monsters.maproom3
       {
          return !!this.m_CellData ? this.m_CellData.playerLevel : 0;
       }
+
+      public function get picSquare() : String
+      {
+         return !!this.m_CellData ? this.m_CellData.pic_square : "";
+   }
       
       public function get damage() : int
       {
@@ -255,23 +260,23 @@ package com.monsters.maproom3
       
       public function Setup(cellData:Object) : void
       {
-         var _loc2_:int = 0;
-         var _loc3_:int = 0;
+         var cellHeight:int = 0;
+         var cellType:int = 0;
          if(cellData.hasOwnProperty("i"))
          {
-            _loc2_ = int(cellData.i);
+            cellHeight = int(cellData.i);
             this.m_CellHeaderBitField &= ~(MAX_VALUE_CELL_HEIGHT << BIT_SHIFT_CELL_HEIGHT);
-            this.m_CellHeaderBitField |= (_loc2_ & MAX_VALUE_CELL_HEIGHT) << BIT_SHIFT_CELL_HEIGHT;
+            this.m_CellHeaderBitField |= (cellHeight & MAX_VALUE_CELL_HEIGHT) << BIT_SHIFT_CELL_HEIGHT;
          }
          if(cellData.hasOwnProperty("b"))
          {
-            _loc3_ = int(cellData.b);
-            if(_loc3_ == -1)
+            cellType = int(cellData.b);
+            if(cellType == -1)
             {
-               _loc3_ = int(EnumYardType.EMPTY);
+               cellType = int(EnumYardType.EMPTY);
             }
             this.m_CellHeaderBitField &= ~(MAX_VALUE_CELL_TYPE << BIT_SHIFT_CELL_TYPE);
-            this.m_CellHeaderBitField |= (_loc3_ & MAX_VALUE_CELL_TYPE) << BIT_SHIFT_CELL_TYPE;
+            this.m_CellHeaderBitField |= (cellType & MAX_VALUE_CELL_TYPE) << BIT_SHIFT_CELL_TYPE;
          }
          if(this.m_CellData != null)
          {

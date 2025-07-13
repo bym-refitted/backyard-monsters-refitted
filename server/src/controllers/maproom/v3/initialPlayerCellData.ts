@@ -3,6 +3,8 @@ import { Status } from "../../../enums/StatusCodes";
 import { KoaController } from "../../../utils/KoaController";
 import { ORMContext } from "../../../server";
 import { calculateBaseLevel } from "../../../services/base/calculateBaseLevel";
+import { EnumYardType } from "../../../enums/EnumYardType";
+import { EnumBaseRelationship } from "../../../enums/EnumBaseRelationship";
 
 // Used to get the data of the current player cell
 export const initialPlayerCellData: KoaController = async (ctx) => {
@@ -19,25 +21,26 @@ export const initialPlayerCellData: KoaController = async (ctx) => {
     celldata: [
       {
         uid: currentUser.userid,
-        b: 3,
+        b: EnumYardType.PLAYER,
         bid: currentUser.save.baseid,
         x: 10,
         y: 10,
         aid: 0,
         i: 0,
-        n: "Me",
+        n: currentUser.username,
         tid: 0,
         l: baseLevel,
         pl: 0,
         r: 0,
         dm: 0,
-        rel: 7,
+        rel: EnumBaseRelationship.SELF,
         lo: 0,
         fr: 0,
         p: 0,
         d: 0,
         t: 0,
         fbid: "",
+        pic_square: currentUser.pic_square,
       },
     ],
   };

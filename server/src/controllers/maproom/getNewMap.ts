@@ -19,18 +19,20 @@ export const getNewMap: KoaController = async (ctx) => {
   const cellY = MapRoom.HEIGHT;
 
   if (CURRENT_MAPROOM_VERSION === MapRoomVersion.V3) {
-    for (let x = 0; x < cellX; x++) {
-      for (let y = 0; y < cellY; y++) {
-        cells.push({ h: 0, t: 100 });
-      }
-    }
+    // TODO: What is the purpose of this?
+    
+    // for (let x = 0; x < cellX; x++) {
+    //   for (let y = 0; y < cellY; y++) {
+    //     cells.push({ h: 0, t: 100 });
+    //   }
+    // }
 
     ctx.body = {
       newmap: true,
       mapheaderurl: `${BASE_URL}:${PORT}/api/bm/getnewmap`,
       width: MapRoom.WIDTH,
       height: MapRoom.HEIGHT,
-      data: cells,
+      // data: cells,
     };
   } else {
     ctx.body = { newmap: false };

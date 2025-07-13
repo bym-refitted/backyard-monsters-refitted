@@ -344,17 +344,6 @@ router.post(
   saveBookmarks
 );
 
-/**
- * Worldmap v3 init route
- * @name POST /worldmapv3/initworldmap
- */
-router.post(
-  "/worldmapv3/initworldmap",
-  verifyUserAuth,
-  verifyAccountStatus,
-  debugDataLog("Posting MR3 init data"),
-  initialPlayerCellData
-);
 
 /**
  * Worldmap v3 init route
