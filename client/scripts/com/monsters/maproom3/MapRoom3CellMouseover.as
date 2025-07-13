@@ -341,7 +341,7 @@ package com.monsters.maproom3
          }
          else
          {
-            this.m_ProfilePicture.load(new URLRequest(MakeFacebookProfilePictureURL(param1.facebookID)));
+            this.m_ProfilePicture.load(new URLRequest(param1.picSquare));
             this.m_ProfilePicture.visible = true;
          }
          this.m_DamageBarIcon.bitmapData = MapRoom3AssetCache.instance.GetDamageBarSegmentAsset(param1.damagePercentage);
@@ -608,7 +608,7 @@ package com.monsters.maproom3
          var _loc4_:Object = {
             "first_name":this.m_SelectedCell.name,
             "last_name":"",
-            "pic_square":MakeFacebookProfilePictureURL(this.m_SelectedCell.facebookID)
+            "pic_square":this.m_SelectedCell.picSquare
          };
          var _loc5_:Contact = new Contact(this.m_SelectedCell.userID.toString(),_loc4_);
          this.m_MailboxMessage = new Message();
