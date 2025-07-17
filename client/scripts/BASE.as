@@ -3508,6 +3508,10 @@ package
          var attackerCell:MapRoomCell = null;
          var flingerRange:Number = NaN;
          var monsterId:String = null;
+         var amtAllCells:Number = NaN;
+         var amtCurCell:Number = NaN;
+         var amtAvailable:Number = NaN;
+         var amtUsed:Number = NaN;
          var attackerCellUpdates:Object = null;
          var homeCellUpdates:Object = null;
          var cellUpdates:Object = [];
@@ -3531,11 +3535,20 @@ package
                      {
                         if (Boolean(attackerCell.monsters[monsterId]) && attackerCell.monsters[monsterId].Get() > 0)
                         {
-                           if (GLOBAL._attackerMapCreaturesStart[monsterId].Get() > ATTACK._curCreaturesAvailable[monsterId])
+                           amtAllCells = GLOBAL._attackerMapCreaturesStart[monsterId].Get();
+                           amtCurCell = attackerCell.monsters[monsterId].Get();
+                           amtAvailable = ATTACK._curCreaturesAvailable[monsterId]; 
+                           if (ATTACK._flingerBucket[monsterId])
                            {
-                              if (GLOBAL._attackerMapCreaturesStart[monsterId].Get() - ATTACK._curCreaturesAvailable[monsterId] >= attackerCell.monsters[monsterId].Get())
+                              // Monsters in the flinger's bucket have not been used yet, thus shouldn't be removed from cells.
+                              amtAvailable += ATTACK._flingerBucket[monsterId].Get();
+                           }
+                           amtUsed = amtAllCells - amtAvailable;
+                           if (amtAllCells > amtAvailable)
+                           {
+                              if (amtUsed >= amtCurCell)
                               {
-                                 GLOBAL._attackerMapCreaturesStart[monsterId].Add(-attackerCell.monsters[monsterId].Get());
+                                 GLOBAL._attackerMapCreaturesStart[monsterId].Add(-amtCurCell);
                                  attackerCell.monsterData.saved = GLOBAL.Timestamp();
                                  delete attackerCell.monsters[monsterId];
                                  delete attackerCell.hpMonsters[monsterId];
@@ -3543,10 +3556,10 @@ package
                               }
                               else
                               {
-                                 attackerCell.monsters[monsterId].Add(-1 * (GLOBAL._attackerMapCreaturesStart[monsterId].Get() - ATTACK._curCreaturesAvailable[monsterId]));
-                                 attackerCell.hpMonsters[monsterId] -= GLOBAL._attackerMapCreaturesStart[monsterId].Get() - ATTACK._curCreaturesAvailable[monsterId];
+                                 attackerCell.monsters[monsterId].Add(-amtUsed);
+                                 attackerCell.hpMonsters[monsterId] -= amtUsed;
                                  attackerCell.monsterData.saved = GLOBAL.Timestamp();
-                                 GLOBAL._attackerMapCreaturesStart[monsterId].Set(ATTACK._curCreaturesAvailable[monsterId]);
+                                 GLOBAL._attackerMapCreaturesStart[monsterId].Set(amtAvailable);
                                  attackerCell.isDirty = true;
                               }
                            }
