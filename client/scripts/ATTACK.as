@@ -739,8 +739,8 @@ package
             else
             {
                _curCreaturesAvailable[param1] += 1;
-               _creaturesLoaded.Add(-1);
             }
+            _creaturesLoaded.Add(-1);
             SOUNDS.Play("click1");
             return true;
          }
