@@ -46,11 +46,6 @@ export const getMapRoomCells: KoaController = async (ctx) => {
         y: 8,
       },
       {
-        i: 70,
-        x: 9,
-        y: 12,
-      },
-      {
         i: 90,
         x: 10,
         y: 14,
