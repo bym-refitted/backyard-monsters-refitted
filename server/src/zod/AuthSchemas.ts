@@ -19,7 +19,7 @@ const passwordSchema = z.preprocess((arg) => {
   } else {
     return arg;
   }
-}, z.string().min(8, passwordLengthError).regex(new RegExp(".*[A-Z].*"), passwordError).regex(new RegExp(".*[a-z].*"), passwordError).regex(new RegExp(".*\\d.*"), passwordError).regex(new RegExp(".*[`~<>?,./!@#$%^&*()\\-_+=\"'|{}\\[\\];:\\\\].*"), passwordError).optional());
+}, z.string().min(8, passwordLengthError).regex(new RegExp(".*[A-Z].*"), passwordError).regex(new RegExp(".*[`~<>?,./!@#$%^&*()\\-_+=\"'|{}\\[\\];:\\\\].*"), passwordError).optional());
 
 /**
  * Schema to validate email addresses.
