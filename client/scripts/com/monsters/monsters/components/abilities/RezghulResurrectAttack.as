@@ -3,6 +3,7 @@ package com.monsters.monsters.components.abilities
    import com.monsters.events.ProjectileEvent;
    import com.monsters.interfaces.ITargetable;
    import com.monsters.monsters.MonsterBase;
+   import com.monsters.monsters.creeps.CreepBase;
    import com.monsters.projectiles.Projectilev2;
    import flash.geom.Point;
    import gs.TweenLite;
@@ -27,6 +28,10 @@ package com.monsters.monsters.components.abilities
       
       override protected function getValidTargetsInRange(param1:uint, param2:Point, param3:int) : Vector.<ITargetable>
       {
+         if(!owner.inBattleState)
+         {
+            return null;
+         }
          var targets:Vector.<ITargetable> = null;
          var currentCreep:ITargetable = null;
          var allDeadCreeps:Array = Targeting.getDeadCreeps(param2,param1,param3);
@@ -37,7 +42,7 @@ package com.monsters.monsters.components.abilities
             {
                targets = new Vector.<ITargetable>();
             }
-            if((currentCreep = allDeadCreeps[idx].creep) is MonsterBase && k_UNRESURRECTABLE_CREATURES.indexOf(MonsterBase(currentCreep)._creatureID) == -1)
+            if((currentCreep = allDeadCreeps[idx].creep) is CreepBase && k_UNRESURRECTABLE_CREATURES.indexOf(CreepBase(currentCreep)._creatureID) == -1)
             {
                targets.push(currentCreep);
             }
@@ -70,18 +75,18 @@ package com.monsters.monsters.components.abilities
             idx = 0;
             while(idx < deadCreepsInRange.length)
             {
-               if((currentCreep = deadCreepsInRange[idx]) is MonsterBase && k_UNRESURRECTABLE_CREATURES.indexOf(MonsterBase(currentCreep)._creatureID) == -1)
+               if((currentCreep = deadCreepsInRange[idx]) is CreepBase && k_UNRESURRECTABLE_CREATURES.indexOf(CreepBase(currentCreep)._creatureID) == -1)
                {
-                  this.resurrect(currentCreep as MonsterBase);
+                  this.resurrect(currentCreep as CreepBase);
                }
                idx++;
             }
          }
       }
       
-      private function resurrect(monsterToRes:MonsterBase) : void
+      private function resurrect(monsterToRes:CreepBase) : void
       {
-         var newMonster:MonsterBase = null;
+         var newMonster:CreepBase = null;
          if(owner._friendly)
          {
             newMonster = CREATURES.Spawn(monsterToRes._creatureID,MAP._BUILDINGTOPS,monsterToRes._behaviour,new Point(monsterToRes.x,monsterToRes.y),monsterToRes._targetRotation,null,monsterToRes._house);
@@ -95,7 +100,7 @@ package com.monsters.monsters.components.abilities
             "y":newMonster._graphicMC.y + 20,
             "ease":Sine.easeOut,
             "overwrite":false,
-            "onComplete":newMonster.findTarget
+            "onComplete":(newMonster._friendly ? newMonster.findDefenseTargets : newMonster.findTarget)
          });
          GIBLETS.Create(new Point(newMonster.x,newMonster.y + 20),1,50,20,10);
          newMonster.addComponent(this.m_zombiefy.clone());
