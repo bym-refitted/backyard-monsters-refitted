@@ -3503,100 +3503,113 @@ package
 
       private static function getMR2MonsterUpdateSaveData():Object
       {
-         var _loc3_:CellData = null;
-         var _loc4_:MapRoomCell = null;
-         var _loc5_:MapRoomCell = null;
-         var _loc6_:Number = NaN;
-         var _loc7_:String = null;
-         var _loc8_:Object = null;
-         var _loc9_:Object = null;
-         var _loc1_:Object = [];
-         var _loc2_:Object = {
+         var attackerCellData:CellData = null;
+         var attackerHomeCell:MapRoomCell = null;
+         var attackerCell:MapRoomCell = null;
+         var flingerRange:Number = NaN;
+         var monsterId:String = null;
+         var amtAllCells:Number = NaN;
+         var amtCurCell:Number = NaN;
+         var amtAvailable:Number = NaN;
+         var amtUsed:Number = NaN;
+         var attackerCellUpdates:Object = null;
+         var homeCellUpdates:Object = null;
+         var cellUpdates:Object = [];
+         var resourceLoot:Object = {
                "r1": ATTACK._loot.r1.Get(),
                "r2": ATTACK._loot.r2.Get(),
                "r3": ATTACK._loot.r3.Get(),
                "r4": ATTACK._loot.r4.Get()
             };
-         for each (_loc3_ in GLOBAL._attackerCellsInRange)
+         for each (attackerCellData in GLOBAL._attackerCellsInRange)
          {
-            _loc5_ = _loc3_.cell;
-            if (_loc5_ && _loc5_.mine && Boolean(_loc5_.resources))
+            attackerCell = attackerCellData.cell;
+            if (attackerCell && attackerCell.mine && Boolean(attackerCell.resources))
             {
-               if (_loc5_.flingerRange.Get())
+               if (attackerCell.flingerRange.Get())
                {
-                  _loc6_ = POWERUPS.Apply(POWERUPS.ALLIANCE_DECLAREWAR, [_loc5_.flingerRange.Get()]);
-                  if (_loc6_ >= _loc3_.range)
+                  flingerRange = POWERUPS.Apply(POWERUPS.ALLIANCE_DECLAREWAR, [attackerCell.flingerRange.Get()]);
+                  if (flingerRange >= attackerCellData.range)
                   {
-                     for (_loc7_ in GLOBAL._attackerMapCreaturesStart)
+                     for (monsterId in GLOBAL._attackerMapCreaturesStart)
                      {
-                        if (Boolean(_loc5_.monsters[_loc7_]) && _loc5_.monsters[_loc7_].Get() > 0)
+                        if (Boolean(attackerCell.monsters[monsterId]) && attackerCell.monsters[monsterId].Get() > 0)
                         {
-                           if (GLOBAL._attackerMapCreaturesStart[_loc7_].Get() > ATTACK._curCreaturesAvailable[_loc7_])
+                           amtAllCells = GLOBAL._attackerMapCreaturesStart[monsterId].Get();
+                           amtCurCell = attackerCell.monsters[monsterId].Get();
+                           amtAvailable = ATTACK._curCreaturesAvailable[monsterId]; 
+                           if (ATTACK._flingerBucket[monsterId])
                            {
-                              if (GLOBAL._attackerMapCreaturesStart[_loc7_].Get() - ATTACK._curCreaturesAvailable[_loc7_] >= _loc5_.monsters[_loc7_].Get())
+                              // Monsters in the flinger's bucket have not been used yet, thus shouldn't be removed from cells.
+                              amtAvailable += ATTACK._flingerBucket[monsterId].Get();
+                           }
+                           amtUsed = amtAllCells - amtAvailable;
+                           if (amtAllCells > amtAvailable)
+                           {
+                              if (amtUsed >= amtCurCell)
                               {
-                                 GLOBAL._attackerMapCreaturesStart[_loc7_].Add(-_loc5_.monsters[_loc7_].Get());
-                                 _loc5_.monsterData.saved = GLOBAL.Timestamp();
-                                 delete _loc5_.monsters[_loc7_];
-                                 delete _loc5_.hpMonsters[_loc7_];
-                                 _loc5_.isDirty = true;
+                                 GLOBAL._attackerMapCreaturesStart[monsterId].Add(-amtCurCell);
+                                 attackerCell.monsterData.saved = GLOBAL.Timestamp();
+                                 delete attackerCell.monsters[monsterId];
+                                 delete attackerCell.hpMonsters[monsterId];
+                                 attackerCell.isDirty = true;
                               }
                               else
                               {
-                                 _loc5_.monsters[_loc7_].Add(-1 * (GLOBAL._attackerMapCreaturesStart[_loc7_].Get() - ATTACK._curCreaturesAvailable[_loc7_]));
-                                 _loc5_.hpMonsters[_loc7_] -= GLOBAL._attackerMapCreaturesStart[_loc7_].Get() - ATTACK._curCreaturesAvailable[_loc7_];
-                                 _loc5_.monsterData.saved = GLOBAL.Timestamp();
-                                 GLOBAL._attackerMapCreaturesStart[_loc7_].Set(ATTACK._curCreaturesAvailable[_loc7_]);
-                                 _loc5_.isDirty = true;
+                                 attackerCell.monsters[monsterId].Add(-amtUsed);
+                                 attackerCell.hpMonsters[monsterId] -= amtUsed;
+                                 attackerCell.monsterData.saved = GLOBAL.Timestamp();
+                                 GLOBAL._attackerMapCreaturesStart[monsterId].Set(amtAvailable);
+                                 attackerCell.isDirty = true;
                               }
                            }
                         }
                      }
                   }
                }
-               if (_loc5_.isDirty)
+               if (attackerCell.isDirty)
                {
-                  if (_loc5_.Check())
+                  if (attackerCell.Check())
                   {
-                     _loc5_.monsterData["housed"] = _loc5_.monsters;
-                     _loc5_.hpMonsterData["housed"] = _loc5_.hpMonsters;
-                     _loc5_.monsterData.saved = GLOBAL.Timestamp();
-                     _loc5_.hpMonsterData.saved = GLOBAL.Timestamp();
-                     _loc8_ = {
-                           "baseid": _loc5_.baseID,
-                           "m": _loc5_.hpMonsterData
+                     attackerCell.monsterData["housed"] = attackerCell.monsters;
+                     attackerCell.hpMonsterData["housed"] = attackerCell.hpMonsters;
+                     attackerCell.monsterData.saved = GLOBAL.Timestamp();
+                     attackerCell.hpMonsterData.saved = GLOBAL.Timestamp();
+                     attackerCellUpdates = {
+                           "baseid": attackerCell.baseID,
+                           "m": attackerCell.hpMonsterData
                         };
-                     if (_loc5_.isProtected)
+                     if (attackerCell.isProtected)
                      {
-                        _loc8_.p = 1;
-                        _loc5_.isProtected = 0;
+                        attackerCellUpdates.p = 1;
+                        attackerCell.isProtected = 0;
                      }
-                     _loc1_.push(_loc8_);
-                     _loc5_.isDirty = false;
+                     cellUpdates.push(attackerCellUpdates);
+                     attackerCell.isDirty = false;
                   }
                   else
                   {
-                     LOGGER.Log("err", "BASE.Save:  Dirty Cell " + _loc5_.cellX + "," + _loc5_.cellY + "does not check out before doing map update!  " + JSON.encode(_loc5_.hpResources));
+                     LOGGER.Log("err", "BASE.Save:  Dirty Cell " + attackerCell.cellX + "," + attackerCell.cellY + "does not check out before doing map update!  " + JSON.encode(attackerCell.hpResources));
                   }
                }
             }
          }
-         _loc4_ = MapRoom.homeCell as MapRoomCell;
-         if (_loc4_ && _loc4_.isProtected && (guardianFlung() || SiegeWeapons.didActivatWeapon || ResourceBombs.launchedBomb))
+         attackerHomeCell = MapRoom.homeCell as MapRoomCell;
+         if (attackerHomeCell && attackerHomeCell.isProtected && (guardianFlung() || SiegeWeapons.didActivatWeapon || ResourceBombs.launchedBomb))
          {
-            _loc4_.isProtected = 0;
-            _loc9_ = {
+            attackerHomeCell.isProtected = 0;
+            homeCellUpdates = {
                   "baseid": GLOBAL._homeBaseID,
-                  "m": _loc4_.hpMonsterData,
+                  "m": attackerHomeCell.hpMonsterData,
                   "p": 1
                };
-            _loc1_.push(_loc9_);
+            cellUpdates.push(homeCellUpdates);
          }
          if (GLOBAL._attackerCellsInRange.length == 0 && GLOBAL.mode === GLOBAL.e_BASE_MODE.ATTACK)
          {
             LOGGER.Log("err", "BASE.Save: No Cells in Range.");
          }
-         return _loc1_;
+         return cellUpdates;
       }
 
       private static function getPurchaseSaveData():Object
