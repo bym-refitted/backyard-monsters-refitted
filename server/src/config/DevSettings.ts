@@ -46,7 +46,7 @@ export const devConfig = {
   /*
    * Logs all missing assets and their paths to the server console.
    */
-  logMissingAssets: false,
+  logMissingAssets: true,
 
   /*
    * Sets whether the user's account should receive all unlockable event rewards.
