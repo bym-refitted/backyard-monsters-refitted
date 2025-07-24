@@ -1207,7 +1207,7 @@ package
                PLEASEWAIT.Hide();
                MapRoomManager.instance.ShowDelayed();
             }
-            if (BASE._needCurrentCell && GLOBAL._currentCell && !MapRoomManager.instance.isInMapRoom3)
+            if (BASE._needCurrentCell && GLOBAL._currentCell && !MapRoomManager.instance.isInMapRoom3 && BASE._saveCounterA == BASE._saveCounterB && !BASE._saving)
             {
                PLEASEWAIT.Hide();
                BASE._needCurrentCell = false;
