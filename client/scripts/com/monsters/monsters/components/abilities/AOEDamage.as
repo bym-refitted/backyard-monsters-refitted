@@ -2,7 +2,7 @@ package com.monsters.monsters.components.abilities
 {
    import com.monsters.interfaces.IAttackable;
    import com.monsters.monsters.components.Component;
-   import com.monsters.monsters.creeps.CreepBase;
+   import com.monsters.monsters.MonsterBase;
    import flash.geom.Point;
    
    public class AOEDamage extends Component
@@ -47,24 +47,26 @@ package com.monsters.monsters.components.abilities
 
       private function getAllTargets(ownerLocation:Point, initialTarget:IAttackable = null):Array
       {
-         if(this.m_includeInitialTarget || !initialTarget || !(initialTarget is CreepBase || initialTarget is BFOUNDATION))
-		   {
-            if(owner._friendly && initialTarget is CreepBase)
-            {
-               // Only get creeps for friendly/defending monsters, so they don't friendly-fire their yard's buildings.
-               return Targeting.getCreepsInRange(this.m_radiusOuter,ownerLocation,this.m_targetFlags);
-            }
-			   return Targeting.getTargetsInRange(this.m_radiusOuter,ownerLocation,this.m_targetFlags);
-		   }
-         if(initialTarget is CreepBase)
+         var targetFlags:int = this.m_targetFlags;
+         var ignoreCreep:MonsterBase = null;
+         var ignoreBuilding:BFOUNDATION = null;
+         if(owner._friendly && Boolean(targetFlags & Targeting.k_TARGETS_BUILDINGS) && !(initialTarget is BFOUNDATION))
          {
-            if(owner._friendly)
-            {
-               return Targeting.getCreepsInRange(this.m_radiusOuter,ownerLocation,this.m_targetFlags,initialTarget);
-            }
-            return Targeting.getTargetsInRange(this.m_radiusOuter,ownerLocation,this.m_targetFlags,initialTarget);
+            // Defending monsters will not hit their own base's buildings unless specifically targetting them.
+            targetFlags ^= Targeting.k_TARGETS_BUILDINGS;
          }
-         return Targeting.getTargetsInRange(this.m_radiusOuter,ownerLocation,this.m_targetFlags,null,initialTarget);
+         if(!this.m_includeInitialTarget)
+         {
+            if(initialTarget is MonsterBase)
+            {
+               ignoreCreep = initialTarget
+            }
+            else if(initialTarget is BFOUNDATION)
+            {
+               ignoreBuilding = initialTarget
+            }
+         }
+         return Targeting.getTargetsInRange(this.m_radiusOuter,ownerLocation,targetFlags,ignoreCreep,ignoreBuilding);
       }
    }
 }
