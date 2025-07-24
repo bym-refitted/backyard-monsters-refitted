@@ -5581,7 +5581,6 @@ package
                {
                   if (isMainYardOrInfernoMainYard)
                   {
-                     yardType = EnumYardType.OUTPOST;
                      _currentCellLoc = GLOBAL._mapOutpost[0];
                      GLOBAL._currentCell = null;
                      _needCurrentCell = true;
@@ -5598,7 +5597,6 @@ package
                         {
                            if (_loc3_ < GLOBAL._mapOutpostIDs.length - 1)
                            {
-                              yardType = EnumYardType.OUTPOST;
                               _currentCellLoc = GLOBAL._mapOutpost[_loc3_ + 1];
                               GLOBAL._currentCell = null;
                               _needCurrentCell = true;
