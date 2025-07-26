@@ -9,10 +9,24 @@ package com.monsters.monsters.champions
    public class Fomor extends ChampionBase
    {
        
-      
-      public function Fomor(param1:String, param2:Point, param3:Number, param4:Point = null, param5:Boolean = false, param6:BFOUNDATION = null, param7:int = 1, param8:int = 0, param9:int = 0, param10:int = 1, param11:int = 20000, param12:int = 0, param13:int = 1)
+      /*
+      param1 -> behaviour
+      param2 -> targetPosition
+      param3 -> targetRotation
+      param4 -> targetCenter
+      param5 -> friendly
+      param6 -> house
+      param7 -> level
+      param8 -> feeds
+      param9 -> feedTime
+      param10 -> creatureID
+      param11 -> health
+      param12 -> foodBonus
+      param13 -> powerLevel
+      */
+      public function Fomor(behaviour:String, targetPosition:Point, targetRotation:Number, targetCenter:Point = null, friendly:Boolean = false, house:BFOUNDATION = null, level:int = 1, feeds:int = 0, feedTime:int = 0, creatureID:int = 1, health:int = 20000, foodBonus:int = 0, powerLevel:int = 1)
       {
-         super(param1,param2,param3,param4,param5,param6,param7,param8,param9,param10,param11,param12,param13);
+         super(behaviour,targetPosition,targetRotation,targetCenter,friendly,house,level,feeds,feedTime,creatureID,health,foodBonus,powerLevel);
          attackDelayProperty.value = 8;
          if(_behaviour == "bounce")
          {
@@ -23,10 +37,13 @@ package com.monsters.monsters.champions
          addComponent(new AOEEnrage(250,1 + _buff * 2,_buff));
          attackFlags = Targeting.getOldStyleTargets(1);
       }
-      
+      /*
+      _loc2_ -> tickResult
+      param1 -> time delta?
+      */
       override public function tick(param1:int = 1) : Boolean
       {
-         var _loc2_:Boolean = super.tick(param1);
+         var tickResult:Boolean = super.tick(param1);
          switch(_behaviour)
          {
             case k_sBHVR_BUFF:
@@ -35,17 +52,17 @@ package com.monsters.monsters.champions
             case k_sBHVR_PEN:
                _hasTarget = false;
          }
-         return _loc2_;
+         return tickResult;
       }
-      
+      //_loc1_ -> distance
       override public function canShootCreep() : Boolean
       {
          if(_targetCreep == null)
          {
             return false;
          }
-         var _loc1_:Number = GLOBAL.QuickDistance(_targetCreep._tmpPoint,_tmpPoint);
-         if(_loc1_ > m_range)
+         var distance:Number = GLOBAL.QuickDistance(_targetCreep._tmpPoint,_tmpPoint);
+         if(distance > m_range)
          {
             return false;
          }
@@ -56,33 +73,38 @@ package com.monsters.monsters.champions
          return false;
       }
       
+      /*
+         _loc2_ -> currentBuilding
+         _loc3_ -> buildingFound
+         _loc4_ -> removed since its never used
+         _loc1_ -> buildings
+         _loc5_ -> creepFound (removed since its never used)
+      */
       public function findBuffTargets() : void
       {
-         var _loc2_:BFOUNDATION = null;
-         var _loc3_:Boolean = false;
-         var _loc4_:Array = null;
-         var _loc1_:Vector.<Object> = InstanceManager.getInstancesByClass(BFOUNDATION);
-         for each(_loc2_ in _loc1_)
+         var currentBuilding:BFOUNDATION = null;
+         var buildingFound:Boolean = false;
+         var buildings:Vector.<Object> = InstanceManager.getInstancesByClass(BFOUNDATION);
+         //if no building found theres no point in buffing anyone
+         for each(currentBuilding in buildings)
          {
-            if(_loc2_._class !== "decoration" && _loc2_._class !== "immovable" && _loc2_.health > 0 && _loc2_._class !== "enemy")
+            if(currentBuilding._class !== "decoration" && currentBuilding._class !== "immovable" && currentBuilding.health > 0 && currentBuilding._class !== "enemy")
             {
-               _loc3_ = true;
+               buildingFound = true;
             }
          }
-         if(!_loc3_)
+         if(!buildingFound)
          {
             changeModeRetreat();
             return;
          }
          _looking = true;
-         var _loc5_:Boolean = false;
          _targetCreeps = Targeting.getCreepsInRange(1500,_tmpPoint,Targeting.getOldStyleTargets(1),this);
          if(_targetCreeps.length > 0)
          {
             _targetCreeps.sortOn(["dist"],Array.NUMERIC);
             if(!(Boolean(_targetCreep) && _targetCreep.health > 0 && _targetCreep.health < _targetCreep.maxHealth))
             {
-               _loc5_ = true;
                while(_targetCreeps.length > 0 && (_targetCreeps[0].creep._behaviour == "heal" || _targetCreeps[0].creep.health == _targetCreeps[0].creep.maxHealth))
                {
                   _targetCreeps.shift();
@@ -104,7 +126,6 @@ package com.monsters.monsters.champions
          }
          if(_targetCreeps.length > 0)
          {
-            _loc5_ = false;
             _helpCreep = _targetCreeps[0].creep;
             if(_movement == "fly")
             {
@@ -119,7 +140,6 @@ package com.monsters.monsters.champions
          }
          else if(_helpCreep && _helpCreep.health > 0 && _helpCreep.health < _helpCreep.maxHealth)
          {
-            _loc5_ = false;
             if(_movement == "fly")
             {
                _waypoints = [_helpCreep._tmpPoint];
@@ -157,9 +177,9 @@ package com.monsters.monsters.champions
          }
       }
       
+      // _loc1_ -> removed since its never used
       override protected function doAttackDamage() : void
       {
-         var _loc1_:Number = 1;
          if(_creatureID == "G3")
          {
             if(Boolean(_targetCreep) && _targetCreep.health > 0)
@@ -179,26 +199,31 @@ package com.monsters.monsters.champions
          }
       }
       
-      override protected function rangedAttack(param1:ITargetable) : ITargetable
+      /*
+      _loc3_ -> fireball
+      _loc2_ -> startingPoint
+      param1 -> target
+      */
+      override protected function rangedAttack(target:ITargetable) : ITargetable
       {
-         var _loc3_:FIREBALL = null;
-         var _loc2_:Point = Point.interpolate(_tmpPoint.add(new Point(0,-_altitude)),_targetPosition,0.8);
-         if(param1 is BFOUNDATION)
+         var fireball:FIREBALL = null;
+         var startingPoint:Point = Point.interpolate(_tmpPoint.add(new Point(0,-_altitude)),_targetPosition,0.8);
+         if(target is BFOUNDATION)
          {
-            _loc3_ = FIREBALLS.Spawn(_loc2_,_targetPosition,_targetBuilding,8,damage,0,0,FIREBALLS.TYPE_FIREBALL,this);
+            fireball = FIREBALLS.Spawn(startingPoint,_targetPosition,_targetBuilding,8,damage,0,0,FIREBALLS.TYPE_FIREBALL,this);
          }
          else
          {
-            _loc3_ = FIREBALLS.Spawn2(_loc2_,_targetCreep._tmpPoint,_targetCreep,8,damage,0,FIREBALLS.TYPE_FIREBALL,1,this);
+            fireball = FIREBALLS.Spawn2(startingPoint,_targetCreep._tmpPoint,_targetCreep,8,damage,0,FIREBALLS.TYPE_FIREBALL,1,this);
          }
          SOUNDS.Play("hit" + int(1 + Math.random() * 3),0.1 + Math.random() * 0.1);
          FIREBALLS._fireballs[FIREBALLS._id - 1]._graphic.gotoAndStop(3);
-         return _loc3_;
+         return fireball;
       }
       
+      // _loc1_ removed since its never used
       public function tickBBuff() : void
       {
-         var _loc1_:Number = 1;
          if(health <= 0)
          {
             Targeting.CreepCellDelete(_id,node);
