@@ -35,7 +35,7 @@ package
       {
          var _loc1_:RasterData = null;
          super.SetProps();
-         damageProperty.value = _buildingProps.damage[0];
+         damageProperty.value = _buildingProps.damage[0].Get();
          if(GLOBAL.mode != GLOBAL.e_BASE_MODE.BUILD)
          {
             _mc.visible = false;
