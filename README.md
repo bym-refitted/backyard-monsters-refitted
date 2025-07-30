@@ -33,7 +33,7 @@ Choose your setup method:
 | 🖥️ **Server Setup** | [Server & Database Configuration](https://github.com/bym-refitted/backyard-monsters-refitted/wiki/Server-&-Database-Setup) |
 | 🎮 **Client Setup** | [Client Recompilation Guide](https://github.com/bym-refitted/backyard-monsters-refitted/wiki/Client-Setup-(Recomp)) |
 | 🐳 **Docker Setup** | [Docker Configuration](https://github.com/bym-refitted/backyard-monsters-refitted/wiki/Docker-Setup) |
-| 📱 **Android Setup** | [Android APK Compilation](https://github.com/bym-refitted/backyard-monsters-refitted/wiki/Android-Application-Setup) |
+| 📱 **Android Setup** | [Android APK Compilation](https://github.com/bym-refitted/backyard-monsters-refitted/wiki/Android-APK-Setup) |
 
 <br>
 
