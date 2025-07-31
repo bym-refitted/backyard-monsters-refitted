@@ -13,10 +13,10 @@
 ![Postgres](https://img.shields.io/badge/postgres-%23316192.svg?style=for-the-badge&logo=postgresql&logoColor=white)
 ![ActionScript](https://img.shields.io/badge/ActionScript-%23DD0031.svg?style=for-the-badge)
 
-## Repo Information
-We are running a lightweight [Koa](https://koajs.com/) server written in [TypeScript](https://www.typescriptlang.org/), with a [PostgreSQL](https://www.postgresql.org/) database leveraging [MikroORM](https://mikro-orm.io/), as our ORM of choice. The client is written in [ActionScript 3](https://help.adobe.com/en_US/FlashPlatform/reference/actionscript/3/index.html) and uses [Adobe FlashPlayer](https://www.adobe.com/products/flashplayer/end-of-life.html) to display its content. 
-
-This repository contains the entire modified SWF (Shockwave Flash) client files, along with the corresponding server component rebuilt from the ground up for Kixeye's 2010 Flash client, Backyard Monsters. The client is running on version 128.5690.
+## 📖 About This Project
+This repository is a complete digital preservation and restoration of Backyard Monsters, Kixeye’s 2010 Flash-based strategy game. It features a reconstructed client, decompiled from original game files, alongside a custom-built server component implemented through extensive reverse engineering efforts.
+The client runs on version 128.5690 and remains fully compatible with the original ActionScript 3 codebase, rendered through Adobe Flash Player. The backend is powered by Node.js, using the Koa framework, with a PostgreSQL database managed via MikroORM and written entirely in TypeScript.
+This project aims to keep a piece of gaming history alive and playable for future generations.
 
 <br>
 
@@ -25,31 +25,25 @@ We recommend to download our game launcher which can be installed from our websi
 
 <br>
 
+## 🛠️ Setup & Installation
+Choose your setup method:
 
-## 🗄️ Server setup
+| Setup Type | Documentation |
+|------------|---------------|
+| 🖥️ **Server Setup** | [Server & Database Configuration](https://github.com/bym-refitted/backyard-monsters-refitted/wiki/Server-&-Database-Setup) |
+| 🎮 **Client Setup** | [Client Recompilation Guide](https://github.com/bym-refitted/backyard-monsters-refitted/wiki/Client-Setup-(Recomp)) |
+| 🐳 **Docker Setup** | [Docker Configuration](https://github.com/bym-refitted/backyard-monsters-refitted/wiki/Docker-Setup) |
+| 📱 **Android Setup** | [Android APK Compilation](https://github.com/bym-refitted/backyard-monsters-refitted/wiki/Android-APK-Setup) |
 
-The server can either be set up manually by installing the required components on your machine, or through [Docker Compose](https://github.com/bym-refitted/backyard-monsters-refitted/edit/main/README.md#-docker-deployment).
+<br>
 
-Follow the instructions carefully on our [server setup & configuration](https://github.com/bym-refitted/backyard-monsters-refitted/wiki/Server-&-Database-Setup) Wiki page.
+## 🤝 Contributing
 
-<br />
+We welcome contributions from the community! Whether you're fixing bugs, adding features, or improving documentation, your help is appreciated.
 
-## 💻 Client Setup
-Follow the instructions carefully on our [client setup & configuration](https://github.com/bym-refitted/backyard-monsters-refitted/wiki/Client-Setup-&-Compilation) Wiki page.
+**Ready to contribute?** Please read our [Contributing Guidelines](./CONTRIBUTING.md) to get started.
 
-To contribute you will need to copy your changes to the src directory. If you are wondering why we are using this horrible workflow please see [CONTRIBUTING.md](./CONTRIBUTING.md) for more information. If you are able to figure out how to compile directly to swf without unlinking all assets, please let us know.
-
-<br />
-
-## 🐳 Docker
-For working with Docker directly, follow the instructions carefully on our [Docker Deployment](https://github.com/bym-refitted/backyard-monsters-refitted/wiki/Docker-Deployment) Wiki page.
-
-<br />
-
-## 📱 Android Setup
-To compile an APK for Android follow our [Android Application Setup](https://github.com/bym-refitted/backyard-monsters-refitted/wiki/Android-Application-Setup) Wiki page.
-
-<br />
+<br>
 
 ## Preservation of digital heritage
 - [Exemption to PCCPSACT](https://www.federalregister.gov/documents/2018/10/26/2018-23241/exemption-to-prohibition-on-circumvention-of-copyright-protection-systems-for-access-control), exemptions to the provision of the Digital Millennium Copyright Act (“DMCA”).
@@ -58,6 +52,7 @@ To compile an APK for Android follow our [Android Application Setup](https://git
 - [The Internet Archive](https://archive.org/), a digital library of Internet sites and other cultural artifacts in digital form.
 - [Flashpoint Archive](https://flashpointarchive.org/), the webgame preservation project.
 - [Adobe Flash Player Archive](https://archive.org/download/flashplayerarchive/), the Adobe Inc. archive.org Flash Player Archive.
+- [Stop Killing Games](https://eci.ec.europa.eu/045/public/#/screen/home), a campaign advocating for the legal right to preserve and play digital games.
 
 <br />
 
@@ -65,6 +60,6 @@ To compile an APK for Android follow our [Android Application Setup](https://git
 
 ```
 Backyard Monsters preservation project.
-Copyright (C) 2024 | The Backyard Monsters Refitted team
+Copyright (C) 2025 | The Backyard Monsters Refitted team
 See the GNU General Public License <https://www.gnu.org/licenses/>.
 ```
