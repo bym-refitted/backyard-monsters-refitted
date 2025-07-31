@@ -45,7 +45,7 @@ package
 
       public static var cdnUrl:String = "http://localhost:3001/";
 
-      public static var apiVersionSuffix:String = "v1.2.6-beta/";
+      public static var apiVersionSuffix:String = "v1.2.9-beta/";
 
       public static var connectionCounter:int;
 
@@ -997,7 +997,8 @@ package
 
       public static function get isFullScreen():Boolean
       {
-         return _ROOT.stage.displayState === StageDisplayState.FULL_SCREEN;
+         return _ROOT.stage.displayState === StageDisplayState.FULL_SCREEN ||
+            _ROOT.stage.displayState === StageDisplayState.FULL_SCREEN_INTERACTIVE;
       }
 
       public static function goFullScreen(param1:MouseEvent = null):void
@@ -1206,7 +1207,7 @@ package
                PLEASEWAIT.Hide();
                MapRoomManager.instance.ShowDelayed();
             }
-            if (BASE._needCurrentCell && GLOBAL._currentCell && !MapRoomManager.instance.isInMapRoom3)
+            if (BASE._needCurrentCell && GLOBAL._currentCell && !MapRoomManager.instance.isInMapRoom3 && BASE._saveCounterA == BASE._saveCounterB && !BASE._saving)
             {
                PLEASEWAIT.Hide();
                BASE._needCurrentCell = false;
