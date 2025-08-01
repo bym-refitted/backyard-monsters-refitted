@@ -6,7 +6,7 @@
   "license": "GPL-3.0-only",
   "main": "dist/server.js",
   "scripts": {
-    "build": "rimraf dist && npx tsc ",
+    "build": "rimraf dist && node scripts/build-env.mjs && npx tsc",
     "start": "node dist/server.js",
     "preserve": "npm run build",
     "serve": "concurrently \"npx tsc -w\" \"npm run compile-sass\" \"nodemon dist/server.js\"",
