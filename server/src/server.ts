@@ -11,7 +11,6 @@ import router from "./app.routes";
 import { createClient } from "redis";
 import { EntityManager, MikroORM, RequestContext } from "@mikro-orm/core";
 import { errorLog, logging } from "./utils/logger";
-import { firstRunEnv } from "./utils/firstRunEnv";
 import { ascii_node } from "./utils/ascii_art";
 import { ErrorInterceptor } from "./middleware/clientSafeError";
 import { processLanguagesFile } from "./middleware/processLanguageFile";
@@ -47,8 +46,6 @@ const api = new Router();
 api.get("/", (ctx: Context) => (ctx.body = {}));
 
 (async () => {
-  await firstRunEnv();
-
   ORMContext.orm = await MikroORM.init<PostgreSqlDriver>(ormConfig);
   ORMContext.em = ORMContext.orm.em;
 
