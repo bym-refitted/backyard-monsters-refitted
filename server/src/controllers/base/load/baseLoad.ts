@@ -45,12 +45,13 @@ export const baseLoad: KoaController = async (ctx) => {
         break;
 
       case BaseMode.VIEW:
+      case BaseMode.IVIEW:
         baseSave = await baseModeView(baseid);
         break;
 
       case BaseMode.ATTACK:
         if (!ctx.meetsDiscordAgeCheck) throw discordAgeErr();
-        
+
         await validateAttack(user, attackData);
         baseSave = await baseModeAttack(user, baseid);
         break;
@@ -65,7 +66,12 @@ export const baseLoad: KoaController = async (ctx) => {
 
       case BaseMode.IWMVIEW:
         baseSave = await infernoModeView(user, baseid);
-      break;
+        break;
+
+      case BaseMode.IATTACK:
+        await validateAttack(user, attackData);
+        // TODO: Implement inferno attack logic
+        break;
 
       case BaseMode.IWMATTACK:
         await validateAttack(user, attackData);
