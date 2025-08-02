@@ -1,20 +1,47 @@
-## 📝 Guidelines
-- If possible, try to keep modifications made to the binary (SWF) to a minimum, as it is impossible to see what has been changed in a pull request.
+# Contributing to Backyard Monsters Refitted
 
-- Ideally, most of the changes should be made to the server responses that the game expects in <code>server/src/controllers</code>
+Welcome to the Backyard Monsters Refitted development team!
 
-- There may be times when we need to make changes to the binary, if this is the case, your changes must be made in the <code>src</code> folder as reference, this folder holds all the game files (decompiled) -  we will then compile the binary on our end and update on git to ensure that the changes you made are working as expected.</br></br>
-<b>Example:</b> You fixed something in the <code>BASE.as</code> file within the game's binary. Make sure you go to the <code>src</code> folder and update that change there also, as this is what will be in your pull reqeust!
+## 📝 Development Guidelines
 
-<br/>
+We recommend all developers compile the client application using VSCode, as outlined in our [Wiki](https://github.com/bym-refitted/backyard-monsters-refitted/wiki). This allows for seamless development and makes it easy for us to track your changes.
 
-## 🔌 How to push code changes
-- First, make sure you checkout directly from the branch you intend to make changes to, your branch name should be formatted like so: <b>feature/whatever_change_you_made</b>
+### Code Standards
+We expect developers to follow the coding style and standards already established in the codebase:
+- Use the ORM provided for database queries and operations
+- Utilize proper TypeScript features (interfaces, type definitions)
+- Use JSDoc comments over single-line comments
+- Keep logic modular and concise
+- Understand what you're writing and the problem it solves
 
-- Make sure you include a meaningful commit message! If you find yourself with more than 3 commits, please ensure to squash your commits into one.
+Remember, other developers will need to work with your code, so please make it readable and maintainable. **We will not accept subpar pull requests.**
 
-- Raise a pull request to merge your changes into the desired branch.
+### Communication
+Communication is key! We have a Discord channel where developers can ask questions and solve issues together. Please check our Wiki first, then ask if you're unsure about anything.
 
-- Please <b>DO NOT</b> include the game's binary in your pull request, as mentioned any changes you make should be in <code>src</code>
+<br>
 
-<br/>
+## 🔀 Pull Requests
+
+### Branch Setup
+- Checkout directly from the branch you intend to make changes to
+- Use proper branch naming: `feature/your-change`, `bugfix/issue-description`, `hotfix/urgent-fix`
+
+### Requirements
+- **Pull Request Description Required**: Your PR must include a detailed description outlining:
+  - What changes you made
+  - Why the changes were necessary
+  - How you tested the changes
+- Include meaningful commit messages
+- **DO NOT** include any `.swf` files or game binaries - changes should only be in `src`
+
+### Feature Tags
+Use appropriate tags for your changes:
+- `experimental` - New features in testing
+- `bugfix` - Bug fixes
+- `performance` - Performance improvements
+- `security` - Security-related changes
+
+---
+
+*We maintain high standards to ensure quality contributions. Thank you for helping make Backyard Monsters Refitted better!*
