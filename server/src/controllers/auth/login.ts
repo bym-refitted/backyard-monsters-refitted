@@ -29,8 +29,7 @@ import type { StringValue } from "ms";
  * @returns {Promise<User>} - A promise that resolves to the authenticated user record.
  * @throws {Error} - Throws an error if the token is invalid or the user does not exist.
  */
-const authenticateWithToken = async (ctx: Context) => {
-  const { token } = UserLoginSchema.parse(ctx.request.body);
+const authenticateWithToken = async (token: string) => {
   const { user } = verifyJwtToken(token);
 
   let userRecord = await ORMContext.em.findOne(User, { email: user.email });
@@ -56,11 +55,7 @@ export const login: KoaController = async (ctx) => {
   let { email, password, token } = UserLoginSchema.parse(ctx.request.body);
   let user: User | null = null;
 
-  if (token) {
-    try {
-      user = await authenticateWithToken(ctx);
-    } catch (err) {}
-  }
+  if (token) user = await authenticateWithToken(token);
 
   if (!user) {
     user = await ORMContext.em.findOne(User, { email });
