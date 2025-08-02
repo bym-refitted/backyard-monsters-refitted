@@ -2,8 +2,7 @@ import z from "zod";
 
 const emailError = "Invalid email address";
 
-const uppercaseRegex = /.*[A-Z].*/;
-const specialCharRegex = /.*[`~<>?,./!@#$%^&*()\\-_+="'|{}\\[\\];:\\\\].*/;
+const passwordRegex = /^(?=.*[A-Z])(?=.*[\W_])(?=.{8,})/;
 const passwordLengthError = "Password must be at least 8 characters long";
 const passwordError =
   "Password must contain at least one uppercase letter and one special character";
@@ -14,14 +13,14 @@ const passwordError =
  * - Must contain at least one uppercase letter.
  * - Must contain at least one special character.
  */
-const passwordSchema = z
-  .string()
-  .trim()
-  .min(8, passwordLengthError)
-  .regex(uppercaseRegex, passwordError)
-  .regex(specialCharRegex, passwordError)
-  .optional();
-  
+const passwordSchema = z.preprocess((arg) => {
+  if (typeof arg === "string" && arg === "") {
+    return undefined;
+  } else {
+    return arg;
+  }
+}, z.string().trim().min(8, passwordLengthError).regex(new RegExp(".*[A-Z].*"), passwordError).regex(new RegExp(".*[`~<>?,./!@#$%^&*()\\-_+=\"'|{}\\[\\];:\\\\].*"), passwordError).optional());
+
 /**
  * Schema to validate email addresses.
  * - Must be a valid email format.
