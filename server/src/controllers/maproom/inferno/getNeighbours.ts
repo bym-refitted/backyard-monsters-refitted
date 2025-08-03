@@ -13,7 +13,6 @@ import { errorLog } from "../../../utils/logger";
 
 interface NeighborResponse extends NeighborData {
   type: BaseType.INFERNO;
-  description: string;
   wm: number;
   friend: number;
   pic: string;
@@ -60,7 +59,7 @@ export const getNeighbours: KoaController = async (ctx) => {
       !infernoMaproom.neighbors.length;
 
     if (isCacheExpired) {
-      const foundNeighbors = await findNeighbors(user);
+      const foundNeighbors = await findNeighbours(user);
       infernoMaproom.neighbors = foundNeighbors;
       infernoMaproom.neighborsLastCalculated = currentDate;
 
@@ -71,7 +70,6 @@ export const getNeighbours: KoaController = async (ctx) => {
       (neighbor) => ({
         ...neighbor,
         type: BaseType.INFERNO,
-        description: "",
         wm: 0,
         friend: 0,
         pic: neighbor.pic_square || "",
@@ -107,7 +105,7 @@ export const getNeighbours: KoaController = async (ctx) => {
  * @param {User} user - The authenticated user to find neighbors for
  * @returns {Promise<NeighborData[]>} - Array of neighbor data suitable for caching
  */
-const findNeighbors = async (user: User): Promise<NeighborData[]> => {
+const findNeighbours = async (user: User): Promise<NeighborData[]> => {
   const { infernosave, save } = user;
 
   if (!save.worldid) return [];
@@ -121,23 +119,40 @@ const findNeighbors = async (user: User): Promise<NeighborData[]> => {
   const minLevel = Math.max(1, userLevel - levelRange);
   const maxLevel = userLevel + levelRange;
 
+  // Find users who have main saves in the same world
+  const sameWorldUsers = await ORMContext.em.find(
+    Save,
+    {
+      type: BaseType.MAIN,
+      worldid: save.worldid,
+      userid: { $ne: user.userid },
+    },
+    {
+      limit: 500,
+      orderBy: { lastupdateAt: "DESC" },
+    }
+  );
+
+  const sameWorldUserIds = sameWorldUsers.map((s) => s.userid);
+
+  if (sameWorldUserIds.length === 0) return [];
+
   const validNeighbours: Array<{ save: Save; level: number }> = [];
   const userIds = new Set<number>();
 
   // Get same-world inferno players within level range
-  const worldNeighbours = await ORMContext.em.find(
+  const infernoUserSaves = await ORMContext.em.find(
     Save,
     {
       type: BaseType.INFERNO,
-      userid: { $ne: user.userid },
-      worldid: save.worldid,
+      userid: { $in: sameWorldUserIds },
     },
     {
-      limit: 60,
+      limit: 150,
     }
   );
 
-  for (const neighbourSave of worldNeighbours) {
+  for (const neighbourSave of infernoUserSaves) {
     const neighbourLevel = calculateBaseLevel(
       neighbourSave.points,
       neighbourSave.basevalue
