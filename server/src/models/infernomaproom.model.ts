@@ -15,6 +15,15 @@ export interface TribeData {
   destroyedAt?: number;
 }
 
+export interface NeighborData {
+  userid: number;
+  baseid: string;
+  level: number;
+  username: string;
+  pic_square?: string;
+  lastupdateAt: Date;
+}
+
 @Entity({ tableName: "inferno_maproom" })
 export class InfernoMaproom {
   @PrimaryKey()
@@ -22,6 +31,12 @@ export class InfernoMaproom {
 
   @Property({ type: "json", nullable: true })
   tribedata: TribeData[] = [];
+
+  @Property({ type: "json", nullable: true })
+  neighbors: NeighborData[] = [];
+
+  @Property({ nullable: true })
+  neighborsLastCalculated?: Date;
 
   @Property()
   createdAt: Date = new Date();
