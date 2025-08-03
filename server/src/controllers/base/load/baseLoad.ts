@@ -69,14 +69,17 @@ export const baseLoad: KoaController = async (ctx) => {
         break;
 
       case BaseMode.IATTACK:
+        if (!ctx.meetsDiscordAgeCheck) throw discordAgeErr();
+
         await validateAttack(user, attackData);
-        // TODO: Implement inferno attack logic
+        baseSave = await infernoModeAttack(user, baseid);
         break;
 
       case BaseMode.IWMATTACK:
         await validateAttack(user, attackData);
         baseSave = await infernoModeAttack(user, baseid);
         break;
+        
       default:
         throw new Error(`Base type not handled, type: ${type}.`);
     }
@@ -105,7 +108,10 @@ export const baseLoad: KoaController = async (ctx) => {
 
     // Only include user save data if the base belongs to the current user
     // and is not an inferno base
-    if (baseSave.type !== BaseType.INFERNO && user.userid === filteredSave.userid) {
+    if (
+      baseSave.type !== BaseType.INFERNO &&
+      user.userid === filteredSave.userid
+    ) {
       Object.assign(responseBody, mapUserSaveData(user));
     }
 

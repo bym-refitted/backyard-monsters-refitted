@@ -25,8 +25,8 @@ export const createAttackLog = async (attacker: User, defender: User, save: Save
     defender_pic_square: defender.pic_square,
 
     type: save.type,
-    x: save.cell.x,
-    y: save.cell.y,
+    x: save.cell?.x || null,
+    y: save.cell?.y || null,
 
     loot: {},
     attackreport: {},
