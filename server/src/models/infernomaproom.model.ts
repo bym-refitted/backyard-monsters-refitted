@@ -15,7 +15,7 @@ export interface TribeData {
   destroyedAt?: number;
 }
 
-export interface NeighborData {
+export interface NeighbourData {
   userid: number;
   baseid: string;
   level: number;
@@ -33,7 +33,7 @@ export class InfernoMaproom {
   tribedata: TribeData[] = [];
 
   @Property({ type: "json", nullable: true })
-  neighbors: NeighborData[] = [];
+  neighbors: NeighbourData[] = [];
 
   @Property({ nullable: true })
   neighborsLastCalculated?: Date;
