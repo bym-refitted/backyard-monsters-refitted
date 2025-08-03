@@ -151,7 +151,7 @@ const findNeighbours = async (user: User): Promise<NeighborData[]> => {
     }
   }
 
-  // Fetch user data for all valid neighbours in one query
+  // Fetch users for all valid neighbours
   const neighbourUsers = await ORMContext.em.find(User, {
     userid: { $in: Array.from(userIds) },
   });
@@ -159,7 +159,6 @@ const findNeighbours = async (user: User): Promise<NeighborData[]> => {
   const users = new Map<number, User>();
   neighbourUsers.forEach((user) => users.set(user.userid, user));
 
-  // Build cached neighbor data
   const cachedNeighbors: NeighborData[] = [];
 
   for (const neighbor of validNeighbours) {
