@@ -7,21 +7,13 @@ import {
   Property,
 } from "@mikro-orm/core";
 import { User } from "./user.model";
+import { NeighbourData } from "../services/maproom/inferno/createNeighbourData";
 
 export interface TribeData {
   baseid: string;
   tribeHealthData: Record<string, number>;
   destroyed?: number;
   destroyedAt?: number;
-}
-
-export interface NeighbourData {
-  userid: number;
-  baseid: string;
-  level: number;
-  username: string;
-  pic_square?: string;
-  lastupdateAt: Date;
 }
 
 @Entity({ tableName: "inferno_maproom" })
