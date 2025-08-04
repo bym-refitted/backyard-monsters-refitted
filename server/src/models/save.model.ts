@@ -529,7 +529,8 @@ export class Save {
     "buildinghealthdata",
     "buildingresources",
     "attackreport",
-    "attackersiege"
+    "attackersiege",
+    "attackcreatures"
   ];
 
   public static createMainSave = async (
