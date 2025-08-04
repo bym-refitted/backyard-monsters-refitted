@@ -2,24 +2,15 @@ import { KoaController } from "../../../utils/KoaController";
 import { Status } from "../../../enums/StatusCodes";
 import { User } from "../../../models/user.model";
 import { Save } from "../../../models/save.model";
-import {
-  InfernoMaproom,
-  NeighbourData,
-} from "../../../models/infernomaproom.model";
+import { InfernoMaproom } from "../../../models/infernomaproom.model";
 import { ORMContext } from "../../../server";
 import { BaseType } from "../../../enums/Base";
 import { calculateBaseLevel } from "../../../services/base/calculateBaseLevel";
 import { errorLog } from "../../../utils/logger";
-
-interface NeighbourResponse extends NeighbourData {
-  type: BaseType.INFERNO;
-  wm: number;
-  friend: number;
-  pic: string;
-  basename: string;
-  saved: Date;
-  attackpermitted: number;
-}
+import {
+  NeighbourData,
+  createNeighbourData,
+} from "../../../services/maproom/inferno/createNeighbourData";
 
 /**
  * Cache validity period for inferno neighbours.
@@ -63,24 +54,11 @@ export const getNeighbours: KoaController = async (ctx) => {
       await ORMContext.em.persistAndFlush(infernoMaproom);
     }
 
-    const neighbours: NeighbourResponse[] = infernoMaproom.neighbors.map(
-      (neighbour) => ({
-        ...neighbour,
-        type: BaseType.INFERNO,
-        wm: 0,
-        friend: 0,
-        pic: neighbour.pic_square || "",
-        basename: `${neighbour.username}`,
-        saved: neighbour.lastupdateAt,
-        attackpermitted: 1,
-      })
-    );
-
     ctx.status = Status.OK;
     ctx.body = {
       error: 0,
       wmbases: [],
-      bases: neighbours,
+      bases: infernoMaproom.neighbors,
     };
   } catch (error) {
     errorLog("Error fetching inferno neighbours:", error);
@@ -160,16 +138,11 @@ const findNeighbours = async (user: User): Promise<NeighbourData[]> => {
 
   for (const neighbour of validNeighbours) {
     const neighbourUser = users.get(neighbour.save.userid);
+    const { save, level } = neighbour;
 
     if (neighbourUser) {
-      cachedNeighbours.push({
-        userid: neighbour.save.userid,
-        baseid: neighbour.save.baseid,
-        level: neighbour.level,
-        username: neighbourUser.username,
-        pic_square: neighbourUser.pic_square || "",
-        lastupdateAt: neighbour.save.lastupdateAt,
-      });
+      const neighbourData = createNeighbourData(save, neighbourUser, level);
+      cachedNeighbours.push(neighbourData);
     }
   }
 
