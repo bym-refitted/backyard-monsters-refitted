@@ -6,7 +6,6 @@ export interface NeighbourData {
   baseid: string;
   level: number;
   username: string;
-  lastupdateAt: number;
   attacksto?: number;
   attacksfrom?: number;
   helpsto?: number;
@@ -48,7 +47,6 @@ export const createNeighbourData = (save: Save, user: User, level: number) => {
     basename: user.username,
     ownerName: user.username,
     pic: user.pic_square || "",
-    lastupdateAt: timestamp,
     saved: timestamp,
     seentime: timestamp,
     baseseed: Math.floor(Math.random() * 999999) + 1,
