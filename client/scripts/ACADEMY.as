@@ -104,7 +104,7 @@ package
                         _loc3_ = true;
                         _loc4_ = KEYS.Get("acad_err_upgrade");
                         _loc5_ = KEYS.Get("acad_err_upgrade");
-                        if(BASE.isInfernoMainYardOrOutpost && GLOBAL.player.m_upgrades[param1].level >= 4)
+                        if(BASE.isInfernoMainYardOrOutpost && GLOBAL.player.m_upgrades[param1].level >= 5)
                         {
                            _loc3_ = true;
                            _loc4_ = KEYS.Get("acad_err_fullytrained");
