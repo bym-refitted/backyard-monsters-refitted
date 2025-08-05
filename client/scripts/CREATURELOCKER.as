@@ -724,7 +724,7 @@ package
                "description":"mi_Balthazar_desc",
                "stream":["mi_Balthazar_stream","mi_Balthazar_streambody","quests/balthazar.png"],
                "trainingCosts":[[614400,86400],[1228800,172800],[1843200,259200],[2457600,345600],[3686400,518400]],
-               "movement":"fly",
+               "movement":"fly_low",
                "pathing":"direct",
                "props":{
                   "speed":[4.5],
