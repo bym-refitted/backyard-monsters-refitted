@@ -198,6 +198,19 @@ package
          _guardianList.length = 0;
       }
       
+      public static function get _hasLivingGuardian() : Boolean
+      {
+         var idx:int = 0;
+         while(idx < _guardianList.length)
+         {
+            if(Boolean(_guardianList[idx]) && _guardianList[idx].health > 0)
+            {
+               return true;
+            }
+         }
+         return false;
+      }
+
       public static function get _guardian() : ChampionBase
       {
          var _loc1_:int = 0;
