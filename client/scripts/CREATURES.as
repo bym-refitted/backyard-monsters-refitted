@@ -200,10 +200,9 @@ package
       
       public static function get _hasLivingGuardian() : Boolean
       {
-         var idx:int = 0;
-         while(idx < _guardianList.length)
+         for(var idx:int = 0; idx < _guardianList.length; idx++)
          {
-            if(Boolean(_guardianList[idx]) && _guardianList[idx].health > 0)
+            if(_guardianList[idx] && _guardianList[idx].health > 0)
             {
                return true;
             }
