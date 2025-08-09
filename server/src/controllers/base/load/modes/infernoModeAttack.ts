@@ -6,6 +6,7 @@ import { ORMContext } from "../../../../server";
 import { createAttackLog } from "../../../../services/base/createAttackLog";
 import { getCurrentDateTime } from "../../../../utils/getCurrentDateTime";
 import { AttackDetails } from "./baseModeAttack";
+import { addAttackerAsNeighbor } from "../../../../services/maproom/inferno/addAttackerAsNeighbor";
 import {
   InfernoMaproom,
   TribeData,
@@ -46,13 +47,16 @@ export const infernoModeAttack = async (user: User, baseid: string) => {
   save.attacks.push(attackDetails);
   save.attackid = Math.floor(Math.random() * 99999) + 1;
 
-  // Create an attack log for the attack
   const defender = await ORMContext.em.findOne(User, {
     userid: save.saveuserid,
   });
 
   if (!defender) throw new Error("Defender user not found.");
-  await createAttackLog(user, defender, save);
+
+  await Promise.all([
+    addAttackerAsNeighbor(user, defender.userid),
+    createAttackLog(user, defender, save),
+  ]);
 
   await ORMContext.em.persistAndFlush(save);
   return save;
