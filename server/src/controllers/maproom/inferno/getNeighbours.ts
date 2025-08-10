@@ -37,6 +37,12 @@ export const getNeighbours: KoaController = async (ctx) => {
   await ORMContext.em.populate(user, ["save", "infernosave"]);
 
   try {
+    if (!user.save.worldid) {
+      ctx.status = Status.OK;
+      ctx.body = { error: 0, bases: [] };
+      return;
+    }
+
     let infernoMaproom = await ORMContext.em.findOne(InfernoMaproom, {
       userid: user.userid,
     });
