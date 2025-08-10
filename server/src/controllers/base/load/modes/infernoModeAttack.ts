@@ -6,7 +6,7 @@ import { ORMContext } from "../../../../server";
 import { createAttackLog } from "../../../../services/base/createAttackLog";
 import { getCurrentDateTime } from "../../../../utils/getCurrentDateTime";
 import { AttackDetails } from "./baseModeAttack";
-import { addAttackerAsNeighbor } from "../../../../services/maproom/inferno/addAttackerAsNeighbor";
+import { addAttackerAsNeighbour } from "../../../../services/maproom/inferno/addAttackerAsNeighbour";
 import {
   InfernoMaproom,
   TribeData,
@@ -56,7 +56,7 @@ export const infernoModeAttack = async (user: User, baseid: string) => {
 
 
   await Promise.all([
-    addAttackerAsNeighbor(user, defender),
+    addAttackerAsNeighbour(user, defender),
     createAttackLog(user, defender, save),
   ]);
 

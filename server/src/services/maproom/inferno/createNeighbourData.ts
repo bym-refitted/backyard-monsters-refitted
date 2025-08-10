@@ -49,7 +49,7 @@ export const createNeighbourData = (save: Save, user: User, level: number) => {
     pic: user.pic_square || "",
     saved: timestamp,
     seentime: timestamp,
-    baseseed: Math.floor(Math.random() * 999999) + 1,
+    baseseed: save.userid, 
     attacksto: 0,
     attacksfrom: 0,
     helpsto: 0,
