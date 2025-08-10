@@ -24,7 +24,7 @@ export class InfernoMaproom {
   @Property({ type: "json", nullable: true })
   tribedata: TribeData[] = [];
 
-  @Property({ type: "json", defaultRaw: "'[]'::json" })
+  @Property({ type: "json", defaultRaw: "'[]'::jsonb" })
   neighbors: NeighbourData[] = [];
 
   @Property({ nullable: true })
