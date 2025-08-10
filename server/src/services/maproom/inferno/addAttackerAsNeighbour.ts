@@ -16,7 +16,7 @@ import { createNeighbourData } from "./createNeighbourData";
  * @param {User} attacker - The user who initiated the attack
  * @param {number} defenderUserId - The userid of the player who was attacked
  */
-export const addAttackerAsNeighbor = async (attacker: User, defender: User) => {
+export const addAttackerAsNeighbour = async (attacker: User, defender: User) => {
   const [defenderMaproom, attackerMaproom] = await Promise.all([
     ORMContext.em.findOne(InfernoMaproom, { userid: defender.userid }),
     ORMContext.em.findOne(InfernoMaproom, { userid: attacker.userid }),
