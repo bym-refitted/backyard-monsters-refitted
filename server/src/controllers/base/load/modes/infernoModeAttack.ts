@@ -29,6 +29,7 @@ export const infernoModeAttack = async (user: User, baseid: string) => {
     baseid,
   });
 
+
   if (!save) return infernoTribeSave(user, baseid);
 
   if (save.attacks.length > 3) {
@@ -53,8 +54,9 @@ export const infernoModeAttack = async (user: User, baseid: string) => {
 
   if (!defender) throw new Error("Defender user not found.");
 
+
   await Promise.all([
-    addAttackerAsNeighbor(user, defender.userid),
+    addAttackerAsNeighbor(user, defender),
     createAttackLog(user, defender, save),
   ]);
 

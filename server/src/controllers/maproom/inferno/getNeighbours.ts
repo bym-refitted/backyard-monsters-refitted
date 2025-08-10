@@ -6,11 +6,13 @@ import { InfernoMaproom } from "../../../models/infernomaproom.model";
 import { ORMContext } from "../../../server";
 import { BaseType } from "../../../enums/Base";
 import { calculateBaseLevel } from "../../../services/base/calculateBaseLevel";
+import { damageProtection } from "../../../services/maproom/v2/damageProtection";
 import { errorLog } from "../../../utils/logger";
 import {
   NeighbourData,
   createNeighbourData,
 } from "../../../services/maproom/inferno/createNeighbourData";
+import { AttackPermission } from "../../../enums/MapRoom";
 
 /**
  * Cache validity period for inferno neighbours.
@@ -48,17 +50,40 @@ export const getNeighbours: KoaController = async (ctx) => {
 
     if (getNewNeighbours) {
       const foundNeighbours = await findNeighbours(user);
-      infernoMaproom.neighbors = foundNeighbours;
+
+      // Preserve previous attack data on attackers who may have attacked before defender seeded
+      const mergedNeighbors = foundNeighbours.map((newNeighbor) => {
+        
+        const existing = infernoMaproom.neighbors.find(
+          (old) => old.userid === newNeighbor.userid
+        );
+
+        if (existing) {
+          return {
+            ...newNeighbor,
+            attacksfrom: existing.attacksfrom || 0,
+            attacksto: existing.attacksto || 0,
+            retaliatecount: existing.retaliatecount || 0,
+          };
+        }
+
+        return newNeighbor;
+      });
+
+      infernoMaproom.neighbors = mergedNeighbors;
       infernoMaproom.neighborsLastCalculated = currentDate;
 
       await ORMContext.em.persistAndFlush(infernoMaproom);
     }
 
+    // Update attack permissions for cached neighbours based on current save state
+    const neighbours = await setNeighbourInfo(infernoMaproom.neighbors);
+
     ctx.status = Status.OK;
     ctx.body = {
       error: 0,
       wmbases: [],
-      bases: infernoMaproom.neighbors,
+      bases: neighbours,
     };
   } catch (error) {
     errorLog("Error fetching inferno neighbours:", error);
@@ -150,6 +175,42 @@ const findNeighbours = async (user: User): Promise<NeighbourData[]> => {
 };
 
 /**
+ * Updates attack permissions for cached neighbours based on current save state.
+ * This function runs every time getNeighbours is called to ensure protection status is current.
+ *
+ * @param {NeighbourData[]} cachedNeighbours - The cached neighbour data
+ * @returns {Promise<NeighbourData[]>} - Updated neighbour data with current attack permissions
+ */
+const setNeighbourInfo = async (cachedNeighbours: NeighbourData[]) => {
+  if (!cachedNeighbours.length) return cachedNeighbours;
+
+  const userIds = cachedNeighbours.map((neighbour) => neighbour.userid);
+
+  const currentSaves = await ORMContext.em.find(Save, {
+    type: BaseType.INFERNO,
+    userid: { $in: userIds },
+  });
+
+  const saveMap = new Map<number, Save>();
+  currentSaves.forEach((save) => saveMap.set(save.userid, save));
+
+  // Update protection status for all saves
+  for (const save of currentSaves) await damageProtection(save);
+
+  return cachedNeighbours.map((neighbour) => {
+    const currentSave = saveMap.get(neighbour.userid);
+
+    if (currentSave && currentSave.protected === 1) {
+      neighbour.attackpermitted = AttackPermission.DAMAGE_PROTECTION;
+    } else {
+      neighbour.attackpermitted = AttackPermission.ATTACKABLE;
+    }
+
+    return neighbour;
+  });
+};
+
+/**
  * Check if the neighbour cache has expired and needs to be refreshed
  *
  * @param {InfernoMaproom} infernoMaproom - The inferno maproom object to check
@@ -158,5 +219,4 @@ const findNeighbours = async (user: User): Promise<NeighbourData[]> => {
  */
 const isCacheExpired = (infernoMaproom: InfernoMaproom, cacheExpiry: Date) =>
   !infernoMaproom.neighborsLastCalculated ||
-  infernoMaproom.neighborsLastCalculated < cacheExpiry ||
-  !infernoMaproom.neighbors.length;
+  infernoMaproom.neighborsLastCalculated < cacheExpiry;

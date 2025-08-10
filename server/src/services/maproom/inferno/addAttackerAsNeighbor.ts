@@ -6,41 +6,67 @@ import { createNeighbourData } from "./createNeighbourData";
 
 /**
  * Adds the attacker to the defender's neighbor list for retaliation purposes.
- * 
+ *
  * When a player attacks another player's inferno base, the attacker is automatically
  * added to the defender's neighbor list (if not already present). This allows the
  * defender to see who attacked them and enables potential retaliation.
  *
+ * @notes the client has a maximum of 180 neighbors that can theoretically be displayed
+ *
  * @param {User} attacker - The user who initiated the attack
- * @param {number} userid - The userid of the player who was attacked
+ * @param {number} defenderUserId - The userid of the player who was attacked
  */
-export const addAttackerAsNeighbor = async (attacker: User, userid: number) => {
-  let defender = await ORMContext.em.findOne(InfernoMaproom, { userid });
+export const addAttackerAsNeighbor = async (attacker: User, defender: User) => {
+  const [defenderMaproom, attackerMaproom] = await Promise.all([
+    ORMContext.em.findOne(InfernoMaproom, { userid: defender.userid }),
+    ORMContext.em.findOne(InfernoMaproom, { userid: attacker.userid }),
+  ]);
 
-  if (!defender) throw new Error("Defender's inferno save not found.");
+  if (!defenderMaproom || !attackerMaproom)
+    throw new Error("Inferno save not found for either attacker or defender.");
 
-  const { neighbors } = defender;
+  const { neighbors: defenderNeighbor } = defenderMaproom;
 
-  const existingNeighbor = neighbors.find(
+  // Check if attacker already exists in the defender's neighbors
+  const existingAttacker = defenderNeighbor.find(
     (neighbor) => neighbor.userid === attacker.userid
   );
 
-  if (existingNeighbor) return;
+  if (!existingAttacker) {
+    const attackerLevel = calculateBaseLevel(
+      attacker.infernosave.points,
+      attacker.infernosave.basevalue
+    );
 
-  const attackerLevel = calculateBaseLevel(
-    attacker.infernosave.points,
-    attacker.infernosave.basevalue
+    const attackerNeighbour = createNeighbourData(
+      attacker.infernosave,
+      attacker,
+      attackerLevel
+    );
+
+    attackerNeighbour.attacksfrom = 1;
+
+    defenderNeighbor.unshift(attackerNeighbour);
+
+    if (defenderNeighbor.length > 25) {
+      defenderMaproom.neighbors = defenderNeighbor.slice(0, 25);
+    }
+  } else {
+    existingAttacker.attacksfrom = existingAttacker.attacksfrom + 1;
+  }
+
+  // Update attacker's neighbor list, defender should already exist from initial seeding
+  const existingDefender = attackerMaproom.neighbors.find(
+    (neighbor) => neighbor.userid === defender.userid
   );
 
-  const neighborData = createNeighbourData(
-    attacker.infernosave,
-    attacker,
-    attackerLevel
-  );
+  if (!existingDefender) 
+    throw new Error("Defender not found in attacker's neighbor list");
 
-  neighbors.unshift(neighborData);
+  existingDefender.attacksto = existingDefender.attacksto + 1;
 
-  if (neighbors.length > 25) defender.neighbors = neighbors.slice(0, 25);
-
-  await ORMContext.em.persistAndFlush(defender);
+  await Promise.all([
+    ORMContext.em.persistAndFlush(defenderMaproom),
+    ORMContext.em.persistAndFlush(attackerMaproom),
+  ]);
 };
