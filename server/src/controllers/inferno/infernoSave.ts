@@ -19,6 +19,7 @@ import { resourcesHandler } from "../base/save/handlers/resourceHandler";
 export const infernoSave: KoaController = async (ctx) => {
   const user: User = ctx.authUser;
   const userSave = user.save;
+  const userInfernoSave = user.infernosave;
   await ORMContext.em.populate(user, ["save", "infernosave"]);
 
   try {
@@ -70,6 +71,10 @@ export const infernoSave: KoaController = async (ctx) => {
 
         case SaveKeys.ACADEMY:
           academyHandler(ctx, baseSave);
+          break;
+
+        case SaveKeys.ATTACKCREATURES:
+          if (isAttack) userInfernoSave.monsters = value;
           break;
 
         case SaveKeys.BUILDINGDATA:
