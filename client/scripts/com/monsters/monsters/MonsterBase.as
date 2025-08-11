@@ -1076,20 +1076,20 @@ package com.monsters.monsters
       
       public function findHuntingTargets() : void
       {
-         var _loc4_:MonsterBase = null;
-         var _loc1_:int = 0;
-         var _loc2_:Array = [];
-         var _loc3_:Object = CREATURES._creatures;
-         for each(_loc4_ in _loc3_)
+         var monster:MonsterBase = null;
+         var amount:int = 0;
+         var targets:Array = [];
+         var allMonsters:Object = CREATURES._creatures;
+         for each(monster in allMonsters)
          {
-            if(!(_loc4_._behaviour != k_sBHVR_DEFEND && _loc4_._behaviour != k_sBHVR_BUNKER))
+            if(!(monster._behaviour != k_sBHVR_DEFEND && monster._behaviour != k_sBHVR_BUNKER))
             {
-               _loc2_.push({
-                  "creep":_loc4_,
-                  "dist":GLOBAL.QuickDistance(_loc4_._tmpPoint,this._tmpPoint)
+               targets.push({
+                  "creep":monster,
+                  "dist":GLOBAL.QuickDistance(monster._tmpPoint,this._tmpPoint)
                });
-               _loc1_++;
-               if(_loc1_ >= 10)
+               amount++;
+               if(amount >= 10)
                {
                   break;
                }
@@ -1097,22 +1097,29 @@ package com.monsters.monsters
          }
          if(Boolean(CREATURES._guardian) && CREATURES._guardian.health > 0)
          {
-            _loc2_.push({
+            targets.push({
                "creep":CREATURES._guardian,
                "dist":GLOBAL.QuickDistance(CREATURES._guardian._tmpPoint,this._tmpPoint)
             });
          }
-         if(_loc2_.length > 0)
+         if(Boolean(CREATURES._krallen) && CREATURES._krallen.health > 0)
          {
-            _loc2_.sortOn("dist",Array.NUMERIC);
-            while(_loc2_.length > 0 && _loc2_[0].creep.health <= 0)
+            targets.push({
+               "creep":CREATURES._krallen,
+               "dist":GLOBAL.QuickDistance(CREATURES._krallen._tmpPoint,this._tmpPoint)
+            });
+         }
+         if(targets.length > 0)
+         {
+            targets.sortOn("dist",Array.NUMERIC);
+            while(targets.length > 0 && targets[0].creep.health <= 0)
             {
-               _loc2_.splice(0,1);
+               targets.splice(0,1);
             }
          }
-         if(_loc2_.length > 0)
+         if(targets.length > 0)
          {
-            this._targetCreep = _loc2_[0].creep;
+            this._targetCreep = targets[0].creep;
             this._waypoints = [this._targetCreep._tmpPoint];
          }
       }
@@ -1149,7 +1156,7 @@ package com.monsters.monsters
          var _loc2_:int = getTimer();
          var _loc11_:Array = [];
          this._looking = true;
-         if(this._behaviour == k_sBHVR_HUNT && (CREATURES._creatureCount > 0 || CREATURES._guardian && CREATURES._guardian.health > 0))
+         if(this._behaviour == k_sBHVR_HUNT && (CREATURES._creatureCount > 0 || CREATURES._hasLivingGuardian))
          {
             this.findHuntingTargets();
             if(this._targetCreep)
