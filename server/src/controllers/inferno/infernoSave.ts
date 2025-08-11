@@ -12,6 +12,7 @@ import { KoaController } from "../../utils/KoaController";
 import { errorLog } from "../../utils/logger";
 import { BaseSaveSchema } from "../../zod/BaseSaveSchema";
 import { academyHandler } from "../base/save/handlers/academyHandler";
+import { attackLootHandler } from "../base/save/handlers/attackLootHandler";
 import { buildingDataHandler } from "../base/save/handlers/buildingDataHandler";
 import { purchaseHandler } from "../base/save/handlers/purchaseHandler";
 import { resourcesHandler } from "../base/save/handlers/resourceHandler";
@@ -94,6 +95,21 @@ export const infernoSave: KoaController = async (ctx) => {
           }
       }
     }
+
+    if (isAttack) {
+      for (const key of Object.keys(saveData)) {
+        const value = saveData[key];
+        switch (key) {
+          case SaveKeys.ATTACKLOOT:
+            attackLootHandler(value, userSave, SaveKeys.IRESOURCES);
+            break;
+          default:
+            break;
+        }
+      }
+      await ORMContext.em.persistAndFlush(userSave);
+    }
+
     baseSave.id = baseSave.savetime;
     baseSave.savetime = getCurrentDateTime();
     await ORMContext.em.persistAndFlush(baseSave);
