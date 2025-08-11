@@ -131,22 +131,9 @@ export const migrateBase: KoaController = async (ctx) => {
     if (resources)
       userSave.resources = updateResources(resources, userSave.resources, Operation.SUBTRACT);
 
-    // We wrap this in a transaction to ensure atomicity
-    // If any part of this fails, the entire transaction will be rolled back.
     await ORMContext.em.transactional(async (em) => {
       await em.persistAndFlush([homeCell, userSave]);
       await em.removeAndFlush([outpostCell.save, outpostCell]);
-
-      const homeCells = await em.find(WorldMapCell, {
-        baseid: userSave.baseid,
-        base_type: MapRoomCell.HOMECELL,
-      });
-
-      if (homeCells.length > 1) {
-        throw new Error(
-          `User ${currentUser.userid} would end up with multiple homecells.`
-        );
-      }
     });
 
     ctx.status = Status.OK;
