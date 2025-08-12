@@ -49,3 +49,18 @@ export enum Terrain {
   ROCK = 175,
   LAND6 = 176,
 }
+
+/**
+ * Attack permission codes used by the client for different protection states
+ * Map Room 1 specific
+ *
+ * @enum {number}
+ */
+export enum AttackPermission {
+  ATTACKABLE = 1,
+  LEVEL_RESTRICTION = 3,
+  VENGEANCE_MODE = 4,
+  DAMAGE_PROTECTION = 5,
+  SPECIAL_PROTECTION = 6,
+  UNDER_ATTACK = 7,
+}
