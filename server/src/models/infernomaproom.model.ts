@@ -7,6 +7,7 @@ import {
   Property,
 } from "@mikro-orm/core";
 import { User } from "./user.model";
+import { NeighbourData } from "../services/maproom/inferno/createNeighbourData";
 
 export interface TribeData {
   baseid: string;
@@ -22,6 +23,12 @@ export class InfernoMaproom {
 
   @Property({ type: "json", nullable: true })
   tribedata: TribeData[] = [];
+
+  @Property({ type: "json", defaultRaw: "'[]'::jsonb" })
+  neighbors: NeighbourData[] = [];
+
+  @Property({ nullable: true })
+  neighborsLastCalculated?: Date;
 
   @Property()
   createdAt: Date = new Date();
