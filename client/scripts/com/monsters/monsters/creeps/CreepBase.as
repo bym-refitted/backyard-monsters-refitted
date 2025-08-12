@@ -964,7 +964,7 @@ package com.monsters.monsters.creeps
          {
             if(!_targetCreep)
             {
-               if(_behaviour === k_sBHVR_HUNT && (CREATURES._creatureCount > 0 || CREATURES._guardian && CREATURES._guardian.health > 0) && _frameNumber % 150 == 0)
+               if(_behaviour === k_sBHVR_HUNT && (CREATURES._creatureCount > 0 || CREATURES._hasLivingGuardian) && _frameNumber % 150 == 0)
                {
                   findTarget(_targetGroup);
                }
@@ -1364,8 +1364,15 @@ package com.monsters.monsters.creeps
                }
                else
                {
+                  if(_targetGroup == 6)
+                  {
+                     damageDelt = _targetCreep.modifyHealth(-(damage*3));
+                  }
+                  else
+                  {
+                     damageDelt = _targetCreep.modifyHealth(-damage);
+                  }
                   ATTACK.Damage(_tmpPoint.x,_tmpPoint.y - 5,damageDelt,_mc.visible);
-                  damageDelt = _targetCreep.modifyHealth(-damage);
                }
                if(!_explode)
                {
