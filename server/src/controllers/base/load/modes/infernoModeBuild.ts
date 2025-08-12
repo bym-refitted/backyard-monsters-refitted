@@ -37,6 +37,9 @@ export const infernoModeBuild = async (user: User) => {
   const { points, basevalue, stats } = infernoSave;
   infernoSave.level = calculateBaseLevel(points, basevalue);
 
+  // Set worldid to match the user's main save for neighbor matching
+  infernoSave.worldid = userSave.worldid;
+
   // Create Inferno tribes based on the user's current level
   infernoSave.wmstatus = await createScaledTribes(infernoSave, INFERNO_TRIBES);
 

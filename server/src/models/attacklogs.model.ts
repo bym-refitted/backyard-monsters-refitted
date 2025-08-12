@@ -1,8 +1,8 @@
 import { Entity, Index, PrimaryKey, Property } from "@mikro-orm/core";
 import { FieldData } from "./save.model";
 
-@Index({ properties: ['attacker_userid', 'attacktime'] })
-@Index({ properties: ['defender_userid', 'attacktime'] })
+@Index({ properties: ["attacker_userid", "attacktime"] })
+@Index({ properties: ["defender_userid", "attacktime"] })
 @Entity({ tableName: "attack_logs" })
 export class AttackLogs {
   @PrimaryKey()
@@ -29,11 +29,11 @@ export class AttackLogs {
   @Property()
   type!: string;
 
-  @Property()
-  x!: number;
+  @Property({ nullable: true })
+  x?: number;
 
-  @Property()
-  y!: number;
+  @Property({ nullable: true })
+  y?: number;
 
   @Property({ type: "json", nullable: true })
   loot?: FieldData;

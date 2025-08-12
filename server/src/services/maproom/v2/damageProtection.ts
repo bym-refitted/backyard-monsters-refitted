@@ -108,6 +108,7 @@ export const damageProtection = async (save: Save, mode?: BaseMode) => {
           }
         }
         break;
+
       case BaseType.OUTPOST:
         // If there are new attacks after the 8-hour protection period
         // has ended, apply protection again.
@@ -133,8 +134,28 @@ export const damageProtection = async (save: Save, mode?: BaseMode) => {
           }
         }
         break;
-      default:
+
+      case BaseType.INFERNO:
+        // Filter attacks after the 36-hour protection period
+        const infernoAttacksInLast36Hours = attacks.filter(
+          (attack) => attack.starttime > thirtySixHoursAgo
+        );
+
+        if (protection) {
+          // Should never happen
+          if (!mainProtectionTime) removeProtection();
+
+          // If the protection time was set over 36 hours ago, remove protection
+          if (mainProtectionTime <= thirtySixHoursAgo) removeProtection();
+        } else {
+          // 50% or more damage = 36 HOURS
+          if (damage >= 50 && infernoAttacksInLast36Hours.length !== 0) {
+            setProtection();
+          }
+        }
         break;
+      default:
+        throw new Error(`Unknown base type for damage protection: ${type}`);
     }
   }
 
