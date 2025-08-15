@@ -2364,22 +2364,22 @@ package
             1:{
                //"anim":["anim1.1.png",new Rectangle(11,-2,22,17),44],
                //"anim2":["anim2.1.png",new Rectangle(-32,-49,53,84),44],
-               "top":["top.1.png",new Point(-50,-27)],
+               "top":["top.1.png",new Point(-50,-55)],
                // "shadow":["shadow.1.jpg",new Point(-50,23)],
-               "shadow":["shadow.1.jpg",new Point(-50,2)],
-               "topdamaged":["top.1.damaged.png",new Point(-48,-49)],
+               "shadow":["shadow.1.jpg",new Point(-50,-30)],
+               "topdamaged":["top.1.damaged.png",new Point(-48,-21)],               
                //"shadowdamaged":["shadow.1.jpg",new Point(-50,23)],
-               "topdestroyed":["top.1.destroyed.png",new Point(-59,-10)]
+               "topdestroyed":["top.1.destroyed.png",new Point(-59,-21)]
                //"shadowdestroyed":["shadow.1.jpg",new Point(-50,23)]
             },
             2:{
                //"anim":["anim1.2.png",new Rectangle(1,-18,44,26),47],
                //"anim2":["anim2.2.png",new Rectangle(-39,-96,67,117),47],
-               "top":["top.2.png",new Point(-56,-43)],
-               "shadow":["shadow.2.jpg",new Point(-60,10)],
-               "topdamaged":["top.2.damaged.png",new Point(-61,-91)],
+               "top":["top.2.png",new Point(-56,-95)],
+               "shadow":["shadow.2.jpg",new Point(-61,-30)],
+               "topdamaged":["top.2.damaged.png",new Point(-56,-91)],
                //"shadowdamaged":["shadow.2.damaged.jpg",new Point(-58,8)],
-               "topdestroyed":["top.2.destroyed.png",new Point(-71,-56)]
+               "topdestroyed":["top.2.destroyed.png",new Point(-59,-76)]
                //"shadowdestroyed":["shadow.2.destroyed.jpg",new Point(-73,-17)]
             }
          },
