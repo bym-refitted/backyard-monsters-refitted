@@ -716,7 +716,7 @@ package
       public function addResourceBar(param1:DisplayObject) : void
       {
          var _loc2_:MovieClip = null;
-         if(Boolean(mc) && GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD)
+         if(Boolean(mc) && GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD && !BASE.isInfernoMainYardOrOutpost)
          {
             if(MapRoomManager.instance.isInMapRoom2)
             {
