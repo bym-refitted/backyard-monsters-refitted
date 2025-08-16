@@ -288,10 +288,15 @@ package
          var _loc1_:int = 0;
          var _loc2_:Vector.<Object> = null;
          var _loc3_:BFOUNDATION = null;
-         var _loc4_:int = 0;
+         var a:int = 0;
          var _loc5_:Object = null;
          if(GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD)
          {
+            // The following logic was added from an older SWF which included Wild Monster Invasion 1 specific logic
+            // SWF version: game-v120.v7
+            // =============================================== // 
+            SPECIALEVENT_WM1.Tick();
+            // =============================================== // 
             if(t % 10 == 0)
             {
                _loc1_ = 0;
@@ -316,11 +321,11 @@ package
             t += 1;
             if(_queued != null && !_inProgress)
             {
-               if(!GLOBAL._catchup && !warningPopup && !_trojan && _queued.warned == 0 && !baseIsRepairing && BASE._isSanctuary <= GLOBAL.Timestamp() && _enabled && !INFERNO_EMERGENCE_EVENT.ShouldRunEvent() && !PLANNER.isOpen())
+               if(!GLOBAL._catchup && !warningPopup && !_trojan && _queued.warned == 0 && !baseIsRepairing && BASE._isSanctuary <= GLOBAL.Timestamp() && _enabled && !SPECIALEVENT_WM1.EventActive() && !INFERNO_EMERGENCE_EVENT.ShouldRunEvent() && !PLANNER.isOpen())
                {
                   ShowWarning();
                }
-               if(!GLOBAL._catchup && !_trojan && _queued.warned == 1 && !UI2._wildMonsterBar && !_inProgress && !baseIsRepairing && BASE._isSanctuary <= GLOBAL.Timestamp() && _enabled && !INFERNO_EMERGENCE_EVENT.ShouldRunEvent())
+               if(!GLOBAL._catchup && !_trojan && _queued.warned == 1 && !UI2._wildMonsterBar && !_inProgress && !baseIsRepairing && BASE._isSanctuary <= GLOBAL.Timestamp() && _enabled && !SPECIALEVENT_WM1.EventActive() && !INFERNO_EMERGENCE_EVENT.ShouldRunEvent())
                {
                   UI2.Show("wmbar");
                }
@@ -347,7 +352,7 @@ package
             }
             else if(!_inProgress)
             {
-               if(!GLOBAL._catchup && _history.sessionsSinceLastAttack >= _sessionsBetweenAttacks && !baseIsRepairing && !_processing && GLOBAL.Timestamp() > _history.nextAttack && BASE._baseLevel >= 9 && !_trojan && BASE._isSanctuary <= GLOBAL.Timestamp() && _enabled && !PLANNER.isOpen() && !INFERNO_EMERGENCE_EVENT.ShouldRunEvent())
+               if(!GLOBAL._catchup && _history.sessionsSinceLastAttack >= _sessionsBetweenAttacks && !baseIsRepairing && !_processing && GLOBAL.Timestamp() > _history.nextAttack && BASE._baseLevel >= 9 && !_trojan && BASE._isSanctuary <= GLOBAL.Timestamp() && _enabled && !PLANNER.isOpen() && !SPECIALEVENT_WM1.EventActive() && !INFERNO_EMERGENCE_EVENT.ShouldRunEvent())
                {
                   _processing = true;
                   Trigger();
@@ -355,21 +360,21 @@ package
             }
             else if(_inProgress)
             {
-               if(CREEPS._creepCount == 0)
+               if(CREEPS._creepCount == 0 && (!SPECIALEVENT_WM1.active || SPECIALEVENT_WM1.AllWavesSpawned()))
                {
                   _cleanUpFunc();
                }
                else if(GLOBAL.Timestamp() % 10 == 0)
                {
-                  _loc4_ = 0;
+                  a = 0;
                   for each(_loc5_ in CREEPS._creeps)
                   {
                      if(_loc5_._behaviour == GLOBAL.e_BASE_MODE.ATTACK || _loc5_._behaviour == "bounce" || _loc5_._behaviour == "loot" || _loc5_._behaviour == "heal" || _loc5_._behaviour == "buff" || _loc5_._behaviour == "hunt")
                      {
-                        _loc4_++;
+                        a++;
                      }
                   }
-                  if(_loc4_ == 0)
+                  if(a == 0 && (!SPECIALEVENT_WM1.active || SPECIALEVENT_WM1.AllWavesSpawned()))
                   {
                      _cleanUpFunc();
                   }
@@ -918,6 +923,22 @@ package
          {
             ATTACK.PoorDefense();
          }
+         // The following logic was added from an older SWF which included Wild Monster Invasion 1 specific logic
+         // SWF version: game-v120.v7
+         // =============================================== //
+         else if(SPECIALEVENT_WM1.active)
+         {
+            // Note: This is condition could be problematic
+            if(CREEPS._creepCount > 0 || !SPECIALEVENT_WM1.AllWavesSpawned() || _loc3_ <= _loc4_ * 0.1)
+            {
+               ATTACK.PoorDefense();
+            }
+            else
+            {
+               ATTACK.WellDefended(true);
+            }
+         }
+         // =============================================== //
          else if(_loc3_ < _loc4_ * 0.9 || TUTORIAL._stage < 200)
          {
             ATTACK.PoorDefense();
