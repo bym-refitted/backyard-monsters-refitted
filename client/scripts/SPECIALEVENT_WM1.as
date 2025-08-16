@@ -850,16 +850,16 @@ package
       private static function InitializeTimes() : void
       {
          var _loc1_:Date = new Date();
-         _loc1_.setUTCFullYear(2011,10,10);
-         _loc1_.setUTCHours(20,0,0,0);
+         _loc1_.setUTCFullYear(2025,7,15);
+         _loc1_.setUTCHours(0,0,0,0);
          _eventStartTime = Math.floor(_loc1_.getTime() / 1000);
          var _loc2_:Date = new Date();
-         _loc2_.setUTCFullYear(2011,10,17);
-         _loc2_.setUTCHours(20,0,0,0);
+         _loc2_.setUTCFullYear(2025,7,20);
+         _loc2_.setUTCHours(0,0,0,0);
          _eventExtensionTime = Math.floor(_loc2_.getTime() / 1000);
          var _loc3_:Date = new Date();
-         _loc3_.setUTCFullYear(2011,10,20);
-         _loc3_.setUTCHours(20,0,0,0);
+         _loc3_.setUTCFullYear(2025,7,23);
+         _loc3_.setUTCHours(0,0,0,0);
          _eventEndTime = Math.floor(_loc3_.getTime() / 1000);
       }
       
@@ -1177,7 +1177,7 @@ package
       
       public static function EventActive() : Boolean
       {
-         if(BASE._isOutpost)
+         if(BASE.isOutpost)
          {
             return false;
          }

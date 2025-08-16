@@ -406,7 +406,7 @@ package
                         SPECIALEVENT_WM1.ShowEventEndPopup();
                      }
                   }
-                  else if(SPECIALEVENT_WM1.EventActive() && GLOBAL._mode == GLOBAL.e_BASE_MODE.BUILD && (!GLOBAL._flags.viximo && !GLOBAL._flags.kongregate))
+                  else if(SPECIALEVENT_WM1.EventActive() && GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD && (!GLOBAL._flags.viximo && !GLOBAL._flags.kongregate))
                   {
                      if(!_top.mcSpecialEvent.visible)
                      {
@@ -444,7 +444,7 @@ package
                         _top.mcSpecialEvent.tCountdown.htmlText = GLOBAL.ToTime(_loc3_,true);
                      }
                   }
-                  else if(GLOBAL._mode == GLOBAL.e_BASE_MODE.BUILD && !BASE._isOutpost && !GLOBAL._flags.viximo && !GLOBAL._flags.kongregate)
+                  else if(GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD && !BASE.isOutpost && !GLOBAL._flags.viximo && !GLOBAL._flags.kongregate)
                   {
                      if(!_top.mcSpecialEvent.visible)
                      {
