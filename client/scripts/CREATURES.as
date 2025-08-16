@@ -31,7 +31,7 @@ package
          _guardianList.length = 0;
       }
       
-      public static function GetProperty(param1:String, param2:String, param3:int = 0, param4:Boolean = true) : Number
+      public static function GetProperty(param1:String, param2:String, param3:int = 0, param4:Boolean = true) : *
       {
          var stat:Array = null;
          var checkID:String = null;
