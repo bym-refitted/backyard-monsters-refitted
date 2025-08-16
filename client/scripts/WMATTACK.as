@@ -907,7 +907,8 @@ package
          for each(_loc2_ in _loc1_)
          {
             _loc2_.GridCost(true);
-            if(_loc2_ is BTRAP && _loc2_ is BWALL && _loc2_._repairing != 1)
+            // if(_loc2_ is BTRAP && _loc2_ is BWALL && _loc2_._repairing != 1) // Revisit this
+            if(_loc2_._class != "trap" && _loc2_._class != "wall" && _loc2_._repairing != 1)
             {
                _loc3_ += _loc2_.health;
                _loc4_ += _loc2_.maxHealth;
@@ -928,7 +929,7 @@ package
          // =============================================== //
          else if(SPECIALEVENT_WM1.active)
          {
-            // Note: This is condition could be problematic
+            // Check if base took massive damage (90%+ destruction)
             if(CREEPS._creepCount > 0 || !SPECIALEVENT_WM1.AllWavesSpawned() || _loc3_ <= _loc4_ * 0.1)
             {
                ATTACK.PoorDefense();

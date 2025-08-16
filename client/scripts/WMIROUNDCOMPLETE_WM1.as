@@ -105,7 +105,7 @@ package
             numDamagedBuildings = 0;
             for each(b in BASE._buildingsAll)
             {
-               if(b._hp.Get() < b._hpMax.Get())
+               if(b.health < b.maxHealth)
                {
                   numDamagedBuildings++;
                }
@@ -142,7 +142,7 @@ package
             numDamagedBuildings = 0;
             for each(b in BASE._buildingsAll)
             {
-               if(b._hp.Get() < b._hpMax.Get())
+               if(b.health < b.maxHealth)
                {
                   numDamagedBuildings++;
                }
@@ -307,7 +307,7 @@ package
          var _loc2_:* = undefined;
          for each(_loc2_ in BASE._buildingsAll)
          {
-            if(_loc2_._hp.Get() < _loc2_._hpMax.Get() && _loc2_._repairing == 0)
+            if(_loc2_.health < _loc2_.maxHealth && _loc2_._repairing == 0)
             {
                _loc2_.Repair();
             }

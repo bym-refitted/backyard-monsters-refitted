@@ -5,6 +5,7 @@ package
    import flash.events.MouseEvent;
    import flash.geom.Point;
    import com.monsters.monsters.champions.ChampionBase;
+   import com.monsters.inventory.InventoryManager;
    
    /*
    * This is the original SPECIALEVENT.as class for Wild Monster Invasion 1.
@@ -922,8 +923,8 @@ package
                {
                   if(_loc8_._class != "wall")
                   {
-                     _loc4_ += _loc8_._hp.Get();
-                     _loc5_ += _loc8_._hpMax.Get();
+                     _loc4_ += _loc8_.health;
+                     _loc5_ += _loc8_.maxHealth;
                   }
                   if(BTOTEM.IsTotem(_loc8_._type))
                   {
@@ -950,7 +951,7 @@ package
          var _loc1_:BFOUNDATION = null;
          for each(_loc1_ in BASE._buildingsAll)
          {
-            if(_loc1_._hp.Get() < _loc1_._hpMax.Get() && _loc1_._repairing == 0)
+            if(_loc1_.health < _loc1_.maxHealth && _loc1_._repairing == 0)
             {
                _loc1_.Repair();
             }
@@ -1205,7 +1206,8 @@ package
       public static function TotemReward() : void
       {
          var _loc1_:int = TotemQualified(121);
-         BASE.BuildingStorageAdd(_loc1_);
+         // BASE.BuildingStorageAdd(_loc1_); // Only existed in game-v120.v7
+         InventoryManager.buildingStorageAdd(_loc1_, 1);
       }
       
       public static function TotemPlace() : void
