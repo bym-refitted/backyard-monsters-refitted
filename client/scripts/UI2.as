@@ -391,6 +391,10 @@ package
                   {
                      UI_BOTTOM._nextwave.visible = false;
                   }
+                  if(Boolean(UI_BOTTOM._nextwave_wm1) && UI_BOTTOM._nextwave_wm1.visible)
+                  {
+                     UI_BOTTOM._nextwave_wm1.visible = false;
+                  }
                   if(!_top.mcSave.visible)
                   {
                      _top.mcSave.visible = true;
