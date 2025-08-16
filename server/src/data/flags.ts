@@ -54,12 +54,12 @@ export const flags = {
   //    4: Event active (after start time)
   //    5+: Post-event phase (7 days after start)
   // Note: WMI v2 calculates phases automatically based on TIME_OFFSETS and event start time
-  invasionpop: 6,
+  invasionpop: 4,
   // invasionpop2: Controls WMI v1 (SPECIALEVENT_WM1.as) event state:
   //   -1: Event disabled/not available
   //   Other values: Combined with invasionpop using Math.max() to determine final state
   // Note: WMI v1 uses server-controlled flags rather than time-based calculation
-  invasionpop2: 6,
+  invasionpop2: 4,
   iframestart_override: 0,
   mushrooms: 1,
   chatwhitelist: "2,3,23",
