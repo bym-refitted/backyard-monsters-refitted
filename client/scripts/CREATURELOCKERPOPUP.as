@@ -255,13 +255,13 @@ package
          }
          else
          {
-            str = KEYS.Get("mon_infotounlock",{"v1":GLOBAL.ToTime(data.time)});
-            if(BASE._resources.r3.Get() < data.resource)
+            str = KEYS.Get("mon_infotounlock",{"v1":GLOBAL.ToTime(data.time.Get())});
+            if(BASE._resources.r3.Get() < data.resource.Get())
             {
                str += "<font color=\"#CC0000\">";
             }
-            str += "<b>" + KEYS.Get(GLOBAL._resourceNames[2]) + "</b>: " + GLOBAL.FormatNumber(data.resource) + "<br>";
-            if(BASE._resources.r3.Get() < data.resource)
+            str += "<b>" + KEYS.Get(GLOBAL._resourceNames[2]) + "</b>: " + GLOBAL.FormatNumber(data.resource.Get()) + "<br>";
+            if(BASE._resources.r3.Get() < data.resource.Get())
             {
                str += "</font>";
             }
@@ -381,8 +381,8 @@ package
             mcButtons.bStart.Enabled = true;
             mcButtons.bStart.Highlight = true;
             mcButtons.bStart.addEventListener(MouseEvent.CLICK,this.Start);
-            putty = int(CREATURELOCKER._creatures[this._creatureID].resource);
-            time = int(CREATURELOCKER._creatures[this._creatureID].time);
+            putty = int(CREATURELOCKER._creatures[this._creatureID].resource.Get());
+            time = int(CREATURELOCKER._creatures[this._creatureID].time.Get());
             timeCost = STORE.GetTimeCost(time);
             resourcesCost = Math.ceil(Math.pow(Math.sqrt(putty / 2),0.75));
             this._instantUnlockCost = timeCost + resourcesCost;
