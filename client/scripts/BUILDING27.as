@@ -118,6 +118,14 @@ package
          var _loc2_:MovieClip = null;
          if(GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD)
          {
+            // The following logic was added from an older SWF which included Wild Monster Invasion 1 specific logic
+            // SWF version: game-v120.v7
+            // =============================================== // 
+            if(SPECIALEVENT_WM1.active)
+            {
+               return;
+            }
+            // =============================================== //
             if(INFERNO_EMERGENCE_EVENT.isAttackActive)
             {
                return;

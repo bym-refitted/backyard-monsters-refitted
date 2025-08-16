@@ -402,6 +402,11 @@ package
 
       public static function Cleanup():void
       {
+         // The following logic was added from an older SWF which included Wild Monster Invasion 1 specific logic
+         // SWF version: game-v120.v7
+         // =============================================== //
+         SPECIALEVENT_WM1.ClearWildMonsterPowerups();
+         // =============================================== //
          BaseBuffHandler.instance.clearBuffs();
          RewardHandler.instance.clear();
          GLOBAL.player.clear();
