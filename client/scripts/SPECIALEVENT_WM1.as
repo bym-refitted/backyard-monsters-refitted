@@ -1177,7 +1177,11 @@ package
       
       public static function EventActive() : Boolean
       {
-         return false;
+         if(BASE._isOutpost)
+         {
+            return false;
+         }
+         return SPECIALEVENT.invasionpop == 4 || SPECIALEVENT.invasionpop == 5;
       }
       
       public static function get invasionpop() : Number
@@ -1264,10 +1268,7 @@ package
          {
             case -1:
             case 0:
-               if(GLOBAL.StatGet("lasttdpopup") != 0)
-               {
-                  GLOBAL.StatSet("lasttdpopup",0);
-               }
+               GLOBAL.StatSet("lasttdpopup",0);
                break;
             case 1:
             case 2:
