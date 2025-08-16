@@ -402,6 +402,11 @@ package
 
       public static function Cleanup():void
       {
+         // The following logic was added from an older SWF which included Wild Monster Invasion 1 specific logic
+         // SWF version: game-v120.v7
+         // =============================================== //
+         SPECIALEVENT_WM1.ClearWildMonsterPowerups();
+         // =============================================== //
          BaseBuffHandler.instance.clearBuffs();
          RewardHandler.instance.clear();
          GLOBAL.player.clear();
@@ -2994,7 +2999,7 @@ package
          }
          if (_lastPaged >= _loc2_ && !_paging && !_saving && GLOBAL.Timestamp() - _lastSaved >= _loc2_)
          {
-            if (SPECIALEVENT.active)
+            if (SPECIALEVENT.active || SPECIALEVENT_WM1.active)
             {
                _blockSave = false;
                Save(0, false, true);
