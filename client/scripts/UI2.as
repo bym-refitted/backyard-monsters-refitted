@@ -412,7 +412,7 @@ package
                      {
                         _top.mcSpecialEvent.visible = true;
                      }
-                     if(UI_BOTTOM._nextwave_wm1 && !UI_BOTTOM._nextwave_wm1.visible && UI_NEXTWAVE.ShouldDisplay())
+                     if(UI_BOTTOM._nextwave_wm1 && !UI_BOTTOM._nextwave_wm1.visible && UI_NEXTWAVE_WM1.ShouldDisplay())
                      {
                         UI_BOTTOM._nextwave_wm1.visible = true;
                      }
@@ -450,7 +450,7 @@ package
                      {
                         _top.mcSpecialEvent.visible = true;
                      }
-                     if(UI_BOTTOM._nextwave_wm1 && !UI_BOTTOM._nextwave_wm1.visible && UI_NEXTWAVE.ShouldDisplay())
+                     if(UI_BOTTOM._nextwave_wm1 && !UI_BOTTOM._nextwave_wm1.visible && UI_NEXTWAVE_WM1.ShouldDisplay())
                      {
                         UI_BOTTOM._nextwave_wm1.visible = true;
                      }
