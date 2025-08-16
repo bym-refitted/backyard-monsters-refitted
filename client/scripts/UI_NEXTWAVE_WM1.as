@@ -23,11 +23,11 @@ package
       
       public static function ShouldDisplay() : Boolean
       {
-         if(GLOBAL._mode != "build")
+         if(GLOBAL.mode != GLOBAL.e_BASE_MODE.BUILD)
          {
             return false;
          }
-         if(BASE._isOutpost)
+         if(BASE.isOutpost)
          {
             return false;
          }
