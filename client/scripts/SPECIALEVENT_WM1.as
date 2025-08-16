@@ -1181,7 +1181,7 @@ package
          {
             return false;
          }
-         return SPECIALEVENT.invasionpop == 4 || SPECIALEVENT.invasionpop == 5;
+         return SPECIALEVENT_WM1.invasionpop == 4 || SPECIALEVENT_WM1.invasionpop == 5;
       }
       
       public static function get invasionpop() : Number
