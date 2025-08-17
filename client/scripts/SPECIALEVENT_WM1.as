@@ -1078,6 +1078,8 @@ package
                   if(_loc2_[_loc3_]._behaviour != "retreat")
                   {
                      _loc1_++;
+                     // Original implementation had a ModeRetreat function
+                     // _loc2_[_loc3_].ModeRetreat();
                      _loc2_[_loc3_].changeModeRetreat();
                   }
                   _loc3_++;
