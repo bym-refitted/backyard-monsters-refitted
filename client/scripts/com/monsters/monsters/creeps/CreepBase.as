@@ -57,7 +57,7 @@ package com.monsters.monsters.creeps
          _house = param9;
          _hits = 0;
          _spawnPoint = new Point(int(param3.x / 100) * 100,int(param3.y / 100) * 100);
-         _goeasy = param11;
+         _goeasy = SPECIALEVENT_WM1.active ? false : param9;
          _movement = CREATURELOCKER._creatures[param1].movement;
          this.m_bInfernoCreep = BASE.isInfernoCreep(_creatureID);
          _pathing = CREATURELOCKER._creatures[param1].pathing;
