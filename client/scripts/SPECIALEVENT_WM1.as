@@ -851,15 +851,15 @@ package
       private static function InitializeTimes() : void
       {
          var _loc1_:Date = new Date();
-         _loc1_.setUTCFullYear(2025,7,15);
+         _loc1_.setUTCFullYear(2025,7,22);
          _loc1_.setUTCHours(0,0,0,0);
          _eventStartTime = Math.floor(_loc1_.getTime() / 1000);
          var _loc2_:Date = new Date();
-         _loc2_.setUTCFullYear(2025,7,20);
+         _loc2_.setUTCFullYear(2025,7,31);
          _loc2_.setUTCHours(0,0,0,0);
          _eventExtensionTime = Math.floor(_loc2_.getTime() / 1000);
          var _loc3_:Date = new Date();
-         _loc3_.setUTCFullYear(2025,7,23);
+         _loc3_.setUTCFullYear(2025,7,29);
          _loc3_.setUTCHours(0,0,0,0);
          _eventEndTime = Math.floor(_loc3_.getTime() / 1000);
       }
@@ -971,7 +971,7 @@ package
          var _loc9_:Point = null;
          // Original version had a CHAMPIONMONSTER.as class before the refactor to ChampionBase.as
          // var _loc10_:CHAMPIONMONSTER = null;
-         var _loc10_:ChampionBase = null;
+         var champion:ChampionBase = null;
          if(_round >= WAVES.length)
          {
             return;
@@ -1005,8 +1005,8 @@ package
                _loc7_ = WAVES[_round][_wave];
                _loc8_ = (_loc7_.angle + _randomDirection) % 360;
                _loc9_ = GRID.ToISO(Math.cos(_loc8_ * 0.0174532925) * 900,Math.sin(_loc8_ * 0.0174532925) * 900,0);
-               _loc10_ = CREEPS.SpawnGuardian(_loc7_.guardianID,MAP._BUILDINGTOPS,"bounce",_loc7_.level,_loc9_,_loc7_.direction,_loc7_.health,_loc7_.foodbonus,true);
-               _currentAttackers.push([_loc10_]);
+               champion = CREEPS.SpawnGuardian(_loc7_.guardianID, MAP._BUILDINGTOPS, "bounce", _loc7_.level, _loc9_, _loc7_.direction, _loc7_.health, _loc7_.foodbonus, 0, true);
+               _currentAttackers.push([champion]);
          }
          _timeOfNextWave = GLOBAL.Timestamp();
          while(++_wave < WAVES[_round].length && WAVES[_round][_wave] instanceof Number)
