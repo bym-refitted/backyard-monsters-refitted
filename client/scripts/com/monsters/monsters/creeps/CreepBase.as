@@ -716,6 +716,11 @@ package com.monsters.monsters.creeps
          }
          else if(_behaviour != "retreat")
          {
+            if(SPECIALEVENT_WM1.active && !this._friendly)
+            {
+               setHealth(0);
+               return;
+            }
             changeModeRetreat();
          }
          if(_waypoints.length)
@@ -1078,7 +1083,11 @@ package com.monsters.monsters.creeps
                         return false;
                      }
                   }
-                  else if(!GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD && _hits > _hitLimit)
+                  else if(!SPECIALEVENT_WM1.active && GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD && _hits > _hitLimit)
+                  {
+                     return true;
+                  }
+                  else if(GLOBAL.mode != GLOBAL.e_BASE_MODE.BUILD && _hits > _hitLimit)
                   {
                      return true;
                   }

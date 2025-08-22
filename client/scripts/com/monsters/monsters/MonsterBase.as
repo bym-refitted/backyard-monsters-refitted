@@ -362,7 +362,8 @@ package com.monsters.monsters
       
       public function get lootingMultiplier() : Number
       {
-         return CModifiableProperty(this.getComponentByName(k_LOOT_PROPERTY)).value;
+         var lootProp:CModifiableProperty = CModifiableProperty(this.getComponentByName(k_LOOT_PROPERTY));
+         return lootProp ? lootProp.value : 1;
       }
       
       protected function rangedAttack(param1:ITargetable) : ITargetable
@@ -979,7 +980,7 @@ package com.monsters.monsters
          }
          if(!this._friendly)
          {
-            if(GLOBAL._wmCreaturePowerups[this._creatureID])
+            if(SPECIALEVENT_WM1.active || Boolean(GLOBAL._wmCreaturePowerups[this._creatureID]))
             {
                if(GLOBAL._wmCreaturePowerups[this._creatureID])
                {
@@ -1006,7 +1007,7 @@ package com.monsters.monsters
          }
          if(!this._friendly)
          {
-            if(GLOBAL._wmCreaturePowerups[this._creatureID])
+            if(SPECIALEVENT.active || Boolean(GLOBAL._wmCreaturePowerups[this._creatureID]))
             {
                if(GLOBAL._wmCreaturePowerups[this._creatureID])
                {
