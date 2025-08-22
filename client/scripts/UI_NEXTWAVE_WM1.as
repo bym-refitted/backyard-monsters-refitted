@@ -79,7 +79,7 @@ package
       public function WaveShow(param1:MouseEvent) : void
       {
          var _loc7_:bubblepopupDownBuff = null;
-         if(SPECIALEVENT_WM1.wave >= SPECIALEVENT_WM1.BONUSWAVE)
+         if(SPECIALEVENT_WM1.wave >= SPECIALEVENT_WM1.BONUSWAVE2)
          {
             return;
          }
