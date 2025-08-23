@@ -1,5 +1,5 @@
 import { devConfig } from "../config/DevSettings";
-import { calculateWMIEvent } from "../services/events/calculateWMIEvent";
+import { setupInvasionEvent } from "../services/events/setupInvasionEvent";
 
 /**
  * Configuration flags for game settings.
@@ -45,7 +45,7 @@ export const flags = {
   chat: 0, // Disable chat
   event1: 1,
   event2: 0,
-  ...calculateWMIEvent().phases, // Event phases
+  ...setupInvasionEvent().phases,
   iframestart_override: 0,
   mushrooms: 1,
   chatwhitelist: "2,3,23",

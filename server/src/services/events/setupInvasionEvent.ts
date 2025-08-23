@@ -13,7 +13,7 @@ import { devConfig } from "../../config/DevSettings";
  * @param {Context} ctx - Koa context object
  * @returns Event timing object with Unix timestamps (seconds)
  */
-export const calculateWMIEvent = () => {
+export const setupInvasionEvent = () => {
   let startDate: Date;
 
   if (devConfig.startEventNowOverride) {

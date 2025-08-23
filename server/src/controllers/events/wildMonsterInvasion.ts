@@ -1,9 +1,9 @@
 import { Status } from "../../enums/StatusCodes";
-import { calculateWMIEvent } from "../../services/events/calculateWMIEvent";
+import { setupInvasionEvent } from "../../services/events/setupInvasionEvent";
 import { KoaController } from "../../utils/KoaController";
 
 export const wildMonsterInvasion: KoaController = async (ctx) => {
-  const eventData = calculateWMIEvent();
+  const eventData = setupInvasionEvent();
 
   ctx.status = Status.OK;
   ctx.body = eventData.dates;
