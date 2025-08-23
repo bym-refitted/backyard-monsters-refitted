@@ -388,9 +388,6 @@ package
                   {
                      _top.mcReinforcements.visible = false;
                   }
-                  // The following logic was added from an older SWF which included Wild Monster Invasion 1 specific logic
-                  // SWF version: game-v120.v7
-                  // =============================================== // 
                   if(SPECIALEVENT_WM1.GetTimeUntilEnd() < 0 || SPECIALEVENT_WM1.wave > SPECIALEVENT_WM1.numWaves || SPECIALEVENT_WM1.invasionpop == 4 && SPECIALEVENT_WM1.wave > SPECIALEVENT_WM1.BONUSWAVE2)
                   {
                      if(Boolean(_top.mcSpecialEvent) && _top.mcSpecialEvent.visible)
@@ -484,7 +481,6 @@ package
                         UI_BOTTOM._nextwave_wm1.visible = false;
                      }
                   }
-                  // =============================================== //
                   if(!_top.mcSave.visible)
                   {
                      _top.mcSave.visible = true;

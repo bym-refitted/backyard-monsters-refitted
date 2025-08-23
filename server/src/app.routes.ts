@@ -39,6 +39,7 @@ import { Context } from "koa";
 import { getAvailableWorlds } from "./controllers/leaderboards/getAvailableWorlds";
 import { getLeaderboards } from "./controllers/leaderboards/getLeaderboards";
 import { getAttackLogs } from "./controllers/attacklogs/getAttackLogs";
+import { wildMonsterInvasion } from "./controllers/events/wildMonsterInvasion";
 
 const RateLimit = require("koa2-ratelimit").RateLimit;
 
@@ -485,6 +486,13 @@ router.post(
   debugDataLog("Report message thread"),
   reportMessageThread
 );
+
+router.get("/api/:apiVersion/events/wmi1",
+  apiVersion,
+  // verifyUserAuth,
+  debugDataLog("Getting WMI event details"),
+  wildMonsterInvasion
+)
 
 /**
  * Get available worlds
