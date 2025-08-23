@@ -456,6 +456,7 @@ package
          GLOBAL._bLocker = null;
          GLOBAL._bMap = null;
          GLOBAL._bStore = null;
+         GLOBAL._bTotem = null;
          UI2.Hide("warning");
          UI2.Hide("scareAway");
          WMATTACK._inProgress = false;
@@ -4971,7 +4972,7 @@ package
          buildingProperties = GLOBAL._buildingProps[buildingNum - 1] || {};
          if (buildingProperties.type == "decoration")
          {
-            if (BTOTEM.IsTotem2(buildingNum))
+            if (BTOTEM.IsTotem(buildingNum) || BTOTEM.IsTotem2(buildingNum))
             {
                buildingFoundation = new BTOTEM(buildingNum);
             }

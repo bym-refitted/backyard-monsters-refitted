@@ -21,7 +21,7 @@ package com.monsters.inventory
             BASE._buildingsStored["b" + param1] = new SecNum(0);
          }
          BASE._buildingsStored["b" + param1].Add(1);
-         if(BTOTEM.IsTotem2(param1))
+         if(BTOTEM.IsTotem(param1) || BTOTEM.IsTotem2(param1))
          {
             BASE._buildingsStored["bl" + param1] = new SecNum(param2);
          }
