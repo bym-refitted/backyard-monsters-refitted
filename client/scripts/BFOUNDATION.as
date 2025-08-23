@@ -455,6 +455,10 @@ package
                {
                   hasTownHall = true;
                }
+               if (BTOTEM.IsTotem(buildingData._type)) {
+                  // GLOBAL._bTotem.Tick(0);
+                  buildingData._type = SPECIALEVENT_WM1.TotemQualified(buildingData._type);
+               }
                if(buildingData is BTRAP && buildingData._fired || buildingData._type == 53 && buildingData._expireTime < GLOBAL.Timestamp())
                {
                   Console.warning("Ignored Building" + buildingData + buildingData._type + buildingData._expireTime + " setting buildinghealthdata to 0");
@@ -3427,7 +3431,7 @@ package
          }
          this._countdownBuild.Set(0);
          this._constructed = true;
-         if(!this._prefab && !BTOTEM.IsTotem2(this._type))
+         if(!this._prefab && !BTOTEM.IsTotem(this._type) || !BTOTEM.IsTotem2(this._type))
          {
             this._lvl.Set(1);
             this._hpLvl = 1;
