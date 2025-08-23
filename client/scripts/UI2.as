@@ -97,7 +97,6 @@ package
             {
                _top.mcSpecialEvent.buttonMode = true;
                _top.mcSpecialEvent.mouseChildren = false;
-               // _top.mcSpecialEvent.addEventListener(MouseEvent.CLICK,SPECIALEVENT.TimerClicked);
                _top.mcSpecialEvent.addEventListener(MouseEvent.CLICK,SPECIALEVENT_WM1.TimerClicked);
             }
          }
@@ -441,7 +440,7 @@ package
                         _top.mcSpecialEvent.tCountdown.htmlText = GLOBAL.ToTime(_loc3_,true);
                      }
                   }
-                  else if(GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD && !BASE.isOutpost && !GLOBAL._flags.viximo && !GLOBAL._flags.kongregate)
+                  else if(GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD && !BASE.isOutpost && !BASE.isInfernoMainYardOrOutpost && !GLOBAL._flags.viximo && !GLOBAL._flags.kongregate)
                   {
                      if(!_top.mcSpecialEvent.visible)
                      {

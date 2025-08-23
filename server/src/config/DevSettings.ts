@@ -57,7 +57,14 @@ export const devConfig = {
   /*
    * Sets whether the descent into Inferno should be enabled or disabled.
    */
-  skipDescent: process.env.ENV === Env.PROD ? false : false,
+  skipDescent: process.env.ENV === Env.PROD ? false : true,
+
+  /*
+   * An override epoch timestamp for event start dates.
+   * If set, the event will start immediately from this timestamp.
+   * Default value is 0 - no override.
+   */  
+  startEventNowOverride: process.env.ENV === Env.PROD ? 0 : 1755960487,
 
   /*
    * Sets whether the tutorial phase of the game is enabled or disabled.
