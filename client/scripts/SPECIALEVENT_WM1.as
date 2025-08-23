@@ -850,20 +850,21 @@ package
       
       private static function InitializeTimes() : void
       {
-         var _loc1_:Date = new Date();
-         _loc1_.setUTCFullYear(2025,7,22);
-         _loc1_.setUTCHours(0,0,0,0);
-         _eventStartTime = Math.floor(_loc1_.getTime() / 1000);
-         var _loc2_:Date = new Date();
-         _loc2_.setUTCFullYear(2025,7,31);
-         _loc2_.setUTCHours(0,0,0,0);
-         _eventExtensionTime = Math.floor(_loc2_.getTime() / 1000);
-         var _loc3_:Date = new Date();
-         _loc3_.setUTCFullYear(2025,7,29);
-         _loc3_.setUTCHours(0,0,0,0);
-         _eventEndTime = Math.floor(_loc3_.getTime() / 1000);
+         new URLLoaderApi().load(
+               GLOBAL._apiURL + "events/wmi1",
+               null,
+               function(serverData:Object):void
+               {
+                  if (serverData)
+                  {
+                     _eventStartTime = Number(serverData.start);
+                     _eventEndTime = Number(serverData.end);
+                     _eventExtensionTime = Number(serverData.extension);
+                  }
+               }
+            );
       }
-      
+
       public static function StartRound() : void
       {
          if(_active)

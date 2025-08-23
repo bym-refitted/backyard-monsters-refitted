@@ -1229,15 +1229,11 @@ package
             }
             POPUPS.Next();
          };
-         // The following logic was added from an older SWF which included Wild Monster Invasion 1 specific logic
-         // SWF version: game-v120.v7
-         // =============================================== //
          if(SPECIALEVENT_WM1.active)
          {
             SPECIALEVENT_WM1.EndRound(true);
             return;
          }
-         // =============================================== //
          if(INFERNO_EMERGENCE_EVENT.isAttackActive)
          {
             INFERNO_EMERGENCE_POPUPS.ShowStagePassed(INFERNOPORTAL.building._lvl.Get());

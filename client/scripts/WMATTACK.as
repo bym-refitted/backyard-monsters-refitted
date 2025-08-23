@@ -292,11 +292,7 @@ package
          var _loc5_:Object = null;
          if(GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD)
          {
-            // The following logic was added from an older SWF which included Wild Monster Invasion 1 specific logic
-            // SWF version: game-v120.v7
-            // =============================================== // 
             SPECIALEVENT_WM1.Tick();
-            // =============================================== // 
             if(t % 10 == 0)
             {
                _loc1_ = 0;
@@ -924,9 +920,6 @@ package
          {
             ATTACK.PoorDefense();
          }
-         // The following logic was added from an older SWF which included Wild Monster Invasion 1 specific logic
-         // SWF version: game-v120.v7
-         // =============================================== //
          else if(SPECIALEVENT_WM1.active)
          {
             // Check if base took massive damage (90%+ destruction)
@@ -939,7 +932,6 @@ package
                ATTACK.WellDefended(true);
             }
          }
-         // =============================================== //
          else if(_loc3_ < _loc4_ * 0.9 || TUTORIAL._stage < 200)
          {
             ATTACK.PoorDefense();

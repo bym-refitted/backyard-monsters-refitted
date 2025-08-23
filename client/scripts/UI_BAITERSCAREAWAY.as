@@ -18,30 +18,21 @@ package
          {
             bReturn.SetupKey("wmi_surrenderbtn");
          }
-
-         // The following logic was added from an older SWF which included Wild Monster Invasion 1 specific logic
-         // SWF version: game-v120.v7
-         // =============================================== // 
          if(SPECIALEVENT.active || SPECIALEVENT_WM1.active)
          {
             bReturn.SetupKey("wmi_surrenderbtn");
          }
-         // =============================================== // 
          bReturn.addEventListener(MouseEvent.CLICK,this.onReturnDown);
       }
       
       private function onReturnDown(param1:MouseEvent) : void
       {
-         // The following logic was added from an older SWF which included Wild Monster Invasion 1 specific logic
-         // SWF version: game-v120.v7
-         // =============================================== // 
          var _loc2_:Boolean = SPECIALEVENT_WM1.active;
          if(_loc2_)
          {
             SPECIALEVENT_WM1.Surrender();
             return;
          }
-         // =============================================== // 
          dispatchEvent(new Event("scareAway"));
       }
       
