@@ -14,63 +14,43 @@ import { devConfig } from "../../config/DevSettings";
  * @returns Event timing object with Unix timestamps (seconds)
  */
 export const setupInvasionEvent = () => {
+  const now = new Date();
   let startDate: Date;
+  let invasionpop: number;
 
+  // TODO: get rid of this hardcoded value + check the monthly logic
   if (devConfig.startEventNowOverride) {
     // startDate = new Date(devConfig.startEventNowOverride * 1000);
-    const fiveDaysFromNow = Math.floor(Date.now() / 1000) + 5 * 24 * 60 * 60;
-    startDate = new Date(fiveDaysFromNow * 1000);
+    startDate = new Date(1756141530 * 1000);
   } else {
-    const now = new Date();
     startDate = new Date(now.getFullYear(), now.getMonth(), 1);
   }
 
   const endDate = new Date(startDate);
-  endDate.setDate(startDate.getDate() + 7);
+  endDate.setDate(startDate.getDate() + 5);
 
   const extensionDate = new Date(endDate);
   extensionDate.setDate(endDate.getDate() + 2);
 
-  const startTimestamp = Math.floor(startDate.getTime() / 1000);
-  const endTimestamp = Math.floor(endDate.getTime() / 1000);
-  const extensionTimestamp = Math.floor(extensionDate.getTime() / 1000);
+  // Timstamps
+  const current = Math.floor(now.getTime() / 1000);
+  const start = Math.floor(startDate.getTime() / 1000);
+  const end = Math.floor(endDate.getTime() / 1000);
+  const extension = Math.floor(extensionDate.getTime() / 1000);
 
-  // Calculate current phase based on time
-  const now = new Date();
-  const currentTimestamp = Math.floor(now.getTime() / 1000);
-
-  const DAYS = 24 * 60 * 60;
-
-  // Phase thresholds (days before event start)
-  const phases = [
-    { threshold: startTimestamp - 7 * DAYS, phase: -1 },
-    { threshold: startTimestamp - 4 * DAYS, phase: 0 },
-    { threshold: startTimestamp - 1 * DAYS, phase: 1 },
-    { threshold: startTimestamp, phase: 2 },
-    { threshold: startTimestamp + 1, phase: 3 },
-    { threshold: endTimestamp + 1, phase: 4 },
-  ];
-
-  let invasionpop = 5;
-
-  for (const { threshold, phase } of phases) {
-    if (currentTimestamp < threshold) {
-      invasionpop = phase;
-      break;
-    }
+  if (current < start) {
+    // TODO: add 2 and 3 based on how many days away event is
+    invasionpop = 1; // before
+  } else if (current < end) {
+    invasionpop = 4; // during
+  } else {
+    invasionpop = -1; // after
   }
 
-  const invasionpop2 = Math.max(invasionpop, 4);
+  const invasionpop2 = invasionpop;
 
   return {
-    dates: {
-      start: startTimestamp,
-      end: endTimestamp,
-      extension: extensionTimestamp,
-    },
-    phases: {
-      invasionpop,
-      invasionpop2,
-    },
+    dates: { start, end, extension },
+    phases: { invasionpop, invasionpop2 },
   };
 };
