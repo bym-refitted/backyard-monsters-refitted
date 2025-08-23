@@ -1181,7 +1181,7 @@ package
       
       public static function EventActive() : Boolean
       {
-         if(BASE.isOutpost)
+         if(BASE.isOutpost || BASE.isInfernoMainYardOrOutpost)
          {
             return false;
          }

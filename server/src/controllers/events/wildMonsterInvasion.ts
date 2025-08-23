@@ -1,11 +1,10 @@
 import { Status } from "../../enums/StatusCodes";
+import { calculateWMIEvent } from "../../services/events/calculateWMIEvent";
 import { KoaController } from "../../utils/KoaController";
 
 export const wildMonsterInvasion: KoaController = async (ctx) => {
+  const eventData = calculateWMIEvent();
+
   ctx.status = Status.OK;
-  ctx.body = {
-    start: 1755957124,
-    end: 1756561919,
-    extension: 1756561919,
-  };
+  ctx.body = eventData.dates;
 };
