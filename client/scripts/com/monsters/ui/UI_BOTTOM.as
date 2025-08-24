@@ -14,6 +14,8 @@ package com.monsters.ui
       
       public static var _nextwave:UI_NEXTWAVE;
       
+      public static var _nextwave_wm1:UI_NEXTWAVE_WM1;
+      
       public static var _mc:UI_MENU;
       
       public static var _missions:UI_MISSIONMENU;
@@ -64,6 +66,14 @@ package com.monsters.ui
             GLOBAL._layerUI.addChild(_nextwave);
          }
          _nextwave.visible = false;
+         
+         _nextwave_wm1 = new UI_NEXTWAVE_WM1();
+         _nextwave_wm1.Setup();
+         if(_nextwave_wm1)
+         {
+            GLOBAL._layerUI.addChild(_nextwave_wm1);
+         }
+         _nextwave_wm1.visible = false;
       }
       
       public static function clickedStore(param1:MouseEvent) : void
@@ -138,6 +148,10 @@ package com.monsters.ui
          {
             _nextwave.Resize();
          }
+         if(_nextwave_wm1)
+         {
+            _nextwave_wm1.Resize();
+         }
          if(TUTORIAL._stage < TUTORIAL._endstage)
          {
             TUTORIAL.Resize();
@@ -178,6 +192,10 @@ package com.monsters.ui
                Chat._bymChat.show();
             }
          }
+         if(_nextwave && SPECIALEVENT_WM1.EventActive() && UI_NEXTWAVE_WM1.ShouldDisplay())
+         {
+            _nextwave_wm1.visible = true;
+         }
          if(MonsterMadness.infoBar)
          {
             MonsterMadness.addInfoBar();
@@ -202,6 +220,10 @@ package com.monsters.ui
          if(_nextwave)
          {
             _nextwave.visible = false;
+         }
+         if(_nextwave_wm1)
+         {
+            _nextwave_wm1.visible = false;
          }
          if(MonsterMadness.infoBar)
          {
