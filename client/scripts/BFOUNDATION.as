@@ -3431,7 +3431,7 @@ package
          }
          this._countdownBuild.Set(0);
          this._constructed = true;
-         if(!this._prefab && !BTOTEM.IsTotem(this._type) || !BTOTEM.IsTotem2(this._type))
+         if(!this._prefab && !BTOTEM.IsTotem2(this._type))
          {
             this._lvl.Set(1);
             this._hpLvl = 1;
