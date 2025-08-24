@@ -27,7 +27,11 @@ package
          {
             return false;
          }
-         if(BASE.isOutpost)
+         if(BASE.isOutpost || BASE.isInfernoMainYardOrOutpost)
+         {
+            return false;
+         }
+         if (GLOBAL._flags.invasionpop != 4 && GLOBAL._flags.invasionpop != 5) 
          {
             return false;
          }

@@ -1,6 +1,8 @@
 import { devConfig } from "../config/DevSettings";
 import { setupInvasionEvent } from "../services/events/setupInvasionEvent";
 
+const invasionPhases = setupInvasionEvent().phases;
+
 /**
  * Configuration flags for game settings.
  * These flags are used to enable/disable features in game.
@@ -45,7 +47,7 @@ export const flags = {
   chat: 0, // Disable chat
   event1: 1,
   event2: 0,
-  ...setupInvasionEvent().phases,
+  ...invasionPhases,
   iframestart_override: 0,
   mushrooms: 1,
   chatwhitelist: "2,3,23",
