@@ -1209,7 +1209,8 @@ package
       public static function TotemReward() : void
       {
          var _loc1_:int = TotemQualified(121);
-         // BASE.BuildingStorageAdd(_loc1_); // Only existed in game-v120.v7
+         BTOTEM.RemoveAllFromStorage(true,false);
+         BTOTEM.RemoveAllFromYard(true,false);
          InventoryManager.buildingStorageAdd(_loc1_, 1);
       }
       

@@ -64,7 +64,7 @@ export const devConfig = {
    * If set, the event will start immediately from this timestamp.
    * Default value is 0 - no override.
    */  
-  startEventNowOverride: process.env.ENV === Env.PROD ? 0 : 1756124923,
+  startEventNowOverride: process.env.ENV === Env.PROD ? 0 : 1756039033,
 
   /*
    * Sets whether the tutorial phase of the game is enabled or disabled.
