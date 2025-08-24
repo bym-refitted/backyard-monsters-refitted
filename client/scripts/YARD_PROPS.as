@@ -6748,7 +6748,6 @@ package
             "time":new SecNum(0),
             "re":[]
          }],
-         "buildingbuttons":["125.v2"],
          "imageData":{
             "baseurl":"buildings/decorations/wmitotem/",
             "1":{
