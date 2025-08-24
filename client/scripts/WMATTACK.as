@@ -122,7 +122,12 @@ package
       public static var _enabled:Boolean;
       
       private static var _cleanUpFunc:Function;
+
+      private static var _pointPool:Vector.<Point> = new Vector.<Point>();
+   
+      private static var _poolIndex:int = 0;
        
+      private static var _rngCache:Object = {};
       
       public function WMATTACK()
       {
@@ -738,6 +743,24 @@ package
          }
          return _loc12_;
       }
+
+     /*
+      * Retrieves a Point object from the object pool, creating new ones only when necessary.
+      * This reduces garbage collection overhead during high-volume spawning by reusing 
+      * Point instances instead of creating new objects.
+      * 
+      * @param x The x coordinate to set on the pooled Point
+      * @param y The y coordinate to set on the pooled Point
+      * @return A Point object with the specified coordinates (may be recycled from pool)
+      * 
+      */
+      private static function getPooledPoint(x:Number, y:Number) : Point {
+         if(_poolIndex >= _pointPool.length) _pointPool.push(new Point());
+         var point:Point = _pointPool[_poolIndex++];
+         point.x = x; 
+         point.y = y;
+         return point;
+      }
       
       public static function SpawnA(param1:Array) : Array
       {
@@ -750,6 +773,9 @@ package
          var _loc3_:Array = [];
          var _loc7_:int = 3;
          var _loc8_:int = 0;
+
+         _poolIndex = 0;
+
          while(_loc8_ < param1.length)
          {
             _loc9_ = int(param1[_loc8_][4]);
@@ -797,7 +823,13 @@ package
          var _loc9_:MonsterBase = null;
          var _loc10_:uint = uint(BASE._basePoints) + uint(BASE._baseValue);
          var _loc11_:Number = 0.4;
-         var _loc12_:Rndm = new Rndm(int(param1.x + param1.y));
+
+         // We use cached RNG by seed to avoid recreating identical Rndm objects
+         var seedValue:int = int(param1.x + param1.y);
+         var _loc12_:Rndm = _rngCache[seedValue];
+         if(!_loc12_) {
+            _loc12_ = _rngCache[seedValue] = new Rndm(seedValue);
+         }
          if(_loc10_ > 1000000)
          {
             _loc11_ = 0.5;
@@ -825,7 +857,10 @@ package
          {
             _loc6_ = _loc12_.random() * 360 * 0.0174532925;
             _loc7_ = _loc12_.random() * param2 / 2;
-            _loc8_ = param1.add(new Point(Math.cos(_loc6_) * _loc7_,Math.sin(_loc6_) * _loc7_));
+
+            var offsetPoint:Point = getPooledPoint(Math.cos(_loc6_) * _loc7_, Math.sin(_loc6_) * _loc7_);
+            _loc8_ = param1.add(offsetPoint);
+
             _loc9_ = CREEPS.Spawn(param3,MAP._BUILDINGTOPS,"bounce",GRID.ToISO(_loc8_.x,_loc8_.y,0),_loc12_.random() * 360,_loc11_,true);
             if(_rage)
             {

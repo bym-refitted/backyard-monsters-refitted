@@ -234,6 +234,12 @@ package com.monsters.monsters
       public var damageProperty:CModifiableProperty;
       
       protected var m_filters:Array;
+
+      private var _lastXd:Number = NaN;
+
+      private var _lastYd:Number = NaN;
+
+      private var _cachedTargetRotation:Number = NaN;
       
       public function MonsterBase()
       {
@@ -642,7 +648,16 @@ package com.monsters.monsters
          {
             if (!this._lockRotation)
             {
-               this._targetRotation = Math.atan2(this._yd,this._xd) * 57.2957795 - 90;
+               // Only calculate rotation when movement direction changes
+               if(_lastXd !== this._xd || _lastYd !== this._yd) {
+                  this._targetRotation = Math.atan2(this._yd, this._xd) * 57.2957795 - 90;
+                  _lastXd = this._xd;
+                  _lastYd = this._yd;
+                  _cachedTargetRotation = this._targetRotation;
+               } else {
+                  // Use cached rotation
+                  this._targetRotation = _cachedTargetRotation;
+               }
             }
             _loc1_ = this.m_rotation - this._targetRotation;
             if(_loc1_ > 180)
