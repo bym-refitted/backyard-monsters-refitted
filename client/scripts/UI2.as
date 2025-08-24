@@ -442,9 +442,19 @@ package
                   }
                   else if(GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD && !BASE.isOutpost && !BASE.isInfernoMainYardOrOutpost && !GLOBAL._flags.viximo && !GLOBAL._flags.kongregate)
                   {
-                     if(!_top.mcSpecialEvent.visible)
+                     if(SPECIALEVENT_WM1.invasionpop != 1)
                      {
-                        _top.mcSpecialEvent.visible = true;
+                        if(!_top.mcSpecialEvent.visible)
+                        {
+                           _top.mcSpecialEvent.visible = true;
+                        }
+                     }
+                     else
+                     {
+                        if(_top.mcSpecialEvent.visible)
+                        {
+                           _top.mcSpecialEvent.visible = false;
+                        }  
                      }
                      if(UI_BOTTOM._nextwave_wm1 && !UI_BOTTOM._nextwave_wm1.visible && UI_NEXTWAVE_WM1.ShouldDisplay())
                      {
