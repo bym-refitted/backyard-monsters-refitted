@@ -246,7 +246,7 @@ package
          }
          if(ResourceBombs._state == 0)
          {
-            if(ResourceBombs._bombid && !ResourceBombs._bombs[ResourceBombs._bombid].used && GLOBAL._attackersResources["r" + ResourceBombs._bombs[ResourceBombs._bombid].resource].Get() >= ResourceBombs._bombs[ResourceBombs._bombid].cost)
+            if(ResourceBombs._bombid && !ResourceBombs._bombs[ResourceBombs._bombid].used && GLOBAL._attackersResources["r" + ResourceBombs._bombs[ResourceBombs._bombid].resource].Get() >= ResourceBombs._bombs[ResourceBombs._bombid].cost.Get())
             {
                ResourceBombs.BombAdd(ResourceBombs._bombs[ResourceBombs._bombid]);
             }
