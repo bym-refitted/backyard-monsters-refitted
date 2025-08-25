@@ -33,6 +33,11 @@ package
       
       public static var _guardianList:Vector.<ChampionBase> = new Vector.<ChampionBase>();
        
+      private static var _overlapKeyCache:Object = {};
+
+      private static var _cacheHits:int = 0;
+      
+      private static var _cacheMisses:int = 0;
       
       public function CREEPS()
       {
@@ -60,6 +65,43 @@ package
          }
          return null;
       }
+
+      /*
+      * Generates overlap key for creep positioning, using cache to avoid expensive string operations.
+      * Caches frequently used position keys to eliminate repeated string concatenations.
+      * 
+      * @param creatureID The creature identifier
+      * @param x The x coordinate 
+      * @param y The y coordinate
+      * @return Cached or newly created overlap key string
+      */
+      private static function getOverlapKey(creatureID:String, x:Number, y:Number):String {
+         var gridX:int = int(x * 0.5);
+         var gridY:int = int(y * 0.5);
+         
+         var cacheKey:String = creatureID + "_" + gridX + "_" + gridY;
+         
+         var cachedKey:String = _overlapKeyCache[cacheKey];
+         if(cachedKey) {
+            _cacheHits++;
+            return cachedKey;
+         }
+         
+         // Cache miss - create the overlap key
+         _cacheMisses++;
+         var overlapKey:String = creatureID + "x" + gridX + "y" + gridY;
+         _overlapKeyCache[cacheKey] = overlapKey;
+         
+         return overlapKey;
+      }
+
+      /*
+      * Clears the overlap key cache periodically to prevent memory growth.
+      */
+      private static function clearOverlapCache():void {
+         _overlapKeyCache = {};
+         _cacheHits = _cacheMisses = 0;
+      }
       
       public static function Tick() : void
       {
@@ -72,7 +114,7 @@ package
          for(_loc3_ in _creeps)
          {
             _loc2_ = _creeps[_loc3_];
-            _loc5_ = _loc2_._creatureID + "x" + int(_loc2_._tmpPoint.x * 0.5) + "y" + int(_loc2_._tmpPoint.y * 0.5);
+            _loc5_ = getOverlapKey(_loc2_._creatureID, _loc2_._tmpPoint.x, _loc2_._tmpPoint.y);
             if(!_creepOverlap[_loc5_])
             {
                _creepOverlap[_loc5_] = 1;
@@ -279,6 +321,8 @@ package
             _loc4_++;
          }
          _guardianList.length = 0;
+         clearOverlapCache();
+         Targeting.clearGridCaches();
       }
       
       public static function get _guardian() : ChampionBase

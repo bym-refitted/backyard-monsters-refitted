@@ -455,6 +455,10 @@ package
                {
                   hasTownHall = true;
                }
+               if (BTOTEM.IsTotem(buildingData._type)) {
+                  // GLOBAL._bTotem.Tick(0);
+                  buildingData._type = SPECIALEVENT_WM1.TotemQualified(buildingData._type);
+               }
                if(buildingData is BTRAP && buildingData._fired || buildingData._type == 53 && buildingData._expireTime < GLOBAL.Timestamp())
                {
                   Console.warning("Ignored Building" + buildingData + buildingData._type + buildingData._expireTime + " setting buildinghealthdata to 0");

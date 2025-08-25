@@ -402,6 +402,7 @@ package
 
       public static function Cleanup():void
       {
+         SPECIALEVENT_WM1.ClearWildMonsterPowerups();
          BaseBuffHandler.instance.clearBuffs();
          RewardHandler.instance.clear();
          GLOBAL.player.clear();
@@ -451,6 +452,7 @@ package
          GLOBAL._bLocker = null;
          GLOBAL._bMap = null;
          GLOBAL._bStore = null;
+         GLOBAL._bTotem = null;
          UI2.Hide("warning");
          UI2.Hide("scareAway");
          WMATTACK._inProgress = false;
@@ -2994,7 +2996,7 @@ package
          }
          if (_lastPaged >= _loc2_ && !_paging && !_saving && GLOBAL.Timestamp() - _lastSaved >= _loc2_)
          {
-            if (SPECIALEVENT.active)
+            if (SPECIALEVENT.active || SPECIALEVENT_WM1.active)
             {
                _blockSave = false;
                Save(0, false, true);
@@ -4966,7 +4968,7 @@ package
          buildingProperties = GLOBAL._buildingProps[buildingNum - 1] || {};
          if (buildingProperties.type == "decoration")
          {
-            if (BTOTEM.IsTotem2(buildingNum))
+            if (BTOTEM.IsTotem(buildingNum) || BTOTEM.IsTotem2(buildingNum))
             {
                buildingFoundation = new BTOTEM(buildingNum);
             }
