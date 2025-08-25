@@ -170,8 +170,8 @@ package
             buff_txt.htmlText = "<b>" + KEYS.Get("gcage_labelBuff") + "</b>";
             tEvoStage.htmlText = "<b>" + CHAMPIONCAGE._guardians["G" + _loc2_].name + "</b> " + KEYS.Get("chamber_level",{"v1":_loc3_});
             tEvoDesc.htmlText = KEYS.Get(CHAMPIONCAGE._guardians["G" + _loc2_].description);
-            _loc7_ = CHAMPIONCAGE.GetGuardianProperty(_loc5_,_loc3_,"damage");
-            _loc8_ = CHAMPIONCAGE.GetGuardianProperty(_loc5_,_loc3_,"health");
+            _loc7_ = CHAMPIONCAGE.GetGuardianProperty(_loc5_,_loc3_,"damage").Get();
+            _loc8_ = CHAMPIONCAGE.GetGuardianProperty(_loc5_,_loc3_,"health").Get();
             _loc9_ = CHAMPIONCAGE.GetGuardianProperty(_loc5_,_loc3_,"speed");
             _loc10_ = CHAMPIONCAGE.GetGuardianProperty(_loc5_,_loc3_,"buffs") * 100;
             if(_loc4_ > 0)
