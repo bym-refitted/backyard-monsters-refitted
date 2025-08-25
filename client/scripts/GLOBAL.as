@@ -45,7 +45,7 @@ package
 
       public static var cdnUrl:String = "http://localhost:3001/";
 
-      public static var apiVersionSuffix:String = "v1.3.2-beta/";
+      public static var apiVersionSuffix:String = "v1.3.4-beta/";
 
       public static var connectionCounter:int;
 
@@ -228,6 +228,8 @@ package
       public static var _bCage:CHAMPIONCAGE;
 
       public static var _bTower:BFOUNDATION;
+      
+      public static var _bTotem:BTOTEM;
 
       public static var _bTowerCount:int;
 
@@ -961,6 +963,7 @@ package
          _bTower = null;
          _bMap = null;
          _bStore = null;
+         _bTotem = null;
          _bTownhall = null;
          _bRadio = null;
          _bSiegeLab = null;

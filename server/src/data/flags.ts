@@ -1,4 +1,7 @@
 import { devConfig } from "../config/DevSettings";
+import { setupInvasionEvent } from "../services/events/setupInvasionEvent";
+
+const invasionPhases = setupInvasionEvent().phases;
 
 /**
  * Configuration flags for game settings.
@@ -36,7 +39,7 @@ export const flags = {
   attacking: 1,
   gifts: 1,
   attacklog: 1,
-  messaging: devConfig.allowedMessageType.message ? 1: 0,
+  messaging: devConfig.allowedMessageType.message ? 1 : 0,
   sroverlay: 0,
   leaderboard: 1,
   fanfriendbookmarkquests: 1,
@@ -44,8 +47,7 @@ export const flags = {
   chat: 0, // Disable chat
   event1: 1,
   event2: 0,
-  invasionpop: 6,
-  invasionpop2: 6,
+  ...invasionPhases,
   iframestart_override: 0,
   mushrooms: 1,
   chatwhitelist: "2,3,23",
