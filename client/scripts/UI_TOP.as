@@ -142,6 +142,7 @@ package
          var _loc1_:int = 0;
 
          mc.mcPoints.scaleX = mc.mcPoints.scaleY = _uiScale;
+         mcSpecialEvent.scaleX = mcSpecialEvent.scaleY = 1.5;
          
          mc.mcPoints.addEventListener(MouseEvent.MOUSE_OVER,this.InfoShow);
          mc.mcPoints.addEventListener(MouseEvent.MOUSE_OUT,this.InfoHide);
@@ -482,7 +483,7 @@ package
          y = param1.y + 15;
          mcProtected.x = param1.width - 125;
          mcReinforcements.x = param1.width - 125;
-         mcSpecialEvent.x = param1.width - 125;
+         mcSpecialEvent.x = param1.width - 200;
          mcBuffHolder.x = param1.width - 200;
 
          if (GLOBAL.mode == GLOBAL.e_BASE_MODE.ATTACK || GLOBAL.mode == GLOBAL.e_BASE_MODE.WMATTACK)
