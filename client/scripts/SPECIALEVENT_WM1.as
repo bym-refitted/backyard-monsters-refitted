@@ -6,6 +6,11 @@ package
    import flash.geom.Point;
    import com.monsters.monsters.champions.ChampionBase;
    import com.monsters.inventory.InventoryManager;
+   import flash.net.URLLoader;
+   import flash.events.IOErrorEvent;
+   import flash.events.Event;
+   import flash.net.URLRequest;
+   import flash.net.URLRequestMethod;
    
    /*
    * This is the original SPECIALEVENT.as class for Wild Monster Invasion 1.
@@ -850,19 +855,21 @@ package
       
       private static function InitializeTimes() : void
       {
-         new URLLoaderApi().load(
-               GLOBAL._apiURL + "events/wmi1",
-               null,
-               function(serverData:Object):void
-               {
-                  if (serverData)
-                  {
-                     _eventStartTime = Number(serverData.start);
-                     _eventEndTime = Number(serverData.end);
-                     _eventExtensionTime = Number(serverData.extension);
-                  }
-               }
-            );
+         var request:URLRequest = new URLRequest(GLOBAL._apiURL + "events/wmi1");
+         request.method = URLRequestMethod.GET;
+
+         var loader:URLLoader = new URLLoader();
+         loader.load(request);
+         loader.addEventListener(Event.COMPLETE, function(event:Event):void
+         {
+            var data:Object = JSON.decode(event.target.data);
+            if (data)
+            {
+               _eventStartTime = Number(data.start);
+               _eventEndTime = Number(data.end);
+               _eventExtensionTime = Number(data.extension);
+            }
+         });
       }
 
       public static function StartRound() : void
