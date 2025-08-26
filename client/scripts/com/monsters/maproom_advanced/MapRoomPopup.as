@@ -94,7 +94,7 @@ package com.monsters.maproom_advanced
             h = 768;
          }
          r = new Rectangle(0 - (w - 760) / 2,0 - (h - 720) / 2,w,h);
-         if(GLOBAL._ROOT.stage.displayState == StageDisplayState.FULL_SCREEN)
+         if(GLOBAL.isFullScreen)
          {
             this._fullScreen = true;
             mcFrame.x = r.x + 175;
@@ -732,7 +732,7 @@ package com.monsters.maproom_advanced
          this._cells = [];
          this._cellContainer = new MovieClip();
          this._sortArray = [];
-         if(GLOBAL._ROOT.stage.displayState == StageDisplayState.FULL_SCREEN)
+         if(GLOBAL.isFullScreen)
          {
             this._cellCountX = 18;
             this._cellCountY = 15;
@@ -763,7 +763,7 @@ package com.monsters.maproom_advanced
                mapRoomCell.depth = mapRoomCell.y * 1000 + mapRoomCell.x;
                this._sortArray.push(mapRoomCell);
                this._cellContainer.addChild(mapRoomCell);
-               if(GLOBAL._ROOT.stage.displayState == StageDisplayState.FULL_SCREEN)
+               if(GLOBAL.isFullScreen)
                {
                   mapRoomCell.Y += param1.y - 8;
                   if(param1.x % 2)
@@ -1635,7 +1635,7 @@ package com.monsters.maproom_advanced
       
       public function FullScreen() : void
       {
-         if(GLOBAL._ROOT.stage.displayState == StageDisplayState.FULL_SCREEN)
+         if(GLOBAL.isFullScreen)
          {
             this._fullScreen = true;
          }
@@ -1649,7 +1649,7 @@ package com.monsters.maproom_advanced
       public function Resize() : void
       {
          var _loc1_:Boolean = false;
-         if(GLOBAL._ROOT.stage.displayState == StageDisplayState.FULL_SCREEN)
+         if(GLOBAL.isFullScreen)
          {
             if(this._fullScreen != true)
             {

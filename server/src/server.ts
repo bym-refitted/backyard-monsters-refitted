@@ -9,15 +9,14 @@ import ormConfig from "./mikro-orm.config";
 import router from "./app.routes";
 
 import { createClient } from "redis";
-import { MariaDbDriver } from "@mikro-orm/mariadb";
 import { EntityManager, MikroORM, RequestContext } from "@mikro-orm/core";
 import { errorLog, logging } from "./utils/logger";
-import { firstRunEnv } from "./utils/firstRunEnv";
 import { ascii_node } from "./utils/ascii_art";
 import { ErrorInterceptor } from "./middleware/clientSafeError";
 import { processLanguagesFile } from "./middleware/processLanguageFile";
 import { logMissingAssets, morganLogging } from "./middleware/morganLogging";
 import { corsCacheControl } from "./middleware/corsCacheControlSetup";
+import { PostgreSqlDriver } from "@mikro-orm/postgresql";
 
 export const app = new Koa();
 app.proxy = true;
@@ -25,7 +24,7 @@ app.proxy = true;
 export const PORT = process.env.PORT || 3001;
 export const BASE_URL = process.env.BASE_URL;
 
-export const getApiVersion = () => "v1.2.5-beta";
+export const getApiVersion = () => "v1.3.4-beta";
 
 export const ORMContext = {} as {
   orm: MikroORM;
@@ -47,9 +46,7 @@ const api = new Router();
 api.get("/", (ctx: Context) => (ctx.body = {}));
 
 (async () => {
-  await firstRunEnv();
-
-  ORMContext.orm = await MikroORM.init<MariaDbDriver>(ormConfig);
+  ORMContext.orm = await MikroORM.init<PostgreSqlDriver>(ormConfig);
   ORMContext.em = ORMContext.orm.em;
 
   await redisClient.connect();

@@ -30,6 +30,9 @@ package
       
       public static const _CELLSIZE:int = 100;
        
+      private static var _gridKeyCache:Object = {};
+      
+      private static var _cartesianCache:Object = {};
       
       public function Targeting()
       {
@@ -42,11 +45,47 @@ package
          _creepCells = {};
          _deadCreepCells = {};
       }
+
+      /*
+       * Optimized grid key generation with coordinate transformation caching.
+       * Eliminates redundant ISO/Cartesian conversions and string concatenations.
+      */
+      private static function getGridKey(isoPoint:Point):String {
+         // Create cache key for ISO coordinates (rounded to avoid floating point issues)
+         var cacheKey:String = int(isoPoint.x) + "_" + int(isoPoint.y);
+         
+         // Check if we already calculated this grid position
+         var cachedGridKey:String = _gridKeyCache[cacheKey];
+         if(cachedGridKey) {
+            return cachedGridKey;
+         }
+         
+         // Check if we already have cartesian conversion cached
+         var cartesian:Point = _cartesianCache[cacheKey];
+         if(!cartesian) {
+            cartesian = GRID.FromISO(isoPoint.x, isoPoint.y);
+            _cartesianCache[cacheKey] = cartesian;
+         }
+         
+         // Calculate grid key once
+         var gridKey:String = "node" + int(cartesian.x / _CELLSIZE) + "|" + int(cartesian.y / _CELLSIZE);
+         _gridKeyCache[cacheKey] = gridKey;
+         
+         return gridKey;
+      }
+
+      /*
+       * Clears coordinate and grid caches to prevent memory growth.
+      */
+      public static function clearGridCaches():void {
+         _gridKeyCache = {};
+         _cartesianCache = {};
+      }
       
       public static function CreepCellAdd(param1:Point, param2:String, param3:MonsterBase) : String
       {
-         param1 = GRID.FromISO(param1.x,param1.y);
-         var _loc4_:String = "node" + int(param1.x / _CELLSIZE) + "|" + int(param1.y / _CELLSIZE);
+         var _loc4_:String = getGridKey(param1);
+
          var _loc5_:Object;
          if(!(_loc5_ = param3.dead ? _deadCreepCells : _creepCells)[_loc4_])
          {
@@ -58,12 +97,12 @@ package
       
       public static function CreepCellMove(param1:Point, param2:String, param3:MonsterBase, param4:String) : String
       {
-         param1 = GRID.FromISO(param1.x,param1.y);
-         var _loc5_:String;
-         if((_loc5_ = "node" + int(param1.x / _CELLSIZE) + "|" + int(param1.y / _CELLSIZE)) != param4)
+         var _loc5_:String = getGridKey(param1);
+         
+         if(_loc5_ != param4)
          {
-            CreepCellDelete(param2,param4,param3.dead);
-            return CreepCellAdd(GRID.ToISO(param1.x,param1.y,0),param2,param3);
+            CreepCellDelete(param2, param4, param3.dead);
+            return CreepCellAdd(param1, param2, param3);
          }
          return "";
       }

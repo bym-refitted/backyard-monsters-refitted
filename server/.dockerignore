@@ -1,7 +1,16 @@
 .git
+.gitignore
 Dockerfile*
+docker-compose*
+README.md
 example.env
 .env
-# enforce recompile inside the container
+.env.*
 node_modules/
 dist/
+coverage/
+.nyc_output/
+*.log
+npm-debug.log*
+.DS_Store
+Thumbs.db

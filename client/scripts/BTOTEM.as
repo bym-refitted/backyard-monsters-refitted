@@ -68,7 +68,7 @@ package
          }
       }
       
-      private static function RemoveAllFromStorage(param1:Boolean = false, param2:Boolean = false) : void
+      public static function RemoveAllFromStorage(param1:Boolean = false, param2:Boolean = false) : void
       {
          var _loc3_:Number = NaN;
          if(param1)
@@ -100,7 +100,7 @@ package
          }
       }
       
-      private static function RemoveAllFromYard(param1:Boolean = false, param2:Boolean = false) : void
+      public static function RemoveAllFromYard(param1:Boolean = false, param2:Boolean = false) : void
       {
          var _loc4_:BFOUNDATION = null;
          var _loc3_:Vector.<Object> = InstanceManager.getInstancesByClass(BDECORATION);

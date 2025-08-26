@@ -122,7 +122,12 @@ package
       public static var _enabled:Boolean;
       
       private static var _cleanUpFunc:Function;
+
+      private static var _pointPool:Vector.<Point> = new Vector.<Point>();
+   
+      private static var _poolIndex:int = 0;
        
+      private static var _rngCache:Object = {};
       
       public function WMATTACK()
       {
@@ -288,10 +293,11 @@ package
          var _loc1_:int = 0;
          var _loc2_:Vector.<Object> = null;
          var _loc3_:BFOUNDATION = null;
-         var _loc4_:int = 0;
+         var a:int = 0;
          var _loc5_:Object = null;
          if(GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD)
          {
+            SPECIALEVENT_WM1.Tick();
             if(t % 10 == 0)
             {
                _loc1_ = 0;
@@ -316,11 +322,11 @@ package
             t += 1;
             if(_queued != null && !_inProgress)
             {
-               if(!GLOBAL._catchup && !warningPopup && !_trojan && _queued.warned == 0 && !baseIsRepairing && BASE._isSanctuary <= GLOBAL.Timestamp() && _enabled && !INFERNO_EMERGENCE_EVENT.ShouldRunEvent() && !PLANNER.isOpen())
+               if(!GLOBAL._catchup && !warningPopup && !_trojan && _queued.warned == 0 && !baseIsRepairing && BASE._isSanctuary <= GLOBAL.Timestamp() && _enabled && !SPECIALEVENT_WM1.EventActive() && !INFERNO_EMERGENCE_EVENT.ShouldRunEvent() && !PLANNER.isOpen())
                {
                   ShowWarning();
                }
-               if(!GLOBAL._catchup && !_trojan && _queued.warned == 1 && !UI2._wildMonsterBar && !_inProgress && !baseIsRepairing && BASE._isSanctuary <= GLOBAL.Timestamp() && _enabled && !INFERNO_EMERGENCE_EVENT.ShouldRunEvent())
+               if(!GLOBAL._catchup && !_trojan && _queued.warned == 1 && !UI2._wildMonsterBar && !_inProgress && !baseIsRepairing && BASE._isSanctuary <= GLOBAL.Timestamp() && _enabled && !SPECIALEVENT_WM1.EventActive() && !INFERNO_EMERGENCE_EVENT.ShouldRunEvent())
                {
                   UI2.Show("wmbar");
                }
@@ -347,7 +353,7 @@ package
             }
             else if(!_inProgress)
             {
-               if(!GLOBAL._catchup && _history.sessionsSinceLastAttack >= _sessionsBetweenAttacks && !baseIsRepairing && !_processing && GLOBAL.Timestamp() > _history.nextAttack && BASE._baseLevel >= 9 && !_trojan && BASE._isSanctuary <= GLOBAL.Timestamp() && _enabled && !PLANNER.isOpen() && !INFERNO_EMERGENCE_EVENT.ShouldRunEvent())
+               if(!GLOBAL._catchup && _history.sessionsSinceLastAttack >= _sessionsBetweenAttacks && !baseIsRepairing && !_processing && GLOBAL.Timestamp() > _history.nextAttack && BASE._baseLevel >= 9 && !_trojan && BASE._isSanctuary <= GLOBAL.Timestamp() && _enabled && !PLANNER.isOpen() && !SPECIALEVENT_WM1.EventActive() && !INFERNO_EMERGENCE_EVENT.ShouldRunEvent())
                {
                   _processing = true;
                   Trigger();
@@ -355,21 +361,21 @@ package
             }
             else if(_inProgress)
             {
-               if(CREEPS._creepCount == 0)
+               if(CREEPS._creepCount == 0 && (!SPECIALEVENT_WM1.active || SPECIALEVENT_WM1.AllWavesSpawned()))
                {
                   _cleanUpFunc();
                }
                else if(GLOBAL.Timestamp() % 10 == 0)
                {
-                  _loc4_ = 0;
+                  a = 0;
                   for each(_loc5_ in CREEPS._creeps)
                   {
                      if(_loc5_._behaviour == GLOBAL.e_BASE_MODE.ATTACK || _loc5_._behaviour == "bounce" || _loc5_._behaviour == "loot" || _loc5_._behaviour == "heal" || _loc5_._behaviour == "buff" || _loc5_._behaviour == "hunt")
                      {
-                        _loc4_++;
+                        a++;
                      }
                   }
-                  if(_loc4_ == 0)
+                  if(a == 0 && (!SPECIALEVENT_WM1.active || SPECIALEVENT_WM1.AllWavesSpawned()))
                   {
                      _cleanUpFunc();
                   }
@@ -737,6 +743,24 @@ package
          }
          return _loc12_;
       }
+
+     /*
+      * Retrieves a Point object from the object pool, creating new ones only when necessary.
+      * This reduces garbage collection overhead during high-volume spawning by reusing 
+      * Point instances instead of creating new objects.
+      * 
+      * @param x The x coordinate to set on the pooled Point
+      * @param y The y coordinate to set on the pooled Point
+      * @return A Point object with the specified coordinates (may be recycled from pool)
+      * 
+      */
+      private static function getPooledPoint(x:Number, y:Number) : Point {
+         if(_poolIndex >= _pointPool.length) _pointPool.push(new Point());
+         var point:Point = _pointPool[_poolIndex++];
+         point.x = x; 
+         point.y = y;
+         return point;
+      }
       
       public static function SpawnA(param1:Array) : Array
       {
@@ -749,6 +773,9 @@ package
          var _loc3_:Array = [];
          var _loc7_:int = 3;
          var _loc8_:int = 0;
+
+         _poolIndex = 0;
+
          while(_loc8_ < param1.length)
          {
             _loc9_ = int(param1[_loc8_][4]);
@@ -796,7 +823,13 @@ package
          var _loc9_:MonsterBase = null;
          var _loc10_:uint = uint(BASE._basePoints) + uint(BASE._baseValue);
          var _loc11_:Number = 0.4;
-         var _loc12_:Rndm = new Rndm(int(param1.x + param1.y));
+
+         // We use cached RNG by seed to avoid recreating identical Rndm objects
+         var seedValue:int = int(param1.x + param1.y);
+         var _loc12_:Rndm = _rngCache[seedValue];
+         if(!_loc12_) {
+            _loc12_ = _rngCache[seedValue] = new Rndm(seedValue);
+         }
          if(_loc10_ > 1000000)
          {
             _loc11_ = 0.5;
@@ -824,7 +857,10 @@ package
          {
             _loc6_ = _loc12_.random() * 360 * 0.0174532925;
             _loc7_ = _loc12_.random() * param2 / 2;
-            _loc8_ = param1.add(new Point(Math.cos(_loc6_) * _loc7_,Math.sin(_loc6_) * _loc7_));
+
+            var offsetPoint:Point = getPooledPoint(Math.cos(_loc6_) * _loc7_, Math.sin(_loc6_) * _loc7_);
+            _loc8_ = param1.add(offsetPoint);
+
             _loc9_ = CREEPS.Spawn(param3,MAP._BUILDINGTOPS,"bounce",GRID.ToISO(_loc8_.x,_loc8_.y,0),_loc12_.random() * 360,_loc11_,true);
             if(_rage)
             {
@@ -902,7 +938,8 @@ package
          for each(_loc2_ in _loc1_)
          {
             _loc2_.GridCost(true);
-            if(_loc2_ is BTRAP && _loc2_ is BWALL && _loc2_._repairing != 1)
+            // if(_loc2_ is BTRAP && _loc2_ is BWALL && _loc2_._repairing != 1) // Revisit this
+            if(_loc2_._class != "trap" && _loc2_._class != "wall" && _loc2_._repairing != 1)
             {
                _loc3_ += _loc2_.health;
                _loc4_ += _loc2_.maxHealth;
@@ -917,6 +954,18 @@ package
          if(MONSTERBAITER._scaredAway && _loc3_ < _loc4_)
          {
             ATTACK.PoorDefense();
+         }
+         else if(SPECIALEVENT_WM1.active)
+         {
+            // Check if base took massive damage (90%+ destruction)
+            if(CREEPS._creepCount > 0 || !SPECIALEVENT_WM1.AllWavesSpawned() || _loc3_ <= _loc4_ * 0.1)
+            {
+               ATTACK.PoorDefense();
+            }
+            else
+            {
+               ATTACK.WellDefended(true);
+            }
          }
          else if(_loc3_ < _loc4_ * 0.9 || TUTORIAL._stage < 200)
          {

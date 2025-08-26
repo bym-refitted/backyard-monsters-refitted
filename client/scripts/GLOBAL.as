@@ -45,7 +45,7 @@ package
 
       public static var cdnUrl:String = "http://localhost:3001/";
 
-      public static var apiVersionSuffix:String = "v1.2.5-beta/";
+      public static var apiVersionSuffix:String = "v1.3.4-beta/";
 
       public static var connectionCounter:int;
 
@@ -228,6 +228,8 @@ package
       public static var _bCage:CHAMPIONCAGE;
 
       public static var _bTower:BFOUNDATION;
+      
+      public static var _bTotem:BTOTEM;
 
       public static var _bTowerCount:int;
 
@@ -963,6 +965,7 @@ package
          _bTower = null;
          _bMap = null;
          _bStore = null;
+         _bTotem = null;
          _bTownhall = null;
          _bRadio = null;
          _bSiegeLab = null;
@@ -999,7 +1002,8 @@ package
 
       public static function get isFullScreen():Boolean
       {
-         return _ROOT.stage.displayState === StageDisplayState.FULL_SCREEN;
+         return _ROOT.stage.displayState === StageDisplayState.FULL_SCREEN ||
+            _ROOT.stage.displayState === StageDisplayState.FULL_SCREEN_INTERACTIVE;
       }
 
       public static function goFullScreen(param1:MouseEvent = null):void
@@ -1208,7 +1212,7 @@ package
                PLEASEWAIT.Hide();
                MapRoomManager.instance.ShowDelayed();
             }
-            if (BASE._needCurrentCell && GLOBAL._currentCell && !MapRoomManager.instance.isInMapRoom3)
+            if (BASE._needCurrentCell && GLOBAL._currentCell && !MapRoomManager.instance.isInMapRoom3 && BASE._saveCounterA == BASE._saveCounterB && !BASE._saving)
             {
                PLEASEWAIT.Hide();
                BASE._needCurrentCell = false;

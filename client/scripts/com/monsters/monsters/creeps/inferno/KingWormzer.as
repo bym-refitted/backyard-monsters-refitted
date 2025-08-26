@@ -13,14 +13,16 @@ package com.monsters.monsters.creeps.inferno
       {
          super(param1,param2,param3,param4,param5,param6,param7,param8,param9,param10,param11,param12);
          var _loc13_:* = Targeting.k_TARGETS_BUILDINGS | Targeting.k_TARGETS_GROUND;
-         if(param8)
-         {
-            _loc13_ |= Targeting.k_TARGETS_ATTACKERS;
-         }
-         else
-         {
-            _loc13_ |= Targeting.k_TARGETS_DEFENDERS;
-         }
+         // Monster targeting parameters disabled.
+         // King Wormer's splash damage did not work against monsters in the original game, and is too overpowered when re-enabled.
+         //if(param8)
+         //{
+         //   _loc13_ |= Targeting.k_TARGETS_ATTACKERS;
+         //}
+         //else
+         //{
+         //   _loc13_ |= Targeting.k_TARGETS_DEFENDERS;
+         //}
          addComponent(new AOEDamageOnAttackOncePerTarget(100,_loc13_,4));
       }
    }

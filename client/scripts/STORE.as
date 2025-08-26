@@ -2923,6 +2923,18 @@ package
             {
                delete _storeData.HOD3;
             }
+            if(Boolean(_storeData.HODI) && _storeData.HODI.e < GLOBAL.Timestamp())
+            {
+               delete _storeData.HODI;
+            }
+            if(Boolean(_storeData.HOD2I) && _storeData.HOD2I.e < GLOBAL.Timestamp())
+            {
+               delete _storeData.HOD2I;
+            }
+            if(Boolean(_storeData.HOD3I) && _storeData.HOD3I.e < GLOBAL.Timestamp())
+            {
+               delete _storeData.HOD3I;
+            }
             GLOBAL._hatcheryOverdrivePower.Set(0);
             if(_storeData.HOD3)
             {
@@ -3174,11 +3186,10 @@ package
          ZazzleClear();
          _zazzleMC = new MovieClip();
          _mc.window.addChild(_zazzleMC);
-         //img = "popups/" + "ZAZZLE_AD.v2" + ".jpg";
-         img = "popups/" + "DISCORD_AD" + ".png";
+         img = "popups/" + "ZAZZLE_AD.v2" + ".jpg";
          ImageCache.GetImageWithCallBack(img,ZazzleImageLoaded);
       }
-      
+
       public static function ZazzleClear() : void
       {
          if(Boolean(_zazzleMC) && Boolean(_zazzleMC.parent))
@@ -3190,8 +3201,7 @@ package
       
       public static function ZazzleClick(param1:Event = null) : void
       {
-         //GLOBAL.gotoURL("http://www.zazzle.com/backyardmonsters/",null,true,[63,1]);
-         GLOBAL.gotoURL("http://discord.gg/spnd23jGE9",null,true,[63,1]);
+         GLOBAL.gotoURL("http://www.zazzle.com/backyardmonsters/",null,true,[63,1]);
       }
    }
 }
