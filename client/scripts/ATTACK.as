@@ -739,8 +739,8 @@ package
             else
             {
                _curCreaturesAvailable[param1] += 1;
-               _creaturesLoaded.Add(-1);
             }
+            _creaturesLoaded.Add(-1);
             SOUNDS.Play("click1");
             return true;
          }
@@ -1229,6 +1229,11 @@ package
             }
             POPUPS.Next();
          };
+         if(SPECIALEVENT_WM1.active)
+         {
+            SPECIALEVENT_WM1.EndRound(true);
+            return;
+         }
          if(INFERNO_EMERGENCE_EVENT.isAttackActive)
          {
             INFERNO_EMERGENCE_POPUPS.ShowStagePassed(INFERNOPORTAL.building._lvl.Get());

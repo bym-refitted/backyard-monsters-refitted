@@ -72,7 +72,7 @@ package
                urls._currencyURL = serverUrl + "";
                urls._countryCode = serverUrl + "us";
             }
-            this.Data(urls, new Object());
+            this.Data(urls, loaderInfo.parameters);
          }
       }
 
@@ -111,11 +111,10 @@ package
          }
       }
 
-      // IMPORTANT: On Android Security.allowDomain("*"); is not allowed for Adobe AIR applications.
-      public function Data(urls:Object, params:Object):void
+      public function Data(urls:Object, loaderParams:Object):void
       {
          loaderInfo.uncaughtErrorEvents.addEventListener(UncaughtErrorEvent.UNCAUGHT_ERROR, this.uncaughtErrorThrown);
-         setLauncherVars(params);
+         setLauncherVars(loaderParams);
          SWFProfiler.init(stage, this);
          GLOBAL.init();
          GLOBAL._baseURL = urls._baseURL;

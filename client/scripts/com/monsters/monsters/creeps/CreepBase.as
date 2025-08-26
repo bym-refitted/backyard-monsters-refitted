@@ -57,7 +57,7 @@ package com.monsters.monsters.creeps
          _house = param9;
          _hits = 0;
          _spawnPoint = new Point(int(param3.x / 100) * 100,int(param3.y / 100) * 100);
-         _goeasy = param11;
+         _goeasy = SPECIALEVENT_WM1.active ? false : param9;
          _movement = CREATURELOCKER._creatures[param1].movement;
          this.m_bInfernoCreep = BASE.isInfernoCreep(_creatureID);
          _pathing = CREATURELOCKER._creatures[param1].pathing;
@@ -716,6 +716,11 @@ package com.monsters.monsters.creeps
          }
          else if(_behaviour != "retreat")
          {
+            if(SPECIALEVENT_WM1.active && !this._friendly)
+            {
+               setHealth(0);
+               return;
+            }
             changeModeRetreat();
          }
          if(_waypoints.length)
@@ -964,7 +969,7 @@ package com.monsters.monsters.creeps
          {
             if(!_targetCreep)
             {
-               if(_behaviour === k_sBHVR_HUNT && (CREATURES._creatureCount > 0 || CREATURES._guardian && CREATURES._guardian.health > 0) && _frameNumber % 150 == 0)
+               if(_behaviour === k_sBHVR_HUNT && (CREATURES._creatureCount > 0 || CREATURES._hasLivingGuardian) && _frameNumber % 150 == 0)
                {
                   findTarget(_targetGroup);
                }
@@ -1078,7 +1083,11 @@ package com.monsters.monsters.creeps
                         return false;
                      }
                   }
-                  else if(!GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD && _hits > _hitLimit)
+                  else if(!SPECIALEVENT_WM1.active && GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD && _hits > _hitLimit)
+                  {
+                     return true;
+                  }
+                  else if(GLOBAL.mode != GLOBAL.e_BASE_MODE.BUILD && _hits > _hitLimit)
                   {
                      return true;
                   }
@@ -1364,8 +1373,15 @@ package com.monsters.monsters.creeps
                }
                else
                {
+                  if(_targetGroup == 6)
+                  {
+                     damageDelt = _targetCreep.modifyHealth(-(damage*3));
+                  }
+                  else
+                  {
+                     damageDelt = _targetCreep.modifyHealth(-damage);
+                  }
                   ATTACK.Damage(_tmpPoint.x,_tmpPoint.y - 5,damageDelt,_mc.visible);
-                  damageDelt = _targetCreep.modifyHealth(-damage);
                }
                if(!_explode)
                {

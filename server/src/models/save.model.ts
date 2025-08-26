@@ -20,7 +20,7 @@ export interface FieldData {
 }
 
 // Composite index on worldid, type, and userid
-@Index({ properties: ["worldid", "type", "userid"] })
+@Index({ properties: ["type", "worldid", "userid"] })
 @Entity({ tableName: "save" })
 export class Save {
   // IDs & Foreign Keys
@@ -187,7 +187,7 @@ export class Save {
   usemap!: number;
 
   @FrontendKey
-  @Property()
+  @Property({ check: "credits >= 0" })
   credits!: number;
 
   @Property({ default: 0 })
@@ -334,7 +334,7 @@ export class Save {
   loot?: FieldData = {};
 
   @FrontendKey
-  @Property({ type: "json", nullable: true })
+  @Property({ type: "text", nullable: true })
   attackreport!: FieldData;
 
   @FrontendKey
@@ -529,7 +529,8 @@ export class Save {
     "buildinghealthdata",
     "buildingresources",
     "attackreport",
-    "attackersiege"
+    "attackersiege",
+    "attackcreatures"
   ];
 
   public static createMainSave = async (
@@ -562,6 +563,7 @@ export class Save {
     infernoSave.baseid = infernoSave.basesaveid.toString();
     infernoSave.homebaseid = infernoSave.basesaveid;
     infernoSave.stats = user.save.stats;
+    infernoSave.worldid = user.save.worldid;
     infernoSave.credits = 0;
     user.save.iresources = {
       r1: 59168,

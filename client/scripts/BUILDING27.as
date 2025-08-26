@@ -118,6 +118,10 @@ package
          var _loc2_:MovieClip = null;
          if(GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD)
          {
+            if(SPECIALEVENT_WM1.active)
+            {
+               return;
+            }
             if(INFERNO_EMERGENCE_EVENT.isAttackActive)
             {
                return;

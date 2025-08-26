@@ -21,14 +21,8 @@ import { MapRoomCell } from "../../../enums/MapRoom";
 const MigrateBaseSchema = z.object({
   type: z.nativeEnum(BaseType),
   baseid: z.string(),
-  resources: z
-    .string()
-    .transform((res) => JSON.parse(res))
-    .optional(),
-  shiny: z
-    .string()
-    .transform((shiny) => parseInt(shiny))
-    .optional(),
+  resources: z.string().transform((res) => JSON.parse(res)).optional(),
+  shiny: z.string().transform((shiny) => parseInt(shiny)).optional(),
 });
 
 /**
@@ -109,13 +103,10 @@ export const migrateBase: KoaController = async (ctx) => {
       ctx.body = { error: 1 };
       throw new Error("Invalid home cell");
     }
-
     // Store outpost details before removing it
     const [outpostX, outpostY] = [outpostCell.x, outpostCell.y];
     const outpostHeight = outpostCell.terrainHeight;
     const outpostBaseId = outpostCell.save.baseid;
-
-    await ORMContext.em.removeAndFlush([outpostCell.save, outpostCell]);
 
     // Update the user's homecell coordinates to the outpost cell
     homeCell.x = outpostX;
@@ -138,13 +129,12 @@ export const migrateBase: KoaController = async (ctx) => {
 
     if (shiny) userSave.credits = userSave.credits - shiny;
     if (resources)
-      userSave.resources = updateResources(
-        resources,
-        userSave.resources,
-        Operation.SUBTRACT
-      );
+      userSave.resources = updateResources(resources, userSave.resources, Operation.SUBTRACT);
 
-    await ORMContext.em.persistAndFlush([homeCell, userSave]);
+    await ORMContext.em.transactional(async (em) => {
+      await em.persistAndFlush([homeCell, userSave]);
+      await em.removeAndFlush([outpostCell.save, outpostCell]);
+    });
 
     ctx.status = Status.OK;
     ctx.body = {
