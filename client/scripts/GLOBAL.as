@@ -45,7 +45,7 @@ package
 
       public static var cdnUrl:String = "http://localhost:3001/";
 
-      public static var apiVersionSuffix:String = "v1.3.4-beta/";
+      public static var apiVersionSuffix:String = "v1.3.5-beta";
 
       public static var connectionCounter:int;
 
@@ -441,6 +441,10 @@ package
 
       private static var fastTickables:Vector.<ITickable>;
 
+      public static var initError:String = "";
+      
+      public static var versionMismatch:Boolean = false;
+
       public function GLOBAL()
       {
          super();
@@ -455,15 +459,28 @@ package
        */
       public static function init():void
       {
-         new URLLoaderApi().load(serverUrl + "init", null, function(serverData:Object)
+         new URLLoaderApi().load(serverUrl + "init", [["apiVersion", apiVersionSuffix]], function(serverData:Object)
             {
                var stage:Stage = GAME._instance.stage;
 
+               if (serverData.hasOwnProperty("error"))
+               {
+                  GLOBAL.initError = serverData.error;
+                  GLOBAL.versionMismatch = !!serverData.versionMismatch;
+                  GLOBAL.eventDispatcher.dispatchEvent(new Event("initError"));
+                  return;
+               }
+               GLOBAL.LanguageSetup();
                if (serverData.hasOwnProperty("debugMode"))
                {
                   _aiDesignMode = serverData.debugMode;
                   Console.initialize(stage);
                }
+            }, function(error:IOErrorEvent):void
+            {
+               GLOBAL.initError = "Failed to connect to the server.";
+               GLOBAL.eventDispatcher.dispatchEvent(new Event("initError"));
+               return;
             });
       }
 

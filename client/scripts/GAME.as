@@ -41,7 +41,7 @@ package
       {
          var urls:Object = null;
          var serverUrl:String = GLOBAL.serverUrl;
-         var apiVersionSuffix:String = GLOBAL.apiVersionSuffix;
+         var apiVersionSuffix:String = GLOBAL.apiVersionSuffix + "/";
          var cdnUrl:String = GLOBAL.cdnUrl;
          super();
          _instance = this;
