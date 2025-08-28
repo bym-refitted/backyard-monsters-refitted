@@ -129,7 +129,9 @@ package
          this._req.addEventListener(HTTPStatusEvent.HTTP_STATUS, this.setStatus);
          this._req.addEventListener(SecurityErrorEvent.SECURITY_ERROR, function(event:SecurityErrorEvent):*
             {
-               GLOBAL.ErrorMessage(event.text, GLOBAL.ERROR_ORANGE_BOX_ONLY);
+               GLOBAL.initError = "Failed to connect to the server.";
+               GLOBAL.eventDispatcher.dispatchEvent(new Event("initError"));
+               return;
             });
       }
 
@@ -179,14 +181,49 @@ package
          }
       }
 
+      /*
+    * Handles IO error events from URLLoader requests.
+    *
+    * This function is triggered when the server responds with a non-2xx HTTP status code
+    * (such as 400, 404, 500), or when a network error occurs. In ActionScript 3, even when
+    * an HTTP error occurs, the server's response body (such as a JSON error message) is still
+    * available in the URLLoader's `data` property.
+    *
+    * The function attempts to decode the response body as JSON. If the server sent a JSON error
+    * object (e.g., `{ "error": "Invalid API version..." }`), it will be parsed and passed to
+    * the success callback (`_onComplete`). This allows the main application code to handle
+    * server-sent error messages in a unified way, regardless of HTTP status.
+    *
+    * If the response is not valid JSON or no data is present, the error callback (`_onError`)
+    * is called instead.
+    *
+    * This approach ensures that server error messages are not lost, and can be displayed to
+    * the user even when the HTTP status code indicates an error.
+    *
+    * @param {IOErrorEvent} param1 - The IO error event triggered by the URLLoader.
+    */
       private function loadError(param1:IOErrorEvent):void
       {
          LOGGER.Log("err", "URLLoader Load Error " + this._url);
-         if (this._onError === null)
+         var errorObj:Object = null;
+         if (this._req && this._req.data)
          {
-            return;
+            try
+            {
+               errorObj = JSON.decode(this._req.data);
+            }
+            catch (e:Error)
+            {
+            }
          }
-         this._onError(param1);
+         if (errorObj && this._onComplete != null)
+         {
+            this._onComplete(errorObj);
+         }
+         else if (this._onError != null)
+         {
+            this._onError(param1);
+         }
       }
 
       public function Clear():void

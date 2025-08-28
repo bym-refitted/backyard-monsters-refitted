@@ -104,25 +104,20 @@ package com.auth
         public function AuthForm()
         {
             addEventListener(Event.ADDED_TO_STAGE, formAddedToStageHandler);
-            GLOBAL.LanguageSetup();
 
-            // Start a timer every second to check if text content and supported languages are loaded from the server
+            GLOBAL.eventDispatcher.addEventListener("initError", function(event:Event):void
+                {
+                    errMessage.text = GLOBAL.initError;
+                    // If loadingContainer is present, refresh the loading screen to update the title
+                    if (loadingContainer && loadingContainer.parent)
+                    {
+                        Loading();
+                    }
+                });
+
             checkContentLoadedTimer = new Timer(1000);
             checkContentLoadedTimer.addEventListener(TimerEvent.TIMER, checkContentLoaded);
             checkContentLoadedTimer.start();
-
-            KEYS.securityErrorListener(noConnection);
-            KEYS.ioErrorListener(errorEvent);
-        }
-
-        private function noConnection(event:SecurityErrorEvent):void
-        {
-            errMessage.text = KEYS.errorMessage;
-        }
-
-        private function errorEvent(event:IOErrorEvent):void
-        {
-            errMessage.text = KEYS.errorMessage;
         }
 
         private function checkContentLoaded(event:TimerEvent):void
@@ -150,7 +145,8 @@ package com.auth
             removeEventListener(Event.ADDED_TO_STAGE, formAddedToStageHandler);
             try
             {
-                if (stage) stage.color = BACKGROUND;
+                if (stage)
+                    stage.color = BACKGROUND;
             }
             catch (e:Error)
             {
@@ -231,57 +227,134 @@ package com.auth
         {
             var navWidth:Number = stage.stageWidth;
             var navHeight:Number = stage.stageHeight;
-            var loadingDesc:TextField = new TextField();
-            var loadingDescStyle:TextFormat = new TextFormat();
-            errMessage = new TextField();
-            var errMessageStyle:TextFormat = new TextFormat();
+
+            // Remove previous loadingContainer if present
+            if (loadingContainer && loadingContainer.parent)
+            {
+                loadingContainer.parent.removeChild(loadingContainer);
+            }
 
             loadingContainer = new Sprite();
             addChild(loadingContainer);
 
-            var loadingTitle:TextField = createRichText("Connecting to the server...", WHITE);
+            // Dimensions for centering
+            var contentWidth:Number = 400;
+            var contentHeight:Number = 250;
+            var contentPadding:Number = 0;
 
-            loadingDescStyle.font = "Verdana";
-            loadingDescStyle.size = 14;
-            loadingDescStyle.leftMargin = 10;
-            loadingDescStyle.color = WHITE;
+            // If versionMismatch, show fantastic.png above the update text
+            var updateImageLoader:Loader;
+            var img:Bitmap;
+            var loadingTitle:TextField = new TextField();
+            var titleFormat:TextFormat = new TextFormat();
+            titleFormat.font = "Groboldov";
+            titleFormat.size = 32;
+            titleFormat.color = WHITE;
+            titleFormat.align = TextFormatAlign.CENTER;
+            loadingTitle.defaultTextFormat = titleFormat;
+            loadingTitle.text = GLOBAL.versionMismatch ? "New Update Available!" : "Connecting to the server";
+            loadingTitle.width = contentWidth;
+            loadingTitle.height = 38;
+            loadingTitle.x = 0;
+            loadingTitle.selectable = false;
+            loadingTitle.embedFonts = true;
+            loadingTitle.antiAliasType = AntiAliasType.ADVANCED;
+            loadingTitle.autoSize = TextFieldAutoSize.NONE;
 
-            errMessageStyle.font = "Verdana";
-            errMessageStyle.size = 14;
-            errMessageStyle.leftMargin = 30;
-            errMessageStyle.color = WHITE;
-
-            loadingDesc.x = loadingTitle.x;
-            loadingDesc.y = loadingTitle.y + loadingTitle.height + 15;
-            loadingDesc.width = loadingTitle.width + 5;
-            loadingDesc.embedFonts = true;
-            loadingDesc.antiAliasType = AntiAliasType.NORMAL;
-            loadingDesc.defaultTextFormat = loadingDescStyle;
-            loadingDesc.htmlText = "<font color='#ffffff'>Taking a while? Check our </font><font color='#00CDB8'>#server-status</font><font color='#ffffff'> on our Discord.</font>";
-            loadingDesc.selectable = false;
-            loadingDesc.mouseEnabled = true;
-            mousePointerCursor(loadingDesc);
-            loadingDesc.addEventListener(MouseEvent.CLICK, DiscordLink);
-
-            errMessage.x = loadingTitle.x;
-            errMessage.y = loadingDesc.x + loadingDesc.height + 50;
-            errMessage.width = loadingTitle.width + 5;
-            errMessage.embedFonts = true;
-            errMessage.antiAliasType = AntiAliasType.NORMAL;
-            errMessage.defaultTextFormat = errMessageStyle;
-            errMessage.htmlText = KEYS.errorMessage;
-
+            if (GLOBAL.versionMismatch)
+            {
+                updateImageLoader = new Loader();
+                updateImageLoader.load(new URLRequest(GLOBAL.serverUrl + "assets/popups/fantastic.png"));
+                updateImageLoader.contentLoaderInfo.addEventListener(Event.COMPLETE, function(e:Event):void
+                    {
+                        img = Bitmap(updateImageLoader.content);
+                        img.x = (contentWidth - img.width) / 2;
+                        img.y = 0;
+                        loadingContainer.addChildAt(img, 0);
+                        // Place loadingTitle below the image
+                        loadingTitle.y = img.y + img.height + 10;
+                    });
+                loadingTitle.y = 80;
+            }
+            else
+            {
+                loadingTitle.y = 0;
+            }
             loadingContainer.addChild(loadingTitle);
-            loadingContainer.addChild(loadingDesc);
+
+            var descPresent:Boolean = false;
+            var loadingDesc:TextField;
+            if (!GLOBAL.versionMismatch)
+            {
+                loadingDesc = new TextField();
+                var descFormat:TextFormat = new TextFormat();
+                descFormat.font = "Verdana";
+                descFormat.size = 14;
+                descFormat.color = LIGHT_GRAY;
+                descFormat.align = TextFormatAlign.CENTER;
+                loadingDesc.defaultTextFormat = descFormat;
+                loadingDesc.htmlText = "<font color='#ffffff'>Taking a while? Check our </font><font color='#00CDB8'><u>#server-status</u></font><font color='#ffffff'> on Discord.</font>";
+                loadingDesc.width = contentWidth;
+                loadingDesc.height = 28;
+                loadingDesc.x = 0;
+                loadingDesc.y = loadingTitle.y + loadingTitle.height + 10;
+                loadingDesc.selectable = false;
+                loadingDesc.embedFonts = true;
+                loadingDesc.antiAliasType = AntiAliasType.ADVANCED;
+                loadingDesc.autoSize = TextFieldAutoSize.NONE;
+                mousePointerCursor(loadingDesc);
+                loadingDesc.addEventListener(MouseEvent.CLICK, DiscordLink);
+                loadingContainer.addChild(loadingDesc);
+                descPresent = true;
+            }
+
+            // Error message (if any)
+            errMessage = new TextField();
+            var errFormat:TextFormat = new TextFormat();
+            errFormat.font = "Verdana";
+            errFormat.size = 16;
+            errFormat.color = RED;
+            errFormat.align = TextFormatAlign.CENTER;
+            errFormat.leading = 5;
+            errMessage.defaultTextFormat = errFormat;
+            errMessage.htmlText = GLOBAL.initError;
+            errMessage.width = contentWidth;
+            errMessage.x = 0;
+            errMessage.wordWrap = true;
+            errMessage.multiline = true;
+            errMessage.embedFonts = true;
+            errMessage.antiAliasType = AntiAliasType.ADVANCED;
+            errMessage.autoSize = TextFieldAutoSize.LEFT;
+
+            var errMsgY:Number = loadingTitle.y + loadingTitle.height + 14;
+            if (descPresent && loadingDesc)
+            {
+                errMsgY = loadingDesc.y + loadingDesc.height + 14;
+            }
+            errMessage.y = errMsgY;
+            if (errMessage.width > contentWidth)
+            {
+                errMessage.width = contentWidth;
+            }
             loadingContainer.addChild(errMessage);
 
-            loadingContainer.x = (navWidth - loadingContainer.width) / 2;
-            loadingContainer.y = (navHeight - loadingContainer.height) / 2;
+            // If versionMismatch, update errMessage position after image loads
+            if (GLOBAL.versionMismatch && updateImageLoader)
+            {
+                updateImageLoader.contentLoaderInfo.addEventListener(Event.COMPLETE, function(e:Event):void
+                    {
+                        errMessage.y = loadingTitle.y + loadingTitle.height + 14;
+                    });
+            }
+
+            // Center the loadingContainer on stage
+            loadingContainer.x = (navWidth - contentWidth) / 2;
+            loadingContainer.y = (navHeight - contentHeight) / 2;
         }
 
         public static function DiscordLink(param1:Event = null):void
         {
-            GLOBAL.gotoURL("https://discord.com/invite/bym");
+            GLOBAL.gotoURL("https://discord.gg/bymrefitted");
         }
 
         private function HeaderTitle():void
@@ -291,7 +364,7 @@ package com.auth
 
             navContainer.graphics.drawRect(0, 0, navWidth, navHeight);
             navContainer.x = -20;
-            navContainer.y = 50; // Margin top
+            navContainer.y = 50;
 
             var textContainer:Sprite = new Sprite();
             navContainer.addChild(textContainer);
@@ -598,27 +671,6 @@ package com.auth
                 usernameInput.y = emailInput.y - usernameInput.height - 20;
                 CreateBorder(usernameInput);
             }
-            else
-            {
-                usernameInput.width = 0;
-                usernameInput.height = 0;
-                formContainer.removeChild(borderContainer);
-            }
-        }
-
-        private function updateLinkText():void
-        {
-            hasAccountText.embedFonts = true;
-            hasAccountText.antiAliasType = AntiAliasType.NORMAL;
-            hasAccountText.text = isRegisterForm ? KEYS.Get("auth_login_link") : KEYS.Get("auth_register_link");
-        }
-
-        private function updateLinkColour():void
-        {
-            hasAccountFormat.color = isRegisterForm ? SECONDARY : PRIMARY;
-            hasAccountFormat.font = "Verdana";
-            hasAccountText.defaultTextFormat = hasAccountFormat;
-            hasAccountText.setTextFormat(hasAccountFormat);
         }
 
         private function updateButtonText():void
