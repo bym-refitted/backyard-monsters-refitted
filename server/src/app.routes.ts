@@ -40,6 +40,7 @@ import { getAvailableWorlds } from "./controllers/leaderboards/getAvailableWorld
 import { getLeaderboards } from "./controllers/leaderboards/getLeaderboards";
 import { getAttackLogs } from "./controllers/attacklogs/getAttackLogs";
 import { wildMonsterInvasion } from "./controllers/events/wildMonsterInvasion";
+import { init } from "./controllers/init";
 
 const RateLimit = require("koa2-ratelimit").RateLimit;
 
@@ -81,10 +82,7 @@ router.get("/connection", (ctx) => (ctx.status = Status.OK));
  * Init route
  * @name GET /api/:apiVersion/bm/getnewmap
  */
-router.get("/init", debugDataLog("Initilizing game client"), (ctx) => {
-  ctx.status = Status.OK;
-  ctx.body = { debugMode: devConfig.debugMode };
-});
+router.post("/init", debugDataLog("Initilizing game client"), init);
 
 /**
  * MapRoom setup
