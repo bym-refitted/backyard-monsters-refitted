@@ -673,6 +673,21 @@ package com.auth
             }
         }
 
+        private function updateLinkText():void
+        {
+            hasAccountText.embedFonts = true;
+            hasAccountText.antiAliasType = AntiAliasType.NORMAL;
+            hasAccountText.text = isRegisterForm ? KEYS.Get("auth_login_link") : KEYS.Get("auth_register_link");
+        }
+
+        private function updateLinkColour():void
+        {
+            hasAccountFormat.color = isRegisterForm ? SECONDARY : PRIMARY;
+            hasAccountFormat.font = "Verdana";
+            hasAccountText.defaultTextFormat = hasAccountFormat;
+            hasAccountText.setTextFormat(hasAccountFormat);
+        }
+        
         private function updateButtonText():void
         {
             button.graphics.beginFill(isRegisterForm ? PRIMARY : SECONDARY);
