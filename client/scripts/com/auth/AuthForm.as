@@ -323,9 +323,16 @@ package com.auth
             loadingContainer.addChild(loadingTitle);
             loadingContainer.addChild(errMessage);
 
-            // Fixed container position
-            loadingContainer.x = 200;
-            loadingContainer.y = 200;
+            var scale:Number = 2.2; 
+            loadingContainer.scaleX = loadingContainer.scaleY = scale;
+
+            if (stage) {
+                loadingContainer.x = 0;
+                loadingContainer.y = 50;
+            } else {
+                loadingContainer.x = 200;
+                loadingContainer.y = 200;
+            }
         }
 
         public static function DiscordLink(param1:Event = null):void
