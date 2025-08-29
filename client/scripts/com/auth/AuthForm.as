@@ -225,9 +225,6 @@ package com.auth
 
         private function Loading():void
         {
-            var navWidth:Number = stage.stageWidth;
-            var navHeight:Number = stage.stageHeight;
-
             // Remove previous loadingContainer if present
             if (loadingContainer && loadingContainer.parent)
             {
@@ -237,14 +234,9 @@ package com.auth
             loadingContainer = new Sprite();
             addChild(loadingContainer);
 
-            // Dimensions for centering
             var contentWidth:Number = 400;
-            var contentHeight:Number = 250;
-            var contentPadding:Number = 0;
 
-            // If versionMismatch, show fantastic.png above the update text
-            var updateImageLoader:Loader;
-            var img:Bitmap;
+            // Create title
             var loadingTitle:TextField = new TextField();
             var titleFormat:TextFormat = new TextFormat();
             titleFormat.font = "Groboldov";
@@ -261,28 +253,7 @@ package com.auth
             loadingTitle.antiAliasType = AntiAliasType.ADVANCED;
             loadingTitle.autoSize = TextFieldAutoSize.NONE;
 
-            if (GLOBAL.versionMismatch)
-            {
-                updateImageLoader = new Loader();
-                updateImageLoader.load(new URLRequest(GLOBAL.serverUrl + "assets/popups/fantastic.png"));
-                updateImageLoader.contentLoaderInfo.addEventListener(Event.COMPLETE, function(e:Event):void
-                    {
-                        img = Bitmap(updateImageLoader.content);
-                        img.x = (contentWidth - img.width) / 2;
-                        img.y = 0;
-                        loadingContainer.addChildAt(img, 0);
-                        // Place loadingTitle below the image
-                        loadingTitle.y = img.y + img.height + 10;
-                    });
-                loadingTitle.y = 80;
-            }
-            else
-            {
-                loadingTitle.y = 0;
-            }
-            loadingContainer.addChild(loadingTitle);
-
-            var descPresent:Boolean = false;
+            // Create description (only for non-version mismatch)
             var loadingDesc:TextField;
             if (!GLOBAL.versionMismatch)
             {
@@ -297,7 +268,7 @@ package com.auth
                 loadingDesc.width = contentWidth;
                 loadingDesc.height = 28;
                 loadingDesc.x = 0;
-                loadingDesc.y = loadingTitle.y + loadingTitle.height + 10;
+                loadingDesc.y = 50; // Fixed position
                 loadingDesc.selectable = false;
                 loadingDesc.embedFonts = true;
                 loadingDesc.antiAliasType = AntiAliasType.ADVANCED;
@@ -305,10 +276,9 @@ package com.auth
                 mousePointerCursor(loadingDesc);
                 loadingDesc.addEventListener(MouseEvent.CLICK, DiscordLink);
                 loadingContainer.addChild(loadingDesc);
-                descPresent = true;
             }
 
-            // Error message (if any)
+            // Create error message
             errMessage = new TextField();
             var errFormat:TextFormat = new TextFormat();
             errFormat.font = "Verdana";
@@ -326,30 +296,36 @@ package com.auth
             errMessage.antiAliasType = AntiAliasType.ADVANCED;
             errMessage.autoSize = TextFieldAutoSize.LEFT;
 
-            var errMsgY:Number = loadingTitle.y + loadingTitle.height + 14;
-            if (descPresent && loadingDesc)
+            // Position elements based on version mismatch
+            if (GLOBAL.versionMismatch)
             {
-                errMsgY = loadingDesc.y + loadingDesc.height + 14;
-            }
-            errMessage.y = errMsgY;
-            if (errMessage.width > contentWidth)
-            {
-                errMessage.width = contentWidth;
-            }
-            loadingContainer.addChild(errMessage);
+                loadingTitle.y = 140;
+                errMessage.y = 190;
 
-            // If versionMismatch, update errMessage position after image loads
-            if (GLOBAL.versionMismatch && updateImageLoader)
-            {
+                var updateImageLoader:Loader = new Loader();
+                updateImageLoader.load(new URLRequest(GLOBAL.serverUrl + "assets/popups/fantastic.png"));
                 updateImageLoader.contentLoaderInfo.addEventListener(Event.COMPLETE, function(e:Event):void
                     {
-                        errMessage.y = loadingTitle.y + loadingTitle.height + 14;
+                        var img:Bitmap = Bitmap(updateImageLoader.content);
+                        img.x = (contentWidth - img.width) / 2;
+                        img.y = 0;
+                        loadingContainer.addChildAt(img, 0);
                     });
             }
+            else
+            {
+                // Positions for normal loading (no image)
+                loadingTitle.y = 0;
+                errMessage.y = 90;
+            }
 
-            // Center the loadingContainer on stage
-            loadingContainer.x = (navWidth - contentWidth) / 2;
-            loadingContainer.y = (navHeight - contentHeight) / 2;
+            // Add elements to container
+            loadingContainer.addChild(loadingTitle);
+            loadingContainer.addChild(errMessage);
+
+            // Fixed container position
+            loadingContainer.x = 200;
+            loadingContainer.y = 200;
         }
 
         public static function DiscordLink(param1:Event = null):void
