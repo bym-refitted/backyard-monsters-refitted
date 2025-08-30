@@ -851,7 +851,7 @@ package
       private static function InitializeTimes() : void
       {
          new URLLoaderApi().load(
-               GLOBAL._apiURL + "events/wmi1",
+               GLOBAL._apiURL + "events/wmi?type=wmi1",
                null,
                function(serverData:Object):void
                {

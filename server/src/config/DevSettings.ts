@@ -60,11 +60,18 @@ export const devConfig = {
   skipDescent: process.env.ENV === Env.PROD ? false : true,
 
   /*
-   * An override epoch timestamp for event start dates.
+   * An override epoch timestamp for wild monster invasion 1 start time.
    * If set, the event will start immediately from this timestamp.
    * Default value is 0 - no override.
    */  
-  startEventNowOverride: process.env.ENV === Env.PROD ? 0 : 1756039033,
+  wmi1StartNowOverride: process.env.ENV === Env.PROD ? 0 : 0,
+
+    /*
+   * An override epoch timestamp for wild monster invasion 2 start time.
+   * If set, the event will start immediately from this timestamp.
+   * Default value is 0 - no override.
+   */  
+  wmi2StartNowOverride: process.env.ENV === Env.PROD ? 0 : 1756571236,
 
   /*
    * Sets whether the tutorial phase of the game is enabled or disabled.
