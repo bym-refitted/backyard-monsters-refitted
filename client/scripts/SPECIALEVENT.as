@@ -1442,10 +1442,26 @@ package
          InitializeTimes();
       }
       
+      // private static function InitializeTimes() : void
+      // {
+      //    _eventStartTime = new SecNum(0);
+      //    _eventEndTime = new SecNum(_eventStartTime.Get() + 60 * 60 * 24 * 7);
+      // }
+
       private static function InitializeTimes() : void
       {
-         _eventStartTime = new SecNum(0);
-         _eventEndTime = new SecNum(_eventStartTime.Get() + 60 * 60 * 24 * 7);
+         new URLLoaderApi().load(
+               GLOBAL._apiURL + "events/wmi?type=wmi2",
+               null,
+               function(serverData:Object):void
+               {
+                  if (serverData)
+                  {
+                     _eventStartTime = new SecNum(serverData.start);
+                     _eventEndTime = new SecNum(_eventStartTime.Get() + 60 * 60 * 24 * 7);
+                  }
+               }
+            );
       }
       
       public static function StartRound() : void
