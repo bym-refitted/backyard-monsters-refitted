@@ -202,9 +202,11 @@ package com.auth
 
             // Get image asset
             this.loader = new Loader();
-            this.loader.load(new URLRequest(GLOBAL.serverUrl + "assets/popups/C5-LAB-150.png"));
+            this.loader.load(new URLRequest(GLOBAL.cdnUrl + "assets/popups/C5-LAB-150.png"));
             this.loader.contentLoaderInfo.addEventListener(Event.COMPLETE, onImageLoaded);
-            this.loader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, handleNetworkError);
+            this.loader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, function(e:IOErrorEvent):void
+                {
+                });
 
             usernameInput = createBlock(0, 0, "Username");
             emailInput = createBlock(350, 35, "Email");
@@ -670,7 +672,7 @@ package com.auth
             hasAccountText.defaultTextFormat = hasAccountFormat;
             hasAccountText.setTextFormat(hasAccountFormat);
         }
-        
+
         private function updateButtonText():void
         {
             button.graphics.beginFill(isRegisterForm ? PRIMARY : SECONDARY);
@@ -712,7 +714,11 @@ package com.auth
                     if (isUsernameValid)
                     {
                         var newUser:Array = [["username", usernameValue], ["email", emailValue], ["password", passwordValue], ["last_name", ""], ["pic_square", ""]];
-                        new URLLoaderApi().load(GLOBAL._apiURL + "player/register", newUser, registerNewUser, handleRegisterFailure);
+
+                        new URLLoaderApi().load(GLOBAL._apiURL + "player/register", newUser, registerNewUser, function(event:IOErrorEvent):void
+                            {
+                                GLOBAL.Message("An error occurred during registration on the server.");
+                            });
                     }
                     else
                     {
@@ -721,7 +727,10 @@ package com.auth
                 }
                 else
                 {
-                    new URLLoaderApi().load(GLOBAL._apiURL + "bm/getnewmap", null, postAuthDetails, handleNetworkError);
+                    new URLLoaderApi().load(GLOBAL._apiURL + "bm/getnewmap", null, postAuthDetails, function(event:IOErrorEvent):void
+                        {
+                            GLOBAL.Message("We cannot connect you to the server at this time. Please try again later or check our server status.");
+                        });
                 }
             }
             else
@@ -748,19 +757,14 @@ package com.auth
 
         private function registerNewUser(serverData:Object):void
         {
+            if (serverData.hasOwnProperty("error"))
+            {
+                GLOBAL.Message(serverData.error);
+                return;
+            }
             GLOBAL.Message("You have successfully registered an account. Please login to continue.");
             isRegisterForm = false;
             updateState();
-        }
-
-        public function handleNetworkError(event:IOErrorEvent):void
-        {
-            GLOBAL.Message("Hmm.. it seems we cannot connect you to the server at this time. Please try again later or check our server status.");
-        }
-
-        public function handleRegisterFailure(event:Event):void
-        {
-            GLOBAL.Message("It seems this account already exists. Please try to login.");
         }
 
         private function isValidUsername(username:String):Boolean
