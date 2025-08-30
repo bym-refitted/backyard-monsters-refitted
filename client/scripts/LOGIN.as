@@ -90,7 +90,7 @@ package
          {
             handleLoadSuccessful = function(serverData:Object):void
             {
-               if (serverData.hasOwnProperty("error"))
+               if (serverData.hasOwnProperty("error") && serverData.error != 0)
                {
                    GLOBAL.Message(serverData.error);
                    return;
