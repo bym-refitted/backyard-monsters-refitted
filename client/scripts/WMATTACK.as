@@ -951,11 +951,14 @@ package
          }
          BASE._blockSave = false;
          BASE.Save();
-         if(MONSTERBAITER._scaredAway && _loc3_ < _loc4_)
-         {
-            ATTACK.PoorDefense();
+         if (MONSTERBAITER._scaredAway) {
+            MONSTERBAITER._scaredAway = false;
+            CUSTOMATTACKS._started = false;
+            QUESTS.Check();
+            MONSTERBAITER._attacking = 0;
+            return;
          }
-         else if(SPECIALEVENT_WM1.active)
+         if(SPECIALEVENT_WM1.active)
          {
             // Check if base took massive damage (90%+ destruction)
             if(CREEPS._creepCount > 0 || !SPECIALEVENT_WM1.AllWavesSpawned() || _loc3_ <= _loc4_ * 0.1)
@@ -973,12 +976,8 @@ package
          }
          else if(_loc3_ >= _loc4_ * 0.9)
          {
-            if(!MONSTERBAITER._scaredAway)
-            {
-               ATTACK.WellDefended(true);
-            }
+            ATTACK.WellDefended(true);
          }
-         MONSTERBAITER._scaredAway = false;
          CUSTOMATTACKS._started = false;
          QUESTS.Check();
          MONSTERBAITER._attacking = 0;
