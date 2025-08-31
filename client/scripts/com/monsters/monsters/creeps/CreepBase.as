@@ -81,13 +81,13 @@ package com.monsters.monsters.creeps
          {
             moveSpeedProperty.value *= 2;
          }
-         setHealth(int(CREATURES.GetProperty(_creatureID,"health",param5,_friendly) * param10));
+         setHealth(int(CREATURES.GetProperty(_creatureID,"health",param5,_friendly).Get() * param10));
          maxHealthProperty.value = health;
          if(health > param6)
          {
             setHealth(param6);
          }
-         damageProperty.set(int(CREATURES.GetProperty(_creatureID,"damage",param5,_friendly) * param10));
+         damageProperty.set(int(CREATURES.GetProperty(_creatureID,"damage",param5,_friendly).Get() * param10));
          _goo = CREATURES.GetProperty(_creatureID,"cResource",param5,_friendly);
          _targetPosition = param3;
          _targetCenter = param7;

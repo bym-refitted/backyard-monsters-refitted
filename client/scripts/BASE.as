@@ -1842,7 +1842,7 @@ package
                   {
                      if (Boolean(_buildingHealthData) && building.id in _buildingHealthData)
                      {
-                        building.hp = _buildingHealthData[building.id];
+                        building.hp.Set(_buildingHealthData[building.id]);
                      }
                      else if (MapRoomManager.instance.isInMapRoom3 && !BASE.isInfernoMainYardOrOutpost)
                      {

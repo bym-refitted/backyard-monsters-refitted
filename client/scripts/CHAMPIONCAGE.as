@@ -54,10 +54,10 @@ package
             "spawnClass":ChampionBase,
             "props":{
                "speed":[1,1.2,1.4,1.6,1.8,2],
-               "health":[40000,80000,120000,140000,160000,200000],
+               "health":[new SecNum(40000),new SecNum(80000),new SecNum(120000),new SecNum(140000),new SecNum(160000),new SecNum(200000)],
                "healtime":[3600,7200,14400,28800,57600,115200],
                "range":[35,45,55,65,70,70],
-               "damage":[1000,1200,1500,2000,2500,3000],
+               "damage":[new SecNum(1000),new SecNum(1200),new SecNum(1500),new SecNum(2000),new SecNum(2500),new SecNum(3000)],
                "feeds":[{"C2":8},{
                   "C2":5,
                   "C6":3
@@ -97,10 +97,10 @@ package
             "spawnClass":ChampionBase,
             "props":{
                "speed":[2,2.2,2.5,2.8,3.2,3.6],
-               "health":[12000,20000,36000,42000,52000,60000],
+               "health":[new SecNum(12000),new SecNum(20000),new SecNum(36000),new SecNum(42000),new SecNum(52000),new SecNum(60000)],
                "healtime":[3600,7200,14400,28800,57600,115200],
                "range":[35,45,55,65,85,90],
-               "damage":[3000,3600,4200,5500,6500,8000],
+               "damage":[new SecNum(3000),new SecNum(3600),new SecNum(4200),new SecNum(5500),new SecNum(6500),new SecNum(8000)],
                "feeds":[{"C1":15},{
                   "C1":10,
                   "C4":8
@@ -140,10 +140,10 @@ package
             "spawnClass":Fomor,
             "props":{
                "speed":[1.2,1.4,2,2.1,2.2,2.3],
-               "health":[15000,17500,20000,22500,25000,40000],
+               "health":[new SecNum(15000),new SecNum(17500),new SecNum(20000),new SecNum(22500),new SecNum(25000),new SecNum(40000)],
                "healtime":[3600,7200,14400,28800,57600,115200],
                "range":[140,140,180,190,200,210],
-               "damage":[70,80,90,100,110,120],
+               "damage":[new SecNum(70),new SecNum(80),new SecNum(90),new SecNum(100),new SecNum(110),new SecNum(120)],
                "feeds":[{"C3":10},{
                   "C3":10,
                   "C9":1
@@ -188,10 +188,10 @@ package
             "powerLevel3Desc":"mon_korathdesc_stomp",
             "props":{
                "speed":[1.4,1.6,1.8,2,2.3,2.5],
-               "health":[28000,62000,96000,120000,144000,175000],
+               "health":[new SecNum(28000),new SecNum(62000),new SecNum(96000),new SecNum(120000),new SecNum(144000),new SecNum(175000)],
                "healtime":[3600,7200,14400,28800,57600,115200],
                "range":[35,45,55,60,65,65],
-               "damage":[2000,2400,3000,3800,5000,6500],
+               "damage":[new SecNum(2000),new SecNum(2400),new SecNum(3000),new SecNum(3800),new SecNum(5000),new SecNum(6500)],
                "feeds":[{
                   "IC1":10,
                   "IC2":5
@@ -233,10 +233,10 @@ package
             "powerLevel3Desc":"mon_korathdesc_stomp",
             "props":{
                "speed":[2.2,2.3,2.4,2.5,2.6],
-               "health":[50000,52000,54000,58000,62000],
+               "health":[new SecNum(50000),new SecNum(52000),new SecNum(54000),new SecNum(58000),new SecNum(62000)],
                "healtime":[7200,14400,28800,57600,115200],
                "range":[35,45,55,60,65],
-               "damage":[800,850,900,1000,1200],
+               "damage":[new SecNum(800),new SecNum(850),new SecNum(900),new SecNum(1000),new SecNum(1200)],
                "feeds":[{
                   "IC1":20,
                   "IC2":10
@@ -480,6 +480,11 @@ package
          {
             var _loc2_:Object = _guardians["G" + param1];
             var _loc3_:Object = _loc2_.props;
+            for (var temp = 0; temp < _loc3_.health.length; temp++)
+            {
+               _loc3_.health[temp] = int(_loc3_.health[temp].Get())
+               _loc3_.damage[temp] = int(_loc3_.damage[temp].Get())
+            }
             tmpArray.push([_loc3_.movement,_loc3_.attack,_loc3_.speed,_loc3_.health,_loc3_.damage,_loc3_.healtime,_loc3_.feedCount,_loc3_.feedShiny,_loc3_.evolveShiny,_loc3_.feedTime,_loc3_.bucket,_loc3_.buffs,_loc3_.range,_loc3_.bonusSpeed,_loc3_.bonusHealth,_loc3_.bonusRange,_loc3_.bonusDamage,_loc3_.bonusFeedShiny,_loc3_.bonusFeedTime,_loc3_.bonusBuffs]);
          };
          tmpArray = [];
@@ -827,7 +832,7 @@ package
                {
                   _loc7_ += CHAMPIONCAGE.GetGuardianProperty(CREATURES._guardian._creatureID,CREATURES._guardian._foodBonus.Get(),"bonusHealth");
                }
-               _loc8_ = CHAMPIONCAGE.GetGuardianProperty(CREATURES._guardian._creatureID,CREATURES._guardian._level.Get(),"health") + CHAMPIONCAGE.GetGuardianProperty(CREATURES._guardian._creatureID,CREATURES._guardian._foodBonus.Get(),"bonusHealth");
+               _loc8_ = CHAMPIONCAGE.GetGuardianProperty(CREATURES._guardian._creatureID,CREATURES._guardian._level.Get(),"health").Get() + CHAMPIONCAGE.GetGuardianProperty(CREATURES._guardian._creatureID,CREATURES._guardian._foodBonus.Get(),"bonusHealth");
                if(_loc7_ >= _loc8_)
                {
                   _loc7_ = _loc8_;
@@ -887,7 +892,7 @@ package
                   {
                      _loc7_ += CHAMPIONCAGE.GetGuardianProperty(CREATURES._guardian._creatureID,CREATURES._guardian._foodBonus.Get(),"bonusHealth");
                   }
-                  _loc8_ = CHAMPIONCAGE.GetGuardianProperty(CREATURES._guardian._creatureID,CREATURES._guardian._level.Get(),"health") + CHAMPIONCAGE.GetGuardianProperty(CREATURES._guardian._creatureID,CREATURES._guardian._foodBonus.Get(),"bonusHealth");
+                  _loc8_ = CHAMPIONCAGE.GetGuardianProperty(CREATURES._guardian._creatureID,CREATURES._guardian._level.Get(),"health").Get() + CHAMPIONCAGE.GetGuardianProperty(CREATURES._guardian._creatureID,CREATURES._guardian._foodBonus.Get(),"bonusHealth");
                   if(_loc7_ >= _loc8_)
                   {
                      _loc7_ = _loc8_;
