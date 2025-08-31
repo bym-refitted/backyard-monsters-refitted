@@ -255,13 +255,13 @@ package
          }
          else
          {
-            str = KEYS.Get("mon_infotounlock",{"v1":GLOBAL.ToTime(data.time)});
-            if(BASE._resources.r3.Get() < data.resource)
+            str = KEYS.Get("mon_infotounlock",{"v1":GLOBAL.ToTime(data.time.Get())});
+            if(BASE._resources.r3.Get() < data.resource.Get())
             {
                str += "<font color=\"#CC0000\">";
             }
-            str += "<b>" + KEYS.Get(GLOBAL._resourceNames[2]) + "</b>: " + GLOBAL.FormatNumber(data.resource) + "<br>";
-            if(BASE._resources.r3.Get() < data.resource)
+            str += "<b>" + KEYS.Get(GLOBAL._resourceNames[2]) + "</b>: " + GLOBAL.FormatNumber(data.resource.Get()) + "<br>";
+            if(BASE._resources.r3.Get() < data.resource.Get())
             {
                str += "</font>";
             }
@@ -288,13 +288,13 @@ package
             {
                maxSpeed = CREATURES.GetProperty(c,"speed");
             }
-            if(CREATURES.GetProperty(c,"health") > maxHealth)
+            if(CREATURES.GetProperty(c,"health").Get() > maxHealth)
             {
-               maxHealth = CREATURES.GetProperty(c,"health");
+               maxHealth = CREATURES.GetProperty(c,"health").Get();
             }
-            if(CREATURES.GetProperty(c,"damage") > maxDamage)
+            if(CREATURES.GetProperty(c,"damage").Get() > maxDamage)
             {
-               maxDamage = CREATURES.GetProperty(c,"damage");
+               maxDamage = CREATURES.GetProperty(c,"damage").Get();
             }
             if(CREATURES.GetProperty(c,"cTime") > maxTime)
             {
@@ -315,12 +315,12 @@ package
             "delay":0
          });
          TweenLite.to(bHealth.mcBar,0.4,{
-            "width":100 / maxHealth * CREATURES.GetProperty(this._creatureID,"health"),
+            "width":100 / maxHealth * CREATURES.GetProperty(this._creatureID,"health").Get(),
             "ease":Circ.easeInOut,
             "delay":0.05
          });
          TweenLite.to(bDamage.mcBar,0.4,{
-            "width":100 / maxDamage * CREATURES.GetProperty(this._creatureID,"damage"),
+            "width":100 / maxDamage * CREATURES.GetProperty(this._creatureID,"damage").Get(),
             "ease":Circ.easeInOut,
             "delay":0.1
          });
@@ -340,8 +340,8 @@ package
             "delay":0.25
          });
          tSpeed.htmlText = KEYS.Get("mon_statsspeed",{"v1":CREATURES.GetProperty(this._creatureID,"speed")});
-         tHealth.htmlText = CREATURES.GetProperty(this._creatureID,"health").toString();
-         dam = CREATURES.GetProperty(this._creatureID,"damage");
+         tHealth.htmlText = CREATURES.GetProperty(this._creatureID,"health").Get().toString();
+         dam = CREATURES.GetProperty(this._creatureID,"damage").Get();
          if(dam > 0)
          {
             tDamage.htmlText = dam.toString();
@@ -381,8 +381,8 @@ package
             mcButtons.bStart.Enabled = true;
             mcButtons.bStart.Highlight = true;
             mcButtons.bStart.addEventListener(MouseEvent.CLICK,this.Start);
-            putty = int(CREATURELOCKER._creatures[this._creatureID].resource);
-            time = int(CREATURELOCKER._creatures[this._creatureID].time);
+            putty = int(CREATURELOCKER._creatures[this._creatureID].resource.Get());
+            time = int(CREATURELOCKER._creatures[this._creatureID].time.Get());
             timeCost = STORE.GetTimeCost(time);
             resourcesCost = Math.ceil(Math.pow(Math.sqrt(putty / 2),0.75));
             this._instantUnlockCost = timeCost + resourcesCost;
