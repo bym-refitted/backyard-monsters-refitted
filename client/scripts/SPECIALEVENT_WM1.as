@@ -899,7 +899,7 @@ package
             _loc3_ = new WMIROUNDCOMPLETE_WM1(wave);
             POPUPS.Push(_loc3_,null,null,null,null,false,"now");
             ++_round;
-            UI_BOTTOM._nextwave_wm1.SetWave(wave);
+            SPECIALEVENT.updateWaveDisplay(wave);
             GLOBAL.StatSet("wmi_wave",_round);
             if(GLOBAL._bTotem)
             {
@@ -1304,7 +1304,7 @@ package
       public static function DEBUGOVERRIDEROUND(param1:int) : void
       {
          _round = param1;
-         UI_BOTTOM._nextwave_wm1.SetWave(wave);
+         SPECIALEVENT.updateWaveDisplay(wave);
       }
       
       public static function DebugToggleActive(param1:Boolean) : void

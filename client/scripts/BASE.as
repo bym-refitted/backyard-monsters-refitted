@@ -402,6 +402,7 @@ package
 
       public static function Cleanup():void
       {
+         SPECIALEVENT.ClearWildMonsterPowerups();
          SPECIALEVENT_WM1.ClearWildMonsterPowerups();
          BaseBuffHandler.instance.clearBuffs();
          RewardHandler.instance.clear();
@@ -2996,7 +2997,8 @@ package
          }
          if (_lastPaged >= _loc2_ && !_paging && !_saving && GLOBAL.Timestamp() - _lastSaved >= _loc2_)
          {
-            if (SPECIALEVENT.active || SPECIALEVENT_WM1.active)
+            var activeEvent:* = SPECIALEVENT.getActiveSpecialEvent();
+            if (activeEvent.active)
             {
                _blockSave = false;
                Save(0, false, true);

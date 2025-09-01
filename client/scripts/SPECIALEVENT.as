@@ -1442,12 +1442,6 @@ package
          InitializeTimes();
       }
       
-      // private static function InitializeTimes() : void
-      // {
-      //    _eventStartTime = new SecNum(0);
-      //    _eventEndTime = new SecNum(_eventStartTime.Get() + 60 * 60 * 24 * 7);
-      // }
-
       private static function InitializeTimes() : void
       {
          new URLLoaderApi().load(
@@ -1462,6 +1456,51 @@ package
                   }
                }
             );
+      }
+
+      public static function getActiveSpecialEvent() : * 
+      {
+         if (SPECIALEVENT.EventActive()) return SPECIALEVENT;
+         if (SPECIALEVENT_WM1.EventActive()) return SPECIALEVENT_WM1;
+         return SPECIALEVENT;
+      }
+      
+      public static function updateNextWaveUI() : void
+      {
+         if(UI_BOTTOM._nextwave)
+         {
+            UI_BOTTOM._nextwave.visible = false;
+         }
+         if(UI_BOTTOM._nextwave_wm1)
+         {
+            UI_BOTTOM._nextwave_wm1.visible = false;
+         }
+         
+         var activeEvent:* = getActiveSpecialEvent();
+         if(activeEvent)
+         {
+            if(activeEvent == SPECIALEVENT && UI_BOTTOM._nextwave && UI_NEXTWAVE.ShouldDisplay())
+            {
+               UI_BOTTOM._nextwave.visible = true;
+            }
+            else if(activeEvent == SPECIALEVENT_WM1 && UI_BOTTOM._nextwave_wm1 && UI_NEXTWAVE_WM1.ShouldDisplay())
+            {
+               UI_BOTTOM._nextwave_wm1.visible = true;
+            }
+         }
+      }
+      
+      public static function updateWaveDisplay(waveNumber:int) : void
+      {
+         var activeEvent:* = getActiveSpecialEvent();
+         if(activeEvent == SPECIALEVENT && UI_BOTTOM._nextwave)
+         {
+            UI_BOTTOM._nextwave.SetWave(waveNumber);
+         }
+         else if(activeEvent == SPECIALEVENT_WM1 && UI_BOTTOM._nextwave_wm1)
+         {
+            UI_BOTTOM._nextwave_wm1.SetWave(waveNumber);
+         }
       }
       
       public static function StartRound() : void
@@ -1502,7 +1541,7 @@ package
             _loc3_ = new WMIROUNDCOMPLETE(wave);
             POPUPS.Push(_loc3_,null,null,null,null,false,"now");
             _wave.Add(1);
-            UI_BOTTOM._nextwave.SetWave(wave);
+            SPECIALEVENT.updateWaveDisplay(wave);
             SetStat("wmi_wave",_wave.Get());
          }
          else
@@ -1697,7 +1736,9 @@ package
                   if(_loc2_[_loc3_]._behaviour != "retreat")
                   {
                      _loc1_++;
-                     _loc2_[_loc3_].ModeRetreat();
+                     // Original implementation had a ModeRetreat function
+                     // _loc2_[_loc3_].ModeRetreat();
+                     _loc2_[_loc3_].changeModeRetreat();
                   }
                   _loc3_++;
                }
@@ -1784,6 +1825,10 @@ package
          {
             return true;
          }
+         if(SPECIALEVENT_WM1.EventActive())
+         {
+            return false;
+         }
          return SPECIALEVENT.invasionpop == 4;
       }
       
@@ -1844,7 +1889,7 @@ package
       public static function DEBUGOVERRIDEWAVE(param1:int) : void
       {
          _wave.Set(param1);
-         UI_BOTTOM._nextwave.SetWave(param1);
+         SPECIALEVENT.updateWaveDisplay(param1);
       }
       
       public static function DebugToggleActive(param1:Boolean) : void
@@ -1929,7 +1974,7 @@ package
       
       public static function get active() : Boolean
       {
-         return false;
+         return _active;
       }
       
       public static function get numWaves() : int
