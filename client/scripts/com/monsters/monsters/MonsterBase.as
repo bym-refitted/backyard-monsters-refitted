@@ -995,7 +995,8 @@ package com.monsters.monsters
          }
          if(!this._friendly)
          {
-            if(SPECIALEVENT_WM1.active || Boolean(GLOBAL._wmCreaturePowerups[this._creatureID]))
+            var activeEvent:* = SPECIALEVENT.getActiveSpecialEvent();
+            if(activeEvent.active || Boolean(GLOBAL._wmCreaturePowerups[this._creatureID]))
             {
                if(GLOBAL._wmCreaturePowerups[this._creatureID])
                {

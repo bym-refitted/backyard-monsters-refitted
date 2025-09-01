@@ -192,10 +192,7 @@ package com.monsters.ui
                Chat._bymChat.show();
             }
          }
-         if(_nextwave && SPECIALEVENT_WM1.EventActive() && UI_NEXTWAVE_WM1.ShouldDisplay())
-         {
-            _nextwave_wm1.visible = true;
-         }
+         SPECIALEVENT.updateNextWaveUI();
          if(MonsterMadness.infoBar)
          {
             MonsterMadness.addInfoBar();

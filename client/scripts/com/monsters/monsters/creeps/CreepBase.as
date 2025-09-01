@@ -49,6 +49,7 @@ package com.monsters.monsters.creeps
       public function CreepBase(param1:String, param2:String, param3:Point, param4:Number, param5:int = 0, param6:int = 2147483647, param7:Point = null, param8:Boolean = false, param9:BFOUNDATION = null, param10:Number = 1, param11:Boolean = false, param12:MonsterBase = null)
       {
          var _loc13_:Point = null;
+         var activeEvent:* = SPECIALEVENT.getActiveSpecialEvent();
          super();
          _friendly = param8;
          setInitialFriendlyFlags(_friendly);
@@ -57,7 +58,7 @@ package com.monsters.monsters.creeps
          _house = param9;
          _hits = 0;
          _spawnPoint = new Point(int(param3.x / 100) * 100,int(param3.y / 100) * 100);
-         _goeasy = SPECIALEVENT_WM1.active ? false : param9;
+         _goeasy = activeEvent.active ? false : param9;
          _movement = CREATURELOCKER._creatures[param1].movement;
          this.m_bInfernoCreep = BASE.isInfernoCreep(_creatureID);
          _pathing = CREATURELOCKER._creatures[param1].pathing;
@@ -716,7 +717,8 @@ package com.monsters.monsters.creeps
          }
          else if(_behaviour != "retreat")
          {
-            if(SPECIALEVENT_WM1.active && !this._friendly)
+            var activeEvent:* = SPECIALEVENT.getActiveSpecialEvent();
+            if(activeEvent.active && !this._friendly)
             {
                setHealth(0);
                return;
@@ -1075,6 +1077,7 @@ package com.monsters.monsters.creeps
                   {
                      ++_hits;
                   }
+                  var activeEvent:* = SPECIALEVENT.getActiveSpecialEvent();
                   if(_goeasy)
                   {
                      if(_hits > 20)
@@ -1083,7 +1086,7 @@ package com.monsters.monsters.creeps
                         return false;
                      }
                   }
-                  else if(!SPECIALEVENT_WM1.active && GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD && _hits > _hitLimit)
+                  else if(!activeEvent.active && GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD && _hits > _hitLimit)
                   {
                      return true;
                   }

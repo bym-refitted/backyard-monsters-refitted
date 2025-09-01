@@ -929,7 +929,8 @@ package com.monsters.monsters.champions
          if(health <= 0)
          {
             Targeting.CreepCellDelete(_id,node);
-            if(!SPECIALEVENT_WM1.active) {
+            var activeEvent:* = SPECIALEVENT.getActiveSpecialEvent();
+            if(!activeEvent.active) {
                changeModeRetreat();
                ATTACK.Log(_creatureID,LOGIN._playerName + "\'s Level " + this._level.Get() + " " + CHAMPIONCAGE._guardians[_creatureID].name + " retreated.");
                SOUNDS.Play("monsterland" + (1 + int(Math.random() * 3)));
@@ -1621,7 +1622,8 @@ package com.monsters.monsters.champions
             case k_sBHVR_ATTACK:
             case k_sBHVR_BOUNCE:
                this.tickBAttack();
-               if(SPECIALEVENT_WM1.active && this.health <= 0)
+               var activeEvent:* = SPECIALEVENT.getActiveSpecialEvent();
+               if(activeEvent.active && this.health <= 0)
                {
                   return true;
                }
