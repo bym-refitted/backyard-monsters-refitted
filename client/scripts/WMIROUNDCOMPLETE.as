@@ -52,7 +52,40 @@ package
             ImageCache.GetImageWithCallBack(GetImageName(wave,true),imageComplete);
          }
          mcFrame.Setup(wave != 1);
-         if(wave == -1)
+         if(SPECIALEVENT.isMajorWave(wave))
+         {
+            mcTitle.htmlText = KEYS.Get("wmi_winwavetitle");
+            mcText.htmlText = KEYS.Get("wmi_winwave" + wave);
+            if(wave == SPECIALEVENT.BONUSWAVE)
+            {
+               mcStats.htmlText = KEYS.Get("wmi_completedwave31");
+            }
+            else if(wave == SPECIALEVENT.BONUSWAVE2)
+            {
+               mcStats.htmlText = KEYS.Get("wmi_completedwave32");
+            }
+            else
+            {
+               mcStats.htmlText = KEYS.Get("wmi_completedwaves",{"v1":wave});
+            }
+            rBtn.Highlight = true;
+            if(wave == 1)
+            {
+               BTOTEM.TotemReward();
+               this.ButtonsVisible(false,false,true,false);
+               rBtn.SetupKey("wmi_placetotembtn");
+               rBtn.addEventListener(MouseEvent.CLICK,this.PlaceTotem);
+            }
+            else
+            {
+               this.ButtonsVisible(false,false,false,true);
+               bragBtn.SetupKey("btn_brag");
+               bragBtn.Highlight = true;
+               bragBtn.addEventListener(MouseEvent.CLICK,Brag);
+            }
+            lBtn.visible = false;
+         }
+         else if(wave == -1)
          {
             if(surrendered)
             {
