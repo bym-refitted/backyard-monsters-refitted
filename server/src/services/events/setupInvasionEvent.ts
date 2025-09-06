@@ -57,10 +57,10 @@ export const setupInvasionEvent = (type?: Invasion): InvasionEventResult => {
   }
 
   const endDate = new Date(startDate);
-  endDate.setDate(startDate.getDate() + 6);
+  endDate.setDate(startDate.getDate() + 7);
 
   const extensionDate = new Date(endDate);
-  extensionDate.setDate(endDate.getDate() + 1);
+  extensionDate.setDate(endDate.getDate());
 
   // Timstamps
   const current = Math.floor(now.getTime() / 1000);
@@ -112,12 +112,12 @@ const getInvasionPop = ({ current, start, end, extension }: InvasionPop) => {
 };
 
 const getNextInvasionDate = (now: Date, monthParity: 0 | 1): Date => {
-  const currentMonth = now.getMonth();
+  const currentMonth = now.getMonth() + 1;
 
   if (currentMonth % 2 === monthParity)
+    return new Date(now.getFullYear(), currentMonth - 1, 10);
+  else 
     return new Date(now.getFullYear(), currentMonth, 10);
-  else
-    return new Date(now.getFullYear(), currentMonth + 1, 10);
 };
 
 // Determine which invasion event should be active

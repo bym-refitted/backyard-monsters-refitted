@@ -63,14 +63,14 @@ export const devConfig = {
    * An override epoch timestamp for wild monster invasion 1 start time.
    * If set, the event will start immediately from this timestamp.
    * Default value is 0 - no override.
-   */  
-  wmi1StartNowOverride: process.env.ENV === Env.PROD ? 0 : 1757181023,
+   */
+  wmi1StartNowOverride: process.env.ENV === Env.PROD ? 0 : 0,
 
-    /*
+  /*
    * An override epoch timestamp for wild monster invasion 2 start time.
    * If set, the event will start immediately from this timestamp.
    * Default value is 0 - no override.
-   */  
+   */
   wmi2StartNowOverride: process.env.ENV === Env.PROD ? 0 : 0,
 
   /*
