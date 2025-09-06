@@ -1432,12 +1432,10 @@ package
       
       public static function Setup() : void
       {
+         if(_setupCalled) return;
+
          if (GLOBAL._flags.activeInvasion != EnumInvasionType.WMI2) return;
-         
-         if(_setupCalled)
-         {
-            return;
-         }
+                  
          _setupCalled = true;
          _wave = new SecNum(GetStat("wmi2_wave"));
          _group = 0;
@@ -1877,6 +1875,8 @@ package
                {
                   SetStat("lasttdpopup",0);
                }
+               SetStat("wmi2_wave", 100);
+               _wave.Set(100);
                break;
             case 1:
             case 2:

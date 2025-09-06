@@ -392,6 +392,13 @@ package
                      _top.mcReinforcements.visible = false;
                   }
                   var activeEvent:* = SPECIALEVENT.getActiveSpecialEvent();
+                  var isBuildMode:Boolean = GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD;
+                  var isMainYard:Boolean = !BASE.isOutpost && !BASE.isInfernoMainYardOrOutpost;
+                  var isAllowedPlatform:Boolean = !GLOBAL._flags.viximo && !GLOBAL._flags.kongregate;
+                  var isWMI1Active:Boolean = activeEvent == SPECIALEVENT_WM1 && (SPECIALEVENT_WM1.invasionpop == 4 || SPECIALEVENT_WM1.invasionpop == 5);
+                  var isWMI2Active:Boolean = activeEvent == SPECIALEVENT && SPECIALEVENT.invasionpop == 3;
+                  var isEventActive:Boolean = isWMI1Active || isWMI2Active;
+                  
                   if(!activeEvent || (activeEvent == SPECIALEVENT && SPECIALEVENT.GetTimeUntilEnd() < 0) || 
                      (activeEvent == SPECIALEVENT_WM1 && (SPECIALEVENT_WM1.GetTimeUntilEnd() < 0 || SPECIALEVENT_WM1.wave > SPECIALEVENT_WM1.numWaves || SPECIALEVENT_WM1.invasionpop == 4 && SPECIALEVENT_WM1.wave > SPECIALEVENT_WM1.BONUSWAVE2)))
                   {
@@ -405,7 +412,7 @@ package
                         SPECIALEVENT_WM1.ShowEventEndPopup();
                      }
                   }
-                  else if(activeEvent && GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD && (!GLOBAL._flags.viximo && !GLOBAL._flags.kongregate))
+                  else if(activeEvent && isBuildMode && isAllowedPlatform && isEventActive)
                   {
                      if(!_top.mcSpecialEvent.visible)
                      {
@@ -452,9 +459,9 @@ package
                         }
                      }
                   }
-                  else if(GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD && !BASE.isOutpost && !BASE.isInfernoMainYardOrOutpost && !GLOBAL._flags.viximo && !GLOBAL._flags.kongregate)
+                  else if(isBuildMode && isMainYard && isAllowedPlatform)
                   {
-                     // This section is specific to WM1's invasionpop system - may need to be extended for other events
+                     // This section handles pre-event timing for both WM1 and WM2
                      if(activeEvent == SPECIALEVENT_WM1)
                      {
                         if(SPECIALEVENT_WM1.invasionpop != 1)
@@ -473,6 +480,42 @@ package
                         }
                         SPECIALEVENT.updateNextWaveUI();
                         _loc4_ = SPECIALEVENT_WM1.GetTimeUntilStart();
+                        _loc5_ = Math.ceil(_loc4_ / 86400);
+                        if(_loc5_ > 1)
+                        {
+                           _top.mcSpecialEvent.tCountdown.htmlText = _loc5_ + " " + KEYS.Get("global_days");
+                        }
+                        else
+                        {
+                           _loc6_ = Math.ceil(_loc4_ / 3600);
+                           if(_loc6_ > 1)
+                           {
+                              _top.mcSpecialEvent.tCountdown.htmlText = _loc6_ + " " + KEYS.Get("global_hours");
+                           }
+                           else
+                           {
+                              _top.mcSpecialEvent.tCountdown.htmlText = "&lt; 1 " + KEYS.Get("global_hour");
+                           }
+                        }
+                     }
+                     else if(activeEvent == SPECIALEVENT)
+                     {
+                        if(SPECIALEVENT.invasionpop >= 0 && SPECIALEVENT.invasionpop <= 2)
+                        {
+                           if(!_top.mcSpecialEvent.visible)
+                           {
+                              _top.mcSpecialEvent.visible = true;
+                           }
+                        }
+                        else
+                        {
+                           if(_top.mcSpecialEvent.visible)
+                           {
+                              _top.mcSpecialEvent.visible = false;
+                           }  
+                        }
+                        SPECIALEVENT.updateNextWaveUI();
+                        _loc4_ = SPECIALEVENT.GetTimeUntilStart();
                         _loc5_ = Math.ceil(_loc4_ / 86400);
                         if(_loc5_ > 1)
                         {
