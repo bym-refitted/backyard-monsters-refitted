@@ -396,7 +396,7 @@ package
                   var isMainYard:Boolean = !BASE.isOutpost && !BASE.isInfernoMainYardOrOutpost;
                   var isAllowedPlatform:Boolean = !GLOBAL._flags.viximo && !GLOBAL._flags.kongregate;
                   var isWMI1Active:Boolean = activeEvent == SPECIALEVENT_WM1 && (SPECIALEVENT_WM1.invasionpop == 4 || SPECIALEVENT_WM1.invasionpop == 5);
-                  var isWMI2Active:Boolean = activeEvent == SPECIALEVENT && SPECIALEVENT.invasionpop == 3;
+                  var isWMI2Active:Boolean = activeEvent == SPECIALEVENT && SPECIALEVENT.invasionpop == 4;
                   var isEventActive:Boolean = isWMI1Active || isWMI2Active;
                   
                   if(!activeEvent || (activeEvent == SPECIALEVENT && SPECIALEVENT.GetTimeUntilEnd() < 0) || 
@@ -500,7 +500,7 @@ package
                      }
                      else if(activeEvent == SPECIALEVENT)
                      {
-                        if(SPECIALEVENT.invasionpop >= 0 && SPECIALEVENT.invasionpop <= 2)
+                        if(SPECIALEVENT.invasionpop >= 0 && SPECIALEVENT.invasionpop <= 3)
                         {
                            if(!_top.mcSpecialEvent.visible)
                            {
