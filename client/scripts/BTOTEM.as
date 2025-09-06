@@ -199,6 +199,72 @@ package
                return 6;
          }
       }
+
+      private static function EarnedTotemLevel2() : int
+      {
+         var wmi2_wave:int = GLOBAL.StatGet("wmi2_wave");
+         var currentLevel:int = 0;
+         
+         switch(wmi2_wave)
+         {
+            case 0:
+            case 101:
+            case 102:
+            case 103:
+            case 104:
+               currentLevel = 0;
+               break;
+            case 105:
+            case 106:
+            case 107:
+            case 108:
+            case 109:
+               currentLevel = 1;
+               break;
+            case 110:
+            case 111:
+            case 112:
+            case 113:
+            case 114:
+            case 115:
+            case 116:
+            case 117:
+            case 118:
+            case 119:
+               currentLevel = 2;
+               break;
+            case 120:
+            case 121:
+            case 122:
+            case 123:
+            case 124:
+            case 125:
+            case 126:
+            case 127:
+            case 128:
+            case 129:
+               currentLevel = 3;
+               break;
+            case 130:
+               currentLevel = 4;
+               break;
+            case 131:
+               currentLevel = 5;
+               break;
+            default:
+               currentLevel = 6;
+               break;
+         }
+         
+         var storedLevel:int = GLOBAL.StatGet("bl" + BTOTEM_BUILDING_TYPE);
+         if(currentLevel > storedLevel)
+         {
+            GLOBAL.StatSet("bl" + BTOTEM_BUILDING_TYPE, currentLevel);
+            return currentLevel;
+         }
+         
+         return storedLevel;
+      }
       
       public static function IsTotem(param1:int, param2:Boolean = true) : Boolean
       {
@@ -213,11 +279,16 @@ package
       override public function Tick(param1:int) : void
       {
          super.Tick(param1);
-         var _loc2_:int = EarnedTotemLevel();
-         if(_lvl.Get() != _loc2_)
+         // Only update totem level for WMI2 totems (type 131)
+         // WMI1 totems (types 121-126) should be managed by SPECIALEVENT_WM1.TotemQualified()
+         if(_type == BTOTEM_BUILDING_TYPE)
          {
-            _lvl.Set(_loc2_);
-            _hpLvl = _loc2_;
+            var _loc2_:int = EarnedTotemLevel2();
+            if(_lvl.Get() != _loc2_)
+            {
+               _lvl.Set(_loc2_);
+               _hpLvl = _loc2_;
+            }
          }
       }
    }
