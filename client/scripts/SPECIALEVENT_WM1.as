@@ -1292,8 +1292,6 @@ package
             case -1:
             case 0:
                GLOBAL.StatSet("lasttdpopup",0);
-               GLOBAL.StatSet("wmi_wave", 0);
-               _round = 0;
                break;
             case 1:
             case 2:
