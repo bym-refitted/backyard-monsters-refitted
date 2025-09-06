@@ -6,6 +6,7 @@ package
    import flash.geom.Point;
    import com.monsters.monsters.champions.ChampionBase;
    import com.monsters.inventory.InventoryManager;
+   import com.monsters.enums.EnumInvasionType;
    
    /*
    * This is the original SPECIALEVENT.as class for Wild Monster Invasion 1.
@@ -837,6 +838,8 @@ package
       
       public static function Setup() : void
       {
+         if (GLOBAL._flags.activeInvasion != EnumInvasionType.WMI1) return;
+
          if(_setupCalled)
          {
             return;
@@ -1194,6 +1197,9 @@ package
          {
             return INVASIONPOP_OVERRIDE;
          }
+         
+         if (_eventStartTime <= 0) return -1;
+         
          if(GLOBAL._flags.invasionpop2 == -1)
          {
             return -1;
