@@ -71,7 +71,7 @@ export const devConfig = {
    * If set, the event will start immediately from this timestamp.
    * Default value is 0 - no override.
    */
-  wmi2StartNowOverride: process.env.ENV === Env.PROD ? 0 : 0,
+  wmi2StartNowOverride: process.env.ENV === Env.PROD ? 0 : 1757196878,
 
   /*
    * Sets whether the tutorial phase of the game is enabled or disabled.
