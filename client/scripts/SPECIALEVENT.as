@@ -7,6 +7,7 @@ package
    import flash.display.MovieClip;
    import flash.events.MouseEvent;
    import flash.geom.Point;
+   import com.monsters.enums.EnumInvasionType;
    
    public class SPECIALEVENT
    {
@@ -1431,6 +1432,8 @@ package
       
       public static function Setup() : void
       {
+         if (GLOBAL._flags.activeInvasion != EnumInvasionType.WMI2) return;
+         
          if(_setupCalled)
          {
             return;
@@ -1458,10 +1461,11 @@ package
             );
       }
 
+      // Use server-provided activeInvasion flag to determine which event should be active
       public static function getActiveSpecialEvent() : * 
       {
-         if (SPECIALEVENT.EventActive()) return SPECIALEVENT;
-         if (SPECIALEVENT_WM1.EventActive()) return SPECIALEVENT_WM1;
+         if (GLOBAL._flags.activeInvasion == "wmi1") return SPECIALEVENT_WM1;
+
          return SPECIALEVENT;
       }
       
@@ -1720,7 +1724,6 @@ package
             return;
          }
          _lastTimestamp = GLOBAL.Timestamp();
-         InitializeTimes();
          if(_knownFlag != invasionpop)
          {
             FlagChanged();

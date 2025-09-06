@@ -119,3 +119,13 @@ const getNextInvasionDate = (now: Date, monthParity: 0 | 1): Date => {
   else
     return new Date(now.getFullYear(), currentMonth + 1, 10);
 };
+
+// Determine which invasion event should be active
+export const getActiveInvasion = (): Invasion => {
+  if (devConfig.wmi1StartNowOverride) return Invasion.WMI1;
+
+  if (devConfig.wmi2StartNowOverride) return Invasion.WMI2;
+
+  const currentMonth = new Date().getMonth() + 1;
+  return currentMonth % 2 === 1 ? Invasion.WMI1 : Invasion.WMI2;
+};
