@@ -1436,7 +1436,7 @@ package
             return;
          }
          _setupCalled = true;
-         _wave = new SecNum(GetStat("wmi_wave"));
+         _wave = new SecNum(GetStat("wmi2_wave"));
          _group = 0;
          _knownFlag = invasionpop;
          InitializeTimes();
@@ -1512,7 +1512,7 @@ package
          _active = true;
          if(_wave.Get() == -1)
          {
-            _wave.Set(SPECIALEVENT.GetStat("wmi_wave"));
+            _wave.Set(SPECIALEVENT.GetStat("wmi2_wave"));
          }
          _group = 0;
          _currentAttackers = new Array();
@@ -1542,7 +1542,7 @@ package
             POPUPS.Push(_loc3_,null,null,null,null,false,"now");
             _wave.Add(1);
             SPECIALEVENT.updateWaveDisplay(wave);
-            SetStat("wmi_wave",_wave.Get());
+            SetStat("wmi2_wave",_wave.Get());
          }
          else
          {

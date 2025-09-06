@@ -1240,28 +1240,41 @@ package
                }
                _loc4_++;
             }
+            
+            var qualifiedType:int;
             switch(_loc3_)
             {
                case 1:
-                  param1 = 121;
+                  qualifiedType = 121;
                   break;
                case 2:
-                  param1 = 122;
+                  qualifiedType = 122;
                   break;
                case 3:
-                  param1 = 123;
+                  qualifiedType = 123;
                   break;
                case 4:
-                  param1 = 124;
+                  qualifiedType = 124;
                   break;
                case 5:
-                  param1 = 125;
+                  qualifiedType = 125;
                   break;
                case 6:
-                  param1 = 126;
+                  qualifiedType = 126;
                   break;
                default:
-                  param1 = 121;
+                  qualifiedType = 121;
+            }
+            
+            // Only upgrade totems, never downgrade them
+            // If current totem is higher than qualified type, keep the current one
+            if(param1 > qualifiedType)
+            {
+               return param1;
+            }
+            else
+            {
+               return qualifiedType;
             }
          }
          return param1;
