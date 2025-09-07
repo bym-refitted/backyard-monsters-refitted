@@ -12,8 +12,8 @@ package com.monsters.monsters.components
       private var _cachedValue:Number = NaN;
       private var _isDirty:Boolean = true;
       
-      // Comment: Rewritten function - floating-point numbers are not compile-time constants.
-      public function CModifiableProperty(param1:Number = Number.MAX_VALUE, param2:Number = Number.NEGATIVE_INFINITY, param3:Number = -1)
+      // Comment: Using compile-time constants for default parameter values
+      public function CModifiableProperty(param1:Number = 1.7976931348623157e+308, param2:Number = -1.7976931348623157e+308, param3:Number = -1)
       {
          super(param1,param2,param3);
          this._modifiers = new Vector.<IPropertyModifier>();
