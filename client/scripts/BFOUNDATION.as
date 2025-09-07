@@ -573,7 +573,7 @@ package
             _loc5_ = this.Loot(param1 * _loc4_);
             ATTACK.damage(param1,this,param1 - _loc3_);
          }
-         if(k_DOES_PRINT_DETAILED_LOGGING)
+         if(k_DOES_PRINT_DETAILED_LOGGING && GLOBAL._aiDesignMode)
          {
             param1 = Math.round(param1);
             _loc3_ = Math.round(_loc3_);
@@ -1446,7 +1446,7 @@ package
             {
                this._mcHit.gotoAndStop("f" + param3);
             }
-            else
+            else if(GLOBAL._aiDesignMode)
             {
                print("BFOUNDATION.ImageCallback building has no hit 1 " + this._type + " frame f" + param3);
             }

@@ -897,6 +897,10 @@ package
          {
             LOGGER.Stat([80,_round]);
             StartRepairs();
+            if(isMajorWave(_round) && _round != 1)
+            {
+               BTOTEM.UpgradeTotem();
+            }
             _loc3_ = new WMIROUNDCOMPLETE_WM1(wave);
             POPUPS.Push(_loc3_,null,null,null,null,false,"now");
             ++_round;
@@ -1306,6 +1310,22 @@ package
       public static function get numWaves() : int
       {
          return WAVES.length;
+      }
+      
+      public static function isMajorWave(param1:int) : Boolean
+      {
+         switch(param1)
+         {
+            case 1:
+            case 10:
+            case 20:
+            case 30:
+            case 31:
+            case 32:
+               return true;
+            default:
+               return false;
+         }
       }
    }
 }
