@@ -402,6 +402,7 @@ package
 
       public static function Cleanup():void
       {
+         SPECIALEVENT.ClearWildMonsterPowerups();
          SPECIALEVENT_WM1.ClearWildMonsterPowerups();
          BaseBuffHandler.instance.clearBuffs();
          RewardHandler.instance.clear();
@@ -452,7 +453,6 @@ package
          GLOBAL._bLocker = null;
          GLOBAL._bMap = null;
          GLOBAL._bStore = null;
-         GLOBAL._bTotem = null;
          UI2.Hide("warning");
          UI2.Hide("scareAway");
          WMATTACK._inProgress = false;
@@ -2751,7 +2751,6 @@ package
             }
          }
          GLOBAL.CallJS("cc.injectFriendsSwf", null, false);
-         BTOTEM.FindMissingTotem();
          s_processing = false;
          HideFootprints();
       }
@@ -2996,7 +2995,8 @@ package
          }
          if (_lastPaged >= _loc2_ && !_paging && !_saving && GLOBAL.Timestamp() - _lastSaved >= _loc2_)
          {
-            if (SPECIALEVENT.active || SPECIALEVENT_WM1.active)
+            var activeEvent:* = SPECIALEVENT.getActiveSpecialEvent();
+            if (activeEvent.active)
             {
                _blockSave = false;
                Save(0, false, true);

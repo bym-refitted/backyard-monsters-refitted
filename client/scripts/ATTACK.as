@@ -1229,9 +1229,10 @@ package
             }
             POPUPS.Next();
          };
-         if(SPECIALEVENT_WM1.active)
+         var activeEvent:* = SPECIALEVENT.getActiveSpecialEvent()
+         if(activeEvent.active)
          {
-            SPECIALEVENT_WM1.EndRound(true);
+            activeEvent.EndRound(true);
             return;
          }
          if(INFERNO_EMERGENCE_EVENT.isAttackActive)

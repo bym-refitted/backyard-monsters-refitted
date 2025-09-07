@@ -18,7 +18,8 @@ package
          {
             bReturn.SetupKey("wmi_surrenderbtn");
          }
-         if(SPECIALEVENT.active || SPECIALEVENT_WM1.active)
+         var activeEvent:* = SPECIALEVENT.getActiveSpecialEvent();
+         if(activeEvent.active)
          {
             bReturn.SetupKey("wmi_surrenderbtn");
          }
@@ -27,10 +28,11 @@ package
       
       private function onReturnDown(param1:MouseEvent) : void
       {
-         var _loc2_:Boolean = SPECIALEVENT_WM1.active;
+         var activeEvent:* = SPECIALEVENT.getActiveSpecialEvent();
+         var _loc2_:Boolean = activeEvent.active;
          if(_loc2_)
          {
-            SPECIALEVENT_WM1.Surrender();
+            activeEvent.Surrender();
             return;
          }
          dispatchEvent(new Event("scareAway"));
