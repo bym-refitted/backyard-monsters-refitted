@@ -2072,24 +2072,24 @@ package
                      mc.bPost.SetupKey("btn_brag");
                      mc.bPost.addEventListener(MouseEvent.CLICK,BragTotem(this._type));
                      mc.bPost.Highlight = true;
-                     switch(this._type)
+                     switch(this._lvl.Get())
                      {
-                        case 121:
+                        case 1:
                            totemImgUrl = "building-wmitotem1.png";
                            break;
-                        case 122:
+                        case 2:
                            totemImgUrl = "building-wmitotem2.png";
                            break;
-                        case 123:
+                        case 3:
                            totemImgUrl = "building-wmitotem3.png";
                            break;
-                        case 124:
+                        case 4:
                            totemImgUrl = "building-wmitotem4.png";
                            break;
-                        case 125:
+                        case 5:
                            totemImgUrl = "building-wmitotem5.png";
                            break;
-                        case 126:
+                        case 6:
                            totemImgUrl = "building-wmitotem6.png";
                            break;
                         default:
