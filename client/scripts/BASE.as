@@ -2752,7 +2752,6 @@ package
             }
          }
          GLOBAL.CallJS("cc.injectFriendsSwf", null, false);
-         BTOTEM.FindMissingTotem();
          s_processing = false;
          HideFootprints();
       }
