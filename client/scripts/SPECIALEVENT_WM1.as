@@ -6,15 +6,7 @@ package
    import flash.geom.Point;
    import com.monsters.monsters.champions.ChampionBase;
    import com.monsters.inventory.InventoryManager;
-<<<<<<< HEAD
-   import flash.net.URLLoader;
-   import flash.events.IOErrorEvent;
-   import flash.events.Event;
-   import flash.net.URLRequest;
-   import flash.net.URLRequestMethod;
-=======
    import com.monsters.enums.EnumInvasionType;
->>>>>>> 504c35e508c9b62938d4f8bb5482f0cf9b76f884
    
    /*
    * This is the original SPECIALEVENT.as class for Wild Monster Invasion 1.
