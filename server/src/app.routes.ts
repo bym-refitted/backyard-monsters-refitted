@@ -26,7 +26,6 @@ import { supportedLangs } from "./controllers/supportedLangs";
 import { Status } from "./enums/StatusCodes";
 import { forgotPassword } from "./controllers/auth/forgotPassword";
 import { resetPassword } from "./controllers/auth/resetPassword";
-import { devConfig } from "./config/DevSettings";
 import { infernoSave } from "./controllers/inferno/infernoSave";
 import { getNeighbours } from "./controllers/maproom/inferno/getNeighbours";
 import { Env } from "./enums/Env";
@@ -432,7 +431,7 @@ router.post(
 router.get(
   "/api/:apiVersion/player/getmessagetargets",
   apiVersion,
-  verifyUserAuth,
+  // verifyUserAuth,
   debugDataLog("Get message targets"),
   getMessageTargets
 );
@@ -492,7 +491,7 @@ router.post(
 router.get(
   "/api/:apiVersion/events/wmi",
   apiVersion,
-  verifyUserAuth,
+  // verifyUserAuth,
   debugDataLog("Getting WMI event details"),
   wildMonsterInvasion
 );
