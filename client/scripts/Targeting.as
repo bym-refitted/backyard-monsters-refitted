@@ -34,6 +34,16 @@ package
       
       private static var _cartesianCache:Object = {};
       
+      // Performance tracking and cache management
+      private static var _cacheCleanupCounter:int = 0;
+      private static const CACHE_CLEANUP_INTERVAL:int = 1800; // Clean cache every 30 seconds at 60fps
+      private static var _creepCellMoveCallCount:int = 0;
+      
+      // Range query result caching
+      private static var _rangeQueryCache:Object = {};
+      private static var _rangeQueryFrameStamp:Object = {};
+      private static var _currentFrame:int = 0;
+      
       public function Targeting()
       {
          super();
@@ -82,6 +92,13 @@ package
          _cartesianCache = {};
       }
       
+      /*
+       * Reset performance counters
+      */
+      public static function resetPerformanceStats():void {
+         _creepCellMoveCallCount = 0;
+      }
+      
       public static function CreepCellAdd(param1:Point, param2:String, param3:MonsterBase) : String
       {
          var _loc4_:String = getGridKey(param1);
@@ -97,6 +114,17 @@ package
       
       public static function CreepCellMove(param1:Point, param2:String, param3:MonsterBase, param4:String) : String
       {
+         // Performance tracking
+         _creepCellMoveCallCount++;
+         
+         // Periodic cache cleanup to prevent memory growth
+         _cacheCleanupCounter++;
+         if(_cacheCleanupCounter >= CACHE_CLEANUP_INTERVAL)
+         {
+            _cacheCleanupCounter = 0;
+            clearGridCaches();
+         }
+         
          var _loc5_:String = getGridKey(param1);
          
          if(_loc5_ != param4)
@@ -231,6 +259,16 @@ package
       
       public static function getCreepsInRange(param1:Number, param2:Point, param3:int = 0, param4:MonsterBase = null) : Array
       {
+         // Performance optimization: Cache range query results within the same frame
+         _currentFrame = GLOBAL._frameNumber;
+         var cacheKey:String = param1 + "_" + int(param2.x) + "_" + int(param2.y) + "_" + param3 + "_" + (param4 ? param4._id : "null");
+         
+         // Check if we have a cached result from this frame
+         if(_rangeQueryCache[cacheKey] && _rangeQueryFrameStamp[cacheKey] == _currentFrame)
+         {
+            return _rangeQueryCache[cacheKey];
+         }
+         
          var _loc11_:int = 0;
          var _loc12_:String = null;
          var _loc13_:String = null;
@@ -277,6 +315,24 @@ package
             }
             _loc10_++;
          }
+         
+         // Cache the result for this frame
+         _rangeQueryCache[cacheKey] = _loc8_;
+         _rangeQueryFrameStamp[cacheKey] = _currentFrame;
+         
+         // Periodic cleanup of old cache entries (keep last 10 frames worth)
+         if(_currentFrame % 300 == 0) // Every 5 seconds at 60fps
+         {
+            for(var oldCacheKey:String in _rangeQueryFrameStamp)
+            {
+               if(_rangeQueryFrameStamp[oldCacheKey] < _currentFrame - 10)
+               {
+                  delete _rangeQueryCache[oldCacheKey];
+                  delete _rangeQueryFrameStamp[oldCacheKey];
+               }
+            }
+         }
+         
          return _loc8_;
       }
       
