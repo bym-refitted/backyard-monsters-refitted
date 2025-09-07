@@ -491,7 +491,7 @@ router.post(
 router.get(
   "/api/:apiVersion/events/wmi",
   apiVersion,
-  verifyUserAuth,
+  // verifyUserAuth,
   debugDataLog("Getting WMI event details"),
   wildMonsterInvasion
 );
