@@ -7,6 +7,10 @@ package
    import com.monsters.monsters.champions.ChampionBase;
    import com.monsters.inventory.InventoryManager;
    import com.monsters.enums.EnumInvasionType;
+   import flash.net.URLRequest;
+   import flash.net.URLLoader;
+   import flash.events.Event;
+   import flash.net.URLRequestMethod;
    
    /*
    * This is the original SPECIALEVENT.as class for Wild Monster Invasion 1.
@@ -851,19 +855,35 @@ package
       
       private static function InitializeTimes() : void
       {
-         new URLLoaderApi().load(
-               GLOBAL._apiURL + "events/wmi?type=wmi1",
-               null,
-               function(serverData:Object):void
-               {
-                  if (serverData)
-                  {
-                     _eventStartTime = Number(serverData.start);
-                     _eventEndTime = Number(serverData.end);
-                     _eventExtensionTime = Number(serverData.extension);
-                  }
-               }
-            );
+         // TODO: Figure out why the fuck this does not work on Adobe Air SDK (Android)
+         // new URLLoaderApi().load(
+         //       GLOBAL._apiURL + "events/wmi?type=wmi1",
+         //       null,
+         //       function(serverData:Object):void
+         //       {
+         //          if (serverData)
+         //          {
+         //             _eventStartTime = Number(serverData.start);
+         //             _eventEndTime = Number(serverData.end);
+         //             _eventExtensionTime = Number(serverData.extension);
+         //          }
+         //       }
+         //    );
+         var request:URLRequest = new URLRequest(GLOBAL._apiURL + "events/wmi?type=wmi1");
+         request.method = URLRequestMethod.GET;
+
+         var loader:URLLoader = new URLLoader();
+         loader.load(request);
+         loader.addEventListener(Event.COMPLETE, function(event:Event):void
+         {
+            var serverData:Object = JSON.decode(event.target.data);
+            if (serverData)
+            {
+               _eventStartTime = Number(serverData.start);
+               _eventEndTime = Number(serverData.end);
+               _eventExtensionTime = Number(serverData.extension);
+            }
+         });
       }
 
       public static function StartRound() : void

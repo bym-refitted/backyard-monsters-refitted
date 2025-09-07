@@ -8,6 +8,10 @@ package
    import flash.events.MouseEvent;
    import flash.geom.Point;
    import com.monsters.enums.EnumInvasionType;
+   import flash.net.URLRequest;
+   import flash.net.URLLoader;
+   import flash.events.Event;
+   import flash.net.URLRequestMethod;
    
    public class SPECIALEVENT
    {
@@ -1445,18 +1449,33 @@ package
       
       private static function InitializeTimes() : void
       {
-         new URLLoaderApi().load(
-               GLOBAL._apiURL + "events/wmi?type=wmi2",
-               null,
-               function(serverData:Object):void
-               {
-                  if (serverData)
-                  {
-                     _eventStartTime = new SecNum(serverData.start);
-                     _eventEndTime = new SecNum(_eventStartTime.Get() + 60 * 60 * 24 * 7);
-                  }
-               }
-            );
+         // TODO: Figure out why the fuck this does not work on Adobe Air SDK (Android)
+         // new URLLoaderApi().load(
+         //       GLOBAL._apiURL + "events/wmi?type=wmi2",
+         //       null,
+         //       function(serverData:Object):void
+         //       {
+         //          if (serverData)
+         //          {
+         //             _eventStartTime = new SecNum(serverData.start);
+         //             _eventEndTime = new SecNum(_eventStartTime.Get() + 60 * 60 * 24 * 7);
+         //          }
+         //       }
+         //    );
+         var request:URLRequest = new URLRequest(GLOBAL._apiURL + "events/wmi?type=wmi2");
+         request.method = URLRequestMethod.GET;
+
+         var loader:URLLoader = new URLLoader();
+         loader.load(request);
+         loader.addEventListener(Event.COMPLETE, function(event:Event):void
+         {
+            var serverData:Object = JSON.decode(event.target.data);
+            if (serverData)
+            {
+               _eventStartTime = new SecNum(serverData.start);
+               _eventEndTime = new SecNum(_eventStartTime.Get() + 60 * 60 * 24 * 7);
+            }
+         });
       }
 
       // Use server-provided activeInvasion flag to determine which event should be active
