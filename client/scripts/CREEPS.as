@@ -39,6 +39,15 @@ package
       
       private static var _cacheMisses:int = 0;
       
+      private static var _lastCacheClear:int = 0;
+      
+      // Performance optimization: Batch processing arrays
+      private static var _aliveCreeps:Vector.<MonsterBase> = new Vector.<MonsterBase>();
+      private static var _deadCreeps:Vector.<String> = new Vector.<String>();
+      private static var _visibleCreepCount:int = 0;
+      private static var _overlapProcessingIndex:int = 0;
+      private static const OVERLAP_BATCH_SIZE:int = 10;
+      
       public function CREEPS()
       {
          super();
@@ -105,69 +114,74 @@ package
       
       public static function Tick() : void
       {
-         var _loc2_:MonsterBase = null;
-         var _loc3_:String = null;
-         var _loc5_:String = null;
          var _loc1_:int = getTimer();
-         var _loc4_:int = 0;
-         _creepOverlap = {};
-         for(_loc3_ in _creeps)
+         
+         // Performance optimization: Clear cache periodically to prevent memory bloat
+         if(_loc1_ - _lastCacheClear > 30000) // Clear every 30 seconds
          {
-            _loc2_ = _creeps[_loc3_];
-            _loc5_ = getOverlapKey(_loc2_._creatureID, _loc2_._tmpPoint.x, _loc2_._tmpPoint.y);
-            if(!_creepOverlap[_loc5_])
-            {
-               _creepOverlap[_loc5_] = 1;
-               if(Boolean(_loc2_._mc) && !_loc2_._mc.visible)
-               {
-                  _loc2_._mc.visible = true;
-               }
-            }
-            else
-            {
-               _creepOverlap[_loc5_] += 1;
-               if(_creepOverlap[_loc5_] > 1)
-               {
-                  if(_loc2_._mc.visible)
-                  {
-                     _loc2_._mc.visible = false;
-                  }
-               }
-               else if(!_loc2_._mc.visible)
-               {
-                  _loc2_._mc.visible = true;
-               }
-            }
-            if(Boolean(_loc2_._mc) && _loc2_._mc.visible)
-            {
-               _loc4_ += 1;
-            }
-            if(_loc2_.tick(1))
-            {
-               if(!_loc2_.dying)
-               {
-                  _loc2_.die();
-               }
-               if(_loc2_.dead)
-               {
-                  if(!BYMConfig.instance.RENDERER_ON)
-                  {
-                     MAP._BUILDINGTOPS.removeChild(_loc2_.graphic);
-                  }
-                  --_creepCount;
-                  if(_loc2_._creatureID.substr(0,1) == "G" || (GLOBAL.mode == GLOBAL.e_BASE_MODE.ATTACK || GLOBAL.mode == GLOBAL.e_BASE_MODE.WMATTACK) && !_loc2_.isDisposable)
-                  {
-                     --_flungCount;
-                     ATTACK._creaturesFlung.Add(-1);
-                  }
-                  delete _creeps[_loc3_];
-               }
-            }
+            clearOverlapCache();
+            _lastCacheClear = _loc1_;
          }
+         
+         // Completely rewritten tick system for better performance
+         _aliveCreeps.length = 0;
+         _deadCreeps.length = 0;
+         _visibleCreepCount = 0;
+         
+         // Phase 1: Separate alive/dead creeps and tick alive ones
+         var creepId:String;
+         var creep:MonsterBase;
+         for(creepId in _creeps)
+         {
+            creep = _creeps[creepId];
+            
+            // Tick the creep first
+            if(creep.tick(1))
+            {
+               // Creep should die
+               if(!creep.dying)
+               {
+                  creep.die();
+               }
+               if(creep.dead)
+               {
+                  _deadCreeps.push(creepId);
+                  continue;
+               }
+            }
+            
+            // Creep is alive, add to processing list
+            _aliveCreeps.push(creep);
+         }
+         
+         // Phase 2: Clean up dead creeps (batch operation)
+         var deadId:String;
+         for each(deadId in _deadCreeps)
+         {
+            creep = _creeps[deadId];
+            if(!BYMConfig.instance.RENDERER_ON)
+            {
+               MAP._BUILDINGTOPS.removeChild(creep.graphic);
+            }
+            --_creepCount;
+            if(creep._creatureID.substr(0,1) == "G" || (GLOBAL.mode == GLOBAL.e_BASE_MODE.ATTACK || GLOBAL.mode == GLOBAL.e_BASE_MODE.WMATTACK) && !creep.isDisposable)
+            {
+               --_flungCount;
+               ATTACK._creaturesFlung.Add(-1);
+            }
+            delete _creeps[deadId];
+         }
+         
+         // Phase 3: Process overlap detection in batches (spread across multiple frames)
+         processOverlapBatch();
+         
+         // Cleanup counters
          if(_creepCount <= 0)
          {
             _flungCount = _creepCount = 0;
          }
+         
+         // Validation (only in attack modes)
          if(GLOBAL.mode == GLOBAL.e_BASE_MODE.ATTACK || GLOBAL.mode == GLOBAL.e_BASE_MODE.WMATTACK)
          {
             if(ATTACK._creaturesFlung.Get() < _flungCount && ATTACK._creaturesFlung.Get() > 0)
@@ -175,6 +189,65 @@ package
                LOGGER.Log("log","More creeps than flung creatures");
                GLOBAL.ErrorMessage();
             }
+         }
+      }
+      
+      /*
+       * Process overlap detection in small batches to spread CPU load across frames
+       */
+      private static function processOverlapBatch():void
+      {
+         if(_aliveCreeps.length == 0) return;
+         
+         _creepOverlap = {}; // Reset overlap data
+         var processed:int = 0;
+         var startIndex:int = _overlapProcessingIndex;
+         var creep:MonsterBase;
+         var overlapKey:String;
+         
+         // Process a batch of creeps
+         while(processed < OVERLAP_BATCH_SIZE && _overlapProcessingIndex < _aliveCreeps.length)
+         {
+            creep = _aliveCreeps[_overlapProcessingIndex];
+            overlapKey = getOverlapKey(creep._creatureID, creep._tmpPoint.x, creep._tmpPoint.y);
+            
+            if(!_creepOverlap[overlapKey])
+            {
+               _creepOverlap[overlapKey] = 1;
+               if(Boolean(creep._mc) && !creep._mc.visible)
+               {
+                  creep._mc.visible = true;
+               }
+            }
+            else
+            {
+               _creepOverlap[overlapKey] += 1;
+               if(_creepOverlap[overlapKey] > 1)
+               {
+                  if(creep._mc.visible)
+                  {
+                     creep._mc.visible = false;
+                  }
+               }
+               else if(!creep._mc.visible)
+               {
+                  creep._mc.visible = true;
+               }
+            }
+            
+            if(Boolean(creep._mc) && creep._mc.visible)
+            {
+               _visibleCreepCount++;
+            }
+            
+            _overlapProcessingIndex++;
+            processed++;
+         }
+         
+         // Reset index when we've processed all creeps
+         if(_overlapProcessingIndex >= _aliveCreeps.length)
+         {
+            _overlapProcessingIndex = 0;
          }
       }
       

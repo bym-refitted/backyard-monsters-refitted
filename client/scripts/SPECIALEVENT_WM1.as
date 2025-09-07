@@ -6,11 +6,15 @@ package
    import flash.geom.Point;
    import com.monsters.monsters.champions.ChampionBase;
    import com.monsters.inventory.InventoryManager;
+<<<<<<< HEAD
    import flash.net.URLLoader;
    import flash.events.IOErrorEvent;
    import flash.events.Event;
    import flash.net.URLRequest;
    import flash.net.URLRequestMethod;
+=======
+   import com.monsters.enums.EnumInvasionType;
+>>>>>>> 504c35e508c9b62938d4f8bb5482f0cf9b76f884
    
    /*
    * This is the original SPECIALEVENT.as class for Wild Monster Invasion 1.
@@ -842,10 +846,10 @@ package
       
       public static function Setup() : void
       {
-         if(_setupCalled)
-         {
-            return;
-         }
+         if(_setupCalled) return;
+         
+         if (GLOBAL._flags.activeInvasion != EnumInvasionType.WMI1) return;
+
          _setupCalled = true;
          _round = GLOBAL.StatGet("wmi_wave");
          _wave = 0;
@@ -855,21 +859,19 @@ package
       
       private static function InitializeTimes() : void
       {
-         var request:URLRequest = new URLRequest(GLOBAL._apiURL + "events/wmi1");
-         request.method = URLRequestMethod.GET;
-
-         var loader:URLLoader = new URLLoader();
-         loader.load(request);
-         loader.addEventListener(Event.COMPLETE, function(event:Event):void
-         {
-            var data:Object = JSON.decode(event.target.data);
-            if (data)
-            {
-               _eventStartTime = Number(data.start);
-               _eventEndTime = Number(data.end);
-               _eventExtensionTime = Number(data.extension);
-            }
-         });
+         new URLLoaderApi().load(
+               GLOBAL._apiURL + "events/wmi?type=wmi1",
+               null,
+               function(serverData:Object):void
+               {
+                  if (serverData)
+                  {
+                     _eventStartTime = Number(serverData.start);
+                     _eventEndTime = Number(serverData.end);
+                     _eventExtensionTime = Number(serverData.extension);
+                  }
+               }
+            );
       }
 
       public static function StartRound() : void
@@ -903,15 +905,15 @@ package
          {
             LOGGER.Stat([80,_round]);
             StartRepairs();
+            if(isMajorWave(_round) && _round != 1)
+            {
+               BTOTEM.UpgradeTotem();
+            }
             _loc3_ = new WMIROUNDCOMPLETE_WM1(wave);
             POPUPS.Push(_loc3_,null,null,null,null,false,"now");
             ++_round;
-            UI_BOTTOM._nextwave_wm1.SetWave(wave);
+            SPECIALEVENT.updateWaveDisplay(wave);
             GLOBAL.StatSet("wmi_wave",_round);
-            if(GLOBAL._bTotem)
-            {
-               GLOBAL._bTotem._renderState = null;
-            }
          }
          else
          {
@@ -933,10 +935,6 @@ package
                   {
                      _loc4_ += _loc8_.health;
                      _loc5_ += _loc8_.maxHealth;
-                  }
-                  if(BTOTEM.IsTotem(_loc8_._type))
-                  {
-                     _loc8_._type = SPECIALEVENT_WM1.TotemQualified(_loc8_._type);
                   }
                }
             }
@@ -1201,6 +1199,9 @@ package
          {
             return INVASIONPOP_OVERRIDE;
          }
+         
+         if (_eventStartTime <= 0) return -1;
+         
          if(GLOBAL._flags.invasionpop2 == -1)
          {
             return -1;
@@ -1211,67 +1212,6 @@ package
       public static function AllWavesSpawned() : Boolean
       {
          return !_spawningWaves;
-      }
-      
-      public static function TotemReward() : void
-      {
-         var _loc1_:int = TotemQualified(121);
-         BTOTEM.RemoveAllFromStorage(true,false);
-         BTOTEM.RemoveAllFromYard(true,false);
-         InventoryManager.buildingStorageAdd(_loc1_, 1);
-      }
-      
-      public static function TotemPlace() : void
-      {
-         var _loc1_:int = TotemQualified(121);
-         BUILDINGS._buildingID = _loc1_;
-         BUILDINGS.Show();
-         BUILDINGS._mc.SwitchB(4,4,0);
-      }
-      
-      public static function TotemQualified(param1:int) : Number
-      {
-         var _loc2_:Number = NaN;
-         var _loc3_:Number = NaN;
-         var _loc4_:Number = NaN;
-         if(BTOTEM.IsTotem(param1))
-         {
-            _loc2_ = GLOBAL.StatGet("wmi_wave");
-            _loc3_ = 0;
-            _loc4_ = 0;
-            while(_loc4_ < SPECIALEVENT_WM1.WONSTAGE.length)
-            {
-               if(_loc2_ >= SPECIALEVENT_WM1.WONSTAGE[_loc4_])
-               {
-                  _loc3_ = _loc4_ + 1;
-               }
-               _loc4_++;
-            }
-            switch(_loc3_)
-            {
-               case 1:
-                  param1 = 121;
-                  break;
-               case 2:
-                  param1 = 122;
-                  break;
-               case 3:
-                  param1 = 123;
-                  break;
-               case 4:
-                  param1 = 124;
-                  break;
-               case 5:
-                  param1 = 125;
-                  break;
-               case 6:
-                  param1 = 126;
-                  break;
-               default:
-                  param1 = 121;
-            }
-         }
-         return param1;
       }
       
       public static function FlagChanged() : void
@@ -1311,7 +1251,7 @@ package
       public static function DEBUGOVERRIDEROUND(param1:int) : void
       {
          _round = param1;
-         UI_BOTTOM._nextwave_wm1.SetWave(wave);
+         SPECIALEVENT.updateWaveDisplay(wave);
       }
       
       public static function DebugToggleActive(param1:Boolean) : void
@@ -1378,6 +1318,22 @@ package
       public static function get numWaves() : int
       {
          return WAVES.length;
+      }
+      
+      public static function isMajorWave(param1:int) : Boolean
+      {
+         switch(param1)
+         {
+            case 1:
+            case 10:
+            case 20:
+            case 30:
+            case 31:
+            case 32:
+               return true;
+            default:
+               return false;
+         }
       }
    }
 }

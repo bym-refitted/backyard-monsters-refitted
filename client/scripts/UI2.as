@@ -47,6 +47,8 @@ package
       public static var _debugWarningTxt:TextField;
       
       public static var _debugWarningTxtVal:String = "DEBUG MODE";
+
+      public static var activeEvent:*;
        
       
       public function UI2()
@@ -56,6 +58,8 @@ package
       
       public static function Setup() : void
       {
+         activeEvent = SPECIALEVENT.getActiveSpecialEvent();
+
          _tutorial = GLOBAL._layerUI.addChild(new MovieClip()) as MovieClip;
          _top = GLOBAL._layerUI.addChild(new UI_TOP()) as UI_TOP;
          _warning = GLOBAL._layerUI.addChild(new UI_WARNING()) as UI_WARNING;
@@ -97,7 +101,7 @@ package
             {
                _top.mcSpecialEvent.buttonMode = true;
                _top.mcSpecialEvent.mouseChildren = false;
-               _top.mcSpecialEvent.addEventListener(MouseEvent.CLICK,SPECIALEVENT_WM1.TimerClicked);
+               _top.mcSpecialEvent.addEventListener(MouseEvent.CLICK, activeEvent.TimerClicked);
             }
          }
          if(GLOBAL._aiDesignMode)
@@ -387,95 +391,147 @@ package
                   {
                      _top.mcReinforcements.visible = false;
                   }
-                  if(SPECIALEVENT_WM1.GetTimeUntilEnd() < 0 || SPECIALEVENT_WM1.wave > SPECIALEVENT_WM1.numWaves || SPECIALEVENT_WM1.invasionpop == 4 && SPECIALEVENT_WM1.wave > SPECIALEVENT_WM1.BONUSWAVE2)
+                  var activeEvent:* = SPECIALEVENT.getActiveSpecialEvent();
+                  var isBuildMode:Boolean = GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD;
+                  var isMainYard:Boolean = !BASE.isOutpost && !BASE.isInfernoMainYardOrOutpost;
+                  var isAllowedPlatform:Boolean = !GLOBAL._flags.viximo && !GLOBAL._flags.kongregate;
+                  var isWMI1Active:Boolean = activeEvent == SPECIALEVENT_WM1 && (SPECIALEVENT_WM1.invasionpop == 4 || SPECIALEVENT_WM1.invasionpop == 5);
+                  var isWMI2Active:Boolean = activeEvent == SPECIALEVENT && SPECIALEVENT.invasionpop == 4;
+                  var isEventActive:Boolean = isWMI1Active || isWMI2Active;
+                  
+                  if(!activeEvent || (activeEvent == SPECIALEVENT && SPECIALEVENT.GetTimeUntilEnd() < 0) || 
+                     (activeEvent == SPECIALEVENT_WM1 && (SPECIALEVENT_WM1.GetTimeUntilEnd() < 0 || SPECIALEVENT_WM1.wave > SPECIALEVENT_WM1.numWaves || SPECIALEVENT_WM1.invasionpop == 4 && SPECIALEVENT_WM1.wave > SPECIALEVENT_WM1.BONUSWAVE2)))
                   {
                      if(Boolean(_top.mcSpecialEvent) && _top.mcSpecialEvent.visible)
                      {
                         _top.mcSpecialEvent.visible = false;
                      }
-                     if(Boolean(UI_BOTTOM._nextwave_wm1) && UI_BOTTOM._nextwave_wm1.visible)
-                     {
-                        UI_BOTTOM._nextwave_wm1.visible = false;
-                     }
-                     if(SPECIALEVENT_WM1.GetTimeUntilEnd() < 0 && SPECIALEVENT_WM1.GetTimeUntilEnd() > -86400 && GLOBAL.StatGet("wmi_end") == 0)
+                     SPECIALEVENT.updateNextWaveUI(); // This will hide all nextwave UIs
+                     if(activeEvent == SPECIALEVENT_WM1 && SPECIALEVENT_WM1.GetTimeUntilEnd() < 0 && SPECIALEVENT_WM1.GetTimeUntilEnd() > -86400 && GLOBAL.StatGet("wmi_end") == 0)
                      {
                         SPECIALEVENT_WM1.ShowEventEndPopup();
                      }
                   }
-                  else if(SPECIALEVENT_WM1.EventActive() && GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD && (!GLOBAL._flags.viximo && !GLOBAL._flags.kongregate))
+                  else if(activeEvent && isBuildMode && isAllowedPlatform && isEventActive)
                   {
                      if(!_top.mcSpecialEvent.visible)
                      {
                         _top.mcSpecialEvent.visible = true;
                      }
-                     if(UI_BOTTOM._nextwave_wm1 && !UI_BOTTOM._nextwave_wm1.visible && UI_NEXTWAVE_WM1.ShouldDisplay())
+                     SPECIALEVENT.updateNextWaveUI(); // This will show the appropriate nextwave UI
+                     if(activeEvent == SPECIALEVENT_WM1)
                      {
-                        UI_BOTTOM._nextwave_wm1.visible = true;
-                     }
-                     _loc3_ = SPECIALEVENT_WM1.GetTimeUntilExtension();
-                     if(_loc3_ < 0 || SPECIALEVENT_WM1.invasionpop == 5)
-                     {
-                        _loc3_ = SPECIALEVENT_WM1.GetTimeUntilEnd();
-                        if(_loc3_ > 0)
+                        _loc3_ = SPECIALEVENT_WM1.GetTimeUntilExtension();
+                        if(_loc3_ < 0 || SPECIALEVENT_WM1.invasionpop == 5)
                         {
-                           if(SPECIALEVENT_WM1.invasionpop == 4)
+                           _loc3_ = SPECIALEVENT_WM1.GetTimeUntilEnd();
+                           if(_loc3_ > 0)
                            {
-                              if(Boolean(_top.mcSpecialEvent) && _top.mcSpecialEvent.visible)
+                              if(SPECIALEVENT_WM1.invasionpop == 4)
                               {
-                                 _top.mcSpecialEvent.visible = false;
-                              }
-                              if(Boolean(UI_BOTTOM._nextwave_wm1) && UI_BOTTOM._nextwave_wm1.visible)
-                              {
-                                 UI_BOTTOM._nextwave_wm1.visible = false;
+                                 if(Boolean(_top.mcSpecialEvent) && _top.mcSpecialEvent.visible)
+                                 {
+                                    _top.mcSpecialEvent.visible = false;
+                                 }
+                                 SPECIALEVENT.updateNextWaveUI(); // This will hide nextwave UIs
                               }
                            }
                         }
-                     }
-                     if(_loc3_ > 86400)
-                     {
-                        _top.mcSpecialEvent.tCountdown.htmlText = GLOBAL.ToTime(_loc3_,true,false);
-                     }
-                     else
-                     {
-                        _top.mcSpecialEvent.tCountdown.htmlText = GLOBAL.ToTime(_loc3_,true);
-                     }
-                  }
-                  else if(GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD && !BASE.isOutpost && !BASE.isInfernoMainYardOrOutpost && !GLOBAL._flags.viximo && !GLOBAL._flags.kongregate)
-                  {
-                     if(SPECIALEVENT_WM1.invasionpop != 1)
-                     {
-                        if(!_top.mcSpecialEvent.visible)
+                        if(_loc3_ > 86400)
                         {
-                           _top.mcSpecialEvent.visible = true;
-                        }
-                     }
-                     else
-                     {
-                        if(_top.mcSpecialEvent.visible)
-                        {
-                           _top.mcSpecialEvent.visible = false;
-                        }  
-                     }
-                     if(UI_BOTTOM._nextwave_wm1 && !UI_BOTTOM._nextwave_wm1.visible && UI_NEXTWAVE_WM1.ShouldDisplay())
-                     {
-                        UI_BOTTOM._nextwave_wm1.visible = true;
-                     }
-                     _loc4_ = SPECIALEVENT_WM1.GetTimeUntilStart();
-                     _loc5_ = Math.ceil(_loc4_ / 86400);
-                     if(_loc5_ > 1)
-                     {
-                        _top.mcSpecialEvent.tCountdown.htmlText = _loc5_ + " " + KEYS.Get("global_days");
-                     }
-                     else
-                     {
-                        _loc6_ = Math.ceil(_loc4_ / 3600);
-                        if(_loc6_ > 1)
-                        {
-                           _top.mcSpecialEvent.tCountdown.htmlText = _loc6_ + " " + KEYS.Get("global_hours");
+                           _top.mcSpecialEvent.tCountdown.htmlText = GLOBAL.ToTime(_loc3_,true,false);
                         }
                         else
                         {
-                           _top.mcSpecialEvent.tCountdown.htmlText = "&lt; 1 " + KEYS.Get("global_hour");
+                           _top.mcSpecialEvent.tCountdown.htmlText = GLOBAL.ToTime(_loc3_,true);
+                        }
+                     }
+                     else if(activeEvent == SPECIALEVENT)
+                     {
+                        _loc3_ = SPECIALEVENT.GetTimeUntilEnd();
+                        if(_loc3_ > 86400)
+                        {
+                           _top.mcSpecialEvent.tCountdown.htmlText = GLOBAL.ToTime(_loc3_,true,false);
+                        }
+                        else
+                        {
+                           _top.mcSpecialEvent.tCountdown.htmlText = GLOBAL.ToTime(_loc3_,true);
+                        }
+                     }
+                  }
+                  else if(isBuildMode && isMainYard && isAllowedPlatform)
+                  {
+                     // This section handles pre-event timing for both WM1 and WM2
+                     if(activeEvent == SPECIALEVENT_WM1)
+                     {
+                        if(SPECIALEVENT_WM1.invasionpop != 1)
+                        {
+                           if(!_top.mcSpecialEvent.visible)
+                           {
+                              _top.mcSpecialEvent.visible = true;
+                           }
+                        }
+                        else
+                        {
+                           if(_top.mcSpecialEvent.visible)
+                           {
+                              _top.mcSpecialEvent.visible = false;
+                           }  
+                        }
+                        SPECIALEVENT.updateNextWaveUI();
+                        _loc4_ = SPECIALEVENT_WM1.GetTimeUntilStart();
+                        _loc5_ = Math.ceil(_loc4_ / 86400);
+                        if(_loc5_ > 1)
+                        {
+                           _top.mcSpecialEvent.tCountdown.htmlText = _loc5_ + " " + KEYS.Get("global_days");
+                        }
+                        else
+                        {
+                           _loc6_ = Math.ceil(_loc4_ / 3600);
+                           if(_loc6_ > 1)
+                           {
+                              _top.mcSpecialEvent.tCountdown.htmlText = _loc6_ + " " + KEYS.Get("global_hours");
+                           }
+                           else
+                           {
+                              _top.mcSpecialEvent.tCountdown.htmlText = "&lt; 1 " + KEYS.Get("global_hour");
+                           }
+                        }
+                     }
+                     else if(activeEvent == SPECIALEVENT)
+                     {
+                        if(SPECIALEVENT.invasionpop >= 0 && SPECIALEVENT.invasionpop <= 3)
+                        {
+                           if(!_top.mcSpecialEvent.visible)
+                           {
+                              _top.mcSpecialEvent.visible = true;
+                           }
+                        }
+                        else
+                        {
+                           if(_top.mcSpecialEvent.visible)
+                           {
+                              _top.mcSpecialEvent.visible = false;
+                           }  
+                        }
+                        SPECIALEVENT.updateNextWaveUI();
+                        _loc4_ = SPECIALEVENT.GetTimeUntilStart();
+                        _loc5_ = Math.ceil(_loc4_ / 86400);
+                        if(_loc5_ > 1)
+                        {
+                           _top.mcSpecialEvent.tCountdown.htmlText = _loc5_ + " " + KEYS.Get("global_days");
+                        }
+                        else
+                        {
+                           _loc6_ = Math.ceil(_loc4_ / 3600);
+                           if(_loc6_ > 1)
+                           {
+                              _top.mcSpecialEvent.tCountdown.htmlText = _loc6_ + " " + KEYS.Get("global_hours");
+                           }
+                           else
+                           {
+                              _top.mcSpecialEvent.tCountdown.htmlText = "&lt; 1 " + KEYS.Get("global_hour");
+                           }
                         }
                      }
                   }
@@ -485,10 +541,7 @@ package
                      {
                         _top.mcSpecialEvent.visible = false;
                      }
-                     if(Boolean(UI_BOTTOM._nextwave_wm1) && UI_BOTTOM._nextwave_wm1.visible)
-                     {
-                        UI_BOTTOM._nextwave_wm1.visible = false;
-                     }
+                     SPECIALEVENT.updateNextWaveUI(); // This will hide all nextwave UIs
                   }
                   if(!_top.mcSave.visible)
                   {

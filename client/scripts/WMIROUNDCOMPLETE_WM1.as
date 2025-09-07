@@ -75,7 +75,7 @@ package
             rBtn.Highlight = true;
             if(wave == 1)
             {
-               SPECIALEVENT_WM1.TotemReward();
+               BTOTEM.TotemReward();
                this.ButtonsVisible(false,false,true,false);
                rBtn.SetupKey("wmi_placetotembtn");
                rBtn.addEventListener(MouseEvent.CLICK,this.PlaceTotem);
@@ -324,7 +324,7 @@ package
       
       private function PlaceTotem(param1:MouseEvent) : void
       {
-         SPECIALEVENT_WM1.TotemPlace();
+         BTOTEM.TotemPlace();
          this.Hide();
       }
    }

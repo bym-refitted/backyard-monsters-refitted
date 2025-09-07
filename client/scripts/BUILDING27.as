@@ -118,7 +118,8 @@ package
          var _loc2_:MovieClip = null;
          if(GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD)
          {
-            if(SPECIALEVENT_WM1.active)
+            var activeEvent:* = SPECIALEVENT.getActiveSpecialEvent(); 
+            if(activeEvent.active)
             {
                return;
             }
