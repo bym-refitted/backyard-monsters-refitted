@@ -928,10 +928,6 @@ package
                      _loc4_ += _loc8_.health;
                      _loc5_ += _loc8_.maxHealth;
                   }
-                  if(BTOTEM.IsTotem(_loc8_._type))
-                  {
-                     _loc8_._type = SPECIALEVENT_WM1.TotemQualified(_loc8_._type);
-                  }
                }
             }
             _loc6_ = 100 - 100 / _loc5_ * _loc4_;
@@ -1208,80 +1204,6 @@ package
       public static function AllWavesSpawned() : Boolean
       {
          return !_spawningWaves;
-      }
-      
-      public static function TotemReward() : void
-      {
-         var _loc1_:int = TotemQualified(121);
-         BTOTEM.RemoveAllFromStorage(true,false);
-         BTOTEM.RemoveAllFromYard(true,false);
-         InventoryManager.buildingStorageAdd(_loc1_, 1);
-      }
-      
-      public static function TotemPlace() : void
-      {
-         var _loc1_:int = TotemQualified(121);
-         BUILDINGS._buildingID = _loc1_;
-         BUILDINGS.Show();
-         BUILDINGS._mc.SwitchB(4,4,0);
-      }
-      
-      public static function TotemQualified(param1:int) : Number
-      {
-         var _loc2_:Number = NaN;
-         var _loc3_:Number = NaN;
-         var _loc4_:Number = NaN;
-         if(BTOTEM.IsTotem(param1))
-         {
-            _loc2_ = GLOBAL.StatGet("wmi_wave");
-            _loc3_ = 0;
-            _loc4_ = 0;
-            while(_loc4_ < SPECIALEVENT_WM1.WONSTAGE.length)
-            {
-               if(_loc2_ >= SPECIALEVENT_WM1.WONSTAGE[_loc4_])
-               {
-                  _loc3_ = _loc4_ + 1;
-               }
-               _loc4_++;
-            }
-            
-            var qualifiedType:int;
-            switch(_loc3_)
-            {
-               case 1:
-                  qualifiedType = 121;
-                  break;
-               case 2:
-                  qualifiedType = 122;
-                  break;
-               case 3:
-                  qualifiedType = 123;
-                  break;
-               case 4:
-                  qualifiedType = 124;
-                  break;
-               case 5:
-                  qualifiedType = 125;
-                  break;
-               case 6:
-                  qualifiedType = 126;
-                  break;
-               default:
-                  qualifiedType = 121;
-            }
-            
-            // Only upgrade totems, never downgrade them
-            // If current totem is higher than qualified type, keep the current one
-            if(param1 > qualifiedType)
-            {
-               return param1;
-            }
-            else
-            {
-               return qualifiedType;
-            }
-         }
-         return param1;
       }
       
       public static function FlagChanged() : void
