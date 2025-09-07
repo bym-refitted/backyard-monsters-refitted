@@ -13,6 +13,10 @@ package com.monsters.monsters.components.abilities
       
       private var m_timeToRemove:Number;
       
+      private static var s_cachedTimestamp:Number = 0;
+      
+      private static var s_lastCacheFrame:int = -1;
+      
       public function TemporaryComponent(param1:Component, param2:Number)
       {
          super();
@@ -37,7 +41,15 @@ package com.monsters.monsters.components.abilities
       
       override public function tick(param1:int = 1) : void
       {
-         if(GLOBAL.Timestamp() >= this.m_timeToRemove)
+         // Cache timestamp to avoid repeated GLOBAL.Timestamp() calls
+         // Only update cache once per frame, reuse for all TemporaryComponent instances
+         if(s_lastCacheFrame != GLOBAL._frameNumber)
+         {
+            s_cachedTimestamp = GLOBAL.Timestamp();
+            s_lastCacheFrame = GLOBAL._frameNumber;
+         }
+         
+         if(s_cachedTimestamp >= this.m_timeToRemove)
          {
             owner.removeComponent(this);
          }

@@ -84,7 +84,8 @@ package
                }
                else if(level == 0 && GLOBAL.player.m_upgrades[checkID] != null)
                {
-                  if(SPECIALEVENT_WM1.active && !friendly)
+                  var activeEvent:* = SPECIALEVENT.getActiveSpecialEvent();
+                  if(activeEvent.active && !friendly)
                   {
                      level = int(GLOBAL._wmCreatureLevels[monsterID]);
                   }

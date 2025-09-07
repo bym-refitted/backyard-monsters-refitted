@@ -52,7 +52,40 @@ package
             ImageCache.GetImageWithCallBack(GetImageName(wave,true),imageComplete);
          }
          mcFrame.Setup(wave != 1);
-         if(wave == -1)
+         if(SPECIALEVENT.isMajorWave(wave))
+         {
+            mcTitle.htmlText = KEYS.Get("wmi_winwavetitle");
+            mcText.htmlText = KEYS.Get("wmi_winwave" + wave);
+            if(wave == SPECIALEVENT.BONUSWAVE)
+            {
+               mcStats.htmlText = KEYS.Get("wmi_completedwave31");
+            }
+            else if(wave == SPECIALEVENT.BONUSWAVE2)
+            {
+               mcStats.htmlText = KEYS.Get("wmi_completedwave32");
+            }
+            else
+            {
+               mcStats.htmlText = KEYS.Get("wmi_completedwaves",{"v1":wave});
+            }
+            rBtn.Highlight = true;
+            if(wave == 1)
+            {
+               BTOTEM.TotemReward();
+               this.ButtonsVisible(false,false,true,false);
+               rBtn.SetupKey("wmi_placetotembtn");
+               rBtn.addEventListener(MouseEvent.CLICK,this.PlaceTotem);
+            }
+            else
+            {
+               this.ButtonsVisible(false,false,false,true);
+               bragBtn.SetupKey("btn_brag");
+               bragBtn.Highlight = true;
+               bragBtn.addEventListener(MouseEvent.CLICK,Brag);
+            }
+            lBtn.visible = false;
+         }
+         else if(wave == -1)
          {
             if(surrendered)
             {
@@ -175,7 +208,7 @@ package
                GLOBAL.CallJS("sendFeed",["wmi2totem-construct",KEYS.Get("wmi2_wave32streamtitle"),KEYS.Get("wmi2_wave32streamdesc"),"wmitotemfeed2_6.png"]);
                break;
             case 33:
-               GLOBAL.CallJS("sendFeed",["wmi2-eventover",KEYS.Get("wmi2_eventoverstreamtitle"),KEYS.Get("wmi2_eventoverstreamdesc",{"v1":SPECIALEVENT.GetStat("wmi_wave")}),"wmi2_aftermath.v2.png"]);
+               GLOBAL.CallJS("sendFeed",["wmi2-eventover",KEYS.Get("wmi2_eventoverstreamtitle"),KEYS.Get("wmi2_eventoverstreamdesc",{"v1":SPECIALEVENT.GetStat("wmi2_wave")}),"wmi2_aftermath.v2.png"]);
          }
          POPUPS.Next();
       }

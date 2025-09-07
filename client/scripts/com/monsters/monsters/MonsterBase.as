@@ -199,6 +199,11 @@ package com.monsters.monsters
       
       public var _movement:String = "";
       
+      // Performance optimization: Component tick management  
+      private var _componentTickCounter:int = 0;
+      private static const COMPONENT_TICK_INTERVAL:int = 3; // Tick components every 3 frames
+      private static const RENDER_INTERVAL:int = 2; // Render every 2 frames when not visible
+      
       public var _pathing:String = "";
 
       public var _lockRotation:Boolean = false;
@@ -247,6 +252,10 @@ package com.monsters.monsters
          this._attackComponents = new Vector.<Component>();
          this._damagePerSecond = new SecNum(0);
          this._tmpPoint = new Point(0,0);
+         
+         // Initialize performance optimization variables
+         this._componentTickCounter = 0;
+           
          super();
          this._id = GLOBAL.NextCreepID().toString();
          this._rasterPt = new Point();
@@ -416,7 +425,7 @@ package com.monsters.monsters
             }
             this.healed(param1);
          }
-         if(k_DOES_PRINT_DETAILED_LOGGING)
+         if(k_DOES_PRINT_DETAILED_LOGGING && GLOBAL._aiDesignMode)
          {
             param1 = Math.round(param1);
             _loc3_ = Math.round(_loc3_);
@@ -570,18 +579,32 @@ package com.monsters.monsters
          {
             return true;
          }
-         var _loc3_:int = int(this._components.length - 1);
-         while(_loc3_ >= 0)
+         
+         // Performance optimization: Reduce component tick frequency
+         _componentTickCounter += param1;
+         var shouldTickComponents:Boolean = _componentTickCounter >= COMPONENT_TICK_INTERVAL;
+         var accumulatedTicks:int = _componentTickCounter;
+         if(shouldTickComponents)
          {
-            this._components[_loc3_].tick(param1);
-            _loc3_--;
+            _componentTickCounter = 0;
          }
-         _loc3_ = int(this._attackComponents.length - 1);
-         while(_loc3_ >= 0)
+         
+         if(shouldTickComponents)
          {
-            this._attackComponents[_loc3_].tick(param1);
-            _loc3_--;
+            var _loc3_:int = int(this._components.length - 1);
+            while(_loc3_ >= 0)
+            {
+               this._components[_loc3_].tick(accumulatedTicks);
+               _loc3_--;
+            }
+            _loc3_ = int(this._attackComponents.length - 1);
+            while(_loc3_ >= 0)
+            {
+               this._attackComponents[_loc3_].tick(accumulatedTicks);
+               _loc3_--;
+            }
          }
+         
          _loc2_ = this.tickState(param1);
          this.move();
          this.render();
@@ -995,7 +1018,8 @@ package com.monsters.monsters
          }
          if(!this._friendly)
          {
-            if(SPECIALEVENT_WM1.active || Boolean(GLOBAL._wmCreaturePowerups[this._creatureID]))
+            var activeEvent:* = SPECIALEVENT.getActiveSpecialEvent();
+            if(activeEvent.active || Boolean(GLOBAL._wmCreaturePowerups[this._creatureID]))
             {
                if(GLOBAL._wmCreaturePowerups[this._creatureID])
                {

@@ -7,6 +7,7 @@ package
    import flash.display.MovieClip;
    import flash.events.MouseEvent;
    import flash.geom.Point;
+   import com.monsters.enums.EnumInvasionType;
    
    public class SPECIALEVENT
    {
@@ -1431,12 +1432,12 @@ package
       
       public static function Setup() : void
       {
-         if(_setupCalled)
-         {
-            return;
-         }
+         if(_setupCalled) return;
+
+         if (GLOBAL._flags.activeInvasion != EnumInvasionType.WMI2) return;
+                  
          _setupCalled = true;
-         _wave = new SecNum(GetStat("wmi_wave"));
+         _wave = new SecNum(GetStat("wmi2_wave"));
          _group = 0;
          _knownFlag = invasionpop;
          InitializeTimes();
@@ -1444,8 +1445,65 @@ package
       
       private static function InitializeTimes() : void
       {
-         _eventStartTime = new SecNum(0);
-         _eventEndTime = new SecNum(_eventStartTime.Get() + 60 * 60 * 24 * 7);
+         new URLLoaderApi().load(
+               GLOBAL._apiURL + "events/wmi?type=wmi2",
+               null,
+               function(serverData:Object):void
+               {
+                  if (serverData)
+                  {
+                     _eventStartTime = new SecNum(serverData.start);
+                     _eventEndTime = new SecNum(_eventStartTime.Get() + 60 * 60 * 24 * 7);
+                  }
+               }
+            );
+      }
+
+      // Use server-provided activeInvasion flag to determine which event should be active
+      public static function getActiveSpecialEvent() : * 
+      {
+         if (GLOBAL._flags.activeInvasion == EnumInvasionType.WMI1) 
+            return SPECIALEVENT_WM1;
+
+         return SPECIALEVENT;
+      }
+      
+      public static function updateNextWaveUI() : void
+      {
+         if(UI_BOTTOM._nextwave)
+         {
+            UI_BOTTOM._nextwave.visible = false;
+         }
+         if(UI_BOTTOM._nextwave_wm1)
+         {
+            UI_BOTTOM._nextwave_wm1.visible = false;
+         }
+         
+         var activeEvent:* = getActiveSpecialEvent();
+         if(activeEvent)
+         {
+            if(activeEvent == SPECIALEVENT && UI_BOTTOM._nextwave && UI_NEXTWAVE.ShouldDisplay())
+            {
+               UI_BOTTOM._nextwave.visible = true;
+            }
+            else if(activeEvent == SPECIALEVENT_WM1 && UI_BOTTOM._nextwave_wm1 && UI_NEXTWAVE_WM1.ShouldDisplay())
+            {
+               UI_BOTTOM._nextwave_wm1.visible = true;
+            }
+         }
+      }
+      
+      public static function updateWaveDisplay(waveNumber:int) : void
+      {
+         var activeEvent:* = getActiveSpecialEvent();
+         if(activeEvent == SPECIALEVENT && UI_BOTTOM._nextwave)
+         {
+            UI_BOTTOM._nextwave.SetWave(waveNumber);
+         }
+         else if(activeEvent == SPECIALEVENT_WM1 && UI_BOTTOM._nextwave_wm1)
+         {
+            UI_BOTTOM._nextwave_wm1.SetWave(waveNumber);
+         }
       }
       
       public static function StartRound() : void
@@ -1457,7 +1515,7 @@ package
          _active = true;
          if(_wave.Get() == -1)
          {
-            _wave.Set(SPECIALEVENT.GetStat("wmi_wave"));
+            _wave.Set(SPECIALEVENT.GetStat("wmi2_wave"));
          }
          _group = 0;
          _currentAttackers = new Array();
@@ -1486,8 +1544,8 @@ package
             _loc3_ = new WMIROUNDCOMPLETE(wave);
             POPUPS.Push(_loc3_,null,null,null,null,false,"now");
             _wave.Add(1);
-            UI_BOTTOM._nextwave.SetWave(wave);
-            SetStat("wmi_wave",_wave.Get());
+            SPECIALEVENT.updateWaveDisplay(wave);
+            SetStat("wmi2_wave",_wave.Get());
          }
          else
          {
@@ -1665,7 +1723,6 @@ package
             return;
          }
          _lastTimestamp = GLOBAL.Timestamp();
-         InitializeTimes();
          if(_knownFlag != invasionpop)
          {
             FlagChanged();
@@ -1681,7 +1738,9 @@ package
                   if(_loc2_[_loc3_]._behaviour != "retreat")
                   {
                      _loc1_++;
-                     _loc2_[_loc3_].ModeRetreat();
+                     // Original implementation had a ModeRetreat function
+                     // _loc2_[_loc3_].ModeRetreat();
+                     _loc2_[_loc3_].changeModeRetreat();
                   }
                   _loc3_++;
                }
@@ -1768,6 +1827,10 @@ package
          {
             return true;
          }
+         if(SPECIALEVENT_WM1.EventActive())
+         {
+            return false;
+         }
          return SPECIALEVENT.invasionpop == 4;
       }
       
@@ -1828,7 +1891,7 @@ package
       public static function DEBUGOVERRIDEWAVE(param1:int) : void
       {
          _wave.Set(param1);
-         UI_BOTTOM._nextwave.SetWave(param1);
+         SPECIALEVENT.updateWaveDisplay(param1);
       }
       
       public static function DebugToggleActive(param1:Boolean) : void
@@ -1913,7 +1976,7 @@ package
       
       public static function get active() : Boolean
       {
-         return false;
+         return _active;
       }
       
       public static function get numWaves() : int
