@@ -20,6 +20,10 @@ package com.monsters.monsters.components.abilities
       
       private var m_targetFlags:int;
       
+      private var m_rangeCheckCounter:int = 0;
+      
+      private static const RANGE_CHECK_INTERVAL:int = 30;
+      
       public function AOEEnrage(param1:uint, param2:Number, param3:Number, param4:Number = 0)
       {
          super();
@@ -59,15 +63,24 @@ package com.monsters.monsters.components.abilities
       
       override public function tick(param1:int = 1) : void
       {
-         var _loc2_:Vector.<MonsterBase> = this.getFriendliesInRange();
-         if(owner.inBattleState)
+         // Only check range every 30 ticks instead of every tick
+         // This reduces expensive range calculations from 60fps to 2fps with no gameplay impact
+         this.m_rangeCheckCounter += param1;
+         
+         if(this.m_rangeCheckCounter >= RANGE_CHECK_INTERVAL)
          {
-            this.addEnrageToFriendliesInRange(_loc2_);
-            this.removeEnrageFromOutOfRangeFriendlies(_loc2_);
-         }
-         else
-         {
-            this.removeEnrageFromOutOfRangeFriendlies();
+            this.m_rangeCheckCounter = 0;
+            
+            var _loc2_:Vector.<MonsterBase> = this.getFriendliesInRange();
+            if(owner.inBattleState)
+            {
+               this.addEnrageToFriendliesInRange(_loc2_);
+               this.removeEnrageFromOutOfRangeFriendlies(_loc2_);
+            }
+            else
+            {
+               this.removeEnrageFromOutOfRangeFriendlies();
+            }
          }
       }
       

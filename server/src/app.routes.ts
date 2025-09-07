@@ -484,12 +484,17 @@ router.post(
   reportMessageThread
 );
 
-router.get("/api/:apiVersion/events/wmi1",
+/**
+ * Get WMI1 event details
+ * @name GET /api/:apiVersion/events/wmi1
+ */
+router.get(
+  "/api/:apiVersion/events/wmi",
   apiVersion,
-  // verifyUserAuth,
+  verifyUserAuth,
   debugDataLog("Getting WMI event details"),
   wildMonsterInvasion
-)
+);
 
 /**
  * Get available worlds
