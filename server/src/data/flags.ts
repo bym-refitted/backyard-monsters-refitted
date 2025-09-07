@@ -1,7 +1,14 @@
 import { devConfig } from "../config/DevSettings";
-import { setupInvasionEvent } from "../services/events/setupInvasionEvent";
+import {
+  getActiveInvasion,
+  setupInvasionEvent,
+} from "../services/events/setupInvasionEvent";
 
-const invasionPhases = setupInvasionEvent().phases;
+const activeInvasion = getActiveInvasion();
+const invasionPhases = setupInvasionEvent(activeInvasion).phases;
+
+// Flag to tell the client which invasion is active
+const invasionFlags = { ...invasionPhases, activeInvasion };
 
 /**
  * Configuration flags for game settings.
@@ -47,7 +54,7 @@ export const flags = {
   chat: 0, // Disable chat
   event1: 1,
   event2: 0,
-  ...invasionPhases,
+  ...invasionFlags,
   iframestart_override: 0,
   mushrooms: 1,
   chatwhitelist: "2,3,23",

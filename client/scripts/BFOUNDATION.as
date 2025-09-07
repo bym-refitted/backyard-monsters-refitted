@@ -455,10 +455,6 @@ package
                {
                   hasTownHall = true;
                }
-               if (BTOTEM.IsTotem(buildingData._type)) {
-                  // GLOBAL._bTotem.Tick(0);
-                  buildingData._type = SPECIALEVENT_WM1.TotemQualified(buildingData._type);
-               }
                if(buildingData is BTRAP && buildingData._fired || buildingData._type == 53 && buildingData._expireTime < GLOBAL.Timestamp())
                {
                   Console.warning("Ignored Building" + buildingData + buildingData._type + buildingData._expireTime + " setting buildinghealthdata to 0");
@@ -577,7 +573,7 @@ package
             _loc5_ = this.Loot(param1 * _loc4_);
             ATTACK.damage(param1,this,param1 - _loc3_);
          }
-         if(k_DOES_PRINT_DETAILED_LOGGING)
+         if(k_DOES_PRINT_DETAILED_LOGGING && GLOBAL._aiDesignMode)
          {
             param1 = Math.round(param1);
             _loc3_ = Math.round(_loc3_);
@@ -1450,7 +1446,7 @@ package
             {
                this._mcHit.gotoAndStop("f" + param3);
             }
-            else
+            else if(GLOBAL._aiDesignMode)
             {
                print("BFOUNDATION.ImageCallback building has no hit 1 " + this._type + " frame f" + param3);
             }
@@ -2076,24 +2072,24 @@ package
                      mc.bPost.SetupKey("btn_brag");
                      mc.bPost.addEventListener(MouseEvent.CLICK,BragTotem(this._type));
                      mc.bPost.Highlight = true;
-                     switch(this._type)
+                     switch(this._lvl.Get())
                      {
-                        case 121:
+                        case 1:
                            totemImgUrl = "building-wmitotem1.png";
                            break;
-                        case 122:
+                        case 2:
                            totemImgUrl = "building-wmitotem2.png";
                            break;
-                        case 123:
+                        case 3:
                            totemImgUrl = "building-wmitotem3.png";
                            break;
-                        case 124:
+                        case 4:
                            totemImgUrl = "building-wmitotem4.png";
                            break;
-                        case 125:
+                        case 5:
                            totemImgUrl = "building-wmitotem5.png";
                            break;
-                        case 126:
+                        case 6:
                            totemImgUrl = "building-wmitotem6.png";
                            break;
                         default:
@@ -2895,7 +2891,7 @@ package
       
       public function Downgrade_TOTEM_DEBUG() : void
       {
-         if(this._type != BTOTEM.BTOTEM_BUILDING_TYPE)
+         if(this._type != BTOTEM.BTOTEM_WMI2)
          {
             return;
          }
