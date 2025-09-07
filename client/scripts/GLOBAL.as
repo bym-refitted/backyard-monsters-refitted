@@ -228,8 +228,6 @@ package
       public static var _bCage:CHAMPIONCAGE;
 
       public static var _bTower:BFOUNDATION;
-      
-      public static var _bTotem:BTOTEM;
 
       public static var _bTowerCount:int;
 
@@ -988,7 +986,6 @@ package
          _bTower = null;
          _bMap = null;
          _bStore = null;
-         _bTotem = null;
          _bTownhall = null;
          _bRadio = null;
          _bSiegeLab = null;

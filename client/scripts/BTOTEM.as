@@ -90,21 +90,15 @@ package
       
       public static function RemoveAllFromStorage(param1:Boolean = false, param2:Boolean = false) : void
       {
-         var _loc3_:Number = NaN;
          if(param1)
          {
-            _loc3_ = BTOTEM_WMI1;
-            while(_loc3_ <= 126)
+            if(BASE._buildingsStored["b" + BTOTEM_WMI1])
             {
-               if(BASE._buildingsStored["b" + _loc3_])
-               {
-                  delete BASE._buildingsStored["b" + _loc3_];
-               }
-               if(BASE._buildingsStored["bl" + _loc3_])
-               {
-                  delete BASE._buildingsStored["bl" + _loc3_];
-               }
-               _loc3_++;
+               delete BASE._buildingsStored["b" + BTOTEM_WMI1];
+            }
+            if(BASE._buildingsStored["bl" + BTOTEM_WMI1])
+            {
+               delete BASE._buildingsStored["bl" + BTOTEM_WMI1];
             }
          }
          if(param2)
@@ -201,7 +195,7 @@ package
                currentLevel = 6;
                break;
             default:
-               currentLevel = 0;
+               currentLevel = 6;
                break;
          }
          
@@ -270,7 +264,7 @@ package
                currentLevel = 6;
                break;
             default:
-               currentLevel = 0;
+               currentLevel = 6;
                break;
          }
          
@@ -283,7 +277,7 @@ package
          return storedLevel;
       }
       
-      public static function IsTotem(param1:int, param2:Boolean = true) : Boolean
+      public static function IsTotem(param1:int) : Boolean
       {
          return param1 == BTOTEM_WMI1;
       }
@@ -297,27 +291,24 @@ package
       {
          super.Tick(param1);
          
-         if(_type == BTOTEM_WMI2)
+         var earnedLevel:int;
+         if(_type == BTOTEM_WMI1)
          {
-            var _loc2_:int = EarnedTotemLevel2();
-            if(_lvl.Get() != _loc2_)
-            {
-               _lvl.Set(_loc2_);
-               _hpLvl = _loc2_;
-               // Force visual update
-               // this.Update(true);
-            }
+            earnedLevel = EarnedTotemLevel();
          }
-         else if(_type == BTOTEM_WMI1)
+         else if(_type == BTOTEM_WMI2)
          {
-            var earnedLevel:int = EarnedTotemLevel();
-            if(_lvl.Get() != earnedLevel)
-            {
-               _lvl.Set(earnedLevel);
-               _hpLvl = earnedLevel;
-               // Force visual update to show new totem appearance
-               // this.Update(true);
-            }
+            earnedLevel = EarnedTotemLevel2();
+         }
+         else
+         {
+            return;
+         }
+         
+         if(_lvl.Get() != earnedLevel)
+         {
+            _lvl.Set(earnedLevel);
+            _hpLvl = earnedLevel;
          }
       }
    }

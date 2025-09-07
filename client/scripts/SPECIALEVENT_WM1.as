@@ -902,10 +902,6 @@ package
             ++_round;
             SPECIALEVENT.updateWaveDisplay(wave);
             GLOBAL.StatSet("wmi_wave",_round);
-            if(GLOBAL._bTotem)
-            {
-               GLOBAL._bTotem._renderState = null;
-            }
          }
          else
          {

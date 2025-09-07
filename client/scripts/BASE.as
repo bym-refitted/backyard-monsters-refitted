@@ -453,7 +453,6 @@ package
          GLOBAL._bLocker = null;
          GLOBAL._bMap = null;
          GLOBAL._bStore = null;
-         GLOBAL._bTotem = null;
          UI2.Hide("warning");
          UI2.Hide("scareAway");
          WMATTACK._inProgress = false;
