@@ -278,7 +278,10 @@ package
          var _loc17_:int = 0;
          if(!(param3 & k_TARGETS_DEFENDERS || param3 & k_TARGETS_ATTACKERS))
          {
-            print("haha, you are a fool! Attempting to get creeps in range, but targeting attacking or defending creeps not defined");
+            if(GLOBAL._aiDesignMode)
+            {
+               print("haha, you are a fool! Attempting to get creeps in range, but targeting attacking or defending creeps not defined");
+            }
             return null;
          }
          param2 = PATHING.FromISO(param2);

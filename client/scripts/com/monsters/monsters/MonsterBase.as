@@ -425,7 +425,7 @@ package com.monsters.monsters
             }
             this.healed(param1);
          }
-         if(k_DOES_PRINT_DETAILED_LOGGING)
+         if(k_DOES_PRINT_DETAILED_LOGGING && GLOBAL._aiDesignMode)
          {
             param1 = Math.round(param1);
             _loc3_ = Math.round(_loc3_);

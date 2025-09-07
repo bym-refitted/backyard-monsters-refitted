@@ -23,16 +23,38 @@ package
          }
       }
       
+      public static function HasTotemPlaced(param1:Boolean = false, param2:Boolean = false) : Boolean
+      {
+         var _loc4_:BFOUNDATION = null;
+         var _loc3_:Vector.<Object> = InstanceManager.getInstancesByClass(BDECORATION);
+         for each(_loc4_ in _loc3_)
+         {
+            if(param1 && _loc4_._type == BTOTEM_WMI1)
+            {
+               return true;
+            }
+            if(param2 && _loc4_._type === BTOTEM_WMI2)
+            {
+               return true;
+            }
+         }
+         return false;
+      }
+      
       public static function TotemReward() : void
       {
          if (GLOBAL._flags.activeInvasion == EnumInvasionType.WMI1) 
          {
+            if(HasTotemPlaced(true, false)) return;
+            
             RemoveAllFromStorage(true,false);
             RemoveAllFromYard(true,false);
             InventoryManager.buildingStorageAdd(BTOTEM_WMI1, 1);
          }
          else 
          {
+            if(HasTotemPlaced(false, true)) return;
+         
             RemoveAllFromStorage(false,true);
             RemoveAllFromYard(false,true);
             InventoryManager.buildingStorageAdd(BTOTEM_WMI2,1);
@@ -41,15 +63,23 @@ package
       
       public static function TotemPlace() : void
       {
+         var totemType:int;
          if (GLOBAL._flags.activeInvasion == EnumInvasionType.WMI1) 
          {
-            BUILDINGS._buildingID = BTOTEM_WMI1;
+            totemType = BTOTEM_WMI1;
          }
          else 
          {
-            BUILDINGS._buildingID = BTOTEM_WMI2;
+            totemType = BTOTEM_WMI2;
          }
          
+         // Check if there's actually a totem in storage to place
+         if(!BASE._buildingsStored["b" + totemType] || BASE._buildingsStored["b" + totemType].Get() <= 0)
+         {
+            return;
+         }
+         
+         BUILDINGS._buildingID = totemType;
          BUILDINGS.Show();
          BUILDINGS._mc.SwitchB(4,4,0);
       }
@@ -60,31 +90,25 @@ package
          var _loc1_:Vector.<Object> = InstanceManager.getInstancesByClass(BDECORATION);
          for each(_loc2_ in _loc1_)
          {
-            if(_loc2_._type === BTOTEM_WMI2)
+            if(_loc2_._type === BTOTEM_WMI1 || _loc2_._type === BTOTEM_WMI2)
             {
                _loc2_.Upgraded();
             }
          }
-         if(BASE._buildingsStored["bl" + BTOTEM_WMI2])
+         
+         if(GLOBAL._flags.activeInvasion == EnumInvasionType.WMI1)
          {
-            BASE._buildingsStored["bl" + BTOTEM_WMI2].Add(1);
-         }
-      }
-      
-      public static function DowngradeTotem() : void
-      {
-         var _loc2_:BFOUNDATION = null;
-         var _loc1_:Vector.<Object> = InstanceManager.getInstancesByClass(BDECORATION);
-         for each(_loc2_ in _loc1_)
-         {
-            if(_loc2_._type === BTOTEM_WMI2)
+            if(BASE._buildingsStored["bl" + BTOTEM_WMI1])
             {
-               _loc2_.Downgrade_TOTEM_DEBUG();
+               BASE._buildingsStored["bl" + BTOTEM_WMI1].Set(EarnedTotemLevel());
             }
          }
-         if(BASE._buildingsStored["bl" + BTOTEM_WMI2])
+         else
          {
-            BASE._buildingsStored["bl" + BTOTEM_WMI2].Add(-1);
+            if(BASE._buildingsStored["bl" + BTOTEM_WMI2])
+            {
+               BASE._buildingsStored["bl" + BTOTEM_WMI2].Set(EarnedTotemLevel2());
+            }
          }
       }
       
