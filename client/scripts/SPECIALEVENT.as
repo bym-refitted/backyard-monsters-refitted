@@ -1462,7 +1462,8 @@ package
       // Use server-provided activeInvasion flag to determine which event should be active
       public static function getActiveSpecialEvent() : * 
       {
-         if (GLOBAL._flags.activeInvasion == "wmi1") return SPECIALEVENT_WM1;
+         if (GLOBAL._flags.activeInvasion == EnumInvasionType.WMI1) 
+            return SPECIALEVENT_WM1;
 
          return SPECIALEVENT;
       }
