@@ -295,9 +295,10 @@ package
          var _loc3_:BFOUNDATION = null;
          var a:int = 0;
          var _loc5_:Object = null;
+         var activeEvent:* = SPECIALEVENT.getActiveSpecialEvent();
          if(GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD)
          {
-            SPECIALEVENT_WM1.Tick();
+            activeEvent.Tick();
             if(t % 10 == 0)
             {
                _loc1_ = 0;
@@ -322,11 +323,11 @@ package
             t += 1;
             if(_queued != null && !_inProgress)
             {
-               if(!GLOBAL._catchup && !warningPopup && !_trojan && _queued.warned == 0 && !baseIsRepairing && BASE._isSanctuary <= GLOBAL.Timestamp() && _enabled && !SPECIALEVENT_WM1.EventActive() && !INFERNO_EMERGENCE_EVENT.ShouldRunEvent() && !PLANNER.isOpen())
+               if(!GLOBAL._catchup && !warningPopup && !_trojan && _queued.warned == 0 && !baseIsRepairing && BASE._isSanctuary <= GLOBAL.Timestamp() && _enabled && !activeEvent.EventActive() && !INFERNO_EMERGENCE_EVENT.ShouldRunEvent() && !PLANNER.isOpen())
                {
                   ShowWarning();
                }
-               if(!GLOBAL._catchup && !_trojan && _queued.warned == 1 && !UI2._wildMonsterBar && !_inProgress && !baseIsRepairing && BASE._isSanctuary <= GLOBAL.Timestamp() && _enabled && !SPECIALEVENT_WM1.EventActive() && !INFERNO_EMERGENCE_EVENT.ShouldRunEvent())
+               if(!GLOBAL._catchup && !_trojan && _queued.warned == 1 && !UI2._wildMonsterBar && !_inProgress && !baseIsRepairing && BASE._isSanctuary <= GLOBAL.Timestamp() && _enabled && !activeEvent.EventActive() && !INFERNO_EMERGENCE_EVENT.ShouldRunEvent())
                {
                   UI2.Show("wmbar");
                }
@@ -353,7 +354,7 @@ package
             }
             else if(!_inProgress)
             {
-               if(!GLOBAL._catchup && _history.sessionsSinceLastAttack >= _sessionsBetweenAttacks && !baseIsRepairing && !_processing && GLOBAL.Timestamp() > _history.nextAttack && BASE._baseLevel >= 9 && !_trojan && BASE._isSanctuary <= GLOBAL.Timestamp() && _enabled && !PLANNER.isOpen() && !SPECIALEVENT_WM1.EventActive() && !INFERNO_EMERGENCE_EVENT.ShouldRunEvent())
+               if(!GLOBAL._catchup && _history.sessionsSinceLastAttack >= _sessionsBetweenAttacks && !baseIsRepairing && !_processing && GLOBAL.Timestamp() > _history.nextAttack && BASE._baseLevel >= 9 && !_trojan && BASE._isSanctuary <= GLOBAL.Timestamp() && _enabled && !PLANNER.isOpen() && !activeEvent.EventActive() && !INFERNO_EMERGENCE_EVENT.ShouldRunEvent())
                {
                   _processing = true;
                   Trigger();
@@ -361,7 +362,7 @@ package
             }
             else if(_inProgress)
             {
-               if(CREEPS._creepCount == 0 && (!SPECIALEVENT_WM1.active || SPECIALEVENT_WM1.AllWavesSpawned()))
+               if(CREEPS._creepCount == 0 && (!activeEvent.active || activeEvent.AllWavesSpawned()))
                {
                   _cleanUpFunc();
                }
@@ -375,7 +376,7 @@ package
                         a++;
                      }
                   }
-                  if(a == 0 && (!SPECIALEVENT_WM1.active || SPECIALEVENT_WM1.AllWavesSpawned()))
+                  if(a == 0 && (!activeEvent.active || activeEvent.AllWavesSpawned()))
                   {
                      _cleanUpFunc();
                   }
@@ -958,10 +959,11 @@ package
             MONSTERBAITER._attacking = 0;
             return;
          }
-         if(SPECIALEVENT_WM1.active)
+         var activeEvent = SPECIALEVENT.getActiveSpecialEvent()
+         if(activeEvent.active)
          {
             // Check if base took massive damage (90%+ destruction)
-            if(CREEPS._creepCount > 0 || !SPECIALEVENT_WM1.AllWavesSpawned() || _loc3_ <= _loc4_ * 0.1)
+            if(CREEPS._creepCount > 0 || !activeEvent.AllWavesSpawned() || _loc3_ <= _loc4_ * 0.1)
             {
                ATTACK.PoorDefense();
             }
