@@ -431,7 +431,7 @@ router.post(
 router.get(
   "/api/:apiVersion/player/getmessagetargets",
   apiVersion,
-  // verifyUserAuth,
+  verifyUserAuth,
   debugDataLog("Get message targets"),
   getMessageTargets
 );
