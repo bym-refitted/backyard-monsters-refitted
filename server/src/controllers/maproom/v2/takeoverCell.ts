@@ -121,7 +121,7 @@ export const takeoverCell: KoaController = async (ctx) => {
     ctx.body = { error: 0 };
   } catch (error) {
     ctx.status = Status.BAD_REQUEST;
-    ctx.body = { error: 1 };
+    ctx.body = { error: "The server attempted to take over this cell but failed unexpectedly." };
     errorLog("Error taking over cell:", error);
   }
 };
