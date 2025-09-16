@@ -1,8 +1,6 @@
 import { devConfig } from "../config/DevSettings";
-import {
-  getActiveInvasion,
-  setupInvasionEvent,
-} from "../services/events/setupInvasionEvent";
+import { getActiveInvasion } from "../services/events/wmi/getActiveInvasion";
+import { setupInvasionEvent } from "../services/events/wmi/setupInvasionEvent";
 
 const activeInvasion = getActiveInvasion();
 const invasionPhases = setupInvasionEvent(activeInvasion).phases;
