@@ -1,5 +1,5 @@
-import { devConfig } from "../../config/DevSettings";
-import { Invasion } from "../../enums/Invasion";
+import { devConfig } from "../../../config/DevSettings";
+import { Invasion } from "../../../enums/Invasion";
 
 interface InvasionEventPhases {
   invasionpop: number;
@@ -22,15 +22,15 @@ type InvasionPop = Pick<InvasionEventDates, "start" | "end" | "extension"> & {
 };
 
 /**
- * Calculates and returns the timing and phase information for the
- * Wild Monster Invasion event. Determines the event's start, end,
- * and extension periods based on the first day of the current month
- * (or dev override), and computes the current phase based on the
- * present time.
+ * Sets up invasion event dates and phases based on invasion type.
+ * Handles different invasions (WMI1, WMI2) with dev overrides and calculates
+ * start, end, and extension dates. Creates a 7-day event period starting on the 10th
+ * of the appropriate month based on invasion type scheduling.
  *
- * @returns {InvasionEventResult} Object containing event dates and phases.
+ * @param {Invasion} type - The type of invasion to set up (WMI1, WMI2, or default)
+ * @returns {InvasionEventResult} Object containing timestamps for event dates and calculated phase numbers
  */
-export const setupInvasionEvent = (type?: Invasion): InvasionEventResult => {
+export const setupInvasionEvent = (type: Invasion): InvasionEventResult => {
   const now = new Date();
   let startDate: Date;
 
@@ -62,7 +62,6 @@ export const setupInvasionEvent = (type?: Invasion): InvasionEventResult => {
   const extensionDate = new Date(endDate);
   extensionDate.setDate(endDate.getDate());
 
-  // Timstamps
   const current = Math.floor(now.getTime() / 1000);
   const start = Math.floor(startDate.getTime() / 1000);
   const end = Math.floor(endDate.getTime() / 1000);
@@ -78,23 +77,13 @@ export const setupInvasionEvent = (type?: Invasion): InvasionEventResult => {
 };
 
 /**
- * Determines the current phase of the Wild Monster Invasion event
- * based on the current time relative to the event timeline.
+ * Calculates invasion phase based on current timestamp relative to event dates.
+ * Returns different phase numbers: 1-3 for pre-invasion countdown (based on days remaining),
+ * 4 for active invasion period, 5 for extension period, and -1 for post-event.
+ * Uses day-based thresholds to determine which phase the invasion is currently in.
  *
- * - Phase 1: 7+ days before event start
- * - Phase 2: 4-6 days before event start
- * - Phase 3: 1-3 days before event start
- * - Phase 4: During main event period
- * - Phase 5: During extension period
- * - Phase -1: After event has completely ended
- *
- * @param {InvasionPop} params - Object containing timing information
- * @param {number} params.current - Current time
- * @param {number} params.start - Event start time
- * @param {number} params.end - Event end time
- * @param {number} params.extension - Extension end time
- *
- * @returns {number} Phase integer representing the current event state
+ * @param {InvasionPop} params - Object containing current timestamp and event start/end/extension timestamps
+ * @returns {number} Phase number indicating invasion status (-1, 0-5)
  */
 const getInvasionPop = ({ current, start, end, extension }: InvasionPop) => {
   const SECONDS_PER_DAY = 86400;
@@ -111,21 +100,20 @@ const getInvasionPop = ({ current, start, end, extension }: InvasionPop) => {
   return -1;
 };
 
+/**
+ * Gets the next invasion date based on month parity scheduling system.
+ * WMI1 invasions occur in odd months, WMI2 in even months, always on the 10th.
+ * If current month matches the parity, returns 10th of current month, otherwise
+ * returns 10th of next month to maintain the alternating schedule.
+ *
+ * @param {Date} now - Current date to calculate from
+ * @param {0 | 1} monthParity - Month parity (0 for even months, 1 for odd months)
+ * @returns {Date} Next invasion start date set to the 10th of the appropriate month
+ */
 const getNextInvasionDate = (now: Date, monthParity: 0 | 1): Date => {
   const currentMonth = now.getMonth() + 1;
 
   if (currentMonth % 2 === monthParity)
     return new Date(now.getFullYear(), currentMonth - 1, 10);
-  else 
-    return new Date(now.getFullYear(), currentMonth, 10);
-};
-
-// Determine which invasion event should be active
-export const getActiveInvasion = (): Invasion => {
-  if (devConfig.wmi1StartNowOverride) return Invasion.WMI1;
-
-  if (devConfig.wmi2StartNowOverride) return Invasion.WMI2;
-
-  const currentMonth = new Date().getMonth() + 1;
-  return currentMonth % 2 === 1 ? Invasion.WMI1 : Invasion.WMI2;
+  else return new Date(now.getFullYear(), currentMonth, 10);
 };
