@@ -73,6 +73,9 @@ export class User {
   @Property({ type: "json", nullable: true })
   bookmarks?: FieldData;
 
+  @Property({ type: "json", defaultRaw: "'[]'::jsonb" })
+  blockedUsers: number[] = [];
+
   @FrontendKey
   @Property({ default: 0 })
   _isFan?: number;
