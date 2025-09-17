@@ -45,7 +45,7 @@ package
 
       public static var cdnUrl:String = "http://localhost:3001/";
 
-      public static var apiVersionSuffix:String = "v1.3.7-beta";
+      public static var apiVersionSuffix:String = "v1.3.9-beta";
 
       public static var connectionCounter:int;
 
@@ -228,6 +228,8 @@ package
       public static var _bCage:CHAMPIONCAGE;
 
       public static var _bTower:BFOUNDATION;
+      
+      public static var _bTotem:BTOTEM;
 
       public static var _bTowerCount:int;
 
@@ -356,14 +358,6 @@ package
       public static var _maxLoops:int = 800;
 
       public static var _loopsBanked:int = 0;
-      
-      // Performance optimizations: Cache defense structures and limit excessive looping
-      private static var _cachedTowers:Vector.<Object> = null;
-      private static var _cachedTraps:Vector.<Object> = null;
-      private static var _cachedBunkers:Vector.<Object> = null;
-      private static var _cacheUpdateCounter:int = 0;
-      private static const CACHE_UPDATE_INTERVAL:int = 30; // Update defense cache every 30 frames (~0.5 seconds)
-      private static const MAX_SAFE_LOOPS:int = 8; // Drastically reduce max loops to prevent lag spikes
 
       public static var lastTime:Number;
 
@@ -988,6 +982,7 @@ package
          _bTower = null;
          _bMap = null;
          _bStore = null;
+         _bTotem = null;
          _bTownhall = null;
          _bRadio = null;
          _bSiegeLab = null;
@@ -1310,11 +1305,9 @@ package
                   }
                   _loopsBanked += 2 / 25 * (_loc3_ - lastTime);
                   _loops = _loopsBanked;
-                  
-                  // Performance optimization: Drastically limit max loops to prevent lag spikes
-                  if (_loops > MAX_SAFE_LOOPS)
+                  if (_loops > _maxLoops)
                   {
-                     _loops = MAX_SAFE_LOOPS;
+                     _loops = _maxLoops;
                   }
                }
                else
@@ -1325,16 +1318,6 @@ package
                _loc5_ = int(getTimer());
                if (!MapRoomManager.instance.isOpen)
                {
-                  // Performance optimization: Update defense structure cache periodically instead of every loop
-                  _cacheUpdateCounter++;
-                  if(_cacheUpdateCounter >= CACHE_UPDATE_INTERVAL || _cachedTowers == null)
-                  {
-                     _cacheUpdateCounter = 0;
-                     _cachedTowers = InstanceManager.getInstancesByClass(BTOWER);
-                     _cachedTraps = InstanceManager.getInstancesByClass(BTRAP);
-                     _cachedBunkers = InstanceManager.getInstancesByClass(Bunker);
-                  }
-                  
                   _loc7_ = 0;
                   while (_loc7_ < _loops)
                   {
@@ -1343,22 +1326,21 @@ package
                      {
                         _render = true;
                      }
-                     
-                     // Performance optimization: Only process combat if there are active units
                      if (CREEPS._creepCount > 0 || Boolean(SiegeWeapons.activeWeapon))
                      {
                         CREEPS.Tick();
-                        
-                        // Performance optimization: Use cached defense structures
-                        for each (_loc15_ in _cachedTowers)
+                        _loc10_ = InstanceManager.getInstancesByClass(BTOWER);
+                        _loc11_ = InstanceManager.getInstancesByClass(BTRAP);
+                        _loc12_ = InstanceManager.getInstancesByClass(Bunker);
+                        for each (_loc15_ in _loc10_)
                         {
                            _loc15_.TickAttack();
                         }
-                        for each (_loc14_ in _cachedTraps)
+                        for each (_loc14_ in _loc11_)
                         {
                            _loc14_.TickAttack();
                         }
-                        for each (_loc13_ in _cachedBunkers)
+                        for each (_loc13_ in _loc12_)
                         {
                            _loc13_.TickAttack();
                         }
@@ -1456,15 +1438,6 @@ package
             lastTime = 0;
             _loops = 4;
          }
-      }
-
-      // Performance optimization: Function to refresh defense structure cache
-      public static function RefreshDefenseCache():void
-      {
-         _cachedTowers = InstanceManager.getInstancesByClass(BTOWER);
-         _cachedTraps = InstanceManager.getInstancesByClass(BTRAP);
-         _cachedBunkers = InstanceManager.getInstancesByClass(Bunker);
-         _cacheUpdateCounter = 0;
       }
 
       public static function LogFPS():void

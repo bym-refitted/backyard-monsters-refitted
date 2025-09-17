@@ -94,7 +94,7 @@ package com.monsters.monsters.components.abilities
             _loc3_ = param1[_loc2_];
             if(!(_loc4_ = _loc3_.getComponentByName(name)))
             {
-               _loc3_.addComponent(new Enrage(this.m_speedMultiplier,this.m_armorMultiplier),name);
+               _loc3_.addComponent(new Enrage(this.m_speedMultiplier,this.m_armorMultiplier,owner._creatureID),name);
                this.m_enragedFriends.push(_loc3_);
             }
             _loc2_++;

@@ -43,6 +43,7 @@ export const infernoModeAttack = async (user: User, baseid: string) => {
     friend: 0,
     count: 1,
     starttime: getCurrentDateTime(),
+    seen: false
   };
 
   save.attacks.push(attackDetails);

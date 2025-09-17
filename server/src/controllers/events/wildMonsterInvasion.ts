@@ -1,6 +1,6 @@
 import { Invasion } from "../../enums/Invasion";
 import { Status } from "../../enums/StatusCodes";
-import { setupInvasionEvent } from "../../services/events/setupInvasionEvent";
+import { setupInvasionEvent } from "../../services/events/wmi/setupInvasionEvent";
 import { KoaController } from "../../utils/KoaController";
 
 export const wildMonsterInvasion: KoaController = async (ctx) => {

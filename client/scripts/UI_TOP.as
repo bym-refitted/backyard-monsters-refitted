@@ -1398,6 +1398,15 @@ package
             }
             else if(label == "alert")
             {
+               if (BASE._currentAttacks && BASE._currentAttacks.length > 0)
+               {
+                  for each (var attack:Object in BASE._currentAttacks)
+                  {
+                     attack.seen = true;
+                  }
+                  BASE._attacksModified = true;
+                  BASE.Save();
+               }
                POPUPS.Show("alerts");
             }
             else if(label == "invite")

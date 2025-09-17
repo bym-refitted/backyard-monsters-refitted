@@ -118,9 +118,8 @@ export const baseLoad: KoaController = async (ctx) => {
     ctx.status = Status.OK;
     ctx.body = responseBody;
   } catch (err) {
-    errorLog(`Failed to load base`, err);
-
     ctx.status = Status.INTERNAL_SERVER_ERROR;
-    ctx.body = { error: 1 };
+    ctx.body = { error: "The server failed to load this base." };
+    errorLog(`Failed to load base`, err);
   }
 };
