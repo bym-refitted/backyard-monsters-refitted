@@ -22,6 +22,7 @@ export interface AttackDetails {
   friend: number;
   count: number;
   starttime: number;
+  seen: boolean;
 }
 
 /**
@@ -37,7 +38,6 @@ export const baseModeAttack = async (user: User, baseid: string) => {
 
   if (!save) save = wildMonsterSave(baseid);
 
-  // Store the 100 most recent attacks
   if (save.attacks.length > 3) {
     save.attacks = save.attacks.slice(-2);
   }
@@ -50,6 +50,7 @@ export const baseModeAttack = async (user: User, baseid: string) => {
     friend: 0,
     count: 1,
     starttime: getCurrentDateTime(),
+    seen: false,
   };
 
   if (save.type != BaseType.TRIBE) save.attacks.push(attackDetails);
