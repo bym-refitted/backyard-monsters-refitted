@@ -1,13 +1,12 @@
 import { Status } from "../../enums/StatusCodes";
-import { loadFailureErr, mailboxErr } from "../../errors/errors";
+import { mailboxErr } from "../../errors/errors";
 import { User } from "../../models/user.model";
 import { KoaController } from "../../utils/KoaController";
 
-import { errorLog } from "../../utils/logger";
 import { ORMContext } from "../../server";
 import { Thread } from "../../models/thread.model";
-import { Message } from "../../models/message.model";
 import { FilterFrontendKeys } from "../../utils/FrontendKey";
+import { errorLog } from "../../utils/logger";
 
 /**
  * Controller to get threads for mailbox.
@@ -31,7 +30,15 @@ export const getMessageThreads: KoaController = async (ctx) => {
       { populate: ["lastMessage"] }
     );
 
-    const threadMessages = threads.map((thread, index) => {
+    const blockedUsers = new Set(user.blockedUsers);
+
+    // Filter out threads with blocked users and ensure they have lastMessage
+    const filteredThreads = threads.filter((thread) => {
+      const targetUser = thread.userid === user.userid ? thread.targetid : thread.userid;
+      return thread.lastMessage && !blockedUsers.has(targetUser);
+    });
+
+    const threadMessages = filteredThreads.map((thread, index) => {
       const { lastMessage } = thread;
       const isSender = lastMessage.userid === user.userid;
 
@@ -39,7 +46,9 @@ export const getMessageThreads: KoaController = async (ctx) => {
 
       lastMessage.messageid = index.toString();
       lastMessage.messagecount = thread.messagecount;
+      
       lastMessage.userid = isSender ? lastMessage.targetid : lastMessage.userid;
+      lastMessage.reportid = "0";
 
       return lastMessage;
     });
@@ -54,6 +63,7 @@ export const getMessageThreads: KoaController = async (ctx) => {
     ctx.status = Status.OK;
     ctx.body = { error: 0, threads: threadsList };
   } catch (err) {
+    errorLog("Error getting message threads:", err);
     throw mailboxErr();
   }
 };

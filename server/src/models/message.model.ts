@@ -59,9 +59,9 @@ export class Message {
   @FrontendKey
   messagecount!: number;
 
-  @Property({ nullable: true })
+  @Property({ default: "0" })
   @FrontendKey
-  reportid: string;
+  reportid: string = "0";
 
   @Property({ nullable: true })
   @FrontendKey
