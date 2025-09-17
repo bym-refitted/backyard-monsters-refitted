@@ -4,7 +4,6 @@ import { ORMContext } from "../../../../server";
 import { BaseMode } from "../../../../enums/Base";
 import { logging } from "../../../../utils/logger";
 import { balancedReward } from "../../../../services/base/balancedReward";
-import { Report } from "../../../../models/report.model";
 import { logReport } from "../../../../services/base/reportManager";
 import { getCurrentDateTime } from "../../../../utils/getCurrentDateTime";
 
@@ -30,11 +29,6 @@ export const baseModeBuild = async (user: User, baseid: string) => {
   // Default mode only runs once on initial base load
   if (baseid === BaseMode.DEFAULT) {
     await balancedReward(userSave);
-
-    // Remove attacks less than 48 hours old
-    userSave.attacks = userSave.attacks.filter((attack) => {
-      return getCurrentDateTime() - attack.starttime < 48 * 60 * 60;
-    });
 
     await ORMContext.em.persistAndFlush(userSave);
     return userSave;

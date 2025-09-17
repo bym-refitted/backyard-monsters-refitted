@@ -76,6 +76,10 @@ package
       public static var _attackerArray:Array;
 
       public static var _attackerNameArray:Array;
+      
+      public static var _currentAttacks:Array;
+      
+      public static var _attacksModified:Boolean;
 
       public static var _deltaResources:Object;
 
@@ -346,6 +350,8 @@ package
          _saving = false;
          _paging = false;
          _saveErrors = 0;
+         _currentAttacks = [];
+         _attacksModified = false;
          _pageErrors = 0;
          _lastSaved = 0;
          _infernoSaveLoad = false;
@@ -1381,6 +1387,7 @@ package
                _attackerNameArray = [];
                if (GLOBAL.mode != GLOBAL.e_BASE_MODE.WMATTACK && GLOBAL.mode != GLOBAL.e_BASE_MODE.WMVIEW && Boolean(serverData.attacks))
                {
+                  _currentAttacks = serverData.attacks;
                   TauntB = function(param1:int, param2:int):Function
                   {
                      var n:int = param1;
@@ -1395,6 +1402,8 @@ package
                   attackCount = 0;
                   for each (attackObj in attacksArr)
                   {
+                     if (attackObj.seen) continue;
+                     
                      attackCount++;
                      found = false;
                      for each (listed in _attackerArray)
@@ -3778,6 +3787,10 @@ package
          saveData["monsterbaiter"] = JSON.encode(MONSTERBAITER.Export());
          saveData["version"] = GLOBAL._version.Get();
          saveData["aiattacks"] = JSON.encode(WMATTACK.Export());
+         if (_attacksModified) {
+            saveData["attacks"] = JSON.encode(_currentAttacks);
+            _attacksModified = false;
+         }
          saveData["effects"] = EFFECTS._effectsJSON;
          saveData["empirevalue"] = CalcBaseValue();
          saveData["inventory"] = STORE.InventoryExport();
