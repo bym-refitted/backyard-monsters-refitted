@@ -5,6 +5,7 @@ import { AttackLogs } from "../../models/attacklogs.model";
 import { ORMContext, redisClient } from "../../server";
 import { KoaController } from "../../utils/KoaController";
 import { AttackLogFilter } from "../../enums/AttackLogFilter";
+import { User } from "../../models/user.model";
 
 /**
  * Time-to-live (TTL) for attack logs cache in Redis.
@@ -14,21 +15,15 @@ import { AttackLogFilter } from "../../enums/AttackLogFilter";
 const AL_CACHE_TTL = 1800;
 
 /**
- * Controller to handle the retrieval of attack logs based on user ID and filter type.
+ * Controller to handle the retrieval of attack logs based on authenticated user ID and filter type.
  *
  * @param {Koa.Context} ctx - The Koa context object.
  * @returns {Promise<void>} - A promise that resolves when the operation is complete.
  */
 export const getAttackLogs: KoaController = async (ctx) => {
-  const { userid, filter } = ctx.query;
+  const { filter } = ctx.query;
+  const { userid }: User = ctx.authUser;
 
-  if (!userid) {
-    ctx.status = Status.BAD_REQUEST;
-    ctx.body = { error: "userid is required" };
-    return;
-  }
-
-  const parsedUserId = parseInt(userid as string);
   const filterType = (filter as string) || "both";
   const cacheKey = `attackLogs:${userid}:${filter}`;
 
@@ -45,19 +40,19 @@ export const getAttackLogs: KoaController = async (ctx) => {
 
     switch (filterType) {
       case AttackLogFilter.MY_ATTACKS:
-        whereCondition = { attacker_userid: parsedUserId };
+        whereCondition = { attacker_userid: userid };
         break;
 
       case AttackLogFilter.MY_DEFENCES:
-        whereCondition = { defender_userid: parsedUserId };
+        whereCondition = { defender_userid: userid };
         break;
 
       case AttackLogFilter.BOTH:
       default:
         whereCondition = {
           $or: [
-            { attacker_userid: parsedUserId },
-            { defender_userid: parsedUserId },
+            { attacker_userid: userid },
+            { defender_userid: userid },
           ],
         };
         break;
