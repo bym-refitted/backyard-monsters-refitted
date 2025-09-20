@@ -14,6 +14,7 @@ import { User } from "./user.model";
 import { WorldMapCell } from "./worldmapcell.model";
 import { AttackDetails } from "../controllers/base/load/modes/baseModeAttack";
 import { BaseType } from "../enums/Base";
+import { Stats } from "../services/events/wmi/invasionUtils";
 
 export interface FieldData {
   [key: string | number]: any;
@@ -287,7 +288,7 @@ export class Save {
 
   @FrontendKey
   @Property({ type: "json", nullable: true })
-  stats?: FieldData = {};
+  stats?: Stats = {};
 
   @FrontendKey
   @Property({ type: "json", nullable: true })
