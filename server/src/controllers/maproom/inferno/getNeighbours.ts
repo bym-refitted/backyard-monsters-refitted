@@ -183,6 +183,7 @@ const findNeighbours = async (user: User): Promise<NeighbourData[]> => {
 /**
  * Updates and overrides dynamic data which changes frequently between neighbours.
  * This function runs every time getNeighbours controller is called to ensure up-to-date information.
+ * Filters out neighbours whose saves no longer exist in the database.
  *
  * @param {NeighbourData[]} cachedNeighbours - The cached neighbour data
  * @returns {Promise<NeighbourData[]>} - Updated neighbour data with current attack permissions
@@ -203,23 +204,25 @@ const updateNeighbourData = async (cachedNeighbours: NeighbourData[]) => {
   // Update protection status for all saves
   for (const save of neighbourSaves) await damageProtection(save);
 
-  return cachedNeighbours.map((neighbour) => {
-    const currentSave = saveMap.get(neighbour.userid);
+  return cachedNeighbours
+    .filter((neighbour) => saveMap.has(neighbour.userid))
+    .map((neighbour) => {
+      const currentSave = saveMap.get(neighbour.userid);
 
-    // TODO: Add the rest of the cases here for attack permissions
-    // e.g. level too low, starting protection, etc
-    if (currentSave.protected === 1) {
-      neighbour.attackpermitted = AttackPermission.DAMAGE_PROTECTION;
-    } else {
-      neighbour.attackpermitted = AttackPermission.ATTACKABLE;
-    }
+      // TODO: Add the rest of the cases here for attack permissions
+      // e.g. level too low, starting protection, etc
+      if (currentSave.protected === 1) {
+        neighbour.attackpermitted = AttackPermission.DAMAGE_PROTECTION;
+      } else {
+        neighbour.attackpermitted = AttackPermission.ATTACKABLE;
+      }
 
-    neighbour.level = currentSave.level;
-    neighbour.saved = currentSave.savetime;
-    neighbour.online = getCurrentDateTime() - currentSave.savetime <= 60;
+      neighbour.level = currentSave.level;
+      neighbour.saved = currentSave.savetime;
+      neighbour.online = getCurrentDateTime() - currentSave.savetime <= 60;
 
-    return neighbour;
-  });
+      return neighbour;
+    });
 };
 
 /**
