@@ -52,8 +52,8 @@ export const getNeighbours: KoaController = async (ctx) => {
       currentDate.getTime() - CACHE_VALIDITY_HOURS * 60 * 60 * 1000
     );
 
-    // Check if we need to fetch new neighbours
-    const getNewNeighbours = isCacheExpired(infernoMaproom, cacheExpiry);
+    // Check if we need to fetch new neighbours (cache expired or array empty)
+    const getNewNeighbours = isCacheExpired(infernoMaproom, cacheExpiry) || infernoMaproom.neighbors.length === 0;
 
     if (getNewNeighbours) {
       const foundNeighbours = await findNeighbours(user);
