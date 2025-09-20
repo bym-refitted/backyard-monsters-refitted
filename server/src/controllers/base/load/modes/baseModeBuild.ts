@@ -5,7 +5,8 @@ import { BaseMode } from "../../../../enums/Base";
 import { logging } from "../../../../utils/logger";
 import { balancedReward } from "../../../../services/base/balancedReward";
 import { logReport } from "../../../../services/base/reportManager";
-import { getCurrentDateTime } from "../../../../utils/getCurrentDateTime";
+import { resetWaves } from "../../../../services/events/wmi/invasionUtils";
+import { getActiveInvasion } from "../../../../services/events/wmi/getActiveInvasion";
 
 /**
  * Retrieves the save data for the user based on the provided `baseid`.
@@ -28,6 +29,9 @@ export const baseModeBuild = async (user: User, baseid: string) => {
 
   // Default mode only runs once on initial base load
   if (baseid === BaseMode.DEFAULT) {
+    const activeInvasion = getActiveInvasion();
+    if (userSave.stats?.other) resetWaves(userSave.stats.other, activeInvasion);
+
     await balancedReward(userSave);
 
     await ORMContext.em.persistAndFlush(userSave);
