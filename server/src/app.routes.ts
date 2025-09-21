@@ -59,14 +59,6 @@ const registerLimiter = RateLimit.middleware({
 });
 
 /**
- * Rate limit for leaderboard
- */
-const leaderboardLimiter = RateLimit.middleware({
-  interval: { min: process.env.ENV === Env.PROD ? 60 : 1 },
-  max: 25,
-});
-
-/**
  * All applcation routes
  */
 const router = new Router();

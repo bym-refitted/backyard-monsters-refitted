@@ -7,7 +7,6 @@ import { emailUniqueErr, usernameUniqueErr } from "../../errors/errors";
 import { logging } from "../../utils/logger";
 import { Status } from "../../enums/StatusCodes";
 import { UserRegistrationSchema } from "../../zod/AuthSchemas";
-import { Auth } from "../../enums/Env";
 
 /**
  * Controller to handle user registration.

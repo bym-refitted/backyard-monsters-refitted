@@ -1,4 +1,4 @@
-import JWT, { JsonWebTokenError, TokenExpiredError } from "jsonwebtoken";
+import { JsonWebTokenError, TokenExpiredError } from "jsonwebtoken";
 import bcrypt from "bcrypt";
 
 import { Status } from "../../enums/StatusCodes";

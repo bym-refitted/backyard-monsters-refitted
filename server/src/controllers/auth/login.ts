@@ -13,7 +13,6 @@ import {
 import { logging } from "../../utils/logger";
 import { BymJwtPayload, verifyJwtToken } from "../../middleware/auth";
 import { Status } from "../../enums/StatusCodes";
-import { Context } from "koa";
 import { UserLoginSchema } from "../../zod/AuthSchemas";
 import { Env } from "../../enums/Env";
 import type { StringValue } from "ms";
