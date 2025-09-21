@@ -1,5 +1,5 @@
 <p align="center">
-  <img width="80%" src="./server/public/assets/popups/base-destroyed.png">
+  <img width="80%" src="./server/public/assets/popups/outpost-takeover.png">
 </p>
 
 <br />
