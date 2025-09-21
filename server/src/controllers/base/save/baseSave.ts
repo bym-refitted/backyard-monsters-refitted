@@ -17,7 +17,6 @@ import { permissionErr, saveFailureErr } from "../../../errors/errors";
 import { attackLootHandler } from "./handlers/attackLootHandler";
 import { monsterUpdateHandler } from "./handlers/monsterUpdateHandler";
 import { ClientSafeError } from "../../../middleware/clientSafeError";
-import { championHandler } from "./handlers/championHandler";
 import { validateSave } from "../../../scripts/anticheat/anticheat";
 import { updateResources } from "../../../services/base/updateResources";
 import { buildingDataHandler } from "./handlers/buildingDataHandler";

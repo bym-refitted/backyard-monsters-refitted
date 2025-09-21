@@ -5,7 +5,6 @@ import { User } from "../../../models/user.model";
 import { WorldMapCell } from "../../../models/worldmapcell.model";
 import { ORMContext } from "../../../server";
 import { logReport } from "../../base/reportManager";
-import { Report } from "../../../models/report.model";
 
 /**
  * Validates if the target is within the attack range of the user's main base or any of their outposts.
