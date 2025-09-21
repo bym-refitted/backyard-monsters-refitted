@@ -2923,6 +2923,18 @@ package
             {
                delete _storeData.HOD3;
             }
+            if(Boolean(_storeData.HODI) && _storeData.HODI.e < GLOBAL.Timestamp())
+            {
+               delete _storeData.HODI;
+            }
+            if(Boolean(_storeData.HOD2I) && _storeData.HOD2I.e < GLOBAL.Timestamp())
+            {
+               delete _storeData.HOD2I;
+            }
+            if(Boolean(_storeData.HOD3I) && _storeData.HOD3I.e < GLOBAL.Timestamp())
+            {
+               delete _storeData.HOD3I;
+            }
             GLOBAL._hatcheryOverdrivePower.Set(0);
             if(_storeData.HOD3)
             {

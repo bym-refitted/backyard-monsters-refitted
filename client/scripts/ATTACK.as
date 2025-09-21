@@ -1229,6 +1229,12 @@ package
             }
             POPUPS.Next();
          };
+         var activeEvent:* = SPECIALEVENT.getActiveSpecialEvent()
+         if(activeEvent.active)
+         {
+            activeEvent.EndRound(true);
+            return;
+         }
          if(INFERNO_EMERGENCE_EVENT.isAttackActive)
          {
             INFERNO_EMERGENCE_POPUPS.ShowStagePassed(INFERNOPORTAL.building._lvl.Get());

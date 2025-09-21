@@ -30,6 +30,19 @@ package
       
       public static const _CELLSIZE:int = 100;
        
+      private static var _gridKeyCache:Object = {};
+      
+      private static var _cartesianCache:Object = {};
+      
+      // Performance tracking and cache management
+      private static var _cacheCleanupCounter:int = 0;
+      private static const CACHE_CLEANUP_INTERVAL:int = 1800; // Clean cache every 30 seconds at 60fps
+      private static var _creepCellMoveCallCount:int = 0;
+      
+      // Range query result caching
+      private static var _rangeQueryCache:Object = {};
+      private static var _rangeQueryFrameStamp:Object = {};
+      private static var _currentFrame:int = 0;
       
       public function Targeting()
       {
@@ -42,11 +55,54 @@ package
          _creepCells = {};
          _deadCreepCells = {};
       }
+
+      /*
+       * Optimized grid key generation with coordinate transformation caching.
+       * Eliminates redundant ISO/Cartesian conversions and string concatenations.
+      */
+      private static function getGridKey(isoPoint:Point):String {
+         // Create cache key for ISO coordinates (rounded to avoid floating point issues)
+         var cacheKey:String = int(isoPoint.x) + "_" + int(isoPoint.y);
+         
+         // Check if we already calculated this grid position
+         var cachedGridKey:String = _gridKeyCache[cacheKey];
+         if(cachedGridKey) {
+            return cachedGridKey;
+         }
+         
+         // Check if we already have cartesian conversion cached
+         var cartesian:Point = _cartesianCache[cacheKey];
+         if(!cartesian) {
+            cartesian = GRID.FromISO(isoPoint.x, isoPoint.y);
+            _cartesianCache[cacheKey] = cartesian;
+         }
+         
+         // Calculate grid key once
+         var gridKey:String = "node" + int(cartesian.x / _CELLSIZE) + "|" + int(cartesian.y / _CELLSIZE);
+         _gridKeyCache[cacheKey] = gridKey;
+         
+         return gridKey;
+      }
+
+      /*
+       * Clears coordinate and grid caches to prevent memory growth.
+      */
+      public static function clearGridCaches():void {
+         _gridKeyCache = {};
+         _cartesianCache = {};
+      }
+      
+      /*
+       * Reset performance counters
+      */
+      public static function resetPerformanceStats():void {
+         _creepCellMoveCallCount = 0;
+      }
       
       public static function CreepCellAdd(param1:Point, param2:String, param3:MonsterBase) : String
       {
-         param1 = GRID.FromISO(param1.x,param1.y);
-         var _loc4_:String = "node" + int(param1.x / _CELLSIZE) + "|" + int(param1.y / _CELLSIZE);
+         var _loc4_:String = getGridKey(param1);
+
          var _loc5_:Object;
          if(!(_loc5_ = param3.dead ? _deadCreepCells : _creepCells)[_loc4_])
          {
@@ -58,12 +114,23 @@ package
       
       public static function CreepCellMove(param1:Point, param2:String, param3:MonsterBase, param4:String) : String
       {
-         param1 = GRID.FromISO(param1.x,param1.y);
-         var _loc5_:String;
-         if((_loc5_ = "node" + int(param1.x / _CELLSIZE) + "|" + int(param1.y / _CELLSIZE)) != param4)
+         // Performance tracking
+         _creepCellMoveCallCount++;
+         
+         // Periodic cache cleanup to prevent memory growth
+         _cacheCleanupCounter++;
+         if(_cacheCleanupCounter >= CACHE_CLEANUP_INTERVAL)
          {
-            CreepCellDelete(param2,param4,param3.dead);
-            return CreepCellAdd(GRID.ToISO(param1.x,param1.y,0),param2,param3);
+            _cacheCleanupCounter = 0;
+            clearGridCaches();
+         }
+         
+         var _loc5_:String = getGridKey(param1);
+         
+         if(_loc5_ != param4)
+         {
+            CreepCellDelete(param2, param4, param3.dead);
+            return CreepCellAdd(param1, param2, param3);
          }
          return "";
       }
@@ -192,6 +259,16 @@ package
       
       public static function getCreepsInRange(param1:Number, param2:Point, param3:int = 0, param4:MonsterBase = null) : Array
       {
+         // Performance optimization: Cache range query results within the same frame
+         _currentFrame = GLOBAL._frameNumber;
+         var cacheKey:String = param1 + "_" + int(param2.x) + "_" + int(param2.y) + "_" + param3 + "_" + (param4 ? param4._id : "null");
+         
+         // Check if we have a cached result from this frame
+         if(_rangeQueryCache[cacheKey] && _rangeQueryFrameStamp[cacheKey] == _currentFrame)
+         {
+            return _rangeQueryCache[cacheKey];
+         }
+         
          var _loc11_:int = 0;
          var _loc12_:String = null;
          var _loc13_:String = null;
@@ -201,7 +278,10 @@ package
          var _loc17_:int = 0;
          if(!(param3 & k_TARGETS_DEFENDERS || param3 & k_TARGETS_ATTACKERS))
          {
-            print("haha, you are a fool! Attempting to get creeps in range, but targeting attacking or defending creeps not defined");
+            if(GLOBAL._aiDesignMode)
+            {
+               print("haha, you are a fool! Attempting to get creeps in range, but targeting attacking or defending creeps not defined");
+            }
             return null;
          }
          param2 = PATHING.FromISO(param2);
@@ -238,6 +318,24 @@ package
             }
             _loc10_++;
          }
+         
+         // Cache the result for this frame
+         _rangeQueryCache[cacheKey] = _loc8_;
+         _rangeQueryFrameStamp[cacheKey] = _currentFrame;
+         
+         // Periodic cleanup of old cache entries (keep last 10 frames worth)
+         if(_currentFrame % 300 == 0) // Every 5 seconds at 60fps
+         {
+            for(var oldCacheKey:String in _rangeQueryFrameStamp)
+            {
+               if(_rangeQueryFrameStamp[oldCacheKey] < _currentFrame - 10)
+               {
+                  delete _rangeQueryCache[oldCacheKey];
+                  delete _rangeQueryFrameStamp[oldCacheKey];
+               }
+            }
+         }
+         
          return _loc8_;
       }
       

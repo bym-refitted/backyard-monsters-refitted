@@ -18,11 +18,23 @@ package
          {
             bReturn.SetupKey("wmi_surrenderbtn");
          }
+         var activeEvent:* = SPECIALEVENT.getActiveSpecialEvent();
+         if(activeEvent.active)
+         {
+            bReturn.SetupKey("wmi_surrenderbtn");
+         }
          bReturn.addEventListener(MouseEvent.CLICK,this.onReturnDown);
       }
       
       private function onReturnDown(param1:MouseEvent) : void
       {
+         var activeEvent:* = SPECIALEVENT.getActiveSpecialEvent();
+         var _loc2_:Boolean = activeEvent.active;
+         if(_loc2_)
+         {
+            activeEvent.Surrender();
+            return;
+         }
          dispatchEvent(new Event("scareAway"));
       }
       

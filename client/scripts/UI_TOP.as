@@ -716,7 +716,7 @@ package
       public function addResourceBar(param1:DisplayObject) : void
       {
          var _loc2_:MovieClip = null;
-         if(Boolean(mc) && GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD)
+         if(Boolean(mc) && GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD && !BASE.isInfernoMainYardOrOutpost)
          {
             if(MapRoomManager.instance.isInMapRoom2)
             {
@@ -1342,6 +1342,15 @@ package
             }
             else if(label == "alert")
             {
+               if (BASE._currentAttacks && BASE._currentAttacks.length > 0)
+               {
+                  for each (var attack:Object in BASE._currentAttacks)
+                  {
+                     attack.seen = true;
+                  }
+                  BASE._attacksModified = true;
+                  BASE.Save();
+               }
                POPUPS.Show("alerts");
             }
             else if(label == "invite")

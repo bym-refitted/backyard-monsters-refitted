@@ -27,6 +27,10 @@ package com.monsters.monsters.creeps
    public class CreepBase extends MonsterBase
    {
        
+      // Performance optimization: Point object pool to reduce GC pressure
+      private static var _pointPool:Vector.<Point> = new Vector.<Point>();
+      private static var _poolSize:int = 0;
+      private static const MAX_POOL_SIZE:int = 50;
       
       protected var _lastFrame:int = -1;
       
@@ -46,9 +50,20 @@ package com.monsters.monsters.creeps
       
       protected var m_altitudeMin:int;
       
+      protected var m_findTargetsCounter:int = 0;
+      
+      protected static const FIND_TARGETS_INTERVAL:int = 200;
+      
+      // Performance optimization: Track position changes to minimize CreepCellMove calls
+      protected var _lastGridPosition:Point = null;
+      protected static const GRID_CELL_SIZE:int = 100; // Match Targeting._CELLSIZE
+      protected var _gridMoveCounter:int = 0;
+      protected static const GRID_UPDATE_INTERVAL:int = 5; // Only check for grid changes every 5 frames
+      
       public function CreepBase(param1:String, param2:String, param3:Point, param4:Number, param5:int = 0, param6:int = 2147483647, param7:Point = null, param8:Boolean = false, param9:BFOUNDATION = null, param10:Number = 1, param11:Boolean = false, param12:MonsterBase = null)
       {
          var _loc13_:Point = null;
+         var activeEvent:* = SPECIALEVENT.getActiveSpecialEvent();
          super();
          _friendly = param8;
          setInitialFriendlyFlags(_friendly);
@@ -57,7 +72,7 @@ package com.monsters.monsters.creeps
          _house = param9;
          _hits = 0;
          _spawnPoint = new Point(int(param3.x / 100) * 100,int(param3.y / 100) * 100);
-         _goeasy = param11;
+         _goeasy = activeEvent.active ? false : param9;
          _movement = CREATURELOCKER._creatures[param1].movement;
          this.m_bInfernoCreep = BASE.isInfernoCreep(_creatureID);
          _pathing = CREATURELOCKER._creatures[param1].pathing;
@@ -76,6 +91,10 @@ package com.monsters.monsters.creeps
          graphic.mouseEnabled = false;
          graphic.mouseChildren = false;
          _speed = 0;
+         
+         // Performance optimization counters
+         this.m_findTargetsCounter = int(Math.random() * 200); // Randomize initial counter to spread load
+         
          moveSpeedProperty.value = CREATURES.GetProperty(_creatureID,"speed",param5,_friendly) / 2;
          if(TUTORIAL._stage < 200)
          {
@@ -119,7 +138,8 @@ package com.monsters.monsters.creeps
          CreepSkinManager.instance.SetupSkins(_creatureID);
          if(_movement == "fly")
          {
-            _shadow = new BitmapData(52,50,true,0);
+            SPRITES.SetupSprite("shadow");
+            _shadow = new BitmapData(52,50,true,16777215);
             _shadowMC = BYMConfig.instance.RENDERER_ON ? new Bitmap(_shadow) : graphic.addChild(new Bitmap(_shadow));
             _shadowMC.x = -21;
             _shadowMC.y = -16;
@@ -252,6 +272,31 @@ package com.monsters.monsters.creeps
          }
       }
       
+      // Performance optimization: Point object pooling methods
+      private static function getPooledPoint(x:Number = 0, y:Number = 0):Point
+      {
+         var point:Point;
+         if(_poolSize > 0)
+         {
+            point = _pointPool[--_poolSize];
+            point.x = x;
+            point.y = y;
+         }
+         else
+         {
+            point = new Point(x, y);
+         }
+         return point;
+      }
+      
+      private static function returnPointToPool(point:Point):void
+      {
+         if(_poolSize < MAX_POOL_SIZE)
+         {
+            _pointPool[_poolSize++] = point;
+         }
+      }
+      
       override protected function tickState(param1:int = 1) : Boolean
       {
          var _loc2_:Number = NaN;
@@ -378,10 +423,39 @@ package com.monsters.monsters.creeps
          {
             updateBuffs();
          }
-         newNode = Targeting.CreepCellMove(_tmpPoint,_id,this,node);
-         if(newNode)
+         
+         // Performance optimization: Only check for grid cell changes every few frames
+         _gridMoveCounter++;
+         if(_gridMoveCounter >= GRID_UPDATE_INTERVAL)
          {
-            node = newNode;
+            _gridMoveCounter = 0;
+            
+            // Calculate current grid position
+            var currentGridX:int = int(_tmpPoint.x / GRID_CELL_SIZE);
+            var currentGridY:int = int(_tmpPoint.y / GRID_CELL_SIZE);
+            
+            // Only call CreepCellMove if we've moved to a different grid cell
+            if(!_lastGridPosition || 
+               _lastGridPosition.x != currentGridX || 
+               _lastGridPosition.y != currentGridY)
+            {
+               newNode = Targeting.CreepCellMove(_tmpPoint,_id,this,node);
+               if(newNode)
+               {
+                  node = newNode;
+               }
+               
+               // Update cached grid position
+               if(!_lastGridPosition)
+               {
+                  _lastGridPosition = new Point(currentGridX, currentGridY);
+               }
+               else
+               {
+                  _lastGridPosition.x = currentGridX;
+                  _lastGridPosition.y = currentGridY;
+               }
+            }
          }
          return false;
       }
@@ -619,8 +693,10 @@ package com.monsters.monsters.creeps
       
       public function interceptTarget() : void
       {
-         var _loc1_:Point = _targetCreep._tmpPoint.subtract(_tmpPoint);
+         var _loc1_:Point = getPooledPoint(_targetCreep._tmpPoint.x - _tmpPoint.x, _targetCreep._tmpPoint.y - _tmpPoint.y);
          var _loc2_:Number = _loc1_.x * _loc1_.x + _loc1_.y * _loc1_.y;
+         returnPointToPool(_loc1_); // Return to pool immediately after use
+         
          _intercepting = false;
          _looking = true;
          if(_loc2_ < this.DEFENSE_RANGE_SQUARED || this.canShootCreep())
@@ -716,6 +792,12 @@ package com.monsters.monsters.creeps
          }
          else if(_behaviour != "retreat")
          {
+            var activeEvent:* = SPECIALEVENT.getActiveSpecialEvent();
+            if(activeEvent.active && !this._friendly)
+            {
+               setHealth(0);
+               return;
+            }
             changeModeRetreat();
          }
          if(_waypoints.length)
@@ -964,7 +1046,7 @@ package com.monsters.monsters.creeps
          {
             if(!_targetCreep)
             {
-               if(_behaviour === k_sBHVR_HUNT && (CREATURES._creatureCount > 0 || CREATURES._guardian && CREATURES._guardian.health > 0) && _frameNumber % 150 == 0)
+               if(_behaviour === k_sBHVR_HUNT && (CREATURES._creatureCount > 0 || CREATURES._hasLivingGuardian) && _frameNumber % 150 == 0)
                {
                   findTarget(_targetGroup);
                }
@@ -996,7 +1078,16 @@ package com.monsters.monsters.creeps
          }
          if(!_looking && !_attacking && _frameNumber % (GLOBAL._catchup ? 300 : 150) == 0)
          {
-            findTarget(_targetGroup);
+            // Performance optimization: Reduce frequency during high monster counts
+            var interval:int = GLOBAL._catchup ? 300 : 150;
+            if(CREEPS._creepCount > 20)
+            {
+               interval *= 2;
+            }
+            if(_frameNumber % interval == 0)
+            {
+               findTarget(_targetGroup);
+            }
          }
          if(_atTarget)
          {
@@ -1070,6 +1161,7 @@ package com.monsters.monsters.creeps
                   {
                      ++_hits;
                   }
+                  var activeEvent:* = SPECIALEVENT.getActiveSpecialEvent();
                   if(_goeasy)
                   {
                      if(_hits > 20)
@@ -1078,7 +1170,11 @@ package com.monsters.monsters.creeps
                         return false;
                      }
                   }
-                  else if(!GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD && _hits > _hitLimit)
+                  else if(!activeEvent.active && GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD && _hits > _hitLimit)
+                  {
+                     return true;
+                  }
+                  else if(GLOBAL.mode != GLOBAL.e_BASE_MODE.BUILD && _hits > _hitLimit)
                   {
                      return true;
                   }
@@ -1364,8 +1460,15 @@ package com.monsters.monsters.creeps
                }
                else
                {
+                  if(_targetGroup == 6)
+                  {
+                     damageDelt = _targetCreep.modifyHealth(-(damage*3));
+                  }
+                  else
+                  {
+                     damageDelt = _targetCreep.modifyHealth(-damage);
+                  }
                   ATTACK.Damage(_tmpPoint.x,_tmpPoint.y - 5,damageDelt,_mc.visible);
-                  damageDelt = _targetCreep.modifyHealth(-damage);
                }
                if(!_explode)
                {
@@ -1682,7 +1785,13 @@ package com.monsters.monsters.creeps
          }
          if(_frameNumber % 200)
          {
-            this.findDefenseTargets();
+            // Performance optimization: Use counter instead of frame modulo
+            this.m_findTargetsCounter++;
+            if(this.m_findTargetsCounter >= FIND_TARGETS_INTERVAL)
+            {
+               this.m_findTargetsCounter = 0;
+               this.findDefenseTargets();
+            }
          }
          if(_atTarget && _behaviour == k_sBHVR_BUNKER)
          {

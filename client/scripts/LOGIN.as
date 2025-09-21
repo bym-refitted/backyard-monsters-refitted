@@ -90,6 +90,12 @@ package
          {
             handleLoadSuccessful = function(serverData:Object):void
             {
+               if (serverData.hasOwnProperty("error") && serverData.error != 0)
+               {
+                   GLOBAL.Message(serverData.error);
+                   return;
+               }
+
                if (serverData.error == 0)
                {
                   if (GLOBAL._local)
@@ -103,14 +109,10 @@ package
                      ExternalInterface.call("setItem", "authToken", authToken);
                   }
                }
-               else
-               {
-                  GLOBAL.ErrorMessage(serverData.error, GLOBAL.ERROR_ORANGE_BOX_ONLY);
-               }
             };
             handleLoadError = function(error:IOErrorEvent):void
             {
-               GLOBAL._layerTop.addChild(GLOBAL.Message("Hmm.. it seems this email and password combination does not match any account or there was an issue connecting."));
+               GLOBAL._layerTop.addChild(GLOBAL.Message("An error occurred during login on the server."));
             };
             new URLLoaderApi().load(GLOBAL._apiURL + "player/getinfo", [["version", GLOBAL._version.Get()]].concat(authInfo), handleLoadSuccessful, handleLoadError);
          }

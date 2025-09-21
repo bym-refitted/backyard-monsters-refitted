@@ -20,12 +20,21 @@ package com.monsters.monsters.components.abilities
       
       private var m_filter:BitmapFilter;
       
-      public function Enrage(param1:Number, param2:Number)
+      private var m_sourceCreatureID:String;
+      
+      public function Enrage(param1:Number, param2:Number, param3:String = null)
       {
          super();
          this.m_moveSpeedModifier = new MultiplicationPropertyModifier(param1);
          this.m_attackSpeedModifier = new DivisionModifier(param1);
          this.m_armorModifier = new ArmorPropertyModifier(param2);
+         this.m_sourceCreatureID = param3;
+
+         var activeEvent:* = SPECIALEVENT.getActiveSpecialEvent();
+         if (activeEvent.active && this.m_sourceCreatureID != "G3") {
+            this.m_filter = new GlowFilter(13582340,1,3,3,5,1);
+            return;
+         }
          this.m_filter = new GlowFilter(16724735,0.6,8,8,4,3);
       }
       
