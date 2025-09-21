@@ -76,6 +76,10 @@ package
       public static var _attackerArray:Array;
 
       public static var _attackerNameArray:Array;
+      
+      public static var _currentAttacks:Array;
+      
+      public static var _attacksModified:Boolean;
 
       public static var _deltaResources:Object;
 
@@ -346,6 +350,8 @@ package
          _saving = false;
          _paging = false;
          _saveErrors = 0;
+         _currentAttacks = [];
+         _attacksModified = false;
          _pageErrors = 0;
          _lastSaved = 0;
          _infernoSaveLoad = false;
@@ -402,6 +408,8 @@ package
 
       public static function Cleanup():void
       {
+         SPECIALEVENT.ClearWildMonsterPowerups();
+         SPECIALEVENT_WM1.ClearWildMonsterPowerups();
          BaseBuffHandler.instance.clearBuffs();
          RewardHandler.instance.clear();
          GLOBAL.player.clear();
@@ -1379,6 +1387,7 @@ package
                _attackerNameArray = [];
                if (GLOBAL.mode != GLOBAL.e_BASE_MODE.WMATTACK && GLOBAL.mode != GLOBAL.e_BASE_MODE.WMVIEW && Boolean(serverData.attacks))
                {
+                  _currentAttacks = serverData.attacks;
                   TauntB = function(param1:int, param2:int):Function
                   {
                      var n:int = param1;
@@ -1393,6 +1402,8 @@ package
                   attackCount = 0;
                   for each (attackObj in attacksArr)
                   {
+                     if (attackObj.seen) continue;
+                     
                      attackCount++;
                      found = false;
                      for each (listed in _attackerArray)
@@ -2749,7 +2760,6 @@ package
             }
          }
          GLOBAL.CallJS("cc.injectFriendsSwf", null, false);
-         BTOTEM.FindMissingTotem();
          s_processing = false;
          HideFootprints();
       }
@@ -2994,7 +3004,8 @@ package
          }
          if (_lastPaged >= _loc2_ && !_paging && !_saving && GLOBAL.Timestamp() - _lastSaved >= _loc2_)
          {
-            if (SPECIALEVENT.active)
+            var activeEvent:* = SPECIALEVENT.getActiveSpecialEvent();
+            if (activeEvent.active)
             {
                _blockSave = false;
                Save(0, false, true);
@@ -3776,6 +3787,10 @@ package
          saveData["monsterbaiter"] = JSON.encode(MONSTERBAITER.Export());
          saveData["version"] = GLOBAL._version.Get();
          saveData["aiattacks"] = JSON.encode(WMATTACK.Export());
+         if (_attacksModified) {
+            saveData["attacks"] = JSON.encode(_currentAttacks);
+            _attacksModified = false;
+         }
          saveData["effects"] = EFFECTS._effectsJSON;
          saveData["empirevalue"] = CalcBaseValue();
          saveData["inventory"] = STORE.InventoryExport();
@@ -4966,7 +4981,7 @@ package
          buildingProperties = GLOBAL._buildingProps[buildingNum - 1] || {};
          if (buildingProperties.type == "decoration")
          {
-            if (BTOTEM.IsTotem2(buildingNum))
+            if (BTOTEM.IsTotem(buildingNum) || BTOTEM.IsTotem2(buildingNum))
             {
                buildingFoundation = new BTOTEM(buildingNum);
             }
@@ -5581,7 +5596,6 @@ package
                {
                   if (isMainYardOrInfernoMainYard)
                   {
-                     yardType = EnumYardType.OUTPOST;
                      _currentCellLoc = GLOBAL._mapOutpost[0];
                      GLOBAL._currentCell = null;
                      _needCurrentCell = true;
@@ -5598,7 +5612,6 @@ package
                         {
                            if (_loc3_ < GLOBAL._mapOutpostIDs.length - 1)
                            {
-                              yardType = EnumYardType.OUTPOST;
                               _currentCellLoc = GLOBAL._mapOutpost[_loc3_ + 1];
                               GLOBAL._currentCell = null;
                               _needCurrentCell = true;

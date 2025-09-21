@@ -41,7 +41,7 @@ package
       {
          var urls:Object = null;
          var serverUrl:String = GLOBAL.serverUrl;
-         var apiVersionSuffix:String = GLOBAL.apiVersionSuffix;
+         var apiVersionSuffix:String = GLOBAL.apiVersionSuffix + "/";
          var cdnUrl:String = GLOBAL.cdnUrl;
          super();
          _instance = this;
@@ -68,7 +68,7 @@ package
                urls._currencyURL = serverUrl + "";
                urls._countryCode = serverUrl + "us";
             }
-            this.Data(urls, new Object());
+            this.Data(urls, loaderInfo.parameters);
          }
       }
 
@@ -107,10 +107,10 @@ package
          }
       }
 
-      public function Data(urls:Object, params:Object):void
+      public function Data(urls:Object, loaderParams:Object):void
       {
          loaderInfo.uncaughtErrorEvents.addEventListener(UncaughtErrorEvent.UNCAUGHT_ERROR, this.uncaughtErrorThrown);
-         setLauncherVars(params);
+         setLauncherVars(loaderParams);
          SWFProfiler.init(stage, this);
          Security.allowDomain("*");
          GLOBAL.init();

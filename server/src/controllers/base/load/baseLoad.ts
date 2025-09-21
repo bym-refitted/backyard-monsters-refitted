@@ -45,12 +45,13 @@ export const baseLoad: KoaController = async (ctx) => {
         break;
 
       case BaseMode.VIEW:
+      case BaseMode.IVIEW:
         baseSave = await baseModeView(baseid);
         break;
 
       case BaseMode.ATTACK:
         if (!ctx.meetsDiscordAgeCheck) throw discordAgeErr();
-        
+
         await validateAttack(user, attackData);
         baseSave = await baseModeAttack(user, baseid);
         break;
@@ -65,12 +66,20 @@ export const baseLoad: KoaController = async (ctx) => {
 
       case BaseMode.IWMVIEW:
         baseSave = await infernoModeView(user, baseid);
-      break;
+        break;
+
+      case BaseMode.IATTACK:
+        if (!ctx.meetsDiscordAgeCheck) throw discordAgeErr();
+
+        await validateAttack(user, attackData);
+        baseSave = await infernoModeAttack(user, baseid);
+        break;
 
       case BaseMode.IWMATTACK:
         await validateAttack(user, attackData);
         baseSave = await infernoModeAttack(user, baseid);
         break;
+        
       default:
         throw new Error(`Base type not handled, type: ${type}.`);
     }
@@ -99,16 +108,18 @@ export const baseLoad: KoaController = async (ctx) => {
 
     // Only include user save data if the base belongs to the current user
     // and is not an inferno base
-    if (baseSave.type !== BaseType.INFERNO && user.userid === filteredSave.userid) {
+    if (
+      baseSave.type !== BaseType.INFERNO &&
+      user.userid === filteredSave.userid
+    ) {
       Object.assign(responseBody, mapUserSaveData(user));
     }
 
     ctx.status = Status.OK;
     ctx.body = responseBody;
   } catch (err) {
-    errorLog(`Failed to load base`, err);
-
     ctx.status = Status.INTERNAL_SERVER_ERROR;
-    ctx.body = { error: 1 };
+    ctx.body = { error: "The server failed to load this base." };
+    errorLog(`Failed to load base`, err);
   }
 };

@@ -14,13 +14,14 @@ import { User } from "./user.model";
 import { WorldMapCell } from "./worldmapcell.model";
 import { AttackDetails } from "../controllers/base/load/modes/baseModeAttack";
 import { BaseType } from "../enums/Base";
+import { Stats } from "../services/events/wmi/invasionUtils";
 
 export interface FieldData {
   [key: string | number]: any;
 }
 
 // Composite index on worldid, type, and userid
-@Index({ properties: ["worldid", "type", "userid"] })
+@Index({ properties: ["type", "worldid", "userid"] })
 @Entity({ tableName: "save" })
 export class Save {
   // IDs & Foreign Keys
@@ -287,7 +288,7 @@ export class Save {
 
   @FrontendKey
   @Property({ type: "json", nullable: true })
-  stats?: FieldData = {};
+  stats?: Stats = {};
 
   @FrontendKey
   @Property({ type: "json", nullable: true })
@@ -529,7 +530,8 @@ export class Save {
     "buildinghealthdata",
     "buildingresources",
     "attackreport",
-    "attackersiege"
+    "attackersiege",
+    "attackcreatures"
   ];
 
   public static createMainSave = async (
@@ -562,6 +564,7 @@ export class Save {
     infernoSave.baseid = infernoSave.basesaveid.toString();
     infernoSave.homebaseid = infernoSave.basesaveid;
     infernoSave.stats = user.save.stats;
+    infernoSave.worldid = user.save.worldid;
     infernoSave.credits = 0;
     user.save.iresources = {
       r1: 59168,

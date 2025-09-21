@@ -27,14 +27,14 @@ export const balancedReward = async (userSave: Save) => {
   let townHallLevel = townHall.l;
 
   // Town Hall Level 6
-  if (townHallLevel >= 6 && !rewards[KORATH]) {
-    rewards[KORATH] = { id: KORATH, value: KorathReward.FISTS_OF_DOOM };
+  if (townHallLevel >= 6 && !rewards[KRALLEN]) {
+    rewards[KRALLEN] = { id: KRALLEN, value: 1 };
+    addKrallenData(userSave);
   }
 
   // Town Hall Level 7
-  if (townHallLevel >= 7 && !rewards[KRALLEN]) {
-    rewards[KRALLEN] = { id: KRALLEN, value: 1 };
-    addKrallenData(userSave);
+  if (townHallLevel >= 7 && !rewards[KORATH]) {
+    rewards[KORATH] = { id: KORATH, value: KorathReward.FISTS_OF_DOOM };
   }
 
   // Town Hall Level 8
@@ -47,8 +47,6 @@ export const balancedReward = async (userSave: Save) => {
     rewards[DIAMOND_SPURTZ] = { id: DIAMOND_SPURTZ };
   }
 };
-
-
 
 /**
  * Adds Krallen data to the user's save, including champion data and reward metadata.

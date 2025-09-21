@@ -9,6 +9,7 @@ import { getCurrentDateTime } from "../../utils/getCurrentDateTime";
 import { findOrCreateThread } from "../../services/mail/findOrCreateThread";
 import { countUnreadMessage } from "../../services/mail/countUnreadMessage";
 import { mailboxErr } from "../../errors/errors";
+import { errorLog } from "../../utils/logger";
 
 /**
  * Controller to send message
@@ -24,7 +25,7 @@ import { mailboxErr } from "../../errors/errors";
  */
 export const sendMessage: KoaController = async (ctx) => {
   try {
-    const { userid }: User = ctx.authUser;
+    const { userid, blockedUsers }: User = ctx.authUser;
     const message = SendMessageSchema.parse(ctx.request.body);
 
     const isAllowedToSend = devConfig.allowedMessageType[message.type];
@@ -47,6 +48,25 @@ export const sendMessage: KoaController = async (ctx) => {
     const isSender = thread.userid === userid;
     const messageTargetId = isSender ? thread.targetid : thread.userid;
 
+    const recipient = await ORMContext.em.findOne(
+      User,
+      { userid: messageTargetId },
+      { populate: ["save"] }
+    );
+
+    if (!recipient) {
+      ctx.status = Status.OK;
+      ctx.body = { error: 1 };
+      return;
+    }
+
+    // Check if either user has blocked the other
+    if (blockedUsers.includes(messageTargetId) || recipient.blockedUsers.includes(userid)) {
+      ctx.status = Status.OK;
+      ctx.body = { error: 1, message: "Cannot send message to this user" };
+      return;
+    }
+
     const newMessage = ORMContext.em.create(Message, {
       threadid: thread.threadid,
       userid,
@@ -65,20 +85,8 @@ export const sendMessage: KoaController = async (ctx) => {
 
     const count = await countUnreadMessage(messageTargetId);
 
-    const targetUser = await ORMContext.em.findOne(
-      User,
-      { userid: messageTargetId },
-      { populate: ["save"] }
-    );
-
-    if (!targetUser) {
-      ctx.status = Status.OK;
-      ctx.body = { error: 1 };
-      return;
-    }
-
-    targetUser.save.unreadmessages = count;
-    await ORMContext.em.persistAndFlush(targetUser);
+    recipient.save.unreadmessages = count;
+    await ORMContext.em.persistAndFlush(recipient);
 
     ctx.status = Status.OK;
     ctx.body = {
@@ -87,6 +95,7 @@ export const sendMessage: KoaController = async (ctx) => {
       threadid: thread.threadid,
     };
   } catch (err) {
+    errorLog("Error sending message:", err);
     throw mailboxErr();
   }
 };

@@ -26,7 +26,6 @@ import { supportedLangs } from "./controllers/supportedLangs";
 import { Status } from "./enums/StatusCodes";
 import { forgotPassword } from "./controllers/auth/forgotPassword";
 import { resetPassword } from "./controllers/auth/resetPassword";
-import { devConfig } from "./config/DevSettings";
 import { infernoSave } from "./controllers/inferno/infernoSave";
 import { getNeighbours } from "./controllers/maproom/inferno/getNeighbours";
 import { Env } from "./enums/Env";
@@ -39,6 +38,8 @@ import { Context } from "koa";
 import { getAvailableWorlds } from "./controllers/leaderboards/getAvailableWorlds";
 import { getLeaderboards } from "./controllers/leaderboards/getLeaderboards";
 import { getAttackLogs } from "./controllers/attacklogs/getAttackLogs";
+import { wildMonsterInvasion } from "./controllers/events/wildMonsterInvasion";
+import { init } from "./controllers/init";
 
 const RateLimit = require("koa2-ratelimit").RateLimit;
 
@@ -80,10 +81,7 @@ router.get("/connection", (ctx) => (ctx.status = Status.OK));
  * Init route
  * @name GET /api/:apiVersion/bm/getnewmap
  */
-router.get("/init", debugDataLog("Initilizing game client"), (ctx) => {
-  ctx.status = Status.OK;
-  ctx.body = { debugMode: devConfig.debugMode };
-});
+router.post("/init", debugDataLog("Initilizing game client"), init);
 
 /**
  * MapRoom setup
@@ -473,6 +471,18 @@ router.post(
   verifyUserAuth,
   debugDataLog("Report message thread"),
   reportMessageThread
+);
+
+/**
+ * Get WMI1 event details
+ * @name GET /api/:apiVersion/events/wmi1
+ */
+router.get(
+  "/api/:apiVersion/events/wmi",
+  apiVersion,
+  // verifyUserAuth,
+  debugDataLog("Getting WMI event details"),
+  wildMonsterInvasion
 );
 
 /**

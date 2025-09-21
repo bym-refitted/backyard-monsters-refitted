@@ -18,8 +18,6 @@ package
 
       public static var supportedLanguagesJson:Object;
 
-      public static var errorMessage:String = "";
-
       private static var dispatcher:EventDispatcher = new EventDispatcher();
 
       public static var LANGUAGE_FILE_LOADED:String = "languageFileLoaded";
@@ -35,8 +33,9 @@ package
          var languageFile:URLLoader = new URLLoader();
          languageFile.load(new URLRequest(_storageURL + language + ".json"));
          languageFile.addEventListener(Event.COMPLETE, handleLangFileSucc);
-         languageFile.addEventListener(IOErrorEvent.IO_ERROR, handleLoadError);
-         languageFile.addEventListener(SecurityErrorEvent.SECURITY_ERROR, noConnection);
+         languageFile.addEventListener(IOErrorEvent.IO_ERROR, function(event:IOErrorEvent):void
+            {
+            });
       }
 
       public static function GetSupportedLanguages():void
@@ -44,10 +43,8 @@ package
          var languages:URLLoader = new URLLoader();
          languages.load(new URLRequest(GLOBAL._apiURL + "supportedLangs"));
          languages.addEventListener(Event.COMPLETE, handleSupportedLangsSucc);
-         languages.addEventListener(IOErrorEvent.IO_ERROR, handleLoadError);
-         languages.addEventListener(SecurityErrorEvent.SECURITY_ERROR, function(event:SecurityErrorEvent):void
-            {
-            });
+         languages.addEventListener(IOErrorEvent.IO_ERROR, function(event:IOErrorEvent):void {});
+         languages.addEventListener(SecurityErrorEvent.SECURITY_ERROR, function(event:SecurityErrorEvent):void {});
       }
 
       private static function handleLangFileSucc(data:Event):void
@@ -64,29 +61,7 @@ package
          supportedLanguagesJson = JSON.decode(rawData);
          GLOBAL.supportedLangsLoaded = true;
       }
-
-      private static function handleLoadError(error:IOErrorEvent):void
-      {
-         errorMessage = "Failed to retrieve required content from the server.";
-         dispatcher.dispatchEvent(new IOErrorEvent(IOErrorEvent.IO_ERROR));
-      }
-
-      public static function noConnection(error:SecurityErrorEvent):void
-      {
-         errorMessage = "We could not establish a connection with the server.";
-         dispatcher.dispatchEvent(new SecurityErrorEvent(SecurityErrorEvent.SECURITY_ERROR));
-      }
-
-      public static function securityErrorListener(listener:Function):void
-      {
-         dispatcher.addEventListener(SecurityErrorEvent.SECURITY_ERROR, listener);
-      }
-
-      public static function ioErrorListener(listener:Function):void
-      {
-         dispatcher.addEventListener(IOErrorEvent.IO_ERROR, listener);
-      }
-
+      
       // Processes the JSON language file from the server
       // Replaces #placeholders# within JSON with dynamic values
       public static function Get(jsonKeyPath:String, placeholders:Object = null):String

@@ -104,25 +104,20 @@ package com.auth
         public function AuthForm()
         {
             addEventListener(Event.ADDED_TO_STAGE, formAddedToStageHandler);
-            GLOBAL.LanguageSetup();
 
-            // Start a timer every second to check if text content and supported languages are loaded from the server
+            GLOBAL.eventDispatcher.addEventListener("initError", function(event:Event):void
+                {
+                    errMessage.text = GLOBAL.initError;
+                    // If loadingContainer is present, refresh the loading screen to update the title
+                    if (loadingContainer && loadingContainer.parent)
+                    {
+                        Loading();
+                    }
+                });
+
             checkContentLoadedTimer = new Timer(1000);
             checkContentLoadedTimer.addEventListener(TimerEvent.TIMER, checkContentLoaded);
             checkContentLoadedTimer.start();
-
-            KEYS.securityErrorListener(noConnection);
-            KEYS.ioErrorListener(errorEvent);
-        }
-
-        private function noConnection(event:SecurityErrorEvent):void
-        {
-            errMessage.text = KEYS.errorMessage;
-        }
-
-        private function errorEvent(event:IOErrorEvent):void
-        {
-            errMessage.text = KEYS.errorMessage;
         }
 
         private function checkContentLoaded(event:TimerEvent):void
@@ -150,7 +145,8 @@ package com.auth
             removeEventListener(Event.ADDED_TO_STAGE, formAddedToStageHandler);
             try
             {
-                if (stage) stage.color = BACKGROUND;
+                if (stage)
+                    stage.color = BACKGROUND;
             }
             catch (e:Error)
             {
@@ -206,9 +202,11 @@ package com.auth
 
             // Get image asset
             this.loader = new Loader();
-            this.loader.load(new URLRequest(GLOBAL.serverUrl + "assets/popups/C5-LAB-150.png"));
+            this.loader.load(new URLRequest(GLOBAL.cdnUrl + "assets/popups/C5-LAB-150.png"));
             this.loader.contentLoaderInfo.addEventListener(Event.COMPLETE, onImageLoaded);
-            this.loader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, handleNetworkError);
+            this.loader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, function(e:IOErrorEvent):void
+                {
+                });
 
             usernameInput = createBlock(0, 0, "Username");
             emailInput = createBlock(350, 35, "Email");
@@ -229,59 +227,112 @@ package com.auth
 
         private function Loading():void
         {
-            var navWidth:Number = stage.stageWidth;
-            var navHeight:Number = stage.stageHeight;
-            var loadingDesc:TextField = new TextField();
-            var loadingDescStyle:TextFormat = new TextFormat();
-            errMessage = new TextField();
-            var errMessageStyle:TextFormat = new TextFormat();
+            // Remove previous loadingContainer if present
+            if (loadingContainer && loadingContainer.parent)
+            {
+                loadingContainer.parent.removeChild(loadingContainer);
+            }
 
             loadingContainer = new Sprite();
             addChild(loadingContainer);
 
-            var loadingTitle:TextField = createRichText("Connecting to the server...", WHITE);
+            var contentWidth:Number = 400;
 
-            loadingDescStyle.font = "Verdana";
-            loadingDescStyle.size = 14;
-            loadingDescStyle.leftMargin = 10;
-            loadingDescStyle.color = WHITE;
+            // Create title
+            var loadingTitle:TextField = new TextField();
+            var titleFormat:TextFormat = new TextFormat();
+            titleFormat.font = "Groboldov";
+            titleFormat.size = 32;
+            titleFormat.color = WHITE;
+            titleFormat.align = TextFormatAlign.CENTER;
+            loadingTitle.defaultTextFormat = titleFormat;
+            loadingTitle.text = GLOBAL.versionMismatch ? "New Update Available!" : "Connecting to the server";
+            loadingTitle.width = contentWidth;
+            loadingTitle.height = 38;
+            loadingTitle.x = 0;
+            loadingTitle.selectable = false;
+            loadingTitle.embedFonts = true;
+            loadingTitle.antiAliasType = AntiAliasType.ADVANCED;
+            loadingTitle.autoSize = TextFieldAutoSize.NONE;
 
-            errMessageStyle.font = "Verdana";
-            errMessageStyle.size = 14;
-            errMessageStyle.leftMargin = 30;
-            errMessageStyle.color = WHITE;
+            // Create description (only for non-version mismatch)
+            var loadingDesc:TextField;
+            if (!GLOBAL.versionMismatch)
+            {
+                loadingDesc = new TextField();
+                var descFormat:TextFormat = new TextFormat();
+                descFormat.font = "Verdana";
+                descFormat.size = 14;
+                descFormat.color = LIGHT_GRAY;
+                descFormat.align = TextFormatAlign.CENTER;
+                loadingDesc.defaultTextFormat = descFormat;
+                loadingDesc.htmlText = "<font color='#ffffff'>Taking a while? Check our </font><font color='#00CDB8'><u>#server-status</u></font><font color='#ffffff'> on Discord.</font>";
+                loadingDesc.width = contentWidth;
+                loadingDesc.height = 28;
+                loadingDesc.x = 0;
+                loadingDesc.y = 50; // Fixed position
+                loadingDesc.selectable = false;
+                loadingDesc.embedFonts = true;
+                loadingDesc.antiAliasType = AntiAliasType.ADVANCED;
+                loadingDesc.autoSize = TextFieldAutoSize.NONE;
+                mousePointerCursor(loadingDesc);
+                loadingDesc.addEventListener(MouseEvent.CLICK, DiscordLink);
+                loadingContainer.addChild(loadingDesc);
+            }
 
-            loadingDesc.x = loadingTitle.x;
-            loadingDesc.y = loadingTitle.y + loadingTitle.height + 15;
-            loadingDesc.width = loadingTitle.width + 5;
-            loadingDesc.embedFonts = true;
-            loadingDesc.antiAliasType = AntiAliasType.NORMAL;
-            loadingDesc.defaultTextFormat = loadingDescStyle;
-            loadingDesc.htmlText = "<font color='#ffffff'>Taking a while? Check our </font><font color='#00CDB8'>#server-status</font><font color='#ffffff'> on our Discord.</font>";
-            loadingDesc.selectable = false;
-            loadingDesc.mouseEnabled = true;
-            mousePointerCursor(loadingDesc);
-            loadingDesc.addEventListener(MouseEvent.CLICK, DiscordLink);
-
-            errMessage.x = loadingTitle.x;
-            errMessage.y = loadingDesc.x + loadingDesc.height + 50;
-            errMessage.width = loadingTitle.width + 5;
+            // Create error message
+            errMessage = new TextField();
+            var errFormat:TextFormat = new TextFormat();
+            errFormat.font = "Verdana";
+            errFormat.size = 16;
+            errFormat.color = RED;
+            errFormat.align = TextFormatAlign.CENTER;
+            errFormat.leading = 5;
+            errMessage.defaultTextFormat = errFormat;
+            errMessage.htmlText = GLOBAL.initError;
+            errMessage.width = contentWidth;
+            errMessage.x = 0;
+            errMessage.wordWrap = true;
+            errMessage.multiline = true;
             errMessage.embedFonts = true;
-            errMessage.antiAliasType = AntiAliasType.NORMAL;
-            errMessage.defaultTextFormat = errMessageStyle;
-            errMessage.htmlText = KEYS.errorMessage;
+            errMessage.antiAliasType = AntiAliasType.ADVANCED;
+            errMessage.autoSize = TextFieldAutoSize.LEFT;
 
+            // Position elements based on version mismatch
+            if (GLOBAL.versionMismatch)
+            {
+                loadingTitle.y = 140;
+                errMessage.y = 190;
+
+                var updateImageLoader:Loader = new Loader();
+                updateImageLoader.load(new URLRequest(GLOBAL.serverUrl + "assets/popups/fantastic.png"));
+                updateImageLoader.contentLoaderInfo.addEventListener(Event.COMPLETE, function(e:Event):void
+                    {
+                        var img:Bitmap = Bitmap(updateImageLoader.content);
+                        img.x = (contentWidth - img.width) / 2;
+                        img.y = 0;
+                        loadingContainer.addChildAt(img, 0);
+                    });
+            }
+            else
+            {
+                // Positions for normal loading (no image)
+                loadingTitle.y = 0;
+                errMessage.y = 90;
+            }
+
+            // Add elements to container
             loadingContainer.addChild(loadingTitle);
-            loadingContainer.addChild(loadingDesc);
             loadingContainer.addChild(errMessage);
 
-            loadingContainer.x = (navWidth - loadingContainer.width) / 2;
-            loadingContainer.y = (navHeight - loadingContainer.height) / 2;
+            // Fixed container position
+            loadingContainer.x = 200;
+            loadingContainer.y = 200;
         }
 
         public static function DiscordLink(param1:Event = null):void
         {
-            GLOBAL.gotoURL("https://discord.com/invite/bym");
+            GLOBAL.gotoURL("https://discord.gg/bymrefitted");
         }
 
         private function HeaderTitle():void
@@ -291,7 +342,7 @@ package com.auth
 
             navContainer.graphics.drawRect(0, 0, navWidth, navHeight);
             navContainer.x = -20;
-            navContainer.y = 50; // Margin top
+            navContainer.y = 50;
 
             var textContainer:Sprite = new Sprite();
             navContainer.addChild(textContainer);
@@ -598,12 +649,6 @@ package com.auth
                 usernameInput.y = emailInput.y - usernameInput.height - 20;
                 CreateBorder(usernameInput);
             }
-            else
-            {
-                usernameInput.width = 0;
-                usernameInput.height = 0;
-                formContainer.removeChild(borderContainer);
-            }
         }
 
         private function updateLinkText():void
@@ -662,7 +707,11 @@ package com.auth
                     if (isUsernameValid)
                     {
                         var newUser:Array = [["username", usernameValue], ["email", emailValue], ["password", passwordValue], ["last_name", ""], ["pic_square", ""]];
-                        new URLLoaderApi().load(GLOBAL._apiURL + "player/register", newUser, registerNewUser, handleRegisterFailure);
+
+                        new URLLoaderApi().load(GLOBAL._apiURL + "player/register", newUser, registerNewUser, function(event:IOErrorEvent):void
+                            {
+                                GLOBAL.Message("An error occurred during registration on the server.");
+                            });
                     }
                     else
                     {
@@ -671,7 +720,10 @@ package com.auth
                 }
                 else
                 {
-                    new URLLoaderApi().load(GLOBAL._apiURL + "bm/getnewmap", null, postAuthDetails, handleNetworkError);
+                    new URLLoaderApi().load(GLOBAL._apiURL + "bm/getnewmap", null, postAuthDetails, function(event:IOErrorEvent):void
+                        {
+                            GLOBAL.Message("We cannot connect you to the server at this time. Please try again later or check our server status.");
+                        });
                 }
             }
             else
@@ -698,19 +750,14 @@ package com.auth
 
         private function registerNewUser(serverData:Object):void
         {
+            if (serverData.hasOwnProperty("error"))
+            {
+                GLOBAL.Message(serverData.error);
+                return;
+            }
             GLOBAL.Message("You have successfully registered an account. Please login to continue.");
             isRegisterForm = false;
             updateState();
-        }
-
-        public function handleNetworkError(event:IOErrorEvent):void
-        {
-            GLOBAL.Message("Hmm.. it seems we cannot connect you to the server at this time. Please try again later or check our server status.");
-        }
-
-        public function handleRegisterFailure(event:Event):void
-        {
-            GLOBAL.Message("It seems this account already exists. Please try to login.");
         }
 
         private function isValidUsername(username:String):Boolean

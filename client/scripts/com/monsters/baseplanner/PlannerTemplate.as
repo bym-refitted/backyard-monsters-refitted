@@ -177,6 +177,12 @@ package com.monsters.baseplanner
                {
                   _loc5_ = int(_loc4_.substr(_loc4_.indexOf("b") + 1));
                   _loc6_ = int(BASE._buildingsStored[_loc4_].Get());
+                  
+                  if (YARD_PROPS._yardProps[_loc5_ - 1] && YARD_PROPS._yardProps[_loc5_ - 1].cls == null)
+                  {
+                     continue;
+                  }
+                  
                   _loc7_ = 0;
                   while(_loc7_ < _loc6_)
                   {

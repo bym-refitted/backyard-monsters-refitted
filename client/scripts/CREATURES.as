@@ -84,6 +84,11 @@ package
                }
                else if(level == 0 && GLOBAL.player.m_upgrades[checkID] != null)
                {
+                  var activeEvent:* = SPECIALEVENT.getActiveSpecialEvent();
+                  if(activeEvent.active && !friendly)
+                  {
+                     level = int(GLOBAL._wmCreatureLevels[monsterID]);
+                  }
                   level = int(GLOBAL.player.m_upgrades[checkID].level);
                }
                if(stat.length < level)
@@ -198,6 +203,18 @@ package
          _guardianList.length = 0;
       }
       
+      public static function get _hasLivingGuardian() : Boolean
+      {
+         for(var idx:int = 0; idx < _guardianList.length; idx++)
+         {
+            if(_guardianList[idx] && _guardianList[idx].health > 0)
+            {
+               return true;
+            }
+         }
+         return false;
+      }
+
       public static function get _guardian() : ChampionBase
       {
          var _loc1_:int = 0;
