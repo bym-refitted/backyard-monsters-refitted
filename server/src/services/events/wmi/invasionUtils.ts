@@ -1,4 +1,5 @@
 import { Invasion } from "../../../enums/Invasion";
+import { getActiveInvasion } from "./getActiveInvasion";
 import { setupInvasionEvent } from "./setupInvasionEvent";
 
 export interface Stats {
@@ -28,7 +29,7 @@ const waveResetValues: Record<Invasion, number> = {
 
 /**
  * Resets the wave progress for a user based on the current active invasion event.
- * 
+ *
  * This function ensures that:
  * 1. Waves are only reset once per event per user.
  * 2. Skipped events are handled correctly (user will start fresh for a new event).
@@ -40,8 +41,10 @@ const waveResetValues: Record<Invasion, number> = {
  * @param {Stats["other"]} stats - The user's invasion-related stats object.
  * @param {Invasion} activeInvasion - The current active invasion type (e.g., WMI1, WMI2).
  */
-export const resetWaves = (stats: Stats["other"], activeInvasion: Invasion) => {
+export const resetInvasionWaves = (stats: Stats["other"]) => {
   if (!stats) return;
+
+  const activeInvasion = getActiveInvasion();
 
   const waveKey = waveKeyMap[activeInvasion];
   const lastEventEndKey = lastEventEndMap[activeInvasion];
