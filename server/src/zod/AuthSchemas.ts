@@ -2,7 +2,6 @@ import z from "zod";
 
 const emailError = "Invalid email address";
 
-const passwordRegex = /^(?=.*[A-Z])(?=.*[\W_])(?=.{8,})/;
 const passwordLengthError = "Password must be at least 8 characters long";
 const passwordError =
   "Password must contain at least one uppercase letter and one special character";
