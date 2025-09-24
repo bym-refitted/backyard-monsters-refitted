@@ -1,14 +1,14 @@
+import z from "zod";
 import { Save } from "../../models/save.model";
 import { User } from "../../models/user.model";
 import { KoaController } from "../../utils/KoaController";
 import { ORMContext } from "../../server";
 import { joinOrCreateWorld } from "../../services/maproom/v2/joinOrCreateWorld";
-import { leaveWorld } from "../../services/maproom/v2/leaveWorld";
+// import { leaveWorld } from "../../services/maproom/v2/leaveWorld";
 import { FilterFrontendKeys } from "../../utils/FrontendKey";
 import { MapRoomVersion } from "../../enums/MapRoom";
 import { Status } from "../../enums/StatusCodes";
 import { Env } from "../../enums/Env";
-import z from "zod";
 
 /**
  * Sets the Map Room version on the server.
@@ -23,33 +23,35 @@ const SetMapVersionSchema = z.object({
 });
 
 /**
- * Map version controller for Map Room 2 .
+ * Map version controller for the Map Room.
  * If the version is V2, the user will join a world. Otherwise, the user will leave the world.
  *
  * @param {Context} ctx - The Koa context object
  * @returns {Promise<void>} - A promise that resolves when the controller is complete.
  */
 export const setMapVersion: KoaController = async (ctx) => {
+  if (!ctx.meetsDiscordAgeCheck) {
+    ctx.status = Status.OK;
+    ctx.body = {
+      error: "Discord account is not old enough.",
+    };
+    return;
+  }
+
   const user: User = ctx.authUser;
   await ORMContext.em.populate(user, ["save"]);
 
   let save: Save = user.save;
   const { version } = SetMapVersionSchema.parse(ctx.request.body);
 
-  if (version === MapRoomVersion.V2) {
-    // Check if the user's Discord account is at least a week old
-    if (!ctx.meetsDiscordAgeCheck) {
-      ctx.status = Status.OK;
-      ctx.body = {
-        error: "Discord account is not old enough.",
-      };
-      return;
-    }
+  console.log("Setting map version to", version);
 
+  if (version === MapRoomVersion.V2) {
     await joinOrCreateWorld(user, save);
-  } else {
-    await leaveWorld(user, save);
-  }
+  } 
+  // else {
+  //   await leaveWorld(user, save);
+  // }
 
   const filteredSave = FilterFrontendKeys(save);
 

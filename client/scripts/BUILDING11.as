@@ -44,11 +44,11 @@ package
          {
             if(_lvl.Get() < 2 && GLOBAL.StatGet("mrl") == 2)
             {
-               GLOBAL.StatSet("mrl",2); // Comment: Previously set to 1
+               GLOBAL.StatSet("mrl",1); // Comment: Previously set to 1
             }
             if(GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD && _lvl.Get() == 1 && GLOBAL.StatGet("mrl") != 2 && BASE._saveCounterA == BASE._saveCounterB && !BASE._saving)
             {
-               this.NewWorld();
+               //this.NewWorld();
             }
          }
          if(!GLOBAL._catchup && GLOBAL._render && _countdownUpgrade.Get() && _countdownUpgrade.Get() < 60 * 60 * 24 * 2)

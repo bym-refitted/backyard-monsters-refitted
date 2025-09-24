@@ -111,12 +111,12 @@ package
                }
                if(GLOBAL._bMap)
                {
-                  if(GLOBAL._bMap._canFunction && initMaproomSetup)
+                  if(GLOBAL._bMap._canFunction)
                   {
                      GLOBAL.BlockerAdd();
                      SOUNDS.Play("click1");
                      _open = true;
-                     if([1, 2].indexOf(loadState) === -1)
+                     if(true)
                      {
                         // Loads Map Room 1
                         // This can be triggered if save.usemap on the server is not set or 0

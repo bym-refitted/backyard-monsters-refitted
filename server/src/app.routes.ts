@@ -258,7 +258,7 @@ router.post(
   "/api/:apiVersion/bm/neighbours/get",
   apiVersion,
   verifyUserAuth,
-  debugDataLog("Getting Inferno neighbours"),
+  debugDataLog("Getting neighbours"),
   getNeighbours
 );
 

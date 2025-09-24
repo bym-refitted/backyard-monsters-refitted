@@ -197,6 +197,7 @@ package com.monsters.maproom
          };
          handleLoadError = function(param1:IOErrorEvent):void
          {
+            GLOBAL.Message("Failed to load map neighbours");
             MapRoom.BRIDGE.GLOBAL.WaitHide();
             MapRoom.BRIDGE.Log("err","MAPROOMPOPUP.Get HTTP");
             MapRoom.BRIDGE.GLOBAL.ErrorMessage("MAPROOMPOPUP.Get 2");
@@ -207,8 +208,7 @@ package com.monsters.maproom
          {
          }
          loadVars = [["baseid",0]];
-          // Comment: This does not exist - handle the use of this network request
-         // r = new MapRoom.BRIDGE.URLLoaderApi();
+         r = new URLLoaderApi();
          r.load(MapRoom.BRIDGE.GLOBAL._apiURL + "bm/neighbours/get",loadVars,handleLoadSuccessful,handleLoadError);
       }
       
