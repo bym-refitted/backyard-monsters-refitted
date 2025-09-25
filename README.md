@@ -1,9 +1,8 @@
 <p align="center">
-  <img width="80%" src="./server/public/assets/popups/base-destroyed.png">
+  <img width="90%" src="./server/public/assets/popups/outpost-takeover.png">
 </p>
 
-<br />
-<br />
+<br>
 
 ![Koa.JS](https://img.shields.io/badge/Koa.JS-%23121011.svg?style=for-the-badge)
 ![NodeJS](https://img.shields.io/badge/node.js-6DA55F?style=for-the-badge&logo=node.js&logoColor=white)

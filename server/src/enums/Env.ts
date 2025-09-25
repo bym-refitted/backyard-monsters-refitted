@@ -6,8 +6,3 @@ export enum Env {
   LOCAL = "local",
   PROD = "production",
 }
-
-export enum Auth {
-  ENABLED = "enabled",
-  DISABLED = "disabled",
-}

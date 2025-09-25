@@ -4,7 +4,6 @@ import { KoaController } from "../../../utils/KoaController";
 import { ORMContext } from "../../../server";
 import { Save } from "../../../models/save.model";
 import { Status } from "../../../enums/StatusCodes";
-import { logging } from "../../../utils/logger";
 
 interface Monster {
   hid: number[];

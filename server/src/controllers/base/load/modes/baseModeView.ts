@@ -1,5 +1,4 @@
 import { Save } from "../../../../models/save.model";
-import { User } from "../../../../models/user.model";
 import { ORMContext } from "../../../../server";
 import { wildMonsterSave } from "../../../../services/maproom/v2/wildMonsters";
 import { getCurrentDateTime } from "../../../../utils/getCurrentDateTime";
