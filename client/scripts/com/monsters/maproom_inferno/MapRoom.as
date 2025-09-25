@@ -5,6 +5,7 @@ package com.monsters.maproom_inferno
    import flash.display.Sprite;
    import flash.events.Event;
    import flash.events.MouseEvent;
+   import flash.system.Capabilities;
    
    public class MapRoom extends old_maproom
    {
@@ -46,6 +47,13 @@ package com.monsters.maproom_inferno
       {
          this.x = 0;
          this.y = 20;
+         if (Capabilities.playerType == "Desktop") 
+         {
+            this.scaleX = 1.8;
+            this.scaleY = 1.8;
+            this.x = GLOBAL._SCREENCENTER.x - (this.width / 2);
+            this.y = GLOBAL._SCREENCENTER.y - (this.height / 2);
+         }
          top = new Sprite();
          top.addChild(mvBtn);
          top.addChild(lvBtn);

@@ -3,6 +3,7 @@ package
    import flash.display.DisplayObject;
    import gs.TweenLite;
    import gs.easing.Quad;
+   import flash.system.Capabilities;
    
    public class POPUPSETTINGS
    {
@@ -37,13 +38,21 @@ package
       
       public static function ScaleUp(param1:DisplayObject) : void
       {
-         param1.scaleX = 0.9;
-         param1.scaleY = 0.9;
-         TweenLite.to(param1,0.2,{
-            "scaleX":1,
-            "scaleY":1,
-            "ease":Quad.easeOut
-         });
+         if (Capabilities.playerType == "Desktop")
+         {
+            param1.scaleX = 1.8;
+            param1.scaleY = 1.8;
+         }
+         else
+         {
+            param1.scaleX = 0.9;
+            param1.scaleY = 0.9;
+            TweenLite.to(param1,0.2,{
+               "scaleX":1,
+               "scaleY":1,
+               "ease":Quad.easeOut
+            });
+         }
       }
       
       public static function ScaleUpFromTopLeft(param1:DisplayObject) : void
