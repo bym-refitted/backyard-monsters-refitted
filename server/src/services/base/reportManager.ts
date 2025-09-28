@@ -39,14 +39,15 @@ export const logAttackViolation = async (user: User, message: string) => {
   const incident = await getOrCreateReport(user);
 
   incident.attackViolations += 1;
-  
+  user.banned = true;
+
   const newReport: ReportEntry = {
     message: `ATTACK VIOLATION: ${message}`,
     timestamp: new Date().toISOString(),
   };
-  
+
   incident.report.push(newReport);
-  await ORMContext.em.persistAndFlush(incident);
+  await ORMContext.em.persistAndFlush([incident, user]);
 };
 
 /**

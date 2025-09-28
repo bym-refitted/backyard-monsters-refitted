@@ -4,8 +4,8 @@ import { ORMContext } from "../../../../server";
 import { BaseMode } from "../../../../enums/Base";
 import { logging } from "../../../../utils/logger";
 import { balancedReward } from "../../../../services/base/balancedReward";
-import { logReport } from "../../../../services/base/reportManager";
 import { resetInvasionWaves } from "../../../../services/events/wmi/invasionUtils";
+import { permissionErr } from "../../../../errors/errors";
 
 /**
  * Retrieves the save data for the user based on the provided `baseid`.
@@ -30,8 +30,7 @@ export const baseModeBuild = async (user: User, baseid: string) => {
   if (baseid === BaseMode.DEFAULT) {
     await balancedReward(userSave);
 
-    if (userSave.stats?.other) 
-      resetInvasionWaves(userSave.stats.other);
+    if (userSave.stats?.other) resetInvasionWaves(userSave.stats.other);
 
     await ORMContext.em.persistAndFlush(userSave);
     return userSave;
@@ -41,13 +40,8 @@ export const baseModeBuild = async (user: User, baseid: string) => {
     const baseSave = await ORMContext.em.findOne(Save, { baseid });
 
     if (!baseSave) throw new Error(`Base save not found for baseid: ${baseid}`);
-
-    if (baseSave.userid !== user.userid) {
-      const message = `${user.username} attempted to access unauthorized baseid: ${baseid}`;
-      await logReport(user, message);
-      throw new Error(message);
-    }
-
+    if (baseSave.userid !== user.userid) throw permissionErr();
+    
     return baseSave;
   }
 
