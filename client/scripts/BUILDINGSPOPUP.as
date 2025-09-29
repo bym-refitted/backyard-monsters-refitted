@@ -4,7 +4,6 @@ package
    import com.monsters.managers.InstanceManager;
    import flash.display.MovieClip;
    import flash.events.MouseEvent;
-   import flash.system.Capabilities;
    
    public class BUILDINGSPOPUP extends BUILDINGSPOPUP_CLIP
    {
@@ -336,16 +335,7 @@ package
       
       public function Center() : void
       {
-         if (Capabilities.playerType == "Desktop") 
-         {
-            POPUPSETTINGS.AlignToCenter(this);
-            this.x = -300;
-            this.y = -220;
-         }
-         else 
-         {
-            POPUPSETTINGS.AlignToUpperLeft(this);
-         }
+         POPUPSETTINGS.AlignToUpperLeft(this);
       }
       
       public function ScaleUp() : void

@@ -4,6 +4,7 @@ package
    import gs.TweenLite;
    import gs.easing.Quad;
    import flash.system.Capabilities;
+   import utils.DisplayScaler;
    
    public class POPUPSETTINGS
    {
@@ -40,8 +41,7 @@ package
       {
          if (Capabilities.playerType == "Desktop")
          {
-            param1.scaleX = 1.8;
-            param1.scaleY = 1.8;
+            DisplayScaler.scaleElement(param1);
          }
          else
          {

@@ -6,6 +6,7 @@ package com.monsters.maproom_inferno
    import flash.events.Event;
    import flash.events.MouseEvent;
    import flash.system.Capabilities;
+   import utils.DisplayScaler;
    
    public class MapRoom extends old_maproom
    {
@@ -49,8 +50,7 @@ package com.monsters.maproom_inferno
          this.y = 20;
          if (Capabilities.playerType == "Desktop") 
          {
-            this.scaleX = 1.8;
-            this.scaleY = 1.8;
+            DisplayScaler.scaleElement(this);
             this.x = GLOBAL._SCREENCENTER.x - (this.width / 2);
             this.y = GLOBAL._SCREENCENTER.y - (this.height / 2);
          }
