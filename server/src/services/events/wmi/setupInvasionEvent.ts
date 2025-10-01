@@ -39,7 +39,7 @@ export const setupInvasionEvent = (type: Invasion): InvasionEventResult => {
       if (devConfig.wmi1StartNowOverride) {
         startDate = new Date(devConfig.wmi1StartNowOverride * 1000);
       } else {
-        startDate = getNextInvasionDate(now, 1);
+        startDate = getNextInvasionDate(now, 0);
       }
       break;
 
@@ -47,7 +47,7 @@ export const setupInvasionEvent = (type: Invasion): InvasionEventResult => {
       if (devConfig.wmi2StartNowOverride) {
         startDate = new Date(devConfig.wmi2StartNowOverride * 1000);
       } else {
-        startDate = getNextInvasionDate(now, 0);
+        startDate = getNextInvasionDate(now, 1);
       }
       break;
 
