@@ -524,6 +524,7 @@ export class Save {
     "damage",
     "locked",
     "protected",
+    "monsters",
     "champion",
     "over",
     "buildingdata",
