@@ -13,6 +13,9 @@ export class World {
   @Property()
   playerCount: number = 0;
 
+  @Property({ default: 2 })
+  map_version: number = 2;
+
   @Property()
   createdAt: Date = new Date();
 

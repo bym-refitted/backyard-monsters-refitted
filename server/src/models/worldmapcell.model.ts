@@ -56,6 +56,10 @@ export class WorldMapCell {
   @Property()
   terrainHeight!: number;
 
+  @Index()
+  @Property({ default: 2 })
+  map_version!: number;
+
   @ManyToOne(() => World)
   world!: World;
 
