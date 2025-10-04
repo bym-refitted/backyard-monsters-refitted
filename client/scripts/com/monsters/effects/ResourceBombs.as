@@ -59,8 +59,8 @@ package com.monsters.effects
                "name":KEYS.Get("bomb_tw0_name"),
                "description":"",
                "radius":200,
-               "damage":2200,
-               "cost":10000,
+               "damage":SecNum(2200),
+               "cost":SecNum(10000),
                "resource":1,
                "image":"bombbuttons/twigs1.png",
                "col":0,
@@ -74,8 +74,8 @@ package com.monsters.effects
                "name":KEYS.Get("bomb_tw1_name"),
                "description":"",
                "radius":200,
-               "damage":7000,
-               "cost":100000,
+               "damage":SecNum(7000),
+               "cost":SecNum(100000),
                "resource":1,
                "image":"bombbuttons/twigs2.png",
                "col":1,
@@ -89,8 +89,8 @@ package com.monsters.effects
                "name":KEYS.Get("bomb_tw2_name"),
                "description":"",
                "radius":200,
-               "damage":50000,
-               "cost":5000000,
+               "damage":SecNum(50000),
+               "cost":SecNum(5000000),
                "resource":1,
                "image":"bombbuttons/twigs3.png",
                "col":2,
@@ -104,8 +104,8 @@ package com.monsters.effects
                "name":KEYS.Get("bomb_pb0_name"),
                "description":"",
                "radius":200,
-               "damage":2400,
-               "cost":10000,
+               "damage":SecNum(2400),
+               "cost":SecNum(10000),
                "resource":2,
                "image":"bombbuttons/pebbles1.png",
                "col":0,
@@ -119,8 +119,8 @@ package com.monsters.effects
                "name":KEYS.Get("bomb_pb1_name"),
                "description":"",
                "radius":300,
-               "damage":9000,
-               "cost":100000,
+               "damage":SecNum(9000),
+               "cost":SecNum(100000),
                "resource":2,
                "image":"bombbuttons/pebbles2.png",
                "col":1,
@@ -134,8 +134,8 @@ package com.monsters.effects
                "name":KEYS.Get("bomb_pb2_name"),
                "description":"",
                "radius":350,
-               "damage":30000,
-               "cost":2000000,
+               "damage":SecNum(30000),
+               "cost":SecNum(2000000),
                "resource":2,
                "image":"bombbuttons/pebbles3.png",
                "col":2,
@@ -149,8 +149,8 @@ package com.monsters.effects
                "name":KEYS.Get("bomb_pb3_name"),
                "description":"",
                "radius":400,
-               "damage":75000,
-               "cost":10000000,
+               "damage":SecNum(75000),
+               "cost":SecNum(10000000),
                "resource":2,
                "image":"bombbuttons/pebbles4.png",
                "col":3,
@@ -165,10 +165,10 @@ package com.monsters.effects
                "description":"bomb_pu_description",
                "damageMult":0.2,
                "radius":150,
-               "damage":0,
+               "damage":SecNum(0),
                "speed":1.2,
                "speedlength":10,
-               "cost":10000,
+               "cost":SecNum(10000),
                "resource":3,
                "image":"bombbuttons/putty1.png",
                "col":0,
@@ -183,10 +183,10 @@ package com.monsters.effects
                "description":"bomb_pu_description",
                "damageMult":0.4,
                "radius":150,
-               "damage":0,
+               "damage":SecNum(0),
                "speed":1.4,
                "speedlength":15,
-               "cost":100000,
+               "cost":SecNum(100000),
                "resource":3,
                "image":"bombbuttons/putty2.png",
                "col":1,
@@ -201,10 +201,10 @@ package com.monsters.effects
                "description":"bomb_pu_description",
                "damageMult":0.7,
                "radius":300,
-               "damage":0,
+               "damage":SecNum(0),
                "speed":1.8,
                "speedlength":30,
-               "cost":5000000,
+               "cost":SecNum(5000000),
                "resource":3,
                "image":"bombbuttons/putty3.png",
                "col":2,
@@ -219,10 +219,10 @@ package com.monsters.effects
                "description":"bomb_pu_description",
                "damageMult":0.9,
                "radius":500,
-               "damage":0,
+               "damage":SecNum(0),
                "speed":2,
                "speedlength":40,
-               "cost":10000000,
+               "cost":SecNum(10000000),
                "resource":3,
                "image":"bombbuttons/putty4.png",
                "col":3,
@@ -249,11 +249,11 @@ package com.monsters.effects
             for(_loc4_ in _bombs)
             {
                _loc3_ = _bombs[_loc4_];
-               if(GLOBAL._attackersResources["r" + _loc3_.resource].Get() >= _loc3_.cost && GLOBAL._attackersCatapult >= _loc3_.catapultLevel && _loc3_.cost <= 2000000)
+               if(GLOBAL._attackersResources["r" + _loc3_.resource].Get() >= _loc3_.cost.Get() && GLOBAL._attackersCatapult >= _loc3_.catapultLevel && _loc3_.cost.Get() <= 2000000)
                {
-                  if(_loc3_.cost > _loc1_)
+                  if(_loc3_.cost.Get() > _loc1_)
                   {
-                     _loc1_ = int(_loc3_.cost);
+                     _loc1_ = int(_loc3_.cost.Get());
                      _loc2_ = _loc4_;
                   }
                }
@@ -324,11 +324,11 @@ package com.monsters.effects
          ATTACK.RemoveDropZone();
          if(GLOBAL._attackersResources)
          {
-            if(GLOBAL._attackersResources["r" + _loc2_.resource].Get() >= _loc2_.cost)
+            if(GLOBAL._attackersResources["r" + _loc2_.resource].Get() >= _loc2_.cost.Get())
             {
-               GLOBAL._resources["r" + _loc2_.resource].Add(-_loc2_.cost);
-               GLOBAL._hpResources["r" + _loc2_.resource] -= _loc2_.cost;
-               GLOBAL._attackersDeltaResources["r" + _loc2_.resource] = new SecNum(-_loc2_.cost);
+               GLOBAL._resources["r" + _loc2_.resource].Add(-_loc2_.cost.Get());
+               GLOBAL._hpResources["r" + _loc2_.resource] -= _loc2_.cost.Get();
+               GLOBAL._attackersDeltaResources["r" + _loc2_.resource] = new SecNum(-_loc2_.cost.Get());
                GLOBAL._attackersDeltaResources.dirty = true;
                _loc3_ = true;
             }
@@ -349,7 +349,7 @@ package com.monsters.effects
             ACHIEVEMENTS.Check("hugerage",1);
          }
          ATTACK.Log("bomb" + ResourceBombs._bombid,"<font color=\"#A800FF\">" + KEYS.Get("attack_log_catapulted",{
-            "v1":GLOBAL.FormatNumber(_loc2_.cost),
+            "v1":GLOBAL.FormatNumber(_loc2_.cost.Get()),
             "v2":GLOBAL._resourceNames[_loc2_.resource - 1]
          }) + "</font>");
          _state = 0;
@@ -382,11 +382,11 @@ package com.monsters.effects
          }
          if(ALLIANCES._myAlliance)
          {
-            LOGGER.Stat([27,param3.resource,param3.col,param3.cost,ALLIANCES._allianceID]);
+            LOGGER.Stat([27,param3.resource,param3.col,param3.cost.Get(),ALLIANCES._allianceID]);
          }
          else
          {
-            LOGGER.Stat([27,param3.resource,param3.col,param3.cost]);
+            LOGGER.Stat([27,param3.resource,param3.col,param3.cost.Get()]);
          }
       }
       
@@ -435,13 +435,13 @@ package com.monsters.effects
             {
                _loc1_.push(_bombs[_loc3_].radius);
             }
-            if(_bombs[_loc3_].damage)
+            if(_bombs[_loc3_].damage.Get())
             {
-               _loc1_.push(_bombs[_loc3_].damage);
+               _loc1_.push(_bombs[_loc3_].damage.Get());
             }
-            if(_bombs[_loc3_].cost)
+            if(_bombs[_loc3_].cost.Get())
             {
-               _loc1_.push(_bombs[_loc3_].cost);
+               _loc1_.push(_bombs[_loc3_].cost.Get());
             }
             if(_bombs[_loc3_].resource)
             {
