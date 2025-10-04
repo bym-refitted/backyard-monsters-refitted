@@ -89,7 +89,6 @@ export const baseLoad: KoaController = async (ctx) => {
       ? 205
       : filteredSave.tutorialstage;
 
-    // Get fresh flags with current invasion data
     const flags = getFlags();
     flags.discordOldEnough = ctx.meetsDiscordAgeCheck;
 
