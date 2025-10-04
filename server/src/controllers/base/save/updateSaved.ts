@@ -1,6 +1,6 @@
 import z from "zod";
 
-import { flags } from "../../../data/flags";
+import { getFlags } from "../../../data/flags";
 import { BaseMode, BaseType } from "../../../enums/Base";
 import { Status } from "../../../enums/StatusCodes";
 import { saveFailureErr } from "../../../errors/errors";
@@ -56,6 +56,9 @@ export const updateSaved: KoaController = async (ctx) => {
     }
 
     const filteredSave = FilterFrontendKeys(baseSave);
+
+    const flags = getFlags();
+    flags.discordOldEnough = ctx.meetsDiscordAgeCheck;
 
     const responseBody = {
       error: 0,
