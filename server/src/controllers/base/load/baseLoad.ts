@@ -5,7 +5,7 @@ import { KoaController } from "../../../utils/KoaController";
 import { storeItems } from "../../../data/store/storeItems";
 import { User } from "../../../models/user.model";
 import { FilterFrontendKeys } from "../../../utils/FrontendKey";
-import { flags } from "../../../data/flags";
+import { getFlags } from "../../../data/flags";
 import { getCurrentDateTime } from "../../../utils/getCurrentDateTime";
 import { BaseMode, BaseType } from "../../../enums/Base";
 import { WORLD_SIZE } from "../../../config/WorldGenSettings";
@@ -89,6 +89,8 @@ export const baseLoad: KoaController = async (ctx) => {
       ? 205
       : filteredSave.tutorialstage;
 
+    // Get fresh flags with current invasion data
+    const flags = getFlags();
     flags.discordOldEnough = ctx.meetsDiscordAgeCheck;
 
     const responseBody = {
