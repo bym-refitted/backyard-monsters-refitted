@@ -152,7 +152,9 @@ package com.monsters.maproom3.data
          {
             return;
          }
-         var timer:int = getTimer();
+         // Timeout disabled - we have a loading screen that blocks interaction anyway
+         // No need to artificially slow down cell creation with time-slicing
+         // var timer:int = getTimer();
          this.m_CellCreationIndexX;
          while(this.m_CellCreationIndexX < this.m_Width)
          {
@@ -162,10 +164,11 @@ package com.monsters.maproom3.data
                index = this.GetCellIndex(this.m_CellCreationIndexX,this.m_CellCreationIndexY);
                cellData = this.m_CreatingMapData.data[index];
                this.m_MapRoom3Cells[index] = new MapRoom3Cell(this.m_CellCreationIndexX,this.m_CellCreationIndexY,cellData.h,cellData.t);
-               if(getTimer() - timer > CELL_CREATION_LOOP_TIMEOUT)
-               {
-                  return;
-               }
+               // Timeout check disabled for faster loading
+               // if(getTimer() - timer > CELL_CREATION_LOOP_TIMEOUT)
+               // {
+               //    return;
+               // }
                ++this.m_CellCreationIndexY;
             }
             this.m_CellCreationIndexY = 0;
