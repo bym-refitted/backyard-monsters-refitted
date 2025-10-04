@@ -2,17 +2,21 @@ import { devConfig } from "../config/DevSettings";
 import { getActiveInvasion } from "../services/events/wmi/getActiveInvasion";
 import { setupInvasionEvent } from "../services/events/wmi/setupInvasionEvent";
 
-const activeInvasion = getActiveInvasion();
-const invasionPhases = setupInvasionEvent(activeInvasion).phases;
-
-// Flag to tell the client which invasion is active
-const invasionFlags = { ...invasionPhases, activeInvasion };
+/**
+ * Gets the current invasion flags.
+ * These flags are used to determine the state of Wild Monster Invasion events.
+ */
+const getInvasionFlags = () => {
+  const activeInvasion = getActiveInvasion();
+  const invasionPhases = setupInvasionEvent(activeInvasion).phases;
+  return { ...invasionPhases, activeInvasion };
+};
 
 /**
  * Configuration flags for game settings.
  * These flags are used to enable/disable features in game.
  */
-export const flags = {
+export const getFlags = () => ({
   // Platforms:
   viximo: 0,
   kongregate: 0,
@@ -52,7 +56,7 @@ export const flags = {
   chat: 0, // Disable chat
   event1: 1,
   event2: 0,
-  ...invasionFlags,
+  ...getInvasionFlags(),
   iframestart_override: 0,
   mushrooms: 1,
   chatwhitelist: "2,3,23",
@@ -88,4 +92,4 @@ export const flags = {
   topups: 1,
   topup_gifts: 1,
   gamedebug: 1,
-};
+});
