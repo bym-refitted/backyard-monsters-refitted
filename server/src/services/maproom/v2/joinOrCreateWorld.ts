@@ -3,7 +3,7 @@ import { User } from "../../../models/user.model";
 import { Save } from "../../../models/save.model";
 import { logging } from "../../../utils/logger";
 import { World } from "../../../models/world.model";
-import { MapRoom, MapRoomCell } from "../../../enums/MapRoom";
+import { MapRoom2, MapRoomCell } from "../../../enums/MapRoom";
 import { EntityManager } from "@mikro-orm/core";
 import { ORMContext } from "../../../server";
 import { findFreeCell } from "./findFreeCell";
@@ -31,7 +31,7 @@ export const joinOrCreateWorld = async (
   let world: World | null = null;
 
   let availableWorlds = await em.find(World, {
-    playerCount: { $lt: MapRoom.MAX_PLAYERS },
+    playerCount: { $lt: MapRoom2.MAX_PLAYERS },
   });
 
   const shuffledWorlds = availableWorlds.sort(() => Math.random() - 0.5);

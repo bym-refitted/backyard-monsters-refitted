@@ -1,5 +1,5 @@
 import { Loaded } from "@mikro-orm/core";
-import { MapRoom } from "../../../enums/MapRoom";
+import { MapRoom2 } from "../../../enums/MapRoom";
 import { Save } from "../../../models/save.model";
 import { User } from "../../../models/user.model";
 import { WorldMapCell } from "../../../models/worldmapcell.model";
@@ -60,8 +60,8 @@ export const validateRange = async (
   // Otherwise, we collect the baseid's of outposts within a 4-cell square area of the attack cell
   for (let dx = -4; dx <= 4; dx++) {
     for (let dy = -4; dy <= 4; dy++) {
-      const neighborX = (cellX + dx + MapRoom.WIDTH) % MapRoom.WIDTH;
-      const neighborY = (cellY + dy + MapRoom.HEIGHT) % MapRoom.HEIGHT;
+      const neighborX = (cellX + dx + MapRoom2.WIDTH) % MapRoom2.WIDTH;
+      const neighborY = (cellY + dy + MapRoom2.HEIGHT) % MapRoom2.HEIGHT;
 
       const outpostId = userOutposts.get(`${neighborX}${neighborY}`);
       if (outpostId) outpostsInRange.push({ baseid: outpostId, dx, dy });
@@ -106,8 +106,8 @@ const getDistanceFromMain = (
   const deltaY = Math.abs(baseY - cellY);
 
   // Wrap-around distances (for toroidal map)
-  const wrappedDeltaX = Math.min(deltaX, MapRoom.WIDTH - deltaX);
-  const wrappedDeltaY = Math.min(deltaY, MapRoom.HEIGHT - deltaY);
+  const wrappedDeltaX = Math.min(deltaX, MapRoom2.WIDTH - deltaX);
+  const wrappedDeltaY = Math.min(deltaY, MapRoom2.HEIGHT - deltaY);
 
   // Use the maximum wrapped distance to calculate square range distance
   return Math.max(wrappedDeltaX, wrappedDeltaY);

@@ -1,12 +1,23 @@
 /**
- * Enum representing the size and player capacity of the Map Room.
+ * Enum representing the size and player capacity of Map Room 2.
  *
  * @enum {number}
  */
-export enum MapRoom {
+export enum MapRoom2 {
   WIDTH = 800,
   HEIGHT = 800,
   MAX_PLAYERS = 2500,
+}
+
+/**
+ * Enum representing the size and player capacity of Map Room 3.
+ *
+ * @enum {number}
+ */
+export enum MapRoom3 {
+  WIDTH = 500,
+  HEIGHT = 500,
+  MAX_PLAYERS = 1800,
 }
 
 /**

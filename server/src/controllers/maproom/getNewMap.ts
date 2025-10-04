@@ -1,4 +1,4 @@
-import { MapRoom, MapRoomVersion } from "../../enums/MapRoom";
+import { MapRoom2, MapRoomVersion } from "../../enums/MapRoom";
 import { Status } from "../../enums/StatusCodes";
 import { BASE_URL, PORT } from "../../server";
 import { KoaController } from "../../utils/KoaController";
@@ -15,8 +15,8 @@ import { CURRENT_MAPROOM_VERSION } from "./setMapVersion";
  */
 export const getNewMap: KoaController = async (ctx) => {
   const cells = [];
-  const cellX = MapRoom.WIDTH;
-  const cellY = MapRoom.HEIGHT;
+  const cellX = MapRoom2.WIDTH;
+  const cellY = MapRoom2.HEIGHT;
 
   if (CURRENT_MAPROOM_VERSION === MapRoomVersion.V3) {
     // TODO: What is the purpose of this?
@@ -30,8 +30,8 @@ export const getNewMap: KoaController = async (ctx) => {
     ctx.body = {
       newmap: true,
       mapheaderurl: `${BASE_URL}:${PORT}/api/bm/getnewmap`,
-      width: MapRoom.WIDTH,
-      height: MapRoom.HEIGHT,
+      width: MapRoom2.WIDTH,
+      height: MapRoom2.HEIGHT,
       // data: cells,
     };
   } else {

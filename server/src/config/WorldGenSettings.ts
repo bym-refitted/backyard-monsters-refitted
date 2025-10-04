@@ -1,10 +1,14 @@
-import { MapRoom } from "../enums/MapRoom";
+import { MapRoom2 } from "../enums/MapRoom";
+
+// =============================================================================
+// Map Room 2 - World Generation Configuration
+// =============================================================================
 
 /**
- * Represents the size of the world map.
+ * Represents the size of Map Room 2 world map.
  * @constant {number[]}
  */
-export const WORLD_SIZE = [MapRoom.HEIGHT, MapRoom.WIDTH];
+export const WORLD_SIZE = [MapRoom2.HEIGHT, MapRoom2.WIDTH];
 
 /**
  * The scale factor for noise generation. This value determines the frequency of the noise.
@@ -25,3 +29,52 @@ export const TERRAIN_SCALE = 95;
  * @constant {number}
  */
 export const EDGE_TRANSITION_WIDTH = 3;
+
+// =============================================================================
+// Map Room 3 - World Generation Configuration
+// =============================================================================
+
+/**
+ * The seed for cell generation. Changing this will produce a different cell layout.
+ * @constant {string}
+ */
+export const CELL_SEED = "maproom3-cells";
+
+/**
+ * The scale factor for placement noise. This determines how clustered cells are.
+ * Lower values = more scattered, higher values = larger clusters
+ * @constant {number}
+ */
+export const PLACEMENT_NOISE_SCALE = 5;
+
+/**
+ * The scale factor for cell type noise. This determines how varied cell types are.
+ * Lower values = more mixed cell types, higher values = larger regions of same type
+ * @constant {number}
+ */
+export const TYPE_NOISE_SCALE = 3;
+
+/**
+ * Threshold for placing cells. Only cells with placement noise above this value get cells.
+ * Range: -1 to 1. Higher values = fewer cells, lower values = more cells
+ * @constant {number}
+ */
+export const PLACEMENT_THRESHOLD = 0.25;
+
+/**
+ * Number of cells from the map edge where cells will not be placed.
+ * @constant {number}
+ */
+export const CELL_EDGE = 1;
+
+/**
+ * Minimum altitude value for cells (corresponds to clover01.png)
+ * @constant {number}
+ */
+export const MIN_CELL_ALTITUDE = 32;
+
+/**
+ * Maximum altitude value for cells (corresponds to spiky07.png)
+ * @constant {number}
+ */
+export const MAX_CELL_ALTITUDE = 79;
