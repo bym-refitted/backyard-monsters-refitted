@@ -48,18 +48,11 @@ export const CELL_SEED = "maproom3-cells";
 export const PLACEMENT_NOISE_SCALE = 5;
 
 /**
- * The scale factor for cell type noise. This determines how varied cell types are.
- * Lower values = more mixed cell types, higher values = larger regions of same type
- * @constant {number}
- */
-export const TYPE_NOISE_SCALE = 3;
-
-/**
  * Threshold for placing cells. Only cells with placement noise above this value get cells.
  * Range: -1 to 1. Higher values = fewer cells, lower values = more cells
  * @constant {number}
  */
-export const PLACEMENT_THRESHOLD = 0.25;
+export const PLACEMENT_THRESHOLD = 0.45;
 
 /**
  * Number of cells from the map edge where cells will not be placed.
