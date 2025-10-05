@@ -21,15 +21,13 @@ export const getMapRoomCells: KoaController = async (ctx) => {
     }
 
     const allCells = generateCells();
-    const cellPositions = new Set(
+    const coords = new Set(
       cellids.map(
         (id) => `${id % MapRoom3.WIDTH},${Math.floor(id / MapRoom3.WIDTH)}`
       )
     );
 
-    const cells = allCells.filter((cell) =>
-      cellPositions.has(`${cell.x},${cell.y}`)
-    );
+    const cells = allCells.filter((cell) => coords.has(`${cell.x},${cell.y}`));
 
     ctx.status = Status.OK;
     ctx.body = { celldata: [...cells] };
