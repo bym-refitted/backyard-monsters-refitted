@@ -3,13 +3,13 @@ import { EnumYardType } from "../../../../enums/EnumYardType";
 import { Tribes } from "../../../../enums/Tribes";
 import { WorldMapCell } from "../../../../models/worldmapcell.model";
 
-export const tribeOutpostCell = async (cell: WorldMapCell) => {
+export const strongholdCell = async (cell: WorldMapCell) => {
   const [cellX, cellY] = [cell.x, cell.y];
   const tribeIndex = (cellX + cellY) % Tribes.length;
 
   return {
     uid: 0,
-    b: EnumYardType.EMPTY,
+    b: EnumYardType.STRONGHOLD,
     bid: 1234,
     n: Tribes[tribeIndex],
     x: cellX,

@@ -26,7 +26,7 @@ export const initialPlayerCellData: KoaController = async (ctx) => {
         x: 10,
         y: 10,
         aid: 0,
-        i: 0,
+        i: 50,
         n: currentUser.username,
         tid: 0,
         l: baseLevel,
