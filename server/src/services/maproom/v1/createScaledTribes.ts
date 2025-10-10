@@ -81,6 +81,7 @@ export const createScaledTribes = async (save: Save, tribes: TribeScaleConfig) =
       tribe.destroyed = 0;
       tribe.destroyedAt = null;
       tribe.tribeHealthData = {};
+      tribe.monsters = undefined;
       persist = true;
     }
   }
