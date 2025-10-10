@@ -59,8 +59,9 @@ package
       /*
        * Optimized grid key generation with coordinate transformation caching.
        * Eliminates redundant ISO/Cartesian conversions and string concatenations.
+       * Returns null if the position is invalid.
       */
-      private static function getGridKey(isoPoint:Point):String {
+      private static function getGridKey(isoPoint:Point):* {
          if(!isoPoint) return null;
          
          // Create cache key for ISO coordinates (rounded to avoid floating point issues)
@@ -104,9 +105,9 @@ package
          _creepCellMoveCallCount = 0;
       }
       
-      public static function CreepCellAdd(param1:Point, param2:String, param3:MonsterBase) : String
+      public static function CreepCellAdd(param1:Point, param2:String, param3:MonsterBase) : *
       {
-         var _loc4_:String = getGridKey(param1);
+         var _loc4_:* = getGridKey(param1);
          
          if(!_loc4_) return null;
 
@@ -119,7 +120,7 @@ package
          return _loc4_;
       }
       
-      public static function CreepCellMove(param1:Point, param2:String, param3:MonsterBase, param4:String) : String
+      public static function CreepCellMove(param1:Point, param2:String, param3:MonsterBase, param4:String) : *
       {
          // Performance tracking
          _creepCellMoveCallCount++;
@@ -132,7 +133,7 @@ package
             clearGridCaches();
          }
          
-         var _loc5_:String = getGridKey(param1);
+         var _loc5_:* = getGridKey(param1);
          
          // Don't move creeps with invalid positions
          // We should still delete from old position if it was valid
