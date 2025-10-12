@@ -27,6 +27,12 @@ package com.monsters.monsters.components.abilities
          var _loc5_:String = null;
          var _loc6_:MonsterBase = null;
          this._target.removeEventListener(MonsterBase.k_DEATH_EVENT,this.split);
+         
+         if(this._target._friendly && this._target._house)
+         {
+            return;
+         }
+         
          var _loc2_:int = CREATURES.GetProperty(this._target._creatureID,"splits",0,this._target._friendly);
          var _loc3_:Point = new Point(this._target._mc.x + Math.random() * 120 - 60,this._target._mc.y + Math.random() * 120 - 60);
          var _loc4_:int = 0;
