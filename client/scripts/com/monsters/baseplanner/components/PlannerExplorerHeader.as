@@ -147,8 +147,11 @@ package com.monsters.baseplanner.components
                this._elementList[_loc2_].decrement();
                if(this._elementList[_loc2_].numBuildings <= 0)
                {
-                  this._elementList[_loc2_].x = 30000;
-                  delete global[this._elementList.splice(_loc2_,1)];
+                  var _loc3_:PlannerExplorerButton = this._elementList[_loc2_];
+                  _loc3_.x = 30000;
+                  this._elementList.splice(_loc2_,1);
+                  removeChild(_loc3_);
+                  _loc3_.clear();
                }
             }
             _loc2_++;

@@ -103,5 +103,6 @@ const infernoTribeSave = async (user: User, baseid: string): Promise<Save> => {
     ...tribeData,
     baseid,
     buildinghealthdata: existingTribe.tribeHealthData || {},
+    monsters: existingTribe.monsters ?? tribeData.monsters,
   });
 };

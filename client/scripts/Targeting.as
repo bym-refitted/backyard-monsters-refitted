@@ -59,8 +59,11 @@ package
       /*
        * Optimized grid key generation with coordinate transformation caching.
        * Eliminates redundant ISO/Cartesian conversions and string concatenations.
+       * Returns null if the position is invalid.
       */
-      private static function getGridKey(isoPoint:Point):String {
+      private static function getGridKey(isoPoint:Point):* {
+         if(!isoPoint) return null;
+         
          // Create cache key for ISO coordinates (rounded to avoid floating point issues)
          var cacheKey:String = int(isoPoint.x) + "_" + int(isoPoint.y);
          
@@ -74,6 +77,9 @@ package
          var cartesian:Point = _cartesianCache[cacheKey];
          if(!cartesian) {
             cartesian = GRID.FromISO(isoPoint.x, isoPoint.y);
+            
+            if(!cartesian) return null;
+            
             _cartesianCache[cacheKey] = cartesian;
          }
          
@@ -99,9 +105,11 @@ package
          _creepCellMoveCallCount = 0;
       }
       
-      public static function CreepCellAdd(param1:Point, param2:String, param3:MonsterBase) : String
+      public static function CreepCellAdd(param1:Point, param2:String, param3:MonsterBase) : *
       {
-         var _loc4_:String = getGridKey(param1);
+         var _loc4_:* = getGridKey(param1);
+         
+         if(!_loc4_) return null;
 
          var _loc5_:Object;
          if(!(_loc5_ = param3.dead ? _deadCreepCells : _creepCells)[_loc4_])
@@ -112,7 +120,7 @@ package
          return _loc4_;
       }
       
-      public static function CreepCellMove(param1:Point, param2:String, param3:MonsterBase, param4:String) : String
+      public static function CreepCellMove(param1:Point, param2:String, param3:MonsterBase, param4:String) : *
       {
          // Performance tracking
          _creepCellMoveCallCount++;
@@ -125,7 +133,15 @@ package
             clearGridCaches();
          }
          
-         var _loc5_:String = getGridKey(param1);
+         var _loc5_:* = getGridKey(param1);
+         
+         // Don't move creeps with invalid positions
+         // We should still delete from old position if it was valid
+         if(!_loc5_)
+         {
+            if (param4) CreepCellDelete(param2, param4, param3.dead);
+            return null;
+         }
          
          if(_loc5_ != param4)
          {
@@ -178,6 +194,9 @@ package
          var _loc15_:Number = NaN;
          var _loc16_:Point = null;
          var _loc17_:int = 0;
+         
+         if(!param2) return [];
+         
          var _loc5_:int = int(param2.x / _CELLSIZE);
          var _loc6_:int = int(param2.y / _CELLSIZE);
          var _loc7_:int = int(param1 / _CELLSIZE) + 1;
@@ -190,12 +209,28 @@ package
             while(_loc11_ <= _loc6_ + _loc7_)
             {
                _loc12_ = "node" + _loc10_ + "|" + _loc11_;
+               
+               if(!_creepCells[_loc12_])
+               {
+                  _loc11_++;
+                  continue;
+               }
                for(_loc13_ in _creepCells[_loc12_])
                {
-                  if((_loc14_ = _creepCells[_loc12_][_loc13_]) != param4 && canHitCreep(_loc14_.defenseFlags,param3))
+                  _loc14_ = _creepCells[_loc12_][_loc13_];
+                  
+                  if(!_loc14_ || !_loc14_._tmpPoint)
+                  {
+                     continue;
+                  }
+                  
+                  if(_loc14_ != param4 && canHitCreep(_loc14_.defenseFlags,param3))
                   {
                      _loc15_ = _loc14_.health;
                      _loc16_ = PATHING.FromISO(_loc14_._tmpPoint);
+                     
+                     if(!_loc16_) continue;
+                     
                      if((_loc17_ = int(GLOBAL.QuickDistanceSquared(param2,_loc16_))) < _loc9_)
                      {
                         _loc8_.push({
@@ -219,8 +254,13 @@ package
          var _loc5_:BFOUNDATION = null;
          var _loc6_:int = 0;
          var _loc4_:Array = [];
+         
+         if(!param2) return [];
+         
          for each(_loc5_ in BASE._buildingsAll)
          {
+            if(!_loc5_) continue;
+            
             if(_loc5_.isTargetable && _loc5_ != param3)
             {
                if((_loc6_ = int(GLOBAL.QuickDistanceSquared(param2,new Point(_loc5_.x,_loc5_.y)))) < param1 * param1)
@@ -259,6 +299,8 @@ package
       
       public static function getCreepsInRange(param1:Number, param2:Point, param3:int = 0, param4:MonsterBase = null) : Array
       {
+         if(!param2) return [];
+
          // Performance optimization: Cache range query results within the same frame
          _currentFrame = GLOBAL._frameNumber;
          var cacheKey:String = param1 + "_" + int(param2.x) + "_" + int(param2.y) + "_" + param3 + "_" + (param4 ? param4._id : "null");
@@ -282,9 +324,12 @@ package
             {
                print("haha, you are a fool! Attempting to get creeps in range, but targeting attacking or defending creeps not defined");
             }
-            return null;
+            return [];
          }
          param2 = PATHING.FromISO(param2);
+         
+         if(!param2)return [];
+         
          var _loc5_:int = int(param2.x / _CELLSIZE);
          var _loc6_:int = int(param2.y / _CELLSIZE);
          var _loc7_:int = int(param1 / _CELLSIZE) + 1;
@@ -297,12 +342,25 @@ package
             while(_loc11_ <= _loc6_ + _loc7_)
             {
                _loc12_ = "node" + _loc10_ + "|" + _loc11_;
+               
+               if(!_creepCells[_loc12_])
+               {
+                  _loc11_++;
+                  continue;
+               }
                for(_loc13_ in _creepCells[_loc12_])
                {
-                  if((_loc14_ = _creepCells[_loc12_][_loc13_]).health > 0 && _loc14_.isTargetable && _loc14_ != param4 && canHitCreep(param3,_loc14_.defenseFlags))
+                  _loc14_ = _creepCells[_loc12_][_loc13_];
+                  
+                  if(!_loc14_ || !_loc14_._tmpPoint) continue;
+                  
+                  if(_loc14_.health > 0 && _loc14_.isTargetable && _loc14_ != param4 && canHitCreep(param3,_loc14_.defenseFlags))
                   {
                      _loc15_ = _loc14_.health;
                      _loc16_ = PATHING.FromISO(_loc14_._tmpPoint);
+
+                     if(!_loc16_) continue;
+
                      if((_loc17_ = int(GLOBAL.QuickDistanceSquared(param2,_loc16_))) < _loc9_)
                      {
                         _loc8_.push({
@@ -348,7 +406,13 @@ package
          var _loc15_:Number = NaN;
          var _loc16_:Point = null;
          var _loc17_:int = 0;
+         
+         if(!param1) return [];
+         
          param1 = PATHING.FromISO(param1);
+         
+         if(!param1) return [];
+         
          var _loc5_:int = int(param1.x / _CELLSIZE);
          var _loc6_:int = int(param1.y / _CELLSIZE);
          var _loc7_:int = int(param2 / _CELLSIZE) + 1;
@@ -361,14 +425,27 @@ package
             while(_loc11_ <= _loc6_ + _loc7_)
             {
                _loc12_ = "node" + _loc10_ + "|" + _loc11_;
+               
+               if(!_deadCreepCells[_loc12_])
+               {
+                  _loc11_++;
+                  continue;
+               }
                for(_loc13_ in _deadCreepCells[_loc12_])
                {
-                  if((_loc14_ = _deadCreepCells[_loc12_][_loc13_]).health <= 0 && _loc14_._visible && _loc14_.isTargetable && _loc14_ != param4)
+                  _loc14_ = _deadCreepCells[_loc12_][_loc13_];
+                  
+                  if(!_loc14_ || !_loc14_._tmpPoint) continue;
+                  
+                  if(_loc14_.health <= 0 && _loc14_._visible && _loc14_.isTargetable && _loc14_ != param4)
                   {
                      if(canHitCreep(param3,_loc14_.defenseFlags))
                      {
                         _loc15_ = _loc14_.health;
                         _loc16_ = PATHING.FromISO(_loc14_._tmpPoint);
+                        
+                        if(!_loc16_) continue;
+                        
                         if((_loc17_ = int(GLOBAL.QuickDistanceSquared(param1,_loc16_))) < _loc9_)
                         {
                            _loc8_.push({
@@ -402,6 +479,9 @@ package
             return null;
          }
          _loc5_.sortOn(["dist"],Array.NUMERIC);
+         
+         if(!_loc5_[0] || !_loc5_[0].creep) return null;
+         
          return _loc5_[0].creep;
       }
       
@@ -412,14 +492,21 @@ package
          var _loc8_:int = 0;
          var _loc9_:String = null;
          var _loc10_:* = undefined;
+         
+         if(!param1 || !param4) return 0;
+         
          if(param5 > param2)
          {
             param5 = param2 - 1;
          }
          for each(_loc10_ in param4)
          {
+            if(!_loc10_) continue;
+     
             if(getQualifiedClassName(_loc10_) == "Object")
             {
+               if(!_loc10_.creep) continue;
+               
                _loc6_ = int(_loc10_.dist);
                _loc10_ = _loc10_.creep;
             }
@@ -459,11 +546,13 @@ package
       
       public static function getFriendlyFlag(param1:MonsterBase) : int
       {
+         if(!param1) return k_TARGETS_ATTACKERS;
          return param1._friendly ? k_TARGETS_DEFENDERS : k_TARGETS_ATTACKERS;
       }
       
       public static function getEnemyFlag(param1:MonsterBase) : int
       {
+         if(!param1) return k_TARGETS_DEFENDERS;
          return param1._friendly ? k_TARGETS_ATTACKERS : k_TARGETS_DEFENDERS;
       }
       
@@ -475,6 +564,9 @@ package
             return null;
          }
          _loc4_.sortOn(["dist"],Array.NUMERIC);
+         
+         if(!_loc4_[0] || !_loc4_[0].creep) return null;
+         
          return _loc4_[0].creep;
       }
    }
