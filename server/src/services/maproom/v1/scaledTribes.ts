@@ -27,8 +27,8 @@ export const scaledTribes = async (user: User, saveData: BaseSaveData) => {
 
   if (!existingTribe) throw saveFailureErr();
 
-  // Update the existing tribe's health data
   existingTribe.tribeHealthData = saveData.buildinghealthdata;
+  existingTribe.monsters = saveData.monsters;
   existingTribe.destroyed = saveData.destroyed;
   existingTribe.destroyedAt = saveData.destroyed && getCurrentDateTime();
   
@@ -45,6 +45,7 @@ export const scaledTribes = async (user: User, saveData: BaseSaveData) => {
     ...tribeData,
     baseid: saveData.baseid,
     buildinghealthdata: existingTribe?.tribeHealthData || {},
+    monsters: existingTribe.monsters ?? tribeData.monsters,
   });
 
   await ORMContext.em.persistAndFlush(maproom1);

@@ -30,5 +30,6 @@ export const infernoModeView = async (user: User, baseid: string) => {
     ...tribeData,
     baseid,
     buildinghealthdata: existingTribe?.tribeHealthData || {},
+    monsters: existingTribe?.monsters ?? tribeData.monsters,
   });
 };
