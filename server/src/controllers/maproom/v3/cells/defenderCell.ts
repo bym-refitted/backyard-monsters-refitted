@@ -1,23 +1,40 @@
+import { Context } from "koa";
 import { EnumBaseRelationship } from "../../../../enums/EnumBaseRelationship";
 import { EnumYardType } from "../../../../enums/EnumYardType";
 import { Tribes } from "../../../../enums/Tribes";
 import { WorldMapCell } from "../../../../models/worldmapcell.model";
+import { CellData } from "../../../../types/CellData";
 
-export const defenderCell = async (cell: WorldMapCell) => {
-  const [cellX, cellY] = [cell.x, cell.y];
-  const tribeIndex = (cellX + cellY) % Tribes.length;
+/**
+ * Formats a fortification (defender) cell for Map Room 3
+ *
+ * @param cell - Generated cell with x, y, i (altitude), t (type)
+ * @returns Formatted fortification cell data
+ */
+export const defenderCell = async (
+  ctx: Context,
+  cell: WorldMapCell
+): Promise<CellData> => {
+  const tribeIndex = (cell.x + cell.y) % Tribes.length;
 
   return {
     uid: 0,
-    b: EnumYardType.FORTIFICATION,
     bid: 1234,
     n: Tribes[tribeIndex],
-    x: cellX,
-    y: cellY,
-    i: 50,
+    tid: 0,
+    x: cell.x,
+    y: cell.y,
+    i: 50, // value 50 places fortifications above terrain
     l: 50,
-    rel: EnumBaseRelationship.NONE,
-    dm: cell?.save?.damage || 0,
-    d: cell?.save?.destroyed || 0,
+    pl: 0,
+    r: 0,
+    dm: 0,
+    lo: 0,
+    fr: 0,
+    p: 0,
+    d: 0,
+    t: 0,
+    b: EnumYardType.FORTIFICATION,
+    rel: EnumBaseRelationship.ENEMY,
   };
 };

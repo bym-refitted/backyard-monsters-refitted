@@ -71,3 +71,15 @@ export const MIN_CELL_ALTITUDE = 32;
  * @constant {number}
  */
 export const MAX_CELL_ALTITUDE = 79;
+
+/**
+ * Grid spacing between strongholds (in cells)
+ * @constant {number}
+ */
+export const STRONGHOLD_GRID_SPACING = 30;
+
+/**
+ * Offset from the edge for the first stronghold placement
+ * @constant {number}
+ */
+export const STRONGHOLD_GRID_OFFSET = 10;
