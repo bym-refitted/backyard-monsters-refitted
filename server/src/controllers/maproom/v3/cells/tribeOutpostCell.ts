@@ -2,8 +2,9 @@ import { EnumBaseRelationship } from "../../../../enums/EnumBaseRelationship";
 import { EnumYardType } from "../../../../enums/EnumYardType";
 import { Tribes } from "../../../../enums/Tribes";
 import { WorldMapCell } from "../../../../models/worldmapcell.model";
+import { CellData } from "../../../../types/CellData";
 
-export const tribeOutpostCell = async (cell: WorldMapCell) => {
+export const tribeOutpostCell = async (cell: WorldMapCell): Promise<CellData> => {
   const [cellX, cellY] = [cell.x, cell.y];
   const tribeIndex = (cellX + cellY) % Tribes.length;
 

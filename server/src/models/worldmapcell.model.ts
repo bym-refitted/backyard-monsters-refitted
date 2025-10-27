@@ -10,8 +10,7 @@ import { FrontendKey } from "../utils/FrontendKey";
 import { World } from "./world.model";
 import { Save } from "./save.model";
 
-// Composite index on world_id, x, and y
-@Index({ properties: ["world_id", "x", "y"] })
+@Index({ properties: ["world_id", "map_version", "x", "y"] })
 @Entity({ tableName: "world_map_cell" })
 export class WorldMapCell {
   
@@ -31,6 +30,9 @@ export class WorldMapCell {
   @FrontendKey
   @Property()
   baseid!: string;
+
+  @Property({ default: 2 })
+  map_version!: number;
 
   @FrontendKey
   @Property()
@@ -55,10 +57,6 @@ export class WorldMapCell {
   @FrontendKey
   @Property()
   terrainHeight!: number;
-
-  @Index()
-  @Property({ default: 2 })
-  map_version!: number;
 
   @ManyToOne(() => World)
   world!: World;
