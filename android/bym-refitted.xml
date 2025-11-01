@@ -13,7 +13,7 @@
         <systemChrome>standard</systemChrome>
         <fullScreen>true</fullScreen>
         <aspectRatio>landscape</aspectRatio>
-        <!-- <autoOrients>true</autoOrients> -->
+        <autoOrients>false</autoOrients>
         <visible>true</visible>
         <width>720</width>
         <height>1280</height>
@@ -42,7 +42,7 @@
            <supports-screens android:normalScreens="true"/>
            <uses-feature android:required="true" android:name="android.hardware.touchscreen.multitouch"/>
            <application android:enabled="true" android:hardwareAccelerated="true" android:targetSdkVersion="35">
-               <activity android:excludeFromRecents="false">
+               <activity android:excludeFromRecents="false" android:screenOrientation="landscape">
                    <intent-filter>
                        <action android:name="android.intent.action.MAIN"/>
                        <category android:name= "android.intent.category.LAUNCHER"/>
