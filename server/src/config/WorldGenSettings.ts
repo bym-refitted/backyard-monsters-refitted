@@ -73,13 +73,53 @@ export const MIN_CELL_ALTITUDE = 32;
 export const MAX_CELL_ALTITUDE = 79;
 
 /**
- * Grid spacing between strongholds (in cells)
- * @constant {number}
+ * Seed for stronghold placement randomization
+ * @constant {string}
  */
-export const STRONGHOLD_GRID_SPACING = 30;
+export const STRONGHOLD_SEED = "maproom3-strongholds";
 
 /**
- * Offset from the edge for the first stronghold placement
+ * Grid size for stronghold placement. One stronghold per grid cell.
+ * Smaller value = more strongholds. Higher value = fewer strongholds.
  * @constant {number}
  */
-export const STRONGHOLD_GRID_OFFSET = 10;
+export const STRONGHOLD_GRID_SIZE = 24;
+
+/**
+ * Maximum random jitter for stronghold positions within their grid cell.
+ * Adds randomness to break up the grid pattern while maintaining minimum spacing.
+ * @constant {number}
+ */
+export const STRONGHOLD_JITTER = 8;
+
+/**
+ * Minimum distance between resource outposts and strongholds
+ * @constant {number}
+ */
+export const MIN_RESOURCE_STRONGHOLD_DISTANCE = 3;
+
+/**
+ * Seed for resource outpost placement randomization
+ * @constant {string}
+ */
+export const RESOURCE_SEED = "maproom3-resources-v2";
+
+/**
+ * Grid size for resource outpost placement. One resource per grid cell.
+ * Smaller value = more resources. Higher value = fewer resource outposts.
+ * @constant {number}
+ */
+export const RESOURCE_GRID_SIZE = 5;
+
+/**
+ * Maximum random jitter for resource outpost positions within their grid cell.
+ * Adds randomness to break up the grid pattern while maintaining minimum spacing.
+ * @constant {number}
+ */
+export const RESOURCE_JITTER = 2;
+
+/**
+ * Seed for tribe outpost placement randomization
+ * @constant {string}
+ */
+export const TRIBE_OUTPOST_SEED = "maproom3-tribes";

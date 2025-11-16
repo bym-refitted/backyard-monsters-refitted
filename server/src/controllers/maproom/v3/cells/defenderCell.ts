@@ -17,14 +17,23 @@ export const defenderCell = async (
 ): Promise<CellData> => {
   const tribeIndex = (cell.x + cell.y) % Tribes.length;
 
+  // Generate unique tid (tribe ID) based on exact coordinates
+  // Each defender gets a unique tid so they never fortify structures (structures have tid: 0)
+  // Format: x * 1000 + y ensures uniqueness and never matches structure tid of 0
+  const tid = cell.x * 1000 + cell.y;
+
+  // 60% no clover (altitude 5-31), 40% on clovers (altitude 32-49)
+  // Altitude 32-49 maps to clover01.png through clover06.png
+  const altitude = 5 + (cell.x * 73 + cell.y * 31) % 45;
+
   return {
     uid: 0,
     bid: 1234,
     n: Tribes[tribeIndex],
-    tid: 0,
+    tid,
     x: cell.x,
     y: cell.y,
-    i: 50, // value 50 places fortifications above terrain
+    i: altitude,
     l: 50,
     pl: 0,
     r: 0,

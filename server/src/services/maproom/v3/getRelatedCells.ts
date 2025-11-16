@@ -1,5 +1,5 @@
 import { EnumYardType } from "../../../enums/EnumYardType";
-import { DEFENDER_OFFSETS } from "./getDefenderOutposts";
+import { getHexNeighborOffsets } from "./getDefenderOutposts";
 
 type Coord = [number, number];
 type Cell = { x: number; y: number; t?: number };
@@ -7,8 +7,7 @@ type Cell = { x: number; y: number; t?: number };
 const relatedCellsCache = new Map<string, Coord[]>();
 
 const hasDefensiveStructure = (type?: number): boolean =>
-  type === EnumYardType.STRONGHOLD;
-// Future types: MAIN_YARD, RESOURCE_OUTPOST, etc.
+  type === EnumYardType.STRONGHOLD || type === EnumYardType.RESOURCE;
 
 /**
  * Returns coordinates of related cells that should load with the given cell.
@@ -27,16 +26,18 @@ export const getRelatedCellPositions = (
 
   const related: Coord[] = [];
 
-  // If this cell has defnders
+  // If this cell has defenders
   if (hasDefensiveStructure(cellType)) {
-    for (const [dx, dy] of DEFENDER_OFFSETS) related.push([x + dx, y + dy]);
+    const offsets = getHexNeighborOffsets(x, y);
+    for (const [dx, dy] of offsets) related.push([x + dx, y + dy]);
     relatedCellsCache.set(cacheKey, related);
     return related;
   }
 
   // If this is a defender outpost, link to its parent (and siblings)
   if (cellType === EnumYardType.FORTIFICATION) {
-    const parent = DEFENDER_OFFSETS.map(
+    const offsets = getHexNeighborOffsets(x, y);
+    const parent = offsets.map(
       ([dx, dy]) => [x + dx, y + dy] as Coord
     ).find(([px, py]) => {
       const parentCell = cellsByCoord.get(`${px},${py}`);
@@ -48,7 +49,8 @@ export const getRelatedCellPositions = (
       related.push(parent);
 
       // Include all sibling defender outposts
-      for (const [dx, dy] of DEFENDER_OFFSETS)
+      const parentOffsets = getHexNeighborOffsets(parentX, parentY);
+      for (const [dx, dy] of parentOffsets)
         related.push([parentX + dx, parentY + dy]);
     }
   }
