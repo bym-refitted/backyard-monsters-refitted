@@ -84,6 +84,7 @@ export const baseModeAttack = async (user: User, baseid: string) => {
   save.cell = cell;
   save.worldid = userSave.worldid;
   save.attackid = Math.floor(Math.random() * 99999) + 1;
+  save.attackreport = {};
   await ORMContext.em.persistAndFlush([cell, save]);
 
   // Create an attack log for the attack
