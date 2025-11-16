@@ -1,20 +1,10 @@
 import { Context } from "koa";
 import { EnumBaseRelationship } from "../../../../enums/EnumBaseRelationship";
 import { EnumYardType } from "../../../../enums/EnumYardType";
-import { Tribes } from "../../../../enums/Tribes";
 import { WorldMapCell } from "../../../../models/worldmapcell.model";
-import { CellData } from "../../../../types/CellData";
+import { Tribes } from "../../../../enums/Tribes";
 
-/**
- * Formats a stronghold cell for Map Room 3
- *
- * @param cell - Generated cell with x, y, i (altitude), t (type)
- * @returns Formatted stronghold cell data
- */
-export const strongholdCell = async (
-  ctx: Context,
-  cell: WorldMapCell
-): Promise<CellData> => {
+export const resourceCell = async (ctx: Context, cell: WorldMapCell) => {
   const tribeIndex = (cell.x + cell.y) % Tribes.length;
 
   // 60% no clover (altitude 5-31), 40% on clovers (altitude 32-49)
@@ -24,7 +14,7 @@ export const strongholdCell = async (
 
   return {
     uid: 0,
-    bid: 1234,
+    bid: 5678,
     n: Tribes[tribeIndex],
     tid: 0,
     x: cell.x,
@@ -39,7 +29,7 @@ export const strongholdCell = async (
     p: 0,
     d: 0,
     t: 0,
-    b: EnumYardType.STRONGHOLD,
+    b: EnumYardType.RESOURCE,
     rel: EnumBaseRelationship.ENEMY,
   };
 };
