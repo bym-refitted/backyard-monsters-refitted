@@ -1,9 +1,7 @@
-import { clearInterval } from "timers";
 import { AttackLogs } from "../../models/attacklogs.model";
 import { Save } from "../../models/save.model";
 import { User } from "../../models/user.model";
 import { ORMContext } from "../../server";
-import { logging, errorLog } from "../../utils/logger";
 
 /**
  * Creates a new attack log entry in the database
@@ -17,6 +15,9 @@ import { logging, errorLog } from "../../utils/logger";
  * @returns {Promise<void>}
  */
 export const createAttackLog = async (attacker: User, defender: User, save: Save) => {
+  await ORMContext.em.getConnection().execute(
+    'SELECT bym.process_expired_attack_log_watchers()'
+  );
   const attackLog = ORMContext.em.create(AttackLogs, {
     attacker_userid: attacker.userid,
     attacker_username: attacker.username,
@@ -31,61 +32,14 @@ export const createAttackLog = async (attacker: User, defender: User, save: Save
     y: save.cell?.y || null,
 
     loot: {},
-    attackreport: {},
+    attackreport: '',
     attacktime: new Date(),
   });
 
   await ORMContext.em.persistAndFlush(attackLog);
 
-  const attackReport = await pollForAttackCompletion(save);
-  attackLog.attackreport = {"details": attackReport};
-  await ORMContext.em.persistAndFlush(attackLog);
-};
-
-/**
- * Polls the save every 2 seconds for attackreport changes.
- * Detects attack completion by monitoring attackid changes.
- */
-const pollForAttackCompletion = async (save: Save) => {
-  let lastReport = JSON.stringify((await ORMContext.em.findOne(Save, save.basesaveid)).attackreport);
-  let lastChangeTime = Date.now();
-  let initialAttackId = save.attackid;
-  
-  const maxDuration = 7 * 60 * 1000; // 7 minutes
-  const pollInterval = 1000; // Poll every 1 seconds
-
-  const pollTimer = setInterval(async () => {
-    try {
-      const freshSave = await ORMContext.em.findOne(Save, save.basesaveid);
-      const currentReport = JSON.stringify(freshSave.attackreport || {});
-      const currentAttackId = freshSave.attackid;
-      const elapsedTime = Date.now() - lastChangeTime;
-
-      logging("current Attack ID:", currentAttackId);
-      logging("current Report:" , currentReport);
-
-      // Attack ended: attackid changed to 0
-      if (currentAttackId === 0) {
-        clearInterval(pollTimer);
-        return currentReport;
-      }
-
-      // Attack ended and new attack started: attackid changed from initial value to new value
-      else if (currentAttackId !== initialAttackId) {
-        clearInterval(pollTimer);
-        return lastReport;
-      }
-      // Timeout after 7 minutes = client disconnected 
-      else if (elapsedTime > maxDuration) {
-        clearInterval(pollTimer);
-        return lastReport;
-      }
-        
-      lastReport = currentReport;
-      lastChangeTime = Date.now();
-    } catch (error) {
-      errorLog("Error polling attack completion:", error);
-      clearInterval(pollTimer);
-    }
-  }, pollInterval);
+  await ORMContext.em.getConnection().execute(
+    'SELECT bym.register_attacklog_watch(?, ?)',
+    [save.basesaveid, (attackLog as any).id]
+  );
 };
