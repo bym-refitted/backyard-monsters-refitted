@@ -6,7 +6,6 @@ main.css
 server/src/database/bym-db*
 server/src/database/migrations/.snapshot*
 server/data
-server/package-lock.json
 .idea
 api-versioning
 android/bymr.keystore
