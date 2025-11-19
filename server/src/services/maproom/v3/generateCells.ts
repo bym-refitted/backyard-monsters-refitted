@@ -62,12 +62,8 @@ export const generateCells = (): Cell[] => {
       const defenders = getDefenderOutposts(x, y);
 
       for (const [fortX, fortY] of defenders) {
-        const fKey = (fortX << 16) | fortY;
-        
-        if (!occupiedCells.has(fKey)) {
-          cells.push({ x: fortX, y: fortY, t: EnumYardType.FORTIFICATION });
-          occupiedCells.add(fKey);
-        }
+        cells.push({ x: fortX, y: fortY, t: EnumYardType.FORTIFICATION });
+        occupiedCells.add((fortX << 16) | fortY);
       }
     }
   }
