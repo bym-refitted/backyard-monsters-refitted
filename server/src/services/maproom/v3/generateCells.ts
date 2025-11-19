@@ -1,4 +1,11 @@
 import alea from "alea";
+
+import { createNoise2D } from "simplex-noise";
+import { MapRoom3 } from "../../../enums/MapRoom";
+import { EnumYardType } from "../../../enums/EnumYardType";
+import { getDefenderOutposts } from "./getDefenderOutposts";
+import { isValidPosition } from "./utils/isValidPosition";
+
 import {
   CELL_SEED,
   CELL_EDGE,
@@ -12,11 +19,6 @@ import {
   RESOURCE_SEED,
   TRIBE_OUTPOST_SEED,
 } from "../../../config/WorldGenSettings";
-import { createNoise2D } from "simplex-noise";
-import { MapRoom3 } from "../../../enums/MapRoom";
-import { EnumYardType } from "../../../enums/EnumYardType";
-import { getDefenderOutposts } from "./getDefenderOutposts";
-import { isValidPosition } from "./utils/isValidPosition";
 
 interface Cell {
   i?: number;
