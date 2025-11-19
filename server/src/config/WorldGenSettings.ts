@@ -83,7 +83,7 @@ export const STRONGHOLD_SEED = "maproom3-strongholds";
  * Smaller value = more strongholds. Higher value = fewer strongholds.
  * @constant {number}
  */
-export const STRONGHOLD_GRID_SIZE = 24;
+export const STRONGHOLD_GRID_SIZE = 18;
 
 /**
  * Maximum random jitter for stronghold positions within their grid cell.
@@ -93,30 +93,11 @@ export const STRONGHOLD_GRID_SIZE = 24;
 export const STRONGHOLD_JITTER = 8;
 
 /**
- * Minimum distance between resource outposts and strongholds
- * @constant {number}
- */
-export const MIN_RESOURCE_STRONGHOLD_DISTANCE = 3;
-
-/**
  * Seed for resource outpost placement randomization
  * @constant {string}
  */
 export const RESOURCE_SEED = "maproom3-resources-v2";
 
-/**
- * Grid size for resource outpost placement. One resource per grid cell.
- * Smaller value = more resources. Higher value = fewer resource outposts.
- * @constant {number}
- */
-export const RESOURCE_GRID_SIZE = 5;
-
-/**
- * Maximum random jitter for resource outpost positions within their grid cell.
- * Adds randomness to break up the grid pattern while maintaining minimum spacing.
- * @constant {number}
- */
-export const RESOURCE_JITTER = 2;
 
 /**
  * Seed for tribe outpost placement randomization

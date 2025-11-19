@@ -10,10 +10,7 @@ import {
   STRONGHOLD_GRID_SIZE,
   STRONGHOLD_JITTER,
   RESOURCE_SEED,
-  RESOURCE_GRID_SIZE,
-  RESOURCE_JITTER,
   TRIBE_OUTPOST_SEED,
-  MIN_RESOURCE_STRONGHOLD_DISTANCE,
 } from "../../../config/WorldGenSettings";
 import { createNoise2D } from "simplex-noise";
 import { MapRoom3 } from "../../../enums/MapRoom";
@@ -34,13 +31,12 @@ export const generateCells = (): Cell[] => {
   if (cachedCells) return cachedCells;
 
   const cells: Cell[] = [];
-  const occupiedCells = new Set<string>();
-  const strongholdPositions: Array<{ x: number; y: number }> = [];
+  const occupiedCells = new Set<number>();
 
   const { WIDTH, HEIGHT } = MapRoom3;
 
   // ============================================================================
-  // PHASE 1: Place Strongholds
+  // PHASE 1: Strongholds
   // ============================================================================
   const strongholdRng = alea(STRONGHOLD_SEED);
 
@@ -56,104 +52,54 @@ export const generateCells = (): Cell[] => {
       const x = centerX + jitterX;
       const y = centerY + jitterY;
 
-      if (!isValidPosition(x, y) || occupiedCells.has(`${x},${y}`)) continue;
+      const key = (x << 16) | y;
+
+      if (!isValidPosition(x, y) || occupiedCells.has(key)) continue;
 
       cells.push({ x, y, t: EnumYardType.STRONGHOLD });
-
-      occupiedCells.add(`${x},${y}`);
-      strongholdPositions.push({ x, y });
+      occupiedCells.add(key);
 
       const defenders = getDefenderOutposts(x, y);
 
       for (const [fortX, fortY] of defenders) {
-        if (!occupiedCells.has(`${fortX},${fortY}`)) {
+        const fKey = (fortX << 16) | fortY;
+        
+        if (!occupiedCells.has(fKey)) {
           cells.push({ x: fortX, y: fortY, t: EnumYardType.FORTIFICATION });
-          occupiedCells.add(`${fortX},${fortY}`);
+          occupiedCells.add(fKey);
         }
       }
     }
   }
 
   // ============================================================================
-  // PHASE 2: Place Resource Outposts
+  // PHASE 2: Resource Outposts
   // ============================================================================
   const resourceRng = alea(RESOURCE_SEED);
+  const maxResourceAttempts = (WIDTH - 2 * CELL_EDGE) * (HEIGHT - 2 * CELL_EDGE) * 0.06;
 
-  for (
-    let gridY = CELL_EDGE;
-    gridY < HEIGHT - CELL_EDGE;
-    gridY += RESOURCE_GRID_SIZE
-  ) {
-    for (
-      let gridX = CELL_EDGE;
-      gridX < WIDTH - CELL_EDGE;
-      gridX += RESOURCE_GRID_SIZE
-    ) {
-      // Calculate center of grid cell
-      const centerX = gridX + Math.floor(RESOURCE_GRID_SIZE / 2);
-      const centerY = gridY + Math.floor(RESOURCE_GRID_SIZE / 2);
+  for (let attempt = 0; attempt < maxResourceAttempts; attempt++) {
+    const x = CELL_EDGE + Math.floor(resourceRng() * (WIDTH - 2 * CELL_EDGE));
+    const y = CELL_EDGE + Math.floor(resourceRng() * (HEIGHT - 2 * CELL_EDGE));
+    
+    const key = (x << 16) | y;
+    
+    if (occupiedCells.has(key)) continue;
 
-      // Apply random jitter
-      const jitterX = Math.floor((resourceRng() - 0.5) * 2 * RESOURCE_JITTER);
-      const jitterY = Math.floor((resourceRng() - 0.5) * 2 * RESOURCE_JITTER);
+    const defenders = getDefenderOutposts(x, y);
+    if (defenders.some(([dx, dy]) => occupiedCells.has((dx << 16) | dy  ))) continue;
 
-      const x = centerX + jitterX;
-      const y = centerY + jitterY;
+    cells.push({ x, y, t: EnumYardType.RESOURCE });
+    occupiedCells.add(key);
 
-      // Validate position
-      if (!isValidPosition(x, y) || occupiedCells.has(`${x},${y}`)) continue;
-
-      // Check distance from all strongholds to avoid defender overlap
-      let tooCloseToStronghold = false;
-      for (const stronghold of strongholdPositions) {
-        const distance = Math.sqrt(
-          (x - stronghold.x) ** 2 + (y - stronghold.y) ** 2
-        );
-        if (distance < MIN_RESOURCE_STRONGHOLD_DISTANCE) {
-          tooCloseToStronghold = true;
-          break;
-        }
-      }
-      if (tooCloseToStronghold) continue;
-
-      // Check if ALL defender positions are available before placing resource
-      const defenders = getDefenderOutposts(x, y);
-      let allDefenderSlotsAvailable = true;
-      for (const [fortX, fortY] of defenders) {
-        if (
-          !isValidPosition(fortX, fortY) ||
-          occupiedCells.has(`${fortX},${fortY}`)
-        ) {
-          allDefenderSlotsAvailable = false;
-          break;
-        }
-      }
-
-      // Skip this resource if any defender slot is blocked
-      if (!allDefenderSlotsAvailable) continue;
-
-      // Place resource outpost
-      cells.push({
-        x,
-        y,
-        t: EnumYardType.RESOURCE,
-      });
-      occupiedCells.add(`${x},${y}`);
-
-      // Place defenders around resource outpost
-      for (const [fortX, fortY] of defenders) {
-        cells.push({
-          x: fortX,
-          y: fortY,
-          t: EnumYardType.FORTIFICATION,
-        });
-        occupiedCells.add(`${fortX},${fortY}`);
-      }
+    for (const [fortX, fortY] of defenders) {
+      cells.push({ x: fortX, y: fortY, t: EnumYardType.FORTIFICATION });
+      occupiedCells.add((fortX << 16) | fortY);
     }
   }
 
   // ============================================================================
-  // PHASE 3: Place Tribe Outposts
+  // PHASE 3: Tribe Outposts
   // ============================================================================
   const tribeRng = alea(TRIBE_OUTPOST_SEED);
   const maxAttempts = (WIDTH - 2 * CELL_EDGE) * (HEIGHT - 2 * CELL_EDGE) * 0.12;
@@ -162,21 +108,25 @@ export const generateCells = (): Cell[] => {
     const x = CELL_EDGE + Math.floor(tribeRng() * (WIDTH - 2 * CELL_EDGE));
     const y = CELL_EDGE + Math.floor(tribeRng() * (HEIGHT - 2 * CELL_EDGE));
 
-    if (!occupiedCells.has(`${x},${y}`)) {
+    const key = (x << 16) | y;
+    
+    if (!occupiedCells.has(key)) {
       cells.push({ x, y, t: EnumYardType.OUTPOST });
-      occupiedCells.add(`${x},${y}`);
+      occupiedCells.add(key);
     }
   }
 
   // ============================================================================
-  // PHASE 4: Place Bushes/Clover
+  // PHASE 4: Bushes/Clover
   // ============================================================================
   const noise = createNoise2D(alea(CELL_SEED));
   const cloverRng = alea(CELL_SEED + "-clover");
 
   for (let y = CELL_EDGE; y < MapRoom3.HEIGHT - CELL_EDGE; y++) {
     for (let x = CELL_EDGE; x < MapRoom3.WIDTH - CELL_EDGE; x++) {
-      if (occupiedCells.has(`${x},${y}`)) continue;
+      const key = (x << 16) | y;
+
+      if (occupiedCells.has(key)) continue;
 
       let altitude: number | null = null;
 
