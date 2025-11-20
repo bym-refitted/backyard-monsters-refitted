@@ -28,7 +28,7 @@ export const defenderCell = async (
 
   return {
     uid: 0,
-    bid: 1234,
+    bid: "1234",
     n: Tribes[tribeIndex],
     tid,
     x: cell.x,

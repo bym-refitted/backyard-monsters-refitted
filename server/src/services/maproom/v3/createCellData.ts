@@ -20,11 +20,14 @@ export const createCellData = async (
     case EnumYardType.FORTIFICATION:
       return defenderCell(ctx, cell);
 
+    case EnumYardType.STRONGHOLD:
+      return strongholdCell(ctx, cell);
+
     case EnumYardType.RESOURCE:
       return resourceCell(ctx, cell);
 
     case EnumYardType.OUTPOST:
-      return tribeOutpostCell(cell);
+      return tribeOutpostCell(cell, worldid);
 
     default:
       return terrainCell({ x: cell.x, y: cell.y, i: cell.terrainHeight });

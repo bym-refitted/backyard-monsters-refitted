@@ -3,7 +3,7 @@ export type CellData = {
   y: number;
   i: number;
   uid?: number;
-  bid?: number;
+  bid?: string;
   n?: string;
   tid?: number;
   l?: number;
