@@ -4,6 +4,13 @@ import { EnumYardType } from "../../../../enums/EnumYardType";
 import { WorldMapCell } from "../../../../models/worldmapcell.model";
 import { Tribes } from "../../../../enums/Tribes";
 
+/**
+ * Formats a resource outpost cell for Map Room 3
+ * Wiki: https://backyardmonsters.fandom.com/wiki/Resource_Outpost
+ *
+ * @param cell - Generated cell with x, y, i (altitude), t (type)
+ * @returns Formatted resource outpost cell data
+ */
 export const resourceCell = async (ctx: Context, cell: WorldMapCell) => {
   const tribeIndex = (cell.x + cell.y) % Tribes.length;
 
@@ -20,9 +27,9 @@ export const resourceCell = async (ctx: Context, cell: WorldMapCell) => {
     x: cell.x,
     y: cell.y,
     i: altitude,
-    l: 50,
+    l: 30,
     pl: 0,
-    r: 0,
+    r: 4,
     dm: 0,
     lo: 0,
     fr: 0,

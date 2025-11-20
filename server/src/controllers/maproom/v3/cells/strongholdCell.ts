@@ -7,6 +7,7 @@ import { CellData } from "../../../../types/CellData";
 
 /**
  * Formats a stronghold cell for Map Room 3
+ * Wiki: https://backyardmonsters.fandom.com/wiki/Stronghold
  *
  * @param cell - Generated cell with x, y, i (altitude), t (type)
  * @returns Formatted stronghold cell data
@@ -32,7 +33,7 @@ export const strongholdCell = async (
     i: altitude,
     l: 50,
     pl: 0,
-    r: 0,
+    r: 20,
     dm: 0,
     lo: 0,
     fr: 0,
