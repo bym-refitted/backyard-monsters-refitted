@@ -12,10 +12,7 @@ import { CellData } from "../../../../types/CellData";
  * @param cell - Generated cell with x, y, i (altitude), t (type)
  * @returns Formatted stronghold cell data
  */
-export const strongholdCell = async (
-  ctx: Context,
-  cell: WorldMapCell
-): Promise<CellData> => {
+export const strongholdCell = async (ctx: Context, cell: WorldMapCell): Promise<CellData> => {
   const tribeIndex = (cell.x + cell.y) % Tribes.length;
 
   // 60% no clover (altitude 5-31), 40% on clovers (altitude 32-49)
@@ -25,7 +22,7 @@ export const strongholdCell = async (
 
   return {
     uid: 0,
-    bid: 1234,
+    bid: "1234",
     n: Tribes[tribeIndex],
     tid: 0,
     x: cell.x,
