@@ -18,10 +18,8 @@ import { calculateTribeLevel, minimumTribeLevels } from "./calculateTribeLevel";
  * @returns {Save} - A new `Save` object for the wild monster, with tribe-specific data.
  */
 export const wildMonsterSave = (baseid: string) => {
-  const baseId = parseInt(baseid);
-
-  const cellX = Math.floor(baseId / 1000) % 1000;
-  const cellY = baseId % 1000;
+  const cellX = parseInt(baseid.slice(-6, -3));
+  const cellY = parseInt(baseid.slice(-3));
 
   const tribeIndex = (cellX + cellY) % Tribes.length;
   const tribe = Tribes[tribeIndex] as Tribe;
