@@ -20,7 +20,8 @@ export interface FieldData {
   [key: string | number]: any;
 }
 
-// Composite index on worldid, type, and userid
+const NEXT_USER_BASEID = `SELECT nextval('bym.user_baseid_seq') AS baseid`;
+
 @Index({ properties: ["type", "worldid", "userid"] })
 @Entity({ tableName: "save" })
 export class Save {
@@ -43,7 +44,7 @@ export class Save {
   cell: WorldMapCell;
 
   @FrontendKey
-  @Property({ default: 0 })
+  @Property({ type: 'bigint', default: 0 })
   homebaseid!: number;
 
   @Index()
@@ -516,7 +517,7 @@ export class Save {
     "basevalue",
     "empirevalue",
     "points",
-    "tutorialstage"
+    "tutorialstage",
   ];
 
   public static attackSaveKeys: (keyof FieldData)[] = [
@@ -532,7 +533,7 @@ export class Save {
     "buildingresources",
     "attackreport",
     "attackersiege",
-    "attackcreatures"
+    "attackcreatures",
   ];
 
   public static createMainSave = async (
@@ -540,12 +541,13 @@ export class Save {
     user: User
   ) => {
     const baseSave = em.create(Save, getDefaultBaseData(user, BaseType.MAIN));
-    // Persist the entity to generate basesaveid
-    await em.persistAndFlush(baseSave);
 
-    // Update the baseid and homebase to match the basesaveid
-    baseSave.baseid = baseSave.basesaveid.toString();
-    baseSave.homebaseid = baseSave.basesaveid;
+    const [{ baseid }] = await em
+      .getConnection()
+      .execute<{ baseid: string }>(NEXT_USER_BASEID);
+
+    baseSave.baseid = baseid;
+    baseSave.homebaseid = parseInt(baseid, 10);
     await em.persistAndFlush(baseSave);
 
     user.save = baseSave;
@@ -558,12 +560,18 @@ export class Save {
     em: EntityManager<IDatabaseDriver<Connection>>,
     user: User
   ) => {
-    const infernoSave = em.create(Save, getDefaultBaseData(user, BaseType.INFERNO));
-    await em.persistAndFlush(infernoSave);
+    const infernoSave = em.create(
+      Save,
+      getDefaultBaseData(user, BaseType.INFERNO)
+    );
+
+    const [{ baseid }] = await em
+      .getConnection()
+      .execute<{ baseid: string }>(NEXT_USER_BASEID);
 
     infernoSave.type = BaseType.INFERNO;
-    infernoSave.baseid = infernoSave.basesaveid.toString();
-    infernoSave.homebaseid = infernoSave.basesaveid;
+    infernoSave.baseid = baseid;
+    infernoSave.homebaseid = parseInt(baseid, 10);
     infernoSave.stats = user.save.stats;
     infernoSave.worldid = user.save.worldid;
     infernoSave.credits = 0;
@@ -572,7 +580,7 @@ export class Save {
       r2: 60090,
       r3: 59849,
       r4: 55864,
-    }
+    };
 
     user.infernosave = infernoSave;
     await em.persistAndFlush(infernoSave);
