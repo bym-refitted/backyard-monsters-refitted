@@ -1,13 +1,6 @@
-import {
-  Entity,
-  Property,
-  PrimaryKey,
-  EntityManager,
-  Connection,
-  IDatabaseDriver,
-  OneToOne,
-  Index,
-} from "@mikro-orm/core";
+import { Entity, Property, PrimaryKey, OneToOne, Index } from "@mikro-orm/core";
+
+import { EntityManager, PostgreSqlDriver } from "@mikro-orm/postgresql";
 import { FrontendKey } from "../utils/FrontendKey";
 import { getDefaultBaseData } from "../data/getDefaultBaseData";
 import { User } from "./user.model";
@@ -44,7 +37,7 @@ export class Save {
   cell: WorldMapCell;
 
   @FrontendKey
-  @Property({ type: 'bigint', default: 0 })
+  @Property({ type: "bigint", default: 0 })
   homebaseid!: number;
 
   @Index()
@@ -536,15 +529,11 @@ export class Save {
     "attackcreatures",
   ];
 
-  public static createMainSave = async (
-    em: EntityManager<IDatabaseDriver<Connection>>,
-    user: User
-  ) => {
+  public static createMainSave = async (em: EntityManager<PostgreSqlDriver>, user: User) => {
     const baseSave = em.create(Save, getDefaultBaseData(user, BaseType.MAIN));
 
-    const [{ baseid }] = await em
-      .getConnection()
-      .execute<{ baseid: string }>(NEXT_USER_BASEID);
+    const [result] = await em.execute<[{ baseid: string }]>(NEXT_USER_BASEID);
+    const baseid = result.baseid;
 
     baseSave.baseid = baseid;
     baseSave.homebaseid = parseInt(baseid, 10);
@@ -556,18 +545,11 @@ export class Save {
     return baseSave;
   };
 
-  public static createInfernoSave = async (
-    em: EntityManager<IDatabaseDriver<Connection>>,
-    user: User
-  ) => {
-    const infernoSave = em.create(
-      Save,
-      getDefaultBaseData(user, BaseType.INFERNO)
-    );
+  public static createInfernoSave = async (em: EntityManager<PostgreSqlDriver>, user: User) => {
+    const infernoSave = em.create(Save, getDefaultBaseData(user, BaseType.INFERNO));
 
-    const [{ baseid }] = await em
-      .getConnection()
-      .execute<{ baseid: string }>(NEXT_USER_BASEID);
+    const [result] = await em.execute<[{ baseid: string }]>(NEXT_USER_BASEID);
+    const baseid = result.baseid;
 
     infernoSave.type = BaseType.INFERNO;
     infernoSave.baseid = baseid;
@@ -584,6 +566,7 @@ export class Save {
 
     user.infernosave = infernoSave;
     await em.persistAndFlush(infernoSave);
+
     return infernoSave;
   };
 }

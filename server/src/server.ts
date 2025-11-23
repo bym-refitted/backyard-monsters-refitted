@@ -9,14 +9,14 @@ import ormConfig from "./mikro-orm.config";
 import router from "./app.routes";
 
 import { createClient } from "redis";
-import { EntityManager, MikroORM, RequestContext } from "@mikro-orm/core";
+import { MikroORM, RequestContext } from "@mikro-orm/core";
+import { EntityManager, PostgreSqlDriver } from "@mikro-orm/postgresql";
 import { errorLog, logging } from "./utils/logger";
 import { ascii_node } from "./utils/ascii_art";
 import { ErrorInterceptor } from "./middleware/clientSafeError";
 import { processLanguagesFile } from "./middleware/processLanguageFile";
 import { logMissingAssets, morganLogging } from "./middleware/morganLogging";
 import { corsCacheControl } from "./middleware/corsCacheControlSetup";
-import { PostgreSqlDriver } from "@mikro-orm/postgresql";
 
 export const app = new Koa();
 app.proxy = true;
@@ -27,8 +27,8 @@ export const BASE_URL = process.env.BASE_URL;
 export const getApiVersion = () => "v1.4.2-beta";
 
 export const ORMContext = {} as {
-  orm: MikroORM;
-  em: EntityManager;
+  orm: MikroORM<PostgreSqlDriver>;
+  em: EntityManager<PostgreSqlDriver>;
 };
 
 export const redisClient = createClient({
