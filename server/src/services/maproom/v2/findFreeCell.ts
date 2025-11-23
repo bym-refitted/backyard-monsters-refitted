@@ -1,7 +1,7 @@
 import { MapRoom, Terrain } from "../../../enums/MapRoom";
 import { World } from "../../../models/world.model";
 import { WorldMapCell } from "../../../models/worldmapcell.model";
-import { EntityManager } from "@mikro-orm/core";
+import { EntityManager, PostgreSqlDriver } from "@mikro-orm/postgresql";
 import { logging } from "../../../utils/logger";
 import { generateNoise, getTerrainHeight } from "./generateMap";
 
@@ -18,11 +18,11 @@ interface Cell {
  * Finds a free cell in a given world that is not water and not occupied by another player.
  *
  * @param {World} world - The world in which to find a free cell.
- * @param {EntityManager} em - The entity manager for database operations.
+ * @param {EntityManager<PostgreSqlDriver>} em - The entity manager for database operations.
  * @returns {Promise<Cell>} - The coordinates and terrain height of the free cell.
  * @throws {Error} - If no free cell is found after several attempts.
  */
-export const findFreeCell = async (world: World, em: EntityManager) => {
+export const findFreeCell = async (world: World, em: EntityManager<PostgreSqlDriver>) => {
   let cell: Cell = { x: null, y: null, terrainHeight: null };
   let maxAttempts = 10;
 
