@@ -16,7 +16,6 @@ import { BaseType } from "../../../enums/Base";
 import { permissionErr, saveFailureErr } from "../../../errors/errors";
 import { attackLootHandler } from "./handlers/attackLootHandler";
 import { monsterUpdateHandler } from "./handlers/monsterUpdateHandler";
-import { ClientSafeError } from "../../../middleware/clientSafeError";
 import { validateSave } from "../../../scripts/anticheat/anticheat";
 import { updateResources } from "../../../services/base/updateResources";
 import { buildingDataHandler } from "./handlers/buildingDataHandler";
@@ -163,8 +162,8 @@ export const baseSave: KoaController = async (ctx) => {
   } catch (err) {
     errorLog(`Failed to save base for user: ${user.username}`, err);
 
-    if (err instanceof ClientSafeError) throw err;
-    throw new Error("An unexpected error occurred while saving this base.");
+    ctx.status = Status.INTERNAL_SERVER_ERROR;
+    ctx.body = { error: `Failed to save for user: ${user.username}` };
   }
 };
 

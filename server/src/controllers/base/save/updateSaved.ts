@@ -12,6 +12,7 @@ import { getCurrentDateTime } from "../../../utils/getCurrentDateTime";
 import { KoaController } from "../../../utils/KoaController";
 import { baseModeBuild } from "../load/modes/baseModeBuild";
 import { baseModeView } from "../load/modes/baseModeView";
+import { infernoModeView } from "../load/modes/infernoModeView";
 import { errorLog } from "../../../utils/logger";
 import { mapUserSaveData } from "../mapUserSaveData";
 
@@ -40,10 +41,19 @@ export const updateSaved: KoaController = async (ctx) => {
 
     let baseSave: Save = null;
 
-    if (type === BaseMode.BUILD) {
-      baseSave = await baseModeBuild(user, baseid);
-    } else {
-      baseSave = await baseModeView(baseid);
+    switch (type) {
+      case BaseMode.BUILD:
+        baseSave = await baseModeBuild(user, baseid);
+        break;
+
+      case BaseMode.IVIEW:
+      case BaseMode.IATTACK:
+        baseSave = await infernoModeView(user, baseid);
+        break;
+
+      default:
+        baseSave = await baseModeView(baseid);
+        break;
     }
 
     if (!baseSave) throw saveFailureErr();
@@ -77,6 +87,6 @@ export const updateSaved: KoaController = async (ctx) => {
     errorLog(`Failed to update save for user: ${user.username}`, err);
 
     ctx.status = Status.INTERNAL_SERVER_ERROR;
-    ctx.body = { error: 1 };
+    ctx.body = { error: `Failed to update save for user: ${user.username}` };
   }
 };
