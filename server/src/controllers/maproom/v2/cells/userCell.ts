@@ -1,6 +1,6 @@
 import { Context } from "koa";
 import { User } from "../../../../models/user.model";
-import { ORMContext } from "../../../../server";
+import { postgres } from "../../../../server";
 import { WorldMapCell } from "../../../../models/worldmapcell.model";
 import { calculateBaseLevel } from "../../../../services/base/calculateBaseLevel";
 import { damageProtection } from "../../../../services/maproom/v2/damageProtection";
@@ -20,7 +20,7 @@ import { getCurrentDateTime } from "../../../../utils/getCurrentDateTime";
 export const userCell = async (ctx: Context, cell: WorldMapCell) => {
   const cellSave = cell.save;
   const currentUser: User = ctx.authUser;
-  await ORMContext.em.populate(currentUser, ["save"]);
+  await postgres.em.populate(currentUser, ["save"]);
 
   try {
     const mine = currentUser.userid === cell.uid;
@@ -28,7 +28,7 @@ export const userCell = async (ctx: Context, cell: WorldMapCell) => {
     // Get the cell owner, either the current user or another user
     const cellOwner = mine
       ? currentUser
-      : await ORMContext.em.findOne(
+      : await postgres.em.findOne(
           User,
           { userid: cell.uid },
           { populate: ["save"] }

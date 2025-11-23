@@ -26,7 +26,7 @@ export const BASE_URL = process.env.BASE_URL;
 
 export const getApiVersion = () => "v1.4.2-beta";
 
-export const ORMContext = {} as {
+export const postgres = {} as {
   orm: MikroORM<PostgreSqlDriver>;
   em: EntityManager<PostgreSqlDriver>;
 };
@@ -46,8 +46,8 @@ const api = new Router();
 api.get("/", (ctx: Context) => (ctx.body = {}));
 
 (async () => {
-  ORMContext.orm = await MikroORM.init<PostgreSqlDriver>(ormConfig);
-  ORMContext.em = ORMContext.orm.em;
+  postgres.orm = await MikroORM.init<PostgreSqlDriver>(ormConfig);
+  postgres.em = postgres.orm.em;
 
   await redisClient.connect();
 
@@ -60,7 +60,7 @@ api.get("/", (ctx: Context) => (ctx.body = {}));
   );
 
   app.use((_, next: Next) =>
-    RequestContext.createAsync(ORMContext.orm.em, next)
+    RequestContext.createAsync(postgres.orm.em, next)
   );
 
   // Logs

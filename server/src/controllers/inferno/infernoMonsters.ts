@@ -1,7 +1,7 @@
 import z from "zod";
 import { Status } from "../../enums/StatusCodes";
 import { User } from "../../models/user.model";
-import { ORMContext } from "../../server";
+import { postgres } from "../../server";
 import { KoaController } from "../../utils/KoaController";
 import { BaseType } from "../../enums/Base";
 import { Save } from "../../models/save.model";
@@ -15,7 +15,7 @@ export const infernoMonsters: KoaController = async (ctx) => {
   const user: User = ctx.authUser;
   let { type, imonsters } = InfernoMonstersSchema.parse(ctx.request.body);
 
-  let infernoSave = await ORMContext.em.findOne(Save, {
+  let infernoSave = await postgres.em.findOne(Save, {
     userid: user.userid,
     type: BaseType.INFERNO,
   });
@@ -24,7 +24,7 @@ export const infernoMonsters: KoaController = async (ctx) => {
 
   if (type === BaseType.SET) {
     infernoSave.monsters = imonsters;
-    await ORMContext.em.persistAndFlush(infernoSave);
+    await postgres.em.persistAndFlush(infernoSave);
   }
 
   ctx.status = Status.OK;

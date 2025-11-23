@@ -1,11 +1,11 @@
 import { MonsterUpdate } from "../../controllers/base/save/handlers/monsterUpdateHandler";
 import { Save } from "../../models/save.model";
-import { ORMContext } from "../../server";
+import { postgres } from "../../server";
 
 export const updateMonsters = async (monsterupdates: MonsterUpdate[]) => {
   // Fetch all bases that match the provided base IDs in one go
   const baseIds = monsterupdates.map((update) => update.baseid.toString());
-  const saves = await ORMContext.em.find(Save, { baseid: { $in: baseIds } });
+  const saves = await postgres.em.find(Save, { baseid: { $in: baseIds } });
 
   // Iterate over the saves and apply the updates
   for (const save of saves) {

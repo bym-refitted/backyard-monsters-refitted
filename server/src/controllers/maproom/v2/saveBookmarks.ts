@@ -1,6 +1,6 @@
 import { Status } from "../../../enums/StatusCodes";
 import { KoaController } from "../../../utils/KoaController";
-import { ORMContext } from "../../../server";
+import { postgres } from "../../../server";
 import { User } from "../../../models/user.model";
 
 interface Bookmark { bookmarks: string };
@@ -20,7 +20,7 @@ export const saveBookmarks: KoaController = async (ctx) => {
   if (!bookmarks) throw new Error("Bookmarks not found");
 
   user.bookmarks = JSON.parse(bookmarks);
-  await ORMContext.em.persistAndFlush(user);
+  await postgres.em.persistAndFlush(user);
 
   ctx.status = Status.OK;
   ctx.body = { error: 0 };

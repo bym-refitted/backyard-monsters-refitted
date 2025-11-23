@@ -1,5 +1,5 @@
 import { Save } from "../../../models/save.model";
-import { ORMContext } from "../../../server";
+import { postgres } from "../../../server";
 import { Tribe, Tribes } from "../../../enums/Tribes";
 import { legionnaire } from "../../../data/tribes/legionnaire";
 import { abunaki } from "../../../data/tribes/abunaki";
@@ -30,7 +30,7 @@ export const wildMonsterSave = (baseid: string) => {
   const { tribeSave } = fetchTribeData(tribeIndex, level);
 
   // Return a new save for the wild monster.
-  return ORMContext.em.create(Save, {
+  return postgres.em.create(Save, {
     ...tribeSave,
     baseid,
     level,

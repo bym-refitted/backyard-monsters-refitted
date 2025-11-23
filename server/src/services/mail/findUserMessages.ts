@@ -1,6 +1,6 @@
 import { Message } from "../../models/message.model";
 import { User } from "../../models/user.model";
-import { ORMContext } from "../../server";
+import { postgres } from "../../server";
 
 type MessageFilter = { threadid: number };
 
@@ -13,7 +13,7 @@ type MessageFilter = { threadid: number };
  * @returns {Promise<Loaded<Message, never>[]>} - A promise that resolves to an array of messages.
  */
 export const findUserMessages = async (user: User, filter: MessageFilter) => {
-  const messages = await ORMContext.em.find(
+  const messages = await postgres.em.find(
     Message,
     {
       $or: [{ userid: user.userid }, { targetid: user.userid }],

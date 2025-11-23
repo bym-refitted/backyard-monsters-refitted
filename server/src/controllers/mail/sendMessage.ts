@@ -3,7 +3,7 @@ import { User } from "../../models/user.model";
 import { KoaController } from "../../utils/KoaController";
 import { devConfig } from "../../config/DevSettings";
 import { SendMessageSchema } from "./zod/SendMessageSchema";
-import { ORMContext } from "../../server";
+import { postgres } from "../../server";
 import { Message } from "../../models/message.model";
 import { getCurrentDateTime } from "../../utils/getCurrentDateTime";
 import { findOrCreateThread } from "../../services/mail/findOrCreateThread";
@@ -48,7 +48,7 @@ export const sendMessage: KoaController = async (ctx) => {
     const isSender = thread.userid === userid;
     const messageTargetId = isSender ? thread.targetid : thread.userid;
 
-    const recipient = await ORMContext.em.findOne(
+    const recipient = await postgres.em.findOne(
       User,
       { userid: messageTargetId },
       { populate: ["save"] }
@@ -67,7 +67,7 @@ export const sendMessage: KoaController = async (ctx) => {
       return;
     }
 
-    const newMessage = ORMContext.em.create(Message, {
+    const newMessage = postgres.em.create(Message, {
       threadid: thread.threadid,
       userid,
       targetid: messageTargetId,
@@ -81,12 +81,12 @@ export const sendMessage: KoaController = async (ctx) => {
 
     thread.messagecount++;
     thread.lastMessage = newMessage;
-    await ORMContext.em.persistAndFlush(thread);
+    await postgres.em.persistAndFlush(thread);
 
     const count = await countUnreadMessage(messageTargetId);
 
     recipient.save.unreadmessages = count;
-    await ORMContext.em.persistAndFlush(recipient);
+    await postgres.em.persistAndFlush(recipient);
 
     ctx.status = Status.OK;
     ctx.body = {
