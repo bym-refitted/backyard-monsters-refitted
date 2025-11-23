@@ -68,8 +68,8 @@ export const baseModeAttack = async (user: User, baseid: string) => {
     if (!world) throw new Error("No world found.");
 
     // Derive cellX and cellY from baseid
-    const cellX = parseInt(baseid.slice(4, 7));
-    const cellY = parseInt(baseid.slice(7, 10));
+    const cellX = parseInt(baseid.slice(-6, -3));
+    const cellY = parseInt(baseid.slice(-3));
 
     const noise = generateNoise(world.uuid);
     const terrainHeight = getTerrainHeight(noise, cellX, cellY);
