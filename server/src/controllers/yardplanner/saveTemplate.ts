@@ -1,6 +1,6 @@
 import { Status } from "../../enums/StatusCodes";
 import { User } from "../../models/user.model";
-import { ORMContext } from "../../server";
+import { postgres } from "../../server";
 import { KoaController } from "../../utils/KoaController";
 
 interface RequestBody {
@@ -23,7 +23,7 @@ export const saveTemplate: KoaController = async (ctx) => {
   const user: User = ctx.authUser;
   let save = user.save;
 
-  await ORMContext.em.populate(user, ["save"]);
+  await postgres.em.populate(user, ["save"]);
 
   const existingSlotIndex = save.savetemplate.findIndex(
     (template) => template.slotid === requestBody.slotid
@@ -36,7 +36,7 @@ export const saveTemplate: KoaController = async (ctx) => {
     // Insert new layout if slotid doesn't exist
     save.savetemplate.push({ ...requestBody });
   }
-  await ORMContext.em.persistAndFlush(save);
+  await postgres.em.persistAndFlush(save);
 
   ctx.status = Status.OK;
   ctx.body = {

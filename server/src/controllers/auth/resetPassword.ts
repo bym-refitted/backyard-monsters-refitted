@@ -4,7 +4,7 @@ import bcrypt from "bcrypt";
 import { Status } from "../../enums/StatusCodes";
 import { KoaController } from "../../utils/KoaController";
 import { authFailureErr } from "../../errors/errors";
-import { ORMContext } from "../../server";
+import { postgres } from "../../server";
 import { User } from "../../models/user.model";
 import { errorLog } from "../../utils/logger";
 import { ResetPasswordSchema } from "../../zod/AuthSchemas";
@@ -29,7 +29,7 @@ export const resetPassword: KoaController = async (ctx) => {
     // Verify the token
     const { email } = decodedToken.user;
 
-    const user = await ORMContext.em.findOne(User, { email });
+    const user = await postgres.em.findOne(User, { email });
     if (!user || user.resetToken !== token){
       console.log("User not found or token mismatch");
     }
@@ -39,7 +39,7 @@ export const resetPassword: KoaController = async (ctx) => {
     // Update the user's password
     user.password = hashedPassword;
     user.resetToken = "";
-    await ORMContext.em.persistAndFlush(user);
+    await postgres.em.persistAndFlush(user);
 
     ctx.status = Status.OK;
     ctx.body = {

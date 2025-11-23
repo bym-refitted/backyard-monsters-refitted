@@ -1,7 +1,7 @@
 import { Save } from "../../models/save.model";
 import { User } from "../../models/user.model";
 import { KoaController } from "../../utils/KoaController";
-import { ORMContext } from "../../server";
+import { postgres } from "../../server";
 import { joinOrCreateWorld } from "../../services/maproom/v2/joinOrCreateWorld";
 import { leaveWorld } from "../../services/maproom/v2/leaveWorld";
 import { FilterFrontendKeys } from "../../utils/FrontendKey";
@@ -31,7 +31,7 @@ const SetMapVersionSchema = z.object({
  */
 export const setMapVersion: KoaController = async (ctx) => {
   const user: User = ctx.authUser;
-  await ORMContext.em.populate(user, ["save"]);
+  await postgres.em.populate(user, ["save"]);
 
   let save: Save = user.save;
   const { version } = SetMapVersionSchema.parse(ctx.request.body);

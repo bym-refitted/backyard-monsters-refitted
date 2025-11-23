@@ -5,7 +5,7 @@ import { logging } from "../../../utils/logger";
 import { World } from "../../../models/world.model";
 import { MapRoom, MapRoomCell } from "../../../enums/MapRoom";
 import { EntityManager, PostgreSqlDriver } from "@mikro-orm/postgresql";
-import { ORMContext } from "../../../server";
+import { postgres } from "../../../server";
 import { findFreeCell } from "./findFreeCell";
 
 /**
@@ -25,7 +25,7 @@ import { findFreeCell } from "./findFreeCell";
 export const joinOrCreateWorld = async (
   user: User,
   save: Save,
-  em: EntityManager<PostgreSqlDriver> = ORMContext.em,
+  em: EntityManager<PostgreSqlDriver> = postgres.em,
   relocate: Boolean = false
 ) => {
   let world: World | null = null;

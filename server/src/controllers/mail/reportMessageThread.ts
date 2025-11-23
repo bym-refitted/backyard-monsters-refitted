@@ -1,7 +1,7 @@
 import { Status } from "../../enums/StatusCodes";
 import { KoaController } from "../../utils/KoaController";
 import { ReportMessageSchema } from "./zod/ReportMessageSchema";
-import { ORMContext } from "../../server";
+import { postgres } from "../../server";
 import { Thread } from "../../models/thread.model";
 import { User } from "../../models/user.model";
 import { mailboxErr } from "../../errors/errors";
@@ -19,7 +19,7 @@ export const reportMessageThread: KoaController = async (ctx) => {
     const user: User = ctx.authUser;
     const { threadid } = ReportMessageSchema.parse(ctx.request.body);
 
-    const thread = await ORMContext.em.findOne(Thread, { threadid });
+    const thread = await postgres.em.findOne(Thread, { threadid });
 
     if (!thread) throw mailboxErr();
 
@@ -33,7 +33,7 @@ export const reportMessageThread: KoaController = async (ctx) => {
     }
 
     user.blockedUsers.push(blockedUserId);
-    await ORMContext.em.persistAndFlush(user);
+    await postgres.em.persistAndFlush(user);
 
     ctx.status = Status.OK;
     ctx.body = { error: 0 };

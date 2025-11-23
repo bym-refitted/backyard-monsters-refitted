@@ -6,7 +6,7 @@ import { saveFailureErr } from "../../../errors/errors";
 import { InfernoMaproom } from "../../../models/infernomaproom.model";
 import { Save } from "../../../models/save.model";
 import { User } from "../../../models/user.model";
-import { ORMContext } from "../../../server";
+import { postgres } from "../../../server";
 import { getCurrentDateTime } from "../../../utils/getCurrentDateTime";
 import { BaseSaveSchema } from "../../../zod/BaseSaveSchema";
 
@@ -17,7 +17,7 @@ export const scaledTribes = async (user: User, saveData: BaseSaveData) => {
   const userInfernoSave = user.infernosave;
   const currentSave = userInfernoSave || userSave;
 
-  const maproom1 = await ORMContext.em.findOne(InfernoMaproom, {
+  const maproom1 = await postgres.em.findOne(InfernoMaproom, {
     userid: user.userid,
   });
 
@@ -48,7 +48,7 @@ export const scaledTribes = async (user: User, saveData: BaseSaveData) => {
     monsters: existingTribe.monsters ?? tribeData.monsters,
   });
 
-  await ORMContext.em.persistAndFlush(maproom1);
+  await postgres.em.persistAndFlush(maproom1);
 
   for (const key of Object.keys(saveData)) {
     const value = saveData[key];
@@ -68,6 +68,6 @@ export const scaledTribes = async (user: User, saveData: BaseSaveData) => {
         break;
     }
   }
-  await ORMContext.em.persistAndFlush(userSave);
+  await postgres.em.persistAndFlush(userSave);
   return tribeSave;
 };

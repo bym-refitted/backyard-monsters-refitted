@@ -1,6 +1,6 @@
 import { FieldData, Save } from "../../../models/save.model";
 import { User } from "../../../models/user.model";
-import { ORMContext } from "../../../server";
+import { postgres } from "../../../server";
 import { FilterFrontendKeys } from "../../../utils/FrontendKey";
 import { KoaController } from "../../../utils/KoaController";
 import { getCurrentDateTime } from "../../../utils/getCurrentDateTime";
@@ -30,13 +30,13 @@ import { buildingDataHandler } from "./handlers/buildingDataHandler";
 export const baseSave: KoaController = async (ctx) => {
   const user: User = ctx.authUser;
   const userSave = user.save;
-  await ORMContext.em.populate(user, ["save"]);
+  await postgres.em.populate(user, ["save"]);
 
   try {
     const saveData = BaseSaveSchema.parse(ctx.request.body);
 
     const { basesaveid } = saveData;
-    const baseSave = await ORMContext.em.findOne(Save, { basesaveid });
+    const baseSave = await postgres.em.findOne(Save, { basesaveid });
 
     if (!baseSave) throw saveFailureErr();
 
@@ -132,7 +132,7 @@ export const baseSave: KoaController = async (ctx) => {
             break;
         }
       }
-      await ORMContext.em.persistAndFlush(userSave);
+      await postgres.em.persistAndFlush(userSave);
     }
 
     // Set the attackid to 0 if the attack is over
@@ -141,7 +141,7 @@ export const baseSave: KoaController = async (ctx) => {
 
     baseSave.id = baseSave.savetime;
     baseSave.savetime = getCurrentDateTime();
-    await ORMContext.em.persistAndFlush(baseSave);
+    await postgres.em.persistAndFlush(baseSave);
 
     const filteredSave = FilterFrontendKeys(baseSave);
     logging(`Saving ${user.username}'s base | IP: ${ctx.ip}`);

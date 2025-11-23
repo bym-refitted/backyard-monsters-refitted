@@ -2,7 +2,7 @@ import { inferoMonsters } from "../../../../data/monsterKeys";
 import { INFERNO_TRIBES } from "../../../../enums/Tribes";
 import { Save } from "../../../../models/save.model";
 import { User } from "../../../../models/user.model";
-import { ORMContext } from "../../../../server";
+import { postgres } from "../../../../server";
 import { calculateBaseLevel } from "../../../../services/base/calculateBaseLevel";
 import { createScaledTribes } from "../../../../services/maproom/v1/createScaledTribes";
 import { permissionErr } from "../../../../errors/errors";
@@ -25,7 +25,7 @@ export const infernoModeBuild = async (user: User) => {
   const userSave = user.save;
   let infernoSave = user.infernosave;
 
-  if (!infernoSave) infernoSave = await Save.createInfernoSave(ORMContext.em, user);
+  if (!infernoSave) infernoSave = await Save.createInfernoSave(postgres.em, user);
 
   if (infernoSave.userid !== user.userid) throw permissionErr();
 
@@ -55,6 +55,6 @@ export const infernoModeBuild = async (user: User) => {
     userSave.lockerdata[key] = itemCount;
   });
 
-  await ORMContext.em.flush();
+  await postgres.em.flush();
   return infernoSave;
 };

@@ -3,7 +3,7 @@ import { MapRoom } from "../../../enums/MapRoom";
 import { Save } from "../../../models/save.model";
 import { User } from "../../../models/user.model";
 import { WorldMapCell } from "../../../models/worldmapcell.model";
-import { ORMContext } from "../../../server";
+import { postgres } from "../../../server";
 import { logReport } from "../../base/reportManager";
 
 /**
@@ -35,7 +35,7 @@ export const validateRange = async (
 
   // First, retrieve the cell under attack
   if (!attackCell && options?.baseid) {
-    attackCell = await ORMContext.em.findOne(WorldMapCell, {
+    attackCell = await postgres.em.findOne(WorldMapCell, {
       baseid: options.baseid,
     });
   }
@@ -72,7 +72,7 @@ export const validateRange = async (
     throw new Error("No outposts near attack cell.");
 
   // Query the database for the in-range outposts
-  const outpostSaves = await ORMContext.em.find(Save, {
+  const outpostSaves = await postgres.em.find(Save, {
     baseid: { $in: outpostsInRange.map((outpost) => outpost.baseid) },
   });
 

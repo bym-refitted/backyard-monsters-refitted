@@ -6,7 +6,7 @@ import { Status } from "../../../enums/StatusCodes";
 import { saveFailureErr } from "../../../errors/errors";
 import { Save } from "../../../models/save.model";
 import { User } from "../../../models/user.model";
-import { ORMContext } from "../../../server";
+import { postgres } from "../../../server";
 import { FilterFrontendKeys } from "../../../utils/FrontendKey";
 import { getCurrentDateTime } from "../../../utils/getCurrentDateTime";
 import { KoaController } from "../../../utils/KoaController";
@@ -32,7 +32,7 @@ const UpdateSavedSchema = z.object({
  */
 export const updateSaved: KoaController = async (ctx) => {
   const user: User = ctx.authUser;
-  await ORMContext.em.populate(user, ["save"]);
+  await postgres.em.populate(user, ["save"]);
 
   const userSave = user.save;
   
@@ -62,7 +62,7 @@ export const updateSaved: KoaController = async (ctx) => {
     baseSave.id = baseSave.savetime; // client expects this.
 
     if (baseid !== BaseMode.DEFAULT && type === BaseMode.BUILD) {
-      await ORMContext.em.persistAndFlush(baseSave);
+      await postgres.em.persistAndFlush(baseSave);
     }
 
     const filteredSave = FilterFrontendKeys(baseSave);
