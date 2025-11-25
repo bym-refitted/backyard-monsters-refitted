@@ -1,6 +1,6 @@
 import { Status } from "../../enums/StatusCodes";
 import { World } from "../../models/world.model";
-import { ORMContext, redisClient } from "../../server";
+import { postgres, redisClient } from "../../server";
 import { KoaController } from "../../utils/KoaController";
 import { LB_CACHE_TTL } from "./getLeaderboards";
 
@@ -23,7 +23,7 @@ export const getAvailableWorlds: KoaController = async (ctx) => {
   if (cachedWorlds) {
     worlds = JSON.parse(cachedWorlds);
   } else {
-    worlds = await ORMContext.em.find(World, {});
+    worlds = await postgres.em.find(World, {});
     await redisClient.setEx(cacheKey, LB_CACHE_TTL, JSON.stringify(worlds));
   }
 

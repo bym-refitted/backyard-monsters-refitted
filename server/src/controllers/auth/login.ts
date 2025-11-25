@@ -2,7 +2,7 @@ import bcrypt from "bcrypt";
 import JWT from "jsonwebtoken";
 
 import { User } from "../../models/user.model";
-import { ORMContext, redisClient } from "../../server";
+import { postgres, redisClient } from "../../server";
 import { FilterFrontendKeys } from "../../utils/FrontendKey";
 import { KoaController } from "../../utils/KoaController";
 import {
@@ -31,7 +31,7 @@ import type { StringValue } from "ms";
 const authenticateWithToken = async (token: string) => {
   const { user } = verifyJwtToken(token);
 
-  let userRecord = await ORMContext.em.findOne(User, { email: user.email });
+  let userRecord = await postgres.em.findOne(User, { email: user.email });
   if (!userRecord) throw emailPasswordErr();
 
   return userRecord;
@@ -57,7 +57,7 @@ export const login: KoaController = async (ctx) => {
   if (token) user = await authenticateWithToken(token);
 
   if (!user) {
-    user = await ORMContext.em.findOne(User, { email });
+    user = await postgres.em.findOne(User, { email });
     if (!user) throw emailPasswordErr();
 
     const isMatch = await bcrypt.compare(password, user.password);
@@ -107,7 +107,7 @@ export const login: KoaController = async (ctx) => {
   );
 
   await redisClient.set(`user-token:${user.email}`, newToken);
-  await ORMContext.em.persistAndFlush(user);
+  await postgres.em.persistAndFlush(user);
 
   const filteredUser = FilterFrontendKeys(user);
   logging(

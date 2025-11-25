@@ -1,5 +1,5 @@
 import { Save } from "../../../../models/save.model";
-import { ORMContext } from "../../../../server";
+import { postgres } from "../../../../server";
 import { wildMonsterSave } from "../../../../services/maproom/v2/wildMonsters";
 import { getCurrentDateTime } from "../../../../utils/getCurrentDateTime";
 
@@ -18,7 +18,7 @@ const WILD_MONSTER_EXPIRATION = 43200;
  * @returns {Promise<Loaded<Save, never>>} The save object or null if no valid save is found.
  */
 export const baseModeView = async (baseid: string) => {
-  let save = await ORMContext.em.findOne(Save, { baseid });
+  let save = await postgres.em.findOne(Save, { baseid });
 
   if (!save) save = wildMonsterSave(baseid);
 
@@ -26,7 +26,7 @@ export const baseModeView = async (baseid: string) => {
     const currentTimestamp = getCurrentDateTime();
 
     if (currentTimestamp - save.savetime > WILD_MONSTER_EXPIRATION) {
-      await ORMContext.em.removeAndFlush(save);
+      await postgres.em.removeAndFlush(save);
       save = wildMonsterSave(baseid);
     }
   }

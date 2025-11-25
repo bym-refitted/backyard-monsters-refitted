@@ -1,7 +1,7 @@
 import z from "zod";
 
 import { KoaController } from "../../../utils/KoaController";
-import { ORMContext } from "../../../server";
+import { postgres } from "../../../server";
 import { Save } from "../../../models/save.model";
 import { Status } from "../../../enums/StatusCodes";
 
@@ -37,7 +37,7 @@ export const transferMonsters: KoaController = async (ctx) => {
   const orderBy = frombaseid > tobaseid ? { baseid: 'DESC' } : { baseid: 'ASC' };
 
   // Fetch the bases to transfer the monsters between
-  const [fromBase, toBase] = await ORMContext.em.find(Save, {
+  const [fromBase, toBase] = await postgres.em.find(Save, {
     baseid: { $in: [frombaseid, tobaseid] },
   }, { orderBy });
 
@@ -57,7 +57,7 @@ export const transferMonsters: KoaController = async (ctx) => {
   fromBase.monsters = fromMonsters;
   toBase.monsters = toMonsters;
 
-  await ORMContext.em.persistAndFlush([fromBase, toBase]);
+  await postgres.em.persistAndFlush([fromBase, toBase]);
 
   ctx.status = Status.OK;
   ctx.body = { error: 0 };

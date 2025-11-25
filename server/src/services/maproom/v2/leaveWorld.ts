@@ -2,7 +2,7 @@ import { BaseType } from "../../../enums/Base";
 import { Save } from "../../../models/save.model";
 import { User } from "../../../models/user.model";
 import { WorldMapCell } from "../../../models/worldmapcell.model";
-import { ORMContext } from "../../../server";
+import { postgres } from "../../../server";
 
 export const leaveWorld = async (user: User, save: Save) => {
   if (!save.worldid) return;
@@ -10,7 +10,7 @@ export const leaveWorld = async (user: User, save: Save) => {
   const { userid } = user;
   const worldid = save.worldid;
 
-  await ORMContext.em.transactional(async (em) => {
+  await postgres.em.transactional(async (em) => {
     await em
       .getConnection()
       .execute(
