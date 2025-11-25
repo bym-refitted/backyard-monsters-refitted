@@ -1,6 +1,6 @@
 import { Save } from "../../../../models/save.model";
 import { User } from "../../../../models/user.model";
-import { ORMContext } from "../../../../server";
+import { postgres } from "../../../../server";
 import { BaseMode } from "../../../../enums/Base";
 import { logging } from "../../../../utils/logger";
 import { balancedReward } from "../../../../services/base/balancedReward";
@@ -23,7 +23,7 @@ export const baseModeBuild = async (user: User, baseid: string) => {
   // If no user save is found, setup MR1 & create a default save for the user.
   if (!userSave) {
     logging("User save not found; creating a default save.");
-    return await Save.createMainSave(ORMContext.em, user);
+    return await Save.createMainSave(postgres.em, user);
   }
 
   // Default mode only runs once on initial base load
@@ -32,12 +32,12 @@ export const baseModeBuild = async (user: User, baseid: string) => {
 
     if (userSave.stats?.other) resetInvasionWaves(userSave.stats.other);
 
-    await ORMContext.em.persistAndFlush(userSave);
+    await postgres.em.persistAndFlush(userSave);
     return userSave;
   }
 
   if (baseid !== userSave.baseid) {
-    const baseSave = await ORMContext.em.findOne(Save, { baseid });
+    const baseSave = await postgres.em.findOne(Save, { baseid });
 
     if (!baseSave) throw new Error(`Base save not found for baseid: ${baseid}`);
     if (baseSave.userid !== user.userid) throw permissionErr();

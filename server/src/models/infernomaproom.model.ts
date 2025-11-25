@@ -1,11 +1,6 @@
-import {
-  Connection,
-  Entity,
-  EntityManager,
-  IDatabaseDriver,
-  PrimaryKey,
-  Property,
-} from "@mikro-orm/core";
+import { Entity, PrimaryKey, Property } from "@mikro-orm/core";
+
+import { EntityManager, PostgreSqlDriver } from "@mikro-orm/postgresql";
 import { User } from "./user.model";
 import { NeighbourData } from "../services/maproom/inferno/createNeighbourData";
 
@@ -37,13 +32,8 @@ export class InfernoMaproom {
   @Property({ onUpdate: () => new Date() })
   lastupdateAt: Date = new Date();
 
-  public static setupMapRoom1Data = async (
-    em: EntityManager<IDatabaseDriver<Connection>>,
-    user: User
-  ) => {
-    const maproom = em.create(InfernoMaproom, {
-      userid: user.userid,
-    });
+  public static setupMapRoom1Data = async (em: EntityManager<PostgreSqlDriver>, user: User) => {
+    const maproom = em.create(InfernoMaproom, { userid: user.userid });
 
     await em.persistAndFlush(maproom);
     return maproom;

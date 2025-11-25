@@ -1,7 +1,7 @@
 import { AttackLogs } from "../../models/attacklogs.model";
 import { Save } from "../../models/save.model";
 import { User } from "../../models/user.model";
-import { ORMContext } from "../../server";
+import { postgres } from "../../server";
 
 /**
  * Creates a new attack log entry in the database
@@ -15,7 +15,7 @@ import { ORMContext } from "../../server";
  * @returns {Promise<void>}
  */
 export const createAttackLog = async (attacker: User, defender: User, save: Save) => {
-  const attackLog = ORMContext.em.create(AttackLogs, {
+  const attackLog = postgres.em.create(AttackLogs, {
     attacker_userid: attacker.userid,
     attacker_username: attacker.username,
     attacker_pic_square: attacker.pic_square,
@@ -33,5 +33,5 @@ export const createAttackLog = async (attacker: User, defender: User, save: Save
     attacktime: new Date(),
   });
 
-  await ORMContext.em.persistAndFlush(attackLog);
+  await postgres.em.persistAndFlush(attackLog);
 };

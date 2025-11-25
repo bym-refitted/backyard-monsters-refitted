@@ -1,6 +1,6 @@
 import { devConfig } from "../../../config/DevSettings";
 import { Save } from "../../../models/save.model";
-import { ORMContext } from "../../../server";
+import { postgres } from "../../../server";
 import { KoaController } from "../../../utils/KoaController";
 import { storeItems } from "../../../data/store/storeItems";
 import { User } from "../../../models/user.model";
@@ -32,7 +32,7 @@ import { discordAgeErr } from "../../../errors/errors";
  */
 export const baseLoad: KoaController = async (ctx) => {
   const user: User = ctx.authUser;
-  await ORMContext.em.populate(user, ["save", "infernosave"]);
+  await postgres.em.populate(user, ["save", "infernosave"]);
 
   try {
     const { baseid, type, attackData } = BaseLoadSchema.parse(ctx.request.body);

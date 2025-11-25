@@ -1,4 +1,4 @@
-import { ORMContext, redisClient } from "../server";
+import { postgres, redisClient } from "../server";
 import { User } from "../models/user.model";
 import { Context, Next } from "koa";
 import {
@@ -34,7 +34,7 @@ export const verifyUserAuth = async (ctx: Context, next: Next) => {
 
   if (storedToken !== token) throw authFailureErr();
 
-  const user = await ORMContext.em.findOne(User, {
+  const user = await postgres.em.findOne(User, {
     email: decodedToken.user.email,
   });
 

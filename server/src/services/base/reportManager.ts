@@ -1,6 +1,6 @@
 import { Report } from "../../models/report.model";
 import { User } from "../../models/user.model";
-import { ORMContext } from "../../server";
+import { postgres } from "../../server";
 
 type ReportEntry = {
   message: string;
@@ -24,7 +24,7 @@ export const logReport = async (user: User, message: string) => {
   };
 
   incident.report.push(newReport);
-  await ORMContext.em.persistAndFlush(incident);
+  await postgres.em.persistAndFlush(incident);
 };
 
 /**
@@ -47,7 +47,7 @@ export const logAttackViolation = async (user: User, message: string) => {
   };
 
   incident.report.push(newReport);
-  await ORMContext.em.persistAndFlush([incident, user]);
+  await postgres.em.persistAndFlush([incident, user]);
 };
 
 /**
@@ -68,7 +68,7 @@ export const logBanReport = async (user: User, message: string) => {
 
   incident.banReason = banReason;
   user.banned = true;
-  await ORMContext.em.persistAndFlush(incident);
+  await postgres.em.persistAndFlush(incident);
 };
 
 /**
@@ -80,7 +80,7 @@ export const logBanReport = async (user: User, message: string) => {
  */
 const getOrCreateReport = async (user: User): Promise<Report> => {
   const { userid, username, discord_tag } = user;
-  let incident = await ORMContext.em.findOne(Report, { userid });
+  let incident = await postgres.em.findOne(Report, { userid });
 
   if (!incident) {
     incident = new Report();
