@@ -1,5 +1,5 @@
 import { Message } from "../../models/message.model";
-import { ORMContext } from "../../server";
+import { postgres } from "../../server";
 
 /**
  * Count unread messages for a user.
@@ -9,7 +9,7 @@ import { ORMContext } from "../../server";
  * @returns
  */
 export const countUnreadMessage = (userid: number) => {
-  return ORMContext.em.count(Message, {
+  return postgres.em.count(Message, {
     $or: [
       {
         userid: userid,

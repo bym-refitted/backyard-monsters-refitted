@@ -3,7 +3,7 @@ import { Status } from "../../enums/StatusCodes";
 import { mailboxErr } from "../../errors/errors";
 import { Thread } from "../../models/thread.model";
 import { User } from "../../models/user.model";
-import { ORMContext } from "../../server";
+import { postgres } from "../../server";
 import { KoaController } from "../../utils/KoaController";
 
 interface TargetUser {
@@ -29,7 +29,7 @@ export const getMessageTargets: KoaController = async (ctx) => {
   try {
     const user: User = ctx.authUser;
 
-    const threads = await ORMContext.em.find(
+    const threads = await postgres.em.find(
       Thread,
       {
         $or: [{ userid: user.userid }, { targetid: user.userid }],
@@ -52,7 +52,7 @@ export const getMessageTargets: KoaController = async (ctx) => {
       ),
     ];
 
-    const users = await ORMContext.em.find(
+    const users = await postgres.em.find(
       User,
       {
         userid: { $in: conversationPartnerIds },

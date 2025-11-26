@@ -3,7 +3,7 @@ import { Status } from "../../../enums/StatusCodes";
 import { User } from "../../../models/user.model";
 import { Save } from "../../../models/save.model";
 import { InfernoMaproom } from "../../../models/infernomaproom.model";
-import { ORMContext } from "../../../server";
+import { postgres } from "../../../server";
 import { BaseType } from "../../../enums/Base";
 import { calculateBaseLevel } from "../../../services/base/calculateBaseLevel";
 import { damageProtection } from "../../../services/maproom/v2/damageProtection";
@@ -34,7 +34,7 @@ const CACHE_VALIDITY_HOURS = 24 * 7 * 4;
  */
 export const getNeighbours: KoaController = async (ctx) => {
   const user: User = ctx.authUser;
-  await ORMContext.em.populate(user, ["save", "infernosave"]);
+  await postgres.em.populate(user, ["save", "infernosave"]);
 
   try {
     if (!user.save.worldid) {
@@ -43,7 +43,7 @@ export const getNeighbours: KoaController = async (ctx) => {
       return;
     }
 
-    let infernoMaproom = await ORMContext.em.findOne(InfernoMaproom, {
+    let infernoMaproom = await postgres.em.findOne(InfernoMaproom, {
       userid: user.userid,
     });
 
@@ -79,7 +79,7 @@ export const getNeighbours: KoaController = async (ctx) => {
       infernoMaproom.neighbors = mergedNeighbors;
       infernoMaproom.neighborsLastCalculated = currentDate;
 
-      await ORMContext.em.persistAndFlush(infernoMaproom);
+      await postgres.em.persistAndFlush(infernoMaproom);
     }
 
     // Update attack permissions for cached neighbours based on current save state
@@ -129,7 +129,7 @@ const findNeighbours = async (user: User): Promise<NeighbourData[]> => {
   const userIds = new Set<number>();
 
   // Retrieve inferno saves of other users in the same overworld
-  const infernoSaves = await ORMContext.em.find(
+  const infernoSaves = await postgres.em.find(
     Save,
     {
       type: BaseType.INFERNO,
@@ -158,7 +158,7 @@ const findNeighbours = async (user: User): Promise<NeighbourData[]> => {
   }
 
   // Fetch users for all valid neighbours
-  const neighbourUsers = await ORMContext.em.find(User, {
+  const neighbourUsers = await postgres.em.find(User, {
     userid: { $in: Array.from(userIds) },
   });
 
@@ -193,7 +193,7 @@ const updateNeighbourData = async (cachedNeighbours: NeighbourData[]) => {
 
   const userIds = cachedNeighbours.map((neighbour) => neighbour.userid);
 
-  const neighbourSaves = await ORMContext.em.find(Save, {
+  const neighbourSaves = await postgres.em.find(Save, {
     type: BaseType.INFERNO,
     userid: { $in: userIds },
   });

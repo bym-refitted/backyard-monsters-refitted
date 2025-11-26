@@ -3,19 +3,19 @@ import { BaseType } from "../../../../enums/Base";
 import { InfernoMaproom } from "../../../../models/infernomaproom.model";
 import { Save } from "../../../../models/save.model";
 import { User } from "../../../../models/user.model";
-import { ORMContext } from "../../../../server";
+import { postgres } from "../../../../server";
 
 export const infernoModeDescent = async (user: User) => {
   const { userid } = user.save;
 
-  let baseSave = await ORMContext.em.findOne(Save, {
+  let baseSave = await postgres.em.findOne(Save, {
     userid,
     type: BaseType.MAIN,
   });
 
-  const maproom1 = await ORMContext.em.findOne(InfernoMaproom, { userid });
+  const maproom1 = await postgres.em.findOne(InfernoMaproom, { userid });
 
-  if (!maproom1) await InfernoMaproom.setupMapRoom1Data(ORMContext.em, user);
+  if (!maproom1) await InfernoMaproom.setupMapRoom1Data(postgres.em, user);
 
   // Otherwise, create an array of 13 descent tribes, client expects IDs between 201-213.
   const tribes = Array.from({ length: 13 }, (_, i) => [201 + i, i + 1, 0]);
@@ -27,7 +27,7 @@ export const infernoModeDescent = async (user: User) => {
   if (baseSave.wmstatus.length !== 0) return baseSave;
 
   baseSave.wmstatus = tribes;
-  await ORMContext.em.flush();
+  await postgres.em.flush();
 
   return baseSave;
 };

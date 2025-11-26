@@ -1,6 +1,6 @@
 import bcrypt from "bcrypt";
 
-import { EntityManager } from "@mikro-orm/core";
+import { EntityManager, PostgreSqlDriver } from "@mikro-orm/postgresql";
 import { getDefaultBaseData } from "../../data/getDefaultBaseData";
 import { Save } from "../../models/save.model";
 import { User } from "../../models/user.model";
@@ -9,7 +9,7 @@ import { errorLog, logging } from "../../utils/logger";
 import { MapRoom } from "../../enums/MapRoom";
 import { BaseType } from "../../enums/Base";
 
-export const seedWorldMapUsers = async (em: EntityManager) => {
+export const seedWorldMapUsers = async (em: EntityManager<PostgreSqlDriver>) => {
   // Check if users already exist
   const existingUsers = await em.count(User, {});
   if (existingUsers > 0) {

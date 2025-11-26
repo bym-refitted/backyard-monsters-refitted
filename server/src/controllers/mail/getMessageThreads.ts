@@ -3,7 +3,7 @@ import { mailboxErr } from "../../errors/errors";
 import { User } from "../../models/user.model";
 import { KoaController } from "../../utils/KoaController";
 
-import { ORMContext } from "../../server";
+import { postgres } from "../../server";
 import { Thread } from "../../models/thread.model";
 import { FilterFrontendKeys } from "../../utils/FrontendKey";
 import { errorLog } from "../../utils/logger";
@@ -22,7 +22,7 @@ export const getMessageThreads: KoaController = async (ctx) => {
   const user: User = ctx.authUser;
 
   try {
-    const threads = await ORMContext.em.find(
+    const threads = await postgres.em.find(
       Thread,
       {
         $or: [{ userid: user.userid }, { targetid: user.userid }],
