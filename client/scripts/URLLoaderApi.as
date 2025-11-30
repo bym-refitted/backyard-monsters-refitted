@@ -123,6 +123,10 @@ package
          }
          urlBuilder.data = urlVariables;
          urlBuilder.method = URLRequestMethod.POST;
+         if(currentIndex == 0)
+         {
+            urlBuilder.method = URLRequestMethod.GET;
+         }
          this._req = new URLLoader(urlBuilder);
          this._req.addEventListener(Event.COMPLETE, this.fireComplete);
          this._req.addEventListener(IOErrorEvent.IO_ERROR, this.loadError);
