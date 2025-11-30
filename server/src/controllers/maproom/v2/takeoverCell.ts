@@ -1,6 +1,6 @@
 import { KoaController } from "../../../utils/KoaController";
 import { User } from "../../../models/user.model";
-import { ORMContext } from "../../../server";
+import { postgres } from "../../../server";
 import { WorldMapCell } from "../../../models/worldmapcell.model";
 import { Status } from "../../../enums/StatusCodes";
 import { BaseType } from "../../../enums/Base";
@@ -31,11 +31,11 @@ export const takeoverCell: KoaController = async (ctx) => {
     );
 
     const currentUser: User = ctx.authUser;
-    await ORMContext.em.populate(currentUser, ["save"]);
+    await postgres.em.populate(currentUser, ["save"]);
 
     const userSave = currentUser.save;
 
-    const cell = await ORMContext.em.findOne(
+    const cell = await postgres.em.findOne(
       WorldMapCell,
       { baseid },
       { populate: ["save"] }
@@ -63,7 +63,7 @@ export const takeoverCell: KoaController = async (ctx) => {
       );
 
     // Find the previous owner
-    const previousOwner = await ORMContext.em.findOne(
+    const previousOwner = await postgres.em.findOne(
       User,
       { userid: cellSave.userid },
       { populate: ["save"] }
@@ -84,7 +84,7 @@ export const takeoverCell: KoaController = async (ctx) => {
         delete buildingresources[`b${baseid}`];
       }
 
-      await ORMContext.em.persistAndFlush(previousOwner);
+      await postgres.em.persistAndFlush(previousOwner);
     }
 
     // Update save
@@ -115,7 +115,7 @@ export const takeoverCell: KoaController = async (ctx) => {
 
     // Update user
     userSave.outposts.push([cell.x, cell.y, baseid]);
-    await ORMContext.em.persistAndFlush([cellSave, currentUser]);
+    await postgres.em.persistAndFlush([cellSave, currentUser]);
 
     ctx.status = Status.OK;
     ctx.body = { error: 0 };

@@ -1664,7 +1664,7 @@ package com.monsters.monsters.champions
             default:
                this.tickDefault();
          }
-         if((_behaviour == GLOBAL.e_BASE_MODE.ATTACK || _behaviour == "retreat" && health > 0 || _behaviour == "buff") && _frameNumber % 5 == 0)
+         if((this.inBattleState || _behaviour == "retreat" && health > 0) && _frameNumber % 5 == 0)
          {
             newNode = Targeting.CreepCellMove(_tmpPoint,_id,this,node);
             if(newNode)

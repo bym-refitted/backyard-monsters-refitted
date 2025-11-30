@@ -2,7 +2,7 @@ import { FilterQuery } from "@mikro-orm/core";
 import { Status } from "../../enums/StatusCodes";
 import { loadFailureErr } from "../../errors/errors";
 import { AttackLogs } from "../../models/attacklogs.model";
-import { ORMContext, redisClient } from "../../server";
+import { postgres, redisClient } from "../../server";
 import { KoaController } from "../../utils/KoaController";
 import { AttackLogFilter } from "../../enums/AttackLogFilter";
 import { User } from "../../models/user.model";
@@ -58,7 +58,7 @@ export const getAttackLogs: KoaController = async (ctx) => {
         break;
     }
 
-    const attackLogs = await ORMContext.em.find(AttackLogs, whereCondition, {
+    const attackLogs = await postgres.em.find(AttackLogs, whereCondition, {
       orderBy: { attacktime: "DESC" },
       limit: 50,
     });

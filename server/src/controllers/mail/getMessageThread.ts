@@ -2,7 +2,7 @@ import { Status } from "../../enums/StatusCodes";
 import { mailboxErr } from "../../errors/errors";
 import { User } from "../../models/user.model";
 import { KoaController } from "../../utils/KoaController";
-import { ORMContext } from "../../server";
+import { postgres } from "../../server";
 import { GetMessageSchema } from "./zod/GetMessageSchema";
 import { countUnreadMessage } from "../../services/mail/countUnreadMessage";
 import { findUserMessages } from "../../services/mail/findUserMessages";
@@ -21,7 +21,7 @@ export const getMessageThread: KoaController = async (ctx) => {
   try {
     const user: User = ctx.authUser;
     const userSave = user.save;
-    await ORMContext.em.populate(user, ["save"]);
+    await postgres.em.populate(user, ["save"]);
 
     const { threadid } = GetMessageSchema.parse(ctx.request.body);
 
@@ -39,12 +39,12 @@ export const getMessageThread: KoaController = async (ctx) => {
         }
       });
 
-      await ORMContext.em.persistAndFlush(messages);
+      await postgres.em.persistAndFlush(messages);
 
       const count = await countUnreadMessage(user.userid);
 
       userSave.unreadmessages = count;
-      await ORMContext.em.flush();
+      await postgres.em.flush();
     }
 
     const thread = Object.fromEntries(

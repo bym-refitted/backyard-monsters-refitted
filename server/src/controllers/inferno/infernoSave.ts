@@ -1,10 +1,11 @@
+import { BaseType } from "../../enums/Base";
 import { SaveKeys } from "../../enums/SaveKeys";
 import { Status } from "../../enums/StatusCodes";
 import { permissionErr } from "../../errors/errors";
 import { ClientSafeError } from "../../middleware/clientSafeError";
 import { Save } from "../../models/save.model";
 import { User } from "../../models/user.model";
-import { ORMContext } from "../../server";
+import { postgres } from "../../server";
 import { scaledTribes } from "../../services/maproom/v1/scaledTribes";
 import { FilterFrontendKeys } from "../../utils/FrontendKey";
 import { getCurrentDateTime } from "../../utils/getCurrentDateTime";
@@ -21,14 +22,14 @@ export const infernoSave: KoaController = async (ctx) => {
   const user: User = ctx.authUser;
   const userSave = user.save;
   const userInfernoSave = user.infernosave;
-  await ORMContext.em.populate(user, ["save", "infernosave"]);
+  await postgres.em.populate(user, ["save", "infernosave"]);
 
   try {
     const saveData = BaseSaveSchema.parse(ctx.request.body);
 
     // Fist attempt to find a user's Inferno base save
     const { basesaveid } = saveData;
-    let baseSave = await ORMContext.em.findOne(Save, { basesaveid });
+    let baseSave = await postgres.em.findOne(Save, { basesaveid });
 
     // Otherwise, retrieve a moloch tribe and handle tribe save logic
     if (!baseSave) {
@@ -51,7 +52,6 @@ export const infernoSave: KoaController = async (ctx) => {
 
     for (const key of isAttack ? Save.attackSaveKeys : Save.saveKeys) {
       const value = ctx.request.body[key];
-
       switch (key) {
         case SaveKeys.RESOURCES:
           resourcesHandler(baseSave, value);
@@ -84,6 +84,7 @@ export const infernoSave: KoaController = async (ctx) => {
           } else {
             baseSave[SaveKeys.BUILDINGDATA] = saveData.buildingdata;
           }
+          break;
 
         default:
           if (value) {
@@ -96,23 +97,38 @@ export const infernoSave: KoaController = async (ctx) => {
       }
     }
 
-    if (isAttack) {
-      for (const key of Object.keys(saveData)) {
-        const value = saveData[key];
-        switch (key) {
-          case SaveKeys.ATTACKLOOT:
-            attackLootHandler(value, userSave, SaveKeys.IRESOURCES);
-            break;
-          default:
-            break;
+    // Defender-specific save updates during an attack
+    if (isAttack && !isOwner) {
+      const defenderSave = await postgres.em.findOne(Save, {
+        type: BaseType.INFERNO,
+        userid: baseSave.saveuserid,
+      });
+
+      if (defenderSave) {
+        for (const key of Object.keys(saveData)) {
+          const value = saveData[key];
+          switch (key) {
+            case SaveKeys.MONSTERS:
+              if (value) defenderSave.monsters = value;
+              break;
+
+            case SaveKeys.ATTACKLOOT:
+              attackLootHandler(value, userSave, SaveKeys.IRESOURCES);
+              break;
+              
+            default:
+              break;
+          }
         }
+        await postgres.em.persistAndFlush(defenderSave);
       }
-      await ORMContext.em.persistAndFlush(userSave);
     }
+
+    if (isAttack) await postgres.em.persistAndFlush(userSave);
 
     baseSave.id = baseSave.savetime;
     baseSave.savetime = getCurrentDateTime();
-    await ORMContext.em.persistAndFlush(baseSave);
+    await postgres.em.persistAndFlush(baseSave);
 
     const filteredSave = FilterFrontendKeys(baseSave);
 

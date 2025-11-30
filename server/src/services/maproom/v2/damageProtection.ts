@@ -1,6 +1,6 @@
 import { BaseMode, BaseType } from "../../../enums/Base";
 import { Save } from "../../../models/save.model";
-import { ORMContext } from "../../../server";
+import { postgres } from "../../../server";
 import { getCurrentDateTime } from "../../../utils/getCurrentDateTime";
 
 /**
@@ -163,6 +163,6 @@ export const damageProtection = async (save: Save, mode?: BaseMode) => {
     save.protected = protection;
     save.mainProtectionTime = mainProtectionTime;
     save.outpostProtectionTime = outpostProtectionTime;
-    await ORMContext.em.persistAndFlush(save);
+    await postgres.em.persistAndFlush(save);
   }
 };

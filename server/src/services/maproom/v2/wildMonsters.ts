@@ -1,5 +1,5 @@
 import { Save } from "../../../models/save.model";
-import { ORMContext } from "../../../server";
+import { postgres } from "../../../server";
 import { Tribe, Tribes } from "../../../enums/Tribes";
 import { legionnaire } from "../../../data/tribes/legionnaire";
 import { abunaki } from "../../../data/tribes/abunaki";
@@ -18,10 +18,8 @@ import { calculateTribeLevel, minimumTribeLevels } from "./calculateTribeLevel";
  * @returns {Save} - A new `Save` object for the wild monster, with tribe-specific data.
  */
 export const wildMonsterSave = (baseid: string) => {
-  const baseId = parseInt(baseid);
-
-  const cellX = Math.floor(baseId / 1000) % 1000;
-  const cellY = baseId % 1000;
+  const cellX = parseInt(baseid.slice(-6, -3));
+  const cellY = parseInt(baseid.slice(-3));
 
   const tribeIndex = (cellX + cellY) % Tribes.length;
   const tribe = Tribes[tribeIndex] as Tribe;
@@ -32,7 +30,7 @@ export const wildMonsterSave = (baseid: string) => {
   const { tribeSave } = fetchTribeData(tribeIndex, level);
 
   // Return a new save for the wild monster.
-  return ORMContext.em.create(Save, {
+  return postgres.em.create(Save, {
     ...tribeSave,
     baseid,
     level,

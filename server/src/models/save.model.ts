@@ -1,13 +1,6 @@
-import {
-  Entity,
-  Property,
-  PrimaryKey,
-  EntityManager,
-  Connection,
-  IDatabaseDriver,
-  OneToOne,
-  Index,
-} from "@mikro-orm/core";
+import { Entity, Property, PrimaryKey, OneToOne, Index } from "@mikro-orm/core";
+
+import { EntityManager, PostgreSqlDriver } from "@mikro-orm/postgresql";
 import { FrontendKey } from "../utils/FrontendKey";
 import { getDefaultBaseData } from "../data/getDefaultBaseData";
 import { User } from "./user.model";
@@ -20,7 +13,8 @@ export interface FieldData {
   [key: string | number]: any;
 }
 
-// Composite index on worldid, type, and userid
+const NEXT_USER_BASEID = `SELECT nextval('bym.user_baseid_seq') AS baseid`;
+
 @Index({ properties: ["type", "worldid", "userid"] })
 @Entity({ tableName: "save" })
 export class Save {
@@ -43,7 +37,7 @@ export class Save {
   cell: WorldMapCell;
 
   @FrontendKey
-  @Property({ default: 0 })
+  @Property({ type: "bigint", default: 0 })
   homebaseid!: number;
 
   @Index()
@@ -516,7 +510,7 @@ export class Save {
     "basevalue",
     "empirevalue",
     "points",
-    "tutorialstage"
+    "tutorialstage",
   ];
 
   public static attackSaveKeys: (keyof FieldData)[] = [
@@ -524,6 +518,7 @@ export class Save {
     "damage",
     "locked",
     "protected",
+    "monsters",
     "champion",
     "over",
     "buildingdata",
@@ -531,20 +526,17 @@ export class Save {
     "buildingresources",
     "attackreport",
     "attackersiege",
-    "attackcreatures"
+    "attackcreatures",
   ];
 
-  public static createMainSave = async (
-    em: EntityManager<IDatabaseDriver<Connection>>,
-    user: User
-  ) => {
+  public static createMainSave = async (em: EntityManager<PostgreSqlDriver>, user: User) => {
     const baseSave = em.create(Save, getDefaultBaseData(user, BaseType.MAIN));
-    // Persist the entity to generate basesaveid
-    await em.persistAndFlush(baseSave);
 
-    // Update the baseid and homebase to match the basesaveid
-    baseSave.baseid = baseSave.basesaveid.toString();
-    baseSave.homebaseid = baseSave.basesaveid;
+    const [result] = await em.execute<[{ baseid: string }]>(NEXT_USER_BASEID);
+    const baseid = result.baseid;
+
+    baseSave.baseid = baseid;
+    baseSave.homebaseid = parseInt(baseid, 10);
     await em.persistAndFlush(baseSave);
 
     user.save = baseSave;
@@ -553,16 +545,15 @@ export class Save {
     return baseSave;
   };
 
-  public static createInfernoSave = async (
-    em: EntityManager<IDatabaseDriver<Connection>>,
-    user: User
-  ) => {
+  public static createInfernoSave = async (em: EntityManager<PostgreSqlDriver>, user: User) => {
     const infernoSave = em.create(Save, getDefaultBaseData(user, BaseType.INFERNO));
-    await em.persistAndFlush(infernoSave);
+
+    const [result] = await em.execute<[{ baseid: string }]>(NEXT_USER_BASEID);
+    const baseid = result.baseid;
 
     infernoSave.type = BaseType.INFERNO;
-    infernoSave.baseid = infernoSave.basesaveid.toString();
-    infernoSave.homebaseid = infernoSave.basesaveid;
+    infernoSave.baseid = baseid;
+    infernoSave.homebaseid = parseInt(baseid, 10);
     infernoSave.stats = user.save.stats;
     infernoSave.worldid = user.save.worldid;
     infernoSave.credits = 0;
@@ -571,10 +562,11 @@ export class Save {
       r2: 60090,
       r3: 59849,
       r4: 55864,
-    }
+    };
 
     user.infernosave = infernoSave;
     await em.persistAndFlush(infernoSave);
+
     return infernoSave;
   };
 }

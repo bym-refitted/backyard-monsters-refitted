@@ -11,4 +11,6 @@ api-versioning
 android/bymr.keystore
 android/apk/*
 
+android/apk/BYMRefitted.apk
+CLAUDE.md
 .DS_Store

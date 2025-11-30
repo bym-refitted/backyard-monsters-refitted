@@ -2,7 +2,7 @@ import { molochTribes } from "../../../../data/tribes/molochTribes";
 import { BaseType } from "../../../../enums/Base";
 import { Save } from "../../../../models/save.model";
 import { User } from "../../../../models/user.model";
-import { ORMContext } from "../../../../server";
+import { postgres } from "../../../../server";
 import { createAttackLog } from "../../../../services/base/createAttackLog";
 import { getCurrentDateTime } from "../../../../utils/getCurrentDateTime";
 import { AttackDetails } from "./baseModeAttack";
@@ -24,7 +24,7 @@ import {
  * @returns {Promise<Save>} The save data for the attacked base
  */
 export const infernoModeAttack = async (user: User, baseid: string) => {
-  const save = await ORMContext.em.findOne(Save, {
+  const save = await postgres.em.findOne(Save, {
     type: BaseType.INFERNO,
     baseid,
   });
@@ -49,7 +49,7 @@ export const infernoModeAttack = async (user: User, baseid: string) => {
   save.attacks.push(attackDetails);
   save.attackid = Math.floor(Math.random() * 99999) + 1;
 
-  const defender = await ORMContext.em.findOne(User, {
+  const defender = await postgres.em.findOne(User, {
     userid: save.saveuserid,
   });
 
@@ -61,7 +61,7 @@ export const infernoModeAttack = async (user: User, baseid: string) => {
     createAttackLog(user, defender, save),
   ]);
 
-  await ORMContext.em.persistAndFlush(save);
+  await postgres.em.persistAndFlush(save);
   return save;
 };
 
@@ -79,7 +79,7 @@ export const infernoModeAttack = async (user: User, baseid: string) => {
  * @throws {Error} When no tribe data is found for the given baseid
  */
 const infernoTribeSave = async (user: User, baseid: string): Promise<Save> => {
-  const maproom1 = await ORMContext.em.findOne(InfernoMaproom, {
+  const maproom1 = await postgres.em.findOne(InfernoMaproom, {
     userid: user.userid,
   });
 
@@ -91,7 +91,7 @@ const infernoTribeSave = async (user: User, baseid: string): Promise<Save> => {
     const newTribe: TribeData = { baseid, tribeHealthData: {} };
 
     maproom1.tribedata.push(newTribe);
-    await ORMContext.em.persistAndFlush(maproom1);
+    await postgres.em.persistAndFlush(maproom1);
     existingTribe = newTribe;
   }
 
@@ -103,5 +103,6 @@ const infernoTribeSave = async (user: User, baseid: string): Promise<Save> => {
     ...tribeData,
     baseid,
     buildinghealthdata: existingTribe.tribeHealthData || {},
+    monsters: existingTribe.monsters ?? tribeData.monsters,
   });
 };

@@ -1,6 +1,6 @@
 import { InfernoMaproom } from "../../../models/infernomaproom.model";
 import { User } from "../../../models/user.model";
-import { ORMContext } from "../../../server";
+import { postgres } from "../../../server";
 import { calculateBaseLevel } from "../../base/calculateBaseLevel";
 import { createNeighbourData } from "./createNeighbourData";
 
@@ -18,8 +18,8 @@ import { createNeighbourData } from "./createNeighbourData";
  */
 export const addAttackerAsNeighbour = async (attacker: User, defender: User) => {
   const [defenderMaproom, attackerMaproom] = await Promise.all([
-    ORMContext.em.findOne(InfernoMaproom, { userid: defender.userid }),
-    ORMContext.em.findOne(InfernoMaproom, { userid: attacker.userid }),
+    postgres.em.findOne(InfernoMaproom, { userid: defender.userid }),
+    postgres.em.findOne(InfernoMaproom, { userid: attacker.userid }),
   ]);
 
   if (!defenderMaproom || !attackerMaproom)
@@ -66,7 +66,7 @@ export const addAttackerAsNeighbour = async (attacker: User, defender: User) => 
   existingDefender.attacksto = existingDefender.attacksto + 1;
 
   await Promise.all([
-    ORMContext.em.persistAndFlush(defenderMaproom),
-    ORMContext.em.persistAndFlush(attackerMaproom),
+    postgres.em.persistAndFlush(defenderMaproom),
+    postgres.em.persistAndFlush(attackerMaproom),
   ]);
 };

@@ -1,17 +1,18 @@
 import z from "zod";
 
-import { flags } from "../../../data/flags";
+import { getFlags } from "../../../data/flags";
 import { BaseMode, BaseType } from "../../../enums/Base";
 import { Status } from "../../../enums/StatusCodes";
 import { saveFailureErr } from "../../../errors/errors";
 import { Save } from "../../../models/save.model";
 import { User } from "../../../models/user.model";
-import { ORMContext } from "../../../server";
+import { postgres } from "../../../server";
 import { FilterFrontendKeys } from "../../../utils/FrontendKey";
 import { getCurrentDateTime } from "../../../utils/getCurrentDateTime";
 import { KoaController } from "../../../utils/KoaController";
 import { baseModeBuild } from "../load/modes/baseModeBuild";
 import { baseModeView } from "../load/modes/baseModeView";
+import { infernoModeView } from "../load/modes/infernoModeView";
 import { errorLog } from "../../../utils/logger";
 import { mapUserSaveData } from "../mapUserSaveData";
 
@@ -31,7 +32,7 @@ const UpdateSavedSchema = z.object({
  */
 export const updateSaved: KoaController = async (ctx) => {
   const user: User = ctx.authUser;
-  await ORMContext.em.populate(user, ["save"]);
+  await postgres.em.populate(user, ["save"]);
 
   const userSave = user.save;
   
@@ -40,10 +41,19 @@ export const updateSaved: KoaController = async (ctx) => {
 
     let baseSave: Save = null;
 
-    if (type === BaseMode.BUILD) {
-      baseSave = await baseModeBuild(user, baseid);
-    } else {
-      baseSave = await baseModeView(baseid);
+    switch (type) {
+      case BaseMode.BUILD:
+        baseSave = await baseModeBuild(user, baseid);
+        break;
+
+      case BaseMode.IVIEW:
+      case BaseMode.IATTACK:
+        baseSave = await infernoModeView(user, baseid);
+        break;
+
+      default:
+        baseSave = await baseModeView(baseid);
+        break;
     }
 
     if (!baseSave) throw saveFailureErr();
@@ -52,10 +62,13 @@ export const updateSaved: KoaController = async (ctx) => {
     baseSave.id = baseSave.savetime; // client expects this.
 
     if (baseid !== BaseMode.DEFAULT && type === BaseMode.BUILD) {
-      await ORMContext.em.persistAndFlush(baseSave);
+      await postgres.em.persistAndFlush(baseSave);
     }
 
     const filteredSave = FilterFrontendKeys(baseSave);
+
+    const flags = getFlags();
+    flags.discordOldEnough = ctx.meetsDiscordAgeCheck;
 
     const responseBody = {
       error: 0,
@@ -74,6 +87,6 @@ export const updateSaved: KoaController = async (ctx) => {
     errorLog(`Failed to update save for user: ${user.username}`, err);
 
     ctx.status = Status.INTERNAL_SERVER_ERROR;
-    ctx.body = { error: 1 };
+    ctx.body = { error: `Failed to update save for user: ${user.username}` };
   }
 };

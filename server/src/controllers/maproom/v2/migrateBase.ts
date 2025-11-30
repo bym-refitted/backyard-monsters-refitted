@@ -2,7 +2,7 @@ import z from "zod";
 
 import { KoaController } from "../../../utils/KoaController";
 import { User } from "../../../models/user.model";
-import { ORMContext } from "../../../server";
+import { postgres } from "../../../server";
 import { WorldMapCell } from "../../../models/worldmapcell.model";
 import { Status } from "../../../enums/StatusCodes";
 import { BaseMode, BaseType } from "../../../enums/Base";
@@ -51,7 +51,7 @@ export const migrateBase: KoaController = async (ctx) => {
     );
 
     const currentUser: User = ctx.authUser;
-    await ORMContext.em.populate(currentUser, ["save"]);
+    await postgres.em.populate(currentUser, ["save"]);
 
     const userSave = currentUser.save;
     const currentTime = getCurrentDateTime();
@@ -69,14 +69,14 @@ export const migrateBase: KoaController = async (ctx) => {
 
     // Check if the user is relocating due to their empire being overrun.
     if (type !== BaseType.OUTPOST && baseid === BaseMode.DEFAULT) {
-      await joinOrCreateWorld(currentUser, userSave, ORMContext.em, true);
+      await joinOrCreateWorld(currentUser, userSave, postgres.em, true);
       ctx.status = Status.OK;
       ctx.body = { error: 0 };
       return;
     }
 
     // Otherwise, fetch the outpost cell (destination) and the user's homeCell (origin) for migration.
-    const cells = await ORMContext.em.find(
+    const cells = await postgres.em.find(
       WorldMapCell,
       {
         baseid: { $in: [baseid, userSave.baseid] },
@@ -131,7 +131,7 @@ export const migrateBase: KoaController = async (ctx) => {
     if (resources)
       userSave.resources = updateResources(resources, userSave.resources, Operation.SUBTRACT);
 
-    await ORMContext.em.transactional(async (em) => {
+    await postgres.em.transactional(async (em) => {
       await em.persistAndFlush([homeCell, userSave]);
       await em.removeAndFlush([outpostCell.save, outpostCell]);
     });

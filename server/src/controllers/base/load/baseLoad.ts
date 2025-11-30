@@ -1,11 +1,11 @@
 import { devConfig } from "../../../config/DevSettings";
 import { Save } from "../../../models/save.model";
-import { ORMContext } from "../../../server";
+import { postgres } from "../../../server";
 import { KoaController } from "../../../utils/KoaController";
 import { storeItems } from "../../../data/store/storeItems";
 import { User } from "../../../models/user.model";
 import { FilterFrontendKeys } from "../../../utils/FrontendKey";
-import { flags } from "../../../data/flags";
+import { getFlags } from "../../../data/flags";
 import { getCurrentDateTime } from "../../../utils/getCurrentDateTime";
 import { BaseMode, BaseType } from "../../../enums/Base";
 import { WORLD_SIZE } from "../../../config/WorldGenSettings";
@@ -32,7 +32,7 @@ import { discordAgeErr } from "../../../errors/errors";
  */
 export const baseLoad: KoaController = async (ctx) => {
   const user: User = ctx.authUser;
-  await ORMContext.em.populate(user, ["save", "infernosave"]);
+  await postgres.em.populate(user, ["save", "infernosave"]);
 
   try {
     const { baseid, type, attackData } = BaseLoadSchema.parse(ctx.request.body);
@@ -89,6 +89,7 @@ export const baseLoad: KoaController = async (ctx) => {
       ? 205
       : filteredSave.tutorialstage;
 
+    const flags = getFlags();
     flags.discordOldEnough = ctx.meetsDiscordAgeCheck;
 
     const responseBody = {

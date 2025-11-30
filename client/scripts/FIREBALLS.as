@@ -3,7 +3,7 @@ package
    import com.monsters.debug.Console;
    import com.monsters.interfaces.IAttackable;
    import com.monsters.monsters.MonsterBase;
-   import com.monsters.siege.weapons.Vacuum;
+   import com.monsters.siege.weapons.VacuumHose;
    import flash.display.Sprite;
    import flash.geom.Point;
    
@@ -113,8 +113,7 @@ package
          }
          _loc10_._source = param9;
          _loc10_._startPoint = param1;
-         var _loc11_:Sprite = !!Vacuum.getHose() ? Vacuum.getHose()._vacuum : null;
-         _loc10_._targetType = !!_loc11_ ? 4 : param8;
+         _loc10_._targetType = param3 is VacuumHose ? 4 : param8;
          _loc10_._targetPoint = param2;
          _loc10_._targetCreep = param3;
          _loc10_._maxSpeed = param4;
