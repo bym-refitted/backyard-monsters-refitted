@@ -2,7 +2,7 @@ import { BaseMode, BaseType } from "../../../../enums/Base";
 import { MapRoomCell } from "../../../../enums/MapRoom";
 import { World } from "../../../../models/world.model";
 import { WorldMapCell } from "../../../../models/worldmapcell.model";
-import { ORMContext } from "../../../../server";
+import { postgres } from "../../../../server";
 import { damageProtection } from "../../../../services/maproom/v2/damageProtection";
 import { Save } from "../../../../models/save.model";
 import { User } from "../../../../models/user.model";
@@ -34,7 +34,7 @@ export interface AttackDetails {
  */
 export const baseModeAttack = async (user: User, baseid: string) => {
   const userSave: Save = user.save;
-  let save = await ORMContext.em.findOne(Save, { baseid });
+  let save = await postgres.em.findOne(Save, { baseid });
 
   if (!save) save = wildMonsterSave(baseid);
 
@@ -58,18 +58,18 @@ export const baseModeAttack = async (user: User, baseid: string) => {
   // Remove damage protection
   await damageProtection(userSave, BaseMode.ATTACK);
 
-  let cell = await ORMContext.em.findOne(WorldMapCell, { baseid });
+  let cell = await postgres.em.findOne(WorldMapCell, { baseid });
 
   if (!cell) {
-    const world = await ORMContext.em.findOne(World, {
+    const world = await postgres.em.findOne(World, {
       uuid: userSave.worldid,
     });
 
     if (!world) throw new Error("No world found.");
 
     // Derive cellX and cellY from baseid
-    const cellX = parseInt(baseid.slice(4, 7));
-    const cellY = parseInt(baseid.slice(7, 10));
+    const cellX = parseInt(baseid.slice(-6, -3));
+    const cellY = parseInt(baseid.slice(-3));
 
     const noise = generateNoise(world.uuid);
     const terrainHeight = getTerrainHeight(noise, cellX, cellY);
@@ -84,11 +84,11 @@ export const baseModeAttack = async (user: User, baseid: string) => {
   save.cell = cell;
   save.worldid = userSave.worldid;
   save.attackid = Math.floor(Math.random() * 99999) + 1;
-  await ORMContext.em.persistAndFlush([cell, save]);
+  await postgres.em.persistAndFlush([cell, save]);
 
   // Create an attack log for the attack
   if (save.type !== BaseType.TRIBE) {
-    const defender = await ORMContext.em.findOne(User, {
+    const defender = await postgres.em.findOne(User, {
       userid: save.saveuserid,
     });
 

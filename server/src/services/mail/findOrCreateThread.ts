@@ -1,6 +1,6 @@
 import { mailboxErr } from "../../errors/errors";
 import { Thread } from "../../models/thread.model";
-import { ORMContext } from "../../server";
+import { postgres } from "../../server";
 
 /**
  * Find an existing thread by ID and user, or create a new one if no valid ID is given.
@@ -13,7 +13,7 @@ import { ORMContext } from "../../server";
 export const findOrCreateThread = async (threadId: number, targetId: number, userId: number) => {
   // First, we attempt to find an existing thread
   if (threadId > 0) {
-    const thread = await ORMContext.em.findOne(Thread, {
+    const thread = await postgres.em.findOne(Thread, {
       threadid: threadId,
       $or: [{ userid: userId }, { targetid: userId }],
     });
@@ -24,7 +24,7 @@ export const findOrCreateThread = async (threadId: number, targetId: number, use
   }
 
   // Otherwise, create a new thread
-  const [lastThread] = await ORMContext.em.find(
+  const [lastThread] = await postgres.em.find(
     Thread,
     {},
     { orderBy: { threadid: "DESC" }, limit: 1 }
@@ -36,6 +36,6 @@ export const findOrCreateThread = async (threadId: number, targetId: number, use
   newThread.threadid = lastThread ? lastThread.threadid + 1 : 1;
   newThread.messagecount = 0;
 
-  await ORMContext.em.persistAndFlush(newThread);
+  await postgres.em.persistAndFlush(newThread);
   return newThread;
 };

@@ -1,5 +1,5 @@
 import { Status } from "../../enums/StatusCodes";
-import { ORMContext, redisClient } from "../../server";
+import { postgres, redisClient } from "../../server";
 import { KoaController } from "../../utils/KoaController";
 
 /**
@@ -37,7 +37,7 @@ export const getLeaderboards: KoaController = async (ctx) => {
       return;
     }
 
-    const leaderboard = await ORMContext.em.getConnection().execute(
+    const leaderboard = await postgres.em.getConnection().execute(
       `
             SELECT u.username, u.discord_tag, sub.outpost_count 
             FROM bym.user u

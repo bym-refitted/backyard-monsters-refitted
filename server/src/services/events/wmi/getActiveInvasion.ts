@@ -16,5 +16,5 @@ export const getActiveInvasion = (): Invasion => {
   if (devConfig.wmi2StartNowOverride) return Invasion.WMI2;
 
   const currentMonth = new Date().getMonth() + 1;
-  return currentMonth % 2 === 1 ? Invasion.WMI1 : Invasion.WMI2;
+  return currentMonth % 2 === 0 ? Invasion.WMI1 : Invasion.WMI2;
 };

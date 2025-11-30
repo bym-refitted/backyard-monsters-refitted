@@ -1,6 +1,6 @@
 import bcrypt from "bcrypt";
 import { KoaController } from "../../utils/KoaController";
-import { ORMContext } from "../../server";
+import { postgres } from "../../server";
 import { User } from "../../models/user.model";
 import { FilterFrontendKeys } from "../../utils/FrontendKey";
 import { emailUniqueErr, usernameUniqueErr } from "../../errors/errors";
@@ -23,7 +23,7 @@ export const register: KoaController = async (ctx) => {
   const registeredUser = UserRegistrationSchema.parse(ctx.request.body);
 
   // Find user by username or email
-  const existingUser = await ORMContext.em.findOne(User, {
+  const existingUser = await postgres.em.findOne(User, {
     $or: [
       { username: registeredUser.username },
       { email: registeredUser.email },
@@ -42,13 +42,13 @@ export const register: KoaController = async (ctx) => {
   const hash = await bcrypt.hash(registeredUser.password, 10);
 
   // Create new user record
-  const user = ORMContext.em.create(User, {
+  const user = postgres.em.create(User, {
     ...registeredUser,
     pic_square: `${process.env.AVATAR_URL}?seed=${registeredUser.username}&size=50`,
     password: hash,
   });
 
-  await ORMContext.em.persistAndFlush(user);
+  await postgres.em.persistAndFlush(user);
   const filteredUser = FilterFrontendKeys(user);
   logging(
     `User ${filteredUser.username} registered successfully | ID: ${filteredUser.userid} | Email: ${filteredUser.email} | IP Address: ${ctx.ip}`

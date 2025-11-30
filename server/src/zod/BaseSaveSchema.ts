@@ -92,6 +92,16 @@ export const BaseSaveSchema = z.object({
     .transform((data) => (data ? (JSON.parse(data) as Resources) : undefined)),
 
   /**
+   * The monsters data, transformed from a JSON string to an object.
+   * This property is optional.
+   * @type {object | undefined}
+   */
+  monsters: z
+    .string()
+    .optional()
+    .transform((data) => (data ? JSON.parse(data) : undefined)),
+
+  /**
    * The attack creatures data, transformed from a JSON string to an object.
    * This property is optional.
    * @type {object | undefined}
@@ -101,7 +111,7 @@ export const BaseSaveSchema = z.object({
     .optional()
     .transform((data) => (data ? JSON.parse(data) : undefined)),
 
-    attackersiege: z
+  attackersiege: z
     .string()
     .optional()
     .transform((data) => (data ? JSON.parse(data) : undefined)),

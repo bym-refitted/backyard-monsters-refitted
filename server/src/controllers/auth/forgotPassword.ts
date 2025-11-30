@@ -5,7 +5,7 @@ import { Status } from "../../enums/StatusCodes";
 import { KoaController } from "../../utils/KoaController";
 import { errorLog } from "../../utils/logger";
 import { promises as fs } from "fs";
-import { ORMContext } from "../../server";
+import { postgres } from "../../server";
 import { User } from "../../models/user.model";
 import { authFailureErr } from "../../errors/errors";
 import { ForgotPasswordSchema } from "../../zod/AuthSchemas";
@@ -33,7 +33,7 @@ export const forgotPassword: KoaController = async (ctx) => {
     });
 
     // Store the token in the database associated with the user's email
-    const user = await ORMContext.em.findOne(User, { email });
+    const user = await postgres.em.findOne(User, { email });
     
     if (!user) {
       errorLog(`ForgotPassword: User not found for email: ${email}`);
@@ -41,7 +41,7 @@ export const forgotPassword: KoaController = async (ctx) => {
     }
 
     user.resetToken = token;
-    await ORMContext.em.persistAndFlush(user);
+    await postgres.em.persistAndFlush(user);
 
     // Read the HTML template
     const templatePath = path.resolve(

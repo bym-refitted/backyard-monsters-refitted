@@ -3,7 +3,7 @@ import { z } from "zod";
 import { KoaController } from "../../../utils/KoaController";
 import { User } from "../../../models/user.model";
 import { WorldMapCell } from "../../../models/worldmapcell.model";
-import { ORMContext } from "../../../server";
+import { postgres } from "../../../server";
 import { devConfig } from "../../../config/DevSettings";
 import { Status } from "../../../enums/StatusCodes";
 import { createCellData } from "../../../services/maproom/v2/createCellData";
@@ -34,7 +34,7 @@ export const getArea: KoaController = async (ctx) => {
   const { x, y, sendresources } = getAreaSchema.parse(ctx.request.body);
 
   const user: User = ctx.authUser;
-  await ORMContext.em.populate(user, ["save"]);
+  await postgres.em.populate(user, ["save"]);
 
   const save: Save = user.save;
   const worldid = save.worldid;
@@ -47,7 +47,7 @@ export const getArea: KoaController = async (ctx) => {
   const currentY = y;
 
   // First, get persistant cells which have been stored in the database.
-  const dbCells = await ORMContext.em.find(
+  const dbCells = await postgres.em.find(
     WorldMapCell,
     {
       x: {

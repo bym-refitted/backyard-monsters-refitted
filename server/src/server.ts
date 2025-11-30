@@ -9,14 +9,14 @@ import ormConfig from "./mikro-orm.config";
 import router from "./app.routes";
 
 import { createClient } from "redis";
-import { EntityManager, MikroORM, RequestContext } from "@mikro-orm/core";
+import { MikroORM, RequestContext } from "@mikro-orm/core";
+import { EntityManager, PostgreSqlDriver } from "@mikro-orm/postgresql";
 import { errorLog, logging } from "./utils/logger";
 import { ascii_node } from "./utils/ascii_art";
 import { ErrorInterceptor } from "./middleware/clientSafeError";
 import { processLanguagesFile } from "./middleware/processLanguageFile";
 import { logMissingAssets, morganLogging } from "./middleware/morganLogging";
 import { corsCacheControl } from "./middleware/corsCacheControlSetup";
-import { PostgreSqlDriver } from "@mikro-orm/postgresql";
 
 export const app = new Koa();
 app.proxy = true;
@@ -24,11 +24,11 @@ app.proxy = true;
 export const PORT = process.env.PORT || 3001;
 export const BASE_URL = process.env.BASE_URL;
 
-export const getApiVersion = () => "v1.3.9-beta";
+export const getApiVersion = () => "v1.4.2-beta";
 
-export const ORMContext = {} as {
-  orm: MikroORM;
-  em: EntityManager;
+export const postgres = {} as {
+  orm: MikroORM<PostgreSqlDriver>;
+  em: EntityManager<PostgreSqlDriver>;
 };
 
 export const redisClient = createClient({
@@ -46,8 +46,8 @@ const api = new Router();
 api.get("/", (ctx: Context) => (ctx.body = {}));
 
 (async () => {
-  ORMContext.orm = await MikroORM.init<PostgreSqlDriver>(ormConfig);
-  ORMContext.em = ORMContext.orm.em;
+  postgres.orm = await MikroORM.init<PostgreSqlDriver>(ormConfig);
+  postgres.em = postgres.orm.em;
 
   await redisClient.connect();
 
@@ -60,7 +60,7 @@ api.get("/", (ctx: Context) => (ctx.body = {}));
   );
 
   app.use((_, next: Next) =>
-    RequestContext.createAsync(ORMContext.orm.em, next)
+    RequestContext.createAsync(postgres.orm.em, next)
   );
 
   // Logs
