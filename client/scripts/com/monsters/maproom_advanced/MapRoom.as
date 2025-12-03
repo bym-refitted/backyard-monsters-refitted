@@ -521,16 +521,8 @@ package com.monsters.maproom_advanced
       internal static function AddBookmark(param1:String, param2:Boolean = true) : Object
       {
          var _loc3_:Object = null;
-         param1 = param1.replace(/\<.*?>/g,"");
-         var _loc4_:XMLDocument;
-         if((_loc4_ = new XMLDocument(param1)) && _loc4_.firstChild && Boolean(_loc4_.firstChild.nodeValue))
-         {
-            param1 = _loc4_.firstChild.nodeValue;
-         }
-         else
-         {
-            param1 = KEYS.Get("str_blank");
-         }
+         param1 = param1.replace(/^\s+|\s+$/g, "");
+
          if(param1.length == 0)
          {
             return {
