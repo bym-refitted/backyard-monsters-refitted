@@ -142,11 +142,11 @@ package com.monsters.monsters.champions
          }
          if(this._foodBonus.Get() > 0)
          {
-            maxHealthProperty.value = CHAMPIONCAGE.GetGuardianProperty(_creatureID,this._level.Get(),"health") + CHAMPIONCAGE.GetGuardianProperty(_creatureID,this._foodBonus.Get(),"bonusHealth");
+            maxHealthProperty.value = CHAMPIONCAGE.GetGuardianProperty(_creatureID,this._level.Get(),"health").Get() + CHAMPIONCAGE.GetGuardianProperty(_creatureID,this._foodBonus.Get(),"bonusHealth");
          }
          else
          {
-            maxHealthProperty.value = CHAMPIONCAGE.GetGuardianProperty(_creatureID,this._level.Get(),"health");
+            maxHealthProperty.value = CHAMPIONCAGE.GetGuardianProperty(_creatureID,this._level.Get(),"health").Get();
          }
          this._regen = CHAMPIONCAGE.GetGuardianProperty(_creatureID,this._level.Get(),"healtime");
          if(param11 > 0 && param11 <= maxHealth)
@@ -163,12 +163,12 @@ package com.monsters.monsters.champions
          }
          if(this._foodBonus.Get() > 0)
          {
-            damageProperty.value = int(CHAMPIONCAGE.GetGuardianProperty(_creatureID,this._level.Get(),"damage")) + int(CHAMPIONCAGE.GetGuardianProperty(_creatureID,this._foodBonus.Get(),"bonusDamage"));
+            damageProperty.value = int(CHAMPIONCAGE.GetGuardianProperty(_creatureID,this._level.Get(),"damage").Get()) + int(CHAMPIONCAGE.GetGuardianProperty(_creatureID,this._foodBonus.Get(),"bonusDamage"));
             m_range = CHAMPIONCAGE.GetGuardianProperty(_creatureID,this._level.Get(),"range") + CHAMPIONCAGE.GetGuardianProperty(_creatureID,this._foodBonus.Get(),"bonusRange");
          }
          else
          {
-            damageProperty.value = int(CHAMPIONCAGE.GetGuardianProperty(_creatureID,this._level.Get(),"damage"));
+            damageProperty.value = int(CHAMPIONCAGE.GetGuardianProperty(_creatureID,this._level.Get(),"damage").Get());
             m_range = CHAMPIONCAGE.GetGuardianProperty(_creatureID,this._level.Get(),"range");
          }
          _movement = CHAMPIONCAGE.GetGuardianProperty(_creatureID,this._level.Get(),"movement");
@@ -908,11 +908,11 @@ package com.monsters.monsters.champions
             this._feeds = new SecNum(0);
             this._feedTime = new SecNum(int(GLOBAL.Timestamp() + CHAMPIONCAGE.GetGuardianProperty(_creatureID,param1,"feedTime")));
             LOGGER.Log("fed","level " + this._level.Get());
-            maxHealthProperty.value = CHAMPIONCAGE.GetGuardianProperty(_creatureID,this._level.Get(),"health");
+            maxHealthProperty.value = CHAMPIONCAGE.GetGuardianProperty(_creatureID,this._level.Get(),"health").Get();
             moveSpeedProperty.value = CHAMPIONCAGE.GetGuardianProperty(_creatureID,this._level.Get(),"speed") / 2;
             this._regen = CHAMPIONCAGE.GetGuardianProperty(_creatureID,this._level.Get(),"healtime");
             setHealth(maxHealth);
-            damageProperty.value = int(CHAMPIONCAGE.GetGuardianProperty(_creatureID,this._level.Get(),"damage"));
+            damageProperty.value = int(CHAMPIONCAGE.GetGuardianProperty(_creatureID,this._level.Get(),"damage").Get());
             m_range = CHAMPIONCAGE.GetGuardianProperty(_creatureID,this._level.Get(),"range");
             _movement = CHAMPIONCAGE.GetGuardianProperty(_creatureID,this._level.Get(),"movement");
             if(param1 >= 6)
@@ -1326,7 +1326,7 @@ package com.monsters.monsters.champions
                CHAMPIONCAGE.Hide();
                _loc2_ = health;
                _loc3_ = Math.max(1,this._foodBonus.Get() - 1);
-               _loc4_ = CHAMPIONCAGE.GetGuardianProperty(_creatureID,this._level.Get(),"health") + CHAMPIONCAGE.GetGuardianProperty(_creatureID,_loc3_,"bonusHealth");
+               _loc4_ = CHAMPIONCAGE.GetGuardianProperty(_creatureID,this._level.Get(),"health").Get() + CHAMPIONCAGE.GetGuardianProperty(_creatureID,_loc3_,"bonusHealth");
                if(_loc2_ < 1)
                {
                   _loc2_ = 1;
@@ -1530,11 +1530,11 @@ package com.monsters.monsters.champions
          }
          if(this._foodBonus.Get() > 0)
          {
-            maxHealthProperty.value = CHAMPIONCAGE.GetGuardianProperty(_creatureID,this._level.Get(),"health") + CHAMPIONCAGE.GetGuardianProperty(_creatureID,this._foodBonus.Get(),"bonusHealth");
+            maxHealthProperty.value = CHAMPIONCAGE.GetGuardianProperty(_creatureID,this._level.Get(),"health").Get() + CHAMPIONCAGE.GetGuardianProperty(_creatureID,this._foodBonus.Get(),"bonusHealth");
          }
          else
          {
-            maxHealthProperty.value = CHAMPIONCAGE.GetGuardianProperty(_creatureID,this._level.Get(),"health");
+            maxHealthProperty.value = CHAMPIONCAGE.GetGuardianProperty(_creatureID,this._level.Get(),"health").Get();
          }
          if(health > maxHealth)
          {
@@ -1542,11 +1542,11 @@ package com.monsters.monsters.champions
          }
          if(this._foodBonus.Get() > 0)
          {
-            damageProperty.value = int(CHAMPIONCAGE.GetGuardianProperty(_creatureID,this._level.Get(),"damage")) + int(CHAMPIONCAGE.GetGuardianProperty(_creatureID,this._foodBonus.Get(),"bonusDamage"));
+            damageProperty.value = int(CHAMPIONCAGE.GetGuardianProperty(_creatureID,this._level.Get(),"damage").Get()) + int(CHAMPIONCAGE.GetGuardianProperty(_creatureID,this._foodBonus.Get(),"bonusDamage"));
          }
          else
          {
-            damageProperty.value = int(CHAMPIONCAGE.GetGuardianProperty(_creatureID,this._level.Get(),"damage"));
+            damageProperty.value = int(CHAMPIONCAGE.GetGuardianProperty(_creatureID,this._level.Get(),"damage").Get());
          }
          if(this._foodBonus.Get() > 0)
          {
@@ -1579,9 +1579,9 @@ package com.monsters.monsters.champions
       {
          if(_frameNumber % 30 == 0)
          {
-            if(maxHealth != CHAMPIONCAGE.GetGuardianProperty(_creatureID,this._level.Get(),"health"))
+            if(maxHealth != CHAMPIONCAGE.GetGuardianProperty(_creatureID,this._level.Get(),"health").Get())
             {
-               if(maxHealth != CHAMPIONCAGE.GetGuardianProperty(_creatureID,this._level.Get(),"health") + CHAMPIONCAGE.GetGuardianProperty(_creatureID,this._foodBonus.Get(),"bonusHealth"))
+               if(maxHealth != CHAMPIONCAGE.GetGuardianProperty(_creatureID,this._level.Get(),"health").Get() + CHAMPIONCAGE.GetGuardianProperty(_creatureID,this._foodBonus.Get(),"bonusHealth"))
                {
                   LOGGER.Log("hak","Champion monster health max incorrect");
                   GLOBAL.ErrorMessage("GUARDIANMONSTER hack 2");
