@@ -1487,7 +1487,7 @@ package com.monsters.maproom_advanced
       public function HideBookmarkAddPopupWithAdd(param1:MouseEvent) : void
       {
          GLOBAL.BlockerRemove();
-         var _loc2_:Object = MapRoom.AddBookmark(this._popupBookmarkAdd.tName.htmlText);
+         var _loc2_:Object = MapRoom.AddBookmark(this._popupBookmarkAdd.tName.text);
          if(_loc2_.hide && this._popupBookmarkAdd && Boolean(this._popupBookmarkAdd.parent))
          {
             this._popupBookmarkAdd.parent.removeChild(this._popupBookmarkAdd);
