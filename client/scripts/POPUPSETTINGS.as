@@ -5,6 +5,7 @@ package
    import gs.easing.Quad;
    import flash.system.Capabilities;
    import utils.DisplayScaler;
+   import com.monsters.enums.EnumPlayerType;
    
    public class POPUPSETTINGS
    {
@@ -39,7 +40,7 @@ package
       
       public static function ScaleUp(param1:DisplayObject) : void
       {
-         if (Capabilities.playerType == "Desktop")
+         if (Capabilities.playerType == EnumPlayerType.DESKTOP)
          {
             DisplayScaler.scaleElement(param1);
          }

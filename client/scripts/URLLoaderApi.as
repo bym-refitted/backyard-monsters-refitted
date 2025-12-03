@@ -10,6 +10,8 @@ package
    import flash.net.URLRequestHeader;
    import flash.net.URLRequestMethod;
    import flash.net.URLVariables;
+   import flash.system.Capabilities;
+   import com.monsters.enums.EnumPlayerType;
 
    public class URLLoaderApi
    {
@@ -123,9 +125,14 @@ package
          }
          urlBuilder.data = urlVariables;
          urlBuilder.method = URLRequestMethod.POST;
-         if(currentIndex == 0)
+
+         // Adobe Air handles networking protocols differently - we need to manually set this to a GET request if body is empty
+         if(Capabilities.playerType == EnumPlayerType.DESKTOP)
          {
-            urlBuilder.method = URLRequestMethod.GET;
+            if(currentIndex == 0)
+            {
+               urlBuilder.method = URLRequestMethod.GET;
+            }
          }
          this._req = new URLLoader(urlBuilder);
          this._req.addEventListener(Event.COMPLETE, this.fireComplete);

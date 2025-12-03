@@ -1,10 +1,13 @@
 package com.monsters.mailbox
 {
+   import com.monsters.enums.EnumPlayerType;
    import com.monsters.mailbox.model.Contact;
    import flash.display.Sprite;
    import flash.events.Event;
    import flash.events.IOErrorEvent;
    import flash.events.MouseEvent;
+   import flash.system.Capabilities;
+   import utils.DisplayScaler;
    
    public class MailBox extends Sprite
    {
@@ -54,6 +57,7 @@ package com.monsters.mailbox
       {
          GLOBAL.BlockerAdd();
          GLOBAL._layerWindows.addChild(param1);
+         param1.ScaleUp();
          param1.x = 100;
          param1.y = -15;
          currentThread = param1;
@@ -114,6 +118,14 @@ package com.monsters.mailbox
       {
          this.x = 0;
          this.y = 0;
+      }
+
+      public function ScaleUp() : void
+      {
+         if (Capabilities.playerType == EnumPlayerType.DESKTOP)
+         {
+            DisplayScaler.scaleElement(this);
+         }
       }
    }
 }
