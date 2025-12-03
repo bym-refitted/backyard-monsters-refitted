@@ -3,6 +3,7 @@ package utils
     import flash.display.DisplayObject;
     import flash.system.Capabilities;
     import flash.display.Stage;
+    import com.monsters.enums.EnumPlayerType;
 
     public class DisplayScaler
     {
@@ -21,7 +22,7 @@ package utils
          */
         public static function getUIScale():Number
         {
-            if (Capabilities.playerType != "Desktop")
+            if (Capabilities.playerType != EnumPlayerType.DESKTOP)
             {
                 return 1.0;
             }

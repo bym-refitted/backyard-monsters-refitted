@@ -1,6 +1,7 @@
 package com.monsters.maproom_inferno
 {
    import com.monsters.maproom_inferno.views.*;
+   import com.monsters.enums.EnumPlayerType;
    import flash.display.MovieClip;
    import flash.display.Sprite;
    import flash.events.Event;
@@ -48,7 +49,7 @@ package com.monsters.maproom_inferno
       {
          this.x = 0;
          this.y = 20;
-         if (Capabilities.playerType == "Desktop") 
+         if (Capabilities.playerType == EnumPlayerType.DESKTOP)
          {
             DisplayScaler.scaleElement(this);
             this.x = GLOBAL._SCREENCENTER.x - (this.width / 2);

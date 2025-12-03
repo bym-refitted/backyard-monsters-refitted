@@ -36,6 +36,7 @@ package
          _mc = new MailBox();
          GLOBAL.BlockerAdd();
          GLOBAL._layerWindows.addChild(_mc);
+         _mc.ScaleUp();
          _mc.Setup();
       }
       

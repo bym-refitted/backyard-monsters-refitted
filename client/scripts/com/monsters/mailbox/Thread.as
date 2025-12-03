@@ -2,6 +2,7 @@ package com.monsters.mailbox
 {
    import com.monsters.alliances.ALLIANCES;
    import com.monsters.display.ScrollSet;
+   import com.monsters.enums.EnumPlayerType;
    import com.monsters.mailbox.model.Contact;
    import com.monsters.mailbox.model.ThreadData;
    import com.monsters.maproom_advanced.MapRoom;
@@ -15,7 +16,9 @@ package com.monsters.mailbox
    import flash.events.KeyboardEvent;
    import flash.events.MouseEvent;
    import flash.events.TimerEvent;
+   import flash.system.Capabilities;
    import flash.utils.Timer;
+   import utils.DisplayScaler;
    
    public class Thread extends Thread_CLIP
    {
@@ -748,6 +751,14 @@ package com.monsters.mailbox
       public function heightForThread() : Number
       {
          return 100;
+      }
+
+      public function ScaleUp() : void
+      {
+         if (Capabilities.playerType == EnumPlayerType.DESKTOP)
+         {
+            DisplayScaler.scaleElement(this);
+         }
       }
    }
 }
