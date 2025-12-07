@@ -1,7 +1,6 @@
 import { User } from "../../../models/user.model";
 import { Status } from "../../../enums/StatusCodes";
 import { KoaController } from "../../../utils/KoaController";
-import { ORMContext } from "../../../server";
 import { MapRoom3, MapRoomVersion } from "../../../enums/MapRoom";
 import { generateCells } from "../../../services/maproom/v3/generateCells";
 import { getRelatedCellPositions } from "../../../services/maproom/v3/getRelatedCells";
@@ -14,13 +13,14 @@ import { Save } from "../../../models/save.model";
 import { FilterQuery } from "@mikro-orm/core";
 import { mapByCoordinates } from "../../../services/maproom/v3/utils/mapByCoordinates";
 import { CellData } from "../../../types/CellData";
+import { postgres } from "../../../server";
 
 export const getMapRoomCells: KoaController = async (ctx) => {
   try {
     const { cellids } = CellSchema.parse(ctx.request.body);
 
     const user: User = ctx.authUser;
-    await ORMContext.em.populate(user, ["save"]);
+    await postgres.em.populate(user, ["save"]);
 
     const save: Save = user.save;
     const worldid = save.worldid;
@@ -44,7 +44,7 @@ export const getMapRoomCells: KoaController = async (ctx) => {
     };
 
     // Get persistent cells which have been stored in the database.
-    const dbCells = await ORMContext.em.find(WorldMapCell, query, { populate: ["save"] });
+    const dbCells = await postgres.em.find(WorldMapCell, query, { populate: ["save"] });
     const dbCellsByCoord = mapByCoordinates(dbCells);
 
     // Otherwise, we generate all procedural cells
