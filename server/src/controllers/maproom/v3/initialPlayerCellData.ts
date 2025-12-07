@@ -1,15 +1,15 @@
 import { User } from "../../../models/user.model";
 import { Status } from "../../../enums/StatusCodes";
 import { KoaController } from "../../../utils/KoaController";
-import { ORMContext } from "../../../server";
 import { calculateBaseLevel } from "../../../services/base/calculateBaseLevel";
 import { EnumYardType } from "../../../enums/EnumYardType";
 import { EnumBaseRelationship } from "../../../enums/EnumBaseRelationship";
+import { postgres } from "../../../server";
 
 // Used to get the data of the current player cell
 export const initialPlayerCellData: KoaController = async (ctx) => {
   const currentUser: User = ctx.authUser;
-  await ORMContext.em.populate(currentUser, ["save"]);
+  await postgres.em.populate(currentUser, ["save"]);
 
   const points = currentUser.save.points;
   const basevalue = currentUser.save.basevalue;
