@@ -2,7 +2,7 @@ import { FilterQuery } from "@mikro-orm/core";
 import { Status } from "../../enums/StatusCodes";
 import { loadFailureErr } from "../../errors/errors";
 import { AttackLogs } from "../../models/attacklogs.model";
-import { postgres, redisClient } from "../../server";
+import { postgres, redis } from "../../server";
 import { KoaController } from "../../utils/KoaController";
 import { AttackLogFilter } from "../../enums/AttackLogFilter";
 import { User } from "../../models/user.model";
@@ -28,7 +28,7 @@ export const getAttackLogs: KoaController = async (ctx) => {
   const cacheKey = `attackLogs:${userid}:${filter}`;
 
   try {
-    const cachedAttackLogs = await redisClient.get(cacheKey);
+    const cachedAttackLogs = await redis.get(cacheKey);
 
     if (cachedAttackLogs) {
       ctx.status = Status.OK;
@@ -63,7 +63,7 @@ export const getAttackLogs: KoaController = async (ctx) => {
       limit: 50,
     });
 
-    await redisClient.setEx(cacheKey, AL_CACHE_TTL, JSON.stringify(attackLogs));
+    await redis.setEx(cacheKey, AL_CACHE_TTL, JSON.stringify(attackLogs));
 
     ctx.status = Status.OK;
     ctx.body = { attackLogs };

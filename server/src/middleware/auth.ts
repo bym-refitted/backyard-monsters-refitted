@@ -1,4 +1,4 @@
-import { postgres, redisClient } from "../server";
+import { postgres, redis } from "../server";
 import { User } from "../models/user.model";
 import { Context, Next } from "koa";
 import {
@@ -28,7 +28,7 @@ export const verifyUserAuth = async (ctx: Context, next: Next) => {
   const token = authHeader.replace("Bearer ", "");
 
   const decodedToken = verifyJwtToken(token);
-  const storedToken = await redisClient.get(
+  const storedToken = await redis.get(
     `user-token:${decodedToken.user.email}`
   );
 

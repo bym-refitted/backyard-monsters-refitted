@@ -1,5 +1,5 @@
 import { Status } from "../../enums/StatusCodes";
-import { postgres, redisClient } from "../../server";
+import { postgres, redis } from "../../server";
 import { KoaController } from "../../utils/KoaController";
 
 /**
@@ -29,7 +29,7 @@ export const getLeaderboards: KoaController = async (ctx) => {
 
   try {
     const cacheKey = `leaderboards_${worldid}`;
-    const cachedData = await redisClient.get(cacheKey);
+    const cachedData = await redis.get(cacheKey);
 
     if (cachedData) {
       ctx.status = Status.OK;
@@ -53,7 +53,7 @@ export const getLeaderboards: KoaController = async (ctx) => {
       [worldid]
     );
 
-    await redisClient.setEx(cacheKey, LB_CACHE_TTL, JSON.stringify(leaderboard));
+    await redis.setEx(cacheKey, LB_CACHE_TTL, JSON.stringify(leaderboard));
 
     ctx.status = Status.OK;
     ctx.body = { leaderboard };
