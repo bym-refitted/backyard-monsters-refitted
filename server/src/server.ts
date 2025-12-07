@@ -31,12 +31,12 @@ export const postgres = {} as {
   em: EntityManager<PostgreSqlDriver>;
 };
 
-export const redisClient = createClient({
+export const redis = createClient({
   url: process.env.REDIS_URL || "redis://localhost:6379",
 });
 
-redisClient.on("connect", () => logging("Connected to Redis client."));
-redisClient.on("error", (err) => errorLog("Redis client error:", err));
+redis.on("connect", () => logging("Connected to Redis client."));
+redis.on("error", (err) => errorLog("Redis client error:", err));
 
 // CORS & Cache Control
 app.use(corsCacheControl);
@@ -49,7 +49,7 @@ api.get("/", (ctx: Context) => (ctx.body = {}));
   postgres.orm = await MikroORM.init<PostgreSqlDriver>(ormConfig);
   postgres.em = postgres.orm.em;
 
-  await redisClient.connect();
+  await redis.connect();
 
   app.use(
     bodyParser({
