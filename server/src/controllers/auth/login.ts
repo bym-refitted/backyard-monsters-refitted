@@ -2,7 +2,7 @@ import bcrypt from "bcrypt";
 import JWT from "jsonwebtoken";
 
 import { User } from "../../models/user.model";
-import { postgres, redisClient } from "../../server";
+import { postgres, redis } from "../../server";
 import { FilterFrontendKeys } from "../../utils/FrontendKey";
 import { KoaController } from "../../utils/KoaController";
 import {
@@ -106,7 +106,7 @@ export const login: KoaController = async (ctx) => {
     }
   );
 
-  await redisClient.set(`user-token:${user.email}`, newToken);
+  await redis.set(`user-token:${user.email}`, newToken);
   await postgres.em.persistAndFlush(user);
 
   const filteredUser = FilterFrontendKeys(user);
