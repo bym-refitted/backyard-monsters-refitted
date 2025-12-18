@@ -66,19 +66,6 @@ export class Save {
   @Property({ default: 0 })
   wmid!: number;
 
-  // Damage Protection
-  @Property({ nullable: true })
-  mainProtectionTime: number | null;
-
-  @Property({ nullable: true })
-  outpostProtectionTime: number | null;
-
-  @Property({ default: false })
-  initialProtectionOver!: boolean;
-
-  @Property({ default: false })
-  initialOutpostProtectionOver!: boolean;
-
   // Primatives
   @Index()
   @FrontendKey
