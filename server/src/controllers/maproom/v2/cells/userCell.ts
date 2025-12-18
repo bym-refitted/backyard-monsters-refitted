@@ -48,6 +48,9 @@ export const userCell = async (ctx: Context, cell: WorldMapCell) => {
 
     await damageProtection(cellSave);
 
+    const currentTime = getCurrentDateTime();
+    const isProtected = cellSave.protected > 0 && cellSave.protected > currentTime;
+
     return {
       uid: cellOwner.userid,
       b: cell.base_type,
@@ -63,7 +66,7 @@ export const userCell = async (ctx: Context, cell: WorldMapCell) => {
       n: cellOwner.username,
       fr: 0,
       on: online,
-      p: cellSave.protected,
+      p: isProtected ? 1 : 0, // Convert timestamp to boolean for client
       r: cellSave.resources,
       m: cellSave.monsters || {},
       l: baseLevel,

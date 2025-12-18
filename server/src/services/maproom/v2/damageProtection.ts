@@ -11,68 +11,28 @@ import { getCurrentDateTime } from "../../../utils/getCurrentDateTime";
  * @param {BaseMode} [mode] - The mode of the base (optional).
  */
 export const damageProtection = async (save: Save, mode?: BaseMode) => {
-  let {
-    type,
-    damage,
-    createtime,
-    initialProtectionOver,
-    initialOutpostProtectionOver,
-    attacks,
-    outpostProtectionTime,
-    mainProtectionTime,
-  } = save;
+  let { type, damage, attacks } = save;
 
   let protection = save.protected;
   const currentTime = getCurrentDateTime();
 
-  const sevenDays = 7 * 24 * 60 * 60;
-  const twelveHours = 12 * 60 * 60;
+  const thirtySixHours = 36 * 60 * 60;
+  const eightHours = 8 * 60 * 60;
+  const oneHour = 3600;
 
-  const thirtySixHoursAgo = currentTime - 60 * 36 * 60;
-  const eightHoursAgo = currentTime - 8 * 60 * 60;
-  const oneHourAgo = currentTime - 3600;
-
-  // Check if 7 days have passed since account creation
-  const isFirstWeekOver = currentTime - createtime > sevenDays;
-
-  // Check if 12 hours have passed since outpost takeover
-  const isOutpostProtectionOver = currentTime - createtime > twelveHours;
+  const thirtySixHoursAgo = currentTime - thirtySixHours;
+  const eightHoursAgo = currentTime - eightHours;
+  const oneHourAgo = currentTime - oneHour;
 
   let persist = false;
 
-  const setProtection = () => {
-    protection = 1;
-    mainProtectionTime = currentTime;
-    persist = true;
-  };
-
-  const removeProtection = () => {
-    protection = 0;
-    mainProtectionTime = null;
-    save.initialProtectionOver = true;
-    persist = true;
-  };
-
-  const setOutpostProtection = () => {
-    protection = 1;
-    outpostProtectionTime = currentTime;
-    persist = true;
-  };
-
-  const removeOutpostProtection = () => {
-    protection = 0;
-    save.damage = 0;
-    outpostProtectionTime = null;
-    save.initialOutpostProtectionOver = true;
+  const setProtection = (duration: number) => {
+    protection = currentTime + duration;
     persist = true;
   };
 
   if (mode === BaseMode.ATTACK) {
     protection = 0;
-    save.initialProtectionOver = true;
-    save.initialOutpostProtectionOver = true;
-    if (mainProtectionTime) mainProtectionTime = null;
-    if (outpostProtectionTime) outpostProtectionTime = null;
     persist = true;
   } else {
     switch (type) {
@@ -86,25 +46,21 @@ export const damageProtection = async (save: Save, mode?: BaseMode) => {
           (attack) => attack.starttime > thirtySixHoursAgo
         );
 
-        if (protection) {
-          // Should never happen
-          if (!mainProtectionTime) removeProtection();
+        const isProtected = protection > 0 && protection > currentTime;
 
-          // First week of the game = 7 DAYS
-          if (isFirstWeekOver && !initialProtectionOver) removeProtection();
-
-          // If the protection time was set over 36 hours ago, remove protection
-          if (mainProtectionTime <= thirtySixHoursAgo) removeProtection();
-        } else {
-          // TODO: Check if the user attacks within the first week to invalidate
-          if (!isFirstWeekOver) setProtection();
+        if (!isProtected) {
+          // Clear expired protection timestamp
+          if (protection > 0 && protection <= currentTime) {
+            protection = 0;
+            persist = true;
+          }
 
           // 4 attacks in 1 hour = 1 HOUR
-          if (attacksInLastHour.length >= 4) setProtection();
+          if (attacksInLastHour.length >= 4) setProtection(oneHour);
 
           // 50% and 75% or more damage = 36 HOURS
           if (damage >= 50 && attacksInLast36Hours.length !== 0) {
-            setProtection();
+            setProtection(thirtySixHours);
           }
         }
         break;
@@ -116,21 +72,18 @@ export const damageProtection = async (save: Save, mode?: BaseMode) => {
           (attack) => attack.starttime > eightHoursAgo
         );
 
-        if (protection) {
-          // Should never happen
-          if (!outpostProtectionTime) removeOutpostProtection();
+        const isOutpostProtected = protection > 0 && protection > currentTime;
 
-          // Outpost takeover = 12 HOURS
-          if (isOutpostProtectionOver && !initialOutpostProtectionOver) {
-            removeOutpostProtection();
+        if (!isOutpostProtected) {
+          // Clear expired protection timestamp
+          if (protection > 0 && protection <= currentTime) {
+            protection = 0;
+            persist = true;
           }
 
-          // If the protection time was set over 8 hours ago, remove protection
-          if (outpostProtectionTime <= eightHoursAgo) removeOutpostProtection();
-        } else {
           // 25% or more damage = 8 HOURS
           if (damage >= 25 && attacksInLast8Hours.length !== 0) {
-            setOutpostProtection();
+            setProtection(eightHours);
           }
         }
         break;
@@ -141,16 +94,18 @@ export const damageProtection = async (save: Save, mode?: BaseMode) => {
           (attack) => attack.starttime > thirtySixHoursAgo
         );
 
-        if (protection) {
-          // Should never happen
-          if (!mainProtectionTime) removeProtection();
+        const isInfernoProtected = protection > 0 && protection > currentTime;
 
-          // If the protection time was set over 36 hours ago, remove protection
-          if (mainProtectionTime <= thirtySixHoursAgo) removeProtection();
-        } else {
+        if (!isInfernoProtected) {
+          // Clear expired protection timestamp
+          if (protection > 0 && protection <= currentTime) {
+            protection = 0;
+            persist = true;
+          }
+
           // 50% or more damage = 36 HOURS
           if (damage >= 50 && infernoAttacksInLast36Hours.length !== 0) {
-            setProtection();
+            setProtection(thirtySixHours);
           }
         }
         break;
@@ -161,8 +116,6 @@ export const damageProtection = async (save: Save, mode?: BaseMode) => {
 
   if (persist) {
     save.protected = protection;
-    save.mainProtectionTime = mainProtectionTime;
-    save.outpostProtectionTime = outpostProtectionTime;
     await postgres.em.persistAndFlush(save);
   }
 };
