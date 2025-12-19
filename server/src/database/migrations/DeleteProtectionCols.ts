@@ -15,5 +15,10 @@ export class DeleteProtectionCols extends Migration {
       DROP COLUMN IF EXISTS "initial_protection_over",
       DROP COLUMN IF EXISTS "initial_outpost_protection_over";
     `);
+
+    this.addSql(`
+      ALTER TABLE "bym"."save"
+      ALTER COLUMN "protected" SET DEFAULT 0;
+    `);
   }
 }
