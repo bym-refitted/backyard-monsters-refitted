@@ -1,9 +1,9 @@
 import { User } from "../../models/user.model";
 import { loadFailureErr } from "../../errors/errors";
 import { logAttackViolation } from "../base/reportManager";
-import { MonsterProps, monsterStats } from "../../data/monsterStats";
+import { MonsterProps, monsterStats } from "../../data/stats/monsterStats";
 import { AttackData } from "../../zod/AttackSchema";
-import { ChampionProps, championStats } from "../../data/championStats";
+import { ChampionProps, championStats } from "../../data/stats/championStats";
 
 // TODO:
 // Validate monster count from flinger

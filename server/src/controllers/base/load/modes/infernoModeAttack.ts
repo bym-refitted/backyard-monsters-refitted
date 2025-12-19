@@ -1,4 +1,4 @@
-import { molochTribes } from "../../../../data/tribes/molochTribes";
+import { molochTribes } from "../../../../data/tribes/inferno/molochTribes";
 import { BaseType } from "../../../../enums/Base";
 import { Save } from "../../../../models/save.model";
 import { User } from "../../../../models/user.model";

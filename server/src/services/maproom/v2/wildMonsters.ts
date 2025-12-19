@@ -1,10 +1,10 @@
 import { Save } from "../../../models/save.model";
 import { postgres } from "../../../server";
 import { Tribe, Tribes } from "../../../enums/Tribes";
-import { legionnaire } from "../../../data/tribes/legionnaire";
-import { abunaki } from "../../../data/tribes/abunaki";
-import { dreadnaught } from "../../../data/tribes/dreadnaught";
-import { kozu } from "../../../data/tribes/kozu";
+import { legionnaire } from "../../../data/tribes/v2/legionnaire";
+import { abunaki } from "../../../data/tribes/v2/abunaki";
+import { dreadnaught } from "../../../data/tribes/v2/dreadnaught";
+import { kozu } from "../../../data/tribes/v2/kozu";
 import { calculateTribeLevel, minimumTribeLevels } from "./calculateTribeLevel";
 
 /**
