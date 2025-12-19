@@ -48,7 +48,7 @@ package
             mc.bReturn.SetupKey("btn_openmap");
             if((GLOBAL.mode != GLOBAL.e_BASE_MODE.HELP || MapRoomManager.instance.isInMapRoom3) && !MapRoomManager.instance.viewOnly && GLOBAL._currentCell && MapRoomManager.instance.flingerInRange)
             {
-               if(GLOBAL._currentCell.isDestroyed)
+               if(GLOBAL._currentCell.isDestroyed && GLOBAL._currentCell.baseType != 2)
                {
                   mc.bAttack.SetupKey("newmap_take_btn");
                }

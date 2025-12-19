@@ -211,7 +211,9 @@ const updateNeighbourData = async (cachedNeighbours: NeighbourData[]) => {
 
       // TODO: Add the rest of the cases here for attack permissions
       // e.g. level too low, starting protection, etc
-      if (currentSave.protected === 1) {
+      const currentTime = getCurrentDateTime();
+      const isProtected = currentSave.protected > 0 && currentSave.protected > currentTime;
+      if (isProtected) {
         neighbour.attackpermitted = AttackPermission.DAMAGE_PROTECTION;
       } else {
         neighbour.attackpermitted = AttackPermission.ATTACKABLE;

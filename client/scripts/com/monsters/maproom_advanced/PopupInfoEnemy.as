@@ -182,7 +182,7 @@ package com.monsters.maproom_advanced
                break;
             }
          }
-         if(this._cell._destroyed && !this._cell._protected && (this._cell._locked == 0 || this._cell._locked == LOGIN._playerID) && MapRoom._flingerInRange)
+         if(this._cell._base != 2 && this._cell._destroyed && !this._cell._protected && (this._cell._locked == 0 || this._cell._locked == LOGIN._playerID) && MapRoom._flingerInRange)
          {
             this.bAttack.SetupKey("btn_takeover");
             this.bAttack.Enabled = !this.doesHaveMaxOutposts();
@@ -604,7 +604,7 @@ package com.monsters.maproom_advanced
             GLOBAL.Message(KEYS.Get("map_msg_attackingdisabled"));
             return;
          }
-         if(this._cell._destroyed && !this._cell._protected && (this._cell._locked == 0 || this._cell._locked == LOGIN._playerID) && MapRoom._flingerInRange)
+         if(this._cell._base != 2 && this._cell._destroyed && !this._cell._protected && (this._cell._locked == 0 || this._cell._locked == LOGIN._playerID) && MapRoom._flingerInRange)
          {
             _loc2_ = _minTakeoverCost.Get();
             if(GLOBAL._mapOutpost)
