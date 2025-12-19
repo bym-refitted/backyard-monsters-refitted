@@ -1,4 +1,4 @@
-import { inferoMonsters } from "../../../../data/monsterKeys";
+import { inferoMonsters } from "../../../../data/stats/monsterKeys";
 import { INFERNO_TRIBES } from "../../../../enums/Tribes";
 import { Save } from "../../../../models/save.model";
 import { User } from "../../../../models/user.model";

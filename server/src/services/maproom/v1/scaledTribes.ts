@@ -1,6 +1,6 @@
 import { TypeOf } from "zod";
 import { resourcesHandler } from "../../../controllers/base/save/handlers/resourceHandler";
-import { molochTribes } from "../../../data/tribes/molochTribes";
+import { molochTribes } from "../../../data/tribes/inferno/molochTribes";
 import { SaveKeys } from "../../../enums/SaveKeys";
 import { saveFailureErr } from "../../../errors/errors";
 import { InfernoMaproom } from "../../../models/infernomaproom.model";

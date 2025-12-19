@@ -1,4 +1,4 @@
-import { molochTribes } from "../../../../data/tribes/molochTribes";
+import { molochTribes } from "../../../../data/tribes/inferno/molochTribes";
 import { InfernoMaproom, TribeData } from "../../../../models/infernomaproom.model";
 import { Save } from "../../../../models/save.model";
 import { User } from "../../../../models/user.model";
