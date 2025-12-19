@@ -20,13 +20,17 @@ export const getDefaultBaseData = (user: User, baseType: BaseType) => {
   if (baseType === BaseType.INFERNO && devConfig.infernoSandbox)
     return infernoSandbox(user);
 
+  const currentTime = getCurrentDateTime();
+  const sevenDays = 7 * 24 * 60 * 60;
+
   return {
     saveuserid: user.userid,
     userid: user.userid,
     cellid: -1,
     name: user.username,
     credits: devConfig.shiny || 1000,
-    createtime: getCurrentDateTime(),
+    createtime: currentTime,
+    protected: currentTime + sevenDays,
 
     // Pre-populated Objects
     resources: {
