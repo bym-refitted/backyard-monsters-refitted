@@ -720,10 +720,9 @@ package com.auth
                 }
                 else
                 {
-                    new URLLoaderApi().load(GLOBAL._apiURL + "bm/getnewmap", null, postAuthDetails, function(event:IOErrorEvent):void
-                        {
-                            GLOBAL.Message("We cannot connect you to the server at this time. Please try again later or check our server status.");
-                        });
+                    // Authentication call
+                    const authInfo:Array = [["email", emailValue], ["password", passwordValue]];
+                    LOGIN.AuthenticateUser(authInfo);
                 }
             }
             else
@@ -743,10 +742,6 @@ package com.auth
             }
         }
 
-        private function postAuthDetails(serverData:Object):void
-        {
-            LOGIN.OnGetNewMap(serverData, [["email", emailValue], ["password", passwordValue]]);
-        }
 
         private function registerNewUser(serverData:Object):void
         {

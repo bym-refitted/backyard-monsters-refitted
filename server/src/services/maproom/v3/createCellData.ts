@@ -7,13 +7,17 @@ import { defenderCell } from "../../../controllers/maproom/v3/cells/defenderCell
 import { resourceCell } from "../../../controllers/maproom/v3/cells/resourceCell";
 import { tribeOutpostCell } from "../../../controllers/maproom/v3/cells/tribeOutpostCell";
 import { terrainCell } from "../../../controllers/maproom/v3/cells/terrainCell";
+import { playerCell } from "../../../controllers/maproom/v3/cells/playerCell";
 
 export const createCellData = async (
   cell: Loaded<WorldMapCell, never>,
-  worldid: string,
-  ctx: Context
+  ctx: Context,
+  worldid?: string,
 ) => {
   switch (cell.base_type) {
+    case EnumYardType.PLAYER:
+      return playerCell(ctx, cell);
+
     case EnumYardType.STRONGHOLD:
       return strongholdCell(ctx, cell);
 

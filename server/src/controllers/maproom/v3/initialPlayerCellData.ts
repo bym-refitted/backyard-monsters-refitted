@@ -1,161 +1,38 @@
 import { User } from "../../../models/user.model";
 import { Status } from "../../../enums/StatusCodes";
 import { KoaController } from "../../../utils/KoaController";
-import { calculateBaseLevel } from "../../../services/base/calculateBaseLevel";
 import { EnumYardType } from "../../../enums/EnumYardType";
-import { EnumBaseRelationship } from "../../../enums/EnumBaseRelationship";
 import { postgres } from "../../../server";
+import { WorldMapCell } from "../../../models/worldmapcell.model";
+import { createCellData } from "../../../services/maproom/v3/createCellData";
 
-// Used to get the data of the current player cell
+/**
+ * Returns the initial cell data for Map Room v3 when player opens the map.
+ * Returns the player's main yard cell. Defender outposts are automatically included
+ * when the player cell is requested via getcells (through getRelatedCells).
+ *
+ * @param {Context} ctx - Koa context with authenticated user
+ * @returns {Promise<void>} Cell data response with player's main yard cell
+ */
 export const initialPlayerCellData: KoaController = async (ctx) => {
-  const currentUser: User = ctx.authUser;
-  await postgres.em.populate(currentUser, ["save"]);
+  const user: User = ctx.authUser;
+  await postgres.em.populate(user, ["save"]);
 
-  const points = currentUser.save.points;
-  const basevalue = currentUser.save.basevalue;
-  const baseLevel = calculateBaseLevel(points, basevalue);
+  const homeCell = await postgres.em.findOne(WorldMapCell, {
+    uid: user.userid,
+    base_type: EnumYardType.PLAYER,
+  });
+
+  if (!homeCell) console.log("No MapRoom3 home found for user:", user.username);
+
+  const celldata = [];
+
+  const playerCellData = await createCellData(homeCell, ctx);
+  celldata.push(playerCellData);
 
   ctx.status = Status.OK;
   ctx.body = {
     error: 0,
-    celldata: [
-      {
-        uid: currentUser.userid,
-        b: EnumYardType.PLAYER,
-        bid: currentUser.save.baseid,
-        x: 10,
-        y: 10,
-        aid: 0,
-        i: 50,
-        n: currentUser.username,
-        tid: 0,
-        l: baseLevel,
-        pl: 0,
-        r: 0,
-        dm: 0,
-        rel: EnumBaseRelationship.SELF,
-        lo: 0,
-        fr: 0,
-        p: 0,
-        d: 0,
-        t: 0,
-        fbid: "",
-        pic_square: currentUser.pic_square,
-      },
-      {
-        uid: 0,
-        b: EnumYardType.FORTIFICATION,
-        bid: 1234,
-        n: "Abunakki",
-        tid: 0,
-        x: 9,
-        y: 10,
-        l: 25,
-        pl: 0,
-        r: 0,
-        dm: 0,
-        rel: EnumBaseRelationship.ENEMY,
-        lo: 0,
-        fr: 0,
-        p: 0,
-        d: 0,
-        t: 0,
-      },
-      {
-        uid: 0,
-        b: EnumYardType.FORTIFICATION,
-        bid: 1234,
-        n: "Abunakki",
-        tid: 0,
-        x: 11,
-        y: 10,
-        l: 25,
-        pl: 0,
-        r: 0,
-        dm: 0,
-        rel: EnumBaseRelationship.ENEMY,
-        lo: 0,
-        fr: 0,
-        p: 0,
-        d: 0,
-        t: 0,
-      },
-      {
-        uid: 0,
-        b: EnumYardType.FORTIFICATION,
-        bid: 1234,
-        n: "Abunakki",
-        tid: 0,
-        x: 9,
-        y: 11,
-        l: 25,
-        pl: 0,
-        r: 0,
-        dm: 0,
-        rel: EnumBaseRelationship.ENEMY,
-        lo: 0,
-        fr: 0,
-        p: 0,
-        d: 0,
-        t: 0,
-      },
-      {
-        uid: 0,
-        b: EnumYardType.FORTIFICATION,
-        bid: 1234,
-        n: "Abunakki",
-        tid: 0,
-        x: 10,
-        y: 11,
-        l: 25,
-        pl: 0,
-        r: 0,
-        dm: 0,
-        rel: EnumBaseRelationship.ENEMY,
-        lo: 0,
-        fr: 0,
-        p: 0,
-        d: 0,
-        t: 0,
-      },
-      {
-        uid: 0,
-        b: EnumYardType.FORTIFICATION,
-        bid: 1234,
-        n: "Abunakki",
-        tid: 0,
-        x: 9,
-        y: 9,
-        l: 25,
-        pl: 0,
-        r: 0,
-        dm: 0,
-        rel: EnumBaseRelationship.ENEMY,
-        lo: 0,
-        fr: 0,
-        p: 0,
-        d: 0,
-        t: 0,
-      },
-      {
-        uid: 0,
-        b: EnumYardType.FORTIFICATION,
-        bid: 1234,
-        n: "Abunakki",
-        tid: 0,
-        x: 10,
-        y: 9,
-        l: 25,
-        pl: 0,
-        r: 0,
-        dm: 0,
-        rel: EnumBaseRelationship.ENEMY,
-        lo: 0,
-        fr: 0,
-        p: 0,
-        d: 0,
-        t: 0,
-      },
-    ],
+    celldata,
   };
 };

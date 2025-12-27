@@ -7,7 +7,9 @@ type Cell = { x: number; y: number; t?: number };
 const relatedCellsCache = new Map<string, Coord[]>();
 
 const hasDefensiveStructure = (type?: number): boolean =>
-  type === EnumYardType.STRONGHOLD || type === EnumYardType.RESOURCE;
+  type === EnumYardType.STRONGHOLD ||
+  type === EnumYardType.RESOURCE ||
+  type === EnumYardType.PLAYER;
 
 /**
  * Returns coordinates of related cells that should load with the given cell.

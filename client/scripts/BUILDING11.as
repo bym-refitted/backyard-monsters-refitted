@@ -218,11 +218,12 @@ package
          }
          else
          {
-            if(MapRoomManager.instance.isInMapRoom3 && !GLOBAL._aiDesignMode)
-            {
-               GLOBAL.Message(KEYS.Get("map_cannot_recycle_map_room3"));
-               return;
-            }
+            // Comment: this stopped Map Room 3 from being recycled
+            // if(MapRoomManager.instance.isInMapRoom3 && !GLOBAL._aiDesignMode)
+            // {
+            //    GLOBAL.Message(KEYS.Get("map_cannot_recycle_map_room3"));
+            //    return;
+            // }
             GLOBAL.Message(KEYS.Get("newmap_recycle2"),KEYS.Get("btn_recycle"),this.RecycleD);
          }
          GLOBAL.eventDispatcher.dispatchEvent(new BuildingEvent(BuildingEvent.ATTEMPT_RECYCLE,this));

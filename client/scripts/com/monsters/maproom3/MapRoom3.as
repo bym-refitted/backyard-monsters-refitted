@@ -107,16 +107,20 @@ package com.monsters.maproom3
       {
          var serverData:Object = JSON.decode(this.m_HeightMapLoader.data);
          this.m_MapRoom3Data = new MapRoom3Data(serverData);
+         this.m_MapRoom3Data.LoadInitialCellData(this.m_LastCenterPoint);
       }
-      
       public function OnHeightMapLoadFailed(param1:Event) : void
       {
          this.m_MapRoom3Data = new MapRoom3Data(null);
+         this.m_MapRoom3Data.LoadInitialCellData(this.m_LastCenterPoint);
       }
       
       public function Setup() : void
       {
-         this.m_MapRoom3Data.LoadInitialCellData(this.m_LastCenterPoint);
+         if(this.m_MapRoom3Data != null)
+         {
+            this.m_MapRoom3Data.LoadInitialCellData(this.m_LastCenterPoint);
+         }
          FriendPicker.ClearContacts();
       }
       

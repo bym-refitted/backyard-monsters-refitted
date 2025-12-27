@@ -2,7 +2,8 @@ import { MapRoom3, MapRoomVersion } from "../../enums/MapRoom";
 import { Status } from "../../enums/StatusCodes";
 import { BASE_URL, PORT } from "../../server";
 import { KoaController } from "../../utils/KoaController";
-import { CURRENT_MAPROOM_VERSION } from "./setMapVersion";
+import { User } from "../../models/user.model";
+import { postgres } from "../../server";
 
 /**
  * Controller to get Map Room metadata and configuration.
@@ -24,7 +25,12 @@ import { CURRENT_MAPROOM_VERSION } from "./setMapVersion";
  * @param {Object} ctx - Koa context object.
  */
 export const getNewMap: KoaController = async (ctx) => {
-  if (CURRENT_MAPROOM_VERSION === MapRoomVersion.V3) {
+  const user: User = ctx.authUser;
+  await postgres.em.populate(user, ["save", "save.cell"]);
+
+  const { cell } = user.save;
+
+  if (cell?.map_version === MapRoomVersion.V3) {
     ctx.body = {
       newmap: true,
       mapheaderurl: `${BASE_URL}:${PORT}/api/bm/getnewmap`,
