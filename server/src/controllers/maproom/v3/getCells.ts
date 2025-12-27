@@ -14,6 +14,8 @@ import { FilterQuery } from "@mikro-orm/core";
 import { mapByCoordinates } from "../../../services/maproom/v3/utils/mapByCoordinates";
 import { CellData } from "../../../types/CellData";
 import { postgres } from "../../../server";
+import { getHexNeighborOffsets } from "../../../services/maproom/v3/getDefenderOutposts";
+import { EnumYardType } from "../../../enums/EnumYardType";
 
 export const getMapRoomCells: KoaController = async (ctx) => {
   try {
@@ -51,6 +53,12 @@ export const getMapRoomCells: KoaController = async (ctx) => {
     const genCells = generateCells();
     const genCellsByCoords = mapByCoordinates(genCells);
 
+    // Merge both maps for getRelatedCells (db cells include player yards)
+    const allCellsByCoord = new Map(genCellsByCoords);
+    for (const [key, dbCell] of dbCellsByCoord) {
+      allCellsByCoord.set(key, { x: dbCell.x, y: dbCell.y, t: dbCell.base_type });
+    }
+
     const cellsToReturn = new Map<string, CellData>();
 
     const fetchOrGenerateCell = async (x: number, y: number) => {
@@ -64,18 +72,42 @@ export const getMapRoomCells: KoaController = async (ctx) => {
 
       if (dbCell) {
         cell = dbCell;
-      } else if (genCell) {
-        cell = new WorldMapCell(undefined, genCell.x, genCell.y, genCell.i);
-        cell.base_type = genCell.t || 0;
       } else {
-        cell = new WorldMapCell(undefined, x, y, 0);
+        // Check if this position should be a defender around a player yard
+        // Must check BEFORE using genCell to override tribe outposts
+        const offsets = getHexNeighborOffsets(x, y);
+        let isDefender = false;
+
+        for (const [dx, dy] of offsets) {
+          const neighborKey = `${x + dx},${y + dy}`;
+
+          // check merged map (includes both db and generated cells)
+          const neighborInMap = allCellsByCoord.get(neighborKey);
+          if (neighborInMap?.t === EnumYardType.PLAYER) {
+            isDefender = true;
+            break;
+          }
+        }
+
+        if (isDefender) {
+          // Create as defender (overrides tribe outposts in genCell)
+          cell = new WorldMapCell(undefined, x, y, 0);
+          cell.base_type = EnumYardType.FORTIFICATION;
+        } else if (genCell) {
+          // Use generated cell (stronghold/resource/outpost/terrain)
+          cell = new WorldMapCell(undefined, genCell.x, genCell.y, genCell.i);
+          cell.base_type = genCell.t || 0;
+        } else {
+          // Empty terrain
+          cell = new WorldMapCell(undefined, x, y, 0);
+        }
       }
 
-      const cellData = await createCellData(cell, worldid, ctx);
+      const cellData = await createCellData(cell, ctx, worldid);
       cellsToReturn.set(key, cellData);
 
-      // Include related cells
-      const relatedPositions = getRelatedCellPositions(x, y, dbCell?.base_type ?? genCell?.t, genCellsByCoords);
+      // Include related cells (use merged map so defenders can find player yard parents)
+      const relatedPositions = getRelatedCellPositions(x, y, dbCell?.base_type ?? genCell?.t, allCellsByCoord);
 
       for (const [relX, relY] of relatedPositions)
         await fetchOrGenerateCell(relX, relY);

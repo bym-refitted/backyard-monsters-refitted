@@ -71,20 +71,9 @@ router.get("/connection", (ctx) => (ctx.status = Status.OK));
 
 /**
  * Init route
- * @name GET /api/:apiVersion/bm/getnewmap
+ * @name POST /init
  */
 router.post("/init", debugDataLog("Initilizing game client"), init);
-
-/**
- * MapRoom setup
- * @name GET /api/:apiVersion/bm/getnewmap
- */
-router.get(
-  "/api/:apiVersion/bm/getnewmap",
-  apiVersion,
-  debugDataLog("Getting new maproom"),
-  getNewMap
-);
 
 /**
  * MapRoom setup
@@ -93,6 +82,7 @@ router.get(
 router.post(
   "/api/:apiVersion/bm/getnewmap",
   apiVersion,
+  verifyUserAuth,
   debugDataLog("Posting to new maproom"),
   getNewMap
 );
@@ -334,16 +324,15 @@ router.post(
   saveBookmarks
 );
 
-
 /**
  * Worldmap v3 init route
- * @name GET /worldmapv3/initworldmap
+ * @name POST /worldmapv3/initworldmap
  */
-router.get(
+router.post(
   "/worldmapv3/initworldmap",
   verifyUserAuth,
   verifyAccountStatus,
-  debugDataLog("Getting MR3 init data"),
+  debugDataLog("MR3 init data"),
   initialPlayerCellData
 );
 

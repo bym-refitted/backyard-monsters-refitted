@@ -1,19 +1,15 @@
+import z from "zod";
 import { Save } from "../../models/save.model";
 import { User } from "../../models/user.model";
 import { KoaController } from "../../utils/KoaController";
 import { postgres } from "../../server";
 import { joinOrCreateWorld } from "../../services/maproom/v2/joinOrCreateWorld";
+import { joinNewWorldMap } from "../../services/maproom/v3/joinNewWorldMap";
 import { leaveWorld } from "../../services/maproom/v2/leaveWorld";
 import { FilterFrontendKeys } from "../../utils/FrontendKey";
 import { MapRoomVersion } from "../../enums/MapRoom";
 import { Status } from "../../enums/StatusCodes";
 import { Env } from "../../enums/Env";
-import z from "zod";
-
-/**
- * Sets the Map Room version on the server.
- */
-export const CURRENT_MAPROOM_VERSION = MapRoomVersion.V3 as MapRoomVersion;
 
 /**
  * Schema for validating the request body when setting the map version.
@@ -36,19 +32,23 @@ export const setMapVersion: KoaController = async (ctx) => {
   let save: Save = user.save;
   const { version } = SetMapVersionSchema.parse(ctx.request.body);
 
-  if (version === MapRoomVersion.V2) {
-    // Check if the user's Discord account is at least a week old
-    if (!ctx.meetsDiscordAgeCheck) {
-      ctx.status = Status.OK;
-      ctx.body = {
-        error: "Discord account is not old enough.",
-      };
-      return;
-    }
+  if (!ctx.meetsDiscordAgeCheck) {
+    ctx.status = Status.OK;
+    ctx.body = { error: "Discord account is not old enough." };
+    return;
+  }
 
-    await joinOrCreateWorld(user, save);
-  } else {
-    // await leaveWorld(user, save);
+  switch (version) {
+    case MapRoomVersion.V2:
+      await joinOrCreateWorld(user, save);
+      break;
+
+    case MapRoomVersion.V3:
+      await joinNewWorldMap(user, save);
+      break;
+
+    default:
+      await leaveWorld(user, save);
   }
 
   const filteredSave = FilterFrontendKeys(save);

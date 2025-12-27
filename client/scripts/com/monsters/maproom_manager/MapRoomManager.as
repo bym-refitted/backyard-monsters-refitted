@@ -283,9 +283,15 @@ package com.monsters.maproom_manager
       {
          if(param1.error == 0)
          {
-            PLEASEWAIT.Hide();
-            PLEASEWAIT.Show(KEYS.Get("upgraded_to_map_room3_refresh"));
-            GLOBAL.CallJS("cc.reloadParent");
+            this.init(true,GLOBAL._apiURL + "bm/getnewmap");
+            this.m_CurrentMapRoom.Setup();
+
+            PLEASEWAIT.Show(KEYS.Get("nwm_loading"));
+            GLOBAL._showMapWaiting = 1;
+
+            // Comment: Old implementation forced users to reload their browser
+            // PLEASEWAIT.Show(KEYS.Get("upgraded_to_map_room3_refresh"));
+            // GLOBAL.CallJS("cc.reloadParent");
          }
          else
          {

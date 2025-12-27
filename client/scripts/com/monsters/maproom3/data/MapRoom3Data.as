@@ -198,6 +198,7 @@ package com.monsters.maproom3.data
          {
             _loc2_.push(["worldid",DEBUG_WORLD_ID]);
          }
+         _loc2_.push(["token", LOGIN.token]);
          new URLLoaderApi().load(MapRoomManager.instance.mapRoom3URL + "initworldmap",_loc2_,this.OnInitialPlayerCellDataLoaded);
       }
       
@@ -232,6 +233,7 @@ package com.monsters.maproom3.data
          {
             _loc8_.push(["worldid",DEBUG_WORLD_ID]);
          }
+         _loc8_.push(["token", LOGIN.token]); // TODO: Why does the server still return cells if we don't send a token? verify auth should fail?
          new URLLoaderApi().load(GetCellsRequestURL(),_loc8_,this.OnInitialCellDataLoaded);
       }
       
@@ -318,6 +320,7 @@ package com.monsters.maproom3.data
          {
             _loc6_.push(["worldid",DEBUG_WORLD_ID]);
          }
+         _loc6_.push(["token", LOGIN.token]);
          this.m_PendingCellDataRequest = _loc6_;
          new URLLoaderApi().load(GetCellsRequestURL(),_loc6_,this.OnCellDataLoaded);
       }
@@ -378,6 +381,7 @@ package com.monsters.maproom3.data
          {
             _loc12_.push(["worldid",DEBUG_WORLD_ID]);
          }
+         _loc12_.push(["token", LOGIN.token]);
          this.m_PendingCellDataRequest = _loc12_;
          new URLLoaderApi().load(GetCellsRequestURL(),_loc12_,this.OnCellDataLoaded);
       }

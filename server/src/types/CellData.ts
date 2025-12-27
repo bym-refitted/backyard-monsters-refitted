@@ -17,4 +17,6 @@ export type CellData = {
   t?: number;
   b?: number;
   rel?: number;
+  fbid?: string,
+  pic_square?: string,
 };
