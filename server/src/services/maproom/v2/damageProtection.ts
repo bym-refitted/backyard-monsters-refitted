@@ -31,7 +31,7 @@ export const damageProtection = async (save: Save, mode?: BaseMode) => {
     persist = true;
   };
 
-  if (mode === BaseMode.ATTACK) {
+  if (mode === BaseMode.ATTACK || mode === BaseMode.IATTACK) {
     protection = 0;
     persist = true;
   } else {
