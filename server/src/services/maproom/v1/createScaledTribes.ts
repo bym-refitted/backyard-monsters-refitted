@@ -1,7 +1,7 @@
 import { TribeScale } from "../../../enums/Tribes";
-import { loadFailureErr } from "../../../errors/errors";
 import { InfernoMaproom } from "../../../models/infernomaproom.model";
 import { Save } from "../../../models/save.model";
+import { User } from "../../../models/user.model";
 import { postgres } from "../../../server";
 import { getCurrentDateTime } from "../../../utils/getCurrentDateTime";
 
@@ -57,8 +57,12 @@ export const createScaledTribes = async (save: Save, tribes: TribeScaleConfig) =
   const { minTribeId } = tribes[scale];
   const tribeIds = Array.from({ length: 7 }, (_, i) => minTribeId + i);
 
-  const maproom = await postgres.em.findOne(InfernoMaproom, { userid });
-  if (!maproom) throw loadFailureErr();
+  let maproom = await postgres.em.findOne(InfernoMaproom, { userid });
+
+  if (!maproom) {
+    const user = await postgres.em.findOne(User, { userid });
+    maproom = await InfernoMaproom.setupMapRoom1Data(postgres.em, user);
+  }
 
   const tribeIdSet = new Set(tribeIds);
 
