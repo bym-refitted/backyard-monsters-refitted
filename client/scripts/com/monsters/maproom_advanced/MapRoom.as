@@ -469,7 +469,7 @@ package com.monsters.maproom_advanced
          {
             _bookmarkData = {};
          }
-         if(param2.length > 0 && Boolean(_bookmarkData[param1]))
+         if(param2.length == 0 && Boolean(_bookmarkData[param1]))
          {
             delete _bookmarkData[param1];
             if(param3)
