@@ -149,6 +149,13 @@ package
          while(param2 < _loc7_.length)
          {
             _loc10_ = _loc7_[param2];
+
+            if(BASE.isInfernoMainYardOrOutpost && int(_loc10_.id) == 135)
+            {
+               param2++;
+               continue;
+            }
+
             if(int(_loc10_.group) == param1 && (_loc10_.subgroup == null || int(_loc10_.subgroup) == BUILDINGS._menuB) && (!_loc10_.block || InventoryManager.buildingStorageCount(int(_loc10_.id))))
             {
                if(_loc8_ >= 10 * BUILDINGS._page && _loc8_ < 10 + 10 * BUILDINGS._page)
