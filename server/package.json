@@ -14,6 +14,7 @@
     "db:seed": "ts-node src/seed.ts",
     "db:drop": "mikro-orm schema:drop --drop-db -r",
     "migration:up": "npm run build && mikro-orm migration:up",
+    "migration:down": "npm run build && mikro-orm migration:down",
     "compile-sass": "sass --no-source-map --watch styles/main.scss public/main.css"
   },
   "dependencies": {

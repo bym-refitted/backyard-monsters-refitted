@@ -15,6 +15,9 @@ import { postgres } from "../../server";
  * @returns {Promise<void>}
  */
 export const createAttackLog = async (attacker: User, defender: User, save: Save) => {
+  await postgres.em.getConnection().execute(
+    'SELECT bym.process_expired_attack_log_watchers()'
+  );
   const attackLog = postgres.em.create(AttackLogs, {
     attacker_userid: attacker.userid,
     attacker_username: attacker.username,
@@ -29,9 +32,14 @@ export const createAttackLog = async (attacker: User, defender: User, save: Save
     y: save.cell?.y || null,
 
     loot: {},
-    attackreport: {},
+    attackreport: '',
     attacktime: new Date(),
   });
 
   await postgres.em.persistAndFlush(attackLog);
+
+  await postgres.em.getConnection().execute(
+    'SELECT bym.register_attacklog_watch(?, ?)',
+    [save.basesaveid, (attackLog as any).id]
+  );
 };
