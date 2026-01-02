@@ -6050,7 +6050,7 @@ package
                   "X": param1.x,
                   "Y": param1.y,
                   "t": _loc4_,
-                  "id": BASE._buildingCount++
+                  "id": (BASE._buildingCount+1)
                };
             if (_buildingsStored["bl" + _loc4_])
             {
