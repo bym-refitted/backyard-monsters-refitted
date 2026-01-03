@@ -47,7 +47,7 @@ export const baseSave: KoaController = async (ctx) => {
     // Not the owner and not in an attack
     if (!isOwner && baseSave.attackid === 0) throw permissionErr();
 
-    await validateSave(ctx, async () => {});
+    await validateSave(user, baseSave);
 
     // Standard save logic
     for (const key of isAttack ? Save.attackSaveKeys : Save.saveKeys) {
@@ -160,6 +160,10 @@ export const baseSave: KoaController = async (ctx) => {
     ctx.status = Status.OK;
     ctx.body = responseBody;
   } catch (err) {
+    if (err instanceof Error && 'isClientFriendly' in err) {
+      throw err;
+    }
+
     errorLog(`Failed to save base for user: ${user.username}`, err);
 
     ctx.status = Status.INTERNAL_SERVER_ERROR;

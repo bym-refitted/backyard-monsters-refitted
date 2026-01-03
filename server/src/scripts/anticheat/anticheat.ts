@@ -1,10 +1,24 @@
-import { Context, Next } from "koa";
+import { Save } from '../../models/save.model';
+import { User } from '../../models/user.model';
 
-/**
- * We do not provide the source for our anti-cheat module on this repository.
- * You can create your own anti-cheat system here if you wish for your own server.
- * 
- * @param {Context} _ctx - The Koa context object.
- * @param {Next} _next - The next middleware function.
- */
-export const validateSave = async (_ctx: Context, _next: Next) => {}
+let antiCheatModule: { validateSave: (user: User, save: Save) => Promise<void> } | null = null;
+
+async function loadAntiCheatModule() {
+  if (antiCheatModule) return antiCheatModule;
+
+  try {
+    // @ts-ignore: private module may not exist in development builds
+    antiCheatModule = await import('./anticheat.private.js');
+    console.log("loading private anticheat");
+  } catch {
+    antiCheatModule = await import('./anticheat.stub.js');
+    console.warn('Anti-cheat stub loaded (development mode)');
+  }
+
+  return antiCheatModule;
+}
+
+export const validateSave = async (user: User, save: Save) => {
+  const module = await loadAntiCheatModule();
+  return module.validateSave(user, save);
+};
