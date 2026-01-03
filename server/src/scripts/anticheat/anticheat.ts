@@ -9,10 +9,8 @@ async function loadAntiCheatModule() {
   try {
     // @ts-ignore: private module may not exist in development builds
     antiCheatModule = await import('./anticheat.private.js');
-    console.log("loading private anticheat");
   } catch {
     antiCheatModule = await import('./anticheat.stub.js');
-    console.warn('Anti-cheat stub loaded (development mode)');
   }
 
   return antiCheatModule;
