@@ -488,7 +488,7 @@ package com.monsters.baseplanner
 
       public function dragBuilding(param1:BuildingItem, param2:Boolean = false):void
       {
-         if(this._selectMoveTarget && (this._selectMoveTarget != param1 && this._selectMoveDragging))
+         if (this._selectMoveDragging && this._selectMoveTarget != param1)
          {
             return; // a different building is already being dragged.
          }
