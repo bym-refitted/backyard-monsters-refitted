@@ -6050,7 +6050,19 @@ package
                   "X": param1.x,
                   "Y": param1.y,
                   "t": _loc4_,
-                  "id": BASE._buildingCount++
+                  // Setting the building's ID using a post-increment causes decorations placed via the Yard Planer to overwrite the most
+                  // recently placed building, since they often have the value of _buildingCount as their ID.
+                  //
+                  // Using a pre-increment here (++BASE._buildingCount) fixes the issue but causes _buildingCount to increment by 2 after
+                  // the building is set up, as BFOUNDATION.Setup() also contains the line ++BASE._buildingCount;. No noticable errors are
+                  // caused by incrementing twice but it does leave inconsistent gaps in buidlings' IDs and means the "building count"
+                  // variable does not accurately describe the amount of buildings. Making the ID _buildingCount+1 here fixes the issue
+                  // while only incrementing _buildingCount by 1 after Setup() is called.
+                  // 
+                  // later on, building data assignment logic should be standardized/rewritten so IDs are not set manually like this.
+                  // See Pull Request: https://github.com/bym-refitted/backyard-monsters-refitted/pull/189
+                  //"id": BASE._buildingCount++
+                  "id": (BASE._buildingCount+1)
                };
             if (_buildingsStored["bl" + _loc4_])
             {

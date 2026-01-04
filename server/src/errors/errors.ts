@@ -80,6 +80,15 @@ export const userPermaBannedErr = () =>
     isClientFriendly: true
   });
 
+export const antiCheatBanErr = () =>
+  new ClientSafeError({
+    message:
+      "Hey bud, it seems you got caught by a very basic anti-cheat, you're not that guy pal, enjoy the ban.",
+    status: Status.FORBIDDEN,
+    data: null,
+    isClientFriendly: true
+  });
+
 export const discordVerifyErr = () =>
   new ClientSafeError({
     message:

@@ -1446,7 +1446,10 @@ package com.monsters.maproom_advanced
                MapRoom.BookmarkDataSetStr("mbmn" + _loc3_,MapRoom._bookmarks[_loc3_].name,false);
                _loc3_++;
             }
-            MapRoom.BookmarkDataSet("mbms",_loc2_);
+            MapRoom.BookmarkDataSet("mbms",_loc2_,false);
+            MapRoom.BookmarkDataSet("mbm" + _loc2_,0,false);
+            MapRoom.BookmarkDataSetStr("mbmn" + _loc2_,"",false);
+            MapRoom.BookmarksSave();
          }
          else
          {
@@ -1487,7 +1490,7 @@ package com.monsters.maproom_advanced
       public function HideBookmarkAddPopupWithAdd(param1:MouseEvent) : void
       {
          GLOBAL.BlockerRemove();
-         var _loc2_:Object = MapRoom.AddBookmark(this._popupBookmarkAdd.tName.htmlText);
+         var _loc2_:Object = MapRoom.AddBookmark(this._popupBookmarkAdd.tName.text);
          if(_loc2_.hide && this._popupBookmarkAdd && Boolean(this._popupBookmarkAdd.parent))
          {
             this._popupBookmarkAdd.parent.removeChild(this._popupBookmarkAdd);
