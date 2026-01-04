@@ -1,16 +1,34 @@
+# Environment files
 .env
+
+# Node dependencies
 node_modules/
+
+# Build output
 dist/
-bin
+bin/
 main.css
-server/src/database/bym-db*
-server/src/database/migrations/.snapshot*
-server/data
+
+# IDE / editor
 .idea
+.DS_Store
+
+# Documentation / misc
+CLAUDE.md
+
+# API / versioning
 api-versioning
+
+# Android / mobile
 android/bymr.keystore
 android/apk/*
 
 android/apk/BYMRefitted.apk
-CLAUDE.md
-.DS_Store
+
+# Server database / data
+server/data
+server/src/database/bym-db*
+server/src/database/migrations/.snapshot*
+
+# Private scripts / sensitive
+server/src/scripts/anticheat/anticheat.private.ts
