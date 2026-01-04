@@ -125,10 +125,12 @@ export const login: KoaController = async (ctx) => {
     mailversion: 1,
     soundversion: 1,
     languageversion: 8,
+    sendinvite: 1,
     app_id: "",
     tpid: "",
     currency_url: "",
     language: "en",
     settings: {},
+    // TODO: add remaining keys that the client expects
   };
 };

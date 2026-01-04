@@ -78,7 +78,7 @@ package com.monsters.configs
       
       public function get INVITE_BUTTON() : Boolean
       {
-         return false;
+         return true;
       }
       
       public function get LOCAL_MODE() : int
