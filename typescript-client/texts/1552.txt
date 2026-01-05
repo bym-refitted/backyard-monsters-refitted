@@ -1,0 +1,5 @@
+>You will not be able to send messages until 
+--- RECORDSEPARATOR ---
+you exit full screen mode. To exit the full screen 
+--- RECORDSEPARATOR ---
+mode, press the 'Escape Key'.

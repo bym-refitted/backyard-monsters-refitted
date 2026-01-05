@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg xmlns:xlink="http://www.w3.org/1999/xlink" height="25.4px" width="30.5px" xmlns="http://www.w3.org/2000/svg">
+  <g transform="matrix(1.0, 0.0, 0.0, 1.0, 1.1, 1.8)">
+    <path d="M9.95 -0.85 L14.5 -0.35 Q18.2 0.1 20.15 3.85 22.05 7.6 21.15 12.55 20.2 17.45 17.0 20.6 13.75 23.75 10.05 23.3 L5.0 22.55 Q4.05 22.3 3.5 17.6 2.95 13.05 3.45 10.5 3.85 8.15 6.55 3.55 9.25 -0.95 9.95 -0.85" fill="url(#gradient0)" fill-rule="evenodd" stroke="none"/>
+    <path d="M9.95 -0.85 Q9.25 -0.95 6.55 3.55 3.85 8.15 3.45 10.5 2.95 13.05 3.5 17.6 4.05 22.3 5.0 22.55 L10.05 23.3 Q13.75 23.75 17.0 20.6 20.2 17.45 21.15 12.55 22.05 7.6 20.15 3.85 18.2 0.1 14.5 -0.35 L9.95 -0.85 Z" fill="none" stroke="#b68616" stroke-linecap="round" stroke-linejoin="round" stroke-width="0.5"/>
+    <path d="M6.8 22.9 Q2.85 22.45 0.65 18.6 -1.5 14.85 -0.55 9.95 0.35 5.05 3.75 1.85 7.25 -1.25 11.2 -0.8 15.2 -0.3 17.35 3.45 19.5 7.3 18.6 12.2 17.65 17.1 14.25 20.2 10.8 23.4 6.8 22.9" fill="url(#gradient1)" fill-rule="evenodd" stroke="none"/>
+    <path d="M6.8 22.9 Q10.8 23.4 14.25 20.2 17.65 17.1 18.6 12.2 19.5 7.3 17.35 3.45 15.2 -0.3 11.2 -0.8 7.25 -1.25 3.75 1.85 0.35 5.05 -0.55 9.95 -1.5 14.85 0.65 18.6 2.85 22.45 6.8 22.9 Z" fill="none" stroke="#b68616" stroke-linecap="round" stroke-linejoin="round" stroke-width="0.5"/>
+    <path d="M5.5 4.65 Q7.7 2.4 10.25 2.7 12.85 3.0 14.2 5.65 15.45 8.35 14.8 11.85 14.15 15.4 11.95 17.65 9.7 19.95 7.1 19.65 4.55 19.35 3.25 16.65 1.85 13.95 2.5 10.4 3.15 6.9 5.5 4.65" fill="url(#gradient2)" fill-rule="evenodd" stroke="none"/>
+    <path d="M5.5 4.65 Q3.15 6.9 2.5 10.4 1.85 13.95 3.25 16.65 4.55 19.35 7.1 19.65 9.7 19.95 11.95 17.65 14.15 15.4 14.8 11.85 15.45 8.35 14.2 5.65 12.85 3.0 10.25 2.7 7.7 2.4 5.5 4.65 Z" fill="none" stroke="#e6ad2b" stroke-linecap="round" stroke-linejoin="round" stroke-width="0.25"/>
+    <path d="M13.15 5.75 Q20.55 3.8 17.9 -1.8 22.25 3.6 27.6 -1.15 21.85 5.55 29.4 8.8 21.1 5.5 20.55 12.6 20.15 5.1 13.15 5.75" fill="url(#gradient3)" fill-rule="evenodd" stroke="none"/>
+  </g>
+  <defs>
+    <linearGradient gradientTransform="matrix(-0.0027, 0.0145, 0.0108, 0.0013, 12.3, 11.5)" gradientUnits="userSpaceOnUse" id="gradient0" spreadMethod="pad" x1="-819.2" x2="819.2">
+      <stop offset="0.0" stop-color="#f1c71f"/>
+      <stop offset="0.3568627450980392" stop-color="#e7d53a"/>
+      <stop offset="0.4980392156862745" stop-color="#fcfcbe"/>
+      <stop offset="0.6666666666666666" stop-color="#e7d337"/>
+      <stop offset="1.0" stop-color="#edc423"/>
+    </linearGradient>
+    <linearGradient gradientTransform="matrix(0.0124, 0.0089, 0.0081, -0.0062, 9.0, 11.05)" gradientUnits="userSpaceOnUse" id="gradient1" spreadMethod="pad" x1="-819.2" x2="819.2">
+      <stop offset="0.0" stop-color="#f5e665"/>
+      <stop offset="0.10980392156862745" stop-color="#feedd6"/>
+      <stop offset="0.2549019607843137" stop-color="#ffff00"/>
+      <stop offset="0.5137254901960784" stop-color="#fddcac"/>
+      <stop offset="0.8352941176470589" stop-color="#fff851"/>
+      <stop offset="1.0" stop-color="#f3a023"/>
+    </linearGradient>
+    <linearGradient gradientTransform="matrix(-0.0087, -0.0076, -0.0056, 0.0042, 8.65, 11.15)" gradientUnits="userSpaceOnUse" id="gradient2" spreadMethod="pad" x1="-819.2" x2="819.2">
+      <stop offset="0.0" stop-color="#fadb96"/>
+      <stop offset="0.3254901960784314" stop-color="#f2de2f"/>
+      <stop offset="0.5254901960784314" stop-color="#dab00c"/>
+      <stop offset="0.6666666666666666" stop-color="#f0dc28"/>
+      <stop offset="0.8588235294117647" stop-color="#fddcac"/>
+      <stop offset="1.0" stop-color="#fae000"/>
+    </linearGradient>
+    <linearGradient gradientTransform="matrix(0.0071, 0.0066, -0.0065, 0.0063, 21.65, 7.7)" gradientUnits="userSpaceOnUse" id="gradient3" spreadMethod="pad" x1="-819.2" x2="819.2">
+      <stop offset="0.1843137254901961" stop-color="#f5f578"/>
+      <stop offset="0.4980392156862745" stop-color="#f4d24f"/>
+      <stop offset="0.7137254901960784" stop-color="#f1f08d"/>
+    </linearGradient>
+  </defs>
+</svg>

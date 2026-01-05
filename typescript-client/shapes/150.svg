@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg xmlns:xlink="http://www.w3.org/1999/xlink" height="63.85px" width="79.5px" xmlns="http://www.w3.org/2000/svg">
+  <g transform="matrix(1.0, 0.0, 0.0, 1.0, -4.5, -6.65)">
+    <path d="M83.35 49.55 L83.4 47.55 83.35 45.45 83.4 47.55 83.35 49.55 Q82.25 57.55 72.0 63.4 60.5 70.0 44.25 70.0 28.0 70.0 16.5 63.4 5.4 57.0 5.0 48.15 L5.0 46.95 Q5.2 30.6 16.45 18.95 27.95 7.15 44.2 7.15 60.45 7.15 71.9 18.95 82.65 30.05 83.35 45.45 L83.5 47.5 83.35 49.55 M57.25 26.2 Q65.4 27.8 72.0 31.6 82.2 37.45 83.35 45.45 82.2 37.45 72.0 31.6 65.4 27.8 57.25 26.2 M31.75 26.1 Q23.3 27.7 16.5 31.6 5.35 38.0 5.0 46.95 5.35 38.0 16.5 31.6 23.3 27.7 31.75 26.1" fill="url(#gradient0)" fill-rule="evenodd" stroke="none"/>
+    <path d="M83.35 49.55 L83.5 47.5 83.35 45.45" fill="none" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.49803922" stroke-width="1.0"/>
+    <path d="M83.35 45.45 L83.4 47.55 83.35 49.55 Q82.25 57.55 72.0 63.4 60.5 70.0 44.25 70.0 28.0 70.0 16.5 63.4 5.4 57.0 5.0 48.15 L5.0 46.95 Q5.2 30.6 16.45 18.95 27.95 7.15 44.2 7.15 60.45 7.15 71.9 18.95 82.65 30.05 83.35 45.45" fill="none" stroke="#ffffff" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.49803922" stroke-width="1.0"/>
+    <path d="M83.35 45.45 Q82.2 37.45 72.0 31.6 65.4 27.8 57.25 26.2 M5.0 46.95 Q5.35 38.0 16.5 31.6 23.3 27.7 31.75 26.1" fill="none" stroke="#ffffff" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.2901961" stroke-width="1.0"/>
+  </g>
+  <defs>
+    <radialGradient cx="0" cy="0" gradientTransform="matrix(0.0768, 0.0, 0.0, 0.0768, 27.3, 20.0)" gradientUnits="userSpaceOnUse" id="gradient0" r="819.2" spreadMethod="pad">
+      <stop offset="0.0" stop-color="#ffffff" stop-opacity="0.4117647"/>
+      <stop offset="1.0" stop-color="#000000" stop-opacity="0.08627451"/>
+    </radialGradient>
+  </defs>
+</svg>

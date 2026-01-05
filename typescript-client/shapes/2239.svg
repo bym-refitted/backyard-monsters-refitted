@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg xmlns:xlink="http://www.w3.org/1999/xlink" height="229.5px" width="566.0px" xmlns="http://www.w3.org/2000/svg">
+  <g transform="matrix(1.0, 0.0, 0.0, 1.0, 328.5, 150.5)">
+    <path d="M237.0 -146.0 L237.0 -143.2 237.0 74.5 Q237.0 78.5 233.0 78.5 L-324.0 78.5 Q-328.0 78.5 -328.0 74.5 L-328.0 -143.2 -328.0 -146.0 Q-328.0 -150.0 -324.0 -150.0 L233.0 -150.0 Q237.0 -150.0 237.0 -146.0" fill="#ffffff" fill-rule="evenodd" stroke="none"/>
+    <path d="M237.0 -146.0 Q237.0 -150.0 233.0 -150.0 L-324.0 -150.0 Q-328.0 -150.0 -328.0 -146.0 L-328.0 -143.2 -328.0 74.5 Q-328.0 78.5 -324.0 78.5 L233.0 78.5 Q237.0 78.5 237.0 74.5 L237.0 -143.2 237.0 -146.0 Z" fill="none" stroke="#333333" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.0"/>
+    <path d="M-63.0 -120.75 L200.5 -120.75 207.0 -120.75 207.0 62.25 200.5 62.25 -63.0 62.25 -63.0 -120.75 M200.5 62.25 L200.5 -120.75 200.5 62.25" fill="#ffffff" fill-rule="evenodd" stroke="none"/>
+    <path d="M-63.0 62.25 L-69.5 62.25 -69.5 -120.75 -63.0 -120.75 200.5 -120.75 200.5 62.25 -63.0 62.25 Z" fill="none" stroke="#333333" stroke-linecap="round" stroke-linejoin="round" stroke-width="0.1"/>
+  </g>
+</svg>
