@@ -60,14 +60,14 @@
 | [x] | BUILDING8.as | |
 | [x] | BUILDING9.as | |
 | [x] | BUILDINGBUTTON.as | |
-| [ ] | BUILDINGBUTTONSOON.as | |
+| [x] | BUILDINGBUTTONSOON.as | |
 | [ ] | BUILDINGBUTTON_CLIP.as | |
 | [x] | BUILDINGINFO.as | |
 | [x] | BUILDINGOPTIONS.as | |
 | [ ] | BUILDINGOPTIONSPOPUP.as | |
 | [ ] | BUILDINGOPTIONSPOPUP_CLIP.as | |
 | [x] | BUILDINGS.as | |
-| [ ] | BUILDINGSARROW.as | |
+| [x] | BUILDINGSARROW.as | |
 | [ ] | BUILDINGSPOPUP.as | |
 | [ ] | BUILDINGSPOPUPINFO_CLIP.as | |
 | [ ] | BUILDINGSPOPUP_CLIP.as | |
@@ -95,7 +95,7 @@
 | [ ] | BasePlanner_FrameMask.as | |
 | [ ] | BlackSpurtzCannon.as | |
 | [x] | Bunker.as | |
-| [ ] | Button.as | |
+| [x] | Button.as | |
 | [ ] | ButtonBrown.as | |
 | [ ] | ButtonBrown_CLIP.as | |
 | [ ] | Button_CLIP.as | |
@@ -133,14 +133,14 @@
 | [ ] | CheckBox_selectedOverIcon.as | |
 | [ ] | CheckBox_selectedUpIcon.as | |
 | [ ] | CheckBox_upIcon.as | |
-| [ ] | Checkbox.as | |
+| [x] | Checkbox.as | |
 | [ ] | CreatureLockerItem.as | |
 | [ ] | DEFENSEEVENTPOPUP.as | |
 | [ ] | DEFENSEEVENTPOPUP_CLIP.as | |
 | [ ] | DEFENSEEVENTPOPUP_WM1.as | |
 | [x] | DROPZONE.as | |
 | [ ] | DROPZONE_CLIP.as | |
-| [ ] | Dynamic.as | |
+| [x] | Dynamic.as | |
 | [x] | EFFECTS.as | |
 | [x] | ERRORMESSAGE.as | |
 | [ ] | ERRORMESSAGE_CLIP.as | |
@@ -151,8 +151,8 @@
 | [ ] | EventsBar_CLIP.as | |
 | [ ] | FACEBOOK_NCP_CLIP.as | |
 | [ ] | FBPROMO_711_CLIP.as | |
-| [ ] | FIREBALL.as | |
-| [ ] | FIREBALLS.as | |
+| [x] | FIREBALL.as | |
+| [x] | FIREBALLS.as | |
 | [ ] | FIREBALL_CLIP.as | |
 | [ ] | ForeignBaseInferno_CLIP.as | |
 | [ ] | FriendPickerItem_CLIP.as | |
@@ -191,7 +191,7 @@
 | [ ] | HousingPersistentPopup_CLIP.as | |
 | [ ] | HousingPopupMonster_CLIP.as | |
 | [ ] | INFERNOAPI.as | |
-| [ ] | INFERNOPORTAL.as | |
+| [x] | INFERNOPORTAL.as | |
 | [ ] | INFERNOQUAKETOWER.as | |
 | [ ] | INFERNOYARDPROPS.as | |
 | [ ] | INFERNO_ASCENSION_POPUP.as | |
