@@ -1,11 +1,9 @@
-import z from "zod";
-
 import { KoaController } from "../../../utils/KoaController";
 import { User } from "../../../models/user.model";
 import { postgres } from "../../../server";
 import { WorldMapCell } from "../../../models/worldmapcell.model";
 import { Status } from "../../../enums/StatusCodes";
-import { BaseMode, BaseType } from "../../../enums/Base";
+import { BaseType } from "../../../enums/Base";
 import { getCurrentDateTime } from "../../../utils/getCurrentDateTime";
 import { errorLog } from "../../../utils/logger";
 import {
@@ -13,17 +11,11 @@ import {
   updateResources,
 } from "../../../services/base/updateResources";
 import { joinOrCreateWorld } from "../../../services/maproom/v2/joinOrCreateWorld";
+import { leaveWorld } from "../../../services/maproom/v2/leaveWorld";
 import { MapRoomCell } from "../../../enums/MapRoom";
-
-/**
- * Request schema for migrate base.
- */
-const MigrateBaseSchema = z.object({
-  type: z.nativeEnum(BaseType),
-  baseid: z.string(),
-  resources: z.string().transform((res) => JSON.parse(res)).optional(),
-  shiny: z.string().transform((shiny) => parseInt(shiny)).optional(),
-});
+import { relocateOutpostErr } from "../../../errors/errors";
+import { ClientSafeError } from "../../../middleware/clientSafeError";
+import { MigrateBaseSchema } from "../../../zod/MigrateBaseSchema";
 
 /**
  * Cooldown period for base migration.
@@ -46,9 +38,7 @@ const COOLDOWN_PERIOD = 24 * 60 * 60;
  */
 export const migrateBase: KoaController = async (ctx) => {
   try {
-    const { baseid, resources, shiny, type } = MigrateBaseSchema.parse(
-      ctx.request.body
-    );
+    const { baseid, resources, shiny, type } = MigrateBaseSchema.parse(ctx.request.body);
 
     const currentUser: User = ctx.authUser;
     await postgres.em.populate(currentUser, ["save"]);
@@ -67,9 +57,13 @@ export const migrateBase: KoaController = async (ctx) => {
       return;
     }
 
-    // Check if the user is relocating due to their empire being overrun.
-    if (type !== BaseType.OUTPOST && baseid === BaseMode.DEFAULT) {
+    // User is relocating due to their empire being overrun.
+    if (type === BaseType.RANDOM) {
+      if (userSave.outposts.length > 0) throw relocateOutpostErr();
+
+      await leaveWorld(currentUser, userSave);
       await joinOrCreateWorld(currentUser, userSave, postgres.em, true);
+
       ctx.status = Status.OK;
       ctx.body = { error: 0 };
       return;
@@ -142,6 +136,8 @@ export const migrateBase: KoaController = async (ctx) => {
       coords: [outpostX, outpostY],
     };
   } catch (error) {
+    if (error instanceof ClientSafeError) throw error;
+
     ctx.status = Status.BAD_REQUEST;
     ctx.body = { error: 1 };
     errorLog("Error migrating user base:", error);
