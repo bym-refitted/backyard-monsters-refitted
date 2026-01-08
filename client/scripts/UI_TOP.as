@@ -1331,12 +1331,13 @@ package
          {
             if(label == "gift")
             {
-               if(POPUPS.QueueCount("gifts") > 0)
+               if(POPUPS.QueueCount("gifts") > 0 && GLOBAL._flags.gifts == 1)
                {
-                  GLOBAL.Message(KEYS.Get("disabled_gifts"));
+                  POPUPS.Show("gifts");
                }
                else
                {
+                  // POPUPS.Gift();
                   GLOBAL.Message(KEYS.Get("disabled_gifts"));
                }
             }
@@ -1355,7 +1356,14 @@ package
             }
             else if(label == "invite")
             {
-               POPUPS.Invite();
+               if (GLOBAL._flags.invites == 1)
+               {
+                  POPUPS.Invite();
+               }
+               else
+               {
+                  GLOBAL.Message(KEYS.Get("disabled_invites"));
+               }
             }
             else if(label == "inbox")
             {

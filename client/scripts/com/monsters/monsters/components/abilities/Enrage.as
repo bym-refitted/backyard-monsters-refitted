@@ -48,6 +48,11 @@ package com.monsters.monsters.components.abilities
       
       override protected function onRegister() : void
       {
+         if(!owner || !owner.moveSpeedProperty || !owner.attackDelayProperty || !owner.armorProperty)
+         {
+            return;
+         }
+
          owner.moveSpeedProperty.addModifier(this.m_moveSpeedModifier);
          owner.attackDelayProperty.addModifier(this.m_attackSpeedModifier);
          owner.armorProperty.addModifier(this.m_armorModifier);
