@@ -46,7 +46,6 @@ export const getFlags = () => ({
   empire_value_limit: 831186222,
   nwm_relocate: 1,
   attacking: 1,
-  gifts: 1,
   attacklog: 1,
   messaging: devConfig.allowedMessageType.message ? 1 : 0,
   sroverlay: 0,
@@ -54,6 +53,8 @@ export const getFlags = () => ({
   fanfriendbookmarkquests: 1,
   ticker: 0,
   chat: 0, // Disable chat
+  invites: 0, // Diable friend invites
+  gifts: 0, // Disable gifts
   event1: 1,
   event2: 0,
   ...getInvasionFlags(),
@@ -69,7 +70,7 @@ export const getFlags = () => ({
   midgameIncentive: 0,
   showFBCEarn: 1,
   trialpayDealspot: 1,
-  showFBCDaily: 1,
+  showFBCDaily: 0,
   validate_percent: 0,
   autoban_validate_fail: 0,
   autoban_client: 0,

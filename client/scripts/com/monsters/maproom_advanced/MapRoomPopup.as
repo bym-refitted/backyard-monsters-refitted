@@ -1446,7 +1446,10 @@ package com.monsters.maproom_advanced
                MapRoom.BookmarkDataSetStr("mbmn" + _loc3_,MapRoom._bookmarks[_loc3_].name,false);
                _loc3_++;
             }
-            MapRoom.BookmarkDataSet("mbms",_loc2_);
+            MapRoom.BookmarkDataSet("mbms",_loc2_,false);
+            MapRoom.BookmarkDataSet("mbm" + _loc2_,0,false);
+            MapRoom.BookmarkDataSetStr("mbmn" + _loc2_,"",false);
+            MapRoom.BookmarksSave();
          }
          else
          {
