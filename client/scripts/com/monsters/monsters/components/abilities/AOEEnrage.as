@@ -84,20 +84,28 @@ package com.monsters.monsters.components.abilities
          }
       }
       
-      private function addEnrageToFriendliesInRange(param1:Vector.<MonsterBase>) : void
+     /*
+      * Applies the Enrage component to nearby friendly monsters that are eligible.
+      * Skips invalid targets, monsters already enraged, and monsters missing
+      * required stat properties.
+      *
+      * @param friendliesInRange List of friendly monsters within effect range
+      */
+      private function addEnrageToFriendliesInRange(friendliesInRange:Vector.<MonsterBase>) : void
       {
-         var _loc3_:MonsterBase = null;
-         var _loc4_:Component = null;
-         var _loc2_:int = 0;
-         while(_loc2_ < param1.length)
-         {
-            _loc3_ = param1[_loc2_];
-            if(!(_loc4_ = _loc3_.getComponentByName(name)))
-            {
-               _loc3_.addComponent(new Enrage(this.m_speedMultiplier,this.m_armorMultiplier,owner._creatureID),name);
-               this.m_enragedFriends.push(_loc3_);
-            }
-            _loc2_++;
+         for (var i:int = 0; i < friendliesInRange.length; i++) {
+            var friendly:MonsterBase = friendliesInRange[i];
+            
+            if (!friendly) continue;
+
+            if (friendly.getComponentByName(name)) continue;
+
+            if (!friendly.moveSpeedProperty || !friendly.attackDelayProperty || !friendly.armorProperty) continue;
+
+            var enrage:Enrage = new Enrage(this.m_speedMultiplier, this.m_armorMultiplier, owner._creatureID);
+
+            friendly.addComponent(enrage, name);
+            this.m_enragedFriends.push(friendly);
          }
       }
       
