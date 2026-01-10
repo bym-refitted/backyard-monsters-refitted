@@ -72,7 +72,7 @@ package com.monsters.maproom_advanced
             }
             else
             {
-               GLOBAL.ErrorMessage("PopupLostMainBase.Relocate 1");
+               GLOBAL.ErrorMessage(param1.error);
                LOGGER.Log("err","PopupLostMainBase.Relocate non-zero error " + param1.error);
             }
          };
