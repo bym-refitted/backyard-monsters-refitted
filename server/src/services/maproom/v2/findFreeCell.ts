@@ -4,6 +4,7 @@ import { WorldMapCell } from "../../../models/worldmapcell.model";
 import { EntityManager, PostgreSqlDriver } from "@mikro-orm/postgresql";
 import { logging } from "../../../utils/logger";
 import { generateNoise, getTerrainHeight } from "./generateMap";
+import { setTimeout } from "timers/promises";
 
 /**
  * Interface representing a single cell
@@ -46,7 +47,7 @@ export const findFreeCell = async (world: World, em: EntityManager<PostgreSqlDri
       logging(`Tile (${x}, ${y}) is occupied by another player. Skipping.`);
       
       // Note: this is a self solving issue (gets better over time we promise, says the Promise)
-      await new Promise((resolve) => setTimeout(resolve, 200));
+      await setTimeout(200);
       continue;
     }
 
