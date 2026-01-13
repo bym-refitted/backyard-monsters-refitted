@@ -1,19 +1,19 @@
 import bcrypt from "bcrypt";
 
 import { EntityManager, PostgreSqlDriver } from "@mikro-orm/postgresql";
-import { getDefaultBaseData } from "../../data/getDefaultBaseData";
-import { Save } from "../../models/save.model";
-import { User } from "../../models/user.model";
-import { joinOrCreateWorld } from "../../services/maproom/v2/joinOrCreateWorld";
-import { errorLog, logging } from "../../utils/logger";
-import { MapRoom } from "../../enums/MapRoom";
-import { BaseType } from "../../enums/Base";
+import { getDefaultBaseData } from "../../data/getDefaultBaseData.js";
+import { Save } from "../../models/save.model.js";
+import { User } from "../../models/user.model.js";
+import { joinOrCreateWorld } from "../../services/maproom/v2/joinOrCreateWorld.js";
+import { logger } from "../../utils/logger.js";
+import { MapRoom } from "../../enums/MapRoom.js";
+import { BaseType } from "../../enums/Base.js";
 
 export const seedWorldMapUsers = async (em: EntityManager<PostgreSqlDriver>) => {
   // Check if users already exist
   const existingUsers = await em.count(User, {});
   if (existingUsers > 0) {
-    errorLog(`
+    logger.error(`
       There are users already in the database. Run the following commands first before seeding:
       - npm run db:drop
       - npm run db:init
@@ -44,6 +44,6 @@ export const seedWorldMapUsers = async (em: EntityManager<PostgreSqlDriver>) => 
       joinOrCreateWorld(user, save, em),
       em.persistAndFlush(save),
     ]);
-    logging("Seeding completed successfully. 🌱");
+    logger.info("Seeding completed successfully. 🌱");
   }
 };

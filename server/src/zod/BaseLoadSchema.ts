@@ -1,5 +1,5 @@
 import z from "zod";
-import { AttackData } from "./AttackSchema";
+import { AttackData } from "./AttackSchema.js";
 
 export const BaseLoadSchema = z.object({
   /**

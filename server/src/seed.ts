@@ -1,7 +1,7 @@
 import { MikroORM } from "@mikro-orm/core";
-import ormConfig from "./mikro-orm.config";
-import { seedWorldMapUsers } from "./database/seeds/seedWorldMapUsers";
-import { errorLog } from "./utils/logger";
+import ormConfig from "./mikro-orm.config.js";
+import { seedWorldMapUsers } from "./database/seeds/seedWorldMapUsers.js";
+import { logger } from "./utils/logger.js";
 
 /**
  * Seed the database with dummy users.
@@ -22,7 +22,7 @@ import { errorLog } from "./utils/logger";
 
     await orm.close(true);
   } catch (err) {
-    errorLog(err);
+    logger.error(err);
     process.exit(1);
   }
 })();

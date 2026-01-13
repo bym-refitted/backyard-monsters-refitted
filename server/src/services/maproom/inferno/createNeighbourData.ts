@@ -1,5 +1,5 @@
-import { User } from "../../../models/user.model";
-import { Save } from "../../../models/save.model";
+import { User } from "../../../models/user.model.js";
+import { Save } from "../../../models/save.model.js";
 
 export interface NeighbourData {
   userid: number;

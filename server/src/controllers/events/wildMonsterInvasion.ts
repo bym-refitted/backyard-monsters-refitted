@@ -1,7 +1,7 @@
-import { Invasion } from "../../enums/Invasion";
-import { Status } from "../../enums/StatusCodes";
-import { setupInvasionEvent } from "../../services/events/wmi/setupInvasionEvent";
-import { KoaController } from "../../utils/KoaController";
+import { Invasion } from "../../enums/Invasion.js";
+import { Status } from "../../enums/StatusCodes.js";
+import { setupInvasionEvent } from "../../services/events/wmi/setupInvasionEvent.js";
+import { KoaController } from "../../utils/KoaController.js";
 
 export const wildMonsterInvasion: KoaController = async (ctx) => {
   const { type } = ctx.query;

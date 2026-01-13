@@ -1,9 +1,9 @@
 import { Loaded } from "@mikro-orm/core";
-import { WorldMapCell } from "../../../models/worldmapcell.model";
+import { WorldMapCell } from "../../../models/worldmapcell.model.js";
 import { Context } from "koa";
-import { Terrain } from "../../../enums/MapRoom";
-import { userCell } from "../../../controllers/maproom/v2/cells/userCell";
-import { wildMonsterCell } from "../../../controllers/maproom/v2/cells/wildMonsterCell";
+import { Terrain } from "../../../enums/MapRoom.js";
+import { userCell } from "../../../controllers/maproom/v2/cells/userCell.js";
+import { wildMonsterCell } from "../../../controllers/maproom/v2/cells/wildMonsterCell.js";
 
 /**
  * Constructs the necessary data object of a cell on the world map.

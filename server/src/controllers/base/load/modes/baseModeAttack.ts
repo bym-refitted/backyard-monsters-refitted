@@ -1,19 +1,19 @@
-import { BaseMode, BaseType } from "../../../../enums/Base";
-import { MapRoomCell } from "../../../../enums/MapRoom";
-import { World } from "../../../../models/world.model";
-import { WorldMapCell } from "../../../../models/worldmapcell.model";
-import { postgres } from "../../../../server";
-import { damageProtection } from "../../../../services/maproom/v2/damageProtection";
-import { Save } from "../../../../models/save.model";
-import { User } from "../../../../models/user.model";
-import { wildMonsterSave } from "../../../../services/maproom/v2/wildMonsters";
-import { getCurrentDateTime } from "../../../../utils/getCurrentDateTime";
-import { validateRange } from "../../../../services/maproom/v2/validateRange";
+import { BaseMode, BaseType } from "../../../../enums/Base.js";
+import { MapRoomCell } from "../../../../enums/MapRoom.js";
+import { World } from "../../../../models/world.model.js";
+import { WorldMapCell } from "../../../../models/worldmapcell.model.js";
+import { postgres } from "../../../../server.js";
+import { damageProtection } from "../../../../services/maproom/v2/damageProtection.js";
+import { Save } from "../../../../models/save.model.js";
+import { User } from "../../../../models/user.model.js";
+import { wildMonsterSave } from "../../../../services/maproom/v2/wildMonsters.js";
+import { getCurrentDateTime } from "../../../../utils/getCurrentDateTime.js";
+import { validateRange } from "../../../../services/maproom/v2/validateRange.js";
 import {
   generateNoise,
   getTerrainHeight,
-} from "../../../../services/maproom/v2/generateMap";
-import { createAttackLog } from "../../../../services/base/createAttackLog";
+} from "../../../../services/maproom/v2/generateMap.js";
+import { createAttackLog } from "../../../../services/base/createAttackLog.js";
 
 export interface AttackDetails {
   fbid: string;
