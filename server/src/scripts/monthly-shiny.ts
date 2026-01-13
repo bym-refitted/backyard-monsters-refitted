@@ -1,4 +1,3 @@
-import "dotenv/config";
 import mikroOrmConfig from "../mikro-orm.config";
 
 import { MikroORM } from "@mikro-orm/core";
