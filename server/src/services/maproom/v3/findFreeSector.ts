@@ -6,6 +6,7 @@ import { EnumYardType } from "../../../enums/EnumYardType";
 import { getHexNeighborOffsets } from "./getDefenderOutposts";
 import { generateCells } from "./generateCells";
 import { mapByCoordinates } from "./utils/mapByCoordinates";
+import { setTimeout } from "timers/promises";
 
 interface Cell {
   x: number | null;
@@ -64,7 +65,7 @@ const canOverride = (dbCell: WorldMapCell | null, genCell: GeneratedCell | undef
  */
 export const findFreeSector = async (world: World, em: EntityManager<PostgreSqlDriver>) => {
   let cell: Cell = { x: null, y: null, terrainHeight: null };
-  const maxAttempts = 10;
+  const maxAttempts = 100;
 
   // Generate procedural cells (cached, so this is efficient)
   const genCells = generateCells();
@@ -122,7 +123,7 @@ export const findFreeSector = async (world: World, em: EntityManager<PostgreSqlD
 
     // Only accept this position if all defender slots are overridable
     if (!allDefenderPositionsFree) {
-      await new Promise((resolve) => setTimeout(resolve, 200));
+      await setTimeout(200);
       continue;
     }
 

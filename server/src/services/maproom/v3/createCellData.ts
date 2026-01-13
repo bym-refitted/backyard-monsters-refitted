@@ -30,6 +30,9 @@ export const createCellData = async (
     case EnumYardType.OUTPOST:
       return tribeOutpostCell(cell, worldid);
 
+    case EnumYardType.BORDER:
+      return terrainCell({ x: cell.x, y: cell.y, i: cell.terrainHeight });
+
     default:
       return terrainCell({ x: cell.x, y: cell.y, i: cell.terrainHeight });
   }

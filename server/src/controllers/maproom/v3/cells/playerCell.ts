@@ -16,10 +16,7 @@ import { errorLog } from "../../../../utils/logger";
  * @returns Formatted player cell data
  */
 export const playerCell = async (ctx: Context, cell: WorldMapCell): Promise<CellData> => {
-  const cellSave = cell.save;
   const currentUser: User = ctx.authUser;
-  await postgres.em.populate(currentUser, ["save"]);
-
   const mine = currentUser.userid === cell.uid;
 
   const cellOwner = mine
