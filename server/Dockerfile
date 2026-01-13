@@ -1,44 +1,59 @@
 # ===============================
-# Build stage
+# Base image (shared)
 # ===============================
-FROM node:22.14.0-bookworm-slim AS builder
-
+FROM oven/bun:latest AS base
 WORKDIR /app
 
-# Copy package files
-COPY package*.json ./
+# ===============================
+# Dependencies stage (cacheable)
+# ===============================
+FROM base AS deps
 
-# Install ALL dependencies (including dev deps for building)
-RUN npm ci
+# Copy package definitions first
+COPY package.json bun.lock ./
 
-# Install PostgreSQL client for build/migration scripts
-RUN apt-get update && apt-get install -y postgresql-client && \
-    rm -rf /var/lib/apt/lists/* && \
-    apt-get clean
+# Install production dependencies only
+# You can add --frozen-lockfile for reproducible installs
+RUN bun install --production
 
-# Copy source code
+# ===============================
+# Build stage
+# ===============================
+FROM base AS builder
+
+# Copy everything for build
 COPY . .
 
-# Build the application
-RUN npm run build
+# Install all dependencies including devDependencies
+RUN bun install
+
+# If your build requires additional tools like Postgres client:
+RUN apt-get update && \
+    apt-get install -y postgresql-client && \
+    rm -rf /var/lib/apt/lists/*
+
+# Build your app
+RUN bun run build
 
 # ===============================
 # Production stage
 # ===============================
-FROM node:22.14.0-alpine AS production
+FROM base AS production
 
 WORKDIR /app
 
-# Copy package files
-COPY package*.json ./
+# Copy only production deps
+COPY --from=deps /app/node_modules /app/node_modules
 
-# Install ONLY production dependencies
-RUN npm ci --only=production && npm cache clean --force
-
-# Copy assets and built files from the builder stage
+# Copy build output
 COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/public ./public 
+COPY --from=builder /app/public ./public
+
+# If your app relies on other static assets
+# COPY --from=builder /app/static ./static
+
+ENV NODE_ENV=production
 
 EXPOSE 3001
 
-CMD ["npm", "start"]
+CMD ["bun", "run", "start"]
