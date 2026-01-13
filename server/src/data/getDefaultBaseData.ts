@@ -1,10 +1,10 @@
-import { devConfig } from "../config/DevSettings";
-import { User } from "../models/user.model";
-import { devSandbox } from "../dev/devSandbox";
-import { getCurrentDateTime } from "../utils/getCurrentDateTime";
-import { Reward } from "../enums/Rewards";
-import { BaseType } from "../enums/Base";
-import { infernoSandbox } from "../dev/infernoSandbox";
+import { devConfig } from "../config/DevSettings.js";
+import { User } from "../models/user.model.js";
+import { devSandbox } from "../dev/devSandbox.js";
+import { getCurrentDateTime } from "../utils/getCurrentDateTime.js";
+import { Reward } from "../enums/Rewards.js";
+import { BaseType } from "../enums/Base.js";
+import { infernoSandbox } from "../dev/infernoSandbox.js";
 
 /**
  * Generates the default base data object for a new save.

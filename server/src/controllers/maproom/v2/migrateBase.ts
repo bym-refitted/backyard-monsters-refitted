@@ -1,21 +1,21 @@
-import { KoaController } from "../../../utils/KoaController";
-import { User } from "../../../models/user.model";
-import { postgres } from "../../../server";
-import { WorldMapCell } from "../../../models/worldmapcell.model";
-import { Status } from "../../../enums/StatusCodes";
-import { BaseType } from "../../../enums/Base";
-import { getCurrentDateTime } from "../../../utils/getCurrentDateTime";
-import { errorLog } from "../../../utils/logger";
+import { KoaController } from "../../../utils/KoaController.js";
+import { User } from "../../../models/user.model.js";
+import { postgres } from "../../../server.js";
+import { WorldMapCell } from "../../../models/worldmapcell.model.js";
+import { Status } from "../../../enums/StatusCodes.js";
+import { BaseType } from "../../../enums/Base.js";
+import { getCurrentDateTime } from "../../../utils/getCurrentDateTime.js";
+import { logger } from "../../../utils/logger.js";
 import {
   Operation,
   updateResources,
-} from "../../../services/base/updateResources";
-import { joinOrCreateWorld } from "../../../services/maproom/v2/joinOrCreateWorld";
-import { leaveWorld } from "../../../services/maproom/v2/leaveWorld";
-import { MapRoomCell } from "../../../enums/MapRoom";
-import { relocateOutpostErr } from "../../../errors/errors";
-import { ClientSafeError } from "../../../middleware/clientSafeError";
-import { MigrateBaseSchema } from "../../../zod/MigrateBaseSchema";
+} from "../../../services/base/updateResources.js";
+import { joinOrCreateWorld } from "../../../services/maproom/v2/joinOrCreateWorld.js";
+import { leaveWorld } from "../../../services/maproom/v2/leaveWorld.js";
+import { MapRoomCell } from "../../../enums/MapRoom.js";
+import { relocateOutpostErr } from "../../../errors/errors.js";
+import { ClientSafeError } from "../../../middleware/clientSafeError.js";
+import { MigrateBaseSchema } from "../../../zod/MigrateBaseSchema.js";
 
 /**
  * Cooldown period for base migration.
@@ -140,6 +140,6 @@ export const migrateBase: KoaController = async (ctx) => {
 
     ctx.status = Status.BAD_REQUEST;
     ctx.body = { error: 1 };
-    errorLog("Error migrating user base:", error);
+    logger.error("Error migrating user base:", error);
   }
 };

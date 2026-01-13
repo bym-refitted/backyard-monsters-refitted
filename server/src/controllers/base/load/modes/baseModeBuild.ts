@@ -1,11 +1,11 @@
-import { Save } from "../../../../models/save.model";
-import { User } from "../../../../models/user.model";
-import { postgres } from "../../../../server";
-import { BaseMode } from "../../../../enums/Base";
-import { logging } from "../../../../utils/logger";
-import { balancedReward } from "../../../../services/base/balancedReward";
-import { resetInvasionWaves } from "../../../../services/events/wmi/invasionUtils";
-import { permissionErr } from "../../../../errors/errors";
+import { Save } from "../../../../models/save.model.js";
+import { User } from "../../../../models/user.model.js";
+import { postgres } from "../../../../server.js";
+import { BaseMode } from "../../../../enums/Base.js";
+import { logger } from "../../../../utils/logger.js";
+import { balancedReward } from "../../../../services/base/balancedReward.js";
+import { resetInvasionWaves } from "../../../../services/events/wmi/invasionUtils.js";
+import { permissionErr } from "../../../../errors/errors.js";
 
 /**
  * Retrieves the save data for the user based on the provided `baseid`.
@@ -22,7 +22,7 @@ export const baseModeBuild = async (user: User, baseid: string) => {
 
   // If no user save is found, setup MR1 & create a default save for the user.
   if (!userSave) {
-    logging("User save not found; creating a default save.");
+    logger.info("User save not found; creating a default save.");
     return await Save.createMainSave(postgres.em, user);
   }
 

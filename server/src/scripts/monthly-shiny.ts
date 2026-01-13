@@ -1,8 +1,8 @@
-import mikroOrmConfig from "../mikro-orm.config";
+import mikroOrmConfig from "../mikro-orm.config.js";
 
 import { MikroORM } from "@mikro-orm/core";
-import { Save } from "../models/save.model";
-import { BaseType } from "../enums/Base";
+import { Save } from "../models/save.model.js";
+import { BaseType } from "../enums/Base.js";
 
 /**
  * This script is responsible for adding shiny to all main yard saves.

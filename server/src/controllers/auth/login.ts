@@ -1,20 +1,20 @@
 import bcrypt from "bcrypt";
 import JWT from "jsonwebtoken";
 
-import { User } from "../../models/user.model";
-import { postgres, redis } from "../../server";
-import { FilterFrontendKeys } from "../../utils/FrontendKey";
-import { KoaController } from "../../utils/KoaController";
+import { User } from "../../models/user.model.js";
+import { postgres, redis } from "../../server.js";
+import { FilterFrontendKeys } from "../../utils/FrontendKey.js";
+import { KoaController } from "../../utils/KoaController.js";
 import {
   emailPasswordErr,
   discordVerifyErr,
   userPermaBannedErr,
-} from "../../errors/errors";
-import { logging } from "../../utils/logger";
-import { BymJwtPayload, verifyJwtToken } from "../../middleware/auth";
-import { Status } from "../../enums/StatusCodes";
-import { UserLoginSchema } from "../../zod/AuthSchemas";
-import { Env } from "../../enums/Env";
+} from "../../errors/errors.js";
+import { logger } from "../../utils/logger.js";
+import { BymJwtPayload, verifyJwtToken } from "../../middleware/auth.js";
+import { Status } from "../../enums/StatusCodes.js";
+import { UserLoginSchema } from "../../zod/AuthSchemas.js";
+import { Env } from "../../enums/Env.js";
 import type { StringValue } from "ms";
 
 /**
@@ -110,7 +110,7 @@ export const login: KoaController = async (ctx) => {
   await postgres.em.persistAndFlush(user);
 
   const filteredUser = FilterFrontendKeys(user);
-  logging(
+  logger.info(
     `User ${filteredUser.username} successful login | ID: ${filteredUser.userid} | Email: ${filteredUser.email} | IP Address: ${ctx.ip}`
   );
 

@@ -1,5 +1,5 @@
-import { Status } from "../enums/StatusCodes";
-import { KoaController } from "../utils/KoaController";
+import { Status } from "../enums/StatusCodes.js";
+import { KoaController } from "../utils/KoaController.js";
 
 /**
  * Controller to handle the retrieval of supported languages.

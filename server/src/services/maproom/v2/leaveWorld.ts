@@ -1,8 +1,8 @@
-import { BaseType } from "../../../enums/Base";
-import { Save } from "../../../models/save.model";
-import { User } from "../../../models/user.model";
-import { WorldMapCell } from "../../../models/worldmapcell.model";
-import { postgres } from "../../../server";
+import { BaseType } from "../../../enums/Base.js";
+import { Save } from "../../../models/save.model.js";
+import { User } from "../../../models/user.model.js";
+import { WorldMapCell } from "../../../models/worldmapcell.model.js";
+import { postgres } from "../../../server.js";
 
 export const leaveWorld = async (user: User, save: Save) => {
   if (!save.worldid) return;

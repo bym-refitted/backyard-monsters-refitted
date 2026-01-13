@@ -1,8 +1,8 @@
-import { WorldMapCell } from "../../../../models/worldmapcell.model";
-import { Tribes } from "../../../../enums/Tribes";
-import { calculateTribeLevel } from "../../../../services/maproom/v2/calculateTribeLevel";
-import { MapRoomCell } from "../../../../enums/MapRoom";
-import { generateBaseId } from "../../../../utils/generateBaseId";
+import { WorldMapCell } from "../../../../models/worldmapcell.model.js";
+import { Tribes } from "../../../../enums/Tribes.js";
+import { calculateTribeLevel } from "../../../../services/maproom/v2/calculateTribeLevel.js";
+import { MapRoomCell } from "../../../../enums/MapRoom.js";
+import { generateBaseId } from "../../../../utils/generateBaseId.js";
 
 export const wildMonsterCell = async (cell: WorldMapCell, worldId: string) => {
   const [cellX, cellY] = [cell.x, cell.y];
