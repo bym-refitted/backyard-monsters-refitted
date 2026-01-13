@@ -2,6 +2,7 @@ import "dotenv/config";
 import bcrypt from "bcrypt";
 import ormConfig from "../../mikro-orm.config";
 
+import { v4 as uuidv4 } from "uuid";
 import { MikroORM } from "@mikro-orm/core";
 import { errorLog, logging } from "../../utils/logger";
 import { getDefaultBaseData } from "../../data/getDefaultBaseData";
@@ -33,15 +34,18 @@ import { MapRoom3 } from "../../enums/MapRoom";
 
     logging(`Seeding Map Room 3 with ${MapRoom3.MAX_PLAYERS} users`);
 
-    const users = Array.from({ length: MapRoom3.MAX_PLAYERS }, (_, i) => ({
-      username: `mr3user${i + 1}`,
-      email: `mr3user${i + 1}@test.com`,
-      password: "Dev12345!",
-    }));
+    const users = Array.from({ length: MapRoom3.MAX_PLAYERS }, () => {
+      const uniqueId = uuidv4().replace(/-/g, "").slice(0, 12);
+
+      return {
+        username: uniqueId,
+        email: `${uniqueId}@test.com`,
+        password: "Dev12345!",
+      };
+    });
 
     // Insert users and their saves into the database
-    for (let i = 0; i < users.length; i++) {
-      const userData = users[i];
+    for (const [_, userData] of users.entries()) {
       const hashedPassword = await bcrypt.hash(userData.password, 10);
       const user = em.create(User, { ...userData, password: hashedPassword });
       await em.persistAndFlush(user);
