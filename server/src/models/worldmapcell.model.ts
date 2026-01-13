@@ -6,9 +6,8 @@ import {
   PrimaryKey,
   Property,
 } from "@mikro-orm/core";
-import { FrontendKey } from "../utils/FrontendKey";
-import { World } from "./world.model";
-import { Save } from "./save.model";
+import { FrontendKey } from "../utils/FrontendKey.js";
+import { World } from "./world.model.js";
 
 // Composite index on world_id, x, and y
 @Index({ properties: ["world_id", "x", "y"] })
@@ -59,6 +58,11 @@ export class WorldMapCell {
   @ManyToOne(() => World)
   world!: World;
 
-  @OneToOne({ mappedBy: "cell", nullable: true, entity: () => Save })
-  save: Save;
+  /**
+   * Circular dependency between Save and WorldMapCell requires string-based entity reference
+   * and any type to avoid ES module initialization errors with emitDecoratorMetadata.
+   * Using @mikro-orm/reflection would solve this but requires MikroORM v6+ upgrade.
+   */
+  @OneToOne({ mappedBy: "cell", nullable: true, entity: "Save" })
+  save: any;
 }

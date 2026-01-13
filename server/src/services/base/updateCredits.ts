@@ -1,8 +1,8 @@
-import { Save } from "../../models/save.model";
-import { errorLog } from "../../utils/logger";
-import { StoreItem, storeItems } from "../../data/store/storeItems";
-import { purchaseKeys } from "../../data/store/purchaseKeys";
-import { User } from "../../models/user.model";
+import { Save } from "../../models/save.model.js";
+import { logger } from "../../utils/logger.js";
+import { StoreItem, storeItems } from "../../data/store/storeItems.js";
+import { purchaseKeys } from "../../data/store/purchaseKeys.js";
+import { User } from "../../models/user.model.js";
 import { Context } from "koa";
 
 interface Mushrooms {
@@ -21,7 +21,7 @@ export const updateCredits = (ctx: Context, save: Save, item: string, quantity: 
   const userSave = user.save;
 
   if (quantity <= 0) {
-    errorLog(`Invalid purchase quantity! Item: ${item}, quantity: ${quantity}`);
+    logger.error("Invalid purchase quantity!", { item, quantity });
     return;
   }
 
@@ -41,8 +41,8 @@ export const updateCredits = (ctx: Context, save: Save, item: string, quantity: 
   // Handle store purchases
   const storeItem: StoreItem = storeItems[item];
   
-  if (!storeItem?.c) 
-    errorLog("Not a store item! Add to non-store items list", item);
+  if (!storeItem?.c)
+    logger.error("Not a store item! Add to non-store items list", { item });
   
   let itemCost: number = storeItem.c[0];
 

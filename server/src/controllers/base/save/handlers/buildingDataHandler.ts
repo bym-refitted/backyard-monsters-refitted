@@ -1,6 +1,6 @@
-import { SaveKeys } from "../../../../enums/SaveKeys";
-import { permissionErr } from "../../../../errors/errors";
-import { Save } from "../../../../models/save.model";
+import { SaveKeys } from "../../../../enums/SaveKeys.js";
+import { permissionErr } from "../../../../errors/errors.js";
+import { Save } from "../../../../models/save.model.js";
 
 enum Building {
   TRAP = 24,

@@ -1,5 +1,5 @@
 import z from "zod";
-import { BaseType } from "../enums/Base";
+import { BaseType } from "../enums/Base.js";
 
 /**
  * Request schema for migrate base.

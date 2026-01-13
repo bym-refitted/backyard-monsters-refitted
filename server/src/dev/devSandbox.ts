@@ -1,6 +1,6 @@
-import { Reward } from "../enums/Rewards";
-import { User } from "../models/user.model";
-import { getCurrentDateTime } from "../utils/getCurrentDateTime";
+import { Reward } from "../enums/Rewards.js";
+import { User } from "../models/user.model.js";
+import { getCurrentDateTime } from "../utils/getCurrentDateTime.js";
 
 export const devSandbox = (user?: User) => {
   return {

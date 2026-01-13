@@ -1,6 +1,6 @@
-import { User } from "../../../models/user.model";
-import { Status } from "../../../enums/StatusCodes";
-import { KoaController } from "../../../utils/KoaController";
+import { User } from "../../../models/user.model.js";
+import { Status } from "../../../enums/StatusCodes.js";
+import { KoaController } from "../../../utils/KoaController.js";
 
 export const getMapRoomCells: KoaController = async (ctx) => {
   const user : User = ctx.authUser;

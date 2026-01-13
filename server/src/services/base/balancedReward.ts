@@ -1,7 +1,7 @@
-import { KorathReward, Reward } from "../../enums/Rewards";
-import { Save } from "../../models/save.model";
-import { extractTownHall, TownHall } from "../../utils/extractTownHall";
-import { parseChampionData } from "../../utils/parseChampionData";
+import { KorathReward, Reward } from "../../enums/Rewards.js";
+import { Save } from "../../models/save.model.js";
+import { extractTownHall, TownHall } from "../../utils/extractTownHall.js";
+import { parseChampionData } from "../../utils/parseChampionData.js";
 
 /**
  * Adds rewards to the user's save data based on their Town Hall level.

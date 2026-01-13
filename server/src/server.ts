@@ -4,18 +4,19 @@ import Koa, { Context, Next } from "koa";
 import Router from "@koa/router";
 import bodyParser from "koa-bodyparser";
 import serve from "koa-static";
-import ormConfig from "./mikro-orm.config";
-import router from "./app.routes";
+import ormConfig from "./mikro-orm.config.js";
+import router from "./app.routes.js";
 
 import { createClient } from "redis";
 import { MikroORM, RequestContext } from "@mikro-orm/core";
 import { EntityManager, PostgreSqlDriver } from "@mikro-orm/postgresql";
-import { errorLog, logging } from "./utils/logger";
-import { ascii_node } from "./utils/ascii_art";
-import { ErrorInterceptor } from "./middleware/clientSafeError";
-import { processLanguagesFile } from "./middleware/processLanguageFile";
-import { logMissingAssets, morganLogging } from "./middleware/morganLogging";
-import { corsCacheControl } from "./middleware/corsCacheControlSetup";
+import { logger } from "./utils/logger.js";
+import { ascii_node } from "./utils/ascii_art.js";
+import { ErrorInterceptor } from "./middleware/clientSafeError.js";
+import { processLanguagesFile } from "./middleware/processLanguageFile.js";
+import { logMissingAssets, morganLogging } from "./middleware/morganLogging.js";
+import { corsCacheControl } from "./middleware/corsCacheControlSetup.js";
+import { Env } from "./enums/Env.js";
 
 export const app = new Koa();
 app.proxy = true;
@@ -34,8 +35,8 @@ export const redis = createClient({
   url: process.env.REDIS_URL || "redis://localhost:6379",
 });
 
-redis.on("connect", () => logging("Connected to Redis client."));
-redis.on("error", (err) => errorLog("Redis client error:", err));
+redis.on("connect", () => logger.info("Connected to Redis client."));
+redis.on("error", (err) => logger.error("Redis client error:", err));
 
 // CORS & Cache Control
 app.use(corsCacheControl);
@@ -57,14 +58,17 @@ api.get("/", (ctx: Context) => (ctx.body = {}));
       formLimit: "50mb",
     })
   );
-
+  
   app.use((_, next: Next) =>
     RequestContext.createAsync(postgres.orm.em, next)
   );
 
   // Logs
   app.use(logMissingAssets);
-  app.use(morganLogging);
+  
+  if (process.env.ENV !== Env.LOCAL) {
+    app.use(morganLogging);
+  }
 
   app.use(processLanguagesFile);
 
@@ -72,7 +76,7 @@ api.get("/", (ctx: Context) => (ctx.body = {}));
   app.use(serve("public/"));
 
   process.on("unhandledRejection", (reason, promise) => {
-    errorLog(`Unhandled Rejection at: ${promise} reason: ${reason}`);
+    logger.error(`Unhandled Rejection at: ${promise} reason: ${reason}`);
   });
 
   app.use(ErrorInterceptor);
@@ -82,8 +86,9 @@ api.get("/", (ctx: Context) => (ctx.body = {}));
   app.use(router.allowedMethods());
 
   app.listen(PORT, () => {
-    logging(`
-    ${ascii_node} Server running on: ${BASE_URL}:${PORT}
+    console.log(`
+${ascii_node}
+Server running on: ${BASE_URL}:${PORT}
     `);
   });
-})().catch((e) => errorLog(e));
+})().catch((e) => logger.error(e));

@@ -1,6 +1,6 @@
 import { Context, Next } from "koa";
-import { getApiVersion } from "../server";
-import { Status } from "../enums/StatusCodes";
+import { getApiVersion } from "../server.js";
+import { Status } from "../enums/StatusCodes.js";
 
 /**
  * Middleware to enforce API versioning.

@@ -1,5 +1,5 @@
-import { Status } from "../enums/StatusCodes";
-import { ClientSafeError } from "../middleware/clientSafeError";
+import { Status } from "../enums/StatusCodes.js";
+import { ClientSafeError } from "../middleware/clientSafeError.js";
 
 /**
  * Creates a new instance of `ClientSafeError` with the specified properties.

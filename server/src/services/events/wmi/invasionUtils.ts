@@ -1,6 +1,6 @@
-import { Invasion } from "../../../enums/Invasion";
-import { getActiveInvasion } from "./getActiveInvasion";
-import { setupInvasionEvent } from "./setupInvasionEvent";
+import { Invasion } from "../../../enums/Invasion.js";
+import { getActiveInvasion } from "./getActiveInvasion.js";
+import { setupInvasionEvent } from "./setupInvasionEvent.js";
 
 export interface Stats {
   other?: {

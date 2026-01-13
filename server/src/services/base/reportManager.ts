@@ -1,6 +1,6 @@
-import { Report } from "../../models/report.model";
-import { User } from "../../models/user.model";
-import { postgres } from "../../server";
+import { Report } from "../../models/report.model.js";
+import { User } from "../../models/user.model.js";
+import { postgres } from "../../server.js";
 
 type ReportEntry = {
   message: string;
