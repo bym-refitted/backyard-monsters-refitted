@@ -4,7 +4,7 @@ module.exports = {
       name: "bymr-server",
       script: "./dist/server.js",
       exec_mode: "fork",
-      node_args: "--env-file=.env",
+      interpreter: "bun",
       max_memory_restart: "1G",
       env: {
         NODE_ENV: "production",
