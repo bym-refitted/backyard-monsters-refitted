@@ -2,6 +2,7 @@ import "dotenv/config";
 import bcrypt from "bcrypt";
 import ormConfig from "../../mikro-orm.config";
 
+import { v4 as uuidv4 } from "uuid";
 import { MikroORM } from "@mikro-orm/core";
 import { errorLog, logging } from "../../utils/logger";
 import { getDefaultBaseData } from "../../data/getDefaultBaseData";
@@ -32,14 +33,18 @@ import { joinOrCreateWorld } from "../../services/maproom/v2/joinOrCreateWorld";
 
     logging(`Seeding Map Room 2 with ${MapRoom2.MAX_PLAYERS} users`);
 
-    const users = Array.from({ length: MapRoom2.MAX_PLAYERS }, (_, i) => ({
-      username: `user${i + 1}`,
-      email: `user${i + 1}@test.com`,
-      password: "Dev12345!",
-    }));
+    const users = Array.from({ length: MapRoom2.MAX_PLAYERS }, () => {
+      const uniqueId = uuidv4().replace(/-/g, "").slice(0, 12);
+
+      return {
+        username: uniqueId,
+        email: `${uniqueId}@test.com`,
+        password: "Dev12345!",
+      };
+    });
 
     // Insert users and their saves into the database
-    for (const userData of users) {
+    for (const [_, userData] of users.entries()) {
       const hashedPassword = await bcrypt.hash(userData.password, 10);
       const user = em.create(User, { ...userData, password: hashedPassword });
       await em.persistAndFlush(user);
@@ -49,13 +54,14 @@ import { joinOrCreateWorld } from "../../services/maproom/v2/joinOrCreateWorld";
       const save = em.create(Save, { ...saveData, saveuserid: user.userid });
       user.save = save;
 
+      // Persist save first to generate baseid
+      await em.persistAndFlush(save);
+
       // Join user to a world and assign them a cell
-      await Promise.all([
-        joinOrCreateWorld(user, save, em),
-        em.persistAndFlush(save),
-      ]);
-      logging("Seeding completed successfully. 🌱");
+      await joinOrCreateWorld(user, save, em);
     }
+
+    logging(`Seeding completed successfully! 🌱`);
 
     await orm.close(true);
   } catch (err) {
