@@ -59,6 +59,17 @@ export const getMapRoomCells: KoaController = async (ctx) => {
       allCellsByCoord.set(key, { x: dbCell.x, y: dbCell.y, t: dbCell.base_type });
     }
 
+    const defenderPositions = new Set<string>();
+
+    for (const [_, dbCell] of dbCellsByCoord) {
+      if (dbCell.base_type === EnumYardType.PLAYER) {
+        const offsets = getHexNeighborOffsets(dbCell.x, dbCell.y);
+        for (const [dx, dy] of offsets) {
+          defenderPositions.add(`${dbCell.x + dx},${dbCell.y + dy}`);
+        }
+      }
+    }
+
     const cellsToReturn = new Map<string, CellData>();
 
     const fetchOrGenerateCell = async (x: number, y: number) => {
@@ -73,33 +84,27 @@ export const getMapRoomCells: KoaController = async (ctx) => {
       if (dbCell) {
         cell = dbCell;
       } else {
-        // Check if this position should be a defender around a player yard
-        // Must check BEFORE using genCell to override tribe outposts
-        const offsets = getHexNeighborOffsets(x, y);
-        let isDefender = false;
+        const isBorder = x < 0 || x >= MapRoom3.WIDTH || y < 0 || y >= MapRoom3.HEIGHT;
 
-        for (const [dx, dy] of offsets) {
-          const neighborKey = `${x + dx},${y + dy}`;
-
-          // check merged map (includes both db and generated cells)
-          const neighborInMap = allCellsByCoord.get(neighborKey);
-          if (neighborInMap?.t === EnumYardType.PLAYER) {
-            isDefender = true;
-            break;
-          }
-        }
-
-        if (isDefender) {
-          // Create as defender (overrides tribe outposts in genCell)
-          cell = new WorldMapCell(undefined, x, y, 0);
-          cell.base_type = EnumYardType.FORTIFICATION;
-        } else if (genCell) {
-          // Use generated cell (stronghold/resource/outpost/terrain)
-          cell = new WorldMapCell(undefined, genCell.x, genCell.y, genCell.i);
-          cell.base_type = genCell.t || 0;
+        if (isBorder) {
+          cell = new WorldMapCell(undefined, x, y, 100);
+          cell.base_type = EnumYardType.BORDER;
         } else {
-          // Empty terrain
-          cell = new WorldMapCell(undefined, x, y, 0);
+          // Check if this position is a pre-computed defender position
+          const isDefender = defenderPositions.has(key);
+
+          if (isDefender) {
+            // Create as defender (overrides tribe outposts in genCell)
+            cell = new WorldMapCell(undefined, x, y, 0);
+            cell.base_type = EnumYardType.FORTIFICATION;
+          } else if (genCell) {
+            // Use generated cell (stronghold/resource/outpost/terrain)
+            cell = new WorldMapCell(undefined, genCell.x, genCell.y, genCell.i);
+            cell.base_type = genCell.t || 0;
+          } else {
+            // Empty terrain
+            cell = new WorldMapCell(undefined, x, y, 0);
+          }
         }
       }
 
