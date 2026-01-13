@@ -1,5 +1,4 @@
 import "reflect-metadata";
-import "dotenv/config";
 
 import Koa, { Context, Next } from "koa";
 import Router from "@koa/router";

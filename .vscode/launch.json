@@ -13,6 +13,7 @@
         "request": "launch",
         "name": "Launch Debug",
         "runtimeArgs": [
+            "--env-file=${workspaceFolder}/server/.env",
             "-r",
             "ts-node/register"
         ],
@@ -20,7 +21,7 @@
             "${workspaceFolder}/server/src/server.ts"
         ],
         "localRoot": "${workspaceFolder}/server",
-        
+
     }
     ]
 }
