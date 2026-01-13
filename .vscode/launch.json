@@ -1,7 +1,7 @@
 {
     "configurations": [
     {
-        "name": "Attach to Nodemon",
+        "name": "Attach to Node",
         "port": 9229,
         "request": "attach",
         "type": "node",
