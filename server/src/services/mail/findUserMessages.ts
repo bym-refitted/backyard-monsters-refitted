@@ -1,6 +1,6 @@
-import { Message } from "../../models/message.model";
-import { User } from "../../models/user.model";
-import { postgres } from "../../server";
+import { Message } from "../../models/message.model.js";
+import { User } from "../../models/user.model.js";
+import { postgres } from "../../server.js";
 
 type MessageFilter = { threadid: number };
 

@@ -1,16 +1,16 @@
-import { molochTribes } from "../../../../data/tribes/inferno/molochTribes";
-import { BaseType } from "../../../../enums/Base";
-import { Save } from "../../../../models/save.model";
-import { User } from "../../../../models/user.model";
-import { postgres } from "../../../../server";
-import { createAttackLog } from "../../../../services/base/createAttackLog";
-import { getCurrentDateTime } from "../../../../utils/getCurrentDateTime";
-import { AttackDetails } from "./baseModeAttack";
-import { addAttackerAsNeighbour } from "../../../../services/maproom/inferno/addAttackerAsNeighbour";
+import { molochTribes } from "../../../../data/tribes/inferno/molochTribes.js";
+import { BaseType } from "../../../../enums/Base.js";
+import { Save } from "../../../../models/save.model.js";
+import { User } from "../../../../models/user.model.js";
+import { postgres } from "../../../../server.js";
+import { createAttackLog } from "../../../../services/base/createAttackLog.js";
+import { getCurrentDateTime } from "../../../../utils/getCurrentDateTime.js";
+import { AttackDetails } from "./baseModeAttack.js";
+import { addAttackerAsNeighbour } from "../../../../services/maproom/inferno/addAttackerAsNeighbour.js";
 import {
   InfernoMaproom,
   TribeData,
-} from "../../../../models/infernomaproom.model";
+} from "../../../../models/infernomaproom.model.js";
 
 /**
  * Handles Inferno mode attacks for both real players and AI tribes

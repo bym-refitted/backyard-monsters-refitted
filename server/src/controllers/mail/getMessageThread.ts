@@ -1,13 +1,13 @@
-import { Status } from "../../enums/StatusCodes";
-import { mailboxErr } from "../../errors/errors";
-import { User } from "../../models/user.model";
-import { KoaController } from "../../utils/KoaController";
-import { postgres } from "../../server";
-import { GetMessageSchema } from "./zod/GetMessageSchema";
-import { countUnreadMessage } from "../../services/mail/countUnreadMessage";
-import { findUserMessages } from "../../services/mail/findUserMessages";
-import { Message } from "../../models/message.model";
-import { FilterFrontendKeys } from "../../utils/FrontendKey";
+import { Status } from "../../enums/StatusCodes.js";
+import { mailboxErr } from "../../errors/errors.js";
+import { User } from "../../models/user.model.js";
+import { KoaController } from "../../utils/KoaController.js";
+import { postgres } from "../../server.js";
+import { GetMessageSchema } from "./zod/GetMessageSchema.js";
+import { countUnreadMessage } from "../../services/mail/countUnreadMessage.js";
+import { findUserMessages } from "../../services/mail/findUserMessages.js";
+import { Message } from "../../models/message.model.js";
+import { FilterFrontendKeys } from "../../utils/FrontendKey.js";
 
 /**
  * Controller to get multiple messages with single threadid.

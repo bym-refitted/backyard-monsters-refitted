@@ -1,7 +1,7 @@
 {
     "configurations": [
     {
-        "name": "Attach to Nodemon",
+        "name": "Attach to Node",
         "port": 9229,
         "request": "attach",
         "type": "node",
@@ -13,6 +13,7 @@
         "request": "launch",
         "name": "Launch Debug",
         "runtimeArgs": [
+            "--env-file=${workspaceFolder}/server/.env",
             "-r",
             "ts-node/register"
         ],
@@ -20,7 +21,7 @@
             "${workspaceFolder}/server/src/server.ts"
         ],
         "localRoot": "${workspaceFolder}/server",
-        
+
     }
     ]
 }

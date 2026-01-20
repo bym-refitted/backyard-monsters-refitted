@@ -1,20 +1,20 @@
 import z from "zod";
 
-import { getFlags } from "../../../data/flags";
-import { BaseMode, BaseType } from "../../../enums/Base";
-import { Status } from "../../../enums/StatusCodes";
-import { saveFailureErr } from "../../../errors/errors";
-import { Save } from "../../../models/save.model";
-import { User } from "../../../models/user.model";
-import { postgres } from "../../../server";
-import { FilterFrontendKeys } from "../../../utils/FrontendKey";
-import { getCurrentDateTime } from "../../../utils/getCurrentDateTime";
-import { KoaController } from "../../../utils/KoaController";
-import { baseModeBuild } from "../load/modes/baseModeBuild";
-import { baseModeView } from "../load/modes/baseModeView";
-import { infernoModeView } from "../load/modes/infernoModeView";
-import { errorLog } from "../../../utils/logger";
-import { mapUserSaveData } from "../mapUserSaveData";
+import { getFlags } from "../../../data/flags.js";
+import { BaseMode, BaseType } from "../../../enums/Base.js";
+import { Status } from "../../../enums/StatusCodes.js";
+import { saveFailureErr } from "../../../errors/errors.js";
+import { Save } from "../../../models/save.model.js";
+import { User } from "../../../models/user.model.js";
+import { postgres } from "../../../server.js";
+import { FilterFrontendKeys } from "../../../utils/FrontendKey.js";
+import { getCurrentDateTime } from "../../../utils/getCurrentDateTime.js";
+import { KoaController } from "../../../utils/KoaController.js";
+import { baseModeBuild } from "../load/modes/baseModeBuild.js";
+import { baseModeView } from "../load/modes/baseModeView.js";
+import { infernoModeView } from "../load/modes/infernoModeView.js";
+import { logger } from "../../../utils/logger.js";
+import { mapUserSaveData } from "../mapUserSaveData.js";
 
 const UpdateSavedSchema = z.object({
   type: z.string(),
@@ -84,7 +84,7 @@ export const updateSaved: KoaController = async (ctx) => {
     ctx.status = Status.OK;
     ctx.body = responseBody;
   } catch (err) {
-    errorLog(`Failed to update save for user: ${user.username}`, err);
+    logger.error(`Failed to update save for user: ${user.username}`, err);
 
     ctx.status = Status.INTERNAL_SERVER_ERROR;
     ctx.body = { error: `Failed to update save for user: ${user.username}` };

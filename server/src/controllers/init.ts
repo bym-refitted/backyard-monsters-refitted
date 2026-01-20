@@ -1,8 +1,8 @@
 import z from "zod";
-import { devConfig } from "../config/DevSettings";
-import { Status } from "../enums/StatusCodes";
-import { KoaController } from "../utils/KoaController";
-import { getApiVersion } from "../server";
+import { devConfig } from "../config/DevSettings.js";
+import { Status } from "../enums/StatusCodes.js";
+import { KoaController } from "../utils/KoaController.js";
+import { getApiVersion } from "../server.js";
 
 export const InitSchema = z.object({
   apiVersion: z.string().optional(),

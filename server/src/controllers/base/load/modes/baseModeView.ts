@@ -1,7 +1,7 @@
-import { Save } from "../../../../models/save.model";
-import { postgres } from "../../../../server";
-import { wildMonsterSave } from "../../../../services/maproom/v2/wildMonsters";
-import { getCurrentDateTime } from "../../../../utils/getCurrentDateTime";
+import { Save } from "../../../../models/save.model.js";
+import { postgres } from "../../../../server.js";
+import { wildMonsterSave } from "../../../../services/maproom/v2/wildMonsters.js";
+import { getCurrentDateTime } from "../../../../utils/getCurrentDateTime.js";
 
 /**
  * The expiration time for a wild monster save in seconds.

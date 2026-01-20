@@ -1,27 +1,27 @@
-import { devConfig } from "../../../config/DevSettings";
-import { Save } from "../../../models/save.model";
-import { postgres } from "../../../server";
-import { KoaController } from "../../../utils/KoaController";
-import { storeItems } from "../../../data/store/storeItems";
-import { User } from "../../../models/user.model";
-import { FilterFrontendKeys } from "../../../utils/FrontendKey";
-import { getFlags } from "../../../data/flags";
-import { getCurrentDateTime } from "../../../utils/getCurrentDateTime";
-import { BaseMode, BaseType } from "../../../enums/Base";
-import { WORLD_SIZE } from "../../../config/WorldGenSettings";
-import { Status } from "../../../enums/StatusCodes";
-import { baseModeView } from "./modes/baseModeView";
-import { baseModeBuild } from "./modes/baseModeBuild";
-import { errorLog } from "../../../utils/logger";
-import { baseModeAttack } from "./modes/baseModeAttack";
-import { mapUserSaveData } from "../mapUserSaveData";
-import { infernoModeDescent } from "./modes/infernoModeDescent";
-import { infernoModeView } from "./modes/infernoModeView";
-import { infernoModeAttack } from "./modes/infernoModeAttack";
-import { infernoModeBuild } from "./modes/infernoModeBuild";
-import { validateAttack } from "../../../services/maproom/validateAttack";
-import { BaseLoadSchema } from "../../../zod/BaseLoadSchema";
-import { discordAgeErr } from "../../../errors/errors";
+import { devConfig } from "../../../config/DevSettings.js";
+import { Save } from "../../../models/save.model.js";
+import { postgres } from "../../../server.js";
+import { KoaController } from "../../../utils/KoaController.js";
+import { storeItems } from "../../../data/store/storeItems.js";
+import { User } from "../../../models/user.model.js";
+import { FilterFrontendKeys } from "../../../utils/FrontendKey.js";
+import { getFlags } from "../../../data/flags.js";
+import { getCurrentDateTime } from "../../../utils/getCurrentDateTime.js";
+import { BaseMode, BaseType } from "../../../enums/Base.js";
+import { WORLD_SIZE } from "../../../config/WorldGenSettings.js";
+import { Status } from "../../../enums/StatusCodes.js";
+import { baseModeView } from "./modes/baseModeView.js";
+import { baseModeBuild } from "./modes/baseModeBuild.js";
+import { logger } from "../../../utils/logger.js";
+import { baseModeAttack } from "./modes/baseModeAttack.js";
+import { mapUserSaveData } from "../mapUserSaveData.js";
+import { infernoModeDescent } from "./modes/infernoModeDescent.js";
+import { infernoModeView } from "./modes/infernoModeView.js";
+import { infernoModeAttack } from "./modes/infernoModeAttack.js";
+import { infernoModeBuild } from "./modes/infernoModeBuild.js";
+import { validateAttack } from "../../../services/maproom/validateAttack.js";
+import { BaseLoadSchema } from "../../../zod/BaseLoadSchema.js";
+import { discordAgeErr } from "../../../errors/errors.js";
 
 /**
  * Controller responsible for loading base modes based on the user's request.
@@ -121,6 +121,6 @@ export const baseLoad: KoaController = async (ctx) => {
   } catch (err) {
     ctx.status = Status.INTERNAL_SERVER_ERROR;
     ctx.body = { error: "The server failed to load this base." };
-    errorLog(`Failed to load base`, err);
+    logger.error(`Failed to load base`, err);
   }
 };

@@ -1,5 +1,5 @@
-import { Save } from '../../models/save.model';
-import { User } from '../../models/user.model';
+import { Save } from '../../models/save.model.js';
+import { User } from '../../models/user.model.js';
 
 let antiCheatModule: { validateSave: (user: User, save: Save) => Promise<void> } | null = null;
 

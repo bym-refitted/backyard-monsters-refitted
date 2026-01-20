@@ -3,7 +3,7 @@
     "skipLibCheck": true, // Skip type checking of all declaration files (*.d.ts).
     "module": "NodeNext",
     "moduleResolution": "nodenext",
-    "target": "ES2020",
+    "target": "ES2022",
     "sourceMap": true,
     "outDir": "dist",
     "forceConsistentCasingInFileNames": true,

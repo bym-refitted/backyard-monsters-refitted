@@ -1,7 +1,7 @@
 import { Context, Next } from "koa";
 import fs from "fs/promises";
-import { errorLog } from "../utils/logger";
-import { Status } from "../enums/StatusCodes";
+import { logger } from "../utils/logger.js";
+import { Status } from "../enums/StatusCodes.js";
 
 /**
  * Middleware to process language files based on the request path.
@@ -32,6 +32,6 @@ export const processLanguagesFile = async (ctx: Context, next: Next) => {
   } catch (error) {
     ctx.status = Status.INTERNAL_SERVER_ERROR;
     ctx.body = { error: "Error processing JSON data" };
-    errorLog(error);
+    logger.error(error);
   }
 };

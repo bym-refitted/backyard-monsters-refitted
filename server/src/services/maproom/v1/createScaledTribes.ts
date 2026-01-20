@@ -1,9 +1,9 @@
-import { TribeScale } from "../../../enums/Tribes";
-import { InfernoMaproom } from "../../../models/infernomaproom.model";
-import { Save } from "../../../models/save.model";
-import { User } from "../../../models/user.model";
-import { postgres } from "../../../server";
-import { getCurrentDateTime } from "../../../utils/getCurrentDateTime";
+import { TribeScale } from "../../../enums/Tribes.js";
+import { InfernoMaproom } from "../../../models/infernomaproom.model.js";
+import { Save } from "../../../models/save.model.js";
+import { User } from "../../../models/user.model.js";
+import { postgres } from "../../../server.js";
+import { getCurrentDateTime } from "../../../utils/getCurrentDateTime.js";
 
 export interface TribeDetails {
   minTribeId: number;

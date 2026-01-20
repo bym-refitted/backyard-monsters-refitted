@@ -1,10 +1,10 @@
 import { Loaded } from "@mikro-orm/core";
-import { MapRoom2 } from "../../../enums/MapRoom";
-import { Save } from "../../../models/save.model";
-import { User } from "../../../models/user.model";
-import { WorldMapCell } from "../../../models/worldmapcell.model";
-import { postgres } from "../../../server";
-import { logReport } from "../../base/reportManager";
+import { Save } from "../../../models/save.model.js";
+import { User } from "../../../models/user.model.js";
+import { WorldMapCell } from "../../../models/worldmapcell.model.js";
+import { postgres } from "../../../server.js";
+import { logReport } from "../../base/reportManager.js";
+import { MapRoom2 } from "../../../enums/MapRoom.js";
 
 /**
  * Validates if the target is within the attack range of the user's main base or any of their outposts.

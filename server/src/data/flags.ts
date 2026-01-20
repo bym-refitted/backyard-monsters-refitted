@@ -1,6 +1,6 @@
-import { devConfig } from "../config/DevSettings";
-import { getActiveInvasion } from "../services/events/wmi/getActiveInvasion";
-import { setupInvasionEvent } from "../services/events/wmi/setupInvasionEvent";
+import { devConfig } from "../config/DevSettings.js";
+import { getActiveInvasion } from "../services/events/wmi/getActiveInvasion.js";
+import { setupInvasionEvent } from "../services/events/wmi/setupInvasionEvent.js";
 
 /**
  * Gets the current invasion flags.

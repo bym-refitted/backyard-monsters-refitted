@@ -1,13 +1,13 @@
-import { postgres, redis } from "../server";
-import { User } from "../models/user.model";
+import { postgres, redis } from "../server.js";
+import { User } from "../models/user.model.js";
 import { Context, Next } from "koa";
 import {
   authFailureErr,
   discordAgeErr,
   tokenAuthFailureErr,
-} from "../errors/errors";
+} from "../errors/errors.js";
 import JWT, { JwtPayload } from "jsonwebtoken";
-import { Env } from "../enums/Env";
+import { Env } from "../enums/Env.js";
 
 /**
  * Middleware to enforce authentication for protected routes.

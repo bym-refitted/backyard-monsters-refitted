@@ -1,5 +1,5 @@
-import { devConfig } from "../../../config/DevSettings";
-import { Invasion } from "../../../enums/Invasion";
+import { devConfig } from "../../../config/DevSettings.js";
+import { Invasion } from "../../../enums/Invasion.js";
 
 /**
  * Determines which invasion type is currently active based on dev overrides or month scheduling.

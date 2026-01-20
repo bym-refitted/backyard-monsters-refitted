@@ -26,7 +26,7 @@ services:
     depends_on:
       db:
         condition: service_healthy
-    command: npm run db:init
+    command: bun run db:init
     restart: "no"
 
   # API server

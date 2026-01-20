@@ -1,14 +1,14 @@
 import alea from "alea";
 
 import { createNoise2D, NoiseFunction2D as Noise } from "simplex-noise";
-import { MapRoom2, Terrain } from "../../../enums/MapRoom";
+import { MapRoom2, Terrain } from "../../../enums/MapRoom.js";
 
 import {
   NOISE_SCALE,
   WORLD_SIZE,
   EDGE_TRANSITION_WIDTH,
   TERRAIN_SCALE,
-} from "../../../config/WorldGenSettings";
+} from "../../../config/WorldGenSettings.js";
 
 /**
  * Generates simplex noise based on a given seed.

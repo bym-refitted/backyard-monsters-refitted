@@ -1,15 +1,15 @@
 import { z } from "zod";
 
-import { KoaController } from "../../../utils/KoaController";
-import { User } from "../../../models/user.model";
-import { WorldMapCell } from "../../../models/worldmapcell.model";
-import { postgres } from "../../../server";
-import { devConfig } from "../../../config/DevSettings";
-import { Status } from "../../../enums/StatusCodes";
-import { createCellData } from "../../../services/maproom/v2/createCellData";
-import { Save } from "../../../models/save.model";
-import { generateNoise, getTerrainHeight } from "../../../services/maproom/v2/generateMap";
-import { MapRoomVersion } from "../../../enums/MapRoom";
+import { KoaController } from "../../../utils/KoaController.js";
+import { User } from "../../../models/user.model.js";
+import { WorldMapCell } from "../../../models/worldmapcell.model.js";
+import { postgres } from "../../../server.js";
+import { devConfig } from "../../../config/DevSettings.js";
+import { Status } from "../../../enums/StatusCodes.js";
+import { createCellData } from "../../../services/maproom/v2/createCellData.js";
+import { Save } from "../../../models/save.model.js";
+import { generateNoise, getTerrainHeight } from "../../../services/maproom/v2/generateMap.js";
+import { MapRoomVersion } from "../../../enums/MapRoom.js";
 
 /**
  * Schema for validating the request body when getting area data.

@@ -1,19 +1,19 @@
-import { KoaController } from "../../../utils/KoaController";
-import { Status } from "../../../enums/StatusCodes";
-import { User } from "../../../models/user.model";
-import { Save } from "../../../models/save.model";
-import { InfernoMaproom } from "../../../models/infernomaproom.model";
-import { postgres } from "../../../server";
-import { BaseType } from "../../../enums/Base";
-import { calculateBaseLevel } from "../../../services/base/calculateBaseLevel";
-import { damageProtection } from "../../../services/maproom/v2/damageProtection";
-import { errorLog } from "../../../utils/logger";
-import { AttackPermission } from "../../../enums/MapRoom";
-import { getCurrentDateTime } from "../../../utils/getCurrentDateTime";
+import { KoaController } from "../../../utils/KoaController.js";
+import { Status } from "../../../enums/StatusCodes.js";
+import { User } from "../../../models/user.model.js";
+import { Save } from "../../../models/save.model.js";
+import { InfernoMaproom } from "../../../models/infernomaproom.model.js";
+import { postgres } from "../../../server.js";
+import { BaseType } from "../../../enums/Base.js";
+import { calculateBaseLevel } from "../../../services/base/calculateBaseLevel.js";
+import { damageProtection } from "../../../services/maproom/v2/damageProtection.js";
+import { logger } from "../../../utils/logger.js";
+import { AttackPermission } from "../../../enums/MapRoom.js";
+import { getCurrentDateTime } from "../../../utils/getCurrentDateTime.js";
 import {
   NeighbourData,
   createNeighbourData,
-} from "../../../services/maproom/inferno/createNeighbourData";
+} from "../../../services/maproom/inferno/createNeighbourData.js";
 
 /**
  * Cache validity period for inferno neighbours.
@@ -92,7 +92,7 @@ export const getNeighbours: KoaController = async (ctx) => {
       bases: neighbours,
     };
   } catch (error) {
-    errorLog("Error fetching inferno neighbours:", error);
+    logger.error("Error fetching inferno neighbours:", error);
     ctx.status = Status.OK;
     ctx.body = {
       error: 0,

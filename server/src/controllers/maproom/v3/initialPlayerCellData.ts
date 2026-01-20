@@ -1,10 +1,10 @@
-import { User } from "../../../models/user.model";
-import { Status } from "../../../enums/StatusCodes";
-import { KoaController } from "../../../utils/KoaController";
-import { EnumYardType } from "../../../enums/EnumYardType";
-import { postgres } from "../../../server";
-import { WorldMapCell } from "../../../models/worldmapcell.model";
-import { createCellData } from "../../../services/maproom/v3/createCellData";
+import { User } from "../../../models/user.model.js";
+import { Status } from "../../../enums/StatusCodes.js";
+import { KoaController } from "../../../utils/KoaController.js";
+import { EnumYardType } from "../../../enums/EnumYardType.js";
+import { WorldMapCell } from "../../../models/worldmapcell.model.js";
+import { postgres } from "../../../server.js";
+import { createCellData } from "../../../services/maproom/v3/createCellData.js";
 
 /**
  * Returns the initial cell data for Map Room v3 when player opens the map.

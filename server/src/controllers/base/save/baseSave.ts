@@ -1,24 +1,24 @@
-import { FieldData, Save } from "../../../models/save.model";
-import { User } from "../../../models/user.model";
-import { postgres } from "../../../server";
-import { FilterFrontendKeys } from "../../../utils/FrontendKey";
-import { KoaController } from "../../../utils/KoaController";
-import { getCurrentDateTime } from "../../../utils/getCurrentDateTime";
-import { errorLog, logging } from "../../../utils/logger";
-import { Status } from "../../../enums/StatusCodes";
-import { SaveKeys } from "../../../enums/SaveKeys";
-import { BaseSaveSchema } from "../../../zod/BaseSaveSchema";
-import { resourcesHandler } from "./handlers/resourceHandler";
-import { purchaseHandler } from "./handlers/purchaseHandler";
-import { academyHandler } from "./handlers/academyHandler";
-import { mapUserSaveData } from "../mapUserSaveData";
-import { BaseType } from "../../../enums/Base";
-import { permissionErr, saveFailureErr } from "../../../errors/errors";
-import { attackLootHandler } from "./handlers/attackLootHandler";
-import { monsterUpdateHandler } from "./handlers/monsterUpdateHandler";
-import { validateSave } from "../../../scripts/anticheat/anticheat";
-import { updateResources } from "../../../services/base/updateResources";
-import { buildingDataHandler } from "./handlers/buildingDataHandler";
+import { FieldData, Save } from "../../../models/save.model.js";
+import { User } from "../../../models/user.model.js";
+import { postgres } from "../../../server.js";
+import { FilterFrontendKeys } from "../../../utils/FrontendKey.js";
+import { KoaController } from "../../../utils/KoaController.js";
+import { getCurrentDateTime } from "../../../utils/getCurrentDateTime.js";
+import { logger } from "../../../utils/logger.js";
+import { Status } from "../../../enums/StatusCodes.js";
+import { SaveKeys } from "../../../enums/SaveKeys.js";
+import { BaseSaveSchema } from "../../../zod/BaseSaveSchema.js";
+import { resourcesHandler } from "./handlers/resourceHandler.js";
+import { purchaseHandler } from "./handlers/purchaseHandler.js";
+import { academyHandler } from "./handlers/academyHandler.js";
+import { mapUserSaveData } from "../mapUserSaveData.js";
+import { BaseType } from "../../../enums/Base.js";
+import { permissionErr, saveFailureErr } from "../../../errors/errors.js";
+import { attackLootHandler } from "./handlers/attackLootHandler.js";
+import { monsterUpdateHandler } from "./handlers/monsterUpdateHandler.js";
+import { validateSave } from "../../../scripts/anticheat/anticheat.js";
+import { updateResources } from "../../../services/base/updateResources.js";
+import { buildingDataHandler } from "./handlers/buildingDataHandler.js";
 
 /**
  * Controller responsible for saving the user's base data.
@@ -144,7 +144,7 @@ export const baseSave: KoaController = async (ctx) => {
     await postgres.em.persistAndFlush(baseSave);
 
     const filteredSave = FilterFrontendKeys(baseSave);
-    logging(`Saving ${user.username}'s base | IP: ${ctx.ip}`);
+    logger.info(`Saving ${user.username}'s base | IP: ${ctx.ip}`);
 
     const responseBody = {
       error: 0,
@@ -164,7 +164,7 @@ export const baseSave: KoaController = async (ctx) => {
       throw err;
     }
 
-    errorLog(`Failed to save base for user: ${user.username}`, err);
+    logger.error(`Failed to save base for user: ${user.username}`, err);
 
     ctx.status = Status.INTERNAL_SERVER_ERROR;
     ctx.body = { error: `Failed to save for user: ${user.username}` };
