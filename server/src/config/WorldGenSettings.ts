@@ -1,4 +1,4 @@
-import { MapRoom2 } from "../enums/MapRoom";
+import { MapRoom2 } from "../enums/MapRoom.js";
 
 // =============================================================================
 // Map Room 2 - World Generation Configuration

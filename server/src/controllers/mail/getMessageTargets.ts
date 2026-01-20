@@ -1,10 +1,10 @@
-import { MapRoomVersion } from "../../enums/MapRoom";
-import { Status } from "../../enums/StatusCodes";
-import { mailboxErr } from "../../errors/errors";
-import { Thread } from "../../models/thread.model";
-import { User } from "../../models/user.model";
-import { postgres } from "../../server";
-import { KoaController } from "../../utils/KoaController";
+import { MapRoomVersion } from "../../enums/MapRoom.js";
+import { Status } from "../../enums/StatusCodes.js";
+import { mailboxErr } from "../../errors/errors.js";
+import { Thread } from "../../models/thread.model.js";
+import { User } from "../../models/user.model.js";
+import { postgres } from "../../server.js";
+import { KoaController } from "../../utils/KoaController.js";
 
 interface TargetUser {
   friend: number;

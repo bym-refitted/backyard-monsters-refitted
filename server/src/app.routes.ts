@@ -1,47 +1,46 @@
 import Router from "@koa/router";
 
-import { debugDataLog } from "./middleware/debugDataLog";
-import { baseSave } from "./controllers/base/save/baseSave";
-import { login } from "./controllers/auth/login";
-import { register } from "./controllers/auth/register";
-import { baseLoad } from "./controllers/base/load/baseLoad";
-import { updateSaved } from "./controllers/base/save/updateSaved";
-import { getMapRoomCells } from "./controllers/maproom/v3/getCells";
-import { getNewMap } from "./controllers/maproom/getNewMap";
-import { verifyUserAuth, verifyAccountStatus } from "./middleware/auth";
-import { relocate } from "./controllers/maproom/v3/relocate";
-import { infernoMonsters } from "./controllers/inferno/infernoMonsters";
-import { recordDebugData } from "./controllers/debug/recordDebugData";
-import { getTemplates } from "./controllers/yardplanner/getTemplates";
-import { saveTemplate } from "./controllers/yardplanner/saveTemplate";
-import { getArea } from "./controllers/maproom/v2/getArea";
-import { initialPlayerCellData } from "./controllers/maproom/v3/initialPlayerCellData";
-import { setMapVersion } from "./controllers/maproom/setMapVersion";
-import { saveBookmarks } from "./controllers/maproom/v2/saveBookmarks";
-import { takeoverCell } from "./controllers/maproom/v2/takeoverCell";
-import { migrateBase } from "./controllers/maproom/v2/migrateBase";
-import { transferMonsters } from "./controllers/maproom/v2/transferMonsters";
-import { apiVersion } from "./middleware/apiVersioning";
-import { supportedLangs } from "./controllers/supportedLangs";
-import { Status } from "./enums/StatusCodes";
-import { forgotPassword } from "./controllers/auth/forgotPassword";
-import { resetPassword } from "./controllers/auth/resetPassword";
-import { infernoSave } from "./controllers/inferno/infernoSave";
-import { getNeighbours } from "./controllers/maproom/inferno/getNeighbours";
-import { Env } from "./enums/Env";
-import { getMessageTargets } from "./controllers/mail/getMessageTargets";
-import { getMessageThreads } from "./controllers/mail/getMessageThreads";
-import { getMessageThread } from "./controllers/mail/getMessageThread";
-import { sendMessage } from "./controllers/mail/sendMessage";
-import { reportMessageThread } from "./controllers/mail/reportMessageThread";
+import { logRequest } from "./middleware/logRequest.js";
+import { baseSave } from "./controllers/base/save/baseSave.js";
+import { login } from "./controllers/auth/login.js";
+import { register } from "./controllers/auth/register.js";
+import { baseLoad } from "./controllers/base/load/baseLoad.js";
+import { updateSaved } from "./controllers/base/save/updateSaved.js";
+import { getMapRoomCells } from "./controllers/maproom/v3/getCells.js";
+import { getNewMap } from "./controllers/maproom/getNewMap.js";
+import { verifyUserAuth, verifyAccountStatus } from "./middleware/auth.js";
+import { relocate } from "./controllers/maproom/v3/relocate.js";
+import { infernoMonsters } from "./controllers/inferno/infernoMonsters.js";
+import { recordDebugData } from "./controllers/debug/recordDebugData.js";
+import { getTemplates } from "./controllers/yardplanner/getTemplates.js";
+import { saveTemplate } from "./controllers/yardplanner/saveTemplate.js";
+import { getArea } from "./controllers/maproom/v2/getArea.js";
+import { initialPlayerCellData } from "./controllers/maproom/v3/initialPlayerCellData.js";
+import { setMapVersion } from "./controllers/maproom/setMapVersion.js";
+import { saveBookmarks } from "./controllers/maproom/v2/saveBookmarks.js";
+import { takeoverCell } from "./controllers/maproom/v2/takeoverCell.js";
+import { migrateBase } from "./controllers/maproom/v2/migrateBase.js";
+import { transferMonsters } from "./controllers/maproom/v2/transferMonsters.js";
+import { apiVersion } from "./middleware/apiVersioning.js";
+import { supportedLangs } from "./controllers/supportedLangs.js";
+import { Status } from "./enums/StatusCodes.js";
+import { forgotPassword } from "./controllers/auth/forgotPassword.js";
+import { resetPassword } from "./controllers/auth/resetPassword.js";
+import { infernoSave } from "./controllers/inferno/infernoSave.js";
+import { getNeighbours } from "./controllers/maproom/inferno/getNeighbours.js";
+import { Env } from "./enums/Env.js";
+import { getMessageTargets } from "./controllers/mail/getMessageTargets.js";
+import { getMessageThreads } from "./controllers/mail/getMessageThreads.js";
+import { getMessageThread } from "./controllers/mail/getMessageThread.js";
+import { sendMessage } from "./controllers/mail/sendMessage.js";
+import { reportMessageThread } from "./controllers/mail/reportMessageThread.js";
 import { Context } from "koa";
-import { getAvailableWorlds } from "./controllers/leaderboards/getAvailableWorlds";
-import { getLeaderboards } from "./controllers/leaderboards/getLeaderboards";
-import { getAttackLogs } from "./controllers/attacklogs/getAttackLogs";
-import { wildMonsterInvasion } from "./controllers/events/wildMonsterInvasion";
-import { init } from "./controllers/init";
-
-const RateLimit = require("koa2-ratelimit").RateLimit;
+import { getAvailableWorlds } from "./controllers/leaderboards/getAvailableWorlds.js";
+import { getLeaderboards } from "./controllers/leaderboards/getLeaderboards.js";
+import { getAttackLogs } from "./controllers/attacklogs/getAttackLogs.js";
+import { wildMonsterInvasion } from "./controllers/events/wildMonsterInvasion.js";
+import { init } from "./controllers/init.js";
+import { RateLimit } from "koa2-ratelimit";
 
 /**
  * Rate limit for user registration
@@ -73,7 +72,18 @@ router.get("/connection", (ctx) => (ctx.status = Status.OK));
  * Init route
  * @name POST /init
  */
-router.post("/init", debugDataLog("Initilizing game client"), init);
+router.post("/init", logRequest("Initilizing game client"), init);
+
+/**
+ * MapRoom setup
+ * @name GET /api/:apiVersion/bm/getnewmap
+ */
+router.get(
+  "/api/:apiVersion/bm/getnewmap",
+  apiVersion,
+  logRequest("Getting new maproom"),
+  getNewMap
+);
 
 /**
  * MapRoom setup
@@ -83,7 +93,7 @@ router.post(
   "/api/:apiVersion/bm/getnewmap",
   apiVersion,
   verifyUserAuth,
-  debugDataLog("Posting to new maproom"),
+  logRequest("Posting to new maproom"),
   getNewMap
 );
 
@@ -94,7 +104,7 @@ router.post(
 router.post(
   "/api/:apiVersion/player/getinfo",
   apiVersion,
-  debugDataLog("User login attempt"),
+  logRequest("User login attempt"),
   login
 );
 
@@ -106,7 +116,7 @@ router.post(
   "/api/:apiVersion/player/register",
   apiVersion,
   registerLimiter,
-  debugDataLog("Registering user"),
+  logRequest("Registering user"),
   register
 );
 
@@ -117,7 +127,7 @@ router.post(
 router.get(
   "/api/:apiVersion/supportedLangs",
   apiVersion,
-  debugDataLog("Getting supported languages"),
+  logRequest("Getting supported languages"),
   supportedLangs
 );
 
@@ -144,7 +154,7 @@ router.post("/api/:apiVersion/player/reset-password", resetPassword);
 router.post(
   "/base/load",
   verifyUserAuth,
-  debugDataLog("Base load data"),
+  logRequest("Base load data"),
   baseLoad
 );
 
@@ -155,7 +165,7 @@ router.post(
 router.post(
   "/base/save",
   verifyUserAuth,
-  debugDataLog("Base save data"),
+  logRequest("Base save data"),
   baseSave
 );
 
@@ -166,7 +176,7 @@ router.post(
 router.post(
   "/base/updatesaved",
   verifyUserAuth,
-  debugDataLog("Base updated save"),
+  logRequest("Base updated save"),
   updateSaved
 );
 
@@ -177,7 +187,7 @@ router.post(
 router.post(
   "/api/:apiVersion/bm/base/updatesaved",
   verifyUserAuth,
-  debugDataLog("Inferno updated save"),
+  logRequest("Inferno updated save"),
   updateSaved
 );
 
@@ -188,7 +198,7 @@ router.post(
 router.post(
   "/base/migrate",
   verifyUserAuth,
-  debugDataLog("Base migrate data"),
+  logRequest("Base migrate data"),
   migrateBase
 );
 
@@ -200,7 +210,7 @@ router.get(
   "/api/:apiVersion/bm/yardplanner/gettemplates",
   apiVersion,
   verifyUserAuth,
-  debugDataLog("Get templates"),
+  logRequest("Get templates"),
   getTemplates
 );
 
@@ -212,7 +222,7 @@ router.post(
   "/api/:apiVersion/bm/yardplanner/savetemplate",
   apiVersion,
   verifyUserAuth,
-  debugDataLog("Saving template"),
+  logRequest("Saving template"),
   saveTemplate
 );
 
@@ -224,7 +234,7 @@ router.post(
   "/api/:apiVersion/bm/base/load",
   apiVersion,
   verifyUserAuth,
-  debugDataLog("Inferno load data"),
+  logRequest("Inferno load data"),
   baseLoad
 );
 
@@ -236,7 +246,7 @@ router.post(
   "/api/:apiVersion/bm/base/save",
   apiVersion,
   verifyUserAuth,
-  debugDataLog("Inferno save data"),
+  logRequest("Inferno save data"),
   infernoSave
 );
 
@@ -248,7 +258,7 @@ router.post(
   "/api/:apiVersion/bm/neighbours/get",
   apiVersion,
   verifyUserAuth,
-  debugDataLog("Getting Inferno neighbours"),
+  logRequest("Getting Inferno neighbours"),
   getNeighbours
 );
 
@@ -260,7 +270,7 @@ router.post(
   "/api/:apiVersion/bm/base/infernomonsters",
   apiVersion,
   verifyUserAuth,
-  debugDataLog("Load inferno monsters"),
+  logRequest("Load inferno monsters"),
   infernoMonsters
 );
 
@@ -272,7 +282,7 @@ router.post(
   "/worldmapv2/getarea",
   verifyUserAuth,
   verifyAccountStatus,
-  debugDataLog("MR2 get area"),
+  logRequest("MR2 get area"),
   getArea
 );
 
@@ -283,7 +293,7 @@ router.post(
 router.post(
   "/worldmapv2/setmapversion",
   verifyUserAuth,
-  debugDataLog("Set maproom version"),
+  logRequest("Set maproom version"),
   setMapVersion
 );
 
@@ -295,7 +305,7 @@ router.post(
   "/worldmapv2/takeoverCell",
   verifyAccountStatus,
   verifyUserAuth,
-  debugDataLog("Taking over cell"),
+  logRequest("Taking over cell"),
   takeoverCell
 );
 
@@ -307,7 +317,7 @@ router.post(
   "/worldmapv2/transferassets",
   verifyUserAuth,
   verifyAccountStatus,
-  debugDataLog("Transferring assets"),
+  logRequest("Transferring assets"),
   transferMonsters
 );
 
@@ -320,7 +330,7 @@ router.post(
   apiVersion,
   verifyUserAuth,
   verifyAccountStatus,
-  debugDataLog("MR2 save bookmarks"),
+  logRequest("MR2 save bookmarks"),
   saveBookmarks
 );
 
@@ -332,7 +342,19 @@ router.post(
   "/worldmapv3/initworldmap",
   verifyUserAuth,
   verifyAccountStatus,
-  debugDataLog("MR3 init data"),
+  logRequest("Posting MR3 init data"),
+  initialPlayerCellData
+);
+
+/**
+ * Worldmap v3 init route
+ * @name GET /worldmapv3/initworldmap
+ */
+router.get(
+  "/worldmapv3/initworldmap",
+  verifyUserAuth,
+  verifyAccountStatus,
+  logRequest("Getting MR3 init data"),
   initialPlayerCellData
 );
 
@@ -344,7 +366,7 @@ router.post(
   "/worldmapv3/getcells",
   verifyUserAuth,
   verifyAccountStatus,
-  debugDataLog("Get MR3 cells"),
+  logRequest("Get MR3 cells"),
   getMapRoomCells
 );
 
@@ -356,7 +378,7 @@ router.post(
   "/worldmapv3/relocate",
   verifyUserAuth,
   verifyAccountStatus,
-  debugDataLog("Relocating MR3 base"),
+  logRequest("Relocating MR3 base"),
   relocate
 );
 
@@ -368,7 +390,7 @@ router.get(
   "/worldmapv3/setmapversion",
   verifyUserAuth,
   verifyAccountStatus,
-  debugDataLog("Set maproom version"),
+  logRequest("Set maproom version"),
   setMapVersion
 );
 
@@ -380,7 +402,7 @@ router.post(
   "/worldmapv3/setmapversion",
   verifyUserAuth,
   verifyAccountStatus,
-  debugDataLog("Set maproom version"),
+  logRequest("Set maproom version"),
   setMapVersion
 );
 
@@ -402,7 +424,7 @@ router.get(
   "/api/:apiVersion/player/getmessagetargets",
   apiVersion,
   verifyUserAuth,
-  debugDataLog("Get message targets"),
+  logRequest("Get message targets"),
   getMessageTargets
 );
 
@@ -414,7 +436,7 @@ router.get(
   "/api/:apiVersion/player/getmessagethreads",
   apiVersion,
   verifyUserAuth,
-  debugDataLog("Get message threads"),
+  logRequest("Get message threads"),
   getMessageThreads
 );
 
@@ -426,7 +448,7 @@ router.post(
   "/api/:apiVersion/player/getmessagethread",
   apiVersion,
   verifyUserAuth,
-  debugDataLog("Get message thread by threadid"),
+  logRequest("Get message thread by threadid"),
   getMessageThread
 );
 
@@ -438,7 +460,7 @@ router.post(
   "/api/:apiVersion/player/sendmessage",
   apiVersion,
   verifyUserAuth,
-  debugDataLog("Send message"),
+  logRequest("Send message"),
   sendMessage
 );
 
@@ -450,7 +472,7 @@ router.post(
   "/api/:apiVersion/player/reportmessagethread",
   apiVersion,
   verifyUserAuth,
-  debugDataLog("Report message thread"),
+  logRequest("Report message thread"),
   reportMessageThread
 );
 
@@ -462,7 +484,7 @@ router.get(
   "/api/:apiVersion/events/wmi",
   apiVersion,
   // verifyUserAuth,
-  debugDataLog("Getting WMI event details"),
+  logRequest("Getting WMI event details"),
   wildMonsterInvasion
 );
 

@@ -1,13 +1,12 @@
 import { Entity, Property, PrimaryKey, OneToOne, Index } from "@mikro-orm/core";
 
 import { EntityManager, PostgreSqlDriver } from "@mikro-orm/postgresql";
-import { FrontendKey } from "../utils/FrontendKey";
-import { getDefaultBaseData } from "../data/getDefaultBaseData";
-import { User } from "./user.model";
-import { WorldMapCell } from "./worldmapcell.model";
-import { AttackDetails } from "../controllers/base/load/modes/baseModeAttack";
-import { BaseType } from "../enums/Base";
-import { Stats } from "../services/events/wmi/invasionUtils";
+import { FrontendKey } from "../utils/FrontendKey.js";
+import { getDefaultBaseData } from "../data/getDefaultBaseData.js";
+import { User } from "./user.model.js";
+import { AttackDetails } from "../controllers/base/load/modes/baseModeAttack.js";
+import { BaseType } from "../enums/Base.js";
+import { Stats } from "../services/events/wmi/invasionUtils.js";
 
 export interface FieldData {
   [key: string | number]: any;
@@ -28,13 +27,18 @@ export class Save {
   @Property({ default: "0" })
   baseid!: string;
 
+  /**
+   * Circular dependency between Save and WorldMapCell requires string-based entity reference
+   * and any type to avoid ES module initialization errors with emitDecoratorMetadata.
+   * Using @mikro-orm/reflection would solve this but requires MikroORM v6+ upgrade.
+   */
   @OneToOne({
     nullable: true,
     orphanRemoval: true,
     inversedBy: "save",
-    entity: () => WorldMapCell,
+    entity: "WorldMapCell",
   })
-  cell: WorldMapCell;
+  cell: any;
 
   @FrontendKey
   @Property({ type: "bigint", default: 0 })

@@ -1,5 +1,5 @@
-import { Message } from "../../models/message.model";
-import { postgres } from "../../server";
+import { Message } from "../../models/message.model.js";
+import { postgres } from "../../server.js";
 
 /**
  * Count unread messages for a user.

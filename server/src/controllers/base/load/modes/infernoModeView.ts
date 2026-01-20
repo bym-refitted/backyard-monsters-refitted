@@ -1,8 +1,8 @@
-import { molochTribes } from "../../../../data/tribes/inferno/molochTribes";
-import { InfernoMaproom, TribeData } from "../../../../models/infernomaproom.model";
-import { Save } from "../../../../models/save.model";
-import { User } from "../../../../models/user.model";
-import { postgres } from "../../../../server";
+import { molochTribes } from "../../../../data/tribes/inferno/molochTribes.js";
+import { InfernoMaproom, TribeData } from "../../../../models/infernomaproom.model.js";
+import { Save } from "../../../../models/save.model.js";
+import { User } from "../../../../models/user.model.js";
+import { postgres } from "../../../../server.js";
 
 export const infernoModeView = async (user: User, baseid: string) => {
   const save = await postgres.em.findOne(Save, { baseid });

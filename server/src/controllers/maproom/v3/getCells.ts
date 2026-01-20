@@ -1,21 +1,21 @@
-import { User } from "../../../models/user.model";
-import { Status } from "../../../enums/StatusCodes";
-import { KoaController } from "../../../utils/KoaController";
-import { MapRoom3, MapRoomVersion } from "../../../enums/MapRoom";
-import { generateCells } from "../../../services/maproom/v3/generateCells";
-import { getRelatedCellPositions } from "../../../services/maproom/v3/getRelatedCells";
-import { createCellData } from "../../../services/maproom/v3/createCellData";
-import { CellSchema } from "../../../zod/CellSchema";
-import { errorLog } from "../../../utils/logger";
-import { loadFailureErr } from "../../../errors/errors";
-import { WorldMapCell } from "../../../models/worldmapcell.model";
-import { Save } from "../../../models/save.model";
+import { User } from "../../../models/user.model.js";
+import { Status } from "../../../enums/StatusCodes.js";
+import { KoaController } from "../../../utils/KoaController.js";
+import { CellSchema } from "../../../zod/CellSchema.js";
+import { postgres } from "../../../server.js";
+import { Save } from "../../../models/save.model.js";
+import { MapRoom3, MapRoomVersion } from "../../../enums/MapRoom.js";
 import { FilterQuery } from "@mikro-orm/core";
-import { mapByCoordinates } from "../../../services/maproom/v3/utils/mapByCoordinates";
-import { CellData } from "../../../types/CellData";
-import { postgres } from "../../../server";
-import { getHexNeighborOffsets } from "../../../services/maproom/v3/getDefenderOutposts";
-import { EnumYardType } from "../../../enums/EnumYardType";
+import { WorldMapCell } from "../../../models/worldmapcell.model.js";
+import { mapByCoordinates } from "../../../services/maproom/v3/utils/mapByCoordinates.js";
+import { generateCells } from "../../../services/maproom/v3/generateCells.js";
+import { EnumYardType } from "../../../enums/EnumYardType.js";
+import { getHexNeighborOffsets } from "../../../services/maproom/v3/getDefenderOutposts.js";
+import { CellData } from "../../../types/CellData.js";
+import { createCellData } from "../../../services/maproom/v3/createCellData.js";
+import { getRelatedCellPositions } from "../../../services/maproom/v3/getRelatedCells.js";
+import { logger } from "../../../utils/logger.js";
+import { loadFailureErr } from "../../../errors/errors.js";
 
 export const getMapRoomCells: KoaController = async (ctx) => {
   try {
@@ -124,7 +124,7 @@ export const getMapRoomCells: KoaController = async (ctx) => {
     ctx.status = Status.OK;
     ctx.body = { celldata: [...cellsToReturn.values()] };
   } catch (error) {
-    errorLog("Error in getMapRoomCells:", error);
+    logger.error("Error in getMapRoomCells:", error);
     throw loadFailureErr();
   }
 };

@@ -1,12 +1,12 @@
-import { WorldMapCell } from "../../../models/worldmapcell.model";
-import { User } from "../../../models/user.model";
-import { Save } from "../../../models/save.model";
-import { logging } from "../../../utils/logger";
-import { World } from "../../../models/world.model";
-import { MapRoom2, MapRoomCell } from "../../../enums/MapRoom";
+import { WorldMapCell } from "../../../models/worldmapcell.model.js";
+import { User } from "../../../models/user.model.js";
+import { Save } from "../../../models/save.model.js";
+import { logger } from "../../../utils/logger.js";
+import { World } from "../../../models/world.model.js";
+import { MapRoom2, MapRoomCell } from "../../../enums/MapRoom.js";
 import { EntityManager, PostgreSqlDriver } from "@mikro-orm/postgresql";
-import { postgres } from "../../../server";
-import { findFreeCell } from "./findFreeCell";
+import { postgres } from "../../../server.js";
+import { findFreeCell } from "./findFreeCell.js";
 
 /**
  * Assigns a user to a world by either joining an existing one with available space
@@ -38,11 +38,11 @@ export const joinOrCreateWorld = async (
 
   if (shuffledWorlds.length > 0) {
     world = shuffledWorlds[0];
-    logging(`User assigned to existing world: ${world.name}`);
+    logger.info(`User assigned to existing world: ${world.name}`);
   } else {
     world = em.create(World, {});
     world.name = "New World";
-    logging("All worlds full, created new world.");
+    logger.info("All worlds full, created new world.");
   }
 
   // If not relocating, check if the user is already in the world
@@ -58,7 +58,7 @@ export const joinOrCreateWorld = async (
   const { x, y, terrainHeight } = await findFreeCell(world, em);
 
   if (relocate)
-    logging(
+    logger.info(
       `${user.username} relocated to new cell (${x}, ${y}) in world ${world.uuid}`
     );
 

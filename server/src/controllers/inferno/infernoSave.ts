@@ -1,22 +1,22 @@
-import { BaseType } from "../../enums/Base";
-import { SaveKeys } from "../../enums/SaveKeys";
-import { Status } from "../../enums/StatusCodes";
-import { permissionErr } from "../../errors/errors";
-import { ClientSafeError } from "../../middleware/clientSafeError";
-import { Save } from "../../models/save.model";
-import { User } from "../../models/user.model";
-import { postgres } from "../../server";
-import { scaledTribes } from "../../services/maproom/v1/scaledTribes";
-import { FilterFrontendKeys } from "../../utils/FrontendKey";
-import { getCurrentDateTime } from "../../utils/getCurrentDateTime";
-import { KoaController } from "../../utils/KoaController";
-import { errorLog } from "../../utils/logger";
-import { BaseSaveSchema } from "../../zod/BaseSaveSchema";
-import { academyHandler } from "../base/save/handlers/academyHandler";
-import { attackLootHandler } from "../base/save/handlers/attackLootHandler";
-import { buildingDataHandler } from "../base/save/handlers/buildingDataHandler";
-import { purchaseHandler } from "../base/save/handlers/purchaseHandler";
-import { resourcesHandler } from "../base/save/handlers/resourceHandler";
+import { BaseType } from "../../enums/Base.js";
+import { SaveKeys } from "../../enums/SaveKeys.js";
+import { Status } from "../../enums/StatusCodes.js";
+import { permissionErr } from "../../errors/errors.js";
+import { ClientSafeError } from "../../middleware/clientSafeError.js";
+import { Save } from "../../models/save.model.js";
+import { User } from "../../models/user.model.js";
+import { postgres } from "../../server.js";
+import { scaledTribes } from "../../services/maproom/v1/scaledTribes.js";
+import { FilterFrontendKeys } from "../../utils/FrontendKey.js";
+import { getCurrentDateTime } from "../../utils/getCurrentDateTime.js";
+import { KoaController } from "../../utils/KoaController.js";
+import { logger } from "../../utils/logger.js";
+import { BaseSaveSchema } from "../../zod/BaseSaveSchema.js";
+import { academyHandler } from "../base/save/handlers/academyHandler.js";
+import { attackLootHandler } from "../base/save/handlers/attackLootHandler.js";
+import { buildingDataHandler } from "../base/save/handlers/buildingDataHandler.js";
+import { purchaseHandler } from "../base/save/handlers/purchaseHandler.js";
+import { resourcesHandler } from "../base/save/handlers/resourceHandler.js";
 
 export const infernoSave: KoaController = async (ctx) => {
   const user: User = ctx.authUser;
@@ -139,7 +139,7 @@ export const infernoSave: KoaController = async (ctx) => {
       credits: userSave.credits,
     };
   } catch (err) {
-    errorLog(`Failed to save inferno base for user: ${user.username}`, err);
+    logger.error(`Failed to save inferno base for user: ${user.username}`, err);
 
     if (err instanceof ClientSafeError) throw err;
     throw new Error("An unexpected error occurred while saving this base.");

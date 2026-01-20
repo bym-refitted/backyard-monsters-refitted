@@ -1,12 +1,12 @@
-import { Status } from "../../enums/StatusCodes";
-import { mailboxErr } from "../../errors/errors";
-import { User } from "../../models/user.model";
-import { KoaController } from "../../utils/KoaController";
+import { Status } from "../../enums/StatusCodes.js";
+import { mailboxErr } from "../../errors/errors.js";
+import { User } from "../../models/user.model.js";
+import { KoaController } from "../../utils/KoaController.js";
 
-import { postgres } from "../../server";
-import { Thread } from "../../models/thread.model";
-import { FilterFrontendKeys } from "../../utils/FrontendKey";
-import { errorLog } from "../../utils/logger";
+import { postgres } from "../../server.js";
+import { Thread } from "../../models/thread.model.js";
+import { FilterFrontendKeys } from "../../utils/FrontendKey.js";
+import { logger } from "../../utils/logger.js";
 
 /**
  * Controller to get threads for mailbox.
@@ -63,7 +63,7 @@ export const getMessageThreads: KoaController = async (ctx) => {
     ctx.status = Status.OK;
     ctx.body = { error: 0, threads: threadsList };
   } catch (err) {
-    errorLog("Error getting message threads:", err);
+    logger.error("Error getting message threads:", err);
     throw mailboxErr();
   }
 };

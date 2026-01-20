@@ -1,11 +1,11 @@
-import { inferoMonsters } from "../../../../data/stats/monsterKeys";
-import { INFERNO_TRIBES } from "../../../../enums/Tribes";
-import { Save } from "../../../../models/save.model";
-import { User } from "../../../../models/user.model";
-import { postgres } from "../../../../server";
-import { calculateBaseLevel } from "../../../../services/base/calculateBaseLevel";
-import { createScaledTribes } from "../../../../services/maproom/v1/createScaledTribes";
-import { permissionErr } from "../../../../errors/errors";
+import { inferoMonsters } from "../../../../data/stats/monsterKeys.js";
+import { INFERNO_TRIBES } from "../../../../enums/Tribes.js";
+import { Save } from "../../../../models/save.model.js";
+import { User } from "../../../../models/user.model.js";
+import { postgres } from "../../../../server.js";
+import { calculateBaseLevel } from "../../../../services/base/calculateBaseLevel.js";
+import { createScaledTribes } from "../../../../services/maproom/v1/createScaledTribes.js";
+import { permissionErr } from "../../../../errors/errors.js";
 
 /**
  * Retrieves the save data for the user based on their Inferno mode request.

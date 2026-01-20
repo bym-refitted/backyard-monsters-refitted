@@ -1,7 +1,7 @@
-import { Status } from "../../enums/StatusCodes";
-import { User } from "../../models/user.model";
-import { postgres } from "../../server";
-import { KoaController } from "../../utils/KoaController";
+import { Status } from "../../enums/StatusCodes.js";
+import { User } from "../../models/user.model.js";
+import { postgres } from "../../server.js";
+import { KoaController } from "../../utils/KoaController.js";
 
 interface RequestBody {
   slotid: number;

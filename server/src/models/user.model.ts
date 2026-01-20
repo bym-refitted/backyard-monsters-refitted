@@ -1,6 +1,6 @@
 import { Entity, Property, PrimaryKey, OneToOne, Index } from "@mikro-orm/core";
-import { FieldData, Save } from "./save.model";
-import { FrontendKey } from "../utils/FrontendKey";
+import { FieldData, Save } from "./save.model.js";
+import { FrontendKey } from "../utils/FrontendKey.js";
 
 @Entity({ tableName: "user" })
 export class User {

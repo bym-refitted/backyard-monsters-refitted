@@ -1,11 +1,11 @@
-import { Save } from "../../../models/save.model";
-import { postgres } from "../../../server";
-import { Tribe, Tribes } from "../../../enums/Tribes";
-import { legionnaire } from "../../../data/tribes/v2/legionnaire";
-import { abunaki } from "../../../data/tribes/v2/abunaki";
-import { dreadnaught } from "../../../data/tribes/v2/dreadnaught";
-import { kozu } from "../../../data/tribes/v2/kozu";
-import { calculateTribeLevel, minimumTribeLevels } from "./calculateTribeLevel";
+import { Save } from "../../../models/save.model.js";
+import { postgres } from "../../../server.js";
+import { Tribe, Tribes } from "../../../enums/Tribes.js";
+import { calculateTribeLevel, minimumTribeLevels } from "./calculateTribeLevel.js";
+import { abunaki } from "../../../data/tribes/v2/abunaki.js";
+import { dreadnaught } from "../../../data/tribes/v2/dreadnaught.js";
+import { kozu } from "../../../data/tribes/v2/kozu.js";
+import { legionnaire } from "../../../data/tribes/v2/legionnaire.js";
 
 /**
  * Generates a save for a wild monster based on the given base ID.
