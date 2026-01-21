@@ -1,5 +1,5 @@
 import { Entity, Index, PrimaryKey, Property } from "@mikro-orm/core";
-import { FrontendKey } from "../utils/FrontendKey";
+import { FrontendKey } from "../utils/FrontendKey.js";
 import { v4 } from "uuid";
 
 @Index({ properties: ["userid", "userUnread"] })

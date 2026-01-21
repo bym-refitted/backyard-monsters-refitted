@@ -2,7 +2,7 @@
 
 > A comprehensive overview of the `server` project architecture and folder organization.
 
-The server is built on a modern Node.js architecture using Koa.js, TypeScript, and MikroORM. This modular structure separates concerns across distinct layers - from API endpoints and business logic to data models and utilities. Each folder serves a specific purpose in the application's ecosystem, enabling scalable development and easy maintenance. The codebase follows clean architecture principles with clear separation between controllers, services, and data access layers, making it straightforward for developers to locate and modify specific functionality.
+The server is built on a modern Bun runtime using Koa.js, TypeScript, and MikroORM. This modular structure separates concerns across distinct layers - from API endpoints and business logic to data models and utilities. Each folder serves a specific purpose in the application's ecosystem, enabling scalable development and easy maintenance. The codebase follows clean architecture principles with clear separation between controllers, services, and data access layers, making it straightforward for developers to locate and modify specific functionality.
 <br>
 
 <br>

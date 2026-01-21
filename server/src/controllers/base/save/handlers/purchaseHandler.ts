@@ -1,8 +1,8 @@
 import { Context } from "koa";
-import { storeItems } from "../../../../data/store/storeItems";
-import { Save, FieldData } from "../../../../models/save.model";
-import { updateCredits } from "../../../../services/base/updateCredits";
-import { getCurrentDateTime } from "../../../../utils/getCurrentDateTime";
+import { storeItems } from "../../../../data/store/storeItems.js";
+import { Save, FieldData } from "../../../../models/save.model.js";
+import { updateCredits } from "../../../../services/base/updateCredits.js";
+import { getCurrentDateTime } from "../../../../utils/getCurrentDateTime.js";
 
 export const purchaseHandler = (ctx: Context, purchaseData: [string, number], save: Save) => {
   // Update 'storedata' with the new purchased item & quantity

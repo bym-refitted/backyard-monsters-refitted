@@ -1,12 +1,12 @@
 import bcrypt from "bcrypt";
-import { KoaController } from "../../utils/KoaController";
-import { postgres } from "../../server";
-import { User } from "../../models/user.model";
-import { FilterFrontendKeys } from "../../utils/FrontendKey";
-import { emailUniqueErr, usernameUniqueErr } from "../../errors/errors";
-import { logging } from "../../utils/logger";
-import { Status } from "../../enums/StatusCodes";
-import { UserRegistrationSchema } from "../../zod/AuthSchemas";
+import { KoaController } from "../../utils/KoaController.js";
+import { postgres } from "../../server.js";
+import { User } from "../../models/user.model.js";
+import { FilterFrontendKeys } from "../../utils/FrontendKey.js";
+import { emailUniqueErr, usernameUniqueErr } from "../../errors/errors.js";
+import { logger } from "../../utils/logger.js";
+import { Status } from "../../enums/StatusCodes.js";
+import { UserRegistrationSchema } from "../../zod/AuthSchemas.js";
 
 /**
  * Controller to handle user registration.
@@ -50,7 +50,7 @@ export const register: KoaController = async (ctx) => {
 
   await postgres.em.persistAndFlush(user);
   const filteredUser = FilterFrontendKeys(user);
-  logging(
+  logger.info(
     `User ${filteredUser.username} registered successfully | ID: ${filteredUser.userid} | Email: ${filteredUser.email} | IP Address: ${ctx.ip}`
   );
 

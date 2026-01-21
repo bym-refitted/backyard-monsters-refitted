@@ -1,6 +1,6 @@
 import { Context } from "koa";
-import { SaveKeys } from "../../../../enums/SaveKeys";
-import { Save } from "../../../../models/save.model";
+import { SaveKeys } from "../../../../enums/SaveKeys.js";
+import { Save } from "../../../../models/save.model.js";
 
 interface AcademyData {
   [monster: string]: {

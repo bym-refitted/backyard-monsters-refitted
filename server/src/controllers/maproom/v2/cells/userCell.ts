@@ -1,11 +1,11 @@
 import { Context } from "koa";
-import { User } from "../../../../models/user.model";
-import { postgres } from "../../../../server";
-import { WorldMapCell } from "../../../../models/worldmapcell.model";
-import { calculateBaseLevel } from "../../../../services/base/calculateBaseLevel";
-import { damageProtection } from "../../../../services/maproom/v2/damageProtection";
-import { errorLog } from "../../../../utils/logger";
-import { getCurrentDateTime } from "../../../../utils/getCurrentDateTime";
+import { User } from "../../../../models/user.model.js";
+import { postgres } from "../../../../server.js";
+import { WorldMapCell } from "../../../../models/worldmapcell.model.js";
+import { calculateBaseLevel } from "../../../../services/base/calculateBaseLevel.js";
+import { damageProtection } from "../../../../services/maproom/v2/damageProtection.js";
+import { logger } from "../../../../utils/logger.js";
+import { getCurrentDateTime } from "../../../../utils/getCurrentDateTime.js";
 
 /**
  * Handles the user's homecell & outpost data on the world map.
@@ -34,7 +34,7 @@ export const userCell = async (ctx: Context, cell: WorldMapCell) => {
           { populate: ["save"] }
         );
 
-    if (!cellOwner) errorLog(`Cell owner save data is missing.`);
+    if (!cellOwner) logger.error(`Cell owner save data is missing.`);
 
     const online = getCurrentDateTime() - cellSave.savetime <= 60;
 
@@ -77,6 +77,6 @@ export const userCell = async (ctx: Context, cell: WorldMapCell) => {
       im: cellOwner.pic_square
     };
   } catch (error) {
-    errorLog("Error fetching user cell data", error);
+    logger.error("Error fetching user cell data", error);
   }
 };

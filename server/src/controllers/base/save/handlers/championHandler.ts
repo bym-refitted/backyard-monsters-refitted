@@ -1,7 +1,7 @@
-import { SaveKeys } from "../../../../enums/SaveKeys";
-import { permissionErr } from "../../../../errors/errors";
-import { Save } from "../../../../models/save.model";
-import { parseChampionData } from "../../../../utils/parseChampionData";
+import { SaveKeys } from "../../../../enums/SaveKeys.js";
+import { permissionErr } from "../../../../errors/errors.js";
+import { Save } from "../../../../models/save.model.js";
+import { parseChampionData } from "../../../../utils/parseChampionData.js";
 
 /**
  * =================================

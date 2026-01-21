@@ -1,9 +1,9 @@
-import { User } from "../../models/user.model";
-import { loadFailureErr } from "../../errors/errors";
-import { logAttackViolation } from "../base/reportManager";
-import { MonsterProps, monsterStats } from "../../data/monsterStats";
-import { AttackData } from "../../zod/AttackSchema";
-import { ChampionProps, championStats } from "../../data/championStats";
+import { User } from "../../models/user.model.js";
+import { loadFailureErr } from "../../errors/errors.js";
+import { logAttackViolation } from "../base/reportManager.js";
+import { MonsterProps, monsterStats } from "../../data/monsterStats.js";
+import { AttackData } from "../../zod/AttackSchema.js";
+import { ChampionProps, championStats } from "../../data/championStats.js";
 
 // TODO:
 // Validate monster count from flinger

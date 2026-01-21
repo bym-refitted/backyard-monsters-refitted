@@ -1,16 +1,16 @@
 import path from "path";
 
 import { MikroORM } from "@mikro-orm/core";
-import { Save } from "./models/save.model";
-import { User } from "./models/user.model";
-import { WorldMapCell } from "./models/worldmapcell.model";
-import { World } from "./models/world.model";
-import { Env } from "./enums/Env";
-import { Report } from "./models/report.model";
-import { InfernoMaproom } from "./models/infernomaproom.model";
-import { Message } from "./models/message.model";
-import { Thread } from "./models/thread.model";
-import { AttackLogs } from "./models/attacklogs.model";
+import { Save } from "./models/save.model.js";
+import { User } from "./models/user.model.js";
+import { WorldMapCell } from "./models/worldmapcell.model.js";
+import { World } from "./models/world.model.js";
+import { Env } from "./enums/Env.js";
+import { Report } from "./models/report.model.js";
+import { InfernoMaproom } from "./models/infernomaproom.model.js";
+import { Message } from "./models/message.model.js";
+import { Thread } from "./models/thread.model.js";
+import { AttackLogs } from "./models/attacklogs.model.js";
 import { PostgreSqlDriver } from "@mikro-orm/postgresql";
 
 /**
@@ -49,7 +49,7 @@ const mikroOrmConfig = {
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
   migrations: {
-    path: path.join(__dirname, "../dist/database/migrations"),
+    path: path.join(import.meta.dirname, "../dist/database/migrations"),
     pattern: /^[\w-]+\d+\.[j]s$/,
   },
 } as Parameters<typeof MikroORM.init<PostgreSqlDriver>>[0];

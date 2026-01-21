@@ -1,6 +1,6 @@
-import { MonsterUpdate } from "../../controllers/base/save/handlers/monsterUpdateHandler";
-import { Save } from "../../models/save.model";
-import { postgres } from "../../server";
+import { MonsterUpdate } from "../../controllers/base/save/handlers/monsterUpdateHandler.js";
+import { Save } from "../../models/save.model.js";
+import { postgres } from "../../server.js";
 
 export const updateMonsters = async (monsterupdates: MonsterUpdate[]) => {
   // Fetch all bases that match the provided base IDs in one go

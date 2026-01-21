@@ -1,6 +1,6 @@
-import { mailboxErr } from "../../errors/errors";
-import { Thread } from "../../models/thread.model";
-import { postgres } from "../../server";
+import { mailboxErr } from "../../errors/errors.js";
+import { Thread } from "../../models/thread.model.js";
+import { postgres } from "../../server.js";
 
 /**
  * Find an existing thread by ID and user, or create a new one if no valid ID is given.

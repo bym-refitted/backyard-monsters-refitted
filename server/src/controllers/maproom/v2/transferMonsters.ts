@@ -1,9 +1,9 @@
 import z from "zod";
 
-import { KoaController } from "../../../utils/KoaController";
-import { postgres } from "../../../server";
-import { Save } from "../../../models/save.model";
-import { Status } from "../../../enums/StatusCodes";
+import { KoaController } from "../../../utils/KoaController.js";
+import { postgres } from "../../../server.js";
+import { Save } from "../../../models/save.model.js";
+import { Status } from "../../../enums/StatusCodes.js";
 
 interface Monster {
   hid: number[];

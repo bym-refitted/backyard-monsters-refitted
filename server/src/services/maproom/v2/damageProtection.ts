@@ -1,7 +1,7 @@
-import { BaseMode, BaseType } from "../../../enums/Base";
-import { Save } from "../../../models/save.model";
-import { postgres } from "../../../server";
-import { getCurrentDateTime } from "../../../utils/getCurrentDateTime";
+import { BaseMode, BaseType } from "../../../enums/Base.js";
+import { Save } from "../../../models/save.model.js";
+import { postgres } from "../../../server.js";
+import { getCurrentDateTime } from "../../../utils/getCurrentDateTime.js";
 
 /**
  * Handles the damage protection for the user's base.
@@ -78,6 +78,7 @@ export const damageProtection = async (save: Save, mode?: BaseMode) => {
           // Clear expired protection timestamp
           if (protection > 0 && protection <= currentTime) {
             protection = 0;
+            save.damage = 0; 
             persist = true;
           }
 

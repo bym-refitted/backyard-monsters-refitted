@@ -1,4 +1,4 @@
-import { Tribe } from "../../../enums/Tribes";
+import { Tribe } from "../../../enums/Tribes.js";
 
 /**
  * Object mapping each tribe to its minimum level.

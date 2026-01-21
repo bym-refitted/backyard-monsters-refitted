@@ -1,9 +1,10 @@
-import { MapRoom, Terrain } from "../../../enums/MapRoom";
-import { World } from "../../../models/world.model";
-import { WorldMapCell } from "../../../models/worldmapcell.model";
+import { MapRoom, Terrain } from "../../../enums/MapRoom.js";
+import { World } from "../../../models/world.model.js";
+import { WorldMapCell } from "../../../models/worldmapcell.model.js";
 import { EntityManager, PostgreSqlDriver } from "@mikro-orm/postgresql";
-import { logging } from "../../../utils/logger";
-import { generateNoise, getTerrainHeight } from "./generateMap";
+import { logger } from "../../../utils/logger.js";
+import { generateNoise, getTerrainHeight } from "./generateMap.js";
+import { setTimeout } from "timers/promises";
 
 /**
  * Interface representing a single cell
@@ -36,17 +37,17 @@ export const findFreeCell = async (world: World, em: EntityManager<PostgreSqlDri
 
     // Skip if the cell is water
     if (terrainHeight <= Terrain.WATER3) {
-      logging(`Tile (${x}, ${y}) is water. Skipping.`);
+      logger.info(`Tile (${x}, ${y}) is water. Skipping.`);
       continue;
     }
 
     // Skip if the cell is already occupied
     const existingCell = await em.findOne(WorldMapCell, { world, x, y });
     if (existingCell) {
-      logging(`Tile (${x}, ${y}) is occupied by another player. Skipping.`);
+      logger.info(`Tile (${x}, ${y}) is occupied by another player. Skipping.`);
       
       // Note: this is a self solving issue (gets better over time we promise, says the Promise)
-      await new Promise((resolve) => setTimeout(resolve, 200));
+      await setTimeout(200);
       continue;
     }
 

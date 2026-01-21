@@ -1,11 +1,11 @@
-import { Status } from "../../enums/StatusCodes";
-import { KoaController } from "../../utils/KoaController";
-import { ReportMessageSchema } from "./zod/ReportMessageSchema";
-import { postgres } from "../../server";
-import { Thread } from "../../models/thread.model";
-import { User } from "../../models/user.model";
-import { mailboxErr } from "../../errors/errors";
-import { errorLog } from "../../utils/logger";
+import { Status } from "../../enums/StatusCodes.js";
+import { KoaController } from "../../utils/KoaController.js";
+import { ReportMessageSchema } from "./zod/ReportMessageSchema.js";
+import { postgres } from "../../server.js";
+import { Thread } from "../../models/thread.model.js";
+import { User } from "../../models/user.model.js";
+import { mailboxErr } from "../../errors/errors.js";
+import { logger } from "../../utils/logger.js";
 
 /**
  * Controller to report/block a user from a message thread
@@ -40,6 +40,6 @@ export const reportMessageThread: KoaController = async (ctx) => {
   } catch (error) {
     ctx.status = Status.INTERNAL_SERVER_ERROR;
     ctx.body = { error: 1 };
-    errorLog("Error blocking user:", error);
+    logger.error("Error blocking user:", error);
   }
 };

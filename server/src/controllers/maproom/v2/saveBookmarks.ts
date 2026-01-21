@@ -1,7 +1,7 @@
-import { Status } from "../../../enums/StatusCodes";
-import { KoaController } from "../../../utils/KoaController";
-import { postgres } from "../../../server";
-import { User } from "../../../models/user.model";
+import { Status } from "../../../enums/StatusCodes.js";
+import { KoaController } from "../../../utils/KoaController.js";
+import { postgres } from "../../../server.js";
+import { User } from "../../../models/user.model.js";
 
 interface Bookmark { bookmarks: string };
 

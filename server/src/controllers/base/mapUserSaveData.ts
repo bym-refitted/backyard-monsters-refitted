@@ -1,4 +1,4 @@
-import { User } from "../../models/user.model";
+import { User } from "../../models/user.model.js";
 
 /**
  * Maps the common properties from the user save object

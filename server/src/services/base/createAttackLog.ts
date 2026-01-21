@@ -1,7 +1,7 @@
-import { AttackLogs } from "../../models/attacklogs.model";
-import { Save } from "../../models/save.model";
-import { User } from "../../models/user.model";
-import { postgres } from "../../server";
+import { AttackLogs } from "../../models/attacklogs.model.js";
+import { Save } from "../../models/save.model.js";
+import { User } from "../../models/user.model.js";
+import { postgres } from "../../server.js";
 
 /**
  * Creates a new attack log entry in the database

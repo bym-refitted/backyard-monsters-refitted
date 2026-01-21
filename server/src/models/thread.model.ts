@@ -1,6 +1,6 @@
 import { Entity, Index, OneToOne, PrimaryKey, Property } from "@mikro-orm/core";
 import { v4 } from "uuid";
-import { Message } from "./message.model";
+import { Message } from "./message.model.js";
 
 @Index({ properties: ["userid", "threadid"] })
 @Index({ properties: ["targetid", "threadid"] })
