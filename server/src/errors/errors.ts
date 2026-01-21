@@ -1,5 +1,5 @@
-import { Status } from "../enums/StatusCodes";
-import { ClientSafeError } from "../middleware/clientSafeError";
+import { Status } from "../enums/StatusCodes.js";
+import { ClientSafeError } from "../middleware/clientSafeError.js";
 
 /**
  * Creates a new instance of `ClientSafeError` with the specified properties.
@@ -108,17 +108,25 @@ export const discordAgeErr = () =>
 
 export const permissionErr = () =>
   new ClientSafeError({
-    message:
-      "You do not have permission to complete this operation.",
+    message: "You do not have permission to complete this operation.",
     status: Status.FORBIDDEN,
     data: null,
     isClientFriendly: true,
   });
 
-  export const mailboxErr = () =>
-    new ClientSafeError({
-      message: "Mailbox failed with an error.",
-      status: Status.NOT_FOUND,
-      data: null,
-      isClientFriendly: true,
-    });
+export const mailboxErr = () =>
+  new ClientSafeError({
+    message: "Mailbox failed with an error.",
+    status: Status.NOT_FOUND,
+    data: null,
+    isClientFriendly: true,
+  });
+
+export const relocateOutpostErr = () =>
+  new ClientSafeError({
+    message:
+      "You cannot relocate while owning outposts in this world.",
+    status: Status.FORBIDDEN,
+    data: null,
+    isClientFriendly: true,
+  });

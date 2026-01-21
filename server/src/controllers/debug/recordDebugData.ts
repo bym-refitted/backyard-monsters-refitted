@@ -1,7 +1,7 @@
-import { Status } from "../../enums/StatusCodes";
-import { debugClientErr } from "../../errors/errors";
-import { KoaController } from "../../utils/KoaController";
-import { errorLog, logging } from "../../utils/logger";
+import { Status } from "../../enums/StatusCodes.js";
+import { debugClientErr } from "../../errors/errors.js";
+import { KoaController } from "../../utils/KoaController.js";
+import { logger } from "../../utils/logger.js";
 
 const LOG_LEVEL = {
   INFO: "info",
@@ -30,11 +30,11 @@ export const recordDebugData: KoaController = async (ctx) => {
     if (!body.key || !body.saveid || !body.value) throw debugClientErr();
 
     if (body.key === LOG_LEVEL.ERROR) {
-      errorLog(
+      logger.error(
         `ERROR logged for basesaveid '${body.saveid}'. Details: ${body.value}`
       );
     } else {
-      logging(
+      logger.info(
         `INFO logged for basesaveid '${body.saveid}'. Details: ${body.value}`
       );
     }

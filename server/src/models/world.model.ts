@@ -1,6 +1,6 @@
 import { Collection, Entity, OneToMany, PrimaryKey, Property } from "@mikro-orm/core";
 import { v4 } from "uuid";
-import { WorldMapCell } from "./worldmapcell.model";
+import { WorldMapCell } from "./worldmapcell.model.js";
 
 @Entity({ tableName: "world" })
 export class World {

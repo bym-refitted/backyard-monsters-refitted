@@ -1,16 +1,15 @@
 import path from "path";
 import JWT from "jsonwebtoken";
 
-import { Status } from "../../enums/StatusCodes";
-import { KoaController } from "../../utils/KoaController";
-import { errorLog } from "../../utils/logger";
+import { Status } from "../../enums/StatusCodes.js";
+import { KoaController } from "../../utils/KoaController.js";
+import { logger } from "../../utils/logger.js";
 import { promises as fs } from "fs";
-import { postgres } from "../../server";
-import { User } from "../../models/user.model";
-import { authFailureErr } from "../../errors/errors";
-import { ForgotPasswordSchema } from "../../zod/AuthSchemas";
-import { transporter } from "../../config/MailSettings";
-
+import { postgres } from "../../server.js";
+import { User } from "../../models/user.model.js";
+import { authFailureErr } from "../../errors/errors.js";
+import { ForgotPasswordSchema } from "../../zod/AuthSchemas.js";
+import { transporter } from "../../config/MailSettings.js";
 /**
  * Controller to handle forgot password functionality.
  *
@@ -36,7 +35,7 @@ export const forgotPassword: KoaController = async (ctx) => {
     const user = await postgres.em.findOne(User, { email });
     
     if (!user) {
-      errorLog(`ForgotPassword: User not found for email: ${email}`);
+      logger.error(`ForgotPassword: User not found for email: ${email}`);
       throw authFailureErr();
     }
 
@@ -45,7 +44,7 @@ export const forgotPassword: KoaController = async (ctx) => {
 
     // Read the HTML template
     const templatePath = path.resolve(
-      __dirname,
+      import.meta.dirname,
       "../../../public/templates/forgot-password.html"
     );
     const html = await fs.readFile(templatePath, "utf-8");
@@ -67,7 +66,7 @@ export const forgotPassword: KoaController = async (ctx) => {
     ctx.status = Status.OK;
     ctx.body = { message: "Password reset email sent successfully." };
   } catch (error) {
-    errorLog(`Error in forgotPassword controller: ${error}`);
+    logger.error(`Error in forgotPassword controller: ${error}`);
     ctx.status = Status.BAD_REQUEST;
     ctx.body = {
       message: "Failed to send email. Please try again later.",

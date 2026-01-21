@@ -1,14 +1,16 @@
-import { JsonWebTokenError, TokenExpiredError } from "jsonwebtoken";
 import bcrypt from "bcrypt";
+import * as jwt from "jsonwebtoken";
 
-import { Status } from "../../enums/StatusCodes";
-import { KoaController } from "../../utils/KoaController";
-import { authFailureErr } from "../../errors/errors";
-import { postgres } from "../../server";
-import { User } from "../../models/user.model";
-import { errorLog } from "../../utils/logger";
-import { ResetPasswordSchema } from "../../zod/AuthSchemas";
-import { verifyJwtToken } from "../../middleware/auth";
+import { Status } from "../../enums/StatusCodes.js";
+import { KoaController } from "../../utils/KoaController.js";
+import { authFailureErr } from "../../errors/errors.js";
+import { postgres } from "../../server.js";
+import { User } from "../../models/user.model.js";
+import { logger } from "../../utils/logger.js";
+import { ResetPasswordSchema } from "../../zod/AuthSchemas.js";
+import { verifyJwtToken } from "../../middleware/auth.js";
+
+const { JsonWebTokenError, TokenExpiredError } = jwt;
 
 /**
  * Controller to handle password reset requests.
@@ -46,7 +48,7 @@ export const resetPassword: KoaController = async (ctx) => {
       message: "Password has been reset successfully.",
     };
   } catch (error) {
-    errorLog(`Error resetting password: ${error}`);
+    logger.error(`Error resetting password: ${error}`);
     if (error instanceof TokenExpiredError) {
       ctx.status = Status.UNAUTHORIZED;
       ctx.body = {
@@ -56,7 +58,7 @@ export const resetPassword: KoaController = async (ctx) => {
       return;
     }
 
-    if (error instanceof JsonWebTokenError) errorLog(`Invalid token: ${error}`);
+    if (error instanceof JsonWebTokenError) logger.error(`Invalid token: ${error}`);
     throw authFailureErr();
   }
-};
+};  

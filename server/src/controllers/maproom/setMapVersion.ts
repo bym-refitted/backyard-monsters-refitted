@@ -1,13 +1,13 @@
-import { Save } from "../../models/save.model";
-import { User } from "../../models/user.model";
-import { KoaController } from "../../utils/KoaController";
-import { postgres } from "../../server";
-import { joinOrCreateWorld } from "../../services/maproom/v2/joinOrCreateWorld";
-import { leaveWorld } from "../../services/maproom/v2/leaveWorld";
-import { FilterFrontendKeys } from "../../utils/FrontendKey";
-import { MapRoomVersion } from "../../enums/MapRoom";
-import { Status } from "../../enums/StatusCodes";
-import { Env } from "../../enums/Env";
+import { Save } from "../../models/save.model.js";
+import { User } from "../../models/user.model.js";
+import { KoaController } from "../../utils/KoaController.js";
+import { postgres } from "../../server.js";
+import { joinOrCreateWorld } from "../../services/maproom/v2/joinOrCreateWorld.js";
+import { leaveWorld } from "../../services/maproom/v2/leaveWorld.js";
+import { FilterFrontendKeys } from "../../utils/FrontendKey.js";
+import { MapRoomVersion } from "../../enums/MapRoom.js";
+import { Status } from "../../enums/StatusCodes.js";
+import { Env } from "../../enums/Env.js";
 import z from "zod";
 
 /**

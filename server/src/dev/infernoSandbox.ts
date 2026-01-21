@@ -1,5 +1,5 @@
-import { User } from "../models/user.model";
-import { getCurrentDateTime } from "../utils/getCurrentDateTime";
+import { User } from "../models/user.model.js";
+import { getCurrentDateTime } from "../utils/getCurrentDateTime.js";
 
 export const infernoSandbox = (user?: User) => {
   return {

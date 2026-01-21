@@ -1,5 +1,5 @@
 import { Context, Next } from "koa";
-import { Status } from "../enums/StatusCodes";
+import { Status } from "../enums/StatusCodes.js";
 
 /**
  * Middleware to set CORS headers and apply cache control.

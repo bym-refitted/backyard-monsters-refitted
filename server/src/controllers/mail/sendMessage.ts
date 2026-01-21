@@ -1,15 +1,15 @@
-import { Status } from "../../enums/StatusCodes";
-import { User } from "../../models/user.model";
-import { KoaController } from "../../utils/KoaController";
-import { devConfig } from "../../config/DevSettings";
-import { SendMessageSchema } from "./zod/SendMessageSchema";
-import { postgres } from "../../server";
-import { Message } from "../../models/message.model";
-import { getCurrentDateTime } from "../../utils/getCurrentDateTime";
-import { findOrCreateThread } from "../../services/mail/findOrCreateThread";
-import { countUnreadMessage } from "../../services/mail/countUnreadMessage";
-import { mailboxErr } from "../../errors/errors";
-import { errorLog } from "../../utils/logger";
+import { Status } from "../../enums/StatusCodes.js";
+import { User } from "../../models/user.model.js";
+import { KoaController } from "../../utils/KoaController.js";
+import { devConfig } from "../../config/DevSettings.js";
+import { SendMessageSchema } from "./zod/SendMessageSchema.js";
+import { postgres } from "../../server.js";
+import { Message } from "../../models/message.model.js";
+import { getCurrentDateTime } from "../../utils/getCurrentDateTime.js";
+import { findOrCreateThread } from "../../services/mail/findOrCreateThread.js";
+import { countUnreadMessage } from "../../services/mail/countUnreadMessage.js";
+import { mailboxErr } from "../../errors/errors.js";
+import { logger } from "../../utils/logger.js";
 
 /**
  * Controller to send message
@@ -95,7 +95,7 @@ export const sendMessage: KoaController = async (ctx) => {
       threadid: thread.threadid,
     };
   } catch (err) {
-    errorLog("Error sending message:", err);
+    logger.error("Error sending message:", err);
     throw mailboxErr();
   }
 };

@@ -1,6 +1,6 @@
 import { Context, Next } from "koa";
-import { errorLog } from "../utils/logger";
-import { Status } from "../enums/StatusCodes";
+import { logger } from "../utils/logger.js";
+import { Status } from "../enums/StatusCodes.js";
 
 interface ConstructorParams {
   status: number;
@@ -75,7 +75,7 @@ export const ErrorInterceptor = async (ctx: Context, next: Next) => {
           isClientFriendly: true,
         });
     const errorObj = clientError.toSafeJson();
-    if (!isSafe) errorLog(`${JSON.stringify(errorObj)}`);
+    if (!isSafe) logger.error(`${JSON.stringify(errorObj)}`);
 
     console.error(
       `ErrorInterceptor error: ${errorObj.message} | status: ${errorObj.status}`

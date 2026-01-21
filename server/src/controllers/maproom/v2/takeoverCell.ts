@@ -1,18 +1,18 @@
-import { KoaController } from "../../../utils/KoaController";
-import { User } from "../../../models/user.model";
-import { postgres } from "../../../server";
-import { WorldMapCell } from "../../../models/worldmapcell.model";
-import { Status } from "../../../enums/StatusCodes";
-import { BaseType } from "../../../enums/Base";
-import { MapRoomCell } from "../../../enums/MapRoom";
+import { KoaController } from "../../../utils/KoaController.js";
+import { User } from "../../../models/user.model.js";
+import { postgres } from "../../../server.js";
+import { WorldMapCell } from "../../../models/worldmapcell.model.js";
+import { Status } from "../../../enums/StatusCodes.js";
+import { BaseType } from "../../../enums/Base.js";
+import { MapRoomCell } from "../../../enums/MapRoom.js";
 import {
   Operation,
   updateResources,
-} from "../../../services/base/updateResources";
-import { errorLog } from "../../../utils/logger";
-import { getCurrentDateTime } from "../../../utils/getCurrentDateTime";
-import { validateRange } from "../../../services/maproom/v2/validateRange";
-import { TakeoverCellSchema } from "../../../zod/TakeoverCellSchema";
+} from "../../../services/base/updateResources.js";
+import { logger } from "../../../utils/logger.js";
+import { getCurrentDateTime } from "../../../utils/getCurrentDateTime.js";
+import { validateRange } from "../../../services/maproom/v2/validateRange.js";
+import { TakeoverCellSchema } from "../../../zod/TakeoverCellSchema.js";
 
 /**
  * Controller to handle the takeover of a cell on the world map via shiny or resources.
@@ -123,6 +123,6 @@ export const takeoverCell: KoaController = async (ctx) => {
   } catch (error) {
     ctx.status = Status.BAD_REQUEST;
     ctx.body = { error: "The server attempted to take over this cell but failed unexpectedly." };
-    errorLog("Error taking over cell:", error);
+    logger.error("Error taking over cell:", error);
   }
 };

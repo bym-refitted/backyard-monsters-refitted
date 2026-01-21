@@ -1313,9 +1313,9 @@ package
             mc.tB.htmlText = "<b>" + KEYS.Get("ai_poordefense_tb") + "</b>";
             mc.tC.htmlText = KEYS.Get("ai_poordefense_tc");
             mc.bAction.SetupKey("ai_repairdamage_btn");
-            mc.bAction.addEventListener(MouseEvent.CLICK,RepairAll,false,0,true);
+            mc.bAction.addEventListener(MouseEvent.CLICK,RepairAll);
             mc.bAction2.SetupKey("pop_damaged_repairnow_btn");
-            mc.bAction2.addEventListener(MouseEvent.CLICK,RepairNow,false,0,true);
+            mc.bAction2.addEventListener(MouseEvent.CLICK,RepairNow);
             mc.bAction2.Highlight = true;
             POPUPS.Push(mc,null,null,"shotgun","military.png");
          }

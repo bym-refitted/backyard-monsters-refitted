@@ -1,5 +1,5 @@
-import { Save } from "../../../../models/save.model";
-import { updateMonsters } from "../../../../services/base/updateMonsters";
+import { Save } from "../../../../models/save.model.js";
+import { updateMonsters } from "../../../../services/base/updateMonsters.js";
 
 export interface MonsterUpdate {
   m: {

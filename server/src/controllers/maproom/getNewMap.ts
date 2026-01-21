@@ -1,8 +1,8 @@
-import { MapRoom, MapRoomVersion } from "../../enums/MapRoom";
-import { Status } from "../../enums/StatusCodes";
-import { BASE_URL, PORT } from "../../server";
-import { KoaController } from "../../utils/KoaController";
-import { CURRENT_MAPROOM_VERSION } from "./setMapVersion";
+import { MapRoom, MapRoomVersion } from "../../enums/MapRoom.js";
+import { Status } from "../../enums/StatusCodes.js";
+import { BASE_URL, PORT } from "../../server.js";
+import { KoaController } from "../../utils/KoaController.js";
+import { CURRENT_MAPROOM_VERSION } from "./setMapVersion.js";
 
 /**
  * Controller to get Map Room details.

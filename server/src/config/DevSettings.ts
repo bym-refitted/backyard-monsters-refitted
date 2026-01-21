@@ -1,4 +1,4 @@
-import { Env } from "../enums/Env";
+import { Env } from "../enums/Env.js";
 
 /** Visit our Wiki to get more information on each flag.
  * Wiki: https://github.com/bym-refitted/backyard-monsters-refitted/wiki/Dev-Settings-%E2%80%90-Configuration

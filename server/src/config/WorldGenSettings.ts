@@ -1,4 +1,4 @@
-import { MapRoom } from "../enums/MapRoom";
+import { MapRoom } from "../enums/MapRoom.js";
 
 /**
  * Represents the size of the world map.
