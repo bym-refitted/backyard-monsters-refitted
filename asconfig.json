@@ -12,7 +12,7 @@
 		"default-background-color": "#1D232A",
 		"swf-version": 11,
 		"target-player": "16.0",
-		"default-frame-rate": 24,
+		"default-frame-rate": 40,
 		"default-size": {
 			"width": 760,
 			"height": 670
