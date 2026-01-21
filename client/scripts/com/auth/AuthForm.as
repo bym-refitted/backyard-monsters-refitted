@@ -2,12 +2,11 @@ package com.auth
 {
     import flash.display.Sprite;
     import flash.text.TextField;
-    import flash.text.TextFormatAlign;
     import flash.text.TextFieldType;
     import flash.text.TextFieldAutoSize;
     import flash.text.AntiAliasType;
-    import flash.events.MouseEvent;
     import flash.events.Event;
+    import flash.events.MouseEvent;
     import flash.ui.MouseCursor;
     import flash.ui.Mouse;
     import flash.text.TextFormat;
@@ -16,13 +15,12 @@ package com.auth
     import flash.display.Loader;
     import flash.net.URLRequest;
     import flash.events.FocusEvent;
+    import flash.text.TextFormatAlign;
     import flash.system.LoaderContext;
     import flash.events.IOErrorEvent;
     import flash.utils.Timer;
     import flash.events.TimerEvent;
     import flash.events.SecurityErrorEvent;
-
-    // (habby-edit) Remember-email local storage (AIR/Flash)
     import flash.net.SharedObject;
 
     // DISCLAIMER: This is far from my best work, actually, it's quite miserable, but it works.
@@ -102,14 +100,31 @@ package com.auth
 
         private var languages:Array;
 
-        // (habby-edit) Remember email UI + state
+        // Remember Email (local-only)
+        private static const REMEMBER_SO_NAME:String = "bymr_authprefs";
+        private static const REMEMBER_SO_PATH:String = "/";
+        private static const REMEMBER_EMAIL_KEY:String = "remember_email";
+        private static const REMEMBER_ENABLED_KEY:String = "remember_enabled";
+
         private var rememberEmailEnabled:Boolean = false;
-        private var rememberEmailToggle:TextField;
-        private var rememberEmailPrefill:String = "";
+
+        // Checkbox UI (no plaintext checkbox chars)
+        private var rememberEmailRow:Sprite;
+        private var rememberEmailBox:Sprite;
+        private var rememberEmailCheck:Sprite;
+        private var rememberEmailLabel:TextField;
 
         public function AuthForm()
         {
             addEventListener(Event.ADDED_TO_STAGE, formAddedToStageHandler);
+
+            // Load remembered email state early so it can prefill the Email field when created
+            var remembered:Object = loadRememberEmail();
+            rememberEmailEnabled = Boolean(remembered.enabled);
+            if (rememberEmailEnabled && remembered.email is String)
+            {
+                emailValue = String(remembered.email);
+            }
 
             GLOBAL.eventDispatcher.addEventListener("initError", function(event:Event):void
                 {
@@ -175,10 +190,6 @@ package com.auth
 
         private function handleContentLoaded():void
         {
-            // (habby-edit) Load remember-email state early (so createInputField can prefill correctly)
-            rememberEmailEnabled = RememberEmailStore.loadEnabled();
-            rememberEmailPrefill = rememberEmailEnabled ? RememberEmailStore.loadEmail() : "";
-
             // Global Initialization
             navContainer = new Sprite();
             formContainer = new Sprite();
@@ -224,8 +235,11 @@ package com.auth
             CreateBorder(emailInput);
             CreateBorder(passwordInput);
 
-            // (habby-edit) Add "Remember email" toggle under password input
-            createRememberEmailToggle();
+            // Remember email checkbox (login form only)
+            if (!isRegisterForm)
+            {
+                createRememberEmailToggle();
+            }
 
             // Create button
             submitButton = createButton();
@@ -236,51 +250,6 @@ package com.auth
 
             // Link
             FormNavigate();
-        }
-
-        // (habby-edit) Creates a simple clickable "Remember email" toggle (TextField-based)
-        private function createRememberEmailToggle():void
-        {
-            rememberEmailToggle = new TextField();
-            rememberEmailToggle.selectable = false;
-            rememberEmailToggle.mouseEnabled = true;
-            rememberEmailToggle.embedFonts = true;
-            rememberEmailToggle.antiAliasType = AntiAliasType.NORMAL;
-            rememberEmailToggle.autoSize = TextFieldAutoSize.LEFT;
-
-            var tf:TextFormat = new TextFormat();
-            tf.font = "Verdana";
-            tf.size = 14;
-            tf.color = WHITE;
-            rememberEmailToggle.defaultTextFormat = tf;
-
-            rememberEmailToggle.text = rememberEmailEnabled ? "☑ Remember email" : "☐ Remember email";
-
-            // Place it where startY currently is (startY is already after password input + gap)
-            rememberEmailToggle.x = passwordInput.x;
-            rememberEmailToggle.y = startY - 10;
-
-            mousePointerCursor(rememberEmailToggle);
-
-            rememberEmailToggle.addEventListener(MouseEvent.CLICK, onRememberEmailToggleClick);
-            formContainer.addChild(rememberEmailToggle);
-
-            // Give it some vertical space so the submit button doesn't overlap
-            startY += 10;
-        }
-
-        private function onRememberEmailToggleClick(event:MouseEvent):void
-        {
-            rememberEmailEnabled = !rememberEmailEnabled;
-            rememberEmailToggle.text = rememberEmailEnabled ? "☑ Remember email" : "☐ Remember email";
-
-            // Save current email (trimmed) if enabled; otherwise clear.
-            // Note: emailValue may still be "Email" placeholder if user never focused it.
-            // We'll prefer the live field text, but guard against placeholder.
-            var current:String = (emailInput != null) ? emailInput.text : emailValue;
-            if (current == "Email")
-                current = "";
-            RememberEmailStore.save(current, rememberEmailEnabled);
         }
 
         private function Loading():void
@@ -386,10 +355,13 @@ package com.auth
             var scale:Number = 2.2;
             loadingContainer.scaleX = loadingContainer.scaleY = scale;
 
-            if (stage) {
+            if (stage)
+            {
                 loadingContainer.x = 0;
                 loadingContainer.y = 50;
-            } else {
+            }
+            else
+            {
                 loadingContainer.x = 200;
                 loadingContainer.y = 200;
             }
@@ -507,24 +479,23 @@ package com.auth
             placeholderTextFormat.size = 14;
             placeholderTextFormat.color = WHITE;
 
-            input.text = placeholder;
-            input.setTextFormat(placeholderTextFormat);
+            // Prefill Email if enabled
+            if (placeholder == "Email" && rememberEmailEnabled && emailValue != "" && emailValue != "Email")
+            {
+                input.text = emailValue;
+                input.setTextFormat(inputTextFormat);
+            }
+            else
+            {
+                input.text = placeholder;
+                input.setTextFormat(placeholderTextFormat);
+            }
 
             if (isPassword)
                 input.displayAsPassword = true;
 
             if (placeholder)
             {
-                input.text = placeholder;
-
-                // (habby-edit) Prefill remembered email (only for Email field) before focus handlers
-                if (placeholder == "Email" && rememberEmailEnabled && rememberEmailPrefill != null && rememberEmailPrefill.length > 0)
-                {
-                    input.text = rememberEmailPrefill;
-                    input.setTextFormat(inputTextFormat);
-                    emailValue = rememberEmailPrefill;
-                }
-
                 input.addEventListener(FocusEvent.FOCUS_IN, function(event:FocusEvent):void
                     {
                         if (input.text == placeholder)
@@ -545,6 +516,117 @@ package com.auth
             }
 
             return input;
+        }
+
+        // Remember Email: checkbox sprite + label (no plaintext checkbox characters)
+        private function createRememberEmailToggle():void
+        {
+            rememberEmailRow = new Sprite();
+            rememberEmailRow.buttonMode = true;
+            rememberEmailRow.useHandCursor = true;
+            rememberEmailRow.mouseChildren = false;
+
+            rememberEmailBox = new Sprite();
+            rememberEmailBox.graphics.lineStyle(2, WHITE);
+            rememberEmailBox.graphics.beginFill(BACKGROUND);
+            rememberEmailBox.graphics.drawRect(0, 0, 18, 18);
+            rememberEmailBox.graphics.endFill();
+            rememberEmailRow.addChild(rememberEmailBox);
+
+            rememberEmailCheck = new Sprite();
+            rememberEmailCheck.graphics.lineStyle(3, SECONDARY);
+            rememberEmailCheck.graphics.moveTo(3, 10);
+            rememberEmailCheck.graphics.lineTo(8, 15);
+            rememberEmailCheck.graphics.lineTo(16, 3);
+            rememberEmailCheck.visible = rememberEmailEnabled;
+            rememberEmailRow.addChild(rememberEmailCheck);
+
+            rememberEmailLabel = new TextField();
+            rememberEmailLabel.selectable = false;
+            rememberEmailLabel.embedFonts = true;
+            rememberEmailLabel.antiAliasType = AntiAliasType.NORMAL;
+            rememberEmailLabel.autoSize = TextFieldAutoSize.LEFT;
+
+            var tf:TextFormat = new TextFormat();
+            tf.font = "Verdana";
+            tf.size = 14;
+            tf.color = WHITE;
+            rememberEmailLabel.defaultTextFormat = tf;
+            rememberEmailLabel.text = "Remember email";
+            rememberEmailLabel.x = 24;
+            rememberEmailLabel.y = -2;
+            rememberEmailRow.addChild(rememberEmailLabel);
+
+            // Position under password input (startY currently points after password field)
+            rememberEmailRow.x = passwordInput.x;
+            rememberEmailRow.y = startY - 10;
+
+            // Mobile-safe hit area
+            rememberEmailRow.graphics.beginFill(0x000000, 0);
+            rememberEmailRow.graphics.drawRect(0, 0, rememberEmailLabel.x + rememberEmailLabel.width, 20);
+            rememberEmailRow.graphics.endFill();
+
+            rememberEmailRow.addEventListener(MouseEvent.CLICK, onRememberEmailToggleClick);
+            formContainer.addChild(rememberEmailRow);
+
+            // Small spacing so button doesn't overlap
+            startY += 10;
+        }
+
+        private function onRememberEmailToggleClick(event:MouseEvent):void
+        {
+            rememberEmailEnabled = !rememberEmailEnabled;
+
+            if (rememberEmailCheck)
+                rememberEmailCheck.visible = rememberEmailEnabled;
+
+            var current:String = (emailInput != null) ? emailInput.text : emailValue;
+            if (current == "Email") current = "";
+
+            saveRememberEmail(current, rememberEmailEnabled);
+        }
+
+        private function loadRememberEmail():Object
+        {
+            var result:Object = { enabled: false, email: "" };
+            try
+            {
+                var so:SharedObject = SharedObject.getLocal(REMEMBER_SO_NAME, REMEMBER_SO_PATH);
+                if (so && so.data)
+                {
+                    result.enabled = Boolean(so.data[REMEMBER_ENABLED_KEY]);
+                    result.email = (so.data[REMEMBER_EMAIL_KEY] is String) ? String(so.data[REMEMBER_EMAIL_KEY]) : "";
+                }
+            }
+            catch (e:Error)
+            {
+            }
+            return result;
+        }
+
+        private function saveRememberEmail(email:String, enabled:Boolean):void
+        {
+            try
+            {
+                var so:SharedObject = SharedObject.getLocal(REMEMBER_SO_NAME, REMEMBER_SO_PATH);
+                if (!so || !so.data) return;
+
+                so.data[REMEMBER_ENABLED_KEY] = enabled;
+
+                if (enabled)
+                {
+                    so.data[REMEMBER_EMAIL_KEY] = email;
+                }
+                else
+                {
+                    delete so.data[REMEMBER_EMAIL_KEY];
+                }
+
+                so.flush();
+            }
+            catch (e:Error)
+            {
+            }
         }
 
         function createSelectInput(defaultOption:String = "English"):Sprite
@@ -721,6 +803,24 @@ package com.auth
                 usernameInput.x = 50;
                 usernameInput.y = emailInput.y - usernameInput.height - 20;
                 CreateBorder(usernameInput);
+
+                // Hide/remove remember email on register view
+                if (rememberEmailRow && rememberEmailRow.parent)
+                {
+                    rememberEmailRow.parent.removeChild(rememberEmailRow);
+                }
+            }
+            else
+            {
+                // Ensure checkbox exists on login view
+                if (!rememberEmailRow)
+                {
+                    createRememberEmailToggle();
+                }
+                else if (!rememberEmailRow.parent)
+                {
+                    formContainer.addChild(rememberEmailRow);
+                }
             }
         }
 
@@ -769,19 +869,20 @@ package com.auth
         {
             clearErrorMessages();
 
-            // (habby-edit) Keep remember-email storage in sync at the moment of submit.
-            // Use live field text (not placeholder).
-            var currentEmail:String = (emailInput != null) ? emailInput.text : emailValue;
-            if (currentEmail == "Email")
-                currentEmail = "";
-            RememberEmailStore.save(currentEmail, rememberEmailEnabled);
-
             var isUsernameValid:Boolean = isValidUsername(usernameValue);
             var isEmailValid:Boolean = isValidEmail(emailValue);
             var isPasswordValid:Boolean = isValidPassword(passwordValue);
 
             if (isEmailValid && isPasswordValid)
             {
+                // Persist remembered email only on successful submit attempt (client-side)
+                if (!isRegisterForm)
+                {
+                    var current:String = emailValue;
+                    if (current == "Email") current = "";
+                    saveRememberEmail(current, rememberEmailEnabled);
+                }
+
                 if (isRegisterForm)
                 {
                     if (isUsernameValid)
@@ -870,7 +971,6 @@ package com.auth
             errorText.htmlText = errorMessage;
             errorText.textColor = RED;
             errorText.x = inputField.x;
-            ;
             errorText.y = inputField.y + inputField.height + 5;
             errorText.width = inputField.width + 100;
             errorText.height = 40;
@@ -900,22 +1000,21 @@ package com.auth
             // Remove event listeners
             submitButton.removeEventListener(MouseEvent.CLICK, submitButtonClickHandler);
 
-            if (rememberEmailToggle)
+            if (rememberEmailRow)
             {
-                rememberEmailToggle.removeEventListener(MouseEvent.CLICK, onRememberEmailToggleClick);
+                rememberEmailRow.removeEventListener(MouseEvent.CLICK, onRememberEmailToggleClick);
             }
 
             // Remove display objects
             formContainer.removeChild(submitButton);
             formContainer.removeChild(emailInput);
             formContainer.removeChild(passwordInput);
-
-            if (rememberEmailToggle && rememberEmailToggle.parent == formContainer)
-            {
-                formContainer.removeChild(rememberEmailToggle);
-            }
-
             removeChild(formContainer);
+
+            if (rememberEmailRow && rememberEmailRow.parent)
+            {
+                rememberEmailRow.parent.removeChild(rememberEmailRow);
+            }
 
             if (image)
             {
@@ -932,71 +1031,16 @@ package com.auth
             image = null;
             loader = null;
 
+            rememberEmailRow = null;
+            rememberEmailBox = null;
+            rememberEmailCheck = null;
+            rememberEmailLabel = null;
+
             if (formContainer.parent)
             {
                 formContainer.parent.removeChild(formContainer);
             }
         }
 
-    }
-
-    // (habby-edit) Local-only remember-email storage (email ONLY; no password/token)
-    internal final class RememberEmailStore
-    {
-        private static const SO_NAME:String = "bymr_prefs";
-        private static const KEY_EMAIL:String = "remember_email_value";
-        private static const KEY_ENABLED:String = "remember_email_enabled";
-
-        public static function loadEnabled():Boolean
-        {
-            try
-            {
-                var so:SharedObject = SharedObject.getLocal(SO_NAME);
-                return so.data[KEY_ENABLED] === true;
-            }
-            catch (e:Error)
-            {
-                return false;
-            }
-        }
-
-        public static function loadEmail():String
-        {
-            try
-            {
-                var so:SharedObject = SharedObject.getLocal(SO_NAME);
-                var v:* = so.data[KEY_EMAIL];
-                return (v is String) ? String(v) : "";
-            }
-            catch (e:Error)
-            {
-                return "";
-            }
-        }
-
-        public static function save(email:String, enabled:Boolean):void
-        {
-            try
-            {
-                var so:SharedObject = SharedObject.getLocal(SO_NAME);
-                so.data[KEY_ENABLED] = enabled;
-
-                if (enabled)
-                {
-                    var trimmed:String = (email != null) ? email.replace(/^\s+|\s+$/g, "") : "";
-                    so.data[KEY_EMAIL] = trimmed;
-                }
-                else
-                {
-                    delete so.data[KEY_EMAIL];
-                }
-
-                so.flush();
-            }
-            catch (e:Error)
-            {
-                // ignore
-            }
-        }
     }
 }
