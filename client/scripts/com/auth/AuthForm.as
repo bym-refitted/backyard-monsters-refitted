@@ -1,6 +1,9 @@
 package com.auth
 {
     import flash.display.Sprite;
+    import flash.display.CapsStyle;
+    import flash.display.JointStyle;
+    import flash.display.LineScaleMode;
     import flash.text.TextField;
     import flash.text.TextFieldType;
     import flash.text.TextFieldAutoSize;
@@ -22,6 +25,9 @@ package com.auth
     import flash.events.TimerEvent;
     import flash.events.SecurityErrorEvent;
     import flash.net.SharedObject;
+    import flash.system.Capabilities;
+    import flash.geom.Rectangle;
+    import utils.DisplayScaler;
 
     // DISCLAIMER: This is far from my best work, actually, it's quite miserable, but it works.
     // I don't really have the time, nor the patience to look deprecated best practices for
@@ -38,9 +44,17 @@ package com.auth
 
         private var loadingContainer:Sprite;
 
+        private var uiRoot:Sprite;
+
         private var navContainer:Sprite;
 
         private var selectField:Sprite;
+
+        private var selectInput:Sprite;
+
+        // Responsive scaling (mobile)
+        private static const FORM_WIDTH:Number = 450;
+        private static const FORM_HEIGHT:Number = 600;
 
         private var dropdownMenu:Sprite;
 
@@ -65,6 +79,8 @@ package com.auth
         private var submitButton:Sprite;
 
         private var hasAccountText:TextField;
+
+        private var authLinkContainer:Sprite;
 
         private var defaultText:TextField;
 
@@ -107,6 +123,7 @@ package com.auth
         private static const REMEMBER_ENABLED_KEY:String = "remember_enabled";
 
         private var rememberEmailEnabled:Boolean = false;
+        private var rememberEmailErrorReported:Boolean = false;
 
         // Checkbox UI (no plaintext checkbox chars)
         private var rememberEmailRow:Sprite;
@@ -201,22 +218,26 @@ package com.auth
             passwordErrorText = new TextField();
             hasAccountText = new TextField();
 
-            var formWidth:Number = 450;
-            var formHeight:Number = 600;
+            // Root container for scaling/centering the whole auth UI safely
+            uiRoot = new Sprite();
+            addChild(uiRoot);
+
+            var formWidth:Number = FORM_WIDTH;
+            var formHeight:Number = FORM_HEIGHT;
 
             languages = KEYS.supportedLanguagesJson;
-            var selectInput:Sprite = createSelectInput();
-            addChild(selectInput);
+            selectInput = createSelectInput();
+            uiRoot.addChild(selectInput);
             selectInput.x = 20;
             selectInput.y = 10;
 
             HeaderTitle();
-            addChild(navContainer);
+            uiRoot.addChild(navContainer);
 
             formContainer.graphics.drawRect(0, 0, formWidth, formHeight);
             formContainer.x = 155;
             formContainer.y = 45;
-            addChild(formContainer);
+            uiRoot.addChild(formContainer);
 
             // Y-position for the first input field
             startY = 345;
@@ -243,13 +264,16 @@ package com.auth
 
             // Create button
             submitButton = createButton();
-            submitButton.x = (formContainer.width - submitButton.width) / 2;
+            submitButton.x = passwordInput.x + (passwordInput.width - submitButton.width) / 2;
             submitButton.y = startY + 28;
             formContainer.addChild(submitButton);
             submitButton.addEventListener(MouseEvent.CLICK, submitButtonClickHandler);
 
             // Link
             FormNavigate();
+
+            // Make the UI a bit larger on mobile while ensuring it still fits on screen.
+            setupResponsiveScale();
         }
 
         private function Loading():void
@@ -420,6 +444,9 @@ package com.auth
             image.scaleX = 1;
             image.scaleY = 1;
             formContainer.addChild(image);
+
+            // Image size can affect bounds; re-apply responsive scale if needed.
+            applyResponsiveScale();
         }
 
         // Function to create and position input fields
@@ -428,7 +455,8 @@ package com.auth
             var input:TextField = createInputField(width, height, placeholder, isPassword);
             formContainer.addChild(input);
 
-            input.x = (formContainer.width - input.width) / 2;
+            // Use design width to avoid bounds drift from dynamic children.
+            input.x = (FORM_WIDTH - input.width) / 2;
             input.y = startY;
 
             input.addEventListener(Event.CHANGE, function(event:Event):void
@@ -517,73 +545,189 @@ package com.auth
 
             return input;
         }
-
-        // Remember Email: checkbox sprite + label (no plaintext checkbox characters)
+        // Remember Email: full-row checkbox + label
         private function createRememberEmailToggle():void
         {
+            if (rememberEmailRow) return;
+
             rememberEmailRow = new Sprite();
             rememberEmailRow.buttonMode = true;
             rememberEmailRow.useHandCursor = true;
             rememberEmailRow.mouseChildren = false;
 
             rememberEmailBox = new Sprite();
-            rememberEmailBox.graphics.lineStyle(2, WHITE);
-            rememberEmailBox.graphics.beginFill(BACKGROUND);
-            rememberEmailBox.graphics.drawRect(0, 0, 18, 18);
-            rememberEmailBox.graphics.endFill();
             rememberEmailRow.addChild(rememberEmailBox);
 
             rememberEmailCheck = new Sprite();
-            rememberEmailCheck.graphics.lineStyle(3, SECONDARY);
-            rememberEmailCheck.graphics.moveTo(3, 10);
-            rememberEmailCheck.graphics.lineTo(8, 15);
-            rememberEmailCheck.graphics.lineTo(16, 3);
-            rememberEmailCheck.visible = rememberEmailEnabled;
             rememberEmailRow.addChild(rememberEmailCheck);
 
             rememberEmailLabel = new TextField();
             rememberEmailLabel.selectable = false;
+            rememberEmailLabel.mouseEnabled = false;
             rememberEmailLabel.embedFonts = true;
             rememberEmailLabel.antiAliasType = AntiAliasType.NORMAL;
-            rememberEmailLabel.autoSize = TextFieldAutoSize.LEFT;
+            rememberEmailLabel.autoSize = TextFieldAutoSize.NONE;
+            rememberEmailLabel.multiline = false;
+            rememberEmailLabel.wordWrap = false;
 
             var tf:TextFormat = new TextFormat();
             tf.font = "Verdana";
             tf.size = 14;
             tf.color = WHITE;
             rememberEmailLabel.defaultTextFormat = tf;
-            rememberEmailLabel.text = "Remember email";
-            rememberEmailLabel.x = 24;
-            rememberEmailLabel.y = -2;
+            updateRememberEmailLabel();
             rememberEmailRow.addChild(rememberEmailLabel);
-
-            // Position under password input (startY currently points after password field)
-            rememberEmailRow.x = passwordInput.x;
-            rememberEmailRow.y = startY - 10;
-
-            // Mobile-safe hit area
-            rememberEmailRow.graphics.beginFill(0x000000, 0);
-            rememberEmailRow.graphics.drawRect(0, 0, rememberEmailLabel.x + rememberEmailLabel.width, 20);
-            rememberEmailRow.graphics.endFill();
 
             rememberEmailRow.addEventListener(MouseEvent.CLICK, onRememberEmailToggleClick);
             formContainer.addChild(rememberEmailRow);
 
-            // Small spacing so button doesn't overlap
-            startY += 10;
+            // Initial draw/position (safe even before other controls exist)
+            redrawRememberEmailToggle();
+            rememberEmailRow.x = (passwordInput != null) ? passwordInput.x : 0;
+            rememberEmailRow.y = (passwordInput != null) ? (passwordInput.y + passwordInput.height + 14) : 0;
+
+            // If other controls exist already, reflow them.
+            layoutAuthControls();
+        }
+
+        private function updateRememberEmailLabel():void
+        {
+            if (!rememberEmailLabel) return;
+
+            var label:String = KEYS.Get("auth_remember_email");
+            // Fallback for missing translation keys
+            if (!label || label == "" || label == "auth_remember_email")
+            {
+                label = "Remember email";
+            }
+            rememberEmailLabel.text = label;
+        }
+
+        private function redrawRememberEmailToggle():void
+        {
+            if (!rememberEmailRow) return;
+
+            var rowW:Number = (passwordInput != null) ? passwordInput.width : 350;
+            var rowH:Number = 34;
+
+            rememberEmailRow.graphics.clear();
+            // Invisible full-row hit area (no background/outline)
+            rememberEmailRow.graphics.beginFill(0x000000, 0);
+            rememberEmailRow.graphics.drawRect(0, 0, rowW, rowH);
+            rememberEmailRow.graphics.endFill();
+
+
+
+            var boxSize:Number = 20;
+            var boxX:Number = 10;
+            var boxY:Number = (rowH - boxSize) / 2;
+
+            rememberEmailBox.graphics.clear();
+            rememberEmailBox.graphics.lineStyle(1, rememberEmailEnabled ? PRIMARY : WHITE, rememberEmailEnabled ? 1 : 0.35);
+            if (rememberEmailEnabled)
+            {
+                rememberEmailBox.graphics.beginFill(PRIMARY, 1);
+            }
+            else
+            {
+                rememberEmailBox.graphics.beginFill(0x000000, 0);
+            }
+            rememberEmailBox.graphics.drawRoundRect(0, 0, boxSize, boxSize, 6, 6);
+            rememberEmailBox.graphics.endFill();
+            rememberEmailBox.x = boxX;
+            rememberEmailBox.y = boxY;
+
+            rememberEmailCheck.graphics.clear();
+            rememberEmailCheck.graphics.lineStyle(3, WHITE, 1, false, LineScaleMode.NORMAL, CapsStyle.ROUND, JointStyle.ROUND);
+            rememberEmailCheck.graphics.moveTo(4, 10);
+            rememberEmailCheck.graphics.lineTo(8, 14);
+            rememberEmailCheck.graphics.lineTo(16, 5);
+            rememberEmailCheck.visible = rememberEmailEnabled;
+            rememberEmailCheck.x = boxX;
+            rememberEmailCheck.y = boxY;
+
+            updateRememberEmailLabel();
+            rememberEmailLabel.x = boxX + boxSize + 12;
+            rememberEmailLabel.width = Math.max(0, rowW - rememberEmailLabel.x - 12);
+            rememberEmailLabel.height = rowH;
+            rememberEmailLabel.y = Math.max(0, (rowH - rememberEmailLabel.textHeight) / 2 - 2);
+
+            // Prevent long translations from expanding container bounds and shifting layout.
+            rememberEmailRow.scrollRect = new Rectangle(0, 0, rowW, rowH);
         }
 
         private function onRememberEmailToggleClick(event:MouseEvent):void
         {
             rememberEmailEnabled = !rememberEmailEnabled;
-
-            if (rememberEmailCheck)
-                rememberEmailCheck.visible = rememberEmailEnabled;
+            redrawRememberEmailToggle();
 
             var current:String = (emailInput != null) ? emailInput.text : emailValue;
             if (current == "Email") current = "";
 
             saveRememberEmail(current, rememberEmailEnabled);
+            layoutAuthControls();
+        }
+
+        private function reportRememberEmailError(message:String):void
+        {
+            if (rememberEmailErrorReported) return;
+            rememberEmailErrorReported = true;
+
+            try
+            {
+                GLOBAL.Message(message);
+            }
+            catch (e:Error)
+            {
+                // Ignore UI errors; this is best-effort reporting.
+            }
+        }
+
+        private function layoutAuthControls():void
+        {
+            if (!formContainer || !passwordInput || !submitButton) return;
+
+            var y:Number = passwordInput.y + passwordInput.height + 14;
+
+            // If we have a password validation error field, place controls under it.
+            if (passwordErrorText && passwordErrorText.parent == formContainer && passwordErrorText.text != "")
+            {
+                y = passwordErrorText.y + passwordErrorText.height + 10;
+            }
+
+            if (!isRegisterForm)
+            {
+                if (!rememberEmailRow)
+                {
+                    createRememberEmailToggle();
+                }
+                if (rememberEmailRow && rememberEmailRow.parent != formContainer)
+                {
+                    formContainer.addChild(rememberEmailRow);
+                }
+
+                rememberEmailRow.x = passwordInput.x;
+                rememberEmailRow.y = y;
+
+                y = rememberEmailRow.y + rememberEmailRow.height + 18;
+            }
+            else
+            {
+                if (rememberEmailRow && rememberEmailRow.parent)
+                {
+                    rememberEmailRow.parent.removeChild(rememberEmailRow);
+                }
+                y += 10;
+            }
+
+            submitButton.x = passwordInput.x + (passwordInput.width - submitButton.width) / 2;
+            submitButton.y = y;
+
+            if (authLinkContainer)
+            {
+                authLinkContainer.x = passwordInput.x + (passwordInput.width - authLinkContainer.width) / 2;
+                authLinkContainer.y = submitButton.y + submitButton.height + 15;
+            }
         }
 
         private function loadRememberEmail():Object
@@ -600,7 +744,16 @@ package com.auth
             }
             catch (e:Error)
             {
+                reportRememberEmailError("Failed to load saved email: " + e);
             }
+
+            // Guard against corrupt/invalid saved data
+            if (result.enabled && result.email != "" && !isValidEmail(String(result.email)))
+            {
+                result.enabled = false;
+                result.email = "";
+            }
+
             return result;
         }
 
@@ -613,7 +766,8 @@ package com.auth
 
                 so.data[REMEMBER_ENABLED_KEY] = enabled;
 
-                if (enabled)
+                // Only persist a real, non-empty email.
+                if (enabled && email != "" && isValidEmail(email))
                 {
                     so.data[REMEMBER_EMAIL_KEY] = email;
                 }
@@ -626,6 +780,7 @@ package com.auth
             }
             catch (e:Error)
             {
+                reportRememberEmailError("Failed to save email: " + e);
             }
         }
 
@@ -762,17 +917,22 @@ package com.auth
 
             return button;
         }
-
         private function FormNavigate():void
         {
-            var linkContainer:Sprite = new Sprite();
-            linkContainer.buttonMode = true;
-            linkContainer.useHandCursor = true;
-            linkContainer.mouseChildren = false;
+            // Remove old container if it exists (e.g., after state toggles/rebuilds)
+            if (authLinkContainer && authLinkContainer.parent)
+            {
+                authLinkContainer.parent.removeChild(authLinkContainer);
+            }
+
+            authLinkContainer = new Sprite();
+            authLinkContainer.buttonMode = true;
+            authLinkContainer.useHandCursor = true;
+            authLinkContainer.mouseChildren = false;
 
             hasAccountText = new TextField();
             hasAccountText.autoSize = TextFieldAutoSize.LEFT;
-            hasAccountText.x = linkContainer.width / 2;
+            hasAccountText.x = 0;
 
             hasAccountFormat = new TextFormat();
             hasAccountFormat.size = 16;
@@ -780,19 +940,20 @@ package com.auth
             updateLinkText();
 
             hasAccountText.y = 0;
-            linkContainer.addChild(hasAccountText);
+            authLinkContainer.addChild(hasAccountText);
 
-            linkContainer.x = (formContainer.width - linkContainer.width) / 2;
-            linkContainer.y = submitButton.y + submitButton.height + 15;
-            mousePointerCursor(linkContainer);
+            mousePointerCursor(authLinkContainer);
 
-            formContainer.addChild(linkContainer);
-            linkContainer.addEventListener(MouseEvent.CLICK, function(event:Event)
+            formContainer.addChild(authLinkContainer);
+            authLinkContainer.addEventListener(MouseEvent.CLICK, function(event:Event)
                 {
                     isRegisterForm = !isRegisterForm;
                     updateState();
                 });
+
+            layoutAuthControls();
         }
+
 
         private function updateFormFields():void
         {
@@ -915,7 +1076,7 @@ package com.auth
                 }
                 if (!isPasswordValid)
                 {
-                    showErrorMessage(passwordInput, "Password must be at least 8 characters long, contain at least 1 uppercase\nletter, and 1 special character");
+                    showErrorMessage(passwordInput, "Password must be at least 8 characters long, contain at least 1 uppercase letter, and 1 special character");
                 }
                 if (!isUsernameValid && isRegisterForm)
                 {
@@ -958,22 +1119,46 @@ package com.auth
             var passwordRegex:RegExp = /^(?=.*[A-Z])(?=.*[\W_])(?=.{8,})/;
             return passwordRegex.test(password);
         }
-
         private function clearErrorMessages():void
         {
-            emailErrorText.text = "";
-            passwordErrorText.text = "";
-        }
+            if (emailErrorText && emailErrorText.parent)
+            {
+                emailErrorText.parent.removeChild(emailErrorText);
+            }
+            if (passwordErrorText && passwordErrorText.parent)
+            {
+                passwordErrorText.parent.removeChild(passwordErrorText);
+            }
 
+            if (emailErrorText) emailErrorText.text = "";
+            if (passwordErrorText) passwordErrorText.text = "";
+
+            layoutAuthControls();
+        }
         private function showErrorMessage(inputField:TextField, errorMessage:String):void
         {
+            // Remove any existing error field for this input to prevent stacking/overlap.
+            if (inputField == emailInput && emailErrorText && emailErrorText.parent)
+            {
+                emailErrorText.parent.removeChild(emailErrorText);
+            }
+            else if (inputField == passwordInput && passwordErrorText && passwordErrorText.parent)
+            {
+                passwordErrorText.parent.removeChild(passwordErrorText);
+            }
+
             var errorText:TextField = new TextField();
-            errorText.htmlText = errorMessage;
             errorText.textColor = RED;
             errorText.x = inputField.x;
             errorText.y = inputField.y + inputField.height + 5;
-            errorText.width = inputField.width + 100;
-            errorText.height = 40;
+            errorText.width = inputField.width;
+            errorText.multiline = true;
+            errorText.wordWrap = true;
+            errorText.htmlText = errorMessage;
+
+            // Fit height to content (minimum helps avoid zero-height edge cases).
+            errorText.height = Math.max(18, errorText.textHeight + 10);
+
             formContainer.addChild(errorText);
 
             if (inputField == emailInput)
@@ -984,6 +1169,9 @@ package com.auth
             {
                 passwordErrorText = errorText;
             }
+
+            // Reflow controls so errors never overlap the checkbox/button.
+            layoutAuthControls();
         }
 
         public function updateState():void
@@ -993,11 +1181,129 @@ package com.auth
             updateButtonColor();
             updateLinkText();
             updateLinkColour();
+
+            if (rememberEmailRow)
+            {
+                redrawRememberEmailToggle();
+            }
+
+            layoutAuthControls();
+
+            applyResponsiveScale();
         }
+
+
+
+
+        private function isMobileDevice():Boolean
+        {
+            var m:String = Capabilities.manufacturer;
+            if (!m) return false;
+            m = m.toLowerCase();
+            return (m.indexOf("android") != -1 || m.indexOf("ios") != -1);
+        }
+
+        private function setupResponsiveScale():void
+        {
+            if (!stage || !uiRoot) return;
+
+            applyResponsiveScale();
+
+            // Keep it correct on orientation/size changes
+            stage.addEventListener(Event.RESIZE, onStageResize);
+        }
+
+        private function onStageResize(event:Event):void
+        {
+            applyResponsiveScale();
+        }
+
+        /*
+         * Responsive scaling/centering:
+         * - Uses a wrapper (uiRoot) so child bounds changes (checkbox label, errors, etc.)
+         *   don't drift the UI left/right.
+         * - Uses DisplayScaler's design-based approach as a hint, but clamps to a safe
+         *   range so different resolutions don't look wildly different.
+         */
+        private function applyResponsiveScale():void
+        {
+            if (!stage || !uiRoot || !formContainer) return;
+
+            // IMPORTANT:
+            // Do NOT reposition the whole Auth UI here.
+            // In many builds the parent container already handles centering/letterboxing.
+            // Centering uiRoot on the stage caused the entire login screen to drift into a corner
+            // on some mobile layouts, so we only scale the form itself.
+            uiRoot.x = 0;
+            uiRoot.y = 0;
+            uiRoot.scaleX = uiRoot.scaleY = 1.0;
+
+            var margin:Number = 18;
+
+            // Target scale: modest bump on mobile so inputs/buttons are easier to tap.
+            var desired:Number = 1.0;
+
+            if (isMobileDevice())
+            {
+                var dpi:Number = Capabilities.screenDPI;
+
+                if (!isNaN(dpi) && dpi > 0)
+                {
+                    if (dpi >= 420) desired = 1.28;
+                    else if (dpi >= 360) desired = 1.22;
+                    else if (dpi >= 300) desired = 1.16;
+                    else if (dpi >= 240) desired = 1.10;
+                    else desired = 1.06;
+                }
+                else
+                {
+                    // Fallback when DPI is unavailable.
+                    var maxRes:Number = Math.max(Capabilities.screenResolutionX, Capabilities.screenResolutionY);
+                    desired = (maxRes >= 1920) ? 1.16 : 1.10;
+                }
+
+                desired = Math.min(desired, 1.28);
+            }
+
+            // Clamp to what can actually fit on the current stage.
+            // Keep the form's original top (45px) so it never creeps into the header.
+            var maxByW:Number = (stage.stageWidth - margin * 2) / FORM_WIDTH;
+            var maxByH:Number = (stage.stageHeight - 45 - margin) / FORM_HEIGHT;
+
+            var maxScale:Number = Math.max(0.5, Math.min(maxByW, maxByH));
+            var scale:Number = (desired > maxScale) ? maxScale : desired;
+
+            if (isNaN(scale) || scale <= 0) scale = 1.0;
+
+            formContainer.scaleX = formContainer.scaleY = scale;
+
+            // Keep horizontally centered under the header (design center = 155 + 450/2 = 380)
+            var centerX:Number = 155 + (FORM_WIDTH / 2);
+            formContainer.x = centerX - (FORM_WIDTH * scale) / 2;
+
+            // Keep roughly the legacy top position, but compensate a bit when scaling up so the UI
+            // doesn't visually drift downward on mobile.
+            var baseY:Number = 45;
+            var yAdjust:Number = Math.max(0, (scale - 1) * 80);
+            formContainer.y = Math.max(20, baseY - yAdjust);
+        }
+
+
+
 
         public function disposeUI():void
         {
-            // Remove event listeners
+                        if (stage)
+            {
+                stage.removeEventListener(Event.RESIZE, onStageResize);
+            }
+
+            if (selectInput && selectInput.parent)
+            {
+                selectInput.parent.removeChild(selectInput);
+            }
+
+// Remove event listeners
             submitButton.removeEventListener(MouseEvent.CLICK, submitButtonClickHandler);
 
             if (rememberEmailRow)
@@ -1009,7 +1315,10 @@ package com.auth
             formContainer.removeChild(submitButton);
             formContainer.removeChild(emailInput);
             formContainer.removeChild(passwordInput);
-            removeChild(formContainer);
+            if (formContainer && formContainer.parent)
+            {
+                formContainer.parent.removeChild(formContainer);
+            }
 
             if (rememberEmailRow && rememberEmailRow.parent)
             {
@@ -1030,6 +1339,7 @@ package com.auth
             passwordInput = null;
             image = null;
             loader = null;
+            selectInput = null;
 
             rememberEmailRow = null;
             rememberEmailBox = null;
