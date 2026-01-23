@@ -60,7 +60,13 @@ package com.auth
 
         private var usernameInput:TextField;
 
-        private var emailInput:TextField;
+        
+        private var usernameBorder:Sprite;
+        private var emailBorder:Sprite;
+        private var passwordBorder:Sprite;
+        private var baseEmailY:Number = NaN;
+        private var basePasswordY:Number = NaN;
+private var emailInput:TextField;
 
         private var passwordInput:TextField;
 
@@ -253,8 +259,13 @@ package com.auth
             usernameInput = createBlock(0, 0, "Username");
             emailInput = createBlock(350, 35, "Email");
             passwordInput = createBlock(350, 35, "Password", true);
-            CreateBorder(emailInput);
-            CreateBorder(passwordInput);
+            emailBorder = CreateBorder(emailInput);
+            passwordBorder = CreateBorder(passwordInput);
+
+            // Remember the design-time positions so we can reflow the layout cleanly
+            // when switching between Login and Register.
+            baseEmailY = emailInput.y;
+            basePasswordY = passwordInput.y;
 
             // Remember email checkbox (login form only)
             if (!isRegisterForm)
@@ -272,7 +283,11 @@ package com.auth
             // Link
             FormNavigate();
 
-            // Make the UI a bit larger on mobile while ensuring it still fits on screen.
+            // Apply correct initial state (Login/Register) before responsive scaling.
+            // This ensures Login fields are shifted up immediately on first load (not only after toggling).
+            updateState();
+
+// Make the UI a bit larger on mobile while ensuring it still fits on screen.
             setupResponsiveScale();
         }
 
@@ -957,13 +972,59 @@ package com.auth
 
         private function updateFormFields():void
         {
+            // Make Login use the vertical space that Register reserves for the username field.
+            // This keeps the topmost visible input closer to the image in both modes.
+            var usernameH:Number = 35;
+            var gap:Number = 20;
+            var loginShift:Number = usernameH + gap;
+
+            // Safety: capture base positions if something recreated fields unexpectedly.
+            if (isNaN(baseEmailY) && emailInput) baseEmailY = emailInput.y;
+            if (isNaN(basePasswordY) && passwordInput) basePasswordY = passwordInput.y;
+
             if (isRegisterForm)
             {
+                // Restore base positions before placing the username field above Email.
+                emailInput.y = baseEmailY;
+                passwordInput.y = basePasswordY;
+
+                if (emailBorder)
+                {
+                    emailBorder.x = emailInput.x;
+                    emailBorder.y = emailInput.y + emailInput.height;
+                }
+                if (passwordBorder)
+                {
+                    passwordBorder.x = passwordInput.x;
+                    passwordBorder.y = passwordInput.y + passwordInput.height;
+                }
+
+                // Re-seat existing error labels (if any) under their fields.
+                if (emailErrorText && emailErrorText.parent == formContainer && emailErrorText.text != "")
+                {
+                    emailErrorText.y = emailInput.y + emailInput.height + 5;
+                }
+                if (passwordErrorText && passwordErrorText.parent == formContainer && passwordErrorText.text != "")
+                {
+                    passwordErrorText.y = passwordInput.y + passwordInput.height + 5;
+                }
+
+                // Show username field on register
+                usernameInput.visible = true;
+                usernameInput.mouseEnabled = true;
+                usernameInput.tabEnabled = true;
+
                 usernameInput.width = 350;
                 usernameInput.height = 35;
                 usernameInput.x = 50;
-                usernameInput.y = emailInput.y - usernameInput.height - 20;
-                CreateBorder(usernameInput);
+                usernameInput.y = emailInput.y - usernameInput.height - gap;
+
+                // Ensure we don't stack multiple borders when toggling views
+                if (usernameBorder && usernameBorder.parent)
+                {
+                    usernameBorder.parent.removeChild(usernameBorder);
+                }
+                usernameBorder = CreateBorder(usernameInput);
 
                 // Hide/remove remember email on register view
                 if (rememberEmailRow && rememberEmailRow.parent)
@@ -973,6 +1034,43 @@ package com.auth
             }
             else
             {
+                // Hide username field on login
+                usernameInput.visible = false;
+                usernameInput.mouseEnabled = false;
+                usernameInput.tabEnabled = false;
+                usernameInput.width = 0;
+                usernameInput.height = 0;
+
+                if (usernameBorder && usernameBorder.parent)
+                {
+                    usernameBorder.parent.removeChild(usernameBorder);
+                }
+
+                // Pull Login fields up so the topmost input sits where the Register username sits.
+                emailInput.y = baseEmailY - loginShift;
+                passwordInput.y = basePasswordY - loginShift;
+
+                if (emailBorder)
+                {
+                    emailBorder.x = emailInput.x;
+                    emailBorder.y = emailInput.y + emailInput.height;
+                }
+                if (passwordBorder)
+                {
+                    passwordBorder.x = passwordInput.x;
+                    passwordBorder.y = passwordInput.y + passwordInput.height;
+                }
+
+                // Re-seat existing error labels (if any) under their fields.
+                if (emailErrorText && emailErrorText.parent == formContainer && emailErrorText.text != "")
+                {
+                    emailErrorText.y = emailInput.y + emailInput.height + 5;
+                }
+                if (passwordErrorText && passwordErrorText.parent == formContainer && passwordErrorText.text != "")
+                {
+                    passwordErrorText.y = passwordInput.y + passwordInput.height + 5;
+                }
+
                 // Ensure checkbox exists on login view
                 if (!rememberEmailRow)
                 {
@@ -1283,15 +1381,53 @@ package com.auth
 
             // Keep roughly the legacy top position, but compensate a bit when scaling up so the UI
             // doesn't visually drift downward on mobile.
-            var baseY:Number = 45;
-            var yAdjust:Number = Math.max(0, (scale - 1) * 80);
+            var baseY:Number = isMobileDevice() ? 35 : 45;
+            var yAdjust:Number = Math.max(0, (scale - 1) * (isMobileDevice() ? 95 : 80));
             formContainer.y = Math.max(20, baseY - yAdjust);
+
+            // If the stage is short (common on Android), ensure the bottom link row
+            // ("Don't have an account yet? Register here") never gets clipped.
+            clampFormToStage(margin);
         }
 
 
 
 
-        public function disposeUI():void
+        
+        /**
+         * Keeps the auth form (inputs + login/register switch row) fully visible.
+         * This ONLY repositions the form container (not the whole app/stage).
+         */
+        private function clampFormToStage(margin:Number):void
+        {
+            if (!stage || !formContainer) return;
+
+            try
+            {
+                var bounds:Rectangle = formContainer.getBounds(stage);
+
+                // Push up if bottom is outside the stage.
+                var maxBottom:Number = stage.stageHeight - margin;
+                if (bounds.bottom > maxBottom)
+                {
+                    formContainer.y -= (bounds.bottom - maxBottom);
+                    bounds = formContainer.getBounds(stage);
+                }
+
+                // Keep some breathing room from the top so we don't cover the language selector.
+                var minTop:Number = 20;
+                if (bounds.top < minTop)
+                {
+                    formContainer.y += (minTop - bounds.top);
+                }
+            }
+            catch (e:Error)
+            {
+                // Best-effort: if bounds calc fails for any reason, don't break auth flow.
+            }
+        }
+
+public function disposeUI():void
         {
                         if (stage)
             {
