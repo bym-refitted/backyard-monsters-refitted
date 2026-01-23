@@ -20,15 +20,12 @@ package com.auth
     import flash.events.FocusEvent;
     import flash.text.TextFormatAlign;
     import flash.system.LoaderContext;
+    import flash.geom.Rectangle;
     import flash.events.IOErrorEvent;
     import flash.utils.Timer;
     import flash.events.TimerEvent;
     import flash.events.SecurityErrorEvent;
     import flash.net.SharedObject;
-    import flash.system.Capabilities;
-    import flash.geom.Rectangle;
-    import utils.DisplayScaler;
-
     // DISCLAIMER: This is far from my best work, actually, it's quite miserable, but it works.
     // I don't really have the time, nor the patience to look deprecated best practices for
     // creating a UI with Flash/AS3. But, if you do, then by all means please spare my
@@ -51,8 +48,6 @@ package com.auth
         private var selectField:Sprite;
 
         private var selectInput:Sprite;
-
-        // Responsive scaling (mobile)
         private static const FORM_WIDTH:Number = 450;
         private static const FORM_HEIGHT:Number = 600;
 
@@ -224,7 +219,7 @@ private var emailInput:TextField;
             passwordErrorText = new TextField();
             hasAccountText = new TextField();
 
-            // Root container for scaling/centering the whole auth UI safely
+            // Root container to isolate auth UI bounds (prevents drift from checkbox/errors)
             uiRoot = new Sprite();
             addChild(uiRoot);
 
@@ -282,13 +277,8 @@ private var emailInput:TextField;
 
             // Link
             FormNavigate();
-
-            // Apply correct initial state (Login/Register) before responsive scaling.
             // This ensures Login fields are shifted up immediately on first load (not only after toggling).
             updateState();
-
-// Make the UI a bit larger on mobile while ensuring it still fits on screen.
-            setupResponsiveScale();
         }
 
         private function Loading():void
@@ -459,9 +449,6 @@ private var emailInput:TextField;
             image.scaleX = 1;
             image.scaleY = 1;
             formContainer.addChild(image);
-
-            // Image size can affect bounds; re-apply responsive scale if needed.
-            applyResponsiveScale();
         }
 
         // Function to create and position input fields
@@ -1286,154 +1273,10 @@ private var emailInput:TextField;
             }
 
             layoutAuthControls();
-
-            applyResponsiveScale();
         }
 
-
-
-
-        private function isMobileDevice():Boolean
+        public function disposeUI():void
         {
-            var m:String = Capabilities.manufacturer;
-            if (!m) return false;
-            m = m.toLowerCase();
-            return (m.indexOf("android") != -1 || m.indexOf("ios") != -1);
-        }
-
-        private function setupResponsiveScale():void
-        {
-            if (!stage || !uiRoot) return;
-
-            applyResponsiveScale();
-
-            // Keep it correct on orientation/size changes
-            stage.addEventListener(Event.RESIZE, onStageResize);
-        }
-
-        private function onStageResize(event:Event):void
-        {
-            applyResponsiveScale();
-        }
-
-        /*
-         * Responsive scaling/centering:
-         * - Uses a wrapper (uiRoot) so child bounds changes (checkbox label, errors, etc.)
-         *   don't drift the UI left/right.
-         * - Uses DisplayScaler's design-based approach as a hint, but clamps to a safe
-         *   range so different resolutions don't look wildly different.
-         */
-        private function applyResponsiveScale():void
-        {
-            if (!stage || !uiRoot || !formContainer) return;
-
-            // IMPORTANT:
-            // Do NOT reposition the whole Auth UI here.
-            // In many builds the parent container already handles centering/letterboxing.
-            // Centering uiRoot on the stage caused the entire login screen to drift into a corner
-            // on some mobile layouts, so we only scale the form itself.
-            uiRoot.x = 0;
-            uiRoot.y = 0;
-            uiRoot.scaleX = uiRoot.scaleY = 1.0;
-
-            var margin:Number = 18;
-
-            // Target scale: modest bump on mobile so inputs/buttons are easier to tap.
-            var desired:Number = 1.0;
-
-            if (isMobileDevice())
-            {
-                var dpi:Number = Capabilities.screenDPI;
-
-                if (!isNaN(dpi) && dpi > 0)
-                {
-                    if (dpi >= 420) desired = 1.28;
-                    else if (dpi >= 360) desired = 1.22;
-                    else if (dpi >= 300) desired = 1.16;
-                    else if (dpi >= 240) desired = 1.10;
-                    else desired = 1.06;
-                }
-                else
-                {
-                    // Fallback when DPI is unavailable.
-                    var maxRes:Number = Math.max(Capabilities.screenResolutionX, Capabilities.screenResolutionY);
-                    desired = (maxRes >= 1920) ? 1.16 : 1.10;
-                }
-
-                desired = Math.min(desired, 1.28);
-            }
-
-            // Clamp to what can actually fit on the current stage.
-            // Keep the form's original top (45px) so it never creeps into the header.
-            var maxByW:Number = (stage.stageWidth - margin * 2) / FORM_WIDTH;
-            var maxByH:Number = (stage.stageHeight - 45 - margin) / FORM_HEIGHT;
-
-            var maxScale:Number = Math.max(0.5, Math.min(maxByW, maxByH));
-            var scale:Number = (desired > maxScale) ? maxScale : desired;
-
-            if (isNaN(scale) || scale <= 0) scale = 1.0;
-
-            formContainer.scaleX = formContainer.scaleY = scale;
-
-            // Keep horizontally centered under the header (design center = 155 + 450/2 = 380)
-            var centerX:Number = 155 + (FORM_WIDTH / 2);
-            formContainer.x = centerX - (FORM_WIDTH * scale) / 2;
-
-            // Keep roughly the legacy top position, but compensate a bit when scaling up so the UI
-            // doesn't visually drift downward on mobile.
-            var baseY:Number = isMobileDevice() ? 35 : 45;
-            var yAdjust:Number = Math.max(0, (scale - 1) * (isMobileDevice() ? 95 : 80));
-            formContainer.y = Math.max(20, baseY - yAdjust);
-
-            // If the stage is short (common on Android), ensure the bottom link row
-            // ("Don't have an account yet? Register here") never gets clipped.
-            clampFormToStage(margin);
-        }
-
-
-
-
-        
-        /**
-         * Keeps the auth form (inputs + login/register switch row) fully visible.
-         * This ONLY repositions the form container (not the whole app/stage).
-         */
-        private function clampFormToStage(margin:Number):void
-        {
-            if (!stage || !formContainer) return;
-
-            try
-            {
-                var bounds:Rectangle = formContainer.getBounds(stage);
-
-                // Push up if bottom is outside the stage.
-                var maxBottom:Number = stage.stageHeight - margin;
-                if (bounds.bottom > maxBottom)
-                {
-                    formContainer.y -= (bounds.bottom - maxBottom);
-                    bounds = formContainer.getBounds(stage);
-                }
-
-                // Keep some breathing room from the top so we don't cover the language selector.
-                var minTop:Number = 20;
-                if (bounds.top < minTop)
-                {
-                    formContainer.y += (minTop - bounds.top);
-                }
-            }
-            catch (e:Error)
-            {
-                // Best-effort: if bounds calc fails for any reason, don't break auth flow.
-            }
-        }
-
-public function disposeUI():void
-        {
-                        if (stage)
-            {
-                stage.removeEventListener(Event.RESIZE, onStageResize);
-            }
-
             if (selectInput && selectInput.parent)
             {
                 selectInput.parent.removeChild(selectInput);
