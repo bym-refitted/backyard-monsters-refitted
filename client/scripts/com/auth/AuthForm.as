@@ -59,9 +59,9 @@ package com.auth
         private var usernameBorder:Sprite;
         private var emailBorder:Sprite;
         private var passwordBorder:Sprite;
-        private var baseEmailY:Number = NaN;
-        private var basePasswordY:Number = NaN;
-private var emailInput:TextField;
+        private var baseEmailY:Number;
+        private var basePasswordY:Number;
+        private var emailInput:TextField;
 
         private var passwordInput:TextField;
 
@@ -965,9 +965,7 @@ private var emailInput:TextField;
             var gap:Number = 20;
             var loginShift:Number = usernameH + gap;
 
-            // Safety: capture base positions if something recreated fields unexpectedly.
-            if (isNaN(baseEmailY) && emailInput) baseEmailY = emailInput.y;
-            if (isNaN(basePasswordY) && passwordInput) basePasswordY = passwordInput.y;
+            // baseEmailY/basePasswordY are captured in handleContentLoaded().
 
             if (isRegisterForm)
             {
