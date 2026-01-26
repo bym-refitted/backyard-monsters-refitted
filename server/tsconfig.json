@@ -12,7 +12,8 @@
     "esModuleInterop": true,
     "inlineSources": true,
     "noUnusedLocals": true,
-    "noUnusedParameters": true
+    "noUnusedParameters": true,
+    "verbatimModuleSyntax": true
   },
   "include": [
     "src/**/*",

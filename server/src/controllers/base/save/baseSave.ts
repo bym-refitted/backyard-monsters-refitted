@@ -1,8 +1,8 @@
-import { FieldData, Save } from "../../../models/save.model.js";
+import { type FieldData, Save } from "../../../models/save.model.js";
 import { User } from "../../../models/user.model.js";
 import { postgres } from "../../../server.js";
 import { FilterFrontendKeys } from "../../../utils/FrontendKey.js";
-import { KoaController } from "../../../utils/KoaController.js";
+import type { KoaController } from "../../../utils/KoaController.js";
 import { getCurrentDateTime } from "../../../utils/getCurrentDateTime.js";
 import { logger } from "../../../utils/logger.js";
 import { Status } from "../../../enums/StatusCodes.js";

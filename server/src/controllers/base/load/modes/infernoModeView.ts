@@ -1,5 +1,5 @@
 import { molochTribes } from "../../../../data/tribes/molochTribes.js";
-import { InfernoMaproom, TribeData } from "../../../../models/infernomaproom.model.js";
+import { InfernoMaproom, type TribeData } from "../../../../models/infernomaproom.model.js";
 import { Save } from "../../../../models/save.model.js";
 import { User } from "../../../../models/user.model.js";
 import { postgres } from "../../../../server.js";

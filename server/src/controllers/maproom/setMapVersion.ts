@@ -1,6 +1,6 @@
 import { Save } from "../../models/save.model.js";
 import { User } from "../../models/user.model.js";
-import { KoaController } from "../../utils/KoaController.js";
+import type { KoaController } from "../../utils/KoaController.js";
 import { postgres } from "../../server.js";
 import { joinOrCreateWorld } from "../../services/maproom/v2/joinOrCreateWorld.js";
 import { leaveWorld } from "../../services/maproom/v2/leaveWorld.js";

@@ -1,5 +1,5 @@
 import { Entity, Index, PrimaryKey, Property } from "@mikro-orm/core";
-import { FieldData } from "./save.model.js";
+import type { FieldData } from "./save.model.js";
 
 @Index({ properties: ["attacker_userid", "attacktime"] })
 @Index({ properties: ["defender_userid", "attacktime"] })
