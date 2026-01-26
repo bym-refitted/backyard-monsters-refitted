@@ -1,6 +1,6 @@
-import { Loaded } from "@mikro-orm/core";
+import type { Loaded } from "@mikro-orm/core";
 import { WorldMapCell } from "../../../models/worldmapcell.model.js";
-import { Context } from "koa";
+import type { Context } from "koa";
 import { Terrain } from "../../../enums/MapRoom.js";
 import { userCell } from "../../../controllers/maproom/v2/cells/userCell.js";
 import { wildMonsterCell } from "../../../controllers/maproom/v2/cells/wildMonsterCell.js";
