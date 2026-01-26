@@ -1,7 +1,7 @@
 import { devConfig } from "../../../config/DevSettings.js";
 import { Save } from "../../../models/save.model.js";
 import { postgres } from "../../../server.js";
-import { KoaController } from "../../../utils/KoaController.js";
+import type { KoaController } from "../../../utils/KoaController.js";
 import { storeItems } from "../../../data/store/storeItems.js";
 import { User } from "../../../models/user.model.js";
 import { FilterFrontendKeys } from "../../../utils/FrontendKey.js";

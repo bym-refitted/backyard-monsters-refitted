@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { KoaController } from "../../../utils/KoaController.js";
+import type { KoaController } from "../../../utils/KoaController.js";
 import { User } from "../../../models/user.model.js";
 import { WorldMapCell } from "../../../models/worldmapcell.model.js";
 import { postgres } from "../../../server.js";

@@ -5,11 +5,11 @@ import { User } from "../../../../models/user.model.js";
 import { postgres } from "../../../../server.js";
 import { createAttackLog } from "../../../../services/base/createAttackLog.js";
 import { getCurrentDateTime } from "../../../../utils/getCurrentDateTime.js";
-import { AttackDetails } from "./baseModeAttack.js";
+import type { AttackDetails } from "./baseModeAttack.js";
 import { addAttackerAsNeighbour } from "../../../../services/maproom/inferno/addAttackerAsNeighbour.js";
 import {
   InfernoMaproom,
-  TribeData,
+  type TribeData,
 } from "../../../../models/infernomaproom.model.js";
 
 /**

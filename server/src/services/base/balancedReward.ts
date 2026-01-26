@@ -1,6 +1,6 @@
 import { KorathReward, Reward } from "../../enums/Rewards.js";
 import { Save } from "../../models/save.model.js";
-import { extractTownHall, TownHall } from "../../utils/extractTownHall.js";
+import { extractTownHall, type TownHall } from "../../utils/extractTownHall.js";
 import { parseChampionData } from "../../utils/parseChampionData.js";
 
 /**

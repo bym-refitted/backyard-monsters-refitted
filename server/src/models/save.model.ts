@@ -4,9 +4,9 @@ import { EntityManager, PostgreSqlDriver } from "@mikro-orm/postgresql";
 import { FrontendKey } from "../utils/FrontendKey.js";
 import { getDefaultBaseData } from "../data/getDefaultBaseData.js";
 import { User } from "./user.model.js";
-import { AttackDetails } from "../controllers/base/load/modes/baseModeAttack.js";
+import type { AttackDetails } from "../controllers/base/load/modes/baseModeAttack.js";
 import { BaseType } from "../enums/Base.js";
-import { Stats } from "../services/events/wmi/invasionUtils.js";
+import type { Stats } from "../services/events/wmi/invasionUtils.js";
 
 export interface FieldData {
   [key: string | number]: any;

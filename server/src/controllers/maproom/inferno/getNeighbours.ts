@@ -1,4 +1,4 @@
-import { KoaController } from "../../../utils/KoaController.js";
+import type { KoaController } from "../../../utils/KoaController.js";
 import { Status } from "../../../enums/StatusCodes.js";
 import { User } from "../../../models/user.model.js";
 import { Save } from "../../../models/save.model.js";

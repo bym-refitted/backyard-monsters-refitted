@@ -1,6 +1,6 @@
 import { Status } from "../../enums/StatusCodes.js";
 import { postgres, redis } from "../../server.js";
-import { KoaController } from "../../utils/KoaController.js";
+import type { KoaController } from "../../utils/KoaController.js";
 
 /**
  * Time-to-live (TTL) for leaderboard cache in Redis.
