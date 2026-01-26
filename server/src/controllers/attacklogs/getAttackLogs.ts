@@ -1,4 +1,4 @@
-import { FilterQuery } from "@mikro-orm/core";
+import type { FilterQuery } from "@mikro-orm/core";
 import { Status } from "../../enums/StatusCodes.js";
 import { loadFailureErr } from "../../errors/errors.js";
 import { AttackLogs } from "../../models/attacklogs.model.js";

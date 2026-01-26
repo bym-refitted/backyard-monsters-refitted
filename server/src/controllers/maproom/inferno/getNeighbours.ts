@@ -11,7 +11,7 @@ import { logger } from "../../../utils/logger.js";
 import { AttackPermission } from "../../../enums/MapRoom.js";
 import { getCurrentDateTime } from "../../../utils/getCurrentDateTime.js";
 import {
-  NeighbourData,
+  type NeighbourData,
   createNeighbourData,
 } from "../../../services/maproom/inferno/createNeighbourData.js";
 

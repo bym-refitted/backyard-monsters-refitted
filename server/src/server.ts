@@ -1,6 +1,6 @@
 import "reflect-metadata";
 
-import Koa, { Context, Next } from "koa";
+import Koa, { type Context, type Next } from "koa";
 import Router from "@koa/router";
 import bodyParser from "koa-bodyparser";
 import serve from "koa-static";

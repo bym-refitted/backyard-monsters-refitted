@@ -1,4 +1,4 @@
-import { Context } from "koa";
+import type { Context } from "koa";
 import { User } from "../../../../models/user.model.js";
 import { postgres } from "../../../../server.js";
 import { WorldMapCell } from "../../../../models/worldmapcell.model.js";

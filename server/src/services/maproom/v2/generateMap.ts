@@ -1,6 +1,6 @@
 import alea from "alea";
 
-import { createNoise2D, NoiseFunction2D as Noise } from "simplex-noise";
+import { createNoise2D, type NoiseFunction2D as Noise } from "simplex-noise";
 import { MapRoom, Terrain } from "../../../enums/MapRoom.js";
 
 import {

@@ -1,4 +1,4 @@
-import { Context, Next } from "koa";
+import type { Context, Next } from "koa";
 import { getApiVersion } from "../server.js";
 import { Status } from "../enums/StatusCodes.js";
 
