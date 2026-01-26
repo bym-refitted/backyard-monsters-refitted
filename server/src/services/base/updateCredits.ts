@@ -1,6 +1,6 @@
 import { Save } from "../../models/save.model.js";
 import { logger } from "../../utils/logger.js";
-import { StoreItem, storeItems } from "../../data/store/storeItems.js";
+import { type StoreItem, storeItems } from "../../data/store/storeItems.js";
 import { purchaseKeys } from "../../data/store/purchaseKeys.js";
 import { User } from "../../models/user.model.js";
 import { Context } from "koa";

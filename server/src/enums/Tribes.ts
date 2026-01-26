@@ -1,4 +1,4 @@
-import { TribeScaleConfig } from "../services/maproom/v1/createScaledTribes.js";
+import type { TribeScaleConfig } from "../services/maproom/v1/createScaledTribes.js";
 
 /**
  * Enum representing the different wild monster tribes.
