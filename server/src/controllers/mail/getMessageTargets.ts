@@ -4,7 +4,7 @@ import { mailboxErr } from "../../errors/errors.js";
 import { Thread } from "../../models/thread.model.js";
 import { User } from "../../models/user.model.js";
 import { postgres } from "../../server.js";
-import { KoaController } from "../../utils/KoaController.js";
+import type { KoaController } from "../../utils/KoaController.js";
 
 interface TargetUser {
   friend: number;

@@ -9,7 +9,7 @@ import { postgres } from "../../server.js";
 import { scaledTribes } from "../../services/maproom/v1/scaledTribes.js";
 import { FilterFrontendKeys } from "../../utils/FrontendKey.js";
 import { getCurrentDateTime } from "../../utils/getCurrentDateTime.js";
-import { KoaController } from "../../utils/KoaController.js";
+import type { KoaController } from "../../utils/KoaController.js";
 import { logger } from "../../utils/logger.js";
 import { BaseSaveSchema } from "../../zod/BaseSaveSchema.js";
 import { academyHandler } from "../base/save/handlers/academyHandler.js";

@@ -1,7 +1,7 @@
 import { Status } from "../../enums/StatusCodes.js";
 import { World } from "../../models/world.model.js";
 import { postgres, redis } from "../../server.js";
-import { KoaController } from "../../utils/KoaController.js";
+import type { KoaController } from "../../utils/KoaController.js";
 import { LB_CACHE_TTL } from "./getLeaderboards.js";
 
 /**

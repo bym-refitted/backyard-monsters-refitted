@@ -1,6 +1,6 @@
 import { Status } from "../../enums/StatusCodes.js";
 import { User } from "../../models/user.model.js";
-import { KoaController } from "../../utils/KoaController.js";
+import type { KoaController } from "../../utils/KoaController.js";
 import { devConfig } from "../../config/DevSettings.js";
 import { SendMessageSchema } from "./zod/SendMessageSchema.js";
 import { postgres } from "../../server.js";

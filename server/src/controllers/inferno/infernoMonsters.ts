@@ -2,7 +2,7 @@ import z from "zod";
 import { Status } from "../../enums/StatusCodes.js";
 import { User } from "../../models/user.model.js";
 import { postgres } from "../../server.js";
-import { KoaController } from "../../utils/KoaController.js";
+import type { KoaController } from "../../utils/KoaController.js";
 import { BaseType } from "../../enums/Base.js";
 import { Save } from "../../models/save.model.js";
 
