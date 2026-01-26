@@ -4,17 +4,15 @@
   "description": "The Backyard Monsters preservation project.",
   "author": "React1-X",
   "license": "GPL-3.0-only",
-  "main": "dist/server.js",
+  "main": "src/server.ts",
   "type": "module",
   "scripts": {
-    "build": "rimraf dist && bun src/scripts/build-env.mjs && bunx tsc",
-    "start": "bun dist/server.js",
-    "serve": "bunx concurrently \"bunx tsc -w\" \"bun run compile-sass\" \"bun --watch dist/server.js\"",
-    "db:init": "bun run build && (bunx mikro-orm schema:create -r || echo 'Schema already exists, continuing...') && bunx mikro-orm migration:up",
+    "dev": "bun --watch src/server.ts",
+    "db:init": "(bunx mikro-orm schema:create -r || echo 'Schema already exists, continuing...') && bunx mikro-orm migration:up",
     "db:seed": "bun src/seed.ts",
     "db:drop": "bunx mikro-orm schema:drop --drop-db -r",
-    "migration:up": "bun run build && bunx mikro-orm migration:up",
-    "compile-sass": "sass --no-source-map --watch styles/main.scss public/main.css"
+    "migration:up": "bunx mikro-orm migration:up",
+    "typecheck": "bunx tsc --noEmit"
   },
   "engines": {
     "bun": ">=1.0.0"
@@ -53,15 +51,10 @@
     "@types/koa-static": "4.0.4",
     "@types/nodemailer": "6.4.17",
     "@types/uuid": "10.0.0",
-    "concurrently": "9.1.2",
-    "rimraf": "6.0.1",
-    "sass": "1.86.3",
     "typescript": "5.8.3"
   },
   "mikro-orm": {
-    "useTsNode": false,
     "configPaths": [
-      "./dist/mikro-orm.config.js",
       "./src/mikro-orm.config.ts"
     ]
   }
