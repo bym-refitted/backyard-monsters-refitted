@@ -36,8 +36,10 @@ package com.monsters.maproom_advanced
       private var _sortArray:Array;
       
       private var _cellCountX:int;
-      
+
       private var _cellCountY:int;
+
+      private var _cellLookup:Object;
       
       private var _bubble:bubblepopup3;
       
@@ -613,6 +615,7 @@ package com.monsters.maproom_advanced
             }
             this._cells = [];
          }
+         this._cellLookup = null;
          if(!MapRoom._viewOnly)
          {
             this.bHome.removeEventListener(MouseEvent.CLICK,function(param1:MouseEvent):void
@@ -732,6 +735,7 @@ package com.monsters.maproom_advanced
          this._cells = [];
          this._cellContainer = new MovieClip();
          this._sortArray = [];
+         this._cellLookup = {};
          if(GLOBAL.isFullScreen)
          {
             this._cellCountX = 18;
@@ -795,6 +799,7 @@ package com.monsters.maproom_advanced
                      this._cellContainer.y = 40;
                   }
                }
+               this._cellLookup[mapRoomCell.X * 10000 + mapRoomCell.Y] = mapRoomCell;
                rowIndex++;
             }
             stageHeight++;
@@ -887,9 +892,11 @@ package com.monsters.maproom_advanced
             }
          }
          this._sortArray = [];
+         var _oldCellKey_:int;
          for each(_loc6_ in this._cells)
          {
             _loc3_ = false;
+            _oldCellKey_ = _loc6_.X * 10000 + _loc6_.Y;
             if(this._cellContainer.x + _loc6_.x > this._cellCountX * (this._cellWidth * 0.75) - this._cellWidth * 0.75 * 5)
             {
                _loc6_.x -= this._cellCountX * (this._cellWidth * 0.75);
@@ -957,7 +964,11 @@ package com.monsters.maproom_advanced
                _loc6_.mc.mcPlayer.visible = false;
                _loc6_._updated = false;
                _loc6_._dataAge = 0;
+               _loc6_._inRange = false;
+               _loc6_.mc.mcGlow.gotoAndStop(1);
                _loc4_ = true;
+               delete this._cellLookup[_oldCellKey_];
+               this._cellLookup[_loc6_.X * 10000 + _loc6_.Y] = _loc6_;
             }
             if((!_loc6_._updated || param1) && _loc6_._dataAge <= 0)
             {
@@ -1152,13 +1163,11 @@ package com.monsters.maproom_advanced
          {
             hexY = MapRoom._mapHeight + hexY;
          }
-         for each(var cell in this._cells)
-         {
-            if(cell.X == hexX && cell.Y == hexY)
-            {
-               return cell;
-            }
-         }
+         
+         var cell:MapRoomCell = this._cellLookup[hexX * 10000 + hexY];
+
+         if (cell) return cell;
+
          if(this._fallbackHomeCell.X == hexX && this._fallbackHomeCell.Y == hexY)
          {
             return this._fallbackHomeCell;
