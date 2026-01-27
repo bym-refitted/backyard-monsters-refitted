@@ -63,7 +63,7 @@ export const getAttackLogs: KoaController = async (ctx) => {
       limit: 50,
     });
 
-    await redis.setEx(cacheKey, AL_CACHE_TTL, JSON.stringify(attackLogs));
+    await redis.setex(cacheKey, AL_CACHE_TTL, JSON.stringify(attackLogs));
 
     ctx.status = Status.OK;
     ctx.body = { attackLogs };

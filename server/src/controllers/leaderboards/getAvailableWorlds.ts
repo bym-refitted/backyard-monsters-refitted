@@ -24,7 +24,7 @@ export const getAvailableWorlds: KoaController = async (ctx) => {
     worlds = JSON.parse(cachedWorlds);
   } else {
     worlds = await postgres.em.find(World, {});
-    await redis.setEx(cacheKey, LB_CACHE_TTL, JSON.stringify(worlds));
+    await redis.setex(cacheKey, LB_CACHE_TTL, JSON.stringify(worlds));
   }
 
   ctx.status = Status.OK;

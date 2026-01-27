@@ -7,7 +7,7 @@ import serve from "koa-static";
 import ormConfig from "./mikro-orm.config.js";
 import router from "./app.routes.js";
 
-import { createClient } from "redis";
+import { RedisClient } from "bun";
 import { MikroORM, RequestContext } from "@mikro-orm/core";
 import { EntityManager, PostgreSqlDriver } from "@mikro-orm/postgresql";
 import { logger } from "./utils/logger.js";
@@ -31,12 +31,10 @@ export const postgres = {} as {
   em: EntityManager<PostgreSqlDriver>;
 };
 
-export const redis = createClient({
-  url: process.env.REDIS_URL || "redis://localhost:6379",
-});
+export const redis = new RedisClient(process.env.REDIS_URL);
 
-redis.on("connect", () => logger.info("Connected to Redis client."));
-redis.on("error", (err) => logger.error("Redis client error:", err));
+redis.onconnect = () => logger.info(`Connected to Redis server`);
+redis.onclose = (err) => logger.error(`Redis disconnected: ${err.message}`);
 
 // CORS & Cache Control
 app.use(corsCacheControl);
@@ -56,16 +54,14 @@ api.get("/", (ctx: Context) => (ctx.body = {}));
       enableTypes: ["json", "form"],
       jsonLimit: "50mb",
       formLimit: "50mb",
-    })
+    }),
   );
-  
-  app.use((_, next: Next) =>
-    RequestContext.createAsync(postgres.orm.em, next)
-  );
+
+  app.use((_, next: Next) => RequestContext.createAsync(postgres.orm.em, next));
 
   // Logs
   app.use(logMissingAssets);
-  
+
   if (process.env.ENV !== Env.LOCAL) {
     app.use(morganLogging);
   }

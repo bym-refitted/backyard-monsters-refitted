@@ -53,7 +53,7 @@ export const getLeaderboards: KoaController = async (ctx) => {
       [worldid]
     );
 
-    await redis.setEx(cacheKey, LB_CACHE_TTL, JSON.stringify(leaderboard));
+    await redis.setex(cacheKey, LB_CACHE_TTL, JSON.stringify(leaderboard));
 
     ctx.status = Status.OK;
     ctx.body = { leaderboard };
