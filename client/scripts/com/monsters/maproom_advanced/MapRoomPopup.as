@@ -77,6 +77,8 @@ package com.monsters.maproom_advanced
       
       private var _popupMonstersB:PopupMonstersB;
 
+      private var _lastBuffCount:Number = -1;
+
       public static var s_Instance:MapRoomPopup = null;
       
       public function MapRoomPopup()
@@ -619,6 +621,7 @@ package com.monsters.maproom_advanced
          }
          this._cellLookup = null;
          this._tempMovePoint = null;
+         this._lastBuffCount = -1;
          if(!MapRoom._viewOnly)
          {
             this.bHome.removeEventListener(MouseEvent.CLICK,function(param1:MouseEvent):void
@@ -1522,7 +1525,12 @@ package com.monsters.maproom_advanced
          var _loc11_:Object = null;
          var _loc12_:String = null;
          var _loc13_:MovieClip = null;
-         var _loc1_:Number = POWERUPS.CheckPowers(null,"NORMAL");
+         var powerup:Number = POWERUPS.CheckPowers(null,"NORMAL");
+
+         if (powerup == this._lastBuffCount) return;
+
+         this._lastBuffCount = powerup;
+
          var _loc2_:int = this.mcBuffHolder.numChildren;
          while(_loc2_--)
          {
@@ -1530,7 +1538,7 @@ package com.monsters.maproom_advanced
             this.mcBuffHolder.getChildAt(_loc2_).removeEventListener(MouseEvent.ROLL_OUT,this.BuffHide);
             this.mcBuffHolder.removeChildAt(_loc2_);
          }
-         if(_loc1_ > 0)
+         if(powerup > 0)
          {
             _loc3_ = 3;
             _loc4_ = 2;
