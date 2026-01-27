@@ -1,7 +1,6 @@
 import type { Context } from "koa";
-import { User } from "../../../../models/user.model.js";
-import { postgres } from "../../../../server.js";
-import { WorldMapCell } from "../../../../models/worldmapcell.model.js";
+import type { User } from "../../../../models/user.model.js";
+import type { WorldMapCell } from "../../../../models/worldmapcell.model.js";
 import { calculateBaseLevel } from "../../../../services/base/calculateBaseLevel.js";
 import { damageProtection } from "../../../../services/maproom/v2/damageProtection.js";
 import { logger } from "../../../../utils/logger.js";
@@ -16,23 +15,17 @@ import { getCurrentDateTime } from "../../../../utils/getCurrentDateTime.js";
  *
  * @param {Context} ctx - The Koa context object.
  * @param {WorldMapCell} cell - The world map cell object.
+ * @param {Map<number, User>} cellOwners - Pre-loaded map of user IDs to User entities.
  */
-export const userCell = async (ctx: Context, cell: WorldMapCell) => {
+export const userCell = async (ctx: Context, cell: WorldMapCell, cellOwners: Map<number, User>) => {
   const cellSave = cell.save;
   const currentUser: User = ctx.authUser;
-  await postgres.em.populate(currentUser, ["save"]);
 
   try {
     const mine = currentUser.userid === cell.uid;
 
     // Get the cell owner, either the current user or another user
-    const cellOwner = mine
-      ? currentUser
-      : await postgres.em.findOne(
-          User,
-          { userid: cell.uid },
-          { populate: ["save"] }
-        );
+    const cellOwner = mine ? currentUser : cellOwners.get(cell.uid);
 
     if (!cellOwner) logger.error(`Cell owner save data is missing.`);
 
