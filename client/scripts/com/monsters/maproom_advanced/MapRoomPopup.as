@@ -1033,14 +1033,30 @@ package com.monsters.maproom_advanced
          // Process collected range cells
          if(checkRange)
          {
+            // Optimistic highlighting: apply home base range immediately using local data
+            // This shows highlighting before zone data loads from server
+            if (GLOBAL._playerFlingerLevel.Get() > 0) {
+               flingerRange = BUILDING5.getFlingerRange(GLOBAL._playerFlingerLevel.Get(), true);
+               flingerRange = POWERUPS.Apply(POWERUPS.ALLIANCE_DECLAREWAR, [flingerRange]);
+
+               // Highlight the home cell itself (ApplyRangeHighlighting skips the origin)
+               var homeCell:MapRoomCell = this.GetCell(GLOBAL._mapHome.x, GLOBAL._mapHome.y);
+
+               if (homeCell) {
+                  if (!homeCell._over) homeCell.mc.mcGlow.alpha = 0.5;
+                  homeCell._inRange = true;
+               }
+
+               this.ApplyRangeHighlighting(GLOBAL._mapHome.x, GLOBAL._mapHome.y, flingerRange);
+            }
+
             for each(rangeCell in cellsWithRange)
             {
+               // Skip home cell if already highlighted above
+               if (rangeCell.X == GLOBAL._mapHome.x && rangeCell.Y == GLOBAL._mapHome.y) continue;
+
                flingerRange = POWERUPS.Apply(POWERUPS.ALLIANCE_DECLAREWAR,[rangeCell._flingerRange.Get()]);
                this.ShowRange(rangeCell,flingerRange);
-            }
-            if(!homeCellVisible && this._fallbackHomeCell._mine && this._fallbackHomeCell._base > 0)
-            {
-               this.ShowRange(this._fallbackHomeCell,POWERUPS.Apply(POWERUPS.ALLIANCE_DECLAREWAR,[this._fallbackHomeCell._flingerRange.Get()]));
             }
          }
 
@@ -1062,9 +1078,6 @@ package com.monsters.maproom_advanced
       
       public function ShowRange(param1:MapRoomCell, param2:int) : void
       {
-         var _loc3_:CellData = null;
-         var _loc4_:Vector.<CellData> = null;
-         var _loc5_:MapRoomCell = null;
          if(!this._dragged)
          {
             if(param1._water == 0)
@@ -1074,24 +1087,44 @@ package com.monsters.maproom_advanced
                   param1.mc.mcGlow.alpha = 0.5;
                }
                param1._inRange = true;
-               _loc4_ = this.GetCellsInRange(param1.X,param1.Y,param2);
-               for each(_loc3_ in _loc4_)
-               {
-                  if(Boolean(_loc5_ = _loc3_.cell as MapRoomCell) && !_loc5_._water)
-                  {
-                     if(!_loc5_._over)
-                     {
-                        if(_loc3_.range <= 10)
-                        {
-                           _loc5_.mc.mcGlow.alpha = 0.5;
-                        }
-                        else
-                        {
-                           _loc5_.mc.mcGlow.alpha = Math.max(_loc5_.mc.mcGlow.alpha,0.35);
-                        }
-                     }
-                     _loc5_._inRange = true;
+               this.ApplyRangeHighlighting(param1.X, param1.Y, param2);
+            }
+         }
+      }
+
+      /*
+       * Applies range highlighting directly without allocating intermediate objects.
+       * This is an optimized version that combines GetCellsInRange + highlighting into one pass.
+       */
+      private function ApplyRangeHighlighting(startOffsetX:int, startOffsetY:int, range:int):void
+      {
+         var cell:MapRoomCell;
+         var distance:int;
+         var currentOffsetX:int;
+         var currentOffsetY:int;
+
+         var startAxialQ:int = startOffsetX;
+         var startAxialR:int = startOffsetY - (startOffsetX - (startOffsetX & 1)) / 2;
+
+         for (var deltaQ:int = -range; deltaQ <= range; deltaQ++) {
+            for (var deltaR:int = Math.max(-range, -deltaQ - range); deltaR <= Math.min(range, -deltaQ + range); deltaR++) {
+               if (deltaQ == 0 && deltaR == 0) continue;
+
+               var currentAxialQ:int = startAxialQ + deltaQ;
+               var currentAxialR:int = startAxialR + deltaR;
+
+               distance = Math.max(Math.abs(deltaQ), Math.abs(deltaR), Math.abs(-deltaQ - deltaR));
+
+               currentOffsetX = currentAxialQ;
+               currentOffsetY = currentAxialR + (currentAxialQ - (currentAxialQ & 1)) / 2;
+
+               cell = this.GetCell(currentOffsetX, currentOffsetY);
+
+               if (cell && !cell._water) {
+                  if (!cell._over) {
+                     cell.mc.mcGlow.alpha = distance <= 10 ? 0.5 : Math.max(cell.mc.mcGlow.alpha, 0.35);
                   }
+                  cell._inRange = true;
                }
             }
          }
