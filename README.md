@@ -19,7 +19,7 @@ This project aims to keep a piece of gaming history alive and playable for futur
 <br>
 
 ## 🚀 How to Play
-We recommend to download our game launcher which can be installed from our website's [download page](https://bymrefitted.com/downloads). This will allow you to seamlessly manage what build versions of the client you play, all from one place, without worrying about manually downloading new versions. The launcher currently supports Windows (64-bit) and Linux.
+We recommend to download our game launcher which can be installed from our website's [download page](https://bymrefitted.com/downloads). This will allow you to seamlessly manage what build versions of the client you play, all from one place, without worrying about manually downloading new versions. The launcher supports Windows (64-bit), MacOS and Linux.
 
 <br>
 
