@@ -9,8 +9,9 @@
   "scripts": {
     "dev": "bun --watch src/server.ts",
     "db:init": "(bun --bun x mikro-orm schema:create -r || echo 'Schema already exists, continuing...') && bun --bun x mikro-orm migration:up",
-    "db:seed": "bun src/seed.ts",
     "db:drop": "bun --bun x mikro-orm schema:drop --drop-db -r",
+    "db:seed:mr2": "bun src/database/seeds/seed_maproom2.ts",
+    "db:seed:mr3": "bun src/database/seeds/seed_maproom3.ts",
     "migration:up": "bun --bun x mikro-orm migration:up",
     "typecheck": "bunx tsc --noEmit"
   },
