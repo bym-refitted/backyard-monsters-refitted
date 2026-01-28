@@ -1,4 +1,4 @@
-import { FieldData } from "../models/save.model.js";
+import type { FieldData } from "../models/save.model.js";
 
 export interface TownHall {
   id: number;

@@ -1,9 +1,9 @@
-import { EnumBaseRelationship } from "../../../../enums/EnumBaseRelationship";
-import { EnumYardType } from "../../../../enums/EnumYardType";
-import { Tribes } from "../../../../enums/Tribes";
-import { WorldMapCell } from "../../../../models/worldmapcell.model";
-import { CellData } from "../../../../types/CellData";
-import { generateBaseId } from "../../../../utils/generateBaseId";
+import { EnumBaseRelationship } from "../../../../enums/EnumBaseRelationship.js";
+import { EnumYardType } from "../../../../enums/EnumYardType.js";
+import { Tribes } from "../../../../enums/Tribes.js";
+import { WorldMapCell } from "../../../../models/worldmapcell.model.js";
+import { generateBaseId } from "../../../../utils/generateBaseId.js";
+import type { CellData } from "../../../../types/CellData.js";
 
 export const tribeOutpostCell = async (cell: WorldMapCell, worldId: string): Promise<CellData> => {
   const [cellX, cellY] = [cell.x, cell.y];

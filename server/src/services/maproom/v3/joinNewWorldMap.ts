@@ -1,13 +1,13 @@
-import { WorldMapCell } from "../../../models/worldmapcell.model";
-import { User } from "../../../models/user.model";
-import { Save } from "../../../models/save.model";
-import { logging } from "../../../utils/logger";
-import { World } from "../../../models/world.model";
-import { MapRoom3, MapRoomVersion } from "../../../enums/MapRoom";
+import { WorldMapCell } from "../../../models/worldmapcell.model.js";
+import { User } from "../../../models/user.model.js";
+import { Save } from "../../../models/save.model.js";
+import { World } from "../../../models/world.model.js";
+import { MapRoom3, MapRoomVersion } from "../../../enums/MapRoom.js";
 import { EntityManager, PostgreSqlDriver } from "@mikro-orm/postgresql";
-import { postgres } from "../../../server";
-import { findFreeSector } from "./findFreeSector";
-import { EnumYardType } from "../../../enums/EnumYardType";
+import { postgres } from "../../../server.js";
+import { findFreeSector } from "./findFreeSector.js";
+import { EnumYardType } from "../../../enums/EnumYardType.js";
+import { logger } from "../../../utils/logger.js";
 
 /**
  * Assigns a user to a Map Room 3 world by either joining an existing one with available space
@@ -43,12 +43,12 @@ export const joinNewWorldMap = async (
 
   if (shuffledWorlds.length > 0) {
     world = shuffledWorlds[0];
-    logging(`User ${user.username} assigned to existing world: ${world.name}`);
+    logger.info(`User ${user.username} assigned to existing world: ${world.name}`);
   } else {
     world = em.create(World, {});
     world.name = "New World";
     world.map_version = MapRoomVersion.V3;
-    logging("All worlds full, created new world.");
+    logger.info("All worlds full, created new world.");
   }
 
   if (save.worldid === world.uuid) return;

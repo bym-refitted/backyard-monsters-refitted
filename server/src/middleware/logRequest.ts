@@ -1,4 +1,4 @@
-import { Context, Next } from "koa";
+import type { Context, Next } from "koa";
 import { inspect } from "util";
 import { Env } from "../enums/Env.js";
 

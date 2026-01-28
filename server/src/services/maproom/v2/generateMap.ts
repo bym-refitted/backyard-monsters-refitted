@@ -1,7 +1,7 @@
 import alea from "alea";
 
-import { createNoise2D, NoiseFunction2D as Noise } from "simplex-noise";
 import { MapRoom2, Terrain } from "../../../enums/MapRoom.js";
+import { createNoise2D, type NoiseFunction2D as Noise } from "simplex-noise";
 
 import {
   NOISE_SCALE,

@@ -1,5 +1,5 @@
-import { EnumYardType } from "../../../enums/EnumYardType";
-import { getHexNeighborOffsets } from "./getDefenderOutposts";
+import { EnumYardType } from "../../../enums/EnumYardType.js";
+import { getHexNeighborOffsets } from "./getDefenderOutposts.js";
 
 type Coord = [number, number];
 type Cell = { x: number; y: number; t?: number };

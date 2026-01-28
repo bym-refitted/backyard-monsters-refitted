@@ -1,7 +1,7 @@
 import { SaveKeys } from "../../../../enums/SaveKeys.js";
-import { FieldData, Save } from "../../../../models/save.model.js";
+import { type FieldData, Save } from "../../../../models/save.model.js";
 import {
-  Resources,
+  type Resources,
   updateResources,
 } from "../../../../services/base/updateResources.js";
 

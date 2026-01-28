@@ -1,5 +1,5 @@
-import { CELL_EDGE } from "../../../../config/WorldGenSettings";
-import { MapRoom3 } from "../../../../enums/MapRoom";
+import { CELL_EDGE } from "../../../../config/WorldGenSettings.js";
+import { MapRoom3 } from "../../../../enums/MapRoom.js";
 
 /**
  * Checks if a position is within valid bounds of the map room.

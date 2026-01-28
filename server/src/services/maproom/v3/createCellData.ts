@@ -1,13 +1,13 @@
-import { Context } from "koa";
-import { Loaded } from "@mikro-orm/core";
-import { EnumYardType } from "../../../enums/EnumYardType";
-import { WorldMapCell } from "../../../models/worldmapcell.model";
-import { strongholdCell } from "../../../controllers/maproom/v3/cells/strongholdCell";
-import { defenderCell } from "../../../controllers/maproom/v3/cells/defenderCell";
-import { resourceCell } from "../../../controllers/maproom/v3/cells/resourceCell";
-import { tribeOutpostCell } from "../../../controllers/maproom/v3/cells/tribeOutpostCell";
-import { terrainCell } from "../../../controllers/maproom/v3/cells/terrainCell";
-import { playerCell } from "../../../controllers/maproom/v3/cells/playerCell";
+import type { Context } from "koa";
+import type { Loaded } from "@mikro-orm/core";
+import { EnumYardType } from "../../../enums/EnumYardType.js";
+import { WorldMapCell } from "../../../models/worldmapcell.model.js";
+import { strongholdCell } from "../../../controllers/maproom/v3/cells/strongholdCell.js";
+import { defenderCell } from "../../../controllers/maproom/v3/cells/defenderCell.js";
+import { resourceCell } from "../../../controllers/maproom/v3/cells/resourceCell.js";
+import { tribeOutpostCell } from "../../../controllers/maproom/v3/cells/tribeOutpostCell.js";
+import { terrainCell } from "../../../controllers/maproom/v3/cells/terrainCell.js";
+import { playerCell } from "../../../controllers/maproom/v3/cells/playerCell.js";
 
 export const createCellData = async (
   cell: Loaded<WorldMapCell, never>,

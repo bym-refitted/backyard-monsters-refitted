@@ -2,7 +2,7 @@ import path from "path";
 import JWT from "jsonwebtoken";
 
 import { Status } from "../../enums/StatusCodes.js";
-import { KoaController } from "../../utils/KoaController.js";
+import type { KoaController } from "../../utils/KoaController.js";
 import { logger } from "../../utils/logger.js";
 import { promises as fs } from "fs";
 import { postgres } from "../../server.js";

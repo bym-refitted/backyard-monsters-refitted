@@ -1,4 +1,4 @@
-import { TypeOf } from "zod";
+import type { TypeOf } from "zod";
 import { resourcesHandler } from "../../../controllers/base/save/handlers/resourceHandler.js";
 import { SaveKeys } from "../../../enums/SaveKeys.js";
 import { saveFailureErr } from "../../../errors/errors.js";
