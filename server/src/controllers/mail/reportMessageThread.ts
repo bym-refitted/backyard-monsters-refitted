@@ -1,5 +1,5 @@
 import { Status } from "../../enums/StatusCodes.js";
-import { KoaController } from "../../utils/KoaController.js";
+import type { KoaController } from "../../utils/KoaController.js";
 import { ReportMessageSchema } from "./zod/ReportMessageSchema.js";
 import { postgres } from "../../server.js";
 import { Thread } from "../../models/thread.model.js";

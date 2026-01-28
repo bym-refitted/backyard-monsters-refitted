@@ -1,7 +1,7 @@
 import { Status } from "../../enums/StatusCodes.js";
 import { World } from "../../models/world.model.js";
 import { postgres, redis } from "../../server.js";
-import { KoaController } from "../../utils/KoaController.js";
+import type { KoaController } from "../../utils/KoaController.js";
 import { LB_CACHE_TTL } from "./getLeaderboards.js";
 
 /**
@@ -24,7 +24,7 @@ export const getAvailableWorlds: KoaController = async (ctx) => {
     worlds = JSON.parse(cachedWorlds);
   } else {
     worlds = await postgres.em.find(World, {});
-    await redis.setEx(cacheKey, LB_CACHE_TTL, JSON.stringify(worlds));
+    await redis.setex(cacheKey, LB_CACHE_TTL, JSON.stringify(worlds));
   }
 
   ctx.status = Status.OK;

@@ -1,7 +1,7 @@
 import { devConfig } from "../config/DevSettings.js";
 import { logger } from "../utils/logger.js";
 import morgan from "koa-morgan";
-import { Context, Next } from "koa";
+import type { Context, Next } from "koa";
 
 /**
  * Middleware to log missing assets.

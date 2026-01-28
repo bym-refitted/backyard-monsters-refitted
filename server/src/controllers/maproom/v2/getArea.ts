@@ -1,13 +1,13 @@
 import { z } from "zod";
 
-import { KoaController } from "../../../utils/KoaController.js";
+import type { KoaController } from "../../../utils/KoaController.js";
 import { User } from "../../../models/user.model.js";
 import { WorldMapCell } from "../../../models/worldmapcell.model.js";
 import { postgres } from "../../../server.js";
 import { devConfig } from "../../../config/DevSettings.js";
 import { Status } from "../../../enums/StatusCodes.js";
 import { createCellData } from "../../../services/maproom/v2/createCellData.js";
-import { Save } from "../../../models/save.model.js";
+import type { Save } from "../../../models/save.model.js";
 import { generateNoise, getTerrainHeight } from "../../../services/maproom/v2/generateMap.js";
 
 /**
@@ -63,10 +63,21 @@ export const getArea: KoaController = async (ctx) => {
     { populate: ["save"] }
   );
 
+  // Batch load all unique cell owners in a single query
+  const ownerIds = [...new Set(dbCells.map(cell => cell.uid).filter(Boolean))];
+
+  const ownersList = await postgres.em.find(
+    User,
+    { userid: { $in: ownerIds } },
+    { populate: ["save"] }
+  );
+
+  const cellOwners = new Map<number, User>(ownersList.map(u => [u.userid, u]));
+
   const cells = {};
   for (const cell of dbCells) {
     if (!cells[cell.x]) cells[cell.x] = {};
-    cells[cell.x][cell.y] = await createCellData(cell, worldid, ctx);
+    cells[cell.x][cell.y] = await createCellData(cell, worldid, ctx, cellOwners);
   }
 
   // Then, fill the remaining cells in-memory

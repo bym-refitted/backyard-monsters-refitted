@@ -1,5 +1,5 @@
 import z from "zod";
-import { Resources } from "../services/base/updateResources.js";
+import type { Resources } from "../services/base/updateResources.js";
 
 /**
  * Schema for validating and transforming base save data.

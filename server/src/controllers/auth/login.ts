@@ -4,14 +4,14 @@ import JWT from "jsonwebtoken";
 import { User } from "../../models/user.model.js";
 import { postgres, redis } from "../../server.js";
 import { FilterFrontendKeys } from "../../utils/FrontendKey.js";
-import { KoaController } from "../../utils/KoaController.js";
+import type { KoaController } from "../../utils/KoaController.js";
 import {
   emailPasswordErr,
   discordVerifyErr,
   userPermaBannedErr,
 } from "../../errors/errors.js";
 import { logger } from "../../utils/logger.js";
-import { BymJwtPayload, verifyJwtToken } from "../../middleware/auth.js";
+import { type BymJwtPayload, verifyJwtToken } from "../../middleware/auth.js";
 import { Status } from "../../enums/StatusCodes.js";
 import { UserLoginSchema } from "../../zod/AuthSchemas.js";
 import { Env } from "../../enums/Env.js";

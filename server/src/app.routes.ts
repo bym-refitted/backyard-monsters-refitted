@@ -34,7 +34,7 @@ import { getMessageThreads } from "./controllers/mail/getMessageThreads.js";
 import { getMessageThread } from "./controllers/mail/getMessageThread.js";
 import { sendMessage } from "./controllers/mail/sendMessage.js";
 import { reportMessageThread } from "./controllers/mail/reportMessageThread.js";
-import { Context } from "koa";
+import type { Context } from "koa";
 import { getAvailableWorlds } from "./controllers/leaderboards/getAvailableWorlds.js";
 import { getLeaderboards } from "./controllers/leaderboards/getLeaderboards.js";
 import { getAttackLogs } from "./controllers/attacklogs/getAttackLogs.js";
