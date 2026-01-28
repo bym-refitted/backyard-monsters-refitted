@@ -1404,16 +1404,19 @@ package com.monsters.maproom_advanced
       
       public function Hide() : void
       {
-         if(_open && GLOBAL.mode != GLOBAL.e_BASE_MODE.ATTACK && GLOBAL.mode != GLOBAL.e_BASE_MODE.WMATTACK)
+         if(_open)
          {
             SOUNDS.Play("close");
-            if(_mc.parent)
+            if(_mc && _mc.parent)
             {
                _mc.parent.removeChild(_mc);
             }
             ClearCells();
-            _mc.Cleanup();
-            _mc = null;
+            if(_mc)
+            {
+               _mc.Cleanup();
+               _mc = null;
+            }
          }
          _open = false;
       }

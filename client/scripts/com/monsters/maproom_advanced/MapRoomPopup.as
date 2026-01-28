@@ -79,6 +79,10 @@ package com.monsters.maproom_advanced
 
       private var _lastBuffCount:Number = -1;
 
+      private var _onHomeClick:Function;
+
+      private var _onViewOnlyBookmarkClick:Function;
+
       public static var s_Instance:MapRoomPopup = null;
       
       public function MapRoomPopup()
@@ -160,11 +164,12 @@ package com.monsters.maproom_advanced
          if(!MapRoom._viewOnly)
          {
             this.bHome.SetupKey("btn_home");
-            this.bHome.addEventListener(MouseEvent.CLICK,function(param1:MouseEvent):void
+            this._onHomeClick = function(param1:MouseEvent):void
             {
                HideBookmarkMenu();
                MapRoom.JumpTo(GLOBAL._mapHome);
-            });
+            };
+            this.bHome.addEventListener(MouseEvent.CLICK, this._onHomeClick);
             this.bHome.buttonMode = true;
             this.bHome.x = mcFrame2.x + 20;
             this.bHome.y = mcFrame2.y + 200;
@@ -183,10 +188,11 @@ package com.monsters.maproom_advanced
          else
          {
             this.bBookmarks.SetupKey("btn_home");
-            this.bBookmarks.addEventListener(MouseEvent.CLICK,function(param1:MouseEvent):void
+            this._onViewOnlyBookmarkClick = function(param1:MouseEvent):void
             {
                MapRoom.JumpTo(MapRoom._inviteLocation);
-            });
+            };
+            this.bBookmarks.addEventListener(MouseEvent.CLICK, this._onViewOnlyBookmarkClick);
             this.bBookmarks.buttonMode = true;
             this.bBookmarks.Enabled = true;
             this.bBookmarks.x = mcFrame2.x + 20;
@@ -533,6 +539,8 @@ package com.monsters.maproom_advanced
       public function Cleanup() : void
       {
          var i:int = 0;
+         this.HideBookmarkMenu();
+
          this._bubble = null;
          if(this._popupInfoMine)
          {
@@ -624,21 +632,25 @@ package com.monsters.maproom_advanced
          this._lastBuffCount = -1;
          if(!MapRoom._viewOnly)
          {
-            this.bHome.removeEventListener(MouseEvent.CLICK,function(param1:MouseEvent):void
+            if(this._onHomeClick != null)
             {
-               HideBookmarkMenu();
-               MapRoom.JumpTo(GLOBAL._mapHome);
-            });
+               this.bHome.removeEventListener(MouseEvent.CLICK, this._onHomeClick);
+               this._onHomeClick = null;
+            }
             this.bJump.removeEventListener(MouseEvent.CLICK,this.JumpPopupShow);
             this.bBookmarks.removeEventListener(MouseEvent.CLICK,this.ShowBookmarkMenu);
          }
          else
          {
-            this.bBookmarks.removeEventListener(MouseEvent.CLICK,function(param1:MouseEvent):void
+            if(this._onViewOnlyBookmarkClick != null)
             {
-               MapRoom.JumpTo(MapRoom._inviteLocation);
-            });
+               this.bBookmarks.removeEventListener(MouseEvent.CLICK, this._onViewOnlyBookmarkClick);
+               this._onViewOnlyBookmarkClick = null;
+            }
          }
+
+         MapRoom.ClearCells();
+         s_Instance = null;
       }
       
       public function Setup() : void
