@@ -49,8 +49,9 @@ const mikroOrmConfig = {
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
   migrations: {
-    path: path.join(import.meta.dirname, "../dist/database/migrations"),
-    pattern: /^[\w-]+\d+\.[j]s$/,
+    path: path.join(import.meta.dirname, "./database/migrations"),
+    pathTs: path.join(import.meta.dirname, "./database/migrations"),
+    pattern: /^\d{8}_[\w]+\.ts$/,
   },
 } as Parameters<typeof MikroORM.init<PostgreSqlDriver>>[0];
 
