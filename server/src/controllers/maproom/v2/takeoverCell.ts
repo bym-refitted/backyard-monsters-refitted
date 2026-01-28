@@ -1,4 +1,4 @@
-import { KoaController } from "../../../utils/KoaController.js";
+import type { KoaController } from "../../../utils/KoaController.js";
 import { User } from "../../../models/user.model.js";
 import { postgres } from "../../../server.js";
 import { WorldMapCell } from "../../../models/worldmapcell.model.js";
@@ -37,7 +37,7 @@ export const takeoverCell: KoaController = async (ctx) => {
 
     const cell = await postgres.em.findOne(
       WorldMapCell,
-      { baseid },
+      { baseid, world_id: userSave.worldid },
       { populate: ["save"] }
     );
 

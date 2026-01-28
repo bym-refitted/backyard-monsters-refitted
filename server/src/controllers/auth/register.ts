@@ -1,5 +1,5 @@
 import bcrypt from "bcrypt";
-import { KoaController } from "../../utils/KoaController.js";
+import type { KoaController } from "../../utils/KoaController.js";
 import { postgres } from "../../server.js";
 import { User } from "../../models/user.model.js";
 import { FilterFrontendKeys } from "../../utils/FrontendKey.js";
