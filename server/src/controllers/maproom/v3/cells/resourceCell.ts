@@ -1,9 +1,9 @@
-import { Context } from "koa";
-import { EnumBaseRelationship } from "../../../../enums/EnumBaseRelationship";
-import { EnumYardType } from "../../../../enums/EnumYardType";
-import { WorldMapCell } from "../../../../models/worldmapcell.model";
-import { Tribes } from "../../../../enums/Tribes";
-import { CellData } from "../../../../types/CellData";
+import type { Context } from "koa";
+import { EnumBaseRelationship } from "../../../../enums/EnumBaseRelationship.js";
+import { EnumYardType } from "../../../../enums/EnumYardType.js";
+import { WorldMapCell } from "../../../../models/worldmapcell.model.js";
+import { Tribes } from "../../../../enums/Tribes.js";
+import type { CellData } from "../../../../types/CellData.js";
 
 /**
  * Formats a resource outpost cell for Map Room 3
@@ -12,7 +12,7 @@ import { CellData } from "../../../../types/CellData";
  * @param cell - Generated cell with x, y, i (altitude), t (type)
  * @returns Formatted resource outpost cell data
  */
-export const resourceCell = async (ctx: Context, cell: WorldMapCell): Promise<CellData> => {
+export const resourceCell = async (_: Context, cell: WorldMapCell): Promise<CellData> => {
   const tribeIndex = (cell.x + cell.y) % Tribes.length;
 
   // 60% no clover (altitude 5-31), 40% on clovers (altitude 32-49)

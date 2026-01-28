@@ -1,5 +1,5 @@
 import {
-  Resources,
+  type Resources,
   updateResources,
 } from "../../../../services/base/updateResources.js";
 import { Save } from "../../../../models/save.model.js";

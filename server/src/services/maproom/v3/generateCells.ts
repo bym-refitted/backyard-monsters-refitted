@@ -1,10 +1,10 @@
 import alea from "alea";
 
 import { createNoise2D } from "simplex-noise";
-import { MapRoom3 } from "../../../enums/MapRoom";
-import { EnumYardType } from "../../../enums/EnumYardType";
-import { getDefenderOutposts } from "./getDefenderOutposts";
-import { isValidPosition } from "./utils/isValidPosition";
+import { MapRoom3 } from "../../../enums/MapRoom.js";
+import { EnumYardType } from "../../../enums/EnumYardType.js";
+import { getDefenderOutposts } from "./getDefenderOutposts.js";
+import { isValidPosition } from "./utils/isValidPosition.js";
 
 import {
   CELL_SEED,
@@ -18,7 +18,7 @@ import {
   STRONGHOLD_JITTER,
   RESOURCE_SEED,
   TRIBE_OUTPOST_SEED,
-} from "../../../config/WorldGenSettings";
+} from "../../../config/WorldGenSettings.js";
 
 interface Cell {
   i?: number;

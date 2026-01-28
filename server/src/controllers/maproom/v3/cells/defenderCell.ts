@@ -1,9 +1,9 @@
-import { Context } from "koa";
-import { EnumBaseRelationship } from "../../../../enums/EnumBaseRelationship";
-import { EnumYardType } from "../../../../enums/EnumYardType";
-import { Tribes } from "../../../../enums/Tribes";
-import { WorldMapCell } from "../../../../models/worldmapcell.model";
-import { CellData } from "../../../../types/CellData";
+import type { Context } from "koa";
+import { EnumBaseRelationship } from "../../../../enums/EnumBaseRelationship.js";
+import { EnumYardType } from "../../../../enums/EnumYardType.js";
+import { Tribes } from "../../../../enums/Tribes.js";
+import { WorldMapCell } from "../../../../models/worldmapcell.model.js";
+import type { CellData } from "../../../../types/CellData.js";
 
 /**
  * Formats a fortification (defender) cell for Map Room 3

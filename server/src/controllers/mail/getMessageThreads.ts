@@ -1,7 +1,7 @@
 import { Status } from "../../enums/StatusCodes.js";
 import { mailboxErr } from "../../errors/errors.js";
 import { User } from "../../models/user.model.js";
-import { KoaController } from "../../utils/KoaController.js";
+import type { KoaController } from "../../utils/KoaController.js";
 
 import { postgres } from "../../server.js";
 import { Thread } from "../../models/thread.model.js";

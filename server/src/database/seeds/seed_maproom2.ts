@@ -1,16 +1,16 @@
 import "dotenv/config";
 import bcrypt from "bcrypt";
-import ormConfig from "../../mikro-orm.config";
+import ormConfig from "../../mikro-orm.config.js";
 
 import { v4 as uuidv4 } from "uuid";
 import { MikroORM } from "@mikro-orm/core";
-import { errorLog, logging } from "../../utils/logger";
-import { getDefaultBaseData } from "../../data/getDefaultBaseData";
-import { BaseType } from "../../enums/Base";
-import { MapRoom2 } from "../../enums/MapRoom";
-import { Save } from "../../models/save.model";
-import { User } from "../../models/user.model";
-import { joinOrCreateWorld } from "../../services/maproom/v2/joinOrCreateWorld";
+import { getDefaultBaseData } from "../../data/getDefaultBaseData.js";
+import { BaseType } from "../../enums/Base.js";
+import { MapRoom2 } from "../../enums/MapRoom.js";
+import { Save } from "../../models/save.model.js";
+import { User } from "../../models/user.model.js";
+import { joinOrCreateWorld } from "../../services/maproom/v2/joinOrCreateWorld.js";
+import { logger } from "../../utils/logger.js";
 
 /**
  * Seed the database with Map Room 2 dummy users.
@@ -31,7 +31,7 @@ import { joinOrCreateWorld } from "../../services/maproom/v2/joinOrCreateWorld";
     const orm = await MikroORM.init(ormConfig);
     const em = orm.em.fork();
 
-    logging(`Seeding Map Room 2 with ${MapRoom2.MAX_PLAYERS} users`);
+    logger.info(`Seeding Map Room 2 with ${MapRoom2.MAX_PLAYERS} users`);
 
     const users = Array.from({ length: MapRoom2.MAX_PLAYERS }, () => {
       const uniqueId = uuidv4().replace(/-/g, "").slice(0, 12);
@@ -61,11 +61,11 @@ import { joinOrCreateWorld } from "../../services/maproom/v2/joinOrCreateWorld";
       await joinOrCreateWorld(user, save, em);
     }
 
-    logging(`Seeding completed successfully! 🌱`);
+    logger.info(`Seeding completed successfully! 🌱`);
 
     await orm.close(true);
   } catch (err) {
-    errorLog(err);
+    logger.error(err);
     process.exit(1);
   }
 })();

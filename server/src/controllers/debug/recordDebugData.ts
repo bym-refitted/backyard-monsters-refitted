@@ -1,6 +1,6 @@
 import { Status } from "../../enums/StatusCodes.js";
 import { debugClientErr } from "../../errors/errors.js";
-import { KoaController } from "../../utils/KoaController.js";
+import type { KoaController } from "../../utils/KoaController.js";
 import { logger } from "../../utils/logger.js";
 
 const LOG_LEVEL = {

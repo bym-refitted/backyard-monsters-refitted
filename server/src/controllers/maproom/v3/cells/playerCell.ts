@@ -1,12 +1,12 @@
-import { Context } from "koa";
-import { EnumBaseRelationship } from "../../../../enums/EnumBaseRelationship";
-import { EnumYardType } from "../../../../enums/EnumYardType";
-import { WorldMapCell } from "../../../../models/worldmapcell.model";
-import { CellData } from "../../../../types/CellData";
-import { calculateBaseLevel } from "../../../../services/base/calculateBaseLevel";
-import { postgres } from "../../../../server";
-import { User } from "../../../../models/user.model";
-import { errorLog } from "../../../../utils/logger";
+import type { Context } from "koa";
+import { EnumBaseRelationship } from "../../../../enums/EnumBaseRelationship.js";
+import { EnumYardType } from "../../../../enums/EnumYardType.js";
+import { WorldMapCell } from "../../../../models/worldmapcell.model.js";
+import type { CellData } from "../../../../types/CellData.js";
+import { calculateBaseLevel } from "../../../../services/base/calculateBaseLevel.js";
+import { postgres } from "../../../../server.js";
+import { User } from "../../../../models/user.model.js";
+import { logger } from "../../../../utils/logger.js";
 
 /**
  * Formats a player cell for Map Room 3
@@ -27,7 +27,7 @@ export const playerCell = async (ctx: Context, cell: WorldMapCell): Promise<Cell
         { populate: ["save"] }
       );
 
-  if (!cellOwner) errorLog(`Cell owner save data is missing.`);
+  if (!cellOwner) logger.error(`Cell owner save data is missing.`);
 
   const points = cellOwner.save.points;
   const basevalue = cellOwner.save.basevalue;

@@ -1,4 +1,4 @@
-import { CellData } from "../../../../types/CellData";
+import type { CellData } from "../../../../types/CellData.js";
 
 /**
  * Formats a terrain cell (bush/clover or empty) for Map Room 3

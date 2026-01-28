@@ -1,6 +1,6 @@
 import { Status } from "../../enums/StatusCodes.js";
 import { postgres, redis } from "../../server.js";
-import { KoaController } from "../../utils/KoaController.js";
+import type { KoaController } from "../../utils/KoaController.js";
 
 /**
  * Time-to-live (TTL) for leaderboard cache in Redis.
@@ -53,7 +53,7 @@ export const getLeaderboards: KoaController = async (ctx) => {
       [worldid]
     );
 
-    await redis.setEx(cacheKey, LB_CACHE_TTL, JSON.stringify(leaderboard));
+    await redis.setex(cacheKey, LB_CACHE_TTL, JSON.stringify(leaderboard));
 
     ctx.status = Status.OK;
     ctx.body = { leaderboard };

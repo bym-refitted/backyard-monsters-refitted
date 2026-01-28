@@ -2,7 +2,7 @@ import { MapRoom3, MapRoomVersion } from "../../enums/MapRoom.js";
 import { Status } from "../../enums/StatusCodes.js";
 import { User } from "../../models/user.model.js";
 import { BASE_URL, PORT, postgres } from "../../server.js";
-import { KoaController } from "../../utils/KoaController.js";
+import type { KoaController } from "../../utils/KoaController.js";
 
 /**
  * Controller to get Map Room metadata and configuration.

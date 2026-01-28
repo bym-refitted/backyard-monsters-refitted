@@ -78,6 +78,7 @@ export const damageProtection = async (save: Save, mode?: BaseMode) => {
           // Clear expired protection timestamp
           if (protection > 0 && protection <= currentTime) {
             protection = 0;
+            save.damage = 0; 
             persist = true;
           }
 

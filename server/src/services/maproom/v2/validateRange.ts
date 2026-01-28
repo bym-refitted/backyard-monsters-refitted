@@ -1,4 +1,4 @@
-import { Loaded } from "@mikro-orm/core";
+import type { Loaded } from "@mikro-orm/core";
 import { Save } from "../../../models/save.model.js";
 import { User } from "../../../models/user.model.js";
 import { WorldMapCell } from "../../../models/worldmapcell.model.js";

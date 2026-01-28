@@ -1,16 +1,16 @@
 import "dotenv/config";
 import bcrypt from "bcrypt";
-import ormConfig from "../../mikro-orm.config";
+import ormConfig from "../../mikro-orm.config.js";
 
 import { v4 as uuidv4 } from "uuid";
 import { MikroORM } from "@mikro-orm/core";
-import { errorLog, logging } from "../../utils/logger";
-import { getDefaultBaseData } from "../../data/getDefaultBaseData";
-import { BaseType } from "../../enums/Base";
-import { Save } from "../../models/save.model";
-import { User } from "../../models/user.model";
-import { joinNewWorldMap } from "../../services/maproom/v3/joinNewWorldMap";
-import { MapRoom3 } from "../../enums/MapRoom";
+import { getDefaultBaseData } from "../../data/getDefaultBaseData.js";
+import { BaseType } from "../../enums/Base.js";
+import { Save } from "../../models/save.model.js";
+import { User } from "../../models/user.model.js";
+import { joinNewWorldMap } from "../../services/maproom/v3/joinNewWorldMap.js";
+import { MapRoom3 } from "../../enums/MapRoom.js";
+import { logger } from "../../utils/logger.js";
 
 /**
  * Seed the database with Map Room 3 dummy users.
@@ -32,7 +32,7 @@ import { MapRoom3 } from "../../enums/MapRoom";
     const orm = await MikroORM.init(ormConfig);
     const em = orm.em.fork();
 
-    logging(`Seeding Map Room 3 with ${MapRoom3.MAX_PLAYERS} users`);
+    logger.info(`Seeding Map Room 3 with ${MapRoom3.MAX_PLAYERS} users`);
 
     const users = Array.from({ length: MapRoom3.MAX_PLAYERS }, () => {
       const uniqueId = uuidv4().replace(/-/g, "").slice(0, 12);
@@ -62,13 +62,11 @@ import { MapRoom3 } from "../../enums/MapRoom";
       await joinNewWorldMap(user, save, em);
     }
 
-    logging(
-      `Seeding completed successfully! 🌱`
-    );
+    logger.info(`Seeding completed successfully! 🌱`);
 
     await orm.close(true);
   } catch (err) {
-    errorLog(err);
+    logger.error(err);
     process.exit(1);
   }
 })();

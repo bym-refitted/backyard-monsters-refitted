@@ -1,4 +1,4 @@
-import { Context, Next } from "koa";
+import type { Context, Next } from "koa";
 import { logger } from "../utils/logger.js";
 import { Status } from "../enums/StatusCodes.js";
 

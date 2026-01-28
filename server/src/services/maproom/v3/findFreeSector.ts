@@ -1,11 +1,11 @@
-import { MapRoom3, MapRoomVersion } from "../../../enums/MapRoom";
-import { World } from "../../../models/world.model";
-import { WorldMapCell } from "../../../models/worldmapcell.model";
+import { MapRoom3, MapRoomVersion } from "../../../enums/MapRoom.js";
+import { World } from "../../../models/world.model.js";
+import { WorldMapCell } from "../../../models/worldmapcell.model.js";
 import { EntityManager, PostgreSqlDriver } from "@mikro-orm/postgresql";
-import { EnumYardType } from "../../../enums/EnumYardType";
-import { getHexNeighborOffsets } from "./getDefenderOutposts";
-import { generateCells } from "./generateCells";
-import { mapByCoordinates } from "./utils/mapByCoordinates";
+import { EnumYardType } from "../../../enums/EnumYardType.js";
+import { getHexNeighborOffsets } from "./getDefenderOutposts.js";
+import { generateCells } from "./generateCells.js";
+import { mapByCoordinates } from "./utils/mapByCoordinates.js";
 import { setTimeout } from "timers/promises";
 
 interface Cell {

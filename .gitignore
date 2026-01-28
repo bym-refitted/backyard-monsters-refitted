@@ -7,7 +7,6 @@ node_modules/
 # Build output
 dist/
 bin/
-main.css
 
 # IDE / editor
 .idea
