@@ -29,7 +29,7 @@ Choose your setup method:
 | Setup Type | Documentation |
 |------------|---------------|
 | 🖥️ **Server Setup** | [Server & Database Configuration](https://github.com/bym-refitted/backyard-monsters-refitted/wiki/Server-&-Database-Setup) |
-| 🎮 **Client Setup** | [Client Recompilation Guide](https://github.com/bym-refitted/backyard-monsters-refitted/wiki/Client-Setup-(Recomp)) |
+| 🎮 **Client Setup** | [Client Recompilation Guide](https://github.com/bym-refitted/backyard-monsters-refitted/wiki/Client-Setup) |
 | 🐳 **Docker Setup** | [Docker Configuration](https://github.com/bym-refitted/backyard-monsters-refitted/wiki/Docker-Setup) |
 | 📱 **Android Setup** | [Android APK Compilation](https://github.com/bym-refitted/backyard-monsters-refitted/wiki/Android-APK-Setup) |
 
@@ -50,7 +50,7 @@ We welcome contributions from the community! Whether you're fixing bugs, adding 
 - [The Internet Archive](https://archive.org/), a digital library of Internet sites and other cultural artifacts in digital form.
 - [Flashpoint Archive](https://flashpointarchive.org/), the webgame preservation project.
 - [Adobe Flash Player Archive](https://archive.org/download/flashplayerarchive/), the Adobe Inc. archive.org Flash Player Archive.
-- [Stop Killing Games](https://eci.ec.europa.eu/045/public/#/screen/home), a campaign advocating for the legal right to preserve and play digital games.
+- [Stop Killing Games](https://www.stopkillinggames.com/) a campaign advocating for the legal right to preserve and play digital games.
 
 <br />
 
