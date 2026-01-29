@@ -704,16 +704,9 @@ package
             "r4":new SecNum(0),
             "time":new SecNum(97200),
             "re":[[14,1,4],[11,1,1]]
-         },{
-            "r1":new SecNum(1247840),
-            "r2":new SecNum(1247840),
-            "r3":new SecNum(623920),
-            "r4":new SecNum(0),
-            "time":new SecNum(97200),
-            "re":[[14,1,4],[11,1,1]]
          }];
-         _buildingProps[4].hp = [4000,8000,16000,28000,28000];
-         _buildingProps[4].capacity = [500,1000,1750,2250,3000,4000,4000];
+         _buildingProps[4].hp = [4000,8000,16000,28000];
+         _buildingProps[4].capacity = [500,1000,1750,2250,3000,4000];
       }
 
       public static function SetBuildingProps():void
