@@ -2142,7 +2142,7 @@ export const abunaki = {
         id: 174,
         Y: 330,
         t: 5,
-        l: 5,
+        l: 4,
       },
       "175": {
         X: 80,
