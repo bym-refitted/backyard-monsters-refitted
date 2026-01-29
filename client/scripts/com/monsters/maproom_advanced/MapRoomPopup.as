@@ -1104,9 +1104,12 @@ package com.monsters.maproom_advanced
          }
       }
 
-      /*
+      /**
        * Applies range highlighting directly without allocating intermediate objects.
        * This is an optimized version that combines GetCellsInRange + highlighting into one pass.
+       *
+       * Cells within base flinger range get full highlight (alpha 0.5).
+       * Cells in bonus range from Alliance Declare War powerup get dimmer highlight (alpha 0.35).
        */
       private function ApplyRangeHighlighting(startOffsetX:int, startOffsetY:int, range:int):void
       {
@@ -1114,6 +1117,12 @@ package com.monsters.maproom_advanced
          var distance:int;
          var currentOffsetX:int;
          var currentOffsetY:int;
+         var baseRange:int = range;
+
+         if (POWERUPS.CheckPowers(POWERUPS.ALLIANCE_DECLAREWAR, "NORMAL"))
+         {
+            baseRange = range - 2;
+         }
 
          var startAxialQ:int = startOffsetX;
          var startAxialR:int = startOffsetY - (startOffsetX - (startOffsetX & 1)) / 2;
@@ -1134,7 +1143,7 @@ package com.monsters.maproom_advanced
 
                if (cell && !cell._water) {
                   if (!cell._over) {
-                     cell.mc.mcGlow.alpha = distance <= 10 ? 0.5 : Math.max(cell.mc.mcGlow.alpha, 0.35);
+                     cell.mc.mcGlow.alpha = distance <= baseRange ? 0.5 : Math.max(cell.mc.mcGlow.alpha, 0.35);
                   }
                   cell._inRange = true;
                }
