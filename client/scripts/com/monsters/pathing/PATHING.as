@@ -327,8 +327,22 @@ package com.monsters.pathing
                   "startPoint": gridStart
                };
          }
-         _floods[gridKeyTarget].startpoints[gridKeyStart].callbackfunctions.push([callback, ignoreWalls, targetBuilding, originalTarget]);
-         _floods[gridKeyTarget].pending += 1;
+         // Prevent duplicate callback registration
+         var callbacks:Array = _floods[gridKeyTarget].startpoints[gridKeyStart].callbackfunctions;
+         var alreadyAdded:Boolean = false;
+         for (var idx:int = 0; idx < callbacks.length; idx++)
+         {
+            if (callbacks[idx][0] === callback)
+            {
+               alreadyAdded = true;
+               break;
+            }
+         }
+         if (!alreadyAdded)
+         {
+            callbacks.push([callback, ignoreWalls, targetBuilding, originalTarget]);
+            _floods[gridKeyTarget].pending += 1;
+         }
       }
 
       /**
@@ -394,9 +408,9 @@ package com.monsters.pathing
 
          // Determine the time slice limit based on the number of pending flood fills
          timeSliceLimit = 25 / pendingFloodCount;
-         if (timeSliceLimit < 5)
+         if (timeSliceLimit < 15)
          {
-            timeSliceLimit = 5;
+            timeSliceLimit = 15;
          }
 
          // Process each flood object
