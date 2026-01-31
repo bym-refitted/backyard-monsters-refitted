@@ -10,11 +10,6 @@ package SWC_ALL_fla
       public function tutorialhand3_804()
       {
          super();
-         addFrameScript(0,this.frame1);
-      }
-      
-      internal function frame1() : *
-      {
          stop();
       }
    }
