@@ -73,11 +73,6 @@ package
       public function CREATURELOCKERPOPUP_CLIP()
       {
          super();
-         addFrameScript(0,this.frame1);
-      }
-      
-      internal function frame1() : *
-      {
          stop();
       }
    }

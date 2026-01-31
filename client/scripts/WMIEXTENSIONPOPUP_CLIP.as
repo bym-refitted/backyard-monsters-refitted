@@ -21,12 +21,8 @@ package
       public function WMIEXTENSIONPOPUP_CLIP()
       {
          super();
-         addFrameScript(1,this.frame2);
-      }
-      
-      internal function frame2() : *
-      {
-         this.closeBtn.stop();
+         stop();
+         if (closeBtn) closeBtn.stop();
       }
    }
 }
