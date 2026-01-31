@@ -4,7 +4,7 @@ package
    import flash.display.DisplayObject;
    import flash.display.MovieClip;
    import flash.events.MouseEvent;
-   
+
    public class frame3 extends MovieClip
    {
        

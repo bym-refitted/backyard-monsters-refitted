@@ -17,6 +17,8 @@ package
       public function bubblepopup_CLIP()
       {
          super();
+         if (mcArrow) mcArrow.stop();
+         if (mcBG) mcBG.stop();
       }
    }
 }

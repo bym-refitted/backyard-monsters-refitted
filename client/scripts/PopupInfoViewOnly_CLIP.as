@@ -33,6 +33,7 @@ package
       public function PopupInfoViewOnly_CLIP()
       {
          super();
+         if (mcArrow) mcArrow.stop();
       }
    }
 }
