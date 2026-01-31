@@ -30,6 +30,7 @@ package
       public function UI_TOP_CLIP()
       {
          super();
+         if (mc && mc.mcPoints) mc.mcPoints.stop();
       }
    }
 }
