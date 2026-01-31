@@ -55,7 +55,7 @@ package
       public function MonsterBunkerPopup_Persistent_CLIP()
       {
          super();
-         stop();
+         MovieClipUtil.stopAll(this);
       }
    }
 }

@@ -15,6 +15,7 @@ package
       public function bubblepopup5()
       {
          super();
+         if (mcBG) mcBG.stop();
       }
    }
 }
