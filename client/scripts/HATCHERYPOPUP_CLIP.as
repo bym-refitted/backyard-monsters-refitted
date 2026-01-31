@@ -2,6 +2,7 @@ package
 {
    import flash.display.MovieClip;
    import flash.text.TextField;
+   import com.monsters.utils.MovieClipUtils;
    
    [Embed(source="/_assets/assets.swf", symbol="HATCHERYPOPUP_CLIP")]
    public dynamic class HATCHERYPOPUP_CLIP extends MovieClip
@@ -69,7 +70,7 @@ package
       public function HATCHERYPOPUP_CLIP()
       {
          super();
-         stop();
+         MovieClipUtils.stopAll(this);
       }
    }
 }

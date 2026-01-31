@@ -18,6 +18,7 @@ package
       {
          super();
          stop();
+         if (mcLoading) mcLoading.stop();
       }
    }
 }
