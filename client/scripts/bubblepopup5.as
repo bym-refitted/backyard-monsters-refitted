@@ -2,6 +2,7 @@ package
 {
    import flash.display.MovieClip;
    import flash.text.TextField;
+   import com.monsters.utils.MovieClipUtils;
    
    [Embed(source="/_assets/assets.swf", symbol="bubblepopup5")]
    public dynamic class bubblepopup5 extends MovieClip
@@ -15,7 +16,7 @@ package
       public function bubblepopup5()
       {
          super();
-         if (mcBG) mcBG.stop();
+         MovieClipUtils.stopAll(this);
       }
    }
 }
