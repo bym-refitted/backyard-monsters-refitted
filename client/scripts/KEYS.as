@@ -50,7 +50,7 @@ package
       private static function handleLangFileSucc(data:Event):void
       {
          var rawData:String = String(data.target.data);
-         languageFileJson = JSON.decode(rawData);
+         languageFileJson = JSON.parse(rawData);
          GLOBAL.textContentLoaded = true;
          GLOBAL.eventDispatcher.dispatchEvent(new Event(LANGUAGE_FILE_LOADED));
       }
@@ -58,7 +58,7 @@ package
       private static function handleSupportedLangsSucc(data:Event):void
       {
          var rawData:String = String(data.target.data);
-         supportedLanguagesJson = JSON.decode(rawData);
+         supportedLanguagesJson = JSON.parse(rawData);
          GLOBAL.supportedLangsLoaded = true;
       }
       

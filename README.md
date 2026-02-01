@@ -13,13 +13,13 @@
 
 ## 📖 About This Project
 This repository is a complete digital preservation and restoration of Backyard Monsters, Kixeye’s 2010 Flash-based strategy game. It features a reconstructed client, decompiled from original game files, alongside a custom-built server component implemented through extensive reverse engineering efforts.
-The client runs on version 128.5690 and remains fully compatible with the original ActionScript 3 codebase, rendered through Adobe Flash Player. The backend is powered by Node.js, using the Koa framework, with a PostgreSQL database managed via MikroORM and written entirely in TypeScript.
+The client runs on version 128.5690 and remains fully compatible with the original ActionScript 3 codebase, rendered through Adobe Flash Player. The backend is powered by Bun, using the Koa framework, with a PostgreSQL database managed via MikroORM and written entirely in TypeScript.
 This project aims to keep a piece of gaming history alive and playable for future generations.
 
 <br>
 
 ## 🚀 How to Play
-We recommend to download our game launcher which can be installed from our website's [download page](https://bymrefitted.com/downloads). This will allow you to seamlessly manage what build versions of the client you play, all from one place, without worrying about manually downloading new versions. The launcher currently supports Windows (64-bit) and Linux.
+We recommend to download our game launcher which can be installed from our website's [download page](https://bymrefitted.com/downloads). This will allow you to seamlessly manage what build versions of the client you play, all from one place, without worrying about manually downloading new versions. The launcher supports Windows (64-bit), MacOS and Linux.
 
 <br>
 
@@ -29,7 +29,7 @@ Choose your setup method:
 | Setup Type | Documentation |
 |------------|---------------|
 | 🖥️ **Server Setup** | [Server & Database Configuration](https://github.com/bym-refitted/backyard-monsters-refitted/wiki/Server-&-Database-Setup) |
-| 🎮 **Client Setup** | [Client Recompilation Guide](https://github.com/bym-refitted/backyard-monsters-refitted/wiki/Client-Setup-(Recomp)) |
+| 🎮 **Client Setup** | [Client Recompilation Guide](https://github.com/bym-refitted/backyard-monsters-refitted/wiki/Client-Recompilation-Guide) |
 | 🐳 **Docker Setup** | [Docker Configuration](https://github.com/bym-refitted/backyard-monsters-refitted/wiki/Docker-Setup) |
 | 📱 **Android Setup** | [Android APK Compilation](https://github.com/bym-refitted/backyard-monsters-refitted/wiki/Android-APK-Setup) |
 
@@ -50,7 +50,7 @@ We welcome contributions from the community! Whether you're fixing bugs, adding 
 - [The Internet Archive](https://archive.org/), a digital library of Internet sites and other cultural artifacts in digital form.
 - [Flashpoint Archive](https://flashpointarchive.org/), the webgame preservation project.
 - [Adobe Flash Player Archive](https://archive.org/download/flashplayerarchive/), the Adobe Inc. archive.org Flash Player Archive.
-- [Stop Killing Games](https://eci.ec.europa.eu/045/public/#/screen/home), a campaign advocating for the legal right to preserve and play digital games.
+- [Stop Killing Games](https://www.stopkillinggames.com/) a campaign advocating for the legal right to preserve and play digital games.
 
 <br />
 

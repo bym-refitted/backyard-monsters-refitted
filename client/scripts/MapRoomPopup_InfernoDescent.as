@@ -16,11 +16,6 @@ package
       public function MapRoomPopup_InfernoDescent()
       {
          super();
-         addFrameScript(0,this.frame1);
-      }
-      
-      internal function frame1() : *
-      {
          stop();
       }
    }

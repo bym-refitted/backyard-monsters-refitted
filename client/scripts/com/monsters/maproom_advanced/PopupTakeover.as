@@ -211,7 +211,7 @@ package com.monsters.maproom_advanced
                GLOBAL.Message(KEYS.Get("newmap_take4"));
                return;
             }
-            takeoverVars = [["baseid",this._cell._baseID],["resources",JSON.encode({
+            takeoverVars = [["baseid",this._cell._baseID],["resources",JSON.stringify({
                "r1":this._resourceCost.Get(),
                "r2":this._resourceCost.Get(),
                "r3":this._resourceCost.Get(),

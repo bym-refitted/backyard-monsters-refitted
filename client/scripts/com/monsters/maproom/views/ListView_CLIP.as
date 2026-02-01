@@ -1,6 +1,7 @@
 package com.monsters.maproom.views
 {
    import flash.display.MovieClip;
+   import com.monsters.utils.MovieClipUtils;
    
    [Embed(source="/_assets/assets.swf", symbol="com.monsters.maproom.views.ListView_CLIP")]
    public dynamic class ListView_CLIP extends MovieClip
@@ -22,6 +23,7 @@ package com.monsters.maproom.views
       public function ListView_CLIP()
       {
          super();
+         MovieClipUtils.stopAll(this);
       }
    }
 }
