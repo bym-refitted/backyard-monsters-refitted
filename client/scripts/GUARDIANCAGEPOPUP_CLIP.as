@@ -2,6 +2,7 @@ package
 {
    import flash.display.MovieClip;
    import flash.text.TextField;
+   import com.monsters.utils.MovieClipUtils;
    
    [Embed(source="/_assets/assets.swf", symbol="GUARDIANCAGEPOPUP_CLIP")]
    public dynamic class GUARDIANCAGEPOPUP_CLIP extends MovieClip
@@ -179,6 +180,7 @@ package
       public function GUARDIANCAGEPOPUP_CLIP()
       {
          super();
+         MovieClipUtils.stopAll(this);
       }
    }
 }

@@ -18,11 +18,6 @@ package
       public function FBPROMO_711_CLIP()
       {
          super();
-         addFrameScript(0,this.frame1);
-      }
-      
-      internal function frame1() : *
-      {
          stop();
       }
    }

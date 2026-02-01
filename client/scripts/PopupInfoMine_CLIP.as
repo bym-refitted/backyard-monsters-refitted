@@ -49,6 +49,7 @@ package
       public function PopupInfoMine_CLIP()
       {
          super();
+         if (mcArrow) mcArrow.stop();
       }
    }
 }

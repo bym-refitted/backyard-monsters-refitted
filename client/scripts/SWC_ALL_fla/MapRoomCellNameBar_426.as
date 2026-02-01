@@ -19,11 +19,6 @@ package SWC_ALL_fla
       public function MapRoomCellNameBar_426()
       {
          super();
-         addFrameScript(0,this.frame1);
-      }
-      
-      internal function frame1() : *
-      {
          stop();
       }
    }

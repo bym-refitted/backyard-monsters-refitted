@@ -2,6 +2,7 @@ package
 {
    import flash.display.MovieClip;
    import flash.text.TextField;
+   import com.monsters.utils.MovieClipUtils;
    
    [Embed(source="/_assets/assets.swf", symbol="Inbox_CLIP")]
    public dynamic class Inbox_CLIP extends MovieClip
@@ -37,6 +38,7 @@ package
       public function Inbox_CLIP()
       {
          super();
+         MovieClipUtils.stopAll(this);
       }
    }
 }

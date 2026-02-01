@@ -23,11 +23,9 @@ package com.auth
     import flash.utils.Timer;
     import flash.events.TimerEvent;
     import flash.events.SecurityErrorEvent;
+    import flash.display.StageAlign;
 
-    // DISCLAIMER: This is far from my best work, actually, it's quite miserable, but it works.
-    // I don't really have the time, nor the patience to look deprecated best practices for
-    // creating a UI with Flash/AS3. But, if you do, then by all means please spare my
-    // sanity and make this better and seperate it out. Thanks.
+    // TODO: This file needs a complete refactor. It is currently very messy and hard to read.
     public class AuthForm extends Sprite
     {
 
@@ -101,8 +99,24 @@ package com.auth
 
         private var languages:Array;
 
+        private var background:Sprite;
+
+        private var contentContainer:Sprite;
+
+        private var originalStageAlign:String;
+
+        private const DESIGN_WIDTH:Number = 760;
+        
+        private const DESIGN_HEIGHT:Number = 670;
+
         public function AuthForm()
         {
+            background = new Sprite();
+            addChild(background);
+
+            contentContainer = new Sprite();
+            addChild(contentContainer);
+
             addEventListener(Event.ADDED_TO_STAGE, formAddedToStageHandler);
 
             GLOBAL.eventDispatcher.addEventListener("initError", function(event:Event):void
@@ -128,7 +142,10 @@ package com.auth
             {
                 checkContentLoadedTimer.stop();
                 checkContentLoadedTimer.removeEventListener(TimerEvent.TIMER, checkContentLoaded);
-                removeChild(loadingContainer);
+                if (loadingContainer && loadingContainer.parent)
+                {
+                    contentContainer.removeChild(loadingContainer);
+                }
                 handleContentLoaded();
             }
             else
@@ -143,17 +160,14 @@ package com.auth
         public function formAddedToStageHandler(event:Event):void
         {
             removeEventListener(Event.ADDED_TO_STAGE, formAddedToStageHandler);
-            try
-            {
-                if (stage)
-                    stage.color = BACKGROUND;
-            }
-            catch (e:Error)
-            {
-                this.graphics.beginFill(BACKGROUND);
-                this.graphics.drawRect(0, 0, stage.stageWidth, stage.stageHeight);
-                this.graphics.endFill();
-            }
+
+            // Store original alignment and set TOP_LEFT for AuthForm
+            originalStageAlign = stage.align;
+            stage.align = StageAlign.TOP_LEFT;
+
+            drawBackground();
+            centerContent();
+            stage.addEventListener(Event.RESIZE, onStageResize);
 
             if (!GLOBAL.textContentLoaded && !GLOBAL.supportedLangsLoaded)
             {
@@ -162,9 +176,32 @@ package com.auth
             else
             {
                 // If text content is already loaded, proceed with UI setup
-                removeChild(loadingContainer);
+                if (loadingContainer && loadingContainer.parent)
+                {
+                    contentContainer.removeChild(loadingContainer);
+                }
                 handleContentLoaded();
             }
+        }
+
+        private function onStageResize(event:Event):void
+        {
+            drawBackground();
+            centerContent();
+        }
+
+        private function drawBackground():void
+        {
+            background.graphics.clear();
+            background.graphics.beginFill(BACKGROUND);
+            background.graphics.drawRect(0, 0, stage.stageWidth, stage.stageHeight);
+            background.graphics.endFill();
+        }
+
+        private function centerContent():void
+        {
+            contentContainer.x = (stage.stageWidth - DESIGN_WIDTH) / 2;
+            contentContainer.y = (stage.stageHeight - DESIGN_HEIGHT) / 2;
         }
 
         private function handleContentLoaded():void
@@ -185,17 +222,17 @@ package com.auth
 
             languages = KEYS.supportedLanguagesJson;
             var selectInput:Sprite = createSelectInput();
-            addChild(selectInput);
+            contentContainer.addChild(selectInput);
             selectInput.x = 20;
             selectInput.y = 10;
 
             HeaderTitle();
-            addChild(navContainer);
+            contentContainer.addChild(navContainer);
 
             formContainer.graphics.drawRect(0, 0, formWidth, formHeight);
             formContainer.x = 155;
             formContainer.y = 45;
-            addChild(formContainer);
+            contentContainer.addChild(formContainer);
 
             // Y-position for the first input field
             startY = 345;
@@ -234,7 +271,7 @@ package com.auth
             }
 
             loadingContainer = new Sprite();
-            addChild(loadingContainer);
+            contentContainer.addChild(loadingContainer);
 
             var contentWidth:Number = 400;
 
@@ -419,9 +456,6 @@ package com.auth
         private function createInputField(width:Number, height:Number, placeholder:String = "", isPassword:Boolean = false):TextField
         {
             var input:TextField = new TextField();
-
-            input.background = true;
-            input.backgroundColor = BACKGROUND;
             input.type = TextFieldType.INPUT;
             input.width = width;
             input.height = height;
@@ -812,34 +846,37 @@ package com.auth
 
         public function disposeUI():void
         {
+            // Restore original stage alignment and remove listener
+            if (stage)
+            {
+                stage.align = originalStageAlign;
+                stage.removeEventListener(Event.RESIZE, onStageResize);
+            }
+
+            // Stop timer
+            if (checkContentLoadedTimer)
+            {
+                checkContentLoadedTimer.stop();
+                checkContentLoadedTimer.removeEventListener(TimerEvent.TIMER, checkContentLoaded);
+            }
+
             // Remove event listeners
-            submitButton.removeEventListener(MouseEvent.CLICK, submitButtonClickHandler);
+            if (submitButton) submitButton.removeEventListener(MouseEvent.CLICK, submitButtonClickHandler);
 
-            // Remove display objects
-            formContainer.removeChild(submitButton);
-            formContainer.removeChild(emailInput);
-            formContainer.removeChild(passwordInput);
-            removeChild(formContainer);
+            // Dispose bitmap data to free memory
+            if (image) image.bitmapData.dispose();
 
-            if (image)
+            // Unload loader
+            if (loader)
             {
-                image.bitmapData.dispose();
-                formContainer.removeChild(image);
+                loader.contentLoaderInfo.removeEventListener(Event.COMPLETE, onImageLoaded);
+                loader.unload();
             }
-            // Clean up resources
-            loader.unload();
-            loader.contentLoaderInfo.removeEventListener(Event.COMPLETE, onImageLoaded);
 
-            submitButton = null;
-            emailInput = null;
-            passwordInput = null;
-            image = null;
-            loader = null;
+            // Clear background graphics
+            if (background) background.graphics.clear();
 
-            if (formContainer.parent)
-            {
-                formContainer.parent.removeChild(formContainer);
-            }
+            if (this.parent) this.parent.removeChild(this);
         }
 
     }

@@ -14,6 +14,8 @@ package
       public function koth_looted_marker()
       {
          super();
+         if (mcBG) mcBG.stop();
+         if (check) check.stop();
       }
    }
 }

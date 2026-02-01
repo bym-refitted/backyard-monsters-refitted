@@ -14,6 +14,8 @@ package
       public function ScrollSet_CLIP()
       {
          super();
+         if (mcBG) mcBG.stop();
+         if (mcScroller) mcScroller.stop();
       }
    }
 }

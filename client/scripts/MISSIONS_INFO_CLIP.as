@@ -2,6 +2,7 @@ package
 {
    import flash.display.MovieClip;
    import flash.text.TextField;
+   import com.monsters.utils.MovieClipUtils;
    
    [Embed(source="/_assets/assets.swf", symbol="MISSIONS_INFO_CLIP")]
    public dynamic class MISSIONS_INFO_CLIP extends MovieClip
@@ -35,6 +36,7 @@ package
       public function MISSIONS_INFO_CLIP()
       {
          super();
+         MovieClipUtils.stopAll(this);
       }
    }
 }
