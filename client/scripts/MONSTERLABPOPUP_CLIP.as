@@ -2,6 +2,7 @@ package
 {
    import flash.display.MovieClip;
    import flash.text.TextField;
+   import com.monsters.utils.MovieClipUtils;
    
    [Embed(source="/_assets/assets.swf", symbol="MONSTERLABPOPUP_CLIP")]
    public dynamic class MONSTERLABPOPUP_CLIP extends MovieClip
@@ -51,12 +52,7 @@ package
       public function MONSTERLABPOPUP_CLIP()
       {
          super();
-         addFrameScript(0,this.frame1);
-      }
-      
-      internal function frame1() : *
-      {
-         stop();
+         MovieClipUtils.stopAll(this);
       }
    }
 }

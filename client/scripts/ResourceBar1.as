@@ -21,6 +21,9 @@ package
       public function ResourceBar1()
       {
          super();
+         if (mcBar) mcBar.stop();
+         if (mcPoints) mcPoints.stop();
+         if (bAdd) bAdd.stop();
       }
    }
 }

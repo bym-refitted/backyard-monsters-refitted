@@ -14,6 +14,7 @@ package
       public function buttonFullscreen()
       {
          super();
+         stop();
          addEventListener(MouseEvent.CLICK,this.Click);
          addEventListener(MouseEvent.MOUSE_OVER,this.Over);
          addEventListener(MouseEvent.MOUSE_OUT,this.Out);

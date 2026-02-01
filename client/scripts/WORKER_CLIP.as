@@ -12,6 +12,7 @@ package
       public function WORKER_CLIP()
       {
          super();
+         if (mcMarker) mcMarker.stop();
       }
    }
 }

@@ -31,11 +31,6 @@ package
       public function ROUNDCOMPLETEPOPUP_CLIP()
       {
          super();
-         addFrameScript(1,this.frame2);
-      }
-      
-      internal function frame2() : *
-      {
          stop();
       }
    }

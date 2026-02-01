@@ -10,6 +10,7 @@ package
       public function buttonProtection()
       {
          super();
+         stop();
          mouseChildren = false;
          addEventListener(MouseEvent.CLICK,this.Show);
          buttonMode = true;

@@ -12,6 +12,7 @@ package
       public function creatureBar()
       {
          super();
+         if (mcBar) mcBar.stop();
       }
    }
 }

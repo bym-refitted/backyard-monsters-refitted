@@ -10,11 +10,6 @@ package ChatUI_fla
       public function ChatBox_ignoreBtn_17()
       {
          super();
-         addFrameScript(0,this.frame1);
-      }
-      
-      internal function frame1() : *
-      {
          stop();
       }
    }
