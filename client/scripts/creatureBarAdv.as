@@ -14,6 +14,8 @@ package
       public function creatureBarAdv()
       {
          super();
+         if (mcBar) mcBar.stop();
+         if (mcBar2) mcBar2.stop();
       }
    }
 }

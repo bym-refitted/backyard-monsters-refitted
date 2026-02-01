@@ -19,6 +19,8 @@ package
       public function bubblepopupUpSiegeWeapon_CLIP()
       {
          super();
+         if (mcArrow) mcArrow.stop();
+         if (mcBG) mcBG.stop();
       }
    }
 }

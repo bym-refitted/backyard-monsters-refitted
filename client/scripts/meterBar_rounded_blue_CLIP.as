@@ -16,6 +16,8 @@ package
       public function meterBar_rounded_blue_CLIP()
       {
          super();
+         if (mcFill) mcFill.stop();
+         if (mcBG) mcBG.stop();
       }
    }
 }

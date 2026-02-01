@@ -117,6 +117,7 @@ package
          {
             gotoAndStop(GLOBAL._loadmode);
          }
+         if (mc && mc.mcPoints) mc.mcPoints.stop();
          if(GLOBAL._loadmode == GLOBAL.e_BASE_MODE.BUILD || GLOBAL._loadmode == GLOBAL.e_BASE_MODE.IBUILD)
          {
             this.setupBuildMode();
