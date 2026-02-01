@@ -59,7 +59,7 @@ package
          else
          {
             authForm = new AuthForm();
-            GLOBAL._layerTop.addChild(authForm);
+            GAME._instance.addChild(authForm);
          }
       }
 
@@ -169,6 +169,7 @@ package
          if (authForm)
          {
             authForm.disposeUI();
+            authForm = null;
          }
          if (serverData)
          {

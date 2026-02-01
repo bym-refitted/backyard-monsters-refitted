@@ -159,7 +159,6 @@ package
          addEventListener(Event.ENTER_FRAME, GLOBAL.TickFast);
 
          LOGIN.Login();
-         stage.frameRate = 40;
          stage.scaleMode = StageScaleMode.NO_SCALE;
          stage.addEventListener(Event.RESIZE, GLOBAL.ResizeGame);
          stage.showDefaultContextMenu = false;
