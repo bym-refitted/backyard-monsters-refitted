@@ -9,7 +9,7 @@ package
       
       public var mcZoom:buttonZoom_CLIP;
       
-      public var mcProtected:MovieClip;
+      public var mcProtected:buttonProtection_CLIP;
       
       public var mcFullscreen:buttonFullscreen_CLIP;
       
