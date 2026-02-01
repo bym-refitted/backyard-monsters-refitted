@@ -54,14 +54,14 @@ package
             request.requestHeaders.push(new URLRequestHeader("Authorization", "Bearer " + LOGIN.token));
 
             if (data == null || data == undefined) data = {};
-            if (method != URLRequestMethod.GET) request.data = JSON.encode(data);
+            if (method != URLRequestMethod.GET) request.data = JSON.stringify(data);
 
             // Send the request
             loader.load(request);
 
             // On success, decode JSON and invoke callback
             loader.addEventListener(Event.COMPLETE, function(e:Event) : void {
-               var response:Object = JSON.decode(loader.data);
+               var response:Object = JSON.parse(loader.data);
                
                if (onComplete != null) onComplete(response);
             });
@@ -210,7 +210,7 @@ package
          {
             try
             {
-               errorObj = JSON.decode(this._req.data);
+               errorObj = JSON.parse(this._req.data);
             }
             catch (e:Error)
             {
@@ -240,7 +240,7 @@ package
          {
             return;
          }
-         var decodedReqData:Object = JSON.decode(this._req.data);
+         var decodedReqData:Object = JSON.parse(this._req.data);
          if (Boolean(this._onComplete))
          {
             if (decodedReqData)
