@@ -2,28 +2,28 @@
 	"config": "flex",
 	"type": "app",
 	"mainClass": "GAME",
- 	"compilerOptions": {
-		"strict": false,
-		"warnings": false,
-		"debug": false,
-		"optimize": true,
+	"compilerOptions": {
 		"output": "bin/bymr-stable.swf",
-		"source-path": [
-			"client/scripts"
-		],
-		"default-background-color": "#1D232A",
-		"swf-version": 13,
 		"target-player": "11.0",
+		"swf-version": 13,
 		"default-frame-rate": 40,
+		"default-background-color": "#FFFFFF",
 		"default-size": {
 			"width": 760,
 			"height": 670
 		},
+		"optimize": true,
+		"debug": false,
+		"strict": false,
+		"warnings": false,
+		"use-network": true,
+		"advanced-telemetry": true,
+		"static-link-runtime-shared-libraries": true,
+		"source-path": [
+			"client/scripts"
+		],
 		"library-path": [
 			"./playerglobal.swc"
-		],
-		"use-network": true,
-		"static-link-runtime-shared-libraries": true,
-		"advanced-telemetry": true
+		]
 	}
 }
