@@ -2136,7 +2136,7 @@ package
             }
             _loc2_++;
          }
-         return md5(JSON.encode(_loc1_));
+         return md5(JSON.stringify(_loc1_));
       }
       
       public static function Completed() : void

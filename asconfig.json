@@ -5,20 +5,22 @@
  	"compilerOptions": {
 		"strict": false,
 		"warnings": false,
+		"debug": false,
+		"optimize": true,
 		"output": "bin/bymr-stable.swf",
 		"source-path": [
 			"client/scripts"
 		],
 		"default-background-color": "#1D232A",
-		"swf-version": 11,
-		"target-player": "16.0",
+		"swf-version": 13,
+		"target-player": "11.0",
 		"default-frame-rate": 40,
 		"default-size": {
 			"width": 760,
 			"height": 670
 		},
 		"library-path": [
-			"playerglobal.swc"
+			"./playerglobal.swc"
 		],
 		"use-network": true,
 		"static-link-runtime-shared-libraries": true,

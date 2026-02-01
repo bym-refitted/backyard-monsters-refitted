@@ -241,7 +241,7 @@ package com.monsters.maproom_advanced
                GLOBAL.Message(KEYS.Get("map_relocate_notenoughresources"));
                return;
             }
-            relocateVars.push(["resources",JSON.encode({
+            relocateVars.push(["resources",JSON.stringify({
                "r1":this.RESOURCECOST.Get(),
                "r2":this.RESOURCECOST.Get(),
                "r3":this.RESOURCECOST.Get(),
