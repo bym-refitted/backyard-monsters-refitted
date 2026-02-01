@@ -2,6 +2,7 @@ package
 {
    import flash.display.MovieClip;
    import flash.text.TextField;
+   import SWC_ALL_fla.loading_52;
    
    [Embed(source="/_assets/assets.swf", symbol="Thread_CLIP")]
    public dynamic class Thread_CLIP extends MovieClip
@@ -18,7 +19,7 @@ package
       
       public var denyBtn:Button_CLIP;
       
-      public var spinner:MovieClip;
+      public var spinner:loading_52;
       
       public var mask_mc:MovieClip;
       
