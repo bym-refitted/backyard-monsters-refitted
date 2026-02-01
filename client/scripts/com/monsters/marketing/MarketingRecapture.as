@@ -42,7 +42,7 @@ package com.monsters.marketing
          {
             return;
          }
-         var _loc2_:Object = JSON.decode(param1);
+         var _loc2_:Object = JSON.parse(param1);
          if(_loc2_.champpopup)
          {
             this.m_champPopup = uint(_loc2_.champpopup);

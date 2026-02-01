@@ -223,7 +223,7 @@ package
          var _loc2_:MapRoom3Cell = null;
          _loc2_ = GLOBAL._currentCell as MapRoom3Cell;
          var _loc3_:int = MapRoomManager.instance.CalculateCellId(_loc2_.cellX,_loc2_.cellY);
-         BASE.LoadBase(null,0,_loc2_.baseID,!_loc2_.userID ? GLOBAL.e_BASE_MODE.WMATTACK : GLOBAL.e_BASE_MODE.ATTACK,false,_loc2_.cellType,_loc3_,!!param1 ? ["attackcost",JSON.encode(param1)] : null);
+         BASE.LoadBase(null,0,_loc2_.baseID,!_loc2_.userID ? GLOBAL.e_BASE_MODE.WMATTACK : GLOBAL.e_BASE_MODE.ATTACK,false,_loc2_.cellType,_loc3_,!!param1 ? ["attackcost",JSON.stringify(param1)] : null);
       }
       
       public function Attack(param1:MouseEvent) : void
