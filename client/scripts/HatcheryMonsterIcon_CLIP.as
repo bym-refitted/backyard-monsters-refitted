@@ -2,6 +2,7 @@ package
 {
    import flash.display.MovieClip;
    import flash.text.TextField;
+   import SWC_ALL_fla.loading_210;
    
    [Embed(source="/_assets/assets.swf", symbol="HatcheryMonsterIcon_CLIP")]
    public dynamic class HatcheryMonsterIcon_CLIP extends MovieClip
@@ -12,7 +13,7 @@ package
       
       public var mcImage:MovieClip;
       
-      public var mcLoading:MovieClip;
+      public var mcLoading:loading_210;
       
       public function HatcheryMonsterIcon_CLIP()
       {
