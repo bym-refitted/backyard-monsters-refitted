@@ -18,11 +18,6 @@ package
       public function old_maproom()
       {
          super();
-         addFrameScript(0,this.frame1);
-      }
-      
-      internal function frame1() : *
-      {
          stop();
       }
    }

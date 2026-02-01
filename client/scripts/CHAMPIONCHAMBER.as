@@ -282,7 +282,7 @@ package
          super.Setup(param1);
          if(param1.fz)
          {
-            _loc3_ = JSON.decode(param1.fz) as Array;
+            _loc3_ = JSON.parse(param1.fz) as Array;
             this._frozen = [];
             _loc4_ = new Dictionary();
             _loc5_ = null;
@@ -469,7 +469,7 @@ package
             _loc3_.push(_loc6_);
             _loc5_++;
          }
-         _loc1_.fz = JSON.encode(_loc3_);
+         _loc1_.fz = JSON.stringify(_loc3_);
          return _loc1_;
       }
    }

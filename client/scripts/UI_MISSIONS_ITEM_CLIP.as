@@ -2,6 +2,7 @@ package
 {
    import flash.display.MovieClip;
    import flash.text.TextField;
+   import SWC_ALL_fla.loading_210;
    
    [Embed(source="/_assets/assets.swf", symbol="UI_MISSIONS_ITEM_CLIP")]
    public dynamic class UI_MISSIONS_ITEM_CLIP extends MovieClip
@@ -16,7 +17,7 @@ package
       
       public var mcImage:MovieClip;
       
-      public var mcLoading:MovieClip;
+      public var mcLoading:loading_210;
       
       public var mcCheck:MovieClip;
       

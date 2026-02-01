@@ -460,7 +460,7 @@ package com.monsters.effects
                _loc1_.push(_bombs[_loc3_].speedlength);
             }
          }
-         return md5(JSON.encode(_loc1_));
+         return md5(JSON.stringify(_loc1_));
       }
    }
 }

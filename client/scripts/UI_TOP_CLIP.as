@@ -9,7 +9,7 @@ package
       
       public var mcZoom:buttonZoom_CLIP;
       
-      public var mcProtected:MovieClip;
+      public var mcProtected:buttonProtection_CLIP;
       
       public var mcFullscreen:buttonFullscreen_CLIP;
       
@@ -30,6 +30,7 @@ package
       public function UI_TOP_CLIP()
       {
          super();
+         if (mc && mc.mcPoints) mc.mcPoints.stop();
       }
    }
 }

@@ -45,15 +45,15 @@ package
       }
    
       /*public static function DebugQAdd(logMessage:String, debugVars:Object): void {
-         logQueue.push({logMessage: logMessage, debugVars: JSON.encode(debugVars)});
+         logQueue.push({logMessage: logMessage, debugVars: JSON.stringify(debugVars)});
       }
 
       public static function DebugQPost(trace: Error = null) : void
       {
-         var logger:Array = [["key", "logType"], ["message", JSON.encode(logQueue)], ["saveid", BASE._lastSaveID] ];
+         var logger:Array = [["key", "logType"], ["message", JSON.stringify(logQueue)], ["saveid", BASE._lastSaveID] ];
 
          if (trace){
-            logger.push(["error", JSON.encode(trace.getStackTrace())]);
+            logger.push(["error", JSON.stringify(trace.getStackTrace())]);
          }
          new URLLoaderApi().load(GLOBAL._apiURL + "player/recorddebugdata", logger, handleLoadSuccessful, handleLoadError);
       }*/
@@ -868,7 +868,7 @@ package
                   arg = {};
                   arg["train_" + monsternames[data[1] - 1]] = 1;
             }
-            arrArg = [JSON.encode(arg)];
+            arrArg = [JSON.stringify(arg)];
             GLOBAL.CallJS("cc.kg_statsUpdate",[arg],false);
          }
          catch(e:Error)
