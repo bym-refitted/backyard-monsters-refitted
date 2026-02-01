@@ -3878,10 +3878,6 @@ package
       private function GetHitMC() : MovieClip
       {
          var _loc1_:Object = !!GLOBAL._buildingProps[this._type - 1] ? GLOBAL._buildingProps[this._type - 1] : {};
-         if(_loc1_.hitCls)
-         {
-            return new _loc1_.hitCls();
-         }
          var _loc2_:Boolean = BASE.isInfernoMainYardOrOutpost;
          if(this._type == 1)
          {
@@ -4231,7 +4227,7 @@ package
          {
             return new building135hit();
          }
-         return !!_loc1_.hitCls ? new _loc1_.hitCls() : new building1hit();
+         return new building1hit();
       }
       
       private function GetFootprintMC() : MovieClip
