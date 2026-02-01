@@ -4991,10 +4991,6 @@ package
             }
             return buildingFoundation;
          }
-         if (buildingProperties.cls)
-         {
-            return new buildingProperties.cls();
-         }
          if (buildingNum == 1)
          {
             buildingFoundation = new BUILDING1();
@@ -5163,7 +5159,7 @@ package
          {
             buildingFoundation = new INFERNO_MAGMA_TOWER();
          }
-         return !!buildingProperties.cls ? new buildingProperties.cls() : buildingFoundation;
+         return buildingFoundation;
       }
 
       public static function ShowFootprints():void
