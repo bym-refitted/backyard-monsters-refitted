@@ -55,12 +55,7 @@ package
       public function MonsterBunkerPopup_Persistent_CLIP()
       {
          super();
-         addFrameScript(0,this.frame1);
-      }
-      
-      internal function frame1() : *
-      {
-         stop();
+         MovieClipUtil.stopAll(this);
       }
    }
 }

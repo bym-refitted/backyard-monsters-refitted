@@ -18,6 +18,10 @@ package
       public function creatureBarGuardian()
       {
          super();
+         if (mcBar) mcBar.stop();
+         if (mcBuff1) mcBuff1.stop();
+         if (mcBuff2) mcBuff2.stop();
+         if (mcBuff3) mcBuff3.stop();
       }
    }
 }

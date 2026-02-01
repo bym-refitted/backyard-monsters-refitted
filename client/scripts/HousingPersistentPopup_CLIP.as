@@ -2,6 +2,7 @@ package
 {
    import flash.display.MovieClip;
    import flash.text.TextField;
+   import com.monsters.utils.MovieClipUtils;
    
    [Embed(source="/_assets/assets.swf", symbol="HousingPersistentPopup_CLIP")]
    public dynamic class HousingPersistentPopup_CLIP extends MovieClip
@@ -49,12 +50,7 @@ package
       public function HousingPersistentPopup_CLIP()
       {
          super();
-         addFrameScript(0,this.frame1);
-      }
-      
-      internal function frame1() : *
-      {
-         stop();
+         MovieClipUtils.stopAll(this);
       }
    }
 }

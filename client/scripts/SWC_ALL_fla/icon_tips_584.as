@@ -14,11 +14,6 @@ package SWC_ALL_fla
       public function icon_tips_584()
       {
          super();
-         addFrameScript(0,this.frame1);
-      }
-      
-      internal function frame1() : *
-      {
          stop();
       }
    }

@@ -26,10 +26,9 @@ package com.auth
     import flash.events.TimerEvent;
     import flash.events.SecurityErrorEvent;
     import flash.net.SharedObject;
-    // DISCLAIMER: This is far from my best work, actually, it's quite miserable, but it works.
-    // I don't really have the time, nor the patience to look deprecated best practices for
-    // creating a UI with Flash/AS3. But, if you do, then by all means please spare my
-    // sanity and make this better and seperate it out. Thanks.
+    import flash.display.StageAlign;
+
+    // TODO: This file needs a complete refactor. It is currently very messy and hard to read.
     public class AuthForm extends Sprite
     {
 
@@ -40,8 +39,6 @@ package com.auth
         private var borderContainer:Sprite;
 
         private var loadingContainer:Sprite;
-
-        private var uiRoot:Sprite;
 
         private var navContainer:Sprite;
 
@@ -55,7 +52,6 @@ package com.auth
 
         private var usernameInput:TextField;
 
-        
         private var usernameBorder:Sprite;
         private var emailBorder:Sprite;
         private var passwordBorder:Sprite;
@@ -132,8 +128,21 @@ package com.auth
         private var rememberEmailCheck:Sprite;
         private var rememberEmailLabel:TextField;
 
+        // Background and centering
+        private var background:Sprite;
+        private var contentContainer:Sprite;
+        private var originalStageAlign:String;
+        private const DESIGN_WIDTH:Number = 760;
+        private const DESIGN_HEIGHT:Number = 670;
+
         public function AuthForm()
         {
+            background = new Sprite();
+            addChild(background);
+
+            contentContainer = new Sprite();
+            addChild(contentContainer);
+
             addEventListener(Event.ADDED_TO_STAGE, formAddedToStageHandler);
 
             // Load remembered email state early so it can prefill the Email field when created
@@ -167,12 +176,15 @@ package com.auth
             {
                 checkContentLoadedTimer.stop();
                 checkContentLoadedTimer.removeEventListener(TimerEvent.TIMER, checkContentLoaded);
-                removeChild(loadingContainer);
+                if (loadingContainer && loadingContainer.parent)
+                {
+                    contentContainer.removeChild(loadingContainer);
+                }
                 handleContentLoaded();
             }
             else
             {
-                if (!loadingContainer.parent)
+                if (!loadingContainer || !loadingContainer.parent)
                 {
                     Loading();
                 }
@@ -182,17 +194,14 @@ package com.auth
         public function formAddedToStageHandler(event:Event):void
         {
             removeEventListener(Event.ADDED_TO_STAGE, formAddedToStageHandler);
-            try
-            {
-                if (stage)
-                    stage.color = BACKGROUND;
-            }
-            catch (e:Error)
-            {
-                this.graphics.beginFill(BACKGROUND);
-                this.graphics.drawRect(0, 0, stage.stageWidth, stage.stageHeight);
-                this.graphics.endFill();
-            }
+
+            // Store original alignment and set TOP_LEFT for AuthForm
+            originalStageAlign = stage.align;
+            stage.align = StageAlign.TOP_LEFT;
+
+            drawBackground();
+            centerContent();
+            stage.addEventListener(Event.RESIZE, onStageResize);
 
             if (!GLOBAL.textContentLoaded && !GLOBAL.supportedLangsLoaded)
             {
@@ -201,9 +210,32 @@ package com.auth
             else
             {
                 // If text content is already loaded, proceed with UI setup
-                removeChild(loadingContainer);
+                if (loadingContainer && loadingContainer.parent)
+                {
+                    contentContainer.removeChild(loadingContainer);
+                }
                 handleContentLoaded();
             }
+        }
+
+        private function onStageResize(event:Event):void
+        {
+            drawBackground();
+            centerContent();
+        }
+
+        private function drawBackground():void
+        {
+            background.graphics.clear();
+            background.graphics.beginFill(BACKGROUND);
+            background.graphics.drawRect(0, 0, stage.stageWidth, stage.stageHeight);
+            background.graphics.endFill();
+        }
+
+        private function centerContent():void
+        {
+            contentContainer.x = (stage.stageWidth - DESIGN_WIDTH) / 2;
+            contentContainer.y = (stage.stageHeight - DESIGN_HEIGHT) / 2;
         }
 
         private function handleContentLoaded():void
@@ -219,26 +251,22 @@ package com.auth
             passwordErrorText = new TextField();
             hasAccountText = new TextField();
 
-            // Root container to isolate auth UI bounds (prevents drift from checkbox/errors)
-            uiRoot = new Sprite();
-            addChild(uiRoot);
-
             var formWidth:Number = FORM_WIDTH;
             var formHeight:Number = FORM_HEIGHT;
 
             languages = KEYS.supportedLanguagesJson;
             selectInput = createSelectInput();
-            uiRoot.addChild(selectInput);
+            contentContainer.addChild(selectInput);
             selectInput.x = 20;
             selectInput.y = 10;
 
             HeaderTitle();
-            uiRoot.addChild(navContainer);
+            contentContainer.addChild(navContainer);
 
             formContainer.graphics.drawRect(0, 0, formWidth, formHeight);
             formContainer.x = 155;
             formContainer.y = 45;
-            uiRoot.addChild(formContainer);
+            contentContainer.addChild(formContainer);
 
             // Y-position for the first input field
             startY = 345;
@@ -290,7 +318,7 @@ package com.auth
             }
 
             loadingContainer = new Sprite();
-            addChild(loadingContainer);
+            contentContainer.addChild(loadingContainer);
 
             var contentWidth:Number = 400;
 
@@ -486,9 +514,6 @@ package com.auth
         private function createInputField(width:Number, height:Number, placeholder:String = "", isPassword:Boolean = false):TextField
         {
             var input:TextField = new TextField();
-
-            input.background = true;
-            input.backgroundColor = BACKGROUND;
             input.type = TextFieldType.INPUT;
             input.width = width;
             input.height = height;
@@ -547,6 +572,7 @@ package com.auth
 
             return input;
         }
+
         // Remember Email: full-row checkbox + label
         private function createRememberEmailToggle():void
         {
@@ -617,8 +643,6 @@ package com.auth
             rememberEmailRow.graphics.beginFill(0x000000, 0);
             rememberEmailRow.graphics.drawRect(0, 0, rowW, rowH);
             rememberEmailRow.graphics.endFill();
-
-
 
             var boxSize:Number = 20;
             var boxX:Number = 10;
@@ -919,6 +943,7 @@ package com.auth
 
             return button;
         }
+
         private function FormNavigate():void
         {
             // Remove old container if it exists (e.g., after state toggles/rebuilds)
@@ -955,7 +980,6 @@ package com.auth
 
             layoutAuthControls();
         }
-
 
         private function updateFormFields():void
         {
@@ -1202,6 +1226,7 @@ package com.auth
             var passwordRegex:RegExp = /^(?=.*[A-Z])(?=.*[\W_])(?=.{8,})/;
             return passwordRegex.test(password);
         }
+
         private function clearErrorMessages():void
         {
             if (emailErrorText && emailErrorText.parent)
@@ -1218,6 +1243,7 @@ package com.auth
 
             layoutAuthControls();
         }
+
         private function showErrorMessage(inputField:TextField, errorMessage:String):void
         {
             // Remove any existing error field for this input to prevent stacking/overlap.
@@ -1275,58 +1301,39 @@ package com.auth
 
         public function disposeUI():void
         {
-            if (selectInput && selectInput.parent)
+            // Restore original stage alignment and remove listener
+            if (stage)
             {
-                selectInput.parent.removeChild(selectInput);
+                stage.align = originalStageAlign;
+                stage.removeEventListener(Event.RESIZE, onStageResize);
             }
 
-// Remove event listeners
-            submitButton.removeEventListener(MouseEvent.CLICK, submitButtonClickHandler);
-
-            if (rememberEmailRow)
+            // Stop timer
+            if (checkContentLoadedTimer)
             {
-                rememberEmailRow.removeEventListener(MouseEvent.CLICK, onRememberEmailToggleClick);
+                checkContentLoadedTimer.stop();
+                checkContentLoadedTimer.removeEventListener(TimerEvent.TIMER, checkContentLoaded);
             }
 
-            // Remove display objects
-            formContainer.removeChild(submitButton);
-            formContainer.removeChild(emailInput);
-            formContainer.removeChild(passwordInput);
-            if (formContainer && formContainer.parent)
+            // Remove event listeners
+            if (submitButton) submitButton.removeEventListener(MouseEvent.CLICK, submitButtonClickHandler);
+            if (rememberEmailRow) rememberEmailRow.removeEventListener(MouseEvent.CLICK, onRememberEmailToggleClick);
+
+            // Dispose bitmap data to free memory
+            if (image) image.bitmapData.dispose();
+
+            // Unload loader
+            if (loader)
             {
-                formContainer.parent.removeChild(formContainer);
+                loader.contentLoaderInfo.removeEventListener(Event.COMPLETE, onImageLoaded);
+                loader.unload();
             }
 
-            if (rememberEmailRow && rememberEmailRow.parent)
-            {
-                rememberEmailRow.parent.removeChild(rememberEmailRow);
-            }
+            // Clear background graphics
+            if (background) background.graphics.clear();
 
-            if (image)
-            {
-                image.bitmapData.dispose();
-                formContainer.removeChild(image);
-            }
-            // Clean up resources
-            loader.unload();
-            loader.contentLoaderInfo.removeEventListener(Event.COMPLETE, onImageLoaded);
-
-            submitButton = null;
-            emailInput = null;
-            passwordInput = null;
-            image = null;
-            loader = null;
-            selectInput = null;
-
-            rememberEmailRow = null;
-            rememberEmailBox = null;
-            rememberEmailCheck = null;
-            rememberEmailLabel = null;
-
-            if (formContainer.parent)
-            {
-                formContainer.parent.removeChild(formContainer);
-            }
+            // Remove AuthForm from display list (removes all children too)
+            if (this.parent) this.parent.removeChild(this);
         }
 
     }

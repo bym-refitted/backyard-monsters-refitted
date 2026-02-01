@@ -19,11 +19,6 @@ package
       public function descentDebuff_info_CLIP()
       {
          super();
-         addFrameScript(0,this.frame1);
-      }
-      
-      internal function frame1() : *
-      {
          stop();
       }
    }

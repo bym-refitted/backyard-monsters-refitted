@@ -562,7 +562,7 @@ package
 
       public static function LoadBaseB():void
       {
-         print("|BASE| - LoadBaseB() _loadBase:" + JSON.encode(_loadBase));
+         print("|BASE| - LoadBaseB() _loadBase:" + JSON.stringify(_loadBase));
          GLOBAL._baseURL2 = _loadBase[0];
          var userId:Number = Number(_loadBase[1]);
          var baseId:Number = Number(_loadBase[2]);
@@ -664,7 +664,7 @@ package
          }
          if (_loc7_ == GLOBAL.e_BASE_MODE.ATTACK || _loc7_ == GLOBAL.e_BASE_MODE.WMATTACK || _loc7_ == GLOBAL.e_BASE_MODE.IATTACK || _loc7_ == GLOBAL.e_BASE_MODE.IWMATTACK)
          {
-            var attackData:String = JSON.encode(ATTACK.AttackData());
+            var attackData:String = JSON.stringify(ATTACK.AttackData());
             requestData.push(["attackData", attackData]);
          }
          var _loc9_:int = 0;
@@ -1258,7 +1258,7 @@ package
                {
                   if (serverData.champion != "\"null\"" && serverData.champion != "null")
                   {
-                     champion = JSON.decode(serverData.champion);
+                     champion = JSON.parse(serverData.champion);
                      size = 0;
                      if (champion.t)
                      {
@@ -1365,8 +1365,8 @@ package
                         }
                         catch (e:Error)
                         {
-                           championString = JSON.decode(serverData.champion) as String;
-                           _guardianData[j] = JSON.decode(championString);
+                           championString = JSON.parse(serverData.champion) as String;
+                           _guardianData[j] = JSON.parse(championString);
                            Console.warning("Base::handleBaseLoadSuccessful - Error thrown on champion, champion data is - " + championString, true);
                            continue;
                         }
@@ -3600,7 +3600,7 @@ package
                   }
                   else
                   {
-                     LOGGER.Log("err", "BASE.Save:  Dirty Cell " + attackerCell.cellX + "," + attackerCell.cellY + "does not check out before doing map update!  " + JSON.encode(attackerCell.hpResources));
+                     LOGGER.Log("err", "BASE.Save:  Dirty Cell " + attackerCell.cellX + "," + attackerCell.cellY + "does not check out before doing map update!  " + JSON.stringify(attackerCell.hpResources));
                   }
                }
             }
@@ -3743,67 +3743,67 @@ package
          var buildingSaveData:Vector.<Object> = BFOUNDATION.getBuildingSaveData();
          if (!MapRoomManager.instance.isInMapRoom3 || !GLOBAL.isInAttackMode || BASE.isInfernoMainYardOrOutpost)
          {
-            saveData["buildingdata"] = JSON.encode(buildingSaveData[0]);
+            saveData["buildingdata"] = JSON.stringify(buildingSaveData[0]);
          }
          // Old implementation - was specific to MapRoom3, should have been for every map room.
          // if(MapRoomManager.instance.isInMapRoom3 && !BASE.isInfernoMainYardOrOutpost)
          // {
-         // saveData["buildinghealthdata"] = JSON.encode(buildingSaveData[1]);
-         // saveData["buildingkeydata"] = JSON.encode(buildingSaveData[2]);
+         // saveData["buildinghealthdata"] = JSON.stringify(buildingSaveData[1]);
+         // saveData["buildingkeydata"] = JSON.stringify(buildingSaveData[2]);
          // }
-         saveData["buildinghealthdata"] = JSON.encode(buildingSaveData[1]);
-         saveData["buildingkeydata"] = JSON.encode(buildingSaveData[2]);
-         saveData["stats"] = JSON.encode(getStatsSaveData());
-         saveData["resources"] = JSON.encode(getResourceSaveData());
+         saveData["buildinghealthdata"] = JSON.stringify(buildingSaveData[1]);
+         saveData["buildingkeydata"] = JSON.stringify(buildingSaveData[2]);
+         saveData["stats"] = JSON.stringify(getStatsSaveData());
+         saveData["resources"] = JSON.stringify(getResourceSaveData());
          if (MapRoomManager.instance.isInMapRoom2)
          {
-            saveData["monsters"] = JSON.encode(getHousingSaveData());
+            saveData["monsters"] = JSON.stringify(getHousingSaveData());
          }
          else
          {
-            saveData["monsters"] = JSON.encode(GLOBAL.player.exportMonsters());
+            saveData["monsters"] = JSON.stringify(GLOBAL.player.exportMonsters());
          }
          saveData["catapult"] = !!GLOBAL._bCatapult ? GLOBAL._bCatapult._lvl.Get() : 0;
          saveData["flinger"] = !!GLOBAL._bFlinger ? GLOBAL._bFlinger._lvl.Get() : 0;
-         saveData["researchdata"] = JSON.encode(getStoredBuildingsSaveData());
+         saveData["researchdata"] = JSON.stringify(getStoredBuildingsSaveData());
          if (!MapRoomManager.instance.isInMapRoom3 || !GLOBAL.isInAttackMode)
          {
-            saveData["mushrooms"] = JSON.encode(getMushroomSaveData());
+            saveData["mushrooms"] = JSON.stringify(getMushroomSaveData());
          }
-         saveData["quests"] = JSON.encode(QUESTS._completed);
+         saveData["quests"] = JSON.stringify(QUESTS._completed);
          saveData["basename"] = GLOBAL.mode == GLOBAL.e_BASE_MODE.WMATTACK ? TRIBES.TribeForBaseID(_wmID).name : _baseName;
-         saveData["siege"] = JSON.encode(GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD && isMainYardOrInfernoMainYard ? SiegeWeapons.exportWeapons() : _oldSiegeData);
-         saveData["attackersiege"] = JSON.encode(GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD && isMainYardOrInfernoMainYard ? null : SiegeWeapons.exportWeapons());
+         saveData["siege"] = JSON.stringify(GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD && isMainYardOrInfernoMainYard ? SiegeWeapons.exportWeapons() : _oldSiegeData);
+         saveData["attackersiege"] = JSON.stringify(GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD && isMainYardOrInfernoMainYard ? null : SiegeWeapons.exportWeapons());
          saveData["baseid"] = _baseID;
          saveData["lastupdate"] = !!isNaN(UPDATES._lastUpdateID) ? 0 : UPDATES._lastUpdateID;
-         saveData["academy"] = JSON.encode(GLOBAL.player.exportAcademyData());
+         saveData["academy"] = JSON.stringify(GLOBAL.player.exportAcademyData());
          saveData["baseseed"] = _baseSeed;
-         saveData["lockerdata"] = JSON.encode(CREATURELOCKER._lockerData);
+         saveData["lockerdata"] = JSON.stringify(CREATURELOCKER._lockerData);
          saveData["basevalue"] = _baseValue;
          saveData["points"] = _basePoints;
          saveData["tutorialstage"] = !!BASE.isInfernoMainYardOrOutpost ? TUTORIAL._endstage : TUTORIAL._stage;
          saveData["basesaveid"] = _lastSaveID;
          saveData["clienttime"] = GLOBAL.Timestamp();
-         saveData["monsterbaiter"] = JSON.encode(MONSTERBAITER.Export());
+         saveData["monsterbaiter"] = JSON.stringify(MONSTERBAITER.Export());
          saveData["version"] = GLOBAL._version.Get();
-         saveData["aiattacks"] = JSON.encode(WMATTACK.Export());
+         saveData["aiattacks"] = JSON.stringify(WMATTACK.Export());
          if (_attacksModified) {
-            saveData["attacks"] = JSON.encode(_currentAttacks);
+            saveData["attacks"] = JSON.stringify(_currentAttacks);
             _attacksModified = false;
          }
          saveData["effects"] = EFFECTS._effectsJSON;
          saveData["empirevalue"] = CalcBaseValue();
          saveData["inventory"] = STORE.InventoryExport();
-         saveData["achieved"] = JSON.encode(ACHIEVEMENTS.Report());
+         saveData["achieved"] = JSON.stringify(ACHIEVEMENTS.Report());
          var frontpageData:Object = FrontPageHandler.export();
          if (frontpageData)
          {
-            saveData["frontpage"] = JSON.encode(frontpageData);
+            saveData["frontpage"] = JSON.stringify(frontpageData);
          }
          frontpageData = ReplayableEventHandler.exportData();
          if (frontpageData)
          {
-            saveData["events"] = JSON.encode(frontpageData);
+            saveData["events"] = JSON.stringify(frontpageData);
          }
          var counter:int = 0;
          while (counter < GLOBAL.player.handlers.length)
@@ -3812,21 +3812,21 @@ package
             exportedData = handler.exportData();
             if (exportedData)
             {
-               saveData[handler.name] = JSON.encode(exportedData);
+               saveData[handler.name] = JSON.stringify(exportedData);
             }
             counter++;
          }
          frontpageData = getInfernoResourcesSaveData();
          if (frontpageData)
          {
-            saveData["iresources"] = JSON.encode(frontpageData);
+            saveData["iresources"] = JSON.stringify(frontpageData);
          }
          if (MapRoomManager.instance.isInMapRoom2or3)
          {
             updateAutoBank = AutoBankManager.updateSaveData();
             if (updateAutoBank)
             {
-               updateAutoBank = JSON.encode(updateAutoBank);
+               updateAutoBank = JSON.stringify(updateAutoBank);
             }
             if (MapRoomManager.instance.isInMapRoom2)
             {
@@ -3839,7 +3839,7 @@ package
          }
          if (!BASE.isOutpost)
          {
-            saveData.champion = JSON.encode(getChampionSaveData());
+            saveData.champion = JSON.stringify(getChampionSaveData());
          }
          if (GLOBAL.mode != GLOBAL.e_BASE_MODE.BUILD && GLOBAL.mode != GLOBAL.e_BASE_MODE.IBUILD)
          {
@@ -3860,44 +3860,44 @@ package
             saveData.attackreport = ATTACK.LogRead();
             saveData.protect = _saveProtect;
             saveData.attackid = _attackID;
-            saveData.lootreport = JSON.encode(getLootReportSaveData());
+            saveData.lootreport = JSON.stringify(getLootReportSaveData());
             if (!MapRoomManager.instance.isInMapRoom2or3 || BASE.isInfernoMainYardOrOutpost)
             {
-               saveData.attackcreatures = JSON.encode(GLOBAL.attackingPlayer.exportMonsters());
+               saveData.attackcreatures = JSON.stringify(GLOBAL.attackingPlayer.exportMonsters());
             }
-            saveData.attackloot = JSON.encode(getAttackerDeltaResourcesSaveData());
+            saveData.attackloot = JSON.stringify(getAttackerDeltaResourcesSaveData());
             attackerChampion = getAttackingPlayerGuardianSaveData();
             if (attackerChampion)
             {
-               saveData.attackerchampion = JSON.encode(attackerChampion);
+               saveData.attackerchampion = JSON.stringify(attackerChampion);
             }
          }
          if (MapRoomManager.instance.isInMapRoom2 && !GLOBAL.InfernoMode(GLOBAL._loadmode))
          {
-            saveData.monsterupdate = JSON.encode(getMR2MonsterUpdateSaveData());
+            saveData.monsterupdate = JSON.stringify(getMR2MonsterUpdateSaveData());
          }
          else if (MapRoomManager.instance.isInMapRoom3 && !BASE.isInfernoMainYardOrOutpost)
          {
             if (GLOBAL.attackingPlayer)
             {
-               saveData.monsterupdate = JSON.encode(GLOBAL.attackingPlayer.exportMonsters());
+               saveData.monsterupdate = JSON.stringify(GLOBAL.attackingPlayer.exportMonsters());
             }
          }
          if (GIFTS._giftsAccepted.length > 0)
          {
-            saveData.gifts = JSON.encode(GIFTS._giftsAccepted);
+            saveData.gifts = JSON.stringify(GIFTS._giftsAccepted);
          }
          if (GIFTS._sentGiftsAccepted.length > 0)
          {
-            saveData.sentgifts = JSON.encode(GIFTS._sentGiftsAccepted);
+            saveData.sentgifts = JSON.stringify(GIFTS._sentGiftsAccepted);
          }
          if (GIFTS._sentInvitesAccepted.length > 0)
          {
-            saveData.sentinvites = JSON.encode(GIFTS._sentInvitesAccepted);
+            saveData.sentinvites = JSON.stringify(GIFTS._sentInvitesAccepted);
          }
          if (_pendingPurchase.length > 0)
          {
-            saveData.purchase = JSON.encode(getPurchaseSaveData());
+            saveData.purchase = JSON.stringify(getPurchaseSaveData());
             _pendingPurchase = [];
          }
          saveData.timeplayed = int(GLOBAL._timePlayed);
@@ -3929,7 +3929,7 @@ package
          }
          if (_pendingFBPromo)
          {
-            saveData.fbpromos = JSON.encode(_pendingFBPromoIDs);
+            saveData.fbpromos = JSON.stringify(_pendingFBPromoIDs);
             _pendingFBPromo = 0;
             GLOBAL._displayedPromoNew = true;
             GLOBAL.StatSet("fbpromotimer", GLOBAL.Timestamp());
@@ -4048,7 +4048,7 @@ package
          }
          else
          {
-            LOGGER.Log("err", "Base.Save: " + JSON.encode(serverData));
+            LOGGER.Log("err", "Base.Save: " + JSON.stringify(serverData));
             GLOBAL.ErrorMessage("BASE.SaveB 2: " + serverData.error);
          }
          _saving = false;
@@ -4277,7 +4277,7 @@ package
             }
             else
             {
-               LOGGER.Log("err", "Base.Page: " + JSON.encode(serverData));
+               LOGGER.Log("err", "Base.Page: " + JSON.stringify(serverData));
                GLOBAL.ErrorMessage("Base.Page: " + serverData.error);
             }
          };

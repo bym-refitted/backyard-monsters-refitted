@@ -13,11 +13,6 @@ package SWC_ALL_fla
       public function MonsterLabItem_Star_340()
       {
          super();
-         addFrameScript(0,this.frame1);
-      }
-      
-      internal function frame1() : *
-      {
          stop();
       }
    }

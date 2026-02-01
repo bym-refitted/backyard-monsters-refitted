@@ -10,13 +10,7 @@ package SWC_ALL_fla
       public function bubblepopupBG_10()
       {
          super();
-         addFrameScript(0,this.frame1);
-      }
-      
-      internal function frame1() : *
-      {
          stop();
-         z;
       }
    }
 }

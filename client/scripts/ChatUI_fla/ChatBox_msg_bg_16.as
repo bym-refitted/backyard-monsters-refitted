@@ -10,11 +10,6 @@ package ChatUI_fla
       public function ChatBox_msg_bg_16()
       {
          super();
-         addFrameScript(0,this.frame1);
-      }
-      
-      internal function frame1() : *
-      {
          stop();
       }
    }

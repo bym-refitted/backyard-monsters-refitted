@@ -128,7 +128,7 @@ package
          {
             _loc1_[_loc2_] = _storeInventory[_loc2_].Get();
          }
-         return JSON.encode(_loc1_);
+         return JSON.stringify(_loc1_);
       }
       
       public static function GetHealAllShinyCost() : int
@@ -2867,7 +2867,7 @@ package
       
       public static function FacebookCreditPurchaseB(param1:String) : void
       {
-         if(int(JSON.decode(param1).success) == 1)
+         if(int(JSON.parse(param1).success) == 1)
          {
             BuyB(_facebookPurchaseItemCode);
          }
@@ -3140,7 +3140,7 @@ package
       public static function updateCredits(param1:String) : void
       {
          POPUPS.Next();
-         var _loc2_:Object = JSON.decode(param1);
+         var _loc2_:Object = JSON.parse(param1);
          if(_loc2_.error == 0)
          {
             if(LOGIN.checkHash(param1))

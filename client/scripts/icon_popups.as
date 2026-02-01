@@ -16,11 +16,6 @@ package
       public function icon_popups()
       {
          super();
-         addFrameScript(0,this.frame1);
-      }
-      
-      internal function frame1() : *
-      {
          stop();
       }
    }
