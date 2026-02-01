@@ -876,7 +876,7 @@ package
          loader.load(request);
          loader.addEventListener(Event.COMPLETE, function(event:Event):void
          {
-            var serverData:Object = JSON.decode(event.target.data);
+            var serverData:Object = JSON.parse(event.target.data);
             if (serverData)
             {
                _eventStartTime = Number(serverData.start);
