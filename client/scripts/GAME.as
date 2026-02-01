@@ -150,7 +150,7 @@ package
          GLOBAL.RefreshScreen();
          if (urls.openbase)
          {
-            GLOBAL._openBase = JSON.decode(urls.openbase);
+            GLOBAL._openBase = JSON.parse(urls.openbase);
          }
          else
          {
@@ -173,7 +173,7 @@ package
                   if (BASE._saveCounterA == BASE._saveCounterB && !BASE._saving && !BASE._loading)
                   {
                      GLOBAL._currentCell = null;
-                     _loc2_ = JSON.decode(param1);
+                     _loc2_ = JSON.parse(param1);
                      _loc3_ = MapRoomManager.instance.isInMapRoom3 ? int(EnumYardType.PLAYER) : int(EnumYardType.MAIN_YARD);
                      if (_loc2_.viewleader)
                      {

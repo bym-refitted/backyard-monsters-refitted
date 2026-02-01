@@ -489,7 +489,7 @@ package
             Push(i);
             i++;
          }
-         return md5(JSON.encode(tmpArray));
+         return md5(JSON.stringify(tmpArray));
       }
       
       public static function getGuardianSpawnClass(param1:int) : Class

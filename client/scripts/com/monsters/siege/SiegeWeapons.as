@@ -188,7 +188,7 @@ package com.monsters.siege
             _loc1_.push(getWeapon(Jars.ID).getProperty(SiegeWeapon.DURABILITY).values[_loc2_]);
             _loc2_++;
          }
-         return md5(JSON.encode(_loc1_));
+         return md5(JSON.stringify(_loc1_));
       }
    }
 }

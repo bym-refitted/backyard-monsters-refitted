@@ -325,7 +325,7 @@ package com.monsters.maproom_advanced
                   GLOBAL.Message(KEYS.Get("map_rel_res"));
                   return;
                }
-               loadvars.push(["resources",JSON.encode({
+               loadvars.push(["resources",JSON.stringify({
                   "r1":RESOURCECOST.Get(),
                   "r2":RESOURCECOST.Get(),
                   "r3":RESOURCECOST.Get(),
@@ -514,7 +514,7 @@ package com.monsters.maproom_advanced
             LOGGER.Log("err","MapRoom.BookmarksSave HTTP");
          };
          var url:String = GLOBAL._apiURL + "player/savebookmarks";
-         var loadvars:Array = [["bookmarks",JSON.encode(_bookmarkData)]];
+         var loadvars:Array = [["bookmarks",JSON.stringify(_bookmarkData)]];
          new URLLoaderApi().load(url,loadvars,handleBMSaveSuccessful,handleBMSaveError);
       }
       
@@ -1027,11 +1027,11 @@ package com.monsters.maproom_advanced
                   }
                   if(!_monsterTargetRef.Check())
                   {
-                     LOGGER.Log("err","BASE.Save:  transfer target Cell " + _monsterTargetRef.X + "," + _monsterTargetRef.Y + "does not check out before doing monster transfer!  " + JSON.encode(_monsterTargetRef._hpMonsterData));
+                     LOGGER.Log("err","BASE.Save:  transfer target Cell " + _monsterTargetRef.X + "," + _monsterTargetRef.Y + "does not check out before doing monster transfer!  " + JSON.stringify(_monsterTargetRef._hpMonsterData));
                   }
                   if(!_monsterSource.Check())
                   {
-                     LOGGER.Log("err","BASE.Save:  transfer source Cell " + _monsterSource.X + "," + _monsterSource.Y + "does not check out before doing monster transfer!  " + JSON.encode(_monsterSource._hpMonsterData));
+                     LOGGER.Log("err","BASE.Save:  transfer source Cell " + _monsterSource.X + "," + _monsterSource.Y + "does not check out before doing monster transfer!  " + JSON.stringify(_monsterSource._hpMonsterData));
                   }
                   srcMonsterData = {
                      "hcount":_monsterSource._hpMonsterData.hcount,
@@ -1059,7 +1059,7 @@ package com.monsters.maproom_advanced
                      "hstage":_monsterTargetRef._hpMonsterData.hstage,
                      "saved":GLOBAL.Timestamp()
                   };
-                  transferVars = [["frombaseid",_monsterSource._baseID],["tobaseid",_monsterTargetRef._baseID],["monsters",JSON.encode([srcMonsterData,targetMonsterData])]];
+                  transferVars = [["frombaseid",_monsterSource._baseID],["tobaseid",_monsterTargetRef._baseID],["monsters",JSON.stringify([srcMonsterData,targetMonsterData])]];
                   trySendTransfer = function():void
                   {
                      // send transfer request after any getarea requests containing the source/target cells finish, to ensure the cells are up-to-date.

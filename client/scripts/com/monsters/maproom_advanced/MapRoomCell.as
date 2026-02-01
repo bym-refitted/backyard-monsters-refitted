@@ -1192,11 +1192,11 @@ package com.monsters.maproom_advanced
             }
             if(this._hpMonsterData)
             {
-               _loc2_ += " monsterdata " + JSON.encode(this._hpMonsterData);
+               _loc2_ += " monsterdata " + JSON.stringify(this._hpMonsterData);
             }
             if(this._hpResources)
             {
-               _loc2_ += " resources " + JSON.encode(this._hpResources);
+               _loc2_ += " resources " + JSON.stringify(this._hpResources);
             }
          }
          MapRoom.TransferMonstersB(this);
