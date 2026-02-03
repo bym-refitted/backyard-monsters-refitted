@@ -31,7 +31,7 @@ package
       
       private static var _positionSet:Boolean = false;
 
-      private static var _academy:ACADEMY = ACADEMY.getInstance(); 
+      private static const _academy:ACADEMY = ACADEMY.getInstance(); 
       
       public function BUILDINGINFO()
       {
@@ -639,7 +639,7 @@ package
          }
          if(param1.target.labelKey == "btn_openacademy")
          {
-            ACADEMY.Show(_building);
+            _academy.Show(_building);
          }
          if(param1.target.labelKey == "btn_repair")
          {

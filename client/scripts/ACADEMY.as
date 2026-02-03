@@ -15,8 +15,7 @@ package
       
       public static var _monsterID:String;
       
-      // TODO: make non-static
-      private static var _open:Boolean = false;
+      private var _open:Boolean = false;
       
       private static var _monsterString:String = "C";
       
@@ -60,9 +59,9 @@ package
       public function get open(): Boolean
       {
          return _open;
-      }
+      } 
 
-      public static function Show(param1:BFOUNDATION) : void
+      public function Show(param1:BFOUNDATION) : void
       {
          if(!_open)
          {
@@ -75,7 +74,7 @@ package
          }
       }
       
-      public static function Hide(param1:MouseEvent = null) : void
+      public function Hide(param1:MouseEvent = null) : void
       {
          if(_open)
          {
