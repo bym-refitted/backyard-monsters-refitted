@@ -5,7 +5,7 @@ package com.monsters.frontPage.messages.underusedFeatures
    
    public class Underused02Academy extends KeywordMessage
    {
-       
+      private static const _academy = ACADEMY.getInstance(); 
       
       public function Underused02Academy()
       {
@@ -25,7 +25,7 @@ package com.monsters.frontPage.messages.underusedFeatures
       
       override protected function onButtonClick() : void
       {
-         ACADEMY.Show(GLOBAL._bAcademy);
+         _academy.Show(GLOBAL._bAcademy);
          POPUPS.Next();
       }
       

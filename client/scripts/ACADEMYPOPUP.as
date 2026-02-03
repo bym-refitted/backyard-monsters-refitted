@@ -34,7 +34,8 @@ package
       
       public static var _instantUpgradeCost:int = 0;
        
-      
+      private static const _academy:ACADEMY = ACADEMY.getInstance();
+
       private const _infernoFrameOffset:int = 6;
       
       private var _portraitImage:DisplayObject;
@@ -603,7 +604,7 @@ package
       
       public function Hide(param1:MouseEvent = null) : void
       {
-         ACADEMY.Hide(param1);
+         _academy.Hide(param1);
       }
       
       public function Center() : void
