@@ -26,7 +26,8 @@ package
       private static const _yardMaxMonsters:int = 16;
       
       private static const _infernoMaxMonsters:int = 9;
-       
+
+
       private static var _instance:ACADEMY;
 
 
@@ -55,11 +56,6 @@ package
       }
 
       // =========================================================
-
-      public function get open(): Boolean
-      {
-         return _open;
-      } 
 
       public function Show(param1:BFOUNDATION) : void
       {
@@ -296,5 +292,17 @@ package
             _mc.Update();
          }
       }
+
+      // =========================================================
+      // Getters and Setters
+      // =========================================================
+
+      /**
+       * Returns whether the Academy popup is currently open.
+       */
+      public function get open(): Boolean
+      {
+         return _open;
+      } 
    }
 }
