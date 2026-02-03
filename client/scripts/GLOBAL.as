@@ -445,6 +445,8 @@ package
       
       public static var versionMismatch:Boolean = false;
 
+      private static var _academy: ACADEMY = ACADEMY.getInstance();
+
       public function GLOBAL()
       {
          super();
@@ -1165,7 +1167,7 @@ package
                STORE.ProcessPurchases();
                BASE.Tick();
                HOUSING.Update();
-               ACADEMY.Tick();
+               _academy.Tick();
                if (GLOBAL.mode == e_BASE_MODE.ATTACK || GLOBAL.mode == e_BASE_MODE.WMATTACK)
                {
                   ATTACK.Tick();
