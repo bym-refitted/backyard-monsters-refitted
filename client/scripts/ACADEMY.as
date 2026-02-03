@@ -289,7 +289,7 @@ package
       /**
        * Updates the Academy popup movie clip if it exists.
        */
-      public static function Update() : void
+      public function Update() : void
       {
          if(_mc)
          {
