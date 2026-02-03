@@ -201,6 +201,7 @@ package
          mc.bAlert.addEventListener(MouseEvent.MOUSE_OUT,this.ButtonInfoHide);
          this._buttonIcons = [];
          this._buttonIcons = [mc.bInvite,mc.bGift,mc.bInbox,mc.bAlert];
+         addEventListener(Event.ENTER_FRAME, onSpinnerTick);
          mc.bEarn.bAction.tLabel.htmlText = KEYS.Get("btn_earn");
          if(GLOBAL._flags.showFBCEarn == 1)
          {
@@ -236,7 +237,18 @@ package
             mc.bDailyDeal.visible = false;
          }
       }
-      
+
+      private function onSpinnerTick(e:Event):void
+      {
+         for each (var btn:* in this._buttonIcons)
+         {
+            if (btn && btn.mcSpinner && btn.mcSpinner.visible)
+            {
+               btn.mcSpinner.rotation += 4;
+            }
+         }
+      }
+
       private function setupScoutMode() : void
       {
          var _loc1_:MovieClip = null;
@@ -570,6 +582,7 @@ package
                mc.bDailyDeal.removeEventListener(MouseEvent.MOUSE_OVER,this.ButtonInfoShow);
                mc.bDailyDeal.removeEventListener(MouseEvent.MOUSE_OUT,this.ButtonInfoHide);
             }
+            removeEventListener(Event.ENTER_FRAME, onSpinnerTick);
          }
          else if(GLOBAL.mode == GLOBAL.e_BASE_MODE.ATTACK)
          {
