@@ -91,11 +91,11 @@ package
        * Starts the upgrade process for a monster.
        * 
        * @param monsterId The ID of the monster to upgrade.
-       * @param param2 TODO: Describe this parameter.
+       * @param validateOnly If true, only validate if the upgrade is possible, without actually starting it.
        * 
        * @return An object containing error status, error message, and current status.
        */
-      public static function StartMonsterUpgrade(monsterId:String, param2:Boolean = false) : Object
+      public static function StartMonsterUpgrade(monsterId:String, validateOnly:Boolean = false) : Object
       {
          var trainingCosts:Array = null;
          if(!GLOBAL.player.m_upgrades[monsterId])
@@ -124,7 +124,7 @@ package
                         trainingCosts = CREATURELOCKER._creatures[monsterId].trainingCosts[GLOBAL.player.m_upgrades[monsterId].level - 1];
                         if(BASE.Charge(3,trainingCosts[0],true) > 0)
                         {
-                           if(!param2)
+                           if(!validateOnly)
                            {
                               BASE.Charge(3,trainingCosts[0]);
                               GLOBAL.player.m_upgrades[monsterId].time = new SecNum(GLOBAL.Timestamp() + trainingCosts[1]);
