@@ -6,15 +6,19 @@ package
    
    public class ACADEMY
    {
-      
+      // Unique identifier for the Academy building type.
       public static const ID:int = 26;
       
+      // The currently selected academy building. Set when the academy popup is shown.
       public static var _building:BFOUNDATION = null;
       
+      // The academy popup movie clip instance.
       public static var _mc:ACADEMYPOPUP = null;
       
+      // The current monster ID being upgraded.
       public static var _monsterID:String;
       
+      // Indicates whether the academy popup is currently open.
       private var _open:Boolean = false;
       
       private static var _monsterString:String = "C";
@@ -93,7 +97,7 @@ package
        */
       public static function StartMonsterUpgrade(monsterId:String, param2:Boolean = false) : Object
       {
-         var _loc6_:Array = null;
+         var trainingCosts:Array = null;
          if(!GLOBAL.player.m_upgrades[monsterId])
          {
             GLOBAL.player.m_upgrades[monsterId] = {"level":1};
@@ -101,24 +105,30 @@ package
          var error:Boolean = false;
          var errorMessage:String = "";
          var status:String = KEYS.Get("acad_status_level",{"v1":GLOBAL.player.m_upgrades[monsterId].level});
+         
+         // Is an academy building selected and not currently upgrading?
          if(Boolean(_building) && !_building._upgrading)
          {
+            // Is the monster not already being upgraded?
             if(!GLOBAL.player.m_upgrades[monsterId].time)
             {
+               // Is the monster even unlocked?
                if(Boolean(CREATURELOCKER._lockerData[monsterId]) && CREATURELOCKER._lockerData[monsterId].t == 2)
                {
+                  // Can the monster be upgraded further, e.g. is there a next level configured?
                   if(GLOBAL.player.m_upgrades[monsterId].level < CREATURELOCKER._creatures[monsterId].trainingCosts.length + 1)
                   {
+                     // Is the academy building at a high enough level to upgrade this monster to the next level?
                      if(GLOBAL.player.m_upgrades[monsterId].level <= _building._lvl.Get())
                      {
-                        _loc6_ = CREATURELOCKER._creatures[monsterId].trainingCosts[GLOBAL.player.m_upgrades[monsterId].level - 1];
-                        if(BASE.Charge(3,_loc6_[0],true) > 0)
+                        trainingCosts = CREATURELOCKER._creatures[monsterId].trainingCosts[GLOBAL.player.m_upgrades[monsterId].level - 1];
+                        if(BASE.Charge(3,trainingCosts[0],true) > 0)
                         {
                            if(!param2)
                            {
-                              BASE.Charge(3,_loc6_[0]);
-                              GLOBAL.player.m_upgrades[monsterId].time = new SecNum(GLOBAL.Timestamp() + _loc6_[1]);
-                              GLOBAL.player.m_upgrades[monsterId].duration = _loc6_[1];
+                              BASE.Charge(3,trainingCosts[0]);
+                              GLOBAL.player.m_upgrades[monsterId].time = new SecNum(GLOBAL.Timestamp() + trainingCosts[1]);
+                              GLOBAL.player.m_upgrades[monsterId].duration = trainingCosts[1];
                               _building._upgrading = monsterId;
                               BASE.Save();
                               LOGGER.Stat([11,int(monsterId.substr(1)),GLOBAL.player.m_upgrades[monsterId].level + 1]);
