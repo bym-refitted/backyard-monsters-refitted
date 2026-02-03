@@ -83,37 +83,45 @@ package
          }
       }
       
-      public static function StartMonsterUpgrade(param1:String, param2:Boolean = false) : Object
+      /**
+       * Starts the upgrade process for a monster.
+       * 
+       * @param monsterId The ID of the monster to upgrade.
+       * @param param2 TODO: Describe this parameter.
+       * 
+       * @return An object containing error status, error message, and current status.
+       */
+      public static function StartMonsterUpgrade(monsterId:String, param2:Boolean = false) : Object
       {
          var _loc6_:Array = null;
-         if(!GLOBAL.player.m_upgrades[param1])
+         if(!GLOBAL.player.m_upgrades[monsterId])
          {
-            GLOBAL.player.m_upgrades[param1] = {"level":1};
+            GLOBAL.player.m_upgrades[monsterId] = {"level":1};
          }
          var error:Boolean = false;
          var errorMessage:String = "";
-         var status:String = KEYS.Get("acad_status_level",{"v1":GLOBAL.player.m_upgrades[param1].level});
+         var status:String = KEYS.Get("acad_status_level",{"v1":GLOBAL.player.m_upgrades[monsterId].level});
          if(Boolean(_building) && !_building._upgrading)
          {
-            if(!GLOBAL.player.m_upgrades[param1].time)
+            if(!GLOBAL.player.m_upgrades[monsterId].time)
             {
-               if(Boolean(CREATURELOCKER._lockerData[param1]) && CREATURELOCKER._lockerData[param1].t == 2)
+               if(Boolean(CREATURELOCKER._lockerData[monsterId]) && CREATURELOCKER._lockerData[monsterId].t == 2)
                {
-                  if(GLOBAL.player.m_upgrades[param1].level < CREATURELOCKER._creatures[param1].trainingCosts.length + 1)
+                  if(GLOBAL.player.m_upgrades[monsterId].level < CREATURELOCKER._creatures[monsterId].trainingCosts.length + 1)
                   {
-                     if(GLOBAL.player.m_upgrades[param1].level <= _building._lvl.Get())
+                     if(GLOBAL.player.m_upgrades[monsterId].level <= _building._lvl.Get())
                      {
-                        _loc6_ = CREATURELOCKER._creatures[param1].trainingCosts[GLOBAL.player.m_upgrades[param1].level - 1];
+                        _loc6_ = CREATURELOCKER._creatures[monsterId].trainingCosts[GLOBAL.player.m_upgrades[monsterId].level - 1];
                         if(BASE.Charge(3,_loc6_[0],true) > 0)
                         {
                            if(!param2)
                            {
                               BASE.Charge(3,_loc6_[0]);
-                              GLOBAL.player.m_upgrades[param1].time = new SecNum(GLOBAL.Timestamp() + _loc6_[1]);
-                              GLOBAL.player.m_upgrades[param1].duration = _loc6_[1];
-                              _building._upgrading = param1;
+                              GLOBAL.player.m_upgrades[monsterId].time = new SecNum(GLOBAL.Timestamp() + _loc6_[1]);
+                              GLOBAL.player.m_upgrades[monsterId].duration = _loc6_[1];
+                              _building._upgrading = monsterId;
                               BASE.Save();
-                              LOGGER.Stat([11,int(param1.substr(1)),GLOBAL.player.m_upgrades[param1].level + 1]);
+                              LOGGER.Stat([11,int(monsterId.substr(1)),GLOBAL.player.m_upgrades[monsterId].level + 1]);
                            }
                         }
                         else
@@ -128,11 +136,11 @@ package
                         error = true;
                         errorMessage = KEYS.Get("acad_err_upgrade");
                         status = KEYS.Get("acad_err_upgrade");
-                        if(BASE.isInfernoMainYardOrOutpost && GLOBAL.player.m_upgrades[param1].level >= 5)
+                        if(BASE.isInfernoMainYardOrOutpost && GLOBAL.player.m_upgrades[monsterId].level >= 5)
                         {
                            error = true;
                            errorMessage = KEYS.Get("acad_err_fullytrained");
-                           status = KEYS.Get("acad_err_lfullytrained",{"v1":GLOBAL.player.m_upgrades[param1].level});
+                           status = KEYS.Get("acad_err_lfullytrained",{"v1":GLOBAL.player.m_upgrades[monsterId].level});
                         }
                      }
                   }
@@ -140,7 +148,7 @@ package
                   {
                      error = true;
                      errorMessage = KEYS.Get("acad_err_fullytrained");
-                     status = KEYS.Get("acad_err_lfullytrained",{"v1":GLOBAL.player.m_upgrades[param1].level});
+                     status = KEYS.Get("acad_err_lfullytrained",{"v1":GLOBAL.player.m_upgrades[monsterId].level});
                   }
                }
                else
@@ -153,10 +161,10 @@ package
             else
             {
                error = true;
-               errorMessage = KEYS.Get("acad_err_training",{"v1":GLOBAL.player.m_upgrades[param1].level + 1});
+               errorMessage = KEYS.Get("acad_err_training",{"v1":GLOBAL.player.m_upgrades[monsterId].level + 1});
                status = KEYS.Get("acad_err_trainingstatus",{
-                  "v1":GLOBAL.player.m_upgrades[param1].level + 1,
-                  "v2":GLOBAL.ToTime(GLOBAL.player.m_upgrades[param1].time.Get() - GLOBAL.Timestamp())
+                  "v1":GLOBAL.player.m_upgrades[monsterId].level + 1,
+                  "v2":GLOBAL.ToTime(GLOBAL.player.m_upgrades[monsterId].time.Get() - GLOBAL.Timestamp())
                });
             }
          }
@@ -164,11 +172,11 @@ package
          {
             error = true;
             errorMessage = KEYS.Get("acad_err_busy");
-            if(GLOBAL.player.m_upgrades[param1].time)
+            if(GLOBAL.player.m_upgrades[monsterId].time)
             {
                status = KEYS.Get("acad_err_trainingstatus",{
-                  "v1":GLOBAL.player.m_upgrades[param1].level + 1,
-                  "v2":GLOBAL.ToTime(GLOBAL.player.m_upgrades[param1].time.Get() - GLOBAL.Timestamp())
+                  "v1":GLOBAL.player.m_upgrades[monsterId].level + 1,
+                  "v2":GLOBAL.ToTime(GLOBAL.player.m_upgrades[monsterId].time.Get() - GLOBAL.Timestamp())
                });
             }
          }
