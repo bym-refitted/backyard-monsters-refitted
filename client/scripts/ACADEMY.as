@@ -27,12 +27,29 @@ package
       
       private static const _infernoMaxMonsters:int = 9;
        
-      
-      public function ACADEMY()
+      private static var _instance:ACADEMY;
+
+      public function ACADEMY(dummy: Function)
       {
-         super();
+         if (dummy != _instanceblocker)
+         {
+            throw new Error("Singleton class, use getInstance() to access.");
+         }
       }
-      
+
+      private static function _instanceblocker():void
+      {
+      }
+
+      public static function getInstance():ACADEMY
+      {
+         if (_instance == null)
+         {
+            _instance = new ACADEMY(_instanceblocker);
+         }
+         return _instance;
+      }
+
       public static function Show(param1:BFOUNDATION) : void
       {
          if(!_open)
