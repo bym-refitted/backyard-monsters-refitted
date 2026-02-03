@@ -70,7 +70,7 @@ router.get("/connection", (ctx) => (ctx.status = Status.OK));
 
 /**
  * Init route
- * @name GET /api/:apiVersion/bm/getnewmap
+ * @name GET /init
  */
 router.post("/init", logRequest("Initilizing game client"), init);
 
