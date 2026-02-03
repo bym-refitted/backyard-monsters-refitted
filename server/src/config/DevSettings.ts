@@ -57,7 +57,7 @@ export const devConfig = {
   /*
    * Sets whether the descent into Inferno should be enabled or disabled.
    */
-  skipDescent: process.env.ENV === Env.PROD ? false : true,
+  skipDescent: process.env.ENV === Env.PROD ? false : false,
 
   /*
    * An override epoch timestamp for wild monster invasion 1 start time.
