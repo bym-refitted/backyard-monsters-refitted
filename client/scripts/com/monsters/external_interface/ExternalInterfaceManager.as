@@ -15,13 +15,8 @@ package com.monsters.external_interface
          */
         public static function SetupCallbacks():void
         {
-            if (!ExternalInterface.available)
-            {
-                return;
-            }
-
-            // setupDone flag set at the bottom
-            if (setupDone)
+            // Note: setupDone is set at the END of this method
+            if (!ExternalInterface.available || setupDone)
             {
                 return;
             }
