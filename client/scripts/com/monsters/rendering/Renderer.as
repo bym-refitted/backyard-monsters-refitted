@@ -1,5 +1,6 @@
 package com.monsters.rendering
 {
+   import com.monsters.utils.ObjectPool;
    import flash.display.Bitmap;
    import flash.display.BitmapData;
    import flash.display.Shape;
@@ -116,12 +117,14 @@ package com.monsters.rendering
             {
                if(_loc4_.renderer_friend::_alpha !== 4278190080)
                {
-                  _loc6_ = new BitmapData(_loc5_.width,_loc5_.height,true,_loc4_.renderer_friend::_alpha);
+                  // Use pooled BitmapData instead of creating new one each frame
+                  _loc6_ = ObjectPool.getBitmapData(_loc5_.width, _loc5_.height, true, _loc4_.renderer_friend::_alpha);
                }
                this.renderer_friend::_canvas.copyPixels(_loc5_,_loc5_.rect,this._pt,_loc6_);
                if(_loc6_)
                {
-                  _loc6_.dispose();
+                  // Return to pool instead of disposing
+                  ObjectPool.returnBitmapData(_loc6_);
                   _loc6_ = null;
                }
             }
