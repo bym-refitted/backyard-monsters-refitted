@@ -4,6 +4,7 @@ package
    import com.monsters.effects.LASERS;
    import com.monsters.effects.ResourceBombs;
    import com.monsters.effects.particles.Particles;
+   import com.monsters.utils.ObjectPool;
    import flash.display.BitmapData;
    import flash.display.DisplayObject;
    import flash.display.DisplayObjectContainer;
@@ -120,7 +121,11 @@ package
       public static function Burn(param1:int, param2:int) : void
       {
          var _loc3_:int = 80 * int(Math.random() * 4) - 80;
-         MAP.effectsBMD.copyPixels(_burns,new Rectangle(_loc3_,0,80,40),new Point(param1 + MAP.effectsBMD.width * 0.5 - 40,param2 + MAP.effectsBMD.height * 0.5 - 20),null,null,true);
+         var burnRect:Rectangle = ObjectPool.getRect(_loc3_, 0, 80, 40);
+         var burnPoint:Point = ObjectPool.getPoint(param1 + MAP.effectsBMD.width * 0.5 - 40, param2 + MAP.effectsBMD.height * 0.5 - 20);
+         MAP.effectsBMD.copyPixels(_burns, burnRect, burnPoint, null, null, true);
+         ObjectPool.returnRect(burnRect);
+         ObjectPool.returnPoint(burnPoint);
       }
       
       public static function Lightning(param1:int, param2:int, param3:int, param4:int, param5:DisplayObjectContainer = null, param6:uint = 3197178) : void
