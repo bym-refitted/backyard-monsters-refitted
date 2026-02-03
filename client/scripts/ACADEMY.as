@@ -268,7 +268,7 @@ package
          }
       }
       
-      public static function Tick() : void
+      public function Tick() : void
       {
          var _loc1_:String = null;
          var _loc2_:Object = null;
@@ -286,6 +286,9 @@ package
          Update();
       }
       
+      /**
+       * Updates the Academy popup movie clip if it exists.
+       */
       public static function Update() : void
       {
          if(_mc)
