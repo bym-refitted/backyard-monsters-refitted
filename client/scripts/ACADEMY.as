@@ -90,9 +90,9 @@ package
          {
             GLOBAL.player.m_upgrades[param1] = {"level":1};
          }
-         var _loc3_:Boolean = false;
-         var _loc4_:String = "";
-         var _loc5_:String = KEYS.Get("acad_status_level",{"v1":GLOBAL.player.m_upgrades[param1].level});
+         var error:Boolean = false;
+         var errorMessage:String = "";
+         var status:String = KEYS.Get("acad_status_level",{"v1":GLOBAL.player.m_upgrades[param1].level});
          if(Boolean(_building) && !_building._upgrading)
          {
             if(!GLOBAL.player.m_upgrades[param1].time)
@@ -118,43 +118,43 @@ package
                         }
                         else
                         {
-                           _loc3_ = true;
-                           _loc4_ = BASE.isInfernoMainYardOrOutpost ? KEYS.Get("acad_err_sulfur") : KEYS.Get("acad_err_putty");
-                           _loc5_ = BASE.isInfernoMainYardOrOutpost ? KEYS.Get("acad_err_sulfur") : KEYS.Get("acad_err_putty");
+                           error = true;
+                           errorMessage = BASE.isInfernoMainYardOrOutpost ? KEYS.Get("acad_err_sulfur") : KEYS.Get("acad_err_putty");
+                           status = BASE.isInfernoMainYardOrOutpost ? KEYS.Get("acad_err_sulfur") : KEYS.Get("acad_err_putty");
                         }
                      }
                      else
                      {
-                        _loc3_ = true;
-                        _loc4_ = KEYS.Get("acad_err_upgrade");
-                        _loc5_ = KEYS.Get("acad_err_upgrade");
+                        error = true;
+                        errorMessage = KEYS.Get("acad_err_upgrade");
+                        status = KEYS.Get("acad_err_upgrade");
                         if(BASE.isInfernoMainYardOrOutpost && GLOBAL.player.m_upgrades[param1].level >= 5)
                         {
-                           _loc3_ = true;
-                           _loc4_ = KEYS.Get("acad_err_fullytrained");
-                           _loc5_ = KEYS.Get("acad_err_lfullytrained",{"v1":GLOBAL.player.m_upgrades[param1].level});
+                           error = true;
+                           errorMessage = KEYS.Get("acad_err_fullytrained");
+                           status = KEYS.Get("acad_err_lfullytrained",{"v1":GLOBAL.player.m_upgrades[param1].level});
                         }
                      }
                   }
                   else
                   {
-                     _loc3_ = true;
-                     _loc4_ = KEYS.Get("acad_err_fullytrained");
-                     _loc5_ = KEYS.Get("acad_err_lfullytrained",{"v1":GLOBAL.player.m_upgrades[param1].level});
+                     error = true;
+                     errorMessage = KEYS.Get("acad_err_fullytrained");
+                     status = KEYS.Get("acad_err_lfullytrained",{"v1":GLOBAL.player.m_upgrades[param1].level});
                   }
                }
                else
                {
-                  _loc3_ = true;
-                  _loc4_ = KEYS.Get("acad_err_locked");
-                  _loc5_ = KEYS.Get("acad_err_locked");
+                  error = true;
+                  errorMessage = KEYS.Get("acad_err_locked");
+                  status = KEYS.Get("acad_err_locked");
                }
             }
             else
             {
-               _loc3_ = true;
-               _loc4_ = KEYS.Get("acad_err_training",{"v1":GLOBAL.player.m_upgrades[param1].level + 1});
-               _loc5_ = KEYS.Get("acad_err_trainingstatus",{
+               error = true;
+               errorMessage = KEYS.Get("acad_err_training",{"v1":GLOBAL.player.m_upgrades[param1].level + 1});
+               status = KEYS.Get("acad_err_trainingstatus",{
                   "v1":GLOBAL.player.m_upgrades[param1].level + 1,
                   "v2":GLOBAL.ToTime(GLOBAL.player.m_upgrades[param1].time.Get() - GLOBAL.Timestamp())
                });
@@ -162,20 +162,20 @@ package
          }
          else
          {
-            _loc3_ = true;
-            _loc4_ = KEYS.Get("acad_err_busy");
+            error = true;
+            errorMessage = KEYS.Get("acad_err_busy");
             if(GLOBAL.player.m_upgrades[param1].time)
             {
-               _loc5_ = KEYS.Get("acad_err_trainingstatus",{
+               status = KEYS.Get("acad_err_trainingstatus",{
                   "v1":GLOBAL.player.m_upgrades[param1].level + 1,
                   "v2":GLOBAL.ToTime(GLOBAL.player.m_upgrades[param1].time.Get() - GLOBAL.Timestamp())
                });
             }
          }
          return {
-            "error":_loc3_,
-            "errorMessage":_loc4_,
-            "status":_loc5_
+            "error":error,
+            "errorMessage":errorMessage,
+            "status":status
          };
       }
       
