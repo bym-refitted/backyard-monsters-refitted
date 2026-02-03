@@ -15,7 +15,8 @@ package
       
       public static var _monsterID:String;
       
-      public static var _open:Boolean = false;
+      // TODO: make non-static
+      private static var _open:Boolean = false;
       
       private static var _monsterString:String = "C";
       
@@ -29,6 +30,7 @@ package
        
       private static var _instance:ACADEMY;
 
+
       public function ACADEMY(dummy: Function)
       {
          if (dummy != _instanceblocker)
@@ -37,6 +39,9 @@ package
          }
       }
 
+      /**
+       * Function to block direct instantiation from outside the class.
+       */
       private static function _instanceblocker():void
       {
       }
@@ -48,6 +53,13 @@ package
             _instance = new ACADEMY(_instanceblocker);
          }
          return _instance;
+      }
+
+      // =========================================================
+
+      public function get open(): Boolean
+      {
+         return _open;
       }
 
       public static function Show(param1:BFOUNDATION) : void

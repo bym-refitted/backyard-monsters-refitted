@@ -36,6 +36,7 @@ package
       
       public static var _timer:Timer;
        
+      private static var _academy:ACADEMY = ACADEMY.getInstance();
       
       public function POPUPS()
       {
@@ -129,7 +130,7 @@ package
       public static function hasPopupsOpen() : Boolean
       {
          var _loc1_:Boolean = Boolean(GLOBAL._newBuilding) && (GLOBAL._newBuilding as BFOUNDATION)._placing == true;
-         return BUILDINGS._open || STORE._open || BUILDINGOPTIONS._open || ACADEMY._open || CREATURELOCKER._open || _loc1_ || Boolean(_mc) || _open;
+         return BUILDINGS._open || STORE._open || BUILDINGOPTIONS._open || _academy._open || CREATURELOCKER._open || _loc1_ || Boolean(_mc) || _open;
       }
       
       private static function NextDelayed(param1:int = 200) : void
