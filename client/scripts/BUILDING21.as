@@ -1,6 +1,7 @@
 package
 {
    import com.monsters.interfaces.IAttackable;
+   import com.monsters.utils.ObjectPool;
    import flash.display.BitmapData;
    import flash.geom.Point;
    import flash.geom.Rectangle;
@@ -66,7 +67,8 @@ package
          }
          else
          {
-            PROJECTILES.Spawn(new Point(_mc.x,_mc.y + _top),null,param1,_speed,int(damage * _loc2_ * _loc3_),false,_splash);
+            var spawnPt:Point = ObjectPool.getPoint(_mc.x, _mc.y + _top);
+            PROJECTILES.Spawn(spawnPt, null, param1, _speed, int(damage * _loc2_ * _loc3_), false, _splash);
          }
       }
       

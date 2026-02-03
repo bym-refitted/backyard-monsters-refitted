@@ -7,6 +7,7 @@ package
    import com.monsters.monsters.MonsterBase;
    import com.monsters.siege.weapons.Vacuum;
    import com.monsters.siege.weapons.VacuumHose;
+   import com.monsters.utils.ObjectPool;
    import flash.display.Bitmap;
    import flash.display.BitmapData;
    import flash.display.MovieClip;
@@ -113,7 +114,10 @@ package
             }
             if(Boolean(this._targetCreep._movement) && this._targetCreep._movement == "fly")
             {
-               _targetPoint = new Point(this._targetCreep._tmpPoint.x,this._targetCreep._tmpPoint.y - this._targetCreep._altitude);
+               // Reuse _targetPoint instead of allocating new Point
+               if(!_targetPoint) _targetPoint = new Point();
+               _targetPoint.x = this._targetCreep._tmpPoint.x;
+               _targetPoint.y = this._targetCreep._tmpPoint.y - this._targetCreep._altitude;
             }
             else
             {
@@ -122,7 +126,10 @@ package
          }
          else if(_targetType == 2)
          {
-            _targetPoint = new Point(this._targetBuilding._mc.x,this._targetBuilding._mc.y + this._targetBuilding._footprint[0].height / 2);
+            // Reuse _targetPoint instead of allocating new Point
+            if(!_targetPoint) _targetPoint = new Point();
+            _targetPoint.x = this._targetBuilding._mc.x;
+            _targetPoint.y = this._targetBuilding._mc.y + this._targetBuilding._footprint[0].height / 2;
          }
          else if(_targetType != 3)
          {
@@ -130,7 +137,10 @@ package
             {
             }
          }
-         _distance = Point.distance(_targetPoint,new Point(_tmpX,_tmpY));
+         // Use pooled Point for distance calculation
+         var tempPt:Point = ObjectPool.getPoint(_tmpX, _tmpY);
+         _distance = Point.distance(_targetPoint, tempPt);
+         ObjectPool.returnPoint(tempPt);
          if(this.Move())
          {
             return true;
@@ -254,14 +264,17 @@ package
          var _loc4_:Point = null;
          var _loc5_:int = 0;
          var _loc6_:Array = null;
+         // Use pooled Point for position
+         var splashPt:Point = ObjectPool.getPoint(_tmpX, _tmpY);
          if(this._targetCreep._movement == "fly")
          {
-            _loc6_ = Targeting.getCreepsInRange(_splash,new Point(_tmpX,_tmpY),Targeting.getOldStyleTargets(2));
+            _loc6_ = Targeting.getCreepsInRange(_splash, splashPt, Targeting.getOldStyleTargets(2));
          }
          else
          {
-            _loc6_ = Targeting.getCreepsInRange(_splash,new Point(_tmpX,_tmpY),Targeting.getOldStyleTargets(0));
+            _loc6_ = Targeting.getCreepsInRange(_splash, splashPt, Targeting.getOldStyleTargets(0));
          }
+         ObjectPool.returnPoint(splashPt);
          var _loc7_:int = 0;
          var _loc8_:int = 0;
          while(_loc8_ < _loc6_.length)

@@ -4,6 +4,7 @@ package
    import com.monsters.monsters.MonsterBase;
    import com.monsters.pathing.PATHING;
    import com.monsters.siege.weapons.Vacuum;
+   import com.monsters.utils.ObjectPool;
    import flash.display.BitmapData;
    import flash.display.MovieClip;
    import flash.events.MouseEvent;
@@ -161,7 +162,8 @@ package
          }
          else
          {
-            PROJECTILES.Spawn(new Point(_mc.x,_mc.y + _top),null,param1,_speed,int(damage * _loc2_ * _loc3_),false,_splash,attackFlags);
+            var spawnPt:Point = ObjectPool.getPoint(_mc.x, _mc.y + _top);
+            PROJECTILES.Spawn(spawnPt, null, param1, _speed, int(damage * _loc2_ * _loc3_), false, _splash, attackFlags);
          }
       }
       

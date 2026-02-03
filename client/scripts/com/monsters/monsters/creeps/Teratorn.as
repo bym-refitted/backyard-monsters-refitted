@@ -3,6 +3,7 @@ package com.monsters.monsters.creeps
    import com.monsters.interfaces.ITargetable;
    import com.monsters.monsters.MonsterBase;
    import com.monsters.monsters.components.abilities.GlavesOnAttack;
+   import com.monsters.utils.ObjectPool;
    import flash.geom.Point;
    
    public class Teratorn extends CreepBase
@@ -23,9 +24,10 @@ package com.monsters.monsters.creeps
       {
          if(param1 is BFOUNDATION)
          {
-            return FIREBALLS.Spawn(new Point(_tmpPoint.x,_tmpPoint.y - _altitude),_targetBuilding._position,_targetBuilding,6,damage,0,0,FIREBALLS.TYPE_MAGMA,this);
+            var spawnPt:Point = ObjectPool.getPoint(_tmpPoint.x, _tmpPoint.y - _altitude);
+            return FIREBALLS.Spawn(spawnPt, _targetBuilding._position, _targetBuilding, 6, damage, 0, 0, FIREBALLS.TYPE_MAGMA, this);
          }
-         return FIREBALLS.Spawn2(_tmpPoint,_targetCreep._tmpPoint,_targetCreep,10,damage,0,FIREBALLS.TYPE_MAGMA,1,this);
+         return FIREBALLS.Spawn2(_tmpPoint, _targetCreep._tmpPoint, _targetCreep, 10, damage, 0, FIREBALLS.TYPE_MAGMA, 1, this);
       }
    }
 }

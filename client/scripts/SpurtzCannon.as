@@ -6,6 +6,7 @@ package
    import com.monsters.monsters.MonsterBase;
    import com.monsters.monsters.creeps.inferno.Spurtz;
    import com.monsters.utils.MathUtils;
+   import com.monsters.utils.ObjectPool;
    import flash.display.BitmapData;
    import flash.display.DisplayObject;
    import flash.display.Sprite;
@@ -211,14 +212,20 @@ package
          }
          var _loc1_:Number = 0.5 + 0.5 / maxHealth * health;
          var _loc2_:Number = 1;
-         var _loc3_:Number = MathUtils.getDistanceBetweenTwoPoints(_position,new Point(_target.x,_target.y));
+         var targetPt:Point = ObjectPool.getPoint(_target.x, _target.y);
+         var _loc3_:Number = MathUtils.getDistanceBetweenTwoPoints(_position, targetPt);
+         ObjectPool.returnPoint(targetPt);
          var _loc4_:Number = (this._barrelRotation + 180) * (Math.PI / 180);
-         var _loc5_:Point = (_loc5_ = new Point(x + Math.cos(_loc4_) * _loc3_,y + Math.sin(_loc4_) * _loc3_)).add(new Point(this.getSpreadFromDistance(_loc3_ * 0.2),this.getSpreadFromDistance(_loc3_ * 0.2)));
+         var _loc5_:Point = ObjectPool.getPoint(x + Math.cos(_loc4_) * _loc3_, y + Math.sin(_loc4_) * _loc3_);
+         var spreadPt:Point = ObjectPool.getPoint(this.getSpreadFromDistance(_loc3_ * 0.2), this.getSpreadFromDistance(_loc3_ * 0.2));
+         _loc5_ = _loc5_.add(spreadPt);
+         ObjectPool.returnPoint(spreadPt);
          if(Boolean(GLOBAL._towerOverdrive) && GLOBAL._towerOverdrive.Get() >= GLOBAL.Timestamp())
          {
             _loc2_ = 1.25;
          }
-         this._projectile = FIREBALLS.Spawn2(new Point(_mc.x,_mc.y + _top),_loc5_,null,_speed,int(damage * _loc1_ * _loc2_),_splash,this._projectileType,3,this);
+         var spawnPt:Point = ObjectPool.getPoint(_mc.x, _mc.y + _top);
+         this._projectile = FIREBALLS.Spawn2(spawnPt, _loc5_, null, _speed, int(damage * _loc1_ * _loc2_), _splash, this._projectileType, 3, this);
          this._projectile.addEventListener(FIREBALL.COLLIDED,this.collidedWithTarget,false,0,true);
          ++this._shotsFired;
          this.scaleDisplayObjectRandomly(this._projectile._graphic);

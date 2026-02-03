@@ -1618,7 +1618,7 @@ package
          }
          var _loc1_:Point = MAP.instance.offset;
          var _loc2_:Function = MAP.instance.viewRect.intersects;
-         var _loc3_:Rectangle = new Rectangle();
+         var _loc3_:Rectangle = _visibilityRect;
          if(this._mcHit)
          {
             this._mcHit.x = _mc.x + this._offsets[this.m_hitOffsetIndex].x;
@@ -1688,8 +1688,12 @@ package
             _loc2_.y = this._mcBase.y + this._offsets[_RASTERDATA_SHADOW].y - _loc1_.y;
          }
          _loc3_ = new BitmapData(this.m_shadowBMD.width,this.m_shadowBMD.height,true);
-         var _loc4_:Rectangle = new Rectangle(this._rasterPt[_RASTERDATA_SHADOW].x,this._rasterPt[_RASTERDATA_SHADOW].y,_loc3_.width,_loc3_.height);
-         _loc3_.copyPixels(MAP.effectsBMD,_loc4_,new Point());
+         // Reuse _visibilityRect for shadow source rectangle
+         _visibilityRect.x = this._rasterPt[_RASTERDATA_SHADOW].x;
+         _visibilityRect.y = this._rasterPt[_RASTERDATA_SHADOW].y;
+         _visibilityRect.width = _loc3_.width;
+         _visibilityRect.height = _loc3_.height;
+         _loc3_.copyPixels(MAP.effectsBMD, _visibilityRect, _nullPoint);
          _loc3_.draw(this.m_shadowBMD,null,null,BlendMode.MULTIPLY);
          if(this._rasterData[_RASTERDATA_SHADOW] is RasterData === false)
          {

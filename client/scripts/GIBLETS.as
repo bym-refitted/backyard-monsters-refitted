@@ -1,5 +1,6 @@
 package
 {
+   import com.monsters.utils.ObjectPool;
    import flash.geom.Point;
    import gs.*;
    import gs.easing.*;
@@ -87,7 +88,10 @@ package
                   {
                      _loc7_ *= 1.5;
                   }
-                  Spawn(param1.add(new Point(-3 + Math.random() * 6,-2 + Math.random() * 4)),param2,_loc7_,_loc6_ / 100,param5);
+                  var offsetPt:Point = ObjectPool.getPoint(-3 + Math.random() * 6, -2 + Math.random() * 4);
+                  var spawnPt:Point = param1.add(offsetPt);
+                  ObjectPool.returnPoint(offsetPt);
+                  Spawn(spawnPt, param2, _loc7_, _loc6_ / 100, param5);
                   _loc6_++;
                }
             }
@@ -100,7 +104,9 @@ package
          var _loc7_:Point;
          var _loc8_:Number = (_loc7_ = GRID.FromISO(param1.x,param1.y)).x + Math.cos(_loc6_) * param3;
          var _loc9_:Number = _loc7_.y + Math.sin(_loc6_) * param3;
-         var _loc10_:Point = GRID.ToISO(_loc8_,_loc9_,0).add(new Point(0,param5));
+         var offsetPt:Point = ObjectPool.getPoint(0, param5);
+         var _loc10_:Point = GRID.ToISO(_loc8_,_loc9_,0).add(offsetPt);
+         ObjectPool.returnPoint(offsetPt);
          _giblets[_gibletCount] = MAP._RESOURCES.addChild(PoolGet(_gibletCount,param1,_loc10_,param3,param4,param2));
          ++_gibletCount;
       }

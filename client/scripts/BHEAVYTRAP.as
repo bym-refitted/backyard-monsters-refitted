@@ -1,6 +1,7 @@
 package
 {
    import com.monsters.monsters.MonsterBase;
+   import com.monsters.utils.ObjectPool;
    import flash.events.*;
    import flash.geom.Point;
    
@@ -58,7 +59,8 @@ package
          var _loc4_:Number = NaN;
          var _loc5_:Point = null;
          var _loc6_:int = 0;
-         var _loc7_:Array = Targeting.getCreepsInRange(_size,new Point(_mc.x,_mc.y),Targeting.getOldStyleTargets(-1));
+         var rangePt:Point = ObjectPool.getPoint(_mc.x, _mc.y);
+         var _loc7_:Array = Targeting.getCreepsInRange(_size, rangePt, Targeting.getOldStyleTargets(-1));
          var _loc8_:int = 0;
          var _loc9_:int = 0;
          for(_loc3_ in _loc7_)
@@ -74,11 +76,13 @@ package
                if(_loc2_.health <= 0)
                {
                   _loc9_++;
-                  GIBLETS.Create(new Point(_mc.x,_mc.y + 3),0.8,75,2);
+                  var gibPt:Point = ObjectPool.getPoint(_mc.x, _mc.y + 3);
+                  GIBLETS.Create(gibPt, 0.8, 75, 2);
                }
             }
          }
-         _loc7_ = Targeting.getCreepsInRange(_size,new Point(_mc.x,_mc.y),Targeting.getOldStyleTargets(2));
+         _loc7_ = Targeting.getCreepsInRange(_size, rangePt, Targeting.getOldStyleTargets(2));
+         ObjectPool.returnPoint(rangePt);
          for(_loc3_ in _loc7_)
          {
             _loc1_ = _loc7_[_loc3_];
@@ -92,7 +96,8 @@ package
                if(_loc2_.health <= 0)
                {
                   _loc9_++;
-                  GIBLETS.Create(new Point(_mc.x,_mc.y + 3),0.8,75,2);
+                  var gibPt2:Point = ObjectPool.getPoint(_mc.x, _mc.y + 3);
+                  GIBLETS.Create(gibPt2, 0.8, 75, 2);
                }
             }
          }

@@ -13,6 +13,7 @@ package
    import com.monsters.siege.weapons.Jars;
    import com.monsters.siege.weapons.Vacuum;
    import com.monsters.siege.weapons.VacuumHose;
+   import com.monsters.utils.ObjectPool;
    import flash.display.MovieClip;
    import flash.display.Shape;
    import flash.display.Sprite;
@@ -464,7 +465,10 @@ package
             _loc9_ = int(_targetFlyerMode[_type]);
          }
          var _loc10_:int = Targeting.getOldStyleTargets(_loc9_);
-         this.creeps = Targeting.getCreepsInRange(_range,_position.add(new Point(0,_footprint[0].height / 2)),_loc10_);
+         var offsetPt:Point = ObjectPool.getPoint(0, _footprint[0].height / 2);
+         var rangePt:Point = _position.add(offsetPt);
+         ObjectPool.returnPoint(offsetPt);
+         this.creeps = Targeting.getCreepsInRange(_range, rangePt, _loc10_);
          this._hasTargets = false;
          if(this.creeps.length > 0)
          {

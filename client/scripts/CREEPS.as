@@ -6,6 +6,7 @@ package
    import com.monsters.monsters.champions.ChampionBase;
    import com.monsters.monsters.champions.Krallen;
    import com.monsters.monsters.creeps.CreepBase;
+   import com.monsters.utils.ObjectPool;
    import flash.display.BitmapData;
    import flash.geom.Point;
    import flash.utils.getTimer;
@@ -414,6 +415,8 @@ package
          _guardianList.length = 0;
          clearOverlapCache();
          Targeting.clearGridCaches();
+         // Clear object pools to release memory between battles
+         ObjectPool.clearAll();
       }
       
       public static function get _guardian() : ChampionBase

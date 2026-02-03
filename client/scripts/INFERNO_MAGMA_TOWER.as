@@ -3,6 +3,7 @@ package
    import com.monsters.interfaces.IAttackable;
    import com.monsters.monsters.MonsterBase;
    import com.monsters.monsters.components.statusEffects.FlameEffect;
+   import com.monsters.utils.ObjectPool;
    import flash.display.BitmapData;
    import flash.display.MovieClip;
    import flash.events.Event;
@@ -76,14 +77,16 @@ package
          {
             _loc3_ = 1.25;
          }
-         this._projectile = FIREBALLS.Spawn2(new Point(_mc.x,_mc.y + _top),new Point(param1.x,param1.y),param1,_speed,int(damage * _loc2_ * _loc3_),_splash,this._projectileType,1,this);
+         this._projectile = FIREBALLS.Spawn2(ObjectPool.getPoint(_mc.x, _mc.y + _top), ObjectPool.getPoint(param1.x, param1.y), param1, _speed, int(damage * _loc2_ * _loc3_), _splash, this._projectileType, 1, this);
       }
       
       protected function onProjectileCollision(param1:Event) : void
       {
          var _loc2_:FIREBALL = param1.target as FIREBALL;
          _loc2_.removeEventListener(FIREBALL.COLLIDED,this.onProjectileCollision);
-         var _loc3_:Array = Targeting.getCreepsInRange(_splash,new Point(_loc2_._targetCreep.x,_loc2_._targetCreep.y),Targeting.getOldStyleTargets(0));
+         var rangePt:Point = ObjectPool.getPoint(_loc2_._targetCreep.x, _loc2_._targetCreep.y);
+         var _loc3_:Array = Targeting.getCreepsInRange(_splash, rangePt, Targeting.getOldStyleTargets(0));
+         ObjectPool.returnPoint(rangePt);
          var _loc4_:int = 0;
          while(_loc4_ < _loc3_.length)
          {

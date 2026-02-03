@@ -3,6 +3,7 @@ package
    import com.monsters.configs.BYMConfig;
    import com.monsters.monsters.MonsterBase;
    import com.monsters.rendering.RasterData;
+   import com.monsters.utils.ObjectPool;
    import flash.events.*;
    import flash.geom.Point;
    
@@ -112,7 +113,8 @@ package
          var _loc8_:int = 0;
          var _loc9_:int = 0;
          var _loc10_:RasterData = null;
-         var _loc7_:Array = Targeting.getCreepsInRange(_size,new Point(_mc.x,_mc.y),attackFlags);
+         var _loc7_:Array = Targeting.getCreepsInRange(_size, ObjectPool.getPoint(_mc.x, _mc.y), attackFlags);
+         // Note: Can't return point immediately as it's used in getCreepsInRange
          for(_loc3_ in _loc7_)
          {
             _loc1_ = _loc7_[_loc3_];
@@ -126,7 +128,9 @@ package
                if(_loc2_.health <= 0)
                {
                   _loc9_++;
-                  GIBLETS.Create(new Point(_mc.x,_mc.y + 3),0.8,75,2);
+                  var gibletsPoint:Point = ObjectPool.getPoint(_mc.x, _mc.y + 3);
+                  GIBLETS.Create(gibletsPoint, 0.8, 75, 2);
+                  ObjectPool.returnPoint(gibletsPoint);
                }
             }
          }
@@ -155,7 +159,9 @@ package
                   "v2":_loc8_
                }) + "</font>");
             }
-            EFFECTS.Scorch(new Point(_mc.x,_mc.y + 5));
+            var scorchPoint:Point = ObjectPool.getPoint(_mc.x, _mc.y + 5);
+            EFFECTS.Scorch(scorchPoint);
+            ObjectPool.returnPoint(scorchPoint);
          }
          this._hasTargets = false;
          _mc.visible = true;

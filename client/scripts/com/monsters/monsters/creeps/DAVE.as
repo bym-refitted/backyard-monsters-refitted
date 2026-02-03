@@ -3,6 +3,7 @@ package com.monsters.monsters.creeps
    import com.monsters.interfaces.ITargetable;
    import com.monsters.monsters.MonsterBase;
    import com.monsters.monsters.components.abilities.DAVERockets;
+   import com.monsters.utils.ObjectPool;
    import flash.geom.Point;
    
    public class DAVE extends CreepBase
@@ -22,11 +23,15 @@ package com.monsters.monsters.creeps
       {
          if(param1 is BFOUNDATION)
          {
-            FIREBALLS.Spawn(new Point(_tmpPoint.x + Math.random() * 20 - 10,_tmpPoint.y + Math.random() * 20 - 10),_targetBuilding._position,_targetBuilding,10,damage / 2,0,0,FIREBALL.TYPE_MISSILE,this);
-            return FIREBALLS.Spawn(new Point(_tmpPoint.x + Math.random() * 20 - 10,_tmpPoint.y + Math.random() * 20 - 10),_targetBuilding._position,_targetBuilding,10,damage / 2,0,0,FIREBALL.TYPE_MISSILE,this);
+            var spawnPt1:Point = ObjectPool.getPoint(_tmpPoint.x + Math.random() * 20 - 10, _tmpPoint.y + Math.random() * 20 - 10);
+            FIREBALLS.Spawn(spawnPt1, _targetBuilding._position, _targetBuilding, 10, damage / 2, 0, 0, FIREBALL.TYPE_MISSILE, this);
+            var spawnPt2:Point = ObjectPool.getPoint(_tmpPoint.x + Math.random() * 20 - 10, _tmpPoint.y + Math.random() * 20 - 10);
+            return FIREBALLS.Spawn(spawnPt2, _targetBuilding._position, _targetBuilding, 10, damage / 2, 0, 0, FIREBALL.TYPE_MISSILE, this);
          }
-         FIREBALLS.Spawn2(new Point(_tmpPoint.x + Math.random() * 20 - 10,_tmpPoint.y + Math.random() * 20 - 10),_targetCreep._tmpPoint,_targetCreep,10,damage / 2,0,FIREBALL.TYPE_MISSILE,1,this);
-         return FIREBALLS.Spawn2(new Point(_tmpPoint.x + Math.random() * 20 - 10,_tmpPoint.y + Math.random() * 20 - 10),_targetCreep._tmpPoint,_targetCreep,10,damage / 2,0,FIREBALL.TYPE_MISSILE,1,this);
+         var spawnPt3:Point = ObjectPool.getPoint(_tmpPoint.x + Math.random() * 20 - 10, _tmpPoint.y + Math.random() * 20 - 10);
+         FIREBALLS.Spawn2(spawnPt3, _targetCreep._tmpPoint, _targetCreep, 10, damage / 2, 0, FIREBALL.TYPE_MISSILE, 1, this);
+         var spawnPt4:Point = ObjectPool.getPoint(_tmpPoint.x + Math.random() * 20 - 10, _tmpPoint.y + Math.random() * 20 - 10);
+         return FIREBALLS.Spawn2(spawnPt4, _targetCreep._tmpPoint, _targetCreep, 10, damage / 2, 0, FIREBALL.TYPE_MISSILE, 1, this);
       }
       
       override public function deathSplat() : void
