@@ -113,7 +113,7 @@ package
             if(!GLOBAL.player.m_upgrades[monsterId].time)
             {
                // Is the monster even unlocked?
-               if(Boolean(CREATURELOCKER._lockerData[monsterId]) && CREATURELOCKER._lockerData[monsterId].t == 2)
+               if(CREATURELOCKER.isCreatureUnlocked(monsterId))
                {
                   // Can the monster be upgraded further, e.g. is there a next level configured?
                   if(GLOBAL.player.m_upgrades[monsterId].level < CREATURELOCKER._creatures[monsterId].trainingCosts.length + 1)
