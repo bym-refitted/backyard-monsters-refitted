@@ -43,6 +43,7 @@ package
        * 
        * If a creature ID is not present in this object, it is considered locked.
        * 
+       * TODO: replace all direct accesses to this variable with the provided helper methods and then make it private.
        */
       public static var _lockerData:Object;
       
