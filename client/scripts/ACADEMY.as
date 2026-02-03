@@ -88,100 +88,26 @@ package
       }
       
       /**
-       * Starts the upgrade process for a monster.
+       * Validates whether a monster upgrade is possible.
        * 
-       * @param monsterId The ID of the monster to upgrade.
-       * @param validateOnly If true, only validate if the upgrade is possible, without actually starting it.
+       * @param monsterId The ID of the monster to validate for upgrade.
        * 
        * @return An object containing error status, error message, and current status.
        */
-      public static function StartMonsterUpgrade(monsterId:String, validateOnly:Boolean = false) : Object
+      public static function CheckMonsterUpgradePossible(monsterId:String) : Object
       {
          var trainingCosts:Array = null;
          if(!GLOBAL.player.m_upgrades[monsterId])
          {
             GLOBAL.player.m_upgrades[monsterId] = {"level":1};
          }
-         var error:Boolean = false;
-         var errorMessage:String = "";
-         var status:String = KEYS.Get("acad_status_level",{"v1":GLOBAL.player.m_upgrades[monsterId].level});
          
-         // Is an academy building selected and not currently upgrading?
-         if(Boolean(_building) && !_building._upgrading)
+         var defaultStatus:String = KEYS.Get("acad_status_level",{"v1":GLOBAL.player.m_upgrades[monsterId].level});
+
+         // is an upgrade already in progress or no building selected?
+         if(!Boolean(_building) || _building._upgrading)
          {
-            // Is the monster not already being upgraded?
-            if(!GLOBAL.player.m_upgrades[monsterId].time)
-            {
-               // Is the monster even unlocked?
-               if(CREATURELOCKER.isCreatureUnlocked(monsterId))
-               {
-                  // Can the monster be upgraded further, e.g. is there a next level configured?
-                  if(GLOBAL.player.m_upgrades[monsterId].level < CREATURELOCKER._creatures[monsterId].trainingCosts.length + 1)
-                  {
-                     // Is the academy building at a high enough level to upgrade this monster to the next level?
-                     if(GLOBAL.player.m_upgrades[monsterId].level <= _building._lvl.Get())
-                     {
-                        trainingCosts = CREATURELOCKER._creatures[monsterId].trainingCosts[GLOBAL.player.m_upgrades[monsterId].level - 1];
-                        if(BASE.Charge(3,trainingCosts[0],true) > 0)
-                        {
-                           if(!validateOnly)
-                           {
-                              BASE.Charge(3,trainingCosts[0]);
-                              GLOBAL.player.m_upgrades[monsterId].time = new SecNum(GLOBAL.Timestamp() + trainingCosts[1]);
-                              GLOBAL.player.m_upgrades[monsterId].duration = trainingCosts[1];
-                              _building._upgrading = monsterId;
-                              BASE.Save();
-                              LOGGER.Stat([11,int(monsterId.substr(1)),GLOBAL.player.m_upgrades[monsterId].level + 1]);
-                           }
-                        }
-                        else
-                        {
-                           error = true;
-                           errorMessage = BASE.isInfernoMainYardOrOutpost ? KEYS.Get("acad_err_sulfur") : KEYS.Get("acad_err_putty");
-                           status = BASE.isInfernoMainYardOrOutpost ? KEYS.Get("acad_err_sulfur") : KEYS.Get("acad_err_putty");
-                        }
-                     }
-                     else
-                     {
-                        error = true;
-                        errorMessage = KEYS.Get("acad_err_upgrade");
-                        status = KEYS.Get("acad_err_upgrade");
-                        if(BASE.isInfernoMainYardOrOutpost && GLOBAL.player.m_upgrades[monsterId].level >= 5)
-                        {
-                           error = true;
-                           errorMessage = KEYS.Get("acad_err_fullytrained");
-                           status = KEYS.Get("acad_err_lfullytrained",{"v1":GLOBAL.player.m_upgrades[monsterId].level});
-                        }
-                     }
-                  }
-                  else
-                  {
-                     error = true;
-                     errorMessage = KEYS.Get("acad_err_fullytrained");
-                     status = KEYS.Get("acad_err_lfullytrained",{"v1":GLOBAL.player.m_upgrades[monsterId].level});
-                  }
-               }
-               else
-               {
-                  error = true;
-                  errorMessage = KEYS.Get("acad_err_locked");
-                  status = KEYS.Get("acad_err_locked");
-               }
-            }
-            else
-            {
-               error = true;
-               errorMessage = KEYS.Get("acad_err_training",{"v1":GLOBAL.player.m_upgrades[monsterId].level + 1});
-               status = KEYS.Get("acad_err_trainingstatus",{
-                  "v1":GLOBAL.player.m_upgrades[monsterId].level + 1,
-                  "v2":GLOBAL.ToTime(GLOBAL.player.m_upgrades[monsterId].time.Get() - GLOBAL.Timestamp())
-               });
-            }
-         }
-         else
-         {
-            error = true;
-            errorMessage = KEYS.Get("acad_err_busy");
+            var status:String = defaultStatus;
             if(GLOBAL.player.m_upgrades[monsterId].time)
             {
                status = KEYS.Get("acad_err_trainingstatus",{
@@ -189,12 +115,112 @@ package
                   "v2":GLOBAL.ToTime(GLOBAL.player.m_upgrades[monsterId].time.Get() - GLOBAL.Timestamp())
                });
             }
+            return {
+               "error":true,
+               "errorMessage":KEYS.Get("acad_err_busy"),
+               "status":status
+            };
          }
+
+         // Is an upgrade for this monster already in progress?
+         if(GLOBAL.player.m_upgrades[monsterId].time) 
+         {
+            return {
+               error: true,
+               errorMessage: KEYS.Get("acad_err_training",{"v1":GLOBAL.player.m_upgrades[monsterId].level + 1}),
+               status: KEYS.Get("acad_err_trainingstatus",{
+                  "v1":GLOBAL.player.m_upgrades[monsterId].level + 1,
+                  "v2":GLOBAL.ToTime(GLOBAL.player.m_upgrades[monsterId].time.Get() - GLOBAL.Timestamp())
+               })
+            }
+         }
+
+         // Is the monster still locked in the creature locker?
+         if(!CREATURELOCKER.isCreatureUnlocked(monsterId)) 
+         {
+            return {
+               error: true,
+               errorMessage: KEYS.Get("acad_err_locked"),
+               status: KEYS.Get("acad_err_locked")
+            }
+         }
+
+         // Has the monster already reached its maximum upgrade level?
+         if(GLOBAL.player.m_upgrades[monsterId].level >= CREATURELOCKER._creatures[monsterId].trainingCosts.length + 1) 
+         {
+            return {
+               error: true,
+               errorMessage: KEYS.Get("acad_err_fullytrained"),
+               status: KEYS.Get("acad_err_lfullytrained",{"v1":GLOBAL.player.m_upgrades[monsterId].level})
+            }
+         }
+
+         // Is the monster upgrade level too high for the current academy level?
+         if(GLOBAL.player.m_upgrades[monsterId].level > _building._lvl.Get()) 
+         {
+            // Special case for Inferno Main Yard or Outpost with max level monsters
+            if(BASE.isInfernoMainYardOrOutpost && GLOBAL.player.m_upgrades[monsterId].level >= 5)
+            {
+               return {
+                  error: true,
+                  errorMessage: KEYS.Get("acad_err_fullytrained"),
+                  status: KEYS.Get("acad_err_lfullytrained",{"v1":GLOBAL.player.m_upgrades[monsterId].level})
+               };
+            }
+
+            return {
+               error: true,
+               errorMessage: KEYS.Get("acad_err_upgrade"),
+               status: KEYS.Get("acad_err_upgrade")
+            };
+         }
+
+         // Is the player missing the required resources for the upgrade?
+         trainingCosts = CREATURELOCKER._creatures[monsterId].trainingCosts[GLOBAL.player.m_upgrades[monsterId].level - 1];
+         if(BASE.Charge(3,trainingCosts[0],true) <= 0)
+         {
+            var errorMessage:String = BASE.isInfernoMainYardOrOutpost ? KEYS.Get("acad_err_sulfur") : KEYS.Get("acad_err_putty");
+            return {
+               "error":true,
+               "errorMessage":errorMessage,
+               "status":errorMessage
+            }
+         }
+
          return {
-            "error":error,
-            "errorMessage":errorMessage,
-            "status":status
+            "error":false,
+            "errorMessage":"",
+            "status": defaultStatus
          };
+      }
+      
+      /**
+       * Starts the upgrade process for a monster.
+       * 
+       * @param monsterId The ID of the monster to upgrade.
+       * 
+       * @return An object containing error status, error message, and current status.
+       */
+      public static function StartMonsterUpgrade(monsterId:String) : Object
+      {
+         var validationResult:Object = CheckMonsterUpgradePossible(monsterId);
+         
+         // If validation failed, return the validation result
+         if(validationResult.error)
+         {
+            return validationResult;
+         }
+         
+         // Validation passed, proceed with upgrade
+         var trainingCosts:Array = CREATURELOCKER._creatures[monsterId].trainingCosts[GLOBAL.player.m_upgrades[monsterId].level - 1];
+         BASE.Charge(3,trainingCosts[0]);
+         GLOBAL.player.m_upgrades[monsterId].time = new SecNum(GLOBAL.Timestamp() + trainingCosts[1]);
+         GLOBAL.player.m_upgrades[monsterId].duration = trainingCosts[1];
+         _building._upgrading = monsterId;
+         BASE.Save();
+         LOGGER.Stat([11,int(monsterId.substr(1)),GLOBAL.player.m_upgrades[monsterId].level + 1]);
+         
+         return validationResult;
       }
       
       public static function CancelMonsterUpgrade(param1:String) : void

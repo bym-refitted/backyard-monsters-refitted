@@ -166,7 +166,7 @@ package
          var _loc7_:Boolean = false;
          var _loc11_:Object = null;
          var _loc2_:Object = GLOBAL.player.m_upgrades[_monsterID];
-         var _loc3_:Object = ACADEMY.StartMonsterUpgrade(_monsterID,true);
+         var upgradeCheckResult:Object = ACADEMY.CheckMonsterUpgradePossible(_monsterID);
          var _loc4_:Array = CREATURELOCKER._creatures[_monsterID].trainingCosts[GLOBAL.player.m_upgrades[_monsterID].level - 1];
          if(Boolean(this._portraitImage) && Boolean(this._portraitImage.parent))
          {
@@ -202,7 +202,7 @@ package
          }
          else
          {
-            if(!_loc3_.error)
+            if(!upgradeCheckResult.error)
             {
                bA.tDescription.htmlText = KEYS.Get("academy_traininstantly");
                this.CalculateInstantCost();
@@ -229,7 +229,7 @@ package
                bB.mcTime.visible = true;
                bB.mcTime.tValue.htmlText = "<b>" + GLOBAL.ToTime(_loc4_[1]) + "</b>";
             }
-            else if(_loc3_.status == KEYS.Get("acad_err_putty") || _loc3_.status == KEYS.Get("acad_err_sulfur"))
+            else if(upgradeCheckResult.status == KEYS.Get("acad_err_putty") || upgradeCheckResult.status == KEYS.Get("acad_err_sulfur"))
             {
                bA.tDescription.visible = true;
                bA.gArrow.visible = true;
@@ -249,13 +249,13 @@ package
                bA.bAction.removeEventListener(MouseEvent.CLICK,this.SpeedUp);
                bA.bAction.Enabled = true;
                bA.bAction.Highlight = true;
-               bB.bAction.Setup(_loc3_.errorMessage);
+               bB.bAction.Setup(upgradeCheckResult.errorMessage);
                bB.bAction.removeEventListener(MouseEvent.CLICK,this.StartMonsterUpgrade);
                bB.bAction.removeEventListener(MouseEvent.CLICK,this.CancelMonsterUpgrade);
                bB.bAction.Enabled = false;
                bB.bAction.visible = true;
             }
-            else if(bA.label != _loc3_.errorMessage)
+            else if(bA.label != upgradeCheckResult.errorMessage)
             {
                bA.gArrow.visible = false;
                bA.tDescription.visible = false;
@@ -267,7 +267,7 @@ package
                bB.mcTime.visible = false;
                bA.bAction.removeEventListener(MouseEvent.CLICK,this.InstantMonsterUpgrade);
                bA.bAction.removeEventListener(MouseEvent.CLICK,this.SpeedUp);
-               bA.bAction.Setup(_loc3_.errorMessage);
+               bA.bAction.Setup(upgradeCheckResult.errorMessage);
                bA.bAction.Enabled = false;
                bA.bAction.Highlight = false;
                bB.bAction.removeEventListener(MouseEvent.CLICK,this.StartMonsterUpgrade);
@@ -277,7 +277,7 @@ package
             bA.bAction.Highlight = false;
             bPrevious.visible = bNext.visible = true;
          }
-         var _loc5_:* = (_loc5_ = (_loc5_ = "<b>" + KEYS.Get("acad_mon_name") + "</b> " + KEYS.Get(CREATURELOCKER._creatures[_monsterID].name) + "<br>") + ("<b>" + KEYS.Get("acad_mon_status") + "</b> " + _loc3_.status)) + ("<br>" + KEYS.Get(CREATURELOCKER._creatures[_monsterID].description));
+         var _loc5_:* = (_loc5_ = (_loc5_ = "<b>" + KEYS.Get("acad_mon_name") + "</b> " + KEYS.Get(CREATURELOCKER._creatures[_monsterID].name) + "<br>") + ("<b>" + KEYS.Get("acad_mon_status") + "</b> " + upgradeCheckResult.status)) + ("<br>" + KEYS.Get(CREATURELOCKER._creatures[_monsterID].description));
          tName.htmlText = _loc5_;
          var _loc6_:int;
          if((_loc6_ = CREATURES.GetProperty(_monsterID,"damage")) > 0)
