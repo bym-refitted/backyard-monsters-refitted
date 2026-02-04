@@ -1673,18 +1673,6 @@ package
 
       public static function Build():void
       {
-         var buildingFoundation:BFOUNDATION = null;
-         var counter:int = 0;
-         var building:Object = null;
-         var displayObject:DisplayObject = null;
-         var rawMonstersHidLength:int = 0;
-         var rawMonstersHLength:int = 0;
-         var rawMonsterIndex:int = 0;
-         var townHallLevel:int = 0;
-         var buildingTypeCount:int = 0;
-         var props:Object = null;
-         var foundationIndex:int = 0;
-         var propCount:int = 0;
          PLEASEWAIT.Update(KEYS.Get("msg_building"));
          if (MAPROOM_INFERNO._open)
          {
@@ -1697,7 +1685,7 @@ package
          var mapIndex:int = GLOBAL._layerMap.numChildren - 1;
          while (mapIndex >= 0)
          {
-            displayObject = GLOBAL._layerMap.getChildAt(mapIndex);
+            var displayObject:DisplayObject = GLOBAL._layerMap.getChildAt(mapIndex);
             if (displayObject.parent)
             {
                displayObject.parent.removeChild(displayObject);
@@ -1744,7 +1732,8 @@ package
          }
 
          var buildingTypeCounts:Dictionary = new Dictionary();
-         for each (building in _buildingData)
+         var counter:int = 0;
+         for each (var building:Object in _buildingData)
          {
             if (building)
             {
@@ -1768,7 +1757,7 @@ package
                   {
                      counter++;
                   }
-                  buildingFoundation = addBuildingC(building.t);
+                  var buildingFoundation:BFOUNDATION = addBuildingC(building.t);
                   if (buildingFoundation)
                   {
                      foundationType = buildingFoundation._type;
@@ -1779,9 +1768,9 @@ package
                   }
                   if (building.t == 13 && _rawMonsters && Boolean(_rawMonsters.h) && Boolean(_rawMonsters.hid))
                   {
-                     rawMonstersHidLength = int(_rawMonsters.hid.length);
-                     rawMonstersHLength = int(_rawMonsters.h.length);
-                     rawMonsterIndex = 0;
+                     var rawMonstersHidLength:int = int(_rawMonsters.hid.length);
+                     var rawMonstersHLength:int = int(_rawMonsters.h.length);
+                     var rawMonsterIndex:int = 0;
                      while (rawMonsterIndex < rawMonstersHidLength && rawMonsterIndex < rawMonstersHLength)
                      {
                         if (_rawMonsters.hid[rawMonsterIndex] == building.id)
@@ -1958,14 +1947,14 @@ package
          var bFoundation:Vector.<Object> = InstanceManager.getInstancesByClass(BFOUNDATION);
          if (GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD && GLOBAL.townHall && isMainYardOrInfernoMainYard && !GLOBAL._aiDesignMode)
          {
-            townHallLevel = GLOBAL.townHall._lvl.Get();
-            buildingTypeCount = 0;
-            for each (props in GLOBAL._buildingProps)
+            var townHallLevel:int = GLOBAL.townHall._lvl.Get();
+            var buildingTypeCount:int = 0;
+            for each (var props:Object in GLOBAL._buildingProps)
             {
                if (props.type != "decoration")
                {
                   buildingTypeCount = 0;
-                  foundationIndex = int(bFoundation.length - 1);
+                  var foundationIndex:int = int(bFoundation.length - 1);
                   while (foundationIndex >= 0)
                   {
                      buildingFoundation = bFoundation[foundationIndex] as BFOUNDATION;
@@ -1975,7 +1964,7 @@ package
                         {
                            buildingTypeCount += 1;
                         }
-                        propCount = townHallLevel < props.quantity.length ? int(props.quantity[townHallLevel]) : int(props.quantity[props.quantity.length - 1]);
+                        var propCount:int = townHallLevel < props.quantity.length ? int(props.quantity[townHallLevel]) : int(props.quantity[props.quantity.length - 1]);
                         if (buildingTypeCount > propCount)
                         {
                            Console.print("BASE::Build:too many buildings " + buildingTypeCount + "/" + propCount + " type:" + buildingFoundation._type);
