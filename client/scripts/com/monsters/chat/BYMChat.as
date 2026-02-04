@@ -1,8 +1,7 @@
 package com.monsters.chat
 {
+   import com.monsters.chat.impl.smartfox.SmartFoxChatSystem;
    import com.monsters.chat.ui.*;
-   import com.smartfoxserver.v2.entities.*;
-   import com.smartfoxserver.v2.entities.data.*;
    import flash.display.*;
    import flash.events.*;
    import flash.geom.*;
@@ -14,7 +13,7 @@ package com.monsters.chat
    public class BYMChat extends Sprite
    {
       
-      private static var _chat:CS_SmartFoxServer2X = null;
+      private static var _chat:IChatSystem = null;
       
       public static var _userRecord:UserRecord = null;
       
@@ -98,8 +97,8 @@ package com.monsters.chat
          this.chatBox = param1;
          addChild(param1 as MovieClip);
          param1.addEventListener(KeyboardEvent.KEY_DOWN,this.keyboardEventHandler);
-         var _loc3_:String = param2 == null || param2 == "" ? CS_SmartFoxServer2X.HOST_TEST : param2;
-         var _loc4_:int = CS_SmartFoxServer2X.PORT;
+         var _loc3_:String = param2 == null || param2 == "" ? SmartFoxChatSystem.HOST_TEST : param2;
+         var _loc4_:int = SmartFoxChatSystem.PORT;
          var _loc5_:Array;
          if((_loc5_ = _loc3_.split(":")).length > 1)
          {
@@ -142,7 +141,7 @@ package com.monsters.chat
       {
          try
          {
-            _chat = new CS_SmartFoxServer2X(this._chatHost,this._chatPort);
+            _chat = new SmartFoxChatSystem(this._chatHost,this._chatPort);
             _chat.addEventListener(ChatEvent.CONNECT,this.onConnect);
             _chat.addEventListener(ChatEvent.LOGIN,this.onLogin);
             _chat.addEventListener(ChatEvent.JOIN,this.onJoin);
@@ -653,7 +652,7 @@ package com.monsters.chat
          var _loc3_:String = null;
          var _loc4_:String = null;
          var _loc5_:Array = null;
-         var _loc6_:SFSObject = null;
+         var _loc6_:ChatData = null;
          var _loc7_:String = null;
          var _loc8_:String = null;
          if(param1.Success)
@@ -729,8 +728,8 @@ package com.monsters.chat
       
       private function onUserEnter(param1:ChatEvent) : void
       {
-         var _loc2_:User = param1.Get("user") as User;
-         var _loc3_:Room = param1.Get("room") as Room;
+         var _loc2_:ChatUser = param1.Get("user") as ChatUser;
+         var _loc3_:ChatRoom = param1.Get("room") as ChatRoom;
          if(this.sector_channel == null)
          {
             LOGGER.Log("err","BYMChat.onUserEnter(): No sector has been joined yet");
@@ -750,8 +749,8 @@ package com.monsters.chat
       
       private function onUserExit(param1:ChatEvent) : void
       {
-         var _loc2_:User = param1.Get("user") as User;
-         var _loc3_:Room = param1.Get("room") as Room;
+         var _loc2_:ChatUser = param1.Get("user") as ChatUser;
+         var _loc3_:ChatRoom = param1.Get("room") as ChatRoom;
          delete _displayNameMap[_loc2_.name];
       }
       
@@ -991,7 +990,7 @@ package com.monsters.chat
          {
             return _chat.roomNames;
          }
-         return [];
+         return new Vector.<String>();
       }
       
       public function chatInputHasFocus() : Boolean
