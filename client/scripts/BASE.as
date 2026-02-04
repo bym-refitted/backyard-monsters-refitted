@@ -576,7 +576,6 @@ package
 
       public static function Load(url:String = null, userId:Number = 0, baseId:Number = 0, baseType:int = -1, cellId:Number = 0):void
       {
-         var _loc15_:int = 0;
          GLOBAL._baseLoads += 1;
          _loading = true;
          _baseID = baseId;
@@ -704,11 +703,11 @@ package
          }
          if (_addtionalLoadArguments)
          {
-            _loc15_ = 0;
-            while (_loc15_ < _addtionalLoadArguments.length)
+            var i:int = 0;
+            while (i < _addtionalLoadArguments.length)
             {
-               requestData.push(_addtionalLoadArguments[_loc15_]);
-               _loc15_++;
+               requestData.push(_addtionalLoadArguments[i]);
+               i++;
             }
          }
          if (!_loadedSomething && ExternalInterface.available)
