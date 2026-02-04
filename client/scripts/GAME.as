@@ -163,8 +163,7 @@ package
          stage.scaleMode = StageScaleMode.NO_SCALE;
          stage.addEventListener(Event.RESIZE, GLOBAL.ResizeGame);
          stage.showDefaultContextMenu = false;
-
-         ExternalInterfaceManager.SetupCallbacks();
+         ExternalInterfaceManager.Initialize();
 
          if (this._checkScreenSize)
          {
