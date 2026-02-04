@@ -1,6 +1,6 @@
 package com.monsters.chat
 {
-   import com.monsters.chat.impl.smartfox.SmartFoxChatSystem;
+   import com.monsters.chat.impl.stub.StubChatSystem;
    import com.monsters.chat.ui.*;
    import flash.display.*;
    import flash.events.*;
@@ -97,8 +97,8 @@ package com.monsters.chat
          this.chatBox = param1;
          addChild(param1 as MovieClip);
          param1.addEventListener(KeyboardEvent.KEY_DOWN,this.keyboardEventHandler);
-         var _loc3_:String = param2 == null || param2 == "" ? SmartFoxChatSystem.HOST_TEST : param2;
-         var _loc4_:int = SmartFoxChatSystem.PORT;
+         var _loc3_:String = param2 == null || param2 == "" ? StubChatSystem.HOST_TEST : param2;
+         var _loc4_:int = StubChatSystem.PORT;
          var _loc5_:Array;
          if((_loc5_ = _loc3_.split(":")).length > 1)
          {
@@ -141,7 +141,7 @@ package com.monsters.chat
       {
          try
          {
-            _chat = new SmartFoxChatSystem(this._chatHost,this._chatPort);
+            _chat = new StubChatSystem(this._chatHost,this._chatPort);
             _chat.addEventListener(ChatEvent.CONNECT,this.onConnect);
             _chat.addEventListener(ChatEvent.LOGIN,this.onLogin);
             _chat.addEventListener(ChatEvent.JOIN,this.onJoin);
