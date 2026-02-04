@@ -1,7 +1,8 @@
-package com.monsters.chat
+package com.monsters.chat.impl.stub
 {
    import flash.events.EventDispatcher;
    import flash.utils.Dictionary;
+   import com.monsters.chat.*;
    
    /**
     * Stub/no-op implementation of IChatSystem.
@@ -11,10 +12,14 @@ package com.monsters.chat
    {
       private var _isConnected:Boolean = false;
       private var _isLoggedIn:Boolean = false;
+
+      public static const HOST_TEST:String = "stub.chat.server";
+      public static const PORT:int = 12345;
       
-      public function StubChatSystem()
+      public function StubChatSystem(chatHost:String, chatPort:int)
       {
          super();
+         // No-op: no actual connection is made in stub mode
       }
       
       // Connection management
