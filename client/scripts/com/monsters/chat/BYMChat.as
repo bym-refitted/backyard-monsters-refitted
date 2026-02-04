@@ -985,7 +985,7 @@ package com.monsters.chat
          }
       }
       
-      public function get roomNames() : Array
+      public function get roomNames() : Vector.<String>
       {
          if(_chat != null)
          {
