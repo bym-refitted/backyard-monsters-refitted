@@ -82,6 +82,7 @@ package
       
       public static var _allowInfernoResourcesAboveGround:Boolean = true;
        
+      private static var _academy: ACADEMY = ACADEMY.getInstance();
       
       public function STORE()
       {
@@ -2628,7 +2629,7 @@ package
                      LOGGER.Stat([4,ACADEMY._monsterID.substr(1),GLOBAL.player.m_upgrades[ACADEMY._monsterID].level + 1,0,_loc4_]);
                   }
                }
-               ACADEMY.Update();
+               _academy.Update();
             }
             else if(_loc15_._type == 116)
             {
