@@ -54,281 +54,281 @@ package com.monsters.pathing
 
       public static function Setup():void
       {
-         var _loc2_:PATHINGobject = null;
-         var _loc3_:int = 0;
-         var _loc4_:int = 0;
-         var _loc5_:int = 0;
-         var _loc1_:int = getTimer();
-         _loc4_ = 0;
-         while (_loc4_ < _gridWidth)
+         var gridSpace:PATHINGobject = null;
+         var gridKey:int = 0;
+         var widthIdx:int = 0;
+         var heightIdx:int = 0;
+         var startTime:int = getTimer();
+         widthIdx = 0;
+         while (widthIdx < _gridWidth)
          {
-            _loc5_ = 0;
-            while (_loc5_ < _gridHeight)
+            heightIdx = 0;
+            while (heightIdx < _gridHeight)
             {
-               _loc3_ = _loc4_ * 1000 + _loc5_;
-               _loc2_ = new PATHINGobject();
-               _loc2_.pointX = _loc4_;
-               _loc2_.pointY = _loc5_;
-               _loc2_.cost = 10;
-               _costs[_loc3_] = _loc2_;
-               _loc5_ += 1;
+               gridKey = widthIdx * 1000 + heightIdx;
+               gridSpace = new PATHINGobject();
+               gridSpace.pointX = widthIdx;
+               gridSpace.pointY = heightIdx;
+               gridSpace.cost = 10;
+               _costs[gridKey] = gridSpace;
+               heightIdx += 1;
             }
-            _loc4_ += 1;
+            widthIdx += 1;
          }
          _poolPathing = new Vector.<PATHINGobject>();
          _poolPathingB = new Vector.<PATHINGobject>();
          _poolPathingLength = 0;
       }
 
-      public static function Cost(param1:Point, param2:Rectangle, param3:int):Rectangle
+      public static function Cost(buildingPoint:Point, buildingRegion:Rectangle, regionCost:int):Rectangle
       {
-         var _loc4_:Point = null;
-         var _loc5_:Point = null;
-         var _loc6_:int = 0;
-         var _loc7_:int = 0;
-         var _loc8_:int = 0;
-         var _loc9_:Rectangle = null;
-         var _loc10_:int = 0;
-         _loc4_ = FromISO(param1);
-         _loc4_.x += param2.x;
-         _loc4_.y += param2.y;
-         _loc5_ = GlobalLocal(_loc4_);
-         _loc9_ = new Rectangle(_loc5_.x, _loc5_.y, param2.width * 0.1, param2.height * 0.1);
-         _loc7_ = _loc9_.x;
-         while (_loc7_ < _loc9_.x + _loc9_.width)
+         var convertPoint:Point = null;
+         var gridPoint:Point = null;
+         var gridKey:int = 0;
+         var xIdx:int = 0;
+         var yIdx:int = 0;
+         var gridRegion:Rectangle = null;
+         var cost:int = 0;
+         convertPoint = FromISO(buildingPoint);
+         convertPoint.x += buildingRegion.x;
+         convertPoint.y += buildingRegion.y;
+         gridPoint = GlobalLocal(convertPoint);
+         gridRegion = new Rectangle(gridPoint.x, gridPoint.y, buildingRegion.width * 0.1, buildingRegion.height * 0.1);
+         xIdx = gridRegion.x;
+         while (xIdx < gridRegion.x + gridRegion.width)
          {
-            _loc8_ = _loc9_.y;
-            while (_loc8_ < _loc9_.y + _loc9_.height)
+            yIdx = gridRegion.y;
+            while (yIdx < gridRegion.y + gridRegion.height)
             {
-               _loc6_ = _loc7_ * 1000 + _loc8_;
-               if (_costs[_loc6_])
+               gridKey = xIdx * 1000 + yIdx;
+               if (_costs[gridKey])
                {
-                  _loc10_ = int(_costs[_loc6_].cost);
-                  _costs[_loc6_].cost += param3;
-                  if (_costs[_loc6_].cost < 2)
+                  cost = int(_costs[gridKey].cost);
+                  _costs[gridKey].cost += regionCost;
+                  if (_costs[gridKey].cost < 2)
                   {
-                     _costs[_loc6_].cost = 2;
+                     _costs[gridKey].cost = 2;
                   }
                }
-               _loc8_ += 1;
+               yIdx += 1;
             }
-            _loc7_ += 1;
+            xIdx += 1;
          }
-         return _loc9_;
+         return gridRegion;
       }
 
-      public static function RegisterBuilding(param1:Rectangle, param2:BFOUNDATION, param3:Boolean):void
+      public static function RegisterBuilding(region:Rectangle, building:BFOUNDATION, register:Boolean):void
       {
-         var _loc4_:Point = null;
-         var _loc5_:int = 0;
-         var _loc6_:int = 0;
-         var _loc7_:int = 0;
-         _loc4_ = GlobalLocal(FromISO(new Point(param1.x, param1.y)));
-         param1.width *= 0.1;
-         param1.height *= 0.1;
-         _loc6_ = _loc4_.x;
-         while (_loc6_ < _loc4_.x + param1.width)
+         var gridEndPoint:Point = null;
+         var gridKey:int = 0;
+         var xIdx:int = 0;
+         var yIdx:int = 0;
+         gridEndPoint = GlobalLocal(FromISO(new Point(region.x, region.y)));
+         region.width *= 0.1;
+         region.height *= 0.1;
+         xIdx = gridEndPoint.x;
+         while (xIdx < gridEndPoint.x + region.width)
          {
-            _loc7_ = _loc4_.y;
-            while (_loc7_ < _loc4_.y + param1.height)
+            yIdx = gridEndPoint.y;
+            while (yIdx < gridEndPoint.y + region.height)
             {
-               _loc5_ = _loc6_ * 1000 + _loc7_;
-               if (_costs[_loc5_])
+               gridKey = xIdx * 1000 + yIdx;
+               if (_costs[gridKey])
                {
-                  if (param3)
+                  if (register)
                   {
-                     _costs[_loc5_].building = param2;
+                     _costs[gridKey].building = building;
                   }
                   else
                   {
-                     delete _costs[_loc5_].building;
+                     delete _costs[gridKey].building;
                   }
                }
-               _loc7_ += 1;
+               yIdx += 1;
             }
-            _loc6_ += 1;
+            xIdx += 1;
          }
       }
 
       public static function Tick():void
       {
-         var _loc5_:Point = null;
-         var _loc6_:int = 0;
-         var _loc7_:int = 0;
-         var _loc8_:BFOUNDATION = null;
-         var _loc9_:Array = null;
-         var _loc10_:Vector.<Object> = null;
-         var _loc1_:int = getTimer();
-         var _loc2_:int = 0;
-         var _loc3_:int = 0;
-         var _loc4_:int = 0;
+         var buildingPoint:Point = null;
+         var widthIdx:int = 0;
+         var heightIdx:int = 0;
+         var building:BFOUNDATION = null;
+         var regionCostArray:Array = null;
+         var allBuildings:Vector.<Object> = null;
+         var startTime:int = getTimer();
+         var elapsedTime:int = 0;
+         var elapsedTime2:int = 0;
+         var elapsedTime3:int = 0;
          if (_resetRequested)
          {
             _resetRequested = false;
-            _loc5_ = new Point(0, 0);
+            buildingPoint = new Point(0, 0);
             Clear();
-            _loc6_ = 0;
-            while (_loc6_ < _gridWidth)
+            widthIdx = 0;
+            while (widthIdx < _gridWidth)
             {
-               _loc7_ = 0;
-               while (_loc7_ < _gridHeight)
+               heightIdx = 0;
+               while (heightIdx < _gridHeight)
                {
-                  _costs[_loc6_ * 1000 + _loc7_].cost = 10;
-                  _loc7_ += 1;
+                  _costs[widthIdx * 1000 + heightIdx].cost = 10;
+                  heightIdx += 1;
                }
-               _loc6_ += 1;
+               widthIdx += 1;
             }
-            _loc2_ = getTimer() - _loc1_;
-            _loc10_ = InstanceManager.getInstancesByClass(BFOUNDATION);
-            for each (_loc8_ in _loc10_)
+            elapsedTime = getTimer() - startTime;
+            allBuildings = InstanceManager.getInstancesByClass(BFOUNDATION);
+            for each (building in allBuildings)
             {
-               if (Boolean(_loc8_._gridCost) && (_loc8_.health > 0 || _loc8_ is BMUSHROOM))
+               if (Boolean(building._gridCost) && (building.health > 0 || building is BMUSHROOM))
                {
-                  for each (_loc9_ in _loc8_._gridCost)
+                  for each (regionCostArray in building._gridCost)
                   {
-                     _loc5_.x = _loc8_.x;
-                     _loc5_.y = _loc8_.y;
-                     PATHING.Cost(_loc5_, _loc9_[0], _loc9_[1]);
+                     buildingPoint.x = building.x;
+                     buildingPoint.y = building.y;
+                     PATHING.Cost(buildingPoint, regionCostArray[0], regionCostArray[1]);
                   }
                }
             }
-            _loc3_ = getTimer() - _loc1_;
-            _loc4_ = getTimer() - _loc1_;
+            elapsedTime2 = getTimer() - startTime;
+            elapsedTime3 = getTimer() - startTime;
          }
          ProcessFlood();
       }
 
-      public static function GetPath(param1:Point, param2:Rectangle, param3:Function = null, param4:Boolean = false, param5:BFOUNDATION = null):Array
+      public static function GetPath(startPoint:Point, targetRect:Rectangle, callback:Function = null, ignoreWalls:Boolean = false, targetBuilding:BFOUNDATION = null):Array
       {
-         var _loc6_:Point = null;
-         var _loc7_:Rectangle = null;
-         var _loc8_:Point = null;
-         var _loc9_:Point = null;
-         var _loc10_:Point = null;
-         _loc9_ = param1;
-         _loc10_ = new Point(param2.x, param2.y);
-         param1.x = int(param1.x);
-         param1.y = int(param1.y);
-         param2.x = int(param2.x);
-         param2.y = int(param2.y);
-         _loc6_ = FromISO(param1);
-         _loc8_ = FromISO(new Point(param2.x, param2.y));
-         _loc7_ = param2;
-         _loc7_.x = _loc8_.x;
-         _loc7_.y = _loc8_.y;
-         _loc6_ = GlobalLocal(_loc6_);
-         _loc8_ = GlobalLocal(new Point(_loc7_.x, _loc7_.y));
-         _loc7_.x = int(_loc8_.x);
-         _loc7_.y = int(_loc8_.y);
-         _loc7_.width *= 0.1;
-         _loc7_.height *= 0.1;
-         GetPathB(_loc6_, _loc7_, _loc9_, _loc10_, param3, param4, param5);
+         var gridStart:Point = null;
+         var gridTargetRect:Rectangle = null;
+         var gridTargetPoint:Point = null;
+         var originalStart:Point = null;
+         var originalTarget:Point = null;
+         originalStart = startPoint;
+         originalTarget = new Point(targetRect.x, targetRect.y);
+         startPoint.x = int(startPoint.x);
+         startPoint.y = int(startPoint.y);
+         targetRect.x = int(targetRect.x);
+         targetRect.y = int(targetRect.y);
+         gridStart = FromISO(startPoint);
+         gridTargetPoint = FromISO(new Point(targetRect.x, targetRect.y));
+         gridTargetRect = targetRect;
+         gridTargetRect.x = gridTargetPoint.x;
+         gridTargetRect.y = gridTargetPoint.y;
+         gridStart = GlobalLocal(gridStart);
+         gridTargetPoint = GlobalLocal(new Point(gridTargetRect.x, gridTargetRect.y));
+         gridTargetRect.x = int(gridTargetPoint.x);
+         gridTargetRect.y = int(gridTargetPoint.y);
+         gridTargetRect.width *= 0.1;
+         gridTargetRect.height *= 0.1;
+         GetPathB(gridStart, gridTargetRect, originalStart, originalTarget, callback, ignoreWalls, targetBuilding);
          return [];
       }
 
-      public static function GetPathB(param1:Point, param2:Rectangle, param3:Point, param4:Point, param5:Function = null, param6:Boolean = false, param7:BFOUNDATION = null):void
+      public static function GetPathB(gridStart:Point, gridTargetRect:Rectangle, originalStart:Point, originalTarget:Point, callback:Function = null, ignoreWalls:Boolean = false, targetBuilding:BFOUNDATION = null):void
       {
-         var _loc8_:int = 0;
-         var _loc9_:int = 0;
-         var _loc10_:Number = NaN;
-         var _loc11_:Number = NaN;
-         var _loc12_:Number = NaN;
-         var _loc13_:int = 0;
-         var _loc14_:Object = null;
-         var _loc15_:Object = null;
-         var _loc16_:Object = null;
-         var _loc17_:int = 0;
-         var _loc18_:PATHINGfloodobject = null;
-         var _loc23_:int = 0;
-         var _loc24_:PATHINGobject = null;
-         var _loc25_:PATHINGobject = null;
-         var _loc26_:PATHINGobject = null;
+         var gridKeyTarget:int = 0;
+         var gridKeyStart:int = 0;
+         var angle:Number = NaN;
+         var moveX:Number = NaN;
+         var moveY:Number = NaN;
+         var attempts:int = 0;
+         var edgeArr:Object = null;
+         var floodFillArr:Object = null;
+         var startArr:Object = null;
+         var widthIdx:int = 0;
+         var newFlood:PATHINGfloodobject = null;
+         var heightIdx:int = 0;
+         var initEdgeSpace:PATHINGobject = null;
+         var initFillSpace:PATHINGobject = null;
+         var initStartSpace:PATHINGobject = null;
          RenderCosts();
-         param1.x = int(param1.x);
-         param1.y = int(param1.y);
-         param2.x = int(param2.x);
-         param2.y = int(param2.y);
-         _loc9_ = param1.x * 1000 + param1.y;
-         _loc8_ = param2.x * 1000 + param2.y;
-         if (!_costs[_loc9_] && !_costs[_loc8_])
+         gridStart.x = int(gridStart.x);
+         gridStart.y = int(gridStart.y);
+         gridTargetRect.x = int(gridTargetRect.x);
+         gridTargetRect.y = int(gridTargetRect.y);
+         gridKeyStart = gridStart.x * 1000 + gridStart.y;
+         gridKeyTarget = gridTargetRect.x * 1000 + gridTargetRect.y;
+         if (!_costs[gridKeyStart] && !_costs[gridKeyTarget])
          {
-            param5([param3, param4], param7);
-            RenderPath([param3, param4]);
+            callback([originalStart, originalTarget], targetBuilding);
+            RenderPath([originalStart, originalTarget]);
             return;
          }
-         if (!_costs[_loc9_])
+         if (!_costs[gridKeyStart])
          {
-            _loc10_ = 90 - Math.atan2(param2.y - param1.y, param2.x - param1.x) * 57.2957795;
-            _loc11_ = Math.sin(_loc10_ * 0.0174532925) * 5;
-            _loc12_ = Math.cos(_loc10_ * 0.0174532925) * 5;
-            _loc13_ = 0;
-            while (!_costs[_loc9_] && _loc13_ < 2000)
+            angle = 90 - Math.atan2(gridTargetRect.y - gridStart.y, gridTargetRect.x - gridStart.x) * 57.2957795;
+            moveX = Math.sin(angle * 0.0174532925) * 5;
+            moveY = Math.cos(angle * 0.0174532925) * 5;
+            attempts = 0;
+            while (!_costs[gridKeyStart] && attempts < 2000)
             {
-               _loc13_ += 1;
-               param1.x += _loc11_;
-               param1.y += _loc12_;
-               _loc9_ = int(param1.x) * 1000 + int(param1.y);
+               attempts += 1;
+               gridStart.x += moveX;
+               gridStart.y += moveY;
+               gridKeyStart = int(gridStart.x) * 1000 + int(gridStart.y);
             }
-            param1.x = int(param1.x);
-            param1.y = int(param1.y);
+            gridStart.x = int(gridStart.x);
+            gridStart.y = int(gridStart.y);
          }
-         if (!_costs[_loc8_])
+         if (!_costs[gridKeyTarget])
          {
-            param5([param3, param4], param7);
-            RenderPath([param3, param4]);
+            callback([originalStart, originalTarget], targetBuilding);
+            RenderPath([originalStart, originalTarget]);
             return;
          }
-         if (param6)
+         if (ignoreWalls)
          {
-            _loc8_ += 1000000;
+            gridKeyTarget += 1000000;
          }
-         if (!_floods[_loc8_])
+         if (!_floods[gridKeyTarget])
          {
-            _loc14_ = {};
-            _loc15_ = {};
-            _loc16_ = {};
-            _loc17_ = 0;
-            while (_loc17_ < param2.width)
+            edgeArr = {};
+            floodFillArr = {};
+            startArr = {};
+            widthIdx = 0;
+            while (widthIdx < gridTargetRect.width)
             {
-               _loc23_ = 0;
-               while (_loc23_ < param2.height)
+               heightIdx = 0;
+               while (heightIdx < gridTargetRect.height)
                {
-                  _loc24_ = new PATHINGobject();
-                  _loc24_.pointX = param2.x + _loc17_;
-                  _loc24_.pointY = param2.y + _loc23_;
-                  _loc24_.depth = 0;
-                  _loc14_[param2.x + _loc17_ * 1000 + param2.y + _loc23_] = _loc24_;
-                  _loc25_ = new PATHINGobject();
-                  _loc25_.pointX = param2.x + _loc17_;
-                  _loc25_.pointY = param2.y + _loc23_;
-                  _loc25_.depth = 0;
-                  _loc15_[param2.x + _loc17_ * 1000 + param2.y + _loc23_] = _loc25_;
-                  _loc26_ = new PATHINGobject();
-                  _loc26_.pointX = param2.x + _loc17_;
-                  _loc26_.pointY = param2.y + _loc23_;
-                  _loc26_.depth = 0;
-                  _loc16_[param2.x + _loc17_ * 1000 + param2.y + _loc23_] = _loc26_;
-                  _loc23_ += 1;
+                  initEdgeSpace = new PATHINGobject();
+                  initEdgeSpace.pointX = gridTargetRect.x + widthIdx;
+                  initEdgeSpace.pointY = gridTargetRect.y + heightIdx;
+                  initEdgeSpace.depth = 0;
+                  edgeArr[gridTargetRect.x + widthIdx * 1000 + gridTargetRect.y + heightIdx] = initEdgeSpace;
+                  initFillSpace = new PATHINGobject();
+                  initFillSpace.pointX = gridTargetRect.x + widthIdx;
+                  initFillSpace.pointY = gridTargetRect.y + heightIdx;
+                  initFillSpace.depth = 0;
+                  floodFillArr[gridTargetRect.x + widthIdx * 1000 + gridTargetRect.y + heightIdx] = initFillSpace;
+                  initStartSpace = new PATHINGobject();
+                  initStartSpace.pointX = gridTargetRect.x + widthIdx;
+                  initStartSpace.pointY = gridTargetRect.y + heightIdx;
+                  initStartSpace.depth = 0;
+                  startArr[gridTargetRect.x + widthIdx * 1000 + gridTargetRect.y + heightIdx] = initStartSpace;
+                  heightIdx += 1;
                }
-               _loc17_ += 1;
+               widthIdx += 1;
             }
-            _loc18_ = new PATHINGfloodobject();
-            _loc18_.flood = _loc15_;
-            _loc18_.edge = _loc14_;
-            _loc18_.start = _loc16_;
-            _loc18_.ignoreWalls = param6;
-            _floods[_loc8_] = _loc18_;
+            newFlood = new PATHINGfloodobject();
+            newFlood.flood = floodFillArr;
+            newFlood.edge = edgeArr;
+            newFlood.start = startArr;
+            newFlood.ignoreWalls = ignoreWalls;
+            _floods[gridKeyTarget] = newFlood;
          }
-         if (!_floods[_loc8_].startpoints[_loc9_])
+         if (!_floods[gridKeyTarget].startpoints[gridKeyStart])
          {
-            _floods[_loc8_].startpoints[_loc9_] = {
-                  "startID": _loc9_,
+            _floods[gridKeyTarget].startpoints[gridKeyStart] = {
+                  "startID": gridKeyStart,
                   "callbackfunctions": [],
-                  "startPoint": param1
+                  "startPoint": gridStart
                };
          }
-         _floods[_loc8_].startpoints[_loc9_].callbackfunctions.push([param5, param6, param7, param4]);
-         _floods[_loc8_].pending += 1;
+         _floods[gridKeyTarget].startpoints[gridKeyStart].callbackfunctions.push([callback, ignoreWalls, targetBuilding, originalTarget]);
+         _floods[gridKeyTarget].pending += 1;
       }
 
       /**
@@ -422,45 +422,45 @@ package com.monsters.pathing
                      {
                         currentX = currentEdgePoint.pointX;
                         currentY = currentEdgePoint.pointY;
-                        neighborY = currentX - 1;
+                        neighborX = currentX - 1;
 
                         // Check all neighboring points
-                        while (neighborY < currentX + 2)
+                        while (neighborX < currentX + 2)
                         {
-                           neighborKey = currentY - 1;
-                           while (neighborKey < currentY + 2)
+                           neighborY = currentY - 1;
+                           while (neighborY < currentY + 2)
                            {
                               // Skip the current point itself
-                              if (!(neighborY == currentX && neighborKey == currentY))
+                              if (!(neighborX == currentX && neighborY == currentY))
                               {
-                                 neighborX = neighborY * 1000 + neighborKey;
+                                 neighborKey = neighborX * 1000 + neighborY;
 
                                  // Check if the neighbor is already part of the flood
-                                 if (!currentFloodObject.flood[neighborX])
+                                 if (!currentFloodObject.flood[neighborKey])
                                  {
 
                                     // If the neighbor hasn't been added yet, evaluate it
-                                    if (!newEdge[neighborX])
+                                    if (!newEdge[neighborKey])
                                     {
-                                       if (_costs[neighborX])
+                                       if (_costs[neighborKey])
                                        {
                                           expandedPointsCount += 1;
                                           newFloodPoint = new PATHINGobject();
-                                          newFloodPoint.pointX = neighborY;
-                                          newFloodPoint.pointY = neighborKey;
+                                          newFloodPoint.pointX = neighborX;
+                                          newFloodPoint.pointY = neighborY;
 
                                           // Calculate movement cost
-                                          movementCost = int(_costs[neighborX].cost);
+                                          movementCost = int(_costs[neighborKey].cost);
                                           if (currentFloodObject.ignoreWalls)
                                           {
-                                             if (_costs[neighborX].building)
+                                             if (_costs[neighborKey].building)
                                              {
                                                 movementCost = 20;
                                              }
                                           }
 
                                           // Increase cost for diagonal movement
-                                          if (neighborY != currentEdgePoint.pointX && neighborKey != currentEdgePoint.pointY)
+                                          if (neighborX != currentEdgePoint.pointX && neighborY != currentEdgePoint.pointY)
                                           {
                                              movementCost *= 1.5;
                                           }
@@ -473,17 +473,17 @@ package com.monsters.pathing
                                           }
 
                                           // Add the new point to the flood and edge
-                                          newEdge[neighborX] = newFloodPoint;
-                                          currentFloodObject.flood[neighborX] = newFloodPoint;
+                                          newEdge[neighborKey] = newFloodPoint;
+                                          currentFloodObject.flood[neighborKey] = newFloodPoint;
                                           currentFloodObject.edgeLength += 1;
                                           pointsAddedCount += 1;
                                        }
                                     }
                                  }
                               }
-                              neighborKey += 1;
+                              neighborY += 1;
                            }
-                           neighborY += 1;
+                           neighborX += 1;
                         }
                      }
                      else
@@ -507,181 +507,181 @@ package com.monsters.pathing
          }
       }
 
-      private static function CheckStartReached(param1:PATHINGfloodobject):int
+      private static function CheckStartReached(floodFill:PATHINGfloodobject):int
       {
-         var _loc3_:Object = null;
-         var _loc4_:Array = null;
-         var _loc2_:int = 0;
-         for each (_loc3_ in param1.startpoints)
+         var pathingStart:Object = null;
+         var callback:Array = null;
+         var found:int = 0;
+         for each (pathingStart in floodFill.startpoints)
          {
-            if (Boolean(_loc3_) && Boolean(param1.flood[_loc3_.startID]))
+            if (Boolean(pathingStart) && Boolean(floodFill.flood[pathingStart.startID]))
             {
-               for each (_loc4_ in _loc3_.callbackfunctions)
+               for each (callback in pathingStart.callbackfunctions)
                {
-                  Path(param1.flood, _loc3_.startID, _loc4_[0], _loc4_[1], _loc4_[2], _loc4_[3]);
-                  --param1.pending;
-                  _loc2_ += 1;
+                  Path(floodFill.flood, pathingStart.startID, callback[0], callback[1], callback[2], callback[3]);
+                  --floodFill.pending;
+                  found += 1;
                }
-               _loc3_.callbackfunctions = [];
-               delete param1.startpoints[_loc3_.startID];
+               pathingStart.callbackfunctions = [];
+               delete floodFill.startpoints[pathingStart.startID];
             }
          }
-         return _loc2_;
+         return found;
       }
 
-      public static function Path(param1:Object, param2:int, param3:Function, param4:Boolean = false, param5:BFOUNDATION = null, param6:Point = null):void
+      public static function Path(floodFill:Object, startId:int, callback:Function, ignoreWalls:Boolean = false, targetBuilding:BFOUNDATION = null, originalTarget:Point = null):void
       {
-         var _loc8_:int = 0;
-         var _loc9_:int = 0;
-         var _loc12_:int = 0;
-         var _loc13_:Point = null;
-         var _loc14_:int = 0;
-         var _loc15_:int = 0;
-         var _loc16_:int = 0;
-         var _loc17_:Boolean = false;
-         var _loc18_:BFOUNDATION = null;
-         var _loc19_:Boolean = false;
-         var _loc20_:int = 0;
-         var _loc21_:int = 0;
-         var _loc22_:int = 0;
-         var _loc23_:int = 0;
-         var _loc24_:Array = null;
-         var _loc25_:int = 0;
-         var _loc26_:int = 0;
-         var _loc27_:Point = null;
-         var _loc28_:int = 0;
-         var _loc7_:int = getTimer();
-         var _loc10_:Array = [];
-         var _loc11_:int = 0;
-         if (param1[param2])
+         var startX:int = 0;
+         var startY:int = 0;
+         var gridKey:int = 0;
+         var gridPoint:Point = null;
+         var currentDepth:int = 0;
+         var currentX:int = 0;
+         var currentY:int = 0;
+         var foundLowerDepth:Boolean = false;
+         var wall:BFOUNDATION = null;
+         var buildPath:Boolean = false;
+         var offsetX:int = 0;
+         var offsetY:int = 0;
+         var repeat:int = 0;
+         var nearbyOffsetX:int = 0;
+         var nearbyGridSpaces:Array = null;
+         var nearbyOffsetY:int = 0;
+         var nearbyGridKey:int = 0;
+         var nearbyPoint:Point = null;
+         var randIdx:int = 0;
+         var startTime:int = getTimer();
+         var path:Array = [];
+         var numWaypoints:int = 0;
+         if (floodFill[startId])
          {
-            _loc8_ = int(param1[param2].pointX);
-            _loc9_ = int(param1[param2].pointY);
-            _loc14_ = int(param1[param2].depth);
-            _loc10_[_loc11_] = ToISO(LocalGlobal(new Point(_loc8_, _loc9_)), 0);
-            _loc11_ += 1;
-            _loc19_ = true;
+            startX = int(floodFill[startId].pointX);
+            startY = int(floodFill[startId].pointY);
+            currentDepth = int(floodFill[startId].depth);
+            path[numWaypoints] = ToISO(LocalGlobal(new Point(startX, startY)), 0);
+            numWaypoints += 1;
+            buildPath = true;
          }
-         _loc13_ = new Point(0, 0);
-         while (_loc19_)
+         gridPoint = new Point(0, 0);
+         while (buildPath)
          {
-            _loc19_ = false;
-            _loc20_ = -1;
-            while (_loc20_ < 2)
+            buildPath = false;
+            offsetX = -1;
+            while (offsetX < 2)
             {
-               _loc21_ = -1;
-               while (_loc21_ < 2)
+               offsetY = -1;
+               while (offsetY < 2)
                {
-                  if (!(_loc20_ == 0 && _loc21_ == 0))
+                  if (!(offsetX == 0 && offsetY == 0))
                   {
-                     _loc13_.x = _loc8_ + _loc20_;
-                     _loc13_.y = _loc9_ + _loc21_;
-                     _loc12_ = _loc13_.x * 1000 + _loc13_.y;
-                     if (param1[_loc12_] && param1[_loc12_].depth < _loc14_ && param1[_loc12_].depth > 0)
+                     gridPoint.x = startX + offsetX;
+                     gridPoint.y = startY + offsetY;
+                     gridKey = gridPoint.x * 1000 + gridPoint.y;
+                     if (floodFill[gridKey] && floodFill[gridKey].depth < currentDepth && floodFill[gridKey].depth > 0)
                      {
-                        _loc15_ = _loc13_.x;
-                        _loc16_ = _loc13_.y;
-                        _loc17_ = true;
-                        _loc14_ = int(param1[_loc12_].depth);
-                        _loc19_ = true;
-                        if (!param4 && _loc11_ > 1)
+                        currentX = gridPoint.x;
+                        currentY = gridPoint.y;
+                        foundLowerDepth = true;
+                        currentDepth = int(floodFill[gridKey].depth);
+                        buildPath = true;
+                        if (!ignoreWalls && numWaypoints > 1)
                         {
-                           if (_costs[_loc12_])
+                           if (_costs[gridKey])
                            {
-                              _loc18_ = _costs[_loc12_].building;
-                              if (_loc18_)
+                              wall = _costs[gridKey].building;
+                              if (wall)
                               {
-                                 if (_loc18_.health > 0)
+                                 if (wall.health > 0)
                                  {
-                                    _loc22_ = (_loc18_._lvl.Get() ^ 2) + 1;
-                                    _loc23_ = 0;
-                                    while (_loc23_ < _loc22_)
+                                    repeat = (wall._lvl.Get() ^ 2) + 1;
+                                    nearbyOffsetX = 0;
+                                    while (nearbyOffsetX < repeat)
                                     {
-                                       _loc10_.push(_loc10_[_loc10_.length - 1]);
-                                       _loc23_++;
+                                       path.push(path[path.length - 1]);
+                                       nearbyOffsetX++;
                                     }
-                                    param3(_loc10_, _loc18_);
-                                    RenderPath(_loc10_);
+                                    callback(path, wall);
+                                    RenderPath(path);
                                     return;
                                  }
                               }
                            }
                         }
-                        if (!param4 && _loc14_ < 20)
+                        if (!ignoreWalls && currentDepth < 20)
                         {
                            if (Math.random() < 0.6)
                            {
-                              _loc24_ = new Array();
-                              _loc23_ = -3;
-                              while (_loc23_ < 4)
+                              nearbyGridSpaces = new Array();
+                              nearbyOffsetX = -3;
+                              while (nearbyOffsetX < 4)
                               {
-                                 _loc25_ = -3;
-                                 while (_loc25_ < 4)
+                                 nearbyOffsetY = -3;
+                                 while (nearbyOffsetY < 4)
                                  {
-                                    if (Boolean(_loc23_) && Boolean(_loc25_))
+                                    if (Boolean(nearbyOffsetX) && Boolean(nearbyOffsetY))
                                     {
-                                       _loc26_ = (_loc15_ + _loc23_) * 1000 + _loc16_ + _loc25_;
-                                       if (param1[_loc26_])
+                                       nearbyGridKey = (currentX + nearbyOffsetX) * 1000 + currentY + nearbyOffsetY;
+                                       if (floodFill[nearbyGridKey])
                                        {
-                                          if (param1[_loc26_].depth < 20 && param1[_loc26_].depth > 0)
+                                          if (floodFill[nearbyGridKey].depth < 20 && floodFill[nearbyGridKey].depth > 0)
                                           {
-                                             _loc27_ = new Point(_loc15_ + _loc23_, _loc16_ + _loc25_);
-                                             _loc24_.push(_loc27_);
+                                             nearbyPoint = new Point(currentX + nearbyOffsetX, currentY + nearbyOffsetY);
+                                             nearbyGridSpaces.push(nearbyPoint);
                                           }
                                        }
                                     }
-                                    _loc25_++;
+                                    nearbyOffsetY++;
                                  }
-                                 _loc23_++;
+                                 nearbyOffsetX++;
                               }
-                              if (_loc24_.length > 0)
+                              if (nearbyGridSpaces.length > 0)
                               {
-                                 _loc28_ = int(Math.random() * _loc24_.length);
-                                 _loc15_ = int(_loc24_[_loc28_].x);
-                                 _loc16_ = int(_loc24_[_loc28_].y);
+                                 randIdx = int(Math.random() * nearbyGridSpaces.length);
+                                 currentX = int(nearbyGridSpaces[randIdx].x);
+                                 currentY = int(nearbyGridSpaces[randIdx].y);
                               }
                            }
                         }
                      }
                   }
-                  _loc21_ += 1;
+                  offsetY += 1;
                }
-               _loc20_ += 1;
+               offsetX += 1;
             }
-            if (_loc17_)
+            if (foundLowerDepth)
             {
-               _loc8_ = _loc15_;
-               _loc9_ = _loc16_;
-               _loc10_[_loc11_] = ToISO(LocalGlobal(Jiggle(_loc15_, _loc16_)), 0);
-               _loc11_ += 1;
+               startX = currentX;
+               startY = currentY;
+               path[numWaypoints] = ToISO(LocalGlobal(Jiggle(currentX, currentY)), 0);
+               numWaypoints += 1;
             }
          }
-         if (param6)
+         if (originalTarget)
          {
-            _loc13_ = GlobalLocal(FromISO(param6));
-            if (!param5 || !_costs[_loc13_.x * 1000 + _loc13_.y])
+            gridPoint = GlobalLocal(FromISO(originalTarget));
+            if (!targetBuilding || !_costs[gridPoint.x * 1000 + gridPoint.y])
             {
-               _loc10_[_loc11_] = param6;
+               path[numWaypoints] = originalTarget;
             }
          }
          RenderFlood();
-         RenderPath(_loc10_);
-         param3(_loc10_, param5);
+         RenderPath(path);
+         callback(path, targetBuilding);
       }
 
-      private static function Jiggle(param1:int, param2:int):Point
+      private static function Jiggle(x:int, y:int):Point
       {
-         return new Point(param1 + (Math.random() - 0.5) * 0.4, param2 + (Math.random() - 0.5) * 0.4);
+         return new Point(x + (Math.random() - 0.5) * 0.4, y + (Math.random() - 0.5) * 0.4);
       }
 
-      public static function GetBuildingFromISO(param1:Point):BFOUNDATION
+      public static function GetBuildingFromISO(isoPoint:Point):BFOUNDATION
       {
-         var _loc2_:Point = FromISO(param1);
-         var _loc3_:Point = GlobalLocal(_loc2_);
-         var _loc4_:int = 1000 * int(_loc3_.x) + int(_loc3_.y);
-         if (_costs[_loc4_])
+         var cartPoint:Point = FromISO(isoPoint);
+         var gridPoint:Point = GlobalLocal(cartPoint);
+         var gridKey:int = 1000 * int(gridPoint.x) + int(gridPoint.y);
+         if (_costs[gridKey])
          {
-            return _costs[_loc4_].building;
+            return _costs[gridKey].building;
          }
          return null;
       }
@@ -757,54 +757,54 @@ package com.monsters.pathing
 
       public static function Cleanup():void
       {
-         var _loc1_:* = undefined;
-         for each (_loc1_ in _costs)
+         var gridSpace:* = undefined;
+         for each (gridSpace in _costs)
          {
-            delete _costs[_loc1_];
+            delete _costs[gridSpace];
          }
          _costs = {};
          _floods = {};
       }
 
-      public static function LineOfSight(param1:int, param2:int, param3:int, param4:int, param5:BFOUNDATION = null, param6:Boolean = false):Boolean
+      public static function LineOfSight(startX:int, startY:int, targetX:int, targetY:int, targetBuilding:BFOUNDATION = null, includeAllBuildings:Boolean = false):Boolean
       {
-         var _loc7_:int = 0;
-         var _loc8_:int = 0;
-         var _loc9_:BFOUNDATION = null;
-         var _loc16_:int = 0;
-         var _loc18_:int = 0;
-         var _loc10_:Point = GlobalLocal(FromISO(new Point(param1, param2)));
-         var _loc11_:Point = GlobalLocal(FromISO(new Point(param3, param4)));
-         param1 = _loc10_.x;
-         param2 = _loc10_.y;
-         param3 = _loc11_.x;
-         param4 = _loc11_.y;
-         var _loc12_:Number = param3 - param1;
-         var _loc13_:Number = param4 - param2;
-         var _loc14_:Number = Math.atan2(_loc13_, _loc12_) * c180PI;
-         var _loc15_:Number = Math.sqrt(_loc12_ * _loc12_ + _loc13_ * _loc13_);
-         _loc7_ = 0;
-         while (_loc7_ < _loc15_)
+         var currentDistance:int = 0;
+         var gridKey:int = 0;
+         var wall:BFOUNDATION = null;
+         var gridX:int = 0;
+         var gridY:int = 0;
+         var gridStart:Point = GlobalLocal(FromISO(new Point(startX, startY)));
+         var gridTarget:Point = GlobalLocal(FromISO(new Point(targetX, targetY)));
+         startX = gridStart.x;
+         startY = gridStart.y;
+         targetX = gridTarget.x;
+         targetY = gridTarget.y;
+         var difX:Number = targetX - startX;
+         var difY:Number = targetY - startY;
+         var angle:Number = Math.atan2(difY, difX) * c180PI;
+         var totalDistance:Number = Math.sqrt(difX * difX + difY * difY);
+         currentDistance = 0;
+         while (currentDistance < totalDistance)
          {
-            _loc16_ = param1 + Math.cos(_loc14_ * cPI180) * _loc7_;
-            _loc18_ = param2 + Math.sin(_loc14_ * cPI180) * _loc7_;
-            _loc8_ = _loc16_ * 1000 + _loc18_;
-            if (!_costs[_loc8_])
+            gridX = startX + Math.cos(angle * cPI180) * currentDistance;
+            gridY = startY + Math.sin(angle * cPI180) * currentDistance;
+            gridKey = gridX * 1000 + gridY;
+            if (!_costs[gridKey])
             {
                return true;
             }
-            _loc9_ = _costs[_loc8_].building;
-            if (Boolean(_loc9_) && _loc9_.health > 0)
+            wall = _costs[gridKey].building;
+            if (Boolean(wall) && wall.health > 0)
             {
-               if (!(Boolean(param5) && _loc9_ == param5))
+               if (!(Boolean(targetBuilding) && wall == targetBuilding))
                {
-                  if (_loc9_._type == 17 || param6)
+                  if (wall._type == 17 || includeAllBuildings)
                   {
                      return false;
                   }
                }
             }
-            _loc7_++;
+            currentDistance++;
          }
          return true;
       }
@@ -878,38 +878,38 @@ package com.monsters.pathing
          return _loc4_;
       }
 
-      private static function GlobalLocal(param1:Point):Point
+      private static function GlobalLocal(toGridPoint:Point):Point
       {
-         param1.x *= 0.1;
-         param1.y *= 0.1;
-         param1.x += _gridWidth >> 1;
-         param1.y += _gridHeight >> 1;
-         param1.x = int(param1.x);
-         param1.y = int(param1.y);
-         return param1;
+         toGridPoint.x *= 0.1;
+         toGridPoint.y *= 0.1;
+         toGridPoint.x += _gridWidth >> 1;
+         toGridPoint.y += _gridHeight >> 1;
+         toGridPoint.x = int(toGridPoint.x);
+         toGridPoint.y = int(toGridPoint.y);
+         return toGridPoint;
       }
 
-      public static function LocalGlobal(param1:Point):Point
+      public static function LocalGlobal(toCartPoint:Point):Point
       {
-         param1.x -= _gridWidth >> 1;
-         param1.y -= _gridHeight >> 1;
-         param1.x *= 10;
-         param1.y *= 10;
-         return param1;
+         toCartPoint.x -= _gridWidth >> 1;
+         toCartPoint.y -= _gridHeight >> 1;
+         toCartPoint.x *= 10;
+         toCartPoint.y *= 10;
+         return toCartPoint;
       }
 
-      public static function ToISO(param1:Point, param2:int):Point
+      public static function ToISO(cartPoint:Point, offset:int):Point
       {
-         var _loc3_:int = (param1.x + param1.y) * 0.5 - param2;
-         var _loc5_:int = param1.x - param1.y;
-         return new Point(_loc5_, _loc3_);
+         var isoY:int = (cartPoint.x + cartPoint.y) * 0.5 - offset;
+         var isoX:int = cartPoint.x - cartPoint.y;
+         return new Point(isoX, isoY);
       }
 
-      public static function FromISO(param1:Point):Point
+      public static function FromISO(isoPoint:Point):Point
       {
-         var _loc2_:int = param1.y - param1.x * 0.5;
-         var _loc3_:int = param1.x * 0.5 + param1.y;
-         return new Point(_loc3_, _loc2_);
+         var cartY:int = isoPoint.y - isoPoint.x * 0.5;
+         var cartX:int = isoPoint.x * 0.5 + isoPoint.y;
+         return new Point(cartX, cartY);
       }
 
       public static function PlotRandom(param1:MouseEvent):void
