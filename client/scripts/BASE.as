@@ -578,7 +578,6 @@ package
       {
          var _loc15_:int = 0;
          GLOBAL._baseLoads += 1;
-         var _loc6_:int = getTimer();
          _loading = true;
          _baseID = baseId;
          _baseLevel = 0;
