@@ -1176,16 +1176,25 @@ package com.monsters.monsters
       {
          var building:BFOUNDATION = null;
          var startPoint:Point = PATHING.FromISO(this._tmpPoint);
-         var allTargets:Array = [];
+         var closestBuilding:Object = null;
+         var secondClosestBuilding:Object = null;
          this._looking = true;
-         var addTarget:Function = function(building)
+         var checkTarget:Function = function(building)
          {
             var targetPoint:Point = GRID.FromISO(building._mc.x,building._mc.y + building._middle);
-            var distance:int = GLOBAL.QuickDistance(startPoint,targetPoint) - building._middle;
-            allTargets.push({
-               "building":building,
-               "distance":distance
-            });
+            var distance:Number = GLOBAL.QuickDistance(startPoint,targetPoint) - building._middle;
+            if(!closestBuilding || distance < closestBuilding.distance)
+            {
+               if(closestBuilding)
+               {
+                  secondClosestBuilding = {"building":closestBuilding.building, "distance":closestBuilding.distance};
+               }
+               closestBuilding = {"building":building, "distance":distance};
+            }
+            else if(!secondClosestBuilding || distance < secondClosestBuilding.distance)
+            {
+               secondClosestBuilding = {"building":building, "distance":distance};
+            }
          };
          // Preferred target is walls
          if(targetGroup == 2)
@@ -1194,7 +1203,7 @@ package com.monsters.monsters
             {
                if(!building._destroyed && building.health > 0)
                {
-                  addTarget(building);
+                  checkTarget(building);
                }
             }
          }
@@ -1205,7 +1214,7 @@ package com.monsters.monsters
             {
                if(building.health > 0 && building is ILootable && !building._looted)
                {
-                  addTarget(building);
+                  checkTarget(building);
                }
             }
          }
@@ -1219,12 +1228,12 @@ package com.monsters.monsters
                   var bunker:* = building;
                   if(bunker.health > 0 && (bunker._used > 0 || bunker._monstersDispatchedTotal > 0))
                   {
-                     addTarget(building);
+                     checkTarget(building);
                   }
                }
                else if(building._class != "trap" && building.health > 0 && !(building as BTOWER).isJard)
                {
-                  addTarget(building);
+                  checkTarget(building);
                }
             }
          }
@@ -1264,13 +1273,13 @@ package com.monsters.monsters
                   }
                   if(bunkerUsed)
                   {
-                     addTarget(huntBunker);
+                     checkTarget(huntBunker);
                   }
                }
             }
          }
          // No preferred targets left or targets all
-         if(allTargets.length == 0 || targetGroup == 1)
+         if(!closestBuilding || targetGroup == 1)
          {
             for each(building in BASE._buildingsMain)
             {
@@ -1287,27 +1296,26 @@ package com.monsters.monsters
                         continue;
                      }
                   }
-                  addTarget(building);
+                  checkTarget(building);
                }
             }
          }
-         if(allTargets.length == 0 && !this._targetCreep)
+         if(!closestBuilding && !this._targetCreep)
          {
             // No valid targets left
             this.changeModeRetreat();
          }
          else
          {
-            allTargets.sortOn("distance",Array.NUMERIC);
             // Burrowing monsters move to a random side of their target
             if(this._movement == "burrow")
             {
                this._hasTarget = true;
                this._hasPath = true;
-               var burrowWaypoint:Point = GRID.FromISO(allTargets[0].building._mc.x,allTargets[0].building._mc.y);
+               var burrowWaypoint:Point = GRID.FromISO(closestBuilding.building._mc.x,closestBuilding.building._mc.y);
                var randSide:int = int(Math.random() * 4);
-               var height:int = int(allTargets[0].building._footprint[0].height);
-               var width:int = int(allTargets[0].building._footprint[0].width);
+               var height:int = int(closestBuilding.building._footprint[0].height);
+               var width:int = int(closestBuilding.building._footprint[0].width);
                if(randSide == 0)
                {
                   burrowWaypoint.x += Math.random() * height;
@@ -1330,14 +1338,14 @@ package com.monsters.monsters
                }
                this._waypoints = [GRID.ToISO(burrowWaypoint.x,burrowWaypoint.y,0)];
                this._targetPosition = this._waypoints[0];
-               this._targetBuilding = allTargets[0].building;
+               this._targetBuilding = closestBuilding.building;
             }
             // Flying monsters circle around their target
             else if(this._movement == "fly" || this._movement == "fly_low")
             {
                this._hasTarget = true;
                this._hasPath = true;
-               this._targetBuilding = allTargets[0].building;
+               this._targetBuilding = closestBuilding.building;
                this._targetCenter = this._targetBuilding._position;
                var randAngle:Number = NaN;
                var randRadius:Number = NaN;
@@ -1381,15 +1389,15 @@ package com.monsters.monsters
             }
             else if(GLOBAL._catchup)
             {
-               this.WaypointTo(new Point(allTargets[0].building._mc.x,allTargets[0].building._mc.y),allTargets[0].building);
+               this.WaypointTo(new Point(closestBuilding.building._mc.x,closestBuilding.building._mc.y),closestBuilding.building);
             }
             else
             {
                // Get paths to the closest 2 buildings
-               this.WaypointTo(new Point(allTargets[0].building._mc.x,allTargets[0].building._mc.y),allTargets[0].building);
-               if(allTargets.length > 1)
+               this.WaypointTo(new Point(closestBuilding.building._mc.x,closestBuilding.building._mc.y),closestBuilding.building);
+               if(secondClosestBuilding)
                {
-                  this.WaypointTo(new Point(allTargets[1].building._mc.x,allTargets[1].building._mc.y),allTargets[1].building);
+                  this.WaypointTo(new Point(secondClosestBuilding.building._mc.x,secondClosestBuilding.building._mc.y),secondClosestBuilding.building);
                }
             }
          }
