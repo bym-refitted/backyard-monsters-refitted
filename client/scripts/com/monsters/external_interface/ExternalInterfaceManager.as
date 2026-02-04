@@ -1,25 +1,28 @@
 package com.monsters.external_interface
 {
+    import com.monsters.alliances.ALLIANCES;
+    import flash.external.ExternalInterface;
+    import com.monsters.radio.RADIO;
+    import com.monsters.maproom_manager.MapRoomManager;
+    import com.monsters.enums.EnumYardType;
+
     public class ExternalInterfaceManager
     {
+        private static var _init:Boolean = false;
+
         public function ExternalInterfaceManager()
         {
-            throw new Error("ExternalInterfaceManager is a singleton and cannot be instantiated.");
+            super();
         }
-
-        private static var setupDone:Boolean = false;
 
         /**
          * Sets up the external interface callbacks if ExternalInterface is available.
          * This method should only be called once. Muptiple calls will have no effect after the first setup.
          */
-        public static function SetupCallbacks():void
+        public static function Initialize():void
         {
-            // Note: setupDone is set at the END of this method
-            if (!ExternalInterface.available || setupDone)
-            {
-                return;
-            }
+            if (!ExternalInterface.available || _init) return;
+            _init = true;
 
             ExternalInterface.addCallback("openbase", function(baseLoadParamsStr:String):void
                 {
@@ -112,8 +115,6 @@ package com.monsters.external_interface
                 {
                     GLOBAL.ShowMap();
                 });
-
-            setupDone = true;
         }
     }
 }
