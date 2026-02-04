@@ -814,17 +814,17 @@ package com.monsters.chat
          }
       }
       
-      public function get roomNames() : Array
+      public function get roomNames() : Vector.<String>
       {
          var _loc2_:Room = null;
-         var _loc1_:Array = [];
+         var roomNames:Vector.<String> = new Vector.<String>();
          for each(var _loc5_ in this.roomMap)
          {
             _loc2_ = _loc5_;
             _loc5_;
-            _loc1_.push(_loc2_.name);
+            roomNames.push(_loc2_.name);
          }
-         return _loc1_;
+         return roomNames;
       }
       
       public function get numUsers() : int
