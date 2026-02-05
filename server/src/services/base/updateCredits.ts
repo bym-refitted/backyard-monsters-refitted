@@ -8,6 +8,7 @@ import type { Context } from "koa";
 interface Mushrooms {
   MUSHROOM1: number;
   MUSHROOM2: number;
+  MUSHROOM3: number;
 }
 
 /**
@@ -26,7 +27,7 @@ export const updateCredits = (ctx: Context, save: Save, item: string, quantity: 
   }
 
   // Handle mushrooms
-  const mushroomCredits: Mushrooms = { MUSHROOM1: 3, MUSHROOM2: 8 };
+  const mushroomCredits: Mushrooms = { MUSHROOM1: 3, MUSHROOM2: 8, MUSHROOM3: 3 };
   if (item in mushroomCredits) {
     userSave.credits += mushroomCredits[item];
     return;
@@ -40,10 +41,12 @@ export const updateCredits = (ctx: Context, save: Save, item: string, quantity: 
 
   // Handle store purchases
   const storeItem: StoreItem = storeItems[item];
-  
-  if (!storeItem?.c)
-    logger.error("Not a store item! Add to non-store items list", { item });
-  
+
+  if (!storeItem?.c) {
+    logger.error(`Not a store item! Add to non-store items list ${item}`);
+    return;
+  }
+
   let itemCost: number = storeItem.c[0];
 
   if (storeItem.c.length > 1) {
