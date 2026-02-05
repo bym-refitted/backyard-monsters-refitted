@@ -19,6 +19,7 @@ package
       public function UI_WILDMONSTERBAR_CLIP()
       {
          super();
+         if (info) info.stop();
       }
    }
 }

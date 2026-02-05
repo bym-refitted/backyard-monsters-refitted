@@ -3,7 +3,7 @@
 	"type": "app",
 	"mainClass": "GAME",
 	"compilerOptions": {
-		"output": "bin/bymr-debug.swf",
+		"output": "bin/bymr-stable.swf",
 		"target-player": "11.0",
 		"swf-version": 13,
 		"default-frame-rate": 40,
@@ -12,11 +12,11 @@
 			"width": 760,
 			"height": 670
 		},
-		"optimize": false,
+		"optimize": true,
 		"strict": false,
-		"warnings": true,
+		"warnings": false,
 		"use-network": true,
-		"advanced-telemetry": true,
+		"advanced-telemetry": false,
 		"static-link-runtime-shared-libraries": true,
 		"source-path": [
 			"client/scripts"
@@ -27,11 +27,11 @@
 		"define": [
 			{
 				"name": "CONFIG::SERVER_URL",
-				"value": "'http://localhost:3001/'"
+				"value": "'https://server.bymrefitted.com/'"
 			},
 			{
 				"name": "CONFIG::CDN_URL",
-				"value": "'http://localhost:3001/'"
+				"value": "'https://cdn.bymrefitted.com/'"
 			}
 		]
 	}
