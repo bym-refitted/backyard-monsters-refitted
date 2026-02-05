@@ -41,9 +41,9 @@ package
 
    public class GLOBAL
    {
-      public static var serverUrl:String = "http://localhost:3001/";
+      public static var serverUrl:String = CONFIG::SERVER_URL;
 
-      public static var cdnUrl:String = "http://localhost:3001/";
+      public static var cdnUrl:String = CONFIG::CDN_URL;
 
       public static var apiVersionSuffix:String = "v1.4.7-beta";
 
