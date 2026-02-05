@@ -576,9 +576,7 @@ package
 
       public static function Load(url:String = null, userId:Number = 0, baseId:Number = 0, baseType:int = -1, cellId:Number = 0):void
       {
-         var _loc15_:int = 0;
          GLOBAL._baseLoads += 1;
-         var _loc6_:int = getTimer();
          _loading = true;
          _baseID = baseId;
          _baseLevel = 0;
@@ -705,11 +703,11 @@ package
          }
          if (_addtionalLoadArguments)
          {
-            _loc15_ = 0;
-            while (_loc15_ < _addtionalLoadArguments.length)
+            var i:int = 0;
+            while (i < _addtionalLoadArguments.length)
             {
-               requestData.push(_addtionalLoadArguments[_loc15_]);
-               _loc15_++;
+               requestData.push(_addtionalLoadArguments[i]);
+               i++;
             }
          }
          if (!_loadedSomething && ExternalInterface.available)
@@ -752,40 +750,9 @@ package
 
       private static function handleBaseLoadSuccessful(data:Object):void
       {
-         var TauntB:Function;
-         var onImageLoad:Function;
-         var LoadImageError:Function;
-         var firstLoad:Boolean = false;
-         var idstr:String = null;
-         var ix:int = 0;
-         var resources:Object = null;
-         var building:Object = null;
-         var researchdata:String = null;
-         var iresources:Object = null;
-         var kx:int = 0;
-         var champion:Object = null;
-         var size:int = 0;
-         var existingGuardians:Dictionary = null;
-         var playerGuardianIndex:int = 0;
-         var guardianIndex:int = 0;
-         var addedGuardian:Boolean = false;
-         var unfrozenFound:Boolean = false;
-         var j:int = 0;
-         var championString:String = null;
-         var attacksArr:Array = null;
-         var attackCount:int = 0;
-         var attackObj:Object = null;
-         var found:Boolean = false;
-         var listed:Object = null;
-         var popupMC:popup_attackedme = null;
-         var loader:Loader = null;
-         var promoTimer:int = 0;
-         var promoItemsArr:Array = null;
-         var promoID:Array = null;
-         var promoGifts:Array = null;
-         var serverData:Object = data;
          try
          {
+            var serverData:Object = data;
             if (serverData.error == 0)
             {
                if (parseBaseLoadMessages(serverData))
@@ -801,7 +768,7 @@ package
                {
                   _baseID = loadObject.baseid;
                }
-               firstLoad = false;
+               var firstLoad:Boolean = false;
                if (!_loadedSomething)
                {
                   if (ExternalInterface.available)
@@ -873,9 +840,9 @@ package
                }
                _loadedFBID = serverData.fbid;
                _userID = serverData.userid;
-               idstr = _userID.toString();
+               var idstr = _userID.toString();
                _userDigits = [];
-               ix = 0;
+               var ix:int = 0;
                while (ix < idstr.length)
                {
                   _userDigits.push(int(idstr.charAt(ix)));
@@ -972,7 +939,7 @@ package
                   GLOBAL._mapHome = new Point(serverData.homebase[0], serverData.homebase[1]);
                }
                GLOBAL._unreadMessages = serverData.unreadmessages;
-               resources = serverData.resources;
+               var resources:Object = serverData.resources;
                if (resources == null)
                {
                   _resources.r1 = 1000;
@@ -998,7 +965,7 @@ package
                }
                if (serverData.iresources)
                {
-                  iresources = serverData.iresources;
+                  var iresources:Object = serverData.iresources;
                   _iresources.r1 = new SecNum(Math.floor(iresources.r1));
                   _iresources.r2 = new SecNum(Math.floor(iresources.r2));
                   _iresources.r3 = new SecNum(Math.floor(iresources.r3));
@@ -1032,7 +999,7 @@ package
                _buildingData = serverData.buildingdata;
                if (!MapRoomManager.instance.isInMapRoom3)
                {
-                  for each (building in _buildingData)
+                  for each (var building:Object in _buildingData)
                   {
                      if (building.t == 14)
                      {
@@ -1080,7 +1047,7 @@ package
                _tempLoot = serverData.loot;
                GLOBAL.SetBuildingProps();
                _buildingsStored = {};
-               for (researchdata in serverData.researchdata)
+               for (var researchdata:String in serverData.researchdata)
                {
                   if (serverData.researchdata[researchdata])
                   {
@@ -1095,7 +1062,7 @@ package
                   };
                if (GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD)
                {
-                  kx = 1;
+                  var kx:int = 1;
                   while (kx < 5)
                   {
                      GLOBAL._resources["r" + kx] = new SecNum(_resources["r" + kx].Get());
@@ -1258,8 +1225,8 @@ package
                {
                   if (serverData.champion != "\"null\"" && serverData.champion != "null")
                   {
-                     champion = JSON.parse(serverData.champion);
-                     size = 0;
+                     var champion:Object = JSON.parse(serverData.champion);
+                     var size:int = 0;
                      if (champion.t)
                      {
                         size = 1;
@@ -1269,12 +1236,11 @@ package
                      {
                         size = int(champion.length);
                      }
-                     existingGuardians = new Dictionary();
-                     playerGuardianIndex = 0;
-                     guardianIndex = 0;
-                     addedGuardian = false;
-                     unfrozenFound = false;
-                     j = 0;
+                     var existingGuardians:Dictionary = new Dictionary();
+                     var guardianIndex:int = 0;
+                     var addedGuardian:Boolean = false;
+                     var unfrozenFound:Boolean = false;
+                     var j:int = 0;
                      while (j < size)
                      {
                         try
@@ -1365,7 +1331,7 @@ package
                         }
                         catch (e:Error)
                         {
-                           championString = JSON.parse(serverData.champion) as String;
+                           var championString:String = JSON.parse(serverData.champion) as String;
                            _guardianData[j] = JSON.parse(championString);
                            Console.warning("Base::handleBaseLoadSuccessful - Error thrown on champion, champion data is - " + championString, true);
                            continue;
@@ -1388,7 +1354,7 @@ package
                if (GLOBAL.mode != GLOBAL.e_BASE_MODE.WMATTACK && GLOBAL.mode != GLOBAL.e_BASE_MODE.WMVIEW && Boolean(serverData.attacks))
                {
                   _currentAttacks = serverData.attacks;
-                  TauntB = function(param1:int, param2:int):Function
+                  var TauntB:Function = function(param1:int, param2:int):Function
                   {
                      var n:int = param1;
                      var fbid:int = param2;
@@ -1398,15 +1364,16 @@ package
                         POPUPS.Next();
                      };
                   };
-                  attacksArr = serverData.attacks;
-                  attackCount = 0;
+                  var attacksArr:Array = serverData.attacks;
+                  var attackCount:int = 0;
+                  var attackObj:Object = null;
                   for each (attackObj in attacksArr)
                   {
                      if (attackObj.seen) continue;
                      
                      attackCount++;
-                     found = false;
-                     for each (listed in _attackerArray)
+                     var found:Boolean = false;
+                     for each (var listed:Object in _attackerArray)
                      {
                         if (listed.fbid == attackObj.fbid)
                         {
@@ -1430,7 +1397,7 @@ package
                   }
                   for each (attackObj in _attackerArray)
                   {
-                     popupMC = new popup_attackedme();
+                     var popupMC:popup_attackedme = new popup_attackedme();
                      popupMC.gotoAndStop(1);
                      if (attackObj.count == 1)
                      {
@@ -1449,15 +1416,15 @@ package
                      }
                      if (attackObj.pic)
                      {
-                        onImageLoad = function(param1:Event):void
+                        var loader:Loader = new Loader();
+                        var onImageLoad:Function = function(param1:Event):void
                         {
                            loader.height = 50;
                            loader.width = 50;
                         };
-                        LoadImageError = function(param1:IOErrorEvent):void
+                        var LoadImageError:Function = function(param1:IOErrorEvent):void
                         {
                         };
-                        loader = new Loader();
                         loader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, LoadImageError, false, 0, true);
                         loader.contentLoaderInfo.addEventListener(Event.COMPLETE, onImageLoad);
                         popupMC.mcPic.mcBG.addChild(loader);
@@ -1496,14 +1463,14 @@ package
                   {
                      if (serverData.promotiontimer is int)
                      {
-                        promoTimer = int(serverData.promotiontimer);
+                        var promoTimer:int = int(serverData.promotiontimer);
                         GLOBAL._flags.hasPromo = 1;
                      }
                      else if (serverData.promotiontimer is String && serverData.promotiontimer == "purchasereceive")
                      {
                         if (serverData.purchasereceive)
                         {
-                           promoItemsArr = serverData.purchasereceive;
+                           var promoItemsArr:Array = serverData.purchasereceive;
                            BUY.purchaseProcess(promoItemsArr);
                            BUY.purchaseComplete(serverData.promotiontimer);
                            GLOBAL._flags.hasPromo = 1;
@@ -1515,8 +1482,8 @@ package
                {
                   if (serverData.fbpromos)
                   {
-                     promoID = [];
-                     promoGifts = [];
+                     var promoID:Array = [];
+                     var promoGifts:Array = [];
                      if (serverData.fbpromos)
                      {
                         if (serverData.fbpromos.ids)
@@ -1706,18 +1673,6 @@ package
 
       public static function Build():void
       {
-         var buildingFoundation:BFOUNDATION = null;
-         var counter:int = 0;
-         var building:Object = null;
-         var displayObject:DisplayObject = null;
-         var rawMonstersHidLength:int = 0;
-         var rawMonstersHLength:int = 0;
-         var rawMonsterIndex:int = 0;
-         var townHallLevel:int = 0;
-         var buildingTypeCount:int = 0;
-         var props:Object = null;
-         var foundationIndex:int = 0;
-         var propCount:int = 0;
          PLEASEWAIT.Update(KEYS.Get("msg_building"));
          if (MAPROOM_INFERNO._open)
          {
@@ -1730,7 +1685,7 @@ package
          var mapIndex:int = GLOBAL._layerMap.numChildren - 1;
          while (mapIndex >= 0)
          {
-            displayObject = GLOBAL._layerMap.getChildAt(mapIndex);
+            var displayObject:DisplayObject = GLOBAL._layerMap.getChildAt(mapIndex);
             if (displayObject.parent)
             {
                displayObject.parent.removeChild(displayObject);
@@ -1777,7 +1732,8 @@ package
          }
 
          var buildingTypeCounts:Dictionary = new Dictionary();
-         for each (building in _buildingData)
+         var counter:int = 0;
+         for each (var building:Object in _buildingData)
          {
             if (building)
             {
@@ -1801,7 +1757,7 @@ package
                   {
                      counter++;
                   }
-                  buildingFoundation = addBuildingC(building.t);
+                  var buildingFoundation:BFOUNDATION = addBuildingC(building.t);
                   if (buildingFoundation)
                   {
                      foundationType = buildingFoundation._type;
@@ -1812,9 +1768,9 @@ package
                   }
                   if (building.t == 13 && _rawMonsters && Boolean(_rawMonsters.h) && Boolean(_rawMonsters.hid))
                   {
-                     rawMonstersHidLength = int(_rawMonsters.hid.length);
-                     rawMonstersHLength = int(_rawMonsters.h.length);
-                     rawMonsterIndex = 0;
+                     var rawMonstersHidLength:int = int(_rawMonsters.hid.length);
+                     var rawMonstersHLength:int = int(_rawMonsters.h.length);
+                     var rawMonsterIndex:int = 0;
                      while (rawMonsterIndex < rawMonstersHidLength && rawMonsterIndex < rawMonstersHLength)
                      {
                         if (_rawMonsters.hid[rawMonsterIndex] == building.id)
@@ -1991,14 +1947,14 @@ package
          var bFoundation:Vector.<Object> = InstanceManager.getInstancesByClass(BFOUNDATION);
          if (GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD && GLOBAL.townHall && isMainYardOrInfernoMainYard && !GLOBAL._aiDesignMode)
          {
-            townHallLevel = GLOBAL.townHall._lvl.Get();
-            buildingTypeCount = 0;
-            for each (props in GLOBAL._buildingProps)
+            var townHallLevel:int = GLOBAL.townHall._lvl.Get();
+            var buildingTypeCount:int = 0;
+            for each (var props:Object in GLOBAL._buildingProps)
             {
                if (props.type != "decoration")
                {
                   buildingTypeCount = 0;
-                  foundationIndex = int(bFoundation.length - 1);
+                  var foundationIndex:int = int(bFoundation.length - 1);
                   while (foundationIndex >= 0)
                   {
                      buildingFoundation = bFoundation[foundationIndex] as BFOUNDATION;
@@ -2008,7 +1964,7 @@ package
                         {
                            buildingTypeCount += 1;
                         }
-                        propCount = townHallLevel < props.quantity.length ? int(props.quantity[townHallLevel]) : int(props.quantity[props.quantity.length - 1]);
+                        var propCount:int = townHallLevel < props.quantity.length ? int(props.quantity[townHallLevel]) : int(props.quantity[props.quantity.length - 1]);
                         if (buildingTypeCount > propCount)
                         {
                            Console.print("BASE::Build:too many buildings " + buildingTypeCount + "/" + propCount + " type:" + buildingFoundation._type);
