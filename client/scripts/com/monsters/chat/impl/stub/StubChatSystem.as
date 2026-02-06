@@ -22,7 +22,9 @@ package com.monsters.chat.impl.stub
       public function StubChatSystem(chatHost:String, chatPort:int)
       {
          super();
-         // No-op: no actual connection is made in stub mode
+         // No-op: no actual connection is made in stub mode.
+         // chatHost and chatPort are accepted to satisfy the IChatSystem
+         // constructor/interface contract; they are intentionally unused here.
       }
       
       // Connection management
