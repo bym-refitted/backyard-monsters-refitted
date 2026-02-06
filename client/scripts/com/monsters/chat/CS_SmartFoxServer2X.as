@@ -871,7 +871,6 @@ package com.monsters.chat
          for each(var _loc5_ in this.roomMap)
          {
             _loc2_ = _loc5_;
-            _loc5_;
             roomNames.push(_loc2_.name);
          }
          return roomNames;
