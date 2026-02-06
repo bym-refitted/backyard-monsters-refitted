@@ -70,6 +70,17 @@ export const getMapRoomCells: KoaController = async (ctx) => {
       }
     }
 
+    // Batch load all cell owners in a single query
+    const ownerIds = [...new Set(dbCells.map(cell => cell.uid).filter(Boolean))];
+
+    const ownersList = await postgres.em.find(
+      User,
+      { userid: { $in: ownerIds } },
+      { populate: ["save"] }
+    );
+
+    const cellOwners = new Map<number, User>(ownersList.map(u => [u.userid, u]));
+
     const cellsToReturn = new Map<string, CellData>();
 
     const fetchOrGenerateCell = async (x: number, y: number) => {
@@ -108,7 +119,7 @@ export const getMapRoomCells: KoaController = async (ctx) => {
         }
       }
 
-      const cellData = await createCellData(cell, ctx, worldid);
+      const cellData = await createCellData(cell, worldid, ctx, cellOwners);
       cellsToReturn.set(key, cellData);
 
       // Include related cells (use merged map so defenders can find player yard parents)
