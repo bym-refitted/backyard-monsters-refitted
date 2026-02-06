@@ -20,19 +20,25 @@ import {
   TRIBE_OUTPOST_SEED,
 } from "../../../config/WorldGenSettings.js";
 
-interface Cell {
+export interface GeneratedCell {
   i?: number;
   x: number;
   y: number;
   t?: number;
 }
 
-let cachedCells: Cell[] | null = null;
+let cachedCells: Map<string, GeneratedCell> | null = null;
 
-export const generateCells = (): Cell[] => {
+/**
+ * Generates all procedural cells for Map Room 3 and returns them as a Map.
+ * Results are cached at module level - only generated once per server lifetime.
+ *
+ * Cells include: strongholds, resources, tribe outposts, defenders, and terrain (bushes/clover).
+ */
+export const getGeneratedCells = (): Map<string, GeneratedCell> => {
   if (cachedCells) return cachedCells;
 
-  const cells: Cell[] = [];
+  const cells: GeneratedCell[] = [];
   const occupiedCells = new Set<number>();
 
   const { WIDTH, HEIGHT } = MapRoom3;
@@ -169,6 +175,6 @@ export const generateCells = (): Cell[] => {
     }
   }
 
-  cachedCells = cells;
-  return cells;
+  cachedCells = new Map(cells.map(cell => [`${cell.x},${cell.y}`, cell]));
+  return cachedCells;
 };
