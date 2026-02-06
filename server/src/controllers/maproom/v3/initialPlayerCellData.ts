@@ -18,6 +18,8 @@ export const initialPlayerCellData: KoaController = async (ctx) => {
   const user: User = ctx.authUser;
   await postgres.em.populate(user, ["save"]);
 
+  const { worldid } = user.save;
+
   const homeCell = await postgres.em.findOne(WorldMapCell, {
     uid: user.userid,
     base_type: EnumYardType.PLAYER,
@@ -25,14 +27,12 @@ export const initialPlayerCellData: KoaController = async (ctx) => {
 
   if (!homeCell) console.log("No MapRoom3 home found for user:", user.username);
 
-  const celldata = [];
-
-  const playerCellData = await createCellData(homeCell, ctx);
-  celldata.push(playerCellData);
+  const cellOwners = new Map([[user.userid, user]]);
+  const playerCellData = await createCellData(homeCell, worldid, ctx, cellOwners);
 
   ctx.status = Status.OK;
   ctx.body = {
     error: 0,
-    celldata,
+    celldata: [playerCellData],
   };
 };
