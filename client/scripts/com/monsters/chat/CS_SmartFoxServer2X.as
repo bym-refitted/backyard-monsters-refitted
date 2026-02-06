@@ -581,7 +581,7 @@ package com.monsters.chat
       
       private function onRoomRemove(param1:SFSEvent) : void
       {
-         delete this.roomMap[event.params.room.name];
+         delete this.roomMap[param1.params.room.name];
       }
       
       private function onRoomCreationError(param1:SFSEvent) : void
