@@ -2,7 +2,10 @@ package com.monsters.chat.impl.stub
 {
    import flash.events.EventDispatcher;
    import flash.utils.Dictionary;
-   import com.monsters.chat.*;
+   import com.monsters.chat.IChatSystem;
+   import com.monsters.chat.ChatEvent;
+   import com.monsters.chat.Channel;
+   import com.monsters.chat.IAuthenticationSystem;
    
    /**
     * Stub/no-op implementation of IChatSystem.
