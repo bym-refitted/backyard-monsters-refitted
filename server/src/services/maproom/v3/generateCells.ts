@@ -3,7 +3,7 @@ import alea from "alea";
 import { createNoise2D } from "simplex-noise";
 import { MapRoom3 } from "../../../enums/MapRoom.js";
 import { EnumYardType } from "../../../enums/EnumYardType.js";
-import { getDefenderOutposts } from "./getDefenderOutposts.js";
+import { getDefenderCoords } from "./getDefenderCoords.js";
 import { isValidPosition } from "./utils/isValidPosition.js";
 
 import {
@@ -67,7 +67,7 @@ export const getGeneratedCells = (): Map<string, GeneratedCell> => {
       cells.push({ x, y, t: EnumYardType.STRONGHOLD });
       occupiedCells.add(key);
 
-      const defenders = getDefenderOutposts(x, y);
+      const defenders = getDefenderCoords(x, y);
 
       for (const [fortX, fortY] of defenders) {
         cells.push({ x: fortX, y: fortY, t: EnumYardType.FORTIFICATION });
@@ -90,7 +90,7 @@ export const getGeneratedCells = (): Map<string, GeneratedCell> => {
     
     if (occupiedCells.has(key)) continue;
 
-    const defenders = getDefenderOutposts(x, y);
+    const defenders = getDefenderCoords(x, y);
     if (defenders.some(([dx, dy]) => occupiedCells.has((dx << 16) | dy  ))) continue;
 
     cells.push({ x, y, t: EnumYardType.RESOURCE });

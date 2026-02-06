@@ -8,14 +8,13 @@ import { WorldMapCell } from "../../../models/worldmapcell.model.js";
 import { mapByCoordinates } from "../../../services/maproom/v3/utils/mapByCoordinates.js";
 import { getGeneratedCells } from "../../../services/maproom/v3/generateCells.js";
 import { EnumYardType } from "../../../enums/EnumYardType.js";
-import { getHexNeighborOffsets } from "../../../services/maproom/v3/getDefenderOutposts.js";
 import { createCellData } from "../../../services/maproom/v3/createCellData.js";
-import { getRelatedCellPositions } from "../../../services/maproom/v3/getRelatedCells.js";
+import { getDefenderCoords, isDefensiveStructure } from "../../../services/maproom/v3/getDefenderCoords.js";
 import { logger } from "../../../utils/logger.js";
 import { loadFailureErr } from "../../../errors/errors.js";
 import type { KoaController } from "../../../utils/KoaController.js";
 import type { CellData } from "../../../types/CellData.js";
-import type { FilterQuery } from "@mikro-orm/core";
+import { getCellBounds, type Coord } from "../../../services/maproom/v3/utils/getCellBounds.js";
 
 export const getMapRoomCells: KoaController = async (ctx) => {
   try {
@@ -33,64 +32,123 @@ export const getMapRoomCells: KoaController = async (ctx) => {
       return;
     }
 
-    // Convert IDs to coordinates
-    const requestedCoords = cellids.map((id) => ({
+    // Convert the IDs the client sends to coordinates
+    const requestedCoords: Coord[] = cellids.map((id) => ({
       x: id % MapRoom3.WIDTH,
       y: Math.floor(id / MapRoom3.WIDTH),
     }));
 
-    const query: FilterQuery<WorldMapCell> = {
-      world_id: worldid,
-      map_version: MapRoomVersion.V3,
-      $or: requestedCoords.map(({ x, y }) => ({ x, y })),
-    };
+    const generateCells = getGeneratedCells();
 
-    // Get persistent cells which have been stored in the database.
-    const dbCells = await postgres.em.find(WorldMapCell, query, { populate: ["save"] });
-    const dbCellsByCoord = mapByCoordinates(dbCells);
+    // =========================================================================
+    // PHASE 1: Collect coordinates for requested cells + generated defenders
+    // =========================================================================
+    const coords = new Map<string, Coord>();
 
-    // Get procedurally generated cells (cached at module level)
-    const genCellsByCoord = getGeneratedCells();
+    for (const { x, y } of requestedCoords) {
+      const key = `${x},${y}`;
+      coords.set(key, { x, y });
 
-    // Merge both maps for getRelatedCells (db cells include player yards)
-    const allCellsByCoord = new Map(genCellsByCoord);
-    for (const [key, dbCell] of dbCellsByCoord) {
-      allCellsByCoord.set(key, { x: dbCell.x, y: dbCell.y, t: dbCell.base_type });
-    }
+      const genCell = generateCells.get(key);
 
-    const defenderPositions = new Set<string>();
+      // If this is a defender, find and add its parent structure + all siblings
+      if (genCell?.t === EnumYardType.FORTIFICATION) {
+        for (const [px, py] of getDefenderCoords(x, y)) {
+          const parentCell = generateCells.get(`${px},${py}`);
+          if (isDefensiveStructure(parentCell?.t)) {
+            // Add parent
+            coords.set(`${px},${py}`, { x: px, y: py });
+            // Add all defenders around the parent (siblings)
+            for (const [dx, dy] of getDefenderCoords(px, py)) {
+              const dKey = `${dx},${dy}`;
+              if (!coords.has(dKey)) {
+                coords.set(dKey, { x: dx, y: dy });
+              }
+            }
+            break;
+          }
+        }
+      }
 
-    for (const [_, dbCell] of dbCellsByCoord) {
-      if (dbCell.base_type === EnumYardType.PLAYER) {
-        const offsets = getHexNeighborOffsets(dbCell.x, dbCell.y);
-        for (const [dx, dy] of offsets) {
-          defenderPositions.add(`${dbCell.x + dx},${dbCell.y + dy}`);
+      // Add defender positions for cells that have them (strongholds, resources)
+      for (const [relX, relY] of getDefenderCoords(x, y, genCell?.t)) {
+        const relKey = `${relX},${relY}`;
+        if (!coords.has(relKey)) {
+          coords.set(relKey, { x: relX, y: relY });
         }
       }
     }
 
-    // Batch load all cell owners in a single query
-    const ownerIds = [...new Set(dbCells.map(cell => cell.uid).filter(Boolean))];
+    // =========================================================================
+    // PHASE 2: Single DB query using bounding box
+    // =========================================================================
+    const coordsList = [...coords.values()];
+
+    const { minX, maxX, minY, maxY } = getCellBounds(coordsList);
+
+    const dbCells = await postgres.em.find(
+      WorldMapCell,
+      {
+        world_id: worldid,
+        map_version: MapRoomVersion.V3,
+        x: { $gte: minX, $lte: maxX },
+        y: { $gte: minY, $lte: maxY },
+      },
+      { populate: ["save"] },
+    );
+
+    const requestedSet = new Set(coordsList.map(cell => `${cell.x},${cell.y}`));
+
+    const dbCellsByCoord = mapByCoordinates(
+      dbCells.filter((cell) => requestedSet.has(`${cell.x},${cell.y}`)),
+    );
+
+    // =========================================================================
+    // PHASE 3: Process player-owned structures - add defender coords
+    // =========================================================================
+    const defenderPositions = new Set<string>();
+
+    for (const dbCell of dbCells) {
+      // Handle any player-owned defensive structure (PLAYER, STRONGHOLD, RESOURCE)
+      if (dbCell.uid && isDefensiveStructure(dbCell.base_type)) {
+        for (const [relX, relY] of getDefenderCoords(dbCell.x, dbCell.y)) {
+          const relKey = `${relX},${relY}`;
+          if (!coords.has(relKey)) {
+            coords.set(relKey, { x: relX, y: relY });
+          }
+          defenderPositions.add(relKey);
+        }
+      }
+    }
+
+    // =========================================================================
+    // PHASE 4: Batch load all cell owners in a single query
+    // =========================================================================
+    const ownerIds = [...new Set(dbCells.map((cell) => cell.uid).filter(Boolean))];
 
     const ownersList = await postgres.em.find(
       User,
       { userid: { $in: ownerIds } },
-      { populate: ["save"] }
+      { populate: ["save"] },
     );
 
-    const cellOwners = new Map<number, User>(ownersList.map(u => [u.userid, u]));
+    const cellOwners = new Map<number, User>(
+      ownersList.map((u) => [u.userid, u]),
+    );
 
+    // =========================================================================
+    // PHASE 5: Build cell data for all coordinates
+    // =========================================================================
     const cellsToReturn = new Map<string, CellData>();
 
-    const fetchOrGenerateCell = async (x: number, y: number) => {
+    for (const [key, { x, y }] of coords) {
+      if (cellsToReturn.has(key)) continue;
+
       let cell: WorldMapCell;
-      const key = `${x},${y}`;
-
-      if (cellsToReturn.has(key)) return;
-
       const dbCell = dbCellsByCoord.get(key);
-      const genCell = genCellsByCoord.get(key);
+      const genCell = generateCells.get(key);
 
+      // TODO: this shit is horrible, sort it out
       if (dbCell) {
         cell = dbCell;
       } else {
@@ -100,19 +158,15 @@ export const getMapRoomCells: KoaController = async (ctx) => {
           cell = new WorldMapCell(undefined, x, y, 100);
           cell.base_type = EnumYardType.BORDER;
         } else {
-          // Check if this position is a pre-computed defender position
           const isDefender = defenderPositions.has(key);
 
           if (isDefender) {
-            // Create as defender (overrides tribe outposts in genCell)
             cell = new WorldMapCell(undefined, x, y, 0);
             cell.base_type = EnumYardType.FORTIFICATION;
           } else if (genCell) {
-            // Use generated cell (stronghold/resource/outpost/terrain)
             cell = new WorldMapCell(undefined, genCell.x, genCell.y, genCell.i);
             cell.base_type = genCell.t || 0;
           } else {
-            // Empty terrain
             cell = new WorldMapCell(undefined, x, y, 0);
           }
         }
@@ -120,16 +174,7 @@ export const getMapRoomCells: KoaController = async (ctx) => {
 
       const cellData = await createCellData(cell, worldid, ctx, cellOwners);
       cellsToReturn.set(key, cellData);
-
-      // Include related cells (use merged map so defenders can find player yard parents)
-      const relatedPositions = getRelatedCellPositions(x, y, dbCell?.base_type ?? genCell?.t, allCellsByCoord);
-
-      for (const [relX, relY] of relatedPositions)
-        await fetchOrGenerateCell(relX, relY);
-    };
-
-    // Process each requested coordinate
-    for (const { x, y } of requestedCoords) await fetchOrGenerateCell(x, y);
+    }
 
     ctx.status = Status.OK;
     ctx.body = { celldata: [...cellsToReturn.values()] };

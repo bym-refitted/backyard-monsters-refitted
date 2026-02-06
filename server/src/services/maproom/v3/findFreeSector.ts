@@ -3,7 +3,7 @@ import { World } from "../../../models/world.model.js";
 import { WorldMapCell } from "../../../models/worldmapcell.model.js";
 import { EntityManager, PostgreSqlDriver } from "@mikro-orm/postgresql";
 import { EnumYardType } from "../../../enums/EnumYardType.js";
-import { getHexNeighborOffsets } from "./getDefenderOutposts.js";
+import { getDefenderCoords } from "./getDefenderCoords.js";
 import { getGeneratedCells, type GeneratedCell } from "./generateCells.js";
 import { setTimeout } from "timers/promises";
 
@@ -88,13 +88,9 @@ export const findFreeSector = async (world: World, em: EntityManager<PostgreSqlD
     if (!canOverride(existingCell, centerGenCell)) continue;
 
     // Check all 6 surrounding defender positions can be overridden
-    const offsets = getHexNeighborOffsets(x, y);
     let allDefenderPositionsFree = true;
 
-    for (const [dx, dy] of offsets) {
-      const defenderX = x + dx;
-      const defenderY = y + dy;
-
+    for (const [defenderX, defenderY] of getDefenderCoords(x, y)) {
       // Check database first, then generated cells
       const existingDefender = await em.findOne(WorldMapCell, {
         world,

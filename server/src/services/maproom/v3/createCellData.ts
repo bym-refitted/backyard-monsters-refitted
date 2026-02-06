@@ -9,6 +9,7 @@ import { tribeOutpostCell } from "../../../controllers/maproom/v3/cells/tribeOut
 import { terrainCell } from "../../../controllers/maproom/v3/cells/terrainCell.js";
 import { playerCell } from "../../../controllers/maproom/v3/cells/playerCell.js";
 import type { User } from "../../../models/user.model.js";
+import type { CellData } from "../../../types/CellData.js";
 
 /**
  * Constructs the necessary data object of a cell on the world map.
@@ -17,14 +18,14 @@ import type { User } from "../../../models/user.model.js";
  * @param {string} worldid - The world ID.
  * @param {Context} ctx - The Koa context object.
  * @param {Map<number, User>} cellOwners - Pre-loaded map of user IDs to User entities.
- * @returns {Promise<Object>} - The data object for the cell.
+ * @returns {Promise<CellData>} - The data object for the cell.
  */
 export const createCellData = async (
   cell: Loaded<WorldMapCell, never>,
   worldid: string,
   ctx: Context,
   cellOwners: Map<number, User> = new Map(),
-) => {
+): Promise<CellData> => {
   switch (cell.base_type) {
     case EnumYardType.PLAYER:
       return playerCell(ctx, cell, cellOwners);
