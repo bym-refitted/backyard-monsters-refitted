@@ -6,7 +6,7 @@ import { Save } from "../../../models/save.model.js";
 import { MapRoom3, MapRoomVersion } from "../../../enums/MapRoom.js";
 import { WorldMapCell } from "../../../models/worldmapcell.model.js";
 import { mapByCoordinates } from "../../../services/maproom/v3/utils/mapByCoordinates.js";
-import { generateCells } from "../../../services/maproom/v3/generateCells.js";
+import { getGeneratedCells } from "../../../services/maproom/v3/generateCells.js";
 import { EnumYardType } from "../../../enums/EnumYardType.js";
 import { getHexNeighborOffsets } from "../../../services/maproom/v3/getDefenderOutposts.js";
 import { createCellData } from "../../../services/maproom/v3/createCellData.js";
@@ -49,12 +49,11 @@ export const getMapRoomCells: KoaController = async (ctx) => {
     const dbCells = await postgres.em.find(WorldMapCell, query, { populate: ["save"] });
     const dbCellsByCoord = mapByCoordinates(dbCells);
 
-    // Otherwise, we generate all procedural cells
-    const genCells = generateCells();
-    const genCellsByCoords = mapByCoordinates(genCells);
+    // Get procedurally generated cells (cached at module level)
+    const genCellsByCoord = getGeneratedCells();
 
     // Merge both maps for getRelatedCells (db cells include player yards)
-    const allCellsByCoord = new Map(genCellsByCoords);
+    const allCellsByCoord = new Map(genCellsByCoord);
     for (const [key, dbCell] of dbCellsByCoord) {
       allCellsByCoord.set(key, { x: dbCell.x, y: dbCell.y, t: dbCell.base_type });
     }
@@ -90,7 +89,7 @@ export const getMapRoomCells: KoaController = async (ctx) => {
       if (cellsToReturn.has(key)) return;
 
       const dbCell = dbCellsByCoord.get(key);
-      const genCell = genCellsByCoords.get(key);
+      const genCell = genCellsByCoord.get(key);
 
       if (dbCell) {
         cell = dbCell;

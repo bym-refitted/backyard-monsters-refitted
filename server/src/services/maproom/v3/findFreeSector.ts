@@ -4,21 +4,13 @@ import { WorldMapCell } from "../../../models/worldmapcell.model.js";
 import { EntityManager, PostgreSqlDriver } from "@mikro-orm/postgresql";
 import { EnumYardType } from "../../../enums/EnumYardType.js";
 import { getHexNeighborOffsets } from "./getDefenderOutposts.js";
-import { generateCells } from "./generateCells.js";
-import { mapByCoordinates } from "./utils/mapByCoordinates.js";
+import { getGeneratedCells, type GeneratedCell } from "./generateCells.js";
 import { setTimeout } from "timers/promises";
 
 interface Cell {
   x: number | null;
   y: number | null;
   terrainHeight: number | null;
-}
-
-interface GeneratedCell {
-  x: number;
-  y: number;
-  i?: number;
-  t?: number;
 }
 
 // TODO: clean this file up its shitty
@@ -67,9 +59,8 @@ export const findFreeSector = async (world: World, em: EntityManager<PostgreSqlD
   let cell: Cell = { x: null, y: null, terrainHeight: null };
   const maxAttempts = 100;
 
-  // Generate procedural cells (cached, so this is efficient)
-  const genCells = generateCells();
-  const genCellsByCoord = mapByCoordinates(genCells);
+  // Get procedurally generated cells
+  const genCellsByCoord = getGeneratedCells();
 
   // Define safe zone boundaries (avoid edges to ensure defender positions fit)
   const EDGE_MARGIN = 3;
