@@ -527,139 +527,143 @@ package com.monsters.maproom3
          }
       }
       
-      private function UpdateMap(param1:Boolean = false) : void
+      private function UpdateMap(forceUpdate: Boolean = false) : void
       {
-         var _loc2_:int = 0;
-         var _loc3_:int = 0;
-         var _loc7_:int = 0;
-         var _loc8_:int = 0;
-         var _loc9_:int = 0;
-         var _loc10_:int = 0;
-         var _loc11_:int = 0;
-         var _loc12_:int = 0;
-         var _loc13_:int = 0;
-         var _loc14_:MapRoom3Cell = null;
-         var _loc15_:MapRoom3CellGraphic = null;
-         var _loc16_:Vector.<MapRoom3Cell> = null;
-         var _loc19_:int = 0;
-         var _loc20_:int = 0;
-         var _loc21_:int = 0;
-         var _loc22_:Number = NaN;
-         var _loc23_:Number = NaN;
          this.AdjustCenterPoint();
          this.DrawBackground();
          this.DrawRangeAlphaLayer(this.m_RangeAlphaLayer);
          this.DrawRangeAlphaLayer(this.m_MouseoverRangeAlphaLayer);
+
+         var bufferWidth:int = this.GetBufferWidth();
+         var bufferHeight:int = this.GetBufferHeight();
+         var totalBufferCells:int = bufferWidth * bufferHeight;
+
+         var topLeftX:int = this.m_CenterPoint.x - int(bufferWidth * 0.5);
+         var topLeftY:int = this.m_CenterPoint.y - int(bufferHeight * 0.5);
+
+         var newTileBuffer:Vector.<MapRoom3CellGraphic> = new Vector.<MapRoom3CellGraphic>();
+         var unusedTiles:Vector.<MapRoom3CellGraphic> = new Vector.<MapRoom3CellGraphic>();
+
          var _rangeGlowCount:int = this.m_RangeGlowLayer.numChildren;
          var _mouseoverGlowCount:int = this.m_MouseoverRangeGlowLayer.numChildren;
-         _loc2_ = this.GetBufferWidth();
-         _loc3_ = this.GetBufferHeight();
-         var _loc4_:int = _loc2_ * _loc3_;
-         var _loc5_:int = this.m_CenterPoint.x - int(_loc2_ * 0.5);
-         var _loc6_:int = this.m_CenterPoint.y - int(_loc3_ * 0.5);
-         var _loc17_:Vector.<MapRoom3CellGraphic> = new Vector.<MapRoom3CellGraphic>();
-         var _loc18_:Vector.<MapRoom3CellGraphic> = new Vector.<MapRoom3CellGraphic>();
-         for each(_loc15_ in this.m_TileBuffer)
+
+         var bufferIndex:int = 0;
+         var bufferOffsetX:int = 0;
+         var bufferOffsetY:int = 0;
+         var mapX:int = 0;
+         var mapY:int = 0;
+         var cellIndex:int = 0;
+         var attackRangeIndex:int = 0;
+         var cell:MapRoom3Cell = null;
+         var tileGraphic:MapRoom3CellGraphic = null;
+         var attackRangeCells:Vector.<MapRoom3Cell> = null;
+         var insertIndex:int = 0;
+         var numChildren:int = 0;
+         var midIndex:int = 0;
+         var dx:Number = NaN;
+         var dy:Number = NaN;
+
+         for each(tileGraphic in this.m_TileBuffer)
          {
-            _loc14_ = _loc15_.cell;
-            _loc8_ = int(_loc15_.x / MapRoom3CellGraphic.HEX_WIDTH) - _loc5_;
-            _loc9_ = int(_loc15_.y / MapRoom3CellGraphic.HEX_HEIGHT_OVERLAP) - _loc6_;
-            if(param1 || _loc8_ < 0 || _loc9_ < 0 || _loc8_ >= _loc2_ || _loc9_ >= _loc3_)
+            cell = tileGraphic.cell;
+            bufferOffsetX = int(tileGraphic.x / MapRoom3CellGraphic.HEX_WIDTH) - topLeftX;
+            bufferOffsetY = int(tileGraphic.y / MapRoom3CellGraphic.HEX_HEIGHT_OVERLAP) - topLeftY;
+            if(forceUpdate || bufferOffsetX < 0 || bufferOffsetY < 0 || bufferOffsetX >= bufferWidth || bufferOffsetY >= bufferHeight)
             {
-               this.m_TileLayer.removeChild(_loc15_);
-               _loc18_.push(_loc15_);
-               this.m_TileLookup[_loc15_.cellIndex] = null;
-               _loc15_.x = 0;
-               _loc15_.y = 0;
+               this.m_TileLayer.removeChild(tileGraphic);
+               unusedTiles.push(tileGraphic);
+               this.m_TileLookup[tileGraphic.cellIndex] = null;
+               tileGraphic.x = 0;
+               tileGraphic.y = 0;
             }
             else
             {
-               _loc17_.push(_loc15_);
+               newTileBuffer.push(tileGraphic);
             }
          }
          this.m_TileBuffer.length = 0;
-         this.m_TileBuffer = _loc17_;
-         _loc7_ = 0;
-         while(_loc7_ < _loc4_)
+         this.m_TileBuffer = newTileBuffer;
+         bufferIndex = 0;
+         while(bufferIndex < totalBufferCells)
          {
-            _loc8_ = _loc7_ % _loc2_;
-            _loc9_ = int(_loc7_ / _loc2_);
-            _loc10_ = _loc8_ + _loc5_;
-            _loc11_ = _loc9_ + _loc6_;
-            _loc14_ = this.m_MapData.GetMapRoom3Cell(_loc10_,_loc11_);
-            _loc16_ = _loc14_.inAttackRangeOfCells;
-            _loc13_ = 0;
-            while(_loc14_ != null)
+            bufferOffsetX = bufferIndex % bufferWidth;
+            bufferOffsetY = int(bufferIndex / bufferWidth);
+            mapX = bufferOffsetX + topLeftX;
+            mapY = bufferOffsetY + topLeftY;
+            cell = this.m_MapData.GetMapRoom3Cell(mapX,mapY);
+            attackRangeCells = cell.inAttackRangeOfCells;
+            attackRangeIndex = 0;
+            while(cell != null)
             {
-               if(_loc14_.isBorder)
+               if(cell.isBorder)
                {
-                  _loc12_ = (_loc11_ + this.m_MapData.mapHeight) % this.m_MapData.mapHeight * this.m_MapData.mapWidth + (_loc10_ + this.m_MapData.mapWidth) % this.m_MapData.mapWidth;
+                  cellIndex = (mapY + this.m_MapData.mapHeight) % this.m_MapData.mapHeight * this.m_MapData.mapWidth + (mapX + this.m_MapData.mapWidth) % this.m_MapData.mapWidth;
                }
                else
                {
-                  _loc12_ = _loc14_.cellY * this.m_MapData.mapWidth + _loc14_.cellX;
+                  cellIndex = cell.cellY * this.m_MapData.mapWidth + cell.cellX;
                }
-               if(this.m_TileLookup[_loc12_] == null)
+               if(this.m_TileLookup[cellIndex] == null)
                {
-                  if(_loc18_.length > 0)
+                  if(unusedTiles.length > 0)
                   {
-                     _loc15_ = _loc18_.pop();
+                     tileGraphic = unusedTiles.pop();
                   }
                   else
                   {
-                     _loc15_ = new MapRoom3CellGraphic();
-                     _loc15_.addEventListener(MouseEvent.CLICK,this.OnCellGraphicClicked);
-                     _loc15_.addEventListener(MouseEvent.ROLL_OVER,this.OnCellGraphicRollOver);
-                     _loc15_.addEventListener(MouseEvent.ROLL_OUT,this.OnCellGraphicRollOut);
+                     tileGraphic = new MapRoom3CellGraphic();
+                     tileGraphic.addEventListener(MouseEvent.CLICK,this.OnCellGraphicClicked);
+                     tileGraphic.addEventListener(MouseEvent.ROLL_OVER,this.OnCellGraphicRollOver);
+                     tileGraphic.addEventListener(MouseEvent.ROLL_OUT,this.OnCellGraphicRollOut);
                   }
-                  this.m_TileBuffer.push(_loc15_);
-                  _loc15_.cellIndex = _loc12_;
-                  this.m_TileLookup[_loc12_] = _loc15_;
-                  _loc15_.x = _loc10_ * MapRoom3CellGraphic.HEX_WIDTH + (!!(_loc11_ % 2) ? MapRoom3CellGraphic.HEX_WIDTH * 0.5 : 0);
-                  _loc15_.y = _loc11_ * MapRoom3CellGraphic.HEX_HEIGHT_OVERLAP;
-                  _loc15_.setMapCell(_loc14_);
-                  _loc19_ = 0;
-                  _loc20_ = this.m_TileLayer.numChildren;
-                  while(_loc19_ < _loc20_)
+                  this.m_TileBuffer.push(tileGraphic);
+                  tileGraphic.cellIndex = cellIndex;
+                  this.m_TileLookup[cellIndex] = tileGraphic;
+                  tileGraphic.x = mapX * MapRoom3CellGraphic.HEX_WIDTH + (!!(mapY % 2) ? MapRoom3CellGraphic.HEX_WIDTH * 0.5 : 0);
+                  tileGraphic.y = mapY * MapRoom3CellGraphic.HEX_HEIGHT_OVERLAP;
+                  tileGraphic.setMapCell(cell);
+                  insertIndex = 0;
+                  numChildren = this.m_TileLayer.numChildren;
+                  while(insertIndex < numChildren)
                   {
-                     _loc21_ = (_loc19_ + _loc20_) * 0.5;
-                     _loc22_ = _loc15_.x - this.m_TileLayer.getChildAt(_loc21_).x;
-                     _loc23_ = _loc15_.y - this.m_TileLayer.getChildAt(_loc21_).y;
-                     if(_loc23_ < 0 || _loc23_ == 0 && _loc22_ <= 0)
+                     midIndex = (insertIndex + numChildren) * 0.5;
+                     dx = tileGraphic.x - this.m_TileLayer.getChildAt(midIndex).x;
+                     dy = tileGraphic.y - this.m_TileLayer.getChildAt(midIndex).y;
+                     if(dy < 0 || dy == 0 && dx <= 0)
                      {
-                        _loc20_ = _loc21_;
+                        numChildren = midIndex;
                      }
                      else
                      {
-                        _loc19_ = _loc21_ + 1;
+                        insertIndex = midIndex + 1;
                      }
                   }
-                  this.m_TileLayer.addChildAt(_loc15_,_loc19_);
+                  this.m_TileLayer.addChildAt(tileGraphic,insertIndex);
                }
-               _loc14_ = null;
-               if(_loc16_ != null && _loc13_ < _loc16_.length)
+               cell = null;
+               if(attackRangeCells != null && attackRangeIndex < attackRangeCells.length)
                {
-                  _loc14_ = _loc16_[_loc13_++];
-                  _loc10_ = _loc14_.cellX;
-                  _loc11_ = _loc14_.cellY;
+                  cell = attackRangeCells[attackRangeIndex++];
+                  mapX = cell.cellX;
+                  mapY = cell.cellY;
                }
             }
-            _loc7_++;
+            bufferIndex++;
          }
-         for each(_loc15_ in _loc18_)
+         for each(tileGraphic in unusedTiles)
          {
-            _loc15_.removeEventListener(MouseEvent.CLICK,this.OnCellGraphicClicked);
-            _loc15_.removeEventListener(MouseEvent.ROLL_OVER,this.OnCellGraphicRollOver);
-            _loc15_.removeEventListener(MouseEvent.ROLL_OUT,this.OnCellGraphicRollOut);
-            _loc15_.Clear();
-            _loc15_ = null;
+            tileGraphic.removeEventListener(MouseEvent.CLICK,this.OnCellGraphicClicked);
+            tileGraphic.removeEventListener(MouseEvent.ROLL_OVER,this.OnCellGraphicRollOver);
+            tileGraphic.removeEventListener(MouseEvent.ROLL_OUT,this.OnCellGraphicRollOut);
+            tileGraphic.Clear();
+            tileGraphic = null;
          }
-         _loc18_.length = 0;
-         if(this.m_RangeGlowLayer.numChildren != _rangeGlowCount || param1)
+         unusedTiles.length = 0;
+         if(this.m_RangeGlowLayer.numChildren != _rangeGlowCount || forceUpdate)
          {
             this.m_RangeGlowCacheDirty = true;
          }
-         if(this.m_MouseoverRangeGlowLayer.numChildren != _mouseoverGlowCount || param1)
+         if(this.m_MouseoverRangeGlowLayer.numChildren != _mouseoverGlowCount || forceUpdate)
          {
             this.m_MouseoverRangeGlowCacheDirty = true;
          }
