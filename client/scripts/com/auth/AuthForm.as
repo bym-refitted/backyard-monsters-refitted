@@ -13,20 +13,16 @@ package com.auth
     import flash.ui.MouseCursor;
     import flash.ui.Mouse;
     import flash.text.TextFormat;
-    import flash.filters.DropShadowFilter;
     import flash.display.Bitmap;
     import flash.display.Loader;
     import flash.net.URLRequest;
     import flash.events.FocusEvent;
     import flash.text.TextFormatAlign;
-    import flash.system.LoaderContext;
-    import flash.geom.Rectangle;
     import flash.events.IOErrorEvent;
     import flash.utils.Timer;
     import flash.events.TimerEvent;
-    import flash.events.SecurityErrorEvent;
     import flash.net.SharedObject;
-    import flash.display.StageAlign;
+    import flash.geom.Rectangle;
 
     // TODO: This file needs a complete refactor. It is currently very messy and hard to read.
     public class AuthForm extends Sprite
@@ -103,7 +99,7 @@ package com.auth
 
         private var BACKGROUND:uint = 0x1D232A;
 
-        private var LIGHT_GRAY = 0xC9C9C9;
+        private var LIGHT_GRAY:uint = 0xC9C9C9;
 
         private var PRIMARY:uint = 0x004DE5;
 
@@ -132,6 +128,7 @@ package com.auth
         private var background:Sprite;
         private var contentContainer:Sprite;
         private var originalStageAlign:String;
+
         private const DESIGN_WIDTH:Number = 760;
         private const DESIGN_HEIGHT:Number = 670;
 
@@ -195,10 +192,6 @@ package com.auth
         {
             removeEventListener(Event.ADDED_TO_STAGE, formAddedToStageHandler);
 
-            // Store original alignment and set TOP_LEFT for AuthForm
-            originalStageAlign = stage.align;
-            stage.align = StageAlign.TOP_LEFT;
-
             drawBackground();
             centerContent();
             stage.addEventListener(Event.RESIZE, onStageResize);
@@ -222,20 +215,25 @@ package com.auth
         {
             drawBackground();
             centerContent();
+            GLOBAL.RefreshScreen();
+            GLOBAL.ResizeLayer(GLOBAL._layerTop);
         }
 
         private function drawBackground():void
         {
+            // slight hack but its only 2-lines of shit
+            var offsetX:Number = -(stage.stageWidth - DESIGN_WIDTH) / 2;
+            var offsetY:Number = -(stage.stageHeight - DESIGN_HEIGHT) / 2;
             background.graphics.clear();
             background.graphics.beginFill(BACKGROUND);
-            background.graphics.drawRect(0, 0, stage.stageWidth, stage.stageHeight);
+            background.graphics.drawRect(offsetX, offsetY, stage.stageWidth, stage.stageHeight);
             background.graphics.endFill();
         }
 
         private function centerContent():void
         {
-            contentContainer.x = (stage.stageWidth - DESIGN_WIDTH) / 2;
-            contentContainer.y = (stage.stageHeight - DESIGN_HEIGHT) / 2;
+            contentContainer.x = 0;
+            contentContainer.y = 0;
         }
 
         private function handleContentLoaded():void
@@ -810,7 +808,7 @@ package com.auth
             }
         }
 
-        function createSelectInput(defaultOption:String = "English"):Sprite
+        private function createSelectInput(defaultOption:String = "English"):Sprite
         {
             selectField = new Sprite();
             var selectWidth:Number = 80;
@@ -872,7 +870,7 @@ package com.auth
         // Function to handle language select event
         private function langSelectClickHandler(event:MouseEvent):void
         {
-            var selectedLanguage = event.currentTarget.text;
+            var selectedLanguage: String = event.currentTarget.text;
             defaultText.text = selectedLanguage;
             defaultText.width = 200;
             dropdownMenu.visible = true;
@@ -972,7 +970,7 @@ package com.auth
             mousePointerCursor(authLinkContainer);
 
             formContainer.addChild(authLinkContainer);
-            authLinkContainer.addEventListener(MouseEvent.CLICK, function(event:Event)
+            authLinkContainer.addEventListener(MouseEvent.CLICK, function(event:Event):void
                 {
                     isRegisterForm = !isRegisterForm;
                     updateState();
@@ -1169,10 +1167,9 @@ package com.auth
                 }
                 else
                 {
-                    new URLLoaderApi().load(GLOBAL._apiURL + "bm/getnewmap", null, postAuthDetails, function(event:IOErrorEvent):void
-                        {
-                            GLOBAL.Message("We cannot connect you to the server at this time. Please try again later or check our server status.");
-                        });
+                    // Authentication call
+                    const authInfo:Array = [["email", emailValue], ["password", passwordValue]];
+                    LOGIN.AuthenticateUser(authInfo);
                 }
             }
             else
@@ -1192,10 +1189,6 @@ package com.auth
             }
         }
 
-        private function postAuthDetails(serverData:Object):void
-        {
-            LOGIN.OnGetNewMap(serverData, [["email", emailValue], ["password", passwordValue]]);
-        }
 
         private function registerNewUser(serverData:Object):void
         {
@@ -1301,10 +1294,8 @@ package com.auth
 
         public function disposeUI():void
         {
-            // Restore original stage alignment and remove listener
             if (stage)
             {
-                stage.align = originalStageAlign;
                 stage.removeEventListener(Event.RESIZE, onStageResize);
             }
 
