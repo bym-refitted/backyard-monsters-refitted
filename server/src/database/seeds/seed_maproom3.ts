@@ -12,6 +12,8 @@ import { joinNewWorldMap } from "../../services/maproom/v3/joinNewWorldMap.js";
 import { MapRoom3 } from "../../enums/MapRoom.js";
 import { logger } from "../../utils/logger.js";
 
+const NEXT_USER_BASEID = `SELECT nextval('bym.user_baseid_seq') AS baseid`;
+
 /**
  * Seed the database with Map Room 3 dummy users.
  *
@@ -50,12 +52,17 @@ import { logger } from "../../utils/logger.js";
       const user = em.create(User, { ...userData, password: hashedPassword });
       await em.persistAndFlush(user);
 
-      // Create a default save for the user
+      // Create a default save for the user with proper baseid generation
       const saveData = getDefaultBaseData(user, BaseType.MAIN);
       const save = em.create(Save, { ...saveData, saveuserid: user.userid });
-      user.save = save;
 
-      // Persist save first to generate baseid
+      // Generate baseid from sequence (same as Save.createMainSave)
+      const [result] = await em.execute<[{ baseid: string }]>(NEXT_USER_BASEID);
+      const baseid = result.baseid;
+      save.baseid = baseid;
+      save.homebaseid = parseInt(baseid, 10);
+
+      user.save = save;
       await em.persistAndFlush(save);
 
       // Join user to Map Room 3 world and assign them a cell
