@@ -17,7 +17,6 @@ package
    import flash.system.Security;
    import flash.net.SharedObject;
    import com.monsters.external_interface.ExternalInterfaceManager;
-   import com.auth.AuthForm;
    public class GAME extends Sprite
    {
 
@@ -38,8 +37,6 @@ package
       private var _previousDistance:Number = 0;
 
       private var _scaleFactor:Number = 1;
-
-      private var _authFormContainer:Sprite;
 
       public function GAME()
       {
@@ -86,39 +83,6 @@ package
          GLOBAL.CallJS("cc.enableMouseWheel");
       }
 
-
-      /**
-       * Adds the authentication form to the display list and returns the instance of the added form.
-       * 
-       * @param {AuthForm} authForm - The instance of the AuthForm to be added to the display list.
-       * @return {Sprite} - The instance of the added AuthForm as a Sprite.
-       */
-      public function addAuthForm(authForm: AuthForm):Sprite
-      {
-         if (this._authFormContainer == null)
-         {
-       * @return {AuthForm} - The instance of the added AuthForm.
-       */
-      public function addAuthForm(authForm: AuthForm):AuthForm
-      {
-         this._authFormContainer.addChild(authForm);
-         return authForm;
-      }
-
-      /**
-       * Removes the specified authentication form from the display list.
-       * WARNING: The caller must dispose of the AuthForm instance separately.
-       * 
-       * @param {AuthForm} authForm - The instance of the AuthForm to be removed from the display list.
-       */
-      public function removeAuthForm(authForm: AuthForm):void
-      {
-         if (this._authFormContainer && this._authFormContainer.contains(authForm))
-         {
-            this._authFormContainer.removeChild(authForm);
-         }
-      }
-
       public function setLauncherVars(params:Object):void
       {
          try
@@ -150,11 +114,6 @@ package
          setLauncherVars(loaderParams);
          SWFProfiler.init(stage, this);
          Security.allowDomain("*");
-         
-         // Set up the AuthForm container to be placed behind the GLOBAL._ROOT, such that error message popups are placed above the AuthForm.
-         _authFormContainer = new Sprite();
-         _authFormContainer.name = "AuthFormContainer";
-         addChild(_authFormContainer);
 
          GLOBAL.init();
          GLOBAL._baseURL = urls._baseURL;
