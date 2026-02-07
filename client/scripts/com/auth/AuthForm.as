@@ -130,6 +130,7 @@ package com.auth
         private var originalStageAlign:String;
 
         private const DESIGN_WIDTH:Number = 760;
+
         private const DESIGN_HEIGHT:Number = 670;
 
         public function AuthForm()
@@ -870,7 +871,7 @@ package com.auth
         // Function to handle language select event
         private function langSelectClickHandler(event:MouseEvent):void
         {
-            var selectedLanguage: String = event.currentTarget.text;
+            var selectedLanguage:String = event.currentTarget.text;
             defaultText.text = selectedLanguage;
             defaultText.width = 200;
             dropdownMenu.visible = true;
@@ -1167,9 +1168,10 @@ package com.auth
                 }
                 else
                 {
-                    // Authentication call
-                    const authInfo:Array = [["email", emailValue], ["password", passwordValue]];
-                    LOGIN.AuthenticateUser(authInfo);
+                    new URLLoaderApi().load(GLOBAL._apiURL + "bm/getnewmap", null, postAuthDetails, function(event:IOErrorEvent):void
+                        {
+                            GLOBAL.Message("We cannot connect you to the server at this time. Please try again later or check our server status.");
+                        });
                 }
             }
             else
@@ -1189,6 +1191,10 @@ package com.auth
             }
         }
 
+        private function postAuthDetails(serverData:Object):void
+        {
+            LOGIN.OnGetNewMap(serverData, [["email", emailValue], ["password", passwordValue]]);
+        }
 
         private function registerNewUser(serverData:Object):void
         {
@@ -1311,7 +1317,8 @@ package com.auth
             if (rememberEmailRow) rememberEmailRow.removeEventListener(MouseEvent.CLICK, onRememberEmailToggleClick);
 
             // Dispose bitmap data to free memory
-            if (image) image.bitmapData.dispose();
+            if (image)
+                image.bitmapData.dispose();
 
             // Unload loader
             if (loader)
@@ -1321,7 +1328,8 @@ package com.auth
             }
 
             // Clear background graphics
-            if (background) background.graphics.clear();
+            if (background)
+                background.graphics.clear();
 
             // Remove AuthForm from display list (removes all children too)
             if (this.parent) this.parent.removeChild(this);
