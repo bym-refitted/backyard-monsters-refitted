@@ -12,18 +12,14 @@ package com.auth
     import flash.ui.Mouse;
     import flash.events.MouseEvent;
     import flash.text.TextFormat;
-    import flash.filters.DropShadowFilter;
     import flash.display.Bitmap;
     import flash.display.Loader;
     import flash.net.URLRequest;
     import flash.events.FocusEvent;
     import flash.text.TextFormatAlign;
-    import flash.system.LoaderContext;
     import flash.events.IOErrorEvent;
     import flash.utils.Timer;
     import flash.events.TimerEvent;
-    import flash.events.SecurityErrorEvent;
-    import flash.display.StageAlign;
 
     // TODO: This file needs a complete refactor. It is currently very messy and hard to read.
     public class AuthForm extends Sprite
@@ -89,7 +85,7 @@ package com.auth
 
         private var BACKGROUND:uint = 0x1D232A;
 
-        private var LIGHT_GRAY = 0xC9C9C9;
+        private var LIGHT_GRAY:uint = 0xC9C9C9;
 
         private var PRIMARY:uint = 0x004DE5;
 
@@ -103,10 +99,8 @@ package com.auth
 
         private var contentContainer:Sprite;
 
-        private var originalStageAlign:String;
-
         private const DESIGN_WIDTH:Number = 760;
-        
+
         private const DESIGN_HEIGHT:Number = 670;
 
         public function AuthForm()
@@ -161,10 +155,6 @@ package com.auth
         {
             removeEventListener(Event.ADDED_TO_STAGE, formAddedToStageHandler);
 
-            // Store original alignment and set TOP_LEFT for AuthForm
-            originalStageAlign = stage.align;
-            stage.align = StageAlign.TOP_LEFT;
-
             drawBackground();
             centerContent();
             stage.addEventListener(Event.RESIZE, onStageResize);
@@ -188,20 +178,25 @@ package com.auth
         {
             drawBackground();
             centerContent();
+            GLOBAL.RefreshScreen();
+            GLOBAL.ResizeLayer(GLOBAL._layerTop);
         }
 
         private function drawBackground():void
         {
+            // slight hack but its only 2-lines of shit
+            var offsetX:Number = -(stage.stageWidth - DESIGN_WIDTH) / 2;
+            var offsetY:Number = -(stage.stageHeight - DESIGN_HEIGHT) / 2;
             background.graphics.clear();
             background.graphics.beginFill(BACKGROUND);
-            background.graphics.drawRect(0, 0, stage.stageWidth, stage.stageHeight);
+            background.graphics.drawRect(offsetX, offsetY, stage.stageWidth, stage.stageHeight);
             background.graphics.endFill();
         }
 
         private function centerContent():void
         {
-            contentContainer.x = (stage.stageWidth - DESIGN_WIDTH) / 2;
-            contentContainer.y = (stage.stageHeight - DESIGN_HEIGHT) / 2;
+            contentContainer.x = 0;
+            contentContainer.y = 0;
         }
 
         private function handleContentLoaded():void
@@ -508,7 +503,7 @@ package com.auth
             return input;
         }
 
-        function createSelectInput(defaultOption:String = "English"):Sprite
+        private function createSelectInput(defaultOption:String = "English"):Sprite
         {
             selectField = new Sprite();
             var selectWidth:Number = 80;
@@ -570,7 +565,7 @@ package com.auth
         // Function to handle language select event
         private function langSelectClickHandler(event:MouseEvent):void
         {
-            var selectedLanguage = event.currentTarget.text;
+            var selectedLanguage:String = event.currentTarget.text;
             defaultText.text = selectedLanguage;
             defaultText.width = 200;
             dropdownMenu.visible = true;
@@ -666,7 +661,7 @@ package com.auth
             mousePointerCursor(linkContainer);
 
             formContainer.addChild(linkContainer);
-            linkContainer.addEventListener(MouseEvent.CLICK, function(event:Event)
+            linkContainer.addEventListener(MouseEvent.CLICK, function(event:Event):void
                 {
                     isRegisterForm = !isRegisterForm;
                     updateState();
@@ -846,10 +841,8 @@ package com.auth
 
         public function disposeUI():void
         {
-            // Restore original stage alignment and remove listener
             if (stage)
             {
-                stage.align = originalStageAlign;
                 stage.removeEventListener(Event.RESIZE, onStageResize);
             }
 
@@ -861,10 +854,12 @@ package com.auth
             }
 
             // Remove event listeners
-            if (submitButton) submitButton.removeEventListener(MouseEvent.CLICK, submitButtonClickHandler);
+            if (submitButton)
+                submitButton.removeEventListener(MouseEvent.CLICK, submitButtonClickHandler);
 
             // Dispose bitmap data to free memory
-            if (image) image.bitmapData.dispose();
+            if (image)
+                image.bitmapData.dispose();
 
             // Unload loader
             if (loader)
@@ -874,9 +869,11 @@ package com.auth
             }
 
             // Clear background graphics
-            if (background) background.graphics.clear();
+            if (background)
+                background.graphics.clear();
 
-            if (this.parent) this.parent.removeChild(this);
+            if (this.parent)
+                this.parent.removeChild(this);
         }
 
     }
