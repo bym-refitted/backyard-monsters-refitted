@@ -95,23 +95,27 @@ package
        */
       public function addAuthForm(authForm: AuthForm):Sprite
       {
+         if (this._authFormContainer == null)
+         {
+            this._authFormContainer = new Sprite();
+            this.addChild(this._authFormContainer);
+         }
+
          return this._authFormContainer.addChild(authForm);
       }
 
       /**
-       * Removes the specified authentication form from the display list and disposes of its container.
+       * Removes the specified authentication form from the display list.
        * WARNING: The caller must dispose of the AuthForm instance separately.
        * 
        * @param {AuthForm} authForm - The instance of the AuthForm to be removed from the display list.
        */
       public function removeAuthForm(authForm: AuthForm):void
       {
-         if (this._authFormContainer.contains(authForm))
+         if (this._authFormContainer && this._authFormContainer.contains(authForm))
          {
             this._authFormContainer.removeChild(authForm);
          }
-         this.removeChild(this._authFormContainer);
-         this._authFormContainer = null;
       }
 
       public function setLauncherVars(params:Object):void
