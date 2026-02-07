@@ -97,11 +97,12 @@ package
       {
          if (this._authFormContainer == null)
          {
-            this._authFormContainer = new Sprite();
-            this.addChild(this._authFormContainer);
-         }
-
-         return this._authFormContainer.addChild(authForm);
+       * @return {AuthForm} - The instance of the added AuthForm.
+       */
+      public function addAuthForm(authForm: AuthForm):AuthForm
+      {
+         this._authFormContainer.addChild(authForm);
+         return authForm;
       }
 
       /**
