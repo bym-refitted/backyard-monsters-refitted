@@ -480,7 +480,8 @@ package com.monsters.pathing
                            {
                               for (var nearbyOffsetY:int = -3; nearbyOffsetY < 4; nearbyOffsetY++)
                               {
-                                 if (nearbyOffsetX == 0 && nearbyOffsetY == 0) continue;
+                                 // Monsters scatter towards diagonal positions
+                                 if (nearbyOffsetX == 0 || nearbyOffsetY == 0) continue;
 
                                  var nearbyGridKey:int = (currentX + nearbyOffsetX) * 1000 + currentY + nearbyOffsetY;
                                  if (floodFill[nearbyGridKey] && floodFill[nearbyGridKey].depth < 20 && floodFill[nearbyGridKey].depth > 0)
