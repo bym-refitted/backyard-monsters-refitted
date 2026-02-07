@@ -47,7 +47,7 @@ export const playerCell = (ctx: Context, cell: WorldMapCell, cellOwners: Map<num
     p: 0,
     d: 0,
     t: 0,
-    rel: EnumBaseRelationship.SELF,
+    rel: mine ? EnumBaseRelationship.SELF : EnumBaseRelationship.ENEMY,
     pic_square: cellOwner.pic_square,
   };
 };
