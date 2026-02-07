@@ -85,7 +85,7 @@ package com.auth
 
         private var BACKGROUND:uint = 0x1D232A;
 
-        private var LIGHT_GRAY = 0xC9C9C9;
+        private var LIGHT_GRAY:uint = 0xC9C9C9;
 
         private var PRIMARY:uint = 0x004DE5;
 
@@ -100,7 +100,7 @@ package com.auth
         private var contentContainer:Sprite;
 
         private const DESIGN_WIDTH:Number = 760;
-        
+
         private const DESIGN_HEIGHT:Number = 670;
 
         public function AuthForm()
@@ -503,7 +503,7 @@ package com.auth
             return input;
         }
 
-        function createSelectInput(defaultOption:String = "English"):Sprite
+        private function createSelectInput(defaultOption:String = "English"):Sprite
         {
             selectField = new Sprite();
             var selectWidth:Number = 80;
@@ -565,7 +565,7 @@ package com.auth
         // Function to handle language select event
         private function langSelectClickHandler(event:MouseEvent):void
         {
-            var selectedLanguage = event.currentTarget.text;
+            var selectedLanguage:String = event.currentTarget.text;
             defaultText.text = selectedLanguage;
             defaultText.width = 200;
             dropdownMenu.visible = true;
@@ -661,7 +661,7 @@ package com.auth
             mousePointerCursor(linkContainer);
 
             formContainer.addChild(linkContainer);
-            linkContainer.addEventListener(MouseEvent.CLICK, function(event:Event)
+            linkContainer.addEventListener(MouseEvent.CLICK, function(event:Event):void
                 {
                     isRegisterForm = !isRegisterForm;
                     updateState();
@@ -749,9 +749,10 @@ package com.auth
                 }
                 else
                 {
-                    // Authentication call
-                    const authInfo:Array = [["email", emailValue], ["password", passwordValue]];
-                    LOGIN.AuthenticateUser(authInfo);
+                    new URLLoaderApi().load(GLOBAL._apiURL + "bm/getnewmap", null, postAuthDetails, function(event:IOErrorEvent):void
+                        {
+                            GLOBAL.Message("We cannot connect you to the server at this time. Please try again later or check our server status.");
+                        });
                 }
             }
             else
@@ -771,6 +772,10 @@ package com.auth
             }
         }
 
+        private function postAuthDetails(serverData:Object):void
+        {
+            LOGIN.OnGetNewMap(serverData, [["email", emailValue], ["password", passwordValue]]);
+        }
 
         private function registerNewUser(serverData:Object):void
         {
@@ -854,10 +859,12 @@ package com.auth
             }
 
             // Remove event listeners
-            if (submitButton) submitButton.removeEventListener(MouseEvent.CLICK, submitButtonClickHandler);
+            if (submitButton)
+                submitButton.removeEventListener(MouseEvent.CLICK, submitButtonClickHandler);
 
             // Dispose bitmap data to free memory
-            if (image) image.bitmapData.dispose();
+            if (image)
+                image.bitmapData.dispose();
 
             // Unload loader
             if (loader)
@@ -867,9 +874,11 @@ package com.auth
             }
 
             // Clear background graphics
-            if (background) background.graphics.clear();
+            if (background)
+                background.graphics.clear();
 
-            if (this.parent) this.parent.removeChild(this);
+            if (this.parent)
+                this.parent.removeChild(this);
         }
 
     }
