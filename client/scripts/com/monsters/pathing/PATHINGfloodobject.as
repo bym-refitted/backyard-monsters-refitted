@@ -10,17 +10,11 @@ package com.monsters.pathing
       
       public var flood:Object;
       
-      public var start:Object;
-      
       public var edge:Object;
       
       public var minDepth:int = 9999999;
       
       public var startpoints:Object;
-      
-      public var edgeLength:int = 0;
-      
-      public var endPoint:Point;
       
       public var ignoreWalls:Boolean = false;
       
