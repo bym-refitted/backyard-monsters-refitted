@@ -59,7 +59,7 @@ package
          else
          {
             authForm = new AuthForm();
-            GAME._instance.addChild(authForm);
+            GLOBAL._layerTop.addChild(authForm);
          }
       }
 
