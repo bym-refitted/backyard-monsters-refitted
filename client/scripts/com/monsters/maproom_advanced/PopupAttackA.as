@@ -397,7 +397,7 @@ package com.monsters.maproom_advanced
                twigBombLevel = 0;
                while (twigBombLevel < 3)
                {
-                  if (this._attackResources.r1 < ResourceBombs._bombs["tw" + twigBombLevel].cost)
+                  if (this._attackResources.r1 < ResourceBombs._bombs["tw" + twigBombLevel].cost.Get())
                   {
                      break;
                   }
@@ -410,7 +410,7 @@ package com.monsters.maproom_advanced
                twigBombLevel = 0;
                while (twigBombLevel < 4)
                {
-                  if (this._attackResources.r2 < ResourceBombs._bombs["pb" + twigBombLevel].cost)
+                  if (this._attackResources.r2 < ResourceBombs._bombs["pb" + twigBombLevel].cost.Get())
                   {
                      break;
                   }
@@ -423,7 +423,7 @@ package com.monsters.maproom_advanced
                twigBombLevel = 0;
                while (twigBombLevel < 4)
                {
-                  if (this._attackResources.r3 < ResourceBombs._bombs["pu" + twigBombLevel].cost)
+                  if (this._attackResources.r3 < ResourceBombs._bombs["pu" + twigBombLevel].cost.Get())
                   {
                      break;
                   }
