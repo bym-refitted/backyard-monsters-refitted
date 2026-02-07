@@ -17,7 +17,7 @@ export enum MapRoom2 {
 export enum MapRoom3 {
   WIDTH = 500,
   HEIGHT = 500,
-  MAX_PLAYERS = 1800,
+  MAX_PLAYERS = 1400,
 }
 
 /**
