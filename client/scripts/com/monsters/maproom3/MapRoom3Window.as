@@ -920,9 +920,9 @@ package com.monsters.maproom3
 
          // Calculate the snapshot area with padding for the filter bleed
          var bounds:Rectangle = glowLayer.getBounds(glowLayer);
-         var padding:Number = glowFilter.inner ? 2 : Math.max(glowFilter.blurX,glowFilter.blurY) * 2;
+         var padding:Number = glowFilter.inner ? 2 : Math.max(glowFilter.blurX, glowFilter.blurY) * 2;
          
-         bounds.inflate(padding,padding);
+         bounds.inflate(padding, padding);
 
          var bmdWidth:int = Math.ceil(bounds.width);
          var bmdHeight:int = Math.ceil(bounds.height);
