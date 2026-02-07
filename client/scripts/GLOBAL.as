@@ -445,6 +445,9 @@ package
       
       public static var versionMismatch:Boolean = false;
 
+      // Counter for blocker instances. Only used to give unique names to blocker movie clips.
+      private static var _blockerCounter:int = 0;
+
       public function GLOBAL()
       {
          super();
@@ -2003,6 +2006,7 @@ package
          _loc2_.height = GLOBAL._ROOT.stage.stageHeight;
          _loc2_.x = GLOBAL._SCREEN.x;
          _loc2_.y = GLOBAL._SCREEN.y;
+         _loc2_.name = "blocker_" + (++_blockerCounter);
          _blockerList.push(_loc2_);
       }
 

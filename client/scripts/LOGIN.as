@@ -59,7 +59,7 @@ package
          else
          {
             authForm = new AuthForm();
-            GAME._instance.addChild(authForm);
+            GAME._instance.addAuthForm(authForm);
          }
       }
 
@@ -168,6 +168,7 @@ package
       {
          if (authForm)
          {
+            GAME._instance.removeAuthForm(authForm);
             authForm.disposeUI();
             authForm = null;
          }

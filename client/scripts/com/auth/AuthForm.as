@@ -111,6 +111,7 @@ package com.auth
 
         public function AuthForm()
         {
+            name = "AuthForm";
             background = new Sprite();
             addChild(background);
 

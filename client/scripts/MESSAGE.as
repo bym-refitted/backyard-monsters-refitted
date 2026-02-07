@@ -19,6 +19,9 @@ package
       public var _args:Array;
       
       public var _args2:Array;
+
+      // Static counter to give unique names to message movie clip instances.
+      private static var messageIdCounter:int = 0;
       
       public function MESSAGE()
       {
@@ -61,6 +64,7 @@ package
          bAction2.y = mcBG.y + mcBG.height - 45;
          GLOBAL.BlockerAdd(GLOBAL._layerTop);
          this._mc = GLOBAL._layerTop.addChild(this) as MESSAGE_CLIP;
+         this._mc.name = "MESSAGE_" + (++messageIdCounter);
          this._mc.Center();
          this._mc.ScaleUp();
          return this;

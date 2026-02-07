@@ -161,6 +161,9 @@ package
             case 408:
                LOGGER.Log("err", "URLLoaderApi HTTP status " + this._status + " Request Timeout");
                break;
+            case 409:
+               LOGGER.Log("err", "URLLoaderApi HTTP status " + this._status + " Conflict");
+               break;
             case 500:
                LOGGER.Log("err", "URLLoaderApi HTTP status " + this._status + " Internal Server Error");
                break;
