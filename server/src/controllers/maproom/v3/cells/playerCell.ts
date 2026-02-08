@@ -3,7 +3,6 @@ import type { User } from "../../../../models/user.model.js";
 import type { WorldMapCell } from "../../../../models/worldmapcell.model.js";
 import type { CellData } from "../../../../types/CellData.js";
 import { EnumBaseRelationship } from "../../../../enums/EnumBaseRelationship.js";
-import { EnumYardType } from "../../../../enums/EnumYardType.js";
 import { calculateBaseLevel } from "../../../../services/base/calculateBaseLevel.js";
 import { logger } from "../../../../utils/logger.js";
 
@@ -30,7 +29,7 @@ export const playerCell = (ctx: Context, cell: WorldMapCell, cellOwners: Map<num
   // TODO: sort out the rest of the properties, refer to userCell.ts
   return {
     uid: cellOwner.userid,
-    b: EnumYardType.PLAYER,
+    b: cell.base_type,
     bid: cell.baseid,
     n: cellOwner.username,
     tid: 0,
