@@ -35,11 +35,16 @@ export const getMapRoomCells: KoaController = async (ctx) => {
       return;
     }
 
-    // Convert the IDs the client sends to coordinates
-    const requestedCoords: Coord[] = cellids.map((id) => ({
-      x: id % MapRoom3.WIDTH,
-      y: Math.floor(id / MapRoom3.WIDTH),
-    }));
+    // Note: the client uses 1-based cell IDs (MapRoom3.as: CalculateCellId: y * width + x + 1)
+    // so that cellId 0 can serve as a "no cell" sentinel for uninitialized AS3 ints.
+    // Subtract 1 here to convert back to 0-based grid coordinates.
+    const requestedCoords: Coord[] = cellids.map((id) => {
+      const zeroBasedId = id - 1;
+      return {
+        x: zeroBasedId % MapRoom3.WIDTH,
+        y: Math.floor(zeroBasedId / MapRoom3.WIDTH),
+      };
+    });
 
     const generateCells = getGeneratedCells();
 

@@ -1,4 +1,7 @@
 import { EnumYardType } from "../enums/EnumYardType.js";
+import { strongholds } from "../data/tribes/v3/strongholds.js";
+import { resources } from "../data/tribes/v3/resources.js";
+import { defenders } from "../data/tribes/v3/defenders.js";
 
 /**
  * The seed for cell generation. Changing this will produce a different cell layout.
@@ -80,6 +83,13 @@ export const STRUCTURE_LEVELS: Record<number, number[]> = {
 export const STRUCTURE_RANGE: Record<number, Record<number, number>> = {
   [EnumYardType.STRONGHOLD]: { 30: 10, 40: 15, 50: 20 },
   [EnumYardType.RESOURCE]: { 10: 2, 20: 3, 30: 4, 40: 5, 50: 6 },
+};
+
+/** Save data templates per structure type and level. */
+export const STRUCTURE_SAVES: Record<number, Record<number, Record<string, any>>> = {
+  [EnumYardType.STRONGHOLD]: strongholds,
+  [EnumYardType.RESOURCE]: resources,
+  [EnumYardType.FORTIFICATION]: defenders,
 };
 
 /** Defender levels per parent structure type and level. */

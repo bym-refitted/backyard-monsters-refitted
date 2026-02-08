@@ -47,7 +47,7 @@ export const defenders: Record<number, Record<string, any>> = {
     attackid: 0,
     purchasecomplete: 0,
     buildingdata: {
-      "0": { X: -70, Y: 0, t: 14, id: 0 },
+      "0": { X: -70, Y: 0, t: 140, id: 0 },
     },
     buildingkeydata: {},
     researchdata: {},
@@ -150,7 +150,7 @@ export const defenders: Record<number, Record<string, any>> = {
     attackid: 0,
     purchasecomplete: 0,
     buildingdata: {
-      "0": { X: -70, Y: 0, t: 14, id: 0 },
+      "0": { X: -70, Y: 0, t: 140, id: 0 },
     },
     buildingkeydata: {},
     researchdata: {},
@@ -253,7 +253,7 @@ export const defenders: Record<number, Record<string, any>> = {
     attackid: 0,
     purchasecomplete: 0,
     buildingdata: {
-      "0": { X: -70, Y: 0, t: 14, id: 0 },
+      "0": { X: -70, Y: 0, t: 140, id: 0 },
     },
     buildingkeydata: {},
     researchdata: {},
@@ -356,7 +356,7 @@ export const defenders: Record<number, Record<string, any>> = {
     attackid: 0,
     purchasecomplete: 0,
     buildingdata: {
-      "0": { X: -70, Y: 0, t: 14, id: 0 },
+      "0": { X: -70, Y: 0, t: 140, id: 0 },
     },
     buildingkeydata: {},
     researchdata: {},
@@ -459,7 +459,7 @@ export const defenders: Record<number, Record<string, any>> = {
     attackid: 0,
     purchasecomplete: 0,
     buildingdata: {
-      "0": { X: -70, Y: 0, t: 14, id: 0 },
+      "0": { X: -70, Y: 0, t: 140, id: 0 },
     },
     buildingkeydata: {},
     researchdata: {},
@@ -562,7 +562,7 @@ export const defenders: Record<number, Record<string, any>> = {
     attackid: 0,
     purchasecomplete: 0,
     buildingdata: {
-      "0": { X: -70, Y: 0, t: 14, id: 0 },
+      "0": { X: -70, Y: 0, t: 140, id: 0 },
     },
     buildingkeydata: {},
     researchdata: {},
@@ -665,7 +665,7 @@ export const defenders: Record<number, Record<string, any>> = {
     attackid: 0,
     purchasecomplete: 0,
     buildingdata: {
-      "0": { X: -70, Y: 0, t: 14, id: 0 },
+      "0": { X: -70, Y: 0, t: 140, id: 0 },
     },
     buildingkeydata: {},
     researchdata: {},
@@ -768,7 +768,7 @@ export const defenders: Record<number, Record<string, any>> = {
     attackid: 0,
     purchasecomplete: 0,
     buildingdata: {
-      "0": { X: -70, Y: 0, t: 14, id: 0 },
+      "0": { X: -70, Y: 0, t: 140, id: 0 },
     },
     buildingkeydata: {},
     researchdata: {},
@@ -871,7 +871,7 @@ export const defenders: Record<number, Record<string, any>> = {
     attackid: 0,
     purchasecomplete: 0,
     buildingdata: {
-      "0": { X: -70, Y: 0, t: 14, id: 0 },
+      "0": { X: -70, Y: 0, t: 140, id: 0 },
     },
     buildingkeydata: {},
     researchdata: {},
@@ -974,7 +974,7 @@ export const defenders: Record<number, Record<string, any>> = {
     attackid: 0,
     purchasecomplete: 0,
     buildingdata: {
-      "0": { X: -70, Y: 0, t: 14, id: 0 },
+      "0": { X: -70, Y: 0, t: 140, id: 0 },
     },
     buildingkeydata: {},
     researchdata: {},
