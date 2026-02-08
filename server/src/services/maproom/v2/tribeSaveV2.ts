@@ -8,7 +8,7 @@ import { kozu } from "../../../data/tribes/v2/kozu.js";
 import { legionnaire } from "../../../data/tribes/v2/legionnaire.js";
 
 /**
- * Generates a save for a wild monster based on the given base ID.
+ * Generates a save for a wild monster on Map Room 2 based on the given base ID.
  *
  * The base ID is used to calculate the cell coordinates (`cellX`, `cellY`)
  * and derive a tribe index from the combined coordinates. Based on the tribe index,
@@ -17,7 +17,7 @@ import { legionnaire } from "../../../data/tribes/v2/legionnaire.js";
  * @param {string} baseid - The base ID as a string, which will be converted to an integer.
  * @returns {Save} - A new `Save` object for the wild monster, with tribe-specific data.
  */
-export const wildMonsterSave = (baseid: string) => {
+export const tribeSaveV2 = (baseid: string) => {
   const cellX = parseInt(baseid.slice(-6, -3));
   const cellY = parseInt(baseid.slice(-3));
 

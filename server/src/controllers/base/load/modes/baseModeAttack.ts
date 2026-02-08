@@ -1,12 +1,12 @@
 import { BaseMode, BaseType } from "../../../../enums/Base.js";
-import { MapRoomCell } from "../../../../enums/MapRoom.js";
+import { MapRoomCell, MapRoomVersion } from "../../../../enums/MapRoom.js";
 import { World } from "../../../../models/world.model.js";
 import { WorldMapCell } from "../../../../models/worldmapcell.model.js";
 import { postgres } from "../../../../server.js";
 import { damageProtection } from "../../../../services/maproom/v2/damageProtection.js";
 import { Save } from "../../../../models/save.model.js";
 import { User } from "../../../../models/user.model.js";
-import { wildMonsterSave } from "../../../../services/maproom/v2/wildMonsters.js";
+import { tribeSaveHandler } from "../../../../services/maproom/tribeSaveHandler.js";
 import { getCurrentDateTime } from "../../../../utils/getCurrentDateTime.js";
 import { validateRange } from "../../../../services/maproom/v2/validateRange.js";
 import {
@@ -28,15 +28,16 @@ export interface AttackDetails {
 /**
  * Processes an attack from a user against a specific base
  * 
- * @param user - The attacking user
- * @param baseid - ID of the base being attacked
+ * @param {User} user - The attacking user
+ * @param {string} baseid - ID of the base being attacked
+ * @param {MapRoomVersion} mapversion - Version of the map room being used
  * @returns Result of range validation check
  */
-export const baseModeAttack = async (user: User, baseid: string) => {
+export const baseModeAttack = async (user: User, baseid: string, mapversion: MapRoomVersion) => {
   const userSave: Save = user.save;
   let save = await postgres.em.findOne(Save, { baseid });
 
-  if (!save) save = wildMonsterSave(baseid);
+  if (!save) save = tribeSaveHandler(baseid, mapversion);
 
   if (save.attacks.length > 3) {
     save.attacks = save.attacks.slice(-2);
@@ -55,30 +56,35 @@ export const baseModeAttack = async (user: User, baseid: string) => {
 
   if (save.type != BaseType.TRIBE) save.attacks.push(attackDetails);
 
-  // Remove damage protection
   await damageProtection(userSave, BaseMode.ATTACK);
 
   let cell = await postgres.em.findOne(WorldMapCell, { baseid });
 
   if (!cell) {
-    const world = await postgres.em.findOne(World, {
-      uuid: userSave.worldid,
-    });
-
-    if (!world) throw new Error("No world found.");
-
-    // Derive cellX and cellY from baseid
     const cellX = parseInt(baseid.slice(-6, -3));
     const cellY = parseInt(baseid.slice(-3));
 
-    const noise = generateNoise(world.uuid);
-    const terrainHeight = getTerrainHeight(noise, cellX, cellY);
+    if (mapversion === MapRoomVersion.V3) {
+      cell = new WorldMapCell(undefined, cellX, cellY, 0);
+      cell.world_id = userSave.worldid;
+      cell.uid = save.saveuserid;
+      cell.base_type = save.wmid;
+      cell.map_version = MapRoomVersion.V3;
+      cell.baseid = baseid;
+    } else {
+      const world = await postgres.em.findOne(World, { uuid: userSave.worldid });
 
-    // Create a new cell record
-    cell = new WorldMapCell(world, cellX, cellY, terrainHeight);
-    cell.uid = save.saveuserid;
-    cell.base_type = MapRoomCell.WM;
-    cell.baseid = baseid;
+      if (!world) throw new Error("No world found.");
+
+      const noise = generateNoise(world.uuid);
+      const terrainHeight = getTerrainHeight(noise, cellX, cellY);
+
+      cell = new WorldMapCell(world, cellX, cellY, terrainHeight);
+      cell.uid = save.saveuserid;
+      cell.base_type = MapRoomCell.WM;
+      cell.map_version = MapRoomVersion.V2;
+      cell.baseid = baseid;
+    }
   }
 
   save.cell = cell;
