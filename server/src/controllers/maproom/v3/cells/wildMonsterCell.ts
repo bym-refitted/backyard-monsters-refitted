@@ -9,8 +9,8 @@ import type { CellData } from "../../../../types/CellData.js";
  * Formats a wild monster cell (stronghold, resource outpost, or defender) for Map Room 3.
  * Mirrors the MR2 wildMonsterCell pattern — deterministic tribe, level, and base ID from coordinates.
  *
- * @param cell - WorldMapCell with x, y, base_type
- * @param worldId - The world UUID for base ID generation
+ * @param {WorldMapCell} cell - WorldMapCell with x, y, base_type
+ * @param {string} worldId - The world UUID for base ID generation
  * @returns Formatted wild monster cell data
  */
 export const wildMonsterCell = async (cell: WorldMapCell, worldId: string): Promise<CellData> => {

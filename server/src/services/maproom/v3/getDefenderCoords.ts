@@ -13,9 +13,9 @@ export const isDefensiveStructure = (type?: number): boolean =>
 /**
  * Returns the 6 surrounding defender coordinates for a cell.
  *
- * @param x - Cell x coordinate
- * @param y - Cell y coordinate
- * @param cellType - Cell type. Defaults to PLAYER to return all neighbors when not specified.
+ * @param {number} x - Cell x coordinate
+ * @param {number} y - Cell y coordinate
+ * @param {EnumYardType} cellType - Cell type. Defaults to PLAYER to return all neighbors when not specified.
  * @returns Array of [x, y] coordinate tuples for defender positions
  */
 export const getDefenderCoords = (x: number, y: number, cellType = EnumYardType.PLAYER): Coord[] => {

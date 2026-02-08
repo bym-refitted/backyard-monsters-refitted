@@ -23,11 +23,11 @@ const STRONGHOLD_DEFENDER_LEVELS: Record<number, number[]> = {
  * Returns the 6 defender levels for a given parent structure type and level.
  * Player yards use fixed levels. Strongholds and resource outposts are level-dependent.
  *
- * @param parentType - EnumYardType of the parent structure
- * @param parentLevel - Level of the parent structure (ignored for PLAYER)
+ * @param {EnumYardType} parentType - EnumYardType of the parent structure
+ * @param {number} parentLevel - Level of the parent structure (ignored for PLAYER)
  * @returns Array of 6 defender levels, or null if no mapping exists
  */
-export const getDefenderLevels = (parentType: number, parentLevel?: number): number[] | null => {
+export const getDefenderLevels = (parentType: EnumYardType, parentLevel?: number) => {
   switch (parentType) {
     case EnumYardType.PLAYER:
       return PLAYER_DEFENDER_LEVELS;
