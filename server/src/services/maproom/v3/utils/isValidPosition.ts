@@ -1,4 +1,4 @@
-import { CELL_EDGE } from "../../../../config/WorldGenSettings.js";
+import { CELL_EDGE } from "../../../../config/MapRoom3Config.js";
 import { MapRoom3 } from "../../../../enums/MapRoom.js";
 
 /**

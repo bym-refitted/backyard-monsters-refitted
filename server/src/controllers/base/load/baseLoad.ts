@@ -8,7 +8,7 @@ import { FilterFrontendKeys } from "../../../utils/FrontendKey.js";
 import { getFlags } from "../../../data/flags.js";
 import { getCurrentDateTime } from "../../../utils/getCurrentDateTime.js";
 import { BaseMode, BaseType } from "../../../enums/Base.js";
-import { WORLD_SIZE } from "../../../config/WorldGenSettings.js";
+import { WORLD_SIZE } from "../../../config/MapRoom2Config.js";
 import { Status } from "../../../enums/StatusCodes.js";
 import { baseModeView } from "./modes/baseModeView.js";
 import { baseModeBuild } from "./modes/baseModeBuild.js";

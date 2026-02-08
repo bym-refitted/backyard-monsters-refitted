@@ -1,3 +1,4 @@
+import { STRUCTURE_RANGE } from "../../../../config/MapRoom3Config.js";
 import { EnumBaseRelationship } from "../../../../enums/EnumBaseRelationship.js";
 import { Tribes } from "../../../../enums/Tribes.js";
 import { WorldMapCell } from "../../../../models/worldmapcell.model.js";
@@ -33,7 +34,7 @@ export const wildMonsterCell = async (cell: WorldMapCell, worldId: string): Prom
     i: altitude,
     l: level,
     pl: 0,
-    r: 0, // TODO: add range based on the structure level + type
+    r: STRUCTURE_RANGE[cell.base_type]?.[level] ?? 0,
     dm: cell?.save?.damage || 0,
     d: cell?.save?.destroyed || 0,
     lo: 0,

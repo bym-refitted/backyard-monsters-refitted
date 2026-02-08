@@ -1,9 +1,5 @@
+import { STRUCTURE_LEVELS } from "../../../config/MapRoom3Config.js";
 import { EnumYardType } from "../../../enums/EnumYardType.js";
-
-const structureLevels: Record<number, number[]> = {
-  [EnumYardType.STRONGHOLD]: [30, 40, 50],
-  [EnumYardType.RESOURCE]: [10, 20, 30, 40, 50],
-};
 
 /**
  * Calculates a deterministic structure level based on cell coordinates
@@ -15,7 +11,7 @@ const structureLevels: Record<number, number[]> = {
  * @returns The level for this structure at these coordinates
  */
 export const calculateStructureLevel = (x: number, y: number, type: EnumYardType): number => {
-  const levels = structureLevels[type];
+  const levels = STRUCTURE_LEVELS[type];
   if (!levels?.length) return 1;
 
   const index = Math.abs(x * 73 + y * 31) % levels.length; // TODO: better way to generate pseudo-random but deterministic??

@@ -8,7 +8,7 @@ import {
   WORLD_SIZE,
   EDGE_TRANSITION_WIDTH,
   TERRAIN_SCALE,
-} from "../../../config/WorldGenSettings.js";
+} from "../../../config/MapRoom2Config.js";
 
 /**
  * Generates simplex noise based on a given seed.
