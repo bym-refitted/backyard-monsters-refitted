@@ -1,22 +1,9 @@
-import { strongholds } from "../../../data/tribes/v3/strongholds.js";
-import { resources } from "../../../data/tribes/v3/resources.js";
 import { EnumYardType } from "../../../enums/EnumYardType.js";
 
-const dataByType: Record<number, Record<number, Record<string, any>>> = {
-  [EnumYardType.STRONGHOLD]: strongholds,
-  [EnumYardType.RESOURCE]: resources,
+const structureLevels: Record<number, number[]> = {
+  [EnumYardType.STRONGHOLD]: [30, 40, 50],
+  [EnumYardType.RESOURCE]: [10, 20, 30, 40, 50],
 };
-
-/**
- * Pre-computed sorted level arrays per structure type.
- */
-const levelsByType: Record<number, number[]> = {};
-
-for (const [type, data] of Object.entries(dataByType)) {
-  levelsByType[Number(type)] = Object.keys(data)
-    .map(Number)
-    .sort((a, b) => a - b);
-}
 
 /**
  * Calculates a deterministic structure level based on cell coordinates
@@ -28,9 +15,9 @@ for (const [type, data] of Object.entries(dataByType)) {
  * @returns The level for this structure at these coordinates
  */
 export const calculateStructureLevel = (x: number, y: number, type: EnumYardType): number => {
-  const levels = levelsByType[type];
+  const levels = structureLevels[type];
   if (!levels?.length) return 1;
 
-  const index = Math.abs(x * 73 + y * 31) % levels.length;
+  const index = Math.abs(x * 73 + y * 31) % levels.length; // TODO: better way to generate pseudo-random but deterministic??
   return levels[index];
 };
