@@ -15,7 +15,10 @@ import { loadFailureErr } from "../../../errors/errors.js";
 import type { KoaController } from "../../../utils/KoaController.js";
 import type { CellData } from "../../../types/CellData.js";
 import { getCellBounds, type Coord } from "../../../services/maproom/v3/utils/getCellBounds.js";
+import { getDefenderLevels } from "../../../services/maproom/v3/getDefenderLevels.js";
 
+// TODO: this entire controller is a bit of a mess, but it's on the right track
+// just needs to be more explicit about what we're doing and cleaned up
 export const getMapRoomCells: KoaController = async (ctx) => {
   try {
     const { cellids } = CellSchema.parse(ctx.request.body);
@@ -52,10 +55,10 @@ export const getMapRoomCells: KoaController = async (ctx) => {
       const genCell = generateCells.get(key);
 
       // If this is a defender, find and add its parent structure + all siblings
-      if (genCell?.t === EnumYardType.FORTIFICATION) {
+      if (genCell?.type === EnumYardType.FORTIFICATION) {
         for (const [px, py] of getDefenderCoords(x, y)) {
           const parentCell = generateCells.get(`${px},${py}`);
-          if (isDefensiveStructure(parentCell?.t)) {
+          if (isDefensiveStructure(parentCell?.type)) {
             // Add parent
             coords.set(`${px},${py}`, { x: px, y: py });
             // Add all defenders around the parent (siblings)
@@ -71,7 +74,7 @@ export const getMapRoomCells: KoaController = async (ctx) => {
       }
 
       // Add defender positions for cells that have them (strongholds, resources)
-      for (const [relX, relY] of getDefenderCoords(x, y, genCell?.t)) {
+      for (const [relX, relY] of getDefenderCoords(x, y, genCell?.type)) {
         const relKey = `${relX},${relY}`;
         if (!coords.has(relKey)) {
           coords.set(relKey, { x: relX, y: relY });
@@ -104,19 +107,26 @@ export const getMapRoomCells: KoaController = async (ctx) => {
     );
 
     // =========================================================================
-    // PHASE 3: Process player-owned structures - add defender coords
+    // PHASE 3: Process player-owned structures - add defender coords + levels
     // =========================================================================
     const defenderPositions = new Set<string>();
+    const playerDefenderLevels = new Map<string, number>();
 
     for (const dbCell of dbCells) {
       // Handle any player-owned defensive structure (PLAYER, STRONGHOLD, RESOURCE)
       if (dbCell.uid && isDefensiveStructure(dbCell.base_type)) {
-        for (const [relX, relY] of getDefenderCoords(dbCell.x, dbCell.y)) {
+        const defenderCoords = getDefenderCoords(dbCell.x, dbCell.y);
+        const defenderLevels = getDefenderLevels(dbCell.base_type);
+
+        for (let i = 0; i < defenderCoords.length; i++) {
+          const [relX, relY] = defenderCoords[i];
           const relKey = `${relX},${relY}`;
           if (!coords.has(relKey)) {
             coords.set(relKey, { x: relX, y: relY });
           }
           defenderPositions.add(relKey);
+
+          if (defenderLevels) playerDefenderLevels.set(relKey, defenderLevels[i]);
         }
       }
     }
@@ -164,8 +174,8 @@ export const getMapRoomCells: KoaController = async (ctx) => {
             cell = new WorldMapCell(undefined, x, y, 0);
             cell.base_type = EnumYardType.FORTIFICATION;
           } else if (genCell) {
-            cell = new WorldMapCell(undefined, genCell.x, genCell.y, genCell.i);
-            cell.base_type = genCell.t || 0;
+            cell = new WorldMapCell(undefined, genCell.x, genCell.y, genCell.altitude);
+            cell.base_type = genCell.type || 0;
           } else {
             cell = new WorldMapCell(undefined, x, y, 0);
           }
@@ -173,6 +183,14 @@ export const getMapRoomCells: KoaController = async (ctx) => {
       }
 
       const cellData = await createCellData(cell, worldid, ctx, cellOwners);
+      
+      // Override defender levels: player-owned take priority, then generated
+      if (playerDefenderLevels.has(key)) {
+        cellData.l = playerDefenderLevels.get(key);
+      } else if (genCell?.level) {
+        cellData.l = genCell.level;
+      }
+
       cellsToReturn.set(key, cellData);
     }
 

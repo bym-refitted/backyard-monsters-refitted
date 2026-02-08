@@ -35,7 +35,7 @@ const canOverride = (dbCell: WorldMapCell | null, genCell: GeneratedCell | undef
   if (dbCell) return dbCell.base_type === EnumYardType.OUTPOST;
 
   // No database cell, check generated cell
-  if (genCell?.t !== undefined) return genCell.t === EnumYardType.OUTPOST;
+  if (genCell?.type !== undefined) return genCell.type === EnumYardType.OUTPOST;
 
   // No database cell, no generated structure = terrain/empty, can override
   return true;
