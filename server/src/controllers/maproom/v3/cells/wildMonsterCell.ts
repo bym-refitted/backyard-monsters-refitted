@@ -1,5 +1,6 @@
 import { STRUCTURE_RANGE } from "../../../../config/MapRoom3Config.js";
 import { EnumBaseRelationship } from "../../../../enums/EnumBaseRelationship.js";
+import { EnumYardType } from "../../../../enums/EnumYardType.js";
 import { Tribes } from "../../../../enums/Tribes.js";
 import { WorldMapCell } from "../../../../models/worldmapcell.model.js";
 import { generateBaseId } from "../../../../utils/generateBaseId.js";
@@ -18,6 +19,11 @@ export const wildMonsterCell = async (cell: WorldMapCell, worldId: string): Prom
   const [cellX, cellY] = [cell.x, cell.y];
 
   const tribeIndex = (cellX + cellY) % Tribes.length;
+
+  // For strongholds, use tribe IDs 4-7; for resource outposts and defenders, use 0-3
+  // this avoids wild monsters buffing entire areas of the map with the same tribe
+  const tribeId = cell.base_type === EnumYardType.STRONGHOLD ? tribeIndex + 4 : tribeIndex;
+
   const level = calculateStructureLevel(cellX, cellY, cell.base_type);
   const baseid = generateBaseId(worldId, cellX, cellY);
 
@@ -28,7 +34,7 @@ export const wildMonsterCell = async (cell: WorldMapCell, worldId: string): Prom
     uid: 0,
     bid: baseid,
     n: Tribes[tribeIndex],
-    tid: tribeIndex,
+    tid: tribeId,
     x: cellX,
     y: cellY,
     i: altitude,
