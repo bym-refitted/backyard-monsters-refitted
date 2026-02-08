@@ -6,6 +6,7 @@ import { WorldMapCell } from "../../../../models/worldmapcell.model.js";
 import { generateBaseId } from "../../../../utils/generateBaseId.js";
 import { calculateStructureLevel } from "../../../../services/maproom/v3/calculateStructureLevel.js";
 import type { CellData } from "../../../../types/CellData.js";
+import { MapRoomVersion } from "../../../../enums/MapRoom.js";
 
 /**
  * Formats a wild monster cell (stronghold, resource outpost, or defender) for Map Room 3.
@@ -25,7 +26,7 @@ export const wildMonsterCell = async (cell: WorldMapCell, worldId: string): Prom
   const tribeId = cell.base_type === EnumYardType.STRONGHOLD ? tribeIndex + 4 : tribeIndex;
 
   const level = calculateStructureLevel(cellX, cellY, cell.base_type);
-  const baseid = generateBaseId(worldId, cellX, cellY);
+  const baseid = generateBaseId(worldId, cellX, cellY, MapRoomVersion.V3);
 
   // 60% no clover (altitude 5-31), 40% on clovers (altitude 32-49)
   const altitude = 5 + (cellX * 73 + cellY * 31) % 45;

@@ -658,6 +658,7 @@ package
          }
          requestData.push(["baseid", _baseID]);
          requestData.push(["type", _loc7_]);
+         requestData.push(["mapversion", MapRoomManager.instance.mapRoomVersion]);
          if (MapRoomManager.instance.viewOnly && (GLOBAL.mode == GLOBAL.e_BASE_MODE.VIEW || GLOBAL.mode == GLOBAL.e_BASE_MODE.WMVIEW))
          {
             requestData.push(["worldid", MapRoomManager.instance.worldID]);
@@ -1764,16 +1765,30 @@ package
             _buildingData = null;
          }
 
-         // Always ensure that the main yard has a town hall
+         // Client guards to ensure the main building on each yard is always the correct type
          if (isMainYard && _buildingData.hasOwnProperty("0") && _buildingData["0"].t !== 14)
          {
             _buildingData["0"].t = 14;
          }
 
-         // Always ensure that the outpost has an outpost building
-         if (isOutpost && _buildingData.hasOwnProperty("0") && _buildingData["0"].t !== 112)
+         if (isOutpostMapRoom2Only && _buildingData.hasOwnProperty("0") && _buildingData["0"].t !== 112)
          {
             _buildingData["0"].t = 112;
+         }
+
+         if (isOutpostStronghold && _buildingData.hasOwnProperty("0") && _buildingData["0"].t !== GuardTower.k_TYPE)
+         {
+            _buildingData["0"].t = GuardTower.k_TYPE;
+         }
+
+         if (isOutpostResource && _buildingData.hasOwnProperty("0") && _buildingData["0"].t !== ResourceOutpost.k_TYPE)
+         {
+            _buildingData["0"].t = ResourceOutpost.k_TYPE;
+         }
+
+         if (isOutpostFortification && _buildingData.hasOwnProperty("0") && _buildingData["0"].t !== OutpostDefender.k_TYPE)
+         {
+            _buildingData["0"].t = OutpostDefender.k_TYPE;
          }
 
          var buildingTypeCounts:Dictionary = new Dictionary();
@@ -4310,13 +4325,14 @@ package
                tmpMode = GLOBAL.e_BASE_MODE.IVIEW;
          }
          _paging = true;
+         var mapVersion:int = MapRoomManager.instance.mapRoomVersion;
          if (isInfernoMainYardOrOutpost || isEventBaseId(_baseID) && GLOBAL.mode == "wmattack")
          {
-            new URLLoaderApi().load(GLOBAL._infBaseURL + "updatesaved", [["baseid", BASE._loadedBaseID], ["version", GLOBAL._version.Get()], ["lastupdate", UPDATES._lastUpdateID], ["type", tmpMode]], handleLoadSuccessful, handleLoadError);
+            new URLLoaderApi().load(GLOBAL._infBaseURL + "updatesaved", [["baseid", BASE._loadedBaseID], ["version", GLOBAL._version.Get()], ["lastupdate", UPDATES._lastUpdateID], ["type", tmpMode], ["mapversion", mapVersion]], handleLoadSuccessful, handleLoadError);
          }
          else
          {
-            new URLLoaderApi().load(GLOBAL._baseURL + "updatesaved", [["baseid", BASE._loadedBaseID], ["version", GLOBAL._version.Get()], ["lastupdate", UPDATES._lastUpdateID], ["type", tmpMode]], handleLoadSuccessful, handleLoadError);
+            new URLLoaderApi().load(GLOBAL._baseURL + "updatesaved", [["baseid", BASE._loadedBaseID], ["version", GLOBAL._version.Get()], ["lastupdate", UPDATES._lastUpdateID], ["type", tmpMode], ["mapversion", mapVersion]], handleLoadSuccessful, handleLoadError);
          }
       }
 

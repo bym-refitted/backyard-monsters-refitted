@@ -35,7 +35,7 @@ export const baseLoad: KoaController = async (ctx) => {
   await postgres.em.populate(user, ["save", "infernosave"]);
 
   try {
-    const { baseid, type, attackData } = BaseLoadSchema.parse(ctx.request.body);
+    const { baseid, type, mapversion, attackData } = BaseLoadSchema.parse(ctx.request.body);
 
     let baseSave: Save = null;
 
@@ -46,14 +46,14 @@ export const baseLoad: KoaController = async (ctx) => {
 
       case BaseMode.VIEW:
       case BaseMode.IVIEW:
-        baseSave = await baseModeView(baseid);
+        baseSave = await baseModeView(baseid, mapversion);
         break;
 
       case BaseMode.ATTACK:
         if (!ctx.meetsDiscordAgeCheck) throw discordAgeErr();
 
         await validateAttack(user, attackData);
-        baseSave = await baseModeAttack(user, baseid);
+        baseSave = await baseModeAttack(user, baseid, mapversion);
         break;
 
       case BaseMode.IDESCENT:

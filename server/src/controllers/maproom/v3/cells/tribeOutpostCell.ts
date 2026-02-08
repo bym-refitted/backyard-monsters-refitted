@@ -4,13 +4,14 @@ import { Tribes } from "../../../../enums/Tribes.js";
 import { WorldMapCell } from "../../../../models/worldmapcell.model.js";
 import { generateBaseId } from "../../../../utils/generateBaseId.js";
 import type { CellData } from "../../../../types/CellData.js";
+import { MapRoomVersion } from "../../../../enums/MapRoom.js";
 
 export const tribeOutpostCell = async (cell: WorldMapCell, worldId: string): Promise<CellData> => {
   const [cellX, cellY] = [cell.x, cell.y];
 
   const tribeIndex = (cellX + cellY) % Tribes.length;
   
-  const baseid = generateBaseId(worldId, cellX, cellY);
+  const baseid = generateBaseId(worldId, cellX, cellY, MapRoomVersion.V3);
 
   return {
     uid: 0,
