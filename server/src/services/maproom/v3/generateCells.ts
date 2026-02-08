@@ -20,7 +20,7 @@ import {
   STRONGHOLD_JITTER,
   RESOURCE_SEED,
   TRIBE_OUTPOST_SEED,
-} from "../../../config/WorldGenSettings.js";
+} from "../../../config/MapRoom3Config.js";
 
 export interface GeneratedCell {
   x: number;

@@ -1,38 +1,4 @@
-import { MapRoom2 } from "../enums/MapRoom.js";
-
-// =============================================================================
-// Map Room 2 - World Generation Configuration
-// =============================================================================
-
-/**
- * Represents the size of Map Room 2 world map.
- * @constant {number[]}
- */
-export const WORLD_SIZE = [MapRoom2.HEIGHT, MapRoom2.WIDTH];
-
-/**
- * The scale factor for noise generation. This value determines the frequency of the noise.
- * A higher value results in larger, more spread-out features, while a lower value results in smaller, more detailed features.
- * @constant {number}
- */
-export const NOISE_SCALE = 12;
-
-/**
- * The scale factor for terrain height. This value determines the range of terrain heights.
- * A higher value results in taller terrain features, while a lower value results in flatter terrain.
- * @constant {number}
- */
-export const TERRAIN_SCALE = 95;
-
-/**
- * Number of cells near the edge where the transition will start to smooth.
- * @constant {number}
- */
-export const EDGE_TRANSITION_WIDTH = 3;
-
-// =============================================================================
-// Map Room 3 - World Generation Configuration
-// =============================================================================
+import { EnumYardType } from "../enums/EnumYardType.js";
 
 /**
  * The seed for cell generation. Changing this will produce a different cell layout.
@@ -98,9 +64,39 @@ export const STRONGHOLD_JITTER = 8;
  */
 export const RESOURCE_SEED = "maproom3-resources-v2";
 
-
 /**
  * Seed for tribe outpost placement randomization
  * @constant {string}
  */
 export const TRIBE_OUTPOST_SEED = "maproom3-tribes";
+
+/** Available levels per structure type. */
+export const STRUCTURE_LEVELS: Record<number, number[]> = {
+  [EnumYardType.STRONGHOLD]: [30, 40, 50],
+  [EnumYardType.RESOURCE]: [10, 20, 30, 40, 50],
+};
+
+/** Attack range per structure type and level. */
+export const STRUCTURE_RANGE: Record<number, Record<number, number>> = {
+  [EnumYardType.STRONGHOLD]: { 30: 10, 40: 15, 50: 20 },
+  [EnumYardType.RESOURCE]: { 10: 2, 20: 3, 30: 4, 40: 5, 50: 6 },
+};
+
+/** Defender levels per parent structure type and level. */
+export const DEFENDER_LEVELS: Record<number, Record<number, number[]>> = {
+  [EnumYardType.PLAYER]: { 0: [5, 5, 10, 10, 15, 20] },
+
+  [EnumYardType.RESOURCE]: {
+    10: [5, 5, 10, 10, 15, 20],
+    20: [10, 10, 15, 15, 20, 25],
+    30: [20, 20, 25, 25, 30, 35],
+    40: [30, 30, 35, 35, 40, 45],
+    50: [40, 40, 45, 45, 50, 50],
+  },
+
+  [EnumYardType.STRONGHOLD]: {
+    30: [20, 20, 25, 25, 30, 35],
+    40: [30, 30, 35, 35, 40, 45],
+    50: [40, 40, 45, 45, 50, 50],
+  },
+};
