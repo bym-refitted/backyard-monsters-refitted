@@ -4,6 +4,8 @@ import { createNoise2D } from "simplex-noise";
 import { MapRoom3 } from "../../../enums/MapRoom.js";
 import { EnumYardType } from "../../../enums/EnumYardType.js";
 import { getDefenderCoords } from "./getDefenderCoords.js";
+import { getDefenderLevels } from "./getDefenderLevels.js";
+import { calculateStructureLevel } from "./calculateStructureLevel.js";
 import { isValidPosition } from "./utils/isValidPosition.js";
 
 import {
@@ -21,10 +23,11 @@ import {
 } from "../../../config/WorldGenSettings.js";
 
 export interface GeneratedCell {
-  i?: number;
   x: number;
   y: number;
-  t?: number;
+  altitude?: number;
+  type?: number;
+  level?: number;
 }
 
 let cachedCells: Map<string, GeneratedCell> | null = null;
@@ -64,13 +67,24 @@ export const getGeneratedCells = (): Map<string, GeneratedCell> => {
 
       if (!isValidPosition(x, y) || occupiedCells.has(key)) continue;
 
-      cells.push({ x, y, t: EnumYardType.STRONGHOLD });
+      cells.push({ x, y, type: EnumYardType.STRONGHOLD });
       occupiedCells.add(key);
 
       const defenders = getDefenderCoords(x, y);
+      
+      const strongholdLevel = calculateStructureLevel(x, y, EnumYardType.STRONGHOLD);
+      const defenderLevels = getDefenderLevels(EnumYardType.STRONGHOLD, strongholdLevel);
 
-      for (const [fortX, fortY] of defenders) {
-        cells.push({ x: fortX, y: fortY, t: EnumYardType.FORTIFICATION });
+      for (let i = 0; i < defenders.length; i++) {
+        const [fortX, fortY] = defenders[i];
+
+        cells.push({ 
+          x: fortX, 
+          y: fortY, 
+          type: EnumYardType.FORTIFICATION, 
+          level: defenderLevels[i]
+        });
+
         occupiedCells.add((fortX << 16) | fortY);
       }
     }
@@ -93,11 +107,22 @@ export const getGeneratedCells = (): Map<string, GeneratedCell> => {
     const defenders = getDefenderCoords(x, y);
     if (defenders.some(([dx, dy]) => occupiedCells.has((dx << 16) | dy  ))) continue;
 
-    cells.push({ x, y, t: EnumYardType.RESOURCE });
+    cells.push({ x, y, type: EnumYardType.RESOURCE });
     occupiedCells.add(key);
 
-    for (const [fortX, fortY] of defenders) {
-      cells.push({ x: fortX, y: fortY, t: EnumYardType.FORTIFICATION });
+    const resourceLevel = calculateStructureLevel(x, y, EnumYardType.RESOURCE);
+    const defenderLevels = getDefenderLevels(EnumYardType.RESOURCE, resourceLevel);
+
+    for (let i = 0; i < defenders.length; i++) {
+      const [fortX, fortY] = defenders[i];
+
+      cells.push({
+         x: fortX, 
+         y: fortY, 
+         type: EnumYardType.FORTIFICATION, 
+         level: defenderLevels[i]
+        });
+
       occupiedCells.add((fortX << 16) | fortY);
     }
   }
@@ -115,7 +140,7 @@ export const getGeneratedCells = (): Map<string, GeneratedCell> => {
     const key = (x << 16) | y;
     
     if (!occupiedCells.has(key)) {
-      cells.push({ x, y, t: EnumYardType.OUTPOST });
+      cells.push({ x, y, type: EnumYardType.OUTPOST });
       occupiedCells.add(key);
     }
   }
@@ -167,9 +192,9 @@ export const getGeneratedCells = (): Map<string, GeneratedCell> => {
 
       if (altitude !== null) {
         cells.push({
-          i: altitude,
           x,
           y,
+          altitude
         });
       }
     }
