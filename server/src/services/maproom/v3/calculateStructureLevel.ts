@@ -9,9 +9,9 @@ const structureLevels: Record<number, number[]> = {
  * Calculates a deterministic structure level based on cell coordinates
  * and the available levels defined in the corresponding data file.
  *
- * @param x - Cell X coordinate
- * @param y - Cell Y coordinate
- * @param type - EnumYardType (STRONGHOLD or RESOURCE)
+ * @param {number} x number - Cell X coordinate
+ * @param {number} y number - Cell Y coordinate
+ * @param {EnumYardType} type - EnumYardType (STRONGHOLD or RESOURCE)
  * @returns The level for this structure at these coordinates
  */
 export const calculateStructureLevel = (x: number, y: number, type: EnumYardType): number => {
