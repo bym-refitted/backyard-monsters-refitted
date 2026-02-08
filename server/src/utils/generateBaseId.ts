@@ -21,20 +21,25 @@ const worldIdTo24Bit = (worldId: string): number => {
 /**
  * Generates a deterministic base ID that is safe for use with ActionScript
  * (double-precision numbers), based on worldId and cell coordinates.
- * The worldHash is constrained to 8 digits
+ * The worldHash is constrained to 8 digits.
  *
- * The format is:
- * [worldHash: 8 digits][X: 3 digits][Y: 3 digits] => 14 digits max.
+ * MR2 format: [worldHash: 8][X: 3][Y: 3] => 14 digits
+ * MR3 format: [3][worldHash: 8][X: 3][Y: 3] => 15 digits
+ *
+ * Coordinates are always the last 6 digits regardless of version.
+ * Max safe integer for AS3 doubles is 2^53-1 (16 digits), so 15 is safe.
  *
  * @param {string} worldId - The UUID of the world.
  * @param {number} x - The X coordinate of the cell (max 3 digits, 0–999).
  * @param {number} y - The Y coordinate of the cell (max 3 digits, 0–999).
- * @returns {string} A 14-digit deterministic base ID.
+ * @param {number} version - Map room version prefix (omitted for MR2, 3 for MR3).
+ * @returns {string} A deterministic base ID.
  */
-export const generateBaseId = (worldId: string, x: number, y: number) => {
-const worldHash = (worldIdTo24Bit(worldId) % 90000000) + 10000000;
+export const generateBaseId = (worldId: string, x: number, y: number, version?: number) => {
+  const worldHash = (worldIdTo24Bit(worldId) % 90000000) + 10000000;
+  const prefix = version ? `${version}` : "";
 
-  return `${worldHash}${x.toString().padStart(3, "0")}${y
+  return `${prefix}${worldHash}${x.toString().padStart(3, "0")}${y
     .toString()
     .padStart(3, "0")}`;
 };
