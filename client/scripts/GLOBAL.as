@@ -754,19 +754,19 @@ package
          }
       }
 
-      public static function isInfernoMode(mode:String):Boolean
+      public static function isInfernoMode(param1:String):Boolean
       {
-         return mode == e_BASE_MODE.IBUILD || mode == GLOBAL.e_BASE_MODE.IVIEW || mode == GLOBAL.e_BASE_MODE.IATTACK || mode == GLOBAL.e_BASE_MODE.IHELP || mode == GLOBAL.e_BASE_MODE.IWMVIEW || mode == GLOBAL.e_BASE_MODE.IWMATTACK;
+         return param1 == e_BASE_MODE.IBUILD || param1 == GLOBAL.e_BASE_MODE.IVIEW || param1 == GLOBAL.e_BASE_MODE.IATTACK || param1 == GLOBAL.e_BASE_MODE.IHELP || param1 == GLOBAL.e_BASE_MODE.IWMVIEW || param1 == GLOBAL.e_BASE_MODE.IWMATTACK;
       }
 
-      public static function isValidMode(mode:String):Boolean
+      public static function isValidMode(param1:String):Boolean
       {
-         return mode == e_BASE_MODE.BUILD || mode == e_BASE_MODE.ATTACK || mode == e_BASE_MODE.WMATTACK || mode == e_BASE_MODE.VIEW || mode == e_BASE_MODE.WMVIEW || mode == e_BASE_MODE.HELP || mode == e_BASE_MODE.IBUILD || mode == GLOBAL.e_BASE_MODE.IVIEW || mode == GLOBAL.e_BASE_MODE.IATTACK || mode == GLOBAL.e_BASE_MODE.IHELP || mode == GLOBAL.e_BASE_MODE.IWMVIEW || mode == GLOBAL.e_BASE_MODE.IWMATTACK;
+         return param1 == e_BASE_MODE.BUILD || param1 == e_BASE_MODE.ATTACK || param1 == e_BASE_MODE.WMATTACK || param1 == e_BASE_MODE.VIEW || param1 == e_BASE_MODE.WMVIEW || param1 == e_BASE_MODE.HELP || param1 == e_BASE_MODE.IBUILD || param1 == GLOBAL.e_BASE_MODE.IVIEW || param1 == GLOBAL.e_BASE_MODE.IATTACK || param1 == GLOBAL.e_BASE_MODE.IHELP || param1 == GLOBAL.e_BASE_MODE.IWMVIEW || param1 == GLOBAL.e_BASE_MODE.IWMATTACK;
       }
 
-      public static function infernoToDefaultMode(mode:String):String
+      public static function infernoToDefaultMode(param1:String):String
       {
-         switch (mode)
+         switch (param1)
          {
             case GLOBAL.e_BASE_MODE.IBUILD:
                return GLOBAL.e_BASE_MODE.BUILD;
@@ -781,7 +781,7 @@ package
             case GLOBAL.e_BASE_MODE.IWMATTACK:
                return GLOBAL.e_BASE_MODE.WMATTACK;
             default:
-               return mode;
+               return param1;
          }
       }
 
@@ -800,8 +800,8 @@ package
          _FPStimestamp = 0;
          ImageCache.prependImagePath = GLOBAL._storageURL;
          MapRoom3AssetCache.instance.Load();
-         var mr3Tileset:Array = MapRoom3TileSetManager.DEFAULT_TILE_SET;
-         MapRoom3TileSetManager.instance.SetCurrentTileSet(mr3Tileset);
+         var _loc2_:Array = MapRoom3TileSetManager.DEFAULT_TILE_SET;
+         MapRoom3TileSetManager.instance.SetCurrentTileSet(_loc2_);
          if (!_timekeeper)
          {
             _timekeeper = new Timekeeper();
