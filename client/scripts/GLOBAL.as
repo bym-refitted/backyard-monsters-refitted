@@ -77,7 +77,11 @@ package
 
       public static var _languageVersion:int;
 
-      public static var _halt:Boolean;
+      /**
+       * If set, the game loop is completely halted.
+       * Used in fatal error situations. The game must be reloaded to recover from this state.
+       */
+      private static var _halt:Boolean;
 
       public static var _frameNumber:int;
 
@@ -177,6 +181,12 @@ package
 
       private static var _mode:String;
 
+      /**
+       * Describes the current baseMode of the game.
+       * The mode is only set in GLOBAL.Setup.
+       * 
+       * Possible values are defined in com.monsters.enums.EnumBaseMode.
+       */
       public static var _loadmode:String;
 
       public static const e_BASE_MODE:EnumBaseMode = new EnumBaseMode();
@@ -484,6 +494,23 @@ package
             });
       }
 
+      /**
+       * Halts the game loop, preventing any further updates or interactions.
+       * This should be called in situations where a fatal error has occurred and the game cannot continue functioning properly.
+       */
+      public static function Halt():void
+      {
+         _halt = true;
+      }
+
+      /**
+       * Returns whether the game is currently halted due to a fatal error.
+       */
+      public static function get isHalted():Boolean
+      {
+         return _halt;
+      }
+
       /*
        * Checks the network connection by making a request to the server.
        * Updates the `connectionLost` status based on the response.
@@ -733,19 +760,19 @@ package
          }
       }
 
-      public static function isInfernoMode(param1:String):Boolean
+      public static function isInfernoMode(mode:String):Boolean
       {
-         return param1 == e_BASE_MODE.IBUILD || param1 == GLOBAL.e_BASE_MODE.IVIEW || param1 == GLOBAL.e_BASE_MODE.IATTACK || param1 == GLOBAL.e_BASE_MODE.IHELP || param1 == GLOBAL.e_BASE_MODE.IWMVIEW || param1 == GLOBAL.e_BASE_MODE.IWMATTACK;
+         return mode == e_BASE_MODE.IBUILD || mode == GLOBAL.e_BASE_MODE.IVIEW || mode == GLOBAL.e_BASE_MODE.IATTACK || mode == GLOBAL.e_BASE_MODE.IHELP || mode == GLOBAL.e_BASE_MODE.IWMVIEW || mode == GLOBAL.e_BASE_MODE.IWMATTACK;
       }
 
-      public static function isValidMode(param1:String):Boolean
+      public static function isValidMode(mode:String):Boolean
       {
-         return param1 == e_BASE_MODE.BUILD || param1 == e_BASE_MODE.ATTACK || param1 == e_BASE_MODE.WMATTACK || param1 == e_BASE_MODE.VIEW || param1 == e_BASE_MODE.WMVIEW || param1 == e_BASE_MODE.HELP || param1 == e_BASE_MODE.IBUILD || param1 == GLOBAL.e_BASE_MODE.IVIEW || param1 == GLOBAL.e_BASE_MODE.IATTACK || param1 == GLOBAL.e_BASE_MODE.IHELP || param1 == GLOBAL.e_BASE_MODE.IWMVIEW || param1 == GLOBAL.e_BASE_MODE.IWMATTACK;
+         return mode == e_BASE_MODE.BUILD || mode == e_BASE_MODE.ATTACK || mode == e_BASE_MODE.WMATTACK || mode == e_BASE_MODE.VIEW || mode == e_BASE_MODE.WMVIEW || mode == e_BASE_MODE.HELP || mode == e_BASE_MODE.IBUILD || mode == GLOBAL.e_BASE_MODE.IVIEW || mode == GLOBAL.e_BASE_MODE.IATTACK || mode == GLOBAL.e_BASE_MODE.IHELP || mode == GLOBAL.e_BASE_MODE.IWMVIEW || mode == GLOBAL.e_BASE_MODE.IWMATTACK;
       }
 
-      public static function infernoToDefaultMode(param1:String):String
+      public static function infernoToDefaultMode(mode:String):String
       {
-         switch (param1)
+         switch (mode)
          {
             case GLOBAL.e_BASE_MODE.IBUILD:
                return GLOBAL.e_BASE_MODE.BUILD;
@@ -760,7 +787,7 @@ package
             case GLOBAL.e_BASE_MODE.IWMATTACK:
                return GLOBAL.e_BASE_MODE.WMATTACK;
             default:
-               return param1;
+               return mode;
          }
       }
 
@@ -779,8 +806,8 @@ package
          _FPStimestamp = 0;
          ImageCache.prependImagePath = GLOBAL._storageURL;
          MapRoom3AssetCache.instance.Load();
-         var _loc2_:Array = MapRoom3TileSetManager.DEFAULT_TILE_SET;
-         MapRoom3TileSetManager.instance.SetCurrentTileSet(_loc2_);
+         var mr3Tileset:Array = MapRoom3TileSetManager.DEFAULT_TILE_SET;
+         MapRoom3TileSetManager.instance.SetCurrentTileSet(mr3Tileset);
          if (!_timekeeper)
          {
             _timekeeper = new Timekeeper();
@@ -1114,7 +1141,7 @@ package
          {
             CheckNetworkConnection(null);
          }
-         if (!_halt && !GLOBAL._catchup)
+         if (!isHalted && !GLOBAL._catchup)
          {
             t += 1;
             if (MapRoomManager.instance.isOpen)
@@ -1274,7 +1301,7 @@ package
          var _loc13_:Bunker = null;
          var _loc14_:BTRAP = null;
          var _loc15_:BFOUNDATION = null;
-         if (!_halt)
+         if (!isHalted)
          {
             _loc2_ = int(getTimer());
             SOUNDS.Tick();

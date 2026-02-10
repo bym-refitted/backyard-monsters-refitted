@@ -81,7 +81,7 @@ package
             "ease":Elastic.easeOut
          });
          LOGGER.Log("err","OOPS");
-         GLOBAL._halt = true;
+         GLOBAL.Halt();
       }
       
       public function Resize() : void
