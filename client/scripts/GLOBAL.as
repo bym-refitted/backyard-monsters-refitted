@@ -181,12 +181,6 @@ package
 
       private static var _mode:String;
 
-      /**
-       * Describes the current baseMode of the game.
-       * The mode is only set in GLOBAL.Setup.
-       * 
-       * Possible values are defined in com.monsters.enums.EnumBaseMode.
-       */
       public static var _loadmode:String;
 
       public static const e_BASE_MODE:EnumBaseMode = new EnumBaseMode();
