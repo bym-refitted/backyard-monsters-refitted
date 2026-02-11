@@ -10,6 +10,8 @@ package com.monsters.chat
       
       public static const LOGIN:String = "login";
       
+      public static const LOGOUT:String = "logout";
+      
       public static const JOIN:String = "join";
       
       public static const LEAVE:String = "leave";
