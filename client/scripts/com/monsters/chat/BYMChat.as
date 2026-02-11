@@ -8,6 +8,7 @@ package com.monsters.chat
    import flash.utils.Dictionary;
    import flash.utils.Timer;
    import gs.TweenLite;
+   import com.monsters.chat.ChatData;
    
    public class BYMChat extends Sprite
    {
