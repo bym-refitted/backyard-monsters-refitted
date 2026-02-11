@@ -910,44 +910,39 @@ package
       {
       }
       
-      public static function damage(param1:Number, param2:IAttackable = null, param3:Number = 0) : void
+      public static function damage(amount:int, damagedTarget:IAttackable = null, amountModified:Number = 0) : void
       {
-         var _loc8_:String = null;
          if(getTimer() - m_lastAttackTime > 400)
          {
             m_recentlyAttacked = new Dictionary();
             m_lastAttackTime = getTimer();
          }
-         var _loc4_:uint = ParticleText.TYPE_DAMAGE;
-         if(param1 < 0)
+         var particleType:uint = (amount < 0) ? ParticleText.TYPE_HEAL : ParticleText.TYPE_DAMAGE;
+         var particleSpawn:Point = new Point(damagedTarget.x,damagedTarget.y);
+         if(damagedTarget is MonsterBase)
          {
-            _loc4_ = ParticleText.TYPE_HEAL;
+            particleSpawn.y -= MonsterBase(damagedTarget)._altitude;
          }
-         var _loc5_:Point = new Point(param2.x,param2.y);
-         if(param2 is MonsterBase)
-         {
-            _loc5_.y -= MonsterBase(param2)._altitude;
-         }
-         var _loc6_:int = int(m_recentlyAttacked[param2]);
-         m_recentlyAttacked[param2] = _loc6_ + 1;
-         if(_loc6_ > 2)
+         var recentAttacks:int = int(m_recentlyAttacked[damagedTarget]);
+         m_recentlyAttacked[damagedTarget] = recentAttacks + 1;
+         if(recentAttacks > 2)
          {
             return;
          }
-         if(_loc6_ == 1)
+         if(recentAttacks == 1)
          {
-            _loc5_.x += 10 * param1.toString().length;
+            particleSpawn.x += 10 * amount.toString().length;
          }
-         else if(_loc6_ == 2)
+         else if(recentAttacks == 2)
          {
-            _loc5_.x -= 10 * param1.toString().length;
+            particleSpawn.x -= 10 * amount.toString().length;
          }
-         var _loc7_:ParticleDamageItem = ParticleText.Create(_loc5_,param1,_loc4_);
-         if(param3 != 0 && Boolean(_loc7_))
+         var damageParticle:ParticleDamageItem = ParticleText.Create(particleSpawn,amount,particleType);
+         if(amountModified != 0 && Boolean(damageParticle))
          {
-            _loc8_ = param3 < 0 ? "-" : "+";
-            _loc7_._mc.tLootA.htmlText += "(" + _loc8_ + Math.abs(Math.round(param3)) + ")";
-            _loc7_._mc.tLootB.htmlText += "(" + _loc8_ + Math.abs(Math.round(param3)) + ")";
+            var modifier:String = amountModified < 0 ? "-" : "+";
+            damageParticle._mc.tLootA.htmlText += "(" + modifier + Math.abs(Math.round(amountModified)) + ")";
+            damageParticle._mc.tLootB.htmlText += "(" + modifier + Math.abs(Math.round(amountModified)) + ")";
          }
       }
       
