@@ -7821,9 +7821,10 @@ package
          "imageData":{
             "baseurl":"buildings/guardtower/",
             "1":{
-               "top":["top.v2.1.png",new Point(-98,-75)],
+               "top":["top.v2.1.png",new Point(-98,-100)],
                // MISSING ASSETS TO RECREATE OR FIND:
 
+               // "top":["top.v2.1.png",new Point(-98,-75)],
                // "shadow":["shadow.v2.1.png",new Point(-78,9)],
                // "anim":["anim.v2.1.png",new Rectangle(-47,-231,95,212),32],
                // "anim2":["anim.v2.2.png",new Rectangle(-79,-75,168,102),32],
