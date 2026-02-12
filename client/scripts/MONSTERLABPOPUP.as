@@ -332,7 +332,7 @@ package
                this.btn_resource.bAction.addEventListener(MouseEvent.CLICK,this.StartMonsterPowerup);
                this.btn_resource.bAction.visible = true;
                this.btn_resource.mcR3.visible = true;
-               this.btn_resource.mcR3.tValue.htmlText = "<b><font color=\"#" + (_loc6_[0] > GLOBAL._resources.r3.Get() ? "FF0000" : "000000") + "\">" + GLOBAL.FormatNumber(_loc12_) + "</font></b>";
+               this.btn_resource.mcR3.tValue.htmlText = "<b><font color=\"#" + (_loc6_[0].Get() > GLOBAL._resources.r3.Get() ? "FF0000" : "000000") + "\">" + GLOBAL.FormatNumber(_loc12_) + "</font></b>";
                this.btn_resource.mcR4.visible = true;
                this.btn_resource.mcTime.visible = true;
                this.btn_resource.mcTime.tValue.htmlText = "<b>" + GLOBAL.ToTime(_loc13_) + "</b>";
@@ -356,10 +356,10 @@ package
                this.btn_instant.bAction.Highlight = true;
                this.btn_instant.bAction.addEventListener(MouseEvent.CLICK,this.InstantMonsterPowerup);
                this.btn_resource.mcR3.visible = true;
-               this.btn_resource.mcR3.tValue.htmlText = "<b><font color=\"#" + (_loc6_[0] > GLOBAL._resources.r3.Get() ? "FF0000" : "000000") + "\">" + GLOBAL.FormatNumber(_loc6_[0]) + "</font></b>";
+               this.btn_resource.mcR3.tValue.htmlText = "<b><font color=\"#" + (_loc6_[0].Get() > GLOBAL._resources.r3.Get() ? "FF0000" : "000000") + "\">" + GLOBAL.FormatNumber(_loc6_[0].Get()) + "</font></b>";
                this.btn_resource.mcR4.visible = true;
                this.btn_resource.mcTime.visible = true;
-               this.btn_resource.mcTime.tValue.htmlText = "<b>" + GLOBAL.ToTime(_loc6_[1],true) + "</b>";
+               this.btn_resource.mcTime.tValue.htmlText = "<b>" + GLOBAL.ToTime(_loc6_[1].Get(),true) + "</b>";
                this.btn_resource.bAction.Setup(_loc5_.errorString);
                this.btn_resource.bAction.removeEventListener(MouseEvent.CLICK,this.StartMonsterPowerup);
                this.btn_resource.bAction.Enabled = false;
@@ -613,7 +613,7 @@ package
                _loc4_ = _bMonsterLab._upgradeFinishTime.Get() - GLOBAL.Timestamp();
                _loc5_ = GLOBAL.ToTime(_loc4_,true);
                this.tf_statusPBarLabel.htmlText = "<b>" + _loc5_ + "</b>";
-               _loc6_ = int(_loc3_[1]);
+               _loc6_ = int(_loc3_[1].Get());
                _loc7_ = 100 / _loc6_ * (_loc6_ - _loc4_);
                this.pBar_status.mcBar.width = Math.max(_loc7_,1);
                this.pBar_status.mcBar2.width = Math.max(_loc7_,1);
