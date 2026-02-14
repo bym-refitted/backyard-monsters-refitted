@@ -1,8 +1,6 @@
 package com.monsters.chat
 {
    import com.monsters.chat.ui.*;
-   import com.smartfoxserver.v2.entities.*;
-   import com.smartfoxserver.v2.entities.data.*;
    import flash.display.*;
    import flash.events.*;
    import flash.geom.*;
@@ -10,11 +8,12 @@ package com.monsters.chat
    import flash.utils.Dictionary;
    import flash.utils.Timer;
    import gs.TweenLite;
+   import com.monsters.chat.ChatData;
    
    public class BYMChat extends Sprite
    {
       
-      private static var _chat:CS_SmartFoxServer2X = null;
+      private static var _chat:IChatSystem = null;
       
       public static var _userRecord:UserRecord = null;
       
@@ -653,7 +652,7 @@ package com.monsters.chat
          var _loc3_:String = null;
          var _loc4_:String = null;
          var _loc5_:Array = null;
-         var _loc6_:SFSObject = null;
+         var _loc6_:ChatData = null;
          var _loc7_:String = null;
          var _loc8_:String = null;
          if(param1.Success)
@@ -729,8 +728,8 @@ package com.monsters.chat
       
       private function onUserEnter(param1:ChatEvent) : void
       {
-         var _loc2_:User = param1.Get("user") as User;
-         var _loc3_:Room = param1.Get("room") as Room;
+         var _loc2_:ChatUser = param1.Get("user") as ChatUser;
+         var _loc3_:ChatRoom = param1.Get("room") as ChatRoom;
          if(this.sector_channel == null)
          {
             LOGGER.Log("err","BYMChat.onUserEnter(): No sector has been joined yet");
@@ -750,8 +749,8 @@ package com.monsters.chat
       
       private function onUserExit(param1:ChatEvent) : void
       {
-         var _loc2_:User = param1.Get("user") as User;
-         var _loc3_:Room = param1.Get("room") as Room;
+         var _loc2_:ChatUser = param1.Get("user") as ChatUser;
+         var _loc3_:ChatRoom = param1.Get("room") as ChatRoom;
          delete _displayNameMap[_loc2_.name];
       }
       
@@ -985,13 +984,13 @@ package com.monsters.chat
          }
       }
       
-      public function get roomNames() : Array
+      public function get roomNames() : Vector.<String>
       {
          if(_chat != null)
          {
             return _chat.roomNames;
          }
-         return [];
+         return new Vector.<String>();
       }
       
       public function chatInputHasFocus() : Boolean
