@@ -2,6 +2,10 @@ import { EnumYardType } from "../enums/EnumYardType.js";
 import { strongholds } from "../data/tribes/v3/strongholds.js";
 import { resources } from "../data/tribes/v3/resources.js";
 import { defenders } from "../data/tribes/v3/defenders.js";
+import { kozu } from "../data/tribes/v3/outposts/kozu.js";
+import { legionnaire } from "../data/tribes/v3/outposts/legionnaire.js";
+import { abunakki } from "../data/tribes/v3/outposts/abunakki.js";
+import { dreadnaut } from "../data/tribes/v3/outposts/dreadnaut.js";
 
 /**
  * The seed for cell generation. Changing this will produce a different cell layout.
@@ -77,6 +81,7 @@ export const TRIBE_OUTPOST_SEED = "maproom3-tribes";
 export const STRUCTURE_LEVELS: Record<number, number[]> = {
   [EnumYardType.STRONGHOLD]: [30, 40, 50],
   [EnumYardType.RESOURCE]: [10, 20, 30, 40, 50],
+  [EnumYardType.OUTPOST]: [45, 50],
 };
 
 /** Attack range per structure type and level. */
@@ -86,14 +91,22 @@ export const STRUCTURE_RANGE: Record<number, Record<number, number>> = {
 };
 
 /** Save data templates per structure type and level. */
-export const STRUCTURE_SAVES: Record<number, Record<number, Record<string, any>>> = {
+export const STRUCTURE_SAVES = {
   [EnumYardType.STRONGHOLD]: strongholds,
   [EnumYardType.RESOURCE]: resources,
   [EnumYardType.FORTIFICATION]: defenders,
 };
 
+/** Save data templates for tribe outposts, keyed by tribe index then level. */
+export const OUTPOST_SAVES = {
+  0: legionnaire,
+  1: kozu,
+  2: abunakki,
+  3: dreadnaut,
+};
+
 /** Defender levels per parent structure type and level. */
-export const DEFENDER_LEVELS: Record<number, Record<number, number[]>> = {
+export const DEFENDER_LEVELS = {
   [EnumYardType.PLAYER]: { 0: [5, 5, 10, 10, 15, 20] },
 
   [EnumYardType.RESOURCE]: {
