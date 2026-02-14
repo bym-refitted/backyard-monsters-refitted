@@ -1,5 +1,16 @@
 package com.monsters.chat
 {
+   public class CS_SmartFoxServer2X {}
+
+/*
+ * CS_SmartFoxServer2X - DEPRECATED
+ *
+ * Original SmartFoxServer v2 implementation of IChatSystem.
+ * Replaced by StubChatSystem. Kept for reference.
+ * The com.smartfoxserver.v2 library has been removed.
+ *
+ * To restore, re-add the SmartFox v2 client library and uncomment this file.
+ *
    import com.monsters.chat.AS_Login;
    import com.monsters.chat.Channel;
    import com.monsters.chat.ChatData;
@@ -31,49 +42,45 @@ package com.monsters.chat
    import flash.events.TimerEvent;
    import flash.utils.Dictionary;
    import flash.utils.Timer;
-   
-   /**
-    * SmartFoxServer implementation of IChatSystem.
-    * Wraps the SmartFoxServer v2 client and converts to neutral chat types.
-    */
+
    public class CS_SmartFoxServer2X extends EventDispatcher implements IChatSystem
    {
 
       public static const HOST_LIVE:String = "message5.dc.kixeye.com";
-      
+
       public static const HOST_TEST:String = "message3.dc.kixeye.com";
-      
+
       public static const PORT:int = 9933;
-      
+
       public static const ZONE:String = "Backyard Monsters";
-      
+
       private static const EXT_REQ_STRING:String = "backyardmonsters";
-       
-      
+
+
       private var m_user:UserRecord = null;
-      
+
       private var m_login:AS_Login = null;
-      
+
       private var sfs:SmartFox;
-      
+
       private var roomMap:Dictionary;
-      
+
       private var host:String = null;
-      
+
       private var port:int = -1;
-      
+
       private var zone:String = null;
-      
+
       private var _isLoggedIn:Boolean = false;
-      
+
       private var _isLoggingOut:Boolean = false;
-      
+
       private var join_channel:Channel = null;
-      
+
       private var keepAliveTimer:Timer;
-      
+
       private var keepAliveInterval:int = 120000;
-      
+
       public function CS_SmartFoxServer2X(param1:String = "message3.dc.kixeye.com", param2:int = 9933, param3:String = "Backyard Monsters")
       {
          super();
@@ -114,7 +121,7 @@ package com.monsters.chat
          this.sfs.disconnect();
          this.stopKeepAlive();
       }
-      
+
       public function get isConnected() : Boolean
       {
          return this.sfs.isConnected;
@@ -136,7 +143,7 @@ package com.monsters.chat
          }
          return _loc1_;
       }
-      
+
       private function onErrorLogged(param1:LoggerEvent) : void
       {
          var _loc2_:Boolean = false;
@@ -173,7 +180,7 @@ package com.monsters.chat
                this.updateName(param1);
          }
       }
-      
+
       private function updateName(param1:SFSEvent, param2:String = null) : void
       {
          var _loc3_:SFSObject = param1.params.params as SFSObject;
@@ -232,7 +239,7 @@ package com.monsters.chat
                delete this.roomMap[_loc6_];
          }
       }
-      
+
       private function ignoreResponse(param1:SFSEvent) : void
       {
          var _loc9_:int = 0;
@@ -257,7 +264,6 @@ package com.monsters.chat
                _loc11_ = (_loc10_ = _loc6_.getSFSObject(_loc9_) as SFSObject).getUtfString("target");
                _loc12_ = _loc10_.getUtfString("displayname");
 
-               // Convert to ChatData for neutral format
                var chatData:ChatData = new ChatData();
                chatData.putUtfString("target", _loc11_);
                chatData.putUtfString("displayname", _loc12_);
@@ -281,7 +287,7 @@ package com.monsters.chat
          }
          dispatchEvent(new ChatEvent(ChatEvent.IGNORE,_loc5_,_loc8_));
       }
-      
+
       private function ignoreErrorResponse(param1:SFSEvent) : void
       {
          var _loc2_:SFSObject = param1.params.params as SFSObject;
@@ -293,7 +299,7 @@ package com.monsters.chat
          _loc6_["reason"] = _loc4_;
          dispatchEvent(new ChatEvent(ChatEvent.IGNOREERROR,_loc5_,_loc6_));
       }
-      
+
       private function onAdminMessage(param1:SFSEvent) : void
       {
          var _loc2_:Boolean = true;
@@ -303,7 +309,7 @@ package com.monsters.chat
          _loc3_["message"] = param1.params.message;
          dispatchEvent(new ChatEvent(ChatEvent.SAY,_loc2_,_loc3_));
       }
-      
+
       private function onModeratorMessage(param1:SFSEvent) : void
       {
          var _loc2_:Boolean = true;
@@ -313,11 +319,11 @@ package com.monsters.chat
          _loc3_["message"] = param1.params.message;
          dispatchEvent(new ChatEvent(ChatEvent.SAY,_loc2_,_loc3_));
       }
-      
+
       private function onConfigLoadSuccess(param1:SFSEvent) : void
       {
       }
-      
+
       private function onConfigLoadFailure(param1:SFSEvent) : void
       {
          var _loc2_:Boolean = false;
@@ -325,7 +331,7 @@ package com.monsters.chat
          _loc3_["reason"] = "config load failure";
          dispatchEvent(new ChatEvent(ChatEvent.CONNECT,_loc2_,_loc3_));
       }
-      
+
       private function onConnection(param1:SFSEvent) : void
       {
          var _loc2_:Boolean = Boolean(param1.params.success);
@@ -336,7 +342,7 @@ package com.monsters.chat
          }
          dispatchEvent(new ChatEvent(ChatEvent.CONNECT,_loc2_,_loc3_));
       }
-      
+
       private function onConnectionLost(param1:SFSEvent) : void
       {
          var _loc2_:Boolean = false;
@@ -365,15 +371,15 @@ package com.monsters.chat
             this.stopKeepAlive();
          }
       }
-      
+
       private function onConnectionResume(param1:SFSEvent) : void
       {
       }
-      
+
       private function onConnectionRetry(param1:SFSEvent) : void
       {
       }
-      
+
       public function login(param1:IAuthenticationSystem) : void
       {
          var _loc2_:AS_Login = param1 as AS_Login;
@@ -381,7 +387,6 @@ package com.monsters.chat
          this.m_user = _loc2_.User;
          var _loc3_:String = _loc2_.Password;
 
-         // Convert ChatData to SFSObject for SmartFox
          var chatData:ChatData = _loc2_.Params;
          var _loc4_:SFSObject = this.chatDataToSFSObject(chatData);
 
@@ -395,7 +400,7 @@ package com.monsters.chat
          {
          }
       }
-      
+
       private function onLogin(param1:SFSEvent) : void
       {
          var _loc3_:Room = null;
@@ -419,7 +424,7 @@ package com.monsters.chat
          this._isLoggedIn = true;
          this.initKeepAlive();
       }
-      
+
       private function onLoginError(param1:SFSEvent) : void
       {
          var _loc2_:Boolean = false;
@@ -457,7 +462,7 @@ package com.monsters.chat
             this._isLoggingOut = false;
          }
       }
-      
+
       public function join(param1:Channel, param2:String = null, param3:Boolean = true) : void
       {
          var _loc4_:int = 0;
@@ -491,20 +496,18 @@ package com.monsters.chat
             }
          }
       }
-      
+
       public function setDisplayNameUserVar(param1:String) : void
       {
          var _loc2_:Array = [];
          _loc2_.push(new SFSUserVariable("displayName",param1));
          this.sfs.send(new SetUserVariablesRequest(_loc2_));
       }
-      
+
       private function onUserVarsUpdate(param1:SFSEvent) : void
       {
-         // Comment: Obfuscation
-         // §§pop();
       }
-      
+
       public function updateDisplayName(param1:Channel, param2:String, param3:String) : void
       {
          var extensionRequest:ExtensionRequest;
@@ -552,7 +555,7 @@ package com.monsters.chat
             LOGGER.Log("err","Exception in updateDisplayName.sfs.send(extensionRequest): " + e);
          }
       }
-      
+
       private function onRoomJoin(param1:SFSEvent) : void
       {
          var _loc2_:Boolean = true;
@@ -560,7 +563,7 @@ package com.monsters.chat
          _loc3_["channel"] = this.join_channel;
          dispatchEvent(new ChatEvent(ChatEvent.JOIN,_loc2_,_loc3_));
       }
-      
+
       private function onRoomJoinError(param1:SFSEvent) : void
       {
          var _loc2_:Boolean = false;
@@ -569,7 +572,7 @@ package com.monsters.chat
          _loc3_["reason"] = "error joining room";
          dispatchEvent(new ChatEvent(ChatEvent.JOIN,_loc2_,_loc3_));
       }
-      
+
       private function onRoomAdd(param1:SFSEvent) : void
       {
          this.roomMap[param1.params.room.name] = param1.params.room;
@@ -578,16 +581,16 @@ package com.monsters.chat
             this.join(this.join_channel);
          }
       }
-      
+
       private function onRoomRemove(param1:SFSEvent) : void
       {
          delete this.roomMap[param1.params.room.name];
       }
-      
+
       private function onRoomCreationError(param1:SFSEvent) : void
       {
       }
-      
+
       public function leave(param1:Channel, param2:Boolean = true) : void
       {
          var leaveRoomRequest:LeaveRoomRequest;
@@ -617,7 +620,7 @@ package com.monsters.chat
          params["channel"] = channel;
          dispatchEvent(new ChatEvent(ChatEvent.LEAVE,success,params));
       }
-      
+
       public function extension(param1:String, param2:Dictionary) : void
       {
          var _loc3_:SFSObject = new SFSObject();
@@ -636,14 +639,14 @@ package com.monsters.chat
          {
          }
       }
-      
+
       public function adminMessage(param1:String) : void
       {
          var _loc2_:MessageRecipientMode = new MessageRecipientMode(MessageRecipientMode.TO_ZONE,null);
          var _loc3_:AdminMessageRequest = new AdminMessageRequest(param1,_loc2_,null);
          this.sfs.send(_loc3_);
       }
-      
+
       public function say(param1:Channel, param2:String) : void
       {
          var _loc4_:SFSObject = null;
@@ -704,7 +707,7 @@ package com.monsters.chat
             }
          }
       }
-      
+
       private function onPrivateMessage(param1:SFSEvent) : void
       {
          var _loc2_:Boolean = true;
@@ -715,7 +718,7 @@ package com.monsters.chat
          _loc3_["message"] = param1.params.message;
          dispatchEvent(new ChatEvent(ChatEvent.SAY,_loc2_,_loc3_));
       }
-      
+
       private function onPublicMessage(param1:SFSEvent) : void
       {
          var _loc2_:Boolean = true;
@@ -725,10 +728,9 @@ package com.monsters.chat
          _loc3_["message"] = param1.params.message;
          dispatchEvent(new ChatEvent(ChatEvent.SAY,_loc2_,_loc3_));
       }
-      
+
       private function onUserEnterRoom(param1:SFSEvent) : void
       {
-         // convert to neutral types
          var sfsUser:User = param1.params.user;
          var sfsRoom:Room = param1.params.room;
 
@@ -738,20 +740,19 @@ package com.monsters.chat
          _loc3_["room"] = new ChatRoom(sfsRoom.id, sfsRoom.name, sfsRoom.userCount, sfsRoom.maxUsers);
          dispatchEvent(new ChatEvent(ChatEvent.USER_ENTER,_loc2_,_loc3_));
       }
-      
+
       private function onUserExitRoom(event:SFSEvent) : void
       {
-         // Convert to neutral types
          var sfsUser:User = event.params.user;
          var sfsRoom:Room = event.params.room;
-         
+
          var _loc2_:Boolean = true;
          var _loc3_:Dictionary = new Dictionary();
          _loc3_["user"] = new ChatUser(sfsUser.id, sfsUser.name);
          _loc3_["room"] = new ChatRoom(sfsRoom.id, sfsRoom.name, sfsRoom.userCount, sfsRoom.maxUsers);
          dispatchEvent(new ChatEvent(ChatEvent.USER_EXIT,_loc2_,_loc3_));
       }
-      
+
       public function list(param1:String = null) : void
       {
          var _loc2_:Boolean = true;
@@ -759,7 +760,7 @@ package com.monsters.chat
          _loc3_["list"] = new Array();
          dispatchEvent(new ChatEvent(ChatEvent.LIST,_loc2_,_loc3_));
       }
-      
+
       public function members(param1:Channel) : void
       {
          var _loc2_:Boolean = true;
@@ -767,7 +768,7 @@ package com.monsters.chat
          _loc3_["members"] = new Array();
          dispatchEvent(new ChatEvent(ChatEvent.MEMBERS,_loc2_,_loc3_));
       }
-      
+
       public function showIgnore() : void
       {
          var _loc1_:SFSObject = new SFSObject();
@@ -776,7 +777,7 @@ package com.monsters.chat
          var _loc2_:ExtensionRequest = new ExtensionRequest(EXT_REQ_STRING,_loc1_);
          this.sfs.send(_loc2_);
       }
-      
+
       public function getIgnore() : void
       {
          var _loc1_:SFSObject = new SFSObject();
@@ -785,7 +786,7 @@ package com.monsters.chat
          var _loc2_:ExtensionRequest = new ExtensionRequest(EXT_REQ_STRING,_loc1_);
          this.sfs.send(_loc2_);
       }
-      
+
       public function ignore(param1:String, param2:String) : void
       {
          var _loc3_:SFSObject = new SFSObject();
@@ -796,7 +797,7 @@ package com.monsters.chat
          var _loc4_:ExtensionRequest = new ExtensionRequest(EXT_REQ_STRING,_loc3_);
          this.sfs.send(_loc4_);
       }
-      
+
       public function unignore(param1:String) : void
       {
          var _loc2_:SFSObject = new SFSObject();
@@ -806,7 +807,7 @@ package com.monsters.chat
          var _loc3_:ExtensionRequest = new ExtensionRequest(EXT_REQ_STRING,_loc2_);
          this.sfs.send(_loc3_);
       }
-      
+
       public function error(param1:String, param2:String) : void
       {
          var _loc3_:Boolean = false;
@@ -814,9 +815,7 @@ package com.monsters.chat
          (_loc4_ = new Dictionary())["error"] = param2;
          dispatchEvent(new ChatEvent(ChatEvent.SAY,_loc3_,_loc4_));
       }
-      
-      // ============ Keep-Alive ============
-      
+
       private function initKeepAlive() : void
       {
          if(this.keepAliveTimer != null)
@@ -827,7 +826,7 @@ package com.monsters.chat
          this.keepAliveTimer.addEventListener(TimerEvent.TIMER,this.keepAliveListener);
          this.keepAliveTimer.start();
       }
-      
+
       private function stopKeepAlive() : void
       {
          if(this.keepAliveTimer != null)
@@ -837,7 +836,7 @@ package com.monsters.chat
             this.keepAliveTimer = null;
          }
       }
-      
+
       private function keepAliveListener(param1:TimerEvent) : void
       {
          var _loc2_:SFSObject = new SFSObject();
@@ -863,7 +862,7 @@ package com.monsters.chat
             this.stopKeepAlive();
          }
       }
-      
+
       public function get roomNames() : Vector.<String>
       {
          var _loc2_:Room = null;
@@ -875,7 +874,7 @@ package com.monsters.chat
          }
          return roomNames;
       }
-      
+
       public function get numUsers() : int
       {
          return this.sfs.userManager.userCount;
@@ -912,4 +911,6 @@ package com.monsters.chat
          return result;
       }
    }
+}
+*/
 }
