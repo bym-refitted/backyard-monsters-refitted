@@ -91,11 +91,15 @@ package com.monsters
       
       public function get armor() : Number
       {
+         if (!this.armorProperty) return 1;
+
          return this.armorProperty.value;
       }
       
       public function get moveSpeed() : Number
       {
+         if (!this.moveSpeedProperty) return 0;
+
          return this.moveSpeedProperty.value;
       }
       
@@ -161,6 +165,8 @@ package com.monsters
       
       public function get maxHealth() : Number
       {
+         if (!this.maxHealthProperty) return 0;
+
          return this.maxHealthProperty.value;
       }
       

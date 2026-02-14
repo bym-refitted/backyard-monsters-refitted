@@ -1,5 +1,14 @@
 package com.monsters.chat
 {
+   import com.monsters.chat.AS_Login;
+   import com.monsters.chat.Channel;
+   import com.monsters.chat.ChatData;
+   import com.monsters.chat.ChatEvent;
+   import com.monsters.chat.ChatRoom;
+   import com.monsters.chat.ChatUser;
+   import com.monsters.chat.IAuthenticationSystem;
+   import com.monsters.chat.IChatSystem;
+   import com.monsters.chat.UserRecord;
    import com.smartfoxserver.v2.SmartFox;
    import com.smartfoxserver.v2.core.SFSEvent;
    import com.smartfoxserver.v2.entities.Room;
@@ -23,9 +32,13 @@ package com.monsters.chat
    import flash.utils.Dictionary;
    import flash.utils.Timer;
    
+   /**
+    * SmartFoxServer implementation of IChatSystem.
+    * Wraps the SmartFoxServer v2 client and converts to neutral chat types.
+    */
    public class CS_SmartFoxServer2X extends EventDispatcher implements IChatSystem
    {
-      
+
       public static const HOST_LIVE:String = "message5.dc.kixeye.com";
       
       public static const HOST_TEST:String = "message3.dc.kixeye.com";
@@ -94,7 +107,19 @@ package com.monsters.chat
          this.sfs.addEventListener(SFSEvent.USER_VARIABLES_UPDATE,this.onUserVarsUpdate);
          this.connect();
       }
+
+
+      public function disconnect() : void
+      {
+         this.sfs.disconnect();
+         this.stopKeepAlive();
+      }
       
+      public function get isConnected() : Boolean
+      {
+         return this.sfs.isConnected;
+      }
+
       public function connect() : Boolean
       {
          var _loc1_:Boolean = false;
@@ -121,7 +146,7 @@ package com.monsters.chat
          _loc3_["message"] = param1.params.message;
          dispatchEvent(new ChatEvent(ChatEvent.SAY,_loc2_,_loc3_));
       }
-      
+
       private function onExtensionResponse(param1:SFSEvent) : void
       {
          var _loc2_:String = String(param1.params.cmd);
@@ -177,7 +202,7 @@ package com.monsters.chat
                return;
          }
       }
-      
+
       private function roomResponse(param1:SFSEvent, param2:String = null) : void
       {
          var _loc3_:SFSObject = param1.params.params as SFSObject;
@@ -231,7 +256,13 @@ package com.monsters.chat
             {
                _loc11_ = (_loc10_ = _loc6_.getSFSObject(_loc9_) as SFSObject).getUtfString("target");
                _loc12_ = _loc10_.getUtfString("displayname");
-               _loc7_.push(_loc10_);
+
+               // Convert to ChatData for neutral format
+               var chatData:ChatData = new ChatData();
+               chatData.putUtfString("target", _loc11_);
+               chatData.putUtfString("displayname", _loc12_);
+
+               _loc7_.push(chatData);
                _loc9_++;
             }
             _loc8_["ignore_list"] = _loc7_;
@@ -349,7 +380,11 @@ package com.monsters.chat
          this.m_login = _loc2_;
          this.m_user = _loc2_.User;
          var _loc3_:String = _loc2_.Password;
-         var _loc4_:SFSObject = _loc2_.Params;
+
+         // Convert ChatData to SFSObject for SmartFox
+         var chatData:ChatData = _loc2_.Params;
+         var _loc4_:SFSObject = this.chatDataToSFSObject(chatData);
+
          var _loc5_:LoginRequest = new LoginRequest(this.m_user.Name,_loc3_,this.zone,_loc4_);
          try
          {
@@ -393,14 +428,19 @@ package com.monsters.chat
          dispatchEvent(new ChatEvent(ChatEvent.LOGIN,_loc2_,_loc3_));
          this._isLoggedIn = false;
       }
-      
+
       public function logout() : void
       {
          this._isLoggedIn = false;
          this.sfs.disconnect();
          this.stopKeepAlive();
       }
-      
+
+      public function get isLoggedIn() : Boolean
+      {
+         return this._isLoggedIn;
+      }
+
       private function onLogout(param1:SFSEvent) : void
       {
          this._isLoggedIn = false;
@@ -487,7 +527,7 @@ package com.monsters.chat
             LOGGER.Log("err","Exception in updateDisplayName.sfs.send(extensionRequest): " + e);
          }
       }
-      
+
       public function updateDisplayNameDirect(param1:Channel, param2:String, param3:String, param4:String) : void
       {
          var extensionRequest:ExtensionRequest;
@@ -688,19 +728,27 @@ package com.monsters.chat
       
       private function onUserEnterRoom(param1:SFSEvent) : void
       {
+         // convert to neutral types
+         var sfsUser:User = param1.params.user;
+         var sfsRoom:Room = param1.params.room;
+
          var _loc2_:Boolean = true;
          var _loc3_:Dictionary = new Dictionary();
-         _loc3_["user"] = param1.params.user;
-         _loc3_["room"] = param1.params.room;
+         _loc3_["user"] = new ChatUser(sfsUser.id, sfsUser.name);
+         _loc3_["room"] = new ChatRoom(sfsRoom.id, sfsRoom.name, sfsRoom.userCount, sfsRoom.maxUsers);
          dispatchEvent(new ChatEvent(ChatEvent.USER_ENTER,_loc2_,_loc3_));
       }
       
-      private function onUserExitRoom(param1:SFSEvent) : void
+      private function onUserExitRoom(event:SFSEvent) : void
       {
+         // Convert to neutral types
+         var sfsUser:User = event.params.user;
+         var sfsRoom:Room = event.params.room;
+         
          var _loc2_:Boolean = true;
          var _loc3_:Dictionary = new Dictionary();
-         _loc3_["user"] = param1.params.user;
-         _loc3_["room"] = param1.params.room;
+         _loc3_["user"] = new ChatUser(sfsUser.id, sfsUser.name);
+         _loc3_["room"] = new ChatRoom(sfsRoom.id, sfsRoom.name, sfsRoom.userCount, sfsRoom.maxUsers);
          dispatchEvent(new ChatEvent(ChatEvent.USER_EXIT,_loc2_,_loc3_));
       }
       
@@ -767,6 +815,8 @@ package com.monsters.chat
          dispatchEvent(new ChatEvent(ChatEvent.SAY,_loc3_,_loc4_));
       }
       
+      // ============ Keep-Alive ============
+      
       private function initKeepAlive() : void
       {
          if(this.keepAliveTimer != null)
@@ -814,22 +864,52 @@ package com.monsters.chat
          }
       }
       
-      public function get roomNames() : Array
+      public function get roomNames() : Vector.<String>
       {
          var _loc2_:Room = null;
-         var _loc1_:Array = [];
+         var roomNames:Vector.<String> = new Vector.<String>();
          for each(var _loc5_ in this.roomMap)
          {
             _loc2_ = _loc5_;
-            _loc5_;
-            _loc1_.push(_loc2_.name);
+            roomNames.push(_loc2_.name);
          }
-         return _loc1_;
+         return roomNames;
       }
       
       public function get numUsers() : int
       {
          return this.sfs.userManager.userCount;
+      }
+
+      private function chatDataToSFSObject(chatData:ChatData) : SFSObject
+      {
+         var result:SFSObject = new SFSObject();
+         if(chatData == null)
+         {
+            return result;
+         }
+         var keys:Array = chatData.keys;
+         for each (var key:String in keys)
+         {
+            var value:* = chatData.get(key);
+            if(value is String)
+            {
+               result.putUtfString(key, value as String);
+            }
+            else if(value is int)
+            {
+               result.putInt(key, value as int);
+            }
+            else if(value is Number)
+            {
+               result.putDouble(key, value as Number);
+            }
+            else if(value is Boolean)
+            {
+               result.putBool(key, value as Boolean);
+            }
+         }
+         return result;
       }
    }
 }

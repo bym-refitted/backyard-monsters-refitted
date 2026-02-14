@@ -1179,7 +1179,7 @@ package com.monsters.monsters
          var closestBuilding:Object = null;
          var secondClosestBuilding:Object = null;
          this._looking = true;
-         var checkTarget:Function = function(building)
+         var checkTarget:Function = function(building:BFOUNDATION) : void
          {
             var targetPoint:Point = GRID.FromISO(building._mc.x,building._mc.y + building._middle);
             var distance:Number = GLOBAL.QuickDistance(startPoint,targetPoint) - building._middle;
