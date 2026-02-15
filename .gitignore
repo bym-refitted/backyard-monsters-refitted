@@ -28,4 +28,4 @@ server/src/database/bym-db*
 server/src/database/migrations/.snapshot*
 
 # Private scripts / sensitive
-server/src/scripts/anticheat/anticheat.private.ts
+server/src/scripts/anticheat/priv/*
