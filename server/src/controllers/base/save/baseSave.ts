@@ -47,7 +47,7 @@ export const baseSave: KoaController = async (ctx) => {
     // Not the owner and not in an attack
     if (!isOwner && baseSave.attackid === 0) throw permissionErr();
 
-    await validateSave(user, baseSave);
+    await validateSave(user, baseSave, ctx.request.body);
 
     // Standard save logic
     for (const key of isAttack ? Save.attackSaveKeys : Save.saveKeys) {

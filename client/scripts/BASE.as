@@ -3711,7 +3711,7 @@ package
          var exportedData:Object = null;
          var updateAutoBank:Object = null;
          var attackerChampion:Array = null;
-         if (GLOBAL._halt)
+         if (GLOBAL.isHalted)
          {
             return false;
          }

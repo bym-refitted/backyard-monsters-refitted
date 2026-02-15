@@ -45,7 +45,7 @@ package
 
       public static var cdnUrl:String = CONFIG::CDN_URL;
 
-      public static var apiVersionSuffix:String = "v1.4.9-beta";
+      public static var apiVersionSuffix:String = "v1.5.0-beta";
 
       public static var connectionCounter:int;
 
@@ -77,7 +77,11 @@ package
 
       public static var _languageVersion:int;
 
-      public static var _halt:Boolean;
+      /**
+       * If set, the game loop is completely halted.
+       * Used in fatal error situations. The game must be reloaded to recover from this state.
+       */
+      private static var _halt:Boolean;
 
       public static var _frameNumber:int;
 
@@ -461,7 +465,7 @@ package
        */
       public static function init():void
       {
-         new URLLoaderApi().load(serverUrl + "init", [["apiVersion", apiVersionSuffix]], function(serverData:Object)
+         new URLLoaderApi().load(serverUrl + "init", [["apiVersion", apiVersionSuffix]], function(serverData:Object) : void
             {
                var stage:Stage = GAME._instance.stage;
 
@@ -484,6 +488,23 @@ package
                GLOBAL.eventDispatcher.dispatchEvent(new Event("initError"));
                return;
             });
+      }
+
+      /**
+       * Halts the game loop, preventing any further updates or interactions.
+       * This should be called in situations where a fatal error has occurred and the game cannot continue functioning properly.
+       */
+      public static function Halt():void
+      {
+         _halt = true;
+      }
+
+      /**
+       * Returns whether the game is currently halted due to a fatal error.
+       */
+      public static function get isHalted():Boolean
+      {
+         return _halt;
       }
 
       /*
@@ -1116,7 +1137,7 @@ package
          {
             CheckNetworkConnection(null);
          }
-         if (!_halt && !GLOBAL._catchup)
+         if (!isHalted && !GLOBAL._catchup)
          {
             t += 1;
             if (MapRoomManager.instance.isOpen)
@@ -1276,7 +1297,7 @@ package
          var _loc13_:Bunker = null;
          var _loc14_:BTRAP = null;
          var _loc15_:BFOUNDATION = null;
-         if (!_halt)
+         if (!isHalted)
          {
             _loc2_ = int(getTimer());
             SOUNDS.Tick();

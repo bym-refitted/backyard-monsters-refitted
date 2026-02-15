@@ -9,6 +9,7 @@ package com.monsters.chat
    import flash.utils.Timer;
    import gs.TweenLite;
    import com.monsters.chat.ChatData;
+   import com.monsters.chat.impl.stub.StubChatSystem;
    
    public class BYMChat extends Sprite
    {
@@ -97,8 +98,8 @@ package com.monsters.chat
          this.chatBox = param1;
          addChild(param1 as MovieClip);
          param1.addEventListener(KeyboardEvent.KEY_DOWN,this.keyboardEventHandler);
-         var _loc3_:String = param2 == null || param2 == "" ? CS_SmartFoxServer2X.HOST_TEST : param2;
-         var _loc4_:int = CS_SmartFoxServer2X.PORT;
+         var _loc3_:String = param2 == null || param2 == "" ? StubChatSystem.HOST_TEST : param2;
+         var _loc4_:int = StubChatSystem.PORT;
          var _loc5_:Array;
          if((_loc5_ = _loc3_.split(":")).length > 1)
          {
@@ -141,7 +142,7 @@ package com.monsters.chat
       {
          try
          {
-            _chat = new CS_SmartFoxServer2X(this._chatHost,this._chatPort);
+            _chat = new StubChatSystem(this._chatHost,this._chatPort);
             _chat.addEventListener(ChatEvent.CONNECT,this.onConnect);
             _chat.addEventListener(ChatEvent.LOGIN,this.onLogin);
             _chat.addEventListener(ChatEvent.JOIN,this.onJoin);
