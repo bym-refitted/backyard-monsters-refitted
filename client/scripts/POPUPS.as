@@ -81,7 +81,7 @@ package
       
       public static function Next(param1:MouseEvent = null) : void
       {
-         if(GLOBAL._halt)
+         if(GLOBAL.isHalted)
          {
             GLOBAL.CallJS("reloadPage");
          }
@@ -399,7 +399,7 @@ package
          movie.x = GLOBAL._SCREENCENTER.x;
          movie.y = GLOBAL._SCREENCENTER.y;
          GLOBAL._layerTop.addChild(movie);
-         GLOBAL._halt = true;
+         GLOBAL.Halt();
       }
       
       public static function Timeout() : void
@@ -441,7 +441,7 @@ package
          _loc1_.x = GLOBAL._SCREENCENTER.x;
          _loc1_.y = GLOBAL._SCREENCENTER.y;
          GLOBAL._layerTop.addChild(_loc1_);
-         GLOBAL._halt = true;
+         GLOBAL.Halt();
       }
       
       public static function AFK() : void
@@ -834,7 +834,7 @@ package
       public static function CallbackGift(param1:String) : void
       {
          RemoveBG();
-         if(GLOBAL._halt)
+         if(GLOBAL.isHalted)
          {
             GLOBAL.CallJS("reloadPage");
          }
@@ -860,7 +860,7 @@ package
          {
             LOGGER.Log("err","POPUPS.CallbackShiny " + o + " | " + e.message);
          }
-         if(GLOBAL._halt)
+         if(GLOBAL.isHalted)
          {
             GLOBAL.CallJS("reloadPage");
          }
