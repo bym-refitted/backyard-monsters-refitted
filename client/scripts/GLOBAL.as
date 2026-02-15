@@ -463,7 +463,7 @@ package
        */
       public static function init():void
       {
-         new URLLoaderApi().load(serverUrl + "init", [["apiVersion", apiVersionSuffix]], function(serverData:Object)
+         new URLLoaderApi().load(serverUrl + "init", [["apiVersion", apiVersionSuffix]], function(serverData:Object) : void
             {
                var stage:Stage = GAME._instance.stage;
 
