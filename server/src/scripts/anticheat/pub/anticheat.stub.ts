@@ -1,6 +1,12 @@
 import { Save } from "../../../models/save.model.js";
 import { User } from "../../../models/user.model.js";
 
+
+/**
+ * Optional initialization function for the anti-cheat module.
+ */
+export const initialize = async (): Promise<void> => {};
+
 /**
  * STUB: Public no-op implementation for open-source builds.
  *

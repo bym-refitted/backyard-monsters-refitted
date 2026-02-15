@@ -17,6 +17,7 @@ import { processLanguagesFile } from "./middleware/processLanguageFile.js";
 import { logMissingAssets, morganLogging } from "./middleware/morganLogging.js";
 import { corsCacheControl } from "./middleware/corsCacheControlSetup.js";
 import { Env } from "./enums/Env.js";
+import { initAnticheat } from "./scripts/anticheat/anticheat.js";
 
 export const app = new Koa();
 app.proxy = true;
@@ -80,6 +81,8 @@ api.get("/", (ctx: Context) => (ctx.body = {}));
   // Routes
   app.use(router.routes());
   app.use(router.allowedMethods());
+
+  await initAnticheat();
 
   app.listen(PORT, () => {
     console.log(`
