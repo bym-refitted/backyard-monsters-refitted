@@ -6,7 +6,7 @@ import { Save } from "../../../models/save.model.js";
 import { MapRoom3, MapRoomVersion } from "../../../enums/MapRoom.js";
 import { WorldMapCell } from "../../../models/worldmapcell.model.js";
 import { mapByCoordinates } from "../../../services/maproom/v3/utils/mapByCoordinates.js";
-import { getGeneratedCells } from "../../../services/maproom/v3/generateCells.js";
+import { getGeneratedCells, cellKey } from "../../../services/maproom/v3/generateCells.js";
 import { EnumYardType } from "../../../enums/EnumYardType.js";
 import { createCellData } from "../../../services/maproom/v3/createCellData.js";
 import { getDefenderCoords, isDefensiveStructure } from "../../../services/maproom/v3/getDefenderCoords.js";
@@ -57,12 +57,12 @@ export const getMapRoomCells: KoaController = async (ctx) => {
       const key = `${x},${y}`;
       coords.set(key, { x, y });
 
-      const genCell = generateCells.get(key);
+      const genCell = generateCells.get(cellKey(x, y));
 
       // If this is a defender, find and add its parent structure + all siblings
       if (genCell?.type === EnumYardType.FORTIFICATION) {
         for (const [px, py] of getDefenderCoords(x, y)) {
-          const parentCell = generateCells.get(`${px},${py}`);
+          const parentCell = generateCells.get(cellKey(px, py));
           if (isDefensiveStructure(parentCell?.type)) {
             // Add parent
             coords.set(`${px},${py}`, { x: px, y: py });
@@ -161,7 +161,7 @@ export const getMapRoomCells: KoaController = async (ctx) => {
 
       let cell: WorldMapCell;
       const dbCell = dbCellsByCoord.get(key);
-      const genCell = generateCells.get(key);
+      const genCell = generateCells.get(cellKey(x, y));
 
       // TODO: this shit is horrible, sort it out
       if (dbCell) {

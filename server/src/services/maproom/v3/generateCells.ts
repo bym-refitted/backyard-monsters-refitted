@@ -20,6 +20,7 @@ import {
   STRONGHOLD_JITTER,
   RESOURCE_SEED,
   TRIBE_OUTPOST_SEED,
+  STRUCTURE_LEVELS,
 } from "../../../config/MapRoom3Config.js";
 
 export interface GeneratedCell {
@@ -30,7 +31,10 @@ export interface GeneratedCell {
   level?: number;
 }
 
-let cachedCells: Map<string, GeneratedCell> | null = null;
+let cachedCells: Map<number, GeneratedCell> | null = null;
+
+/** Packs x,y coordinates into a single numeric key for Map lookups. */
+export const cellKey = (x: number, y: number): number => (x << 16) | y;
 
 /**
  * Generates all procedural cells for Map Room 3 and returns them as a Map.
@@ -38,7 +42,7 @@ let cachedCells: Map<string, GeneratedCell> | null = null;
  *
  * Cells include: strongholds, resources, tribe outposts, defenders, and terrain (bushes/clover).
  */
-export const getGeneratedCells = (): Map<string, GeneratedCell> => {
+export const getGeneratedCells = (): Map<number, GeneratedCell> => {
   if (cachedCells) return cachedCells;
 
   const cells: GeneratedCell[] = [];
@@ -140,7 +144,10 @@ export const getGeneratedCells = (): Map<string, GeneratedCell> => {
     const key = (x << 16) | y;
     
     if (!occupiedCells.has(key)) {
-      cells.push({ x, y, type: EnumYardType.OUTPOST });
+      const outpostLevels = STRUCTURE_LEVELS[EnumYardType.OUTPOST];
+      const level = outpostLevels[Math.floor(tribeRng() * outpostLevels.length)];
+
+      cells.push({ x, y, type: EnumYardType.OUTPOST, level });
       occupiedCells.add(key);
     }
   }
@@ -200,6 +207,6 @@ export const getGeneratedCells = (): Map<string, GeneratedCell> => {
     }
   }
 
-  cachedCells = new Map(cells.map(cell => [`${cell.x},${cell.y}`, cell]));
+  cachedCells = new Map(cells.map(cell => [cellKey(cell.x, cell.y), cell]));
   return cachedCells;
 };
