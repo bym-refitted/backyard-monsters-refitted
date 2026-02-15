@@ -45,7 +45,7 @@ package
 
       public static var cdnUrl:String = CONFIG::CDN_URL;
 
-      public static var apiVersionSuffix:String = "v1.4.9-beta";
+      public static var apiVersionSuffix:String = "v1.5.0-beta";
 
       public static var connectionCounter:int;
 
@@ -463,7 +463,7 @@ package
        */
       public static function init():void
       {
-         new URLLoaderApi().load(serverUrl + "init", [["apiVersion", apiVersionSuffix]], function(serverData:Object)
+         new URLLoaderApi().load(serverUrl + "init", [["apiVersion", apiVersionSuffix]], function(serverData:Object) : void
             {
                var stage:Stage = GAME._instance.stage;
 

@@ -17,6 +17,7 @@ import { processLanguagesFile } from "./middleware/processLanguageFile.js";
 import { logMissingAssets, morganLogging } from "./middleware/morganLogging.js";
 import { corsCacheControl } from "./middleware/corsCacheControlSetup.js";
 import { Env } from "./enums/Env.js";
+import { initAnticheat } from "./scripts/anticheat/anticheat.js";
 
 export const app = new Koa();
 app.proxy = true;
@@ -24,7 +25,7 @@ app.proxy = true;
 export const PORT = process.env.PORT || 3001;
 export const BASE_URL = process.env.BASE_URL;
 
-export const getApiVersion = () => "v1.4.9-beta";
+export const getApiVersion = () => "v1.5.0-beta";
 
 export const postgres = {} as {
   orm: MikroORM<PostgreSqlDriver>;
@@ -80,6 +81,8 @@ api.get("/", (ctx: Context) => (ctx.body = {}));
   // Routes
   app.use(router.routes());
   app.use(router.allowedMethods());
+
+  await initAnticheat();
 
   app.listen(PORT, () => {
     console.log(`
