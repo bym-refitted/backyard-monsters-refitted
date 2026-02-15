@@ -3,7 +3,7 @@ import { postgres } from "../../../server.js";
 import { EnumYardType } from "../../../enums/EnumYardType.js";
 import { STRUCTURE_SAVES, OUTPOST_SAVES } from "../../../config/MapRoom3Config.js";
 import { Tribes } from "../../../enums/Tribes.js";
-import { getGeneratedCells } from "./generateCells.js";
+import { getGeneratedCells, cellKey } from "./generateCells.js";
 import { calculateStructureLevel } from "./calculateStructureLevel.js";
 
 /**
@@ -13,11 +13,9 @@ import { calculateStructureLevel } from "./calculateStructureLevel.js";
  * Extracts cell coordinates from the baseid, looks up the structure type from
  * the generated cell cache, then resolves the appropriate save data template:
  *
- * Outposts: Tribe-specific layouts looked up via OUTPOST_SAVES[tribeIndex][level].
- *   The tribe is determined by coordinates, and wmid is set to 0 so the client
- *   treats the base as a main yard.
- * 
- * Defenders (fortifications): Use pre-computed levels assigned during world generation.
+ * Outposts and Defenders: Use pre-computed levels assigned during world generation.
+ *   Outposts are tribe-specific, looked up via OUTPOST_SAVES[tribeIndex][level].
+ *   wmid is set to 0 so the client treats the base as a main yard.
  * 
  * Strongholds/Resources: Use deterministic level calculation from coordinates.
  *
@@ -29,13 +27,13 @@ export const tribeSaveV3 = (baseid: string): Save | null => {
   const cellX = parseInt(baseid.slice(-6, -3));
   const cellY = parseInt(baseid.slice(-3));
 
-  const genCell = getGeneratedCells().get(`${cellX},${cellY}`);
+  const genCell = getGeneratedCells().get(cellKey(cellX, cellY));
   const structureType = genCell?.type;
 
   if (structureType === EnumYardType.OUTPOST) {
     const tribeIndex = (cellX + cellY) % Tribes.length;
 
-    const level = calculateStructureLevel(cellX, cellY, structureType);
+    const level = genCell.level;
     const outpostSave = OUTPOST_SAVES[tribeIndex][level];
 
     if (!outpostSave) return null;

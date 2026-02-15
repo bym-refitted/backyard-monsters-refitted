@@ -4,7 +4,7 @@ import { WorldMapCell } from "../../../models/worldmapcell.model.js";
 import { EntityManager, PostgreSqlDriver } from "@mikro-orm/postgresql";
 import { EnumYardType } from "../../../enums/EnumYardType.js";
 import { getDefenderCoords } from "./getDefenderCoords.js";
-import { getGeneratedCells, type GeneratedCell } from "./generateCells.js";
+import { getGeneratedCells, cellKey, type GeneratedCell } from "./generateCells.js";
 import { setTimeout } from "timers/promises";
 
 interface Cell {
@@ -82,7 +82,7 @@ export const findFreeSector = async (world: World, em: EntityManager<PostgreSqlD
       map_version: MapRoomVersion.V3,
     });
 
-    const centerGenCell = genCellsByCoord.get(`${x},${y}`);
+    const centerGenCell = genCellsByCoord.get(cellKey(x, y));
 
     // Center position must be overridable (terrain, EMPTY, or OUTPOST)
     if (!canOverride(existingCell, centerGenCell)) continue;
@@ -99,7 +99,7 @@ export const findFreeSector = async (world: World, em: EntityManager<PostgreSqlD
         map_version: MapRoomVersion.V3,
       });
 
-      const defenderGenCell = genCellsByCoord.get(`${defenderX},${defenderY}`);
+      const defenderGenCell = genCellsByCoord.get(cellKey(defenderX, defenderY));
 
       // Defender position must be overridable (terrain, EMPTY, or OUTPOST)
       if (!canOverride(existingDefender, defenderGenCell)) {
