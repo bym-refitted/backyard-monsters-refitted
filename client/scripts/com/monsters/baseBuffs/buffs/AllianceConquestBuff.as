@@ -34,6 +34,7 @@ package com.monsters.baseBuffs.buffs
 }
 
 import com.monsters.monsters.components.modifiers.MultiplicationPropertyModifier;
+import com.monsters.baseBuffs.buffs.AllianceConquestBuff;
 
 class ConquestAttackCostMultiplier extends MultiplicationPropertyModifier
 {

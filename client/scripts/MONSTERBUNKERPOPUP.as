@@ -856,7 +856,7 @@ package
                         if(_loc4_._creatureID == param1 && _loc4_._behaviour == "bunker")
                         {
                            _loc4_.changeModeJuice();
-                           --this._bunker._monstersDispatched[param1];
+                           this._bunker._monstersDispatched[param1] = int(this._bunker._monstersDispatched[param1]) - 1;
                            if(this._bunker._monstersDispatched[param1] < 0)
                            {
                               this._bunker._monstersDispatched[param1] = 0;
@@ -874,7 +874,7 @@ package
                      {
                         CREATURES.Spawn(param1,MAP._BUILDINGTOPS,"juice",new Point(this._bunker.x,this._bunker.y).add(new Point(-60 + Math.random() * 135,-5 + Math.random() * 20)),Math.random() * 360);
                      }
-                     --this._bunker._monsters[param1];
+                     this._bunker._monsters[param1] = int(this._bunker._monsters[param1]) - 1;
                      if(this._bunker._monsters[param1] < 0)
                      {
                         this._bunker._monsters[param1] = 0;
@@ -888,7 +888,7 @@ package
          }
          if(this._bunker._monsters[param1])
          {
-            --this._bunker._monsters[param1];
+            this._bunker._monsters[param1] = int(this._bunker._monsters[param1]) - 1;
             if(this._bunker._monsters[param1] < 0)
             {
                this._bunker._monsters[param1] = 0;

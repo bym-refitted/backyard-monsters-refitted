@@ -446,7 +446,7 @@ package
                }
                _loc4_++;
             }
-            --this.m_bunker._monstersDispatched[param1];
+            this.m_bunker._monstersDispatched[param1] = int(this.m_bunker._monstersDispatched[param1]) - 1;
             if(this.m_bunker._monstersDispatched[param1] < 0)
             {
                this.m_bunker._monstersDispatched[param1] = 0;

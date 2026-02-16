@@ -269,7 +269,8 @@ package
                   if(_loc8_ = CREATURES.Spawn(_loc2_,MAP._BUILDINGTOPS,"decoy",_position.add(new Point(_loc4_,_loc5_)),Math.random() * 360))
                   {
                      _loc8_._homeBunker = this;
-                     ++_monstersDispatched[_loc2_];
+                     var dispatechedCount:int = int(_monstersDispatched[_loc2_]);
+                     _monstersDispatched[_loc2_] = ++dispatechedCount;
                      ++_monstersDispatchedTotal;
                   }
                }
@@ -506,7 +507,7 @@ package
                   }
                   _loc11_.WaypointTo(_loc11_._targetCreep._tmpPoint);
                   _loc11_._targetPosition = _loc11_._targetCreep._tmpPoint;
-                  ++_monstersDispatched[_loc5_];
+                  _monstersDispatched[_loc5_] = int(_monstersDispatched[_loc5_]) + 1;
                   ++_monstersDispatchedTotal;
                }
             }
@@ -675,7 +676,7 @@ package
             {
                if(this.numMonsters(_loc4_))
                {
-                  --this._monsters[_loc4_];
+                  this._monsters[_loc4_] = int(this._monsters[_loc4_]) - 1;
                   _used -= CREATURELOCKER._creatures[_loc4_].props.cStorage;
                   _loc1_ = true;
                }
@@ -708,16 +709,20 @@ package
       
       public function RemoveCreature(param1:String) : void
       {
-         --this._monsters[param1];
-         if(this._monsters[param1] < 0)
+         var count:int = int(this._monsters[param1]);
+         --count;
+         if(count < 0)
          {
-            this._monsters[param1] = 0;
+            count = 0;
          }
-         --_monstersDispatched[param1];
-         if(_monstersDispatched[param1] < 0)
+         this._monsters[param1] = count;
+         var dispatchedCount:int = int(_monstersDispatched[param1]);
+         --dispatchedCount;
+         if(dispatchedCount < 0)
          {
-            _monstersDispatched[param1] = 0;
+            dispatchedCount = 0;
          }
+         _monstersDispatched[param1] = dispatchedCount;
          --_monstersDispatchedTotal;
          if(_monstersDispatchedTotal < 0)
          {
