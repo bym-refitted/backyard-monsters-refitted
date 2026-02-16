@@ -215,7 +215,7 @@ package com.auth
             var formWidth:Number = 450;
             var formHeight:Number = 600;
 
-            languages = KEYS.supportedLanguagesJson;
+            languages = KEYS.supportedLanguagesJson as Array;
             var selectInput:Sprite = createSelectInput();
             contentContainer.addChild(selectInput);
             selectInput.x = 20;

@@ -142,7 +142,7 @@ package
                      _loc2_ -= CREATURES.GetProperty(_loc5_._inProduction,"cStorage");
                      if(_finishQueue[_loc5_._inProduction])
                      {
-                        ++_finishQueue[_loc5_._inProduction];
+                        _finishQueue[_loc5_._inProduction] = int(_finishQueue[_loc5_._inProduction]) + 1;
                      }
                      else
                      {

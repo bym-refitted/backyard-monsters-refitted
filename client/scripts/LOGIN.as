@@ -106,7 +106,7 @@ package
                   else
                   {
                      // ToDo: Implement if we are running in a browser.
-                     ExternalInterface.call("setItem", "authToken", authToken);
+                     ExternalInterface.call("setItem", "authToken", token);
                   }
                }
             };

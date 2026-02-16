@@ -16,7 +16,8 @@ package
       
       override public function Constructed() : void
       {
-         ++ACHIEVEMENTS._stats["heavytraps"];
+         var heavyTrapsConstructed:Number = ACHIEVEMENTS._stats["heavytraps"] as Number;
+         ACHIEVEMENTS._stats["heavytraps"] = heavyTrapsConstructed + 1;
          ACHIEVEMENTS.Check();
          super.Constructed();
       }
