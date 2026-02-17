@@ -31,6 +31,20 @@ package
       
       public static const k_USE_REBALANCED_MONSTERS:Boolean = false;
       
+      /**
+       * Locker data object storing the unlock status of creatures.
+       * It maps a creature ID (String) to an object with at least a 't' property:
+       * - t = 1: creature is being unlocked
+       * - t = 2: creature is unlocked
+       * 
+       * If t = 1, the object contains additional properties:
+       * - s: start time of the unlock process (Number, timestamp)
+       * - e: end time of the unlock process (Number, timestamp)
+       * 
+       * If a creature ID is not present in this object, it is considered locked.
+       * 
+       * TODO: replace all direct accesses to this variable with the provided helper methods and then make it private.
+       */
       public static var _lockerData:Object;
       
       public static var _open:Boolean;
@@ -64,12 +78,86 @@ package
       {
          return BASE.isInfernoMainYardOrOutpost ? "IC1" : "C1";
       }
+
+      /**
+       * Checks if a creature is unlocked in the locker data.
+       * A creature is considered unlocked if:
+       * 1. it exists in the locker data,
+       * 2. its type 't' is equal to 2. (if t=1, it is currently being unlocked)
+       * 
+       * @param creatureId The ID of the creature to check.
+       * @return True if the creature is unlocked, false otherwise.
+       */
+      public static function isCreatureUnlocked(creatureId:String) : Boolean
+      {
+         if(_lockerData == null)
+         {
+            return false;
+         }
+         if(_lockerData[creatureId] == null)
+         {
+            return false;
+         }
+         if(_lockerData[creatureId].t != 2)
+         {
+            return false;
+         }
+         return true;
+      }
+
+      /**
+       * Checks if a creature is currently being unlocked in the locker data.
+       * A creature is considered being unlocked if:
+       * 1. it exists in the locker data,
+       * 2. its type 't' is equal to 1.
+       * 
+       * @param creatureId The ID of the creature to check.
+       * @return True if the creature is being unlocked, false otherwise.
+       */
+      public static function isCreatureBeingUnlocked(creatureId:String) : Boolean
+      {
+         if(_lockerData == null)
+         {
+            return false;
+         }
+         if(_lockerData[creatureId] == null)
+         {
+            return false;
+         }
+         if(_lockerData[creatureId].t != 1)
+         {
+            return false;
+         }
+         return true;
+      }
+
+      /**
+       * Marks a creature as unlocked in the locker data.
+       */
+      public static function setCreatureUnlocked(creatureId:String) : void
+      {
+         _lockerData[creatureId] = {"t":2};
+      }
+
+      /**
+       * Checks if a creature is either being unlocked or already unlocked.
+       * 
+       * 
+       * @param creatureId The ID of the creature to check.
+       * @return True if the creature exists in the locker data, false otherwise.
+       */
+      public static function hasCreature(creatureId:String) : Boolean
+      {
+         return _lockerData != null && _lockerData[creatureId] != null;
+      }
       
-      public static function Data(param1:Object) : void
+      public static function Data(lockerDataFromServer:Object) : void
       {
          var _loc2_:int = 0;
-         _lockerData = param1;
-         _lockerData[getFirstCreatureID()] = {"t":2};
+         _lockerData = lockerDataFromServer;
+         
+         // Ensure the first creature is always unlocked
+         setCreatureUnlocked(getFirstCreatureID());
          if(_lockerData.C100)
          {
             _lockerData.C12 = _lockerData.C100;
@@ -82,7 +170,7 @@ package
                _loc2_ = 2;
                while(_loc2_ <= NUM_ICREEP_TYPE)
                {
-                  if(Boolean(_lockerData["IC" + _loc2_]) && _lockerData["IC" + _loc2_].t == 2)
+                  if(isCreatureUnlocked("IC" + _loc2_))
                   {
                      ACHIEVEMENTS.Check("unlock_monster",1);
                      break;
@@ -95,7 +183,7 @@ package
                _loc2_ = 2;
                while(_loc2_ <= NUM_CREEP_TYPE)
                {
-                  if(Boolean(_lockerData["C" + _loc2_]) && _lockerData["C" + _loc2_].t == 2)
+                  if(isCreatureUnlocked("C" + _loc2_))
                   {
                      ACHIEVEMENTS.Check("unlock_monster",1);
                      break;

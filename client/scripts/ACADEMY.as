@@ -6,16 +6,20 @@ package
    
    public class ACADEMY
    {
-      
+      // Unique identifier for the Academy building type.
       public static const ID:int = 26;
       
+      // The currently selected academy building. Set when the academy popup is shown.
       public static var _building:BFOUNDATION = null;
       
+      // The academy popup movie clip instance.
       public static var _mc:ACADEMYPOPUP = null;
       
+      // The current monster ID being upgraded.
       public static var _monsterID:String;
       
-      public static var _open:Boolean = false;
+      // Indicates whether the academy popup is currently open.
+      private var _open:Boolean = false;
       
       private static var _monsterString:String = "C";
       
@@ -26,14 +30,38 @@ package
       private static const _yardMaxMonsters:int = 16;
       
       private static const _infernoMaxMonsters:int = 9;
-       
-      
-      public function ACADEMY()
+
+
+      private static var _instance:ACADEMY;
+
+
+      public function ACADEMY(dummy: Function)
       {
-         super();
+         if (dummy != _instanceblocker)
+         {
+            throw new Error("Singleton class, use getInstance() to access.");
+         }
       }
-      
-      public static function Show(param1:BFOUNDATION) : void
+
+      /**
+       * Function to block direct instantiation from outside the class.
+       */
+      private static function _instanceblocker():void
+      {
+      }
+
+      public static function getInstance():ACADEMY
+      {
+         if (_instance == null)
+         {
+            _instance = new ACADEMY(_instanceblocker);
+         }
+         return _instance;
+      }
+
+      // =========================================================
+
+      public function Show(param1:BFOUNDATION) : void
       {
          if(!_open)
          {
@@ -46,7 +74,7 @@ package
          }
       }
       
-      public static function Hide(param1:MouseEvent = null) : void
+      public function Hide(param1:MouseEvent = null) : void
       {
          if(_open)
          {
@@ -59,100 +87,140 @@ package
          }
       }
       
-      public static function StartMonsterUpgrade(param1:String, param2:Boolean = false) : Object
+      /**
+       * Validates whether a monster upgrade is possible.
+       * 
+       * @param monsterId The ID of the monster to validate for upgrade.
+       * 
+       * @return An object containing error status, error message, and current status.
+       */
+      public static function CheckMonsterUpgradePossible(monsterId:String) : Object
       {
-         var _loc6_:Array = null;
-         if(!GLOBAL.player.m_upgrades[param1])
+         var trainingCosts:Array = null;
+         if(!GLOBAL.player.m_upgrades[monsterId])
          {
-            GLOBAL.player.m_upgrades[param1] = {"level":1};
+            GLOBAL.player.m_upgrades[monsterId] = {"level":1};
          }
-         var _loc3_:Boolean = false;
-         var _loc4_:String = "";
-         var _loc5_:String = KEYS.Get("acad_status_level",{"v1":GLOBAL.player.m_upgrades[param1].level});
-         if(Boolean(_building) && !_building._upgrading)
+         
+         var defaultStatus:String = KEYS.Get("acad_status_level",{"v1":GLOBAL.player.m_upgrades[monsterId].level});
+
+         // is an upgrade already in progress or no building selected?
+         if(!Boolean(_building) || _building._upgrading)
          {
-            if(!GLOBAL.player.m_upgrades[param1].time)
+            var status:String = defaultStatus;
+            if(GLOBAL.player.m_upgrades[monsterId].time)
             {
-               if(Boolean(CREATURELOCKER._lockerData[param1]) && CREATURELOCKER._lockerData[param1].t == 2)
-               {
-                  if(GLOBAL.player.m_upgrades[param1].level < CREATURELOCKER._creatures[param1].trainingCosts.length + 1)
-                  {
-                     if(GLOBAL.player.m_upgrades[param1].level <= _building._lvl.Get())
-                     {
-                        _loc6_ = CREATURELOCKER._creatures[param1].trainingCosts[GLOBAL.player.m_upgrades[param1].level - 1];
-                        if(BASE.Charge(3,_loc6_[0],true) > 0)
-                        {
-                           if(!param2)
-                           {
-                              BASE.Charge(3,_loc6_[0]);
-                              GLOBAL.player.m_upgrades[param1].time = new SecNum(GLOBAL.Timestamp() + _loc6_[1]);
-                              GLOBAL.player.m_upgrades[param1].duration = _loc6_[1];
-                              _building._upgrading = param1;
-                              BASE.Save();
-                              LOGGER.Stat([11,int(param1.substr(1)),GLOBAL.player.m_upgrades[param1].level + 1]);
-                           }
-                        }
-                        else
-                        {
-                           _loc3_ = true;
-                           _loc4_ = BASE.isInfernoMainYardOrOutpost ? KEYS.Get("acad_err_sulfur") : KEYS.Get("acad_err_putty");
-                           _loc5_ = BASE.isInfernoMainYardOrOutpost ? KEYS.Get("acad_err_sulfur") : KEYS.Get("acad_err_putty");
-                        }
-                     }
-                     else
-                     {
-                        _loc3_ = true;
-                        _loc4_ = KEYS.Get("acad_err_upgrade");
-                        _loc5_ = KEYS.Get("acad_err_upgrade");
-                        if(BASE.isInfernoMainYardOrOutpost && GLOBAL.player.m_upgrades[param1].level >= 5)
-                        {
-                           _loc3_ = true;
-                           _loc4_ = KEYS.Get("acad_err_fullytrained");
-                           _loc5_ = KEYS.Get("acad_err_lfullytrained",{"v1":GLOBAL.player.m_upgrades[param1].level});
-                        }
-                     }
-                  }
-                  else
-                  {
-                     _loc3_ = true;
-                     _loc4_ = KEYS.Get("acad_err_fullytrained");
-                     _loc5_ = KEYS.Get("acad_err_lfullytrained",{"v1":GLOBAL.player.m_upgrades[param1].level});
-                  }
-               }
-               else
-               {
-                  _loc3_ = true;
-                  _loc4_ = KEYS.Get("acad_err_locked");
-                  _loc5_ = KEYS.Get("acad_err_locked");
-               }
-            }
-            else
-            {
-               _loc3_ = true;
-               _loc4_ = KEYS.Get("acad_err_training",{"v1":GLOBAL.player.m_upgrades[param1].level + 1});
-               _loc5_ = KEYS.Get("acad_err_trainingstatus",{
-                  "v1":GLOBAL.player.m_upgrades[param1].level + 1,
-                  "v2":GLOBAL.ToTime(GLOBAL.player.m_upgrades[param1].time.Get() - GLOBAL.Timestamp())
+               status = KEYS.Get("acad_err_trainingstatus",{
+                  "v1":GLOBAL.player.m_upgrades[monsterId].level + 1,
+                  "v2":GLOBAL.ToTime(GLOBAL.player.m_upgrades[monsterId].time.Get() - GLOBAL.Timestamp())
                });
             }
+            return {
+               "error":true,
+               "errorMessage":KEYS.Get("acad_err_busy"),
+               "status":status
+            };
          }
-         else
+
+         // Is an upgrade for this monster already in progress?
+         if(GLOBAL.player.m_upgrades[monsterId].time) 
          {
-            _loc3_ = true;
-            _loc4_ = KEYS.Get("acad_err_busy");
-            if(GLOBAL.player.m_upgrades[param1].time)
-            {
-               _loc5_ = KEYS.Get("acad_err_trainingstatus",{
-                  "v1":GLOBAL.player.m_upgrades[param1].level + 1,
-                  "v2":GLOBAL.ToTime(GLOBAL.player.m_upgrades[param1].time.Get() - GLOBAL.Timestamp())
-               });
+            return {
+               error: true,
+               errorMessage: KEYS.Get("acad_err_training",{"v1":GLOBAL.player.m_upgrades[monsterId].level + 1}),
+               status: KEYS.Get("acad_err_trainingstatus",{
+                  "v1":GLOBAL.player.m_upgrades[monsterId].level + 1,
+                  "v2":GLOBAL.ToTime(GLOBAL.player.m_upgrades[monsterId].time.Get() - GLOBAL.Timestamp())
+               })
             }
          }
+
+         // Is the monster still locked in the creature locker?
+         if(!CREATURELOCKER.isCreatureUnlocked(monsterId)) 
+         {
+            return {
+               error: true,
+               errorMessage: KEYS.Get("acad_err_locked"),
+               status: KEYS.Get("acad_err_locked")
+            }
+         }
+
+         // Has the monster already reached its maximum upgrade level?
+         if(GLOBAL.player.m_upgrades[monsterId].level >= CREATURELOCKER._creatures[monsterId].trainingCosts.length + 1) 
+         {
+            return {
+               error: true,
+               errorMessage: KEYS.Get("acad_err_fullytrained"),
+               status: KEYS.Get("acad_err_lfullytrained",{"v1":GLOBAL.player.m_upgrades[monsterId].level})
+            }
+         }
+
+         // Is the monster upgrade level too high for the current academy level?
+         if(GLOBAL.player.m_upgrades[monsterId].level > _building._lvl.Get()) 
+         {
+            // Special case for Inferno Main Yard or Outpost with max level monsters
+            if(BASE.isInfernoMainYardOrOutpost && GLOBAL.player.m_upgrades[monsterId].level >= 5)
+            {
+               return {
+                  error: true,
+                  errorMessage: KEYS.Get("acad_err_fullytrained"),
+                  status: KEYS.Get("acad_err_lfullytrained",{"v1":GLOBAL.player.m_upgrades[monsterId].level})
+               };
+            }
+
+            return {
+               error: true,
+               errorMessage: KEYS.Get("acad_err_upgrade"),
+               status: KEYS.Get("acad_err_upgrade")
+            };
+         }
+
+         // Is the player missing the required resources for the upgrade?
+         trainingCosts = CREATURELOCKER._creatures[monsterId].trainingCosts[GLOBAL.player.m_upgrades[monsterId].level - 1];
+         if(BASE.Charge(3,trainingCosts[0],true) <= 0)
+         {
+            var errorMessage:String = BASE.isInfernoMainYardOrOutpost ? KEYS.Get("acad_err_sulfur") : KEYS.Get("acad_err_putty");
+            return {
+               "error":true,
+               "errorMessage":errorMessage,
+               "status":errorMessage
+            }
+         }
+
          return {
-            "error":_loc3_,
-            "errorMessage":_loc4_,
-            "status":_loc5_
+            "error":false,
+            "errorMessage":"",
+            "status": defaultStatus
          };
+      }
+      
+      /**
+       * Starts the upgrade process for a monster.
+       * 
+       * @param monsterId The ID of the monster to upgrade.
+       * 
+       * @return An object containing error status, error message, and current status.
+       */
+      public static function StartMonsterUpgrade(monsterId:String) : Object
+      {
+         var validationResult:Object = CheckMonsterUpgradePossible(monsterId);
+         
+         // If validation failed, return the validation result
+         if(validationResult.error)
+         {
+            return validationResult;
+         }
+         
+         // Validation passed, proceed with upgrade
+         var trainingCosts:Array = CREATURELOCKER._creatures[monsterId].trainingCosts[GLOBAL.player.m_upgrades[monsterId].level - 1];
+         BASE.Charge(3,trainingCosts[0]);
+         GLOBAL.player.m_upgrades[monsterId].time = new SecNum(GLOBAL.Timestamp() + trainingCosts[1]);
+         GLOBAL.player.m_upgrades[monsterId].duration = trainingCosts[1];
+         _building._upgrading = monsterId;
+         BASE.Save();
+         LOGGER.Stat([11,int(monsterId.substr(1)),GLOBAL.player.m_upgrades[monsterId].level + 1]);
+         
+         return validationResult;
       }
       
       public static function CancelMonsterUpgrade(param1:String) : void
@@ -240,7 +308,7 @@ package
          }
       }
       
-      public static function Tick() : void
+      public function Tick() : void
       {
          var _loc1_:String = null;
          var _loc2_:Object = null;
@@ -258,12 +326,27 @@ package
          Update();
       }
       
-      public static function Update() : void
+      /**
+       * Updates the Academy popup movie clip if it exists.
+       */
+      public function Update() : void
       {
          if(_mc)
          {
             _mc.Update();
          }
       }
+
+      // =========================================================
+      // Getters and Setters
+      // =========================================================
+
+      /**
+       * Returns whether the Academy popup is currently open.
+       */
+      public function get open(): Boolean
+      {
+         return _open;
+      } 
    }
 }
