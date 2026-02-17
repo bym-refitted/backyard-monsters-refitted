@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project>
+	
+	<meta title="ClientHx" package="com.sample.clienthx" version="1.0.0" company="Company Name" />
+	<app main="Main" path="Export" file="client-hx" />
+	
+	<source path="src" />
+	
+	<haxelib name="openfl" />
+
+	<assets path="assets" rename="assets" />
+	
+</project>
