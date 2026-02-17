@@ -1,5 +1,6 @@
 package;
 
+import com.bymr.hx.HaxeLib;
 import test.TestSprite;
 import openfl.display.Sprite;
 
@@ -15,6 +16,10 @@ class Main extends Sprite
 	public function new()
 	{
 		super();
-		addChild( new TestSprite() );
+
+		// declare variables to tell the compiler to include these classes in the swc
+		
+		var testSprite:TestSprite;
+		var haxeLib:HaxeLib;
 	}
 }
