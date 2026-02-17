@@ -1,7 +1,5 @@
 package com.cc.tests
 {
-   import com.adobe.crypto.MD5;
-   
    public class ABTest
    {
        
@@ -40,7 +38,7 @@ package com.cc.tests
             _loc3_ = LOGIN._playerID.toString();
          }
          _loc3_ = param1 + _loc3_;
-         return MD5.hash(_loc3_);
+         return md5(_loc3_);
       }
    }
 }
