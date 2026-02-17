@@ -16,7 +16,7 @@ package
 
       public static var languageFileJson:Object;
 
-      public static var supportedLanguagesJson:Object;
+      public static var supportedLanguagesJson:Array;
 
       private static var dispatcher:EventDispatcher = new EventDispatcher();
 
@@ -58,7 +58,7 @@ package
       private static function handleSupportedLangsSucc(data:Event):void
       {
          var rawData:String = String(data.target.data);
-         supportedLanguagesJson = JSON.parse(rawData);
+         supportedLanguagesJson = JSON.parse(rawData) as Array;
          GLOBAL.supportedLangsLoaded = true;
       }
       
