@@ -1,7 +1,9 @@
 # Haxe Client Library
 
-This repository includes a small Haxe project in client-hx as part of the gradual AS3 to Haxe migration.
-It builds into a SWC and is linked from the AS3 client during the transition.
+This repository includes a Haxe project in client-hx as part of the gradual AS3 to Haxe migration.
+It builds into a SWC (Flash Library) and is linked from the AS3 client during the transition.
+
+As the AS3 client depends on this library, it must be compiled **before** the AS3 client.
 
 ## Dependencies
 
