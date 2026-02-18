@@ -16,7 +16,12 @@ If you have Haxe installed, install the Haxe libraries with:
 
 ```bash
 haxelib install lime
+
+haxelib run lime setup
+
 haxelib install openfl
+
+haxelib run openfl setup
 ```
 
 Make sure that both Lime and OpenFL are inside your PATH (the haxelib installer should ask for your password to do this for you).
