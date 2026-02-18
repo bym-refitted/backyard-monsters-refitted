@@ -77,7 +77,9 @@ class SecNum {
 	 */
 	public function new(initialValue:Int) {
 		this.Set(initialValue);
+        #if debug
 		trace("SecNum initialized with value: " + initialValue);
+        #end
 	}
 
 	/**
