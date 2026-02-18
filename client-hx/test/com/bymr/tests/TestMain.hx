@@ -1,13 +1,15 @@
 package com.bymr.tests;
 
+import com.bymr.tests.mocks.MockGlobal;
+import com.bymr.tests.mocks.MockLogger;
+import com.bymr.hx.HaxeLib;
 import com.cc.utils.SecNum;
 
 class TestMain {
-
-    
-
 	public static function main() {
 		trace("Hello from TestMain!");
+
+		HaxeLib.bootstrap(new MockGlobal(), new MockLogger());
 
 		final runs = 9999999;
 		var s:SecNum = new SecNum(0);
