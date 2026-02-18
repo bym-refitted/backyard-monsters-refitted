@@ -2564,5 +2564,10 @@ package
       {
          trace(message);
       }
+
+      public function ErrorMessage(message:String = "", errorType:int = 0):void
+      {
+         GLOBAL.ErrorMessage(message, errorType);
+      }
    }
 }
