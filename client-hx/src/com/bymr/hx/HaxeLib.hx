@@ -1,43 +1,46 @@
 package com.bymr.hx;
 
+import com.bymr.hx.api.ILogger;
 import com.bymr.hx.api.IGlobal;
 
-class HaxeLib
-{
-    private static var _instance:HaxeLib;
+class HaxeLib {
+	
+    // Proxy to AS3 GLOBAL class
+    public static var GLOBAL:IGlobal;
+	
+    // Proxy to AS3 LOGGER class
+    public static var LOGGER:ILogger;
 
-    private var _global:IGlobal;
+    // Specifies if the library has been bootstrapped/initialized
+	private static var bootstrapped:Bool = false;
 
-    function new() {}
+	function new() {}
 
-    /**
-     * Bootstraps the haxe library by providing decoupled access to the AS3 code though interfaces. 
-     * This allows the Haxe code to call methods on the AS3 code without directly depending on AS3 classes.
-     * 
-     * @param globalInstance 
-     */
-    public static function bootstrap(globalInstance: IGlobal):Void {
-        if (_instance != null) {
-            return;
-        }
-        _instance = new HaxeLib();
-        
-        _instance._global = globalInstance;
+	/**
+	 * Bootstraps the haxe library by providing decoupled access to the AS3 code though interfaces. 
+	 * This allows the Haxe code to call methods on the AS3 code without directly depending on AS3 classes.
+	 * 
+	 * @param globalInstance 
+	 * @param loggerInstance 
+	 */
+	public static function bootstrap(globalInstance:IGlobal, loggerInstance:ILogger):Void {
+		if (bootstrapped) {
+			return;
+		}
+		bootstrapped = true;
 
-        HaxeLib.global().log("HaxeLib bootstrapped successfully!");
-    }
+		if (globalInstance == null) {
+			throw "Global instance cannot be null when bootstrapping HaxeLib.";
+		}
 
+		if (loggerInstance == null) {
+			throw "Logger instance cannot be null when bootstrapping HaxeLib.";
+		}
 
-    /**
-     * Returns the instance of the GLOBAL class in AS3, which implements the IGlobal interface.
-     * This allows Haxe code to call methods on the GLOBAL class in AS3 through the IGlobal interface.
-     * 
-     * @return IGlobal instance that allows calling methods on the GLOBAL class in AS3.
-     */
-    public static function global():IGlobal {
-        if (_instance == null) {
-            throw "HaxeLib not bootstrapped. Call HaxeLib.bootstrap() first.";
-        }
-        return _instance._global;
-    }
+		GLOBAL = globalInstance;
+		LOGGER = loggerInstance;
+
+        // ...and directly use that logger :-)
+		LOGGER.Log("info", "HaxeLib bootstrapped successfully!");
+	}
 }
