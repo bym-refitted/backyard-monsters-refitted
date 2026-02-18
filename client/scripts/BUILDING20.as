@@ -1,6 +1,7 @@
 package
 {
    import com.monsters.interfaces.IAttackable;
+   import com.monsters.utils.ObjectPool;
    import flash.display.BitmapData;
    import flash.geom.Point;
    import flash.geom.Rectangle;
@@ -46,11 +47,16 @@ package
          }
          else if(_targetVacuum)
          {
-            PROJECTILES.Spawn(new Point(_mc.x,_mc.y + _top),GLOBAL.townHall._position.add(new Point(0,-GLOBAL.townHall._mc.height)),null,_speed,int(damage * _loc3_ * 3 * _loc2_),false,0);
+            var firePt:Point = ObjectPool.getPoint(_mc.x, _mc.y + _top);
+            var targetOffsetPt:Point = ObjectPool.getPoint(0, -GLOBAL.townHall._mc.height);
+            var targetPt:Point = GLOBAL.townHall._position.add(targetOffsetPt);
+            ObjectPool.returnPoint(targetOffsetPt);
+            PROJECTILES.Spawn(firePt, targetPt, null, _speed, int(damage * _loc3_ * 3 * _loc2_), false, 0);
          }
          else
          {
-            PROJECTILES.Spawn(new Point(_mc.x,_mc.y + _top),null,param1,_speed,int(damage * _loc2_ * _loc3_),false,_splash,Targeting.getOldStyleTargets(-1));
+            var spawnPt:Point = ObjectPool.getPoint(_mc.x, _mc.y + _top);
+            PROJECTILES.Spawn(spawnPt, null, param1, _speed, int(damage * _loc2_ * _loc3_), false, _splash, Targeting.getOldStyleTargets(-1));
          }
       }
    }

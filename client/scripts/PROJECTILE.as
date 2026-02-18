@@ -2,6 +2,7 @@ package
 {
    import com.monsters.interfaces.IAttackable;
    import com.monsters.monsters.MonsterBase;
+   import com.monsters.utils.ObjectPool;
    import flash.geom.Point;
    
    public class PROJECTILE extends ProjectileBase
@@ -27,8 +28,14 @@ package
             PROJECTILES.Remove(_id);
             return false;
          }
-         _targetPoint = new Point(this._target.x,this._target.y - (this._target is MonsterBase && MonsterBase(this._target)._movement == "fly" ? MonsterBase(this._target)._altitude : 0));
-         _distance = Point.distance(_targetPoint,new Point(_tmpX,_tmpY));
+         // Reuse _targetPoint instead of allocating new Point
+         if(!_targetPoint) _targetPoint = new Point();
+         _targetPoint.x = this._target.x;
+         _targetPoint.y = this._target.y - (this._target is MonsterBase && MonsterBase(this._target)._movement == "fly" ? MonsterBase(this._target)._altitude : 0);
+         // Use pooled Point for distance calculation
+         var tempPt:Point = ObjectPool.getPoint(_tmpX, _tmpY);
+         _distance = Point.distance(_targetPoint, tempPt);
+         ObjectPool.returnPoint(tempPt);
          if(this.Move())
          {
             return true;
@@ -77,9 +84,10 @@ package
       
       public function Splash() : void
       {
-         var _loc1_:Point = new Point(_tmpX,_tmpY);
-         var _loc2_:Array = Targeting.getTargetsInRange(_splash,_loc1_,this._splashTargetFlags);
-         Targeting.DealLinearAEDamage(_loc1_,_splash,_damage,_loc2_);
+         var _loc1_:Point = ObjectPool.getPoint(_tmpX, _tmpY);
+         var _loc2_:Array = Targeting.getTargetsInRange(_splash, _loc1_, this._splashTargetFlags);
+         Targeting.DealLinearAEDamage(_loc1_, _splash, _damage, _loc2_);
+         ObjectPool.returnPoint(_loc1_);
          this._target.modifyHealth(0,this);
       }
    }

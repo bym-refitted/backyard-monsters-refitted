@@ -246,6 +246,10 @@ package com.monsters.monsters
 
       private var _cachedTargetRotation:Number = NaN;
       
+      // Cached geometry for HP bar rendering (reduces GC pressure)
+      private var _hpBarRect:Rectangle = new Rectangle(0, 0, 17, 5);
+      private var _hpBarPoint:Point = new Point();
+      
       public function MonsterBase()
       {
          this._components = new Vector.<Component>();
@@ -733,7 +737,11 @@ package com.monsters.monsters
             if(health < maxHealth)
             {
                _loc4_ = 11 - int(11 / maxHealth * health);
-               this._graphic.copyPixels(CREEPS._bmdHPbar,new Rectangle(0,5 * _loc4_,17,5),new Point(-this._graphicMC.x - CREEPS._bmdHPbar.width / 2,6));
+               // Reuse cached geometry instead of allocating new objects
+               this._hpBarRect.y = 5 * _loc4_;
+               this._hpBarPoint.x = -this._graphicMC.x - CREEPS._bmdHPbar.width / 2;
+               this._hpBarPoint.y = 6;
+               this._graphic.copyPixels(CREEPS._bmdHPbar, this._hpBarRect, this._hpBarPoint);
             }
             if(this._graphic)
             {

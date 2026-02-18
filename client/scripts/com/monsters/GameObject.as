@@ -24,6 +24,9 @@ package com.monsters
       
       public var _middle:int;
       
+      /** Cached rectangle for visibility testing - avoids per-frame allocations */
+      protected var _visibilityRect:Rectangle = new Rectangle();
+      
       private var _health:SecNum;
       
       public var _size:int;
@@ -274,7 +277,7 @@ package com.monsters
          }
          var _loc1_:Point = MAP.instance.offset;
          var _loc2_:Function = MAP.instance.viewRect.intersects;
-         var _loc3_:Rectangle = new Rectangle();
+         var _loc3_:Rectangle = _visibilityRect;
          var _loc4_:int = int(this.m_children.length);
          if(Boolean(this._mc) && Boolean(_loc4_))
          {

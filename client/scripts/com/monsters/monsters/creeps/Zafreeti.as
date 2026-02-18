@@ -2,6 +2,7 @@ package com.monsters.monsters.creeps
 {
    import com.monsters.interfaces.ITargetable;
    import com.monsters.monsters.MonsterBase;
+   import com.monsters.utils.ObjectPool;
    import flash.display.BitmapData;
    import flash.geom.Point;
    
@@ -31,7 +32,8 @@ package com.monsters.monsters.creeps
          {
             SOUNDS.Play("hit" + int(4 + Math.random() * 1),0.1 + Math.random() * 0.1);
          }
-         return FIREBALLS.Spawn2(new Point(_tmpPoint.x,_tmpPoint.y - _altitude),_targetCreep._tmpPoint,_targetCreep,25,damage,0,FIREBALLS.TYPE_FIREBALL,1,this);
+         var spawnPt:Point = ObjectPool.getPoint(_tmpPoint.x, _tmpPoint.y - _altitude);
+         return FIREBALLS.Spawn2(spawnPt, _targetCreep._tmpPoint, _targetCreep, 25, damage, 0, FIREBALLS.TYPE_FIREBALL, 1, this);
       }
    }
 }

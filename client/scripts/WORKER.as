@@ -4,6 +4,7 @@ package
    import com.monsters.display.ImageCache;
    import com.monsters.pathing.PATHING;
    import com.monsters.rendering.RasterData;
+   import com.monsters.utils.ObjectPool;
    import flash.display.Bitmap;
    import flash.display.BitmapData;
    import flash.display.DisplayObject;
@@ -207,17 +208,20 @@ package
          var _loc3_:Rectangle = null;
          if(!GLOBAL._catchup)
          {
-            _loc3_ = new Rectangle(param1.x,param1.y,10,10);
+            _loc3_ = ObjectPool.getRect(param1.x, param1.y, 10, 10);
             if(param2)
             {
-               _loc3_ = new Rectangle(param2._mc.x,param2._mc.y,param2._footprint[0].width,param2._footprint[0].height);
+               ObjectPool.returnRect(_loc3_);
+               _loc3_ = ObjectPool.getRect(param2._mc.x, param2._mc.y, param2._footprint[0].width, param2._footprint[0].height);
             }
             this._hasPath = false;
-            PATHING.GetPath(new Point(x,y),_loc3_,this.setWaypoints,true,param2);
+            var pathPoint:Point = ObjectPool.getPoint(x, y);
+            PATHING.GetPath(pathPoint, _loc3_, this.setWaypoints, true, param2);
+            // Note: pathPoint and _loc3_ are consumed by GetPath, don't return to pool
          }
          else
          {
-            this._waypoints = [new Point(x,y)];
+            this._waypoints = [ObjectPool.getPoint(x, y)];
          }
       }
       
@@ -269,7 +273,9 @@ package
          }
          if(this._hasPath)
          {
-            Distance = Point.distance(this._targetPosition,new Point(x,y));
+            var distPoint:Point = ObjectPool.getPoint(x, y);
+            Distance = Point.distance(this._targetPosition, distPoint);
+            ObjectPool.returnPoint(distPoint);
             if(Distance < 20)
             {
                if(this._waypoints.length > 0)
