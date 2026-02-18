@@ -38,8 +38,9 @@ package
    import flash.utils.*;
    import gs.TweenLite;
    import gs.easing.Cubic;
+   import com.bymr.hx.api.IGlobal;
 
-   public class GLOBAL
+   public class GLOBAL implements IGlobal
    {
       public static var serverUrl:String = CONFIG::SERVER_URL;
 
@@ -2551,6 +2552,20 @@ package
       public static function get StageHeight():int
       {
          return _ROOT.stage.stageHeight;
+      }
+
+      // ==============================================
+      // Start of IGlobal implementation
+      // ==============================================
+
+      public function log(message:String):void
+      {
+         trace(message);
+      }
+
+      public function ErrorMessage(message:String = "", errorType:int = 0):void
+      {
+         GLOBAL.ErrorMessage(message, errorType);
       }
    }
 }
