@@ -1,6 +1,6 @@
 package test;
 
-import com.bymr.hx.HaxeLib;
+import com.bymr.hx.HaxeLib.LOGGER;
 import openfl.text.TextField;
 import openfl.display.Sprite;
 
@@ -11,7 +11,7 @@ class TestSprite extends Sprite {
         graphics.drawRect(0, 0, 100, 100);
         graphics.endFill();
         
-        HaxeLib.global().log("TestSprite created!");
+        LOGGER.Log("info", "TestSprite created!");
 
 		var text = new TextField();
 		text.text = "Hello from Haxe!";

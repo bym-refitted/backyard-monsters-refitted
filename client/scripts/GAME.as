@@ -37,7 +37,7 @@ package
 
       public function GAME()
       {
-         HaxeLib.bootstrap(new GLOBAL());
+         HaxeLib.bootstrap(new GLOBAL(), new LOGGER());
 
          var urls:Object = null;
          var serverUrl:String = GLOBAL.serverUrl;
