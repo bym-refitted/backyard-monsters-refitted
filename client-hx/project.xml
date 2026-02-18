@@ -5,6 +5,8 @@
 	<app main="Main" path="Export" file="client-hx" />
 	
 	<source path="src" />
+
+	<source path="test" />
 	
 	<haxelib name="openfl" />
 
