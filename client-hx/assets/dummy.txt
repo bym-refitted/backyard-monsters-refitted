@@ -1,0 +1,3 @@
+This directory is preserved by this placeholder file.
+
+It can be removed when other assets are included here.
