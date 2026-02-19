@@ -1,17 +1,20 @@
 package com.bymr.hx;
 
+import com.bymr.hx.api.IKeys;
 import com.bymr.hx.api.ILogger;
 import com.bymr.hx.api.IGlobal;
 
 class HaxeLib {
-	
-    // Proxy to AS3 GLOBAL class
-    public static var GLOBAL:IGlobal;
-	
-    // Proxy to AS3 LOGGER class
-    public static var LOGGER:ILogger;
+	// Proxy to AS3 GLOBAL class
+	public static var GLOBAL:IGlobal;
 
-    // Specifies if the library has been bootstrapped/initialized
+	// Proxy to AS3 LOGGER class
+	public static var LOGGER:ILogger;
+
+	// Proxy to AS3 KEYS class
+	public static var KEYS:IKeys;
+
+	// Specifies if the library has been bootstrapped/initialized
 	private static var bootstrapped:Bool = false;
 
 	function new() {}
@@ -22,8 +25,9 @@ class HaxeLib {
 	 * 
 	 * @param globalInstance 
 	 * @param loggerInstance 
+	 * @param keysInstance
 	 */
-	public static function bootstrap(globalInstance:IGlobal, loggerInstance:ILogger):Void {
+	public static function bootstrap(globalInstance:IGlobal, loggerInstance:ILogger, keysInstance:IKeys):Void {
 		if (bootstrapped) {
 			return;
 		}
@@ -36,11 +40,16 @@ class HaxeLib {
 		if (loggerInstance == null) {
 			throw "Logger instance cannot be null when bootstrapping HaxeLib.";
 		}
+		
+		if (keysInstance == null) {
+			throw "Keys instance cannot be null when bootstrapping HaxeLib.";
+		}
 
 		GLOBAL = globalInstance;
 		LOGGER = loggerInstance;
+		KEYS = keysInstance;
 
-        // ...and directly use that logger :-)
+		// ...and directly use that logger :-)
 		LOGGER.Log("info", "HaxeLib bootstrapped successfully!");
 	}
 }
