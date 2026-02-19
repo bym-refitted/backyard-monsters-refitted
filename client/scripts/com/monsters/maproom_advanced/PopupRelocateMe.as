@@ -115,8 +115,14 @@ package com.monsters.maproom_advanced
       
       public function Cleanup() : void
       {
-         this.mcInstant.bAction.removeEventListener(MouseEvent.CLICK, _onInstantClick);
-         this.mcResources.bAction.removeEventListener(MouseEvent.CLICK, _onResourcesClick);
+         if(_onInstantClick != null)
+         {
+            this.mcInstant.bAction.removeEventListener(MouseEvent.CLICK, _onInstantClick);
+         }
+         if(_onResourcesClick != null)
+         {
+            this.mcResources.bAction.removeEventListener(MouseEvent.CLICK, _onResourcesClick);
+         }
       }
       
       public function Hide() : void
