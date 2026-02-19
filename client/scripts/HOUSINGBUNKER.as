@@ -492,7 +492,7 @@ package
       {
          if(!MapRoomManager.instance.isInMapRoom3 || !BASE.isMainYardOrInfernoMainYard)
          {
-            --this._monsters[param1];
+            this._monsters[param1] = int(this._monsters[param1]) - 1;
             if(this._monsters[param1] < 0)
             {
                this._monsters[param1] = 0;
@@ -502,7 +502,7 @@ package
                GLOBAL.player.monsterListByID(param1).add(-1);
             }
          }
-         --_monstersDispatched[param1];
+         _monstersDispatched[param1] = int(_monstersDispatched[param1]) - 1;
          if(_monstersDispatched[param1] < 0)
          {
             _monstersDispatched[param1] = 0;

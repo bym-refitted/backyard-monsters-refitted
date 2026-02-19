@@ -39,7 +39,7 @@ package
       
       override public function Constructed() : void
       {
-         ++ACHIEVEMENTS._stats["blocksbuilt"];
+         ACHIEVEMENTS._stats["blocksbuilt"] = int(ACHIEVEMENTS._stats["blocksbuilt"]) + 1;
          ACHIEVEMENTS.Check();
          super.Constructed();
       }

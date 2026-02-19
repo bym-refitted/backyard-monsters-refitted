@@ -151,6 +151,7 @@ package
          var _loc2_:int = 0;
          var _loc3_:int = 0;
          var creatureID:String = null;
+         var _loc4_:String = null;
          m_recentlyAttacked = new Dictionary();
          _flingerCooldown = 5;
          _flingerCooling = 0;

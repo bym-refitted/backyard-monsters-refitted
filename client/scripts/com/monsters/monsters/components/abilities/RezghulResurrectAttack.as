@@ -89,11 +89,11 @@ package com.monsters.monsters.components.abilities
          var newMonster:CreepBase = null;
          if(owner._friendly)
          {
-            newMonster = CREATURES.Spawn(monsterToRes._creatureID,MAP._BUILDINGTOPS,monsterToRes._behaviour,new Point(monsterToRes.x,monsterToRes.y),monsterToRes._targetRotation,null,monsterToRes._house);
+            newMonster = CREATURES.Spawn(monsterToRes._creatureID,MAP._BUILDINGTOPS,monsterToRes._behaviour,new Point(monsterToRes.x,monsterToRes.y),monsterToRes._targetRotation,null,monsterToRes._house) as CreepBase;
          }
          else
          {
-            newMonster = CREEPS.Spawn(monsterToRes._creatureID,MAP._BUILDINGTOPS,monsterToRes._behaviour,new Point(monsterToRes.x,monsterToRes.y),monsterToRes._targetRotation,1,false,true);
+            newMonster = CREEPS.Spawn(monsterToRes._creatureID,MAP._BUILDINGTOPS,monsterToRes._behaviour,new Point(monsterToRes.x,monsterToRes.y),monsterToRes._targetRotation,1,false,true) as CreepBase;
          }
          EFFECTS.Dig(int(newMonster.x),int(newMonster.y + 20));
          TweenLite.from(newMonster._graphicMC,0.8,{

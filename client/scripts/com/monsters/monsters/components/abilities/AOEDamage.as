@@ -59,11 +59,11 @@ package com.monsters.monsters.components.abilities
          {
             if(initialTarget is MonsterBase)
             {
-               ignoreCreep = initialTarget
+               ignoreCreep = initialTarget as MonsterBase;
             }
             else if(initialTarget is BFOUNDATION)
             {
-               ignoreBuilding = initialTarget
+               ignoreBuilding = initialTarget as BFOUNDATION;
             }
          }
          return Targeting.getTargetsInRange(this.m_radiusOuter,ownerLocation,targetFlags,ignoreCreep,ignoreBuilding);
