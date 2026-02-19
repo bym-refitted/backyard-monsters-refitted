@@ -366,13 +366,7 @@ package
                {
                   if(Boolean(GLOBAL.player.monsterListByID(n)) && GLOBAL.player.monsterListByID(n).numCreeps - int(_juiceList[n]) > 0)
                   {
-                     var num:int = int(_juiceList[n]);
-                     if(!num)
-                     {
-                        num = 0;
-                     }
-                     ++num;
-                     _juiceList[n] = num;
+                     _juiceList[n] = int(_juiceList[n]) + 1;
                   }
                   Update();
                }

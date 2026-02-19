@@ -5570,7 +5570,7 @@ package
          _loc2_ = InstanceManager.getInstancesByClass(BFOUNDATION);
          for each (_loc3_ in _loc2_)
          {
-            _buildingCounts["b" + _loc3_._type] = int(_buildingCounts["b" + _loc3_._type]) + 1;
+            ++_buildingCounts["b" + _loc3_._type];
          }
       }
 
