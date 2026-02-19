@@ -85,13 +85,13 @@ package
             {
                _maxSpeed = CREATURES.GetProperty(_loc2_,"speed",10);
             }
-            if(CREATURES.GetProperty(_loc2_,"health",10) > _maxHealth)
+            if(CREATURES.GetProperty(_loc2_,"health",10).Get() > _maxHealth)
             {
                _maxHealth = CREATURES.GetProperty(_loc2_,"health",10);
             }
-            if(CREATURES.GetProperty(_loc2_,"damage",10) > _maxDamage)
+            if(CREATURES.GetProperty(_loc2_,"damage",10).Get() > _maxDamage)
             {
-               _maxDamage = CREATURES.GetProperty(_loc2_,"damage",10);
+               _maxDamage = CREATURES.GetProperty(_loc2_,"damage",10).Get();
             }
             if(CREATURES.GetProperty(_loc2_,"cTime",10) > _maxTime)
             {
@@ -153,8 +153,8 @@ package
       {
          var _loc1_:Array = CREATURELOCKER._creatures[_monsterID].trainingCosts[GLOBAL.player.m_upgrades[_monsterID].level - 1];
          var _loc2_:String = KEYS.Get(CREATURELOCKER._creatures[_monsterID].name);
-         var _loc3_:int = int(_loc1_[0]);
-         var _loc4_:int = int(_loc1_[1]);
+         var _loc3_:int = int(_loc1_[0].Get());
+         var _loc4_:int = int(_loc1_[1].Get());
          var _loc5_:int = STORE.GetTimeCost(_loc4_);
          var _loc6_:int = Math.ceil(Math.pow(Math.sqrt(_loc3_ / 2),0.75));
          _instantUpgradeCost = _loc5_ + _loc6_;
@@ -223,10 +223,10 @@ package
                bB.mcR1.visible = true;
                bB.mcR2.visible = true;
                bB.mcR3.visible = true;
-               bB.mcR3.tValue.htmlText = "<b><font color=\"#" + (_loc4_[0] > GLOBAL._resources.r3.Get() ? "FF0000" : "000000") + "\">" + GLOBAL.FormatNumber(_loc4_[0]) + "</font></b>";
+               bB.mcR3.tValue.htmlText = "<b><font color=\"#" + (_loc4_[0].Get() > GLOBAL._resources.r3.Get() ? "FF0000" : "000000") + "\">" + GLOBAL.FormatNumber(_loc4_[0].Get()) + "</font></b>";
                bB.mcR4.visible = true;
                bB.mcTime.visible = true;
-               bB.mcTime.tValue.htmlText = "<b>" + GLOBAL.ToTime(_loc4_[1]) + "</b>";
+               bB.mcTime.tValue.htmlText = "<b>" + GLOBAL.ToTime(_loc4_[1].Get()) + "</b>";
             }
             else if(_loc3_.status == KEYS.Get("acad_err_putty") || _loc3_.status == KEYS.Get("acad_err_sulfur"))
             {
@@ -237,10 +237,10 @@ package
                bB.mcR1.visible = true;
                bB.mcR2.visible = true;
                bB.mcR3.visible = true;
-               bB.mcR3.tValue.htmlText = "<b><font color=\"#" + (_loc4_[0] > GLOBAL._resources.r3.Get() ? "FF0000" : "000000") + "\">" + GLOBAL.FormatNumber(_loc4_[0]) + "</font></b>";
+               bB.mcR3.tValue.htmlText = "<b><font color=\"#" + (_loc4_[0].Get() > GLOBAL._resources.r3.Get() ? "FF0000" : "000000") + "\">" + GLOBAL.FormatNumber(_loc4_[0].Get()) + "</font></b>";
                bB.mcR4.visible = true;
                bB.mcTime.visible = true;
-               bB.mcTime.tValue.htmlText = "<b>" + GLOBAL.ToTime(_loc4_[1]) + "</b>";
+               bB.mcTime.tValue.htmlText = "<b>" + GLOBAL.ToTime(_loc4_[1].Get()) + "</b>";
                this.CalculateInstantCost();
                bA.bAction.Setup(KEYS.Get("btn_useshiny",{"v1":_instantUpgradeCost}));
                bA.bAction.removeEventListener(MouseEvent.CLICK,this.InstantMonsterUpgrade);
@@ -279,7 +279,7 @@ package
          var _loc5_:* = (_loc5_ = (_loc5_ = "<b>" + KEYS.Get("acad_mon_name") + "</b> " + KEYS.Get(CREATURELOCKER._creatures[_monsterID].name) + "<br>") + ("<b>" + KEYS.Get("acad_mon_status") + "</b> " + _loc3_.status)) + ("<br>" + KEYS.Get(CREATURELOCKER._creatures[_monsterID].description));
          tName.htmlText = _loc5_;
          var _loc6_:int;
-         if((_loc6_ = CREATURES.GetProperty(_monsterID,"damage")) > 0)
+         if((_loc6_ = CREATURES.GetProperty(_monsterID,"damage").Get()) > 0)
          {
             _loc7_ = false;
          }
@@ -288,7 +288,7 @@ package
             _loc7_ = true;
          }
          bSpeedA.mcBar.width = 100 / _maxSpeed * CREATURES.GetProperty(_monsterID,"speed");
-         bHealthA.mcBar.width = 100 / _maxHealth * CREATURES.GetProperty(_monsterID,"health");
+         bHealthA.mcBar.width = 100 / _maxHealth * CREATURES.GetProperty(_monsterID,"health").Get();
          if(!_loc7_)
          {
             bDamageA.mcBar.width = 100 / _maxDamage * _loc6_;
@@ -301,7 +301,7 @@ package
          bStorageA.mcBar.width = 100 / _maxStorage * CREATURES.GetProperty(_monsterID,"cStorage");
          bTimeA.mcBar.width = 100 / _maxTime * CREATURES.GetProperty(_monsterID,"cTime");
          tSpeedA.htmlText = KEYS.Get("mon_att_speedvalue",{"v1":CREATURES.GetProperty(_monsterID,"speed")});
-         tHealthA.htmlText = CREATURES.GetProperty(_monsterID,"health").toString();
+         tHealthA.htmlText = CREATURES.GetProperty(_monsterID,"health").Get().toString();
          if(!_loc7_)
          {
             tDamageA.htmlText = _loc6_.toString();
@@ -337,19 +337,19 @@ package
          {
             _loc8_ = int(GLOBAL.player.m_upgrades[_monsterID].level);
          }
-         _loc6_ = CREATURES.GetProperty(_monsterID,"damage",_loc8_);
+         _loc6_ = CREATURES.GetProperty(_monsterID,"damage",_loc8_).Get();
          if(_loc7_)
          {
             _loc6_ = -_loc6_;
          }
          bSpeedB.mcBar.width = 100 / _maxSpeed * CREATURES.GetProperty(_monsterID,"speed",_loc8_);
-         bHealthB.mcBar.width = 100 / _maxHealth * CREATURES.GetProperty(_monsterID,"health",_loc8_);
+         bHealthB.mcBar.width = 100 / _maxHealth * CREATURES.GetProperty(_monsterID,"health",_loc8_).Get();
          bDamageB.mcBar.width = 100 / _maxDamage * _loc6_;
          bResourceB.mcBar.width = 100 / _maxResource * CREATURES.GetProperty(_monsterID,"cResource",_loc8_);
          bStorageB.mcBar.width = 100 / _maxStorage * CREATURES.GetProperty(_monsterID,"cStorage",_loc8_);
          bTimeB.mcBar.width = 100 / _maxTime * CREATURES.GetProperty(_monsterID,"cTime",_loc8_);
          tSpeedB.htmlText = KEYS.Get("mon_att_speedvalue",{"v1":CREATURES.GetProperty(_monsterID,"speed",_loc8_)});
-         tHealthB.htmlText = CREATURES.GetProperty(_monsterID,"health",_loc8_).toString();
+         tHealthB.htmlText = CREATURES.GetProperty(_monsterID,"health",_loc8_).Get().toString();
          if(!_loc7_)
          {
             tDamageB.htmlText = _loc6_.toString();
@@ -372,7 +372,7 @@ package
          {
             bSpeedB.mcBar.gotoAndStop(1);
          }
-         if(CREATURES.GetProperty(_monsterID,"health") != CREATURES.GetProperty(_monsterID,"health",_loc8_))
+         if(CREATURES.GetProperty(_monsterID,"health").Get() != CREATURES.GetProperty(_monsterID,"health",_loc8_).Get())
          {
             bHealthB.mcBar.gotoAndStop(2);
          }
@@ -380,7 +380,7 @@ package
          {
             bHealthB.mcBar.gotoAndStop(1);
          }
-         if(CREATURES.GetProperty(_monsterID,"damage") != CREATURES.GetProperty(_monsterID,"damage",_loc8_))
+         if(CREATURES.GetProperty(_monsterID,"damage").Get() != CREATURES.GetProperty(_monsterID,"damage",_loc8_).Get())
          {
             bDamageB.mcBar.gotoAndStop(2);
          }

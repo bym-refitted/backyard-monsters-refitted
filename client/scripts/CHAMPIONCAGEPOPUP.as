@@ -978,8 +978,8 @@ package
                   tEvoDesc.htmlText += "* " + KEYS.Get(CHAMPIONCAGE._guardians["G" + CREATURES._guardian._type].powerLevel3Desc);
                }
             }
-            _loc1_ = CHAMPIONCAGE.GetGuardianProperty(this.guardID,this.guardLevel,"damage");
-            _loc2_ = CHAMPIONCAGE.GetGuardianProperty(this.guardID,this.guardLevel,"health");
+            _loc1_ = CHAMPIONCAGE.GetGuardianProperty(this.guardID,this.guardLevel,"damage").Get();
+            _loc2_ = CHAMPIONCAGE.GetGuardianProperty(this.guardID,this.guardLevel,"health").Get();
             _loc3_ = CHAMPIONCAGE.GetGuardianProperty(this.guardID,this.guardLevel,"speed");
             _loc4_ = CHAMPIONCAGE.GetGuardianProperty(this.guardID,this.guardLevel,"buffs") * 100;
             if(this.foodBonus > 0)
@@ -989,8 +989,8 @@ package
                _loc3_ += CHAMPIONCAGE.GetGuardianProperty(this.guardID,this.foodBonus,"bonusSpeed");
                _loc4_ += CHAMPIONCAGE.GetGuardianProperty(this.guardID,this.foodBonus,"bonusBuffs") * 100;
             }
-            _loc5_ = CHAMPIONCAGE.GetGuardianProperty(this.guardID,this.guardLevel,"damage");
-            _loc6_ = CHAMPIONCAGE.GetGuardianProperty(this.guardID,this.guardLevel,"health");
+            _loc5_ = CHAMPIONCAGE.GetGuardianProperty(this.guardID,this.guardLevel,"damage").Get();
+            _loc6_ = CHAMPIONCAGE.GetGuardianProperty(this.guardID,this.guardLevel,"health").Get();
             _loc7_ = CHAMPIONCAGE.GetGuardianProperty(this.guardID,this.guardLevel,"speed");
             _loc8_ = CHAMPIONCAGE.GetGuardianProperty(this.guardID,this.guardLevel,"buffs") * 100;
             _loc9_ = int(_loc3_ * 10) / 10;
@@ -1206,12 +1206,12 @@ package
                p3_speed_txt.htmlText = "<b>" + KEYS.Get("gcage_labelSpeed") + "</b>";
                p3_buff_txt.htmlText = "<b>" + KEYS.Get("gcage_labelBuff") + "</b>";
                p3_abilities_txt.htmlText = "<b>" + KEYS.Get("gcage_labelAbilities") + "</b>";
-               _loc19_ = CHAMPIONCAGE.GetGuardianProperty(this.kothID,this.kothLevel,"damage");
-               _loc20_ = CHAMPIONCAGE.GetGuardianProperty(this.kothID,this.kothLevel,"health");
+               _loc19_ = CHAMPIONCAGE.GetGuardianProperty(this.kothID,this.kothLevel,"damage").Get();
+               _loc20_ = CHAMPIONCAGE.GetGuardianProperty(this.kothID,this.kothLevel,"health").Get();
                _loc21_ = CHAMPIONCAGE.GetGuardianProperty(this.kothID,this.kothLevel,"speed");
                _loc22_ = CHAMPIONCAGE.GetGuardianProperty(this.kothID,this.kothLevel,"buffs") * 100;
-               _loc5_ = CHAMPIONCAGE.GetGuardianProperty(this.kothID,this.kothLevel,"damage");
-               _loc6_ = CHAMPIONCAGE.GetGuardianProperty(this.kothID,this.kothLevel,"health");
+               _loc5_ = CHAMPIONCAGE.GetGuardianProperty(this.kothID,this.kothLevel,"damage").Get();
+               _loc6_ = CHAMPIONCAGE.GetGuardianProperty(this.kothID,this.kothLevel,"health").Get();
                _loc7_ = CHAMPIONCAGE.GetGuardianProperty(this.kothID,this.kothLevel,"speed");
                _loc8_ = CHAMPIONCAGE.GetGuardianProperty(this.kothID,this.kothLevel,"buffs") * 100;
                _loc23_ = int(_loc21_ * 10) / 10;
@@ -1232,7 +1232,7 @@ package
                   if(this.kothLevel + 1 <= _loc24_)
                   {
                      TweenLite.to(p3_bDamage["mcBuff" + 1],0,{
-                        "width":100 / _maxDamage * CHAMPIONCAGE.GetGuardianProperty(this.kothID,this.kothLevel + 1,"damage") + 2,
+                        "width":100 / _maxDamage * CHAMPIONCAGE.GetGuardianProperty(this.kothID,this.kothLevel + 1,"damage").Get() + 2,
                         "ease":Circ.easeInOut,
                         "delay":0
                      });
@@ -1255,7 +1255,7 @@ package
                   if(this.kothLevel + 1 <= _loc24_)
                   {
                      TweenLite.to(p3_bHealth["mcBuff" + 1],0,{
-                        "width":100 / _maxHealth * CHAMPIONCAGE.GetGuardianProperty(this.kothID,this.kothLevel + 1,"health") + 2,
+                        "width":100 / _maxHealth * CHAMPIONCAGE.GetGuardianProperty(this.kothID,this.kothLevel + 1,"health").Get() + 2,
                         "ease":Circ.easeInOut,
                         "delay":0
                      });

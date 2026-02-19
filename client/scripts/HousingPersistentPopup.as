@@ -695,11 +695,11 @@ package
                      _loc4_--;
                      if(_loc10_.substr(0,1) == "I")
                      {
-                        _loc6_ += CREATURES.GetProperty(_loc10_,"cResource") * (_loc9_[_loc13_].health / CREATURES.GetProperty(_loc10_,"health"));
+                        _loc6_ += CREATURES.GetProperty(_loc10_,"cResource") * (_loc9_[_loc13_].health / CREATURES.GetProperty(_loc10_,"health").Get());
                      }
                      else
                      {
-                        _loc5_ += CREATURES.GetProperty(_loc10_,"cResource") * (_loc9_[_loc13_].health / CREATURES.GetProperty(_loc10_,"health"));
+                        _loc5_ += CREATURES.GetProperty(_loc10_,"cResource") * (_loc9_[_loc13_].health / CREATURES.GetProperty(_loc10_,"health").Get());
                      }
                   }
                }
