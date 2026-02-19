@@ -123,7 +123,8 @@ package com.monsters.frontPage
          while(_loc2_ < CATEGORIES.length)
          {
             _loc3_ = CATEGORIES[_loc2_];
-            if(_loc4_ = _loc3_.getMessageByName(param1))
+            _loc4_ = _loc3_.getMessageByName(param1);
+            if(_loc4_)
             {
                return _loc4_;
             }

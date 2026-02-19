@@ -256,7 +256,8 @@ package com.monsters.frontPage
          while(_loc2_ < FrontPageLibrary.CATEGORIES.length)
          {
             _loc3_ = FrontPageLibrary.CATEGORIES[_loc2_];
-            if(_loc4_ = _loc3_.export())
+            _loc4_ = _loc3_.export();
+            if(_loc4_)
             {
                if(!_loc1_)
                {

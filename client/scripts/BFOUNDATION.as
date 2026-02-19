@@ -478,7 +478,8 @@ package
                   {
                      buildingHealthData[buildingData._id] = int(buildingData.health);
                   }
-                  if(exportBuildingData = buildingData.Export())
+                  exportBuildingData = buildingData.Export();
+                  if(exportBuildingData)
                   {
                      buildingDataByID[buildingData._id] = exportBuildingData;
                      hashString += (exportBuildingData.X + exportBuildingData.Y).toString();

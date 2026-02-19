@@ -97,7 +97,9 @@ package com.monsters.frontPage.categories
          var _loc3_:int = 0;
          while(_loc3_ < this._messages.length)
          {
-            if(_loc5_ = (_loc4_ = this._messages[_loc3_]).export())
+            _loc4_ = this._messages[_loc3_];
+            _loc5_ = _loc4_.export();
+            if(_loc5_)
             {
                _loc2_[_loc4_.name] = _loc5_;
                _loc1_ = true;

@@ -118,7 +118,8 @@ package com.monsters.autobanking
                      }
                      else
                      {
-                        if(_loc8_ = int(param1[_loc6_]["height"]))
+                        _loc8_ = int(param1[_loc6_]["height"]);
+                        if(_loc8_)
                         {
                            delete _loc7_["height"];
                         }
@@ -340,7 +341,8 @@ package com.monsters.autobanking
          {
             _loc8_ = new Vector.<String>();
             _loc13_ = 0;
-            if(_loc14_ = BaseBuffHandler.instance.getBuffByName(AutoBankBaseBuff.k_NAME) as AutoBankBaseBuff)
+            _loc14_ = BaseBuffHandler.instance.getBuffByName(AutoBankBaseBuff.k_NAME) as AutoBankBaseBuff;
+            if(_loc14_)
             {
                fundAllResources(_loc14_.value * Math.max(0,param1),param2 || s_logCounter == 0);
             }

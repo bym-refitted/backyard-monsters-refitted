@@ -328,7 +328,8 @@ package
                while(_loc7_ < this._targetFlyers.length)
                {
                   _loc5_ = this._targetFlyers[_loc7_].creep;
-                  if(_loc6_ = this.getInterceptor(_loc1_,_loc5_))
+                  _loc6_ = this.getInterceptor(_loc1_,_loc5_);
+                  if(_loc6_)
                   {
                      this.dispatchCreature(_loc6_,_loc5_);
                      _loc1_.splice(_loc1_.indexOf(_loc6_),1);
@@ -397,7 +398,8 @@ package
             }
          }
          var _loc7_:CreepBase;
-         if(_loc7_ = param1)
+         _loc7_ = param1;
+         if(_loc7_)
          {
             _loc7_._targetRotation = Math.random() * 360;
             _loc7_.changeModeDefend();

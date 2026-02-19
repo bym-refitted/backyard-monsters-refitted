@@ -266,7 +266,8 @@ package
                         _loc4_ = _loc6_ / 2;
                      }
                   }
-                  if(_loc8_ = CREATURES.Spawn(_loc2_,MAP._BUILDINGTOPS,"decoy",_position.add(new Point(_loc4_,_loc5_)),Math.random() * 360))
+                  _loc8_ = CREATURES.Spawn(_loc2_,MAP._BUILDINGTOPS,"decoy",_position.add(new Point(_loc4_,_loc5_)),Math.random() * 360);
+                  if(_loc8_)
                   {
                      _loc8_._homeBunker = this;
                      var dispatchedCount:int = int(_monstersDispatched[_loc2_]);
@@ -492,7 +493,8 @@ package
                   }
                }
                _loc2_ = this.getNextCreepToRelease(_loc5_);
-               if(_loc11_ = CREATURES.Spawn(_loc5_,MAP._BUILDINGTOPS,"defend",_position.add(new Point(_loc7_,_loc8_)),Math.random() * 360,null,null,0,!!_loc2_ ? int(_loc2_.health) : int.MAX_VALUE))
+               _loc11_ = CREATURES.Spawn(_loc5_,MAP._BUILDINGTOPS,"defend",_position.add(new Point(_loc7_,_loc8_)),Math.random() * 360,null,null,0,!!_loc2_ ? int(_loc2_.health) : int.MAX_VALUE);
+               if(_loc11_)
                {
                   _loc11_._targetCreep = _loc6_;
                   _loc11_._homeBunker = this;
