@@ -15,7 +15,6 @@ package com.monsters.maproom_advanced
    import flash.geom.Point;
    import flash.geom.Rectangle;
    import flash.net.URLRequest;
-   import flash.utils.getTimer;
    
    internal class MapRoomPopup extends MapRoomPopup_CLIP
    {
@@ -909,7 +908,8 @@ package com.monsters.maproom_advanced
          }
          if((!this._fallbackHomeCell._updated || param1) && this._fallbackHomeCell._dataAge <= 0)
          {
-            if(cellData = MapRoom.GetCell(this._fallbackHomeCell.X,this._fallbackHomeCell.Y))
+            cellData = MapRoom.GetCell(this._fallbackHomeCell.X,this._fallbackHomeCell.Y);
+            if(cellData)
             {
                this._fallbackHomeCell.Setup(cellData);
             }
@@ -999,7 +999,8 @@ package com.monsters.maproom_advanced
             }
             if((!cell._updated || param1) && cell._dataAge <= 0)
             {
-               if(cellData = MapRoom.GetCell(cell.X,cell.Y))
+               cellData = MapRoom.GetCell(cell.X,cell.Y);
+               if(cellData)
                {
                   cell.Setup(cellData);
                }

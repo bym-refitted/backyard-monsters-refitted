@@ -1,7 +1,6 @@
 package
 {
    import com.monsters.monsters.MonsterBase;
-   import flash.events.*;
    import flash.geom.Point;
    
    public class BHEAVYTRAP extends BTRAP

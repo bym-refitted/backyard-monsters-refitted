@@ -8,8 +8,6 @@ package
    import flash.display.Sprite;
    import flash.events.MouseEvent;
    import flash.text.TextField;
-   import gs.*;
-   import gs.easing.*;
    
    public class MONSTERLABPOPUP extends MONSTERLABPOPUP_CLIP
    {

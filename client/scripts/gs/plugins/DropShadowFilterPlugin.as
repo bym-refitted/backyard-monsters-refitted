@@ -1,6 +1,5 @@
 package gs.plugins
 {
-   import flash.display.*;
    import flash.filters.*;
    import gs.*;
    

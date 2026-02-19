@@ -116,7 +116,8 @@ package
             {
                if(_loc5_)
                {
-                  if(_loc6_ = CREATURES.Spawn(param1,MAP._BUILDINGTOPS,"juice",new Point(param2.x,param2.y),0))
+                  _loc6_ = CREATURES.Spawn(param1,MAP._BUILDINGTOPS,"juice",new Point(param2.x,param2.y),0);
+                  if(_loc6_)
                   {
                      _loc6_.ModeJuice();
                   }

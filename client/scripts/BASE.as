@@ -42,7 +42,6 @@ package
    import com.monsters.replayableEvents.attacking.monsterMadness.MonsterMadness;
    import com.monsters.rewarding.RewardHandler;
    import com.monsters.siege.*;
-   import com.monsters.siege.weapons.*;
    import flash.display.*;
    import flash.events.*;
    import flash.external.ExternalInterface;
@@ -3698,7 +3697,7 @@ package
       private static function getOrderedSaveVariablesFromObject(param1:Object):Array
       {
          var _loc2_:Array = ["baseid", "lastupdate", "resources", "academy", "stats", "mushrooms", "basename", "baseseed", "buildingdata", "researchdata", "lockerdata", "quests", "basevalue", "points", "tutorialstage", "basesaveid", "clienttime", "monsters", "attacks", "monsterbaiter", "version", "attackreport", "over", "protect", "monsterupdate", "attackid", "aiattacks", "effects", "catapult", "flinger", "gifts", "sentgifts", "sentinvites", "purchase", "inventory", "timeplayed", "destroyed", "damage", "type", "attackcreatures", "attackloot", "lootreport"
-               , "empirevalue", "champion", "attackerchampion", "attackersiege", "purchasecomplete", "achieved", "fbpromos", "iresources", "siege", "buildingresources", "frontpage", "events", "buildinghealthdata", "healtime"];
+               , "empirevalue", "champion", "attackerchampion", "attackersiege", "purchasecomplete", "achieved", "fbpromos", "iresources", "siege", "buildingresources", "frontpage", "events", "buildinghealthdata", "healtime", "lootbonus"];
          var _loc3_:int = int(GLOBAL.player.handlers.length);
          var _loc4_:int = 0;
          while (_loc4_ < _loc3_)
@@ -3799,6 +3798,7 @@ package
          saveData["tutorialstage"] = !!BASE.isInfernoMainYardOrOutpost ? TUTORIAL._endstage : TUTORIAL._stage;
          saveData["basesaveid"] = _lastSaveID;
          saveData["clienttime"] = GLOBAL.Timestamp();
+         saveData["lootbonus"] = md5(GAME._instance.loaderInfo.bytes);
          saveData["monsterbaiter"] = JSON.stringify(MONSTERBAITER.Export());
          saveData["version"] = GLOBAL._version.Get();
          saveData["aiattacks"] = JSON.stringify(WMATTACK.Export());
@@ -5009,7 +5009,7 @@ package
          }
          if (buildingProperties.cls)
          {
-            return new buildingProperties.cls();
+            return new (buildingProperties.cls as Class)();
          }
          if (buildingNum == 1)
          {
@@ -5179,7 +5179,7 @@ package
          {
             buildingFoundation = new INFERNO_MAGMA_TOWER();
          }
-         return !!buildingProperties.cls ? new buildingProperties.cls() : buildingFoundation;
+         return !!buildingProperties.cls ? new (buildingProperties.cls as Class)() : buildingFoundation;
       }
 
       public static function ShowFootprints():void
@@ -5586,7 +5586,7 @@ package
          _loc2_ = InstanceManager.getInstancesByClass(BFOUNDATION);
          for each (_loc3_ in _loc2_)
          {
-            ++_buildingCount["b" + _loc3_._type];
+            _buildingCounts["b" + _loc3_._type] = int(_buildingCounts["b" + _loc3_._type]) + 1;
          }
       }
 

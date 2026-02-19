@@ -322,7 +322,8 @@ package com.monsters.player
             }
             _loc11_++;
          }
-         if(_loc4_ = int(_loc10_.length))
+         _loc4_ = int(_loc10_.length);
+         if(_loc4_)
          {
             _loc14_ = 0;
             while(_loc14_ < _loc4_)

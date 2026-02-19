@@ -4,7 +4,6 @@ package
    import com.monsters.interfaces.IAttackable;
    import com.monsters.monsters.MonsterBase;
    import com.monsters.siege.weapons.VacuumHose;
-   import flash.display.Sprite;
    import flash.geom.Point;
    
    public class FIREBALLS

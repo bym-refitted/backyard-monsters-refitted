@@ -153,7 +153,8 @@ package
          var _loc3_:Array = [];
          var _loc4_:Object = CREATURELOCKER.GetCreatures("above");
          var _loc5_:*;
-         if(_loc5_ = !BASE.isInfernoMainYardOrOutpost)
+         _loc5_ = !BASE.isInfernoMainYardOrOutpost;
+         if(_loc5_)
          {
             for(_loc8_ in _loc4_)
             {
@@ -168,7 +169,8 @@ package
          }
          var _loc6_:Object = CREATURELOCKER.GetCreatures("inferno");
          var _loc7_:Boolean;
-         if(_loc7_ = MAPROOM_DESCENT.DescentPassed)
+         _loc7_ = MAPROOM_DESCENT.DescentPassed;
+         if(_loc7_)
          {
             for(_loc10_ in _loc6_)
             {
@@ -233,7 +235,8 @@ package
          {
             _loc11_ = int(_loc8_.substring(_loc8_.indexOf("C") + 1));
             _loc1_ = _loc8_;
-            if(!((_loc6_ = _loc1_.substring(0,2) == "IC") && !MAPROOM_DESCENT.DescentPassed))
+            _loc6_ = _loc1_.substring(0,2) == "IC";
+            if(!(_loc6_ && !MAPROOM_DESCENT.DescentPassed))
             {
                if(!_loc6_ && !CREATURELOCKER._lockerData[_loc1_])
                {
@@ -296,7 +299,8 @@ package
             _loc4_ = 0;
             for(_loc2_ in this._juiceList)
             {
-               if(!(_loc6_ = _loc2_.substring(0,2) == "IC"))
+               _loc6_ = _loc2_.substring(0,2) == "IC";
+               if(!_loc6_)
                {
                   _loc3_ += this._juiceList[_loc2_];
                   _loc14_ = 0.6;
@@ -366,11 +370,7 @@ package
                {
                   if(Boolean(GLOBAL.player.monsterListByID(n)) && GLOBAL.player.monsterListByID(n).numCreeps - int(_juiceList[n]) > 0)
                   {
-                     if(!_juiceList[n])
-                     {
-                        _juiceList[n] = 0;
-                     }
-                     ++_juiceList[n];
+                     _juiceList[n] = int(_juiceList[n]) + 1;
                   }
                   Update();
                }
@@ -409,7 +409,8 @@ package
                   if(_loc5_._creatureID == _loc2_ && _loc5_._behaviour != "juice")
                   {
                      _loc5_.changeModeJuice();
-                     --this._juiceList[_loc2_];
+                     var leftToJuice:int = int(this._juiceList[_loc2_]);
+                     this._juiceList[_loc2_] = --leftToJuice;
                   }
                }
             }

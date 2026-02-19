@@ -1,6 +1,5 @@
 package com.monsters.maproom
 {
-   import com.monsters.ai.*;
    import com.monsters.enums.EnumYardType;
    import com.monsters.mailbox.model.Contact;
    import com.monsters.maproom.model.BaseObject;
@@ -194,11 +193,11 @@ package com.monsters.maproom
             "last_name":"",
             "pic_square":this.player.data.pic
          });
-         _loc2_.picker.preloadSelection(_loc3_);
-         _loc2_.requestType = "message";
-         _loc2_.body_txt.text = "";
+         // _loc2_.picker.preloadSelection(_loc3_);
+         // _loc2_.requestType = "message";
+         // _loc2_.body_txt.text = "";
          GLOBAL.BlockerAdd();
-         GLOBAL._layerWindows.addChild(_loc2_);
+         // GLOBAL._layerWindows.addChild(_loc2_);
       }
       
       private function onHelp(param1:MouseEvent) : void
@@ -256,13 +255,13 @@ package com.monsters.maproom
                   "last_name":"",
                   "pic_square":this.player.data.pic
                });
-               _loc2_.picker.preloadSelection(_loc3_);
-               _loc2_.subject_txt.htmlText = "<b>" + MapRoom.BRIDGE.KEYS.Get("map_trucesubject");
-               _loc2_.body_txt.htmlText = MapRoom.BRIDGE.KEYS.Get("map_trucemessage");
-               _loc2_.requestType = "trucerequest";
-               _loc2_.truceShareHandler = MapRoom.BRIDGE.truceShareHandler;
+               // _loc2_.picker.preloadSelection(_loc3_);
+               // _loc2_.subject_txt.htmlText = "<b>" + MapRoom.BRIDGE.KEYS.Get("map_trucesubject");
+               // _loc2_.body_txt.htmlText = MapRoom.BRIDGE.KEYS.Get("map_trucemessage");
+               // _loc2_.requestType = "trucerequest";
+               // _loc2_.truceShareHandler = MapRoom.BRIDGE.truceShareHandler;
                GLOBAL.BlockerAdd();
-               GLOBAL._layerWindows.addChild(_loc2_);
+               // GLOBAL._layerWindows.addChild(_loc2_);
             }
             else
             {

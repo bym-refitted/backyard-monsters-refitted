@@ -856,7 +856,7 @@ package
                         if(_loc4_._creatureID == param1 && _loc4_._behaviour == "bunker")
                         {
                            _loc4_.changeModeJuice();
-                           --this._bunker._monstersDispatched[param1];
+                           this._bunker._monstersDispatched[param1] = int(this._bunker._monstersDispatched[param1]) - 1;
                            if(this._bunker._monstersDispatched[param1] < 0)
                            {
                               this._bunker._monstersDispatched[param1] = 0;
@@ -874,7 +874,7 @@ package
                      {
                         CREATURES.Spawn(param1,MAP._BUILDINGTOPS,"juice",new Point(this._bunker.x,this._bunker.y).add(new Point(-60 + Math.random() * 135,-5 + Math.random() * 20)),Math.random() * 360);
                      }
-                     --this._bunker._monsters[param1];
+                     this._bunker._monsters[param1] = int(this._bunker._monsters[param1]) - 1;
                      if(this._bunker._monsters[param1] < 0)
                      {
                         this._bunker._monsters[param1] = 0;
@@ -888,7 +888,7 @@ package
          }
          if(this._bunker._monsters[param1])
          {
-            --this._bunker._monsters[param1];
+            this._bunker._monsters[param1] = int(this._bunker._monsters[param1]) - 1;
             if(this._bunker._monsters[param1] < 0)
             {
                this._bunker._monsters[param1] = 0;
@@ -910,7 +910,8 @@ package
          var _loc4_:Array = [];
          var _loc5_:Object = CREATURELOCKER.GetCreatures("above");
          var _loc6_:*;
-         if(_loc6_ = !BASE.isInfernoMainYardOrOutpost)
+         _loc6_ = !BASE.isInfernoMainYardOrOutpost;
+         if(_loc6_)
          {
             for(_loc9_ in _loc5_)
             {
@@ -925,7 +926,8 @@ package
          }
          var _loc7_:Object = CREATURELOCKER.GetCreatures("inferno");
          var _loc8_:Boolean;
-         if(_loc8_ = MAPROOM_DESCENT.DescentPassed)
+         _loc8_ = MAPROOM_DESCENT.DescentPassed;
+         if(_loc8_)
          {
             for(_loc11_ in _loc7_)
             {

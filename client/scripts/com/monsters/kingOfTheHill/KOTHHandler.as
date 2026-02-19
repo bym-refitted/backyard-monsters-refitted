@@ -184,7 +184,8 @@ package com.monsters.kingOfTheHill
       private function updateReward(param1:String, param2:Number, param3:Boolean = false) : void
       {
          var _loc4_:Reward;
-         if(_loc4_ = RewardHandler.instance.getRewardByID(param1))
+         _loc4_ = RewardHandler.instance.getRewardByID(param1);
+         if(_loc4_)
          {
             if(!param2)
             {

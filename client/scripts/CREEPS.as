@@ -279,7 +279,8 @@ package
          }
          ++_creepCount;
          var _loc10_:Class;
-         if(!(_loc10_ = CREATURELOCKER._creatures[param1].classType))
+         _loc10_ = CREATURELOCKER._creatures[param1].classType;
+         if(!_loc10_)
          {
             _loc10_ = CreepBase;
          }

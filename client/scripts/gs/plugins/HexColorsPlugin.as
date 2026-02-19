@@ -1,6 +1,5 @@
 package gs.plugins
 {
-   import flash.display.*;
    import gs.*;
    
    public class HexColorsPlugin extends TweenPlugin

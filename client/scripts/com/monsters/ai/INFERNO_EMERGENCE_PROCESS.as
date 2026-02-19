@@ -2,7 +2,6 @@ package com.monsters.ai
 {
    import com.monsters.managers.InstanceManager;
    import com.monsters.pathing.PATHING;
-   import flash.display.*;
    import flash.geom.Point;
    import flash.geom.Rectangle;
    
