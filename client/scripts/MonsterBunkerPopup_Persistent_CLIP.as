@@ -2,6 +2,7 @@ package
 {
    import flash.display.MovieClip;
    import flash.text.TextField;
+   import com.monsters.utils.MovieClipUtils;
    
    [Embed(source="/_assets/assets.swf", symbol="MonsterBunkerPopup_Persistent_CLIP")]
    public dynamic class MonsterBunkerPopup_Persistent_CLIP extends MovieClip
@@ -55,7 +56,7 @@ package
       public function MonsterBunkerPopup_Persistent_CLIP()
       {
          super();
-         MovieClipUtil.stopAll(this);
+         MovieClipUtils.stopAll(this);
       }
    }
 }

@@ -266,10 +266,12 @@ package
                         _loc4_ = _loc6_ / 2;
                      }
                   }
-                  if(_loc8_ = CREATURES.Spawn(_loc2_,MAP._BUILDINGTOPS,"decoy",_position.add(new Point(_loc4_,_loc5_)),Math.random() * 360))
+                  _loc8_ = CREATURES.Spawn(_loc2_,MAP._BUILDINGTOPS,"decoy",_position.add(new Point(_loc4_,_loc5_)),Math.random() * 360);
+                  if(_loc8_)
                   {
                      _loc8_._homeBunker = this;
-                     ++_monstersDispatched[_loc2_];
+                     var dispatchedCount:int = int(_monstersDispatched[_loc2_]);
+                     _monstersDispatched[_loc2_] = ++dispatchedCount;
                      ++_monstersDispatchedTotal;
                   }
                }
@@ -491,7 +493,8 @@ package
                   }
                }
                _loc2_ = this.getNextCreepToRelease(_loc5_);
-               if(_loc11_ = CREATURES.Spawn(_loc5_,MAP._BUILDINGTOPS,"defend",_position.add(new Point(_loc7_,_loc8_)),Math.random() * 360,null,null,0,!!_loc2_ ? int(_loc2_.health) : int.MAX_VALUE))
+               _loc11_ = CREATURES.Spawn(_loc5_,MAP._BUILDINGTOPS,"defend",_position.add(new Point(_loc7_,_loc8_)),Math.random() * 360,null,null,0,!!_loc2_ ? int(_loc2_.health) : int.MAX_VALUE);
+               if(_loc11_)
                {
                   _loc11_._targetCreep = _loc6_;
                   _loc11_._homeBunker = this;
@@ -506,7 +509,7 @@ package
                   }
                   _loc11_.WaypointTo(_loc11_._targetCreep._tmpPoint);
                   _loc11_._targetPosition = _loc11_._targetCreep._tmpPoint;
-                  ++_monstersDispatched[_loc5_];
+                  _monstersDispatched[_loc5_] = int(_monstersDispatched[_loc5_]) + 1;
                   ++_monstersDispatchedTotal;
                }
             }
@@ -675,7 +678,7 @@ package
             {
                if(this.numMonsters(_loc4_))
                {
-                  --this._monsters[_loc4_];
+                  this._monsters[_loc4_] = int(this._monsters[_loc4_]) - 1;
                   _used -= CREATURELOCKER._creatures[_loc4_].props.cStorage;
                   _loc1_ = true;
                }
@@ -708,16 +711,20 @@ package
       
       public function RemoveCreature(param1:String) : void
       {
-         --this._monsters[param1];
-         if(this._monsters[param1] < 0)
+         var count:int = int(this._monsters[param1]);
+         --count;
+         if(count < 0)
          {
-            this._monsters[param1] = 0;
+            count = 0;
          }
-         --_monstersDispatched[param1];
-         if(_monstersDispatched[param1] < 0)
+         this._monsters[param1] = count;
+         var dispatchedCount:int = int(_monstersDispatched[param1]);
+         --dispatchedCount;
+         if(dispatchedCount < 0)
          {
-            _monstersDispatched[param1] = 0;
+            dispatchedCount = 0;
          }
+         _monstersDispatched[param1] = dispatchedCount;
          --_monstersDispatchedTotal;
          if(_monstersDispatchedTotal < 0)
          {
@@ -840,7 +847,8 @@ package
                }
                else
                {
-                  _loc1_.m = {(_loc3_.valueOf()):_loc2_};
+                  _loc1_.m = {};
+                  _loc1_.m[_loc3_.valueOf()] = _loc2_;
                }
             }
          }

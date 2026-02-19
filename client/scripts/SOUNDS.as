@@ -291,7 +291,7 @@ package
 
       public static function Tick():void
       {
-         for (var soundName in _concurrent)
+         for (var soundName:String in _concurrent)
          {
             if (_concurrent[soundName] > 0)
             {

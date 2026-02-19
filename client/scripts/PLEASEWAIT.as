@@ -1,8 +1,6 @@
 package
 {
    import flash.display.MovieClip;
-   import flash.utils.*;
-   import gs.easing.*;
    
    public class PLEASEWAIT extends MovieClip
    {

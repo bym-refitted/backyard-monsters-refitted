@@ -329,7 +329,8 @@ package
                }
             }
          }
-         if(_loc9_ = GLOBAL.player.m_upgrades[_monsterID].level <= _loc10_)
+         _loc9_ = GLOBAL.player.m_upgrades[_monsterID].level <= _loc10_;
+         if(_loc9_)
          {
             _loc8_ = GLOBAL.player.m_upgrades[_monsterID].level + 1;
          }

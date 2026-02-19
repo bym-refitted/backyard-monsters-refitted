@@ -57,7 +57,8 @@ package com.monsters.monsters.components.abilities
                if(!(_loc4_ === owner || !_loc5_))
                {
                   _loc7_ = _loc5_.getComponentByType(LootingMultiplier) as LootingMultiplier;
-                  if((_loc8_ = _loc3_(this._championOwner._tmpPoint,_loc5_._tmpPoint) < this._radiusSqrd.Get()) && !_loc7_)
+                  _loc8_ = _loc3_(this._championOwner._tmpPoint,_loc5_._tmpPoint) < this._radiusSqrd.Get();
+                  if(_loc8_ && !_loc7_)
                   {
                      _loc5_.addComponent(new LootingMultiplier(1 + this._championOwner._buff));
                      this.m_buddiesInRange.push(_loc5_);
@@ -79,7 +80,8 @@ package com.monsters.monsters.components.abilities
          while(_loc3_ >= 0)
          {
             _loc5_ = (_loc4_ = this.m_buddiesInRange[_loc3_]).getComponentByType(LootingMultiplier) as LootingMultiplier;
-            if(!(_loc6_ = _loc1_(this._championOwner._tmpPoint,_loc4_._tmpPoint) < this._radiusSqrd.Get()) && Boolean(_loc5_))
+            _loc6_ = _loc1_(this._championOwner._tmpPoint,_loc4_._tmpPoint) < this._radiusSqrd.Get();
+            if(!_loc6_ && Boolean(_loc5_))
             {
                _loc4_.removeComponent(_loc5_);
                this.m_buddiesInRange.splice(_loc3_,1);

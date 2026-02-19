@@ -3,8 +3,6 @@ package
    import com.monsters.debug.Console;
    import flash.events.*;
    import flash.text.TextFieldAutoSize;
-   import gs.*;
-   import gs.easing.*;
    
    public class MESSAGE extends MESSAGE_CLIP
    {
