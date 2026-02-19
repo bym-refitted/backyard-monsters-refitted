@@ -7,83 +7,81 @@ package com.monsters.rendering
    import flash.filters.BitmapFilter;
    import flash.geom.Point;
    import flash.geom.Rectangle;
-   
-   use namespace renderer_friend;
-   
+      
    public class RasterData
    {
       
-      renderer_friend static const s_rasterData:Vector.<RasterData> = new Vector.<RasterData>();
+      internal static const s_rasterData:Vector.<RasterData> = new Vector.<RasterData>();
       
-      renderer_friend static const s_visibleData:Vector.<RasterData> = new Vector.<RasterData>();
+      internal static const s_visibleData:Vector.<RasterData> = new Vector.<RasterData>();
       
-      renderer_friend static const s_unsortedData:Vector.<RasterData> = new Vector.<RasterData>();
+      internal static const s_unsortedData:Vector.<RasterData> = new Vector.<RasterData>();
       
-      renderer_friend static const s_debugData:Vector.<RasterData> = new Vector.<RasterData>();
+      internal static const s_debugData:Vector.<RasterData> = new Vector.<RasterData>();
       
-      renderer_friend static var s_needsSort:Boolean;
+      internal static var s_needsSort:Boolean;
       
       private static var s_id:uint;
        
       
-      renderer_friend const _id:uint = s_id++;
+      internal const _id:uint = s_id++;
       
-      renderer_friend var _data:IBitmapDrawable;
+      internal var _data:IBitmapDrawable;
       
-      renderer_friend var _pt:Point;
+      internal var _pt:Point;
       
-      renderer_friend var _depth:Number;
+      internal var _depth:Number;
       
-      renderer_friend var _rect:Rectangle;
+      internal var _rect:Rectangle;
       
-      renderer_friend var _blendMode:String;
+      internal var _blendMode:String;
       
-      renderer_friend var _filter:BitmapFilter;
+      internal var _filter:BitmapFilter;
       
-      renderer_friend var _scaleX:int;
+      internal var _scaleX:int;
       
-      renderer_friend var _scaleY:int;
+      internal var _scaleY:int;
       
-      renderer_friend var _alpha:uint;
+      internal var _alpha:uint;
       
-      renderer_friend var _visible:Boolean;
+      internal var _visible:Boolean;
       
-      renderer_friend var _unSorted:Boolean;
+      internal var _unSorted:Boolean;
       
-      renderer_friend var _cleared:Boolean;
+      internal var _cleared:Boolean;
       
-      public function RasterData(param1:IBitmapDrawable, param2:Point, param3:Number, param4:String = null, param5:Boolean = false)
+      public function RasterData(data:IBitmapDrawable, pt:Point, depth:Number, blendMode:String = null, unSorted:Boolean = false)
       {
          super();
-         this.data = param1;
-         this.renderer_friend::_pt = param2;
-         this.renderer_friend::_depth = param3;
-         this.renderer_friend::_blendMode = param4;
-         this.renderer_friend::_scaleX = this.renderer_friend::_scaleY = 100;
-         this.renderer_friend::_alpha = 4278190080;
-         this.renderer_friend::_visible = true;
-         this.renderer_friend::_unSorted = param5;
-         renderer_friend::s_needsSort = this.renderer_friend::_unSorted ? renderer_friend::s_needsSort : true;
-         if(this.renderer_friend::_unSorted)
+         this.data = data;
+         this._pt = pt;
+         this._depth = depth;
+         this._blendMode = blendMode;
+         this._scaleX = this._scaleY = 100;
+         this._alpha = 4278190080;
+         this._visible = true;
+         this._unSorted = unSorted;
+         s_needsSort = this._unSorted ? s_needsSort : true;
+         if(this._unSorted)
          {
-            renderer_friend::s_rasterData[renderer_friend::s_rasterData.length] = this;
-            renderer_friend::s_unsortedData[renderer_friend::s_unsortedData.length] = this;
+            s_rasterData[s_rasterData.length] = this;
+            s_unsortedData[s_unsortedData.length] = this;
          }
          else
          {
-            renderer_friend::s_rasterData[renderer_friend::s_rasterData.length] = this;
-            renderer_friend::s_visibleData[renderer_friend::s_visibleData.length] = this;
+            s_rasterData[s_rasterData.length] = this;
+            s_visibleData[s_visibleData.length] = this;
          }
       }
       
       public static function get rasterData() : Vector.<RasterData>
       {
-         return renderer_friend::s_rasterData;
+         return s_rasterData;
       }
       
       public static function get visibleData() : Vector.<RasterData>
       {
-         return renderer_friend::s_visibleData;
+         return s_visibleData;
       }
       
       public static function get totalMemory() : uint
@@ -91,9 +89,9 @@ package com.monsters.rendering
          var _loc1_:uint = 0;
          var _loc2_:RasterData = null;
          var _loc3_:BitmapData = null;
-         for each(_loc2_ in renderer_friend::s_rasterData)
+         for each(_loc2_ in s_rasterData)
          {
-            _loc3_ = _loc2_.renderer_friend::_data as BitmapData;
+            _loc3_ = _loc2_._data as BitmapData;
             if(_loc3_)
             {
                _loc1_ += _loc3_.getPixels(_loc3_.rect).length;
@@ -102,186 +100,186 @@ package com.monsters.rendering
          return _loc1_;
       }
       
-      renderer_friend static function showDebug() : void
+      internal static function showDebug() : void
       {
          var _loc1_:RasterData = null;
          var _loc2_:BitmapData = null;
          var _loc3_:Shape = null;
-         for each(_loc1_ in renderer_friend::s_rasterData)
+         for each(_loc1_ in s_rasterData)
          {
-            _loc2_ = _loc1_.renderer_friend::_data as BitmapData;
+            _loc2_ = _loc1_._data as BitmapData;
             if(_loc2_)
             {
                _loc3_ = new Shape();
                _loc3_.graphics.lineStyle(1,16711680);
                _loc3_.graphics.beginFill(10027008,0.4);
                _loc3_.graphics.drawRect(0,0,_loc2_.width,_loc2_.height);
-               renderer_friend::s_debugData[renderer_friend::s_debugData.length] = new RasterData(_loc3_,_loc1_.renderer_friend::_pt,_loc1_.renderer_friend::_depth);
+               s_debugData[s_debugData.length] = new RasterData(_loc3_,_loc1_._pt,_loc1_._depth);
             }
          }
       }
       
-      renderer_friend static function hideDebug() : void
+      internal static function hideDebug() : void
       {
          var _loc1_:RasterData = null;
-         for each(_loc1_ in renderer_friend::s_debugData)
+         for each(_loc1_ in s_debugData)
          {
             _loc1_.clear(true);
          }
-         renderer_friend::s_debugData.length = 0;
+         s_debugData.length = 0;
       }
       
       public static function clear(param1:Boolean = false) : void
       {
          var _loc2_:RasterData = null;
-         for each(_loc2_ in renderer_friend::s_rasterData)
+         for each(_loc2_ in s_rasterData)
          {
             _loc2_.clear(param1);
          }
-         renderer_friend::s_unsortedData.length = renderer_friend::s_visibleData.length = renderer_friend::s_rasterData.length = renderer_friend::s_debugData.length = 0;
+         s_unsortedData.length = s_visibleData.length = s_rasterData.length = s_debugData.length = 0;
       }
       
       public function get id() : uint
       {
-         return this.renderer_friend::_id;
+         return this._id;
       }
       
       public function get data() : IBitmapDrawable
       {
-         return this.renderer_friend::_data;
+         return this._data;
       }
       
-      public function set data(param1:IBitmapDrawable) : void
+      public function set data(newData:IBitmapDrawable) : void
       {
-         this.renderer_friend::_data = param1;
+         this._data = newData;
          switch(true)
          {
-            case this.renderer_friend::_data is BitmapData:
-               this.renderer_friend::_rect = (this.renderer_friend::_data as BitmapData).rect;
+            case this._data is BitmapData:
+               this._rect = (this._data as BitmapData).rect;
                break;
-            case this.renderer_friend::_data is MovieClip:
-               this.renderer_friend::_rect = (this.renderer_friend::_data as MovieClip).getRect(this.renderer_friend::_data as MovieClip);
+            case this._data is MovieClip:
+               this._rect = (this._data as MovieClip).getRect(this._data as MovieClip);
                break;
             default:
-               this.renderer_friend::_rect = new Rectangle();
+               this._rect = new Rectangle();
          }
       }
       
-      public function set pt(param1:Point) : void
+      public function set pt(newPt:Point) : void
       {
-         this.renderer_friend::_pt = param1;
+         this._pt = newPt;
       }
       
       public function get rect() : Rectangle
       {
-         return this.renderer_friend::_rect;
+         return this._rect;
       }
       
       public function get depth() : Number
       {
-         return this.renderer_friend::_depth;
+         return this._depth;
       }
       
-      public function set depth(param1:Number) : void
+      public function set depth(newDepth:Number) : void
       {
-         if(this.renderer_friend::_depth !== param1)
+         if(this._depth !== newDepth)
          {
-            renderer_friend::s_needsSort = true;
-            this.renderer_friend::_depth = param1;
+            s_needsSort = true;
+            this._depth = newDepth;
          }
       }
       
-      public function set blendMode(param1:String) : void
+      public function set blendMode(newBlendMode:String) : void
       {
-         this.renderer_friend::_blendMode = param1;
+         this._blendMode = newBlendMode;
       }
       
-      public function set filter(param1:BitmapFilter) : void
+      public function set filter(newFilter:BitmapFilter) : void
       {
-         this.renderer_friend::_filter = param1;
+         this._filter = newFilter;
       }
       
-      public function set scaleX(param1:Number) : void
+      public function set scaleX(newScaleX:Number) : void
       {
-         this.renderer_friend::_scaleX = param1 * 100 >> 0;
+         this._scaleX = newScaleX * 100 >> 0;
       }
       
-      public function set scaleY(param1:Number) : void
+      public function set scaleY(newScaleY:Number) : void
       {
-         this.renderer_friend::_scaleY = param1 * 100 >> 0;
+         this._scaleY = newScaleY * 100 >> 0;
       }
       
-      public function set alpha(param1:Number) : void
+      public function set alpha(newAlpha:Number) : void
       {
-         this.renderer_friend::_alpha = Math.ceil(param1 * 255) << 24;
+         this._alpha = Math.ceil(newAlpha * 255) << 24;
       }
       
       public function get visible() : Boolean
       {
-         return this.renderer_friend::_visible;
+         return this._visible;
       }
       
-      public function set visible(param1:Boolean) : void
+      public function set visible(newVisible:Boolean) : void
       {
-         if(!this.renderer_friend::_visible && param1)
+         if(!this._visible && newVisible)
          {
-            if(this.renderer_friend::_unSorted)
+            if(this._unSorted)
             {
-               renderer_friend::s_unsortedData[renderer_friend::s_unsortedData.length] = this;
+               s_unsortedData[s_unsortedData.length] = this;
             }
             else
             {
-               renderer_friend::s_visibleData[renderer_friend::s_visibleData.length] = this;
+               s_visibleData[s_visibleData.length] = this;
             }
-            renderer_friend::s_needsSort = true;
+            s_needsSort = true;
          }
-         else if(this.renderer_friend::_visible && !param1)
+         else if(this._visible && !newVisible)
          {
-            if(this.renderer_friend::_unSorted)
+            if(this._unSorted)
             {
-               renderer_friend::s_unsortedData.splice(renderer_friend::s_unsortedData.indexOf(this),1);
+               s_unsortedData.splice(s_unsortedData.indexOf(this),1);
             }
             else
             {
-               renderer_friend::s_visibleData.splice(renderer_friend::s_visibleData.indexOf(this),1);
+               s_visibleData.splice(s_visibleData.indexOf(this),1);
             }
-            renderer_friend::s_needsSort = true;
+            s_needsSort = true;
          }
-         this.renderer_friend::_visible = param1;
+         this._visible = newVisible;
       }
       
       public function clone() : RasterData
       {
-         return new RasterData(this.renderer_friend::_data,this.renderer_friend::_pt,this.renderer_friend::_depth);
+         return new RasterData(this._data,this._pt,this._depth);
       }
       
-      public function clear(param1:Boolean = false) : void
+      public function clear(dispose:Boolean = false) : void
       {
-         if(this.renderer_friend::_cleared)
+         if(this._cleared)
          {
             return;
          }
-         renderer_friend::s_rasterData.splice(renderer_friend::s_rasterData.indexOf(this),1);
-         if(this.renderer_friend::_visible)
+         s_rasterData.splice(s_rasterData.indexOf(this),1);
+         if(this._visible)
          {
-            if(this.renderer_friend::_unSorted)
+            if(this._unSorted)
             {
-               renderer_friend::s_unsortedData.splice(renderer_friend::s_unsortedData.indexOf(this),1);
+               s_unsortedData.splice(s_unsortedData.indexOf(this),1);
             }
             else
             {
-               renderer_friend::s_visibleData.splice(renderer_friend::s_visibleData.indexOf(this),1);
+               s_visibleData.splice(s_visibleData.indexOf(this),1);
             }
          }
-         if(param1 && this.renderer_friend::_data is BitmapData)
+         if(dispose && this._data is BitmapData)
          {
-            (this.renderer_friend::_data as BitmapData).dispose();
+            (this._data as BitmapData).dispose();
          }
-         this.renderer_friend::_data = null;
-         this.renderer_friend::_pt = null;
-         this.renderer_friend::_rect = null;
-         this.renderer_friend::_blendMode = null;
-         this.renderer_friend::_cleared = true;
+         this._data = null;
+         this._pt = null;
+         this._rect = null;
+         this._blendMode = null;
+         this._cleared = true;
       }
    }
 }
