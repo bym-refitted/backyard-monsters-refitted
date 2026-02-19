@@ -787,6 +787,7 @@ class AuthForm extends Sprite
     {
         if (serverData.hasOwnProperty("error"))
         {
+            // TODO: GLOBAL.Message returns a MESSAGE object only accessible in AS3 - we need to find a solution for this!
             GLOBAL.Message(serverData.error);
             return;
         }
