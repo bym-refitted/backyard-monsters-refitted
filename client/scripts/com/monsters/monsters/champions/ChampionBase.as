@@ -15,7 +15,6 @@ package com.monsters.monsters.champions
    import com.monsters.siege.weapons.SiegeWeapon;
    import flash.display.Bitmap;
    import flash.display.BitmapData;
-   import flash.display.DisplayObject;
    import flash.events.MouseEvent;
    import flash.geom.Point;
    import flash.geom.Rectangle;

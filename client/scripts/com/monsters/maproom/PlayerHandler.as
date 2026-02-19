@@ -1,6 +1,5 @@
 package com.monsters.maproom
 {
-   import com.monsters.ai.*;
    import com.monsters.enums.EnumYardType;
    import com.monsters.mailbox.model.Contact;
    import com.monsters.maproom.model.BaseObject;

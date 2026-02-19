@@ -9,7 +9,6 @@ package
    import flash.geom.Point;
    import flash.geom.Rectangle;
    import flash.utils.Dictionary;
-   import gs.easing.*;
    
    public class CHAMPIONCHAMBER extends BFOUNDATION
    {

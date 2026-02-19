@@ -21,10 +21,8 @@ package
    import com.monsters.player.MonsterData;
    import com.monsters.player.Player;
    import com.monsters.siege.SiegeWeapons;
-   import flash.display.*;
    import flash.events.*;
    import flash.geom.*;
-   import flash.net.*;
    import flash.text.TextFieldAutoSize;
    import flash.utils.*;
    

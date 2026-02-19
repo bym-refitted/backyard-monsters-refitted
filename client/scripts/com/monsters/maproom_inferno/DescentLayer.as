@@ -9,7 +9,6 @@ package com.monsters.maproom_inferno
    import flash.geom.Point;
    import flash.geom.Rectangle;
    import flash.utils.getTimer;
-   import gs.easing.*;
    
    // We have opted to use the March 2012 pre-patch version of descent bases
    // which introduced the original 13, over the reduced version of 7.

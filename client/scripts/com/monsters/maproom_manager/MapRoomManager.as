@@ -2,7 +2,6 @@ package com.monsters.maproom_manager
 {
    import com.monsters.maproom3.MapRoom3;
    import com.monsters.maproom3.MapRoom3Cell;
-   import com.monsters.maproom3.popups.MapRoom3ConfirmMigrationPopup;
    import com.monsters.maproom_advanced.MapRoom;
    import com.monsters.monsters.components.CModifiableProperty;
    import config.singletonlock.SingletonLock;

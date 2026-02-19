@@ -1,7 +1,6 @@
 package com.adobe.images
 {
    import flash.display.*;
-   import flash.geom.*;
    import flash.utils.*;
    
    public class JPGEncoder

@@ -42,7 +42,6 @@ package
    import com.monsters.replayableEvents.attacking.monsterMadness.MonsterMadness;
    import com.monsters.rewarding.RewardHandler;
    import com.monsters.siege.*;
-   import com.monsters.siege.weapons.*;
    import flash.display.*;
    import flash.events.*;
    import flash.external.ExternalInterface;

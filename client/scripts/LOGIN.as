@@ -9,7 +9,6 @@ package
    import com.monsters.radio.RADIO;
    import flash.events.*;
    import flash.external.ExternalInterface;
-   import flash.net.*;
    import flash.system.Capabilities;
 
    public class LOGIN

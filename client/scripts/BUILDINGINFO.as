@@ -13,8 +13,6 @@ package
    import flash.geom.Point;
    import flash.text.TextField;
    import flash.text.TextFieldAutoSize;
-   import gs.*;
-   import gs.easing.*;
    
    public class BUILDINGINFO
    {
