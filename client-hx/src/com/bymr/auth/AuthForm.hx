@@ -22,13 +22,12 @@ import openfl.utils.Timer;
 import openfl.events.TimerEvent;
 
 import com.bymr.hx.HaxeLib.GLOBAL;
-import com.bymr.hx.HaxeLib.LOGGER;
 
 // TODO: This file needs a complete refactor. It is currently very messy and hard to read.
-public class AuthForm extends Sprite
+class AuthForm extends Sprite
 {
 
-    private var isRegisterForm:Boolean = false;
+    private var isRegisterForm:Bool = false;
 
     private var formContainer:Sprite;
 
@@ -76,35 +75,35 @@ public class AuthForm extends Sprite
 
     private var loader:Loader;
 
-    private var startY:Number;
+    private var startY:Float;
 
-    private var verticalSpacingBetweenBlocks:Number = 0;
+    private var verticalSpacingBetweenBlocks:Int = 0;
 
-    private var BLACK:uint = 0x000000;
+    private var BLACK:UInt = 0x000000;
 
-    private var WHITE:uint = 0xFFFFFF;
+    private var WHITE:UInt = 0xFFFFFF;
 
-    private var RED:uint = 0xFF0000;
+    private var RED:UInt = 0xFF0000;
 
-    private var BACKGROUND:uint = 0x1D232A;
+    private var BACKGROUND:UInt = 0x1D232A;
 
-    private var LIGHT_GRAY:uint = 0xC9C9C9;
+    private var LIGHT_GRAY:UInt = 0xC9C9C9;
 
-    private var PRIMARY:uint = 0x004DE5;
+    private var PRIMARY:UInt = 0x004DE5;
 
-    private var SECONDARY:uint = 0x00CDB8;
+    private var SECONDARY:UInt = 0x00CDB8;
 
     private var checkContentLoadedTimer:Timer;
 
-    private var languages:Array;
+    private var languages:Array<String>;
 
     private var background:Sprite;
 
     private var contentContainer:Sprite;
 
-    private const DESIGN_WIDTH:Number = 760;
+    private final DESIGN_WIDTH:UInt = 760;
 
-    private const DESIGN_HEIGHT:Number = 670;
+    private final DESIGN_HEIGHT:UInt = 670;
 
     public function AuthForm()
     {
@@ -116,11 +115,11 @@ public class AuthForm extends Sprite
 
         addEventListener(Event.ADDED_TO_STAGE, formAddedToStageHandler);
 
-        GLOBAL.eventDispatcher.addEventListener("initError", function(event:Event):void
+        GLOBAL.eventDispatcher.addEventListener("initError", function(event:Event):Void
             {
                 errMessage.text = GLOBAL.initError;
                 // If loadingContainer is present, refresh the loading screen to update the title
-                if (loadingContainer && loadingContainer.parent)
+                if (loadingContainer != null && loadingContainer.parent != null)
                 {
                     Loading();
                 }
@@ -131,7 +130,7 @@ public class AuthForm extends Sprite
         checkContentLoadedTimer.start();
     }
 
-    private function checkContentLoaded(event:TimerEvent):void
+    private function checkContentLoaded(event:TimerEvent):Void
     {
         // True: Once we receive the language file and supported languages from the server
         // This also let's us know whether a connection has been established.
@@ -139,7 +138,7 @@ public class AuthForm extends Sprite
         {
             checkContentLoadedTimer.stop();
             checkContentLoadedTimer.removeEventListener(TimerEvent.TIMER, checkContentLoaded);
-            if (loadingContainer && loadingContainer.parent)
+            if (loadingContainer != null && loadingContainer.parent != null)
             {
                 contentContainer.removeChild(loadingContainer);
             }
@@ -147,14 +146,14 @@ public class AuthForm extends Sprite
         }
         else
         {
-            if (!loadingContainer.parent)
+            if (loadingContainer == null || loadingContainer.parent == null)
             {
                 Loading();
             }
         }
     }
 
-    public function formAddedToStageHandler(event:Event):void
+    public function formAddedToStageHandler(event:Event):Void
     {
         removeEventListener(Event.ADDED_TO_STAGE, formAddedToStageHandler);
 
@@ -169,7 +168,7 @@ public class AuthForm extends Sprite
         else
         {
             // If text content is already loaded, proceed with UI setup
-            if (loadingContainer && loadingContainer.parent)
+            if (loadingContainer != null && loadingContainer.parent != null)
             {
                 contentContainer.removeChild(loadingContainer);
             }
@@ -177,7 +176,7 @@ public class AuthForm extends Sprite
         }
     }
 
-    private function onStageResize(event:Event):void
+    private function onStageResize(event:Event):Void
     {
         drawBackground();
         centerContent();
@@ -185,24 +184,24 @@ public class AuthForm extends Sprite
         GLOBAL.ResizeLayer(GLOBAL._layerTop);
     }
 
-    private function drawBackground():void
+    private function drawBackground():Void
     {
         // slight hack but its only 2-lines of shit
-        var offsetX:Number = -(stage.stageWidth - DESIGN_WIDTH) / 2;
-        var offsetY:Number = -(stage.stageHeight - DESIGN_HEIGHT) / 2;
+        var offsetX:Float = -(stage.stageWidth - DESIGN_WIDTH) / 2;
+        var offsetY:Float = -(stage.stageHeight - DESIGN_HEIGHT) / 2;
         background.graphics.clear();
         background.graphics.beginFill(BACKGROUND);
         background.graphics.drawRect(offsetX, offsetY, stage.stageWidth, stage.stageHeight);
         background.graphics.endFill();
     }
 
-    private function centerContent():void
+    private function centerContent():Void
     {
         contentContainer.x = 0;
         contentContainer.y = 0;
     }
 
-    private function handleContentLoaded():void
+    private function handleContentLoaded():Void
     {
         // Global Initialization
         navContainer = new Sprite();
@@ -215,8 +214,8 @@ public class AuthForm extends Sprite
         passwordErrorText = new TextField();
         hasAccountText = new TextField();
 
-        var formWidth:Number = 450;
-        var formHeight:Number = 600;
+        var formWidth:Float = 450;
+        var formHeight:Float = 600;
 
         languages = KEYS.supportedLanguagesJson;
         var selectInput:Sprite = createSelectInput();
@@ -239,7 +238,7 @@ public class AuthForm extends Sprite
         this.loader = new Loader();
         this.loader.load(new URLRequest(GLOBAL.cdnUrl + "assets/popups/C5-LAB-150.png"));
         this.loader.contentLoaderInfo.addEventListener(Event.COMPLETE, onImageLoaded);
-        this.loader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, function(e:IOErrorEvent):void
+        this.loader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, function(e:IOErrorEvent):Void
             {
             });
 
@@ -260,10 +259,10 @@ public class AuthForm extends Sprite
         FormNavigate();
     }
 
-    private function Loading():void
+    private function Loading():Void
     {
         // Remove previous loadingContainer if present
-        if (loadingContainer && loadingContainer.parent)
+        if (loadingContainer != null && loadingContainer.parent != null)
         {
             loadingContainer.parent.removeChild(loadingContainer);
         }
@@ -271,7 +270,7 @@ public class AuthForm extends Sprite
         loadingContainer = new Sprite();
         contentContainer.addChild(loadingContainer);
 
-        var contentWidth:Number = 400;
+        var contentWidth:Float = 400;
 
         // Create title
         var loadingTitle:TextField = new TextField();
@@ -341,9 +340,9 @@ public class AuthForm extends Sprite
 
             var updateImageLoader:Loader = new Loader();
             updateImageLoader.load(new URLRequest(GLOBAL.serverUrl + "assets/popups/fantastic.png"));
-            updateImageLoader.contentLoaderInfo.addEventListener(Event.COMPLETE, function(e:Event):void
+            updateImageLoader.contentLoaderInfo.addEventListener(Event.COMPLETE, function(e:Event):Void
                 {
-                    var img:Bitmap = Bitmap(updateImageLoader.content);
+                    var img = updateImageLoader.content;
                     img.x = (contentWidth - img.width) / 2;
                     img.y = 0;
                     loadingContainer.addChildAt(img, 0);
@@ -365,15 +364,15 @@ public class AuthForm extends Sprite
         loadingContainer.y = 200;
     }
 
-    public static function DiscordLink(param1:Event = null):void
+    public static function DiscordLink(param1:Event = null):Void
     {
         GLOBAL.gotoURL("https://discord.gg/bymrefitted");
     }
 
-    private function HeaderTitle():void
+    private function HeaderTitle():Void
     {
-        var navWidth:Number = 800;
-        var navHeight:Number = 50;
+        var navWidth:Float = 800;
+        var navHeight:Float = 50;
 
         navContainer.graphics.drawRect(0, 0, navWidth, navHeight);
         navContainer.x = -20;
@@ -394,7 +393,7 @@ public class AuthForm extends Sprite
     }
 
     // Essentially creates a 'span' element.
-    private function createRichText(text:String, color:uint):TextField
+    private function createRichText(text:String, color:UInt):TextField
     {
         var textField:TextField = new TextField();
         var textFormat:TextFormat = new TextFormat();
@@ -409,9 +408,9 @@ public class AuthForm extends Sprite
         return textField;
     }
 
-    private function onImageLoaded(event:Event):void
+    private function onImageLoaded(event:Event):Void
     {
-        image = Bitmap(loader.content);
+        var image = loader.content;
 
         image.x = 150;
         image.y = 150;
@@ -421,7 +420,7 @@ public class AuthForm extends Sprite
     }
 
     // Function to create and position input fields
-    private function createBlock(width:Number, height:Number, placeholder:String = "", isPassword:Boolean = false):TextField
+    private function createBlock(width:Float, height:Float, placeholder:String = "", isPassword:Bool = false):TextField
     {
         var input:TextField = createInputField(width, height, placeholder, isPassword);
         formContainer.addChild(input);
@@ -429,7 +428,7 @@ public class AuthForm extends Sprite
         input.x = (formContainer.width - input.width) / 2;
         input.y = startY;
 
-        input.addEventListener(Event.CHANGE, function(event:Event):void
+        input.addEventListener(Event.CHANGE, function(event:Event):Void
             {
                 if (placeholder == "Email")
                 {
@@ -451,7 +450,7 @@ public class AuthForm extends Sprite
         return input;
     }
 
-    private function createInputField(width:Number, height:Number, placeholder:String = "", isPassword:Boolean = false):TextField
+    private function createInputField(width:Float, height:Float, placeholder:String = "", isPassword:Bool = false):TextField
     {
         var input:TextField = new TextField();
         input.type = TextFieldType.INPUT;
@@ -480,11 +479,11 @@ public class AuthForm extends Sprite
         if (isPassword)
             input.displayAsPassword = true;
 
-        if (placeholder)
+        if (placeholder != null)
         {
             input.text = placeholder;
 
-            input.addEventListener(FocusEvent.FOCUS_IN, function(event:FocusEvent):void
+            input.addEventListener(FocusEvent.FOCUS_IN, function(event:FocusEvent):Void
                 {
                     if (input.text == placeholder)
                     {
@@ -493,7 +492,7 @@ public class AuthForm extends Sprite
                     }
                 });
 
-            input.addEventListener(FocusEvent.FOCUS_OUT, function(event:FocusEvent):void
+            input.addEventListener(FocusEvent.FOCUS_OUT, function(event:FocusEvent):Void
                 {
                     if (input.text == "")
                     {
@@ -509,8 +508,8 @@ public class AuthForm extends Sprite
     private function createSelectInput(defaultOption:String = "English"):Sprite
     {
         selectField = new Sprite();
-        var selectWidth:Number = 80;
-        var selectHeight:Number = 30;
+        var selectWidth:Float = 80;
+        var selectHeight:Float = 30;
         selectField.graphics.lineStyle(1, WHITE);
         selectField.graphics.drawRect(0, 0, selectWidth, selectHeight);
 
@@ -522,7 +521,7 @@ public class AuthForm extends Sprite
         defaultText.textColor = WHITE;
         defaultText.embedFonts = true;
         defaultText.defaultTextFormat = defaultTextStyle;
-        defaultText.text = defaultOption.toLocaleUpperCase();
+        defaultText.text = defaultOption.toUpperCase();
         defaultText.x = (selectWidth - defaultText.textWidth) / 2;
         defaultText.y = (selectHeight - defaultText.textHeight) / 2;
         mousePointerCursor(defaultText);
@@ -534,7 +533,7 @@ public class AuthForm extends Sprite
         selectField.addChild(dropdownMenu);
 
         // Populate the dropdown menu with options
-        for (var index:int = 0; index < languages.length; index++)
+        for (index in 0...languages.length)
         {
             var langSelectText:TextField = new TextField();
             var langSelectTextStyle:TextFormat = new TextFormat();
@@ -544,7 +543,7 @@ public class AuthForm extends Sprite
             langSelectText.embedFonts = true;
             langSelectText.textColor = WHITE;
             langSelectText.defaultTextFormat = langSelectTextStyle;
-            langSelectText.text = languages[index].toLocaleUpperCase();
+            langSelectText.text = languages[index].toUpperCase();
             langSelectText.y = index * 30;
             langSelectText.width = 200;
             langSelectText.selectable = false;
@@ -555,7 +554,7 @@ public class AuthForm extends Sprite
         }
 
         // Handle click events to toggle the dropdown menu visibility
-        selectField.addEventListener(MouseEvent.CLICK, function(event:MouseEvent):void
+        selectField.addEventListener(MouseEvent.CLICK, function(event:MouseEvent):Void
             {
                 dropdownMenu.visible = !dropdownMenu.visible;
             });
@@ -566,15 +565,15 @@ public class AuthForm extends Sprite
     }
 
     // Function to handle language select event
-    private function langSelectClickHandler(event:MouseEvent):void
+    private function langSelectClickHandler(event:MouseEvent):Void
     {
         var selectedLanguage:String = event.currentTarget.text;
         defaultText.text = selectedLanguage;
         defaultText.width = 200;
         dropdownMenu.visible = true;
 
-        var textWidth:Number = defaultText.textWidth;
-        var newSelectWidth:Number = textWidth + 23;
+        var textWidth:Float = defaultText.textWidth;
+        var newSelectWidth:Float = textWidth + 23;
 
         selectField.graphics.clear();
         selectField.graphics.lineStyle(1, WHITE);
@@ -582,9 +581,9 @@ public class AuthForm extends Sprite
 
         // Iterate over the supported languages and pass them to KEYS.Setup()
         // to grab available language file.
-        for each (var language:String in languages)
+        for (language in languages)
         {
-            if (selectedLanguage.toLocaleLowerCase() === language.toLocaleLowerCase())
+            if (selectedLanguage.toLowerCase() == language.toLowerCase())
             {
                 KEYS.Setup(language.toLowerCase());
                 return;
@@ -608,7 +607,7 @@ public class AuthForm extends Sprite
 
     private function createButton():Sprite
     {
-        var formRadius:Number = 16;
+        var formRadius:Float = 16;
         button = new Sprite();
         updateButtonColor();
         button.buttonMode = true;
@@ -640,7 +639,7 @@ public class AuthForm extends Sprite
         return button;
     }
 
-    private function FormNavigate():void
+    private function FormNavigate():Void
     {
         var linkContainer:Sprite = new Sprite();
         linkContainer.buttonMode = true;
@@ -664,14 +663,14 @@ public class AuthForm extends Sprite
         mousePointerCursor(linkContainer);
 
         formContainer.addChild(linkContainer);
-        linkContainer.addEventListener(MouseEvent.CLICK, function(event:Event):void
+        linkContainer.addEventListener(MouseEvent.CLICK, function(event:Event):Void
             {
                 isRegisterForm = !isRegisterForm;
                 updateState();
             });
     }
 
-    private function updateFormFields():void
+    private function updateFormFields():Void
     {
         if (isRegisterForm)
         {
@@ -683,14 +682,14 @@ public class AuthForm extends Sprite
         }
     }
 
-    private function updateLinkText():void
+    private function updateLinkText():Void
     {
         hasAccountText.embedFonts = true;
         hasAccountText.antiAliasType = AntiAliasType.NORMAL;
         hasAccountText.text = isRegisterForm ? KEYS.Get("auth_login_link") : KEYS.Get("auth_register_link");
     }
 
-    private function updateLinkColour():void
+    private function updateLinkColour():Void
     {
         hasAccountFormat.color = isRegisterForm ? SECONDARY : PRIMARY;
         hasAccountFormat.font = "Verdana";
@@ -698,39 +697,40 @@ public class AuthForm extends Sprite
         hasAccountText.setTextFormat(hasAccountFormat);
     }
 
-    private function updateButtonText():void
+    private function updateButtonText():Void
     {
         button.graphics.beginFill(isRegisterForm ? PRIMARY : SECONDARY);
         buttonText.text = isRegisterForm ? KEYS.Get("auth_register_btn").toUpperCase() : KEYS.Get("auth_login_btn").toUpperCase();
     }
 
-    private function updateButtonColor():void
+    private function updateButtonColor():Void
     {
         button.graphics.beginFill(isRegisterForm ? SECONDARY : PRIMARY);
         button.graphics.drawRoundRect(0, 0, 350, 50, 12);
         button.graphics.endFill();
     }
 
-    private function mousePointerCursor(element:*):void
+    // TODO: fix the usage of Dynamic here
+    private function mousePointerCursor(element:Dynamic):Void
     {
-        element.addEventListener(MouseEvent.ROLL_OVER, function(e:MouseEvent):void
+        element.addEventListener(MouseEvent.ROLL_OVER, function(e:MouseEvent):Void
             {
                 Mouse.cursor = MouseCursor.BUTTON;
             });
 
-        element.addEventListener(MouseEvent.ROLL_OUT, function(e:MouseEvent):void
+        element.addEventListener(MouseEvent.ROLL_OUT, function(e:MouseEvent):Void
             {
                 Mouse.cursor = MouseCursor.AUTO;
             });
     }
 
-    private function submitButtonClickHandler(event:MouseEvent):void
+    private function submitButtonClickHandler(event:MouseEvent):Void
     {
         clearErrorMessages();
 
-        var isUsernameValid:Boolean = isValidUsername(usernameValue);
-        var isEmailValid:Boolean = isValidEmail(emailValue);
-        var isPasswordValid:Boolean = isValidPassword(passwordValue);
+        var isUsernameValid:Bool = isValidUsername(usernameValue);
+        var isEmailValid:Bool = isValidEmail(emailValue);
+        var isPasswordValid:Bool = isValidPassword(passwordValue);
 
         if (isEmailValid && isPasswordValid)
         {
@@ -738,9 +738,9 @@ public class AuthForm extends Sprite
             {
                 if (isUsernameValid)
                 {
-                    var newUser:Array = [["username", usernameValue], ["email", emailValue], ["password", passwordValue], ["last_name", ""], ["pic_square", ""]];
+                    var newUser:Array<Array<String>> = [["username", usernameValue], ["email", emailValue], ["password", passwordValue], ["last_name", ""], ["pic_square", ""]];
 
-                    new URLLoaderApi().load(GLOBAL._apiURL + "player/register", newUser, registerNewUser, function(event:IOErrorEvent):void
+                    new URLLoaderApi().load(GLOBAL._apiURL + "player/register", newUser, registerNewUser, function(event:IOErrorEvent):Void
                         {
                             GLOBAL.Message("An error occurred during registration on the server.");
                         });
@@ -752,7 +752,7 @@ public class AuthForm extends Sprite
             }
             else
             {
-                new URLLoaderApi().load(GLOBAL._apiURL + "bm/getnewmap", null, postAuthDetails, function(event:IOErrorEvent):void
+                new URLLoaderApi().load(GLOBAL._apiURL + "bm/getnewmap", null, postAuthDetails, function(event:IOErrorEvent):Void
                     {
                         GLOBAL.Message("We cannot connect you to the server at this time. Please try again later or check our server status.");
                     });
@@ -775,12 +775,14 @@ public class AuthForm extends Sprite
         }
     }
 
-    private function postAuthDetails(serverData:Object):void
+    // TODO: refactor this to not use Dynamic and instead use a proper data structure
+    private function postAuthDetails(serverData:Dynamic):Void
     {
         LOGIN.OnGetNewMap(serverData, [["email", emailValue], ["password", passwordValue]]);
     }
 
-    private function registerNewUser(serverData:Object):void
+    // TODO: refactor this to not use Dynamic and instead use a proper data structure
+    private function registerNewUser(serverData:Dynamic):Void
     {
         if (serverData.hasOwnProperty("error"))
         {
@@ -792,37 +794,37 @@ public class AuthForm extends Sprite
         updateState();
     }
 
-    private function isValidUsername(username:String):Boolean
+    private function isValidUsername(username:String):Bool
     {
-        var pattern:RegExp = /^[a-zA-Z0-9_]+$/;
-        return username.length >= 2 && username.length <= 12 && pattern.test(username);
+        var pattern:EReg = ~/^[a-zA-Z0-9_]+$/;
+        return username.length >= 2 && username.length <= 12 && pattern.match(username);
     }
 
-    private function isValidEmail(email:String):Boolean
+    private function isValidEmail(email:String):Bool
     {
-        var emailPattern:RegExp = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
-        return emailPattern.test(email);
+        var emailPattern:EReg = ~/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+        return emailPattern.match(email);
     }
 
-    private function isValidPassword(password:String):Boolean
+    private function isValidPassword(password:String):Bool
     {
-        var passwordRegex:RegExp = /^(?=.*[A-Z])(?=.*[\W_])(?=.{8,})/;
-        return passwordRegex.test(password);
+        var passwordRegex:EReg = ~/^(?=.*[A-Z])(?=.*[\W_])(?=.{8,})/;
+        return passwordRegex.match(password);
     }
 
-    private function clearErrorMessages():void
+    private function clearErrorMessages():Void
     {
         emailErrorText.text = "";
         passwordErrorText.text = "";
     }
 
-    private function showErrorMessage(inputField:TextField, errorMessage:String):void
+    private function showErrorMessage(inputField:TextField, errorMessage:String):Void
     {
         var errorText:TextField = new TextField();
         errorText.htmlText = errorMessage;
         errorText.textColor = RED;
         errorText.x = inputField.x;
-        ;
+        
         errorText.y = inputField.y + inputField.height + 5;
         errorText.width = inputField.width + 100;
         errorText.height = 40;
@@ -838,7 +840,7 @@ public class AuthForm extends Sprite
         }
     }
 
-    public function updateState():void
+    public function updateState():Void
     {
         updateFormFields();
         updateButtonText();
@@ -847,41 +849,40 @@ public class AuthForm extends Sprite
         updateLinkColour();
     }
 
-    public function disposeUI():void
+    public function disposeUI():Void
     {
-        if (stage)
+        if (stage != null)
         {
             stage.removeEventListener(Event.RESIZE, onStageResize);
         }
 
         // Stop timer
-        if (checkContentLoadedTimer)
+        if (checkContentLoadedTimer != null)
         {
             checkContentLoadedTimer.stop();
             checkContentLoadedTimer.removeEventListener(TimerEvent.TIMER, checkContentLoaded);
         }
 
         // Remove event listeners
-        if (submitButton)
+        if (submitButton != null)
             submitButton.removeEventListener(MouseEvent.CLICK, submitButtonClickHandler);
 
         // Dispose bitmap data to free memory
-        if (image)
+        if (image != null && image.bitmapData != null)
             image.bitmapData.dispose();
 
         // Unload loader
-        if (loader)
+        if (loader != null)
         {
             loader.contentLoaderInfo.removeEventListener(Event.COMPLETE, onImageLoaded);
             loader.unload();
         }
 
         // Clear background graphics
-        if (background)
+        if (background != null)
             background.graphics.clear();
 
-        if (this.parent)
+        if (this.parent != null)
             this.parent.removeChild(this);
     }
-
 }
