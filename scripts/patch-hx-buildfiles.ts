@@ -1,5 +1,6 @@
 import path from "path";
 
+const nameOfSwf = "client-hx";
 
 const haxeProjectDir = "client-hx";
 
@@ -30,7 +31,7 @@ for (const file of filesToPatch) {
     }
 
     let content = await Bun.file(filePath).text();
-    content = content.replace("\.swf", "\.swc");
+    content = content.replace(`${nameOfSwf}\.swf`, `${nameOfSwf}\.swc`);
     await Bun.write(filePath, content);
     console.log(`Patched ${filePath}`);
 }
