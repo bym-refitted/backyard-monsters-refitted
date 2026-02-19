@@ -9,7 +9,6 @@ package com.monsters.frontPage
    import com.monsters.frontPage.messages.news.News04Slimeattikus;
    import com.monsters.frontPage.messages.news.News05YardPlanner2;
    import com.monsters.frontPage.messages.news.News06TownHallLevel10;
-   import com.monsters.frontPage.messages.promotions.Maproom3OptInPopup;
    import com.monsters.frontPage.messages.promotions.Promo01DaveClub;
    import com.monsters.frontPage.messages.promotions.Promo02DaveClub;
    import com.monsters.frontPage.messages.promotions.Promo03RecapturedGorgo;

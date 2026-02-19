@@ -2,7 +2,6 @@ package com.monsters.monsters.components.abilities
 {
    import com.monsters.events.ProjectileEvent;
    import com.monsters.interfaces.ITargetable;
-   import com.monsters.monsters.MonsterBase;
    import com.monsters.monsters.creeps.CreepBase;
    import com.monsters.projectiles.Projectilev2;
    import flash.geom.Point;

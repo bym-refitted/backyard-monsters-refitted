@@ -2,9 +2,6 @@ package
 {
    import flash.display.MovieClip;
    import flash.events.*;
-   import gs.*;
-   import gs.easing.*;
-   
    public class QUEUE
    {
       

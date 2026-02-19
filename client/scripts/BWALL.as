@@ -1,7 +1,6 @@
 package
 {
    import com.monsters.pathing.PATHING;
-   import flash.events.*;
    import flash.geom.Rectangle;
    
    public class BWALL extends BFOUNDATION

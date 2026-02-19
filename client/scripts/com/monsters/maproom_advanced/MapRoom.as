@@ -20,9 +20,7 @@ package com.monsters.maproom_advanced
    import flash.events.*;
    import flash.geom.Point;
    import flash.utils.Dictionary;
-   import flash.utils.getTimer;
    import flash.utils.Timer;
-   import flash.xml.XMLDocument;
    
    public class MapRoom implements IMapRoom
    {

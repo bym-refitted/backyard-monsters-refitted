@@ -5,7 +5,6 @@ package
    import flash.events.MouseEvent;
    import flash.geom.Point;
    import com.monsters.monsters.champions.ChampionBase;
-   import com.monsters.inventory.InventoryManager;
    import com.monsters.enums.EnumInvasionType;
    
    /*

@@ -15,7 +15,6 @@ package
    import flash.display.Sprite;
    import flash.events.*;
    import flash.geom.Rectangle;
-   import flash.net.*;
    
    public class STORE
    {

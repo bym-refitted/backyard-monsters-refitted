@@ -7,7 +7,6 @@ package com.monsters.monsters.creeps
    import com.monsters.maproom_manager.MapRoomManager;
    import com.monsters.monsters.MonsterBase;
    import com.monsters.monsters.components.*;
-   import com.monsters.monsters.components.abilities.*;
    import com.monsters.monsters.components.modifiers.AdditionPropertyModifier;
    import com.monsters.pathing.PATHING;
    import com.monsters.rendering.RasterData;
@@ -16,7 +15,6 @@ package com.monsters.monsters.creeps
    import com.monsters.siege.weapons.SiegeWeapon;
    import flash.display.Bitmap;
    import flash.display.BitmapData;
-   import flash.display.DisplayObject;
    import flash.events.MouseEvent;
    import flash.geom.Point;
    import flash.geom.Rectangle;

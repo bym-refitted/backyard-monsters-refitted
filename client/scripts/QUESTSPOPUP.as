@@ -8,7 +8,6 @@ package
    import flash.display.BitmapData;
    import flash.display.MovieClip;
    import flash.events.*;
-   import flash.net.*;
    
    public class QUESTSPOPUP extends QUESTSPOPUP_CLIP
    {
