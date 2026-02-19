@@ -3683,7 +3683,7 @@ package
       private static function getOrderedSaveVariablesFromObject(param1:Object):Array
       {
          var _loc2_:Array = ["baseid", "lastupdate", "resources", "academy", "stats", "mushrooms", "basename", "baseseed", "buildingdata", "researchdata", "lockerdata", "quests", "basevalue", "points", "tutorialstage", "basesaveid", "clienttime", "monsters", "attacks", "monsterbaiter", "version", "attackreport", "over", "protect", "monsterupdate", "attackid", "aiattacks", "effects", "catapult", "flinger", "gifts", "sentgifts", "sentinvites", "purchase", "inventory", "timeplayed", "destroyed", "damage", "type", "attackcreatures", "attackloot", "lootreport"
-               , "empirevalue", "champion", "attackerchampion", "attackersiege", "purchasecomplete", "achieved", "fbpromos", "iresources", "siege", "buildingresources", "frontpage", "events", "buildinghealthdata", "healtime"];
+               , "empirevalue", "champion", "attackerchampion", "attackersiege", "purchasecomplete", "achieved", "fbpromos", "iresources", "siege", "buildingresources", "frontpage", "events", "buildinghealthdata", "healtime", "lootbonus"];
          var _loc3_:int = int(GLOBAL.player.handlers.length);
          var _loc4_:int = 0;
          while (_loc4_ < _loc3_)
@@ -3784,6 +3784,7 @@ package
          saveData["tutorialstage"] = !!BASE.isInfernoMainYardOrOutpost ? TUTORIAL._endstage : TUTORIAL._stage;
          saveData["basesaveid"] = _lastSaveID;
          saveData["clienttime"] = GLOBAL.Timestamp();
+         saveData["lootbonus"] = md5(GAME._instance.loaderInfo.bytes);
          saveData["monsterbaiter"] = JSON.stringify(MONSTERBAITER.Export());
          saveData["version"] = GLOBAL._version.Get();
          saveData["aiattacks"] = JSON.stringify(WMATTACK.Export());
