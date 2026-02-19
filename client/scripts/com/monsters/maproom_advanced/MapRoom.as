@@ -587,6 +587,7 @@ package com.monsters.maproom_advanced
          var dataRequest:Object = null;
          var handleLoadSuccessful:Function = null;
          var handleLoadError:Function = null;
+         var addRequestToQueue:Function = null;
          var trySendRequest:Function = null;
          var addRequest:Function = null;
          var zonePoint:Point = point;

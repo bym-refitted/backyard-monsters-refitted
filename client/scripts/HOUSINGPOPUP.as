@@ -366,11 +366,13 @@ package
                {
                   if(Boolean(GLOBAL.player.monsterListByID(n)) && GLOBAL.player.monsterListByID(n).numCreeps - int(_juiceList[n]) > 0)
                   {
-                     if(!_juiceList[n])
+                     var num:int = int(_juiceList[n]);
+                     if(!num)
                      {
-                        _juiceList[n] = 0;
+                        num = 0;
                      }
-                     ++_juiceList[n];
+                     ++num;
+                     _juiceList[n] = num;
                   }
                   Update();
                }
@@ -409,7 +411,8 @@ package
                   if(_loc5_._creatureID == _loc2_ && _loc5_._behaviour != "juice")
                   {
                      _loc5_.changeModeJuice();
-                     --this._juiceList[_loc2_];
+                     var leftToJuice:int = int(this._juiceList[_loc2_]);
+                     this._juiceList[_loc2_] = --leftToJuice;
                   }
                }
             }

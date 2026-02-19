@@ -864,7 +864,7 @@ package
                            if(_loc11_._creatureID == _loc14_ && _loc11_._behaviour != "feed" && _loc11_._behaviour != "juice")
                            {
                               _loc11_.changeModeFeed();
-                              --_loc6_[_loc14_];
+                              _loc6_[_loc14_] = int(_loc6_[_loc14_]) - 1;
                            }
                         }
                      }
@@ -969,7 +969,7 @@ package
                         if(_loc11_._creatureID == _loc14_ && _loc11_._behaviour != "feed" && _loc11_._behaviour != "juice")
                         {
                            _loc11_.changeModeFeed();
-                           --_loc6_[_loc14_];
+                           _loc6_[_loc14_] = int(_loc6_[_loc14_]) - 1;
                         }
                      }
                   }
