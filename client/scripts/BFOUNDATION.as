@@ -3879,7 +3879,7 @@ package
 
          if(_loc1_.hitCls)
          {
-            return new _loc1_.hitCls();
+            return new (_loc1_.hitCls as Class)();
          }
          var _loc2_:Boolean = BASE.isInfernoMainYardOrOutpost;
          if(this._type == 1)
@@ -4230,7 +4230,7 @@ package
          {
             return new building135hit();
          }
-         return !!_loc1_.hitCls ? new _loc1_.hitCls() : new building1hit();
+         return !!_loc1_.hitCls ? new (_loc1_.hitCls as Class)() : new building1hit();
       }
       
       private function GetFootprintMC() : MovieClip
