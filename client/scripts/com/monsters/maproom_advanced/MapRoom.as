@@ -1064,8 +1064,8 @@ package com.monsters.maproom_advanced
                   trySendTransfer = function():void
                   {
                      // send transfer request after any getarea requests containing the source/target cells finish, to ensure the cells are up-to-date.
-                     var sourcePendingZoneIdx = GetPendingZoneRequestIndex(_monsterSource.cellX, _monsterSource.cellY);
-                     var targetPendingZoneIdx = zoneSource.id == zoneTarget.id ? sourcePendingZoneIdx : GetPendingZoneRequestIndex(_monsterTargetRef.cellX, _monsterTargetRef.cellY);
+                     var sourcePendingZoneIdx:int = GetPendingZoneRequestIndex(_monsterSource.cellX, _monsterSource.cellY);
+                     var targetPendingZoneIdx:int = zoneSource.id == zoneTarget.id ? sourcePendingZoneIdx : GetPendingZoneRequestIndex(_monsterTargetRef.cellX, _monsterTargetRef.cellY);
                      if (sourcePendingZoneIdx == -1  && targetPendingZoneIdx == -1)
                      {
                         if (transferRetryTimer)

@@ -1007,7 +1007,7 @@ package
                _currentAttackers.push([champion]);
          }
          _timeOfNextWave = GLOBAL.Timestamp();
-         while(++_wave < WAVES[_round].length && WAVES[_round][_wave] instanceof Number)
+         while(++_wave < WAVES[_round].length && WAVES[_round][_wave] is Number)
          {
             _timeOfNextWave += WAVES[_round][_wave];
          }

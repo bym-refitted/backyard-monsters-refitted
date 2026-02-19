@@ -959,7 +959,7 @@ package
             MONSTERBAITER._attacking = 0;
             return;
          }
-         var activeEvent = SPECIALEVENT.getActiveSpecialEvent()
+         var activeEvent:* = SPECIALEVENT.getActiveSpecialEvent()
          if(activeEvent.active)
          {
             // Check if base took massive damage (90%+ destruction)
