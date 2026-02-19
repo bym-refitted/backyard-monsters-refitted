@@ -22,6 +22,7 @@ import openfl.utils.Timer;
 import openfl.events.TimerEvent;
 
 import com.bymr.hx.HaxeLib.GLOBAL;
+import com.bymr.hx.HaxeLib.KEYS;
 
 // TODO: This file needs a complete refactor. It is currently very messy and hard to read.
 class AuthForm extends Sprite
@@ -115,9 +116,9 @@ class AuthForm extends Sprite
 
         addEventListener(Event.ADDED_TO_STAGE, formAddedToStageHandler);
 
-        GLOBAL.eventDispatcher.addEventListener("initError", function(event:Event):Void
+        GLOBAL.getEventDispatcher().addEventListener("initError", function(event:Event):Void
             {
-                errMessage.text = GLOBAL.initError;
+                errMessage.text = GLOBAL.getInitError();
                 // If loadingContainer is present, refresh the loading screen to update the title
                 if (loadingContainer != null && loadingContainer.parent != null)
                 {
@@ -134,7 +135,7 @@ class AuthForm extends Sprite
     {
         // True: Once we receive the language file and supported languages from the server
         // This also let's us know whether a connection has been established.
-        if (GLOBAL.textContentLoaded && GLOBAL.supportedLangsLoaded)
+        if (GLOBAL.isTextContentLoaded() && GLOBAL.isSupportedLangsLoaded())
         {
             checkContentLoadedTimer.stop();
             checkContentLoadedTimer.removeEventListener(TimerEvent.TIMER, checkContentLoaded);
@@ -161,7 +162,7 @@ class AuthForm extends Sprite
         centerContent();
         stage.addEventListener(Event.RESIZE, onStageResize);
 
-        if (!GLOBAL.textContentLoaded && !GLOBAL.supportedLangsLoaded)
+        if (!GLOBAL.isTextContentLoaded() && !GLOBAL.isSupportedLangsLoaded())
         {
             Loading();
         }
@@ -181,7 +182,7 @@ class AuthForm extends Sprite
         drawBackground();
         centerContent();
         GLOBAL.RefreshScreen();
-        GLOBAL.ResizeLayer(GLOBAL._layerTop);
+        GLOBAL.ResizeLayer(GLOBAL.getLayerTop());
     }
 
     private function drawBackground():Void
@@ -217,7 +218,7 @@ class AuthForm extends Sprite
         var formWidth:Float = 450;
         var formHeight:Float = 600;
 
-        languages = KEYS.supportedLanguagesJson;
+        languages = KEYS.getSupportedLanguages();
         var selectInput:Sprite = createSelectInput();
         contentContainer.addChild(selectInput);
         selectInput.x = 20;
@@ -236,7 +237,7 @@ class AuthForm extends Sprite
 
         // Get image asset
         this.loader = new Loader();
-        this.loader.load(new URLRequest(GLOBAL.cdnUrl + "assets/popups/C5-LAB-150.png"));
+        this.loader.load(new URLRequest(GLOBAL.getCdnUrl() + "assets/popups/C5-LAB-150.png"));
         this.loader.contentLoaderInfo.addEventListener(Event.COMPLETE, onImageLoaded);
         this.loader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, function(e:IOErrorEvent):Void
             {
@@ -280,7 +281,7 @@ class AuthForm extends Sprite
         titleFormat.color = WHITE;
         titleFormat.align = TextFormatAlign.CENTER;
         loadingTitle.defaultTextFormat = titleFormat;
-        loadingTitle.text = GLOBAL.versionMismatch ? "New Update Available!" : "Connecting to the server";
+        loadingTitle.text = GLOBAL.isVersionMismatch() ? "New Update Available!" : "Connecting to the server";
         loadingTitle.width = contentWidth;
         loadingTitle.height = 38;
         loadingTitle.x = 0;
@@ -291,7 +292,7 @@ class AuthForm extends Sprite
 
         // Create description (only for non-version mismatch)
         var loadingDesc:TextField;
-        if (!GLOBAL.versionMismatch)
+        if (!GLOBAL.isVersionMismatch())
         {
             loadingDesc = new TextField();
             var descFormat:TextFormat = new TextFormat();
@@ -323,7 +324,7 @@ class AuthForm extends Sprite
         errFormat.align = TextFormatAlign.CENTER;
         errFormat.leading = 5;
         errMessage.defaultTextFormat = errFormat;
-        errMessage.htmlText = GLOBAL.initError;
+        errMessage.htmlText = GLOBAL.getInitError();
         errMessage.width = contentWidth;
         errMessage.x = 0;
         errMessage.wordWrap = true;
@@ -333,13 +334,13 @@ class AuthForm extends Sprite
         errMessage.autoSize = TextFieldAutoSize.LEFT;
 
         // Position elements based on version mismatch
-        if (GLOBAL.versionMismatch)
+        if (GLOBAL.isVersionMismatch())
         {
             loadingTitle.y = 140;
             errMessage.y = 190;
 
             var updateImageLoader:Loader = new Loader();
-            updateImageLoader.load(new URLRequest(GLOBAL.serverUrl + "assets/popups/fantastic.png"));
+            updateImageLoader.load(new URLRequest(GLOBAL.getServerUrl() + "assets/popups/fantastic.png"));
             updateImageLoader.contentLoaderInfo.addEventListener(Event.COMPLETE, function(e:Event):Void
                 {
                     var img = updateImageLoader.content;
