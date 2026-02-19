@@ -22,7 +22,11 @@ package com.monsters.maproom_advanced
       private var SHINYCOST:SecNum;
       
       private var _mode:String;
-      
+
+      private var _onInstantClick:Function;
+
+      private var _onResourcesClick:Function;
+
       public function PopupRelocateMe()
       {
          super();
@@ -45,28 +49,31 @@ package com.monsters.maproom_advanced
             x = 395;
             y = 260;
          }
+         var self:PopupRelocateMe = this;
          this._mode = mode;
          this.tTitle.htmlText = "<b>" + KEYS.Get("map_relocate") + "</b>";
          if(mode == "invite")
          {
-            this.mcInstant.bAction.addEventListener(MouseEvent.CLICK,function(param1:MouseEvent):void
+            _onInstantClick = function(param1:MouseEvent):void
             {
-               if(this.parent)
+               if(self.parent)
                {
-                  this.parent.removeChild(this);
+                  self.parent.removeChild(self);
                }
                MapRoom.AcceptInvitation(true);
-            });
+            };
+            this.mcInstant.bAction.addEventListener(MouseEvent.CLICK, _onInstantClick);
             this.RESOURCECOST = new SecNum(10000000);
             this.SHINYCOST = new SecNum(1200);
             this.tDescription.htmlText = "<font color=\"#CC0000\">" + KEYS.Get("msg_moveyard_warn") + "</font>";
          }
          else
          {
-            this.mcInstant.bAction.addEventListener(MouseEvent.CLICK,function(param1:MouseEvent):void
+            _onInstantClick = function(param1:MouseEvent):void
             {
                RelocateConfirm(true);
-            });
+            };
+            this.mcInstant.bAction.addEventListener(MouseEvent.CLICK, _onInstantClick);
             this.RESOURCECOST = new SecNum(30000000);
             this.SHINYCOST = new SecNum(1500);
             this.tDescription.htmlText = "<font color=\"#CC0000\">" + KEYS.Get("msg_movetooutpost_warn") + "</font>";
@@ -86,56 +93,30 @@ package com.monsters.maproom_advanced
          this.mcResources.bAction.SetupKey("btn_useresources");
          if(mode == "invite")
          {
-            this.mcResources.bAction.addEventListener(MouseEvent.CLICK,function(param1:MouseEvent):void
+            _onResourcesClick = function(param1:MouseEvent):void
             {
-               if(this.parent)
+               if(self.parent)
                {
-                  this.parent.removeChild(this);
+                  self.parent.removeChild(self);
                }
                MapRoom.AcceptInvitation(false);
-            });
+            };
+            this.mcResources.bAction.addEventListener(MouseEvent.CLICK, _onResourcesClick);
          }
          else
          {
-            this.mcResources.bAction.addEventListener(MouseEvent.CLICK,function(param1:MouseEvent):void
+            _onResourcesClick = function(param1:MouseEvent):void
             {
                RelocateConfirm(false);
-            });
+            };
+            this.mcResources.bAction.addEventListener(MouseEvent.CLICK, _onResourcesClick);
          }
       }
       
       public function Cleanup() : void
       {
-         if(this._mode == "invite")
-         {
-            this.mcInstant.bAction.removeEventListener(MouseEvent.CLICK,function(param1:MouseEvent):void
-            {
-               if(this.parent)
-               {
-                  this.parent.removeChild(this);
-               }
-               MapRoom.AcceptInvitation(true);
-            });
-            this.mcResources.bAction.removeEventListener(MouseEvent.CLICK,function(param1:MouseEvent):void
-            {
-               if(this.parent)
-               {
-                  this.parent.removeChild(this);
-               }
-               MapRoom.AcceptInvitation(false);
-            });
-         }
-         else
-         {
-            this.mcInstant.bAction.removeEventListener(MouseEvent.CLICK,function(param1:MouseEvent):void
-            {
-               RelocateConfirm(true);
-            });
-            this.mcResources.bAction.removeEventListener(MouseEvent.CLICK,function(param1:MouseEvent):void
-            {
-               RelocateConfirm(false);
-            });
-         }
+         this.mcInstant.bAction.removeEventListener(MouseEvent.CLICK, _onInstantClick);
+         this.mcResources.bAction.removeEventListener(MouseEvent.CLICK, _onResourcesClick);
       }
       
       public function Hide() : void
