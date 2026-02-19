@@ -68,7 +68,8 @@ package com.monsters.baseBuffs
          var _loc3_:Array = m_buffTypes[param1];
          if(_loc3_)
          {
-            if(_loc4_ = _loc3_[param2])
+            _loc4_ = _loc3_[param2];
+            if(_loc4_)
             {
                (_loc5_ = new _loc4_.type() as BaseBuff).id = param1;
                return _loc5_;

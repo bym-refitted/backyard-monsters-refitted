@@ -462,7 +462,8 @@ package
          _storeItems.FIX.c = [GetTimeCost(_loc4_) + _loc5_ * 10];
          _storeItems.FIX.d = KEYS.Get("desc_repairbdgs",{"v1":_repairCount});
          _storeItems.FIX.t = KEYS.Get("str_repairbdgs");
-         if(_loc8_ = GLOBAL.player.getNumDamagedCreeps())
+         _loc8_ = GLOBAL.player.getNumDamagedCreeps();
+         if(_loc8_)
          {
             _storeItems.HAMS.t = KEYS.Get("str_healmons");
             _storeItems.HAMS.d = KEYS.Get("str_healmons_desc",{"v1":_loc8_});

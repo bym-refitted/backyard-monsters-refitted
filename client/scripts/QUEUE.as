@@ -201,7 +201,8 @@ package
          }// test.errorMessage
          if(!test.error)
          {
-            if(worker = WORKERS.Assign(buildingFoundation))
+            worker = WORKERS.Assign(buildingFoundation);
+            if(worker)
             {
                stackIndex = 0;
                while(stackIndex < _stack.length)

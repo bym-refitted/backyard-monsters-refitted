@@ -68,7 +68,8 @@ package com.monsters.projectiles
          var _loc3_:Point = null;
          var _loc5_:Number = NaN;
          var _loc4_:ITargetable;
-         if(_loc4_ = Targeting.getClosestEnemy(k_MAX_DISTANCE_TO_LIGHTNING_TARGET,param1,Targeting.k_TARGETS_ALL))
+         _loc4_ = Targeting.getClosestEnemy(k_MAX_DISTANCE_TO_LIGHTNING_TARGET,param1,Targeting.k_TARGETS_ALL);
+         if(_loc4_)
          {
             _loc3_ = new Point(_loc4_.x,_loc4_.y);
             _loc5_ = GLOBAL.QuickDistance(_loc3_,param1);

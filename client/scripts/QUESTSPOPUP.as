@@ -108,7 +108,8 @@ package
             while(_loc2_ < QUESTS._quests.length)
             {
                _loc3_ = QUESTS._quests[_loc2_];
-               if((_loc4_ = true) && _loc3_.group == this._groupID && QUESTS._completed && QUESTS._completed[_loc3_.id] == 1)
+               _loc4_ = true;
+               if(_loc4_ && _loc3_.group == this._groupID && QUESTS._completed && QUESTS._completed[_loc3_.id] == 1)
                {
                   this.ShowQuestB(_loc3_.id);
                   break;

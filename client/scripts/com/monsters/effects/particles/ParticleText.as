@@ -28,7 +28,8 @@ package com.monsters.effects.particles
          var _loc4_:ParticleDamageItem = null;
          if(!GLOBAL._catchup && _currentCount < _currentMax)
          {
-            if(_loc4_ = PoolGet(param3))
+            _loc4_ = PoolGet(param3);
+            if(_loc4_)
             {
                _loc4_.Init(param1,param2,param3);
             }

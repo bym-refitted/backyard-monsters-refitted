@@ -160,7 +160,8 @@ package
             _loc3_ = int(param1.l.Get());
             _loc4_ = int(param1.fb.Get());
             _loc5_ = "G" + _loc2_;
-            if(_loc6_ = "monsters/" + "G" + _loc2_ + "_L" + _loc3_ + "-150.png")
+            _loc6_ = "monsters/" + "G" + _loc2_ + "_L" + _loc3_ + "-150.png";
+            if(_loc6_)
             {
                ImageCache.GetImageWithCallBack(_loc6_,this.UpdateSelectImage);
             }

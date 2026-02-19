@@ -819,7 +819,8 @@ package
          var _loc9_:Number = Number(GLOBAL._resources["r" + param1 + "max"]);
          var _loc10_:Number = Number(GLOBAL._resources["r" + param1].Get());
          var _loc11_:Krallen;
-         if(_loc11_ = CREEPS.krallen)
+         _loc11_ = CREEPS.krallen;
+         if(_loc11_)
          {
             _loc9_ += _loc9_ * _loc11_._buff;
          }

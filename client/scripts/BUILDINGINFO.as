@@ -692,7 +692,8 @@ package
          {
             if(_building._type == 14 && _building._lvl.Get() && _building._lvl.Get() < _building._buildingProps.costs.length)
             {
-               if(!(_loc5_ = BUY.FBCNcpCheckEligibility()))
+               _loc5_ = BUY.FBCNcpCheckEligibility();
+               if(!_loc5_)
                {
                   BUILDINGOPTIONS.Show(_building,"upgrade");
                }
