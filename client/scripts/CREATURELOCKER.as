@@ -1317,7 +1317,8 @@ package
          var _loc4_:Array = [];
          var _loc5_:Array = [];
          var _loc6_:*;
-         if(_loc6_ = !BASE.isInfernoMainYardOrOutpost)
+         _loc6_ = !BASE.isInfernoMainYardOrOutpost;
+         if(_loc6_)
          {
             _loc8_ = CREATURELOCKER.GetCreatures("above");
             for(_loc9_ in _loc8_)
@@ -1333,7 +1334,8 @@ package
             _loc3_.sortOn(["index"],Array.NUMERIC);
          }
          var _loc7_:Boolean;
-         if(_loc7_ = MAPROOM_DESCENT.DescentPassed && (BASE.isInfernoMainYardOrOutpost || SubscriptionHandler.isEnabledForAll || HATCHERYCC.doesShowInfernoCreeps))
+         _loc7_ = MAPROOM_DESCENT.DescentPassed && (BASE.isInfernoMainYardOrOutpost || SubscriptionHandler.isEnabledForAll || HATCHERYCC.doesShowInfernoCreeps);
+         if(_loc7_)
          {
             _loc12_ = CREATURELOCKER.GetCreatures("inferno");
             for(_loc13_ in _loc12_)

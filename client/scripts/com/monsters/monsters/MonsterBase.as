@@ -24,7 +24,6 @@ package com.monsters.monsters
    import flash.filters.GlowFilter;
    import flash.geom.Point;
    import flash.geom.Rectangle;
-   import flash.utils.getTimer;
    import gs.TweenLite;
    import gs.easing.Bounce;
    import gs.easing.Sine;

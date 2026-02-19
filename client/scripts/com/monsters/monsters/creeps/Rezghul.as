@@ -12,7 +12,6 @@ package com.monsters.monsters.creeps
    import com.monsters.rendering.RasterData;
    import flash.display.Bitmap;
    import flash.display.BitmapData;
-   import flash.display.DisplayObject;
    import flash.geom.Point;
    import org.kissmyas.utils.loanshark.LoanShark;
    

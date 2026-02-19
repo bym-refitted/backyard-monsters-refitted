@@ -1,6 +1,5 @@
 package com.monsters.pathing
 {
-   import flash.geom.Point;
    
    public class PATHINGfloodobject
    {

@@ -41,7 +41,8 @@ package com.monsters.monsters.champions
             {
                break;
             }
-            if(_loc18_ = _loc14_[_loc17_] as Class)
+            _loc18_ = _loc14_[_loc17_] as Class;
+            if(_loc18_)
             {
                addComponent(new _loc18_());
             }
@@ -151,7 +152,8 @@ package com.monsters.monsters.champions
          {
             for(_loc16_ in _loc18_)
             {
-               if(_loc7_ = _loc18_[_loc16_] as BFOUNDATION)
+               _loc7_ = _loc18_[_loc16_] as BFOUNDATION;
+               if(_loc7_)
                {
                   _loc12_ = GRID.FromISO(_loc7_._mc.x,_loc7_._mc.y + _loc7_._middle);
                   _loc13_ = GLOBAL.QuickDistance(_loc11_,_loc12_) - _loc7_._middle;

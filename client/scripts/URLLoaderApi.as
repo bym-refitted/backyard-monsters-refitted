@@ -49,13 +49,13 @@ package
          try {
             var request:URLRequest = new URLRequest(url);
             var loader:URLLoader = new URLLoader();
-            var errMessage = "";
+            var errMessage:String = "";
 
             request.method = method;
             request.contentType = "application/json";
             request.requestHeaders.push(new URLRequestHeader("Authorization", "Bearer " + LOGIN.token));
 
-            if (data == null || data == undefined) data = {};
+            if (data == null) data = {};
             if (method != URLRequestMethod.GET) request.data = JSON.stringify(data);
 
             // Send the request

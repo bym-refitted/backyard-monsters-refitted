@@ -1164,7 +1164,8 @@ package
                _loc6_ = 0;
                for each (_loc4_ in _loc3_)
                {
-                  if (_loc7_ = _loc4_ is BRESOURCE)
+                  _loc7_ = _loc4_ is BRESOURCE;
+                  if (_loc7_)
                   {
                      _loc5_ = _loc4_._stored.Get();
                      _loc6_ = _loc4_._countdownProduce.Get();
@@ -2368,8 +2369,9 @@ package
             {
                _loc2_ = param1.name + (_loc2_ == "" ? "" : "." + _loc2_);
             }
+            param1 = param1.parent;
          }
-         while (param1 = param1.parent);
+         while (param1);
 
          return _loc2_;
       }

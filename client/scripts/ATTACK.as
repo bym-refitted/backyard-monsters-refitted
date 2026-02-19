@@ -21,10 +21,8 @@ package
    import com.monsters.player.MonsterData;
    import com.monsters.player.Player;
    import com.monsters.siege.SiegeWeapons;
-   import flash.display.*;
    import flash.events.*;
    import flash.geom.*;
-   import flash.net.*;
    import flash.text.TextFieldAutoSize;
    import flash.utils.*;
    
@@ -151,6 +149,7 @@ package
          var _loc2_:int = 0;
          var _loc3_:int = 0;
          var creatureID:String = null;
+         var _loc4_:String = null;
          m_recentlyAttacked = new Dictionary();
          _flingerCooldown = 5;
          _flingerCooling = 0;
@@ -818,7 +817,8 @@ package
          var _loc9_:Number = Number(GLOBAL._resources["r" + param1 + "max"]);
          var _loc10_:Number = Number(GLOBAL._resources["r" + param1].Get());
          var _loc11_:Krallen;
-         if(_loc11_ = CREEPS.krallen)
+         _loc11_ = CREEPS.krallen;
+         if(_loc11_)
          {
             _loc9_ += _loc9_ * _loc11_._buff;
          }

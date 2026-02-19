@@ -5,7 +5,6 @@ package
    import flash.events.MouseEvent;
    import flash.geom.Point;
    import com.monsters.monsters.champions.ChampionBase;
-   import com.monsters.inventory.InventoryManager;
    import com.monsters.enums.EnumInvasionType;
    import flash.net.URLRequest;
    import flash.net.URLLoader;
@@ -1027,7 +1026,7 @@ package
                _currentAttackers.push([champion]);
          }
          _timeOfNextWave = GLOBAL.Timestamp();
-         while(++_wave < WAVES[_round].length && WAVES[_round][_wave] instanceof Number)
+         while(++_wave < WAVES[_round].length && WAVES[_round][_wave] is Number)
          {
             _timeOfNextWave += WAVES[_round][_wave];
          }

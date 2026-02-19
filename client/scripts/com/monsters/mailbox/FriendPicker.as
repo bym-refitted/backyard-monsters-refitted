@@ -282,6 +282,7 @@ package com.monsters.mailbox
          var onErr:Function = null;
          var onImgComplete:Function = null;
          var item:FriendPickerItem = param1;
+         var self:FriendPicker = this;
          onErr = function(param1:IOErrorEvent):void
          {
          };
@@ -289,7 +290,7 @@ package com.monsters.mailbox
          {
             photoRing.visible = true;
             loader.width = loader.height = 50;
-            setChildIndex(photoRing,this.numChildren - 1);
+            setChildIndex(photoRing,self.numChildren - 1);
          };
          this.currentSelection = item;
          this.close();

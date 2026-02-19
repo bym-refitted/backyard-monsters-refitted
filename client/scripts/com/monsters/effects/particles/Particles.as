@@ -4,9 +4,6 @@ package com.monsters.effects.particles
    import flash.geom.Matrix;
    import flash.geom.Point;
    import flash.geom.Rectangle;
-   import gs.*;
-   import gs.easing.*;
-   
    public class Particles
    {
       
