@@ -80,7 +80,7 @@ package
          {
             if(!this._locked)
             {
-               this.Enabled = this._props.cost <= GLOBAL._attackersResources["r" + this._props.resource].Get();
+               this.Enabled = this._props.cost.Get() <= GLOBAL._attackersResources["r" + this._props.resource].Get();
             }
             else
             {
@@ -105,14 +105,14 @@ package
             });
          }
          _loc1_ += "<br>" + KEYS.Get("bomb_cost_resources",{
-            "v1":CATAPULTPOPUP.Format(this._props.cost),
+            "v1":CATAPULTPOPUP.Format(this._props.cost.Get()),
             "v2":KEYS.Get(GLOBAL._resourceNames[this._props.resource - 1])
          }) + "<br>";
          if(this._props.catapultLevel > GLOBAL._attackersCatapult)
          {
             _loc1_ += "<br>" + "<b><font color = \"#FF0000\">" + KEYS.Get("bomb_catapult_level",{"v1":this._props.catapultLevel}) + "</font></b>";
          }
-         else if(this._props.cost > GLOBAL._attackersResources["r" + this._props.resource].Get() && !this._props.used)
+         else if(this._props.cost.Get() > GLOBAL._attackersResources["r" + this._props.resource].Get() && !this._props.used)
          {
             _loc1_ += "<br><b><font color = \"#FF0000\">" + KEYS.Get("bomb_need_resources",{"v1":KEYS.Get(GLOBAL._resourceNames[this._props.resource - 1])}) + "</font></b>";
          }

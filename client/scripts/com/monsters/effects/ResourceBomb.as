@@ -80,7 +80,7 @@ package com.monsters.effects
          this.position = param2;
          this.size = param3.radius;
          this.bomb = param3;
-         this.damage = param3.damage;
+         this.damage = int(param3.damage.Get());
          this.damageSum = 0;
          this.resourceid = param3.resource;
          this.positionFromISO = PATHING.FromISO(this.position);
@@ -141,7 +141,7 @@ package com.monsters.effects
             ++this.particleCount;
             _loc5_++;
          }
-         this.dpp = param3.damage / this.particleCount;
+         this.dpp = param3.damage.Get() / this.particleCount;
       }
       
       public function RemoveParticle(param1:String) : void
