@@ -1,25 +1,28 @@
 package com.bymr.auth;
 
-import flash.display.Sprite;
-import flash.text.TextField;
-import flash.text.TextFormatAlign;
-import flash.text.TextFieldType;
-import flash.text.TextFieldAutoSize;
-import flash.text.AntiAliasType;
-import flash.events.MouseEvent;
-import flash.events.Event;
-import flash.ui.MouseCursor;
-import flash.ui.Mouse;
-import flash.events.MouseEvent;
-import flash.text.TextFormat;
-import flash.display.Bitmap;
-import flash.display.Loader;
-import flash.net.URLRequest;
-import flash.events.FocusEvent;
-import flash.text.TextFormatAlign;
-import flash.events.IOErrorEvent;
-import flash.utils.Timer;
-import flash.events.TimerEvent;
+import openfl.display.Sprite;
+import openfl.text.TextField;
+import openfl.text.TextFormatAlign;
+import openfl.text.TextFieldType;
+import openfl.text.TextFieldAutoSize;
+import openfl.text.AntiAliasType;
+import openfl.events.MouseEvent;
+import openfl.events.Event;
+import openfl.ui.MouseCursor;
+import openfl.ui.Mouse;
+import openfl.events.MouseEvent;
+import openfl.text.TextFormat;
+import openfl.display.Bitmap;
+import openfl.display.Loader;
+import openfl.net.URLRequest;
+import openfl.events.FocusEvent;
+import openfl.text.TextFormatAlign;
+import openfl.events.IOErrorEvent;
+import openfl.utils.Timer;
+import openfl.events.TimerEvent;
+
+import com.bymr.hx.HaxeLib.GLOBAL;
+import com.bymr.hx.HaxeLib.LOGGER;
 
 // TODO: This file needs a complete refactor. It is currently very messy and hard to read.
 public class AuthForm extends Sprite
