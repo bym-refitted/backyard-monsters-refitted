@@ -186,7 +186,8 @@ package com.monsters.siege.weapons
          var _loc3_:int = 0;
          while(_loc3_ < _loc2_)
          {
-            if(_loc4_ = this._targets[_loc3_]._jarHealth)
+            _loc4_ = this._targets[_loc3_]._jarHealth;
+            if(_loc4_)
             {
                _loc1_ += _loc4_.Get();
             }

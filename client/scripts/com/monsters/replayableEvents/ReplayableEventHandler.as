@@ -334,7 +334,9 @@ package com.monsters.replayableEvents
          var _loc3_:int = 0;
          while(_loc3_ < ReplayableEventLibrary.EVENTS.length)
          {
-            if(_loc5_ = (_loc4_ = ReplayableEventLibrary.EVENTS[_loc3_]).exportData())
+            _loc4_ = ReplayableEventLibrary.EVENTS[_loc3_];
+            _loc5_ = _loc4_.exportData();
+            if(_loc5_)
             {
                _loc1_[_loc4_.name] = _loc5_;
                _loc2_ = true;

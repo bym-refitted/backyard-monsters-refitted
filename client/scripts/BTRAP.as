@@ -3,7 +3,6 @@ package
    import com.monsters.configs.BYMConfig;
    import com.monsters.monsters.MonsterBase;
    import com.monsters.rendering.RasterData;
-   import flash.events.*;
    import flash.geom.Point;
    
    public class BTRAP extends BFOUNDATION

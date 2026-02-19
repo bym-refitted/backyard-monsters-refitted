@@ -452,7 +452,7 @@ package com.auth
         }
 
         // Essentially creates a 'span' element.
-        private function createRichText(text:String, color:String):TextField
+        private function createRichText(text:String, color:uint):TextField
         {
             var textField:TextField = new TextField();
             var textFormat:TextFormat = new TextFormat();

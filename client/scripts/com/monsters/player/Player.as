@@ -279,7 +279,8 @@ package com.monsters.player
       {
          var _loc3_:Vector.<MonsterData> = this.monsterList;
          var _loc4_:MonsterData;
-         if(_loc4_ = this.monsterListByID(param1))
+         _loc4_ = this.monsterListByID(param1);
+         if(_loc4_)
          {
             _loc4_.add(1,param2);
          }
@@ -707,7 +708,8 @@ package com.monsters.player
             _loc10_ = 0;
             while(_loc10_ < _loc6_)
             {
-               if(_loc7_ = _loc3_[_loc10_].numCreepsByHouse(int(param1.substr(1)),!param2))
+               _loc7_ = _loc3_[_loc10_].numCreepsByHouse(int(param1.substr(1)),!param2);
+               if(_loc7_)
                {
                   _loc8_ = _loc3_[_loc10_].m_creatureID;
                   _loc9_ = CREATURES.GetProperty(_loc8_,"hTime");
@@ -820,7 +822,8 @@ package com.monsters.player
             while(_loc11_ < _loc8_)
             {
                _loc9_ = _loc3_[_loc11_].m_creatureID;
-               if(_loc4_ = _loc3_[_loc11_].numCreepsByHouse(_loc10_,param2))
+               _loc4_ = _loc3_[_loc11_].numCreepsByHouse(_loc10_,param2);
+               if(_loc4_)
                {
                   _loc7_ = CREATURES.GetProperty(_loc9_,"health");
                   _loc5_ = _loc4_ - _loc4_ * (_loc3_[_loc11_].curHealth(_loc10_,param2) / (_loc7_ * _loc4_));

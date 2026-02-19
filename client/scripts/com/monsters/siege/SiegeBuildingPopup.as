@@ -429,7 +429,8 @@ package com.monsters.siege
             return;
          }
          var _loc4_:MovieClip;
-         if(_loc4_ = param3[0])
+         _loc4_ = param3[0];
+         if(_loc4_)
          {
             while(_loc4_.numChildren > 0)
             {
@@ -446,7 +447,8 @@ package com.monsters.siege
       {
          var _loc5_:Bitmap = null;
          var _loc4_:MovieClip;
-         if(_loc4_ = param3[0])
+         _loc4_ = param3[0];
+         if(_loc4_)
          {
             while(_loc4_.numChildren > 0)
             {

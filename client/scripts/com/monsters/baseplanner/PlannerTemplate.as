@@ -75,7 +75,8 @@ package com.monsters.baseplanner
          while(_loc3_ < param1.nodes.length)
          {
             _loc6_ = param1.nodes[_loc3_];
-            if(!(_loc7_ = this.getBuildingFromNode(_loc6_)))
+            _loc7_ = this.getBuildingFromNode(_loc6_);
+            if(!_loc7_)
             {
                _loc2_.push(_loc6_);
             }

@@ -34,22 +34,22 @@ package com.gskinner.utils
       
       public static function get seed() : uint
       {
-         return instance.seed;
+         return instance._seed;
       }
       
       public static function set seed(param1:uint) : void
       {
-         instance.seed = param1;
+         instance._seed = param1;
       }
       
       public static function get pointer() : uint
       {
-         return instance.pointer;
+         return instance._pointer;
       }
       
       public static function set pointer(param1:uint) : void
       {
-         instance.pointer = param1;
+         instance._pointer = param1;
       }
       
       public static function random() : Number

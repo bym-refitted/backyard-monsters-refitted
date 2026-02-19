@@ -436,7 +436,8 @@ package
          var _loc5_:Object = null;
          var _loc6_:int = 0;
          var _loc4_:Object;
-         if(_loc4_ = _guardians[param1])
+         _loc4_ = _guardians[param1];
+         if(_loc4_)
          {
             if((_loc5_ = _loc4_.props)[param3])
             {
@@ -744,7 +745,8 @@ package
             else
             {
                _loc12_ = new _loc10_("pen",PointInCage(_loc9_),0,_loc9_,true,this,param1,param2,param3,param4,param5,param7,param8);
-               if(_loc13_ = CREATURES.addGuardian(_loc12_))
+               _loc13_ = CREATURES.addGuardian(_loc12_);
+               if(_loc13_)
                {
                   _loc12_.export();
                   if(param6 != "")
@@ -864,7 +866,7 @@ package
                            if(_loc11_._creatureID == _loc14_ && _loc11_._behaviour != "feed" && _loc11_._behaviour != "juice")
                            {
                               _loc11_.changeModeFeed();
-                              --_loc6_[_loc14_];
+                              _loc6_[_loc14_] = int(_loc6_[_loc14_]) - 1;
                            }
                         }
                      }
@@ -969,7 +971,7 @@ package
                         if(_loc11_._creatureID == _loc14_ && _loc11_._behaviour != "feed" && _loc11_._behaviour != "juice")
                         {
                            _loc11_.changeModeFeed();
-                           --_loc6_[_loc14_];
+                           _loc6_[_loc14_] = int(_loc6_[_loc14_]) - 1;
                         }
                      }
                   }

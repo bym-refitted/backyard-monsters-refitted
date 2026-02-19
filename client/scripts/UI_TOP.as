@@ -1554,7 +1554,8 @@ package
          var _loc3_:String = "";
          var _loc4_:* = "";
          var _loc5_:BaseBuff;
-         if(!(_loc5_ = BaseBuff(BaseBuffHandler.instance.getBuffByName(_loc2_.name))))
+         _loc5_ = BaseBuff(BaseBuffHandler.instance.getBuffByName(_loc2_.name));
+         if(!_loc5_)
          {
             return;
          }

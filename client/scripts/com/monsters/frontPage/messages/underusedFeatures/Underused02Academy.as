@@ -39,7 +39,8 @@ package com.monsters.frontPage.messages.underusedFeatures
          var _loc3_:* = _loc2_ >= GLOBAL._buildingProps[ACADEMY.ID - 1].costs.length;
          for(_loc4_ in _loc1_)
          {
-            if(!(_loc5_ = GLOBAL.player.m_upgrades[_loc4_]))
+            _loc5_ = GLOBAL.player.m_upgrades[_loc4_];
+            if(!_loc5_)
             {
                return null;
             }

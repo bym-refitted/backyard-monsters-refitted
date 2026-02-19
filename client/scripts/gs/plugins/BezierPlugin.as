@@ -1,7 +1,6 @@
 package gs.plugins
 {
    import gs.*;
-   import gs.utils.tween.*;
    
    public class BezierPlugin extends TweenPlugin
    {

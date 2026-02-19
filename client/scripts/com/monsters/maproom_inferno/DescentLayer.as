@@ -9,7 +9,6 @@ package com.monsters.maproom_inferno
    import flash.geom.Point;
    import flash.geom.Rectangle;
    import flash.utils.getTimer;
-   import gs.easing.*;
    
    // We have opted to use the March 2012 pre-patch version of descent bases
    // which introduced the original 13, over the reduced version of 7.
@@ -516,7 +515,8 @@ package com.monsters.maproom_inferno
             _loc10_ = this.mapWidth / this.divisor - 2;
             _loc4_ = 1 + param1.data.baseid.Get() % _loc10_;
             _loc5_ = 1 + param1.data.baseseed.Get() % _loc10_;
-            if(!(_loc11_ = this.getNonConflictingCoords(new Point(_loc4_,_loc5_),new Rectangle(2,2,_loc10_ - 2,_loc10_ - 2),10)))
+            _loc11_ = this.getNonConflictingCoords(new Point(_loc4_,_loc5_),new Rectangle(2,2,_loc10_ - 2,_loc10_ - 2),10);
+            if(!_loc11_)
             {
                return false;
             }

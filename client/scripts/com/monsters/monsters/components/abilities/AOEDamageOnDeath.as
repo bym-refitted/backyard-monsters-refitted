@@ -7,9 +7,9 @@ package com.monsters.monsters.components.abilities
    {
        
       
-      public function AOEDamageOnDeath(param1:uint, param2:int, param3:uint = 4294967295)
+      public function AOEDamageOnDeath(radiusOuter:uint, targetFlags:int, maxTargets:uint = 4294967295)
       {
-         super(param1,param2,param3);
+         super(radiusOuter,targetFlags,maxTargets);
       }
       
       override protected function onRegister() : void

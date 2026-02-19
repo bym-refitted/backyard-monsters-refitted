@@ -178,7 +178,8 @@ package com.monsters.replayableEvents
             _loc3_ = 0;
             while(_loc3_ < this._quotas.length)
             {
-               if(_loc4_ = this._quotas[_loc3_].exportData())
+               _loc4_ = this._quotas[_loc3_].exportData();
+               if(_loc4_)
                {
                   _loc1_.quotas[_loc3_] = _loc4_;
                }

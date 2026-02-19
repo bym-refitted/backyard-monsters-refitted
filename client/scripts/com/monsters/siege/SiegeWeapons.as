@@ -112,7 +112,8 @@ package com.monsters.siege
             weapons[_loc2_] = _loc3_;
             if(param1)
             {
-               if(_loc4_ = param1[_loc2_])
+               _loc4_ = param1[_loc2_];
+               if(_loc4_)
                {
                   _loc3_.importVariables(_loc4_);
                }

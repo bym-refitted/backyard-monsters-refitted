@@ -1,12 +1,8 @@
 package
 {
    import com.flashdynamix.utils.SWFProfiler;
-   import com.monsters.alliances.ALLIANCES;
-   import com.monsters.debug.Console;
-   import com.monsters.enums.EnumYardType;
    import com.monsters.maproom_manager.MapRoomManager;
    import com.monsters.marketing.MarketingRecapture;
-   import com.monsters.radio.RADIO;
    import flash.display.*;
    import flash.events.ErrorEvent;
    import flash.events.Event;

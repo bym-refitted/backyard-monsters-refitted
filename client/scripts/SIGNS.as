@@ -1,6 +1,5 @@
 package
 {
-   import com.cc.utils.SecNum;
    import flash.display.Loader;
    import flash.display.MovieClip;
    import flash.events.Event;
