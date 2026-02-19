@@ -654,7 +654,7 @@ package
                   {
                      LOGGER.Stat([28,_loc8_,_flingerBucket[_loc8_].Get()]);
                   }
-                  _flingValue += CREATURES.GetProperty(_loc8_,"cResource");
+                  _flingValue += CREATURES.GetProperty(_loc8_,"cResource").Get();
                }
             }
          }

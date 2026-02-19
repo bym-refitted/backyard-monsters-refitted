@@ -308,7 +308,7 @@ package
                   {
                      _loc14_ = 1;
                   }
-                  _loc4_ += Math.ceil(CREATURES.GetProperty(_loc2_,"cResource") * _loc14_) * this._juiceList[_loc2_];
+                  _loc4_ += Math.ceil(CREATURES.GetProperty(_loc2_,"cResource").Get() * _loc14_) * this._juiceList[_loc2_];
                }
             }
             if(_loc3_ > 0)

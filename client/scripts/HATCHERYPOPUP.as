@@ -161,35 +161,35 @@ package
             {
                speed = CREATURES.GetProperty(currentCreature,"speed");
             }
-            if(CREATURES.GetProperty(currentCreature,"health") > health)
+            if(CREATURES.GetProperty(currentCreature,"health").Get() > health)
             {
-               health = CREATURES.GetProperty(currentCreature,"health");
+               health = CREATURES.GetProperty(currentCreature,"health").Get();
             }
-            if(CREATURES.GetProperty(currentCreature,"damage") > damage)
+            if(CREATURES.GetProperty(currentCreature,"damage").Get() > damage)
             {
-               damage = CREATURES.GetProperty(currentCreature,"damage");
+               damage = CREATURES.GetProperty(currentCreature,"damage").Get();
             }
-            if(CREATURES.GetProperty(currentCreature,"cTime") > cTime)
+            if(CREATURES.GetProperty(currentCreature,"cTime").Get() > cTime)
             {
-               cTime = CREATURES.GetProperty(currentCreature,"cTime");
+               cTime = CREATURES.GetProperty(currentCreature,"cTime").Get();
             }
-            if(CREATURES.GetProperty(currentCreature,"cResource") > cResource)
+            if(CREATURES.GetProperty(currentCreature,"cResource").Get() > cResource)
             {
-               cResource = CREATURES.GetProperty(currentCreature,"cResource");
+               cResource = CREATURES.GetProperty(currentCreature,"cResource").Get();
             }
             if(CREATURES.GetProperty(currentCreature,"cStorage") > cStorage)
             {
                cStorage = CREATURES.GetProperty(currentCreature,"cStorage");
             }
          }
-         damageShown = CREATURES.GetProperty(creatureStringID,"damage");
+         damageShown = CREATURES.GetProperty(creatureStringID,"damage").Get();
          TweenLite.to(mcMonsterInfo.bSpeed.mcBar,0.4,{
             "width":100 / speed * CREATURES.GetProperty(creatureStringID,"speed"),
             "ease":Circ.easeInOut,
             "delay":0
          });
          TweenLite.to(mcMonsterInfo.bHealth.mcBar,0.4,{
-            "width":100 / health * CREATURES.GetProperty(creatureStringID,"health"),
+            "width":100 / health * CREATURES.GetProperty(creatureStringID,"health").Get(),
             "ease":Circ.easeInOut,
             "delay":0.05
          });
@@ -199,12 +199,12 @@ package
             "delay":0.1
          });
          TweenLite.to(mcMonsterInfo.bTime.mcBar,0.4,{
-            "width":100 / cTime * CREATURES.GetProperty(creatureStringID,"cTime"),
+            "width":100 / cTime * CREATURES.GetProperty(creatureStringID,"cTime").Get(),
             "ease":Circ.easeInOut,
             "delay":0.15
          });
          TweenLite.to(mcMonsterInfo.bResource.mcBar,0.4,{
-            "width":100 / cResource * CREATURES.GetProperty(creatureStringID,"cResource"),
+            "width":100 / cResource * CREATURES.GetProperty(creatureStringID,"cResource").Get(),
             "ease":Circ.easeInOut,
             "delay":0.2
          });
@@ -214,7 +214,7 @@ package
             "delay":0.25
          });
          mcMonsterInfo.tSpeed.htmlText = KEYS.Get("mon_statsspeed",{"v1":CREATURES.GetProperty(creatureStringID,"speed")});
-         mcMonsterInfo.tHealth.htmlText = GLOBAL.FormatNumber(CREATURES.GetProperty(creatureStringID,"health"));
+         mcMonsterInfo.tHealth.htmlText = GLOBAL.FormatNumber(CREATURES.GetProperty(creatureStringID,"health")).Get();
          if(damageShown > 0)
          {
             mcMonsterInfo.tDamage.htmlText = damageShown;
@@ -224,11 +224,11 @@ package
             mcMonsterInfo.tDamage.htmlText = -damageShown + " (" + KEYS.Get("str_heal") + ")";
          }
          mcMonsterInfo.tResource.htmlText = KEYS.Get("mon_att_costvalue",{
-            "v1":GLOBAL.FormatNumber(CREATURES.GetProperty(creatureStringID,"cResource")),
+            "v1":GLOBAL.FormatNumber(CREATURES.GetProperty(creatureStringID,"cResource")).Get(),
             "v2":KEYS.Get(BRESOURCE.GetResourceNameKey(3))
          });
          mcMonsterInfo.tStorage.htmlText = KEYS.Get("mon_att_housingvalue",{"v1":CREATURES.GetProperty(creatureStringID,"cStorage")});
-         mcMonsterInfo.tTime.htmlText = GLOBAL.ToTime(CREATURES.GetProperty(creatureStringID,"cTime"),true);
+         mcMonsterInfo.tTime.htmlText = GLOBAL.ToTime(CREATURES.GetProperty(creatureStringID,"cTime").Get(),true);
          var level:int = 1;
          if(Boolean(GLOBAL.player.m_upgrades[creatureStringID]) && GLOBAL.player.m_upgrades[creatureStringID].level > 1)
          {
@@ -270,7 +270,7 @@ package
             var _loc2_:* = BASE.isInfernoMainYardOrOutpost ? "I" : "";
             _loc2_ += "C" + n;
             var _loc3_:* = 1 + _hatchery._lvl.Get();
-            if(!BASE.Charge(4,CREATURES.GetProperty(_loc2_,"cResource"),true))
+            if(!BASE.Charge(4,CREATURES.GetProperty(_loc2_,"cResource").Get(),true))
             {
                if(BASE.isInfernoMainYardOrOutpost)
                {
@@ -338,8 +338,8 @@ package
       
       private function Charge(param1:String) : void
       {
-         BASE.Charge(4,CREATURES.GetProperty(param1,"cResource"));
-         ResourcePackages.Create(BASE.isInfernoMainYardOrOutpost ? 8 : 4,this._hatchery,CREATURES.GetProperty(param1,"cResource"),true);
+         BASE.Charge(4,CREATURES.GetProperty(param1,"cResource").Get());
+         ResourcePackages.Create(BASE.isInfernoMainYardOrOutpost ? 8 : 4,this._hatchery,CREATURES.GetProperty(param1,"cResource").Get(),true);
          BASE.Save();
       }
       
@@ -361,7 +361,7 @@ package
                   {
                      _loc3_.splice(n - 1,1);
                   }
-                  BASE.Fund(4,CREATURES.GetProperty(_loc2_,"cResource"));
+                  BASE.Fund(4,CREATURES.GetProperty(_loc2_,"cResource").Get());
                   BASE.Save();
                }
                else
@@ -371,7 +371,7 @@ package
             }
             else if(_hatchery._inProduction != "")
             {
-               BASE.Fund(4,CREATURES.GetProperty(_hatchery._inProduction,"cResource"));
+               BASE.Fund(4,CREATURES.GetProperty(_hatchery._inProduction,"cResource").Get());
                _hatchery.StartProduction();
             }
             RenderQueue();
@@ -414,7 +414,7 @@ package
             bFinish.gotoAndStop(2);
             bFinish.Enabled = true;
             ImageCache.GetImageWithCallBack("monsters/" + this._hatchery._inProduction + "-medium.jpg",this.IconLoaded,true,1,"",[this.slot0]);
-            _loc4_ = CREATURES.GetProperty(this._hatchery._inProduction,"cTime");
+            _loc4_ = CREATURES.GetProperty(this._hatchery._inProduction,"cTime").Get();
             if((_loc5_ = 100 / _loc4_ * this._hatchery._countdownProduce.Get()) < 0)
             {
                _loc5_ = 0;

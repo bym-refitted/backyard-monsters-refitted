@@ -80,13 +80,13 @@ package
                      if(GLOBAL.player.m_upgrades[param1].level <= _building._lvl.Get())
                      {
                         _loc6_ = CREATURELOCKER._creatures[param1].trainingCosts[GLOBAL.player.m_upgrades[param1].level - 1];
-                        if(BASE.Charge(3,_loc6_[0],true) > 0)
+                        if(BASE.Charge(3,_loc6_[0].Get(),true) > 0)
                         {
                            if(!param2)
                            {
-                              BASE.Charge(3,_loc6_[0]);
-                              GLOBAL.player.m_upgrades[param1].time = new SecNum(GLOBAL.Timestamp() + _loc6_[1]);
-                              GLOBAL.player.m_upgrades[param1].duration = _loc6_[1];
+                              BASE.Charge(3,_loc6_[0].Get());
+                              GLOBAL.player.m_upgrades[param1].time = new SecNum(GLOBAL.Timestamp() + _loc6_[1].Get());
+                              GLOBAL.player.m_upgrades[param1].duration = _loc6_[1].Get();
                               _building._upgrading = param1;
                               BASE.Save();
                               LOGGER.Stat([11,int(param1.substr(1)),GLOBAL.player.m_upgrades[param1].level + 1]);
@@ -169,7 +169,7 @@ package
                break;
             }
          }
-         BASE.Fund(3,CREATURELOCKER._creatures[param1].trainingCosts[GLOBAL.player.m_upgrades[param1].level - 1][0]);
+         BASE.Fund(3,CREATURELOCKER._creatures[param1].trainingCosts[GLOBAL.player.m_upgrades[param1].level - 1][0].Get());
          BASE.Save();
       }
       
@@ -190,7 +190,7 @@ package
          {
             GLOBAL.player.monsterListByID(monsterID).level = GLOBAL.player.m_upgrades[monsterID].level;
          }
-         stat = CREATURELOCKER._creatures[monsterID].props.cResource;
+         stat = CREATURELOCKER._creatures[monsterID].props.cResource.Get();
          if(Boolean(stat) && GLOBAL.player.m_upgrades[monsterID].level == stat.length - 1)
          {
             LOGGER.KongStat([5,monsterID.substr(1)]);

@@ -48,7 +48,7 @@ package
       public function Prep(param1:String) : void
       {
          ++QUESTS._global.monstersblended;
-         QUESTS._global.monstersblendedgoo += Math.ceil(CREATURES.GetProperty(param1,"cResource") * 0.7);
+         QUESTS._global.monstersblendedgoo += Math.ceil(CREATURES.GetProperty(param1,"cResource").Get() * 0.7);
          ACHIEVEMENTS.Check("monstersblended",QUESTS._global.monstersblended);
          QUESTS.Check();
          if(GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD)
@@ -71,9 +71,9 @@ package
             _loc5_ = 1;
          }
          this._guardian = 0;
-         BASE.Fund(4,Math.ceil(CREATURES.GetProperty(param2,"cResource") * _loc5_ * param3),false,null,param2.substr(0,1) == "I" && !BASE.isInfernoMainYardOrOutpost);
+         BASE.Fund(4,Math.ceil(CREATURES.GetProperty(param2,"cResource").Get() * _loc5_ * param3),false,null,param2.substr(0,1) == "I" && !BASE.isInfernoMainYardOrOutpost);
          this._lastType = _loc4_ ? 8 : 4;
-         ResourcePackages.Create(this._lastType,this,Math.ceil(CREATURES.GetProperty(param2,"cResource") * _loc5_));
+         ResourcePackages.Create(this._lastType,this,Math.ceil(CREATURES.GetProperty(param2,"cResource").Get() * _loc5_));
       }
       
       public function BlendGuardian(param1:int) : void

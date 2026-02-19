@@ -35,7 +35,7 @@ package com.monsters.ui.popups
          {
             _loc4_ = 1;
          }
-         _loc5_ += Math.ceil(CREATURES.GetProperty(this.m_strCreepId,"cResource") * _loc4_) * this.m_nTotalCreeps;
+         _loc5_ += Math.ceil(CREATURES.GetProperty(this.m_strCreepId,"cResource").Get() * _loc4_) * this.m_nTotalCreeps;
          mcFrame.Setup(true,this.cancelCallback);
          btnCancel.Setup(KEYS.Get("mh_cancel_btn"));
          btnCancel.addEventListener(MouseEvent.CLICK,this.cancelCallback,false,0,true);
