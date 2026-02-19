@@ -1,4 +1,4 @@
-package com.auth;
+package com.bymr.auth;
 
 import flash.display.Sprite;
 import flash.text.TextField;
