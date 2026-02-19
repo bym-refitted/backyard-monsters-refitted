@@ -269,8 +269,8 @@ package
                   if(_loc8_ = CREATURES.Spawn(_loc2_,MAP._BUILDINGTOPS,"decoy",_position.add(new Point(_loc4_,_loc5_)),Math.random() * 360))
                   {
                      _loc8_._homeBunker = this;
-                     var dispatechedCount:int = int(_monstersDispatched[_loc2_]);
-                     _monstersDispatched[_loc2_] = ++dispatechedCount;
+                     var dispatchedCount:int = int(_monstersDispatched[_loc2_]);
+                     _monstersDispatched[_loc2_] = ++dispatchedCount;
                      ++_monstersDispatchedTotal;
                   }
                }

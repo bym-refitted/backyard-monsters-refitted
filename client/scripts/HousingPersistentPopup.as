@@ -627,13 +627,7 @@ package
             {
                if(Boolean(GLOBAL.player.monsterListByID(_loc3_)) && GLOBAL.player.monsterListByID(_loc3_).numHousedCreeps - int(this._juiceList[_loc3_]) > 0)
                {
-                  var num:int = int(this._juiceList[_loc3_]);
-                  if(!num)
-                  {
-                     num = 0;
-                  }
-                  ++num;
-                  this._juiceList[_loc3_] = num;
+                  this._juiceList[_loc3_] = int(this._juiceList[_loc3_]) + 1;
                   if(_loc3_ != this.m_strLastSelectedJuiced)
                   {
                      this.m_strLastSelectedJuiced = _loc3_;

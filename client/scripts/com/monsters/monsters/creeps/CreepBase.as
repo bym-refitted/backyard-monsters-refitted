@@ -1284,7 +1284,7 @@ package com.monsters.monsters.creeps
                   {
                      _homeBunker._monstersDispatched[_creatureID] = 0;
                   }
-                  _homeBunker._monstersDispatchedTotal = int(_homeBunker._monstersDispatchedTotal) - 1;
+                  --_homeBunker._monstersDispatchedTotal;
                   if(_homeBunker._monstersDispatchedTotal < 0)
                   {
                      _homeBunker._monstersDispatchedTotal = 0;
@@ -1443,7 +1443,7 @@ package com.monsters.monsters.creeps
                            {
                               _homeBunker._monstersDispatched[_creatureID] = 0;
                            }
-                           _homeBunker._monstersDispatchedTotal = int(_homeBunker._monstersDispatchedTotal) - 1;
+                           --_homeBunker._monstersDispatchedTotal;
                            if(_homeBunker._monstersDispatchedTotal < 0)
                            {
                               _homeBunker._monstersDispatchedTotal = 0;
