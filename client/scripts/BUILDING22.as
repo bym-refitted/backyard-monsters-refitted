@@ -845,7 +845,8 @@ package
                }
                else
                {
-                  _loc1_.m = {(_loc3_.valueOf()):_loc2_};
+                  _loc1_.m = {};
+                  _loc1_.m[_loc3_.valueOf()] = _loc2_;
                }
             }
          }
