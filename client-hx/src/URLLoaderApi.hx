@@ -1,14 +1,14 @@
 package;
 
-import flash.events.Event;
-import flash.events.HTTPStatusEvent;
-import flash.events.IOErrorEvent;
-import flash.events.SecurityErrorEvent;
-import flash.net.URLLoader;
-import flash.net.URLRequest;
-import flash.net.URLRequestHeader;
-import flash.net.URLRequestMethod;
-import flash.net.URLVariables;
+import openfl.events.Event;
+import openfl.events.HTTPStatusEvent;
+import openfl.events.IOErrorEvent;
+import openfl.events.SecurityErrorEvent;
+import openfl.net.URLLoader;
+import openfl.net.URLRequest;
+import openfl.net.URLRequestHeader;
+import openfl.net.URLRequestMethod;
+import openfl.net.URLVariables;
 
 public class URLLoaderApi {
 	public static var _data:String = "";
