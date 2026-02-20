@@ -13,7 +13,7 @@
 			"height": 670
 		},
 		"optimize": true,
-		"strict": false,
+		"strict": true,
 		"warnings": false,
 		"use-network": true,
 		"advanced-telemetry": false,

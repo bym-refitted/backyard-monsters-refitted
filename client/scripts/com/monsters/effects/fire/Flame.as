@@ -268,8 +268,9 @@ package com.monsters.effects.fire
                _loc3_ = _loc3_ > _loc2_ ? _loc3_ : _loc2_;
                this._greyBmd.setPixel(_loc4_.x + 10,_loc4_.y + 30,_loc3_ << 16 | _loc3_ << 8 | _loc3_);
             }
+            _loc4_ = _loc4_.next;
          }
-         while(_loc4_ = _loc4_.next);
+         while(_loc4_);
          
          this._fire.paletteMap(this._greyBmd,this._rect,this._point,this._zeros,this._zeros,this._palette,this._zeros);
          this._coolingBmd1.unlock();

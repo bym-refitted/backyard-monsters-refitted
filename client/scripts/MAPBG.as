@@ -3,7 +3,6 @@ package
    import flash.display.Bitmap;
    import flash.display.BitmapData;
    import flash.display.BitmapDataChannel;
-   import flash.filters.*;
    import flash.geom.*;
    import flash.utils.getTimer;
    

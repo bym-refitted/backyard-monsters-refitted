@@ -130,14 +130,16 @@ package
          {
             if(_loc6_)
             {
-               if(_loc7_ = CREATURES.Spawn(param1,MAP._BUILDINGTOPS,"juice",param2,0))
+               _loc7_ = CREATURES.Spawn(param1,MAP._BUILDINGTOPS,"juice",param2,0);
+               if(_loc7_)
                {
                   _loc7_.changeModeJuice();
                }
             }
             else
             {
-               if(!(_loc8_ = createAndHouseCreep(param1,param2)))
+               _loc8_ = createAndHouseCreep(param1,param2);
+               if(!_loc8_)
                {
                   return false;
                }
@@ -330,7 +332,8 @@ package
          var _loc3_:Array = [];
          var _loc4_:Object = CREATURELOCKER.GetCreatures("above");
          var _loc5_:*;
-         if(_loc5_ = !BASE.isInfernoMainYardOrOutpost)
+         _loc5_ = !BASE.isInfernoMainYardOrOutpost;
+         if(_loc5_)
          {
             for(_loc10_ in _loc4_)
             {
@@ -344,7 +347,8 @@ package
          }
          var _loc6_:Object = CREATURELOCKER.GetCreatures("inferno");
          var _loc7_:Boolean;
-         if(_loc7_ = MAPROOM_DESCENT.DescentPassed)
+         _loc7_ = MAPROOM_DESCENT.DescentPassed;
+         if(_loc7_)
          {
             for(_loc12_ in _loc6_)
             {

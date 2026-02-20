@@ -1,7 +1,5 @@
 package gs
 {
-   import flash.errors.*;
-   import flash.utils.*;
    import gs.utils.tween.*;
    
    public class OverwriteManager
