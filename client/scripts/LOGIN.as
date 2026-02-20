@@ -9,7 +9,6 @@ package
    import com.monsters.radio.RADIO;
    import flash.events.*;
    import flash.external.ExternalInterface;
-   import flash.net.*;
    import flash.system.Capabilities;
 
    public class LOGIN
@@ -106,7 +105,7 @@ package
                   else
                   {
                      // ToDo: Implement if we are running in a browser.
-                     ExternalInterface.call("setItem", "authToken", authToken);
+                     ExternalInterface.call("setItem", "authToken", token);
                   }
                }
             };

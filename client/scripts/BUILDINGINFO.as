@@ -13,8 +13,6 @@ package
    import flash.geom.Point;
    import flash.text.TextField;
    import flash.text.TextFieldAutoSize;
-   import gs.*;
-   import gs.easing.*;
    
    public class BUILDINGINFO
    {
@@ -692,7 +690,8 @@ package
          {
             if(_building._type == 14 && _building._lvl.Get() && _building._lvl.Get() < _building._buildingProps.costs.length)
             {
-               if(!(_loc5_ = BUY.FBCNcpCheckEligibility()))
+               _loc5_ = BUY.FBCNcpCheckEligibility();
+               if(!_loc5_)
                {
                   BUILDINGOPTIONS.Show(_building,"upgrade");
                }

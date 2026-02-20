@@ -2255,7 +2255,8 @@ package
          {
             _loc9_ = param3.x;
             _loc10_ = param3.y;
-            if(_loc11_ = param3.parent)
+            _loc11_ = param3.parent;
+            if(_loc11_)
             {
                while(_loc11_.parent)
                {

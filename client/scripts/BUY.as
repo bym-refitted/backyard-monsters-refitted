@@ -9,7 +9,6 @@ package
    import flash.display.MovieClip;
    import flash.events.*;
    import flash.external.ExternalInterface;
-   import flash.net.*;
    import gs.TweenLite;
    
    public class BUY

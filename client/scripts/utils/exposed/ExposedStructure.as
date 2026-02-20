@@ -192,8 +192,8 @@ package utils.exposed
                }
                else if(propertyClass == Point)
                {
-                  propertyX = propertyNode.property.(@name == "x");
-                  propertyY = propertyNode.property.(@name == "y");
+                  propertyX = Number(propertyNode.property.(@name == "x"));
+                  propertyY = Number(propertyNode.property.(@name == "y"));
                   if(this[propertyName] == null)
                   {
                      this[propertyName] = new Point(propertyX,propertyY);
@@ -308,8 +308,8 @@ package utils.exposed
                            {
                               for each(elementNode in propertyNode.element)
                               {
-                                 elementX = elementNode.property.(@name == "x");
-                                 elementY = elementNode.property.(@name == "y");
+                                 elementX = Number(elementNode.property.(@name == "x"));
+                                 elementY = Number(elementNode.property.(@name == "y"));
                                  if(this[propertyName][elementNode.@index] == null)
                                  {
                                     this[propertyName][elementNode.@index] = new Point(elementX,elementY);

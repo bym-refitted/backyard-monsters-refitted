@@ -1,8 +1,6 @@
 package
 {
    import flash.geom.Point;
-   import gs.*;
-   import gs.easing.*;
    
    public class GIBLETS
    {

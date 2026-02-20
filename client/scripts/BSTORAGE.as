@@ -4,8 +4,6 @@ package
    import com.monsters.enums.EnumYardType;
    import com.monsters.interfaces.ILootable;
    import com.monsters.maproom_manager.MapRoomManager;
-   import flash.events.*;
-   
    public class BSTORAGE extends BFOUNDATION implements ILootable
    {
       

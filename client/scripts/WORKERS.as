@@ -1,10 +1,7 @@
 package
 {
    import flash.display.MovieClip;
-   import flash.events.*;
    import flash.geom.Point;
-   import gs.*;
-   import gs.easing.*;
    
    public class WORKERS
    {

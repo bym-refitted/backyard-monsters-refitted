@@ -1,8 +1,6 @@
 package gs.plugins
 {
-   import flash.display.*;
    import flash.filters.*;
-   import gs.*;
    import gs.utils.tween.TweenInfo;
    
    public class FilterPlugin extends TweenPlugin

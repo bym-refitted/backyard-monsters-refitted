@@ -90,7 +90,7 @@ package
 
       private static function replacePlaceholders(input:String, placeholders:Object):String
       {
-         for (var key in placeholders)
+         for (var key:String in placeholders)
          {
             if (placeholders.hasOwnProperty(key))
             {

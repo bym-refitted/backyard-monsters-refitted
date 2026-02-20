@@ -1,6 +1,5 @@
 package gs.plugins
 {
-   import flash.display.*;
    import flash.media.SoundTransform;
    import gs.*;
    

@@ -238,7 +238,8 @@ package
                   });
                   _bar._tA.htmlText = this._currentSiegeWeapon.name;
                   _bar._tA.y = 4;
-                  if(_loc4_ = this._currentSiegeWeapon.duration)
+                  _loc4_ = this._currentSiegeWeapon.duration;
+                  if(_loc4_)
                   {
                      _bar.timebar.visible = true;
                      _bar.timebar.alpha = 1;

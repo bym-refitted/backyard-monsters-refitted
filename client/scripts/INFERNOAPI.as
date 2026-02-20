@@ -4,10 +4,7 @@ package
    import com.monsters.ai.WMBASE;
    import flash.events.*;
    import flash.external.ExternalInterface;
-   import flash.net.*;
    import flash.utils.getTimer;
-   import gs.*;
-   import gs.easing.*;
    
    public class INFERNOAPI extends EventDispatcher
    {

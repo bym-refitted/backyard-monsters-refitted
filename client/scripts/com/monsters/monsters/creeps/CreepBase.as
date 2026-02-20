@@ -7,7 +7,6 @@ package com.monsters.monsters.creeps
    import com.monsters.maproom_manager.MapRoomManager;
    import com.monsters.monsters.MonsterBase;
    import com.monsters.monsters.components.*;
-   import com.monsters.monsters.components.abilities.*;
    import com.monsters.monsters.components.modifiers.AdditionPropertyModifier;
    import com.monsters.pathing.PATHING;
    import com.monsters.rendering.RasterData;
@@ -16,7 +15,6 @@ package com.monsters.monsters.creeps
    import com.monsters.siege.weapons.SiegeWeapon;
    import flash.display.Bitmap;
    import flash.display.BitmapData;
-   import flash.display.DisplayObject;
    import flash.events.MouseEvent;
    import flash.geom.Point;
    import flash.geom.Rectangle;
@@ -1269,7 +1267,7 @@ package com.monsters.monsters.creeps
                   }
                   if(!MapRoomManager.instance.isInMapRoom3 || !BASE.isMainYardOrInfernoMainYard)
                   {
-                     --_homeBunker._monsters[_creatureID];
+                     _homeBunker._monsters[_creatureID] = int(_homeBunker._monsters[_creatureID]) - 1;
                      if(_homeBunker._monsters[_creatureID] < 0)
                      {
                         _homeBunker._monsters[_creatureID] = 0;
@@ -1279,7 +1277,7 @@ package com.monsters.monsters.creeps
                   {
                      GLOBAL.player.monsterListByID(_creatureID).unlinkCreepFromData(this);
                   }
-                  --_homeBunker._monstersDispatched[_creatureID];
+                  _homeBunker._monstersDispatched[_creatureID] = int(_homeBunker._monstersDispatched[_creatureID]) - 1;
                   if(_homeBunker._monstersDispatched[_creatureID] < 0)
                   {
                      _homeBunker._monstersDispatched[_creatureID] = 0;
@@ -1428,7 +1426,7 @@ package com.monsters.monsters.creeps
                         {
                            if(!MapRoomManager.instance.isInMapRoom3 || !BASE.isMainYardOrInfernoMainYard)
                            {
-                              --_homeBunker._monsters[_creatureID];
+                              _homeBunker._monsters[_creatureID] = int(_homeBunker._monsters[_creatureID]) - 1;
                               if(_homeBunker._monsters[_creatureID] < 0)
                               {
                                  _homeBunker._monsters[_creatureID] = 0;
@@ -1438,7 +1436,7 @@ package com.monsters.monsters.creeps
                            {
                               GLOBAL.player.monsterListByID(_creatureID).unlinkCreepFromData(this);
                            }
-                           --_homeBunker._monstersDispatched[_creatureID];
+                           _homeBunker._monstersDispatched[_creatureID] = int(_homeBunker._monstersDispatched[_creatureID]) - 1;
                            if(_homeBunker._monstersDispatched[_creatureID] < 0)
                            {
                               _homeBunker._monstersDispatched[_creatureID] = 0;
@@ -1545,7 +1543,7 @@ package com.monsters.monsters.creeps
                {
                   if(!MapRoomManager.instance.isInMapRoom3 || !BASE.isMainYardOrInfernoMainYard)
                   {
-                     --_homeBunker._monsters[_creatureID];
+                     _homeBunker._monsters[_creatureID] = int(_homeBunker._monsters[_creatureID]) - 1;
                      if(_homeBunker._monsters[_creatureID] < 0)
                      {
                         _homeBunker._monsters[_creatureID] = 0;
@@ -1555,7 +1553,7 @@ package com.monsters.monsters.creeps
                   {
                      GLOBAL.player.monsterListByID(_creatureID).unlinkCreepFromData(this);
                   }
-                  --_homeBunker._monstersDispatched[_creatureID];
+                  _homeBunker._monstersDispatched[_creatureID] = int(_homeBunker._monstersDispatched[_creatureID]) - 1;
                   if(_homeBunker._monstersDispatched[_creatureID] < 0)
                   {
                      _homeBunker._monstersDispatched[_creatureID] = 0;
@@ -1758,7 +1756,7 @@ package com.monsters.monsters.creeps
                {
                   if(!MapRoomManager.instance.isInMapRoom3 || !BASE.isMainYardOrInfernoMainYard)
                   {
-                     --_homeBunker._monsters[_creatureID];
+                     _homeBunker._monsters[_creatureID] = int(_homeBunker._monsters[_creatureID]) - 1;
                      if(_homeBunker._monsters[_creatureID] < 0)
                      {
                         _homeBunker._monsters[_creatureID] = 0;
@@ -1768,7 +1766,7 @@ package com.monsters.monsters.creeps
                   {
                      GLOBAL.player.monsterListByID(_creatureID).unlinkCreepFromData(this);
                   }
-                  --_homeBunker._monstersDispatched[_creatureID];
+                  _homeBunker._monstersDispatched[_creatureID] = int(_homeBunker._monstersDispatched[_creatureID]) - 1;
                   if(_homeBunker._monstersDispatched[_creatureID] < 0)
                   {
                      _homeBunker._monstersDispatched[_creatureID] = 0;
@@ -1801,7 +1799,7 @@ package com.monsters.monsters.creeps
                {
                   GLOBAL.player.monsterListByID(_creatureID).unlinkCreepFromData(this);
                }
-               --_homeBunker._monstersDispatched[_creatureID];
+               _homeBunker._monstersDispatched[_creatureID] = int(_homeBunker._monstersDispatched[_creatureID]) - 1;
                if(_homeBunker._monstersDispatched[_creatureID] < 0)
                {
                   _homeBunker._monstersDispatched[_creatureID] = 0;
@@ -2317,7 +2315,7 @@ package com.monsters.monsters.creeps
                {
                   if(!MapRoomManager.instance.isInMapRoom3 || !BASE.isMainYardOrInfernoMainYard)
                   {
-                     --_homeBunker._monsters[_creatureID];
+                     _homeBunker._monsters[_creatureID] = int(_homeBunker._monsters[_creatureID]) - 1;
                      if(_homeBunker._monsters[_creatureID] < 0)
                      {
                         _homeBunker._monsters[_creatureID] = 0;
@@ -2328,7 +2326,7 @@ package com.monsters.monsters.creeps
                      setHealth(0);
                      GLOBAL.player.monsterListByID(_creatureID).unlinkCreepFromData(this);
                   }
-                  --_homeBunker._monstersDispatched[_creatureID];
+                  _homeBunker._monstersDispatched[_creatureID] = int(_homeBunker._monstersDispatched[_creatureID]) - 1;
                   if(_homeBunker._monstersDispatched[_creatureID] < 0)
                   {
                      _homeBunker._monstersDispatched[_creatureID] = 0;
