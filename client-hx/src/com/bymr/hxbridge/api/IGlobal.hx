@@ -1,4 +1,4 @@
-package com.bymr.hx.api;
+package com.bymr.hxbridge.api;
 
 /**
  * This interface defines methods that the Haxe Code can call on the GLOBAL class in AS3.
@@ -13,5 +13,5 @@ interface IGlobal {
 	 */
 	function log(message:String):Void;
 
-    function ErrorMessage(message:String = "", errorType:Int = 0):Void;
+	function ErrorMessage(message:String = "", errorType:Int = 0):Void;
 }

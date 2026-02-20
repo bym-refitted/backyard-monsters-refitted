@@ -1,6 +1,6 @@
 package test;
 
-import com.bymr.hx.HaxeLib.LOGGER;
+import com.bymr.hxbridge.HaxeLib.LOGGER;
 import openfl.text.TextField;
 import openfl.display.Sprite;
 

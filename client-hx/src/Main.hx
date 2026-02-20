@@ -1,6 +1,6 @@
 package;
 
-import com.bymr.hx.HaxeLib;
+import com.bymr.hxbridge.HaxeLib;
 import test.TestSprite;
 import openfl.display.Sprite;
 
