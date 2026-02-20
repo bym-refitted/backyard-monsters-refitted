@@ -1,6 +1,6 @@
 package com.bymr.tests.mocks;
 
-import com.bymr.hx.api.ILogger;
+import com.bymr.hxbridge.api.ILogger;
 
 /**
  * This is a mock implementation of the ILogger interface for testing purposes. 
