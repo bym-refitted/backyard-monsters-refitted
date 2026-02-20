@@ -233,7 +233,7 @@ package
       public static var _bCage:CHAMPIONCAGE;
 
       public static var _bTower:BFOUNDATION;
-      
+
       public static var _bTotem:BTOTEM;
 
       public static var _bTowerCount:int;
@@ -447,7 +447,7 @@ package
       private static var fastTickables:Vector.<ITickable>;
 
       public static var initError:String = "";
-      
+
       public static var versionMismatch:Boolean = false;
 
       public function GLOBAL()
@@ -464,7 +464,7 @@ package
        */
       public static function init():void
       {
-         new URLLoaderApi().load(serverUrl + "init", [["apiVersion", apiVersionSuffix]], function(serverData:Object) : void
+         new URLLoaderApi().load(serverUrl + "init", [["apiVersion", apiVersionSuffix]], function(serverData:Object):void
             {
                var stage:Stage = GAME._instance.stage;
 
@@ -514,20 +514,23 @@ package
        * @param event - The TimerEvent that triggers this function.
        * @return void
        */
-      public static function CheckNetworkConnection(event:TimerEvent): void {
+      public static function CheckNetworkConnection(event:TimerEvent):void
+      {
          var url:String = serverUrl + "connection";
          var request:URLRequest = new URLRequest(url);
          request.method = URLRequestMethod.GET;
-         
+
          var loader:URLLoader = new URLLoader();
 
-         var onComplete:Function = function(event:Event):void {
+         var onComplete:Function = function(event:Event):void
+         {
             loader.removeEventListener(Event.COMPLETE, onComplete);
             loader.removeEventListener(IOErrorEvent.IO_ERROR, onError);
             connectionLost = false;
          };
 
-         var onError:Function = function(event:IOErrorEvent):void {
+         var onError:Function = function(event:IOErrorEvent):void
+         {
             loader.removeEventListener(Event.COMPLETE, onComplete);
             loader.removeEventListener(IOErrorEvent.IO_ERROR, onError);
             connectionLost = true;
@@ -537,9 +540,12 @@ package
          loader.addEventListener(Event.COMPLETE, onComplete);
          loader.addEventListener(IOErrorEvent.IO_ERROR, onError);
 
-         try {
+         try
+         {
             loader.load(request);
-         } catch (error:Error) {
+         }
+         catch (error:Error)
+         {
             connectionLost = true;
             POPUPS.NoConnection();
          }
@@ -628,107 +634,107 @@ package
 
       private static function changeNotMaproom3SpecificBuildings():void
       {
-         _buildingProps[8].costs = [{
-            "r1":new SecNum(1000000),
-            "r2":new SecNum(1000000),
-            "r3":new SecNum(1000000),
-            "r4":new SecNum(0),
-            "time":new SecNum(43200),
-            "re":[[14,1,3],[15,1,1]]
-         },{
-            "r1":new SecNum(250000),
-            "r2":new SecNum(250000),
-            "r3":new SecNum(0),
-            "r4":new SecNum(0),
-            "time":new SecNum(21600),
-            "re":[[14,1,3],[15,1,1]]
-         },{
-            "r1":new SecNum(500000),
-            "r2":new SecNum(500000),
-            "r3":new SecNum(0),
-            "r4":new SecNum(0),
-            "time":new SecNum(43200),
-            "re":[[14,1,3],[15,1,1]]
-         }];
-         _buildingProps[8].quantity = [0,0,0,1,1,1,1,1,1,1,1];
-         _buildingProps[14].costs = [{
-            "r1":new SecNum(2160),
-            "r2":new SecNum(2160),
-            "r3":new SecNum(0),
-            "r4":new SecNum(0),
-            "time":new SecNum(300),
-            "re":[[14,1,1]]
-         },{
-            "r1":new SecNum(8640),
-            "r2":new SecNum(8640),
-            "r3":new SecNum(0),
-            "r4":new SecNum(0),
-            "time":new SecNum(4500),
-            "re":[[14,1,3],[8,1,1]]
-         },{
-            "r1":new SecNum(34560),
-            "r2":new SecNum(34560),
-            "r3":new SecNum(0),
-            "r4":new SecNum(0),
-            "time":new SecNum(10800),
-            "re":[[14,1,4],[8,1,1]]
-         },{
-            "r1":new SecNum(138240),
-            "r2":new SecNum(138240),
-            "r3":new SecNum(0),
-            "r4":new SecNum(0),
-            "time":new SecNum(28800),
-            "re":[[14,1,5],[8,1,1]]
-         },{
-            "r1":new SecNum(552960),
-            "r2":new SecNum(552960),
-            "r3":new SecNum(0),
-            "r4":new SecNum(0),
-            "time":new SecNum(72000),
-            "re":[[14,1,6],[8,1,1]]
-         },{
-            "r1":new SecNum(2211840),
-            "r2":new SecNum(2211840),
-            "r3":new SecNum(0),
-            "r4":new SecNum(0),
-            "time":new SecNum(144000),
-            "re":[[14,1,6],[8,1,1]]
-         }];
-         _buildingProps[14].capacity = [200,260,320,380,450,540];
-         _buildingProps[14].hp = [4000,14000,25000,43000,75000,130000];
-         _buildingProps[14].repairTime = [100,200,300,400,500,600];
-         _buildingProps[21].capacity = [380,450,540,660,800];
-         _buildingProps[4].costs = [{
-            "r1":new SecNum(1000),
-            "r2":new SecNum(1000),
-            "r3":new SecNum(500),
-            "r4":new SecNum(0),
-            "time":new SecNum(900),
-            "re":[[14,1,1]]
-         },{
-            "r1":new SecNum(64300),
-            "r2":new SecNum(64300),
-            "r3":new SecNum(32150),
-            "r4":new SecNum(0),
-            "time":new SecNum(10800),
-            "re":[[14,1,3],[11,1,1]]
-         },{
-            "r1":new SecNum(283600),
-            "r2":new SecNum(283600),
-            "r3":new SecNum(141800),
-            "r4":new SecNum(0),
-            "time":new SecNum(32400),
-            "re":[[14,1,4],[11,1,1]]
-         },{
-            "r1":new SecNum(1247840),
-            "r2":new SecNum(1247840),
-            "r3":new SecNum(623920),
-            "r4":new SecNum(0),
-            "time":new SecNum(97200),
-            "re":[[14,1,4],[11,1,1]]
-         }];
-         _buildingProps[4].hp = [4000,8000,16000,28000];
-         _buildingProps[4].capacity = [500,1000,1750,2250,3000,4000];
+         _buildingProps[8].costs = [ {
+                  "r1": new SecNum(1000000),
+                  "r2": new SecNum(1000000),
+                  "r3": new SecNum(1000000),
+                  "r4": new SecNum(0),
+                  "time": new SecNum(43200),
+                  "re": [[14, 1, 3], [15, 1, 1]]
+               }, {
+                  "r1": new SecNum(250000),
+                  "r2": new SecNum(250000),
+                  "r3": new SecNum(0),
+                  "r4": new SecNum(0),
+                  "time": new SecNum(21600),
+                  "re": [[14, 1, 3], [15, 1, 1]]
+               }, {
+                  "r1": new SecNum(500000),
+                  "r2": new SecNum(500000),
+                  "r3": new SecNum(0),
+                  "r4": new SecNum(0),
+                  "time": new SecNum(43200),
+                  "re": [[14, 1, 3], [15, 1, 1]]
+               }];
+         _buildingProps[8].quantity = [0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1];
+         _buildingProps[14].costs = [ {
+                  "r1": new SecNum(2160),
+                  "r2": new SecNum(2160),
+                  "r3": new SecNum(0),
+                  "r4": new SecNum(0),
+                  "time": new SecNum(300),
+                  "re": [[14, 1, 1]]
+               }, {
+                  "r1": new SecNum(8640),
+                  "r2": new SecNum(8640),
+                  "r3": new SecNum(0),
+                  "r4": new SecNum(0),
+                  "time": new SecNum(4500),
+                  "re": [[14, 1, 3], [8, 1, 1]]
+               }, {
+                  "r1": new SecNum(34560),
+                  "r2": new SecNum(34560),
+                  "r3": new SecNum(0),
+                  "r4": new SecNum(0),
+                  "time": new SecNum(10800),
+                  "re": [[14, 1, 4], [8, 1, 1]]
+               }, {
+                  "r1": new SecNum(138240),
+                  "r2": new SecNum(138240),
+                  "r3": new SecNum(0),
+                  "r4": new SecNum(0),
+                  "time": new SecNum(28800),
+                  "re": [[14, 1, 5], [8, 1, 1]]
+               }, {
+                  "r1": new SecNum(552960),
+                  "r2": new SecNum(552960),
+                  "r3": new SecNum(0),
+                  "r4": new SecNum(0),
+                  "time": new SecNum(72000),
+                  "re": [[14, 1, 6], [8, 1, 1]]
+               }, {
+                  "r1": new SecNum(2211840),
+                  "r2": new SecNum(2211840),
+                  "r3": new SecNum(0),
+                  "r4": new SecNum(0),
+                  "time": new SecNum(144000),
+                  "re": [[14, 1, 6], [8, 1, 1]]
+               }];
+         _buildingProps[14].capacity = [200, 260, 320, 380, 450, 540];
+         _buildingProps[14].hp = [4000, 14000, 25000, 43000, 75000, 130000];
+         _buildingProps[14].repairTime = [100, 200, 300, 400, 500, 600];
+         _buildingProps[21].capacity = [380, 450, 540, 660, 800];
+         _buildingProps[4].costs = [ {
+                  "r1": new SecNum(1000),
+                  "r2": new SecNum(1000),
+                  "r3": new SecNum(500),
+                  "r4": new SecNum(0),
+                  "time": new SecNum(900),
+                  "re": [[14, 1, 1]]
+               }, {
+                  "r1": new SecNum(64300),
+                  "r2": new SecNum(64300),
+                  "r3": new SecNum(32150),
+                  "r4": new SecNum(0),
+                  "time": new SecNum(10800),
+                  "re": [[14, 1, 3], [11, 1, 1]]
+               }, {
+                  "r1": new SecNum(283600),
+                  "r2": new SecNum(283600),
+                  "r3": new SecNum(141800),
+                  "r4": new SecNum(0),
+                  "time": new SecNum(32400),
+                  "re": [[14, 1, 4], [11, 1, 1]]
+               }, {
+                  "r1": new SecNum(1247840),
+                  "r2": new SecNum(1247840),
+                  "r3": new SecNum(623920),
+                  "r4": new SecNum(0),
+                  "time": new SecNum(97200),
+                  "re": [[14, 1, 4], [11, 1, 1]]
+               }];
+         _buildingProps[4].hp = [4000, 8000, 16000, 28000];
+         _buildingProps[4].capacity = [500, 1000, 1750, 2250, 3000, 4000];
       }
 
       public static function SetBuildingProps():void
@@ -1396,7 +1402,7 @@ package
                      _ROOT.stage.invalidate();
                   }
                }
-               ++ _frameNumber;
+               ++_frameNumber;
                _loc2_ = int(getTimer());
                if (!MapRoomManager.instance.isOpen)
                {
@@ -1425,7 +1431,7 @@ package
                      _fps = int(1000 / ((_loc2_ - _FPStimestamp) / 40));
                      if (_FPStimestamp > 0)
                      {
-                        _FPSarray.push( {"fps": _fps});
+                        _FPSarray.push({"fps": _fps});
                      }
                      _FPStimestamp = _loc2_;
                   }
@@ -1695,7 +1701,7 @@ package
 
       public static function NextCreepID():int
       {
-         ++ _creepCount;
+         ++_creepCount;
          return _creepCount;
       }
 
@@ -2285,7 +2291,7 @@ package
             }
             _loc4_++;
          }
-         _shinyShrooms.push( {
+         _shinyShrooms.push({
                   "x": param1.x,
                   "y": param1.y
                });
@@ -2566,6 +2572,61 @@ package
       public function ErrorMessage(message:String = "", errorType:int = 0):void
       {
          GLOBAL.ErrorMessage(message, errorType);
+      }
+
+      public function getInitError():String
+      {
+         return GLOBAL.initError;
+      }
+
+      public function getCdnUrl():String
+      {
+         return GLOBAL.cdnUrl;
+      }
+
+      public function getEventDispatcher():EventDispatcher
+      {
+         return GLOBAL.eventDispatcher;
+      }
+
+      public function isVersionMismatch():Boolean
+      {
+         return GLOBAL.versionMismatch;
+      }
+
+      public function getLayerTop():Sprite
+      {
+         return GLOBAL.layerTop;
+      }
+
+      public function isSupportedLangsLoaded():Boolean
+      {
+         return GLOBAL.supportedLangsLoaded;
+      }
+
+      public function getServerUrl():String
+      {
+         return GLOBAL.serverUrl;
+      }
+
+      public function isTextContentLoaded():Boolean
+      {
+         return GLOBAL.textContentLoaded;
+      }
+
+      public function gotoURL(param1:String, param2:URLVariables = null, param3:Boolean = true, param4:Array = null):void
+      {
+         GLOBAL.gotoURL(param1, param2, param3, param4);
+      }
+
+      public function RefreshScreen():void
+      {
+         GLOBAL.RefreshScreen();
+      }
+
+      public function ResizeLayer(layer:Sprite):void
+      {
+         GLOBAL.ResizeLayer(layer);
       }
    }
 }
