@@ -94,6 +94,7 @@ export const baseLoad: KoaController = async (ctx) => {
 
     const responseBody = {
       ...filteredSave,
+      canattack: true, // TODO: Implement actual level validation to determine if the user can attack this base
       flags,
       worldsize: WORLD_SIZE,
       error: 0,
