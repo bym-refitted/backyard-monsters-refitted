@@ -13,7 +13,7 @@ package
    import flash.system.Security;
    import flash.net.SharedObject;
    import com.monsters.external_interface.ExternalInterfaceManager;
-   import com.bymr.hx.HaxeLib;
+   import com.bymr.hxbridge.HaxeLib;
    public class GAME extends Sprite
    {
 
