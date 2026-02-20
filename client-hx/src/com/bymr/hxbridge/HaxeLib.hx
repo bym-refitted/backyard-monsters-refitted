@@ -1,8 +1,8 @@
-package com.bymr.hx;
+package com.bymr.hxbridge;
 
-import com.bymr.hx.api.IKeys;
-import com.bymr.hx.api.ILogger;
-import com.bymr.hx.api.IGlobal;
+import com.bymr.hxbridge.api.IKeys;
+import com.bymr.hxbridge.api.ILogger;
+import com.bymr.hxbridge.api.IGlobal;
 
 class HaxeLib {
 	// Proxy to AS3 GLOBAL class
