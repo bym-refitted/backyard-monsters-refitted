@@ -1,6 +1,6 @@
 package com.bymr.tests.mocks;
 
-import com.bymr.hx.api.IGlobal;
+import com.bymr.hxbridge.api.IGlobal;
 
 /**
  * This is a mock implementation of the IGlobal interface for testing purposes. 

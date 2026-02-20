@@ -1,7 +1,7 @@
 package com.cc.utils;
 
-import com.bymr.hx.HaxeLib.GLOBAL;
-import com.bymr.hx.HaxeLib.LOGGER;
+import com.bymr.hxbridge.HaxeLib.GLOBAL;
+import com.bymr.hxbridge.HaxeLib.LOGGER;
 
 /**
  * SecNum (Secure Number) - A lightweight obfuscated integer storage class with integrity checking.
