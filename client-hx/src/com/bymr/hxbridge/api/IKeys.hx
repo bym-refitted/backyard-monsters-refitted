@@ -1,4 +1,4 @@
-package com.bymr.hx.api;
+package com.bymr.hxbridge.api;
 
 interface IKeys {
 	/**

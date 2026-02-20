@@ -1,4 +1,4 @@
-package com.bymr.hx.api;
+package com.bymr.hxbridge.api;
 
 import openfl.net.URLVariables;
 import openfl.display.Sprite;

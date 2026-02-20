@@ -21,8 +21,8 @@ import openfl.events.IOErrorEvent;
 import openfl.utils.Timer;
 import openfl.events.TimerEvent;
 
-import com.bymr.hx.HaxeLib.GLOBAL;
-import com.bymr.hx.HaxeLib.KEYS;
+import com.bymr.hxbridge.HaxeLib.GLOBAL;
+import com.bymr.hxbridge.HaxeLib.KEYS;
 
 // TODO: This file needs a complete refactor. It is currently very messy and hard to read.
 class AuthForm extends Sprite

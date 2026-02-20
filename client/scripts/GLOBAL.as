@@ -38,7 +38,7 @@ package
    import flash.utils.*;
    import gs.TweenLite;
    import gs.easing.Cubic;
-   import com.bymr.hx.api.IGlobal;
+   import com.bymr.hxbridge.api.IGlobal;
 
    public class GLOBAL implements IGlobal
    {
