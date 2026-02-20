@@ -5,7 +5,7 @@ import { defenders } from "../data/tribes/v3/defenders.js";
 import { kozu } from "../data/tribes/v3/outposts/kozu.js";
 import { legionnaire } from "../data/tribes/v3/outposts/legionnaire.js";
 import { abunakki } from "../data/tribes/v3/outposts/abunakki.js";
-import { dreadnaut } from "../data/tribes/v3/outposts/dreadnaut.js";
+import { dreadnaught } from "../data/tribes/v3/outposts/dreadnaught.js";
 
 /**
  * The seed for cell generation. Changing this will produce a different cell layout.
@@ -102,7 +102,7 @@ export const OUTPOST_SAVES = {
   0: legionnaire,
   1: kozu,
   2: abunakki,
-  3: dreadnaut,
+  3: dreadnaught,
 };
 
 /** Defender levels per parent structure type and level. */
