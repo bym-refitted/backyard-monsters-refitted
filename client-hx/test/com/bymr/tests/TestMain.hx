@@ -2,7 +2,7 @@ package com.bymr.tests;
 
 import com.bymr.tests.mocks.MockGlobal;
 import com.bymr.tests.mocks.MockLogger;
-import com.bymr.hx.HaxeLib;
+import com.bymr.hxbridge.HaxeLib;
 import com.cc.utils.SecNum;
 
 class TestMain {
