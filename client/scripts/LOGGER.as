@@ -2,7 +2,7 @@ package
 {
    import com.monsters.enums.EnumYardType;
    import flash.events.IOErrorEvent;
-   import com.bymr.hx.api.ILogger;
+   import com.bymr.hxbridge.api.ILogger;
    
    public class LOGGER implements ILogger
    {
