@@ -1,5 +1,6 @@
 package;
 
+import com.bymr.auth.AuthForm;
 import com.bymr.hxbridge.HaxeLib;
 import test.TestSprite;
 import openfl.display.Sprite;
@@ -21,5 +22,6 @@ class Main extends Sprite
 		
 		var testSprite:TestSprite;
 		var haxeLib:HaxeLib;
+		var authForm:AuthForm;
 	}
 }
