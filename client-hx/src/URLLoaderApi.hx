@@ -13,7 +13,7 @@ import flash.net.URLVariables;
 public class URLLoaderApi {
 	public static var _data:String = "";
 
-	private var _status:int;
+	private var _status:Int;
 
 	private var _url:String;
 
@@ -39,7 +39,7 @@ public class URLLoaderApi {
 	 * @param {Function} onComplete - a callback function to be called on successful completion of the request.
 	 * @return {void}
 	 */
-	public function invokeApiRequest(url:String, data:Object, method:String = "POST", onComplete:Function = null):void {
+	public function invokeApiRequest(url:String, data:Object, method:String = "POST", onComplete:Function = null):Void {
 		try {
 			var request:URLRequest = new URLRequest(url);
 			var loader:URLLoader = new URLLoader();
@@ -58,14 +58,14 @@ public class URLLoaderApi {
 			loader.load(request);
 
 			// On success, decode JSON and invoke callback
-			loader.addEventListener(Event.COMPLETE, function(e:Event):void {
+			loader.addEventListener(Event.COMPLETE, function(e:Event):Void {
 				var response:Object = JSON.parse(loader.data);
 
 				if (onComplete != null)
 					onComplete(response);
 			});
 
-			loader.addEventListener(IOErrorEvent.IO_ERROR, function(event:IOErrorEvent):void {
+			loader.addEventListener(IOErrorEvent.IO_ERROR, function(event:IOErrorEvent):Void {
 				errMessage = "IOError error event occurred while making the request"
 				GLOBAL.ErrorMessage(errMessage, GLOBAL.ERROR_ORANGE_BOX_ONLY);
 			});
@@ -89,11 +89,11 @@ public class URLLoaderApi {
 	 * @param {Function} onFail - a callback function to be called on failure of the request.
 	 * @return {void}
 	 */
-	public function load(baseUrl:String, keyValuePairs:Array = null, onComplete:Function = null, onFail:Function = null):void {
+	public function load(baseUrl:String, keyValuePairs:Array = null, onComplete:Function = null, onFail:Function = null):Void {
 		var urlBuilder:URLRequest;
 		var urlVariables:URLVariables;
 		var authHeader:URLRequestHeader;
-		var currentIndex:int = 0;
+		var currentIndex:Int = 0;
 		var currentPair:Array = null;
 		var token: * = LOGIN.token;
 		this._onComplete = onComplete;
@@ -128,7 +128,7 @@ public class URLLoaderApi {
 		});
 	}
 
-	private function setStatus(param1:HTTPStatusEvent):void {
+	private function setStatus(param1:HTTPStatusEvent):Void {
 		this._status = param1.status;
 		switch (this._status) {
 			case 404:
@@ -192,7 +192,7 @@ public class URLLoaderApi {
 	 *
 	 * @param {IOErrorEvent} param1 - The IO error event triggered by the URLLoader.
 	 */
-	private function loadError(param1:IOErrorEvent):void {
+	private function loadError(param1:IOErrorEvent):Void {
 		LOGGER.Log("err", "URLLoader Load Error " + this._url);
 		var errorObj:Object = null;
 		if (this._req && this._req.data) {
@@ -207,14 +207,14 @@ public class URLLoaderApi {
 		}
 	}
 
-	public function Clear():void {
+	public function Clear():Void {
 		this._req.removeEventListener(Event.COMPLETE, this.fireComplete);
 		this._req.removeEventListener(IOErrorEvent.IO_ERROR, this.loadError);
 		this._req.removeEventListener(HTTPStatusEvent.HTTP_STATUS, this.setStatus);
 		this._req = null;
 	}
 
-	private function fireComplete(param1:Event):void {
+	private function fireComplete(param1:Event):Void {
 		if (this._onComplete == = null) {
 			return;
 		}
