@@ -38,8 +38,9 @@ package
    import flash.utils.*;
    import gs.TweenLite;
    import gs.easing.Cubic;
+   import com.bymr.hxbridge.api.IGlobal;
 
-   public class GLOBAL
+   public class GLOBAL implements IGlobal
    {
       public static var serverUrl:String = CONFIG::SERVER_URL;
 
@@ -1656,16 +1657,17 @@ package
          };
       }
 
-      public static function Message(param1:String, param2:String = null, param3:Function = null, param4:Array = null, param5:String = null, param6:Function = null, param7:Array = null, param8:int = 1, param9:Boolean = true):MESSAGE
+      public static function Message(messageHtml:String, labelActionA:String = null, callbackActionA:Function = null, argsActionA:Array = null, labelActionB:String = null, callbackActionB:Function = null, argsActionB:Array = null, unused:int = 1, closable:Boolean = true):MESSAGE
       {
          var _loc10_:MESSAGE;
-         return (_loc10_ = new MESSAGE()).Show(param1, param2, param3, param4, param5, param6, param7, param8, param9);
+         return (_loc10_ = new MESSAGE()).Show(messageHtml, labelActionA, callbackActionA, argsActionA, labelActionB, callbackActionB, argsActionB, unused, closable);
       }
 
-      public static function Confirm(param1:String, param2:String = null, param3:Function = null, param4:Array = null, param5:int = 1):void
+      // Apparently unused?
+      public static function Confirm(messageHtml:String, labelActionA:String = null, callbackActionA:Function = null, argsActionA:Array = null, param5:int = 1):void
       {
          var _loc6_:MESSAGE;
-         (_loc6_ = new MESSAGE()).Show(param1, param2, param3, param4, param5.toString());
+         (_loc6_ = new MESSAGE()).Show(messageHtml, labelActionA, callbackActionA, argsActionA, param5.toString());
       }
 
       public static function FormatNumber(param1:Number):String
@@ -2553,6 +2555,20 @@ package
       public static function get StageHeight():int
       {
          return _ROOT.stage.stageHeight;
+      }
+
+      // ==============================================
+      // Start of IGlobal implementation
+      // ==============================================
+
+      public function log(message:String):void
+      {
+         trace(message);
+      }
+
+      public function ErrorMessage(message:String = "", errorType:int = 0):void
+      {
+         GLOBAL.ErrorMessage(message, errorType);
       }
    }
 }
