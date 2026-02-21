@@ -24,12 +24,14 @@ interface BuildingData {
  * Trap buildings (types 24 and 117) are specifically excluded from these validation checks
  * as they can be legitimately removed during gameplay.
  *
- * @param {Record<string, any>} buildingData - The new building data submitted by the client
+ * @param {Record<string, any> | null} buildingData - The new building data submitted by the client
  * @param {Save} save - The save object of the base to be validated
  * @returns {Promise<void>} A promise that resolves when validation is are complete
  * @throws {Error} Throws a permission error if validation fails
  */
-export const buildingDataHandler = async (buildingData: Record<string, any>, save: Save) => {
+export const buildingDataHandler = (buildingData: Record<string, any> | null, save: Save) => {
+  if (!buildingData) return;
+
   const savedBuildingData = save.buildingdata || {};
   const buildingKeys = ["x", "y", "t", "l"];
 
