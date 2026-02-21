@@ -64,18 +64,17 @@ export const baseModeAttack = async (user: User, baseid: string, mapversion: Map
     const cellX = parseInt(baseid.slice(-6, -3));
     const cellY = parseInt(baseid.slice(-3));
 
+    const world = await postgres.em.findOne(World, { uuid: userSave.worldid });
+
+    if (!world) throw new Error("No world found.");
+
     if (mapversion === MapRoomVersion.V3) {
-      cell = new WorldMapCell(undefined, cellX, cellY, 0);
-      cell.world_id = userSave.worldid;
+      cell = new WorldMapCell(world, cellX, cellY, 0);
       cell.uid = save.saveuserid;
       cell.base_type = save.wmid;
       cell.map_version = MapRoomVersion.V3;
       cell.baseid = baseid;
     } else {
-      const world = await postgres.em.findOne(World, { uuid: userSave.worldid });
-
-      if (!world) throw new Error("No world found.");
-
       const noise = generateNoise(world.uuid);
       const terrainHeight = getTerrainHeight(noise, cellX, cellY);
 
@@ -102,5 +101,5 @@ export const baseModeAttack = async (user: User, baseid: string, mapversion: Map
     await createAttackLog(user, defender, save);
   }
 
-  return await validateRange(user, save, { baseid });
+  return await validateRange(user, save, mapversion, { baseid });
 };
