@@ -4,7 +4,7 @@ import { postgres } from "../../../server.js";
 import { WorldMapCell } from "../../../models/worldmapcell.model.js";
 import { Status } from "../../../enums/StatusCodes.js";
 import { BaseType } from "../../../enums/Base.js";
-import { MapRoomCell } from "../../../enums/MapRoom.js";
+import { MapRoomCell, MapRoomVersion } from "../../../enums/MapRoom.js";
 import {
   Operation,
   updateResources,
@@ -52,7 +52,9 @@ export const takeoverCell: KoaController = async (ctx) => {
     if (cellSave.damage < 90)
       throw new Error("Cell is not damaged enough to be taken over.");
 
-    await validateRange(currentUser, userSave, { attackCell: cell });
+    const mapversion: MapRoomVersion = cell.map_version;
+
+    await validateRange(currentUser, userSave, mapversion, { attackCell: cell });
 
     if (shiny) userSave.credits = userSave.credits - shiny;
     if (resources)

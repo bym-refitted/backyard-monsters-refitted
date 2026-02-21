@@ -4,7 +4,42 @@ import { User } from "../../../models/user.model.js";
 import { WorldMapCell } from "../../../models/worldmapcell.model.js";
 import { postgres } from "../../../server.js";
 import { logReport } from "../../base/reportManager.js";
-import { MapRoom2 } from "../../../enums/MapRoom.js";
+import { MapRoom2, MapRoomVersion } from "../../../enums/MapRoom.js";
+
+type RangeOptions = { baseid?: string; attackCell?: Loaded<WorldMapCell, never> };
+
+/**
+ * Validates if the target is within the attack range of the user's base.
+ * Delegates to the appropriate version-specific handler based on map version.
+ *
+ * @param {User} user - The user object containing the save data
+ * @param {Save} save - The save object containing the user's base and outposts
+ * @param {MapRoomVersion} mapversion - The map room version
+ * @param {RangeOptions} options - The options object
+ * @returns {Promise<Save>} - The save object if the attack is valid
+ */
+export const validateRange = async (user: User, save: Save, mapversion: MapRoomVersion, options: RangeOptions) => {
+  switch (mapversion) {
+    case MapRoomVersion.V2:
+      return validateRangeV2(user, save, options);
+
+    case MapRoomVersion.V3:
+      return validateRangeV3(save);
+
+    default:
+      throw new Error(`validateRange: unhandled map version ${mapversion}`);
+  }
+};
+
+/**
+ * MR3 range validation.
+ * Range is checked client-side before the attack request is sent.
+ * TODO: Implement server-side validation for MR3 cost ranges. Right now we just return the save.
+ *
+ * @param {Save} save - The save being attacked
+ * @returns {Save}
+ */
+const validateRangeV3 = (save: Save) => save;
 
 /**
  * Validates if the target is within the attack range of the user's main base or any of their outposts.
@@ -18,18 +53,12 @@ import { MapRoom2 } from "../../../enums/MapRoom.js";
  *
  * @param {User} user - The user object containing the save data
  * @param {Save} save - The save object containing the user's base and outposts
- * @param {Object} options - The options object
- * @param {string} [options.baseid] - The baseid of the target
- * @param {Loaded<WorldMapCell, never>} [options.attackCell] - The cell under attack
+ * @param {RangeOptions} options - The options object
  *
  * @throws {Error} - attack invalidation error
  * @returns {Promise<Save>} - The save object if the attack is valid
  */
-export const validateRange = async (
-  user: User,
-  save: Save,
-  options: { baseid?: string; attackCell?: Loaded<WorldMapCell, never> }
-) => {
+const validateRangeV2 = async (user: User, save: Save, options: RangeOptions) => {
   const { homebase, outposts, flinger } = user.save;
   let attackCell = options?.attackCell;
 
