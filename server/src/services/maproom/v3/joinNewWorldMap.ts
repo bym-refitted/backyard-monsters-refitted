@@ -8,6 +8,7 @@ import { postgres } from "../../../server.js";
 import { findFreeSector } from "./findFreeSector.js";
 import { EnumYardType } from "../../../enums/EnumYardType.js";
 import { logger } from "../../../utils/logger.js";
+import { leaveWorld } from "../v2/leaveWorld.js";
 
 /**
  * Assigns a user to a Map Room 3 world by either joining an existing one with available space
@@ -52,6 +53,8 @@ export const joinNewWorldMap = async (
   }
 
   if (save.worldid === world.uuid) return;
+
+  await leaveWorld(user, save);
 
   world.playerCount += 1;
   save.usemap = 1;
