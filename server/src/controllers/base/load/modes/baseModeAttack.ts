@@ -13,6 +13,7 @@ import {
   generateNoise,
   getTerrainHeight,
 } from "../../../../services/maproom/v2/generateMap.js";
+import { getGeneratedCells, cellKey } from "../../../../services/maproom/v3/generateCells.js";
 import { createAttackLog } from "../../../../services/base/createAttackLog.js";
 
 export interface AttackDetails {
@@ -69,9 +70,11 @@ export const baseModeAttack = async (user: User, baseid: string, mapversion: Map
     if (!world) throw new Error("No world found.");
 
     if (mapversion === MapRoomVersion.V3) {
-      cell = new WorldMapCell(world, cellX, cellY, 0);
+      const genCell = getGeneratedCells().get(cellKey(cellX, cellY));
+      
+      cell = new WorldMapCell(world, cellX, cellY, genCell?.altitude ?? 0);
       cell.uid = save.saveuserid;
-      cell.base_type = save.wmid;
+      cell.base_type = genCell?.type ?? save.wmid;
       cell.map_version = MapRoomVersion.V3;
       cell.baseid = baseid;
     } else {
