@@ -8,10 +8,11 @@ import { tribeSaveV3 } from "./v3/tribeSaveV3.js";
  *
  * @param {string} baseid - The base ID
  * @param {MapRoomVersion} mapversion - The map room version from the client
- * @returns {Save | null} A new Save entity for the wild monster, or null
+ * @param {string} worldid - The world UUID (required for MR3 player yard defender lookups)
+ * @returns {Promise<Save | null>} A new Save entity for the wild monster, or null
  */
-export const tribeSaveHandler = (baseid: string, mapversion: MapRoomVersion) => {
-  if (mapversion === MapRoomVersion.V3) return tribeSaveV3(baseid);
+export const tribeSaveHandler = (baseid: string, mapversion: MapRoomVersion, worldid: string) => {
+  if (mapversion === MapRoomVersion.V3) return tribeSaveV3(baseid, worldid);
 
   return tribeSaveV2(baseid);
 };

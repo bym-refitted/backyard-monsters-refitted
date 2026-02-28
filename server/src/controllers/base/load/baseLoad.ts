@@ -35,6 +35,7 @@ export const baseLoad: KoaController = async (ctx) => {
   await postgres.em.populate(user, ["save", "infernosave"]);
 
   try {
+    const { worldid } = user.save;
     const { baseid, type, mapversion, attackData } = BaseLoadSchema.parse(ctx.request.body);
 
     let baseSave: Save = null;
@@ -46,7 +47,7 @@ export const baseLoad: KoaController = async (ctx) => {
 
       case BaseMode.VIEW:
       case BaseMode.IVIEW:
-        baseSave = await baseModeView(baseid, mapversion);
+        baseSave = await baseModeView(baseid, mapversion, worldid);
         break;
 
       case BaseMode.ATTACK:

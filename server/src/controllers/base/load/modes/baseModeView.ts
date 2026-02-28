@@ -16,19 +16,20 @@ const WILD_MONSTER_EXPIRATION = 43200;
  *
  * @param {string} baseid - The base identifier for the requested save.
  * @param {MapRoomVersion} mapversion - The version of the map to determine the save handling logic.
+ * @param {string} worldid - The world UUID, passed through for MR3 player yard defender lookups.
  * @returns {Promise<Loaded<Save, never>>} The save object or null if no valid save is found.
  */
-export const baseModeView = async (baseid: string, mapversion: MapRoomVersion) => {
+export const baseModeView = async (baseid: string, mapversion: MapRoomVersion, worldid: string) => {
   let save = await postgres.em.findOne(Save, { baseid });
 
-  if (!save) save = tribeSaveHandler(baseid, mapversion);
+  if (!save) save = await tribeSaveHandler(baseid, mapversion, worldid);
 
   if (save && save.wmid !== 0) {
     const currentTimestamp = getCurrentDateTime();
 
     if (currentTimestamp - save.savetime > WILD_MONSTER_EXPIRATION) {
       await postgres.em.removeAndFlush(save);
-      save = tribeSaveHandler(baseid, mapversion);
+      save = await tribeSaveHandler(baseid, mapversion, worldid);
     }
   }
 
