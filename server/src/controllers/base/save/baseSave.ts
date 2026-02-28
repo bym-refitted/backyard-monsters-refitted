@@ -1,8 +1,8 @@
+import type { KoaController } from "../../../utils/KoaController.js";
 import { type FieldData, Save } from "../../../models/save.model.js";
 import { User } from "../../../models/user.model.js";
 import { postgres } from "../../../server.js";
 import { FilterFrontendKeys } from "../../../utils/FrontendKey.js";
-import type { KoaController } from "../../../utils/KoaController.js";
 import { getCurrentDateTime } from "../../../utils/getCurrentDateTime.js";
 import { logger } from "../../../utils/logger.js";
 import { Status } from "../../../enums/StatusCodes.js";
@@ -20,6 +20,9 @@ import { validateSave } from "../../../scripts/anticheat/anticheat.js";
 import { updateResources } from "../../../services/base/updateResources.js";
 import { buildingDataHandler } from "./handlers/buildingDataHandler.js";
 import { takeoverCellMR3, type TakeoverData } from "../../../services/maproom/v3/takeoverCellMR3.js";
+import { isMR3Structure } from "../../../services/maproom/v3/utils/isMR3Structure.js";
+import { WorldMapCell } from "../../../models/worldmapcell.model.js";
+import { MapRoomVersion } from "../../../enums/MapRoom.js";
 
 /**
  * Controller responsible for saving the user's base data.
@@ -137,9 +140,20 @@ export const baseSave: KoaController = async (ctx) => {
       }
       await postgres.em.persistAndFlush(userSave);
 
-      // If the attack is over and the base is a tribe base with 90% or more damage, trigger MapRoom3 takeover logic
+      // MR3 Takeover Logic:
+      // If the attack is over and the base is a tribe base with 90% or more damage,
+      // trigger takeover logic for MR3 structures or destroy the outpost.
       if (saveData.over && baseSave.damage >= 90 && baseSave.type === BaseType.TRIBE) {
-        takeoverData = await takeoverCellMR3(baseSave, user, userSave);
+        if (isMR3Structure(baseSave.wmid)) {
+          takeoverData = await takeoverCellMR3(baseSave, user, userSave);
+        } else {
+          const cell = await postgres.em.findOne(WorldMapCell, {
+            baseid: baseSave.baseid,
+            map_version: MapRoomVersion.V3,
+          });
+          
+          if (cell && !cell.destroyed_at) cell.destroyed_at = new Date();
+        }
       }
     }
 

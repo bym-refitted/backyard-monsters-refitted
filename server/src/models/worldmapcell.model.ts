@@ -57,6 +57,9 @@ export class WorldMapCell {
   @Property()
   terrainHeight!: number;
 
+  @Property({ nullable: true })
+  destroyed_at?: Date | null;
+
   @ManyToOne(() => World)
   world!: World;
 
