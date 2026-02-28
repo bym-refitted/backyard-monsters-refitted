@@ -105,11 +105,7 @@ export const getMapRoomCells: KoaController = async (ctx) => {
       { populate: ["save"] },
     );
 
-    const requestedSet = new Set(coordsList.map(cell => `${cell.x},${cell.y}`));
-
-    const dbCellsByCoord = mapByCoordinates(
-      dbCells.filter((cell) => requestedSet.has(`${cell.x},${cell.y}`)),
-    );
+    const dbCellsByCoord = mapByCoordinates(dbCells);
 
     // =========================================================================
     // PHASE 3: Process player-owned structures - add defender coords + levels

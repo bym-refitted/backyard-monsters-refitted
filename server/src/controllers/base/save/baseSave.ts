@@ -19,6 +19,7 @@ import { monsterUpdateHandler } from "./handlers/monsterUpdateHandler.js";
 import { validateSave } from "../../../scripts/anticheat/anticheat.js";
 import { updateResources } from "../../../services/base/updateResources.js";
 import { buildingDataHandler } from "./handlers/buildingDataHandler.js";
+import { takeoverCellMR3, type TakeoverData } from "../../../services/maproom/v3/takeoverCellMR3.js";
 
 /**
  * Controller responsible for saving the user's base data.
@@ -116,6 +117,8 @@ export const baseSave: KoaController = async (ctx) => {
       if (isOutpostOwner) updateOutposts(userSave, baseSave, key);
     }
 
+    let takeoverData: TakeoverData | null = null;
+
     if (isAttack) {
       for (const key of Object.keys(saveData)) {
         const value = saveData[key];
@@ -133,11 +136,15 @@ export const baseSave: KoaController = async (ctx) => {
         }
       }
       await postgres.em.persistAndFlush(userSave);
+
+      // If the attack is over and the base is a tribe base with 90% or more damage, trigger MapRoom3 takeover logic
+      if (saveData.over && baseSave.damage >= 90 && baseSave.type === BaseType.TRIBE) {
+        takeoverData = await takeoverCellMR3(baseSave, user, userSave);
+      }
     }
 
     // Set the attackid to 0 if the attack is over
     baseSave.attackid = saveData.over ? 0 : baseSave.attackid;
-    //if (over) save.protected = isNaN(destroyed) ? 0 : destroyed;
 
     baseSave.id = baseSave.savetime;
     baseSave.savetime = getCurrentDateTime();
@@ -150,6 +157,7 @@ export const baseSave: KoaController = async (ctx) => {
       error: 0,
       basesaveid: baseSave.basesaveid,
       ...filteredSave,
+      ...(takeoverData && { takeover: takeoverData }),
       champion: JSON.stringify(filteredSave.champion),
     };
 

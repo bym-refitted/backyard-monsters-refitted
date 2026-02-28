@@ -52,7 +52,7 @@ export const baseLoad: KoaController = async (ctx) => {
       case BaseMode.ATTACK:
         if (!ctx.meetsDiscordAgeCheck) throw discordAgeErr();
 
-        await validateAttack(user, attackData);
+        await validateAttack(user, attackData, mapversion);
         baseSave = await baseModeAttack(user, baseid, mapversion);
         break;
 

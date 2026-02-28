@@ -5,14 +5,18 @@ import type { CellData } from "../../../../types/CellData.js";
 import { EnumBaseRelationship } from "../../../../enums/EnumBaseRelationship.js";
 import { calculateBaseLevel } from "../../../../services/base/calculateBaseLevel.js";
 import { logger } from "../../../../utils/logger.js";
+import { STRUCTURE_RANGE } from "../../../../config/MapRoom3Config.js";
 
 /**
- * Formats a player cell for Map Room 3
+ * Handles the player's cell data on the world map for Map Room v3.
  *
- * @param ctx - Koa context with authenticated user
- * @param cell - WorldMapCell with player data
- * @param cellOwners - Pre-loaded map of user IDs to User entities
- * @returns Formatted player cell data
+ * Retrieves the current player's cell details if the cell belongs to them.
+ * Otherwise, retrieves the cell details of other players on the world map.
+ * Data for a player cell comes from both the world map cell and the player's save data.
+ *
+ * @param {Context} ctx - The Koa context object.
+ * @param {WorldMapCell} cell - The world map cell object.
+ * @param {Map<number, User>} cellOwners - Pre-loaded map of user IDs to User entities.
  */
 export const playerCell = (ctx: Context, cell: WorldMapCell, cellOwners: Map<number, User>): CellData => {
   const currentUser: User = ctx.authUser;
@@ -24,9 +28,12 @@ export const playerCell = (ctx: Context, cell: WorldMapCell, cellOwners: Map<num
 
   const points = cellOwner.save.points;
   const basevalue = cellOwner.save.basevalue;
-  const baseLevel = calculateBaseLevel(points, basevalue);
 
-  // TODO: sort out the rest of the properties, refer to userCell.ts
+  const playerLevel = calculateBaseLevel(points, basevalue);
+  const structureLevel: number = cell.save?.level;
+
+  const structureRange = STRUCTURE_RANGE[cell.base_type];
+
   return {
     uid: cellOwner.userid,
     b: cell.base_type,
@@ -36,10 +43,10 @@ export const playerCell = (ctx: Context, cell: WorldMapCell, cellOwners: Map<num
     x: cell.x,
     y: cell.y,
     i: cell.terrainHeight,
-    l: baseLevel,
+    l: structureRange ? (structureLevel ?? playerLevel) : playerLevel,
     fbid: "",
     pl: 0,
-    r: 10,
+    r: structureRange?.[structureLevel] ?? 0,
     dm: 0,
     lo: 0,
     fr: 0,
