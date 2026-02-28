@@ -303,6 +303,14 @@ package
       override public function Setup(param1:Object) : void
       {
          super.Setup(param1);
+         if(MapRoomManager.instance.isInMapRoom3)
+         {
+            _lvl.Set(3);
+         }
+         else if(MapRoomManager.instance.isInMapRoom2)
+         {
+            _lvl.Set(2);
+         }
          if(_lvl.Get() > 1)
          {
             ACHIEVEMENTS.Check("map2",1);
