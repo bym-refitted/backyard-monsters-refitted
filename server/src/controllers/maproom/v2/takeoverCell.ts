@@ -64,7 +64,7 @@ export const takeoverCell: KoaController = async (ctx) => {
         Operation.SUBTRACT
       );
 
-    // Find the previous owner
+    // Clean up previous owner's save if the cell was player-owned
     const previousOwner = await postgres.em.findOne(
       User,
       { userid: cellSave.userid },
@@ -74,17 +74,11 @@ export const takeoverCell: KoaController = async (ctx) => {
     if (previousOwner?.save) {
       const { outposts } = previousOwner.save;
 
-      // Filter out the outpost that matches the specified cell
       previousOwner.save.outposts = outposts.filter(
         ([x, y, id]) => !(x === cell.x && y === cell.y && id === baseid)
       );
 
-      // Remove the `buildingresources` entry for this outpost
-      const buildingresources = previousOwner.save.buildingresources;
-
-      if (buildingresources && buildingresources[`b${baseid}`]) {
-        delete buildingresources[`b${baseid}`];
-      }
+      delete previousOwner.save.buildingresources[`b${baseid}`];
 
       await postgres.em.persistAndFlush(previousOwner);
     }

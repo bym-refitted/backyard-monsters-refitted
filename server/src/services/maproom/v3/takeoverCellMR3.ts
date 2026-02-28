@@ -79,6 +79,25 @@ export const takeoverCellMR3 = async (baseSave: Save, user: User, userSave: Save
   baseSave.createtime = getCurrentDateTime();
   baseSave.takeoverDate = new Date();
 
+  // Clean up previous owner's save if the cell was player-owned
+  const previousOwner = await postgres.em.findOne(
+    User,
+    { userid: baseSave.saveuserid },
+    { populate: ["save"] },
+  );
+
+  if (previousOwner?.save) {
+    const { outposts } = previousOwner.save;
+    
+    previousOwner.save.outposts = outposts.filter(
+      ([x, y, id]) => !(x === cell.x && y === cell.y && id === baseid),
+    );
+
+    delete previousOwner.save.buildingresources[`b${baseid}`];
+
+    await postgres.em.persistAndFlush(previousOwner);
+  }
+
   // Update world map cell
   cell.uid = user.userid;
   cell.base_type = wmid;
