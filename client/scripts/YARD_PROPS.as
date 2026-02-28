@@ -1129,8 +1129,15 @@ package
             "time":new SecNum(900),
             "re":[[14,1,1]]
          },{
-            "r1":new SecNum(1000000),
-            "r2":new SecNum(1000000),
+            "r1":new SecNum(0),
+            "r2":new SecNum(0),
+            "r3":new SecNum(0),
+            "r4":new SecNum(0),
+            "time":new SecNum(345600),
+            "re":[[14,1,6]]
+         },{
+            "r1":new SecNum(0),
+            "r2":new SecNum(0),
             "r3":new SecNum(0),
             "r4":new SecNum(0),
             "time":new SecNum(345600),
@@ -1159,8 +1166,8 @@ package
             "1":{"img":"11.png"}
          },
          "quantity":[0,1,1,1,1,1,1,1,1,1,1],
-         "hp":[5000,10000],
-         "repairTime":[300,600]
+         "hp":[5000,10000,10000],
+         "repairTime":[300,600,600]
       },{
          "id":12,
          "group":2,
