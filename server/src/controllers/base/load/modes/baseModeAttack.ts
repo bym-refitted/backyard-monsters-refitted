@@ -37,7 +37,7 @@ export const baseModeAttack = async (user: User, baseid: string, mapversion: Map
   const userSave: Save = user.save;
   let save = await postgres.em.findOne(Save, { baseid });
 
-  if (!save) save = tribeSaveHandler(baseid, mapversion);
+  if (!save) save = await tribeSaveHandler(baseid, mapversion, userSave.worldid);
 
   if (save.attacks.length > 3) {
     save.attacks = save.attacks.slice(-2);
