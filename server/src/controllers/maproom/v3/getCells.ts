@@ -16,6 +16,7 @@ import type { KoaController } from "../../../utils/KoaController.js";
 import type { CellData } from "../../../types/CellData.js";
 import { getCellBounds, type Coord } from "../../../services/maproom/v3/utils/getCellBounds.js";
 import { getDefenderLevels } from "../../../services/maproom/v3/getDefenderLevels.js";
+import { TRIBE_REGEN_TIME } from "../../../config/MapRoom3Config.js";
 
 // TODO: this entire controller is a bit of a mess, but it's on the right track
 // just needs to be more explicit about what we're doing and cleaned up
@@ -151,6 +152,7 @@ export const getMapRoomCells: KoaController = async (ctx) => {
     // PHASE 5: Build cell data for all coordinates
     // =========================================================================
     const cellsToReturn = new Map<string, CellData>();
+    const destroyedCells: WorldMapCell[] = [];
 
     for (const [key, { x, y }] of coords) {
       if (cellsToReturn.has(key)) continue;
@@ -161,7 +163,22 @@ export const getMapRoomCells: KoaController = async (ctx) => {
 
       // TODO: this shit is horrible, sort it out
       if (dbCell) {
-        cell = dbCell;
+        if (dbCell.destroyed_at) {
+          const elapsed = Date.now() - dbCell.destroyed_at.getTime();
+          if (elapsed >= TRIBE_REGEN_TIME) {
+            destroyedCells.push(dbCell);
+            if (genCell) {
+              cell = new WorldMapCell(undefined, genCell.x, genCell.y, genCell.altitude);
+              cell.base_type = genCell.type || 0;
+            } else {
+              cell = new WorldMapCell(undefined, x, y, 0);
+            }
+          } else {
+            cell = new WorldMapCell(undefined, dbCell.x, dbCell.y, dbCell.terrainHeight);
+          }
+        } else {
+          cell = dbCell;
+        }
       } else {
         const isBorder = x < 0 || x >= MapRoom3.WIDTH || y < 0 || y >= MapRoom3.HEIGHT;
 
@@ -184,7 +201,7 @@ export const getMapRoomCells: KoaController = async (ctx) => {
       }
 
       const cellData = await createCellData(cell, worldid, ctx, cellOwners);
-      
+
       // Override defender levels: player-owned take priority, then generated
       if (playerDefenderLevels.has(key)) {
         cellData.l = playerDefenderLevels.get(key);
@@ -193,6 +210,15 @@ export const getMapRoomCells: KoaController = async (ctx) => {
       }
 
       cellsToReturn.set(key, cellData);
+    }
+
+    // Lazy-delete expired destroyed outpost cells so the generated cell repopulates
+    if (destroyedCells.length > 0) {
+      for (const deadCell of destroyedCells) {
+        if (deadCell.save) postgres.em.remove(deadCell.save);
+        postgres.em.remove(deadCell);
+      }
+      await postgres.em.flush();
     }
 
     ctx.status = Status.OK;

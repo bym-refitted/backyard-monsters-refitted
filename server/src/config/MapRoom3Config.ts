@@ -130,6 +130,9 @@ export const OUTPOST_SAVES = {
   3: dreadnaught,
 };
 
+/** Time in milliseconds before a destroyed tribe outpost regenerates. (3 days) */
+export const TRIBE_REGEN_TIME = 3 * 24 * 60 * 60 * 1000;
+
 /** Defender levels per parent structure type and level. */
 export const DEFENDER_LEVELS = {
   [EnumYardType.PLAYER]: { 0: [5, 5, 10, 10, 15, 20] },
