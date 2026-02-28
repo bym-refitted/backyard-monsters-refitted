@@ -84,10 +84,35 @@ export const STRUCTURE_LEVELS: Record<number, number[]> = {
   [EnumYardType.OUTPOST]: [45, 50],
 };
 
-/** Attack range per structure type and level. */
+/** Attack range in cells per structure type and level. */
 export const STRUCTURE_RANGE: Record<number, Record<number, number>> = {
   [EnumYardType.STRONGHOLD]: { 30: 10, 40: 15, 50: 20 },
   [EnumYardType.RESOURCE]: { 10: 2, 20: 3, 30: 4, 40: 5, 50: 6 },
+};
+
+/** Resource production rate in units per second per level (client displays as ×60/min). */
+export const RESOURCE_PRODUCTION_RATES: Record<number, number> = {
+  10: 1,
+  20: 2,
+  30: 5,
+  40: 11,
+  50: 23,
+};
+
+/** Additional resource storage capacity granted by a RESOURCE outpost per level. */
+export const RESOURCE_CAPACITIES: Record<number, number> = {
+  10: 175000,
+  20: 350000,
+  30: 750000,
+  40: 2000000,
+  50: 4000000,
+};
+
+/** Monster and tower damage bonus (%) granted by a STRONGHOLD per level. */
+export const STRONGHOLD_BONUSES: Record<number, number> = {
+  30: 10,
+  40: 20,
+  50: 30,
 };
 
 /** Save data templates per structure type and level. */
