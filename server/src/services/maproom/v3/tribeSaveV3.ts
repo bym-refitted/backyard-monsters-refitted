@@ -49,11 +49,16 @@ export const tribeSaveV3 = async (baseid: string, worldid: string): Promise<Save
 
     if (!outpostSave) return null;
 
+    // Client uses wmid to look up the tribe via TRIBES.TribeForBaseID(_wmID).
+    // L_IDS/K_IDS/A_IDS/D_IDS start at 1/11/21/31, so tribeIndex * 10 + 1
+    // gives the first nid of each tribe's range and resolves correctly.
+    const wmid = tribeIndex * 10 + 1;
+
     return postgres.em.create(Save, {
       ...outpostSave,
       baseid,
       level,
-      wmid: 0,
+      wmid,
     });
   }
 
