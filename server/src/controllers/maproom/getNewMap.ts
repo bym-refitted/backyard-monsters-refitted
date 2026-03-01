@@ -27,7 +27,7 @@ export const getNewMap: KoaController = async (ctx) => {
   const user: User = ctx.authUser;
   await postgres.em.populate(user, ["save", "save.cell"]);
 
-  const { cell } = user.save;
+  const cell = user.save?.cell;
 
   if (cell?.map_version === MapRoomVersion.V3) {
     ctx.body = {
