@@ -309,6 +309,11 @@ package com.monsters.maproom_manager
       
       public function DowngradeFromMapRoom3() : void
       {
+         if(this.m_CurrentMapRoom is MapRoom3)
+         {
+            this.m_CurrentMapRoom = new MapRoom();
+         }
+         this.m_MapRoomVersion = MAP_ROOM_VERSION_1;
       }
       
       public function CheckForAndForceUpgradeFromMapRoom1() : void

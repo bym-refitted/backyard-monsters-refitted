@@ -236,11 +236,12 @@ package
             return;
          }
          var _loc1_:Array = [["version",1]];
-         if(MapRoomManager.instance.isInMapRoom3)
-         {
-            RecycleB();
-            return;
-         }
+         // Comment: This stopped Map Room 3 from being recycled.
+         // if(MapRoomManager.instance.isInMapRoom3)
+         // {
+         //    RecycleB();
+         //    return;
+         // }
          new URLLoaderApi().load(GLOBAL._mapURL + "setmapversion",_loc1_,this.RecycleDSuccess,this.RecycleDFail);
          // PLEASEWAIT.Show(KEYS.Get("wait_processing"));
       }
@@ -260,7 +261,7 @@ package
                GLOBAL.StatSet("mrl",1,true);
             }
             GLOBAL._bMap = null;
-            MapRoomManager.instance.mapRoomVersion = MapRoomManager.MAP_ROOM_VERSION_1;
+            MapRoomManager.instance.DowngradeFromMapRoom3();
             GLOBAL._baseURL = param1.baseurl;
             BASE._baseID = 0;
             BASE._loadedFriendlyBaseID = 0;

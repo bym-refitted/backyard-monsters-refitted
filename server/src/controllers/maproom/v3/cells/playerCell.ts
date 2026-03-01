@@ -5,7 +5,7 @@ import type { CellData } from "../../../../types/CellData.js";
 import { EnumBaseRelationship } from "../../../../enums/EnumBaseRelationship.js";
 import { calculateBaseLevel } from "../../../../services/base/calculateBaseLevel.js";
 import { logger } from "../../../../utils/logger.js";
-import { STRUCTURE_RANGE } from "../../../../config/MapRoom3Config.js";
+import { PLAYER_RANGE, STRUCTURE_RANGE } from "../../../../config/MapRoom3Config.js";
 
 /**
  * Handles the player's cell data on the world map for Map Room v3.
@@ -46,7 +46,7 @@ export const playerCell = (ctx: Context, cell: WorldMapCell, cellOwners: Map<num
     l: structureRange ? (structureLevel ?? playerLevel) : playerLevel,
     fbid: "",
     pl: 0,
-    r: structureRange?.[structureLevel] ?? 0,
+    r: structureRange?.[structureLevel] ?? PLAYER_RANGE,
     dm: 0,
     lo: 0,
     fr: 0,
