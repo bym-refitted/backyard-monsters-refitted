@@ -84,6 +84,9 @@ export const STRUCTURE_LEVELS: Record<number, number[]> = {
   [EnumYardType.OUTPOST]: [45, 50],
 };
 
+/** Attack range in cells for a player's main yard. */
+export const PLAYER_RANGE = 10;
+
 /** Attack range in cells per structure type and level. */
 export const STRUCTURE_RANGE: Record<number, Record<number, number>> = {
   [EnumYardType.STRONGHOLD]: { 30: 10, 40: 15, 50: 20 },
