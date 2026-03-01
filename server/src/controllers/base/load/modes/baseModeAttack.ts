@@ -71,10 +71,10 @@ export const baseModeAttack = async (user: User, baseid: string, mapversion: Map
 
     if (mapversion === MapRoomVersion.V3) {
       const genCell = getGeneratedCells().get(cellKey(cellX, cellY));
-      
+
       cell = new WorldMapCell(world, cellX, cellY, genCell?.altitude ?? 0);
       cell.uid = save.saveuserid;
-      cell.base_type = genCell?.type ?? save.wmid;
+      cell.base_type = save.wmid;
       cell.map_version = MapRoomVersion.V3;
       cell.baseid = baseid;
     } else {
