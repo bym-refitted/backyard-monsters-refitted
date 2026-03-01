@@ -1,6 +1,7 @@
 import { MapRoom3, MapRoomVersion } from "../../enums/MapRoom.js";
 import { Status } from "../../enums/StatusCodes.js";
 import { User } from "../../models/user.model.js";
+import type { WorldMapCell } from "../../models/worldmapcell.model.js";
 import { BASE_URL, PORT, postgres } from "../../server.js";
 import type { KoaController } from "../../utils/KoaController.js";
 
@@ -27,7 +28,7 @@ export const getNewMap: KoaController = async (ctx) => {
   const user: User = ctx.authUser;
   await postgres.em.populate(user, ["save", "save.cell"]);
 
-  const cell = user.save?.cell;
+  const cell: WorldMapCell = user.save?.cell;
 
   if (cell?.map_version === MapRoomVersion.V3) {
     ctx.body = {
