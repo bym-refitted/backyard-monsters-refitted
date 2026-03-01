@@ -8,7 +8,10 @@ import { FilterFrontendKeys } from "../../../utils/FrontendKey.js";
 import { getFlags } from "../../../data/flags.js";
 import { getCurrentDateTime } from "../../../utils/getCurrentDateTime.js";
 import { BaseMode, BaseType } from "../../../enums/Base.js";
+import { EnumYardType } from "../../../enums/EnumYardType.js";
+import { MapRoomVersion } from "../../../enums/MapRoom.js";
 import { WORLD_SIZE } from "../../../config/MapRoom2Config.js";
+import { RESOURCE_PRODUCTION_RATES, RESOURCE_CAPACITIES } from "../../../config/MapRoom3Config.js";
 import { Status } from "../../../enums/StatusCodes.js";
 import { baseModeView } from "./modes/baseModeView.js";
 import { baseModeBuild } from "./modes/baseModeBuild.js";
@@ -86,16 +89,34 @@ export const baseLoad: KoaController = async (ctx) => {
     }
 
     const filteredSave = FilterFrontendKeys(baseSave);
-    const isTutorialEnabled = devConfig.skipTutorial
-      ? 205
-      : filteredSave.tutorialstage;
+    const isTutorialEnabled = devConfig.skipTutorial ? 205 : filteredSave.tutorialstage;
 
     const flags = getFlags();
     flags.discordOldEnough = ctx.meetsDiscordAgeCheck;
 
-    const responseBody = {
+    const isOwner = baseSave.type !== BaseType.INFERNO && user.userid === filteredSave.userid;
+    
+    let totalResourceRate = 0;
+    let totalResourceCapacity = 0;
+
+    // Sum production rate and storage capacity from all player-owned MR3 resource outposts.
+    if (isOwner && mapversion === MapRoomVersion.V3) {
+      const resourceOutposts = await postgres.em.find(Save, {
+        saveuserid: user.userid,
+        type: BaseType.OUTPOST,
+        wmid: EnumYardType.RESOURCE,
+      });
+
+      for (const { level } of resourceOutposts) {
+        totalResourceRate += RESOURCE_PRODUCTION_RATES[level];
+        totalResourceCapacity += RESOURCE_CAPACITIES[level];
+      }
+    }
+
+    ctx.status = Status.OK;
+    ctx.body = {
       ...filteredSave,
-      canattack: true, // TODO: Implement actual level validation to determine if the user can attack this base
+      canattack: true,
       flags,
       worldsize: WORLD_SIZE,
       error: 0,
@@ -104,22 +125,12 @@ export const baseLoad: KoaController = async (ctx) => {
       storeitems: { ...storeItems },
       tutorialstage: isTutorialEnabled,
       currenttime: getCurrentDateTime(),
-      pic_square: `${process.env.AVATAR_URL}?seed=${
-        filteredSave.name
-      }&size=${50}`,
+      pic_square: `${process.env.AVATAR_URL}?seed=${filteredSave.name}&size=${50}`,
+      ...(isOwner && mapUserSaveData(user)),
+      ...(isOwner && mapversion === MapRoomVersion.V3 && {
+        player: { buffs: { 2: totalResourceRate, 10: totalResourceCapacity } },
+      }),
     };
-
-    // Only include user save data if the base belongs to the current user
-    // and is not an inferno base
-    if (
-      baseSave.type !== BaseType.INFERNO &&
-      user.userid === filteredSave.userid
-    ) {
-      Object.assign(responseBody, mapUserSaveData(user));
-    }
-
-    ctx.status = Status.OK;
-    ctx.body = responseBody;
   } catch (err) {
     ctx.status = Status.INTERNAL_SERVER_ERROR;
     ctx.body = { error: "The server failed to load this base." };
