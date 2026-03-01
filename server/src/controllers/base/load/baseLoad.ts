@@ -38,7 +38,7 @@ export const baseLoad: KoaController = async (ctx) => {
   await postgres.em.populate(user, ["save", "infernosave"]);
 
   try {
-    const { worldid } = user.save;
+    const worldid = user.save?.worldid;
     const { baseid, type, mapversion, attackData } = BaseLoadSchema.parse(ctx.request.body);
 
     let baseSave: Save = null;
