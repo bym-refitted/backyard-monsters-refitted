@@ -20,7 +20,9 @@ import { EnumYardType } from "../../../../enums/EnumYardType.js";
  * @param {Map<number, User>} cellOwners - Pre-loaded map of user IDs to User entities.
  */
 export const playerCell = (ctx: Context, cell: WorldMapCell, cellOwners: Map<number, User>): CellData => {
+  const cellSave = cell.save;
   const currentUser: User = ctx.authUser;
+
   const mine = currentUser.userid === cell.uid;
 
   const cellOwner = mine ? currentUser : cellOwners.get(cell.uid);
@@ -31,12 +33,12 @@ export const playerCell = (ctx: Context, cell: WorldMapCell, cellOwners: Map<num
   const basevalue = cellOwner.save.basevalue;
 
   const playerLevel = calculateBaseLevel(points, basevalue);
-  const structureLevel: number = cell.save?.level;
+  const structureLevel: number = cellSave?.level;
 
   const structureRange = STRUCTURE_RANGE[cell.base_type];
 
   let range = 0;
-  
+
   if (structureRange) {
     range = structureRange[structureLevel];
   } else if (cell.base_type === EnumYardType.PLAYER) {
@@ -56,11 +58,11 @@ export const playerCell = (ctx: Context, cell: WorldMapCell, cellOwners: Map<num
     fbid: "",
     pl: 0,
     r: range,
-    dm: 0,
+    dm: cellSave.damage,
     lo: 0,
     fr: 0,
     p: 0,
-    d: 0,
+    d: cellSave.damage >= 90 ? 1 : 0,
     t: 0,
     rel: mine ? EnumBaseRelationship.SELF : EnumBaseRelationship.ENEMY,
     pic_square: cellOwner.pic_square,
