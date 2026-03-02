@@ -5449,14 +5449,14 @@ export const strongholds: Record<number, Record<string, any>> = {
         id: 108,
       },
       "109": {
-        X: 135,
-        Y: -35,
+        X: -35,
+        Y: -165,
         t: 115,
         id: 109,
       },
       "110": {
-        X: -35,
-        Y: -165,
+        X: 135,
+        Y: -35,
         t: 118,
         id: 110,
       },
