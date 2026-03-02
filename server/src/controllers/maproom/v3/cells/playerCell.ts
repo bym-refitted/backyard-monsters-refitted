@@ -6,6 +6,7 @@ import { EnumBaseRelationship } from "../../../../enums/EnumBaseRelationship.js"
 import { calculateBaseLevel } from "../../../../services/base/calculateBaseLevel.js";
 import { logger } from "../../../../utils/logger.js";
 import { PLAYER_RANGE, STRUCTURE_RANGE } from "../../../../config/MapRoom3Config.js";
+import { EnumYardType } from "../../../../enums/EnumYardType.js";
 
 /**
  * Handles the player's cell data on the world map for Map Room v3.
@@ -34,6 +35,14 @@ export const playerCell = (ctx: Context, cell: WorldMapCell, cellOwners: Map<num
 
   const structureRange = STRUCTURE_RANGE[cell.base_type];
 
+  let range = 0;
+  
+  if (structureRange) {
+    range = structureRange[structureLevel];
+  } else if (cell.base_type === EnumYardType.PLAYER) {
+    range = PLAYER_RANGE;
+  }
+
   return {
     uid: cellOwner.userid,
     b: cell.base_type,
@@ -46,7 +55,7 @@ export const playerCell = (ctx: Context, cell: WorldMapCell, cellOwners: Map<num
     l: structureRange ? (structureLevel ?? playerLevel) : playerLevel,
     fbid: "",
     pl: 0,
-    r: structureRange?.[structureLevel] ?? PLAYER_RANGE,
+    r: range,
     dm: 0,
     lo: 0,
     fr: 0,
