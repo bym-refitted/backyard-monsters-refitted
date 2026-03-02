@@ -76,24 +76,13 @@ router.post("/init", logRequest("Initilizing game client"), init);
 
 /**
  * MapRoom setup
- * @name GET /api/:apiVersion/bm/getnewmap
- */
-router.get(
-  "/api/:apiVersion/bm/getnewmap",
-  apiVersion,
-  logRequest("Getting new maproom"),
-  getNewMap
-);
-
-/**
- * MapRoom setup
  * @name POST /api/:apiVersion/bm/getnewmap
  */
 router.post(
   "/api/:apiVersion/bm/getnewmap",
   apiVersion,
   verifyUserAuth,
-  logRequest("Posting to new maproom"),
+  logRequest("Getting new maproom"),
   getNewMap
 );
 

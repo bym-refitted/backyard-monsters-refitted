@@ -38,6 +38,7 @@ export const updateSaved: KoaController = async (ctx) => {
   const userSave = user.save;
   
   try {
+    const worldid = user.save?.worldid;
     const { baseid, type, mapversion } = UpdateSavedSchema.parse(ctx.request.body);
 
     let baseSave: Save = null;
@@ -53,7 +54,7 @@ export const updateSaved: KoaController = async (ctx) => {
         break;
 
       default:
-        baseSave = await baseModeView(baseid, mapversion);
+        baseSave = await baseModeView(baseid, mapversion, worldid);
         break;
     }
 
