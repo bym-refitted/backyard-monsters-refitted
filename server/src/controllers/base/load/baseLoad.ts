@@ -28,6 +28,7 @@ import { validateAttack } from "../../../services/maproom/validateAttack.js";
 import { BaseLoadSchema } from "../../../zod/BaseLoadSchema.js";
 import { discordAgeErr } from "../../../errors/errors.js";
 import { EnumBaseRelationship } from "../../../enums/EnumBaseRelationship.js";
+import { calculateBaseLevel } from "../../../services/base/calculateBaseLevel.js";
 
 /**
  * Controller responsible for loading base modes based on the user's request.
@@ -138,11 +139,19 @@ export const baseLoad: KoaController = async (ctx) => {
       }
     }
 
+    const attackerLevel = calculateBaseLevel(user.save.points, user.save.basevalue);
+    
+    const isAttackRestricted =
+      mapversion === MapRoomVersion.V3 &&
+      attackerLevel >= 30 &&
+      baseSave.wmid === EnumYardType.RESOURCE &&
+      baseSave.level <= 20;
+
     ctx.status = Status.OK;
     ctx.body = {
       ...filteredSave,
       relationship: isOwner ? EnumBaseRelationship.SELF : EnumBaseRelationship.ENEMY,
-      canattack: true,
+      canattack: !isAttackRestricted,
       flags,
       worldsize: WORLD_SIZE,
       error: 0,
