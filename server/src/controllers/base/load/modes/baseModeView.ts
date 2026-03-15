@@ -1,4 +1,4 @@
-import type { MapRoomVersion } from "../../../../enums/MapRoom.js";
+import { MapRoomVersion } from "../../../../enums/MapRoom.js";
 import { Save } from "../../../../models/save.model.js";
 import { postgres } from "../../../../server.js";
 import { tribeSaveHandler } from "../../../../services/maproom/tribeSaveHandler.js";
@@ -24,7 +24,7 @@ export const baseModeView = async (baseid: string, mapversion: MapRoomVersion, w
 
   if (!save) save = await tribeSaveHandler(baseid, mapversion, worldid);
 
-  if (save && save.wmid !== 0) {
+  if (mapversion !== MapRoomVersion.V3 && save && save.wmid !== 0) {
     const currentTimestamp = getCurrentDateTime();
 
     if (currentTimestamp - save.savetime > WILD_MONSTER_EXPIRATION) {

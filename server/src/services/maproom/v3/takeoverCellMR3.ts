@@ -66,6 +66,8 @@ export const takeoverCellMR3 = async (baseSave: Save, user: User, userSave: Save
     return null;
   }
 
+  const previousSaveUserId = baseSave.saveuserid;
+
   // Transfer ownership of the save
   baseSave.saveuserid = user.userid;
   baseSave.userid = userSave.userid;
@@ -82,7 +84,7 @@ export const takeoverCellMR3 = async (baseSave: Save, user: User, userSave: Save
   // Clean up previous owner's save if the cell was player-owned
   const previousOwner = await postgres.em.findOne(
     User,
-    { userid: baseSave.saveuserid },
+    { userid: previousSaveUserId },
     { populate: ["save"] },
   );
 

@@ -141,17 +141,20 @@ export const baseSave: KoaController = async (ctx) => {
       await postgres.em.persistAndFlush(userSave);
 
       // MR3 Takeover Logic:
-      // If the attack is over and the base is a tribe base with 90% or more damage,
-      // trigger takeover logic for MR3 structures or destroy the outpost.
-      if (saveData.over && baseSave.damage >= 90 && baseSave.type === BaseType.TRIBE) {
+      // If the attack is over and damage >= 90, trigger takeover or destroy logic.
+      // MR3 capturable structures (RESOURCE, STRONGHOLD, FORTIFICATION) allow re-capture
+      // from OUTPOST type (player-owned) in addition to first capture from TRIBE type.
+      if (saveData.over && baseSave.damage >= 90) {
         if (isMR3Structure(baseSave.wmid)) {
-          takeoverData = await takeoverCellMR3(baseSave, user, userSave);
-        } else {
+          if (baseSave.type === BaseType.TRIBE || baseSave.type === BaseType.OUTPOST) {
+            takeoverData = await takeoverCellMR3(baseSave, user, userSave);
+          }
+        } else if (baseSave.type === BaseType.TRIBE) {
           const cell = await postgres.em.findOne(WorldMapCell, {
             baseid: baseSave.baseid,
             map_version: MapRoomVersion.V3,
           });
-          
+
           if (cell && !cell.destroyed_at) cell.destroyed_at = new Date();
         }
       }
