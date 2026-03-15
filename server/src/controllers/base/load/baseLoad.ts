@@ -27,6 +27,7 @@ import { infernoModeBuild } from "./modes/infernoModeBuild.js";
 import { validateAttack } from "../../../services/maproom/validateAttack.js";
 import { BaseLoadSchema } from "../../../zod/BaseLoadSchema.js";
 import { discordAgeErr } from "../../../errors/errors.js";
+import { EnumBaseRelationship } from "../../../enums/EnumBaseRelationship.js";
 
 /**
  * Controller responsible for loading base modes based on the user's request.
@@ -140,6 +141,7 @@ export const baseLoad: KoaController = async (ctx) => {
     ctx.status = Status.OK;
     ctx.body = {
       ...filteredSave,
+      relationship: isOwner ? EnumBaseRelationship.SELF : EnumBaseRelationship.ENEMY,
       canattack: true,
       flags,
       worldsize: WORLD_SIZE,
