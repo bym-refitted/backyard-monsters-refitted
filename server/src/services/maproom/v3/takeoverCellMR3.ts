@@ -78,6 +78,7 @@ export const takeoverCellMR3 = async (baseSave: Save, user: User, userSave: Save
   baseSave.resources = {};
   baseSave.monsters = {};
   baseSave.attacks = [];
+  baseSave.tutorialstage = 205;
   baseSave.createtime = getCurrentDateTime();
   baseSave.takeoverDate = new Date();
 
