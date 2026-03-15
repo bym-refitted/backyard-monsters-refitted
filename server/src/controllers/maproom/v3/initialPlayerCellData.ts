@@ -11,9 +11,13 @@ import { logger } from "../../../utils/logger.js";
 /**
  * Returns the initial cell data for Map Room v3 when player opens the map.
  *
- * Returns ALL player-owned cells (home + all outposts) so the client has the
- * complete set before BookmarksManager.Setup() runs. Without this, outposts
- * outside the initial viewport would be missing from the bookmark header count.
+ * Returns ALL player-owned cells (home + outposts + captured defenders) so the
+ * client has the complete set before BookmarksManager.Setup() runs. Outposts
+ * outside the initial viewport would otherwise be missing from the bookmark
+ * header count. Captured FORTIFICATION defenders are included so their
+ * m_CellData is pre-populated before the window renders, preventing the tribe
+ * appearance that occurs when ClearData() sets m_CellData to null on every
+ * map open and the cell hasn't been covered by getCells yet.
  *
  * The home cell (PLAYER type) is always first — the client uses celldata[0]
  * to determine the initial map center point.
@@ -27,7 +31,7 @@ export const initialPlayerCellData: KoaController = async (ctx) => {
 
   const { worldid } = user.save;
 
-  // Fetch all player-owned cells (home + outposts) for Map Room v3
+  // Fetch all player-owned cells
   const playerCells = await postgres.em.find(
     WorldMapCell,
     {
@@ -39,6 +43,7 @@ export const initialPlayerCellData: KoaController = async (ctx) => {
           EnumYardType.PLAYER,
           EnumYardType.RESOURCE,
           EnumYardType.STRONGHOLD,
+          EnumYardType.FORTIFICATION,
         ],
       },
     },
