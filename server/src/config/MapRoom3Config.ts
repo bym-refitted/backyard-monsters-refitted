@@ -136,6 +136,9 @@ export const OUTPOST_SAVES = {
 /** Time in milliseconds before a destroyed tribe outpost regenerates. (3 days) */
 export const TRIBE_REGEN_TIME = 3 * 24 * 60 * 60 * 1000;
 
+/** Damage reduction (%) granted per number of owned FORTIFICATION defenders surrounding a structure. Index = defender count. */
+export const DEFENDER_DAMAGE_REDUCTION = [0, 7, 13, 23, 35, 50, 75];
+
 /** Defender levels per parent structure type and level. */
 export const DEFENDER_LEVELS = {
   [EnumYardType.PLAYER]: { 0: [5, 5, 10, 10, 15, 20] },

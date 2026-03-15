@@ -11,7 +11,9 @@ import { BaseMode, BaseType } from "../../../enums/Base.js";
 import { EnumYardType } from "../../../enums/EnumYardType.js";
 import { MapRoomVersion } from "../../../enums/MapRoom.js";
 import { WORLD_SIZE } from "../../../config/MapRoom2Config.js";
-import { RESOURCE_PRODUCTION_RATES, RESOURCE_CAPACITIES } from "../../../config/MapRoom3Config.js";
+import { RESOURCE_PRODUCTION_RATES, RESOURCE_CAPACITIES, DEFENDER_DAMAGE_REDUCTION } from "../../../config/MapRoom3Config.js";
+import { WorldMapCell } from "../../../models/worldmapcell.model.js";
+import { getDefenderCoords, isDefensiveStructure } from "../../../services/maproom/v3/getDefenderCoords.js";
 import { Status } from "../../../enums/StatusCodes.js";
 import { baseModeView } from "./modes/baseModeView.js";
 import { baseModeBuild } from "./modes/baseModeBuild.js";
@@ -95,12 +97,13 @@ export const baseLoad: KoaController = async (ctx) => {
     flags.discordOldEnough = ctx.meetsDiscordAgeCheck;
 
     const isOwner = baseSave.type !== BaseType.INFERNO && user.userid === filteredSave.userid;
-    
+
     let totalResourceRate = 0;
     let totalResourceCapacity = 0;
+    let defenderReduction = 0;
 
     // Sum production rate and storage capacity from all player-owned MR3 resource outposts.
-    if (isOwner && mapversion === MapRoomVersion.V3) {
+    if (mapversion === MapRoomVersion.V3 && isOwner) {
       const resourceOutposts = await postgres.em.find(Save, {
         saveuserid: user.userid,
         type: BaseType.OUTPOST,
@@ -110,6 +113,27 @@ export const baseLoad: KoaController = async (ctx) => {
       for (const { level } of resourceOutposts) {
         totalResourceRate += RESOURCE_PRODUCTION_RATES[level];
         totalResourceCapacity += RESOURCE_CAPACITIES[level];
+      }
+    }
+
+    // Set damage reduction buff for attacking bases with defenders
+    if (mapversion === MapRoomVersion.V3 && !isOwner && type === BaseMode.ATTACK) {
+      const attackedCell: WorldMapCell = baseSave.cell;
+
+      if (attackedCell?.uid && isDefensiveStructure(attackedCell.base_type)) {
+        const defenderCoords = getDefenderCoords(attackedCell.x, attackedCell.y, attackedCell.base_type);
+
+        const defenderCells = await postgres.em.find(WorldMapCell, {
+          $and: [
+            { $or: defenderCoords.map(([x, y]) => ({ x, y })) },
+            { base_type: EnumYardType.FORTIFICATION },
+            { uid: attackedCell.uid },
+            { map_version: MapRoomVersion.V3 },
+            { world_id: worldid },
+          ],
+        });
+
+        defenderReduction = DEFENDER_DAMAGE_REDUCTION[defenderCells.length];
       }
     }
 
@@ -129,6 +153,9 @@ export const baseLoad: KoaController = async (ctx) => {
       ...(isOwner && mapUserSaveData(user)),
       ...(isOwner && mapversion === MapRoomVersion.V3 && {
         player: { buffs: { 2: totalResourceRate, 10: totalResourceCapacity } },
+      }),
+      ...(defenderReduction > 0 && {
+        player: { buffs: { 1: defenderReduction } },
       }),
     };
   } catch (err) {
