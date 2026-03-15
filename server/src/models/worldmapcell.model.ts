@@ -37,6 +37,7 @@ export class WorldMapCell {
   @Property()
   world_id!: string;
 
+  @Index()
   @FrontendKey
   @Property()
   uid!: number;
