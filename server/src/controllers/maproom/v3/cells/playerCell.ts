@@ -20,6 +20,8 @@ import { EnumYardType } from "../../../../enums/EnumYardType.js";
  * @param {Map<number, User>} cellOwners - Pre-loaded map of user IDs to User entities.
  */
 export const playerCell = (ctx: Context, cell: WorldMapCell, cellOwners: Map<number, User>): CellData => {
+  const [cellX, cellY] = [cell.x, cell.y];
+
   const cellSave = cell.save;
   const currentUser: User = ctx.authUser;
 
@@ -45,6 +47,8 @@ export const playerCell = (ctx: Context, cell: WorldMapCell, cellOwners: Map<num
     range = PLAYER_RANGE;
   }
 
+const altitude = 5 + (cellX * 73 + cellY * 31) % 45;
+
   return {
     uid: cellOwner.userid,
     b: cell.base_type,
@@ -53,7 +57,7 @@ export const playerCell = (ctx: Context, cell: WorldMapCell, cellOwners: Map<num
     tid: 0,
     x: cell.x,
     y: cell.y,
-    i: cell.terrainHeight,
+    i: altitude,
     l: structureRange ? (structureLevel ?? playerLevel) : playerLevel,
     fbid: "",
     pl: 0,
