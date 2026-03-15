@@ -17,9 +17,6 @@ import type { CellData } from "../../../types/CellData.js";
 import { getCellBounds, type Coord } from "../../../services/maproom/v3/utils/getCellBounds.js";
 import { getDefenderLevels } from "../../../services/maproom/v3/getDefenderLevels.js";
 import { TRIBE_REGEN_TIME } from "../../../config/MapRoom3Config.js";
-
-// TODO: this entire controller is a bit of a mess, but it's on the right track
-// just needs to be more explicit about what we're doing and cleaned up
 export const getMapRoomCells: KoaController = async (ctx) => {
   try {
     const { cellids } = CellSchema.parse(ctx.request.body);
@@ -115,12 +112,8 @@ export const getMapRoomCells: KoaController = async (ctx) => {
     const playerDefenderLevels = new Map<string, number>();
     // Tracks the 6 defender positions belonging specifically to PLAYER main yards.
     // Used in Phase 5 to guarantee they always render as FORTIFICATION cells
-    // regardless of any corrupt DB state (wrong uid, destroyed_at, etc.).
+    // regardless of any corrupt DB state (destroyed_at, etc.).
     const playerYardDefenderPositions = new Set<string>();
-    // Maps defender position keys to their owning player's uid so Phase 5 can
-    // propagate the uid to FORTIFICATION cells instead of returning them as
-    // wildMonsterCells (uid=0) which the client renders as tribe defenders.
-    const playerDefenderOwners = new Map<string, number>();
 
     for (const dbCell of dbCells) {
       // Handle any player-owned defensive structure (PLAYER, STRONGHOLD, RESOURCE)
@@ -131,11 +124,7 @@ export const getMapRoomCells: KoaController = async (ctx) => {
         for (let i = 0; i < defenderCoords.length; i++) {
           const [relX, relY] = defenderCoords[i];
           const relKey = `${relX},${relY}`;
-          if (!coords.has(relKey)) {
-            coords.set(relKey, { x: relX, y: relY });
-          }
           defenderPositions.add(relKey);
-          playerDefenderOwners.set(relKey, dbCell.uid);
 
           if (dbCell.base_type === EnumYardType.PLAYER) {
             playerYardDefenderPositions.add(relKey);
@@ -174,7 +163,6 @@ export const getMapRoomCells: KoaController = async (ctx) => {
       const dbCell = dbCellsByCoord.get(key);
       const genCell = generateCells.get(cellKey(x, y));
 
-      // TODO: this shit is horrible, sort it out
       if (dbCell) {
         if (dbCell.destroyed_at && playerYardDefenderPositions.has(key)) {
           // A player yard FORTIFICATION defender should never be treated as destroyed
@@ -219,14 +207,6 @@ export const getMapRoomCells: KoaController = async (ctx) => {
       }
 
       const cellData = await createCellData(cell, worldid, ctx, cellOwners);
-
-      // Patch uid on FORTIFICATION cells belonging to player-owned structures.
-      // wildMonsterCell is still used for the graphic data (tid, n, bid, etc.),
-      // but uid=0 causes the client to treat them as tribe defenders on every
-      // 30s getCells refresh. Patching uid here keeps the graphic intact while
-      // correctly marking ownership.
-      if (!cellData.uid && playerDefenderOwners.has(key))
-        cellData.uid = playerDefenderOwners.get(key);
 
       // Override defender levels: player-owned take priority, then generated
       if (playerDefenderLevels.has(key)) {
