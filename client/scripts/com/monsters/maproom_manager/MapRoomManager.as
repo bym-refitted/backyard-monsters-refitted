@@ -280,6 +280,7 @@ package com.monsters.maproom_manager
       
       private function MapRoom3UpgradeSuccess(param1:Object) : void
       {
+         GLOBAL._save = true;
          if(param1.error == 0)
          {
             this.init(true,GLOBAL._apiURL + "bm/getnewmap");
@@ -299,9 +300,10 @@ package com.monsters.maproom_manager
             GLOBAL.ErrorMessage("Error upgrading to Map Room 3");
          }
       }
-      
+
       private function MapRoom3UpgradeFail(param1:IOErrorEvent) : void
       {
+         GLOBAL._save = true;
          PLEASEWAIT.Hide();
          LOGGER.Log("err","HTTP error upgrading to Map Room 3");
          GLOBAL.ErrorMessage("HTTP error upgrading to Map Room 3");
