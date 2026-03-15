@@ -218,19 +218,15 @@ export const getMapRoomCells: KoaController = async (ctx) => {
         }
       }
 
-      // Propagate player uid to FORTIFICATION cells surrounding player-owned structures.
-      // Without this, createCellData routes them to wildMonsterCell (uid=0) on every
-      // getCells refresh, causing the client to flip them to tribe defender appearance.
-      if (!cell.uid && playerDefenderOwners.has(key)) {
-        const ownerUid = playerDefenderOwners.get(key)!;
-        const owned = new WorldMapCell(undefined, cell.x, cell.y, cell.terrainHeight ?? 0);
-        owned.base_type = cell.base_type;
-        owned.uid = ownerUid;
-        owned.save = cell.save;
-        cell = owned;
-      }
-
       const cellData = await createCellData(cell, worldid, ctx, cellOwners);
+
+      // Patch uid on FORTIFICATION cells belonging to player-owned structures.
+      // wildMonsterCell is still used for the graphic data (tid, n, bid, etc.),
+      // but uid=0 causes the client to treat them as tribe defenders on every
+      // 30s getCells refresh. Patching uid here keeps the graphic intact while
+      // correctly marking ownership.
+      if (!cellData.uid && playerDefenderOwners.has(key))
+        cellData.uid = playerDefenderOwners.get(key);
 
       // Override defender levels: player-owned take priority, then generated
       if (playerDefenderLevels.has(key)) {
