@@ -22,9 +22,12 @@ export const BaseLoadSchema = z.object({
 
   /**
    * The map room version the client is currently in (1, 2, or 3).
-   * @type {number}
+   * @type {number | undefined}
    */
-  mapversion: z.coerce.number(),
+  mapversion: z.coerce
+    .number()
+    .transform((version) => (Number.isNaN(version) ? undefined : version))
+    .optional(),
 
   /**
    * The attack payload, transformed from a JSON string to an AttackPayload object.
