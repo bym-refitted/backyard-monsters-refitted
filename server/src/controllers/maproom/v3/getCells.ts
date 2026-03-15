@@ -117,6 +117,10 @@ export const getMapRoomCells: KoaController = async (ctx) => {
     // Used in Phase 5 to guarantee they always render as FORTIFICATION cells
     // regardless of any corrupt DB state (wrong uid, destroyed_at, etc.).
     const playerYardDefenderPositions = new Set<string>();
+    // Maps defender position keys to their owning player's uid so Phase 5 can
+    // propagate the uid to FORTIFICATION cells instead of returning them as
+    // wildMonsterCells (uid=0) which the client renders as tribe defenders.
+    const playerDefenderOwners = new Map<string, number>();
 
     for (const dbCell of dbCells) {
       // Handle any player-owned defensive structure (PLAYER, STRONGHOLD, RESOURCE)
@@ -131,6 +135,7 @@ export const getMapRoomCells: KoaController = async (ctx) => {
             coords.set(relKey, { x: relX, y: relY });
           }
           defenderPositions.add(relKey);
+          playerDefenderOwners.set(relKey, dbCell.uid);
 
           if (dbCell.base_type === EnumYardType.PLAYER) {
             playerYardDefenderPositions.add(relKey);
@@ -211,6 +216,18 @@ export const getMapRoomCells: KoaController = async (ctx) => {
             cell = new WorldMapCell(undefined, x, y, 0);
           }
         }
+      }
+
+      // Propagate player uid to FORTIFICATION cells surrounding player-owned structures.
+      // Without this, createCellData routes them to wildMonsterCell (uid=0) on every
+      // getCells refresh, causing the client to flip them to tribe defender appearance.
+      if (!cell.uid && playerDefenderOwners.has(key)) {
+        const ownerUid = playerDefenderOwners.get(key)!;
+        const owned = new WorldMapCell(undefined, cell.x, cell.y, cell.terrainHeight ?? 0);
+        owned.base_type = cell.base_type;
+        owned.uid = ownerUid;
+        owned.save = cell.save;
+        cell = owned;
       }
 
       const cellData = await createCellData(cell, worldid, ctx, cellOwners);
