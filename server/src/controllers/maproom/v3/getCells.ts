@@ -100,8 +100,8 @@ export const getMapRoomCells: KoaController = async (ctx) => {
       {
         world_id: worldid,
         map_version: MapRoomVersion.V3,
-        x: { $gte: minX, $lte: maxX },
-        y: { $gte: minY, $lte: maxY },
+        x: { $gte: minX - 1, $lte: maxX + 1 },
+        y: { $gte: minY - 1, $lte: maxY + 1 },
       },
       { populate: ["save"] },
     );
@@ -113,6 +113,10 @@ export const getMapRoomCells: KoaController = async (ctx) => {
     // =========================================================================
     const defenderPositions = new Set<string>();
     const playerDefenderLevels = new Map<string, number>();
+    // Tracks the 6 defender positions belonging specifically to PLAYER main yards.
+    // Used in Phase 5 to guarantee they always render as FORTIFICATION cells
+    // regardless of any corrupt DB state (wrong uid, destroyed_at, etc.).
+    const playerYardDefenderPositions = new Set<string>();
 
     for (const dbCell of dbCells) {
       // Handle any player-owned defensive structure (PLAYER, STRONGHOLD, RESOURCE)
@@ -127,6 +131,10 @@ export const getMapRoomCells: KoaController = async (ctx) => {
             coords.set(relKey, { x: relX, y: relY });
           }
           defenderPositions.add(relKey);
+
+          if (dbCell.base_type === EnumYardType.PLAYER) {
+            playerYardDefenderPositions.add(relKey);
+          }
 
           if (defenderLevels) playerDefenderLevels.set(relKey, defenderLevels[i]);
         }
@@ -163,7 +171,12 @@ export const getMapRoomCells: KoaController = async (ctx) => {
 
       // TODO: this shit is horrible, sort it out
       if (dbCell) {
-        if (dbCell.destroyed_at) {
+        if (dbCell.destroyed_at && playerYardDefenderPositions.has(key)) {
+          // A player yard FORTIFICATION defender should never be treated as destroyed
+          // terrain — destroyed_at here is corrupt state. Force it back to FORTIFICATION.
+          cell = new WorldMapCell(undefined, x, y, 0);
+          cell.base_type = EnumYardType.FORTIFICATION;
+        } else if (dbCell.destroyed_at) {
           const elapsed = Date.now() - dbCell.destroyed_at.getTime();
           if (elapsed >= TRIBE_REGEN_TIME) {
             destroyedCells.push(dbCell);
