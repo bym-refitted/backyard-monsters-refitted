@@ -17,9 +17,6 @@ import type { CellData } from "../../../types/CellData.js";
 import { getCellBounds, type Coord } from "../../../services/maproom/v3/utils/getCellBounds.js";
 import { getDefenderLevels } from "../../../services/maproom/v3/getDefenderLevels.js";
 import { TRIBE_REGEN_TIME } from "../../../config/MapRoom3Config.js";
-
-// TODO: this entire controller is a bit of a mess, but it's on the right track
-// just needs to be more explicit about what we're doing and cleaned up
 export const getMapRoomCells: KoaController = async (ctx) => {
   try {
     const { cellids } = CellSchema.parse(ctx.request.body);
@@ -115,7 +112,7 @@ export const getMapRoomCells: KoaController = async (ctx) => {
     const playerDefenderLevels = new Map<string, number>();
     // Tracks the 6 defender positions belonging specifically to PLAYER main yards.
     // Used in Phase 5 to guarantee they always render as FORTIFICATION cells
-    // regardless of any corrupt DB state (wrong uid, destroyed_at, etc.).
+    // regardless of any corrupt DB state (destroyed_at, etc.).
     const playerYardDefenderPositions = new Set<string>();
 
     for (const dbCell of dbCells) {
@@ -127,9 +124,6 @@ export const getMapRoomCells: KoaController = async (ctx) => {
         for (let i = 0; i < defenderCoords.length; i++) {
           const [relX, relY] = defenderCoords[i];
           const relKey = `${relX},${relY}`;
-          if (!coords.has(relKey)) {
-            coords.set(relKey, { x: relX, y: relY });
-          }
           defenderPositions.add(relKey);
 
           if (dbCell.base_type === EnumYardType.PLAYER) {
@@ -169,7 +163,6 @@ export const getMapRoomCells: KoaController = async (ctx) => {
       const dbCell = dbCellsByCoord.get(key);
       const genCell = generateCells.get(cellKey(x, y));
 
-      // TODO: this shit is horrible, sort it out
       if (dbCell) {
         if (dbCell.destroyed_at && playerYardDefenderPositions.has(key)) {
           // A player yard FORTIFICATION defender should never be treated as destroyed
