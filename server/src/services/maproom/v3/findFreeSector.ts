@@ -5,6 +5,8 @@ import { EntityManager, PostgreSqlDriver } from "@mikro-orm/postgresql";
 import { EnumYardType } from "../../../enums/EnumYardType.js";
 import { getDefenderCoords } from "./getDefenderCoords.js";
 import { getGeneratedCells, cellKey, type GeneratedCell } from "./generateCells.js";
+import { getHexDistance } from "./getHexNeighborOffsets.js";
+import { MIN_PLAYER_DISTANCE } from "../../../config/MapRoom3Config.js";
 import { setTimeout } from "timers/promises";
 
 interface Cell {
@@ -113,6 +115,21 @@ export const findFreeSector = async (world: World, em: EntityManager<PostgreSqlD
       await setTimeout(200);
       continue;
     }
+
+    // Ensure minimum distance from all existing player yards
+    const nearbyPlayerCells = await em.find(WorldMapCell, {
+      world,
+      map_version: MapRoomVersion.V3,
+      base_type: EnumYardType.PLAYER,
+      x: { $gte: x - MIN_PLAYER_DISTANCE, $lte: x + MIN_PLAYER_DISTANCE },
+      y: { $gte: y - MIN_PLAYER_DISTANCE, $lte: y + MIN_PLAYER_DISTANCE },
+    });
+
+    const playerCell = nearbyPlayerCells.some(
+      (cell) => getHexDistance(x, y, cell.x, cell.y) < MIN_PLAYER_DISTANCE
+    );
+
+    if (playerCell) continue;
 
     cell = { x, y, terrainHeight: 10 };
     break;
