@@ -967,7 +967,7 @@ package
                      }
                   }
                }
-               else if (MapRoomManager.instance.isInMapRoom3 && Boolean(serverData.homebase))
+               else if (MapRoomManager.instance.isInMapRoom3 && GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD && Boolean(serverData.homebase))
                {
                   GLOBAL._mapHome = new Point(serverData.homebase[0], serverData.homebase[1]);
                }
