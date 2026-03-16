@@ -39,4 +39,16 @@ export const BaseLoadSchema = z.object({
     .transform((data): AttackData | undefined =>
       data ? JSON.parse(data) : undefined
     ),
+
+  /**
+   * The MR3 out-of-range attack cost, sent by the client when attacking outside
+   * the player's range. Either resource amounts or a shiny cost.
+   * @type {{ resources?: number[]; shiny?: number } | undefined}
+   */
+  attackcost: z
+    .string()
+    .optional()
+    .transform((data): { resources?: number[]; shiny?: number } | undefined =>
+      data ? JSON.parse(data) : undefined
+    ),
 });

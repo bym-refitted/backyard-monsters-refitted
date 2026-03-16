@@ -43,7 +43,7 @@ export const baseLoad: KoaController = async (ctx) => {
 
   try {
     const worldid = user.save?.worldid;
-    const { baseid, type, mapversion, attackData } = BaseLoadSchema.parse(ctx.request.body);
+    const { baseid, type, mapversion, attackData, attackcost } = BaseLoadSchema.parse(ctx.request.body);
 
     let baseSave: Save = null;
 
@@ -61,7 +61,7 @@ export const baseLoad: KoaController = async (ctx) => {
         if (!ctx.meetsDiscordAgeCheck) throw discordAgeErr();
 
         await validateAttack(user, attackData, mapversion);
-        baseSave = await baseModeAttack(user, baseid, mapversion);
+        baseSave = await baseModeAttack({ user, baseid, mapversion, attackCost: attackcost });
         break;
 
       case BaseMode.IDESCENT:

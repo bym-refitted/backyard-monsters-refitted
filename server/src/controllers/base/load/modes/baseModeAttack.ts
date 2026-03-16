@@ -15,6 +15,7 @@ import {
 } from "../../../../services/maproom/v2/generateMap.js";
 import { getGeneratedCells, cellKey } from "../../../../services/maproom/v3/generateCells.js";
 import { createAttackLog } from "../../../../services/base/createAttackLog.js";
+import { updateResources, Operation } from "../../../../services/base/updateResources.js";
 
 export interface AttackDetails {
   fbid: string;
@@ -26,15 +27,20 @@ export interface AttackDetails {
   seen: boolean;
 }
 
+interface BaseModeAttack {
+  user: User;
+  baseid: string;
+  mapversion: MapRoomVersion;
+  attackCost?: { resources?: number[]; shiny?: number };
+}
+
 /**
  * Processes an attack from a user against a specific base
- * 
- * @param {User} user - The attacking user
- * @param {string} baseid - ID of the base being attacked
- * @param {MapRoomVersion} mapversion - Version of the map room being used
+ *
+ * @param {BaseModeAttack} options - Attack options
  * @returns Result of range validation check
  */
-export const baseModeAttack = async (user: User, baseid: string, mapversion: MapRoomVersion) => {
+export const baseModeAttack = async ({ user, baseid, mapversion, attackCost }: BaseModeAttack) => {
   const userSave: Save = user.save;
   let save = await postgres.em.findOne(Save, { baseid });
 
@@ -92,7 +98,18 @@ export const baseModeAttack = async (user: User, baseid: string, mapversion: Map
   save.cell = cell;
   save.worldid = userSave.worldid;
   save.attackid = Math.floor(Math.random() * 99999) + 1;
-  await postgres.em.persistAndFlush([cell, save]);
+  
+  // Handle attack cost for MR3 attack range
+  if (mapversion === MapRoomVersion.V3 && attackCost) {
+    if (attackCost.resources) {
+      const [r1, r2, r3] = attackCost.resources;
+      updateResources({ r1, r2, r3 }, userSave.resources, Operation.SUBTRACT);
+    } else if (attackCost.shiny) {
+      userSave.credits = Math.max(0, userSave.credits - attackCost.shiny);
+    }
+  }
+
+  await postgres.em.persistAndFlush([cell, save, userSave]);
 
   // Create an attack log for the attack
   if (save.type !== BaseType.TRIBE) {
