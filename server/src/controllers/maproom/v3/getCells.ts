@@ -199,7 +199,7 @@ export const getMapRoomCells: KoaController = async (ctx) => {
       // Override defender levels: player-owned take priority, then generated
       if (playerDefenderLevels.has(key)) {
         cellData.l = playerDefenderLevels.get(key);
-      } else if (genCell?.level) {
+      } else if (genCell?.level && !cell.uid) {
         cellData.l = genCell.level;
       }
 

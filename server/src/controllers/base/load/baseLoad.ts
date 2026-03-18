@@ -11,7 +11,7 @@ import { BaseMode, BaseType } from "../../../enums/Base.js";
 import { EnumYardType } from "../../../enums/EnumYardType.js";
 import { MapRoomVersion } from "../../../enums/MapRoom.js";
 import { WORLD_SIZE } from "../../../config/MapRoom2Config.js";
-import { RESOURCE_PRODUCTION_RATES, RESOURCE_CAPACITIES, DEFENDER_DAMAGE_REDUCTION } from "../../../config/MapRoom3Config.js";
+import { RESOURCE_PRODUCTION_RATES, RESOURCE_CAPACITIES, DEFENDER_DAMAGE_REDUCTION, STRONGHOLD_BONUSES } from "../../../config/MapRoom3Config.js";
 import { WorldMapCell } from "../../../models/worldmapcell.model.js";
 import { getDefenderCoords, isDefensiveStructure } from "../../../services/maproom/v3/getDefenderCoords.js";
 import { Status } from "../../../enums/StatusCodes.js";
@@ -102,19 +102,23 @@ export const baseLoad: KoaController = async (ctx) => {
 
     let totalResourceRate = 0;
     let totalResourceCapacity = 0;
+    let totalStrongholdBonus = 0;
     let defenderReduction = 0;
 
-    // Sum production rate and storage capacity from all player-owned MR3 resource outposts.
+    // Sum production rate, storage capacity, and stronghold bonuses from player-owned MR3 outposts.
     if (mapversion === MapRoomVersion.V3 && isOwner) {
-      const resourceOutposts = await postgres.em.find(Save, {
-        saveuserid: user.userid,
-        type: BaseType.OUTPOST,
-        wmid: EnumYardType.RESOURCE,
-      });
+      const [resourceOutposts, strongholdOutposts] = await Promise.all([
+        postgres.em.find(Save, { saveuserid: user.userid, type: BaseType.OUTPOST, wmid: EnumYardType.RESOURCE }),
+        postgres.em.find(Save, { saveuserid: user.userid, type: BaseType.OUTPOST, wmid: EnumYardType.STRONGHOLD }),
+      ]);
 
       for (const { level } of resourceOutposts) {
         totalResourceRate += RESOURCE_PRODUCTION_RATES[level];
         totalResourceCapacity += RESOURCE_CAPACITIES[level];
+      }
+
+      for (const { level } of strongholdOutposts) {
+        totalStrongholdBonus += STRONGHOLD_BONUSES[level];
       }
     }
 
@@ -157,7 +161,13 @@ export const baseLoad: KoaController = async (ctx) => {
       pic_square: `${process.env.AVATAR_URL}?seed=${filteredSave.name}&size=${50}`,
       ...(isOwner && mapUserSaveData(user)),
       ...(isOwner && mapversion === MapRoomVersion.V3 && {
-        player: { buffs: { 2: totalResourceRate, 10: totalResourceCapacity } },
+        player: {
+          buffs: {
+            2: totalResourceRate,
+            10: totalResourceCapacity,
+            ...(totalStrongholdBonus > 0 && { 5: totalStrongholdBonus, 6: totalStrongholdBonus }),
+          },
+        },
       }),
       ...(defenderReduction > 0 && {
         player: { buffs: { 1: defenderReduction } },
