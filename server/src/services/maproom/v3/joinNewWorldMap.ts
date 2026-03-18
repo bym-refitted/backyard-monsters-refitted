@@ -17,13 +17,12 @@ import { leaveWorld } from "../v2/leaveWorld.js";
  * Creates the player's main yard cell and 6 surrounding defender outpost cells in a hexagon formation.
  * Each defender gets its own Save entity with appropriate base data.
  *
- * If the user is not relocating and already in the assigned world, no action is taken.
- * If relocating, a new position is found, and the user's base is updated accordingly.
+ * Always leaves the user's current world (if any) and places them in a new position,
+ * even if the selected world happens to be the same one they were already in.
  *
  * @param {User} user - The user who is joining or relocating in the world
  * @param {Save} save - The user's main save data
  * @param {EntityManager} em - The entity manager for database operations
- * @param {boolean} relocate - Flag indicating whether the user is relocating
  * @returns {Promise<void>} A promise that resolves when the operation is complete
  */
 export const joinNewWorldMap = async (
@@ -52,9 +51,10 @@ export const joinNewWorldMap = async (
     logger.info("All worlds full, created new world.");
   }
 
-  if (save.worldid === world.uuid) return;
-
   await leaveWorld(user, save);
+
+  // Refresh world after leaveWorld's raw SQL decrement to get an accurate playerCount.
+  await em.refresh(world);
 
   world.playerCount += 1;
   save.usemap = 1;
