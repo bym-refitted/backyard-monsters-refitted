@@ -105,20 +105,32 @@ export const baseLoad: KoaController = async (ctx) => {
     let totalStrongholdBonus = 0;
     let defenderReduction = 0;
 
-    // Sum production rate, storage capacity, and stronghold bonuses from player-owned MR3 outposts.
-    if (mapversion === MapRoomVersion.V3 && isOwner) {
-      const [resourceOutposts, strongholdOutposts] = await Promise.all([
-        postgres.em.find(Save, { saveuserid: user.userid, type: BaseType.OUTPOST, wmid: EnumYardType.RESOURCE }),
-        postgres.em.find(Save, { saveuserid: user.userid, type: BaseType.OUTPOST, wmid: EnumYardType.STRONGHOLD }),
-      ]);
+    if (mapversion === MapRoomVersion.V3) {
+      // Sum production rate and storage capacity from all player-owned MR3 resource outposts.
+      if (isOwner) {
+        const resourceOutposts = await postgres.em.find(Save, {
+          saveuserid: user.userid,
+          type: BaseType.OUTPOST,
+          wmid: EnumYardType.RESOURCE,
+        });
 
-      for (const { level } of resourceOutposts) {
-        totalResourceRate += RESOURCE_PRODUCTION_RATES[level];
-        totalResourceCapacity += RESOURCE_CAPACITIES[level];
+        for (const { level } of resourceOutposts) {
+          totalResourceRate += RESOURCE_PRODUCTION_RATES[level];
+          totalResourceCapacity += RESOURCE_CAPACITIES[level];
+        }
       }
 
-      for (const { level } of strongholdOutposts) {
-        totalStrongholdBonus += STRONGHOLD_BONUSES[level];
+      // Sum stronghold bonus for the attacker. Applies buff to monsters deployed during combat.
+      if (type === BaseMode.ATTACK) {
+        const strongholdOutposts = await postgres.em.find(Save, {
+          saveuserid: user.userid,
+          type: BaseType.OUTPOST,
+          wmid: EnumYardType.STRONGHOLD,
+        });
+
+        for (const { level } of strongholdOutposts) {
+          totalStrongholdBonus += STRONGHOLD_BONUSES[level];
+        }
       }
     }
 
@@ -161,13 +173,10 @@ export const baseLoad: KoaController = async (ctx) => {
       pic_square: `${process.env.AVATAR_URL}?seed=${filteredSave.name}&size=${50}`,
       ...(isOwner && mapUserSaveData(user)),
       ...(isOwner && mapversion === MapRoomVersion.V3 && {
-        player: {
-          buffs: {
-            2: totalResourceRate,
-            10: totalResourceCapacity,
-            ...(totalStrongholdBonus > 0 && { 5: totalStrongholdBonus, 6: totalStrongholdBonus }),
-          },
-        },
+        player: { buffs: { 2: totalResourceRate, 10: totalResourceCapacity } },
+      }),
+      ...(type === BaseMode.ATTACK && mapversion === MapRoomVersion.V3 && totalStrongholdBonus > 0 && {
+        attackingplayer: { buffs: { 5: totalStrongholdBonus } },
       }),
       ...(defenderReduction > 0 && {
         player: { buffs: { 1: defenderReduction } },
