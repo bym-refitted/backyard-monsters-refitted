@@ -79,12 +79,12 @@ export const baseLoad: KoaController = async (ctx) => {
       case BaseMode.IATTACK:
         if (!ctx.meetsDiscordAgeCheck) throw discordAgeErr();
 
-        await validateAttack(user, attackData);
+        await validateAttack(user, attackData, mapversion);
         baseSave = await infernoModeAttack(user, baseid);
         break;
 
       case BaseMode.IWMATTACK:
-        await validateAttack(user, attackData);
+        await validateAttack(user, attackData, mapversion);
         baseSave = await infernoModeAttack(user, baseid);
         break;
         
