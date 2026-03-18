@@ -103,6 +103,7 @@ export const baseLoad: KoaController = async (ctx) => {
     let totalResourceRate = 0;
     let totalResourceCapacity = 0;
     let totalStrongholdBonus = 0;
+    let totalDefenderStrongholdBonus = 0;
     let defenderReduction = 0;
 
     if (mapversion === MapRoomVersion.V3) {
@@ -120,16 +121,19 @@ export const baseLoad: KoaController = async (ctx) => {
         }
       }
 
-      // Sum stronghold bonus for the attacker. Applies buff to monsters deployed during combat.
+      // Sum stronghold bonuses for attacker (monster damage) and defender (tower damage).
       if (type === BaseMode.ATTACK) {
-        const strongholdOutposts = await postgres.em.find(Save, {
-          saveuserid: user.userid,
-          type: BaseType.OUTPOST,
-          wmid: EnumYardType.STRONGHOLD,
-        });
+        const [attackerStrongholds, defenderStrongholds] = await Promise.all([
+          postgres.em.find(Save, { saveuserid: user.userid, type: BaseType.OUTPOST, wmid: EnumYardType.STRONGHOLD }),
+          postgres.em.find(Save, { saveuserid: baseSave.saveuserid, type: BaseType.OUTPOST, wmid: EnumYardType.STRONGHOLD }),
+        ]);
 
-        for (const { level } of strongholdOutposts) {
+        for (const { level } of attackerStrongholds) {
           totalStrongholdBonus += STRONGHOLD_BONUSES[level];
+        }
+
+        for (const { level } of defenderStrongholds) {
+          totalDefenderStrongholdBonus += STRONGHOLD_BONUSES[level];
         }
       }
     }
@@ -177,6 +181,9 @@ export const baseLoad: KoaController = async (ctx) => {
       }),
       ...(type === BaseMode.ATTACK && mapversion === MapRoomVersion.V3 && totalStrongholdBonus > 0 && {
         attackingplayer: { buffs: { 5: totalStrongholdBonus } },
+      }),
+      ...(type === BaseMode.ATTACK && mapversion === MapRoomVersion.V3 && totalDefenderStrongholdBonus > 0 && {
+        defendingplayer: { buffs: { 6: totalDefenderStrongholdBonus } },
       }),
       ...(defenderReduction > 0 && {
         player: { buffs: { 1: defenderReduction } },
