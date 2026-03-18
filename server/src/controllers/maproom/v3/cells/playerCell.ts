@@ -7,6 +7,8 @@ import { calculateBaseLevel } from "../../../../services/base/calculateBaseLevel
 import { logger } from "../../../../utils/logger.js";
 import { PLAYER_RANGE, STRUCTURE_RANGE } from "../../../../config/MapRoom3Config.js";
 import { EnumYardType } from "../../../../enums/EnumYardType.js";
+import { damageProtection } from "../../../../services/maproom/v2/damageProtection.js";
+import { getCurrentDateTime } from "../../../../utils/getCurrentDateTime.js";
 
 /**
  * Handles the player's cell data on the world map for Map Room v3.
@@ -19,7 +21,7 @@ import { EnumYardType } from "../../../../enums/EnumYardType.js";
  * @param {WorldMapCell} cell - The world map cell object.
  * @param {Map<number, User>} cellOwners - Pre-loaded map of user IDs to User entities.
  */
-export const playerCell = (ctx: Context, cell: WorldMapCell, cellOwners: Map<number, User>): CellData => {
+export const playerCell = async (ctx: Context, cell: WorldMapCell, cellOwners: Map<number, User>): Promise<CellData> => {
   const [cellX, cellY] = [cell.x, cell.y];
 
   const cellSave = cell.save;
@@ -47,7 +49,15 @@ export const playerCell = (ctx: Context, cell: WorldMapCell, cellOwners: Map<num
     range = PLAYER_RANGE;
   }
 
-const altitude = 5 + (cellX * 73 + cellY * 31) % 45;
+  const altitude = 5 + (cellX * 73 + cellY * 31) % 45;
+
+  let isProtected = false;
+  const currentTime = getCurrentDateTime();
+
+  if (cell.base_type === EnumYardType.PLAYER) {
+    await damageProtection(cellSave);
+    isProtected = cellSave.protected > 0 && cellSave.protected > currentTime;
+  }
 
   return {
     uid: cellOwner.userid,
@@ -65,7 +75,7 @@ const altitude = 5 + (cellX * 73 + cellY * 31) % 45;
     dm: cellSave?.damage ?? 0,
     lo: 0,
     fr: 0,
-    p: 0,
+    p: isProtected ? 1 : 0,
     d: (cellSave?.damage ?? 0) >= 90 ? 1 : 0,
     t: 0,
     rel: mine ? EnumBaseRelationship.SELF : EnumBaseRelationship.ENEMY,

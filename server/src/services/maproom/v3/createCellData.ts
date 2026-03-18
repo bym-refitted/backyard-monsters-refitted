@@ -26,7 +26,7 @@ export const createCellData = async (
   ctx: Context,
   cellOwners: Map<number, User> = new Map(),
 ): Promise<CellData> => {
-  if (cell.uid > 0) return playerCell(ctx, cell, cellOwners);
+  if (cell.uid > 0) return await playerCell(ctx, cell, cellOwners);
 
   switch (cell.base_type) {
     case EnumYardType.STRONGHOLD:
