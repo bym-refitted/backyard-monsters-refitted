@@ -161,8 +161,7 @@ export const baseLoad: KoaController = async (ctx) => {
 
     const attackAllowed = canAttack(user.save, baseSave, mapversion);
 
-    ctx.status = Status.OK;
-    ctx.body = {
+    const response: Record<string, unknown> = {
       ...filteredSave,
       relationship: isOwner ? EnumBaseRelationship.SELF : EnumBaseRelationship.ENEMY,
       canattack: attackAllowed,
@@ -171,24 +170,28 @@ export const baseLoad: KoaController = async (ctx) => {
       error: 0,
       id: filteredSave.basesaveid,
       champion: JSON.stringify(filteredSave.champion),
-      storeitems: { ...storeItems },
+      storeitems: storeItems,
       tutorialstage: isTutorialEnabled,
       currenttime: getCurrentDateTime(),
-      pic_square: `${process.env.AVATAR_URL}?seed=${filteredSave.name}&size=${50}`,
+      pic_square: `${process.env.AVATAR_URL}?seed=${filteredSave.name}&size=50`,
       ...(isOwner && mapUserSaveData(user)),
-      ...(isOwner && mapversion === MapRoomVersion.V3 && {
-        player: { buffs: { 2: totalResourceRate, 10: totalResourceCapacity } },
-      }),
-      ...(type === BaseMode.ATTACK && mapversion === MapRoomVersion.V3 && totalStrongholdBonus > 0 && {
-        attackingplayer: { buffs: { 5: totalStrongholdBonus } },
-      }),
-      ...(type === BaseMode.ATTACK && mapversion === MapRoomVersion.V3 && totalDefenderStrongholdBonus > 0 && {
-        defendingplayer: { buffs: { 6: totalDefenderStrongholdBonus } },
-      }),
-      ...(defenderReduction > 0 && {
-        player: { buffs: { 1: defenderReduction } },
-      }),
     };
+
+    if (isOwner && mapversion === MapRoomVersion.V3) {
+      response.player = { buffs: { 2: totalResourceRate, 10: totalResourceCapacity } };
+    }
+
+    if (defenderReduction > 0) {
+      response.player = { buffs: { 1: defenderReduction } };
+    }
+
+    if (type === BaseMode.ATTACK && mapversion === MapRoomVersion.V3) {
+      if (totalStrongholdBonus > 0) response.attackingplayer = { buffs: { 5: totalStrongholdBonus } };
+      if (totalDefenderStrongholdBonus > 0) response.defendingplayer = { buffs: { 6: totalDefenderStrongholdBonus } };
+    }
+
+    ctx.status = Status.OK;
+    ctx.body = response;
   } catch (err) {
     ctx.status = Status.INTERNAL_SERVER_ERROR;
     ctx.body = { error: "The server failed to load this base." };
