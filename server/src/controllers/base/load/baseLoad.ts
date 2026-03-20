@@ -11,9 +11,10 @@ import { BaseMode, BaseType } from "../../../enums/Base.js";
 import { EnumYardType } from "../../../enums/EnumYardType.js";
 import { MapRoomVersion } from "../../../enums/MapRoom.js";
 import { WORLD_SIZE } from "../../../config/MapRoom2Config.js";
-import { RESOURCE_PRODUCTION_RATES, RESOURCE_CAPACITIES, DEFENDER_DAMAGE_REDUCTION, STRONGHOLD_BONUSES } from "../../../config/MapRoom3Config.js";
+import { RESOURCE_PRODUCTION_RATES, RESOURCE_CAPACITIES, DEFENDER_DAMAGE_REDUCTION, STRONGHOLD_BONUSES, STRUCTURE_RANGE } from "../../../config/MapRoom3Config.js";
 import { WorldMapCell } from "../../../models/worldmapcell.model.js";
 import { getDefenderCoords, isDefensiveStructure } from "../../../services/maproom/v3/getDefenderCoords.js";
+import { getHexDistance } from "../../../services/maproom/v3/getHexNeighborOffsets.js";
 import { Status } from "../../../enums/StatusCodes.js";
 import { baseModeView } from "./modes/baseModeView.js";
 import { baseModeBuild } from "./modes/baseModeBuild.js";
@@ -121,20 +122,47 @@ export const baseLoad: KoaController = async (ctx) => {
         }
       }
 
-      // Sum stronghold bonuses for attacker (monster damage) and defender (tower damage).
-      if (type === BaseMode.ATTACK) {
+      // Strongholds boost monster damage (attacker) and tower damage (defender),
+      // but only if the target cell falls within their attack range.
+      if (type === BaseMode.ATTACK && baseSave.cell) {
+        const targetCell: WorldMapCell = baseSave.cell;
+
         const [attackerStrongholds, defenderStrongholds] = await Promise.all([
-          postgres.em.find(Save, { saveuserid: user.userid, type: BaseType.OUTPOST, wmid: EnumYardType.STRONGHOLD }),
-          postgres.em.find(Save, { saveuserid: baseSave.saveuserid, type: BaseType.OUTPOST, wmid: EnumYardType.STRONGHOLD }),
+          postgres.em.find(
+            Save,
+            {
+              saveuserid: user.userid,
+              type: BaseType.OUTPOST,
+              wmid: EnumYardType.STRONGHOLD,
+            },
+            { populate: ["cell"] },
+          ),
+          
+          postgres.em.find(
+            Save,
+            {
+              saveuserid: baseSave.saveuserid,
+              type: BaseType.OUTPOST,
+              wmid: EnumYardType.STRONGHOLD,
+            },
+            { populate: ["cell"] },
+          ),
         ]);
 
-        for (const { level } of attackerStrongholds) {
-          totalStrongholdBonus += STRONGHOLD_BONUSES[level];
-        }
+        const strongholdBonus = (strongholds: Save[]) => {
+          let bonus = 0;
 
-        for (const { level } of defenderStrongholds) {
-          totalDefenderStrongholdBonus += STRONGHOLD_BONUSES[level];
-        }
+          for (const { level, cell } of strongholds) {
+            const distance = cell && getHexDistance(cell.x, cell.y, targetCell.x, targetCell.y);
+            
+            if (distance && distance <= STRUCTURE_RANGE[EnumYardType.STRONGHOLD][level])
+              bonus += STRONGHOLD_BONUSES[level];
+          }
+          return bonus;
+        };
+
+        totalStrongholdBonus = strongholdBonus(attackerStrongholds);
+        totalDefenderStrongholdBonus = strongholdBonus(defenderStrongholds);
       }
     }
 
