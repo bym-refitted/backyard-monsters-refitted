@@ -15,14 +15,6 @@ interface Cell {
   terrainHeight: number | null;
 }
 
-// TODO: clean this file up its shitty
-// 1. We need to check if a cell exists in the database first at that spot
-// 2. If no, check if the terrain generation has taken that space
-// 3. If no, all good we can place the yard (and override that generated terrain)
-
-// Potential issues:
-// 1. What happens if a tribe outpost is already in the database? It will block the placement of a main yard
-
 /**
  * Checks if a position can be overridden by a player yard or defender.
  * Checks database cell first, then generated cell if no database cell exists.
