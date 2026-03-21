@@ -120,6 +120,26 @@ export const baseLoad: KoaController = async (ctx) => {
           totalResourceRate += RESOURCE_PRODUCTION_RATES[level];
           totalResourceCapacity += RESOURCE_CAPACITIES[level];
         }
+
+        // Auto-bank calculates and applies resources accumulated since the player's last session.
+        if (type === BaseMode.BUILD && totalResourceRate > 0) {
+          const userSave = user.save;
+          const now = getCurrentDateTime();
+          const lastAccumulated = userSave.buildingresources?.t;
+
+          if (lastAccumulated) {
+            const elapsed = now - lastAccumulated;
+            const accumulated = Math.floor(totalResourceRate * elapsed);
+
+            if (accumulated > 0 && userSave.resources) {
+              for (const resource of ["r1", "r2", "r3", "r4"])
+                userSave.resources[resource] += accumulated;
+            }
+          }
+
+          userSave.buildingresources.t = now;
+          await postgres.em.persistAndFlush(userSave);
+        }
       }
 
       // Strongholds boost monster damage (attacker) and tower damage (defender),
