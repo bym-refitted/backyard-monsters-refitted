@@ -36,9 +36,10 @@ package
       override public function Description() : void
       {
          super.Description();
+         var effectiveLevel:int = getEffectiveLevel();
          _upgradeDescription = KEYS.Get("bdg_housing_capacitydesc",{
-            "v1":GLOBAL.FormatNumber(_buildingProps.capacity[_lvl.Get() - 1]),
-            "v2":GLOBAL.FormatNumber(_buildingProps.capacity[_lvl.Get()])
+            "v1":GLOBAL.FormatNumber(_buildingProps.capacity[effectiveLevel - 1]),
+            "v2":GLOBAL.FormatNumber(_buildingProps.capacity[effectiveLevel])
          });
          if(_recycleCosts != null)
          {
@@ -50,8 +51,8 @@ package
             _blockRecycle = false;
          }
          var _loc1_:int = HOUSING._housingSpace.Get();
-         var _loc2_:int = int(_buildingProps.capacity[_lvl.Get() - 1]);
-         if(HOUSING._housingSpace.Get() - _buildingProps.capacity[_lvl.Get() - 1] < 0)
+         var _loc2_:int = int(_buildingProps.capacity[effectiveLevel - 1]);
+         if(HOUSING._housingSpace.Get() - _buildingProps.capacity[effectiveLevel - 1] < 0)
          {
             _recycleDescription = "<font color=\"#CC0000\">" + KEYS.Get("bdg_housing_recyclewarning") + "</font>";
             _blockRecycle = true;

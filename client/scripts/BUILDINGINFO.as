@@ -47,15 +47,16 @@ package
          _mc = MAP._BUILDINGINFO.addChild(new buildingInfoData()) as MovieClip;
          _mc.tName.autoSize = TextFieldAutoSize.CENTER;
          var _loc2_:* = "<b>" + KEYS.Get(_props.name) + "</b>";
+         var effectiveLvl:int = _building.getEffectiveLevel();
          if(_building._lvl.Get() > 0 && _props.costs && _props.costs.length > 1)
          {
             if(Boolean(_props.names) && _props.names.length > 1)
             {
-               _loc2_ = "<b>" + KEYS.Get(_props.names[param1._lvl.Get() - 1]) + "</b>";
+               _loc2_ = "<b>" + KEYS.Get(_props.names[effectiveLvl - 1]) + "</b>";
             }
             else
             {
-               _loc2_ += "<br><b>" + KEYS.Get("bdg_infopop_levelnum",{"v1":param1._lvl.Get()}) + "</b>";
+               _loc2_ += "<br><b>" + KEYS.Get("bdg_infopop_levelnum",{"v1":effectiveLvl}) + "</b>";
             }
             if(_building._fortification.Get() > 0)
             {
