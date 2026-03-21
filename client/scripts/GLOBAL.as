@@ -291,6 +291,8 @@ package
 
       public static var _buildingProps:Array;
 
+      private static var _mr2BuildingProps:Array = null;
+
       public static const k_STAGE_FPS:uint = 24;
 
       public static var _fps:int;
@@ -625,6 +627,15 @@ package
          return GLOBAL.mode === GLOBAL.e_BASE_MODE.WMATTACK || GLOBAL.mode === GLOBAL.e_BASE_MODE.IWMATTACK || GLOBAL.mode === GLOBAL.e_BASE_MODE.IATTACK || GLOBAL.mode === GLOBAL.e_BASE_MODE.ATTACK;
       }
 
+      private static function copyBuildingProps(param1:Object):Object
+      {
+         var copy:Object = {};
+         var key:String = null;
+
+         for (key in param1) copy[key] = param1[key];
+         return copy;
+      }
+
       private static function changeNotMaproom3SpecificBuildings():void
       {
          _buildingProps[8].costs = [{
@@ -694,8 +705,6 @@ package
             "re":[[14,1,6],[8,1,1]]
          }];
          _buildingProps[14].capacity = [200,260,320,380,450,540];
-         _buildingProps[14].hp = [4000,14000,25000,43000,75000,130000];
-         _buildingProps[14].repairTime = [100,200,300,400,500,600];
          _buildingProps[21].capacity = [380,450,540,660,800];
          _buildingProps[4].costs = [{
             "r1":new SecNum(1000),
@@ -726,7 +735,6 @@ package
             "time":new SecNum(97200),
             "re":[[14,1,4],[11,1,1]]
          }];
-         _buildingProps[4].hp = [4000,8000,16000,28000];
          _buildingProps[4].capacity = [500,1000,1750,2250,3000,4000];
       }
 
@@ -741,10 +749,32 @@ package
                _buildingProps = OUTPOST_YARD_PROPS._outpostProps;
                break;
             default:
-               _buildingProps = YARD_PROPS._yardProps;
                if (!MapRoomManager.instance.isInMapRoom3)
                {
-                  changeNotMaproom3SpecificBuildings();
+                  if (_mr2BuildingProps == null)
+                  {
+                     // Shallow-copy the array and each entry that changeNotMaproom3SpecificBuildings()
+                     // will mutate, so YARD_PROPS._yardProps originals are never modified. This ensures
+                     // a same-session MR2 to MR3 upgrade sees pristine MR3 values in YARD_PROPS.
+                     // NOTE: if you add a new index to changeNotMaproom3SpecificBuildings(), add a
+                     // copyBuildingProps() for it here too, otherwise the original will be mutated.
+                     _mr2BuildingProps = YARD_PROPS._yardProps.slice();
+                     _mr2BuildingProps[4] = copyBuildingProps(YARD_PROPS._yardProps[4]);
+                     _mr2BuildingProps[8] = copyBuildingProps(YARD_PROPS._yardProps[8]);
+                     _mr2BuildingProps[14] = copyBuildingProps(YARD_PROPS._yardProps[14]);
+                     _mr2BuildingProps[21] = copyBuildingProps(YARD_PROPS._yardProps[21]);
+                     
+                     _buildingProps = _mr2BuildingProps;
+                     changeNotMaproom3SpecificBuildings();
+                  }
+                  else
+                  {
+                     _buildingProps = _mr2BuildingProps;
+                  }
+               }
+               else
+               {
+                  _buildingProps = YARD_PROPS._yardProps;
                }
          }
          if (Boolean(GLOBAL._flags.viximo) || Boolean(GLOBAL._flags.kongregate))
