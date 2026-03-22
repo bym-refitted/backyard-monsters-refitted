@@ -2211,7 +2211,11 @@ export const strongholds: Record<number, Record<string, any>> = {
     inventory: {},
     monsterbaiter: {},
     loot: {},
-    storedata: {},
+    storedata: {
+      ENL: {
+        q: 6,
+      },
+    },
     coords: {},
     quests: {},
     player: {},
@@ -4748,7 +4752,11 @@ export const strongholds: Record<number, Record<string, any>> = {
     inventory: {},
     monsterbaiter: {},
     loot: {},
-    storedata: {},
+    storedata: {
+      ENL: {
+        q: 6,
+      },
+    },
     coords: {},
     quests: {},
     player: {},
@@ -7909,7 +7917,11 @@ export const strongholds: Record<number, Record<string, any>> = {
     inventory: {},
     monsterbaiter: {},
     loot: {},
-    storedata: {},
+    storedata: {
+      ENL: {
+        q: 6,
+      },
+    },
     coords: {},
     quests: {},
     player: {},
