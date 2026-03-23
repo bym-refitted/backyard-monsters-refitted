@@ -218,11 +218,12 @@ package
          }
          else
          {
-            if(MapRoomManager.instance.isInMapRoom3 && !GLOBAL._aiDesignMode)
-            {
-               GLOBAL.Message(KEYS.Get("map_cannot_recycle_map_room3"));
-               return;
-            }
+            // Comment: this stopped Map Room 3 from being recycled
+            // if(MapRoomManager.instance.isInMapRoom3 && !GLOBAL._aiDesignMode)
+            // {
+            //    GLOBAL.Message(KEYS.Get("map_cannot_recycle_map_room3"));
+            //    return;
+            // }
             GLOBAL.Message(KEYS.Get("newmap_recycle2"),KEYS.Get("btn_recycle"),this.RecycleD);
          }
          GLOBAL.eventDispatcher.dispatchEvent(new BuildingEvent(BuildingEvent.ATTEMPT_RECYCLE,this));
@@ -235,11 +236,12 @@ package
             return;
          }
          var _loc1_:Array = [["version",1]];
-         if(MapRoomManager.instance.isInMapRoom3)
-         {
-            RecycleB();
-            return;
-         }
+         // Comment: This stopped Map Room 3 from being recycled.
+         // if(MapRoomManager.instance.isInMapRoom3)
+         // {
+         //    RecycleB();
+         //    return;
+         // }
          new URLLoaderApi().load(GLOBAL._mapURL + "setmapversion",_loc1_,this.RecycleDSuccess,this.RecycleDFail);
          // PLEASEWAIT.Show(KEYS.Get("wait_processing"));
       }
@@ -259,7 +261,7 @@ package
                GLOBAL.StatSet("mrl",1,true);
             }
             GLOBAL._bMap = null;
-            MapRoomManager.instance.mapRoomVersion = MapRoomManager.MAP_ROOM_VERSION_1;
+            MapRoomManager.instance.DowngradeFromMapRoom3();
             GLOBAL._baseURL = param1.baseurl;
             BASE._baseID = 0;
             BASE._loadedFriendlyBaseID = 0;
@@ -302,6 +304,14 @@ package
       override public function Setup(param1:Object) : void
       {
          super.Setup(param1);
+         if(MapRoomManager.instance.isInMapRoom3)
+         {
+            _lvl.Set(3);
+         }
+         else if(MapRoomManager.instance.isInMapRoom2)
+         {
+            _lvl.Set(2);
+         }
          if(_lvl.Get() > 1)
          {
             ACHIEVEMENTS.Check("map2",1);

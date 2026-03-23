@@ -1,14 +1,14 @@
 import alea from "alea";
 
+import { MapRoom2, Terrain } from "../../../enums/MapRoom.js";
 import { createNoise2D, type NoiseFunction2D as Noise } from "simplex-noise";
-import { MapRoom, Terrain } from "../../../enums/MapRoom.js";
 
 import {
   NOISE_SCALE,
   WORLD_SIZE,
   EDGE_TRANSITION_WIDTH,
   TERRAIN_SCALE,
-} from "../../../config/WorldGenSettings.js";
+} from "../../../config/MapRoom2Config.js";
 
 /**
  * Generates simplex noise based on a given seed.
@@ -115,8 +115,8 @@ const smoothHeight = (noise: Noise, cellX: number, cellY: number) => {
   const scale = NOISE_SCALE;
   const noiseAt = (dx: number, dy: number) => noise(dx / scale, dy / scale);
 
-  const topCellY = cellY - 1 < 0 ? MapRoom.HEIGHT - cellY - 1 : cellY - 1;
-  const rightCellX = cellX - 1 < 0 ? MapRoom.HEIGHT - cellX - 1 : cellX - 1;
+  const topCellY = cellY - 1 < 0 ? MapRoom2.HEIGHT - cellY - 1 : cellY - 1;
+  const rightCellX = cellX - 1 < 0 ? MapRoom2.HEIGHT - cellX - 1 : cellX - 1;
   let currentCell = noiseAt(cellX, cellY) / 4;
 
   // Retrieve the noise values for the adjacent cells

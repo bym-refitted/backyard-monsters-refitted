@@ -12,6 +12,9 @@ package com.monsters.maproom3
    import flash.geom.Point;
    import flash.net.URLLoader;
    import flash.net.URLRequest;
+   import flash.net.URLRequestHeader;
+   import flash.net.URLRequestMethod;
+   import flash.net.URLVariables;
    import flash.utils.Dictionary;
    
    public class MapRoom3 implements IMapRoom
@@ -37,7 +40,12 @@ package com.monsters.maproom3
          super();
          if(headerUrl != null)
          {
-            this.m_HeightMapLoader = new URLLoader(new URLRequest(headerUrl));
+            var req:URLRequest = new URLRequest(headerUrl);
+            req.method = URLRequestMethod.POST;
+            req.data = new URLVariables();
+            req.requestHeaders.push(new URLRequestHeader("Authorization","Bearer " + LOGIN.token));
+            
+            this.m_HeightMapLoader = new URLLoader(req);
             this.m_HeightMapLoader.addEventListener(Event.COMPLETE,this.OnHeightMapLoaded,false,0,true);
             this.m_HeightMapLoader.addEventListener(IOErrorEvent.IO_ERROR,this.OnHeightMapLoadFailed,false,0,true);
             this.m_HeightMapLoader.addEventListener(IOErrorEvent.NETWORK_ERROR,this.OnHeightMapLoadFailed,false,0,true);
@@ -107,16 +115,20 @@ package com.monsters.maproom3
       {
          var serverData:Object = JSON.parse(this.m_HeightMapLoader.data);
          this.m_MapRoom3Data = new MapRoom3Data(serverData);
+         this.m_MapRoom3Data.LoadInitialCellData(this.m_LastCenterPoint);
       }
-      
       public function OnHeightMapLoadFailed(param1:Event) : void
       {
          this.m_MapRoom3Data = new MapRoom3Data(null);
+         this.m_MapRoom3Data.LoadInitialCellData(this.m_LastCenterPoint);
       }
       
       public function Setup() : void
       {
-         this.m_MapRoom3Data.LoadInitialCellData(this.m_LastCenterPoint);
+         if(this.m_MapRoom3Data != null)
+         {
+            this.m_MapRoom3Data.LoadInitialCellData(this.m_LastCenterPoint);
+         }
          FriendPicker.ClearContacts();
       }
       

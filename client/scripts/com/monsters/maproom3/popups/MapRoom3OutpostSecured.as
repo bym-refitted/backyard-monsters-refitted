@@ -25,18 +25,18 @@ package com.monsters.maproom3.popups
                tfTitle.htmlText = KEYS.Get("ro_taken_title");
                tfBody.htmlText = KEYS.Get("ro_taken_desc",{
                   "v1":param2.level,
-                  "v2":GLOBAL.FormatNumber(param2[2] * 60),
-                  "v3":GLOBAL.FormatNumber(param2[10]),
-                  "v4":param2[7]
+                  "v2":GLOBAL.FormatNumber(param2.productionRate * 60),
+                  "v3":GLOBAL.FormatNumber(param2.capacity),
+                  "v4":param2.range
                });
                break;
             case EnumYardType.STRONGHOLD:
                tfTitle.htmlText = KEYS.Get("sh_taken_title");
                tfBody.htmlText = KEYS.Get("sh_taken_desc",{
                   "v1":param2.level,
-                  "v2":param2[5],
-                  "v3":param2[6],
-                  "v4":param2[7]
+                  "v2":param2.monsterBonus,
+                  "v3":param2.towerBonus,
+                  "v4":param2.range
                });
                break;
             case EnumYardType.PLAYER:

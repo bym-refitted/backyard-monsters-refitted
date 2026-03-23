@@ -3536,7 +3536,7 @@ export const devSandbox = (user?: User) => {
         id: 594,
         Y: 75,
         t: 5,
-        l: 5,
+        l: 4,
       },
       "595": {
         X: -225,

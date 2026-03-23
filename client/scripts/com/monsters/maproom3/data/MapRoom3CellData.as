@@ -75,6 +75,8 @@ package com.monsters.maproom3.data
       private var m_Name:String = "";
       
       private var m_FacebookId:String = "";
+
+      private var m_PicSquare:String = "";
       
       private var m_AllianceId:int = 0;
       
@@ -100,6 +102,11 @@ package com.monsters.maproom3.data
       public function get facebookID() : String
       {
          return this.m_FacebookId;
+      }
+
+      public function get pic_square() : String
+      {
+         return this.m_PicSquare;
       }
       
       public function get allianceID() : int
@@ -181,6 +188,7 @@ package com.monsters.maproom3.data
       {
          this.m_Name = cellData.hasOwnProperty("n") ? String(cellData["n"]) : "";
          this.m_FacebookId = cellData.hasOwnProperty("fbid") ? String(cellData["fbid"]) : "";
+         this.m_PicSquare = cellData.hasOwnProperty("pic_square") ? String(cellData["pic_square"]) : "";
          this.m_AllianceId = cellData.hasOwnProperty("aid") ? int(cellData["aid"]) : 0;
          this.m_BaseId = cellData.hasOwnProperty("bid") ? Number(cellData["bid"]) : 0;
          this.m_UserId = cellData.hasOwnProperty("uid") ? int(cellData["uid"]) : 0;

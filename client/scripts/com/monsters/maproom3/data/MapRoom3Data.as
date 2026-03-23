@@ -152,7 +152,9 @@ package com.monsters.maproom3.data
          {
             return;
          }
-         var timer:int = getTimer();
+         // Timeout disabled - we have a loading screen that blocks interaction anyway
+         // No need to artificially slow down cell creation with time-slicing
+         // var timer:int = getTimer();
          this.m_CellCreationIndexX;
          while(this.m_CellCreationIndexX < this.m_Width)
          {
@@ -162,10 +164,11 @@ package com.monsters.maproom3.data
                index = this.GetCellIndex(this.m_CellCreationIndexX,this.m_CellCreationIndexY);
                cellData = this.m_CreatingMapData.data[index];
                this.m_MapRoom3Cells[index] = new MapRoom3Cell(this.m_CellCreationIndexX,this.m_CellCreationIndexY,cellData.h,cellData.t);
-               if(getTimer() - timer > CELL_CREATION_LOOP_TIMEOUT)
-               {
-                  return;
-               }
+               // Timeout check disabled for faster loading
+               // if(getTimer() - timer > CELL_CREATION_LOOP_TIMEOUT)
+               // {
+               //    return;
+               // }
                ++this.m_CellCreationIndexY;
             }
             this.m_CellCreationIndexY = 0;
@@ -195,17 +198,18 @@ package com.monsters.maproom3.data
          {
             _loc2_.push(["worldid",DEBUG_WORLD_ID]);
          }
+         _loc2_.push(["token", LOGIN.token]);
          new URLLoaderApi().load(MapRoomManager.instance.mapRoom3URL + "initworldmap",_loc2_,this.OnInitialPlayerCellDataLoaded);
       }
       
-      private function OnInitialPlayerCellDataLoaded(initworldmapData:Object) : void
+      private function OnInitialPlayerCellDataLoaded(serverData:Object) : void
       {
          var _loc9_:int = 0;
          var _loc10_:int = 0;
-         this.m_InitialPlayerCellData = initworldmapData;
+         this.m_InitialPlayerCellData = serverData;
          if(this.m_InitialCentrePoint == null)
          {
-            this.m_InitialCentrePoint = new Point(initworldmapData.celldata[0].x,initworldmapData.celldata[0].y);
+            this.m_InitialCentrePoint = new Point(serverData.celldata[0].x,serverData.celldata[0].y);
          }
          var _loc2_:Array = [];
          var _loc3_:int = Math.max(0,this.m_InitialCentrePoint.x - CELL_LOAD_BUFFER_X);
@@ -229,12 +233,13 @@ package com.monsters.maproom3.data
          {
             _loc8_.push(["worldid",DEBUG_WORLD_ID]);
          }
+         _loc8_.push(["token", LOGIN.token]); // TODO: Why does the server still return cells if we don't send a token? verify auth should fail?
          new URLLoaderApi().load(GetCellsRequestURL(),_loc8_,this.OnInitialCellDataLoaded);
       }
       
-      private function OnInitialCellDataLoaded(param1:Object) : void
+      private function OnInitialCellDataLoaded(serverData:Object) : void
       {
-         this.m_InitialCellData = param1;
+         this.m_InitialCellData = serverData;
       }
       
       public function ParseInitialCellData() : void
@@ -315,6 +320,7 @@ package com.monsters.maproom3.data
          {
             _loc6_.push(["worldid",DEBUG_WORLD_ID]);
          }
+         _loc6_.push(["token", LOGIN.token]);
          this.m_PendingCellDataRequest = _loc6_;
          new URLLoaderApi().load(GetCellsRequestURL(),_loc6_,this.OnCellDataLoaded);
       }
@@ -375,27 +381,28 @@ package com.monsters.maproom3.data
          {
             _loc12_.push(["worldid",DEBUG_WORLD_ID]);
          }
+         _loc12_.push(["token", LOGIN.token]);
          this.m_PendingCellDataRequest = _loc12_;
          new URLLoaderApi().load(GetCellsRequestURL(),_loc12_,this.OnCellDataLoaded);
       }
       
-      private function OnCellDataLoaded(getcellsData:Object) : void
+      private function OnCellDataLoaded(serverData:Object) : void
       {
          if(this.m_PendingCellDataRequest == null)
          {
             return;
          }
          this.m_PendingCellDataRequest = null;
-         this.ParseCellData(getcellsData);
+         this.ParseCellData(serverData);
       }
       
-      private function ParseCellData(getcellsData:Object) : void
+      private function ParseCellData(serverData:Object) : void
       {
          var cellDataArray:Array = null;
          var cellData:Object = null;
          var mapRoomCell:MapRoom3Cell = null;
          var cellID:int = 0;
-         cellDataArray = getcellsData.celldata;
+         cellDataArray = serverData.celldata;
          var timer:int = getTimer();
          var cellDataArrayLength:uint = cellDataArray.length;
          var index:int = 0;
@@ -420,9 +427,9 @@ package com.monsters.maproom3.data
             }
             index++;
          }
-         if(getcellsData.alliancedata != null)
+         if(serverData.alliancedata != null)
          {
-            this.OnAllianceDataLoaded(getcellsData.alliancedata);
+            this.OnAllianceDataLoaded(serverData.alliancedata);
          }
          if(MapRoom3.mapRoom3Window != null)
          {
