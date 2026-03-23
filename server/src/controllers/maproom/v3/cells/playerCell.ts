@@ -55,7 +55,6 @@ export const playerCell = async (ctx: Context, cell: WorldMapCell, cellOwners: M
   const currentTime = getCurrentDateTime();
 
   if (cell.base_type === EnumYardType.PLAYER) {
-    await damageProtection(cellSave);
     isProtected = cellSave.protected > 0 && cellSave.protected > currentTime;
   }
 
