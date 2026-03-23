@@ -38,6 +38,7 @@ export const leaveWorld = async (user: User, save: Save) => {
           { map_version: MapRoomVersion.V3 },
           { base_type: EnumYardType.FORTIFICATION },
           { uid: { $ne: userid } },
+          { uid: { $gt: 0 } },
         ],
       });
 
