@@ -77,17 +77,17 @@ export const tribeSaveV3 = async (baseid: string, worldid: string): Promise<Save
   const genCell = getGeneratedCells().get(cellKey(cellX, cellY));
   const structureType = genCell?.type;
 
+  // Client uses wmid to look up the tribe via TRIBES.TribeForBaseID(_wmID).
+  // L_IDS/K_IDS/A_IDS/D_IDS start at 1/11/21/31, so tribeIndex * 10 + 1
+  // gives the first nid of each tribe's range and resolves correctly.
+  const tribeIndex = (cellX + cellY) % Tribes.length;
+  const wmid = tribeIndex * 10 + 1;
+
   if (structureType === EnumYardType.OUTPOST) {
-    const tribeIndex = (cellX + cellY) % Tribes.length;
     const level = genCell.level;
     const outpostSave = OUTPOST_SAVES[tribeIndex][level];
 
     if (!outpostSave) return null;
-
-    // Client uses wmid to look up the tribe via TRIBES.TribeForBaseID(_wmID).
-    // L_IDS/K_IDS/A_IDS/D_IDS start at 1/11/21/31, so tribeIndex * 10 + 1
-    // gives the first nid of each tribe's range and resolves correctly.
-    const wmid = tribeIndex * 10 + 1;
 
     return postgres.em.create(Save, {
       ...outpostSave,
@@ -111,7 +111,7 @@ export const tribeSaveV3 = async (baseid: string, worldid: string): Promise<Save
       ...tribeSave[level],
       baseid,
       level,
-      wmid: structureType,
+      wmid,
     });
   }
 
