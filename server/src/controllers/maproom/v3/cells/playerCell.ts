@@ -7,7 +7,6 @@ import { calculateBaseLevel } from "../../../../services/base/calculateBaseLevel
 import { logger } from "../../../../utils/logger.js";
 import { PLAYER_RANGE, STRUCTURE_RANGE } from "../../../../config/MapRoom3Config.js";
 import { EnumYardType } from "../../../../enums/EnumYardType.js";
-import { damageProtection } from "../../../../services/maproom/v2/damageProtection.js";
 import { getCurrentDateTime } from "../../../../utils/getCurrentDateTime.js";
 
 /**
