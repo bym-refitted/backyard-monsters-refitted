@@ -1,14 +1,14 @@
 import { Save } from "../../../models/save.model.js";
 import { postgres } from "../../../server.js";
 import { Tribe, Tribes } from "../../../enums/Tribes.js";
-import { legionnaire } from "../../../data/tribes/legionnaire.js";
-import { abunaki } from "../../../data/tribes/abunaki.js";
-import { dreadnaught } from "../../../data/tribes/dreadnaught.js";
-import { kozu } from "../../../data/tribes/kozu.js";
 import { calculateTribeLevel, minimumTribeLevels } from "./calculateTribeLevel.js";
+import { abunaki } from "../../../data/tribes/v2/abunaki.js";
+import { dreadnaught } from "../../../data/tribes/v2/dreadnaught.js";
+import { kozu } from "../../../data/tribes/v2/kozu.js";
+import { legionnaire } from "../../../data/tribes/v2/legionnaire.js";
 
 /**
- * Generates a save for a wild monster based on the given base ID.
+ * Generates a save for a wild monster on Map Room 2 based on the given base ID.
  *
  * The base ID is used to calculate the cell coordinates (`cellX`, `cellY`)
  * and derive a tribe index from the combined coordinates. Based on the tribe index,
@@ -17,7 +17,7 @@ import { calculateTribeLevel, minimumTribeLevels } from "./calculateTribeLevel.j
  * @param {string} baseid - The base ID as a string, which will be converted to an integer.
  * @returns {Save} - A new `Save` object for the wild monster, with tribe-specific data.
  */
-export const wildMonsterSave = (baseid: string) => {
+export const tribeSaveV2 = (baseid: string) => {
   const cellX = parseInt(baseid.slice(-6, -3));
   const cellY = parseInt(baseid.slice(-3));
 

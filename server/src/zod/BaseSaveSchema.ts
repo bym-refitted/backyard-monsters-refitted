@@ -55,10 +55,13 @@ export const BaseSaveSchema = z.object({
 
   /**
    * The building data, transformed from a JSON string to an object.
-   * This property is required.
+   * This property is optional.
    * @type {object | undefined}
    */
-  buildingdata: z.string().transform((data) => JSON.parse(data)),
+  buildingdata: z
+    .string()
+    .optional()
+    .transform((data) => (data ? JSON.parse(data) : undefined)),
 
   /**
    * The building health data, transformed from a JSON string to an object.
@@ -79,7 +82,7 @@ export const BaseSaveSchema = z.object({
   monsterupdate: z
     .string()
     .optional()
-    .transform((data) => (data ? (JSON.parse(data) as any[]) : undefined)),
+    .transform((data) => (data ? JSON.parse(data) : undefined)),
 
   /**
    * The attack loot data, transformed from a JSON string to an object.

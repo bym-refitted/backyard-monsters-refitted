@@ -280,11 +280,18 @@ package com.monsters.maproom_manager
       
       private function MapRoom3UpgradeSuccess(param1:Object) : void
       {
+         GLOBAL._save = true;
          if(param1.error == 0)
          {
-            PLEASEWAIT.Hide();
-            PLEASEWAIT.Show(KEYS.Get("upgraded_to_map_room3_refresh"));
-            GLOBAL.CallJS("cc.reloadParent");
+            this.init(true,GLOBAL._apiURL + "bm/getnewmap");
+            this.m_CurrentMapRoom.Setup();
+
+            PLEASEWAIT.Show(KEYS.Get("nwm_loading"));
+            GLOBAL._showMapWaiting = 1;
+
+            // Comment: Old implementation forced users to reload their browser
+            // PLEASEWAIT.Show(KEYS.Get("upgraded_to_map_room3_refresh"));
+            // GLOBAL.CallJS("cc.reloadParent");
          }
          else
          {
@@ -293,9 +300,10 @@ package com.monsters.maproom_manager
             GLOBAL.ErrorMessage("Error upgrading to Map Room 3");
          }
       }
-      
+
       private function MapRoom3UpgradeFail(param1:IOErrorEvent) : void
       {
+         GLOBAL._save = true;
          PLEASEWAIT.Hide();
          LOGGER.Log("err","HTTP error upgrading to Map Room 3");
          GLOBAL.ErrorMessage("HTTP error upgrading to Map Room 3");
@@ -303,6 +311,11 @@ package com.monsters.maproom_manager
       
       public function DowngradeFromMapRoom3() : void
       {
+         if(this.m_CurrentMapRoom is MapRoom3)
+         {
+            this.m_CurrentMapRoom = new MapRoom();
+         }
+         this.m_MapRoomVersion = MAP_ROOM_VERSION_1;
       }
       
       public function CheckForAndForceUpgradeFromMapRoom1() : void

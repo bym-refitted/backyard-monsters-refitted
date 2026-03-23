@@ -208,7 +208,7 @@ package
          {
             mcResources.bAction.addEventListener(MouseEvent.CLICK,this.ActionResourceUpgrade);
             mcResources.bAction.Setup(KEYS.Get("buildoptions_resources"));
-            if(this._building._lvl.Get() < this._building._buildingProps.costs.length)
+            if(this._building._lvl.Get() < this._building.getEffectiveLevelMax())
             {
                if(this._building._type != 14)
                {
@@ -368,9 +368,10 @@ package
             }
             else if(this._building._buildingProps.names && this._building._buildingProps.names.length > 1 && Boolean(this._building._buildingProps.descriptions) && this._building._buildingProps.descriptions.length > 1)
             {
+               var _effectiveLvl:int = this._building.getEffectiveLevel();
                _loc2_ = KEYS.Get("bdg_morenolevel",{
-                  "v1":KEYS.Get(this._building._buildingProps.names[this._building._lvl.Get() - 1]),
-                  "v2":KEYS.Get(this._building._buildingProps.descriptions[this._building._lvl.Get() - 1]),
+                  "v1":KEYS.Get(this._building._buildingProps.names[_effectiveLvl - 1]),
+                  "v2":KEYS.Get(this._building._buildingProps.descriptions[_effectiveLvl - 1]),
                   "v3":this._building._recycleDescription
                });
             }
@@ -378,7 +379,7 @@ package
             {
                _loc2_ = KEYS.Get("bdg_more",{
                   "v1":KEYS.Get(this._building._buildingProps.name),
-                  "v2":this._building._lvl.Get(),
+                  "v2":this._building.getEffectiveLevel(),
                   "v3":KEYS.Get(this._building._buildingProps.description),
                   "v4":this._building._recycleDescription
                });

@@ -66,25 +66,14 @@ package
       {
          GLOBAL.eventDispatcher.removeEventListener(KEYS.LANGUAGE_FILE_LOADED, onLanguageLoaded);
 
-         new URLLoaderApi().load(GLOBAL._apiURL + "bm/getnewmap", null,
-               function(serverData:Object):void
-               {
-                  LOGIN.OnGetNewMap(serverData, [["token", GAME.sharedObj.data.token]]);
-               });
+         var authInfo:Array = [["token", GAME.sharedObj.data.token]];
+         AuthenticateUser(authInfo);
       }
 
-      public static function OnGetNewMap(serverData:Object, authInfo:Array):void
-      {
-         _Login(serverData.newmap, serverData.mapheaderurl, authInfo);
-      }
-
-      private static function _Login(newmap:Boolean, mapheaderurl:String, authInfo:Array):void
+      public static function AuthenticateUser(authInfo:Array):void
       {
          var handleLoadSuccessful:Function;
          var handleLoadError:Function;
-         var onMapRoom3:Boolean = newmap;
-         var mapRoom3HeaderURL:String = mapheaderurl;
-         MapRoomManager.instance.init(onMapRoom3, mapRoom3HeaderURL);
          if (GLOBAL._local)
          {
             handleLoadSuccessful = function(serverData:Object):void
@@ -99,8 +88,15 @@ package
                {
                   if (GLOBAL._local)
                   {
+                     // Set token
                      token = serverData.token;
-                     LOGIN.Process(serverData);
+
+                     new URLLoaderApi().load(GLOBAL._apiURL + "bm/getnewmap", [["token", token]],
+                        function(mapData:Object):void 
+                        {
+                           MapRoomManager.instance.init(mapData.newmap, mapData.mapheaderurl);
+                           LOGIN.Process(serverData);
+                        });
                   }
                   else
                   {

@@ -263,7 +263,7 @@ package com.monsters.display
       
       protected static function clearOverlay(param1:Object) : void
       {
-         if(Boolean(param1.container) && param1.container.parent == MAP._BUILDINGTOPS)
+         if(Boolean(param1.container) && MAP._BUILDINGTOPS && param1.container.parent == MAP._BUILDINGTOPS)
          {
             MAP._BUILDINGTOPS.removeChild(param1.container);
          }
