@@ -253,12 +253,14 @@ export const strongholds: Record<number, Record<string, any>> = {
       "44": {
         X: 65,
         Y: -135,
+        l: 2,
         t: 136,
         id: 44,
       },
       "45": {
         X: -135,
         Y: 65,
+        l: 2,
         t: 136,
         id: 45,
       },
@@ -517,12 +519,14 @@ export const strongholds: Record<number, Record<string, any>> = {
       "85": {
         X: -35,
         Y: 135,
+        l: 4,
         t: 115,
         id: 85,
       },
       "86": {
         X: -205,
         Y: -35,
+        l: 4,
         t: 118,
         id: 86,
       },
@@ -683,12 +687,14 @@ export const strongholds: Record<number, Record<string, any>> = {
       "109": {
         X: -35,
         Y: -205,
+        l: 4,
         t: 115,
         id: 109,
       },
       "110": {
         X: 135,
         Y: -35,
+        l: 4,
         t: 118,
         id: 110,
       },
@@ -814,6 +820,7 @@ export const strongholds: Record<number, Record<string, any>> = {
       "128": {
         X: 45,
         Y: 225,
+        l: 6,
         t: 21,
         id: 128,
       },
@@ -974,6 +981,7 @@ export const strongholds: Record<number, Record<string, any>> = {
       "151": {
         X: 135,
         Y: 135,
+        l: 5,
         t: 23,
         id: 151,
       },
@@ -1057,12 +1065,14 @@ export const strongholds: Record<number, Record<string, any>> = {
       "163": {
         X: 225,
         Y: 225,
+        l: 6,
         t: 20,
         id: 163,
       },
       "164": {
         X: 225,
         Y: 45,
+        l: 6,
         t: 21,
         id: 164,
       },
@@ -1237,12 +1247,14 @@ export const strongholds: Record<number, Record<string, any>> = {
       "189": {
         X: -295,
         Y: -115,
+        l: 6,
         t: 21,
         id: 189,
       },
       "190": {
         X: -115,
         Y: -295,
+        l: 6,
         t: 21,
         id: 190,
       },
@@ -1333,6 +1345,7 @@ export const strongholds: Record<number, Record<string, any>> = {
       "203": {
         X: -205,
         Y: -205,
+        l: 5,
         t: 23,
         id: 203,
       },
@@ -1437,12 +1450,14 @@ export const strongholds: Record<number, Record<string, any>> = {
       "218": {
         X: -295,
         Y: -295,
+        l: 6,
         t: 20,
         id: 218,
       },
       "219": {
         X: -205,
         Y: 135,
+        l: 5,
         t: 25,
         id: 219,
       },
@@ -1680,12 +1695,14 @@ export const strongholds: Record<number, Record<string, any>> = {
       "256": {
         X: -115,
         Y: 225,
+        l: 6,
         t: 20,
         id: 256,
       },
       "257": {
         X: -295,
         Y: 45,
+        l: 6,
         t: 20,
         id: 257,
       },
@@ -1811,6 +1828,7 @@ export const strongholds: Record<number, Record<string, any>> = {
       "275": {
         X: -295,
         Y: 225,
+        l: 6,
         t: 21,
         id: 275,
       },
@@ -2167,24 +2185,28 @@ export const strongholds: Record<number, Record<string, any>> = {
       "329": {
         X: 225,
         Y: -115,
+        l: 6,
         t: 20,
         id: 329,
       },
       "330": {
         X: 45,
         Y: -295,
+        l: 6,
         t: 20,
         id: 330,
       },
       "331": {
         X: 135,
         Y: -205,
+        l: 5,
         t: 25,
         id: 331,
       },
       "332": {
         X: 225,
         Y: -295,
+        l: 6,
         t: 21,
         id: 332,
       },
@@ -2293,7 +2315,7 @@ export const strongholds: Record<number, Record<string, any>> = {
       "0": {
         X: -65,
         Y: -65,
-        l: 1,
+        l: 2,
         t: 138,
         id: 0,
       },
@@ -2748,12 +2770,14 @@ export const strongholds: Record<number, Record<string, any>> = {
       "85": {
         X: -35,
         Y: 135,
+        l: 6,
         t: 115,
         id: 85,
       },
       "86": {
         X: -205,
         Y: -35,
+        l: 6,
         t: 118,
         id: 86,
       },
@@ -2914,12 +2938,14 @@ export const strongholds: Record<number, Record<string, any>> = {
       "109": {
         X: -35,
         Y: -205,
+        l: 6,
         t: 115,
         id: 109,
       },
       "110": {
         X: 135,
         Y: -35,
+        l: 6,
         t: 118,
         id: 110,
       },
@@ -3045,6 +3071,7 @@ export const strongholds: Record<number, Record<string, any>> = {
       "128": {
         X: 45,
         Y: 225,
+        l: 8,
         t: 21,
         id: 128,
       },
@@ -3205,6 +3232,7 @@ export const strongholds: Record<number, Record<string, any>> = {
       "151": {
         X: 135,
         Y: 135,
+        l: 6,
         t: 23,
         id: 151,
       },
@@ -3288,12 +3316,14 @@ export const strongholds: Record<number, Record<string, any>> = {
       "163": {
         X: 225,
         Y: 225,
+        l: 8,
         t: 20,
         id: 163,
       },
       "164": {
         X: 225,
         Y: 45,
+        l: 8,
         t: 21,
         id: 164,
       },
@@ -3465,15 +3495,10 @@ export const strongholds: Record<number, Record<string, any>> = {
         t: 17,
         id: 188,
       },
-      "189": {
-        X: -295,
-        Y: -115,
-        t: 21,
-        id: 189,
-      },
       "190": {
         X: -115,
         Y: -295,
+        l: 8,
         t: 21,
         id: 190,
       },
@@ -3564,6 +3589,7 @@ export const strongholds: Record<number, Record<string, any>> = {
       "203": {
         X: -205,
         Y: -205,
+        l: 6,
         t: 23,
         id: 203,
       },
@@ -3668,12 +3694,14 @@ export const strongholds: Record<number, Record<string, any>> = {
       "218": {
         X: -295,
         Y: -295,
+        l: 8,
         t: 20,
         id: 218,
       },
       "219": {
         X: -205,
         Y: 135,
+        l: 6,
         t: 25,
         id: 219,
       },
@@ -3911,12 +3939,14 @@ export const strongholds: Record<number, Record<string, any>> = {
       "256": {
         X: -115,
         Y: 225,
+        l: 8,
         t: 20,
         id: 256,
       },
       "257": {
         X: -295,
         Y: 45,
+        l: 8,
         t: 20,
         id: 257,
       },
@@ -4038,12 +4068,6 @@ export const strongholds: Record<number, Record<string, any>> = {
         l: 5,
         t: 17,
         id: 274,
-      },
-      "275": {
-        X: -295,
-        Y: 225,
-        t: 21,
-        id: 275,
       },
       "276": {
         X: 120,
@@ -4398,24 +4422,28 @@ export const strongholds: Record<number, Record<string, any>> = {
       "329": {
         X: 225,
         Y: -115,
+        l: 8,
         t: 20,
         id: 329,
       },
       "330": {
         X: 45,
         Y: -295,
+        l: 8,
         t: 20,
         id: 330,
       },
       "331": {
         X: 135,
         Y: -205,
+        l: 6,
         t: 25,
         id: 331,
       },
       "332": {
         X: 225,
         Y: -295,
+        l: 8,
         t: 21,
         id: 332,
       },
@@ -4716,14 +4744,30 @@ export const strongholds: Record<number, Record<string, any>> = {
       "387": {
         X: 65,
         Y: -135,
+        l: 3,
         t: 136,
         id: 387,
       },
       "388": {
         X: -135,
         Y: 65,
+        l: 3,
         t: 136,
         id: 388,
+      },
+      "402": {
+        X: -295,
+        Y: 225,
+        l: 8,
+        t: 21,
+        id: 402,
+      },
+      "403": {
+        X: -295,
+        Y: -115,
+        l: 8,
+        t: 21,
+        id: 403,
       },
     },
     buildingkeydata: {},
@@ -4830,7 +4874,7 @@ export const strongholds: Record<number, Record<string, any>> = {
       "0": {
         X: -65,
         Y: -65,
-        l: 1,
+        l: 3,
         t: 138,
         id: 0,
       },
@@ -5285,12 +5329,14 @@ export const strongholds: Record<number, Record<string, any>> = {
       "85": {
         X: -35,
         Y: 95,
+        l: 8,
         t: 115,
         id: 85,
       },
       "86": {
         X: -205,
         Y: -35,
+        l: 8,
         t: 118,
         id: 86,
       },
@@ -5451,12 +5497,14 @@ export const strongholds: Record<number, Record<string, any>> = {
       "109": {
         X: -35,
         Y: -165,
+        l: 8,
         t: 115,
         id: 109,
       },
       "110": {
         X: 135,
         Y: -35,
+        l: 8,
         t: 118,
         id: 110,
       },
@@ -5582,6 +5630,7 @@ export const strongholds: Record<number, Record<string, any>> = {
       "128": {
         X: 65,
         Y: 235,
+        l: 10,
         t: 21,
         id: 128,
       },
@@ -5742,6 +5791,7 @@ export const strongholds: Record<number, Record<string, any>> = {
       "151": {
         X: 200,
         Y: -240,
+        l: 8,
         t: 23,
         id: 151,
       },
@@ -5825,12 +5875,14 @@ export const strongholds: Record<number, Record<string, any>> = {
       "163": {
         X: -135,
         Y: 235,
+        l: 10,
         t: 20,
         id: 163,
       },
       "164": {
         X: 225,
         Y: 35,
+        l: 10,
         t: 21,
         id: 164,
       },
@@ -6005,12 +6057,14 @@ export const strongholds: Record<number, Record<string, any>> = {
       "189": {
         X: -295,
         Y: -105,
+        l: 10,
         t: 21,
         id: 189,
       },
       "190": {
         X: 225,
         Y: -335,
+        l: 10,
         t: 21,
         id: 190,
       },
@@ -6101,6 +6155,7 @@ export const strongholds: Record<number, Record<string, any>> = {
       "203": {
         X: -270,
         Y: 170,
+        l: 8,
         t: 23,
         id: 203,
       },
@@ -6205,12 +6260,14 @@ export const strongholds: Record<number, Record<string, any>> = {
       "218": {
         X: -295,
         Y: -335,
+        l: 10,
         t: 20,
         id: 218,
       },
       "219": {
         X: 200,
         Y: 170,
+        l: 8,
         t: 25,
         id: 219,
       },
@@ -6448,12 +6505,14 @@ export const strongholds: Record<number, Record<string, any>> = {
       "256": {
         X: 225,
         Y: 265,
+        l: 10,
         t: 20,
         id: 256,
       },
       "257": {
         X: -295,
         Y: 35,
+        l: 10,
         t: 20,
         id: 257,
       },
@@ -6579,6 +6638,7 @@ export const strongholds: Record<number, Record<string, any>> = {
       "275": {
         X: -295,
         Y: 265,
+        l: 10,
         t: 21,
         id: 275,
       },
@@ -6935,24 +6995,28 @@ export const strongholds: Record<number, Record<string, any>> = {
       "329": {
         X: 225,
         Y: -105,
+        l: 10,
         t: 20,
         id: 329,
       },
       "330": {
         X: 65,
         Y: -305,
+        l: 10,
         t: 20,
         id: 330,
       },
       "331": {
         X: -270,
         Y: -240,
+        l: 8,
         t: 25,
         id: 331,
       },
       "332": {
         X: -135,
         Y: -305,
+        l: 10,
         t: 21,
         id: 332,
       },
@@ -7253,12 +7317,14 @@ export const strongholds: Record<number, Record<string, any>> = {
       "387": {
         X: -35,
         Y: -265,
+        l: 5,
         t: 137,
         id: 387,
       },
       "388": {
         X: -35,
         Y: 195,
+        l: 5,
         t: 137,
         id: 388,
       },
@@ -7300,24 +7366,28 @@ export const strongholds: Record<number, Record<string, any>> = {
       "425": {
         X: -135,
         Y: 115,
+        l: 6,
         t: 129,
         id: 425,
       },
       "426": {
         X: 65,
         Y: -185,
+        l: 6,
         t: 129,
         id: 426,
       },
       "427": {
         X: 65,
         Y: 115,
+        l: 6,
         t: 129,
         id: 427,
       },
       "428": {
         X: -135,
         Y: -185,
+        l: 6,
         t: 129,
         id: 428,
       },
@@ -7674,12 +7744,14 @@ export const strongholds: Record<number, Record<string, any>> = {
       "490": {
         X: 225,
         Y: -35,
+        l: 6,
         t: 132,
         id: 490,
       },
       "491": {
         X: -295,
         Y: -35,
+        l: 6,
         t: 132,
         id: 491,
       },
