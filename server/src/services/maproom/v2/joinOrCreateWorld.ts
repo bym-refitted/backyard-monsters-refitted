@@ -3,7 +3,7 @@ import { User } from "../../../models/user.model.js";
 import { Save } from "../../../models/save.model.js";
 import { logger } from "../../../utils/logger.js";
 import { World } from "../../../models/world.model.js";
-import { MapRoom, MapRoomCell } from "../../../enums/MapRoom.js";
+import { MapRoom2, MapRoomCell, MapRoomVersion } from "../../../enums/MapRoom.js";
 import { EntityManager, PostgreSqlDriver } from "@mikro-orm/postgresql";
 import { postgres } from "../../../server.js";
 import { findFreeCell } from "./findFreeCell.js";
@@ -31,7 +31,8 @@ export const joinOrCreateWorld = async (
   let world: World | null = null;
 
   let availableWorlds = await em.find(World, {
-    playerCount: { $lt: MapRoom.MAX_PLAYERS },
+    playerCount: { $lt: MapRoom2.MAX_PLAYERS },
+    map_version: MapRoomVersion.V2,
   });
 
   const shuffledWorlds = availableWorlds.sort(() => Math.random() - 0.5);
@@ -42,6 +43,7 @@ export const joinOrCreateWorld = async (
   } else {
     world = em.create(World, {});
     world.name = "New World";
+    world.map_version = MapRoomVersion.V2;
     logger.info("All worlds full, created new world.");
   }
 

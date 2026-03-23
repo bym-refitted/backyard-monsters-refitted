@@ -10,6 +10,7 @@ import { getMapRoomCells } from "./controllers/maproom/v3/getCells.js";
 import { getNewMap } from "./controllers/maproom/getNewMap.js";
 import { verifyUserAuth, verifyAccountStatus } from "./middleware/auth.js";
 import { relocate } from "./controllers/maproom/v3/relocate.js";
+import { getFriendInfo } from "./controllers/maproom/v3/getFriendInfo.js";
 import { infernoMonsters } from "./controllers/inferno/infernoMonsters.js";
 import { recordDebugData } from "./controllers/debug/recordDebugData.js";
 import { getTemplates } from "./controllers/yardplanner/getTemplates.js";
@@ -70,20 +71,9 @@ router.get("/connection", (ctx) => (ctx.status = Status.OK));
 
 /**
  * Init route
- * @name GET /init
+ * @name POST /init
  */
 router.post("/init", logRequest("Initilizing game client"), init);
-
-/**
- * MapRoom setup
- * @name GET /api/:apiVersion/bm/getnewmap
- */
-router.get(
-  "/api/:apiVersion/bm/getnewmap",
-  apiVersion,
-  logRequest("Getting new maproom"),
-  getNewMap
-);
 
 /**
  * MapRoom setup
@@ -92,7 +82,8 @@ router.get(
 router.post(
   "/api/:apiVersion/bm/getnewmap",
   apiVersion,
-  logRequest("Posting to new maproom"),
+  verifyUserAuth,
+  logRequest("Getting new maproom"),
   getNewMap
 );
 
@@ -371,15 +362,16 @@ router.post(
 
 /**
  * Worldmap v3 relocate base
- * @name POST /worldmapv3/relocate
+ * @name GET /worldmapv3/relocate
  */
-router.post(
-  "/worldmapv3/relocate",
-  verifyUserAuth,
-  verifyAccountStatus,
-  logRequest("Relocating MR3 base"),
-  relocate
-);
+router.get("/worldmapv3/relocate", verifyUserAuth, verifyAccountStatus, logRequest("Relocating MR3 base"), relocate);
+
+
+/**
+ * Worldmap v3 friend info for relocation popup
+ * @name GET POST /worldmapv3/getfriendinfo
+ */
+router.get("/worldmapv3/getfriendinfo", verifyUserAuth, verifyAccountStatus, getFriendInfo);
 
 /**
  * Worldmap v3 set map version

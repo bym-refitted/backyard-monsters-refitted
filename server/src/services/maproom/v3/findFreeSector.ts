@@ -1,0 +1,137 @@
+import { MapRoom3, MapRoomVersion } from "../../../enums/MapRoom.js";
+import { World } from "../../../models/world.model.js";
+import { WorldMapCell } from "../../../models/worldmapcell.model.js";
+import { EntityManager, PostgreSqlDriver } from "@mikro-orm/postgresql";
+import { EnumYardType } from "../../../enums/EnumYardType.js";
+import { getDefenderCoords } from "./getDefenderCoords.js";
+import { getGeneratedCells, cellKey, type GeneratedCell } from "./generateCells.js";
+import { getHexDistance } from "./getHexNeighborOffsets.js";
+import { MIN_PLAYER_DISTANCE } from "../../../config/MapRoom3Config.js";
+import { setTimeout } from "timers/promises";
+
+interface Cell {
+  x: number | null;
+  y: number | null;
+  terrainHeight: number | null;
+}
+
+/**
+ * Checks if a position can be overridden by a player yard or defender.
+ * Checks database cell first, then generated cell if no database cell exists.
+ *
+ * Can override: terrain (no cell) or tribe outposts (OUTPOST).
+ * Cannot override: strongholds, resources, fortifications, or other player bases.
+ *
+ * Note: Tribe outposts are stored as OUTPOST (1) but sent to client as EMPTY (100).
+ */
+const canOverride = (dbCell: WorldMapCell | null, genCell: GeneratedCell | undefined): boolean => {
+  // Check database cell first
+  if (dbCell) return dbCell.base_type === EnumYardType.OUTPOST;
+
+  // No database cell, check generated cell
+  if (genCell?.type !== undefined) return genCell.type === EnumYardType.OUTPOST;
+
+  // No database cell, no generated structure = terrain/empty, can override
+  return true;
+};
+
+/**
+ * Finds a free cell in Map Room 3 for placing a player's main yard.
+ *
+ * In Map Room 3, cells are pre-generated with strongholds, resources, and defenders.
+ * A valid player position must have:
+ * 1. Center cell can override: terrain, EMPTY cells, or tribe outposts (OUTPOST)
+ * 2. All 6 surrounding defender positions can override: terrain, EMPTY cells, or tribe outposts
+ * 3. Cannot override: strongholds, resources, or other player bases
+ *
+ * @param {World} world - The world in which to find a free cell
+ * @param {EntityManager<PostgreSqlDriver>} em - The entity manager for database operations
+ * @returns {Promise<Cell>} The coordinates and terrain height of the free cell
+ * @throws {Error} If no free cell is found after several attempts
+ */
+export const findFreeSector = async (world: World, em: EntityManager<PostgreSqlDriver>) => {
+  let cell: Cell = { x: null, y: null, terrainHeight: null };
+  const maxAttempts = 100;
+
+  // Get procedurally generated cells
+  const genCellsByCoord = getGeneratedCells();
+
+  // Define safe zone boundaries (avoid edges to ensure defender positions fit)
+  const EDGE_MARGIN = 3;
+  const MIN_X = EDGE_MARGIN;
+  const MAX_X = MapRoom3.WIDTH - EDGE_MARGIN;
+  const MIN_Y = EDGE_MARGIN;
+  const MAX_Y = MapRoom3.HEIGHT - EDGE_MARGIN;
+
+  for (let attempt = 0; attempt < maxAttempts; attempt++) {
+    // Generate random position within safe boundaries
+    const x = MIN_X + Math.floor(Math.random() * (MAX_X - MIN_X));
+    const y = MIN_Y + Math.floor(Math.random() * (MAX_Y - MIN_Y));
+
+    // Check if the center cell can be overridden (database first, then generated)
+    const existingCell = await em.findOne(WorldMapCell, {
+      world,
+      x,
+      y,
+      map_version: MapRoomVersion.V3,
+    });
+
+    const centerGenCell = genCellsByCoord.get(cellKey(x, y));
+
+    // Center position must be overridable (terrain, EMPTY, or OUTPOST)
+    if (!canOverride(existingCell, centerGenCell)) continue;
+
+    // Check all 6 surrounding defender positions can be overridden
+    let allDefenderPositionsFree = true;
+
+    for (const [defenderX, defenderY] of getDefenderCoords(x, y)) {
+      // Check database first, then generated cells
+      const existingDefender = await em.findOne(WorldMapCell, {
+        world,
+        x: defenderX,
+        y: defenderY,
+        map_version: MapRoomVersion.V3,
+      });
+
+      const defenderGenCell = genCellsByCoord.get(cellKey(defenderX, defenderY));
+
+      // Defender position must be overridable (terrain, EMPTY, or OUTPOST)
+      if (!canOverride(existingDefender, defenderGenCell)) {
+        allDefenderPositionsFree = false;
+        break;
+      }
+    }
+
+    // Only accept this position if all defender slots are overridable
+    if (!allDefenderPositionsFree) {
+      await setTimeout(200);
+      continue;
+    }
+
+    // Ensure minimum distance from all existing player yards
+    const nearbyPlayerCells = await em.find(WorldMapCell, {
+      world,
+      map_version: MapRoomVersion.V3,
+      base_type: EnumYardType.PLAYER,
+      x: { $gte: x - MIN_PLAYER_DISTANCE, $lte: x + MIN_PLAYER_DISTANCE },
+      y: { $gte: y - MIN_PLAYER_DISTANCE, $lte: y + MIN_PLAYER_DISTANCE },
+    });
+
+    const playerCell = nearbyPlayerCells.some(
+      (cell) => getHexDistance(x, y, cell.x, cell.y) < MIN_PLAYER_DISTANCE
+    );
+
+    if (playerCell) continue;
+
+    cell = { x, y, terrainHeight: 10 };
+    break;
+  }
+
+  if (cell.x === null || cell.y === null) {
+    throw new Error(
+      `Failed to find a free position for player yard after ${maxAttempts} attempts. World may be full.`
+    );
+  }
+
+  return cell;
+};

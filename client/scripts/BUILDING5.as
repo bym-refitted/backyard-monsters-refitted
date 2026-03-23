@@ -51,7 +51,7 @@ package
          GLOBAL._bFlinger = this;
          if(GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD)
          {
-            GLOBAL._playerFlingerLevel.Set(_lvl.Get());
+            GLOBAL._playerFlingerLevel.Set(getEffectiveLevel());
          }
          super.PlaceB();
       }
@@ -93,7 +93,7 @@ package
          GLOBAL._bFlinger = this;
          if(GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD)
          {
-            GLOBAL._playerFlingerLevel.Set(_lvl.Get());
+            GLOBAL._playerFlingerLevel.Set(getEffectiveLevel());
          }
       }
       
@@ -116,7 +116,7 @@ package
             mc.bPost.addEventListener(MouseEvent.CLICK,Brag);
             mc.bPost.Highlight = true;
             POPUPS.Push(mc,null,null,null,"build.v2.png");
-            GLOBAL._playerFlingerLevel.Set(_lvl.Get());
+            GLOBAL._playerFlingerLevel.Set(getEffectiveLevel());
          }
       }
       
@@ -127,7 +127,7 @@ package
          {
             if(GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD)
             {
-               GLOBAL._playerFlingerLevel.Set(_lvl.Get());
+               GLOBAL._playerFlingerLevel.Set(getEffectiveLevel());
             }
             GLOBAL._bFlinger = this;
          }

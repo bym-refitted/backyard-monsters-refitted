@@ -1,4 +1,4 @@
-import { experiencePoints } from "../../data/experiencePoints.js";
+import { experiencePoints } from "../../data/stats/experiencePoints.js";
 
 /**
  * Calculates the base level based on the given base points and base value.

@@ -1,38 +1,65 @@
 import { User } from "../../../models/user.model.js";
 import { Status } from "../../../enums/StatusCodes.js";
+import { EnumYardType } from "../../../enums/EnumYardType.js";
+import { WorldMapCell } from "../../../models/worldmapcell.model.js";
+import { MapRoomVersion } from "../../../enums/MapRoom.js";
+import { postgres } from "../../../server.js";
+import { createCellData } from "../../../services/maproom/v3/createCellData.js";
 import type { KoaController } from "../../../utils/KoaController.js";
+import { logger } from "../../../utils/logger.js";
 
+/**
+ * Returns the initial cell data for Map Room v3 when player opens the map.
+ *
+ * Returns ALL player-owned cells (home + outposts + captured defenders) so the
+ * client has the complete set before BookmarksManager.Setup() runs. Outposts
+ * outside the initial viewport would otherwise be missing from the bookmark
+ * header count. Captured FORTIFICATION defenders are included so their
+ * m_CellData is pre-populated before the window renders, preventing the tribe
+ * appearance that occurs when ClearData() sets m_CellData to null on every
+ * map open and the cell hasn't been covered by getCells yet.
+ *
+ * The home cell (PLAYER type) is always first — the client uses celldata[0]
+ * to determine the initial map center point.
+ *
+ * @param {Context} ctx - Koa context with authenticated user
+ * @returns {Promise<void>} Cell data response with all player-owned cells
+ */
 export const initialPlayerCellData: KoaController = async (ctx) => {
-  const user : User = ctx.authUser;
-  const uid = user.userid;
+  const user: User = ctx.authUser;
+  await postgres.em.populate(user, ["save"]);
+
+  const { worldid } = user.save;
+
+  // Fetch all player-owned cells
+  const playerCells = await postgres.em.find(
+    WorldMapCell,
+    {
+      uid: user.userid,
+      map_version: MapRoomVersion.V3,
+      world_id: worldid,
+      base_type: {
+        $in: [
+          EnumYardType.PLAYER,
+          EnumYardType.RESOURCE,
+          EnumYardType.STRONGHOLD,
+        ],
+      },
+    },
+    { populate: ["save"] },
+  );
+
+  if (!playerCells.length)
+    logger.info(`No MapRoom3 player cells found for user: ${user.username}`);
+
+  const cellOwners = new Map([[user.userid, user]]);
+
+  const celldata = await Promise.all(
+    playerCells
+      .sort((cell) => (cell.base_type === EnumYardType.PLAYER ? -1 : 1))
+      .map((cell) => createCellData(cell, worldid, ctx, cellOwners)),
+  );
 
   ctx.status = Status.OK;
-  ctx.body = {
-    error: 0,
-    celldata: [
-      {
-        n: "Anonymous",
-        uid,
-        bid: 1234, // base ID
-        tid: 0, // wild monster tribe ID
-        x: 50, // base x-coord
-        y: 50, // base y-coord
-        aid: 0,
-        l: 0,
-        pl: 0,
-        r: 0,
-        dm: 0,
-        rel: 7,
-        lo: 0,
-        fr: 0,
-        p: 0,
-        d: 0,
-        t: 0,
-        fbid: "",
-        // Investigate 'b' and 'i' called in MapRoom3Cell - Setup()
-        b: 50,
-        i: 50,
-      },
-    ],
-  };
+  ctx.body = { error: 0, celldata };
 };

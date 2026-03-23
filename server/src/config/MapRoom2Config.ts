@@ -1,10 +1,10 @@
-import { MapRoom } from "../enums/MapRoom.js";
+import { MapRoom2 } from "../enums/MapRoom.js";
 
 /**
- * Represents the size of the world map.
+ * Represents the size of Map Room 2 world map.
  * @constant {number[]}
  */
-export const WORLD_SIZE = [MapRoom.HEIGHT, MapRoom.WIDTH];
+export const WORLD_SIZE = [MapRoom2.HEIGHT, MapRoom2.WIDTH];
 
 /**
  * The scale factor for noise generation. This value determines the frequency of the noise.

@@ -223,22 +223,22 @@ package com.monsters.maproom3.tiles
          return Boolean(this.m_CurrentTileSet) && Boolean(this.m_CurrentBackground);
       }
       
-      public function SetCurrentTileSet(param1:Array, param2:String = "worldmap/background.jpg") : void
+      public function SetCurrentTileSet(tileSet:Array, mapBg:String = "worldmap/background.jpg") : void
       {
-         if(param1 != DEFAULT_TILE_SET && param1 != INFERNO_TILE_SET)
+         if(tileSet != DEFAULT_TILE_SET && tileSet != INFERNO_TILE_SET)
          {
             return;
          }
-         if(this.m_TileSetsInUse[param1] == null)
+         if(this.m_TileSetsInUse[tileSet] == null)
          {
-            this.m_CurrentTileSet = new MapRoom3TileSet(param1);
-            this.m_TileSetsInUse[param1] = this.m_CurrentTileSet;
+            this.m_CurrentTileSet = new MapRoom3TileSet(tileSet);
+            this.m_TileSetsInUse[tileSet] = this.m_CurrentTileSet;
          }
          else
          {
-            this.m_CurrentTileSet = this.m_TileSetsInUse[param1] as MapRoom3TileSet;
+            this.m_CurrentTileSet = this.m_TileSetsInUse[tileSet] as MapRoom3TileSet;
          }
-         ImageCache.GetImageWithCallBack(param2,this.OnBackgroundImageLoaded,true,1);
+         ImageCache.GetImageWithCallBack(mapBg,this.OnBackgroundImageLoaded,true,1);
       }
       
       private function OnBackgroundImageLoaded(param1:String, param2:BitmapData) : void

@@ -77,7 +77,7 @@ package
          {
             if(_loc3_._countdownBuild.Get() <= 0 && (_loc3_.health > 10 || MapRoomManager.instance.isInMapRoom3))
             {
-               _loc6_ = int(_loc3_._buildingProps.capacity[_loc3_._lvl.Get() - 1]);
+               _loc6_ = int(_loc3_._buildingProps.capacity[_loc3_.getEffectiveLevel() - 1]);
                if(GLOBAL._extraHousing >= GLOBAL.Timestamp() && GLOBAL._extraHousingPower.Get() > 0)
                {
                   _loc6_ = addHousingCapacityMultiplier(_loc6_);
@@ -203,7 +203,7 @@ package
          {
             if(_loc3_._countdownBuild.Get() <= 0 && (_loc3_.health > 0 || MapRoomManager.instance.isInMapRoom3))
             {
-               _loc6_ = int(_loc3_._buildingProps.capacity[_loc3_._lvl.Get() - 1]);
+               _loc6_ = int(_loc3_._buildingProps.capacity[_loc3_.getEffectiveLevel() - 1]);
                if(GLOBAL._extraHousing >= GLOBAL.Timestamp() && GLOBAL._extraHousingPower.Get() > 0)
                {
                   _loc6_ = addHousingCapacityMultiplier(_loc6_);
