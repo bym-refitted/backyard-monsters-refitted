@@ -1,6 +1,5 @@
 import type { TypeOf } from "zod";
 import { resourcesHandler } from "../../../controllers/base/save/handlers/resourceHandler.js";
-import { molochTribes } from "../../../data/tribes/molochTribes.js";
 import { SaveKeys } from "../../../enums/SaveKeys.js";
 import { saveFailureErr } from "../../../errors/errors.js";
 import { InfernoMaproom } from "../../../models/infernomaproom.model.js";
@@ -9,6 +8,7 @@ import { User } from "../../../models/user.model.js";
 import { postgres } from "../../../server.js";
 import { getCurrentDateTime } from "../../../utils/getCurrentDateTime.js";
 import { BaseSaveSchema } from "../../../zod/BaseSaveSchema.js";
+import { molochTribes } from "../../../data/tribes/inferno/molochTribes.js";
 
 type BaseSaveData = TypeOf<typeof BaseSaveSchema>;
 

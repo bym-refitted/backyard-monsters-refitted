@@ -9,6 +9,7 @@ import { Status } from "../../../enums/StatusCodes.js";
 import { createCellData } from "../../../services/maproom/v2/createCellData.js";
 import type { Save } from "../../../models/save.model.js";
 import { generateNoise, getTerrainHeight } from "../../../services/maproom/v2/generateMap.js";
+import { MapRoomVersion } from "../../../enums/MapRoom.js";
 
 /**
  * Schema for validating the request body when getting area data.
@@ -50,6 +51,8 @@ export const getArea: KoaController = async (ctx) => {
   const dbCells = await postgres.em.find(
     WorldMapCell,
     {
+      world_id: worldid,
+      map_version: MapRoomVersion.V2,
       x: {
         $gte: currentX,
         $lte: currentX + width,
@@ -58,7 +61,6 @@ export const getArea: KoaController = async (ctx) => {
         $gte: currentY,
         $lte: currentY + height,
       },
-      world_id: worldid,
     },
     { populate: ["save"] }
   );

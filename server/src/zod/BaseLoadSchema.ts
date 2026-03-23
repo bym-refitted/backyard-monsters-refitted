@@ -21,6 +21,15 @@ export const BaseLoadSchema = z.object({
   baseid: z.string(),
 
   /**
+   * The map room version the client is currently in (1, 2, or 3).
+   * @type {number | undefined}
+   */
+  mapversion: z.coerce
+    .number()
+    .transform((version) => (Number.isNaN(version) ? undefined : version))
+    .optional(),
+
+  /**
    * The attack payload, transformed from a JSON string to an AttackPayload object.
    * @type {AttackData | undefined}
    */
@@ -28,6 +37,18 @@ export const BaseLoadSchema = z.object({
     .string()
     .optional()
     .transform((data): AttackData | undefined =>
+      data ? JSON.parse(data) : undefined
+    ),
+
+  /**
+   * The MR3 out-of-range attack cost, sent by the client when attacking outside
+   * the player's range. Either resource amounts or a shiny cost.
+   * @type {{ resources?: number[]; shiny?: number } | undefined}
+   */
+  attackcost: z
+    .string()
+    .optional()
+    .transform((data): { resources?: number[]; shiny?: number } | undefined =>
       data ? JSON.parse(data) : undefined
     ),
 });

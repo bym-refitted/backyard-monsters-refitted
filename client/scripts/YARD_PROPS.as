@@ -1129,8 +1129,15 @@ package
             "time":new SecNum(900),
             "re":[[14,1,1]]
          },{
-            "r1":new SecNum(1000000),
-            "r2":new SecNum(1000000),
+            "r1":new SecNum(0),
+            "r2":new SecNum(0),
+            "r3":new SecNum(0),
+            "r4":new SecNum(0),
+            "time":new SecNum(345600),
+            "re":[[14,1,6]]
+         },{
+            "r1":new SecNum(0),
+            "r2":new SecNum(0),
             "r3":new SecNum(0),
             "r4":new SecNum(0),
             "time":new SecNum(345600),
@@ -1159,8 +1166,8 @@ package
             "1":{"img":"11.png"}
          },
          "quantity":[0,1,1,1,1,1,1,1,1,1,1],
-         "hp":[5000,10000],
-         "repairTime":[300,600]
+         "hp":[5000,10000,10000],
+         "repairTime":[300,600,600]
       },{
          "id":12,
          "group":2,
@@ -7821,15 +7828,18 @@ package
          "imageData":{
             "baseurl":"buildings/guardtower/",
             "1":{
-               "top":["top.v2.1.png",new Point(-98,-75)],
-               "shadow":["shadow.v2.1.png",new Point(-78,9)],
-               "anim":["anim.v2.1.png",new Rectangle(-47,-231,95,212),32],
-               "anim2":["anim.v2.2.png",new Rectangle(-79,-75,168,102),32],
-               "anim2damaged":["anim.v2.2.damaged.png",new Rectangle(-88,-72,163,103),32],
+               "top":["top.v2.1.png",new Point(-98,-100)],
+               // MISSING ASSETS TO RECREATE OR FIND:
+
+               // "top":["top.v2.1.png",new Point(-98,-75)],
+               // "shadow":["shadow.v2.1.png",new Point(-78,9)],
+               // "anim":["anim.v2.1.png",new Rectangle(-47,-231,95,212),32],
+               // "anim2":["anim.v2.2.png",new Rectangle(-79,-75,168,102),32],
+               // "anim2damaged":["anim.v2.2.damaged.png",new Rectangle(-88,-72,163,103),32],
                "topdamaged":["top.v2.1.damaged.png",new Point(-98,-95)],
-               "shadowdamaged":["shadow.v2.1.damaged.png",new Point(-81,5)],
-               "topdestroyed":["top.v2.1.destroyed.png",new Point(-102,-65)],
-               "shadowdestroyed":["shadow.v2.1.destroyed.png",new Point(-98,4)]
+               // "shadowdamaged":["shadow.v2.1.damaged.png",new Point(-81,5)],
+               "topdestroyed":["top.v2.1.destroyed.png",new Point(-102,-65)]
+               // "shadowdestroyed":["shadow.v2.1.destroyed.png",new Point(-98,4)]
             }
          },
          "upgradeImgData":{
@@ -7868,9 +7878,11 @@ package
          "imageData":{
             "baseurl":"buildings/resourceoutpost/",
             "1":{
-               "top":["top.v2.1.png",new Point(-86,-64)],
-               "shadow":["shadow.v2.1.png",new Point(-86,25)],
-               "anim":["anim.v2.1.png",new Rectangle(-20,-25,51,39),30]
+               "top":["top.v2.1.png",new Point(-86,-64)]
+               // MISSING ASSETS TO RECREATE OR FIND:
+               
+               // "shadow":["shadow.v2.1.png",new Point(-86,25)],
+               // "anim":["anim.v2.1.png",new Rectangle(-20,-25,51,39),30]
             }
          },
          "quantity":[0,1],

@@ -2,101 +2,116 @@ package com.monsters.maproom3.tiles
 {
    import com.monsters.display.ImageCache;
    import com.monsters.maproom3.MapRoom3Cell;
-   
+
    internal class MapRoom3TileSet
    {
-       
-      
+
       private var m_TileSetInfo:Array;
-      
+
       private var m_TileSetRanges:Array;
-      
+
       private var m_URLLookup:Object;
-      
-      public function MapRoom3TileSet(param1:Array)
+
+      /*
+       * Initializes the tile set for Map Room 3 based on altitude-based segmentation.
+       *
+       * The constructor takes in a tile set definition array, extracts unique altitude cutoffs
+       * from the min/max altitudes of the tiles, organizes the tile set into altitude ranges,
+       * and associates each range with the applicable tile indices. It also triggers the image
+       * loading for the tiles and sets up lookup maps.
+       *
+       * @param tileSet An array of tile metadata objects, each containing:
+       *                - min_alt: Minimum altitude for which this tile is used.
+       *                - max_alt: Maximum altitude for which this tile is used.
+       *                - src: The image source path for the tile.
+       */
+      public function MapRoom3TileSet(tileSet:Array)
       {
-         var _loc2_:int = 0;
-         var _loc5_:MapRoom3TileSetRange = null;
-         var _loc6_:int = 0;
          super();
-         this.m_TileSetInfo = param1;
+
+         var currentRange:MapRoom3TileSetRange = null;
+         var heightCutoffs:Array = new Array();
+         var tileImageSources:Array = new Array();
+         var tileIndex:int = 0;
+         var rangeIndex:int = 0;
+
+         this.m_TileSetInfo = tileSet;
          this.m_TileSetRanges = new Array();
          this.m_URLLookup = new Object();
-         var _loc3_:Array = new Array();
-         var _loc4_:Array = new Array();
-         _loc2_ = 0;
-         while(_loc2_ < this.m_TileSetInfo.length)
+
+         tileIndex = 0;
+         while (tileIndex < this.m_TileSetInfo.length)
          {
-            if(_loc3_.indexOf(int(this.m_TileSetInfo[_loc2_].min_alt)) == -1)
+            if (heightCutoffs.indexOf(int(this.m_TileSetInfo[tileIndex].min_alt)) == -1)
             {
-               _loc3_.push(int(this.m_TileSetInfo[_loc2_].min_alt));
+               heightCutoffs.push(int(this.m_TileSetInfo[tileIndex].min_alt));
             }
-            if(_loc3_.indexOf(int(this.m_TileSetInfo[_loc2_].max_alt)) == -1)
+            if (heightCutoffs.indexOf(int(this.m_TileSetInfo[tileIndex].max_alt)) == -1)
             {
-               _loc3_.push(int(this.m_TileSetInfo[_loc2_].max_alt));
+               heightCutoffs.push(int(this.m_TileSetInfo[tileIndex].max_alt));
             }
-            _loc4_.push(this.m_TileSetInfo[_loc2_].src);
-            this.m_URLLookup[this.m_TileSetInfo[_loc2_].src] = _loc2_;
-            _loc2_++;
+            tileImageSources.push(this.m_TileSetInfo[tileIndex].src);
+            this.m_URLLookup[this.m_TileSetInfo[tileIndex].src] = tileIndex;
+            tileIndex++;
          }
-         _loc3_.sort(Array.NUMERIC);
-         ImageCache.GetImageGroupWithCallBack("map_tiles",_loc4_,this.OnImagesLoaded);
-         _loc2_ = 0;
-         while(_loc2_ < _loc3_.length - 1)
+         heightCutoffs.sort(Array.NUMERIC);
+         ImageCache.GetImageGroupWithCallBack("map_tiles", tileImageSources, this.OnImagesLoaded);
+         tileIndex = 0;
+         while (tileIndex < heightCutoffs.length - 1)
          {
-            _loc5_ = new MapRoom3TileSetRange(_loc3_[_loc2_],_loc3_[_loc2_ + 1]);
-            this.m_TileSetRanges.push(_loc5_);
-            _loc2_++;
+            currentRange = new MapRoom3TileSetRange(heightCutoffs[tileIndex], heightCutoffs[tileIndex + 1]);
+            this.m_TileSetRanges.push(currentRange);
+            tileIndex++;
          }
-         _loc2_ = 0;
-         while(_loc2_ < this.m_TileSetInfo.length)
+         tileIndex = 0;
+         while (tileIndex < this.m_TileSetInfo.length)
          {
-            _loc6_ = 0;
-            _loc5_ = this.m_TileSetRanges[_loc6_];
-            while(_loc6_ < this.m_TileSetRanges.length && _loc5_.end <= this.m_TileSetInfo[_loc2_].min_alt)
+            rangeIndex = 0;
+            currentRange = this.m_TileSetRanges[rangeIndex];
+            while (rangeIndex < this.m_TileSetRanges.length && currentRange.end <= this.m_TileSetInfo[tileIndex].min_alt)
             {
-               _loc6_++;
-               _loc5_ = this.m_TileSetRanges[_loc6_];
+               rangeIndex++;
+               currentRange = this.m_TileSetRanges[rangeIndex];
             }
-            while(_loc6_ < this.m_TileSetRanges.length && _loc5_.end <= this.m_TileSetInfo[_loc2_].max_alt)
+            while (rangeIndex < this.m_TileSetRanges.length && currentRange.end <= this.m_TileSetInfo[tileIndex].max_alt)
             {
-               _loc5_.options.push(_loc2_);
-               _loc6_++;
-               _loc5_ = this.m_TileSetRanges[_loc6_];
+               currentRange.options.push(tileIndex);
+               rangeIndex++;
+               currentRange = this.m_TileSetRanges[rangeIndex];
             }
-            _loc2_++;
+            tileIndex++;
          }
       }
-      
-      private function OnImagesLoaded(param1:Array, param2:String) : void
+
+      private function OnImagesLoaded(param1:Array, param2:String):void
       {
          var _loc3_:int = 0;
          var _loc4_:int = 0;
          _loc3_ = 0;
-         while(_loc3_ < param1.length)
+         while (_loc3_ < param1.length)
          {
             _loc4_ = int(this.m_URLLookup[param1[_loc3_][0]]);
             this.m_TileSetInfo[_loc4_].bmd = param1[_loc3_][1];
             _loc3_++;
          }
       }
-      
-      internal function GetTileToDrawForCell(param1:MapRoom3Cell, param2:int) : Object
+
+      internal function GetTileToDrawForCell(param1:MapRoom3Cell, param2:int):Object
       {
          var _loc4_:MapRoom3TileSetRange = null;
          var _loc6_:* = 0;
          var _loc7_:int = 0;
          var _loc3_:Object = null;
-         if(param1.cellHeight < this.m_TileSetRanges[0].start)
+         if (param1.cellHeight < this.m_TileSetRanges[0].start)
          {
             return _loc3_;
          }
          var _loc5_:int = 0;
-         while(_loc5_ < this.m_TileSetRanges.length && this.m_TileSetRanges[_loc5_].end < param1.cellHeight)
+         while (_loc5_ < this.m_TileSetRanges.length && this.m_TileSetRanges[_loc5_].end < param1.cellHeight)
          {
             _loc5_++;
          }
-         if(_loc5_ < this.m_TileSetRanges.length)
+         if (_loc5_ < this.m_TileSetRanges.length)
          {
             _loc4_ = this.m_TileSetRanges[_loc5_];
             _loc6_ = param2;

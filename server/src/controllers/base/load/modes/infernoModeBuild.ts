@@ -1,4 +1,4 @@
-import { inferoMonsters } from "../../../../data/monsterKeys.js";
+import { inferoMonsters } from "../../../../data/stats/monsterKeys.js";
 import { INFERNO_TRIBES } from "../../../../enums/Tribes.js";
 import { Save } from "../../../../models/save.model.js";
 import { User } from "../../../../models/user.model.js";

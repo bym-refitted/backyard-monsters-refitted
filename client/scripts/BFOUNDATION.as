@@ -787,16 +787,17 @@ package
       {
          var _loc1_:Number = NaN;
          var _loc2_:Object = null;
-         if(this._buildingProps.names != null && this._buildingProps.names.length >= this._lvl.Get())
+         var effectiveLvl:int = getEffectiveLevel();
+         if(this._buildingProps.names != null && this._buildingProps.names.length >= effectiveLvl)
          {
-            this._buildingTitle = "<b>" + this._buildingProps.names[this._lvl.Get() - 1] + "</b>";
+            this._buildingTitle = "<b>" + this._buildingProps.names[effectiveLvl - 1] + "</b>";
          }
          else
          {
             this._buildingTitle = "<b>" + this._buildingProps.name + "</b>";
             if(this._buildingProps.costs.length > 1)
             {
-               this._buildingTitle += " " + KEYS.Get("bdg_level",{"v1":this._lvl.Get()});
+               this._buildingTitle += " " + KEYS.Get("bdg_level",{"v1":effectiveLvl});
             }
          }
          if(health < maxHealth)
@@ -876,7 +877,7 @@ package
                this._repairDescription += "<br>" + KEYS.Get("building_attacksetback");
             }
          }
-         if(this._lvl.Get() >= this._buildingProps.costs.length)
+         if(this._lvl.Get() >= getEffectiveLevelMax())
          {
             this._upgradeDescription = KEYS.Get("bdg_fullyupgraded");
             this._upgradeCosts = "";
@@ -937,7 +938,40 @@ package
          _loc1_ = Math.ceil(maxHealth / _loc1_);
          return int((maxHealth - health) / _loc1_);
       }
-      
+
+      /**
+       * Returns the building level clamped to the MR2 maximum for buildings whose
+       * max level differs between MR2 and MR3. Always returns the real level in MR3.
+       * 
+       * @return Effective building level for rendering purposes
+       */
+      public function getEffectiveLevel() : int
+      {
+         if(!MapRoomManager.instance.isInMapRoom3)
+         {
+            if(_type == 5)  return Math.min(_lvl.Get(), 4);   // Flinger: MR2 max 4, MR3 max 5
+            if(_type == 15) return Math.min(_lvl.Get(), 6);   // Housing: MR2 max 6, MR3 max 10
+         }
+         return _lvl.Get();
+      }
+
+      /**
+       * Returns the maximum upgradeable level for this building in the current map room mode.
+       * In MR2, some buildings are capped below their full costs array length.
+       * In MR3, the full costs array applies.
+       *
+       * @returns {int} Max level this building can be upgraded to in the current mode
+       */
+      public function getEffectiveLevelMax() : int
+      {
+         if(!MapRoomManager.instance.isInMapRoom3)
+         {
+            if(_type == 5)  return 4;   // Flinger: MR2 max 4
+            if(_type == 15) return 6;   // Housing: MR2 max 6
+         }
+         return _buildingProps.costs.length;
+      }
+
       public function RenderClear(param1:Boolean = true) : void
       {
          if(m_isCleared)
@@ -978,20 +1012,21 @@ package
          if(this._renderState == null || state !== this._renderState || this._lvl.Get() != this._renderLevel)
          {
             this._renderLevel = this._lvl.Get();
+            var effectiveLevel:int = getEffectiveLevel();
             imageDataA = GLOBAL._buildingProps[this._type - 1].imageData;
-            if(this._lvl.Get() == 0)
+            if(effectiveLevel == 0)
             {
                imageDataB = imageDataA[1];
                imageLevel = 1;
             }
-            else if(imageDataA[this._lvl.Get()])
+            else if(imageDataA[effectiveLevel])
             {
-               imageDataB = imageDataA[this._lvl.Get()];
-               imageLevel = this._lvl.Get();
+               imageDataB = imageDataA[effectiveLevel];
+               imageLevel = effectiveLevel;
             }
             else
             {
-               i = this._lvl.Get() - 1;
+               i = effectiveLevel - 1;
                while(i > 0)
                {
                   if(imageDataA[i])
@@ -3642,6 +3677,17 @@ package
             }
          }
          this._countdownUpgrade.Set(int(building.cU));
+         // In MR2, cancel any in-progress upgrade that targets a level above the MR2 cap.
+         // This handles the case where a player started a housing/flinger upgrade on MR3 then
+         // downgraded back to MR2.
+         if(this._countdownUpgrade.Get() > 0 && !MapRoomManager.instance.isInMapRoom3)
+         {
+            if((this._type == 15 && this._lvl.Get() >= 6) || (this._type == 5 && this._lvl.Get() >= 4))
+            {
+               this._countdownUpgrade.Set(0);
+               BASE.Save();
+            }
+         }
          this._countdownRebuild.Set(int(building.cR));
          this._hpCountdownRebuild = this._countdownRebuild.Get();
          if(building.fort)
@@ -3704,16 +3750,15 @@ package
          {
             this._lvl.Set(0);
          }
-         this._hpLvl = this._lvl.Get();
-         if(this._lvl.Get() == 0)
+         var hpLevel:int = getEffectiveLevel();
+         this._hpLvl = hpLevel;
+         if(hpLevel == 0)
          {
             maxHealthProperty.value = this._buildingProps.hp[0];
          }
          else
          {
-            _loc5_ = this._lvl.Get();
-            _loc6_ = int(this._buildingProps.hp[_loc5_ - 1]);
-            maxHealthProperty.value = _loc6_;
+            maxHealthProperty.value = int(this._buildingProps.hp[hpLevel - 1]);
          }
          if(building.hp == null)
          {

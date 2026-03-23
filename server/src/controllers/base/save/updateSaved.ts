@@ -21,6 +21,7 @@ const UpdateSavedSchema = z.object({
   version: z.string(),
   lastupdate: z.string(),
   baseid: z.string(),
+  mapversion: z.coerce.number(),
 });
 
 /**
@@ -37,7 +38,8 @@ export const updateSaved: KoaController = async (ctx) => {
   const userSave = user.save;
   
   try {
-    const { baseid, type } = UpdateSavedSchema.parse(ctx.request.body);
+    const worldid = user.save?.worldid;
+    const { baseid, type, mapversion } = UpdateSavedSchema.parse(ctx.request.body);
 
     let baseSave: Save = null;
 
@@ -52,7 +54,7 @@ export const updateSaved: KoaController = async (ctx) => {
         break;
 
       default:
-        baseSave = await baseModeView(baseid);
+        baseSave = await baseModeView(baseid, mapversion, worldid);
         break;
     }
 

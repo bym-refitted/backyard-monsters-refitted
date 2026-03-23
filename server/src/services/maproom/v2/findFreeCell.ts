@@ -1,4 +1,4 @@
-import { MapRoom, Terrain } from "../../../enums/MapRoom.js";
+import { MapRoom2, Terrain } from "../../../enums/MapRoom.js";
 import { World } from "../../../models/world.model.js";
 import { WorldMapCell } from "../../../models/worldmapcell.model.js";
 import { EntityManager, PostgreSqlDriver } from "@mikro-orm/postgresql";
@@ -28,8 +28,8 @@ export const findFreeCell = async (world: World, em: EntityManager<PostgreSqlDri
   let maxAttempts = 10;
 
   for (let attempt = 0; attempt < maxAttempts; attempt++) {
-    const x = Math.floor(Math.random() * MapRoom.WIDTH);
-    const y = Math.floor(Math.random() * MapRoom.HEIGHT);
+    const x = Math.floor(Math.random() * MapRoom2.WIDTH);
+    const y = Math.floor(Math.random() * MapRoom2.HEIGHT);
 
     // Generate noise based on the world's seed
     const noise = generateNoise(world.uuid);

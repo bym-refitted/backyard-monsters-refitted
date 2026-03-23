@@ -3,6 +3,7 @@ package com.monsters.maproom3
    import com.cc.ui.ArrowKeyState;
    import com.monsters.maproom3.data.MapRoom3Data;
    import com.monsters.maproom3.tiles.MapRoom3TileSetManager;
+   import flash.display.Bitmap;
    import flash.display.BitmapData;
    import flash.display.Sprite;
    import flash.events.MouseEvent;
@@ -10,6 +11,7 @@ package com.monsters.maproom3
    import flash.filters.GlowFilter;
    import flash.geom.Matrix;
    import flash.geom.Point;
+   import flash.geom.Rectangle;
    import flash.utils.Timer;
    import gs.TweenLite;
    import gs.easing.Quad;
@@ -96,7 +98,19 @@ package com.monsters.maproom3
       private var m_Dragging:Boolean = false;
       
       private var m_KeyScrollVelocity:Number = 8;
-      
+
+      private var m_RangeGlowBitmap:Bitmap;
+
+      private var m_RangeGlowCacheDirty:Boolean = true;
+
+      private var m_MouseoverRangeGlowBitmap:Bitmap;
+
+      private var m_MouseoverRangeGlowCacheDirty:Boolean = true;
+
+      private var m_GlowCacheMatrix:Matrix = new Matrix();
+
+      private var m_GlowCachePoint:Point = new Point(0,0);
+
       public function MapRoom3Window(param1:MapRoom3Data)
       {
          super();
@@ -120,7 +134,9 @@ package com.monsters.maproom3
          this.m_RangeGlowLayer.mouseEnabled = false;
          this.m_RangeGlowLayer.mouseChildren = false;
          this.m_ScrollingCanvas.addChild(this.m_RangeGlowLayer);
-         this.m_RangeGlowLayer.filters = [this.RANGE_GLOW_FILTER];
+         this.m_RangeGlowLayer.visible = false;
+         this.m_RangeGlowBitmap = new Bitmap();
+         this.m_ScrollingCanvas.addChild(this.m_RangeGlowBitmap);
          this.m_MouseoverRangeAlphaLayer = new Sprite();
          this.m_MouseoverRangeAlphaLayer.mouseEnabled = false;
          this.m_MouseoverRangeAlphaLayer.mouseChildren = false;
@@ -134,7 +150,9 @@ package com.monsters.maproom3
          this.m_MouseoverRangeGlowLayer.mouseEnabled = false;
          this.m_MouseoverRangeGlowLayer.mouseChildren = false;
          this.m_ScrollingCanvas.addChild(this.m_MouseoverRangeGlowLayer);
-         this.m_MouseoverRangeGlowLayer.filters = [this.MOUSEOVER_RANGE_GLOW_FILTER];
+         this.m_MouseoverRangeGlowLayer.visible = false;
+         this.m_MouseoverRangeGlowBitmap = new Bitmap();
+         this.m_ScrollingCanvas.addChild(this.m_MouseoverRangeGlowBitmap);
          this.m_CellOverlayLayer = new Sprite();
          this.m_CellOverlayLayer.mouseEnabled = false;
          this.m_ScrollingCanvas.addChild(this.m_CellOverlayLayer);
@@ -281,8 +299,9 @@ package com.monsters.maproom3
             this.x = Math.round(this.x);
             this.y = Math.round(this.y);
          }
+         this.FlushGlowCaches();
       }
-      
+
       private function OnMouseClicked(param1:MouseEvent) : void
       {
          var _loc2_:Number = 0;
@@ -358,9 +377,10 @@ package com.monsters.maproom3
          else
          {
             this.m_KeyScrollVelocity = KEY_SCROLL_START_VELOCITY;
+            this.FlushGlowCaches();
          }
       }
-      
+
       public function Clear() : void
       {
          var _loc1_:MapRoom3CellGraphic = null;
@@ -397,9 +417,19 @@ package com.monsters.maproom3
          this.m_ScrollingCanvas.removeChild(this.m_TileLayer);
          this.m_ScrollingCanvas.removeChild(this.m_CellOverlayLayer);
          this.m_ScrollingCanvas.removeChild(this.m_MouseoverRangeGlowLayer);
+         if(this.m_MouseoverRangeGlowBitmap.bitmapData != null)
+         {
+            this.m_MouseoverRangeGlowBitmap.bitmapData.dispose();
+         }
+         this.m_ScrollingCanvas.removeChild(this.m_MouseoverRangeGlowBitmap);
          this.m_ScrollingCanvas.removeChild(this.m_MouseoverRangeLayer);
          this.m_ScrollingCanvas.removeChild(this.m_MouseoverRangeAlphaLayer);
          this.m_ScrollingCanvas.removeChild(this.m_RangeGlowLayer);
+         if(this.m_RangeGlowBitmap.bitmapData != null)
+         {
+            this.m_RangeGlowBitmap.bitmapData.dispose();
+         }
+         this.m_ScrollingCanvas.removeChild(this.m_RangeGlowBitmap);
          this.m_ScrollingCanvas.removeChild(this.m_RangeLayer);
          this.m_ScrollingCanvas.removeChild(this.m_RangeAlphaLayer);
          this.m_ScrollingCanvas.removeChild(this.m_BaseLayer);
@@ -410,9 +440,11 @@ package com.monsters.maproom3
          this.m_MouseoverRangeAlphaLayer = null;
          this.m_MouseoverRangeLayer = null;
          this.m_MouseoverRangeGlowLayer = null;
+         this.m_MouseoverRangeGlowBitmap = null;
          this.m_RangeAlphaLayer = null;
          this.m_RangeLayer = null;
          this.m_RangeGlowLayer = null;
+         this.m_RangeGlowBitmap = null;
          this.m_CellOverlayLayer = null;
          this.m_TileLayer = null;
          this.m_InfoLayer = null;
@@ -495,136 +527,149 @@ package com.monsters.maproom3
          }
       }
       
-      private function UpdateMap(param1:Boolean = false) : void
+      private function UpdateMap(forceUpdate: Boolean = false) : void
       {
-         var _loc2_:int = 0;
-         var _loc3_:int = 0;
-         var _loc7_:int = 0;
-         var _loc8_:int = 0;
-         var _loc9_:int = 0;
-         var _loc10_:int = 0;
-         var _loc11_:int = 0;
-         var _loc12_:int = 0;
-         var _loc13_:int = 0;
-         var _loc14_:MapRoom3Cell = null;
-         var _loc15_:MapRoom3CellGraphic = null;
-         var _loc16_:Vector.<MapRoom3Cell> = null;
-         var _loc19_:int = 0;
-         var _loc20_:int = 0;
-         var _loc21_:int = 0;
-         var _loc22_:Number = NaN;
-         var _loc23_:Number = NaN;
          this.AdjustCenterPoint();
          this.DrawBackground();
          this.DrawRangeAlphaLayer(this.m_RangeAlphaLayer);
          this.DrawRangeAlphaLayer(this.m_MouseoverRangeAlphaLayer);
-         _loc2_ = this.GetBufferWidth();
-         _loc3_ = this.GetBufferHeight();
-         var _loc4_:int = _loc2_ * _loc3_;
-         var _loc5_:int = this.m_CenterPoint.x - int(_loc2_ * 0.5);
-         var _loc6_:int = this.m_CenterPoint.y - int(_loc3_ * 0.5);
-         var _loc17_:Vector.<MapRoom3CellGraphic> = new Vector.<MapRoom3CellGraphic>();
-         var _loc18_:Vector.<MapRoom3CellGraphic> = new Vector.<MapRoom3CellGraphic>();
-         for each(_loc15_ in this.m_TileBuffer)
+
+         var bufferWidth:int = this.GetBufferWidth();
+         var bufferHeight:int = this.GetBufferHeight();
+         var totalBufferCells:int = bufferWidth * bufferHeight;
+
+         var topLeftX:int = this.m_CenterPoint.x - int(bufferWidth * 0.5);
+         var topLeftY:int = this.m_CenterPoint.y - int(bufferHeight * 0.5);
+
+         var newTileBuffer:Vector.<MapRoom3CellGraphic> = new Vector.<MapRoom3CellGraphic>();
+         var unusedTiles:Vector.<MapRoom3CellGraphic> = new Vector.<MapRoom3CellGraphic>();
+
+         var _rangeGlowCount:int = this.m_RangeGlowLayer.numChildren;
+         var _mouseoverGlowCount:int = this.m_MouseoverRangeGlowLayer.numChildren;
+
+         var bufferIndex:int = 0;
+         var bufferOffsetX:int = 0;
+         var bufferOffsetY:int = 0;
+         var mapX:int = 0;
+         var mapY:int = 0;
+         var cellIndex:int = 0;
+         var attackRangeIndex:int = 0;
+         var cell:MapRoom3Cell = null;
+         var tileGraphic:MapRoom3CellGraphic = null;
+         var attackRangeCells:Vector.<MapRoom3Cell> = null;
+         var insertIndex:int = 0;
+         var numChildren:int = 0;
+         var midIndex:int = 0;
+         var dx:Number = NaN;
+         var dy:Number = NaN;
+
+         for each(tileGraphic in this.m_TileBuffer)
          {
-            _loc14_ = _loc15_.cell;
-            _loc8_ = int(_loc15_.x / MapRoom3CellGraphic.HEX_WIDTH) - _loc5_;
-            _loc9_ = int(_loc15_.y / MapRoom3CellGraphic.HEX_HEIGHT_OVERLAP) - _loc6_;
-            if(param1 || _loc8_ < 0 || _loc9_ < 0 || _loc8_ >= _loc2_ || _loc9_ >= _loc3_)
+            cell = tileGraphic.cell;
+            bufferOffsetX = int(tileGraphic.x / MapRoom3CellGraphic.HEX_WIDTH) - topLeftX;
+            bufferOffsetY = int(tileGraphic.y / MapRoom3CellGraphic.HEX_HEIGHT_OVERLAP) - topLeftY;
+            if(forceUpdate || bufferOffsetX < 0 || bufferOffsetY < 0 || bufferOffsetX >= bufferWidth || bufferOffsetY >= bufferHeight)
             {
-               this.m_TileLayer.removeChild(_loc15_);
-               _loc18_.push(_loc15_);
-               this.m_TileLookup[_loc15_.cellIndex] = null;
-               _loc15_.x = 0;
-               _loc15_.y = 0;
+               this.m_TileLayer.removeChild(tileGraphic);
+               unusedTiles.push(tileGraphic);
+               this.m_TileLookup[tileGraphic.cellIndex] = null;
+               tileGraphic.x = 0;
+               tileGraphic.y = 0;
             }
             else
             {
-               _loc17_.push(_loc15_);
+               newTileBuffer.push(tileGraphic);
             }
          }
          this.m_TileBuffer.length = 0;
-         this.m_TileBuffer = _loc17_;
-         _loc7_ = 0;
-         while(_loc7_ < _loc4_)
+         this.m_TileBuffer = newTileBuffer;
+         bufferIndex = 0;
+         while(bufferIndex < totalBufferCells)
          {
-            _loc8_ = _loc7_ % _loc2_;
-            _loc9_ = int(_loc7_ / _loc2_);
-            _loc10_ = _loc8_ + _loc5_;
-            _loc11_ = _loc9_ + _loc6_;
-            _loc14_ = this.m_MapData.GetMapRoom3Cell(_loc10_,_loc11_);
-            _loc16_ = _loc14_.inAttackRangeOfCells;
-            _loc13_ = 0;
-            while(_loc14_ != null)
+            bufferOffsetX = bufferIndex % bufferWidth;
+            bufferOffsetY = int(bufferIndex / bufferWidth);
+            mapX = bufferOffsetX + topLeftX;
+            mapY = bufferOffsetY + topLeftY;
+            cell = this.m_MapData.GetMapRoom3Cell(mapX,mapY);
+            attackRangeCells = cell.inAttackRangeOfCells;
+            attackRangeIndex = 0;
+            while(cell != null)
             {
-               if(_loc14_.isBorder)
+               if(cell.isBorder)
                {
-                  _loc12_ = (_loc11_ + this.m_MapData.mapHeight) % this.m_MapData.mapHeight * this.m_MapData.mapWidth + (_loc10_ + this.m_MapData.mapWidth) % this.m_MapData.mapWidth;
+                  cellIndex = (mapY + this.m_MapData.mapHeight) % this.m_MapData.mapHeight * this.m_MapData.mapWidth + (mapX + this.m_MapData.mapWidth) % this.m_MapData.mapWidth;
                }
                else
                {
-                  _loc12_ = _loc14_.cellY * this.m_MapData.mapWidth + _loc14_.cellX;
+                  cellIndex = cell.cellY * this.m_MapData.mapWidth + cell.cellX;
                }
-               if(this.m_TileLookup[_loc12_] == null)
+               if(this.m_TileLookup[cellIndex] == null)
                {
-                  if(_loc18_.length > 0)
+                  if(unusedTiles.length > 0)
                   {
-                     _loc15_ = _loc18_.pop();
+                     tileGraphic = unusedTiles.pop();
                   }
                   else
                   {
-                     _loc15_ = new MapRoom3CellGraphic();
-                     _loc15_.addEventListener(MouseEvent.CLICK,this.OnCellGraphicClicked);
-                     _loc15_.addEventListener(MouseEvent.ROLL_OVER,this.OnCellGraphicRollOver);
-                     _loc15_.addEventListener(MouseEvent.ROLL_OUT,this.OnCellGraphicRollOut);
+                     tileGraphic = new MapRoom3CellGraphic();
+                     tileGraphic.addEventListener(MouseEvent.CLICK,this.OnCellGraphicClicked);
+                     tileGraphic.addEventListener(MouseEvent.ROLL_OVER,this.OnCellGraphicRollOver);
+                     tileGraphic.addEventListener(MouseEvent.ROLL_OUT,this.OnCellGraphicRollOut);
                   }
-                  this.m_TileBuffer.push(_loc15_);
-                  _loc15_.cellIndex = _loc12_;
-                  this.m_TileLookup[_loc12_] = _loc15_;
-                  _loc15_.x = _loc10_ * MapRoom3CellGraphic.HEX_WIDTH + (!!(_loc11_ % 2) ? MapRoom3CellGraphic.HEX_WIDTH * 0.5 : 0);
-                  _loc15_.y = _loc11_ * MapRoom3CellGraphic.HEX_HEIGHT_OVERLAP;
-                  _loc15_.setMapCell(_loc14_);
-                  _loc19_ = 0;
-                  _loc20_ = this.m_TileLayer.numChildren;
-                  while(_loc19_ < _loc20_)
+                  this.m_TileBuffer.push(tileGraphic);
+                  tileGraphic.cellIndex = cellIndex;
+                  this.m_TileLookup[cellIndex] = tileGraphic;
+                  tileGraphic.x = mapX * MapRoom3CellGraphic.HEX_WIDTH + (!!(mapY % 2) ? MapRoom3CellGraphic.HEX_WIDTH * 0.5 : 0);
+                  tileGraphic.y = mapY * MapRoom3CellGraphic.HEX_HEIGHT_OVERLAP;
+                  tileGraphic.setMapCell(cell);
+                  insertIndex = 0;
+                  numChildren = this.m_TileLayer.numChildren;
+                  while(insertIndex < numChildren)
                   {
-                     _loc21_ = (_loc19_ + _loc20_) * 0.5;
-                     _loc22_ = _loc15_.x - this.m_TileLayer.getChildAt(_loc21_).x;
-                     _loc23_ = _loc15_.y - this.m_TileLayer.getChildAt(_loc21_).y;
-                     if(_loc23_ < 0 || _loc23_ == 0 && _loc22_ <= 0)
+                     midIndex = (insertIndex + numChildren) * 0.5;
+                     dx = tileGraphic.x - this.m_TileLayer.getChildAt(midIndex).x;
+                     dy = tileGraphic.y - this.m_TileLayer.getChildAt(midIndex).y;
+                     if(dy < 0 || dy == 0 && dx <= 0)
                      {
-                        _loc20_ = _loc21_;
+                        numChildren = midIndex;
                      }
                      else
                      {
-                        _loc19_ = _loc21_ + 1;
+                        insertIndex = midIndex + 1;
                      }
                   }
-                  this.m_TileLayer.addChildAt(_loc15_,_loc19_);
+                  this.m_TileLayer.addChildAt(tileGraphic,insertIndex);
                }
-               _loc14_ = null;
-               if(_loc16_ != null && _loc13_ < _loc16_.length)
+               cell = null;
+               if(attackRangeCells != null && attackRangeIndex < attackRangeCells.length)
                {
-                  _loc14_ = _loc16_[_loc13_++];
-                  _loc10_ = _loc14_.cellX;
-                  _loc11_ = _loc14_.cellY;
+                  cell = attackRangeCells[attackRangeIndex++];
+                  mapX = cell.cellX;
+                  mapY = cell.cellY;
                }
             }
-            _loc7_++;
+            bufferIndex++;
          }
-         for each(_loc15_ in _loc18_)
+         for each(tileGraphic in unusedTiles)
          {
-            _loc15_.removeEventListener(MouseEvent.CLICK,this.OnCellGraphicClicked);
-            _loc15_.removeEventListener(MouseEvent.ROLL_OVER,this.OnCellGraphicRollOver);
-            _loc15_.removeEventListener(MouseEvent.ROLL_OUT,this.OnCellGraphicRollOut);
-            _loc15_.Clear();
-            _loc15_ = null;
+            tileGraphic.removeEventListener(MouseEvent.CLICK,this.OnCellGraphicClicked);
+            tileGraphic.removeEventListener(MouseEvent.ROLL_OVER,this.OnCellGraphicRollOver);
+            tileGraphic.removeEventListener(MouseEvent.ROLL_OUT,this.OnCellGraphicRollOut);
+            tileGraphic.Clear();
+            tileGraphic = null;
          }
-         _loc18_.length = 0;
-         this.m_RangeGlowLayer.visible = true;
-         if(this.m_RangeGlowLayer.height >= k_MAX_FILTER_SIZE || this.m_RangeGlowLayer.width >= k_MAX_FILTER_SIZE || this.m_RangeGlowLayer.width * this.m_RangeGlowLayer.height >= k_MAX_FILTER_TOTAL_SIZE)
+         unusedTiles.length = 0;
+         if(this.m_RangeGlowLayer.numChildren != _rangeGlowCount || forceUpdate)
          {
-            this.m_RangeGlowLayer.visible = false;
+            this.m_RangeGlowCacheDirty = true;
+         }
+         if(this.m_MouseoverRangeGlowLayer.numChildren != _mouseoverGlowCount || forceUpdate)
+         {
+            this.m_MouseoverRangeGlowCacheDirty = true;
+         }
+         if(!this.m_Dragging && !ArrowKeyState.ArrowKeyPressed)
+         {
+            this.FlushGlowCaches();
          }
       }
       
@@ -693,6 +738,7 @@ package com.monsters.maproom3
          {
             return;
          }
+         this.m_MouseoverRangeGlowCacheDirty = true;
          if(this.m_MousedoverCellGraphic != null)
          {
             this.m_MouseoverInfo.Hide();
@@ -710,8 +756,9 @@ package com.monsters.maproom3
                this.m_MouseoverInfo.Show(this.m_MousedoverCellGraphic.cell,_loc2_,_loc3_,false);
             }
          }
+         this.FlushGlowCaches();
       }
-      
+
       private function SetSelectedCellGraphic(param1:MapRoom3CellGraphic) : void
       {
          var _loc2_:Number = NaN;
@@ -777,10 +824,10 @@ package com.monsters.maproom3
          this.m_ScrollingCanvas.y += _loc3_;
          this.RANGE_GLOW_FILTER.blurX = RANGE_GLOW_BLUR_X * this.m_ScrollingCanvas.scaleX;
          this.RANGE_GLOW_FILTER.blurY = RANGE_GLOW_BLUR_Y * this.m_ScrollingCanvas.scaleY;
-         this.m_RangeGlowLayer.filters = [this.RANGE_GLOW_FILTER];
          this.MOUSEOVER_RANGE_GLOW_FILTER.blurX = RANGE_GLOW_BLUR_X * this.m_ScrollingCanvas.scaleX;
          this.MOUSEOVER_RANGE_GLOW_FILTER.blurY = RANGE_GLOW_BLUR_Y * this.m_ScrollingCanvas.scaleY;
-         this.m_MouseoverRangeGlowLayer.filters = [this.MOUSEOVER_RANGE_GLOW_FILTER];
+         this.m_RangeGlowCacheDirty = true;
+         this.m_MouseoverRangeGlowCacheDirty = true;
          this.Resize();
       }
       
@@ -830,6 +877,81 @@ package com.monsters.maproom3
          return param1;
       }
       
+      /**
+       * Flushes any dirty glow caches by re-rendering the glow filter
+       * to a BitmapData snapshot. Only performs work when dirty flags are set.
+       */
+      private function FlushGlowCaches() : void {
+         if (this.m_RangeGlowCacheDirty) {
+            this.RenderGlowToCache(this.m_RangeGlowLayer, this.RANGE_GLOW_FILTER, this.m_RangeGlowBitmap);
+            this.m_RangeGlowCacheDirty = false;
+         }
+         
+         if (this.m_MouseoverRangeGlowCacheDirty) {
+            this.RenderGlowToCache(this.m_MouseoverRangeGlowLayer, this.MOUSEOVER_RANGE_GLOW_FILTER, this.m_MouseoverRangeGlowBitmap);
+            this.m_MouseoverRangeGlowCacheDirty = false;
+         }
+      }
+
+      /**
+       * Snapshots a glow layer's vector shapes into a flat BitmapData with the
+       * GlowFilter baked in. The result is displayed via the output Bitmap,
+       * avoiding Flash's per-frame filter re-rasterization.
+       * 
+       * TLDR: Take a hidden vector Sprite, render it to a bitmap, apply a glow, 
+       * cache the result so we don’t recompute every frame.
+       * 
+       * @param glowLayer Hidden Sprite containing the range glow shapes
+       * @param glowFilter The GlowFilter to bake into the snapshot
+       * @param outputBitmap The Bitmap that displays the cached result
+       */
+      private function RenderGlowToCache(glowLayer:Sprite, glowFilter:GlowFilter, outputBitmap:Bitmap) : void {
+         // Dispose previous cached bitmap
+         if (outputBitmap.bitmapData != null) {
+            outputBitmap.bitmapData.dispose();
+            outputBitmap.bitmapData = null;
+         }
+
+         // Nothing to render
+         if (glowLayer.numChildren == 0) return;
+
+         // Temporarily show the hidden layer so getBounds/draw work
+         glowLayer.visible = true;
+
+         // Calculate the snapshot area with padding for the filter bleed
+         var bounds:Rectangle = glowLayer.getBounds(glowLayer);
+         var padding:Number = glowFilter.inner ? 2 : Math.max(glowFilter.blurX, glowFilter.blurY) * 2;
+         
+         bounds.inflate(padding, padding);
+
+         var bmdWidth:int = Math.ceil(bounds.width);
+         var bmdHeight:int = Math.ceil(bounds.height);
+
+         // Skip if degenerate or exceeds Flash's BitmapData limits
+         if (bmdWidth <= 0 || bmdHeight <= 0 || bmdWidth > k_MAX_FILTER_SIZE || bmdHeight > k_MAX_FILTER_SIZE) {
+            glowLayer.visible = false;
+            return;
+         }
+
+         // Render the vector shapes to a BitmapData
+         var sourceBmd:BitmapData = new BitmapData(bmdWidth, bmdHeight, true, 0);
+
+         this.m_GlowCacheMatrix.identity();
+         this.m_GlowCacheMatrix.translate(-bounds.x, -bounds.y);
+         sourceBmd.draw(glowLayer, this.m_GlowCacheMatrix);
+         glowLayer.visible = false;
+
+         // Apply the GlowFilter onto a fresh BitmapData, then discard the source
+         var filteredBmd:BitmapData = new BitmapData(bmdWidth, bmdHeight, true, 0);
+         filteredBmd.applyFilter(sourceBmd, sourceBmd.rect, this.m_GlowCachePoint, glowFilter);
+         sourceBmd.dispose();
+
+         // Display the result
+         outputBitmap.bitmapData = filteredBmd;
+         outputBitmap.x = bounds.x;
+         outputBitmap.y = bounds.y;
+      }
+
       private function DrawBackground() : void
       {
          if(this.m_BackgroundImage == null)
