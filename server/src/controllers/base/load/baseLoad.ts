@@ -1,4 +1,4 @@
-import { devConfig } from "../../../config/DevSettings.js";
+import { devConfig } from "../../../config/GameConfig.js";
 import { Save } from "../../../models/save.model.js";
 import { postgres } from "../../../server.js";
 import type { KoaController } from "../../../utils/KoaController.js";

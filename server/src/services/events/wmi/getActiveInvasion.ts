@@ -1,4 +1,4 @@
-import { devConfig } from "../../../config/DevSettings.js";
+import { devConfig } from "../../../config/GameConfig.js";
 import { Invasion } from "../../../enums/Invasion.js";
 
 /**

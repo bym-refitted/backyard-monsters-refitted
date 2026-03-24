@@ -1,4 +1,4 @@
-import { devConfig } from "../config/DevSettings.js";
+import { devConfig } from "../config/GameConfig.js";
 import { User } from "../models/user.model.js";
 import { devSandbox } from "../dev/devSandbox.js";
 import { getCurrentDateTime } from "../utils/getCurrentDateTime.js";

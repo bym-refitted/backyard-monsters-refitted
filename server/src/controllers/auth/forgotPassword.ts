@@ -9,7 +9,7 @@ import { postgres } from "../../server.js";
 import { User } from "../../models/user.model.js";
 import { authFailureErr } from "../../errors/errors.js";
 import { ForgotPasswordSchema } from "../../zod/AuthSchemas.js";
-import { transporter } from "../../config/MailSettings.js";
+import { transporter } from "../../config/MailConfig.js";
 /**
  * Controller to handle forgot password functionality.
  *
