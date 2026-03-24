@@ -27,9 +27,9 @@ The server is built on a modern Bun runtime using Koa.js, TypeScript, and MikroO
 
 | File | Purpose |
 |------|---------|
-| `DevSettings.ts` | Development flags & feature toggles |
-| `MailSettings.ts` | SMTP mailer configuration |
-| `WorldGenSettings.ts` | World generation parameters |
+| `GameConfig.ts` | Development flags & feature toggles (see wiki for details) |
+| `MailConfig.ts` | SMTP transporter configuration |
+| `MapRoom2Config.ts` | MR2 world size and noise generation parameters |
 | `MapRoom3Config.ts` | MR3 structure/outpost save templates and cell configuration |
 
 <br>
@@ -71,7 +71,7 @@ The server is built on a modern Bun runtime using Koa.js, TypeScript, and MikroO
 <br>
 
 ## 📂 Development Tools
-**`dev/`** - Development sandbox bases used to load populated pre-configured test yards, which can be enabled in `DevSettings.ts`
+**`dev/`** - Development sandbox bases used to load populated pre-configured test yards, which can be enabled in `GameConfig.ts`
 
 <br>
 
