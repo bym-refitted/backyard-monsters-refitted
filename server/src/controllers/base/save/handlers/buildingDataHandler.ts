@@ -1,5 +1,4 @@
 import { SaveKeys } from "../../../../enums/SaveKeys.js";
-import { permissionErr } from "../../../../errors/errors.js";
 import { Save } from "../../../../models/save.model.js";
 
 enum Building {
@@ -7,72 +6,40 @@ enum Building {
   HEAVY_TRAP = 117,
 }
 
-interface BuildingData {
-  x: number;      // x coordinate
-  y: number;      // y coordinate
-  t: number;      // type
-  l?: number;     // level
-}
-
 /**
- * Handles building data validation during base attack save operations.
+ * Updates buildingdata after an attack in a server-authoritative way.
  *
- * This handler performs two key validation steps:
- * 1) Ensures non-trap buildings aren't removed from the base (count validation)
- * 2) Verifies that immutable properties (type, position, level) of buildings aren't modified
+ * Non-trap buildings are never modified by attacks — their type, level, and
+ * position are taken directly from the DB, so a hacker cannot modify them
+ * by tampering with the network payload.
  *
- * Trap buildings (types 24 and 117) are specifically excluded from these validation checks
- * as they can be legitimately removed during gameplay.
+ * The only legitimate change an attack makes to buildingdata is removing
+ * triggered traps (types 24 and 117). We detect which traps were triggered
+ * by checking which trap keys are absent from the client's submission.
  *
- * @param {Record<string, any> | null} buildingData - The new building data submitted by the client
- * @param {Save} save - The save object of the base to be validated
- * @returns {Promise<void>} A promise that resolves when validation is are complete
- * @throws {Error} Throws a permission error if validation fails
+ * @param {Record<string, any> | null} buildingData - The building data submitted by the attacker
+ * @param {Save} save - The defender's save record
  */
 export const buildingDataHandler = (buildingData: Record<string, any> | null, save: Save) => {
   if (!buildingData) return;
 
   const savedBuildingData = save.buildingdata || {};
-  const buildingKeys = ["x", "y", "t", "l"];
 
-  let originalBuildingCount = 0;
-  let newBuildingCount = 0;
-
-  for (const key in buildingData) {
-    const building: BuildingData = buildingData[key];
-
-    if (building.t === Building.TRAP || building.t === Building.HEAVY_TRAP) 
-      continue;
-
-    newBuildingCount++;
-  }
+  const result: Record<string, any> = {};
 
   for (const key in savedBuildingData) {
-    const building: BuildingData = savedBuildingData[key];
+    const building = savedBuildingData[key];
+    const isTrap = building.t === Building.TRAP || building.t === Building.HEAVY_TRAP;
 
-    if (building.t === Building.TRAP || building.t === Building.HEAVY_TRAP) 
-      continue;
-
-    originalBuildingCount++;
-
-    // Validate that building data from db exists in client data
-    const newBuilding = buildingData[key];
-    if (!newBuilding) throw permissionErr();
-
-    // Validate immutable properties
-    for (const key of buildingKeys) {
-      if (
-        building[key] !== undefined &&
-        (newBuilding[key] === undefined ||
-          newBuilding[key] !== building[key])
-      ) {
-        throw permissionErr();
-      }
+    if (isTrap) {
+      // Keep the trap only if the client still reports it as present.
+      // Absent = triggered during the attack, so we drop it.
+      if (buildingData[key]) result[key] = building;
+    } else {
+      // Non-trap buildings are never modified by attacks - always keep DB value.
+      result[key] = building;
     }
   }
 
-  if (newBuildingCount < originalBuildingCount) throw permissionErr();
-
-  // Validation passed
-  save[SaveKeys.BUILDINGDATA] = buildingData;
+  save[SaveKeys.BUILDINGDATA] = result;
 };
