@@ -88,11 +88,14 @@ export const baseSave: KoaController = async (ctx) => {
           break;
 
         case SaveKeys.BUILDINGDATA:
+          if (saveData.buildingdata == null) break;
+          
           if (isAttack) {
             buildingDataHandler(saveData.buildingdata, baseSave);
           } else {
             baseSave[SaveKeys.BUILDINGDATA] = saveData.buildingdata;
           }
+          break;
 
         case SaveKeys.CHAMPION:
           if (isAttack) {
