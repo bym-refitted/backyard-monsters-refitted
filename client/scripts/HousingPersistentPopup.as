@@ -265,6 +265,7 @@ package
       {
          var _loc2_:int = param1.getResourceCostInShiny();
          var _loc3_:Boolean = param1.m_creatureID.substr(0,1) == "I" && !BASE.isInfernoMainYardOrOutpost;
+         var _loc4_:int = GLOBAL.player.getResourceCostByID(param1.m_creatureID);
          if(BASE._pendingPurchase.length == 0)
          {
             if(_loc2_ > BASE._credits.Get())
@@ -273,7 +274,7 @@ package
             }
             else
             {
-               BASE.Charge(4,_loc3_ ? Number(BASE._iresources.r4.Get()) : Number(BASE._resources.r4.Get()),false,_loc3_);
+               BASE.Charge(4,_loc4_,false,_loc3_);
                this.healQueueAdd(param1);
                if(_loc2_ > 0)
                {

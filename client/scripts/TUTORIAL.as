@@ -962,18 +962,17 @@ package
                _rewindCondition = ConditionRewindQuestsClose;
                break;
             case 101:
-               if(MapRoomManager.instance.isInMapRoom3)
-               {
-                  MapRoom3Tutorial.instance.start();
-               }
-               else
-               {
-                  // Comment: This part of the tutorial requires MapRoom 1, we should uncomment this when we implement MapRoom 1
-                  // For now, we skip this part of the tutorial and set the tutorial stage to 140
-                  BASE.BuildingDeselect();
-                  _stage = 140;
-                  //Add(6,BOBBOTTOMLEFTLOW,KEYS.Get("tut_101"),POINT_MAP,["mc",UI_BOTTOM._mc.bMap,new Point(15,15),-30],false,false,ConditionMapRoomOpen);
-               }
+               // MR3 tutorial is disabled - skip directly to stage 140 regardless of map room version
+               // if(MapRoomManager.instance.isInMapRoom3)
+               // {
+               //    MapRoom3Tutorial.instance.start();
+               // }
+               // else
+               // {
+               //    Add(6,BOBBOTTOMLEFTLOW,KEYS.Get("tut_101"),POINT_MAP,["mc",UI_BOTTOM._mc.bMap,new Point(15,15),-30],false,false,ConditionMapRoomOpen);
+               // }
+               BASE.BuildingDeselect();
+               _stage = 140;
                break;
             case 102:
                if(!MAPROOM._open)

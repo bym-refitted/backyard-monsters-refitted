@@ -609,7 +609,12 @@ package
                   "zombieSpeedMultiplier":[0.75],
                   "zombieHealthMultiplier":[1,1.1,1.2,1.3,1.4,1.5],
                   "zombieDamageMultiplier":[1,1.1,1.2,1.3,1.4,1.5],
-                  "resurrectCooldown":[7,7,6,6,5,4]
+                  "resurrectCooldown":[7,7,6,6,5,4],
+                  // ============= Added stats to avoid heal issues ========= //
+                  // TODO: Determine Rezghul's actual stats from the original
+                  "hTime":[1125],
+                  "hResource":[250000]
+                  // ======================================================== //
                }
             },
             "IC1":{
