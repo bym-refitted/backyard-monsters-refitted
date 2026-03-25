@@ -89,7 +89,7 @@ package
       
       override public function AnimFrame(param1:Boolean = true) : void
       {
-         if(_animLoaded && !GLOBAL._catchup)
+         if(_animLoaded && !GLOBAL._catchup && _animBMD != null && _animContainerBMD != null)
          {
             _animRect.x = _animRect.width * _animTick;
             _animContainerBMD.copyPixels(_animBMD,_animRect,_nullPoint);

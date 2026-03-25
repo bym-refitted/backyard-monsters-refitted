@@ -1,4 +1,4 @@
-import { devConfig } from "../config/DevSettings.js";
+import { devConfig } from "../config/GameConfig.js";
 import { getActiveInvasion } from "../services/events/wmi/getActiveInvasion.js";
 import { setupInvasionEvent } from "../services/events/wmi/setupInvasionEvent.js";
 

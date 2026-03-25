@@ -1,4 +1,4 @@
-import { devConfig } from "../config/DevSettings.js";
+import { devConfig } from "../config/GameConfig.js";
 import { logger } from "../utils/logger.js";
 import morgan from "koa-morgan";
 import type { Context, Next } from "koa";

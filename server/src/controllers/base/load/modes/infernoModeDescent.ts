@@ -1,4 +1,4 @@
-import { devConfig } from "../../../../config/DevSettings.js";
+import { devConfig } from "../../../../config/GameConfig.js";
 import { BaseType } from "../../../../enums/Base.js";
 import { InfernoMaproom } from "../../../../models/infernomaproom.model.js";
 import { Save } from "../../../../models/save.model.js";
