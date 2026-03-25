@@ -2,7 +2,6 @@ import type { Context } from "koa";
 import type { User } from "../../../../models/user.model.js";
 import type { WorldMapCell } from "../../../../models/worldmapcell.model.js";
 import { calculateBaseLevel } from "../../../../services/base/calculateBaseLevel.js";
-import { damageProtection } from "../../../../services/maproom/v2/damageProtection.js";
 import { logger } from "../../../../utils/logger.js";
 import { getCurrentDateTime } from "../../../../utils/getCurrentDateTime.js";
 
@@ -38,8 +37,6 @@ export const userCell = async (ctx: Context, cell: WorldMapCell, cellOwners: Map
     const points = cellOwner.save.points;
     const basevalue = cellOwner.save.basevalue;
     const baseLevel = calculateBaseLevel(points, basevalue);
-
-    await damageProtection(cellSave);
 
     const currentTime = getCurrentDateTime();
     const isProtected = cellSave.protected > 0 && cellSave.protected > currentTime;

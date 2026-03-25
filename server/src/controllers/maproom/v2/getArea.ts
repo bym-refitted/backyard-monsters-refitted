@@ -4,7 +4,7 @@ import type { KoaController } from "../../../utils/KoaController.js";
 import { User } from "../../../models/user.model.js";
 import { WorldMapCell } from "../../../models/worldmapcell.model.js";
 import { postgres } from "../../../server.js";
-import { devConfig } from "../../../config/DevSettings.js";
+import { devConfig } from "../../../config/GameConfig.js";
 import { Status } from "../../../enums/StatusCodes.js";
 import { createCellData } from "../../../services/maproom/v2/createCellData.js";
 import type { Save } from "../../../models/save.model.js";

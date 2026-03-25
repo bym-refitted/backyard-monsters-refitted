@@ -1,5 +1,5 @@
 import z from "zod";
-import { devConfig } from "../config/DevSettings.js";
+import { devConfig } from "../config/GameConfig.js";
 import { Status } from "../enums/StatusCodes.js";
 import type { KoaController } from "../utils/KoaController.js";
 import { getApiVersion } from "../server.js";

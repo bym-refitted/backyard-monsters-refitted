@@ -27,9 +27,10 @@ The server is built on a modern Bun runtime using Koa.js, TypeScript, and MikroO
 
 | File | Purpose |
 |------|---------|
-| `DevSettings.ts` | Development flags & feature toggles |
-| `MailSettings.ts` | SMTP mailer configuration |
-| `WorldGenSettings.ts` | World generation parameters |
+| `GameConfig.ts` | Development flags & feature toggles (see wiki for details) |
+| `MailConfig.ts` | SMTP transporter configuration |
+| `MapRoom2Config.ts` | MR2 world size and noise generation parameters |
+| `MapRoom3Config.ts` | MR3 structure/outpost save templates and cell configuration |
 
 <br>
 
@@ -58,7 +59,9 @@ The server is built on a modern Bun runtime using Koa.js, TypeScript, and MikroO
 |----------|-------|-------------|
 | **Game Stats** | `championStats.ts`, `experiencePoints.ts`, `monsterStats.ts` | Static game data e.g. stats for monsters |
 | **Game Config** | `flags.ts`, `monsterKeys.ts` | Game flags & identifiers |
-| **Content** | `store/`, `tribes/` | Store items & tribe data |
+| **Content** | `store/` | Store items |
+| **Tribe Data** | `tribes/v2/` | MR2 tribe save templates (abunaki, dreadnaught, kozu, legionnaire) |
+| **Tribe Data** | `tribes/v3/` | MR3 structure saves (outposts, defenders, strongholds, resources) |
 
 <br>
 
@@ -68,7 +71,7 @@ The server is built on a modern Bun runtime using Koa.js, TypeScript, and MikroO
 <br>
 
 ## 📂 Development Tools
-**`dev/`** - Development sandbox bases used to load populated pre-configured test yards, which can be enabled in `DevSettings.ts`
+**`dev/`** - Development sandbox bases used to load populated pre-configured test yards, which can be enabled in `GameConfig.ts`
 
 <br>
 
@@ -94,6 +97,7 @@ The server is built on a modern Bun runtime using Koa.js, TypeScript, and MikroO
 **`models/`** - ORM entity definitions
 - Users, saves, worlds, messages, threads
 - Attack logs, leaderboards, and more
+- `WorldMapCell` — tracks MR3 cell state (owner, base type, captured/destroyed timestamps, map version)
 
 <br>
 

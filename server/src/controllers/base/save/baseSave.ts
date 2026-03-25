@@ -20,6 +20,7 @@ import { validateSave } from "../../../scripts/anticheat/anticheat.js";
 import { updateResources } from "../../../services/base/updateResources.js";
 import { buildingDataHandler } from "./handlers/buildingDataHandler.js";
 import { takeoverCellMR3, type TakeoverData } from "../../../services/maproom/v3/takeoverCellMR3.js";
+import { damageProtection } from "../../../services/maproom/v2/damageProtection.js";
 import { isMR3Structure } from "../../../services/maproom/v3/utils/isMR3Structure.js";
 import { WorldMapCell } from "../../../models/worldmapcell.model.js";
 import { MapRoomVersion } from "../../../enums/MapRoom.js";
@@ -87,11 +88,14 @@ export const baseSave: KoaController = async (ctx) => {
           break;
 
         case SaveKeys.BUILDINGDATA:
+          if (saveData.buildingdata == null) break;
+          
           if (isAttack) {
             buildingDataHandler(saveData.buildingdata, baseSave);
           } else {
             baseSave[SaveKeys.BUILDINGDATA] = saveData.buildingdata;
           }
+          break;
 
         case SaveKeys.CHAMPION:
           if (isAttack) {
@@ -157,6 +161,10 @@ export const baseSave: KoaController = async (ctx) => {
 
           if (cell && !cell.destroyed_at) cell.destroyed_at = new Date();
         }
+      }
+      // Grant damage protection to the defender when the attack ends
+      if (saveData.over && (baseSave.type === BaseType.MAIN || baseSave.type === BaseType.OUTPOST)) {
+        await damageProtection(baseSave);
       }
     }
 
