@@ -18,6 +18,21 @@ import { getCellBounds, type Coord } from "../../../services/maproom/v3/utils/ge
 import { getDefenderLevels } from "../../../services/maproom/v3/getDefenderLevels.js";
 import { TRIBE_REGEN_TIME } from "../../../config/MapRoom3Config.js";
 
+/**
+ * Save fields fetched alongside each WorldMapCell in the DB query.
+ * Restricted to only what the cell handlers need to.
+ */
+const CELL_SAVE_FIELDS = [
+  "*",
+  "save.basesaveid",
+  "save.damage",
+  "save.destroyed",
+  "save.level",
+  "save.protected",
+  "save.points",
+  "save.basevalue",
+] as const;
+
 export const getMapRoomCells: KoaController = async (ctx) => {
   try {
     const { cellids } = CellSchema.parse(ctx.request.body);
@@ -101,7 +116,7 @@ export const getMapRoomCells: KoaController = async (ctx) => {
         x: { $gte: minX - 1, $lte: maxX + 1 },
         y: { $gte: minY - 1, $lte: maxY + 1 },
       },
-      { populate: ["save"] },
+      { populate: ["save"], fields: CELL_SAVE_FIELDS },
     );
 
     const dbCellsByCoord = mapByCoordinates(dbCells);
