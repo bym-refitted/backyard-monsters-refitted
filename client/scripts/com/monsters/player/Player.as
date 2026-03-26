@@ -299,7 +299,7 @@ package com.monsters.player
       
       public function fillMonsterData(param1:Object) : void
       {
-         var _loc5_:String = null;
+         var creatureID:String = null;
          var _loc6_:int = 0;
          var _loc7_:MonsterData = null;
          var _loc8_:int = 0;
@@ -310,54 +310,55 @@ package com.monsters.player
          _loc2_.length = 0;
          this.m_monsterIndexList = [];
          var _loc4_:Boolean = false;
-         for(_loc5_ in param1)
+         for(creatureID in param1)
          {
-            if(_loc5_.substr(0,1) == "C" || _loc5_.substr(0,2) == "IC")
+            if(creatureID.substr(0,1) == "C" || creatureID.substr(0,2) == "IC")
             {
-               if(!_loc4_ && !(param1[_loc5_] is Number))
+               if(!_loc4_ && !(param1[creatureID] is Number))
                {
                   _loc4_ = true;
                }
                if(_loc4_)
                {
-                  _loc6_ = int(param1[_loc5_].length);
+                  if(param1[creatureID] == null) continue;
+                  _loc6_ = int(param1[creatureID].length);
                }
                else
                {
-                  _loc6_ = int(param1[_loc5_]);
+                  _loc6_ = int(param1[creatureID]);
                }
                if(_loc6_)
                {
                   _loc7_ = new MonsterData();
-                  if(_loc5_ == "C100")
+                  if(creatureID == "C100")
                   {
-                     _loc5_ = "C12";
+                     creatureID = "C12";
                   }
-                  _loc7_.m_creatureID = _loc5_;
+                  _loc7_.m_creatureID = creatureID;
                   _loc7_.add(_loc6_);
                   _loc8_ = 0;
                   while(_loc8_ < _loc6_)
                   {
                      if(_loc4_)
                      {
-                        _loc7_.m_creeps[_loc8_].health = param1[_loc5_][_loc8_].health > 0 ? Number(param1[_loc5_][_loc8_].health) : 1;
-                        _loc7_.m_creeps[_loc8_].ownerID = param1[_loc5_][_loc8_].ownerID;
-                        _loc7_.m_creeps[_loc8_].queued = !!param1[_loc5_][_loc8_].q ? uint(param1[_loc5_][_loc8_].q) : 0;
+                        _loc7_.m_creeps[_loc8_].health = param1[creatureID][_loc8_].health > 0 ? Number(param1[creatureID][_loc8_].health) : 1;
+                        _loc7_.m_creeps[_loc8_].ownerID = param1[creatureID][_loc8_].ownerID;
+                        _loc7_.m_creeps[_loc8_].queued = !!param1[creatureID][_loc8_].q ? uint(param1[creatureID][_loc8_].q) : 0;
                      }
                      else
                      {
                         _loc7_.m_creeps[_loc8_].health = int.MAX_VALUE;
                      }
-                     if(this.m_upgrades[_loc5_] != null)
+                     if(this.m_upgrades[creatureID] != null)
                      {
-                        _loc7_.level = this.m_upgrades[_loc5_].level;
+                        _loc7_.level = this.m_upgrades[creatureID].level;
                      }
                      _loc8_++;
                   }
                   _loc2_.push(_loc7_);
-                  if(!this.m_monsterIndexList[_loc5_])
+                  if(!this.m_monsterIndexList[creatureID])
                   {
-                     this.m_monsterIndexList[_loc5_] = _loc2_.length;
+                     this.m_monsterIndexList[creatureID] = _loc2_.length;
                   }
                }
             }
