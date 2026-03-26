@@ -21,6 +21,27 @@ const getAreaSchema = z.object({
 });
 
 /**
+ * Save fields fetched alongside each WorldMapCell in the DB query.
+ * Restricted to only what the cell handlers need.
+ */
+const CELL_SAVE_FIELDS = [
+  "*",
+  "save.basesaveid",
+  "save.savetime",
+  "save.locked",
+  "save.empirevalue",
+  "save.flinger",
+  "save.catapult",
+  "save.protected",
+  "save.resources",
+  "save.monsters",
+  "save.damage",
+  "save.destroyed",
+  "save.points",
+  "save.basevalue",
+] as const;
+
+/**
  * Controller for generating cells on the World Map.
  * 
  * Processes chunks of 10 x 10 cells, retrieving persistent cells (e.g., homebases, outposts) 
@@ -62,7 +83,7 @@ export const getArea: KoaController = async (ctx) => {
         $lte: currentY + height,
       },
     },
-    { populate: ["save"] }
+    { populate: ["save"], fields: CELL_SAVE_FIELDS }
   );
 
   // Batch load all unique cell owners in a single query
