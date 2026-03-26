@@ -45,7 +45,7 @@ package
 
       public static var cdnUrl:String = CONFIG::CDN_URL;
 
-      public static var apiVersionSuffix:String = "v1.5.2-beta";
+      public static var apiVersionSuffix:String = "v1.5.3-beta";
 
       public static var connectionCounter:int;
 
@@ -1163,7 +1163,7 @@ package
 
          // Poll the server every 5 ticks to check for network connection
          connectionCounter += 1;
-         if (connectionCounter % 5 == 0)
+         if (connectionCounter % 30 == 0)
          {
             CheckNetworkConnection(null);
          }
