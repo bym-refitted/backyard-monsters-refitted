@@ -162,8 +162,10 @@ export const baseSave: KoaController = async (ctx) => {
           if (cell && !cell.destroyed_at) cell.destroyed_at = new Date();
         }
       }
-      // Grant damage protection to the defender when the attack ends
-      if (saveData.over && (baseSave.type === BaseType.MAIN || baseSave.type === BaseType.OUTPOST)) {
+      // Grant damage protection to the defender main yard when the attack ends.
+      const isProtectable = baseSave.type === BaseType.MAIN || baseSave.type === BaseType.OUTPOST;
+      
+      if (saveData.over && isProtectable && !isMR3Structure(baseSave.wmid)) {
         await damageProtection(baseSave);
       }
     }
