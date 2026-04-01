@@ -19,4 +19,5 @@ export const purchaseKeys = new Set([
   "QINVITE5",   // Quest Invite 5 Friends
   "QINVITE10",  // Quest Invite 10 Friends
   "QWM1",       // Quest Wild Monster 1
+  "HAM",        // Heal All Monsters
 ]);
