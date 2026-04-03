@@ -32,11 +32,13 @@ const emailSchema = z.string().trim().email(emailError).toLowerCase();
  * - Email is optional.
  * - Password is optional.
  * - Token is optional.
+ * - sessionType distinguishes game sessions from launcher/website sessions.
  */
 export const UserLoginSchema = z.object({
   email: emailSchema.optional(),
   password: passwordSchema.optional(),
   token: z.string().optional(),
+  sessionType: z.enum(["game", "launcher"]).default("game"),
 });
 
 /**
