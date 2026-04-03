@@ -1,6 +1,5 @@
 import z from "zod";
 
-import { Save } from "../../models/save.model.js";
 import { User } from "../../models/user.model.js";
 import type { KoaController } from "../../utils/KoaController.js";
 import { postgres } from "../../server.js";
@@ -35,7 +34,8 @@ export const setMapVersion: KoaController = async (ctx) => {
   const user: User = ctx.authUser;
   await postgres.em.populate(user, ["save"]);
 
-  let save: Save = user.save;
+  const save = user.save!;
+
   const { version } = SetMapVersionSchema.parse(ctx.request.body);
 
   if (!ctx.meetsDiscordAgeCheck) {

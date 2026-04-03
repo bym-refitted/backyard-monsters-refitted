@@ -1,5 +1,6 @@
 import { Save } from "../../../models/save.model.js";
 import { postgres } from "../../../server.js";
+import type { RequiredEntityData } from "@mikro-orm/core";
 import { EnumYardType } from "../../../enums/EnumYardType.js";
 import {
   STRUCTURE_SAVES,
@@ -62,6 +63,9 @@ export const tribeSaveV3 = async (baseid: string, worldid: string): Promise<Save
 
     if (defenderIndex >= 0) {
       const defenderLevels = getDefenderLevels(EnumYardType.PLAYER);
+      
+      if (!defenderLevels) return null;
+
       const level = defenderLevels[defenderIndex];
       const defenderSave = STRUCTURE_SAVES[EnumYardType.FORTIFICATION];
 
@@ -70,7 +74,7 @@ export const tribeSaveV3 = async (baseid: string, worldid: string): Promise<Save
         baseid,
         level,
         wmid: EnumYardType.FORTIFICATION,
-      });
+      } as unknown as RequiredEntityData<Save>);
     }
   }
 
@@ -79,8 +83,8 @@ export const tribeSaveV3 = async (baseid: string, worldid: string): Promise<Save
 
   if (structureType === EnumYardType.OUTPOST) {
     const tribeIndex = (cellX + cellY) % Tribes.length;
-    const level = genCell.level;
-    const outpostSave = OUTPOST_SAVES[tribeIndex][level];
+    const level = genCell!.level ?? 0;
+    const outpostSave = OUTPOST_SAVES[tribeIndex]?.[level];
 
     if (!outpostSave) return null;
 
@@ -94,7 +98,7 @@ export const tribeSaveV3 = async (baseid: string, worldid: string): Promise<Save
       baseid,
       level,
       wmid,
-    });
+    } as unknown as RequiredEntityData<Save>);
   }
 
   if (structureType !== undefined) {
@@ -104,7 +108,7 @@ export const tribeSaveV3 = async (baseid: string, worldid: string): Promise<Save
 
     const isFortification = structureType === EnumYardType.FORTIFICATION;
     const level = isFortification
-      ? genCell.level
+      ? genCell!.level ?? 0
       : calculateStructureLevel(cellX, cellY, structureType);
 
     return postgres.em.create(Save, {
@@ -112,7 +116,7 @@ export const tribeSaveV3 = async (baseid: string, worldid: string): Promise<Save
       baseid,
       level,
       wmid: structureType,
-    });
+    } as unknown as RequiredEntityData<Save>);
   }
 
   return null;

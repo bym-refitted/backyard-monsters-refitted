@@ -96,7 +96,9 @@ export const takeoverCellMR3 = async (baseSave: Save, user: User, userSave: Save
       ([x, y, id]) => !(x === cell.x && y === cell.y && id === baseid),
     );
 
-    delete previousOwner.save.buildingresources[`b${baseid}`];
+    if (previousOwner.save.buildingresources) {
+      delete previousOwner.save.buildingresources[`b${baseid}`];
+    }
 
     await postgres.em.persistAndFlush(previousOwner);
   }
@@ -140,5 +142,8 @@ export const takeoverCellMR3 = async (baseSave: Save, user: User, userSave: Save
 
       return { level, weakened: EnumYardType.RESOURCE };
     }
+
+    default:
+      return null;
   }
 };

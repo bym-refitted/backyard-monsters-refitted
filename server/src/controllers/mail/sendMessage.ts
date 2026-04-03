@@ -10,6 +10,7 @@ import { findOrCreateThread } from "../../services/mail/findOrCreateThread.js";
 import { countUnreadMessage } from "../../services/mail/countUnreadMessage.js";
 import { mailboxErr } from "../../errors/errors.js";
 import { logger } from "../../utils/logger.js";
+import type { MessageData } from "../../types/EntityData.js";
 
 /**
  * Controller to send message
@@ -54,7 +55,7 @@ export const sendMessage: KoaController = async (ctx) => {
       { populate: ["save"] }
     );
 
-    if (!recipient) {
+    if (!recipient || !recipient.save) {
       ctx.status = Status.OK;
       ctx.body = { error: 1 };
       return;
@@ -77,7 +78,7 @@ export const sendMessage: KoaController = async (ctx) => {
       subject: filteredSubject,
       message: filteredMessage,
       updatetime: getCurrentDateTime(),
-    });
+    } as unknown as MessageData);
 
     thread.messagecount++;
     thread.lastMessage = newMessage;
@@ -95,7 +96,7 @@ export const sendMessage: KoaController = async (ctx) => {
       threadid: thread.threadid,
     };
   } catch (err) {
-    logger.error("Error sending message:", err);
+    logger.error(`Error sending message: ${err}`);
     throw mailboxErr();
   }
 };

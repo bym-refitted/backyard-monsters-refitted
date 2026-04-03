@@ -40,6 +40,6 @@ export const reportMessageThread: KoaController = async (ctx) => {
   } catch (error) {
     ctx.status = Status.INTERNAL_SERVER_ERROR;
     ctx.body = { error: 1 };
-    logger.error("Error blocking user:", error);
+    logger.error(`Error blocking user: ${error}`);
   }
 };

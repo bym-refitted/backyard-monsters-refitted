@@ -1,4 +1,6 @@
-export const kozu = {
+import type { SaveData } from "../../../types/EntityData.js";
+
+export const kozu: Record<number, SaveData> = {
   0: {
     type: "tribe",
     userid: 0,

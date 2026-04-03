@@ -61,6 +61,9 @@ export const createScaledTribes = async (save: Save, tribes: TribeScaleConfig) =
 
   if (!maproom) {
     const user = await postgres.em.findOne(User, { userid });
+
+    if (!user) throw new Error(`User not found for userid: ${userid}`);
+    
     maproom = await InfernoMaproom.setupMapRoom1Data(postgres.em, user);
   }
 
@@ -83,7 +86,7 @@ export const createScaledTribes = async (save: Save, tribes: TribeScaleConfig) =
 
       // Reset tribe data
       tribe.destroyed = 0;
-      tribe.destroyedAt = null;
+      tribe.destroyedAt = undefined;
       tribe.tribeHealthData = {};
       tribe.monsters = undefined;
       persist = true;

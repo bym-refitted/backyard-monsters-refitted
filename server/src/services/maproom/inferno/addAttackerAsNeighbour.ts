@@ -25,6 +25,8 @@ export const addAttackerAsNeighbour = async (attacker: User, defender: User) => 
   if (!defenderMaproom || !attackerMaproom)
     throw new Error("Inferno save not found for either attacker or defender.");
 
+  if (!attacker.infernosave) throw new Error("Attacker inferno save not found.");
+
   const { neighbors: defenderNeighbor } = defenderMaproom;
 
   // Check if attacker already exists in the defender's neighbors
@@ -52,7 +54,7 @@ export const addAttackerAsNeighbour = async (attacker: User, defender: User) => 
       defenderMaproom.neighbors = defenderNeighbor.slice(0, 25);
     }
   } else {
-    existingAttacker.attacksfrom = existingAttacker.attacksfrom + 1;
+    existingAttacker.attacksfrom = (existingAttacker.attacksfrom ?? 0) + 1;
   }
 
   // Update attacker's neighbor list, defender should already exist from initial seeding
@@ -63,7 +65,7 @@ export const addAttackerAsNeighbour = async (attacker: User, defender: User) => 
   if (!existingDefender) 
     throw new Error("Defender not found in attacker's neighbor list");
 
-  existingDefender.attacksto = existingDefender.attacksto + 1;
+  existingDefender.attacksto = (existingDefender.attacksto ?? 0) + 1;
 
   await Promise.all([
     postgres.em.persistAndFlush(defenderMaproom),

@@ -32,6 +32,6 @@ export const processLanguagesFile = async (ctx: Context, next: Next) => {
   } catch (error) {
     ctx.status = Status.INTERNAL_SERVER_ERROR;
     ctx.body = { error: "Error processing JSON data" };
-    logger.error(error);
+    logger.error(`Error processing language file for code ${languageCode}: ${error}`);
   }
 };

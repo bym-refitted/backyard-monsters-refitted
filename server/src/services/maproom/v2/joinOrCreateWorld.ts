@@ -7,6 +7,7 @@ import { MapRoom2, MapRoomCell, MapRoomVersion } from "../../../enums/MapRoom.js
 import { EntityManager, PostgreSqlDriver } from "@mikro-orm/postgresql";
 import { postgres } from "../../../server.js";
 import { findFreeCell } from "./findFreeCell.js";
+import type { WorldData } from "../../../types/EntityData.js";
 
 /**
  * Assigns a user to a world by either joining an existing one with available space
@@ -41,9 +42,10 @@ export const joinOrCreateWorld = async (
     world = shuffledWorlds[0];
     logger.info(`User assigned to existing world: ${world.name}`);
   } else {
-    world = em.create(World, {});
+    world = em.create(World, {} as unknown as WorldData);
     world.name = "New World";
     world.map_version = MapRoomVersion.V2;
+
     logger.info("All worlds full, created new world.");
   }
 

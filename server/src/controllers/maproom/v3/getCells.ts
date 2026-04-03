@@ -2,7 +2,6 @@ import { User } from "../../../models/user.model.js";
 import { Status } from "../../../enums/StatusCodes.js";
 import { CellSchema } from "../../../zod/CellSchema.js";
 import { postgres } from "../../../server.js";
-import { Save } from "../../../models/save.model.js";
 import { MapRoom3, MapRoomVersion } from "../../../enums/MapRoom.js";
 import { WorldMapCell } from "../../../models/worldmapcell.model.js";
 import { mapByCoordinates } from "../../../services/maproom/v3/utils/mapByCoordinates.js";
@@ -40,10 +39,11 @@ export const getMapRoomCells: KoaController = async (ctx) => {
     const user: User = ctx.authUser;
     await postgres.em.populate(user, ["save"]);
 
-    const save: Save = user.save;
-    const worldid = save.worldid;
+    const save = user.save!;
 
-    if (!cellids?.length) {
+    const worldid = save.worldid;
+    
+    if (!worldid || !cellids?.length) {
       ctx.status = Status.OK;
       ctx.body = { celldata: [] };
       return;
@@ -233,7 +233,7 @@ export const getMapRoomCells: KoaController = async (ctx) => {
     ctx.status = Status.OK;
     ctx.body = { celldata: [...cellsToReturn.values()] };
   } catch (error) {
-    logger.error("Error in getMapRoomCells:", error);
+    logger.error(`Error in getMapRoomCells: ${error}`);
     throw loadFailureErr();
   }
 };
