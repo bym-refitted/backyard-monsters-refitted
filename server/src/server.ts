@@ -48,6 +48,15 @@ api.get("/", (ctx: Context) => (ctx.body = {}));
   postgres.orm = await MikroORM.init<PostgreSqlDriver>(ormConfig);
   postgres.em = postgres.orm.em;
 
+  if (process.env.Env !== Env.PROD) {
+    try {
+      await postgres.orm.getMigrator().up();
+      logger.info("Database migrations applied");
+    } catch (err) {
+      logger.error("Database migration failure", err);
+    }
+  }
+
   await redis.connect();
 
   app.use(
