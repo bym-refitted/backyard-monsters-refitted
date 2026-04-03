@@ -3,6 +3,7 @@ import { Entity, PrimaryKey, Property } from "@mikro-orm/core";
 import { EntityManager, PostgreSqlDriver } from "@mikro-orm/postgresql";
 import { User } from "./user.model.js";
 import type { NeighbourData } from "../services/maproom/inferno/createNeighbourData.js";
+import type { InfernoMaproomData } from "../types/EntityData.js";
 
 export interface TribeData {
   baseid: string;
@@ -33,7 +34,10 @@ export class InfernoMaproom {
   lastupdateAt: Date = new Date();
 
   public static setupMapRoom1Data = async (em: EntityManager<PostgreSqlDriver>, user: User) => {
-    const maproom = em.create(InfernoMaproom, { userid: user.userid });
+    const maproom = em.create(InfernoMaproom, 
+    {
+      userid: user.userid,
+    } as unknown as InfernoMaproomData);
 
     await em.persistAndFlush(maproom);
     return maproom;

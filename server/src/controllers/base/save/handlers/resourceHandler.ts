@@ -21,5 +21,5 @@ export const resourcesHandler = (
   }
 
   if (resourceData)
-    save[resourceKey] = updateResources(resourceData, save[resourceKey]);
+    save[resourceKey] = updateResources(resourceData, save[resourceKey] ?? {});
 };

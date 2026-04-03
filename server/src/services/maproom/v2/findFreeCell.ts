@@ -61,5 +61,5 @@ export const findFreeCell = async (world: World, em: EntityManager<PostgreSqlDri
     throw new Error("Failed to find land position after several attempts");
   }
 
-  return cell;
+  return cell as { x: number; y: number; terrainHeight: number };
 };

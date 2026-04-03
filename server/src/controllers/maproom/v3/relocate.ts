@@ -10,7 +10,7 @@ export const relocate: KoaController = async (ctx) => {
   await postgres.em.populate(user, ["save"]);
 
   try {
-    await joinNewWorldMap(user, user.save);
+    await joinNewWorldMap(user, user.save!);
 
     ctx.status = Status.OK;
     ctx.body = {
@@ -18,7 +18,7 @@ export const relocate: KoaController = async (ctx) => {
       mapheaderurl: `${BASE_URL}:${PORT}/api/bm/getnewmap`,
     };
   } catch (err) {
-    logger.error("Failed to relocate MR3 base", err);
+    logger.error(`Failed to relocate MR3 base: ${err}`);
     ctx.status = Status.INTERNAL_SERVER_ERROR;
     ctx.body = { error: "Failed to relocate base. Please try again." };
   }

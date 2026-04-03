@@ -11,7 +11,7 @@ import type { KoaController } from "../../utils/KoaController.js";
  */
 export const getTemplates: KoaController = async (ctx) => {
   const user: User = ctx.authUser;
-  let save = user.save;
+  let save = user.save!;
 
   await postgres.em.populate(user, ["save"]);
   const template = save.savetemplate;

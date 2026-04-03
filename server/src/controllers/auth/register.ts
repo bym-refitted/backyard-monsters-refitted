@@ -7,6 +7,7 @@ import { emailUniqueErr, usernameUniqueErr } from "../../errors/errors.js";
 import { logger } from "../../utils/logger.js";
 import { Status } from "../../enums/StatusCodes.js";
 import { UserRegistrationSchema } from "../../zod/AuthSchemas.js";
+import type { UserData } from "../../types/EntityData.js";
 
 /**
  * Controller to handle user registration.
@@ -39,14 +40,14 @@ export const register: KoaController = async (ctx) => {
     if (isEmailTaken) throw emailUniqueErr();
   }
 
-  const hash = await bcrypt.hash(registeredUser.password, 10);
+  const hash = await bcrypt.hash(registeredUser.password!, 10);
 
   // Create new user record
   const user = postgres.em.create(User, {
     ...registeredUser,
     pic_square: `${process.env.AVATAR_URL}?seed=${registeredUser.username}&size=50`,
     password: hash,
-  });
+  } as unknown as UserData);
 
   await postgres.em.persistAndFlush(user);
   const filteredUser = FilterFrontendKeys(user);

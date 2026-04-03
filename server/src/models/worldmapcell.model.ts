@@ -13,12 +13,12 @@ import { World } from "./world.model.js";
 @Entity({ tableName: "world_map_cell" })
 export class WorldMapCell {
   
-  constructor(world?: World, x?: number, y?: number, terrainHeight?: number) {
-    this.world = world;
-    this.world_id = world?.uuid;
+  constructor(world: World | undefined, x: number, y: number, terrainHeight: number | undefined) {
+    this.world = world!;
+    this.world_id = world?.uuid ?? "";
     this.x = x;
     this.y = y;
-    this.terrainHeight = terrainHeight;
+    this.terrainHeight = terrainHeight ?? 0;
   }
 
   @FrontendKey

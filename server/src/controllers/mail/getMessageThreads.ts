@@ -38,8 +38,10 @@ export const getMessageThreads: KoaController = async (ctx) => {
       return thread.lastMessage && !blockedUsers.has(targetUser);
     });
 
-    const threadMessages = filteredThreads.map((thread, index) => {
-      const { lastMessage } = thread;
+    const threadMessages = filteredThreads.flatMap((thread, index) => {
+      if (!thread.lastMessage) return [];
+
+      const lastMessage = thread.lastMessage;
       const isSender = lastMessage.userid === user.userid;
 
       lastMessage.selectUnread(user.userid);
@@ -50,20 +52,20 @@ export const getMessageThreads: KoaController = async (ctx) => {
       lastMessage.userid = isSender ? lastMessage.targetid : lastMessage.userid;
       lastMessage.reportid = "0";
 
-      return lastMessage;
+      return [lastMessage];
     });
 
     const threadsList = Object.fromEntries(
-      threadMessages.map((thread: Thread) => [
-        thread.threadid,
-        FilterFrontendKeys(thread),
+      threadMessages.map((message) => [
+        message.threadid,
+        FilterFrontendKeys(message),
       ])
     );
 
     ctx.status = Status.OK;
     ctx.body = { error: 0, threads: threadsList };
   } catch (err) {
-    logger.error("Error getting message threads:", err);
+    logger.error(`Error getting message threads: ${err}`);
     throw mailboxErr();
   }
 };

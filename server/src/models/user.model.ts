@@ -30,13 +30,13 @@ export class User {
   password!: string;
 
   @Property({ default: false })
-  discord_verified: boolean;
+  discord_verified: boolean = false;
 
   @Property({ nullable: true })
-  discord_id: string;
+  discord_id: string | null = null;
 
   @Property({ nullable: true })
-  discord_tag: string;
+  discord_tag: string | null = null;
 
   @Property({ default: "" })
   @FrontendKey

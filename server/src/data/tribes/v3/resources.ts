@@ -1,4 +1,6 @@
-export const resources: Record<number, Record<string, any>> = {
+import type { SaveData } from "../../../types/EntityData.js";
+
+export const resources: Record<number, SaveData> = {
   10: {
     type: "tribe",
     userid: 0,

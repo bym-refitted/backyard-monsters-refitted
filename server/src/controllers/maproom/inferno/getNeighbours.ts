@@ -37,7 +37,7 @@ export const getNeighbours: KoaController = async (ctx) => {
   await postgres.em.populate(user, ["save", "infernosave"]);
 
   try {
-    if (!user.save.worldid) {
+    if (!user.save?.worldid) {
       ctx.status = Status.OK;
       ctx.body = { error: 0, bases: [] };
       return;
@@ -51,6 +51,8 @@ export const getNeighbours: KoaController = async (ctx) => {
     const cacheExpiry = new Date(
       currentDate.getTime() - CACHE_VALIDITY_HOURS * 60 * 60 * 1000
     );
+
+    if (!infernoMaproom) throw new Error("Inferno maproom not found.");
 
     // Check if we need to fetch new neighbours (cache expired or array empty)
     const getNewNeighbours = isCacheExpired(infernoMaproom, cacheExpiry) || infernoMaproom.neighbors.length === 0;
@@ -92,7 +94,7 @@ export const getNeighbours: KoaController = async (ctx) => {
       bases: neighbours,
     };
   } catch (error) {
-    logger.error("Error fetching inferno neighbours:", error);
+    logger.error(`Error fetching inferno neighbours: ${error}`);
     ctx.status = Status.OK;
     ctx.body = {
       error: 0,
@@ -114,7 +116,7 @@ export const getNeighbours: KoaController = async (ctx) => {
 const findNeighbours = async (user: User): Promise<NeighbourData[]> => {
   const { infernosave, save } = user;
 
-  if (!save.worldid) return [];
+  if (!save?.worldid || !infernosave) return [];
 
   const userLevel = calculateBaseLevel(
     infernosave.points,
@@ -208,6 +210,8 @@ const updateNeighbourData = async (cachedNeighbours: NeighbourData[]) => {
     .filter((neighbour) => saveMap.has(neighbour.userid))
     .map((neighbour) => {
       const currentSave = saveMap.get(neighbour.userid);
+      
+      if (!currentSave) return neighbour;
 
       // TODO: Add the rest of the cases here for attack permissions
       // e.g. level too low, starting protection, etc

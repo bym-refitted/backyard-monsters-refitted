@@ -33,10 +33,10 @@ export const updateResources = (
     Object.keys(resources).forEach((key) => {
       const resourceKey = key as keyof Resources;
       if (key.endsWith("max")) {
-        saveResources[resourceKey] = resources[key];
+        saveResources[resourceKey] = resources[resourceKey];
       } else {
         saveResources[resourceKey] +=
-          operation === Operation.ADD ? resources[key] : -resources[key];
+          operation === Operation.ADD ? resources[resourceKey] : -resources[resourceKey]!;
       }
     });
   }

@@ -96,7 +96,7 @@ export const validateAttack = async (user: User, attackData: AttackData, mapVers
  * @param {number[]} arr2 - Second array of numeric stats.
  * @returns {boolean} - True if arrays are equal within 2 decimal places, otherwise false.
  */
-const isMonsterStatsEqual = (arr1: number[], arr2: number[]) => {
+const isMonsterStatsEqual = (arr1: number[], arr2: number[] | undefined) => {
   if (!Array.isArray(arr1) || !Array.isArray(arr2) || arr1.length !== arr2.length)
     return false;
 
@@ -113,7 +113,7 @@ const isMonsterStatsEqual = (arr1: number[], arr2: number[]) => {
  * @param {StatValue} val2 - Second stat value.
  * @returns {boolean} - True if values are considered equal, false otherwise.
  */
-const isChampionStatsEqual = (val1: StatValue, val2: StatValue) => {
+const isChampionStatsEqual = (val1: StatValue, val2: StatValue | undefined) => {
   if (!Array.isArray(val1) || !Array.isArray(val2) || val1.length !== val2.length) 
     return false;
 

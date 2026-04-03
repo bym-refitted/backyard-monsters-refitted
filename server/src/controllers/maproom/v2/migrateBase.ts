@@ -43,11 +43,11 @@ export const migrateBase: KoaController = async (ctx) => {
     const currentUser: User = ctx.authUser;
     await postgres.em.populate(currentUser, ["save"]);
 
-    const userSave = currentUser.save;
+    const userSave = currentUser.save!;
     const currentTime = getCurrentDateTime();
 
     // Check if the user is within the cooldown period.
-    if (userSave.cantmovetill > currentTime) {
+    if (userSave.cantmovetill && userSave.cantmovetill > currentTime) {
       ctx.status = Status.OK;
       ctx.body = {
         error: 0,
@@ -119,11 +119,13 @@ export const migrateBase: KoaController = async (ctx) => {
     );
 
     // Remove baseid from building resources object
-    delete userSave.buildingresources[`b${outpostBaseId}`];
+    if (userSave.buildingresources) {
+      delete userSave.buildingresources[`b${outpostBaseId}`];
+    }
 
     if (shiny) userSave.credits = userSave.credits - shiny;
     if (resources)
-      userSave.resources = updateResources(resources, userSave.resources, Operation.SUBTRACT);
+      userSave.resources = updateResources(resources, userSave.resources ?? {}, Operation.SUBTRACT);
 
     await postgres.em.transactional(async (em) => {
       await em.persistAndFlush([homeCell, userSave]);
@@ -140,6 +142,6 @@ export const migrateBase: KoaController = async (ctx) => {
 
     ctx.status = Status.BAD_REQUEST;
     ctx.body = { error: 1 };
-    logger.error("Error migrating user base:", error);
+    logger.error(`Error migrating user base: ${error}`);
   }
 };

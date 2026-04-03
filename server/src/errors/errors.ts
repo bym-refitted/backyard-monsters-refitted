@@ -10,7 +10,7 @@ export const authFailureErr = () =>
   new ClientSafeError({
     message: "Could not authenticate",
     status: Status.UNAUTHORIZED,
-    data: null,
+    data: {},
     isClientFriendly: true,
   });
 
@@ -18,7 +18,7 @@ export const tokenAuthFailureErr = () =>
   new ClientSafeError({
     message: "Could not authenticate with user token",
     status: Status.UNAUTHORIZED,
-    data: null,
+    data: {},
     isClientFriendly: true,
   });
 
@@ -27,7 +27,7 @@ export const emailPasswordErr = () =>
     message:
       "Your login credentials are incorrect. Please check and try again. If you forgot your password, you can reset it by clicking on forgot password.",
     status: Status.CONFLICT,
-    data: null,
+    data: {},
     isClientFriendly: true,
   });
 
@@ -35,7 +35,7 @@ export const usernameUniqueErr = () =>
   new ClientSafeError({
     message: "An account with this username already exists.",
     status: Status.CONFLICT,
-    data: null,
+    data: {},
     isClientFriendly: true,
   });
 
@@ -43,7 +43,7 @@ export const emailUniqueErr = () =>
   new ClientSafeError({
     message: "An account with this email address already exists.",
     status: Status.CONFLICT,
-    data: null,
+    data: {},
     isClientFriendly: true,
   });
 
@@ -51,7 +51,7 @@ export const debugClientErr = () =>
   new ClientSafeError({
     message: "Sorry, it appears this cannot be found.",
     status: Status.NOT_FOUND,
-    data: null,
+    data: {},
     isClientFriendly: true,
   });
 
@@ -59,7 +59,7 @@ export const saveFailureErr = () =>
   new ClientSafeError({
     message: "We encountered an error while saving",
     status: Status.INTERNAL_SERVER_ERROR,
-    data: null,
+    data: {},
     isClientFriendly: true,
   });
 
@@ -67,7 +67,7 @@ export const loadFailureErr = () =>
   new ClientSafeError({
     message: "We could not load the requested data",
     status: Status.NOT_FOUND,
-    data: null,
+    data: {},
     isClientFriendly: true,
   });
 
@@ -76,7 +76,7 @@ export const userPermaBannedErr = () =>
     message:
       "Your account has been permanently banned. If you believe this is an error, please contact support.",
     status: Status.FORBIDDEN,
-    data: null,
+    data: {},
     isClientFriendly: true
   });
 
@@ -85,7 +85,7 @@ export const antiCheatBanErr = () =>
     message:
       "Hey bud, it seems you got caught by a very basic anti-cheat, you're not that guy pal, enjoy the ban.",
     status: Status.FORBIDDEN,
-    data: null,
+    data: {},
     isClientFriendly: true
   });
 
@@ -94,7 +94,7 @@ export const discordVerifyErr = () =>
     message:
       "In order to continue, you must verify your account on our Discord server, in the #claim-account channel.",
     status: Status.UNAUTHORIZED,
-    data: null,
+    data: {},
     isClientFriendly: true
   });
 
@@ -103,14 +103,15 @@ export const discordAgeErr = () =>
     message:
       "Your discord account must be at least 1 week old in order to access this feature.",
     status: Status.UNAUTHORIZED,
-    data: null,
+    data: {},
+    isClientFriendly: true
   });
 
 export const permissionErr = () =>
   new ClientSafeError({
     message: "You do not have permission to complete this operation.",
     status: Status.FORBIDDEN,
-    data: null,
+    data: {},
     isClientFriendly: true,
   });
 
@@ -118,7 +119,7 @@ export const mailboxErr = () =>
   new ClientSafeError({
     message: "Mailbox failed with an error.",
     status: Status.NOT_FOUND,
-    data: null,
+    data: {},
     isClientFriendly: true,
   });
 
@@ -127,6 +128,6 @@ export const relocateOutpostErr = () =>
     message:
       "You cannot relocate while owning outposts in this world.",
     status: Status.FORBIDDEN,
-    data: null,
+    data: {},
     isClientFriendly: true,
   });
