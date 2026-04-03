@@ -20,10 +20,10 @@ import { resourcesHandler } from "../base/save/handlers/resourceHandler.js";
 
 export const infernoSave: KoaController = async (ctx) => {
   const user: User = ctx.authUser;
+  await postgres.em.populate(user, ["save", "infernosave"]);
   
   const userSave = user.save!;
   const userInfernoSave = user.infernosave;
-  await postgres.em.populate(user, ["save", "infernosave"]);
 
   try {
     const body = ctx.request.body as Record<string, unknown>;
@@ -82,6 +82,8 @@ export const infernoSave: KoaController = async (ctx) => {
           break;
 
         case SaveKeys.BUILDINGDATA:
+          if (saveData.buildingdata == null) break;
+
           if (isAttack) {
             buildingDataHandler(saveData.buildingdata, baseSave);
           } else {
