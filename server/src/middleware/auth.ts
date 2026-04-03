@@ -26,17 +26,16 @@ export const verifyUserAuth = async (ctx: Context, next: Next) => {
   if (!authHeader || !authHeader.startsWith("Bearer ")) throw authFailureErr();
 
   const token = authHeader.replace("Bearer ", "");
-
   const decodedToken = verifyJwtToken(token);
-  const storedToken = await redis.get(
-    `user-token:${decodedToken.user.email}`
-  );
+
+  const sessionType = decodedToken.user.sessionType;
+  const email = decodedToken.user.email;
+
+  const storedToken = await redis.get(`user-token:${sessionType}:${email}`);
 
   if (storedToken !== token) throw authFailureErr();
 
-  const user = await postgres.em.findOne(User, {
-    email: decodedToken.user.email,
-  });
+  const user = await postgres.em.findOne(User, { email });
 
   if (!user || user.banned) throw authFailureErr();
 
@@ -86,6 +85,7 @@ export interface BymJwtPayload extends DisgustingJwtPayloadHack {
     email: string;
     discordId: string | null;
     meetsDiscordAgeCheck: boolean;
+    sessionType: "game" | "launcher";
   };
 }
 
@@ -101,11 +101,14 @@ export interface BymJwtPayload extends DisgustingJwtPayloadHack {
  */
 export const verifyJwtToken = (token: string): BymJwtPayload => {
   if (process.env.ENV === Env.LOCAL) {
+    const decoded = JWT.decode(token) as BymJwtPayload;
+
     return {
       user: {
-        email: (JWT.decode(token) as BymJwtPayload).user?.email,
+        email: decoded.user?.email,
         discordId: null,
         meetsDiscordAgeCheck: true,
+        sessionType: decoded.user?.sessionType,
       },
     };
   }
