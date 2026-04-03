@@ -48,12 +48,13 @@ api.get("/", (ctx: Context) => (ctx.body = {}));
   postgres.orm = await MikroORM.init<PostgreSqlDriver>(ormConfig);
   postgres.em = postgres.orm.em;
 
-  try {
-    await postgres.orm.getMigrator().up();
-    logger.info("Database migrations applied");
-  } catch (err) {
-    logger.error(`Database migration failure: ${err?.message ?? err}`);
-    // continue startup anyway; runtime has safe guarding for outdated schema in routes
+  if (process.env.Env !== Env.PROD) {
+    try {
+      await postgres.orm.getMigrator().up();
+      logger.info("Database migrations applied");
+    } catch (err) {
+      logger.error("Database migration failure", err);
+    }
   }
 
   await redis.connect();
