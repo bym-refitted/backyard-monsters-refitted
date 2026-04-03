@@ -90,4 +90,4 @@ ${ascii_node}
 Server running on: ${BASE_URL}:${PORT}
     `);
   });
-})().catch((e) => logger.error(e));
+})().catch((e) => logger.error(`Startup failed: ${e}`));
