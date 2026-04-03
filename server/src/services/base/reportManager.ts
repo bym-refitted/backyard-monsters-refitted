@@ -23,7 +23,7 @@ export const logReport = async (user: User, message: string) => {
     timestamp: new Date().toISOString(),
   };
 
-  incident.report.push(newReport);
+  (incident.report ??= []).push(newReport);
   await postgres.em.persistAndFlush(incident);
 };
 
@@ -46,7 +46,7 @@ export const logAttackViolation = async (user: User, message: string) => {
     timestamp: new Date().toISOString(),
   };
 
-  incident.report.push(newReport);
+  (incident.report ??= []).push(newReport);
   await postgres.em.persistAndFlush([incident, user]);
 };
 
@@ -90,7 +90,7 @@ const getOrCreateReport = async (user: User): Promise<Report> => {
     incident.violations = 0;
     incident.attackViolations = 0;
     incident.report = [];
-    incident.banReason = null;
+    incident.banReason = undefined;
   }
 
   incident.violations += 1;

@@ -9,7 +9,7 @@ import { User } from "../../models/user.model.js";
  * @returns {Object} An object containing the mapped properties.
  */
 export const mapUserSaveData = (user: User) => {
-  const userSave = user.save;
+  const userSave = user.save!;
 
   return {
     credits: userSave.credits,

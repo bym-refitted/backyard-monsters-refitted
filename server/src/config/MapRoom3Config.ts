@@ -1,4 +1,5 @@
 import { EnumYardType } from "../enums/EnumYardType.js";
+import type { SaveData } from "../types/EntityData.js";
 import { strongholds } from "../data/tribes/v3/strongholds.js";
 import { resources } from "../data/tribes/v3/resources.js";
 import { defenders } from "../data/tribes/v3/defenders.js";
@@ -122,14 +123,14 @@ export const STRONGHOLD_BONUSES: Record<number, number> = {
 };
 
 /** Save data templates per structure type and level. */
-export const STRUCTURE_SAVES = {
+export const STRUCTURE_SAVES: Record<number, Record<number, SaveData>> = {
   [EnumYardType.STRONGHOLD]: strongholds,
   [EnumYardType.RESOURCE]: resources,
   [EnumYardType.FORTIFICATION]: defenders,
 };
 
 /** Save data templates for tribe outposts, keyed by tribe index then level. */
-export const OUTPOST_SAVES = {
+export const OUTPOST_SAVES: Record<number, Record<number, SaveData>> = {
   0: legionnaire,
   1: kozu,
   2: abunakki,

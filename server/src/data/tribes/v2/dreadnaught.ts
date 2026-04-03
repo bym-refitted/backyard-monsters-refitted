@@ -1,4 +1,6 @@
-export const dreadnaught = {
+import type { SaveData } from "../../../types/EntityData.js";
+
+export const dreadnaught: Record<number, SaveData> = {
   0: {
     type: "tribe",
     userid: 0,

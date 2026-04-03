@@ -18,7 +18,12 @@ type RangeOptions = { baseid?: string; attackCell?: Loaded<WorldMapCell, never> 
  * @param {RangeOptions} options - The options object
  * @returns {Promise<Save>} - The save object if the attack is valid
  */
-export const validateRange = async (user: User, save: Save, mapversion: MapRoomVersion, options: RangeOptions) => {
+export const validateRange = async (
+  user: User, 
+  save: Save, mapversion: MapRoomVersion | undefined, 
+  options: RangeOptions) => {
+  if (!mapversion) throw new Error("Map version is required for range validation.");
+  
   switch (mapversion) {
     case MapRoomVersion.V2:
       return validateRangeV2(user, save, options);
@@ -59,14 +64,15 @@ const validateRangeV3 = (save: Save) => save;
  * @returns {Promise<Save>} - The save object if the attack is valid
  */
 const validateRangeV2 = async (user: User, save: Save, options: RangeOptions) => {
-  const { homebase, outposts, flinger } = user.save;
-  let attackCell = options?.attackCell;
+  const { homebase, outposts, flinger } = user.save!;
+
+  if (!homebase) throw new Error(`${user.username} has no homebase.`);
+  
+  let attackCell: Loaded<WorldMapCell, never> | null | undefined = options?.attackCell;
 
   // First, retrieve the cell under attack
   if (!attackCell && options?.baseid) {
-    attackCell = await postgres.em.findOne(WorldMapCell, {
-      baseid: options.baseid,
-    });
+    attackCell = await postgres.em.findOne(WorldMapCell, { baseid: options.baseid });
   }
 
   if (!attackCell) throw new Error("Attack cell not found.");

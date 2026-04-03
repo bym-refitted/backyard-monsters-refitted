@@ -1,4 +1,6 @@
-export const defenders: Record<number, Record<string, any>> = {
+import type { SaveData } from "../../../types/EntityData.js";
+
+export const defenders: Record<number, SaveData> = {
   5: {
     type: "tribe",
     userid: 0,

@@ -46,7 +46,7 @@ export const baseLoad: KoaController = async (ctx) => {
     const worldid = user.save?.worldid;
     const { baseid, type, mapversion, attackData, attackcost } = BaseLoadSchema.parse(ctx.request.body);
 
-    let baseSave: Save = null;
+    let baseSave: Save | null = null;
 
     switch (type) {
       case BaseMode.BUILD:
@@ -93,6 +93,8 @@ export const baseLoad: KoaController = async (ctx) => {
         throw new Error(`Base type not handled, type: ${type}.`);
     }
 
+    if (!baseSave) throw new Error("Base save not found.");
+
     const filteredSave = FilterFrontendKeys(baseSave);
     const isTutorialEnabled = devConfig.skipTutorial ? 205 : filteredSave.tutorialstage;
 
@@ -123,7 +125,7 @@ export const baseLoad: KoaController = async (ctx) => {
 
         // Auto-bank calculates and applies resources accumulated since the player's last session.
         if (type === BaseMode.BUILD && totalResourceRate > 0) {
-          const userSave = user.save;
+          const userSave = user.save!;
           const now = getCurrentDateTime();
           const lastAccumulated = userSave.buildingresources?.t;
 
@@ -137,7 +139,7 @@ export const baseLoad: KoaController = async (ctx) => {
             }
           }
 
-          userSave.buildingresources.t = now;
+          userSave.buildingresources!.t = now;
           await postgres.em.persistAndFlush(userSave);
         }
       }
@@ -207,7 +209,7 @@ export const baseLoad: KoaController = async (ctx) => {
       }
     }
 
-    const attackAllowed = canAttack(user.save, baseSave, mapversion);
+    const attackAllowed = canAttack(user.save!, baseSave, mapversion);
 
     const response: Record<string, unknown> = {
       ...filteredSave,
@@ -243,6 +245,6 @@ export const baseLoad: KoaController = async (ctx) => {
   } catch (err) {
     ctx.status = Status.INTERNAL_SERVER_ERROR;
     ctx.body = { error: "The server failed to load this base." };
-    logger.error(`Failed to load base`, err);
+    logger.error(`Failed to load base: ${err}`);
   }
 };

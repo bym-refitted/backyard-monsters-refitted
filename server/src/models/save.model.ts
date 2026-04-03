@@ -1,4 +1,4 @@
-import { Entity, Property, PrimaryKey, OneToOne, Index } from "@mikro-orm/core";
+import { Entity, Property, PrimaryKey, OneToOne, Index, type RequiredEntityData } from "@mikro-orm/core";
 
 import { EntityManager, PostgreSqlDriver } from "@mikro-orm/postgresql";
 import { FrontendKey } from "../utils/FrontendKey.js";
@@ -177,7 +177,7 @@ export class Save {
   credits!: number;
 
   @Property({ default: 0 })
-  monthly_credits: number;
+  monthly_credits: number = 0;
 
   @FrontendKey
   @Property({ type: "json", nullable: true, default: "null" })
@@ -189,7 +189,7 @@ export class Save {
 
   @FrontendKey
   @Property({ nullable: true })
-  worldid?: string;
+  worldid?: string | null;
 
   @FrontendKey
   @Property({ default: 0 })
@@ -400,7 +400,7 @@ export class Save {
 
   @FrontendKey
   @Property({ type: "json", nullable: true })
-  homebase: string[] = [];
+  homebase: string[] | null = [];
 
   @FrontendKey
   @Property({ type: "json", nullable: true })
@@ -521,7 +521,7 @@ export class Save {
   ];
 
   public static createMainSave = async (em: EntityManager<PostgreSqlDriver>, user: User) => {
-    const baseSave = em.create(Save, getDefaultBaseData(user, BaseType.MAIN));
+    const baseSave = em.create(Save, getDefaultBaseData(user, BaseType.MAIN) as unknown as RequiredEntityData<Save>);
 
     const [result] = await em.execute<[{ baseid: string }]>(NEXT_USER_BASEID);
     const baseid = result.baseid;
@@ -537,7 +537,8 @@ export class Save {
   };
 
   public static createInfernoSave = async (em: EntityManager<PostgreSqlDriver>, user: User) => {
-    const infernoSave = em.create(Save, getDefaultBaseData(user, BaseType.INFERNO));
+    const save = user.save!;
+    const infernoSave = em.create(Save, getDefaultBaseData(user, BaseType.INFERNO) as unknown as RequiredEntityData<Save>);
 
     const [result] = await em.execute<[{ baseid: string }]>(NEXT_USER_BASEID);
     const baseid = result.baseid;
@@ -545,10 +546,10 @@ export class Save {
     infernoSave.type = BaseType.INFERNO;
     infernoSave.baseid = baseid;
     infernoSave.homebaseid = parseInt(baseid, 10);
-    infernoSave.stats = user.save.stats;
-    infernoSave.worldid = user.save.worldid;
+    infernoSave.stats = save.stats;
+    infernoSave.worldid = save.worldid;
     infernoSave.credits = 0;
-    user.save.iresources = {
+    save.iresources = {
       r1: 59168,
       r2: 60090,
       r3: 59849,

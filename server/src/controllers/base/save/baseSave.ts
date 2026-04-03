@@ -34,11 +34,13 @@ import { MapRoomVersion } from "../../../enums/MapRoom.js";
  */
 export const baseSave: KoaController = async (ctx) => {
   const user: User = ctx.authUser;
-  const userSave = user.save;
   await postgres.em.populate(user, ["save"]);
+  
+  const userSave = user.save!;
 
   try {
-    const saveData = BaseSaveSchema.parse(ctx.request.body);
+    const body = ctx.request.body as Record<string, unknown>;
+    const saveData = BaseSaveSchema.parse(body);
 
     const { basesaveid } = saveData;
     const baseSave = await postgres.em.findOne(Save, { basesaveid });
@@ -52,18 +54,18 @@ export const baseSave: KoaController = async (ctx) => {
     // Not the owner and not in an attack
     if (!isOwner && baseSave.attackid === 0) throw permissionErr();
 
-    await validateSave(user, baseSave, ctx.request.body);
+    await validateSave(user, baseSave, body);
 
     // Standard save logic
     for (const key of isAttack ? Save.attackSaveKeys : Save.saveKeys) {
-      const value = ctx.request.body[key];
+      const value = body[key] as string;
 
       switch (key) {
         case SaveKeys.RESOURCES:
           resourcesHandler(baseSave, value);
           if (isOutpostOwner) {
             const resources = JSON.parse(value);
-            userSave.resources = updateResources(resources, userSave.resources);
+            userSave.resources = updateResources(resources, userSave.resources!);
           }
           break;
 
@@ -80,7 +82,7 @@ export const baseSave: KoaController = async (ctx) => {
           break;
 
         case SaveKeys.PURCHASE:
-          purchaseHandler(ctx, saveData.purchase, userSave);
+          if (saveData.purchase) purchaseHandler(ctx, saveData.purchase, userSave);
           break;
 
         case SaveKeys.ACADEMY:
@@ -113,10 +115,11 @@ export const baseSave: KoaController = async (ctx) => {
 
         default:
           if (value) {
+            const save = baseSave as unknown as Record<string, unknown>;
             try {
-              baseSave[key] = JSON.parse(value);
+              save[key] = JSON.parse(value);
             } catch (_) {
-              baseSave[key] = value;
+              save[key] = value;
             }
           }
       }
@@ -127,21 +130,14 @@ export const baseSave: KoaController = async (ctx) => {
     let takeoverData: TakeoverData | null = null;
 
     if (isAttack) {
-      for (const key of Object.keys(saveData)) {
-        const value = saveData[key];
-        switch (key) {
-          case SaveKeys.MONSTERUPDATE:
-            await monsterUpdateHandler(value, userSave);
-            break;
-
-          case SaveKeys.ATTACKLOOT:
-            attackLootHandler(value, userSave);
-            break;
-
-          default:
-            break;
-        }
+      if (saveData.monsterupdate) {
+        await monsterUpdateHandler(saveData.monsterupdate, userSave);
       }
+
+      if (saveData.attackloot) {
+        attackLootHandler(saveData.attackloot, userSave);
+      }
+
       await postgres.em.persistAndFlush(userSave);
 
       // MR3 Takeover Logic:
@@ -199,7 +195,7 @@ export const baseSave: KoaController = async (ctx) => {
       throw err;
     }
 
-    logger.error(`Failed to save base for user: ${user.username}`, err);
+    logger.error(`Failed to save base for user: ${user.username}: ${err}`);
 
     ctx.status = Status.INTERNAL_SERVER_ERROR;
     ctx.body = { error: `Failed to save for user: ${user.username}` };
@@ -211,9 +207,8 @@ const updateOutposts = (
   baseSave: Save,
   key: keyof FieldData
 ) => {
-  if (key === SaveKeys.BUILDING_RESOURCES) {
-    userSave.buildingresources[`b${baseSave.baseid}`] =
-      baseSave.buildingresources[`b${baseSave.baseid}`];
+  if (key === SaveKeys.BUILDING_RESOURCES && userSave.buildingresources) {
+    userSave.buildingresources[`b${baseSave.baseid}`] = baseSave.buildingresources?.[`b${baseSave.baseid}`];
     userSave.buildingresources["t"] = getCurrentDateTime();
   }
 

@@ -13,7 +13,7 @@ export class Report {
   username!: string;
 
   @Property({ nullable: true })
-  discord_tag: string;
+  discord_tag: string | null = null;
 
   @Property({ type: "json", nullable: true })
   report?: FieldData;
@@ -22,10 +22,10 @@ export class Report {
   banReason?: FieldData;
 
   @Property({ default: 0 })
-  violations: number;
+  violations: number = 0;
 
   @Property({ default: 0 })
-  attackViolations: number;
+  attackViolations: number = 0;
 
   @Property()
   createdAt: Date = new Date();

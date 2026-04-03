@@ -19,15 +19,7 @@ export const FrontendKey = (target: any, propertyKey: string) => {
  * @param {T} instance - The instance to filter.
  * @returns {Partial<T>} A new object containing only the properties marked with the FrontendKey decorator.
  */
-export const FilterFrontendKeys = <T>(instance: T): Partial<T> => {
-  const filteredObject: Partial<T> = {};
-
-  for (const key in instance) {
-    // Check if the property is marked with the FrontendKey decorator
-    if (instance.hasOwnProperty(key) && Reflect.getMetadata(FrontendKeyMetadataKey, instance, key)) {
-      filteredObject[key] = instance[key];
-    }
-  }
-
-  return filteredObject;
-};
+export const FilterFrontendKeys = <T extends object>(instance: T): Partial<T> =>
+  Object.fromEntries(
+    Object.entries(instance).filter(([key]) => Reflect.getMetadata(FrontendKeyMetadataKey, instance, key))
+  ) as Partial<T>;

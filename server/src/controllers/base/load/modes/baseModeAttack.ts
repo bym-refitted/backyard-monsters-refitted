@@ -18,9 +18,9 @@ import { createAttackLog } from "../../../../services/base/createAttackLog.js";
 import { updateResources, Operation } from "../../../../services/base/updateResources.js";
 
 export interface AttackDetails {
-  fbid: string;
+  fbid?: string;
   name: string;
-  pic_square: string;
+  pic_square?: string;
   friend: number;
   count: number;
   starttime: number;
@@ -30,7 +30,7 @@ export interface AttackDetails {
 interface BaseModeAttack {
   user: User;
   baseid: string;
-  mapversion: MapRoomVersion;
+  mapversion?: MapRoomVersion;
   attackCost?: { resources?: number[]; shiny?: number };
 }
 
@@ -41,10 +41,12 @@ interface BaseModeAttack {
  * @returns Result of range validation check
  */
 export const baseModeAttack = async ({ user, baseid, mapversion, attackCost }: BaseModeAttack) => {
-  const userSave: Save = user.save;
+  const userSave = user.save!;
   let save = await postgres.em.findOne(Save, { baseid });
 
   if (!save) save = await tribeSaveHandler(baseid, mapversion, userSave.worldid);
+
+  if (!save) throw new Error(`Save not found for baseid: ${baseid}`);
 
   if (save.attacks.length > 3) {
     save.attacks = save.attacks.slice(-2);
@@ -96,14 +98,14 @@ export const baseModeAttack = async ({ user, baseid, mapversion, attackCost }: B
   }
 
   save.cell = cell;
-  save.worldid = userSave.worldid;
+  save.worldid = userSave.worldid!;
   save.attackid = Math.floor(Math.random() * 99999) + 1;
   
   // Handle attack cost for MR3 attack range
   if (mapversion === MapRoomVersion.V3 && attackCost) {
     if (attackCost.resources) {
       const [r1, r2, r3] = attackCost.resources;
-      updateResources({ r1, r2, r3 }, userSave.resources, Operation.SUBTRACT);
+      updateResources({ r1, r2, r3 }, userSave.resources!, Operation.SUBTRACT);
     } else if (attackCost.shiny) {
       userSave.credits = Math.max(0, userSave.credits - attackCost.shiny);
     }

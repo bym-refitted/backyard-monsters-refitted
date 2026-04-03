@@ -41,7 +41,7 @@ export const BaseSaveSchema = z.object({
   champion: z
     .string()
     .optional()
-    .transform((data) => (data ? JSON.stringify(JSON.parse(data)) : null)),
+    .transform((data) => (data ? JSON.stringify(JSON.parse(data)) : undefined)),
 
   /**
    * The attacker champion data, transformed from a JSON string.
@@ -127,7 +127,7 @@ export const BaseSaveSchema = z.object({
   over: z
     .string()
     .optional()
-    .transform((data) => parseInt(data, 10)),
+    .transform((data) => data !== undefined ? parseInt(data, 10) : undefined),
 
   /**
    * The destroyed state, transformed from a string to a number, or undefined.
@@ -137,7 +137,7 @@ export const BaseSaveSchema = z.object({
   destroyed: z
     .string()
     .optional()
-    .transform((data) => parseInt(data, 10)),
+    .transform((data) => data !== undefined ? parseInt(data, 10) : undefined),
 
   /**
    * The attack ID, transformed from a string to a number, or undefined.

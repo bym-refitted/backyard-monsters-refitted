@@ -19,7 +19,7 @@ const WILD_MONSTER_EXPIRATION = 43200;
  * @param {string} worldid - The world UUID, passed through for MR3 player yard defender lookups.
  * @returns {Promise<Loaded<Save, never>>} The save object or null if no valid save is found.
  */
-export const baseModeView = async (baseid: string, mapversion: MapRoomVersion, worldid: string) => {
+export const baseModeView = async (baseid: string, mapversion: MapRoomVersion = MapRoomVersion.V2, worldid?: string | null) => {
   let save = await postgres.em.findOne(Save, { baseid });
 
   if (!save) save = await tribeSaveHandler(baseid, mapversion, worldid);
