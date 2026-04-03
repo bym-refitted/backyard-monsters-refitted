@@ -27,7 +27,7 @@ export const forgotPassword: KoaController = async (ctx) => {
     const { email } = ForgotPasswordSchema.parse(ctx.request.body);
 
     // Generate a short-lived JWT token
-    const token = JWT.sign({ user: { email } }, process.env.SECRET_KEY, {
+    const token = JWT.sign({ user: { email } }, process.env.SECRET_KEY!, {
       expiresIn: "20m",
     });
 

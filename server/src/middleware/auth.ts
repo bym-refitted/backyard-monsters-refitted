@@ -84,7 +84,7 @@ type DisgustingJwtPayloadHack = Pick<
 export interface BymJwtPayload extends DisgustingJwtPayloadHack {
   user: {
     email: string;
-    discordId?: string;
+    discordId: string | null;
     meetsDiscordAgeCheck: boolean;
   };
 }
@@ -104,13 +104,14 @@ export const verifyJwtToken = (token: string): BymJwtPayload => {
     return {
       user: {
         email: (JWT.decode(token) as BymJwtPayload).user?.email,
+        discordId: null,
         meetsDiscordAgeCheck: true,
       },
     };
   }
 
   try {
-    return <BymJwtPayload>JWT.verify(token, process.env.SECRET_KEY);
+    return <BymJwtPayload>JWT.verify(token, process.env.SECRET_KEY!);
   } catch (err) {
     throw tokenAuthFailureErr();
   }

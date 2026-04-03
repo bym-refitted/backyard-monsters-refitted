@@ -25,7 +25,7 @@ export const tribeOutpostCell = async (cell: WorldMapCell, worldId: string): Pro
     x: cellX,
     y: cellY,
     i: altitude,
-    l: genCell.level,
+    l: genCell?.level ?? 0,
     rel: EnumBaseRelationship.ENEMY,
     dm: cell?.save?.damage || 0,
     d: cell?.save?.destroyed || 0,

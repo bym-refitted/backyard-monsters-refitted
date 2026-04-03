@@ -5,8 +5,8 @@ import { getCurrentDateTime } from "../utils/getCurrentDateTime.js";
 export const devSandbox = (user?: User) => {
   return {
     type: "main",
-    saveuserid: user.userid,
-    userid: user.userid,
+    saveuserid: user?.userid,
+    userid: user?.userid,
     wmid: 0,
     createtime: getCurrentDateTime(),
     savetime: 0,
@@ -22,7 +22,7 @@ export const devSandbox = (user?: User) => {
     baseid_inferno: 0,
     fbid: "100002268912813",
     fortifycellid: 0,
-    name: user.username || "Anonymous",
+    name: user?.username || "Anonymous",
     level: 1,
     catapult: 1,
     flinger: 1,

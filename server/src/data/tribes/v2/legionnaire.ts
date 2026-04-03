@@ -1,4 +1,6 @@
-export const legionnaire = {
+import type { SaveData } from "../../../types/EntityData.js";
+
+export const legionnaire: Record<number, SaveData> = {
   0: {
     type: "tribe",
     userid: 0,

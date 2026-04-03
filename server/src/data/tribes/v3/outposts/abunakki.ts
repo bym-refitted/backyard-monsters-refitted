@@ -1,4 +1,6 @@
-export const abunakki: Record<number, Record<string, any>> = {
+import type { SaveData } from "../../../../types/EntityData.js";
+
+export const abunakki: Record<number, SaveData> = {
   45: {
     type: "tribe",
     userid: 0,

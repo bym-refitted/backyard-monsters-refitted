@@ -18,7 +18,7 @@ import { permissionErr } from "../../../../errors/errors.js";
  * @returns {Promise<Save | null>} The user's save object or null if not found.
  */
 export const baseModeBuild = async (user: User, baseid: string) => {
-  let userSave: Save = user.save;
+  const userSave = user.save;
 
   // If no user save is found, setup MR1 & create a default save for the user.
   if (!userSave) {

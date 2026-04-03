@@ -1,4 +1,6 @@
-export const molochTribes = [
+import type { SaveData } from "../../../types/EntityData.js";
+
+export const molochTribes: SaveData[] = [
   // Descent moloch tribes (13 total)
   // Reserved baseid: 201-213
   {

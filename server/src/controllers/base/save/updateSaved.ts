@@ -35,13 +35,13 @@ export const updateSaved: KoaController = async (ctx) => {
   const user: User = ctx.authUser;
   await postgres.em.populate(user, ["save"]);
 
-  const userSave = user.save;
+  const userSave = user.save!;
   
   try {
     const worldid = user.save?.worldid;
     const { baseid, type, mapversion } = UpdateSavedSchema.parse(ctx.request.body);
 
-    let baseSave: Save = null;
+    let baseSave: Save | null = null;
 
     switch (type) {
       case BaseMode.BUILD:
@@ -86,7 +86,7 @@ export const updateSaved: KoaController = async (ctx) => {
     ctx.status = Status.OK;
     ctx.body = responseBody;
   } catch (err) {
-    logger.error(`Failed to update save for user: ${user.username}`, err);
+    logger.error(`Failed to update save for user: ${user.username}: ${err}`);
 
     ctx.status = Status.INTERNAL_SERVER_ERROR;
     ctx.body = { error: `Failed to update save for user: ${user.username}` };

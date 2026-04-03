@@ -32,11 +32,9 @@ export const resetPassword: KoaController = async (ctx) => {
     const { email } = decodedToken.user;
 
     const user = await postgres.em.findOne(User, { email });
-    if (!user || user.resetToken !== token){
-      console.log("User not found or token mismatch");
-    }
+    if (!user || user.resetToken !== token) throw authFailureErr();
 
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedPassword = await bcrypt.hash(password!, 10);
 
     // Update the user's password
     user.password = hashedPassword;

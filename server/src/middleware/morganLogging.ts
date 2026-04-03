@@ -34,5 +34,5 @@ const logFormat = "Server: :method :status :url";
  * @type {Function}
  */
 export const morganLogging = morgan(logFormat, {
-  skip: (ctx) => ctx.url.startsWith("/assets"),
+  skip: (ctx) => ctx.url?.startsWith("/assets") ?? false,
 });
