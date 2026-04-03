@@ -53,7 +53,7 @@ api.get("/", (ctx: Context) => (ctx.body = {}));
       await postgres.orm.getMigrator().up();
       logger.info("Database migrations applied");
     } catch (err) {
-      logger.error("Database migration failure", err);
+      logger.error(`Database migration failure: ${err}`);
     }
   }
 
