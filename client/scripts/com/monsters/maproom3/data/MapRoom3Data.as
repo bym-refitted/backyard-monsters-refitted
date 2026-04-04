@@ -402,6 +402,7 @@ package com.monsters.maproom3.data
          var cellData:Object = null;
          var mapRoomCell:MapRoom3Cell = null;
          var cellID:int = 0;
+         if (serverData == null || serverData.celldata == null) return;
          cellDataArray = serverData.celldata;
          var timer:int = getTimer();
          var cellDataArrayLength:uint = cellDataArray.length;

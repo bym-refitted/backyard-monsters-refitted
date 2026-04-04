@@ -3,7 +3,7 @@ import bcrypt from "bcrypt";
 import ormConfig from "../../mikro-orm.config.js";
 
 import { v4 as uuidv4 } from "uuid";
-import { MikroORM } from "@mikro-orm/core";
+import { MikroORM, type RequiredEntityData } from "@mikro-orm/core";
 import { getDefaultBaseData } from "../../data/getDefaultBaseData.js";
 import { BaseType } from "../../enums/Base.js";
 import { Save } from "../../models/save.model.js";
@@ -11,6 +11,7 @@ import { User } from "../../models/user.model.js";
 import { joinNewWorldMap } from "../../services/maproom/v3/joinNewWorldMap.js";
 import { MapRoom3 } from "../../enums/MapRoom.js";
 import { logger } from "../../utils/logger.js";
+import type { UserData } from "../../types/EntityData.js";
 
 const NEXT_USER_BASEID = `SELECT nextval('bym.user_baseid_seq') AS baseid`;
 
@@ -49,12 +50,25 @@ const NEXT_USER_BASEID = `SELECT nextval('bym.user_baseid_seq') AS baseid`;
     // Insert users and their saves into the database
     for (const [_, userData] of users.entries()) {
       const hashedPassword = await bcrypt.hash(userData.password, 10);
-      const user = em.create(User, { ...userData, password: hashedPassword });
+
+      const user = em.create(User,
+        { 
+          ...userData, 
+          password: hashedPassword 
+        } as unknown as UserData
+      );
+      
       await em.persistAndFlush(user);
 
       // Create a default save for the user with proper baseid generation
       const saveData = getDefaultBaseData(user, BaseType.MAIN);
-      const save = em.create(Save, { ...saveData, saveuserid: user.userid });
+
+      const save = em.create(Save, 
+        { 
+          ...saveData,
+          saveuserid: user.userid
+        } as unknown as RequiredEntityData<Save>
+      );
 
       // Generate baseid from sequence (same as Save.createMainSave)
       const [result] = await em.execute<[{ baseid: string }]>(NEXT_USER_BASEID);
@@ -73,7 +87,7 @@ const NEXT_USER_BASEID = `SELECT nextval('bym.user_baseid_seq') AS baseid`;
 
     await orm.close(true);
   } catch (err) {
-    logger.error(err);
+    logger.error(`Failed to seed Map Room 3: ${err}`);
     process.exit(1);
   }
 })();

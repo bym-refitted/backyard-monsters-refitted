@@ -25,7 +25,7 @@ app.proxy = true;
 export const PORT = process.env.PORT || 3001;
 export const BASE_URL = process.env.BASE_URL;
 
-export const getApiVersion = () => "v1.5.3-beta";
+export const getApiVersion = () => "v1.5.4-beta";
 
 export const postgres = {} as {
   orm: MikroORM<PostgreSqlDriver>;
@@ -47,6 +47,15 @@ api.get("/", (ctx: Context) => (ctx.body = {}));
 (async () => {
   postgres.orm = await MikroORM.init<PostgreSqlDriver>(ormConfig);
   postgres.em = postgres.orm.em;
+
+  if (process.env.ENV !== Env.PROD) {
+    try {
+      await postgres.orm.getMigrator().up();
+      logger.info("Database migrations applied");
+    } catch (err) {
+      logger.error(`Database migration failure: ${err}`);
+    }
+  }
 
   await redis.connect();
 
@@ -90,4 +99,4 @@ ${ascii_node}
 Server running on: ${BASE_URL}:${PORT}
     `);
   });
-})().catch((e) => logger.error(e));
+})().catch((e) => logger.error(`Startup failed: ${e}`));

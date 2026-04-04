@@ -1,4 +1,6 @@
-export const strongholds: Record<number, Record<string, any>> = {
+import type { SaveData } from "../../../types/EntityData.js";
+
+export const strongholds: Record<number, SaveData> = {
   30: {
     type: "tribe",
     userid: 0,

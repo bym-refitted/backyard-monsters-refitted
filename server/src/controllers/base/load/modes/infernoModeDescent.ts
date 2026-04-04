@@ -6,12 +6,11 @@ import { User } from "../../../../models/user.model.js";
 import { postgres } from "../../../../server.js";
 
 export const infernoModeDescent = async (user: User) => {
-  const { userid } = user.save;
+  const { userid } = user.save!;
 
-  let baseSave = await postgres.em.findOne(Save, {
-    userid,
-    type: BaseType.MAIN,
-  });
+  let baseSave = await postgres.em.findOne(Save, { userid, type: BaseType.MAIN });
+
+  if (!baseSave) throw new Error(`Main save not found for user: ${user.username}`);
 
   const maproom1 = await postgres.em.findOne(InfernoMaproom, { userid });
 

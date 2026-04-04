@@ -51,7 +51,7 @@ const authenticateWithToken = async (token: string) => {
  * @throws {Error} - Throws an error if authentication fails or if the request body is invalid.
  */
 export const login: KoaController = async (ctx) => {
-  let { email, password, token } = UserLoginSchema.parse(ctx.request.body);
+  let { email, password, token, sessionType } = UserLoginSchema.parse(ctx.request.body);
   let user: User | null = null;
 
   if (token) user = await authenticateWithToken(token);
@@ -60,7 +60,7 @@ export const login: KoaController = async (ctx) => {
     user = await postgres.em.findOne(User, { email });
     if (!user) throw emailPasswordErr();
 
-    const isMatch = await bcrypt.compare(password, user.password);
+    const isMatch = await bcrypt.compare(password!, user.password);
     if (!isMatch) throw emailPasswordErr();
   }
 
@@ -68,7 +68,7 @@ export const login: KoaController = async (ctx) => {
 
   // Generate and set the token
   const sessionLifeTime = process.env.SESSION_LIFETIME || "30d";
-  let discordId: string;
+  let discordId: string | null = null;
 
   // Check if the user has verified their Discord account
   if (process.env.ENV === Env.PROD) {
@@ -97,16 +97,17 @@ export const login: KoaController = async (ctx) => {
         email: user.email,
         discordId,
         meetsDiscordAgeCheck:
-          process.env.ENV !== Env.PROD || isOlderThanOneWeek(discordId),
+          process.env.ENV !== Env.PROD || isOlderThanOneWeek(discordId!),
+        sessionType,
       },
     } satisfies BymJwtPayload,
-    process.env.SECRET_KEY,
+    process.env.SECRET_KEY!,
     {
       expiresIn: sessionLifeTime as StringValue,
     }
   );
 
-  await redis.set(`user-token:${user.email}`, newToken);
+  await redis.set(`user-token:${sessionType}:${user.email}`, newToken);
   await postgres.em.persistAndFlush(user);
 
   const filteredUser = FilterFrontendKeys(user);

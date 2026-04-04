@@ -76,7 +76,19 @@ package
          {
             _loc3_ = 1.25;
          }
-         this._projectile = FIREBALLS.Spawn2(new Point(_mc.x,_mc.y + _top),new Point(param1.x,param1.y),param1,_speed,int(damage * _loc2_ * _loc3_),_splash,this._projectileType,1,this);
+         if(isJard)
+         {
+            _jarHealth.Add(-int(damage * _loc2_ * _loc3_));
+            ATTACK.Damage(_mc.x,_mc.y + _top,damage * _loc2_ * _loc3_);
+            if(_jarHealth.Get() <= 0)
+            {
+               KillJar();
+            }
+         }
+         else
+         {
+            this._projectile = FIREBALLS.Spawn2(new Point(_mc.x,_mc.y + _top),new Point(param1.x,param1.y),param1,_speed,int(damage * _loc2_ * _loc3_),_splash,this._projectileType,1,this);
+         }
       }
       
       protected function onProjectileCollision(param1:Event) : void

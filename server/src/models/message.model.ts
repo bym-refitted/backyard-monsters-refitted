@@ -14,7 +14,7 @@ export class Message {
 
   @Property({ persist: false })
   @FrontendKey
-  messageid: string;
+  messageid!: string;
 
   @Index()
   @Property()
@@ -45,11 +45,11 @@ export class Message {
 
   @FrontendKey
   @Property({ persist: false })
-  unread: number;
+  unread!: number;
 
   @Property({ nullable: true, length: 580 })
   @FrontendKey
-  message: string;
+  message!: string;
 
   @Property()
   @FrontendKey
@@ -65,27 +65,27 @@ export class Message {
 
   @Property({ nullable: true })
   @FrontendKey
-  truceid: string;
+  truceid: string | null = null;
 
   @Property({ nullable: true })
   @FrontendKey
-  trucestate: string;
+  trucestate: string | null = null;
 
   @Property({ nullable: true })
   @FrontendKey
-  migratestate: string;
+  migratestate: string | null = null;
 
   @Property({ nullable: true, type: "json" })
   @FrontendKey
-  coords: number[];
+  coords: number[] | null = null;
 
   @Property({ nullable: true })
   @FrontendKey
-  worldid: string;
+  worldid: string | null = null;
 
   @Property({ nullable: true })
   @FrontendKey
-  baseid: string;
+  baseid: string | null = null;
 
   @Property({ onCreate: () => new Date() })
   createdAt: Date = new Date();

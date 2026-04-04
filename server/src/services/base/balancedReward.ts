@@ -14,13 +14,13 @@ import { parseChampionData } from "../../utils/parseChampionData.js";
  * @returns {Promise<void>} A promise that resolves when the balanced rewards are added.
  */
 export const balancedReward = async (userSave: Save) => {
-  let rewards = userSave.rewards;
+  let rewards = userSave.rewards!;
   const { KORATH, KRALLEN, REZGHUL, DIAMOND_SPURTZ } = Reward;
 
   // Early return if all rewards are already assigned
   if (rewards[KORATH] && rewards[KRALLEN] && rewards[DIAMOND_SPURTZ]) return;
 
-  const townHall: TownHall = extractTownHall(userSave.buildingdata);
+  const townHall: TownHall | null = extractTownHall(userSave.buildingdata ?? {});
   if (!townHall || !townHall.l) return;
 
   let townHallLevel = townHall.l;
@@ -53,9 +53,9 @@ export const balancedReward = async (userSave: Save) => {
  * @param {Save} userSave - The user's save data to update.
  */
 const addKrallenData = (userSave: Save) => {
-  const championData = parseChampionData(userSave.champion);
+  const championData = parseChampionData(userSave.champion ?? "");
 
-  if (Object.keys(userSave.krallen).length === 0) {
+  if (Object.keys(userSave.krallen ?? {}).length === 0) {
     const krallen = {
       fb: 0,
       l: 5,

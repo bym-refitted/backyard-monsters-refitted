@@ -1,4 +1,6 @@
-export const dreadnaught: Record<number, Record<string, any>> = {
+import type { SaveData } from "../../../../types/EntityData.js";
+
+export const dreadnaught: Record<number, SaveData> = {
   45: {
     type: "tribe",
     userid: 0,
@@ -2752,14 +2754,14 @@ export const dreadnaught: Record<number, Record<string, any>> = {
     aiattacks: {},
     monsters: {},
     resources: {
-      r1: 0,
-      r2: 0,
-      r3: 0,
-      r4: 0,
-      r1max: 0,
-      r2max: 0,
-      r3max: 0,
-      r4max: 0,
+      r1: 11734789,
+      r2: 11734789,
+      r3: 9612324,
+      r4: 9612324,
+      r1max: 11734789,
+      r2max: 11734789,
+      r3max: 9612324,
+      r4max: 9612324,
     },
     lockerdata: {},
     events: {},
@@ -5835,14 +5837,14 @@ export const dreadnaught: Record<number, Record<string, any>> = {
     aiattacks: {},
     monsters: {},
     resources: {
-      r1: 0,
-      r2: 0,
-      r3: 0,
-      r4: 0,
-      r1max: 0,
-      r2max: 0,
-      r3max: 0,
-      r4max: 0,
+      r1: 20224648,
+      r2: 18102183,
+      r3: 19163416,
+      r4: 19163416,
+      r1max: 20224648,
+      r2max: 18102183,
+      r3max: 19163416,
+      r4max: 19163416,
     },
     lockerdata: {},
     events: {},

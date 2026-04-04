@@ -20,7 +20,7 @@ import { FilterFrontendKeys } from "../../utils/FrontendKey.js";
 export const getMessageThread: KoaController = async (ctx) => {
   try {
     const user: User = ctx.authUser;
-    const userSave = user.save;
+    const userSave = user.save!;
     await postgres.em.populate(user, ["save"]);
 
     const { threadid } = GetMessageSchema.parse(ctx.request.body);

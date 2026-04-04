@@ -1,4 +1,6 @@
-export const abunakki: Record<number, Record<string, any>> = {
+import type { SaveData } from "../../../../types/EntityData.js";
+
+export const abunakki: Record<number, SaveData> = {
   45: {
     type: "tribe",
     userid: 0,
@@ -4474,14 +4476,14 @@ export const abunakki: Record<number, Record<string, any>> = {
     aiattacks: {},
     monsters: {},
     resources: {
-      r1: 0,
-      r2: 0,
-      r3: 0,
-      r4: 0,
-      r1max: 0,
-      r2max: 0,
-      r3max: 0,
-      r4max: 0,
+      r1: 13856265,
+      r2: 13856265,
+      r3: 13856265,
+      r4: 13856265,
+      r1max: 13856265,
+      r2max: 13856265,
+      r3max: 13856265,
+      r4max: 13856265,
     },
     lockerdata: {},
     events: {},
@@ -8952,14 +8954,14 @@ export const abunakki: Record<number, Record<string, any>> = {
     aiattacks: {},
     monsters: {},
     resources: {
-      r1: 0,
-      r2: 0,
-      r3: 0,
-      r4: 0,
-      r1max: 0,
-      r2max: 0,
-      r3max: 0,
-      r4max: 0,
+      r1: 24379194,
+      r2: 24379194,
+      r3: 24379194,
+      r4: 24379194,
+      r1max: 24379194,
+      r2max: 24379194,
+      r3max: 24379194,
+      r4max: 24379194,
     },
     lockerdata: {},
     events: {},

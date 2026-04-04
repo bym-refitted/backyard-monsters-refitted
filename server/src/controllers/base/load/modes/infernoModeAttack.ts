@@ -37,7 +37,7 @@ export const infernoModeAttack = async (user: User, baseid: string) => {
   }
 
   const attackDetails: AttackDetails = {
-    fbid: user.save.fbid,
+    fbid: "",
     name: user.username,
     pic_square: user.pic_square,
     friend: 0,
@@ -79,9 +79,9 @@ export const infernoModeAttack = async (user: User, baseid: string) => {
  * @throws {Error} When no tribe data is found for the given baseid
  */
 const infernoTribeSave = async (user: User, baseid: string): Promise<Save> => {
-  const maproom1 = await postgres.em.findOne(InfernoMaproom, {
-    userid: user.userid,
-  });
+  const maproom1 = await postgres.em.findOne(InfernoMaproom, { userid: user.userid });
+
+  if (!maproom1) throw new Error(`Inferno maproom not found for user: ${user.username}`);
 
   let existingTribe = maproom1.tribedata.find(
     (tribe) => tribe.baseid === baseid
