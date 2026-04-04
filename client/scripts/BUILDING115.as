@@ -129,6 +129,10 @@ package
             _animTick = int(_loc9_);
             this.AnimFrame();
          }
+         if(this._jarAnimation)
+         {
+            this.TickJar();
+         }
       }
       
       override public function AnimFrame(param1:Boolean = true) : void
