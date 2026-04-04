@@ -350,7 +350,7 @@ package
          this._jarAnimation.render();
       }
       
-      private function TickJar() : void
+      protected function TickJar() : void
       {
          if(Boolean(this._jarHealth) && this._jarHealth.Get() <= 0)
          {
