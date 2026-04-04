@@ -29,7 +29,9 @@ export const initialPlayerCellData: KoaController = async (ctx) => {
   const user: User = ctx.authUser;
   await postgres.em.populate(user, ["save"]);
 
-  const { worldid } = user.save;
+  const { worldid } = user.save!;
+  
+  if (!worldid) throw new Error(`${user.username} has no world ID.`);
 
   // Fetch all player-owned cells
   const playerCells = await postgres.em.find(

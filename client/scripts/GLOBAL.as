@@ -45,7 +45,7 @@ package
 
       public static var cdnUrl:String = CONFIG::CDN_URL;
 
-      public static var apiVersionSuffix:String = "v1.5.3-beta";
+      public static var apiVersionSuffix:String = "v1.5.4-beta";
 
       public static var connectionCounter:int;
 

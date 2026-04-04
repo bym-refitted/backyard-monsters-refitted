@@ -33,7 +33,7 @@ export const takeoverCell: KoaController = async (ctx) => {
     const currentUser: User = ctx.authUser;
     await postgres.em.populate(currentUser, ["save"]);
 
-    const userSave = currentUser.save;
+    const userSave = currentUser.save!;
 
     const cell = await postgres.em.findOne(
       WorldMapCell,
@@ -60,7 +60,7 @@ export const takeoverCell: KoaController = async (ctx) => {
     if (resources)
       userSave.resources = updateResources(
         resources,
-        userSave.resources,
+        userSave.resources ?? {},
         Operation.SUBTRACT
       );
 
@@ -78,7 +78,8 @@ export const takeoverCell: KoaController = async (ctx) => {
         ([x, y, id]) => !(x === cell.x && y === cell.y && id === baseid)
       );
 
-      delete previousOwner.save.buildingresources[`b${baseid}`];
+      if (previousOwner.save.buildingresources)
+        delete previousOwner.save.buildingresources[`b${baseid}`];
 
       await postgres.em.persistAndFlush(previousOwner);
     }
@@ -117,8 +118,8 @@ export const takeoverCell: KoaController = async (ctx) => {
     ctx.status = Status.OK;
     ctx.body = { error: 0 };
   } catch (error) {
+    logger.error(`Error taking over cell: ${error}`);
     ctx.status = Status.BAD_REQUEST;
     ctx.body = { error: "The server attempted to take over this cell but failed unexpectedly." };
-    logger.error("Error taking over cell:", error);
   }
 };

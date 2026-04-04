@@ -71,7 +71,7 @@ export const ErrorInterceptor = async (ctx: Context, next: Next) => {
           message: "Something went wrong, please contact support.",
           status: Status.INTERNAL_SERVER_ERROR,
           data: {},
-          internalInfo: err,
+          internalInfo: err instanceof Error ? err : undefined,
           isClientFriendly: true,
         });
     const errorObj = clientError.toSafeJson();

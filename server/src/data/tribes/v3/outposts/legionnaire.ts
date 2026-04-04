@@ -1,4 +1,6 @@
-export const legionnaire: Record<number, Record<string, any>> = {
+import type { SaveData } from "../../../../types/EntityData.js";
+
+export const legionnaire: Record<number, SaveData> = {
   45: {
     type: "tribe",
     userid: 0,
@@ -2827,14 +2829,14 @@ export const legionnaire: Record<number, Record<string, any>> = {
     aiattacks: {},
     monsters: {},
     resources: {
-      r1: 0,
-      r2: 0,
-      r3: 0,
-      r4: 0,
-      r1max: 0,
-      r2max: 0,
-      r3max: 0,
-      r4max: 0,
+      r1: 13724800,
+      r2: 13724800,
+      r3: 13724800,
+      r4: 13724800,
+      r1max: 13724800,
+      r2max: 13724800,
+      r3max: 13724800,
+      r4max: 13724800,
     },
     lockerdata: {},
     events: {},
@@ -6120,14 +6122,14 @@ export const legionnaire: Record<number, Record<string, any>> = {
     aiattacks: {},
     monsters: {},
     resources: {
-      r1: 0,
-      r2: 0,
-      r3: 0,
-      r4: 0,
-      r1max: 0,
-      r2max: 0,
-      r3max: 0,
-      r4max: 0,
+      r1: 18724597,
+      r2: 18724597,
+      r3: 18724597,
+      r4: 18724597,
+      r1max: 18724597,
+      r2max: 18724597,
+      r3max: 18724597,
+      r4max: 18724597,
     },
     lockerdata: {},
     events: {},

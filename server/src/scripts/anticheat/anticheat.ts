@@ -27,10 +27,10 @@ async function loadAntiCheatModule() {
 
 export const initAnticheat = async () => {
   const module = await loadAntiCheatModule();
-  await module.initialize();
+  await module?.initialize();
 };
 
 export const validateSave = async (user: User, save: Save, rawBody: unknown) => {
   const module = await loadAntiCheatModule();
-  return module.validateSave(user, save, rawBody);
+  return module?.validateSave(user, save, rawBody);
 };

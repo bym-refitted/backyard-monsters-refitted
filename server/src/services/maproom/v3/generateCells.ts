@@ -79,6 +79,8 @@ export const getGeneratedCells = (): Map<number, GeneratedCell> => {
       const strongholdLevel = calculateStructureLevel(x, y, EnumYardType.STRONGHOLD);
       const defenderLevels = getDefenderLevels(EnumYardType.STRONGHOLD, strongholdLevel);
 
+      if (!defenderLevels) continue;
+
       for (let i = 0; i < defenders.length; i++) {
         const [fortX, fortY] = defenders[i];
 
@@ -116,6 +118,8 @@ export const getGeneratedCells = (): Map<number, GeneratedCell> => {
 
     const resourceLevel = calculateStructureLevel(x, y, EnumYardType.RESOURCE);
     const defenderLevels = getDefenderLevels(EnumYardType.RESOURCE, resourceLevel);
+
+    if (!defenderLevels) continue;
 
     for (let i = 0; i < defenders.length; i++) {
       const [fortX, fortY] = defenders[i];

@@ -20,12 +20,14 @@ import { resourcesHandler } from "../base/save/handlers/resourceHandler.js";
 
 export const infernoSave: KoaController = async (ctx) => {
   const user: User = ctx.authUser;
-  const userSave = user.save;
-  const userInfernoSave = user.infernosave;
   await postgres.em.populate(user, ["save", "infernosave"]);
+  
+  const userSave = user.save!;
+  const userInfernoSave = user.infernosave;
 
   try {
-    const saveData = BaseSaveSchema.parse(ctx.request.body);
+    const body = ctx.request.body as Record<string, unknown>;
+    const saveData = BaseSaveSchema.parse(body);
 
     // Fist attempt to find a user's Inferno base save
     const { basesaveid } = saveData;
@@ -51,7 +53,8 @@ export const infernoSave: KoaController = async (ctx) => {
     if (!isOwner && baseSave.attackid === 0) throw permissionErr();
 
     for (const key of isAttack ? Save.attackSaveKeys : Save.saveKeys) {
-      const value = ctx.request.body[key];
+      const value = body[key] as string;
+
       switch (key) {
         case SaveKeys.RESOURCES:
           resourcesHandler(baseSave, value);
@@ -67,7 +70,7 @@ export const infernoSave: KoaController = async (ctx) => {
           break;
 
         case SaveKeys.PURCHASE:
-          purchaseHandler(ctx, saveData.purchase, baseSave);
+          if (saveData.purchase) purchaseHandler(ctx, saveData.purchase, baseSave);
           break;
 
         case SaveKeys.ACADEMY:
@@ -75,10 +78,12 @@ export const infernoSave: KoaController = async (ctx) => {
           break;
 
         case SaveKeys.ATTACKCREATURES:
-          if (isAttack) userInfernoSave.monsters = value;
+          if (isAttack && userInfernoSave) userInfernoSave.monsters = JSON.parse(value);
           break;
 
         case SaveKeys.BUILDINGDATA:
+          if (saveData.buildingdata == null) break;
+
           if (isAttack) {
             buildingDataHandler(saveData.buildingdata, baseSave);
           } else {
@@ -88,10 +93,11 @@ export const infernoSave: KoaController = async (ctx) => {
 
         default:
           if (value) {
+            const save = baseSave as unknown as Record<string, unknown>;
             try {
-              baseSave[key] = JSON.parse(value);
+              save[key] = JSON.parse(value);
             } catch (_) {
-              baseSave[key] = value;
+              save[key] = value;
             }
           }
       }
@@ -105,8 +111,9 @@ export const infernoSave: KoaController = async (ctx) => {
       });
 
       if (defenderSave) {
-        for (const key of Object.keys(saveData)) {
+        for (const key of Object.keys(saveData) as (keyof typeof saveData)[]) {
           const value = saveData[key];
+
           switch (key) {
             case SaveKeys.MONSTERS:
               if (value) defenderSave.monsters = value;
@@ -139,7 +146,7 @@ export const infernoSave: KoaController = async (ctx) => {
       credits: userSave.credits,
     };
   } catch (err) {
-    logger.error(`Failed to save inferno base for user: ${user.username}`, err);
+    logger.error(`Failed to save inferno base for user: ${user.username}: ${err}`);
 
     if (err instanceof ClientSafeError) throw err;
     throw new Error("An unexpected error occurred while saving this base.");

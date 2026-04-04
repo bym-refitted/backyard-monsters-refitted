@@ -21,7 +21,7 @@ interface RequestBody {
 export const saveTemplate: KoaController = async (ctx) => {
   const requestBody = ctx.request.body as RequestBody;
   const user: User = ctx.authUser;
-  let save = user.save;
+  let save = user.save!;
 
   await postgres.em.populate(user, ["save"]);
 

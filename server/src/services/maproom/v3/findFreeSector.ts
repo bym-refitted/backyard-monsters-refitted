@@ -133,5 +133,5 @@ export const findFreeSector = async (world: World, em: EntityManager<PostgreSqlD
     );
   }
 
-  return cell;
+  return cell as { x: number; y: number; terrainHeight: number };
 };

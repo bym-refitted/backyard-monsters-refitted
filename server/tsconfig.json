@@ -3,7 +3,9 @@
     "types": [
       "bun-types"
     ],
-    "outDir": "dist",
+
+    
+    "rootDir": "src",
     "target": "es2022",
     "module": "NodeNext",
     "moduleResolution": "nodenext",
@@ -19,7 +21,6 @@
     "forceConsistentCasingInFileNames": true,
   },
   "include": [
-    "src/**/*",
-    "scripts/anticheat"
+    "src/**/*"
   ],
 }

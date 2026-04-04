@@ -18,7 +18,7 @@ export const SendMessageSchema = z.object({
    * The message type, possible value between message,trucerequest,truceaccept,trucereject,migraterequest
    * @type {string}
    */
-  type: z.string(),
+  type: z.enum(["message", "trucerequest", "truceaccept", "trucereject", "migraterequest"]),
 
   /**
    * the content of the message

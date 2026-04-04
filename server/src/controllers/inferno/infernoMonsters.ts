@@ -20,6 +20,8 @@ export const infernoMonsters: KoaController = async (ctx) => {
     type: BaseType.INFERNO,
   });
 
+  if (!infernoSave) throw new Error("Inferno save not found");
+
   if (type === BaseType.GET) imonsters = infernoSave.monsters;
 
   if (type === BaseType.SET) {
