@@ -38,10 +38,16 @@ export const getMapRoomCells: KoaController = async (ctx) => {
     const user: User = ctx.authUser;
     await postgres.em.populate(user, ["save"]);
 
-    const save = user.save!;
+    const save = user.save;
+
+    if (!save) {
+      ctx.status = Status.OK;
+      ctx.body = { celldata: [] };
+      return;
+    }
 
     const worldid = save.worldid;
-    
+
     if (!worldid || !cellids?.length) {
       ctx.status = Status.OK;
       ctx.body = { celldata: [] };
@@ -126,6 +132,23 @@ export const getMapRoomCells: KoaController = async (ctx) => {
       if (!dbCellsByCoord.has(key) || cell.uid > 0) dbCellsByCoord.set(key, cell);
     }
 
+    let hasExpiredCells = false;
+
+    // Lazy-delete expired destroyed outpost cells and remove them from dbCellsByCoord
+    // so Phase 5 treats those positions as empty and repopulates from generated data.
+    for (const [key, dbCell] of dbCellsByCoord) {
+      if (!dbCell.destroyed_at) continue;
+      if (Date.now() - dbCell.destroyed_at.getTime() < TRIBE_REGEN_TIME) continue;
+
+      if (dbCell.save) postgres.em.remove(dbCell.save);
+      
+      postgres.em.remove(dbCell);
+      dbCellsByCoord.delete(key);
+      hasExpiredCells = true;
+    }
+
+    if (hasExpiredCells) await postgres.em.flush();
+
     // =========================================================================
     // PHASE 3: Process player-owned structures - add defender coords + levels
     // =========================================================================
@@ -167,7 +190,6 @@ export const getMapRoomCells: KoaController = async (ctx) => {
     // PHASE 5: Build cell data for all coordinates
     // =========================================================================
     const cellsToReturn = new Map<string, CellData>();
-    const destroyedCells: WorldMapCell[] = [];
 
     for (const [key, { x, y }] of coords) {
       if (cellsToReturn.has(key)) continue;
@@ -182,21 +204,9 @@ export const getMapRoomCells: KoaController = async (ctx) => {
         // Tribe outpost at a fortification position - defender wins
         cell = new WorldMapCell(undefined, x, y, 0);
         cell.base_type = EnumYardType.FORTIFICATION;
-        if (dbCell?.save) cell.save = dbCell.save;
       } else if (dbCell) {
         if (dbCell.destroyed_at) {
-          const elapsed = Date.now() - dbCell.destroyed_at.getTime();
-          if (elapsed >= TRIBE_REGEN_TIME) {
-            destroyedCells.push(dbCell);
-            if (genCell) {
-              cell = new WorldMapCell(undefined, genCell.x, genCell.y, genCell.altitude);
-              cell.base_type = genCell.type || 0;
-            } else {
-              cell = new WorldMapCell(undefined, x, y, 0);
-            }
-          } else {
-            cell = new WorldMapCell(undefined, dbCell.x, dbCell.y, dbCell.terrainHeight);
-          }
+          cell = new WorldMapCell(undefined, dbCell.x, dbCell.y, dbCell.terrainHeight);
         } else {
           cell = dbCell;
         }
@@ -225,15 +235,6 @@ export const getMapRoomCells: KoaController = async (ctx) => {
       }
 
       cellsToReturn.set(key, cellData);
-    }
-
-    // Lazy-delete expired destroyed outpost cells so the generated cell repopulates
-    if (destroyedCells.length > 0) {
-      for (const deadCell of destroyedCells) {
-        if (deadCell.save) postgres.em.remove(deadCell.save);
-        postgres.em.remove(deadCell);
-      }
-      await postgres.em.flush();
     }
 
     ctx.status = Status.OK;
