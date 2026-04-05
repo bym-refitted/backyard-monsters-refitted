@@ -1,7 +1,7 @@
 import { Save } from "../../models/save.model.js";
 import { logger } from "../../utils/logger.js";
 import { type StoreItem, storeItems } from "../../data/store/storeItems.js";
-import { purchaseKeys } from "../../data/store/purchaseKeys.js";
+import { purchaseKeys, rewardCredits } from "../../data/store/purchaseKeys.js";
 import { User } from "../../models/user.model.js";
 import type { Context } from "koa";
 
@@ -30,6 +30,14 @@ export const updateCredits = (ctx: Context, save: Save, item: string, quantity: 
   const mushroomCredits: Mushrooms = { MUSHROOM1: 3, MUSHROOM2: 8, MUSHROOM3: 3 };
   if (item in mushroomCredits) {
     userSave.credits += mushroomCredits[item as keyof Mushrooms];
+    return;
+  }
+
+  // Handle quest rewards that grant credits
+  if (item in rewardCredits) {
+    const collected = (save.storedata?.[item]?.q ?? 0) > quantity;
+
+    if (!collected) userSave.credits += rewardCredits[item];
     return;
   }
 
