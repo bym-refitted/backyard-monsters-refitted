@@ -40,6 +40,10 @@ package com.monsters.monsters.components.abilities
       
       override protected function onUnregister() : void
       {
+         if(!owner || !owner.moveSpeedProperty || !owner.attackDelayProperty || !owner.armorProperty)
+         {
+            return;
+         }
          owner.moveSpeedProperty.removeModifier(this.m_moveSpeedModifier);
          owner.attackDelayProperty.removeModifier(this.m_attackSpeedModifier);
          owner.armorProperty.removeModifier(this.m_armorModifier);
