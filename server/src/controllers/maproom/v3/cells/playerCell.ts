@@ -29,7 +29,8 @@ export const playerCell = async (ctx: Context, cell: WorldMapCell, cellOwners: M
 
   const cellOwner = mine ? currentUser : cellOwners.get(cell.uid);
 
-  if (!cellOwner?.save) throw new Error(`Cell owner save not found for uid: ${cell.uid}`);
+  // We render an empty cell if the owner is not found or doesn't have save data
+  if (!cellOwner?.save) return { x: cell.x, y: cell.y, i: 0 };
 
   const points = cellOwner.save.points;
   const basevalue = cellOwner.save.basevalue;

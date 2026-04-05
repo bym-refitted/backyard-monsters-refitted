@@ -912,42 +912,63 @@ package com.monsters.maproom3
             outputBitmap.bitmapData = null;
          }
 
-         // Nothing to render
-         if (glowLayer.numChildren == 0) return;
+         // Nothing to render - reset layer in case we were in the live-filter fallback.
+         if (glowLayer.numChildren == 0) {
+            glowLayer.visible = false;
+            glowLayer.filters = [];
+            return;
+         }
 
-         // Temporarily show the hidden layer so getBounds/draw work
-         glowLayer.visible = true;
-
-         // Calculate the snapshot area with padding for the filter bleed
+         // Calculate the snapshot area with padding for the filter bleed.
+         // getBounds works on invisible sprites, so all validation happens while the
+         // layer is still hidden - it is never left exposed on a failed early-out.
          var bounds:Rectangle = glowLayer.getBounds(glowLayer);
          var padding:Number = glowFilter.inner ? 2 : Math.max(glowFilter.blurX, glowFilter.blurY) * 2;
-         
+
          bounds.inflate(padding, padding);
 
          var bmdWidth:int = Math.ceil(bounds.width);
          var bmdHeight:int = Math.ceil(bounds.height);
 
-         // Skip if degenerate or exceeds Flash's BitmapData limits
-         if (bmdWidth <= 0 || bmdHeight <= 0 || bmdWidth > k_MAX_FILTER_SIZE || bmdHeight > k_MAX_FILTER_SIZE) {
+         // Degenerate bounds — nothing to draw.
+         if (bmdWidth <= 0 || bmdHeight <= 0) {
             glowLayer.visible = false;
+            glowLayer.filters = [];
             return;
          }
 
-         // Render the vector shapes to a BitmapData
-         var sourceBmd:BitmapData = new BitmapData(bmdWidth, bmdHeight, true, 0);
+         // Flash's BitmapData limits: 8191 per axis, 16,777,215 total pixels.
+         // When the range is too large to rasterize, fall back to a live GlowFilter
+         // on the layer so the glow is always visible regardless of range size.
+         // glowFilter.blurX/Y was pre-multiplied by canvas scale for the cache path;
+         // a live filter is applied by Flash in screen-pixel space so we divide back
+         // to the base values to avoid the blur being double-scaled.
+         if (bmdWidth > k_MAX_FILTER_SIZE || bmdHeight > k_MAX_FILTER_SIZE || (bmdWidth * bmdHeight) > k_MAX_FILTER_TOTAL_SIZE) {
+            var fallbackFilter:GlowFilter = GlowFilter(glowFilter.clone());
+            fallbackFilter.blurX /= this.m_ScrollingCanvas.scaleX;
+            fallbackFilter.blurY /= this.m_ScrollingCanvas.scaleY;
+            glowLayer.filters = [fallbackFilter];
+            glowLayer.visible = true;
+            return;
+         }
+
+         // The filter is set before visible=true so any incidental rendered frame
+         // shows the correct filtered glow (transparent interior) rather than white.
+         glowLayer.visible = false;
+         glowLayer.filters = [glowFilter];
+         glowLayer.visible = true;
+
+         var cachedBmd:BitmapData = new BitmapData(bmdWidth, bmdHeight, true, 0);
 
          this.m_GlowCacheMatrix.identity();
          this.m_GlowCacheMatrix.translate(-bounds.x, -bounds.y);
-         sourceBmd.draw(glowLayer, this.m_GlowCacheMatrix);
-         glowLayer.visible = false;
+         cachedBmd.draw(glowLayer, this.m_GlowCacheMatrix);
 
-         // Apply the GlowFilter onto a fresh BitmapData, then discard the source
-         var filteredBmd:BitmapData = new BitmapData(bmdWidth, bmdHeight, true, 0);
-         filteredBmd.applyFilter(sourceBmd, sourceBmd.rect, this.m_GlowCachePoint, glowFilter);
-         sourceBmd.dispose();
+         glowLayer.visible = false;
+         glowLayer.filters = [];
 
          // Display the result
-         outputBitmap.bitmapData = filteredBmd;
+         outputBitmap.bitmapData = cachedBmd;
          outputBitmap.x = bounds.x;
          outputBitmap.y = bounds.y;
       }
