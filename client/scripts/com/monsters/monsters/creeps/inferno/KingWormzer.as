@@ -1,5 +1,6 @@
 package com.monsters.monsters.creeps.inferno
 {
+   import com.monsters.maproom_manager.MapRoomManager;
    import com.monsters.monsters.MonsterBase;
    import com.monsters.monsters.components.abilities.AOEDamageOnAttackOncePerTarget;
    import com.monsters.monsters.creeps.CreepBase;
@@ -23,7 +24,10 @@ package com.monsters.monsters.creeps.inferno
          //{
          //   _loc13_ |= Targeting.k_TARGETS_DEFENDERS;
          //}
-         addComponent(new AOEDamageOnAttackOncePerTarget(100,_loc13_,4));
+         if(!MapRoomManager.instance.isInMapRoom3)
+         {
+            addComponent(new AOEDamageOnAttackOncePerTarget(100,_loc13_,4));
+         }
       }
    }
 }
