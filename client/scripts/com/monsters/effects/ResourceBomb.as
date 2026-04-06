@@ -146,6 +146,8 @@ package com.monsters.effects
       
       public function RemoveParticle(param1:String) : void
       {
+         if (!this.particles[param1]) return;
+
          this.particles[param1].clear();
          delete this.particles[param1];
          --this.particleCount;

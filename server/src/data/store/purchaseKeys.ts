@@ -3,7 +3,7 @@
  */
 export const purchaseKeys = new Set([
   "IU",         // Instant Upgrade
-  "IF",         // Instant Finish    
+  "IF",         // Instant Finish
   "IFD",        // Instant Champion Feed
   "ITR",        // Instant Train
   "IUN",        // Instant Unlock
@@ -15,9 +15,15 @@ export const purchaseKeys = new Set([
   "HSM",        // Instant Heal Single Monster
   "BUNK",       // Monster Bunker Instant Monsters
   "KIT",        // Outpost Kit
-  "QINVITE1",   // Quest Invite 1 Friend
-  "QINVITE5",   // Quest Invite 5 Friends
-  "QINVITE10",  // Quest Invite 10 Friends
   "QWM1",       // Quest Wild Monster 1
   "HAM",        // Heal All Monsters
 ]);
+
+/**
+ * Reward keys map items that grant shiny (credits) to the player, keyed by item ID with their shiny reward amount.
+ */
+export const rewardCredits: Record<string, number> = {
+  "QINVITE1":  25,    // Quest Invite 1 Friend
+  "QINVITE5":  45,    // Quest Invite 5 Friends
+  "QINVITE10": 65,    // Quest Invite 10 Friends
+};
