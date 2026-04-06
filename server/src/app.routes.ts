@@ -29,34 +29,17 @@ import { forgotPassword } from "./controllers/auth/forgotPassword.js";
 import { resetPassword } from "./controllers/auth/resetPassword.js";
 import { infernoSave } from "./controllers/inferno/infernoSave.js";
 import { getNeighbours } from "./controllers/maproom/inferno/getNeighbours.js";
-import { Env } from "./enums/Env.js";
 import { getMessageTargets } from "./controllers/mail/getMessageTargets.js";
 import { getMessageThreads } from "./controllers/mail/getMessageThreads.js";
 import { getMessageThread } from "./controllers/mail/getMessageThread.js";
 import { sendMessage } from "./controllers/mail/sendMessage.js";
 import { reportMessageThread } from "./controllers/mail/reportMessageThread.js";
-import type { Context } from "koa";
 import { getAvailableWorlds } from "./controllers/leaderboards/getAvailableWorlds.js";
 import { getLeaderboards } from "./controllers/leaderboards/getLeaderboards.js";
 import { getAttackLogs } from "./controllers/attacklogs/getAttackLogs.js";
 import { wildMonsterInvasion } from "./controllers/events/wildMonsterInvasion.js";
 import { init } from "./controllers/init.js";
-import { RateLimit } from "koa2-ratelimit";
-
-/**
- * Rate limit for user registration
- */
-const registerLimiter = RateLimit.middleware({
-  interval: { min: process.env.ENV === Env.PROD ? 60 : 1 },
-  max: 3,
-  handler: async (ctx: Context) => {
-    ctx.status = Status.TOO_MANY_REQUESTS;
-    ctx.body = {
-      error:
-        "Too many requests where sent from this IP while creating an account. Please try again in 1 hour.",
-    };
-  },
-});
+import { getCellsLimiter, registerLimiter } from "./middleware/rateLimiters.js";
 
 /**
  * All applcation routes
@@ -356,6 +339,7 @@ router.post(
   "/worldmapv3/getcells",
   verifyUserAuth,
   verifyAccountStatus,
+  getCellsLimiter,
   logRequest("Get MR3 cells"),
   getMapRoomCells
 );
