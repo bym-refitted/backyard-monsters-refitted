@@ -31,9 +31,17 @@ const CELL_SAVE_FIELDS = [
   "save.basevalue",
 ] as const;
 
+const MAX_CELLS_PER_REQUEST = 4250;
+
 export const getMapRoomCells: KoaController = async (ctx) => {
   try {
     const { cellids } = CellSchema.parse(ctx.request.body);
+
+    if (cellids && cellids.length > MAX_CELLS_PER_REQUEST) {
+      ctx.status = Status.BAD_REQUEST;
+      ctx.body = { error: `Maximum ${MAX_CELLS_PER_REQUEST} cells per request` };
+      return;
+    }
 
     const user: User = ctx.authUser;
     await postgres.em.populate(user, ["save"]);

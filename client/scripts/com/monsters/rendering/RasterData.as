@@ -223,6 +223,10 @@ package com.monsters.rendering
       
       public function set visible(param1:Boolean) : void
       {
+         if (this.renderer_friend::_cleared) return;
+
+         var idx:int = 0;
+         
          if(!this.renderer_friend::_visible && param1)
          {
             if(this.renderer_friend::_unSorted)
@@ -239,11 +243,21 @@ package com.monsters.rendering
          {
             if(this.renderer_friend::_unSorted)
             {
-               renderer_friend::s_unsortedData.splice(renderer_friend::s_unsortedData.indexOf(this),1);
+               idx = renderer_friend::s_unsortedData.indexOf(this);
+
+               if(idx >= 0)
+               {
+                  renderer_friend::s_unsortedData.splice(idx,1);
+               }
             }
             else
             {
-               renderer_friend::s_visibleData.splice(renderer_friend::s_visibleData.indexOf(this),1);
+               idx = renderer_friend::s_visibleData.indexOf(this);
+
+               if(idx >= 0)
+               {
+                  renderer_friend::s_visibleData.splice(idx,1);
+               }
             }
             renderer_friend::s_needsSort = true;
          }
@@ -261,16 +275,31 @@ package com.monsters.rendering
          {
             return;
          }
-         renderer_friend::s_rasterData.splice(renderer_friend::s_rasterData.indexOf(this),1);
+         var idx:int = renderer_friend::s_rasterData.indexOf(this);
+
+         if(idx >= 0)
+         {
+            renderer_friend::s_rasterData.splice(idx,1);
+         }
          if(this.renderer_friend::_visible)
          {
             if(this.renderer_friend::_unSorted)
             {
-               renderer_friend::s_unsortedData.splice(renderer_friend::s_unsortedData.indexOf(this),1);
+               idx = renderer_friend::s_unsortedData.indexOf(this);
+
+               if(idx >= 0)
+               {
+                  renderer_friend::s_unsortedData.splice(idx,1);
+               }
             }
             else
             {
-               renderer_friend::s_visibleData.splice(renderer_friend::s_visibleData.indexOf(this),1);
+               idx = renderer_friend::s_visibleData.indexOf(this);
+
+               if(idx >= 0)
+               {
+                  renderer_friend::s_visibleData.splice(idx,1);
+               }
             }
          }
          if(param1 && this.renderer_friend::_data is BitmapData)
