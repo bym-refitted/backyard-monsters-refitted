@@ -15,7 +15,9 @@ package com.monsters.maproom3
    import flash.net.URLRequestHeader;
    import flash.net.URLRequestMethod;
    import flash.net.URLVariables;
+   import flash.system.Capabilities;
    import flash.utils.Dictionary;
+   import com.monsters.enums.EnumPlayerType;
    
    public class MapRoom3 implements IMapRoom
    {
@@ -40,9 +42,23 @@ package com.monsters.maproom3
          super();
          if(headerUrl != null)
          {
+            if (Capabilities.playerType == EnumPlayerType.DESKTOP)
+            {
+               // On Android AIR the mapheaderurl has no API version segment and always
+               // returns 404. Android AIR may not fire any URLLoader event on a 404
+               // with no response body, leaving m_MapRoom3Data null permanently.
+               // Skip the request: initialise with default map dimensions now and
+               // let Setup() call LoadInitialCellData when the user opens the map.
+               this.m_MapRoom3Data = new MapRoom3Data(null);
+               return;
+            }
+
             var req:URLRequest = new URLRequest(headerUrl);
             req.method = URLRequestMethod.POST;
-            req.data = new URLVariables();
+            var vars:URLVariables = new URLVariables();
+
+            vars["token"] = LOGIN.token;
+            req.data = vars;
             req.requestHeaders.push(new URLRequestHeader("Authorization","Bearer " + LOGIN.token));
             
             this.m_HeightMapLoader = new URLLoader(req);
