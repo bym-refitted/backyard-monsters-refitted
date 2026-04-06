@@ -100,46 +100,54 @@ package com.monsters.rendering
       
       private function rasterize(param1:Vector.<RasterData>) : void
       {
-         var _loc2_:Vector.<RasterData> = null;
-         var _loc4_:RasterData = null;
-         var _loc5_:BitmapData = null;
-         var _loc6_:BitmapData = null;
-         var _loc7_:int = 0;
-         _loc2_ = param1;
-         var _loc3_:int = int(_loc2_.length);
-         while(_loc7_ < _loc3_)
+         var entries:Vector.<RasterData> = null;
+         var entry:RasterData = null;
+         var entryBmd:BitmapData = null;
+         var alphaMask:BitmapData = null;
+         var i:int = 0;
+         
+         entries = param1;
+         var len:int = int(entries.length);
+
+         while(i < len)
          {
-            _loc5_ = (_loc4_ = _loc2_[_loc7_]).renderer_friend::_data as BitmapData;
-            this._pt.x = _loc4_.renderer_friend::_pt.x;
-            this._pt.y = _loc4_.renderer_friend::_pt.y;
-            if(_loc5_ && !_loc4_.renderer_friend::_blendMode && !_loc4_.renderer_friend::_filter && (_loc4_.renderer_friend::_scaleX & _loc4_.renderer_friend::_scaleY) === 100)
+            entry = entries[i];
+            if(!entry || entry.renderer_friend::_cleared || !entry.renderer_friend::_pt)
             {
-               if(_loc4_.renderer_friend::_alpha !== 4278190080)
+               i++;
+               continue;
+            }
+            entryBmd = entry.renderer_friend::_data as BitmapData;
+            this._pt.x = entry.renderer_friend::_pt.x;
+            this._pt.y = entry.renderer_friend::_pt.y;
+            if(entryBmd && !entry.renderer_friend::_blendMode && !entry.renderer_friend::_filter && (entry.renderer_friend::_scaleX & entry.renderer_friend::_scaleY) === 100)
+            {
+               if(entry.renderer_friend::_alpha !== 4278190080)
                {
-                  _loc6_ = new BitmapData(_loc5_.width,_loc5_.height,true,_loc4_.renderer_friend::_alpha);
+                  alphaMask = new BitmapData(entryBmd.width,entryBmd.height,true,entry.renderer_friend::_alpha);
                }
-               this.renderer_friend::_canvas.copyPixels(_loc5_,_loc5_.rect,this._pt,_loc6_);
-               if(_loc6_)
+               this.renderer_friend::_canvas.copyPixels(entryBmd,entryBmd.rect,this._pt,alphaMask);
+               if(alphaMask)
                {
-                  _loc6_.dispose();
-                  _loc6_ = null;
+                  alphaMask.dispose();
+                  alphaMask = null;
                }
             }
             else
             {
-               this._matrix.createBox(_loc4_.renderer_friend::_scaleX * 0.01,_loc4_.renderer_friend::_scaleY * 0.01,0,this._pt.x,this._pt.y);
-               if(Boolean(_loc4_.renderer_friend::_filter) && Boolean(_loc5_))
+               this._matrix.createBox(entry.renderer_friend::_scaleX * 0.01,entry.renderer_friend::_scaleY * 0.01,0,this._pt.x,this._pt.y);
+               if(Boolean(entry.renderer_friend::_filter) && Boolean(entryBmd))
                {
-                  this._bm.bitmapData = _loc5_;
-                  this._bm.filters = [_loc4_.renderer_friend::_filter];
-                  this.renderer_friend::_canvas.draw(this._bm,this._matrix,null,_loc4_.renderer_friend::_blendMode);
+                  this._bm.bitmapData = entryBmd;
+                  this._bm.filters = [entry.renderer_friend::_filter];
+                  this.renderer_friend::_canvas.draw(this._bm,this._matrix,null,entry.renderer_friend::_blendMode);
                }
                else
                {
-                  this.renderer_friend::_canvas.draw(_loc4_.renderer_friend::_data,this._matrix,null,_loc4_.renderer_friend::_blendMode);
+                  this.renderer_friend::_canvas.draw(entry.renderer_friend::_data,this._matrix,null,entry.renderer_friend::_blendMode);
                }
             }
-            _loc7_++;
+            i++;
          }
       }
    }

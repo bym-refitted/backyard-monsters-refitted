@@ -171,6 +171,8 @@ package com.monsters.effects
       
       protected function Add() : void
       {
+         if (this.m_cleared) return;
+         
          if(!BYMConfig.instance.RENDERER_ON)
          {
             this.mc.visible = true;
@@ -305,7 +307,7 @@ package com.monsters.effects
          }
          if(BYMConfig.instance.RENDERER_ON)
          {
-            if(this.m_resourceId !== k_TYPE_TWIGS)
+            if(this.m_resourceId !== k_TYPE_TWIGS && MAP.effectsBMD && this.bmd_frame && this.m_rasterPt)
             {
                MAP.effectsBMD.copyPixels(this.bmd_frame,this.bmd_frame.rect,this.m_rasterPt);
             }
@@ -315,6 +317,10 @@ package com.monsters.effects
             }
             this.m_rasterData = null;
             this.m_rasterPt = null;
+         }
+         if(this.mc)
+         {
+            this.mc.removeEventListener(Event.ENTER_FRAME, this.Anim);
          }
          if(this.bmd_frame)
          {
