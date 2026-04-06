@@ -31,7 +31,7 @@ const CELL_SAVE_FIELDS = [
   "save.basevalue",
 ] as const;
 
-const MAX_CELLS_PER_REQUEST = 4000;
+const MAX_CELLS_PER_REQUEST = 4250;
 
 export const getMapRoomCells: KoaController = async (ctx) => {
   try {
