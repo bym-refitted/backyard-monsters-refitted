@@ -13,6 +13,7 @@ package
    import flash.system.Security;
    import flash.net.SharedObject;
    import com.monsters.external_interface.ExternalInterfaceManager;
+   import com.bymr.hxbridge.HaxeLib;
    public class GAME extends Sprite
    {
 
@@ -36,6 +37,8 @@ package
 
       public function GAME()
       {
+         HaxeLib.bootstrap(new GLOBAL(), new LOGGER());
+
          var urls:Object = null;
          var serverUrl:String = GLOBAL.serverUrl;
          var apiVersionSuffix:String = GLOBAL.apiVersionSuffix + "/";
