@@ -184,6 +184,8 @@ package
 
       private function onZoom(event:TransformGestureEvent):void
       {
+         if (MapRoomManager.instance.isOpen) return;
+
          const MIN_SCALE:Number = 1.5;
          const MAX_SCALE:Number = 3.5;
 

@@ -1,15 +1,18 @@
 package com.monsters.maproom3
 {
    import com.cc.ui.ArrowKeyState;
+   import com.monsters.enums.EnumPlayerType;
    import com.monsters.maproom3.data.MapRoom3Data;
    import com.monsters.maproom3.tiles.MapRoom3TileSetManager;
    import flash.display.BitmapData;
    import flash.display.Sprite;
    import flash.events.MouseEvent;
    import flash.events.TimerEvent;
+   import flash.events.TransformGestureEvent;
    import flash.filters.GlowFilter;
    import flash.geom.Matrix;
    import flash.geom.Point;
+   import flash.system.Capabilities;
    import flash.utils.Timer;
    import gs.TweenLite;
    import gs.easing.Quad;
@@ -96,6 +99,12 @@ package com.monsters.maproom3
       private var m_Dragging:Boolean = false;
       
       private var m_KeyScrollVelocity:Number = 8;
+
+      private var m_ZoomScale:Number = 1.0;
+
+      private static const PINCH_MIN_SCALE:Number = 0.5;
+
+      private static const PINCH_MAX_SCALE:Number = 3.0;
       
       public function MapRoom3Window(param1:MapRoom3Data)
       {
@@ -230,6 +239,10 @@ package com.monsters.maproom3
             this.m_CenterPoint.y = param1.y;
          }
          this.CenterOn(this.m_CenterPoint);
+         if (Capabilities.playerType == EnumPlayerType.DESKTOP)
+         {
+            stage.addEventListener(TransformGestureEvent.GESTURE_ZOOM, this.OnGestureZoom, false, 0, true);
+         }
       }
       
       public function TickFast() : void
@@ -366,6 +379,10 @@ package com.monsters.maproom3
          var _loc1_:MapRoom3CellGraphic = null;
          TweenLite.killTweensOf(this.m_ScrollingCanvas,true);
          this.m_CenterPointForLoadingLocked = false;
+         if (Capabilities.playerType == EnumPlayerType.DESKTOP)
+         {
+            stage.removeEventListener(TransformGestureEvent.GESTURE_ZOOM, this.OnGestureZoom);
+         }
          removeEventListener(MouseEvent.MOUSE_DOWN,this.OnMouseDown);
          removeEventListener(MouseEvent.MOUSE_UP,this.OnMouseUp);
          removeEventListener(MouseEvent.MOUSE_MOVE,this.OnMouseMoved);
@@ -740,13 +757,54 @@ package com.monsters.maproom3
       {
          return this.m_ScrollingCanvas.scaleX < 1;
       }
-      
+
+      /**
+       * Handles pinch-to-zoom gesture events on Android (Adobe AIR).
+       * Zooms m_ScrollingCanvas toward the pinch midpoint, clamped to
+       * [PINCH_MIN_SCALE, PINCH_MAX_SCALE].
+       */
+      private function OnGestureZoom(event:TransformGestureEvent) : void
+      {
+         var prevScale:Number = this.m_ZoomScale;
+
+         this.m_ZoomScale *= event.scaleX;
+         this.m_ZoomScale = Math.max(PINCH_MIN_SCALE, Math.min(PINCH_MAX_SCALE, this.m_ZoomScale));
+
+         if (this.m_ZoomScale == prevScale) return;
+
+         // Record where the pinch midpoint sits in canvas-local coords before scaling.
+         var pinchPoint:Point = new Point(event.stageX, event.stageY);
+         var localBefore:Point = this.m_ScrollingCanvas.globalToLocal(pinchPoint);
+
+         this.m_ScrollingCanvas.scaleX = this.m_ZoomScale;
+         this.m_ScrollingCanvas.scaleY = this.m_ZoomScale;
+
+         // Compensate canvas position so the pinch midpoint stays fixed on screen.
+         var localAfter:Point = this.m_ScrollingCanvas.globalToLocal(pinchPoint);
+         this.m_ScrollingCanvas.x += (localAfter.x - localBefore.x) * this.m_ZoomScale;
+         this.m_ScrollingCanvas.y += (localAfter.y - localBefore.y) * this.m_ZoomScale;
+
+         this.m_ScrollingCanvas.x = this.AdjustHorizontalBounds(this.m_ScrollingCanvas.x);
+         this.m_ScrollingCanvas.y = this.AdjustVerticalBounds(this.m_ScrollingCanvas.y);
+
+         this.RANGE_GLOW_FILTER.blurX = RANGE_GLOW_BLUR_X * this.m_ZoomScale;
+         this.RANGE_GLOW_FILTER.blurY = RANGE_GLOW_BLUR_Y * this.m_ZoomScale;
+         this.m_RangeGlowLayer.filters = [this.RANGE_GLOW_FILTER];
+         this.MOUSEOVER_RANGE_GLOW_FILTER.blurX = RANGE_GLOW_BLUR_X * this.m_ZoomScale;
+         this.MOUSEOVER_RANGE_GLOW_FILTER.blurY = RANGE_GLOW_BLUR_Y * this.m_ZoomScale;
+         this.m_MouseoverRangeGlowLayer.filters = [this.MOUSEOVER_RANGE_GLOW_FILTER];
+
+         this.AdjustCenterPoint();
+         this.UpdateMap(true);
+      }
+
       internal function Zoom(param1:Number, param2:Number = 0) : void
       {
          if(this.m_ScrollingCanvas.scaleX == param1)
          {
             return;
          }
+         this.m_ZoomScale = param1;
          if(param2 != 0)
          {
             TweenLite.to(this.m_ScrollingCanvas,param2,{
