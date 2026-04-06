@@ -6,6 +6,8 @@ package
    import com.monsters.display.ImageCache;
    import com.monsters.managers.InstanceManager;
    import com.monsters.monsters.MonsterBase;
+   import com.monsters.maproom_manager.MapRoomManager;
+   import com.monsters.monsters.components.abilities.AOEDamageOnAttackOncePerTarget;
    import com.monsters.monsters.components.abilities.Enrage;
    import com.monsters.monsters.components.abilities.TemporaryComponent;
    import com.monsters.pathing.PATHING;
@@ -821,7 +823,7 @@ package
          var _loc6_:Number = NaN;
          var _loc7_:int = 0;
          var _loc8_:Point = null;
-         var _loc9_:MonsterBase = null;
+         var monster:MonsterBase = null;
          var _loc10_:uint = uint(BASE._basePoints) + uint(BASE._baseValue);
          var _loc11_:Number = 0.4;
 
@@ -862,12 +864,17 @@ package
             var offsetPoint:Point = getPooledPoint(Math.cos(_loc6_) * _loc7_, Math.sin(_loc6_) * _loc7_);
             _loc8_ = param1.add(offsetPoint);
 
-            _loc9_ = CREEPS.Spawn(param3,MAP._BUILDINGTOPS,"bounce",GRID.ToISO(_loc8_.x,_loc8_.y,0),_loc12_.random() * 360,_loc11_,true);
+            monster = CREEPS.Spawn(param3,MAP._BUILDINGTOPS,"bounce",GRID.ToISO(_loc8_.x,_loc8_.y,0),_loc12_.random() * 360,_loc11_,true);
             if(_rage)
             {
-               _loc9_.addComponent(new TemporaryComponent(new Enrage(2,0),_rage));
+               monster.addComponent(new TemporaryComponent(new Enrage(2,0),_rage));
             }
-            _loc13_.push(_loc9_);
+            if(param3 == "IC8" && MapRoomManager.instance.isInMapRoom3)
+            {
+               var targetFlags:int = Targeting.k_TARGETS_BUILDINGS | Targeting.k_TARGETS_GROUND;
+               monster.addComponent(new AOEDamageOnAttackOncePerTarget(100, targetFlags, 4));
+            }
+            _loc13_.push(monster);
             _loc14_++;
          }
          return _loc13_;
