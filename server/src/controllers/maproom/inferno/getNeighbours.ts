@@ -17,9 +17,9 @@ import {
 
 /**
  * Cache validity period for inferno neighbours.
- * This is set to 4 weeks.
+ * This is set to 2 weeks.
  */
-const CACHE_VALIDITY_HOURS = 24 * 7 * 4;
+const CACHE_VALIDITY_HOURS = 24 * 7 * 2;
 
 /**
  * Controller to get inferno neighbours for PvP matchmaking.
@@ -206,29 +206,23 @@ const updateNeighbourData = async (cachedNeighbours: NeighbourData[]) => {
   // Update protection status for all saves
   for (const save of neighbourSaves) await damageProtection(save);
 
-  return cachedNeighbours
-    .filter((neighbour) => saveMap.has(neighbour.userid))
-    .map((neighbour) => {
-      const currentSave = saveMap.get(neighbour.userid);
-      
-      if (!currentSave) return neighbour;
+  return cachedNeighbours.flatMap((neighbour) => {
+    const neighbourSave = saveMap.get(neighbour.userid);
 
-      // TODO: Add the rest of the cases here for attack permissions
-      // e.g. level too low, starting protection, etc
-      const currentTime = getCurrentDateTime();
-      const isProtected = currentSave.protected > 0 && currentSave.protected > currentTime;
-      if (isProtected) {
-        neighbour.attackpermitted = AttackPermission.DAMAGE_PROTECTION;
-      } else {
-        neighbour.attackpermitted = AttackPermission.ATTACKABLE;
-      }
+    if (!neighbourSave || neighbourSave.worldid == null) return [];
 
-      neighbour.level = currentSave.level;
-      neighbour.saved = currentSave.savetime;
-      neighbour.online = getCurrentDateTime() - currentSave.savetime <= 60;
+    // TODO: Add the rest of the cases here for attack permissions e.g. level too low
+    const currentTime = getCurrentDateTime();
+    const isProtected = neighbourSave.protected > 0 && neighbourSave.protected > currentTime;
 
-      return neighbour;
-    });
+    neighbour.attackpermitted = isProtected ? AttackPermission.DAMAGE_PROTECTION : AttackPermission.ATTACKABLE;
+
+    neighbour.level = neighbourSave.level;
+    neighbour.saved = neighbourSave.savetime;
+    neighbour.online = getCurrentDateTime() - neighbourSave.savetime <= 60;
+
+    return [neighbour];
+  });
 };
 
 /**
