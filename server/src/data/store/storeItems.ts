@@ -191,7 +191,7 @@ export const storeItems: { [key: string]: StoreItem } = {
   PRO1: {
     t: "+24 hours protection",
     d: "Gives you 24 hours protection. Removed if you attack anyone.",
-    du: 432000,
+    du: 86400,
     c: [32],
     i: 0,
     a: 0,
@@ -199,7 +199,7 @@ export const storeItems: { [key: string]: StoreItem } = {
   PRO2: {
     t: "Holiday Protection",
     d: "Gives you 7 days protection. Removed if you attack anyone.",
-    du: 1209600,
+    du: 604800,
     c: [250],
     i: 0,
     a: 0,
