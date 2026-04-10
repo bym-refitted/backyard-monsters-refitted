@@ -39,7 +39,7 @@ export const infernoModeAttack = async (user: User, baseid: string) => {
   const attackDetails: AttackDetails = {
     fbid: "",
     name: user.username,
-    pic_square: user.pic_square,
+    pic_square: user.pic_square ?? undefined,
     friend: 0,
     count: 1,
     starttime: getCurrentDateTime(),
