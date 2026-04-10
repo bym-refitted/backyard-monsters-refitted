@@ -101,10 +101,8 @@ export const getArea: KoaController = async (ctx) => {
   const cells: Record<number, Record<number, unknown>> = {};
   for (const cell of dbCells) {
     if (!cells[cell.x]) cells[cell.x] = {};
-    // Cast required: field projection (CELL_SAVE_FIELDS) narrows the MikroORM Loaded
-    // type to a partial Save, which doesn't structurally satisfy WorldMapCell.save.
-    // At runtime the entity is a full WorldMapCell — all projected fields are accessed below.
-    cells[cell.x][cell.y] = await createCellData(cell as unknown as WorldMapCell, worldid, ctx, cellOwners);
+
+    cells[cell.x][cell.y] = await createCellData(cell as WorldMapCell, worldid, ctx, cellOwners);
   }
 
   // Then, fill the remaining cells in-memory
