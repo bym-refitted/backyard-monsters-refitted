@@ -1,90 +1,96 @@
-import { Entity, Property, PrimaryKey, OneToOne, Index } from "@mikro-orm/core";
+import {
+  Entity,
+  Property,
+  PrimaryKey,
+  OneToOne,
+  Index,
+} from "@mikro-orm/decorators/es";
 import { type FieldData, Save } from "./save.model.js";
 import { FrontendKey } from "../utils/FrontendKey.js";
 
 @Entity({ tableName: "user" })
 export class User {
   @FrontendKey
-  @PrimaryKey({ autoincrement: true })
+  @PrimaryKey({ autoincrement: true, type: "number" })
   userid!: number;
 
   @OneToOne(() => Save, { nullable: true })
-  save?: Save;
-  
-  @OneToOne(() => Save, { nullable: true })
-  infernosave?: Save;
+  save?: Save | null;
 
-  @Property({ unique: true })
+  @OneToOne(() => Save, { nullable: true })
+  infernosave?: Save | null;
+
+  @Property({ type: "string", unique: true })
   @FrontendKey
   username!: string;
 
-  @Property({ default: false })
-  banned?: boolean;
+  @Property({ type: "boolean", default: false })
+  banned: boolean = false;
 
   @FrontendKey
-  @Property({ unique: true })
+  @Property({ type: "string", unique: true })
   @Index()
   email!: string;
 
-  @Property()
+  @Property({ type: "string" })
   password!: string;
 
-  @Property({ default: false })
+  @Property({ type: "boolean", default: false })
   discord_verified: boolean = false;
 
-  @Property({ nullable: true })
-  discord_id: string | null = null;
+  @Property({ type: "string", nullable: true })
+  discord_id?: string | null;
 
-  @Property({ nullable: true })
-  discord_tag: string | null = null;
+  @Property({ type: "string", nullable: true })
+  discord_tag?: string | null;
 
-  @Property({ default: "" })
+  @Property({ type: "string", default: "" })
   @FrontendKey
-  last_name?: string;
+  last_name: string = "";
 
-  @Property({ default: "" })
-  resetToken?: string;
-
-  @FrontendKey
-  @Property({ nullable: true })
-  pic_square?: string;
+  @Property({ type: "string", default: "" })
+  resetToken: string = "";
 
   @FrontendKey
-  @Property({ default: 0 })
-  timeplayed?: number;
+  @Property({ type: "string", nullable: true })
+  pic_square?: string | null;
 
   @FrontendKey
-  @Property({ type: "json", nullable: true })
-  stats?: FieldData;
-
-  @FrontendKey
-  @Property({ default: 0 })
-  friendcount?: number;
-
-  @FrontendKey
-  @Property({ default: 0 })
-  sessioncount?: number;
-
-  @FrontendKey
-  @Property({ default: 100 })
-  addtime?: number;
+  @Property({ type: "number", default: 0 })
+  timeplayed: number = 0;
 
   @FrontendKey
   @Property({ type: "json", nullable: true })
-  bookmarks?: FieldData;
+  stats?: FieldData | null;
+
+  @FrontendKey
+  @Property({ type: "number", default: 0 })
+  friendcount: number = 0;
+
+  @FrontendKey
+  @Property({ type: "number", default: 0 })
+  sessioncount: number = 0;
+
+  @FrontendKey
+  @Property({ type: "number", default: 100 })
+  addtime: number = 100;
+
+  @FrontendKey
+  @Property({ type: "json", nullable: true })
+  bookmarks?: FieldData | null;
 
   @Property({ type: "json", defaultRaw: "'[]'::jsonb" })
   blockedUsers: number[] = [];
 
   @FrontendKey
-  @Property({ default: 0 })
-  _isFan?: number;
+  @Property({ type: "number", default: 0 })
+  _isFan: number = 0;
 
   @FrontendKey
-  @Property({ default: 0 })
-  sendgift?: number;
+  @Property({ type: "number", default: 0 })
+  sendgift: number = 0;
 
   @FrontendKey
-  @Property({ default: 0 })
-  sendinvite?: number;
+  @Property({ type: "number", default: 0 })
+  sendinvite: number = 0;
 }

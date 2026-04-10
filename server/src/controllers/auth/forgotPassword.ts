@@ -40,7 +40,8 @@ export const forgotPassword: KoaController = async (ctx) => {
     }
 
     user.resetToken = token;
-    await postgres.em.persistAndFlush(user);
+    postgres.em.persist(user);
+    await postgres.em.flush();
 
     // Read the HTML template
     const templatePath = path.resolve(

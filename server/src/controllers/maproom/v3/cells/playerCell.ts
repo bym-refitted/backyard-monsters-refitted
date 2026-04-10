@@ -36,7 +36,7 @@ export const playerCell = async (ctx: Context, cell: WorldMapCell, cellOwners: M
   const basevalue = cellOwner.save.basevalue;
 
   const playerLevel = calculateBaseLevel(points, basevalue);
-  const structureLevel: number = cellSave?.level;
+  const structureLevel = cellSave?.level ?? 0;
 
   const structureRange = STRUCTURE_RANGE[cell.base_type];
 
@@ -54,7 +54,7 @@ export const playerCell = async (ctx: Context, cell: WorldMapCell, cellOwners: M
   const currentTime = getCurrentDateTime();
 
   if (cell.base_type === EnumYardType.PLAYER) {
-    isProtected = cellSave.protected > 0 && cellSave.protected > currentTime;
+    isProtected = (cellSave?.protected ?? 0) > 0 && (cellSave?.protected ?? 0) > currentTime;
   }
 
   return {

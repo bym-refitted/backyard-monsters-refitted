@@ -49,7 +49,8 @@ export const register: KoaController = async (ctx) => {
     password: hash,
   } as unknown as UserData);
 
-  await postgres.em.persistAndFlush(user);
+  postgres.em.persist(user);
+  await postgres.em.flush();
   const filteredUser = FilterFrontendKeys(user);
   logger.info(
     `User ${filteredUser.username} registered successfully | ID: ${filteredUser.userid} | Email: ${filteredUser.email} | IP Address: ${ctx.ip}`

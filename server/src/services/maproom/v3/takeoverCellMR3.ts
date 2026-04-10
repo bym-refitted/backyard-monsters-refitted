@@ -100,7 +100,7 @@ export const takeoverCellMR3 = async (baseSave: Save, user: User, userSave: Save
       delete previousOwner.save.buildingresources[`b${baseid}`];
     }
 
-    await postgres.em.persistAndFlush(previousOwner);
+    postgres.em.persist(previousOwner);
   }
 
   // Update world map cell
@@ -108,7 +108,8 @@ export const takeoverCellMR3 = async (baseSave: Save, user: User, userSave: Save
   cell.base_type = wmid;
 
   userSave.outposts.push([cell.x, cell.y, baseSave.baseid]);
-  await postgres.em.persistAndFlush([cell, userSave]);
+  postgres.em.persist([cell, userSave]);
+  await postgres.em.flush();
 
   switch (wmid) {
     case EnumYardType.RESOURCE:
