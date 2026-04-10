@@ -24,7 +24,8 @@ export const logReport = async (user: User, message: string) => {
   };
 
   (incident.report ??= []).push(newReport);
-  await postgres.em.persistAndFlush(incident);
+  postgres.em.persist(incident);
+  await postgres.em.flush();
 };
 
 /**
@@ -47,7 +48,8 @@ export const logAttackViolation = async (user: User, message: string) => {
   };
 
   (incident.report ??= []).push(newReport);
-  await postgres.em.persistAndFlush([incident, user]);
+  postgres.em.persist([incident, user]);
+  await postgres.em.flush();
 };
 
 /**
@@ -68,7 +70,8 @@ export const logBanReport = async (user: User, message: string) => {
 
   incident.banReason = banReason;
   user.banned = true;
-  await postgres.em.persistAndFlush(incident);
+  postgres.em.persist(incident);
+  await postgres.em.flush();
 };
 
 /**
@@ -86,7 +89,7 @@ const getOrCreateReport = async (user: User): Promise<Report> => {
     incident = new Report();
     incident.userid = userid;
     incident.username = username;
-    incident.discord_tag = discord_tag;
+    incident.discord_tag = discord_tag ?? null;
     incident.violations = 0;
     incident.attackViolations = 0;
     incident.report = [];

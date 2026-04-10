@@ -28,7 +28,8 @@ export const baseModeView = async (baseid: string, mapversion: MapRoomVersion = 
     const currentTimestamp = getCurrentDateTime();
 
     if (currentTimestamp - save.savetime > WILD_MONSTER_EXPIRATION) {
-      await postgres.em.removeAndFlush(save);
+      postgres.em.remove(save);
+      await postgres.em.flush();
       save = await tribeSaveHandler(baseid, mapversion, worldid);
     }
   }

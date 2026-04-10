@@ -36,6 +36,7 @@ export const findOrCreateThread = async (threadId: number, targetId: number, use
   newThread.threadid = lastThread ? lastThread.threadid + 1 : 1;
   newThread.messagecount = 0;
 
-  await postgres.em.persistAndFlush(newThread);
+  postgres.em.persist(newThread);
+  await postgres.em.flush();
   return newThread;
 };

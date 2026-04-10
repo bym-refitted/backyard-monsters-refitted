@@ -20,6 +20,7 @@ import { validateSave } from "../../../scripts/anticheat/anticheat.js";
 import { updateResources } from "../../../services/base/updateResources.js";
 import { buildingDataHandler } from "./handlers/buildingDataHandler.js";
 import { takeoverCellMR3, type TakeoverData } from "../../../services/maproom/v3/takeoverCellMR3.js";
+import { serializeChampion } from "../../../utils/parseChampionData.js";
 import { damageProtection } from "../../../services/maproom/v2/damageProtection.js";
 import { isMR3Structure } from "../../../services/maproom/v3/utils/isMR3Structure.js";
 import { WorldMapCell } from "../../../models/worldmapcell.model.js";
@@ -138,7 +139,8 @@ export const baseSave: KoaController = async (ctx) => {
         attackLootHandler(saveData.attackloot, userSave);
       }
 
-      await postgres.em.persistAndFlush(userSave);
+      postgres.em.persist(userSave);
+      await postgres.em.flush();
 
       // MR3 Takeover Logic:
       // If the attack is over and damage >= 90, trigger takeover or destroy logic.
@@ -171,7 +173,8 @@ export const baseSave: KoaController = async (ctx) => {
 
     baseSave.id = baseSave.savetime;
     baseSave.savetime = getCurrentDateTime();
-    await postgres.em.persistAndFlush(baseSave);
+    postgres.em.persist(baseSave);
+    await postgres.em.flush();
 
     const filteredSave = FilterFrontendKeys(baseSave);
     logger.info(`Saving ${user.username}'s base | IP: ${ctx.ip}`);
@@ -181,7 +184,7 @@ export const baseSave: KoaController = async (ctx) => {
       basesaveid: baseSave.basesaveid,
       ...filteredSave,
       ...(takeoverData && { takeover: takeoverData }),
-      champion: JSON.stringify(filteredSave.champion),
+      champion: serializeChampion(filteredSave.champion),
     };
 
     if (user.userid === filteredSave.userid) {

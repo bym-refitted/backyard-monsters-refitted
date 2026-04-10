@@ -39,7 +39,8 @@ export const resetPassword: KoaController = async (ctx) => {
     // Update the user's password
     user.password = hashedPassword;
     user.resetToken = "";
-    await postgres.em.persistAndFlush(user);
+    postgres.em.persist(user);
+    await postgres.em.flush();
 
     ctx.status = Status.OK;
     ctx.body = {

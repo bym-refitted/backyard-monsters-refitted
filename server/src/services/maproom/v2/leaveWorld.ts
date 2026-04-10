@@ -75,7 +75,7 @@ export const leaveWorld = async (user: User, save: Save) => {
           ownerSave.outposts = ownerSave.outposts.filter(
             (outpost) => !defenderBaseids.includes(outpost[2]),
           );
-          await em.persistAndFlush(ownerSave);
+          em.persist(ownerSave);
         }
 
         await em.nativeDelete(Save, { baseid: { $in: defenderBaseids } });
@@ -97,7 +97,7 @@ export const leaveWorld = async (user: User, save: Save) => {
 
     save.worldid = null;
     save.usemap = 0;
-    save.cell = null;
+    save.cell = undefined;
     save.homebase = null;
     save.outposts = [];
     save.buildingresources = {};
@@ -114,6 +114,7 @@ export const leaveWorld = async (user: User, save: Save) => {
       toPersist.push(user.infernosave);
     }
 
-    await em.persistAndFlush(toPersist);
+    em.persist(toPersist);
+    await em.flush();
   });
 };
