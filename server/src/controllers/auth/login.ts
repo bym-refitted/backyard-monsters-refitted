@@ -68,7 +68,7 @@ export const login: KoaController = async (ctx) => {
 
   // Generate and set the token
   const sessionLifeTime = process.env.SESSION_LIFETIME || "30d";
-  let discordId: string | null = null;
+  let discordId: string | null | undefined;
 
   // Check if the user has verified their Discord account
   if (process.env.ENV === Env.PROD) {
@@ -108,7 +108,8 @@ export const login: KoaController = async (ctx) => {
   );
 
   await redis.set(`user-token:${sessionType}:${user.email}`, newToken);
-  await postgres.em.persistAndFlush(user);
+  postgres.em.persist(user);
+  await postgres.em.flush();
 
   const filteredUser = FilterFrontendKeys(user);
   logger.info(

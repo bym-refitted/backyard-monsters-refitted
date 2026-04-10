@@ -5,14 +5,15 @@ import {
   OneToOne,
   PrimaryKey,
   Property,
-} from "@mikro-orm/core";
+} from "@mikro-orm/decorators/es";
 import { FrontendKey } from "../utils/FrontendKey.js";
 import { World } from "./world.model.js";
+import { Save } from "./save.model.js";
 
 @Index({ properties: ["world_id", "map_version", "x", "y"] })
 @Entity({ tableName: "world_map_cell" })
 export class WorldMapCell {
-  
+
   constructor(world: World | undefined, x: number, y: number, terrainHeight: number | undefined) {
     this.world = world!;
     this.world_id = world?.uuid ?? "";
@@ -22,53 +23,48 @@ export class WorldMapCell {
   }
 
   @FrontendKey
-  @PrimaryKey()
+  @PrimaryKey({ type: 'number' })
   cellid!: number;
 
   @Index()
   @FrontendKey
-  @Property()
+  @Property({ type: 'string' })
   baseid!: string;
 
-  @Property({ default: 2 })
+  @Property({ type: 'number', default: 2 })
   map_version!: number;
 
   @FrontendKey
-  @Property()
+  @Property({ type: 'string' })
   world_id!: string;
 
   @Index()
   @FrontendKey
-  @Property()
+  @Property({ type: 'number' })
   uid!: number;
 
   @FrontendKey
-  @Property()
+  @Property({ type: 'number' })
   x!: number;
 
   @FrontendKey
-  @Property()
+  @Property({ type: 'number' })
   y!: number;
 
   @FrontendKey
-  @Property()
+  @Property({ type: 'number' })
   base_type!: number;
 
   @FrontendKey
-  @Property()
+  @Property({ type: 'number' })
   terrainHeight!: number;
 
-  @Property({ nullable: true })
+  @Property({ type: Date, nullable: true })
   destroyed_at?: Date | null;
 
   @ManyToOne(() => World)
   world!: World;
 
-  /**
-   * Circular dependency between Save and WorldMapCell requires string-based entity reference
-   * and any type to avoid ES module initialization errors with emitDecoratorMetadata.
-   * Using @mikro-orm/reflection would solve this but requires MikroORM v6+ upgrade.
-   */
-  @OneToOne({ mappedBy: "cell", nullable: true, entity: "Save" })
-  save: any;
+  @OneToOne({ mappedBy: "cell", nullable: true, entity: () => Save })
+  save?: Save | undefined;
 }

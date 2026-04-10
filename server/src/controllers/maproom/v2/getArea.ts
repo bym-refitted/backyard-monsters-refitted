@@ -101,7 +101,8 @@ export const getArea: KoaController = async (ctx) => {
   const cells: Record<number, Record<number, unknown>> = {};
   for (const cell of dbCells) {
     if (!cells[cell.x]) cells[cell.x] = {};
-    cells[cell.x][cell.y] = await createCellData(cell, worldid, ctx, cellOwners);
+
+    cells[cell.x][cell.y] = await createCellData(cell as WorldMapCell, worldid, ctx, cellOwners);
   }
 
   // Then, fill the remaining cells in-memory

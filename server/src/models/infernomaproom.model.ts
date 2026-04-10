@@ -1,5 +1,4 @@
-import { Entity, PrimaryKey, Property } from "@mikro-orm/core";
-
+import { Entity, PrimaryKey, Property } from "@mikro-orm/decorators/es";
 import { EntityManager, PostgreSqlDriver } from "@mikro-orm/postgresql";
 import { User } from "./user.model.js";
 import type { NeighbourData } from "../services/maproom/inferno/createNeighbourData.js";
@@ -15,7 +14,7 @@ export interface TribeData {
 
 @Entity({ tableName: "inferno_maproom" })
 export class InfernoMaproom {
-  @PrimaryKey()
+  @PrimaryKey({ type: 'number' })
   userid!: number;
 
   @Property({ type: "json", nullable: true })
@@ -24,22 +23,23 @@ export class InfernoMaproom {
   @Property({ type: "json", defaultRaw: "'[]'::jsonb" })
   neighbors: NeighbourData[] = [];
 
-  @Property({ nullable: true })
+  @Property({ type: Date, nullable: true })
   neighborsLastCalculated?: Date;
 
-  @Property()
+  @Property({ type: Date })
   createdAt: Date = new Date();
 
-  @Property({ onUpdate: () => new Date() })
+  @Property({ type: Date, onUpdate: () => new Date() })
   lastupdateAt: Date = new Date();
 
   public static setupMapRoom1Data = async (em: EntityManager<PostgreSqlDriver>, user: User) => {
-    const maproom = em.create(InfernoMaproom, 
+    const maproom = em.create(InfernoMaproom,
     {
       userid: user.userid,
     } as unknown as InfernoMaproomData);
 
-    await em.persistAndFlush(maproom);
+    em.persist(maproom);
+    await em.flush();
     return maproom;
   };
 }

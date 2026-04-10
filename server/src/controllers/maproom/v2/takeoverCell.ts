@@ -81,7 +81,7 @@ export const takeoverCell: KoaController = async (ctx) => {
       if (previousOwner.save.buildingresources)
         delete previousOwner.save.buildingresources[`b${baseid}`];
 
-      await postgres.em.persistAndFlush(previousOwner);
+      postgres.em.persist(previousOwner);
     }
 
     // Update save
@@ -113,7 +113,8 @@ export const takeoverCell: KoaController = async (ctx) => {
 
     // Update user
     userSave.outposts.push([cell.x, cell.y, baseid]);
-    await postgres.em.persistAndFlush([cellSave, currentUser]);
+    postgres.em.persist([cellSave, currentUser]);
+    await postgres.em.flush();
 
     ctx.status = Status.OK;
     ctx.body = { error: 0 };

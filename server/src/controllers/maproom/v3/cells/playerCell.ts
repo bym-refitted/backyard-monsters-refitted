@@ -36,7 +36,7 @@ export const playerCell = async (ctx: Context, cell: WorldMapCell, cellOwners: M
   const basevalue = cellOwner.save.basevalue;
 
   const playerLevel = calculateBaseLevel(points, basevalue);
-  const structureLevel: number = cellSave?.level;
+  const structureLevel = cellSave?.level ?? 0;
 
   const structureRange = STRUCTURE_RANGE[cell.base_type];
 
@@ -54,7 +54,7 @@ export const playerCell = async (ctx: Context, cell: WorldMapCell, cellOwners: M
   const currentTime = getCurrentDateTime();
 
   if (cell.base_type === EnumYardType.PLAYER) {
-    isProtected = cellSave.protected > 0 && cellSave.protected > currentTime;
+    isProtected = (cellSave?.protected ?? 0) > 0 && (cellSave?.protected ?? 0) > currentTime;
   }
 
   return {
@@ -77,6 +77,6 @@ export const playerCell = async (ctx: Context, cell: WorldMapCell, cellOwners: M
     d: (cellSave?.damage ?? 0) >= 90 ? 1 : 0,
     t: 0,
     rel: mine ? EnumBaseRelationship.SELF : EnumBaseRelationship.ENEMY,
-    pic_square: cellOwner.pic_square,
+    pic_square: cellOwner.pic_square ?? undefined,
   };
 };
