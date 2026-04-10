@@ -20,7 +20,8 @@ export const saveBookmarks: KoaController = async (ctx) => {
   if (!bookmarks) throw new Error("Bookmarks not found");
 
   user.bookmarks = JSON.parse(bookmarks);
-  await postgres.em.persistAndFlush(user);
+  postgres.em.persist(user);
+  await postgres.em.flush();
 
   ctx.status = Status.OK;
   ctx.body = { error: 0 };

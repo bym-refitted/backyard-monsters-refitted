@@ -39,7 +39,8 @@ export const getMessageThread: KoaController = async (ctx) => {
         }
       });
 
-      await postgres.em.persistAndFlush(messages);
+      postgres.em.persist(messages);
+      await postgres.em.flush();
 
       const count = await countUnreadMessage(user.userid);
 

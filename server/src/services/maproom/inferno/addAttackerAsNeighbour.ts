@@ -67,8 +67,7 @@ export const addAttackerAsNeighbour = async (attacker: User, defender: User) => 
 
   existingDefender.attacksto = (existingDefender.attacksto ?? 0) + 1;
 
-  await Promise.all([
-    postgres.em.persistAndFlush(defenderMaproom),
-    postgres.em.persistAndFlush(attackerMaproom),
-  ]);
+  postgres.em.persist(defenderMaproom);
+  postgres.em.persist(attackerMaproom);
+  await postgres.em.flush();
 };

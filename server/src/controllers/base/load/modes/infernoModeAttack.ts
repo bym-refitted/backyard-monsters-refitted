@@ -39,7 +39,7 @@ export const infernoModeAttack = async (user: User, baseid: string) => {
   const attackDetails: AttackDetails = {
     fbid: "",
     name: user.username,
-    pic_square: user.pic_square,
+    pic_square: user.pic_square ?? undefined,
     friend: 0,
     count: 1,
     starttime: getCurrentDateTime(),
@@ -61,7 +61,8 @@ export const infernoModeAttack = async (user: User, baseid: string) => {
     createAttackLog(user, defender, save),
   ]);
 
-  await postgres.em.persistAndFlush(save);
+  postgres.em.persist(save);
+  await postgres.em.flush();
   return save;
 };
 
@@ -91,7 +92,8 @@ const infernoTribeSave = async (user: User, baseid: string): Promise<Save> => {
     const newTribe: TribeData = { baseid, tribeHealthData: {} };
 
     maproom1.tribedata.push(newTribe);
-    await postgres.em.persistAndFlush(maproom1);
+    postgres.em.persist(maproom1);
+    await postgres.em.flush();
     existingTribe = newTribe;
   }
 

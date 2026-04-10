@@ -81,7 +81,8 @@ export const getNeighbours: KoaController = async (ctx) => {
       infernoMaproom.neighbors = mergedNeighbors;
       infernoMaproom.neighborsLastCalculated = currentDate;
 
-      await postgres.em.persistAndFlush(infernoMaproom);
+      postgres.em.persist(infernoMaproom);
+      await postgres.em.flush();
     }
 
     // Update attack permissions for cached neighbours based on current save state

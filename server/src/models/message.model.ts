@@ -1,4 +1,4 @@
-import { Entity, Index, PrimaryKey, Property } from "@mikro-orm/core";
+import { Entity, Index, PrimaryKey, Property } from "@mikro-orm/decorators/es";
 import { FrontendKey } from "../utils/FrontendKey.js";
 import { v4 } from "uuid";
 
@@ -8,70 +8,70 @@ import { v4 } from "uuid";
 @Index({ properties: ["targetid", "createdAt"] })
 @Entity({ tableName: "message" })
 export class Message {
-  @PrimaryKey()
-  @Property()
+  @PrimaryKey({ type: 'string' })
+  @Property({ type: 'string' })
   id: string = v4();
 
-  @Property({ persist: false })
+  @Property({ type: 'string', persist: false })
   @FrontendKey
   messageid!: string;
 
   @Index()
-  @Property()
+  @Property({ type: 'number' })
   @FrontendKey
   threadid!: number;
 
   @FrontendKey
-  @Property()
+  @Property({ type: 'number' })
   updatetime!: number;
 
-  @Property()
+  @Property({ type: 'number' })
   @FrontendKey
   userid!: number;
 
-  @Property()
+  @Property({ type: 'number' })
   @FrontendKey
   targetid!: number;
 
-  @Property()
+  @Property({ type: 'string' })
   @FrontendKey
   messagetype!: string;
 
-  @Property()
+  @Property({ type: 'number' })
   userUnread!: number;
 
-  @Property()
+  @Property({ type: 'number' })
   targetUnread!: number;
 
   @FrontendKey
-  @Property({ persist: false })
+  @Property({ type: 'number', persist: false })
   unread!: number;
 
-  @Property({ nullable: true, length: 580 })
+  @Property({ type: 'string', nullable: true, length: 580 })
   @FrontendKey
   message!: string;
 
-  @Property()
+  @Property({ type: 'string' })
   @FrontendKey
   subject!: string;
 
-  @Property({ persist: false })
+  @Property({ type: 'number', persist: false })
   @FrontendKey
   messagecount!: number;
 
-  @Property({ default: "0" })
+  @Property({ type: 'string', default: "0" })
   @FrontendKey
   reportid: string = "0";
 
-  @Property({ nullable: true })
+  @Property({ type: 'string', nullable: true })
   @FrontendKey
   truceid: string | null = null;
 
-  @Property({ nullable: true })
+  @Property({ type: 'string', nullable: true })
   @FrontendKey
   trucestate: string | null = null;
 
-  @Property({ nullable: true })
+  @Property({ type: 'string', nullable: true })
   @FrontendKey
   migratestate: string | null = null;
 
@@ -79,15 +79,15 @@ export class Message {
   @FrontendKey
   coords: number[] | null = null;
 
-  @Property({ nullable: true })
+  @Property({ type: 'string', nullable: true })
   @FrontendKey
   worldid: string | null = null;
 
-  @Property({ nullable: true })
+  @Property({ type: 'string', nullable: true })
   @FrontendKey
   baseid: string | null = null;
 
-  @Property({ onCreate: () => new Date() })
+  @Property({ type: Date, onCreate: () => new Date() })
   createdAt: Date = new Date();
 
   selectUnread(userid: number) {

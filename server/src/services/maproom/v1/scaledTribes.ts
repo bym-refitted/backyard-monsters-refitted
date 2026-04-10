@@ -50,7 +50,7 @@ export const scaledTribes = async (user: User, saveData: BaseSaveData) => {
     monsters: existingTribe.monsters ?? tribeData?.monsters,
   });
 
-  await postgres.em.persistAndFlush(maproom1);
+  postgres.em.persist(maproom1);
 
   for (const key of Object.keys(saveData) as (keyof typeof saveData)[]) {
     const value = saveData[key];
@@ -70,6 +70,7 @@ export const scaledTribes = async (user: User, saveData: BaseSaveData) => {
         break;
     }
   }
-  await postgres.em.persistAndFlush(userSave);
+  postgres.em.persist(userSave);
+  await postgres.em.flush();
   return tribeSave;
 };

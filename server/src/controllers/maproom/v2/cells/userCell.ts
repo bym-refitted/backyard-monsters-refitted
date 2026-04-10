@@ -26,9 +26,9 @@ export const userCell = async (ctx: Context, cell: WorldMapCell, cellOwners: Map
     // Get the cell owner, either the current user or another user
     const cellOwner = mine ? currentUser : cellOwners.get(cell.uid);
 
-    if (!cellOwner?.save) { 
-      logger.error(`Cell owner save data is missing.`); 
-      return; 
+    if (!cellOwner?.save || !cellSave) {
+      logger.error(`Cell owner save data is missing.`);
+      return;
     }
 
     const online = getCurrentDateTime() - cellSave.savetime <= 60;

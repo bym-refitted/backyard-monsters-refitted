@@ -23,7 +23,8 @@ export const infernoModeView = async (user: User, baseid: string) => {
     const newTribe: TribeData = { baseid, tribeHealthData: {} };
 
     maproom1.tribedata.push(newTribe);
-    await postgres.em.persistAndFlush(maproom1);
+    postgres.em.persist(maproom1);
+    await postgres.em.flush();
   }
 
   const tribeData = molochTribes.find((tribe) => tribe.baseid === baseid)!;
