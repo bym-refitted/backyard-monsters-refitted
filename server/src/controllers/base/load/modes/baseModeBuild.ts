@@ -32,7 +32,8 @@ export const baseModeBuild = async (user: User, baseid: string) => {
 
     if (userSave.stats?.other) resetInvasionWaves(userSave.stats.other);
 
-    await postgres.em.persistAndFlush(userSave);
+    postgres.em.persist(userSave);
+    await postgres.em.flush();
     return userSave;
   }
 
