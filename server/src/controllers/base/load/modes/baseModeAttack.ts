@@ -18,9 +18,9 @@ import { createAttackLog } from "../../../../services/base/createAttackLog.js";
 import { updateResources, Operation } from "../../../../services/base/updateResources.js";
 
 export interface AttackDetails {
-  fbid?: string | null | undefined;
+  fbid?: string;
   name: string;
-  pic_square?: string | null | undefined;
+  pic_square?: string;
   friend: number;
   count: number;
   starttime: number;
@@ -54,9 +54,9 @@ export const baseModeAttack = async ({ user, baseid, mapversion, attackCost }: B
 
   // Track the details of the attack
   const attackDetails: AttackDetails = {
-    fbid: userSave.fbid,
+    fbid: "",
     name: user.username,
-    pic_square: user.pic_square,
+    pic_square: user.pic_square ?? undefined,
     friend: 0,
     count: 1,
     starttime: getCurrentDateTime(),
