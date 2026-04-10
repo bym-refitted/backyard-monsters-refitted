@@ -76,5 +76,6 @@ export const joinNewWorldMap = async (
   save.worldid = world.uuid;
   save.homebase = [homeCell.x.toString(), homeCell.y.toString()];
 
-  await em.persistAndFlush([world, homeCell, save]);
+  em.persist([world, homeCell, save]);
+  await em.flush();
 };

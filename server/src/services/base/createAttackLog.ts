@@ -33,5 +33,6 @@ export const createAttackLog = async (attacker: User, defender: User, save: Save
     attacktime: new Date(),
   });
 
-  await postgres.em.persistAndFlush(attackLog);
+  postgres.em.persist(attackLog);
+  await postgres.em.flush();
 };

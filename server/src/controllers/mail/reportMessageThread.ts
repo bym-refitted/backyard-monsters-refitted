@@ -33,7 +33,8 @@ export const reportMessageThread: KoaController = async (ctx) => {
     }
 
     user.blockedUsers.push(blockedUserId);
-    await postgres.em.persistAndFlush(user);
+    postgres.em.persist(user);
+    await postgres.em.flush();
 
     ctx.status = Status.OK;
     ctx.body = { error: 0 };

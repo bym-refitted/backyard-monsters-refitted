@@ -64,7 +64,8 @@ export const updateSaved: KoaController = async (ctx) => {
     baseSave.id = baseSave.savetime; // client expects this.
 
     if (baseid !== BaseMode.DEFAULT && type === BaseMode.BUILD) {
-      await postgres.em.persistAndFlush(baseSave);
+      postgres.em.persist(baseSave);
+      await postgres.em.flush();
     }
 
     const filteredSave = FilterFrontendKeys(baseSave);

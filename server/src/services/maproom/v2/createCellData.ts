@@ -1,4 +1,3 @@
-import type { Loaded } from "@mikro-orm/core";
 import { WorldMapCell } from "../../../models/worldmapcell.model.js";
 import type { Context } from "koa";
 import { Terrain } from "../../../enums/MapRoom.js";
@@ -16,7 +15,7 @@ import type { User } from "../../../models/user.model.js";
  * @returns {Promise<Object>} - The data object for the cell.
  */
 export const createCellData = async (
-  cell: Loaded<WorldMapCell, never>,
+  cell: WorldMapCell,
   worldid: string,
   ctx: Context,
   cellOwners: Map<number, User> = new Map(),

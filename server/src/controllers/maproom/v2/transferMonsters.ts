@@ -34,7 +34,7 @@ export const transferMonsters: KoaController = async (ctx) => {
   const [fromMonsters, toMonsters]: MonstersTransfer = monsters;
 
   // Determine the order so the query always makes the source base the first result.
-  const orderBy = frombaseid > tobaseid ? { baseid: 'DESC' } : { baseid: 'ASC' };
+  const orderBy = frombaseid > tobaseid ? { baseid: 'DESC' as const } : { baseid: 'ASC' as const };
 
   // Fetch the bases to transfer the monsters between
   const [fromBase, toBase] = await postgres.em.find(Save, {
@@ -57,7 +57,8 @@ export const transferMonsters: KoaController = async (ctx) => {
   fromBase.monsters = fromMonsters;
   toBase.monsters = toMonsters;
 
-  await postgres.em.persistAndFlush([fromBase, toBase]);
+  postgres.em.persist([fromBase, toBase]);
+  await postgres.em.flush();
 
   ctx.status = Status.OK;
   ctx.body = { error: 0 };

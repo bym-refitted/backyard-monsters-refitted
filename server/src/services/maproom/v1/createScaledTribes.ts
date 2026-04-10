@@ -94,7 +94,11 @@ export const createScaledTribes = async (save: Save, tribes: TribeScaleConfig) =
   }
 
   maproom.tribedata = currentTribes
-  if (persist) await postgres.em.persistAndFlush(maproom);
+  
+  if (persist) {
+    postgres.em.persist(maproom);
+    await postgres.em.flush();
+  }
 
   return tribeIds.map((tribeId, i) => {
     const patternIndex = i % levelPattern.length;

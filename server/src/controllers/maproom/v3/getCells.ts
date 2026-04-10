@@ -137,7 +137,10 @@ export const getMapRoomCells: KoaController = async (ctx) => {
 
     for (const cell of dbCells) {
       const key = `${cell.x},${cell.y}`;
-      if (!dbCellsByCoord.has(key) || cell.uid > 0) dbCellsByCoord.set(key, cell);
+      // Cast required: field projection (CELL_SAVE_FIELDS) narrows the MikroORM Loaded
+      // type to a partial Save, which doesn't structurally satisfy WorldMapCell.save.
+      // At runtime the entity is a full WorldMapCell — all projected fields are accessed below.
+      if (!dbCellsByCoord.has(key) || cell.uid > 0) dbCellsByCoord.set(key, cell as unknown as WorldMapCell);
     }
 
     let hasExpiredCells = false;

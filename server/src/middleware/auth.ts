@@ -83,7 +83,7 @@ type DisgustingJwtPayloadHack = Pick<
 export interface BymJwtPayload extends DisgustingJwtPayloadHack {
   user: {
     email: string;
-    discordId: string | null;
+    discordId: string | null | undefined;
     meetsDiscordAgeCheck: boolean;
     sessionType: "game" | "launcher";
   };

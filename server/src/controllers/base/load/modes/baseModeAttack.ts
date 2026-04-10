@@ -18,9 +18,9 @@ import { createAttackLog } from "../../../../services/base/createAttackLog.js";
 import { updateResources, Operation } from "../../../../services/base/updateResources.js";
 
 export interface AttackDetails {
-  fbid?: string;
+  fbid?: string | null | undefined;
   name: string;
-  pic_square?: string;
+  pic_square?: string | null | undefined;
   friend: number;
   count: number;
   starttime: number;
@@ -111,7 +111,8 @@ export const baseModeAttack = async ({ user, baseid, mapversion, attackCost }: B
     }
   }
 
-  await postgres.em.persistAndFlush([cell, save, userSave]);
+  postgres.em.persist([cell, save, userSave]);
+  await postgres.em.flush();
 
   // Create an attack log for the attack
   if (save.type !== BaseType.TRIBE) {
