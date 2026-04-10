@@ -10,17 +10,15 @@ networks:
 
 
 services:
-  # Database initialization service (runs once)
+  # Database initialization service (runs once, then exits)
   db-init:
-    build: 
-      context: .
-      target: builder
+    build: .
     environment:
-      - DB_NAME=${DB_NAME}
+      - DB_NAME=${DB_NAME:-bym}
       - DB_HOST=db
       - DB_PORT=5432
-      - DB_USER=${DB_USER}
-      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_USER=${DB_USER:-postgres}
+      - DB_PASSWORD=${DB_PASSWORD:-dev12345}
     networks:
       - bymr
     depends_on:
@@ -34,15 +32,15 @@ services:
     build: .
     container_name: bymr-api-server
     environment:
-      - ENV=${ENV}
-      - BASE_URL=${BASE_URL}
+      - ENV=${ENV:-local}
+      - BASE_URL=${BASE_URL:-http://localhost}
       - PORT=3001
-      - DB_NAME=${DB_NAME}
+      - DB_NAME=${DB_NAME:-bym}
       - DB_HOST=db
       - DB_PORT=5432
-      - DB_USER=${DB_USER}
-      - DB_PASSWORD=${DB_PASSWORD}
-      - SECRET_KEY=${SECRET_KEY}
+      - DB_USER=${DB_USER:-postgres}
+      - DB_PASSWORD=${DB_PASSWORD:-dev12345}
+      - SECRET_KEY=${SECRET_KEY:-secret}
       - REDIS_URL=redis://redis:6379
     networks:
       - bymr
@@ -51,8 +49,8 @@ services:
     develop:
       watch:
         - action: sync
-          path: server
-          target: /app
+          path: ./src
+          target: /app/src
     deploy:
       resources:
         limits:
@@ -71,20 +69,18 @@ services:
 
   # Database
   db:
-    image: postgres:16
+    image: postgres:18.1
     container_name: bymr-database
     environment:
-      - POSTGRES_DB=${DB_NAME}
-      - POSTGRES_USER=${DB_USER}
-      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME:-bym}
+      - POSTGRES_USER=${DB_USER:-postgres}
+      - POSTGRES_PASSWORD=${DB_PASSWORD:-dev12345}
     ports:
       - ${DB_PORT:-5432}:5432
-    profiles:
-      - dev
     networks:
       - bymr
     volumes:
-      - db:/var/lib/postgresql/data
+      - db:/var/lib/postgresql
     deploy:
       resources:
         limits:
@@ -94,13 +90,13 @@ services:
           memory: 512M
           cpus: '0.5'
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}" ]
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-postgres} -d ${DB_NAME:-bym}"]
       start_period: 10s
       interval: 10s
       timeout: 5s
       retries: 3
 
-  # pgAdmin for database management
+  # pgAdmin — database GUI (optional, start with: docker compose --profile tools up)
   pgadmin:
     image: dpage/pgadmin4:9.4
     environment:
@@ -121,16 +117,14 @@ services:
     depends_on:
       - db
     profiles:
-      - dev
+      - tools
 
-  # Redis cache
+  # Redis
   redis:
-    image: redis:8.0-M03-bookworm
+    image: redis:8.4.0
     container_name: bymr-redis-cache
     ports:
       - ${REDIS_PORT:-6379}:6379
-    profiles:
-      - dev
     networks:
       - bymr
     restart: unless-stopped
@@ -143,7 +137,7 @@ services:
           memory: 64M
           cpus: '0.1'
     healthcheck:
-      test: [ "CMD", "redis-cli", "ping" ]
+      test: ["CMD", "redis-cli", "ping"]
       interval: 5s
       timeout: 3s
       retries: 3
