@@ -54,9 +54,9 @@ export const baseModeAttack = async ({ user, baseid, mapversion, attackCost }: B
 
   // Track the details of the attack
   const attackDetails: AttackDetails = {
-    fbid: userSave.fbid,
+    fbid: "",
     name: user.username,
-    pic_square: user.pic_square,
+    pic_square: user.pic_square ?? undefined,
     friend: 0,
     count: 1,
     starttime: getCurrentDateTime(),
@@ -111,7 +111,8 @@ export const baseModeAttack = async ({ user, baseid, mapversion, attackCost }: B
     }
   }
 
-  await postgres.em.persistAndFlush([cell, save, userSave]);
+  postgres.em.persist([cell, save, userSave]);
+  await postgres.em.flush();
 
   // Create an attack log for the attack
   if (save.type !== BaseType.TRIBE) {

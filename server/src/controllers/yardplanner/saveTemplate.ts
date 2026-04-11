@@ -36,7 +36,8 @@ export const saveTemplate: KoaController = async (ctx) => {
     // Insert new layout if slotid doesn't exist
     save.savetemplate.push({ ...requestBody });
   }
-  await postgres.em.persistAndFlush(save);
+  postgres.em.persist(save);
+  await postgres.em.flush();
 
   ctx.status = Status.OK;
   ctx.body = {

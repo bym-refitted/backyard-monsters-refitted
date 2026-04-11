@@ -11,7 +11,7 @@ interface TargetUser {
   mapver: number;
   first_name: string;
   last_name?: string;
-  pic_square?: string;
+  pic_square?: string | null | undefined;
 }
 
 type TargetUsers = Record<number, TargetUser>;

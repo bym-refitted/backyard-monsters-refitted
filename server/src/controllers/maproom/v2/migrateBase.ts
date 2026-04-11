@@ -128,8 +128,9 @@ export const migrateBase: KoaController = async (ctx) => {
       userSave.resources = updateResources(resources, userSave.resources ?? {}, Operation.SUBTRACT);
 
     await postgres.em.transactional(async (em) => {
-      await em.persistAndFlush([homeCell, userSave]);
-      await em.removeAndFlush([outpostCell.save, outpostCell]);
+      em.persist([homeCell, userSave]);
+      em.remove([outpostCell.save, outpostCell]);
+      await em.flush();
     });
 
     ctx.status = Status.OK;

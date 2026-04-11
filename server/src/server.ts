@@ -1,5 +1,3 @@
-import "reflect-metadata";
-
 import Koa, { type Context, type Next } from "koa";
 import Router from "@koa/router";
 import bodyParser from "koa-bodyparser";
@@ -25,7 +23,7 @@ app.proxy = true;
 export const PORT = process.env.PORT || 3001;
 export const BASE_URL = process.env.BASE_URL;
 
-export const getApiVersion = () => "v1.5.6-beta";
+export const getApiVersion = () => "v1.5.7-beta";
 
 export const postgres = {} as {
   orm: MikroORM<PostgreSqlDriver>;
@@ -50,7 +48,7 @@ api.get("/", (ctx: Context) => (ctx.body = {}));
 
   if (process.env.ENV !== Env.PROD) {
     try {
-      await postgres.orm.getMigrator().up();
+      await postgres.orm.migrator.up();
       logger.info("Database migrations applied");
     } catch (err) {
       logger.error(`Database migration failure: ${err}`);
@@ -67,7 +65,7 @@ api.get("/", (ctx: Context) => (ctx.body = {}));
     }),
   );
 
-  app.use((_, next: Next) => RequestContext.createAsync(postgres.orm.em, next));
+  app.use((_, next: Next) => RequestContext.create(postgres.orm.em, next));
 
   // Logs
   app.use(logMissingAssets);

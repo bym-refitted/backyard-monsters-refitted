@@ -127,15 +127,16 @@ export const infernoSave: KoaController = async (ctx) => {
               break;
           }
         }
-        await postgres.em.persistAndFlush(defenderSave);
+        postgres.em.persist(defenderSave);
       }
     }
 
-    if (isAttack) await postgres.em.persistAndFlush(userSave);
+    if (isAttack) postgres.em.persist(userSave);
 
     baseSave.id = baseSave.savetime;
     baseSave.savetime = getCurrentDateTime();
-    await postgres.em.persistAndFlush(baseSave);
+    postgres.em.persist(baseSave);
+    await postgres.em.flush();
 
     const filteredSave = FilterFrontendKeys(baseSave);
 
