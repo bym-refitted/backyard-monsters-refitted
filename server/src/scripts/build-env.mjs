@@ -29,7 +29,9 @@ import { randomBytes } from 'crypto';
     console.log("✅ Created .env file with generated SECRET_KEY");
   } catch (err) {
     if (err.code === "EEXIST") {
-      console.log(".env file already exists.");
+      console.log(".env file already exists, skipping.");
+    } else if (err.code === "ENOENT") {
+      console.log("example.env not found, skipping .env generation.");
     } else {
       console.error(`❌ Unexpected env copying error: ${err.message}`);
       process.exit(1);

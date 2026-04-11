@@ -27,6 +27,7 @@ import { infernoModeAttack } from "./modes/infernoModeAttack.js";
 import { infernoModeBuild } from "./modes/infernoModeBuild.js";
 import { validateAttack } from "../../../services/maproom/validateAttack.js";
 import { BaseLoadSchema } from "../../../zod/BaseLoadSchema.js";
+import { serializeChampion } from "../../../utils/parseChampionData.js";
 import { discordAgeErr } from "../../../errors/errors.js";
 import { EnumBaseRelationship } from "../../../enums/EnumBaseRelationship.js";
 import { canAttack } from "../../../services/base/canAttack.js";
@@ -140,7 +141,8 @@ export const baseLoad: KoaController = async (ctx) => {
           }
 
           userSave.buildingresources!.t = now;
-          await postgres.em.persistAndFlush(userSave);
+          postgres.em.persist(userSave);
+          await postgres.em.flush();
         }
       }
 
@@ -190,7 +192,7 @@ export const baseLoad: KoaController = async (ctx) => {
 
     // Set damage reduction buff for attacking bases with defenders
     if (mapversion === MapRoomVersion.V3 && !isOwner && type === BaseMode.ATTACK) {
-      const attackedCell: WorldMapCell = baseSave.cell;
+      const attackedCell = baseSave.cell;
 
       if (attackedCell?.uid && isDefensiveStructure(attackedCell.base_type)) {
         const defenderCoords = getDefenderCoords(attackedCell.x, attackedCell.y, attackedCell.base_type);
@@ -219,7 +221,7 @@ export const baseLoad: KoaController = async (ctx) => {
       worldsize: WORLD_SIZE,
       error: 0,
       id: filteredSave.basesaveid,
-      champion: JSON.stringify(filteredSave.champion),
+      champion: serializeChampion(filteredSave.champion),
       storeitems: storeItems,
       tutorialstage: isTutorialEnabled,
       currenttime: getCurrentDateTime(),

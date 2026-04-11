@@ -82,12 +82,14 @@ export const sendMessage: KoaController = async (ctx) => {
 
     thread.messagecount++;
     thread.lastMessage = newMessage;
-    await postgres.em.persistAndFlush(thread);
+    postgres.em.persist(thread);
+    await postgres.em.flush();
 
     const count = await countUnreadMessage(messageTargetId);
 
     recipient.save.unreadmessages = count;
-    await postgres.em.persistAndFlush(recipient);
+    postgres.em.persist(recipient);
+    await postgres.em.flush();
 
     ctx.status = Status.OK;
     ctx.body = {

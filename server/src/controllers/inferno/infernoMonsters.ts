@@ -26,7 +26,8 @@ export const infernoMonsters: KoaController = async (ctx) => {
 
   if (type === BaseType.SET) {
     infernoSave.monsters = imonsters;
-    await postgres.em.persistAndFlush(infernoSave);
+    postgres.em.persist(infernoSave);
+    await postgres.em.flush();
   }
 
   ctx.status = Status.OK;
