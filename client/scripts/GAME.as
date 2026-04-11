@@ -37,6 +37,15 @@ package
       public function GAME()
       {
          var urls:Object = null;
+         
+         // Override server URL if provided as a flash var
+         var flashVarServerUrl:* = loaderInfo.parameters["serverUrl"];
+
+         if (flashVarServerUrl != undefined && flashVarServerUrl != "")
+         {
+            GLOBAL.serverUrl = String(flashVarServerUrl);
+         }
+
          var serverUrl:String = GLOBAL.serverUrl;
          var apiVersionSuffix:String = GLOBAL.apiVersionSuffix + "/";
          var cdnUrl:String = GLOBAL.cdnUrl;
