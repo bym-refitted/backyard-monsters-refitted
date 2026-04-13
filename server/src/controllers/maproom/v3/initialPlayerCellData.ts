@@ -39,7 +39,7 @@ export const initialPlayerCellData: KoaController = async (ctx) => {
     {
       uid: user.userid,
       map_version: MapRoomVersion.V3,
-      world: { uuid: worldid },
+      world: worldid,
       base_type: {
         $in: [
           EnumYardType.PLAYER,
