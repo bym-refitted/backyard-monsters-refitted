@@ -124,7 +124,7 @@ export const getMapRoomCells: KoaController = async (ctx) => {
     const dbCells = await postgres.em.find(
       WorldMapCell,
       {
-        world: { uuid: worldid },
+        world: worldid,
         map_version: MapRoomVersion.V3,
         x: { $gte: minX - 1, $lte: maxX + 1 },
         y: { $gte: minY - 1, $lte: maxY + 1 },

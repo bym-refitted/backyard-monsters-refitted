@@ -42,7 +42,7 @@ export const leaveWorld = async (user: User, save: Save) => {
 
     const homeCell = await em.findOne(WorldMapCell, {
       uid: userid,
-      world: { uuid: worldid },
+      world: worldid,
       map_version: MapRoomVersion.V3,
       base_type: EnumYardType.PLAYER,
     });

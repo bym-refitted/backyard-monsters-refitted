@@ -18,6 +18,9 @@ export class ConsolidateWorldMapCellWorldFK extends Migration {
         DROP CONSTRAINT IF EXISTS "world_map_cell_world_uuid_foreign";
 
       ALTER TABLE "bym"."world_map_cell"
+        DROP CONSTRAINT IF EXISTS "world_map_cell_world_id_foreign";
+
+      ALTER TABLE "bym"."world_map_cell"
         DROP COLUMN IF EXISTS "world_uuid";
 
       ALTER TABLE "bym"."world_map_cell"
