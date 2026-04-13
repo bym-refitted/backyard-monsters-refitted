@@ -73,7 +73,7 @@ export const getArea: KoaController = async (ctx) => {
   const dbCells = await postgres.em.find(
     WorldMapCell,
     {
-      world_id: worldid,
+      world: worldid,
       map_version: MapRoomVersion.V2,
       x: {
         $gte: currentX,
