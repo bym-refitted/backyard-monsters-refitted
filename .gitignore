@@ -29,3 +29,4 @@ server/src/database/migrations/.snapshot*
 
 # Private scripts / sensitive
 server/src/scripts/anticheat/priv/*
+*server/src/scripts/mr3
