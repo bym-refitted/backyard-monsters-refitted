@@ -203,7 +203,7 @@ export const baseLoad: KoaController = async (ctx) => {
             { base_type: EnumYardType.FORTIFICATION },
             { uid: attackedCell.uid },
             { map_version: MapRoomVersion.V3 },
-            { world_id: worldid },
+            { world: worldid },
           ],
         });
 

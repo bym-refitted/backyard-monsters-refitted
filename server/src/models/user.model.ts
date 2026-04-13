@@ -79,6 +79,7 @@ export class User {
   @Property({ type: "json", nullable: true })
   bookmarks?: FieldData | null;
 
+  @Index({ name: "idx_user_blocked_users", type: "gin" })
   @Property({ type: "json", defaultRaw: "'[]'::jsonb" })
   blockedUsers: number[] = [];
 

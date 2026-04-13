@@ -49,7 +49,7 @@ export const tribeSaveV3 = async (baseid: string, worldid: string): Promise<Save
     $and: [
       { $or: neighborCoords },
       {
-        world_id: worldid,
+        world: { uuid: worldid },
         base_type: EnumYardType.PLAYER,
         uid: { $gt: 0 },
         map_version: MapRoomVersion.V3,
