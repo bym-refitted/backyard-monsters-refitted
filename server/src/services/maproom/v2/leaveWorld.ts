@@ -42,7 +42,7 @@ export const leaveWorld = async (user: User, save: Save) => {
 
     const homeCell = await em.findOne(WorldMapCell, {
       uid: userid,
-      world_id: worldid,
+      world: { uuid: worldid },
       map_version: MapRoomVersion.V3,
       base_type: EnumYardType.PLAYER,
     });
@@ -53,7 +53,7 @@ export const leaveWorld = async (user: User, save: Save) => {
       const orphanedDefenders = await em.find(WorldMapCell, {
         $and: [
           { $or: defenderCoords.map(([x, y]) => ({ x, y })) },
-          { world_id: worldid },
+          { world: worldid },
           { map_version: MapRoomVersion.V3 },
           { base_type: EnumYardType.FORTIFICATION },
           { uid: { $ne: userid } },
@@ -85,7 +85,7 @@ export const leaveWorld = async (user: User, save: Save) => {
       await em.nativeDelete(WorldMapCell, {
         $and: [
           { $or: defenderCoords.map(([x, y]) => ({ x, y })) },
-          { world_id: worldid },
+          { world: worldid },
           { map_version: MapRoomVersion.V3 },
           { base_type: EnumYardType.FORTIFICATION },
         ],

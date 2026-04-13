@@ -98,7 +98,6 @@ export const baseModeAttack = async ({ user, baseid, mapversion, attackCost }: B
   }
 
   save.cell = cell;
-  save.worldid = userSave.worldid!;
   save.attackid = Math.floor(Math.random() * 99999) + 1;
   
   // Handle attack cost for MR3 attack range
