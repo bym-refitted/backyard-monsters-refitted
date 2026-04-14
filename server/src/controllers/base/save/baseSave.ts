@@ -185,7 +185,6 @@ export const baseSave: KoaController = async (ctx) => {
       basesaveid: baseSave.basesaveid,
       ...filteredSave,
       ...(takeoverData && { takeover: takeoverData }),
-      champion: filteredSave.champion,
     };
 
     if (user.userid === filteredSave.userid) {
