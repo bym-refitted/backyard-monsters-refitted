@@ -37,7 +37,7 @@ export const takeoverCell: KoaController = async (ctx) => {
 
     const cell = await postgres.em.findOne(
       WorldMapCell,
-      { baseid, world_id: userSave.worldid },
+      { baseid, world: userSave.worldid },
       { populate: ["save"] }
     );
 

@@ -1,5 +1,5 @@
 import type { KoaController } from "../../../utils/KoaController.js";
-import { type FieldData, Save } from "../../../models/save.model.js";
+import { Save } from "../../../models/save.model.js";
 import { User } from "../../../models/user.model.js";
 import { postgres } from "../../../server.js";
 import { FilterFrontendKeys } from "../../../utils/FrontendKey.js";
@@ -20,7 +20,6 @@ import { validateSave } from "../../../scripts/anticheat/anticheat.js";
 import { updateResources } from "../../../services/base/updateResources.js";
 import { buildingDataHandler } from "./handlers/buildingDataHandler.js";
 import { takeoverCellMR3, type TakeoverData } from "../../../services/maproom/v3/takeoverCellMR3.js";
-import { serializeChampion } from "../../../utils/parseChampionData.js";
 import { damageProtection } from "../../../services/maproom/v2/damageProtection.js";
 import { isMR3Structure } from "../../../services/maproom/v3/utils/isMR3Structure.js";
 import { WorldMapCell } from "../../../models/worldmapcell.model.js";
@@ -82,10 +81,6 @@ export const baseSave: KoaController = async (ctx) => {
           resourcesHandler(baseSave, value, SaveKeys.IRESOURCES);
           break;
 
-        case SaveKeys.PURCHASE:
-          if (saveData.purchase) purchaseHandler(ctx, saveData.purchase, userSave);
-          break;
-
         case SaveKeys.ACADEMY:
           academyHandler(ctx, baseSave);
           break;
@@ -102,9 +97,13 @@ export const baseSave: KoaController = async (ctx) => {
 
         case SaveKeys.CHAMPION:
           if (isAttack) {
-            userSave[SaveKeys.CHAMPION] = saveData.attackerchampion;
+            if (saveData.attackerchampion) {
+              userSave.champion = saveData.attackerchampion;
+            }
           } else {
-            baseSave[SaveKeys.CHAMPION] = saveData.champion;
+            if (saveData.champion) {
+              baseSave.champion = saveData.champion;
+            }
           }
           break;
 
@@ -127,6 +126,8 @@ export const baseSave: KoaController = async (ctx) => {
 
       if (isOutpostOwner) updateOutposts(userSave, baseSave, key);
     }
+
+    if (!isAttack && saveData.purchase) purchaseHandler(ctx, saveData.purchase, userSave);
 
     let takeoverData: TakeoverData | null = null;
 
@@ -184,7 +185,6 @@ export const baseSave: KoaController = async (ctx) => {
       basesaveid: baseSave.basesaveid,
       ...filteredSave,
       ...(takeoverData && { takeover: takeoverData }),
-      champion: serializeChampion(filteredSave.champion),
     };
 
     if (user.userid === filteredSave.userid) {
@@ -208,7 +208,7 @@ export const baseSave: KoaController = async (ctx) => {
 const updateOutposts = (
   userSave: Save,
   baseSave: Save,
-  key: keyof FieldData
+  key: keyof Save
 ) => {
   if (key === SaveKeys.BUILDING_RESOURCES && userSave.buildingresources) {
     userSave.buildingresources[`b${baseSave.baseid}`] = baseSave.buildingresources?.[`b${baseSave.baseid}`];

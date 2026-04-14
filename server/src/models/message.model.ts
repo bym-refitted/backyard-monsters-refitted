@@ -75,7 +75,7 @@ export class Message {
   @FrontendKey
   migratestate: string | null = null;
 
-  @Property({ nullable: true, type: "json" })
+  @Property({ nullable: true, type: "json", columnType: "jsonb" })
   @FrontendKey
   coords: number[] | null = null;
 

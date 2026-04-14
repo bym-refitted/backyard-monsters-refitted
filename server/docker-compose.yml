@@ -76,7 +76,7 @@ services:
       - POSTGRES_USER=${DB_USER:-postgres}
       - POSTGRES_PASSWORD=${DB_PASSWORD:-dev12345}
     ports:
-      - ${DB_PORT:-5432}:5432
+      - ${DB_HOST_PORT:-5432}:5432
     networks:
       - bymr
     volumes:

@@ -1,4 +1,4 @@
-import type { FieldData } from "../models/save.model.js";
+import type { JsonObject } from "../types/JsonObject.js";
 
 export interface TownHall {
   id: number;
@@ -21,7 +21,7 @@ export interface TownHall {
  * @returns the townHall object found or null if not found
  * @throws Error when townHall Object cannot be found
  */
-export const extractTownHall = (buildingData: FieldData): TownHall | null => {
+export const extractTownHall = (buildingData: JsonObject): TownHall | null => {
   for (const key in buildingData) {
     const building = buildingData[key];
 

@@ -1,5 +1,6 @@
 import { SaveKeys } from "../../../../enums/SaveKeys.js";
-import { type FieldData, Save } from "../../../../models/save.model.js";
+import { Save } from "../../../../models/save.model.js";
+import type { JsonObject } from "../../../../types/JsonObject.js";
 import {
   type Resources,
   updateResources,
@@ -12,7 +13,7 @@ export const attackLootHandler = (
 ) => {
   if (value) {
     const resources: Resources = value;
-    const savedResources: FieldData = updateResources(
+    const savedResources: JsonObject = updateResources(
       resources,
       userSave[resourceField] || {}
     );
