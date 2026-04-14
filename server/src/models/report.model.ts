@@ -15,11 +15,11 @@ export class Report {
   @Property({ type: 'string', nullable: true })
   discord_tag: string | null = null;
 
-  @Property({ type: "json", nullable: true })
-  report?: JsonObject;
+  @Property({ columnType: "jsonb", nullable: true })
+  report?: JsonObject = {};
 
-  @Property({ type: "json", nullable: true })
-  banReason?: JsonObject;
+  @Property({ columnType: "jsonb", nullable: true })
+  banReason?: JsonObject = {};
 
   @Property({ type: 'number', default: 0 })
   violations: number = 0;
