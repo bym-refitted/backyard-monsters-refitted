@@ -1,4 +1,4 @@
-import type { FieldData } from "../../models/save.model.js";
+import type { JsonObject } from "../../types/JsonObject.js";
 
 export interface Resources {
   r1?: number;
@@ -20,13 +20,13 @@ export enum Operation {
  * Updates the resources with the delta sent from the client.
  * 
  * @param {Resources} resources - The request body containing the resources.
- * @param {FieldData} saveResources - The existing saved resources.
+ * @param {JsonObject} saveResources - The existing saved resources.
  * @param {Operation} [operation = Resource.ADD] - The type of operation to perform (add or subtract).
- * @returns {FieldData} Updated resources after applying the delta.
+ * @returns {JsonObject} Updated resources after applying the delta.
  */
 export const updateResources = (
   resources: Resources,
-  saveResources: FieldData,
+  saveResources: JsonObject,
   operation: Operation = Operation.ADD
 ) => {
   if (resources) {

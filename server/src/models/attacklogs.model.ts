@@ -1,5 +1,5 @@
 import { Entity, Index, PrimaryKey, Property } from "@mikro-orm/decorators/es";
-import type { FieldData } from "./save.model.js";
+import type { JsonObject } from "../types/JsonObject.js";
 
 @Index({ properties: ["attacker_userid", "attacktime"] })
 @Index({ properties: ["defender_userid", "attacktime"] })
@@ -35,11 +35,11 @@ export class AttackLogs {
   @Property({ type: 'number', nullable: true })
   y?: number;
 
-  @Property({ type: "json", nullable: true })
-  loot?: FieldData;
+  @Property({ columnType: "jsonb", nullable: true })
+  loot?: JsonObject = {};
 
-  @Property({ type: "json", nullable: true })
-  attackreport!: FieldData;
+  @Property({ columnType: "jsonb", nullable: true })
+  attackreport: JsonObject = {};
 
   @Property({ type: Date })
   attacktime: Date = new Date();
