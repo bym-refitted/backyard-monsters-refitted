@@ -763,15 +763,13 @@ package
          var researchdata:String = null;
          var iresources:Object = null;
          var kx:int = 0;
-         var champion:Object = null;
-         var size:int = 0;
+         var champion:Array = null;
          var existingGuardians:Dictionary = null;
          var playerGuardianIndex:int = 0;
          var guardianIndex:int = 0;
          var addedGuardian:Boolean = false;
          var unfrozenFound:Boolean = false;
          var j:int = 0;
-         var championString:String = null;
          var attacksArr:Array = null;
          var attackCount:int = 0;
          var attackObj:Object = null;
@@ -1256,30 +1254,18 @@ package
                _guardianData.length = 0;
                if (serverData.champion)
                {
-                  if (serverData.champion != "\"null\"" && serverData.champion != "null")
+                  champion = serverData.champion;
+                  if (champion.length > 0)
                   {
-                     champion = JSON.parse(serverData.champion);
-                     size = 0;
-                     if (champion.t)
-                     {
-                        size = 1;
-                        champion = [champion];
-                     }
-                     else
-                     {
-                        size = int(champion.length);
-                     }
                      existingGuardians = new Dictionary();
                      playerGuardianIndex = 0;
                      guardianIndex = 0;
                      addedGuardian = false;
                      unfrozenFound = false;
                      j = 0;
-                     while (j < size)
+                     while (j < champion.length)
                      {
-                        try
-                        {
-                           if (Boolean(champion[j].t) && !existingGuardians[champion[j].t])
+                        if (Boolean(champion[j].t) && !existingGuardians[champion[j].t])
                            {
                               existingGuardians[champion[j].t] = true;
                               _guardianData[guardianIndex] = {};
@@ -1341,20 +1327,11 @@ package
                               {
                                  _guardianData[guardianIndex].status = ChampionBase.k_CHAMPION_STATUS_NORMAL;
                               }
-                              if (champion[j].log)
-                              {
-                                 _guardianData[guardianIndex].log = champion[j].log;
-                              }
-                              else
-                              {
-                                 _guardianData[guardianIndex].log = String(_guardianData[guardianIndex].status).toString();
-                              }
                               if (_guardianData[guardianIndex].t != 5)
                               {
                                  if (unfrozenFound && _guardianData[guardianIndex].status == ChampionBase.k_CHAMPION_STATUS_NORMAL)
                                  {
                                     _guardianData[guardianIndex].status = ChampionBase.k_CHAMPION_STATUS_FROZEN;
-                                    _guardianData[guardianIndex].log += "," + ChampionBase.k_CHAMPION_STATUS_FROZEN.toString();
                                  }
                                  else if (!unfrozenFound && _guardianData[guardianIndex].status == ChampionBase.k_CHAMPION_STATUS_NORMAL)
                                  {
@@ -1362,14 +1339,6 @@ package
                                  }
                               }
                            }
-                        }
-                        catch (e:Error)
-                        {
-                           championString = JSON.parse(serverData.champion) as String;
-                           _guardianData[j] = JSON.parse(championString);
-                           Console.warning("Base::handleBaseLoadSuccessful - Error thrown on champion, champion data is - " + championString, true);
-                           continue;
-                        }
                         if (GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD && isMainYard && Boolean(_guardianData[j]))
                         {
                            GLOBAL._playerGuardianData[j] = _guardianData[j];
@@ -3354,7 +3323,6 @@ package
                   if (_loc2_)
                   {
                      _guardianData[_loc5_].status = ChampionBase.k_CHAMPION_STATUS_FROZEN;
-                     _guardianData[_loc5_].log += "," + ChampionBase.k_CHAMPION_STATUS_FROZEN.toString();
                   }
                   _loc2_ = true;
                }
@@ -3365,14 +3333,6 @@ package
                else
                {
                   _loc4_[_loc3_].status = ChampionBase.k_CHAMPION_STATUS_NORMAL;
-               }
-               if (_guardianData[_loc5_].log)
-               {
-                  _loc4_[_loc3_].log = String(_guardianData[_loc5_].log).substr(0, 255);
-               }
-               else
-               {
-                  _loc4_[_loc3_].log = String(_loc4_[_loc3_].status).toString();
                }
                _loc3_++;
             }
@@ -3481,7 +3441,6 @@ package
                   if (_loc2_)
                   {
                      GLOBAL._playerGuardianData[_loc3_].status = ChampionBase.k_CHAMPION_STATUS_FROZEN;
-                     GLOBAL._playerGuardianData[_loc3_].log += "," + ChampionBase.k_CHAMPION_STATUS_FROZEN.toString();
                   }
                   _loc2_ = true;
                }
@@ -3492,14 +3451,6 @@ package
                else
                {
                   _loc1_[_loc3_].status = 0;
-               }
-               if (GLOBAL._playerGuardianData[_loc3_].log)
-               {
-                  _loc1_[_loc3_].log = GLOBAL._playerGuardianData[_loc3_].log;
-               }
-               else
-               {
-                  _loc1_[_loc3_].log = int(_loc1_[_loc3_].status).toString();
                }
             }
             _loc3_++;

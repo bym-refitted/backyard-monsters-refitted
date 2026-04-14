@@ -151,19 +151,17 @@ package
                _loc2_++;
             }
             LOGGER.Stat([69,BASE._guardianData[_loc1_].t,BASE._guardianData[_loc1_].l.Get()]);
-            BASE._guardianData[_loc1_].ft -= GLOBAL.Timestamp();
             CREATURES._guardian.export();
             CREATURES._guardian.changeModeFreeze();
+            BASE._guardianData[_loc1_].ft -= GLOBAL.Timestamp();
             this._frozen.push(BASE._guardianData[_loc1_]);
             BASE._guardianData[_loc1_].status = ChampionBase.k_CHAMPION_STATUS_FROZEN;
-            BASE._guardianData[_loc1_].log += "," + ChampionBase.k_CHAMPION_STATUS_FROZEN.toString();
             if(GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD)
             {
                _loc3_ = GLOBAL.getPlayerGuardianIndex(CREATURES._guardian._type);
                if(_loc3_ != -1 && GLOBAL._playerGuardianData[_loc3_] != BASE._guardianData[_loc1_])
                {
                   GLOBAL._playerGuardianData[_loc3_].status = ChampionBase.k_CHAMPION_STATUS_FROZEN;
-                  GLOBAL._playerGuardianData[_loc3_].log += "," + ChampionBase.k_CHAMPION_STATUS_FROZEN.toString();
                   GLOBAL._playerGuardianData[_loc3_].ft -= GLOBAL.Timestamp();
                }
             }
@@ -220,7 +218,6 @@ package
                   if(obj.t == type)
                   {
                      obj.status = ChampionBase.k_CHAMPION_STATUS_NORMAL;
-                     obj.log += "," + ChampionBase.k_CHAMPION_STATUS_NORMAL.toString();
                      break;
                   }
                }
@@ -229,7 +226,6 @@ package
                   if(obj.t == type)
                   {
                      obj.status = ChampionBase.k_CHAMPION_STATUS_NORMAL;
-                     obj.log += "," + ChampionBase.k_CHAMPION_STATUS_NORMAL.toString();
                      break;
                   }
                }
@@ -350,7 +346,6 @@ package
                      _loc5_.pl = new SecNum(0);
                   }
                   _loc5_.status = ChampionBase.k_CHAMPION_STATUS_FROZEN;
-                  _loc5_.log = ChampionBase.k_CHAMPION_STATUS_FROZEN.toString();
                   BASE._guardianData.push(_loc5_);
                   if(GLOBAL.getPlayerGuardianIndex(_loc5_.t) == -1)
                   {
@@ -464,7 +459,6 @@ package
                _loc6_.pl = 0;
             }
             _loc6_.status = !!_loc4_ ? ChampionBase.k_CHAMPION_STATUS_MIGRATED : ChampionBase.k_CHAMPION_STATUS_FROZEN;
-            _loc6_.log = !!_loc4_ ? _loc4_.log : ChampionBase.k_CHAMPION_STATUS_FROZEN.toString();
             _loc3_.push(_loc6_);
             _loc5_++;
          }

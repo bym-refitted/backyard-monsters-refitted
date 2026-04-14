@@ -5,8 +5,9 @@ import {
   OneToOne,
   Index,
 } from "@mikro-orm/decorators/es";
-import { type FieldData, Save } from "./save.model.js";
+import { Save } from "./save.model.js";
 import { FrontendKey } from "../utils/FrontendKey.js";
+import type { JsonObject } from "../types/JsonObject.js";
 
 @Entity({ tableName: "user" })
 export class User {
@@ -60,8 +61,8 @@ export class User {
   timeplayed: number = 0;
 
   @FrontendKey
-  @Property({ type: "json", nullable: true })
-  stats?: FieldData | null;
+  @Property({ columnType: "jsonb", nullable: true })
+  stats?: JsonObject | null = {};
 
   @FrontendKey
   @Property({ type: "number", default: 0 })
@@ -76,10 +77,11 @@ export class User {
   addtime: number = 100;
 
   @FrontendKey
-  @Property({ type: "json", nullable: true })
-  bookmarks?: FieldData | null;
+  @Property({ columnType: "jsonb", nullable: true })
+  bookmarks?: JsonObject | null = {};
 
-  @Property({ type: "json", defaultRaw: "'[]'::jsonb" })
+  @Index({ name: "idx_user_blocked_users", type: "gin" })
+  @Property({ columnType: "jsonb" })
   blockedUsers: number[] = [];
 
   @FrontendKey

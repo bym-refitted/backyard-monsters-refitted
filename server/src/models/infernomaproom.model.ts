@@ -17,10 +17,10 @@ export class InfernoMaproom {
   @PrimaryKey({ type: 'number' })
   userid!: number;
 
-  @Property({ type: "json", nullable: true })
+  @Property({ columnType: "jsonb", nullable: true })
   tribedata: TribeData[] = [];
 
-  @Property({ type: "json", defaultRaw: "'[]'::jsonb" })
+  @Property({ columnType: "jsonb" })
   neighbors: NeighbourData[] = [];
 
   @Property({ type: Date, nullable: true })
