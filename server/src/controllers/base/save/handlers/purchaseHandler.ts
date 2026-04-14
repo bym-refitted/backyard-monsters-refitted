@@ -1,8 +1,9 @@
 import type { Context } from "koa";
 import { storeItems } from "../../../../data/store/storeItems.js";
-import { Save, type FieldData } from "../../../../models/save.model.js";
+import { Save } from "../../../../models/save.model.js";
 import { updateCredits } from "../../../../services/base/updateCredits.js";
 import { getCurrentDateTime } from "../../../../utils/getCurrentDateTime.js";
+import type { JsonObject } from "../../../../types/JsonObject.js";
 
 export const purchaseHandler = (ctx: Context, purchaseData: [string, number], save: Save) => {
   const currentTime = getCurrentDateTime();
@@ -10,7 +11,7 @@ export const purchaseHandler = (ctx: Context, purchaseData: [string, number], sa
   if (purchaseData) {
     const [item, quantity] = purchaseData;
 
-    const storeData: FieldData = save.storedata || {};
+    const storeData: JsonObject = save.storedata || {};
     storeData[item] = {
       q: (storeData[item]?.q || 0) + quantity,
     };

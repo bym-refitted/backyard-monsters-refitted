@@ -8,10 +8,8 @@ import { WorldMapCell } from "./worldmapcell.model.js";
 import { type RequiredEntityData, BigIntType } from "@mikro-orm/core";
 import type { AttackDetails } from "../controllers/base/load/modes/baseModeAttack.js";
 import type { Stats } from "../services/events/wmi/invasionUtils.js";
-
-export interface FieldData {
-  [key: string | number]: any;
-}
+import type { ChampionData } from "../types/ChampionData.js";
+import type { JsonObject } from "../types/JsonObject.js";
 
 const NEXT_USER_BASEID = `SELECT nextval('bym.user_baseid_seq') AS baseid`;
 
@@ -176,8 +174,8 @@ export class Save {
   monthly_credits: number = 0;
 
   @FrontendKey
-  @Property({ type: "json", nullable: true, default: "null" })
-  champion?: string | null;
+  @Property({ type: "json" })
+  champion: ChampionData[] = [];
 
   @FrontendKey
   @Property({ type: 'number', default: 0 })
@@ -252,20 +250,20 @@ export class Save {
   // MR3 specific Objects
   @FrontendKey
   @Property({ type: "json", nullable: true })
-  buildingkeydata?: FieldData | null = {};
+  buildingkeydata?: JsonObject | null = {};
 
   @FrontendKey
   @Property({ type: "json", nullable: true })
-  buildinghealthdata?: FieldData | null = {};
+  buildinghealthdata?: JsonObject | null = {};
 
   // Objects
   @FrontendKey
   @Property({ type: "json", nullable: true })
-  buildingdata?: FieldData | null = {};
+  buildingdata?: JsonObject | null = {};
 
   @FrontendKey
   @Property({ type: "json", nullable: true })
-  researchdata?: FieldData | null = {};
+  researchdata?: JsonObject | null = {};
 
   @FrontendKey
   @Property({ type: "json", nullable: true })
@@ -273,87 +271,87 @@ export class Save {
 
   @FrontendKey
   @Property({ type: "json", nullable: true })
-  academy?: FieldData | null = {};
+  academy?: JsonObject | null = {};
 
   @FrontendKey
   @Property({ type: "json", nullable: true })
-  rewards?: FieldData | null = {};
+  rewards?: JsonObject | null = {};
 
   @FrontendKey
   @Property({ type: "json", nullable: true })
-  aiattacks?: FieldData | null = {};
+  aiattacks?: JsonObject | null = {};
 
   @FrontendKey
   @Property({ type: "json", nullable: true })
-  monsters?: FieldData | null = {};
+  monsters?: JsonObject | null = {};
 
   @FrontendKey
   @Property({ type: "json", nullable: true })
-  resources?: FieldData | null = {};
+  resources?: JsonObject | null = {};
 
   @FrontendKey
   @Property({ type: "json", nullable: true })
-  iresources?: FieldData | null = {};
+  iresources?: JsonObject | null = {};
 
   @FrontendKey
   @Property({ type: "json", nullable: true })
-  lockerdata?: FieldData | null = {};
+  lockerdata?: JsonObject | null = {};
 
   @FrontendKey
   @Property({ type: "json", nullable: true })
-  events?: FieldData | null = {};
+  events?: JsonObject | null = {};
 
   @FrontendKey
   @Property({ type: "json", nullable: true })
-  inventory?: FieldData | null = {};
+  inventory?: JsonObject | null = {};
 
   @FrontendKey
   @Property({ type: "json", nullable: true })
-  monsterbaiter?: FieldData | null = {};
+  monsterbaiter?: JsonObject | null = {};
 
   @FrontendKey
   @Property({ type: "json", nullable: true })
-  loot?: FieldData | null = {};
+  loot?: JsonObject | null = {};
 
   @FrontendKey
   @Property({ type: "text", nullable: true })
-  attackreport?: FieldData | null = {};
+  attackreport?: JsonObject | null = {};
 
   @FrontendKey
   @Property({ type: "json", nullable: true })
-  storedata?: FieldData | null = {};
+  storedata?: JsonObject | null = {};
 
   @FrontendKey
   @Property({ type: "json", nullable: true })
-  coords?: FieldData | null = {};
+  coords?: JsonObject | null = {};
 
   @FrontendKey
   @Property({ type: "json", nullable: true })
-  quests?: FieldData | null = {};
+  quests?: JsonObject | null = {};
 
   @FrontendKey
   @Property({ type: "json", nullable: true })
-  player?: FieldData | null = {};
+  player?: JsonObject | null = {};
 
   @FrontendKey
   @Property({ type: "json", nullable: true })
-  krallen?: FieldData | null = {};
+  krallen?: JsonObject | null = {};
 
   @FrontendKey
   @Property({ type: "json", nullable: true })
-  siege?: FieldData | null = {};
+  siege?: JsonObject | null = {};
 
   @FrontendKey
   @Property({ type: "json", nullable: true })
-  buildingresources?: FieldData | null = {};
+  buildingresources?: JsonObject | null = {};
 
   @FrontendKey
   @Property({ type: "json", nullable: true })
-  mushrooms?: FieldData | null = {};
+  mushrooms?: JsonObject | null = {};
 
   @FrontendKey
   @Property({ type: "json", nullable: true })
-  frontpage?: FieldData | null = {};
+  frontpage?: JsonObject | null = {};
 
   @Property({ type: Date })
   takeoverDate: Date = new Date();
@@ -367,20 +365,20 @@ export class Save {
   // Client save objects
   @FrontendKey
   @Property({ type: "json", nullable: true })
-  attackloot?: FieldData | null = {};
+  attackloot?: JsonObject | null = {};
 
   @FrontendKey
   @Property({ type: "json", nullable: true })
-  lootreport?: FieldData | null = {};
+  lootreport?: JsonObject | null = {};
 
   @FrontendKey
   @Property({ type: "json", nullable: true })
-  attackersiege?: FieldData | null = {};
+  attackersiege?: JsonObject | null = {};
 
   // Arrays
   @FrontendKey
   @Property({ type: "json", nullable: true })
-  monsterupdate?: FieldData | null = [];
+  monsterupdate?: JsonObject | null = [];
 
   @FrontendKey
   @Property({ type: "json", nullable: true })
@@ -438,7 +436,7 @@ export class Save {
   @Property({ type: "json", nullable: true })
   attpowerups: string[] = [];
 
-  public static saveKeys: (keyof FieldData)[] = [
+  public static saveKeys: (keyof Save)[] = [
     "buildingdata",
     "buildingkeydata",
     "researchdata",
@@ -481,7 +479,6 @@ export class Save {
     "sentinvites",
     "sentgifts",
     "fbpromos",
-    "purchase",
     "powerups",
     "attpowerups",
     "level",
@@ -500,7 +497,7 @@ export class Save {
     "tutorialstage",
   ];
 
-  public static attackSaveKeys: (keyof FieldData)[] = [
+  public static attackSaveKeys: (keyof Save)[] = [
     "destroyed",
     "damage",
     "locked",
@@ -513,7 +510,6 @@ export class Save {
     "buildingresources",
     "attackreport",
     "attackersiege",
-    "attackcreatures",
   ];
 
   public static createMainSave = async (em: EntityManager<PostgreSqlDriver>, user: User) => {

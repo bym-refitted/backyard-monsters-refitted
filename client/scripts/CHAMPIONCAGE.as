@@ -716,7 +716,6 @@ package
                   if(_loc11_.t == param4 && _loc11_.status != ChampionBase.k_CHAMPION_STATUS_NORMAL)
                   {
                      _loc11_.status = ChampionBase.k_CHAMPION_STATUS_NORMAL;
-                     _loc11_.log = _loc11_.log != undefined ? _loc11_.log + "," + ChampionBase.k_CHAMPION_STATUS_NORMAL.toString() : ChampionBase.k_CHAMPION_STATUS_NORMAL.toString();
                      break;
                   }
                }
@@ -727,7 +726,6 @@ package
                      if(_loc11_.t == param4 && _loc11_.status != ChampionBase.k_CHAMPION_STATUS_NORMAL)
                      {
                         _loc11_.status = ChampionBase.k_CHAMPION_STATUS_NORMAL;
-                        _loc11_.log = _loc11_.log != undefined ? _loc11_.log + "," + ChampionBase.k_CHAMPION_STATUS_NORMAL.toString() : ChampionBase.k_CHAMPION_STATUS_NORMAL.toString();
                         break;
                      }
                   }
@@ -1074,13 +1072,11 @@ package
          if(_loc3_ >= 0)
          {
             GLOBAL._playerGuardianData[_loc3_].status = param2;
-            GLOBAL._playerGuardianData[_loc3_].log += "," + param2.toString();
          }
          _loc3_ = BASE.getGuardianIndex(param1);
          if(_loc3_ >= 0)
          {
             BASE._guardianData[_loc3_].status = param2;
-            BASE._guardianData[_loc3_].log += "," + param2.toString();
          }
       }
    }
