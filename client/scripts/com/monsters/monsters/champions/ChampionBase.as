@@ -318,14 +318,12 @@ package com.monsters.monsters.champions
          CREATURES._creatures[CREATURES._creatureID] = this;
          var _loc1_:int = BASE.getGuardianIndex(CREATURES._guardian._type);
          BASE._guardianData[_loc1_].status = ChampionBase.k_CHAMPION_STATUS_JUICED;
-         BASE._guardianData[_loc1_].log += "," + ChampionBase.k_CHAMPION_STATUS_JUICED.toString();
          if(GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD)
          {
             _loc1_ = GLOBAL.getPlayerGuardianIndex(CREATURES._guardian._type);
             if(_loc1_ != -1)
             {
                GLOBAL._playerGuardianData[_loc1_].status = ChampionBase.k_CHAMPION_STATUS_JUICED;
-               GLOBAL._playerGuardianData[_loc1_].log += "," + ChampionBase.k_CHAMPION_STATUS_JUICED.toString();
             }
          }
          CREATURES._guardian = null;
@@ -1431,10 +1429,6 @@ package com.monsters.monsters.champions
                _loc2_ = int(BASE._guardianData.push({}) - 1);
             }
             _loc4_ = int(BASE._guardianData[_loc2_].status);
-            if((_loc5_ = String(BASE._guardianData[_loc2_].log)) == null)
-            {
-               _loc5_ = _loc4_.toString();
-            }
             BASE._guardianData[_loc2_] = {};
             BASE._guardianData[_loc2_].hp = new SecNum(health);
             BASE._guardianData[_loc2_].l = new SecNum(this._level.Get());
@@ -1445,7 +1439,6 @@ package com.monsters.monsters.champions
             BASE._guardianData[_loc2_].fb = new SecNum(this._foodBonus.Get());
             BASE._guardianData[_loc2_].pl = new SecNum(this._powerLevel.Get());
             BASE._guardianData[_loc2_].status = _loc4_;
-            BASE._guardianData[_loc2_].log = _loc5_;
          }
          if(!param1 && GLOBAL.mode != GLOBAL.e_BASE_MODE.BUILD || param1 && _loc3_ && GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD)
          {
@@ -1455,10 +1448,6 @@ package com.monsters.monsters.champions
                _loc2_ = int(GLOBAL._playerGuardianData.push({}) - 1);
             }
             _loc4_ = int(GLOBAL._playerGuardianData[_loc2_].status);
-            if((_loc5_ = String(GLOBAL._playerGuardianData[_loc2_].log)) == null)
-            {
-               _loc5_ = _loc4_.toString();
-            }
             GLOBAL._playerGuardianData[_loc2_] = {};
             GLOBAL._playerGuardianData[_loc2_].hp = new SecNum(health);
             GLOBAL._playerGuardianData[_loc2_].l = new SecNum(this._level.Get());
@@ -1469,7 +1458,6 @@ package com.monsters.monsters.champions
             GLOBAL._playerGuardianData[_loc2_].fb = new SecNum(this._foodBonus.Get());
             GLOBAL._playerGuardianData[_loc2_].pl = new SecNum(this._powerLevel.Get());
             GLOBAL._playerGuardianData[_loc2_].status = _loc4_;
-            GLOBAL._playerGuardianData[_loc2_].log = _loc5_;
          }
       }
       

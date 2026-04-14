@@ -27,7 +27,6 @@ import { infernoModeAttack } from "./modes/infernoModeAttack.js";
 import { infernoModeBuild } from "./modes/infernoModeBuild.js";
 import { validateAttack } from "../../../services/maproom/validateAttack.js";
 import { BaseLoadSchema } from "../../../zod/BaseLoadSchema.js";
-import { serializeChampion } from "../../../utils/parseChampionData.js";
 import { discordAgeErr } from "../../../errors/errors.js";
 import { EnumBaseRelationship } from "../../../enums/EnumBaseRelationship.js";
 import { canAttack } from "../../../services/base/canAttack.js";
@@ -221,7 +220,6 @@ export const baseLoad: KoaController = async (ctx) => {
       worldsize: WORLD_SIZE,
       error: 0,
       id: filteredSave.basesaveid,
-      champion: serializeChampion(filteredSave.champion),
       storeitems: storeItems,
       tutorialstage: isTutorialEnabled,
       currenttime: getCurrentDateTime(),

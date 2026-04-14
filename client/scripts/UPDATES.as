@@ -151,14 +151,12 @@ package
                BASE._guardianData[_loc1_].ft -= GLOBAL.Timestamp();
                (GLOBAL._bChamber as CHAMPIONCHAMBER)._frozen.push(BASE._guardianData[_loc1_]);
                BASE._guardianData[_loc1_].status = ChampionBase.k_CHAMPION_STATUS_FROZEN;
-               BASE._guardianData[_loc1_].log += "," + ChampionBase.k_CHAMPION_STATUS_FROZEN.toString();
                if(GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD)
                {
                   _loc2_ = GLOBAL.getPlayerGuardianIndex(CREATURES._guardian._type);
                   if(_loc2_ != -1)
                   {
                      GLOBAL._playerGuardianData[_loc2_].status = ChampionBase.k_CHAMPION_STATUS_FROZEN;
-                     GLOBAL._playerGuardianData[_loc2_].log += "," + ChampionBase.k_CHAMPION_STATUS_FROZEN.toString();
                      GLOBAL._playerGuardianData[_loc2_].ft -= GLOBAL.Timestamp();
                   }
                }
@@ -191,7 +189,6 @@ package
                            _loc9_ = CHAMPIONCAGE.getGuardianSpawnClass(param1);
                            CREATURES._guardian = new _loc9_("cage",_loc3_,0,_loc5_,true,GLOBAL._bChamber,(GLOBAL._bChamber as CHAMPIONCHAMBER)._frozen[_loc2_].l.Get(),(GLOBAL._bChamber as CHAMPIONCHAMBER)._frozen[_loc2_].fd,(GLOBAL._bChamber as CHAMPIONCHAMBER)._frozen[_loc2_].ft + GLOBAL.Timestamp(),(GLOBAL._bChamber as CHAMPIONCHAMBER)._frozen[_loc2_].t,(GLOBAL._bChamber as CHAMPIONCHAMBER)._frozen[_loc2_].hp.Get(),(GLOBAL._bChamber as CHAMPIONCHAMBER)._frozen[_loc2_].fb.Get());
                            _loc8_.status = ChampionBase.k_CHAMPION_STATUS_NORMAL;
-                           _loc8_.log += "," + ChampionBase.k_CHAMPION_STATUS_NORMAL.toString();
                            break;
                         }
                      }
@@ -201,7 +198,6 @@ package
                         {
                            _loc8_.ft += GLOBAL.Timestamp();
                            _loc8_.status = ChampionBase.k_CHAMPION_STATUS_NORMAL;
-                           _loc8_.log += "," + ChampionBase.k_CHAMPION_STATUS_NORMAL.toString();
                            break;
                         }
                      }
