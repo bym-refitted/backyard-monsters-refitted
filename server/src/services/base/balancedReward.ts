@@ -1,7 +1,6 @@
 import { KorathReward, Reward } from "../../enums/Rewards.js";
 import { Save } from "../../models/save.model.js";
 import { extractTownHall, type TownHall } from "../../utils/extractTownHall.js";
-import { parseChampionData } from "../../utils/parseChampionData.js";
 
 /**
  * Adds rewards to the user's save data based on their Town Hall level.
@@ -53,25 +52,19 @@ export const balancedReward = async (userSave: Save) => {
  * @param {Save} userSave - The user's save data to update.
  */
 const addKrallenData = (userSave: Save) => {
-  const championData = parseChampionData(userSave.champion ?? "");
+  const championData = userSave.champion;
 
   if (Object.keys(userSave.krallen ?? {}).length === 0) {
-    const krallen = {
+    championData.push({
       fb: 0,
       l: 5,
       pl: 2,
       status: 0,
-      log: "0",
       t: 5,
       ft: 1730563770,
       fd: 0,
       hp: 62000,
-    };
-
-    if (Array.isArray(championData)) {
-      championData.push(krallen);
-      userSave.champion = JSON.stringify(championData);
-    }
+    });
 
     userSave.krallen = {
       countdown: 443189,

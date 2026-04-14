@@ -69,16 +69,8 @@ export const infernoSave: KoaController = async (ctx) => {
           baseSave.basevalue = value.toString();
           break;
 
-        case SaveKeys.PURCHASE:
-          if (saveData.purchase) purchaseHandler(ctx, saveData.purchase, baseSave);
-          break;
-
         case SaveKeys.ACADEMY:
           academyHandler(ctx, baseSave);
-          break;
-
-        case SaveKeys.ATTACKCREATURES:
-          if (isAttack && userInfernoSave) userInfernoSave.monsters = JSON.parse(value);
           break;
 
         case SaveKeys.BUILDINGDATA:
@@ -101,6 +93,14 @@ export const infernoSave: KoaController = async (ctx) => {
             }
           }
       }
+    }
+
+    if (!isAttack && saveData.purchase) {
+      purchaseHandler(ctx, saveData.purchase, baseSave);
+    }
+
+    if (isAttack && saveData.attackcreatures && userInfernoSave) {
+      userInfernoSave.monsters = saveData.attackcreatures;
     }
 
     // Defender-specific save updates during an attack

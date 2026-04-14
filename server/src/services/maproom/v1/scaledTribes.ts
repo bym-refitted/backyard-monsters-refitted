@@ -61,7 +61,7 @@ export const scaledTribes = async (user: User, saveData: BaseSaveData) => {
         break;
 
       case SaveKeys.ATTACKERCHAMPION:
-        userSave.champion = saveData.attackerchampion;
+        if (saveData.attackerchampion) userSave.champion = saveData.attackerchampion;
         break;
 
       case SaveKeys.ATTACKLOOT:
