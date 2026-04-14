@@ -133,6 +133,7 @@ export const infernoSave: KoaController = async (ctx) => {
 
     if (isAttack) postgres.em.persist(userSave);
 
+    baseSave.champion = [];
     baseSave.id = baseSave.savetime;
     baseSave.savetime = getCurrentDateTime();
     postgres.em.persist(baseSave);
