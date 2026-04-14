@@ -35,11 +35,11 @@ export class AttackLogs {
   @Property({ type: 'number', nullable: true })
   y?: number;
 
-  @Property({ type: "json", nullable: true })
-  loot?: JsonObject;
+  @Property({ columnType: "jsonb", nullable: true })
+  loot?: JsonObject = {};
 
-  @Property({ type: "json", nullable: true })
-  attackreport!: JsonObject;
+  @Property({ columnType: "jsonb", nullable: true })
+  attackreport: JsonObject = {};
 
   @Property({ type: Date })
   attacktime: Date = new Date();
