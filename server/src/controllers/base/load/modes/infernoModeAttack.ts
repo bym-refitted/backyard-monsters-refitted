@@ -1,5 +1,5 @@
 import { molochTribes } from "../../../../data/tribes/inferno/molochTribes.js";
-import { BaseType } from "../../../../enums/Base.js";
+import { BaseMode, BaseType } from "../../../../enums/Base.js";
 import { Save } from "../../../../models/save.model.js";
 import { User } from "../../../../models/user.model.js";
 import { postgres } from "../../../../server.js";
@@ -11,6 +11,7 @@ import {
   InfernoMaproom,
   type TribeData,
 } from "../../../../models/infernomaproom.model.js";
+import { damageProtection } from "../../../../services/maproom/v2/damageProtection.js";
 
 /**
  * Handles Inferno mode attacks for both real players and AI tribes
@@ -29,6 +30,8 @@ export const infernoModeAttack = async (user: User, baseid: string) => {
     baseid,
   });
 
+
+  await damageProtection(user.infernosave!, BaseMode.IATTACK);
 
   if (!save) return infernoTribeSave(user, baseid);
 
