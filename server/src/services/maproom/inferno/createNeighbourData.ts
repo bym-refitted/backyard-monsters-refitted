@@ -1,33 +1,6 @@
 import { User } from "../../../models/user.model.js";
 import { Save } from "../../../models/save.model.js";
-
-export interface NeighbourData {
-  userid: number;
-  baseid: string;
-  level: number;
-  username: string;
-  attacksto?: number;
-  attacksfrom?: number;
-  helpsto?: number;
-  helpsfrom?: number;
-  retaliatecount?: number;
-  seentime?: number;
-  baseseed?: number;
-  attacker?: string;
-  friend?: number;
-  saved?: number;
-  attackpermitted?: number;
-  basename?: string;
-  ownerName?: string;
-  pic?: string;
-  trucestate?: string;
-  truceexpire?: number;
-  destroyed?: number;
-  online?: boolean;
-  description?: string;
-  type?: number;
-  wm?: number;
-}
+import type { NeighbourData } from "../../../types/NeighbourData.js";
 
 /**
  * Creates a cached neighbour data object from a save and user.
@@ -37,7 +10,7 @@ export interface NeighbourData {
  * @param {number} level - The calculated level of the neighbour
  * @returns {NeighbourData} NeighbourData object ready for caching
  */
-export const createNeighbourData = (save: Save, user: User, level: number) => {
+export const createNeighbourData = (save: Save, user: User, level: number): NeighbourData => {
   const timestamp = Math.floor(save.lastupdateAt.getTime() / 1000);
 
   return {
@@ -52,6 +25,8 @@ export const createNeighbourData = (save: Save, user: User, level: number) => {
     baseseed: save.userid, 
     attacksto: 0,
     attacksfrom: 0,
+    attacksTodayCount: 0,
+    attacksTodayDate: Math.floor(new Date().setHours(0, 0, 0, 0) / 1000),
     helpsto: 0,
     helpsfrom: 0,
     retaliatecount: 0,
@@ -66,5 +41,5 @@ export const createNeighbourData = (save: Save, user: User, level: number) => {
     online: false,
     description: "",
     level,
-  } as NeighbourData;
+  }
 };

@@ -1,8 +1,8 @@
 import { Entity, PrimaryKey, Property } from "@mikro-orm/decorators/es";
 import { EntityManager, PostgreSqlDriver } from "@mikro-orm/postgresql";
 import { User } from "./user.model.js";
-import type { NeighbourData } from "../services/maproom/inferno/createNeighbourData.js";
 import type { InfernoMaproomData } from "../types/EntityData.js";
+import type { NeighbourData } from "../types/NeighbourData.js";
 
 export interface TribeData {
   baseid: string;

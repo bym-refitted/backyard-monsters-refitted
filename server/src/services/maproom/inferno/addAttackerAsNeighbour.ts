@@ -62,10 +62,29 @@ export const addAttackerAsNeighbour = async (attacker: User, defender: User) => 
     (neighbor) => neighbor.userid === defender.userid
   );
 
-  if (!existingDefender) 
+  if (!existingDefender)
     throw new Error("Defender not found in attacker's neighbor list");
 
   existingDefender.attacksto = (existingDefender.attacksto ?? 0) + 1;
+
+  const todayStart = new Date().setHours(0, 0, 0, 0) / 1000;
+
+  if (existingDefender.attacksTodayDate < todayStart) {
+    existingDefender.attacksTodayCount = 0;
+    existingDefender.attacksTodayDate = todayStart;
+  }
+
+  existingDefender.attacksTodayCount++;
+
+  if (existingDefender.attacksTodayCount >= 10) {
+    attackerMaproom.neighbors = attackerMaproom.neighbors.filter(
+      (neighbor) => neighbor.userid !== defender.userid
+    );
+    
+    defenderMaproom.neighbors = defenderMaproom.neighbors.filter(
+      (neighbor) => neighbor.userid !== attacker.userid
+    );
+  }
 
   postgres.em.persist(defenderMaproom);
   postgres.em.persist(attackerMaproom);
