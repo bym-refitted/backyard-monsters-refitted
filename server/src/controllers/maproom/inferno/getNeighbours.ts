@@ -10,10 +10,8 @@ import { damageProtection } from "../../../services/maproom/v2/damageProtection.
 import { logger } from "../../../utils/logger.js";
 import { AttackPermission } from "../../../enums/MapRoom.js";
 import { getCurrentDateTime } from "../../../utils/getCurrentDateTime.js";
-import {
-  type NeighbourData,
-  createNeighbourData,
-} from "../../../services/maproom/inferno/createNeighbourData.js";
+import { createNeighbourData } from "../../../services/maproom/inferno/createNeighbourData.js";
+import type { NeighbourData } from "../../../types/NeighbourData.js";
 
 /**
  * Cache validity period for inferno neighbours.
