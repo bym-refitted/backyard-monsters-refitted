@@ -30,8 +30,9 @@ export const infernoModeAttack = async (user: User, baseid: string) => {
     baseid,
   });
 
-
-  await damageProtection(user.infernosave!, BaseMode.IATTACK);
+  if (user.infernosave) {
+    await damageProtection(user.infernosave, BaseMode.IATTACK);
+  }
 
   if (!save) return infernoTribeSave(user, baseid);
 
