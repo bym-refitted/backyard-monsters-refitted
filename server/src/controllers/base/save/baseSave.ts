@@ -169,11 +169,16 @@ export const baseSave: KoaController = async (ctx) => {
       }
     }
 
-    // Set the attackid to 0 if the attack is over
     baseSave.attackid = saveData.over ? 0 : baseSave.attackid;
 
-    baseSave.id = baseSave.savetime;
-    baseSave.savetime = getCurrentDateTime();
+    // We only update savetime for owner saves
+    if (isAttack) {
+      baseSave.id = getCurrentDateTime();
+    } else {
+      baseSave.id = baseSave.savetime;
+      baseSave.savetime = getCurrentDateTime();
+    }
+
     postgres.em.persist(baseSave);
     await postgres.em.flush();
 
