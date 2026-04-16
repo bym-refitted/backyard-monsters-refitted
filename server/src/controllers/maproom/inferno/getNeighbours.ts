@@ -3,7 +3,7 @@ import { Status } from "../../../enums/StatusCodes.js";
 import { Save } from "../../../models/save.model.js";
 import { User } from "../../../models/user.model.js";
 import { InfernoMaproom } from "../../../models/infernomaproom.model.js";
-import { postgres, redis } from "../../../server.js";
+import { postgres } from "../../../server.js";
 import { BaseType } from "../../../enums/Base.js";
 import { calculateBaseLevel } from "../../../services/base/calculateBaseLevel.js";
 import { damageProtection } from "../../../services/maproom/v2/damageProtection.js";
@@ -12,6 +12,7 @@ import { AttackPermission } from "../../../enums/MapRoom.js";
 import { getCurrentDateTime } from "../../../utils/getCurrentDateTime.js";
 import { createNeighbourData } from "../../../services/maproom/inferno/createNeighbourData.js";
 import type { NeighbourData } from "../../../types/NeighbourData.js";
+import { getLastSeen } from "../../../services/maproom/getLastSeen.js";
 
 /**
  * Cache validity period for inferno neighbours.
@@ -195,20 +196,13 @@ const updateNeighbourData = async (cachedNeighbours: NeighbourData[]) => {
   const userIds = cachedNeighbours.map((neighbour) => neighbour.userid);
 
   // Fetch current saves and last seen timestamps for all neighbours in parallel
-  const [neighbourSaves, lastSeen] = await Promise.all([
+  const [neighbourSaves, lastSeens] = await Promise.all([
     postgres.em.find(Save, { type: BaseType.INFERNO, userid: { $in: userIds } }),
-    redis.mget(...userIds.map((uid) => `last-seen:inferno:${uid}`)),
+    getLastSeen(userIds, BaseType.INFERNO),
   ]);
 
   const saves = new Map<number, Save>();
   neighbourSaves.forEach((save) => saves.set(save.userid, save));
-
-  const lastSeens = new Map<number, number>();
-
-  userIds.forEach((userid, i) => {
-    const timestamp = lastSeen[i];
-    if (timestamp) lastSeens.set(userid, parseInt(timestamp));
-  });
 
   // Update protection status for all saves
   for (const save of neighbourSaves) await damageProtection(save);
