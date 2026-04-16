@@ -5,6 +5,7 @@ import { calculateBaseLevel } from "../../../../services/base/calculateBaseLevel
 import { logger } from "../../../../utils/logger.js";
 import { getCurrentDateTime } from "../../../../utils/getCurrentDateTime.js";
 import { MapRoomCell } from "../../../../enums/MapRoom.js";
+import { isAttackActive } from "../../../../services/base/isAttackActive.js";
 
 /**
  * Handles the user's homecell & outpost data on the world map.
@@ -33,9 +34,10 @@ export const userCell = async (ctx: Context, cell: WorldMapCell, cellOwners: Map
     
     const lastSeen = ctx.state.lastSeen;
     const online = homecell && (lastSeen.get(cell.uid) ?? 0) >= currentTime - 60;
+    const isUnderAttack = homecell && isAttackActive(cellSave);
 
     let locked = cellSave.locked;
-    if (online) locked = 1;
+    if (online || isUnderAttack) locked = 1;
     if (mine) locked = 0;
 
     const points = cellOwner.save.points;
