@@ -17,6 +17,7 @@ import { attackLootHandler } from "../base/save/handlers/attackLootHandler.js";
 import { buildingDataHandler } from "../base/save/handlers/buildingDataHandler.js";
 import { purchaseHandler } from "../base/save/handlers/purchaseHandler.js";
 import { resourcesHandler } from "../base/save/handlers/resourceHandler.js";
+import { damageProtection } from "../../services/maproom/v2/damageProtection.js";
 
 export const infernoSave: KoaController = async (ctx) => {
   const user: User = ctx.authUser;
@@ -132,6 +133,12 @@ export const infernoSave: KoaController = async (ctx) => {
     }
 
     if (isAttack) postgres.em.persist(userSave);
+
+    if (isAttack) baseSave.attackid = saveData.over ? 0 : baseSave.attackid;
+
+    if (isAttack && saveData.over) {
+      await damageProtection(baseSave);
+    }
 
     baseSave.id = baseSave.savetime;
     baseSave.savetime = getCurrentDateTime();
