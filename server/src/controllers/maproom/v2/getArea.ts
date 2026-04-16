@@ -3,7 +3,7 @@ import { z } from "zod";
 import type { KoaController } from "../../../utils/KoaController.js";
 import { User } from "../../../models/user.model.js";
 import { WorldMapCell } from "../../../models/worldmapcell.model.js";
-import { postgres } from "../../../server.js";
+import { postgres, redis } from "../../../server.js";
 import { devConfig } from "../../../config/GameConfig.js";
 import { Status } from "../../../enums/StatusCodes.js";
 import { createCellData } from "../../../services/maproom/v2/createCellData.js";
@@ -90,13 +90,21 @@ export const getArea: KoaController = async (ctx) => {
   // Batch load all unique cell owners in a single query
   const ownerIds = [...new Set(dbCells.map(cell => cell.uid).filter(Boolean))] as number[];
 
-  const ownersList = await postgres.em.find(
-    User,
-    { userid: { $in: ownerIds } },
-    { populate: ["save"] }
-  );
+  const [ownersList, lastSeenList] = await Promise.all([
+    postgres.em.find(User, { userid: { $in: ownerIds } }, { populate: ["save"] }),
+    redis.mget(...ownerIds.map((id) => `last-seen:${id}`)),
+  ]);
 
   const cellOwners = new Map<number, User>(ownersList.map(u => [u.userid, u]));
+
+  const lastSeen = new Map<number, number>();
+
+  ownerIds.forEach((id, i) => {
+    const timestamp = lastSeenList[i];
+    if (timestamp) lastSeen.set(id, parseInt(timestamp));
+  });
+
+  ctx.state.lastSeen = lastSeen;
 
   const cells: Record<number, Record<number, unknown>> = {};
   for (const cell of dbCells) {

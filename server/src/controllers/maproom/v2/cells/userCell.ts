@@ -17,24 +17,22 @@ import { getCurrentDateTime } from "../../../../utils/getCurrentDateTime.js";
  * @param {Map<number, User>} cellOwners - Pre-loaded map of user IDs to User entities.
  */
 export const userCell = async (ctx: Context, cell: WorldMapCell, cellOwners: Map<number, User>) => {
-  const cellSave = cell.save;
   const currentUser: User = ctx.authUser;
+  const lastSeen = ctx.state.lastSeen;
 
   try {
     const mine = currentUser.userid === cell.uid;
-
-    // Get the cell owner, either the current user or another user
     const cellOwner = mine ? currentUser : cellOwners.get(cell.uid);
 
-    if (!cellOwner?.save || !cellSave) {
-      logger.error(`Cell owner save data is missing.`);
-      return;
-    }
+    const cellSave = cell.save;
+    if (!cellSave || !cellOwner?.save) return;
 
     const currentTime = getCurrentDateTime();
+    const online = (lastSeen.get(cell.uid) ?? 0) >= currentTime - 60;
 
-    // locked stores the attacker's user ID when a base is actively under attack (set by the attack system)
-    const locked = mine ? 0 : cellSave.locked || 0;
+    let locked = cellSave.locked;
+    if (online) locked = 1;
+    if (mine) locked = 0;
 
     const points = cellOwner.save.points;
     const basevalue = cellOwner.save.basevalue;
@@ -59,7 +57,7 @@ export const userCell = async (ctx: Context, cell: WorldMapCell, cellOwners: Map
       t: 0,
       n: cellOwner.username,
       fr: 0,
-      p: isProtected ? 1 : 0, // Convert timestamp to boolean for client
+      p: isProtected ? 1 : 0,
       r: cellSave.resources,
       m: cellSave.monsters || {},
       l: baseLevel,
