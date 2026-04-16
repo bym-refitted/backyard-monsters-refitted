@@ -140,6 +140,14 @@ export const baseUnderAttackErr = () =>
     isClientFriendly: false,
   });
 
+export const userOnlineErr = () =>
+  new ClientSafeError({
+    message: "This player is currently online and cannot be attacked. Please try again later.",
+    status: Status.CONFLICT,
+    data: {},
+    isClientFriendly: false,
+  });
+
 export const takeoverCellErr = () =>
   new ClientSafeError({
     message: "The server attempted to take over this cell but failed unexpectedly. Please try again.",
