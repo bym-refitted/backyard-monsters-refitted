@@ -245,6 +245,7 @@ const updateNeighbourData = async (cachedNeighbours: NeighbourData[]) => {
 
     const isProtected = neighbourSave.protected > 0 && neighbourSave.protected > currentTime;
 
+    const lastAttack = neighbourSave.attacks.at(-1);
     const isUnderAttack = isAttackActive(neighbourSave);
 
     // Reset stale attackid left over from a disconnected attacker
@@ -256,9 +257,9 @@ const updateNeighbourData = async (cachedNeighbours: NeighbourData[]) => {
 
     if (isProtected) {
       neighbour.attackpermitted = AttackPermission.DAMAGE_PROTECTION;
-    } else if (isUnderAttack) {
+    } else if (isUnderAttack && lastAttack) {
       neighbour.attackpermitted = AttackPermission.UNDER_ATTACK;
-      neighbour.attacker = neighbourSave.attacks.at(-1)!.name;
+      neighbour.attacker = lastAttack.name;
     } else {
       neighbour.attackpermitted = AttackPermission.ATTACKABLE;
     }
