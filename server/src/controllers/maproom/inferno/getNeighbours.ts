@@ -197,7 +197,7 @@ const updateNeighbourData = async (cachedNeighbours: NeighbourData[]) => {
   // Fetch current saves and last seen timestamps for all neighbours in parallel
   const [neighbourSaves, lastSeen] = await Promise.all([
     postgres.em.find(Save, { type: BaseType.INFERNO, userid: { $in: userIds } }),
-    redis.mget(...userIds.map((uid) => `last-seen:${uid}`)),
+    redis.mget(...userIds.map((uid) => `last-seen:inferno:${uid}`)),
   ]);
 
   const saves = new Map<number, Save>();

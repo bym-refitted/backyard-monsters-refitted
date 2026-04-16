@@ -92,7 +92,7 @@ export const getArea: KoaController = async (ctx) => {
 
   const [ownersList, lastSeenList] = await Promise.all([
     postgres.em.find(User, { userid: { $in: ownerIds } }, { populate: ["save"] }),
-    redis.mget(...ownerIds.map((id) => `last-seen:${id}`)),
+    redis.mget(...ownerIds.map((id) => `last-seen:main:${id}`)),
   ]);
 
   const cellOwners = new Map<number, User>(ownersList.map(u => [u.userid, u]));

@@ -137,7 +137,7 @@ export const infernoSave: KoaController = async (ctx) => {
     baseSave.savetime = getCurrentDateTime();
 
     if (!isAttack) {
-      await redis.setex(`last-seen:${user.userid}`, 120, getCurrentDateTime().toString());
+      await redis.setex(`last-seen:inferno:${user.userid}`, 120, getCurrentDateTime().toString());
     }
 
     baseSave.champion = [];

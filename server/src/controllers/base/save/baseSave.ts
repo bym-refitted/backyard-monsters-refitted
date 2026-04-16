@@ -175,7 +175,7 @@ export const baseSave: KoaController = async (ctx) => {
     baseSave.savetime = getCurrentDateTime();
 
     if (!isAttack) {
-      await redis.setex(`last-seen:${user.userid}`, 120, getCurrentDateTime().toString());
+      await redis.setex(`last-seen:main:${user.userid}`, 120, getCurrentDateTime().toString());
     }
 
     postgres.em.persist(baseSave);
