@@ -1,7 +1,7 @@
 import { User } from "../../../models/user.model.js";
 import { Status } from "../../../enums/StatusCodes.js";
 import { CellSchema } from "../../../zod/CellSchema.js";
-import { postgres } from "../../../server.js";
+import { postgres, redis } from "../../../server.js";
 import { MapRoom3, MapRoomVersion } from "../../../enums/MapRoom.js";
 import { WorldMapCell } from "../../../models/worldmapcell.model.js";
 import { getGeneratedCells, cellKey } from "../../../services/maproom/v3/generateCells.js";
@@ -187,15 +187,22 @@ export const getMapRoomCells: KoaController = async (ctx) => {
     // =========================================================================
     const ownerIds = [...new Set(dbCells.map((cell) => cell.uid).filter(Boolean))];
 
-    const ownersList = await postgres.em.find(
-      User,
-      { userid: { $in: ownerIds } },
-      { populate: ["save"] },
-    );
+    const [ownersList, lastSeenValues] = await Promise.all([
+      postgres.em.find(User, { userid: { $in: ownerIds } }, { populate: ["save"] }),
+      redis.mget(...ownerIds.map((id) => `last-seen:main:${id}`)),
+    ]);
 
     const cellOwners = new Map<number, User>(
       ownersList.map((u) => [u.userid, u]),
     );
+
+    const lastSeenMap = new Map<number, number>();
+    ownerIds.forEach((id, i) => {
+      const timestamp = lastSeenValues[i];
+      if (timestamp) lastSeenMap.set(id, parseInt(timestamp));
+    });
+
+    ctx.state.lastSeen = lastSeenMap;
 
     // =========================================================================
     // PHASE 5: Build cell data for all coordinates

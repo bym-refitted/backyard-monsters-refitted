@@ -4,6 +4,7 @@ import type { WorldMapCell } from "../../../../models/worldmapcell.model.js";
 import { calculateBaseLevel } from "../../../../services/base/calculateBaseLevel.js";
 import { logger } from "../../../../utils/logger.js";
 import { getCurrentDateTime } from "../../../../utils/getCurrentDateTime.js";
+import { MapRoomCell } from "../../../../enums/MapRoom.js";
 
 /**
  * Handles the user's homecell & outpost data on the world map.
@@ -28,7 +29,9 @@ export const userCell = async (ctx: Context, cell: WorldMapCell, cellOwners: Map
     if (!cellSave || !cellOwner?.save) return;
 
     const currentTime = getCurrentDateTime();
-    const online = (lastSeen.get(cell.uid) ?? 0) >= currentTime - 60;
+
+    const homecell = cell.base_type === MapRoomCell.HOMECELL;
+    const online = homecell && (lastSeen.get(cell.uid) ?? 0) >= currentTime - 60;
 
     let locked = cellSave.locked;
     if (online) locked = 1;

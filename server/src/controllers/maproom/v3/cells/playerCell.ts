@@ -22,12 +22,13 @@ import { getCurrentDateTime } from "../../../../utils/getCurrentDateTime.js";
 export const playerCell = async (ctx: Context, cell: WorldMapCell, cellOwners: Map<number, User>): Promise<CellData> => {
   const [cellX, cellY] = [cell.x, cell.y];
 
-  const cellSave = cell.save;
   const currentUser: User = ctx.authUser;
+  const lastSeen = ctx.state.lastSeen;
 
   const mine = currentUser.userid === cell.uid;
-
   const cellOwner = mine ? currentUser : cellOwners.get(cell.uid);
+
+  const cellSave = cell.save;
 
   // We render an empty cell if the owner is not found or doesn't have save data
   if (!cellOwner?.save) return { x: cell.x, y: cell.y, i: 0 };
@@ -50,12 +51,20 @@ export const playerCell = async (ctx: Context, cell: WorldMapCell, cellOwners: M
 
   const altitude = 5 + (cellX * 73 + cellY * 31) % 45;
 
-  let isProtected = false;
   const currentTime = getCurrentDateTime();
+  const homeCell = cell.base_type === EnumYardType.PLAYER;
 
-  if (cell.base_type === EnumYardType.PLAYER) {
+  let isProtected = false;
+
+  if (homeCell) {
     isProtected = (cellSave?.protected ?? 0) > 0 && (cellSave?.protected ?? 0) > currentTime;
   }
+
+  const online = homeCell && (lastSeen.get(cell.uid) ?? 0) >= currentTime - 60;
+
+  let locked = 0;
+  if (online) locked = 1;
+  if (mine) locked = 0;
 
   return {
     uid: cellOwner.userid,
@@ -71,7 +80,7 @@ export const playerCell = async (ctx: Context, cell: WorldMapCell, cellOwners: M
     pl: 0,
     r: range,
     dm: cellSave?.damage ?? 0,
-    lo: 0,
+    lo: locked,
     fr: 0,
     p: isProtected ? 1 : 0,
     d: (cellSave?.damage ?? 0) >= 90 ? 1 : 0,
