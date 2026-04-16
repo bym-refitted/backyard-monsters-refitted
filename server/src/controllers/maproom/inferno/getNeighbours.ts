@@ -6,7 +6,6 @@ import { InfernoMaproom } from "../../../models/infernomaproom.model.js";
 import { postgres } from "../../../server.js";
 import { BaseType } from "../../../enums/Base.js";
 import { calculateBaseLevel } from "../../../services/base/calculateBaseLevel.js";
-import { logger } from "../../../utils/logger.js";
 import { AttackPermission } from "../../../enums/MapRoom.js";
 import { getCurrentDateTime } from "../../../utils/getCurrentDateTime.js";
 import { createNeighbourData } from "../../../services/maproom/inferno/createNeighbourData.js";
@@ -49,73 +48,63 @@ export const getNeighbours: KoaController = async (ctx) => {
   const user: User = ctx.authUser;
   await postgres.em.populate(user, ["save", "infernosave"]);
 
-  try {
-    if (!user.save?.worldid) {
-      ctx.status = Status.OK;
-      ctx.body = { error: 0, bases: [] };
-      return;
-    }
+  if (!user.save?.worldid) {
+    ctx.status = Status.OK;
+    ctx.body = { error: 0, bases: [] };
+    return;
+  }
 
-    let infernoMaproom = await postgres.em.findOne(InfernoMaproom, {
-      userid: user.userid,
+  const infernoMaproom = await postgres.em.findOne(InfernoMaproom, {
+    userid: user.userid,
+  });
+
+  const currentDate = new Date();
+  const cacheExpiry = new Date(
+    currentDate.getTime() - CACHE_VALIDITY_HOURS * 60 * 60 * 1000
+  );
+
+  if (!infernoMaproom) throw new Error("Inferno maproom not found.");
+
+  // Check if we need to fetch new neighbours (cache expired or array empty)
+  const getNewNeighbours = isCacheExpired(infernoMaproom, cacheExpiry) || infernoMaproom.neighbors.length === 0;
+
+  if (getNewNeighbours) {
+    const foundNeighbours = await findNeighbours(user);
+
+    // Preserve previous attack data on attackers who may have attacked before defender seeded
+    const mergedNeighbors = foundNeighbours.map((newNeighbor) => {
+      const existing = infernoMaproom.neighbors.find(
+        (old) => old.userid === newNeighbor.userid
+      );
+
+      if (existing) {
+        return {
+          ...newNeighbor,
+          attacksfrom: existing.attacksfrom || 0,
+          attacksto: existing.attacksto || 0,
+          retaliatecount: existing.retaliatecount || 0,
+        };
+      }
+
+      return newNeighbor;
     });
 
-    const currentDate = new Date();
-    const cacheExpiry = new Date(
-      currentDate.getTime() - CACHE_VALIDITY_HOURS * 60 * 60 * 1000
-    );
+    infernoMaproom.neighbors = mergedNeighbors;
+    infernoMaproom.neighborsLastCalculated = currentDate;
 
-    if (!infernoMaproom) throw new Error("Inferno maproom not found.");
-
-    // Check if we need to fetch new neighbours (cache expired or array empty)
-    const getNewNeighbours = isCacheExpired(infernoMaproom, cacheExpiry) || infernoMaproom.neighbors.length === 0;
-
-    if (getNewNeighbours) {
-      const foundNeighbours = await findNeighbours(user);
-
-      // Preserve previous attack data on attackers who may have attacked before defender seeded
-      const mergedNeighbors = foundNeighbours.map((newNeighbor) => {
-        const existing = infernoMaproom.neighbors.find(
-          (old) => old.userid === newNeighbor.userid
-        );
-
-        if (existing) {
-          return {
-            ...newNeighbor,
-            attacksfrom: existing.attacksfrom || 0,
-            attacksto: existing.attacksto || 0,
-            retaliatecount: existing.retaliatecount || 0,
-          };
-        }
-
-        return newNeighbor;
-      });
-
-      infernoMaproom.neighbors = mergedNeighbors;
-      infernoMaproom.neighborsLastCalculated = currentDate;
-
-      postgres.em.persist(infernoMaproom);
-      await postgres.em.flush();
-    }
-
-    // Update attack permissions for cached neighbours based on current save state
-    const neighbours = await updateNeighbourData(infernoMaproom.neighbors);
-
-    ctx.status = Status.OK;
-    ctx.body = {
-      error: 0,
-      wmbases: [],
-      bases: neighbours,
-    };
-  } catch (error) {
-    logger.error(`Error fetching inferno neighbours: ${error}`);
-    ctx.status = Status.OK;
-    ctx.body = {
-      error: 0,
-      wmbases: [],
-      bases: [],
-    };
+    postgres.em.persist(infernoMaproom);
+    await postgres.em.flush();
   }
+
+  // Update attack permissions for cached neighbours based on current save state
+  const neighbours = await updateNeighbourData(infernoMaproom.neighbors);
+
+  ctx.status = Status.OK;
+  ctx.body = {
+    error: 0,
+    wmbases: [],
+    bases: neighbours,
+  };
 };
 
 /**

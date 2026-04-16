@@ -2,7 +2,6 @@ import type { Context } from "koa";
 import type { User } from "../../../../models/user.model.js";
 import type { WorldMapCell } from "../../../../models/worldmapcell.model.js";
 import { calculateBaseLevel } from "../../../../services/base/calculateBaseLevel.js";
-import { logger } from "../../../../utils/logger.js";
 import { getCurrentDateTime } from "../../../../utils/getCurrentDateTime.js";
 import { MapRoomCell } from "../../../../enums/MapRoom.js";
 import { isAttackActive } from "../../../../services/base/isAttackActive.js";
@@ -21,59 +20,55 @@ import { isAttackActive } from "../../../../services/base/isAttackActive.js";
 export const userCell = async (ctx: Context, cell: WorldMapCell, cellOwners: Map<number, User>) => {
   const currentUser: User = ctx.authUser;
 
-  try {
-    const mine = currentUser.userid === cell.uid;
-    const cellOwner = mine ? currentUser : cellOwners.get(cell.uid);
+  const mine = currentUser.userid === cell.uid;
+  const cellOwner = mine ? currentUser : cellOwners.get(cell.uid);
 
-    const cellSave = cell.save;
-    if (!cellSave || !cellOwner?.save) return;
+  const cellSave = cell.save;
+  if (!cellSave || !cellOwner?.save) return;
 
-    const currentTime = getCurrentDateTime();
+  const currentTime = getCurrentDateTime();
 
-    const homeCell = cell.base_type === MapRoomCell.HOMECELL;
+  const homeCell = cell.base_type === MapRoomCell.HOMECELL;
     
-    const lastSeen = ctx.state.lastSeen;
-    const online = homeCell && (lastSeen.get(cell.uid) ?? 0) >= currentTime - 60;
-    const isUnderAttack = homeCell && isAttackActive(cellSave);
+  const lastSeen = ctx.state.lastSeen;
+  const online = homeCell && (lastSeen.get(cell.uid) ?? 0) >= currentTime - 60;
+  const isUnderAttack = homeCell && isAttackActive(cellSave);
 
-    let locked = cellSave.locked;
-    if (online || isUnderAttack) locked = 1;
-    if (mine) locked = 0;
+  let locked = cellSave.locked;
+  if (online || isUnderAttack) locked = 1;
+  if (mine) locked = 0;
 
-    const points = cellOwner.save.points;
-    const basevalue = cellOwner.save.basevalue;
-    const baseLevel = calculateBaseLevel(points, basevalue);
+  const points = cellOwner.save.points;
+  const basevalue = cellOwner.save.basevalue;
+  const baseLevel = calculateBaseLevel(points, basevalue);
 
-    const isProtected = cellSave.protected > 0 && cellSave.protected > currentTime;
-    const protectionExpired = cellSave.protected > 0 && cellSave.protected <= currentTime;
+  const isProtected = cellSave.protected > 0 && cellSave.protected > currentTime;
+  const protectionExpired = cellSave.protected > 0 && cellSave.protected <= currentTime;
     
-    const damage = protectionExpired ? 0 : cellSave.damage;
+  const damage = protectionExpired ? 0 : cellSave.damage;
 
-    return {
-      uid: cellOwner.userid,
-      b: cell.base_type,
-      pi: 0,
-      bid: cell.baseid,
-      aid: 0,
-      i: cell.terrainHeight,
-      v: cellSave.empirevalue,
-      mine: mine ? 1 : 0,
-      f: cellSave.flinger,
-      c: cellSave.catapult,
-      t: 0,
-      n: cellOwner.username,
-      fr: 0,
-      p: isProtected ? 1 : 0,
-      r: cellSave.resources,
-      m: cellSave.monsters || {},
-      l: baseLevel,
-      d: damage >= 90 ? 1 : 0,
-      lo: locked,
-      dm: damage,
-      pic_square: cellOwner.pic_square,
-      im: cellOwner.pic_square
-    };
-  } catch (error) {
-    logger.error(`Error fetching user cell data: ${error}`);
-  }
+  return {
+    uid: cellOwner.userid,
+    b: cell.base_type,
+    pi: 0,
+    bid: cell.baseid,
+    aid: 0,
+    i: cell.terrainHeight,
+    v: cellSave.empirevalue,
+    mine: mine ? 1 : 0,
+    f: cellSave.flinger,
+     c: cellSave.catapult,
+    t: 0,
+    n: cellOwner.username,
+    fr: 0,
+    p: isProtected ? 1 : 0,
+    r: cellSave.resources,
+    m: cellSave.monsters || {},
+    l: baseLevel,
+    d: damage >= 90 ? 1 : 0,
+    lo: locked,
+    dm: damage,
+    pic_square: cellOwner.pic_square,
+    im: cellOwner.pic_square
+  };
 };

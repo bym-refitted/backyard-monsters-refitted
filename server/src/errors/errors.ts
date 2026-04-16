@@ -131,3 +131,20 @@ export const relocateOutpostErr = () =>
     data: {},
     isClientFriendly: true,
   });
+
+export const baseUnderAttackErr = () =>
+  new ClientSafeError({
+    message: "This base is currently under attack by another player. Please try again later.",
+    status: Status.CONFLICT,
+    data: {},
+    isClientFriendly: false,
+  });
+
+export const takeoverCellErr = () =>
+  new ClientSafeError({
+    message: "The server attempted to take over this cell but failed unexpectedly. Please try again.",
+    status: Status.INTERNAL_SERVER_ERROR,
+    data: {},
+    isClientFriendly: false,
+  });
+

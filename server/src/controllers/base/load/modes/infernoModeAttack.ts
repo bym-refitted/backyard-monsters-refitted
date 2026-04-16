@@ -12,6 +12,8 @@ import {
   type TribeData,
 } from "../../../../models/infernomaproom.model.js";
 import { damageProtection } from "../../../../services/maproom/v2/damageProtection.js";
+import { isAttackActive } from "../../../../services/base/isAttackActive.js";
+import { baseUnderAttackErr } from "../../../../errors/errors.js";
 
 /**
  * Handles Inferno mode attacks for both real players and AI tribes
@@ -35,6 +37,8 @@ export const infernoModeAttack = async (user: User, baseid: string) => {
   }
 
   if (!save) return infernoTribeSave(user, baseid);
+
+  if (isAttackActive(save)) throw baseUnderAttackErr();
 
   if (save.attacks.length > 3) {
     save.attacks = save.attacks.slice(-2);
