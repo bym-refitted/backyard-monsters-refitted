@@ -56,6 +56,8 @@ export const initialPlayerCellData: KoaController = async (ctx) => {
 
   const cellOwners = new Map([[user.userid, user]]);
 
+  ctx.state.lastSeen = new Map();
+
   const celldata = await Promise.all(
     playerCells
       .sort((cell) => (cell.base_type === EnumYardType.PLAYER ? -1 : 1))
