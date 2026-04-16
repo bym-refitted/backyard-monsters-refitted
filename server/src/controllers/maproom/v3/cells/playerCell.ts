@@ -23,7 +23,6 @@ export const playerCell = async (ctx: Context, cell: WorldMapCell, cellOwners: M
   const [cellX, cellY] = [cell.x, cell.y];
 
   const currentUser: User = ctx.authUser;
-  const lastSeen = ctx.state.lastSeen;
 
   const mine = currentUser.userid === cell.uid;
   const cellOwner = mine ? currentUser : cellOwners.get(cell.uid);
@@ -31,13 +30,13 @@ export const playerCell = async (ctx: Context, cell: WorldMapCell, cellOwners: M
   const cellSave = cell.save;
 
   // We render an empty cell if the owner is not found or doesn't have save data
-  if (!cellOwner?.save) return { x: cell.x, y: cell.y, i: 0 };
+  if (!cellSave || !cellOwner?.save) return { x: cell.x, y: cell.y, i: 0 };
 
   const points = cellOwner.save.points;
   const basevalue = cellOwner.save.basevalue;
 
   const playerLevel = calculateBaseLevel(points, basevalue);
-  const structureLevel = cellSave?.level ?? 0;
+  const structureLevel = cellSave.level ?? 0;
 
   const structureRange = STRUCTURE_RANGE[cell.base_type];
 
@@ -56,10 +55,10 @@ export const playerCell = async (ctx: Context, cell: WorldMapCell, cellOwners: M
 
   let isProtected = false;
 
-  if (homeCell) {
-    isProtected = (cellSave?.protected ?? 0) > 0 && (cellSave?.protected ?? 0) > currentTime;
-  }
+  if (homeCell) 
+    isProtected = cellSave.protected > 0 && cellSave.protected > currentTime;
 
+  const lastSeen = ctx.state.lastSeen ?? new Map();
   const online = homeCell && (lastSeen.get(cell.uid) ?? 0) >= currentTime - 60;
 
   let locked = 0;
