@@ -7,6 +7,7 @@ import { calculateBaseLevel } from "../../../../services/base/calculateBaseLevel
 import { PLAYER_RANGE, STRUCTURE_RANGE } from "../../../../config/MapRoom3Config.js";
 import { EnumYardType } from "../../../../enums/EnumYardType.js";
 import { getCurrentDateTime } from "../../../../utils/getCurrentDateTime.js";
+import { isAttackActive } from "../../../../services/base/isAttackActive.js";
 
 /**
  * Handles the player's cell data on the world map for Map Room v3.
@@ -60,9 +61,10 @@ export const playerCell = async (ctx: Context, cell: WorldMapCell, cellOwners: M
 
   const lastSeen = ctx.state.lastSeen ?? new Map();
   const online = homeCell && (lastSeen.get(cell.uid) ?? 0) >= currentTime - 60;
+  const isUnderAttack = homeCell && isAttackActive(cellSave);
 
   let locked = 0;
-  if (online) locked = 1;
+  if (online || isUnderAttack) locked = 1;
   if (mine) locked = 0;
 
   return {
