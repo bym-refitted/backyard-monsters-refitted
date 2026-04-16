@@ -126,6 +126,7 @@ export const damageProtection = async (save: Save, mode?: BaseMode) => {
   if (persist) {
     save.protected = protection;
     postgres.em.persist(save);
-    await postgres.em.flush();
   }
+
+  return persist;
 };

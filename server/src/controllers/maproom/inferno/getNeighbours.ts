@@ -6,19 +6,33 @@ import { InfernoMaproom } from "../../../models/infernomaproom.model.js";
 import { postgres } from "../../../server.js";
 import { BaseType } from "../../../enums/Base.js";
 import { calculateBaseLevel } from "../../../services/base/calculateBaseLevel.js";
-import { damageProtection } from "../../../services/maproom/v2/damageProtection.js";
 import { logger } from "../../../utils/logger.js";
 import { AttackPermission } from "../../../enums/MapRoom.js";
 import { getCurrentDateTime } from "../../../utils/getCurrentDateTime.js";
 import { createNeighbourData } from "../../../services/maproom/inferno/createNeighbourData.js";
 import type { NeighbourData } from "../../../types/NeighbourData.js";
 import { getLastSeen } from "../../../services/maproom/getLastSeen.js";
+import { isAttackActive } from "../../../services/base/isAttackActive.js";
 
 /**
  * Cache validity period for inferno neighbours.
  * This is set to 2 weeks.
  */
 const CACHE_VALIDITY_HOURS = 24 * 7 * 2;
+
+/**
+ * Save fields fetched when updating live neighbour data.
+ * Restricted to only what updateNeighbourData needs.
+ */
+const NEIGHBOUR_SAVE_FIELDS = [
+  "userid",
+  "protected",
+  "attackid",
+  "attacks",
+  "damage",
+  "worldid",
+  "level",
+] as const;
 
 /**
  * Controller to get inferno neighbours for PvP matchmaking.
@@ -197,31 +211,67 @@ const updateNeighbourData = async (cachedNeighbours: NeighbourData[]) => {
 
   // Fetch current saves and last seen timestamps for all neighbours in parallel
   const [neighbourSaves, lastSeens] = await Promise.all([
-    postgres.em.find(Save, { type: BaseType.INFERNO, userid: { $in: userIds } }),
+    postgres.em.find(
+      Save,
+      {
+        type: BaseType.INFERNO,
+        userid: { $in: userIds },
+      },
+      { fields: NEIGHBOUR_SAVE_FIELDS },
+    ) as unknown as Promise<Save[]>,
+
     getLastSeen(userIds, BaseType.INFERNO),
   ]);
 
   const saves = new Map<number, Save>();
   neighbourSaves.forEach((save) => saves.set(save.userid, save));
 
-  // Update protection status for all saves
-  for (const save of neighbourSaves) await damageProtection(save);
+  const currentTime = getCurrentDateTime();
+  let needsFlush = false;
 
-  return cachedNeighbours.flatMap((neighbour) => {
+  // Clear expired protection timestamps
+  for (const save of neighbourSaves) {
+    if (save.protected > 0 && save.protected <= currentTime) {
+      save.protected = 0;
+      postgres.em.persist(save);
+      needsFlush = true;
+    }
+  }
+
+  const updatedNeighbours = cachedNeighbours.flatMap((neighbour) => {
     const neighbourSave = saves.get(neighbour.userid);
 
     if (!neighbourSave || neighbourSave.worldid == null) return [];
 
-    // TODO: Add the rest of the cases here for attack permissions e.g. level too low
-    const currentTime = getCurrentDateTime();
     const isProtected = neighbourSave.protected > 0 && neighbourSave.protected > currentTime;
 
-    neighbour.attackpermitted = isProtected ? AttackPermission.DAMAGE_PROTECTION : AttackPermission.ATTACKABLE;
+    const isUnderAttack = isAttackActive(neighbourSave);
+
+    // Reset stale attackid left over from a disconnected attacker
+    if (neighbourSave.attackid !== 0 && !isUnderAttack) {
+      neighbourSave.attackid = 0;
+      postgres.em.persist(neighbourSave);
+      needsFlush = true;
+    }
+
+    if (isProtected) {
+      neighbour.attackpermitted = AttackPermission.DAMAGE_PROTECTION;
+    } else if (isUnderAttack) {
+      neighbour.attackpermitted = AttackPermission.UNDER_ATTACK;
+      neighbour.attacker = neighbourSave.attacks.at(-1)!.name;
+    } else {
+      neighbour.attackpermitted = AttackPermission.ATTACKABLE;
+    }
+
     neighbour.level = neighbourSave.level;
     neighbour.saved = lastSeens.get(neighbour.userid) ?? 0;
 
     return [neighbour];
   });
+
+  if (needsFlush) await postgres.em.flush();
+
+  return updatedNeighbours;
 };
 
 /**
