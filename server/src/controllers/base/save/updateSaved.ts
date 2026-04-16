@@ -13,7 +13,6 @@ import type { KoaController } from "../../../utils/KoaController.js";
 import { baseModeBuild } from "../load/modes/baseModeBuild.js";
 import { baseModeView } from "../load/modes/baseModeView.js";
 import { infernoModeView } from "../load/modes/infernoModeView.js";
-import { logger } from "../../../utils/logger.js";
 import { mapUserSaveData } from "../mapUserSaveData.js";
 
 const UpdateSavedSchema = z.object({
@@ -36,60 +35,52 @@ export const updateSaved: KoaController = async (ctx) => {
   await postgres.em.populate(user, ["save"]);
 
   const userSave = user.save!;
-  
-  try {
-    const worldid = user.save?.worldid;
-    const { baseid, type, mapversion } = UpdateSavedSchema.parse(ctx.request.body);
+  const worldid = user.save?.worldid;
+  const { baseid, type, mapversion } = UpdateSavedSchema.parse(ctx.request.body);
 
-    let baseSave: Save | null = null;
+  let baseSave: Save | null = null;
 
-    switch (type) {
-      case BaseMode.BUILD:
-        baseSave = await baseModeBuild(user, baseid);
-        break;
+  switch (type) {
+    case BaseMode.BUILD:
+      baseSave = await baseModeBuild(user, baseid);
+      break;
 
-      case BaseMode.IVIEW:
-      case BaseMode.IATTACK:
-        baseSave = await infernoModeView(user, baseid);
-        break;
+    case BaseMode.IVIEW:
+    case BaseMode.IATTACK:
+      baseSave = await infernoModeView(user, baseid);
+      break;
 
-      default:
-        baseSave = await baseModeView(baseid, mapversion, worldid);
-        break;
-    }
-
-    if (!baseSave) throw saveFailureErr();
-
-    baseSave.savetime = getCurrentDateTime();
-    baseSave.id = baseSave.savetime; // client expects this.
-
-    if (baseid !== BaseMode.DEFAULT && type === BaseMode.BUILD) {
-      postgres.em.persist(baseSave);
-      await postgres.em.flush();
-    }
-
-    const filteredSave = FilterFrontendKeys(baseSave);
-
-    const flags = getFlags();
-    flags.discordOldEnough = Number(ctx.meetsDiscordAgeCheck);
-
-    const responseBody = {
-      error: 0,
-      flags,
-      ...filteredSave,
-      credits: userSave.credits
-    };
-
-    if (baseSave.type !== BaseType.INFERNO && user.userid === filteredSave.userid) {
-      Object.assign(responseBody, mapUserSaveData(user));
-    }
-
-    ctx.status = Status.OK;
-    ctx.body = responseBody;
-  } catch (err) {
-    logger.error(`Failed to update save for user: ${user.username}: ${err}`);
-
-    ctx.status = Status.INTERNAL_SERVER_ERROR;
-    ctx.body = { error: `Failed to update save for user: ${user.username}` };
+    default:
+      baseSave = await baseModeView(baseid, mapversion, worldid);
+      break;
   }
+
+  if (!baseSave) throw saveFailureErr();
+
+  baseSave.savetime = getCurrentDateTime();
+  baseSave.id = baseSave.savetime; // client expects this.
+
+  if (baseid !== BaseMode.DEFAULT && type === BaseMode.BUILD) {
+    postgres.em.persist(baseSave);
+    await postgres.em.flush();
+  }
+
+  const filteredSave = FilterFrontendKeys(baseSave);
+
+  const flags = getFlags();
+  flags.discordOldEnough = Number(ctx.meetsDiscordAgeCheck);
+
+  const responseBody = {
+    error: 0,
+    flags,
+    ...filteredSave,
+    credits: userSave.credits
+  };
+
+  if (baseSave.type !== BaseType.INFERNO && user.userid === filteredSave.userid) {
+    Object.assign(responseBody, mapUserSaveData(user));
+  }
+
+  ctx.status = Status.OK;
+  ctx.body = responseBody;
 };

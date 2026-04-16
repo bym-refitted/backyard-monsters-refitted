@@ -9,10 +9,10 @@ import {
   Operation,
   updateResources,
 } from "../../../services/base/updateResources.js";
-import { logger } from "../../../utils/logger.js";
 import { getCurrentDateTime } from "../../../utils/getCurrentDateTime.js";
 import { validateRange } from "../../../services/maproom/v2/validateRange.js";
 import { TakeoverCellSchema } from "../../../zod/TakeoverCellSchema.js";
+import { takeoverCellErr } from "../../../errors/errors.js";
 
 /**
  * Controller to handle the takeover of a cell on the world map via shiny or resources.
@@ -25,102 +25,91 @@ import { TakeoverCellSchema } from "../../../zod/TakeoverCellSchema.js";
  * @throws Will throw an error if the base or base type is invalid.
  */
 export const takeoverCell: KoaController = async (ctx) => {
-  try {
-    const { baseid, resources, shiny } = TakeoverCellSchema.parse(
-      ctx.request.body
-    );
+  const { baseid, resources, shiny } = TakeoverCellSchema.parse(ctx.request.body);
 
-    const currentUser: User = ctx.authUser;
-    await postgres.em.populate(currentUser, ["save"]);
+  const currentUser: User = ctx.authUser;
+  await postgres.em.populate(currentUser, ["save"]);
 
-    const userSave = currentUser.save!;
+  const userSave = currentUser.save!;
 
-    const cell = await postgres.em.findOne(
-      WorldMapCell,
-      { baseid, world: userSave.worldid },
-      { populate: ["save"] }
-    );
+  const cell = await postgres.em.findOne(
+    WorldMapCell,
+    { baseid, world: userSave.worldid },
+    { populate: ["save"] }
+  );
 
-    if (!cell || !cell.save || cell.save.type === BaseType.MAIN) {
-      ctx.status = Status.BAD_REQUEST;
-      ctx.body = { error: 1 };
-      throw new Error(`Invalid base or base type. Base ID: ${baseid}`);
-    }
-
-    const cellSave = cell.save;
-
-    if (cellSave.damage < 90)
-      throw new Error("Cell is not damaged enough to be taken over.");
-
-    const mapversion: MapRoomVersion = cell.map_version;
-
-    await validateRange(currentUser, userSave, mapversion, { attackCell: cell });
-
-    if (shiny) userSave.credits = userSave.credits - shiny;
-    if (resources)
-      userSave.resources = updateResources(
-        resources,
-        userSave.resources ?? {},
-        Operation.SUBTRACT
-      );
-
-    // Clean up previous owner's save if the cell was player-owned
-    const previousOwner = await postgres.em.findOne(
-      User,
-      { userid: cellSave.userid },
-      { populate: ["save"] }
-    );
-
-    if (previousOwner?.save) {
-      const { outposts } = previousOwner.save;
-
-      previousOwner.save.outposts = outposts.filter(
-        ([x, y, id]) => !(x === cell.x && y === cell.y && id === baseid)
-      );
-
-      if (previousOwner.save.buildingresources)
-        delete previousOwner.save.buildingresources[`b${baseid}`];
-
-      postgres.em.persist(previousOwner);
-    }
-
-    // Update save
-    const currentTime = getCurrentDateTime();
-    const twelveHours = 12 * 60 * 60;
-
-    cellSave.saveuserid = currentUser.userid;
-    cellSave.userid = userSave.userid;
-    cellSave.homebaseid = userSave.homebaseid;
-    cellSave.name = userSave.name;
-    cellSave.createtime = currentTime;
-    cellSave.protected = currentTime + twelveHours;
-    cellSave.attacks = [];
-    cellSave.resources = {};
-    cellSave.tutorialstage = 205;
-    cellSave.monsters = {};
-    
-    cellSave.takeoverDate = new Date();
-
-    if (cellSave.type === BaseType.TRIBE) {
-      cellSave.type = BaseType.OUTPOST;
-      cellSave.buildingdata = {};
-      cellSave.wmid = 0;
-    }
-
-    // Update cell
-    cell.uid = currentUser.userid;
-    cell.base_type = MapRoomCell.OUTPOST;
-
-    // Update user
-    userSave.outposts.push([cell.x, cell.y, baseid]);
-    postgres.em.persist([cellSave, currentUser]);
-    await postgres.em.flush();
-
-    ctx.status = Status.OK;
-    ctx.body = { error: 0 };
-  } catch (error) {
-    logger.error(`Error taking over cell: ${error}`);
-    ctx.status = Status.BAD_REQUEST;
-    ctx.body = { error: "The server attempted to take over this cell but failed unexpectedly." };
+  if (!cell || !cell.save || cell.save.type === BaseType.MAIN) {
+    throw new Error(`Invalid base or base type. Base ID: ${baseid}`);
   }
+
+  const cellSave = cell.save;
+
+  if (cellSave.damage < 90) throw takeoverCellErr();
+
+  const mapversion: MapRoomVersion = cell.map_version;
+
+  await validateRange(currentUser, userSave, mapversion, { attackCell: cell });
+
+  if (shiny) userSave.credits = userSave.credits - shiny;
+  if (resources)
+    userSave.resources = updateResources(
+      resources,
+      userSave.resources ?? {},
+      Operation.SUBTRACT
+    );
+
+  // Clean up previous owner's save if the cell was player-owned
+  const previousOwner = await postgres.em.findOne(
+    User,
+    { userid: cellSave.userid },
+    { populate: ["save"] }
+  );
+
+  if (previousOwner?.save) {
+    const { outposts } = previousOwner.save;
+
+    previousOwner.save.outposts = outposts.filter(
+      ([x, y, id]) => !(x === cell.x && y === cell.y && id === baseid)
+    );
+
+    if (previousOwner.save.buildingresources)
+      delete previousOwner.save.buildingresources[`b${baseid}`];
+
+    postgres.em.persist(previousOwner);
+  }
+
+  // Update save
+  const currentTime = getCurrentDateTime();
+  const twelveHours = 12 * 60 * 60;
+
+  cellSave.saveuserid = currentUser.userid;
+  cellSave.userid = userSave.userid;
+  cellSave.homebaseid = userSave.homebaseid;
+  cellSave.name = userSave.name;
+  cellSave.createtime = currentTime;
+  cellSave.protected = currentTime + twelveHours;
+  cellSave.attacks = [];
+  cellSave.resources = {};
+  cellSave.tutorialstage = 205;
+  cellSave.monsters = {};
+    
+  cellSave.takeoverDate = new Date();
+
+  if (cellSave.type === BaseType.TRIBE) {
+    cellSave.type = BaseType.OUTPOST;
+    cellSave.buildingdata = {};
+    cellSave.wmid = 0;
+  }
+
+  // Update cell
+  cell.uid = currentUser.userid;
+  cell.base_type = MapRoomCell.OUTPOST;
+
+  // Update user
+  userSave.outposts.push([cell.x, cell.y, baseid]);
+  postgres.em.persist([cellSave, currentUser]);
+  await postgres.em.flush();
+
+  ctx.status = Status.OK;
+  ctx.body = { error: 0 };
 };

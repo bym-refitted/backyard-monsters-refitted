@@ -16,6 +16,8 @@ import {
 import { getGeneratedCells, cellKey } from "../../../../services/maproom/v3/generateCells.js";
 import { createAttackLog } from "../../../../services/base/createAttackLog.js";
 import { updateResources, Operation } from "../../../../services/base/updateResources.js";
+import { isAttackActive } from "../../../../services/base/isAttackActive.js";
+import { baseUnderAttackErr } from "../../../../errors/errors.js";
 
 export interface AttackDetails {
   fbid?: string;
@@ -47,6 +49,8 @@ export const baseModeAttack = async ({ user, baseid, mapversion, attackCost }: B
   if (!save) save = await tribeSaveHandler(baseid, mapversion, userSave.worldid);
 
   if (!save) throw new Error(`Save not found for baseid: ${baseid}`);
+
+  if (save.type !== BaseType.TRIBE && isAttackActive(save)) throw baseUnderAttackErr();
 
   if (save.attacks.length > 3) {
     save.attacks = save.attacks.slice(-2);
