@@ -25,7 +25,6 @@ export interface NeighbourData {
   trucestate?: string;
   truceexpire?: number;
   destroyed?: number;
-  online?: boolean;
   description?: string;
   type?: number;
   wm?: number;

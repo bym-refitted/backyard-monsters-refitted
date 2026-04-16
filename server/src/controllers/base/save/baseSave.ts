@@ -1,7 +1,7 @@
 import type { KoaController } from "../../../utils/KoaController.js";
 import { Save } from "../../../models/save.model.js";
 import { User } from "../../../models/user.model.js";
-import { postgres } from "../../../server.js";
+import { postgres, redis } from "../../../server.js";
 import { FilterFrontendKeys } from "../../../utils/FrontendKey.js";
 import { getCurrentDateTime } from "../../../utils/getCurrentDateTime.js";
 import { logger } from "../../../utils/logger.js";
@@ -173,6 +173,10 @@ export const baseSave: KoaController = async (ctx) => {
 
     baseSave.id = baseSave.savetime;
     baseSave.savetime = getCurrentDateTime();
+
+    if (!isAttack) {
+      await redis.setex(`last-seen:${user.userid}`, 120, getCurrentDateTime().toString());
+    }
 
     postgres.em.persist(baseSave);
     await postgres.em.flush();

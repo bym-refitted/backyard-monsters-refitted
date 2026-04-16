@@ -1,9 +1,9 @@
 import type { KoaController } from "../../../utils/KoaController.js";
 import { Status } from "../../../enums/StatusCodes.js";
-import { User } from "../../../models/user.model.js";
 import { Save } from "../../../models/save.model.js";
+import { User } from "../../../models/user.model.js";
 import { InfernoMaproom } from "../../../models/infernomaproom.model.js";
-import { postgres } from "../../../server.js";
+import { postgres, redis } from "../../../server.js";
 import { BaseType } from "../../../enums/Base.js";
 import { calculateBaseLevel } from "../../../services/base/calculateBaseLevel.js";
 import { damageProtection } from "../../../services/maproom/v2/damageProtection.js";
@@ -194,19 +194,27 @@ const updateNeighbourData = async (cachedNeighbours: NeighbourData[]) => {
 
   const userIds = cachedNeighbours.map((neighbour) => neighbour.userid);
 
-  const neighbourSaves = await postgres.em.find(Save, {
-    type: BaseType.INFERNO,
-    userid: { $in: userIds },
-  });
+  // Fetch current saves and last seen timestamps for all neighbours in parallel
+  const [neighbourSaves, lastSeen] = await Promise.all([
+    postgres.em.find(Save, { type: BaseType.INFERNO, userid: { $in: userIds } }),
+    redis.mget(...userIds.map((uid) => `last-seen:${uid}`)),
+  ]);
 
-  const saveMap = new Map<number, Save>();
-  neighbourSaves.forEach((save) => saveMap.set(save.userid, save));
+  const saves = new Map<number, Save>();
+  neighbourSaves.forEach((save) => saves.set(save.userid, save));
+
+  const lastSeens = new Map<number, number>();
+
+  userIds.forEach((userid, i) => {
+    const timestamp = lastSeen[i];
+    if (timestamp) lastSeens.set(userid, parseInt(timestamp));
+  });
 
   // Update protection status for all saves
   for (const save of neighbourSaves) await damageProtection(save);
 
   return cachedNeighbours.flatMap((neighbour) => {
-    const neighbourSave = saveMap.get(neighbour.userid);
+    const neighbourSave = saves.get(neighbour.userid);
 
     if (!neighbourSave || neighbourSave.worldid == null) return [];
 
@@ -215,10 +223,8 @@ const updateNeighbourData = async (cachedNeighbours: NeighbourData[]) => {
     const isProtected = neighbourSave.protected > 0 && neighbourSave.protected > currentTime;
 
     neighbour.attackpermitted = isProtected ? AttackPermission.DAMAGE_PROTECTION : AttackPermission.ATTACKABLE;
-
     neighbour.level = neighbourSave.level;
-    neighbour.saved = neighbourSave.savetime;
-    neighbour.online = getCurrentDateTime() - neighbourSave.savetime <= 60;
+    neighbour.saved = lastSeens.get(neighbour.userid) ?? 0;
 
     return [neighbour];
   });

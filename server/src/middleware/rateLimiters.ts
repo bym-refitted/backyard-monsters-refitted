@@ -10,7 +10,7 @@ export const getCellsLimiter = RateLimit.middleware({
   interval: { min: 1 },
   max: 60,
   prefixKey: "getcells",
-  keyGenerator: async (ctx: Context) => ctx.authUser?.userid ?? ctx.ip,
+  keyGenerator: async (ctx: Context) => String(ctx.authUser?.userid ?? ctx.ip),
   handler: async (ctx: Context) => {
     ctx.status = Status.TOO_MANY_REQUESTS;
     ctx.body = { error: "Too many cell requests. Please slow down." };

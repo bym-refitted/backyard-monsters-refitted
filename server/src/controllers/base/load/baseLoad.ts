@@ -99,7 +99,7 @@ export const baseLoad: KoaController = async (ctx) => {
     const isTutorialEnabled = devConfig.skipTutorial ? 205 : filteredSave.tutorialstage;
 
     const flags = getFlags();
-    flags.discordOldEnough = ctx.meetsDiscordAgeCheck;
+    flags.discordOldEnough = Number(ctx.meetsDiscordAgeCheck);
 
     const isOwner = baseSave.type !== BaseType.INFERNO && user.userid === filteredSave.userid;
 
