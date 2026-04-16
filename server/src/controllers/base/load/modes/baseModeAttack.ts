@@ -17,7 +17,8 @@ import { getGeneratedCells, cellKey } from "../../../../services/maproom/v3/gene
 import { createAttackLog } from "../../../../services/base/createAttackLog.js";
 import { updateResources, Operation } from "../../../../services/base/updateResources.js";
 import { isAttackActive } from "../../../../services/base/isAttackActive.js";
-import { baseUnderAttackErr } from "../../../../errors/errors.js";
+import { baseUnderAttackErr, userOnlineErr } from "../../../../errors/errors.js";
+import { redis } from "../../../../server.js";
 
 export interface AttackDetails {
   fbid?: string;
@@ -50,11 +51,15 @@ export const baseModeAttack = async ({ user, baseid, mapversion, attackCost }: B
 
   if (!save) throw new Error(`Save not found for baseid: ${baseid}`);
 
-  if (save.type !== BaseType.TRIBE && isAttackActive(save)) throw baseUnderAttackErr();
+  if (save.type !== BaseType.TRIBE) {
+    const lastSeen = await redis.get(`last-seen:${BaseType.MAIN}:${save.userid}`);
+    
+    if (lastSeen && parseInt(lastSeen) >= getCurrentDateTime() - 60) throw userOnlineErr();
 
-  if (save.attacks.length > 3) {
-    save.attacks = save.attacks.slice(-2);
+    if (isAttackActive(save)) throw baseUnderAttackErr();
   }
+
+  if (save.attacks.length > 3) save.attacks = save.attacks.slice(-2);
 
   // Track the details of the attack
   const attackDetails: AttackDetails = {
