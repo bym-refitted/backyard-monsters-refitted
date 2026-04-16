@@ -30,11 +30,11 @@ export const userCell = async (ctx: Context, cell: WorldMapCell, cellOwners: Map
 
     const currentTime = getCurrentDateTime();
 
-    const homecell = cell.base_type === MapRoomCell.HOMECELL;
+    const homeCell = cell.base_type === MapRoomCell.HOMECELL;
     
     const lastSeen = ctx.state.lastSeen;
-    const online = homecell && (lastSeen.get(cell.uid) ?? 0) >= currentTime - 60;
-    const isUnderAttack = homecell && isAttackActive(cellSave);
+    const online = homeCell && (lastSeen.get(cell.uid) ?? 0) >= currentTime - 60;
+    const isUnderAttack = homeCell && isAttackActive(cellSave);
 
     let locked = cellSave.locked;
     if (online || isUnderAttack) locked = 1;
