@@ -19,7 +19,6 @@ import { MapRoomCell } from "../../../../enums/MapRoom.js";
  */
 export const userCell = async (ctx: Context, cell: WorldMapCell, cellOwners: Map<number, User>) => {
   const currentUser: User = ctx.authUser;
-  const lastSeen = ctx.state.lastSeen;
 
   try {
     const mine = currentUser.userid === cell.uid;
@@ -31,6 +30,8 @@ export const userCell = async (ctx: Context, cell: WorldMapCell, cellOwners: Map
     const currentTime = getCurrentDateTime();
 
     const homecell = cell.base_type === MapRoomCell.HOMECELL;
+    
+    const lastSeen = ctx.state.lastSeen;
     const online = homecell && (lastSeen.get(cell.uid) ?? 0) >= currentTime - 60;
 
     let locked = cellSave.locked;
