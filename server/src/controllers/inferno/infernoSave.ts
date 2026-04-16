@@ -5,7 +5,7 @@ import { permissionErr } from "../../errors/errors.js";
 import { ClientSafeError } from "../../middleware/clientSafeError.js";
 import { Save } from "../../models/save.model.js";
 import { User } from "../../models/user.model.js";
-import { postgres } from "../../server.js";
+import { postgres, redis } from "../../server.js";
 import { scaledTribes } from "../../services/maproom/v1/scaledTribes.js";
 import { FilterFrontendKeys } from "../../utils/FrontendKey.js";
 import { getCurrentDateTime } from "../../utils/getCurrentDateTime.js";
@@ -135,6 +135,10 @@ export const infernoSave: KoaController = async (ctx) => {
 
     baseSave.id = baseSave.savetime;
     baseSave.savetime = getCurrentDateTime();
+
+    if (!isAttack) {
+      await redis.setex(`last-seen:${user.userid}`, 120, getCurrentDateTime().toString());
+    }
 
     baseSave.champion = [];
 

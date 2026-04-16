@@ -38,7 +38,6 @@ export const createNeighbourData = (save: Save, user: User, level: number): Neig
     trucestate: "",
     truceexpire: 0,
     destroyed: 0,
-    online: false,
     description: "",
     level,
   }

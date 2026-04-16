@@ -71,7 +71,7 @@ export const updateSaved: KoaController = async (ctx) => {
     const filteredSave = FilterFrontendKeys(baseSave);
 
     const flags = getFlags();
-    flags.discordOldEnough = ctx.meetsDiscordAgeCheck;
+    flags.discordOldEnough = Number(ctx.meetsDiscordAgeCheck);
 
     const responseBody = {
       error: 0,

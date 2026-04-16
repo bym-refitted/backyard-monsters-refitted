@@ -31,17 +31,15 @@ export const userCell = async (ctx: Context, cell: WorldMapCell, cellOwners: Map
       return;
     }
 
-    const online = getCurrentDateTime() - cellSave.savetime <= 60;
+    const currentTime = getCurrentDateTime();
 
-    // TODO: Cell should be locked when a player is getting attacked, not when online
-    // Everytime a user cell is attacked, it trigger this for 60 seconds
-    const locked = mine ? 0 : online ? 1 : cellSave.locked || 0;
+    // locked stores the attacker's user ID when a base is actively under attack (set by the attack system)
+    const locked = mine ? 0 : cellSave.locked || 0;
 
     const points = cellOwner.save.points;
     const basevalue = cellOwner.save.basevalue;
     const baseLevel = calculateBaseLevel(points, basevalue);
 
-    const currentTime = getCurrentDateTime();
     const isProtected = cellSave.protected > 0 && cellSave.protected > currentTime;
     const protectionExpired = cellSave.protected > 0 && cellSave.protected <= currentTime;
     
@@ -61,7 +59,6 @@ export const userCell = async (ctx: Context, cell: WorldMapCell, cellOwners: Map
       t: 0,
       n: cellOwner.username,
       fr: 0,
-      on: online,
       p: isProtected ? 1 : 0, // Convert timestamp to boolean for client
       r: cellSave.resources,
       m: cellSave.monsters || {},
