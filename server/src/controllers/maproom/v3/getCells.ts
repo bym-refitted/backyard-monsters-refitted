@@ -1,7 +1,7 @@
 import { User } from "../../../models/user.model.js";
 import { Status } from "../../../enums/StatusCodes.js";
 import { CellSchema } from "../../../zod/CellSchema.js";
-import { postgres, redis } from "../../../server.js";
+import { postgres } from "../../../server.js";
 import { MapRoom3, MapRoomVersion } from "../../../enums/MapRoom.js";
 import { WorldMapCell } from "../../../models/worldmapcell.model.js";
 import { getGeneratedCells, cellKey } from "../../../services/maproom/v3/generateCells.js";
