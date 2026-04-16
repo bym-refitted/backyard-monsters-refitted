@@ -15,6 +15,8 @@ import type { CellData } from "../../../types/CellData.js";
 import { getCellBounds, type Coord } from "../../../services/maproom/v3/utils/getCellBounds.js";
 import { getDefenderLevels } from "../../../services/maproom/v3/getDefenderLevels.js";
 import { TRIBE_REGEN_TIME } from "../../../config/MapRoom3Config.js";
+import { getLastSeen } from "../../../services/maproom/getLastSeen.js";
+import { BaseType } from "../../../enums/Base.js";
 
 /**
  * Save fields fetched alongside each WorldMapCell in the DB query.
@@ -187,20 +189,14 @@ export const getMapRoomCells: KoaController = async (ctx) => {
     // =========================================================================
     const ownerIds = [...new Set(dbCells.map((cell) => cell.uid).filter(Boolean))];
 
-    const [ownersList, lastSeenValues] = await Promise.all([
+    const [ownersList, lastSeenMap] = await Promise.all([
       postgres.em.find(User, { userid: { $in: ownerIds } }, { populate: ["save"] }),
-      redis.mget(...ownerIds.map((id) => `last-seen:main:${id}`)),
+      getLastSeen(ownerIds, BaseType.MAIN),
     ]);
 
     const cellOwners = new Map<number, User>(
       ownersList.map((u) => [u.userid, u]),
     );
-
-    const lastSeenMap = new Map<number, number>();
-    ownerIds.forEach((id, i) => {
-      const timestamp = lastSeenValues[i];
-      if (timestamp) lastSeenMap.set(id, parseInt(timestamp));
-    });
 
     ctx.state.lastSeen = lastSeenMap;
 
