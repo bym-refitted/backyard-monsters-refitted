@@ -34,7 +34,10 @@ package
          else
          {
             _canFunction = true;
-            MAPROOM.initMaproomSetup = true;
+            if(_lvl.Get() == 1 || GLOBAL.StatGet("mrl") >= 2 || MapRoomManager.instance.isInMapRoom3)
+            {
+               MAPROOM.initMaproomSetup = true;
+            }
          }
          if(MapRoomManager.instance.isInMapRoom3)
          {
@@ -46,7 +49,7 @@ package
             {
                GLOBAL.StatSet("mrl",2); // Comment: Previously set to 1
             }
-            if(GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD && _lvl.Get() == 1 && GLOBAL.StatGet("mrl") != 2 && BASE._saveCounterA == BASE._saveCounterB && !BASE._saving)
+            if(GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD && _lvl.Get() >= 2 && GLOBAL.StatGet("mrl") != 2 && BASE._saveCounterA == BASE._saveCounterB && !BASE._saving)
             {
                this.NewWorld();
             }
@@ -69,6 +72,7 @@ package
                return;
             }
             this.callPending = true;
+            MAPROOM.initMaproomSetup = false;
             _loc1_ = [["version",2]];
             new URLLoaderApi().load(GLOBAL._mapURL + "setmapversion",_loc1_,this.NewWorldSuccess,this.NewWorldFail);
          }
