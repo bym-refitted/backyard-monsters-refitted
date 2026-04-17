@@ -45,6 +45,10 @@ export const setMapVersion: KoaController = async (ctx) => {
   }
 
   switch (version) {
+    case MapRoomVersion.V1:
+      await leaveWorld(user, save);
+      break;
+
     case MapRoomVersion.V2:
       await joinOrCreateWorld(user, save);
       break;
@@ -52,9 +56,6 @@ export const setMapVersion: KoaController = async (ctx) => {
     case MapRoomVersion.V3:
       await joinNewWorldMap(user, save);
       break;
-
-    default:
-      await leaveWorld(user, save);
   }
 
   const filteredSave = FilterFrontendKeys(save);

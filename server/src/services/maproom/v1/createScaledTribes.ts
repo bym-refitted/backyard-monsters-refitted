@@ -64,7 +64,7 @@ export const createScaledTribes = async (save: Save, tribes: TribeScaleConfig) =
 
     if (!user) throw new Error(`User not found for userid: ${userid}`);
     
-    maproom = await InfernoMaproom.setupMapRoom1Data(postgres.em, user);
+    maproom = await InfernoMaproom.setupInfernoMapRoomData(postgres.em, user);
   }
 
   const tribeIdSet = new Set(tribeIds);
