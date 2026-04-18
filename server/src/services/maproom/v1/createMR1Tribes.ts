@@ -8,6 +8,7 @@ import { Save } from "../../../models/save.model.js";
 import { User } from "../../../models/user.model.js";
 import { postgres } from "../../../server.js";
 import { getCurrentDateTime } from "../../../utils/getCurrentDateTime.js";
+import { extractTownHall } from "../../../utils/extractTownHall.js";
 
 export interface MR1TribeScaleConfig {
   [TribeScale.LOW]: { maxLevel: number };
@@ -18,12 +19,12 @@ export interface MR1TribeScaleConfig {
 const mr1TribeData = [legionnaire, kozu, abunaki, dreadnaught];
 
 /**
- * Returns an array of scaled MR1 tribes based on the player's level.
+ * Returns an array of scaled MR1 tribes based on the player's Town Hall level.
  *
  * Tribe scale is selected as follows:
- * - LOW:  levels 1–10
- * - MID:  levels 11–20
- * - HIGH: levels 21+
+ * - LOW:  Town Hall 1–3
+ * - MID:  Town Hall 4–6
+ * - HIGH: Town Hall 7–10
  *
  * Each scale maps to a different baseid per tribe type so the client loads
  * the appropriate difficulty variant. The wmstatus level is set dynamically
@@ -33,7 +34,7 @@ const mr1TribeData = [legionnaire, kozu, abunaki, dreadnaught];
  * Destroyed tribes respawn after 1 hour, matching inferno behaviour.
  *
  * @param {Save} save - The player's main save
- * @param {MR1TribeScaleConfig} tribes - Level thresholds per scale
+ * @param {MR1TribeScaleConfig} tribes - Town Hall level thresholds per scale (max TH level is 10)
  * @returns {Promise<number[][]>} wmstatus array of [baseid, level, destroyed] tuples
  */
 export const createMR1Tribes = async (save: Save, tribes: MR1TribeScaleConfig) => {
@@ -41,15 +42,18 @@ export const createMR1Tribes = async (save: Save, tribes: MR1TribeScaleConfig) =
   const playerLevel = Math.max(1, level);
   const levelPattern = [-1, 0, 1, 2];
 
+  const townHall = extractTownHall(save.buildingdata ?? {});
+  const thLevel = townHall?.l ?? 1;
+
   const oneHour = 1 * 60 * 60;
   const currentTime = getCurrentDateTime();
 
   let scale: TribeScale;
   let persist = false;
 
-  if (playerLevel <= tribes[TribeScale.LOW].maxLevel) {
+  if (thLevel <= tribes[TribeScale.LOW].maxLevel) {
     scale = TribeScale.LOW;
-  } else if (playerLevel <= tribes[TribeScale.MID].maxLevel) {
+  } else if (thLevel <= tribes[TribeScale.MID].maxLevel) {
     scale = TribeScale.MID;
   } else {
     scale = TribeScale.HIGH;

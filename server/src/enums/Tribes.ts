@@ -38,9 +38,9 @@ export const Tribes: Tribe[] = [
  * @type {Record}
  */
 export const MR1_TRIBES: MR1TribeScaleConfig = {
-  [TribeScale.LOW]: { maxLevel: 10 },
-  [TribeScale.MID]: { maxLevel: 20 },
-  [TribeScale.HIGH]: { maxLevel: 56 },
+  [TribeScale.LOW]: { maxLevel: 3 },
+  [TribeScale.MID]: { maxLevel: 6 },
+  [TribeScale.HIGH]: { maxLevel: Infinity }
 };
 
 export const INFERNO_TRIBES: TribeScaleConfig = {
