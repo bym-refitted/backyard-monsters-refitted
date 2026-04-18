@@ -12,9 +12,9 @@ export const infernoModeDescent = async (user: User) => {
 
   if (!baseSave) throw new Error(`Main save not found for user: ${user.username}`);
 
-  const maproom1 = await postgres.em.findOne(InfernoMaproom, { userid });
+  const maproomInferno = await postgres.em.findOne(InfernoMaproom, { userid });
 
-  if (!maproom1) await InfernoMaproom.setupInfernoMapRoomData(postgres.em, user);
+  if (!maproomInferno) await InfernoMaproom.setupInfernoMapRoomData(postgres.em, user);
 
   // Otherwise, create an array of 13 descent tribes, client expects IDs between 201-213.
   const tribes = Array.from({ length: 13 }, (_, i) => [201 + i, i + 1, 0]);

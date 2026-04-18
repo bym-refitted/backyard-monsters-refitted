@@ -29,6 +29,9 @@ import { BaseLoadSchema } from "../../../zod/BaseLoadSchema.js";
 import { discordAgeErr } from "../../../errors/errors.js";
 import { EnumBaseRelationship } from "../../../enums/EnumBaseRelationship.js";
 import { canAttack } from "../../../services/base/canAttack.js";
+import { createScaledMR1Tribes } from "../../../services/maproom/v1/createScaledMR1Tribes.js";
+import { MR1_TRIBES } from "../../../enums/Tribes.js";
+import { calculateBaseLevel } from "../../../services/base/calculateBaseLevel.js";
 
 /**
  * Controller responsible for loading base modes based on the user's request.
@@ -53,7 +56,7 @@ export const baseLoad: KoaController = async (ctx) => {
 
     case BaseMode.VIEW:
     case BaseMode.IVIEW:
-      baseSave = await baseModeView(baseid, mapversion, worldid);
+      baseSave = await baseModeView(baseid, mapversion, worldid, user);
       break;
 
     case BaseMode.ATTACK:
@@ -86,12 +89,30 @@ export const baseLoad: KoaController = async (ctx) => {
       await validateAttack(user, attackData, mapversion);
       baseSave = await infernoModeAttack(user, baseid);
       break;
-        
+
+    case BaseMode.WMVIEW:
+      baseSave = await baseModeView(baseid, mapversion, worldid, user);
+      break;
+
+    case BaseMode.WMATTACK:
+      if (!ctx.meetsDiscordAgeCheck) throw discordAgeErr();
+      await validateAttack(user, attackData, mapversion);
+      baseSave = await baseModeAttack({ user, baseid, mapversion, attackCost: attackcost });
+      break;
+
     default:
       throw new Error(`Base type not handled, type: ${type}.`);
   }
 
   if (!baseSave) throw new Error("Base save not found.");
+
+  if (type === BaseMode.BUILD && mapversion === MapRoomVersion.V1) {
+    const save = user.save!;
+    save.level = calculateBaseLevel(save.points, save.basevalue);
+    save.wmstatus = await createScaledMR1Tribes(save, MR1_TRIBES);
+    postgres.em.persist(save);
+    await postgres.em.flush();
+  }
 
   const filteredSave = FilterFrontendKeys(baseSave);
   const isTutorialEnabled = devConfig.skipTutorial ? 205 : filteredSave.tutorialstage;

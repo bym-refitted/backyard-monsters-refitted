@@ -2,7 +2,7 @@ import { InfernoMaproom } from "../../../models/infernomaproom.model.js";
 import { User } from "../../../models/user.model.js";
 import { postgres } from "../../../server.js";
 import { calculateBaseLevel } from "../../base/calculateBaseLevel.js";
-import { createNeighbourData } from "./createNeighbourData.js";
+import { createNeighbourData } from "../createNeighbourData.js";
 
 /**
  * Adds the attacker to the defender's neighbor list for retaliation purposes.

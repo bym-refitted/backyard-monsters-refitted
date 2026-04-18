@@ -3,14 +3,9 @@ import { EntityManager, PostgreSqlDriver } from "@mikro-orm/postgresql";
 import { User } from "./user.model.js";
 import type { InfernoMaproomData } from "../types/EntityData.js";
 import type { NeighbourData } from "../types/NeighbourData.js";
+import type { TribeData } from "../types/TribeData.js";
 
-export interface TribeData {
-  baseid: string;
-  tribeHealthData: Record<string, number>;
-  monsters?: Record<string, number>;
-  destroyed?: number;
-  destroyedAt?: number;
-}
+export type { TribeData };
 
 @Entity({ tableName: "inferno_maproom" })
 export class InfernoMaproom {

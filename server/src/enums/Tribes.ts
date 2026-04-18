@@ -1,4 +1,5 @@
-import type { TribeScaleConfig } from "../services/maproom/v1/createScaledTribes.js";
+import type { TribeScaleConfig } from "../services/maproom/inferno/createScaledTribes.js";
+import type { MR1TribeScaleConfig } from "../services/maproom/v1/createScaledMR1Tribes.js";
 
 /**
  * Enum representing the different wild monster tribes.
@@ -36,6 +37,12 @@ export const Tribes: Tribe[] = [
  * Level scaling config for Inferno tribes
  * @type {Record}
  */
+export const MR1_TRIBES: MR1TribeScaleConfig = {
+  [TribeScale.LOW]: { maxLevel: 10 },
+  [TribeScale.MID]: { maxLevel: 20 },
+  [TribeScale.HIGH]: { maxLevel: 56 },
+};
+
 export const INFERNO_TRIBES: TribeScaleConfig = {
   [TribeScale.LOW]: {
     minTribeId: 214,

@@ -9,7 +9,6 @@ import { BaseType } from "../../../enums/Base.js";
 import { findInfernoNeighbours } from "../../../services/maproom/inferno/findInfernoNeighbours.js";
 import { findOverworldNeighbours } from "../../../services/maproom/v1/findOverworldNeighbours.js";
 import { updateNeighbourData } from "../../../services/maproom/updateNeighbourData.js";
-
 const GetNeighboursSchema = z.object({ type: z.string().optional() });
 
 /**
@@ -99,7 +98,7 @@ const getOverworldNeighbours: KoaController = async (ctx) => {
   let maproom = await postgres.em.findOne(Maproom, { userid: user.userid });
 
   // Initial Map Room 1 creation
-  if (!maproom) maproom = await Maproom.setupMaproomData(postgres.em, user);
+  if (!maproom) maproom = await Maproom.setupMapRoomData(postgres.em, user);
 
   const currentDate = new Date();
   const cacheExpiry = new Date(currentDate.getTime() - CACHE_VALIDITY_HOURS * 60 * 60 * 1000);

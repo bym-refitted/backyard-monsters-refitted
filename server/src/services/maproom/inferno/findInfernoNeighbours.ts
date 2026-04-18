@@ -3,7 +3,7 @@ import { User } from "../../../models/user.model.js";
 import { postgres } from "../../../server.js";
 import { BaseType } from "../../../enums/Base.js";
 import { calculateBaseLevel } from "../../base/calculateBaseLevel.js";
-import { createNeighbourData } from "./createNeighbourData.js";
+import { createNeighbourData } from "../createNeighbourData.js";
 import type { NeighbourData } from "../../../types/NeighbourData.js";
 
 /**
