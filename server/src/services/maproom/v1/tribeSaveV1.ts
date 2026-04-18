@@ -2,17 +2,8 @@ import { Save } from "../../../models/save.model.js";
 import { Maproom } from "../../../models/maproom.model.js";
 import { User } from "../../../models/user.model.js";
 import { postgres } from "../../../server.js";
-import { legionnaire } from "../../../data/tribes/v1/legionnaire.js";
-import { kozu } from "../../../data/tribes/v1/kozu.js";
-import { abunaki } from "../../../data/tribes/v1/abunaki.js";
-import { dreadnaught } from "../../../data/tribes/v1/dreadnaught.js";
+import { MR1_TRIBES_MAP } from "../../../data/tribes/v1/index.js";
 import type { TribeData } from "../../../types/TribeData.js";
-
-const mr1Tribes = new Map(
-  [legionnaire, kozu, abunaki, dreadnaught].flatMap((tribe) =>
-    Object.values(tribe).map((entry) => [entry.baseid, entry])
-  )
-);
 
 /**
  * Generates a synthetic Save for an MR1 wild monster tribe base.
@@ -41,7 +32,7 @@ export const tribeSaveV1 = async (baseid: string, user: User): Promise<Save> => 
     existingTribe = newTribe;
   }
 
-  const tribeData = mr1Tribes.get(baseid);
+  const tribeData = MR1_TRIBES_MAP.get(baseid);
 
   if (!tribeData) throw new Error(`No MR1 tribe data found for baseid: ${baseid}`);
 

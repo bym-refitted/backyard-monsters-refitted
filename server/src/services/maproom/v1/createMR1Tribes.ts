@@ -36,7 +36,7 @@ const mr1TribeData = [legionnaire, kozu, abunaki, dreadnaught];
  * @param {MR1TribeScaleConfig} tribes - Level thresholds per scale
  * @returns {Promise<number[][]>} wmstatus array of [baseid, level, destroyed] tuples
  */
-export const createScaledMR1Tribes = async (save: Save, tribes: MR1TribeScaleConfig) => {
+export const createMR1Tribes = async (save: Save, tribes: MR1TribeScaleConfig) => {
   const { userid, wmstatus, level } = save;
   const playerLevel = Math.max(1, level);
   const levelPattern = [-1, 0, 1, 2];

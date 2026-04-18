@@ -6,7 +6,7 @@ import { postgres } from "../../../../server.js";
 import { createAttackLog } from "../../../../services/base/createAttackLog.js";
 import { getCurrentDateTime } from "../../../../utils/getCurrentDateTime.js";
 import type { AttackDetails } from "./baseModeAttack.js";
-import { addAttackerAsNeighbour } from "../../../../services/maproom/inferno/addAttackerAsNeighbour.js";
+import { registerInfernoAttacker } from "../../../../services/maproom/inferno/registerInfernoAttacker.js";
 import {
   InfernoMaproom,
   type TribeData,
@@ -72,7 +72,7 @@ export const infernoModeAttack = async (user: User, baseid: string) => {
 
 
   await Promise.all([
-    addAttackerAsNeighbour(user, defender),
+    registerInfernoAttacker(user, defender),
     createAttackLog(user, defender, save),
   ]);
 
