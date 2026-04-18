@@ -4,7 +4,7 @@ import { Save } from "../../../../models/save.model.js";
 import { User } from "../../../../models/user.model.js";
 import { postgres } from "../../../../server.js";
 import { calculateBaseLevel } from "../../../../services/base/calculateBaseLevel.js";
-import { createScaledTribes } from "../../../../services/maproom/v1/createScaledTribes.js";
+import { createScaledTribes } from "../../../../services/maproom/inferno/createScaledTribes.js";
 import { isAttackActive } from "../../../../services/base/isAttackActive.js";
 import { baseUnderAttackErr, permissionErr } from "../../../../errors/errors.js";
 

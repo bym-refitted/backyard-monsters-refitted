@@ -23,7 +23,7 @@ export type TribeScaleConfig = Record<TribeScale, TribeDetails>;
  * Example: if the player is level 5, it will select tribes within the LOW range.
  * which consists of tribe IDs at range 214-220 retrieved from
  * `molochTribes.ts`.
- * 
+ *
  * Tribes are respawned if they have been destroyed for more than 2 hours,
  * by resetting their values in both the maproom table and wmstatus field
  * in the save table.
@@ -57,24 +57,24 @@ export const createScaledTribes = async (save: Save, tribes: TribeScaleConfig) =
   const { minTribeId } = tribes[scale];
   const tribeIds = Array.from({ length: 7 }, (_, i) => minTribeId + i);
 
-  let maproom = await postgres.em.findOne(InfernoMaproom, { userid });
+  let maproomInferno = await postgres.em.findOne(InfernoMaproom, { userid });
 
-  if (!maproom) {
+  if (!maproomInferno) {
     const user = await postgres.em.findOne(User, { userid });
 
     if (!user) throw new Error(`User not found for userid: ${userid}`);
-    
-    maproom = await InfernoMaproom.setupInfernoMapRoomData(postgres.em, user);
+
+    maproomInferno = await InfernoMaproom.setupInfernoMapRoomData(postgres.em, user);
   }
 
   const tribeIdSet = new Set(tribeIds);
 
   // Only store tribedata within the user's current level range
-  const currentTribes = maproom.tribedata.filter(tribe => 
+  const currentTribes = maproomInferno.tribedata.filter(tribe =>
     tribeIdSet.has(Number(tribe.baseid))
   );
 
-  for (const tribe of maproom.tribedata) {
+  for (const tribe of maproomInferno.tribedata) {
     const canRespawn = tribe.destroyedAt && (currentTime - tribe.destroyedAt > oneHour);
 
     if (tribe.destroyed && canRespawn) {
@@ -93,10 +93,10 @@ export const createScaledTribes = async (save: Save, tribes: TribeScaleConfig) =
     }
   }
 
-  maproom.tribedata = currentTribes
-  
+  maproomInferno.tribedata = currentTribes
+
   if (persist) {
-    postgres.em.persist(maproom);
+    postgres.em.persist(maproomInferno);
     await postgres.em.flush();
   }
 

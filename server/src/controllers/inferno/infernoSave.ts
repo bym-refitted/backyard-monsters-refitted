@@ -6,7 +6,7 @@ import { ClientSafeError } from "../../middleware/clientSafeError.js";
 import { Save } from "../../models/save.model.js";
 import { User } from "../../models/user.model.js";
 import { postgres, redis } from "../../server.js";
-import { scaledTribes } from "../../services/maproom/v1/scaledTribes.js";
+import { scaledTribes } from "../../services/maproom/inferno/scaledTribes.js";
 import { FilterFrontendKeys } from "../../utils/FrontendKey.js";
 import { getCurrentDateTime } from "../../utils/getCurrentDateTime.js";
 import type { KoaController } from "../../utils/KoaController.js";

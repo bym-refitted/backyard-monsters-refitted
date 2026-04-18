@@ -20,6 +20,8 @@ import { isAttackActive } from "../../../../services/base/isAttackActive.js";
 import { baseUnderAttackErr, userOnlineErr } from "../../../../errors/errors.js";
 import { redis } from "../../../../server.js";
 
+import { MR1_TRIBE_IDS } from "../../../../data/tribes/v1/index.js";
+
 export interface AttackDetails {
   fbid?: string;
   name: string;
@@ -45,9 +47,14 @@ interface BaseModeAttack {
  */
 export const baseModeAttack = async ({ user, baseid, mapversion, attackCost }: BaseModeAttack) => {
   const userSave = user.save!;
-  let save = await postgres.em.findOne(Save, { baseid });
+  let save: Save | null = null;
 
-  if (!save) save = await tribeSaveHandler(baseid, mapversion, userSave.worldid);
+  if (mapversion === MapRoomVersion.V1 && MR1_TRIBE_IDS.has(baseid)) {
+    save = await tribeSaveHandler(baseid, mapversion, userSave.worldid, user);
+  } else {
+    save = await postgres.em.findOne(Save, { baseid });
+    if (!save) save = await tribeSaveHandler(baseid, mapversion, userSave.worldid, user);
+  }
 
   if (!save) throw new Error(`Save not found for baseid: ${baseid}`);
 
@@ -76,39 +83,43 @@ export const baseModeAttack = async ({ user, baseid, mapversion, attackCost }: B
 
   await damageProtection(userSave, BaseMode.ATTACK);
 
-  let cell = await postgres.em.findOne(WorldMapCell, { baseid });
+  save.attackid = Math.floor(Math.random() * 99999) + 1;
 
-  if (!cell) {
-    const cellX = parseInt(baseid.slice(-6, -3));
-    const cellY = parseInt(baseid.slice(-3));
+  if (mapversion !== MapRoomVersion.V1) {
+    let cell = await postgres.em.findOne(WorldMapCell, { baseid });
 
-    const world = await postgres.em.findOne(World, { uuid: userSave.worldid });
+    if (!cell) {
+      const cellX = parseInt(baseid.slice(-6, -3));
+      const cellY = parseInt(baseid.slice(-3));
 
-    if (!world) throw new Error("No world found.");
+      const world = await postgres.em.findOne(World, { uuid: userSave.worldid });
 
-    if (mapversion === MapRoomVersion.V3) {
-      const genCell = getGeneratedCells().get(cellKey(cellX, cellY));
+      if (!world) throw new Error("No world found.");
 
-      cell = new WorldMapCell(world, cellX, cellY, genCell?.altitude ?? 0);
-      cell.uid = save.saveuserid;
-      cell.base_type = genCell?.type ?? save.wmid;
-      cell.map_version = MapRoomVersion.V3;
-      cell.baseid = baseid;
-    } else {
-      const noise = generateNoise(world.uuid);
-      const terrainHeight = getTerrainHeight(noise, cellX, cellY);
+      if (mapversion === MapRoomVersion.V3) {
+        const genCell = getGeneratedCells().get(cellKey(cellX, cellY));
 
-      cell = new WorldMapCell(world, cellX, cellY, terrainHeight);
-      cell.uid = save.saveuserid;
-      cell.base_type = MapRoomCell.WM;
-      cell.map_version = MapRoomVersion.V2;
-      cell.baseid = baseid;
+        cell = new WorldMapCell(world, cellX, cellY, genCell?.altitude ?? 0);
+        cell.uid = save.saveuserid;
+        cell.base_type = genCell?.type ?? save.wmid;
+        cell.map_version = MapRoomVersion.V3;
+        cell.baseid = baseid;
+      } else {
+        const noise = generateNoise(world.uuid);
+        const terrainHeight = getTerrainHeight(noise, cellX, cellY);
+
+        cell = new WorldMapCell(world, cellX, cellY, terrainHeight);
+        cell.uid = save.saveuserid;
+        cell.base_type = MapRoomCell.WM;
+        cell.map_version = MapRoomVersion.V2;
+        cell.baseid = baseid;
+      }
     }
+
+    save.cell = cell;
+    postgres.em.persist(cell);
   }
 
-  save.cell = cell;
-  save.attackid = Math.floor(Math.random() * 99999) + 1;
-  
   // Handle attack cost for MR3 attack range
   if (mapversion === MapRoomVersion.V3 && attackCost) {
     if (attackCost.resources) {
@@ -119,7 +130,7 @@ export const baseModeAttack = async ({ user, baseid, mapversion, attackCost }: B
     }
   }
 
-  postgres.em.persist([cell, save, userSave]);
+  postgres.em.persist([save, userSave]);
   await postgres.em.flush();
 
   // Create an attack log for the attack

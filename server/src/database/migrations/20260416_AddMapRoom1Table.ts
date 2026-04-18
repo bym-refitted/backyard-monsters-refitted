@@ -1,13 +1,14 @@
 import { Migration } from "@mikro-orm/migrations";
 
 /**
- * Creates the maproom table for MR1 overworld neighbour caching.
+ * Creates the maproom table for MR1 overworld neighbour caching and tribe health tracking.
  */
-export class AddMaproomTable extends Migration {
+export class AddMapRoom1Table extends Migration {
   async up(): Promise<void> {
     this.addSql(`
       CREATE TABLE "bym"."maproom" (
         "userid" int NOT NULL,
+        "tribedata" jsonb NULL DEFAULT '[]',
         "neighbors" jsonb NOT NULL DEFAULT '[]',
         "neighbors_last_calculated" timestamptz NULL,
         "created_at" timestamptz NOT NULL DEFAULT now(),

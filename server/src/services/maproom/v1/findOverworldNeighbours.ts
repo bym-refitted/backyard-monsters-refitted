@@ -2,8 +2,9 @@ import { Save } from "../../../models/save.model.js";
 import { User } from "../../../models/user.model.js";
 import { postgres } from "../../../server.js";
 import { BaseType } from "../../../enums/Base.js";
+import { MapRoomVersion } from "../../../enums/MapRoom.js";
 import { calculateBaseLevel } from "../../base/calculateBaseLevel.js";
-import { createNeighbourData } from "../inferno/createNeighbourData.js";
+import { createNeighbourData } from "../createNeighbourData.js";
 import type { NeighbourData } from "../../../types/NeighbourData.js";
 
 /**
@@ -29,6 +30,7 @@ export const findOverworldNeighbours = async (user: User, save: Save): Promise<N
     {
       type: BaseType.MAIN,
       userid: { $ne: user.userid },
+      mapversion: MapRoomVersion.V1,
     },
     {
       limit: 150,

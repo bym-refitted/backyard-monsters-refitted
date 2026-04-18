@@ -58,6 +58,10 @@ export const setMapVersion: KoaController = async (ctx) => {
       break;
   }
 
+  save.mapversion = version;
+  postgres.em.persist(save);
+  await postgres.em.flush();
+
   const filteredSave = FilterFrontendKeys(save);
 
   const baseurl =

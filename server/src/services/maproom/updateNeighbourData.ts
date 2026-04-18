@@ -4,6 +4,7 @@ import { AttackPermission } from "../../enums/MapRoom.js";
 import { getCurrentDateTime } from "../../utils/getCurrentDateTime.js";
 import { getLastSeen } from "./getLastSeen.js";
 import { isAttackActive } from "../base/isAttackActive.js";
+import { calculateBaseLevel } from "../base/calculateBaseLevel.js";
 import type { NeighbourData } from "../../types/NeighbourData.js";
 import type { BaseType } from "../../enums/Base.js";
 
@@ -20,8 +21,8 @@ const NEIGHBOUR_SAVE_FIELDS = [
   "attackid",
   "attacks",
   "damage",
-  "worldid",
-  "level",
+  "points",
+  "basevalue",
 ] as const;
 
 /**
@@ -65,7 +66,7 @@ export const updateNeighbourData = async (cachedNeighbours: NeighbourData[], bas
   const updatedNeighbours = cachedNeighbours.flatMap((neighbour) => {
     const neighbourSave = saves.get(neighbour.userid);
 
-    if (!neighbourSave || neighbourSave.worldid == null) return [];
+    if (!neighbourSave) return [];
 
     const isProtected = neighbourSave.protected > 0 && neighbourSave.protected > currentTime;
     const lastAttack = neighbourSave.attacks.at(-1);
@@ -86,7 +87,7 @@ export const updateNeighbourData = async (cachedNeighbours: NeighbourData[], bas
       neighbour.attackpermitted = AttackPermission.ATTACKABLE;
     }
 
-    neighbour.level = neighbourSave.level;
+    neighbour.level = calculateBaseLevel(neighbourSave.points, neighbourSave.basevalue);
     neighbour.saved = lastSeens.get(neighbour.userid) ?? 0;
 
     return [neighbour];

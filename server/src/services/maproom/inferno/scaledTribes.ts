@@ -17,13 +17,13 @@ export const scaledTribes = async (user: User, saveData: BaseSaveData) => {
   const userInfernoSave = user.infernosave;
   const currentSave = userInfernoSave || userSave!;
 
-  const maproom1 = await postgres.em.findOne(InfernoMaproom, {
+  const maproomInferno = await postgres.em.findOne(InfernoMaproom, {
     userid: user.userid,
   });
 
-  if (!maproom1) throw new Error(`Maproom not found for userid: ${user.username}`);
+  if (!maproomInferno) throw new Error(`Inferno MapRoom not found for userid: ${user.username}`);
 
-  let existingTribe = maproom1.tribedata.find(
+  let existingTribe = maproomInferno.tribedata.find(
     (tribe) => tribe.baseid === saveData.baseid
   );
 
@@ -33,7 +33,7 @@ export const scaledTribes = async (user: User, saveData: BaseSaveData) => {
   existingTribe.monsters = saveData.monsters;
   existingTribe.destroyed = saveData.destroyed;
   existingTribe.destroyedAt = saveData.destroyed && getCurrentDateTime();
-  
+
   // Update the wild monster status on the user save
   currentSave.wmstatus.forEach((tribe) => {
     if (tribe[0] === Number(saveData.baseid)) tribe[2] = saveData.destroyed ?? 0;
@@ -50,7 +50,7 @@ export const scaledTribes = async (user: User, saveData: BaseSaveData) => {
     monsters: existingTribe.monsters ?? tribeData?.monsters,
   });
 
-  postgres.em.persist(maproom1);
+  postgres.em.persist(maproomInferno);
 
   for (const key of Object.keys(saveData) as (keyof typeof saveData)[]) {
     const value = saveData[key];
