@@ -5,6 +5,7 @@ import { Migration } from "@mikro-orm/migrations";
  * - Creates the maproom table for MR1 overworld neighbour caching and tribe health tracking.
  * - Adds mapversion column to save table and backfills MR2/MR3 players from their world's map_version.
  * - Adds mr2upgraded column to save table to track first-time MR2 upgrades.
+ * - Backfills all existing main yards to true so existing players skip the 4-day timer.
  */
 export class AddMapRoom1Support extends Migration {
   async up(): Promise<void> {
@@ -31,7 +32,11 @@ export class AddMapRoom1Support extends Migration {
     `);
 
     this.addSql(
-      `ALTER TABLE "bym"."save" ADD COLUMN "mr2upgraded" boolean NOT NULL DEFAULT false;`
+      `ALTER TABLE "bym"."save" ADD COLUMN "mr2upgraded" boolean NOT NULL DEFAULT false;`,
+    );
+
+    this.addSql(
+      `UPDATE "bym"."save" SET "mr2upgraded" = true WHERE "type" = 'main';`,
     );
   }
 }

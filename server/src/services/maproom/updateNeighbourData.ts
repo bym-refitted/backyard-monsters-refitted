@@ -78,6 +78,10 @@ export const updateNeighbourData = async (cachedNeighbours: NeighbourData[], bas
       needsFlush = true;
     }
 
+    // TODO: 
+    // 1. Add AttackPermission.LEVEL_RESTRICTION if this neighbour is more than 5 levels above the attacker.
+    // 2. Add AttackPermission.VENGEANCE_MODE for breaking the level restriction if a low level attacked a high level.
+    // 3. Add AttackPermission.SPECIAL_PROTECTION for players who just joined the Map.
     if (isProtected) {
       neighbour.attackpermitted = AttackPermission.DAMAGE_PROTECTION;
     } else if (isUnderAttack && lastAttack) {
