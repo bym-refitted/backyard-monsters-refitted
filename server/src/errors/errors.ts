@@ -156,3 +156,19 @@ export const takeoverCellErr = () =>
     isClientFriendly: false,
   });
 
+export const mapRoomDisabledErr = () =>
+  new ClientSafeError({
+    message: "Map Room is not enabled on this server",
+    status: Status.NOT_FOUND,
+    data: {},
+    isClientFriendly: false,
+  });
+
+export const townHallLevelErr = () =>
+  new ClientSafeError({
+    message: "Town Hall level 6 required to upgrade Map Room.",
+    status: Status.FORBIDDEN,
+    data: {},
+    isClientFriendly: true,
+  });
+

@@ -215,6 +215,10 @@ package
                            _loc12_ = false;
                         }
                         _loc1_.push(["btn_viewmap",30,_loc12_]);
+                        if(!MapRoomManager.instance.isInMapRoom2or3 && Boolean(GLOBAL._flags.maproom2))
+                        {
+                           _loc1_.push(["btn_upgrade",30]);
+                        }
                      }
                      else if(_props.id == 12)
                      {

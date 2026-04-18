@@ -32,6 +32,7 @@ import { canAttack } from "../../../services/base/canAttack.js";
 import { createMR1Tribes } from "../../../services/maproom/v1/createMR1Tribes.js";
 import { MR1_TRIBES } from "../../../enums/Tribes.js";
 import { calculateBaseLevel } from "../../../services/base/calculateBaseLevel.js";
+import { extractTownHall } from "../../../utils/extractTownHall.js";
 
 /**
  * Controller responsible for loading base modes based on the user's request.
@@ -44,7 +45,9 @@ export const baseLoad: KoaController = async (ctx) => {
   const user: User = ctx.authUser;
   await postgres.em.populate(user, ["save", "infernosave"]);
 
-  const worldid = user.save?.worldid;
+  const save = user.save!;
+
+  const worldid = save.worldid;
   const { baseid, type, mapversion, attackData, attackcost } = BaseLoadSchema.parse(ctx.request.body);
 
   let baseSave: Save | null = null;
@@ -107,8 +110,6 @@ export const baseLoad: KoaController = async (ctx) => {
   if (!baseSave) throw new Error("Base save not found.");
 
   if (type === BaseMode.BUILD && mapversion === MapRoomVersion.V1) {
-    const save = user.save!;
-
     save.level = calculateBaseLevel(save.points, save.basevalue);
     save.wmstatus = await createMR1Tribes(save, MR1_TRIBES);
     
@@ -121,6 +122,11 @@ export const baseLoad: KoaController = async (ctx) => {
 
   const flags = getFlags();
   flags.discordOldEnough = Number(ctx.meetsDiscordAgeCheck);
+
+  const townHall = extractTownHall(save.buildingdata || {});
+  
+  flags.maproom2 = townHall && townHall.l >= 6 ? 1 : 0;
+  flags.mr2upgraded = save.mr2upgraded ? 1 : 0;
 
   const isOwner = baseSave.type !== BaseType.INFERNO && user.userid === filteredSave.userid;
 
@@ -146,22 +152,21 @@ export const baseLoad: KoaController = async (ctx) => {
 
       // Auto-bank calculates and applies resources accumulated since the player's last session.
       if (type === BaseMode.BUILD && totalResourceRate > 0) {
-        const userSave = user.save!;
         const now = getCurrentDateTime();
-        const lastAccumulated = userSave.buildingresources?.t;
+        const lastAccumulated = save.buildingresources?.t;
 
         if (lastAccumulated) {
           const elapsed = now - lastAccumulated;
           const accumulated = Math.floor(totalResourceRate * elapsed);
 
-          if (accumulated > 0 && userSave.resources) {
+          if (accumulated > 0 && save.resources) {
             for (const resource of ["r1", "r2", "r3", "r4"])
-              userSave.resources[resource] += accumulated;
+              save.resources[resource] += accumulated;
           }
         }
 
-        userSave.buildingresources!.t = now;
-        postgres.em.persist(userSave);
+        save.buildingresources!.t = now;
+        postgres.em.persist(save);
         await postgres.em.flush();
       }
     }
@@ -231,7 +236,7 @@ export const baseLoad: KoaController = async (ctx) => {
     }
   }
 
-  const attackAllowed = canAttack(user.save!, baseSave, mapversion);
+  const attackAllowed = canAttack(save, baseSave, mapversion);
 
   const response: Record<string, unknown> = {
     ...filteredSave,

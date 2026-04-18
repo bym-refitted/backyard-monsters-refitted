@@ -89,6 +89,7 @@ package
             }
             GLOBAL.StatSet(CHANGED_TO_MR2,1);
             GLOBAL.StatSet("mrl",2,true);
+            GLOBAL._flags.mr2upgraded = 1;
             MapRoomManager.instance.mapRoomVersion = MapRoomManager.MAP_ROOM_VERSION_2;
             GLOBAL._baseURL = param1.baseurl;
             GLOBAL._homeBaseID = param1.homebaseid;
@@ -158,12 +159,28 @@ package
       override public function Constructed() : void
       {
          GLOBAL._bMap = this;
+         new URLLoaderApi().load(GLOBAL._mapURL + "setmapversion", [["version", 1]], null, null);
          super.Constructed();
       }
       
+      override public function UpgradeCost() : Object
+      {
+         var cost:Object = super.UpgradeCost();
+         if(Boolean(GLOBAL._flags.mr2upgraded) && cost.time)
+         {
+            cost.time.Set(300);
+         }
+         return cost;
+      }
+
       override public function UpgradeB() : void
       {
+         if(Boolean(GLOBAL._flags.mr2upgraded))
+         {
+            this._buildingProps.costs[_lvl.Get()].time.Set(300);
+         }
          super.UpgradeB();
+         this._hasResources = true;
          this.PopupUpgrade(1);
       }
       
@@ -239,7 +256,7 @@ package
          {
             return;
          }
-         var _loc1_:Array = [["version",1]];
+         var _loc1_:Array = [["version",0]];
          // Comment: This stopped Map Room 3 from being recycled.
          // if(MapRoomManager.instance.isInMapRoom3)
          // {
