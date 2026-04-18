@@ -146,6 +146,10 @@ export const baseSave: KoaController = async (ctx) => {
       await monsterUpdateHandler(saveData.monsterupdate, userSave);
     }
 
+    if (saveData.attackcreatures) {
+      userSave.monsters = saveData.attackcreatures;
+    }
+
     if (saveData.attackloot) {
       attackLootHandler(saveData.attackloot, userSave);
     }
