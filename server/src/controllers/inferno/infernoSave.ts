@@ -6,7 +6,7 @@ import { ClientSafeError } from "../../middleware/clientSafeError.js";
 import { Save } from "../../models/save.model.js";
 import { User } from "../../models/user.model.js";
 import { postgres, redis } from "../../server.js";
-import { scaledTribes } from "../../services/maproom/inferno/scaledTribes.js";
+import { scaledInfernoTribes } from "../../services/maproom/inferno/scaledInfernoTribes.js";
 import { FilterFrontendKeys } from "../../utils/FrontendKey.js";
 import { getCurrentDateTime } from "../../utils/getCurrentDateTime.js";
 import type { KoaController } from "../../utils/KoaController.js";
@@ -36,7 +36,7 @@ export const infernoSave: KoaController = async (ctx) => {
 
     // Otherwise, retrieve a moloch tribe and handle tribe save logic
     if (!baseSave) {
-      const tribeSave = await scaledTribes(user, saveData);
+      const tribeSave = await scaledInfernoTribes(user, saveData);
       const filteredSave = FilterFrontendKeys(tribeSave);
 
       ctx.status = Status.OK;

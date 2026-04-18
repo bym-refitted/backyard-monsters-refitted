@@ -1,5 +1,5 @@
-import type { TribeScaleConfig } from "../services/maproom/inferno/createScaledTribes.js";
-import type { MR1TribeScaleConfig } from "../services/maproom/v1/createScaledMR1Tribes.js";
+import type { TribeScaleConfig } from "../services/maproom/inferno/createInfernoTribes.js";
+import type { MR1TribeScaleConfig } from "../services/maproom/v1/createMR1Tribes.js";
 
 /**
  * Enum representing the different wild monster tribes.

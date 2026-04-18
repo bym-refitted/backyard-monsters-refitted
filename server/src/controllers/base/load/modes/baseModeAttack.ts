@@ -21,6 +21,7 @@ import { baseUnderAttackErr, userOnlineErr } from "../../../../errors/errors.js"
 import { redis } from "../../../../server.js";
 
 import { MR1_TRIBE_IDS } from "../../../../data/tribes/v1/index.js";
+import { registerAttacker } from "../../../../services/maproom/v1/registerAttacker.js";
 
 export interface AttackDetails {
   fbid?: string;
@@ -130,17 +131,23 @@ export const baseModeAttack = async ({ user, baseid, mapversion, attackCost }: B
     }
   }
 
-  postgres.em.persist([save, userSave]);
+  const isMR1Tribe = mapversion === MapRoomVersion.V1 && save.type === BaseType.TRIBE;
+  
+  if (!isMR1Tribe) postgres.em.persist(save);
+
+  postgres.em.persist(userSave);
   await postgres.em.flush();
 
-  // Create an attack log for the attack
+  // Create an attack log and update neighbour attack counters
   if (save.type !== BaseType.TRIBE) {
     const defender = await postgres.em.findOne(User, {
       userid: save.saveuserid,
     });
 
     if (!defender) throw new Error("Defender user not found.");
-    await createAttackLog(user, defender, save);
+
+    if (mapversion === MapRoomVersion.V1) await registerAttacker(user, defender);
+    await createAttackLog(user, defender, save)
   }
 
   return await validateRange(user, save, mapversion, { baseid });

@@ -12,7 +12,15 @@ import { molochTribes } from "../../../data/tribes/inferno/molochTribes.js";
 
 type BaseSaveData = TypeOf<typeof BaseSaveSchema>;
 
-export const scaledTribes = async (user: User, saveData: BaseSaveData) => {
+/**
+ * Persists Inferno tribe attack state (building health, monsters, destroyed) to
+ * the player's InfernoMaproom.tribedata record
+ *
+ * @param {User} user - The attacking user
+ * @param {BaseSaveData} saveData - Parsed save payload from the client
+ * @returns {Promise<Save>} Synthetic Save reflecting updated tribe state
+ */
+export const scaledInfernoTribes = async (user: User, saveData: BaseSaveData) => {
   const userSave = user.save!;
   const userInfernoSave = user.infernosave;
   const currentSave = userInfernoSave || userSave!;

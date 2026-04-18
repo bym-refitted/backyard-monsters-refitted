@@ -35,7 +35,7 @@ export type TribeScaleConfig = Record<TribeScale, TribeDetails>;
  * @param {TribeScaleConfig} tribes - scaling configuration for tribes
  * @returns
  */
-export const createScaledTribes = async (save: Save, tribes: TribeScaleConfig) => {
+export const createInfernoTribes = async (save: Save, tribes: TribeScaleConfig) => {
   const { userid, wmstatus, level } = save;
   const playerLevel = Math.max(1, level);
   const levelPattern = [-2, -1, 0, 0, 0, 1, 3];

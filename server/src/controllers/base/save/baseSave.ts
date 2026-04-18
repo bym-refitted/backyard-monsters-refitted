@@ -24,6 +24,8 @@ import { damageProtection } from "../../../services/maproom/v2/damageProtection.
 import { isMR3Structure } from "../../../services/maproom/v3/utils/isMR3Structure.js";
 import { WorldMapCell } from "../../../models/worldmapcell.model.js";
 import { MapRoomVersion } from "../../../enums/MapRoom.js";
+import { MR1_TRIBE_IDS } from "../../../data/tribes/v1/index.js";
+import { scaledMR1Tribes } from "../../../services/maproom/v1/scaledMR1Tribes.js";
 
 /**
  * Controller responsible for saving the user's base data.
@@ -43,6 +45,15 @@ export const baseSave: KoaController = async (ctx) => {
 
   const { basesaveid } = saveData;
   const baseSave = await postgres.em.findOne(Save, { basesaveid });
+
+  if (!baseSave && MR1_TRIBE_IDS.has(saveData.baseid)) {
+    const tribeSave = await scaledMR1Tribes(user, saveData);
+    const filteredSave = FilterFrontendKeys(tribeSave);
+
+    ctx.status = Status.OK;
+    ctx.body = { error: 0, ...filteredSave };
+    return;
+  }
 
   if (!baseSave) throw saveFailureErr();
 

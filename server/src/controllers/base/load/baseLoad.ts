@@ -29,7 +29,7 @@ import { BaseLoadSchema } from "../../../zod/BaseLoadSchema.js";
 import { discordAgeErr } from "../../../errors/errors.js";
 import { EnumBaseRelationship } from "../../../enums/EnumBaseRelationship.js";
 import { canAttack } from "../../../services/base/canAttack.js";
-import { createScaledMR1Tribes } from "../../../services/maproom/v1/createScaledMR1Tribes.js";
+import { createMR1Tribes } from "../../../services/maproom/v1/createMR1Tribes.js";
 import { MR1_TRIBES } from "../../../enums/Tribes.js";
 import { calculateBaseLevel } from "../../../services/base/calculateBaseLevel.js";
 
@@ -108,8 +108,10 @@ export const baseLoad: KoaController = async (ctx) => {
 
   if (type === BaseMode.BUILD && mapversion === MapRoomVersion.V1) {
     const save = user.save!;
+
     save.level = calculateBaseLevel(save.points, save.basevalue);
-    save.wmstatus = await createScaledMR1Tribes(save, MR1_TRIBES);
+    save.wmstatus = await createMR1Tribes(save, MR1_TRIBES);
+    
     postgres.em.persist(save);
     await postgres.em.flush();
   }

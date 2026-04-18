@@ -16,7 +16,7 @@ import { createNeighbourData } from "../createNeighbourData.js";
  * @param {User} attacker - The user who initiated the attack
  * @param {number} defenderUserId - The userid of the player who was attacked
  */
-export const addAttackerAsNeighbour = async (attacker: User, defender: User) => {
+export const registerInfernoAttacker = async (attacker: User, defender: User) => {
   const [defenderMaproom, attackerMaproom] = await Promise.all([
     postgres.em.findOne(InfernoMaproom, { userid: defender.userid }),
     postgres.em.findOne(InfernoMaproom, { userid: attacker.userid }),
