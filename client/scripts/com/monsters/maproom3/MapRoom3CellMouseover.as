@@ -11,6 +11,7 @@ package com.monsters.maproom3
    import flash.display.DisplayObject;
    import flash.display.Loader;
    import flash.display.Sprite;
+   import flash.events.Event;
    import flash.events.IOErrorEvent;
    import flash.events.MouseEvent;
    import flash.filters.DropShadowFilter;
@@ -128,6 +129,7 @@ package com.monsters.maproom3
          this.m_ProfilePicture = new Loader();
          this.m_ProfilePicture.visible = false;
          this.m_ProfilePicture.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR,this.OnProfilePictureIOErrorEvent,false,0,true);
+         this.m_ProfilePicture.contentLoaderInfo.addEventListener(Event.COMPLETE,this.OnProfilePictureLoaded,false,0,true);
          this.m_Portrait.addChild(this.m_ProfilePicture);
          this.m_WildMonsterPortrait = new Bitmap();
          this.m_WildMonsterPortrait.visible = false;
@@ -231,6 +233,7 @@ package com.monsters.maproom3
          this.m_Portrait.removeChild(this.m_WildMonsterPortrait);
          this.m_WildMonsterPortrait = null;
          this.m_ProfilePicture.contentLoaderInfo.removeEventListener(IOErrorEvent.IO_ERROR,this.OnProfilePictureIOErrorEvent);
+         this.m_ProfilePicture.contentLoaderInfo.removeEventListener(Event.COMPLETE,this.OnProfilePictureLoaded);
          this.m_Portrait.removeChild(this.m_ProfilePicture);
          this.m_ProfilePicture = null;
          this.m_InfoDisplay.removeChild(this.m_Portrait);
@@ -475,6 +478,12 @@ package com.monsters.maproom3
       
       private function OnProfilePictureIOErrorEvent(param1:IOErrorEvent) : void
       {
+      }
+
+      private function OnProfilePictureLoaded(param1:Event) : void
+      {
+         this.m_ProfilePicture.width = PORTRAIT_WIDTH;
+         this.m_ProfilePicture.height = PORTRAIT_HEIGHT;
       }
       
       private function ClearInfo() : void

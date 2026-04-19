@@ -2,6 +2,7 @@ package com.monsters.maproom3.popups
 {
    import com.monsters.maproom3.data.MapRoom3FriendData;
    import flash.display.Loader;
+   import flash.events.Event;
    import flash.events.IOErrorEvent;
    import flash.events.MouseEvent;
    import flash.net.URLRequest;
@@ -23,8 +24,9 @@ package com.monsters.maproom3.popups
          super();
          this.m_FriendToDisplay = param1;
          this.m_ProfilePicture = new Loader();
-         this.m_ProfilePicture.load(new URLRequest("http://graph.facebook.com/" + this.m_FriendToDisplay.facebookId + "/picture"));
          this.m_ProfilePicture.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR,this.OnProfilePictureIOErrorEvent,false,0,true);
+         this.m_ProfilePicture.contentLoaderInfo.addEventListener(Event.COMPLETE,this.OnProfilePictureLoaded,false,0,true);
+         this.m_ProfilePicture.load(new URLRequest("http://graph.facebook.com/" + this.m_FriendToDisplay.facebookId + "/picture"));
          imageHolder.addChild(this.m_ProfilePicture);
          levelIcon.lv_txt.htmlText = "<b>" + this.m_FriendToDisplay.level + "</b>";
          nameText.htmlText = "<b>" + param1.name + "</b>";
@@ -47,11 +49,18 @@ package com.monsters.maproom3.popups
       private function OnProfilePictureIOErrorEvent(param1:IOErrorEvent) : void
       {
       }
+
+      private function OnProfilePictureLoaded(param1:Event) : void
+      {
+         this.m_ProfilePicture.width = PORTRAIT_WIDTH;
+         this.m_ProfilePicture.height = PORTRAIT_HEIGHT;
+      }
       
       public function Clear() : void
       {
          relocateButton.removeEventListener(MouseEvent.CLICK,this.OnRelocateButtonClicked);
          this.m_ProfilePicture.contentLoaderInfo.removeEventListener(IOErrorEvent.IO_ERROR,this.OnProfilePictureIOErrorEvent);
+         this.m_ProfilePicture.contentLoaderInfo.removeEventListener(Event.COMPLETE,this.OnProfilePictureLoaded);
          imageHolder.removeChild(this.m_ProfilePicture);
          this.m_FriendToDisplay = null;
       }

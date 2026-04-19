@@ -191,7 +191,7 @@ package com.monsters.maproom_advanced
          else
          {
             this.bAttack.SetupKey("map_attack_btn");
-            if(this._cell._protected || this._cell._locked != 0 && this._cell._locked != LOGIN._playerID || !MapRoom._flingerInRange)
+            if(this._cell._protected || this._cell._locked != 0 || !MapRoom._flingerInRange)
             {
                this.bAttack.Highlight = false;
             }
@@ -637,7 +637,7 @@ package com.monsters.maproom_advanced
                GLOBAL._layerTop.addChild(_loc4_);
             }
          }
-         else if(this._cell._locked != 0 && this._cell._locked != LOGIN._playerID)
+         else if(this._cell._locked != 0)
          {
             if(this._cell._base == 1)
             {

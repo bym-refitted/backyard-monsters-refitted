@@ -5,7 +5,7 @@ import { permissionErr } from "../../errors/errors.js";
 import { ClientSafeError } from "../../middleware/clientSafeError.js";
 import { Save } from "../../models/save.model.js";
 import { User } from "../../models/user.model.js";
-import { postgres } from "../../server.js";
+import { postgres, redis } from "../../server.js";
 import { scaledTribes } from "../../services/maproom/v1/scaledTribes.js";
 import { FilterFrontendKeys } from "../../utils/FrontendKey.js";
 import { getCurrentDateTime } from "../../utils/getCurrentDateTime.js";
@@ -17,6 +17,7 @@ import { attackLootHandler } from "../base/save/handlers/attackLootHandler.js";
 import { buildingDataHandler } from "../base/save/handlers/buildingDataHandler.js";
 import { purchaseHandler } from "../base/save/handlers/purchaseHandler.js";
 import { resourcesHandler } from "../base/save/handlers/resourceHandler.js";
+import { damageProtection } from "../../services/maproom/v2/damageProtection.js";
 
 export const infernoSave: KoaController = async (ctx) => {
   const user: User = ctx.authUser;
@@ -133,8 +134,21 @@ export const infernoSave: KoaController = async (ctx) => {
 
     if (isAttack) postgres.em.persist(userSave);
 
+    if (isAttack) baseSave.attackid = saveData.over ? 0 : baseSave.attackid;
+
+    if (isAttack && saveData.over) {
+      await damageProtection(baseSave);
+    }
+
     baseSave.id = baseSave.savetime;
     baseSave.savetime = getCurrentDateTime();
+
+    if (!isAttack) {
+      await redis.setex(`last-seen:inferno:${user.userid}`, 120, getCurrentDateTime().toString());
+    }
+
+    baseSave.champion = [];
+
     postgres.em.persist(baseSave);
     await postgres.em.flush();
 
@@ -144,6 +158,7 @@ export const infernoSave: KoaController = async (ctx) => {
     ctx.body = {
       error: 0,
       ...filteredSave,
+      champion: [],
       credits: userSave.credits,
     };
   } catch (err) {

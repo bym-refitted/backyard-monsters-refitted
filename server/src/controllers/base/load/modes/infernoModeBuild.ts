@@ -5,7 +5,8 @@ import { User } from "../../../../models/user.model.js";
 import { postgres } from "../../../../server.js";
 import { calculateBaseLevel } from "../../../../services/base/calculateBaseLevel.js";
 import { createScaledTribes } from "../../../../services/maproom/v1/createScaledTribes.js";
-import { permissionErr } from "../../../../errors/errors.js";
+import { isAttackActive } from "../../../../services/base/isAttackActive.js";
+import { baseUnderAttackErr, permissionErr } from "../../../../errors/errors.js";
 
 /**
  * Retrieves the save data for the user based on their Inferno mode request.
@@ -28,6 +29,7 @@ export const infernoModeBuild = async (user: User) => {
   if (!infernoSave) infernoSave = await Save.createInfernoSave(postgres.em, user);
 
   if (infernoSave.userid !== user.userid) throw permissionErr();
+  if (isAttackActive(infernoSave)) throw baseUnderAttackErr();
 
   const { points, basevalue, stats, academy, lockerdata } = infernoSave;
   infernoSave.level = calculateBaseLevel(points, basevalue);

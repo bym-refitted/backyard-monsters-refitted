@@ -16,6 +16,7 @@ import { Status } from "../../enums/StatusCodes.js";
 import { UserLoginSchema } from "../../zod/AuthSchemas.js";
 import { Env } from "../../enums/Env.js";
 import type { StringValue } from "ms";
+import { fetchDiscordAvatar } from "../../services/discord/fetchDiscordAvatar.js";
 
 /**
  * Authenticates a user using a JWT token.
@@ -74,6 +75,8 @@ export const login: KoaController = async (ctx) => {
   if (process.env.ENV === Env.PROD) {
     if (!user.discord_verified) throw discordVerifyErr();
     discordId = user.discord_id;
+
+    if (discordId) fetchDiscordAvatar(user.userid, discordId);
   }
 
   const isOlderThanOneWeek = (snowflakeId: string) => {

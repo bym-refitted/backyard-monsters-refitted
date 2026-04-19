@@ -1,5 +1,5 @@
 import { molochTribes } from "../../../../data/tribes/inferno/molochTribes.js";
-import { BaseType } from "../../../../enums/Base.js";
+import { BaseMode, BaseType } from "../../../../enums/Base.js";
 import { Save } from "../../../../models/save.model.js";
 import { User } from "../../../../models/user.model.js";
 import { postgres } from "../../../../server.js";
@@ -11,6 +11,10 @@ import {
   InfernoMaproom,
   type TribeData,
 } from "../../../../models/infernomaproom.model.js";
+import { damageProtection } from "../../../../services/maproom/v2/damageProtection.js";
+import { isAttackActive } from "../../../../services/base/isAttackActive.js";
+import { baseUnderAttackErr, userOnlineErr } from "../../../../errors/errors.js";
+import { redis } from "../../../../server.js";
 
 /**
  * Handles Inferno mode attacks for both real players and AI tribes
@@ -29,11 +33,22 @@ export const infernoModeAttack = async (user: User, baseid: string) => {
     baseid,
   });
 
+  if (user.infernosave) {
+    await damageProtection(user.infernosave, BaseMode.IATTACK);
+  }
 
-  if (!save) return infernoTribeSave(user, baseid);
+  if (!save) {
+    return infernoTribeSave(user, baseid);
+  }
 
-  if (save.attacks.length > 3) {
-    save.attacks = save.attacks.slice(-2);
+  const lastSeen = await redis.get(`last-seen:${BaseType.INFERNO}:${save.userid}`);
+  
+  if (lastSeen && parseInt(lastSeen) >= getCurrentDateTime() - 60) throw userOnlineErr();
+
+  if (isAttackActive(save)) throw baseUnderAttackErr();
+
+  if (save.attacks.length > 3) { 
+    save.attacks = save.attacks.slice(-2); 
   }
 
   const attackDetails: AttackDetails = {
