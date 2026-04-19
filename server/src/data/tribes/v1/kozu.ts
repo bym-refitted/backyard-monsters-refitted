@@ -38,6 +38,7 @@ export const kozu: Record<TribeScale, SaveData> = {
     empiredestroyed: 1,
     worldid: "0",
     event_score: 0,
+    mushrooms: {},
     storedata: {
       ENL: {
         q: 6,

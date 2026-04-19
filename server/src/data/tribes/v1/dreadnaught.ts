@@ -38,6 +38,10 @@ export const dreadnaught: Record<TribeScale, SaveData> = {
     empiredestroyed: 1,
     worldid: "0",
     event_score: 0,
+    mushrooms: {},
+    monsters: {
+      C4: 6,
+    },
     storedata: {
       ENL: {
         q: 6,
