@@ -45,6 +45,9 @@ export class User {
   @Property({ type: "string", nullable: true })
   discord_tag?: string | null;
 
+  @Property({ type: "Date", nullable: true })
+  discord_avatar_checked_at?: Date | null;
+
   @Property({ type: "string", default: "" })
   @FrontendKey
   last_name: string = "";

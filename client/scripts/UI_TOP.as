@@ -625,11 +625,8 @@ package
          {
             onImageLoad = function(param1:Event):void
             {
+               loader.width = loader.height = 50;
                mc.mcPic.mcBG.addChild(loader);
-               if(Boolean(GLOBAL._flags.viximo) || Boolean(GLOBAL._flags.kongregate))
-               {
-                  loader.width = loader.height = 50;
-               }
             };
             LoadImageError = function(param1:IOErrorEvent):void
             {

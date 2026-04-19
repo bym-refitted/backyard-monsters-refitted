@@ -6,6 +6,7 @@ import type { KoaController } from "../../utils/KoaController.js";
 
 interface MR2Leaderboard {
   username: string;
+  pic_square: string | null;
   discord_tag: string | null;
   outpost_count: string;
 }
@@ -13,6 +14,7 @@ interface MR2Leaderboard {
 interface MR3Leaderboard {
   username: string;
   discord_tag: string | null;
+  pic_square: string | null;
   stronghold_count: string;
   outpost_count: string;
 }
@@ -65,6 +67,7 @@ export const getLeaderboards: KoaController = async (ctx) => {
         SELECT
           u.username,
           u.discord_tag,
+          u.pic_square,
           COUNT(*) FILTER (WHERE wmc.base_type = ?) AS stronghold_count,
           COUNT(*) FILTER (WHERE wmc.base_type = ?) AS outpost_count
         FROM bym.world_map_cell wmc
@@ -91,7 +94,7 @@ export const getLeaderboards: KoaController = async (ctx) => {
   } else {
     leaderboard = await postgres.em.getConnection().execute<MR2Leaderboard[]>(
       `
-        SELECT u.username, u.discord_tag, sub.outpost_count
+        SELECT u.username, u.discord_tag, u.pic_square, sub.outpost_count
         FROM bym.user u
         JOIN (
             SELECT s.userid, COUNT(*) AS outpost_count
