@@ -45,9 +45,6 @@ export const baseLoad: KoaController = async (ctx) => {
   const user: User = ctx.authUser;
   await postgres.em.populate(user, ["save", "infernosave"]);
 
-  const save = user.save!;
-
-  const worldid = save.worldid;
   const { baseid, type, mapversion, attackData, attackcost } = BaseLoadSchema.parse(ctx.request.body);
 
   let baseSave: Save | null = null;
@@ -59,7 +56,7 @@ export const baseLoad: KoaController = async (ctx) => {
 
     case BaseMode.VIEW:
     case BaseMode.IVIEW:
-      baseSave = await baseModeView(baseid, mapversion, worldid, user);
+      baseSave = await baseModeView(baseid, mapversion, user.save!.worldid, user);
       break;
 
     case BaseMode.ATTACK:
@@ -94,7 +91,7 @@ export const baseLoad: KoaController = async (ctx) => {
       break;
 
     case BaseMode.WMVIEW:
-      baseSave = await baseModeView(baseid, mapversion, worldid, user);
+      baseSave = await baseModeView(baseid, mapversion, user.save!.worldid, user);
       break;
 
     case BaseMode.WMATTACK:
@@ -109,11 +106,13 @@ export const baseLoad: KoaController = async (ctx) => {
 
   if (!baseSave) throw new Error("Base save not found.");
 
+  const userSave = user.save!;
+
   if (type === BaseMode.BUILD && mapversion === MapRoomVersion.V1) {
-    save.level = calculateBaseLevel(save.points, save.basevalue);
-    save.wmstatus = await createMR1Tribes(save, MR1_TRIBES);
+    userSave.level = calculateBaseLevel(userSave.points, userSave.basevalue);
+    userSave.wmstatus = await createMR1Tribes(userSave, MR1_TRIBES);
     
-    postgres.em.persist(save);
+    postgres.em.persist(userSave);
     await postgres.em.flush();
   }
 
@@ -123,10 +122,10 @@ export const baseLoad: KoaController = async (ctx) => {
   const flags = getFlags();
   flags.discordOldEnough = Number(ctx.meetsDiscordAgeCheck);
 
-  const townHall = extractTownHall(save.buildingdata || {});
-  
+  const townHall = extractTownHall(userSave.buildingdata || {});
+
   flags.maproom2 = townHall && townHall.l >= 6 ? 1 : 0;
-  flags.mr2upgraded = save.mr2upgraded ? 1 : 0;
+  flags.mr2upgraded = userSave.mr2upgraded ? 1 : 0;
 
   const isOwner = baseSave.type !== BaseType.INFERNO && user.userid === filteredSave.userid;
 
@@ -153,20 +152,20 @@ export const baseLoad: KoaController = async (ctx) => {
       // Auto-bank calculates and applies resources accumulated since the player's last session.
       if (type === BaseMode.BUILD && totalResourceRate > 0) {
         const now = getCurrentDateTime();
-        const lastAccumulated = save.buildingresources?.t;
+        const lastAccumulated = userSave.buildingresources?.t;
 
         if (lastAccumulated) {
           const elapsed = now - lastAccumulated;
           const accumulated = Math.floor(totalResourceRate * elapsed);
 
-          if (accumulated > 0 && save.resources) {
+          if (accumulated > 0 && userSave.resources) {
             for (const resource of ["r1", "r2", "r3", "r4"])
-              save.resources[resource] += accumulated;
+              userSave.resources[resource] += accumulated;
           }
         }
 
-        save.buildingresources!.t = now;
-        postgres.em.persist(save);
+        userSave.buildingresources!.t = now;
+        postgres.em.persist(userSave);
         await postgres.em.flush();
       }
     }
@@ -228,7 +227,7 @@ export const baseLoad: KoaController = async (ctx) => {
           { base_type: EnumYardType.FORTIFICATION },
           { uid: attackedCell.uid },
           { map_version: MapRoomVersion.V3 },
-          { world: worldid },
+          { world: user.save!.worldid },
         ],
       });
 
@@ -236,7 +235,7 @@ export const baseLoad: KoaController = async (ctx) => {
     }
   }
 
-  const attackAllowed = canAttack(save, baseSave, mapversion);
+  const attackAllowed = canAttack(userSave, baseSave, mapversion);
 
   const avatar = isOwner
     ? user.pic_square
