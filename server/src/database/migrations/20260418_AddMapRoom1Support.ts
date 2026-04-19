@@ -10,7 +10,7 @@ import { Migration } from "@mikro-orm/migrations";
 export class AddMapRoom1Support extends Migration {
   async up(): Promise<void> {
     this.addSql(`
-      CREATE TABLE "bym"."maproom" (
+      CREATE TABLE IF NOT EXISTS "bym"."maproom" (
         "userid" int NOT NULL,
         "tribedata" jsonb NULL DEFAULT '[]',
         "neighbors" jsonb NOT NULL DEFAULT '[]',
@@ -21,7 +21,7 @@ export class AddMapRoom1Support extends Migration {
       );
     `);
 
-    this.addSql(`ALTER TABLE "bym"."save" ADD COLUMN "mapversion" int NULL;`);
+    this.addSql(`ALTER TABLE "bym"."save" ADD COLUMN IF NOT EXISTS "mapversion" int NULL;`);
 
     this.addSql(`
       UPDATE "bym"."save" s
@@ -32,7 +32,7 @@ export class AddMapRoom1Support extends Migration {
     `);
 
     this.addSql(
-      `ALTER TABLE "bym"."save" ADD COLUMN "mr2upgraded" boolean NOT NULL DEFAULT false;`,
+      `ALTER TABLE "bym"."save" ADD COLUMN IF NOT EXISTS "mr2upgraded" boolean NOT NULL DEFAULT false;`,
     );
 
     this.addSql(
