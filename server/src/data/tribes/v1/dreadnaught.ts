@@ -65,7 +65,7 @@ export const dreadnaught: Record<TribeScale, SaveData> = {
         cP: 4,
         id: 20,
         pr: 1,
-        st: 791,
+        st: 13365,
         rCP: 4,
       },
       "21": {
@@ -76,7 +76,7 @@ export const dreadnaught: Record<TribeScale, SaveData> = {
         cP: 2,
         id: 21,
         pr: 1,
-        st: 733,
+        st: 13365,
         rCP: 2,
       },
       "22": {
@@ -87,7 +87,7 @@ export const dreadnaught: Record<TribeScale, SaveData> = {
         cP: 5,
         id: 22,
         pr: 1,
-        st: 724,
+        st: 13365,
         rCP: 5,
       },
       "23": {
@@ -98,7 +98,7 @@ export const dreadnaught: Record<TribeScale, SaveData> = {
         cP: 11,
         id: 23,
         pr: 1,
-        st: 740,
+        st: 13365,
         rCP: 11,
       },
       "24": {
