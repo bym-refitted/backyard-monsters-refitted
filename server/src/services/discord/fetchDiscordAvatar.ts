@@ -40,7 +40,7 @@ export const fetchDiscordAvatar = async (userid: number, discordid: string) => {
 
     const { avatar } = await response.json() as DiscordUser;
 
-    const newPicSquare = fetchAvatarUrl(user.username, discordid, avatar);
+    const newPicSquare = fetchAvatarUrl(discordid, avatar);
 
     user.discord_avatar_checked_at = new Date();
 
@@ -54,11 +54,11 @@ export const fetchDiscordAvatar = async (userid: number, discordid: string) => {
 
 /**
  * Resolves the effective avatar URL for a user.
- * Prefers the Discord CDN when an avatar hash is present, falls back to DiceBear.
+ * Prefers the user's Discord avatar, falls back to Discord's deterministic default avatar.
  */
-export const fetchAvatarUrl = (username: string, discordId?: string | null, avatarHash?: string | null) => {
-  if (discordId && avatarHash) 
+export const fetchAvatarUrl = (discordId?: string | null, avatarHash?: string | null) => {
+  if (discordId && avatarHash)
     return `${DISCORD_CDN}/avatars/${discordId}/${avatarHash}.png?size=64`;
-
-  return `${process.env.AVATAR_URL}?seed=${username}&size=50`;
+  
+  return `${DISCORD_CDN}/embed/avatars/0.png`;
 };
