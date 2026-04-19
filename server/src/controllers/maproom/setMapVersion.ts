@@ -26,7 +26,7 @@ const SetMapVersionSchema = z.object({
  * - NONE: Leaves the current MR2 world and clears mapversion.
  * - V1:   Sets mapversion to 1, no world ops.
  * - V2:   Requires Town Hall level 6. Joins or creates an MR2 world and marks mr2upgraded.
- * - V3:   Joins the MR3 world map.
+ * - V3:   Requires Town Hall level 6. Joins the MR3 world map.
  *
  * @param {Context} ctx - The Koa context object
  * @returns {Promise<void>} - A promise that resolves when the controller is complete.
@@ -63,6 +63,10 @@ export const setMapVersion: KoaController = async (ctx) => {
     }
 
     case MapRoomVersion.V3:
+      const townHall = extractTownHall(save.buildingdata ?? {});
+
+      if (!townHall || townHall.l < 6) throw townHallLevelErr();
+
       await joinNewWorldMap(user, save);
       save.mapversion = MapRoomVersion.V3;
       break;
