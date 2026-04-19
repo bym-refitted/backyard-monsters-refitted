@@ -31,7 +31,7 @@ const mr1TribeData = [legionnaire, kozu, abunaki, dreadnaught];
  * relative to the player's level so tribes always pass the client's
  * _baseLevel - 10 display filter.
  *
- * Destroyed tribes respawn after 1 hour, matching inferno behaviour.
+ * Destroyed tribes respawn after 10 minutes.
  *
  * @param {Save} save - The player's main save
  * @param {MR1TribeScaleConfig} tribes - Town Hall level thresholds per scale (max TH level is 10)
@@ -45,7 +45,7 @@ export const createMR1Tribes = async (save: Save, tribes: MR1TribeScaleConfig) =
   const townHall = extractTownHall(save.buildingdata ?? {});
   const thLevel = townHall?.l ?? 1;
 
-  const oneHour = 1 * 60 * 60;
+  const tenMinutes = 10 * 60;
   const currentTime = getCurrentDateTime();
 
   let scale: TribeScale;
@@ -79,7 +79,7 @@ export const createMR1Tribes = async (save: Save, tribes: MR1TribeScaleConfig) =
 
   // Respawn tribes destroyed more than 1 hour ago
   for (const tribe of maproom.tribedata) {
-    const canRespawn = tribe.destroyedAt && currentTime - tribe.destroyedAt > oneHour;
+    const canRespawn = tribe.destroyedAt && currentTime - tribe.destroyedAt > tenMinutes;
 
     if (tribe.destroyed && canRespawn) {
       const status = wmstatus?.findIndex((status) => status[0] === Number(tribe.baseid));
