@@ -82,7 +82,9 @@ export const baseModeAttack = async ({ user, baseid, mapversion, attackCost }: B
 
   if (save.type != BaseType.TRIBE) save.attacks.push(attackDetails);
 
-  await damageProtection(userSave, BaseMode.ATTACK);
+  if (save.type !== BaseType.TRIBE || mapversion !== MapRoomVersion.V1) {
+    await damageProtection(userSave, BaseMode.ATTACK);
+  }
 
   save.attackid = Math.floor(Math.random() * 99999) + 1;
 
