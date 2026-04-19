@@ -238,6 +238,10 @@ export const baseLoad: KoaController = async (ctx) => {
 
   const attackAllowed = canAttack(save, baseSave, mapversion);
 
+  const avatar = isOwner
+    ? user.pic_square
+    : (await postgres.em.findOne(User, { userid: baseSave.userid }))?.pic_square;
+
   const response: Record<string, unknown> = {
     ...filteredSave,
     relationship: isOwner ? EnumBaseRelationship.SELF : EnumBaseRelationship.ENEMY,
@@ -249,7 +253,7 @@ export const baseLoad: KoaController = async (ctx) => {
     storeitems: storeItems,
     tutorialstage: isTutorialEnabled,
     currenttime: getCurrentDateTime(),
-    pic_square: `${process.env.AVATAR_URL}?seed=${filteredSave.name}&size=50`,
+    pic_square: avatar,
     ...(isOwner && mapUserSaveData(user)),
   };
 

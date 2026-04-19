@@ -45,7 +45,7 @@ export const register: KoaController = async (ctx) => {
   // Create new user record
   const user = postgres.em.create(User, {
     ...registeredUser,
-    pic_square: `${process.env.AVATAR_URL}?seed=${registeredUser.username}&size=50`,
+    pic_square: null,
     password: hash,
   } as unknown as UserData);
 
