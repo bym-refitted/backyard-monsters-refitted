@@ -58,7 +58,7 @@ export const fetchDiscordAvatar = async (userid: number, discordid: string) => {
  */
 export const fetchAvatarUrl = (username: string, discordId?: string | null, avatarHash?: string | null) => {
   if (discordId && avatarHash) 
-    return `${DISCORD_CDN}/avatars/${discordId}/${avatarHash}.png`;
+    return `${DISCORD_CDN}/avatars/${discordId}/${avatarHash}.png?size=64`;
 
   return `${process.env.AVATAR_URL}?seed=${username}&size=50`;
 };
