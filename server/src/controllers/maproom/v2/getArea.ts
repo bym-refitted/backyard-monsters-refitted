@@ -9,6 +9,8 @@ import { Status } from "../../../enums/StatusCodes.js";
 import { createCellData } from "../../../services/maproom/v2/createCellData.js";
 import { generateNoise, getTerrainHeight } from "../../../services/maproom/v2/generateMap.js";
 import { MapRoomVersion } from "../../../enums/MapRoom.js";
+import { getLastSeen } from "../../../services/maproom/getLastSeen.js";
+import { BaseType } from "../../../enums/Base.js";
 
 /**
  * Schema for validating the request body when getting area data.
@@ -90,13 +92,14 @@ export const getArea: KoaController = async (ctx) => {
   // Batch load all unique cell owners in a single query
   const ownerIds = [...new Set(dbCells.map(cell => cell.uid).filter(Boolean))] as number[];
 
-  const ownersList = await postgres.em.find(
-    User,
-    { userid: { $in: ownerIds } },
-    { populate: ["save"] }
-  );
+  const [ownersList, lastSeen] = await Promise.all([
+    postgres.em.find(User, { userid: { $in: ownerIds } }, { populate: ["save"] }),
+    getLastSeen(ownerIds, BaseType.MAIN),
+  ]);
 
   const cellOwners = new Map<number, User>(ownersList.map(u => [u.userid, u]));
+
+  ctx.state.lastSeen = lastSeen;
 
   const cells: Record<number, Record<number, unknown>> = {};
   for (const cell of dbCells) {

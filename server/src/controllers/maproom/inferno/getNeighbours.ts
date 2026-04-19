@@ -1,25 +1,37 @@
 import type { KoaController } from "../../../utils/KoaController.js";
 import { Status } from "../../../enums/StatusCodes.js";
-import { User } from "../../../models/user.model.js";
 import { Save } from "../../../models/save.model.js";
+import { User } from "../../../models/user.model.js";
 import { InfernoMaproom } from "../../../models/infernomaproom.model.js";
 import { postgres } from "../../../server.js";
 import { BaseType } from "../../../enums/Base.js";
 import { calculateBaseLevel } from "../../../services/base/calculateBaseLevel.js";
-import { damageProtection } from "../../../services/maproom/v2/damageProtection.js";
-import { logger } from "../../../utils/logger.js";
 import { AttackPermission } from "../../../enums/MapRoom.js";
 import { getCurrentDateTime } from "../../../utils/getCurrentDateTime.js";
-import {
-  type NeighbourData,
-  createNeighbourData,
-} from "../../../services/maproom/inferno/createNeighbourData.js";
+import { createNeighbourData } from "../../../services/maproom/inferno/createNeighbourData.js";
+import type { NeighbourData } from "../../../types/NeighbourData.js";
+import { getLastSeen } from "../../../services/maproom/getLastSeen.js";
+import { isAttackActive } from "../../../services/base/isAttackActive.js";
 
 /**
  * Cache validity period for inferno neighbours.
  * This is set to 2 weeks.
  */
 const CACHE_VALIDITY_HOURS = 24 * 7 * 2;
+
+/**
+ * Save fields fetched when updating live neighbour data.
+ * Restricted to only what updateNeighbourData needs.
+ */
+const NEIGHBOUR_SAVE_FIELDS = [
+  "userid",
+  "protected",
+  "attackid",
+  "attacks",
+  "damage",
+  "worldid",
+  "level",
+] as const;
 
 /**
  * Controller to get inferno neighbours for PvP matchmaking.
@@ -36,73 +48,63 @@ export const getNeighbours: KoaController = async (ctx) => {
   const user: User = ctx.authUser;
   await postgres.em.populate(user, ["save", "infernosave"]);
 
-  try {
-    if (!user.save?.worldid) {
-      ctx.status = Status.OK;
-      ctx.body = { error: 0, bases: [] };
-      return;
-    }
+  if (!user.save?.worldid) {
+    ctx.status = Status.OK;
+    ctx.body = { error: 0, bases: [] };
+    return;
+  }
 
-    let infernoMaproom = await postgres.em.findOne(InfernoMaproom, {
-      userid: user.userid,
+  const infernoMaproom = await postgres.em.findOne(InfernoMaproom, {
+    userid: user.userid,
+  });
+
+  const currentDate = new Date();
+  const cacheExpiry = new Date(
+    currentDate.getTime() - CACHE_VALIDITY_HOURS * 60 * 60 * 1000
+  );
+
+  if (!infernoMaproom) throw new Error("Inferno maproom not found.");
+
+  // Check if we need to fetch new neighbours (cache expired or array empty)
+  const getNewNeighbours = isCacheExpired(infernoMaproom, cacheExpiry) || infernoMaproom.neighbors.length === 0;
+
+  if (getNewNeighbours) {
+    const foundNeighbours = await findNeighbours(user);
+
+    // Preserve previous attack data on attackers who may have attacked before defender seeded
+    const mergedNeighbors = foundNeighbours.map((newNeighbor) => {
+      const existing = infernoMaproom.neighbors.find(
+        (old) => old.userid === newNeighbor.userid
+      );
+
+      if (existing) {
+        return {
+          ...newNeighbor,
+          attacksfrom: existing.attacksfrom || 0,
+          attacksto: existing.attacksto || 0,
+          retaliatecount: existing.retaliatecount || 0,
+        };
+      }
+
+      return newNeighbor;
     });
 
-    const currentDate = new Date();
-    const cacheExpiry = new Date(
-      currentDate.getTime() - CACHE_VALIDITY_HOURS * 60 * 60 * 1000
-    );
+    infernoMaproom.neighbors = mergedNeighbors;
+    infernoMaproom.neighborsLastCalculated = currentDate;
 
-    if (!infernoMaproom) throw new Error("Inferno maproom not found.");
-
-    // Check if we need to fetch new neighbours (cache expired or array empty)
-    const getNewNeighbours = isCacheExpired(infernoMaproom, cacheExpiry) || infernoMaproom.neighbors.length === 0;
-
-    if (getNewNeighbours) {
-      const foundNeighbours = await findNeighbours(user);
-
-      // Preserve previous attack data on attackers who may have attacked before defender seeded
-      const mergedNeighbors = foundNeighbours.map((newNeighbor) => {
-        const existing = infernoMaproom.neighbors.find(
-          (old) => old.userid === newNeighbor.userid
-        );
-
-        if (existing) {
-          return {
-            ...newNeighbor,
-            attacksfrom: existing.attacksfrom || 0,
-            attacksto: existing.attacksto || 0,
-            retaliatecount: existing.retaliatecount || 0,
-          };
-        }
-
-        return newNeighbor;
-      });
-
-      infernoMaproom.neighbors = mergedNeighbors;
-      infernoMaproom.neighborsLastCalculated = currentDate;
-
-      postgres.em.persist(infernoMaproom);
-      await postgres.em.flush();
-    }
-
-    // Update attack permissions for cached neighbours based on current save state
-    const neighbours = await updateNeighbourData(infernoMaproom.neighbors);
-
-    ctx.status = Status.OK;
-    ctx.body = {
-      error: 0,
-      wmbases: [],
-      bases: neighbours,
-    };
-  } catch (error) {
-    logger.error(`Error fetching inferno neighbours: ${error}`);
-    ctx.status = Status.OK;
-    ctx.body = {
-      error: 0,
-      wmbases: [],
-      bases: [],
-    };
+    postgres.em.persist(infernoMaproom);
+    await postgres.em.flush();
   }
+
+  // Update attack permissions for cached neighbours based on current save state
+  const neighbours = await updateNeighbourData(infernoMaproom.neighbors);
+
+  ctx.status = Status.OK;
+  ctx.body = {
+    error: 0,
+    wmbases: [],
+    bases: neighbours,
+  };
 };
 
 /**
@@ -196,34 +198,70 @@ const updateNeighbourData = async (cachedNeighbours: NeighbourData[]) => {
 
   const userIds = cachedNeighbours.map((neighbour) => neighbour.userid);
 
-  const neighbourSaves = await postgres.em.find(Save, {
-    type: BaseType.INFERNO,
-    userid: { $in: userIds },
-  });
+  // Fetch current saves and last seen timestamps for all neighbours in parallel
+  const [neighbourSaves, lastSeens] = await Promise.all([
+    postgres.em.find(
+      Save,
+      {
+        type: BaseType.INFERNO,
+        userid: { $in: userIds },
+      },
+      { fields: NEIGHBOUR_SAVE_FIELDS },
+    ) as unknown as Promise<Save[]>,
 
-  const saveMap = new Map<number, Save>();
-  neighbourSaves.forEach((save) => saveMap.set(save.userid, save));
+    getLastSeen(userIds, BaseType.INFERNO),
+  ]);
 
-  // Update protection status for all saves
-  for (const save of neighbourSaves) await damageProtection(save);
+  const saves = new Map<number, Save>();
+  neighbourSaves.forEach((save) => saves.set(save.userid, save));
 
-  return cachedNeighbours.flatMap((neighbour) => {
-    const neighbourSave = saveMap.get(neighbour.userid);
+  const currentTime = getCurrentDateTime();
+  let needsFlush = false;
+
+  // Clear expired protection timestamps
+  for (const save of neighbourSaves) {
+    if (save.protected > 0 && save.protected <= currentTime) {
+      save.protected = 0;
+      postgres.em.persist(save);
+      needsFlush = true;
+    }
+  }
+
+  const updatedNeighbours = cachedNeighbours.flatMap((neighbour) => {
+    const neighbourSave = saves.get(neighbour.userid);
 
     if (!neighbourSave || neighbourSave.worldid == null) return [];
 
-    // TODO: Add the rest of the cases here for attack permissions e.g. level too low
-    const currentTime = getCurrentDateTime();
     const isProtected = neighbourSave.protected > 0 && neighbourSave.protected > currentTime;
 
-    neighbour.attackpermitted = isProtected ? AttackPermission.DAMAGE_PROTECTION : AttackPermission.ATTACKABLE;
+    const lastAttack = neighbourSave.attacks.at(-1);
+    const isUnderAttack = isAttackActive(neighbourSave);
+
+    // Reset stale attackid left over from a disconnected attacker
+    if (neighbourSave.attackid !== 0 && !isUnderAttack) {
+      neighbourSave.attackid = 0;
+      postgres.em.persist(neighbourSave);
+      needsFlush = true;
+    }
+
+    if (isProtected) {
+      neighbour.attackpermitted = AttackPermission.DAMAGE_PROTECTION;
+    } else if (isUnderAttack && lastAttack) {
+      neighbour.attackpermitted = AttackPermission.UNDER_ATTACK;
+      neighbour.attacker = lastAttack.name;
+    } else {
+      neighbour.attackpermitted = AttackPermission.ATTACKABLE;
+    }
 
     neighbour.level = neighbourSave.level;
-    neighbour.saved = neighbourSave.savetime;
-    neighbour.online = getCurrentDateTime() - neighbourSave.savetime <= 60;
+    neighbour.saved = lastSeens.get(neighbour.userid) ?? 0;
 
     return [neighbour];
   });
+
+  if (needsFlush) await postgres.em.flush();
+
+  return updatedNeighbours;
 };
 
 /**

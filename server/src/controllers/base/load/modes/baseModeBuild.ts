@@ -5,7 +5,8 @@ import { BaseMode } from "../../../../enums/Base.js";
 import { logger } from "../../../../utils/logger.js";
 import { balancedReward } from "../../../../services/base/balancedReward.js";
 import { resetInvasionWaves } from "../../../../services/events/wmi/invasionUtils.js";
-import { permissionErr } from "../../../../errors/errors.js";
+import { isAttackActive } from "../../../../services/base/isAttackActive.js";
+import { baseUnderAttackErr, permissionErr } from "../../../../errors/errors.js";
 
 /**
  * Retrieves the save data for the user based on the provided `baseid`.
@@ -28,6 +29,8 @@ export const baseModeBuild = async (user: User, baseid: string) => {
 
   // Default mode only runs once on initial base load
   if (baseid === BaseMode.DEFAULT) {
+    if (isAttackActive(userSave)) throw baseUnderAttackErr();
+
     await balancedReward(userSave);
 
     if (userSave.stats?.other) resetInvasionWaves(userSave.stats.other);
@@ -42,9 +45,11 @@ export const baseModeBuild = async (user: User, baseid: string) => {
 
     if (!baseSave) throw new Error(`Base save not found for baseid: ${baseid}`);
     if (baseSave.userid !== user.userid) throw permissionErr();
-    
+    if (isAttackActive(baseSave)) throw baseUnderAttackErr();
+
     return baseSave;
   }
 
+  if (isAttackActive(userSave)) throw baseUnderAttackErr();
   return userSave;
 };

@@ -5,7 +5,6 @@ import { postgres } from "../../server.js";
 import { Thread } from "../../models/thread.model.js";
 import { User } from "../../models/user.model.js";
 import { mailboxErr } from "../../errors/errors.js";
-import { logger } from "../../utils/logger.js";
 
 /**
  * Controller to report/block a user from a message thread
@@ -15,32 +14,26 @@ import { logger } from "../../utils/logger.js";
  * @throws {Error} - Throws an error if the request body is missing required fields or if logging fails.
  */
 export const reportMessageThread: KoaController = async (ctx) => {
-  try {
-    const user: User = ctx.authUser;
-    const { threadid } = ReportMessageSchema.parse(ctx.request.body);
+  const user: User = ctx.authUser;
+  const { threadid } = ReportMessageSchema.parse(ctx.request.body);
 
-    const thread = await postgres.em.findOne(Thread, { threadid });
+  const thread = await postgres.em.findOne(Thread, { threadid });
 
-    if (!thread) throw mailboxErr();
+  if (!thread) throw mailboxErr();
 
-    // Determine the other user in the thread
-    const blockedUserId = thread.userid === user.userid ? thread.targetid : thread.userid;
+  // Determine the other user in the thread
+  const blockedUserId = thread.userid === user.userid ? thread.targetid : thread.userid;
 
-    if (user.blockedUsers.includes(blockedUserId)) {
-      ctx.status = Status.OK;
-      ctx.body = { error: 0 };
-      return;
-    }
-
-    user.blockedUsers.push(blockedUserId);
-    postgres.em.persist(user);
-    await postgres.em.flush();
-
+  if (user.blockedUsers.includes(blockedUserId)) {
     ctx.status = Status.OK;
     ctx.body = { error: 0 };
-  } catch (error) {
-    ctx.status = Status.INTERNAL_SERVER_ERROR;
-    ctx.body = { error: 1 };
-    logger.error(`Error blocking user: ${error}`);
+    return;
   }
+
+  user.blockedUsers.push(blockedUserId);
+  postgres.em.persist(user);
+  await postgres.em.flush();
+
+  ctx.status = Status.OK;
+  ctx.body = { error: 0 };
 };
