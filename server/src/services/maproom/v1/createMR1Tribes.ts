@@ -11,6 +11,7 @@ import { getCurrentDateTime } from "../../../utils/getCurrentDateTime.js";
 import { extractTownHall } from "../../../utils/extractTownHall.js";
 
 export interface MR1TribeScaleConfig {
+  [TribeScale.NEW]: { maxLevel: number };
   [TribeScale.LOW]: { maxLevel: number };
   [TribeScale.MID]: { maxLevel: number };
   [TribeScale.HIGH]: { maxLevel: number };
@@ -22,9 +23,10 @@ const mr1TribeData = [legionnaire, kozu, abunaki, dreadnaught];
  * Returns an array of scaled MR1 tribes based on the player's Town Hall level.
  *
  * Tribe scale is selected as follows:
- * - LOW:  Town Hall 1–3
- * - MID:  Town Hall 4–6
- * - HIGH: Town Hall 7–10
+ * - NEW:  Town Hall 1–2
+ * - LOW:  Town Hall 3–4
+ * - MID:  Town Hall 5–6
+ * - HIGH: Town Hall 7+
  *
  * Each scale maps to a different baseid per tribe type so the client loads
  * the appropriate difficulty variant. The wmstatus level is set dynamically
@@ -51,7 +53,9 @@ export const createMR1Tribes = async (save: Save, tribes: MR1TribeScaleConfig) =
   let scale: TribeScale;
   let persist = false;
 
-  if (thLevel <= tribes[TribeScale.LOW].maxLevel) {
+  if (thLevel <= tribes[TribeScale.NEW].maxLevel) {
+    scale = TribeScale.NEW;
+  } else if (thLevel <= tribes[TribeScale.LOW].maxLevel) {
     scale = TribeScale.LOW;
   } else if (thLevel <= tribes[TribeScale.MID].maxLevel) {
     scale = TribeScale.MID;
