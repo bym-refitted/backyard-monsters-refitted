@@ -1057,6 +1057,16 @@ export const kozu: Record<TribeScale, SaveData> = {
     worldid: "0",
     event_score: 0,
     mushrooms: {},
+    resources: {
+      r1: 40000,
+      r2: 40000,
+      r3: 40000,
+      r4: 32000,
+      r1max: 50000,
+      r2max: 50000,
+      r3max: 50000,
+      r4max: 50000,
+    },
     storedata: {
       ENL: {
         q: 6,
@@ -3175,16 +3185,7 @@ export const kozu: Record<TribeScale, SaveData> = {
     empiredestroyed: 1,
     worldid: "0",
     event_score: 0,
-    resources: {
-      r1: 26000,
-      r2: 30000,
-      r3: 18000,
-      r4: 12000,
-      r1max: 50000,
-      r2max: 50000,
-      r3max: 50000,
-      r4max: 50000,
-    },
+    resources: {},
     storedata: {
       ENL: {
         q: 6,
