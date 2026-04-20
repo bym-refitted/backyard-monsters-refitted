@@ -22,13 +22,24 @@ const getAreaSchema = z.object({
 });
 
 /**
+ * User fields fetched alongside each WorldMapCell in the DB query for cell owners.
+ * Restricted to only what the cell handlers need.
+ */
+const CELL_OWNER_FIELDS = [
+  "userid",
+  "username",
+  "pic_square",
+  "save.points",
+  "save.basevalue",
+] as const;
+
+/**
  * Save fields fetched alongside each WorldMapCell in the DB query.
  * Restricted to only what the cell handlers need.
  */
 const CELL_SAVE_FIELDS = [
   "*",
   "save.basesaveid",
-  "save.savetime",
   "save.locked",
   "save.empirevalue",
   "save.flinger",
@@ -40,6 +51,8 @@ const CELL_SAVE_FIELDS = [
   "save.destroyed",
   "save.points",
   "save.basevalue",
+  "save.attackid",
+  "save.attacks",
 ] as const;
 
 /**
@@ -93,11 +106,14 @@ export const getArea: KoaController = async (ctx) => {
   const ownerIds = [...new Set(dbCells.map(cell => cell.uid).filter(Boolean))] as number[];
 
   const [ownersList, lastSeen] = await Promise.all([
-    postgres.em.find(User, { userid: { $in: ownerIds } }, { populate: ["save"] }),
+    postgres.em.find(User, { userid: { $in: ownerIds } }, {
+      populate: ["save"],
+      fields: CELL_OWNER_FIELDS,
+    }),
     getLastSeen(ownerIds, BaseType.MAIN),
   ]);
 
-  const cellOwners = new Map<number, User>(ownersList.map(u => [u.userid, u]));
+  const cellOwners = new Map<number, User>((ownersList as unknown as User[]).map(u => [u.userid, u]));
 
   ctx.state.lastSeen = lastSeen;
 
