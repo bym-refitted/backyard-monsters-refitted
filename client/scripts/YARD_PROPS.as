@@ -149,7 +149,7 @@ package
             "6":{"img":"1.6.png"},
             "10":{"img":"1.10.png"}
          },
-         "quantity":[0,1,2,4,5,6,6,6,6,6,6],
+         "quantity":[0,6,6,4,5,6,6,6,6,6,6],
          "produce":[2,4,7,11,16,22,29,37,46,56],
          "cycleTime":[10,10,10,10,10,10,10,10,10,10],
          "capacity":[720,2160,5670,13365,29160,60142,118918,227584,424414,775018],
@@ -1081,7 +1081,7 @@ package
             "r4":new SecNum(0),
             "r5":0,
             "time":new SecNum(43200),
-            "re":[[14,1,3]]
+            "re":[[14,1,1]]
          }],
          "imageData":{
             "baseurl":"buildings/yardplanner/",
@@ -1105,7 +1105,7 @@ package
             "baseurl":"buildingthumbs/",
             "1":{"img":"10.png"}
          },
-         "quantity":[0,0,0,1,1,1,1,1,1,1,1],
+         "quantity":[0,1,1,1,1,1,1,1,1,1,1],
          "hp":[16000],
          "repairTime":[3840]
       },{
@@ -1727,14 +1727,14 @@ package
             "r3":new SecNum(0),
             "r4":new SecNum(0),
             "time":new SecNum(5),
-            "re":[[14,1,2]]
+            "re":[[14,1,1]]
          },{
             "r1":new SecNum(0),
             "r2":new SecNum(10000),
             "r3":new SecNum(0),
             "r4":new SecNum(0),
             "time":new SecNum(5),
-            "re":[[14,1,3]]
+            "re":[[14,1,1]]
          },{
             "r1":new SecNum(100000),
             "r2":new SecNum(100000),
@@ -1826,7 +1826,7 @@ package
             "4":{"img":"17.4.png"},
             "5":{"img":"17.5.png"}
          },
-         "quantity":[0,0,30,60,120,200,220,280,300,340,400],
+         "quantity":[0,400,400,400,400,400,400,280,300,340,400],
          "hp":[1000,2300,5750,18000,27000],
          "repairTime":[5,5,5,5,5]
       },{
@@ -2182,7 +2182,7 @@ package
                "back":["fort70_B4.png",new Point(-61,-36)]
             }
          },
-         "quantity":[0,2,3,4,5,6,6,6,6,6,6],
+         "quantity":[0,6,6,4,5,6,6,6,6,6,6],
          "hp":[6000,9000,12600,17640,26460,34400,45000,58000,75500,98200],
          "repairTime":[360,720,1440,2880,5760,11520,23000,46000,64800,86400]
       },{
@@ -2273,14 +2273,14 @@ package
             "r3":new SecNum(2500),
             "r4":new SecNum(0),
             "time":new SecNum(900),
-            "re":[[14,1,2]]
+            "re":[[14,1,1]]
          },{
             "r1":new SecNum(37500),
             "r2":new SecNum(50000),
             "r3":new SecNum(12500),
             "r4":new SecNum(0),
             "time":new SecNum(2700),
-            "re":[[14,1,3]]
+            "re":[[14,1,1]]
          },{
             "r1":new SecNum(187500),
             "r2":new SecNum(250000),
@@ -2405,7 +2405,7 @@ package
                "back":["fort70_B4.png",new Point(-61,-36)]
             }
          },
-         "quantity":[0,2,3,4,5,6,6,6,6,6,6],
+         "quantity":[0,6,6,6,5,6,6,6,6,6,6],
          "hp":[6000,9000,12600,17640,26460,34400,45000,58000,75500,98200],
          "repairTime":[360,720,1440,2880,5760,11520,23000,46000,64800,86400]
       },{
@@ -3867,7 +3867,7 @@ package
             "r3":new SecNum(75000),
             "r4":new SecNum(0),
             "time":new SecNum(5400),
-            "re":[[14,1,3],[5,1,1]]
+            "re":[[14,1,1],[5,1,1]]
          },{
             "r1":new SecNum(128600),
             "r2":new SecNum(128600),
@@ -3881,14 +3881,14 @@ package
             "r3":new SecNum(257200),
             "r4":new SecNum(0),
             "time":new SecNum(21600),
-            "re":[[14,1,5],[5,1,1]]
+            "re":[[14,1,1],[5,1,1]]
          },{
             "r1":new SecNum(514400),
             "r2":new SecNum(514400),
             "r3":new SecNum(514400),
             "r4":new SecNum(0),
             "time":new SecNum(43200),
-            "re":[[14,1,6],[5,1,1]]
+            "re":[[14,1,1],[5,1,1]]
          }],
          "imageData":{
             "baseurl":"buildings/catapult/",
@@ -3932,7 +3932,7 @@ package
             "2":{"img":"51.2.png"},
             "3":{"img":"51.3.png"}
          },
-         "quantity":[0,0,0,1,1,1,1,1,1,1,1],
+         "quantity":[0,1,1,1,1,1,1,1,1,1,1],
          "hp":[4000,8000,16000,32000],
          "repairTime":[120,240,480,960]
       },{
