@@ -1,4 +1,4 @@
-import { TribeScale } from "../../../enums/Tribes.js";
+import { InfernoTribeScale } from "../../../enums/Tribes.js";
 import { InfernoMaproom } from "../../../models/infernomaproom.model.js";
 import { Save } from "../../../models/save.model.js";
 import { User } from "../../../models/user.model.js";
@@ -10,7 +10,7 @@ export interface TribeDetails {
   maxLevel: number;
 }
 
-export type TribeScaleConfig = Omit<Record<TribeScale, TribeDetails>, TribeScale.NEW>;
+export type TribeScaleConfig = Record<InfernoTribeScale, TribeDetails>;
 
 /**
  * Returns an array of scaled tribes based on the player's level.
@@ -43,15 +43,15 @@ export const createInfernoTribes = async (save: Save, tribes: TribeScaleConfig) 
   const oneHour = 1 * 60 * 60;
   const currentTime = getCurrentDateTime();
 
-  let scale: TribeScale;
+  let scale: InfernoTribeScale;
   let persist = false;
 
-  if (playerLevel <= tribes[TribeScale.LOW].maxLevel) {
-    scale = TribeScale.LOW;
-  } else if (playerLevel <= tribes[TribeScale.MID].maxLevel) {
-    scale = TribeScale.MID;
+  if (playerLevel <= tribes[InfernoTribeScale.LOW].maxLevel) {
+    scale = InfernoTribeScale.LOW;
+  } else if (playerLevel <= tribes[InfernoTribeScale.MID].maxLevel) {
+    scale = InfernoTribeScale.MID;
   } else {
-    scale = TribeScale.HIGH;
+    scale = InfernoTribeScale.HIGH;
   }
 
   const { minTribeId } = tribes[scale];

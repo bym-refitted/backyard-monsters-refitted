@@ -1,7 +1,7 @@
 import type { SaveData } from "../../../types/EntityData.js";
 import { TribeScale } from "../../../enums/Tribes.js";
 
-// Baseids match TRIBES.as A_IDS entries (21=NEW, 22=LOW, 23=MID, 24=HIGH)
+// Baseids match TRIBES.as A_IDS entries (21=NEW, 22=TH3, 23=TH4, 24=TH5, 25=HIGH)
 export const abunaki: Record<TribeScale, SaveData> = {
   [TribeScale.NEW]: {
     baseid: "21",
@@ -38,8 +38,13 @@ export const abunaki: Record<TribeScale, SaveData> = {
     empiredestroyed: 1,
     worldid: "0",
     event_score: 0,
+    storedata: {
+      ENL: {
+        q: 6,
+      },
+    },
   },
-  [TribeScale.LOW]: {
+  [TribeScale.TH3]: {
     baseid: "22",
     type: "tribe",
     userid: 0,
@@ -195,7 +200,7 @@ export const abunaki: Record<TribeScale, SaveData> = {
       },
     },
   },
-  [TribeScale.MID]: {
+  [TribeScale.TH4]: {
     baseid: "23",
     type: "tribe",
     userid: 0,
@@ -230,11 +235,16 @@ export const abunaki: Record<TribeScale, SaveData> = {
     empiredestroyed: 1,
     worldid: "0",
     event_score: 0,
+    storedata: {
+      ENL: {
+        q: 6,
+      },
+    },
     buildingdata: {
       "0": { l: 1, X: -75, Y: -95, t: 14, id: 0 },
     },
   },
-  [TribeScale.HIGH]: {
+  [TribeScale.TH5]: {
     baseid: "24",
     type: "tribe",
     userid: 0,
@@ -269,6 +279,61 @@ export const abunaki: Record<TribeScale, SaveData> = {
     empiredestroyed: 1,
     worldid: "0",
     event_score: 0,
+    storedata: {
+      ENL: {
+        q: 6,
+      },
+    },
+    buildingdata: {
+      "0": {
+        X: -70,
+        Y: -65,
+        l: 1,
+        t: 14,
+        id: 0,
+      },
+    },
+  },
+  [TribeScale.HIGH]: {
+    baseid: "25",
+    type: "tribe",
+    userid: 0,
+    wmid: 25,
+    createtime: 0,
+    savetime: 0,
+    seed: 0,
+    saveuserid: 0,
+    bookmarked: 0,
+    fan: 0,
+    emailshared: 1,
+    unreadmessages: 0,
+    giftsentcount: 0,
+    id: 0,
+    canattack: false,
+    cellid: 0,
+    baseid_inferno: 0,
+    fbid: "",
+    fortifycellid: 0,
+    name: "",
+    level: 1,
+    catapult: 0,
+    flinger: 0,
+    destroyed: 0,
+    damage: 0,
+    locked: 0,
+    protected: 1,
+    lastupdate: 0,
+    usemap: 0,
+    credits: 0,
+    champion: [],
+    empiredestroyed: 1,
+    worldid: "0",
+    event_score: 0,
+    storedata: {
+      ENL: {
+        q: 6,
+      },
+    },
     buildingdata: {
       "0": { l: 1, X: -75, Y: -95, t: 14, id: 0 },
     },
