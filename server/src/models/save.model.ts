@@ -26,6 +26,7 @@ export class Save {
   @Property({ type: 'string', default: "0" })
   baseid!: string;
 
+  @Index()
   @OneToOne({
     nullable: true,
     orphanRemoval: true,
