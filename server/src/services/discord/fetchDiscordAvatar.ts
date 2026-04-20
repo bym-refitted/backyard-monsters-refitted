@@ -2,6 +2,7 @@ import { User } from "../../models/user.model.js";
 import { postgres } from "../../server.js";
 import { logger } from "../../utils/logger.js";
 
+const BYMR_CDN = "https://cdn.bymrefitted.com";
 const DISCORD_CDN = "https://cdn.discordapp.com";
 
 const CHECK_INTERVAL_MS = 24 * 60 * 60 * 1000;
@@ -60,5 +61,5 @@ export const fetchAvatarUrl = (discordId?: string | null, avatarHash?: string | 
   if (discordId && avatarHash)
     return `${DISCORD_CDN}/avatars/${discordId}/${avatarHash}.png?size=64`;
   
-  return `${DISCORD_CDN}/embed/avatars/0.png`;
+  return `${BYMR_CDN}/assets/bym-refitted-assets/placeholder.jpg`;
 };
