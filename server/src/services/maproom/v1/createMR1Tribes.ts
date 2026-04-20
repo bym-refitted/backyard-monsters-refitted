@@ -3,6 +3,7 @@ import { legionnaire } from "../../../data/tribes/v1/legionnaire.js";
 import { kozu } from "../../../data/tribes/v1/kozu.js";
 import { abunaki } from "../../../data/tribes/v1/abunaki.js";
 import { dreadnaught } from "../../../data/tribes/v1/dreadnaught.js";
+import { tutorial } from "../../../data/tribes/v1/tutorial.js";
 import { Maproom } from "../../../models/maproom.model.js";
 import { Save } from "../../../models/save.model.js";
 import { User } from "../../../models/user.model.js";
@@ -60,7 +61,9 @@ export const createMR1Tribes = async (save: Save, tribes: MR1TribeScaleConfig) =
     scale = TribeScale.HIGH;
   }
 
-  const scaledTribes = mr1TribeData.map((tribe) => tribe[scale]);
+  const inTutorial = save.tutorialstage < 205;
+
+  const scaledTribes = mr1TribeData.map((tribe, i) => i === 0 && inTutorial ? tutorial : tribe[scale]);
   const scaledBaseIds = new Set(scaledTribes.map((tribe) => Number(tribe.baseid)));
 
   let maproom = await postgres.em.findOne(Maproom, { userid });
