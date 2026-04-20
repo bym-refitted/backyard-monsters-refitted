@@ -237,9 +237,19 @@ export const baseLoad: KoaController = async (ctx) => {
 
   const attackAllowed = canAttack(userSave, baseSave, mapversion);
 
-  const avatar = isOwner
-    ? user.pic_square
-    : (await postgres.em.findOne(User, { userid: baseSave.userid }))?.pic_square;
+  let avatarUser;
+
+  if (isOwner) {
+    avatarUser = user;
+  } else {
+    avatarUser = await postgres.em.findOne(
+      User,
+      { userid: baseSave.userid },
+      { fields: ["pic_square"] }
+    );
+  }
+
+  const avatar = avatarUser?.pic_square;
 
   const response: Record<string, unknown> = {
     ...filteredSave,

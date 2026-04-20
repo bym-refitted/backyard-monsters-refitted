@@ -9,6 +9,19 @@ import type { KoaController } from "../../../utils/KoaController.js";
 import { logger } from "../../../utils/logger.js";
 
 /**
+ * Save fields fetched for the player's own cells.
+ */
+const CELL_SAVE_FIELDS = [
+  "*",
+  "save.basesaveid",
+  "save.level",
+  "save.protected",
+  "save.damage",
+  "save.attackid",
+  "save.attacks",
+] as const;
+
+/**
  * Returns the initial cell data for Map Room v3 when player opens the map.
  *
  * Returns ALL player-owned cells (home + outposts + captured defenders) so the
@@ -48,7 +61,7 @@ export const initialPlayerCellData: KoaController = async (ctx) => {
         ],
       },
     },
-    { populate: ["save"] },
+    { populate: ["save"], fields: CELL_SAVE_FIELDS },
   );
 
   if (!playerCells.length)
@@ -59,7 +72,7 @@ export const initialPlayerCellData: KoaController = async (ctx) => {
   const celldata = await Promise.all(
     playerCells
       .sort((cell) => (cell.base_type === EnumYardType.PLAYER ? -1 : 1))
-      .map((cell) => createCellData(cell, worldid, ctx, cellOwners)),
+      .map((cell) => createCellData(cell as unknown as WorldMapCell, worldid, ctx, cellOwners)),
   );
 
   ctx.status = Status.OK;
