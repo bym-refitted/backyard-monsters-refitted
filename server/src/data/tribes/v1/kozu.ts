@@ -961,7 +961,7 @@ export const kozu: Record<TribeScale, SaveData> = {
         cP: 1,
         id: 465,
         pr: 1,
-        st: 840,
+        st: 13365,
         rCP: 1,
       },
       "466": {
@@ -994,7 +994,7 @@ export const kozu: Record<TribeScale, SaveData> = {
         cP: 6,
         id: 487,
         pr: 1,
-        st: 330,
+        st: 2160,
         rCP: 6,
       },
       "488": {
@@ -1005,7 +1005,7 @@ export const kozu: Record<TribeScale, SaveData> = {
         cP: 6,
         id: 488,
         pr: 1,
-        st: 310,
+        st: 2160,
         rCP: 6,
       },
       "508": {
@@ -1016,7 +1016,7 @@ export const kozu: Record<TribeScale, SaveData> = {
         cP: 6,
         id: 508,
         pr: 1,
-        st: 260,
+        st: 2160,
         rCP: 6,
       },
     },
