@@ -38,6 +38,16 @@ export const abunaki: Record<TribeScale, SaveData> = {
     empiredestroyed: 1,
     worldid: "0",
     event_score: 0,
+    resources: {
+      r1: 2000,
+      r2: 12500,
+      r3: 7000,
+      r4: 3700,
+      r1max: 10000,
+      r2max: 10000,
+      r3max: 10000,
+      r4max: 10000,
+    },
     storedata: {
       ENL: {
         q: 6,
