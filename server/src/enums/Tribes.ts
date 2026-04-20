@@ -17,6 +17,7 @@ export enum Tribe {
  * @enum {string}
  */
 export enum TribeScale {
+  NEW = "new",
   LOW = "low",
   MID = "intermediate",
   HIGH = "high",
@@ -38,7 +39,8 @@ export const Tribes: Tribe[] = [
  * @type {Record}
  */
 export const MR1_TRIBES: MR1TribeScaleConfig = {
-  [TribeScale.LOW]: { maxLevel: 3 },
+  [TribeScale.NEW]: { maxLevel: 2 },
+  [TribeScale.LOW]: { maxLevel: 4 },
   [TribeScale.MID]: { maxLevel: 6 },
   [TribeScale.HIGH]: { maxLevel: Infinity }
 };

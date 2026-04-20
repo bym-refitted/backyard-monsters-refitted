@@ -10,7 +10,7 @@ export interface TribeDetails {
   maxLevel: number;
 }
 
-export type TribeScaleConfig = Record<TribeScale, TribeDetails>;
+export type TribeScaleConfig = Omit<Record<TribeScale, TribeDetails>, TribeScale.NEW>;
 
 /**
  * Returns an array of scaled tribes based on the player's level.
