@@ -14,6 +14,7 @@ import { baseModeBuild } from "../load/modes/baseModeBuild.js";
 import { baseModeView } from "../load/modes/baseModeView.js";
 import { infernoModeView } from "../load/modes/infernoModeView.js";
 import { mapUserSaveData } from "../mapUserSaveData.js";
+import { extractTownHall } from "../../../utils/extractTownHall.js";
 
 const UpdateSavedSchema = z.object({
   type: z.string(),
@@ -69,6 +70,10 @@ export const updateSaved: KoaController = async (ctx) => {
 
   const flags = getFlags();
   flags.discordOldEnough = Number(ctx.meetsDiscordAgeCheck);
+
+  const townHall = extractTownHall(userSave.buildingdata || {});
+  flags.maproom2 = townHall && townHall.l >= 6 ? 1 : 0;
+  flags.mr2upgraded = userSave.mr2upgraded ? 1 : 0;
 
   const responseBody = {
     error: 0,
