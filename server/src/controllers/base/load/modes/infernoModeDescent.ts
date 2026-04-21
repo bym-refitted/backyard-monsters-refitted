@@ -5,6 +5,21 @@ import { Save } from "../../../../models/save.model.js";
 import { User } from "../../../../models/user.model.js";
 import { postgres } from "../../../../server.js";
 
+/**
+ * Handles the initial descent into the Inferno cavern.
+ *
+ * Returns the player's main save populated with 13 descent tribe entries
+ * (baseids 201–213) in wmstatus. These are the static Moloch tribes the
+ * client displays on the descent screen before the player reaches the
+ * Inferno map room.
+ *
+ * Descent tribes are written once and preserved across subsequent loads —
+ * if any 201–213 entry is already present the save is returned as-is.
+ * Non-descent entries in wmstatus (e.g. MR1 tribe slots) are left untouched.
+ *
+ * @param {User} user - The authenticated user entering the Inferno
+ * @returns {Promise<Save>} The player's main save with descent tribes set in wmstatus
+ */
 export const infernoModeDescent = async (user: User) => {
   const { userid } = user.save!;
 
@@ -12,9 +27,9 @@ export const infernoModeDescent = async (user: User) => {
 
   if (!baseSave) throw new Error(`Main save not found for user: ${user.username}`);
 
-  const maproom1 = await postgres.em.findOne(InfernoMaproom, { userid });
+  const maproomInferno = await postgres.em.findOne(InfernoMaproom, { userid });
 
-  if (!maproom1) await InfernoMaproom.setupMapRoom1Data(postgres.em, user);
+  if (!maproomInferno) await InfernoMaproom.setupInfernoMapRoomData(postgres.em, user);
 
   // Otherwise, create an array of 13 descent tribes, client expects IDs between 201-213.
   const tribes = Array.from({ length: 13 }, (_, i) => [201 + i, i + 1, 0]);
@@ -22,10 +37,13 @@ export const infernoModeDescent = async (user: User) => {
   // Skip descent if the devConfig flag is set.
   if (devConfig.skipDescent) tribes.forEach((tribe) => (tribe[2] = 1));
 
-  // If the user already has descent tribes, return the save.
-  if (baseSave.wmstatus.length !== 0) return baseSave;
+  const isDescentTribe = (tribe: number[]) => tribe[0] >= 201 && tribe[0] <= 213;
 
-  baseSave.wmstatus = tribes;
+  if (baseSave.wmstatus.some(isDescentTribe)) return baseSave;
+
+  const wmstatus = [...baseSave.wmstatus.filter((tribe) => !isDescentTribe(tribe)), ...tribes];
+
+  baseSave.wmstatus = wmstatus;
   await postgres.em.flush();
 
   return baseSave;

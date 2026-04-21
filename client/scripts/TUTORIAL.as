@@ -972,7 +972,7 @@ package
                //    Add(6,BOBBOTTOMLEFTLOW,KEYS.Get("tut_101"),POINT_MAP,["mc",UI_BOTTOM._mc.bMap,new Point(15,15),-30],false,false,ConditionMapRoomOpen);
                // }
                BASE.BuildingDeselect();
-               _stage = 140;
+               Add(6,BOBBOTTOMLEFTLOW,KEYS.Get("tut_101"),POINT_MAP,["mc",UI_BOTTOM._mc.bMap,new Point(15,15),-30],false,false,ConditionMapRoomOpen);
                break;
             case 102:
                if(!MAPROOM._open)

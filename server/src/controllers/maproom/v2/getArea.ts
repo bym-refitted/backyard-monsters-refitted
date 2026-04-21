@@ -11,6 +11,7 @@ import { generateNoise, getTerrainHeight } from "../../../services/maproom/v2/ge
 import { MapRoomVersion } from "../../../enums/MapRoom.js";
 import { getLastSeen } from "../../../services/maproom/getLastSeen.js";
 import { BaseType } from "../../../enums/Base.js";
+import { mapRoomDisabledErr } from "../../../errors/errors.js";
 
 /**
  * Schema for validating the request body when getting area data.
@@ -22,13 +23,24 @@ const getAreaSchema = z.object({
 });
 
 /**
+ * User fields fetched alongside each WorldMapCell in the DB query for cell owners.
+ * Restricted to only what the cell handlers need.
+ */
+const CELL_OWNER_FIELDS = [
+  "userid",
+  "username",
+  "pic_square",
+  "save.points",
+  "save.basevalue",
+] as const;
+
+/**
  * Save fields fetched alongside each WorldMapCell in the DB query.
  * Restricted to only what the cell handlers need.
  */
 const CELL_SAVE_FIELDS = [
   "*",
   "save.basesaveid",
-  "save.savetime",
   "save.locked",
   "save.empirevalue",
   "save.flinger",
@@ -40,6 +52,8 @@ const CELL_SAVE_FIELDS = [
   "save.destroyed",
   "save.points",
   "save.basevalue",
+  "save.attackid",
+  "save.attacks",
 ] as const;
 
 /**
@@ -54,6 +68,8 @@ const CELL_SAVE_FIELDS = [
  * @throws {Error} Throws an error if there are issues parsing the request body or retrieving data.
  */
 export const getArea: KoaController = async (ctx) => {
+  if (!devConfig.maproom) throw mapRoomDisabledErr();
+  
   const { x, y, sendresources } = getAreaSchema.parse(ctx.request.body);
 
   const user: User = ctx.authUser;
@@ -93,11 +109,14 @@ export const getArea: KoaController = async (ctx) => {
   const ownerIds = [...new Set(dbCells.map(cell => cell.uid).filter(Boolean))] as number[];
 
   const [ownersList, lastSeen] = await Promise.all([
-    postgres.em.find(User, { userid: { $in: ownerIds } }, { populate: ["save"] }),
+    postgres.em.find(User, { userid: { $in: ownerIds } }, {
+      populate: ["save"],
+      fields: CELL_OWNER_FIELDS,
+    }),
     getLastSeen(ownerIds, BaseType.MAIN),
   ]);
 
-  const cellOwners = new Map<number, User>(ownersList.map(u => [u.userid, u]));
+  const cellOwners = new Map<number, User>((ownersList as unknown as User[]).map(u => [u.userid, u]));
 
   ctx.state.lastSeen = lastSeen;
 
@@ -128,20 +147,15 @@ export const getArea: KoaController = async (ctx) => {
     }
   }
 
-  if (devConfig.maproom) {
-    ctx.status = Status.OK;
-    ctx.body = {
-      error: 0,
-      x: currentX,
-      y: currentY,
-      data: cells,
-      ...(sendresources === 1 && {
-        resources: save.resources,
-        credits: save.credits,
-      }),
-    };
-  } else {
-    ctx.status = Status.NOT_FOUND;
-    ctx.body = { error: "Map Room is not enabled on this server" };
-  }
+  ctx.status = Status.OK;
+  ctx.body = {
+    error: 0,
+    x: currentX,
+    y: currentY,
+    data: cells,
+    ...(sendresources === 1 && {
+      resources: save.resources,
+      credits: save.credits,
+    }),
+  };
 };

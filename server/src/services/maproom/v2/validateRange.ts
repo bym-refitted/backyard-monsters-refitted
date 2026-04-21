@@ -25,6 +25,9 @@ export const validateRange = async (
   if (!mapversion) throw new Error("Map version is required for range validation.");
   
   switch (mapversion) {
+    case MapRoomVersion.V1:
+      return save;
+
     case MapRoomVersion.V2:
       return validateRangeV2(user, save, options);
 

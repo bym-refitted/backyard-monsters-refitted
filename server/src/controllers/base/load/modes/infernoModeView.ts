@@ -9,21 +9,21 @@ export const infernoModeView = async (user: User, baseid: string) => {
 
   if (save) return save;
 
-  const maproom1 = await postgres.em.findOne(InfernoMaproom, {
+  const maproomInferno = await postgres.em.findOne(InfernoMaproom, {
     userid: user.userid,
   });
 
-  if (!maproom1) throw new Error(`Inferno maproom not found for user: ${user.username}`);
+  if (!maproomInferno) throw new Error(`Inferno maproom not found for user: ${user.username}`);
 
-  let existingTribe = maproom1.tribedata.find(
+  let existingTribe = maproomInferno.tribedata.find(
     (tribe) => tribe.baseid === baseid
   );
 
   if (!existingTribe) {
     const newTribe: TribeData = { baseid, tribeHealthData: {} };
 
-    maproom1.tribedata.push(newTribe);
-    postgres.em.persist(maproom1);
+    maproomInferno.tribedata.push(newTribe);
+    postgres.em.persist(maproomInferno);
     await postgres.em.flush();
   }
 

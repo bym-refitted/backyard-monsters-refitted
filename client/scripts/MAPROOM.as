@@ -42,7 +42,6 @@ package
       {
          _mc = null;
          loadState = 0;
-         initMaproomSetup = false;
          _open = false;
          if(GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD)
          {

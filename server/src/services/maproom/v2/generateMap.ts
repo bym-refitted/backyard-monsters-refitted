@@ -10,13 +10,21 @@ import {
   TERRAIN_SCALE,
 } from "../../../config/MapRoom2Config.js";
 
+const noiseCache = new Map<string, Noise>();
+
 /**
- * Generates simplex noise based on a given seed.
- * 
- * @param {string} seed - The seed for the noise generator.
- * @returns {Noise} - The noise generator instance.
+ * Returns a simplex noise function for the given seed.
+ * Cached at module level - identical seeds always return the same instance.
  */
-export const generateNoise = (seed: string) => createNoise2D(alea(seed));
+export const generateNoise = (seed: string): Noise => {
+  let noise = noiseCache.get(seed);
+
+  if (!noise) {
+    noise = createNoise2D(alea(seed));
+    noiseCache.set(seed, noise);
+  }
+  return noise;
+};
 
 /**
  * Calculates the terrain height of a cell based on noise values, with a smooth transition near the edges.

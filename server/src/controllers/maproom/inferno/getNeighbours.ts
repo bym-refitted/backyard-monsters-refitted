@@ -1,50 +1,43 @@
+import z from "zod";
 import type { KoaController } from "../../../utils/KoaController.js";
 import { Status } from "../../../enums/StatusCodes.js";
-import { Save } from "../../../models/save.model.js";
 import { User } from "../../../models/user.model.js";
 import { InfernoMaproom } from "../../../models/infernomaproom.model.js";
+import { Maproom } from "../../../models/maproom.model.js";
 import { postgres } from "../../../server.js";
 import { BaseType } from "../../../enums/Base.js";
-import { calculateBaseLevel } from "../../../services/base/calculateBaseLevel.js";
-import { AttackPermission } from "../../../enums/MapRoom.js";
-import { getCurrentDateTime } from "../../../utils/getCurrentDateTime.js";
-import { createNeighbourData } from "../../../services/maproom/inferno/createNeighbourData.js";
-import type { NeighbourData } from "../../../types/NeighbourData.js";
-import { getLastSeen } from "../../../services/maproom/getLastSeen.js";
-import { isAttackActive } from "../../../services/base/isAttackActive.js";
+import { findInfernoNeighbours } from "../../../services/maproom/inferno/findInfernoNeighbours.js";
+import { findOverworldNeighbours } from "../../../services/maproom/v1/findOverworldNeighbours.js";
+import { updateNeighbourData } from "../../../services/maproom/updateNeighbourData.js";
+const GetNeighboursSchema = z.object({ type: z.string().optional() });
 
 /**
- * Cache validity period for inferno neighbours.
+ * Cache validity period for neighbours.
  * This is set to 2 weeks.
  */
 const CACHE_VALIDITY_HOURS = 24 * 7 * 2;
 
 /**
- * Save fields fetched when updating live neighbour data.
- * Restricted to only what updateNeighbourData needs.
- */
-const NEIGHBOUR_SAVE_FIELDS = [
-  "userid",
-  "protected",
-  "attackid",
-  "attacks",
-  "damage",
-  "worldid",
-  "level",
-] as const;
-
-/**
- * Controller to get inferno neighbours for PvP matchmaking.
- *
- * This system returns cached same-world inferno players within the appropriate level range (±7 levels).
- * Neighbours are calculated once and cached in the inferno_maproom table, then retrieved from cache
- * on subsequent requests. Cache is refreshed when it's older than 4 weeks or doesn't exist.
- * Uses the existing MapRoom v2 world system for world-based neighbour selection.
+ * Controller to get neighbours for PvP matchmaking.
+ * Branches on the type request body param:
+ * 
+ * 1. inferno - Inferno map room neighbours (cached, level-ranged, same world)
+ * 2. absent/other - MR1 overworld neighbours (cached, level-ranged, global)
  *
  * @param {Context} ctx - Koa context object containing authenticated user and request/response
  * @returns {Promise<void>} - Sets response body with neighbour data or error
  */
 export const getNeighbours: KoaController = async (ctx) => {
+  const { type } = GetNeighboursSchema.parse(ctx.request.body);
+
+  if (type === BaseType.INFERNO) {
+    return getInfernoNeighbours(ctx);
+  } else {
+    return getOverworldNeighbours(ctx);
+  }
+};
+
+const getInfernoNeighbours: KoaController = async (ctx) => {
   const user: User = ctx.authUser;
   await postgres.em.populate(user, ["save", "infernosave"]);
 
@@ -54,29 +47,20 @@ export const getNeighbours: KoaController = async (ctx) => {
     return;
   }
 
-  const infernoMaproom = await postgres.em.findOne(InfernoMaproom, {
-    userid: user.userid,
-  });
-
-  const currentDate = new Date();
-  const cacheExpiry = new Date(
-    currentDate.getTime() - CACHE_VALIDITY_HOURS * 60 * 60 * 1000
-  );
+  const infernoMaproom = await postgres.em.findOne(InfernoMaproom, { userid: user.userid });
 
   if (!infernoMaproom) throw new Error("Inferno maproom not found.");
 
-  // Check if we need to fetch new neighbours (cache expired or array empty)
+  const currentDate = new Date();
+  const cacheExpiry = new Date(currentDate.getTime() - CACHE_VALIDITY_HOURS * 60 * 60 * 1000);
   const getNewNeighbours = isCacheExpired(infernoMaproom, cacheExpiry) || infernoMaproom.neighbors.length === 0;
 
   if (getNewNeighbours) {
-    const foundNeighbours = await findNeighbours(user);
+    const foundNeighbours = await findInfernoNeighbours(user);
 
     // Preserve previous attack data on attackers who may have attacked before defender seeded
-    const mergedNeighbors = foundNeighbours.map((newNeighbor) => {
-      const existing = infernoMaproom.neighbors.find(
-        (old) => old.userid === newNeighbor.userid
-      );
-
+    infernoMaproom.neighbors = foundNeighbours.map((newNeighbor) => {
+      const existing = infernoMaproom.neighbors.find((old) => old.userid === newNeighbor.userid);
       if (existing) {
         return {
           ...newNeighbor,
@@ -85,192 +69,56 @@ export const getNeighbours: KoaController = async (ctx) => {
           retaliatecount: existing.retaliatecount || 0,
         };
       }
-
       return newNeighbor;
     });
 
-    infernoMaproom.neighbors = mergedNeighbors;
     infernoMaproom.neighborsLastCalculated = currentDate;
-
     postgres.em.persist(infernoMaproom);
     await postgres.em.flush();
   }
 
-  // Update attack permissions for cached neighbours based on current save state
-  const neighbours = await updateNeighbourData(infernoMaproom.neighbors);
+  const neighbours = await updateNeighbourData(infernoMaproom.neighbors, BaseType.INFERNO);
 
   ctx.status = Status.OK;
-  ctx.body = {
-    error: 0,
-    wmbases: [],
-    bases: neighbours,
-  };
+  ctx.body = { error: 0, wmbases: [], bases: neighbours };
 };
 
-/**
- * Calculate neighbours for a user and return data suitable for caching.
- *
- * This function finds same-world inferno players within a specified level range
- * and returns their essential data for caching in the inferno_maproom table.
- *
- * @param {User} user - The authenticated user to find neighbours for
- * @returns {Promise<NeighbourData[]>} - Array of neighbour data suitable for caching
- */
-const findNeighbours = async (user: User): Promise<NeighbourData[]> => {
-  const { infernosave, save } = user;
+const getOverworldNeighbours: KoaController = async (ctx) => {
+  const user: User = ctx.authUser;
+  await postgres.em.populate(user, ["save"]);
 
-  if (!save?.worldid || !infernosave) return [];
+  const save = user.save;
 
-  const userLevel = calculateBaseLevel(
-    infernosave.points,
-    infernosave.basevalue
-  );
-
-  const levelRange = 7;
-  const minLevel = Math.max(1, userLevel - levelRange);
-  const maxLevel = userLevel + levelRange;
-
-  const validNeighbours: Array<{ save: Save; level: number }> = [];
-  const userIds = new Set<number>();
-
-  // Retrieve inferno saves of other users in the same overworld
-  const infernoSaves = await postgres.em.find(
-    Save,
-    {
-      type: BaseType.INFERNO,
-      worldid: infernosave.worldid,
-      userid: { $ne: user.userid },
-    },
-    {
-      limit: 150,
-      orderBy: { lastupdateAt: "DESC" },
-    }
-  );
-
-  for (const neighbourSave of infernoSaves) {
-    const neighbourLevel = calculateBaseLevel(
-      neighbourSave.points,
-      neighbourSave.basevalue
-    );
-
-    // Only include same-world players within the level range
-    if (neighbourLevel >= minLevel && neighbourLevel <= maxLevel) {
-      validNeighbours.push({ save: neighbourSave, level: neighbourLevel });
-      userIds.add(neighbourSave.userid);
-
-      if (validNeighbours.length >= 25) break;
-    }
+  if (!save) {
+    ctx.status = Status.OK;
+    ctx.body = { error: 0, bases: [] };
+    return;
   }
 
-  // Fetch users for all valid neighbours
-  const neighbourUsers = await postgres.em.find(User, {
-    userid: { $in: Array.from(userIds) },
-  });
+  let maproom = await postgres.em.findOne(Maproom, { userid: user.userid });
 
-  const users = new Map<number, User>();
-  neighbourUsers.forEach((user) => users.set(user.userid, user));
+  // Initial Map Room 1 creation
+  if (!maproom) maproom = await Maproom.setupMapRoomData(postgres.em, user);
 
-  const cachedNeighbours: NeighbourData[] = [];
+  const currentDate = new Date();
+  const cacheExpiry = new Date(currentDate.getTime() - CACHE_VALIDITY_HOURS * 60 * 60 * 1000);
+  const getNewNeighbours = isCacheExpired(maproom, cacheExpiry) || maproom.neighbors.length < 10;
 
-  for (const neighbour of validNeighbours) {
-    const neighbourUser = users.get(neighbour.save.userid);
-    const { save, level } = neighbour;
+  if (getNewNeighbours) {
+    maproom.neighbors = await findOverworldNeighbours(user, save);
 
-    if (neighbourUser) {
-      const neighbourData = createNeighbourData(save, neighbourUser, level);
-      cachedNeighbours.push(neighbourData);
-    }
+    if (maproom.neighbors.length >= 10)
+      maproom.neighborsLastCalculated = currentDate;
+
+    postgres.em.persist(maproom);
+    await postgres.em.flush();
   }
 
-  return cachedNeighbours;
+  const neighbours = await updateNeighbourData(maproom.neighbors, BaseType.MAIN);
+
+  ctx.status = Status.OK;
+  ctx.body = { error: 0, wmbases: [], bases: neighbours };
 };
 
-/**
- * Updates and overrides dynamic data which changes frequently between neighbours.
- * This function runs every time getNeighbours controller is called to ensure up-to-date information.
- * Filters out neighbours whose saves no longer exist in the database.
- *
- * @param {NeighbourData[]} cachedNeighbours - The cached neighbour data
- * @returns {Promise<NeighbourData[]>} - Updated neighbour data with current attack permissions
- */
-const updateNeighbourData = async (cachedNeighbours: NeighbourData[]) => {
-  if (!cachedNeighbours.length) return cachedNeighbours;
-
-  const userIds = cachedNeighbours.map((neighbour) => neighbour.userid);
-
-  // Fetch current saves and last seen timestamps for all neighbours in parallel
-  const [neighbourSaves, lastSeens] = await Promise.all([
-    postgres.em.find(
-      Save,
-      {
-        type: BaseType.INFERNO,
-        userid: { $in: userIds },
-      },
-      { fields: NEIGHBOUR_SAVE_FIELDS },
-    ) as unknown as Promise<Save[]>,
-
-    getLastSeen(userIds, BaseType.INFERNO),
-  ]);
-
-  const saves = new Map<number, Save>();
-  neighbourSaves.forEach((save) => saves.set(save.userid, save));
-
-  const currentTime = getCurrentDateTime();
-  let needsFlush = false;
-
-  // Clear expired protection timestamps
-  for (const save of neighbourSaves) {
-    if (save.protected > 0 && save.protected <= currentTime) {
-      save.protected = 0;
-      postgres.em.persist(save);
-      needsFlush = true;
-    }
-  }
-
-  const updatedNeighbours = cachedNeighbours.flatMap((neighbour) => {
-    const neighbourSave = saves.get(neighbour.userid);
-
-    if (!neighbourSave || neighbourSave.worldid == null) return [];
-
-    const isProtected = neighbourSave.protected > 0 && neighbourSave.protected > currentTime;
-
-    const lastAttack = neighbourSave.attacks.at(-1);
-    const isUnderAttack = isAttackActive(neighbourSave);
-
-    // Reset stale attackid left over from a disconnected attacker
-    if (neighbourSave.attackid !== 0 && !isUnderAttack) {
-      neighbourSave.attackid = 0;
-      postgres.em.persist(neighbourSave);
-      needsFlush = true;
-    }
-
-    if (isProtected) {
-      neighbour.attackpermitted = AttackPermission.DAMAGE_PROTECTION;
-    } else if (isUnderAttack && lastAttack) {
-      neighbour.attackpermitted = AttackPermission.UNDER_ATTACK;
-      neighbour.attacker = lastAttack.name;
-    } else {
-      neighbour.attackpermitted = AttackPermission.ATTACKABLE;
-    }
-
-    neighbour.level = neighbourSave.level;
-    neighbour.saved = lastSeens.get(neighbour.userid) ?? 0;
-
-    return [neighbour];
-  });
-
-  if (needsFlush) await postgres.em.flush();
-
-  return updatedNeighbours;
-};
-
-/**
- * Check if the neighbour cache has expired and needs to be refreshed
- *
- * @param {InfernoMaproom} infernoMaproom - The inferno maproom object to check
- * @param {Date} cacheExpiry - The date before which the cache is considered expired
- * @returns {boolean} - True if the cache is expired, false otherwise
- */
-const isCacheExpired = (infernoMaproom: InfernoMaproom, cacheExpiry: Date) =>
-  !infernoMaproom.neighborsLastCalculated ||
-  infernoMaproom.neighborsLastCalculated < cacheExpiry;
+const isCacheExpired = (record: { neighborsLastCalculated?: Date }, cacheExpiry: Date) =>
+  !record.neighborsLastCalculated || record.neighborsLastCalculated < cacheExpiry;

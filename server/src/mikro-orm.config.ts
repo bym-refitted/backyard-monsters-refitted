@@ -9,6 +9,7 @@ import { World } from "./models/world.model.js";
 import { Env } from "./enums/Env.js";
 import { Report } from "./models/report.model.js";
 import { InfernoMaproom } from "./models/infernomaproom.model.js";
+import { Maproom } from "./models/maproom.model.js";
 import { Message } from "./models/message.model.js";
 import { Thread } from "./models/thread.model.js";
 import { AttackLogs } from "./models/attacklogs.model.js";
@@ -24,6 +25,7 @@ const entities = [
   WorldMapCell,
   Report,
   InfernoMaproom,
+  Maproom,
   Message,
   Thread,
   AttackLogs

@@ -10,11 +10,9 @@ import { MapRoomVersion } from "../../enums/MapRoom.js";
 import { Status } from "../../enums/StatusCodes.js";
 import { Env } from "../../enums/Env.js";
 import { joinNewWorldMap } from "../../services/maproom/v3/joinNewWorldMap.js";
-
-/**
- * Sets the Map Room version on the server.
- */
-export const CURRENT_MAPROOM_VERSION = MapRoomVersion.V2 as MapRoomVersion;
+import { extractTownHall } from "../../utils/extractTownHall.js";
+import { discordAgeErr, townHallLevelErr } from "../../errors/errors.js";
+import { Maproom } from "../../models/maproom.model.js";
 
 /**
  * Schema for validating the request body when setting the map version.
@@ -24,8 +22,12 @@ const SetMapVersionSchema = z.object({
 });
 
 /**
- * Map version controller for Map Room 2 .
- * If the version is V2, the user will join a world. Otherwise, the user will leave the world.
+ * Sets the player's Map Room version and performs the associated world transition.
+ *
+ * - NONE: Leaves the current MR2 world and clears mapversion.
+ * - V1:   Sets mapversion to 1, no world ops.
+ * - V2:   Requires Town Hall level 6. Joins or creates an MR2 world and marks mr2upgraded.
+ * - V3:   Requires Town Hall level 6. Joins the MR3 world map.
  *
  * @param {Context} ctx - The Koa context object
  * @returns {Promise<void>} - A promise that resolves when the controller is complete.
@@ -38,24 +40,48 @@ export const setMapVersion: KoaController = async (ctx) => {
 
   const { version } = SetMapVersionSchema.parse(ctx.request.body);
 
-  if (!ctx.meetsDiscordAgeCheck) {
-    ctx.status = Status.OK;
-    ctx.body = { error: "Discord account is not old enough." };
-    return;
-  }
+  if (!ctx.meetsDiscordAgeCheck) throw discordAgeErr();
 
   switch (version) {
-    case MapRoomVersion.V2:
-      await joinOrCreateWorld(user, save);
+    case MapRoomVersion.NONE:
+      await leaveWorld(user, save);
+      save.mapversion = null;
       break;
+
+    case MapRoomVersion.V1:
+      save.mapversion = MapRoomVersion.V1;
+      break;
+
+    case MapRoomVersion.V2: {
+      const townHall = extractTownHall(save.buildingdata ?? {});
+
+      if (!townHall || townHall.l < 6) throw townHallLevelErr();
+      
+      await joinOrCreateWorld(user, save);
+      save.mr2upgraded = true;
+      save.mapversion = MapRoomVersion.V2;
+
+      const maproom1 = await postgres.em.findOne(Maproom, { userid: user.userid });
+
+      if (maproom1) postgres.em.remove(maproom1);
+      break;
+    }
 
     case MapRoomVersion.V3:
-      await joinNewWorldMap(user, save);
-      break;
+      const townHall = extractTownHall(save.buildingdata ?? {});
 
-    default:
-      await leaveWorld(user, save);
+      if (!townHall || townHall.l < 6) throw townHallLevelErr();
+
+      await joinNewWorldMap(user, save);
+      save.mapversion = MapRoomVersion.V3;
+
+      const maproom1 = await postgres.em.findOne(Maproom, { userid: user.userid });
+
+      if (maproom1) postgres.em.remove(maproom1);
+      break;
   }
+  postgres.em.persist(save);
+  await postgres.em.flush();
 
   const filteredSave = FilterFrontendKeys(save);
 
