@@ -12,6 +12,7 @@ import { Env } from "../../enums/Env.js";
 import { joinNewWorldMap } from "../../services/maproom/v3/joinNewWorldMap.js";
 import { extractTownHall } from "../../utils/extractTownHall.js";
 import { discordAgeErr, townHallLevelErr } from "../../errors/errors.js";
+import { Maproom } from "../../models/maproom.model.js";
 
 /**
  * Schema for validating the request body when setting the map version.
@@ -59,6 +60,10 @@ export const setMapVersion: KoaController = async (ctx) => {
       await joinOrCreateWorld(user, save);
       save.mr2upgraded = true;
       save.mapversion = MapRoomVersion.V2;
+
+      const maproom1 = await postgres.em.findOne(Maproom, { userid: user.userid });
+
+      if (maproom1) postgres.em.remove(maproom1);
       break;
     }
 
