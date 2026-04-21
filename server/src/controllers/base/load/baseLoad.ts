@@ -128,7 +128,7 @@ export const baseLoad: KoaController = async (ctx) => {
 
   const townHall = extractTownHall(userSave.buildingdata || {});
 
-  flags.maproom2 = townHall && townHall.l >= 6 ? 1 : 0;
+  flags.maproom2 = userSave.mr2upgraded || (townHall && townHall.l >= 6) ? 1 : 0;
   flags.mr2upgraded = userSave.mr2upgraded ? 1 : 0;
 
   const isOwner = baseSave.type !== BaseType.INFERNO && user.userid === filteredSave.userid;
