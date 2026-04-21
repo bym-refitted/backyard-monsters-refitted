@@ -9,7 +9,7 @@ import { EnumYardType } from "../../../enums/EnumYardType.js";
 import { createCellData } from "../../../services/maproom/v3/createCellData.js";
 import { getDefenderCoords, isDefensiveStructure } from "../../../services/maproom/v3/getDefenderCoords.js";
 import { logger } from "../../../utils/logger.js";
-import { loadFailureErr } from "../../../errors/errors.js";
+import { loadFailureErr, mapRoomDisabledErr } from "../../../errors/errors.js";
 import type { KoaController } from "../../../utils/KoaController.js";
 import type { CellData } from "../../../types/CellData.js";
 import { getCellBounds, type Coord } from "../../../services/maproom/v3/utils/getCellBounds.js";
@@ -17,6 +17,19 @@ import { getDefenderLevels } from "../../../services/maproom/v3/getDefenderLevel
 import { TRIBE_REGEN_TIME } from "../../../config/MapRoom3Config.js";
 import { getLastSeen } from "../../../services/maproom/getLastSeen.js";
 import { BaseType } from "../../../enums/Base.js";
+import { devConfig } from "../../../config/GameConfig.js";
+
+/**
+ * User fields fetched alongside each WorldMapCell in the DB query for cell owners.
+ * Restricted to only what the cell handlers need.
+ */
+const CELL_OWNER_FIELDS = [
+  "userid",
+  "username",
+  "pic_square",
+  "save.points",
+  "save.basevalue",
+] as const;
 
 /**
  * Save fields fetched alongside each WorldMapCell in the DB query.
@@ -31,12 +44,16 @@ const CELL_SAVE_FIELDS = [
   "save.protected",
   "save.points",
   "save.basevalue",
+  "save.attackid",
+  "save.attacks",
 ] as const;
 
 const MAX_CELLS_PER_REQUEST = 4250;
 
 export const getMapRoomCells: KoaController = async (ctx) => {
   try {
+    if (!devConfig.maproom) throw mapRoomDisabledErr();
+    
     const { cellids } = CellSchema.parse(ctx.request.body);
 
     if (cellids && cellids.length > MAX_CELLS_PER_REQUEST) {
@@ -190,12 +207,15 @@ export const getMapRoomCells: KoaController = async (ctx) => {
     const ownerIds = [...new Set(dbCells.map((cell) => cell.uid).filter(Boolean))];
 
     const [ownersList, lastSeenMap] = await Promise.all([
-      postgres.em.find(User, { userid: { $in: ownerIds } }, { populate: ["save"] }),
+      postgres.em.find(User, { userid: { $in: ownerIds } }, {
+        populate: ["save"],
+        fields: CELL_OWNER_FIELDS,
+      }),
       getLastSeen(ownerIds, BaseType.MAIN),
     ]);
 
     const cellOwners = new Map<number, User>(
-      ownersList.map((u) => [u.userid, u]),
+      (ownersList as unknown as User[]).map((u) => [u.userid, u]),
     );
 
     ctx.state.lastSeen = lastSeenMap;

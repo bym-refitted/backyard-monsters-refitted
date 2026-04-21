@@ -26,6 +26,7 @@ export class Save {
   @Property({ type: 'string', default: "0" })
   baseid!: string;
 
+  @Index()
   @OneToOne({
     nullable: true,
     orphanRemoval: true,
@@ -184,6 +185,12 @@ export class Save {
   @FrontendKey
   @Property({ type: 'string', nullable: true })
   worldid?: string | null;
+
+  @Property({ type: 'number', nullable: true })
+  mapversion?: number | null;
+
+  @Property({ type: 'boolean', default: false })
+  mr2upgraded: boolean = false;
 
   @FrontendKey
   @Property({ type: 'number', default: 0 })

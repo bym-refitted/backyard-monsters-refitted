@@ -3,14 +3,9 @@ import { EntityManager, PostgreSqlDriver } from "@mikro-orm/postgresql";
 import { User } from "./user.model.js";
 import type { InfernoMaproomData } from "../types/EntityData.js";
 import type { NeighbourData } from "../types/NeighbourData.js";
+import type { TribeData } from "../types/TribeData.js";
 
-export interface TribeData {
-  baseid: string;
-  tribeHealthData: Record<string, number>;
-  monsters?: Record<string, number>;
-  destroyed?: number;
-  destroyedAt?: number;
-}
+export type { TribeData };
 
 @Entity({ tableName: "inferno_maproom" })
 export class InfernoMaproom {
@@ -32,7 +27,7 @@ export class InfernoMaproom {
   @Property({ type: Date, onUpdate: () => new Date() })
   lastupdateAt: Date = new Date();
 
-  public static setupMapRoom1Data = async (em: EntityManager<PostgreSqlDriver>, user: User) => {
+  public static setupInfernoMapRoomData = async (em: EntityManager<PostgreSqlDriver>, user: User) => {
     const maproom = em.create(InfernoMaproom,
     {
       userid: user.userid,

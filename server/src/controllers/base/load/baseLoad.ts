@@ -29,6 +29,10 @@ import { BaseLoadSchema } from "../../../zod/BaseLoadSchema.js";
 import { discordAgeErr } from "../../../errors/errors.js";
 import { EnumBaseRelationship } from "../../../enums/EnumBaseRelationship.js";
 import { canAttack } from "../../../services/base/canAttack.js";
+import { createMR1Tribes } from "../../../services/maproom/v1/createMR1Tribes.js";
+import { MR1_TRIBES } from "../../../enums/Tribes.js";
+import { calculateBaseLevel } from "../../../services/base/calculateBaseLevel.js";
+import { extractTownHall } from "../../../utils/extractTownHall.js";
 
 /**
  * Controller responsible for loading base modes based on the user's request.
@@ -41,7 +45,6 @@ export const baseLoad: KoaController = async (ctx) => {
   const user: User = ctx.authUser;
   await postgres.em.populate(user, ["save", "infernosave"]);
 
-  const worldid = user.save?.worldid;
   const { baseid, type, mapversion, attackData, attackcost } = BaseLoadSchema.parse(ctx.request.body);
 
   let baseSave: Save | null = null;
@@ -53,7 +56,7 @@ export const baseLoad: KoaController = async (ctx) => {
 
     case BaseMode.VIEW:
     case BaseMode.IVIEW:
-      baseSave = await baseModeView(baseid, mapversion, worldid);
+      baseSave = await baseModeView(baseid, mapversion, user.save!.worldid, user);
       break;
 
     case BaseMode.ATTACK:
@@ -86,18 +89,47 @@ export const baseLoad: KoaController = async (ctx) => {
       await validateAttack(user, attackData, mapversion);
       baseSave = await infernoModeAttack(user, baseid);
       break;
-        
+
+    case BaseMode.WMVIEW:
+      baseSave = await baseModeView(baseid, mapversion, user.save!.worldid, user);
+      break;
+
+    case BaseMode.WMATTACK:
+      if (!ctx.meetsDiscordAgeCheck) throw discordAgeErr();
+      await validateAttack(user, attackData, mapversion);
+      baseSave = await baseModeAttack({ user, baseid, mapversion, attackCost: attackcost });
+      break;
+
     default:
       throw new Error(`Base type not handled, type: ${type}.`);
   }
 
   if (!baseSave) throw new Error("Base save not found.");
 
+  const userSave = user.save!;
+
+  if (type === BaseMode.BUILD && mapversion === MapRoomVersion.V1) {
+    userSave.level = calculateBaseLevel(userSave.points, userSave.basevalue);
+    const mr1Tribes = await createMR1Tribes(userSave, MR1_TRIBES);
+    const wmstatus = new Map(userSave.wmstatus.map((status) => [status[0], status]));
+
+    mr1Tribes.forEach((tribe) => wmstatus.set(tribe[0], tribe));
+    userSave.wmstatus = [...wmstatus.values()];
+    
+    postgres.em.persist(userSave);
+    await postgres.em.flush();
+  }
+
   const filteredSave = FilterFrontendKeys(baseSave);
   const isTutorialEnabled = devConfig.skipTutorial ? 205 : filteredSave.tutorialstage;
 
   const flags = getFlags();
   flags.discordOldEnough = Number(ctx.meetsDiscordAgeCheck);
+
+  const townHall = extractTownHall(userSave.buildingdata || {});
+
+  flags.maproom2 = townHall && townHall.l >= 6 ? 1 : 0;
+  flags.mr2upgraded = userSave.mr2upgraded ? 1 : 0;
 
   const isOwner = baseSave.type !== BaseType.INFERNO && user.userid === filteredSave.userid;
 
@@ -123,7 +155,6 @@ export const baseLoad: KoaController = async (ctx) => {
 
       // Auto-bank calculates and applies resources accumulated since the player's last session.
       if (type === BaseMode.BUILD && totalResourceRate > 0) {
-        const userSave = user.save!;
         const now = getCurrentDateTime();
         const lastAccumulated = userSave.buildingresources?.t;
 
@@ -200,7 +231,7 @@ export const baseLoad: KoaController = async (ctx) => {
           { base_type: EnumYardType.FORTIFICATION },
           { uid: attackedCell.uid },
           { map_version: MapRoomVersion.V3 },
-          { world: worldid },
+          { world: user.save!.worldid },
         ],
       });
 
@@ -208,11 +239,21 @@ export const baseLoad: KoaController = async (ctx) => {
     }
   }
 
-  const attackAllowed = canAttack(user.save!, baseSave, mapversion);
+  const attackAllowed = canAttack(userSave, baseSave, mapversion);
 
-  const avatar = isOwner
-    ? user.pic_square
-    : (await postgres.em.findOne(User, { userid: baseSave.userid }))?.pic_square;
+  let avatarUser;
+
+  if (isOwner) {
+    avatarUser = user;
+  } else {
+    avatarUser = await postgres.em.findOne(
+      User,
+      { userid: baseSave.userid },
+      { fields: ["pic_square"] }
+    );
+  }
+
+  const avatar = avatarUser?.pic_square;
 
   const response: Record<string, unknown> = {
     ...filteredSave,

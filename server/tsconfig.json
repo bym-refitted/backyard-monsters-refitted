@@ -4,7 +4,7 @@
       "bun-types"
     ],
     "rootDir": "src",
-    "target": "es2022",
+    "target": "ESNext",
     "module": "NodeNext",
     "moduleResolution": "nodenext",
     "sourceMap": true,
