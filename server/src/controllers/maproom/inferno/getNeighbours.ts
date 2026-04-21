@@ -102,11 +102,14 @@ const getOverworldNeighbours: KoaController = async (ctx) => {
 
   const currentDate = new Date();
   const cacheExpiry = new Date(currentDate.getTime() - CACHE_VALIDITY_HOURS * 60 * 60 * 1000);
-  const getNewNeighbours = isCacheExpired(maproom, cacheExpiry) || maproom.neighbors.length === 0;
+  const getNewNeighbours = isCacheExpired(maproom, cacheExpiry) || maproom.neighbors.length < 10;
 
   if (getNewNeighbours) {
     maproom.neighbors = await findOverworldNeighbours(user, save);
-    maproom.neighborsLastCalculated = currentDate;
+
+    if (maproom.neighbors.length >= 10)
+      maproom.neighborsLastCalculated = currentDate;
+
     postgres.em.persist(maproom);
     await postgres.em.flush();
   }
