@@ -74,6 +74,10 @@ export const setMapVersion: KoaController = async (ctx) => {
 
       await joinNewWorldMap(user, save);
       save.mapversion = MapRoomVersion.V3;
+
+      const maproom1 = await postgres.em.findOne(Maproom, { userid: user.userid });
+
+      if (maproom1) postgres.em.remove(maproom1);
       break;
   }
   postgres.em.persist(save);
