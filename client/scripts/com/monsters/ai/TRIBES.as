@@ -56,7 +56,7 @@ package com.monsters.ai
             "succ":KEYS.Get("ai_legion_succ"),
             "succ_stream":KEYS.Get("ai_legion_succstream"),
             "fail":KEYS.Get("ai_legion_fail"),
-            "profilepic":"monsters/tribe_legionnaire_50.v2.jpg",
+            "profilepic":"monsters/tribe_legionnaire_50.jpg",
             "streampostpic":"tribe-legionnaire.v2.png"
          };
          _tribes.k = {
@@ -70,7 +70,7 @@ package com.monsters.ai
             "succ":KEYS.Get("ai_kozu_succ"),
             "succ_stream":KEYS.Get("ai_kozu_succstream"),
             "fail":KEYS.Get("ai_kozu_fail"),
-            "profilepic":"monsters/tribe_kozu_50.v2.jpg",
+            "profilepic":"monsters/tribe_kozu_50.jpg",
             "streampostpic":"tribe-kozu.v2.png"
          };
          _tribes.a = {
@@ -84,7 +84,7 @@ package com.monsters.ai
             "succ":KEYS.Get("ai_abunakki_succ"),
             "succ_stream":KEYS.Get("ai_abunakki_succstream"),
             "fail":KEYS.Get("ai_abunakki_fail"),
-            "profilepic":"monsters/tribe_abunakki_50.v2.jpg",
+            "profilepic":"monsters/tribe_abunakki_50.jpg",
             "streampostpic":"tribe-abunakki.v2.png",
             "behaviour":"juice"
          };
@@ -99,7 +99,7 @@ package com.monsters.ai
             "succ":KEYS.Get("ai_dread_succ"),
             "succ_stream":KEYS.Get("ai_dread_succstream"),
             "fail":KEYS.Get("ai_dread_fail"),
-            "profilepic":"monsters/tribe_dreadnaut_50.v2.jpg",
+            "profilepic":"monsters/tribe_dreadnaut_50.jpg",
             "streampostpic":"tribe-dreadnaut.v2.png"
          };
          _infernotribes = {};

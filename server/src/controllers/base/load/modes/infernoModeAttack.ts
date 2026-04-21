@@ -6,7 +6,7 @@ import { postgres } from "../../../../server.js";
 import { createAttackLog } from "../../../../services/base/createAttackLog.js";
 import { getCurrentDateTime } from "../../../../utils/getCurrentDateTime.js";
 import type { AttackDetails } from "./baseModeAttack.js";
-import { addAttackerAsNeighbour } from "../../../../services/maproom/inferno/addAttackerAsNeighbour.js";
+import { registerInfernoAttacker } from "../../../../services/maproom/inferno/registerInfernoAttacker.js";
 import {
   InfernoMaproom,
   type TribeData,
@@ -72,7 +72,7 @@ export const infernoModeAttack = async (user: User, baseid: string) => {
 
 
   await Promise.all([
-    addAttackerAsNeighbour(user, defender),
+    registerInfernoAttacker(user, defender),
     createAttackLog(user, defender, save),
   ]);
 
@@ -95,19 +95,19 @@ export const infernoModeAttack = async (user: User, baseid: string) => {
  * @throws {Error} When no tribe data is found for the given baseid
  */
 const infernoTribeSave = async (user: User, baseid: string): Promise<Save> => {
-  const maproom1 = await postgres.em.findOne(InfernoMaproom, { userid: user.userid });
+  const maproomInferno = await postgres.em.findOne(InfernoMaproom, { userid: user.userid });
 
-  if (!maproom1) throw new Error(`Inferno maproom not found for user: ${user.username}`);
+  if (!maproomInferno) throw new Error(`Inferno maproom not found for user: ${user.username}`);
 
-  let existingTribe = maproom1.tribedata.find(
+  let existingTribe = maproomInferno.tribedata.find(
     (tribe) => tribe.baseid === baseid
   );
 
   if (!existingTribe) {
     const newTribe: TribeData = { baseid, tribeHealthData: {} };
 
-    maproom1.tribedata.push(newTribe);
-    postgres.em.persist(maproom1);
+    maproomInferno.tribedata.push(newTribe);
+    postgres.em.persist(maproomInferno);
     await postgres.em.flush();
     existingTribe = newTribe;
   }

@@ -1,4 +1,4 @@
-import { TribeScale } from "../../../enums/Tribes.js";
+import { InfernoTribeScale } from "../../../enums/Tribes.js";
 import { InfernoMaproom } from "../../../models/infernomaproom.model.js";
 import { Save } from "../../../models/save.model.js";
 import { User } from "../../../models/user.model.js";
@@ -10,7 +10,7 @@ export interface TribeDetails {
   maxLevel: number;
 }
 
-export type TribeScaleConfig = Record<TribeScale, TribeDetails>;
+export type TribeScaleConfig = Record<InfernoTribeScale, TribeDetails>;
 
 /**
  * Returns an array of scaled tribes based on the player's level.
@@ -23,7 +23,7 @@ export type TribeScaleConfig = Record<TribeScale, TribeDetails>;
  * Example: if the player is level 5, it will select tribes within the LOW range.
  * which consists of tribe IDs at range 214-220 retrieved from
  * `molochTribes.ts`.
- * 
+ *
  * Tribes are respawned if they have been destroyed for more than 2 hours,
  * by resetting their values in both the maproom table and wmstatus field
  * in the save table.
@@ -35,7 +35,7 @@ export type TribeScaleConfig = Record<TribeScale, TribeDetails>;
  * @param {TribeScaleConfig} tribes - scaling configuration for tribes
  * @returns
  */
-export const createScaledTribes = async (save: Save, tribes: TribeScaleConfig) => {
+export const createInfernoTribes = async (save: Save, tribes: TribeScaleConfig) => {
   const { userid, wmstatus, level } = save;
   const playerLevel = Math.max(1, level);
   const levelPattern = [-2, -1, 0, 0, 0, 1, 3];
@@ -43,38 +43,38 @@ export const createScaledTribes = async (save: Save, tribes: TribeScaleConfig) =
   const oneHour = 1 * 60 * 60;
   const currentTime = getCurrentDateTime();
 
-  let scale: TribeScale;
+  let scale: InfernoTribeScale;
   let persist = false;
 
-  if (playerLevel <= tribes[TribeScale.LOW].maxLevel) {
-    scale = TribeScale.LOW;
-  } else if (playerLevel <= tribes[TribeScale.MID].maxLevel) {
-    scale = TribeScale.MID;
+  if (playerLevel <= tribes[InfernoTribeScale.LOW].maxLevel) {
+    scale = InfernoTribeScale.LOW;
+  } else if (playerLevel <= tribes[InfernoTribeScale.MID].maxLevel) {
+    scale = InfernoTribeScale.MID;
   } else {
-    scale = TribeScale.HIGH;
+    scale = InfernoTribeScale.HIGH;
   }
 
   const { minTribeId } = tribes[scale];
   const tribeIds = Array.from({ length: 7 }, (_, i) => minTribeId + i);
 
-  let maproom = await postgres.em.findOne(InfernoMaproom, { userid });
+  let maproomInferno = await postgres.em.findOne(InfernoMaproom, { userid });
 
-  if (!maproom) {
+  if (!maproomInferno) {
     const user = await postgres.em.findOne(User, { userid });
 
     if (!user) throw new Error(`User not found for userid: ${userid}`);
-    
-    maproom = await InfernoMaproom.setupMapRoom1Data(postgres.em, user);
+
+    maproomInferno = await InfernoMaproom.setupInfernoMapRoomData(postgres.em, user);
   }
 
   const tribeIdSet = new Set(tribeIds);
 
   // Only store tribedata within the user's current level range
-  const currentTribes = maproom.tribedata.filter(tribe => 
+  const currentTribes = maproomInferno.tribedata.filter(tribe =>
     tribeIdSet.has(Number(tribe.baseid))
   );
 
-  for (const tribe of maproom.tribedata) {
+  for (const tribe of maproomInferno.tribedata) {
     const canRespawn = tribe.destroyedAt && (currentTime - tribe.destroyedAt > oneHour);
 
     if (tribe.destroyed && canRespawn) {
@@ -93,10 +93,10 @@ export const createScaledTribes = async (save: Save, tribes: TribeScaleConfig) =
     }
   }
 
-  maproom.tribedata = currentTribes
-  
+  maproomInferno.tribedata = currentTribes
+
   if (persist) {
-    postgres.em.persist(maproom);
+    postgres.em.persist(maproomInferno);
     await postgres.em.flush();
   }
 

@@ -1,15 +1,12 @@
 import { Entity, PrimaryKey, Property } from "@mikro-orm/decorators/es";
 import { EntityManager, PostgreSqlDriver } from "@mikro-orm/postgresql";
 import { User } from "./user.model.js";
-import type { InfernoMaproomData } from "../types/EntityData.js";
 import type { NeighbourData } from "../types/NeighbourData.js";
 import type { TribeData } from "../types/TribeData.js";
 
-export type { TribeData };
-
-@Entity({ tableName: "inferno_maproom" })
-export class InfernoMaproom {
-  @PrimaryKey({ type: 'number' })
+@Entity({ tableName: "maproom" })
+export class Maproom {
+  @PrimaryKey({ type: "number" })
   userid!: number;
 
   @Property({ columnType: "jsonb", nullable: true })
@@ -27,11 +24,10 @@ export class InfernoMaproom {
   @Property({ type: Date, onUpdate: () => new Date() })
   lastupdateAt: Date = new Date();
 
-  public static setupInfernoMapRoomData = async (em: EntityManager<PostgreSqlDriver>, user: User) => {
-    const maproom = em.create(InfernoMaproom,
-    {
+  public static setupMapRoomData = async (em: EntityManager<PostgreSqlDriver>, user: User) => {
+    const maproom = em.create(Maproom, {
       userid: user.userid,
-    } as unknown as InfernoMaproomData);
+    } as unknown as Maproom);
 
     em.persist(maproom);
     await em.flush();

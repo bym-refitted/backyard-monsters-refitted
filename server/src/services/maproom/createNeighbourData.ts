@@ -1,6 +1,6 @@
-import { User } from "../../../models/user.model.js";
-import { Save } from "../../../models/save.model.js";
-import type { NeighbourData } from "../../../types/NeighbourData.js";
+import { User } from "../../models/user.model.js";
+import { Save } from "../../models/save.model.js";
+import type { NeighbourData } from "../../types/NeighbourData.js";
 
 /**
  * Creates a cached neighbour data object from a save and user.
@@ -22,7 +22,7 @@ export const createNeighbourData = (save: Save, user: User, level: number): Neig
     pic: user.pic_square || "",
     saved: timestamp,
     seentime: timestamp,
-    baseseed: save.userid, 
+    baseseed: save.userid,
     attacksto: 0,
     attacksfrom: 0,
     attacksTodayCount: 0,

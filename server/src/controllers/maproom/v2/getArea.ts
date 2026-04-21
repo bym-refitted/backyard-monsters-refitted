@@ -11,6 +11,7 @@ import { generateNoise, getTerrainHeight } from "../../../services/maproom/v2/ge
 import { MapRoomVersion } from "../../../enums/MapRoom.js";
 import { getLastSeen } from "../../../services/maproom/getLastSeen.js";
 import { BaseType } from "../../../enums/Base.js";
+import { mapRoomDisabledErr } from "../../../errors/errors.js";
 
 /**
  * Schema for validating the request body when getting area data.
@@ -67,6 +68,8 @@ const CELL_SAVE_FIELDS = [
  * @throws {Error} Throws an error if there are issues parsing the request body or retrieving data.
  */
 export const getArea: KoaController = async (ctx) => {
+  if (!devConfig.maproom) throw mapRoomDisabledErr();
+  
   const { x, y, sendresources } = getAreaSchema.parse(ctx.request.body);
 
   const user: User = ctx.authUser;
@@ -144,20 +147,15 @@ export const getArea: KoaController = async (ctx) => {
     }
   }
 
-  if (devConfig.maproom) {
-    ctx.status = Status.OK;
-    ctx.body = {
-      error: 0,
-      x: currentX,
-      y: currentY,
-      data: cells,
-      ...(sendresources === 1 && {
-        resources: save.resources,
-        credits: save.credits,
-      }),
-    };
-  } else {
-    ctx.status = Status.NOT_FOUND;
-    ctx.body = { error: "Map Room is not enabled on this server" };
-  }
+  ctx.status = Status.OK;
+  ctx.body = {
+    error: 0,
+    x: currentX,
+    y: currentY,
+    data: cells,
+    ...(sendresources === 1 && {
+      resources: save.resources,
+      credits: save.credits,
+    }),
+  };
 };
