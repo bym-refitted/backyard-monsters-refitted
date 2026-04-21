@@ -55,7 +55,7 @@ export const setMapVersion: KoaController = async (ctx) => {
     case MapRoomVersion.V2: {
       const townHall = extractTownHall(save.buildingdata ?? {});
 
-      if (!townHall || townHall.l < 6) throw townHallLevelErr();
+      if (!save.mr2upgraded && (!townHall || townHall.l < 6)) throw townHallLevelErr();
       
       await joinOrCreateWorld(user, save);
       save.mr2upgraded = true;
@@ -70,7 +70,7 @@ export const setMapVersion: KoaController = async (ctx) => {
     case MapRoomVersion.V3:
       const townHall = extractTownHall(save.buildingdata ?? {});
 
-      if (!townHall || townHall.l < 6) throw townHallLevelErr();
+      if (!save.mr2upgraded && (!townHall || townHall.l < 6)) throw townHallLevelErr();
 
       await joinNewWorldMap(user, save);
       save.mapversion = MapRoomVersion.V3;
