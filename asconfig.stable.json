@@ -27,7 +27,7 @@
 		"define": [
 			{
 				"name": "CONFIG::SERVER_URL",
-				"value": "'https://server.bymrefitted.com/'"
+				"value": "'https://stage.bymrefitted.com/'"
 			},
 			{
 				"name": "CONFIG::CDN_URL",
