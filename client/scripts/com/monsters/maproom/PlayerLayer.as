@@ -115,7 +115,6 @@ package com.monsters.maproom
       public function Get() : void
       {
          var loadVars:Array;
-         var r:Object;
          var handleLoadSuccessful:Function = null;
          var handleLoadError:Function = null;
          handleLoadSuccessful = function(param1:Object):void
@@ -207,9 +206,7 @@ package com.monsters.maproom
          {
          }
          loadVars = [["baseid",0]];
-          // Comment: This does not exist - handle the use of this network request
-         // r = new MapRoom.BRIDGE.URLLoaderApi();
-         r.load(MapRoom.BRIDGE.GLOBAL._apiURL + "bm/neighbours/get",loadVars,handleLoadSuccessful,handleLoadError);
+         new URLLoaderApi().load(MapRoom.BRIDGE.GLOBAL._apiURL + "bm/neighbours/get",loadVars,handleLoadSuccessful,handleLoadError);
       }
       
       public function Create(param1:Object) : void

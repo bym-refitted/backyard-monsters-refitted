@@ -12,18 +12,26 @@ import { molochTribes } from "../../../data/tribes/inferno/molochTribes.js";
 
 type BaseSaveData = TypeOf<typeof BaseSaveSchema>;
 
-export const scaledTribes = async (user: User, saveData: BaseSaveData) => {
+/**
+ * Persists Inferno tribe attack state (building health, monsters, destroyed) to
+ * the player's InfernoMaproom.tribedata record
+ *
+ * @param {User} user - The attacking user
+ * @param {BaseSaveData} saveData - Parsed save payload from the client
+ * @returns {Promise<Save>} Synthetic Save reflecting updated tribe state
+ */
+export const scaledInfernoTribes = async (user: User, saveData: BaseSaveData) => {
   const userSave = user.save!;
   const userInfernoSave = user.infernosave;
   const currentSave = userInfernoSave || userSave!;
 
-  const maproom1 = await postgres.em.findOne(InfernoMaproom, {
+  const maproomInferno = await postgres.em.findOne(InfernoMaproom, {
     userid: user.userid,
   });
 
-  if (!maproom1) throw new Error(`Maproom not found for userid: ${user.username}`);
+  if (!maproomInferno) throw new Error(`Inferno MapRoom not found for userid: ${user.username}`);
 
-  let existingTribe = maproom1.tribedata.find(
+  let existingTribe = maproomInferno.tribedata.find(
     (tribe) => tribe.baseid === saveData.baseid
   );
 
@@ -33,7 +41,7 @@ export const scaledTribes = async (user: User, saveData: BaseSaveData) => {
   existingTribe.monsters = saveData.monsters;
   existingTribe.destroyed = saveData.destroyed;
   existingTribe.destroyedAt = saveData.destroyed && getCurrentDateTime();
-  
+
   // Update the wild monster status on the user save
   currentSave.wmstatus.forEach((tribe) => {
     if (tribe[0] === Number(saveData.baseid)) tribe[2] = saveData.destroyed ?? 0;
@@ -50,7 +58,7 @@ export const scaledTribes = async (user: User, saveData: BaseSaveData) => {
     monsters: existingTribe.monsters ?? tribeData?.monsters,
   });
 
-  postgres.em.persist(maproom1);
+  postgres.em.persist(maproomInferno);
 
   for (const key of Object.keys(saveData) as (keyof typeof saveData)[]) {
     const value = saveData[key];

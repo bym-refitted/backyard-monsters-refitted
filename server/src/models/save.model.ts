@@ -186,6 +186,12 @@ export class Save {
   @Property({ type: 'string', nullable: true })
   worldid?: string | null;
 
+  @Property({ type: 'number', nullable: true })
+  mapversion?: number | null;
+
+  @Property({ type: 'boolean', default: false })
+  mr2upgraded: boolean = false;
+
   @FrontendKey
   @Property({ type: 'number', default: 0 })
   event_score!: number;

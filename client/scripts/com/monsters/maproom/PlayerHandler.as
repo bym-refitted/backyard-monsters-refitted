@@ -186,18 +186,17 @@ package com.monsters.maproom
       private function onMessage(param1:MouseEvent) : void
       {
          MapRoom.BRIDGE.SOUNDS.Play("click1");
-         // Important Comment: This does not exist - fix.
-         // var _loc2_:* = new MapRoom.BRIDGE.MessageUI();
+         var _loc2_:* = new MapRoom.BRIDGE["MessageUI"]();
          var _loc3_:Contact = new Contact(String(this.player.data.userid.Get()),{
             "first_name":this.player.data.ownerName,
             "last_name":"",
             "pic_square":this.player.data.pic
          });
-         // _loc2_.picker.preloadSelection(_loc3_);
-         // _loc2_.requestType = "message";
-         // _loc2_.body_txt.text = "";
+         _loc2_.picker.preloadSelection(_loc3_);
+         _loc2_.requestType = "message";
+         _loc2_.body_txt.text = "";
          GLOBAL.BlockerAdd();
-         // GLOBAL._layerWindows.addChild(_loc2_);
+         GLOBAL._layerWindows.addChild(_loc2_);
       }
       
       private function onHelp(param1:MouseEvent) : void
@@ -241,27 +240,26 @@ package com.monsters.maproom
       
       private function onTruce(param1:MouseEvent) : void
       {
-         var _loc2_:* = undefined;
-         var _loc3_:Contact = null;
          MapRoom.BRIDGE.SOUNDS.Play("click1");
          if(!this.data.trucestate || this.data.trucestate == "")
          {
+            // Two different UI paths here, one for the mailbox and one for the old truce system.
+            // Seems they switched to using the mailbox for truces, but kept the old system in the codebase.
             if(MapRoom._useMailBoxForTruces)
             {
-                // Important Comment: This does not exist - fix.
-               // _loc2_ = new MapRoom.BRIDGE.MessageUI();
-               _loc3_ = new Contact(String(this.player.data.userid.Get()),{
+               var _loc2_:* = new MapRoom.BRIDGE["MessageUI"]();
+               var _loc3_:Contact = new Contact(String(this.player.data.userid.Get()),{
                   "first_name":this.player.data.ownerName,
                   "last_name":"",
                   "pic_square":this.player.data.pic
                });
-               // _loc2_.picker.preloadSelection(_loc3_);
-               // _loc2_.subject_txt.htmlText = "<b>" + MapRoom.BRIDGE.KEYS.Get("map_trucesubject");
-               // _loc2_.body_txt.htmlText = MapRoom.BRIDGE.KEYS.Get("map_trucemessage");
-               // _loc2_.requestType = "trucerequest";
-               // _loc2_.truceShareHandler = MapRoom.BRIDGE.truceShareHandler;
+               _loc2_.picker.preloadSelection(_loc3_);
+               _loc2_.subject_txt.htmlText = "<b>" + MapRoom.BRIDGE.KEYS.Get("map_trucesubject");
+               _loc2_.body_txt.htmlText = MapRoom.BRIDGE.KEYS.Get("map_trucemessage");
+               _loc2_.requestType = "trucerequest";
+               _loc2_.truceShareHandler = MapRoom.BRIDGE.truceShareHandler;
                GLOBAL.BlockerAdd();
-               // GLOBAL._layerWindows.addChild(_loc2_);
+               GLOBAL._layerWindows.addChild(_loc2_);
             }
             else
             {
