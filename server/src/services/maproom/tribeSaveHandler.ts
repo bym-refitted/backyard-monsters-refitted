@@ -30,7 +30,7 @@ export const tribeSaveHandler = (
       return tribeSaveV3(baseid, worldid);
 
     case MapRoomVersion.V2:
-      return tribeSaveV2(baseid);
+      return tribeSaveV2(baseid, worldid);
 
     default:
       throw new Error("Map version is required for tribe save lookup.");
