@@ -7,7 +7,7 @@ import type { TribeData } from "../types/TribeData.js";
 
 export type { TribeData };
 
-@Entity({ tableName: "inferno_maproom" })
+@Entity({ tableName: "maproom_inferno" })
 export class InfernoMaproom {
   @PrimaryKey({ type: 'number' })
   userid!: number;
