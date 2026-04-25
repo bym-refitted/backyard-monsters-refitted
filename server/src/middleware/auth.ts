@@ -61,16 +61,11 @@ export const verifyUserAuth = async (ctx: Context, next: Next) => {
 };
 
 /**
- * Middleware to validate a user's eligibility for multiplayer access.
- *
- * This middleware checks for the presence of a valid Bearer token in the
- * Authorization header, verifies the token, and ensures the user meets
- * the Discord account age requirement.
+ * Middleware to enforce the Discord account age requirement for multiplayer access.
  *
  * @param {Context} ctx - The Koa context object.
  * @param {Next} next - The Koa next middleware function.
- * @throws {Error} Throws `tokenAuthFailureErr` if the Authorization header is missing or invalid.
- * @throws {Error} Throws `discordAgeErr` if the user's Discord account creation date does not meet the requirement.
+ * @throws {Error} Throws `discordAgeErr` if the user's Discord account does not meet the 7-day age requirement.
  */
 export const verifyAccountStatus = async (ctx: Context, next: Next) => {
   if (!ctx.meetsDiscordAgeCheck) throw discordAgeErr();
