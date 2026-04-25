@@ -17,7 +17,7 @@ import { getGeneratedCells, cellKey } from "../../../../services/maproom/v3/gene
 import { createAttackLog } from "../../../../services/base/createAttackLog.js";
 import { updateResources, Operation } from "../../../../services/base/updateResources.js";
 import { isAttackActive } from "../../../../services/base/isAttackActive.js";
-import { baseUnderAttackErr, userOnlineErr } from "../../../../errors/errors.js";
+import { baseUnderAttackErr, baseProtectedErr, userOnlineErr } from "../../../../errors/errors.js";
 import { redis } from "../../../../server.js";
 
 import { MR1_TRIBE_IDS } from "../../../../data/tribes/v1/index.js";
@@ -60,6 +60,8 @@ export const baseModeAttack = async ({ user, baseid, mapversion, attackCost }: B
   if (!save) throw new Error(`Save not found for baseid: ${baseid}`);
 
   if (save.type !== BaseType.TRIBE) {
+    if (save.protected > getCurrentDateTime()) throw baseProtectedErr();
+
     if (isAttackActive(save)) throw baseUnderAttackErr();
 
     if (save.type === BaseType.MAIN) {
