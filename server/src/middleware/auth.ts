@@ -6,8 +6,22 @@ import {
   discordAgeErr,
   tokenAuthFailureErr,
 } from "../errors/errors.js";
-import JWT, { type JwtPayload } from "jsonwebtoken";
+import JWT from "jsonwebtoken";
 import { Env } from "../enums/Env.js";
+import { isDiscordAccountOldEnough } from "../services/discord/discordAccountStatus.js";
+import type { SessionType } from "../enums/SessionType.js";
+
+export interface JwtClaims {
+  user: {
+    email: string;
+    discordId: string | null | undefined;
+    sessionType: SessionType.GAME | SessionType.LAUNCHER;
+  };
+}
+
+export interface AuthTokenPayload {
+  user: JwtClaims["user"] & { meetsDiscordAgeCheck: boolean };
+}
 
 /**
  * Middleware to enforce authentication for protected routes.
@@ -47,47 +61,20 @@ export const verifyUserAuth = async (ctx: Context, next: Next) => {
 };
 
 /**
- * Middleware to validate a user's eligibility for multiplayer access.
- *
- * This middleware checks for the presence of a valid Bearer token in the
- * Authorization header, verifies the token, and ensures the user meets
- * the Discord account age requirement.
+ * Middleware to enforce the Discord account age requirement for Map Room access.
+ * Depends on verifyUserAuth middleware to have already set ctx.meetsDiscordAgeCheck.
  *
  * @param {Context} ctx - The Koa context object.
  * @param {Next} next - The Koa next middleware function.
- * @throws {Error} Throws `tokenAuthFailureErr` if the Authorization header is missing or invalid.
- * @throws {Error} Throws `discordAgeErr` if the user's Discord account creation date does not meet the requirement.
+ * @throws {Error} Throws `discordAgeErr` if the user's Discord account does not meet the 7-day age requirement.
  */
 export const verifyAccountStatus = async (ctx: Context, next: Next) => {
-  const authHeader = ctx.headers.authorization;
+  if (ctx.meetsDiscordAgeCheck === undefined)
+    throw new Error("meetsDiscordAgeCheck not set in context");
 
-  if (!authHeader || !authHeader.startsWith("Bearer "))
-    throw tokenAuthFailureErr();
-
-  const token = authHeader.replace("Bearer ", "");
-  const decodedToken = verifyJwtToken(token);
-
-  if (!decodedToken.user.meetsDiscordAgeCheck) throw discordAgeErr();
-
+  if (!ctx.meetsDiscordAgeCheck) throw discordAgeErr();
   await next();
 };
-
-/**
- * A temporary type definition to work around issues with the JWT library types.
- * This type should be removed in the future if the JWT library types are fixed. */
-type DisgustingJwtPayloadHack = Pick<
-  JwtPayload,
-  "iss" | "sub" | "aud" | "exp" | "nbf" | "iat" | "jti"
->;
-
-export interface BymJwtPayload extends DisgustingJwtPayloadHack {
-  user: {
-    email: string;
-    discordId: string | null | undefined;
-    meetsDiscordAgeCheck: boolean;
-    sessionType: "game" | "launcher";
-  };
-}
 
 /**
  * Verifies a JWT token and returns the decoded payload.
@@ -96,12 +83,12 @@ export interface BymJwtPayload extends DisgustingJwtPayloadHack {
  * In production, we introduce discord authentication.
  *
  * @param {string} token - The JWT token to verify.
- * @returns {BymJwtPayload} The decoded JWT payload.
+ * @returns {AuthTokenPayload} The decoded JWT payload.
  * @throws Will throw an error if the token is invalid or verification fails.
  */
-export const verifyJwtToken = (token: string): BymJwtPayload => {
+export const verifyJwtToken = (token: string): AuthTokenPayload => {
   if (process.env.ENV === Env.LOCAL) {
-    const decoded = JWT.decode(token) as BymJwtPayload;
+    const decoded = <AuthTokenPayload>JWT.decode(token);
 
     return {
       user: {
@@ -114,7 +101,14 @@ export const verifyJwtToken = (token: string): BymJwtPayload => {
   }
 
   try {
-    return <BymJwtPayload>JWT.verify(token, process.env.SECRET_KEY!);
+    const decoded = <AuthTokenPayload>JWT.verify(token, process.env.SECRET_KEY!);
+    
+    const { discordId } = decoded.user;
+    const meetsDiscordAgeCheck = discordId ? isDiscordAccountOldEnough(discordId) : false;
+
+    return {
+      user: { ...decoded.user, meetsDiscordAgeCheck },
+    };
   } catch (err) {
     throw tokenAuthFailureErr();
   }

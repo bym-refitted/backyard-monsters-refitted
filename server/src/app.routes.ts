@@ -276,8 +276,8 @@ router.post(
  */
 router.post(
   "/worldmapv2/takeoverCell",
-  verifyAccountStatus,
   verifyUserAuth,
+  verifyAccountStatus,
   logRequest("Taking over cell"),
   takeoverCell
 );

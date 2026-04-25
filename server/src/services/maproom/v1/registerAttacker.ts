@@ -17,13 +17,13 @@ import { createNeighbourData } from "../createNeighbourData.js";
  * @param {User} defender - The user who was attacked
  */
 export const registerAttacker = async (attacker: User, defender: User) => {
-  const [defenderMaproom, attackerMaproom] = await Promise.all([
+  let [defenderMaproom, attackerMaproom] = await Promise.all([
     postgres.em.findOne(Maproom, { userid: defender.userid }),
     postgres.em.findOne(Maproom, { userid: attacker.userid }),
   ]);
 
-  if (!defenderMaproom || !attackerMaproom)
-    throw new Error("MR1 maproom not found for attacker or defender.");
+  if (!defenderMaproom) defenderMaproom = await Maproom.setupMapRoomData(postgres.em, defender);
+  if (!attackerMaproom) attackerMaproom = await Maproom.setupMapRoomData(postgres.em, attacker);
 
   if (!attacker.save) throw new Error("Attacker save not found.");
 
@@ -57,33 +57,32 @@ export const registerAttacker = async (attacker: User, defender: User) => {
     existingAttacker.attacksfrom = (existingAttacker.attacksfrom ?? 0) + 1;
   }
 
-  // Update attacker's neighbor list, defender should already exist from initial seeding
+  // Update attacker's neighbor list, defender should already exist from initial seeding.
   const existingDefender = attackerMaproom.neighbors.find(
     (neighbor) => neighbor.userid === defender.userid
   );
 
-  if (!existingDefender)
-    throw new Error("Defender not found in attacker's neighbor list");
+  if (existingDefender) {
+    existingDefender.attacksto = (existingDefender.attacksto ?? 0) + 1;
 
-  existingDefender.attacksto = (existingDefender.attacksto ?? 0) + 1;
+    const todayStart = new Date().setHours(0, 0, 0, 0) / 1000;
 
-  const todayStart = new Date().setHours(0, 0, 0, 0) / 1000;
+    if (existingDefender.attacksTodayDate < todayStart) {
+      existingDefender.attacksTodayCount = 0;
+      existingDefender.attacksTodayDate = todayStart;
+    }
 
-  if (existingDefender.attacksTodayDate < todayStart) {
-    existingDefender.attacksTodayCount = 0;
-    existingDefender.attacksTodayDate = todayStart;
-  }
+    existingDefender.attacksTodayCount++;
 
-  existingDefender.attacksTodayCount++;
+    if (existingDefender.attacksTodayCount >= 10) {
+      attackerMaproom.neighbors = attackerMaproom.neighbors.filter(
+        (neighbor) => neighbor.userid !== defender.userid
+      );
 
-  if (existingDefender.attacksTodayCount >= 10) {
-    attackerMaproom.neighbors = attackerMaproom.neighbors.filter(
-      (neighbor) => neighbor.userid !== defender.userid
-    );
-
-    defenderMaproom.neighbors = defenderMaproom.neighbors.filter(
-      (neighbor) => neighbor.userid !== attacker.userid
-    );
+      defenderMaproom.neighbors = defenderMaproom.neighbors.filter(
+        (neighbor) => neighbor.userid !== attacker.userid
+      );
+    }
   }
 
   postgres.em.persist(defenderMaproom);

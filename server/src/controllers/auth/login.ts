@@ -11,7 +11,7 @@ import {
   userPermaBannedErr,
 } from "../../errors/errors.js";
 import { logger } from "../../utils/logger.js";
-import { type BymJwtPayload, verifyJwtToken } from "../../middleware/auth.js";
+import { type JwtClaims, verifyJwtToken } from "../../middleware/auth.js";
 import { Status } from "../../enums/StatusCodes.js";
 import { UserLoginSchema } from "../../zod/AuthSchemas.js";
 import { Env } from "../../enums/Env.js";
@@ -79,31 +79,14 @@ export const login: KoaController = async (ctx) => {
     if (discordId) fetchDiscordAvatar(user.userid, discordId);
   }
 
-  const isOlderThanOneWeek = (snowflakeId: string) => {
-    // Discord's epoch starts at 2015-01-01T00:00:00 UTC
-    const discordEpoch = 1420070400000;
-
-    // Extract the timestamp from the Snowflake ID (first 42 bits)
-    const timestamp = Number(BigInt(snowflakeId) >> 22n) + discordEpoch;
-
-    const creationDate = new Date(timestamp);
-    const sevenDaysAgo = new Date();
-
-    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
-
-    return creationDate < sevenDaysAgo;
-  };
-
   const newToken = JWT.sign(
     {
       user: {
         email: user.email,
         discordId,
-        meetsDiscordAgeCheck:
-          process.env.ENV !== Env.PROD || isOlderThanOneWeek(discordId!),
         sessionType,
       },
-    } satisfies BymJwtPayload,
+    } satisfies JwtClaims,
     process.env.SECRET_KEY!,
     {
       expiresIn: sessionLifeTime as StringValue,

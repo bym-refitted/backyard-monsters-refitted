@@ -74,6 +74,7 @@ export const tribeSaveV3 = async (baseid: string, worldid: string): Promise<Save
         baseid,
         level,
         wmid: EnumYardType.FORTIFICATION,
+        worldid,
       } as unknown as RequiredEntityData<Save>);
     }
   }
@@ -98,6 +99,7 @@ export const tribeSaveV3 = async (baseid: string, worldid: string): Promise<Save
       baseid,
       level,
       wmid,
+      worldid,
     } as unknown as RequiredEntityData<Save>);
   }
 
@@ -116,6 +118,7 @@ export const tribeSaveV3 = async (baseid: string, worldid: string): Promise<Save
       baseid,
       level,
       wmid: structureType,
+      worldid,
     } as unknown as RequiredEntityData<Save>);
   }
 

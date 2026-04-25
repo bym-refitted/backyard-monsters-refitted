@@ -8,6 +8,7 @@ import { logger } from "../../utils/logger.js";
 import { Status } from "../../enums/StatusCodes.js";
 import { UserRegistrationSchema } from "../../zod/AuthSchemas.js";
 import type { UserData } from "../../types/EntityData.js";
+import { BYMR_CDN } from "../../services/discord/fetchDiscordAvatar.js";
 
 /**
  * Controller to handle user registration.
@@ -45,7 +46,7 @@ export const register: KoaController = async (ctx) => {
   // Create new user record
   const user = postgres.em.create(User, {
     ...registeredUser,
-    pic_square: null,
+    pic_square: `${BYMR_CDN}/assets/bym-refitted-assets/placeholder.jpg`,
     password: hash,
   } as unknown as UserData);
 
