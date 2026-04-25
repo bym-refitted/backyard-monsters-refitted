@@ -61,13 +61,17 @@ export const verifyUserAuth = async (ctx: Context, next: Next) => {
 };
 
 /**
- * Middleware to enforce the Discord account age requirement for multiplayer access.
+ * Middleware to enforce the Discord account age requirement for Map Room access.
+ * Depends on verifyUserAuth middleware to have already set ctx.meetsDiscordAgeCheck.
  *
  * @param {Context} ctx - The Koa context object.
  * @param {Next} next - The Koa next middleware function.
  * @throws {Error} Throws `discordAgeErr` if the user's Discord account does not meet the 7-day age requirement.
  */
 export const verifyAccountStatus = async (ctx: Context, next: Next) => {
+  if (ctx.meetsDiscordAgeCheck === undefined)
+    throw new Error("meetsDiscordAgeCheck not set in context");
+
   if (!ctx.meetsDiscordAgeCheck) throw discordAgeErr();
   await next();
 };

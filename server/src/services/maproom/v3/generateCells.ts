@@ -67,7 +67,7 @@ export const getGeneratedCells = (): Map<number, GeneratedCell> => {
       const x = centerX + jitterX;
       const y = centerY + jitterY;
 
-      const key = (x << 16) | y;
+      const key = cellKey(x, y);
 
       if (!isValidPosition(x, y) || occupiedCells.has(key)) continue;
 
@@ -106,7 +106,7 @@ export const getGeneratedCells = (): Map<number, GeneratedCell> => {
     const x = CELL_EDGE + Math.floor(resourceRng() * (WIDTH - 2 * CELL_EDGE));
     const y = CELL_EDGE + Math.floor(resourceRng() * (HEIGHT - 2 * CELL_EDGE));
     
-    const key = (x << 16) | y;
+    const key = cellKey(x, y);
     
     if (occupiedCells.has(key)) continue;
 
@@ -145,7 +145,7 @@ export const getGeneratedCells = (): Map<number, GeneratedCell> => {
     const x = CELL_EDGE + Math.floor(tribeRng() * (WIDTH - 2 * CELL_EDGE));
     const y = CELL_EDGE + Math.floor(tribeRng() * (HEIGHT - 2 * CELL_EDGE));
 
-    const key = (x << 16) | y;
+    const key = cellKey(x, y);
     
     if (!occupiedCells.has(key)) {
       const outpostLevels = STRUCTURE_LEVELS[EnumYardType.OUTPOST];
@@ -164,7 +164,7 @@ export const getGeneratedCells = (): Map<number, GeneratedCell> => {
 
   for (let y = CELL_EDGE; y < MapRoom3.HEIGHT - CELL_EDGE; y++) {
     for (let x = CELL_EDGE; x < MapRoom3.WIDTH - CELL_EDGE; x++) {
-      const key = (x << 16) | y;
+      const key = cellKey(x, y);
 
       if (occupiedCells.has(key)) continue;
 
