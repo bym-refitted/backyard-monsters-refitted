@@ -8,13 +8,14 @@ import {
 } from "../errors/errors.js";
 import JWT from "jsonwebtoken";
 import { Env } from "../enums/Env.js";
+import type { SessionType } from "../enums/SessionType.js";
 
 export interface AuthTokenPayload {
   user: {
     email: string;
     discordId: string | null | undefined;
     meetsDiscordAgeCheck: boolean;
-    sessionType: "game" | "launcher";
+    sessionType: SessionType.GAME | SessionType.LAUNCHER;
   };
 }
 
