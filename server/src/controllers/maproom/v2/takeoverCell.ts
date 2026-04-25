@@ -86,6 +86,7 @@ export const takeoverCell: KoaController = async (ctx) => {
   cellSave.userid = userSave.userid;
   cellSave.homebaseid = userSave.homebaseid;
   cellSave.name = userSave.name;
+  cellSave.worldid = userSave.worldid;
   cellSave.createtime = currentTime;
   cellSave.protected = currentTime + twelveHours;
   cellSave.attacks = [];

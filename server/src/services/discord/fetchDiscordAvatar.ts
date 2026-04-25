@@ -2,8 +2,8 @@ import { User } from "../../models/user.model.js";
 import { postgres } from "../../server.js";
 import { logger } from "../../utils/logger.js";
 
-const BYMR_CDN = "https://cdn.bymrefitted.com";
-const DISCORD_CDN = "https://cdn.discordapp.com";
+export const BYMR_CDN = "https://cdn.bymrefitted.com";
+export const DISCORD_CDN = "https://cdn.discordapp.com";
 
 const CHECK_INTERVAL_MS = 24 * 60 * 60 * 1000;
 
