@@ -8,15 +8,19 @@ import {
 } from "../errors/errors.js";
 import JWT from "jsonwebtoken";
 import { Env } from "../enums/Env.js";
+import { isDiscordAccountOldEnough } from "../services/discord/discordAccountStatus.js";
 import type { SessionType } from "../enums/SessionType.js";
 
-export interface AuthTokenPayload {
+export interface JwtClaims {
   user: {
     email: string;
     discordId: string | null | undefined;
-    meetsDiscordAgeCheck: boolean;
     sessionType: SessionType.GAME | SessionType.LAUNCHER;
   };
+}
+
+export interface AuthTokenPayload {
+  user: JwtClaims["user"] & { meetsDiscordAgeCheck: boolean };
 }
 
 /**
@@ -85,7 +89,7 @@ export const verifyAccountStatus = async (ctx: Context, next: Next) => {
  */
 export const verifyJwtToken = (token: string): AuthTokenPayload => {
   if (process.env.ENV === Env.LOCAL) {
-    const decoded = JWT.decode(token) as AuthTokenPayload;
+    const decoded = <AuthTokenPayload>JWT.decode(token);
 
     return {
       user: {
@@ -98,7 +102,14 @@ export const verifyJwtToken = (token: string): AuthTokenPayload => {
   }
 
   try {
-    return <AuthTokenPayload>JWT.verify(token, process.env.SECRET_KEY!);
+    const decoded = <AuthTokenPayload>JWT.verify(token, process.env.SECRET_KEY!);
+    
+    const { discordId } = decoded.user;
+    const meetsDiscordAgeCheck = discordId ? isDiscordAccountOldEnough(discordId) : false;
+
+    return {
+      user: { ...decoded.user, meetsDiscordAgeCheck },
+    };
   } catch (err) {
     throw tokenAuthFailureErr();
   }
