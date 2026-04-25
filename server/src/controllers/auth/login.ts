@@ -11,7 +11,7 @@ import {
   userPermaBannedErr,
 } from "../../errors/errors.js";
 import { logger } from "../../utils/logger.js";
-import { type BymJwtPayload, verifyJwtToken } from "../../middleware/auth.js";
+import { type AuthTokenPayload, verifyJwtToken } from "../../middleware/auth.js";
 import { Status } from "../../enums/StatusCodes.js";
 import { UserLoginSchema } from "../../zod/AuthSchemas.js";
 import { Env } from "../../enums/Env.js";
@@ -103,7 +103,7 @@ export const login: KoaController = async (ctx) => {
           process.env.ENV !== Env.PROD || isOlderThanOneWeek(discordId!),
         sessionType,
       },
-    } satisfies BymJwtPayload,
+    } satisfies AuthTokenPayload,
     process.env.SECRET_KEY!,
     {
       expiresIn: sessionLifeTime as StringValue,
