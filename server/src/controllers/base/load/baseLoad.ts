@@ -31,6 +31,7 @@ import { EnumBaseRelationship } from "../../../enums/EnumBaseRelationship.js";
 import { canAttack } from "../../../services/base/canAttack.js";
 import { createMR1Tribes } from "../../../services/maproom/v1/createMR1Tribes.js";
 import { MR1_TRIBES } from "../../../enums/Tribes.js";
+import { tutorial } from "../../../data/tribes/v1/index.js";
 import { calculateBaseLevel } from "../../../services/base/calculateBaseLevel.js";
 import { extractTownHall } from "../../../utils/extractTownHall.js";
 
@@ -86,6 +87,8 @@ export const baseLoad: KoaController = async (ctx) => {
       break;
 
     case BaseMode.IWMATTACK:
+      if (!ctx.meetsDiscordAgeCheck) throw discordAgeErr();
+      
       await validateAttack(user, attackData, mapversion);
       baseSave = await infernoModeAttack(user, baseid);
       break;
@@ -95,7 +98,8 @@ export const baseLoad: KoaController = async (ctx) => {
       break;
 
     case BaseMode.WMATTACK:
-      if (!ctx.meetsDiscordAgeCheck) throw discordAgeErr();
+      if (!ctx.meetsDiscordAgeCheck && baseid !== tutorial.baseid) throw discordAgeErr();
+      
       await validateAttack(user, attackData, mapversion);
       baseSave = await baseModeAttack({ user, baseid, mapversion, attackCost: attackcost });
       break;
