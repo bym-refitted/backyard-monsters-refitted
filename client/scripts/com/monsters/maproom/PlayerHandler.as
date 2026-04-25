@@ -276,6 +276,13 @@ package com.monsters.maproom
       {
          var _loc6_:String = null;
          MapRoom.BRIDGE.SOUNDS.Play("click1");
+         var discordOldEnough:Boolean = MapRoom.BRIDGE.GLOBAL._flags.discordOldEnough;
+         var discordAgeMessage:String = String(MapRoom.BRIDGE.KEYS.Get("newmap_discord_age"));
+         
+         if (!discordOldEnough) {
+            MapRoom.BRIDGE.GLOBAL.Message(discordAgeMessage);
+            return;
+         }
          var _loc2_:BaseObject = this.player.data;
          var _loc3_:Boolean = false;
          var _loc4_:String = "";

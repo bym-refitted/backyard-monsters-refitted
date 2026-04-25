@@ -285,8 +285,8 @@ package
                {
                   infernoStoreItems.c = [Math.ceil(Math.pow(Math.sqrt(iResourceMax / 2),0.75))];
                   infernoStoreItems.d = KEYS.Get("str_top_10pct",{
-                     "v1":GLOBAL.iresourceNames[resourceIndex - 1],
-                     "v2":GLOBAL.iresourceNames[resourceIndex - 1],
+                     "v1":KEYS.Get(GLOBAL.iresourceNames[resourceIndex - 1]),
+                     "v2":KEYS.Get(GLOBAL.iresourceNames[resourceIndex - 1]),
                      "v3":GLOBAL.FormatNumber(BASE._iresources["r" + resourceIndex].Get() + iResourceMax)
                   });
                   infernoStoreItems.quantity = iResourceMax;
@@ -294,7 +294,7 @@ package
             }
             else if(infernoStoreItems)
             {
-               infernoStoreItems.d = KEYS.Get("str_top_10pct_noroom",{"v1":GLOBAL.iresourceNames[resourceIndex - 1]});
+               infernoStoreItems.d = KEYS.Get("str_top_10pct_noroom",{"v1":KEYS.Get(GLOBAL.iresourceNames[resourceIndex - 1])});
                infernoStoreItems.c = [0];
                infernoStoreItems.quantity = 0;
             }
@@ -339,15 +339,15 @@ package
                {
                   infernoStoreItems.c = [Math.ceil(Math.pow(Math.sqrt(iResourceMax / 2),0.75))];
                   infernoStoreItems.d = KEYS.Get("str_top_50pct",{
-                     "v1":GLOBAL.iresourceNames[resourceIndex - 1],
-                     "v2":GLOBAL.iresourceNames[resourceIndex - 1],
+                     "v1":KEYS.Get(GLOBAL.iresourceNames[resourceIndex - 1]),
+                     "v2":KEYS.Get(GLOBAL.iresourceNames[resourceIndex - 1]),
                      "v3":GLOBAL.FormatNumber(BASE._iresources["r" + resourceIndex].Get() + iResourceMax)
                   });
                   infernoStoreItems.quantity = iResourceMax;
                }
                else
                {
-                  infernoStoreItems.d = KEYS.Get("str_top_50pct_noroom",{"v1":GLOBAL.iresourceNames[resourceIndex - 1]});
+                  infernoStoreItems.d = KEYS.Get("str_top_50pct_noroom",{"v1":KEYS.Get(GLOBAL.iresourceNames[resourceIndex - 1])});
                   infernoStoreItems.c = [0];
                   infernoStoreItems.quantity = 0;
                }
@@ -380,7 +380,7 @@ package
             }
             if(infernoStoreItems)
             {
-               infernoStoreItems.t = KEYS.Get("str_top_fill_label",{"v1":GLOBAL.iresourceNames[resourceIndex - 1]});
+               infernoStoreItems.t = KEYS.Get("str_top_fill_label",{"v1":KEYS.Get(GLOBAL.iresourceNames[resourceIndex - 1])});
             }
             if(BASE._iresources["r" + resourceIndex + "max"] > BASE._iresources["r" + resourceIndex].Get())
             {
@@ -390,14 +390,14 @@ package
                   infernoStoreItems.c = [Math.ceil(Math.pow(Math.sqrt(iResourceMax / 2),0.75))];
                   infernoStoreItems.d = KEYS.Get("str_top_fill",{
                      "v1":GLOBAL.FormatNumber(iResourceMax),
-                     "v2":GLOBAL.iresourceNames[resourceIndex - 1]
+                     "v2":KEYS.Get(GLOBAL.iresourceNames[resourceIndex - 1])
                   });
                   infernoStoreItems.quantity = iResourceMax;
                }
             }
             else if(infernoStoreItems)
             {
-               infernoStoreItems.d = KEYS.Get("str_resourcesfull",{"v1":GLOBAL.iresourceNames[resourceIndex - 1]});
+               infernoStoreItems.d = KEYS.Get("str_resourcesfull",{"v1":KEYS.Get(GLOBAL.iresourceNames[resourceIndex - 1])});
                infernoStoreItems.c = [0];
                infernoStoreItems.quantity = 0;
             }

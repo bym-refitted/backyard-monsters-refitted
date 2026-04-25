@@ -287,6 +287,10 @@ export const baseLoad: KoaController = async (ctx) => {
     if (totalDefenderStrongholdBonus > 0) response.defendingplayer = { buffs: { 6: totalDefenderStrongholdBonus } };
   }
 
+  if (type === BaseMode.IDESCENT) {
+    response.resources = filteredSave.iresources;
+  }
+
   ctx.status = Status.OK;
   ctx.body = response;
 };
