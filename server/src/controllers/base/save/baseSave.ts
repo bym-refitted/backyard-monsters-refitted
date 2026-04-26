@@ -7,7 +7,7 @@ import { getCurrentDateTime } from "../../../utils/getCurrentDateTime.js";
 import { logger } from "../../../utils/logger.js";
 import { Status } from "../../../enums/StatusCodes.js";
 import { SaveKeys } from "../../../enums/SaveKeys.js";
-import { BaseSaveSchema } from "../../../zod/BaseSaveSchema.js";
+import { BaseSaveSchema } from "../../../schemas/BaseSaveSchema.js";
 import { resourcesHandler } from "./handlers/resourceHandler.js";
 import { purchaseHandler } from "./handlers/purchaseHandler.js";
 import { academyHandler } from "./handlers/academyHandler.js";
@@ -24,7 +24,7 @@ import { damageProtection } from "../../../services/maproom/v2/damageProtection.
 import { isMR3Structure } from "../../../services/maproom/v3/utils/isMR3Structure.js";
 import { WorldMapCell } from "../../../models/worldmapcell.model.js";
 import { MapRoomVersion } from "../../../enums/MapRoom.js";
-import { MR1_TRIBE_IDS } from "../../../data/tribes/v1/index.js";
+import { MR1_TRIBE_IDS } from "../../../game-data/tribes/v1/index.js";
 import { scaledMR1Tribes } from "../../../services/maproom/v1/scaledMR1Tribes.js";
 
 /**

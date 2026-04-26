@@ -13,7 +13,7 @@ import { joinOrCreateWorld } from "../../../services/maproom/v2/joinOrCreateWorl
 import { leaveWorld } from "../../../services/maproom/v2/leaveWorld.js";
 import { MapRoomCell } from "../../../enums/MapRoom.js";
 import { relocateOutpostErr } from "../../../errors/errors.js";
-import { MigrateBaseSchema } from "../../../zod/MigrateBaseSchema.js";
+import { MigrateBaseSchema } from "../../../schemas/MigrateBaseSchema.js";
 
 /**
  * Cooldown period for base migration.
