@@ -5,6 +5,7 @@ import { monsterStats, mr3MonsterStats } from "../../game-data/stats/monsterStat
 import type { AttackData } from "../../schemas/AttackSchema.js";
 import { type ChampionProps, championStats } from "../../game-data/stats/championStats.js";
 import { MapRoomVersion } from "../../enums/MapRoom.js";
+import { Env } from "../../enums/Env.js";
 
 // TODO:
 // Validate monster count from flinger
@@ -21,6 +22,8 @@ type StatValue = number[] | string[];
  * @throws Will throw an error if the data is missing, malformed, or tampered with.
  */
 export const validateAttack = async (user: User, attackData: AttackData, mapVersion?: MapRoomVersion) => {
+  if (process.env.ENV === Env.LOCAL) return;
+
   if (!attackData || Object.keys(attackData).length === 0) {
     const message = "Attack payload was missing. Client modified.";
     await logAttackViolation(user, message);
