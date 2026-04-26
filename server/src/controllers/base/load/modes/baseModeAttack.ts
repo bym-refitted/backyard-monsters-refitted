@@ -20,7 +20,7 @@ import { isAttackActive } from "../../../../services/base/isAttackActive.js";
 import { baseUnderAttackErr, baseProtectedErr, userOnlineErr } from "../../../../errors/errors.js";
 import { redis } from "../../../../server.js";
 
-import { MR1_TRIBE_IDS } from "../../../../data/tribes/v1/index.js";
+import { MR1_TRIBE_IDS } from "../../../../game-data/tribes/v1/index.js";
 import { registerAttacker } from "../../../../services/maproom/v1/registerAttacker.js";
 import type { BuildingData } from "../../../../types/BuildingData.js";
 

@@ -1,6 +1,6 @@
 import z from "zod";
 
-import { getFlags } from "../../../data/flags.js";
+import { getFlags } from "../../../game-data/flags.js";
 import { BaseMode, BaseType } from "../../../enums/Base.js";
 import { Status } from "../../../enums/StatusCodes.js";
 import { saveFailureErr } from "../../../errors/errors.js";

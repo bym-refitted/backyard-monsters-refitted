@@ -4,7 +4,7 @@ import { User } from "../../../../models/user.model.js";
 import { postgres } from "../../../../server.js";
 import { tribeSaveHandler } from "../../../../services/maproom/tribeSaveHandler.js";
 import { getCurrentDateTime } from "../../../../utils/getCurrentDateTime.js";
-import { MR1_TRIBE_IDS } from "../../../../data/tribes/v1/index.js";
+import { MR1_TRIBE_IDS } from "../../../../game-data/tribes/v1/index.js";
 
 /**
  * The expiration time for a wild monster save in seconds.

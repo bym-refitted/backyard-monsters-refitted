@@ -13,7 +13,7 @@ import {
 import { logger } from "../../utils/logger.js";
 import { type JwtClaims, verifyJwtToken } from "../../middleware/auth.js";
 import { Status } from "../../enums/StatusCodes.js";
-import { UserLoginSchema } from "../../zod/AuthSchemas.js";
+import { UserLoginSchema } from "../../schemas/AuthSchemas.js";
 import { Env } from "../../enums/Env.js";
 import type { StringValue } from "ms";
 import { fetchDiscordAvatar } from "../../services/discord/fetchDiscordAvatar.js";

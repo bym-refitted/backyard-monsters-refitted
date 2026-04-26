@@ -1,9 +1,9 @@
 import { User } from "../../models/user.model.js";
 import { loadFailureErr } from "../../errors/errors.js";
 import { logAttackViolation } from "../base/reportManager.js";
-import { monsterStats, mr3MonsterStats } from "../../data/stats/monsterStats.js";
-import type { AttackData } from "../../zod/AttackSchema.js";
-import { type ChampionProps, championStats } from "../../data/stats/championStats.js";
+import { monsterStats, mr3MonsterStats } from "../../game-data/stats/monsterStats.js";
+import type { AttackData } from "../../schemas/AttackSchema.js";
+import { type ChampionProps, championStats } from "../../game-data/stats/championStats.js";
 import { MapRoomVersion } from "../../enums/MapRoom.js";
 
 // TODO:

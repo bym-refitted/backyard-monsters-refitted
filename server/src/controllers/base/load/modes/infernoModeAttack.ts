@@ -1,4 +1,4 @@
-import { molochTribes } from "../../../../data/tribes/inferno/molochTribes.js";
+import { molochTribes } from "../../../../game-data/tribes/inferno/molochTribes.js";
 import { BaseMode, BaseType } from "../../../../enums/Base.js";
 import { Save } from "../../../../models/save.model.js";
 import { User } from "../../../../models/user.model.js";

@@ -1,7 +1,7 @@
 import { Entity, Property, PrimaryKey, OneToOne, Index } from "@mikro-orm/decorators/es";
 import { EntityManager, PostgreSqlDriver } from "@mikro-orm/postgresql";
 import { FrontendKey } from "../utils/FrontendKey.js";
-import { getDefaultBaseData } from "../data/getDefaultBaseData.js";
+import { getDefaultBaseData } from "../game-data/getDefaultBaseData.js";
 import { User } from "./user.model.js";
 import { BaseType } from "../enums/Base.js";
 import { WorldMapCell } from "./worldmapcell.model.js";

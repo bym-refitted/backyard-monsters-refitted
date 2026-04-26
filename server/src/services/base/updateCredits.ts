@@ -1,7 +1,7 @@
 import { Save } from "../../models/save.model.js";
 import { logger } from "../../utils/logger.js";
-import { type StoreItem, storeItems } from "../../data/store/storeItems.js";
-import { purchaseKeys, rewardCredits } from "../../data/store/purchaseKeys.js";
+import { type StoreItem, storeItems } from "../../game-data/store/storeItems.js";
+import { purchaseKeys, rewardCredits } from "../../game-data/store/purchaseKeys.js";
 import { User } from "../../models/user.model.js";
 import type { Context } from "koa";
 
