@@ -186,7 +186,7 @@ export const baseSave: KoaController = async (ctx) => {
   baseSave.attackid = saveData.over ? 0 : baseSave.attackid;
 
   baseSave.id = baseSave.savetime;
-  if (!isAttack) baseSave.savetime = getCurrentDateTime();
+  baseSave.savetime = getCurrentDateTime();
 
   if (!isAttack) {
     await redis.setex(`last-seen:main:${user.userid}`, 120, getCurrentDateTime().toString());
