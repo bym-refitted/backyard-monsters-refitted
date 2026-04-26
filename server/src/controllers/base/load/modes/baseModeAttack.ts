@@ -22,6 +22,7 @@ import { redis } from "../../../../server.js";
 
 import { MR1_TRIBE_IDS } from "../../../../data/tribes/v1/index.js";
 import { registerAttacker } from "../../../../services/maproom/v1/registerAttacker.js";
+import type { BuildingData } from "../../../../types/BuildingData.js";
 
 export interface AttackDetails {
   fbid?: string;
@@ -137,7 +138,31 @@ export const baseModeAttack = async ({ user, baseid, mapversion, attackCost }: B
   }
 
   const isMR1Tribe = mapversion === MapRoomVersion.V1 && save.type === BaseType.TRIBE;
-  
+
+  // Clean buildingdata for outposts:
+  // Strips building keys (cB/cU/prefab) for any building which should have finished:
+  // construction, upgrades or kit placements. Avoids serving outdated building states for outposts.
+  if (save.type === BaseType.OUTPOST && save.buildingdata) {
+    const currentTime = getCurrentDateTime();
+    const updatedBuildings: Record<string, BuildingData> = {};
+    let changed = false;
+
+    for (const [key, building] of Object.entries(save.buildingdata)) {
+      const cBExpired = building.cB && save.savetime + building.cB <= currentTime;
+      const cUExpired = building.cU && save.savetime + building.cU <= currentTime;
+
+      if (cBExpired || cUExpired) {
+        const { cB, cU, prefab, ...rest } = building;
+        updatedBuildings[key] = rest;
+        changed = true;
+      } else {
+        updatedBuildings[key] = building;
+      }
+    }
+
+    if (changed) save.buildingdata = updatedBuildings;
+  }
+
   if (!isMR1Tribe) postgres.em.persist(save);
 
   postgres.em.persist(userSave);

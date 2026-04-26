@@ -10,6 +10,7 @@ import type { AttackDetails } from "../controllers/base/load/modes/baseModeAttac
 import type { Stats } from "../services/events/wmi/invasionUtils.js";
 import type { ChampionData } from "../types/ChampionData.js";
 import type { JsonObject } from "../types/JsonObject.js";
+import type { BuildingData } from "../types/BuildingData.js";
 
 const NEXT_USER_BASEID = `SELECT nextval('bym.user_baseid_seq') AS baseid`;
 
@@ -266,7 +267,7 @@ export class Save {
   // Objects
   @FrontendKey
   @Property({ columnType: "jsonb", nullable: true })
-  buildingdata?: JsonObject | null = {};
+  buildingdata?: Record<string, BuildingData> | null = {};
 
   @FrontendKey
   @Property({ columnType: "jsonb", nullable: true })
