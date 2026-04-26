@@ -53,6 +53,8 @@ export const setMapVersion: KoaController = async (ctx) => {
       break;
 
     case MapRoomVersion.V2: {
+      if (save.mapversion === MapRoomVersion.V3) break;
+
       const townHall = extractTownHall(save.buildingdata ?? {});
 
       if (!save.mr2upgraded && (!townHall || townHall.l < 6)) throw townHallLevelErr();
