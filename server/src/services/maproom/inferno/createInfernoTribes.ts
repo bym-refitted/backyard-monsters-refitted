@@ -24,7 +24,7 @@ export type TribeScaleConfig = Record<InfernoTribeScale, TribeDetails>;
  * which consists of tribe IDs at range 214-220 retrieved from
  * `molochTribes.ts`.
  *
- * Tribes are respawned if they have been destroyed for more than 2 hours,
+ * Tribes are respawned if they have been destroyed for more than 1 hour,
  * by resetting their values in both the maproom table and wmstatus field
  * in the save table.
  *

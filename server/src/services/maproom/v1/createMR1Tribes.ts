@@ -81,7 +81,7 @@ export const createMR1Tribes = async (save: Save, tribes: MR1TribeScaleConfig) =
     scaledBaseIds.has(Number(tribe.baseid))
   );
 
-  // Respawn tribes destroyed more than 1 hour ago
+  // Respawn tribes destroyed more than 10 minutes ago
   for (const tribe of maproom.tribedata) {
     const canRespawn = tribe.destroyedAt && currentTime - tribe.destroyedAt > tenMinutes;
 

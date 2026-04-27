@@ -23,7 +23,7 @@ import { getNewMap } from "./controllers/maproom/getNewMap.js";
 import { setMapVersion } from "./controllers/maproom/setMapVersion.js";
 import { infernoSave } from "./controllers/inferno/infernoSave.js";
 import { infernoMonsters } from "./controllers/inferno/infernoMonsters.js";
-import { getNeighbours } from "./controllers/maproom/inferno/getNeighbours.js";
+import { getNeighbours } from "./controllers/maproom/getNeighbours.js";
 
 import { getArea } from "./controllers/maproom/v2/getArea.js";
 import { takeoverCell } from "./controllers/maproom/v2/takeoverCell.js";
