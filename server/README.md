@@ -44,7 +44,7 @@ The server is built on a modern Bun runtime using Koa.js, TypeScript, and MikroO
 └── 📦 debug/                   # Debug endpoint the client sends logs to
 └── 📦 events/                  # Game events handling
 └── 📦 leaderboards/            # Player rankings & scores
-└── 📦 mail/                    # In-game messaging system
+└── 📦 mail/                    # In-game messaging, truce requests & responses
 └── 📦 maproom/                 # Map Room system
 └── 📦 attacklogs/              # Combat logging & history
 └── 📦 yardplanner/             # Base planning & layout tools
@@ -52,15 +52,16 @@ The server is built on a modern Bun runtime using Koa.js, TypeScript, and MikroO
 
 <br>
 
-## 📂 Data & Constants
-**`data/`** - Static game data and configuration constants
+## 📂 Static Game Data
+**`game-data/`** - Static game data and configuration constants
 
 | Category | Files | Description |
 |----------|-------|-------------|
 | **Game Stats** | `championStats.ts`, `experiencePoints.ts`, `monsterStats.ts` | Static game data e.g. stats for monsters |
 | **Game Config** | `flags.ts`, `monsterKeys.ts` | Game flags & identifiers |
 | **Content** | `store/` | Store items |
-| **Tribe Data** | `tribes/v2/` | MR2 tribe save templates (abunaki, dreadnaught, kozu, legionnaire) |
+| **Tribe Data** | `tribes/v1/` | MR1 tribe save templates (abunaki, dreadnaught, kozu, legionnaire) |
+| **Tribe Data** | `tribes/v2/` | MR2 tribe save templates |
 | **Tribe Data** | `tribes/v3/` | MR3 structure saves (outposts, defenders, strongholds, resources) |
 
 <br>
@@ -70,14 +71,9 @@ The server is built on a modern Bun runtime using Koa.js, TypeScript, and MikroO
 
 <br>
 
-## 📂 Development Tools
-**`dev/`** - Development sandbox bases used to load populated pre-configured test yards, which can be enabled in `GameConfig.ts`
-
-<br>
-
 ## 📂 Type Definitions
 **`enums/`** - TypeScript enums for consistent game logic
-- Status codes, base types, game states, and more
+- Status codes, base types, game states, map room versions, attack permissions, truce status, and more
 
 <br>
 
@@ -97,7 +93,14 @@ The server is built on a modern Bun runtime using Koa.js, TypeScript, and MikroO
 **`models/`** - ORM entity definitions
 - Users, saves, worlds, messages, threads
 - Attack logs, leaderboards, and more
-- `WorldMapCell` — tracks MR3 cell state (owner, base type, captured/destroyed timestamps, map version)
+- `WorldMapCell` — tracks MR2/MR3 cell state (owner, base type, captured/destroyed timestamps, map version)
+- `Truce` — tracks truce state between players (status, expiry, initiator/recipient)
+
+<br>
+
+## 📂 Validation Schemas
+**`schemas/`** - Request validation schemas
+- Type-safe API input validation using Zod
 
 <br>
 
@@ -110,15 +113,16 @@ The server is built on a modern Bun runtime using Koa.js, TypeScript, and MikroO
 ## 📂 Business Logic
 **`services/`** - Core business logic and helper services
 - Base updates, maproom operations, game mechanics
+- Truce lifecycle (request, accept/reject, active check, batch lookup)
+
+<br>
+
+## 📂 Type Declarations
+**`types/`** - Shared TypeScript type and interface definitions
+- Entity data shapes, neighbour data, cell data, and more
 
 <br>
 
 ## 📂 Utilities
 **`utils/`** - Common utility functions
 - Logging, date/time operations, formatting
-
-<br>
-
-### 📂 Validation Layer
-**`zod/`** - Request validation schemas
-- Type-safe API input validation using Zod
