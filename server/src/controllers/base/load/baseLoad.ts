@@ -1,6 +1,6 @@
 import { devConfig } from "../../../config/GameConfig.js";
 import { Save } from "../../../models/save.model.js";
-import { postgres } from "../../../server.js";
+import { postgres, redis } from "../../../server.js";
 import type { KoaController } from "../../../utils/KoaController.js";
 import { storeItems } from "../../../game-data/store/storeItems.js";
 import { User } from "../../../models/user.model.js";
@@ -53,6 +53,7 @@ export const baseLoad: KoaController = async (ctx) => {
   switch (type) {
     case BaseMode.BUILD:
       baseSave = await baseModeBuild(user, baseid);
+      await redis.setex(`last-seen:main:${user.userid}`, 120, getCurrentDateTime().toString());
       break;
 
     case BaseMode.VIEW:
