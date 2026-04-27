@@ -1,5 +1,5 @@
 import type { Context, Next } from "koa";
-import { getApiVersion } from "../server.js";
+import { getGameVersion } from "../config/VersionManifestConfig.js";
 import { Status } from "../enums/StatusCodes.js";
 
 /**
@@ -15,7 +15,7 @@ import { Status } from "../enums/StatusCodes.js";
  */
 export const apiVersion = async (ctx: Context, next: Next) => {
   const apiVersion = ctx.params.apiVersion;
-  const expectedApiVersion = getApiVersion();
+  const expectedApiVersion = getGameVersion();
   const useVersionManagement = process.env.USE_VERSION_MANAGEMENT === "enabled";
 
   if (useVersionManagement && apiVersion !== expectedApiVersion) {

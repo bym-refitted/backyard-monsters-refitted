@@ -2,7 +2,7 @@ import z from "zod";
 import { devConfig } from "../config/GameConfig.js";
 import { Status } from "../enums/StatusCodes.js";
 import type { KoaController } from "../utils/KoaController.js";
-import { getApiVersion } from "../server.js";
+import { getGameVersion } from "../config/VersionManifestConfig.js";
 
 export const InitSchema = z.object({
   apiVersion: z.string().optional(),
@@ -10,7 +10,7 @@ export const InitSchema = z.object({
 
 export const init: KoaController = async (ctx) => {
   const { apiVersion } = InitSchema.parse(ctx.request.body);
-  const expectedVersion = getApiVersion();
+  const expectedVersion = getGameVersion();
 
   const invalidVersion = !apiVersion || apiVersion !== expectedVersion;
 

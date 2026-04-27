@@ -8,12 +8,12 @@ export class Migration20260427_AddTruceFieldsToThread extends Migration {
   async up(): Promise<void> {
     await this.execute(`
       ALTER TABLE bym.thread
-        ADD COLUMN truce_id INTEGER,
-        ADD COLUMN trucestate VARCHAR(10)
+        ADD COLUMN IF NOT EXISTS truce_id INTEGER,
+        ADD COLUMN IF NOT EXISTS trucestate VARCHAR(10)
     `);
 
     await this.execute(`
-      CREATE INDEX thread_truce_id_idx ON bym.thread (truce_id)
+      CREATE INDEX IF NOT EXISTS thread_truce_id_idx ON bym.thread (truce_id)
     `);
   }
 }
