@@ -53,7 +53,7 @@ export const baseLoad: KoaController = async (ctx) => {
   switch (type) {
     case BaseMode.BUILD:
       baseSave = await baseModeBuild(user, baseid);
-      await redis.setex(`last-seen:main:${user.userid}`, 120, getCurrentDateTime().toString());
+      redis.setex(`last-seen:main:${user.userid}`, 120, getCurrentDateTime().toString());
       break;
 
     case BaseMode.VIEW:
