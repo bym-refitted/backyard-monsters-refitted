@@ -20,6 +20,7 @@ type Base = BaseType.MAIN | BaseType.INFERNO;
 const NEIGHBOUR_SAVE_FIELDS = [
   "userid",
   "protected",
+  "createtime",
   "attackid",
   "attacks",
   "damage",
@@ -81,11 +82,17 @@ export const updateNeighbourData = async (cachedNeighbours: NeighbourData[], bas
       needsFlush = true;
     }
 
-    // TODO: 
+    const sevenDays = 7 * 24 * 60 * 60;
+    const sevenDayExpiry = neighbourSave.createtime + sevenDays;
+    const specialProtection = isProtected && neighbourSave.protected === sevenDayExpiry;
+
+    // TODO:
     // 1. Add AttackPermission.LEVEL_RESTRICTION if this neighbour is more than 5 levels above the attacker.
     // 2. Add AttackPermission.VENGEANCE_MODE for breaking the level restriction if a low level attacked a high level.
-    // 3. Add AttackPermission.SPECIAL_PROTECTION for players who just joined the Map.
-    if (isProtected) {
+    // 3. Add AttackPermission.HIGHER_LEVEL if the neighbour is more than 5 levels above the attacker
+    if (specialProtection) {
+      neighbour.attackpermitted = AttackPermission.SPECIAL_PROTECTION;
+    } else if (isProtected) {
       neighbour.attackpermitted = AttackPermission.DAMAGE_PROTECTION;
     } else if (isUnderAttack && lastAttack) {
       neighbour.attackpermitted = AttackPermission.UNDER_ATTACK;
