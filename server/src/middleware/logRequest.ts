@@ -11,18 +11,17 @@ import { Env } from "../enums/Env.js";
  * @param {string} [logMessage=""] - Optional label for the log entry.
  * @returns {Function} Koa middleware function.
  */
-export const logRequest = (logMessage: string = "") =>
-  async (ctx: Context, next: Next) => {
-    if (process.env.ENV === Env.LOCAL) {
-      console.log("=".repeat(70));
-      console.log(`📦 ${ctx.method} ${ctx.path}${logMessage ? ` | ${logMessage}` : ""}`);
+export const logRequest = async (ctx: Context, next: Next) => {
+  if (process.env.ENV === Env.LOCAL) {
+    console.log("=".repeat(70));
+    console.log(`📦 ${ctx.method} ${ctx.path}`);
 
-      if (ctx.request.body && Object.keys(ctx.request.body).length > 0) {
-        console.log();
-        console.log(inspect(ctx.request.body, { colors: true, depth: 5, compact: false }));
-      }
-
-      console.log("=".repeat(70) + "\n");
+    if (ctx.request.body && Object.keys(ctx.request.body).length > 0) {
+      console.log();
+      console.log(inspect(ctx.request.body, { colors: true, depth: 5, compact: false }));
     }
-    await next();
-  };
+
+    console.log("=".repeat(70) + "\n");
+  }
+  await next();
+};
