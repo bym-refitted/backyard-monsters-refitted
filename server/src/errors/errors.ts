@@ -180,3 +180,11 @@ export const townHallLevelErr = () =>
     isClientFriendly: true,
   });
 
+export const truceActiveErr = () =>
+  new ClientSafeError({
+    message: "You have an active truce with this player and cannot attack them.",
+    status: Status.FORBIDDEN,
+    data: {},
+    isClientFriendly: false,
+  });
+
