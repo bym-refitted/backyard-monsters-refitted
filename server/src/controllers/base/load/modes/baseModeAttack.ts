@@ -9,20 +9,20 @@ import { User } from "../../../../models/user.model.js";
 import { tribeSaveHandler } from "../../../../services/maproom/tribeSaveHandler.js";
 import { getCurrentDateTime } from "../../../../utils/getCurrentDateTime.js";
 import { validateRange } from "../../../../services/maproom/v2/validateRange.js";
-import {
-  generateNoise,
-  getTerrainHeight,
-} from "../../../../services/maproom/v2/generateMap.js";
 import { getGeneratedCells, cellKey } from "../../../../services/maproom/v3/generateCells.js";
 import { createAttackLog } from "../../../../services/base/createAttackLog.js";
 import { updateResources, Operation } from "../../../../services/base/updateResources.js";
 import { isAttackActive } from "../../../../services/base/isAttackActive.js";
-import { baseUnderAttackErr, baseProtectedErr, userOnlineErr } from "../../../../errors/errors.js";
+import { baseUnderAttackErr, baseProtectedErr, userOnlineErr, truceActiveErr } from "../../../../errors/errors.js";
 import { redis } from "../../../../server.js";
-
+import { isTruceActive } from "../../../../services/mail/isTruceActive.js";
 import { MR1_TRIBE_IDS } from "../../../../game-data/tribes/v1/index.js";
 import { registerAttacker } from "../../../../services/maproom/v1/registerAttacker.js";
 import type { BuildingData } from "../../../../types/BuildingData.js";
+import {
+  generateNoise,
+  getTerrainHeight,
+} from "../../../../services/maproom/v2/generateMap.js";
 
 export interface AttackDetails {
   fbid?: string;
@@ -69,6 +69,10 @@ export const baseModeAttack = async ({ user, baseid, mapversion, attackCost }: B
       const lastSeen = await redis.get(`last-seen:${BaseType.MAIN}:${save.userid}`);
       if (lastSeen && parseInt(lastSeen) >= getCurrentDateTime() - 60) throw userOnlineErr();
     }
+
+    const activeTruce = await isTruceActive(user.userid, save.saveuserid);
+    
+    if (activeTruce) throw truceActiveErr();
   }
 
   if (save.attacks.length > 3) save.attacks = save.attacks.slice(-2);
