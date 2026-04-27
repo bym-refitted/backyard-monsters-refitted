@@ -7,7 +7,7 @@ import { Migration } from "@mikro-orm/migrations";
 export class Migration20260427_CreateTruceTable extends Migration {
   async up(): Promise<void> {
     await this.execute(`
-      CREATE TABLE bym.truce (
+      CREATE TABLE IF NOT EXISTS bym.truce (
         id SERIAL PRIMARY KEY,
         initiator_userid INTEGER NOT NULL,
         recipient_userid INTEGER NOT NULL,
@@ -18,11 +18,11 @@ export class Migration20260427_CreateTruceTable extends Migration {
     `);
 
     await this.execute(`
-      CREATE INDEX truce_initiator_userid_status_idx ON bym.truce (initiator_userid, status)
+      CREATE INDEX IF NOT EXISTS truce_initiator_userid_status_idx ON bym.truce (initiator_userid, status)
     `);
 
     await this.execute(`
-      CREATE INDEX truce_recipient_userid_status_idx ON bym.truce (recipient_userid, status)
+      CREATE INDEX IF NOT EXISTS truce_recipient_userid_status_idx ON bym.truce (recipient_userid, status)
     `);
   }
 }
