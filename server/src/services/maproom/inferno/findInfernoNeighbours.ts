@@ -9,7 +9,9 @@ import type { NeighbourData } from "../../../types/NeighbourData.js";
 /**
  * Calculate inferno neighbours for a user and return data suitable for caching.
  *
- * Finds same-world inferno players within a specified level range.
+ * Note: Commented-out worldid constraint (line 36) to allow cross-world matchmaking in Inferno.
+ * In the original game this was same-world only, but it severely limits the pool of potential neighbours
+ * and leads to empty lists for many players with low population worlds.
  *
  * @param {User} user - The authenticated user to find neighbours for
  * @returns {Promise<NeighbourData[]>} - Array of neighbour data suitable for caching
@@ -31,7 +33,7 @@ export const findInfernoNeighbours = async (user: User): Promise<NeighbourData[]
     Save,
     {
       type: BaseType.INFERNO,
-      worldid: infernosave.worldid,
+      // worldid: infernosave.worldid,
       userid: { $ne: user.userid },
     },
     {
