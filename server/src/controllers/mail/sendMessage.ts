@@ -1,4 +1,6 @@
 import { Status } from "../../enums/StatusCodes.js";
+import { TruceStatus } from "../../enums/TruceStatus.js";
+import { MessageType } from "../../enums/MessageType.js";
 import { User } from "../../models/user.model.js";
 import type { KoaController } from "../../utils/KoaController.js";
 import { devConfig } from "../../config/GameConfig.js";
@@ -8,6 +10,8 @@ import { Message } from "../../models/message.model.js";
 import { getCurrentDateTime } from "../../utils/getCurrentDateTime.js";
 import { findOrCreateThread } from "../../services/mail/findOrCreateThread.js";
 import { countUnreadMessage } from "../../services/mail/countUnreadMessage.js";
+import { handleTruceRequest } from "../../services/mail/handleTruceRequest.js";
+import { handleTruceResponse } from "../../services/mail/handleTruceResponse.js";
 import { mailboxErr } from "../../errors/errors.js";
 import { logger } from "../../utils/logger.js";
 import type { MessageData } from "../../types/EntityData.js";
@@ -19,6 +23,9 @@ import type { MessageData } from "../../types/EntityData.js";
  * - a thread starter will have correct request body for targetid
  * - another reply on a thread will always have request body for targetid set as current user,
  * so it need to be changed by getting up on the correct targetid when saved to DB
+ *
+ * For trucerequest: creates a Truce record and links it to the thread.
+ * For truceaccept/trucereject: updates the Truce record and thread state.
  *
  * @param {Context} ctx - The Koa context object, which includes the request body.
  * @returns {Promise<void>} - A promise that resolves when the controller is complete.
@@ -66,6 +73,20 @@ export const sendMessage: KoaController = async (ctx) => {
       ctx.status = Status.OK;
       ctx.body = { error: 1, message: "Cannot send message to this user" };
       return;
+    }
+
+    switch (message.type) {
+      case MessageType.TRUCE_REQUEST:
+        await handleTruceRequest(userid, messageTargetId, thread);
+        break;
+
+      case MessageType.TRUCE_ACCEPT:
+        await handleTruceResponse(userid, thread, TruceStatus.ACCEPTED);
+        break;
+        
+      case MessageType.TRUCE_REJECT:
+        await handleTruceResponse(userid, thread, TruceStatus.REJECTED);
+        break;
     }
 
     const newMessage = postgres.em.create(Message, {

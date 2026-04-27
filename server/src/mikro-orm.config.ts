@@ -13,6 +13,7 @@ import { Maproom } from "./models/maproom.model.js";
 import { Message } from "./models/message.model.js";
 import { Thread } from "./models/thread.model.js";
 import { AttackLogs } from "./models/attacklogs.model.js";
+import { Truce } from "./models/truce.model.js";
 
 /**
  * List of entities to be used with MikroORM.
@@ -28,7 +29,8 @@ const entities = [
   Maproom,
   Message,
   Thread,
-  AttackLogs
+  AttackLogs,
+  Truce,
 ];
 
 /**

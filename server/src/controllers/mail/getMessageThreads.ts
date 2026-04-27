@@ -48,7 +48,7 @@ export const getMessageThreads: KoaController = async (ctx) => {
 
       lastMessage.messageid = index.toString();
       lastMessage.messagecount = thread.messagecount;
-      
+      lastMessage.trucestate = thread.trucestate ?? null;
       lastMessage.userid = isSender ? lastMessage.targetid : lastMessage.userid;
       lastMessage.reportid = "0";
 

@@ -34,6 +34,7 @@ import { getMessageThreads } from "./controllers/mail/getMessageThreads.js";
 import { getMessageThread } from "./controllers/mail/getMessageThread.js";
 import { sendMessage } from "./controllers/mail/sendMessage.js";
 import { reportMessageThread } from "./controllers/mail/reportMessageThread.js";
+import { requestTruce } from "./controllers/mail/requestTruce.js";
 import { getAvailableWorlds } from "./controllers/leaderboards/getAvailableWorlds.js";
 import { getLeaderboards } from "./controllers/leaderboards/getLeaderboards.js";
 import { getAttackLogs } from "./controllers/attacklogs/getAttackLogs.js";
@@ -437,6 +438,18 @@ router.post(
   verifyUserAuth,
   logRequest("Send message"),
   sendMessage
+);
+
+/**
+ * Request truce (legacy MR2 path — new clients use sendmessage with type=trucerequest)
+ * @name POST /api/:apiVersion/player/requesttruce
+ */
+router.post(
+  "/api/:apiVersion/player/requesttruce",
+  apiVersion,
+  verifyUserAuth,
+  logRequest("Request truce"),
+  requestTruce
 );
 
 /**
