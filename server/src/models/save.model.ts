@@ -11,6 +11,7 @@ import type { Stats } from "../services/events/wmi/invasionUtils.js";
 import type { ChampionData } from "../types/ChampionData.js";
 import type { JsonObject } from "../types/JsonObject.js";
 import type { BuildingData } from "../types/BuildingData.js";
+import { MapRoomVersion } from "../enums/MapRoom.js";
 
 const NEXT_USER_BASEID = `SELECT nextval('bym.user_baseid_seq') AS baseid`;
 
@@ -187,8 +188,8 @@ export class Save {
   @Property({ type: 'string', nullable: true })
   worldid?: string | null;
 
-  @Property({ type: 'number', nullable: true })
-  mapversion?: number | null;
+  @Property({ type: 'number', default: MapRoomVersion.V1 })
+  mapversion: number = MapRoomVersion.V1;
 
   @Property({ type: 'boolean', default: false })
   mr2upgraded: boolean = false;
