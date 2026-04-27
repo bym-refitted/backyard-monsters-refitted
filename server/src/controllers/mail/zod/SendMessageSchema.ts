@@ -1,4 +1,5 @@
 import z from "zod";
+import { MessageType } from "../../../enums/MessageType.js";
 
 /**
  * Schema for validating and transforming send message data.
@@ -15,10 +16,10 @@ export const SendMessageSchema = z.object({
   subject: z.string(),
 
   /**
-   * The message type, possible value between message,trucerequest,truceaccept,trucereject,migraterequest
-   * @type {string}
+   * The message type.
+   * @type {MessageType}
    */
-  type: z.enum(["message", "trucerequest", "truceaccept", "trucereject", "migraterequest"]),
+  type: z.enum(MessageType),
 
   /**
    * the content of the message

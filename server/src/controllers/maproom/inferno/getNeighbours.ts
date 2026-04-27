@@ -114,7 +114,7 @@ const getOverworldNeighbours: KoaController = async (ctx) => {
     await postgres.em.flush();
   }
 
-  const neighbours = await updateNeighbourData(maproom.neighbors, BaseType.MAIN);
+  const neighbours = await updateNeighbourData(maproom.neighbors, BaseType.MAIN, user.userid);
 
   ctx.status = Status.OK;
   ctx.body = { error: 0, wmbases: [], bases: neighbours };
