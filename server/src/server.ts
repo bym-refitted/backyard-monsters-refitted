@@ -15,6 +15,7 @@ import { logMissingAssets, morganLogging } from "./middleware/morganLogging.js";
 import { corsCacheControl } from "./middleware/corsCacheControlSetup.js";
 import { Env } from "./enums/Env.js";
 import { initAnticheat } from "./scripts/anticheat/anticheat.js";
+import { initialize as initVersionManifest } from "./config/VersionManifestConfig.js";
 
 export const app = new Koa();
 app.proxy = true;
@@ -22,7 +23,6 @@ app.proxy = true;
 export const PORT = process.env.PORT || 3001;
 export const BASE_URL = process.env.BASE_URL;
 
-export const getApiVersion = () => "v1.6.1-beta";
 
 export const postgres = {} as {
   orm: MikroORM<PostgreSqlDriver>;
@@ -80,6 +80,7 @@ redis.onclose = (err) => logger.error(`Redis disconnected: ${err.message}`);
   app.use(router.routes());
   app.use(router.allowedMethods());
 
+  await initVersionManifest();
   await initAnticheat();
 
   app.listen(PORT, () => {
