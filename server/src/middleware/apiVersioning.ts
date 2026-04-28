@@ -14,11 +14,10 @@ import { Status } from "../enums/StatusCodes.js";
  * @returns {Promise<void>} - A promise that resolves when the middleware is complete.
  */
 export const apiVersion = async (ctx: Context, next: Next) => {
-  const apiVersion = ctx.params.apiVersion;
+  const apiVersion: string = ctx.params.apiVersion;
   const expectedApiVersion = getGameVersion();
-  const useVersionManagement = process.env.USE_VERSION_MANAGEMENT === "enabled";
 
-  if (useVersionManagement && apiVersion !== expectedApiVersion) {
+  if (expectedApiVersion && apiVersion !== expectedApiVersion) {
     ctx.status = Status.BAD_REQUEST;
     ctx.body = {
       error: `Invalid API version. Expected: ${expectedApiVersion}, Recieved: ${apiVersion}`,
@@ -26,6 +25,5 @@ export const apiVersion = async (ctx: Context, next: Next) => {
     return;
   }
 
-  // If the API version is valid, continue to the next middleware
   await next();
 };
