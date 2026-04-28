@@ -39,11 +39,15 @@ package
       
       override public function TickFast(param1:Event = null) : void
       {
+         super.TickFast(param1);
+         if(!this._tickFastAllowed)
+         {
+            return;
+         }
          if(_animLoaded && !animContainer.visible)
          {
             this.setLightFromRelationship(BASE.loadObject["relationship"]);
          }
-         super.TickFast(param1);
          AnimFrame();
       }
    }

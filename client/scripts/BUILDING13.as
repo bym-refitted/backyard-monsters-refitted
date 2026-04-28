@@ -38,6 +38,11 @@ package
       
       override public function TickFast(param1:Event = null) : void
       {
+         super.TickFast(param1);
+         if(!this._tickFastAllowed)
+         {
+            return;
+         }
          if(GLOBAL._render && _animLoaded && _countdownBuild.Get() + _countdownUpgrade.Get() == 0 && _inProduction != "" && _productionStage.Get() == 1 && _canFunction)
          {
             if(GLOBAL._render && _animLoaded && _countdownBuild.Get() + _countdownUpgrade.Get() == 0 && _canFunction)

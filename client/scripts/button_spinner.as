@@ -2,10 +2,13 @@ package
 {
    import flash.display.MovieClip;
    import flash.events.Event;
+   import flash.utils.getTimer;
 
    [Embed(source="/_assets/assets.swf", symbol="button_spinner")]
    public dynamic class button_spinner extends MovieClip
    {
+      private var lastTick:int;
+
       public function button_spinner()
       {
          super();
@@ -15,7 +18,12 @@ package
 
       public function Tick(e:Event):void
       {
-         rotation += 4;
+         var now:int = getTimer();
+         if (this.lastTick)
+         {
+            rotation += 4 * GLOBAL.LegacyVisualFrameScale(now - this.lastTick);
+         }
+         this.lastTick = now;
       }
 
       private function onRemoved(e:Event):void

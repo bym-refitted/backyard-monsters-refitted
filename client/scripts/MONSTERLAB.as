@@ -227,6 +227,10 @@ package
       override public function TickFast(param1:Event = null) : void
       {
          super.TickFast(param1);
+         if(!this._tickFastAllowed)
+         {
+            return;
+         }
          if(_upgrading && GLOBAL._render && _countdownBuild.Get() + _countdownUpgrade.Get() == 0)
          {
             if((GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD || GLOBAL.mode == "help" || GLOBAL.mode == "view") && this._frameNumber % 3 == 0 && CREEPS._creepCount == 0)

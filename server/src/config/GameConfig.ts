@@ -33,6 +33,12 @@ export const devConfig = {
   debugMode: process.env.ENV === Env.PROD ? false : false,
 
   /*
+   * Client display FPS cap sent during /init.
+   * Gameplay timing remains fixed client-side; this controls presentation only.
+   */
+  clientFpsCap: Number(process.env.CLIENT_FPS_CAP) || 40,
+
+  /*
    * Inserts a sandbox test base into the database, with all buildings placed.
    * Must be set before creating a new record.
    */

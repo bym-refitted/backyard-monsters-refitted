@@ -24,6 +24,8 @@ package
       private var m_tick:int;
       
       private var m_isAttacking:Boolean;
+
+      private var m_lastEnterFrame:int = -1;
       
       public function GuardTower()
       {
@@ -45,6 +47,11 @@ package
       
       override protected function onEnterFrame(param1:Event) : void
       {
+         if(this.m_lastEnterFrame == GLOBAL._frameNumber)
+         {
+            return;
+         }
+         this.m_lastEnterFrame = GLOBAL._frameNumber;
          if(!_mcHit.parent)
          {
             return;

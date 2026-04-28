@@ -6,7 +6,7 @@
 		"output": "bin/bymr-local.swf",
 		"target-player": "11.0",
 		"swf-version": 13,
-		"default-frame-rate": 40,
+		"default-frame-rate": 360,
 		"default-background-color": "#FFFFFF",
 		"default-size": {
 			"width": 760,

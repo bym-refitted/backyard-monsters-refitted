@@ -18,6 +18,8 @@ package com.monsters.siege.weapons
        
       
       public var hose:VacuumHose;
+
+      private var m_lastEnterFrame:int = -1;
       
       public function Vacuum()
       {
@@ -223,6 +225,11 @@ package com.monsters.siege.weapons
       
       protected function onEnterFrame(param1:Event) : void
       {
+         if(this.m_lastEnterFrame == GLOBAL._frameNumber)
+         {
+            return;
+         }
+         this.m_lastEnterFrame = GLOBAL._frameNumber;
          if(this.hose)
          {
             this.hose.tick();

@@ -293,7 +293,23 @@ package
 
       private static var _mr2BuildingProps:Array = null;
 
-      public static const k_STAGE_FPS:uint = 24;
+      public static const LEGACY_FRAME_RATE:uint = 40;
+
+      public static const COMBAT_SIM_RATE:uint = 80;
+
+      public static const MIN_STAGE_FRAME_RATE:Number = 1;
+
+      public static const MAX_STAGE_FRAME_RATE:Number = 1000;
+
+      public static const DEFAULT_STAGE_FRAME_RATE:Number = LEGACY_FRAME_RATE;
+
+      private static const DEFAULT_COMBAT_LOOPS:int = 2;
+
+      private static const MAX_LEGACY_TICKS_PER_FRAME:int = 4;
+
+      private static const MAX_LEGACY_VISUAL_FRAME_SCALE:Number = 10;
+
+      public static var requestedStageFrameRate:Number = DEFAULT_STAGE_FRAME_RATE;
 
       public static var _fps:int;
 
@@ -363,7 +379,9 @@ package
 
       public static var _maxLoops:int = 800;
 
-      public static var _loopsBanked:int = 0;
+      public static var _loopsBanked:Number = 0;
+
+      private static var _legacyTicksBanked:Number = 0;
 
       public static var lastTime:Number;
 
@@ -456,6 +474,52 @@ package
          super();
       }
 
+      public static function NormalizeStageFrameRate(param1:* = null):Number
+      {
+         var _loc2_:Number = DEFAULT_STAGE_FRAME_RATE;
+         if (param1 !== null && param1 !== undefined && String(param1).length > 0)
+         {
+            _loc2_ = Number(param1);
+         }
+         if (isNaN(_loc2_) || _loc2_ <= 0)
+         {
+            _loc2_ = DEFAULT_STAGE_FRAME_RATE;
+         }
+         if (_loc2_ < MIN_STAGE_FRAME_RATE)
+         {
+            _loc2_ = MIN_STAGE_FRAME_RATE;
+         }
+         if (_loc2_ > MAX_STAGE_FRAME_RATE)
+         {
+            _loc2_ = MAX_STAGE_FRAME_RATE;
+         }
+         return _loc2_;
+      }
+
+      public static function ApplyStageFrameRate(param1:Stage, param2:* = null):Number
+      {
+         requestedStageFrameRate = NormalizeStageFrameRate(param2);
+         if (param1)
+         {
+            param1.frameRate = requestedStageFrameRate;
+         }
+         return requestedStageFrameRate;
+      }
+
+      public static function LegacyVisualFrameScale(param1:Number):Number
+      {
+         var _loc2_:Number = param1 * LEGACY_FRAME_RATE / 1000;
+         if (isNaN(_loc2_) || _loc2_ < 0)
+         {
+            return 0;
+         }
+         if (_loc2_ > MAX_LEGACY_VISUAL_FRAME_SCALE)
+         {
+            return MAX_LEGACY_VISUAL_FRAME_SCALE;
+         }
+         return _loc2_;
+      }
+
       /*
        * Initializes the game by loading server configuration data.
        * If the server response contains a `debugMode` property, it enables AI design mode
@@ -475,6 +539,10 @@ package
                   GLOBAL.versionMismatch = !!serverData.versionMismatch;
                   GLOBAL.eventDispatcher.dispatchEvent(new Event("initError"));
                   return;
+               }
+               if (serverData.hasOwnProperty("fpsCap"))
+               {
+                  ApplyStageFrameRate(stage, serverData.fpsCap);
                }
                GLOBAL.LanguageSetup();
                if (serverData.hasOwnProperty("debugMode"))
@@ -824,10 +892,14 @@ package
          {
             setMode(infernoToDefaultMode(baseMode));
          }
-         _fps = 40;
+         _fps = LEGACY_FRAME_RATE;
          _FPSframecount = 0;
          _FPSarray = [];
          _FPStimestamp = 0;
+         _loops = DEFAULT_COMBAT_LOOPS;
+         _loopsBanked = 0;
+         _legacyTicksBanked = 0;
+         lastTime = 0;
          ImageCache.prependImagePath = GLOBAL._storageURL;
          MapRoom3AssetCache.instance.Load();
          var tileSet:Array = MapRoom3TileSetManager.DEFAULT_TILE_SET;
@@ -1312,164 +1384,97 @@ package
 
       public static function TickFast(param1:Event):void
       {
-         var _loc2_:int = 0;
+         var _loc2_:Number = NaN;
          var _loc3_:Number = NaN;
-         var _loc4_:Number = NaN;
+         var _loc4_:int = 0;
          var _loc5_:int = 0;
          var _loc6_:int = 0;
-         var _loc7_:int = 0;
-         var _loc8_:int = 0;
-         var _loc9_:int = 0;
-         var _loc10_:Vector.<Object> = null;
-         var _loc11_:Vector.<Object> = null;
-         var _loc12_:Vector.<Object> = null;
-         var _loc13_:Bunker = null;
-         var _loc14_:BTRAP = null;
-         var _loc15_:BFOUNDATION = null;
          if (!isHalted)
          {
-            _loc2_ = int(getTimer());
-            SOUNDS.Tick();
-            MapRoomManager.instance.TickFast();
             if (_render)
             {
-               _loc3_ = Number(getTimer());
-               if ((_loc4_ = _loc3_ - lastTime) > TIME_ELAPSED_THRESHHOLD && !_aiDesignMode)
-               {
-                  LOGGER.Log("err", "TimeHax");
-                  ErrorMessage("Time Threshold Exceeded");
-               }
+               _loc2_ = Number(getTimer());
                if (lastTime)
                {
-                  _loopsBanked -= _loops;
-                  if (_loopsBanked < 0)
+                  _loc3_ = _loc2_ - lastTime;
+                  if (_loc3_ > TIME_ELAPSED_THRESHHOLD && !_aiDesignMode)
                   {
-                     _loopsBanked = 0;
+                     LOGGER.Log("err", "TimeHax");
+                     ErrorMessage("Time Threshold Exceeded");
                   }
-                  _loopsBanked += 2 / 25 * (_loc3_ - lastTime);
-                  _loops = _loopsBanked;
-                  if (_loops > _maxLoops)
+                  if (_loc3_ < 0)
                   {
-                     _loops = _maxLoops;
+                     _loc3_ = 0;
+                  }
+                  if (!MapRoomManager.instance.isOpen)
+                  {
+                     _loopsBanked += _loc3_ * COMBAT_SIM_RATE / 1000;
+                     if (_loopsBanked > _maxLoops)
+                     {
+                        _loopsBanked = _maxLoops;
+                     }
+                  }
+                  _legacyTicksBanked += _loc3_ * LEGACY_FRAME_RATE / 1000;
+                  if (_legacyTicksBanked > MAX_LEGACY_TICKS_PER_FRAME)
+                  {
+                     _legacyTicksBanked = MAX_LEGACY_TICKS_PER_FRAME;
                   }
                }
                else
                {
-                  _loops = 2;
+                  if (!MapRoomManager.instance.isOpen)
+                  {
+                     _loopsBanked += DEFAULT_COMBAT_LOOPS;
+                  }
+                  _legacyTicksBanked += 1;
                }
-               lastTime = _loc3_;
-               _loc5_ = int(getTimer());
+               lastTime = _loc2_;
                if (!MapRoomManager.instance.isOpen)
                {
-                  _loc7_ = 0;
-                  while (_loc7_ < _loops)
+                  _loc4_ = int(_loopsBanked);
+                  if (_loc4_ > _maxLoops)
                   {
-                     _render = false;
-                     if (_loc7_ == _loops - 1)
-                     {
-                        _render = true;
-                     }
-                     if (CREEPS._creepCount > 0 || Boolean(SiegeWeapons.activeWeapon))
-                     {
-                        CREEPS.Tick();
-                        _loc10_ = InstanceManager.getInstancesByClass(BTOWER);
-                        _loc11_ = InstanceManager.getInstancesByClass(BTRAP);
-                        _loc12_ = InstanceManager.getInstancesByClass(Bunker);
-                        for each (_loc15_ in _loc10_)
-                        {
-                           _loc15_.TickAttack();
-                        }
-                        for each (_loc14_ in _loc11_)
-                        {
-                           _loc14_.TickAttack();
-                        }
-                        for each (_loc13_ in _loc12_)
-                        {
-                           _loc13_.TickAttack();
-                        }
-                     }
-                     CREATURES.Tick();
-                     _loc9_ = _loc8_ = int(fastTickables.length - 1);
-                     while (_loc9_ >= 0)
-                     {
-                        fastTickables[_loc9_].tick();
-                        _loc9_--;
-                     }
-                     _loc6_ = 0;
-                     while (_loc6_ < CREATURES._guardianList.length)
-                     {
-                        if (Boolean(CREATURES._guardianList[_loc6_]) && CREATURES._guardianList[_loc6_].tick(1))
-                        {
-                           if (!BYMConfig.instance.RENDERER_ON)
-                           {
-                              MAP._BUILDINGTOPS.removeChild(CREATURES._guardianList[_loc6_].graphic);
-                           }
-                           CREATURES._guardianList[_loc6_].clearRasterData();
-                           if (CREATURES._guardianList[_loc6_] == CREATURES._guardian)
-                           {
-                              CREATURES._guardian = null;
-                           }
-                           else
-                           {
-                              CREATURES._guardianList.splice(_loc6_, 1);
-                           }
-                           _loc6_--;
-                        }
-                        _loc6_++;
-                     }
-                     PROJECTILES.Tick();
-                     FIREBALLS.Tick();
-                     _loc7_++;
+                     _loc4_ = _maxLoops;
                   }
-                  if (BYMConfig.instance.RENDERER_ON)
+                  _loops = _loc4_;
+                  _loc6_ = 0;
+                  while (_loc6_ < _loc4_)
+                  {
+                     RunCombatSimulationStep(_loc6_ == _loc4_ - 1);
+                     _loc6_++;
+                  }
+                  _loopsBanked -= _loc4_;
+                  if (_loopsBanked < 0)
+                  {
+                     _loopsBanked = 0;
+                  }
+                  if (BYMConfig.instance.RENDERER_ON && _loc4_ > 0)
                   {
                      _ROOT.stage.invalidate();
                   }
                }
-               ++ _frameNumber;
-               _loc2_ = int(getTimer());
-               if (!MapRoomManager.instance.isOpen)
+               else
                {
-                  WORKERS.Tick();
-                  EFFECTS.Tick();
-                  WMATTACK.Tick();
-                  MAPROOM.Tick();
-                  PATHING.Tick();
-                  Smoke.Tick();
-                  Fire.Tick();
-                  BASE.ShakeB();
-                  _player.tick();
+                  _loops = 0;
+                  _loopsBanked = 0;
                }
-               if (!TUTORIAL.hasFinished)
+               _loc5_ = int(_legacyTicksBanked);
+               if (_loc5_ > MAX_LEGACY_TICKS_PER_FRAME)
                {
-                  TUTORIAL.Tick();
+                  _loc5_ = MAX_LEGACY_TICKS_PER_FRAME;
                }
-               if (_flags.logfps)
+               _loc6_ = 0;
+               while (_loc6_ < _loc5_)
                {
-                  if (_FPSframecount == 40 * 60)
-                  {
-                     LogFPS();
-                  }
-                  else if (_FPSframecount > 80 && _FPSframecount % 40 == 0)
-                  {
-                     _fps = int(1000 / ((_loc2_ - _FPStimestamp) / 40));
-                     if (_FPStimestamp > 0)
-                     {
-                        _FPSarray.push( {"fps": _fps});
-                     }
-                     _FPStimestamp = _loc2_;
-                  }
+                  RunLegacyFrameTick();
+                  _loc6_++;
                }
-               else if (_FPSframecount % 40 == 0)
+               _legacyTicksBanked -= _loc5_;
+               if (_legacyTicksBanked < 0)
                {
-                  _fps = int(1000 / ((_loc2_ - _FPStimestamp) / 40));
-                  _FPStimestamp = _loc2_;
+                  _legacyTicksBanked = 0;
                }
-               _FPSframecount += 1;
-               if (_frameNumber % 3 == 0 && !BYMConfig.instance.RENDERER_ON)
-               {
-                  MAP.SortDepth();
-               }
+               UpdateFPSCounter(int(_loc2_));
             }
             else
             {
@@ -1478,9 +1483,132 @@ package
          }
          else
          {
-            lastTime = 0;
-            _loops = 4;
+            ResetTickTiming();
          }
+      }
+
+      private static function RunCombatSimulationStep(param1:Boolean):void
+      {
+         var _loc1_:int = 0;
+         var _loc2_:int = 0;
+         var _loc3_:Vector.<Object> = null;
+         var _loc4_:Vector.<Object> = null;
+         var _loc5_:Vector.<Object> = null;
+         var _loc6_:Bunker = null;
+         var _loc7_:BTRAP = null;
+         var _loc8_:BFOUNDATION = null;
+         _render = param1;
+         if (CREEPS._creepCount > 0 || Boolean(SiegeWeapons.activeWeapon))
+         {
+            CREEPS.Tick();
+            _loc3_ = InstanceManager.getInstancesByClass(BTOWER);
+            _loc4_ = InstanceManager.getInstancesByClass(BTRAP);
+            _loc5_ = InstanceManager.getInstancesByClass(Bunker);
+            for each (_loc8_ in _loc3_)
+            {
+               _loc8_.TickAttack();
+            }
+            for each (_loc7_ in _loc4_)
+            {
+               _loc7_.TickAttack();
+            }
+            for each (_loc6_ in _loc5_)
+            {
+               _loc6_.TickAttack();
+            }
+         }
+         CREATURES.Tick();
+         _loc2_ = int(fastTickables.length - 1);
+         while (_loc2_ >= 0)
+         {
+            fastTickables[_loc2_].tick();
+            _loc2_--;
+         }
+         _loc1_ = 0;
+         while (_loc1_ < CREATURES._guardianList.length)
+         {
+            if (Boolean(CREATURES._guardianList[_loc1_]) && CREATURES._guardianList[_loc1_].tick(1))
+            {
+               if (!BYMConfig.instance.RENDERER_ON)
+               {
+                  MAP._BUILDINGTOPS.removeChild(CREATURES._guardianList[_loc1_].graphic);
+               }
+               CREATURES._guardianList[_loc1_].clearRasterData();
+               if (CREATURES._guardianList[_loc1_] == CREATURES._guardian)
+               {
+                  CREATURES._guardian = null;
+               }
+               else
+               {
+                  CREATURES._guardianList.splice(_loc1_, 1);
+               }
+               _loc1_--;
+            }
+            _loc1_++;
+         }
+         PROJECTILES.Tick();
+         FIREBALLS.Tick();
+      }
+
+      private static function RunLegacyFrameTick():void
+      {
+         SOUNDS.Tick();
+         MapRoomManager.instance.TickFast();
+         ++_frameNumber;
+         if (!MapRoomManager.instance.isOpen)
+         {
+            WORKERS.Tick();
+            EFFECTS.Tick();
+            WMATTACK.Tick();
+            MAPROOM.Tick();
+            PATHING.Tick();
+            Smoke.Tick();
+            Fire.Tick();
+            BASE.ShakeB();
+            _player.tick();
+         }
+         if (!TUTORIAL.hasFinished)
+         {
+            TUTORIAL.Tick();
+         }
+         if (_frameNumber % 3 == 0 && !BYMConfig.instance.RENDERER_ON)
+         {
+            MAP.SortDepth();
+         }
+      }
+
+      private static function UpdateFPSCounter(param1:int):void
+      {
+         if (_flags.logfps)
+         {
+            if (_FPSframecount == LEGACY_FRAME_RATE * 60)
+            {
+               LogFPS();
+            }
+            else if (_FPSframecount > COMBAT_SIM_RATE && _FPSframecount % LEGACY_FRAME_RATE == 0)
+            {
+               _fps = int(1000 / ((param1 - _FPStimestamp) / LEGACY_FRAME_RATE));
+               if (_FPStimestamp > 0)
+               {
+                  _FPSarray.push( {"fps": _fps});
+               }
+               _FPStimestamp = param1;
+            }
+         }
+         else if (_FPSframecount % LEGACY_FRAME_RATE == 0)
+         {
+            _fps = int(1000 / ((param1 - _FPStimestamp) / LEGACY_FRAME_RATE));
+            _FPStimestamp = param1;
+         }
+         _FPSframecount += 1;
+      }
+
+      private static function ResetTickTiming():void
+      {
+         lastTime = 0;
+         _loops = 4;
+         _loopsBanked = 0;
+         _legacyTicksBanked = 0;
       }
 
       public static function LogFPS():void

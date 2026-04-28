@@ -85,6 +85,10 @@ package
       override public function TickFast(param1:Event = null) : void
       {
          super.TickFast(param1);
+         if(!this._tickFastAllowed)
+         {
+            return;
+         }
          if(_animLoaded && !GLOBAL._catchup && (this._blend > 0 || _animTick > 2) && this._frameNumber % 2 == 0)
          {
             this.AnimFrame();

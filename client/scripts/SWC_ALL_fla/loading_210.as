@@ -2,10 +2,13 @@ package SWC_ALL_fla
 {
    import flash.display.MovieClip;
    import flash.events.Event;
+   import flash.utils.getTimer;
 
    [Embed(source="/_assets/assets.swf", symbol="SWC_ALL_fla.loading_210")]
    public dynamic class loading_210 extends MovieClip
    {
+      private var lastTick:int;
+
       public function loading_210()
       {
          super();
@@ -15,7 +18,12 @@ package SWC_ALL_fla
 
       public function Tick(e:Event):void
       {
-         rotation -= 12;
+         var now:int = getTimer();
+         if (this.lastTick)
+         {
+            rotation -= 12 * GLOBAL.LegacyVisualFrameScale(now - this.lastTick);
+         }
+         this.lastTick = now;
       }
 
       private function onRemoved(e:Event):void
