@@ -87,9 +87,9 @@ export const updateNeighbourData = async (cachedNeighbours: NeighbourData[], bas
     const specialProtection = isProtected && neighbourSave.protected === sevenDayExpiry;
 
     // TODO:
-    // 1. Add AttackPermission.LEVEL_RESTRICTION if this neighbour is more than 5 levels above the attacker.
-    // 2. Add AttackPermission.VENGEANCE_MODE for breaking the level restriction if a low level attacked a high level.
-    // 3. Add AttackPermission.HIGHER_LEVEL if the neighbour is more than 5 levels above the attacker
+    // 1. Add AttackPermission.LEVEL_RESTRICTION if the neighbour is more than 5 levels below the attacker.
+    // 2. Add AttackPermission.HIGHER_LEVEL if the neighbour is more than 5 levels above the attacker
+    // 3. Add AttackPermission.VENGEANCE_MODE for breaking the level restriction if a low level attacked a high level.
     if (specialProtection) {
       neighbour.attackpermitted = AttackPermission.SPECIAL_PROTECTION;
     } else if (isProtected) {
