@@ -296,6 +296,8 @@ package
 
       private static var _addtionalLoadArguments:Array = [];
 
+      private static var _academy: ACADEMY = ACADEMY.getInstance();
+
       public function BASE()
       {
          super();
@@ -2244,7 +2246,7 @@ package
             if (isMainYard)
             {
                CREATURELOCKER.Tick();
-               ACADEMY.Tick();
+               _academy.Tick();
             }
             if (CREEPS._creepCount > 0)
             {
