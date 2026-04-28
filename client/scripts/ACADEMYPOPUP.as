@@ -153,8 +153,8 @@ package
       {
          var _loc1_:Array = CREATURELOCKER._creatures[_monsterID].trainingCosts[GLOBAL.player.m_upgrades[_monsterID].level - 1];
          var _loc2_:String = KEYS.Get(CREATURELOCKER._creatures[_monsterID].name);
-         var _loc3_:int = int(_loc1_[0]);
-         var _loc4_:int = int(_loc1_[1]);
+         var _loc3_:int = int(_loc1_[0].Get());
+         var _loc4_:int = int(_loc1_[1].Get());
          var _loc5_:int = STORE.GetTimeCost(_loc4_);
          var _loc6_:int = Math.ceil(Math.pow(Math.sqrt(_loc3_ / 2),0.75));
          _instantUpgradeCost = _loc5_ + _loc6_;
@@ -223,10 +223,10 @@ package
                bB.mcR1.visible = true;
                bB.mcR2.visible = true;
                bB.mcR3.visible = true;
-               bB.mcR3.tValue.htmlText = "<b><font color=\"#" + (_loc4_[0] > GLOBAL._resources.r3.Get() ? "FF0000" : "000000") + "\">" + GLOBAL.FormatNumber(_loc4_[0]) + "</font></b>";
+               bB.mcR3.tValue.htmlText = "<b><font color=\"#" + (_loc4_[0].Get() > GLOBAL._resources.r3.Get() ? "FF0000" : "000000") + "\">" + GLOBAL.FormatNumber(_loc4_[0].Get()) + "</font></b>";
                bB.mcR4.visible = true;
                bB.mcTime.visible = true;
-               bB.mcTime.tValue.htmlText = "<b>" + GLOBAL.ToTime(_loc4_[1]) + "</b>";
+               bB.mcTime.tValue.htmlText = "<b>" + GLOBAL.ToTime(_loc4_[1].Get()) + "</b>";
             }
             else if(_loc3_.status == KEYS.Get("acad_err_putty") || _loc3_.status == KEYS.Get("acad_err_sulfur"))
             {
@@ -237,10 +237,10 @@ package
                bB.mcR1.visible = true;
                bB.mcR2.visible = true;
                bB.mcR3.visible = true;
-               bB.mcR3.tValue.htmlText = "<b><font color=\"#" + (_loc4_[0] > GLOBAL._resources.r3.Get() ? "FF0000" : "000000") + "\">" + GLOBAL.FormatNumber(_loc4_[0]) + "</font></b>";
+               bB.mcR3.tValue.htmlText = "<b><font color=\"#" + (_loc4_[0].Get() > GLOBAL._resources.r3.Get() ? "FF0000" : "000000") + "\">" + GLOBAL.FormatNumber(_loc4_[0].Get()) + "</font></b>";
                bB.mcR4.visible = true;
                bB.mcTime.visible = true;
-               bB.mcTime.tValue.htmlText = "<b>" + GLOBAL.ToTime(_loc4_[1]) + "</b>";
+               bB.mcTime.tValue.htmlText = "<b>" + GLOBAL.ToTime(_loc4_[1].Get()) + "</b>";
                this.CalculateInstantCost();
                bA.bAction.Setup(KEYS.Get("btn_useshiny",{"v1":_instantUpgradeCost}));
                bA.bAction.removeEventListener(MouseEvent.CLICK,this.InstantMonsterUpgrade);
