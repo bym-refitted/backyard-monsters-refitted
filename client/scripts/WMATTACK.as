@@ -323,6 +323,21 @@ package
                }
             }
             t += 1;
+            
+            var isCheckTick:Boolean = t == 100;
+            var noTrojanHistory:Boolean = !_history["s1"];
+            var trojanNotPlaced:Boolean = !BUILDING27._exists;
+            var meetsLevelReq:Boolean = BASE._baseLevel >= 9;
+            var meetsPointsReq:Boolean = int(BASE._basePoints) + int(BASE._baseValue) > _trojanThreshold;
+
+            if (isCheckTick && BASE.isMainYard && noTrojanHistory && trojanNotPlaced && meetsLevelReq && meetsPointsReq) {
+               CUSTOMATTACKS.TrojanHorse();
+               if (BUILDING27._exists)
+               {
+                  _history["s1"] = [2,GLOBAL.Timestamp()];
+                  BASE.Save();
+               }
+            }
             if(_queued != null && !_inProgress)
             {
                if(!GLOBAL._catchup && !warningPopup && !_trojan && _queued.warned == 0 && !baseIsRepairing && BASE._isSanctuary <= GLOBAL.Timestamp() && _enabled && !activeEvent.EventActive() && !INFERNO_EMERGENCE_EVENT.ShouldRunEvent() && !PLANNER.isOpen())

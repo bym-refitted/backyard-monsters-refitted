@@ -30,6 +30,22 @@ package
          SetProps();
          if(GLOBAL.mode != "wmattack" && GLOBAL.mode != "wmview")
          {
+            if (GLOBAL._catchup)
+            {
+               GLOBAL._ROOT.addEventListener(Event.ENTER_FRAME, onCatchupEnd);
+            }
+            else
+            {
+               Render();
+            }
+         }
+      }
+
+      private function onCatchupEnd(e:Event) : void
+      {
+         if (!GLOBAL._catchup)
+         {
+            GLOBAL._ROOT.removeEventListener(Event.ENTER_FRAME, onCatchupEnd);
             Render();
          }
       }
