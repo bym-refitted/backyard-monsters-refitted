@@ -1,12 +1,12 @@
 import z from "zod";
 
-import { getFlags } from "../../../data/flags.js";
+import { getFlags } from "../../../game-data/flags.js";
 import { BaseMode, BaseType } from "../../../enums/Base.js";
 import { Status } from "../../../enums/StatusCodes.js";
 import { saveFailureErr } from "../../../errors/errors.js";
 import { Save } from "../../../models/save.model.js";
 import { User } from "../../../models/user.model.js";
-import { postgres } from "../../../server.js";
+import { postgres, redis } from "../../../server.js";
 import { FilterFrontendKeys } from "../../../utils/FrontendKey.js";
 import { getCurrentDateTime } from "../../../utils/getCurrentDateTime.js";
 import type { KoaController } from "../../../utils/KoaController.js";
@@ -44,6 +44,7 @@ export const updateSaved: KoaController = async (ctx) => {
   switch (type) {
     case BaseMode.BUILD:
       baseSave = await baseModeBuild(user, baseid);
+      redis.setex(`last-seen:main:${user.userid}`, 120, getCurrentDateTime().toString());
       break;
 
     case BaseMode.IVIEW:

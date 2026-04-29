@@ -2,10 +2,10 @@ import { Save } from "../../../models/save.model.js";
 import { postgres } from "../../../server.js";
 import { Tribe, Tribes } from "../../../enums/Tribes.js";
 import { calculateTribeLevel, minimumTribeLevels } from "./calculateTribeLevel.js";
-import { abunaki } from "../../../data/tribes/v2/abunaki.js";
-import { dreadnaught } from "../../../data/tribes/v2/dreadnaught.js";
-import { kozu } from "../../../data/tribes/v2/kozu.js";
-import { legionnaire } from "../../../data/tribes/v2/legionnaire.js";
+import { abunaki } from "../../../game-data/tribes/v2/abunaki.js";
+import { dreadnaught } from "../../../game-data/tribes/v2/dreadnaught.js";
+import { kozu } from "../../../game-data/tribes/v2/kozu.js";
+import { legionnaire } from "../../../game-data/tribes/v2/legionnaire.js";
 import type { RequiredEntityData } from "@mikro-orm/core";
 
 /**

@@ -140,6 +140,14 @@ export const baseUnderAttackErr = () =>
     isClientFriendly: false,
   });
 
+export const baseProtectedErr = () =>
+  new ClientSafeError({
+    message: "This base is currently under damage protection and cannot be attacked.",
+    status: Status.FORBIDDEN,
+    data: {},
+    isClientFriendly: false,
+  });
+
 export const userOnlineErr = () =>
   new ClientSafeError({
     message: "This player is currently online and cannot be attacked. Please try again later.",
@@ -170,5 +178,13 @@ export const townHallLevelErr = () =>
     status: Status.FORBIDDEN,
     data: {},
     isClientFriendly: true,
+  });
+
+export const truceActiveErr = () =>
+  new ClientSafeError({
+    message: "You have an active truce with this player and cannot attack them.",
+    status: Status.FORBIDDEN,
+    data: {},
+    isClientFriendly: false,
   });
 

@@ -11,7 +11,7 @@ import { FilterFrontendKeys } from "../../utils/FrontendKey.js";
 import { getCurrentDateTime } from "../../utils/getCurrentDateTime.js";
 import type { KoaController } from "../../utils/KoaController.js";
 import { logger } from "../../utils/logger.js";
-import { BaseSaveSchema } from "../../zod/BaseSaveSchema.js";
+import { BaseSaveSchema } from "../../schemas/BaseSaveSchema.js";
 import { academyHandler } from "../base/save/handlers/academyHandler.js";
 import { attackLootHandler } from "../base/save/handlers/attackLootHandler.js";
 import { buildingDataHandler } from "../base/save/handlers/buildingDataHandler.js";

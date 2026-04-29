@@ -19,6 +19,7 @@ import { isAttackActive } from "../../../../services/base/isAttackActive.js";
  */
 export const userCell = async (ctx: Context, cell: WorldMapCell, cellOwners: Map<number, User>) => {
   const currentUser: User = ctx.authUser;
+  const { lastSeen, truces } = ctx.state;
 
   const mine = currentUser.userid === cell.uid;
   const cellOwner = mine ? currentUser : cellOwners.get(cell.uid);
@@ -30,7 +31,6 @@ export const userCell = async (ctx: Context, cell: WorldMapCell, cellOwners: Map
 
   const homeCell = cell.base_type === MapRoomCell.HOMECELL;
     
-  const lastSeen = ctx.state.lastSeen;
   const online = homeCell && (lastSeen.get(cell.uid) ?? 0) >= currentTime - 60;
   const isUnderAttack = homeCell && isAttackActive(cellSave);
 
@@ -44,8 +44,10 @@ export const userCell = async (ctx: Context, cell: WorldMapCell, cellOwners: Map
 
   const isProtected = cellSave.protected > 0 && cellSave.protected > currentTime;
   const protectionExpired = cellSave.protected > 0 && cellSave.protected <= currentTime;
-    
+
   const damage = protectionExpired ? 0 : cellSave.damage;
+
+  const truceExpiry = mine ? undefined : truces.get(cellOwner.userid)?.expires_at;
 
   return {
     uid: cellOwner.userid,
@@ -57,8 +59,8 @@ export const userCell = async (ctx: Context, cell: WorldMapCell, cellOwners: Map
     v: cellSave.empirevalue,
     mine: mine ? 1 : 0,
     f: cellSave.flinger,
-     c: cellSave.catapult,
-    t: 0,
+    c: cellSave.catapult,
+    t: truceExpiry,
     n: cellOwner.username,
     fr: 0,
     p: isProtected ? 1 : 0,
@@ -69,6 +71,6 @@ export const userCell = async (ctx: Context, cell: WorldMapCell, cellOwners: Map
     lo: locked,
     dm: damage,
     pic_square: cellOwner.pic_square,
-    im: cellOwner.pic_square
+    im: cellOwner.pic_square,
   };
 };

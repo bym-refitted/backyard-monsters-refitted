@@ -1,5 +1,5 @@
 import type { Context } from "koa";
-import { storeItems } from "../../../../data/store/storeItems.js";
+import { storeItems } from "../../../../game-data/store/storeItems.js";
 import { Save } from "../../../../models/save.model.js";
 import { updateCredits } from "../../../../services/base/updateCredits.js";
 import { getCurrentDateTime } from "../../../../utils/getCurrentDateTime.js";

@@ -6,7 +6,7 @@ import { FilterFrontendKeys } from "../../utils/FrontendKey.js";
 import { emailUniqueErr, usernameUniqueErr } from "../../errors/errors.js";
 import { logger } from "../../utils/logger.js";
 import { Status } from "../../enums/StatusCodes.js";
-import { UserRegistrationSchema } from "../../zod/AuthSchemas.js";
+import { UserRegistrationSchema } from "../../schemas/AuthSchemas.js";
 import type { UserData } from "../../types/EntityData.js";
 import { BYMR_CDN } from "../../services/discord/fetchDiscordAvatar.js";
 

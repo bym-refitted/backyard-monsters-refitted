@@ -1,7 +1,7 @@
-import { User } from "../models/user.model.js";
-import { getCurrentDateTime } from "../utils/getCurrentDateTime.js";
+import { User } from "../../models/user.model.js";
+import { getCurrentDateTime } from "../getCurrentDateTime.js";
 
-export const infernoSandbox = (user?: User) => {
+export const infernoYardSandbox = (user?: User) => {
   return {
     type: "inferno",
     saveuserid: user?.userid,

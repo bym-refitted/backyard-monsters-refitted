@@ -1,12 +1,12 @@
 import { EnumYardType } from "../enums/EnumYardType.js";
 import type { SaveData } from "../types/EntityData.js";
-import { strongholds } from "../data/tribes/v3/strongholds.js";
-import { resources } from "../data/tribes/v3/resources.js";
-import { defenders } from "../data/tribes/v3/defenders.js";
-import { kozu } from "../data/tribes/v3/outposts/kozu.js";
-import { legionnaire } from "../data/tribes/v3/outposts/legionnaire.js";
-import { abunakki } from "../data/tribes/v3/outposts/abunakki.js";
-import { dreadnaught } from "../data/tribes/v3/outposts/dreadnaught.js";
+import { strongholds } from "../game-data/tribes/v3/strongholds.js";
+import { resources } from "../game-data/tribes/v3/resources.js";
+import { defenders } from "../game-data/tribes/v3/defenders.js";
+import { kozu } from "../game-data/tribes/v3/outposts/kozu.js";
+import { legionnaire } from "../game-data/tribes/v3/outposts/legionnaire.js";
+import { abunakki } from "../game-data/tribes/v3/outposts/abunakki.js";
+import { dreadnaught } from "../game-data/tribes/v3/outposts/dreadnaught.js";
 
 /**
  * The seed for cell generation. Changing this will produce a different cell layout.

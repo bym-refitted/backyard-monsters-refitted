@@ -7,7 +7,7 @@ import { authFailureErr } from "../../errors/errors.js";
 import { postgres } from "../../server.js";
 import { User } from "../../models/user.model.js";
 import { logger } from "../../utils/logger.js";
-import { ResetPasswordSchema } from "../../zod/AuthSchemas.js";
+import { ResetPasswordSchema } from "../../schemas/AuthSchemas.js";
 import { verifyJwtToken } from "../../middleware/auth.js";
 
 const { JsonWebTokenError, TokenExpiredError } = jwt;

@@ -2,7 +2,7 @@ import { Save } from "../../../models/save.model.js";
 import { Maproom } from "../../../models/maproom.model.js";
 import { User } from "../../../models/user.model.js";
 import { postgres } from "../../../server.js";
-import { MR1_TRIBES_MAP } from "../../../data/tribes/v1/index.js";
+import { MR1_TRIBES_MAP } from "../../../game-data/tribes/v1/index.js";
 import type { TribeData } from "../../../types/TribeData.js";
 
 /**

@@ -42,6 +42,8 @@ services:
       - DB_PASSWORD=${DB_PASSWORD:-dev12345}
       - SECRET_KEY=${SECRET_KEY:-secret}
       - REDIS_URL=redis://redis:6379
+      - CDN_URL=${CDN_URL:-}
+      - USE_VERSION_MANAGEMENT=${USE_VERSION_MANAGEMENT:-}
     networks:
       - bymr
     ports:
