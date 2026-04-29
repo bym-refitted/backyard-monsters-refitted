@@ -70,9 +70,11 @@ export enum Terrain {
  */
 export enum AttackPermission {
   ATTACKABLE = 1,
+  HIGHER_LEVEL = 2,
   LEVEL_RESTRICTION = 3,
   VENGEANCE_MODE = 4,
   DAMAGE_PROTECTION = 5,
   SPECIAL_PROTECTION = 6,
   UNDER_ATTACK = 7,
+  TRUCE_ACTIVE = 9,
 }

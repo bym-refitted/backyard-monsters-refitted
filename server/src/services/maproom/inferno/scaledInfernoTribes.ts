@@ -7,8 +7,8 @@ import { Save } from "../../../models/save.model.js";
 import { User } from "../../../models/user.model.js";
 import { postgres } from "../../../server.js";
 import { getCurrentDateTime } from "../../../utils/getCurrentDateTime.js";
-import { BaseSaveSchema } from "../../../zod/BaseSaveSchema.js";
-import { molochTribes } from "../../../data/tribes/inferno/molochTribes.js";
+import { BaseSaveSchema } from "../../../schemas/BaseSaveSchema.js";
+import { molochTribes } from "../../../game-data/tribes/inferno/molochTribes.js";
 
 type BaseSaveData = TypeOf<typeof BaseSaveSchema>;
 

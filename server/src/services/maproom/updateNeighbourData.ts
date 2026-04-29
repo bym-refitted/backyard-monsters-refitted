@@ -1,8 +1,10 @@
 import { Save } from "../../models/save.model.js";
 import { postgres } from "../../server.js";
 import { AttackPermission } from "../../enums/MapRoom.js";
+import { TruceStatus } from "../../enums/TruceStatus.js";
 import { getCurrentDateTime } from "../../utils/getCurrentDateTime.js";
 import { getLastSeen } from "./getLastSeen.js";
+import { getTruces } from "./getTruces.js";
 import { isAttackActive } from "../base/isAttackActive.js";
 import { calculateBaseLevel } from "../base/calculateBaseLevel.js";
 import type { NeighbourData } from "../../types/NeighbourData.js";
@@ -17,7 +19,9 @@ type Base = BaseType.MAIN | BaseType.INFERNO;
  */
 const NEIGHBOUR_SAVE_FIELDS = [
   "userid",
+  "baseid",
   "protected",
+  "createtime",
   "attackid",
   "attacks",
   "damage",
@@ -34,12 +38,12 @@ const NEIGHBOUR_SAVE_FIELDS = [
  * @param {Base.MAIN | Base.INFERNO} baseType - Which save type to query for live updates
  * @returns {Promise<NeighbourData[]>} - Updated neighbour data with current attack permissions
  */
-export const updateNeighbourData = async (cachedNeighbours: NeighbourData[], baseType: Base): Promise<NeighbourData[]> => {
+export const updateNeighbourData = async (cachedNeighbours: NeighbourData[], baseType: Base, currentUserId?: number): Promise<NeighbourData[]> => {
   if (!cachedNeighbours.length) return cachedNeighbours;
 
   const userIds = cachedNeighbours.map((neighbour) => neighbour.userid);
 
-  const [neighbourSaves, lastSeens] = await Promise.all([
+  const [neighbourSaves, lastSeens, truces] = await Promise.all([
     postgres.em.find(
       Save,
       { type: baseType, userid: { $in: userIds } },
@@ -47,6 +51,7 @@ export const updateNeighbourData = async (cachedNeighbours: NeighbourData[], bas
     ) as unknown as Promise<Save[]>,
 
     getLastSeen(userIds, baseType),
+    getTruces(currentUserId, userIds),
   ]);
 
   const saves = new Map<number, Save>();
@@ -78,11 +83,17 @@ export const updateNeighbourData = async (cachedNeighbours: NeighbourData[], bas
       needsFlush = true;
     }
 
-    // TODO: 
-    // 1. Add AttackPermission.LEVEL_RESTRICTION if this neighbour is more than 5 levels above the attacker.
-    // 2. Add AttackPermission.VENGEANCE_MODE for breaking the level restriction if a low level attacked a high level.
-    // 3. Add AttackPermission.SPECIAL_PROTECTION for players who just joined the Map.
-    if (isProtected) {
+    const sevenDays = 7 * 24 * 60 * 60;
+    const sevenDayExpiry = neighbourSave.createtime + sevenDays;
+    const specialProtection = isProtected && neighbourSave.protected === sevenDayExpiry;
+
+    // TODO:
+    // 1. Add AttackPermission.LEVEL_RESTRICTION if the neighbour is more than 5 levels below the attacker.
+    // 2. Add AttackPermission.HIGHER_LEVEL if the neighbour is more than 5 levels above the attacker
+    // 3. Add AttackPermission.VENGEANCE_MODE for breaking the level restriction if a low level attacked a high level.
+    if (specialProtection) {
+      neighbour.attackpermitted = AttackPermission.SPECIAL_PROTECTION;
+    } else if (isProtected) {
       neighbour.attackpermitted = AttackPermission.DAMAGE_PROTECTION;
     } else if (isUnderAttack && lastAttack) {
       neighbour.attackpermitted = AttackPermission.UNDER_ATTACK;
@@ -91,8 +102,21 @@ export const updateNeighbourData = async (cachedNeighbours: NeighbourData[], bas
       neighbour.attackpermitted = AttackPermission.ATTACKABLE;
     }
 
+    neighbour.baseid = neighbourSave.baseid;
     neighbour.level = calculateBaseLevel(neighbourSave.points, neighbourSave.basevalue);
     neighbour.saved = lastSeens.get(neighbour.userid) ?? 0;
+
+    const truce = truces.get(neighbour.userid);
+
+    if (!truce) return [neighbour];
+
+    neighbour.trucestate = truce.trucestate;
+    
+    if (truce.expires_at) neighbour.truceexpire = truce.expires_at - currentTime;
+    
+    if (truce.trucestate === TruceStatus.ACCEPTED) {
+      neighbour.attackpermitted = AttackPermission.TRUCE_ACTIVE;
+    }
 
     return [neighbour];
   });

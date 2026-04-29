@@ -1,5 +1,5 @@
 import type { Context, Next } from "koa";
-import { getApiVersion } from "../server.js";
+import { getGameVersion } from "../config/VersionManifestConfig.js";
 import { Status } from "../enums/StatusCodes.js";
 
 /**
@@ -14,11 +14,10 @@ import { Status } from "../enums/StatusCodes.js";
  * @returns {Promise<void>} - A promise that resolves when the middleware is complete.
  */
 export const apiVersion = async (ctx: Context, next: Next) => {
-  const apiVersion = ctx.params.apiVersion;
-  const expectedApiVersion = getApiVersion();
-  const useVersionManagement = process.env.USE_VERSION_MANAGEMENT === "enabled";
+  const apiVersion: string = ctx.params.apiVersion;
+  const expectedApiVersion = getGameVersion();
 
-  if (useVersionManagement && apiVersion !== expectedApiVersion) {
+  if (expectedApiVersion && apiVersion !== expectedApiVersion) {
     ctx.status = Status.BAD_REQUEST;
     ctx.body = {
       error: `Invalid API version. Expected: ${expectedApiVersion}, Recieved: ${apiVersion}`,
@@ -26,6 +25,5 @@ export const apiVersion = async (ctx: Context, next: Next) => {
     return;
   }
 
-  // If the API version is valid, continue to the next middleware
   await next();
 };

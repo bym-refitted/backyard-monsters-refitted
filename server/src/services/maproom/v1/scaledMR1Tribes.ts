@@ -6,9 +6,9 @@ import { Save } from "../../../models/save.model.js";
 import { User } from "../../../models/user.model.js";
 import { postgres } from "../../../server.js";
 import { getCurrentDateTime } from "../../../utils/getCurrentDateTime.js";
-import { BaseSaveSchema } from "../../../zod/BaseSaveSchema.js";
+import { BaseSaveSchema } from "../../../schemas/BaseSaveSchema.js";
 import { attackLootHandler } from "../../../controllers/base/save/handlers/attackLootHandler.js";
-import { MR1_TRIBES_MAP } from "../../../data/tribes/v1/index.js";
+import { MR1_TRIBES_MAP } from "../../../game-data/tribes/v1/index.js";
 
 type BaseSaveData = TypeOf<typeof BaseSaveSchema>;
 

@@ -1,9 +1,9 @@
 import { TribeScale } from "../../../enums/Tribes.js";
-import { legionnaire } from "../../../data/tribes/v1/legionnaire.js";
-import { kozu } from "../../../data/tribes/v1/kozu.js";
-import { abunaki } from "../../../data/tribes/v1/abunaki.js";
-import { dreadnaught } from "../../../data/tribes/v1/dreadnaught.js";
-import { tutorial } from "../../../data/tribes/v1/tutorial.js";
+import { legionnaire } from "../../../game-data/tribes/v1/legionnaire.js";
+import { kozu } from "../../../game-data/tribes/v1/kozu.js";
+import { abunaki } from "../../../game-data/tribes/v1/abunaki.js";
+import { dreadnaught } from "../../../game-data/tribes/v1/dreadnaught.js";
+import { tutorial } from "../../../game-data/tribes/v1/tutorial.js";
 import { Maproom } from "../../../models/maproom.model.js";
 import { Save } from "../../../models/save.model.js";
 import { User } from "../../../models/user.model.js";
@@ -81,7 +81,7 @@ export const createMR1Tribes = async (save: Save, tribes: MR1TribeScaleConfig) =
     scaledBaseIds.has(Number(tribe.baseid))
   );
 
-  // Respawn tribes destroyed more than 1 hour ago
+  // Respawn tribes destroyed more than 10 minutes ago
   for (const tribe of maproom.tribedata) {
     const canRespawn = tribe.destroyedAt && currentTime - tribe.destroyedAt > tenMinutes;
 

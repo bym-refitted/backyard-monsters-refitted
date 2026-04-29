@@ -3,7 +3,7 @@ import ormConfig from "../../mikro-orm.config.js";
 
 import { v4 as uuidv4 } from "uuid";
 import { MikroORM, type RequiredEntityData } from "@mikro-orm/core";
-import { getDefaultBaseData } from "../../data/getDefaultBaseData.js";
+import { getDefaultBaseData } from "../../game-data/getDefaultBaseData.js";
 import { BaseType } from "../../enums/Base.js";
 import { Save } from "../../models/save.model.js";
 import { User } from "../../models/user.model.js";

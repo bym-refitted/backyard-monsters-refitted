@@ -1,5 +1,4 @@
-import Koa, { type Context, type Next } from "koa";
-import Router from "@koa/router";
+import Koa, { type Next } from "koa";
 import bodyParser from "koa-bodyparser";
 import serve from "koa-static";
 import ormConfig from "./mikro-orm.config.js";
@@ -16,6 +15,7 @@ import { logMissingAssets, morganLogging } from "./middleware/morganLogging.js";
 import { corsCacheControl } from "./middleware/corsCacheControlSetup.js";
 import { Env } from "./enums/Env.js";
 import { initAnticheat } from "./scripts/anticheat/anticheat.js";
+import { initialize as initVersionManifest } from "./config/VersionManifestConfig.js";
 
 export const app = new Koa();
 app.proxy = true;
@@ -23,7 +23,6 @@ app.proxy = true;
 export const PORT = process.env.PORT || 3001;
 export const BASE_URL = process.env.BASE_URL;
 
-export const getApiVersion = () => "v1.6.1-beta";
 
 export const postgres = {} as {
   orm: MikroORM<PostgreSqlDriver>;
@@ -35,13 +34,7 @@ export const redis = new RedisClient(process.env.REDIS_URL);
 redis.onconnect = () => logger.info(`Connected to Redis server`);
 redis.onclose = (err) => logger.error(`Redis disconnected: ${err.message}`);
 
-// CORS & Cache Control
-app.use(corsCacheControl);
-
-// Entry point for all modules.
-const api = new Router();
-api.get("/", (ctx: Context) => (ctx.body = {}));
-
+// Initialize MikroORM, Redis, and start the Koa server
 (async () => {
   postgres.orm = await MikroORM.init<PostgreSqlDriver>(ormConfig);
   postgres.em = postgres.orm.em;
@@ -57,6 +50,8 @@ api.get("/", (ctx: Context) => (ctx.body = {}));
 
   await redis.connect();
 
+  app.use(corsCacheControl);
+
   app.use(
     bodyParser({
       enableTypes: ["json", "form"],
@@ -69,14 +64,10 @@ api.get("/", (ctx: Context) => (ctx.body = {}));
 
   // Logs
   app.use(logMissingAssets);
-
-  if (process.env.ENV !== Env.LOCAL) {
-    app.use(morganLogging);
-  }
-
-  app.use(processLanguagesFile);
+  if (process.env.ENV !== Env.LOCAL) app.use(morganLogging);
 
   // Serve static files
+  app.use(processLanguagesFile);
   app.use(serve("public/"));
 
   process.on("unhandledRejection", (reason, promise) => {
@@ -89,6 +80,7 @@ api.get("/", (ctx: Context) => (ctx.body = {}));
   app.use(router.routes());
   app.use(router.allowedMethods());
 
+  await initVersionManifest();
   await initAnticheat();
 
   app.listen(PORT, () => {

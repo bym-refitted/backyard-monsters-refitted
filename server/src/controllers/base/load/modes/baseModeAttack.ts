@@ -9,19 +9,20 @@ import { User } from "../../../../models/user.model.js";
 import { tribeSaveHandler } from "../../../../services/maproom/tribeSaveHandler.js";
 import { getCurrentDateTime } from "../../../../utils/getCurrentDateTime.js";
 import { validateRange } from "../../../../services/maproom/v2/validateRange.js";
-import {
-  generateNoise,
-  getTerrainHeight,
-} from "../../../../services/maproom/v2/generateMap.js";
 import { getGeneratedCells, cellKey } from "../../../../services/maproom/v3/generateCells.js";
 import { createAttackLog } from "../../../../services/base/createAttackLog.js";
 import { updateResources, Operation } from "../../../../services/base/updateResources.js";
 import { isAttackActive } from "../../../../services/base/isAttackActive.js";
-import { baseUnderAttackErr, userOnlineErr } from "../../../../errors/errors.js";
+import { baseUnderAttackErr, baseProtectedErr, userOnlineErr, truceActiveErr } from "../../../../errors/errors.js";
 import { redis } from "../../../../server.js";
-
-import { MR1_TRIBE_IDS } from "../../../../data/tribes/v1/index.js";
+import { isTruceActive } from "../../../../services/mail/isTruceActive.js";
+import { MR1_TRIBE_IDS } from "../../../../game-data/tribes/v1/index.js";
 import { registerAttacker } from "../../../../services/maproom/v1/registerAttacker.js";
+import type { BuildingData } from "../../../../types/BuildingData.js";
+import {
+  generateNoise,
+  getTerrainHeight,
+} from "../../../../services/maproom/v2/generateMap.js";
 
 export interface AttackDetails {
   fbid?: string;
@@ -60,12 +61,18 @@ export const baseModeAttack = async ({ user, baseid, mapversion, attackCost }: B
   if (!save) throw new Error(`Save not found for baseid: ${baseid}`);
 
   if (save.type !== BaseType.TRIBE) {
+    if (save.protected > getCurrentDateTime()) throw baseProtectedErr();
+
     if (isAttackActive(save)) throw baseUnderAttackErr();
 
     if (save.type === BaseType.MAIN) {
       const lastSeen = await redis.get(`last-seen:${BaseType.MAIN}:${save.userid}`);
       if (lastSeen && parseInt(lastSeen) >= getCurrentDateTime() - 60) throw userOnlineErr();
     }
+
+    const activeTruce = await isTruceActive(user.userid, save.saveuserid);
+    
+    if (activeTruce) throw truceActiveErr();
   }
 
   if (save.attacks.length > 3) save.attacks = save.attacks.slice(-2);
@@ -135,7 +142,31 @@ export const baseModeAttack = async ({ user, baseid, mapversion, attackCost }: B
   }
 
   const isMR1Tribe = mapversion === MapRoomVersion.V1 && save.type === BaseType.TRIBE;
-  
+
+  // Clean buildingdata for outposts:
+  // Strips building keys (cB/cU/prefab) for any building which should have finished:
+  // construction, upgrades or kit placements. Avoids serving outdated building states for outposts.
+  if (save.type === BaseType.OUTPOST && save.buildingdata) {
+    const currentTime = getCurrentDateTime();
+    const updatedBuildings: Record<string, BuildingData> = {};
+    let changed = false;
+
+    for (const [key, building] of Object.entries(save.buildingdata)) {
+      const cBExpired = building.cB && save.savetime + building.cB <= currentTime;
+      const cUExpired = building.cU && save.savetime + building.cU <= currentTime;
+
+      if (cBExpired || cUExpired) {
+        const { cB, cU, prefab, ...rest } = building;
+        updatedBuildings[key] = rest;
+        changed = true;
+      } else {
+        updatedBuildings[key] = building;
+      }
+    }
+
+    if (changed) save.buildingdata = updatedBuildings;
+  }
+
   if (!isMR1Tribe) postgres.em.persist(save);
 
   postgres.em.persist(userSave);

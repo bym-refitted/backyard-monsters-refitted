@@ -24,6 +24,7 @@ export const playerCell = async (ctx: Context, cell: WorldMapCell, cellOwners: M
   const [cellX, cellY] = [cell.x, cell.y];
 
   const currentUser: User = ctx.authUser;
+  const { lastSeen = new Map(), truces } = ctx.state;
 
   const mine = currentUser.userid === cell.uid;
   const cellOwner = mine ? currentUser : cellOwners.get(cell.uid);
@@ -59,13 +60,14 @@ export const playerCell = async (ctx: Context, cell: WorldMapCell, cellOwners: M
   if (homeCell) 
     isProtected = cellSave.protected > 0 && cellSave.protected > currentTime;
 
-  const lastSeen = ctx.state.lastSeen ?? new Map();
   const online = homeCell && (lastSeen.get(cell.uid) ?? 0) >= currentTime - 60;
   const isUnderAttack = homeCell && isAttackActive(cellSave);
 
   let locked = 0;
   if (online || isUnderAttack) locked = 1;
   if (mine) locked = 0;
+
+  const hasTruce = !mine && !!truces.get(cellOwner.userid);
 
   return {
     uid: cellOwner.userid,
@@ -85,7 +87,7 @@ export const playerCell = async (ctx: Context, cell: WorldMapCell, cellOwners: M
     fr: 0,
     p: isProtected ? 1 : 0,
     d: (cellSave?.damage ?? 0) >= 90 ? 1 : 0,
-    t: 0,
+    t: hasTruce ? 1 : 0,
     rel: mine ? EnumBaseRelationship.SELF : EnumBaseRelationship.ENEMY,
     pic_square: cellOwner.pic_square ?? undefined,
   };
