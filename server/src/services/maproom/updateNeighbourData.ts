@@ -19,6 +19,7 @@ type Base = BaseType.MAIN | BaseType.INFERNO;
  */
 const NEIGHBOUR_SAVE_FIELDS = [
   "userid",
+  "baseid",
   "protected",
   "createtime",
   "attackid",
@@ -101,6 +102,7 @@ export const updateNeighbourData = async (cachedNeighbours: NeighbourData[], bas
       neighbour.attackpermitted = AttackPermission.ATTACKABLE;
     }
 
+    neighbour.baseid = neighbourSave.baseid;
     neighbour.level = calculateBaseLevel(neighbourSave.points, neighbourSave.basevalue);
     neighbour.saved = lastSeens.get(neighbour.userid) ?? 0;
 
