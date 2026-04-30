@@ -303,6 +303,10 @@ package
       protected var imageData:Object;
       
       private var _lastBarIndex:int = -1;
+
+      protected var _tickFastAllowed:Boolean = true;
+
+      private var _legacyTickFastFrame:int = -1;
       
       public var _overlayOffset:Point;
       
@@ -1743,6 +1747,11 @@ package
       
       public function TickFast(param1:Event = null) : void
       {
+         this._tickFastAllowed = this._legacyTickFastFrame != GLOBAL._frameNumber;
+         if(this._tickFastAllowed)
+         {
+            this._legacyTickFastFrame = GLOBAL._frameNumber;
+         }
       }
       
       public function TickAttack() : void

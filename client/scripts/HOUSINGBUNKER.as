@@ -419,6 +419,11 @@ package
       
       override public function TickFast(param1:Event = null) : void
       {
+         super.TickFast(param1);
+         if(!this._tickFastAllowed)
+         {
+            return;
+         }
          ++this._frameNumber;
       }
       

@@ -2,10 +2,13 @@ package SWC_ALL_fla
 {
    import flash.display.MovieClip;
    import flash.events.Event;
+   import flash.utils.getTimer;
 
    [Embed(source="/_assets/assets.swf", symbol="SWC_ALL_fla.button_spinner_235")]
    public dynamic class button_spinner_235 extends MovieClip
    {
+      private var lastTick:int;
+
       public function button_spinner_235()
       {
          super();
@@ -15,10 +18,15 @@ package SWC_ALL_fla
 
       public function Tick(e:Event):void
       {
+         var now:int = getTimer();
          if (visible)
          {
-            rotation += 4;
+            if (this.lastTick)
+            {
+               rotation += 4 * GLOBAL.LegacyVisualFrameScale(now - this.lastTick);
+            }
          }
+         this.lastTick = now;
       }
 
       private function onRemoved(e:Event):void

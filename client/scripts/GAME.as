@@ -28,6 +28,8 @@ package
 
       public static var language:String = "";
 
+      public static var fpsCap:Number = GLOBAL.DEFAULT_STAGE_FRAME_RATE;
+
       private var _checkScreenSize:Boolean = true;
 
       private var _previousDistance:Number = 0;
@@ -88,8 +90,40 @@ package
          GLOBAL.CallJS("cc.enableMouseWheel");
       }
 
+      private function getLauncherParam(params:Object, name:String):String
+      {
+         var queryStart:int = 0;
+         var query:String = null;
+         var parts:Array = null;
+         var pair:Array = null;
+         var i:int = 0;
+         if (params && params[name] != undefined && params[name] != "")
+         {
+            return String(params[name]);
+         }
+         queryStart = loaderInfo.url.indexOf("?");
+         if (queryStart < 0)
+         {
+            return "";
+         }
+         query = loaderInfo.url.substr(queryStart + 1);
+         parts = query.split("&");
+         while (i < parts.length)
+         {
+            pair = String(parts[i]).split("=");
+            if (pair.length > 0 && pair[0] == name)
+            {
+               return pair.length > 1 ? String(pair[1]) : "";
+            }
+            i++;
+         }
+         return "";
+      }
+
       public function setLauncherVars(params:Object):void
       {
+         var requestedFpsCapParam:String = "";
+         var requestedFpsCap:Number = NaN;
          try
          {
             sharedObj = SharedObject.getLocal("bymr_data", "/");
@@ -105,6 +139,24 @@ package
                token = params.token;
                sharedObj.data.token = token;
             }
+            requestedFpsCapParam = this.getLauncherParam(params, "fpsCap");
+            if (requestedFpsCapParam != "")
+            {
+               requestedFpsCap = Number(requestedFpsCapParam);
+               fpsCap = GLOBAL.NormalizeStageFrameRate(requestedFpsCapParam);
+               if (!isNaN(requestedFpsCap) && requestedFpsCap > 0)
+               {
+                  sharedObj.data.fpsCap = fpsCap;
+               }
+            }
+            else if (sharedObj.data.fpsCap != undefined && sharedObj.data.fpsCap != "")
+            {
+               fpsCap = GLOBAL.NormalizeStageFrameRate(sharedObj.data.fpsCap);
+            }
+            else
+            {
+               fpsCap = GLOBAL.DEFAULT_STAGE_FRAME_RATE;
+            }
             sharedObj.flush();
          }
          catch (e:Error)
@@ -117,8 +169,16 @@ package
       {
          loaderInfo.uncaughtErrorEvents.addEventListener(UncaughtErrorEvent.UNCAUGHT_ERROR, this.uncaughtErrorThrown);
          setLauncherVars(loaderParams);
+         GLOBAL.ApplyStageFrameRate(stage, fpsCap);
          SWFProfiler.init(stage, this);
-         Security.allowDomain("*");
+         try
+         {
+            Security.allowDomain("*");
+         }
+         catch (securityError:SecurityError)
+         {
+            LOGGER.Log("err", "Security.allowDomain unavailable in this runtime: " + securityError.message);
+         }
          GLOBAL.init();
          GLOBAL._baseURL = urls._baseURL;
          GLOBAL._infBaseURL = urls.infbaseurl;

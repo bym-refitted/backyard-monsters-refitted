@@ -41,6 +41,10 @@ package
       override public function TickFast(param1:Event = null) : void
       {
          super.TickFast(param1);
+         if(!this._tickFastAllowed)
+         {
+            return;
+         }
          if(GLOBAL._render && this._frameNumber % 2 == 0 && CREEPS._creepCount == 0)
          {
             this.AnimFrame();

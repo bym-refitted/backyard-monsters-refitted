@@ -56,6 +56,10 @@ package
       override public function TickFast(param1:Event = null) : void
       {
          super.TickFast(param1);
+         if(!this._tickFastAllowed)
+         {
+            return;
+         }
          if(_animLoaded && _countdownBuild.Get() == 0 && this._frameNumber % 3 == 0)
          {
             if(_animTick != this._animTickTarget)

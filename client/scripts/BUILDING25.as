@@ -116,6 +116,10 @@ package
          var _loc2_:Number = NaN;
          var _loc3_:Number = NaN;
          super.TickFast(param1);
+         if(!this._tickFastAllowed)
+         {
+            return;
+         }
          ++_frameNumber;
          if(_frameNumber == 40)
          {

@@ -19,6 +19,8 @@ package
       public var _spewed:Boolean = false;
       
       public var _clicked:Boolean = false;
+
+      private var _lastSpewFrame:int = -1;
       
       public function BUILDING27()
       {
@@ -62,6 +64,11 @@ package
       public function Spew(param1:Event = null) : void
       {
          var _loc4_:int = 0;
+         if(param1 && this._lastSpewFrame == GLOBAL._frameNumber)
+         {
+            return;
+         }
+         this._lastSpewFrame = GLOBAL._frameNumber;
          ++this._spewNumber;
          var _loc2_:int = int(BASE._basePoints) + int(BASE._baseValue);
          var _loc3_:Number = 0.4;

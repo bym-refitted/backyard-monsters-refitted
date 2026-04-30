@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<application xmlns="http://ns.adobe.com/air/application/50.2">
+  <id>bymr.local</id>
+  <versionNumber>1.0.0</versionNumber>
+  <filename>Backyard Monsters Refitted Local</filename>
+  <name>Backyard Monsters Refitted Local</name>
+  <initialWindow>
+    <content>bin/bymr-local.swf</content>
+    <visible>true</visible>
+    <width>760</width>
+    <height>670</height>
+    <renderMode>direct</renderMode>
+  </initialWindow>
+</application>

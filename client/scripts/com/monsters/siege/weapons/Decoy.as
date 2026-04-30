@@ -43,6 +43,8 @@ package com.monsters.siege.weapons
       private var _attractedCreeps:Array;
       
       private var _loopingChannel:SoundChannel;
+
+      private var m_lastEnterFrame:int = -1;
       
       private var _isActive:Boolean;
       
@@ -344,6 +346,11 @@ package com.monsters.siege.weapons
       
       private function onEnterFrame(param1:Event) : void
       {
+         if(this.m_lastEnterFrame == GLOBAL._frameNumber)
+         {
+            return;
+         }
+         this.m_lastEnterFrame = GLOBAL._frameNumber;
          this.decoyGraphic.update();
          if(this._isActive)
          {

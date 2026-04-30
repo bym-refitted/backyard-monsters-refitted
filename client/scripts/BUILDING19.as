@@ -45,6 +45,11 @@ package
       
       override public function TickFast(param1:Event = null) : void
       {
+         super.TickFast(param1);
+         if(!this._tickFastAllowed)
+         {
+            return;
+         }
          if(!GLOBAL._catchup)
          {
             if(_animTick == 0 && MONSTERBAITER._attacking == 1 && health > 0)

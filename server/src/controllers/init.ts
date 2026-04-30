@@ -19,5 +19,8 @@ export const init: KoaController = async (ctx) => {
   }
 
   ctx.status = Status.OK;
-  ctx.body = { debugMode: devConfig.debugMode };
+  ctx.body = {
+    debugMode: devConfig.debugMode,
+    fpsCap: devConfig.clientFpsCap,
+  };
 };

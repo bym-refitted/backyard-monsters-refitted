@@ -26,6 +26,7 @@ package
    import flash.geom.Rectangle;
    import flash.net.URLRequest;
    import flash.text.TextFieldAutoSize;
+   import flash.utils.getTimer;
    import gs.*;
    import gs.easing.*;
    
@@ -50,6 +51,8 @@ package
       public var _siegeweapon:SIEGEWEAPONPOPUP;
       
       public var _buttonIcons:Array;
+
+      private var _spinnerTickTime:int;
       
       public var _descentDebuff:DescentDebuffPopup;
       
@@ -240,11 +243,18 @@ package
 
       private function onSpinnerTick(e:Event):void
       {
+         var now:int = getTimer();
+         var scale:Number = 0;
+         if (this._spinnerTickTime)
+         {
+            scale = GLOBAL.LegacyVisualFrameScale(now - this._spinnerTickTime);
+         }
+         this._spinnerTickTime = now;
          for each (var btn:* in this._buttonIcons)
          {
             if (btn && btn.mcSpinner && btn.mcSpinner.visible)
             {
-               btn.mcSpinner.rotation += 4;
+               btn.mcSpinner.rotation += 4 * scale;
             }
          }
       }

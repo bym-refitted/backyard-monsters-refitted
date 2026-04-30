@@ -39,7 +39,7 @@ services:
       - DB_HOST=db
       - DB_PORT=5432
       - DB_USER=${DB_USER:-postgres}
-      - DB_PASSWORD=${DB_PASSWORD:-dev12345}
+      - DB_PASSWORD=${DB_PASSWORD:-12Kellys!}
       - SECRET_KEY=${SECRET_KEY:-secret}
       - REDIS_URL=redis://redis:6379
       - CDN_URL=${CDN_URL:-}

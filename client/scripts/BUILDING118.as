@@ -86,6 +86,10 @@ package
          var _loc3_:int = 0;
          var _loc4_:Number = NaN;
          super.TickFast();
+         if(!this._tickFastAllowed)
+         {
+            return;
+         }
          if(this._gunballs.length > 0)
          {
             ++this._fireCount;
