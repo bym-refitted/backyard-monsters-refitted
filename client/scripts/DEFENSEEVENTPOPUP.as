@@ -38,6 +38,10 @@ package
          {
             popupnum = Math.floor(Math.random() * 3) + 1;
          }
+         else if(popupnum < 1 || popupnum > 3)
+         {
+            popupnum = 1;
+         }
          rsvpBtn.Setup(KEYS.Get("wmi_buttonpopup1"),false,0,0);
          rsvpBtn.addEventListener(MouseEvent.CLICK,this.rsvpDown);
          ImageCache.GetImageWithCallBack(SPECIALEVENT.BANNERIMAGE,bannerComplete);

@@ -92,8 +92,7 @@ const getInvasionPop = ({ current, start, end, extension }: InvasionPop) => {
   if (current < start) {
     if (daysUntilStart > 6) return 1;
     if (daysUntilStart > 3) return 2;
-    if (start - current < SECONDS_PER_DAY && start - current > 0) return 3;
-    return 0; // fallback
+    return 3;
   }
   if (current < end) return 4;
   if (current < extension) return 5;
