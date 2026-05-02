@@ -1,4 +1,4 @@
-package
+package gameloaders
 {
     import flash.display.Loader;
     import flash.display.MovieClip;
