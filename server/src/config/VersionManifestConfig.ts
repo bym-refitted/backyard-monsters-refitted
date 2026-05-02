@@ -1,7 +1,6 @@
 interface VersionManifest {
   currentGameVersion: string;
   currentAndroidVersion: string;
-  currentLauncherVersion: string;
   httpsWorked: boolean;
 }
 
