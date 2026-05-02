@@ -1,5 +1,5 @@
 import type { Context, Next } from "koa";
-import { getGameVersion } from "../config/VersionManifestConfig.js";
+import { getAndroidVersion, getGameVersion } from "../config/VersionManifestConfig.js";
 import { Status } from "../enums/StatusCodes.js";
 
 /**
@@ -15,12 +15,12 @@ import { Status } from "../enums/StatusCodes.js";
  */
 export const apiVersion = async (ctx: Context, next: Next) => {
   const apiVersion: string = ctx.params.apiVersion;
-  const expectedApiVersion = getGameVersion();
+  const validVersions = [getGameVersion(), getAndroidVersion()].filter(Boolean) as string[];
 
-  if (expectedApiVersion && apiVersion !== expectedApiVersion) {
+  if (validVersions.length > 0 && !validVersions.includes(apiVersion)) {
     ctx.status = Status.BAD_REQUEST;
     ctx.body = {
-      error: `Invalid API version. Expected: ${expectedApiVersion}, Recieved: ${apiVersion}`,
+      error: `Invalid API version. Expected one of: ${validVersions.join(", ")}, Received: ${apiVersion}`,
     };
     return;
   }
