@@ -1,19 +1,24 @@
-package gameloaders
+package
 {
     import flash.display.Loader;
+    import flash.display.LoaderInfo;
     import flash.display.MovieClip;
     import flash.display.Sprite;
     import flash.events.Event;
+    import flash.events.IOErrorEvent;
+    import flash.events.SecurityErrorEvent;
     import flash.events.TimerEvent;
     import flash.net.URLRequest;
     import flash.net.URLLoader;
+    import flash.text.TextField;
+    import flash.text.TextFieldAutoSize;
     import flash.utils.Timer;
 
     /**
      * This file is not used in this codebase, but is left here for reference on how the game loader works.
      * It is responsible for showing the loading screen, fetching the version manifest,
      * and then loading the appropriate game SWF based on the manifest data.
-     * 
+     *
      * This lives in a separate SWF file called "gameloader.swf" which is the initial entry point when the game is launched.
      */
     public class GAMELOADER extends Sprite
@@ -31,6 +36,7 @@ package gameloaders
 
         private var manifestData:Object;
         private var timerDone:Boolean = false;
+        private var _pendingURL:String;
 
         public function GAMELOADER()
         {
@@ -68,9 +74,12 @@ package gameloaders
             timer.addEventListener(TimerEvent.TIMER_COMPLETE, onTimerComplete);
             timer.start();
 
+            _pendingURL = CDN_URL + "versionManifest.json";
             var manifestLoader:URLLoader = new URLLoader();
             manifestLoader.addEventListener(Event.COMPLETE, onManifestLoaded);
-            manifestLoader.load(new URLRequest(CDN_URL + "versionManifest.json?v=" + Math.random()));
+            manifestLoader.addEventListener(IOErrorEvent.IO_ERROR, onIOError);
+            manifestLoader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, onSecurityError);
+            manifestLoader.load(new URLRequest(_pendingURL));
         }
 
         private function onTimerProgress(e:TimerEvent):void
@@ -90,12 +99,65 @@ package gameloaders
 
         private function onManifestLoaded(e:Event):void
         {
-            manifestData = JSON.parse(e.target.data);
+            try
+            {
+                manifestData = JSON.parse(e.target.data);
+            }
+            catch (err:Error)
+            {
+                showError(err.message, _pendingURL);
+                return;
+            }
 
             if (timerDone)
                 proceedWithManifest();
         }
 
+        private function onIOError(e:IOErrorEvent):void
+        {
+            var url:String = (e.target is LoaderInfo) ? LoaderInfo(e.target).url : _pendingURL;
+            showError(describeErrorID(e.errorID), url);
+        }
+
+        private function onSecurityError(e:SecurityErrorEvent):void
+        {
+            var url:String = (e.target is LoaderInfo) ? LoaderInfo(e.target).url : _pendingURL;
+            showError(describeErrorID(e.errorID), url);
+        }
+
+        /**
+         * Maps common Flash load error IDs to human-readable descriptions.
+         * Flash exposes only the numeric code via IOErrorEvent.text — descriptions are internal to the runtime.
+         *
+         * @param {int} id - The error ID from the event
+         * @returns {String} Human-readable description with the error code
+         */
+        private function describeErrorID(id:int):String
+        {
+            var desc:String;
+            switch (id)
+            {
+                case 2032:
+                    desc = "Stream Error (network failure or connection refused)";
+                    break;
+                case 2035:
+                    desc = "URL Not Found";
+                    break;
+                case 2048:
+                    desc = "Security sandbox violation";
+                    break;
+                case 2124:
+                    desc = "Loaded file is an unknown type";
+                    break;
+                default:
+                    desc = "Unexpected load error";
+                    break;
+            }
+            return "Error #" + id + ": " + desc;
+        }
+
+        // Android:
+        // var version:String = manifestData.currentAndroidVersion;
         private function proceedWithManifest():void
         {
             var version:String = manifestData.currentGameVersion;
@@ -107,13 +169,18 @@ package gameloaders
             loadGameSWF(versionSuffix);
         }
 
+        // Android:
+        // _pendingURL = CDN_URL + "swfs/bymr-android-" + versionSuffix + ".swf";
         private function loadGameSWF(versionSuffix:String):void
         {
             this._game = new Loader();
-            var url:String = CDN_URL + "swfs/bymr-stable-" + versionSuffix + ".swf";
-            var request:URLRequest = new URLRequest(url);
+            _pendingURL = CDN_URL + "swfs/bymr-stable-" + versionSuffix + ".swf";
+
+            var request:URLRequest = new URLRequest(_pendingURL);
 
             this._game.contentLoaderInfo.addEventListener(Event.COMPLETE, this.onComplete);
+            this._game.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, onIOError);
+            this._game.contentLoaderInfo.addEventListener(SecurityErrorEvent.SECURITY_ERROR, onSecurityError);
             this._game.load(request);
         }
 
@@ -127,6 +194,25 @@ package gameloaders
             addChild(this._game);
 
             Object(this._game.content).Data(this.urls, loaderParams);
+        }
+
+        private function showError(message:String, url:String):void
+        {
+            var tf:TextField = new TextField();
+            tf.autoSize = TextFieldAutoSize.LEFT;
+            tf.wordWrap = false;
+            tf.textColor = 0xFFFFFF;
+            tf.text = message + "\n" + url;
+            tf.x = 8;
+            tf.y = 8;
+
+            var banner:Sprite = new Sprite();
+            banner.graphics.beginFill(0xCC2222);
+            banner.graphics.drawRect(0, 0, stage.stageWidth, tf.height + 16);
+            banner.graphics.endFill();
+            banner.addChild(tf);
+
+            addChild(banner);
         }
     }
 }
