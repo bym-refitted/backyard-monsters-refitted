@@ -9,7 +9,7 @@
     <allowBrowserInvocation>false</allowBrowserInvocation>
 
     <initialWindow>
-        <content>android/apk/bymr-android.swf</content>
+        <content>android/apk/gameloader-android.swf</content>
         <systemChrome>standard</systemChrome>
         <fullScreen>true</fullScreen>
         <aspectRatio>landscape</aspectRatio>
