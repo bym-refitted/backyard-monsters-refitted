@@ -153,7 +153,8 @@ export const baseSave: KoaController = async (ctx) => {
     if (saveData.attackloot) {
       attackLootHandler(saveData.attackloot, userSave);
       if (baseSave.resources) {
-        updateResources(saveData.attackloot, baseSave.resources, Operation.SUBTRACT);
+        const { r1 = 0, r2 = 0, r3 = 0, r4 = 0 } = saveData.attackloot;
+        updateResources({ r1, r2, r3, r4 }, baseSave.resources, Operation.SUBTRACT);
         for (const key of ["r1", "r2", "r3", "r4"] as const) {
           if ((baseSave.resources[key] as number) < 0) baseSave.resources[key] = 0;
         }

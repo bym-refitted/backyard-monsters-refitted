@@ -123,8 +123,9 @@ export const infernoSave: KoaController = async (ctx) => {
 
             case SaveKeys.ATTACKLOOT:
               attackLootHandler(value, userSave, SaveKeys.IRESOURCES);
-              if (baseSave.resources) {
-                updateResources(value, baseSave.resources, Operation.SUBTRACT);
+              if (saveData.attackloot && baseSave.resources) {
+                const { r1 = 0, r2 = 0, r3 = 0, r4 = 0 } = saveData.attackloot;
+                updateResources({ r1, r2, r3, r4 }, baseSave.resources, Operation.SUBTRACT);
                 for (const key of ["r1", "r2", "r3", "r4"] as const) {
                   if ((baseSave.resources[key] as number) < 0) baseSave.resources[key] = 0;
                 }
