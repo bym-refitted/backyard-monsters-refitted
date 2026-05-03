@@ -32,12 +32,14 @@ package
    import flash.display.*;
    import flash.events.*;
    import flash.external.ExternalInterface;
+   import flash.system.Capabilities;
    import flash.geom.Point;
    import flash.geom.Rectangle;
    import flash.net.*;
    import flash.utils.*;
    import gs.TweenLite;
    import gs.easing.Cubic;
+   import com.monsters.enums.EnumPlayerType;
 
    public class GLOBAL
    {
@@ -2182,7 +2184,18 @@ package
          }
          if (UI_BOTTOM && UI_BOTTOM._missions && !UI_BOTTOM._missions._open)
          {
-            _SCREENHUD = new Point(_SCREEN.x, _SCREEN.y + _SCREEN.height - 30 - 0);
+            if (Capabilities.playerType == EnumPlayerType.DESKTOP)
+            {
+               _SCREENHUD = new Point(_SCREEN.x, UI_BOTTOM._missions.y);
+            }
+            else
+            {
+               _SCREENHUD = new Point(_SCREEN.x, _SCREEN.y + _SCREEN.height - 30 - 0);
+            }
+         }
+         if (Capabilities.playerType == EnumPlayerType.DESKTOP && UI_BOTTOM && UI_BOTTOM._missions && UI_BOTTOM._missions._open)
+         {
+            _SCREENHUD = new Point(_SCREEN.x, UI_BOTTOM._missions.y + UI_BOTTOM._missions.frame.y * UI_BOTTOM._missions.scaleY);
          }
          if (Chat._chatInited && Chat._bymChat && !Chat._bymChat._open)
          {

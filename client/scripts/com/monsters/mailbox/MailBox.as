@@ -51,6 +51,7 @@ package com.monsters.mailbox
             currentThread = null;
          }
          instance.addChild(instance.inbox);
+         instance.Resize();
       }
       
       public static function ShowThread(param1:Thread) : void
@@ -116,8 +117,19 @@ package com.monsters.mailbox
       
       public function Resize() : void
       {
-         this.x = 0;
-         this.y = 0;
+         if (Capabilities.playerType == EnumPlayerType.DESKTOP)
+         {
+            if (this.width > 0 && this.height > 0)
+            {
+               this.x = GLOBAL._SCREENCENTER.x - this.width * 0.5;
+               this.y = GLOBAL._SCREENCENTER.y - this.height * 0.5;
+            }
+         }
+         else
+         {
+            this.x = 0;
+            this.y = 0;
+         }
       }
 
       public function ScaleUp() : void

@@ -377,7 +377,7 @@ package com.monsters.maproom3
          this.m_RightMenuButtonsBar.x = int(GLOBAL._SCREEN.x + GLOBAL._SCREEN.width - this.m_RightMenuButtonsContainerBackground.width);
          if(UI_BOTTOM._missions != null && UI_BOTTOM._missions.frame != null)
          {
-            this.m_RightMenuButtonsBar.y = int(UI_BOTTOM._missions.y + UI_BOTTOM._missions.frame.y - this.m_RightMenuButtonsContainerBackground.height + 1);
+            this.m_RightMenuButtonsBar.y = int(UI_BOTTOM._missions.y + UI_BOTTOM._missions.frame.y * UI_BOTTOM._missions.scaleY - this.m_RightMenuButtonsContainerBackground.height + 1);
          }
       }
       

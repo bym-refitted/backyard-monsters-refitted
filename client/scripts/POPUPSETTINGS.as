@@ -3,9 +3,7 @@ package
    import flash.display.DisplayObject;
    import gs.TweenLite;
    import gs.easing.Quad;
-   import flash.system.Capabilities;
    import utils.DisplayScaler;
-   import com.monsters.enums.EnumPlayerType;
    
    public class POPUPSETTINGS
    {
@@ -40,20 +38,14 @@ package
       
       public static function ScaleUp(param1:DisplayObject) : void
       {
-         if (Capabilities.playerType == EnumPlayerType.DESKTOP)
-         {
-            DisplayScaler.scaleElement(param1);
-         }
-         else
-         {
-            param1.scaleX = 0.9;
-            param1.scaleY = 0.9;
-            TweenLite.to(param1,0.2,{
-               "scaleX":1,
-               "scaleY":1,
-               "ease":Quad.easeOut
-            });
-         }
+         var targetScale:Number = DisplayScaler.getUIScale();
+         param1.scaleX = targetScale * 0.9;
+         param1.scaleY = targetScale * 0.9;
+         TweenLite.to(param1,0.2,{
+            "scaleX":targetScale,
+            "scaleY":targetScale,
+            "ease":Quad.easeOut
+         });
       }
       
       public static function ScaleUpFromTopLeft(param1:DisplayObject) : void

@@ -20,6 +20,8 @@ package
    import flash.display.Loader;
    import flash.display.MovieClip;
    import flash.display.Sprite;
+   import utils.DisplayScaler;
+   import flash.system.Capabilities;
    import flash.events.Event;
    import flash.events.IOErrorEvent;
    import flash.events.MouseEvent;
@@ -28,13 +30,14 @@ package
    import flash.text.TextFieldAutoSize;
    import gs.*;
    import gs.easing.*;
+   import com.monsters.enums.EnumPlayerType;
    
    public class UI_TOP extends UI_TOP_CLIP
    {
       
       public static const CREATUREBUTTONOVER:String = "creatureButtonOver";
       
-      private var _uiScale:Number = 1.8;
+      private var _uiScale:Number = DisplayScaler.getUIScale();
       
       public var _popupWarning:bubblepopup4;
       
@@ -143,7 +146,10 @@ package
          var _loc1_:int = 0;
 
          mc.mcPoints.scaleX = mc.mcPoints.scaleY = _uiScale;
-         mcSpecialEvent.scaleX = mcSpecialEvent.scaleY = 1.5;
+         mcSpecialEvent.scaleX = mcSpecialEvent.scaleY = _uiScale;
+         mcProtected.scaleX = mcProtected.scaleY = _uiScale;
+         mcReinforcements.scaleX = mcReinforcements.scaleY = _uiScale;
+         mcBuffHolder.scaleX = mcBuffHolder.scaleY = _uiScale;
          
          mc.mcPoints.addEventListener(MouseEvent.MOUSE_OVER,this.InfoShow);
          mc.mcPoints.addEventListener(MouseEvent.MOUSE_OUT,this.InfoHide);
@@ -229,6 +235,8 @@ package
          addEventListener(Event.ENTER_FRAME, onSpinnerTick);
 
          mc.bEarn.scaleX = mc.bEarn.scaleY = _uiScale;
+         mc.bEarn.x *= _uiScale;
+         mc.bEarn.y = mc.mcR5.y;
          mc.bEarn.bAction.tLabel.htmlText = KEYS.Get("btn_earn");
          
          if(GLOBAL._flags.showFBCEarn == 1)
@@ -246,6 +254,8 @@ package
             mc.bEarn.visible = false;
          }
          mc.bDailyDeal.scaleX = mc.bDailyDeal.scaleY = _uiScale;
+         mc.bDailyDeal.x *= _uiScale;
+         mc.bDailyDeal.y = mc.mcR5.y;
          mc.bDailyDeal.tLabel.htmlText = KEYS.Get("btn_dailydeal");
          if(GLOBAL._flags.showFBCDaily == 1)
          {
@@ -313,6 +323,20 @@ package
          this._creatureButtonsMC.y = 180;
          this._creatureButtonsMC._mc.x = 2;
          this._creatureButtonsMC._mc.y = -6;
+         if (Capabilities.playerType == EnumPlayerType.DESKTOP)
+         {
+            this._creatureButtonsMC.scaleX = this._creatureButtonsMC.scaleY = _uiScale;
+            this._creatureButtonsMC.y = int(180 * _uiScale);
+            var _loc_i:int = 1;
+            while (_loc_i < 5)
+            {
+               mc["mcR" + _loc_i].scaleX = mc["mcR" + _loc_i].scaleY = _uiScale;
+               mc["mcR" + _loc_i].x = int(mc["mcR" + _loc_i].x * _uiScale);
+               mc["mcR" + _loc_i].y = int(mc["mcR" + _loc_i].y * _uiScale);
+               _loc_i++;
+            }
+            mc.mcPoints.scaleX = mc.mcPoints.scaleY = _uiScale;
+         }
          this._creatureButtons = [];
          if(!GLOBAL._attackersFlinger)
          {
@@ -333,7 +357,8 @@ package
             }
             _loc2_ = new Sprite();
             _loc2_.graphics.beginFill(16777215,1);
-            _loc2_.graphics.drawRect(0,22,200,GLOBAL._SCREEN.height - 476);
+            var _loc_maskH:Number = Capabilities.playerType == EnumPlayerType.DESKTOP ? GLOBAL._SCREEN.height / _uiScale - 247 : GLOBAL._SCREEN.height - 476;
+            _loc2_.graphics.drawRect(0,22,200,_loc_maskH);
             _loc2_.graphics.endFill();
             _loc2_.mouseEnabled = false;
             _loc2_.mouseChildren = false;
@@ -350,6 +375,12 @@ package
             mc.addChild(this._siegeweapon);
             this._siegeweapon.x = 442;
             this._siegeweapon.y = 20;
+            if (Capabilities.playerType == EnumPlayerType.DESKTOP)
+            {
+               this._siegeweapon.scaleX = this._siegeweapon.scaleY = _uiScale;
+               this._siegeweapon.x = int(442 * _uiScale);
+               this._siegeweapon.y = int(20 * _uiScale);
+            }
             this._siegeweapon.Setup(!GLOBAL.isInAttackMode);
          }
          if(GLOBAL._attackersCatapult > 0 && !BASE.isInfernoMainYardOrOutpost)
@@ -358,6 +389,12 @@ package
             mc.addChild(this._catapult);
             this._catapult.x = 350;
             this._catapult.y = 20;
+            if (Capabilities.playerType == EnumPlayerType.DESKTOP)
+            {
+               this._catapult.scaleX = this._catapult.scaleY = _uiScale;
+               this._catapult.x = int(350 * _uiScale);
+               this._catapult.y = int(20 * _uiScale);
+            }
             this._catapult.Setup(!GLOBAL.isInAttackMode);
          }
       }
@@ -425,7 +462,7 @@ package
          }
          if(_loc8_)
          {
-            this._creatureButtonsMC._mc._bottomBar.y = Math.min(GLOBAL._SCREEN.height - 450,_loc8_.y + _loc8_.height - this._creatureButtonsMC._mc._bottomBar.height * 0.8);
+            this._creatureButtonsMC._mc._bottomBar.y = Math.min(Capabilities.playerType == EnumPlayerType.DESKTOP ? GLOBAL._SCREEN.height / _uiScale - 225 : GLOBAL._SCREEN.height - 450,_loc8_.y + _loc8_.height - this._creatureButtonsMC._mc._bottomBar.height * 0.8);
          }
          return [_loc3_,_loc4_];
       }
@@ -461,7 +498,7 @@ package
          }
          if(_loc8_)
          {
-            this._creatureButtonsMC._mc._bottomBar.y = Math.min(GLOBAL._SCREEN.height - 450,_loc8_.y + _loc8_.height - this._creatureButtonsMC._mc._bottomBar.height * 0.8);
+            this._creatureButtonsMC._mc._bottomBar.y = Math.min(Capabilities.playerType == EnumPlayerType.DESKTOP ? GLOBAL._SCREEN.height / _uiScale - 225 : GLOBAL._SCREEN.height - 450,_loc8_.y + _loc8_.height - this._creatureButtonsMC._mc._bottomBar.height * 0.8);
          }
       }
       
@@ -490,36 +527,66 @@ package
       {
          var _loc2_:uint = 0;
          var _loc3_:uint = 0;
-         var buttonScale:Number = 2;
 
-         x = param1.x + 10;
-         y = param1.y + 15;
-         mcProtected.x = param1.width - 125;
-         mcReinforcements.x = param1.width - 125;
-         mcSpecialEvent.x = param1.width - 200;
-         mcBuffHolder.x = param1.width - 200;
-
-         if (GLOBAL.mode == GLOBAL.e_BASE_MODE.ATTACK || GLOBAL.mode == GLOBAL.e_BASE_MODE.WMATTACK)
+         x = param1.x + int(10 * _uiScale);
+         if (Capabilities.playerType == EnumPlayerType.DESKTOP)
          {
-            mcZoom.x = param1.width - 38 - 24;
-            mcFullscreen.x = param1.width - 38;
-            mcSound.x = param1.width - 38 - 24;
-            mcMusic.x = param1.width - 38;
-            mcSave.x = param1.width - 38 - 24;
+            y = param1.y + int(15 * _uiScale);
          }
          else
          {
-            mcZoom.scaleX = mcZoom.scaleY = buttonScale;
-            mcFullscreen.scaleX = mcFullscreen.scaleY = buttonScale;
-            mcSound.scaleX = mcSound.scaleY = buttonScale;
-            mcMusic.scaleX = mcMusic.scaleY = buttonScale;
-            mcSave.scaleX = mcSave.scaleY = buttonScale;
+            y = param1.y + 4;
+         }
+         mcProtected.x = param1.width - int(125 * _uiScale);
+         mcReinforcements.x = param1.width - int(125 * _uiScale);
+         mcSpecialEvent.x = param1.width - int(125 * _uiScale);
+         mcBuffHolder.x = param1.width - int(200 * _uiScale);
 
-            mcMusic.x = param1.width - 90;
-            mcSound.x = param1.width - 150;
-            mcFullscreen.x = param1.width - 210;
-            mcZoom.x = param1.width - 270;
-            mcSave.x = param1.width - 330;
+         if (GLOBAL.mode == GLOBAL.e_BASE_MODE.ATTACK || GLOBAL.mode == GLOBAL.e_BASE_MODE.WMATTACK)
+         {
+            mcZoom.x = param1.width - int(62 * _uiScale);
+            mcFullscreen.x = param1.width - int(38 * _uiScale);
+            mcSound.x = param1.width - int(62 * _uiScale);
+            mcMusic.x = param1.width - int(38 * _uiScale);
+            mcSave.x = param1.width - int(62 * _uiScale);
+            if (Capabilities.playerType == EnumPlayerType.DESKTOP)
+            {
+               mcZoom.scaleX = mcZoom.scaleY = _uiScale;
+               mcFullscreen.scaleX = mcFullscreen.scaleY = _uiScale;
+               mcSound.scaleX = mcSound.scaleY = _uiScale;
+               mcMusic.scaleX = mcMusic.scaleY = _uiScale;
+               mcSave.scaleX = mcSave.scaleY = _uiScale;
+               mcMusic.x = param1.width - int(45 * _uiScale);
+               mcSound.x = param1.width - int(75 * _uiScale);
+               mcFullscreen.x = param1.width - int(105 * _uiScale);
+               mcZoom.x = param1.width - int(135 * _uiScale);
+               mcSave.x = param1.width - int(165 * _uiScale);
+            }
+         }
+         else
+         {
+            if (Capabilities.playerType == EnumPlayerType.DESKTOP)
+            {
+               mcZoom.scaleX = mcZoom.scaleY = _uiScale;
+               mcFullscreen.scaleX = mcFullscreen.scaleY = _uiScale;
+               mcSound.scaleX = mcSound.scaleY = _uiScale;
+               mcMusic.scaleX = mcMusic.scaleY = _uiScale;
+               mcSave.scaleX = mcSave.scaleY = _uiScale;
+
+               mcMusic.x = param1.width - int(45 * _uiScale);
+               mcSound.x = param1.width - int(75 * _uiScale);
+               mcFullscreen.x = param1.width - int(105 * _uiScale);
+               mcZoom.x = param1.width - int(135 * _uiScale);
+               mcSave.x = param1.width - int(165 * _uiScale);
+            }
+            else
+            {
+               mcMusic.x = param1.width - 40;
+               mcSound.x = param1.width - 70;
+               mcFullscreen.x = param1.width - 100;
+               mcZoom.x = param1.width - 130;
+               mcSave.x = param1.width - 160;
+            }
          }
          if(this._descentDebuff)
          {
@@ -540,7 +607,8 @@ package
             }
             (this.m_creatureContainer.mask as Sprite).graphics.clear();
             (this.m_creatureContainer.mask as Sprite).graphics.beginFill(16777215,1);
-            (this.m_creatureContainer.mask as Sprite).graphics.drawRect(0,22,200,GLOBAL._SCREEN.height - 476);
+            var _loc_maskH2:Number = Capabilities.playerType == EnumPlayerType.DESKTOP ? GLOBAL._SCREEN.height / _uiScale - 247 : GLOBAL._SCREEN.height - 476;
+            (this.m_creatureContainer.mask as Sprite).graphics.drawRect(0,22,200,_loc_maskH2);
             (this.m_creatureContainer.mask as Sprite).graphics.endFill();
             this.m_creatureContainer.mask = this.m_creatureContainer.mask;
             this.m_scrollBar.checkResize();
@@ -780,7 +848,7 @@ package
             param1.scaleX = param1.scaleY = _uiScale;
 
             param1.x = -4 * _uiScale;
-            param1.y = _loc2_.y + 37;
+            param1.y = _loc2_.y + int(37 * _uiScale);
             this._daveClub = mc.addChild(param1);
             ++this.extraResourceRows;
             this.Update();
@@ -1075,7 +1143,7 @@ package
             {
                mc.bInvite.visible = BYMConfig.instance.INVITE_BUTTON;
             }
-            _loc8_ = this.extraResourceRows * this._RESOURCEBAR_HEIGHT;
+            _loc8_ = this.extraResourceRows * int(this._RESOURCEBAR_HEIGHT * _uiScale);
             this.SortButtonIcons(2,4,_loc8_);
             mc.bGift.visible = true;
             if((_loc7_ = POPUPS.QueueCount("gifts")) > 0)
@@ -1151,8 +1219,8 @@ package
                {
                   _loc12_ = mc.mcR4;
                }
-               this._daveClub.x = -4;
-               this._daveClub.y = _loc12_.y + 68;
+               this._daveClub.x = int(-4 * _uiScale);
+               this._daveClub.y = _loc12_.y + int(37 * _uiScale);
             }
          }
       }
@@ -1322,26 +1390,23 @@ package
       public function SortButtonIcons(columnsNum:int = 2, rowsPerCol:int = 4, initialYOffset:int = 0) : void
       {
          var startX:int = 9;
-         var startY:int = 195;
+         var startY:int = int(195 * _uiScale);
          var columnsCount:int = columnsNum;
          var rowsPerColumn:int = rowsPerCol;
-         var columnSpacing:int = 67;
-         var rowSpacing:int = 110;
+         var columnSpacing:int = int(67 * _uiScale);
+         var rowSpacing:int = int(55 * _uiScale);
          var yOffset:int = initialYOffset;
          var columnOffset:int = 0;
          var columnIndex:int = 0;
          var rowIndex:int = 0;
          var buttonIndex:int = 0;
-         var buttonScale:Number = 2;
+         var buttonScale:Number = _uiScale;
 
          if(MapRoomManager.instance.isInMapRoom2)
          {
-            yOffset += 250;
+            yOffset += int(35 * _uiScale);
          }
 
-         if (BASE.isMainYardInfernoOnly) {
-            yOffset += 180;
-         }
 
          while(buttonIndex < this._buttonIcons.length)
          {

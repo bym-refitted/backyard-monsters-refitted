@@ -7,8 +7,11 @@ package com.monsters.missions
    import flash.display.Shape;
    import flash.display.Sprite;
    import flash.events.MouseEvent;
+   import flash.system.Capabilities;
    import gs.TweenLite;
    import gs.easing.*;
+   import utils.DisplayScaler;
+   import com.monsters.enums.EnumPlayerType;
    
    public class UI_MISSIONMENU extends UI_MISSIONMENU_CLIP
    {
@@ -706,8 +709,18 @@ package com.monsters.missions
       
       public function Resize() : void
       {
-         x = GLOBAL._SCREEN.x + GLOBAL._SCREEN.width - this._Width;
-         y = GLOBAL._SCREEN.y + GLOBAL._SCREEN.height - 30;
+         if (Capabilities.playerType == EnumPlayerType.DESKTOP)
+         {
+            var uiScale:Number = DisplayScaler.getUIScale();
+            scaleX = scaleY = uiScale;
+            x = GLOBAL._SCREEN.x + GLOBAL._SCREEN.width - this._Width * uiScale;
+            y = GLOBAL._SCREEN.y + GLOBAL._SCREEN.height - int(30 * uiScale);
+         }
+         else
+         {
+            x = GLOBAL._SCREEN.x + GLOBAL._SCREEN.width - this._Width;
+            y = GLOBAL._SCREEN.y + GLOBAL._SCREEN.height - 30;
+         }
          if(this._open)
          {
             this.CheckMissionsStatus();
