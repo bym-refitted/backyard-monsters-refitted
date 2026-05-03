@@ -39,6 +39,7 @@ package
    import flash.utils.*;
    import gs.TweenLite;
    import gs.easing.Cubic;
+   import com.monsters.enums.EnumPlayerType;
 
    public class GLOBAL
    {
