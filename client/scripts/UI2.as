@@ -6,6 +6,8 @@ package
    import flash.display.MovieClip;
    import flash.display.StageDisplayState;
    import flash.events.Event;
+   import utils.DisplayScaler;
+   import flash.system.Capabilities;
    import flash.events.MouseEvent;
    import flash.geom.Rectangle;
    import flash.text.TextField;
@@ -14,6 +16,7 @@ package
    import flash.text.TextFormatAlign;
    import gs.*;
    import gs.easing.*;
+   import com.monsters.enums.EnumPlayerType;
    
    public class UI2
    {
@@ -58,6 +61,7 @@ package
       
       public static function Setup() : void
       {
+         DisplayScaler.init(GLOBAL._ROOT.stage);
          activeEvent = SPECIALEVENT.getActiveSpecialEvent();
 
          _tutorial = GLOBAL._layerUI.addChild(new MovieClip()) as MovieClip;
@@ -572,13 +576,29 @@ package
                {
                   _top.mcSave.visible = false;
                }
-               _loc1_ = 35;
-               for each(_loc2_ in _timers)
+               if (Capabilities.playerType == EnumPlayerType.DESKTOP)
                {
-                  if(_loc2_.visible)
+                  var uiScale:Number = DisplayScaler.getUIScale();
+                  _loc1_ = int(35 * uiScale);
+                  for each(_loc2_ in _timers)
                   {
-                     _loc2_.y = _loc1_;
-                     _loc1_ += 30;
+                     if(_loc2_.visible)
+                     {
+                        _loc2_.y = _loc1_;
+                        _loc1_ += int(_loc2_.height) + int(5 * uiScale);
+                     }
+                  }
+               }
+               else
+               {
+                  _loc1_ = 35;
+                  for each(_loc2_ in _timers)
+                  {
+                     if(_loc2_.visible)
+                     {
+                        _loc2_.y = _loc1_;
+                        _loc1_ += 30;
+                     }
                   }
                }
                updateZoom();
@@ -666,6 +686,7 @@ package
       
       public static function ResizeHandler(param1:Event = null) : void
       {
+         DisplayScaler.init(GLOBAL._ROOT.stage);
          var _loc4_:Rectangle = null;
          var _loc2_:int = GLOBAL._ROOT.stage.stageWidth;
          var _loc3_:int = GLOBAL.GetGameHeight();

@@ -23,6 +23,8 @@ package com.auth
     import flash.events.TimerEvent;
     import flash.net.SharedObject;
     import flash.geom.Rectangle;
+    import flash.system.Capabilities;
+    import com.monsters.enums.EnumPlayerType;
 
     // TODO: This file needs a complete refactor. It is currently very messy and hard to read.
     public class AuthForm extends Sprite
@@ -233,8 +235,19 @@ package com.auth
 
         private function centerContent():void
         {
-            contentContainer.x = 0;
-            contentContainer.y = 0;
+            if (Capabilities.playerType == EnumPlayerType.DESKTOP && stage)
+            {
+                var fitScale:Number = Math.min(stage.stageWidth / DESIGN_WIDTH, stage.stageHeight / DESIGN_HEIGHT);
+                contentContainer.scaleX = contentContainer.scaleY = fitScale;
+                contentContainer.x = DESIGN_WIDTH * (1 - fitScale) / 2;
+                contentContainer.y = DESIGN_HEIGHT * (1 - fitScale) / 2;
+            }
+            else
+            {
+                contentContainer.scaleX = contentContainer.scaleY = 1;
+                contentContainer.x = 0;
+                contentContainer.y = 0;
+            }
         }
 
         private function handleContentLoaded():void
@@ -408,13 +421,25 @@ package com.auth
             loadingContainer.addChild(loadingTitle);
             loadingContainer.addChild(errMessage);
 
-            var scale:Number = 2.2;
-            loadingContainer.scaleX = loadingContainer.scaleY = scale;
+            // On AIR, contentContainer is already scaled via centerContent() — don't double-scale.
+            if (Capabilities.playerType != EnumPlayerType.DESKTOP)
+            {
+                var scale:Number = 2.2;
+                loadingContainer.scaleX = loadingContainer.scaleY = scale;
+            }
 
             if (stage)
             {
-                loadingContainer.x = 0;
-                loadingContainer.y = 50;
+                if (Capabilities.playerType == EnumPlayerType.DESKTOP)
+                {
+                    loadingContainer.x = (DESIGN_WIDTH - contentWidth) / 2;
+                    loadingContainer.y = DESIGN_HEIGHT / 2 - 80;
+                }
+                else
+                {
+                    loadingContainer.x = 0;
+                    loadingContainer.y = 50;
+                }
             }
             else
             {

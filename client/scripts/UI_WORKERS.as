@@ -4,6 +4,9 @@ package
    import flash.display.DisplayObject;
    import flash.display.MovieClip;
    import flash.events.MouseEvent;
+   import flash.system.Capabilities;
+   import utils.DisplayScaler;
+   import com.monsters.enums.EnumPlayerType;
    
    public class UI_WORKERS
    {
@@ -53,8 +56,8 @@ package
                _maxWorkers = 1;
             }
  
-            var iconScale:Number = 2;
-            _workerMCOffset = 90;
+            var iconScale:Number = DisplayScaler.getUIScale();
+            _workerMCOffset = int(45 * iconScale);
 
             _loc1_ = 0;
             while(_loc1_ < _maxWorkers)
@@ -68,7 +71,7 @@ package
                   _loc2_ = new icon_worker();
                }
 
-               _loc2_.y = 80 + _loc1_ * _workerMCOffset;
+               _loc2_.y = int(20 * iconScale) + _loc1_ * _workerMCOffset;
                _loc2_.scaleX = _loc2_.scaleY = iconScale;
 
                _loc2_.mouseChildren = false;
@@ -200,8 +203,17 @@ package
          else if(_mc)
          {
             _mc.x = GLOBAL._SCREEN.x + GLOBAL._SCREEN.width - _workerMCOffset;
-            _loc1_ = !!UI2._wildMonsterBar ? 20 : 0;
-            _mc.y = GLOBAL._SCREEN.top + 50 + _loc1_ + 30 * UI2.TimersVisible();
+            if (Capabilities.playerType == EnumPlayerType.DESKTOP)
+            {
+               var iconScale:Number = DisplayScaler.getUIScale();
+               var wildBarOffset:int = !!UI2._wildMonsterBar ? int(20 * iconScale) : 0;
+               _mc.y = GLOBAL._SCREEN.top + int(50 * iconScale) + wildBarOffset + int(30 * iconScale) * UI2.TimersVisible();
+            }
+            else
+            {
+               _loc1_ = !!UI2._wildMonsterBar ? 20 : 0;
+               _mc.y = GLOBAL._SCREEN.top + 50 + _loc1_ + 30 * UI2.TimersVisible();
+            }
          }
       }
       

@@ -4,6 +4,9 @@ package
    import com.monsters.managers.InstanceManager;
    import flash.display.MovieClip;
    import flash.events.MouseEvent;
+   import flash.system.Capabilities;
+   import utils.DisplayScaler;
+   import com.monsters.enums.EnumPlayerType;
    
    public class BUILDINGSPOPUP extends BUILDINGSPOPUP_CLIP
    {
@@ -342,7 +345,16 @@ package
       
       public function Center() : void
       {
-         POPUPSETTINGS.AlignToUpperLeft(this);
+         if (Capabilities.playerType == EnumPlayerType.DESKTOP)
+         {
+            var scale:Number = DisplayScaler.getUIScale();
+            this.x = GLOBAL._SCREENCENTER.x - this.width * scale * 0.5;
+            this.y = GLOBAL._SCREENCENTER.y - 100 - this.height * scale * 0.5;
+         }
+         else
+         {
+            POPUPSETTINGS.AlignToUpperLeft(this);
+         }
       }
       
       public function ScaleUp() : void
