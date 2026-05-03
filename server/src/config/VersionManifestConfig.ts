@@ -1,6 +1,6 @@
 interface VersionManifest {
   currentGameVersion: string;
-  currentLauncherVersion: string;
+  currentAndroidVersion: string;
   httpsWorked: boolean;
 }
 
@@ -26,7 +26,7 @@ export const initialize = async (): Promise<void> => {
 };
 
 /**
- * Returns the current game version string, or null if version management is disabled.
+ * Returns the current desktop game version string, or null if version management is disabled.
  * e.g. "v1.6.1-beta"
  *
  * @returns {string | null}
@@ -34,4 +34,15 @@ export const initialize = async (): Promise<void> => {
 export const getGameVersion = (): string | null => {
   if (!manifest) return null;
   return `v${manifest.currentGameVersion}-beta`;
+};
+
+/**
+ * Returns the current Android game version string, or null if version management is disabled.
+ * e.g. "v1.0.0-beta"
+ *
+ * @returns {string | null}
+ */
+export const getAndroidVersion = (): string | null => {
+  if (!manifest) return null;
+  return `v${manifest.currentAndroidVersion}-beta`;
 };
