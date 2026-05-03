@@ -8,11 +8,12 @@ package
    import flash.display.Sprite;
    import flash.geom.Rectangle;
    import org.bytearray.display.ScaleBitmap;
+   import utils.DisplayScaler;
    
    public class UI_MENU extends Sprite
    {
        
-      public var menuScale:Number = 1.8;
+      public var menuScale:Number = DisplayScaler.getUIScale();
       
       public var woodmargin:int = 10;
       
@@ -169,7 +170,7 @@ package
             y = int(GLOBAL._SCREEN.y + GLOBAL._SCREEN.height - this.wood.height - 10);
             if(Boolean(UI_BOTTOM._missions) && Boolean(UI_BOTTOM._missions.frame))
             {
-               y = int(UI_BOTTOM._missions.y + UI_BOTTOM._missions.frame.y - this.wood.height);
+               y = int(UI_BOTTOM._missions.y + UI_BOTTOM._missions.frame.y * UI_BOTTOM._missions.scaleY - this.wood.height);
             }
          }
       }

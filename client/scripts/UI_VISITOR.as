@@ -12,6 +12,9 @@ package
    import flash.events.Event;
    import flash.events.MouseEvent;
    import flash.geom.Rectangle;
+   import flash.system.Capabilities;
+   import utils.DisplayScaler;
+   import com.monsters.enums.EnumPlayerType;
    
    public class UI_VISITOR extends UI_VISITOR_CLIP
    {
@@ -97,6 +100,11 @@ package
          }
          mc.bReturn.addEventListener(MouseEvent.CLICK,this.ReturnCB);
          mc.gotoAndStop(1);
+         if (Capabilities.playerType == EnumPlayerType.DESKTOP)
+         {
+            var _uiScale:Number = DisplayScaler.getUIScale();
+            mc.scaleX = mc.scaleY = _uiScale;
+         }
          this.Update();
       }
       
@@ -350,6 +358,14 @@ package
          else
          {
             mc.y = GLOBAL._SCREENHUD.y - (mc.mcBG.height + 10);
+         }
+         if (Capabilities.playerType == EnumPlayerType.DESKTOP)
+         {
+            mc.x = GLOBAL._SCREEN.x + GLOBAL._SCREEN.width - mc.mcBG.width * mc.scaleX - 10;
+            if (!GLOBAL._flags.viximo)
+            {
+               mc.y = GLOBAL._SCREENHUD.y - (mc.mcBG.height * mc.scaleY + 10);
+            }
          }
          var _loc1_:int = 4;
          while(_loc1_ > 0)

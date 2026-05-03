@@ -5,6 +5,9 @@ package com.monsters.maproom
    import flash.display.Sprite;
    import flash.events.Event;
    import flash.events.MouseEvent;
+   import flash.system.Capabilities;
+   import utils.DisplayScaler;
+   import com.monsters.enums.EnumPlayerType;
    
    public class MapRoom extends old_maproom
    {
@@ -46,6 +49,12 @@ package com.monsters.maproom
       {
          this.x = 0;
          this.y = 20;
+         if (Capabilities.playerType == EnumPlayerType.DESKTOP)
+         {
+            DisplayScaler.scaleElement(this);
+            this.x = GLOBAL._SCREENCENTER.x - (this.width / 2);
+            this.y = GLOBAL._SCREENCENTER.y - (this.height / 2);
+         }
          top = new Sprite();
          top.addChild(mvBtn);
          top.addChild(lvBtn);

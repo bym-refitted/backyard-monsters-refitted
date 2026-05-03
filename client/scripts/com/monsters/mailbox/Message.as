@@ -9,7 +9,10 @@ package com.monsters.mailbox
    import flash.events.KeyboardEvent;
    import flash.events.MouseEvent;
    import flash.events.TimerEvent;
+   import flash.system.Capabilities;
    import flash.utils.Timer;
+   import utils.DisplayScaler;
+   import com.monsters.enums.EnumPlayerType;
    
    public class Message extends Message_CLIPB
    {
@@ -85,7 +88,16 @@ package com.monsters.mailbox
       private function onAdd(param1:Event) : void
       {
          removeEventListener(Event.ADDED_TO_STAGE,this.onAdd);
-         this.y = -15;
+         if (Capabilities.playerType == EnumPlayerType.DESKTOP)
+         {
+            DisplayScaler.scaleElement(this);
+            this.x = GLOBAL._SCREENCENTER.x - this.width * 0.5;
+            this.y = GLOBAL._SCREENCENTER.y - this.height * 0.5;
+         }
+         else
+         {
+            this.y = -15;
+         }
          addEventListener(KeyboardEvent.KEY_DOWN,this.onEscapeListener);
          stage.addEventListener(FullScreenEvent.FULL_SCREEN,this.detectFS);
          this.detectFS();
@@ -252,6 +264,11 @@ package com.monsters.mailbox
       
       public function Resize() : void
       {
+         if (Capabilities.playerType == EnumPlayerType.DESKTOP)
+         {
+            this.x = GLOBAL._SCREENCENTER.x - this.width * 0.5;
+            this.y = GLOBAL._SCREENCENTER.y - this.height * 0.5;
+         }
       }
       
       private function onRemoved(param1:Event) : void

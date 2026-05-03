@@ -1821,6 +1821,7 @@ package
       
       public function FollowMouse() : void
       {
+         GLOBAL._buildingMoving = true;
          if(BYMConfig.instance.RENDERER_ON)
          {
             this.showFootprint(true);
@@ -1863,6 +1864,7 @@ package
       
       public function Cancel() : void
       {
+         GLOBAL._buildingMoving = false;
          if(GLOBAL._newBuilding === this)
          {
             this.clear();
@@ -1966,6 +1968,7 @@ package
                   return;
                }
             }
+            GLOBAL._buildingMoving = false;
             this._hasResources = false;
             this._hasWorker = false;
             ++BASE._buildingCount;

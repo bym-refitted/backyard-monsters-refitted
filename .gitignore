@@ -20,6 +20,7 @@ api-versioning
 
 # Android / mobile
 android/bymr.keystore
+android/build-android.sh
 android/apk/*
 
 android/apk/BYMRefitted.apk

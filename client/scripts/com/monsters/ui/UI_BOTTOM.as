@@ -140,6 +140,10 @@ package com.monsters.ui
       
       public static function Resize() : void
       {
+         if(_missions)
+         {
+            _missions.Resize();
+         }
          if(Boolean(_mc) && _mc._loaded)
          {
             _mc.Resize();
