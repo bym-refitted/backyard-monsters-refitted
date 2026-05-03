@@ -1,7 +1,6 @@
 interface VersionManifest {
   currentGameVersion: string;
   currentAndroidVersion: string;
-  httpsWorked: boolean;
 }
 
 let manifest: VersionManifest | null = null;
