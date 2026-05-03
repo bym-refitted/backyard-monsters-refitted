@@ -3694,7 +3694,7 @@
   "upgrading_to_map_room3": "Entrando en el Nuevo Mapa del Mundo",
   "str_healmons": "Curar a todos los monstruos",
   "str_healmons_desc": "Cura al instante #v1# monstruos ahora (los monstruos menores de 5 minutos serán gratis).",
-  "str_healnow_desc": "Ahorra #v1# - Termina de curar #v2# #v3# ahora.",
+  "str_healnow_desc": "Guarda #v1# - Termina de curar #v2# #v3# ahora.",
   "msg_moreresourcesheal": "<b>Necesitas #v1# más de Goo para curar.<\/b><br><br>¿Obtener el Goo y empezar a curar por #v2# Shiny?",
   "msg_juicegoo": "¿Exprimir #v1# monstruos por #v2# Goo?",
   "msg_juicemagma": "¿Exprimir #v1# monstruos por #v2# Magma?",
