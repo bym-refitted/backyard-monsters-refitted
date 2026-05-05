@@ -14,6 +14,7 @@ import { logger } from "../../utils/logger.js";
 import { BaseSaveSchema } from "../../schemas/BaseSaveSchema.js";
 import { academyHandler } from "../base/save/handlers/academyHandler.js";
 import { attackLootHandler } from "../base/save/handlers/attackLootHandler.js";
+import { updateResources, Operation } from "../../services/base/updateResources.js";
 import { buildingDataHandler } from "../base/save/handlers/buildingDataHandler.js";
 import { purchaseHandler } from "../base/save/handlers/purchaseHandler.js";
 import { resourcesHandler } from "../base/save/handlers/resourceHandler.js";
@@ -122,6 +123,13 @@ export const infernoSave: KoaController = async (ctx) => {
 
             case SaveKeys.ATTACKLOOT:
               attackLootHandler(value, userSave, SaveKeys.IRESOURCES);
+              if (saveData.attackloot && baseSave.resources) {
+                const { r1 = 0, r2 = 0, r3 = 0, r4 = 0 } = saveData.attackloot;
+                updateResources({ r1, r2, r3, r4 }, baseSave.resources, Operation.SUBTRACT);
+                for (const key of ["r1", "r2", "r3", "r4"] as const) {
+                  if ((baseSave.resources[key] as number) < 0) baseSave.resources[key] = 0;
+                }
+              }
               break;
               
             default:
