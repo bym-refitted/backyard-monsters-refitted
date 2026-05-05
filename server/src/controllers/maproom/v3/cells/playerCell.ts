@@ -78,7 +78,7 @@ export const playerCell = async (ctx: Context, cell: WorldMapCell, cellOwners: M
     x: cell.x,
     y: cell.y,
     i: altitude,
-    l: cell.base_type !== EnumYardType.PLAYER ? (structureLevel ?? playerLevel) : playerLevel,
+    l: cell.base_type !== EnumYardType.PLAYER ? structureLevel : playerLevel,
     fbid: "",
     pl: 0,
     r: range,
