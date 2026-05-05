@@ -53,7 +53,7 @@ export const getDefaultBaseData = (user: User, baseType: BaseType) => {
       r3max: 10000,
       r4max: 10000,
     },
-    krallen: {},
+    krallen: { lastShownTier: 0 },
     rewards: devConfig.unlockAllEventRewards
       ? {
           // Default event rewards
