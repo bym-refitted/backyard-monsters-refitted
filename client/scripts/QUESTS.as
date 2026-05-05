@@ -1872,7 +1872,7 @@ package
                   {
                      HOUSING.HousingStore(q.reward_creatureid,GLOBAL.townHall._position);
                   }
-                  value += CREATURES.GetProperty(q.reward_creatureid,"cResource");
+                  value += CREATURES.GetProperty(q.reward_creatureid,"cResource").Get();
                   z++;
                }
             }
@@ -2006,7 +2006,7 @@ package
                   {
                      HOUSING.HousingStore(q.reward_creatureid,GLOBAL.townHall._position);
                   }
-                  value += CREATURES.GetProperty(q.reward_creatureid,"cResource");
+                  value += CREATURES.GetProperty(q.reward_creatureid,"cResource").Get();
                   z++;
                }
             }

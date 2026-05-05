@@ -931,8 +931,8 @@ package com.monsters.maproom_advanced
                               this._monsterData.h[_loc5_][2].splice(0,1);
                               this._hpMonsterData.h[_loc5_][2].splice(0,1);
                            }
-                           this._monsterData.h[_loc5_] = [_loc10_,new SecNum(CREATURES.GetProperty(_loc10_,"cTime")),_loc8_];
-                           this._hpMonsterData.h[_loc5_] = [_loc10_,CREATURES.GetProperty(_loc10_,"cTime"),_loc9_];
+                           this._monsterData.h[_loc5_] = [_loc10_,new SecNum(CREATURES.GetProperty(_loc10_,"cTime").Get()),_loc8_];
+                           this._hpMonsterData.h[_loc5_] = [_loc10_,CREATURES.GetProperty(_loc10_,"cTime").Get(),_loc9_];
                            this._monsterData.hstage[_loc5_].Set(1);
                            this._hpMonsterData.hstage[_loc5_] = 1;
                            _loc2_ = false;
@@ -978,8 +978,8 @@ package com.monsters.maproom_advanced
                            _loc10_ = String(_loc8_[0][0]);
                            _loc8_[0][1].Add(-1);
                            _loc9_[0][1] -= 1;
-                           this._monsterData.h[_loc5_] = [_loc10_,new SecNum(CREATURES.GetProperty(_loc10_,"cTime")),_loc8_];
-                           this._hpMonsterData.h[_loc5_] = [_loc10_,CREATURES.GetProperty(_loc10_,"cTime"),_loc9_];
+                           this._monsterData.h[_loc5_] = [_loc10_,new SecNum(CREATURES.GetProperty(_loc10_,"cTime").Get()),_loc8_];
+                           this._hpMonsterData.h[_loc5_] = [_loc10_,CREATURES.GetProperty(_loc10_,"cTime").Get(),_loc9_];
                            if(_loc8_[0][1].Get() == 0)
                            {
                               _loc8_.splice(0,1);
@@ -1013,9 +1013,9 @@ package com.monsters.maproom_advanced
                }
                else if(Boolean(this._monsterData.hcc) && this._monsterData.hcc.length > 0)
                {
-                  this._monsterData.h[_loc5_] = [this._monsterData.hcc[0][0],new SecNum(CREATURES.GetProperty(this._monsterData.hcc[0][0],"cTime"))];
+                  this._monsterData.h[_loc5_] = [this._monsterData.hcc[0][0],new SecNum(CREATURES.GetProperty(this._monsterData.hcc[0][0],"cTime").Get())];
                   this._monsterData.hcc[0][1].Add(-1);
-                  this._hpMonsterData.h[_loc5_] = [this._hpMonsterData.hcc[0][0],CREATURES.GetProperty(this._hpMonsterData.hcc[0][0],"cTime")];
+                  this._hpMonsterData.h[_loc5_] = [this._hpMonsterData.hcc[0][0],CREATURES.GetProperty(this._hpMonsterData.hcc[0][0],"cTime").Get()];
                   this._hpMonsterData.hcc[0][1] -= 1;
                   if(this._monsterData.hcc[0][1].Get() <= 0)
                   {

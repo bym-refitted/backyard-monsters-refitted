@@ -44,11 +44,11 @@ package
             {
                if(BASE.isInfernoCreep(_monsterQueue[_loc3_][0]))
                {
-                  _loc2_[1].Add(CREATURES.GetProperty(_monsterQueue[_loc3_][0],"cResource") * _monsterQueue[_loc3_][1]);
+                  _loc2_[1].Add(CREATURES.GetProperty(_monsterQueue[_loc3_][0],"cResource").Get() * _monsterQueue[_loc3_][1]);
                }
                else
                {
-                  _loc2_[0].Add(CREATURES.GetProperty(_monsterQueue[_loc3_][0],"cResource") * _monsterQueue[_loc3_][1]);
+                  _loc2_[0].Add(CREATURES.GetProperty(_monsterQueue[_loc3_][0],"cResource").Get() * _monsterQueue[_loc3_][1]);
                }
                _loc3_++;
             }
@@ -180,7 +180,7 @@ package
                   _loc8_ = String(_monsterQueue[_loc7_][0]);
                   if(_loc2_ >= CREATURES.GetProperty(_loc8_,"cStorage") * _monsterQueue[_loc7_][1])
                   {
-                     _loc3_ += CREATURES.GetProperty(_loc8_,"cTime") * _monsterQueue[_loc7_][1];
+                     _loc3_ += CREATURES.GetProperty(_loc8_,"cTime").Get() * _monsterQueue[_loc7_][1];
                      _loc2_ -= CREATURES.GetProperty(_loc8_,"cStorage") * _monsterQueue[_loc7_][1];
                      if(_finishQueue[_loc8_])
                      {
@@ -193,7 +193,7 @@ package
                   }
                   else if(_loc2_ >= CREATURES.GetProperty(_loc8_,"cStorage"))
                   {
-                     _loc3_ += CREATURES.GetProperty(_loc8_,"cTime") * (_loc2_ / CREATURES.GetProperty(_loc8_,"cStorage"));
+                     _loc3_ += CREATURES.GetProperty(_loc8_,"cTime").Get() * (_loc2_ / CREATURES.GetProperty(_loc8_,"cStorage"));
                      if(_finishQueue[_loc8_])
                      {
                         _finishQueue[_loc8_] += _loc2_ / CREATURES.GetProperty(_loc8_,"cStorage");
@@ -309,7 +309,7 @@ package
             i = 0;
             while(i < building._monsterQueue.length)
             {
-               BASE.Fund(4,building._monsterQueue[i][1] * CREATURES.GetProperty(building._monsterQueue[i][0],"cResource"));
+               BASE.Fund(4,building._monsterQueue[i][1] * CREATURES.GetProperty(building._monsterQueue[i][0],"cResource").Get());
                i++;
             }
             building._monsterQueue = [];
