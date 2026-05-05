@@ -54,7 +54,7 @@ package
                this.NewWorld();
             }
          }
-         if(!GLOBAL._catchup && GLOBAL._render && _countdownUpgrade.Get() && _countdownUpgrade.Get() < 60 * 60 * 24 * 2)
+         if(GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD && !GLOBAL._catchup && GLOBAL._render && _countdownUpgrade.Get() && _countdownUpgrade.Get() < 60 * 60 * 24 * 2)
          {
             this.PopupUpgrade(2);
          }

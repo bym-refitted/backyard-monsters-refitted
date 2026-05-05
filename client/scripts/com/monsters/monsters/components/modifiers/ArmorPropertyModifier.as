@@ -16,13 +16,16 @@ package com.monsters.monsters.components.modifiers
          super(param1);
       }
       
+      // The old implementation multiplied armor values, which makes combined armor worse than either buff alone.
+      // The new formula compounds damage reductions, which is correct multiplicative stacking.
       override public function modify(param1:Number) : Number
       {
-         if(!param1)
-         {
-            return multiple;
-         }
-         return super.modify(param1);
+         // Original:
+         // if(!param1) return multiple;
+         // return super.modify(param1);
+
+         // New:
+         return 1 - (1 - param1) * (1 - multiple);
       }
    }
 }

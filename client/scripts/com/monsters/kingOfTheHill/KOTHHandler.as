@@ -52,6 +52,8 @@ package com.monsters.kingOfTheHill
       private var _tier:uint;
       
       private var _hudGraphic:KOTHHUDGraphic;
+
+      private var _lastShownTier:uint = 0;
       
       public function KOTHHandler()
       {
@@ -120,12 +122,13 @@ package com.monsters.kingOfTheHill
       private function checkQuotaPopups() : void
       {
          var _loc3_:Message = null;
-         var _loc1_:uint = this.getTier(GLOBAL.StatGet(this._LAST_LOOT_SCORE_LABEL));
+         var _loc1_:uint = this._lastShownTier;
          var _loc2_:uint = this.getTier(this._totalLoot);
          if(_loc2_ > _loc1_ && _loc2_ <= this._lootChangeMessages.length)
          {
             _loc3_ = new this._lootChangeMessages[_loc2_ - 1]();
             POPUPS.Push(new FrontPageGraphic(_loc3_));
+            this._lastShownTier = _loc2_;
          }
       }
       
@@ -263,6 +266,7 @@ package com.monsters.kingOfTheHill
          this._wins = param1.wins;
          this._totalLoot = param1.loot;
          this._timeToReset = param1.countdown;
+         this._lastShownTier = param1.lastShownTier || 0;
          if(this.hasWonPermanantly)
          {
             this._lootThresholds.push(GLOBAL._flags["krallen_special1_award_threshold"] - GLOBAL._flags["krallen_award_threshold"]);
@@ -313,9 +317,17 @@ package com.monsters.kingOfTheHill
       
       public function exportData() : Object
       {
-         GLOBAL.StatSet(this._LAST_LOOT_SCORE_LABEL,this._totalLoot,false);
-         GLOBAL.StatSet(this._LAST_TIER_LABEL,this._tier,false);
-         return null;
+         if(GLOBAL.mode != GLOBAL.e_BASE_MODE.BUILD || !BASE.isMainYard)
+         {
+            return null;
+         }
+         return {
+            "tier": this._tier,
+            "wins": this._wins,
+            "loot": isNaN(this._totalLoot) ? 0 : this._totalLoot,
+            "countdown": this._timeToReset,
+            "lastShownTier": this._lastShownTier
+         };
       }
       
       public function get totalLoot() : Number
