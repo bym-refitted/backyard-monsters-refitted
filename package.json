@@ -19,6 +19,9 @@
     "haxelib:swc:release": "cd client-hx && haxe Export/flash/haxe/release.hxml",
     "haxelib:swc:final": "cd client-hx && haxe Export/flash/haxe/final.hxml",
     "haxelib:copy": "cp client-hx/Export/flash/bin/client-hx.swc bin/client-hx.swc",
+
+    "haxelib:test": "cd client-hx && haxe -p src -p test --run com.bymr.tests.TestMain",
+
     "build": "bun run haxelib:build:debug",
 
     "assert-tools": "bun run scripts/assert-haxe.ts && bun run scripts/assert-lime.ts && bun run scripts/assert-openfl.ts"
