@@ -54,12 +54,6 @@ const getInfernoNeighbours: KoaController = async (ctx) => {
   const user: User = ctx.authUser;
   await postgres.em.populate(user, ["save", "infernosave"]);
 
-  if (!user.save?.worldid) {
-    ctx.status = Status.OK;
-    ctx.body = { error: 0, bases: [] };
-    return;
-  }
-
   const infernoMaproom = await postgres.em.findOne(InfernoMaproom, { userid: user.userid });
 
   if (!infernoMaproom) throw new Error("Inferno maproom not found.");

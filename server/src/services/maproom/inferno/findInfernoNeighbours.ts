@@ -17,9 +17,9 @@ import type { NeighbourData } from "../../../types/NeighbourData.js";
  * @returns {Promise<NeighbourData[]>} - Array of neighbour data suitable for caching
  */
 export const findInfernoNeighbours = async (user: User): Promise<NeighbourData[]> => {
-  const { infernosave, save } = user;
+  const { infernosave } = user;
 
-  if (!save?.worldid || !infernosave) return [];
+  if (!infernosave) return [];
 
   const userLevel = calculateBaseLevel(infernosave.points, infernosave.basevalue);
   const levelRange = 7;
