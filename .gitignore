@@ -19,6 +19,7 @@ CLAUDE.md
 api-versioning
 
 # Android / mobile
+android/build_android.sh
 android/bymr.keystore
 android/apk/BYMRefitted.apk
 
