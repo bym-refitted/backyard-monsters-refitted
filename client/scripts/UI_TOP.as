@@ -325,18 +325,11 @@ package
          this._creatureButtonsMC._mc.y = -6;
          if (Capabilities.playerType == EnumPlayerType.DESKTOP)
          {
-            this._creatureButtonsMC.scaleX = this._creatureButtonsMC.scaleY = _uiScale;
-            this._creatureButtonsMC.y = int(180 * _uiScale);
-            var _loc_i:int = 1;
-            while (_loc_i < 5)
-            {
-               mc["mcR" + _loc_i].scaleX = mc["mcR" + _loc_i].scaleY = _uiScale;
-               mc["mcR" + _loc_i].x = int(mc["mcR" + _loc_i].x * _uiScale);
-               mc["mcR" + _loc_i].y = int(mc["mcR" + _loc_i].y * _uiScale);
-               _loc_i++;
-            }
-            mc.mcPoints.scaleX = mc.mcPoints.scaleY = _uiScale;
+            mc.scaleX = mc.scaleY = _uiScale;
          }
+         if (mc.mcPoints.mcStar) mc.mcPoints.mcStar.visible = false;
+         if (mc.mcPoints.mcLevel) mc.mcPoints.mcLevel.visible = false;
+         if (mc.mcPoints.mcBar) mc.mcPoints.mcBar.visible = false;
          this._creatureButtons = [];
          if(!GLOBAL._attackersFlinger)
          {
@@ -375,12 +368,6 @@ package
             mc.addChild(this._siegeweapon);
             this._siegeweapon.x = 442;
             this._siegeweapon.y = 20;
-            if (Capabilities.playerType == EnumPlayerType.DESKTOP)
-            {
-               this._siegeweapon.scaleX = this._siegeweapon.scaleY = _uiScale;
-               this._siegeweapon.x = int(442 * _uiScale);
-               this._siegeweapon.y = int(20 * _uiScale);
-            }
             this._siegeweapon.Setup(!GLOBAL.isInAttackMode);
          }
          if(GLOBAL._attackersCatapult > 0 && !BASE.isInfernoMainYardOrOutpost)
@@ -389,12 +376,6 @@ package
             mc.addChild(this._catapult);
             this._catapult.x = 350;
             this._catapult.y = 20;
-            if (Capabilities.playerType == EnumPlayerType.DESKTOP)
-            {
-               this._catapult.scaleX = this._catapult.scaleY = _uiScale;
-               this._catapult.x = int(350 * _uiScale);
-               this._catapult.y = int(20 * _uiScale);
-            }
             this._catapult.Setup(!GLOBAL.isInAttackMode);
          }
       }

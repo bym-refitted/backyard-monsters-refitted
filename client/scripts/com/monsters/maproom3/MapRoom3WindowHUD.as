@@ -21,7 +21,10 @@ package com.monsters.maproom3
    import flash.text.TextFormat;
    import flash.text.TextFormatAlign;
    import org.bytearray.display.ScaleBitmap;
-   
+   import utils.DisplayScaler;
+   import flash.system.Capabilities;
+   import com.monsters.enums.EnumPlayerType;
+
    public class MapRoom3WindowHUD extends Sprite
    {
       
@@ -101,6 +104,10 @@ package com.monsters.maproom3
          var _loc9_:Vector.<Bookmark> = null;
          this.m_BookmarksPopup = new BookmarksPopup();
          super();
+         if(Capabilities.playerType == EnumPlayerType.DESKTOP)
+         {
+            this.scaleX = this.scaleY = DisplayScaler.getUIScale();
+         }
          this.m_ResourcesDisplay = new MapRoom3ResourcesDisplay();
          this.m_ResourcesDisplay.mouseEnabled = false;
          this.m_ResourcesDisplay.mouseChildren = false;
@@ -333,14 +340,16 @@ package com.monsters.maproom3
       
       private function PositionResourcesDisplay() : void
       {
-         this.m_ResourcesDisplay.x = GLOBAL._SCREEN.x;
-         this.m_ResourcesDisplay.y = GLOBAL._SCREEN.y;
+         var scale:Number = DisplayScaler.getUIScale();
+         this.m_ResourcesDisplay.x = GLOBAL._SCREEN.x / scale;
+         this.m_ResourcesDisplay.y = GLOBAL._SCREEN.y / scale;
       }
       
       private function PositionBookmarksBar() : void
       {
-         this.m_BookmarksBar.x = GLOBAL._SCREEN.x + GLOBAL._SCREEN.width * 0.5 - this.m_BookmarksBar.width * 0.5;
-         this.m_BookmarksBar.y = GLOBAL._SCREEN.y;
+         var scale:Number = DisplayScaler.getUIScale();
+         this.m_BookmarksBar.x = GLOBAL._SCREEN.x / scale + GLOBAL._SCREEN.width / scale * 0.5 - this.m_BookmarksBar.width * 0.5;
+         this.m_BookmarksBar.y = GLOBAL._SCREEN.y / scale;
          if(this.m_BookmarksBar.x < this.m_ResourcesDisplay.x + this.m_ResourcesDisplay.width)
          {
             this.m_BookmarksBar.x = this.m_ResourcesDisplay.x + this.m_ResourcesDisplay.width;
@@ -349,8 +358,9 @@ package com.monsters.maproom3
       
       private function PositionOptionsButtonBar() : void
       {
-         this.m_OptionButtonsBar.x = GLOBAL._SCREEN.x + GLOBAL._SCREEN.width - this.m_OptionButtonsBar.width - OPTION_BUTTONS_BAR_PADDING_RIGHT;
-         this.m_OptionButtonsBar.y = GLOBAL._SCREEN.y + OPTION_BUTTONS_BAR_PADDING_TOP;
+         var scale:Number = DisplayScaler.getUIScale();
+         this.m_OptionButtonsBar.x = GLOBAL._SCREEN.x / scale + GLOBAL._SCREEN.width / scale - this.m_OptionButtonsBar.width - OPTION_BUTTONS_BAR_PADDING_RIGHT;
+         this.m_OptionButtonsBar.y = GLOBAL._SCREEN.y / scale + OPTION_BUTTONS_BAR_PADDING_TOP;
       }
       
       public function PositionLeftMenuButtonsBar() : void
@@ -359,12 +369,13 @@ package com.monsters.maproom3
          {
             return;
          }
-         this.m_LeftMenuButtonsBar.x = int(GLOBAL._SCREEN.x);
+         var scale:Number = DisplayScaler.getUIScale();
+         this.m_LeftMenuButtonsBar.x = int(GLOBAL._SCREEN.x / scale);
          if(Chat._bymChat != null && Chat._bymChat.chatBox != null && Chat._bymChat.chatBox.background != null)
          {
-            this.m_LeftMenuButtonsBar.y = int(Chat._bymChat.y + Chat._bymChat.chatBox.y + Chat._bymChat.chatBox.background.y - this.m_LeftMenuButtonsContainerBackground.height);
+            this.m_LeftMenuButtonsBar.y = int((Chat._bymChat.y + Chat._bymChat.chatBox.y + Chat._bymChat.chatBox.background.y) / scale - this.m_LeftMenuButtonsContainerBackground.height);
          } else {
-            this.m_LeftMenuButtonsBar.y = int(GLOBAL._SCREEN.y + GLOBAL._SCREEN.height - this.m_LeftMenuButtonsContainerBackground.height);
+            this.m_LeftMenuButtonsBar.y = int(GLOBAL._SCREEN.y / scale + GLOBAL._SCREEN.height / scale - this.m_LeftMenuButtonsContainerBackground.height);
          }
       }
       
@@ -374,10 +385,11 @@ package com.monsters.maproom3
          {
             return;
          }
-         this.m_RightMenuButtonsBar.x = int(GLOBAL._SCREEN.x + GLOBAL._SCREEN.width - this.m_RightMenuButtonsContainerBackground.width);
+         var scale:Number = DisplayScaler.getUIScale();
+         this.m_RightMenuButtonsBar.x = int(GLOBAL._SCREEN.x / scale + GLOBAL._SCREEN.width / scale - this.m_RightMenuButtonsContainerBackground.width);
          if(UI_BOTTOM._missions != null && UI_BOTTOM._missions.frame != null)
          {
-            this.m_RightMenuButtonsBar.y = int(UI_BOTTOM._missions.y + UI_BOTTOM._missions.frame.y * UI_BOTTOM._missions.scaleY - this.m_RightMenuButtonsContainerBackground.height + 1);
+            this.m_RightMenuButtonsBar.y = int((UI_BOTTOM._missions.y + UI_BOTTOM._missions.frame.y * UI_BOTTOM._missions.scaleY) / scale - this.m_RightMenuButtonsContainerBackground.height + 1);
          }
       }
       

@@ -13,6 +13,9 @@ package
    import flash.display.MovieClip;
    import flash.display.Sprite;
    import flash.events.MouseEvent;
+   import flash.system.Capabilities;
+   import com.monsters.enums.EnumPlayerType;
+   import utils.DisplayScaler;
    
    public class HousingPersistentPopup extends HousingPersistentPopup_CLIP
    {
@@ -640,6 +643,7 @@ package
                   {
                      this.m_JuiceAllPopup = new PersistantJuiceAllPopup();
                      this.m_JuiceAllPopup.setup(this.m_strLastSelectedJuiced,this.juiceAllByType,this.closeJuiceAll);
+                     POPUPSETTINGS.ScaleUp(this.m_JuiceAllPopup);
                      POPUPS.Add(this.m_JuiceAllPopup,POPUPS.k_CENTER);
                      this.m_bShownPopup = true;
                   }
@@ -926,7 +930,16 @@ package
       
       public function ScaleUp() : void
       {
-         POPUPSETTINGS.ScaleUp(this);
+         if(Capabilities.playerType == EnumPlayerType.DESKTOP)
+         {
+            setChildIndex(bJuice, numChildren - 1);
+            setChildIndex(bClear, numChildren - 1);
+            setChildIndex(bHealAll, numChildren - 1);
+            setChildIndex(bTransfer, numChildren - 1);
+            setChildIndex(tJuicingText, numChildren - 1);
+            setChildIndex(tAscendText, numChildren - 1);
+            this.scaleX = this.scaleY = DisplayScaler.getUIScale();
+         }
       }
    }
 }

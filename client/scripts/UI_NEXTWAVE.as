@@ -3,6 +3,9 @@ package
    import com.monsters.ui.UI_BOTTOM;
    import flash.display.MovieClip;
    import flash.events.MouseEvent;
+   import flash.system.Capabilities;
+   import com.monsters.enums.EnumPlayerType;
+   import utils.DisplayScaler;
    
    public class UI_NEXTWAVE extends NEXTWAVEBAR_CLIP
    {
@@ -65,8 +68,18 @@ package
       {
          if(UI_BOTTOM._mc)
          {
-            x = UI_BOTTOM._mc.x + UI_BOTTOM._mc.width - mcHit.width;
-            y = UI_BOTTOM._mc.y - mcHit.height;
+            if(Capabilities.playerType == EnumPlayerType.DESKTOP)
+            {
+               var uiScale:Number = DisplayScaler.getUIScale();
+               scaleX = scaleY = uiScale;
+               x = UI_BOTTOM._mc.x + UI_BOTTOM._mc.width - mcHit.width * uiScale;
+               y = UI_BOTTOM._mc.y - mcHit.height * uiScale;
+            }
+            else
+            {
+               x = UI_BOTTOM._mc.x + UI_BOTTOM._mc.width - mcHit.width;
+               y = UI_BOTTOM._mc.y - mcHit.height;
+            }
          }
       }
       

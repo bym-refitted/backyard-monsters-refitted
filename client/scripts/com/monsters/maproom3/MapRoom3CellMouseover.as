@@ -18,7 +18,10 @@ package com.monsters.maproom3
    import flash.net.URLRequest;
    import flash.text.TextField;
    import flash.text.TextFormat;
-   
+   import utils.DisplayScaler;
+   import flash.system.Capabilities;
+   import com.monsters.enums.EnumPlayerType;
+
    public class MapRoom3CellMouseover extends Sprite
    {
       
@@ -96,6 +99,10 @@ package com.monsters.maproom3
       public function MapRoom3CellMouseover()
       {
          super();
+         if(Capabilities.playerType == EnumPlayerType.DESKTOP)
+         {
+            this.scaleX = this.scaleY = DisplayScaler.getUIScale();
+         }
          mouseEnabled = false;
          mouseChildren = false;
          this.m_InfoDisplay = new Sprite();
@@ -300,7 +307,9 @@ package com.monsters.maproom3
          var _loc3_:int = GLOBAL.StageX;
          var _loc4_:int = GLOBAL.StageX + GLOBAL.StageWidth;
          var _loc5_:int = GLOBAL.StageY + 80;
-         var _loc6_:int = this.m_InfoDisplay.width * 0.5;
+         var scale:Number = DisplayScaler.getUIScale();
+         var _loc6_:int = this.m_InfoDisplay.width * scale * 0.5;
+         var scaledH:Number = this.m_InfoDisplay.height * scale;
          if(param1 - _loc6_ < _loc3_)
          {
             param1 = _loc3_ + _loc6_;
@@ -310,13 +319,14 @@ package com.monsters.maproom3
             param1 = _loc4_ - _loc6_;
          }
          x = param1;
-         if(param2 - this.m_InfoDisplay.height < _loc5_)
+         var hexOffset:Number = MapRoom3CellGraphic.HEX_EDGE_LENGTH * MapRoom3.mapRoom3Window.scrollingCanvas.scaleY * 0.5;
+         if(param2 - scaledH < _loc5_)
          {
-            y = param2 + MapRoom3CellGraphic.HEX_EDGE_LENGTH * MapRoom3.mapRoom3Window.scrollingCanvas.scaleY * 0.5 + this.m_InfoDisplay.height;
+            y = param2 + hexOffset + scaledH;
          }
          else
          {
-            y = param2 - MapRoom3CellGraphic.HEX_EDGE_LENGTH * MapRoom3.mapRoom3Window.scrollingCanvas.scaleY * 0.5;
+            y = param2 - hexOffset;
          }
       }
       

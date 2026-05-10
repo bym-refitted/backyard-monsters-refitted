@@ -303,8 +303,16 @@ package
          }
          GLOBAL.BlockerAdd();
          this._buildingInfoMC = GLOBAL._layerWindows.addChild(new BUILDINGOPTIONSPOPUP("build",param1)) as BUILDINGOPTIONSPOPUP;
-         this._buildingInfoMC.x = GLOBAL._SCREENCENTER.x;
-         this._buildingInfoMC.y = GLOBAL._SCREENCENTER.y;
+         if(Capabilities.playerType == EnumPlayerType.DESKTOP)
+         {
+            this._buildingInfoMC.ScaleUp();
+            this._buildingInfoMC.Center();
+         }
+         else
+         {
+            this._buildingInfoMC.x = GLOBAL._SCREENCENTER.x;
+            this._buildingInfoMC.y = GLOBAL._SCREENCENTER.y;
+         }
       }
       
       public function HideInfo() : void
