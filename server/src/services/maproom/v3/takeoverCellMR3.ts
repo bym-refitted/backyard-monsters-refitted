@@ -15,6 +15,7 @@ import { cellKey, getGeneratedCells } from "./generateCells.js";
 import { getHexNeighborOffsets } from "./getHexNeighborOffsets.js";
 import { isMR3Structure } from "./utils/isMR3Structure.js";
 import { logger } from "../../../utils/logger.js";
+import { MapRoomVersion } from "../../../enums/MapRoom.js";
 
 interface ResourceTakeover {
   level: number;
@@ -74,6 +75,7 @@ export const takeoverCellMR3 = async (baseSave: Save, user: User, userSave: Save
   baseSave.homebaseid = userSave.homebaseid;
   baseSave.name = userSave.name;
   baseSave.type = BaseType.OUTPOST;
+  baseSave.mapversion = MapRoomVersion.V3;
   baseSave.damage = 0;
   baseSave.resources = {};
   baseSave.monsters = {};
