@@ -117,9 +117,6 @@ export const getMapRoomCellsV2ForViewer: KoaController = async (ctx) => {
     getTruces(user.userid, ownerIds),
   ]);
 
-  // Online presence is not needed for a read-only viewer — an empty map
-  // tells userCell no one is currently online, which is an acceptable
-  // approximation for strategic map browsing.
   ctx.state.lastSeen = new Map();
   ctx.state.truces   = truces;
 
