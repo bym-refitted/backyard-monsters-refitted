@@ -18,6 +18,22 @@ export const getCellsLimiter = RateLimit.middleware({
 });
 
 /**
+ * Rate limit for the MR2 map viewer bulk cell endpoint.
+ * A full map load is ~32 batches, so 60/min allows nearly two full loads per
+ * minute while blocking someone who is hammering the refresh button.
+ */
+export const getMR2ViewerCellsLimiter = RateLimit.middleware({
+  interval: { min: 1 },
+  max: 60,
+  prefixKey: "getcellsforviewer",
+  keyGenerator: async (ctx: Context) => String(ctx.authUser?.userid ?? ctx.ip),
+  handler: async (ctx: Context) => {
+    ctx.status = Status.TOO_MANY_REQUESTS;
+    ctx.body = { error: "Too many viewer cell requests. Please slow down." };
+  },
+});
+
+/**
  * Rate limit for user registration - 3 requests per hour in prod, per minute in dev.
  */
 export const registerLimiter = RateLimit.middleware({
