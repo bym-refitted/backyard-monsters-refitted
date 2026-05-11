@@ -8,9 +8,7 @@ import { MapRoom2, MapRoomVersion } from "../../../enums/MapRoom.js";
 import { Status } from "../../../enums/StatusCodes.js";
 import { createCellData } from "../../../services/maproom/v2/createCellData.js";
 import { generateNoise, getTerrainHeight } from "../../../services/maproom/v2/generateMap.js";
-import { getLastSeen } from "../../../services/maproom/getLastSeen.js";
 import { getTruces } from "../../../services/maproom/getTruces.js";
-import { BaseType } from "../../../enums/Base.js";
 import { mapRoomDisabledErr } from "../../../errors/errors.js";
 import { devConfig } from "../../../config/GameConfig.js";
 
@@ -111,16 +109,18 @@ export const getMapRoomCellsV2ForViewer: KoaController = async (ctx) => {
   const dbByCoord = new Map(dbCells.map((c) => [`${c.x},${c.y}`, c]));
   const ownerIds  = [...new Set(dbCells.map((c) => c.uid).filter(Boolean))] as number[];
 
-  const [ownersList, lastSeen, truces] = await Promise.all([
+  const [ownersList, truces] = await Promise.all([
     postgres.em.find(User, { userid: { $in: ownerIds } }, {
       populate: ["save"],
       fields: CELL_OWNER_FIELDS,
     }),
-    getLastSeen(ownerIds, BaseType.MAIN),
     getTruces(user.userid, ownerIds),
   ]);
 
-  ctx.state.lastSeen = lastSeen;
+  // Online presence is not needed for a read-only viewer — an empty map
+  // tells userCell no one is currently online, which is an acceptable
+  // approximation for strategic map browsing.
+  ctx.state.lastSeen = new Map();
   ctx.state.truces   = truces;
 
   const cellOwners = new Map<number, User>(
