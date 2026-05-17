@@ -265,7 +265,7 @@ export const baseLoad: KoaController = async (ctx) => {
 
   if (isOwner) {
     chattoken = await getOrCreateChatToken(user.userid);
-    chatchannel = getChatChannel(userSave.worldid, user.userid);
+    chatchannel = getChatChannel(userSave.worldid);
   }
 
   const response: Record<string, unknown> = {

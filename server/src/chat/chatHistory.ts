@@ -2,7 +2,7 @@ import { redis } from "../server.js";
 import type { HistoryEntry } from "./chatProtocol.js";
 
 const HISTORY_KEY = (channel: string) => `history:${channel}`;
-const MAX_HISTORY = 50;
+const MAX_HISTORY = 100;
 
 const HISTORY_TTL_SECONDS = 86400; // 24 hours
 
