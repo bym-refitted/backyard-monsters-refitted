@@ -1,5 +1,6 @@
 package com.monsters.maproom
 {
+   import com.monsters.ai.TRIBES;
    import com.monsters.enums.EnumYardType;
    import com.monsters.mailbox.model.Contact;
    import com.monsters.maproom.model.BaseObject;
@@ -279,11 +280,13 @@ package com.monsters.maproom
          var discordOldEnough:Boolean = MapRoom.BRIDGE.GLOBAL._flags.discordOldEnough;
          var discordAgeMessage:String = String(MapRoom.BRIDGE.KEYS.Get("newmap_discord_age"));
          
-         if (!discordOldEnough) {
+         var _loc2_:BaseObject = this.player.data;
+         var mr1TribeIds:Array = TRIBES.L_IDS.concat(TRIBES.K_IDS, TRIBES.A_IDS, TRIBES.D_IDS);
+         
+         if (!discordOldEnough && mr1TribeIds.indexOf(_loc2_.baseid.Get()) == -1) {
             MapRoom.BRIDGE.GLOBAL.Message(discordAgeMessage);
             return;
          }
-         var _loc2_:BaseObject = this.player.data;
          var _loc3_:Boolean = false;
          var _loc4_:String = "";
          var _loc5_:String = String(MapRoom.BRIDGE.KEYS.Get("map_attack_btn2"));
