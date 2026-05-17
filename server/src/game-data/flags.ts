@@ -53,7 +53,7 @@ export const getFlags = () => ({
   leaderboard: 1,
   fanfriendbookmarkquests: 1,
   ticker: 0,
-  chat: 0, // Disable chat
+  chat: 2, // Enable chat (0=disabled, 1=no display, 2=display)
   invites: 0, // Diable friend invites
   gifts: 0, // Disable gifts
   event1: 1,
@@ -61,7 +61,7 @@ export const getFlags = () => ({
   ...getInvasionFlags(),
   iframestart_override: 0,
   mushrooms: 1,
-  chatwhitelist: "2,3,23",
+  chatwhitelist: "",
   chatblacklist: 0,
   welcome_email: 1,
   email_reengagement: 1,

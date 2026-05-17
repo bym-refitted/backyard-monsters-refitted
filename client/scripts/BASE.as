@@ -861,6 +861,18 @@ package
                {
                   Chat._chatServers = new Array();
                }
+               if (serverData.chattoken != null)
+               {
+                  Chat._chatToken = serverData.chattoken;
+               }
+               if (serverData.chatchannel != null)
+               {
+                  Chat._chatChannel = serverData.chatchannel;
+               }
+               else
+               {
+                  Chat._chatChannel = null;
+               }
                _lastSaveID = serverData.id;
                _baseSeed = serverData.baseseed;
                _loadedBaseID = serverData.baseid;

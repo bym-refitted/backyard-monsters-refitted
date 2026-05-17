@@ -34,6 +34,7 @@ import { MR1_TRIBES } from "../../../enums/Tribes.js";
 import { tutorial } from "../../../game-data/tribes/v1/index.js";
 import { calculateBaseLevel } from "../../../services/base/calculateBaseLevel.js";
 import { extractTownHall } from "../../../utils/extractTownHall.js";
+import { getChatChannel, getOrCreateChatToken } from "../../../chat/chatChannels.js";
 
 /**
  * Controller responsible for loading base modes based on the user's request.
@@ -259,6 +260,13 @@ export const baseLoad: KoaController = async (ctx) => {
   }
 
   const avatar = avatarUser?.pic_square;
+  let chattoken: string | undefined;
+  let chatchannel: string | undefined;
+
+  if (isOwner) {
+    chattoken = await getOrCreateChatToken(user.userid);
+    chatchannel = getChatChannel(userSave.worldid, user.userid);
+  }
 
   const response: Record<string, unknown> = {
     ...filteredSave,
@@ -272,7 +280,13 @@ export const baseLoad: KoaController = async (ctx) => {
     tutorialstage: isTutorialEnabled,
     currenttime: getCurrentDateTime(),
     pic_square: avatar,
-    ...(isOwner && mapUserSaveData(user)),
+    chatservers: [process.env.CHAT_WS_HOST!],
+    ...(isOwner && { 
+      chatenabled: 1,
+      chattoken,
+      chatchannel,
+      ...mapUserSaveData(user)
+    }),
   };
 
   if (isOwner && mapversion === MapRoomVersion.V3) {
