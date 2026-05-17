@@ -82,9 +82,11 @@ export const takeoverCell: KoaController = async (ctx) => {
   const currentTime = getCurrentDateTime();
   const twelveHours = 12 * 60 * 60;
 
+  // Transfer ownership of the save
   cellSave.saveuserid = currentUser.userid;
   cellSave.userid = userSave.userid;
   cellSave.homebaseid = userSave.homebaseid;
+  cellSave.mapversion = mapversion;
   cellSave.name = userSave.name;
   cellSave.worldid = userSave.worldid;
   cellSave.createtime = currentTime;
