@@ -4,21 +4,19 @@ import { SessionType } from "../enums/SessionType.js";
 const emailError = "Invalid email address";
 
 const passwordLengthError = "Password must be at least 8 characters long";
-const passwordError = "Password must contain at least one uppercase letter and one special character";
+const passwordSpecialError = "Password must contain at least one special character";
 
 /**
  * Schema to validate passwords.
  * - Must be at least 8 characters long.
- * - Must contain at least one uppercase letter.
- * - Must contain at least one special character.
+ * - Must contain at least one special character (any non-alphanumeric character).
  */
 const passwordSchema = z.preprocess(
   (input) => (input === "" ? undefined : input),
   z.string()
     .trim()
     .min(8, passwordLengthError)
-    .regex(/[A-Z]/, passwordError)
-    .regex(/[`~<>?,./!@#$%^&*()\-_+="'|{}\[\];:\\]/, passwordError)
+    .regex(/[^a-zA-Z0-9]/, passwordSpecialError)
     .optional()
 );
 
