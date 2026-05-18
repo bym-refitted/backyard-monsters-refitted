@@ -8,6 +8,7 @@ import { FilterFrontendKeys } from "../../../utils/FrontendKey.js";
 import { getFlags } from "../../../game-data/flags.js";
 import { getCurrentDateTime } from "../../../utils/getCurrentDateTime.js";
 import { BaseMode, BaseType } from "../../../enums/Base.js";
+import { Env } from "../../../enums/Env.js";
 import { EnumYardType } from "../../../enums/EnumYardType.js";
 import { MapRoomVersion } from "../../../enums/MapRoom.js";
 import { WORLD_SIZE } from "../../../config/MapRoom2Config.js";
@@ -263,7 +264,7 @@ export const baseLoad: KoaController = async (ctx) => {
   let chattoken: string | undefined;
   let chatchannel: string | undefined;
 
-  if (isOwner) {
+  if (isOwner && process.env.ENV !== Env.LOCAL) {
     chattoken = await getOrCreateChatToken(user.userid);
     chatchannel = getChatChannel(userSave.worldid);
   }
