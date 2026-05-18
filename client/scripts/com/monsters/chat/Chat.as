@@ -4,38 +4,41 @@ package com.monsters.chat
    import com.monsters.maproom_manager.MapRoomManager;
    import flash.display.DisplayObjectContainer;
    import flash.display.StageDisplayState;
-   
+
    public class Chat
    {
-      
+
       public static var _bymChat:BYMChat;
-      
-      public static var _chatroomNumber:Number = 0;
-      
+
       public static const NUM_CHAT_ROOMS:int = 300;
-      
+
       public static var _chatInited:Boolean = false;
-      
+
       public static var _chatEnabled:Boolean = true;
-      
+
       public static var _validName:Boolean = true;
-      
+
       public static var _chatServers:Array = null;
-      
+
+      public static var _chatToken:String = null;
+
+      /** Server-issued channel key, echoed back on join. Set from base load response. */
+      public static var _chatChannel:String = null;
+
       public static var _chatBlackList:Array = null;
-      
+
       public static var _chatWhiteList:Array = null;
-      
+
       public static var _countryCodeBlackList:Array = null;
-      
+
       public static var _chatServer:String;
-       
-      
+
+
       public function Chat()
       {
          super();
       }
-      
+
       public static function initChat() : void
       {
          if(_chatInited)
@@ -64,18 +67,6 @@ package com.monsters.chat
             }
             return;
          }
-         _chatroomNumber = 0;
-         if(!GLOBAL._local)
-         {
-            if(MapRoomManager.instance.isInMapRoom3)
-            {
-               _chatroomNumber = MapRoomManager.instance.worldID;
-            }
-            else
-            {
-               _chatroomNumber = LOGIN._playerID % (GLOBAL._flags != null && Boolean(GLOBAL._flags.numchatrooms) ? GLOBAL._flags.numchatrooms : NUM_CHAT_ROOMS);
-            }
-         }
          if(!_chatEnabled || _chatServers.length == 0)
          {
             if(_bymChat != null)
@@ -87,7 +78,7 @@ package com.monsters.chat
             }
             return;
          }
-         _chatServer = _chatServers[_chatroomNumber % _chatServers.length];
+         _chatServer = _chatServers[0];
          if(_bymChat == null)
          {
             _bymChat = new BYMChat(new ChatBox(),_chatServer);
@@ -114,10 +105,9 @@ package com.monsters.chat
             _bymChat.disableChat();
          }
       }
-      
+
       public static function connectAndLogin() : void
       {
-         var _loc1_:String = null;
          if(!_chatInited)
          {
             return;
@@ -130,9 +120,13 @@ package com.monsters.chat
          {
             return;
          }
+         if(_chatChannel == null || _chatChannel.length == 0)
+         {
+            return;
+         }
          if(_bymChat)
          {
-            _loc1_ = getFirstNameLastInitial();
+            var _loc1_:String = getFirstNameLastInitial();
             if(_loc1_ == null || _loc1_.length == 0)
             {
                _validName = false;
@@ -142,10 +136,10 @@ package com.monsters.chat
             _bymChat.initServer();
             _bymChat.login(_loc1_,LOGIN._playerID.toString(),BASE.BaseLevel().level);
             _bymChat.show();
-            _bymChat.enter_sector("Sector-" + _chatroomNumber.toString());
+            _bymChat.enter_sector(_chatChannel, true);
          }
       }
-      
+
       private static function getFirstNameLastInitial() : String
       {
          var _loc1_:String = LOGIN._playerName;
@@ -173,7 +167,7 @@ package com.monsters.chat
          }
          return null;
       }
-      
+
       public static function setChatPosition(param1:DisplayObjectContainer = null, param2:Number = NaN, param3:Number = NaN) : void
       {
          if(_bymChat != null)
@@ -194,7 +188,7 @@ package com.monsters.chat
             _bymChat.show();
          }
       }
-      
+
       public static function chatUserIsInABTest() : Boolean
       {
          if(GLOBAL._flags)
@@ -230,7 +224,7 @@ package com.monsters.chat
          }
          return true;
       }
-      
+
       public static function flagsShouldChatDisplay() : Boolean
       {
          if(GLOBAL._flags == null)
@@ -251,7 +245,7 @@ package com.monsters.chat
          }
          return true;
       }
-      
+
       public static function flagsShouldChatExist() : Boolean
       {
          if(GLOBAL._flags == null)
