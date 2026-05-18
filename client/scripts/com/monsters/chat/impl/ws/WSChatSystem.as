@@ -12,7 +12,9 @@ package com.monsters.chat.impl.ws
    import com.worlize.websocket.WebSocketErrorEvent;
    import com.worlize.websocket.WebSocketEvent;
    import flash.events.EventDispatcher;
+   import flash.events.TimerEvent;
    import flash.utils.Dictionary;
+   import flash.utils.Timer;
 
    public class WSChatSystem extends EventDispatcher implements IChatSystem
    {
@@ -22,6 +24,8 @@ package com.monsters.chat.impl.ws
       private var _connected:Boolean = false;
       private var _loggedIn:Boolean = false;
       private var _rooms:Vector.<String> = new Vector.<String>();
+
+      private var _pingTimer:Timer = null;
 
       private var _pendingUserId:String = null;
       private var _pendingIgnoreAction:String = "show";
@@ -44,11 +48,19 @@ package com.monsters.chat.impl.ws
          _ws.addEventListener(WebSocketErrorEvent.CONNECTION_FAIL, onWsError);
          _ws.addEventListener(WebSocketErrorEvent.ABNORMAL_CLOSE, onWsError);
          _ws.connect();
+         _pingTimer = new Timer(90000);
+         _pingTimer.addEventListener(TimerEvent.TIMER, onPingTimer);
+         _pingTimer.start();
          return true;
       }
 
       public function disconnect():void
       {
+         if (_pingTimer)
+         {
+            _pingTimer.stop();
+            _pingTimer = null;
+         }
          if (_ws)
             _ws.close();
          _connected = false;
@@ -306,6 +318,12 @@ package com.monsters.chat.impl.ws
       }
 
       // ── Helpers ───────────────────────────────────────────────────────────
+
+      private function onPingTimer(e:TimerEvent):void
+      {
+         if (_connected)
+            sendJson({type: ClientMessageType.PING});
+      }
 
       private function sendAuth(userId:String):void
       {

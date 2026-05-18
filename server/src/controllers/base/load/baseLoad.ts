@@ -8,6 +8,7 @@ import { FilterFrontendKeys } from "../../../utils/FrontendKey.js";
 import { getFlags } from "../../../game-data/flags.js";
 import { getCurrentDateTime } from "../../../utils/getCurrentDateTime.js";
 import { BaseMode, BaseType } from "../../../enums/Base.js";
+import { Env } from "../../../enums/Env.js";
 import { EnumYardType } from "../../../enums/EnumYardType.js";
 import { MapRoomVersion } from "../../../enums/MapRoom.js";
 import { WORLD_SIZE } from "../../../config/MapRoom2Config.js";
@@ -34,7 +35,7 @@ import { MR1_TRIBES } from "../../../enums/Tribes.js";
 import { MR1_TRIBE_IDS } from "../../../game-data/tribes/v1/index.js";
 import { calculateBaseLevel } from "../../../services/base/calculateBaseLevel.js";
 import { extractTownHall } from "../../../utils/extractTownHall.js";
-import { getChatChannel, getOrCreateChatToken } from "../../../chat/chatChannels.js";
+import { getChatChannel, getOrCreateChatToken, INFERNO_CHAT_CHANNEL } from "../../../chat/chatChannels.js";
 
 /**
  * Controller responsible for loading base modes based on the user's request.
@@ -138,6 +139,7 @@ export const baseLoad: KoaController = async (ctx) => {
   flags.mr2upgraded = userSave.mr2upgraded ? 1 : 0;
 
   const isOwner = baseSave.type !== BaseType.INFERNO && user.userid === filteredSave.userid;
+  const isInfernoOwner = baseSave.type === BaseType.INFERNO && user.userid === filteredSave.userid;
 
   let totalResourceRate = 0;
   let totalResourceCapacity = 0;
@@ -263,9 +265,14 @@ export const baseLoad: KoaController = async (ctx) => {
   let chattoken: string | undefined;
   let chatchannel: string | undefined;
 
-  if (isOwner) {
+  if (isOwner && process.env.ENV !== Env.LOCAL) {
     chattoken = await getOrCreateChatToken(user.userid);
-    chatchannel = getChatChannel(userSave.worldid);
+    chatchannel = getChatChannel(mapversion || MapRoomVersion.V1);
+  }
+
+  if (isInfernoOwner && process.env.ENV !== Env.LOCAL) {
+    chattoken = await getOrCreateChatToken(user.userid);
+    chatchannel = INFERNO_CHAT_CHANNEL;
   }
 
   const response: Record<string, unknown> = {
@@ -281,11 +288,16 @@ export const baseLoad: KoaController = async (ctx) => {
     currenttime: getCurrentDateTime(),
     pic_square: avatar,
     chatservers: [process.env.CHAT_WS_HOST!],
-    ...(isOwner && { 
+    ...(isOwner && {
       chatenabled: 1,
       chattoken,
       chatchannel,
       ...mapUserSaveData(user)
+    }),
+    ...(isInfernoOwner && {
+      chatenabled: 1,
+      chattoken,
+      chatchannel,
     }),
   };
 

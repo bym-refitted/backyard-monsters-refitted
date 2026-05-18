@@ -57,9 +57,6 @@ package com.monsters.chat
       
       private var _ignore_list:Array = null;
       
-      public var isLoggingOut:Boolean = false;
-      
-      private var isLoggingOutTimer:Number = 5;
       
       public var chatBox:ChatBox;
       
@@ -80,6 +77,10 @@ package com.monsters.chat
       private var _showY:int;
       
       public var _open:Boolean = true;
+
+      public var isLoggingOut:Boolean = false;
+
+      private var isLoggingOutTimer:Number = 5;
       
       private var globalChatTimer:Timer = null;
       
@@ -287,10 +288,11 @@ package com.monsters.chat
             TweenLite.delayedCall(3,this.logoutDelayCB);
          }
       }
-      
+
       public function logoutDelayCB() : void
       {
          this.isLoggingOut = false;
+         this.chatBox.UpdateChatStatus();
       }
       
       public function disableChat() : void

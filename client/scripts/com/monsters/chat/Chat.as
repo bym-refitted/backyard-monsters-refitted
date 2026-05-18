@@ -122,6 +122,7 @@ package com.monsters.chat
          }
          if(_chatChannel == null || _chatChannel.length == 0)
          {
+            _bymChat.displayUnavailable();
             return;
          }
          if(_bymChat)

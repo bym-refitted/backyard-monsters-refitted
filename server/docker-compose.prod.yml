@@ -2,6 +2,8 @@ services:
   web:
     ports:
       - "80:3001"
+      - "${CHAT_WS_PORT:-3010}:3010"
+      - "843:843"
     environment:
       - ENV=production
 

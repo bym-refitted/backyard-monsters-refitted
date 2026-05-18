@@ -10,6 +10,7 @@ package com.monsters.chat.impl.ws
       public static const GET_IGNORE:String = "getignore";
       public static const IGNORE:String = "ignore";
       public static const UNIGNORE:String = "unignore";
+      public static const PING:String = "ping";
 
       public function ClientMessageType()
       {

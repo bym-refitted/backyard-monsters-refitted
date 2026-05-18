@@ -324,6 +324,9 @@ export const handleMessage = async (ws: ServerWebSocket<SocketData>, data: strin
       return;
     }
 
+    case ClientMessageType.Ping:
+      return;
+
     case ClientMessageType.Unignore: {
       await redis.srem(ignoreKey, message.targetId);
 
