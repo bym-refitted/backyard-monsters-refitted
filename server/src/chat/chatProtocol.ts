@@ -7,6 +7,7 @@ export enum ClientMessageType {
   Ignore = "ignore",
   Unignore = "unignore",
   UpdateName = "updatename",
+  Ping = "ping",
 }
 
 export enum ServerMessageType {
@@ -54,7 +55,8 @@ export type ClientMessage =
   | { type: ClientMessageType.GetIgnore }
   | { type: ClientMessageType.Ignore; targetId: string }
   | { type: ClientMessageType.Unignore; targetId: string }
-  | { type: ClientMessageType.UpdateName; displayName: string };
+  | { type: ClientMessageType.UpdateName; displayName: string }
+  | { type: ClientMessageType.Ping };
 
 export type ServerMessage =
   | { type: ServerMessageType.AuthOk; userId: number; displayName: string }
