@@ -267,7 +267,7 @@ export const baseLoad: KoaController = async (ctx) => {
 
   if (isOwner && process.env.ENV !== Env.LOCAL) {
     chattoken = await getOrCreateChatToken(user.userid);
-    chatchannel = getChatChannel(mapversion || userSave.mapversion);
+    chatchannel = getChatChannel(userSave.mapversion);
   }
 
   if (isInfernoOwner && process.env.ENV !== Env.LOCAL) {
