@@ -7,7 +7,9 @@ const CHANNELS: Record<number, string> = {
   [MapRoomVersion.V3]: "chat:mr3-global",
 };
 
-const VALID_CHANNELS = new Set(Object.values(CHANNELS));
+export const INFERNO_CHAT_CHANNEL = "chat:inferno-global";
+
+const VALID_CHANNELS = new Set([...Object.values(CHANNELS), INFERNO_CHAT_CHANNEL]);
 
 /**
  * Validates a server-issued chat channel key echoed back by the client.
