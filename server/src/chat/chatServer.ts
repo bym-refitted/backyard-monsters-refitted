@@ -4,7 +4,7 @@ import { initGateway, handleOpen, handleMessage, handleClose, type SocketData } 
 
 const POLICY = Buffer.from(
   '<cross-domain-policy>' +
-  '<allow-access-from domain="*" to-ports="3002" secure="false"/>' +
+  `<allow-access-from domain="*" to-ports="${process.env.CHAT_WS_PORT}" secure="false"/>` +
   '</cross-domain-policy>\0'
 );
 
