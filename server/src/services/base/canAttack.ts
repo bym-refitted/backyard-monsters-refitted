@@ -23,7 +23,7 @@ export const canAttack = (attackerSave: Save, defenderSave: Save, mapversion?: M
    */
   if (
     mapversion === MapRoomVersion.V3 &&
-    attackerLevel >= 30 &&
+    attackerLevel >= 36 &&
     defenderSave.wmid === EnumYardType.RESOURCE &&
     defenderSave.level <= 20
   ) return false;
