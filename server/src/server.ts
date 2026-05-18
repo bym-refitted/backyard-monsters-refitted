@@ -16,6 +16,7 @@ import { corsCacheControl } from "./middleware/corsCacheControlSetup.js";
 import { Env } from "./enums/Env.js";
 import { initAnticheat } from "./scripts/anticheat/anticheat.js";
 import { initialize as initVersionManifest } from "./config/VersionManifestConfig.js";
+import { startChatServer } from "./chat/chatServer.js";
 
 export const app = new Koa();
 app.proxy = true;
@@ -49,6 +50,8 @@ redis.onclose = (err) => logger.error(`Redis disconnected: ${err.message}`);
   }
 
   await redis.connect();
+
+  startChatServer();
 
   app.use(corsCacheControl);
 

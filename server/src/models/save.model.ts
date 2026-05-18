@@ -415,7 +415,7 @@ export class Save {
 
   @FrontendKey
   @Property({ columnType: "jsonb", nullable: true })
-  chatservers: string[] = ["bym-chat.kixeye.com"];
+  chatservers: string[] = [];
 
   @FrontendKey
   @Property({ columnType: "jsonb", nullable: true })
