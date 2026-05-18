@@ -49,6 +49,10 @@ package com.monsters.chat
             }
             if(_bymChat.IsConnected)
             {
+               if(_chatChannel != null && (_bymChat.sector_channel == null || _bymChat.sector_channel.Name != _chatChannel))
+               {
+                  _bymChat.enter_sector(_chatChannel, true);
+               }
                return;
             }
          }
