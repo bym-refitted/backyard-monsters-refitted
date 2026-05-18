@@ -209,6 +209,11 @@ package com.monsters.display
          }
       }
       
+      public function Resync() : void
+      {
+         this.OnDrag();
+      }
+
       public function ScrollTo(param1:Number, param2:Boolean = false) : void
       {
          var tgtY:Number;

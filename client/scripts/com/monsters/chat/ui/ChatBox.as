@@ -60,7 +60,7 @@ package com.monsters.chat.ui
       private var fmt_nameOffset:TextFormat;
       
       private var _enabled:Boolean = true;
-      
+
       private var _runOnce:Number = 0;
       
       private var _originProps:Object;
@@ -224,6 +224,7 @@ package com.monsters.chat.ui
       
       private function handleSendClick(param1:MouseEvent) : void
       {
+         if(Chat._bymChat == null) { return; }
          Chat._bymChat.SendMessage();
          this.forceFocus();
       }
@@ -277,13 +278,14 @@ package com.monsters.chat.ui
          {
             this._enabled = false;
             this._maximized = false;
+            this._open = false;
          }
          else
          {
             this._enabled = true;
             this._maximized = false;
          }
-         if(!Chat._bymChat.initialized)
+         if(Chat._bymChat != null && !Chat._bymChat.initialized)
          {
             this.OnChatDisableClick();
          }
@@ -303,6 +305,7 @@ package com.monsters.chat.ui
          var _loc4_:Object = null;
          var _loc2_:Boolean = false;
          var _loc3_:Boolean = false;
+         var chatOpen:Boolean = this._open;
          if(param1 != null)
          {
             if(param1.currentTarget == this.background.arrowUp)
@@ -337,7 +340,7 @@ package com.monsters.chat.ui
          var _loc5_:Number = 0.5;
          if(param1 == null)
          {
-            if(Chat._bymChat._open)
+            if(chatOpen)
             {
                _loc4_ = this._openProps;
             }
@@ -351,7 +354,7 @@ package com.monsters.chat.ui
             this.background.arrowUp.buttonMode = true;
             this.background.arrowDown.buttonMode = false;
          }
-         else if(this._maximized && Chat._bymChat._open)
+         else if(this._maximized && chatOpen)
          {
             if(!(!_loc2_ && !_loc3_))
             {
@@ -364,12 +367,13 @@ package com.monsters.chat.ui
             this.background.arrowUp.buttonMode = true;
             this.background.arrowDown.buttonMode = true;
          }
-         else if(Chat._bymChat._open && !_loc3_)
+         else if(chatOpen && !_loc3_)
          {
             this.ClearAlert();
             if(!_loc2_)
             {
-               Chat._bymChat._open = false;
+               this._open = false;
+               if(Chat._bymChat != null) Chat._bymChat._open = false;
                _loc4_ = this._closeProps;
                this._maximized = false;
                this.background.arrowUp.gotoAndStop("on" + this._skinTag);
@@ -393,13 +397,14 @@ package com.monsters.chat.ui
                return;
             }
          }
-         else if(!Chat._bymChat._open)
+         else if(!chatOpen)
          {
             if(!(_loc2_ || _loc3_))
             {
                return;
             }
-            Chat._bymChat._open = true;
+            this._open = true;
+            if(Chat._bymChat != null) Chat._bymChat._open = true;
             _loc4_ = this._openProps;
             this._maximized = false;
             this.background.arrowUp.gotoAndStop("on" + this._skinTag);
@@ -421,7 +426,7 @@ package com.monsters.chat.ui
          TweenLite.to(this.background.mcScreen,_loc5_,{"height":_loc4_.screenHeight});
          TweenLite.to(this.background.mcMask,_loc5_,{"height":_loc4_.maskHeight});
          TweenLite.to(this._scrollbar,_loc5_,{"y":_loc4_.scrollerY});
-         if(Chat._bymChat._open)
+         if(this._open)
          {
             TweenLite.to(this.inputbar,_loc5_,{
                "y":_loc4_.inputY,
@@ -480,19 +485,19 @@ package com.monsters.chat.ui
          var _loc1_:Object = this._maximized ? this._maxProps : this._openProps;
          this._scrollbar.Update();
          this._scrollbar.visible = this._shell.height > this.background.mcMask.height;
-         if(!Chat._bymChat._open)
+         if(!this._open)
          {
-            Chat._bymChat.toggleMinimizedStat(true);
+            if(Chat._bymChat != null) Chat._bymChat.toggleMinimizedStat(true);
             this._scrollbar.visible = false;
          }
          else if(GLOBAL.StatGet("chatmin") != 0)
          {
-            Chat._bymChat.toggleMinimizedStat(false);
+            if(Chat._bymChat != null) Chat._bymChat.toggleMinimizedStat(false);
          }
-         this._scrollbar.ScrollTo(1,false);
          this.update();
+         this._scrollbar.ScrollTo(1,false);
       }
-      
+
       public function ResizeWindow() : void
       {
          if(this._chatWidth != this._chatWidthDefault.sizeW)
@@ -550,16 +555,13 @@ package com.monsters.chat.ui
             _loc1_ += this._chatHistory[_loc4_].height;
             _loc4_++;
          }
-         if(!this._scrollbar.visible && Chat._bymChat._open)
+         if(!this._scrollbar.visible && Chat._bymChat != null && Chat._bymChat._open)
          {
             this._scrollbar.visible = this._shell.height > this.background.mcMask.height;
          }
          addChild(this._scrollbar);
          this._scrollbar.Update();
-         if(!this._scrollbar.IsDragging)
-         {
-            this._scrollbar.ScrollTo(1,false);
-         }
+         this._scrollbar.Resync();
       }
       
       public function UpdateAlert(param1:int = 0) : void
@@ -596,7 +598,7 @@ package com.monsters.chat.ui
       
       public function ClearAlert() : void
       {
-         if(Chat._bymChat._open)
+         if(this._open)
          {
             this._alertsCounter = 0;
             this.UpdateAlert();
@@ -698,7 +700,7 @@ package com.monsters.chat.ui
       public function UpdateChatStatus() : void
       {
          this.background.mcToggle.gotoAndStop(this._enabled ? "close" + this._skinTag : "on" + this._skinTag);
-         if(Chat._bymChat.isLoggingOut)
+         if(Chat._bymChat != null && Chat._bymChat.isLoggingOut)
          {
             this.background.mcToggle.gotoAndStop("wait" + this._skinTag);
          }
@@ -810,20 +812,23 @@ package com.monsters.chat.ui
          {
             this._enabled = !this._enabled;
          }
-         if(TUTORIAL.hasFinished && !Chat._bymChat.isLoggingOut)
+         if(TUTORIAL.hasFinished)
          {
             this.EnableInput(this._enabled);
-            if(!this._enabled && Chat._bymChat.IsJoined)
+            if(Chat._bymChat != null && !Chat._bymChat.isLoggingOut)
             {
-               Chat._bymChat.disableChat();
-               LOGGER.Stat([68,"hide"]);
-            }
-            else if(Chat.flagsShouldChatExist())
-            {
-               if(!Chat._bymChat.IsConnected)
+               if(!this._enabled && Chat._bymChat.IsJoined)
                {
-                  Chat.connectAndLogin();
-                  LOGGER.Stat([68,"unhide"]);
+                  Chat._bymChat.disableChat();
+                  LOGGER.Stat([68,"hide"]);
+               }
+               else if(Chat.flagsShouldChatExist())
+               {
+                  if(!Chat._bymChat.IsConnected)
+                  {
+                     Chat.connectAndLogin();
+                     LOGGER.Stat([68,"unhide"]);
+                  }
                }
             }
             this.UpdateChatStatus();
