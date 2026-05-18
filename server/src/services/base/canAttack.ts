@@ -18,7 +18,7 @@ export const canAttack = (attackerSave: Save, defenderSave: Save, mapversion?: M
   const attackerLevel = calculateBaseLevel(attackerSave.points, attackerSave.basevalue);
 
   /**
-   * Tribe resource outpost restriction: high-level players (30+) cannot attack
+   * Tribe resource outpost restriction: high-level players (32+) cannot attack
    * low-level (≤20) MR3 resource outposts.
    */
   if (
