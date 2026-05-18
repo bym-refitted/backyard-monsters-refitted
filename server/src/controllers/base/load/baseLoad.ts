@@ -266,7 +266,7 @@ export const baseLoad: KoaController = async (ctx) => {
 
   if (isOwner && process.env.ENV !== Env.LOCAL) {
     chattoken = await getOrCreateChatToken(user.userid);
-    chatchannel = getChatChannel(userSave.worldid);
+    chatchannel = getChatChannel(mapversion || MapRoomVersion.V1);
   }
 
   const response: Record<string, unknown> = {
