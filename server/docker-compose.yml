@@ -44,10 +44,14 @@ services:
       - REDIS_URL=redis://redis:6379
       - CDN_URL=${CDN_URL:-}
       - USE_VERSION_MANAGEMENT=${USE_VERSION_MANAGEMENT:-}
+      - CHAT_WS_PORT=${CHAT_WS_PORT:-3010}
+      - CHAT_WS_HOST=${CHAT_WS_HOST:-localhost:3010}
     networks:
       - bymr
     ports:
       - ${API_PORT:-3001}:3001
+      - ${CHAT_WS_PORT:-3010}:3010
+      - 843:843
     develop:
       watch:
         - action: sync
