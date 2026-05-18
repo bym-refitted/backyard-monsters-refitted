@@ -10,7 +10,7 @@ const HISTORY_TTL_SECONDS = 86400;
  * Appends a message to a channel's history list, capping it at MAX_HISTORY entries.
  * The TTL is refreshed on every push so the history expires 24 hours after the last message.
  *
- * @param {string} channel - The channel key (e.g. `chat:world:{uuid}` or `chat:mr1-global`).
+ * @param {string} channel - The channel key (e.g. `chat:mr1-global`, `chat:mr2-global`, `chat:mr3-global`).
  * @param {HistoryEntry} entry - The message entry to store.
  */
 export const pushMessage = async (channel: string, entry: HistoryEntry) => {
