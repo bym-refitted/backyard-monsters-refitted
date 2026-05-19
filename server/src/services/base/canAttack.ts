@@ -32,13 +32,14 @@ export const canAttack = (attackerSave: Save, defenderSave: Save, mapversion?: M
    * PvP level restriction: attackers cannot attack player main yards more than
    * 12 levels below them. Both players in the level 40–80 safe zone
    * can always attack each other. Although the max level is 56, we use 80 as a client-safe upper bound.
+   *
+   * TODO: re-enable this when vengenance mode is implemented.
    */
-  if (defenderSave.type === BaseType.MAIN && !isOwner) {
-    const defenderLevel = calculateBaseLevel(defenderSave.points, defenderSave.basevalue);
-    const inSafeZone = attackerLevel >= 40 && attackerLevel <= 80 && defenderLevel >= 40 && defenderLevel <= 80;
-
-    if (attackerLevel - defenderLevel >= 12 && !inSafeZone) return false;
-  }
+  // if (defenderSave.type === BaseType.MAIN && !isOwner) {
+  //   const defenderLevel = calculateBaseLevel(defenderSave.points, defenderSave.basevalue);
+  //   const inSafeZone = attackerLevel >= 40 && attackerLevel <= 80 && defenderLevel >= 40 && defenderLevel <= 80;
+  //   if (attackerLevel - defenderLevel >= 12 && !inSafeZone) return false;
+  // }
 
   return true;
 };
