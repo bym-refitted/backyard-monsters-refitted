@@ -82,6 +82,18 @@ package com.monsters.kingOfTheHill
          {
             this.importData(param1);
          }
+         this._lootThresholds.length = 0;
+         if(this.hasWonPermanantly)
+         {
+            this._lootThresholds.push(GLOBAL._flags["krallen_special1_award_threshold"] - GLOBAL._flags["krallen_award_threshold"]);
+         }
+         else
+         {
+            this._lootThresholds.push(GLOBAL._flags["krallen_special1_award_threshold"]);
+         }
+         this._lootThresholds.push(GLOBAL._flags["krallen_award_threshold"]);
+         this._lootThresholds.push(0);
+         this._lootingDuration = GLOBAL._flags["krallen_duration"] * 86400;
          if(this.doesQualify)
          {
             CHAMPIONCAGEPOPUP._kothEnabled = true;
@@ -267,17 +279,6 @@ package com.monsters.kingOfTheHill
          this._totalLoot = param1.loot;
          this._timeToReset = param1.countdown;
          this._lastShownTier = param1.lastShownTier || 0;
-         if(this.hasWonPermanantly)
-         {
-            this._lootThresholds.push(GLOBAL._flags["krallen_special1_award_threshold"] - GLOBAL._flags["krallen_award_threshold"]);
-         }
-         else
-         {
-            this._lootThresholds.push(GLOBAL._flags["krallen_special1_award_threshold"]);
-         }
-         this._lootThresholds.push(GLOBAL._flags["krallen_award_threshold"]);
-         this._lootThresholds.push(0);
-         this._lootingDuration = GLOBAL._flags["krallen_duration"] * 86400;
       }
       
       public function minimumLootRequiredToUnlockKrallen() : uint
