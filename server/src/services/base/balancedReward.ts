@@ -54,7 +54,9 @@ export const balancedReward = async (userSave: Save) => {
 const addKrallenData = (userSave: Save) => {
   const championData = userSave.champion;
 
-  if (Object.keys(userSave.krallen ?? {}).length === 0) {
+  const hasKrallenChampion = championData.some((champion) => champion.t === 5);
+
+  if (!hasKrallenChampion) {
     championData.push({
       fb: 0,
       l: 5,
