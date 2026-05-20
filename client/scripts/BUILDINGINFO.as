@@ -219,6 +219,10 @@ package
                         {
                            _loc1_.push(["btn_upgrade",30]);
                         }
+                        if(MapRoomManager.instance.isInMapRoom2or3)
+                        {
+                           _loc1_.push(["btn_alliances",30,true]);
+                        }
                      }
                      else if(_props.id == 12)
                      {
@@ -420,6 +424,14 @@ package
                   _loc14_.y = _loc7_;
                   _loc7_ += _loc14_.height + 2;
                }
+               else if(_loc1_[_loc8_][0] == "btn_alliances")
+               {
+                  _loc14_.labelKey = "btn_alliances";
+                  _loc14_.Setup("Alliances",false,110,_loc1_[_loc8_][1]);
+                  _loc14_.x = 6;
+                  _loc14_.y = _loc7_;
+                  _loc7_ += _loc14_.height + 2;
+               }
                else
                {
                   _loc14_.SetupKey(_loc1_[_loc8_][0],false,110,_loc1_[_loc8_][1]);
@@ -585,6 +597,10 @@ package
          if(param1.target.labelKey == "btn_viewmap")
          {
             GLOBAL.ShowMap();
+         }
+         if(param1.target.labelKey == "btn_alliances")
+         {
+            ALLIANCEWINDOW.Show();
          }
          if(param1.target.labelKey == "btn_openlab")
          {
