@@ -11,6 +11,11 @@
 ![Postgres](https://img.shields.io/badge/postgres-%23316192.svg?style=for-the-badge&logo=postgresql&logoColor=white)
 ![ActionScript](https://img.shields.io/badge/ActionScript-%23DD0031.svg?style=for-the-badge)
 
+<br>
+
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/bym-refitted/backyard-monsters-refitted)
+
+
 ## 📖 About This Project
 This repository is a complete digital preservation and restoration of Backyard Monsters, Kixeye’s 2010 Flash-based strategy game. It features a reconstructed client, decompiled from original game files, alongside a custom-built server component implemented through extensive reverse engineering efforts.
 The client runs on version 128.5690 and remains fully compatible with the original ActionScript 3 codebase, rendered through Adobe Flash Player. The backend is powered by Bun, using the Koa framework, with a PostgreSQL database managed via MikroORM and written entirely in TypeScript.
