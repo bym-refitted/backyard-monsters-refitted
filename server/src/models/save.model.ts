@@ -343,7 +343,7 @@ export class Save {
   player?: JsonObject | null = {};
 
   @FrontendKey
-  @Property({ columnType: "jsonb", nullable: true })
+  @Property({ columnType: "jsonb", type: "json", nullable: true })
   krallen?: JsonObject | null = null;
 
   @FrontendKey
