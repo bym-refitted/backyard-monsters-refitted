@@ -321,6 +321,10 @@ package com.monsters.kingOfTheHill
          {
             return null;
          }
+         if(!this._tier && !this._wins && !this._totalLoot && !this._lastShownTier)
+         {
+            return null;
+         }
          return {
             "tier": this._tier,
             "wins": this._wins,
