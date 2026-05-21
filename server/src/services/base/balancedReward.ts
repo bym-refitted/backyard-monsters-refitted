@@ -2,6 +2,8 @@ import { KorathReward, Reward } from "../../enums/Rewards.js";
 import { Save } from "../../models/save.model.js";
 import { extractTownHall, type TownHall } from "../../utils/extractTownHall.js";
 
+const INITIAL_KRALLEN_DATA = { countdown: 443189, wins: 5, tier: 5, loot: 750000000000 };
+
 /**
  * Adds rewards to the user's save data based on their Town Hall level.
  *
@@ -28,6 +30,13 @@ export const balancedReward = async (userSave: Save) => {
   if (townHallLevel >= 6 && !rewards[KRALLEN]) {
     rewards[KRALLEN] = { id: KRALLEN, value: 1 };
     addKrallenData(userSave);
+  }
+
+  // Re-initialize KOTH round data if it was wiped (e.g. by the NullifyEmptyKrallenData migration)
+  // but the reward was already granted. Without this the client receives krallen:null and the
+  // KOTHHandler can't display the HUD or champion cage.
+  if (townHallLevel >= 6 && rewards[KRALLEN] && userSave.krallen == null) {
+    userSave.krallen = INITIAL_KRALLEN_DATA;
   }
 
   // Town Hall Level 7
@@ -68,11 +77,6 @@ const addKrallenData = (userSave: Save) => {
       hp: 62000,
     });
 
-    userSave.krallen = {
-      countdown: 443189,
-      wins: 5,
-      tier: 5,
-      loot: 750000000000,
-    };
+    userSave.krallen = INITIAL_KRALLEN_DATA;
   }
 };
