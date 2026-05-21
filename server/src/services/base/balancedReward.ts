@@ -32,10 +32,11 @@ export const balancedReward = async (userSave: Save) => {
     addKrallenData(userSave);
   }
 
-  // Re-initialize KOTH round data if it was wiped (e.g. by the NullifyEmptyKrallenData migration)
-  // but the reward was already granted. Without this the client receives krallen:null and the
-  // KOTHHandler can't display the HUD or champion cage.
   if (townHallLevel >= 6 && rewards[KRALLEN] && userSave.krallen == null) {
+    const krallenChampion = userSave.champion.find((c) => c.t === 5);
+
+    if (krallenChampion) krallenChampion.status = 0;
+    
     userSave.krallen = INITIAL_KRALLEN_DATA;
   }
 
