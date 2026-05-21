@@ -3,7 +3,7 @@ import Router from "@koa/router";
 import { logRequest } from "./middleware/logRequest.js";
 import { apiVersion } from "./middleware/apiVersioning.js";
 import { verifyUserAuth, verifyAccountStatus } from "./middleware/auth.js";
-import { getCellsLimiter, registerLimiter } from "./middleware/rateLimiters.js";
+import { getCellsLimiter, getMR2ViewerCellsLimiter, registerLimiter } from "./middleware/rateLimiters.js";
 import { Status } from "./enums/StatusCodes.js";
 
 import { init } from "./controllers/init.js";
@@ -26,6 +26,7 @@ import { infernoMonsters } from "./controllers/inferno/infernoMonsters.js";
 import { getNeighbours } from "./controllers/maproom/getNeighbours.js";
 
 import { getArea } from "./controllers/maproom/v2/getArea.js";
+import { getMapRoomCellsV2ForViewer } from "./controllers/maproom/v2/getCells.js";
 import { takeoverCell } from "./controllers/maproom/v2/takeoverCell.js";
 import { transferMonsters } from "./controllers/maproom/v2/transferMonsters.js";
 import { saveBookmarks } from "./controllers/maproom/v2/saveBookmarks.js";
@@ -90,7 +91,8 @@ router.post("/api/:apiVersion/bm/neighbours/get", apiVersion, verifyUserAuth, lo
 /**  ────────────────────────────────────────────────
 * 📦 Map Room 2
 * ──────────────────────────────────────────────── */
-router.post("/worldmapv2/getarea", verifyUserAuth, verifyAccountStatus, logRequest, getArea);
+router.post("/worldmapv2/getarea",   verifyUserAuth, verifyAccountStatus, logRequest, getArea);
+router.post("/worldmapv2/getcellsforviewer", verifyUserAuth, verifyAccountStatus, getMR2ViewerCellsLimiter, logRequest, getMapRoomCellsV2ForViewer);
 router.post("/worldmapv2/setmapversion", verifyUserAuth, logRequest, setMapVersion);
 router.post("/worldmapv2/takeoverCell", verifyUserAuth, verifyAccountStatus, logRequest, takeoverCell);
 router.post("/worldmapv2/transferassets", verifyUserAuth, verifyAccountStatus, logRequest, transferMonsters);
