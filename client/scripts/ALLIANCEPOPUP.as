@@ -1,47 +1,28 @@
 package
 {
+   import com.monsters.alliance.AllianceConstants;
+   import com.monsters.alliance.AllianceTabBase;
+   import com.monsters.alliance.tabs.BrowseTab;
+   import com.monsters.alliance.tabs.InvitesTab;
+   import com.monsters.alliance.tabs.MembersTab;
+   import com.monsters.alliance.tabs.MyAllianceTab;
+   import com.monsters.alliance.tabs.PowerUpsTab;
+   import com.monsters.alliance.tabs.SuggestedTab;
    import flash.display.MovieClip;
    import flash.events.MouseEvent;
-   import flash.text.TextField;
-   import flash.text.TextFormat;
 
    public class ALLIANCEPOPUP extends MovieClip
    {
-
-      private static const W:int = 860;
-
-      private static const H:int = 580;
-
-      private static const CONTENT_X:int = 26;
-
-      private static const CONTENT_Y:int = 63;
-
-      private static const CONTENT_W:int = 808;
-
-      private static const CONTENT_H:int = 452;
-
-      private static const TAB_Y:int = 26;
-
-      private static const TAB_H:int = 38;
-
-      private static const TAB_GAP:int = 5;
-
-      private static const INNER_BG:uint = 0xF0DCC0;
-
-      private static const BORDER_COLOR:uint = 0x888888;
-
-      private static const TAB_LABELS:Array = [
-         "Browse Alliances", "My Alliance", "Power-Ups", "Members (0/50)", "Suggested", "Invites (0)"
-      ];
-
-      private static const TAB_WIDTHS:Array = [
-         142, 110, 98, 126, 100, 100
-      ];
+      private static const W:int          = 860;
+      private static const H:int          = 580;
+      private static const CONTENT_X:int  = 26;
+      private static const CONTENT_Y:int  = 63;
+      private static const TAB_Y:int      = 26;
+      private static const TAB_H:int      = 38;
+      private static const TAB_GAP:int    = 5;
 
       private var _tabs:Array;
-
       private var _contentMC:MovieClip;
-
       private var _activeTab:int = 0;
 
       public function ALLIANCEPOPUP()
@@ -59,9 +40,6 @@ package
       private function _buildFrame() : void
       {
          var mcFrame:frame_CLIP = addChild(new frame_CLIP()) as frame_CLIP;
-         // Constructor called Setup() with no parent — no-op for visuals.
-         // Define bounds via invisible fill so frame.resize() reads correct dimensions,
-         // then call Setup() again now that we have a parent.
          mcFrame.graphics.beginFill(0, 0);
          mcFrame.graphics.drawRect(0, 0, W, H);
          mcFrame.graphics.endFill();
@@ -72,9 +50,9 @@ package
       {
          var bg:MovieClip = addChild(new MovieClip()) as MovieClip;
          bg.mouseEnabled = false;
-         bg.graphics.lineStyle(1, BORDER_COLOR, 1);
-         bg.graphics.beginFill(INNER_BG, 1);
-         bg.graphics.drawRect(0, 0, CONTENT_W, CONTENT_H);
+         bg.graphics.lineStyle(1, AllianceConstants.BORDER_COLOR, 1);
+         bg.graphics.beginFill(AllianceConstants.INNER_BG, 1);
+         bg.graphics.drawRect(0, 0, AllianceConstants.CONTENT_W, AllianceConstants.CONTENT_H);
          bg.graphics.endFill();
          bg.x = CONTENT_X;
          bg.y = CONTENT_Y;
@@ -85,16 +63,16 @@ package
          var currentX:int = CONTENT_X;
          _tabs = [];
          var i:int = 0;
-         while (i < TAB_LABELS.length)
+         while (i < AllianceConstants.TAB_LABELS.length)
          {
             var btn:ButtonBrown_CLIP = addChild(new ButtonBrown_CLIP()) as ButtonBrown_CLIP;
-            btn.Setup(TAB_LABELS[i], false, int(TAB_WIDTHS[i]), TAB_H, "#ECBF88");
+            btn.Setup(AllianceConstants.TAB_LABELS[i], false, int(AllianceConstants.TAB_WIDTHS[i]), TAB_H, "#ECBF88");
             btn.focusRect = false;
             btn.x = currentX;
             btn.y = TAB_Y;
             btn.addEventListener(MouseEvent.CLICK, _onTabClick(i));
             _tabs.push(btn);
-            currentX += int(TAB_WIDTHS[i]) + TAB_GAP;
+            currentX += int(AllianceConstants.TAB_WIDTHS[i]) + TAB_GAP;
             i++;
          }
       }
@@ -117,28 +95,27 @@ package
             i++;
          }
          _activeTab = idx;
-         _buildContent();
-      }
-
-      private function _buildContent() : void
-      {
          while (_contentMC.numChildren > 0)
          {
             _contentMC.removeChildAt(0);
          }
-         var fmt:TextFormat = new TextFormat();
-         fmt.font = "Verdana";
-         fmt.size = 12;
-         var tf:TextField = new TextField();
-         tf.selectable = false;
-         tf.wordWrap = true;
-         tf.defaultTextFormat = fmt;
-         tf.width = CONTENT_W - 20;
-         tf.height = 60;
-         tf.x = 10;
-         tf.y = 10;
-         tf.htmlText = "";
-         _contentMC.addChild(tf);
+         var tab:AllianceTabBase = _createTab(idx);
+         _contentMC.addChild(tab);
+         tab.build();
+      }
+
+      private function _createTab(idx:int) : AllianceTabBase
+      {
+         switch (idx)
+         {
+            case 0:  return new BrowseTab();
+            case 1:  return new MyAllianceTab();
+            case 2:  return new PowerUpsTab();
+            case 3:  return new MembersTab();
+            case 4:  return new SuggestedTab();
+            case 5:  return new InvitesTab();
+            default: return new BrowseTab();
+         }
       }
 
       public function Hide(param1:MouseEvent = null) : void
