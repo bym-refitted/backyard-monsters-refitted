@@ -1,25 +1,25 @@
 package
 {
-   import com.monsters.alliance.AllianceConstants;
-   import com.monsters.alliance.AllianceTabBase;
-   import com.monsters.alliance.tabs.BrowseTab;
-   import com.monsters.alliance.tabs.InvitesTab;
-   import com.monsters.alliance.tabs.MembersTab;
-   import com.monsters.alliance.tabs.MyAllianceTab;
-   import com.monsters.alliance.tabs.PowerUpsTab;
-   import com.monsters.alliance.tabs.SuggestedTab;
+   import com.monsters.alliances.AllianceConstants;
+   import com.monsters.alliances.AllianceTabBase;
+   import com.monsters.alliances.tabs.BrowseTab;
+   import com.monsters.alliances.tabs.InvitesTab;
+   import com.monsters.alliances.tabs.MembersTab;
+   import com.monsters.alliances.tabs.MyAllianceTab;
+   import com.monsters.alliances.tabs.PowerUpsTab;
+   import com.monsters.alliances.tabs.SuggestedTab;
    import flash.display.MovieClip;
    import flash.events.MouseEvent;
 
    public class ALLIANCEPOPUP extends MovieClip
    {
-      private static const W:int          = 860;
-      private static const H:int          = 580;
-      private static const CONTENT_X:int  = 26;
-      private static const CONTENT_Y:int  = 63;
-      private static const TAB_Y:int      = 26;
-      private static const TAB_H:int      = 38;
-      private static const TAB_GAP:int    = 5;
+      private static const W:int = 860;
+      private static const H:int = 580;
+      private static const CONTENT_X:int = 26;
+      private static const CONTENT_Y:int = 63;
+      private static const TAB_Y:int = 26;
+      private static const TAB_H:int = 38;
+      private static const TAB_GAP:int = 5;
 
       private var _tabs:Array;
       private var _contentMC:MovieClip;
@@ -37,7 +37,7 @@ package
          _switchTab(0);
       }
 
-      private function _buildFrame() : void
+      private function _buildFrame():void
       {
          var mcFrame:frame_CLIP = addChild(new frame_CLIP()) as frame_CLIP;
          mcFrame.graphics.beginFill(0, 0);
@@ -46,7 +46,7 @@ package
          mcFrame.Setup();
       }
 
-      private function _buildInnerBackground() : void
+      private function _buildInnerBackground():void
       {
          var bg:MovieClip = addChild(new MovieClip()) as MovieClip;
          bg.mouseEnabled = false;
@@ -58,7 +58,7 @@ package
          bg.y = CONTENT_Y;
       }
 
-      private function _buildTabs() : void
+      private function _buildTabs():void
       {
          var currentX:int = CONTENT_X;
          _tabs = [];
@@ -66,7 +66,14 @@ package
          while (i < AllianceConstants.TAB_LABELS.length)
          {
             var btn:ButtonBrown_CLIP = addChild(new ButtonBrown_CLIP()) as ButtonBrown_CLIP;
-            btn.Setup(AllianceConstants.TAB_LABELS[i], false, int(AllianceConstants.TAB_WIDTHS[i]), TAB_H, "#ECBF88");
+            var tabLabel:String;
+            if (i == 3)
+               tabLabel = KEYS.Get(String(AllianceConstants.TAB_LABELS[i]), {"v1": "0", "v2": "50"});
+            else if (i == 5)
+               tabLabel = KEYS.Get(String(AllianceConstants.TAB_LABELS[i]), {"v1": "0"});
+            else
+               tabLabel = KEYS.Get(String(AllianceConstants.TAB_LABELS[i]));
+            btn.Setup(tabLabel, false, int(AllianceConstants.TAB_WIDTHS[i]), TAB_H, "#ECBF88");
             btn.focusRect = false;
             btn.x = currentX;
             btn.y = TAB_Y;
@@ -77,16 +84,16 @@ package
          }
       }
 
-      private function _onTabClick(idx:int) : Function
+      private function _onTabClick(idx:int):Function
       {
-         return function(e:MouseEvent) : void
+         return function(e:MouseEvent):void
          {
             SOUNDS.Play("click1");
             _switchTab(idx);
          };
       }
 
-      private function _switchTab(idx:int) : void
+      private function _switchTab(idx:int):void
       {
          var i:int = 0;
          while (i < _tabs.length)
@@ -104,32 +111,39 @@ package
          tab.build();
       }
 
-      private function _createTab(idx:int) : AllianceTabBase
+      private function _createTab(idx:int):AllianceTabBase
       {
          switch (idx)
          {
-            case 0:  return new BrowseTab();
-            case 1:  return new MyAllianceTab();
-            case 2:  return new PowerUpsTab();
-            case 3:  return new MembersTab();
-            case 4:  return new SuggestedTab();
-            case 5:  return new InvitesTab();
-            default: return new BrowseTab();
+            case 0:
+               return new BrowseTab();
+            case 1:
+               return new MyAllianceTab();
+            case 2:
+               return new PowerUpsTab();
+            case 3:
+               return new MembersTab();
+            case 4:
+               return new SuggestedTab();
+            case 5:
+               return new InvitesTab();
+            default:
+               return new BrowseTab();
          }
       }
 
-      public function Hide(param1:MouseEvent = null) : void
+      public function Hide(param1:MouseEvent = null):void
       {
          ALLIANCEWINDOW.Hide();
       }
 
-      public function Center() : void
+      public function Center():void
       {
          POPUPSETTINGS.AlignToUpperLeft(this);
          y += 70;
       }
 
-      public function ScaleUp() : void
+      public function ScaleUp():void
       {
          POPUPSETTINGS.ScaleUp(this);
       }

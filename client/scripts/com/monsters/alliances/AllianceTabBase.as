@@ -1,4 +1,4 @@
-package com.monsters.alliance
+package com.monsters.alliances
 {
    import flash.display.MovieClip;
    import flash.text.TextField;
@@ -16,7 +16,9 @@ package com.monsters.alliance
          super();
       }
 
-      public function build() : void {}
+      public function build():void
+      {
+      }
 
       /**
        * Adds a non-interactive text label, vertically centered within rowH.
@@ -31,8 +33,8 @@ package com.monsters.alliance
        * @param {uint} color - Text color, defaults to black
        */
       protected function _addLabel(parent:MovieClip, text:String, colX:int, colY:int,
-                                   colW:int, rowH:int, bold:Boolean = false,
-                                   align:String = null, color:uint = 0x000000) : void
+            colW:int, rowH:int, bold:Boolean = false,
+            align:String = null, color:uint = 0x000000):void
       {
          var tf:TextField = parent.addChild(new TextField()) as TextField;
          tf.selectable = false;

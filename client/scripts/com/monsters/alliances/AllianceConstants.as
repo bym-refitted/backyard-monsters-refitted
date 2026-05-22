@@ -1,4 +1,4 @@
-package com.monsters.alliance
+package com.monsters.alliances
 {
    public class AllianceConstants
    {
@@ -9,8 +9,13 @@ package com.monsters.alliance
       public static const BORDER_COLOR:uint = 0x888888;
 
       public static const TAB_LABELS:Array = [
-         "Browse Alliances", "My Alliance", "Power-Ups", "Members (0/50)", "Suggested", "Invites (0)"
-      ];
+            "alliance_tab_browse",
+            "alliance_tab_myalliance",
+            "alliance_tab_powerups",
+            "alliance_tab_members",
+            "alliance_tab_suggested",
+            "alliance_tab_invites"
+         ];
       public static const TAB_WIDTHS:Array = [142, 110, 98, 126, 100, 100];
    }
 }
