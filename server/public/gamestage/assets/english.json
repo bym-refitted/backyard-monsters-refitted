@@ -3879,5 +3879,8 @@
     "alliance_lbl_shield": "Shield Preview",
     "alliance_btn_save": "Save Changes",
     "alliance_name_placeholder": "Alliance Name",
-    "alliance_desc_placeholder": "Alliance Description"
+    "alliance_desc_placeholder": "Alliance Description",
+    "alliance_no_alliance_title": "JOIN THE FELLOWSHIP",
+    "alliance_no_alliance_desc": "Alliances are groups of players who have sworn to protect one another, form truces, and attack rivals who get in their way. Either request to join an existing Alliance, or create your own.",
+    "alliance_no_alliance_btn": "Create an Alliance"
 }
