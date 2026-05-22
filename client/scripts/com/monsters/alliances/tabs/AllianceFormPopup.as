@@ -1,6 +1,9 @@
 package com.monsters.alliances.tabs
 {
+   import com.monsters.display.ImageCache;
    import com.monsters.display.ScrollSetV;
+   import flash.display.Bitmap;
+   import flash.display.BitmapData;
    import flash.display.MovieClip;
    import flash.events.FocusEvent;
    import flash.events.MouseEvent;
@@ -33,9 +36,8 @@ package com.monsters.alliances.tabs
 
       // Shield grid (left, wider column)
       private static const GRID_COLS:int = 4;
-      // CELL_SIZE = 70 → shows ~5.77 rows before scrolling
-      private static const CELL_SIZE:int = 70;
-      // GRID_CONTENT_W = GRID_COLS × CELL_SIZE = 280
+      // CELL_SIZE = 67 → 4×67 + 6px left inset = 274, leaving 6px right padding within 280
+      private static const CELL_SIZE:int = 67;
       private static const GRID_CONTENT_W:int = 280;
       // Space reserved for the ScrollSetV widget to the right of grid content
       private static const SCROLLBAR_ALLOC:int = 16;
@@ -47,17 +49,13 @@ package com.monsters.alliances.tabs
       // RIGHT_FORM_W = BG_W - PAD_H*2 - GRID_CONTENT_W - SCROLLBAR_ALLOC - COL_GAP = 218
       private static const RIGHT_FORM_W:int = 218;
 
-      private static const SHIELD_COLORS:Array = [
-            0xFF0000, 0xDC143C, 0x8B0000, 0xFF4500,
-            0xFF8C00, 0xFFA500, 0xFFD700, 0xFFF200,
-            0x00FF00, 0x7CFC00, 0x228B22, 0x006400,
-            0x0077FF, 0x1E90FF, 0x4169E1, 0x000080,
-            0x9400D3, 0x8A2BE2, 0xFF1493, 0xFF69B4,
-            0x8B4513, 0xD2691E, 0xF4A460, 0xDEB887,
-            0x2F4F4F, 0x708090, 0xC0C0C0, 0x808080,
-            0x20B2AA, 0x008B8B, 0x00CED1, 0x40E0D0
+      // 41 icons → 11 rows × 70px = 770 > 404 → scrollable
+      private static const SHIELD_IDS:Array = [
+            1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
+            11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
+            21, 22, 23, 24, 25, 26, 27, 28, 29, 30,
+            31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41
          ];
-      // 32 colors → 8 rows × 75px = 600 > 414 → scrollable (maxScroll = 186)
 
       private var _mc:MovieClip;
       private var _mode:int;
@@ -65,8 +63,6 @@ package com.monsters.alliances.tabs
       private var _cells:Array;
       private var _previewCells:Array;
       private var _scrollContent:MovieClip;
-      private var _scrollSetV:ScrollSetV;
-      private var _selectionIndicator:MovieClip;
 
       public function AllianceFormPopup()
       {
@@ -138,24 +134,20 @@ package com.monsters.alliances.tabs
 
          // Scrollable content
          _scrollContent = gridContainer.addChild(new MovieClip()) as MovieClip;
-         var ci:int = 0;
-         while (ci < SHIELD_COLORS.length)
+         _scrollContent.x = 6;
+         for (var i:int = 0; i < SHIELD_IDS.length; i++)
          {
             var cell:MovieClip = _scrollContent.addChild(new MovieClip()) as MovieClip;
             cell.buttonMode = true;
             cell.mouseChildren = false;
-            cell.x = (ci % GRID_COLS) * CELL_SIZE;
-            cell.y = int(ci / GRID_COLS) * CELL_SIZE;
-            _drawCell(cell, ci);
-            cell.addEventListener(MouseEvent.CLICK, _makeShieldClickHandler(ci));
+            cell.focusRect = false;
+            cell.x = (i % GRID_COLS) * CELL_SIZE;
+            cell.y = int(i / GRID_COLS) * CELL_SIZE + 5;
+            _drawCell(cell, i == _selectedIdx);
+            _loadIcon(cell, int(SHIELD_IDS[i]), CELL_SIZE - 2, 2);
+            cell.addEventListener(MouseEvent.CLICK, _makeShieldClickHandler(i));
             _cells.push(cell);
-            ci++;
          }
-
-         // Selection indicator drawn on top of all cells so its border is always visible
-         _selectionIndicator = _scrollContent.addChild(new MovieClip()) as MovieClip;
-         _selectionIndicator.mouseEnabled = false;
-         _selectionIndicator.mouseChildren = false;
 
          // Viewport mask
          var maskMC:MovieClip = gridContainer.addChild(new MovieClip()) as MovieClip;
@@ -164,17 +156,10 @@ package com.monsters.alliances.tabs
          maskMC.graphics.endFill();
          _scrollContent.mask = maskMC;
 
-         // Mouse wheel capture zone (transparent, sits over grid)
-         var wheelZone:MovieClip = gridContainer.addChild(new MovieClip()) as MovieClip;
-         wheelZone.graphics.beginFill(0, 0);
-         wheelZone.graphics.drawRect(0, 0, GRID_CONTENT_W, GRID_H);
-         wheelZone.graphics.endFill();
-         wheelZone.addEventListener(MouseEvent.MOUSE_WHEEL, _onMouseWheel);
-
          // Game's native scrollbar — positioned to the right of the grid content
-         _scrollSetV = gridContainer.addChild(new ScrollSetV(_scrollContent, maskMC, true)) as ScrollSetV;
-         _scrollSetV.x = GRID_CONTENT_W;
-         _scrollSetV.y = 0;
+         var scrollBar:ScrollSetV = gridContainer.addChild(new ScrollSetV(_scrollContent, maskMC, true)) as ScrollSetV;
+         scrollBar.x = GRID_CONTENT_W;
+         scrollBar.y = 0;
       }
 
       private function _buildFormColumn(x:int, y:int):void
@@ -244,22 +229,21 @@ package com.monsters.alliances.tabs
          const nameInputY:int = textareaY - gap - inputH;
          const previewY:int = nameInputY - gap - 60;
          var previewX:int = x;
-         var pxi:int = 0;
-         while (pxi < previewSizes.length)
+         for (var i:int = 0; i < previewSizes.length; i++)
          {
-            var sz:int = int(previewSizes[pxi]);
+            var sz:int = int(previewSizes[i]);
             var pCell:MovieClip = _mc.addChild(new MovieClip()) as MovieClip;
             pCell.mouseEnabled = false;
-            pCell.graphics.lineStyle(1, 0x333333, 1);
             pCell.graphics.beginFill(0, 0);
             pCell.graphics.drawRect(0, 0, sz, sz);
             pCell.graphics.endFill();
             pCell.x = previewX;
             pCell.y = previewY;
             previewX += sz + 8;
+            _loadIcon(pCell, int(SHIELD_IDS[_selectedIdx]), sz);
             _previewCells.push(pCell);
-            pxi++;
          }
+
          var nameBg:MovieClip = _mc.addChild(new MovieClip()) as MovieClip;
          nameBg.mouseEnabled = false;
          nameBg.graphics.beginFill(0xFFFFFF, 1);
@@ -297,6 +281,45 @@ package com.monsters.alliances.tabs
       }
 
       /**
+       * Returns the ImageCache key for a shield icon (relative to GLOBAL._storageURL).
+       * IDs 1–20 use the _large suffix; 21–41 use _medium.
+       */
+      private function _iconKey(id:int):String
+      {
+         var suffix:String = id <= 20 ? "_large" : "_medium";
+         return "alliances/" + id + suffix + ".png";
+      }
+
+      /**
+       * Loads a shield icon into a container via ImageCache, scaling it to fit targetSize.
+       * Subsequent calls for the same icon are served from the in-memory BitmapData cache.
+       */
+      private function _loadIcon(container:MovieClip, id:int, targetSize:int, padding:int = 0):void
+      {
+         var inner:int = targetSize - padding * 2;
+         ImageCache.GetImageWithCallBack(
+               _iconKey(id),
+               function(key:String, bmd:BitmapData, args:Array):void
+               {
+                  var bmp:Bitmap = new Bitmap(bmd);
+                  bmp.smoothing = true;
+                  var mc:MovieClip = args[0] as MovieClip;
+                  var ts:int = int(args[1]);
+                  var inn:int = int(args[2]);
+                  if (bmd.width > 0 && bmd.height > 0)
+                  {
+                     var scale:Number = Math.min(inn / bmd.width, inn / bmd.height);
+                     bmp.scaleX = bmp.scaleY = scale;
+                     bmp.x = int((ts - bmd.width * scale) / 2);
+                     bmp.y = int((ts - bmd.height * scale) / 2);
+                  }
+                  mc.addChild(bmp);
+               },
+               true, 4, "", [container, targetSize, inner]
+            );
+      }
+
+      /**
        * Wires placeholder text (light gray) to a TextField, clearing on focus and
        * restoring on blur when empty.
        */
@@ -319,26 +342,20 @@ package com.monsters.alliances.tabs
             });
       }
 
-      private function _drawCell(cell:MovieClip, idx:int):void
+      private function _drawCell(cell:MovieClip, selected:Boolean = false):void
       {
+         const BG_PAD:int = 2;
          cell.graphics.clear();
+         // Full-size transparent rect keeps the hit area intact
          cell.graphics.beginFill(0, 0);
          cell.graphics.drawRect(0, 0, CELL_SIZE - 2, CELL_SIZE - 2);
          cell.graphics.endFill();
-      }
-
-      private function _drawSelectionIndicator():void
-      {
-         var col:int = _selectedIdx % GRID_COLS;
-         var row:int = int(_selectedIdx / GRID_COLS);
-         _selectionIndicator.graphics.clear();
-         _selectionIndicator.graphics.lineStyle(2, 0xFFFFFF, 1);
-         _selectionIndicator.graphics.drawRect(
-               col * CELL_SIZE,
-               row * CELL_SIZE,
-               CELL_SIZE - 2,
-               CELL_SIZE - 2
-            );
+         if (selected)
+         {
+            cell.graphics.beginFill(0x333333, 1);
+            cell.graphics.drawRect(BG_PAD, BG_PAD, CELL_SIZE - 2 - BG_PAD * 2, CELL_SIZE - 2 - BG_PAD * 2);
+            cell.graphics.endFill();
+         }
       }
 
       private function _makeShieldClickHandler(idx:int):Function
@@ -346,8 +363,9 @@ package com.monsters.alliances.tabs
          return function(e:MouseEvent):void
          {
             SOUNDS.Play("click1");
+            _drawCell(_cells[_selectedIdx] as MovieClip, false);
             _selectedIdx = idx;
-            _drawSelectionIndicator();
+            _drawCell(_cells[_selectedIdx] as MovieClip, true);
             _updatePreview();
          };
       }
@@ -358,36 +376,16 @@ package com.monsters.alliances.tabs
          {
             return;
          }
-         var previewSizes:Array = [60, 45, 28];
-         var si:int = 0;
-         while (si < _previewCells.length)
+         var previewSizes:Array = [60, 36, 20];
+         for (var i:int = 0; i < _previewCells.length; i++)
          {
-            var pc:MovieClip = _previewCells[si] as MovieClip;
-            var sz:int = int(previewSizes[si]);
-            pc.graphics.clear();
-            pc.graphics.lineStyle(1, 0x333333, 1);
-            pc.graphics.beginFill(0, 0);
-            pc.graphics.drawRect(0, 0, sz, sz);
-            pc.graphics.endFill();
-            si++;
-         }
-      }
-
-      private function _onMouseWheel(e:MouseEvent):void
-      {
-         var maxScroll:Number = _scrollContent.height - GRID_H;
-         if (maxScroll <= 0)
-         {
-            return;
-         }
-         var newY:Number = Math.max(-maxScroll, Math.min(0, _scrollContent.y - e.delta * 15));
-         _scrollContent.y = newY;
-         // Sync ScrollSetV thumb to match the new scroll position
-         if (_scrollSetV && _scrollSetV.visible)
-         {
-            var ratio:Number = -newY / maxScroll;
-            var thumbTravel:Number = _scrollSetV.height - _scrollSetV.mcScroller.height;
-            _scrollSetV.mcScroller.y = ratio * thumbTravel;
+            var pc:MovieClip = _previewCells[i] as MovieClip;
+            // Remove previous loader, keeping only the border graphics
+            while (pc.numChildren > 0)
+            {
+               pc.removeChildAt(0);
+            }
+            _loadIcon(pc, int(SHIELD_IDS[_selectedIdx]), int(previewSizes[i]));
          }
       }
 
