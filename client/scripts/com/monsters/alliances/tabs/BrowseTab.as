@@ -1,5 +1,6 @@
 package com.monsters.alliances.tabs
 {
+   import com.monsters.alliances.ALLIANCES;
    import com.monsters.alliances.AllianceTabBase;
    import flash.display.DisplayObject;
    import flash.display.GradientType;
@@ -79,6 +80,15 @@ package com.monsters.alliances.tabs
          _filterBtnWorld.mouseChildren = false;
          _drawFilterBtn(_filterBtnWorld, KEYS.Get("alliance_filter_world"), BTN_FILTER_W, BTN_H, _filterMode == 1);
          _filterBtnWorld.addEventListener(MouseEvent.CLICK, _onFilterClick);
+
+         if (!ALLIANCES._myAlliance)
+         {
+            var btnCreate:Button_CLIP = addChild(new Button_CLIP()) as Button_CLIP;
+            btnCreate.Setup(KEYS.Get("alliance_btn_create"), false, 130, BTN_H);
+            btnCreate.x = _filterBtnWorld.x + BTN_FILTER_W + 5;
+            btnCreate.y = CTRL_Y;
+            btnCreate.addEventListener(MouseEvent.CLICK, _onCreateAlliance);
+         }
 
          // Search input + button anchored to right edge
          const searchBtnX:int = CONTENT_W - PAD - BTN_SEARCH_W;
@@ -289,6 +299,12 @@ package com.monsters.alliances.tabs
          _filterMode = (e.currentTarget == _filterBtnAll) ? 0 : 1;
          _drawFilterBtn(_filterBtnAll, KEYS.Get("alliance_filter_all"), BTN_FILTER_W, BTN_H, _filterMode == 0);
          _drawFilterBtn(_filterBtnWorld, KEYS.Get("alliance_filter_world"), BTN_FILTER_W, BTN_H, _filterMode == 1);
+      }
+
+      private function _onCreateAlliance(e:MouseEvent):void
+      {
+         SOUNDS.Play("click1");
+         new AllianceFormPopup().Show(AllianceFormPopup.MODE_CREATE);
       }
 
       /**

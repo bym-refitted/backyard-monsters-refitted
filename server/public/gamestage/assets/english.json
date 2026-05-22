@@ -3852,6 +3852,7 @@
     "alliance_tab_suggested": "Suggested",
     "alliance_tab_invites": "Invites (#v1#)",
     "alliance_btn_ok": "Ok",
+    "alliance_btn_create": "Create Alliance",
     "alliance_btn_visit_leader": "Visit Leader",
     "alliance_btn_request_join": "Request to Join",
     "alliance_btn_search": "Search",
@@ -3868,5 +3869,15 @@
     "alliance_relation_title": "STICKS AND STONES!",
     "alliance_relation_foe": "Change your relationship with \"#v1#\" to Foe. Your Alliance will take the hint that it's open season on anyone in \"#v1#\".",
     "alliance_relation_neutral": "Change your relationship with \"#v1#\" to Neutral. Neither alliance will take action against the other.",
-    "alliance_relation_ally": "Change your relationship with \"#v1#\" to Ally. Your Alliance will treat all members of \"#v1#\" as friends."
+    "alliance_relation_ally": "Change your relationship with \"#v1#\" to Ally. Your Alliance will treat all members of \"#v1#\" as friends.",
+    "alliance_create_title": "CREATE ALLIANCE",
+    "alliance_edit_title": "EDIT ALLIANCE",
+    "alliance_create_desc": "Alliances are groups of players who band together to conquer the world! Pick your Alliance icon, enter a name, and write a description to recruit new members.",
+    "alliance_edit_desc": "Edit your Alliance icon or description below. <b>NOTE:</b> You cannot edit your Alliance name once it has been set.",
+    "alliance_lbl_name": "Alliance Name",
+    "alliance_lbl_desc": "Description",
+    "alliance_lbl_shield": "Shield Preview",
+    "alliance_btn_save": "Save Changes",
+    "alliance_name_placeholder": "Alliance Name",
+    "alliance_desc_placeholder": "Alliance Description"
 }
