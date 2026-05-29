@@ -9,6 +9,7 @@ import {
   emailPasswordErr,
   discordVerifyErr,
   userPermaBannedErr,
+  tokenAuthFailureErr,
 } from "../../errors/errors.js";
 import { logger } from "../../utils/logger.js";
 import { type JwtClaims, verifyJwtToken } from "../../middleware/auth.js";
@@ -31,6 +32,9 @@ import { fetchDiscordAvatar } from "../../services/discord/fetchDiscordAvatar.js
  */
 const authenticateWithToken = async (token: string) => {
   const { user } = verifyJwtToken(token);
+
+  const storedToken = await redis.get(`user-token:${user.sessionType}:${user.email}`);
+  if (storedToken !== token) throw tokenAuthFailureErr();
 
   let userRecord = await postgres.em.findOne(User, { email: user.email });
   if (!userRecord) throw emailPasswordErr();
