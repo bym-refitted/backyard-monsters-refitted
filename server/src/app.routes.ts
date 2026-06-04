@@ -3,7 +3,7 @@ import Router from "@koa/router";
 import { logRequest } from "./middleware/logRequest.js";
 import { apiVersion } from "./middleware/apiVersioning.js";
 import { verifyUserAuth, verifyAccountStatus } from "./middleware/auth.js";
-import { getCellsLimiter, registerLimiter } from "./middleware/rateLimiters.js";
+import { getCellsLimiter, loginLimiter, registerLimiter } from "./middleware/rateLimiters.js";
 import { Status } from "./enums/StatusCodes.js";
 
 import { init } from "./controllers/init.js";
@@ -63,7 +63,7 @@ router.get("/connection", (ctx) => (ctx.status = Status.OK));
 /**  ────────────────────────────────────────────────
 * 📦 Auth
 * ──────────────────────────────────────────────── */
-router.post("/api/:apiVersion/player/getinfo", apiVersion, logRequest, login);
+router.post("/api/:apiVersion/player/getinfo", apiVersion, loginLimiter, logRequest, login);
 router.post("/api/:apiVersion/player/register", apiVersion, registerLimiter, logRequest, register);
 router.post("/api/:apiVersion/player/forgotPassword", apiVersion, forgotPassword);
 router.post("/api/:apiVersion/player/reset-password", resetPassword);

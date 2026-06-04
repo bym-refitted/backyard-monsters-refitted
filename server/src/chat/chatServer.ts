@@ -12,6 +12,8 @@ const POLICY_REQUEST = "<policy-file-request/>";
 
 const DEFAULT_SOCKET_DATA = { userId: null, displayName: "", channel: null, lastMsgAt: 0 };
 
+const POLICY_TIMEOUT_MS = 3000;
+
 /**
  * Flash Player requires a socket policy before allowing raw socket connections.
  * It probes port 843 first, sending "<policy-file-request/>" and expecting the
@@ -22,14 +24,20 @@ const startPolicyServer = () => {
   const PORT = 843;
 
   try {
-    const options: TCPSocketListenOptions<null> = {
+    const options: TCPSocketListenOptions<ReturnType<typeof setTimeout> | null> = {
       hostname: HOSTNAME,
       port: PORT,
       socket: {
+        open: (socket) => {
+          socket.data = setTimeout(() => socket.end(), POLICY_TIMEOUT_MS);
+        },
         data: (socket, data) => {
-          if (!data.toString().includes(POLICY_REQUEST)) return;
-          socket.write(POLICY);
+          if (socket.data) clearTimeout(socket.data);
+          if (data.toString().includes(POLICY_REQUEST)) socket.write(POLICY);
           socket.end();
+        },
+        close: (socket) => {
+          if (socket.data) clearTimeout(socket.data);
         },
         error: (_, err) => logger.warn(`Socket policy server error: ${err.message}`),
       },

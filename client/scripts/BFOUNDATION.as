@@ -3680,16 +3680,14 @@ package
             }
          }
          this._countdownUpgrade.Set(int(building.cU));
-         // In MR2, cancel any in-progress upgrade that targets a level above the MR2 cap.
-         // This handles the case where a player started a housing/flinger upgrade on MR3 then
-         // downgraded back to MR2.
-         if(this._countdownUpgrade.Get() > 0 && !MapRoomManager.instance.isInMapRoom3)
+         // Cancel any in-progress upgrade that targets a level the building can no longer reach
+         // in the current map room mode. Covers buildings whose level is force-set by map version
+         // (e.g. the Map Room, or a housing/flinger upgrade started on MR3 then downgraded to MR2):
+         // a leftover countdown would otherwise index past the costs array and break rendering.
+         if(this._countdownUpgrade.Get() > 0 && this._lvl.Get() >= getEffectiveLevelMax())
          {
-            if((this._type == 15 && this._lvl.Get() >= 6) || (this._type == 5 && this._lvl.Get() >= 4))
-            {
-               this._countdownUpgrade.Set(0);
-               BASE.Save();
-            }
+            this._countdownUpgrade.Set(0);
+            BASE.Save();
          }
          this._countdownRebuild.Set(int(building.cR));
          this._hpCountdownRebuild = this._countdownRebuild.Get();

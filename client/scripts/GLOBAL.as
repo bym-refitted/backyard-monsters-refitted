@@ -47,7 +47,7 @@ package
 
       public static var cdnUrl:String = CONFIG::CDN_URL;
 
-      public static var apiVersionSuffix:String = "v1.0.6-beta";
+      public static var apiVersionSuffix:String = "v1.0.7-beta";
 
       public static var connectionCounter:int;
 
@@ -2184,6 +2184,7 @@ package
          }
          if (UI_BOTTOM && UI_BOTTOM._missions && !UI_BOTTOM._missions._open)
          {
+<<<<<<< HEAD
             if (Capabilities.playerType == EnumPlayerType.DESKTOP)
             {
                _SCREENHUD = new Point(_SCREEN.x, UI_BOTTOM._missions.y);
@@ -2197,6 +2198,11 @@ package
          {
             _SCREENHUD = new Point(_SCREEN.x, UI_BOTTOM._missions.y + UI_BOTTOM._missions.frame.y * UI_BOTTOM._missions.scaleY);
          }
+=======
+            _SCREENHUD = new Point(_SCREEN.x, _SCREEN.y + _SCREEN.height - 30 - 0);
+
+        }
+>>>>>>> efcafe94d0a0a59c939e10c2f39880fe7f3d8731
          if (Chat._chatInited && Chat._bymChat && !Chat._bymChat._open)
          {
             _SCREENHUDLEFT = new Point(_SCREEN.x, _SCREEN.y + _SCREEN.height - 30 - 0);

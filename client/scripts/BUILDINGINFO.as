@@ -209,13 +209,18 @@ package
                      }
                      else if(_props.id == 11 || _props.id == 5 || _props.id == 51)
                      {
-                        if(MapRoomManager.instance.isInMapRoom3 === false && Boolean(GLOBAL._flags.maproom2))
+                        // "New World Map" (Map Room 3 migration) is only shown once the player is on
+                        // Map Room 2, at Town Hall 6+, and the Map Room is not mid-upgrade. An MR1
+                        // player should upgrade the Map Room 1 -> 2 first rather than skip to MR3, and
+                        // entering MR3 mid-upgrade force-promotes the Map Room to its max level with a
+                        // still-pending countdown.
+                        if(MapRoomManager.instance.isInMapRoom2 && Boolean(GLOBAL._flags.maproom2) && GLOBAL.townHall != null && GLOBAL.townHall._lvl.Get() >= 6 && (GLOBAL._bMap == null || GLOBAL._bMap._countdownUpgrade.Get() == 0))
                         {
                            _loc1_.push(["btn_joinnwm",30,_loc12_]);
                            _loc12_ = false;
                         }
                         _loc1_.push(["btn_viewmap",30,_loc12_]);
-                        if(!MapRoomManager.instance.isInMapRoom2or3 && Boolean(GLOBAL._flags.maproom2))
+                        if(!MapRoomManager.instance.isInMapRoom2or3 && Boolean(GLOBAL._flags.maproom2) && _props.id == MAPROOM.TYPE)
                         {
                            _loc1_.push(["btn_upgrade",30]);
                         }

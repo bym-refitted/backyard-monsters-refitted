@@ -9,6 +9,7 @@ import {
   emailPasswordErr,
   discordVerifyErr,
   userPermaBannedErr,
+  tokenAuthFailureErr,
 } from "../../errors/errors.js";
 import { logger } from "../../utils/logger.js";
 import { type JwtClaims, verifyJwtToken } from "../../middleware/auth.js";
@@ -31,6 +32,9 @@ import { fetchDiscordAvatar } from "../../services/discord/fetchDiscordAvatar.js
  */
 const authenticateWithToken = async (token: string) => {
   const { user } = verifyJwtToken(token);
+
+  const storedToken = await redis.get(`user-token:${user.sessionType}:${user.email}`);
+  if (storedToken !== token) throw tokenAuthFailureErr();
 
   let userRecord = await postgres.em.findOne(User, { email: user.email });
   if (!userRecord) throw emailPasswordErr();
@@ -55,7 +59,14 @@ export const login: KoaController = async (ctx) => {
   let { email, password, token, sessionType } = UserLoginSchema.parse(ctx.request.body);
   let user: User | null = null;
 
-  if (token) user = await authenticateWithToken(token);
+  if (token) {
+    try {
+      user = await authenticateWithToken(token);
+    } catch (err) {
+      if (!email || !password) throw err;
+      logger.warn(`Token login failed: ${(err as Error).message}`);
+    }
+  }
 
   if (!user) {
     user = await postgres.em.findOne(User, { email });
