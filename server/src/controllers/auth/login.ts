@@ -59,7 +59,14 @@ export const login: KoaController = async (ctx) => {
   let { email, password, token, sessionType } = UserLoginSchema.parse(ctx.request.body);
   let user: User | null = null;
 
-  if (token) user = await authenticateWithToken(token);
+  if (token) {
+    try {
+      user = await authenticateWithToken(token);
+    } catch (err) {
+      if (!email || !password) throw err;
+      logger.warn(`Token login failed: ${(err as Error).message}`);
+    }
+  }
 
   if (!user) {
     user = await postgres.em.findOne(User, { email });
