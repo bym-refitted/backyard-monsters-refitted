@@ -23,6 +23,7 @@ package
 
       private var _tabs:Array;
       private var _contentMC:MovieClip;
+      private var _innerBg:MovieClip;
       private var _activeTab:int = 0;
 
       public function ALLIANCEPOPUP()
@@ -48,14 +49,24 @@ package
 
       private function _buildInnerBackground():void
       {
-         var bg:MovieClip = addChild(new MovieClip()) as MovieClip;
-         bg.mouseEnabled = false;
-         bg.graphics.lineStyle(1, AllianceConstants.BORDER_COLOR, 1);
-         bg.graphics.beginFill(AllianceConstants.INNER_BG, 1);
-         bg.graphics.drawRect(0, 0, AllianceConstants.CONTENT_W, AllianceConstants.CONTENT_H);
-         bg.graphics.endFill();
-         bg.x = CONTENT_X;
-         bg.y = CONTENT_Y;
+         _innerBg = addChild(new MovieClip()) as MovieClip;
+         _innerBg.mouseEnabled = false;
+         _innerBg.x = CONTENT_X;
+         _innerBg.y = CONTENT_Y;
+      }
+
+      /**
+       * Redraws the beige inner background at the given height. Called per tab
+       * switch so each tab can size its own content area.
+       * @param {int} contentHeight - The active tab's desired background height.
+       */
+      private function _drawInnerBackground(contentHeight:int):void
+      {
+         _innerBg.graphics.clear();
+         _innerBg.graphics.lineStyle(1, AllianceConstants.BORDER_COLOR, 1);
+         _innerBg.graphics.beginFill(AllianceConstants.INNER_BG, 1);
+         _innerBg.graphics.drawRect(0, 0, AllianceConstants.CONTENT_W, contentHeight);
+         _innerBg.graphics.endFill();
       }
 
       private function _buildTabs():void
@@ -107,6 +118,7 @@ package
             _contentMC.removeChildAt(0);
          }
          var tab:AllianceTabBase = _createTab(idx);
+         _drawInnerBackground(tab.contentHeight);
          _contentMC.addChild(tab);
          tab.build();
       }

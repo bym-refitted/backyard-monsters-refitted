@@ -63,15 +63,17 @@ package com.monsters.alliances.tabs
       private var _cells:Array;
       private var _previewCells:Array;
       private var _scrollContent:MovieClip;
+      private var _allianceName:String;
 
       public function AllianceFormPopup()
       {
          super();
       }
 
-      public function Show(mode:int):void
+      public function Show(mode:int, allianceName:String = null):void
       {
          _mode = mode;
+         _allianceName = allianceName;
          _mc = new MovieClip();
          _cells = [];
          _selectedIdx = 0;
@@ -252,10 +254,6 @@ package com.monsters.alliances.tabs
          nameBg.graphics.endFill();
          nameBg.x = x;
          nameBg.y = nameInputY;
-         if (_mode == MODE_EDIT)
-         {
-            nameBg.alpha = 0.5;
-         }
 
          var nameField:TextField = _mc.addChild(new TextField()) as TextField;
          nameField.background = false;
@@ -274,9 +272,10 @@ package com.monsters.alliances.tabs
          }
          else
          {
+            nameField.type = TextFieldType.DYNAMIC;
             nameField.selectable = false;
             nameField.mouseEnabled = false;
-            nameField.alpha = 0.5;
+            nameField.text = (_allianceName != null) ? _allianceName : "";
          }
       }
 

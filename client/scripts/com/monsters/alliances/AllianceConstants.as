@@ -3,6 +3,8 @@ package com.monsters.alliances
    public class AllianceConstants
    {
       public static const CONTENT_W:int = 808;
+      // Default beige inner-background height. Tabs may override via
+      // AllianceTabBase.contentHeight (e.g. My Alliance needs a taller area).
       public static const CONTENT_H:int = 460;
 
       public static const INNER_BG:uint = 0xF0DCC0;

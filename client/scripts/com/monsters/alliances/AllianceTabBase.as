@@ -21,6 +21,16 @@ package com.monsters.alliances
       }
 
       /**
+       * Height of the popup's beige inner background for this tab. Override to
+       * make a tab's content area taller/shorter than the shared default.
+       * @returns {int} Desired inner-background height.
+       */
+      public function get contentHeight():int
+      {
+         return CONTENT_H;
+      }
+
+      /**
        * Adds a non-interactive text label, vertically centered within rowH.
        * @param {MovieClip} parent - Container to add the label to
        * @param {String} text - Label text
