@@ -12,9 +12,27 @@ package com.monsters.alliances.tabs
          return "alliance_suggested_title";
       }
 
-      override protected function get _actionLabelKey():String
+      /**
+       * Suggested members aren't in the alliance yet, so the actions are to
+       * visit their base or invite them.
+       * @param {Object} rowData - The row the actions apply to
+       * @returns {Array} Visit Base + Invite actions for MemberActionPopup
+       */
+      override protected function _actionsFor(rowData:Object):Array
       {
-         return "alliance_btn_invite";
+         return [
+               {labelKey: "alliance_btn_visit", handler: _onVisitBase},
+               {labelKey: "alliance_btn_invite", handler: _onInvite}
+            ];
+      }
+
+      /**
+       * Invites the suggested player to the alliance. Stubbed for now.
+       * @param {Object} rowData - The row that was acted on
+       */
+      private function _onInvite(rowData:Object):void
+      {
+         // TODO: send invite request to server for rowData
       }
 
       /**

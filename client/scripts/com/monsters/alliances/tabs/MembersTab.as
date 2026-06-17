@@ -224,13 +224,20 @@ package com.monsters.alliances.tabs
       }
 
       /**
-       * Localisation key for the row action button inside the popup. Members
-       * can kick; Suggested members can be invited (subclass override).
-       * @returns {String} KEYS key for the action button label
+       * Ordered list of actions for a row's popup, rendered top-to-bottom. Each
+       * entry is { labelKey:String, handler:Function }. Members can visit a
+       * member's base, kick them, or promote them; Suggested overrides this to
+       * offer a single Invite action.
+       * @param {Object} rowData - The row the actions apply to
+       * @returns {Array} Action descriptors for MemberActionPopup
        */
-      protected function get _actionLabelKey():String
+      protected function _actionsFor(rowData:Object):Array
       {
-         return "alliance_btn_kick";
+         return [
+               {labelKey: "alliance_btn_visit", handler: _onVisitBase},
+               {labelKey: "alliance_btn_kick", handler: _onKick},
+               {labelKey: "alliance_btn_promote", handler: _onPromote}
+            ];
       }
 
       /**
@@ -245,9 +252,10 @@ package com.monsters.alliances.tabs
          return function(e:MouseEvent):void
          {
             SOUNDS.Play("click1");
+            var popupH:int = MemberActionPopup.heightFor(_actionsFor(rowData).length);
             const popY:int = Math.min(
                   TABLE_Y + rowBaseY,
-                  CONTENT_H - MemberActionPopup.POPUP_H
+                  CONTENT_H - popupH
                ) + 12;
             _showActionsPopup(rowData, POP_X - 30, popY);
          };
@@ -256,7 +264,7 @@ package com.monsters.alliances.tabs
       private function _showActionsPopup(rowData:Object, popX:int, popY:int):void
       {
          _dismissActivePopup();
-         _activePopup = new MemberActionPopup(rowData, _dismissActivePopup, _actionLabelKey, _onActionSelected);
+         _activePopup = new MemberActionPopup(rowData, _dismissActivePopup, _actionsFor(rowData));
          _activePopup.x = popX;
          _activePopup.y = popY;
          addChild(_activePopup);
@@ -299,13 +307,30 @@ package com.monsters.alliances.tabs
       }
 
       /**
-       * Invoked when the popup's action button (Kick / Invite) is clicked.
-       * Stubbed for now — wires up to the server request later.
+       * Opens the selected member's base. Stubbed for now.
        * @param {Object} rowData - The row that was acted on
        */
-      protected function _onActionSelected(rowData:Object):void
+      protected function _onVisitBase(rowData:Object):void
       {
-         // TODO: send kick / invite request to server for rowData
+         // TODO: navigate to rowData's base
+      }
+
+      /**
+       * Kicks the selected member from the alliance. Stubbed for now.
+       * @param {Object} rowData - The row that was acted on
+       */
+      protected function _onKick(rowData:Object):void
+      {
+         // TODO: send kick request to server for rowData
+      }
+
+      /**
+       * Promotes the selected member. Stubbed for now.
+       * @param {Object} rowData - The row that was acted on
+       */
+      protected function _onPromote(rowData:Object):void
+      {
+         // TODO: send promote request to server for rowData
       }
 
       /**
