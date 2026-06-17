@@ -63,7 +63,10 @@ package com.monsters.alliances.tabs
       // Gap below the beige inner section — the pagination sits on the wooden
       // frame at the very bottom of the popup, outside the content area.
       private static const PAGE_Y_GAP:int = 13;
-      private static const MOCK_TOTAL_PAGES:int = 10;
+      // Number of page-number buttons visible at once (the window slides as the
+      // current page advances)
+      private static const PAGE_VISIBLE:int = 10;
+      private static const MOCK_TOTAL_PAGES:int = 20;
 
       private var _filterMode:int = 0;
       private var _filterBtnAll:MovieClip;
@@ -265,42 +268,56 @@ package com.monsters.alliances.tabs
       }
 
       /**
-       * Builds the pagination row (<<, page numbers, >>). It sits on the wooden
-       * frame at the bottom of the popup, just below the beige inner section, and
-       * is right-aligned to the inner section's right edge. Mock page count for
-       * now; the current page is shown non-clickable.
+       * Builds the pagination row (<<, a sliding window of page numbers, >>). It
+       * sits on the wooden frame at the bottom of the popup, just below the beige
+       * inner section, right-aligned to the inner section's right edge. The window
+       * shows up to PAGE_VISIBLE pages and slides as the current page advances
+       * past it (e.g. 1–10, then 2–11, …). The current page and the arrows at the
+       * first/last page are drawn non-clickable.
        */
       private function _buildPagination():void
       {
-         const pages:int = MOCK_TOTAL_PAGES;
-         if (pages <= 1)
+         const total:int = MOCK_TOTAL_PAGES;
+         if (total <= 1)
          {
             return;
          }
 
-         const count:int = pages + 2; // page numbers plus << and >>
+         const visible:int = Math.min(PAGE_VISIBLE, total);
+         // Window slides so the current page stays visible (rightmost once past it)
+         var start:int = (_currentPage <= visible) ? 1 : _currentPage - visible + 1;
+         if (start > total - visible + 1)
+         {
+            start = total - visible + 1;
+         }
+         if (start < 1)
+         {
+            start = 1;
+         }
+         const end:int = start + visible - 1;
+
+         const count:int = visible + 2; // page numbers plus << and >>
          const totalW:int = count * PAGE_BTN_SIZE + (count - 1) * PAGE_BTN_GAP;
-         // Below the inner section (CONTENT_H), on the wooden frame; the last
-         // button's right edge aligns with the inner section's right edge
          const py:int = CONTENT_H + PAGE_Y_GAP;
+         const step:int = PAGE_BTN_SIZE + PAGE_BTN_GAP;
          var x:int = CONTENT_W - totalW;
 
          var prev:MovieClip = _makePageButton("<<", _currentPage - 1, _currentPage <= 1);
          prev.x = x;
          prev.y = py;
          addChild(prev);
-         x += PAGE_BTN_SIZE + PAGE_BTN_GAP;
+         x += step;
 
-         for (var h:int = 1; h <= pages; h++)
+         for (var p:int = start; p <= end; p++)
          {
-            var num:MovieClip = _makePageButton(String(h), h, h == _currentPage);
+            var num:MovieClip = _makePageButton(String(p), p, p == _currentPage);
             num.x = x;
             num.y = py;
             addChild(num);
-            x += PAGE_BTN_SIZE + PAGE_BTN_GAP;
+            x += step;
          }
 
-         var next:MovieClip = _makePageButton(">>", _currentPage + 1, _currentPage >= pages);
+         var next:MovieClip = _makePageButton(">>", _currentPage + 1, _currentPage >= total);
          next.x = x;
          next.y = py;
          addChild(next);
