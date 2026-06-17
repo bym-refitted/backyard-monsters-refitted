@@ -57,16 +57,51 @@ package
 
       /**
        * Redraws the beige inner background at the given height. Called per tab
-       * switch so each tab can size its own content area.
+       * switch so each tab can size its own content area. The panel's top border
+       * is split around the active tab so the active tab visually merges into the
+       * content area (no line drawn beneath it), while inactive tabs keep the line.
        * @param {int} contentHeight - The active tab's desired background height.
        */
       private function _drawInnerBackground(contentHeight:int):void
       {
+         const w:int = AllianceConstants.CONTENT_W;
+
          _innerBg.graphics.clear();
-         _innerBg.graphics.lineStyle(1, AllianceConstants.BORDER_COLOR, 1);
+
+         // Fill only (no stroke) — borders are drawn as segments below
+         _innerBg.graphics.lineStyle();
          _innerBg.graphics.beginFill(AllianceConstants.INNER_BG, 1);
-         _innerBg.graphics.drawRect(0, 0, AllianceConstants.CONTENT_W, contentHeight);
+         _innerBg.graphics.drawRect(0, 0, w, contentHeight);
          _innerBg.graphics.endFill();
+
+         // Active tab's horizontal span in inner-bg-local coordinates
+         var gapStart:int = -1;
+         var gapEnd:int = -1;
+         if (_tabs != null && _activeTab >= 0 && _activeTab < _tabs.length)
+         {
+            gapStart = int(_tabs[_activeTab].x) - CONTENT_X;
+            gapEnd = gapStart + int(AllianceConstants.TAB_WIDTHS[_activeTab]);
+         }
+
+         _innerBg.graphics.lineStyle(1, AllianceConstants.BORDER_COLOR, 1);
+         // Left, right and bottom edges
+         _innerBg.graphics.moveTo(0, 0);
+         _innerBg.graphics.lineTo(0, contentHeight);
+         _innerBg.graphics.lineTo(w, contentHeight);
+         _innerBg.graphics.lineTo(w, 0);
+         // Top edge, split around the active tab so its underside stays open
+         if (gapStart < 0)
+         {
+            _innerBg.graphics.moveTo(0, 0);
+            _innerBg.graphics.lineTo(w, 0);
+         }
+         else
+         {
+            _innerBg.graphics.moveTo(0, 0);
+            _innerBg.graphics.lineTo(gapStart, 0);
+            _innerBg.graphics.moveTo(gapEnd, 0);
+            _innerBg.graphics.lineTo(w, 0);
+         }
       }
 
       private function _buildTabs():void

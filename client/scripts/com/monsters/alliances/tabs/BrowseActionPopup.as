@@ -1,5 +1,6 @@
 package com.monsters.alliances.tabs
 {
+   import com.monsters.alliances.AllianceConstants;
    import com.monsters.alliances.tabs.AllianceRelationPopup;
    import flash.display.GradientType;
    import flash.display.MovieClip;
@@ -11,6 +12,8 @@ package com.monsters.alliances.tabs
 
    public class BrowseActionPopup extends MovieClip
    {
+      // Larger than the original #actionsBox (103×25 / 9px) for readability in
+      // the Flash client; colours/border/radius still match the original.
       public static const POPUP_W:int = 150;
       private static const BTN_W:int = 134;
       private static const BTN_H:int = 32;
@@ -18,10 +21,17 @@ package com.monsters.alliances.tabs
       private static const PAD:int = 8;
       private static const BTN_GAP:int = 6;
       private static const ICON_ROW_GAP:int = 8;
+      // Swatch size matches the larger (readable) popup; colours match the
+      // original foe/neutral/ally relationship colours below.
       private static const ICON_W:int = 37;
       private static const ICON_H:int = 35;
       private static const ICON_GAP:int = 8;
-      private static const SHIELD_COLORS:Array = [0xFF5625, 0xFFF200, 0x0AB705];
+      // Foe / Neutral / Ally — original relationship colours
+      private static const RELATION_COLORS:Array = [
+            AllianceConstants.REL_HOSTILE,
+            AllianceConstants.REL_NEUTRAL,
+            AllianceConstants.REL_FRIENDLY
+         ];
       private static const RELATION_KEYS:Array = [
             "alliance_relation_foe",
             "alliance_relation_neutral",
@@ -51,9 +61,9 @@ package com.monsters.alliances.tabs
       {
          var bg:MovieClip = addChild(new MovieClip()) as MovieClip;
          bg.mouseEnabled = false;
-         bg.graphics.lineStyle(1, 0x333333, 1);
-         bg.graphics.beginFill(0xAE8254, 1);
-         bg.graphics.drawRoundRect(0, 0, POPUP_W, POPUP_H, 8, 8);
+         bg.graphics.lineStyle(1, AllianceConstants.CELL_BORDER, 1);
+         bg.graphics.beginFill(AllianceConstants.ACTION_BG, 1);
+         bg.graphics.drawRoundRect(0, 0, POPUP_W, POPUP_H, 3, 3);
          bg.graphics.endFill();
 
          const btnX:int = int((POPUP_W - BTN_W) / 2);
@@ -72,13 +82,13 @@ package com.monsters.alliances.tabs
          const startX:int = PAD;
 
          var ci:int = 0;
-         while (ci < SHIELD_COLORS.length)
+         while (ci < RELATION_COLORS.length)
          {
             var box:MovieClip = addChild(new MovieClip()) as MovieClip;
             box.buttonMode = true;
             box.mouseChildren = false;
-            box.graphics.lineStyle(1, 0x333333, 1);
-            box.graphics.beginFill(uint(SHIELD_COLORS[ci]), 1);
+            box.graphics.lineStyle(1, AllianceConstants.CELL_BORDER, 1);
+            box.graphics.beginFill(uint(RELATION_COLORS[ci]), 1);
             box.graphics.drawRect(0, 0, ICON_W, ICON_H);
             box.graphics.endFill();
             box.x = startX + ci * (ICON_W + ICON_GAP);
@@ -160,12 +170,11 @@ package com.monsters.alliances.tabs
       private function _onRequestJoin(e:MouseEvent):void
       {
          SOUNDS.Play("click1");
-         var name:String = (_rowData && _rowData.name) ? String(_rowData.name) : "";
          _dismiss();
-         // TODO: send join request to server
+         // TODO: send join request to server, then show this on the success response
          new AllianceRelationPopup().Show(
                KEYS.Get("alliance_join_request_title"),
-               KEYS.Get("alliance_join_request_body", {"v1": name})
+               KEYS.Get("alliance_join_request_body")
             );
       }
    }

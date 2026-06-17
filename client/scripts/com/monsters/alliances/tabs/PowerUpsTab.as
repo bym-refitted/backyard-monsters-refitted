@@ -153,9 +153,9 @@ package com.monsters.alliances.tabs
          // Cooldown bar (gray) with centred charging text
          var bar:MovieClip = container.addChild(new MovieClip()) as MovieClip;
          bar.mouseEnabled = false;
-         bar.graphics.beginFill(0xA3A3A3, 1);
-         bar.graphics.lineStyle(1, 0x333333, 1);
-         bar.graphics.drawRoundRect(0, 0, barW, BAR_H, 4, 4);
+         bar.graphics.beginFill(0x999999, 1);
+         bar.graphics.lineStyle(1, 0x000000, 1);
+         bar.graphics.drawRect(0, 0, barW, BAR_H);
          bar.graphics.endFill();
          bar.x = barX;
          bar.y = rowY + BAR_Y;
@@ -169,7 +169,7 @@ package com.monsters.alliances.tabs
             var barFill:MovieClip = container.addChild(new MovieClip()) as MovieClip;
             barFill.mouseEnabled = false;
             barFill.graphics.beginFill(0x40E0D0, 1);
-            barFill.graphics.drawRoundRect(0, 0, fillW, BAR_H - 2, 3, 3);
+            barFill.graphics.drawRect(0, 0, fillW, BAR_H - 2);
             barFill.graphics.endFill();
             barFill.x = barX + 1;
             barFill.y = rowY + BAR_Y + 1;

@@ -1,5 +1,6 @@
 package com.monsters.alliances.tabs
 {
+   import com.monsters.alliances.AllianceConstants;
    import flash.display.GradientType;
    import flash.display.MovieClip;
    import flash.events.MouseEvent;
@@ -17,6 +18,8 @@ package com.monsters.alliances.tabs
     */
    public class MemberActionPopup extends MovieClip
    {
+      // Larger than the original #actionsBox (103×25 / 9px) for readability in
+      // the Flash client; colours/border/radius still match the original.
       public static const POPUP_W:int = 150;
       private static const BTN_W:int = 134;
       private static const BTN_H:int = 32;
@@ -60,9 +63,9 @@ package com.monsters.alliances.tabs
 
          var bg:MovieClip = addChild(new MovieClip()) as MovieClip;
          bg.mouseEnabled = false;
-         bg.graphics.lineStyle(1, 0x333333, 1);
-         bg.graphics.beginFill(0xAE8254, 1);
-         bg.graphics.drawRoundRect(0, 0, POPUP_W, popupH, 8, 8);
+         bg.graphics.lineStyle(1, AllianceConstants.CELL_BORDER, 1);
+         bg.graphics.beginFill(AllianceConstants.ACTION_BG, 1);
+         bg.graphics.drawRoundRect(0, 0, POPUP_W, popupH, 3, 3);
          bg.graphics.endFill();
 
          for (var i:int = 0; i < _actions.length; i++)

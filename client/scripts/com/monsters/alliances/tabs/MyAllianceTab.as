@@ -95,9 +95,9 @@ package com.monsters.alliances.tabs
       // server data. The live condition is ALLIANCES._myAlliance != null.
       private static const MOCK_IN_ALLIANCE:Boolean = true;
 
-      // Alternating chat band colours
-      private static const BAND_A:uint = 0xE5EDDE;
-      private static const BAND_B:uint = 0xCADBBD;
+      // Alternating chat band colours (original shout-alternating0 / 1)
+      private static const BAND_A:uint = AllianceConstants.SHOUT_BAND0;
+      private static const BAND_B:uint = AllianceConstants.SHOUT_BAND1;
 
       // Chat state — own WebSocket transport, left disconnected for now
       private var _chatContent:MovieClip;
@@ -465,7 +465,7 @@ package com.monsters.alliances.tabs
          // attached flush to the chat bottom
          var panel:MovieClip = addChild(new MovieClip()) as MovieClip;
          panel.mouseEnabled = false;
-         panel.graphics.beginFill(0xAE8254, 1);
+         panel.graphics.beginFill(AllianceConstants.ACTION_BG, 1);
          panel.graphics.lineStyle(1, 0x6E4F2E, 1);
          panel.graphics.drawRect(0, 0, CHAT_W, PANEL_H);
          panel.graphics.endFill();

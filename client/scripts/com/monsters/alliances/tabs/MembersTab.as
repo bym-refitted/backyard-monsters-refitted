@@ -1,5 +1,6 @@
 package com.monsters.alliances.tabs
 {
+   import com.monsters.alliances.AllianceConstants;
    import com.monsters.alliances.AllianceTabBase;
    import flash.display.DisplayObject;
    import flash.display.MovieClip;
@@ -28,25 +29,26 @@ package com.monsters.alliances.tabs
       private static const HEADER_H:int = 24;
       private static const ROW_H:int = 36;
 
-      // Column layout — widths sum to TABLE_W (788)
-      // | Level(60) | Name(258) | Status(70) | EmpirePoints(120) | LastAttacker(150) | Actions(130) |
+      // Column layout — original proportions (alliance.v343.css members table:
+      // Level45/Name165/Status60/EP100/Attacker130/Actions100) scaled to TABLE_W (788).
       private static const C_LVL_X:int = 0;
-      private static const C_LVL_W:int = 60;
-      private static const C_NAME_X:int = 60;
-      private static const C_NAME_W:int = 258;
-      private static const C_STATUS_X:int = 318;
-      private static const C_STATUS_W:int = 70;
-      private static const C_EP_X:int = 388;
-      private static const C_EP_W:int = 120;
-      private static const C_ATK_X:int = 508;
-      private static const C_ATK_W:int = 150;
-      private static const C_ACT_X:int = 658;
-      private static const C_ACT_W:int = 130;
+      private static const C_LVL_W:int = 59;
+      private static const C_NAME_X:int = 59;
+      private static const C_NAME_W:int = 217;
+      private static const C_STATUS_X:int = 276;
+      private static const C_STATUS_W:int = 79;
+      private static const C_EP_X:int = 355;
+      private static const C_EP_W:int = 131;
+      private static const C_ATK_X:int = 486;
+      private static const C_ATK_W:int = 171;
+      private static const C_ACT_X:int = 657;
+      private static const C_ACT_W:int = 131;
 
-      private static const AVATAR_SIZE:int = 28;
+      // Original member pic is 25×25
+      private static const AVATAR_SIZE:int = 25;
 
-      // Actions button is narrower than its column and centred within it
-      private static const ACT_BTN_W:int = 96;
+      // Actions button is narrower than its column and centred within it (original 97×25)
+      private static const ACT_BTN_W:int = 97;
 
       // Popup is right-aligned to the Actions column's right edge
       private static const POP_RIGHT_X:int = TABLE_X + C_ACT_X + C_ACT_W;
@@ -105,9 +107,9 @@ package com.monsters.alliances.tabs
       {
          if (rowData.self == true)
          {
-            return 0xFAEC82;
+            return AllianceConstants.ROW_ME;
          }
-         return (index % 2 == 0) ? 0xF8ECDF : 0xF1DAC1;
+         return (index % 2 == 0) ? AllianceConstants.ROW_ALT0 : AllianceConstants.ROW_ALT1;
       }
 
       /**
@@ -131,7 +133,7 @@ package com.monsters.alliances.tabs
          tableMC.y = TABLE_Y;
 
          // Pass 1: header + alternating row background fills
-         tableMC.graphics.beginFill(0xCFA377);
+         tableMC.graphics.beginFill(AllianceConstants.HEADER_BG);
          tableMC.graphics.drawRect(0, 0, TABLE_W, HEADER_H);
          tableMC.graphics.endFill();
 
@@ -145,7 +147,7 @@ package com.monsters.alliances.tabs
          }
 
          // Pass 2: vertical column separators
-         tableMC.graphics.lineStyle(1, 0x333333, 1);
+         tableMC.graphics.lineStyle(1, AllianceConstants.CELL_BORDER, 1);
          var vLineXs:Array = [C_NAME_X, C_STATUS_X, C_EP_X, C_ATK_X, C_ACT_X];
          var vli:int = 0;
          while (vli < vLineXs.length)
@@ -154,8 +156,8 @@ package com.monsters.alliances.tabs
             tableMC.graphics.lineTo(int(vLineXs[vli]), totalH);
             vli++;
          }
-         // Outer border uses gray (not black) to match surrounding UI
-         tableMC.graphics.lineStyle(1, 0x888888, 1);
+         // Outer table border
+         tableMC.graphics.lineStyle(1, AllianceConstants.TABLE_BORDER, 1);
          tableMC.graphics.drawRect(0, 0, TABLE_W, totalH);
 
          // Pass 3: header labels
@@ -212,7 +214,7 @@ package com.monsters.alliances.tabs
          // Overlay: horizontal row separators, drawn last so they sit over fills
          var gridOverlay:MovieClip = tableMC.addChild(new MovieClip()) as MovieClip;
          gridOverlay.mouseEnabled = false;
-         gridOverlay.graphics.lineStyle(1, 0x333333, 1);
+         gridOverlay.graphics.lineStyle(1, AllianceConstants.CELL_BORDER, 1);
          var hli:int = 0;
          while (hli < data.length)
          {

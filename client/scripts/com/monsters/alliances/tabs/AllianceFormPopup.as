@@ -1,5 +1,6 @@
 package com.monsters.alliances.tabs
 {
+   import com.monsters.alliances.AllianceConstants;
    import com.monsters.display.ImageCache;
    import com.monsters.display.ScrollSetV;
    import flash.display.Bitmap;
@@ -109,7 +110,7 @@ package com.monsters.alliances.tabs
          // Left column background (beige)
          var leftBg:MovieClip = _mc.addChild(new MovieClip()) as MovieClip;
          leftBg.mouseEnabled = false;
-         leftBg.graphics.beginFill(0xF0DCC0, 1);
+         leftBg.graphics.beginFill(AllianceConstants.INNER_BG, 1);
          leftBg.graphics.lineStyle(1, 0x888888, 1);
          leftBg.graphics.drawRect(0, 0, GRID_CONTENT_W + SCROLLBAR_ALLOC, GRID_H);
          leftBg.graphics.endFill();
@@ -217,6 +218,7 @@ package com.monsters.alliances.tabs
          descField.border = false;
          descField.wordWrap = true;
          descField.multiline = true;
+         descField.maxChars = 255;
          descField.width = RIGHT_FORM_W - 12;
          descField.height = textareaH - 8;
          descField.x = x + 6;
@@ -268,6 +270,7 @@ package com.monsters.alliances.tabs
             nameField.type = TextFieldType.INPUT;
             nameField.selectable = true;
             nameField.mouseEnabled = true;
+            nameField.maxChars = 30;
             _applyPlaceholder(nameField, KEYS.Get("alliance_name_placeholder"));
          }
          else
