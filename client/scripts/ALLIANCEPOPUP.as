@@ -1,5 +1,6 @@
 package
 {
+   import com.monsters.alliances.ALLIANCES;
    import com.monsters.alliances.AllianceConstants;
    import com.monsters.alliances.AllianceTabBase;
    import com.monsters.alliances.tabs.BrowseTab;
@@ -77,10 +78,11 @@ package
          // Active tab's horizontal span in inner-bg-local coordinates
          var gapStart:int = -1;
          var gapEnd:int = -1;
-         if (_tabs != null && _activeTab >= 0 && _activeTab < _tabs.length)
+         var active:Object = _activeTabDescriptor();
+         if (active != null)
          {
-            gapStart = int(_tabs[_activeTab].x) - CONTENT_X;
-            gapEnd = gapStart + int(AllianceConstants.TAB_WIDTHS[_activeTab]);
+            gapStart = int(active.btn.x) - CONTENT_X;
+            gapEnd = gapStart + int(AllianceConstants.TAB_WIDTHS[int(active.index)]);
          }
 
          _innerBg.graphics.lineStyle(1, AllianceConstants.BORDER_COLOR, 1);
@@ -108,9 +110,11 @@ package
       {
          var currentX:int = CONTENT_X;
          _tabs = [];
-         var i:int = 0;
-         while (i < AllianceConstants.TAB_LABELS.length)
+         var visible:Array = _visibleTabIndices();
+         var n:int = 0;
+         while (n < visible.length)
          {
+            var i:int = int(visible[n]);
             var btn:ButtonBrown_CLIP = addChild(new ButtonBrown_CLIP()) as ButtonBrown_CLIP;
             var tabLabel:String;
             if (i == 3)
@@ -124,10 +128,86 @@ package
             btn.x = currentX;
             btn.y = TAB_Y;
             btn.addEventListener(MouseEvent.CLICK, _onTabClick(i));
-            _tabs.push(btn);
+            // Store the button alongside its original TAB_LABELS index so layout
+            // position stays decoupled from the index used by _createTab and the
+            // inner-background gap.
+            _tabs.push({btn: btn, index: i});
             currentX += int(AllianceConstants.TAB_WIDTHS[i]) + TAB_GAP;
+            n++;
+         }
+      }
+
+      /**
+       * Indices into TAB_LABELS for the tabs that should be shown, in order.
+       * Mirrors the original visibility rules (alliances.min.v343.js w()):
+       * Power-Ups and Members require alliance membership; Suggested also
+       * requires the player to be the alliance leader. Browse, My Alliance and
+       * Invites are always shown.
+       * @returns {Array} Visible tab indices.
+       */
+      private function _visibleTabIndices():Array
+      {
+         // TODO: hardcoded while alliance membership/role aren't wired up
+         // server-side yet — mocks the player as an in-alliance leader so every
+         // tab shows for UI work. Swap back to the real checks once the server
+         // populates them:
+         //   var inAlliance:Boolean = (ALLIANCES._myAlliance != null);
+         //   var isLeader:Boolean = ALLIANCES._isLeader;
+         var inAlliance:Boolean = true;
+         var isLeader:Boolean = true;
+         var out:Array = [];
+         var i:int = 0;
+         while (i < AllianceConstants.TAB_LABELS.length)
+         {
+            if (_isTabVisible(i, inAlliance, isLeader))
+            {
+               out.push(i);
+            }
             i++;
          }
+         return out;
+      }
+
+      /**
+       * @param {int} idx - TAB_LABELS index
+       * @param {Boolean} inAlliance - Whether the player is in an alliance
+       * @param {Boolean} isLeader - Whether the player leads their alliance
+       * @returns {Boolean} Whether the tab should be shown
+       */
+      private function _isTabVisible(idx:int, inAlliance:Boolean, isLeader:Boolean):Boolean
+      {
+         switch (idx)
+         {
+            case 2: // Power-Ups
+            case 3: // Members
+               return inAlliance;
+            case 4: // Suggested — leader only
+               return inAlliance && isLeader;
+            default: // Browse, My Alliance, Invites
+               return true;
+         }
+      }
+
+      /**
+       * @returns {Object} The visible-tab descriptor ({btn, index}) for the
+       * active tab, or null if none matches.
+       */
+      private function _activeTabDescriptor():Object
+      {
+         if (_tabs == null)
+         {
+            return null;
+         }
+         var i:int = 0;
+         while (i < _tabs.length)
+         {
+            if (int(_tabs[i].index) == _activeTab)
+            {
+               return _tabs[i];
+            }
+            i++;
+         }
+         return null;
       }
 
       private function _onTabClick(idx:int):Function
@@ -144,7 +224,7 @@ package
          var i:int = 0;
          while (i < _tabs.length)
          {
-            _tabs[i].Highlight = (i == idx);
+            _tabs[i].btn.Highlight = (int(_tabs[i].index) == idx);
             i++;
          }
          _activeTab = idx;

@@ -11,7 +11,15 @@ package com.monsters.alliances
       private static var _alliances:Object;
       
       public static var _myAlliance:AllyInfo;
-      
+
+      /**
+       * Whether the current player is the leader of their alliance. Gates
+       * leader-only UI (e.g. the Suggested Members tab and Edit Alliance).
+       * TODO: populate from the server alliance payload; defaults to false so
+       * leader-only UI stays hidden until membership/role data is loaded.
+       */
+      public static var _isLeader:Boolean = false;
+
       private static var _open:Boolean;
        
       
@@ -44,6 +52,7 @@ package com.monsters.alliances
          {
             _myAlliance = null;
          }
+         _isLeader = false;
       }
       
       public static function SetCellAlliance(param1:MapRoomCell, param2:Boolean = false) : AllyInfo
