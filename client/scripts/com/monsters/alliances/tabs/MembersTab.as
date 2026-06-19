@@ -2,6 +2,9 @@ package com.monsters.alliances.tabs
 {
    import com.monsters.alliances.AllianceConstants;
    import com.monsters.alliances.AllianceTabBase;
+   import com.monsters.display.ImageCache;
+   import flash.display.Bitmap;
+   import flash.display.BitmapData;
    import flash.display.DisplayObject;
    import flash.display.MovieClip;
    import flash.events.MouseEvent;
@@ -191,7 +194,7 @@ package com.monsters.alliances.tabs
             const nameX:int = C_NAME_X + 6 + AVATAR_SIZE + 8;
             _addLabel(tableMC, String(rowData.name), nameX, rowBaseY, C_NAME_X + C_NAME_W - nameX - 6, ROW_H, false, TextFormatAlign.LEFT);
 
-            _drawStatusDot(tableMC, C_STATUS_X + int(C_STATUS_W / 2), rowBaseY + int(ROW_H / 2), rowData.online == true);
+            _drawStatusIcon(tableMC, C_STATUS_X + int(C_STATUS_W / 2), rowBaseY + int(ROW_H / 2), rowData.online == true);
 
             _addLabel(tableMC, String(rowData.ep), C_EP_X, rowBaseY, C_EP_W, ROW_H, false, TextFormatAlign.CENTER);
             _addLabel(tableMC, String(rowData.attacker), C_ATK_X + 8, rowBaseY, C_ATK_W - 8, ROW_H, false, TextFormatAlign.LEFT);
@@ -336,28 +339,36 @@ package com.monsters.alliances.tabs
       }
 
       /**
-       * Draws an online/offline status indicator centred at (cx, cy): a glossy
-       * green dot when online, a dim grey dot when offline.
+       * Loads the online/offline status icon centred at (cx, cy) from the
+       * existing alliance assets (online_1.png / offline_1.png) via ImageCache,
+       * displayed at native size. Matches the original members table, which used
+       * these same images for the Status column.
        * @param {MovieClip} parent - Container to draw into
        * @param {int} cx - Centre x
        * @param {int} cy - Centre y
        * @param {Boolean} online - Whether the member is online
        */
-      private function _drawStatusDot(parent:MovieClip, cx:int, cy:int, online:Boolean):void
+      private function _drawStatusIcon(parent:MovieClip, cx:int, cy:int, online:Boolean):void
       {
-         const R:int = 7;
-         var dot:MovieClip = parent.addChild(new MovieClip()) as MovieClip;
-         dot.mouseEnabled = false;
-         // Thick white outer layer with a 1px light-black border
-         dot.graphics.lineStyle(1, 0x555555, 1);
-         dot.graphics.beginFill(0xFFFFFF, 1);
-         dot.graphics.drawCircle(cx, cy, R + 5);
-         dot.graphics.endFill();
-         // Coloured dot with a thin darker rim
-         dot.graphics.lineStyle(1, online ? 0x0A6E00 : 0x666666, 1);
-         dot.graphics.beginFill(online ? 0x2F9700 : 0xAAAAAA, 1);
-         dot.graphics.drawCircle(cx, cy, R);
-         dot.graphics.endFill();
+         var container:MovieClip = parent.addChild(new MovieClip()) as MovieClip;
+         container.mouseEnabled = false;
+         container.x = cx;
+         container.y = cy;
+
+         var key:String = online ? "alliances/online_1.png" : "alliances/offline_1.png";
+         ImageCache.GetImageWithCallBack(
+               key,
+               function(k:String, bmd:BitmapData, args:Array):void
+               {
+                  var bmp:Bitmap = new Bitmap(bmd);
+                  bmp.smoothing = true;
+                  // Centre the icon on the container origin at (cx, cy)
+                  bmp.x = -int(bmd.width / 2);
+                  bmp.y = -int(bmd.height / 2);
+                  (args[0] as MovieClip).addChild(bmp);
+               },
+               true, 4, "", [container]
+            );
       }
    }
 }
