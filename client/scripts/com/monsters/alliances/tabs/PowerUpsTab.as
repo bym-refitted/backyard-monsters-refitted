@@ -5,10 +5,8 @@ package com.monsters.alliances.tabs
    import com.monsters.display.ImageCache;
    import flash.display.Bitmap;
    import flash.display.BitmapData;
-   import flash.display.GradientType;
    import flash.display.MovieClip;
    import flash.events.MouseEvent;
-   import flash.geom.Matrix;
    import flash.text.TextField;
    import flash.text.TextFormat;
    import flash.text.TextFormatAlign;
@@ -67,9 +65,9 @@ package com.monsters.alliances.tabs
       private function _powerUpData():Array
       {
          return [
-               {icon: "alliances/ap_armament_icon.jpg", nameKey: "ap_armament_name", descKey: "ap_armament_description", cooldown: "11days 23hrs 42mins", progress: 0.6},
-               {icon: "alliances/ap_conquest_icon.jpg", nameKey: "ap_conquest_name", descKey: "ap_conquest_description", cooldown: "13days 23hrs 42mins", progress: 0.45},
-               {icon: "alliances/ap_declarewar_icon.jpg", nameKey: "ap_declarewar_name", descKey: "ap_declarewar_description", cooldown: "27days 23hrs 42mins", progress: 0.18}
+               {icon: "alliances/ap_armament_icon.jpg", nameKey: "ap_armament_name", descKey: "ap_armament_description", cooldown: "11days 23hrs 42mins", progress: 0.6, hourlyCost: 5, remainingHrs: 287},
+               {icon: "alliances/ap_conquest_icon.jpg", nameKey: "ap_conquest_name", descKey: "ap_conquest_description", cooldown: "13days 23hrs 42mins", progress: 0.45, hourlyCost: 5, remainingHrs: 335},
+               {icon: "alliances/ap_declarewar_icon.jpg", nameKey: "ap_declarewar_name", descKey: "ap_declarewar_description", cooldown: "27days 23hrs 42mins", progress: 0.18, hourlyCost: 5, remainingHrs: 671}
             ];
       }
 
@@ -187,12 +185,15 @@ package com.monsters.alliances.tabs
          tBar.defaultTextFormat = barFmt;
          tBar.text = KEYS.Get("powerup_ready_in") + " " + String(data.cooldown);
 
-         // Yellow Speed Up button, bottom-aligned with the bar so it keeps the
-         // same padding from the row bottom that the bar has
-         var btn:MovieClip = _makeSpeedUpButton(KEYS.Get("button_speed_up"));
+         // Gold Speed Up button, bottom-aligned with the bar so it keeps the
+         // same padding from the row bottom that the bar has. Highlight = true
+         // selects the gold button frame — the same gold variant the
+         // building-upgrade "Speed Up" button uses (see BUILDINGINFO).
+         var btn:Button_CLIP = container.addChild(new Button_CLIP()) as Button_CLIP;
+         btn.Setup(KEYS.Get("button_speed_up"), false, BTN_W, BTN_H);
+         btn.Highlight = true;
          btn.x = btnX;
          btn.y = rowY + BAR_Y + BAR_H - BTN_H;
-         container.addChild(btn);
          btn.addEventListener(MouseEvent.CLICK, _makeSpeedUpHandler(data));
       }
 
@@ -226,7 +227,8 @@ package com.monsters.alliances.tabs
       }
 
       /**
-       * Builds a click handler for a row's Speed Up button. Stubbed for now.
+       * Builds a click handler for a row's Speed Up button — opens the
+       * reduce-cooldown dialog for that power-up.
        * @param {Object} data - The power-up row the button belongs to
        * @returns {Function} MouseEvent handler
        */
@@ -235,71 +237,8 @@ package com.monsters.alliances.tabs
          return function(e:MouseEvent):void
          {
             SOUNDS.Play("click1");
-            // TODO: open the Speed Up / reduce-cooldown flow for this power-up
+            new SpeedUpPopup().Show(data);
          };
-      }
-
-      /**
-       * Creates a yellow Speed Up button with a hover state, mirroring the
-       * custom-drawn buttons used elsewhere in the alliance UI.
-       * @param {String} label - Button text
-       * @returns {MovieClip} The button clip
-       */
-      private function _makeSpeedUpButton(label:String):MovieClip
-      {
-         var mc:MovieClip = new MovieClip();
-         mc.buttonMode = true;
-         mc.mouseChildren = false;
-
-         _drawSpeedUpBg(mc, false);
-
-         var tf:TextField = mc.addChild(new TextField()) as TextField;
-         tf.selectable = false;
-         tf.mouseEnabled = false;
-         tf.width = BTN_W;
-         tf.height = 18;
-         tf.x = 0;
-         tf.y = int((BTN_H - 16) / 2);
-         var fmt:TextFormat = new TextFormat("Verdana", 10, 0x4A3A00, true);
-         fmt.align = TextFormatAlign.CENTER;
-         tf.defaultTextFormat = fmt;
-         tf.text = label;
-
-         mc.addEventListener(MouseEvent.ROLL_OVER, function(e:MouseEvent):void
-            {
-               _drawSpeedUpBg(mc, true);
-            });
-         mc.addEventListener(MouseEvent.ROLL_OUT, function(e:MouseEvent):void
-            {
-               _drawSpeedUpBg(mc, false);
-            });
-
-         return mc;
-      }
-
-      /**
-       * Draws (or redraws) the yellow button background in its normal or hover
-       * state, preserving the text child.
-       * @param {MovieClip} mc - The button clip
-       * @param {Boolean} hover - Whether to draw the hover (lighter) state
-       */
-      private function _drawSpeedUpBg(mc:MovieClip, hover:Boolean):void
-      {
-         mc.graphics.clear();
-         mc.graphics.lineStyle(1, 0x8A6D00, 1);
-         var mtx:Matrix = new Matrix();
-         mtx.createGradientBox(BTN_W, BTN_H, Math.PI / 2, 0, 0);
-         // Top color at ratio 0, bottom color at ratio 255 (vertical axis)
-         if (hover)
-         {
-            mc.graphics.beginGradientFill(GradientType.LINEAR, [0xFCFAC8, 0xF6F082], [1, 1], [0, 255], mtx);
-         }
-         else
-         {
-            mc.graphics.beginGradientFill(GradientType.LINEAR, [0xF7F5A3, 0xE6D63C], [1, 1], [0, 255], mtx);
-         }
-         mc.graphics.drawRoundRect(0, 0, BTN_W, BTN_H, 5, 5);
-         mc.graphics.endFill();
       }
    }
 }
