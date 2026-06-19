@@ -21,7 +21,6 @@ package com.monsters.alliances.tabs
       public static const MODE_CREATE:int = 0;
       public static const MODE_EDIT:int = 1;
 
-      // Frame
       private static const BG_W:int = 580;
       private static const BG_H:int = 500;
       private static const PAD_H:int = 28;
@@ -30,27 +29,18 @@ package com.monsters.alliances.tabs
       private static const TITLE_H:int = 32;
       private static const TITLE_GAP:int = 12;
       private static const PAD_BOTTOM:int = 20;
-      // CONTENT_Y_OFFSET = PAD_TOP + TITLE_H + TITLE_GAP = 66
-      private static const CONTENT_Y_OFFSET:int = 66;
-      // CONTENT_H = BG_H - CONTENT_Y_OFFSET - PAD_BOTTOM = 414
-      private static const CONTENT_H:int = 414;
+      private static const CONTENT_Y_OFFSET:int = PAD_TOP + TITLE_H + TITLE_GAP;
+      private static const CONTENT_H:int = BG_H - CONTENT_Y_OFFSET - PAD_BOTTOM;
 
-      // Shield grid (left, wider column)
       private static const GRID_COLS:int = 4;
-      // CELL_SIZE = 67 → 4×67 + 6px left inset = 274, leaving 6px right padding within 280
       private static const CELL_SIZE:int = 67;
       private static const GRID_CONTENT_W:int = 280;
-      // Space reserved for the ScrollSetV widget to the right of grid content
       private static const SCROLLBAR_ALLOC:int = 16;
-      // GRID_H = CONTENT_H - 10 (10px margin at bottom of shield column)
-      private static const GRID_H:int = 404;
+      private static const GRID_H:int = CONTENT_H - 10;
 
-      // Form (right, narrower column)
       private static const COL_GAP:int = 10;
-      // RIGHT_FORM_W = BG_W - PAD_H*2 - GRID_CONTENT_W - SCROLLBAR_ALLOC - COL_GAP = 218
-      private static const RIGHT_FORM_W:int = 218;
+      private static const RIGHT_FORM_W:int = BG_W - PAD_H * 2 - GRID_CONTENT_W - SCROLLBAR_ALLOC - COL_GAP;
 
-      // 41 icons → 11 rows × 70px = 770 > 404 → scrollable
       private static const SHIELD_IDS:Array = [
             1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
             11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
@@ -91,7 +81,6 @@ package com.monsters.alliances.tabs
          frame.y = frameY;
          frame.Setup(true, _onClose);
 
-         // Title
          var tTitle:TextField = _mc.addChild(new TextField()) as TextField;
          tTitle.selectable = false;
          tTitle.mouseEnabled = false;
@@ -107,7 +96,6 @@ package com.monsters.alliances.tabs
          tTitle.x = contentX;
          tTitle.y = frameY + PAD_TOP;
 
-         // Left column background (beige)
          var leftBg:MovieClip = _mc.addChild(new MovieClip()) as MovieClip;
          leftBg.mouseEnabled = false;
          leftBg.graphics.beginFill(AllianceConstants.INNER_BG, 1);
@@ -130,12 +118,10 @@ package com.monsters.alliances.tabs
 
       private function _buildShieldGrid(leftX:int, leftY:int):void
       {
-         // Container placed at the left column origin — content and mask share this space
          var gridContainer:MovieClip = _mc.addChild(new MovieClip()) as MovieClip;
          gridContainer.x = leftX;
          gridContainer.y = leftY;
 
-         // Scrollable content
          _scrollContent = gridContainer.addChild(new MovieClip()) as MovieClip;
          _scrollContent.x = 6;
          for (var i:int = 0; i < SHIELD_IDS.length; i++)
@@ -152,14 +138,12 @@ package com.monsters.alliances.tabs
             _cells.push(cell);
          }
 
-         // Viewport mask
          var maskMC:MovieClip = gridContainer.addChild(new MovieClip()) as MovieClip;
          maskMC.graphics.beginFill(0xFF0000, 1);
          maskMC.graphics.drawRect(0, 0, GRID_CONTENT_W, GRID_H);
          maskMC.graphics.endFill();
          _scrollContent.mask = maskMC;
 
-         // Game's native scrollbar — positioned to the right of the grid content
          var scrollBar:ScrollSetV = gridContainer.addChild(new ScrollSetV(_scrollContent, maskMC, true)) as ScrollSetV;
          scrollBar.x = GRID_CONTENT_W;
          scrollBar.y = 0;
@@ -175,7 +159,6 @@ package com.monsters.alliances.tabs
          const BOTTOM_PAD:int = 10;
          const colBottom:int = y + CONTENT_H;
 
-         // --- TOP: description text ---
          var tDesc:TextField = new TextField();
          tDesc.wordWrap = true;
          tDesc.multiline = true;
@@ -189,9 +172,6 @@ package com.monsters.alliances.tabs
          tDesc.y = y;
          _mc.addChild(tDesc);
 
-         // --- BOTTOM: inputs and button pinned to bottom of column ---
-
-         // Action button
          const btnY:int = colBottom - BOTTOM_PAD - btnH;
          var actBtn:Button_CLIP = _mc.addChild(new Button_CLIP()) as Button_CLIP;
          actBtn.Setup(KEYS.Get(_mode == MODE_CREATE ? "alliance_btn_create" : "alliance_btn_save"), false, btnW, btnH);
@@ -199,7 +179,6 @@ package com.monsters.alliances.tabs
          actBtn.y = btnY;
          actBtn.addEventListener(MouseEvent.CLICK, _onAction);
 
-         // Description textarea (above button)
          const textareaY:int = btnY - gap - textareaH;
          var descBg:MovieClip = _mc.addChild(new MovieClip()) as MovieClip;
          descBg.mouseEnabled = false;
@@ -226,8 +205,6 @@ package com.monsters.alliances.tabs
          descField.defaultTextFormat = new TextFormat("Verdana", 11, 0x333333);
          _applyPlaceholder(descField, KEYS.Get("alliance_desc_placeholder"));
 
-         // Shield preview — three sizes side by side, top-aligned, 8px gap between each,
-         // pinned just above the name input
          _previewCells = [];
          const previewSizes:Array = [60, 36, 20];
          const nameInputY:int = textareaY - gap - inputH;
@@ -348,7 +325,6 @@ package com.monsters.alliances.tabs
       {
          const BG_PAD:int = 2;
          cell.graphics.clear();
-         // Full-size transparent rect keeps the hit area intact
          cell.graphics.beginFill(0, 0);
          cell.graphics.drawRect(0, 0, CELL_SIZE - 2, CELL_SIZE - 2);
          cell.graphics.endFill();
@@ -382,7 +358,6 @@ package com.monsters.alliances.tabs
          for (var i:int = 0; i < _previewCells.length; i++)
          {
             var pc:MovieClip = _previewCells[i] as MovieClip;
-            // Remove previous loader, keeping only the border graphics
             while (pc.numChildren > 0)
             {
                pc.removeChildAt(0);

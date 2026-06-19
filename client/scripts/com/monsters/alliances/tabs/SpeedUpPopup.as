@@ -26,7 +26,6 @@ package com.monsters.alliances.tabs
     */
    public class SpeedUpPopup
    {
-      // Frame
       private static const BG_W:int = 460;
       private static const BG_H:int = 360;
       private static const PAD_H:int = 28;
@@ -35,14 +34,12 @@ package com.monsters.alliances.tabs
       private static const TITLE_H:int = 40;
       private static const PAD_BOTTOM:int = 20;
 
-      // Selection panel (radio rows on the tan frame)
       private static const SEL_GAP:int = 14;
       private static const SEL_PAD:int = 12;
       private static const ROW_H:int = 38;
       private static const RADIO_SIZE:int = 16;
       private static const SHINY_SIZE:int = 18;
 
-      // Buy button
       private static const BTN_W:int = 150;
       private static const BTN_H:int = 36;
 
@@ -81,9 +78,6 @@ package com.monsters.alliances.tabs
          frame.y = frameY;
          frame.Setup(true, _onClose);
 
-         // Title (Groboldov). The original header was a single per-power-up text
-         // image (speed_up_<name>.png), reconstructed here as a centred
-         // "Speed Up <Name>" title since that artwork is missing from the set.
          var tTitle:TextField = _mc.addChild(new TextField()) as TextField;
          tTitle.selectable = false;
          tTitle.mouseEnabled = false;
@@ -94,30 +88,23 @@ package com.monsters.alliances.tabs
          var titleFmt:TextFormat = new TextFormat("Groboldov", TITLE_SIZE, 0xFFFFFF);
          titleFmt.align = TextFormatAlign.CENTER;
          tTitle.defaultTextFormat = titleFmt;
-         // Uppercased to match the other alliance popup titles (e.g.
-         // "CREATE ALLIANCE"), which read larger in the Groboldov font.
          tTitle.text = KEYS.Get(String(_data.nameKey)).toUpperCase();
          tTitle.filters = [new GlowFilter(0, 1, 3, 3, 9, 2), new DropShadowFilter(2, 45, 0, 0.55, 3, 3, 1, 2)];
          tTitle.x = contentX;
          tTitle.y = frameY + PAD_TOP;
 
-         // Selection panel
          const selX:int = contentX;
          const selY:int = frameY + PAD_TOP + TITLE_H + 8;
          const selW:int = BG_W - PAD_H * 2;
          const rows:Array = _buildRowDescriptors();
 
-         // Rows sit directly on the tan frame as a left-aligned bullet list —
-         // the original #selection had no panel/background of its own.
          for (var i:int = 0; i < rows.length; i++)
          {
             _buildRow(selX + SEL_PAD, selY + SEL_PAD + i * ROW_H, selW - SEL_PAD * 2, rows[i]);
          }
 
-         // Buy button, bottom-centred. Highlight = true selects the gold button
-         // frame — the same gold variant the building-upgrade "Speed Up" button
-         // uses (BUILDINGINFO pushes "btn_speedup" with its highlight flag set),
-         // matching the original dialog's goldButton.
+         // Highlight selects the gold button frame, matching the original
+         // dialog's goldButton (same variant as the building-upgrade Speed Up).
          var buyBtn:Button_CLIP = _mc.addChild(new Button_CLIP()) as Button_CLIP;
          buyBtn.Setup(KEYS.Get("button_buy"), false, BTN_W, BTN_H);
          buyBtn.Highlight = true;
@@ -146,8 +133,6 @@ package com.monsters.alliances.tabs
                {value: 2, hours: 2, enabled: remaining >= 2, finish: false},
                {value: 4, hours: 4, enabled: remaining >= 4, finish: false}
             ];
-         // "Finish now" reduces the whole remaining cooldown; only meaningful
-         // when there is more than the base hour left to remove.
          out.push({value: remaining, hours: remaining, enabled: remaining >= 2, finish: true});
 
          for each (var row:Object in out)
@@ -183,7 +168,6 @@ package com.monsters.alliances.tabs
          label.x = x + RADIO_SIZE + 10;
          label.y = y + int((ROW_H - 20) / 2);
 
-         // Shiny cost icon, right after the label text
          var shiny:MovieClip = _mc.addChild(new MovieClip()) as MovieClip;
          shiny.mouseEnabled = false;
          shiny.x = int(label.x + label.width + 6);
@@ -196,7 +180,6 @@ package com.monsters.alliances.tabs
 
          if (enabled)
          {
-            // Transparent full-row hit target so the whole line is clickable
             var hit:MovieClip = _mc.addChild(new MovieClip()) as MovieClip;
             hit.buttonMode = true;
             hit.mouseChildren = false;

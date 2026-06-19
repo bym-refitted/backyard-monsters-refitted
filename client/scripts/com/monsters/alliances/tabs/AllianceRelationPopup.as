@@ -26,7 +26,6 @@ package com.monsters.alliances.tabs
       {
          _mc = new MovieClip();
 
-         // Measure body height before layout
          var tBody:TextField = new TextField();
          tBody.wordWrap = true;
          tBody.multiline = true;

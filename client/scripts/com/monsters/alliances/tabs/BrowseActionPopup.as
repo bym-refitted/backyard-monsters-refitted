@@ -12,8 +12,6 @@ package com.monsters.alliances.tabs
 
    public class BrowseActionPopup extends MovieClip
    {
-      // Larger than the original #actionsBox (103×25 / 9px) for readability in
-      // the Flash client; colours/border/radius still match the original.
       public static const POPUP_W:int = 150;
       private static const BTN_W:int = 134;
       private static const BTN_H:int = 32;
@@ -21,12 +19,9 @@ package com.monsters.alliances.tabs
       private static const PAD:int = 8;
       private static const BTN_GAP:int = 6;
       private static const ICON_ROW_GAP:int = 8;
-      // Swatch size matches the larger (readable) popup; colours match the
-      // original foe/neutral/ally relationship colours below.
       private static const ICON_W:int = 37;
       private static const ICON_H:int = 35;
       private static const ICON_GAP:int = 8;
-      // Foe / Neutral / Ally — original relationship colours
       private static const RELATION_COLORS:Array = [
             AllianceConstants.REL_HOSTILE,
             AllianceConstants.REL_NEUTRAL,
@@ -38,7 +33,6 @@ package com.monsters.alliances.tabs
             "alliance_relation_ally"
          ];
 
-      // Pre-computed so BrowseTab can use it for clamping popup position
       public static const POPUP_H:int =
          PAD + BTN_H + BTN_GAP + BTN_H + ICON_ROW_GAP + ICON_H + PAD;
 

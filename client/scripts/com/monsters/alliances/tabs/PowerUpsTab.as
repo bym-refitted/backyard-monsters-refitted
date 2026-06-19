@@ -19,15 +19,13 @@ package com.monsters.alliances.tabs
     */
    public class PowerUpsTab extends AllianceTabBase
    {
-      // CONTENT_W is an instance const on the base class; mirror it as a class
-      // const so the static layout constants below can reference it. Declared
-      // first because AS3 evaluates static initializers in textual order.
+      // Mirrors the base class's instance CONTENT_W as a class const so the
+      // static layout constants can reference it; must be declared first as AS3
+      // evaluates static initializers in textual order.
       private static const CONTENT_W_C:int = AllianceConstants.CONTENT_W;
 
-      // Outer margin from the tab content edges
       private static const PAD:int = 14;
 
-      // White panel holding the power-up rows
       private static const PANEL_X:int = PAD;
       private static const PANEL_Y:int = PAD;
       private static const PANEL_W:int = CONTENT_W_C - PAD * 2;
@@ -35,20 +33,16 @@ package com.monsters.alliances.tabs
       private static const ROW_H:int = 104;
       private static const ROW_PAD:int = 8;
 
-      // Icon fills almost the full row height
       private static const ICON_SIZE:int = 88;
 
-      // Text block sits to the right of the icon
       private static const TEXT_X:int = ROW_PAD + ICON_SIZE + 12;
       private static const TITLE_Y:int = 4;
       private static const DESC_Y:int = 24;
       private static const DESC_H:int = 36;
 
-      // Cooldown bar, anchored toward the bottom of the row
       private static const BAR_H:int = 22;
       private static const BAR_Y:int = ROW_H - 8 - BAR_H;
 
-      // Yellow Speed Up button, right-aligned and vertically centred on the bar
       private static const BTN_W:int = 140;
       private static const BTN_H:int = 32;
       private static const BTN_GAP:int = 13;
@@ -76,7 +70,6 @@ package com.monsters.alliances.tabs
          var data:Array = _powerUpData();
          var panelH:int = ROW_H * data.length;
 
-         // White rounded panel with a gray border
          var panel:MovieClip = addChild(new MovieClip()) as MovieClip;
          panel.mouseEnabled = false;
          panel.graphics.beginFill(0xFFFFFF, 1);
@@ -92,8 +85,6 @@ package com.monsters.alliances.tabs
 
          for (var i:int = 0; i < data.length; i++)
          {
-            // Row separator above every row except the first — full width,
-            // matching the 1px light-black border used elsewhere
             if (i > 0)
             {
                container.graphics.lineStyle(1, 0x333333, 1);
@@ -117,14 +108,12 @@ package com.monsters.alliances.tabs
          const barX:int = TEXT_X;
          const barW:int = btnX - BTN_GAP - barX;
 
-         // Icon (left), vertically centred in the row
          var iconMC:MovieClip = container.addChild(new MovieClip()) as MovieClip;
          iconMC.mouseEnabled = false;
          iconMC.x = ROW_PAD;
          iconMC.y = rowY + int((ROW_H - ICON_SIZE) / 2);
          _loadIcon(iconMC, String(data.icon), ICON_SIZE);
 
-         // Title
          var tTitle:TextField = container.addChild(new TextField()) as TextField;
          tTitle.selectable = false;
          tTitle.mouseEnabled = false;
@@ -135,7 +124,6 @@ package com.monsters.alliances.tabs
          tTitle.defaultTextFormat = new TextFormat("Verdana", 13, 0x000000, true);
          tTitle.text = KEYS.Get(String(data.nameKey));
 
-         // Description (wrapped, up to two lines)
          var tDesc:TextField = container.addChild(new TextField()) as TextField;
          tDesc.selectable = false;
          tDesc.mouseEnabled = false;
@@ -148,7 +136,6 @@ package com.monsters.alliances.tabs
          tDesc.defaultTextFormat = new TextFormat("Verdana", 13, 0x333333);
          tDesc.text = KEYS.Get(String(data.descKey));
 
-         // Cooldown bar (gray) with centred charging text
          var bar:MovieClip = container.addChild(new MovieClip()) as MovieClip;
          bar.mouseEnabled = false;
          bar.graphics.beginFill(0x999999, 1);
@@ -158,8 +145,6 @@ package com.monsters.alliances.tabs
          bar.x = barX;
          bar.y = rowY + BAR_Y;
 
-         // Turquoise progress fill over the gray track, inset 1px so the bar's
-         // border stays visible
          var progress:Number = Math.max(0, Math.min(1, Number(data.progress)));
          var fillW:int = int((barW - 2) * progress);
          if (fillW > 0)
@@ -185,9 +170,7 @@ package com.monsters.alliances.tabs
          tBar.defaultTextFormat = barFmt;
          tBar.text = KEYS.Get("powerup_ready_in") + " " + String(data.cooldown);
 
-         // Gold Speed Up button, bottom-aligned with the bar so it keeps the
-         // same padding from the row bottom that the bar has. Highlight = true
-         // selects the gold button frame — the same gold variant the
+         // Highlight selects the gold button frame — the same gold variant the
          // building-upgrade "Speed Up" button uses (see BUILDINGINFO).
          var btn:Button_CLIP = container.addChild(new Button_CLIP()) as Button_CLIP;
          btn.Setup(KEYS.Get("button_speed_up"), false, BTN_W, BTN_H);

@@ -19,8 +19,6 @@ package com.monsters.alliances.tabs
    {
       private static const PAD:int = 10;
 
-      // Title block — Groboldov white/glow heading, left-aligned, matching the
-      // "Edit Alliance" / "Join the Fellowship" titles used elsewhere.
       private static const TITLE_SIZE:int = 24;
       private static const TITLE_H:int = 32;
       private static const TITLE_Y:int = 20;
@@ -32,8 +30,8 @@ package com.monsters.alliances.tabs
       private static const HEADER_H:int = 24;
       private static const ROW_H:int = 36;
 
-      // Column layout — original proportions (alliance.v343.css members table:
-      // Level45/Name165/Status60/EP100/Attacker130/Actions100) scaled to TABLE_W (788).
+      // Column proportions from the original members table (alliance.v343.css),
+      // scaled to TABLE_W.
       private static const C_LVL_X:int = 0;
       private static const C_LVL_W:int = 59;
       private static const C_NAME_X:int = 59;
@@ -50,10 +48,9 @@ package com.monsters.alliances.tabs
       // Original member pic is 25×25
       private static const AVATAR_SIZE:int = 25;
 
-      // Actions button is narrower than its column and centred within it (original 97×25)
+      // Original actions button is 97×25
       private static const ACT_BTN_W:int = 97;
 
-      // Popup is right-aligned to the Actions column's right edge
       private static const POP_RIGHT_X:int = TABLE_X + C_ACT_X + C_ACT_W;
       private static const POP_X:int = POP_RIGHT_X - MemberActionPopup.POPUP_W;
 
@@ -135,7 +132,6 @@ package com.monsters.alliances.tabs
          tableMC.x = TABLE_X;
          tableMC.y = TABLE_Y;
 
-         // Pass 1: header + alternating row background fills
          tableMC.graphics.beginFill(AllianceConstants.HEADER_BG);
          tableMC.graphics.drawRect(0, 0, TABLE_W, HEADER_H);
          tableMC.graphics.endFill();
@@ -149,7 +145,6 @@ package com.monsters.alliances.tabs
             fi++;
          }
 
-         // Pass 2: vertical column separators
          tableMC.graphics.lineStyle(1, AllianceConstants.CELL_BORDER, 1);
          var vLineXs:Array = [C_NAME_X, C_STATUS_X, C_EP_X, C_ATK_X, C_ACT_X];
          var vli:int = 0;
@@ -159,12 +154,9 @@ package com.monsters.alliances.tabs
             tableMC.graphics.lineTo(int(vLineXs[vli]), totalH);
             vli++;
          }
-         // Outer table border
          tableMC.graphics.lineStyle(1, AllianceConstants.TABLE_BORDER, 1);
          tableMC.graphics.drawRect(0, 0, TABLE_W, totalH);
 
-         // Pass 3: header labels
-         // "Name" left-aligned with 6px padding so it sits over the avatar column
          _addLabel(tableMC, KEYS.Get("alliance_col_level"), C_LVL_X, 0, C_LVL_W, HEADER_H, true, TextFormatAlign.CENTER);
          _addLabel(tableMC, KEYS.Get("alliance_col_name"), C_NAME_X + 6, 0, C_NAME_W - 6, HEADER_H, true, TextFormatAlign.LEFT);
          _addLabel(tableMC, KEYS.Get("alliance_col_status"), C_STATUS_X, 0, C_STATUS_W, HEADER_H, true, TextFormatAlign.CENTER);

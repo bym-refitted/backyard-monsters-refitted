@@ -27,9 +27,8 @@ package com.monsters.alliances.tabs
       private static const TABLE_X:int = PAD;
       private static const TABLE_W:int = 788; // CONTENT_W - PAD * 2
 
-      // Column layout — original proportions (alliance.v343.css browse table:
-      // Rank40/Name230/Members65/EP95/Leader110/Actions90) scaled to TABLE_W (788).
-      // The alliance icon lives at the left of the Name cell, as in the original.
+      // Column proportions from the original browse table (alliance.v343.css),
+      // scaled to TABLE_W.
       private static const C_RANK_X:int = 0;
       private static const C_RANK_W:int = 50;
       private static const C_NAME_X:int = 50;
@@ -43,28 +42,17 @@ package com.monsters.alliances.tabs
       private static const C_ACT_X:int = 675;
       private static const C_ACT_W:int = 113;
 
-      // Alliance icon at the left of the Name cell — fills the full row height
-      // with no vertical padding, flush to the left of the cell (matches the
-      // original browse rows).
       private static const ICON_W:int = ROW_H;
 
       // Original actions button is 97×25
       private static const ACT_BTN_W:int = 97;
 
-      // Right edge of Actions column in tab-local coordinates, used for popup placement
       private static const POP_RIGHT_X:int = TABLE_X + C_ACT_X + C_ACT_W;
       private static const POP_X:int = POP_RIGHT_X - BrowseActionPopup.POPUP_W;
 
-      // Pagination — small square buttons (<<, page numbers, >>) right-aligned
-      // under the table. Page data is mock until the server search is wired up.
-      // 30 = base 26 + 2px extra inner padding on each side around the label
       private static const PAGE_BTN_SIZE:int = 30;
       private static const PAGE_BTN_GAP:int = 6;
-      // Gap below the beige inner section — the pagination sits on the wooden
-      // frame at the very bottom of the popup, outside the content area.
       private static const PAGE_Y_GAP:int = 13;
-      // Number of page-number buttons visible at once (the window slides as the
-      // current page advances)
       private static const PAGE_VISIBLE:int = 10;
       private static const MOCK_TOTAL_PAGES:int = 20;
 
@@ -133,12 +121,11 @@ package com.monsters.alliances.tabs
             btnCreate.addEventListener(MouseEvent.CLICK, _onCreateAlliance);
          }
 
-         // Search input + button anchored to right edge
          const searchBtnX:int = CONTENT_W - PAD - BTN_SEARCH_W;
          const inputX:int = searchBtnX - 8 - INPUT_W;
-         // INPUT_BOX_H intentionally shorter than BTN_H — gap sits at bottom
          const INPUT_BOX_H:int = 32;
-         // FIELD_H sized to exactly one line — avoids Flash rendering typed text in corner of oversized INPUT TextField
+         // FIELD_H sized to one line — avoids Flash rendering typed text in the
+         // corner of an oversized INPUT TextField
          const FIELD_H:int = 18;
 
          var inputBg:MovieClip = addChild(new MovieClip()) as MovieClip;
@@ -177,7 +164,6 @@ package com.monsters.alliances.tabs
          tableMC.x = TABLE_X;
          tableMC.y = TABLE_Y;
 
-         // Pass 1: row background fills
          tableMC.graphics.beginFill(AllianceConstants.HEADER_BG);
          tableMC.graphics.drawRect(0, 0, TABLE_W, HEADER_H);
          tableMC.graphics.endFill();
@@ -191,7 +177,6 @@ package com.monsters.alliances.tabs
             fi++;
          }
 
-         // Pass 2: vertical column separators
          tableMC.graphics.lineStyle(1, AllianceConstants.CELL_BORDER, 1);
          var vLineXs:Array = [C_NAME_X, C_MEM_X, C_EP_X, C_LDR_X, C_ACT_X];
          var vli:int = 0;
@@ -201,12 +186,9 @@ package com.monsters.alliances.tabs
             tableMC.graphics.lineTo(int(vLineXs[vli]), totalH);
             vli++;
          }
-         // Outer table border
          tableMC.graphics.lineStyle(1, AllianceConstants.TABLE_BORDER, 1);
          tableMC.graphics.drawRect(0, 0, TABLE_W, totalH);
 
-         // Pass 3: header labels
-         // "Leader" has 5px left padding so text doesn't butt against separator line
          _addLabel(tableMC, KEYS.Get("alliance_col_rank"), C_RANK_X, 0, C_RANK_W, HEADER_H, true, TextFormatAlign.CENTER);
          _addLabel(tableMC, KEYS.Get("alliance_col_name"), C_NAME_X + 5, 0, C_MEM_X - C_NAME_X - 5, HEADER_H, true, TextFormatAlign.LEFT);
          _addLabel(tableMC, KEYS.Get("alliance_col_members"), C_MEM_X, 0, C_MEM_W, HEADER_H, true, TextFormatAlign.CENTER);
@@ -214,7 +196,6 @@ package com.monsters.alliances.tabs
          _addLabel(tableMC, KEYS.Get("alliance_col_leader"), C_LDR_X + 5, 0, C_LDR_W - 5, HEADER_H, true, TextFormatAlign.LEFT);
          _addLabel(tableMC, KEYS.Get("alliance_col_actions"), C_ACT_X, 0, C_ACT_W, HEADER_H, true, TextFormatAlign.CENTER);
 
-         // Pass 4: data rows
          var ri:int = 0;
          while (ri < dummyData.length)
          {
@@ -223,8 +204,6 @@ package com.monsters.alliances.tabs
 
             _addLabel(tableMC, String(rowData.rank), C_RANK_X, rowBaseY, C_RANK_W, ROW_H, false, TextFormatAlign.CENTER);
 
-            // Alliance icon — fills the full row height, flush to the left of
-            // the Name cell with no vertical padding, plus a right separator edge
             var iconMC:MovieClip = tableMC.addChild(new MovieClip()) as MovieClip;
             iconMC.mouseEnabled = false;
             iconMC.graphics.beginFill(rowData.color, 1);
@@ -242,7 +221,6 @@ package com.monsters.alliances.tabs
             _addLabel(tableMC, rowData.ep, C_EP_X, rowBaseY, C_EP_W, ROW_H, false, TextFormatAlign.CENTER);
             _addLabel(tableMC, rowData.leader, C_LDR_X + 5, rowBaseY, C_LDR_W - 5, ROW_H, false, TextFormatAlign.LEFT);
 
-            // Actions button — original 97×25, centred in the column
             var actBtn:Button_CLIP = tableMC.addChild(new Button_CLIP()) as Button_CLIP;
             actBtn.Setup(KEYS.Get("alliance_col_actions"), false, ACT_BTN_W, ROW_H - 6);
             actBtn._txt.htmlText = "<b><font color=\"#000000\">" + KEYS.Get("alliance_col_actions") + "</font></b>";
@@ -253,7 +231,6 @@ package com.monsters.alliances.tabs
             ri++;
          }
 
-         // Overlay: horizontal row lines drawn last so they render on top of icon fills
          var gridOverlay:MovieClip = tableMC.addChild(new MovieClip()) as MovieClip;
          gridOverlay.mouseEnabled = false;
          gridOverlay.graphics.lineStyle(1, AllianceConstants.CELL_BORDER, 1);
@@ -284,7 +261,6 @@ package com.monsters.alliances.tabs
          }
 
          const visible:int = Math.min(PAGE_VISIBLE, total);
-         // Window slides so the current page stays visible (rightmost once past it)
          var start:int = (_currentPage <= visible) ? 1 : _currentPage - visible + 1;
          if (start > total - visible + 1)
          {
@@ -296,7 +272,7 @@ package com.monsters.alliances.tabs
          }
          const end:int = start + visible - 1;
 
-         const count:int = visible + 2; // page numbers plus << and >>
+         const count:int = visible + 2;
          const totalW:int = count * PAGE_BTN_SIZE + (count - 1) * PAGE_BTN_GAP;
          const py:int = CONTENT_H + PAGE_Y_GAP;
          const step:int = PAGE_BTN_SIZE + PAGE_BTN_GAP;

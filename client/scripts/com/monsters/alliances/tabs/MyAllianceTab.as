@@ -35,38 +35,27 @@ package com.monsters.alliances.tabs
       private static const TITLE_GAP:int = 14;
       private static const BTN_GAP:int = 24;
 
-      // --- In-alliance layout ---
       private static const PAD:int = 12;
       private static const COL_GAP:int = 12;
-      // Left column holds details, shield, description and the two action buttons.
-      // LEFT_INNER insets the column's content from its left/right edges.
       private static const LEFT_X:int = PAD;
       private static const LEFT_W:int = 318;
       private static const LEFT_INNER:int = 16;
       private static const LEFT_CONTENT_X:int = LEFT_X + LEFT_INNER;
       private static const LEFT_CONTENT_W:int = LEFT_W - LEFT_INNER * 2;
-      // Right column holds the scrollable chat feed and the post-message bar
       private static const RIGHT_X:int = LEFT_X + LEFT_W + COL_GAP;
       private static const RIGHT_W:int = AllianceConstants.CONTENT_W - RIGHT_X - PAD;
 
       private static const ACTION_BTN_H:int = 40;
-      // Visible bottom of the beige inner section, above the popup's wooden base.
-      // Bottom-anchored content must stay above this or the brown frame shows
-      // through behind it.
+      // Visible bottom of the beige inner section; bottom-anchored content must
+      // stay above this or the brown frame shows through behind it.
       private static const INNER_BOTTOM:int = 482;
-      // Beige inner-background height for the in-alliance view — extends a little
-      // below the content's inner-section bottom.
       private static const CONTENT_BG_H:int = INNER_BOTTOM + 10;
-      // Brown footer panel attached flush to the chat bottom, framing the bar.
-      // Sits 10px above the inner-section bottom.
       private static const PANEL_PAD:int = 14;
       private static const PANEL_H:int = ACTION_BTN_H + PANEL_PAD * 2;
       private static const PANEL_Y:int = INNER_BOTTOM - 10 - PANEL_H;
-      // Input + Post Message baseline, padded inside the panel
       private static const ACTION_Y:int = PANEL_Y + PANEL_PAD;
 
       private static const SHIELD_SIZE:int = 90;
-      // Extra right padding so the icon sits further off the column edge
       private static const SHIELD_PAD_R:int = 12;
       private static const DETAIL_ROW_H:int = 24;
       private static const DETAIL_ROW_GAP:int = 26;
@@ -75,16 +64,11 @@ package com.monsters.alliances.tabs
 
       private static const DESC_Y:int = 172;
       private static const DESC_H:int = 175;
-      // Action buttons sit under the description box, with a clear gap above them
       private static const LEFT_BTN_Y:int = DESC_Y + DESC_H + 31;
 
-      // Chat viewport sits above the post-message bar. Rows fill the full inner
-      // width (inset 1px inside the frame border); the scrollbar overlays the
-      // right edge rather than reserving a gutter.
       private static const CHAT_X:int = RIGHT_X;
       private static const CHAT_Y:int = PAD;
       private static const CHAT_W:int = RIGHT_W;
-      // Chat ends exactly at the panel top so the brown footer is attached to it
       private static const CHAT_H:int = PANEL_Y - CHAT_Y;
       private static const SCROLLBAR_W:int = 16;
       private static const CHAT_MASK_W:int = CHAT_W - 2;
@@ -95,11 +79,9 @@ package com.monsters.alliances.tabs
       // server data. The live condition is ALLIANCES._myAlliance != null.
       private static const MOCK_IN_ALLIANCE:Boolean = true;
 
-      // Alternating chat band colours (original shout-alternating0 / 1)
       private static const BAND_A:uint = AllianceConstants.SHOUT_BAND0;
       private static const BAND_B:uint = AllianceConstants.SHOUT_BAND1;
 
-      // Chat state — own WebSocket transport, left disconnected for now
       private var _chatContent:MovieClip;
       private var _chatScroll:ScrollSetV;
       private var _chatYOff:int = 0;
@@ -163,10 +145,6 @@ package com.monsters.alliances.tabs
             };
       }
 
-      // -----------------------------------------------------------------
-      // In-alliance view
-      // -----------------------------------------------------------------
-
       private function _buildInAlliance():void
       {
          var data:Object = _allianceData();
@@ -179,7 +157,6 @@ package com.monsters.alliances.tabs
       {
          const detailBlockW:int = LEFT_CONTENT_W - SHIELD_SIZE - SHIELD_PAD_R - 12;
 
-         // Alliance name title
          var tTitle:TextField = addChild(new TextField()) as TextField;
          tTitle.selectable = false;
          tTitle.mouseEnabled = false;
@@ -192,7 +169,6 @@ package com.monsters.alliances.tabs
          tTitle.defaultTextFormat = titleFmt;
          tTitle.text = String(data.name);
 
-         // Detail rows (label + bold value)
          var rows:Array = [
                [KEYS.Get("alliance_my_rank"), String(data.rank)],
                [KEYS.Get("alliance_my_level"), String(data.level)],
@@ -207,14 +183,12 @@ package com.monsters.alliances.tabs
             _addLabel(this, String(rows[ri][1]), LEFT_CONTENT_X + labelW + 10, rowY, detailBlockW - labelW - 10, DETAIL_ROW_H, true, TextFormatAlign.LEFT);
          }
 
-         // Alliance shield icon, top-right of the left column
          var shield:MovieClip = addChild(new MovieClip()) as MovieClip;
          shield.mouseEnabled = false;
          shield.x = LEFT_X + LEFT_W - LEFT_INNER - SHIELD_PAD_R - SHIELD_SIZE;
          shield.y = TITLE_Y + 10;
          _loadAllianceIcon(shield, int(data.image), SHIELD_SIZE);
 
-         // Description box (white, bordered, read-only)
          var descBg:MovieClip = addChild(new MovieClip()) as MovieClip;
          descBg.mouseEnabled = false;
          descBg.graphics.beginFill(0xFFFFFF, 1);
@@ -236,7 +210,6 @@ package com.monsters.alliances.tabs
          descField.defaultTextFormat = new TextFormat("Verdana", 13, 0x333333);
          descField.text = String(data.desc);
 
-         // Action buttons split the content width evenly, directly under the box
          const btnGap:int = 24;
          const btnW:int = int((LEFT_CONTENT_W - btnGap) / 2);
          var editBtn:Button_CLIP = addChild(new Button_CLIP()) as Button_CLIP;
@@ -261,7 +234,6 @@ package com.monsters.alliances.tabs
        */
       private function _buildChat():void
       {
-         // Outer frame around the chat viewport
          var frame:MovieClip = addChild(new MovieClip()) as MovieClip;
          frame.mouseEnabled = false;
          frame.graphics.beginFill(0xFFFFFF, 1);
@@ -271,7 +243,6 @@ package com.monsters.alliances.tabs
          frame.x = CHAT_X;
          frame.y = CHAT_Y;
 
-         // Inset 1px inside the frame border so rows don't cover the border
          var container:MovieClip = addChild(new MovieClip()) as MovieClip;
          container.x = CHAT_X + 1;
          container.y = CHAT_Y + 1;
@@ -280,14 +251,12 @@ package com.monsters.alliances.tabs
          _chatYOff = 0;
          _chatRowIndex = 0;
 
-         // Viewport mask
          var maskMC:MovieClip = container.addChild(new MovieClip()) as MovieClip;
          maskMC.graphics.beginFill(0xFF0000, 1);
          maskMC.graphics.drawRect(0, 0, CHAT_MASK_W, CHAT_H - 2);
          maskMC.graphics.endFill();
          _chatContent.mask = maskMC;
 
-         // Scrollbar overlays the right edge of the content (no reserved gutter)
          _chatScroll = container.addChild(new ScrollSetV(_chatContent, maskMC, true)) as ScrollSetV;
          _chatScroll.x = CHAT_MASK_W - SCROLLBAR_W;
          _chatScroll.y = 0;
@@ -295,8 +264,6 @@ package com.monsters.alliances.tabs
          _names = {};
          _chatChannel = new Channel("alliance", "system");
 
-         // Build the WebSocket transport from configured chat server (host:port),
-         // wire receive handlers, but do not connect() — chat stays disconnected.
          var host:String = "localhost";
          var port:int = 3002;
          if (Chat._chatServers != null && Chat._chatServers.length > 0)
@@ -353,10 +320,8 @@ package com.monsters.alliances.tabs
          const PAD_IN:int = 8;
          const AVATAR:int = 48;
          const textX:int = PAD_IN + AVATAR + PAD_IN;
-         // Reserve the scrollbar width so wrapped text never sits under it
          const textW:int = CHAT_MASK_W - textX - PAD_IN - SCROLLBAR_W;
 
-         // Measure body height before drawing the band
          var body:TextField = new TextField();
          body.wordWrap = true;
          body.multiline = true;
@@ -447,7 +412,7 @@ package com.monsters.alliances.tabs
        */
       private function _drawBand(content:MovieClip, yOff:int, rowH:int, color:uint):void
       {
-         // Clear any line style left from a prior band so the fill isn't stroked
+         // lineStyle() reset so the fill isn't stroked by a prior band's style
          content.graphics.lineStyle();
          content.graphics.beginFill(color, 1);
          content.graphics.drawRect(0, yOff, CHAT_MASK_W, rowH);
@@ -461,8 +426,6 @@ package com.monsters.alliances.tabs
       {
          const GAP:int = 26;
 
-         // Brown footer panel (matches the tab/frame brown), square corners,
-         // attached flush to the chat bottom
          var panel:MovieClip = addChild(new MovieClip()) as MovieClip;
          panel.mouseEnabled = false;
          panel.graphics.beginFill(AllianceConstants.ACTION_BG, 1);
@@ -605,16 +568,11 @@ package com.monsters.alliances.tabs
          }
       }
 
-      // -----------------------------------------------------------------
-      // No-alliance view
-      // -----------------------------------------------------------------
-
       private function _buildNoAlliance():void
       {
          const titleH:int = TITLE_SIZE + 8;
          const innerX:int = int((CONTENT_W - CONTENT_W_INNER) / 2);
 
-         // Measure body height before layout so we can vertically center the block
          var tBody:TextField = new TextField();
          tBody.wordWrap = true;
          tBody.multiline = true;

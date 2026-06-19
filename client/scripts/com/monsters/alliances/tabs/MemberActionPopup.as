@@ -18,8 +18,6 @@ package com.monsters.alliances.tabs
     */
    public class MemberActionPopup extends MovieClip
    {
-      // Larger than the original #actionsBox (103×25 / 9px) for readability in
-      // the Flash client; colours/border/radius still match the original.
       public static const POPUP_W:int = 150;
       private static const BTN_W:int = 134;
       private static const BTN_H:int = 32;
