@@ -69,13 +69,11 @@ package
 
          _innerBg.graphics.clear();
 
-         // Fill only (no stroke) — borders are drawn as segments below
          _innerBg.graphics.lineStyle();
          _innerBg.graphics.beginFill(AllianceConstants.INNER_BG, 1);
          _innerBg.graphics.drawRect(0, 0, w, contentHeight);
          _innerBg.graphics.endFill();
 
-         // Active tab's horizontal span in inner-bg-local coordinates
          var gapStart:int = -1;
          var gapEnd:int = -1;
          var active:Object = _activeTabDescriptor();
@@ -86,12 +84,10 @@ package
          }
 
          _innerBg.graphics.lineStyle(1, AllianceConstants.BORDER_COLOR, 1);
-         // Left, right and bottom edges
          _innerBg.graphics.moveTo(0, 0);
          _innerBg.graphics.lineTo(0, contentHeight);
          _innerBg.graphics.lineTo(w, contentHeight);
          _innerBg.graphics.lineTo(w, 0);
-         // Top edge, split around the active tab so its underside stays open
          if (gapStart < 0)
          {
             _innerBg.graphics.moveTo(0, 0);

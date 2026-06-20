@@ -164,7 +164,6 @@ package com.monsters.alliances.tabs
          _addLabel(tableMC, KEYS.Get("alliance_col_attacker"), C_ATK_X + 8, 0, C_ATK_W - 8, HEADER_H, true, TextFormatAlign.LEFT);
          _addLabel(tableMC, KEYS.Get("alliance_col_actions"), C_ACT_X, 0, C_ACT_W, HEADER_H, true, TextFormatAlign.CENTER);
 
-         // Pass 4: data rows
          var ri:int = 0;
          while (ri < data.length)
          {
@@ -173,7 +172,6 @@ package com.monsters.alliances.tabs
 
             _addLabel(tableMC, String(rowData.level), C_LVL_X, rowBaseY, C_LVL_W, ROW_H, false, TextFormatAlign.CENTER);
 
-            // Avatar placeholder + player name in the Name column
             var avatar:MovieClip = tableMC.addChild(new MovieClip()) as MovieClip;
             avatar.mouseEnabled = false;
             avatar.graphics.beginFill(0x1A1A1A, 1);
@@ -191,8 +189,6 @@ package com.monsters.alliances.tabs
             _addLabel(tableMC, String(rowData.ep), C_EP_X, rowBaseY, C_EP_W, ROW_H, false, TextFormatAlign.CENTER);
             _addLabel(tableMC, String(rowData.attacker), C_ATK_X + 8, rowBaseY, C_ATK_W - 8, ROW_H, false, TextFormatAlign.LEFT);
 
-            // Actions button — reuses the standard gray Button_CLIP, centred in
-            // the column. Hidden for the current player's own row.
             if (rowData.self != true)
             {
                var actBtn:Button_CLIP = tableMC.addChild(new Button_CLIP()) as Button_CLIP;
@@ -206,7 +202,6 @@ package com.monsters.alliances.tabs
             ri++;
          }
 
-         // Overlay: horizontal row separators, drawn last so they sit over fills
          var gridOverlay:MovieClip = tableMC.addChild(new MovieClip()) as MovieClip;
          gridOverlay.mouseEnabled = false;
          gridOverlay.graphics.lineStyle(1, AllianceConstants.CELL_BORDER, 1);
@@ -354,7 +349,6 @@ package com.monsters.alliances.tabs
                {
                   var bmp:Bitmap = new Bitmap(bmd);
                   bmp.smoothing = true;
-                  // Centre the icon on the container origin at (cx, cy)
                   bmp.x = -int(bmd.width / 2);
                   bmp.y = -int(bmd.height / 2);
                   (args[0] as MovieClip).addChild(bmp);

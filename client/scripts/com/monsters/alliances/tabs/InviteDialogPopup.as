@@ -61,7 +61,6 @@ package com.monsters.alliances.tabs
          _onDecline = onDecline;
          _mc = new MovieClip();
 
-         // Measure the wrapped body height before laying the frame out
          var tBody:TextField = new TextField();
          tBody.wordWrap = true;
          tBody.multiline = true;
@@ -85,8 +84,6 @@ package com.monsters.alliances.tabs
          frame.y = frameY;
          frame.Setup(true, _onClose);
 
-         // Header — Groboldov title (white with glow + drop shadow), standing in
-         // for the original alliance_invitation.png header image
          var tTitle:TextField = _mc.addChild(new TextField()) as TextField;
          tTitle.selectable = false;
          tTitle.mouseEnabled = false;
@@ -104,9 +101,8 @@ package com.monsters.alliances.tabs
 
          const bodyTop:int = tTitle.y + titleH + TITLE_GAP;
 
-         // Row 1: From (left) and Date (right) share a line. The original drops
-         // the year — it renders only the first two "/"-split parts (MM/DD) in
-         // bold (alliances.min.v343.js: d.date = "<b>" + b[0] + "/" + b[1] + "</b>").
+         // The original drops the year, rendering only the first two "/"-split
+         // parts (MM/DD) in bold (alliances.min.v343.js: d.date = b[0] + "/" + b[1]).
          var dateParts:Array = dateStr.split("/");
          var shortDate:String = (dateParts.length >= 2) ? (dateParts[0] + "/" + dateParts[1]) : dateStr;
          _addLine("<b>" + KEYS.Get("alliance_dialog_from") + "</b> " + inviterName + " - " + allianceName,
@@ -114,20 +110,17 @@ package com.monsters.alliances.tabs
          _addLine("<b>" + shortDate + "</b>",
                contentX + CONTENT_W - DATE_W, bodyTop, DATE_W, LINE_H, 13, 0x000000, TextFormatAlign.RIGHT);
 
-         // Row 2: Subject
          // The original subject string has no alliance-name placeholder (a quirk
          // of the source data) — kept byte-faithful here.
          _addLine("<b>" + KEYS.Get("alliance_dialog_subject") + "</b> " + KEYS.Get("alliance_invite_subject"),
                contentX, bodyTop + LINE_H, CONTENT_W, LINE_H, 13, 0x000000, TextFormatAlign.LEFT);
 
-         // Body text
          tBody.selectable = false;
          tBody.mouseEnabled = false;
          _mc.addChild(tBody);
          tBody.x = contentX;
          tBody.y = bodyTop + LINE_H + LINE_H + 4;
 
-         // Decline / Join buttons, right-aligned to the content edge (Join rightmost)
          const btnW:int = 120;
          const btnGap:int = 10;
          const btnY:int = frameY + totalH - PAD_BTN;

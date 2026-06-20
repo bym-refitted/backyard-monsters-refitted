@@ -27,8 +27,8 @@ package com.monsters.alliances.tabs
       private static const TABLE_X:int = PAD;
       private static const TABLE_W:int = 788; // CONTENT_W - PAD * 2
 
-      // Column layout — original proportions (alliance.v343.css messages table:
-      // Checkbox35/From170/Subject325/Date100) scaled to TABLE_W (788).
+      // Column proportions from the original messages table (alliance.v343.css),
+      // scaled to TABLE_W.
       private static const C_CHK_X:int = 0;
       private static const C_CHK_W:int = 44;
       private static const C_FROM_X:int = 44;
@@ -38,9 +38,8 @@ package com.monsters.alliances.tabs
       private static const C_DATE_X:int = 663;
       private static const C_DATE_W:int = 125;
 
-      // Original invite pic is 24×24, sat at the left of the From cell
+      // Original invite pic is 24×24
       private static const FLAG_SIZE:int = 24;
-      // Interactive checkbox square
       private static const CHK_SIZE:int = 16;
 
       private var _invites:Array;
@@ -95,7 +94,6 @@ package com.monsters.alliances.tabs
          tableMC.x = TABLE_X;
          tableMC.y = TABLE_Y;
 
-         // Pass 1: header + alternating row background fills
          tableMC.graphics.beginFill(AllianceConstants.HEADER_BG);
          tableMC.graphics.drawRect(0, 0, TABLE_W, HEADER_H);
          tableMC.graphics.endFill();
@@ -109,7 +107,6 @@ package com.monsters.alliances.tabs
             fi++;
          }
 
-         // Pass 2: vertical column separators
          tableMC.graphics.lineStyle(1, AllianceConstants.CELL_BORDER, 1);
          var vLineXs:Array = [C_FROM_X, C_SUBJ_X, C_DATE_X];
          var vli:int = 0;
@@ -119,25 +116,21 @@ package com.monsters.alliances.tabs
             tableMC.graphics.lineTo(int(vLineXs[vli]), totalH);
             vli++;
          }
-         // Outer table border
          tableMC.graphics.lineStyle(1, AllianceConstants.TABLE_BORDER, 1);
          tableMC.graphics.drawRect(0, 0, TABLE_W, totalH);
 
-         // Pass 3: header labels (checkbox column header is intentionally blank)
          _addLabel(tableMC, KEYS.Get("alliance_col_from"), C_FROM_X + 6, 0, C_FROM_W - 6, HEADER_H, true, TextFormatAlign.LEFT);
          _addLabel(tableMC, KEYS.Get("alliance_col_subject"), C_SUBJ_X + 6, 0, C_SUBJ_W - 6, HEADER_H, true, TextFormatAlign.LEFT);
          _addLabel(tableMC, KEYS.Get("alliance_col_date"), C_DATE_X, 0, C_DATE_W, HEADER_H, true, TextFormatAlign.CENTER);
 
-         // Pass 4: data rows
          var ri:int = 0;
          while (ri < _invites.length)
          {
             var rowData:Object = _invites[ri];
             var rowBaseY:int = HEADER_H + ri * ROW_H;
 
-            // Transparent hit-area over the From/Subject/Date cells (not the
-            // checkbox column) — clicking it opens the invite dialog. Added
-            // first so the non-interactive flag/labels sit on top of it.
+            // Hit-area over the From/Subject/Date cells (not the checkbox); added
+            // before the flag/labels so they stay on top and it still catches clicks.
             var hit:MovieClip = tableMC.addChild(new MovieClip()) as MovieClip;
             hit.graphics.beginFill(0x000000, 0);
             hit.graphics.drawRect(0, 0, TABLE_W - C_FROM_X, ROW_H);
@@ -148,13 +141,11 @@ package com.monsters.alliances.tabs
             hit.mouseChildren = false;
             hit.addEventListener(MouseEvent.CLICK, _makeOpenHandler(rowData));
 
-            // Checkbox, centred in its column
             var chk:MovieClip = _makeCheckbox(rowData);
             chk.x = C_CHK_X + int((C_CHK_W - CHK_SIZE) / 2);
             chk.y = rowBaseY + int((ROW_H - CHK_SIZE) / 2);
             tableMC.addChild(chk);
 
-            // Inviter flag/pic placeholder at the left of the From cell
             var flag:MovieClip = tableMC.addChild(new MovieClip()) as MovieClip;
             flag.mouseEnabled = false;
             flag.graphics.beginFill(uint(rowData.color), 1);
@@ -172,7 +163,6 @@ package com.monsters.alliances.tabs
             ri++;
          }
 
-         // Overlay: horizontal row lines drawn last so they render on top of fills
          var gridOverlay:MovieClip = tableMC.addChild(new MovieClip()) as MovieClip;
          gridOverlay.mouseEnabled = false;
          gridOverlay.graphics.lineStyle(1, AllianceConstants.CELL_BORDER, 1);
@@ -232,7 +222,6 @@ package com.monsters.alliances.tabs
       private function _onCheckAll(e:MouseEvent):void
       {
          SOUNDS.Play("click1");
-         // Toggle: if everything is already ticked, clear all; otherwise tick all
          var allChecked:Boolean = _invites.length > 0;
          for each (var row:Object in _invites)
          {
@@ -262,7 +251,6 @@ package com.monsters.alliances.tabs
          }
          if (remaining.length == _invites.length)
          {
-            // Nothing selected — no-op
             return;
          }
          // TODO: send the accepted/declined invite IDs to the server here; for
