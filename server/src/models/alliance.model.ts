@@ -18,6 +18,10 @@ export class Alliance {
   @Index()
   @Property({ type: "number" })
   leader_userid!: number;
+  
+  @Index()
+  @Property({ type: "string" })
+  world_id!: string;
 
   @Property({ type: "number", default: 0 })
   member_count: number = 0;
