@@ -45,9 +45,9 @@ package
          }
          else
          {
-            if(_lvl.Get() < 2 && GLOBAL.StatGet("mrl") == 2)
+            if(GLOBAL.StatGet("mrl") == 2 && !MapRoomManager.instance.isInMapRoom2or3)
             {
-               GLOBAL.StatSet("mrl",2); // Comment: Previously set to 1
+               GLOBAL.StatSet("mrl",1);
             }
             if(GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD && _lvl.Get() >= 2 && GLOBAL.StatGet("mrl") != 2 && BASE._saveCounterA == BASE._saveCounterB && !BASE._saving)
             {
@@ -159,7 +159,10 @@ package
       override public function Constructed() : void
       {
          GLOBAL._bMap = this;
-         new URLLoaderApi().load(GLOBAL._mapURL + "setmapversion", [["version", 1]], null, null);
+         if(_lvl.Get() < 2)
+         {
+            new URLLoaderApi().load(GLOBAL._mapURL + "setmapversion", [["version", 1]], null, null);
+         }
          super.Constructed();
       }
       
