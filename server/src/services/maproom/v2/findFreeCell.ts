@@ -31,6 +31,9 @@ export const findFreeCell = async (world: World, em: EntityManager<PostgreSqlDri
     const x = Math.floor(Math.random() * MapRoom2.WIDTH);
     const y = Math.floor(Math.random() * MapRoom2.HEIGHT);
 
+    // Skip the origin cell — reserved for tribe conquest
+    if (x === 0 && y === 0) continue;
+
     // Generate noise based on the world's seed
     const noise = generateNoise(world.uuid);
     const terrainHeight = getTerrainHeight(noise, x, y);

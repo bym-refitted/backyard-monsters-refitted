@@ -10,6 +10,7 @@ import JWT from "jsonwebtoken";
 import { Env } from "../enums/Env.js";
 import { isDiscordAccountOldEnough } from "../services/discord/discordAccountStatus.js";
 import type { SessionType } from "../enums/SessionType.js";
+import { logger } from "../utils/logger.js";
 
 export interface JwtClaims {
   user: {
@@ -110,6 +111,8 @@ export const verifyJwtToken = (token: string): AuthTokenPayload => {
       user: { ...decoded.user, meetsDiscordAgeCheck },
     };
   } catch (err) {
+    const { name, message } = err as Error;
+    logger.warn(`JWT verification failed: ${name} - ${message}`);
     throw tokenAuthFailureErr();
   }
 };

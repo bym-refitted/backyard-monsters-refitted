@@ -1,6 +1,6 @@
 import { Save } from "../../models/save.model.js";
 import { postgres } from "../../server.js";
-import { AttackPermission } from "../../enums/MapRoom.js";
+import { AttackPermission, MapRoomVersion } from "../../enums/MapRoom.js";
 import { TruceStatus } from "../../enums/TruceStatus.js";
 import { getCurrentDateTime } from "../../utils/getCurrentDateTime.js";
 import { getLastSeen } from "./getLastSeen.js";
@@ -8,7 +8,7 @@ import { getTruces } from "./getTruces.js";
 import { isAttackActive } from "../base/isAttackActive.js";
 import { calculateBaseLevel } from "../base/calculateBaseLevel.js";
 import type { NeighbourData } from "../../types/NeighbourData.js";
-import type { BaseType } from "../../enums/Base.js";
+import { BaseType } from "../../enums/Base.js";
 
 
 type Base = BaseType.MAIN | BaseType.INFERNO;
@@ -32,7 +32,8 @@ const NEIGHBOUR_SAVE_FIELDS = [
 /**
  * Updates dynamic fields on cached neighbour data with current save state.
  * Runs on every getNeighbours call to keep attack permissions and level up to date.
- * Filters out neighbours whose saves no longer exist in the database.
+ * Filters out neighbours whose saves no longer exist in the database,
+ * and any who have since upgraded off MR1.
  *
  * @param {NeighbourData[]} cachedNeighbours - The cached neighbour data
  * @param {Base.MAIN | Base.INFERNO} baseType - Which save type to query for live updates
@@ -42,11 +43,12 @@ export const updateNeighbourData = async (cachedNeighbours: NeighbourData[], bas
   if (!cachedNeighbours.length) return cachedNeighbours;
 
   const userIds = cachedNeighbours.map((neighbour) => neighbour.userid);
+  const mr1Filter = baseType === BaseType.MAIN ? { mapversion: MapRoomVersion.V1 } : {};
 
   const [neighbourSaves, lastSeens, truces] = await Promise.all([
     postgres.em.find(
       Save,
-      { type: baseType, userid: { $in: userIds } },
+      { type: baseType, userid: { $in: userIds }, ...mr1Filter },
       { fields: NEIGHBOUR_SAVE_FIELDS }
     ) as unknown as Promise<Save[]>,
 

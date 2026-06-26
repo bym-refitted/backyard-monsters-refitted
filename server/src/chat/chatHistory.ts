@@ -4,11 +4,11 @@ import type { HistoryEntry } from "./chatProtocol.js";
 const HISTORY_KEY = (channel: string) => `history:${channel}`;
 
 const MAX_HISTORY = 100;
-const HISTORY_TTL_SECONDS = 86400;
+const HISTORY_TTL_SECONDS = 2592000;
 
 /**
  * Appends a message to a channel's history list, capping it at MAX_HISTORY entries.
- * The TTL is refreshed on every push so the history expires 24 hours after the last message.
+ * The TTL is refreshed on every push so the history expires 30 days after the last message.
  *
  * @param {string} channel - The channel key (e.g. `chat:mr1-global`, `chat:mr2-global`, `chat:mr3-global`).
  * @param {HistoryEntry} entry - The message entry to store.

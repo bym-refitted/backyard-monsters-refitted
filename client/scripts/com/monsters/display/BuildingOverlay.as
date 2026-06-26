@@ -162,9 +162,12 @@ package com.monsters.display
             }
             else if(param1._countdownUpgrade.Get() > 0)
             {
-               _loc6_ = int(param1._buildingProps.costs[param1._lvl.Get()].time.Get());
-               _loc3_ = 49 / _loc6_ * (_loc6_ - param1._countdownUpgrade.Get());
-               _loc4_ = "upgrading";
+               if(param1._buildingProps.costs[param1._lvl.Get()])
+               {
+                  _loc6_ = int(param1._buildingProps.costs[param1._lvl.Get()].time.Get());
+                  _loc3_ = 49 / _loc6_ * (_loc6_ - param1._countdownUpgrade.Get());
+                  _loc4_ = "upgrading";
+               }
             }
             else if(param1._countdownFortify.Get() > 0)
             {

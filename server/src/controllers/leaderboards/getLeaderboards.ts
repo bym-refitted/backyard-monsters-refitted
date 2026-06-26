@@ -103,7 +103,7 @@ export const getLeaderboards: KoaController = async (ctx) => {
             GROUP BY s.userid
         ) AS sub ON u.userid = sub.userid
         ORDER BY sub.outpost_count DESC
-        LIMIT 25
+        LIMIT 100
       `,
       [worldid],
     );

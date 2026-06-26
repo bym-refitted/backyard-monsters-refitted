@@ -45,7 +45,7 @@ package
 
       public static var cdnUrl:String = CONFIG::CDN_URL;
 
-      public static var apiVersionSuffix:String = "v1.6.6-beta";
+      public static var apiVersionSuffix:String = "v1.6.8-beta";
 
       public static var connectionCounter:int;
 
@@ -2181,7 +2181,8 @@ package
          if (UI_BOTTOM && UI_BOTTOM._missions && !UI_BOTTOM._missions._open)
          {
             _SCREENHUD = new Point(_SCREEN.x, _SCREEN.y + _SCREEN.height - 30 - 0);
-         }
+
+        }
          if (Chat._chatInited && Chat._bymChat && !Chat._bymChat._open)
          {
             _SCREENHUDLEFT = new Point(_SCREEN.x, _SCREEN.y + _SCREEN.height - 30 - 0);
