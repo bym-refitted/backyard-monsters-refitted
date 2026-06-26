@@ -1,5 +1,6 @@
 package com.monsters.alliances.tabs
 {
+   import com.monsters.alliances.ALLIANCES;
    import com.monsters.alliances.AllianceConstants;
    import com.monsters.display.ImageCache;
    import com.monsters.display.ScrollSetV;
@@ -7,6 +8,7 @@ package com.monsters.alliances.tabs
    import flash.display.BitmapData;
    import flash.display.MovieClip;
    import flash.events.FocusEvent;
+   import flash.events.IOErrorEvent;
    import flash.events.MouseEvent;
    import flash.filters.DropShadowFilter;
    import flash.filters.GlowFilter;
@@ -20,6 +22,10 @@ package com.monsters.alliances.tabs
    {
       public static const MODE_CREATE:int = 0;
       public static const MODE_EDIT:int = 1;
+
+      // Index of the My Alliance tab in ALLIANCEPOPUP (TAB_LABELS order), jumped
+      // to after a successful create — mirrors the original.
+      private static const MY_ALLIANCE_TAB:int = 1;
 
       private static const BG_W:int = 580;
       private static const BG_H:int = 500;
@@ -55,6 +61,8 @@ package com.monsters.alliances.tabs
       private var _previewCells:Array;
       private var _scrollContent:MovieClip;
       private var _allianceName:String;
+      private var _nameField:TextField;
+      private var _descField:TextField;
 
       public function AllianceFormPopup()
       {
@@ -190,6 +198,7 @@ package com.monsters.alliances.tabs
          descBg.y = textareaY;
 
          var descField:TextField = _mc.addChild(new TextField()) as TextField;
+         _descField = descField;
          descField.type = TextFieldType.INPUT;
          descField.selectable = true;
          descField.mouseEnabled = true;
@@ -235,6 +244,7 @@ package com.monsters.alliances.tabs
          nameBg.y = nameInputY;
 
          var nameField:TextField = _mc.addChild(new TextField()) as TextField;
+         _nameField = nameField;
          nameField.background = false;
          nameField.border = false;
          nameField.width = RIGHT_FORM_W - 12;
@@ -369,8 +379,96 @@ package com.monsters.alliances.tabs
       private function _onAction(e:MouseEvent):void
       {
          SOUNDS.Play("click1");
-         // TODO: send create/edit request to server
-         _onClose();
+         if (_mode == MODE_CREATE)
+         {
+            _submitCreate();
+         }
+         else
+         {
+            // TODO: send edit request to server
+            _onClose();
+         }
+      }
+
+      /**
+       * Reads the form and posts a create-alliance request, mirroring the
+       * original client: both the name and the description are required (an
+       * untouched field still showing its placeholder counts as empty).
+       */
+      private function _submitCreate():void
+      {
+         var name:String = (_nameField != null) ? _trim(_nameField.text) : "";
+         if (name == KEYS.Get("alliance_name_placeholder"))
+         {
+            name = "";
+         }
+         if (name.length == 0)
+         {
+            GLOBAL.Message(KEYS.Get("alliance_err_name_too_short"));
+            return;
+         }
+
+         var description:String = (_descField != null) ? _trim(_descField.text) : "";
+         if (description == KEYS.Get("alliance_desc_placeholder"))
+         {
+            description = "";
+         }
+         if (description.length == 0)
+         {
+            GLOBAL.Message(KEYS.Get("alliance_err_desc_too_short"));
+            return;
+         }
+
+         var image:int = int(SHIELD_IDS[_selectedIdx]);
+
+         PLEASEWAIT.Show(KEYS.Get("alliance_creating"));
+         var r:URLLoaderApi = new URLLoaderApi();
+         var createVars:Array = [["alliance_name", name], ["alliance_image", image], ["alliance_desc", description]];
+         r.load(GLOBAL._allianceURL + "createalliance", createVars, _onCreateComplete, _onCreateFail);
+      }
+
+      /**
+       * Handles the create-alliance response. The transport routes both success
+       * (200) and server-sent error bodies here, so a present `alliance` field
+       * signals success; otherwise `error` carries a message to display.
+       *
+       * Mirrors the original: on success there is no confirmation popup — the
+       * form closes and the window jumps to the My Alliance tab.
+       */
+      private function _onCreateComplete(response:Object):void
+      {
+         PLEASEWAIT.Hide();
+         if (response && response.alliance)
+         {
+            ALLIANCES._allianceID = int(response.alliance.alliance_id);
+            ALLIANCES._myAlliance = ALLIANCES.SetAlliance(response.alliance);
+            ALLIANCES._isLeader = true;
+            _onClose();
+            if (ALLIANCEWINDOW._mc != null)
+            {
+               ALLIANCEWINDOW._mc.SelectTab(MY_ALLIANCE_TAB);
+            }
+            return;
+         }
+         GLOBAL.Message((response && response.error) ? String(response.error) : KEYS.Get("alliance_err_generic"));
+      }
+
+      private function _onCreateFail(e:IOErrorEvent):void
+      {
+         PLEASEWAIT.Hide();
+         GLOBAL.Message(KEYS.Get("alliance_err_generic"));
+      }
+
+      /**
+       * Trims leading/trailing whitespace (AS3 String has no native trim).
+       */
+      private function _trim(value:String):String
+      {
+         if (value == null)
+         {
+            return "";
+         }
+         return value.replace(/^\s+|\s+$/g, "");
       }
 
       private function _onClose(e:MouseEvent = null):void

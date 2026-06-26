@@ -255,6 +255,17 @@ package
          }
       }
 
+      /**
+       * Switches to the given tab (TAB_LABELS index) and renders it. Used after
+       * the player's alliance membership changes (e.g. jumping to My Alliance
+       * once an alliance is created).
+       * @param {int} idx - TAB_LABELS index to switch to.
+       */
+      public function SelectTab(idx:int):void
+      {
+         _switchTab(idx);
+      }
+
       public function Hide(param1:MouseEvent = null):void
       {
          ALLIANCEWINDOW.Hide();

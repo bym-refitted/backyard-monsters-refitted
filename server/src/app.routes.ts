@@ -52,6 +52,8 @@ import { getAttackLogs } from "./controllers/attacklogs/getAttackLogs.js";
 import { wildMonsterInvasion } from "./controllers/events/wildMonsterInvasion.js";
 import { recordDebugData } from "./controllers/debug/recordDebugData.js";
 
+import { createAlliance } from "./controllers/alliance/createAlliance.js";
+
 const router = new Router();
 
 /**  ────────────────────────────────────────────────
@@ -129,6 +131,11 @@ router.post("/api/:apiVersion/bm/yardplanner/savetemplate", apiVersion, verifyUs
 router.get("/api/:apiVersion/worlds", getAvailableWorlds);
 router.get("/api/:apiVersion/leaderboards", getLeaderboards);
 router.get("/api/:apiVersion/attacklogs", verifyUserAuth, getAttackLogs);
+
+/**  ────────────────────────────────────────────────
+* 📦 Alliances
+* ──────────────────────────────────────────────── */
+router.post("/alliance/createalliance", verifyUserAuth, logRequest, createAlliance);
 
 /**  ────────────────────────────────────────────────
 * 📦 Events

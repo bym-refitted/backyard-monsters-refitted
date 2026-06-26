@@ -188,3 +188,27 @@ export const truceActiveErr = () =>
     isClientFriendly: false,
   });
 
+export const alreadyInAllianceErr = () =>
+  new ClientSafeError({
+    message: "You are already a member of an alliance.",
+    status: Status.CONFLICT,
+    data: {},
+    isClientFriendly: true,
+  });
+
+export const allianceNameTakenErr = () =>
+  new ClientSafeError({
+    message: "The alliance name is already taken.",
+    status: Status.CONFLICT,
+    data: {},
+    isClientFriendly: true,
+  });
+
+export const allianceNoWorldErr = () =>
+  new ClientSafeError({
+    message: "You must join a world before creating an alliance.",
+    status: Status.FORBIDDEN,
+    data: {},
+    isClientFriendly: true,
+  });
+

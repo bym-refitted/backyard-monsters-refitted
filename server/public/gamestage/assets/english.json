@@ -3925,5 +3925,9 @@
     "alliance_btn_post": "Post Message",
     "alliance_chat_connecting": "Connecting to chat...",
     "alliance_chat_unavailable": "Chat is currently unavailable.",
-    "alliance_chat_disconnected": "Chat is currently disconnected."
+    "alliance_chat_disconnected": "Chat is currently disconnected.",
+    "alliance_creating": "Creating alliance...",
+    "alliance_err_name_too_short": "The alliance name is too short.",
+    "alliance_err_desc_too_short": "The alliance description is too short.",
+    "alliance_err_generic": "Sorry, something has gone wrong."
 }
