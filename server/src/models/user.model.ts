@@ -7,6 +7,7 @@ import {
 } from "@mikro-orm/decorators/es";
 import { Save } from "./save.model.js";
 import { FrontendKey } from "../utils/FrontendKey.js";
+import { AllianceRole } from "../enums/AllianceRole.js";
 import type { JsonObject } from "../types/JsonObject.js";
 
 @Entity({ tableName: "user" })
@@ -98,4 +99,11 @@ export class User {
   @FrontendKey
   @Property({ type: "number", default: 0 })
   sendinvite: number = 0;
+
+  @Index()
+  @Property({ type: "number", nullable: true })
+  alliance_id?: number | null;
+
+  @Property({ type: "string", nullable: true })
+  alliance_role?: AllianceRole | null;
 }

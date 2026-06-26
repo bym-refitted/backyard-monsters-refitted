@@ -14,6 +14,7 @@ bin/
 
 # Documentation / misc
 CLAUDE.md
+/docs
 
 # API / versioning
 api-versioning
