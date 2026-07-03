@@ -1,5 +1,6 @@
 package
 {
+   import com.monsters.alliances.ALLIANCES;
    import flash.events.MouseEvent;
 
    public class ALLIANCEWINDOW
@@ -20,6 +21,7 @@ package
          {
             SOUNDS.Play("click1");
             _open = true;
+            ALLIANCES.LoadMyAlliance(null, true);
             GLOBAL.BlockerAdd();
             _mc = GLOBAL._layerWindows.addChild(new ALLIANCEPOPUP()) as ALLIANCEPOPUP;
             _mc.Center();

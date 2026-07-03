@@ -75,10 +75,6 @@ package com.monsters.alliances.tabs
 
       private static const POST_BTN_W:int = 130;
 
-      // Mock toggle: forces the in-alliance view so it can be previewed without
-      // server data. The live condition is ALLIANCES._myAlliance != null.
-      private static const MOCK_IN_ALLIANCE:Boolean = true;
-
       private static const BAND_A:uint = AllianceConstants.SHOUT_BAND0;
       private static const BAND_B:uint = AllianceConstants.SHOUT_BAND1;
 
@@ -90,6 +86,7 @@ package com.monsters.alliances.tabs
       private var _chat:WSChatSystem;
       private var _chatChannel:Channel;
       private var _names:Object;
+      private var _data:Object;
 
       public function MyAllianceTab()
       {
@@ -98,8 +95,33 @@ package com.monsters.alliances.tabs
 
       override public function build():void
       {
-         if (_inAlliance())
+         ALLIANCES.LoadMyAlliance(_onMyAllianceData);
+      }
+
+      /**
+       * The My Alliance layout extends below the standard content height (the
+       * in-alliance view fills it; the no-alliance prompt simply sits in a taller
+       * beige area), so the background always reaches the inner-section bottom.
+       */
+      override public function get contentHeight():int
+      {
+         return CONTENT_BG_H;
+      }
+
+      /**
+       * Renders the tab from the cached store payload (fetched on popup open and
+       * refreshed after mutations, not per tab switch). Receives the alliance data
+       * object, or null when the player is unaffiliated or the load failed.
+       */
+      private function _onMyAllianceData(data:Object):void
+      {
+         if (stage == null)
          {
+            return;
+         }
+         if (data)
+         {
+            _data = data;
             _buildInAlliance();
          }
          else
@@ -108,47 +130,9 @@ package com.monsters.alliances.tabs
          }
       }
 
-      /**
-       * The in-alliance layout extends below the standard content height, so its
-       * beige background must reach the panel's inner-section bottom. The
-       * no-alliance view keeps the shared default.
-       */
-      override public function get contentHeight():int
-      {
-         return _inAlliance() ? CONTENT_BG_H : CONTENT_H;
-      }
-
-      /**
-       * @returns {Boolean} True when the player belongs to an alliance.
-       */
-      private function _inAlliance():Boolean
-      {
-         return MOCK_IN_ALLIANCE || ALLIANCES._myAlliance != null;
-      }
-
-      /**
-       * @returns {Object} Alliance display data. Falls back to mock data while
-       * the server-side alliance payload is wired up.
-       */
-      private function _allianceData():Object
-      {
-         return {
-               name: "Klan Kill You",
-               rank: 30,
-               level: 48,
-               leader: "Ryan",
-               members: 50,
-               image: 3,
-               desc: "Website: http://www.fbgsource.com\n" +
-               "Direct link to forums: http://www.fbgsource.com/forum/index.php - Please register on forums. " +
-               "Some good posts there already, more to come."
-            };
-      }
-
       private function _buildInAlliance():void
       {
-         var data:Object = _allianceData();
-         _buildLeftColumn(data);
+         _buildLeftColumn(_data);
          _buildChat();
          _buildPostBar();
       }
@@ -171,9 +155,9 @@ package com.monsters.alliances.tabs
 
          var rows:Array = [
                [KEYS.Get("alliance_my_rank"), String(data.rank)],
-               [KEYS.Get("alliance_my_level"), String(data.level)],
-               [KEYS.Get("alliance_my_leader"), String(data.leader)],
-               [KEYS.Get("alliance_my_members"), String(data.members)]
+               [KEYS.Get("alliance_my_level"), String(data.avg_level)],
+               [KEYS.Get("alliance_my_leader"), String(data.leader_name)],
+               [KEYS.Get("alliance_my_members"), String(data.number_of_members)]
             ];
          const labelW:int = 68;
          for (var ri:int = 0; ri < rows.length; ri++)
@@ -208,7 +192,7 @@ package com.monsters.alliances.tabs
          descField.x = LEFT_CONTENT_X + 8;
          descField.y = DESC_Y + 8;
          descField.defaultTextFormat = new TextFormat("Verdana", 13, 0x333333);
-         descField.text = String(data.desc);
+         descField.text = String(data.description);
 
          const btnGap:int = 24;
          const btnW:int = int((LEFT_CONTENT_W - btnGap) / 2);
@@ -503,7 +487,7 @@ package com.monsters.alliances.tabs
       private function _onEdit(e:MouseEvent):void
       {
          SOUNDS.Play("click1");
-         new AllianceFormPopup().Show(AllianceFormPopup.MODE_EDIT, String(_allianceData().name));
+         new AllianceFormPopup().Show(AllianceFormPopup.MODE_EDIT, (_data != null) ? String(_data.name) : "");
       }
 
       private function _onLeave(e:MouseEvent):void

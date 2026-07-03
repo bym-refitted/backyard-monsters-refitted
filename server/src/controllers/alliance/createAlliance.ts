@@ -36,6 +36,7 @@ export const createAlliance: KoaController = async (ctx) => {
     image: data.alliance_image,
     description: data.alliance_desc,
     leader_userid: user.userid,
+    leader_name: user.username,
     world_id: worldid,
     member_count: 1,
   } as unknown as RequiredEntityData<Alliance>;

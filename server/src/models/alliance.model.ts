@@ -18,7 +18,10 @@ export class Alliance {
   @Index()
   @Property({ type: "number" })
   leader_userid!: number;
-  
+
+  @Property({ type: "string", default: "" })
+  leader_name: string = "";
+
   @Index()
   @Property({ type: "string" })
   world_id!: string;
@@ -29,9 +32,6 @@ export class Alliance {
   @Index()
   @Property({ type: new BigIntType("number"), default: 0 })
   empire_points: number = 0;
-
-  @Property({ type: "number", default: 1 })
-  level: number = 1;
 
   @Property({ type: Date })
   created_at: Date = new Date();

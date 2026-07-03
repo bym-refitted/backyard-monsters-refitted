@@ -443,6 +443,7 @@ package com.monsters.alliances.tabs
             ALLIANCES._allianceID = int(response.alliance.alliance_id);
             ALLIANCES._myAlliance = ALLIANCES.SetAlliance(response.alliance);
             ALLIANCES._isLeader = true;
+            ALLIANCES.InvalidateMyAlliance();
             _onClose();
             if (ALLIANCEWINDOW._mc != null)
             {

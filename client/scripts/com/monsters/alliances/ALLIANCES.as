@@ -21,11 +21,92 @@ package com.monsters.alliances
       public static var _isLeader:Boolean = false;
 
       private static var _open:Boolean;
-       
-      
+
+      private static var _myAllianceData:Object = null;
+
+      private static var _myAllianceLoaded:Boolean = false;
+
+      private static var _myAllianceLoading:Boolean = false;
+
+      private static var _myAlliancePending:Array = [];
+
+
       public function ALLIANCES()
       {
          super();
+      }
+
+      /**
+       * Loads the player's My Alliance payload into the store, firing the network
+       * request at most once per open/mutation cycle. A warm cache invokes onDone
+       * synchronously; concurrent callers coalesce onto the single in-flight
+       * request. Mirrors the original client, which loaded alliance info on popup
+       * open and refreshed it on mutations rather than on every tab switch.
+       * @param {Function} onDone - Receives the alliance data object, or null when
+       *   the player is unaffiliated or the request fails. May be null (warm only).
+       * @param {Boolean} force - Bypass the cache and re-fetch (used on popup open).
+       */
+      public static function LoadMyAlliance(onDone:Function, force:Boolean = false) : void
+      {
+         if(_myAllianceLoaded && !force)
+         {
+            if(onDone != null)
+            {
+               onDone(_myAllianceData);
+            }
+            return;
+         }
+         if(onDone != null)
+         {
+            _myAlliancePending.push(onDone);
+         }
+         if(_myAllianceLoading)
+         {
+            return;
+         }
+         _myAllianceLoading = true;
+         var r:URLLoaderApi = new URLLoaderApi();
+         r.load(GLOBAL._allianceURL + "myalliance",null,_onMyAllianceLoaded,_onMyAllianceLoadFail);
+      }
+
+      private static function _onMyAllianceLoaded(param1:Object) : void
+      {
+         _myAllianceData = (param1 && param1.alliance) ? param1.alliance : null;
+         _myAllianceLoaded = true;
+         _myAllianceLoading = false;
+         _flushMyAlliancePending();
+      }
+
+      private static function _onMyAllianceLoadFail(param1:IOErrorEvent) : void
+      {
+         _myAllianceData = null;
+         _myAllianceLoaded = false;
+         _myAllianceLoading = false;
+         _flushMyAlliancePending();
+      }
+
+      private static function _flushMyAlliancePending() : void
+      {
+         var _loc1_:Array = _myAlliancePending;
+         _myAlliancePending = [];
+         for each(var _loc2_:Function in _loc1_)
+         {
+            if(_loc2_ != null)
+            {
+               _loc2_(_myAllianceData);
+            }
+         }
+      }
+
+      /**
+       * Drops the cached My Alliance payload so the next LoadMyAlliance() re-fetches.
+       * Call after any mutation that changes the player's alliance (create, edit,
+       * leave, join, kick, promote).
+       */
+      public static function InvalidateMyAlliance() : void
+      {
+         _myAllianceLoaded = false;
+         _myAllianceData = null;
       }
       
       public static function Setup(param1:int = 0) : void
@@ -53,6 +134,14 @@ package com.monsters.alliances
             _myAlliance = null;
          }
          _isLeader = false;
+         // NOTE: the My Alliance fetch-cache is deliberately NOT reset here.
+         // Clear() is currently called as a false positive on every base load
+         // (BASE.as takes the "no alliancedata" branch because base-load doesn't
+         // yet surface the player's alliance — Phase 2). Resetting the cache here
+         // forces a re-fetch of alliance/myalliance on the next tab switch after
+         // any navigation. Freshness is already guaranteed by the force-fetch on
+         // popup open (ALLIANCEWINDOW.Show) and InvalidateMyAlliance() on mutations.
+         // Once base-load populates alliancedata, revisit this.
       }
       
       public static function SetCellAlliance(param1:MapRoomCell, param2:Boolean = false) : AllyInfo
