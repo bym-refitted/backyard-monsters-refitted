@@ -53,6 +53,7 @@ import { wildMonsterInvasion } from "./controllers/events/wildMonsterInvasion.js
 import { recordDebugData } from "./controllers/debug/recordDebugData.js";
 
 import { createAlliance } from "./controllers/alliance/createAlliance.js";
+import { editAlliance } from "./controllers/alliance/editAlliance.js";
 import { myAlliance } from "./controllers/alliance/myAlliance.js";
 
 const router = new Router();
@@ -137,6 +138,7 @@ router.get("/api/:apiVersion/attacklogs", verifyUserAuth, getAttackLogs);
 * 📦 Alliances
 * ──────────────────────────────────────────────── */
 router.post("/alliance/createalliance", verifyUserAuth, logRequest, createAlliance);
+router.post("/alliance/editalliance", verifyUserAuth, logRequest, editAlliance);
 router.get("/alliance/myalliance", verifyUserAuth, logRequest, myAlliance);
 
 /**  ────────────────────────────────────────────────

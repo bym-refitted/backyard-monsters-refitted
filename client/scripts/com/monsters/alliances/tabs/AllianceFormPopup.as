@@ -61,6 +61,7 @@ package com.monsters.alliances.tabs
       private var _previewCells:Array;
       private var _scrollContent:MovieClip;
       private var _allianceName:String;
+      private var _allianceDesc:String;
       private var _nameField:TextField;
       private var _descField:TextField;
 
@@ -69,13 +70,23 @@ package com.monsters.alliances.tabs
          super();
       }
 
-      public function Show(mode:int, allianceName:String = null):void
+      /**
+       * Opens the create/edit form. In edit mode, `image` and `description`
+       * prefill the shield selection and description field with the alliance's
+       * current values (the name is shown read-only and cannot be changed).
+       * @param {int} mode - MODE_CREATE or MODE_EDIT.
+       * @param {String} allianceName - Existing name, shown read-only in edit mode.
+       * @param {int} image - Existing shield id, preselected in edit mode.
+       * @param {String} description - Existing description, prefilled in edit mode.
+       */
+      public function Show(mode:int, allianceName:String = null, image:int = 0, description:String = null):void
       {
          _mode = mode;
          _allianceName = allianceName;
+         _allianceDesc = description;
          _mc = new MovieClip();
          _cells = [];
-         _selectedIdx = 0;
+         _selectedIdx = _indexOfShield(image);
 
          const frameX:int = -int(BG_W * 0.5);
          const frameY:int = -int(BG_H * 0.5);
@@ -212,7 +223,14 @@ package com.monsters.alliances.tabs
          descField.x = x + 6;
          descField.y = textareaY + 4;
          descField.defaultTextFormat = new TextFormat("Verdana", 11, 0x333333);
-         _applyPlaceholder(descField, KEYS.Get("alliance_desc_placeholder"));
+         if (_mode == MODE_EDIT && _allianceDesc != null && _allianceDesc.length > 0)
+         {
+            descField.text = _allianceDesc;
+         }
+         else
+         {
+            _applyPlaceholder(descField, KEYS.Get("alliance_desc_placeholder"));
+         }
 
          _previewCells = [];
          const previewSizes:Array = [60, 36, 20];
@@ -267,6 +285,16 @@ package com.monsters.alliances.tabs
             nameField.mouseEnabled = false;
             nameField.text = (_allianceName != null) ? _allianceName : "";
          }
+      }
+
+      /**
+       * Returns the grid index of a shield id, or 0 (first shield) when the id is
+       * absent from SHIELD_IDS — used to preselect the current shield on edit.
+       */
+      private function _indexOfShield(id:int):int
+      {
+         var idx:int = SHIELD_IDS.indexOf(id);
+         return idx < 0 ? 0 : idx;
       }
 
       /**
@@ -385,8 +413,7 @@ package com.monsters.alliances.tabs
          }
          else
          {
-            // TODO: send edit request to server
-            _onClose();
+            _submitEdit();
          }
       }
 
@@ -421,7 +448,6 @@ package com.monsters.alliances.tabs
 
          var image:int = int(SHIELD_IDS[_selectedIdx]);
 
-         PLEASEWAIT.Show(KEYS.Get("alliance_creating"));
          var r:URLLoaderApi = new URLLoaderApi();
          var createVars:Array = [["alliance_name", name], ["alliance_image", image], ["alliance_desc", description]];
          r.load(GLOBAL._allianceURL + "createalliance", createVars, _onCreateComplete, _onCreateFail);
@@ -437,7 +463,6 @@ package com.monsters.alliances.tabs
        */
       private function _onCreateComplete(response:Object):void
       {
-         PLEASEWAIT.Hide();
          if (response && response.alliance)
          {
             ALLIANCES._allianceID = int(response.alliance.alliance_id);
@@ -456,7 +481,58 @@ package com.monsters.alliances.tabs
 
       private function _onCreateFail(e:IOErrorEvent):void
       {
-         PLEASEWAIT.Hide();
+         GLOBAL.Message(KEYS.Get("alliance_err_generic"));
+      }
+
+      /**
+       * Reads the form and posts an edit-alliance request. The name is immutable,
+       * so only the shield image and description are sent; as on create, the
+       * description is required (an untouched placeholder counts as empty).
+       */
+      private function _submitEdit():void
+      {
+         var description:String = (_descField != null) ? _trim(_descField.text) : "";
+         if (description == KEYS.Get("alliance_desc_placeholder"))
+         {
+            description = "";
+         }
+         if (description.length == 0)
+         {
+            GLOBAL.Message(KEYS.Get("alliance_err_desc_too_short"));
+            return;
+         }
+
+         var image:int = int(SHIELD_IDS[_selectedIdx]);
+
+         var r:URLLoaderApi = new URLLoaderApi();
+         var editVars:Array = [["alliance_image", image], ["alliance_desc", description]];
+         r.load(GLOBAL._allianceURL + "editalliance", editVars, _onEditComplete, _onEditFail);
+      }
+
+      /**
+       * Handles the edit-alliance response. As with create, a present `alliance`
+       * field signals success; otherwise `error` carries a message. On success the
+       * cached My Alliance payload is invalidated and the tab is re-rendered so the
+       * new shield and description show immediately.
+       */
+      private function _onEditComplete(response:Object):void
+      {
+         if (response && response.alliance)
+         {
+            ALLIANCES._myAlliance = ALLIANCES.SetAlliance(response.alliance);
+            ALLIANCES.InvalidateMyAlliance();
+            _onClose();
+            if (ALLIANCEWINDOW._mc != null)
+            {
+               ALLIANCEWINDOW._mc.SelectTab(MY_ALLIANCE_TAB);
+            }
+            return;
+         }
+         GLOBAL.Message((response && response.error) ? String(response.error) : KEYS.Get("alliance_err_generic"));
+      }
+
+      private function _onEditFail(e:IOErrorEvent):void
+      {
          GLOBAL.Message(KEYS.Get("alliance_err_generic"));
       }
 

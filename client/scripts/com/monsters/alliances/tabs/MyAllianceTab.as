@@ -487,7 +487,14 @@ package com.monsters.alliances.tabs
       private function _onEdit(e:MouseEvent):void
       {
          SOUNDS.Play("click1");
-         new AllianceFormPopup().Show(AllianceFormPopup.MODE_EDIT, (_data != null) ? String(_data.name) : "");
+         if (_data == null) return;
+         
+         new AllianceFormPopup().Show(
+               AllianceFormPopup.MODE_EDIT,
+               String(_data.name),
+               int(_data.image),
+               String(_data.description)
+            );
       }
 
       private function _onLeave(e:MouseEvent):void
