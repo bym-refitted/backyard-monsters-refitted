@@ -5,6 +5,5 @@
  */
 export enum AllianceRole {
   LEADER = "leader",
-  OFFICER = "officer",
   MEMBER = "member",
 }

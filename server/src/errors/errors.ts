@@ -212,3 +212,11 @@ export const allianceNoWorldErr = () =>
     isClientFriendly: true,
   });
 
+export const leaderMustTransferErr = (allianceName: string) =>
+  new ClientSafeError({
+    message: `Since you're the fearless leader of the ${allianceName} Alliance, you need to elect someone to succeed you before you go.  Go to the Members Tab and promote a current member to leader before you depart.`,
+    status: Status.FORBIDDEN,
+    data: {},
+    isClientFriendly: true,
+  });
+

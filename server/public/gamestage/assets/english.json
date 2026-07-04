@@ -3923,10 +3923,13 @@
     "alliance_btn_edit": "Edit",
     "alliance_btn_leave": "Leave Alliance",
     "alliance_btn_post": "Post Message",
+    "alliance_leave_confirm": "Leaving an Alliance can't be undone.  You'll have to ask the leader of the #alliance# Alliance to take you back if you leave.  Once you leave however, You'll be free to join a new Alliance or create your own.",
+    "alliance_disband_confirm": "Leaving an Alliance can't be undone. You are the last member of \"#alliance#\", are you sure you want to leave?",
     "alliance_chat_connecting": "Connecting to chat...",
     "alliance_chat_unavailable": "Chat is currently unavailable.",
     "alliance_chat_disconnected": "Chat is currently disconnected.",
     "alliance_err_name_too_short": "The alliance name is too short.",
     "alliance_err_desc_too_short": "The alliance description is too short.",
+    "alliance_err_leader_cannot_leave": "Since you're the fearless leader of the #alliance# Alliance, you need to elect someone to succeed you before you go.  Go to the Members Tab and promote a current member to leader before you depart.",
     "alliance_err_generic": "Sorry, something has gone wrong."
 }

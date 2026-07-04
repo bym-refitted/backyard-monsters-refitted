@@ -13,6 +13,7 @@ package com.monsters.alliances.tabs
    import flash.display.BitmapData;
    import flash.display.MovieClip;
    import flash.events.Event;
+   import flash.events.IOErrorEvent;
    import flash.events.KeyboardEvent;
    import flash.events.MouseEvent;
    import flash.filters.DropShadowFilter;
@@ -54,6 +55,9 @@ package com.monsters.alliances.tabs
       private static const PANEL_H:int = ACTION_BTN_H + PANEL_PAD * 2;
       private static const PANEL_Y:int = INNER_BOTTOM - 10 - PANEL_H;
       private static const ACTION_Y:int = PANEL_Y + PANEL_PAD;
+
+      // TAB_LABELS index of the My Alliance tab; re-selected to re-render after a leave.
+      private static const MY_ALLIANCE_TAB:int = 1;
 
       private static const SHIELD_SIZE:int = 90;
       private static const SHIELD_PAD_R:int = 12;
@@ -497,10 +501,66 @@ package com.monsters.alliances.tabs
             );
       }
 
+      /**
+       * Handles the Leave Alliance button. A leader with members remaining cannot
+       * leave and is told to promote a successor first; otherwise a confirmation is shown, using the
+       * disband warning when they are the last member and the plain leave warning
+       * otherwise — matching the original's two variants.
+       */
       private function _onLeave(e:MouseEvent):void
       {
          SOUNDS.Play("click1");
-         // TODO: confirm + send leave-alliance request to server
+         if (_data == null)
+         {
+            return;
+         }
+         var members:int = int(_data.number_of_members);
+         if (ALLIANCES._isLeader && members > 1)
+         {
+            GLOBAL.Message(KEYS.Get("alliance_err_leader_cannot_leave", {"alliance": String(_data.name)}));
+            return;
+         }
+         var confirmKey:String = (ALLIANCES._isLeader && members <= 1) ? "alliance_disband_confirm" : "alliance_leave_confirm";
+         GLOBAL.Message(
+               KEYS.Get(confirmKey, {"alliance": String(_data.name)}),
+               KEYS.Get("btn_yes"), _confirmLeave, null,
+               KEYS.Get("btn_no"), null, null
+            );
+      }
+
+      private function _confirmLeave():void
+      {
+         // A non-empty body is required: Flash downgrades a POST with no data to a
+         // GET, which would miss the POST route. The server ignores the payload and
+         // identifies the alliance from the auth token.
+         var r:URLLoaderApi = new URLLoaderApi();
+         r.load(GLOBAL._allianceURL + "leavealliance", [["confirm", "1"]], _onLeaveComplete, _onLeaveFail);
+      }
+
+      /**
+       * Handles the leave/disband response. On success the player's alliance state
+       * is cleared and the My Alliance tab is re-selected, which now renders the
+       * "create an alliance" prompt; a present `error` field surfaces a message.
+       */
+      private function _onLeaveComplete(response:Object):void
+      {
+         if (response && response.error)
+         {
+            GLOBAL.Message(String(response.error));
+            return;
+         }
+         ALLIANCES.Clear();
+         ALLIANCES._allianceID = 0;
+         ALLIANCES.InvalidateMyAlliance();
+         if (ALLIANCEWINDOW._mc != null)
+         {
+            ALLIANCEWINDOW._mc.SelectTab(MY_ALLIANCE_TAB);
+         }
+      }
+
+      private function _onLeaveFail(e:IOErrorEvent):void
+      {
+         GLOBAL.Message(KEYS.Get("alliance_err_generic"));
       }
 
       private function _onInputKey(e:KeyboardEvent):void

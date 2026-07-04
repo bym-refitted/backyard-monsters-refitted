@@ -26,11 +26,7 @@ export class Migration20260626_CreateAllianceTable extends Migration {
     `);
 
     await this.execute(`
-      CREATE INDEX IF NOT EXISTS alliance_world_id_idx ON bym.alliance (world_id)
-    `);
-
-    await this.execute(`
-      CREATE INDEX IF NOT EXISTS empire_points_idx ON bym.alliance (empire_points DESC)
+      CREATE INDEX IF NOT EXISTS alliance_world_empire_points_idx ON bym.alliance (world_id, empire_points DESC)
     `);
 
     await this.execute(`

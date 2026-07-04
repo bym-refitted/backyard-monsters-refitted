@@ -6,6 +6,7 @@ import { Alliance } from "../../models/alliance.model.js";
 import { User } from "../../models/user.model.js";
 import { postgres } from "../../server.js";
 import { CreateAllianceSchema } from "../../schemas/AllianceSchemas.js";
+import { addAllianceMember } from "../../services/alliance/membership.js";
 import {
   allianceNameTakenErr,
   allianceNoWorldErr,
@@ -38,7 +39,6 @@ export const createAlliance: KoaController = async (ctx) => {
     leader_userid: user.userid,
     leader_name: user.username,
     world_id: worldid,
-    member_count: 1,
   } as unknown as RequiredEntityData<Alliance>;
 
   const alliance = postgres.em.create(Alliance, newAlliance);
@@ -51,11 +51,7 @@ export const createAlliance: KoaController = async (ctx) => {
     throw error;
   }
 
-  user.alliance_id = alliance.id;
-  user.alliance_role = AllianceRole.LEADER;
-
-  postgres.em.persist(user);
-  await postgres.em.flush();
+  await addAllianceMember(user, alliance, AllianceRole.LEADER);
 
   ctx.status = Status.OK;
   ctx.body = {
