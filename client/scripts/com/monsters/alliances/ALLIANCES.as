@@ -12,12 +12,6 @@ package com.monsters.alliances
       
       public static var _myAlliance:AllyInfo;
 
-      /**
-       * Whether the current player is the leader of their alliance. Gates
-       * leader-only UI (e.g. the Suggested Members tab and Edit Alliance).
-       * TODO: populate from the server alliance payload; defaults to false so
-       * leader-only UI stays hidden until membership/role data is loaded.
-       */
       public static var _isLeader:Boolean = false;
 
       private static var _open:Boolean;
@@ -134,14 +128,7 @@ package com.monsters.alliances
             _myAlliance = null;
          }
          _isLeader = false;
-         // NOTE: the My Alliance fetch-cache is deliberately NOT reset here.
-         // Clear() is currently called as a false positive on every base load
-         // (BASE.as takes the "no alliancedata" branch because base-load doesn't
-         // yet surface the player's alliance — Phase 2). Resetting the cache here
-         // forces a re-fetch of alliance/myalliance on the next tab switch after
-         // any navigation. Freshness is already guaranteed by the force-fetch on
-         // popup open (ALLIANCEWINDOW.Show) and InvalidateMyAlliance() on mutations.
-         // Once base-load populates alliancedata, revisit this.
+         InvalidateMyAlliance();
       }
       
       public static function SetCellAlliance(param1:MapRoomCell, param2:Boolean = false) : AllyInfo

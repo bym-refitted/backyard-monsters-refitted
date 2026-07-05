@@ -900,6 +900,7 @@ package
                      {
                         ALLIANCES._allianceID = int(serverData.alliancedata.alliance_id);
                         ALLIANCES._myAlliance = ALLIANCES.SetAlliance(serverData.alliancedata);
+                        ALLIANCES._isLeader = Boolean(serverData.alliancedata.is_leader);
                         ACHIEVEMENTS.Check("alliance", 1);
                      }
                   }
@@ -4235,6 +4236,7 @@ package
                      {
                         ALLIANCES._allianceID = int(serverData.alliancedata.alliance_id);
                         ALLIANCES._myAlliance = ALLIANCES.SetAlliance(serverData.alliancedata);
+                        ALLIANCES._isLeader = Boolean(serverData.alliancedata.is_leader);
                      }
                   }
                   else if (_userID == LOGIN._playerID && (ALLIANCES._allianceID || ALLIANCES._myAlliance))

@@ -36,6 +36,7 @@ import { MR1_TRIBE_IDS } from "../../../game-data/tribes/v1/index.js";
 import { calculateBaseLevel } from "../../../services/base/calculateBaseLevel.js";
 import { extractTownHall } from "../../../utils/extractTownHall.js";
 import { getChatChannel, getOrCreateChatToken, INFERNO_CHAT_CHANNEL } from "../../../chat/chatChannels.js";
+import { getAllianceData } from "../../../services/alliance/allianceData.js";
 
 /**
  * Controller responsible for loading base modes based on the user's request.
@@ -275,6 +276,8 @@ export const baseLoad: KoaController = async (ctx) => {
     chatchannel = INFERNO_CHAT_CHANNEL;
   }
 
+  const alliance = isOwner ? await getAllianceData(user) : null;
+
   const response: Record<string, unknown> = {
     ...filteredSave,
     relationship: isOwner ? EnumBaseRelationship.SELF : EnumBaseRelationship.ENEMY,
@@ -292,7 +295,8 @@ export const baseLoad: KoaController = async (ctx) => {
       chatenabled: 1,
       chattoken,
       chatchannel,
-      ...mapUserSaveData(user)
+      ...mapUserSaveData(user),
+      ...(alliance && { alliancedata: alliance }),
     }),
     ...(isInfernoOwner && {
       chatenabled: 1,

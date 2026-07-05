@@ -102,6 +102,40 @@ package
          }
       }
 
+      /**
+       * Tears down the current tab buttons and rebuilds them from the live
+       * alliance state. The button row is otherwise built once at construction
+       * from a snapshot of membership/leader state, so a membership change
+       * (create / leave / promote) leaves newly un/locked tabs missing until the
+       * popup is reopened. Called by SelectTab, which fires on exactly those
+       * transitions.
+       */
+      private function _rebuildTabs():void
+      {
+         if (_tabs != null)
+         {
+            var i:int = 0;
+            while (i < _tabs.length)
+            {
+               var btn:MovieClip = _tabs[i].btn as MovieClip;
+               if (btn != null && contains(btn))
+               {
+                  removeChild(btn);
+               }
+               i++;
+            }
+         }
+         _buildTabs();
+         if (_innerBg != null)
+         {
+            addChild(_innerBg);
+         }
+         if (_contentMC != null)
+         {
+            addChild(_contentMC);
+         }
+      }
+
       private function _buildTabs():void
       {
          var currentX:int = CONTENT_X;
@@ -143,14 +177,8 @@ package
        */
       private function _visibleTabIndices():Array
       {
-         // TODO: hardcoded while alliance membership/role aren't wired up
-         // server-side yet — mocks the player as an in-alliance leader so every
-         // tab shows for UI work. Swap back to the real checks once the server
-         // populates them:
-         //   var inAlliance:Boolean = (ALLIANCES._myAlliance != null);
-         //   var isLeader:Boolean = ALLIANCES._isLeader;
-         var inAlliance:Boolean = true;
-         var isLeader:Boolean = true;
+         var inAlliance:Boolean = (ALLIANCES._myAlliance != null);
+         var isLeader:Boolean = ALLIANCES._isLeader;
          var out:Array = [];
          var i:int = 0;
          while (i < AllianceConstants.TAB_LABELS.length)
@@ -258,11 +286,13 @@ package
       /**
        * Switches to the given tab (TAB_LABELS index) and renders it. Used after
        * the player's alliance membership changes (e.g. jumping to My Alliance
-       * once an alliance is created).
+       * once an alliance is created), so it first rebuilds the tab row to reflect
+       * tabs that were just un/locked by that change.
        * @param {int} idx - TAB_LABELS index to switch to.
        */
       public function SelectTab(idx:int):void
       {
+         _rebuildTabs();
          _switchTab(idx);
       }
 
