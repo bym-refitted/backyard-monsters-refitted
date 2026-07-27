@@ -18,6 +18,7 @@ import { attackLootHandler } from "./handlers/attackLootHandler.js";
 import { monsterUpdateHandler } from "./handlers/monsterUpdateHandler.js";
 import { validateSave } from "../../../scripts/anticheat/anticheat.js";
 import { updateResources } from "../../../services/base/updateResources.js";
+import { championHandler } from "./handlers/championHandler.js";
 import { buildingDataHandler } from "./handlers/buildingDataHandler.js";
 import { takeoverCellMR3, type TakeoverData } from "../../../services/maproom/v3/takeoverCellMR3.js";
 import { damageProtection } from "../../../services/maproom/v2/damageProtection.js";
@@ -109,6 +110,10 @@ export const baseSave: KoaController = async (ctx) => {
         if (isAttack) {
           if (saveData.attackerchampion) {
             userSave.champion = saveData.attackerchampion;
+          }
+
+          if (saveData.champion) {
+            championHandler(saveData.champion, baseSave);
           }
         } else {
           if (saveData.champion) {
