@@ -33,9 +33,9 @@ package com.monsters.pathing
 
       private static const cPI180:Number = PI / 180;
 
-      private static var _gridWidth:int = 164;
+      private static var _gridWidth:int = 260;
 
-      private static var _gridHeight:int = 132;
+      private static var _gridHeight:int = 260;
 
       private static var _floods:Object = {};
 
@@ -47,13 +47,39 @@ package com.monsters.pathing
 
       private static var _resetRequested:Boolean = false;
 
+      private static var _dirtyMinX:int = int.MAX_VALUE;
+
+      private static var _dirtyMinY:int = int.MAX_VALUE;
+
+      private static var _dirtyMaxX:int = int.MIN_VALUE;
+
+      private static var _dirtyMaxY:int = int.MIN_VALUE;
+
       public function PATHING()
       {
          super();
       }
 
+      /**
+       * Empties the dirty region: the bounding box of cells Cost() has raised above the base
+       * cost of 10. Tracking it lets Tick() reset just those cells rather than all
+       * _gridWidth * _gridHeight of them on every ResetCosts.
+       *
+       * Cost() is the only writer of PATHINGobject.cost, and the box only grows around cells it
+       * actually wrote, so it cannot under cover and strand a raised cost. Empty is min > max,
+       * which makes the reset loops skip themselves.
+       */
+      private static function ClearDirtyRegion():void
+      {
+         _dirtyMinX = int.MAX_VALUE;
+         _dirtyMinY = int.MAX_VALUE;
+         _dirtyMaxX = int.MIN_VALUE;
+         _dirtyMaxY = int.MIN_VALUE;
+      }
+
       public static function Setup():void
       {
+         ClearDirtyRegion();
          for (var widthIdx:int = 0; widthIdx < _gridWidth; widthIdx++)
          {
             for (var heightIdx:int = 0; heightIdx < _gridHeight; heightIdx++)
@@ -86,10 +112,12 @@ package com.monsters.pathing
                if (_costs[gridKey])
                {
                   _costs[gridKey].cost += regionCost;
-                  if (_costs[gridKey].cost < 2)
-                  {
-                     _costs[gridKey].cost = 2;
-                  }
+                  if (_costs[gridKey].cost < 2) _costs[gridKey].cost = 2;
+
+                  if (xIdx < _dirtyMinX) _dirtyMinX = xIdx;
+                  if (xIdx > _dirtyMaxX) _dirtyMaxX = xIdx;
+                  if (yIdx < _dirtyMinY) _dirtyMinY = yIdx;
+                  if (yIdx > _dirtyMaxY) _dirtyMaxY = yIdx;
                }
             }
          }
@@ -127,9 +155,15 @@ package com.monsters.pathing
          {
             _resetRequested = false;
             Clear();
-            for (var widthIdx:int = 0; widthIdx < _gridWidth; widthIdx++)
+            var resetMinX:int = _dirtyMinX;
+            var resetMinY:int = _dirtyMinY;
+            var resetMaxX:int = _dirtyMaxX;
+            var resetMaxY:int = _dirtyMaxY;
+            ClearDirtyRegion();
+
+            for (var widthIdx:int = resetMinX; widthIdx <= resetMaxX; widthIdx++)
             {
-               for (var heightIdx:int = 0; heightIdx < _gridHeight; heightIdx++)
+               for (var heightIdx:int = resetMinY; heightIdx <= resetMaxY; heightIdx++)
                {
                   _costs[widthIdx * 1000 + heightIdx].cost = 10;
                }
@@ -185,9 +219,12 @@ package com.monsters.pathing
          if (!_costs[gridKeyStart])
          {
             // Starting point is out of bounds, nudge it towards the target to move it in bounds.
+            // Step one cell at a time instead of 5, the path is built from wherever this lands and the monster
+            // walks to it in a straight line with no wall checks, so overshooting the boundary
+            // lets it cut through anything in between.
             var angle:Number = 90 - Math.atan2(gridTargetRect.y - gridStart.y, gridTargetRect.x - gridStart.x) * 57.2957795;
-            var moveX:Number = Math.sin(angle * 0.0174532925) * 5;
-            var moveY:Number = Math.cos(angle * 0.0174532925) * 5;
+            var moveX:Number = Math.sin(angle * 0.0174532925);
+            var moveY:Number = Math.cos(angle * 0.0174532925);
             var attempts:int = 0;
             while (!_costs[gridKeyStart] && attempts < 2000)
             {
@@ -607,6 +644,7 @@ package com.monsters.pathing
          }
          _costs = {};
          _floods = {};
+         ClearDirtyRegion();
       }
 
       public static function LineOfSight(startX:int, startY:int, targetX:int, targetY:int, targetBuilding:BFOUNDATION = null, includeAllBuildings:Boolean = false):Boolean

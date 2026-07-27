@@ -23,6 +23,7 @@ export const getCellsLimiter = RateLimit.middleware({
 export const registerLimiter = RateLimit.middleware({
   interval: { min: process.env.ENV === Env.PROD ? 60 : 1 },
   max: 3,
+  prefixKey: "register",
   handler: async (ctx: Context) => {
     ctx.status = Status.TOO_MANY_REQUESTS;
     ctx.body = {
@@ -33,11 +34,12 @@ export const registerLimiter = RateLimit.middleware({
 });
 
 /**
- * Rate limit for login - 10 requests per 5 minutes in prod, 10 per minute in dev.
+ * Rate limit for login - 30 requests per 5 minutes in prod, 30 per minute in dev.
  */
 export const loginLimiter = RateLimit.middleware({
   interval: { min: process.env.ENV === Env.PROD ? 5 : 1 },
-  max: 10,
+  max: 30,
+  prefixKey: "login",
   handler: async (ctx: Context) => {
     ctx.status = Status.TOO_MANY_REQUESTS;
     ctx.body = { error: "Too many login attempts. Please try again later." };

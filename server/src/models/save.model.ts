@@ -8,7 +8,7 @@ import { WorldMapCell } from "./worldmapcell.model.js";
 import { type RequiredEntityData, BigIntType } from "@mikro-orm/core";
 import type { AttackDetails } from "../controllers/base/load/modes/baseModeAttack.js";
 import type { Stats } from "../services/events/wmi/invasionUtils.js";
-import type { ChampionData } from "../types/ChampionData.js";
+import type { ChampionData } from "../schemas/ChampionSchema.js";
 import type { JsonObject } from "../types/JsonObject.js";
 import type { BuildingData } from "../types/BuildingData.js";
 import { MapRoomVersion } from "../enums/MapRoom.js";

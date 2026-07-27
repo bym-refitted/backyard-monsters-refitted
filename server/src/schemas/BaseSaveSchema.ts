@@ -1,5 +1,5 @@
 import z from "zod";
-import type { ChampionData } from "../types/ChampionData.js";
+import { ChampionListSchema } from "./ChampionSchema.js";
 import type { Resources } from "../services/base/updateResources.js";
 
 /**
@@ -35,24 +35,17 @@ export const BaseSaveSchema = z.object({
     ),
 
   /**
-   * The champion data, transformed from a JSON string to a typed array.
-   * This property is optional.
+   * The champions belonging to the base being saved. During an attack this is
+   * the defender's, reported by the attacking client.
    * @type {ChampionData[] | undefined}
    */
-  champion: z
-    .string()
-    .optional()
-    .transform((data) => (data ? (JSON.parse(data) as ChampionData[]) : undefined)),
+  champion: ChampionListSchema,
 
   /**
-   * The attacker champion data, transformed from a JSON string to a typed array.
-   * This property is optional.
+   * The attacking player's own champions, sent alongside `champion`.
    * @type {ChampionData[] | undefined}
    */
-  attackerchampion: z
-    .string()
-    .optional()
-    .transform((data) => (data ? (JSON.parse(data) as ChampionData[]) : undefined)),
+  attackerchampion: ChampionListSchema,
 
   /**
    * The building data, transformed from a JSON string to an object.

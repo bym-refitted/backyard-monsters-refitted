@@ -3395,82 +3395,98 @@ package
          return -1;
       }
 
+      /*
+       * Builds the attacking player's champion list for the save payload.
+       *
+       * Entries are pushed rather than written at the index they occupy in
+       * GLOBAL._playerGuardianData. A skipped guardian would otherwise leave a
+       * hole in the array, which serialises to null and reaches the server as
+       * [null,{...}] - the base loader dereferences champion[j].t without a null
+       * check, so those holes come back as a runtime error on the next load.
+       *
+       * Keeping it dense also makes the length check below meaningful, so a
+       * player with no champions omits the field instead of sending [null,null].
+       */
       private static function getAttackingPlayerGuardianSaveData():Array
       {
-         var _loc1_:Array = new Array(GLOBAL._playerGuardianData.length);
-         var _loc2_:Boolean = false;
-         var _loc3_:int = 0;
-         while (_loc3_ < GLOBAL._playerGuardianData.length)
+         var championData:Array = new Array();
+         var unfrozenFound:Boolean = false;
+         var guardian:Object = null;
+         var champion:Object = null;
+         var i:int = 0;
+         while (i < GLOBAL._playerGuardianData.length)
          {
-            if (Boolean(GLOBAL._playerGuardianData[_loc3_]) && GLOBAL._playerGuardianData[_loc3_].t > 0)
+            guardian = GLOBAL._playerGuardianData[i];
+            if (Boolean(guardian) && guardian.t > 0)
             {
-               _loc1_[_loc3_] = new Object();
-               if (GLOBAL._playerGuardianData[_loc3_].nm)
+               champion = new Object();
+               if (guardian.nm)
                {
-                  _loc1_[_loc3_].nm = GLOBAL._playerGuardianData[_loc3_].nm;
+                  champion.nm = guardian.nm;
                }
-               if (GLOBAL._playerGuardianData[_loc3_].t)
+               if (guardian.t)
                {
-                  _loc1_[_loc3_].t = GLOBAL._playerGuardianData[_loc3_].t;
+                  champion.t = guardian.t;
                }
-               if (GLOBAL._playerGuardianData[_loc3_].hp)
+               if (guardian.hp)
                {
-                  _loc1_[_loc3_].hp = GLOBAL._playerGuardianData[_loc3_].hp.Get();
+                  champion.hp = guardian.hp.Get();
                }
-               if (GLOBAL._playerGuardianData[_loc3_].l)
+               if (guardian.l)
                {
-                  _loc1_[_loc3_].l = GLOBAL._playerGuardianData[_loc3_].l.Get();
+                  champion.l = guardian.l.Get();
                }
-               if (GLOBAL._playerGuardianData[_loc3_].ft)
+               if (guardian.ft)
                {
-                  _loc1_[_loc3_].ft = GLOBAL._playerGuardianData[_loc3_].ft;
+                  champion.ft = guardian.ft;
                }
-               if (GLOBAL._playerGuardianData[_loc3_].fd)
+               if (guardian.fd)
                {
-                  _loc1_[_loc3_].fd = GLOBAL._playerGuardianData[_loc3_].fd;
-               }
-               else
-               {
-                  _loc1_[_loc3_].fd = 0;
-               }
-               if (GLOBAL._playerGuardianData[_loc3_].fb)
-               {
-                  _loc1_[_loc3_].fb = GLOBAL._playerGuardianData[_loc3_].fb.Get();
+                  champion.fd = guardian.fd;
                }
                else
                {
-                  _loc1_[_loc3_].fb = 0;
+                  champion.fd = 0;
                }
-               if (GLOBAL._playerGuardianData[_loc3_].pl)
+               if (guardian.fb)
                {
-                  _loc1_[_loc3_].pl = GLOBAL._playerGuardianData[_loc3_].pl.Get();
+                  champion.fb = guardian.fb.Get();
                }
                else
                {
-                  _loc1_[_loc3_].pl = 0;
+                  champion.fb = 0;
                }
-               if (GLOBAL._playerGuardianData[_loc3_].status == ChampionBase.k_CHAMPION_STATUS_NORMAL && GLOBAL._playerGuardianData[_loc3_].t != 5)
+               if (guardian.pl)
                {
-                  if (_loc2_)
+                  champion.pl = guardian.pl.Get();
+               }
+               else
+               {
+                  champion.pl = 0;
+               }
+               if (guardian.status == ChampionBase.k_CHAMPION_STATUS_NORMAL && guardian.t != 5)
+               {
+                  if (unfrozenFound)
                   {
-                     GLOBAL._playerGuardianData[_loc3_].status = ChampionBase.k_CHAMPION_STATUS_FROZEN;
+                     guardian.status = ChampionBase.k_CHAMPION_STATUS_FROZEN;
                   }
-                  _loc2_ = true;
+                  unfrozenFound = true;
                }
-               if (GLOBAL._playerGuardianData[_loc3_].status)
+               if (guardian.status)
                {
-                  _loc1_[_loc3_].status = GLOBAL._playerGuardianData[_loc3_].status;
+                  champion.status = guardian.status;
                }
                else
                {
-                  _loc1_[_loc3_].status = 0;
+                  champion.status = 0;
                }
+               championData.push(champion);
             }
-            _loc3_++;
+            i++;
          }
-         if (_loc1_.length)
+         if (championData.length)
          {
-            return _loc1_;
+            return championData;
          }
          return null;
       }
@@ -3688,6 +3704,7 @@ package
          var handler:IHandler = null;
          var exportedData:Object = null;
          var updateAutoBank:Object = null;
+         var champion:Array = null;
          var attackerChampion:Array = null;
          if (GLOBAL.isHalted)
          {
@@ -3818,7 +3835,11 @@ package
          }
          if (!BASE.isOutpost)
          {
-            saveData.champion = JSON.stringify(getChampionSaveData());
+            champion = getChampionSaveData();
+            if (champion)
+            {
+               saveData.champion = JSON.stringify(champion);
+            }
          }
          if (GLOBAL.mode != GLOBAL.e_BASE_MODE.BUILD && GLOBAL.mode != GLOBAL.e_BASE_MODE.IBUILD)
          {
