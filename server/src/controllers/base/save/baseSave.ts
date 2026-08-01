@@ -2,7 +2,7 @@ import type { KoaController } from "../../../utils/KoaController.js";
 import { Save } from "../../../models/save.model.js";
 import { User } from "../../../models/user.model.js";
 import { postgres, redis } from "../../../server.js";
-import { FilterFrontendKeys } from "../../../utils/FrontendKey.js";
+import { buildSaveData, mapSaveData } from "../../../services/base/mapSaveData.js";
 import { getCurrentDateTime } from "../../../utils/getCurrentDateTime.js";
 import { logger } from "../../../utils/logger.js";
 import { Status } from "../../../enums/StatusCodes.js";
@@ -11,13 +11,13 @@ import { BaseSaveSchema } from "../../../schemas/BaseSaveSchema.js";
 import { resourcesHandler } from "./handlers/resourceHandler.js";
 import { purchaseHandler } from "./handlers/purchaseHandler.js";
 import { academyHandler } from "./handlers/academyHandler.js";
-import { mapUserSaveData } from "../mapUserSaveData.js";
 import { BaseType } from "../../../enums/Base.js";
 import { permissionErr, saveFailureErr } from "../../../errors/errors.js";
 import { attackLootHandler } from "./handlers/attackLootHandler.js";
+import { defenderLootHandler } from "./handlers/defenderLootHandler.js";
 import { monsterUpdateHandler } from "./handlers/monsterUpdateHandler.js";
 import { validateSave } from "../../../scripts/anticheat/anticheat.js";
-import { updateResources } from "../../../services/base/updateResources.js";
+import { getOutpostOwnerSave } from "../../../services/base/getOutpostOwnerSave.js";
 import { championHandler } from "./handlers/championHandler.js";
 import { buildingDataHandler } from "./handlers/buildingDataHandler.js";
 import { takeoverCellMR3, type TakeoverData } from "../../../services/maproom/v3/takeoverCellMR3.js";
@@ -49,7 +49,7 @@ export const baseSave: KoaController = async (ctx) => {
 
   if (!baseSave && MR1_TRIBE_IDS.has(saveData.baseid)) {
     const tribeSave = await scaledMR1Tribes(user, saveData);
-    const filteredSave = FilterFrontendKeys(tribeSave);
+    const filteredSave = await mapSaveData(tribeSave, user);
 
     ctx.status = Status.OK;
     ctx.body = { error: 0, ...filteredSave };
@@ -73,10 +73,10 @@ export const baseSave: KoaController = async (ctx) => {
 
     switch (key) {
       case SaveKeys.RESOURCES:
-        resourcesHandler(baseSave, value);
         if (isOutpostOwner) {
-          const resources = JSON.parse(value);
-          userSave.resources = updateResources(resources, userSave.resources!);
+          resourcesHandler(userSave, value, { skipCapacity: true });
+        } else {
+          resourcesHandler(baseSave, value);
         }
         break;
 
@@ -89,7 +89,7 @@ export const baseSave: KoaController = async (ctx) => {
         break;
 
       case SaveKeys.IRESOURCES:
-        resourcesHandler(baseSave, value, SaveKeys.IRESOURCES);
+        resourcesHandler(baseSave, value, { key: SaveKeys.IRESOURCES });
         break;
 
       case SaveKeys.ACADEMY:
@@ -144,6 +144,8 @@ export const baseSave: KoaController = async (ctx) => {
 
   if (!isAttack && saveData.purchase) purchaseHandler(ctx, saveData.purchase, userSave);
 
+  const outpostOwnerSave = await getOutpostOwnerSave(baseSave, user);
+
   let takeoverData: TakeoverData | null = null;
 
   if (isAttack) {
@@ -157,6 +159,17 @@ export const baseSave: KoaController = async (ctx) => {
 
     if (saveData.attackloot) {
       attackLootHandler(saveData.attackloot, userSave);
+    }
+
+    if (saveData.resources) {
+      const lootTarget = outpostOwnerSave ?? baseSave;
+
+      if (baseSave.type === BaseType.OUTPOST && !outpostOwnerSave) {
+        logger.error(`Outpost ${baseSave.baseid} has no owner main save - loot applied to a dead column`);
+      }
+
+      defenderLootHandler(saveData.resources, lootTarget);
+      postgres.em.persist(lootTarget);
     }
 
     postgres.em.persist(userSave);
@@ -200,7 +213,7 @@ export const baseSave: KoaController = async (ctx) => {
   postgres.em.persist(baseSave);
   await postgres.em.flush();
 
-  const filteredSave = FilterFrontendKeys(baseSave);
+  const filteredSave = buildSaveData(baseSave, user, outpostOwnerSave);
   logger.info(`Saving ${user.username}'s base | IP: ${ctx.ip}`);
 
   const responseBody = {
@@ -209,10 +222,6 @@ export const baseSave: KoaController = async (ctx) => {
     ...filteredSave,
     ...(takeoverData && { takeover: takeoverData }),
   };
-
-  if (user.userid === filteredSave.userid) {
-    Object.assign(responseBody, mapUserSaveData(user));
-  }
 
   ctx.status = Status.OK;
   ctx.body = responseBody;

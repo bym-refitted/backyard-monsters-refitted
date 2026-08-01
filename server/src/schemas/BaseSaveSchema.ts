@@ -89,6 +89,16 @@ export const BaseSaveSchema = z.object({
     .transform((data) => (data ? (JSON.parse(data) as Resources) : undefined)),
 
   /**
+   * The resource delta for the base being saved. During an attack this is the
+   * defender's, reported by the attacking client.
+   * @type {Resources | undefined}
+   */
+  resources: z
+    .string()
+    .optional()
+    .transform((data) => (data ? (JSON.parse(data) as Resources) : undefined)),
+
+  /**
    * The monsters data, transformed from a JSON string to an object.
    * This property is optional.
    * @type {object | undefined}
