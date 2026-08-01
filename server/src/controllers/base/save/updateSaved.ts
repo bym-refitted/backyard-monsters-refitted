@@ -1,20 +1,19 @@
 import z from "zod";
 
 import { getFlags } from "../../../game-data/flags.js";
-import { BaseMode, BaseType } from "../../../enums/Base.js";
+import { BaseMode } from "../../../enums/Base.js";
 import { Status } from "../../../enums/StatusCodes.js";
 import { saveFailureErr } from "../../../errors/errors.js";
 import { Save } from "../../../models/save.model.js";
 import { User } from "../../../models/user.model.js";
 import { postgres, redis } from "../../../server.js";
-import { FilterFrontendKeys } from "../../../utils/FrontendKey.js";
 import { getCurrentDateTime } from "../../../utils/getCurrentDateTime.js";
 import type { KoaController } from "../../../utils/KoaController.js";
 import { baseModeBuild } from "../load/modes/baseModeBuild.js";
 import { baseModeView } from "../load/modes/baseModeView.js";
 import { infernoModeView } from "../load/modes/infernoModeView.js";
-import { mapUserSaveData } from "../mapUserSaveData.js";
 import { extractTownHall } from "../../../utils/extractTownHall.js";
+import { mapSaveData } from "../../../services/base/mapSaveData.js";
 
 const UpdateSavedSchema = z.object({
   type: z.string(),
@@ -67,7 +66,7 @@ export const updateSaved: KoaController = async (ctx) => {
     await postgres.em.flush();
   }
 
-  const filteredSave = FilterFrontendKeys(baseSave);
+  const filteredSave = await mapSaveData(baseSave, user);
 
   const flags = getFlags();
   flags.discordOldEnough = Number(ctx.meetsDiscordAgeCheck);
@@ -82,10 +81,6 @@ export const updateSaved: KoaController = async (ctx) => {
     ...filteredSave,
     credits: userSave.credits
   };
-
-  if (baseSave.type !== BaseType.INFERNO && user.userid === filteredSave.userid) {
-    Object.assign(responseBody, mapUserSaveData(user));
-  }
 
   ctx.status = Status.OK;
   ctx.body = responseBody;
