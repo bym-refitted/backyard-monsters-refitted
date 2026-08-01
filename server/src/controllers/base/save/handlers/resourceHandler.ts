@@ -19,6 +19,8 @@ interface ResourcesHandlerOptions {
   skipCapacity?: boolean;
 }
 
+type ResourceDelta = Resources | string | undefined;
+
 /**
  * Applies a client resource delta to a save.
  *
@@ -26,11 +28,7 @@ interface ResourcesHandlerOptions {
  * @param {Resources | string | undefined} resourceVal - The delta, stringified or not
  * @param {ResourcesHandlerOptions} [options = {}] - Pool selection and capacity handling
  */
-export const resourcesHandler = (
-  save: Save,
-  resourceVal: Resources | string | undefined,
-  options: ResourcesHandlerOptions = {}
-) => {
+export const resourcesHandler = (save: Save, resourceVal: ResourceDelta, options: ResourcesHandlerOptions = {}) => {
   const { key = SaveKeys.RESOURCES, skipCapacity = false } = options;
 
   let resourceData: Resources | null = null;
