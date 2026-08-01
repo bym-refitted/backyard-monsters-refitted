@@ -13,6 +13,7 @@ import { getOutpostOwnerSave } from "./getOutpostOwnerSave.js";
  */
 const mapOwnerState = (userSave: Save) => ({
   credits: userSave.credits,
+  fan: userSave.fan,
   resources: userSave.resources,
   lockerdata: userSave.lockerdata,
   academy: userSave.academy,
