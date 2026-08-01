@@ -8,7 +8,7 @@ import { SaveKeys } from "../../../../enums/SaveKeys.js";
 /**
  * Options controlling where a delta lands and how much of it is applied.
  */
-interface ResourcesHandlerOptions {
+interface ResourceOptions {
   key?: SaveKeys.RESOURCES | SaveKeys.IRESOURCES;
 
   /**
@@ -25,19 +25,19 @@ type ResourceDelta = Resources | string | undefined;
  * Applies a client resource delta to a save.
  *
  * @param {Save} save - The save to write to
- * @param {Resources | string | undefined} resourceVal - The delta, stringified or not
- * @param {ResourcesHandlerOptions} [options = {}] - Pool selection and capacity handling
+ * @param {ResourceDelta} resourceDelta - The delta, stringified or not
+ * @param {ResourceOptions} [options = {}] - Pool selection and capacity handling
  */
-export const resourcesHandler = (save: Save, resourceVal: ResourceDelta, options: ResourcesHandlerOptions = {}) => {
+export const resourcesHandler = (save: Save, resourceDelta: ResourceDelta, options: ResourceOptions = {}) => {
   const { key = SaveKeys.RESOURCES, skipCapacity = false } = options;
 
   let resourceData: Resources | null = null;
 
-  if (resourceVal) {
+  if (resourceDelta) {
     try {
-      resourceData = JSON.parse(resourceVal as string);
+      resourceData = JSON.parse(resourceDelta as string);
     } catch {
-      resourceData = resourceVal as Resources;
+      resourceData = resourceDelta as Resources;
     }
   }
 
