@@ -15,6 +15,7 @@ import { BaseSaveSchema } from "../../schemas/BaseSaveSchema.js";
 import { academyHandler } from "../base/save/handlers/academyHandler.js";
 import { attackLootHandler } from "../base/save/handlers/attackLootHandler.js";
 import { buildingDataHandler } from "../base/save/handlers/buildingDataHandler.js";
+import { defenderLootHandler } from "../base/save/handlers/defenderLootHandler.js";
 import { purchaseHandler } from "../base/save/handlers/purchaseHandler.js";
 import { resourcesHandler } from "../base/save/handlers/resourceHandler.js";
 import { damageProtection } from "../../services/maproom/v2/damageProtection.js";
@@ -104,31 +105,21 @@ export const infernoSave: KoaController = async (ctx) => {
       userInfernoSave.monsters = saveData.attackcreatures;
     }
 
-    // Defender-specific save updates during an attack
     if (isAttack && !isOwner) {
-      const defenderSave = await postgres.em.findOne(Save, {
-        type: BaseType.INFERNO,
-        userid: baseSave.saveuserid,
-      });
+      attackLootHandler(saveData.attackloot, userSave, SaveKeys.IRESOURCES);
 
-      if (defenderSave) {
-        for (const key of Object.keys(saveData) as (keyof typeof saveData)[]) {
-          const value = saveData[key];
+      if (saveData.resources) {
+        const defenderMainSave = await postgres.em.findOne(Save, {
+          saveuserid: baseSave.saveuserid,
+          type: BaseType.MAIN,
+        });
 
-          switch (key) {
-            case SaveKeys.MONSTERS:
-              if (value) defenderSave.monsters = value;
-              break;
+        if (defenderMainSave) {
+          defenderLootHandler(saveData.resources, defenderMainSave, SaveKeys.IRESOURCES);
+          postgres.em.persist(defenderMainSave);
 
-            case SaveKeys.ATTACKLOOT:
-              attackLootHandler(value, userSave, SaveKeys.IRESOURCES);
-              break;
-              
-            default:
-              break;
-          }
+          baseSave.resources = { ...defenderMainSave.iresources };
         }
-        postgres.em.persist(defenderSave);
       }
     }
 
