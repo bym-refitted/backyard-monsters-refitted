@@ -1,4 +1,5 @@
 import { Save } from "../../models/save.model.js";
+import { User } from "../../models/user.model.js";
 import { postgres } from "../../server.js";
 import { AttackPermission, MapRoomVersion } from "../../enums/MapRoom.js";
 import { TruceStatus } from "../../enums/TruceStatus.js";
@@ -30,6 +31,11 @@ const NEIGHBOUR_SAVE_FIELDS = [
 ] as const;
 
 /**
+ * User fields fetched to refresh the display details cached on each neighbour.
+ */
+const NEIGHBOUR_USER_FIELDS = ["userid", "username", "pic_square"] as const;
+
+/**
  * Updates dynamic fields on cached neighbour data with current save state.
  * Runs on every getNeighbours call to keep attack permissions and level up to date.
  * Filters out neighbours whose saves no longer exist in the database,
@@ -45,7 +51,13 @@ export const updateNeighbourData = async (cachedNeighbours: NeighbourData[], bas
   const userIds = cachedNeighbours.map((neighbour) => neighbour.userid);
   const mr1Filter = baseType === BaseType.MAIN ? { mapversion: MapRoomVersion.V1 } : {};
 
-  const [neighbourSaves, lastSeens, truces] = await Promise.all([
+  const [neighbourUsers, neighbourSaves, lastSeens, truces] = await Promise.all([
+    postgres.em.find(
+      User,
+      { userid: { $in: userIds } },
+      { fields: NEIGHBOUR_USER_FIELDS }
+    ) as unknown as Promise<User[]>,
+    
     postgres.em.find(
       Save,
       { type: baseType, userid: { $in: userIds }, ...mr1Filter },
@@ -53,11 +65,15 @@ export const updateNeighbourData = async (cachedNeighbours: NeighbourData[], bas
     ) as unknown as Promise<Save[]>,
 
     getLastSeen(userIds, baseType),
+
     getTruces(currentUserId, userIds),
   ]);
 
   const saves = new Map<number, Save>();
   neighbourSaves.forEach((save) => saves.set(save.userid, save));
+
+  const owners = new Map<number, User>();
+  neighbourUsers.forEach((owner) => owners.set(owner.userid, owner));
 
   const currentTime = getCurrentDateTime();
   let needsFlush = false;
@@ -107,6 +123,15 @@ export const updateNeighbourData = async (cachedNeighbours: NeighbourData[], bas
     neighbour.baseid = neighbourSave.baseid;
     neighbour.level = calculateBaseLevel(neighbourSave.points, neighbourSave.basevalue);
     neighbour.saved = lastSeens.get(neighbour.userid) ?? 0;
+
+    const owner = owners.get(neighbour.userid);
+
+    if (owner) {
+      neighbour.username = owner.username;
+      neighbour.basename = owner.username;
+      neighbour.ownerName = owner.username;
+      neighbour.pic = owner.pic_square || "";
+    }
 
     const truce = truces.get(neighbour.userid);
 

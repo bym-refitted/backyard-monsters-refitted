@@ -25,6 +25,10 @@ export class User {
   @FrontendKey
   username!: string;
 
+  @FrontendKey
+  @Property({ type: "Date", nullable: true })
+  username_changed_at?: Date | null;
+
   @Property({ type: "boolean", default: false })
   banned: boolean = false;
 
