@@ -112,7 +112,7 @@ export const takeoverCell: KoaController = async (ctx) => {
   userSave.outposts.push([cell.x, cell.y, baseid]);
 
   const isOriginCell = cell.x === 0 && cell.y === 0;
-  if (isOriginCell) cell.world.name = currentUser.username;
+  if (isOriginCell) cell.world.name = `${currentUser.username} Server`;
 
   postgres.em.persist([cellSave, currentUser]);
   await postgres.em.flush();

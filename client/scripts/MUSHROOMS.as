@@ -246,60 +246,60 @@ package
          }
       }
       
-      public static function Pick(param1:BFOUNDATION) : Boolean
+      /**
+       * Resolves a mushroom pick, awarding shiny if the mushroom is golden.
+       *
+       * @param mushroom The mushroom being picked.
+       * @return True once the pick has been resolved, false if a purchase is already in flight.
+       */
+      public static function Pick(mushroom: BFOUNDATION) : Boolean
       {
-         var _loc7_:popup_mushroomshiny = null;
-         var _loc8_:int = 0;
-         var _loc2_:int = param1._id;
-         var _loc3_:String = "";
-         if(BASE._pendingPurchase.length > 0)
-         {
-            return false;
-         }
-         var _loc4_:Rndm = new Rndm(int(param1.x * param1.y));
-         var _loc5_:int = 0;
-         var _loc6_:int = 0;
+         if (BASE._pendingPurchase.length > 0) return false;
+
+         var mushroomId:int = mushroom._id;
+         var workerMessage:String = "";
+         var shinyAwarded:int = 0;
+
+         var positionRng:Rndm = new Rndm(int(mushroom.x * mushroom.y));
+         var isGolden:Boolean = int(positionRng.random() * 4) == 0;
+
          ++QUESTS._global.mushroomspicked;
-         if(int(_loc4_.random() * 4) == 0)
+
+         if (isGolden)
          {
             ++QUESTS._global.goldmushroomspicked;
-            GLOBAL.ValidateMushroomPick(param1);
-            if((_loc5_ = Math.random() * 3 + 1) == 3)
-            {
-               _loc5_ = 1;
-            }
-            BASE.Purchase("MUSHROOM" + _loc5_,1,"MUSHROOMS");
-            // Comment: Updated mushroom values to produce higher shiny.
-            _loc6_ = 3; // MUSHROOM1
-            if(_loc5_ == 2)
-            {
-               _loc6_ = 8; // MUSHROOM2
-            }
-            _loc3_ = KEYS.Get("pop_mushroom_msg1",{"v1":_loc6_});
-            (_loc7_ = new popup_mushroomshiny()).tTitle.htmlText = "<b>" + KEYS.Get("pop_goldenmushroom_title") + "</b>";
-            _loc7_.tMessage.htmlText = KEYS.Get("pop_goldenmushroom_desc",{"v1":_loc6_});
-            POPUPS.Push(_loc7_,null,null,"chaching","goldmushroom.png");
+            GLOBAL.ValidateMushroomPick(mushroom);
+         }
+
+         mushroom.RecycleC();
+
+         if (isGolden)
+         {
+            var mushroomVariant:int = int(Math.random() * 3 + 1);
+            
+            if (mushroomVariant == 3) mushroomVariant = 1;
+
+            shinyAwarded = mushroomVariant == 2 ? 8 : 3;
+            workerMessage = KEYS.Get("pop_mushroom_msg1", { "v1":shinyAwarded });
+
+            BASE.Purchase("MUSHROOM" + mushroomVariant, 1, "MUSHROOMS");
+
+            var shinyPopup:popup_mushroomshiny = new popup_mushroomshiny();
+            shinyPopup.tTitle.htmlText = "<b>" + KEYS.Get("pop_goldenmushroom_title") + "</b>";
+            shinyPopup.tMessage.htmlText = KEYS.Get("pop_goldenmushroom_desc", { "v1":shinyAwarded });
+
+            POPUPS.Push(shinyPopup,null,null,"chaching","goldmushroom.png");
          }
          else
          {
-            if((_loc8_ = int(Math.random() * 3)) == 0)
-            {
-               _loc3_ = KEYS.Get("pop_mushroom_msg2");
-            }
-            else if(_loc8_ == 1)
-            {
-               _loc3_ = KEYS.Get("pop_mushroom_msg3");
-            }
-            else if(_loc8_ == 2)
-            {
-               _loc3_ = KEYS.Get("pop_mushroom_msg4");
-            }
+            var flavourKeys:Array = ["pop_mushroom_msg2", "pop_mushroom_msg3", "pop_mushroom_msg4"];
+            workerMessage = KEYS.Get(flavourKeys[int(Math.random() * flavourKeys.length)]);
             BASE.Save();
          }
-         LOGGER.Stat([34,_loc6_]);
+
+         LOGGER.Stat([34, shinyAwarded]);
          QUESTS.Check();
-         WORKERS.Say(_loc3_,QUEUE.Remove("mushroom" + _loc2_,true),3000);
-         param1.RecycleC();
+         WORKERS.Say(workerMessage, QUEUE.Remove("mushroom" + mushroomId, true), 3000);
          return true;
       }
    }

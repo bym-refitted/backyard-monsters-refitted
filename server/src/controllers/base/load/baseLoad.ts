@@ -4,7 +4,6 @@ import { postgres, redis } from "../../../server.js";
 import type { KoaController } from "../../../utils/KoaController.js";
 import { storeItems } from "../../../game-data/store/storeItems.js";
 import { User } from "../../../models/user.model.js";
-import { FilterFrontendKeys } from "../../../utils/FrontendKey.js";
 import { getFlags } from "../../../game-data/flags.js";
 import { getCurrentDateTime } from "../../../utils/getCurrentDateTime.js";
 import { BaseMode, BaseType } from "../../../enums/Base.js";
@@ -20,7 +19,6 @@ import { Status } from "../../../enums/StatusCodes.js";
 import { baseModeView } from "./modes/baseModeView.js";
 import { baseModeBuild } from "./modes/baseModeBuild.js";
 import { baseModeAttack } from "./modes/baseModeAttack.js";
-import { mapUserSaveData } from "../mapUserSaveData.js";
 import { infernoModeDescent } from "./modes/infernoModeDescent.js";
 import { infernoModeView } from "./modes/infernoModeView.js";
 import { infernoModeAttack } from "./modes/infernoModeAttack.js";
@@ -34,6 +32,7 @@ import { createMR1Tribes } from "../../../services/maproom/v1/createMR1Tribes.js
 import { MR1_TRIBES } from "../../../enums/Tribes.js";
 import { MR1_TRIBE_IDS } from "../../../game-data/tribes/v1/index.js";
 import { calculateBaseLevel } from "../../../services/base/calculateBaseLevel.js";
+import { mapSaveData } from "../../../services/base/mapSaveData.js";
 import { extractTownHall } from "../../../utils/extractTownHall.js";
 import { getChatChannel, getOrCreateChatToken, INFERNO_CHAT_CHANNEL } from "../../../chat/chatChannels.js";
 
@@ -127,7 +126,7 @@ export const baseLoad: KoaController = async (ctx) => {
     await postgres.em.flush();
   }
 
-  const filteredSave = FilterFrontendKeys(baseSave);
+  const filteredSave = await mapSaveData(baseSave, user);
   const isTutorialEnabled = devConfig.skipTutorial ? 205 : filteredSave.tutorialstage;
 
   const flags = getFlags();
@@ -292,7 +291,6 @@ export const baseLoad: KoaController = async (ctx) => {
       chatenabled: 1,
       chattoken,
       chatchannel,
-      ...mapUserSaveData(user)
     }),
     ...(isInfernoOwner && {
       chatenabled: 1,

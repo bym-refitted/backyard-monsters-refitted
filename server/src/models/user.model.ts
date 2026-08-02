@@ -40,6 +40,7 @@ export class User {
   discord_verified: boolean = false;
 
   @Property({ type: "string", nullable: true })
+  @Index()
   discord_id?: string | null;
 
   @Property({ type: "string", nullable: true })
@@ -86,10 +87,6 @@ export class User {
   @Index({ name: "idx_user_blocked_users", type: "gin" })
   @Property({ columnType: "jsonb" })
   blockedUsers: number[] = [];
-
-  @FrontendKey
-  @Property({ type: "number", default: 0 })
-  _isFan: number = 0;
 
   @FrontendKey
   @Property({ type: "number", default: 0 })
