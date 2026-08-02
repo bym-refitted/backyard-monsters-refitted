@@ -3,7 +3,7 @@ import Router from "@koa/router";
 import { logRequest } from "./middleware/logRequest.js";
 import { apiVersion } from "./middleware/apiVersioning.js";
 import { verifyUserAuth, verifyAccountStatus } from "./middleware/auth.js";
-import { getCellsLimiter, loginLimiter, registerLimiter } from "./middleware/rateLimiters.js";
+import { changeUsernameLimiter, getCellsLimiter, loginLimiter, registerLimiter } from "./middleware/rateLimiters.js";
 import { Status } from "./enums/StatusCodes.js";
 
 import { init } from "./controllers/init.js";
@@ -13,6 +13,8 @@ import { login } from "./controllers/auth/login.js";
 import { register } from "./controllers/auth/register.js";
 import { forgotPassword } from "./controllers/auth/forgotPassword.js";
 import { resetPassword } from "./controllers/auth/resetPassword.js";
+import { changeUsername } from "./controllers/auth/changeUsername.js";
+import { getAccount } from "./controllers/auth/getAccount.js";
 
 import { baseLoad } from "./controllers/base/load/baseLoad.js";
 import { baseSave } from "./controllers/base/save/baseSave.js";
@@ -68,6 +70,8 @@ router.post("/api/:apiVersion/player/register", apiVersion, registerLimiter, log
 router.post("/api/:apiVersion/player/forgotPassword", apiVersion, forgotPassword);
 router.post("/api/:apiVersion/player/reset-password", resetPassword);
 router.get("/api/:apiVersion/supportedLangs", apiVersion, logRequest, supportedLangs);
+router.get("/api/:apiVersion/player/account", apiVersion, verifyUserAuth, getAccount);
+router.post("/api/:apiVersion/player/changeusername", apiVersion, verifyUserAuth, changeUsernameLimiter, logRequest, changeUsername);
 
 /**  ────────────────────────────────────────────────
 * 📦 Base
