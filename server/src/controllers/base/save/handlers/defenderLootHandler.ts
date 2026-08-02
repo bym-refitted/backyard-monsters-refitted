@@ -1,5 +1,8 @@
+import { SaveKeys } from "../../../../enums/SaveKeys.js";
 import { Save } from "../../../../models/save.model.js";
 import type { Resources } from "../../../../services/base/updateResources.js";
+
+type ResourceType = SaveKeys.RESOURCES | SaveKeys.IRESOURCES;
 
 /**
  * The largest single-resource payout the client can produce from downing one building
@@ -19,9 +22,10 @@ const MAX_LOOT_PER_RESOURCE = 10_000_000;
  *
  * @param {Resources} reported - The defender's resource delta as reported by the attacker
  * @param {Save} save - The save holding the defender's pool.
+ * @param {ResourceType} [resourceType = SaveKeys.RESOURCES] - Which pool to draw from.
  */
-export const defenderLootHandler = (reported: Resources, save: Save) => {
-  const resources = save.resources ?? {};
+export const defenderLootHandler = (reported: Resources, save: Save, resourceType: ResourceType = SaveKeys.RESOURCES) => {
+  const resources = save[resourceType] ?? {};
   const resourceKeys = ["r1", "r2", "r3", "r4"] as const;
 
   for (const key of resourceKeys) {
@@ -37,5 +41,5 @@ export const defenderLootHandler = (reported: Resources, save: Save) => {
     resources[key] = Math.max(0, stored - loss);
   }
 
-  save.resources = resources;
+  save[resourceType] = resources;
 };
