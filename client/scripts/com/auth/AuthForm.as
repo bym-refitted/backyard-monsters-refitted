@@ -762,7 +762,7 @@ package com.auth
                 }
                 if (!isPasswordValid)
                 {
-                    showErrorMessage(passwordInput, "Password must be at least 8 characters long, contain at least 1 uppercase\nletter, and 1 special character");
+                    showErrorMessage(passwordInput, "Password must be at least 8 characters long and contain\nat least 1 special character");
                 }
                 if (!isUsernameValid && isRegisterForm)
                 {
@@ -798,8 +798,8 @@ package com.auth
 
         private function isValidPassword(password:String):Boolean
         {
-            var passwordRegex:RegExp = /^(?=.*[A-Z])(?=.*[\W_])(?=.{8,})/;
-            return passwordRegex.test(password);
+            var trimmed:String = password.replace(/^\s+|\s+$/g, "");
+            return trimmed.length >= 8 && /[^a-zA-Z0-9]/.test(trimmed);
         }
 
         private function clearErrorMessages():void
