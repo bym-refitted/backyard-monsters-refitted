@@ -34,6 +34,22 @@ export const registerLimiter = RateLimit.middleware({
 });
 
 /**
+ * Rate limit for username changes - 5 requests per hour per user.
+ */
+export const changeUsernameLimiter = RateLimit.middleware({
+  interval: { min: 60 },
+  max: 5,
+  prefixKey: "changeusername",
+  keyGenerator: async (ctx: Context) => String(ctx.authUser?.userid ?? ctx.ip),
+  handler: async (ctx: Context) => {
+    ctx.status = Status.TOO_MANY_REQUESTS;
+    ctx.body = {
+      error: "Too many username change attempts. Please try again later.",
+    };
+  },
+});
+
+/**
  * Rate limit for login - 30 requests per 5 minutes in prod, 30 per minute in dev.
  */
 export const loginLimiter = RateLimit.middleware({
