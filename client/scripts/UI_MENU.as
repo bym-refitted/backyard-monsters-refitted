@@ -80,6 +80,7 @@ package
                addChild(bMap);
                if(BASE.isOutpostMapRoom2Only)
                {
+                  bKits.scaleX = bKits.scaleY = menuScale;
                   addChild(bKits);
                }
 
