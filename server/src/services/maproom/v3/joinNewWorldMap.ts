@@ -5,6 +5,7 @@ import { World } from "../../../models/world.model.js";
 import { MapRoom3, MapRoomVersion } from "../../../enums/MapRoom.js";
 import { EntityManager, PostgreSqlDriver } from "@mikro-orm/postgresql";
 import { postgres } from "../../../server.js";
+import { invalidateWorldsCache } from "../knownWorlds.js";
 import { findFreeSector } from "./findFreeSector.js";
 import { EnumYardType } from "../../../enums/EnumYardType.js";
 import { logger } from "../../../utils/logger.js";
@@ -78,4 +79,6 @@ export const joinNewWorldMap = async (
 
   em.persist([world, homeCell, save]);
   await em.flush();
+
+  await invalidateWorldsCache();
 };

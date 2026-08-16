@@ -6,6 +6,7 @@ import { World } from "../../../models/world.model.js";
 import { MapRoom2, MapRoomCell, MapRoomVersion } from "../../../enums/MapRoom.js";
 import { EntityManager, PostgreSqlDriver } from "@mikro-orm/postgresql";
 import { postgres } from "../../../server.js";
+import { invalidateWorldsCache } from "../knownWorlds.js";
 import { findFreeCell } from "./findFreeCell.js";
 import type { WorldData } from "../../../types/EntityData.js";
 
@@ -79,4 +80,6 @@ export const joinOrCreateWorld = async (
 
   em.persist([world, homeCell, save]);
   await em.flush();
+
+  await invalidateWorldsCache();
 };
