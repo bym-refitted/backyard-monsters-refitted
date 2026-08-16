@@ -8,7 +8,7 @@ import { devConfig } from "../../../config/GameConfig.js";
 import { Status } from "../../../enums/StatusCodes.js";
 import { createCellData } from "../../../services/maproom/v2/createCellData.js";
 import { generateNoise, getTerrainHeight } from "../../../services/maproom/v2/generateMap.js";
-import { MapRoomVersion } from "../../../enums/MapRoom.js";
+import { MapRoom2, MapRoomVersion } from "../../../enums/MapRoom.js";
 import { getLastSeen } from "../../../services/maproom/getLastSeen.js";
 import { getTruces } from "../../../services/maproom/getTruces.js";
 import { BaseType } from "../../../enums/Base.js";
@@ -18,9 +18,9 @@ import { mapRoomDisabledErr } from "../../../errors/errors.js";
  * Schema for validating the request body when getting area data.
  */
 const getAreaSchema = z.object({
-  x: z.string().transform(x => parseInt(x, 10)),
-  y: z.string().transform(y => parseInt(y, 10)),
-  sendresources: z.string().optional().transform(res => res ? parseInt(res, 10) : 0),
+  x: z.coerce.number().int().min(0).max(MapRoom2.WIDTH - 1),
+  y: z.coerce.number().int().min(0).max(MapRoom2.HEIGHT - 1),
+  sendresources: z.coerce.number().optional().default(0),
 });
 
 /**
@@ -81,7 +81,6 @@ export const getArea: KoaController = async (ctx) => {
 
   if (!worldid) throw new Error(`${user.username} has no world ID.`);
 
-  // We ignore width & height sent by the client as it's already hardcoded to 10 x 10
   const width = 10;
   const height = 10;
 
