@@ -4,13 +4,35 @@ import { Status } from "../enums/StatusCodes.js";
 import type { Context } from "koa";
 
 /**
+ * Keys a limit by account, falling back to IP only for unauthenticated routes.
+ *
+ * @param {Context} ctx - The Koa context object.
+ * @returns {Promise<string>} The rate limit bucket key.
+ */
+const byUser = async (ctx: Context) => String(ctx.authUser?.userid ?? ctx.ip);
+
+/**
+ * Rate limit for MR2 getarea - 120 requests per minute per user.
+ */
+export const getAreaLimiter = RateLimit.middleware({
+  interval: { min: 1 },
+  max: 120,
+  prefixKey: "getarea",
+  keyGenerator: byUser,
+  handler: async (ctx: Context) => {
+    ctx.status = Status.TOO_MANY_REQUESTS;
+    ctx.body = { error: "Too many area requests. Please slow down." };
+  },
+});
+
+/**
  * Rate limit for MR3 getcells - 60 requests per minute per user.
  */
 export const getCellsLimiter = RateLimit.middleware({
   interval: { min: 1 },
   max: 60,
   prefixKey: "getcells",
-  keyGenerator: async (ctx: Context) => String(ctx.authUser?.userid ?? ctx.ip),
+  keyGenerator: byUser,
   handler: async (ctx: Context) => {
     ctx.status = Status.TOO_MANY_REQUESTS;
     ctx.body = { error: "Too many cell requests. Please slow down." };
@@ -40,7 +62,7 @@ export const changeUsernameLimiter = RateLimit.middleware({
   interval: { min: 60 },
   max: 5,
   prefixKey: "changeusername",
-  keyGenerator: async (ctx: Context) => String(ctx.authUser?.userid ?? ctx.ip),
+  keyGenerator: byUser,
   handler: async (ctx: Context) => {
     ctx.status = Status.TOO_MANY_REQUESTS;
     ctx.body = {
