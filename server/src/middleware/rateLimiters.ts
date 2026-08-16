@@ -41,6 +41,40 @@ export const publicReadLimiter = RateLimit.middleware({
 });
 
 /**
+ * Rate limit for the MR2 terrain blob - 10 requests per minute per user.
+ *
+ * Sized so one caller can bootstrap or revalidate every MR2 world inside a
+ * single window; 304s pass through the limiter too.
+ */
+export const terrainLimiter = RateLimit.middleware({
+  interval: { min: 1 },
+  max: 10,
+  prefixKey: "terrain",
+  keyGenerator: byUser,
+  handler: async (ctx: Context) => {
+    ctx.status = Status.TOO_MANY_REQUESTS;
+    ctx.body = { error: "Too many terrain requests. Please slow down." };
+  },
+});
+
+/**
+ * Rate limit for the MR2 occupancy snapshot - 10 requests per minute per user.
+ *
+ * The payload is rebuilt at most once a minute, so anything above that rate is
+ * served from cache or answered with a 304.
+ */
+export const snapshotLimiter = RateLimit.middleware({
+  interval: { min: 1 },
+  max: 10,
+  prefixKey: "snapshot",
+  keyGenerator: byUser,
+  handler: async (ctx: Context) => {
+    ctx.status = Status.TOO_MANY_REQUESTS;
+    ctx.body = { error: "Too many snapshot requests. Please slow down." };
+  },
+});
+
+/**
  * Rate limit for MR3 getcells - 60 requests per minute per user.
  */
 export const getCellsLimiter = RateLimit.middleware({
