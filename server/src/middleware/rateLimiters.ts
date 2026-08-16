@@ -26,6 +26,21 @@ export const getAreaLimiter = RateLimit.middleware({
 });
 
 /**
+ * Rate limit for the unauthenticated public read routes (worlds, leaderboards).
+ * Both are Redis cached, so this bounds cache misses rather than the cached
+ * path. Keyed by IP because there is no account to key on.
+ */
+export const publicReadLimiter = RateLimit.middleware({
+  interval: { min: 1 },
+  max: 30,
+  prefixKey: "public-read",
+  handler: async (ctx: Context) => {
+    ctx.status = Status.TOO_MANY_REQUESTS;
+    ctx.body = { error: "Too many requests. Please try again shortly." };
+  },
+});
+
+/**
  * Rate limit for MR3 getcells - 60 requests per minute per user.
  */
 export const getCellsLimiter = RateLimit.middleware({

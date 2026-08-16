@@ -8,6 +8,7 @@ import {
   getAreaLimiter,
   getCellsLimiter,
   loginLimiter,
+  publicReadLimiter,
   registerLimiter,
 } from "./middleware/rateLimiters.js";
 import { Status } from "./enums/StatusCodes.js";
@@ -136,8 +137,8 @@ router.post("/api/:apiVersion/bm/yardplanner/savetemplate", apiVersion, verifyUs
 /**  ────────────────────────────────────────────────
 * 📦 Leaderboards & Attack Logs
 * ──────────────────────────────────────────────── */
-router.get("/api/:apiVersion/worlds", getAvailableWorlds);
-router.get("/api/:apiVersion/leaderboards", getLeaderboards);
+router.get("/api/:apiVersion/worlds", publicReadLimiter, getAvailableWorlds);
+router.get("/api/:apiVersion/leaderboards", publicReadLimiter, getLeaderboards);
 router.get("/api/:apiVersion/attacklogs", verifyUserAuth, getAttackLogs);
 
 /**  ────────────────────────────────────────────────
