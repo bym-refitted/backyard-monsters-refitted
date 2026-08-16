@@ -57,8 +57,7 @@ export const getTerrain: KoaController = async (ctx) => {
     return;
   }
 
-  const worldId = worldid.toString();
-  const terrain = await getTerrainMap(worldId);
+  const terrain = await getTerrainMap(worldid.toString());
 
   ctx.set("Cache-Control", "public, max-age=31536000, immutable");
   ctx.set("Vary", "Accept-Encoding");
