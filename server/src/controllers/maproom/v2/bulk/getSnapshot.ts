@@ -5,7 +5,7 @@ import { getWorldSnapshot } from "../../../../services/maproom/v2/worldSnapshot.
 import type { KoaController } from "../../../../utils/KoaController.js";
 
 /**
- * FOR API CONSUMERS ONLY.
+ * THIS ENDPOINT IS FOR API CONSUMERS ONLY.
  * ____________________________________________________________
  *
  * Serves every occupied cell in an MR2 world in a single request.
