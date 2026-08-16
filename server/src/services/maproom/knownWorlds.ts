@@ -1,7 +1,7 @@
 import { World } from "../../models/world.model.js";
 import { postgres, redis } from "../../server.js";
 
-export const WORLDS_CACHE_TTL = 7200;
+export const WORLDS_CACHE_TTL = 86400;
 
 const WORLDS_CACHE_KEY = "availableWorlds";
 
@@ -21,6 +21,13 @@ export const getCachedWorlds = async (): Promise<World[]> => {
 
   return worlds;
 };
+
+/**
+ * Drops the cached world list.
+ *
+ * @returns {Promise<number>} Resolves once the key is dropped.
+ */
+export const invalidateWorldsCache = () => redis.del(WORLDS_CACHE_KEY);
 
 /**
  * Checks a caller-supplied world id against the known worlds.

@@ -3,7 +3,8 @@ import { UniqueConstraintViolationException } from "@mikro-orm/core";
 import { User } from "../../models/user.model.js";
 import { Save } from "../../models/save.model.js";
 import { World } from "../../models/world.model.js";
-import { postgres, redis } from "../../server.js";
+import { postgres } from "../../server.js";
+import { invalidateWorldsCache } from "../maproom/knownWorlds.js";
 import { usernameUniqueErr } from "../../errors/errors.js";
 
 /** How long a player must wait between username changes. */
@@ -76,7 +77,7 @@ export const renameUser = async (user: User, username: string): Promise<Date> =>
   user.username = username;
   user.username_changed_at = changedAt;
 
-  if (worldsRenamed > 0) await redis.del("availableWorlds");
+  if (worldsRenamed > 0) await invalidateWorldsCache();
 
   return cooldownExpiry(changedAt);
 };
