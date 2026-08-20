@@ -71,6 +71,5 @@ export const userCell = async (ctx: Context, cell: WorldMapCell, cellOwners: Map
     lo: locked,
     dm: damage,
     pic_square: cellOwner.pic_square,
-    im: cellOwner.pic_square,
   };
 };

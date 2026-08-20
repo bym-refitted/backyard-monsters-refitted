@@ -74,7 +74,7 @@ export const scaledInfernoTribes = async (user: User, saveData: BaseSaveData) =>
 
       case SaveKeys.ATTACKLOOT:
         if (userInfernoSave)
-          resourcesHandler(userSave, value, SaveKeys.IRESOURCES);
+          resourcesHandler(userSave, value, { key: SaveKeys.IRESOURCES });
         break;
     }
   }

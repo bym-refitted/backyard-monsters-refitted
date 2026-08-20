@@ -20,6 +20,7 @@ import { startChatServer } from "./chat/chatServer.js";
 
 export const app = new Koa();
 app.proxy = true;
+app.proxyIpHeader = "CF-Connecting-IP";
 
 export const PORT = process.env.PORT || 3001;
 export const BASE_URL = process.env.BASE_URL;

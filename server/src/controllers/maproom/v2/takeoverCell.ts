@@ -1,6 +1,7 @@
 import type { KoaController } from "../../../utils/KoaController.js";
 import { User } from "../../../models/user.model.js";
-import { postgres, redis } from "../../../server.js";
+import { postgres } from "../../../server.js";
+import { invalidateWorldsCache } from "../../../services/maproom/knownWorlds.js";
 import { WorldMapCell } from "../../../models/worldmapcell.model.js";
 import { Status } from "../../../enums/StatusCodes.js";
 import { BaseType } from "../../../enums/Base.js";
@@ -112,12 +113,12 @@ export const takeoverCell: KoaController = async (ctx) => {
   userSave.outposts.push([cell.x, cell.y, baseid]);
 
   const isOriginCell = cell.x === 0 && cell.y === 0;
-  if (isOriginCell) cell.world.name = currentUser.username;
+  if (isOriginCell) cell.world.name = `${currentUser.username} Server`;
 
   postgres.em.persist([cellSave, currentUser]);
   await postgres.em.flush();
 
-  if (isOriginCell) await redis.del("availableWorlds");
+  if (isOriginCell) await invalidateWorldsCache();
 
   ctx.status = Status.OK;
   ctx.body = { error: 0 };

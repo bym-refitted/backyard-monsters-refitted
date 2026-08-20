@@ -5,7 +5,7 @@ import { getDefaultBaseData } from "../game-data/getDefaultBaseData.js";
 import { User } from "./user.model.js";
 import { BaseType } from "../enums/Base.js";
 import { WorldMapCell } from "./worldmapcell.model.js";
-import { type RequiredEntityData, BigIntType } from "@mikro-orm/core";
+import { type RequiredEntityData, BigIntType, UniqueConstraintViolationException } from "@mikro-orm/core";
 import type { AttackDetails } from "../controllers/base/load/modes/baseModeAttack.js";
 import type { Stats } from "../services/events/wmi/invasionUtils.js";
 import type { ChampionData } from "../schemas/ChampionSchema.js";
@@ -522,21 +522,28 @@ export class Save {
   ];
 
   public static createMainSave = async (em: EntityManager<PostgreSqlDriver>, user: User) => {
-    const baseSave = em.create(Save, getDefaultBaseData(user, BaseType.MAIN) as unknown as RequiredEntityData<Save>);
+    try {
+      const baseSave = em.create(Save, getDefaultBaseData(user, BaseType.MAIN) as unknown as RequiredEntityData<Save>);
 
-    const [result] = await em.execute<[{ baseid: string }]>(NEXT_USER_BASEID);
-    const baseid = result.baseid;
+      const [result] = await em.execute<[{ baseid: string }]>(NEXT_USER_BASEID);
+      const baseid = result.baseid;
 
-    baseSave.baseid = baseid;
-    baseSave.homebaseid = parseInt(baseid, 10);
-    em.persist(baseSave);
-    await em.flush();
+      baseSave.baseid = baseid;
+      baseSave.homebaseid = parseInt(baseid, 10);
 
-    user.save = baseSave;
+      em.persist(baseSave);
+      await em.flush();
+    } catch (err) {
+      if (!(err instanceof UniqueConstraintViolationException)) throw err;
+    }
+
+    const mainSave = await em.findOneOrFail(Save, { userid: user.userid, type: BaseType.MAIN });
+
+    user.save = mainSave;
     em.persist(user);
     await em.flush();
 
-    return baseSave;
+    return mainSave;
   };
 
   public static createInfernoSave = async (em: EntityManager<PostgreSqlDriver>, user: User) => {

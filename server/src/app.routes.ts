@@ -3,7 +3,16 @@ import Router from "@koa/router";
 import { logRequest } from "./middleware/logRequest.js";
 import { apiVersion } from "./middleware/apiVersioning.js";
 import { verifyUserAuth, verifyAccountStatus } from "./middleware/auth.js";
-import { getCellsLimiter, loginLimiter, registerLimiter } from "./middleware/rateLimiters.js";
+import {
+  changeUsernameLimiter,
+  getAreaLimiter,
+  getCellsLimiter,
+  loginLimiter,
+  publicReadLimiter,
+  registerLimiter,
+  snapshotLimiter,
+  terrainLimiter,
+} from "./middleware/rateLimiters.js";
 import { Status } from "./enums/StatusCodes.js";
 
 import { init } from "./controllers/init.js";
@@ -13,6 +22,8 @@ import { login } from "./controllers/auth/login.js";
 import { register } from "./controllers/auth/register.js";
 import { forgotPassword } from "./controllers/auth/forgotPassword.js";
 import { resetPassword } from "./controllers/auth/resetPassword.js";
+import { changeUsername } from "./controllers/auth/changeUsername.js";
+import { getAccount } from "./controllers/auth/getAccount.js";
 
 import { baseLoad } from "./controllers/base/load/baseLoad.js";
 import { baseSave } from "./controllers/base/save/baseSave.js";
@@ -26,6 +37,8 @@ import { infernoMonsters } from "./controllers/inferno/infernoMonsters.js";
 import { getNeighbours } from "./controllers/maproom/getNeighbours.js";
 
 import { getArea } from "./controllers/maproom/v2/getArea.js";
+import { getSnapshot } from "./controllers/maproom/v2/bulk/getSnapshot.js";
+import { getTerrain } from "./controllers/maproom/v2/bulk/getTerrain.js";
 import { takeoverCell } from "./controllers/maproom/v2/takeoverCell.js";
 import { transferMonsters } from "./controllers/maproom/v2/transferMonsters.js";
 import { saveBookmarks } from "./controllers/maproom/v2/saveBookmarks.js";
@@ -73,6 +86,8 @@ router.post("/api/:apiVersion/player/register", apiVersion, registerLimiter, log
 router.post("/api/:apiVersion/player/forgotPassword", apiVersion, forgotPassword);
 router.post("/api/:apiVersion/player/reset-password", resetPassword);
 router.get("/api/:apiVersion/supportedLangs", apiVersion, logRequest, supportedLangs);
+router.get("/api/:apiVersion/player/account", apiVersion, verifyUserAuth, getAccount);
+router.post("/api/:apiVersion/player/changeusername", apiVersion, verifyUserAuth, changeUsernameLimiter, logRequest, changeUsername);
 
 /**  ────────────────────────────────────────────────
 * 📦 Base
@@ -95,7 +110,9 @@ router.post("/api/:apiVersion/bm/neighbours/get", apiVersion, verifyUserAuth, lo
 /**  ────────────────────────────────────────────────
 * 📦 Map Room 2
 * ──────────────────────────────────────────────── */
-router.post("/worldmapv2/getarea", verifyUserAuth, verifyAccountStatus, logRequest, getArea);
+router.post("/worldmapv2/getarea", verifyUserAuth, verifyAccountStatus, getAreaLimiter, logRequest, getArea);
+router.get("/worldmapv2/terrain", verifyUserAuth, terrainLimiter, logRequest, getTerrain);
+router.get("/worldmapv2/snapshot", verifyUserAuth, snapshotLimiter, logRequest, getSnapshot);
 router.post("/worldmapv2/setmapversion", verifyUserAuth, logRequest, setMapVersion);
 router.post("/worldmapv2/takeoverCell", verifyUserAuth, verifyAccountStatus, logRequest, takeoverCell);
 router.post("/worldmapv2/transferassets", verifyUserAuth, verifyAccountStatus, logRequest, transferMonsters);
@@ -131,8 +148,8 @@ router.post("/api/:apiVersion/bm/yardplanner/savetemplate", apiVersion, verifyUs
 /**  ────────────────────────────────────────────────
 * 📦 Leaderboards & Attack Logs
 * ──────────────────────────────────────────────── */
-router.get("/api/:apiVersion/worlds", getAvailableWorlds);
-router.get("/api/:apiVersion/leaderboards", getLeaderboards);
+router.get("/api/:apiVersion/worlds", publicReadLimiter, getAvailableWorlds);
+router.get("/api/:apiVersion/leaderboards", publicReadLimiter, getLeaderboards);
 router.get("/api/:apiVersion/attacklogs", verifyUserAuth, getAttackLogs);
 
 /**  ────────────────────────────────────────────────

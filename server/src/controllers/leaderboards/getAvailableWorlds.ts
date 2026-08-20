@@ -1,32 +1,17 @@
 import { Status } from "../../enums/StatusCodes.js";
-import { World } from "../../models/world.model.js";
-import { postgres, redis } from "../../server.js";
+import { getCachedWorlds } from "../../services/maproom/knownWorlds.js";
 import type { KoaController } from "../../utils/KoaController.js";
-import { LB_CACHE_TTL } from "./getLeaderboards.js";
 
 /**
  * Controller to handle the retrieval of available worlds.
  *
- * First checks if the world data is cached in Redis.
- * If not, it queries the database for the world data,
- * caches the result in Redis, and then returns the data to the client.
+ * The world list is Redis cached and shared with the world id validation used
+ * by the leaderboards, so both are served from a single cached read.
  *
- * @param {Context} ctx - The Koa context object, which includes the request body.
+ * @param {Context} ctx - The Koa request/response context object.
  * @returns {Promise<void>} - A promise that resolves when the controller is complete.
  */
 export const getAvailableWorlds: KoaController = async (ctx) => {
-  const cacheKey = "availableWorlds";
-  let worlds: World[] = [];
-
-  const cachedWorlds = await redis.get(cacheKey);
-
-  if (cachedWorlds) {
-    worlds = JSON.parse(cachedWorlds);
-  } else {
-    worlds = await postgres.em.find(World, {});
-    await redis.setex(cacheKey, LB_CACHE_TTL, JSON.stringify(worlds));
-  }
-
   ctx.status = Status.OK;
-  ctx.body = { worlds };
+  ctx.body = { worlds: await getCachedWorlds() };
 };

@@ -27,6 +27,21 @@ const passwordSchema = z.preprocess(
  */
 const emailSchema = z.email(emailError).trim().toLowerCase();
 
+const usernameCharsetError = "Usernames can only contain letters, numbers and underscores";
+const usernameLengthError = "Usernames must be between 2 and 12 characters";
+
+/**
+ * Schema to validate usernames.
+ * - Must be 2 to 12 characters long.
+ * - Letters, numbers and underscores only.
+ */
+const usernameSchema = z
+  .string()
+  .trim()
+  .min(2, usernameLengthError)
+  .max(12, usernameLengthError)
+  .regex(/^[a-zA-Z0-9_]+$/, usernameCharsetError);
+
 /**
  * Schema to validate user login data.
  * - Email is optional.
@@ -48,10 +63,16 @@ export const UserLoginSchema = z.object({
  * - Password must meet the password schema requirements.
  */
 export const UserRegistrationSchema = z.object({
-  username: z.string().min(2).max(12),
+  username: usernameSchema,
   email: emailSchema,
   password: passwordSchema,
 });
+
+/**
+ * Schema to validate a username change request.
+ * - Username must meet the username schema requirements.
+ */
+export const ChangeUsernameSchema = z.object({ username: usernameSchema });
 
 /**
  * Schema to validate password reset data.

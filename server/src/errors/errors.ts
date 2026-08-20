@@ -47,6 +47,14 @@ export const emailUniqueErr = () =>
     isClientFriendly: true,
   });
 
+export const usernameCooldownErr = (nextChangeAt: Date) =>
+  new ClientSafeError({
+    message: `You can only change your username once every 6 months. You can change it again on ${nextChangeAt.toUTCString()}.`,
+    status: Status.CONFLICT,
+    data: { nextChangeAt: nextChangeAt.toISOString() },
+    isClientFriendly: true,
+  });
+
 export const debugClientErr = () =>
   new ClientSafeError({
     message: "Sorry, it appears this cannot be found.",
