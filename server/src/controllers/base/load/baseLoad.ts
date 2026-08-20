@@ -33,6 +33,7 @@ import { MR1_TRIBES } from "../../../enums/Tribes.js";
 import { MR1_TRIBE_IDS } from "../../../game-data/tribes/v1/index.js";
 import { calculateBaseLevel } from "../../../services/base/calculateBaseLevel.js";
 import { mapSaveData } from "../../../services/base/mapSaveData.js";
+import { clearExpiredStoreItems } from "../../../services/base/clearExpiredStoreItems.js";
 import { extractTownHall } from "../../../utils/extractTownHall.js";
 import { getChatChannel, getOrCreateChatToken, INFERNO_CHAT_CHANNEL } from "../../../chat/chatChannels.js";
 
@@ -113,6 +114,8 @@ export const baseLoad: KoaController = async (ctx) => {
   if (!baseSave) throw new Error("Base save not found.");
 
   const userSave = user.save!;
+  const isOwner = user.userid === baseSave.userid;
+  const isInferno = baseSave.type === BaseType.INFERNO;
 
   if (type === BaseMode.BUILD && mapversion === MapRoomVersion.V1) {
     userSave.level = calculateBaseLevel(userSave.points, userSave.basevalue);
@@ -123,6 +126,11 @@ export const baseLoad: KoaController = async (ctx) => {
     userSave.wmstatus = [...wmstatus.values()];
     
     postgres.em.persist(userSave);
+    await postgres.em.flush();
+  }
+
+  if (isOwner && clearExpiredStoreItems(baseSave)) {
+    postgres.em.persist(baseSave);
     await postgres.em.flush();
   }
 
@@ -137,9 +145,6 @@ export const baseLoad: KoaController = async (ctx) => {
   flags.maproom2 = userSave.mr2upgraded || (townHall && townHall.l >= 6) ? 1 : 0;
   flags.mr2upgraded = userSave.mr2upgraded ? 1 : 0;
 
-  const isOwner = baseSave.type !== BaseType.INFERNO && user.userid === filteredSave.userid;
-  const isInfernoOwner = baseSave.type === BaseType.INFERNO && user.userid === filteredSave.userid;
-
   let totalResourceRate = 0;
   let totalResourceCapacity = 0;
   let totalStrongholdBonus = 0;
@@ -148,7 +153,7 @@ export const baseLoad: KoaController = async (ctx) => {
 
   if (mapversion === MapRoomVersion.V3) {
     // Sum production rate and storage capacity from all player-owned MR3 resource outposts.
-    if (isOwner) {
+    if (isOwner && !isInferno) {
       const resourceOutposts = await postgres.em.find(Save, {
         saveuserid: user.userid,
         type: BaseType.OUTPOST,
@@ -266,17 +271,12 @@ export const baseLoad: KoaController = async (ctx) => {
 
   if (isOwner && process.env.ENV !== Env.LOCAL) {
     chattoken = await getOrCreateChatToken(user.userid);
-    chatchannel = getChatChannel(userSave.mapversion);
-  }
-
-  if (isInfernoOwner && process.env.ENV !== Env.LOCAL) {
-    chattoken = await getOrCreateChatToken(user.userid);
-    chatchannel = INFERNO_CHAT_CHANNEL;
+    chatchannel = isInferno ? INFERNO_CHAT_CHANNEL : getChatChannel(userSave.mapversion);
   }
 
   const response: Record<string, unknown> = {
     ...filteredSave,
-    relationship: isOwner ? EnumBaseRelationship.SELF : EnumBaseRelationship.ENEMY,
+    relationship: isOwner && !isInferno ? EnumBaseRelationship.SELF : EnumBaseRelationship.ENEMY,
     canattack: attackAllowed,
     flags,
     worldsize: WORLD_SIZE,
@@ -292,14 +292,9 @@ export const baseLoad: KoaController = async (ctx) => {
       chattoken,
       chatchannel,
     }),
-    ...(isInfernoOwner && {
-      chatenabled: 1,
-      chattoken,
-      chatchannel,
-    }),
   };
 
-  if (isOwner && mapversion === MapRoomVersion.V3) {
+  if (isOwner && !isInferno && mapversion === MapRoomVersion.V3) {
     response.player = { buffs: { 2: totalResourceRate, 10: totalResourceCapacity } };
   }
 
