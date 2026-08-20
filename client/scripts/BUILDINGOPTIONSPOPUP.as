@@ -5,6 +5,7 @@ package
    import com.monsters.display.ImageCache;
    import com.monsters.inventory.InventoryManager;
    import com.monsters.managers.InstanceManager;
+   import com.monsters.utils.HtmlTextUtils;
    import flash.display.Bitmap;
    import flash.display.BitmapData;
    import flash.display.MovieClip;
@@ -269,13 +270,33 @@ package
                      _loc4_ += "</font><br>";
                   }
                }
-               _loc2_ = KEYS.Get("bdg_upgradedesc",{
+               var hasUpgradeDescription:Boolean = this._building._upgradeDescription != "";
+               var groupHealthWithDescription:Boolean = hasUpgradeDescription && this._building._type != BUILDING14.k_TYPE;
+               _loc2_ = HtmlTextUtils.EnsureBreaks(KEYS.Get("bdg_upgradetitle",{
                   "v1":KEYS.Get(this._building._buildingProps.name),
-                  "v2":this._building._lvl.Get() + 1,
-                  "v3":this._building._upgradeDescription
-               });
+                  "v2":this._building._lvl.Get() + 1
+               }),hasUpgradeDescription ? 1 : 2) + this._building._upgradeDescription;
+               if(this._building._class != "wall" && this._building._lvl.Get() < this._building._buildingProps.hp.length)
+               {
+                  var currentMaxHp:int = int(this._building._buildingProps.hp[this._building._lvl.Get() - 1]);
+                  var nextMaxHp:int = int(this._building._buildingProps.hp[this._building._lvl.Get()]);
+                  if(groupHealthWithDescription)
+                  {
+                     _loc2_ = HtmlTextUtils.EnsureBreaks(_loc2_,1);
+                  }
+                  else if(hasUpgradeDescription)
+                  {
+                     _loc2_ = HtmlTextUtils.EnsureBreaks(_loc2_,2);
+                  }
+                  _loc2_ += KEYS.Get("bdg_hp_upgrade",{
+                     "v1":GLOBAL.FormatNumber(currentMaxHp),
+                     "v2":GLOBAL.FormatNumber(nextMaxHp),
+                     "v3":int(100 / currentMaxHp * nextMaxHp) - 100
+                  }) + "<br>";
+               }
                if(_loc4_ != "")
                {
+                  _loc2_ = HtmlTextUtils.EnsureBreaks(_loc2_,2);
                   _loc2_ += KEYS.Get("bdg_upgraderequirements",{"v1":_loc4_});
                }
                _loc3_ = this._building.UpgradeCost();
@@ -363,7 +384,8 @@ package
                _loc2_ = KEYS.Get("bdg_morenolevel",{
                   "v1":KEYS.Get(this._building._buildingProps.name),
                   "v2":KEYS.Get(this._building._buildingProps.description),
-                  "v3":this._building._recycleDescription
+                  "v3":this._building._recycleDescription,
+                  "v5":GLOBAL.FormatNumber(this._building.maxHealth)
                });
             }
             else if(this._building._buildingProps.names && this._building._buildingProps.names.length > 1 && Boolean(this._building._buildingProps.descriptions) && this._building._buildingProps.descriptions.length > 1)
@@ -372,7 +394,8 @@ package
                _loc2_ = KEYS.Get("bdg_morenolevel",{
                   "v1":KEYS.Get(this._building._buildingProps.names[_effectiveLvl - 1]),
                   "v2":KEYS.Get(this._building._buildingProps.descriptions[_effectiveLvl - 1]),
-                  "v3":this._building._recycleDescription
+                  "v3":this._building._recycleDescription,
+                  "v5":GLOBAL.FormatNumber(this._building.maxHealth)
                });
             }
             else
@@ -381,7 +404,8 @@ package
                   "v1":KEYS.Get(this._building._buildingProps.name),
                   "v2":this._building.getEffectiveLevel(),
                   "v3":KEYS.Get(this._building._buildingProps.description),
-                  "v4":this._building._recycleDescription
+                  "v4":this._building._recycleDescription,
+                  "v5":GLOBAL.FormatNumber(this._building.maxHealth)
                });
             }
             if(this._building._class == "decoration")
