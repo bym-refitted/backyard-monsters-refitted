@@ -55,5 +55,11 @@ export default defineConfig({
     path: path.join(import.meta.dirname, "./database/migrations"),
     pathTs: path.join(import.meta.dirname, "./database/migrations"),
     glob: "*.ts",
+    // Must be false: a non-transactional migration (CREATE INDEX CONCURRENTLY in
+    // 20260815_AddUniqueMainSaveIndex) cannot proceed while an earlier transactional
+    // migration in the same batch is still open on another connection - Postgres
+    // makes CONCURRENTLY wait for every in-flight transaction to finish, and the
+    // batch transaction only commits after the whole run succeeds. That's a deadlock.
+    allOrNothing: false,
   },
 });
