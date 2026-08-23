@@ -167,7 +167,9 @@ package com.monsters.alliances.tabs
       /**
        * Maps server rows onto the shape the table renderer expects, resolving the
        * diplomacy swatch colour and flagging the viewer's own alliance (the "me"
-       * row, which is highlighted and has no actions button).
+       * row, which is highlighted and has no actions button). leader_baseid is
+       * carried through unrendered for the actions popup's Visit Leader button,
+       * and is 0 when the leader has no main yard to visit.
        * @param {Array} list - Raw server alliance rows.
        * @returns {Array} Rows for _buildTable.
        */
@@ -185,6 +187,7 @@ package com.monsters.alliances.tabs
                   members: int(item.members),
                   ep: String(item.ep),
                   leader: String(item.leader_name),
+                  leader_baseid: Number(item.leader_baseid),
                   color: _relationshipColor(int(item.relationship)),
                   alliance_id: allianceId,
                   image: int(item.image),

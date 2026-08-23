@@ -3,6 +3,8 @@ package com.monsters.alliances.tabs
    import com.monsters.alliances.AllianceConstants;
    import com.monsters.alliances.tabs.AllianceRelationPopup;
    import com.monsters.display.ImageCache;
+   import com.monsters.enums.EnumYardType;
+   import com.monsters.maproom_manager.MapRoomManager;
    import flash.display.Bitmap;
    import flash.display.BitmapData;
    import flash.display.GradientType;
@@ -42,6 +44,7 @@ package com.monsters.alliances.tabs
 
       private var _rowData:Object;
       private var _dismiss:Function;
+      private var _leaderBaseId:Number;
 
       /**
        * @param {Object} rowData - Alliance row data for this popup's row
@@ -52,6 +55,7 @@ package com.monsters.alliances.tabs
          super();
          _rowData = rowData;
          _dismiss = dismiss;
+         _leaderBaseId = (_rowData != null) ? Number(_rowData.leader_baseid) : 0;
          _build();
       }
 
@@ -202,8 +206,21 @@ package com.monsters.alliances.tabs
       private function _onVisitLeader(e:MouseEvent):void
       {
          SOUNDS.Play("click1");
-         // TODO: navigate to leader's base
+
+         if (!(_leaderBaseId > 0)) return;
+         if (BASE._saving || BASE._loading || BASE._saveCounterA != BASE._saveCounterB) return;
+         if (BASE.isInfernoMainYardOrOutpost) return;
+
          _dismiss();
+         ALLIANCEWINDOW.Hide();
+
+         GLOBAL._currentCell = null;
+
+         var yardType:int = MapRoomManager.instance.isInMapRoom3
+            ? int(EnumYardType.PLAYER)
+            : int(EnumYardType.MAIN_YARD);
+
+         BASE.LoadBase(null, 0, _leaderBaseId, GLOBAL.e_BASE_MODE.VIEW, true, yardType);
       }
 
       private function _onRequestJoin(e:MouseEvent):void
