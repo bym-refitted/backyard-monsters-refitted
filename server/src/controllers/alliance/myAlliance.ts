@@ -1,21 +1,20 @@
+import { AllianceFilter } from "../../enums/AllianceFilter.js";
 import { Status } from "../../enums/StatusCodes.js";
-import { Alliance } from "../../models/alliance.model.js";
 import { User } from "../../models/user.model.js";
-import { postgres } from "../../server.js";
 import { getUserAlliance } from "../../services/alliance/allianceAccess.js";
+import { getAllianceRanks } from "../../services/alliance/allianceRank.js";
 import type { KoaController } from "../../utils/KoaController.js";
 
 /**
  * Returns the authenticated user's alliance for the My Alliance tab, or
- * `alliance: null` when they are unaffiliated. `number_of_members` and
- * `leader_name` are cached columns on the alliance row; rank is the alliance's
- * position within its world by empire points.
+ * `alliance: null` when they are unaffiliated. Rank is the alliance's standing
+ * within its own world by empire points.
  *
  * @param {Context} ctx - Koa context.
  */
 export const myAlliance: KoaController = async (ctx) => {
   const user: User = ctx.authUser;
-  const alliance = await getUserAlliance(user, { withMemberCount: true });
+  const alliance = await getUserAlliance(user, { withFormulas: true });
 
   if (!alliance) {
     ctx.status = Status.OK;
@@ -23,9 +22,7 @@ export const myAlliance: KoaController = async (ctx) => {
     return;
   }
 
-  const { world_id, empire_points } = alliance;
-
-  const rank = await postgres.em.count(Alliance, { world_id, empire_points: { $gt: empire_points } });
+  const ranks = await getAllianceRanks([alliance.id], AllianceFilter.WORLD);
 
   ctx.status = Status.OK;
   ctx.body = {
@@ -35,7 +32,7 @@ export const myAlliance: KoaController = async (ctx) => {
       name: alliance.name,
       image: alliance.image,
       description: alliance.description,
-      rank: rank + 1,
+      rank: ranks.get(alliance.id),
       avg_level: 1, // TODO: implement avg_level as a cached column on the alliance row
       leader_name: alliance.leader_name,
       number_of_members: alliance.member_count,

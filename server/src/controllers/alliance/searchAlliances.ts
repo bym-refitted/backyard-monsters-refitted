@@ -1,10 +1,12 @@
-import { QueryFlag, type FilterQuery } from "@mikro-orm/core";
+import type { FilterQuery } from "@mikro-orm/core";
 
+import { AllianceFilter } from "../../enums/AllianceFilter.js";
 import { Status } from "../../enums/StatusCodes.js";
 import { Alliance } from "../../models/alliance.model.js";
 import { User } from "../../models/user.model.js";
 import { postgres } from "../../server.js";
 import { SearchAlliancesSchema } from "../../schemas/AllianceSchemas.js";
+import { getAllianceRanks } from "../../services/alliance/allianceRank.js";
 import type { KoaController } from "../../utils/KoaController.js";
 import { allianceNoWorldErr } from "../../errors/errors.js";
 
@@ -37,20 +39,25 @@ export const searchAlliances: KoaController = async (ctx) => {
     limit: PAGE_SIZE,
     offset: page * PAGE_SIZE,
     orderBy: { empire_points: "DESC", id: "ASC" },
-    flags: [QueryFlag.INCLUDE_LAZY_FORMULAS],
+    fields: ["*", "member_count"],
   });
 
-  const rows = alliances.map((alliance) => ({
+  const allianceIds = alliances.map((alliance) => alliance.id);
+  const filter = world ? AllianceFilter.WORLD : AllianceFilter.GLOBAL;
+
+  const ranks = await getAllianceRanks(allianceIds, filter);
+
+  const results = alliances.map((alliance) => ({
     alliance_id: alliance.id,
     name: alliance.name,
     image: alliance.image,
     members: alliance.member_count,
     leader_name: alliance.leader_name,
+    rank: ranks.get(alliance.id),
     relationship: 0,
-    rank: 1,
     ep: 1,
   }));
 
   ctx.status = Status.OK;
-  ctx.body = { error: 0, alliances: rows, pageSize: PAGE_SIZE, totalResults };
+  ctx.body = { error: 0, alliances: results, pageSize: PAGE_SIZE, totalResults };
 };

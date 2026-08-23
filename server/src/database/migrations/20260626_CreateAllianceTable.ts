@@ -21,11 +21,11 @@ export class Migration20260626_CreateAllianceTable extends Migration {
     `);
 
     await this.execute(`
-      CREATE INDEX IF NOT EXISTS alliance_leader_userid_idx ON bym.alliance (leader_userid)
+      CREATE INDEX IF NOT EXISTS alliance_leader_userid_index ON bym.alliance (leader_userid)
     `);
 
     await this.execute(`
-      CREATE INDEX IF NOT EXISTS alliance_world_empire_points_idx ON bym.alliance (world_id, empire_points DESC)
+      CREATE INDEX IF NOT EXISTS alliance_world_id_empire_points_index ON bym.alliance (world_id, empire_points DESC)
     `);
 
     await this.execute(`
@@ -35,7 +35,7 @@ export class Migration20260626_CreateAllianceTable extends Migration {
     `);
 
     await this.execute(`
-      CREATE INDEX IF NOT EXISTS user_alliance_id_idx ON bym."user" (alliance_id)
+      CREATE INDEX IF NOT EXISTS user_alliance_id_index ON bym."user" (alliance_id)
     `);
 
     await this.execute(`

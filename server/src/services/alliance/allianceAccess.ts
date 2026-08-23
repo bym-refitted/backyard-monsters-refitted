@@ -1,21 +1,19 @@
-import { QueryFlag } from "@mikro-orm/core";
-
 import { AllianceRole } from "../../enums/AllianceRole.js";
 import { Alliance } from "../../models/alliance.model.js";
 import { User } from "../../models/user.model.js";
 import { postgres } from "../../server.js";
 import { permissionErr } from "../../errors/errors.js";
 
-interface AllianceLookupOptions { withMemberCount?: boolean; }
+interface AllianceLookupOptions { withFormulas?: boolean; }
 
 /**
  * Loads the alliance a user belongs to.
  *
- * member_count is a lazy formula, left unselected by default so the base-load
- * and updatesaved paths that poll through here cost nothing extra. Pass
- * withMemberCount only where the number is displayed: it adds a correlated
- * subquery per row, and reading member_count without it yields undefined
- * rather than a count.
+ * The @Formula property on Alliance - member_count - is lazy,
+ * left unselected by default so the base-load and updatesaved paths that poll
+ * through here cost nothing extra. Pass withFormulas only where those numbers are
+ * displayed: each one adds a correlated subquery, and reading them without it
+ * yields undefined rather than a value.
  *
  * @param {User} user - The user whose membership is being resolved.
  * @param {AllianceLookupOptions} options - Which derived fields to populate.
@@ -24,9 +22,12 @@ interface AllianceLookupOptions { withMemberCount?: boolean; }
 export const getUserAlliance = async (user: User, options: AllianceLookupOptions = {}): Promise<Alliance | null> => {
   if (!user.alliance_id) return null;
 
-  const findOptions = options.withMemberCount ? { flags: [QueryFlag.INCLUDE_LAZY_FORMULAS] } : undefined;
+  const where = { id: user.alliance_id };
 
-  return await postgres.em.findOne(Alliance, { id: user.alliance_id }, findOptions);
+  if (options.withFormulas)
+    return await postgres.em.findOne(Alliance, where, { fields: ["*", "member_count"] });
+
+  return await postgres.em.findOne(Alliance, where);
 };
 
 /**
