@@ -2,6 +2,9 @@ package com.monsters.alliances.tabs
 {
    import com.monsters.alliances.AllianceConstants;
    import com.monsters.alliances.tabs.AllianceRelationPopup;
+   import com.monsters.display.ImageCache;
+   import flash.display.Bitmap;
+   import flash.display.BitmapData;
    import flash.display.GradientType;
    import flash.display.MovieClip;
    import flash.events.MouseEvent;
@@ -22,6 +25,7 @@ package com.monsters.alliances.tabs
       private static const ICON_W:int = 37;
       private static const ICON_H:int = 35;
       private static const ICON_GAP:int = 8;
+      private static const ICON_INSET:int = 3;
       private static const RELATION_COLORS:Array = [
             AllianceConstants.REL_HOSTILE,
             AllianceConstants.REL_NEUTRAL,
@@ -74,6 +78,7 @@ package com.monsters.alliances.tabs
 
          const iconsY:int = PAD + BTN_H + BTN_GAP + BTN_H + ICON_ROW_GAP;
          const startX:int = PAD;
+         const shieldId:int = (_rowData != null) ? int(_rowData.image) : 0;
 
          var ci:int = 0;
          while (ci < RELATION_COLORS.length)
@@ -88,8 +93,48 @@ package com.monsters.alliances.tabs
             box.x = startX + ci * (ICON_W + ICON_GAP);
             box.y = iconsY;
             box.addEventListener(MouseEvent.CLICK, _makeRelationHandler(ci));
+            _loadShield(box, shieldId, ICON_INSET);
             ci++;
          }
+      }
+
+      /**
+       * Loads the alliance's shield into a relation-coloured swatch, inset so the
+       * fill reads as a coloured border around it - the same treatment the Browse
+       * table gives the name column. IDs 1-20 use the _large asset, 21+ _medium.
+       * 
+       * @param {MovieClip} container - The relation-tinted swatch.
+       * @param {int} id - Shield id 1-41.
+       * @param {int} inset - Padding between the swatch edge and the shield.
+       */
+      private function _loadShield(container:MovieClip, id:int, inset:int):void
+      {
+         if (id <= 0) return;
+
+         var suffix:String = id <= 20 ? "_large" : "_medium";
+         var key:String = "alliances/" + id + suffix + ".png";
+         
+         ImageCache.GetImageWithCallBack(
+               key,
+               function(k:String, bmd:BitmapData, args:Array):void
+               {
+                  var bmp:Bitmap = new Bitmap(bmd);
+                  bmp.smoothing = true;
+                  var mc:MovieClip = args[0] as MovieClip;
+                  var ins:int = int(args[1]);
+                  var bw:int = int(args[2]);
+                  var bh:int = int(args[3]);
+                  if (bmd.width > 0 && bmd.height > 0)
+                  {
+                     var scale:Number = Math.min(bw / bmd.width, bh / bmd.height);
+                     bmp.scaleX = bmp.scaleY = scale;
+                     bmp.x = ins + int((bw - bmd.width * scale) / 2);
+                     bmp.y = ins + int((bh - bmd.height * scale) / 2);
+                  }
+                  mc.addChild(bmp);
+               },
+               true, 4, "", [container, inset, ICON_W - inset * 2, ICON_H - inset * 2]
+            );
       }
 
       private function _makeBtn(label:String):MovieClip
