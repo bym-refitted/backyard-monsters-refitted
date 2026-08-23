@@ -1,7 +1,7 @@
 import z from "zod";
 
 import { getFlags } from "../../../game-data/flags.js";
-import { BaseMode } from "../../../enums/Base.js";
+import { BaseMode, BaseType } from "../../../enums/Base.js";
 import { Status } from "../../../enums/StatusCodes.js";
 import { saveFailureErr } from "../../../errors/errors.js";
 import { Save } from "../../../models/save.model.js";
@@ -14,6 +14,7 @@ import { baseModeView } from "../load/modes/baseModeView.js";
 import { infernoModeView } from "../load/modes/infernoModeView.js";
 import { extractTownHall } from "../../../utils/extractTownHall.js";
 import { mapSaveData } from "../../../services/base/mapSaveData.js";
+import { getAllianceData } from "../../../services/alliance/allianceData.js";
 
 const UpdateSavedSchema = z.object({
   type: z.string(),
@@ -58,6 +59,9 @@ export const updateSaved: KoaController = async (ctx) => {
 
   if (!baseSave) throw saveFailureErr();
 
+  const isOwner = user.userid === baseSave.userid;
+  const isInferno = baseSave.type === BaseType.INFERNO;
+
   baseSave.savetime = getCurrentDateTime();
   baseSave.id = baseSave.savetime; // client expects this.
 
@@ -81,6 +85,12 @@ export const updateSaved: KoaController = async (ctx) => {
     ...filteredSave,
     credits: userSave.credits
   };
+
+  if (isOwner && !isInferno) {
+    const alliance = await getAllianceData(user);
+
+    if (alliance) Object.assign(responseBody, { alliancedata: alliance });
+  }
 
   ctx.status = Status.OK;
   ctx.body = responseBody;

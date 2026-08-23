@@ -10,6 +10,7 @@ import {
   loginLimiter,
   publicReadLimiter,
   registerLimiter,
+  searchAlliancesLimiter,
   snapshotLimiter,
   terrainLimiter,
 } from "./middleware/rateLimiters.js";
@@ -69,6 +70,7 @@ import { createAlliance } from "./controllers/alliance/createAlliance.js";
 import { editAlliance } from "./controllers/alliance/editAlliance.js";
 import { leaveAlliance } from "./controllers/alliance/leaveAlliance.js";
 import { myAlliance } from "./controllers/alliance/myAlliance.js";
+import { searchAlliances } from "./controllers/alliance/searchAlliances.js";
 
 const router = new Router();
 
@@ -159,6 +161,7 @@ router.post("/alliance/createalliance", verifyUserAuth, logRequest, createAllian
 router.post("/alliance/editalliance", verifyUserAuth, logRequest, editAlliance);
 router.post("/alliance/leavealliance", verifyUserAuth, logRequest, leaveAlliance);
 router.get("/alliance/myalliance", verifyUserAuth, logRequest, myAlliance);
+router.post("/alliance/searchalliances", verifyUserAuth, searchAlliancesLimiter, logRequest, searchAlliances);
 
 /**  ────────────────────────────────────────────────
 * 📦 Events

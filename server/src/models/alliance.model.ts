@@ -1,4 +1,4 @@
-import { Entity, Index, PrimaryKey, Property } from "@mikro-orm/decorators/es";
+import { Entity, Formula, Index, PrimaryKey, Property } from "@mikro-orm/decorators/es";
 import { BigIntType } from "@mikro-orm/core";
 
 @Entity({ tableName: "alliance" })
@@ -26,12 +26,15 @@ export class Alliance {
   @Property({ type: "string" })
   world_id!: string;
 
-  @Property({ type: "number", default: 0 })
-  member_count: number = 0;
-
   @Property({ type: new BigIntType("number"), default: 0 })
   empire_points: number = 0;
 
   @Property({ type: Date })
   created_at: Date = new Date();
+
+  @Formula((columns) => `(select count(*) from bym."user" u where u.alliance_id = ${columns.id})`, {
+    type: "number",
+    lazy: true,
+  })
+  member_count!: number;
 }

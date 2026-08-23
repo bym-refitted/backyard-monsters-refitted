@@ -16,7 +16,7 @@ import type { KoaController } from "../../utils/KoaController.js";
 
 /**
  * Creates an alliance in the user's world, with them as leader. Rejects if they
- * are already in an alliance, have no world, or the name is taken..
+ * are already in an alliance, have no world, or the name is taken.
  *
  * @param {Context} ctx - Koa context.
  */
@@ -32,7 +32,7 @@ export const createAlliance: KoaController = async (ctx) => {
 
   const data = CreateAllianceSchema.parse(ctx.request.body);
 
-  const newAlliance = {
+  const allianceData = {
     name: data.alliance_name,
     image: data.alliance_image,
     description: data.alliance_desc,
@@ -41,17 +41,19 @@ export const createAlliance: KoaController = async (ctx) => {
     world_id: worldid,
   } as unknown as RequiredEntityData<Alliance>;
 
-  const alliance = postgres.em.create(Alliance, newAlliance);
+  const alliance = await postgres.em.transactional(async (em) => {
+      const newAlliance = em.create(Alliance, allianceData);
 
-  try {
-    postgres.em.persist(alliance);
-    await postgres.em.flush();
-  } catch (error) {
-    if (error instanceof UniqueConstraintViolationException) throw allianceNameTakenErr();
-    throw error;
-  }
+      em.persist(newAlliance);
+      await em.flush();
 
-  await addAllianceMember(user, alliance, AllianceRole.LEADER);
+      await addAllianceMember(user, newAlliance, AllianceRole.LEADER, em);
+
+      return newAlliance;
+    }).catch((error) => {
+      if (error instanceof UniqueConstraintViolationException) throw allianceNameTakenErr();
+      throw error;
+    });
 
   ctx.status = Status.OK;
   ctx.body = {
@@ -61,7 +63,6 @@ export const createAlliance: KoaController = async (ctx) => {
       name: alliance.name,
       image: alliance.image,
       description: alliance.description,
-      members: alliance.member_count,
       leader: user.username,
       world_id: alliance.world_id,
     },

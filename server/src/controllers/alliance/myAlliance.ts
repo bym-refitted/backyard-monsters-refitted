@@ -2,6 +2,7 @@ import { Status } from "../../enums/StatusCodes.js";
 import { Alliance } from "../../models/alliance.model.js";
 import { User } from "../../models/user.model.js";
 import { postgres } from "../../server.js";
+import { getUserAlliance } from "../../services/alliance/allianceAccess.js";
 import type { KoaController } from "../../utils/KoaController.js";
 
 /**
@@ -14,10 +15,7 @@ import type { KoaController } from "../../utils/KoaController.js";
  */
 export const myAlliance: KoaController = async (ctx) => {
   const user: User = ctx.authUser;
-
-  const alliance = user.alliance_id
-    ? await postgres.em.findOne(Alliance, { id: user.alliance_id })
-    : null;
+  const alliance = await getUserAlliance(user, { withMemberCount: true });
 
   if (!alliance) {
     ctx.status = Status.OK;

@@ -11,7 +11,6 @@ export class Migration20260626_CreateAllianceTable extends Migration {
         leader_userid INTEGER NOT NULL,
         leader_name VARCHAR(255) NOT NULL DEFAULT '',
         world_id VARCHAR(64) NOT NULL,
-        member_count INTEGER NOT NULL DEFAULT 0,
         empire_points BIGINT NOT NULL DEFAULT 0,
         created_at TIMESTAMP NOT NULL DEFAULT NOW()
       )

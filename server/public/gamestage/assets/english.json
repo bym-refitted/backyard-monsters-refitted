@@ -3858,6 +3858,7 @@
     "alliance_btn_search": "Search",
     "alliance_filter_all": "All",
     "alliance_filter_world": "This World",
+    "alliance_browse_no_results": "No alliances found.",
     "alliance_col_rank": "Rank",
     "alliance_col_name": "Name",
     "alliance_col_members": "Members",

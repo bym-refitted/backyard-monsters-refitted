@@ -89,6 +89,20 @@ export const getCellsLimiter = RateLimit.middleware({
 });
 
 /**
+ * Rate limit for the alliance browse/search - 30 requests per minute per user.
+ */
+export const searchAlliancesLimiter = RateLimit.middleware({
+  interval: { min: 1 },
+  max: 30,
+  prefixKey: "searchalliances",
+  keyGenerator: byUser,
+  handler: async (ctx: Context) => {
+    ctx.status = Status.TOO_MANY_REQUESTS;
+    ctx.body = { error: "Too many alliance searches. Please slow down." };
+  },
+});
+
+/**
  * Rate limit for user registration - 3 requests per hour in prod, per minute in dev.
  */
 export const registerLimiter = RateLimit.middleware({

@@ -1,7 +1,6 @@
 import { AllianceRole } from "../../enums/AllianceRole.js";
-import { Alliance } from "../../models/alliance.model.js";
 import { User } from "../../models/user.model.js";
-import { postgres } from "../../server.js";
+import { getUserAlliance } from "./allianceAccess.js";
 
 interface AllianceData {
   alliance_id: number;
@@ -19,9 +18,7 @@ interface AllianceData {
  * @returns {Promise<AllianceData | null>} The payload, or null if the user has no alliance.
  */
 export const getAllianceData = async (user: User): Promise<AllianceData | null> => {
-  if (!user.alliance_id) return null;
-
-  const alliance = await postgres.em.findOne(Alliance, { id: user.alliance_id });
+  const alliance = await getUserAlliance(user);
 
   if (!alliance) return null;
 

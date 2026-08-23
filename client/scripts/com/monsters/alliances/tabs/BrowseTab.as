@@ -3,15 +3,21 @@ package com.monsters.alliances.tabs
    import com.monsters.alliances.ALLIANCES;
    import com.monsters.alliances.AllianceConstants;
    import com.monsters.alliances.AllianceTabBase;
+   import com.monsters.display.ImageCache;
+   import flash.display.Bitmap;
+   import flash.display.BitmapData;
    import flash.display.DisplayObject;
    import flash.display.GradientType;
    import flash.display.MovieClip;
+   import flash.events.IOErrorEvent;
+   import flash.events.KeyboardEvent;
    import flash.events.MouseEvent;
    import flash.geom.Matrix;
    import flash.text.TextField;
    import flash.text.TextFieldType;
    import flash.text.TextFormat;
    import flash.text.TextFormatAlign;
+   import flash.ui.Keyboard;
 
    public class BrowseTab extends AllianceTabBase
    {
@@ -54,44 +60,235 @@ package com.monsters.alliances.tabs
       private static const PAGE_BTN_GAP:int = 6;
       private static const PAGE_Y_GAP:int = 13;
       private static const PAGE_VISIBLE:int = 10;
-      private static const MOCK_TOTAL_PAGES:int = 20;
+
+      private static const ENDPOINT:String = "searchalliances";
 
       private var _filterMode:int = 0;
       private var _filterBtnAll:MovieClip;
       private var _filterBtnWorld:MovieClip;
       private var _activePopup:BrowseActionPopup;
       private var _currentPage:int = 1;
+      private var _totalPages:int = 0;
+      private var _searchTerm:String = "";
+      private var _searchField:TextField;
+      private var _resultsLayer:MovieClip;
+      private var _loading:Boolean = false;
 
       public function BrowseTab()
       {
          super();
       }
 
+      /**
+       * Builds the static controls once, then loads the first page of results.
+       * The results table and pagination live in their own layer so they can be
+       * re-rendered on search / filter / page change without rebuilding controls.
+       */
       override public function build():void
       {
          _buildControls();
-         _buildTable(_browseData());
-         _buildPagination();
+         _resultsLayer = addChild(new MovieClip()) as MovieClip;
+         _fetch();
       }
 
       /**
-       * @returns {Array} Browse rows for the current page (10 per page). Mock
-       * data until the server-side alliance search is wired up.
+       * Requests the current page of alliances from the server for the active
+       * search term and world filter. `page` is sent 0-indexed to match the
+       * server; the client tracks it 1-indexed for display.
        */
-      private function _browseData():Array
+      private function _fetch():void
       {
-         return [
-               {rank: 1, name: "VENDETTA", members: 47, ep: "167,880,178,107", leader: "Rob", color: 0xFF5625},
-               {rank: 2, name: "VENDETTA Warriors", members: 50, ep: "113,926,937,744", leader: "Vicki", color: 0x0AB705},
-               {rank: 3, name: "VENDETTA ASSASSINS", members: 49, ep: "73,787,416,124", leader: "Kez", color: 0x0AB705},
-               {rank: 4, name: "VENDETTA NORTH", members: 50, ep: "35,491,719,566", leader: "Sarah", color: 0xFF5625},
-               {rank: 5, name: "VENDETTA II", members: 44, ep: "27,786,251,042", leader: "Duke", color: 0xFFF200},
-               {rank: 6, name: "VENDETTA Fire", members: 8, ep: "3,601,840,764", leader: "Valerie", color: 0xFF5625},
-               {rank: 7, name: "Vendetta CATS", members: 4, ep: "1,104,151,282", leader: "Mongmong", color: 0x0AB705},
-               {rank: 8, name: "vendetta VS me", members: 1, ep: "870,836,236", leader: "Alexander", color: 0xFFF200},
-               {rank: 9, name: "DESTROY VENDETTA", members: 7, ep: "461,837,177", leader: "manuel", color: 0xFF5625},
-               {rank: 10, name: "DESTROY VENDETTA II", members: 9, ep: "216,302,898", leader: "JanEman", color: 0x0AB705}
+         if (_loading)
+         {
+            return;
+         }
+         _loading = true;
+         _clearResults();
+
+         var vars:Array = [
+               ["search", _searchTerm],
+               ["page", String(_currentPage - 1)],
+               ["world", _filterMode == 1 ? "true" : "false"]
             ];
+         var r:URLLoaderApi = new URLLoaderApi();
+         r.load(GLOBAL._allianceURL + ENDPOINT, vars, _onSearchComplete, _onSearchFail);
+      }
+
+      /**
+       * Renders the returned page. Server-sent errors arrive here (not _onSearchFail)
+       * with an `error` field; an empty result set shows the no-results message.
+       * @param {Object} response - Parsed { totalResults, pageSize, alliances[] } payload.
+       */
+      private function _onSearchComplete(response:Object):void
+      {
+         _loading = false;
+         if (stage == null)
+         {
+            return;
+         }
+         _clearResults();
+
+         if (response == null || response.error)
+         {
+            if (response && response.error)
+            {
+               GLOBAL.Message(String(response.error));
+            }
+            _showStatus(KEYS.Get("alliance_browse_no_results"));
+            return;
+         }
+
+         var list:Array = response.alliances as Array;
+         var pageSize:int = int(response.pageSize);
+         var totalResults:int = int(response.totalResults);
+         _totalPages = (pageSize > 0) ? Math.ceil(totalResults / pageSize) : 0;
+
+         if (list == null || list.length == 0)
+         {
+            _showStatus(KEYS.Get("alliance_browse_no_results"));
+            return;
+         }
+
+         _buildTable(_mapRows(list));
+         _buildPagination();
+      }
+
+      private function _onSearchFail(e:IOErrorEvent):void
+      {
+         _loading = false;
+         if (stage == null)
+         {
+            return;
+         }
+         _clearResults();
+         _showStatus(KEYS.Get("alliance_browse_no_results"));
+      }
+
+      /**
+       * Maps server rows onto the shape the table renderer expects, resolving the
+       * diplomacy swatch colour and flagging the viewer's own alliance (the "me"
+       * row, which is highlighted and has no actions button).
+       * @param {Array} list - Raw server alliance rows.
+       * @returns {Array} Rows for _buildTable.
+       */
+      private function _mapRows(list:Array):Array
+      {
+         var out:Array = [];
+         var i:int = 0;
+         while (i < list.length)
+         {
+            var item:Object = list[i];
+            var allianceId:int = int(item.alliance_id);
+            out.push({
+                  rank: int(item.rank),
+                  name: String(item.name),
+                  members: int(item.members),
+                  ep: String(item.ep),
+                  leader: String(item.leader_name),
+                  color: _relationshipColor(int(item.relationship)),
+                  alliance_id: allianceId,
+                  image: int(item.image),
+                  self: allianceId != 0 && allianceId == ALLIANCES._allianceID
+               });
+            i++;
+         }
+         return out;
+      }
+
+      /**
+       * Loads an alliance shield icon into the row's icon box, centred and scaled
+       * to fit inside the given inset (leaving the relationship-colour fill showing
+       * as a border). IDs 1-20 use the _large asset, 21+ use _medium — matching
+       * MyAllianceTab / AllianceFormPopup.
+       * @param {MovieClip} container - The icon box (relationship-tinted).
+       * @param {int} id - Shield id 1-41.
+       * @param {int} inset - Padding between the box edge and the shield.
+       */
+      private function _loadShield(container:MovieClip, id:int, inset:int):void
+      {
+         if (id <= 0)
+         {
+            return;
+         }
+         var suffix:String = id <= 20 ? "_large" : "_medium";
+         var key:String = "alliances/" + id + suffix + ".png";
+         var box:int = ROW_H - inset * 2;
+         ImageCache.GetImageWithCallBack(
+               key,
+               function(k:String, bmd:BitmapData, args:Array):void
+               {
+                  var bmp:Bitmap = new Bitmap(bmd);
+                  bmp.smoothing = true;
+                  var mc:MovieClip = args[0] as MovieClip;
+                  var ins:int = int(args[1]);
+                  var sz:int = int(args[2]);
+                  if (bmd.width > 0 && bmd.height > 0)
+                  {
+                     var scale:Number = Math.min(sz / bmd.width, sz / bmd.height);
+                     bmp.scaleX = bmp.scaleY = scale;
+                     bmp.x = ins + int((sz - bmd.width * scale) / 2);
+                     bmp.y = ins + int((sz - bmd.height * scale) / 2);
+                  }
+                  mc.addChild(bmp);
+               },
+               true, 4, "", [container, inset, box]
+            );
+      }
+
+      /**
+       * @param {int} relationship - Diplomacy value: -1 hostile, 0 neutral, 1 friendly.
+       * @returns {uint} The swatch colour for the row's relationship column.
+       */
+      private function _relationshipColor(relationship:int):uint
+      {
+         if (relationship < 0)
+         {
+            return AllianceConstants.REL_HOSTILE;
+         }
+         if (relationship > 0)
+         {
+            return AllianceConstants.REL_FRIENDLY;
+         }
+         return AllianceConstants.REL_NEUTRAL;
+      }
+
+      /**
+       * Draws a centered status message (loading / no results) in the results layer.
+       */
+      private function _showStatus(message:String):void
+      {
+         if (_resultsLayer == null)
+         {
+            return;
+         }
+         var tf:TextField = _resultsLayer.addChild(new TextField()) as TextField;
+         tf.selectable = false;
+         tf.mouseEnabled = false;
+         tf.width = TABLE_W;
+         tf.height = 24;
+         tf.x = TABLE_X;
+         tf.y = TABLE_Y + 12;
+         var fmt:TextFormat = new TextFormat("Verdana", 13, 0x5A3B1E, true);
+         fmt.align = TextFormatAlign.CENTER;
+         tf.defaultTextFormat = fmt;
+         tf.text = message;
+      }
+
+      /**
+       * Clears the results layer (table, pagination, status text) and dismisses any
+       * open actions popup, leaving the controls intact.
+       */
+      private function _clearResults():void
+      {
+         _dismissActivePopup();
+         if (_resultsLayer == null)
+         {
+            return;
+         }
+         while (_resultsLayer.numChildren > 0)
+         {
+            _resultsLayer.removeChildAt(0);
+         }
       }
 
       private function _buildControls():void
@@ -137,30 +334,52 @@ package com.monsters.alliances.tabs
          inputBg.x = inputX;
          inputBg.y = CTRL_Y;
 
-         var searchField:TextField = addChild(new TextField()) as TextField;
-         searchField.type = TextFieldType.INPUT;
-         searchField.background = false;
-         searchField.border = false;
-         searchField.selectable = true;
-         searchField.mouseEnabled = true;
-         searchField.width = INPUT_W - 12;
-         searchField.height = FIELD_H;
-         searchField.x = inputX + 6;
-         searchField.y = CTRL_Y + int((INPUT_BOX_H - FIELD_H) / 2);
+         _searchField = addChild(new TextField()) as TextField;
+         _searchField.type = TextFieldType.INPUT;
+         _searchField.background = false;
+         _searchField.border = false;
+         _searchField.selectable = true;
+         _searchField.mouseEnabled = true;
+         _searchField.maxChars = 30;
+         _searchField.width = INPUT_W - 12;
+         _searchField.height = FIELD_H;
+         _searchField.x = inputX + 6;
+         _searchField.y = CTRL_Y + int((INPUT_BOX_H - FIELD_H) / 2);
          var sfmt:TextFormat = new TextFormat("Verdana", 11, 0x333333, true);
-         searchField.defaultTextFormat = sfmt;
+         _searchField.defaultTextFormat = sfmt;
+         _searchField.addEventListener(KeyboardEvent.KEY_DOWN, _onSearchKey);
 
          var btnSearch:Button_CLIP = addChild(new Button_CLIP()) as Button_CLIP;
          btnSearch.Setup(KEYS.Get("alliance_btn_search"), false, BTN_SEARCH_W, BTN_H);
          btnSearch.x = searchBtnX;
          btnSearch.y = CTRL_Y;
+         btnSearch.addEventListener(MouseEvent.CLICK, _onSearch);
       }
 
-      private function _buildTable(dummyData:Array):void
+      private function _onSearchKey(e:KeyboardEvent):void
       {
-         const totalH:int = HEADER_H + dummyData.length * ROW_H;
+         if (e.keyCode == Keyboard.ENTER)
+         {
+            _onSearch(null);
+         }
+      }
 
-         var tableMC:MovieClip = addChild(new MovieClip()) as MovieClip;
+      /**
+       * Runs a search from the input field, resetting to the first page.
+       */
+      private function _onSearch(e:MouseEvent):void
+      {
+         SOUNDS.Play("click1");
+         _searchTerm = (_searchField != null && _searchField.text != null) ? _searchField.text : "";
+         _currentPage = 1;
+         _fetch();
+      }
+
+      private function _buildTable(rows:Array):void
+      {
+         const totalH:int = HEADER_H + rows.length * ROW_H;
+
+         var tableMC:MovieClip = _resultsLayer.addChild(new MovieClip()) as MovieClip;
          tableMC.x = TABLE_X;
          tableMC.y = TABLE_Y;
 
@@ -169,9 +388,12 @@ package com.monsters.alliances.tabs
          tableMC.graphics.endFill();
 
          var fi:int = 0;
-         while (fi < dummyData.length)
+         while (fi < rows.length)
          {
-            tableMC.graphics.beginFill((fi % 2 == 0) ? AllianceConstants.ROW_ALT0 : AllianceConstants.ROW_ALT1);
+            var rowFill:uint = Boolean(rows[fi].self)
+               ? AllianceConstants.ROW_ME
+               : ((fi % 2 == 0) ? AllianceConstants.ROW_ALT0 : AllianceConstants.ROW_ALT1);
+            tableMC.graphics.beginFill(rowFill);
             tableMC.graphics.drawRect(0, HEADER_H + fi * ROW_H, TABLE_W, ROW_H);
             tableMC.graphics.endFill();
             fi++;
@@ -197,13 +419,16 @@ package com.monsters.alliances.tabs
          _addLabel(tableMC, KEYS.Get("alliance_col_actions"), C_ACT_X, 0, C_ACT_W, HEADER_H, true, TextFormatAlign.CENTER);
 
          var ri:int = 0;
-         while (ri < dummyData.length)
+         while (ri < rows.length)
          {
-            var rowData:Object = dummyData[ri];
+            var rowData:Object = rows[ri];
             var rowBaseY:int = HEADER_H + ri * ROW_H;
 
             _addLabel(tableMC, String(rowData.rank), C_RANK_X, rowBaseY, C_RANK_W, ROW_H, false, TextFormatAlign.CENTER);
 
+            // The shield sits in a relationship-tinted frame (matching the
+            // original's relation_div wrapper); the colour fill shows as a border
+            // once the shield image loads inset on top of it.
             var iconMC:MovieClip = tableMC.addChild(new MovieClip()) as MovieClip;
             iconMC.mouseEnabled = false;
             iconMC.graphics.beginFill(rowData.color, 1);
@@ -214,6 +439,7 @@ package com.monsters.alliances.tabs
             iconMC.graphics.lineTo(ICON_W, ROW_H);
             iconMC.x = C_NAME_X + 1;
             iconMC.y = rowBaseY;
+            _loadShield(iconMC, int(rowData.image), 3);
 
             const nameX:int = C_NAME_X + 1 + ICON_W + 8;
             _addLabel(tableMC, rowData.name, nameX, rowBaseY, C_MEM_X - nameX - 5, ROW_H, false, TextFormatAlign.LEFT);
@@ -221,12 +447,16 @@ package com.monsters.alliances.tabs
             _addLabel(tableMC, rowData.ep, C_EP_X, rowBaseY, C_EP_W, ROW_H, false, TextFormatAlign.CENTER);
             _addLabel(tableMC, rowData.leader, C_LDR_X + 5, rowBaseY, C_LDR_W - 5, ROW_H, false, TextFormatAlign.LEFT);
 
-            var actBtn:Button_CLIP = tableMC.addChild(new Button_CLIP()) as Button_CLIP;
-            actBtn.Setup(KEYS.Get("alliance_col_actions"), false, ACT_BTN_W, ROW_H - 6);
-            actBtn._txt.htmlText = "<b><font color=\"#000000\">" + KEYS.Get("alliance_col_actions") + "</font></b>";
-            actBtn.x = C_ACT_X + int((C_ACT_W - ACT_BTN_W) / 2);
-            actBtn.y = rowBaseY + 3;
-            actBtn.addEventListener(MouseEvent.CLICK, _makeActionsHandler(rowData, rowBaseY));
+            // The viewer's own alliance has no actions to take on itself.
+            if (!rowData.self)
+            {
+               var actBtn:Button_CLIP = tableMC.addChild(new Button_CLIP()) as Button_CLIP;
+               actBtn.Setup(KEYS.Get("alliance_col_actions"), false, ACT_BTN_W, ROW_H - 6);
+               actBtn._txt.htmlText = "<b><font color=\"#000000\">" + KEYS.Get("alliance_col_actions") + "</font></b>";
+               actBtn.x = C_ACT_X + int((C_ACT_W - ACT_BTN_W) / 2);
+               actBtn.y = rowBaseY + 3;
+               actBtn.addEventListener(MouseEvent.CLICK, _makeActionsHandler(rowData, rowBaseY));
+            }
 
             ri++;
          }
@@ -235,13 +465,18 @@ package com.monsters.alliances.tabs
          gridOverlay.mouseEnabled = false;
          gridOverlay.graphics.lineStyle(1, AllianceConstants.CELL_BORDER, 1);
          var hli:int = 0;
-         while (hli < dummyData.length)
+         while (hli < rows.length)
          {
             var hlineY:int = (hli == 0) ? HEADER_H : HEADER_H + hli * ROW_H;
             gridOverlay.graphics.moveTo(0, hlineY);
             gridOverlay.graphics.lineTo(TABLE_W, hlineY);
             hli++;
          }
+         // Redraw the outer frame's bottom edge on top of the icon rects, which
+         // otherwise hide it on the last/only row.
+         gridOverlay.graphics.lineStyle(1, AllianceConstants.TABLE_BORDER, 1);
+         gridOverlay.graphics.moveTo(0, totalH);
+         gridOverlay.graphics.lineTo(TABLE_W, totalH);
       }
 
       /**
@@ -254,7 +489,7 @@ package com.monsters.alliances.tabs
        */
       private function _buildPagination():void
       {
-         const total:int = MOCK_TOTAL_PAGES;
+         const total:int = _totalPages;
          if (total <= 1)
          {
             return;
@@ -281,7 +516,7 @@ package com.monsters.alliances.tabs
          var prev:MovieClip = _makePageButton("<<", _currentPage - 1, _currentPage <= 1);
          prev.x = x;
          prev.y = py;
-         addChild(prev);
+         _resultsLayer.addChild(prev);
          x += step;
 
          for (var p:int = start; p <= end; p++)
@@ -289,14 +524,14 @@ package com.monsters.alliances.tabs
             var num:MovieClip = _makePageButton(String(p), p, p == _currentPage);
             num.x = x;
             num.y = py;
-            addChild(num);
+            _resultsLayer.addChild(num);
             x += step;
          }
 
          var next:MovieClip = _makePageButton(">>", _currentPage + 1, _currentPage >= total);
          next.x = x;
          next.y = py;
-         addChild(next);
+         _resultsLayer.addChild(next);
       }
 
       /**
@@ -371,7 +606,7 @@ package com.monsters.alliances.tabs
       }
 
       /**
-       * Builds a click handler that switches to the given page and re-renders.
+       * Builds a click handler that loads the given page from the server.
        * @param {int} targetPage - Page to switch to
        * @returns {Function} MouseEvent handler
        */
@@ -380,26 +615,13 @@ package com.monsters.alliances.tabs
          return function(e:MouseEvent):void
          {
             SOUNDS.Play("click1");
-            if (targetPage < 1 || targetPage > MOCK_TOTAL_PAGES || targetPage == _currentPage)
+            if (targetPage < 1 || targetPage > _totalPages || targetPage == _currentPage)
             {
                return;
             }
             _currentPage = targetPage;
-            _rerender();
+            _fetch();
          };
-      }
-
-      /**
-       * Clears and rebuilds the tab's contents (used when the page changes).
-       */
-      private function _rerender():void
-      {
-         _dismissActivePopup();
-         while (numChildren > 0)
-         {
-            removeChildAt(0);
-         }
-         build();
       }
 
       private function _makeActionsHandler(rowData:Object, rowBaseY:int):Function
@@ -466,6 +688,8 @@ package com.monsters.alliances.tabs
          _filterMode = (e.currentTarget == _filterBtnAll) ? 0 : 1;
          _drawFilterBtn(_filterBtnAll, KEYS.Get("alliance_filter_all"), BTN_FILTER_W, BTN_H, _filterMode == 0);
          _drawFilterBtn(_filterBtnWorld, KEYS.Get("alliance_filter_world"), BTN_FILTER_W, BTN_H, _filterMode == 1);
+         _currentPage = 1;
+         _fetch();
       }
 
       private function _onCreateAlliance(e:MouseEvent):void

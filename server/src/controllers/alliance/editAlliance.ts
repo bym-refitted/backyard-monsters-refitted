@@ -1,10 +1,8 @@
 import { Status } from "../../enums/StatusCodes.js";
-import { AllianceRole } from "../../enums/AllianceRole.js";
-import { Alliance } from "../../models/alliance.model.js";
 import { User } from "../../models/user.model.js";
 import { postgres } from "../../server.js";
 import { EditAllianceSchema } from "../../schemas/AllianceSchemas.js";
-import { permissionErr } from "../../errors/errors.js";
+import { requireAllianceLeader } from "../../services/alliance/allianceAccess.js";
 import type { KoaController } from "../../utils/KoaController.js";
 
 /**
@@ -15,13 +13,7 @@ import type { KoaController } from "../../utils/KoaController.js";
  */
 export const editAlliance: KoaController = async (ctx) => {
   const user: User = ctx.authUser;
-  const isLeader = user.alliance_role === AllianceRole.LEADER;
-
-  if (!user.alliance_id || !isLeader) throw permissionErr();
-
-  const alliance = await postgres.em.findOne(Alliance, { id: user.alliance_id });
-
-  if (!alliance) throw permissionErr();
+  const alliance = await requireAllianceLeader(user);
 
   const data = EditAllianceSchema.parse(ctx.request.body);
 
@@ -38,7 +30,6 @@ export const editAlliance: KoaController = async (ctx) => {
       name: alliance.name,
       image: alliance.image,
       description: alliance.description,
-      members: alliance.member_count,
       leader: alliance.leader_name,
       world_id: alliance.world_id,
     },
