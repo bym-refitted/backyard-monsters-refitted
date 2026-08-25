@@ -71,8 +71,14 @@ package com.monsters.rendering
             RasterData.s_needsSort = false;
          }
          this._canvas.lock();
-         this.rasterize(RasterData.s_unsortedData.concat(_loc1_));
-         this._canvas.unlock();
+         try {
+            this.rasterize(RasterData.s_unsortedData.concat(_loc1_));
+         } catch(e:Error) {
+            LOGGER.Log("error", "Renderer.render() error: " + e.message + " stack: " + e.getStackTrace());
+         } finally {
+            // Ensure the canvas is unlocked even if an error occurs
+            this._canvas.unlock();
+         }
       }
       
       private function cull(param1:Vector.<RasterData>) : void
@@ -120,7 +126,7 @@ package com.monsters.rendering
             this._pt.y = entry._pt.y;
             if(entryBmd && !entry._blendMode && !entry._filter && (entry._scaleX & entry._scaleY) === 100)
             {
-               if(entry._alpha !== 4278190080)
+               if(entry._alpha !== 0xFF000000)
                {
                   alphaMask = new BitmapData(entryBmd.width,entryBmd.height,true,entry._alpha);
                }
