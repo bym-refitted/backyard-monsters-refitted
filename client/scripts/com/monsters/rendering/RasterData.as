@@ -121,21 +121,32 @@ package com.monsters.rendering
       
       internal static function hideDebug() : void
       {
-         var _loc1_:RasterData = null;
-         for each(_loc1_ in s_debugData)
+         var rasterData:RasterData = null;
+         while(s_debugData.length > 0)
          {
-            _loc1_.clear(true);
+            rasterData = s_debugData.pop();
+            rasterData.clear(true);
          }
-         s_debugData.length = 0;
       }
       
-      public static function clear(param1:Boolean = false) : void
+      public static function clear(dispose:Boolean = false) : void
       {
-         var _loc2_:RasterData = null;
-         for each(_loc2_ in s_rasterData)
+         var rasterData:RasterData = null;
+
+         while(s_rasterData.length > 0)
          {
-            _loc2_.clear(param1);
+            rasterData = s_rasterData.pop();
+            rasterData.clear(dispose, false);
          }
+
+         // A correct drain leaves these empty. Anything left means the registries
+         // desynced and truncating alone won't neutralise it, since the stale entry 
+         // is still _cleared == false and can re-add itself via set visible.
+         if(s_visibleData.length > 0 || s_unsortedData.length > 0)
+         {
+            LOGGER.Log("error","RasterData.clear() registry desync: visible=" + s_visibleData.length + " unsorted=" + s_unsortedData.length + " | both should be 0.");
+         }
+
          s_unsortedData.length = s_visibleData.length = s_rasterData.length = s_debugData.length = 0;
       }
       
@@ -267,13 +278,14 @@ package com.monsters.rendering
          return new RasterData(this._data,this._pt,this._depth);
       }
       
-      public function clear(dispose:Boolean = false) : void
+      public function clear(dispose:Boolean = false, shouldSpliceFromCollection:Boolean = true) : void
       {
          if(this._cleared)
          {
             return;
          }
-         var idx:int = s_rasterData.indexOf(this);
+         // shouldSpliceFromCollection is used to avoid splicing the same RasterData multiple times when clear() is called from RasterData.clear() static method
+         var idx:int = shouldSpliceFromCollection ? s_rasterData.indexOf(this) : -1;
 
          if(idx >= 0)
          {
