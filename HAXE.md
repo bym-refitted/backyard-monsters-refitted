@@ -53,6 +53,11 @@ Currently, the formatter is configured to indent without tabs and with 3 spaces,
 
 While 3 spaces are arguably unconventional, it is preferred to remain consistent with the original AS3 codebase, especially when copy-pasting code during migration.
 
+The Haxe extension for VSCode already uses the configuration of `hxformat.json` for formatting, but we also provide convenience scripts to format the codebase manually:
+
+Execute `bun run haxelib:format:setup` once to install the `formatter` library using haxelib.
+Then execute `bun run haxelib:format` from the project root to format the codebase.
+
 ## Why This Exists
 
 The Haxe client library is part of a gradual migration from ActionScript 3 to Haxe. We move code one piece at a time into Haxe, compile it as a SWC, and then include that SWC from the AS3 client. This lets the AS3 code call migrated Haxe code while the rest of the client remains in AS3.
