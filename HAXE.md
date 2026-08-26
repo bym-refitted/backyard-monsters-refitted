@@ -45,6 +45,14 @@ The build pipeline:
 3. `haxelib:swc:*` runs Haxe on the patched HXML.
 4. `haxelib:copy` copies the SWC to bin/client-hx.swc.
 
+## Formatter
+
+Haxe has a formatter configuration that lives inside `client-hx/hxformat.json`. A specification for it can be found [here](https://github.com/vshaxe/vshaxe/wiki/Formatting).
+
+Currently, the formatter is configured to indent without tabs and with 3 spaces, as this matches the formatting of the current AS3-codebase.
+
+While 3 spaces are arguably unconventional, it is preferred to remain consistent with the original AS3 codebase, especially when copy-pasting code during migration.
+
 ## Why This Exists
 
 The Haxe client library is part of a gradual migration from ActionScript 3 to Haxe. We move code one piece at a time into Haxe, compile it as a SWC, and then include that SWC from the AS3 client. This lets the AS3 code call migrated Haxe code while the rest of the client remains in AS3.
