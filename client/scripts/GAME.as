@@ -37,8 +37,6 @@ package
 
       public function GAME()
       {
-         HaxeLib.bootstrap(new GLOBAL(), new LOGGER());
-
          var urls:Object = null;
          
          // Override server URL if provided as a flash var
@@ -126,6 +124,7 @@ package
          GLOBAL._baseURL = urls._baseURL;
          GLOBAL._infBaseURL = urls.infbaseurl;
          GLOBAL._apiURL = urls._apiURL;
+         HaxeLib.bootstrap(new GLOBAL(), new LOGGER());
          GLOBAL._gameURL = urls._gameURL;
          GLOBAL._storageURL = urls._storageURL;
          GLOBAL.languageUrl = urls.languageurl;
