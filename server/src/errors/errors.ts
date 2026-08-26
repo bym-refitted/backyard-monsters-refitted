@@ -228,3 +228,67 @@ export const leaderMustTransferErr = (allianceName: string) =>
     isClientFriendly: true,
   });
 
+
+export const requestPendingErr = () =>
+  new ClientSafeError({
+    message: "You already have a request pending.",
+    status: Status.CONFLICT,
+    data: {},
+    isClientFriendly: true,
+  });
+
+export const invitePendingErr = () =>
+  new ClientSafeError({
+    message: "They already have an invite pending.",
+    status: Status.CONFLICT,
+    data: {},
+    isClientFriendly: true,
+  });
+
+export const userAlreadyInAllianceErr = () =>
+  new ClientSafeError({
+    message: "User is already in an alliance.",
+    status: Status.CONFLICT,
+    data: {},
+    isClientFriendly: true,
+  });
+
+export const mustLeaveAllianceErr = () =>
+  new ClientSafeError({
+    message: "You must leave your alliance to join another.",
+    status: Status.CONFLICT,
+    data: {},
+    isClientFriendly: true,
+  });
+
+export const mustLeaveAllianceToAcceptErr = () =>
+  new ClientSafeError({
+    message: "You must leave your current alliance before accepting the invite.",
+    status: Status.CONFLICT,
+    data: {},
+    isClientFriendly: true,
+  });
+
+export const inviteNotPendingErr = () =>
+  new ClientSafeError({
+    message: "Invite has already been resolved.",
+    status: Status.CONFLICT,
+    data: {},
+    isClientFriendly: true,
+  });
+
+export const allianceFullErr = () =>
+  new ClientSafeError({
+    message: "The alliance is already full.",
+    status: Status.CONFLICT,
+    data: {},
+    isClientFriendly: true,
+  });
+
+export const cannotInviteOutsideWorldErr = (username: string) =>
+  new ClientSafeError({
+    message: `${username} is too far away to join your Alliance. Invite them to move to one of your close-by Outposts.`,
+    status: Status.FORBIDDEN,
+    data: {},
+    isClientFriendly: true,
+  });

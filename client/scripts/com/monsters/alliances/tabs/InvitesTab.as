@@ -1,16 +1,26 @@
 package com.monsters.alliances.tabs
 {
+   import com.monsters.alliances.ALLIANCES;
    import com.monsters.alliances.AllianceConstants;
    import com.monsters.alliances.AllianceTabBase;
+   import com.monsters.display.ImageCache;
+   import com.monsters.enums.EnumYardType;
+   import com.monsters.maproom_manager.MapRoomManager;
+   import flash.display.Bitmap;
+   import flash.display.BitmapData;
    import flash.display.MovieClip;
    import flash.events.MouseEvent;
    import flash.text.TextFormatAlign;
 
    /**
-    * Invites tab — lists pending alliance invitations addressed to the player.
+    * Invites tab — the player's alliance inbox, in both directions.
     * Mirrors the original canvas.htm "tabs-messages" layout: a Check All / Delete
-    * control bar above a checkbox / From / Subject / Date table. Data is mock
-    * until the server-side invite payload is wired up.
+    * control bar above a checkbox / From / Subject / Date table.
+    *
+    * One list carries invites and join requests alike. A pending row is addressed
+    * to whoever has to answer it, so a leader sees incoming requests here while an
+    * ordinary player sees incoming invites; once answered the same row returns to
+    * whoever opened it as an "accepted"/"declined" notice.
     */
    public class InvitesTab extends AllianceTabBase
    {
@@ -53,22 +63,117 @@ package com.monsters.alliances.tabs
       {
          if (_invites == null)
          {
-            _invites = _inviteData();
+            _invites = [];
+            _load();
          }
          _buildControls();
          _buildTable();
       }
 
       /**
-       * @returns {Array} Pending invite rows. Mock data until the server-side
-       * invite payload is wired up. Each row carries its own `checked` flag so
-       * selection survives a re-render.
+       * Draws the inbox from the store, which the alliance window warms on open.
+       * Rows arrive in server shape and are mapped onto what the table renderer
+       * expects, the subject line being derived from the row's type and status
+       * exactly as the original composed it.
        */
-      private function _inviteData():Array
+      private function _load():void
       {
-         return [
-               {from: "A.P.A", inviter: "David", subject: "David has invited you to join A.P.A.", date: "08/11/2011", color: 0x2A4B9B, checked: false}
-            ];
+         ALLIANCES.LoadMessages(function(messages:Array):void
+            {
+               _invites = (messages != null) ? _mapRows(messages) : [];
+               _rerender();
+            });
+      }
+
+      /**
+       * Re-reads both stores after a mutation, redrawing the list and the tab strip
+       * so the Invites and Members labels follow the change.
+       *
+       * Answering a request moves the roster as well as the inbox, and the store
+       * layer drops both caches rather than refreshing them - so My Alliance has to
+       * be re-read here too, or the Members label would redraw against a cleared
+       * cache and read 0/0.
+       */
+      private function _refresh():void
+      {
+         ALLIANCES.LoadMessages(function(messages:Array):void
+            {
+               _invites = (messages != null) ? _mapRows(messages) : [];
+               _rerender();
+               ALLIANCEWINDOW.RefreshTabLabels();
+            });
+
+         ALLIANCES.LoadMyAlliance(ALLIANCEWINDOW.RefreshTabLabels);
+      }
+
+      /**
+       * Maps server rows onto the shape the table renderer expects.
+       *
+       * The From column names the other party, which flips with the row: a pending
+       * invite is from the alliance, a pending request is from the player who sent
+       * it, and once resolved each returns to its originator showing the other side.
+       * Each row keeps its own `checked` flag so selection survives a re-render.
+       *
+       * @param {Array} messages - Raw server message rows.
+       * @returns {Array} Rows for _buildTable.
+       */
+      private function _mapRows(messages:Array):Array
+      {
+         var out:Array = [];
+         var i:int = 0;
+         while (i < messages.length)
+         {
+            var item:Object = messages[i];
+            var isInvite:Boolean = String(item.type) == AllianceConstants.INVITE_TYPE_INVITE;
+            var isPending:Boolean = String(item.status) == AllianceConstants.INVITE_PENDING;
+            var fromAlliance:Boolean = isPending ? isInvite : !isInvite;
+
+            out.push({
+                  invite_id: int(item.invite_id),
+                  type: String(item.type),
+                  status: String(item.status),
+                  alliance_name: String(item.alliance_name),
+                  alliance_image: int(item.alliance_image),
+                  leader_name: String(item.leader_name),
+                  user_id: int(item.user_id),
+                  user_name: String(item.user_name),
+                  base_id: Number(item.base_id),
+                  from: fromAlliance ? String(item.alliance_name) : String(item.user_name),
+                  shield: fromAlliance ? int(item.alliance_image) : 0,
+                  subject: _subjectFor(item, isInvite, isPending),
+                  date: String(item.update_at_formatted),
+                  checked: false
+               });
+            i++;
+         }
+         return out;
+      }
+
+      /**
+       * Composes a row's subject the way the original did - one line per type and
+       * status pairing, naming whichever side the reader is not.
+       *
+       * @param {Object} item - The raw server row.
+       * @param {Boolean} isInvite - Whether the alliance opened the exchange.
+       * @param {Boolean} isPending - Whether it is still unanswered.
+       * @returns {String} The subject line.
+       */
+      private function _subjectFor(item:Object, isInvite:Boolean, isPending:Boolean):String
+      {
+         if (isPending)
+         {
+            return isInvite
+               ? KEYS.Get("alliance_msg_subject_invite", {"v1": String(item.invited_by_name), "v2": String(item.alliance_name)})
+               : KEYS.Get("alliance_msg_subject_request", {"v1": String(item.user_name), "v2": String(item.alliance_name)});
+         }
+
+         var accepted:Boolean = String(item.status) == AllianceConstants.INVITE_ACCEPTED;
+
+         if (isInvite)
+         {
+            return KEYS.Get(accepted ? "alliance_msg_subject_invite_accepted" : "alliance_msg_subject_invite_declined");
+         }
+         return KEYS.Get(accepted ? "alliance_msg_subject_accepted" : "alliance_msg_subject_declined");
       }
 
       private function _buildControls():void
@@ -146,14 +251,14 @@ package com.monsters.alliances.tabs
             chk.y = rowBaseY + int((ROW_H - CHK_SIZE) / 2);
             tableMC.addChild(chk);
 
+            // The original drew a bare 24x24 picture here, so nothing backs the
+            // shield. Rows whose other party is a player carry no shield and leave
+            // the slot empty rather than shifting, keeping the column aligned.
             var flag:MovieClip = tableMC.addChild(new MovieClip()) as MovieClip;
             flag.mouseEnabled = false;
-            flag.graphics.beginFill(uint(rowData.color), 1);
-            flag.graphics.lineStyle(1, 0x000000, 1);
-            flag.graphics.drawRect(0, 0, FLAG_SIZE, FLAG_SIZE);
-            flag.graphics.endFill();
             flag.x = C_FROM_X + 6;
             flag.y = rowBaseY + int((ROW_H - FLAG_SIZE) / 2);
+            _loadShield(flag, int(rowData.shield));
 
             const fromX:int = C_FROM_X + 6 + FLAG_SIZE + 6;
             _addLabel(tableMC, String(rowData.from), fromX, rowBaseY, C_FROM_X + C_FROM_W - fromX - 6, ROW_H, false, TextFormatAlign.LEFT);
@@ -174,6 +279,39 @@ package com.monsters.alliances.tabs
             gridOverlay.graphics.lineTo(TABLE_W, hlineY);
             hli++;
          }
+      }
+
+      /**
+       * Draws the alliance shield over a row's From swatch. Rows whose other party
+       * is a player carry no shield id, leaving the plain swatch the original used
+       * for an avatar. IDs 1-20 use the _large asset, 21+ _medium.
+       *
+       * @param {MovieClip} container - The From swatch.
+       * @param {int} id - Shield id 1-41, or 0 for none.
+       */
+      private function _loadShield(container:MovieClip, id:int):void
+      {
+         if (id <= 0) return;
+
+         var suffix:String = id <= 20 ? "_large" : "_medium";
+
+         ImageCache.GetImageWithCallBack(
+               "alliances/" + id + suffix + ".png",
+               function(k:String, bmd:BitmapData, args:Array):void
+               {
+                  var mc:MovieClip = args[0] as MovieClip;
+                  if (bmd.width <= 0 || bmd.height <= 0) return;
+
+                  var bmp:Bitmap = new Bitmap(bmd);
+                  bmp.smoothing = true;
+                  var scale:Number = Math.min(FLAG_SIZE / bmd.width, FLAG_SIZE / bmd.height);
+                  bmp.scaleX = bmp.scaleY = scale;
+                  bmp.x = int((FLAG_SIZE - bmd.width * scale) / 2);
+                  bmp.y = int((FLAG_SIZE - bmd.height * scale) / 2);
+                  mc.addChild(bmp);
+               },
+               true, 4, "", [container]
+            );
       }
 
       /**
@@ -241,22 +379,35 @@ package com.monsters.alliances.tabs
       private function _onDelete(e:MouseEvent):void
       {
          SOUNDS.Play("click1");
-         var remaining:Array = [];
+
+         var ids:Array = [];
          for each (var row:Object in _invites)
          {
-            if (row.checked != true)
+            if (row.checked == true)
             {
-               remaining.push(row);
+               ids.push(int(row.invite_id));
             }
          }
-         if (remaining.length == _invites.length)
-         {
-            return;
-         }
-         // TODO: send the accepted/declined invite IDs to the server here; for
-         // now the deletion is local to the mock list.
-         _invites = remaining;
-         _rerender();
+
+         if (ids.length == 0) return;
+
+         PLEASEWAIT.Show(KEYS.Get("msg_loading"));
+
+         // Sent comma-separated, as the original posted the checked boxes.
+         ALLIANCES.DeleteMessages(ids.join(","), function(response:Object):void
+            {
+               PLEASEWAIT.Hide();
+
+               if (response == null || response.error)
+               {
+                  GLOBAL.Message((response && response.error)
+                     ? String(response.error)
+                     : KEYS.Get("alliance_err_generic"));
+                  return;
+               }
+
+               _refresh();
+            });
       }
 
       /**
@@ -270,9 +421,7 @@ package com.monsters.alliances.tabs
          {
             SOUNDS.Play("click1");
             new InviteDialogPopup().Show(
-                  String(rowData.inviter),
-                  String(rowData.from),
-                  String(rowData.date),
+                  rowData,
                   function():void
                   {
                      _acceptInvite(rowData);
@@ -280,44 +429,85 @@ package com.monsters.alliances.tabs
                   function():void
                   {
                      _declineInvite(rowData);
+                  },
+                  function():void
+                  {
+                     _visitBase(rowData);
                   });
          };
       }
 
       /**
-       * Accepts an invite. Mock behaviour: drops it from the list and re-renders.
-       * @param {Object} rowData - The invite being accepted
+       * Scouts the base of the player asking to join, so a leader can judge the
+       * request before answering it. Leaves the request pending and closes the
+       * alliance window the same way the Browse tab's Visit Leader does.
+       *
+       * @param {Object} rowData - The request being scouted
+       */
+      private function _visitBase(rowData:Object):void
+      {
+         var baseId:Number = Number(rowData.base_id);
+
+         if (!(baseId > 0)) return;
+         if (BASE._saving || BASE._loading || BASE._saveCounterA != BASE._saveCounterB) return;
+         if (BASE.isInfernoMainYardOrOutpost) return;
+
+         ALLIANCEWINDOW.Hide();
+
+         GLOBAL._currentCell = null;
+
+         var yardType:int = MapRoomManager.instance.isInMapRoom3
+            ? int(EnumYardType.PLAYER)
+            : int(EnumYardType.MAIN_YARD);
+
+         BASE.LoadBase(null, 0, baseId, GLOBAL.e_BASE_MODE.VIEW, true, yardType);
+      }
+
+      /**
+       * Accepts a pending row: joining the alliance that invited the player, or
+       * admitting the player who asked to join.
+       * @param {Object} rowData - The row being accepted
        */
       private function _acceptInvite(rowData:Object):void
       {
-         // TODO: GET /alliance/changeinvitestatus?invite_id=<id>&status=accepted,
-         // then (per the original) switch to the Members tab and reload the
-         // roster. For now the acceptance is local to the mock list.
-         _removeInvite(rowData);
+         _answer(rowData, AllianceConstants.INVITE_ACCEPTED);
       }
 
       /**
-       * Declines an invite. Mock behaviour: drops it from the list and re-renders.
-       * @param {Object} rowData - The invite being declined
+       * Declines a pending row.
+       * @param {Object} rowData - The row being declined
        */
       private function _declineInvite(rowData:Object):void
       {
-         // TODO: GET /alliance/changeinvitestatus?invite_id=<id>&status=declined.
-         _removeInvite(rowData);
+         _answer(rowData, AllianceConstants.INVITE_DECLINED);
       }
 
       /**
-       * Removes an invite from the mock list and re-renders.
-       * @param {Object} rowData - The invite to remove
+       * Answers a pending row and reloads the inbox. The row is not dropped
+       * locally - the server keeps it and hands it back to whoever opened it as an
+       * outcome notice, so a refetch is what shows the correct list to both sides.
+       *
+       * @param {Object} rowData - The row being answered
+       * @param {String} status - INVITE_ACCEPTED or INVITE_DECLINED
        */
-      private function _removeInvite(rowData:Object):void
+      private function _answer(rowData:Object, status:String):void
       {
-         var idx:int = _invites.indexOf(rowData);
-         if (idx >= 0)
-         {
-            _invites.splice(idx, 1);
-            _rerender();
-         }
+         PLEASEWAIT.Show(KEYS.Get("msg_loading"));
+
+         ALLIANCES.ChangeInviteStatus(int(rowData.invite_id), status, function(response:Object):void
+            {
+               PLEASEWAIT.Hide();
+
+               if (response == null || response.error)
+               {
+                  GLOBAL.Message((response && response.error)
+                     ? String(response.error)
+                     : KEYS.Get("alliance_err_generic"));
+                  return;
+               }
+
+               _refresh();
+            });
       }
 
       /**

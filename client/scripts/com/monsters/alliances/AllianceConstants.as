@@ -25,6 +25,12 @@ package com.monsters.alliances
       public static const SHOUT_BAND1:uint = 0xE6EFDF;
       public static const SHOUT_GOLD:uint = 0xFBF39D;
 
+      public static const INVITE_TYPE_INVITE:String = "invite";
+      public static const INVITE_TYPE_REQUEST:String = "request";
+      public static const INVITE_PENDING:String = "pending";
+      public static const INVITE_ACCEPTED:String = "accepted";
+      public static const INVITE_DECLINED:String = "declined";
+
       public static const REL_HOSTILE:uint = 0xFF4628;
       public static const REL_NEUTRAL:uint = 0xFFFF00;
       public static const REL_FRIENDLY:uint = 0x13DD05;

@@ -200,11 +200,15 @@ package com.monsters.alliances.tabs
 
          const btnGap:int = 24;
          const btnW:int = int((LEFT_CONTENT_W - btnGap) / 2);
-         var editBtn:Button_CLIP = addChild(new Button_CLIP()) as Button_CLIP;
-         editBtn.Setup(KEYS.Get("alliance_btn_edit"), false, btnW, ACTION_BTN_H);
-         editBtn.x = LEFT_CONTENT_X;
-         editBtn.y = LEFT_BTN_Y;
-         editBtn.addEventListener(MouseEvent.CLICK, _onEdit);
+
+         if (ALLIANCES._isLeader)
+         {
+            var editBtn:Button_CLIP = addChild(new Button_CLIP()) as Button_CLIP;
+            editBtn.Setup(KEYS.Get("alliance_btn_edit"), false, btnW, ACTION_BTN_H);
+            editBtn.x = LEFT_CONTENT_X;
+            editBtn.y = LEFT_BTN_Y;
+            editBtn.addEventListener(MouseEvent.CLICK, _onEdit);
+         }
 
          var leaveBtn:Button_CLIP = addChild(new Button_CLIP()) as Button_CLIP;
          leaveBtn.Setup(KEYS.Get("alliance_btn_leave"), false, btnW, ACTION_BTN_H);

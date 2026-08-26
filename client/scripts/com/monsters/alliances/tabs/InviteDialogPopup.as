@@ -1,5 +1,6 @@
 package com.monsters.alliances.tabs
 {
+   import com.monsters.alliances.AllianceConstants;
    import flash.display.MovieClip;
    import flash.events.MouseEvent;
    import flash.filters.DropShadowFilter;
@@ -45,21 +46,72 @@ package com.monsters.alliances.tabs
       private var _mc:MovieClip;
       private var _onJoin:Function;
       private var _onDecline:Function;
+      private var _onVisitBase:Function;
 
       /**
-       * Opens the invite dialog.
-       * @param {String} inviterName - Name of the player who sent the invite
-       * @param {String} allianceName - Alliance being invited to
-       * @param {String} dateStr - Pre-formatted invite date
-       * @param {Function} onJoin - Called when the player accepts
-       * @param {Function} onDecline - Called when the player declines
+       * Opens the dialog for one inbox row.
+       *
+       * Six presentations share this one modal, as in the original: a pending
+       * invite the player may join or decline, a pending request the leader may
+       * accept, decline or scout first, and the four resolved notices, which are
+       * read-only because the exchange is already over.
+       *
+       * @param {Object} rowData - The inbox row being opened
+       * @param {Function} onAccept - Called when the player accepts (pending only)
+       * @param {Function} onDecline - Called when the player declines (pending only)
+       * @param {Function} onVisitBase - Called to scout a requesting player's base
        */
-      public function Show(inviterName:String, allianceName:String, dateStr:String,
-            onJoin:Function, onDecline:Function):void
+      public function Show(rowData:Object, onAccept:Function, onDecline:Function, onVisitBase:Function = null):void
       {
-         _onJoin = onJoin;
+         _onJoin = onAccept;
          _onDecline = onDecline;
+         _onVisitBase = onVisitBase;
          _mc = new MovieClip();
+
+         const isInvite:Boolean = String(rowData.type) == AllianceConstants.INVITE_TYPE_INVITE;
+         const isPending:Boolean = String(rowData.status) == AllianceConstants.INVITE_PENDING;
+         const isAccepted:Boolean = String(rowData.status) == AllianceConstants.INVITE_ACCEPTED;
+
+         const allianceName:String = String(rowData.alliance_name);
+         const userName:String = String(rowData.user_name);
+         const leaderName:String = String(rowData.leader_name);
+         const dateStr:String = String(rowData.date);
+
+         var header:String;
+         var fromName:String;
+         var subject:String;
+         var body:String;
+
+         if (isPending && isInvite)
+         {
+            header = KEYS.Get("alliance_invite_header");
+            fromName = leaderName + " - " + allianceName;
+            subject = KEYS.Get("alliance_invite_subject");
+            body = KEYS.Get("alliance_invite_body", {"v1": leaderName, "v2": allianceName});
+         }
+         else if (isPending)
+         {
+            header = KEYS.Get("alliance_request_header");
+            fromName = userName;
+            subject = KEYS.Get("alliance_request_subject");
+            body = KEYS.Get("alliance_request_body", {"v1": userName});
+         }
+         else if (isInvite)
+         {
+            header = KEYS.Get(isAccepted ? "alliance_invite_accepted_header" : "alliance_invite_declined_header");
+            fromName = userName;
+            subject = KEYS.Get(isAccepted ? "alliance_invite_accepted_subject" : "alliance_invite_declined_subject");
+            body = KEYS.Get(isAccepted ? "alliance_invite_accepted_body" : "alliance_invite_declined_body");
+         }
+         else
+         {
+            header = KEYS.Get(isAccepted ? "alliance_request_accepted_header" : "alliance_request_declined_header");
+            fromName = allianceName;
+            subject = KEYS.Get(isAccepted ? "alliance_request_accepted_subject" : "alliance_request_declined_subject");
+            body = isAccepted
+               ? KEYS.Get("alliance_request_accepted_body", {"v1": leaderName, "v2": allianceName})
+               : KEYS.Get("alliance_request_declined_body", {"v1": allianceName});
+         }
 
          var tBody:TextField = new TextField();
          tBody.wordWrap = true;
@@ -68,11 +120,15 @@ package com.monsters.alliances.tabs
          var bodyFmt:TextFormat = new TextFormat("Verdana", BODY_SIZE, 0x000000);
          bodyFmt.align = TextFormatAlign.LEFT;
          tBody.defaultTextFormat = bodyFmt;
-         tBody.htmlText = KEYS.Get("alliance_invite_body", {"v1": inviterName, "v2": allianceName});
+         tBody.htmlText = body;
+
+         // A resolved row is a notice with nothing to answer, so it keeps no room
+         // for the button strip.
+         const bottomPad:int = isPending ? PAD_BTN : 28;
 
          const titleH:int = TITLE_SIZE + 8;
          const bodyH:int = int(tBody.textHeight) + 6;
-         const totalH:int = PAD_TOP + titleH + TITLE_GAP + LINE_H + LINE_H + 4 + bodyH + PAD_BTN + 16;
+         const totalH:int = PAD_TOP + titleH + TITLE_GAP + LINE_H + LINE_H + 4 + bodyH + bottomPad + 16;
          const frameX:int = -int(BG_W * 0.5);
          const frameY:int = -int(totalH * 0.5);
          const contentX:int = frameX + PAD_H;
@@ -94,7 +150,7 @@ package com.monsters.alliances.tabs
          var titleFmt:TextFormat = new TextFormat("Groboldov", TITLE_SIZE, 0xFFFFFF);
          titleFmt.align = TextFormatAlign.CENTER;
          tTitle.defaultTextFormat = titleFmt;
-         tTitle.text = KEYS.Get("alliance_invite_header");
+         tTitle.text = header;
          tTitle.filters = [new GlowFilter(0, 1, 3, 3, 9, 2), new DropShadowFilter(2, 45, 0, 0.55, 3, 3, 1, 2)];
          tTitle.x = contentX;
          tTitle.y = frameY + PAD_TOP;
@@ -105,14 +161,12 @@ package com.monsters.alliances.tabs
          // parts (MM/DD) in bold (alliances.min.v343.js: d.date = b[0] + "/" + b[1]).
          var dateParts:Array = dateStr.split("/");
          var shortDate:String = (dateParts.length >= 2) ? (dateParts[0] + "/" + dateParts[1]) : dateStr;
-         _addLine("<b>" + KEYS.Get("alliance_dialog_from") + "</b> " + inviterName + " - " + allianceName,
+         _addLine("<b>" + KEYS.Get("alliance_dialog_from") + "</b> " + fromName,
                contentX, bodyTop, CONTENT_W - DATE_W, LINE_H, 13, 0x000000, TextFormatAlign.LEFT);
          _addLine("<b>" + shortDate + "</b>",
                contentX + CONTENT_W - DATE_W, bodyTop, DATE_W, LINE_H, 13, 0x000000, TextFormatAlign.RIGHT);
 
-         // The original subject string has no alliance-name placeholder (a quirk
-         // of the source data) — kept byte-faithful here.
-         _addLine("<b>" + KEYS.Get("alliance_dialog_subject") + "</b> " + KEYS.Get("alliance_invite_subject"),
+         _addLine("<b>" + KEYS.Get("alliance_dialog_subject") + "</b> " + subject,
                contentX, bodyTop + LINE_H, CONTENT_W, LINE_H, 13, 0x000000, TextFormatAlign.LEFT);
 
          tBody.selectable = false;
@@ -121,21 +175,37 @@ package com.monsters.alliances.tabs
          tBody.x = contentX;
          tBody.y = bodyTop + LINE_H + LINE_H + 4;
 
-         const btnW:int = 120;
-         const btnGap:int = 10;
-         const btnY:int = frameY + totalH - PAD_BTN;
+         if (isPending)
+         {
+            const btnW:int = 120;
+            const btnGap:int = 10;
+            const btnY:int = frameY + totalH - PAD_BTN;
 
-         var btnJoin:Button_CLIP = _mc.addChild(new Button_CLIP()) as Button_CLIP;
-         btnJoin.Setup(KEYS.Get("alliance_btn_join"), false, btnW, 36);
-         btnJoin.x = contentX + CONTENT_W - btnW;
-         btnJoin.y = btnY;
-         btnJoin.addEventListener(MouseEvent.CLICK, _onJoinClick);
+            var btnAccept:Button_CLIP = _mc.addChild(new Button_CLIP()) as Button_CLIP;
 
-         var btnDecline:Button_CLIP = _mc.addChild(new Button_CLIP()) as Button_CLIP;
-         btnDecline.Setup(KEYS.Get("alliance_btn_decline"), false, btnW, 36);
-         btnDecline.x = btnJoin.x - btnGap - btnW;
-         btnDecline.y = btnY;
-         btnDecline.addEventListener(MouseEvent.CLICK, _onDeclineClick);
+            btnAccept.Setup(KEYS.Get(isInvite ? "alliance_btn_join" : "alliance_btn_accept"), false, btnW, 36);
+            btnAccept.x = contentX + CONTENT_W - btnW;
+            btnAccept.y = btnY;
+            btnAccept.addEventListener(MouseEvent.CLICK, _onJoinClick);
+
+            var nextX:int = btnAccept.x;
+
+            if (!isInvite && _onVisitBase != null)
+            {
+               var btnVisit:Button_CLIP = _mc.addChild(new Button_CLIP()) as Button_CLIP;
+               btnVisit.Setup(KEYS.Get("alliance_btn_visit"), false, btnW, 36);
+               btnVisit.x = nextX - btnGap - btnW;
+               btnVisit.y = btnY;
+               btnVisit.addEventListener(MouseEvent.CLICK, _onVisitBaseClick);
+               nextX = btnVisit.x;
+            }
+
+            var btnDecline:Button_CLIP = _mc.addChild(new Button_CLIP()) as Button_CLIP;
+            btnDecline.Setup(KEYS.Get("alliance_btn_decline"), false, btnW, 36);
+            btnDecline.x = nextX - btnGap - btnW;
+            btnDecline.y = btnY;
+            btnDecline.addEventListener(MouseEvent.CLICK, _onDeclineClick);
+         }
 
          GLOBAL.BlockerAdd(GLOBAL._layerTop);
          GLOBAL._layerTop.addChild(_mc);
@@ -185,6 +255,16 @@ package com.monsters.alliances.tabs
          }
       }
 
+      private function _onVisitBaseClick(e:MouseEvent = null):void
+      {
+         SOUNDS.Play("click1");
+
+         var visitBase:Function = _onVisitBase;
+         _close();
+         
+         if (visitBase != null) visitBase();
+      }
+
       /** Frame [X] button — dismisses without accepting or declining. */
       private function _onClose():void
       {
@@ -202,6 +282,7 @@ package com.monsters.alliances.tabs
          _mc = null;
          _onJoin = null;
          _onDecline = null;
+         _onVisitBase = null;
       }
    }
 }

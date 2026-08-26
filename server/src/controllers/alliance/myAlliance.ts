@@ -1,3 +1,4 @@
+import { MAX_ALLIANCE_MEMBERS } from "../../config/AllianceConfig.js";
 import { AllianceFilter } from "../../enums/AllianceFilter.js";
 import { Status } from "../../enums/StatusCodes.js";
 import { User } from "../../models/user.model.js";
@@ -36,6 +37,7 @@ export const myAlliance: KoaController = async (ctx) => {
       avg_level: 1, // TODO: implement avg_level as a cached column on the alliance row
       leader_name: alliance.leader_name,
       number_of_members: alliance.member_count,
+      max_members: MAX_ALLIANCE_MEMBERS,
     },
   };
 };

@@ -18,6 +18,10 @@ package
       private static const H:int = 580;
       private static const CONTENT_X:int = 26;
       private static const CONTENT_Y:int = 63;
+      // TAB_LABELS indices of the two tabs whose labels carry a count.
+      private static const MEMBERS_TAB:int = 3;
+      private static const INVITES_TAB:int = 5;
+
       private static const TAB_Y:int = 26;
       private static const TAB_H:int = 38;
       private static const TAB_GAP:int = 5;
@@ -147,10 +151,14 @@ package
             var i:int = int(visible[n]);
             var btn:ButtonBrown_CLIP = addChild(new ButtonBrown_CLIP()) as ButtonBrown_CLIP;
             var tabLabel:String;
-            if (i == 3)
-               tabLabel = KEYS.Get(String(AllianceConstants.TAB_LABELS[i]), {"v1": "0", "v2": "50"});
-            else if (i == 5)
-               tabLabel = KEYS.Get(String(AllianceConstants.TAB_LABELS[i]), {"v1": "0"});
+            // Both counts read the stores warmed by ALLIANCEWINDOW.Show, so the
+            // labels cost no request of their own and are as fresh as the last load.
+            if (i == MEMBERS_TAB)
+               tabLabel = KEYS.Get(String(AllianceConstants.TAB_LABELS[i]),
+                     {"v1": String(ALLIANCES.MemberCount()), "v2": String(ALLIANCES.MaxMembers())});
+            else if (i == INVITES_TAB)
+               tabLabel = KEYS.Get(String(AllianceConstants.TAB_LABELS[i]),
+                     {"v1": String(ALLIANCES.PendingInviteCount())});
             else
                tabLabel = KEYS.Get(String(AllianceConstants.TAB_LABELS[i]));
             btn.Setup(tabLabel, false, int(AllianceConstants.TAB_WIDTHS[i]), TAB_H, "#ECBF88");
@@ -294,6 +302,24 @@ package
       {
          _rebuildTabs();
          _switchTab(idx);
+      }
+
+      /**
+       * Redraws the tab strip so labels pick up counts that arrived after the
+       * popup was built. The stores are fetched when the window opens, which is
+       * after the first draw, so without this the Members and Invites counts are
+       * always one open behind.
+       */
+      public function RefreshTabLabels():void
+      {
+         _rebuildTabs();
+
+         var i:int = 0;
+         while (i < _tabs.length)
+         {
+            _tabs[i].btn.Highlight = (int(_tabs[i].index) == _activeTab);
+            i++;
+         }
       }
 
       public function Hide(param1:MouseEvent = null):void

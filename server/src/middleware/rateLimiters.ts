@@ -103,6 +103,20 @@ export const searchAlliancesLimiter = RateLimit.middleware({
 });
 
 /**
+ * Rate limit for opening an alliance exchange - 10 per hour per user.
+ */
+export const allianceInviteLimiter = RateLimit.middleware({
+  interval: { hour: 1 },
+  max: 10,
+  prefixKey: "alliance-invite",
+  keyGenerator: byUser,
+  handler: async (ctx: Context) => {
+    ctx.status = Status.TOO_MANY_REQUESTS;
+    ctx.body = { error: "Too many alliance requests. Please try again later." };
+  },
+});
+
+/**
  * Rate limit for user registration - 3 requests per hour in prod, per minute in dev.
  */
 export const registerLimiter = RateLimit.middleware({

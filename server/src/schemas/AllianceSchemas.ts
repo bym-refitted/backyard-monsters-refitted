@@ -1,5 +1,7 @@
 import z from "zod";
 
+import { AllianceInviteStatus } from "../enums/AllianceInvite.js";
+
 /**
  * Schema to validate alliance creation data.
  */
@@ -31,4 +33,38 @@ export const SearchAlliancesSchema = z.object({
   // does, or the tabs lose their error messages. Change both together - stringbool() rejects
   // a real boolean, so the filter would silently stop working.
   world: z.stringbool().catch(false),
+});
+
+/**
+ * Schema for the Browse tab's Request to Join button.
+ */
+export const RequestJoinSchema = z.object({
+  alliance_id: z.coerce.number().int().positive(),
+});
+
+/**
+ * Schema for the Members and Suggested tabs' Invite button.
+ */
+export const InviteUserSchema = z.object({
+  user_id: z.coerce.number().int().positive(),
+});
+
+/**
+ * Schema for answering a pending invite or request. The original sent only
+ * "accepted" or "declined" here - pending is not a status a player may set.
+ */
+export const ChangeInviteStatusSchema = z.object({
+  invite_id: z.coerce.number().int().positive(),
+  status: z.enum([AllianceInviteStatus.ACCEPTED, AllianceInviteStatus.DECLINED]),
+});
+
+/**
+ * Schema for the Invites tab's Delete button, which posts the checked rows as a
+ * comma-separated list of ids.
+ */
+export const DeleteMessagesSchema = z.object({
+  invite_ids: z
+    .string()
+    .transform((ids) => ids.split(",").map(Number))
+    .pipe(z.array(z.number().int().positive()).max(100)),
 });

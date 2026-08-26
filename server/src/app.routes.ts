@@ -10,6 +10,7 @@ import {
   loginLimiter,
   publicReadLimiter,
   registerLimiter,
+  allianceInviteLimiter,
   searchAlliancesLimiter,
   snapshotLimiter,
   terrainLimiter,
@@ -71,6 +72,11 @@ import { editAlliance } from "./controllers/alliance/editAlliance.js";
 import { leaveAlliance } from "./controllers/alliance/leaveAlliance.js";
 import { myAlliance } from "./controllers/alliance/myAlliance.js";
 import { searchAlliances } from "./controllers/alliance/searchAlliances.js";
+import { requestJoin } from "./controllers/alliance/requestJoin.js";
+import { inviteUser } from "./controllers/alliance/inviteUser.js";
+import { changeInviteStatus } from "./controllers/alliance/changeInviteStatus.js";
+import { getMessages } from "./controllers/alliance/getMessages.js";
+import { deleteMessages } from "./controllers/alliance/deleteMessages.js";
 
 const router = new Router();
 
@@ -162,6 +168,11 @@ router.post("/alliance/editalliance", verifyUserAuth, logRequest, editAlliance);
 router.post("/alliance/leavealliance", verifyUserAuth, logRequest, leaveAlliance);
 router.get("/alliance/myalliance", verifyUserAuth, logRequest, myAlliance);
 router.post("/alliance/searchalliances", verifyUserAuth, searchAlliancesLimiter, logRequest, searchAlliances);
+router.post("/alliance/requestjoin", verifyUserAuth, allianceInviteLimiter, logRequest, requestJoin);
+router.post("/alliance/inviteuser", verifyUserAuth, allianceInviteLimiter, logRequest, inviteUser);
+router.post("/alliance/changeinvitestatus", verifyUserAuth, logRequest, changeInviteStatus);
+router.get("/alliance/getmessages", verifyUserAuth, logRequest, getMessages);
+router.post("/alliance/deletemessages", verifyUserAuth, logRequest, deleteMessages);
 
 /**  ────────────────────────────────────────────────
 * 📦 Events

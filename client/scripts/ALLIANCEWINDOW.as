@@ -21,12 +21,25 @@ package
          {
             SOUNDS.Play("click1");
             _open = true;
-            ALLIANCES.LoadMyAlliance(null, true);
+            ALLIANCES.LoadMyAlliance(RefreshTabLabels, true);
+            ALLIANCES.LoadMessages(RefreshTabLabels, true);
             GLOBAL.BlockerAdd();
             _mc = GLOBAL._layerWindows.addChild(new ALLIANCEPOPUP()) as ALLIANCEPOPUP;
             _mc.Center();
             _mc.ScaleUp();
          }
+      }
+
+      /**
+       * Redraws the tab strip once a store lands. Doubles as the load callback:
+       * both stores are fetched before the popup exists, so their counts arrive
+       * after the tabs have been drawn.
+       * 
+       * @param {Object} param1 - The loaded payload, unused; the labels read the store.
+       */
+      public static function RefreshTabLabels(param1:Object = null) : void
+      {
+         if (_open && _mc != null) _mc.RefreshTabLabels();
       }
 
       public static function Hide(param1:MouseEvent = null) : void

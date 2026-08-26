@@ -1,5 +1,6 @@
 package com.monsters.alliances.tabs
 {
+   import com.monsters.alliances.ALLIANCES;
    import com.monsters.alliances.AllianceConstants;
    import com.monsters.alliances.tabs.AllianceRelationPopup;
    import com.monsters.display.ImageCache;
@@ -223,15 +224,40 @@ package com.monsters.alliances.tabs
          BASE.LoadBase(null, 0, _leaderBaseId, GLOBAL.e_BASE_MODE.VIEW, true, yardType);
       }
 
+      /**
+       * Asks the alliance to take the player in. The confirmation is only shown
+       * once the server has the request, so "REQUEST SENT!" means it was: a player
+       * already in an alliance, or one who has asked this alliance before, gets the
+       * server's own wording instead.
+       */
       private function _onRequestJoin(e:MouseEvent):void
       {
          SOUNDS.Play("click1");
+
+         var allianceId:int = (_rowData != null) ? int(_rowData.alliance_id) : 0;
+
+         if (allianceId <= 0) return;
+
          _dismiss();
-         // TODO: send join request to server, then show this on the success response
-         new AllianceRelationPopup().Show(
-               KEYS.Get("alliance_join_request_title"),
-               KEYS.Get("alliance_join_request_body")
-            );
+         PLEASEWAIT.Show(KEYS.Get("msg_loading"));
+
+         ALLIANCES.RequestJoin(allianceId, function(response:Object):void
+            {
+               PLEASEWAIT.Hide();
+
+               if (response == null || response.error)
+               {
+                  GLOBAL.Message((response && response.error)
+                     ? String(response.error)
+                     : KEYS.Get("alliance_err_generic"));
+                  return;
+               }
+
+               new AllianceRelationPopup().Show(
+                     KEYS.Get("alliance_join_request_title"),
+                     KEYS.Get("alliance_join_request_body")
+                  );
+            });
       }
    }
 }

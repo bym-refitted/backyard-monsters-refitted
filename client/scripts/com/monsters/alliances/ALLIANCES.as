@@ -24,6 +24,14 @@ package com.monsters.alliances
 
       private static var _myAlliancePending:Array = [];
 
+      private static var _messagesData:Array = null;
+
+      private static var _messagesLoaded:Boolean = false;
+
+      private static var _messagesLoading:Boolean = false;
+
+      private static var _messagesPending:Array = [];
+
 
       public function ALLIANCES()
       {
@@ -103,6 +111,179 @@ package com.monsters.alliances
          _myAllianceData = null;
       }
       
+      /**
+       * Loads the player's inbox into the store. One inbox carries both directions:
+       * invites and join requests waiting on them, plus the outcomes of whatever
+       * they sent.
+       *
+       * Cached and coalesced like LoadMyAlliance, because the alliance window needs
+       * the rows on open to label the Invites tab and the tab itself needs the same
+       * rows to draw - one request serves both.
+       *
+       * @param {Function} onDone - Receives the message rows, or null on failure. May be null (warm only).
+       * @param {Boolean} force - Bypass the cache and re-fetch.
+       */
+      public static function LoadMessages(onDone:Function, force:Boolean = false) : void
+      {
+         if (_messagesLoaded && !force)
+         {
+            if(onDone != null) onDone(_messagesData);
+            return;
+         }
+
+         if (onDone != null) _messagesPending.push(onDone);
+
+         if (_messagesLoading) return;
+
+         _messagesLoading = true;
+         new URLLoaderApi().load(GLOBAL._allianceURL + "getmessages",null,_onMessagesLoaded,_onMessagesLoadFail);
+      }
+
+      private static function _onMessagesLoaded(response:Object) : void
+      {
+         _messagesData = (response && !response.error) ? response.messages as Array : null;
+         _messagesLoaded = true;
+         _messagesLoading = false;
+         _flushMessagesPending();
+      }
+
+      private static function _onMessagesLoadFail(error:IOErrorEvent) : void
+      {
+         _messagesData = null;
+         _messagesLoaded = false;
+         _messagesLoading = false;
+         _flushMessagesPending();
+      }
+
+      private static function _flushMessagesPending() : void
+      {
+         var waiting:Array = _messagesPending;
+         _messagesPending = [];
+
+         for each (var callback:Function in waiting)
+         {
+            if (callback != null) callback(_messagesData);
+         }
+      }
+
+      public static function InvalidateMessages() : void
+      {
+         _messagesLoaded = false;
+         _messagesData = null;
+      }
+
+      /**
+       * Rows in the cached inbox still waiting on the player, which labels the
+       * Invites tab. Reads the cache rather than asking the server, so it is only
+       * as fresh as the last LoadMessages().
+       * 
+       * @returns {int} Pending rows, or 0 before the inbox has loaded.
+       */
+      public static function PendingInviteCount() : int
+      {
+         if (_messagesData == null) return 0;
+
+         var pending:int = 0;
+         for each (var message:Object in _messagesData)
+         {
+            if (String(message.status) == AllianceConstants.INVITE_PENDING)
+            {
+               pending++;
+            }
+         }
+         return pending;
+      }
+
+      /**
+       * Members in the player's alliance, from the cached My Alliance payload.
+       * 
+       * @returns {int} Member count, or 0 when unaffiliated or not yet loaded.
+       */
+      public static function MemberCount() : int
+      {
+         return (_myAllianceData != null) ? int(_myAllianceData.number_of_members) : 0;
+      }
+
+      /**
+       * How many members the alliance may hold, as reported by the server that
+       * enforces it. Only read where the Members tab is drawn, which happens only
+       * while in an alliance, so the payload is always present.
+       * 
+       * @returns {int} The cap, or 0 when unaffiliated or not yet loaded.
+       */
+      public static function MaxMembers() : int
+      {
+         return (_myAllianceData != null) ? int(_myAllianceData.max_members) : 0;
+      }
+
+      /**
+       * Answers a pending invite or join request. Accepting either one changes the
+       * player's roster, so the My Alliance cache is dropped on success.
+       * 
+       * @param {int} inviteId - The row being answered.
+       * @param {String} status - "accepted" or "declined".
+       * @param {Function} onDone - Receives the server response.
+       */
+      public static function ChangeInviteStatus(inviteId:int, status:String, onDone:Function) : void
+      {
+         new URLLoaderApi().load(GLOBAL._allianceURL + "changeinvitestatus",[["invite_id",inviteId],["status",status]],
+               function(response:Object):void
+               {
+                  if (response != null && !response.error)
+                  {
+                     InvalidateMyAlliance();
+                     InvalidateMessages();
+                  }
+                  onDone(response);
+               },
+               function(e:IOErrorEvent):void
+               {
+                  onDone(null);
+               });
+      }
+
+      /**
+       * Asks an alliance to take the player in, from the Browse tab.
+       * 
+       * @param {int} allianceId - The alliance being asked.
+       * @param {Function} onDone - Receives the server response.
+       */
+      public static function RequestJoin(allianceId:int, onDone:Function) : void
+      {
+         new URLLoaderApi().load(GLOBAL._allianceURL + "requestjoin",[["alliance_id",allianceId]],
+               function(response:Object):void
+               {
+                  onDone(response);
+               },
+               function(e:IOErrorEvent):void
+               {
+                  onDone(null);
+               });
+      }
+
+      /**
+       * Clears the rows checked in the Invites tab.
+       * 
+       * @param {String} inviteIds - Comma-separated invite ids, as the original sent them.
+       * @param {Function} onDone - Receives the server response.
+       */
+      public static function DeleteMessages(inviteIds:String, onDone:Function) : void
+      {
+         new URLLoaderApi().load(GLOBAL._allianceURL + "deletemessages",[["invite_ids",inviteIds]],
+               function(response:Object):void
+               {
+                  if (response != null && !response.error)
+                  {
+                     InvalidateMessages();
+                  }
+                  onDone(response);
+               },
+               function(e:IOErrorEvent):void
+               {
+                  onDone(null);
+               });
+      }
+
       public static function Setup(param1:int = 0) : void
       {
          _alliances = new Object();
@@ -129,6 +310,7 @@ package com.monsters.alliances
          }
          _isLeader = false;
          InvalidateMyAlliance();
+         InvalidateMessages();
       }
       
       public static function SetCellAlliance(param1:MapRoomCell, param2:Boolean = false) : AllyInfo
@@ -195,14 +377,14 @@ package com.monsters.alliances
          onAllianceInviteSuccess = function(param1:Object):void
          {
             PLEASEWAIT.Hide();
-            if(param1.response == "success")
+            if(param1 != null && !param1.error)
             {
                GLOBAL.Message(KEYS.Get("msg_allianceinvitesent"));
                return;
             }
-            if(param1.error)
+            if(param1 && param1.error)
             {
-               GLOBAL.Message(KEYS.Get("msg_err_processinginvite_long") + " - " + param1.error + ": " + param1.error_code);
+               GLOBAL.Message(String(param1.error));
             }
             else
             {
@@ -220,7 +402,7 @@ package com.monsters.alliances
          }
          r = new URLLoaderApi();
          alliancevars = [["user_id",_userId]];
-         r.load(GLOBAL._allianceURL + "inviteuserclient",alliancevars,onAllianceInviteSuccess,onAllianceInviteFail);
+         r.load(GLOBAL._allianceURL + "inviteuser",alliancevars,onAllianceInviteSuccess,onAllianceInviteFail);
       }
       
       public static function AlliancesServerUpdate(param1:String) : void
