@@ -1,5 +1,6 @@
 package;
 
+import com.cc.utils.SecNum;
 import com.bymr.hxbridge.HaxeLib;
 import test.TestSprite;
 import openfl.display.Sprite;
@@ -19,5 +20,6 @@ class Main extends Sprite {
 
       var testSprite:TestSprite;
       var haxeLib:HaxeLib;
+      var secNum:SecNum;
    }
 }

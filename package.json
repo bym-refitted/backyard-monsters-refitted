@@ -21,6 +21,9 @@
     "haxelib:copy": "cp client-hx/Export/flash/bin/client-hx.swc bin/client-hx.swc",
     "haxelib:format": "haxelib run formatter -s client-hx",
     "haxelib:format:setup": "haxelib install formatter",
+
+    "haxelib:test": "cd client-hx && haxe -p src -p test --run com.bymr.tests.TestMain",
+
     "build": "bun run haxelib:build:debug",
 
     "assert-tools": "bun run scripts/assert-haxe.ts && bun run scripts/assert-lime.ts && bun run scripts/assert-openfl.ts"
