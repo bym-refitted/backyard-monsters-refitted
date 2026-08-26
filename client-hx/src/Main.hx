@@ -11,15 +11,13 @@ import openfl.display.Sprite;
  * It is only here to make sure the project compiles and generates the swc file.
  * 
  */
-class Main extends Sprite
-{
-	public function new()
-	{
-		super();
+class Main extends Sprite {
+   public function new() {
+      super();
 
-		// declare variables to tell the compiler to include these classes in the swc
-		
-		var testSprite:TestSprite;
-		var haxeLib:HaxeLib;
-	}
+      // declare variables to tell the compiler to include these classes in the swc
+
+      var testSprite:TestSprite;
+      var haxeLib:HaxeLib;
+   }
 }
