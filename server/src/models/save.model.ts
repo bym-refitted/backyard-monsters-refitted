@@ -243,6 +243,9 @@ export class Save {
   @Property({ type: 'number', default: 0 })
   protect!: number;
 
+  @Property({ type: 'string', nullable: true })
+  lastattackername?: string | null;
+
   @FrontendKey
   @Property({ type: 'number', default: 0 })
   purchasecomplete!: number;

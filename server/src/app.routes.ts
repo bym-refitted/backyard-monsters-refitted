@@ -72,6 +72,7 @@ import { editAlliance } from "./controllers/alliance/editAlliance.js";
 import { leaveAlliance } from "./controllers/alliance/leaveAlliance.js";
 import { myAlliance } from "./controllers/alliance/myAlliance.js";
 import { searchAlliances } from "./controllers/alliance/searchAlliances.js";
+import { myAllianceMembers } from "./controllers/alliance/myAllianceMembers.js";
 import { requestJoin } from "./controllers/alliance/requestJoin.js";
 import { inviteUser } from "./controllers/alliance/inviteUser.js";
 import { changeInviteStatus } from "./controllers/alliance/changeInviteStatus.js";
@@ -167,6 +168,7 @@ router.post("/alliance/createalliance", verifyUserAuth, logRequest, createAllian
 router.post("/alliance/editalliance", verifyUserAuth, logRequest, editAlliance);
 router.post("/alliance/leavealliance", verifyUserAuth, logRequest, leaveAlliance);
 router.get("/alliance/myalliance", verifyUserAuth, logRequest, myAlliance);
+router.get("/alliance/myalliancemembers", verifyUserAuth, logRequest, myAllianceMembers);
 router.post("/alliance/searchalliances", verifyUserAuth, searchAlliancesLimiter, logRequest, searchAlliances);
 router.post("/alliance/requestjoin", verifyUserAuth, allianceInviteLimiter, logRequest, requestJoin);
 router.post("/alliance/inviteuser", verifyUserAuth, allianceInviteLimiter, logRequest, inviteUser);

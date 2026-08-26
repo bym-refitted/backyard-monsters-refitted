@@ -4,6 +4,7 @@ package com.monsters.alliances.tabs
    import com.monsters.alliances.AllianceConstants;
    import com.monsters.alliances.AllianceTabBase;
    import com.monsters.display.ImageCache;
+   import com.monsters.display.ScrollSetV;
    import com.monsters.enums.EnumYardType;
    import com.monsters.maproom_manager.MapRoomManager;
    import flash.display.Bitmap;
@@ -35,7 +36,10 @@ package com.monsters.alliances.tabs
       private static const HEADER_H:int = 22;
       private static const ROW_H:int = 36;
       private static const TABLE_X:int = PAD;
-      private static const TABLE_W:int = 788; // CONTENT_W - PAD * 2
+      private static const SCROLLBAR_W:int = 16;
+      private static const TABLE_W:int = 772;
+
+      private static const VIEW_H:int = 375;
 
       // Column proportions from the original messages table (alliance.v343.css),
       // scaled to TABLE_W.
@@ -44,8 +48,8 @@ package com.monsters.alliances.tabs
       private static const C_FROM_X:int = 44;
       private static const C_FROM_W:int = 213;
       private static const C_SUBJ_X:int = 257;
-      private static const C_SUBJ_W:int = 406;
-      private static const C_DATE_X:int = 663;
+      private static const C_SUBJ_W:int = 390;
+      private static const C_DATE_X:int = 647;
       private static const C_DATE_W:int = 125;
 
       // Original invite pic is 24×24
@@ -75,14 +79,24 @@ package com.monsters.alliances.tabs
        * Rows arrive in server shape and are mapped onto what the table renderer
        * expects, the subject line being derived from the row's type and status
        * exactly as the original composed it.
+       *
+       * That warm store answers before load() returns, while build() is still
+       * partway through drawing. Re-rendering from under it would leave a second
+       * table stacked on the first, so an immediate answer only fills _invites and
+       * lets the build already in progress draw it.
        */
       private function _load():void
       {
+         var answeredDuringBuild:Boolean = true;
+
          ALLIANCES.LoadMessages(function(messages:Array):void
             {
                _invites = (messages != null) ? _mapRows(messages) : [];
-               _rerender();
+
+               if (!answeredDuringBuild) _rerender();
             });
+
+         answeredDuringBuild = false;
       }
 
       /**
@@ -195,9 +209,11 @@ package com.monsters.alliances.tabs
       {
          const totalH:int = HEADER_H + _invites.length * ROW_H;
 
-         var tableMC:MovieClip = addChild(new MovieClip()) as MovieClip;
-         tableMC.x = TABLE_X;
-         tableMC.y = TABLE_Y;
+         var viewport:MovieClip = addChild(new MovieClip()) as MovieClip;
+         viewport.x = TABLE_X;
+         viewport.y = TABLE_Y;
+
+         var tableMC:MovieClip = viewport.addChild(new MovieClip()) as MovieClip;
 
          tableMC.graphics.beginFill(AllianceConstants.HEADER_BG);
          tableMC.graphics.drawRect(0, 0, TABLE_W, HEADER_H);
@@ -279,6 +295,16 @@ package com.monsters.alliances.tabs
             gridOverlay.graphics.lineTo(TABLE_W, hlineY);
             hli++;
          }
+
+         var maskMC:MovieClip = viewport.addChild(new MovieClip()) as MovieClip;
+         maskMC.graphics.beginFill(0xFF0000, 1);
+         maskMC.graphics.drawRect(0, 0, TABLE_W, VIEW_H);
+         maskMC.graphics.endFill();
+         tableMC.mask = maskMC;
+
+         var scrollbar:ScrollSetV = viewport.addChild(new ScrollSetV(tableMC, maskMC, true)) as ScrollSetV;
+         scrollbar.x = TABLE_W + 2;
+         scrollbar.y = 0;
       }
 
       /**

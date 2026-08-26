@@ -1,5 +1,6 @@
 import { UniqueConstraintViolationException } from "@mikro-orm/core";
 
+import { Alliance } from "../../models/alliance.model.js";
 import { User } from "../../models/user.model.js";
 import { Save } from "../../models/save.model.js";
 import { World } from "../../models/world.model.js";
@@ -41,8 +42,11 @@ export const getUsernameCooldown = (user: User): Date | null => {
  * Renames an account and every copy of the old username the server owns.
  *
  * The single writer for username changes, moving user.username, the cooldown stamp,
- * save.name on every yard they own and any world labelled after them together in
- * one transaction.
+ * save.name on every yard they own, any world labelled after them and the leader
+ * name on an alliance they lead together in one transaction.
+ *
+ * Only names meant to read as current are moved. Historical records - attack logs,
+ * and a base's last attacker - keep the name the player had at the time.
  *
  * @param {User} user - The account being renamed, already loaded by the caller
  * @param {string} username - The validated new username
@@ -62,6 +66,7 @@ export const renameUser = async (user: User, username: string): Promise<Date> =>
 
       await em.nativeUpdate(User, { userid: user.userid }, { username, username_changed_at: changedAt });
       await em.nativeUpdate(Save, { saveuserid: user.userid }, { name: username });
+      await em.nativeUpdate(Alliance, { leader_userid: user.userid }, { leader_name: username });
 
       worldsRenamed = await em.nativeUpdate(
         World,

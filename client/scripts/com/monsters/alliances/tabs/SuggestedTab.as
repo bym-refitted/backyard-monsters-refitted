@@ -35,13 +35,9 @@ package com.monsters.alliances.tabs
          // TODO: send invite request to server for rowData
       }
 
-      /**
-       * @returns {Array} Suggested member rows. Mock data until the server-side
-       * suggestion payload is wired up.
-       */
-      override protected function _memberData():Array
+      override protected function _load():void
       {
-         return [
+         _members = [
                {level: 38, name: "Korgan", online: true, ep: "42118903", attacker: ""},
                {level: 35, name: "Mira", online: false, ep: "31995210", attacker: ""},
                {level: 44, name: "Thorne", online: true, ep: "58740112", attacker: ""}

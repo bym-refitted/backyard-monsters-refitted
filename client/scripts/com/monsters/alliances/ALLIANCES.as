@@ -32,6 +32,14 @@ package com.monsters.alliances
 
       private static var _messagesPending:Array = [];
 
+      private static var _membersData:Array = null;
+
+      private static var _membersLoaded:Boolean = false;
+
+      private static var _membersLoading:Boolean = false;
+
+      private static var _membersPending:Array = [];
+
 
       public function ALLIANCES()
       {
@@ -173,6 +181,65 @@ package com.monsters.alliances
       }
 
       /**
+       * Loads the player's alliance roster into the store.
+       *
+       * @param {Function} onDone - Receives the member rows, or null on failure. May be null (warm only).
+       * @param {Boolean} force - Bypass the cache and re-fetch.
+       */
+      public static function LoadMembers(onDone:Function, force:Boolean = false) : void
+      {
+         if (_membersLoaded && !force)
+         {
+            if (onDone != null) onDone(_membersData);
+            return;
+         }
+
+         if (onDone != null) _membersPending.push(onDone);
+
+         if (_membersLoading) return;
+
+         _membersLoading = true;
+         new URLLoaderApi().load(GLOBAL._allianceURL + "myalliancemembers",null,_onMembersLoaded,_onMembersLoadFail);
+      }
+
+      private static function _onMembersLoaded(response:Object) : void
+      {
+         _membersData = (response && !response.error) ? response.members as Array : null;
+         _membersLoaded = true;
+         _membersLoading = false;
+         _flushMembersPending();
+      }
+
+      private static function _onMembersLoadFail(error:IOErrorEvent) : void
+      {
+         _membersData = null;
+         _membersLoaded = false;
+         _membersLoading = false;
+         _flushMembersPending();
+      }
+
+      private static function _flushMembersPending() : void
+      {
+         var waiting:Array = _membersPending;
+         _membersPending = [];
+
+         for each (var callback:Function in waiting)
+         {
+            if (callback != null) callback(_membersData);
+         }
+      }
+
+      /**
+       * Drops the cached roster so the next LoadMembers() re-fetches. Call after any
+       * mutation that changes who is in the alliance.
+       */
+      public static function InvalidateMembers() : void
+      {
+         _membersLoaded = false;
+         _membersData = null;
+      }
+
+      /**
        * Rows in the cached inbox still waiting on the player, which labels the
        * Invites tab. Reads the cache rather than asking the server, so it is only
        * as fresh as the last LoadMessages().
@@ -233,6 +300,7 @@ package com.monsters.alliances
                   {
                      InvalidateMyAlliance();
                      InvalidateMessages();
+                     InvalidateMembers();
                   }
                   onDone(response);
                },
@@ -311,6 +379,7 @@ package com.monsters.alliances
          _isLeader = false;
          InvalidateMyAlliance();
          InvalidateMessages();
+         InvalidateMembers();
       }
       
       public static function SetCellAlliance(param1:MapRoomCell, param2:Boolean = false) : AllyInfo

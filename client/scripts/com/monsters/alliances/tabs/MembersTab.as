@@ -1,15 +1,24 @@
 package com.monsters.alliances.tabs
 {
+   import com.monsters.alliances.ALLIANCES;
    import com.monsters.alliances.AllianceConstants;
    import com.monsters.alliances.AllianceTabBase;
    import com.monsters.display.ImageCache;
+   import com.monsters.display.ScrollSetV;
+   import com.monsters.enums.EnumYardType;
+   import com.monsters.maproom_manager.MapRoomManager;
    import flash.display.Bitmap;
    import flash.display.BitmapData;
    import flash.display.DisplayObject;
+   import flash.display.Loader;
    import flash.display.MovieClip;
+   import flash.events.Event;
+   import flash.events.IOErrorEvent;
    import flash.events.MouseEvent;
    import flash.filters.DropShadowFilter;
    import flash.filters.GlowFilter;
+   import flash.geom.Point;
+   import flash.net.URLRequest;
    import flash.text.AntiAliasType;
    import flash.text.TextField;
    import flash.text.TextFormat;
@@ -26,23 +35,26 @@ package com.monsters.alliances.tabs
 
       private static const TABLE_Y:int = TITLE_Y + TITLE_H + TITLE_GAP;
       private static const TABLE_X:int = PAD;
-      private static const TABLE_W:int = 788; // CONTENT_W - PAD * 2
+      private static const SCROLLBAR_W:int = 16;
+      private static const TABLE_W:int = 772;
       private static const HEADER_H:int = 24;
       private static const ROW_H:int = 36;
+
+      private static const VIEW_H:int = 378;
 
       // Column proportions from the original members table (alliance.v343.css),
       // scaled to TABLE_W.
       private static const C_LVL_X:int = 0;
       private static const C_LVL_W:int = 59;
       private static const C_NAME_X:int = 59;
-      private static const C_NAME_W:int = 217;
-      private static const C_STATUS_X:int = 276;
+      private static const C_NAME_W:int = 201;
+      private static const C_STATUS_X:int = 260;
       private static const C_STATUS_W:int = 79;
-      private static const C_EP_X:int = 355;
+      private static const C_EP_X:int = 339;
       private static const C_EP_W:int = 131;
-      private static const C_ATK_X:int = 486;
+      private static const C_ATK_X:int = 470;
       private static const C_ATK_W:int = 171;
-      private static const C_ACT_X:int = 657;
+      private static const C_ACT_X:int = 641;
       private static const C_ACT_W:int = 131;
 
       // Original member pic is 25×25
@@ -56,6 +68,8 @@ package com.monsters.alliances.tabs
 
       private var _activePopup:MemberActionPopup;
 
+      protected var _members:Array;
+
       public function MembersTab()
       {
          super();
@@ -63,6 +77,11 @@ package com.monsters.alliances.tabs
 
       override public function build():void
       {
+         if (_members == null)
+         {
+            _members = [];
+            _load();
+         }
          _buildTitle();
          _buildTable();
       }
@@ -113,24 +132,72 @@ package com.monsters.alliances.tabs
       }
 
       /**
-       * @returns {Array} Member rows. Falls back to mock data while the
-       * server-side alliance roster payload is wired up.
+       * Draws the roster from the store. Fetched on demand rather than warmed with
+       * the window, since only this tab reads it.
+       *
+       * A warm store answers before load() returns, while build() is still partway
+       * through drawing. Re-rendering from under it would leave a second table
+       * stacked on the first, so an immediate answer only fills _members and lets
+       * the build already in progress draw it.
        */
-      protected function _memberData():Array
+      protected function _load():void
       {
-         return [
-               {level: 41, name: "Drake", online: true, ep: "59711744", attacker: "", self: true}
-            ];
+         var answeredDuringBuild:Boolean = true;
+
+         ALLIANCES.LoadMembers(function(members:Array):void
+            {
+               _members = (members != null) ? _mapRows(members) : [];
+
+               if (!answeredDuringBuild) _rerender();
+            });
+
+         answeredDuringBuild = false;
+      }
+
+      /**
+       * Maps server roster rows onto the shape the table renderer expects.
+       *
+       * The player's own row is marked so it draws highlighted and without an
+       * Actions button - there is nothing they can do to themselves.
+       *
+       * @param {Array} members - Raw server roster rows.
+       * @returns {Array} Rows for _buildTable.
+       */
+      protected function _mapRows(members:Array):Array
+      {
+         var rows:Array = [];
+
+         for each (var member:Object in members)
+         {
+            var status:Object = (member.status != null) ? member.status : {};
+
+            rows.push({
+                  user_id: int(member.user_id),
+                  base_id: member.base_id,
+                  level: int(member.level),
+                  name: String(member.display_name),
+                  pic_square: member.pic_square,
+                  ep: String(member.points),
+                  attacker: String(member.last_attacker),
+                  online: status.online == true,
+                  is_leader: member.is_leader == true,
+                  self: int(member.user_id) == LOGIN._playerID
+               });
+         }
+
+         return rows;
       }
 
       private function _buildTable():void
       {
-         var data:Array = _memberData();
+         var data:Array = _members;
          const totalH:int = HEADER_H + data.length * ROW_H;
 
-         var tableMC:MovieClip = addChild(new MovieClip()) as MovieClip;
-         tableMC.x = TABLE_X;
-         tableMC.y = TABLE_Y;
+         var viewport:MovieClip = addChild(new MovieClip()) as MovieClip;
+         viewport.x = TABLE_X;
+         viewport.y = TABLE_Y;
+
+         var tableMC:MovieClip = viewport.addChild(new MovieClip()) as MovieClip;
 
          tableMC.graphics.beginFill(AllianceConstants.HEADER_BG);
          tableMC.graphics.drawRect(0, 0, TABLE_W, HEADER_H);
@@ -172,14 +239,8 @@ package com.monsters.alliances.tabs
 
             _addLabel(tableMC, String(rowData.level), C_LVL_X, rowBaseY, C_LVL_W, ROW_H, false, TextFormatAlign.CENTER);
 
-            var avatar:MovieClip = tableMC.addChild(new MovieClip()) as MovieClip;
-            avatar.mouseEnabled = false;
-            avatar.graphics.beginFill(0x1A1A1A, 1);
-            avatar.graphics.lineStyle(1, 0x000000, 1);
-            avatar.graphics.drawRect(0, 0, AVATAR_SIZE, AVATAR_SIZE);
-            avatar.graphics.endFill();
-            avatar.x = C_NAME_X + 6;
-            avatar.y = rowBaseY + int((ROW_H - AVATAR_SIZE) / 2);
+            _drawAvatar(tableMC, rowData.pic_square,
+                  C_NAME_X + 6, rowBaseY + int((ROW_H - AVATAR_SIZE) / 2));
 
             const nameX:int = C_NAME_X + 6 + AVATAR_SIZE + 8;
             _addLabel(tableMC, String(rowData.name), nameX, rowBaseY, C_NAME_X + C_NAME_W - nameX - 6, ROW_H, false, TextFormatAlign.LEFT);
@@ -196,7 +257,7 @@ package com.monsters.alliances.tabs
                actBtn._txt.htmlText = "<b><font color=\"#000000\">" + KEYS.Get("alliance_col_actions") + "</font></b>";
                actBtn.x = C_ACT_X + int((C_ACT_W - ACT_BTN_W) / 2);
                actBtn.y = rowBaseY + 3;
-               actBtn.addEventListener(MouseEvent.CLICK, _makeActionsHandler(rowData, rowBaseY));
+               actBtn.addEventListener(MouseEvent.CLICK, _makeActionsHandler(rowData));
             }
 
             ri++;
@@ -213,42 +274,65 @@ package com.monsters.alliances.tabs
             gridOverlay.graphics.lineTo(TABLE_W, hlineY);
             hli++;
          }
+
+         var maskMC:MovieClip = viewport.addChild(new MovieClip()) as MovieClip;
+         maskMC.graphics.beginFill(0xFF0000, 1);
+         maskMC.graphics.drawRect(0, 0, TABLE_W, VIEW_H);
+         maskMC.graphics.endFill();
+         tableMC.mask = maskMC;
+
+         // ScrollSetV hides itself while the content fits, so a short roster keeps
+         // the gutter empty rather than showing a full-length thumb.
+         var scrollbar:ScrollSetV = viewport.addChild(new ScrollSetV(tableMC, maskMC, true)) as ScrollSetV;
+         scrollbar.x = TABLE_W + 2;
+         scrollbar.y = 0;
       }
 
       /**
        * Ordered list of actions for a row's popup, rendered top-to-bottom. Each
-       * entry is { labelKey:String, handler:Function }. Members can visit a
-       * member's base, kick them, or promote them; Suggested overrides this to
-       * offer a single Invite action.
+       * entry is { labelKey:String, handler:Function }.
+       *
+       * Kick and Promote are the leader's alone, as in the original, which served
+       * an ordinary member the visit-only popup and the leader a taller one - so a
+       * member sees a single-button popup rather than actions they cannot take.
+       *
        * @param {Object} rowData - The row the actions apply to
        * @returns {Array} Action descriptors for MemberActionPopup
        */
       protected function _actionsFor(rowData:Object):Array
       {
-         return [
-               {labelKey: "alliance_btn_visit", handler: _onVisitBase},
-               {labelKey: "alliance_btn_kick", handler: _onKick},
-               {labelKey: "alliance_btn_promote", handler: _onPromote}
-            ];
+         var actions:Array = [{labelKey: "alliance_btn_visit", handler: _onVisitBase}];
+
+         if (!ALLIANCES._isLeader) return actions;
+
+         actions.push({labelKey: "alliance_btn_kick", handler: _onKick});
+         actions.push({labelKey: "alliance_btn_promote", handler: _onPromote});
+
+         return actions;
       }
 
       /**
-       * Builds a click handler for a row's Actions button, capturing that row's
-       * data and screen position so the popup can be anchored to it.
+       * Builds a click handler for a row's Actions button.
+       *
+       * The popup is anchored to where the button actually is when clicked rather
+       * than to the row's offset in the table, since the table scrolls underneath a
+       * mask and the two stop agreeing as soon as it does.
+       *
        * @param {Object} rowData - The row this button belongs to
-       * @param {int} rowBaseY - The row's y offset within the table
        * @returns {Function} MouseEvent handler
        */
-      protected function _makeActionsHandler(rowData:Object, rowBaseY:int):Function
+      protected function _makeActionsHandler(rowData:Object):Function
       {
          return function(e:MouseEvent):void
          {
             SOUNDS.Play("click1");
+
+            var button:DisplayObject = e.currentTarget as DisplayObject;
+            var anchor:Point = globalToLocal(button.localToGlobal(new Point(0, 0)));
+
             var popupH:int = MemberActionPopup.heightFor(_actionsFor(rowData).length);
-            const popY:int = Math.min(
-                  TABLE_Y + rowBaseY,
-                  CONTENT_H - popupH
-               ) + 12;
+            const popY:int = Math.min(int(anchor.y), CONTENT_H - popupH) + 12;
+
             _showActionsPopup(rowData, POP_X - 30, popY);
          };
       }
@@ -299,12 +383,29 @@ package com.monsters.alliances.tabs
       }
 
       /**
-       * Opens the selected member's base. Stubbed for now.
+       * Opens the selected member's base, closing the alliance window the same way
+       * the Browse tab's Visit Leader does.
+       *
        * @param {Object} rowData - The row that was acted on
        */
       protected function _onVisitBase(rowData:Object):void
       {
-         // TODO: navigate to rowData's base
+         var baseId:Number = Number(rowData.base_id);
+
+         if (!(baseId > 0)) return;
+         if (BASE._saving || BASE._loading || BASE._saveCounterA != BASE._saveCounterB) return;
+         if (BASE.isInfernoMainYardOrOutpost) return;
+
+         _dismissActivePopup();
+         ALLIANCEWINDOW.Hide();
+
+         GLOBAL._currentCell = null;
+
+         var yardType:int = MapRoomManager.instance.isInMapRoom3
+            ? int(EnumYardType.PLAYER)
+            : int(EnumYardType.MAIN_YARD);
+
+         BASE.LoadBase(null, 0, baseId, GLOBAL.e_BASE_MODE.VIEW, true, yardType);
       }
 
       /**
@@ -326,10 +427,76 @@ package com.monsters.alliances.tabs
       }
 
       /**
+       * Clears and rebuilds the tab's contents.
+       */
+      protected function _rerender():void
+      {
+         _dismissActivePopup();
+
+         while (numChildren > 0)
+         {
+            removeChildAt(0);
+         }
+         build();
+      }
+
+      /**
+       * Loads a member's profile picture, as the original row template did with
+       * <img src="<%= pic_square %>" width="25" height="25">. Squashed to a square
+       * the same way rather than letterboxed, so avatars line up down the column.
+       *
+       * pic_square is an external URL rather than a bundled asset, so it goes
+       * through a Loader like the map room popup does instead of ImageCache. A
+       * player without a picture, or one whose picture fails to load, simply has
+       * no avatar - the name column starts at a fixed x either way.
+       *
+       * @param {MovieClip} parent - Container to draw into
+       * @param {String} url - The member's pic_square URL, possibly empty
+       * @param {int} x - Left edge of the avatar
+       * @param {int} y - Top edge of the avatar
+       */
+      private function _drawAvatar(parent:MovieClip, url:String, x:int, y:int):void
+      {
+         if (url == null || url == "") return;
+
+         var avatar:Loader = new Loader();
+         var onLoad:Function = null;
+         var onError:Function = null;
+
+         onLoad = function(e:Event):void
+         {
+            avatar.contentLoaderInfo.removeEventListener(Event.COMPLETE, onLoad);
+            avatar.contentLoaderInfo.removeEventListener(IOErrorEvent.IO_ERROR, onError);
+            avatar.width = avatar.height = AVATAR_SIZE;
+            avatar.x = x;
+            avatar.y = y;
+            avatar.mouseEnabled = false;
+            avatar.mouseChildren = false;
+            parent.addChild(avatar);
+         };
+
+         onError = function(e:IOErrorEvent):void
+         {
+            avatar.contentLoaderInfo.removeEventListener(Event.COMPLETE, onLoad);
+            avatar.contentLoaderInfo.removeEventListener(IOErrorEvent.IO_ERROR, onError);
+         };
+
+         avatar.contentLoaderInfo.addEventListener(Event.COMPLETE, onLoad);
+         avatar.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, onError, false, 0, true);
+         avatar.load(new URLRequest(url));
+      }
+
+      /**
        * Loads the online/offline status icon centred at (cx, cy) from the
        * existing alliance assets (online_1.png / offline_1.png) via ImageCache,
        * displayed at native size. Matches the original members table, which used
        * these same images for the Status column.
+       *
+       * TODO: the original appended a second icon when status.damage_protection was
+       * set. The server already returns that flag, but damage_protection_1.png is not
+       * among the alliance assets in the repo, so the icon cannot be drawn until the
+       * art is recovered.
+       *
        * @param {MovieClip} parent - Container to draw into
        * @param {int} cx - Centre x
        * @param {int} cy - Centre y
