@@ -250,6 +250,41 @@ package
       }
 
       /**
+       * Purchase-branch entry point for one tier row. Validates and, on
+       * confirmation, spends the pool and starts the job.
+       *
+       * @param targetLevel Tier level (2..5).
+       */
+      public static function confirmTier(targetLevel:int) : void
+      {
+         if(BulkWallJob.isRunning())
+         {
+            GLOBAL.Message(KEYS.Get("bwu_running"));
+            return;
+         }
+         var plan:Object = buildPlan(targetLevel);
+         if(plan.count == 0)
+         {
+            GLOBAL.Message(KEYS.Get("bwu_none"));
+            return;
+         }
+         if(!canAfford(plan.pool))
+         {
+            GLOBAL.Message(KEYS.Get("bwu_short",{"v1":costString(plan.pool)}));
+            return;
+         }
+         STORE.Hide();
+         GLOBAL.Message(KEYS.Get("bwu_confirm",{
+            "v1":plan.count,
+            "v2":targetLevel,
+            "v3":costString(plan.pool)
+         }),KEYS.Get("btn_upgrade"),function():void
+         {
+            BulkWallJob.start(plan);
+         });
+      }
+
+      /**
        * Opens the STORE popup filtered to the reachable tier rows that have at
        * least one wall to raise. Shows a message instead if there are none.
        */

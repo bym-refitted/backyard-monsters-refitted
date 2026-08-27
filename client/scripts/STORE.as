@@ -2408,6 +2408,11 @@ package
          var _loc21_:BFOUNDATION = null;
          var _loc3_:Object = _storeItems[param1];
          var _loc6_:Number = Number(_loc3_.quantity);
+         if(param1.substr(0,4) == "RBLK")
+         {
+            BulkWallUpgrade.confirmTier(BulkWallUpgrade.tierOfKey(param1));
+            return;
+         }
          if(param2)
          {
             _loc7_ = false;

@@ -169,7 +169,13 @@ package
       public var _countdownProduce:SecNum;
       
       public var _countdownFortify:SecNum;
-      
+
+      /**
+       * Target wall level for an active BulkWallJob, or 0 when this building is
+       * not part of a bulk wall upgrade. Serialised as `bwT` in buildingdata.
+       */
+      public var _bulkWallTarget:int = 0;
+
       public var _stored:SecNum;
       
       public var _lvl:SecNum;

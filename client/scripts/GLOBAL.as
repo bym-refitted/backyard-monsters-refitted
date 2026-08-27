@@ -1223,6 +1223,7 @@ package
                   ATTACK.Tick();
                }
                QUEUE.Tick();
+               BulkWallJob.tick();
                UI2.Update();
                LOGGER.Tick();
                MAILBOX.Tick();
