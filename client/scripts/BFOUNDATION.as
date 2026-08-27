@@ -3579,6 +3579,10 @@ package
          {
             _loc1_.cU = this._countdownUpgrade.Get();
          }
+         if(this._bulkWallTarget > 0)
+         {
+            _loc1_.bwT = this._bulkWallTarget;
+         }
          if(this._countdownRebuild.Get() > 0)
          {
             _loc1_.cR = this._countdownRebuild.Get();
@@ -3681,6 +3685,10 @@ package
             }
          }
          this._countdownUpgrade.Set(int(building.cU));
+         if(building.bwT)
+         {
+            this._bulkWallTarget = int(building.bwT);
+         }
          // Cancel any in-progress upgrade that targets a level the building can no longer reach
          // in the current map room mode. Covers buildings whose level is force-set by map version
          // (e.g. the Map Room, or a housing/flinger upgrade started on MR3 then downgraded to MR2):

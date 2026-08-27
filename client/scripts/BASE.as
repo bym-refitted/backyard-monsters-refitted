@@ -407,6 +407,7 @@ package
 
       public static function Cleanup():void
       {
+         BulkWallJob.cancelForModeChange();
          SPECIALEVENT.ClearWildMonsterPowerups();
          SPECIALEVENT_WM1.ClearWildMonsterPowerups();
          BaseBuffHandler.instance.clearBuffs();
@@ -2403,6 +2404,7 @@ package
                }
             }
          }
+         BulkWallJob.resumeFromLoad();
          if (GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD && !WMATTACK._inProgress)
          {
             if (damageCount > 0)
