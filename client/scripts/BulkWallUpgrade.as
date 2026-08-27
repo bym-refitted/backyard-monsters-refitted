@@ -1,5 +1,7 @@
 package
 {
+   import com.monsters.managers.InstanceManager;
+
    /**
     * Resource-only cumulative wall upgrade.
     *
@@ -100,9 +102,130 @@ package
       }
 
       /**
-       * Fills in the title / description of every RBLK* store row from live
-       * wall data. Called by STORE.Variables() each time the store renders.
-       * Task 1: names only; Task 2 adds the real cumulative cost.
+       * Which walls to upgrade to reach targetLevel, and the pooled cost.
+       *
+       * @param targetLevel Destination wall level (2..5).
+       * @return { walls:Array, targets:Object (_id -> int), pool:Object
+       *         ({r1,r2,r3,r4} ints), targetLevel:int, count:int } — every wall
+       *         with no active countdown that is currently below targetLevel,
+       *         plus the summed step cost to raise each one to targetLevel.
+       */
+      public static function buildPlan(targetLevel:int) : Object
+      {
+         var walls:Array = [];
+         var targets:Object = {};
+         var pool:Object = {"r1":0,"r2":0,"r3":0,"r4":0};
+         var all:Vector.<Object> = InstanceManager.getInstancesByClass(BWALL);
+         var w:BFOUNDATION = null;
+         var lvl:int = 0;
+         var c:Object = null;
+         for each(w in all)
+         {
+            if(w._lvl == null || w._lvl.Get() >= targetLevel)
+            {
+               continue;
+            }
+            if(w._countdownBuild.Get() + w._countdownUpgrade.Get() + w._countdownFortify.Get() > 0)
+            {
+               continue;
+            }
+            walls.push(w);
+            targets[w._id] = targetLevel;
+            lvl = w._lvl.Get();
+            while(lvl < targetLevel)
+            {
+               c = w._buildingProps.costs[lvl];
+               if(c)
+               {
+                  pool.r1 += int(c.r1.Get());
+                  pool.r2 += int(c.r2.Get());
+                  pool.r3 += int(c.r3.Get());
+                  pool.r4 += int(c.r4.Get());
+               }
+               lvl++;
+            }
+         }
+         return {
+            "walls":walls,
+            "targets":targets,
+            "pool":pool,
+            "targetLevel":targetLevel,
+            "count":walls.length
+         };
+      }
+
+      /**
+       * All-or-nothing affordability against the correct pool, including silo
+       * caps (a cost above the cap can never be met).
+       *
+       * @param pool {r1,r2,r3,r4} total cost.
+       * @return True only if every non-zero cost is both affordable and within
+       *         the silo cap.
+       */
+      public static function canAfford(pool:Object) : Boolean
+      {
+         var res:Object = isInfernoYard() ? BASE._iresources : BASE._resources;
+         var i:int = 1;
+         while(i < 5)
+         {
+            var need:int = int(pool["r" + i]);
+            if(need > 0)
+            {
+               if(need > int(res["r" + i + "max"]))
+               {
+                  return false;
+               }
+               if(need > int(res["r" + i].Get()))
+               {
+                  return false;
+               }
+            }
+            i++;
+         }
+         return true;
+      }
+
+      /**
+       * "1,000 Twigs, 2,000 Pebbles" for a cost pool, or "-" when empty.
+       *
+       * @param pool {r1,r2,r3,r4} total cost.
+       * @return Formatted, comma-joined resource cost string.
+       */
+      public static function costString(pool:Object) : String
+      {
+         var parts:Array = [];
+         var i:int = 1;
+         while(i < 5)
+         {
+            if(int(pool["r" + i]) > 0)
+            {
+               parts.push(GLOBAL.FormatNumber(int(pool["r" + i])) + " " + GLOBAL._resourceNames[i - 1]);
+            }
+            i++;
+         }
+         return parts.length > 0 ? parts.join(", ") : "-";
+      }
+
+      /**
+       * Summary for one tier row in the store.
+       *
+       * @param targetLevel Tier level (2..5).
+       * @return { count:int, pool:Object, costText:String, affordable:Boolean }.
+       */
+      public static function tierInfo(targetLevel:int) : Object
+      {
+         var plan:Object = buildPlan(targetLevel);
+         return {
+            "count":plan.count,
+            "pool":plan.pool,
+            "costText":costString(plan.pool),
+            "affordable":canAfford(plan.pool)
+         };
+      }
+
+      /**
+       * Fills in the title / description / cost of every RBLK* store row from
+       * live wall data. Called by STORE.Variables() each time the store renders.
        *
        * @param storeItems The STORE._storeItems object.
        */
@@ -110,25 +233,38 @@ package
       {
          var keys:Array = ["RBLK2","RBLK3","RBLK4","RBLK5","RBLK2I","RBLK3I"];
          var k:String = null;
+         var info:Object = null;
          for each(k in keys)
          {
             if(storeItems[k] == null)
             {
                continue;
             }
+            info = tierInfo(tierOfKey(k));
             storeItems[k].t = KEYS.Get("bwu_tier_" + tierOfKey(k));
-            storeItems[k].d = KEYS.Get("bwu_tier_desc",{"v1":0,"v2":"—"});
+            storeItems[k].d = info.count > 0
+               ? KEYS.Get("bwu_tier_desc",{"v1":info.count,"v2":info.costText})
+               : KEYS.Get("bwu_tier_none");
             storeItems[k].c = [0];
          }
       }
 
       /**
-       * Opens the STORE popup filtered to the reachable tier rows. Shows a
-       * message instead if nothing can be bulk-upgraded from here.
+       * Opens the STORE popup filtered to the reachable tier rows that have at
+       * least one wall to raise. Shows a message instead if there are none.
        */
       public static function openStore() : void
       {
-         var keys:Array = reachableTierKeys();
+         var all:Array = reachableTierKeys();
+         var keys:Array = [];
+         var k:String = null;
+         for each(k in all)
+         {
+            if(buildPlan(tierOfKey(k)).count > 0)
+            {
+               keys.push(k);
+            }
+         }
          if(keys.length == 0)
          {
             GLOBAL.Message(KEYS.Get("bwu_none"));
