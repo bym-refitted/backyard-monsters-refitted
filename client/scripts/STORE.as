@@ -12,6 +12,7 @@ package
    import flash.display.Bitmap;
    import flash.display.BitmapData;
    import flash.display.MovieClip;
+   import flash.display.Shape;
    import flash.display.Sprite;
    import flash.events.*;
    import flash.geom.Rectangle;
@@ -2256,6 +2257,18 @@ package
             _loc23_.tA.htmlText = _loc8_ + " ";
             _loc23_.tB.htmlText = _loc9_;
             _loc23_.tC.htmlText = _loc10_ + " ";
+            if(item.substr(0,4) == "RBLK")
+            {
+               _loc23_.tB.htmlText = "";
+               _loc23_.tC.htmlText = BulkWallUpgrade.rowCountText(item) + " ";
+               // Hide the Shiny-coin graphic (an unnamed Shape sitting just before
+               // the price field) - the RBLK rows are paid in resources, not Shiny.
+               var _bwuCoinIdx:int = _loc23_.getChildIndex(_loc23_.tB) - 1;
+               if(_bwuCoinIdx >= 0 && _loc23_.getChildAt(_bwuCoinIdx) is Shape)
+               {
+                  _loc23_.getChildAt(_bwuCoinIdx).visible = false;
+               }
+            }
             if((_loc31_ = item).substr(0,2) == "SP")
             {
                _loc31_ = _loc31_.substr(0,3);
@@ -2275,6 +2288,10 @@ package
             if(item.substr(0,2) == "SP")
             {
                _loc23_.mcIcon.gotoAndStop(item.substr(0,3));
+            }
+            else if(item.substr(0,4) == "RBLK" && MovieClipUtils.validateFrameLabel(_loc23_.mcIcon,item.substr(1)))
+            {
+               _loc23_.mcIcon.gotoAndStop(item.substr(1));
             }
             else if(MovieClipUtils.validateFrameLabel(_loc23_.mcIcon,item))
             {

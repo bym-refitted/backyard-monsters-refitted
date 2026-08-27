@@ -190,13 +190,14 @@ package
        */
       public static function costString(pool:Object) : String
       {
+         var names:Array = isInfernoYard() ? GLOBAL.iresourceNames : GLOBAL._resourceNames;
          var parts:Array = [];
          var i:int = 1;
          while(i < 5)
          {
             if(Number(pool["r" + i]) > 0)
             {
-               parts.push(GLOBAL.FormatNumber(Number(pool["r" + i])) + " " + GLOBAL._resourceNames[i - 1]);
+               parts.push(GLOBAL.FormatNumber(Number(pool["r" + i])) + " " + KEYS.Get(names[i - 1]));
             }
             i++;
          }
@@ -221,8 +222,10 @@ package
       }
 
       /**
-       * Fills in the title / description / cost of every RBLK* store row from
-       * live wall data. Called by STORE.Variables() each time the store renders.
+       * Fills in the title / description of every RBLK* store row. Called by
+       * STORE.Variables() each time the store renders. The per-row cost and
+       * wall count are rendered separately by STORE.Switch via rowCostHtml /
+       * rowCountText.
        *
        * @param storeItems The STORE._storeItems object.
        */
@@ -230,20 +233,36 @@ package
       {
          var keys:Array = ["RBLK2","RBLK3","RBLK4","RBLK5","RBLK2I","RBLK3I"];
          var k:String = null;
-         var info:Object = null;
+         var plan:Object = null;
+         var costTxt:String = null;
          for each(k in keys)
          {
             if(storeItems[k] == null)
             {
                continue;
             }
-            info = tierInfo(tierOfKey(k));
+            plan = buildPlan(tierOfKey(k));
+            costTxt = costString(plan.pool);
+            if(!canAfford(plan.pool))
+            {
+               costTxt = "<font color=\"#CC0000\">" + costTxt + "</font>";
+            }
             storeItems[k].t = KEYS.Get("bwu_tier_" + tierOfKey(k));
-            storeItems[k].d = info.count > 0
-               ? KEYS.Get("bwu_tier_desc",{"v1":info.count,"v2":info.costText})
-               : KEYS.Get("bwu_tier_none");
+            storeItems[k].d = KEYS.Get("bwu_tier_desc")
+               + "<br><b>" + KEYS.Get("bwu_cost_label") + "</b> " + costTxt;
             storeItems[k].c = [0];
          }
+      }
+
+      /**
+       * Text for the footer column of an RBLK* store row, e.g. "8 walls".
+       *
+       * @param storeKey e.g. "RBLK3".
+       * @return Wall-count string.
+       */
+      public static function rowCountText(storeKey:String) : String
+      {
+         return KEYS.Get("bwu_walls_count",{"v1":buildPlan(tierOfKey(storeKey)).count});
       }
 
       /**
