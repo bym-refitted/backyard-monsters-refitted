@@ -1,0 +1,93 @@
+name: Build iOS IPA (GitHub-hosted)
+
+# Alternative to build-ios.yml for anyone who doesn't have a self-hosted Mac
+# runner available. Downloads the Harman AIR SDK fresh (cached between runs)
+# onto a GitHub-hosted macos-14 runner, so no dedicated machine needs to be
+# kept on and maintained. Manual trigger only — it's slower on a cold cache
+# and burns Actions minutes, so it isn't wired to run on every push.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Compile and package IPA
+    runs-on: macos-14
+
+    env:
+      # Repository variable: URL to download the Harman AIR SDK .zip from.
+      AIR_SDK_URL: ${{ vars.AIR_SDK_URL }}
+
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Validate required configuration
+        env:
+          IOS_P12_BASE64: ${{ secrets.IOS_P12_BASE64 }}
+          IOS_PROVISION_BASE64: ${{ secrets.IOS_PROVISION_BASE64 }}
+          IOS_P12_PASS: ${{ secrets.IOS_P12_PASS }}
+        run: |
+          set -euo pipefail
+          test -n "$AIR_SDK_URL" || { echo "Missing repository variable AIR_SDK_URL"; exit 1; }
+          test -n "$IOS_P12_BASE64" || { echo "Missing secret IOS_P12_BASE64"; exit 1; }
+          test -n "$IOS_PROVISION_BASE64" || { echo "Missing secret IOS_PROVISION_BASE64"; exit 1; }
+          test -n "$IOS_P12_PASS" || { echo "Missing secret IOS_P12_PASS"; exit 1; }
+
+      - name: Install asconfigc
+        run: npm install --global asconfigc
+
+      - name: Cache Harman AIR SDK
+        id: air-cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ runner.temp }}/air-sdk
+          key: air-sdk-${{ runner.os }}-${{ hashFiles('ios/build-ios.sh') }}
+
+      - name: Install Harman AIR SDK
+        if: steps.air-cache.outputs.cache-hit != 'true'
+        run: |
+          set -euo pipefail
+          archive="$RUNNER_TEMP/air-sdk.zip"
+          sdk_root="$RUNNER_TEMP/air-sdk"
+          curl --fail --location --retry 3 "$AIR_SDK_URL" --output "$archive"
+          mkdir -p "$sdk_root"
+          ditto -x -k "$archive" "$sdk_root"
+          adt_path="$(find "$sdk_root" -type f -path '*/bin/adt' -print -quit)"
+          test -n "$adt_path" || { echo "AIR SDK archive does not contain bin/adt"; exit 1; }
+          echo "AIR_SDK_HOME=$(dirname "$(dirname "$adt_path")")" >> "$GITHUB_ENV"
+
+      - name: Locate cached AIR SDK
+        if: steps.air-cache.outputs.cache-hit == 'true'
+        run: |
+          set -euo pipefail
+          adt_path="$(find "$RUNNER_TEMP/air-sdk" -type f -path '*/bin/adt' -print -quit)"
+          test -n "$adt_path" || { echo "Cached AIR SDK does not contain bin/adt"; exit 1; }
+          echo "AIR_SDK_HOME=$(dirname "$(dirname "$adt_path")")" >> "$GITHUB_ENV"
+
+      - name: Import signing files
+        env:
+          IOS_P12_BASE64: ${{ secrets.IOS_P12_BASE64 }}
+          IOS_PROVISION_BASE64: ${{ secrets.IOS_PROVISION_BASE64 }}
+        run: |
+          set -euo pipefail
+          echo "$IOS_P12_BASE64" | base64 --decode > "$RUNNER_TEMP/ios-signing.p12"
+          echo "$IOS_PROVISION_BASE64" | base64 --decode > "$RUNNER_TEMP/BYMRefitted.mobileprovision"
+
+      - name: Build IPA
+        env:
+          IOS_P12: ${{ runner.temp }}/ios-signing.p12
+          IOS_P12_PASS: ${{ secrets.IOS_P12_PASS }}
+          IOS_PROVISION: ${{ runner.temp }}/BYMRefitted.mobileprovision
+          IOS_TARGET: ipa-test
+        run: ./ios/build-ios.sh
+
+      - name: Upload IPA artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: BYM-Refitted-${{ github.sha }}
+          path: ios/BYM-Refitted.ipa
+          if-no-files-found: error
+          retention-days: 14
