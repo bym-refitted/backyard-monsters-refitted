@@ -1995,6 +1995,7 @@
     "chat_ignore": "You are about to ignore",
     "chat_ignore_confirm": "Are you sure?",
     "map_alliance_recycle": "You must leave the #v1# Alliance before you can recycle your Map Room.  Go to the My Alliance Tab and select, \"Leave\" to end your current Alliance.",
+    "map_alliance_upgrade": "You must leave the #v1# Alliance before you can upgrade your Map Room.  Go to the My Alliance Tab and select, \"Leave\" to end your current Alliance.",
     "map_attack_ally": "#v1# is in your Alliance.  Are you sure you want to attack them?",
     "map_attack_allyfriend": "#v1# is currently allied with your Alliance.  Are you sure you want to attack them?",
     "apps_alliances_header_united_we_stand": "images\/alliances\/united_we_stand.png",

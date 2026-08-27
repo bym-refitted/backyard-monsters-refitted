@@ -56,7 +56,8 @@ export const joinNewWorldMap = async (
 
   await leaveWorld(user, save);
 
-  // Refresh world after leaveWorld's raw SQL decrement to get an accurate playerCount.
+  // leaveWorld decrements player_count without going through the identity map, so
+  // refresh before reading playerCount back.
   await em.refresh(world);
 
   world.playerCount += 1;

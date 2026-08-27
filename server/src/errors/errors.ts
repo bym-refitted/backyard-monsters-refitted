@@ -261,6 +261,14 @@ export const mustLeaveAllianceErr = () =>
     isClientFriendly: true,
   });
 
+export const mustLeaveAllianceToChangeWorldErr = () =>
+  new ClientSafeError({
+    message: "You must leave your alliance before you can change worlds.",
+    status: Status.CONFLICT,
+    data: {},
+    isClientFriendly: true,
+  });
+
 export const mustLeaveAllianceToAcceptErr = () =>
   new ClientSafeError({
     message: "You must leave your current alliance before accepting the invite.",

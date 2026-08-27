@@ -11,7 +11,11 @@ import { Status } from "../../enums/StatusCodes.js";
 import { Env } from "../../enums/Env.js";
 import { joinNewWorldMap } from "../../services/maproom/v3/joinNewWorldMap.js";
 import { extractTownHall } from "../../utils/extractTownHall.js";
-import { discordAgeErr, townHallLevelErr } from "../../errors/errors.js";
+import {
+  discordAgeErr,
+  mustLeaveAllianceToChangeWorldErr,
+  townHallLevelErr,
+} from "../../errors/errors.js";
 import { Maproom } from "../../models/maproom.model.js";
 
 /**
@@ -44,6 +48,8 @@ export const setMapVersion: KoaController = async (ctx) => {
 
   switch (version) {
     case MapRoomVersion.NONE:
+      if (user.alliance_id) throw mustLeaveAllianceToChangeWorldErr();
+
       await leaveWorld(user, save);
       save.mapversion = MapRoomVersion.V1;
       break;
@@ -54,6 +60,8 @@ export const setMapVersion: KoaController = async (ctx) => {
 
     case MapRoomVersion.V2: {
       if (save.mapversion === MapRoomVersion.V3) break;
+
+      if (user.alliance_id) throw mustLeaveAllianceToChangeWorldErr();
 
       const townHall = extractTownHall(save.buildingdata ?? {});
 
@@ -70,6 +78,8 @@ export const setMapVersion: KoaController = async (ctx) => {
     }
 
     case MapRoomVersion.V3:
+      if (user.alliance_id) throw mustLeaveAllianceToChangeWorldErr();
+
       const townHall = extractTownHall(save.buildingdata ?? {});
 
       if (!save.mr2upgraded && (!townHall || townHall.l < 6)) throw townHallLevelErr();
