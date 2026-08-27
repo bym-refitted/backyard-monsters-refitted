@@ -62,7 +62,7 @@ package
          var i:int = 1;
          while(i < 5)
          {
-            var amt:int = int(plan.pool["r" + i]);
+            var amt:Number = Number(plan.pool["r" + i]);
             if(amt > 0)
             {
                BASE.Charge(i,amt,false,inferno);

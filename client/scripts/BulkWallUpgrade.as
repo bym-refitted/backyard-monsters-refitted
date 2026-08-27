@@ -114,7 +114,7 @@ package
       {
          var walls:Array = [];
          var targets:Object = {};
-         var pool:Object = {"r1":0,"r2":0,"r3":0,"r4":0};
+         var pool:Object = {"r1":0,"r2":0,"r3":0,"r4":0}; // Number arithmetic — a max base can exceed int range
          var all:Vector.<Object> = InstanceManager.getInstancesByClass(BWALL);
          var w:BFOUNDATION = null;
          var lvl:int = 0;
@@ -137,10 +137,10 @@ package
                c = w._buildingProps.costs[lvl];
                if(c)
                {
-                  pool.r1 += int(c.r1.Get());
-                  pool.r2 += int(c.r2.Get());
-                  pool.r3 += int(c.r3.Get());
-                  pool.r4 += int(c.r4.Get());
+                  pool.r1 += Number(c.r1.Get());
+                  pool.r2 += Number(c.r2.Get());
+                  pool.r3 += Number(c.r3.Get());
+                  pool.r4 += Number(c.r4.Get());
                }
                lvl++;
             }
@@ -155,12 +155,16 @@ package
       }
 
       /**
-       * All-or-nothing affordability against the correct pool, including silo
-       * caps (a cost above the cap can never be met).
+       * All-or-nothing affordability: does the player currently hold every
+       * resource the pool needs?
+       *
+       * The silo capacity cap is deliberately NOT checked — a cumulative bulk
+       * cost is a sum of many individually-affordable steps and can exceed silo
+       * size, and overflow / dev resources legitimately sit above the cap. The
+       * only real constraint is the current balance.
        *
        * @param pool {r1,r2,r3,r4} total cost.
-       * @return True only if every non-zero cost is both affordable and within
-       *         the silo cap.
+       * @return True only if every non-zero cost is covered by the balance.
        */
       public static function canAfford(pool:Object) : Boolean
       {
@@ -168,17 +172,10 @@ package
          var i:int = 1;
          while(i < 5)
          {
-            var need:int = int(pool["r" + i]);
-            if(need > 0)
+            var need:Number = Number(pool["r" + i]);
+            if(need > 0 && need > Number(res["r" + i].Get()))
             {
-               if(need > int(res["r" + i + "max"]))
-               {
-                  return false;
-               }
-               if(need > int(res["r" + i].Get()))
-               {
-                  return false;
-               }
+               return false;
             }
             i++;
          }
@@ -197,9 +194,9 @@ package
          var i:int = 1;
          while(i < 5)
          {
-            if(int(pool["r" + i]) > 0)
+            if(Number(pool["r" + i]) > 0)
             {
-               parts.push(GLOBAL.FormatNumber(int(pool["r" + i])) + " " + GLOBAL._resourceNames[i - 1]);
+               parts.push(GLOBAL.FormatNumber(Number(pool["r" + i])) + " " + GLOBAL._resourceNames[i - 1]);
             }
             i++;
          }
