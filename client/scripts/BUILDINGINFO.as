@@ -317,6 +317,7 @@ package
                      if(_props.type == "wall" && !_loc3_)
                      {
                         _loc1_.push(["btn_upgradeall",30,1]);
+                        _loc1_.push(["btn_upgradeallresources",30]);
                      }
                      if(_props.type == "resource" && !_loc3_)
                      {
@@ -724,6 +725,10 @@ package
             {
                STORE.ShowB(1,0,["BLK2","BLK3","BLK4","BLK5"]);
             }
+         }
+         if(param1.target.labelKey == "btn_upgradeallresources")
+         {
+            BulkWallUpgrade.openStore();
          }
          if(param1.target.labelKey == "btn_more")
          {

@@ -609,6 +609,7 @@ package
             });
             _storeItems.BLK5.t = KEYS.Get("str_blackwalls");
          }
+         BulkWallUpgrade.updateStoreRows(_storeItems);
          if(BASE.isInfernoMainYardOrOutpost)
          {
             _storeItems.HODI.d = "Speed up all harvester production for 12 hours.";
