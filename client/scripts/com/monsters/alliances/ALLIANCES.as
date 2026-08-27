@@ -284,6 +284,17 @@ package com.monsters.alliances
       }
 
       /**
+       * The player's alliance name, from the cached My Alliance payload. Used by
+       * the confirmation messages, which name the alliance the way the original did.
+       * 
+       * @returns {String} The name, or empty when unaffiliated or not yet loaded.
+       */
+      public static function AllianceName() : String
+      {
+         return (_myAllianceData != null) ? String(_myAllianceData.name) : "";
+      }
+
+      /**
        * Answers a pending invite or join request. Accepting either one changes the
        * player's roster, so the My Alliance cache is dropped on success.
        * 
@@ -343,6 +354,57 @@ package com.monsters.alliances
                   if (response != null && !response.error)
                   {
                      InvalidateMessages();
+                  }
+                  onDone(response);
+               },
+               function(e:IOErrorEvent):void
+               {
+                  onDone(null);
+               });
+      }
+
+      /**
+       * Removes a member from the player's alliance. Leader only; the server
+       * rejects anyone else.
+       * 
+       * @param {int} userId - The member being removed.
+       * @param {Function} onDone - Receives the server response.
+       */
+      public static function KickMember(userId:int, onDone:Function) : void
+      {
+         new URLLoaderApi().load(GLOBAL._allianceURL + "kickmember", [["userid", userId]],
+               function(response:Object):void
+               {
+                  if (response != null && !response.error)
+                  {
+                     InvalidateMyAlliance();
+                     InvalidateMembers();
+                  }
+                  onDone(response);
+               },
+               function(e:IOErrorEvent):void
+               {
+                  onDone(null);
+               });
+      }
+
+      /**
+       * Hands leadership to another member. The player is demoted in the same move,
+       * so _isLeader is dropped here and the tabs rebuild without leader actions.
+       * 
+       * @param {int} userId - The member taking over.
+       * @param {Function} onDone - Receives the server response.
+       */
+      public static function PromoteMember(userId:int, onDone:Function) : void
+      {
+         new URLLoaderApi().load(GLOBAL._allianceURL + "promotemember", [["userid", userId]],
+               function(response:Object):void
+               {
+                  if (response != null && !response.error)
+                  {
+                     _isLeader = false;
+                     InvalidateMyAlliance();
+                     InvalidateMembers();
                   }
                   onDone(response);
                },
@@ -470,7 +532,7 @@ package com.monsters.alliances
             return;
          }
          r = new URLLoaderApi();
-         alliancevars = [["user_id",_userId]];
+         alliancevars = [["userid",_userId]];
          r.load(GLOBAL._allianceURL + "inviteuser",alliancevars,onAllianceInviteSuccess,onAllianceInviteFail);
       }
       

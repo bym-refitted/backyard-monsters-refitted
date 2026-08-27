@@ -46,7 +46,14 @@ export const RequestJoinSchema = z.object({
  * Schema for the Members and Suggested tabs' Invite button.
  */
 export const InviteUserSchema = z.object({
-  user_id: z.coerce.number().int().positive(),
+  userid: z.coerce.number().int().positive(),
+});
+
+/**
+ * Schema for the Members tab's leader-only Kick and Promote buttons.
+ */
+export const MemberActionSchema = z.object({
+  userid: z.coerce.number().int().positive(),
 });
 
 /**

@@ -64,3 +64,32 @@ export const removeAllianceMember = async (user: User, alliance: Alliance, other
   await postgres.em.flush();
   return disbanded;
 };
+
+/**
+ * Hands leadership of an alliance to one of its members.
+ * 
+ * Leader becomes a member, and the member becomes the leader.
+ * Alliance ownership is updated to reflect the new leader's userid and username.
+ *
+ * @param {User} leader - The current leader, stepping down.
+ * @param {User} member - The member taking over.
+ * @param {Alliance} alliance - The alliance changing hands.
+ */
+export const promoteAllianceMember = async (leader: User, member: User, alliance: Alliance) => {
+  await postgres.em.transactional(async (em) => {
+    await em.nativeUpdate(User, { userid: member.userid }, { alliance_role: AllianceRole.LEADER });
+    await em.nativeUpdate(User, { userid: leader.userid }, { alliance_role: AllianceRole.MEMBER });
+
+    await em.nativeUpdate(
+      Alliance,
+      { id: alliance.id },
+      { leader_userid: member.userid, leader_name: member.username }
+    );
+  });
+
+  member.alliance_role = AllianceRole.LEADER;
+  leader.alliance_role = AllianceRole.MEMBER;
+
+  alliance.leader_userid = member.userid;
+  alliance.leader_name = member.username;
+};

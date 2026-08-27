@@ -78,6 +78,8 @@ import { inviteUser } from "./controllers/alliance/inviteUser.js";
 import { changeInviteStatus } from "./controllers/alliance/changeInviteStatus.js";
 import { getMessages } from "./controllers/alliance/getMessages.js";
 import { deleteMessages } from "./controllers/alliance/deleteMessages.js";
+import { kickMember } from "./controllers/alliance/kickMember.js";
+import { promoteMember } from "./controllers/alliance/promoteMember.js";
 
 const router = new Router();
 
@@ -175,6 +177,8 @@ router.post("/alliance/inviteuser", verifyUserAuth, allianceInviteLimiter, logRe
 router.post("/alliance/changeinvitestatus", verifyUserAuth, logRequest, changeInviteStatus);
 router.get("/alliance/getmessages", verifyUserAuth, logRequest, getMessages);
 router.post("/alliance/deletemessages", verifyUserAuth, logRequest, deleteMessages);
+router.post("/alliance/kickmember", verifyUserAuth, logRequest, kickMember);
+router.post("/alliance/promotemember", verifyUserAuth, logRequest, promoteMember);
 
 /**  ────────────────────────────────────────────────
 * 📦 Events

@@ -409,21 +409,96 @@ package com.monsters.alliances.tabs
       }
 
       /**
-       * Kicks the selected member from the alliance. Stubbed for now.
+       * Kicks the selected member from the alliance, behind the confirmation the
+       * original showed before removing anyone.
+       *
        * @param {Object} rowData - The row that was acted on
        */
       protected function _onKick(rowData:Object):void
       {
-         // TODO: send kick request to server for rowData
+         GLOBAL.Message(
+               KEYS.Get("alliance_kick_confirm", {"name": String(rowData.name)}),
+               KEYS.Get("alliance_btn_kick_user"), _confirmKick, [rowData]
+            );
       }
 
       /**
-       * Promotes the selected member. Stubbed for now.
+       * Promotes the selected member to leader. The confirmation spells out that the
+       * player gives up leadership, as the original's did - there is no way back
+       * without the new leader promoting them again.
+       *
        * @param {Object} rowData - The row that was acted on
        */
       protected function _onPromote(rowData:Object):void
       {
-         // TODO: send promote request to server for rowData
+         GLOBAL.Message(
+               KEYS.Get("alliance_promote_confirm", {"name": String(rowData.name)}),
+               KEYS.Get("alliance_btn_promote_user"), _confirmPromote, [rowData]
+            );
+      }
+
+      /**
+       * The alliance name is read up front because the success message names it,
+       * and the store drops its My Alliance payload the moment the kick lands.
+       *
+       * @param {Object} rowData - The row that was acted on
+       */
+      protected function _confirmKick(rowData:Object):void
+      {
+         var allianceName:String = ALLIANCES.AllianceName();
+
+         ALLIANCES.KickMember(int(rowData.user_id), function(response:Object):void
+            {
+               _onMemberActionDone(response, "alliance_kick_response", String(rowData.name), allianceName);
+            });
+      }
+
+      /**
+       * @param {Object} rowData - The row that was acted on
+       */
+      protected function _confirmPromote(rowData:Object):void
+      {
+         var allianceName:String = ALLIANCES.AllianceName();
+
+         ALLIANCES.PromoteMember(int(rowData.user_id), function(response:Object):void
+            {
+               _onMemberActionDone(response, "alliance_promote_response", String(rowData.name), allianceName);
+            });
+      }
+
+      /**
+       * Reports the outcome of a kick or promote and refreshes the roster. Both drop
+       * the members cache on success, so _load refetches and redraws from its own
+       * callback; a promotion also clears _isLeader, which is what removes the
+       * leader-only actions from the rows on the way back through.
+       *
+       * My Alliance is re-read alongside it because the roster just changed size and
+       * the Members tab label carries that count. Rebuilding the strip also drops
+       * Suggested after a promotion, since it is leader only.
+       *
+       * @param {Object} response - The server response, or null on a transport error
+       * @param {String} messageKey - Locale key for the success message
+       * @param {String} name - The member the action was taken against
+       * @param {String} allianceName - The alliance name, captured before the mutation
+       */
+      protected function _onMemberActionDone(response:Object, messageKey:String, name:String, allianceName:String):void
+      {
+         if (response == null)
+         {
+            GLOBAL.Message(KEYS.Get("alliance_err_generic"));
+            return;
+         }
+
+         if (response.error)
+         {
+            GLOBAL.Message(String(response.error));
+            return;
+         }
+
+         GLOBAL.Message(KEYS.Get(messageKey, {"name": name, "alliance": allianceName}));
+
+         _load();
+         ALLIANCES.LoadMyAlliance(ALLIANCEWINDOW.RefreshTabLabels);
       }
 
       /**

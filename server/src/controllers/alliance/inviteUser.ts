@@ -12,6 +12,8 @@ import {
 } from "../../errors/errors.js";
 import type { KoaController } from "../../utils/KoaController.js";
 
+const INVITE_FIELDS = ["userid", "username", "alliance_id", "save.worldid"] as const;
+
 /**
  * Invites a player into the leader's alliance, from the Members and Suggested
  * tabs. The invite lands in that player's Invites tab for them to answer.
@@ -23,15 +25,11 @@ import type { KoaController } from "../../utils/KoaController.js";
  */
 export const inviteUser: KoaController = async (ctx) => {
   const user: User = ctx.authUser;
-  const { user_id } = InviteUserSchema.parse(ctx.request.body);
+  const { userid } = InviteUserSchema.parse(ctx.request.body);
 
   const alliance = await requireAllianceLeader(user);
 
-  const player = await postgres.em.findOne(
-    User,
-    { userid: user_id },
-    { fields: ["userid", "username", "alliance_id", "save.worldid"] }
-  );
+  const player = await postgres.em.findOne(User, { userid }, { fields: INVITE_FIELDS });
 
   if (!player) throw permissionErr();
 

@@ -285,6 +285,22 @@ export const allianceFullErr = () =>
     isClientFriendly: true,
   });
 
+export const cannotKickErr = () =>
+  new ClientSafeError({
+    message: "You cannot kick members.",
+    status: Status.FORBIDDEN,
+    data: {},
+    isClientFriendly: true,
+  });
+
+export const cannotPromoteErr = () =>
+  new ClientSafeError({
+    message: "You cannot promote members.",
+    status: Status.FORBIDDEN,
+    data: {},
+    isClientFriendly: true,
+  });
+
 export const cannotInviteOutsideWorldErr = (username: string) =>
   new ClientSafeError({
     message: `${username} is too far away to join your Alliance. Invite them to move to one of your close-by Outposts.`,
