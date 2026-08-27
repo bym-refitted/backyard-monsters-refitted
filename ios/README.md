@@ -3,11 +3,13 @@
 Puerto nativo (Adobe AIR) del cliente, jugando contra el **servidor oficial**
 (`https://server.bymrefitted.com`). Funciona, está probado en dispositivo real.
 
-**No está en la App Store** y no lo estará: Apple no admite emuladores/motores
-de terceros ejecutando contenido no revisado como este. Se instala por
-*sideload* (cargarlo tú mismo desde tu Mac), lo cual es 100% legal y lo hace
-cualquier desarrollador de iOS a diario — pero tiene dos límites que hay que
-conocer antes de empezar:
+**No está en la App Store** y no lo estará: este es un proyecto de
+preservación no oficial de un juego con derechos de Kixeye (ver la sección
+de preservación digital en el README principal del repo) — publicarlo en
+una tienda comercial no es viable ni es el objetivo. Se instala por
+*sideload* (cargarlo tú mismo desde tu Mac a tu propio iPhone), que es 100%
+legal y lo hace cualquier desarrollador de iOS a diario para sus propias
+apps — pero tiene dos límites que hay que conocer antes de empezar:
 
 - **Necesitas un Mac** con Xcode, al menos para el primer paso (registrar tu
   cuenta y tu iPhone). El resto puede repetirse sin abrir Xcode.
