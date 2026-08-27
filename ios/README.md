@@ -27,6 +27,23 @@ If you've already been through this once, jump straight to
 
 ---
 
+## Quick summary
+
+1. **Install the requirements** below (Xcode, AIR SDK, asconfigc) — once.
+2. **Step 1**: register your Apple ID + iPhone in Xcode — once (6 clicks).
+3. **Step 2**: copy the signing profile into the project — one command.
+4. **Step 3**: run `./ios/iterate.sh` (or just double-click
+   **`ios/Install BYM Refitted.command`** in Finder — no terminal needed) —
+   compiles, installs and launches the game on your iPhone.
+5. **First launch only**: trust the developer in *Settings → General → VPN
+   & Device Management* (end of Step 3).
+6. **Every 7 days**: repeat Step 1's "renew" (2 min) + Step 2 + `iterate.sh`.
+   See **[PROVISION_RENEWAL.md](PROVISION_RENEWAL.md)**.
+
+That's the whole flow. Details for each step below.
+
+---
+
 ## Requirements
 
 - A Mac with **Xcode** installed (free, from the macOS App Store)
@@ -100,7 +117,22 @@ cp "$NEWPROF" ios/BYMRefitted.mobileprovision
 
 ---
 
-## Step 3 — Compile, package, install and launch (one command)
+## Step 3 — Compile, package, install and launch
+
+### Easiest: double-click, no terminal
+
+Just double-click **[`ios/Install BYM Refitted.command`](Install%20BYM%20Refitted.command)**
+in Finder. The first time, it'll pop up a couple of native macOS dialogs
+asking for your AIR SDK path, your iPhone and your signing certificate
+(it tries to auto-detect them first) — answer once and it remembers them
+for every run after that. A terminal window opens just to show progress,
+but you never have to type a command in it.
+
+If macOS blocks it the first time ("cannot be opened because it is from
+an unidentified developer"), right-click the file → **Open** → **Open**
+again to confirm once.
+
+### Or: from the terminal
 
 You need two things about your setup:
 
