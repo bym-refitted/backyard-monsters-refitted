@@ -129,6 +129,16 @@ exactly which of the 4 steps it was.
 > Save those three `export` lines in your shell profile (`~/.zshrc`) so you
 > don't have to repeat them every time.
 
+**The first time you install**, the app won't open on its own — iOS blocks
+apps from unverified developers until you trust it manually:
+
+1. On the **iPhone**: **Settings → General → VPN & Device Management**
+2. Under "Developer App", tap **"Apple Development: you@example.com"**
+3. Tap **"Trust ..."** and confirm
+
+After that, the app opens normally (and stays trusted until the profile
+expires in 7 days).
+
 ---
 
 ## Every 7 days: renewing the signature
@@ -170,6 +180,7 @@ These are real errors we ran into while testing this — not hypothetical.
 | Error | Cause | Fix |
 |---|---|---|
 | `The device is locked` | The iPhone is locked | Unlock it and keep the screen on during install |
+| App installs but won't open (no error, just doesn't launch) | iOS doesn't trust the developer yet | Settings → General → VPN & Device Management → trust the "Apple Development" profile (see end of Step 3) |
 | `Communication with Apple failed` / `Your team has no devices` | Xcode hasn't registered your iPhone with Apple yet | Repeat all of Step 1 (the `Run` from Xcode onto the iPhone is what actually registers the device — the Signing & Capabilities panel alone isn't enough) |
 | `developer.apple.com/account/resources/devices` says "only for developers enrolled in a program" | That page is paid-accounts only | You don't need it with a free account — registration happens via Xcode (Step 1), not that page |
 | `This provisioning profile has expired` | More than 7 days since the last `Run` in Xcode | Repeat Step 1.6 + Step 2 (see above or PROVISION_RENEWAL.md) |
