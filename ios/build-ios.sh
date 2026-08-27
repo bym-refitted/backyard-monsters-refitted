@@ -12,8 +12,12 @@
 #   - It does not solve touch/fullscreen scaling (that is the CONFIG::MOBILE work
 #     in GAME.as — Phase B — see ios/README.md).
 #
-# ⚠️  UNTESTED: this script was written without the AIR SDK or a device present.
-#     Treat the exact adt/asconfigc flags as a strong starting point, not gospel.
+# The compile/package pipeline is proven end-to-end (see ios/README.md, which
+# uses ios/iterate.sh — same adt/asconfigc flags, plus install+launch, and is
+# the recommended path). This script's .p12-based signing variant specifically
+# is a convenience wrapper for that pipeline and hasn't been exercised on its
+# own; prefer iterate.sh unless you specifically need a standalone .ipa build
+# step (e.g. CI) decoupled from Keychain-based signing.
 #
 # REQUIREMENTS (install once — see ios/README.md):
 #   - Harman AIR SDK          -> export AIR_SDK_HOME=/path/to/AIRSDK

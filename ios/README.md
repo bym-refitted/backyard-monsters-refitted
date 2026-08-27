@@ -1,111 +1,138 @@
-# BYM Refitted — iOS build (personal / sideload)
+# BYM Refitted en iOS — guía de instalación
 
-Package BYM Refitted as an iOS app that plays against the **official multiplayer
-server** (`https://server.bymrefitted.com`), so it works anywhere with no Mac
-acting as a server. Signing uses a **free Apple ID** (re-sign every 7 days).
+Puerto nativo (Adobe AIR) del cliente, jugando contra el **servidor oficial**
+(`https://server.bymrefitted.com`). Funciona, está probado en dispositivo real.
 
-> ⚠️ **Status: scaffolding, not yet a working build.** The files here (descriptor,
-> icons, build script, `asconfig.ios.json`) were prepared without the AIR SDK or a
-> device on hand, so nothing below has been run end-to-end. Two things still need
-> real work: installing the toolchain (yours) and the touch/scaling wrapper (Phase B).
+**No está en la App Store** y no lo estará: Apple no admite emuladores/motores
+de terceros ejecutando contenido no revisado como este. Se instala por
+*sideload* (cargarlo tú mismo desde tu Mac), lo cual es 100% legal y lo hace
+cualquier desarrollador de iOS a diario — pero tiene dos límites que hay que
+conocer antes de empezar:
 
----
+- **Necesitas un Mac** con Xcode, al menos para el primer paso (registrar tu
+  cuenta y tu iPhone). El resto puede repetirse sin abrir Xcode.
+- **Con una cuenta Apple gratuita, la app deja de funcionar cada 7 días**
+  hasta que la vuelves a firmar (2-3 minutos). Es una limitación de Apple para
+  cuentas sin la suscripción de pago (99$/año), no de este proyecto.
 
-## How it fits together
-
-| Piece | File | Status |
-|---|---|---|
-| iOS AIR descriptor | `ios/bym-refitted-ios.xml` | ✅ done, validated by adt (namespace 51.3) |
-| iOS icons (placeholder) | `ios/icons/*` | ⚠️ upscaled from the 72px Android icon — replace with real 1024px art |
-| Prod-pointed compile config | `asconfig.ios.json` | ✅ done — compiles vs prod, `optimize:false` (see note) |
-| Build + package script | `ios/build-ios.sh` | ✅ done — packaging validated end-to-end up to Apple signing |
-| Touch + fullscreen scaling | `GAME.as` (runtime `Capabilities.version` check) | ✅ done — iOS uses `SHOW_ALL`, desktop/web unchanged |
-| Apple signing | your free Apple ID | ⛔ **only remaining step** — needs a free provisioning profile |
-
-**Verified with AIR SDK 51.3.3 on this Mac:** the game compiles against the prod
-server in ~9s → `bin/bymr-ios.swf` (3.4 MB), and `adt -target ipa-test-interpreter`
-accepts the descriptor + swf + icons, stopping only at *"Provisioning profile not
-specified."* — i.e. everything works except the Apple signature.
-
-**`optimize:false` note:** the compiler's bytecode optimizer hangs (100% CPU) on the
-large `GAME` class. `optimize:false` compiles cleanly; the swf is slightly larger and,
-since we package in interpreter mode, there's no real runtime cost.
-
-Why the game SWF is packaged *inside* the app (unlike Android): iOS forbids executing
-ActionScript loaded at runtime, so the Android "download the game SWF" loader can't be
-reused. `asconfig.ios.json` compiles the whole game into `bin/bymr-ios.swf`, which adt
-AOT/interpreter-packages into the `.ipa`.
+Si ya pasaste por esto una vez, ve directo a **[PROVISION_RENEWAL.md](PROVISION_RENEWAL.md)**
+para la renovación semanal.
 
 ---
 
-## The known blocker: touch & scaling (Phase B)
+## Requisitos
 
-[GAME.as](../client/scripts/GAME.as#L170) sets `stage.scaleMode = NO_SCALE` and lays the
-UI out from `stageWidth/stageHeight`. On a phone at retina resolution the 760×670 UI would
-render tiny in a corner. AIR already maps single-finger taps to mouse clicks, so *clicking*
-mostly works for free — but the view must be scaled/letterboxed to fit the screen.
-
-Planned fix (guarded so the desktop/web build is untouched):
-```as3
-CONFIG::MOBILE {
-    // after ADDED_TO_STAGE: scale the game to fit stage bounds, keep aspect,
-    // re-apply on Event.RESIZE / orientation change.
-}
-```
-`asconfig.ios.json` already defines `CONFIG::MOBILE = true`; the code block is not written
-yet because it needs iterating on a real device (scale factor, letterboxing, hit targets).
+- Un Mac con **Xcode** instalado (gratis, desde la App Store de macOS)
+- Un **Apple ID** cualquiera (no hace falta pagar nada)
+- Tu **iPhone** + cable USB (solo para el primer emparejamiento)
+- El **AIR SDK** de Harman: <https://airsdk.harman.com/download> (gratis, requiere cuenta Harman)
+- **asconfigc**: `npm i -g asconfigc`
 
 ---
 
-## One-time setup (your Mac)
+## Paso 1 — Registrar tu Apple ID y tu iPhone en Xcode (una sola vez)
 
-1. **Harman AIR SDK** — free, requires a Harman account: https://airsdk.harman.com/download
-   ```bash
-   export AIR_SDK_HOME=/path/to/AIRSDK
-   ```
-2. **asconfigc** (compiles the SWF via the SDK):
-   ```bash
-   npm i -g asconfigc
-   ```
-3. **Free dev cert + provisioning profile** (only to satisfy adt's packaging):
-   - Easiest: open **Xcode → Settings → Accounts**, add your Apple ID (free), create a
-     throwaway project with bundle id `com.bymrefitted`, let Xcode auto-generate a
-     "Personal Team" development cert + provisioning profile.
-   - Export the cert from **Keychain Access** as a `.p12`.
-   - Find the generated `.mobileprovision` under
-     `~/Library/MobileDevice/Provisioning Profiles/`.
-   - Alternatively, **Sideloadly** can generate/refresh these from your Apple ID for you.
+Este paso es el único que requiere Xcode abierto. Sirve para que Apple sepa
+que tu iPhone existe y te deje generar un certificado de firma gratuito.
 
-## Build
+1. **Xcode → Settings → Accounts** → pulsa `+` → añade tu Apple ID (el que
+   sea, personal está bien).
+2. Crea un proyecto cualquiera desde cero: **File → New → Project → App**
+   (SwiftUI, cualquier nombre). Esto es solo un "gancho" para que Xcode hable
+   con Apple — no tiene nada que ver con el juego.
+3. Selecciona el target del proyecto → pestaña **Signing & Capabilities**:
+   - **Bundle Identifier**: escribe exactamente `com.bymrefitted`
+   - **Automatically manage signing**: activado
+   - **Team**: tu cuenta personal (Personal Team)
+4. Conecta el iPhone por **cable USB**, desbloquéalo y, si aparece
+   "¿Confiar en este ordenador?", pulsa **Confiar**.
+5. Arriba junto al botón ▶, donde dice **"My Mac"**, cámbialo por tu iPhone.
+6. Pulsa **▶ Run**. Esto compila el proyecto vacío y lo instala en el
+   iPhone — es justo esa instalación real la que hace que Apple registre tu
+   dispositivo y genere el perfil de firma. Verás la app abrirse en el
+   iPhone; puedes cerrarla, ya no la necesitas.
+   - Si la primera vez da un error tipo *"Communication with Apple failed"*
+     o *"no devices"*, simplemente repite este paso una vez más — a veces
+     Xcode necesita dos intentos.
+
+A partir de aquí Xcode ya tiene, guardados en tu Mac, un certificado de firma
+(en el Keychain) y un perfil de provisioning (en
+`~/Library/Developer/Xcode/UserData/Provisioning Profiles/`). El proyecto de
+prueba ya no se vuelve a usar — puedes borrarlo si quieres.
+
+---
+
+## Paso 2 — Copiar el perfil de firma al proyecto
 
 ```bash
-export AIR_SDK_HOME=/path/to/AIRSDK
-export IOS_P12=/path/to/dev-cert.p12
-export IOS_P12_PASS=yourpassword
-export IOS_PROVISION="$HOME/Library/MobileDevice/Provisioning Profiles/xxxx.mobileprovision"
-./ios/build-ios.sh
-# -> ios/BYM-Refitted.ipa
+NEWPROF=$(ls -t ~/Library/Developer/Xcode/UserData/Provisioning\ Profiles/*.mobileprovision | head -1)
+cp "$NEWPROF" ios/BYMRefitted.mobileprovision
 ```
-
-## Install on your iPhone (free Apple ID)
-
-Use **Sideloadly** (https://sideloadly.io) or **AltStore** (https://altstore.io):
-1. Connect the iPhone, sign in with your Apple ID inside the tool.
-2. Drop `ios/BYM-Refitted.ipa` in, install.
-3. On the phone: **Settings → General → VPN & Device Management** → trust your Apple ID.
-4. **Every 7 days** the free signature expires — re-run Sideloadly/AltStore to refresh
-   (AltStore can auto-refresh over Wi-Fi if AltServer runs on this Mac on the same network).
-
-> EU note: under the DMA, marketplaces like **AltStore PAL** can refresh apps over the
-> internet without a computer — worth checking if you want to drop the weekly Mac step.
 
 ---
 
-## Honest risk list
+## Paso 3 — Compilar, empaquetar, instalar y lanzar (un solo comando)
 
-- **Scaling/touch (Phase B)** — the real UX work; needs on-device iteration.
-- **AOT compile of the full game** — big Flash games sometimes hit adt AOT errors; the
-  `ipa-test-interpreter` target sidesteps AOT and is fine for personal sideloading.
-- **`ExternalInterface` calls** in the game are browser/JS-bridge only; on AIR they're
-  inert (`ExternalInterface.available == false`) — verify none are load-bearing.
-- **Icons** are placeholders — swap in real 1024px art before you care how it looks.
+Necesitas dos datos tuyos:
+
+- **El identificador de tu iPhone** (o su nombre, vale igual):
+  ```bash
+  xcrun devicectl list devices
+  ```
+- **El nombre exacto de tu certificado de firma**, tal como aparece en
+  Xcode → Signing & Capabilities → *Signing Certificate*, con el formato
+  `Apple Development: tu@email.com (XXXXXXXXXX)`.
+
+Con esos dos datos:
+
+```bash
+export AIR_SDK_HOME=~/AIRSDK/AIRSDK_50.2.5        # donde descomprimiste el AIR SDK
+export BYMR_DEVICE_ID="Ivancillo"                  # nombre o UUID de tu iPhone
+export BYMR_SIGNING_CERT="Apple Development: tu@email.com (XXXXXXXXXX)"
+./ios/iterate.sh
+```
+
+El script compila el SWF (~10-30s), empaqueta el `.ipa`, lo instala en el
+iPhone conectado y lo lanza automáticamente. Verás el progreso paso a paso en
+la terminal; si algo falla, el propio script te dice cuál de los 4 pasos fue.
+
+> Guarda esas tres variables `export` en tu perfil de shell (`~/.zshrc`) para
+> no tener que repetirlas cada vez.
+
+---
+
+## Cada 7 días: renovar la firma
+
+El certificado gratuito caduca semanalmente y la app deja de abrir con un
+error de "perfil caducado". Repite el **Paso 1.6** (Run en Xcode con el
+proyecto de prueba, sobre el iPhone) y el **Paso 2** (copiar el perfil
+nuevo), y vuelve a lanzar `./ios/iterate.sh`. El detalle completo, con
+checklist, está en **[PROVISION_RENEWAL.md](PROVISION_RENEWAL.md)**.
+
+---
+
+## Solución de problemas
+
+Estos son errores reales con los que nos topamos probando esto — no son
+hipotéticos.
+
+| Error | Causa | Solución |
+|---|---|---|
+| `The device is locked` | El iPhone está bloqueado | Desbloquéalo y déjalo con la pantalla encendida durante la instalación |
+| `Communication with Apple failed` / `Your team has no devices` | Xcode no ha registrado tu iPhone en Apple todavía | Repite el Paso 1 completo (el `Run` desde Xcode sobre el iPhone es lo que realmente registra el dispositivo — el panel de Signing & Capabilities por sí solo no basta) |
+| `developer.apple.com/account/resources/devices` da "only for developers enrolled in a program" | Esa web es solo para cuentas de pago | No la necesitas con cuenta gratuita — el registro se hace vía Xcode (Paso 1), no por esa web |
+| `This provisioning profile has expired` | Han pasado más de 7 días desde el último `Run` en Xcode | Repite Paso 1.6 + Paso 2 (ver arriba o PROVISION_RENEWAL.md) |
+| El compilador se cuelga / SWF sale más pequeño de lo normal | El compilador AIR se atasca a veces | `iterate.sh` ya reintenta solo hasta 5 veces — no hace falta hacer nada |
+
+---
+
+## Probar contra otro servidor (opcional, para desarrollo)
+
+Por defecto apunta siempre al servidor oficial. Si quieres compilar contra tu
+propio servidor local o uno privado durante desarrollo:
+
+```bash
+BYMR_LOCAL=1 BYMR_SERVER_URL="https://tu-servidor.example.com/" ./ios/iterate.sh
+```
+
+Sin esas variables, `iterate.sh` compila siempre contra el servidor oficial.
