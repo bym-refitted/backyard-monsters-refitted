@@ -1,0 +1,68 @@
+name: Build iOS IPA
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - ios
+      - feature/ios-port
+    paths:
+      - 'client/**'
+      - 'asconfig.ios.json'
+      - 'ios/**'
+      - '.github/workflows/build-ios.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Compile and package IPA
+    # The runner is a Mac that already has the Harman AIR SDK installed.
+    # Configure AIR_SDK_HOME in the runner's environment and add the `air-sdk`
+    # custom label to that runner.
+    runs-on: [self-hosted, macOS, air-sdk]
+
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Validate required configuration
+        env:
+          IOS_P12_BASE64: ${{ secrets.IOS_P12_BASE64 }}
+          IOS_PROVISION_BASE64: ${{ secrets.IOS_PROVISION_BASE64 }}
+          IOS_P12_PASS: ${{ secrets.IOS_P12_PASS }}
+        run: |
+          set -euo pipefail
+          test -x "$AIR_SDK_HOME/bin/adt" || { echo "AIR_SDK_HOME/bin/adt was not found on the runner"; exit 1; }
+          test -n "$IOS_P12_BASE64" || { echo "Missing secret IOS_P12_BASE64"; exit 1; }
+          test -n "$IOS_PROVISION_BASE64" || { echo "Missing secret IOS_PROVISION_BASE64"; exit 1; }
+          test -n "$IOS_P12_PASS" || { echo "Missing secret IOS_P12_PASS"; exit 1; }
+
+      - name: Install asconfigc
+        run: npm install --global asconfigc
+
+      - name: Import signing files
+        env:
+          IOS_P12_BASE64: ${{ secrets.IOS_P12_BASE64 }}
+          IOS_PROVISION_BASE64: ${{ secrets.IOS_PROVISION_BASE64 }}
+        run: |
+          set -euo pipefail
+          echo "$IOS_P12_BASE64" | base64 --decode > "$RUNNER_TEMP/ios-signing.p12"
+          echo "$IOS_PROVISION_BASE64" | base64 --decode > "$RUNNER_TEMP/BYMRefitted.mobileprovision"
+
+      - name: Build IPA
+        env:
+          IOS_P12: ${{ runner.temp }}/ios-signing.p12
+          IOS_P12_PASS: ${{ secrets.IOS_P12_PASS }}
+          IOS_PROVISION: ${{ runner.temp }}/BYMRefitted.mobileprovision
+          IOS_TARGET: ipa-test
+        run: ./ios/build-ios.sh
+
+      - name: Upload IPA artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: BYM-Refitted-${{ github.sha }}
+          path: ios/BYM-Refitted.ipa
+          if-no-files-found: error
+          retention-days: 14

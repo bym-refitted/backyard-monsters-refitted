@@ -10,6 +10,7 @@ package com.monsters.display
    {
        
       
+
       public function ImageText()
       {
          super();
@@ -28,6 +29,17 @@ package com.monsters.display
          _loc6_.width = 600;
          _loc6_.defaultTextFormat = _loc5_;
          _loc6_.htmlText = param1;
+         // iOS AIR: a TextField created at runtime with embedFonts=true needs the font
+         // registered via Font.registerFont — "Groboldov" only lives inside the SWF and is
+         // never registered, so on the device it measures to 0 width and draws a BLANK
+         // bitmap. That is why building names, the UPGRADING/repairing/building labels and
+         // the collect-amount overlays came up invisible. If the embedded font produced no
+         // glyphs, fall back to a device font so the label is at least readable.
+         if(param1 != null && param1.length > 0 && _loc6_.textWidth < 1)
+         {
+            _loc6_.embedFonts = false;
+            _loc6_.htmlText = param1;
+         }
          if(param4)
          {
             _loc6_.filters = param4;

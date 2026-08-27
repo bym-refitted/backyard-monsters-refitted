@@ -380,6 +380,7 @@ package
       
       public function RenderQueue() : void
       {
+       try {
          var _loc4_:int = 0;
          var _loc5_:int = 0;
          var _loc1_:int = 2 + this._hatchery._lvl.Get();
@@ -449,8 +450,9 @@ package
             tProgress.visible = false;
             bSpeedup.gotoAndStop(1);
          }
+       } catch(rqErr:Error) { }
       }
-      
+
       public function Setup(param1:BUILDING13) : void
       {
          this._hatchery = param1;
@@ -458,23 +460,32 @@ package
          var _loc3_:int = 0;
          while(_loc3_ < _loc2_)
          {
-            this["slot" + _loc3_].addEventListener(MouseEvent.MOUSE_DOWN,this.QueueRemove(_loc3_));
-            this["slot" + _loc3_].addEventListener(MouseEvent.MOUSE_OVER,this.ShowRemove(this["mcRemove" + _loc3_]));
-            this["slot" + _loc3_].addEventListener(MouseEvent.MOUSE_OUT,this.HideRemove(this["mcRemove" + _loc3_]));
-            this["slot" + _loc3_].buttonMode = true;
+            if(this["slot" + _loc3_])
+            {
+               this["slot" + _loc3_].addEventListener(MouseEvent.MOUSE_DOWN,this.QueueRemove(_loc3_));
+               this["slot" + _loc3_].addEventListener(MouseEvent.MOUSE_OVER,this.ShowRemove(this["mcRemove" + _loc3_]));
+               this["slot" + _loc3_].addEventListener(MouseEvent.MOUSE_OUT,this.HideRemove(this["mcRemove" + _loc3_]));
+               this["slot" + _loc3_].buttonMode = true;
+            }
             _loc3_++;
          }
          _loc3_ = _loc2_;
          while(_loc3_ < 5)
          {
-            this["slot" + _loc3_].gotoAndStop(1);
+            if(this["slot" + _loc3_])
+            {
+               this["slot" + _loc3_].gotoAndStop(1);
+            }
             _loc3_++;
          }
          _loc3_ = 0;
          while(_loc3_ < 5)
          {
-            this["mcRemove" + _loc3_].visible = false;
-            this["mcRemove" + _loc3_].mouseEnabled = false;
+            if(this["mcRemove" + _loc3_])
+            {
+               this["mcRemove" + _loc3_].visible = false;
+               this["mcRemove" + _loc3_].mouseEnabled = false;
+            }
             _loc3_++;
          }
          this.MonsterInfoHide();

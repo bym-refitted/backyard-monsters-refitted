@@ -43,8 +43,11 @@ package
          {
             this.mouseEnabled = false;
             this.mouseChildren = false;
-            mcArrow.mouseEnabled = false;
-            mcArrow.mouseChildren = false;
+            if(mcArrow)
+            {
+               mcArrow.mouseEnabled = false;
+               mcArrow.mouseChildren = false;
+            }
          }
          this.addEventListener(Event.ENTER_FRAME,this.Wobble);
          this.ResizeParams = new Array();
@@ -122,16 +125,23 @@ package
       
       public function Rotate() : void
       {
+         if(!mcArrow)
+         {
+            return;
+         }
          if(this.ResizeParams && this.ResizeParams[3] && this.ResizeParams[3] is int)
          {
             mcArrow.rotation = this.ResizeParams[3];
-            if(mcArrow.rotation >= 0)
+            if(mcArrow.mcArrow)
             {
-               mcArrow.mcArrow.gotoAndStop(1);
-            }
-            else
-            {
-               mcArrow.mcArrow.gotoAndStop(2);
+               if(mcArrow.rotation >= 0)
+               {
+                  mcArrow.mcArrow.gotoAndStop(1);
+               }
+               else
+               {
+                  mcArrow.mcArrow.gotoAndStop(2);
+               }
             }
          }
          else
@@ -144,13 +154,16 @@ package
             {
                mcArrow.rotation = (0 - this.x) / (6 / GLOBAL._SCREENINIT.width * GLOBAL._ROOT.stage.stageWidth) + 45;
             }
-            if(x < GLOBAL._ROOT.stage.stageWidth / 2)
+            if(mcArrow.mcArrow)
             {
-               mcArrow.mcArrow.gotoAndStop(1);
-            }
-            else
-            {
-               mcArrow.mcArrow.gotoAndStop(2);
+               if(x < GLOBAL._ROOT.stage.stageWidth / 2)
+               {
+                  mcArrow.mcArrow.gotoAndStop(1);
+               }
+               else
+               {
+                  mcArrow.mcArrow.gotoAndStop(2);
+               }
             }
          }
       }
@@ -160,22 +173,28 @@ package
          if(this.wobbleCountdown == 0)
          {
             this.wobbleCountdown = 80;
-            mcArrow.mcArrow.y = -60;
-            TweenLite.to(mcArrow.mcArrow,0.6,{
-               "y":-70,
-               "ease":Expo.easeInOut,
-               "onComplete":this.WobbleB
-            });
+            if(mcArrow && mcArrow.mcArrow)
+            {
+               mcArrow.mcArrow.y = -60;
+               TweenLite.to(mcArrow.mcArrow,0.6,{
+                  "y":-70,
+                  "ease":Expo.easeInOut,
+                  "onComplete":this.WobbleB
+               });
+            }
          }
          --this.wobbleCountdown;
       }
       
       public function WobbleB() : void
       {
-         TweenLite.to(mcArrow.mcArrow,0.6,{
-            "y":-60,
-            "ease":Bounce.easeOut
-         });
+         if(mcArrow && mcArrow.mcArrow)
+         {
+            TweenLite.to(mcArrow.mcArrow,0.6,{
+               "y":-60,
+               "ease":Bounce.easeOut
+            });
+         }
       }
       
       public function SetPos(param1:int, param2:int) : void

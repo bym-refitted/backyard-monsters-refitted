@@ -19,7 +19,7 @@ package
       
       public var denyBtn:Button_CLIP;
       
-      public var spinner:loading_52;
+      public var spinner:MovieClip;
       
       public var mask_mc:MovieClip;
       

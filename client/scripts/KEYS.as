@@ -16,6 +16,10 @@ package
 
       public static var languageFileJson:Object;
 
+      // English is always kept as a fallback for keys missing in the selected language
+      // (prod translation files are incomplete — e.g. spanish.json lacks the login keys).
+      public static var englishFallbackJson:Object;
+
       public static var supportedLanguagesJson:Array;
 
       private static var dispatcher:EventDispatcher = new EventDispatcher();
@@ -30,6 +34,26 @@ package
       public static function Setup(language:String = "english"):void
       {
          _setup = true;
+         if (language == "english" || englishFallbackJson != null)
+         {
+            loadLanguageFile(language);
+         }
+         else
+         {
+            // Load the English fallback first (so missing keys resolve), then the language.
+            var enFile:URLLoader = new URLLoader();
+            enFile.addEventListener(Event.COMPLETE, function(event:Event):void
+               {
+                  try { englishFallbackJson = JSON.parse(String(event.target.data)); } catch (err:Error) { }
+                  loadLanguageFile(language);
+               });
+            enFile.addEventListener(IOErrorEvent.IO_ERROR, function(event:IOErrorEvent):void { loadLanguageFile(language); });
+            enFile.load(new URLRequest(_storageURL + "english.json"));
+         }
+      }
+
+      private static function loadLanguageFile(language:String):void
+      {
          var languageFile:URLLoader = new URLLoader();
          languageFile.load(new URLRequest(_storageURL + language + ".json"));
          languageFile.addEventListener(Event.COMPLETE, handleLangFileSucc);
@@ -66,26 +90,30 @@ package
       // Replaces #placeholders# within JSON with dynamic values
       public static function Get(jsonKeyPath:String, placeholders:Object = null):String
       {
-         if (languageFileJson == null)
+         if (languageFileJson != null && languageFileJson.hasOwnProperty(jsonKeyPath))
          {
-            return jsonKeyPath;
+            return formatValue(languageFileJson[jsonKeyPath], placeholders);
          }
-         var jsonValue:Object = languageFileJson;
-         if (jsonValue.hasOwnProperty(jsonKeyPath))
+         // Fall back to English for keys the selected language is missing.
+         if (englishFallbackJson != null && englishFallbackJson.hasOwnProperty(jsonKeyPath))
          {
-            var value:* = jsonValue[jsonKeyPath];
-            if (value is String)
-            {
-               var jsonString:String = value as String;
-               if (placeholders != null && jsonString != null)
-               {
-                  jsonString = replacePlaceholders(jsonString, placeholders);
-               }
-               return jsonString;
-            }
-            return String(value);
+            return formatValue(englishFallbackJson[jsonKeyPath], placeholders);
          }
          return jsonKeyPath;
+      }
+
+      private static function formatValue(value:*, placeholders:Object):String
+      {
+         if (value is String)
+         {
+            var jsonString:String = value as String;
+            if (placeholders != null && jsonString != null)
+            {
+               jsonString = replacePlaceholders(jsonString, placeholders);
+            }
+            return jsonString;
+         }
+         return String(value);
       }
 
       private static function replacePlaceholders(input:String, placeholders:Object):String

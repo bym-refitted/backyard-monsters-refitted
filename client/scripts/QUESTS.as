@@ -45,6 +45,22 @@ package
          return _loc1_;
       }
       
+      // Null/throw-safe siege weapon name lookup. On iOS the interpreter can throw
+      // #1009 resolving SiegeWeapons here during quest-data construction; tolerate it
+      // so the base still loads (the weapon-upgrade quest just shows no weapon name).
+      private static function weaponName(id:String):String
+      {
+         try
+         {
+            var w:* = SiegeWeapons.getWeapon(id);
+            return w ? w.name : "";
+         }
+         catch (e:Error)
+         {
+            return "";
+         }
+      }
+
       public static function Setup() : void
       {
          _displayedInstructions = false;
@@ -1400,7 +1416,7 @@ package
             "group":2,
             "name":"q_unlockweapon_name",
             "description":"q_unlockweapon_desc",
-            "keyvars":{"v1":SiegeWeapons.getWeapon(Decoy.ID).name},
+            "keyvars":{"v1":weaponName(Decoy.ID)},
             "hint":"q_unlockweapon_hint",
             "questimage":"siegeweapon_decoy.jpg",
             "questicon":"icon_siegeweapon_decoy.v2.png",
@@ -1420,7 +1436,7 @@ package
             "group":2,
             "name":"q_unlockweapon_name",
             "description":"q_unlockweapon_desc",
-            "keyvars":{"v1":SiegeWeapons.getWeapon(Vacuum.ID).name},
+            "keyvars":{"v1":weaponName(Vacuum.ID)},
             "hint":"q_unlockweapon_hint",
             "questimage":"siegeweapon_vacuum.jpg",
             "questicon":"icon_siegeweapon_vacuum.v2.png",
@@ -1440,7 +1456,7 @@ package
             "group":2,
             "name":"q_unlockweapon_name",
             "description":"q_unlockweapon_desc",
-            "keyvars":{"v1":SiegeWeapons.getWeapon(Jars.ID).name},
+            "keyvars":{"v1":weaponName(Jars.ID)},
             "hint":"q_unlockweapon_hint",
             "questimage":"siegeweapon_jars.jpg",
             "questicon":"icon_siegeweapon_jars.v2.png",
@@ -1461,7 +1477,7 @@ package
             "name":"q_upgradeweapon_name",
             "description":"q_upgradeweapon_desc",
             "keyvars":{
-               "v1":SiegeWeapons.getWeapon(Decoy.ID).name,
+               "v1":weaponName(Decoy.ID),
                "v2":5
             },
             "hint":"q_upgradeweapon_hint",
@@ -1484,7 +1500,7 @@ package
             "name":"q_upgradeweapon_name",
             "description":"q_upgradeweapon_desc",
             "keyvars":{
-               "v1":SiegeWeapons.getWeapon(Vacuum.ID).name,
+               "v1":weaponName(Vacuum.ID),
                "v2":5
             },
             "hint":"q_upgradeweapon_hint",
@@ -1507,7 +1523,7 @@ package
             "name":"q_upgradeweapon_name",
             "description":"q_upgradeweapon_desc",
             "keyvars":{
-               "v1":SiegeWeapons.getWeapon(Jars.ID).name,
+               "v1":weaponName(Jars.ID),
                "v2":5
             },
             "hint":"q_upgradeweapon_hint",
@@ -1530,7 +1546,7 @@ package
             "name":"q_upgradeweapon_name",
             "description":"q_upgradeweapon_desc",
             "keyvars":{
-               "v1":SiegeWeapons.getWeapon(Decoy.ID).name,
+               "v1":weaponName(Decoy.ID),
                "v2":10
             },
             "hint":"q_upgradeweapon_hint",
@@ -1553,7 +1569,7 @@ package
             "name":"q_upgradeweapon_name",
             "description":"q_upgradeweapon_desc",
             "keyvars":{
-               "v1":SiegeWeapons.getWeapon(Vacuum.ID).name,
+               "v1":weaponName(Vacuum.ID),
                "v2":10
             },
             "hint":"q_upgradeweapon_hint",
@@ -1576,7 +1592,7 @@ package
             "name":"q_upgradeweapon_name",
             "description":"q_upgradeweapon_desc",
             "keyvars":{
-               "v1":SiegeWeapons.getWeapon(Jars.ID).name,
+               "v1":weaponName(Jars.ID),
                "v2":10
             },
             "hint":"q_upgradeweapon_hint",
@@ -1830,7 +1846,7 @@ package
                hasRoom = Boolean(GLOBAL._bSiegeFactory) && !GLOBAL._bSiegeFactory.upgradingWeapon && !GLOBAL._bSiegeFactory.hasBuiltWeapon;
                if(!hasRoom)
                {
-                  GLOBAL.Message(KEYS.Get("msg_quest_noroomsiegeweapon",{"v1":SiegeWeapons.getWeapon(q.siegeweapon_reward).name}));
+                  GLOBAL.Message(KEYS.Get("msg_quest_noroomsiegeweapon",{"v1":weaponName(q.siegeweapon_reward)}));
                   return false;
                }
             }
@@ -1922,7 +1938,7 @@ package
                   }
                   if(q.siegeweapon_reward)
                   {
-                     _loc1_.push([q.siegeweapon_rewardcount,SiegeWeapons.getWeapon(q.siegeweapon_reward).name]);
+                     _loc1_.push([q.siegeweapon_rewardcount,weaponName(q.siegeweapon_reward)]);
                   }
                   var _loc2_:String = GLOBAL.Array2String(_loc1_);
                   var _loc3_:String = KEYS.Get(q.streamTitle).replace("#questname#",KEYS.Get(q.name,q.keyvars)).replace("#collected#",_loc2_);
@@ -2049,7 +2065,7 @@ package
                   }
                   if(q.siegeweapon_reward != undefined)
                   {
-                     _loc1_.push([q.siegeweapon_rewardcount,SiegeWeapons.getWeapon(q.siegeweapon_reward).name]);
+                     _loc1_.push([q.siegeweapon_rewardcount,weaponName(q.siegeweapon_reward)]);
                   }
                   var _loc2_:String = GLOBAL.Array2String(_loc1_);
                   var _loc3_:String = KEYS.Get(q.streamTitle).replace("#questname#",KEYS.Get(q.name,q.keyvars)).replace("#collected#",_loc2_);

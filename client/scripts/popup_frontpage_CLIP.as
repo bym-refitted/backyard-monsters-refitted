@@ -20,7 +20,7 @@ package
       
       public var mcFrame:frame_CLIP;
 
-      public var mcLoading:loading_52;
+      public var mcLoading:MovieClip;
       
       public function popup_frontpage_CLIP()
       {

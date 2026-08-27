@@ -92,7 +92,7 @@ package com.monsters.maproom_advanced
          var i:int;
          this._sortArray = [];
          super();
-         w = GLOBAL._ROOT.stage.stageWidth;
+         w = int(GLOBAL.GetGameWidth());
          h = GLOBAL.GetGameHeight();
          if(w > 1024)
          {
@@ -143,6 +143,20 @@ package com.monsters.maproom_advanced
          mcFrame.Setup(true,true,true,0,0);
          mcFrame2.Setup(false);
          mcMask.mcMask.mouseEnabled = false;
+         // iOS AOT: mcMask.mcBG (the layer the map cells are added to) is undefined on the embedded
+         // symbol → GenerateCells' addChild(this._cellContainer) threw #1009 every tick and the map
+         // closed instantly. Recreate it once + reuse mcMask.mcMask as its clip so all 4 addChild/
+         // removeChild sites work unchanged and the cells stay clipped to the map frame.
+         if(mcMask.mcBG == null)
+         {
+            var _mrBG:MovieClip = new MovieClip();
+            mcMask.addChildAt(_mrBG,0);
+            mcMask.mcBG = _mrBG;
+            if(mcMask.mcMask)
+            {
+               _mrBG.mask = mcMask.mcMask;
+            }
+         }
          this._bubble = new bubblepopup3();
          this._popupInfoMine = new PopupInfoMine();
          this._popupInfoEnemy = new PopupInfoEnemy();
@@ -277,32 +291,63 @@ package com.monsters.maproom_advanced
          var _loc1_:int = 1;
          while(_loc1_ < 5)
          {
-            this["mcR" + _loc1_].visible = false;
+            // iOS AOT: the mcR1..4 resource sub-clips can be undefined on the popup symbol.
+            if(this["mcR" + _loc1_])
+            {
+               this["mcR" + _loc1_].visible = false;
+            }
             _loc1_++;
          }
-         mcOutposts.visible = false;
+         if(mcOutposts)
+         {
+            mcOutposts.visible = false;
+         }
       }
-      
+
       private function UpdateResourceDisplay() : void
       {
+         var _r:* = null;
          var _loc2_:int = 0;
          var _loc1_:int = 1;
+         // iOS AOT: mcFrame2/mcR1..4/mcOutposts (+ their tR/mcBar children) can be undefined on
+         // the embedded popup symbol → accessing .x/.tR threw #1010 EVERY tick, tearing the map
+         // popup down so it closed instantly. Guard each; the world-map cells render regardless.
+         if(mcFrame2 == null)
+         {
+            return;
+         }
          while(_loc1_ < 5)
          {
-            this["mcR" + _loc1_].x = mcFrame2.x + 20;
-            this["mcR" + _loc1_].y = mcFrame2.y + 18 + (_loc1_ - 1) * 36;
-            this["mcR" + _loc1_].tR.htmlText = GLOBAL.FormatNumber(GLOBAL._resources["r" + _loc1_].Get());
-            _loc2_ = int(100 / GLOBAL._resources["r" + _loc1_ + "max"] * GLOBAL._resources["r" + _loc1_].Get());
-            if(_loc2_ > 90)
+            _r = this["mcR" + _loc1_];
+            if(_r)
             {
-               _loc2_ = 90;
+               _r.x = mcFrame2.x + 20;
+               _r.y = mcFrame2.y + 18 + (_loc1_ - 1) * 36;
+               if(_r.tR)
+               {
+                  _r.tR.htmlText = GLOBAL.FormatNumber(GLOBAL._resources["r" + _loc1_].Get());
+               }
+               _loc2_ = int(100 / GLOBAL._resources["r" + _loc1_ + "max"] * GLOBAL._resources["r" + _loc1_].Get());
+               if(_loc2_ > 90)
+               {
+                  _loc2_ = 90;
+               }
+               if(_r.mcBar)
+               {
+                  _r.mcBar.width = _loc2_;
+               }
             }
-            this["mcR" + _loc1_].mcBar.width = _loc2_;
             _loc1_++;
          }
-         mcOutposts.x = mcFrame2.x + 20;
-         mcOutposts.y = mcFrame2.y + 162;
-         mcOutposts.tR.htmlText = GLOBAL._mapOutpost.length + " " + KEYS.Get("newmap_outposts");
+         if(mcOutposts)
+         {
+            mcOutposts.x = mcFrame2.x + 20;
+            mcOutposts.y = mcFrame2.y + 162;
+            if(mcOutposts.tR)
+            {
+               mcOutposts.tR.htmlText = GLOBAL._mapOutpost.length + " " + KEYS.Get("newmap_outposts");
+            }
+         }
       }
       
       public function ShowInfo(param1:MapRoomCell) : void
@@ -713,7 +758,7 @@ package com.monsters.maproom_advanced
          var cellIndex:int = 0;
          var rowIndex:int = 0;
          var mapRoomCell:MapRoomCell = null;
-         var stageWidth:int = GLOBAL._ROOT.stage.stageWidth;
+         var stageWidth:int = int(GLOBAL.GetGameWidth());
          var stageHeight:int = GLOBAL.GetGameHeight();
          LOGGER.Log("log","val of param1: " + param1);
          if(stageWidth > 1024)

@@ -47,7 +47,13 @@ package
       {
          if(_mc)
          {
-            _mc.Update();
+            try
+            {
+               _mc.Update();
+            }
+            catch(hatchErr:Error)
+            {
+            }
          }
       }
    }

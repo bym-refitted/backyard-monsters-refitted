@@ -52,6 +52,9 @@ redis.onclose = (err) => logger.error(`Redis disconnected: ${err.message}`);
 
   await redis.connect();
 
+  // Production already serves the Flash socket policy through the chat server.
+  // Keep local mode unchanged: the iOS client does not need chat during local
+  // development, and opening port 843 there is unnecessary.
   if (process.env.ENV !== Env.LOCAL) startChatServer();
 
   app.use(corsCacheControl);
@@ -72,6 +75,29 @@ redis.onclose = (err) => logger.error(`Redis disconnected: ${err.message}`);
 
   // Serve static files
   app.use(processLanguagesFile);
+
+  // Flash only honors `allow-http-request-headers-from` (required for the
+  // Authorization header on cross-domain API calls, e.g. base/load) when the
+  // policy file is served as text/x-cross-domain-policy. koa-static would send
+  // application/xml, which silently drops the header permission and makes the
+  // client throw SecurityError #2048 right after login. Serve it explicitly.
+  app.use(async (ctx, next) => {
+    if (ctx.path === "/crossdomain.xml") {
+      logger.info(`Flash requested crossdomain.xml policy (ua: ${ctx.headers["user-agent"] || "?"})`);
+      // Set the header explicitly (no charset suffix) — Flash matches the bare type.
+      ctx.set("Content-Type", "text/x-cross-domain-policy");
+      ctx.body =
+        '<?xml version="1.0"?>\n' +
+        "<cross-domain-policy>\n" +
+        '  <site-control permitted-cross-domain-policies="all" />\n' +
+        '  <allow-access-from domain="*" secure="false" />\n' +
+        '  <allow-http-request-headers-from domain="*" headers="*" secure="false" />\n' +
+        "</cross-domain-policy>";
+      return;
+    }
+    await next();
+  });
+
   app.use(serve("public/"));
 
   process.on("unhandledRejection", (reason, promise) => {

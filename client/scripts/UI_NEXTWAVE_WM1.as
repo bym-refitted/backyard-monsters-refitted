@@ -62,18 +62,21 @@ package
       public function Setup() : void
       {
          SPECIALEVENT_WM1.Setup();
-         mcHit.addEventListener(MouseEvent.CLICK,OnBarClicked);
-         mcHit.addEventListener(MouseEvent.ROLL_OVER,this.WaveShow);
-         mcHit.addEventListener(MouseEvent.ROLL_OUT,this.WaveHide);
-         mcHit.buttonMode = true;
-         mcHit.mouseChildren = false;
-         this.SetWave(SPECIALEVENT_WM1.wave);
-         this.Resize();
+         if(mcHit)
+         {
+            mcHit.addEventListener(MouseEvent.CLICK,OnBarClicked);
+            mcHit.addEventListener(MouseEvent.ROLL_OVER,this.WaveShow);
+            mcHit.addEventListener(MouseEvent.ROLL_OUT,this.WaveHide);
+            mcHit.buttonMode = true;
+            mcHit.mouseChildren = false;
+            this.SetWave(SPECIALEVENT_WM1.wave);
+            this.Resize();
+         }
       }
       
       public function Resize() : void
       {
-         if(UI_BOTTOM._mc)
+         if(UI_BOTTOM._mc && mcHit)
          {
             x = UI_BOTTOM._mc.x + UI_BOTTOM._mc.width - mcHit.width;
             y = UI_BOTTOM._mc.y - mcHit.height;

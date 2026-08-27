@@ -549,7 +549,17 @@ package
             _loc3_ = new SecNum(BASE.Fund(_type,_loc1_.Get(),false,this));
             if(_loc3_.Get() > 0)
             {
-               ResourcePackages.Create(BASE.isInfernoMainYardOrOutpost ? _type + 4 : _type,this,_loc1_.Get());
+               // The resource is already banked (BASE.Fund above); ResourcePackages.Create is
+               // only the flying-coin animation. Guard it so a visual #1009 can't abort the
+               // rest of Bank (PointsAdd + CalcResources) — otherwise the resource counters
+               // never refresh and collecting looks broken even though the resource was added.
+               try
+               {
+                  ResourcePackages.Create(BASE.isInfernoMainYardOrOutpost ? _type + 4 : _type,this,_loc1_.Get());
+               }
+               catch(pkgErr:Error)
+               {
+               }
                if(TUTORIAL._stage < 200)
                {
                   BASE.PointsAdd(_loc3_.Get());

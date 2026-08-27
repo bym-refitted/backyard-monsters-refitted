@@ -291,7 +291,15 @@ package
       {
          if(_open)
          {
-            _housingPopup.Update();
+            // Guard so a missing child in the housing popup can't throw #1009 every Timekeeper
+            // tick (it was spamming ~1 uncaught error per tick on iOS).
+            try
+            {
+               _housingPopup.Update();
+            }
+            catch(hupErr:Error)
+            {
+            }
          }
       }
       

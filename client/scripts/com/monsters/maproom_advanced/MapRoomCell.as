@@ -115,6 +115,8 @@ package com.monsters.maproom_advanced
       public var depth:int;
       
       private var inTest:Boolean = false;
+
+      private static var _mrcDiag:Boolean = false;
       
       private var _inAllianceProps:Object;
       
@@ -152,29 +154,110 @@ package com.monsters.maproom_advanced
          };
          this.testAllianceIDs = [1,2,3,102,111];
          super();
-         mc.mcHit.addEventListener(MouseEvent.MOUSE_OVER,this.Over);
-         mc.mcHit.addEventListener(MouseEvent.MOUSE_OUT,this.Out);
-         mc.mcHit.addEventListener(MouseEvent.MOUSE_UP,this.Click);
-         mc.mcPlayer.mouseEnabled = false;
-         mc.mcPlayer.mouseChildren = false;
-         mc.mcGlow.mouseEnabled = false;
-         mc.mcGlow.mouseChildren = false;
-         mc.mcGlow.gotoAndStop(1);
-         mc.mcEdges.mouseEnabled = false;
-         mc.mcEdges.mouseChildren = false;
-         mc.mcPlayer.mcWorker.visible = false;
-         mc.mcPlayer.mcInvite.visible = false;
-         mc.mcPlayer.mcFlag.mouseEnabled = false;
-         mc.mcPlayer.mcFlag.mouseChildren = false;
-         mc.mcPlayer.mcFlag.gotoAndStop(1);
-         mc.mcPlayer.mcFlag.nameBar.mcBar.gotoAndStop(1);
-         mc.mcPlayer.mcFlag.nameBar.mcBG.gotoAndStop(1);
-         mc.mcPlayer.mcFlag.txtAlliance.visible = false;
-         mc.mcPlayer.mcFlag.txtAlliance.htmlText = "";
-         mc.mcEdges.enabled = false;
-         mc.mcEdges.visible = false;
-         mc.mcPrompt.enabled = false;
-         mc.mcPrompt.visible = false;
+         // iOS AOT: some of MapRoomCell_CLIP's nested mc.* children are undefined even though the
+         // symbol instantiates (the CLIP ctor's mc.mcPlayer.mcWorker exists, but siblings may not)
+         // → the un-guarded chain below threw #1010 in EVERY cell's ctor, so GenerateCells aborted
+         // and the map closed. Guard by parent; log the child tree ONCE to see what's missing.
+         if(!_mrcDiag)
+         {
+            _mrcDiag = true;
+            try
+            {
+               var _s:String = "MRCELL mc=" + (mc != null);
+               if(mc != null)
+               {
+                  _s += " hit=" + (mc.mcHit != null) + " player=" + (mc.mcPlayer != null) + " glow=" + (mc.mcGlow != null) + " edges=" + (mc.mcEdges != null) + " prompt=" + (mc.mcPrompt != null);
+                  if(mc.mcPlayer != null)
+                  {
+                     _s += " worker=" + (mc.mcPlayer.mcWorker != null) + " invite=" + (mc.mcPlayer.mcInvite != null) + " flag=" + (mc.mcPlayer.mcFlag != null);
+                     if(mc.mcPlayer.mcFlag != null)
+                     {
+                        _s += " nameBar=" + (mc.mcPlayer.mcFlag.nameBar != null) + " txtAlliance=" + (mc.mcPlayer.mcFlag.txtAlliance != null);
+                        if(mc.mcPlayer.mcFlag.nameBar != null)
+                        {
+                           _s += " nb.mcBar=" + (mc.mcPlayer.mcFlag.nameBar.mcBar != null) + " nb.mcBG=" + (mc.mcPlayer.mcFlag.nameBar.mcBG != null);
+                        }
+                     }
+                  }
+               }
+               GAME.logDiag(_s);
+            }
+            catch(e:*)
+            {
+               GAME.logDiag("MRCELL diag err " + e);
+            }
+         }
+         // iOS AOT: mc.mcHit (the cell's click area) is undefined on the embedded symbol. Fall back
+         // to the cell art (mc) itself as the hit target so a camp can still be tapped to attack.
+         var _hit:* = mc.mcHit ? mc.mcHit : mc;
+         if(_hit)
+         {
+            _hit.addEventListener(MouseEvent.MOUSE_OVER,this.Over);
+            _hit.addEventListener(MouseEvent.MOUSE_OUT,this.Out);
+            _hit.addEventListener(MouseEvent.MOUSE_UP,this.Click);
+         }
+         if(mc.mcPlayer)
+         {
+            mc.mcPlayer.mouseEnabled = false;
+            mc.mcPlayer.mouseChildren = false;
+            if(mc.mcPlayer.mcWorker)
+            {
+               mc.mcPlayer.mcWorker.visible = false;
+            }
+            if(mc.mcPlayer.mcInvite)
+            {
+               mc.mcPlayer.mcInvite.visible = false;
+            }
+            if(mc.mcPlayer.mcFlag)
+            {
+               mc.mcPlayer.mcFlag.mouseEnabled = false;
+               mc.mcPlayer.mcFlag.mouseChildren = false;
+               mc.mcPlayer.mcFlag.gotoAndStop(1);
+               if(mc.mcPlayer.mcFlag.nameBar)
+               {
+                  if(mc.mcPlayer.mcFlag.nameBar.mcBar)
+                  {
+                     mc.mcPlayer.mcFlag.nameBar.mcBar.gotoAndStop(1);
+                  }
+                  if(mc.mcPlayer.mcFlag.nameBar.mcBG)
+                  {
+                     mc.mcPlayer.mcFlag.nameBar.mcBG.gotoAndStop(1);
+                  }
+               }
+               if(mc.mcPlayer.mcFlag.txtAlliance)
+               {
+                  mc.mcPlayer.mcFlag.txtAlliance.visible = false;
+                  mc.mcPlayer.mcFlag.txtAlliance.htmlText = "";
+               }
+            }
+         }
+         // iOS AOT: mc.mcGlow is undefined on some cell instances (same lossy-symbol issue as
+         // mcHit above). Every Update()/highlight path in this file and MapRoomPopup assumes
+         // mc.mcGlow exists and touches it unconditionally (alpha, gotoAndStop) — without a
+         // fallback here, that threw #1010 every tick and aborted MapRoomPopup.Update() before
+         // it could refresh the enemy base icons, leaving the map looking empty.
+         if(!mc.mcGlow)
+         {
+            mc.mcGlow = new MovieClip();
+            mc.addChild(mc.mcGlow);
+         }
+         {
+            mc.mcGlow.mouseEnabled = false;
+            mc.mcGlow.mouseChildren = false;
+            this.GlowStop(1);
+         }
+         if(mc.mcEdges)
+         {
+            mc.mcEdges.mouseEnabled = false;
+            mc.mcEdges.mouseChildren = false;
+            mc.mcEdges.enabled = false;
+            mc.mcEdges.visible = false;
+         }
+         if(mc.mcPrompt)
+         {
+            mc.mcPrompt.enabled = false;
+            mc.mcPrompt.visible = false;
+         }
       }
       
       public function set alliance(param1:AllyInfo) : void
@@ -713,20 +796,20 @@ package com.monsters.maproom_advanced
          {
             if(this._over)
             {
-               mc.mcGlow.gotoAndStop(4);
+               this.GlowStop(4);
             }
             else
             {
-               mc.mcGlow.gotoAndStop(3);
+               this.GlowStop(3);
             }
          }
          else if(this._over)
          {
-            mc.mcGlow.gotoAndStop(2);
+            this.GlowStop(2);
          }
          else
          {
-            mc.mcGlow.gotoAndStop(1);
+            this.GlowStop(1);
          }
          if(this._monsterData)
          {
@@ -784,11 +867,11 @@ package com.monsters.maproom_advanced
             {
                if(this._over)
                {
-                  mc.mcGlow.gotoAndStop(5);
+                  this.GlowStop(5);
                }
                else
                {
-                  mc.mcGlow.gotoAndStop(6);
+                  this.GlowStop(6);
                }
                mc.mcPrompt.visible = true;
                mc.mcPrompt.enabled = true;
@@ -811,20 +894,20 @@ package com.monsters.maproom_advanced
          {
             if(this._over)
             {
-               mc.mcGlow.gotoAndStop(4);
+               this.GlowStop(4);
             }
             else
             {
-               mc.mcGlow.gotoAndStop(3);
+               this.GlowStop(3);
             }
          }
          else if(this._over)
          {
-            mc.mcGlow.gotoAndStop(2);
+            this.GlowStop(2);
          }
          else
          {
-            mc.mcGlow.gotoAndStop(1);
+            this.GlowStop(1);
          }
          var _loc2_:Boolean = true;
          if(!this._mine)
@@ -1046,15 +1129,15 @@ package com.monsters.maproom_advanced
          this._over = true;
          if(MapRoom._viewOnly && this._baseID == MapRoom._inviteBaseID)
          {
-            mc.mcGlow.gotoAndStop(5);
+            this.GlowStop(5);
          }
          else if(this._inRange)
          {
-            mc.mcGlow.gotoAndStop(4);
+            this.GlowStop(4);
          }
          else
          {
-            mc.mcGlow.gotoAndStop(2);
+            this.GlowStop(2);
          }
          MapRoom._mc.ShowInfo(this);
       }
@@ -1064,23 +1147,39 @@ package com.monsters.maproom_advanced
          this._over = false;
          if(MapRoom._viewOnly && this._baseID == MapRoom._inviteBaseID)
          {
-            mc.mcGlow.gotoAndStop(6);
+            this.GlowStop(6);
          }
          else if(this._inRange)
          {
-            mc.mcGlow.gotoAndStop(3);
+            this.GlowStop(3);
          }
          else
          {
-            mc.mcGlow.gotoAndStop(1);
+            this.GlowStop(1);
          }
       }
       
+      // iOS AOT: mc.mcGlow (the cell selection glow) is undefined on the embedded symbol; the many
+      // gotoAndStop() calls that set its highlight frame would throw #1009 during Update/highlight
+      // and close the map. Route them all through here so a missing glow is a silent no-op.
+      private function GlowStop(param1:int) : void
+      {
+         if(mc.mcGlow)
+         {
+            mc.mcGlow.gotoAndStop(param1);
+         }
+      }
+
       public function Cleanup() : void
       {
-         mc.mcHit.removeEventListener(MouseEvent.MOUSE_OVER,this.Over);
-         mc.mcHit.removeEventListener(MouseEvent.MOUSE_OUT,this.Out);
-         mc.mcHit.removeEventListener(MouseEvent.MOUSE_UP,this.Click);
+         // Same fallback hit target as the ctor (mc.mcHit is undefined on iOS → listeners on mc).
+         var _hit:* = mc.mcHit ? mc.mcHit : mc;
+         if(_hit)
+         {
+            _hit.removeEventListener(MouseEvent.MOUSE_OVER,this.Over);
+            _hit.removeEventListener(MouseEvent.MOUSE_OUT,this.Out);
+            _hit.removeEventListener(MouseEvent.MOUSE_UP,this.Click);
+         }
          this._allianceID = 0;
          this._alliance = null;
       }

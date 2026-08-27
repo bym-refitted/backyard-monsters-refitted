@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  iOS platform options for the ANE: link the app binary against UserNotifications.framework
+  (provides UNUserNotificationCenter etc.). Passed to adt via -platformoptions when packaging
+  the ANE, and applied when adt links the final .ipa.
+-->
+<platform xmlns="http://ns.adobe.com/air/extension/50.2">
+    <!-- sdkVersion MUST be two segments (e.g. 12.0). adt's parser has a long-standing bug where a
+         three-segment value (12.0.0) is ignored, and without a valid sdkVersion adt wrongly rejects
+         modern arm64-only (Xcode 14+) static libs as "not a universal binary". See airsdk issue #2140. -->
+    <sdkVersion>12.0</sdkVersion>
+    <linkerOptions>
+        <option>-framework UserNotifications</option>
+    </linkerOptions>
+</platform>

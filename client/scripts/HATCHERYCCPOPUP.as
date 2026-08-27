@@ -42,6 +42,31 @@ package
          var _loc11_:MovieClip = null;
          var _loc12_:MovieClip = null;
          super();
+         // The embedded assets.swf is missing the "hatcheryRemove1".."hatcheryRemove5" child
+         // instances on this symbol's timeline (lossy asset — see hatchery1/hatcheryRemove1 null
+         // check that used to throw #1009 here and abort the whole popup as a black box).
+         // Backfill with blank placeholder clips so every hatcheryRemoveN reference below (visible
+         // toggles, ShowRemove/HideRemove hover, Update()) keeps working; only the little cancel-
+         // production "X" icon stays invisible for those slots.
+         var hccMissingIdx:int = 1;
+         var hccMissingBtn:buttonClose_CLIP = null;
+         var hccSlot:MovieClip = null;
+         while(hccMissingIdx <= 5)
+         {
+            if(this["hatcheryRemove" + hccMissingIdx] == null)
+            {
+               hccMissingBtn = new buttonClose_CLIP();
+               hccSlot = this["hatchery" + hccMissingIdx] as MovieClip;
+               if(hccSlot)
+               {
+                  hccMissingBtn.x = hccSlot.x + hccSlot.width - 8;
+                  hccMissingBtn.y = hccSlot.y - 8;
+               }
+               this["hatcheryRemove" + hccMissingIdx] = hccMissingBtn;
+               addChild(hccMissingBtn);
+            }
+            hccMissingIdx++;
+         }
          this.setupSubscriptions(HATCHERYCC.queueLimit > HATCHERYCC.DEFAULT_QUEUE_LIMIT);
          bSpeedup.tName.htmlText = "<b>" + KEYS.Get("btn_speedup") + "</b>";
          bSpeedup.mouseChildren = false;
@@ -679,8 +704,25 @@ package
       {
          var _loc1_:int = 7;
          var _loc2_:int = 1;
+         var hccMissingBtn2:buttonClose_CLIP = null;
+         var hccSlot2:MovieClip = null;
          while(_loc2_ <= _loc1_)
          {
+            // Same lossy-swf gap as hatcheryRemove1-5 in the constructor: mcRemove1-7's child
+            // instances can be missing on this symbol's timeline too. Backfill so Setup() (and
+            // the Center()/ScaleUp() calls right after it in HATCHERYCC.Show()) don't abort.
+            if(this["mcRemove" + _loc2_] == null)
+            {
+               hccMissingBtn2 = new buttonClose_CLIP();
+               hccSlot2 = this["slot" + _loc2_] as MovieClip;
+               if(hccSlot2)
+               {
+                  hccMissingBtn2.x = hccSlot2.x + hccSlot2.width - 8;
+                  hccMissingBtn2.y = hccSlot2.y - 8;
+               }
+               this["mcRemove" + _loc2_] = hccMissingBtn2;
+               addChild(hccMissingBtn2);
+            }
             this["slot" + _loc2_].addEventListener(MouseEvent.MOUSE_DOWN,this.QueueRemove(_loc2_));
             this["slot" + _loc2_].addEventListener(MouseEvent.MOUSE_OVER,this.ShowRemove(this["mcRemove" + _loc2_]));
             this["slot" + _loc2_].addEventListener(MouseEvent.MOUSE_OUT,this.HideRemove(this["mcRemove" + _loc2_]));

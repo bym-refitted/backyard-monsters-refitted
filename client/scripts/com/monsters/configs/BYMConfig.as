@@ -53,7 +53,10 @@ package com.monsters.configs
          // Apparently, it is more performant to have this enabled
          // RENDERER_ON true = graphics are rendered using a bitmap approach
          // RENDERER_ON false = graphics are rendered using a vector approach / display list approach
-         return true;
+         // iOS: the bitmap renderer draws the base to a large BitmapData that comes up
+         // blank on the AIR interpreter build; the vector/display-list path renders fine
+         // (same path the UI uses), so force it off on this build.
+         return false;
       }
       
       public function get OPTIMIZED_SHADOWS() : Boolean

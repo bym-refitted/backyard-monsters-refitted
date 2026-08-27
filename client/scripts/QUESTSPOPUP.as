@@ -357,12 +357,12 @@ package
                   if(!QUESTS._completed || QUESTS._completed[questID] != 1)
                   {
                      (this._infoMC.bCollect as Button).Enabled = false;
-                     this._infoMC.mcArrow.visible = false;
+                     if(this._infoMC.mcArrow) this._infoMC.mcArrow.visible = false;
                   }
                   else
                   {
                      (this._infoMC.bCollect as Button).Highlight = true;
-                     this._infoMC.mcArrow.visible = true;
+                     if(this._infoMC.mcArrow) this._infoMC.mcArrow.visible = true;
                   }
                }
                else

@@ -11,7 +11,14 @@ package
       
       public function Update(param1:String) : void
       {
-         mc.tText.htmlText = param1;
+         // Guard against the lossy assets.swf: the `mc` symbol can be missing its
+         // `tText` child, so `mc.tText.htmlText` throws #1009 every frame during a
+         // wild-monster attack (WMATTACK), freezing the game in a refresh loop.
+         // Skipping the text keeps the warning banner working without crashing.
+         if(mc != null && mc.tText != null)
+         {
+            mc.tText.htmlText = param1;
+         }
       }
    }
 }

@@ -37,27 +37,56 @@ package
          super();
          this._size = param1;
          this._dropTarget = param2;
-         ring1.addEventListener(MouseEvent.MOUSE_UP,this.Place);
-         ring1.addEventListener(MouseEvent.MOUSE_DOWN,MAP.Click);
-         ring1.mouseEnabled = true;
-         ring1.buttonMode = true;
+         // ring1 (the aiming ring) is a nested child of DROPZONE_CLIP that is null on iOS, so
+         // the original ring1.addEventListener threw #1009 here and the whole drop zone was
+         // never created -> could not deploy troops at all. Guard it; the touch tap-to-deploy
+         // below (PlaceTouch) does not need the ring.
+         if(ring1)
+         {
+            ring1.addEventListener(MouseEvent.MOUSE_UP,this.Place);
+            ring1.addEventListener(MouseEvent.MOUSE_DOWN,MAP.Click);
+            ring1.mouseEnabled = true;
+            ring1.buttonMode = true;
+            ring1.gotoAndStop(1);
+         }
          addEventListener(Event.ENTER_FRAME,this.Follow);
-         ring1.gotoAndStop(1);
          this.Update(this._size,param2);
+         // Touch: there is no hovering cursor for the aiming ring to Follow, so the small ring
+         // is never under the finger and ring1's MOUSE_UP (Place) never fires -> can't deploy.
+         // Deploy at the tapped point instead: listen on the whole battlefield and, on release,
+         // snap to the tap location and reuse the same Drop()/ATTACK.Spawn path.
+         if(GLOBAL._iosViewport && MAP._GROUND)
+         {
+            MAP._GROUND.addEventListener(MouseEvent.MOUSE_UP,this.PlaceTouch);
+         }
       }
       
       public function Update(param1:int, param2:int) : void
       {
          this._size = param1;
          this._dropTarget = param2;
-         ring1.width = this._size * 1.2;
-         ring1.height = this._size * 1.2 * 0.5;
+         if(ring1)
+         {
+            ring1.width = this._size * 1.2;
+            ring1.height = this._size * 1.2 * 0.5;
+         }
       }
       
       public function Place(param1:MouseEvent) : void
       {
          if(!MAP._dragged && ATTACK._countdown >= 0)
          {
+            this.Drop();
+         }
+      }
+
+      public function PlaceTouch(param1:MouseEvent) : void
+      {
+         // A tap (not a map-scroll drag) anywhere on the ground deploys at that point on iOS.
+         if(!MAP._dragged && ATTACK._countdown >= 0 && MAP._GROUND)
+         {
+            this.x = MAP._GROUND.mouseX;
+            this.y = MAP._GROUND.mouseY;
             this.Drop();
          }
       }
@@ -73,32 +102,32 @@ package
                case GROUND:
                   if(!BASE.BuildingOverlap(new Point(x,y),this._size,true,true,true))
                   {
-                     ring1.gotoAndStop(1);
+                     if(ring1) ring1.gotoAndStop(1);
                   }
                   else
                   {
-                     ring1.gotoAndStop(2);
+                     if(ring1) ring1.gotoAndStop(2);
                   }
                   break;
                case SIEGEWEAPON_GROUND:
                   if(!BASE.BuildingOverlap(new Point(x,y),this._size,true,true,true))
                   {
-                     ring1.gotoAndStop(1);
+                     if(ring1) ring1.gotoAndStop(1);
                   }
                   else
                   {
-                     ring1.gotoAndStop(2);
+                     if(ring1) ring1.gotoAndStop(2);
                   }
                   this.UpdateTargetBuildings(x,y,this._size);
                   break;
                case SIEGEWEAPON_GROUND_SPECIAL:
                   if(!BASE.BuildingOverlap(new Point(x,y),SIEGEWEAPON_GROUND_SPECIAL_RADIUS,true,true,true))
                   {
-                     ring1.gotoAndStop(1);
+                     if(ring1) ring1.gotoAndStop(1);
                   }
                   else
                   {
-                     ring1.gotoAndStop(2);
+                     if(ring1) ring1.gotoAndStop(2);
                   }
                   this.UpdateTargetBuildings(x,y,this._size);
                   break;
@@ -106,22 +135,22 @@ package
                case SIEGEWEAPON_BUILDINGS:
                   if(BASE.BuildingOverlap(new Point(x,y),this._size,true,true,true))
                   {
-                     ring1.gotoAndStop(1);
+                     if(ring1) ring1.gotoAndStop(1);
                   }
                   else
                   {
-                     ring1.gotoAndStop(2);
+                     if(ring1) ring1.gotoAndStop(2);
                   }
                   this.UpdateTargetBuildings(x,y,this._size);
                   break;
                case MONSTERS:
                   if(CREEPS.CreepOverlap(new Point(x,y),this._size))
                   {
-                     ring1.gotoAndStop(1);
+                     if(ring1) ring1.gotoAndStop(1);
                   }
                   else
                   {
-                     ring1.gotoAndStop(2);
+                     if(ring1) ring1.gotoAndStop(2);
                   }
             }
          }
@@ -139,6 +168,10 @@ package
       {
          this.Clear();
          removeEventListener(Event.ENTER_FRAME,this.Follow);
+         if(GLOBAL._iosViewport && MAP._GROUND)
+         {
+            MAP._GROUND.removeEventListener(MouseEvent.MOUSE_UP,this.PlaceTouch);
+         }
       }
       
       public function get isOverTarget() : Boolean

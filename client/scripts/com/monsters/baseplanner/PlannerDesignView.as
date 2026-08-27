@@ -266,6 +266,13 @@ package com.monsters.baseplanner
 
       public function canvasDragStart(param1:MouseEvent = null):void
       {
+         // On iOS, once a building is picked up (_selectMoveDragging) a finger-drag must move ONLY
+         // that building, not pan the canvas. Panning here would also set _dragged, which suppresses
+         // the drop (BuildingItem.onMouseUp only dispatches BUILDING_CLICK when !_dragged).
+         if (GLOBAL._iosViewport && this._selectMoveDragging)
+         {
+            return;
+         }
          this._dragging = true;
          this._dragged = false;
          this._dragOffset = new Point(this._canvas.x - mouseX, this._canvas.y - mouseY);
@@ -285,6 +292,11 @@ package com.monsters.baseplanner
 
       public function canvasDrag(param1:Event = null):void
       {
+         // Defense in depth: never pan while positioning a picked-up building on iOS.
+         if (GLOBAL._iosViewport && this._selectMoveDragging)
+         {
+            return;
+         }
          if (this._dragged)
          {
             this.checkDragBounds();

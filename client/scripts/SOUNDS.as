@@ -385,27 +385,35 @@ package
          var _loc3_:SoundTransform = null;
          if (param2 == "snd")
          {
+            // mcSound/mcMusic are the mute-button graphics; they are absent from the lossy
+            // assets.swf (null), so guard the frame updates but still apply the mute state.
             if (param1)
             {
-               if (GLOBAL.mode == GLOBAL.e_BASE_MODE.ATTACK || GLOBAL.mode == GLOBAL.e_BASE_MODE.WMATTACK)
+               if (UI2._top && UI2._top.mcSound)
                {
-                  UI2._top.mcSound.gotoAndStop(2 + 2);
-               }
-               else
-               {
-                  UI2._top.mcSound.gotoAndStop(2);
+                  if (GLOBAL.mode == GLOBAL.e_BASE_MODE.ATTACK || GLOBAL.mode == GLOBAL.e_BASE_MODE.WMATTACK)
+                  {
+                     UI2._top.mcSound.gotoAndStop(2 + 2);
+                  }
+                  else
+                  {
+                     UI2._top.mcSound.gotoAndStop(2);
+                  }
                }
                _muted = 1;
             }
             else
             {
-               if (GLOBAL.mode == GLOBAL.e_BASE_MODE.ATTACK || GLOBAL.mode == GLOBAL.e_BASE_MODE.WMATTACK)
+               if (UI2._top && UI2._top.mcSound)
                {
-                  UI2._top.mcSound.gotoAndStop(1 + 2);
-               }
-               else
-               {
-                  UI2._top.mcSound.gotoAndStop(1);
+                  if (GLOBAL.mode == GLOBAL.e_BASE_MODE.ATTACK || GLOBAL.mode == GLOBAL.e_BASE_MODE.WMATTACK)
+                  {
+                     UI2._top.mcSound.gotoAndStop(1 + 2);
+                  }
+                  else
+                  {
+                     UI2._top.mcSound.gotoAndStop(1);
+                  }
                }
                _muted = 0;
             }
@@ -415,26 +423,32 @@ package
             _loc3_ = new SoundTransform();
             if (param1)
             {
-               if (GLOBAL.mode == GLOBAL.e_BASE_MODE.ATTACK || GLOBAL.mode == GLOBAL.e_BASE_MODE.WMATTACK)
+               if (UI2._top && UI2._top.mcMusic)
                {
-                  UI2._top.mcMusic.gotoAndStop(2 + 2);
-               }
-               else
-               {
-                  UI2._top.mcMusic.gotoAndStop(2);
+                  if (GLOBAL.mode == GLOBAL.e_BASE_MODE.ATTACK || GLOBAL.mode == GLOBAL.e_BASE_MODE.WMATTACK)
+                  {
+                     UI2._top.mcMusic.gotoAndStop(2 + 2);
+                  }
+                  else
+                  {
+                     UI2._top.mcMusic.gotoAndStop(2);
+                  }
                }
                _musicVolume = 0;
                _mutedMusic = 1;
             }
             else
             {
-               if (GLOBAL.mode == GLOBAL.e_BASE_MODE.ATTACK || GLOBAL.mode == GLOBAL.e_BASE_MODE.WMATTACK)
+               if (UI2._top && UI2._top.mcMusic)
                {
-                  UI2._top.mcMusic.gotoAndStop(1 + 2);
-               }
-               else
-               {
-                  UI2._top.mcMusic.gotoAndStop(1);
+                  if (GLOBAL.mode == GLOBAL.e_BASE_MODE.ATTACK || GLOBAL.mode == GLOBAL.e_BASE_MODE.WMATTACK)
+                  {
+                     UI2._top.mcMusic.gotoAndStop(1 + 2);
+                  }
+                  else
+                  {
+                     UI2._top.mcMusic.gotoAndStop(1);
+                  }
                }
                _musicVolume = 0.7;
                _mutedMusic = 0;

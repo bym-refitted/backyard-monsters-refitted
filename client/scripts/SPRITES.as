@@ -11,6 +11,7 @@ package
    {
       
       public static var _sprites:Object;
+
        
       
       public function SPRITES()
@@ -109,6 +110,14 @@ package
       
       public static function SetupSprite(param1:String) : void
       {
+         // The sprite registry may not be populated yet (e.g. during SiegeWeapons static
+         // construction) or the descriptor may be missing from the lossy assets.swf, leaving
+         // _sprites / _sprites[param1] null -> #1009. Skip the preload; the image is
+         // re-requested on demand when the sprite is actually rendered.
+         if(!_sprites || !_sprites[param1])
+         {
+            return;
+         }
          ImageCache.GetImageWithCallBack(_sprites[param1].key,onAssetLoaded);
       }
       

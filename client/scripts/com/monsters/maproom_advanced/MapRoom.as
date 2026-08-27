@@ -679,7 +679,38 @@ package com.monsters.maproom_advanced
             };
             handleLoadError = function(param1:IOErrorEvent):void
             {
+               var stuck:Object = null;
+               // A failed getarea used to leave the pending request stuck at the front of the
+               // queue (no shift, no retry, next never sent), so ALL further zone loads froze and
+               // the world map rendered blank — intermittently, whenever a request failed. Against
+               // a remote (VPS) server these transient timeouts/IOErrors are common. Retry the same
+               // request a few times, then drop it and continue with the rest of the queue so one
+               // bad zone can't freeze the whole map; the dropped zone is re-requested by the normal
+               // 30s / scroll refresh when it's back in view.
+               stuck = _pendingMapCellDataRequests[0];
+               if(stuck)
+               {
+                  stuck.retries = int(stuck.retries) + 1;
+                  if(stuck.retries < 4)
+                  {
+                     if(!requestRetryTimer)
+                     {
+                        requestRetryTimer = new Timer(400,1);
+                        requestRetryTimer.addEventListener(TimerEvent.TIMER,trySendRequest);
+                     }
+                     requestRetryTimer.reset();
+                     requestRetryTimer.start();
+                     return;
+                  }
+                  _pendingMapCellDataRequests.shift();
+               }
+               // Only count a zone as failed once we actually give up on it (retries exhausted),
+               // so a single flaky zone can't spuriously trip the fatal HTTP popup.
                ++_saveErrors;
+               if(_pendingMapCellDataRequests.length > 0)
+               {
+                  trySendRequest();
+               }
                if(_saveErrors >= 3)
                {
                   LOGGER.Log("err","MapRoom.RequestData HTTP");

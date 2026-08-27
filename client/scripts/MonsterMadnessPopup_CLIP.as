@@ -15,7 +15,7 @@ package
       
       public var mcFrame:frame_CLIP;
       
-      public var mcLoading:loading_52;
+      public var mcLoading:MovieClip;
       
       public var bAction:Button_CLIP;
       

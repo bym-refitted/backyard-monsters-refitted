@@ -39,10 +39,22 @@ package com.monsters.ui
             _missions = new UI_MISSIONMENU();
          }
          _mc.Setup();
-         _mc.bBuild.addEventListener(MouseEvent.CLICK,BUILDINGS.Show);
-         _mc.bQuests.addEventListener(MouseEvent.CLICK,QUESTS.Show);
-         _mc.bStore.addEventListener(MouseEvent.CLICK,clickedStore);
-         _mc.bMap.addEventListener(MouseEvent.CLICK,GLOBAL.ShowMap);
+         if(_mc.bBuild)
+         {
+            _mc.bBuild.addEventListener(MouseEvent.CLICK,BUILDINGS.Show);
+         }
+         if(_mc.bQuests)
+         {
+            _mc.bQuests.addEventListener(MouseEvent.CLICK,QUESTS.Show);
+         }
+         if(_mc.bStore)
+         {
+            _mc.bStore.addEventListener(MouseEvent.CLICK,clickedStore);
+         }
+         if(_mc.bMap)
+         {
+            _mc.bMap.addEventListener(MouseEvent.CLICK,GLOBAL.ShowMap);
+         }
          if(_missions)
          {
             GLOBAL._layerUI.addChild(_missions);
@@ -53,7 +65,10 @@ package com.monsters.ui
          }
          if(BASE.isOutpostMapRoom2Only)
          {
-            _mc.bKits.addEventListener(MouseEvent.CLICK,ShowStarterKits);
+            if(_mc.bKits)
+            {
+               _mc.bKits.addEventListener(MouseEvent.CLICK,ShowStarterKits);
+            }
          }
          if(!UI2._showBottom)
          {
@@ -101,7 +116,10 @@ package com.monsters.ui
                _loc1_ += 1;
             }
          }
-         _mc.bQuests.Alert = "";
+         if(_mc.bQuests)
+         {
+            _mc.bQuests.Alert = "";
+         }
          if(_missions)
          {
             _missions.Update();
@@ -121,17 +139,23 @@ package com.monsters.ui
                _mc.bStore.Enabled = BASE.isMainYardInfernoOnly;
             }
          }
-         if(Boolean(GLOBAL._bMap) || !BASE.isMainYard)
+         if(_mc.bMap)
          {
-            _mc.bMap.Enabled = true;
-         }
-         else
-         {
-            _mc.bMap.Enabled = false;
+            if(Boolean(GLOBAL._bMap) || !BASE.isMainYard)
+            {
+               _mc.bMap.Enabled = true;
+            }
+            else
+            {
+               _mc.bMap.Enabled = false;
+            }
          }
          var _loc3_:Boolean = !BASE.isMainYardOrInfernoMainYard && MapRoomManager.instance.isInMapRoom3;
-         _mc.bQuests.Enabled = !_loc3_;
-         _mc.bQuests.mouseEnabled = !_loc3_;
+         if(_mc.bQuests)
+         {
+            _mc.bQuests.Enabled = !_loc3_;
+            _mc.bQuests.mouseEnabled = !_loc3_;
+         }
          if(!_mc._sorted)
          {
             _mc.sortAll();
@@ -166,10 +190,22 @@ package com.monsters.ui
       {
          if(Boolean(_mc) && Boolean(_mc.parent))
          {
-            _mc.bBuild.removeEventListener(MouseEvent.CLICK,BUILDINGS.Show);
-            _mc.bQuests.removeEventListener(MouseEvent.CLICK,QUESTS.Show);
-            _mc.bStore.removeEventListener(MouseEvent.CLICK,STORE.Show(1,1));
-            _mc.bMap.removeEventListener(MouseEvent.CLICK,GLOBAL.ShowMap);
+            if(_mc.bBuild)
+            {
+               _mc.bBuild.removeEventListener(MouseEvent.CLICK,BUILDINGS.Show);
+            }
+            if(_mc.bQuests)
+            {
+               _mc.bQuests.removeEventListener(MouseEvent.CLICK,QUESTS.Show);
+            }
+            if(_mc.bStore)
+            {
+               _mc.bStore.removeEventListener(MouseEvent.CLICK,STORE.Show(1,1));
+            }
+            if(_mc.bMap)
+            {
+               _mc.bMap.removeEventListener(MouseEvent.CLICK,GLOBAL.ShowMap);
+            }
             _mc.parent.removeChild(_mc);
             _mc = null;
          }
@@ -204,7 +240,10 @@ package com.monsters.ui
       {
          if(_mc)
          {
-            _mc.bQuests.Alert = "";
+            if(_mc.bQuests)
+            {
+               _mc.bQuests.Alert = "";
+            }
             _mc.visible = false;
          }
          if(!Chat.flagsShouldChatDisplay())

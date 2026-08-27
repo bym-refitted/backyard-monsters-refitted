@@ -749,7 +749,6 @@ package com.auth
                 }
                 else
                 {
-                    // Authentication call
                     const authInfo:Array = [["email", emailValue], ["password", passwordValue]];
                     LOGIN.AuthenticateUser(authInfo);
                 }

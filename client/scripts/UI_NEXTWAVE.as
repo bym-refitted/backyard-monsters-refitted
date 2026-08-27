@@ -52,18 +52,21 @@ package
       public function Setup() : void
       {
          SPECIALEVENT.Setup();
-         mcHit.addEventListener(MouseEvent.CLICK,OnBarClicked);
-         mcHit.addEventListener(MouseEvent.ROLL_OVER,this.WaveShow);
-         mcHit.addEventListener(MouseEvent.ROLL_OUT,this.WaveHide);
-         mcHit.buttonMode = true;
-         mcHit.mouseChildren = false;
+         if(mcHit)
+         {
+            mcHit.addEventListener(MouseEvent.CLICK,OnBarClicked);
+            mcHit.addEventListener(MouseEvent.ROLL_OVER,this.WaveShow);
+            mcHit.addEventListener(MouseEvent.ROLL_OUT,this.WaveHide);
+            mcHit.buttonMode = true;
+            mcHit.mouseChildren = false;
+         }
          this.SetWave(SPECIALEVENT.wave);
          this.Resize();
       }
       
       public function Resize() : void
       {
-         if(UI_BOTTOM._mc)
+         if(UI_BOTTOM._mc && mcHit)
          {
             x = UI_BOTTOM._mc.x + UI_BOTTOM._mc.width - mcHit.width;
             y = UI_BOTTOM._mc.y - mcHit.height;
@@ -91,7 +94,10 @@ package
             _loc7_.Setup(_loc2_.x + _loc2_.width / 2,_loc2_.y + _loc2_.height + 4,_loc3_,_loc4_);
             _loc7_.x = 20;
             _loc7_.y = -20;
-            _loc7_.mcArrow.x = 30;
+            if(_loc7_.mcArrow)
+            {
+               _loc7_.mcArrow.x = 30;
+            }
          }
          else
          {
@@ -119,17 +125,20 @@ package
          {
             this.visible = true;
          }
-         if(param1 == 31)
+         if(tR)
          {
-            tR.htmlText = KEYS.Get("wmi_bonuswave");
-         }
-         else if(param1 == 32)
-         {
-            tR.htmlText = KEYS.Get("wmi_bonuswave2");
-         }
-         else
-         {
-            tR.htmlText = KEYS.Get("wmi_nextwave",{"v1":param1});
+            if(param1 == 31)
+            {
+               tR.htmlText = KEYS.Get("wmi_bonuswave");
+            }
+            else if(param1 == 32)
+            {
+               tR.htmlText = KEYS.Get("wmi_bonuswave2");
+            }
+            else
+            {
+               tR.htmlText = KEYS.Get("wmi_nextwave",{"v1":param1});
+            }
          }
       }
    }
