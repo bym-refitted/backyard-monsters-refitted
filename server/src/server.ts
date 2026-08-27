@@ -52,9 +52,10 @@ redis.onclose = (err) => logger.error(`Redis disconnected: ${err.message}`);
 
   await redis.connect();
 
-  // Always start the chat server so the Flash socket policy (port 843) is served
-  // locally too — without it the client throws SecurityError #2048 on startup.
-  startChatServer();
+  // Production already serves the Flash socket policy through the chat server.
+  // Keep local mode unchanged: the iOS client does not need chat during local
+  // development, and opening port 843 there is unnecessary.
+  if (process.env.ENV !== Env.LOCAL) startChatServer();
 
   app.use(corsCacheControl);
 
