@@ -749,15 +749,6 @@ package com.auth
                 }
                 else
                 {
-                    // Remember credentials so the app can auto-login on next launch.
-                    try
-                    {
-                        GAME.sharedObj.data.savedEmail = emailValue;
-                        GAME.sharedObj.data.savedPassword = passwordValue;
-                        GAME.sharedObj.flush();
-                    }
-                    catch (credErr:Error) { }
-                    // Authentication call
                     const authInfo:Array = [["email", emailValue], ["password", passwordValue]];
                     LOGIN.AuthenticateUser(authInfo);
                 }

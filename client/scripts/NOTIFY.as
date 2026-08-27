@@ -32,34 +32,19 @@ package
       // Fun, randomised copy (BYM's goofy tone). iOS renders emoji in notification banners.
       // A line is picked at random each time so the alerts never feel canned.
       private static const MSG_UPGRADE:Array = [
-         "¡Subió de nivel! Ahora es aún más temible 😎",
-         "Mejora lista 💪 los vecinos ya están temblando",
-         "¡Más grande y más chulo! Obra terminada ✨",
-         "¡Nivel completado! Alguien ha estado ocupado 🏗️"
+         "notify_upgrade_1", "notify_upgrade_2", "notify_upgrade_3", "notify_upgrade_4"
       ];
       private static const MSG_BUILD:Array = [
-         "¡Construido y en pie! Los obreros piden un aplauso 👏",
-         "Obra terminada 🎉 huele a cemento fresco",
-         "¡Ya está listo! Bienvenido al patio 🧱",
-         "¡Nueva estructura desbloqueada! A darle uso 🔨"
+         "notify_build_1", "notify_build_2", "notify_build_3", "notify_build_4"
       ];
       private static const MSG_FORTIFY:Array = [
-         "¡Muro reforzado! Que vengan si se atreven 🛡️",
-         "Fortificado 🧱 ahora rebota hasta un Wormzer 🐛",
-         "¡Defensas al máximo! Aquí no entra ni el viento 💨",
-         "¡Muro más duro que nunca! Los atacantes lo van a odiar 😈"
+         "notify_fortify_1", "notify_fortify_2", "notify_fortify_3", "notify_fortify_4"
       ];
       private static const MSG_CHAMPION:Array = [
-         "¡GRRR! Tu campeón ruge de hambre 🦖 dale de comer ya",
-         "Tu campeón te mira con ojitos... y con mucha hambre 🍖",
-         "Se oye un rugido en el patio 😋 ¡toca comer!",
-         "¡Estómago vacío en el patio! No lo hagas esperar 🥩"
+         "notify_champion_1", "notify_champion_2", "notify_champion_3", "notify_champion_4"
       ];
       private static const MSG_COLLECTORS:Array = [
-         "¡Recolectores a reventar! Ve a vaciarlos 💰",
-         "Tus recursos están hasta arriba 🪙 ¡a recoger!",
-         "¡Alerta de abundancia! Los recolectores no dan más 📦",
-         "¡Llenos hasta el borde! Estás desperdiciando, corre 🏃💨"
+         "notify_collectors_1", "notify_collectors_2", "notify_collectors_3", "notify_collectors_4"
       ];
 
       private static var _ctx:ExtensionContext;
@@ -176,7 +161,7 @@ package
             var rem:Number = g._feedTime.Get() - GLOBAL.Timestamp();
             if(rem > 0)
             {
-               _ctx.call("schedule","champion","🦖 Tu campeón",pick(MSG_CHAMPION),rem);
+               _ctx.call("schedule","champion",KEYS.Get("notify_champion_title"),pick(MSG_CHAMPION),rem);
             }
          }
          catch(e:Error)
@@ -222,7 +207,7 @@ package
             }
             if(anyProducing && maxFull > 0)
             {
-               _ctx.call("schedule","collectorsfull","💰 Recolectores llenos",pick(MSG_COLLECTORS),maxFull);
+               _ctx.call("schedule","collectorsfull",KEYS.Get("notify_collectors_title"),pick(MSG_COLLECTORS),maxFull);
             }
          }
          catch(e:Error)
@@ -232,7 +217,7 @@ package
 
       private static function pick(a:Array) : String
       {
-         return a[int(Math.random() * a.length)];
+         return KEYS.Get(a[int(Math.random() * a.length)]);
       }
 
       private static function remainingSeconds(b:Object) : Number
@@ -286,7 +271,7 @@ package
          catch(e:Error)
          {
          }
-         return "¡Listo! ✅";
+         return KEYS.Get("notify_done");
       }
    }
 }

@@ -60,15 +60,6 @@ package
             GLOBAL.eventDispatcher.addEventListener(KEYS.LANGUAGE_FILE_LOADED, onLanguageLoaded);
             GLOBAL.LanguageSetup();
          }
-         else if (GAME.sharedObj.data.savedEmail && GAME.sharedObj.data.savedPassword)
-         {
-            // Remembered credentials: re-authenticate fresh each launch (robust — no
-            // token expiry). This is the mobile "keep me logged in" path.
-            _autoLogin = true;
-            PLEASEWAIT.Show("Logging in...");
-            GLOBAL.eventDispatcher.addEventListener(KEYS.LANGUAGE_FILE_LOADED, onLanguageLoadedCreds);
-            GLOBAL.LanguageSetup();
-         }
          else
          {
             authForm = new AuthForm();
@@ -84,14 +75,6 @@ package
          AuthenticateUser(authInfo);
       }
 
-      private static function onLanguageLoadedCreds(event:Event):void
-      {
-         GLOBAL.eventDispatcher.removeEventListener(KEYS.LANGUAGE_FILE_LOADED, onLanguageLoadedCreds);
-
-         var authInfo:Array = [["email", GAME.sharedObj.data.savedEmail], ["password", GAME.sharedObj.data.savedPassword]];
-         AuthenticateUser(authInfo);
-      }
-
       // Shows the login form after an auto-login attempt failed, clearing the bad
       // saved session so we don't loop on it.
       private static function fallbackToForm():void
@@ -101,8 +84,6 @@ package
          {
             GAME.token = "";
             GAME.sharedObj.data.token = null;
-            GAME.sharedObj.data.savedEmail = null;
-            GAME.sharedObj.data.savedPassword = null;
             GAME.sharedObj.flush();
          }
          catch (e:Error) { }

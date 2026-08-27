@@ -117,6 +117,14 @@ package
          {
             sharedObj = SharedObject.getLocal("bymr_data", "/");
 
+            // Security: an earlier build stored the raw account password here for
+            // auto-login. Purge any leftover plaintext password from prior installs.
+            if (sharedObj.data.savedPassword || sharedObj.data.savedEmail)
+            {
+               sharedObj.data.savedPassword = null;
+               sharedObj.data.savedEmail = null;
+            }
+
             if (params && params.language)
             {
                language = params.language;
@@ -239,14 +247,19 @@ package
             // the app is backgrounded (no downside — the sim is getTimer-based + server-
             // authoritative). Quality stays full; the render optimisation is renderMode=direct
             // in the app descriptor (GPU composite/present), not a quality drop.
-            POWER.setup(stage);
+            // Disabled for the first release: frame-rate/background lifecycle handling is
+            // external platform behavior. Re-enable together with notifications after the
+            // alpha has a stable lifecycle policy.
+            // POWER.setup(stage);
             // Free continuous pinch-to-zoom (Clash-of-Clans style). GESTURE mode still delivers
             // single-touch mouse events the rest of the game depends on.
             PINCHZOOM.setup(stage);
             // Local notifications: buzz the player when a build/upgrade/fortify finishes while the
             // app is backgrounded. Native side is the com.bym.notif ANE (UNUserNotificationCenter);
             // schedules on DEACTIVATE, cancels on ACTIVATE. Client-only, no server, no ban risk.
-            NOTIFY.init(stage);
+            // Disabled for the first release per maintainer request (external-API surface
+            // kept out of the initial alpha) — re-enable once the foundation ships.
+            // NOTIFY.init(stage);
          }
          // Perf (local optimized build): the engine never sets stage.quality, so Flash
          // defaults to HIGH (4x antialiasing) — the single biggest CPU cost in vector
