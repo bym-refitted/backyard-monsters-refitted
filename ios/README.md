@@ -35,35 +35,56 @@ para la renovación semanal.
 
 ---
 
-## Paso 1 — Registrar tu Apple ID y tu iPhone en Xcode (una sola vez)
+## Paso 1 — Registrar tu Apple ID y tu iPhone en Xcode
 
-Este paso es el único que requiere Xcode abierto. Sirve para que Apple sepa
+Este es el único paso que requiere Xcode abierto. Sirve para que Apple sepa
 que tu iPhone existe y te deje generar un certificado de firma gratuito.
+**La primera vez** son 6 pasos (5-10 min); **para renovar cada 7 días**
+(ver más abajo) son solo 2, con el mismo proyecto ya creado.
+
+### La primera vez (una sola vez en la vida de tu Mac)
 
 1. **Xcode → Settings → Accounts** → pulsa `+` → añade tu Apple ID (el que
    sea, personal está bien).
 2. Crea un proyecto cualquiera desde cero: **File → New → Project → App**
    (SwiftUI, cualquier nombre). Esto es solo un "gancho" para que Xcode hable
-   con Apple — no tiene nada que ver con el juego.
+   con Apple — no tiene nada que ver con el juego. **No lo borres** — lo
+   necesitarás cada semana para renovar la firma (ver abajo).
 3. Selecciona el target del proyecto → pestaña **Signing & Capabilities**:
    - **Bundle Identifier**: escribe exactamente `com.bymrefitted`
    - **Automatically manage signing**: activado
    - **Team**: tu cuenta personal (Personal Team)
 4. Conecta el iPhone por **cable USB**, desbloquéalo y, si aparece
-   "¿Confiar en este ordenador?", pulsa **Confiar**.
+   "¿Confiar en este ordenador?", pulsa **Confiar**. (Este cable solo hace
+   falta esta primera vez — luego Xcode ya reconoce el iPhone por WiFi).
 5. Arriba junto al botón ▶, donde dice **"My Mac"**, cámbialo por tu iPhone.
 6. Pulsa **▶ Run**. Esto compila el proyecto vacío y lo instala en el
    iPhone — es justo esa instalación real la que hace que Apple registre tu
    dispositivo y genere el perfil de firma. Verás la app abrirse en el
    iPhone; puedes cerrarla, ya no la necesitas.
-   - Si la primera vez da un error tipo *"Communication with Apple failed"*
-     o *"no devices"*, simplemente repite este paso una vez más — a veces
-     Xcode necesita dos intentos.
+   - Si da un error tipo *"Communication with Apple failed"* o *"no
+     devices"*, simplemente repite este paso 6 una vez más — a veces Xcode
+     necesita dos intentos.
 
-A partir de aquí Xcode ya tiene, guardados en tu Mac, un certificado de firma
-(en el Keychain) y un perfil de provisioning (en
-`~/Library/Developer/Xcode/UserData/Provisioning Profiles/`). El proyecto de
-prueba ya no se vuelve a usar — puedes borrarlo si quieres.
+Al terminar, Xcode ya tiene guardados en tu Mac un certificado de firma (en
+el Keychain) y un perfil de provisioning (en `~/Library/Developer/Xcode/
+UserData/Provisioning Profiles/`). Con eso sigues al Paso 2.
+
+### Cada 7 días, cuando caduque (2 minutos, ya no hace falta el cable)
+
+El certificado gratuito caduca cada semana y la app deja de abrir con
+`"This provisioning profile has expired"`. Para renovarlo:
+
+1. Abre Xcode y abre el **mismo proyecto** que creaste la primera vez (pasos
+   1-3 de arriba **no** se repiten — el Apple ID y la configuración de
+   Signing ya están guardados).
+2. Con el iPhone cerca (misma red WiFi, ya no necesitas el cable) selecciónalo
+   como destino junto al botón ▶ y pulsa **▶ Run** (esto es el paso 5-6 de
+   arriba, nada más).
+
+Eso ya genera el perfil nuevo. Sigue con el **Paso 2** de abajo (copiarlo) y
+vuelve a lanzar `iterate.sh`. Checklist completo en
+**[PROVISION_RENEWAL.md](PROVISION_RENEWAL.md)**.
 
 ---
 
@@ -108,11 +129,9 @@ la terminal; si algo falla, el propio script te dice cuál de los 4 pasos fue.
 
 ## Cada 7 días: renovar la firma
 
-El certificado gratuito caduca semanalmente y la app deja de abrir con un
-error de "perfil caducado". Repite el **Paso 1.6** (Run en Xcode con el
-proyecto de prueba, sobre el iPhone) y el **Paso 2** (copiar el perfil
-nuevo), y vuelve a lanzar `./ios/iterate.sh`. El detalle completo, con
-checklist, está en **[PROVISION_RENEWAL.md](PROVISION_RENEWAL.md)**.
+Ver la sección **"Cada 7 días, cuando caduque"** dentro del Paso 1 (arriba):
+son solo 2 minutos, sin repetir la configuración inicial. Checklist completo
+en **[PROVISION_RENEWAL.md](PROVISION_RENEWAL.md)**.
 
 ---
 
@@ -128,9 +147,14 @@ no puede, deja de funcionar para todos hasta que lo haga.
 
 Con cuenta de pago (99$/año) el límite sube a 100 dispositivos y el perfil
 dura 1 año, pero sigue siendo una sola persona firmando y repartiendo para
-todos. El flujo self-service de este documento (cada uno compila con su
-propia cuenta gratis) es el único que no depende de nadie más y escala sin
-límite.
+todos.
+
+**Para un usuario individual, el self-service de este documento es la mejor
+opción, sin comparación**: no depende de que nadie más esté disponible, no
+hay que coordinar reenvíos, y una vez hecho el Paso 1 la renovación semanal
+son 2 minutos contigo mismo. La vía del `.ipa` compartido solo tiene sentido
+si ya sois un grupo pequeño y fijo dispuesto a depender de una sola persona
+cada semana — para jugar tú solo, no hay motivo para complicarse con eso.
 
 ---
 

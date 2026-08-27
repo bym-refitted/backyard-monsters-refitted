@@ -2,6 +2,11 @@
 
 **Por qué:** El perfil de desarrollo gratuito de Apple caduca cada **7 días**. Necesitas renovarlo cada semana para instalar la app en el iPhone.
 
+> Este documento asume que ya hiciste la configuración inicial (Paso 1 de
+> [README.md](README.md): añadir tu Apple ID, crear el proyecto "gancho" en
+> Xcode con bundle id `com.bymrefitted`). Si es tu primera vez, ve allí
+> primero — aquí solo está la renovación semanal, que es mucho más corta.
+
 ---
 
 ## 1. Renovar el perfil en Xcode (5 min)
@@ -14,8 +19,8 @@ open /Applications/Xcode.app
 En Xcode:
 1. **Xcode › Settings › Accounts** → verifica que tu Apple ID está conectado
    - Si pide contraseña/2FA, méteala
-2. **Abre el proyecto** `ios/Stub/Stub.xcodeproj` (o cualquier proyecto con `com.bymrefitted`)
-3. En el panel izquierdo, selecciona el **target "Stub"** (o "bymrefitted")
+2. **Abre el proyecto "gancho"** que creaste en el Paso 1 del README (cualquier nombre, bundle id `com.bymrefitted`) — no crees uno nuevo, reutiliza ese
+3. En el panel izquierdo, selecciona el **target** de ese proyecto (el nombre que le pusiste)
 4. Ve a **Signing & Capabilities**
 5. Asegúrate de que:
    - ✅ **"Automatically manage signing"** está activado
