@@ -4,7 +4,7 @@ set -uo pipefail
 ROOT="${BYMR_ROOT:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
 export AIR_SDK_HOME="${AIR_SDK_HOME:?set AIR_SDK_HOME to your AIR SDK install, e.g. ~/AIRSDK/AIRSDK_50.2.5}"
 ADT="$AIR_SDK_HOME/bin/adt"
-DEV="${BYMR_DEVICE_ID:?set BYMR_DEVICE_ID to your device's UDID (xcrun devicectl list devices)}"
+DEV="${BYMR_DEVICE_ID:?set BYMR_DEVICE_ID to the device UDID from: xcrun devicectl list devices}"
 CERT="${BYMR_SIGNING_CERT:?set BYMR_SIGNING_CERT to your \"Apple Development: you@example.com (TEAMID)\" identity}"
 
 cd "$ROOT" || exit 1
