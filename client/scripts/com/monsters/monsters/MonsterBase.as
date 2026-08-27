@@ -19,6 +19,7 @@ package com.monsters.monsters
    import flash.display.Bitmap;
    import flash.display.BitmapData;
    import flash.display.DisplayObject;
+   import flash.display.Sprite;
    import flash.events.Event;
    import flash.filters.BitmapFilter;
    import flash.filters.GlowFilter;
@@ -85,7 +86,11 @@ package com.monsters.monsters
       public var _frameNumber:int;
       
       public var _spawned:Boolean;
-      
+
+      private static var _diagRenderN:int = 0;
+
+      public var _diagMarked:Boolean = false;
+
       public var _creatureID:String;
       
       public var _graphic:BitmapData;
@@ -737,10 +742,21 @@ package com.monsters.monsters
             if(this._graphic)
             {
                this._graphic.unlock();
+               // iOS AIR renderMode="direct" does not reflect in-place BitmapData mutations
+               // on an already-displayed Bitmap, so the creep stays an invisible empty texture.
+               // Reassigning bitmapData forces the GPU texture to re-upload each frame.
+               if(!BYMConfig.instance.RENDERER_ON && this._graphicMC)
+               {
+                  this._graphicMC.bitmapData = this._graphic;
+               }
             }
             if(this._shadow)
             {
                this._shadow.unlock();
+               if(!BYMConfig.instance.RENDERER_ON && this._shadowMC is Bitmap)
+               {
+                  (this._shadowMC as Bitmap).bitmapData = this._shadow;
+               }
             }
             this.updateRasterData();
          }

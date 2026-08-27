@@ -158,12 +158,12 @@ package com.monsters.missions
             if(!QUESTS._completed || QUESTS._completed[this._missionKey] != 1)
             {
                (bCollect as Button).Enabled = false;
-               mcArrow.visible = false;
+               if(mcArrow) mcArrow.visible = false;
             }
             else
             {
                (bCollect as Button).Highlight = true;
-               mcArrow.visible = true;
+               if(mcArrow) mcArrow.visible = true;
             }
          }
          else

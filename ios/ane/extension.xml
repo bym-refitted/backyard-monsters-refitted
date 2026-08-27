@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  AIR Native Extension descriptor for com.bym.notif (iOS local notifications).
+  The <id> here MUST match the <extensionID> in bym-refitted-ios.xml and the id passed to
+  ExtensionContext.createExtensionContext() in NOTIFY.as.
+  The initializer/finalizer names match the C functions in native/BymNotif.m.
+-->
+<extension xmlns="http://ns.adobe.com/air/extension/50.2">
+    <id>com.bym.notif</id>
+    <versionNumber>1.0.0</versionNumber>
+    <platforms>
+        <platform name="iPhone-ARM">
+            <applicationDeployment>
+                <nativeLibrary>libbymnotif.a</nativeLibrary>
+                <initializer>BymNotifExtInitializer</initializer>
+                <finalizer>BymNotifExtFinalizer</finalizer>
+            </applicationDeployment>
+        </platform>
+        <platform name="default">
+            <applicationDeployment/>
+        </platform>
+    </platforms>
+</extension>

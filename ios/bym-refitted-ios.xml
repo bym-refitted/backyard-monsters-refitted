@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Adobe AIR (Harman) application descriptor for the iOS build of BYM Refitted.
+
+  Mirrors android/bym-refitted.xml, but:
+    - <supportedProfiles> stays mobileDevice
+    - the <android> block is replaced by an <iPhone> block (ATS + device families)
+    - the initial content is the GAME swf itself (bin/bymr-ios.swf), NOT a remote
+      gameloader. iOS forbids executing ActionScript loaded at runtime, so the game
+      code must be packaged inside the .ipa and AOT-compiled by adt.
+
+  The swf is built prod-pointed (https://server.bymrefitted.com) via asconfig.ios.json.
+-->
+<application xmlns="http://ns.adobe.com/air/application/50.2">
+    <id>com.bymrefitted</id>
+    <versionNumber>1.0.6</versionNumber>
+    <filename>BYM Refitted</filename>
+    <versionLabel>1.0.6</versionLabel>
+    <name>BYM Refitted</name>
+    <supportedProfiles>mobileDevice</supportedProfiles>
+    <customUpdateUI>false</customUpdateUI>
+    <allowBrowserInvocation>false</allowBrowserInvocation>
+
+    <initialWindow>
+        <!-- Packaged game swf (built by asconfig.ios.json). Path is relative to
+             this descriptor at package time; build-ios.sh copies the swf next to it. -->
+        <content>bymr-ios.swf</content>
+        <systemChrome>standard</systemChrome>
+        <fullScreen>true</fullScreen>
+        <aspectRatio>landscape</aspectRatio>
+        <autoOrients>false</autoOrients>
+        <visible>true</visible>
+        <!-- direct = GPU composite/present (modern AIR). The app is pure display-list (no
+             Stage3D), so direct renders it normally but hands the final composite + present to
+             the GPU instead of the CPU (renderMode=cpu left the GPU idle and cooked the CPU
+             software-rasterising retina pixels every frame). Filters are used across the UI, so
+             NOT gpu mode (which breaks filters). Revert to cpu here if anything renders wrong. -->
+        <renderMode>direct</renderMode>
+    </initialWindow>
+
+    <icon>
+        <image29x29>icons/icon29.png</image29x29>
+        <image40x40>icons/icon40.png</image40x40>
+        <image48x48>icons/icon48.png</image48x48>
+        <image57x57>icons/icon57.png</image57x57>
+        <image58x58>icons/icon58.png</image58x58>
+        <image60x60>icons/icon60.png</image60x60>
+        <image72x72>icons/icon72.png</image72x72>
+        <image76x76>icons/icon76.png</image76x76>
+        <image80x80>icons/icon80.png</image80x80>
+        <image87x87>icons/icon87.png</image87x87>
+        <image100x100>icons/icon100.png</image100x100>
+        <image114x114>icons/icon114.png</image114x114>
+        <image120x120>icons/icon120.png</image120x120>
+        <image144x144>icons/icon144.png</image144x144>
+        <image152x152>icons/icon152.png</image152x152>
+        <image167x167>icons/icon167.png</image167x167>
+        <image180x180>icons/icon180.png</image180x180>
+        <image1024x1024>icons/icon1024.png</image1024x1024>
+    </icon>
+
+    <iPhone>
+        <!-- 1 = iPhone/iPod, 2 = iPad. Keep both so it runs on any device you sideload to. -->
+        <!-- Prod server is HTTPS so ATS is already satisfied; NSAllowsArbitraryLoads
+             is just a safety net for any stray plain-http asset. No XML comments are
+             allowed inside the CDATA below — adt parses it as a raw plist fragment. -->
+        <InfoAdditions>
+            <![CDATA[
+            <key>UIDeviceFamily</key>
+            <array>
+                <string>1</string>
+                <string>2</string>
+            </array>
+            <key>NSAppTransportSecurity</key>
+            <dict>
+                <key>NSAllowsArbitraryLoads</key>
+                <true/>
+            </dict>
+            ]]>
+        </InfoAdditions>
+        <requestedDisplayResolution>high</requestedDisplayResolution>
+        <!-- NOTE: interpreter vs AOT is chosen by the adt -target flag
+             (ipa-test-interpreter = fast, dev-only sideload; ipa-test = AOT).
+             It is NOT set here in the descriptor. See build-ios.sh. -->
+    </iPhone>
+
+    <!-- Native extensions bundled into the .ipa. com.bym.notif = local notifications
+         (UNUserNotificationCenter) so a build/upgrade finishing buzzes the player even when the
+         app is closed. The .ane is built by ios/ane/build-ane.sh and passed to adt via -extdir.
+         The id must match extension.xml's <id> and ExtensionContext id in NOTIFY.as. -->
+    <extensions>
+        <extensionID>com.bym.notif</extensionID>
+    </extensions>
+</application>

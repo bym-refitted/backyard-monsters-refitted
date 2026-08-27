@@ -32,9 +32,13 @@ package
    import flash.display.*;
    import flash.events.*;
    import flash.external.ExternalInterface;
+   import flash.filters.GlowFilter;
+   import flash.geom.Matrix;
    import flash.geom.Point;
    import flash.geom.Rectangle;
    import flash.net.*;
+   import flash.text.TextField;
+   import flash.text.TextFormat;
    import flash.utils.*;
    import gs.TweenLite;
    import gs.easing.Cubic;
@@ -371,7 +375,9 @@ package
 
       public static var _timePlayed:int = 0;
 
-      public static var _flags:Object;
+      // Default to an empty object so the ~130 unguarded `_flags.x` accesses never
+      // #1009 before SetFlags() runs (on iOS the UI builds before flags arrive).
+      public static var _flags:Object = {};
 
       public static var _unreadMessages:int;
 
@@ -556,19 +562,342 @@ package
       public static function LanguageSetup():void
       {
 
-         var token:String = GAME.sharedObj.data.token;
          var language:String = GAME.sharedObj.data.language;
          KEYS._storageURL = GLOBAL.languageUrl;
          KEYS.GetSupportedLanguages();
 
-         if (token)
+         var fallbackLang:String = "english";
+         // Honour an explicitly stored language even without a server token. The original code
+         // gated language on `GAME.sharedObj.data.token`, but on iOS login is automatic via saved
+         // credentials and no token is persisted, so that gate wrongly forced English every time.
+         // English keys remain the fallback for any missing translations (see KEYS.Get).
+         KEYS.Setup(language ? language : fallbackLang);
+      }
+
+      /*
+       * iOS wood-panel fallback. Several embedded wood-frame symbols (Quests/Chat tab
+       * headers, borders, footers) instantiate with correct bounds but rasterize to ZERO
+       * drawable pixels on the iOS AIR renderer, so the tab background looks transparent.
+       * Freshly *drawn* Graphics DO rasterize on iOS (see the BUILDINGINFO white panel), so
+       * when a wood element is genuinely blank we draw a wood-brown fill behind it, matched
+       * to the symbol's real bounds — same size/position as desktop, only the fill is redrawn.
+       * No-op off iOS and when the real art already paints, so desktop/Android are untouched.
+       */
+      public static function PaintWoodFallback(mc:*, top:uint = 0x6E4A2A, bot:uint = 0x442B15):void
+      {
+         if (!_iosViewport || mc == null)
          {
-            KEYS.Setup(language);
+            return;
          }
-         else
+         var cont:DisplayObjectContainer = mc as DisplayObjectContainer;
+         if (cont == null || cont.getChildByName("iosWoodBG") != null)
          {
-            KEYS.Setup("english");
+            return;
          }
+         var b:Rectangle = null;
+         try
+         {
+            b = DisplayObject(mc).getBounds(DisplayObject(mc));
+         }
+         catch (boundsErr:Error)
+         {
+            return;
+         }
+         if (b == null || b.width < 2 || b.height < 2)
+         {
+            return;
+         }
+         // Only fill when the embedded art didn't rasterize (near-zero opaque pixels on iOS).
+         try
+         {
+            var pw:int = Math.max(1, Math.min(120, int(b.width)));
+            var ph:int = Math.max(1, Math.min(40, int(b.height)));
+            var probe:BitmapData = new BitmapData(pw, ph, true, 0);
+            probe.draw(mc, new Matrix(1, 0, 0, 1, -b.x, -b.y));
+            var ob:Rectangle = probe.getColorBoundsRect(0xFF000000, 0x00000000, false);
+            var alreadyPaints:Boolean = ob.width * ob.height > pw * ph * 0.15;
+            probe.dispose();
+            if (alreadyPaints)
+            {
+               return;
+            }
+         }
+         catch (probeErr:Error)
+         {
+         }
+         var s:Shape = new Shape();
+         s.name = "iosWoodBG";
+         var m:Matrix = new Matrix();
+         m.createGradientBox(b.width, b.height, Math.PI / 2, b.x, b.y);
+         s.graphics.beginGradientFill(GradientType.LINEAR, [top, bot], [1, 1], [0, 255], m);
+         s.graphics.drawRoundRect(b.x, b.y, b.width, b.height, 12, 12);
+         s.graphics.endFill();
+         s.graphics.lineStyle(2, 0x2A1B0D, 1);
+         s.graphics.drawRoundRect(b.x, b.y, b.width, b.height, 12, 12);
+         cont.addChildAt(s, 0);
+      }
+
+      /*
+       * iOS resource-counter plank. On desktop each resource counter is a brown WOOD plank with a
+       * lighter cream panel behind the icon and the amount in white — there is no coloured fill
+       * bar. On iOS that wood art rasterizes to 0 drawable pixels (same issue as the Quests/Chat
+       * tabs), so the counter looked bare. Draw the wood plank + cream icon panel once, behind the
+       * icon/number, matched to the real symbol (frame 135x33 @ [0,0], icon on the left). No-op off
+       * iOS / when already drawn. The white amount text is set by the caller (UI_TOP).
+       */
+      public static function CreateResourcePlank(mcR:*):void
+      {
+         if (!_iosViewport || mcR == null)
+         {
+            return;
+         }
+         var cont:DisplayObjectContainer = mcR as DisplayObjectContainer;
+         if (cont == null || cont.getChildByName("iosPlank") != null)
+         {
+            return;
+         }
+         var pw:Number = 135;
+         var ph:Number = 33;
+         var plank:Shape = new Shape();
+         plank.name = "iosPlank";
+         var gr:Graphics = plank.graphics;
+         // Warm-brown base gradient (top a touch lighter, like a lit wood plank).
+         var m:Matrix = new Matrix();
+         m.createGradientBox(pw, ph, Math.PI / 2, 0, 0);
+         gr.beginGradientFill(GradientType.LINEAR, [0x8A5E34, 0x5E3E22], [1, 1], [0, 255], m);
+         gr.drawRoundRect(0, 0, pw, ph, 6, 6);
+         gr.endFill();
+         // Horizontal wood grain: a few darker/lighter streaks (fixed positions -> deterministic).
+         drawGrainStreak(gr, 5, ph, 0x4A3016, 0.35, 1);
+         drawGrainStreak(gr, 9, ph, 0xA9834E, 0.22, 2);
+         drawGrainStreak(gr, 14, ph, 0x4A3016, 0.30, 1);
+         drawGrainStreak(gr, 18, ph, 0x4A3016, 0.40, 1);
+         drawGrainStreak(gr, 22, ph, 0xA9834E, 0.18, 2);
+         drawGrainStreak(gr, 27, ph, 0x4A3016, 0.32, 1);
+         // Top highlight + bottom shadow for a rounded-plank feel.
+         gr.beginFill(0xFFFFFF, 0.07);
+         gr.drawRoundRect(0, 0, pw, ph * 0.42, 6, 6);
+         gr.endFill();
+         gr.beginFill(0x000000, 0.16);
+         gr.drawRect(0, ph - 3, pw, 3);
+         gr.endFill();
+         // Dark plank border.
+         gr.lineStyle(1.5, 0x341F0D, 1);
+         gr.drawRoundRect(0.5, 0.5, pw - 1, ph - 1, 6, 6);
+         gr.lineStyle();
+         // Cream panel behind the icon (the light rectangle on the desktop counter).
+         gr.beginFill(0x2A1B0D, 1);
+         gr.drawRoundRect(1, 2, 44, ph - 4, 5, 5);
+         gr.endFill();
+         gr.beginFill(0xCEB98B, 1);
+         gr.drawRoundRect(3, 4, 40, ph - 8, 4, 4);
+         gr.endFill();
+         // Above the real frame child (index 0, which renders a light pill on iOS and would hide
+         // the plank), but below the number/icon/button, which sit at higher indices.
+         cont.addChildAt(plank, Math.min(1, cont.numChildren));
+      }
+
+      // One horizontal wood-grain streak, inset from the plank edges.
+      private static function drawGrainStreak(gr:Graphics, y:Number, ph:Number, color:uint, alpha:Number, h:Number):void
+      {
+         if (y + h > ph - 1)
+         {
+            return;
+         }
+         gr.beginFill(color, alpha);
+         gr.drawRect(4, y, 127, h);
+         gr.endFill();
+      }
+
+      /*
+       * iOS resource-counter STORAGE FILL bar. On desktop each counter (ResourceBar1..4) has a white
+       * "mcBar" child that fills left-to-right to show how full that resource's storage is (amount vs
+       * cap); it renders 0 px on iOS AIR, so the fill was invisible and every counter looked equally
+       * full. Redraw it here from the real numbers each frame. Geometry is the REAL mcBar placement
+       * extracted from assets.swf: local (16,3), full width 85, height 23. ratio = amount / cap.
+       * Also give the number a dark outline (like desktop) so the white text stays readable over the
+       * white bar. No-op off iOS / when the plank container is null.
+       */
+      public static function UpdateResourcePlankFill(mcR:*, ratio:Number):void
+      {
+         if (!_iosViewport || mcR == null)
+         {
+            return;
+         }
+         var cont:DisplayObjectContainer = mcR as DisplayObjectContainer;
+         if (cont == null)
+         {
+            return;
+         }
+         if (ratio < 0) ratio = 0;
+         if (ratio > 1) ratio = 1;
+         var fill:Shape = cont.getChildByName("iosFill") as Shape;
+         if (fill == null)
+         {
+            fill = new Shape();
+            fill.name = "iosFill";
+            // Just above the wood plank (iosPlank), still below the number/icon (higher indices).
+            var idx:int = 2;
+            var pk:DisplayObject = cont.getChildByName("iosPlank");
+            if (pk) idx = cont.getChildIndex(pk) + 1;
+            cont.addChildAt(fill, Math.min(idx, cont.numChildren));
+         }
+         // Real mcBar geometry from the SWF. Only the WHITE filled portion is drawn (no dark groove
+         // behind it — that read as a stray dark-brown block that didn't reach the plank's end).
+         var bx:Number = 16, by:Number = 3, bw:Number = 85, bh:Number = 23;
+         var fw:Number = bw * ratio;
+         var g:Graphics = fill.graphics;
+         g.clear();
+         if (fw >= 2)
+         {
+            g.beginFill(0xFFFFFF, 0.82);
+            g.drawRoundRect(bx, by, fw, bh, 8, 8);
+            g.endFill();
+            // subtle top gloss
+            g.beginFill(0xFFFFFF, 0.35);
+            g.drawRoundRect(bx + 1, by + 1, Math.max(1, fw - 2), bh * 0.4, 5, 5);
+            g.endFill();
+         }
+         // Dark outline on the amount text (set once) so the white number reads on the white bar.
+         if (mcR.tR && !(mcR.tR.filters && mcR.tR.filters.length > 0))
+         {
+            mcR.tR.filters = [new GlowFilter(0x3A2410, 1, 3, 3, 5, 1)];
+         }
+      }
+
+      /*
+       * iOS self-contained top-HUD badge (protection shield / reinforcements). The embedded
+       * buttonProtection_CLIP / buttonReinforcement_CLIP symbols are NULL on iOS AIR (never
+       * instantiated), so there is nothing to draw into — we rebuild the badge as a child of the
+       * top HUD (top == UI2._top) using geometry extracted DIRECTLY from assets.swf (not guessed):
+       * the symbol's own DefineShape bounds and PlaceObject offsets for its pill / icon / text
+       * children (badge = 111x26; icon at local (6,4) size 17x18 — same as the real desktop
+       * buttonProtection_CLIP/buttonReinforcement_CLIP symbols). kind "shield" = red pill + real
+       * shield glyph (protection, PNG extracted+tinted from the SWF's own shield bitmap, id1096);
+       * "creep" = orange pill + creep glyph (reinforcements). X anchor mirrors the real desktop
+       * formula (UI_TOP.resize: mcProtected.x = width-125); Y mirrors the real BAKED timeline
+       * position (30 / 61 — resize() never touches these, only .x), so the badge sits exactly
+       * where desktop's does relative to the top button row. secs = remaining seconds; <= 0 hides
+       * the badge. Called every frame from UI2.Update on iOS: creates the display objects once
+       * (keyed by id), updates the text + position after. No-op off iOS.
+       */
+      public static function SyncIOSBadge(top:*, id:String, kind:String, secs:Number):Sprite
+      {
+         if (!_iosViewport || top == null)
+         {
+            return null;
+         }
+         var cont:DisplayObjectContainer = top as DisplayObjectContainer;
+         if (cont == null)
+         {
+            return null;
+         }
+         var badge:Sprite = cont.getChildByName(id) as Sprite;
+         if (secs <= 0)
+         {
+            if (badge)
+            {
+               badge.visible = false;
+            }
+            return badge;
+         }
+         // Real desktop symbol geometry (extracted from assets.swf — see comment above).
+         var bw:Number = 111;
+         var bh:Number = 26;
+         if (badge == null)
+         {
+            badge = new Sprite();
+            badge.name = id;
+            badge.mouseEnabled = false;
+            badge.mouseChildren = false;
+            var g:Graphics = badge.graphics;
+            var colTop:uint = kind == "shield" ? 0xF14B34 : 0xFFC24B;
+            var colBot:uint = kind == "shield" ? 0xB3170B : 0xF08006;
+            var rim:uint = kind == "shield" ? 0x6E0A03 : 0x7A3B00;
+            var m:Matrix = new Matrix();
+            m.createGradientBox(bw, bh, Math.PI / 2, 0, 0);
+            g.beginGradientFill(GradientType.LINEAR, [colTop, colBot], [1, 1], [0, 255], m);
+            g.drawRoundRect(0, 0, bw, bh, bh, bh);
+            g.endFill();
+            g.beginFill(0xFFFFFF, 0.14);
+            g.drawRoundRect(3, 2, bw - 6, bh * 0.4, bh * 0.5, bh * 0.5);
+            g.endFill();
+            g.lineStyle(1.5, rim, 1);
+            g.drawRoundRect(1, 1, bw - 2, bh - 2, bh - 2, bh - 2);
+            g.lineStyle();
+            // Real desktop glyph (extracted from assets.swf id1096/id1100, embedded as a straight
+            // PNG so it composites on iOS AIR), placed at the symbol's real local (6,4), 1:1 scale
+            // (17x18 — no scaling; that IS the authored size, per the SWF's own shape bounds).
+            var bmd:BitmapData = kind == "shield" ? new badge_shield() : new badge_creep();
+            var icon:Bitmap = new Bitmap(bmd);
+            icon.name = "ic";
+            icon.smoothing = false;
+            icon.x = 6;
+            icon.y = 4;
+            // Countdown (device font — the embedded Groboldov isn't supplied on iOS AIR). Real
+            // desktop text-field slot: local (27,5), size 83x16.
+            var tf:TextField = new TextField();
+            tf.name = "t";
+            tf.selectable = false;
+            tf.mouseEnabled = false;
+            tf.embedFonts = false;
+            tf.x = 27;
+            tf.y = 5;
+            tf.width = 83;
+            tf.height = 16;
+            var fmt:TextFormat = new TextFormat();
+            fmt.font = "Arial";
+            fmt.bold = true;
+            fmt.size = 12;
+            fmt.color = kind == "shield" ? 0xFFFFFF : 0x3A1E00;
+            fmt.align = "center";
+            tf.defaultTextFormat = fmt;
+            badge.addChild(tf);
+            badge.addChild(icon);
+            cont.addChild(badge);
+         }
+         badge.visible = true;
+         // Desktop puts this at width-125 and pushes the worker column DOWN to avoid overlap, but
+         // hooking that push (via _timers) broke the workers, so instead sit just LEFT of the worker
+         // column. That column's left edge in _top-local space works out to hudW - 55 (derived from
+         // UI_WORKERS: _mc.x = SCREEN.x + SCREEN.width - _workerMCOffset[45], minus the _top offset),
+         // so the badge's right edge goes 6px left of it. Y = the real baked desktop timeline value.
+         var hudW:Number = GetGameWidth() - GetSafeAreaInsetLeft() - GetSafeAreaInsetRight();
+         badge.x = hudW - 61 - bw;
+         badge.y = id == "iosBadgeReinf" ? 61 : 30;
+         var t:TextField = badge.getChildByName("t") as TextField;
+         if (t)
+         {
+            t.text = ToTime(secs, true);
+         }
+         return badge;
+      }
+
+      /*
+       * iOS nav-arrow fallback. The mcArrow child of the arrow-button symbols (BUILDINGSARROW in
+       * the Academy/Buildings/Inbox menus, ListViewArrow in the map-room list) is null on iOS, so
+       * those next/previous arrows were invisible. Draw a right-pointing arrow centred at (cx,cy);
+       * callers that need a left arrow set the button's rotation to 180 (which the map list already
+       * does for its "previous" arrow), so one right-pointing shape serves both directions. No-op
+       * off iOS / when already drawn. Returns the drawn Shape (or null).
+       */
+      public static function DrawArrowFallback(cont:DisplayObjectContainer, cx:Number, cy:Number, halfW:Number, halfH:Number):Shape
+      {
+         if (!_iosViewport || cont == null || cont.getChildByName("iosArrow") != null)
+         {
+            return null;
+         }
+         var a:Shape = new Shape();
+         a.name = "iosArrow";
+         a.graphics.lineStyle(2, 0x3A2611, 1);
+         a.graphics.beginFill(0xF2B03C, 1);
+         a.graphics.moveTo(cx - halfW, cy - halfH);
+         a.graphics.lineTo(cx + halfW, cy);
+         a.graphics.lineTo(cx - halfW, cy + halfH);
+         a.graphics.lineTo(cx - halfW, cy - halfH);
+         a.graphics.endFill();
+         cont.addChild(a);
+         return a;
       }
 
       public static function get townHall():BFOUNDATION
@@ -1329,15 +1658,30 @@ package
          if (!isHalted)
          {
             _loc2_ = int(getTimer());
-            SOUNDS.Tick();
-            MapRoomManager.instance.TickFast();
+            try { SOUNDS.Tick(); } catch (te1:Error) { }
+            try { MapRoomManager.instance.TickFast(); } catch (te2:Error) { }
             if (_render)
             {
                _loc3_ = Number(getTimer());
                if ((_loc4_ = _loc3_ - lastTime) > TIME_ELAPSED_THRESHHOLD && !_aiDesignMode)
                {
-                  LOGGER.Log("err", "TimeHax");
-                  ErrorMessage("Time Threshold Exceeded");
+                  if (_iosViewport)
+                  {
+                     // iOS fully suspends the runtime while backgrounded, so on resume getTimer()
+                     // jumps by the whole background span — the same signal a desktop speedhack
+                     // gives, but here it's a legitimate resume. Don't raise the dead-end "Oops /
+                     // Reload" popup (its Reload calls CallJS("reloadPage"), a no-op in a packaged
+                     // AIR app). Re-anchor the clock to 0 so this frame takes the "fresh start" path
+                     // below (else -> _loops = 2) instead of banking minutes of catch-up loops (which
+                     // would drive _loops to ~0 and paint black). POWER.as separately triggers a real
+                     // server re-fetch after a long background so state isn't left stale.
+                     lastTime = 0;
+                  }
+                  else
+                  {
+                     LOGGER.Log("err", "TimeHax");
+                     ErrorMessage("Time Threshold Exceeded");
+                  }
                }
                if (lastTime)
                {
@@ -1371,7 +1715,7 @@ package
                      }
                      if (CREEPS._creepCount > 0 || Boolean(SiegeWeapons.activeWeapon))
                      {
-                        CREEPS.Tick();
+                        try { CREEPS.Tick(); } catch (tke:Error) { }
                         _loc10_ = InstanceManager.getInstancesByClass(BTOWER);
                         _loc11_ = InstanceManager.getInstancesByClass(BTRAP);
                         _loc12_ = InstanceManager.getInstancesByClass(Bunker);
@@ -1388,7 +1732,7 @@ package
                            _loc13_.TickAttack();
                         }
                      }
-                     CREATURES.Tick();
+                     try { CREATURES.Tick(); } catch (tke:Error) { }
                      _loc9_ = _loc8_ = int(fastTickables.length - 1);
                      while (_loc9_ >= 0)
                      {
@@ -1398,7 +1742,13 @@ package
                      _loc6_ = 0;
                      while (_loc6_ < CREATURES._guardianList.length)
                      {
-                        if (Boolean(CREATURES._guardianList[_loc6_]) && CREATURES._guardianList[_loc6_].tick(1))
+                        // Guardian/champion render() dereferences its graphic's nested child,
+                        // which can be missing from the lossy assets.swf -> #1009 every frame
+                        // (uncaught). Guard the tick so a broken champion just doesn't animate
+                        // instead of crashing the whole game loop.
+                        var _loc16_:Boolean = false;
+                        try { _loc16_ = Boolean(CREATURES._guardianList[_loc6_]) && CREATURES._guardianList[_loc6_].tick(1); } catch (gte:Error) { _loc16_ = false; }
+                        if (_loc16_)
                         {
                            if (!BYMConfig.instance.RENDERER_ON)
                            {
@@ -1417,8 +1767,8 @@ package
                         }
                         _loc6_++;
                      }
-                     PROJECTILES.Tick();
-                     FIREBALLS.Tick();
+                     try { PROJECTILES.Tick(); } catch (tke:Error) { }
+                     try { FIREBALLS.Tick(); } catch (tke:Error) { }
                      _loc7_++;
                   }
                   if (BYMConfig.instance.RENDERER_ON)
@@ -1430,19 +1780,19 @@ package
                _loc2_ = int(getTimer());
                if (!MapRoomManager.instance.isOpen)
                {
-                  WORKERS.Tick();
-                  EFFECTS.Tick();
-                  WMATTACK.Tick();
-                  MAPROOM.Tick();
-                  PATHING.Tick();
-                  Smoke.Tick();
-                  Fire.Tick();
+                  try { WORKERS.Tick(); } catch (tke:Error) { }
+                  try { EFFECTS.Tick(); } catch (tke:Error) { }
+                  try { WMATTACK.Tick(); } catch (tke:Error) { }
+                  try { MAPROOM.Tick(); } catch (tke:Error) { }
+                  try { PATHING.Tick(); } catch (tke:Error) { }
+                  try { Smoke.Tick(); } catch (tke:Error) { }
+                  try { Fire.Tick(); } catch (tke:Error) { }
                   BASE.ShakeB();
                   _player.tick();
                }
                if (!TUTORIAL.hasFinished)
                {
-                  TUTORIAL.Tick();
+                  try { TUTORIAL.Tick(); } catch (tke:Error) { }
                }
                if (_flags.logfps)
                {
@@ -1466,9 +1816,21 @@ package
                   _FPStimestamp = _loc2_;
                }
                _FPSframecount += 1;
-               if (_frameNumber % 3 == 0 && !BYMConfig.instance.RENDERER_ON)
+               if (!BYMConfig.instance.RENDERER_ON)
                {
-                  MAP.SortDepth();
+                  // SortDepth re-orders every building top (O(N log N)) and ran every 3 frames
+                  // (~13x/s on iOS's ~40fps loop) — pure heat/battery on big bases. Buildings only
+                  // change draw depth when one is being moved/placed or added/removed, and those
+                  // paths already call SortDepth explicitly. So when the iOS base is idle (no attack,
+                  // no creeps on the field, nothing being dragged) throttle the periodic sweep to
+                  // every 30 frames (~1.3x/s — still catches any rare animation-driven flicker);
+                  // otherwise keep the responsive 3-frame cadence. 30 is a multiple of 3, so the
+                  // idle sweep stays phase-aligned with the active one.
+                  var _loc17_:int = _iosViewport && !isInAttackMode && CREEPS._creepCount <= 0 && !_touchBuildingDrag ? 30 : 3;
+                  if (_frameNumber % _loc17_ == 0)
+                  {
+                     MAP.SortDepth();
+                  }
                }
             }
             else
@@ -1926,6 +2288,76 @@ package
          return _ROOT.stage.stageHeight;
       }
 
+      // Set true once the iOS SHOW_ALL viewport is configured (GAME.Data). Gates the
+      // adaptive width below so the transient pre-SHOW_ALL layout pass isn't affected.
+      public static var _iosViewport:Boolean = false;
+
+      // True while the player is placing a NEW building or moving an EXISTING one, on iOS only.
+      // On touch a building move is inherently a press-drag-release, which otherwise ALSO arms
+      // the base pan (MAP.Click/MAP.Scroll): the whole village scrolls under the finger and,
+      // because the pan sets MAP._dragged, the drop is rejected by the "if(!MAP._dragged)"
+      // guards in BFOUNDATION.Place/StopMove/Mouseup — so the building can never be positioned.
+      // Gating the pan on this makes a finger-drag move ONLY the building. iOS-only so desktop
+      // (mouse) pan-while-placing is unchanged. Derived from self-clearing state (_newBuilding is
+      // nulled by Place/Cancel; _moving is cleared by StopMoveB / BuildingDeselect) — no sticky
+      // flag that could leak and permanently disable panning.
+      public static function get _touchBuildingDrag():Boolean
+      {
+         return _iosViewport && (_newBuilding != null || (_selectedBuilding != null && _selectedBuilding._moving));
+      }
+
+      // True visible logical width of the game canvas. On iOS the game runs SHOW_ALL over
+      // a fixed-height 760x670 canvas; on a wide device Flash reports the *canvas* width
+      // (stageWidth == 760) but content is actually visible across the whole device width
+      // (nothing is clipped to the stage). The real visible width is the canvas height
+      // times the device's physical aspect ratio, so anchoring the UI to this — instead of
+      // the narrow 760 frame — fills the screen edge-to-edge and centres popups on the real
+      // screen centre, adapting to ANY iPhone. Non-iOS keeps the plain stage width.
+      public static function GetGameWidth():Number
+      {
+         if (_iosViewport && _ROOT.stage.fullScreenHeight > 0)
+         {
+            // Full visible logical width = canvas height x real device aspect. Spread the HUD
+            // to ~92% of that so it stops just short of the physical edges (breathing room +
+            // avoids the landscape notch clipping a corner). design = the 760 the UI was
+            // authored for; below that we never shrink.
+            var full:Number = _ROOT.stage.stageHeight * _ROOT.stage.fullScreenWidth / _ROOT.stage.fullScreenHeight;
+            var design:Number = (_SCREENINIT && _SCREENINIT.width) ? _SCREENINIT.width : 760;
+            if (full > design)
+            {
+               return design + (full - design) * 0.92;
+            }
+            return full;
+         }
+         return _ROOT.stage.stageWidth;
+      }
+
+      // Dynamic Island / notch safe-area inset (in 760-canvas logical units). AIR iOS 50.2
+      // exposes no safe-area API, so we DERIVE it: a device is "notched/Dynamic-Island" when
+      // its physical landscape aspect is very wide (>2.0; 16:9 phones and iPads are below).
+      // The landscape sensor-housing inset is ~4% of the full visible logical width. The
+      // island sits on the LEFT short edge for this app's locked landscape orientation
+      // (aspectRatio=landscape, autoOrients=false -> AIR default landscape) — confirmed by the
+      // top HUD / fling column bleeding under it. Applied HUD-side only (UI2.ResizeHandler),
+      // NOT to _SCREEN/_SCREENCENTER, so the map + popups stay symmetric.
+      private static function computeSafeAreaInset():Number
+      {
+         if (!_iosViewport) return 0;
+         var fw:Number = _ROOT.stage.fullScreenWidth;
+         var fh:Number = _ROOT.stage.fullScreenHeight;
+         if (fw <= 0 || fh <= 0 || fw / fh < 2.0) return 0;
+         var fullVisible:Number = _ROOT.stage.stageHeight * fw / fh;
+         return Math.round(0.04 * fullVisible);
+      }
+      public static function GetSafeAreaInsetLeft():Number
+      {
+         return computeSafeAreaInset();
+      }
+      public static function GetSafeAreaInsetRight():Number
+      {
+         return 0;
+      }
+
       public static function AFK():void
       {
          if (!_catchup)
@@ -2042,7 +2474,7 @@ package
          }
       }
 
-      public static function BlockerAdd(param1:Sprite = null):void
+      public static function BlockerAdd(param1:Sprite = null):DisplayObject
       {
          var _loc2_:DisplayObject = null;
          RefreshScreen();
@@ -2051,11 +2483,14 @@ package
             param1 = GLOBAL._layerWindows;
          }
          _loc2_ = param1.addChild(new popup_bg());
-         _loc2_.width = GLOBAL._ROOT.stage.stageWidth;
-         _loc2_.height = GLOBAL._ROOT.stage.stageHeight;
+         // Cover the whole visible area (not just the narrow canvas) so the dimmer reaches
+         // the true screen edges behind centred popups.
+         _loc2_.width = GLOBAL._SCREEN.width;
+         _loc2_.height = GLOBAL._SCREEN.height;
          _loc2_.x = GLOBAL._SCREEN.x;
          _loc2_.y = GLOBAL._SCREEN.y;
          _blockerList.push(_loc2_);
+         return _loc2_;
       }
 
       public static function BlockerRemove():void
@@ -2112,7 +2547,7 @@ package
          var _loc2_:int = 0;
          var _loc3_:int = 0;
          var _loc4_:int = 0;
-         _flags = serverFlags;
+         _flags = serverFlags ? serverFlags : {};
          if (!_flags.viximo && !_flags.kongregate)
          {
             _loc2_ = int(LOGIN._digits[LOGIN._digits.length - 1]);
@@ -2153,7 +2588,7 @@ package
       public static function RefreshScreen():void
       {
          var _loc3_:Rectangle = null;
-         var _loc1_:int = int(GLOBAL._ROOT.stage.stageWidth);
+         var _loc1_:int = int(GLOBAL.GetGameWidth());
          var _loc2_:int = int(GLOBAL.GetGameHeight());
          var _loc4_:int = UI2._wildMonsterBar != null ? 40 : 0;
          if (!_SCREEN || !_SCREEN.x || !_SCREEN.y || !_SCREEN.width || !_SCREEN.height)
@@ -2568,7 +3003,7 @@ package
 
       public static function get StageX():int
       {
-         return Math.ceil((760 - _ROOT.stage.stageWidth) / 2);
+         return Math.ceil((760 - GetGameWidth()) / 2);
       }
 
       public static function get StageY():int
@@ -2578,7 +3013,7 @@ package
 
       public static function get StageWidth():int
       {
-         return _ROOT.stage.stageWidth;
+         return int(GetGameWidth());
       }
 
       public static function get StageHeight():int

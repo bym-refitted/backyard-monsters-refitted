@@ -112,7 +112,15 @@ package
                {
                   if(GLOBAL._bMap._canFunction && initMaproomSetup)
                   {
-                     GLOBAL.BlockerAdd();
+                     // Tap the dimmed area outside the map-room panel to close it. The classic
+                     // Map Room 1 has no frame close button (old_maproom never calls
+                     // background_mc.Setup), so wire the real close (MAPROOM.Hide) to the blocker.
+                     var _mrBlocker:* = GLOBAL.BlockerAdd();
+                     if(_mrBlocker)
+                     {
+                        _mrBlocker.mouseEnabled = true;
+                        _mrBlocker.addEventListener(MouseEvent.CLICK,Hide);
+                     }
                      SOUNDS.Play("click1");
                      _open = true;
                      if([1, 2].indexOf(loadState) === -1)

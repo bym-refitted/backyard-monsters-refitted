@@ -11,6 +11,7 @@ package
    import flash.events.Event;
    import flash.events.MouseEvent;
    import flash.geom.Point;
+   import flash.geom.Rectangle;
    import flash.text.TextField;
    import flash.text.TextFieldAutoSize;
    
@@ -45,7 +46,10 @@ package
          _building = param1;
          _props = GLOBAL._buildingProps[_building._type - 1];
          _mc = MAP._BUILDINGINFO.addChild(new buildingInfoData()) as MovieClip;
-         _mc.tName.autoSize = TextFieldAutoSize.CENTER;
+         if(_mc.tName)
+         {
+            _mc.tName.autoSize = TextFieldAutoSize.CENTER;
+         }
          var _loc2_:* = "<b>" + KEYS.Get(_props.name) + "</b>";
          var effectiveLvl:int = _building.getEffectiveLevel();
          if(_building._lvl.Get() > 0 && _props.costs && _props.costs.length > 1)
@@ -67,7 +71,17 @@ package
                _loc2_ += "<font color=\"#0000ff\"> <br><b>" + KEYS.Get("bdg_25%boost") + "</b></font>";
             }
          }
-         _mc.tName.htmlText = _loc2_;
+         if(_mc.tName)
+         {
+            _mc.tName.htmlText = _loc2_;
+            // iOS AIR: the Groboldov font embedded in the buildingInfo symbol isn't always
+            // available to these symbol TextFields, so they render blank. Fall back to device font.
+            if(_mc.tName.textWidth < 1)
+            {
+               _mc.tName.embedFonts = false;
+               _mc.tName.htmlText = _loc2_;
+            }
+         }
          _mc.removeEventListener(Event.ENTER_FRAME,Tick);
          _mc.addEventListener(Event.ENTER_FRAME,Tick);
          if(GLOBAL._zoomed)
@@ -79,6 +93,7 @@ package
       
       public static function Update() : void
       {
+         try {
          var _loc4_:int = 0;
          var _loc5_:Vector.<Object> = null;
          var _loc6_:BFOUNDATION = null;
@@ -521,6 +536,11 @@ package
                }
                _loc20_.autoSize = TextFieldAutoSize.CENTER;
                _loc20_.htmlText = _loc9_;
+               if(_loc20_.textWidth < 1)
+               {
+                  _loc20_.embedFonts = false;
+                  _loc20_.htmlText = _loc9_;
+               }
                if(_loc20_.height + 10 > _loc7_)
                {
                   _loc7_ = _loc20_.height + 10;
@@ -530,12 +550,44 @@ package
                   _loc20_.y = (_loc7_ - _loc20_.height) * 0.5;
                }
             }
-            _mc.mcBG.height = _loc7_;
+            // The buildingInfo symbol's white panel background (mcBG) isn't instantiated on
+            // iOS, so the name/timer text floated on the grass. Recreate it as the same white
+            // rounded panel the desktop shows (black text on white), sized to fit the content.
+            if(!_mc.mcBG)
+            {
+               // mcBG is typed MovieClip in buildingInfoData, so the fallback MUST be a
+               // MovieClip (a Sprite would throw #1034 on assignment, swallowed by the catch).
+               var _fbPanel:MovieClip = new MovieClip();
+               _fbPanel.name = "mcBGFallback";
+               _fbPanel.mouseEnabled = false;
+               _fbPanel.mouseChildren = false;
+               _mc.addChildAt(_fbPanel,0);
+               _mc.mcBG = _fbPanel;
+            }
+            if(_mc.mcBG && _mc.mcBG.name == "mcBGFallback")
+            {
+               var _sp:MovieClip = _mc.mcBG as MovieClip;
+               _sp.graphics.clear();
+               var _cb:Rectangle = _mc.getBounds(_mc);
+               _sp.graphics.lineStyle(1.5,0x9A9A9A,1);
+               _sp.graphics.beginFill(0xFFFFFF,0.96);
+               _sp.graphics.drawRoundRect(_cb.x - 10,_cb.y - 8,_cb.width + 20,_cb.height + 16,14,14);
+               _sp.graphics.endFill();
+            }
+            else if(_mc.mcBG)
+            {
+               _mc.mcBG.height = _loc7_;
+            }
          }
+         } catch (updErr:Error) { }
       }
       
       public static function Tick(param1:Event) : void
       {
+         if(!_mc || !_mc.mcBG)
+         {
+            return;
+         }
          if(_mc.mouseX > 150 || _mc.mouseX < -30 || _mc.mouseY > _mc.mcBG.height + 20 || _mc.mouseY < -50)
          {
             Hide();

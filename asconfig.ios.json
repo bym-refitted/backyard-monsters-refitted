@@ -1,0 +1,33 @@
+{
+	"config": "air",
+	"type": "app",
+	"mainClass": "GAME",
+	"compilerOptions": {
+		"output": "bin/bymr-ios.swf",
+		"default-frame-rate": 40,
+		"default-background-color": "#000000",
+		"default-size": {
+			"width": 760,
+			"height": 670
+		},
+		"optimize": false,
+		"strict": true,
+		"warnings": false,
+		"use-network": true,
+		"advanced-telemetry": false,
+		"static-link-runtime-shared-libraries": true,
+		"source-path": [
+			"client/scripts"
+		],
+		"define": [
+			{
+				"name": "CONFIG::SERVER_URL",
+				"value": "'https://server.bymrefitted.com/'"
+			},
+			{
+				"name": "CONFIG::CDN_URL",
+				"value": "'https://cdn.bymrefitted.com/'"
+			}
+		]
+	}
+}

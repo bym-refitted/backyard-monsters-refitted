@@ -3,7 +3,7 @@ package
    import flash.display.MovieClip;
    import flash.text.TextField;
    
-   [Embed(source="/_assets/assets.swf", symbol="EventStoreDisplayItem")]
+   [Embed(source="/_assets/assets_refitted.swf", symbol="EventStoreDisplayItem")]
    public dynamic class EventStoreDisplayItem extends MovieClip
    {
        

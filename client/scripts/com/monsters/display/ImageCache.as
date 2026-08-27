@@ -6,9 +6,11 @@ package com.monsters.display
    import flash.events.Event;
    import flash.events.IOErrorEvent;
    import flash.events.TimerEvent;
+   import flash.geom.Rectangle;
    import flash.net.URLRequest;
    import flash.system.LoaderContext;
    import flash.utils.Timer;
+   import flash.utils.getQualifiedClassName;
    
    public class ImageCache
    {

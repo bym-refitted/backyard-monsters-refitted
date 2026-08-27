@@ -25,7 +25,7 @@ package com.monsters.siege
          _weaponsList[Vacuum.ID] = new Vacuum();
          _weaponsList[Jars.ID] = new Jars();
       }
-      
+
       public function SiegeWeapons()
       {
          super();

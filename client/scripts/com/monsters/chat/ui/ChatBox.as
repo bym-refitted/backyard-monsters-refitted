@@ -670,8 +670,34 @@ package com.monsters.chat.ui
          var _loc2_:int = 0;
          while(_loc2_ < this._skinnedElements.length)
          {
-            this._skinnedElements[_loc2_].gotoAndStop(_loc1_);
+            if(this._skinnedElements[_loc2_])
+            {
+               this._skinnedElements[_loc2_].gotoAndStop(_loc1_);
+            }
             _loc2_++;
+         }
+         // iOS: the wood-frame symbols rasterize to 0 drawable pixels -> transparent chat frame.
+         // Draw wood behind the header/border/input bar (and a dark screen / light input field)
+         // matched to each symbol's real bounds. No-op off iOS / when the real art paints.
+         if(GLOBAL._iosViewport)
+         {
+            if(this.background)
+            {
+               GLOBAL.PaintWoodFallback(this.background.header);
+               GLOBAL.PaintWoodFallback(this.background.border);
+               if(this.background.mcScreen)
+               {
+                  GLOBAL.PaintWoodFallback(this.background.mcScreen.canvas,0x352415,0x241810);
+               }
+            }
+            if(this.inputbar)
+            {
+               GLOBAL.PaintWoodFallback(this.inputbar.inputWoodBg);
+               if(this.inputbar.inputTxtBG)
+               {
+                  GLOBAL.PaintWoodFallback(this.inputbar.inputTxtBG.canvas,0xEBDCB4,0xCDB67F);
+               }
+            }
          }
          this.background.mcToggle.gotoAndStop(this._enabled ? "on" + this._skinTag : "close" + this._skinTag);
          this.background.arrowUp.gotoAndStop("on" + this._skinTag);

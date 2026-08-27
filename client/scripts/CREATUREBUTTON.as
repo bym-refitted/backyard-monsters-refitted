@@ -101,6 +101,13 @@ package
       
       public function Over(param1:MouseEvent) : void
       {
+         // On touch (iOS) there is no hover: ROLL_OVER fires on tap and ROLL_OUT often never
+         // does, so the creature description would stay stuck on screen covering the fling
+         // area. Hover tooltips don't apply on touch — suppress it there.
+         if(GLOBAL._iosViewport)
+         {
+            return;
+         }
          this._description.visible = true;
       }
       

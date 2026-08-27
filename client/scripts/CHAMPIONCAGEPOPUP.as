@@ -66,8 +66,7 @@ package
       public static var _useBonusIndicators:Boolean = false;
       
       public static var _bCage:CHAMPIONCAGE;
-       
-      
+
       private var guard:ChampionBase;
       
       private var guardType:int;
@@ -221,7 +220,7 @@ package
       
       public function addKothListeners() : void
       {
-         if(!p3_mcLootMark2.check.visible)
+         if(!p3_mcLootMark2.check || !p3_mcLootMark2.check.visible)
          {
             p3_mcLootMark2.addEventListener(MouseEvent.ROLL_OVER,this.onOverKothTooltip);
             p3_mcLootMark2.addEventListener(MouseEvent.ROLL_OUT,this.onOutKothTooltip);
@@ -1174,8 +1173,14 @@ package
             this.kothLootCurrent = KOTHHandler.instance.totalLoot;
             this.kothTimeCurrent = ReplayableEventHandler.currentTime - this.kothTimeStart;
             this.kothTimeLeft = this.kothTimeEnd - ReplayableEventHandler.currentTime;
-            p3_bTimeleft.mcFill.width = 400 / KOTHHandler.instance.timePerRound * this.kothTimeCurrent;
-            p3_bLootLeft.mcFill.width = 400 / this.kothLootMax * KOTHHandler.instance.totalLoot;
+            if(p3_bTimeleft.mcFill)
+            {
+               p3_bTimeleft.mcFill.width = 400 / KOTHHandler.instance.timePerRound * this.kothTimeCurrent;
+            }
+            if(p3_bLootLeft.mcFill)
+            {
+               p3_bLootLeft.mcFill.width = 400 / this.kothLootMax * KOTHHandler.instance.totalLoot;
+            }
             _loc17_ = GLOBAL.ToTime(this.kothTimeLeft);
             _loc18_ = GLOBAL.FormatNumber(KOTHHandler.instance.totalLoot);
             p3_tTimeleft.htmlText = "<b>" + _loc17_ + " " + KEYS.Get("koth_bardesc_time") + "</b>";
@@ -1183,8 +1188,11 @@ package
             p3_mcLootMark1.visible = !KOTHHandler.instance.hasWonPermanantly;
             p3_mcLootMark1.check.visible = KOTHHandler.instance.totalLoot >= this.kothLootThresholds[0];
             p3_mcLootMark2.check.visible = KOTHHandler.instance.totalLoot >= this.kothLootThresholds[1];
-            p3_mcLootMark1.x = p3_bLootLeft.x + p3_bLootLeft.mcBG.width / this.kothLootMax * this.kothLootThresholds[0] - p3_mcLootMark1.width / 2;
-            p3_mcLootMark2.x = p3_bLootLeft.x + p3_bLootLeft.mcBG.width / this.kothLootMax * this.kothLootThresholds[1] - p3_mcLootMark2.width;
+            if(p3_bLootLeft.mcBG)
+            {
+               p3_mcLootMark1.x = p3_bLootLeft.x + p3_bLootLeft.mcBG.width / this.kothLootMax * this.kothLootThresholds[0] - p3_mcLootMark1.width / 2;
+               p3_mcLootMark2.x = p3_bLootLeft.x + p3_bLootLeft.mcBG.width / this.kothLootMax * this.kothLootThresholds[1] - p3_mcLootMark2.width;
+            }
             if(p3_mcLootMark1.check.visible && !p3_mcLootMark2.check.visible)
             {
                this.addKothTooltip(p3_mcLootMark2);

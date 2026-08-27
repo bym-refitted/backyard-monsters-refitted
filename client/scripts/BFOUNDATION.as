@@ -1860,7 +1860,7 @@ package
             MAP.SortDepth();
          }
       }
-      
+
       public function Cancel() : void
       {
          if(GLOBAL._newBuilding === this)

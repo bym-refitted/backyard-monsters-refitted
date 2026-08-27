@@ -8,7 +8,11 @@ package com.computus.model
    {
       
       private static var _instance:Timekeeper;
-       
+
+      // Any single gap between regulator ticks longer than this (ms) is treated as a runtime resume
+      // from suspend (e.g. iOS background), not real elapsed time to catch up on — see onTimerEvent.
+      private static const MAX_CATCHUP_GAP:int = 30000;
+
       
       protected var time:Number;
       
@@ -111,6 +115,19 @@ package com.computus.model
       {
          var _loc2_:int = getTimer();
          var _loc3_:int = _loc2_ - this.regulatorCache;
+         this.regulatorCache = _loc2_;
+         // A single gap this large between regulator ticks isn't normal frame/load timing — it's the
+         // runtime resuming from a long suspend (iOS freezes the app while backgrounded, so getTimer()
+         // jumps by the whole background span on the first fire after resume). Banking it would make the
+         // regulator drain minutes of backlog at ~20 ticks/sec, fast-forwarding GLOBAL.Tick() -> nukes
+         // ATTACK._countdown to -120 (RetreatAll) ~15s into the next attack. Drop the gap and re-anchor;
+         // real offline progress is re-fetched from the server on resume (POWER.as), not caught up by
+         // this heartbeat. Normal loads/hitches (< threshold) still bank and catch up, so in-session
+         // timers keep real-time speed (no global slowdown).
+         if(_loc3_ > MAX_CATCHUP_GAP)
+         {
+            return;
+         }
          this.regulatorAcc += _loc3_;
          if(this.regulatorAcc > this.tickFrequency)
          {
@@ -120,7 +137,6 @@ package com.computus.model
             }
             this.regulatorAcc -= this.tickFrequency;
          }
-         this.regulatorCache = _loc2_;
       }
    }
 }

@@ -17,7 +17,7 @@ package
       
       public var mcImage:MovieClip;
       
-      public var mcLoading:loading_210;
+      public var mcLoading:MovieClip;
       
       public var mcCheck:MovieClip;
       

@@ -151,6 +151,9 @@ router.get("/api/:apiVersion/attacklogs", verifyUserAuth, getAttackLogs);
 * 📦 Events
 * ──────────────────────────────────────────────── */
 router.get("/api/:apiVersion/events/wmi", apiVersion, logRequest, wildMonsterInvasion);
+// The client's URLLoaderApi POSTs this endpoint; without a POST route it 405s and the
+// wild-monster invasion event never loads (URLLoader Load Error). Accept POST too.
+router.post("/api/:apiVersion/events/wmi", apiVersion, logRequest, wildMonsterInvasion);
 
 /**  ────────────────────────────────────────────────
 * 📦 Debug

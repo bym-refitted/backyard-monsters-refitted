@@ -30,12 +30,12 @@ package com.monsters.maproom_inferno.views
          if(this.active)
          {
             buttonMode = true;
-            mcArrow.gotoAndStop(2);
+            if(mcArrow) mcArrow.gotoAndStop(2);
          }
          else
          {
             buttonMode = false;
-            mcArrow.gotoAndStop(1);
+            if(mcArrow) mcArrow.gotoAndStop(1);
          }
       }
       
@@ -46,19 +46,23 @@ package com.monsters.maproom_inferno.views
             if(this.wobbleCountdown == 0)
             {
                this.wobbleCountdown = 80;
-               mcArrow.x = -15;
-               TweenLite.to(mcArrow,0.6,{
-                  "x":-20,
-                  "ease":Expo.easeInOut,
-                  "onComplete":this.WobbleB
-               });
+               if(mcArrow)
+               {
+                  mcArrow.x = -15;
+                  TweenLite.to(mcArrow,0.6,{
+                     "x":-20,
+                     "ease":Expo.easeInOut,
+                     "onComplete":this.WobbleB
+                  });
+               }
             }
             --this.wobbleCountdown;
          }
       }
-      
+
       private function WobbleB() : void
       {
+         if(!mcArrow) return;
          TweenLite.to(mcArrow,0.6,{
             "x":-15,
             "ease":Bounce.easeOut

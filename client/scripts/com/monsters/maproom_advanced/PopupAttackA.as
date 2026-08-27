@@ -42,6 +42,14 @@ package com.monsters.maproom_advanced
 
       private var _scroller:ScrollSet;
 
+      // Safety valve: if a nearby cell's data never finishes processing (a stalled
+      // fetch/sync), Update() used to bail out and return false forever, leaving the
+      // popup permanently blank until the app was restarted. After waiting this many
+      // ticks, stop blocking on unprocessed cells and proceed with whatever's ready.
+      private static const MAX_WAIT_TICKS:int = 120;
+
+      private var _waitTicks:int = 0;
+
       public function PopupAttackA()
       {
          super();
@@ -96,6 +104,7 @@ package com.monsters.maproom_advanced
             this.tAttackText.htmlText = "<b>Attack</b>";
          }
          this._enabled = false;
+         this._waitTicks = 0;
          this.bAttack.Enabled = false;
          this.ProfilePic();
          if (this._cell._alliance)
@@ -220,12 +229,16 @@ package com.monsters.maproom_advanced
          if (MapRoom._open)
          {
             this._cellsInRange = MapRoom._mc.GetCellsInRange(this._cell.X, this._cell.Y, 10 + powerUpBonus);
-            for each (cellData in this._cellsInRange)
+            if (this._waitTicks < MAX_WAIT_TICKS)
             {
-               mapRoomCell = cellData.cell as MapRoomCell;
-               if (Boolean(mapRoomCell) && !mapRoomCell._processed)
+               for each (cellData in this._cellsInRange)
                {
-                  return false;
+                  mapRoomCell = cellData.cell as MapRoomCell;
+                  if (Boolean(mapRoomCell) && !mapRoomCell._processed)
+                  {
+                     this._waitTicks++;
+                     return false;
+                  }
                }
             }
          }

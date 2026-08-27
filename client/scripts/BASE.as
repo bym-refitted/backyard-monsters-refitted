@@ -1182,7 +1182,7 @@ package
                GLOBAL.player.importAcademyData(serverData.academy);
                if (GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD && isMainYardOrInfernoMainYard)
                {
-                  SiegeWeapons.importWeapons(serverData.siege);
+                  try { SiegeWeapons.importWeapons(serverData.siege); } catch (siwErr:Error) { GAME.logDiag("importWeapons THREW #" + siwErr.errorID + ": " + siwErr.message + "\n" + siwErr.getStackTrace()); }
                }
                else
                {
@@ -1224,6 +1224,15 @@ package
                      TUTORIAL._stage = int(serverData.tutorialstage);
                   }
                   TUTORIAL.Tick();
+                  // iOS: the earlier _isProtected read (~L834) is gated on TUTORIAL.hasFinished, but
+                  // on a fresh session TUTORIAL._stage isn't restored until just above (here), so that
+                  // read saw _stage=0 -> hasFinished false -> protection left 0 and the shield badge
+                  // never showed. Desktop escapes it because _stage is already restored by then. Re-read
+                  // now that the stage is known. Display-only; the server stays authoritative.
+                  if (GLOBAL._iosViewport && TUTORIAL.hasFinished)
+                  {
+                     _isProtected = int(serverData["protected"]);
+                  }
                }
                WORKERS.Setup();
                QUEUE.Setup();
@@ -1277,7 +1286,7 @@ package
                      j = 0;
                      while (j < champion.length)
                      {
-                        if (Boolean(champion[j].t) && !existingGuardians[champion[j].t])
+                        if (Boolean(champion[j]) && Boolean(champion[j].t) && !existingGuardians[champion[j].t])
                            {
                               existingGuardians[champion[j].t] = true;
                               _guardianData[guardianIndex] = {};
@@ -1413,20 +1422,26 @@ package
                   {
                      popupMC = new popup_attackedme();
                      popupMC.gotoAndStop(1);
-                     if (attackObj.count == 1)
+                     // iOS: popup_attackedme's nested symbol children (tA / mcPic.mcBG / bShare) are
+                     // null, so these derefs threw #1010 -> the whole base load failed with a
+                     // "whoops" when the server included an attackers list. Guard each child.
+                     if (popupMC.tA)
                      {
-                        popupMC.tA.htmlText = KEYS.Get("pop_attackedyou", {
-                                 "v1": attackObj.name,
-                                 "v2": GLOBAL.ToTime(_currentTime - int(attackObj.lastTime), true)
-                              });
-                     }
-                     else
-                     {
-                        popupMC.tA.htmlText = KEYS.Get("pop_attackedyouxtimes", {
-                                 "v1": attackObj.name,
-                                 "v2": attackObj.count,
-                                 "v3": GLOBAL.ToTime(_currentTime - int(attackObj.lastTime), true)
-                              });
+                        if (attackObj.count == 1)
+                        {
+                           popupMC.tA.htmlText = KEYS.Get("pop_attackedyou", {
+                                    "v1": attackObj.name,
+                                    "v2": GLOBAL.ToTime(_currentTime - int(attackObj.lastTime), true)
+                                 });
+                        }
+                        else
+                        {
+                           popupMC.tA.htmlText = KEYS.Get("pop_attackedyouxtimes", {
+                                    "v1": attackObj.name,
+                                    "v2": attackObj.count,
+                                    "v3": GLOBAL.ToTime(_currentTime - int(attackObj.lastTime), true)
+                                 });
+                        }
                      }
                      if (attackObj.pic)
                      {
@@ -1441,10 +1456,13 @@ package
                         loader = new Loader();
                         loader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, LoadImageError, false, 0, true);
                         loader.contentLoaderInfo.addEventListener(Event.COMPLETE, onImageLoad);
-                        popupMC.mcPic.mcBG.addChild(loader);
-                        loader.load(new URLRequest(attackObj.pic));
+                        if (popupMC.mcPic && popupMC.mcPic.mcBG)
+                        {
+                           popupMC.mcPic.mcBG.addChild(loader);
+                           loader.load(new URLRequest(attackObj.pic));
+                        }
                      }
-                     if (attackObj.friend == 1)
+                     if (attackObj.friend == 1 && popupMC.bShare)
                      {
                         popupMC.bShare.SetupKey("btn_talktrash");
                         popupMC.bShare.Highlight = true;
@@ -1462,15 +1480,29 @@ package
                               }
                            });
                      }
-                     else
+                     else if (popupMC.bShare)
                      {
                         popupMC.bShare.visible = false;
                      }
                      POPUPS.Push(popupMC);
                   }
                }
-               _ownerName = GLOBAL.mode == GLOBAL.e_BASE_MODE.WMATTACK || GLOBAL.mode == GLOBAL.e_BASE_MODE.WMVIEW ? String(TRIBES.TribeForBaseID(_wmID).name) : String(serverData.name);
-               _ownerPic = GLOBAL.mode == GLOBAL.e_BASE_MODE.WMATTACK || GLOBAL.mode == GLOBAL.e_BASE_MODE.WMVIEW ? String(TRIBES.TribeForBaseID(_wmID).profilepic) : String(serverData.pic_square);
+               // TribeForBaseID(_wmID) can return null (its final `return null`) when the target
+               // base id isn't in the local tribe association — attacking a real player from the
+               // world map then threw #1010 on `.name`/`.profilepic` and showed the "whoops" error
+               // screen. Look the tribe up once and fall back to the server-sent name/pic (what the
+               // non-world-map branch already uses) when it's missing.
+               var _wmTribe:Object = GLOBAL.mode == GLOBAL.e_BASE_MODE.WMATTACK || GLOBAL.mode == GLOBAL.e_BASE_MODE.WMVIEW ? TRIBES.TribeForBaseID(_wmID) : null;
+               if (GLOBAL.mode == GLOBAL.e_BASE_MODE.WMATTACK || GLOBAL.mode == GLOBAL.e_BASE_MODE.WMVIEW)
+               {
+                  _ownerName = _wmTribe ? String(_wmTribe.name) : String(serverData.name);
+                  _ownerPic = _wmTribe ? String(_wmTribe.profilepic) : String(serverData.pic_square);
+               }
+               else
+               {
+                  _ownerName = String(serverData.name);
+                  _ownerPic = String(serverData.pic_square);
+               }
                if (!GLOBAL._flags.viximo && !GLOBAL._flags.kongregate)
                {
                   if (serverData.promotiontimer)
@@ -1668,6 +1700,7 @@ package
          {
             GLOBAL.Message(KEYS.Get("err_loading_base"));
             LOGGER.Log("err", "Failed to load user base with error: " + error.getStackTrace());
+            GAME.logDiag("BASE LOAD ERROR #" + error.errorID + ": " + error.message + "\n" + error.getStackTrace());
          }
       }
 
@@ -1718,10 +1751,10 @@ package
             }
             mapIndex--;
          }
-         UI2.Setup();
-         GLOBAL.ResizeGame(null);
+         try { UI2.Setup(); } catch (u2e:Error) { GAME.logDiag("UI2.Setup backstop: "+u2e.getStackTrace()); }
+         try { GLOBAL.ResizeGame(null); } catch (be:Error) { GAME.logDiag("ResizeGame: "+be.getStackTrace()); }
          GLOBAL._render = false;
-         PATHING.Setup();
+         try { PATHING.Setup(); } catch (be:Error) { GAME.logDiag("PATHING: "+be.getStackTrace()); }
          var timer:int = getTimer();
          var terrainType:String = "grass";
          if (!MapRoomManager.instance.isInMapRoom3 && GLOBAL._currentCell && (isOutpostOrInfernoOutpost || GLOBAL.mode == GLOBAL.e_BASE_MODE.WMATTACK || GLOBAL.mode == GLOBAL.e_BASE_MODE.WMVIEW))
@@ -1735,7 +1768,7 @@ package
          var map:MAP = new MAP(terrainType);
          var targeting:Targeting = new Targeting();
          QUEUE.Spawn(0);
-         Smoke.Setup();
+         try { Smoke.Setup(); } catch (be:Error) { GAME.logDiag("Smoke: "+be.getStackTrace()); }
          var currentBuilding:Object = {};
          var buildingCount:int = 0;
          var foundationType:int = 0;
@@ -2377,16 +2410,17 @@ package
             GIFTS.ProcessAcceptedInvites(_tempSentInvites);
          }
          UPDATES.Catchup();
-         HOUSING.Cull();
-         HOUSING.Populate();
-         SOUNDS.Setup();
+         try { HOUSING.Cull(); } catch (pde:Error) { GAME.logDiag("HOUSING.Cull: "+pde.getStackTrace()); }
+         try { HOUSING.Populate(); } catch (pde:Error) { GAME.logDiag("HOUSING.Populate: "+pde.getStackTrace()); }
+         try { SOUNDS.Setup(); } catch (pde:Error) { GAME.logDiag("SOUNDS.Setup: "+pde.getStackTrace()); }
          GLOBAL._render = true;
          GLOBAL._catchup = false;
+         PLEASEWAIT.Hide();
          damageCount = 0;
          buildingInstances ||= InstanceManager.getInstancesByClass(BFOUNDATION);
          for each (building in buildingInstances)
          {
-            building.Update(true);
+            try { building.Update(true); } catch (bue:Error) { GAME.logDiag("building.Update: "+bue.getStackTrace()); }
             if (building.health < building.maxHealth && building._repairing == 0)
             {
                damageCount++;
@@ -3765,7 +3799,8 @@ package
             saveData["mushrooms"] = JSON.stringify(getMushroomSaveData());
          }
          saveData["quests"] = JSON.stringify(QUESTS._completed);
-         saveData["basename"] = GLOBAL.mode == GLOBAL.e_BASE_MODE.WMATTACK ? TRIBES.TribeForBaseID(_wmID).name : _baseName;
+         var _saveTribe:Object = GLOBAL.mode == GLOBAL.e_BASE_MODE.WMATTACK ? TRIBES.TribeForBaseID(_wmID) : null;
+         saveData["basename"] = GLOBAL.mode == GLOBAL.e_BASE_MODE.WMATTACK ? (_saveTribe ? _saveTribe.name : _ownerName) : _baseName;
          saveData["siege"] = JSON.stringify(GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD && isMainYardOrInfernoMainYard ? SiegeWeapons.exportWeapons() : _oldSiegeData);
          saveData["attackersiege"] = JSON.stringify(GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD && isMainYardOrInfernoMainYard ? null : SiegeWeapons.exportWeapons());
          saveData["baseid"] = _baseID;
@@ -3862,7 +3897,12 @@ package
             saveData.lootreport = JSON.stringify(getLootReportSaveData());
             if (!MapRoomManager.instance.isInMapRoom2or3 || BASE.isInfernoMainYardOrOutpost)
             {
-               saveData.attackcreatures = JSON.stringify(GLOBAL.attackingPlayer.exportMonsters());
+               // attackingPlayer is null outside an actual attack setup; guard so the
+               // periodic autosave (BASE.Tick) doesn't throw #1009 and abort the save.
+               if (GLOBAL.attackingPlayer)
+               {
+                  saveData.attackcreatures = JSON.stringify(GLOBAL.attackingPlayer.exportMonsters());
+               }
             }
             saveData.attackloot = JSON.stringify(getAttackerDeltaResourcesSaveData());
             attackerChampion = getAttackingPlayerGuardianSaveData();

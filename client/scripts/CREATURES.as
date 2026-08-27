@@ -19,7 +19,7 @@ package
       public static var _ticks:int;
       
       public static var _guardianList:Vector.<ChampionBase> = new Vector.<ChampionBase>();
-       
+
       
       public function CREATURES()
       {
@@ -300,7 +300,7 @@ package
             _guardianList[_loc2_] = param1;
          }
       }
-      
+
       public static function addGuardian(param1:ChampionBase) : Boolean
       {
          var _loc2_:int = -1;

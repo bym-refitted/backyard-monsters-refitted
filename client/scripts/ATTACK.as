@@ -357,7 +357,7 @@ package
             {
                onActionDown = function(param1:MouseEvent):void
                {
-                  if(param1.target.label == "Next" || param1.target.labelKey == "btn_returnhome" || param1.target.labelKey == "btn_skip")
+                  if(param1.target.labelKey == "btn_next" || param1.target.labelKey == "btn_returnhome" || param1.target.labelKey == "btn_skip")
                   {
                      _logOpen = false;
                      _attackLog.parent.removeChild(_attackLog);
@@ -384,7 +384,7 @@ package
                   _attackLog.bAction.Highlight = true;
                   if(MapRoomManager.instance.isInMapRoom2)
                   {
-                     _attackLog.b2.Setup(KEYS.Get("btn_next"));
+                     _attackLog.b2.SetupKey("btn_next");
                   }
                   else
                   {
@@ -398,7 +398,7 @@ package
                   _attackLog.bAction.Highlight = false;
                   if(MapRoomManager.instance.isInMapRoom2)
                   {
-                     _attackLog.bAction.Setup(KEYS.Get("btn_next"));
+                     _attackLog.bAction.SetupKey("btn_next");
                   }
                   else
                   {

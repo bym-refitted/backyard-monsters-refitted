@@ -58,7 +58,7 @@ package
       public var _dealspot:DealSpot;
       
       public var _resourceUI:Object;
-      
+
       public var _resourceR1:int;
       
       public var _resourceR2:int;
@@ -118,39 +118,75 @@ package
             gotoAndStop(GLOBAL._loadmode);
          }
          if (mc && mc.mcPoints) mc.mcPoints.stop();
-         if(GLOBAL._loadmode == GLOBAL.e_BASE_MODE.BUILD || GLOBAL._loadmode == GLOBAL.e_BASE_MODE.IBUILD)
+         // On iOS some nested UI-asset children fail to instantiate (null), which would
+         // abort the whole base load. Isolate the top-bar setup so the base still loads
+         // and is playable even if the top bar ends up partial.
+         try
          {
-            this.setupBuildMode();
+            if(GLOBAL._loadmode == GLOBAL.e_BASE_MODE.BUILD || GLOBAL._loadmode == GLOBAL.e_BASE_MODE.IBUILD)
+            {
+               this.setupBuildMode();
+            }
+            else if(GLOBAL._loadmode == GLOBAL.e_BASE_MODE.ATTACK || GLOBAL._loadmode == GLOBAL.e_BASE_MODE.WMATTACK || GLOBAL._loadmode == GLOBAL.e_BASE_MODE.IATTACK || GLOBAL._loadmode == GLOBAL.e_BASE_MODE.IWMATTACK)
+            {
+               this.setupAttackMode();
+            }
+            else if(MapRoomManager.instance.isInMapRoom3 && (GLOBAL.mode === GLOBAL.e_BASE_MODE.VIEW || GLOBAL.mode === GLOBAL.e_BASE_MODE.WMVIEW))
+            {
+               this.setupScoutMode();
+            }
+            else
+            {
+               this.DescentDebuffHide();
+            }
+            this.Update();
+            // mcSound/mcMusic are timeline children of UI_TOP_CLIP that don't always
+            // instantiate (null) — recreate them so the sound/music toggles are present.
+            // buttonSound_CLIP/buttonMusic_CLIP self-wire their CLICK -> SOUNDS.Toggle().
+            // Positioned next to Save in resize()/UI2.Resize.
+            if(!mcSound)
+            {
+               mcSound = new buttonSound_CLIP();
+               addChild(mcSound);
+            }
+            if(!mcMusic)
+            {
+               mcMusic = new buttonMusic_CLIP();
+               addChild(mcMusic);
+            }
          }
-         else if(GLOBAL._loadmode == GLOBAL.e_BASE_MODE.ATTACK || GLOBAL._loadmode == GLOBAL.e_BASE_MODE.WMATTACK || GLOBAL._loadmode == GLOBAL.e_BASE_MODE.IATTACK || GLOBAL._loadmode == GLOBAL.e_BASE_MODE.IWMATTACK)
+         catch (uiErr:Error)
          {
-            this.setupAttackMode();
+
          }
-         else if(MapRoomManager.instance.isInMapRoom3 && (GLOBAL.mode === GLOBAL.e_BASE_MODE.VIEW || GLOBAL.mode === GLOBAL.e_BASE_MODE.WMVIEW))
-         {
-            this.setupScoutMode();
-         }
-         else
-         {
-            this.DescentDebuffHide();
-         }
-         this.Update();
       }
       
       private function setupBuildMode() : void
       {
          var _loc1_:int = 0;
-         mc.mcPoints.addEventListener(MouseEvent.MOUSE_OVER,this.InfoShow);
-         mc.mcPoints.addEventListener(MouseEvent.MOUSE_OUT,this.InfoHide);
+         
+         if(mc.mcPoints)
+         {
+            mc.mcPoints.addEventListener(MouseEvent.MOUSE_OVER,this.InfoShow);
+            mc.mcPoints.addEventListener(MouseEvent.MOUSE_OUT,this.InfoHide);
+         }
+
          _loc1_ = 1;
          while(_loc1_ < 5)
          {
-            mc["mcR" + _loc1_].mcHit.addEventListener(MouseEvent.MOUSE_OVER,this.StatsShow(_loc1_,false));
-            mc["mcR" + _loc1_].mcHit.addEventListener(MouseEvent.MOUSE_OUT,this.StatsHide);
-            mc["mcR" + _loc1_].bAdd.addEventListener(MouseEvent.CLICK,this.Topup(_loc1_));
-            mc["mcR" + _loc1_].bAdd.buttonMode = true;
-            mc["mcR" + _loc1_].bAdd.mouseEnabled = true;
-            mc["mcR" + _loc1_].bAdd.mouseChildren = false;
+
+            if(mc["mcR" + _loc1_] && mc["mcR" + _loc1_].mcHit)
+            {
+               mc["mcR" + _loc1_].mcHit.addEventListener(MouseEvent.MOUSE_OVER,this.StatsShow(_loc1_,false));
+               mc["mcR" + _loc1_].mcHit.addEventListener(MouseEvent.MOUSE_OUT,this.StatsHide);
+            }
+            if(mc["mcR" + _loc1_] && mc["mcR" + _loc1_].bAdd)
+            {
+               mc["mcR" + _loc1_].bAdd.addEventListener(MouseEvent.CLICK,this.Topup(_loc1_));
+               mc["mcR" + _loc1_].bAdd.buttonMode = true;
+               mc["mcR" + _loc1_].bAdd.mouseEnabled = true;
+               mc["mcR" + _loc1_].bAdd.mouseChildren = false;
+            }
             _loc1_++;
          }
          this._resourceUI = {};
@@ -158,83 +194,113 @@ package
          this._resourceUI.r2 = BASE._resources["r" + 2].Get();
          this._resourceUI.r3 = BASE._resources["r" + 3].Get();
          this._resourceUI.r4 = BASE._resources["r" + 4].Get();
-         mc["mcR" + 1]._resource = BASE._resources["r" + 1].Get();
-         mc["mcR" + 2]._resource = BASE._resources["r" + 2].Get();
-         mc["mcR" + 3]._resource = BASE._resources["r" + 3].Get();
-         mc["mcR" + 4]._resource = BASE._resources["r" + 4].Get();
-         mc.mcR5.bAdd.txtAdd.autoSize = TextFieldAutoSize.LEFT;
-         mc.mcR5.bAdd.txtAdd.htmlText = KEYS.Get("ui_topaddshiny");
-         mc.mcR5.bAdd.mcBG.width = mc.mcR5.bAdd.txtAdd.width + 11;
-         mc.mcR5.mcBG.width = 82 + mc.mcR5.bAdd.width;
-         // mc.mcR5.bAdd.addEventListener(MouseEvent.CLICK,BUY.Show);
-         mc.mcR5.bAdd.addEventListener(MouseEvent.CLICK,function(event:MouseEvent):void
+         if(mc["mcR" + 1]) mc["mcR" + 1]._resource = BASE._resources["r" + 1].Get();
+         if(mc["mcR" + 2]) mc["mcR" + 2]._resource = BASE._resources["r" + 2].Get();
+         if(mc["mcR" + 3]) mc["mcR" + 3]._resource = BASE._resources["r" + 3].Get();
+         if(mc["mcR" + 4]) mc["mcR" + 4]._resource = BASE._resources["r" + 4].Get();
+         if(mc.mcR5 && mc.mcR5.bAdd)
          {
-            GLOBAL.Message(KEYS.Get("disabled_addshiny"));
-         });
-         mc.mcR5.bAdd.buttonMode = true;
-         mc.mcR5.bAdd.mouseChildren = false;
-         mc.mcOutposts.mcHit.addEventListener(MouseEvent.MOUSE_OVER,this.ButtonInfoShow);
-         mc.mcOutposts.mcHit.addEventListener(MouseEvent.MOUSE_OUT,this.ButtonInfoHide);
-         mc.mcOutposts.bNext.addEventListener(MouseEvent.CLICK,BASE.LoadNext);
-         mc.mcOutposts.bNext.buttonMode = true;
-         mc.mcOutposts.bNext.mouseEnabled = true;
-         mc.mcOutposts.bNext.mouseChildren = false;
-         mc.bInvite.buttonMode = true;
-         mc.bInvite.mouseChildren = false;
-         mc.bInvite.addEventListener(MouseEvent.CLICK,this.ButtonClick("invite"));
-         mc.bInvite.addEventListener(MouseEvent.MOUSE_OVER,this.ButtonInfoShow);
-         mc.bInvite.addEventListener(MouseEvent.MOUSE_OUT,this.ButtonInfoHide);
-         mc.bGift.buttonMode = true;
-         mc.bGift.mouseChildren = false;
-         mc.bGift.addEventListener(MouseEvent.CLICK,this.ButtonClick("gift"));
-         mc.bGift.addEventListener(MouseEvent.MOUSE_OVER,this.ButtonInfoShow);
-         mc.bGift.addEventListener(MouseEvent.MOUSE_OUT,this.ButtonInfoHide);
-         mc.bInbox.buttonMode = true;
-         mc.bInbox.mouseChildren = false;
-         mc.bInbox.addEventListener(MouseEvent.CLICK,this.ButtonClick("inbox"));
-         mc.bInbox.addEventListener(MouseEvent.MOUSE_OVER,this.ButtonInfoShow);
-         mc.bInbox.addEventListener(MouseEvent.MOUSE_OUT,this.ButtonInfoHide);
-         mc.bAlert.buttonMode = true;
-         mc.bAlert.mouseChildren = false;
-         mc.bAlert.addEventListener(MouseEvent.CLICK,this.ButtonClick("alert"));
-         mc.bAlert.addEventListener(MouseEvent.MOUSE_OVER,this.ButtonInfoShow);
-         mc.bAlert.addEventListener(MouseEvent.MOUSE_OUT,this.ButtonInfoHide);
+            if(mc.mcR5.bAdd.txtAdd)
+            {
+               mc.mcR5.bAdd.txtAdd.autoSize = TextFieldAutoSize.LEFT;
+               mc.mcR5.bAdd.txtAdd.htmlText = KEYS.Get("ui_topaddshiny");
+            }
+            if(mc.mcR5.bAdd.mcBG && mc.mcR5.bAdd.txtAdd) mc.mcR5.bAdd.mcBG.width = mc.mcR5.bAdd.txtAdd.width + 11;
+            if(mc.mcR5.mcBG) mc.mcR5.mcBG.width = 82 + mc.mcR5.bAdd.width;
+            // mc.mcR5.bAdd.addEventListener(MouseEvent.CLICK,BUY.Show);
+            mc.mcR5.bAdd.addEventListener(MouseEvent.CLICK,function(event:MouseEvent):void
+            {
+               GLOBAL.Message(KEYS.Get("disabled_addshiny"));
+            });
+            mc.mcR5.bAdd.buttonMode = true;
+            mc.mcR5.bAdd.mouseChildren = false;
+         }
+         if(mc.mcOutposts && mc.mcOutposts.mcHit)
+         {
+            mc.mcOutposts.mcHit.addEventListener(MouseEvent.MOUSE_OVER,this.ButtonInfoShow);
+            mc.mcOutposts.mcHit.addEventListener(MouseEvent.MOUSE_OUT,this.ButtonInfoHide);
+         }
+         if(mc.mcOutposts && mc.mcOutposts.bNext)
+         {
+            mc.mcOutposts.bNext.addEventListener(MouseEvent.CLICK,BASE.LoadNext);
+            mc.mcOutposts.bNext.buttonMode = true;
+            mc.mcOutposts.bNext.mouseEnabled = true;
+            mc.mcOutposts.bNext.mouseChildren = false;
+         }
+         if(mc.bInvite)
+         {
+            mc.bInvite.buttonMode = true;
+            mc.bInvite.mouseChildren = false;
+            mc.bInvite.addEventListener(MouseEvent.CLICK,this.ButtonClick("invite"));
+            mc.bInvite.addEventListener(MouseEvent.MOUSE_OVER,this.ButtonInfoShow);
+            mc.bInvite.addEventListener(MouseEvent.MOUSE_OUT,this.ButtonInfoHide);
+         }
+         if(mc.bGift)
+         {
+            mc.bGift.buttonMode = true;
+            mc.bGift.mouseChildren = false;
+            mc.bGift.addEventListener(MouseEvent.CLICK,this.ButtonClick("gift"));
+            mc.bGift.addEventListener(MouseEvent.MOUSE_OVER,this.ButtonInfoShow);
+            mc.bGift.addEventListener(MouseEvent.MOUSE_OUT,this.ButtonInfoHide);
+         }
+         if(mc.bInbox)
+         {
+            mc.bInbox.buttonMode = true;
+            mc.bInbox.mouseChildren = false;
+            mc.bInbox.addEventListener(MouseEvent.CLICK,this.ButtonClick("inbox"));
+            mc.bInbox.addEventListener(MouseEvent.MOUSE_OVER,this.ButtonInfoShow);
+            mc.bInbox.addEventListener(MouseEvent.MOUSE_OUT,this.ButtonInfoHide);
+         }
+         if(mc.bAlert)
+         {
+            mc.bAlert.buttonMode = true;
+            mc.bAlert.mouseChildren = false;
+            mc.bAlert.addEventListener(MouseEvent.CLICK,this.ButtonClick("alert"));
+            mc.bAlert.addEventListener(MouseEvent.MOUSE_OVER,this.ButtonInfoShow);
+            mc.bAlert.addEventListener(MouseEvent.MOUSE_OUT,this.ButtonInfoHide);
+         }
          this._buttonIcons = [];
          this._buttonIcons = [mc.bInvite,mc.bGift,mc.bInbox,mc.bAlert];
          addEventListener(Event.ENTER_FRAME, onSpinnerTick);
-         mc.bEarn.bAction.tLabel.htmlText = KEYS.Get("btn_earn");
-         if(GLOBAL._flags.showFBCEarn == 1)
+         if(mc.bEarn && mc.bEarn.bAction && mc.bEarn.bAction.tLabel) mc.bEarn.bAction.tLabel.htmlText = KEYS.Get("btn_earn");
+         if(mc.bEarn)
          {
-            mc.bEarn.buttonMode = true;
-            mc.bEarn.mouseChildren = false;
-            mc.bEarn.addEventListener(MouseEvent.CLICK,this.ButtonClick("earn"));
-            mc.bEarn.addEventListener(MouseEvent.MOUSE_OVER,this.ButtonInfoShow);
-            mc.bEarn.addEventListener(MouseEvent.MOUSE_OUT,this.ButtonInfoHide);
-         }
-         else
-         {
-            mc.bEarn.mouseChildren = false;
-            mc.bEarn.mouseEnabled = false;
-            mc.bEarn.visible = false;
-         }
-         mc.bDailyDeal.tLabel.htmlText = KEYS.Get("btn_dailydeal");
-         if(GLOBAL._flags.showFBCDaily == 1)
-         {
-            mc.bDailyDeal.buttonMode = true;
-            mc.bDailyDeal.mouseChildren = false;
-            mc.bDailyDeal.addEventListener(MouseEvent.CLICK,this.ButtonClick("daily"));
-            mc.bDailyDeal.addEventListener(MouseEvent.MOUSE_OVER,this.ButtonInfoShow);
-            mc.bDailyDeal.addEventListener(MouseEvent.MOUSE_OUT,this.ButtonInfoHide);
-            if(GLOBAL._flags.showFBCEarn == 0)
+            if(GLOBAL._flags.showFBCEarn == 1)
             {
-               mc.bDailyDeal.x = mc.bEarn.x;
+               mc.bEarn.buttonMode = true;
+               mc.bEarn.mouseChildren = false;
+               mc.bEarn.addEventListener(MouseEvent.CLICK,this.ButtonClick("earn"));
+               mc.bEarn.addEventListener(MouseEvent.MOUSE_OVER,this.ButtonInfoShow);
+               mc.bEarn.addEventListener(MouseEvent.MOUSE_OUT,this.ButtonInfoHide);
+            }
+            else
+            {
+               mc.bEarn.mouseChildren = false;
+               mc.bEarn.mouseEnabled = false;
+               mc.bEarn.visible = false;
             }
          }
-         else
+         if(mc.bDailyDeal && mc.bDailyDeal.tLabel) mc.bDailyDeal.tLabel.htmlText = KEYS.Get("btn_dailydeal");
+         if(mc.bDailyDeal)
          {
-            mc.bDailyDeal.mouseChildren = false;
-            mc.bDailyDeal.mouseEnabled = false;
-            mc.bDailyDeal.visible = false;
+            if(GLOBAL._flags.showFBCDaily == 1)
+            {
+               mc.bDailyDeal.buttonMode = true;
+               mc.bDailyDeal.mouseChildren = false;
+               mc.bDailyDeal.addEventListener(MouseEvent.CLICK,this.ButtonClick("daily"));
+               mc.bDailyDeal.addEventListener(MouseEvent.MOUSE_OVER,this.ButtonInfoShow);
+               mc.bDailyDeal.addEventListener(MouseEvent.MOUSE_OUT,this.ButtonInfoHide);
+               if(GLOBAL._flags.showFBCEarn == 0 && mc.bEarn)
+               {
+                  mc.bDailyDeal.x = mc.bEarn.x;
+               }
+            }
+            else
+            {
+               mc.bDailyDeal.mouseChildren = false;
+               mc.bDailyDeal.mouseEnabled = false;
+               mc.bDailyDeal.visible = false;
+            }
          }
       }
 
@@ -254,21 +320,25 @@ package
          var _loc1_:MovieClip = null;
          var _loc2_:int = 0;
          this.setupAttackMode();
-         if(!GLOBAL._attackersFlinger)
+         var txtC:* = this._creatureButtonsMC && this._creatureButtonsMC._mc ? this._creatureButtonsMC._mc._txtContainer : null;
+         if(txtC && txtC.flinger_txt)
          {
-            this._creatureButtonsMC._mc._txtContainer.flinger_txt.htmlText = KEYS.Get("no_flinger");
+            if(!GLOBAL._attackersFlinger)
+            {
+               txtC.flinger_txt.htmlText = KEYS.Get("no_flinger");
+            }
+            else
+            {
+               txtC.flinger_txt.htmlText = BASE.isInfernoMainYardOrOutpost ? KEYS.Get("monster_limit") : KEYS.Get("attack_flingerbar");
+            }
          }
-         else
-         {
-            this._creatureButtonsMC._mc._txtContainer.flinger_txt.htmlText = BASE.isInfernoMainYardOrOutpost ? KEYS.Get("monster_limit") : KEYS.Get("attack_flingerbar");
-         }
-         this._creatureButtonsMC._mc._txtContainer.mcBar.visible = false;
-         this._creatureButtonsMC._mc._txtContainer.tA.htmlText = "";
+         if(txtC && txtC.mcBar) txtC.mcBar.visible = false;
+         if(txtC && txtC.tA) txtC.tA.htmlText = "";
          _loc2_ = 1;
          while(_loc2_ < 5)
          {
             _loc1_ = mc["mcR" + _loc2_];
-            _loc1_.visible = false;
+            if(_loc1_) _loc1_.visible = false;
             _loc2_++;
          }
       }
@@ -278,18 +348,22 @@ package
          var _loc1_:Array = null;
          var _loc2_:Sprite = null;
          this._creatureButtonsMC = mc.addChild(new flingerLevel()) as flingerLevel;
-         this._creatureButtonsMC._mc._txtContainer.flinger_txt.htmlText = KEYS.Get("txt_flinger_capacity");
-         this._creatureButtonsMC._mc._txtContainer.mcBar.visible = true;
-         this._creatureButtonsMC._mc._txtContainer.tA.htmlText = "0%";
+         var txtC:* = this._creatureButtonsMC._mc ? this._creatureButtonsMC._mc._txtContainer : null;
+         if(txtC && txtC.flinger_txt) txtC.flinger_txt.htmlText = KEYS.Get("txt_flinger_capacity");
+         if(txtC && txtC.mcBar) txtC.mcBar.visible = true;
+         if(txtC && txtC.tA) txtC.tA.htmlText = "0%";
          this._creatureButtonsMC.y = 180;
-         this._creatureButtonsMC._mc.x = 2;
-         this._creatureButtonsMC._mc.y = -6;
+         if(this._creatureButtonsMC._mc)
+         {
+            this._creatureButtonsMC._mc.x = 2;
+            this._creatureButtonsMC._mc.y = -6;
+         }
          this._creatureButtons = [];
          if(!GLOBAL._attackersFlinger)
          {
-            this._creatureButtonsMC._mc._txtContainer.flinger_txt.htmlText = KEYS.Get("no_flinger");
-            this._creatureButtonsMC._mc._txtContainer.tA.htmlText = "";
-            this._creatureButtonsMC._mc._bottomBar.visible = false;
+            if(txtC && txtC.flinger_txt) txtC.flinger_txt.htmlText = KEYS.Get("no_flinger");
+            if(txtC && txtC.tA) txtC.tA.htmlText = "";
+            if(this._creatureButtonsMC._mc && this._creatureButtonsMC._mc._bottomBar) this._creatureButtonsMC._mc._bottomBar.visible = false;
          }
          else
          {
@@ -299,8 +373,8 @@ package
             this.setupCreatureButtons(this.m_creatureContainer,_loc1_[0],_loc1_[1]);
             if(this.m_creatureContainer.numChildren == 0)
             {
-               this._creatureButtonsMC._mc._txtContainer.flinger_txt.htmlText = KEYS.Get("no_monsters");
-               this._creatureButtonsMC._mc._bottomBar.visible = false;
+               if(txtC && txtC.flinger_txt) txtC.flinger_txt.htmlText = KEYS.Get("no_monsters");
+               if(this._creatureButtonsMC._mc && this._creatureButtonsMC._mc._bottomBar) this._creatureButtonsMC._mc._bottomBar.visible = false;
             }
             _loc2_ = new Sprite();
             _loc2_.graphics.beginFill(16777215,1);
@@ -341,8 +415,10 @@ package
          this.setupCreatureButtons(this.m_creatureContainer,_loc1_[0],_loc1_[1]);
          if(this.m_creatureContainer.numChildren == 0)
          {
-            this._creatureButtonsMC._mc._txtContainer.flinger_txt.htmlText = KEYS.Get("no_monsters");
-            this._creatureButtonsMC._mc._bottomBar.visible = false;
+            if(this._creatureButtonsMC._mc && this._creatureButtonsMC._mc._txtContainer && this._creatureButtonsMC._mc._txtContainer.flinger_txt)
+               this._creatureButtonsMC._mc._txtContainer.flinger_txt.htmlText = KEYS.Get("no_monsters");
+            if(this._creatureButtonsMC._mc && this._creatureButtonsMC._mc._bottomBar)
+               this._creatureButtonsMC._mc._bottomBar.visible = false;
          }
          var _loc2_:Sprite = new Sprite();
          _loc2_.graphics.beginFill(16777215,1);
@@ -362,7 +438,7 @@ package
       {
          var _loc3_:int = 0;
          var _loc4_:int = 0;
-         var _loc5_:Boolean = false;
+         var _loc5_:int = 0;
          var _loc6_:int = 0;
          var _loc7_:int = 0;
          var _loc8_:MovieClip = null;
@@ -381,7 +457,7 @@ package
                   {
                      if(GLOBAL._playerGuardianData[_loc7_].t != 5)
                      {
-                        _loc5_ = true;
+                        _loc5_++;
                      }
                      (_loc8_ = param1.addChild(new CHAMPIONBUTTON("G" + GLOBAL._playerGuardianData[_loc7_].t,GLOBAL._playerGuardianData[_loc7_].l.Get(),_loc7_,_loc3_,this._creatureButtonsMC)) as CHAMPIONBUTTON).x = 14;
                      _loc8_.y = 34 + _loc3_ * 53;
@@ -394,7 +470,7 @@ package
             }
             _loc7_++;
          }
-         if(_loc8_)
+         if(_loc8_ && this._creatureButtonsMC._mc && this._creatureButtonsMC._mc._bottomBar)
          {
             this._creatureButtonsMC._mc._bottomBar.y = Math.min(GLOBAL._SCREEN.height - 450,_loc8_.y + _loc8_.height - this._creatureButtonsMC._mc._bottomBar.height * 0.8);
          }
@@ -419,23 +495,31 @@ package
                _loc10_ = _loc6_;
                if(ATTACK._curCreaturesAvailable[_loc10_] > 0)
                {
-                  (_loc8_ = param1.addChild(new CREATUREBUTTON(_loc10_,param2,this._creatureButtonsMC)) as CREATUREBUTTON).x = 14;
-                  _loc8_.y = 34 + param2 * 53;
-                  if(MapRoomManager.instance.isInMapRoom2or3)
+                  // iOS robustness: a null nested child in a single CREATUREBUTTON must not abort
+                  // building the rest of the fling row.
+                  try
                   {
-                     _loc8_.addEventListener(UI_TOP.CREATUREBUTTONOVER,this.sortCreatureButtons);
+                     (_loc8_ = param1.addChild(new CREATUREBUTTON(_loc10_,param2,this._creatureButtonsMC)) as CREATUREBUTTON).x = 14;
+                     _loc8_.y = 34 + param2 * 53;
+                     if(MapRoomManager.instance.isInMapRoom2or3)
+                     {
+                        _loc8_.addEventListener(UI_TOP.CREATUREBUTTONOVER,this.sortCreatureButtons);
+                     }
+                     this._creatureButtons.push(_loc8_);
+                     param2++;
                   }
-                  this._creatureButtons.push(_loc8_);
-                  param2++;
+                  catch(_cbErr:Error)
+                  {
+                  }
                }
             }
          }
-         if(_loc8_)
+         if(_loc8_ && this._creatureButtonsMC._mc && this._creatureButtonsMC._mc._bottomBar)
          {
             this._creatureButtonsMC._mc._bottomBar.y = Math.min(GLOBAL._SCREEN.height - 450,_loc8_.y + _loc8_.height - this._creatureButtonsMC._mc._bottomBar.height * 0.8);
          }
       }
-      
+
       private function sortCreatureButtons(param1:Event = null) : void
       {
          this._creatureButtonsMC.addChild(param1.target as DisplayObject);
@@ -443,18 +527,25 @@ package
       
       private function InfoShow(param1:MouseEvent) : void
       {
+         if(!mc.mcPoints)
+         {
+            return;
+         }
          mc.mcPoints.gotoAndStop(2);
          var _loc2_:Object = BASE.BaseLevel();
-         mc.mcPoints.tInfo.htmlText = KEYS.Get("pop_experiencebar",{
-            "v1":GLOBAL.FormatNumber(_loc2_.points),
-            "v2":GLOBAL.FormatNumber(_loc2_.needed),
-            "v3":_loc2_.level + 1
-         });
+         if(mc.mcPoints.tInfo)
+         {
+            mc.mcPoints.tInfo.htmlText = KEYS.Get("pop_experiencebar",{
+               "v1":GLOBAL.FormatNumber(_loc2_.points),
+               "v2":GLOBAL.FormatNumber(_loc2_.needed),
+               "v3":_loc2_.level + 1
+            });
+         }
       }
-      
+
       private function InfoHide(param1:MouseEvent) : void
       {
-         mc.mcPoints.gotoAndStop(1);
+         if(mc.mcPoints) mc.mcPoints.gotoAndStop(1);
       }
       
       public function resize(param1:Rectangle) : void
@@ -463,25 +554,27 @@ package
          var _loc3_:uint = 0;
          x = param1.x + 10;
          y = param1.y + 4;
-         mcProtected.x = param1.width - 125;
-         mcReinforcements.x = param1.width - 125;
-         mcSpecialEvent.x = param1.width - 125;
-         mcBuffHolder.x = param1.width - 200;
+         if(mcProtected) mcProtected.x = param1.width - 125;
+         if(mcReinforcements) mcReinforcements.x = param1.width - 125;
+         if(mcSpecialEvent) mcSpecialEvent.x = param1.width - 125;
+         if(mcBuffHolder) mcBuffHolder.x = param1.width - 200;
          if(GLOBAL.mode == GLOBAL.e_BASE_MODE.ATTACK || GLOBAL.mode == GLOBAL.e_BASE_MODE.WMATTACK)
          {
-            mcZoom.x = param1.width - 38 - 24;
-            mcFullscreen.x = param1.width - 38;
-            mcSound.x = param1.width - 38 - 24;
-            mcMusic.x = param1.width - 38;
-            mcSave.x = param1.width - 38 - 24;
+            if(mcZoom) mcZoom.x = param1.width - 38 - 24;
+            if(mcFullscreen) mcFullscreen.x = param1.width - 38;
+            if(mcSound) mcSound.x = param1.width - 38 - 24;
+            if(mcMusic) mcMusic.x = param1.width - 38;
+            if(mcSave) mcSave.x = param1.width - 38 - 24;
          }
          else
          {
-            mcZoom.x = param1.width - 130;
-            mcFullscreen.x = param1.width - 100;
-            mcSound.x = param1.width - 70;
-            mcMusic.x = param1.width - 40;
-            mcSave.x = param1.width - 160;
+            // Right cluster, clean adjacent row (right->left): music, sound, save, fullscreen, zoom.
+            // Sound/music sit immediately next to Save as requested.
+            if(mcMusic) mcMusic.x = param1.width - 40;
+            if(mcSound) mcSound.x = param1.width - 70;
+            if(mcSave) mcSave.x = param1.width - 100;
+            if(mcFullscreen) mcFullscreen.x = param1.width - 130;
+            if(mcZoom) mcZoom.x = param1.width - 160;
          }
          if(this._descentDebuff)
          {
@@ -498,14 +591,18 @@ package
                   this._creatureButtons[_loc3_].y = 34 + _loc3_ * 53;
                   _loc3_++;
                }
-               this._creatureButtonsMC._mc._bottomBar.y = Math.min(GLOBAL._SCREEN.height - 450,this._creatureButtons[_loc2_ - 1].y + this._creatureButtons[_loc2_ - 1].height - this._creatureButtonsMC._mc._bottomBar.height * 0.8);
+               if(this._creatureButtonsMC && this._creatureButtonsMC._mc && this._creatureButtonsMC._mc._bottomBar)
+                  this._creatureButtonsMC._mc._bottomBar.y = Math.min(GLOBAL._SCREEN.height - 450,this._creatureButtons[_loc2_ - 1].y + this._creatureButtons[_loc2_ - 1].height - this._creatureButtonsMC._mc._bottomBar.height * 0.8);
             }
-            (this.m_creatureContainer.mask as Sprite).graphics.clear();
-            (this.m_creatureContainer.mask as Sprite).graphics.beginFill(16777215,1);
-            (this.m_creatureContainer.mask as Sprite).graphics.drawRect(0,22,200,GLOBAL._SCREEN.height - 476);
-            (this.m_creatureContainer.mask as Sprite).graphics.endFill();
-            this.m_creatureContainer.mask = this.m_creatureContainer.mask;
-            this.m_scrollBar.checkResize();
+            if(this.m_creatureContainer.mask is Sprite)
+            {
+               (this.m_creatureContainer.mask as Sprite).graphics.clear();
+               (this.m_creatureContainer.mask as Sprite).graphics.beginFill(16777215,1);
+               (this.m_creatureContainer.mask as Sprite).graphics.drawRect(0,22,200,GLOBAL._SCREEN.height - 476);
+               (this.m_creatureContainer.mask as Sprite).graphics.endFill();
+               this.m_creatureContainer.mask = this.m_creatureContainer.mask;
+            }
+            if(this.m_scrollBar) this.m_scrollBar.checkResize();
          }
       }
       
@@ -626,29 +723,32 @@ package
             onImageLoad = function(param1:Event):void
             {
                loader.width = loader.height = 50;
-               mc.mcPic.mcBG.addChild(loader);
+               if(mc.mcPic && mc.mcPic.mcBG) mc.mcPic.mcBG.addChild(loader);
             };
             LoadImageError = function(param1:IOErrorEvent):void
             {
             };
-            if(BASE._ownerName)
+            if(mc.mcPoints && mc.mcPoints.tName)
             {
-               if(BASE._ownerName.toLowerCase().charAt(BASE._ownerName.length - 1) == "s")
+               if(BASE._ownerName)
                {
-                  mc.mcPoints.tName.htmlText = KEYS.Get("uitop_yardownershort",{"v1":BASE._ownerName.toUpperCase()});
+                  if(BASE._ownerName.toLowerCase().charAt(BASE._ownerName.length - 1) == "s")
+                  {
+                     mc.mcPoints.tName.htmlText = KEYS.Get("uitop_yardownershort",{"v1":BASE._ownerName.toUpperCase()});
+                  }
+                  else
+                  {
+                     mc.mcPoints.tName.htmlText = KEYS.Get("uitop_yardownerlong",{"v1":BASE._ownerName.toUpperCase()});
+                  }
+               }
+               else if(GLOBAL.mode == GLOBAL._loadmode)
+               {
+                  mc.mcPoints.tName.htmlText = KEYS.Get("uitop_backyardmonsters");
                }
                else
                {
-                  mc.mcPoints.tName.htmlText = KEYS.Get("uitop_yardownerlong",{"v1":BASE._ownerName.toUpperCase()});
+                  mc.mcPoints.tName.htmlText = KEYS.Get("uitop_backyardmonstersinferno");
                }
-            }
-            else if(GLOBAL.mode == GLOBAL._loadmode)
-            {
-               mc.mcPoints.tName.htmlText = KEYS.Get("uitop_backyardmonsters");
-            }
-            else
-            {
-               mc.mcPoints.tName.htmlText = KEYS.Get("uitop_backyardmonstersinferno");
             }
             loader = new Loader();
             loader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR,LoadImageError,false,0,true);
@@ -668,11 +768,11 @@ package
          }
          else if(GLOBAL.mode == GLOBAL._loadmode)
          {
-            mc.mcPoints.tName.htmlText = KEYS.Get("uitop_backyardmonsters");
+            if(mc.mcPoints && mc.mcPoints.tName) mc.mcPoints.tName.htmlText = KEYS.Get("uitop_backyardmonsters");
          }
          else
          {
-            mc.mcPoints.tName.htmlText = KEYS.Get("uitop_backyardmonstersinferno");
+            if(mc.mcPoints && mc.mcPoints.tName) mc.mcPoints.tName.htmlText = KEYS.Get("uitop_backyardmonstersinferno");
          }
          if((GLOBAL._loadmode == GLOBAL.e_BASE_MODE.IWMATTACK || GLOBAL._loadmode == GLOBAL.e_BASE_MODE.IATTACK) && !MAPROOM_DESCENT.DescentPassed)
          {
@@ -694,10 +794,10 @@ package
             param1.x = 222;
             param1.y = 0;
             this._kothIcon = mc.addChild(param1);
-            mc.mcR5.x = 284;
-            mc.bEarn.x = 415;
-            mc.bDealSpot.x = 502;
-            mc.bDailyDeal.x = 493;
+            if(mc.mcR5) mc.mcR5.x = 284;
+            if(mc.bEarn) mc.bEarn.x = 415;
+            if(mc.bDealSpot) mc.bDealSpot.x = 502;
+            if(mc.bDailyDeal) mc.bDailyDeal.x = 493;
          }
       }
       
@@ -708,10 +808,10 @@ package
             mc.removeChild(param1);
             if(GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD)
             {
-               mc.mcR5.x = 227;
-               mc.bEarn.x = 358;
-               mc.bDailyDeal.x = 436;
-               mc.bDealSpot.x = 445;
+               if(mc.mcR5) mc.mcR5.x = 227;
+               if(mc.bEarn) mc.bEarn.x = 358;
+               if(mc.bDailyDeal) mc.bDailyDeal.x = 436;
+               if(mc.bDealSpot) mc.bDealSpot.x = 445;
             }
          }
          if(this._kothIcon)
@@ -738,7 +838,7 @@ package
                _loc2_ = mc.mcR4;
             }
             param1.x = -4;
-            param1.y = _loc2_.y + 37;
+            if(_loc2_) param1.y = _loc2_.y + 37;
             this._daveClub = mc.addChild(param1);
             ++this.extraResourceRows;
             this.Update();
@@ -852,7 +952,7 @@ package
                _loc3_ = 2;
             }
             var _loc4_:* = mc["mcR" + n];
-            BubbleShow(_loc4_.x + 135,_loc4_.y + int(_loc4_.height * 0.5),_loc2_,_loc3_);
+            if(_loc4_) BubbleShow(_loc4_.x + 135,_loc4_.y + int(_loc4_.height * 0.5),_loc2_,_loc3_);
          };
       }
       
@@ -889,14 +989,38 @@ package
          var _loc5_:Number = NaN;
          var _loc6_:Number = NaN;
          var _loc2_:int = param1;
-         _loc5_ = Number((_loc4_ = mc["mcR" + _loc2_])._resource);
-         _loc4_.tR.htmlText = "<b>" + GLOBAL.FormatNumber(_loc5_) + "</b>";
-         _loc3_ = 90 / BASE._resources["r" + _loc2_ + "max"] * _loc5_;
-         if(_loc3_ > 90)
+         _loc4_ = mc["mcR" + _loc2_];
+         if(!_loc4_)
          {
-            _loc3_ = 90;
+            return;
          }
-         _loc4_.mcBar.width = _loc3_;
+         _loc5_ = Number(_loc4_._resource);
+         // iOS: draw the wood plank + cream icon panel once (the desktop counter is a wood plank,
+         // not a coloured fill bar; that wood art rasterizes blank on iOS) and show the amount in
+         // white to match the desktop. Off iOS the number keeps its original styling.
+         if(GLOBAL._iosViewport)
+         {
+            GLOBAL.CreateResourcePlank(_loc4_);
+            // Perf/heat: this is the onUpdate of a 0.5s resource tween, so it fires EVERY frame
+            // (~40fps) even though the displayed integer only changes a few times per second. The
+            // amount TextField carries a GlowFilter and the fill is a Shape redrawn via
+            // graphics.clear() — touching either re-rasterizes on the always-composited HUD. So only
+            // rewrite the number + redraw the fill when the formatted value actually changed;
+            // otherwise skip. Kills most idle HUD re-raster. iOS-only, cosmetic, no server contact.
+            var _loc7_:String = GLOBAL.FormatNumber(_loc5_);
+            if(_loc4_._iosResText != _loc7_)
+            {
+               _loc4_._iosResText = _loc7_;
+               if(_loc4_.tR) _loc4_.tR.htmlText = "<b><font color=\"#FFFFFF\">" + _loc7_ + "</font></b>";
+               // Storage-fill bar (the desktop white mcBar, invisible on iOS): amount / cap.
+               _loc6_ = Number(BASE._resources["r" + _loc2_ + "max"]);
+               GLOBAL.UpdateResourcePlankFill(_loc4_,_loc6_ > 0 ? _loc5_ / _loc6_ : 0);
+            }
+         }
+         else if(_loc4_.tR)
+         {
+            _loc4_.tR.htmlText = "<b>" + GLOBAL.FormatNumber(_loc5_) + "</b>";
+         }
       }
       
       public function Update() : void
@@ -935,153 +1059,179 @@ package
          var _loc4_:Number = Number(BASE._resources["r" + 2].Get());
          var _loc5_:Number = Number(BASE._resources["r" + 3].Get());
          var _loc6_:Number = Number(BASE._resources["r" + 4].Get());
-         TweenLite.to(mc.mcR1,0.5,{
+         if(mc.mcR1) TweenLite.to(mc.mcR1,0.5,{
             "_resource":_loc3_,
             "onUpdate":this.UpdateTweenResourceText,
             "onUpdateParams":[1],
             "ease":Linear.easeNone,
             "overwrite":1
          });
-         TweenLite.to(mc.mcR2,0.5,{
+         if(mc.mcR2) TweenLite.to(mc.mcR2,0.5,{
             "_resource":_loc4_,
             "onUpdate":this.UpdateTweenResourceText,
             "onUpdateParams":[2],
             "ease":Linear.easeNone,
             "overwrite":1
          });
-         TweenLite.to(mc.mcR3,0.5,{
+         if(mc.mcR3) TweenLite.to(mc.mcR3,0.5,{
             "_resource":_loc5_,
             "onUpdate":this.UpdateTweenResourceText,
             "onUpdateParams":[3],
             "ease":Linear.easeNone,
             "overwrite":1
          });
-         TweenLite.to(mc.mcR4,0.5,{
+         if(mc.mcR4) TweenLite.to(mc.mcR4,0.5,{
             "_resource":_loc6_,
             "onUpdate":this.UpdateTweenResourceText,
             "onUpdateParams":[4],
             "ease":Linear.easeNone,
             "overwrite":1
          });
-         mc["mcR" + 5].tR.htmlText = "<b>" + GLOBAL.FormatNumber(BASE._credits.Get()) + "</b>";
-         if(MapRoomManager.instance.isInMapRoom2)
+         if(mc["mcR" + 5] && mc["mcR" + 5].tR) mc["mcR" + 5].tR.htmlText = "<b>" + GLOBAL.FormatNumber(BASE._credits.Get()) + "</b>";
+         if(mc.mcOutposts)
          {
-            mc.mcOutposts.visible = true;
-            mc.mcOutposts.tR.htmlText = GLOBAL._mapOutpost.length;
-         }
-         else
-         {
-            mc.mcOutposts.visible = false;
+            if(MapRoomManager.instance.isInMapRoom2)
+            {
+               mc.mcOutposts.visible = true;
+               if(mc.mcOutposts.tR) mc.mcOutposts.tR.htmlText = GLOBAL._mapOutpost.length;
+            }
+            else
+            {
+               mc.mcOutposts.visible = false;
+            }
          }
          if(TUTORIAL._stage < 200)
          {
-            mc.bInvite.visible = false;
-            mc.bGift.visible = false;
-            mc.bInbox.visible = false;
-            mc.bAlert.visible = false;
-            mc.mcR5.bAdd.visible = false;
-            mc.bEarn.visible = false;
-            mc.bDailyDeal.visible = false;
+            if(mc.bInvite) mc.bInvite.visible = false;
+            if(mc.bGift) mc.bGift.visible = false;
+            if(mc.bInbox) mc.bInbox.visible = false;
+            if(mc.bAlert) mc.bAlert.visible = false;
+            if(mc.mcR5 && mc.mcR5.bAdd) mc.mcR5.bAdd.visible = false;
+            if(mc.bEarn) mc.bEarn.visible = false;
+            if(mc.bDailyDeal) mc.bDailyDeal.visible = false;
             _loc1_ = 1;
             while(_loc1_ < 6)
             {
-               mc["mcR" + _loc1_].bAdd.visible = false;
+               if(mc["mcR" + _loc1_] && mc["mcR" + _loc1_].bAdd) mc["mcR" + _loc1_].bAdd.visible = false;
                _loc1_++;
             }
             this.SortButtonIcons();
          }
          else
          {
-            if(GLOBAL._flags.sroverlay)
+            if(mc.mcR5 && mc.mcR5.bAdd)
             {
                mc.mcR5.bAdd.visible = true;
             }
-            else
-            {
-               mc.mcR5.bAdd.visible = true;
-            }
-            mc.bEarn.visible = GLOBAL._flags.showFBCEarn == 1;
-            mc.bDailyDeal.visible = GLOBAL._flags.showFBCDaily == 1;
+            if(mc.bEarn) mc.bEarn.visible = GLOBAL._flags.showFBCEarn == 1;
+            if(mc.bDailyDeal) mc.bDailyDeal.visible = GLOBAL._flags.showFBCDaily == 1;
             _loc1_ = 1;
             while(_loc1_ < 6)
             {
-               if(!mc["mcR" + _loc1_].bAdd.visible)
+               if(mc["mcR" + _loc1_] && mc["mcR" + _loc1_].bAdd && !mc["mcR" + _loc1_].bAdd.visible)
                {
                   mc["mcR" + _loc1_].bAdd.visible = true;
                }
                _loc1_++;
             }
             _loc7_ = 0;
-            if(GLOBAL._canInvite && !GLOBAL._flags.kongregate)
+            if(mc.bInvite)
             {
-               if(GLOBAL._sessionCount >= 2 && !GLOBAL._canGift && GLOBAL.Timestamp() - GLOBAL.StatGet("pi") > 60 * 60 * 36)
+               if(GLOBAL._canInvite && !GLOBAL._flags.kongregate)
                {
-                  mc.bInvite.mcSpinner.visible = true;
+                  if(GLOBAL._sessionCount >= 2 && !GLOBAL._canGift && GLOBAL.Timestamp() - GLOBAL.StatGet("pi") > 60 * 60 * 36)
+                  {
+                     if(mc.bInvite.mcSpinner) mc.bInvite.mcSpinner.visible = true;
+                  }
+                  else
+                  {
+                     if(mc.bInvite.mcSpinner) mc.bInvite.mcSpinner.visible = false;
+                  }
+                  mc.bInvite.visible = true;
                }
                else
                {
-                  mc.bInvite.mcSpinner.visible = false;
+                  mc.bInvite.visible = false;
                }
-               mc.bInvite.visible = true;
-            }
-            else
-            {
-               mc.bInvite.visible = false;
-            }
-            if(mc.bInvite.visible)
-            {
-               mc.bInvite.visible = BYMConfig.instance.INVITE_BUTTON;
+               if(mc.bInvite.visible)
+               {
+                  mc.bInvite.visible = BYMConfig.instance.INVITE_BUTTON;
+               }
             }
             _loc8_ = this.extraResourceRows * this._RESOURCEBAR_HEIGHT;
             this.SortButtonIcons(2,4,_loc8_);
-            mc.bGift.visible = true;
-            if((_loc7_ = POPUPS.QueueCount("gifts")) > 0)
+            if(mc.bGift)
             {
-               mc.bGift.mcSpinner.visible = true;
-               mc.bGift.mcCounter.visible = true;
-               if(_loc7_ < 10)
+               mc.bGift.visible = true;
+               if((_loc7_ = POPUPS.QueueCount("gifts")) > 0)
                {
-                  mc.bGift.mcCounter.t.htmlText = "<b>" + _loc7_ + "</b>";
+                  if(mc.bGift.mcSpinner) mc.bGift.mcSpinner.visible = true;
+                  if(mc.bGift.mcCounter)
+                  {
+                     mc.bGift.mcCounter.visible = true;
+                     if(mc.bGift.mcCounter.t)
+                     {
+                        if(_loc7_ < 10)
+                        {
+                           mc.bGift.mcCounter.t.htmlText = "<b>" + _loc7_ + "</b>";
+                        }
+                        else
+                        {
+                           mc.bGift.mcCounter.t.htmlText = "<b>+</b>";
+                        }
+                     }
+                  }
                }
                else
                {
-                  mc.bGift.mcCounter.t.htmlText = "<b>+</b>";
+                  if(mc.bGift.mcSpinner) mc.bGift.mcSpinner.visible = false;
+                  if(mc.bGift.mcCounter) mc.bGift.mcCounter.visible = false;
                }
             }
-            else
+            if(mc.bInbox)
             {
-               mc.bGift.mcSpinner.visible = false;
-               mc.bGift.mcCounter.visible = false;
-            }
-            mc.bInbox.visible = true;
-            if(GLOBAL._unreadMessages > 0)
-            {
-               mc.bInbox.mcCounter.t.htmlText = "<b>" + GLOBAL._unreadMessages + "</b>";
-               mc.bInbox.mcCounter.visible = true;
-               mc.bInbox.mcSpinner.visible = true;
-            }
-            else
-            {
-               mc.bInbox.mcCounter.visible = false;
-               mc.bInbox.mcSpinner.visible = false;
-            }
-            if((_loc7_ = POPUPS.QueueCount("alerts")) > 0)
-            {
-               mc.bAlert.visible = true;
-               mc.bAlert.mcSpinner.visible = true;
-               mc.bAlert.mcCounter.visible = true;
-               if(_loc7_ < 10)
+               mc.bInbox.visible = true;
+               if(GLOBAL._unreadMessages > 0)
                {
-                  mc.bAlert.mcCounter.t.htmlText = "<b>" + _loc7_ + "</b>";
+                  if(mc.bInbox.mcCounter)
+                  {
+                     if(mc.bInbox.mcCounter.t) mc.bInbox.mcCounter.t.htmlText = "<b>" + GLOBAL._unreadMessages + "</b>";
+                     mc.bInbox.mcCounter.visible = true;
+                  }
+                  if(mc.bInbox.mcSpinner) mc.bInbox.mcSpinner.visible = true;
                }
                else
                {
-                  mc.bAlert.mcCounter.t.htmlText = "<b>+</b>";
+                  if(mc.bInbox.mcCounter) mc.bInbox.mcCounter.visible = false;
+                  if(mc.bInbox.mcSpinner) mc.bInbox.mcSpinner.visible = false;
                }
             }
-            else
+            if(mc.bAlert)
             {
-               mc.bAlert.visible = false;
+               if((_loc7_ = POPUPS.QueueCount("alerts")) > 0)
+               {
+                  mc.bAlert.visible = true;
+                  if(mc.bAlert.mcSpinner) mc.bAlert.mcSpinner.visible = true;
+                  if(mc.bAlert.mcCounter)
+                  {
+                     mc.bAlert.mcCounter.visible = true;
+                     if(mc.bAlert.mcCounter.t)
+                     {
+                        if(_loc7_ < 10)
+                        {
+                           mc.bAlert.mcCounter.t.htmlText = "<b>" + _loc7_ + "</b>";
+                        }
+                        else
+                        {
+                           mc.bAlert.mcCounter.t.htmlText = "<b>+</b>";
+                        }
+                     }
+                  }
+               }
+               else
+               {
+                  mc.bAlert.visible = false;
+               }
             }
             this.DisplayBuffs();
             if(this._kothIcon)
@@ -1107,7 +1257,7 @@ package
                   _loc12_ = mc.mcR4;
                }
                this._daveClub.x = -4;
-               this._daveClub.y = _loc12_.y + 37;
+               if(_loc12_) this._daveClub.y = _loc12_.y + 37;
             }
          }
       }
@@ -1123,8 +1273,11 @@ package
          while(_loc2_ < 5)
          {
             _loc3_ = mc["mcR" + _loc2_];
-            _loc3_.tR.htmlText = "<b>" + GLOBAL.FormatNumber(ATTACK._loot["r" + _loc2_].Get()) + "</b>";
-            _loc3_.mcBar.visible = false;
+            if(_loc3_)
+            {
+               if(_loc3_.tR) _loc3_.tR.htmlText = "<b>" + GLOBAL.FormatNumber(ATTACK._loot["r" + _loc2_].Get()) + "</b>";
+               if(_loc3_.mcBar) _loc3_.mcBar.visible = false;
+            }
             _loc2_++;
          }
          _loc2_ = 0;
@@ -1159,65 +1312,75 @@ package
                _loc5_ -= CREATURES.GetProperty(_loc6_,"bucket") * ATTACK._flingerBucket[_loc6_].Get();
             }
          }
-         this._creatureButtonsMC._mc._txtContainer.mcBar.width = 115 - 115 / _loc4_ * _loc5_;
-         if(MapRoomManager.instance.isInMapRoom3)
+         var _loc8_:* = this._creatureButtonsMC && this._creatureButtonsMC._mc ? this._creatureButtonsMC._mc._txtContainer : null;
+         if(_loc8_ && _loc8_.mcBar)
          {
-            this._creatureButtonsMC._mc._txtContainer.mcBar.scaleX = (1 - _loc5_ / _loc4_) * 1.2;
-         }
-         else
-         {
-            this._creatureButtonsMC._mc._txtContainer.mcBar.scaleX = (100 - 100 / _loc4_ * _loc5_) / 100;
-         }
-         if(GLOBAL._attackersFlinger)
-         {
+            _loc8_.mcBar.width = 115 - 115 / _loc4_ * _loc5_;
             if(MapRoomManager.instance.isInMapRoom3)
             {
-               this._creatureButtonsMC._mc._txtContainer.tA.width = 60;
-               this._creatureButtonsMC._mc._txtContainer.tA.htmlText = (_loc4_ - _loc5_).toString() + "/" + _loc4_.toString();
+               _loc8_.mcBar.scaleX = (1 - _loc5_ / _loc4_) * 1.2;
             }
             else
             {
-               this._creatureButtonsMC._mc._txtContainer.tA.width = 56;
-               this._creatureButtonsMC._mc._txtContainer.tA.htmlText = Math.min(100,int((1 - _loc5_ / _loc4_) * 100)).toString() + "%";
+               _loc8_.mcBar.scaleX = (100 - 100 / _loc4_ * _loc5_) / 100;
             }
          }
-         if(GLOBAL.mode != GLOBAL._loadmode)
+         if(GLOBAL._attackersFlinger && _loc8_ && _loc8_.tA)
          {
-            if(ATTACK._countdown > 0)
+            if(MapRoomManager.instance.isInMapRoom3)
             {
-               mc.tMessage.htmlText = KEYS.Get("attack_ui_attacklock");
+               _loc8_.tA.width = 60;
+               _loc8_.tA.htmlText = (_loc4_ - _loc5_).toString() + "/" + _loc4_.toString();
+            }
+            else
+            {
+               _loc8_.tA.width = 56;
+               _loc8_.tA.htmlText = Math.min(100,int((1 - _loc5_ / _loc4_) * 100)).toString() + "%";
+            }
+         }
+         if(mc.tMessage)
+         {
+            if(GLOBAL.mode != GLOBAL._loadmode)
+            {
+               if(ATTACK._countdown > 0)
+               {
+                  mc.tMessage.htmlText = KEYS.Get("attack_ui_attacklock");
+               }
+               else
+               {
+                  mc.tMessage.htmlText = KEYS.Get("attack_ui_attackends");
+               }
+            }
+            else if(ATTACK._countdown > 0)
+            {
+               mc.tMessage.htmlText = KEYS.Get("attack_ui_flingerlock");
             }
             else
             {
                mc.tMessage.htmlText = KEYS.Get("attack_ui_attackends");
             }
          }
-         else if(ATTACK._countdown > 0)
+         if(mc.tTime)
          {
-            mc.tMessage.htmlText = KEYS.Get("attack_ui_flingerlock");
-         }
-         else
-         {
-            mc.tMessage.htmlText = KEYS.Get("attack_ui_attackends");
-         }
-         if(ATTACK._countdown > 30)
-         {
-            mc.tTime.htmlText = GLOBAL.ToTime(ATTACK._countdown,true);
-         }
-         else if(ATTACK._countdown > 0)
-         {
-            mc.tTime.htmlText = "<font color=\"#FF0000\">" + GLOBAL.ToTime(ATTACK._countdown,true) + "</font>";
-         }
-         else if(ATTACK._countdown > -120)
-         {
-            mc.tTime.htmlText = "<font color=\"#FFFFFF\">" + GLOBAL.ToTime(120 + ATTACK._countdown,true) + "</font>";
-         }
-         else
-         {
-            mc.tTime.htmlText = "<font color=\"#FFFFFF\">" + KEYS.Get("attack_ui_over") + "</font>";
+            if(ATTACK._countdown > 30)
+            {
+               mc.tTime.htmlText = GLOBAL.ToTime(ATTACK._countdown,true);
+            }
+            else if(ATTACK._countdown > 0)
+            {
+               mc.tTime.htmlText = "<font color=\"#FF0000\">" + GLOBAL.ToTime(ATTACK._countdown,true) + "</font>";
+            }
+            else if(ATTACK._countdown > -120)
+            {
+               mc.tTime.htmlText = "<font color=\"#FFFFFF\">" + GLOBAL.ToTime(120 + ATTACK._countdown,true) + "</font>";
+            }
+            else
+            {
+               mc.tTime.htmlText = "<font color=\"#FFFFFF\">" + KEYS.Get("attack_ui_over") + "</font>";
+            }
          }
       }
-      
+
       private function updateScoutMode() : void
       {
          var _loc2_:int = 0;
@@ -1227,8 +1390,11 @@ package
          while(_loc2_ < 5)
          {
             _loc3_ = mc["mcR" + _loc2_];
-            _loc3_.tR.htmlText = "<b>" + GLOBAL.FormatNumber((GLOBAL._currentCell as MapRoom3Cell).attackCost[_loc2_ - 1]) + "</b>";
-            _loc3_.mcBar.visible = false;
+            if(_loc3_)
+            {
+               if(_loc3_.tR) _loc3_.tR.htmlText = "<b>" + GLOBAL.FormatNumber((GLOBAL._currentCell as MapRoom3Cell).attackCost[_loc2_ - 1]) + "</b>";
+               if(_loc3_.mcBar) _loc3_.mcBar.visible = false;
+            }
             _loc2_++;
          }
          _loc2_ = 0;
@@ -1237,40 +1403,46 @@ package
             this._creatureButtons[_loc2_].Update();
             _loc2_++;
          }
-         if(GLOBAL.mode != GLOBAL._loadmode)
+         if(mc.tMessage)
          {
-            if(ATTACK._countdown > 0)
+            if(GLOBAL.mode != GLOBAL._loadmode)
             {
-               mc.tMessage.htmlText = KEYS.Get("attack_ui_attacklock");
+               if(ATTACK._countdown > 0)
+               {
+                  mc.tMessage.htmlText = KEYS.Get("attack_ui_attacklock");
+               }
+               else
+               {
+                  mc.tMessage.htmlText = KEYS.Get("attack_ui_attackends");
+               }
+            }
+            else if(ATTACK._countdown > 0)
+            {
+               mc.tMessage.htmlText = KEYS.Get("attack_ui_flingerlock");
             }
             else
             {
                mc.tMessage.htmlText = KEYS.Get("attack_ui_attackends");
             }
          }
-         else if(ATTACK._countdown > 0)
+         if(mc.tTime)
          {
-            mc.tMessage.htmlText = KEYS.Get("attack_ui_flingerlock");
-         }
-         else
-         {
-            mc.tMessage.htmlText = KEYS.Get("attack_ui_attackends");
-         }
-         if(ATTACK._countdown > 30)
-         {
-            mc.tTime.htmlText = GLOBAL.ToTime(ATTACK._countdown,true);
-         }
-         else if(ATTACK._countdown > 0)
-         {
-            mc.tTime.htmlText = "<font color=\"#FF0000\">" + GLOBAL.ToTime(ATTACK._countdown,true) + "</font>";
-         }
-         else if(ATTACK._countdown > -120)
-         {
-            mc.tTime.htmlText = "<font color=\"#FFFFFF\">" + GLOBAL.ToTime(120 + ATTACK._countdown,true) + "</font>";
-         }
-         else
-         {
-            mc.tTime.htmlText = "<font color=\"#FFFFFF\">" + KEYS.Get("attack_ui_over") + "</font>";
+            if(ATTACK._countdown > 30)
+            {
+               mc.tTime.htmlText = GLOBAL.ToTime(ATTACK._countdown,true);
+            }
+            else if(ATTACK._countdown > 0)
+            {
+               mc.tTime.htmlText = "<font color=\"#FF0000\">" + GLOBAL.ToTime(ATTACK._countdown,true) + "</font>";
+            }
+            else if(ATTACK._countdown > -120)
+            {
+               mc.tTime.htmlText = "<font color=\"#FFFFFF\">" + GLOBAL.ToTime(120 + ATTACK._countdown,true) + "</font>";
+            }
+            else
+            {
+               mc.tTime.htmlText = "<font color=\"#FFFFFF\">" + KEYS.Get("attack_ui_over") + "</font>";
+            }
          }
       }
       
@@ -1293,7 +1465,7 @@ package
          var _loc14_:int = 0;
          while(_loc14_ < this._buttonIcons.length)
          {
-            if(this._buttonIcons[_loc14_].visible)
+            if(this._buttonIcons[_loc14_] && this._buttonIcons[_loc14_].visible)
             {
                this._buttonIcons[_loc14_].x = _loc4_ + _loc11_;
                this._buttonIcons[_loc14_].y = _loc5_ + _loc10_;
@@ -1439,7 +1611,7 @@ package
             return;
          }
          var _loc1_:Number = POWERUPS.CheckPowers(null,"NORMAL");
-         var _loc2_:int = this.mcBuffHolder.numChildren;
+         var _loc2_:int = this.mcBuffHolder ? this.mcBuffHolder.numChildren : 0;
          while(_loc2_--)
          {
             this.mcBuffHolder.getChildAt(_loc2_).removeEventListener(MouseEvent.ROLL_OVER,this.BuffShow);
@@ -1479,7 +1651,7 @@ package
                }
                _loc13_.addEventListener(MouseEvent.ROLL_OVER,this.BuffShow);
                _loc13_.addEventListener(MouseEvent.ROLL_OUT,this.BuffHide);
-               this.mcBuffHolder.addChild(_loc13_);
+               if(this.mcBuffHolder) this.mcBuffHolder.addChild(_loc13_);
             }
          }
          else
@@ -1626,15 +1798,15 @@ package
       private function SetPoints(param1:Number, param2:Number, param3:Number, param4:Number, param5:uint, param6:Boolean) : void
       {
          var _loc7_:int = 0;
-         if(GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD)
+         if(GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD && mc.mcPoints)
          {
-            mc.mcPoints.mcLevel.text = param5.toString();
+            if(mc.mcPoints.mcLevel) mc.mcPoints.mcLevel.text = param5.toString();
             _loc7_ = 200 / (param2 - param1) * (param4 - param1);
-            TweenLite.to(mc.mcPoints.mcBar,0.6,{
+            if(mc.mcPoints.mcBar) TweenLite.to(mc.mcPoints.mcBar,0.6,{
                "width":_loc7_,
                "ease":Elastic.easeInOut
             });
-            if(param6)
+            if(param6 && mc.mcPoints.mcStar)
             {
                mc.mcPoints.mcStar.scaleX = mc.mcPoints.mcStar.scaleY = 0.8;
                mc.mcPoints.mcStar.rotation = 180;

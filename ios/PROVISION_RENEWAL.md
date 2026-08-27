@@ -1,0 +1,100 @@
+# Renovar Perfil de Provisioning (Semanal)
+
+**Por qué:** El perfil de desarrollo gratuito de Apple caduca cada **7 días**. Necesitas renovarlo cada semana para instalar la app en el iPhone.
+
+---
+
+## 1. Renovar el perfil en Xcode (5 min)
+
+```bash
+# Abre Xcode
+open /Applications/Xcode.app
+```
+
+En Xcode:
+1. **Xcode › Settings › Accounts** → verifica que tu Apple ID está conectado
+   - Si pide contraseña/2FA, méteala
+2. **Abre el proyecto** `ios/Stub/Stub.xcodeproj` (o cualquier proyecto con `com.bymrefitted`)
+3. En el panel izquierdo, selecciona el **target "Stub"** (o "bymrefitted")
+4. Ve a **Signing & Capabilities**
+5. Asegúrate de que:
+   - ✅ **"Automatically manage signing"** está activado
+   - **Team** = tu equipo personal (Personal Team)
+6. Xcode regenera el perfil automáticamente (~10s)
+
+---
+
+## 2. Copiar el perfil nuevo a la carpeta de build (1 min)
+
+```bash
+#!/bin/bash
+# Encuentra el perfil más nuevo
+NEWPROF=$(ls -t ~/Library/Developer/Xcode/UserData/Provisioning\ Profiles/*.mobileprovision | head -1)
+
+# Cópialo a la carpeta de build
+cp "$NEWPROF" /path/to/backyard-monsters-refitted/ios/BYMRefitted.mobileprovision
+
+# Verifica
+ls -la /path/to/backyard-monsters-refitted/ios/BYMRefitted.mobileprovision
+```
+
+---
+
+## 3. Compilar e instalar en el iPhone (5 min)
+
+```bash
+cd /path/to/backyard-monsters-refitted
+./ios/iterate.sh
+```
+
+Si todo va bien:
+- Verás `✓ instalado`
+- La app se lanzará en el iPhone
+
+Si falla con `"invalid code signature"`:
+  → Ve al **paso 4** (confiar en el perfil en el iPhone)
+
+---
+
+## 4. Confiar en el perfil en el iPhone (1 min)
+
+**Solo la primera vez que instalas un nuevo perfil:**
+
+En el **iPhone**:
+1. **Settings** → **General** → **VPN & Device Management**
+2. Busca **"Apple Development: tu@email.com"**
+3. Toca en él
+4. Pulsa **"Trust"** y confirma
+
+Después de confiar, la app se lanzará sin errores.
+
+---
+
+## Checklist semanal
+
+- [ ] Lunes (o cuando caduque): renovar en Xcode (paso 1)
+- [ ] Copiar perfil nuevo (paso 2)
+- [ ] Compilar: `./ios/iterate.sh` (paso 3)
+- [ ] Si pide trust, confiar en Settings del iPhone (paso 4)
+
+---
+
+## Troubleshooting
+
+| Error | Solución |
+|-------|----------|
+| `"This provisioning profile has expired"` | El perfil caducó. Repite **paso 1-3** |
+| `"invalid code signature"` o `"profile has not been explicitly trusted"` | Necesitas confiar en el perfil. Ve a **paso 4** |
+| `"Unable to install on this device"` | El iPhone está bloqueado. Desbloquéalo y reintenta |
+| Xcode no regenera el perfil | Cierra Xcode, abre Settings › Accounts, vuelve a abrir Xcode |
+
+---
+
+## Alternativa: Suscripción Apple Developer ($99/año)
+
+Si quieres evitar esto cada semana, paga **$99/año** por una cuenta Apple Developer:
+- Los perfiles duran **1 año** (no 7 días)
+- Tienes más dispositivos y aplicaciones
+- Acceso a beta releases
+
+Pero con el flujo anterior, 5 minutos cada lunes = gratis.

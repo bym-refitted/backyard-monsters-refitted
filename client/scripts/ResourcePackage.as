@@ -52,11 +52,23 @@ package
          visible = false;
          x = sourcePoint.x;
          y = sourcePoint.y;
-         mcShadow.y = startHeight;
-         mcShadow.x = startHeight / 2;
          this._id = id;
+         // mcDot (the flying resource icon) / mcShadow may not be auto-instantiated by the
+         // iOS AIR interpreter (they come up null -> #1009 for every collected package).
+         // Recreate mcDot so the collect animation still plays; mcShadow (a plain decorative
+         // shadow) is optional and just skipped when absent.
+         if(!mcDot)
+         {
+            mcDot = new packagedot();
+            addChildAt(mcDot,0);
+         }
+         if(mcShadow)
+         {
+            mcShadow.y = startHeight;
+            mcShadow.x = startHeight / 2;
+            mcShadow.cacheAsBitmap = true;
+         }
          mcDot.gotoAndStop(type);
-         mcShadow.cacheAsBitmap = true;
          mcDot.cacheAsBitmap = true;
          time = Point.distance(targetPoint,sourcePoint) + Math.random() * 50;
          time /= 150;
@@ -85,21 +97,24 @@ package
             "delay":time / 2 + delay,
             "overwrite":0
          });
-         TweenLite.to(mcShadow,time / 2,{
-            "x":startHeight / 2 + time * 100,
-            "alpha":0,
-            "ease":Sine.easeOut,
-            "delay":delay,
-            "overwrite":0
-         });
-         TweenLite.to(mcShadow,time / 2,{
-            "x":endHeight / 2,
-            "y":endHeight,
-            "alpha":1,
-            "ease":Sine.easeIn,
-            "delay":time / 2 + delay,
-            "overwrite":0
-         });
+         if(mcShadow)
+         {
+            TweenLite.to(mcShadow,time / 2,{
+               "x":startHeight / 2 + time * 100,
+               "alpha":0,
+               "ease":Sine.easeOut,
+               "delay":delay,
+               "overwrite":0
+            });
+            TweenLite.to(mcShadow,time / 2,{
+               "x":endHeight / 2,
+               "y":endHeight,
+               "alpha":1,
+               "ease":Sine.easeIn,
+               "delay":time / 2 + delay,
+               "overwrite":0
+            });
+         }
       }
       
       private function Arrived() : void

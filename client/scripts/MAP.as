@@ -41,7 +41,10 @@ package
       
       public static var _autoScroll:Boolean;
       
-      public static const stage:Stage = GLOBAL._ROOT.stage;
+      // Lazily resolve the stage. As a static const this evaluated during MAP's class
+      // initializer, which on iOS fires before GLOBAL._ROOT exists (→ #1009 that cascaded
+      // through RefreshScreen / BASE.Load / the tick). A getter defers it to first use.
+      public static function get stage():Stage { return GLOBAL._ROOT ? GLOBAL._ROOT.stage : null; }
       
       public static var _dragging:Boolean;
       
@@ -344,6 +347,7 @@ package
       
       public static function Clear() : void
       {
+         
          if(_GROUND)
          {
             _GROUND.removeEventListener(MouseEvent.MOUSE_DOWN,Click);
@@ -353,6 +357,7 @@ package
                _GROUND.removeChildAt(0);
             }
          }
+         
          if(_BUILDINGTOPS)
          {
             while(_BUILDINGTOPS.numChildren)
@@ -360,10 +365,12 @@ package
                _BUILDINGTOPS.removeChildAt(0);
             }
          }
+         
          if(BYMConfig.instance.RENDERER_ON && GLOBAL._ROOT.hasEventListener(Event.RENDER))
          {
             GLOBAL._ROOT.removeEventListener(Event.RENDER,_instance.render);
          }
+         
          _BGTILES = null;
          _BUILDINGBASES = null;
          _BUILDINGFOOTPRINTS = null;
@@ -376,6 +383,7 @@ package
          _EFFECTSTOP = null;
          _GROUND = null;
          s_texture = null;
+         
          if(_effectsRasterData)
          {
             _effectsRasterData.clear();
@@ -482,7 +490,9 @@ package
       
       public static function Click(param1:MouseEvent = null) : void
       {
-         if(UI2._scrollMap)
+         // On iOS, a finger-drag that is moving/placing a building must NOT also start a base
+         // pan (it would scroll the village under the finger).
+         if(UI2._scrollMap && !GLOBAL._touchBuildingDrag)
          {
             _dragX = stage.mouseX - _GROUND.x;
             _dragY = stage.mouseY - _GROUND.y;
@@ -492,7 +502,7 @@ package
             stage.addEventListener(MouseEvent.MOUSE_UP,Release);
          }
       }
-      
+
       public static function Release(param1:MouseEvent) : void
       {
          _dragging = false;
@@ -638,8 +648,10 @@ package
             _dragY = ty;
             BFOUNDATION.updateAllRasterData();
          }
-         else if(_dragging && UI2._scrollMap && !_autoScroll && _canScroll)
+         else if(_dragging && UI2._scrollMap && !_autoScroll && _canScroll && !GLOBAL._touchBuildingDrag)
          {
+            // Skipped while a building is being moved/placed on iOS (see GLOBAL._touchBuildingDrag):
+            // keeps the camera still AND leaves _dragged false so the drop guards commit.
             _loc15_ = stage.mouseX;
             _loc16_ = stage.mouseY;
             tx = _loc15_ - _dragX >> 0;

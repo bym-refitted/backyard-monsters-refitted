@@ -907,7 +907,7 @@ package com.monsters.chat
       {
          var _loc6_:int = 0;
          var _loc7_:int = 0;
-         var _loc1_:int = GLOBAL._ROOT.stage.stageWidth;
+         var _loc1_:int = int(GLOBAL.GetGameWidth());
          var _loc2_:int = GLOBAL._ROOT.stage.stageHeight;
          var _loc3_:int = 0;
          var _loc4_:int = 0;

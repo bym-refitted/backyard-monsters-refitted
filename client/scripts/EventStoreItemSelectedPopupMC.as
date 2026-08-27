@@ -3,7 +3,7 @@ package
    import flash.display.MovieClip;
    import flash.text.TextField;
    
-   [Embed(source="/_assets/assets.swf", symbol="EventStoreItemSelectedPopupMC")]
+   [Embed(source="/_assets/assets_refitted.swf", symbol="EventStoreItemSelectedPopupMC")]
    public dynamic class EventStoreItemSelectedPopupMC extends MovieClip
    {
        

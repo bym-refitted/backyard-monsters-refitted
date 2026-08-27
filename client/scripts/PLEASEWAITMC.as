@@ -13,7 +13,7 @@ package
       
       public var tMessage:TextField;
 
-      public var mcLoading:loading_210;
+      public var mcLoading:MovieClip;
 
       public function PLEASEWAITMC()
       {

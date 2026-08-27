@@ -3,10 +3,12 @@ package com.monsters.missions
    import com.monsters.display.ScrollSet;
    import com.monsters.maproom_manager.MapRoomManager;
    import com.monsters.ui.UI_BOTTOM;
+   import flash.display.BitmapData;
    import flash.display.MovieClip;
    import flash.display.Shape;
    import flash.display.Sprite;
    import flash.events.MouseEvent;
+   import flash.geom.Rectangle;
    import gs.TweenLite;
    import gs.easing.*;
    
@@ -135,12 +137,34 @@ package com.monsters.missions
             "ignoreBtnX":315
          };
          super();
-         frame.tTitle.htmlText = KEYS.Get("quests_title");
+         if(frame && frame.tTitle)
+         {
+            frame.tTitle.htmlText = KEYS.Get("quests_title");
+         }
          this._CollectedMissions = {};
          this._CompletedMissions = {};
          this._PriorityMissions = {};
          this._ActiveMissions = [];
-         this._skinnedElements = [this.frame.border,this.frame.header,this.frame.mcScreen.canvas,this.footer];
+         this._skinnedElements = [];
+         if(this.frame)
+         {
+            if(this.frame.border)
+            {
+               this._skinnedElements.push(this.frame.border);
+            }
+            if(this.frame.header)
+            {
+               this._skinnedElements.push(this.frame.header);
+            }
+            if(this.frame.mcScreen && this.frame.mcScreen.canvas)
+            {
+               this._skinnedElements.push(this.frame.mcScreen.canvas);
+            }
+         }
+         if(this.footer)
+         {
+            this._skinnedElements.push(this.footer);
+         }
          if(GLOBAL.StatGet("missionmin") == 1)
          {
             this._open = false;
@@ -152,17 +176,35 @@ package com.monsters.missions
             this._open = true;
             this._maximized = false;
          }
-         this.frame.mcMask.height = this._numDisplaySlots * (32 + this._ItemPaddingY);
+         if(this.frame && this.frame.mcMask)
+         {
+            this.frame.mcMask.height = this._numDisplaySlots * (32 + this._ItemPaddingY);
+         }
          this._Container = new Sprite();
-         this._Container.x = this.frame.mcScreen.x;
-         this._Container.y = this.frame.mcScreen.y;
-         this._Container.mask = this.frame.mcMask;
-         this.frame.addChild(this._Container);
+         if(this.frame && this.frame.mcScreen)
+         {
+            this._Container.x = this.frame.mcScreen.x;
+            this._Container.y = this.frame.mcScreen.y;
+         }
+         if(this.frame && this.frame.mcMask)
+         {
+            this._Container.mask = this.frame.mcMask;
+         }
+         if(this.frame)
+         {
+            this.frame.addChild(this._Container);
+         }
          this._Missions = new MovieClip();
          this._Container.addChild(this._Missions);
          this._ScrollBar = new ScrollSet();
-         this.frame.addChild(this._ScrollBar);
-         this._ScrollBar.Init(this._Container,this.frame.mcMask,0,30,this.frame.mcMask.height);
+         if(this.frame)
+         {
+            this.frame.addChild(this._ScrollBar);
+         }
+         if(this.frame && this.frame.mcMask)
+         {
+            this._ScrollBar.Init(this._Container,this.frame.mcMask,0,30,this.frame.mcMask.height);
+         }
          this._ScrollBar.x = 380 - 16 - 16;
          this._ScrollBar.y = 30;
          this._ScrollBar.AutoHideEnabled = false;
@@ -171,8 +213,11 @@ package com.monsters.missions
          this._PriorityMask.graphics.beginFill(16777215,1);
          this._PriorityMask.graphics.drawRect(0,0,380 - 16 - 16,this._numPinnedItems * (32 + this._ItemPaddingY * (this._numPinnedItems - 1)));
          this._PriorityMask.graphics.endFill();
-         this._PriorityMask.x = this.footer.x + 16;
-         this._PriorityMask.y = this.footer.y + 5;
+         if(this.footer)
+         {
+            this._PriorityMask.x = this.footer.x + 16;
+            this._PriorityMask.y = this.footer.y + 5;
+         }
          this.addChild(this._PriorityMask);
          this._PriorityContainer = new Sprite();
          this._PriorityContainer.x = this._PriorityMask.x;
@@ -182,24 +227,33 @@ package com.monsters.missions
          this._Priority = new MovieClip();
          this._PriorityContainer.addChild(this._Priority);
          this.CheckMissionsStatus();
-         this.frame.arrowUp.addEventListener(MouseEvent.MOUSE_DOWN,this.toggleHide);
-         this.frame.arrowUp.mouseChildren = false;
-         this.frame.arrowUp.buttonMode = true;
-         this.frame.arrowUp.useHandCursor = true;
-         this.frame.arrowUp.gotoAndStop("on" + this._skinTag);
-         this.frame.arrowUp.visible = false;
-         this.frame.arrowDown.mouseChildren = false;
-         this.frame.arrowDown.buttonMode = true;
-         this.frame.arrowDown.useHandCursor = true;
-         this.frame.arrowDown.gotoAndStop("on" + this._skinTag);
-         this.frame.arrowDown.enabled = false;
-         this.frame.arrowDown.visible = false;
-         this.frame.mcToggle.addEventListener(MouseEvent.MOUSE_DOWN,this.OnDisableClick);
-         this.frame.mcToggle.mouseChildren = false;
-         this.frame.mcToggle.buttonMode = true;
-         this.frame.mcToggle.useHandCursor = true;
-         this.frame.mcToggle.gotoAndStop(this._enabled ? "on" + this._skinTag : "close" + this._skinTag);
-         this.frame.mcToggle.visible = TUTORIAL.hasFinished;
+         if(this.frame && this.frame.arrowUp)
+         {
+            this.frame.arrowUp.addEventListener(MouseEvent.MOUSE_DOWN,this.toggleHide);
+            this.frame.arrowUp.mouseChildren = false;
+            this.frame.arrowUp.buttonMode = true;
+            this.frame.arrowUp.useHandCursor = true;
+            this.frame.arrowUp.gotoAndStop("on" + this._skinTag);
+            this.frame.arrowUp.visible = false;
+         }
+         if(this.frame && this.frame.arrowDown)
+         {
+            this.frame.arrowDown.mouseChildren = false;
+            this.frame.arrowDown.buttonMode = true;
+            this.frame.arrowDown.useHandCursor = true;
+            this.frame.arrowDown.gotoAndStop("on" + this._skinTag);
+            this.frame.arrowDown.enabled = false;
+            this.frame.arrowDown.visible = false;
+         }
+         if(this.frame && this.frame.mcToggle)
+         {
+            this.frame.mcToggle.addEventListener(MouseEvent.MOUSE_DOWN,this.OnDisableClick);
+            this.frame.mcToggle.mouseChildren = false;
+            this.frame.mcToggle.buttonMode = true;
+            this.frame.mcToggle.useHandCursor = true;
+            this.frame.mcToggle.gotoAndStop(this._enabled ? "on" + this._skinTag : "close" + this._skinTag);
+            this.frame.mcToggle.visible = TUTORIAL.hasFinished;
+         }
          this.toggleHide();
       }
       
@@ -214,18 +268,46 @@ package com.monsters.missions
          var _loc2_:int = 0;
          while(_loc2_ < this._skinnedElements.length)
          {
-            this._skinnedElements[_loc2_].gotoAndStop(_loc1_);
+            if(this._skinnedElements[_loc2_])
+            {
+               this._skinnedElements[_loc2_].gotoAndStop(_loc1_);
+            }
             _loc2_++;
          }
-         this.frame.mcToggle.gotoAndStop(this._enabled ? "on" + this._skinTag : "close" + this._skinTag);
-         this.frame.arrowUp.gotoAndStop("on" + this._skinTag);
-         this.frame.arrowDown.gotoAndStop("on" + this._skinTag);
+         // iOS: the wood-frame symbols rasterize to 0 drawable pixels, so the tab background is
+         // transparent. Draw a wood fill behind the header/border/footer (and a parchment screen)
+         // matched to each symbol's real bounds. No-op off iOS / when the real art paints.
+         if(GLOBAL._iosViewport && this.frame)
+         {
+            GLOBAL.PaintWoodFallback(this.frame.header);
+            GLOBAL.PaintWoodFallback(this.frame.border);
+            if(this.footer)
+            {
+               GLOBAL.PaintWoodFallback(this.footer);
+            }
+            if(this.frame.mcScreen)
+            {
+               GLOBAL.PaintWoodFallback(this.frame.mcScreen.canvas,0xEBDCB4,0xCDB67F);
+            }
+         }
+         if(this.frame && this.frame.mcToggle)
+         {
+            this.frame.mcToggle.gotoAndStop(this._enabled ? "on" + this._skinTag : "close" + this._skinTag);
+         }
+         if(this.frame && this.frame.arrowUp)
+         {
+            this.frame.arrowUp.gotoAndStop("on" + this._skinTag);
+         }
+         if(this.frame && this.frame.arrowDown)
+         {
+            this.frame.arrowDown.gotoAndStop("on" + this._skinTag);
+         }
       }
       
       public function Update() : void
       {
          this.Skin();
-         if(!this.frame.mcToggle.visible && GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD)
+         if(this.frame && this.frame.mcToggle && !this.frame.mcToggle.visible && GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD)
          {
             this.frame.mcToggle.visible = TUTORIAL.hasFinished;
          }
@@ -251,25 +333,34 @@ package com.monsters.missions
             {
                this._Priority.addChild(_loc4_);
                _loc4_.y = (_loc4_._Height + this._ItemPaddingY) * this._prioritycounter;
-               _loc4_.bg.gotoAndStop("shiny" + this._skinTag);
+               if(_loc4_.bg)
+               {
+                  _loc4_.bg.gotoAndStop("shiny" + this._skinTag);
+               }
             }
             else
             {
                this._Missions.addChild(_loc4_);
                _loc4_.y = (_loc4_._Height + this._ItemPaddingY) * this._counter;
             }
-            if(this._counter % 2 == 0)
+            if(_loc4_.bg)
             {
-               _loc4_.bg.gotoAndStop("off" + this._skinTag);
-            }
-            else
-            {
-               _loc4_.bg.gotoAndStop("on" + this._skinTag);
+               if(this._counter % 2 == 0)
+               {
+                  _loc4_.bg.gotoAndStop("off" + this._skinTag);
+               }
+               else
+               {
+                  _loc4_.bg.gotoAndStop("on" + this._skinTag);
+               }
             }
             if(param2)
             {
-               _loc4_.bg.gotoAndStop("shiny" + this._skinTag);
-               _loc4_.bg.height = _loc4_._Height;
+               if(_loc4_.bg)
+               {
+                  _loc4_.bg.gotoAndStop("shiny" + this._skinTag);
+                  _loc4_.bg.height = _loc4_._Height;
+               }
             }
             this._ActiveMissions.push(_loc4_);
             return 1;
@@ -402,17 +493,26 @@ package com.monsters.missions
                _loc4_.sortOn("order",Array.NUMERIC);
             }
          }
-         if(_loc4_.length < 1 && GLOBAL.mode == GLOBAL._loadmode)
+         if(this.frame && this.frame.mcMask)
          {
-            this.frame.mcMask.height = (this._numDisplaySlots + 1) * (32 + this._ItemPaddingY);
-         }
-         else
-         {
-            this.frame.mcMask.height = this._numDisplaySlots * (32 + this._ItemPaddingY);
+            if(_loc4_.length < 1 && GLOBAL.mode == GLOBAL._loadmode)
+            {
+               this.frame.mcMask.height = (this._numDisplaySlots + 1) * (32 + this._ItemPaddingY);
+            }
+            else
+            {
+               this.frame.mcMask.height = this._numDisplaySlots * (32 + this._ItemPaddingY);
+            }
          }
          this._ScrollBar.Update();
-         this.frame.y = this._openProps.y;
-         this.footer.y = this._openProps.footerY;
+         if(this.frame)
+         {
+            this.frame.y = this._openProps.y;
+         }
+         if(this.footer)
+         {
+            this.footer.y = this._openProps.footerY;
+         }
          var _loc7_:int = int(_loc2_.length);
          _loc6_ = 0;
          while(_loc6_ < _loc7_)
@@ -480,7 +580,7 @@ package com.monsters.missions
          var _loc3_:Boolean = false;
          if(param1 != null)
          {
-            if(param1.currentTarget == this.frame.arrowUp)
+            if(this.frame && this.frame.arrowUp && param1.currentTarget == this.frame.arrowUp)
             {
                if(this._maximized)
                {
@@ -491,7 +591,7 @@ package com.monsters.missions
                   _loc2_ = true;
                }
             }
-            if(param1.currentTarget == this.frame.mcToggle)
+            if(this.frame && this.frame.mcToggle && param1.currentTarget == this.frame.mcToggle)
             {
                if(this._open)
                {
@@ -540,10 +640,16 @@ package com.monsters.missions
                _loc4_ = this._closeProps;
             }
             this._maximized = false;
-            this.frame.arrowUp.gotoAndStop("on" + this._skinTag);
-            this.frame.arrowDown.gotoAndStop("off" + this._skinTag);
-            this.frame.arrowUp.buttonMode = true;
-            this.frame.arrowDown.buttonMode = false;
+            if(this.frame && this.frame.arrowUp)
+            {
+               this.frame.arrowUp.gotoAndStop("on" + this._skinTag);
+               this.frame.arrowUp.buttonMode = true;
+            }
+            if(this.frame && this.frame.arrowDown)
+            {
+               this.frame.arrowDown.gotoAndStop("off" + this._skinTag);
+               this.frame.arrowDown.buttonMode = false;
+            }
          }
          else if(this._maximized && this._open)
          {
@@ -553,10 +659,16 @@ package com.monsters.missions
             }
             _loc4_ = this._openProps;
             this._maximized = false;
-            this.frame.arrowUp.gotoAndStop("on" + this._skinTag);
-            this.frame.arrowDown.gotoAndStop("on" + this._skinTag);
-            this.frame.arrowUp.buttonMode = true;
-            this.frame.arrowDown.buttonMode = true;
+            if(this.frame && this.frame.arrowUp)
+            {
+               this.frame.arrowUp.gotoAndStop("on" + this._skinTag);
+               this.frame.arrowUp.buttonMode = true;
+            }
+            if(this.frame && this.frame.arrowDown)
+            {
+               this.frame.arrowDown.gotoAndStop("on" + this._skinTag);
+               this.frame.arrowDown.buttonMode = true;
+            }
             GLOBAL.StatSet("missionmin",0);
          }
          else if(this._open)
@@ -565,20 +677,32 @@ package com.monsters.missions
             {
                _loc4_ = this._closeProps;
                this._maximized = false;
-               this.frame.arrowUp.gotoAndStop("on" + this._skinTag);
-               this.frame.arrowDown.gotoAndStop("off" + this._skinTag);
-               this.frame.arrowUp.buttonMode = true;
-               this.frame.arrowDown.buttonMode = false;
+               if(this.frame && this.frame.arrowUp)
+               {
+                  this.frame.arrowUp.gotoAndStop("on" + this._skinTag);
+                  this.frame.arrowUp.buttonMode = true;
+               }
+               if(this.frame && this.frame.arrowDown)
+               {
+                  this.frame.arrowDown.gotoAndStop("off" + this._skinTag);
+                  this.frame.arrowDown.buttonMode = false;
+               }
                GLOBAL.StatSet("missionmin",1);
             }
             else if(_loc2_)
             {
                _loc4_ = this._maxProps;
                this._maximized = true;
-               this.frame.arrowUp.gotoAndStop("on" + this._skinTag);
-               this.frame.arrowDown.gotoAndStop("on" + this._skinTag);
-               this.frame.arrowUp.buttonMode = true;
-               this.frame.arrowDown.buttonMode = false;
+               if(this.frame && this.frame.arrowUp)
+               {
+                  this.frame.arrowUp.gotoAndStop("on" + this._skinTag);
+                  this.frame.arrowUp.buttonMode = true;
+               }
+               if(this.frame && this.frame.arrowDown)
+               {
+                  this.frame.arrowDown.gotoAndStop("on" + this._skinTag);
+                  this.frame.arrowDown.buttonMode = false;
+               }
                GLOBAL.StatSet("missionmin",0);
             }
             else if(_loc3_)
@@ -594,10 +718,16 @@ package com.monsters.missions
             }
             _loc4_ = this._openProps;
             this._maximized = false;
-            this.frame.arrowUp.gotoAndStop("on" + this._skinTag);
-            this.frame.arrowDown.gotoAndStop("on" + this._skinTag);
-            this.frame.arrowUp.buttonMode = true;
-            this.frame.arrowDown.buttonMode = true;
+            if(this.frame && this.frame.arrowUp)
+            {
+               this.frame.arrowUp.gotoAndStop("on" + this._skinTag);
+               this.frame.arrowUp.buttonMode = true;
+            }
+            if(this.frame && this.frame.arrowDown)
+            {
+               this.frame.arrowDown.gotoAndStop("on" + this._skinTag);
+               this.frame.arrowDown.buttonMode = true;
+            }
             GLOBAL.StatSet("missionmin",0);
          }
          if(_loc4_ == null)
@@ -605,13 +735,22 @@ package com.monsters.missions
             return;
          }
          this._ScrollBar.visible = false;
-         TweenLite.to(this.frame,_loc5_,{
-            "y":_loc4_.y,
-            "onUpdate":this.toggleOnUpdate,
-            "onComplete":this.toggleVisibleB
-         });
-         TweenLite.to(this.frame.mcScreen,_loc5_,{"height":_loc4_.screenHeight});
-         TweenLite.to(this.frame.mcMask,_loc5_,{"height":_loc4_.maskHeight});
+         if(this.frame)
+         {
+            TweenLite.to(this.frame,_loc5_,{
+               "y":_loc4_.y,
+               "onUpdate":this.toggleOnUpdate,
+               "onComplete":this.toggleVisibleB
+            });
+            if(this.frame.mcScreen)
+            {
+               TweenLite.to(this.frame.mcScreen,_loc5_,{"height":_loc4_.screenHeight});
+            }
+            if(this.frame.mcMask)
+            {
+               TweenLite.to(this.frame.mcMask,_loc5_,{"height":_loc4_.maskHeight});
+            }
+         }
          TweenLite.to(this._ScrollBar,_loc5_,{"y":_loc4_.scrollerY});
          this._animating = true;
          this._open = _loc4_ != this._closeProps;
@@ -624,11 +763,14 @@ package com.monsters.missions
                this.CheckMissionsStatus();
             }
             this.RefreshMissions(this._disableMissions);
-            TweenLite.to(this.footer,_loc5_,{
-               "y":_loc4_.footerY,
-               "autoAlpha":1,
-               "ease":Expo.easeOut
-            });
+            if(this.footer)
+            {
+               TweenLite.to(this.footer,_loc5_,{
+                  "y":_loc4_.footerY,
+                  "autoAlpha":1,
+                  "ease":Expo.easeOut
+               });
+            }
             TweenLite.to(this._PriorityMask,_loc5_,{
                "autoAlpha":1,
                "ease":Expo.easeOut
@@ -640,11 +782,14 @@ package com.monsters.missions
          }
          else
          {
-            TweenLite.to(this.footer,_loc5_,{
-               "y":_loc4_.footerY,
-               "autoAlpha":0,
-               "ease":Quad.easeIn
-            });
+            if(this.footer)
+            {
+               TweenLite.to(this.footer,_loc5_,{
+                  "y":_loc4_.footerY,
+                  "autoAlpha":0,
+                  "ease":Quad.easeIn
+               });
+            }
             TweenLite.to(this._PriorityMask,_loc5_,{
                "autoAlpha":0,
                "ease":Expo.easeOut
@@ -666,9 +811,15 @@ package com.monsters.missions
          this._animating = false;
          var _loc1_:Object = this._maximized ? this._maxProps : this._openProps;
          this._ScrollBar.Update();
-         this._ScrollBar.visible = this._Container.height > this.frame.mcMask.height;
-         this._PriorityMask.x = this.footer.x + 16;
-         this._PriorityMask.y = this.footer.y + 5;
+         if(this.frame && this.frame.mcMask)
+         {
+            this._ScrollBar.visible = this._Container.height > this.frame.mcMask.height;
+         }
+         if(this.footer)
+         {
+            this._PriorityMask.x = this.footer.x + 16;
+            this._PriorityMask.y = this.footer.y + 5;
+         }
          this._PriorityContainer.x = this._PriorityMask.x;
          this._PriorityContainer.y = this._PriorityMask.y;
          if(!this._open)
@@ -685,7 +836,7 @@ package com.monsters.missions
       
       private function OnDisableClick(param1:MouseEvent = null) : void
       {
-         if(param1 && param1.currentTarget == this.frame.mcToggle && TUTORIAL.hasFinished)
+         if(param1 && this.frame && this.frame.mcToggle && param1.currentTarget == this.frame.mcToggle && TUTORIAL.hasFinished)
          {
             this._enabled = !this._enabled;
          }
@@ -699,7 +850,10 @@ package com.monsters.missions
             {
                this._open = true;
             }
-            this.frame.mcToggle.gotoAndStop(this._enabled ? "on" + this._skinTag : "close" + this._skinTag);
+            if(this.frame && this.frame.mcToggle)
+            {
+               this.frame.mcToggle.gotoAndStop(this._enabled ? "on" + this._skinTag : "close" + this._skinTag);
+            }
             this.toggleHide(param1);
          }
       }

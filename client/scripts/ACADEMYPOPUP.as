@@ -60,9 +60,9 @@ package
             _maxMonsters = CREATURELOCKER.NUM_CREEP_TYPE + 1;
          }
          bPrevious.addEventListener(MouseEvent.CLICK,this.Previous);
-         bPrevious.mcArrow.gotoAndStop(2);
+         if(bPrevious.mcArrow) bPrevious.mcArrow.gotoAndStop(2);
          bNext.addEventListener(MouseEvent.CLICK,this.Next);
-         bNext.mcArrow.gotoAndStop(2);
+         if(bNext.mcArrow) bNext.mcArrow.gotoAndStop(2);
          var _loc1_:int = 1;
          while(_loc1_ < 5)
          {

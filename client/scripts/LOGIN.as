@@ -47,12 +47,26 @@ package
          super();
       }
 
+      // True while an automatic (non-interactive) login is in progress, so a failure
+      // falls back to the login form instead of getting stuck on "Logging in…".
+      public static var _autoLogin:Boolean = false;
+
       public static function Login():void
       {
          if (GAME.token)
          {
+            _autoLogin = true;
             PLEASEWAIT.Show("Logging in...");
             GLOBAL.eventDispatcher.addEventListener(KEYS.LANGUAGE_FILE_LOADED, onLanguageLoaded);
+            GLOBAL.LanguageSetup();
+         }
+         else if (GAME.sharedObj.data.savedEmail && GAME.sharedObj.data.savedPassword)
+         {
+            // Remembered credentials: re-authenticate fresh each launch (robust — no
+            // token expiry). This is the mobile "keep me logged in" path.
+            _autoLogin = true;
+            PLEASEWAIT.Show("Logging in...");
+            GLOBAL.eventDispatcher.addEventListener(KEYS.LANGUAGE_FILE_LOADED, onLanguageLoadedCreds);
             GLOBAL.LanguageSetup();
          }
          else
@@ -70,6 +84,36 @@ package
          AuthenticateUser(authInfo);
       }
 
+      private static function onLanguageLoadedCreds(event:Event):void
+      {
+         GLOBAL.eventDispatcher.removeEventListener(KEYS.LANGUAGE_FILE_LOADED, onLanguageLoadedCreds);
+
+         var authInfo:Array = [["email", GAME.sharedObj.data.savedEmail], ["password", GAME.sharedObj.data.savedPassword]];
+         AuthenticateUser(authInfo);
+      }
+
+      // Shows the login form after an auto-login attempt failed, clearing the bad
+      // saved session so we don't loop on it.
+      private static function fallbackToForm():void
+      {
+         _autoLogin = false;
+         try
+         {
+            GAME.token = "";
+            GAME.sharedObj.data.token = null;
+            GAME.sharedObj.data.savedEmail = null;
+            GAME.sharedObj.data.savedPassword = null;
+            GAME.sharedObj.flush();
+         }
+         catch (e:Error) { }
+         PLEASEWAIT.Hide();
+         if (!authForm)
+         {
+            authForm = new AuthForm();
+            GLOBAL._layerTop.addChild(authForm);
+         }
+      }
+
       public static function AuthenticateUser(authInfo:Array):void
       {
          var handleLoadSuccessful:Function;
@@ -80,7 +124,16 @@ package
             {
                if (serverData.hasOwnProperty("error") && serverData.error != 0)
                {
-                   GLOBAL.Message(serverData.error);
+                   if (_autoLogin)
+                   {
+                       // A remembered session was rejected (expired token / changed
+                       // password): drop it and fall back to the login form.
+                       fallbackToForm();
+                   }
+                   else
+                   {
+                       GLOBAL.Message(serverData.error);
+                   }
                    return;
                }
 
@@ -90,13 +143,17 @@ package
                   {
                      // Set token
                      token = serverData.token;
+                     _autoLogin = false;
 
                      new URLLoaderApi().load(GLOBAL._apiURL + "bm/getnewmap", [["token", token]],
-                        function(mapData:Object):void 
+                        function(mapData:Object):void
                         {
+                           
                            MapRoomManager.instance.init(mapData.newmap, mapData.mapheaderurl);
+                           
                            LOGIN.Process(serverData);
-                        });
+                           
+                        }, function(err:IOErrorEvent):void {  });
                   }
                   else
                   {
@@ -149,8 +206,10 @@ package
       public static function Process(serverData:Object):void
       {
          var _loc2_:Object = null;
+         
          if (serverData.version != GLOBAL._version.Get())
          {
+            
             handleVersionMismatch(serverData);
          }
          else
