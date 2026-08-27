@@ -11,11 +11,14 @@ una tienda comercial no es viable ni es el objetivo. Se instala por
 legal y lo hace cualquier desarrollador de iOS a diario para sus propias
 apps — pero tiene dos límites que hay que conocer antes de empezar:
 
-- **Necesitas un Mac** con Xcode, al menos para el primer paso (registrar tu
-  cuenta y tu iPhone). El resto puede repetirse sin abrir Xcode.
+- **Necesitas un Mac** con Xcode, al menos para el Paso 1 (registrar tu
+  cuenta y tu iPhone). Es la parte más pesada de todo esto — un poco lioso
+  la primera vez, pero solo son 6 clics — y luego el resto (compilar,
+  instalar) es un solo comando de terminal, sin volver a abrir Xcode.
 - **Con una cuenta Apple gratuita, la app deja de funcionar cada 7 días**
-  hasta que la vuelves a firmar (2-3 minutos). Es una limitación de Apple para
-  cuentas sin la suscripción de pago (99$/año), no de este proyecto.
+  hasta que la vuelves a firmar (2-3 minutos, repitiendo Paso 1.6 + Paso 2).
+  Es una limitación de Apple para cuentas sin la suscripción de pago
+  (99$/año), no de este proyecto.
 
 Si ya pasaste por esto una vez, ve directo a **[PROVISION_RENEWAL.md](PROVISION_RENEWAL.md)**
 para la renovación semanal.
@@ -110,6 +113,24 @@ error de "perfil caducado". Repite el **Paso 1.6** (Run en Xcode con el
 proyecto de prueba, sobre el iPhone) y el **Paso 2** (copiar el perfil
 nuevo), y vuelve a lanzar `./ios/iterate.sh`. El detalle completo, con
 checklist, está en **[PROVISION_RENEWAL.md](PROVISION_RENEWAL.md)**.
+
+---
+
+## ¿Puedo repartir un `.ipa` ya compilado en vez de que cada uno compile?
+
+Sí, pero solo compensa para un grupo muy pequeño (2-3 personas), no para "la
+comunidad": con cuenta gratis el perfil de firma solo instala en los
+dispositivos cuyo UDID esté metido en él, así que cada persona nueva tiene
+que darte su UDID para que lo añadas y recompiles. Y como el perfil caduca
+cada 7 días **para todos a la vez**, quien lo firma tiene que recompilar y
+reenviar el `.ipa` a todo el grupo cada semana, sin excepción — si un lunes
+no puede, deja de funcionar para todos hasta que lo haga.
+
+Con cuenta de pago (99$/año) el límite sube a 100 dispositivos y el perfil
+dura 1 año, pero sigue siendo una sola persona firmando y repartiendo para
+todos. El flujo self-service de este documento (cada uno compila con su
+propia cuenta gratis) es el único que no depende de nadie más y escala sin
+límite.
 
 ---
 
