@@ -59,6 +59,10 @@ cd /path/to/backyard-monsters-refitted
 ./ios/iterate.sh
 ```
 
+Or, if you'd rather not use the terminal: double-click
+**`ios/Install BYM Refitted.command`** in Finder (see Step 3 in
+[README.md](README.md)).
+
 If all goes well:
 - You'll see `✓ installed`
 - The app will launch on the iPhone

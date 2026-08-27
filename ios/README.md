@@ -122,7 +122,9 @@ cp "$NEWPROF" ios/BYMRefitted.mobileprovision
 ### Easiest: double-click, no terminal
 
 Just double-click **[`ios/Install BYM Refitted.command`](Install%20BYM%20Refitted.command)**
-in Finder. The first time, it'll pop up a couple of native macOS dialogs
+**in the macOS Finder app** (not inside Xcode, VS Code or any other editor —
+those open it as a text file instead of running it; use the actual Finder
+window). The first time, it'll pop up a couple of native macOS dialogs
 asking for your AIR SDK path, your iPhone and your signing certificate
 (it tries to auto-detect them first) — answer once and it remembers them
 for every run after that. A terminal window opens just to show progress,
@@ -217,6 +219,7 @@ These are real errors we ran into while testing this — not hypothetical.
 | `developer.apple.com/account/resources/devices` says "only for developers enrolled in a program" | That page is paid-accounts only | You don't need it with a free account — registration happens via Xcode (Step 1), not that page |
 | `This provisioning profile has expired` | More than 7 days since the last `Run` in Xcode | Repeat Step 1.6 + Step 2 (see above or PROVISION_RENEWAL.md) |
 | The compiler hangs / the SWF comes out smaller than usual | The AIR compiler occasionally gets stuck | `iterate.sh` already retries automatically up to 5 times — no action needed |
+| `New Update Available!` when connecting to the official server | Your branch is behind — `apiVersionSuffix` in `client/scripts/GLOBAL.as` doesn't match the version the official server currently expects | Pull the latest `main` and rebuild. If you're on your own branch, check that `apiVersionSuffix` matches the value in the community's current `main` |
 
 ---
 
