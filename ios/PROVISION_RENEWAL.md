@@ -1,113 +1,114 @@
-# Renovar Perfil de Provisioning (Semanal)
+# Renewing the Provisioning Profile (Weekly)
 
-**Por qué:** El perfil de desarrollo gratuito de Apple caduca cada **7 días**. Necesitas renovarlo cada semana para instalar la app en el iPhone.
+**Why:** Apple's free development profile expires every **7 days**. You need to renew it weekly to keep installing the app on your iPhone.
 
-> Este documento asume que ya hiciste la configuración inicial (Paso 1 de
-> [README.md](README.md): añadir tu Apple ID, crear el proyecto "gancho" en
-> Xcode con bundle id `com.bymrefitted`). Si es tu primera vez, ve allí
-> primero — aquí solo está la renovación semanal, que es mucho más corta.
+> This document assumes you already did the initial setup (Step 1 in
+> [README.md](README.md): adding your Apple ID, creating the "hook" project
+> in Xcode with bundle id `com.bymrefitted`). If this is your first time,
+> go there first — this page only covers the weekly renewal, which is much
+> shorter.
 
 ---
 
-## 1. Renovar el perfil en Xcode (5 min)
+## 1. Renew the profile in Xcode (5 min)
 
 ```bash
-# Abre Xcode
+# Open Xcode
 open /Applications/Xcode.app
 ```
 
-En Xcode:
-1. **Xcode › Settings › Accounts** → verifica que tu Apple ID está conectado
-   - Si pide contraseña/2FA, méteala
-2. **Abre el proyecto "gancho"** que creaste en el Paso 1 del README (cualquier nombre, bundle id `com.bymrefitted`) — no crees uno nuevo, reutiliza ese
-3. En el panel izquierdo, selecciona el **target** de ese proyecto (el nombre que le pusiste)
-4. Ve a **Signing & Capabilities**
-5. Asegúrate de que:
-   - ✅ **"Automatically manage signing"** está activado
-   - **Team** = tu equipo personal (Personal Team)
-6. Normalmente Xcode regenera el perfil solo (~10s). Si el Status sigue en
-   rojo o dice *"Communication with Apple failed"* / *"no devices"*, eso solo
-   se arregla haciendo una instalación real: conecta el iPhone, selecciónalo
-   como destino junto al botón ▶ (en vez de "My Mac") y pulsa **Run**. Ese
-   `Run` sobre el dispositivo es lo que de verdad fuerza a Apple a
-   registrarlo y generar el perfil — el panel de Signing por sí solo a veces
-   no basta.
+In Xcode:
+1. **Xcode › Settings › Accounts** → verify your Apple ID is connected
+   - If it asks for a password/2FA, enter it
+2. **Open the "hook" project** you created in Step 1 of the README (any name, bundle id `com.bymrefitted`) — don't create a new one, reuse that one
+3. In the left panel, select that project's **target** (whatever you named it)
+4. Go to **Signing & Capabilities**
+5. Make sure:
+   - ✅ **"Automatically manage signing"** is checked
+   - **Team** = your personal account (Personal Team)
+6. Xcode usually regenerates the profile on its own (~10s). If the Status
+   stays red or says *"Communication with Apple failed"* / *"no devices"*,
+   the only fix is doing a real install: connect the iPhone, select it as
+   the destination next to the ▶ button (instead of "My Mac") and press
+   **Run**. That `Run` on the device is what actually forces Apple to
+   register it and generate the profile — the Signing panel alone
+   sometimes isn't enough.
 
 ---
 
-## 2. Copiar el perfil nuevo a la carpeta de build (1 min)
+## 2. Copy the new profile into the build folder (1 min)
 
 ```bash
 #!/bin/bash
-# Encuentra el perfil más nuevo
+# Find the newest profile
 NEWPROF=$(ls -t ~/Library/Developer/Xcode/UserData/Provisioning\ Profiles/*.mobileprovision | head -1)
 
-# Cópialo a la carpeta de build
+# Copy it into the build folder
 cp "$NEWPROF" /path/to/backyard-monsters-refitted/ios/BYMRefitted.mobileprovision
 
-# Verifica
+# Verify
 ls -la /path/to/backyard-monsters-refitted/ios/BYMRefitted.mobileprovision
 ```
 
 ---
 
-## 3. Compilar e instalar en el iPhone (5 min)
+## 3. Compile and install on the iPhone (5 min)
 
 ```bash
 cd /path/to/backyard-monsters-refitted
 ./ios/iterate.sh
 ```
 
-Si todo va bien:
-- Verás `✓ instalado`
-- La app se lanzará en el iPhone
+If all goes well:
+- You'll see `✓ installed`
+- The app will launch on the iPhone
 
-Si falla con `"invalid code signature"`:
-  → Ve al **paso 4** (confiar en el perfil en el iPhone)
+If it fails with `"invalid code signature"`:
+  → Go to **step 4** (trusting the profile on the iPhone)
 
 ---
 
-## 4. Confiar en el perfil en el iPhone (1 min)
+## 4. Trust the profile on the iPhone (1 min)
 
-**Solo la primera vez que instalas un nuevo perfil:**
+**Only the first time you install a new profile:**
 
-En el **iPhone**:
+On the **iPhone**:
 1. **Settings** → **General** → **VPN & Device Management**
-2. Busca **"Apple Development: tu@email.com"**
-3. Toca en él
-4. Pulsa **"Trust"** y confirma
+2. Find **"Apple Development: you@example.com"**
+3. Tap it
+4. Press **"Trust"** and confirm
 
-Después de confiar, la app se lanzará sin errores.
+After trusting it, the app will launch without errors.
 
 ---
 
-## Checklist semanal
+## Weekly checklist
 
-- [ ] Lunes (o cuando caduque): renovar en Xcode (paso 1)
-- [ ] Copiar perfil nuevo (paso 2)
-- [ ] Compilar: `./ios/iterate.sh` (paso 3)
-- [ ] Si pide trust, confiar en Settings del iPhone (paso 4)
+- [ ] Monday (or whenever it expires): renew in Xcode (step 1)
+- [ ] Copy the new profile (step 2)
+- [ ] Compile: `./ios/iterate.sh` (step 3)
+- [ ] If it asks to trust, trust it in the iPhone's Settings (step 4)
 
 ---
 
 ## Troubleshooting
 
-| Error | Solución |
+| Error | Fix |
 |-------|----------|
-| `"This provisioning profile has expired"` | El perfil caducó. Repite **paso 1-3** |
-| `"invalid code signature"` o `"profile has not been explicitly trusted"` | Necesitas confiar en el perfil. Ve a **paso 4** |
-| `"Unable to install on this device"` / `"The device is locked"` | El iPhone está bloqueado. Desbloquéalo y déjalo con pantalla encendida durante la instalación |
-| `"Communication with Apple failed"` / `"Your team has no devices"` | Xcode aún no ha registrado el iPhone. No sirve el panel de Signing solo — haz un **Run** real sobre el dispositivo (ver paso 1.6) |
-| `developer.apple.com/account/resources/devices` dice "only for developers enrolled in a program" | Esa web es solo para cuentas de pago; con cuenta gratuita el registro se hace vía Xcode (paso 1.6), no por esa web |
-| Xcode no regenera el perfil tras varios intentos | Cierra Xcode del todo, vuelve a abrirlo, y repite el paso 1.6 (el Run real, no solo el panel) |
+| `"This provisioning profile has expired"` | The profile expired. Repeat **steps 1-3** |
+| `"invalid code signature"` or `"profile has not been explicitly trusted"` | You need to trust the profile. Go to **step 4** |
+| `"Unable to install on this device"` / `"The device is locked"` | The iPhone is locked. Unlock it and keep the screen on during install |
+| `"Communication with Apple failed"` / `"Your team has no devices"` | Xcode hasn't registered the iPhone yet. The Signing panel alone won't do it — do a real **Run** onto the device (see step 1.6) |
+| `developer.apple.com/account/resources/devices` says "only for developers enrolled in a program" | That page is paid-accounts only; with a free account, registration happens via Xcode (step 1.6), not that page |
+| Xcode doesn't regenerate the profile after several tries | Fully quit Xcode, reopen it, and repeat step 1.6 (the real Run, not just the panel) |
 
 ---
 
-## Alternativa: Suscripción Apple Developer ($99/año)
+## Alternative: Apple Developer subscription ($99/year)
 
-Si quieres evitar esto cada semana, paga **$99/año** por una cuenta Apple Developer:
-- Los perfiles duran **1 año** (no 7 días)
-- Tienes más dispositivos y aplicaciones
-- Acceso a beta releases
+If you want to avoid doing this every week, pay **$99/year** for an Apple Developer account:
+- Profiles last **1 year** (not 7 days)
+- You get more devices and apps
+- Access to beta releases
 
-Pero con el flujo anterior, 5 minutos cada lunes = gratis.
+But with the flow above, 5 minutes every Monday = free.

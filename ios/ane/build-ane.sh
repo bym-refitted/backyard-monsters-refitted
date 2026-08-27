@@ -11,7 +11,7 @@
 #
 set -euo pipefail
 
-AIR_SDK_HOME="${AIR_SDK_HOME:-/Users/ivan/AIRSDK/AIRSDK_50.2.5}"
+AIR_SDK_HOME="${AIR_SDK_HOME:?set AIR_SDK_HOME to your AIR SDK install, e.g. ~/AIRSDK/AIRSDK_50.2.5}"
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ADT="$AIR_SDK_HOME/bin/adt"
 ACOMPC="$AIR_SDK_HOME/bin/acompc"

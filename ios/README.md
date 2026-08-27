@@ -1,94 +1,97 @@
-# BYM Refitted en iOS — guía de instalación
+# BYM Refitted on iOS — installation guide
 
-Puerto nativo (Adobe AIR) del cliente, jugando contra el **servidor oficial**
-(`https://server.bymrefitted.com`). Funciona, está probado en dispositivo real.
+Native (Adobe AIR) port of the client, playing against the **official
+server** (`https://server.bymrefitted.com`). It works, and has been tested
+on a real device.
 
-**No está en la App Store** y no lo estará: este es un proyecto de
-preservación no oficial de un juego con derechos de Kixeye (ver la sección
-de preservación digital en el README principal del repo) — publicarlo en
-una tienda comercial no es viable ni es el objetivo. Se instala por
-*sideload* (cargarlo tú mismo desde tu Mac a tu propio iPhone), que es 100%
-legal y lo hace cualquier desarrollador de iOS a diario para sus propias
-apps — pero tiene dos límites que hay que conocer antes de empezar:
+**It's not on the App Store and won't be**: this is an unofficial
+preservation project of a game Kixeye owns the rights to (see the digital
+preservation section in the repo's main README) — publishing it on a
+commercial store isn't viable or the goal here. It installs by
+*sideloading* (loading it yourself from your Mac onto your own iPhone),
+which is 100% legal and something every iOS developer does daily for their
+own apps — but there are two limits worth knowing before you start:
 
-- **Necesitas un Mac** con Xcode, al menos para el Paso 1 (registrar tu
-  cuenta y tu iPhone). Es la parte más pesada de todo esto — un poco lioso
-  la primera vez, pero solo son 6 clics — y luego el resto (compilar,
-  instalar) es un solo comando de terminal, sin volver a abrir Xcode.
-- **Con una cuenta Apple gratuita, la app deja de funcionar cada 7 días**
-  hasta que la vuelves a firmar (2-3 minutos, repitiendo Paso 1.6 + Paso 2).
-  Es una limitación de Apple para cuentas sin la suscripción de pago
-  (99$/año), no de este proyecto.
+- **You need a Mac** with Xcode, at least for Step 1 (registering your
+  account and your iPhone). That's the most tedious part of all this — a
+  bit fiddly the first time, but only 6 clicks — and everything after
+  (compiling, installing) is a single terminal command, no need to reopen
+  Xcode.
+- **With a free Apple account, the app stops working every 7 days** until
+  you re-sign it (2-3 minutes, repeating Step 1.6 + Step 2). That's an
+  Apple limitation for accounts without the paid subscription ($99/year),
+  not something specific to this project.
 
-Si ya pasaste por esto una vez, ve directo a **[PROVISION_RENEWAL.md](PROVISION_RENEWAL.md)**
-para la renovación semanal.
+If you've already been through this once, jump straight to
+**[PROVISION_RENEWAL.md](PROVISION_RENEWAL.md)** for the weekly renewal.
 
 ---
 
-## Requisitos
+## Requirements
 
-- Un Mac con **Xcode** instalado (gratis, desde la App Store de macOS)
-- Un **Apple ID** cualquiera (no hace falta pagar nada)
-- Tu **iPhone** + cable USB (solo para el primer emparejamiento)
-- El **AIR SDK** de Harman: <https://airsdk.harman.com/download> (gratis, requiere cuenta Harman)
+- A Mac with **Xcode** installed (free, from the macOS App Store)
+- Any **Apple ID** (no need to pay for anything)
+- Your **iPhone** + a USB cable (only for the first pairing)
+- Harman's **AIR SDK**: <https://airsdk.harman.com/download> (free, requires a Harman account)
 - **asconfigc**: `npm i -g asconfigc`
 
 ---
 
-## Paso 1 — Registrar tu Apple ID y tu iPhone en Xcode
+## Step 1 — Register your Apple ID and iPhone in Xcode
 
-Este es el único paso que requiere Xcode abierto. Sirve para que Apple sepa
-que tu iPhone existe y te deje generar un certificado de firma gratuito.
-**La primera vez** son 6 pasos (5-10 min); **para renovar cada 7 días**
-(ver más abajo) son solo 2, con el mismo proyecto ya creado.
+This is the only step that requires Xcode open. It's what lets Apple know
+your iPhone exists so it'll let you generate a free signing certificate.
+**The first time** is 6 steps (5-10 min); **renewing every 7 days**
+(see below) is just 2, reusing the project you already created.
 
-### La primera vez (una sola vez en la vida de tu Mac)
+### The first time (once, ever, per Mac)
 
-1. **Xcode → Settings → Accounts** → pulsa `+` → añade tu Apple ID (el que
-   sea, personal está bien).
-2. Crea un proyecto cualquiera desde cero: **File → New → Project → App**
-   (SwiftUI, cualquier nombre). Esto es solo un "gancho" para que Xcode hable
-   con Apple — no tiene nada que ver con el juego. **No lo borres** — lo
-   necesitarás cada semana para renovar la firma (ver abajo).
-3. Selecciona el target del proyecto → pestaña **Signing & Capabilities**:
-   - **Bundle Identifier**: escribe exactamente `com.bymrefitted`
-   - **Automatically manage signing**: activado
-   - **Team**: tu cuenta personal (Personal Team)
-4. Conecta el iPhone por **cable USB**, desbloquéalo y, si aparece
-   "¿Confiar en este ordenador?", pulsa **Confiar**. (Este cable solo hace
-   falta esta primera vez — luego Xcode ya reconoce el iPhone por WiFi).
-5. Arriba junto al botón ▶, donde dice **"My Mac"**, cámbialo por tu iPhone.
-6. Pulsa **▶ Run**. Esto compila el proyecto vacío y lo instala en el
-   iPhone — es justo esa instalación real la que hace que Apple registre tu
-   dispositivo y genere el perfil de firma. Verás la app abrirse en el
-   iPhone; puedes cerrarla, ya no la necesitas.
-   - Si da un error tipo *"Communication with Apple failed"* o *"no
-     devices"*, simplemente repite este paso 6 una vez más — a veces Xcode
-     necesita dos intentos.
+1. **Xcode → Settings → Accounts** → click `+` → add your Apple ID (any
+   one, personal is fine).
+2. Create any project from scratch: **File → New → Project → App**
+   (SwiftUI, any name). This is just a "hook" to get Xcode talking to
+   Apple — it has nothing to do with the game itself. **Don't delete it** —
+   you'll need it every week to renew the signature (see below).
+3. Select the project's target → **Signing & Capabilities** tab:
+   - **Bundle Identifier**: type exactly `com.bymrefitted`
+   - **Automatically manage signing**: checked
+   - **Team**: your personal account (Personal Team)
+4. Connect the iPhone via **USB cable**, unlock it, and if "Trust This
+   Computer?" pops up, tap **Trust**. (This cable is only needed this first
+   time — after this Xcode recognizes the iPhone over Wi-Fi.)
+5. At the top next to the ▶ button, where it says **"My Mac"**, switch it
+   to your iPhone.
+6. Press **▶ Run**. This compiles the empty project and installs it on the
+   iPhone — it's that real install which is what makes Apple actually
+   register your device and generate the signing profile. You'll see the
+   app open on the iPhone; you can close it, you won't need it again.
+   - If it fails with something like *"Communication with Apple failed"*
+     or *"no devices"*, just repeat this step 6 once more — Xcode
+     sometimes needs two tries.
 
-Al terminar, Xcode ya tiene guardados en tu Mac un certificado de firma (en
-el Keychain) y un perfil de provisioning (en `~/Library/Developer/Xcode/
-UserData/Provisioning Profiles/`). Con eso sigues al Paso 2.
+Once done, Xcode has saved a signing certificate (in the Keychain) and a
+provisioning profile (in `~/Library/Developer/Xcode/UserData/Provisioning
+Profiles/`) on your Mac. From there, move on to Step 2.
 
-### Cada 7 días, cuando caduque (2 minutos, ya no hace falta el cable)
+### Every 7 days, when it expires (2 minutes, no cable needed)
 
-El certificado gratuito caduca cada semana y la app deja de abrir con
-`"This provisioning profile has expired"`. Para renovarlo:
+The free certificate expires weekly and the app stops opening with
+`"This provisioning profile has expired"`. To renew it:
 
-1. Abre Xcode y abre el **mismo proyecto** que creaste la primera vez (pasos
-   1-3 de arriba **no** se repiten — el Apple ID y la configuración de
-   Signing ya están guardados).
-2. Con el iPhone cerca (misma red WiFi, ya no necesitas el cable) selecciónalo
-   como destino junto al botón ▶ y pulsa **▶ Run** (esto es el paso 5-6 de
-   arriba, nada más).
+1. Open Xcode and open the **same project** you created the first time
+   (steps 1-3 above are **not** repeated — your Apple ID and Signing
+   config are already saved).
+2. With the iPhone nearby (same Wi-Fi network, you no longer need the
+   cable) select it as the destination next to the ▶ button and press
+   **▶ Run** (this is just step 5-6 from above, nothing more).
 
-Eso ya genera el perfil nuevo. Sigue con el **Paso 2** de abajo (copiarlo) y
-vuelve a lanzar `iterate.sh`. Checklist completo en
+That regenerates the profile. Continue with **Step 2** below (copying it)
+and re-run `iterate.sh`. Full checklist in
 **[PROVISION_RENEWAL.md](PROVISION_RENEWAL.md)**.
 
 ---
 
-## Paso 2 — Copiar el perfil de firma al proyecto
+## Step 2 — Copy the signing profile into the project
 
 ```bash
 NEWPROF=$(ls -t ~/Library/Developer/Xcode/UserData/Provisioning\ Profiles/*.mobileprovision | head -1)
@@ -97,89 +100,91 @@ cp "$NEWPROF" ios/BYMRefitted.mobileprovision
 
 ---
 
-## Paso 3 — Compilar, empaquetar, instalar y lanzar (un solo comando)
+## Step 3 — Compile, package, install and launch (one command)
 
-Necesitas dos datos tuyos:
+You need two things about your setup:
 
-- **El identificador de tu iPhone** (o su nombre, vale igual):
+- **Your iPhone's identifier** (its name works too):
   ```bash
   xcrun devicectl list devices
   ```
-- **El nombre exacto de tu certificado de firma**, tal como aparece en
-  Xcode → Signing & Capabilities → *Signing Certificate*, con el formato
-  `Apple Development: tu@email.com (XXXXXXXXXX)`.
+- **The exact name of your signing certificate**, as shown in
+  Xcode → Signing & Capabilities → *Signing Certificate*, in the format
+  `Apple Development: you@example.com (XXXXXXXXXX)`.
 
-Con esos dos datos:
+With those two:
 
 ```bash
-export AIR_SDK_HOME=~/AIRSDK/AIRSDK_50.2.5        # donde descomprimiste el AIR SDK
-export BYMR_DEVICE_ID="Ivancillo"                  # nombre o UUID de tu iPhone
-export BYMR_SIGNING_CERT="Apple Development: tu@email.com (XXXXXXXXXX)"
+export AIR_SDK_HOME=~/AIRSDK/AIRSDK_50.2.5        # wherever you unpacked the AIR SDK
+export BYMR_DEVICE_ID="MyPhone"                    # your iPhone's name or UUID
+export BYMR_SIGNING_CERT="Apple Development: you@example.com (XXXXXXXXXX)"
 ./ios/iterate.sh
 ```
 
-El script compila el SWF (~10-30s), empaqueta el `.ipa`, lo instala en el
-iPhone conectado y lo lanza automáticamente. Verás el progreso paso a paso en
-la terminal; si algo falla, el propio script te dice cuál de los 4 pasos fue.
+The script compiles the SWF (~10-30s), packages the `.ipa`, installs it on
+the connected iPhone, and launches it automatically. You'll see progress
+for each step in the terminal; if something fails, the script tells you
+exactly which of the 4 steps it was.
 
-> Guarda esas tres variables `export` en tu perfil de shell (`~/.zshrc`) para
-> no tener que repetirlas cada vez.
-
----
-
-## Cada 7 días: renovar la firma
-
-Ver la sección **"Cada 7 días, cuando caduque"** dentro del Paso 1 (arriba):
-son solo 2 minutos, sin repetir la configuración inicial. Checklist completo
-en **[PROVISION_RENEWAL.md](PROVISION_RENEWAL.md)**.
+> Save those three `export` lines in your shell profile (`~/.zshrc`) so you
+> don't have to repeat them every time.
 
 ---
 
-## ¿Puedo repartir un `.ipa` ya compilado en vez de que cada uno compile?
+## Every 7 days: renewing the signature
 
-Sí, pero solo compensa para un grupo muy pequeño (2-3 personas), no para "la
-comunidad": con cuenta gratis el perfil de firma solo instala en los
-dispositivos cuyo UDID esté metido en él, así que cada persona nueva tiene
-que darte su UDID para que lo añadas y recompiles. Y como el perfil caduca
-cada 7 días **para todos a la vez**, quien lo firma tiene que recompilar y
-reenviar el `.ipa` a todo el grupo cada semana, sin excepción — si un lunes
-no puede, deja de funcionar para todos hasta que lo haga.
-
-Con cuenta de pago (99$/año) el límite sube a 100 dispositivos y el perfil
-dura 1 año, pero sigue siendo una sola persona firmando y repartiendo para
-todos.
-
-**Para un usuario individual, el self-service de este documento es la mejor
-opción, sin comparación**: no depende de que nadie más esté disponible, no
-hay que coordinar reenvíos, y una vez hecho el Paso 1 la renovación semanal
-son 2 minutos contigo mismo. La vía del `.ipa` compartido solo tiene sentido
-si ya sois un grupo pequeño y fijo dispuesto a depender de una sola persona
-cada semana — para jugar tú solo, no hay motivo para complicarse con eso.
+See the **"Every 7 days, when it expires"** section inside Step 1 (above):
+it's just 2 minutes, without repeating the initial setup. Full checklist in
+**[PROVISION_RENEWAL.md](PROVISION_RENEWAL.md)**.
 
 ---
 
-## Solución de problemas
+## Can I just share a pre-built `.ipa` instead of everyone compiling?
 
-Estos son errores reales con los que nos topamos probando esto — no son
-hipotéticos.
+Yes, but it only pays off for a very small, fixed group (2-3 people), not
+for "the community" at large: with a free account, the signing profile
+only installs on devices whose UDID is baked into it, so every new person
+has to send you their UDID before you can add it and rebuild. And since the
+profile expires every 7 days **for everyone at once**, whoever signs it has
+to rebuild and resend the `.ipa` to the whole group every week, without
+exception — if they can't one week, it stops working for everyone until
+they do.
 
-| Error | Causa | Solución |
+With a paid account ($99/year) the limit goes up to 100 devices and the
+profile lasts a year, but it's still one person signing and distributing
+for everyone.
+
+**For an individual user, the self-service flow in this document is the
+better option by a wide margin**: it doesn't depend on anyone else being
+available, there's nothing to coordinate, and once Step 1 is done the
+weekly renewal is 2 minutes on your own. The shared-`.ipa` route only makes
+sense if you're already a small, fixed group willing to depend on one
+person every week — for playing solo, there's no reason to deal with that.
+
+---
+
+## Troubleshooting
+
+These are real errors we ran into while testing this — not hypothetical.
+
+| Error | Cause | Fix |
 |---|---|---|
-| `The device is locked` | El iPhone está bloqueado | Desbloquéalo y déjalo con la pantalla encendida durante la instalación |
-| `Communication with Apple failed` / `Your team has no devices` | Xcode no ha registrado tu iPhone en Apple todavía | Repite el Paso 1 completo (el `Run` desde Xcode sobre el iPhone es lo que realmente registra el dispositivo — el panel de Signing & Capabilities por sí solo no basta) |
-| `developer.apple.com/account/resources/devices` da "only for developers enrolled in a program" | Esa web es solo para cuentas de pago | No la necesitas con cuenta gratuita — el registro se hace vía Xcode (Paso 1), no por esa web |
-| `This provisioning profile has expired` | Han pasado más de 7 días desde el último `Run` en Xcode | Repite Paso 1.6 + Paso 2 (ver arriba o PROVISION_RENEWAL.md) |
-| El compilador se cuelga / SWF sale más pequeño de lo normal | El compilador AIR se atasca a veces | `iterate.sh` ya reintenta solo hasta 5 veces — no hace falta hacer nada |
+| `The device is locked` | The iPhone is locked | Unlock it and keep the screen on during install |
+| `Communication with Apple failed` / `Your team has no devices` | Xcode hasn't registered your iPhone with Apple yet | Repeat all of Step 1 (the `Run` from Xcode onto the iPhone is what actually registers the device — the Signing & Capabilities panel alone isn't enough) |
+| `developer.apple.com/account/resources/devices` says "only for developers enrolled in a program" | That page is paid-accounts only | You don't need it with a free account — registration happens via Xcode (Step 1), not that page |
+| `This provisioning profile has expired` | More than 7 days since the last `Run` in Xcode | Repeat Step 1.6 + Step 2 (see above or PROVISION_RENEWAL.md) |
+| The compiler hangs / the SWF comes out smaller than usual | The AIR compiler occasionally gets stuck | `iterate.sh` already retries automatically up to 5 times — no action needed |
 
 ---
 
-## Probar contra otro servidor (opcional, para desarrollo)
+## Testing against a different server (optional, for development)
 
-Por defecto apunta siempre al servidor oficial. Si quieres compilar contra tu
-propio servidor local o uno privado durante desarrollo:
+By default it always points to the official server. If you want to compile
+against your own local or private server during development:
 
 ```bash
-BYMR_LOCAL=1 BYMR_SERVER_URL="https://tu-servidor.example.com/" ./ios/iterate.sh
+BYMR_LOCAL=1 BYMR_SERVER_URL="https://your-server.example.com/" ./ios/iterate.sh
 ```
 
-Sin esas variables, `iterate.sh` compila siempre contra el servidor oficial.
+Without those variables, `iterate.sh` always compiles against the official
+server.
