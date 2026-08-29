@@ -1,5 +1,4 @@
 import { Save } from "../../../../models/save.model.js";
-import { mergeMonsters } from "../../../../services/base/mergeMonsters.js";
 import { updateMonsters } from "../../../../services/base/updateMonsters.js";
 
 export interface MonsterUpdate {
@@ -25,10 +24,6 @@ type MonsterUpdatePayload = MonsterUpdate[] | Record<string, unknown>;
  *
  * MR3: The client sends a plain object keyed by creatureID, where each value is an array
  * of per-creep state objects `{ health, ownerID, q }`, with an optional `Q` heal queue.
- * It reports its whole roster from a snapshot taken at its last yard load, so it is
- * reconciled against the stored one rather than overwriting it — see
- * {@link mergeMonsters}. Damaged monsters still persist and heal in the main yard
- * over time; losses the client never saw are no longer reverted.
  *
  * MR2: The client sends an array of cell updates `[{ baseid, m: housingState }, ...]`.
  * The entry matching the attacker's baseid updates `userSave.monsters`; remaining entries
@@ -39,7 +34,7 @@ type MonsterUpdatePayload = MonsterUpdate[] | Record<string, unknown>;
  */
 export const monsterUpdateHandler = async (monsters: MonsterUpdatePayload, userSave: Save) => {
   if (!Array.isArray(monsters)) {
-    userSave.monsters = mergeMonsters(userSave.monsters, monsters);
+    userSave.monsters = monsters;
     return;
   }
 
