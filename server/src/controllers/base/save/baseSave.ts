@@ -188,8 +188,11 @@ export const baseSave: KoaController = async (ctx) => {
 
     // Bust the attack-log caches only AFTER the row is flushed, so a concurrent
     // GET /attacklogs in the gap can't re-cache the pre-report row for 30 min.
+    // Best-effort: a Redis fault here must not fail a save already committed to Postgres.
     if (battleReportCacheKeys?.length) {
-      await Promise.all(battleReportCacheKeys.map((k) => redis.del(k)));
+      await Promise.all(
+        battleReportCacheKeys.map((k) => redis.del(k).catch(() => {})),
+      );
     }
 
     // MR3 Takeover Logic:
