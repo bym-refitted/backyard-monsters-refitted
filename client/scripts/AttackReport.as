@@ -170,10 +170,12 @@ package
 
       private static function championKey(v:*) : String
       {
+         if(v is Array) return (v as Array).length > 0 ? championKey((v as Array)[0]) : null;
          if(v is String) return v as String;
-         if(v && v.hasOwnProperty("type")) return String(v.type);
-         if(v && v.hasOwnProperty("t")) return String(v.t);
-         return null;
+         var raw:* = (v && v.hasOwnProperty("type")) ? v.type : ((v && v.hasOwnProperty("t")) ? v.t : null);
+         if(raw == null) return null;
+         var s:String = String(raw);
+         return s.charAt(0) == "G" ? s : "G" + s;
       }
 
       private static function countObjectToPairs(counts:Object, enumTable:Array) : Array

@@ -2371,6 +2371,7 @@ package
                   "v2":KEYS.Get(this._buildingProps.name)
                }) + "</font>");
             }
+            AttackReport.RecordBuilding("b" + this._id,this._type,_mc.x,_mc.y,int(health),int(maxHealth));
             this.Update(true);
             this.GridCost(false);
             PATHING.ResetCosts();
