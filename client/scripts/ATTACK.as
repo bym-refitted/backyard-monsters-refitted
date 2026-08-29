@@ -159,6 +159,7 @@ package
          _flingCount = 0;
          _log = [];
          _attackStart = GLOBAL.Timestamp();
+         AttackReport.Reset();
          _flungSpace = new SecNum(0);
          _loot = {
             "r1":new SecNum(0),
@@ -1027,6 +1028,7 @@ package
          BucketClear();
          if(!_sentOver)
          {
+            AttackReport.RecordOutcomeRetreat();
             if(BASE._saveOver != 1)
             {
                BASE.Save(1,false,true);

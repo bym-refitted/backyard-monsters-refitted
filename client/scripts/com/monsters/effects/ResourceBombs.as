@@ -352,6 +352,7 @@ package com.monsters.effects
             "v1":GLOBAL.FormatNumber(_loc2_.cost),
             "v2":GLOBAL._resourceNames[_loc2_.resource - 1]
          }) + "</font>");
+         AttackReport.RecordCatapult(ResourceBombs._bombid);
          _state = 0;
          if(_mc)
          {

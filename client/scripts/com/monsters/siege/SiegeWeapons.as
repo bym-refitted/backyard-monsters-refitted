@@ -67,6 +67,7 @@ package com.monsters.siege
          }
          activeWeaponID = param1;
          ATTACK.Log("siegeWeaponActivation","<font color=\"#0000FF\">" + _loc4_.logMessage + "</font>");
+         AttackReport.RecordSiege(param1);
          if(_loc4_.duration > 0)
          {
             activeWeaponTimer = new Timer(1000,_loc4_.duration);

@@ -563,6 +563,7 @@ package
                "v2":KEYS.Get(this._buildingProps.name),
                "v3":100 - int(100 / maxHealth * health)
             }) + "</font>");
+            AttackReport.RecordBuilding("b" + this._id,this._type,_mc.x,_mc.y,int(health),int(maxHealth));
          }
          if(Boolean(param2) && !this._destroyed)
          {

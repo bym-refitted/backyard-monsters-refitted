@@ -3870,6 +3870,16 @@ package
             {
                saveData.attackerchampion = JSON.stringify(attackerChampion);
             }
+            AttackReport.AddLootTotal(
+               ATTACK._loot.r1.Get(), ATTACK._loot.r2.Get(),
+               ATTACK._loot.r3.Get(), ATTACK._loot.r4.Get());
+            var battleReport:String = AttackReport.Serialize(
+               GLOBAL.attackingPlayer ? GLOBAL.attackingPlayer.exportMonsters() : null,
+               attackerChampion);
+            if (battleReport != "")
+            {
+               saveData.battlereport = battleReport;
+            }
          }
          if (MapRoomManager.instance.isInMapRoom2 && !GLOBAL.InfernoMode(GLOBAL._loadmode))
          {

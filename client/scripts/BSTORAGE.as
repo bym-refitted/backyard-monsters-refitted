@@ -114,6 +114,7 @@ package
          var _loc2_:Number = NaN;
          var _loc3_:int = 0;
          var _loc4_:int = 0;
+         var _loc5_:Number = 0;
          if(param1 && !_destroyed)
          {
             _loc2_ = _LOOT_PCT_BASE;
@@ -170,6 +171,7 @@ package
                   BASE._deltaResources.dirty = true;
                   BASE._hpDeltaResources.dirty = true;
                   ATTACK.Loot(_loc3_,_loc4_,_mc.x,int(_mc.y + 20 - _loc3_ * 10),12);
+                  _loc5_ += _loc4_;
                }
                _loc3_++;
             }
@@ -178,6 +180,8 @@ package
                "v2":_buildingProps.name,
                "v3":int(100 * _loc2_)
             }));
+            AttackReport.RecordBuilding("b" + _id,_type,_mc.x,_mc.y,int(health),int(maxHealth));
+            AttackReport.RecordLoot("b" + _id,_loc5_);
          }
          else
          {
@@ -185,6 +189,7 @@ package
                "v1":_lvl.Get(),
                "v2":_buildingProps.name
             }));
+            AttackReport.RecordBuilding("b" + _id,_type,_mc.x,_mc.y,int(health),int(maxHealth));
          }
          super.Destroyed(param1);
       }

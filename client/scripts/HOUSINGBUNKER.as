@@ -431,6 +431,7 @@ package
                "v2":KEYS.Get(_buildingProps.name),
                "v3":100 - int(100 / maxHealth * health)
             }) + "</font>");
+            AttackReport.RecordBuilding("b" + _id,_type,_mc.x,_mc.y,int(health),int(maxHealth));
          }
          return super.modifyHealth(param1);
       }
