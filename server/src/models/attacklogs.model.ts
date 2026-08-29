@@ -30,6 +30,9 @@ export class AttackLogs {
   type!: string;
 
   @Property({ type: 'number', nullable: true })
+  attackid?: number;
+
+  @Property({ type: 'number', nullable: true })
   x?: number;
 
   @Property({ type: 'number', nullable: true })
