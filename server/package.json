@@ -17,7 +17,8 @@
     "db:seed:mr2": "bun src/database/seeds/seed_maproom2.ts",
     "db:seed:mr3": "bun src/database/seeds/seed_maproom3.ts",
     "migration:up": "bun --bun x mikro-orm migration:up",
-    "typecheck": "bunx tsc --noEmit"
+    "typecheck": "bunx tsc --noEmit",
+    "test": "bun test"
   },
   "engines": {
     "bun": ">=1.0.0"
