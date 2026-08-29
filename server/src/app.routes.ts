@@ -61,6 +61,7 @@ import { saveTemplate } from "./controllers/yardplanner/saveTemplate.js";
 import { getAvailableWorlds } from "./controllers/leaderboards/getAvailableWorlds.js";
 import { getLeaderboards } from "./controllers/leaderboards/getLeaderboards.js";
 import { getAttackLogs } from "./controllers/attacklogs/getAttackLogs.js";
+import { getAttackLogDetail } from "./controllers/attacklogs/getAttackLogDetail.js";
 
 import { wildMonsterInvasion } from "./controllers/events/wildMonsterInvasion.js";
 import { recordDebugData } from "./controllers/debug/recordDebugData.js";
@@ -146,6 +147,7 @@ router.post("/api/:apiVersion/bm/yardplanner/savetemplate", apiVersion, verifyUs
 router.get("/api/:apiVersion/worlds", publicReadLimiter, getAvailableWorlds);
 router.get("/api/:apiVersion/leaderboards", publicReadLimiter, getLeaderboards);
 router.get("/api/:apiVersion/attacklogs", verifyUserAuth, getAttackLogs);
+router.get("/api/:apiVersion/attacklogs/:id", verifyUserAuth, getAttackLogDetail);
 
 /**  ────────────────────────────────────────────────
 * 📦 Events
