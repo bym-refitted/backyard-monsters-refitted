@@ -16,6 +16,7 @@ import { permissionErr, saveFailureErr } from "../../../errors/errors.js";
 import { attackLootHandler } from "./handlers/attackLootHandler.js";
 import { defenderLootHandler } from "./handlers/defenderLootHandler.js";
 import { monsterUpdateHandler } from "./handlers/monsterUpdateHandler.js";
+import { persistBattleReport } from "../../../services/attacklogs/persistBattleReport.js";
 import { validateSave } from "../../../scripts/anticheat/anticheat.js";
 import { getOutpostOwnerSave } from "../../../services/base/getOutpostOwnerSave.js";
 import { championHandler } from "./handlers/championHandler.js";
@@ -170,6 +171,15 @@ export const baseSave: KoaController = async (ctx) => {
 
       defenderLootHandler(saveData.resources, lootTarget);
       postgres.em.persist(lootTarget);
+    }
+
+    if (saveData.over) {
+      await persistBattleReport({
+        attackerUserId: user.userid,
+        defenderUserId: baseSave.saveuserid,
+        attackId: Number(saveData.attackid),
+        rawReport: saveData.battlereport,
+      });
     }
 
     postgres.em.persist(userSave);

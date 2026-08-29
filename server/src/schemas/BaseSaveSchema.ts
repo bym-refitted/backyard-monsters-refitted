@@ -89,6 +89,17 @@ export const BaseSaveSchema = z.object({
     .transform((data) => (data ? (JSON.parse(data) as Resources) : undefined)),
 
   /**
+   * The structured battle report — a compact enum-coded JSON string produced by
+   * AttackReport.Serialize() on the attacking client. Parsed here but NOT validated;
+   * persistBattleReport validates it against CompactAttackReportSchema so a malformed
+   * report never rejects the whole save.
+   */
+  battlereport: z
+    .string()
+    .optional()
+    .transform((data) => (data ? JSON.parse(data) : undefined)),
+
+  /**
    * The resource delta for the base being saved. During an attack this is the
    * defender's, reported by the attacking client.
    * @type {Resources | undefined}
