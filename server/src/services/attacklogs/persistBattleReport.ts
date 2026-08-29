@@ -1,5 +1,5 @@
 import { AttackLogs } from "../../models/attacklogs.model.js";
-import { postgres, redis } from "../../server.js";
+import { postgres } from "../../server.js";
 import { logger } from "../../utils/logger.js";
 import { CompactAttackReportSchema } from "../../schemas/AttackReportSchema.js";
 
@@ -17,19 +17,25 @@ interface Args {
  *
  * Correlates on (attacker, defender, attackid); newest row wins if somehow more
  * than one matches. Does not flush — the caller owns the unit of work.
+ *
+ * Returns the list of Redis keys the caller must delete AFTER it flushes (so a
+ * concurrent GET /attacklogs cannot re-cache the stale row in the gap between
+ * this call and the flush), or `null` when nothing was written.
  */
-export const persistBattleReport = async (args: Args): Promise<void> => {
+export const persistBattleReport = async (
+  args: Args
+): Promise<string[] | null> => {
   const { attackerUserId, defenderUserId, attackId, rawReport } = args;
 
   try {
-    if (rawReport === undefined || rawReport === null) return;
+    if (rawReport === undefined || rawReport === null) return null;
 
     const parsed = CompactAttackReportSchema.safeParse(rawReport);
     if (!parsed.success) {
       logger.debug(
         `Discarding malformed battle report from user ${attackerUserId}: ${parsed.error.message}`
       );
-      return;
+      return null;
     }
 
     // attack_logs.attackid can theoretically be 0 (Save.attackid defaults to 0),
@@ -39,7 +45,7 @@ export const persistBattleReport = async (args: Args): Promise<void> => {
       logger.debug(
         `Battle report from user ${attackerUserId} had no usable attackid (${attackId})`
       );
-      return;
+      return null;
     }
 
     const row = await postgres.em.findOne(
@@ -56,7 +62,7 @@ export const persistBattleReport = async (args: Args): Promise<void> => {
       logger.debug(
         `No attack_logs row for attacker ${attackerUserId} / defender ${defenderUserId} / attackid ${attackId}; battle report dropped`
       );
-      return;
+      return null;
     }
 
     const [r1, r2, r3, r4] = parsed.data.loot;
@@ -64,28 +70,33 @@ export const persistBattleReport = async (args: Args): Promise<void> => {
     row.loot = { r1, r2, r3, r4 };
     postgres.em.persist(row);
 
-    await bustAttackLogCaches(attackerUserId, defenderUserId, row.id);
+    return attackLogCacheKeys(attackerUserId, defenderUserId, row.id);
   } catch (err) {
     logger.warn(
       `persistBattleReport failed for user ${attackerUserId}: ${(err as Error).message}`
     );
+    return null;
   }
 };
 
 /**
- * getAttackLogs caches under attackLogs:<uid>:<filter> for filter in
- * {undefined, myattacks, peopleattackingme, both}; getAttackLogDetail caches
- * under attackLogDetail:<id>. Clear every key this report could have staled.
+ * The Redis keys a persisted battle report staled:
+ *  - getAttackLogs caches under attackLogs:<uid>:<filterType> for filterType in
+ *    {myattacks, peopleattackingme, both} — the three normalised AttackLogFilter
+ *    values (getAttackLogs keys on filterType, never the raw query string).
+ *  - getAttackLogDetail caches under attackLogDetail:<id>.
+ *
+ * The caller deletes these AFTER flushing the row.
  */
-const bustAttackLogCaches = async (
+export const attackLogCacheKeys = (
   attackerUserId: number,
   defenderUserId: number,
   logId: number
-) => {
-  const filters = ["undefined", "myattacks", "peopleattackingme", "both"];
+): string[] => {
+  const filters = ["myattacks", "peopleattackingme", "both"];
   const keys: string[] = [`attackLogDetail:${logId}`];
   for (const uid of [attackerUserId, defenderUserId]) {
     for (const f of filters) keys.push(`attackLogs:${uid}:${f}`);
   }
-  await Promise.all(keys.map((k) => redis.del(k)));
+  return keys;
 };

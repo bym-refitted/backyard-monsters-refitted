@@ -97,7 +97,14 @@ export const BaseSaveSchema = z.object({
   battlereport: z
     .string()
     .optional()
-    .transform((data) => (data ? JSON.parse(data) : undefined)),
+    .transform((data) => {
+      if (!data) return undefined;
+      try {
+        return JSON.parse(data);
+      } catch {
+        return undefined;
+      }
+    }),
 
   /**
    * The resource delta for the base being saved. During an attack this is the

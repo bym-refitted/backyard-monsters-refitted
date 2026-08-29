@@ -10,14 +10,16 @@
  *
  * Note on wiring: persistBattleReport.ts reads the module-level `postgres` /
  * `redis` from src/server.ts, so that module (and its IIFE) is unavoidably in the
- * import graph. We neutralise the IIFE's port bind by forcing PORT=0 before the
- * import (ephemeral throwaway port, never clashes with a running dev server), and
- * we let the IIFE perform the single MikroORM.init. We then wait for
- * `postgres.orm` to be ready and run all DB work inside a RequestContext so the
- * global EntityManager is usable with allowGlobalContext:false.
+ * import graph. We neutralise the IIFE's port bind via the ./_forceEphemeralPort
+ * side-effect import (PORT=0 — ephemeral throwaway port, never clashes with a
+ * running dev server), and we let the IIFE perform the single MikroORM.init. We
+ * then wait for `postgres.orm` to be ready and run all DB work inside a
+ * RequestContext so the global EntityManager is usable with allowGlobalContext:false.
  */
 
-process.env.PORT = "0";
+// MUST be the first import: sets PORT=0 before src/server.js is evaluated (import
+// hoisting means a bare `process.env.PORT = "0"` statement here would run too late).
+import "./_forceEphemeralPort.js";
 
 import { RequestContext } from "@mikro-orm/core";
 import { postgres, redis } from "../src/server.js";
@@ -109,14 +111,17 @@ const main = async () => {
     await em.flush();
     check("Step 2: seeded two attack_logs rows", !!rowA.id && !!rowB.id);
 
-    // Step 3/4 - persist a realistic compact report against attackid 55555
-    await persistBattleReport({
+    // Step 3/4 - persist a realistic compact report against attackid 55555.
+    // persistBattleReport no longer busts caches itself (I3): it returns the keys
+    // and the caller deletes them AFTER the flush. Mirror baseSave's flow here.
+    const bustKeys = await persistBattleReport({
       attackerUserId: 1,
       defenderUserId: DEFENDER,
       attackId: 55555,
       rawReport: goodReport,
     });
     await em.flush();
+    if (bustKeys) await Promise.all(bustKeys.map((k) => redis.del(k)));
 
     // Step 5 - re-fetch in a fresh fork and assert
     let snapshotA = "";

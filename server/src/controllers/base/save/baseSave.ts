@@ -173,8 +173,9 @@ export const baseSave: KoaController = async (ctx) => {
       postgres.em.persist(lootTarget);
     }
 
+    let battleReportCacheKeys: string[] | null = null;
     if (saveData.over) {
-      await persistBattleReport({
+      battleReportCacheKeys = await persistBattleReport({
         attackerUserId: user.userid,
         defenderUserId: baseSave.saveuserid,
         attackId: Number(saveData.attackid),
@@ -184,6 +185,12 @@ export const baseSave: KoaController = async (ctx) => {
 
     postgres.em.persist(userSave);
     await postgres.em.flush();
+
+    // Bust the attack-log caches only AFTER the row is flushed, so a concurrent
+    // GET /attacklogs in the gap can't re-cache the pre-report row for 30 min.
+    if (battleReportCacheKeys?.length) {
+      await Promise.all(battleReportCacheKeys.map((k) => redis.del(k)));
+    }
 
     // MR3 Takeover Logic:
     // If the attack is over and damage >= 90, trigger takeover or destroy logic.

@@ -25,7 +25,10 @@ export const getAttackLogs: KoaController = async (ctx) => {
   const { userid }: User = ctx.authUser;
 
   const filterType = (filter as string) || "both";
-  const cacheKey = `attackLogs:${userid}:${filter}`;
+  // Key on the normalised filterType, not the raw query string: `?filter=garbage`
+  // falls through to `both` data, and keying it under `garbage` would cache that
+  // under a key persistBattleReport can never bust.
+  const cacheKey = `attackLogs:${userid}:${filterType}`;
 
   try {
     const cachedAttackLogs = await redis.get(cacheKey);
@@ -58,9 +61,27 @@ export const getAttackLogs: KoaController = async (ctx) => {
         break;
     }
 
+    // Explicit projection: the list view never needs the (potentially large)
+    // `attackreport` jsonb — that is served per-row by GET /attacklogs/:id — and
+    // `attackid` is an internal correlation key. Excluding `attackreport` here
+    // also keeps it out of the 30-minute Redis cache.
     const attackLogs = await postgres.em.find(AttackLogs, whereCondition, {
       orderBy: { attacktime: "DESC" },
       limit: 50,
+      fields: [
+        "id",
+        "attacker_userid",
+        "attacker_username",
+        "attacker_pic_square",
+        "defender_userid",
+        "defender_username",
+        "defender_pic_square",
+        "type",
+        "x",
+        "y",
+        "loot",
+        "attacktime",
+      ],
     });
 
     await redis.setex(cacheKey, AL_CACHE_TTL, JSON.stringify(attackLogs));
