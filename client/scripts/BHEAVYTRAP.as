@@ -120,7 +120,7 @@ package
                   "v2":_loc8_
                }) + "</font>");
             }
-            AttackReport.RecordBuilding("htrap" + _id,_type,_mc.x,_mc.y,int(health),int(maxHealth));
+            AttackReport.RecordBuilding("htrap" + _id,_type,_mc.x,_mc.y,0,int(maxHealth));
             EFFECTS.Scorch(new Point(_mc.x,_mc.y + 5));
          }
          _hasTargets = false;

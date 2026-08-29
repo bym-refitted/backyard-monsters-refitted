@@ -628,6 +628,7 @@ package
                   _flungSpace.Add(CREATURES.GetProperty(_loc8_,"bucket") * _flingerBucket[_loc8_].Get());
                   _loc7_ = KEYS.Get(CREATURELOCKER._creatures[_loc8_].name);
                   _loc6_.push([_flingerBucket[_loc8_].Get(),_loc7_]);
+                  AttackReport.RecordFlung(_loc8_,_flingerBucket[_loc8_].Get());
                   _loc13_ = 0;
                   while(_loc13_ < _flingerBucket[_loc8_].Get())
                   {

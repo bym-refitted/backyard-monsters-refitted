@@ -13,6 +13,7 @@ package
    {
       private static var _buildings:Object;
       private static var _lootTotal:Array;      // [r1,r2,r3,r4]
+      private static var _flung:Object;         // creatureID string -> cumulative int count flung this attack
       private static var _siege:Object;
       private static var _catapult:Object;
       private static var _retreated:Boolean;
@@ -23,6 +24,7 @@ package
       {
          _buildings = {};
          _lootTotal = [0, 0, 0, 0];
+         _flung = {};
          _siege = {};
          _catapult = {};
          _retreated = false;
@@ -50,12 +52,29 @@ package
          if(b) b.l += amount;
       }
 
-      public static function AddLootTotal(r1:Number, r2:Number, r3:Number, r4:Number) : void
+      /**
+       * Records monsters flung/sent this attack, accumulating across fling waves.
+       * Called at the fling site (ATTACK.Spawn) with the per-wave bucket count for
+       * one creature type. This — NOT the attacker's remaining roster — is what
+       * report.atk.m must reflect.
+       */
+      public static function RecordFlung(creatureId:String, count:int) : void
       {
-         _lootTotal[0] += Math.max(0, r1);
-         _lootTotal[1] += Math.max(0, r2);
-         _lootTotal[2] += Math.max(0, r3);
-         _lootTotal[3] += Math.max(0, r4);
+         if(count <= 0) return;
+         _flung[creatureId] = int(_flung[creatureId] || 0) + count;
+      }
+
+      /**
+       * Sets the loot 4-tuple to the running attack total. ATTACK._loot is already
+       * the cumulative grand total for the whole attack, so this is an assignment,
+       * not an accumulation — calling it repeatedly across mid-attack saves is safe.
+       */
+      public static function SetLootTotal(r1:Number, r2:Number, r3:Number, r4:Number) : void
+      {
+         _lootTotal[0] = Math.max(0, r1);
+         _lootTotal[1] = Math.max(0, r2);
+         _lootTotal[2] = Math.max(0, r3);
+         _lootTotal[3] = Math.max(0, r4);
       }
 
       public static function RecordSiege(siegeId:String) : void
@@ -75,7 +94,7 @@ package
          _retreated = true;
       }
 
-      public static function Serialize(attackMonsters:Object, attackerChampion:Object) : String
+      public static function Serialize(attackerChampion:Object) : String
       {
          if(!_buildings) return "";
 
@@ -86,7 +105,7 @@ package
          report.o = outcome(report.d);
          report.loot = [int(_lootTotal[0]), int(_lootTotal[1]), int(_lootTotal[2]), int(_lootTotal[3])];
          report.b = buildingArray();
-         report.atk = attackForce(attackMonsters, attackerChampion);
+         report.atk = attackForce(attackerChampion);
 
          var s:Array = countObjectToPairs(_siege, AttackReportEnums.SIEGE);
          if(s.length > 0) report.s = s;
@@ -132,18 +151,21 @@ package
          return out;
       }
 
-      private static function attackForce(monsters:Object, champion:Object) : Object
+      /**
+       * report.atk.m is "monsters flung/sent this attack" — accumulated at the fling
+       * site via RecordFlung, NOT derived from the attacker's roster (which per mode
+       * is either the un-sent remainder or the whole owned army). The champion still
+       * comes from the passed-in guardian-save object.
+       */
+      private static function attackForce(champion:Object) : Object
       {
          var m:Array = [];
          var key:String;
-         if(monsters)
+         for(key in _flung)
          {
-            for(key in monsters)
-            {
-               var enumId:int = AttackReportEnums.monsterId(key);
-               var count:int = monsterCount(monsters[key]);
-               if(enumId >= 0 && count > 0) m.push([enumId, count]);
-            }
+            var enumId:int = AttackReportEnums.monsterId(key);
+            var count:int = int(_flung[key]);
+            if(enumId >= 0 && count > 0) m.push([enumId, count]);
          }
          var c:int = -1;
          if(champion)
@@ -152,20 +174,6 @@ package
             if(ck) c = AttackReportEnums.championId(ck);
          }
          return {"m":m, "c":c};
-      }
-
-      /**
-       * attackMonsters comes from GLOBAL.attackingPlayer.exportMonsters() — an object
-       * keyed by creatureID. Each value is either a number (count) or an object with a
-       * countable field. Adjust monsterCount / championKey to that structure once
-       * verified against a real trace (Step 4); the shape below is the expected one.
-       */
-      private static function monsterCount(v:*) : int
-      {
-         if(v is Number) return int(v);
-         if(v && v.hasOwnProperty("count")) return int(v.count);
-         if(v is Array) return (v as Array).length;
-         return 0;
       }
 
       private static function championKey(v:*) : String
