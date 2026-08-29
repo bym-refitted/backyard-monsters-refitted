@@ -3675,7 +3675,7 @@ package
 
       private static function getOrderedSaveVariablesFromObject(param1:Object):Array
       {
-         var _loc2_:Array = ["baseid", "lastupdate", "resources", "academy", "stats", "mushrooms", "basename", "baseseed", "buildingdata", "researchdata", "lockerdata", "quests", "basevalue", "points", "tutorialstage", "basesaveid", "clienttime", "monsters", "attacks", "monsterbaiter", "version", "attackreport", "over", "protect", "monsterupdate", "attackid", "aiattacks", "effects", "catapult", "flinger", "gifts", "sentgifts", "sentinvites", "purchase", "inventory", "timeplayed", "destroyed", "damage", "type", "attackcreatures", "attackloot", "lootreport"
+         var _loc2_:Array = ["baseid", "lastupdate", "resources", "academy", "stats", "mushrooms", "basename", "baseseed", "buildingdata", "researchdata", "lockerdata", "quests", "basevalue", "points", "tutorialstage", "basesaveid", "clienttime", "monsters", "attacks", "monsterbaiter", "version", "attackreport", "battlereport", "over", "protect", "monsterupdate", "attackid", "aiattacks", "effects", "catapult", "flinger", "gifts", "sentgifts", "sentinvites", "purchase", "inventory", "timeplayed", "destroyed", "damage", "type", "attackcreatures", "attackloot", "lootreport"
                , "empirevalue", "champion", "attackerchampion", "attackersiege", "purchasecomplete", "achieved", "fbpromos", "iresources", "siege", "buildingresources", "frontpage", "events", "buildinghealthdata", "healtime", "lootbonus"];
          var _loc3_:int = int(GLOBAL.player.handlers.length);
          var _loc4_:int = 0;
