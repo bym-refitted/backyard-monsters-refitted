@@ -220,6 +220,19 @@ export const allianceNoWorldErr = () =>
     isClientFriendly: true,
   });
 
+/**
+ * The player's world id resolves to no known world - a deleted world, or a cached
+ * world list that has gone stale. Distinct from allianceNoWorldErr, which is the
+ * ordinary case of a player who has not joined a world at all.
+ */
+export const unknownWorldErr = () =>
+  new ClientSafeError({
+    message: "Your world could not be found. Please try again later.",
+    status: Status.INTERNAL_SERVER_ERROR,
+    data: {},
+    isClientFriendly: true,
+  });
+
 export const leaderMustTransferErr = (allianceName: string) =>
   new ClientSafeError({
     message: `Since you're the fearless leader of the ${allianceName} Alliance, you need to elect someone to succeed you before you go.  Go to the Members Tab and promote a current member to leader before you depart.`,
@@ -309,9 +322,17 @@ export const cannotPromoteErr = () =>
     isClientFriendly: true,
   });
 
-export const cannotInviteOutsideWorldErr = (username: string) =>
+export const joinMapVersionErr = () =>
   new ClientSafeError({
-    message: `${username} is too far away to join your Alliance. Invite them to move to one of your close-by Outposts.`,
+    message: "That Alliance is on a different Map Room version.",
+    status: Status.FORBIDDEN,
+    data: {},
+    isClientFriendly: true,
+  });
+
+export const inviteMapVersionErr = (username: string) =>
+  new ClientSafeError({
+    message: `${username} is too far away to join your Alliance. They are on a different Map Room version.`,
     status: Status.FORBIDDEN,
     data: {},
     isClientFriendly: true,

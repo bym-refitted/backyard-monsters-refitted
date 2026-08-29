@@ -17,6 +17,7 @@ import {
   townHallLevelErr,
 } from "../../errors/errors.js";
 import { Maproom } from "../../models/maproom.model.js";
+import { clearPendingInvites } from "../../services/alliance/allianceInvites.js";
 
 /**
  * Schema for validating the request body when setting the map version.
@@ -50,6 +51,8 @@ export const setMapVersion: KoaController = async (ctx) => {
     case MapRoomVersion.NONE:
       if (user.alliance_id) throw mustLeaveAllianceToChangeWorldErr();
 
+      await clearPendingInvites(user.userid);
+
       await leaveWorld(user, save);
       save.mapversion = MapRoomVersion.V1;
       break;
@@ -62,6 +65,8 @@ export const setMapVersion: KoaController = async (ctx) => {
       if (save.mapversion === MapRoomVersion.V3) break;
 
       if (user.alliance_id) throw mustLeaveAllianceToChangeWorldErr();
+
+      await clearPendingInvites(user.userid);
 
       const townHall = extractTownHall(save.buildingdata ?? {});
 
@@ -79,6 +84,8 @@ export const setMapVersion: KoaController = async (ctx) => {
 
     case MapRoomVersion.V3:
       if (user.alliance_id) throw mustLeaveAllianceToChangeWorldErr();
+
+      await clearPendingInvites(user.userid);
 
       const townHall = extractTownHall(save.buildingdata ?? {});
 

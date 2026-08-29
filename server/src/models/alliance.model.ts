@@ -3,6 +3,7 @@ import { BigIntType } from "@mikro-orm/core";
 
 @Entity({ tableName: "alliance" })
 @Index({ properties: ["world_id", "empire_points"] })
+@Index({ properties: ["map_version", "empire_points"] })
 export class Alliance {
   @PrimaryKey({ autoincrement: true, type: "number" })
   id!: number;
@@ -25,6 +26,9 @@ export class Alliance {
 
   @Property({ type: "string" })
   world_id!: string;
+
+  @Property({ type: "number", default: 2 })
+  map_version: number = 2;
 
   @Property({ type: new BigIntType("number"), default: 0 })
   empire_points: number = 0;

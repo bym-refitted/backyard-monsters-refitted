@@ -11,6 +11,7 @@ export class Migration20260626_CreateAllianceTable extends Migration {
         leader_userid INTEGER NOT NULL,
         leader_name VARCHAR(255) NOT NULL DEFAULT '',
         world_id VARCHAR(64) NOT NULL,
+        map_version INTEGER NOT NULL DEFAULT 2,
         empire_points BIGINT NOT NULL DEFAULT 0,
         created_at TIMESTAMP NOT NULL DEFAULT NOW()
       )
@@ -26,6 +27,10 @@ export class Migration20260626_CreateAllianceTable extends Migration {
 
     await this.execute(`
       CREATE INDEX IF NOT EXISTS alliance_world_id_empire_points_index ON bym.alliance (world_id, empire_points DESC)
+    `);
+
+    await this.execute(`
+      CREATE INDEX IF NOT EXISTS alliance_map_version_empire_points_index ON bym.alliance (map_version, empire_points DESC)
     `);
 
     await this.execute(`

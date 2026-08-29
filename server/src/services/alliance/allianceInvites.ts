@@ -158,6 +158,24 @@ export const deleteInviteMessages = async (user: User, inviteIds: number[]) => {
 };
 
 /**
+ * Drops every pending exchange a player is part of - requests they sent and invites
+ * sent to them.
+ *
+ * Called when their base changes Map Room version, which makes all of them moot:
+ * the accept would be refused anyway, and the row would otherwise sit in a leader's
+ * Invites tab looking actionable while failing with a message about someone else's
+ * map room. Deleted rather than declined, because nobody decided anything.
+ *
+ * @param {number} userId - The player whose pending rows are being dropped.
+ * @returns {Promise<number>} How many rows were removed.
+ */
+export const clearPendingInvites = async (userId: number): Promise<number> =>
+  await postgres.em.nativeDelete(AllianceInvite, {
+    user_id: userId,
+    status: AllianceInviteStatus.PENDING,
+  });
+
+/**
  * Refuses an alliance that has no room left.
  *
  * @param {EntityManager} em - EntityManager to count through, so a caller inside a transaction counts within it.

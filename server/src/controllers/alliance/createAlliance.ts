@@ -7,10 +7,12 @@ import { User } from "../../models/user.model.js";
 import { postgres } from "../../server.js";
 import { CreateAllianceSchema } from "../../schemas/AllianceSchemas.js";
 import { addAllianceMember } from "../../services/alliance/membership.js";
+import { getWorldMapVersion } from "../../services/maproom/knownWorlds.js";
 import {
   allianceNameTakenErr,
   allianceNoWorldErr,
   alreadyInAllianceErr,
+  unknownWorldErr,
 } from "../../errors/errors.js";
 import type { KoaController } from "../../utils/KoaController.js";
 
@@ -32,6 +34,10 @@ export const createAlliance: KoaController = async (ctx) => {
 
   const data = CreateAllianceSchema.parse(ctx.request.body);
 
+  const mapVersion = await getWorldMapVersion(worldid);
+
+  if (mapVersion === undefined) throw unknownWorldErr();
+
   const allianceData = {
     name: data.alliance_name,
     image: data.alliance_image,
@@ -39,6 +45,7 @@ export const createAlliance: KoaController = async (ctx) => {
     leader_userid: user.userid,
     leader_name: user.username,
     world_id: worldid,
+    map_version: mapVersion,
   } as unknown as RequiredEntityData<Alliance>;
 
   const alliance = await postgres.em.transactional(async (em) => {

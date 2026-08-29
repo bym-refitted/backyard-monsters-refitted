@@ -8,14 +8,18 @@ import { postgres } from "../../server.js";
 import { SearchAlliancesSchema } from "../../schemas/AllianceSchemas.js";
 import { getLeaderBaseIds } from "../../services/alliance/allianceLeaders.js";
 import { getAllianceRanks } from "../../services/alliance/allianceRank.js";
+import { getWorldMapVersion } from "../../services/maproom/knownWorlds.js";
 import type { KoaController } from "../../utils/KoaController.js";
-import { allianceNoWorldErr } from "../../errors/errors.js";
+import { allianceNoWorldErr, unknownWorldErr } from "../../errors/errors.js";
 
 const PAGE_SIZE = 10;
 
 /**
  * Search alliances for the Browse tab - a leaderboard the client
  * paginates 10 rows at a time.
+ *
+ * "This World" narrows to the player's own world; "All" spans every world on their
+ * Map Room version. Neither ever crosses versions.
  *
  * @param {Context} ctx - Koa context.
  */
@@ -27,13 +31,20 @@ export const searchAlliances: KoaController = async (ctx) => {
 
   if (search) where.name = { $ilike: `%${search}%` };
 
+  await postgres.em.populate(user, ["save"]);
+
+  const worldid = user.save?.worldid;
+
+  if (!worldid) throw allianceNoWorldErr();
+
   if (world) {
-    await postgres.em.populate(user, ["save"]);
-    const worldid = user.save?.worldid;
-
-    if (!worldid) throw allianceNoWorldErr();
-
     where.world_id = worldid;
+  } else {
+    const mapVersion = await getWorldMapVersion(worldid);
+
+    if (mapVersion === undefined) throw unknownWorldErr();
+
+    where.map_version = mapVersion;
   }
 
   const searchOptions = {
