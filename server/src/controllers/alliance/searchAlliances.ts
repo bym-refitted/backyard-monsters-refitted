@@ -1,13 +1,11 @@
 import type { FilterQuery } from "@mikro-orm/core";
 
-import { AllianceFilter } from "../../enums/AllianceFilter.js";
 import { Status } from "../../enums/StatusCodes.js";
 import { Alliance } from "../../models/alliance.model.js";
 import { User } from "../../models/user.model.js";
 import { postgres } from "../../server.js";
 import { SearchAlliancesSchema } from "../../schemas/AllianceSchemas.js";
 import { getLeaderBaseIds } from "../../services/alliance/allianceLeaders.js";
-import { getAllianceRanks } from "../../services/alliance/allianceRank.js";
 import { getWorldMapVersion } from "../../services/maproom/knownWorlds.js";
 import type { KoaController } from "../../utils/KoaController.js";
 import { allianceNoWorldErr, unknownWorldErr } from "../../errors/errors.js";
@@ -50,32 +48,26 @@ export const searchAlliances: KoaController = async (ctx) => {
   const searchOptions = {
     limit: PAGE_SIZE,
     offset: page * PAGE_SIZE,
-    orderBy: { empire_points: "DESC", id: "ASC" },
-    fields: ["*", "member_count"],
+    orderBy: { stats: { empire_points: "DESC" }, id: "ASC" },
+    populate: ["stats"],
   } as const;
 
   const [alliances, totalResults] = await postgres.em.findAndCount(Alliance, where, searchOptions);
 
-  const allianceIds = alliances.map((alliance) => alliance.id);
-  const leaderIds = alliances.map((alliance) => alliance.leader_userid);
+  const leaders = await getLeaderBaseIds(alliances.map((alliance) => alliance.leader_userid));
 
-  const filter = world ? AllianceFilter.WORLD : AllianceFilter.GLOBAL;
-
-  const [ranks, leaders] = await Promise.all([
-    getAllianceRanks(allianceIds, filter),
-    getLeaderBaseIds(leaderIds),
-  ]);
+  const rankField = world ? "world_rank" : "global_rank";
 
   const results = alliances.map((alliance) => ({
     alliance_id: alliance.id,
     name: alliance.name,
     image: alliance.image,
-    members: alliance.member_count,
+    members: alliance.stats?.member_count,
     leader_name: alliance.leader_name,
     leader_baseid: leaders.get(alliance.leader_userid),
-    rank: ranks.get(alliance.id),
+    rank: alliance.stats?.[rankField],
     relationship: 0,
-    ep: 1,
+    ep: alliance.stats?.empire_points,
   }));
 
   ctx.status = Status.OK;

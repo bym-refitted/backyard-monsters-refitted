@@ -1,9 +1,7 @@
-import { Entity, Formula, Index, PrimaryKey, Property } from "@mikro-orm/decorators/es";
-import { BigIntType } from "@mikro-orm/core";
+import { Entity, Index, OneToOne, PrimaryKey, Property } from "@mikro-orm/decorators/es";
+import { AllianceStats } from "./alliancestats.view.js";
 
 @Entity({ tableName: "alliance" })
-@Index({ properties: ["world_id", "empire_points"] })
-@Index({ properties: ["map_version", "empire_points"] })
 export class Alliance {
   @PrimaryKey({ autoincrement: true, type: "number" })
   id!: number;
@@ -30,15 +28,9 @@ export class Alliance {
   @Property({ type: "number", default: 2 })
   map_version: number = 2;
 
-  @Property({ type: new BigIntType("number"), default: 0 })
-  empire_points: number = 0;
-
   @Property({ type: Date })
   created_at: Date = new Date();
 
-  @Formula((columns) => `(select count(*) from bym."user" u where u.alliance_id = ${columns.id})`, {
-    type: "number",
-    lazy: true,
-  })
-  member_count!: number;
+  @OneToOne({ entity: () => AllianceStats, mappedBy: "alliance" })
+  stats?: AllianceStats;
 }

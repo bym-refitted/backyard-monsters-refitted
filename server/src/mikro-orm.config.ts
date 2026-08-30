@@ -16,6 +16,7 @@ import { AttackLogs } from "./models/attacklogs.model.js";
 import { Truce } from "./models/truce.model.js";
 import { Alliance } from "./models/alliance.model.js";
 import { AllianceInvite } from "./models/allianceinvite.model.js";
+import { AllianceStats } from "./models/alliancestats.view.js";
 
 /**
  * List of entities to be used with MikroORM.
@@ -35,6 +36,7 @@ const entities = [
   Truce,
   Alliance,
   AllianceInvite,
+  AllianceStats,
 ];
 
 /**

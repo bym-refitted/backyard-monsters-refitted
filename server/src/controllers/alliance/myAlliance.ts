@@ -1,9 +1,7 @@
 import { MAX_ALLIANCE_MEMBERS } from "../../config/AllianceConfig.js";
-import { AllianceFilter } from "../../enums/AllianceFilter.js";
 import { Status } from "../../enums/StatusCodes.js";
 import { User } from "../../models/user.model.js";
 import { getUserAlliance } from "../../services/alliance/allianceAccess.js";
-import { getAllianceRanks } from "../../services/alliance/allianceRank.js";
 import type { KoaController } from "../../utils/KoaController.js";
 
 /**
@@ -15,15 +13,13 @@ import type { KoaController } from "../../utils/KoaController.js";
  */
 export const myAlliance: KoaController = async (ctx) => {
   const user: User = ctx.authUser;
-  const alliance = await getUserAlliance(user, { withFormulas: true });
+  const alliance = await getUserAlliance(user, { withStats: true });
 
   if (!alliance) {
     ctx.status = Status.OK;
     ctx.body = { error: 0, alliance: null };
     return;
   }
-
-  const ranks = await getAllianceRanks([alliance.id], AllianceFilter.WORLD);
 
   ctx.status = Status.OK;
   ctx.body = {
@@ -33,10 +29,10 @@ export const myAlliance: KoaController = async (ctx) => {
       name: alliance.name,
       image: alliance.image,
       description: alliance.description,
-      rank: ranks.get(alliance.id),
-      avg_level: 1, // TODO: implement avg_level as a cached column on the alliance row
+      rank: alliance.stats?.world_rank,
+      avg_level: alliance.stats?.avg_level,
       leader_name: alliance.leader_name,
-      number_of_members: alliance.member_count,
+      number_of_members: alliance.stats?.member_count,
       max_members: MAX_ALLIANCE_MEMBERS,
     },
   };
