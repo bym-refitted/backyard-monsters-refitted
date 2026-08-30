@@ -40,6 +40,14 @@ package com.monsters.alliances
 
       private static var _membersPending:Array = [];
 
+      private static var _suggestedData:Array = null;
+
+      private static var _suggestedLoaded:Boolean = false;
+
+      private static var _suggestedLoading:Boolean = false;
+
+      private static var _suggestedPending:Array = [];
+
 
       public function ALLIANCES()
       {
@@ -240,6 +248,90 @@ package com.monsters.alliances
       }
 
       /**
+       * Loads the Suggested tab's recruitment candidates into the store. Cached the
+       * same way the original was, which fetched the list once and reused it for the
+       * life of the popup rather than on every tab switch.
+       *
+       * @param {Function} onDone - Receives the candidate rows, or null on failure. May be null (warm only).
+       * @param {Boolean} force - Bypass the cache and re-fetch.
+       */
+      public static function LoadSuggested(onDone:Function, force:Boolean = false) : void
+      {
+         if (_suggestedLoaded && !force)
+         {
+            if (onDone != null) onDone(_suggestedData);
+            return;
+         }
+
+         if (onDone != null) _suggestedPending.push(onDone);
+
+         if (_suggestedLoading) return;
+
+         _suggestedLoading = true;
+         new URLLoaderApi().load(GLOBAL._allianceURL + "getsuggestedmembers",null,_onSuggestedLoaded,_onSuggestedLoadFail);
+      }
+
+      private static function _onSuggestedLoaded(response:Object) : void
+      {
+         _suggestedData = (response && !response.error) ? response.members as Array : null;
+         _suggestedLoaded = true;
+         _suggestedLoading = false;
+         _flushSuggestedPending();
+      }
+
+      private static function _onSuggestedLoadFail(error:IOErrorEvent) : void
+      {
+         _suggestedData = null;
+         _suggestedLoaded = false;
+         _suggestedLoading = false;
+         _flushSuggestedPending();
+      }
+
+      private static function _flushSuggestedPending() : void
+      {
+         var waiting:Array = _suggestedPending;
+         _suggestedPending = [];
+
+         for each (var callback:Function in waiting)
+         {
+            if (callback != null) callback(_suggestedData);
+         }
+      }
+
+      /**
+       * Drops the cached candidates so the next LoadSuggested() re-fetches. Call after
+       * inviting someone, since the server leaves out anyone already invited.
+       */
+      public static function InvalidateSuggested() : void
+      {
+         _suggestedLoaded = false;
+         _suggestedData = null;
+      }
+
+      /**
+       * Invites a player into the alliance, from the Suggested tab.
+       *
+       * @param {int} userId - The player being invited.
+       * @param {Function} onDone - Receives the server response.
+       */
+      public static function InviteUser(userId:int, onDone:Function) : void
+      {
+         new URLLoaderApi().load(GLOBAL._allianceURL + "inviteuser",[["userid",userId]],
+               function(response:Object):void
+               {
+                  if (response != null && !response.error)
+                  {
+                     InvalidateSuggested();
+                  }
+                  onDone(response);
+               },
+               function(e:IOErrorEvent):void
+               {
+                  onDone(null);
+               });
+      }
+
+      /**
        * Rows in the cached inbox still waiting on the player, which labels the
        * Invites tab. Reads the cache rather than asking the server, so it is only
        * as fresh as the last LoadMessages().
@@ -379,6 +471,7 @@ package com.monsters.alliances
                   {
                      InvalidateMyAlliance();
                      InvalidateMembers();
+                     InvalidateSuggested();
                   }
                   onDone(response);
                },
@@ -442,6 +535,7 @@ package com.monsters.alliances
          InvalidateMyAlliance();
          InvalidateMessages();
          InvalidateMembers();
+         InvalidateSuggested();
       }
       
       public static function SetCellAlliance(param1:MapRoomCell, param2:Boolean = false) : AllyInfo

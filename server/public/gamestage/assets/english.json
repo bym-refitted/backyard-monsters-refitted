@@ -3931,6 +3931,7 @@
     "alliance_kick_response": "#name# has been removed from #alliance#.",
     "alliance_promote_confirm": "Are you sure you want to promote #name#? If you proceed you will no longer be the leader.",
     "alliance_promote_response": "#name# has been promoted to leader of #alliance#.",
+    "alliance_invite_sent": "Your invite has been successfully sent.",
     "alliance_btn_kick_user": "Kick User",
     "alliance_btn_promote_user": "Promote User",
     "alliance_chat_connecting": "Connecting to chat...",

@@ -23,6 +23,8 @@ package
             _open = true;
             ALLIANCES.LoadMyAlliance(RefreshTabLabels, true);
             ALLIANCES.LoadMessages(RefreshTabLabels, true);
+            ALLIANCES.InvalidateMembers();
+            ALLIANCES.InvalidateSuggested();
             GLOBAL.BlockerAdd();
             _mc = GLOBAL._layerWindows.addChild(new ALLIANCEPOPUP()) as ALLIANCEPOPUP;
             _mc.Center();

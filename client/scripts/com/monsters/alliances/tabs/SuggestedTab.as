@@ -1,5 +1,7 @@
 package com.monsters.alliances.tabs
 {
+   import com.monsters.alliances.ALLIANCES;
+
    public class SuggestedTab extends MembersTab
    {
       public function SuggestedTab()
@@ -27,21 +29,50 @@ package com.monsters.alliances.tabs
       }
 
       /**
-       * Invites the suggested player to the alliance. Stubbed for now.
+       * Invites the suggested player. The store drops its candidate list on success,
+       * so _load refetches and the invited player drops out of the table - the server
+       * leaves out anyone already holding a pending invite.
+       *
        * @param {Object} rowData - The row that was acted on
        */
       private function _onInvite(rowData:Object):void
       {
-         // TODO: send invite request to server for rowData
+         ALLIANCES.InviteUser(int(rowData.user_id), function(response:Object):void
+            {
+               if (response == null)
+               {
+                  GLOBAL.Message(KEYS.Get("alliance_err_generic"));
+                  return;
+               }
+
+               if (response.error)
+               {
+                  GLOBAL.Message(String(response.error));
+                  return;
+               }
+
+               GLOBAL.Message(KEYS.Get("alliance_invite_sent"));
+
+               _load();
+            });
       }
 
+      /**
+       * Candidates come from their own store cache rather than the roster one, but
+       * arrive in the same row shape, so the inherited mapping and table draw them.
+       */
       override protected function _load():void
       {
-         _members = [
-               {level: 38, name: "Korgan", online: true, ep: "42118903", attacker: ""},
-               {level: 35, name: "Mira", online: false, ep: "31995210", attacker: ""},
-               {level: 44, name: "Thorne", online: true, ep: "58740112", attacker: ""}
-            ];
+         var answeredDuringBuild:Boolean = true;
+
+         ALLIANCES.LoadSuggested(function(members:Array):void
+            {
+               _members = (members != null) ? _mapRows(members) : [];
+
+               if (!answeredDuringBuild) _rerender();
+            });
+
+         answeredDuringBuild = false;
       }
    }
 }
