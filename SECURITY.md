@@ -50,6 +50,6 @@ have; we'll reproduce it ourselves.
 <br>
 
 ## Safe Harbour
-Testing against your own account is fine. Don't access
+Testing against your own account on a localhost instance is fine. Don't access
 other players' data, degrade service, or destroy data.
 Act in good faith and we won't pursue action.
