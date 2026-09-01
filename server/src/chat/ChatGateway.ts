@@ -1,9 +1,11 @@
 import { RedisClient } from "bun";
 import { postgres, redis } from "../server.js";
 import { User } from "../models/user.model.js";
+import { Save } from "../models/save.model.js";
 import { logger } from "../utils/logger.js";
-import { validateChannel, chatTokenKey } from "./chatChannels.js";
+import { validateChannel, chatTokenKey, chatIgnoreKey } from "./chatChannels.js";
 import { pushMessage, getHistory } from "./chatHistory.js";
+import { calculateBaseLevel } from "../services/base/calculateBaseLevel.js";
 import { Filter as BadWords } from "bad-words";
 import {
   send,
@@ -33,6 +35,18 @@ interface ChatClient {
 }
 
 type ServerWebSocket<T> = import("bun").ServerWebSocket<T>;
+
+type ChatIdentity = Pick<User, "username"> & {
+  save?: Pick<Save, "points" | "basevalue"> | null;
+};
+
+const CHAT_FIELDS = [
+  "userid",
+  "username",
+  "banned",
+  "save.points",
+  "save.basevalue"
+] as const;
 
 const RATE_LIMIT_MS = 500;
 const MAX_MSG_LEN = 200;
@@ -155,10 +169,24 @@ const broadcast = (channel: string, payload: string) => {
 /**
  * Called when a new WebSocket connection is opened.
  * Initialises the socket's data to an unauthenticated state.
+ * 
  * @param {ServerWebSocket<SocketData>} ws - The newly opened WebSocket connection.
  */
 export const handleOpen = (ws: ServerWebSocket<SocketData>) => {
   ws.data = { userId: null, displayName: "", channel: null, lastMsgAt: 0 };
+};
+
+/**
+ * The authoritative chat display name for a user.
+ *
+ * @param {ChatIdentity} user - The authenticated user, with the level fields selected.
+ * @returns {string} The display name to broadcast for this user.
+ */
+const getDisplayName = (user: ChatIdentity): string => {
+  const save = user.save;
+  const level = save ? calculateBaseLevel(save.points, save.basevalue) : 1;
+
+  return `[${level}] ${user.username}`;
 };
 
 /**
@@ -194,7 +222,8 @@ export const handleMessage = async (ws: ServerWebSocket<SocketData>, data: strin
     }
 
     const em = postgres.orm.em.fork();
-    const user = await em.findOne(User, { userid: message.userId });
+
+    const user = await em.findOne(User, { userid: message.userId }, { fields: CHAT_FIELDS });
 
     if (!user || user.banned) {
       send(ws, { type: ServerMessageType.AuthFail, reason: AuthFailReason.UserNotFound });
@@ -202,7 +231,7 @@ export const handleMessage = async (ws: ServerWebSocket<SocketData>, data: strin
       return;
     }
 
-    const displayName = user.username;
+    const displayName = getDisplayName(user);
 
     const client: ChatClient = {
       ws,
@@ -241,8 +270,6 @@ export const handleMessage = async (ws: ServerWebSocket<SocketData>, data: strin
     send(ws, { type: ServerMessageType.Error, code: ErrorCode.NotAuthenticated });
     return;
   }
-
-  const ignoreKey = `chat-ignore:${client.userId}`;
 
   switch (message.type) {
     case ClientMessageType.Join: {
@@ -304,19 +331,20 @@ export const handleMessage = async (ws: ServerWebSocket<SocketData>, data: strin
       return;
     }
 
-    case ClientMessageType.UpdateName: {
-      client.displayName = message.displayName.slice(0, 16);
-      ws.data.displayName = client.displayName;
+    case ClientMessageType.UpdateName:
       return;
-    }
 
     case ClientMessageType.GetIgnore: {
+      const ignoreKey = chatIgnoreKey(client.userId);
       const raw = await redis.smembers(ignoreKey);
+
       send(ws, { type: ServerMessageType.IgnoreList, list: raw.map((id) => ({ target: id, displayname: "" })) });
       return;
     }
 
     case ClientMessageType.Ignore: {
+      const ignoreKey = chatIgnoreKey(client.userId);
+
       await redis.sadd(ignoreKey, message.targetId);
 
       const raw = await redis.smembers(ignoreKey);
@@ -328,6 +356,8 @@ export const handleMessage = async (ws: ServerWebSocket<SocketData>, data: strin
       return;
 
     case ClientMessageType.Unignore: {
+      const ignoreKey = chatIgnoreKey(client.userId);
+
       await redis.srem(ignoreKey, message.targetId);
 
       const raw = await redis.smembers(ignoreKey);
