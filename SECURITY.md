@@ -22,8 +22,7 @@ build, and impact. We aim to acknowledge within 72 hours.
 - bymrefitted.com and the game/API server
 - The Tauri launcher
 - The Flash client where a flaw affects other players
-  or server integrity (auth bypass, account takeover,
-  resource duplication, injection, RCE)
+  or server integrity (auth bypass, account takeover, injection, RCE)
 
 <br>
 
