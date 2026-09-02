@@ -21,7 +21,7 @@ package com.hurlant.crypto.rsa
 	import com.hurlant.util.der.DER;
 	import com.hurlant.util.der.OID;
 	import com.hurlant.util.ArrayUtil;
-	import com.hurlant.util.der.Type;
+	import com.hurlant.util.der.DERType;
 	import com.hurlant.util.der.Sequence;
 	import com.hurlant.util.der.ObjectIdentifier;
 	import com.hurlant.util.der.ByteString;
@@ -69,7 +69,8 @@ package com.hurlant.crypto.rsa
 			
 			
 		}
-
+
+
 		public static function parsePublicKey(N:String, E:String):RSAKey {
 			return new RSAKey(new BigInteger(N, 16, true), parseInt(E,16));
 		}
@@ -94,14 +95,16 @@ package com.hurlant.crypto.rsa
 			n = null;
 			Memory.gc();
 		}
-
+
+
 		public function encrypt(src:ByteArray, dst:ByteArray, length:uint, pad:Function=null):void {
 			_encrypt(doPublic, src, dst, length, pad, 0x02);
 		}
 		public function decrypt(src:ByteArray, dst:ByteArray, length:uint, pad:Function=null):void {
 			_decrypt(doPrivate2, src, dst, length, pad, 0x02);
 		}
-
+
+
 		public function sign(src:ByteArray, dst:ByteArray, length:uint, pad:Function = null):void {
 			_encrypt(doPrivate2, src, dst, length, pad, 0x01);
 		}
@@ -109,7 +112,8 @@ package com.hurlant.crypto.rsa
 			_decrypt(doPublic, src, dst, length, pad, 0x01);
 		}
 		
-
+
+
 		private function _encrypt(op:Function, src:ByteArray, dst:ByteArray, length:uint, pad:Function, padType:int):void {
 			// adjust pad if needed
 			if (pad==null) pad = pkcs1pad;

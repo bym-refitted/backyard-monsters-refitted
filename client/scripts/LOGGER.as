@@ -2,8 +2,9 @@ package
 {
    import com.monsters.enums.EnumYardType;
    import flash.events.IOErrorEvent;
+   import com.bymr.hxbridge.api.ILogger;
    
-   public class LOGGER
+   public class LOGGER implements ILogger
    {
       
       public static var _logged:Object = {};
@@ -890,6 +891,15 @@ package
       
       public static function handleLoadError(param1:IOErrorEvent) : void
       {
+      }
+
+      // ==============================================
+      // Start of ILogger implementation
+      // ==============================================
+
+      public function Log(level:String, message:String, param3:Boolean = false): void
+      {
+         LOGGER.Log(level, message, param3);
       }
    }
 }

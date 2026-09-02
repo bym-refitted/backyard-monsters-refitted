@@ -22,7 +22,8 @@
 			"client/scripts"
 		],
 		"library-path": [
-			"./playerglobal.swc"
+			"./playerglobal.swc",
+			"./bin/client-hx.swc"
 		],
 		"define": [
 			{

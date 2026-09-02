@@ -13,6 +13,7 @@ package
    import flash.system.Security;
    import flash.net.SharedObject;
    import com.monsters.external_interface.ExternalInterfaceManager;
+   import com.bymr.hxbridge.HaxeLib;
    public class GAME extends Sprite
    {
 
@@ -123,6 +124,7 @@ package
          GLOBAL._baseURL = urls._baseURL;
          GLOBAL._infBaseURL = urls.infbaseurl;
          GLOBAL._apiURL = urls._apiURL;
+         HaxeLib.bootstrap(new GLOBAL(), new LOGGER());
          GLOBAL._gameURL = urls._gameURL;
          GLOBAL._storageURL = urls._storageURL;
          GLOBAL.languageUrl = urls.languageurl;

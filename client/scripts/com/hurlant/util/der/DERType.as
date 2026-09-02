@@ -10,7 +10,7 @@ package com.hurlant.util.der
 {
 	import com.hurlant.util.Hex;
 	
-	public class Type
+	public class DERType
 	{
 		public static const TLS_CERT:Array = [ 
 			{name:"signedCertificate", extract:true, value: [
