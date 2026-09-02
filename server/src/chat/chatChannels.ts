@@ -34,6 +34,14 @@ export const validateChannel = (channel: string): string | null => {
 export const chatTokenKey = (userId: number) => `chat-token:${userId}`;
 
 /**
+ * Returns the Redis key holding the set of user IDs a player has ignored.
+ *
+ * @param {number} userId - The player's user ID.
+ * @returns {string} The Redis key for the player's ignore list.
+ */
+export const chatIgnoreKey = (userId: number) => `chat-ignore:${userId}`;
+
+/**
  * Returns the appropriate global chat channel for a player based on their map version.
  *
  * @param {MapRoomVersion} mapversion - The player's current map room version.

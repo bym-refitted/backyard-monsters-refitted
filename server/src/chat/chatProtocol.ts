@@ -55,7 +55,7 @@ export type ClientMessage =
   | { type: ClientMessageType.GetIgnore }
   | { type: ClientMessageType.Ignore; targetId: string }
   | { type: ClientMessageType.Unignore; targetId: string }
-  | { type: ClientMessageType.UpdateName; displayName: string }
+  | { type: ClientMessageType.UpdateName }
   | { type: ClientMessageType.Ping };
 
 export type ServerMessage =
