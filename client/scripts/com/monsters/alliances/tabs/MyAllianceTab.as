@@ -3,19 +3,23 @@ package com.monsters.alliances.tabs
    import com.monsters.alliances.ALLIANCES;
    import com.monsters.alliances.AllianceConstants;
    import com.monsters.alliances.AllianceTabBase;
+   import com.monsters.chat.BYMChat;
    import com.monsters.chat.Chat;
    import com.monsters.chat.Channel;
    import com.monsters.chat.ChatEvent;
-   import com.monsters.chat.impl.ws.WSChatSystem;
+   import com.monsters.chat.IChatSystem;
    import com.monsters.display.ImageCache;
    import com.monsters.display.ScrollSetV;
+   import com.monsters.utils.TimeUtils;
    import flash.display.Bitmap;
    import flash.display.BitmapData;
+   import flash.display.Loader;
    import flash.display.MovieClip;
    import flash.events.Event;
    import flash.events.IOErrorEvent;
    import flash.events.KeyboardEvent;
    import flash.events.MouseEvent;
+   import flash.net.URLRequest;
    import flash.filters.DropShadowFilter;
    import flash.filters.GlowFilter;
    import flash.text.AntiAliasType;
@@ -79,6 +83,17 @@ package com.monsters.alliances.tabs
 
       private static const POST_BTN_W:int = 130;
 
+      /**
+       * Rows kept on screen, mirroring ALLIANCE_MESSAGE_LIMIT on the server. Without
+       * this the transcript grows for the whole session while only 50 are stored, so
+       * reopening the popup would silently drop messages the player had just seen.
+       */
+      private static const MAX_CHAT_ROWS:int = 50;
+
+      private static const ROW_BORDER:uint = 0x949493;
+
+      private static const ROW_BORDER_H:int = 1;
+
       private static const BAND_A:uint = AllianceConstants.SHOUT_BAND0;
       private static const BAND_B:uint = AllianceConstants.SHOUT_BAND1;
 
@@ -86,10 +101,19 @@ package com.monsters.alliances.tabs
       private var _chatScroll:ScrollSetV;
       private var _chatYOff:int = 0;
       private var _chatRowIndex:int = 0;
+
+      /** Bumped on clear, so avatar loads that finish afterwards are discarded. */
+      private var _chatGeneration:int = 0;
       private var _chatInput:TextField;
-      private var _chat:WSChatSystem;
+      private static const ALLIANCE_CHANNEL_ALIAS:String = "alliance";
+
+      private var _chat:IChatSystem;
+
+      /** Alias sent on join; the server resolves it to this player's own alliance. */
+      private var _joinChannel:Channel;
+
+      /** The resolved channel key, known only once the server confirms the join. */
       private var _chatChannel:Channel;
-      private var _names:Object;
       private var _data:Object;
 
       public function MyAllianceTab()
@@ -218,11 +242,10 @@ package com.monsters.alliances.tabs
       }
 
       /**
-       * Builds the chat viewport and wires it to its own WebSocket transport
-       * (WSChatSystem). The connection is intentionally left disconnected for
-       * now — no auth, no channel join, no tie-in to the global chat dock. The
-       * receive/send paths are in place so it goes live once connect()/login()/
-       * join() are wired up against a real alliance channel.
+       * Builds the chat viewport and joins the alliance channel on the chat dock's
+       * existing connection. The server permits one socket per player, so opening a
+       * second transport here would authenticate and close the dock's own — the two
+       * features share one socket and separate on channel instead.
        */
       private function _buildChat():void
       {
@@ -253,66 +276,133 @@ package com.monsters.alliances.tabs
          _chatScroll.x = CHAT_MASK_W - SCROLLBAR_W;
          _chatScroll.y = 0;
 
-         _names = {};
-         _chatChannel = new Channel("alliance", "system");
-
-         var host:String = "localhost";
-         var port:int = 3002;
-         if (Chat._chatServers != null && Chat._chatServers.length > 0)
-         {
-            var parts:Array = String(Chat._chatServers[0]).split(":");
-            host = String(parts[0]);
-            if (parts.length > 1)
-            {
-               port = int(parts[1]);
-            }
-         }
-         _chat = new WSChatSystem(host, port);
-         _chat.addEventListener(ChatEvent.SAY, _onWsSay);
-         _chat.addEventListener(ChatEvent.UPDATE_NAME, _onWsName);
-
-         _appendSystemRow(KEYS.Get("alliance_chat_disconnected"));
+         _joinChannel = new Channel(ALLIANCE_CHANNEL_ALIAS, "system");
+         _chatChannel = null;
 
          addEventListener(Event.REMOVED_FROM_STAGE, _onRemovedFromStage);
+
+         Chat.ensureConnected();
+         _chat = BYMChat.chatSystem;
+
+         if (_chat == null)
+         {
+            _appendSystemRow(KEYS.Get("alliance_chat_unavailable"));
+            return;
+         }
+
+         _chat.addEventListener(ChatEvent.LOGIN, _onWsLogin);
+         _chat.addEventListener(ChatEvent.JOIN, _onWsJoin);
+         _chat.addEventListener(ChatEvent.SAY, _onWsSay);
+
+         _appendSystemRow(KEYS.Get("alliance_chat_connecting"));
+
+         if (_chat.isLoggedIn)
+         {
+            _chat.join(_joinChannel);
+         }
       }
 
       /**
-       * Renders an incoming chat message from the WebSocket transport.
+       * Joins once the shared transport finishes authenticating. The socket connects
+       * asynchronously and may still be opening when the popup is built, so the join
+       * waits for login rather than sampling the connection state once.
+       */
+      private function _onWsLogin(e:ChatEvent):void
+      {
+         if (!e.Success || _chat == null)
+         {
+            return;
+         }
+         _chat.join(_joinChannel);
+      }
+
+      /**
+       * Records the channel key the server resolved our join alias to. The dock
+       * shares this transport, so its own joins arrive here too and are ignored.
+       */
+      private function _onWsJoin(e:ChatEvent):void
+      {
+         if (!e.Success)
+         {
+            return;
+         }
+         var channel:Channel = e.Get("channel") as Channel;
+         if (channel == null || !BYMChat.isAllianceChannel(channel.Name))
+         {
+            return;
+         }
+         _chatChannel = channel;
+         _clearChat();
+      }
+
+      /**
+       * Empties the chat transcript. Each row carries its own band, so removing the
+       * rows takes the backgrounds with them.
+       */
+      private function _clearChat():void
+      {
+         while (_chatContent.numChildren > 0)
+         {
+            _chatContent.removeChildAt(0);
+         }
+         _chatYOff = 0;
+         _chatRowIndex = 0;
+         _chatGeneration++;
+      }
+
+      /**
+       * Renders an incoming chat message from the shared transport, ignoring
+       * anything addressed to a channel other than this alliance's.
        */
       private function _onWsSay(e:ChatEvent):void
       {
+         var channel:Channel = e.Get("channel") as Channel;
+         if (_chatChannel == null || channel == null || channel.Name != _chatChannel.Name)
+         {
+            return;
+         }
          var user:String = e.Get("user") as String;
          var message:String = e.Get("message") as String;
          if (message == null || message == "")
          {
             return;
          }
-         var name:String = (user != null && _names[user] != null) ? String(_names[user]) : String(user);
-         _appendUserRow(name, message);
+         var name:String = e.Get("displayname") as String;
+         if (name == null || name == "")
+         {
+            name = String(user);
+         }
+         _appendUserRow(name, message, e.Get("picsquare") as String, Number(e.Get("ts")));
       }
 
-      /**
-       * Caches a userId → display name mapping from the transport.
-       */
-      private function _onWsName(e:ChatEvent):void
-      {
-         var userId:String = e.Get("userid") as String;
-         if (userId != null)
-         {
-            _names[userId] = e.Get("displayname");
-         }
-      }
 
       /**
        * Appends a player chat row (avatar placeholder, name, body) and scrolls
        * the viewport to the newest message.
        */
-      private function _appendUserRow(name:String, message:String):void
+      /**
+       * Appends one player message, laid out as the original shout row was
+       * (user-shout-message-template plus alliance.v343.css): a 25px picture
+       * inset 5px, the name at x=38 / y=5, the body at x=38 / y=25, over a
+       * 40px minimum row, with the relative time pinned to the top right. The
+       * picture is drawn bare - the original had no frame around it, so a player
+       * without one leaves the space empty.
+       */
+      private function _appendUserRow(name:String, message:String, picSquare:String = null, ts:Number = 0):void
       {
-         const PAD_IN:int = 8;
-         const AVATAR:int = 48;
-         const textX:int = PAD_IN + AVATAR + PAD_IN;
-         const textW:int = CHAT_MASK_W - textX - PAD_IN - SCROLLBAR_W;
+         const PAD:int = 5;
+         const AVATAR:int = 32;
+         const AVATAR_GAP:int = 8;
+         const TEXT_X:int = PAD + AVATAR + AVATAR_GAP;
+         const NAME_Y:int = 5;
+         const BODY_Y:int = 25;
+         const MIN_ROW_H:int = Math.max(40, PAD + AVATAR + PAD);
+         const PAD_BOTTOM:int = 8;
+         const TIME_W:int = 110;
+         const TIME_INSET_RIGHT:int = 3;
+         const TIME_INSET_TOP:int = 5;
+         const GUTTER:int = 2;
+         const textW:int = CHAT_MASK_W - TEXT_X - PAD - SCROLLBAR_W;
 
          var body:TextField = new TextField();
          body.wordWrap = true;
@@ -320,33 +410,108 @@ package com.monsters.alliances.tabs
          body.selectable = false;
          body.mouseEnabled = false;
          body.width = textW;
-         body.defaultTextFormat = new TextFormat("Verdana", 13, 0x333333);
+         body.defaultTextFormat = new TextFormat("Verdana", 12, 0x333333);
          body.text = message;
          var bodyH:int = int(body.textHeight) + 6;
 
-         const headerH:int = 20;
-         var rowH:int = Math.max(AVATAR + PAD_IN * 2, headerH + bodyH + PAD_IN * 2);
+         var rowH:int = Math.max(MIN_ROW_H, BODY_Y + bodyH + PAD_BOTTOM);
 
-         _drawBand(_chatContent, _chatYOff, rowH, _nextBandColor());
+         var row:MovieClip = _beginRow(rowH);
 
-         var avatar:MovieClip = _chatContent.addChild(new MovieClip()) as MovieClip;
+         var avatar:MovieClip = row.addChild(new MovieClip()) as MovieClip;
          avatar.mouseEnabled = false;
-         avatar.graphics.beginFill(0xB7B7A8, 1);
-         avatar.graphics.lineStyle(1, 0x8C8C7E, 1);
-         avatar.graphics.drawRoundRect(0, 0, AVATAR, AVATAR, 4, 4);
-         avatar.graphics.endFill();
-         avatar.x = PAD_IN;
-         avatar.y = _chatYOff + PAD_IN;
+         avatar.x = PAD;
+         avatar.y = PAD;
+         _loadAvatar(picSquare, avatar, AVATAR);
 
-         _addLabel(_chatContent, name, textX, _chatYOff + PAD_IN, textW, headerH, true, TextFormatAlign.LEFT);
+         var nameField:TextField = row.addChild(new TextField()) as TextField;
+         nameField.selectable = false;
+         nameField.mouseEnabled = false;
+         nameField.width = textW - TIME_W;
+         nameField.height = 18;
+         nameField.x = TEXT_X;
+         nameField.y = NAME_Y;
+         nameField.defaultTextFormat = new TextFormat("Verdana", 12, 0x000000, true);
+         nameField.text = name;
 
-         body.x = textX;
-         body.y = _chatYOff + PAD_IN + headerH;
+         // Timestamps arrive in milliseconds; the shared helper works in seconds.
+         if (ts > 0)
+         {
+            var timeField:TextField = row.addChild(new TextField()) as TextField;
+            timeField.selectable = false;
+            timeField.mouseEnabled = false;
+            timeField.width = TIME_W;
+            timeField.height = 16;
+
+            timeField.x = CHAT_MASK_W - SCROLLBAR_W - TIME_W - TIME_INSET_RIGHT + GUTTER;
+            timeField.y = TIME_INSET_TOP - GUTTER;
+            var timeFmt:TextFormat = new TextFormat("Verdana", 10, 0x000000);
+            timeFmt.align = TextFormatAlign.RIGHT;
+            timeField.defaultTextFormat = timeFmt;
+            timeField.text = TimeUtils.TimeDistance(ts / 1000);
+         }
+
+         body.x = TEXT_X;
+         body.y = BODY_Y;
          body.height = bodyH;
-         _chatContent.addChild(body);
+         row.addChild(body);
 
-         _chatYOff += rowH;
          _afterAppend();
+      }
+
+      /**
+       * Loads a sender's profile picture into their message row, over the grey
+       * placeholder that is drawn first. Squashed to a square as the original
+       * member rows were, so avatars line up down the column.
+       *
+       * pic_square is an external URL rather than a bundled asset, so it goes
+       * through a Loader like the members table does rather than ImageCache. The
+       * placeholder simply stays put for a player with no picture, or one whose
+       * picture fails to load.
+       *
+       * The load outlives the append, and a rejoin clears the transcript, so the
+       * generation is checked before drawing - otherwise a late avatar would land
+       * on a row that no longer exists.
+       *
+       * @param {String} url - The sender's pic_square URL, possibly empty
+       * @param {MovieClip} holder - The placeholder square to draw into
+       * @param {int} size - Width and height to squash the picture to
+       */
+      private function _loadAvatar(url:String, holder:MovieClip, size:int):void
+      {
+         if (url == null || url == "")
+         {
+            return;
+         }
+
+         const generation:int = _chatGeneration;
+         var loader:Loader = new Loader();
+         var onLoad:Function = null;
+         var onError:Function = null;
+
+         onLoad = function(e:Event):void
+         {
+            loader.contentLoaderInfo.removeEventListener(Event.COMPLETE, onLoad);
+            loader.contentLoaderInfo.removeEventListener(IOErrorEvent.IO_ERROR, onError);
+            if (generation != _chatGeneration)
+            {
+               return;
+            }
+            loader.width = loader.height = size;
+            loader.mouseEnabled = false;
+            loader.mouseChildren = false;
+            holder.addChild(loader);
+         };
+
+         onError = function(e:IOErrorEvent):void
+         {
+            loader.contentLoaderInfo.removeEventListener(Event.COMPLETE, onLoad);
+            loader.contentLoaderInfo.removeEventListener(IOErrorEvent.IO_ERROR, onError);
+         };
+
+         loader.contentLoaderInfo.addEventListener(Event.COMPLETE, onLoad);
+         loader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, onError, false, 0, true);
+         loader.load(new URLRequest(url));
       }
 
       /**
@@ -369,15 +534,62 @@ package com.monsters.alliances.tabs
          var bodyH:int = int(body.textHeight) + 6;
          var rowH:int = bodyH + PAD_IN * 2;
 
-         _drawBand(_chatContent, _chatYOff, rowH, _nextBandColor());
+         var row:MovieClip = _beginRow(rowH);
 
          body.x = PAD_IN;
-         body.y = _chatYOff + PAD_IN;
+         body.y = PAD_IN;
          body.height = bodyH;
-         _chatContent.addChild(body);
+         row.addChild(body);
+
+         _afterAppend();
+      }
+
+      /**
+       * Creates one row, draws its band, and places it at the bottom of the transcript.
+       *
+       * Each row owns its own graphics and children rather than everything sharing the
+       * content clip, so dropping the oldest is a removeChild plus a shift of the rows
+       * below it - no redraw, and no avatars reloaded.
+       *
+       * @param {int} rowH - Height of the row being added.
+       * @returns {MovieClip} The row, whose children use row-local coordinates.
+       */
+      private function _beginRow(rowH:int):MovieClip
+      {
+         var row:MovieClip = _chatContent.addChild(new MovieClip()) as MovieClip;
+         row.mouseEnabled = false;
+         row.y = _chatYOff;
+         row.rowHeight = rowH;
+
+         _drawBand(row, rowH, _nextBandColor());
 
          _chatYOff += rowH;
-         _afterAppend();
+         return row;
+      }
+
+      /**
+       * Drops the oldest rows once the transcript passes MAX_CHAT_ROWS, shifting what
+       * remains up by exactly the height removed. Colours are baked into each row, so
+       * neighbours keep alternating as the window rolls forward.
+       */
+      private function _trimRows():void
+      {
+         while (_chatContent.numChildren > MAX_CHAT_ROWS)
+         {
+            var oldest:MovieClip = _chatContent.getChildAt(0) as MovieClip;
+            var shift:int = int(oldest.rowHeight);
+
+            _chatContent.removeChildAt(0);
+
+            var i:int = 0;
+            while (i < _chatContent.numChildren)
+            {
+               _chatContent.getChildAt(i).y -= shift;
+               i++;
+            }
+
+            _chatYOff -= shift;
+         }
       }
 
       private function _nextBandColor():uint
@@ -388,11 +600,13 @@ package com.monsters.alliances.tabs
       }
 
       /**
-       * Resizes the scrollbar to the new content height and pins the view to the
-       * latest message.
+       * Enforces the row cap, then resizes the scrollbar to the new content height
+       * and pins the view to the latest message.
        */
       private function _afterAppend():void
       {
+         _trimRows();
+
          if (_chatScroll != null)
          {
             _chatScroll.scrollToBottom();
@@ -400,18 +614,21 @@ package com.monsters.alliances.tabs
       }
 
       /**
-       * Draws an alternating-colour background band with a bottom separator line.
+       * Fills a row with its alternating band colour and the 1px #949493 bottom border
+       * the original had (.shout-message).
+       *
+       * The separator is a filled rect on the row's last pixel rather than a stroke on
+       * the boundary, which would straddle the seam and be half-covered by the row below.
        */
-      private function _drawBand(content:MovieClip, yOff:int, rowH:int, color:uint):void
+      private function _drawBand(row:MovieClip, rowH:int, color:uint):void
       {
-         // lineStyle() reset so the fill isn't stroked by a prior band's style
-         content.graphics.lineStyle();
-         content.graphics.beginFill(color, 1);
-         content.graphics.drawRect(0, yOff, CHAT_MASK_W, rowH);
-         content.graphics.endFill();
-         content.graphics.lineStyle(1, 0xC4D2A8, 1);
-         content.graphics.moveTo(0, yOff + rowH);
-         content.graphics.lineTo(CHAT_MASK_W, yOff + rowH);
+         row.graphics.beginFill(color, 1);
+         row.graphics.drawRect(0, 0, CHAT_MASK_W, rowH);
+         row.graphics.endFill();
+
+         row.graphics.beginFill(ROW_BORDER, 1);
+         row.graphics.drawRect(0, rowH - ROW_BORDER_H, CHAT_MASK_W, ROW_BORDER_H);
+         row.graphics.endFill();
       }
 
       private function _buildPostBar():void
@@ -582,8 +799,8 @@ package com.monsters.alliances.tabs
       }
 
       /**
-       * Sends the input text over the WebSocket transport. While disconnected
-       * the transport silently drops the message, so we surface a status row.
+       * Sends the input text over the shared transport. Until the server confirms
+       * the join there is no channel to send on, so we surface a status row instead.
        */
       private function _sendChat():void
       {
@@ -596,7 +813,7 @@ package com.monsters.alliances.tabs
          {
             return;
          }
-         if (_chat != null && _chat.isConnected)
+         if (_chat != null && _chat.isConnected && _chatChannel != null)
          {
             _chat.say(_chatChannel, text);
          }
@@ -608,19 +825,25 @@ package com.monsters.alliances.tabs
       }
 
       /**
-       * Tears down the chat transport when this tab is removed (tab switch or
-       * popup close) so no listeners or sockets leak.
+       * Leaves the alliance channel when this tab is removed (tab switch or popup
+       * close). The socket belongs to the chat dock and stays open — disconnecting
+       * it here would drop the player out of global chat as well.
        */
       private function _onRemovedFromStage(e:Event):void
       {
          removeEventListener(Event.REMOVED_FROM_STAGE, _onRemovedFromStage);
          if (_chat != null)
          {
+            _chat.removeEventListener(ChatEvent.LOGIN, _onWsLogin);
+            _chat.removeEventListener(ChatEvent.JOIN, _onWsJoin);
             _chat.removeEventListener(ChatEvent.SAY, _onWsSay);
-            _chat.removeEventListener(ChatEvent.UPDATE_NAME, _onWsName);
-            _chat.disconnect();
+            if (_chatChannel != null)
+            {
+               _chat.leave(_chatChannel);
+            }
             _chat = null;
          }
+         _chatChannel = null;
       }
 
       private function _buildNoAlliance():void

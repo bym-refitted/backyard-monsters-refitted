@@ -10,7 +10,7 @@ const POLICY = Buffer.from(
 
 const POLICY_REQUEST = "<policy-file-request/>";
 
-const DEFAULT_SOCKET_DATA = { userId: null, displayName: "", channel: null, lastMsgAt: 0 };
+const DEFAULT_SOCKET_DATA = { userId: null, displayName: "", lastMsgAt: 0 };
 
 const POLICY_TIMEOUT_MS = 3000;
 
@@ -56,6 +56,14 @@ const startPolicyServer = () => {
  */
 export const startChatServer = () => {
   const PORT = Number(process.env.CHAT_WS_PORT);
+
+  process.on("unhandledRejection", (reason) => {
+    logger.error(`Unhandled rejection in chat process: ${reason}`);
+  });
+
+  process.on("uncaughtException", (err) => {
+    logger.error(`Uncaught exception in chat process: ${err.stack ?? err}`);
+  });
 
   initGateway();
   startPolicyServer();

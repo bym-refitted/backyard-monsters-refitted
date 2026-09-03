@@ -9,12 +9,60 @@ const CHANNELS: Record<number, string> = {
 
 export const INFERNO_CHAT_CHANNEL = "chat:inferno-global";
 
+export const ALLIANCE_CHANNEL_ALIAS = "alliance";
+
+const ALLIANCE_CHANNEL_PREFIX = "chat:alliance:";
+
+/**
+ * What kind of room a channel is, which decides where its messages are stored
+ * and which name form they carry.
+ *
+ * @enum {string}
+ */
+export enum ChannelType {
+  Alliance = "alliance",
+  Global = "global",
+}
+
+/**
+ * Returns the channel key for an alliance's private chat.
+ *
+ * @param {number} allianceId - The alliance the channel belongs to.
+ * @returns {string} The channel key.
+ */
+export const allianceChannelKey = (allianceId: number) => `${ALLIANCE_CHANNEL_PREFIX}${allianceId}`;
+
+/**
+ * Whether a channel key belongs to an alliance rather than a global room.
+ *
+ * @param {string} channel - The channel key to test.
+ * @returns {boolean} True for alliance channels.
+ */
+export const isAllianceChannel = (channel: string) => channel.startsWith(ALLIANCE_CHANNEL_PREFIX);
+
+/**
+ * Reads the alliance id back out of a channel key.
+ *
+ * @param {string} channel - The channel key to parse.
+ * @returns {number | null} The alliance id, or null if this is not an alliance channel.
+ */
+export const allianceIdFromChannel = (channel: string): number | null => {
+  if (!isAllianceChannel(channel)) return null;
+
+  const id = Number(channel.slice(ALLIANCE_CHANNEL_PREFIX.length));
+
+  return Number.isInteger(id) && id > 0 ? id : null;
+};
+
 const VALID_CHANNELS = new Set([...Object.values(CHANNELS), INFERNO_CHAT_CHANNEL]);
 
 /**
- * Validates a server-issued chat channel key echoed back by the client.
+ * Validates a server-issued global chat channel key echoed back by the client.
  * The server computes the channel during base load and sends it as `chatchannel`.
  * The client echoes it unchanged on join — no parsing or mapping needed here.
+ *
+ * Alliance channels are not covered here: they are resolved from the joining
+ * player's membership instead of being accepted from the client.
  *
  * @param {string} channel - The channel key sent by the client.
  * @returns {string | null} The validated channel key, or null if invalid.

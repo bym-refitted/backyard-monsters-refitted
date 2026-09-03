@@ -3,9 +3,25 @@ import { postgres, redis } from "../server.js";
 import { User } from "../models/user.model.js";
 import { Save } from "../models/save.model.js";
 import { logger } from "../utils/logger.js";
-import { validateChannel, chatTokenKey, chatIgnoreKey } from "./chatChannels.js";
+import {
+  validateChannel,
+  chatTokenKey,
+  chatIgnoreKey,
+  allianceChannelKey,
+  ALLIANCE_CHANNEL_ALIAS as ALLIANCE_CHANNEL,
+  ChannelType,
+} from "./chatChannels.js";
+import {
+  addAllianceMessage,
+  cutAllianceMessages,
+  getAllianceMessages,
+} from "../services/alliance/allianceMessages.js";
 import { pushMessage, getHistory } from "./chatHistory.js";
 import { calculateBaseLevel } from "../services/base/calculateBaseLevel.js";
+import {
+  CHAT_CONTROL_CHANNEL,
+  type ChatControlMessage,
+} from "./chatControl.js";
 import { Filter as BadWords } from "bad-words";
 import {
   send,
@@ -15,28 +31,40 @@ import {
   AuthFailReason,
   type ClientMessage,
   type ServerMessage,
+  type HistoryEntry,
 } from "./chatProtocol.js";
+import { ChatControlType } from "../enums/AllianceMessage.js";
 
 const filter = new BadWords();
 
 export interface SocketData {
   userId: number | null;
   displayName: string;
-  channel: string | null;
   lastMsgAt: number;
+}
+
+export type ChannelInfo =
+  | { type: ChannelType.Alliance; allianceId: number }
+  | { type: ChannelType.Global };
+
+interface ResolvedChannel {
+  key: string;
+  info: ChannelInfo;
 }
 
 interface ChatClient {
   ws: ServerWebSocket<SocketData>;
   userId: number;
   displayName: string;
-  channel: string | null;
+  username: string;
+  picSquare: string | null;
+  channels: Map<string, ChannelInfo>;
   lastMsgAt: number;
 }
 
 type ServerWebSocket<T> = import("bun").ServerWebSocket<T>;
 
-type ChatIdentity = Pick<User, "username"> & {
+type ChatIdentity = Pick<User, "username" | "pic_square"> & {
   save?: Pick<Save, "points" | "basevalue"> | null;
 };
 
@@ -44,6 +72,7 @@ const CHAT_FIELDS = [
   "userid",
   "username",
   "banned",
+  "pic_square",
   "save.points",
   "save.basevalue"
 ] as const;
@@ -62,33 +91,100 @@ let redisSub: RedisClient;
  */
 export const initGateway = () => {
   redisSub = new RedisClient(process.env.REDIS_URL);
-  redisSub.onconnect = () => logger.info("Chat Redis subscriber connected");
+
+  redisSub.onconnect = () => {
+    logger.info("Chat Redis subscriber connected");
+    redisSub.subscribe(CHAT_CONTROL_CHANNEL, handleControlMessage);
+  };
+
   redisSub.onclose = (err) => logger.error(`Chat Redis subscriber disconnected: ${err.message}`);
   redisSub.connect();
 };
 
 /**
- * Subscribes a client to a channel, leaving their previous channel first if needed.
- * Creates the Redis subscription for the channel if this is the first local member.
- * Broadcasts a {@link ServerMessageType.UserEnter} event to the channel on join.
- * 
- * @param {ChatClient} client - The client joining the channel.
- * @param {string} channel - The validated channel key (e.g. `chat:world:{uuid}`).
+ * Handles a control message published by the API process.
+ * Membership changes are written there, so this is how the gateway learns that a
+ * player it is holding in an alliance channel no longer belongs in it.
+ *
+ * @param {string} payload - The serialised {@link ChatControlMessage}.
  */
-const joinChannel = (client: ChatClient, channel: string) => {
-  if (client.channel === channel) return;
+const handleControlMessage = (payload: string) => {
+  let message: ChatControlMessage;
 
-  if (client.channel) leaveChannel(client);
-
-  client.channel = channel;
-  client.ws.data.channel = channel;
-
-  if (!channelMembers.has(channel)) {
-    channelMembers.set(channel, new Set());
-    redisSub.subscribe(channel, (msg: string) => broadcast(channel, msg));
+  try {
+    message = JSON.parse(payload);
+  } catch {
+    logger.error(`Chat control message was not valid JSON: ${payload}`);
+    return;
   }
 
-  channelMembers.get(channel)!.add(client.userId);
+  if (message.type !== ChatControlType.AllianceEvict) return;
+
+  const client = clients.get(message.userId);
+
+  if (!client) return;
+
+  for (const [channel, info] of [...client.channels]) {
+    if (info.type === ChannelType.Alliance) leaveChannel(client, channel);
+  }
+};
+
+/**
+ * Resolves the channel a client is asking to join into a real channel key.
+ *
+ * Global rooms are validated against the fixed set the server issues at base load.
+ * Alliance chat is different: the client sends only the ALLIANCE_CHANNEL_ALIAS
+ * and the key is derived from the player's own membership, so no client can name
+ * another alliance's channel regardless of what it sends.
+ *
+ * @param {number} userid - The player requesting the join.
+ * @param {string} requestedChannel - The channel name as sent by the client.
+ * @returns {Promise<ResolvedChannel | null>} The channel key and its kind, or null if not permitted.
+ */
+const authorizeJoin = async (userid: number, requestedChannel: string): Promise<ResolvedChannel | null> => {
+  if (requestedChannel === ALLIANCE_CHANNEL) {
+    const em = postgres.orm.em.fork();
+    const user = await em.findOne(User, { userid }, { fields: ["alliance_id"] });
+
+    if (!user) return null;
+
+    if (!user.alliance_id) return null;
+
+    const key = allianceChannelKey(user.alliance_id);
+
+    return { key, info: { type: ChannelType.Alliance, allianceId: user.alliance_id } };
+  }
+
+  const key = validateChannel(requestedChannel);
+
+  if (!key) return null;
+
+  return { key, info: { type: ChannelType.Global } };
+};
+
+/**
+ * Subscribes a client to a channel, in addition to any they are already in.
+ * Creates the Redis subscription for the channel if this is the first local member.
+ * Broadcasts a {@link ServerMessageType.UserEnter} event to the channel on join.
+ *
+ * @param {ChatClient} client - The client joining the channel.
+ * @param {string} channel - The resolved channel key (e.g. `chat:alliance:{id}`).
+ * @param {ChannelInfo} channelInfo - What kind of channel it is, from {@link authorizeJoin}.
+ */
+const joinChannel = (client: ChatClient, channel: string, channelInfo: ChannelInfo) => {
+  if (client.channels.has(channel)) return;
+
+  client.channels.set(channel, channelInfo);
+
+  let members = channelMembers.get(channel);
+
+  if (!members) {
+    members = new Set();
+    channelMembers.set(channel, members);
+    subscribeToChannel(channel);
+  }
+
+  members.add(client.userId);
 
   const enterMessage: ServerMessage = {
     type: ServerMessageType.UserEnter,
@@ -101,26 +197,27 @@ const joinChannel = (client: ChatClient, channel: string) => {
 };
 
 /**
- * Removes a client from their current channel.
+ * Removes a client from one of the channels they are in.
  * Unsubscribes from Redis if no local clients remain in the channel.
  * Broadcasts a {@link ServerMessageType.UserExit} event to the channel on leave.
- * @param {ChatClient} client - The client leaving the channel.
+ *
+ * @param {ChatClient} client - The client leaving.
+ * @param {string} channel - The channel being left.
  */
-const leaveChannel = (client: ChatClient) => {
-  const channel = client.channel;
+const leaveChannel = (client: ChatClient, channel: string) => {
+  if (!client.channels.delete(channel)) return;
 
-  if (!channel) return;
-
-  client.channel = null;
-  client.ws.data.channel = null;
-
-  const members = channelMembers.get(channel);
+  const members = channelMembers.get(channel);  
 
   if (members) {
     members.delete(client.userId);
+
     if (members.size === 0) {
       channelMembers.delete(channel);
-      redisSub.unsubscribe(channel);
+
+      redisSub
+        .unsubscribe(channel)
+        .catch((err) => logger.error(`Chat unsubscribe failed for ${channel}: ${err}`));
     }
   }
 
@@ -131,6 +228,26 @@ const leaveChannel = (client: ChatClient) => {
   };
 
   publishToChannel(channel, JSON.stringify(exitMessage));
+};
+
+/**
+ * Removes a client from every channel they are in, used when the connection ends.
+ * 
+ * @param {ChatClient} client - The client being disconnected.
+ */
+const leaveAllChannels = (client: ChatClient) => {
+  for (const channel of [...client.channels.keys()]) leaveChannel(client, channel);
+};
+
+/**
+ * Registers the Redis subscription that feeds a channel's local members.
+ *
+ * @param {string} channel - The channel to subscribe to.
+ */
+const subscribeToChannel = (channel: string) => {
+  redisSub
+    .subscribe(channel, (msg) => broadcast(channel, msg))
+    .catch((err) => logger.error(`Chat subscribe failed for ${channel}: ${err}`));
 };
 
 /**
@@ -167,13 +284,35 @@ const broadcast = (channel: string, payload: string) => {
 };
 
 /**
+ * Returns the entries shown when a channel is joined.
+ *
+ * @param {string} channel - The channel being joined.
+ * @param {ChannelInfo} info - What kind of channel it is.
+ * @returns {Promise<HistoryEntry[]>} Entries ordered oldest to newest.
+ */
+const getChannelHistory = async (channel: string, info: ChannelInfo): Promise<HistoryEntry[]> => {
+  if (info.type !== ChannelType.Alliance) return await getHistory(channel);
+
+  const em = postgres.orm.em.fork();
+  const messages = await getAllianceMessages(info.allianceId, em);
+
+  return messages.map((message) => ({
+    userId: message.userId,
+    displayName: message.displayName,
+    picSquare: message.picSquare,
+    body: message.body,
+    ts: message.ts,
+  }));
+};
+
+/**
  * Called when a new WebSocket connection is opened.
  * Initialises the socket's data to an unauthenticated state.
  * 
  * @param {ServerWebSocket<SocketData>} ws - The newly opened WebSocket connection.
  */
 export const handleOpen = (ws: ServerWebSocket<SocketData>) => {
-  ws.data = { userId: null, displayName: "", channel: null, lastMsgAt: 0 };
+  ws.data = { userId: null, displayName: "", lastMsgAt: 0 };
 };
 
 /**
@@ -190,14 +329,13 @@ const getDisplayName = (user: ChatIdentity): string => {
 };
 
 /**
- * Called when a message is received from a WebSocket client.
  * Parses the incoming JSON, routes to the appropriate handler based on {@link ClientMessageType},
  * and enforces authentication for all message types except `auth`.
- * 
+ *
  * @param {ServerWebSocket<SocketData>} ws - The WebSocket connection that sent the message.
  * @param {string | Buffer} data - The raw message data received from the client.
  */
-export const handleMessage = async (ws: ServerWebSocket<SocketData>, data: string | Buffer) => {
+const dispatch = async (ws: ServerWebSocket<SocketData>, data: string | Buffer) => {
   let message: ClientMessage;
 
   try {
@@ -237,7 +375,9 @@ export const handleMessage = async (ws: ServerWebSocket<SocketData>, data: strin
       ws,
       userId: user.userid,
       displayName,
-      channel: null,
+      username: user.username,
+      picSquare: user.pic_square ?? null,
+      channels: new Map(),
       lastMsgAt: 0,
     };
 
@@ -249,7 +389,7 @@ export const handleMessage = async (ws: ServerWebSocket<SocketData>, data: strin
     
     if (existing) {
       existing.ws.close();
-      leaveChannel(existing);
+      leaveAllChannels(existing);
     }
 
     clients.set(user.userid, client);
@@ -273,29 +413,33 @@ export const handleMessage = async (ws: ServerWebSocket<SocketData>, data: strin
 
   switch (message.type) {
     case ClientMessageType.Join: {
-      const channel = validateChannel(message.channel);
+      const resolved = await authorizeJoin(client.userId, message.channel);
 
-      if (!channel) {
+      if (!resolved) {
         send(ws, { type: ServerMessageType.Error, code: ErrorCode.InvalidChannel });
         return;
       }
 
-      joinChannel(client, channel);
+      joinChannel(client, resolved.key, resolved.info);
 
-      const history = await getHistory(channel);
-      send(ws, { type: ServerMessageType.Joined, channel, history });
+      const history = await getChannelHistory(resolved.key, resolved.info);
+
+      send(ws, { type: ServerMessageType.Joined, channel: resolved.key, history });
       return;
     }
 
     case ClientMessageType.Leave: {
-      leaveChannel(client);
+      leaveChannel(client, message.channel);
       return;
     }
 
+
     case ClientMessageType.Say: {
       const now = Date.now();
+      const channel = message.channel;
+      const info = client.channels.get(channel);
 
-      if (!client.channel) {
+      if (!info) {
         send(ws, { type: ServerMessageType.Error, code: ErrorCode.NotInChannel });
         return;
       }
@@ -311,23 +455,35 @@ export const handleMessage = async (ws: ServerWebSocket<SocketData>, data: strin
 
       if (!messageBody) return;
 
-      const entry = {
-        userId: client.userId,
-        displayName: client.displayName,
-        body: messageBody,
-        ts: now,
-      };
+      const fields = { userId: client.userId, picSquare: client.picSquare, body: messageBody };
 
-      await pushMessage(client.channel, entry);
+      let entry: HistoryEntry;
 
-      // Broadcast the new message to the channel via Redis pub/sub
-      const broadcast: ServerMessage = { 
+      if (info.type === ChannelType.Alliance) {
+        const record = { allianceId: info.allianceId, userId: client.userId, body: messageBody };
+        
+        const em = postgres.orm.em.fork();
+        const stored = await addAllianceMessage(record, em);
+
+        entry = { ...fields, displayName: client.username, ts: stored.created_at.getTime() };
+
+        await cutAllianceMessages(info.allianceId, em).catch((err) =>
+          logger.error(`Trimming alliance ${info.allianceId} messages failed: ${err}`)
+        );
+      } else {
+        entry = { ...fields, displayName: client.displayName, ts: now };
+
+        await pushMessage(channel, entry);
+      }
+
+      const outgoing: ServerMessage = {
         type: ServerMessageType.Message,
-        channel: client.channel,
-        ...entry
+        channel,
+        ...entry,
+        userId: client.userId,
       };
-      
-      publishToChannel(client.channel, JSON.stringify(broadcast));
+
+      publishToChannel(channel, JSON.stringify(outgoing));
       return;
     }
 
@@ -368,6 +524,26 @@ export const handleMessage = async (ws: ServerWebSocket<SocketData>, data: strin
 };
 
 /**
+ * Called when a message is received from a WebSocket client.
+ *
+ * Bun does not await this handler, so anything that escapes it becomes an unhandled
+ * rejection and takes the whole process down with every connection on it. This is the
+ * boundary that keeps one player's failed query from disconnecting everyone.
+ *
+ * @param {ServerWebSocket<SocketData>} ws - The WebSocket connection that sent the message.
+ * @param {string | Buffer} data - The raw message data received from the client.
+ */
+export const handleMessage = async (ws: ServerWebSocket<SocketData>, data: string | Buffer) => {
+  try {
+    await dispatch(ws, data);
+  } catch (err) {
+    logger.error(`Chat message handling failed for user ${ws.data.userId}: ${err}`);
+
+    send(ws, { type: ServerMessageType.Error, code: ErrorCode.ServerError });
+  }
+};
+
+/**
  * Called when a WebSocket connection is closed.
  * Removes the client from their channel and the active clients map.
  * 
@@ -380,6 +556,6 @@ export const handleClose = (ws: ServerWebSocket<SocketData>): void => {
   const client = clients.get(userId);
   if (!client || client.ws !== ws) return;
 
-  leaveChannel(client);
+  leaveAllChannels(client);
   clients.delete(userId);
 };

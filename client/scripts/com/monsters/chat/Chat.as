@@ -110,6 +110,22 @@ package com.monsters.chat
          }
       }
 
+      /**
+       * Brings the chat transport up for features that need a channel but are not
+       * the chat dock. initChat() only connects when the dock is open, so alliance
+       * chat would otherwise be unusable whenever the player has it minimised.
+       * Connecting does not reveal the dock - show() only sets visibility, and the
+       * minimised state is held separately in _open.
+       */
+      public static function ensureConnected() : void
+      {
+         initChat();
+         if(_bymChat != null && !_bymChat.IsConnected && !BYMChat.serverInited)
+         {
+            connectAndLogin();
+         }
+      }
+
       public static function connectAndLogin() : void
       {
          if(!_chatInited)

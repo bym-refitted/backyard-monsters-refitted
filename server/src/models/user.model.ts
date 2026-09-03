@@ -5,6 +5,8 @@ import {
   OneToOne,
   Index,
 } from "@mikro-orm/decorators/es";
+import { PrimaryKeyProp } from "@mikro-orm/core";
+
 import { Save } from "./save.model.js";
 import { FrontendKey } from "../utils/FrontendKey.js";
 import { AllianceRole } from "../enums/AllianceRole.js";
@@ -12,6 +14,8 @@ import type { JsonObject } from "../types/JsonObject.js";
 
 @Entity({ tableName: "user" })
 export class User {
+
+  [PrimaryKeyProp]?: "userid";
   @FrontendKey
   @PrimaryKey({ autoincrement: true, type: "number" })
   userid!: number;

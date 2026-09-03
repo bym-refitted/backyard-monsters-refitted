@@ -28,6 +28,7 @@ export enum ErrorCode {
   NotAuthenticated = "not_authenticated",
   InvalidChannel = "invalid_channel",
   NotInChannel = "not_in_channel",
+  ServerError = "server_error",
 }
 
 export enum AuthFailReason {
@@ -36,8 +37,10 @@ export enum AuthFailReason {
 }
 
 export interface HistoryEntry {
-  userId: number;
+  /** Null for entries with no author: system rows, or a removed account. */
+  userId: number | null;
   displayName: string;
+  picSquare: string | null;
   body: string;
   ts: number;
 }
@@ -62,7 +65,7 @@ export type ServerMessage =
   | { type: ServerMessageType.AuthOk; userId: number; displayName: string }
   | { type: ServerMessageType.AuthFail; reason: AuthFailReason }
   | { type: ServerMessageType.Joined; channel: string; history: HistoryEntry[] }
-  | { type: ServerMessageType.Message; channel: string; userId: number; displayName: string; body: string; ts: number }
+  | { type: ServerMessageType.Message; channel: string; userId: number; displayName: string; picSquare: string | null; body: string; ts: number }
   | { type: ServerMessageType.UserEnter; channel: string; userId: number; displayName: string }
   | { type: ServerMessageType.UserExit; channel: string; userId: number }
   | { type: ServerMessageType.IgnoreList; list: IgnoreEntry[] }

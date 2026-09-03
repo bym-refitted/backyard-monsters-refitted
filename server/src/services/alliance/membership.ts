@@ -4,6 +4,7 @@ import { AllianceRole } from "../../enums/AllianceRole.js";
 import { Alliance } from "../../models/alliance.model.js";
 import { User } from "../../models/user.model.js";
 import { postgres } from "../../server.js";
+import { disconnectAllianceChat } from "../../chat/chatControl.js";
 
 /**
  * Counts the members of an alliance other than the given user. Callers that
@@ -62,6 +63,9 @@ export const removeAllianceMember = async (user: User, alliance: Alliance, other
   if (disbanded) postgres.em.remove(alliance);
 
   await postgres.em.flush();
+
+  await disconnectAllianceChat(user.userid);
+
   return disbanded;
 };
 

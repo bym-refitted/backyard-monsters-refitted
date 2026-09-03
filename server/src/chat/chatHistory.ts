@@ -7,8 +7,11 @@ const MAX_HISTORY = 100;
 const HISTORY_TTL_SECONDS = 2592000;
 
 /**
- * Appends a message to a channel's history list, capping it at MAX_HISTORY entries.
- * The TTL is refreshed on every push so the history expires 30 days after the last message.
+ * Appends a message to a global channel's window, capping it at MAX_HISTORY entries.
+ * The TTL is refreshed on every push so the window expires 30 days after the last message.
+ *
+ * Alliance feeds do not come through here - they are a record in Postgres rather than a
+ * rolling window, and are read and written through the alliance messages service.
  *
  * @param {string} channel - The channel key (e.g. `chat:mr1-global`, `chat:mr2-global`, `chat:mr3-global`).
  * @param {HistoryEntry} entry - The message entry to store.
@@ -25,7 +28,7 @@ export const pushMessage = async (channel: string, entry: HistoryEntry) => {
 };
 
 /**
- * Returns up to MAX_HISTORY messages for a channel, ordered oldest to newest.
+ * Returns up to MAX_HISTORY messages for a global channel, ordered oldest to newest.
  * @param {string} channel - The channel key to fetch history for.
  *
  * @returns {Promise<HistoryEntry[]>} Ordered array of history entries.

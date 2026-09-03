@@ -255,7 +255,7 @@ package com.monsters.chat.impl.ws
                   {
                      var histUserId:String = String(int(entry.userId));
                      updateNameMap(histUserId, String(entry.displayName));
-                     dispatchSay(channelName, histUserId, String(entry.body));
+                     dispatchSay(channelName, histUserId, String(entry.body), entry.picSquare as String, Number(entry.ts), String(entry.displayName));
                   }
                }
                break;
@@ -263,7 +263,7 @@ package com.monsters.chat.impl.ws
             case ServerMessageType.MESSAGE:
                var senderIdStr:String = String(int(msg.userId));
                updateNameMap(senderIdStr, msg.displayName as String);
-               dispatchSay(msg.channel as String, senderIdStr, msg.body as String);
+               dispatchSay(msg.channel as String, senderIdStr, msg.body as String, msg.picSquare as String, Number(msg.ts), msg.displayName as String);
                break;
 
             case ServerMessageType.USER_ENTER:
@@ -347,12 +347,18 @@ package com.monsters.chat.impl.ws
          dispatchEvent(new ChatEvent(ChatEvent.UPDATE_NAME, true, params));
       }
 
-      private function dispatchSay(channelName:String, userId:String, body:String):void
+      private function dispatchSay(channelName:String, userId:String, body:String, picSquare:String = null, ts:Number = 0, displayName:String = null):void
       {
          var params:Dictionary = new Dictionary();
          params["channel"] = new Channel(channelName, "system");
          params["user"] = userId;
          params["message"] = body;
+         params["picsquare"] = picSquare;
+         params["ts"] = ts;
+         // Carried per message rather than read from the shared name map, which is
+         // keyed by user id across every channel: the dock's "[level] name" would
+         // otherwise overwrite the bare name the alliance rows use.
+         params["displayname"] = displayName;
          dispatchEvent(new ChatEvent(ChatEvent.SAY, true, params));
       }
 

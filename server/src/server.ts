@@ -52,7 +52,7 @@ redis.onclose = (err) => logger.error(`Redis disconnected: ${err.message}`);
 
   await redis.connect();
 
-  if (process.env.ENV !== Env.LOCAL) startChatServer();
+  startChatServer();
 
   app.use(corsCacheControl);
 
