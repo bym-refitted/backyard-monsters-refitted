@@ -32,28 +32,6 @@ export enum ChannelType {
  */
 export const allianceChannelKey = (allianceId: number) => `${ALLIANCE_CHANNEL_PREFIX}${allianceId}`;
 
-/**
- * Whether a channel key belongs to an alliance rather than a global room.
- *
- * @param {string} channel - The channel key to test.
- * @returns {boolean} True for alliance channels.
- */
-export const isAllianceChannel = (channel: string) => channel.startsWith(ALLIANCE_CHANNEL_PREFIX);
-
-/**
- * Reads the alliance id back out of a channel key.
- *
- * @param {string} channel - The channel key to parse.
- * @returns {number | null} The alliance id, or null if this is not an alliance channel.
- */
-export const allianceIdFromChannel = (channel: string): number | null => {
-  if (!isAllianceChannel(channel)) return null;
-
-  const id = Number(channel.slice(ALLIANCE_CHANNEL_PREFIX.length));
-
-  return Number.isInteger(id) && id > 0 ? id : null;
-};
-
 const VALID_CHANNELS = new Set([...Object.values(CHANNELS), INFERNO_CHAT_CHANNEL]);
 
 /**
