@@ -1,4 +1,5 @@
 import { Status } from "../../enums/StatusCodes.js";
+import { AllianceMessageType } from "../../enums/AllianceMessage.js";
 import { User } from "../../models/user.model.js";
 import { postgres } from "../../server.js";
 import { MemberActionSchema } from "../../schemas/AllianceSchemas.js";
@@ -24,7 +25,7 @@ export const kickMember: KoaController = async (ctx) => {
 
   if (!member || member.alliance_id !== alliance.id) throw cannotKickErr();
 
-  await removeAllianceMember(member, alliance);
+  await removeAllianceMember(member, alliance, AllianceMessageType.KICKED);
 
   ctx.status = Status.OK;
   ctx.body = { error: 0 };

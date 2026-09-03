@@ -160,11 +160,11 @@ const createSeedUser = async (em: EntityManager<PostgreSqlDriver>, passwordHash:
       em.persist(alliance);
       await em.flush();
 
-      await addAllianceMember(leader, alliance, AllianceRole.LEADER, em);
+      await addAllianceMember(leader, alliance, AllianceRole.LEADER, null, em);
 
       for (let i = 1; i < spec.members; i++) {
         const member = await createSeedUser(em, passwordHash, world.uuid);
-        await addAllianceMember(member, alliance, AllianceRole.MEMBER, em);
+        await addAllianceMember(member, alliance, AllianceRole.MEMBER, null, em);
       }
 
       logger.info(`  ${spec.name} - ${spec.members} members in ${world.name}`);

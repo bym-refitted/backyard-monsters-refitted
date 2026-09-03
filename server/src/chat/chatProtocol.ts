@@ -1,3 +1,5 @@
+import type { AllianceMessageType } from "../enums/AllianceMessage.js";
+
 export enum ClientMessageType {
   Auth = "auth",
   Join = "join",
@@ -37,11 +39,11 @@ export enum AuthFailReason {
 }
 
 export interface HistoryEntry {
-  /** Null for entries with no author: system rows, or a removed account. */
-  userId: number | null;
+  userId: number;
   displayName: string;
   picSquare: string | null;
   body: string;
+  type: AllianceMessageType;
   ts: number;
 }
 
@@ -65,7 +67,7 @@ export type ServerMessage =
   | { type: ServerMessageType.AuthOk; userId: number; displayName: string }
   | { type: ServerMessageType.AuthFail; reason: AuthFailReason }
   | { type: ServerMessageType.Joined; channel: string; history: HistoryEntry[] }
-  | { type: ServerMessageType.Message; channel: string; userId: number; displayName: string; picSquare: string | null; body: string; ts: number }
+  | { type: ServerMessageType.Message; channel: string; messageType: AllianceMessageType; userId: number; displayName: string; picSquare: string | null; body: string; ts: number }
   | { type: ServerMessageType.UserEnter; channel: string; userId: number; displayName: string }
   | { type: ServerMessageType.UserExit; channel: string; userId: number }
   | { type: ServerMessageType.IgnoreList; list: IgnoreEntry[] }

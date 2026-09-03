@@ -5,6 +5,7 @@ import type { EntityManager, PostgreSqlDriver } from "@mikro-orm/postgresql";
 import { AllianceInviteStatus, AllianceInviteType } from "../../enums/AllianceInvite.js";
 import { MAX_ALLIANCE_MEMBERS } from "../../config/AllianceConfig.js";
 import { AllianceRole } from "../../enums/AllianceRole.js";
+import { AllianceMessageType } from "../../enums/AllianceMessage.js";
 import { Alliance } from "../../models/alliance.model.js";
 import { AllianceInvite } from "../../models/allianceinvite.model.js";
 import { User } from "../../models/user.model.js";
@@ -269,7 +270,7 @@ export const answerInvite = async (user: User, inviteId: number, status: Allianc
     await checkAllianceSpace(em, alliance.id);
 
     await em.nativeUpdate(AllianceInvite, { id: invite.id }, { status, updated_at: new Date() });
-    await addAllianceMember(player, alliance, AllianceRole.MEMBER, em);
+    await addAllianceMember(player, alliance, AllianceRole.MEMBER, AllianceMessageType.JOINED, em);
   });
 
   invite.status = status;

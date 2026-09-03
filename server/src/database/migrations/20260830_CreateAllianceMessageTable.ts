@@ -1,7 +1,7 @@
 import { Migration } from "@mikro-orm/migrations";
 
 /**
- * Creates bym.alliance_message, the durable record behind alliance chat.
+ * Creates bym.alliance_message, the record behind alliance chat.
  */
 export class Migration20260830_CreateAllianceMessageTable extends Migration {
   async up(): Promise<void> {
@@ -9,7 +9,7 @@ export class Migration20260830_CreateAllianceMessageTable extends Migration {
       CREATE TABLE IF NOT EXISTS bym.alliance_message (
         id BIGSERIAL PRIMARY KEY,
         alliance_id INTEGER NOT NULL,
-        user_id INTEGER,
+        user_id INTEGER NOT NULL,
         type VARCHAR(16) NOT NULL DEFAULT 'message',
         body TEXT NOT NULL DEFAULT '',
         created_at TIMESTAMP NOT NULL DEFAULT NOW()
@@ -36,7 +36,7 @@ export class Migration20260830_CreateAllianceMessageTable extends Migration {
     await this.execute(`
       ALTER TABLE bym.alliance_message
       ADD CONSTRAINT alliance_message_user_id_foreign
-      FOREIGN KEY (user_id) REFERENCES bym."user"(userid) ON DELETE SET NULL
+      FOREIGN KEY (user_id) REFERENCES bym."user"(userid) ON DELETE CASCADE
     `);
   }
 }

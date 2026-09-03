@@ -1,4 +1,5 @@
 import { Status } from "../../enums/StatusCodes.js";
+import { AllianceMessageType } from "../../enums/AllianceMessage.js";
 import { AllianceRole } from "../../enums/AllianceRole.js";
 import { User } from "../../models/user.model.js";
 import { requireAllianceMember } from "../../services/alliance/allianceAccess.js";
@@ -24,7 +25,7 @@ export const leaveAlliance: KoaController = async (ctx) => {
     throw leaderMustTransferErr(alliance.name);
   }
 
-  await removeAllianceMember(user, alliance, otherMembers);
+  await removeAllianceMember(user, alliance, AllianceMessageType.LEFT, otherMembers);
 
   ctx.status = Status.OK;
   ctx.body = { error: 0 };

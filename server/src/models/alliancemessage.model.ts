@@ -13,8 +13,8 @@ export class AllianceMessage {
   @Property({ type: "number" })
   alliance_id!: number;
 
-  @ManyToOne(() => User, { fieldName: "user_id", nullable: true })
-  author?: User | null;
+  @ManyToOne(() => User, { fieldName: "user_id" })
+  author!: User;
 
   @Property({ type: "string" })
   type: AllianceMessageType = AllianceMessageType.MESSAGE;

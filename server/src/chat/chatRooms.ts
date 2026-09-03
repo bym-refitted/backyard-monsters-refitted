@@ -4,10 +4,9 @@ import { User } from "../models/user.model.js";
 import { postgres } from "../server.js";
 import {
   addAllianceMessage,
-  cutAllianceMessages,
   getAllianceMessages,
 } from "../services/alliance/allianceMessages.js";
-import { logger } from "../utils/logger.js";
+import { AllianceMessageType } from "../enums/AllianceMessage.js";
 import {
   ALLIANCE_CHANNEL_ALIAS,
   allianceChannelKey,
@@ -157,15 +156,7 @@ export const getChannelHistory = async (channel: string, info: ChannelInfo): Pro
   if (info.type !== ChannelType.Alliance) return await getHistory(channel);
 
   const em = postgres.orm.em.fork();
-  const messages = await getAllianceMessages(info.allianceId, em);
-
-  return messages.map((message) => ({
-    userId: message.userId,
-    displayName: message.displayName,
-    picSquare: message.picSquare,
-    body: message.body,
-    ts: message.ts,
-  }));
+  return await getAllianceMessages(info.allianceId, em);
 };
 
 /**
@@ -200,7 +191,12 @@ export const postMessage = async (client: ChatClient, channel: string, body: str
 
   if (!messageBody) return;
 
-  const fields = { userId: client.userId, picSquare: client.picSquare, body: messageBody };
+  const fields = {
+    userId: client.userId,
+    picSquare: client.picSquare,
+    body: messageBody,
+    type: AllianceMessageType.MESSAGE,
+  };
 
   let entry: HistoryEntry;
 
@@ -211,20 +207,19 @@ export const postMessage = async (client: ChatClient, channel: string, body: str
     const stored = await addAllianceMessage(record, em);
 
     entry = { ...fields, displayName: client.username, ts: stored.created_at.getTime() };
-
-    await cutAllianceMessages(info.allianceId, em).catch((err) =>
-      logger.error(`Trimming alliance ${info.allianceId} messages failed: ${err}`)
-    );
   } else {
     entry = { ...fields, displayName: client.displayName, ts: now };
 
     await pushMessage(channel, entry);
   }
 
+  const { type: messageType, ...rest } = entry;
+
   const outgoing: ServerMessage = {
     type: ServerMessageType.Message,
     channel,
-    ...entry,
+    messageType,
+    ...rest,
     userId: client.userId,
   };
 

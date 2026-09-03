@@ -1,6 +1,7 @@
 import { UniqueConstraintViolationException, type RequiredEntityData } from "@mikro-orm/core";
 
 import { Status } from "../../enums/StatusCodes.js";
+import { AllianceMessageType } from "../../enums/AllianceMessage.js";
 import { AllianceRole } from "../../enums/AllianceRole.js";
 import { Alliance } from "../../models/alliance.model.js";
 import { User } from "../../models/user.model.js";
@@ -54,7 +55,7 @@ export const createAlliance: KoaController = async (ctx) => {
       em.persist(newAlliance);
       await em.flush();
 
-      await addAllianceMember(user, newAlliance, AllianceRole.LEADER, em);
+      await addAllianceMember(user, newAlliance, AllianceRole.LEADER, AllianceMessageType.CREATED, em);
 
       return newAlliance;
     }).catch((error) => {

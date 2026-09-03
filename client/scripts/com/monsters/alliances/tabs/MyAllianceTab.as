@@ -8,6 +8,7 @@ package com.monsters.alliances.tabs
    import com.monsters.chat.Channel;
    import com.monsters.chat.ChatEvent;
    import com.monsters.chat.IChatSystem;
+   import com.monsters.chat.impl.ws.AllianceMessageType;
    import com.monsters.display.ImageCache;
    import com.monsters.display.ScrollSetV;
    import com.monsters.utils.TimeUtils;
@@ -354,25 +355,35 @@ package com.monsters.alliances.tabs
        * Renders an incoming chat message from the shared transport, ignoring
        * anything addressed to a channel other than this alliance's.
        */
-      private function _onWsSay(e:ChatEvent):void
+      private function _onWsSay(event:ChatEvent):void
       {
-         var channel:Channel = e.Get("channel") as Channel;
+         var channel:Channel = event.Get("channel") as Channel;
          if (_chatChannel == null || channel == null || channel.Name != _chatChannel.Name)
          {
             return;
          }
-         var user:String = e.Get("user") as String;
-         var message:String = e.Get("message") as String;
+         var user:String = event.Get("user") as String;
+         var message:String = event.Get("message") as String;
          if (message == null || message == "")
          {
             return;
          }
-         var name:String = e.Get("displayname") as String;
+         var picSquare:String = event.Get("picsquare") as String;
+         var ts:Number = Number(event.Get("ts"));
+
+         var messageType:String = event.Get("messagetype") as String;
+         if (messageType != null && messageType != AllianceMessageType.MESSAGE)
+         {
+            _appendSystemRow(message, picSquare, ts);
+            return;
+         }
+
+         var name:String = event.Get("displayname") as String;
          if (name == null || name == "")
          {
             name = String(user);
          }
-         _appendUserRow(name, message, e.Get("picsquare") as String, Number(e.Get("ts")));
+         _appendUserRow(name, message, picSquare, ts);
       }
 
 
@@ -515,29 +526,88 @@ package com.monsters.alliances.tabs
       }
 
       /**
-       * Appends a centred system row (joins, status, server notices).
+       * Appends a system row: an alliance shout, or one of our own connection
+       * notices.
+       *
+       * Laid out as the original's system-shout-message-template was - the
+       * subject's picture inset 5px, the relative time pinned top right, and the
+       * message centred in the box beside the picture rather than across the
+       * whole row (.system-message is left:38px, width:310px, text-align:center).
+       * Bold, where a player row's body is normal weight, and three pixels
+       * higher than one.
+       *
+       * Connection notices pass neither picture nor timestamp - they are ours,
+       * not the original's, and have no subject to show - so their text spans the
+       * full width instead of sitting indented past an empty avatar slot.
+       *
+       * @param {String} message - The text to show, already composed by the server.
+       * @param {String} picSquare - The subject's picture, null for a notice.
+       * @param {Number} ts - Milliseconds since epoch, 0 for a notice.
        */
-      private function _appendSystemRow(message:String):void
+      private function _appendSystemRow(message:String, picSquare:String = null, ts:Number = 0):void
       {
-         const PAD_IN:int = 8;
+         const PAD:int = 5;
+         const AVATAR:int = 32;
+         const AVATAR_GAP:int = 8;
+         const BODY_Y:int = 22;
+         const MIN_ROW_H:int = Math.max(40, PAD + AVATAR + PAD);
+         const PAD_BOTTOM:int = 8;
+         const TIME_W:int = 110;
+         const TIME_INSET_RIGHT:int = 3;
+         const TIME_INSET_TOP:int = 5;
+         const GUTTER:int = 2;
+
+         var hasAvatar:Boolean = picSquare != null && picSquare != "";
+         var textX:int = PAD;
+         if (hasAvatar)
+         {
+            textX = PAD + AVATAR + AVATAR_GAP;
+         }
+         var textW:int = CHAT_MASK_W - textX - PAD - SCROLLBAR_W;
 
          var body:TextField = new TextField();
          body.wordWrap = true;
          body.multiline = true;
          body.selectable = false;
          body.mouseEnabled = false;
-         body.width = CHAT_MASK_W - PAD_IN * 2;
-         var fmt:TextFormat = new TextFormat("Verdana", 12, 0x555555, true);
+         body.width = textW;
+         var fmt:TextFormat = new TextFormat("Verdana", 12, 0x333333, true);
          fmt.align = TextFormatAlign.CENTER;
          body.defaultTextFormat = fmt;
          body.text = message;
          var bodyH:int = int(body.textHeight) + 6;
-         var rowH:int = bodyH + PAD_IN * 2;
+
+         var rowH:int = Math.max(MIN_ROW_H, BODY_Y + bodyH + PAD_BOTTOM);
 
          var row:MovieClip = _beginRow(rowH);
 
-         body.x = PAD_IN;
-         body.y = PAD_IN;
+         if (hasAvatar)
+         {
+            var avatar:MovieClip = row.addChild(new MovieClip()) as MovieClip;
+            avatar.mouseEnabled = false;
+            avatar.x = PAD;
+            avatar.y = PAD;
+            _loadAvatar(picSquare, avatar, AVATAR);
+         }
+
+         if (ts > 0)
+         {
+            var timeField:TextField = row.addChild(new TextField()) as TextField;
+            timeField.selectable = false;
+            timeField.mouseEnabled = false;
+            timeField.width = TIME_W;
+            timeField.height = 16;
+            timeField.x = CHAT_MASK_W - SCROLLBAR_W - TIME_W - TIME_INSET_RIGHT + GUTTER;
+            timeField.y = TIME_INSET_TOP - GUTTER;
+            
+            var timeFmt:TextFormat = new TextFormat("Verdana", 10, 0x000000);
+            timeFmt.align = TextFormatAlign.RIGHT;
+            timeField.defaultTextFormat = timeFmt;
+            timeField.text = TimeUtils.TimeDistance(ts / 1000);
+         }
+
+         body.x = textX;
+         body.y = BODY_Y;
          body.height = bodyH;
          row.addChild(body);
 

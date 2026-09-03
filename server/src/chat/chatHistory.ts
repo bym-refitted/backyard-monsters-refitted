@@ -1,3 +1,4 @@
+import { AllianceMessageType } from "../enums/AllianceMessage.js";
 import { redis } from "../server.js";
 import type { HistoryEntry } from "./chatProtocol.js";
 
@@ -35,5 +36,8 @@ export const pushMessage = async (channel: string, entry: HistoryEntry) => {
  */
 export const getHistory = async (channel: string): Promise<HistoryEntry[]> => {
   const entries = await redis.lrange(HISTORY_KEY(channel), 0, MAX_HISTORY - 1);
-  return entries.map((entry) => JSON.parse(entry)).reverse();
+
+  return entries
+    .map((entry) => ({ type: AllianceMessageType.MESSAGE, ...JSON.parse(entry) }))
+    .reverse();
 };
