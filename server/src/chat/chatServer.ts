@@ -1,6 +1,7 @@
 import type { TCPSocketListenOptions } from "bun";
 import { logger } from "../utils/logger.js";
-import { initGateway, handleOpen, handleMessage, handleClose, type SocketData } from "./ChatGateway.js";
+import { initGateway, handleOpen, handleMessage, handleClose } from "./chatGateway.js";
+import { type SocketData } from "./chatState.js";
 
 const POLICY = Buffer.from(
   '<cross-domain-policy>' +
