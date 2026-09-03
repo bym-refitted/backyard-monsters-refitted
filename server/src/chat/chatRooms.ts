@@ -29,16 +29,15 @@ import {
   unsubscribeFromChannel,
 } from "./chatTransport.js";
 
+interface ResolvedChannel {
+  key: string;
+  info: ChannelInfo;
+}
+
 const filter = new BadWords();
 
 const RATE_LIMIT_MS = 500;
 const MAX_MSG_LEN = 200;
-
-/** A channel key paired with the kind of room it turned out to be. */
-export interface ResolvedChannel {
-  key: string;
-  info: ChannelInfo;
-}
 
 /**
  * Resolves the channel a client is asking to join into a real channel key.
