@@ -188,6 +188,7 @@ package com.monsters.alliances.tabs
                   ep: String(item.ep),
                   leader: String(item.leader_name),
                   leader_baseid: Number(item.leader_baseid),
+                  relationship: int(item.relationship),
                   color: _relationshipColor(int(item.relationship)),
                   alliance_id: allianceId,
                   image: int(item.image),
