@@ -140,20 +140,35 @@ export const getInviteMessages = async (user: User): Promise<InviteMessage[]> =>
 };
 
 /**
- * Removes rows from a player's inbox. Scoped through the same visibility clause
- * the listing uses, so ids belonging to someone else's inbox are simply not
- * matched rather than rejected.
+ * Clears rows from a player's inbox, scoped through the same visibility clause
+ * the listing uses, so ids from another inbox match nothing.
+ *
+ * An unanswered row is declined rather than destroyed: deleting one is a
+ * refusal, and the other side is owed the outcome notice. It still leaves the
+ * deleter's view, since a resolved row belongs to the counterparty's. Each
+ * statement carries its own status predicate, so a row answered mid-request
+ * keeps its outcome.
  *
  * @param {User} user - The player clearing their inbox.
  * @param {number[]} inviteIds - The rows they selected.
- * @returns {Promise<number>} How many rows were removed.
+ * @returns {Promise<number>} How many rows left their inbox.
  */
 export const deleteInviteMessages = async (user: User, inviteIds: number[]) => {
   if (inviteIds.length === 0) return 0;
 
-  return await postgres.em.nativeDelete(AllianceInvite, {
-    $and: [inboxScope(user), { id: { $in: inviteIds } }],
+  const scope = { $and: [inboxScope(user), { id: { $in: inviteIds } }] };
+
+  const deleted = await postgres.em.nativeDelete(AllianceInvite, {
+    $and: [scope, { status: { $ne: AllianceInviteStatus.PENDING } }],
   });
+
+  const declined = await postgres.em.nativeUpdate(
+    AllianceInvite,
+    { $and: [scope, { status: AllianceInviteStatus.PENDING }] },
+    { status: AllianceInviteStatus.DECLINED, updated_at: new Date() }
+  );
+
+  return deleted + declined;
 };
 
 /**

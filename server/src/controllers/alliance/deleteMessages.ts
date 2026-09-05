@@ -14,8 +14,8 @@ export const deleteMessages: KoaController = async (ctx) => {
   const user: User = ctx.authUser;
   const { invite_ids } = DeleteMessagesSchema.parse(ctx.request.body);
 
-  const deleted = await deleteInviteMessages(user, invite_ids);
+  const cleared = await deleteInviteMessages(user, invite_ids);
 
   ctx.status = Status.OK;
-  ctx.body = { error: 0, deleted };
+  ctx.body = { error: 0, deleted: cleared };
 };
