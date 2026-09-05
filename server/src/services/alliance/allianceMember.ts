@@ -1,8 +1,11 @@
 import type { Loaded } from "@mikro-orm/core";
 
 import { AllianceRole } from "../../enums/Alliance.js";
+import { BaseType } from "../../enums/Base.js";
 import { User } from "../../models/user.model.js";
+import { postgres } from "../../server.js";
 import { calculateEmpirePoints } from "../base/calculateEmpirePoints.js";
+import { getLastSeen } from "../maproom/getLastSeen.js";
 
 interface AllianceMemberStatus {
   online: boolean;
@@ -72,4 +75,20 @@ export const toAllianceMember = (
     is_leader: isLeader,
     status,
   };
+};
+
+/**
+ * Counts how many of an alliance's members are currently online.
+ *
+ * @param {number} allianceId - The alliance to count.
+ * @returns {Promise<number>} Members seen within the last-seen window.
+ */
+export const countOnlineMembers = async (allianceId: number) => {
+  const members = await postgres.em.find(User, { alliance_id: allianceId }, { fields: ["userid"] });
+
+  if (members.length === 0) return 0;
+
+  const lastSeen = await getLastSeen(members.map(({ userid }) => userid), BaseType.MAIN);
+
+  return lastSeen.size;
 };

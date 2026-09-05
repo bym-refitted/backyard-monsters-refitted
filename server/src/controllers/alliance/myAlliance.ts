@@ -1,7 +1,7 @@
-import { MAX_ALLIANCE_MEMBERS } from "../../config/AllianceConfig.js";
 import { Status } from "../../enums/StatusCodes.js";
 import { User } from "../../models/user.model.js";
 import { getUserAlliance } from "../../services/alliance/allianceAccess.js";
+import { countOnlineMembers } from "../../services/alliance/allianceMember.js";
 import type { KoaController } from "../../utils/KoaController.js";
 
 /**
@@ -21,6 +21,8 @@ export const myAlliance: KoaController = async (ctx) => {
     return;
   }
 
+  const online = await countOnlineMembers(alliance.id);
+
   ctx.status = Status.OK;
   ctx.body = {
     error: 0,
@@ -33,7 +35,7 @@ export const myAlliance: KoaController = async (ctx) => {
       avg_level: alliance.stats?.avg_level,
       leader_name: alliance.leader_name,
       number_of_members: alliance.stats?.member_count,
-      max_members: MAX_ALLIANCE_MEMBERS,
+      online_members: online,
     },
   };
 };

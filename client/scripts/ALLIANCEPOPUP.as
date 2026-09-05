@@ -155,7 +155,7 @@ package
             // labels cost no request of their own and are as fresh as the last load.
             if (i == MEMBERS_TAB)
                tabLabel = KEYS.Get(String(AllianceConstants.TAB_LABELS[i]),
-                     {"v1": String(ALLIANCES.MemberCount()), "v2": String(ALLIANCES.MaxMembers())});
+                     {"v1": String(ALLIANCES.OnlineCount()), "v2": String(ALLIANCES.MemberCount())});
             else if (i == INVITES_TAB)
                tabLabel = KEYS.Get(String(AllianceConstants.TAB_LABELS[i]),
                      {"v1": String(ALLIANCES.PendingInviteCount())});

@@ -364,15 +364,15 @@ package com.monsters.alliances
       }
 
       /**
-       * How many members the alliance may hold, as reported by the server that
-       * enforces it. Only read where the Members tab is drawn, which happens only
-       * while in an alliance, so the payload is always present.
+       * Members of the player's alliance currently online, from the cached My
+       * Alliance payload. The same last-seen window the Members tab uses for its
+       * per-row dots, so the tab count and the rows always agree.
        * 
-       * @returns {int} The cap, or 0 when unaffiliated or not yet loaded.
+       * @returns {int} Online members, or 0 when unaffiliated or not yet loaded.
        */
-      public static function MaxMembers() : int
+      public static function OnlineCount() : int
       {
-         return (_myAllianceData != null) ? int(_myAllianceData.max_members) : 0;
+         return (_myAllianceData != null) ? int(_myAllianceData.online_members) : 0;
       }
 
       /**
