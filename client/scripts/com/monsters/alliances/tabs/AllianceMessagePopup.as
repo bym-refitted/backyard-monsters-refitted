@@ -9,7 +9,7 @@ package com.monsters.alliances.tabs
    import flash.text.TextFormat;
    import flash.text.TextFormatAlign;
 
-   public class AllianceRelationPopup
+   public class AllianceMessagePopup
    {
       private static const BG_W:int = 500;
       private static const PAD_H:int = 28;

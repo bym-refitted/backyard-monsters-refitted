@@ -3909,6 +3909,8 @@
     "alliance_no_alliance_title": "CREATE AN ALLIANCE",
     "alliance_no_alliance_desc": "Alliances are groups of players who have sworn to protect one another, form truces, and attack rivals who get in their way. Either request to join an existing Alliance, or create your own.",
     "alliance_no_alliance_btn": "Create an Alliance",
+    "alliance_locked_title": "JOIN THE FELLOWSHIP",
+    "alliance_locked_desc": "You can join and create Alliances as part of the World Map experience. Upgrade your Map Room to Level 2 and see what all the fuss is about.",
     "alliance_my_rank": "Rank:",
     "alliance_my_level": "Level:",
     "alliance_my_leader": "Leader:",

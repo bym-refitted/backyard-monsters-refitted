@@ -2,7 +2,7 @@ package com.monsters.alliances.tabs
 {
    import com.monsters.alliances.ALLIANCES;
    import com.monsters.alliances.AllianceConstants;
-   import com.monsters.alliances.tabs.AllianceRelationPopup;
+   import com.monsters.alliances.tabs.AllianceMessagePopup;
    import com.monsters.display.ImageCache;
    import com.monsters.enums.EnumYardType;
    import com.monsters.maproom_manager.MapRoomManager;
@@ -230,7 +230,7 @@ package com.monsters.alliances.tabs
             if (int(_rowData.relationship) == stance)
             {
                _dismiss();
-               new AllianceRelationPopup().Show(KEYS.Get("alliance_relation_title"), body);
+               new AllianceMessagePopup().Show(KEYS.Get("alliance_relation_title"), body);
                return;
             }
 
@@ -254,7 +254,7 @@ package com.monsters.alliances.tabs
                      rowData.relationship = stance;
                   }
 
-                  new AllianceRelationPopup().Show(KEYS.Get("alliance_relation_title"), body);
+                  new AllianceMessagePopup().Show(KEYS.Get("alliance_relation_title"), body);
 
                   if (onChanged != null)
                   {
@@ -313,7 +313,7 @@ package com.monsters.alliances.tabs
                   return;
                }
 
-               new AllianceRelationPopup().Show(
+               new AllianceMessagePopup().Show(
                      KEYS.Get("alliance_join_request_title"),
                      KEYS.Get("alliance_join_request_body")
                   );
