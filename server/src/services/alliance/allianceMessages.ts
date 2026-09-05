@@ -2,45 +2,44 @@ import { EntityManager, PostgreSqlDriver } from "@mikro-orm/postgresql";
 
 import { AllianceMessageType } from "../../enums/AllianceMessage.js";
 import { AllianceMessage } from "../../models/alliancemessage.model.js";
+import type { Alliance } from "../../models/alliance.model.js";
+import type { User } from "../../models/user.model.js";
 import type { HistoryEntry } from "../../chat/chatProtocol.js";
+import { publishAllianceShout } from "../../chat/chatShouts.js";
 import { postgres } from "../../server.js";
-import { SHOUT_TEXT } from "../../config/AllianceConfig.js";
+import { composeShout } from "./shoutText.js";
 
 interface AllianceMessageDraft {
   allianceId: number;
+  targetAllianceId?: number;
   userId: number;
   body: string;
   type?: AllianceMessageType;
+}
+
+export interface ShoutDraft extends Omit<AllianceMessageDraft, "userId" | "targetAllianceId"> {
+  author: User;
+  type: AllianceMessageType;
+  target?: Alliance | null;
+  em?: EntityManagerType;
 }
 
 type EntityManagerType = EntityManager<PostgreSqlDriver>;
 type AllianceFeed = Promise<HistoryEntry[]>;
 
 const FEED_FIELDS = [
-  "type", 
+  "messageType", 
   "body", 
   "created_at", 
   "author.userid", 
   "author.username", 
-  "author.pic_square"
+  "author.pic_square",
+  "targetAlliance.id",
+  "targetAlliance.name",
+  "targetAlliance.image"
 ] as const;
 
 export const ALLIANCE_MESSAGE_LIMIT = 50;
-
-/**
- * Builds a shout's text.
- *
- * @param {string} username - The subject of the shout.
- * @param {AllianceMessageType} type - Which shout to build.
- * @returns {string} The finished sentence, or empty if this type has no text.
- */
-export const createShoutText = (username: string, type: AllianceMessageType): string => {
-  const sentence = SHOUT_TEXT[type];
-
-  if (!sentence) return "";
-
-  return `${username} ${sentence}`;
-};
 
 /**
  * Drops an alliance's oldest entries once it holds more than
@@ -82,12 +81,13 @@ const cutAllianceMessages = async (alliance_id: number, em: EntityManagerType = 
  * @returns {Promise<AllianceMessage>} The stored row, carrying its id and timestamp.
  */
 export const addAllianceMessage = async (draft: AllianceMessageDraft, em: EntityManagerType = postgres.em) => {
-  const { allianceId, userId, body, type } = draft;
+  const { allianceId, userId, body, type, targetAllianceId } = draft;
 
   const row = {
     alliance_id: allianceId,
     author: userId,
-    type: type ?? AllianceMessageType.MESSAGE,
+    targetAlliance: targetAllianceId ?? null,
+    messageType: type ?? AllianceMessageType.MESSAGE,
     body,
     created_at: new Date(),
   };
@@ -100,6 +100,40 @@ export const addAllianceMessage = async (draft: AllianceMessageDraft, em: Entity
   await cutAllianceMessages(allianceId, em);
 
   return message;
+};
+
+/**
+ * Stores a shout and delivers it live to the alliance's channel.
+ *
+ * The sentence is built by composeShout, the same function the feed read uses,
+ * so a shout reads identically whether a member received it over the socket or
+ * scrolled back to it later. Emitting through anything else would leave two
+ * renderings of one message free to drift apart.
+ *
+ * Nothing is caught here: the write may be running inside the caller's open
+ * transaction, where swallowing a failure would poison it.
+ *
+ * @param {ShoutDraft} draft - The shout to raise.
+ */
+export const emitShout = async (shout: ShoutDraft) => {
+  const { author, target = null, em = postgres.em, ...message } = shout;
+
+  const draft: AllianceMessageDraft = { ...message, userId: author.userid, targetAllianceId: target?.id };
+
+  const stored = await addAllianceMessage(draft, em);
+  const shoutText = composeShout(message.type, author.username, message.body, target);
+
+  const entry: HistoryEntry = {
+    userId: author.userid,
+    displayName: author.username,
+    picSquare: author.pic_square ?? null,
+    allianceImage: target?.image ?? null,
+    body: shoutText,
+    ts: stored.created_at.getTime(),
+    messageType: message.type,
+  };
+
+  publishAllianceShout(message.allianceId, entry);
 };
 
 /**
@@ -116,19 +150,20 @@ export const getAllianceMessages = async (allianceId: number, em: EntityManagerT
     { orderBy: { id: "DESC" }, limit: ALLIANCE_MESSAGE_LIMIT, fields: FEED_FIELDS }
   );
 
-  const entries = rows.toReversed().map(({ author, type, body, created_at }) => {
+  const entries = rows.toReversed().map(({ author, targetAlliance, messageType, body, created_at }) => {
     const { userid, username, pic_square } = author;
 
-    const isShout = type !== AllianceMessageType.MESSAGE;
-    const text = isShout ? createShoutText(username, type) : body;
+    const isShout = messageType !== AllianceMessageType.MESSAGE;
+    const text = isShout ? composeShout(messageType, username, body, targetAlliance) : body;
 
     return {
       userId: userid,
       displayName: username,
       picSquare: pic_square ?? null,
+      allianceImage: targetAlliance?.image ?? null,
       body: text,
       ts: created_at.getTime(),
-      type,
+      messageType,
     };
   });
 

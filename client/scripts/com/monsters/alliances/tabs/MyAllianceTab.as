@@ -374,7 +374,7 @@ package com.monsters.alliances.tabs
          var messageType:String = event.Get("messagetype") as String;
          if (messageType != null && messageType != AllianceMessageType.MESSAGE)
          {
-            _appendSystemRow(message, picSquare, ts);
+            _appendSystemRow(message, picSquare, ts, int(event.Get("allianceimage")));
             return;
          }
 
@@ -544,7 +544,7 @@ package com.monsters.alliances.tabs
        * @param {String} picSquare - The subject's picture, null for a notice.
        * @param {Number} ts - Milliseconds since epoch, 0 for a notice.
        */
-      private function _appendSystemRow(message:String, picSquare:String = null, ts:Number = 0):void
+      private function _appendSystemRow(message:String, picSquare:String = null, ts:Number = 0, allianceImage:int = 0):void
       {
          const PAD:int = 5;
          const AVATAR:int = 32;
@@ -557,7 +557,8 @@ package com.monsters.alliances.tabs
          const TIME_INSET_TOP:int = 5;
          const GUTTER:int = 2;
 
-         var hasAvatar:Boolean = picSquare != null && picSquare != "";
+         var hasShield:Boolean = allianceImage > 0;
+         var hasAvatar:Boolean = hasShield || (picSquare != null && picSquare != "");
          var textX:int = PAD;
          if (hasAvatar)
          {
@@ -587,7 +588,15 @@ package com.monsters.alliances.tabs
             avatar.mouseEnabled = false;
             avatar.x = PAD;
             avatar.y = PAD;
-            _loadAvatar(picSquare, avatar, AVATAR);
+
+            if (hasShield)
+            {
+               _loadAllianceIcon(avatar, allianceImage, AVATAR);
+            }
+            else
+            {
+               _loadAvatar(picSquare, avatar, AVATAR);
+            }
          }
 
          if (ts > 0)

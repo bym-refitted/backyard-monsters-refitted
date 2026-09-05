@@ -17,6 +17,7 @@ import { Truce } from "./models/truce.model.js";
 import { Alliance } from "./models/alliance.model.js";
 import { AllianceInvite } from "./models/allianceinvite.model.js";
 import { AllianceMessage } from "./models/alliancemessage.model.js";
+import { AllianceRelationship } from "./models/alliancerelationship.model.js";
 import { AllianceStats } from "./models/alliancestats.view.js";
 
 /**
@@ -38,6 +39,7 @@ const entities = [
   Alliance,
   AllianceInvite,
   AllianceMessage,
+  AllianceRelationship,
   AllianceStats,
 ];
 

@@ -42,8 +42,9 @@ export interface HistoryEntry {
   userId: number;
   displayName: string;
   picSquare: string | null;
+  allianceImage: number | null;
   body: string;
-  type: AllianceMessageType;
+  messageType: AllianceMessageType;
   ts: number;
 }
 
@@ -67,7 +68,7 @@ export type ServerMessage =
   | { type: ServerMessageType.AuthOk; userId: number; displayName: string }
   | { type: ServerMessageType.AuthFail; reason: AuthFailReason }
   | { type: ServerMessageType.Joined; channel: string; history: HistoryEntry[] }
-  | { type: ServerMessageType.Message; channel: string; messageType: AllianceMessageType; userId: number; displayName: string; picSquare: string | null; body: string; ts: number }
+  | { type: ServerMessageType.Message; channel: string; messageType: AllianceMessageType; userId: number; displayName: string; picSquare: string | null; allianceImage: number | null; body: string; ts: number }
   | { type: ServerMessageType.UserEnter; channel: string; userId: number; displayName: string }
   | { type: ServerMessageType.UserExit; channel: string; userId: number }
   | { type: ServerMessageType.IgnoreList; list: IgnoreEntry[] }

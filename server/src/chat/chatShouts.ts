@@ -19,10 +19,11 @@ export const publishAllianceShout = (allianceId: number, entry: HistoryEntry) =>
   const message: ServerMessage = {
     type: ServerMessageType.Message,
     channel,
-    messageType: entry.type,
+    messageType: entry.messageType,
     userId: entry.userId,
     displayName: entry.displayName,
     picSquare: entry.picSquare,
+    allianceImage: entry.allianceImage,
     body: entry.body,
     ts: entry.ts,
   };

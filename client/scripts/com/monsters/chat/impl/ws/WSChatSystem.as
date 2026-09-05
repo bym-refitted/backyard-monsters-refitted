@@ -255,7 +255,7 @@ package com.monsters.chat.impl.ws
                   {
                      var histUserId:String = String(int(entry.userId));
                      updateNameMap(histUserId, String(entry.displayName));
-                     dispatchSay(channelName, histUserId, String(entry.body), entry.picSquare as String, Number(entry.ts), String(entry.displayName), entry.type as String);
+                     dispatchSay(channelName, histUserId, String(entry.body), entry.picSquare as String, Number(entry.ts), String(entry.displayName), entry.messageType as String, int(entry.allianceImage));
                   }
                }
                break;
@@ -263,7 +263,7 @@ package com.monsters.chat.impl.ws
             case ServerMessageType.MESSAGE:
                var senderIdStr:String = String(int(msg.userId));
                updateNameMap(senderIdStr, msg.displayName as String);
-               dispatchSay(msg.channel as String, senderIdStr, msg.body as String, msg.picSquare as String, Number(msg.ts), msg.displayName as String, msg.messageType as String);
+               dispatchSay(msg.channel as String, senderIdStr, msg.body as String, msg.picSquare as String, Number(msg.ts), msg.displayName as String, msg.messageType as String, int(msg.allianceImage));
                break;
 
             case ServerMessageType.USER_ENTER:
@@ -347,7 +347,7 @@ package com.monsters.chat.impl.ws
          dispatchEvent(new ChatEvent(ChatEvent.UPDATE_NAME, true, params));
       }
 
-      private function dispatchSay(channelName:String, userId:String, body:String, picSquare:String = null, ts:Number = 0, displayName:String = null, messageType:String = null):void
+      private function dispatchSay(channelName:String, userId:String, body:String, picSquare:String = null, ts:Number = 0, displayName:String = null, messageType:String = null, allianceImage:int = 0):void
       {
          var params:Dictionary = new Dictionary();
          params["channel"] = new Channel(channelName, "system");
@@ -356,6 +356,7 @@ package com.monsters.chat.impl.ws
          params["picsquare"] = picSquare;
          params["ts"] = ts;
          params["messagetype"] = messageType == null ? AllianceMessageType.MESSAGE : messageType;
+         params["allianceimage"] = allianceImage;
          params["displayname"] = displayName;
          dispatchEvent(new ChatEvent(ChatEvent.SAY, true, params));
       }

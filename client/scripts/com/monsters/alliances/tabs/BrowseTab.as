@@ -643,7 +643,7 @@ package com.monsters.alliances.tabs
       private function _showActionsPopup(rowData:Object, popX:int, popY:int):void
       {
          _dismissActivePopup();
-         _activePopup = new BrowseActionPopup(rowData, _dismissActivePopup);
+         _activePopup = new BrowseActionPopup(rowData, _dismissActivePopup, _fetch);
          _activePopup.x = popX;
          _activePopup.y = popY;
          addChild(_activePopup);

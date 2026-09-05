@@ -194,8 +194,9 @@ export const postMessage = async (client: ChatClient, channel: string, body: str
   const fields = {
     userId: client.userId,
     picSquare: client.picSquare,
+    allianceImage: null,
     body: messageBody,
-    type: AllianceMessageType.MESSAGE,
+    messageType: AllianceMessageType.MESSAGE,
   };
 
   let entry: HistoryEntry;
@@ -213,13 +214,10 @@ export const postMessage = async (client: ChatClient, channel: string, body: str
     await pushMessage(channel, entry);
   }
 
-  const { type: messageType, ...rest } = entry;
-
   const outgoing: ServerMessage = {
     type: ServerMessageType.Message,
     channel,
-    messageType,
-    ...rest,
+    ...entry,
     userId: client.userId,
   };
 

@@ -34,6 +34,7 @@ package com.monsters.alliances.tabs
             AllianceConstants.REL_NEUTRAL,
             AllianceConstants.REL_FRIENDLY
          ];
+      private static const RELATION_VALUES:Array = [-1, 0, 1];
       private static const RELATION_KEYS:Array = [
             "alliance_relation_foe",
             "alliance_relation_neutral",
@@ -45,17 +46,20 @@ package com.monsters.alliances.tabs
 
       private var _rowData:Object;
       private var _dismiss:Function;
+      private var _onChanged:Function;
       private var _leaderBaseId:Number;
 
       /**
        * @param {Object} rowData - Alliance row data for this popup's row
        * @param {Function} dismiss - Callback supplied by BrowseTab to clean up popup state
+       * @param {Function} onChanged - Called after a relationship change lands, so the row's swatch repaints
        */
-      public function BrowseActionPopup(rowData:Object, dismiss:Function)
+      public function BrowseActionPopup(rowData:Object, dismiss:Function, onChanged:Function = null)
       {
          super();
          _rowData = rowData;
          _dismiss = dismiss;
+         _onChanged = onChanged;
          _leaderBaseId = (_rowData != null) ? Number(_rowData.leader_baseid) : 0;
          _build();
       }
@@ -192,15 +196,71 @@ package com.monsters.alliances.tabs
          mc.graphics.endFill();
       }
 
+      /**
+       * Flags this row's alliance, then confirms.
+       *
+       * The confirmation is only shown once the server has taken the change, the
+       * same way Request to Join works - a leader who is refused, or who is no
+       * longer a leader, gets the server's own wording instead of a dialog
+       * claiming something happened.
+       *
+       * @param {int} idx - Which swatch was clicked: 0 Foe, 1 Neutral, 2 Ally.
+       * @returns {Function} The click handler for that swatch.
+       */
       private function _makeRelationHandler(idx:int):Function
       {
          return function(e:MouseEvent):void
          {
             SOUNDS.Play("click1");
+
+            var allianceId:int = (_rowData != null) ? int(_rowData.alliance_id) : 0;
+
+            if (allianceId <= 0) return;
+
             var name:String = (_rowData && _rowData.name) ? String(_rowData.name) : "";
+            var stance:int = int(RELATION_VALUES[idx]);
+            var rowData:Object = _rowData;
+            var onChanged:Function = _onChanged;
             var body:String = KEYS.Get(String(RELATION_KEYS[idx]), {"v1": name});
+
+            // Already flagged this way, so there is nothing to send. The dialog
+            // still shows - clicking Foe on a foe should read as confirmation,
+            // not as a dead button - but the server is spared a write and the
+            // feed a shout that announces nothing.
+            if (int(_rowData.relationship) == stance)
+            {
+               _dismiss();
+               new AllianceRelationPopup().Show(KEYS.Get("alliance_relation_title"), body);
+               return;
+            }
+
             _dismiss();
-            new AllianceRelationPopup().Show(KEYS.Get("alliance_relation_title"), body);
+            PLEASEWAIT.Show(KEYS.Get("msg_loading"));
+
+            ALLIANCES.ChangeRelationship(allianceId, stance, function(response:Object):void
+               {
+                  PLEASEWAIT.Hide();
+
+                  if (response == null || response.error)
+                  {
+                     GLOBAL.Message((response && response.error)
+                        ? String(response.error)
+                        : KEYS.Get("alliance_err_generic"));
+                     return;
+                  }
+
+                  if (rowData != null)
+                  {
+                     rowData.relationship = stance;
+                  }
+
+                  new AllianceRelationPopup().Show(KEYS.Get("alliance_relation_title"), body);
+
+                  if (onChanged != null)
+                  {
+                     onChanged();
+                  }
+               });
          };
       }
 

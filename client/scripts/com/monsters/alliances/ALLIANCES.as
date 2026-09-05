@@ -419,6 +419,39 @@ package com.monsters.alliances
        * @param {int} allianceId - The alliance being asked.
        * @param {Function} onDone - Receives the server response.
        */
+      /**
+       * Flags another alliance as Foe, Neutral or Ally on behalf of the player's own.
+       *
+       * The flag is the alliance's own private opinion - the flagged alliance is
+       * never told - and it is advisory: the map room warns before attacking an
+       * ally rather than preventing it.
+       *
+       * The My Alliance cache is dropped on success because the relationship map
+       * the map room reads travels on that payload, and would otherwise stay
+       * stale until the window was reopened.
+       *
+       * @param {int} allianceId - The alliance being flagged.
+       * @param {int} stance - -1 Foe, 0 Neutral, 1 Ally.
+       * @param {Function} onDone - Receives the parsed response, or null if the request never landed.
+       */
+      public static function ChangeRelationship(allianceId:int, stance:int, onDone:Function) : void
+      {
+         new URLLoaderApi().load(GLOBAL._allianceURL + "changerelationship",
+               [["target_alliance_id",allianceId],["relationship",stance]],
+               function(response:Object):void
+               {
+                  if(Boolean(response) && !response.error)
+                  {
+                     InvalidateMyAlliance();
+                  }
+                  onDone(response);
+               },
+               function(e:IOErrorEvent):void
+               {
+                  onDone(null);
+               });
+      }
+
       public static function RequestJoin(allianceId:int, onDone:Function) : void
       {
          new URLLoaderApi().load(GLOBAL._allianceURL + "requestjoin",[["alliance_id",allianceId]],

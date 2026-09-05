@@ -1,6 +1,7 @@
 import z from "zod";
 
 import { AllianceInviteStatus } from "../enums/AllianceInvite.js";
+import { AllianceStance } from "../enums/AllianceStance.js";
 
 /**
  * Schema to validate alliance creation data.
@@ -74,4 +75,12 @@ export const DeleteMessagesSchema = z.object({
     .string()
     .transform((ids) => ids.split(",").map(Number))
     .pipe(z.array(z.number().int().positive()).max(100)),
+});
+
+/**
+ * Schema for the Browse tab's leader-only Foe / Neutral / Ally buttons.
+ */
+export const ChangeRelationshipSchema = z.object({
+  target_alliance_id: z.coerce.number().int().positive(),
+  relationship: z.coerce.number().int().pipe(z.enum(AllianceStance)),
 });

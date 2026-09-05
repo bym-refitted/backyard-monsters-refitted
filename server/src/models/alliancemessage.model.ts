@@ -2,6 +2,7 @@ import { BigIntType } from "@mikro-orm/core";
 import { Entity, Index, ManyToOne, PrimaryKey, Property } from "@mikro-orm/decorators/es";
 
 import { AllianceMessageType } from "../enums/AllianceMessage.js";
+import { Alliance } from "./alliance.model.js";
 import { User } from "./user.model.js";
 
 @Entity({ tableName: "alliance_message" })
@@ -16,8 +17,11 @@ export class AllianceMessage {
   @ManyToOne(() => User, { fieldName: "user_id" })
   author!: User;
 
+  @ManyToOne({ entity: () => Alliance, nullable: true })
+  targetAlliance?: Alliance | null;
+
   @Property({ type: "string" })
-  type: AllianceMessageType = AllianceMessageType.MESSAGE;
+  messageType: AllianceMessageType = AllianceMessageType.MESSAGE;
 
   @Property({ type: "string" })
   body: string = "";

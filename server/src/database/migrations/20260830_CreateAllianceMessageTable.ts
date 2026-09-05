@@ -10,7 +10,7 @@ export class Migration20260830_CreateAllianceMessageTable extends Migration {
         id BIGSERIAL PRIMARY KEY,
         alliance_id INTEGER NOT NULL,
         user_id INTEGER NOT NULL,
-        type VARCHAR(16) NOT NULL DEFAULT 'message',
+        message_type VARCHAR(16) NOT NULL DEFAULT 'message',
         body TEXT NOT NULL DEFAULT '',
         created_at TIMESTAMP NOT NULL DEFAULT NOW()
       )
@@ -24,7 +24,7 @@ export class Migration20260830_CreateAllianceMessageTable extends Migration {
     await this.execute(`
       ALTER TABLE bym.alliance_message
       ADD CONSTRAINT alliance_message_type_check
-      CHECK (type IN ('message', 'joined', 'left', 'kicked', 'promoted', 'created', 'relationship'))
+      CHECK (message_type IN ('message', 'joined', 'left', 'kicked', 'promoted', 'created', 'relationship'))
     `);
 
     await this.execute(`

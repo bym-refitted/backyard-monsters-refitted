@@ -38,6 +38,6 @@ export const getHistory = async (channel: string): Promise<HistoryEntry[]> => {
   const entries = await redis.lrange(HISTORY_KEY(channel), 0, MAX_HISTORY - 1);
 
   return entries
-    .map((entry) => ({ type: AllianceMessageType.MESSAGE, ...JSON.parse(entry) }))
+    .map((entry) => ({ messageType: AllianceMessageType.MESSAGE, ...JSON.parse(entry) }))
     .reverse();
 };

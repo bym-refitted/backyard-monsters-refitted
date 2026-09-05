@@ -1,13 +1,14 @@
 import { AllianceRole } from "../../enums/AllianceRole.js";
 import { User } from "../../models/user.model.js";
 import { getUserAlliance } from "./allianceAccess.js";
+import { getAllianceRelationships, type Relationship } from "./relationships.js";
 
 interface AllianceData {
   alliance_id: number;
   name: string;
   image: number;
   is_leader: boolean;
-  relationships: Record<string, number>;
+  relationships: Relationship;
 }
 
 /**
@@ -22,11 +23,10 @@ export const getAllianceData = async (user: User): Promise<AllianceData | null> 
 
   if (!alliance) return null;
 
-  return {
-    alliance_id: alliance.id,
-    name: alliance.name,
-    image: alliance.image,
-    is_leader: user.alliance_role === AllianceRole.LEADER,
-    relationships: {},
-  };
+  const { id, name, image } = alliance;
+
+  const isLeader = user.alliance_role === AllianceRole.LEADER;
+  const relationships = await getAllianceRelationships(id);
+
+  return { alliance_id: id, name, image, is_leader: isLeader, relationships };
 };

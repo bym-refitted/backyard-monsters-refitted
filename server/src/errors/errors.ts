@@ -314,6 +314,14 @@ export const cannotKickErr = () =>
     isClientFriendly: true,
   });
 
+export const cannotChangeRelationshipErr = () =>
+  new ClientSafeError({
+    message: "You cannot change relationship statuses.",
+    status: Status.FORBIDDEN,
+    data: {},
+    isClientFriendly: true,
+  });
+
 export const cannotPromoteErr = () =>
   new ClientSafeError({
     message: "You cannot promote members.",
