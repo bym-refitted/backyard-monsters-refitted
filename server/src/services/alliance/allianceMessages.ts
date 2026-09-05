@@ -1,6 +1,6 @@
 import { EntityManager, PostgreSqlDriver } from "@mikro-orm/postgresql";
 
-import { AllianceMessageType } from "../../enums/AllianceMessage.js";
+import { AllianceMessageType } from "../../enums/Alliance.js";
 import { AllianceMessage } from "../../models/alliancemessage.model.js";
 import type { Alliance } from "../../models/alliance.model.js";
 import type { User } from "../../models/user.model.js";

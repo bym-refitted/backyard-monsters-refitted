@@ -1,4 +1,4 @@
-import { AllianceRole } from "../../enums/AllianceRole.js";
+import { AllianceRole } from "../../enums/Alliance.js";
 import { User } from "../../models/user.model.js";
 import { getUserAlliance } from "./allianceAccess.js";
 import { getAllianceRelationships, type Relationship } from "./relationships.js";

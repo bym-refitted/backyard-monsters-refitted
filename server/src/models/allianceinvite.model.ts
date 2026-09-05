@@ -1,6 +1,6 @@
 import { Entity, Index, PrimaryKey, Property } from "@mikro-orm/decorators/es";
 
-import { AllianceInviteStatus, AllianceInviteType } from "../enums/AllianceInvite.js";
+import { AllianceInviteStatus, AllianceInviteType } from "../enums/Alliance.js";
 
 @Entity({ tableName: "alliance_invite" })
 @Index({ properties: ["alliance_id", "status"] })

@@ -1,5 +1,4 @@
-import { AllianceMessageType } from "../enums/AllianceMessage.js";
-import { AllianceStance } from "../enums/AllianceStance.js";
+import { AllianceMessageType, AllianceStance } from "../enums/Alliance.js";
 
 /** Max members an alliance can hold. */
 export const MAX_ALLIANCE_MEMBERS = 50;

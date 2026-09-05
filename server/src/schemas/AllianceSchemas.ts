@@ -1,7 +1,6 @@
 import z from "zod";
 
-import { AllianceInviteStatus } from "../enums/AllianceInvite.js";
-import { AllianceStance } from "../enums/AllianceStance.js";
+import { AllianceInviteStatus, AllianceStance } from "../enums/Alliance.js";
 
 /**
  * Schema to validate alliance creation data.

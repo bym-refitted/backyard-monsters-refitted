@@ -1,4 +1,4 @@
-import type { AllianceMessageType } from "../enums/AllianceMessage.js";
+import type { AllianceMessageType } from "../enums/Alliance.js";
 
 export enum ClientMessageType {
   Auth = "auth",

@@ -1,7 +1,7 @@
 import type { FilterQuery } from "@mikro-orm/core";
 
 import { Status } from "../../enums/StatusCodes.js";
-import { AllianceStance } from "../../enums/AllianceStance.js";
+import { AllianceStance } from "../../enums/Alliance.js";
 import { Alliance } from "../../models/alliance.model.js";
 import { User } from "../../models/user.model.js";
 import { postgres } from "../../server.js";

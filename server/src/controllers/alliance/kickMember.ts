@@ -1,5 +1,5 @@
 import { Status } from "../../enums/StatusCodes.js";
-import { AllianceMessageType } from "../../enums/AllianceMessage.js";
+import { AllianceMessageType } from "../../enums/Alliance.js";
 import { User } from "../../models/user.model.js";
 import { postgres } from "../../server.js";
 import { MemberActionSchema } from "../../schemas/AllianceSchemas.js";

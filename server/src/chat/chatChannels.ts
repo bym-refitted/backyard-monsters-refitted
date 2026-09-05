@@ -1,28 +1,6 @@
+import { ALLIANCE_CHANNEL_PREFIX, CHANNELS, INFERNO_CHAT_CHANNEL } from "../config/ChatConfig.js";
 import { MapRoomVersion } from "../enums/MapRoom.js";
 import { redis } from "../server.js";
-
-const CHANNELS: Record<number, string> = {
-  [MapRoomVersion.V1]: "chat:mr1-global",
-  [MapRoomVersion.V2]: "chat:mr2-global",
-  [MapRoomVersion.V3]: "chat:mr3-global",
-};
-
-export const INFERNO_CHAT_CHANNEL = "chat:inferno-global";
-
-export const ALLIANCE_CHANNEL_ALIAS = "alliance";
-
-const ALLIANCE_CHANNEL_PREFIX = "chat:alliance:";
-
-/**
- * What kind of room a channel is, which decides where its messages are stored
- * and which name form they carry.
- *
- * @enum {string}
- */
-export enum ChannelType {
-  Alliance = "alliance",
-  Global = "global",
-}
 
 /**
  * Returns the channel key for an alliance's private chat.

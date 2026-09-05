@@ -1,4 +1,4 @@
-import { ChatControlType } from "../enums/AllianceMessage.js";
+import { ChatControlType } from "../enums/Chat.js";
 import { redis } from "../server.js";
 import { logger } from "../utils/logger.js";
 

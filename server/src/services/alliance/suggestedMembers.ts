@@ -1,5 +1,5 @@
 import { BaseType } from "../../enums/Base.js";
-import { AllianceInviteStatus } from "../../enums/AllianceInvite.js";
+import { AllianceInviteStatus } from "../../enums/Alliance.js";
 import { AllianceInvite } from "../../models/allianceinvite.model.js";
 import type { Alliance } from "../../models/alliance.model.js";
 import { User } from "../../models/user.model.js";

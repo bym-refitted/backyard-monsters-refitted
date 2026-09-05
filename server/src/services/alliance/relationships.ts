@@ -1,5 +1,4 @@
-import { AllianceMessageType } from "../../enums/AllianceMessage.js";
-import { AllianceStance } from "../../enums/AllianceStance.js";
+import { AllianceMessageType, AllianceStance } from "../../enums/Alliance.js";
 import { Alliance } from "../../models/alliance.model.js";
 import { AllianceRelationship } from "../../models/alliancerelationship.model.js";
 import { User } from "../../models/user.model.js";

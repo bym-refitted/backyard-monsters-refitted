@@ -34,8 +34,9 @@ import { calculateBaseLevel } from "../../../services/base/calculateBaseLevel.js
 import { mapSaveData } from "../../../services/base/mapSaveData.js";
 import { clearExpiredStoreItems } from "../../../services/base/clearExpiredStoreItems.js";
 import { extractTownHall } from "../../../utils/extractTownHall.js";
-import { getChatChannel, getOrCreateChatToken, INFERNO_CHAT_CHANNEL } from "../../../chat/chatChannels.js";
+import { getChatChannel, getOrCreateChatToken } from "../../../chat/chatChannels.js";
 import { getAllianceData } from "../../../services/alliance/allianceData.js";
+import { INFERNO_CHAT_CHANNEL } from "../../../config/ChatConfig.js";
 
 /**
  * Controller responsible for loading base modes based on the user's request.

@@ -2,10 +2,8 @@ import { LockMode, UniqueConstraintViolationException, type FilterQuery } from "
 
 import type { EntityManager, PostgreSqlDriver } from "@mikro-orm/postgresql";
 
-import { AllianceInviteStatus, AllianceInviteType } from "../../enums/AllianceInvite.js";
+import { AllianceInviteStatus, AllianceInviteType, AllianceMessageType, AllianceRole } from "../../enums/Alliance.js";
 import { MAX_ALLIANCE_MEMBERS } from "../../config/AllianceConfig.js";
-import { AllianceRole } from "../../enums/AllianceRole.js";
-import { AllianceMessageType } from "../../enums/AllianceMessage.js";
 import { Alliance } from "../../models/alliance.model.js";
 import { AllianceInvite } from "../../models/allianceinvite.model.js";
 import { User } from "../../models/user.model.js";

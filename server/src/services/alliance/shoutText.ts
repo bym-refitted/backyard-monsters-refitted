@@ -1,6 +1,5 @@
 import { SHOUT_TEXT, STANCE_LABEL } from "../../config/AllianceConfig.js";
-import { AllianceMessageType } from "../../enums/AllianceMessage.js";
-import type { AllianceStance } from "../../enums/AllianceStance.js";
+import { AllianceMessageType, type AllianceStance } from "../../enums/Alliance.js";
 import type { Alliance } from "../../models/alliance.model.js";
 
 

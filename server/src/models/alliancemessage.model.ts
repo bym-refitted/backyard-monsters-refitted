@@ -1,7 +1,7 @@
 import { BigIntType } from "@mikro-orm/core";
 import { Entity, Index, ManyToOne, PrimaryKey, Property } from "@mikro-orm/decorators/es";
 
-import { AllianceMessageType } from "../enums/AllianceMessage.js";
+import { AllianceMessageType } from "../enums/Alliance.js";
 import { Alliance } from "./alliance.model.js";
 import { User } from "./user.model.js";
 

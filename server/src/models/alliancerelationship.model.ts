@@ -1,6 +1,6 @@
 import { Entity, Index, ManyToOne, Property } from "@mikro-orm/decorators/es";
 
-import { AllianceStance } from "../enums/AllianceStance.js";
+import { AllianceStance } from "../enums/Alliance.js";
 import { Alliance } from "./alliance.model.js";
 
 @Entity({ tableName: "alliance_relationship" })

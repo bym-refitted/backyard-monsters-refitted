@@ -4,7 +4,7 @@ import ormConfig from "../../mikro-orm.config.js";
 import { v4 as uuidv4 } from "uuid";
 import { MikroORM, type RequiredEntityData } from "@mikro-orm/core";
 import { getDefaultBaseData } from "../../game-data/getDefaultBaseData.js";
-import { AllianceRole } from "../../enums/AllianceRole.js";
+import { AllianceRole } from "../../enums/Alliance.js";
 import { BaseType } from "../../enums/Base.js";
 import { Alliance } from "../../models/alliance.model.js";
 import { Save } from "../../models/save.model.js";

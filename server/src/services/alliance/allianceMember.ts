@@ -1,6 +1,6 @@
 import type { Loaded } from "@mikro-orm/core";
 
-import { AllianceRole } from "../../enums/AllianceRole.js";
+import { AllianceRole } from "../../enums/Alliance.js";
 import { User } from "../../models/user.model.js";
 import { calculateEmpirePoints } from "../base/calculateEmpirePoints.js";
 

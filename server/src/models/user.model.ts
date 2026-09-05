@@ -9,7 +9,7 @@ import { PrimaryKeyProp } from "@mikro-orm/core";
 
 import { Save } from "./save.model.js";
 import { FrontendKey } from "../utils/FrontendKey.js";
-import { AllianceRole } from "../enums/AllianceRole.js";
+import { AllianceRole } from "../enums/Alliance.js";
 import type { JsonObject } from "../types/JsonObject.js";
 
 @Entity({ tableName: "user" })

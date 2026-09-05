@@ -1,4 +1,4 @@
-import { AllianceMessageType } from "../enums/AllianceMessage.js";
+import { AllianceMessageType } from "../enums/Alliance.js";
 import { redis } from "../server.js";
 import type { HistoryEntry } from "./chatProtocol.js";
 

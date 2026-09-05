@@ -1,4 +1,4 @@
-import type { ChannelType } from "./chatChannels.js";
+import type { ChannelType } from "../enums/Chat.js";
 
 type ServerWebSocket<T> = import("bun").ServerWebSocket<T>;
 

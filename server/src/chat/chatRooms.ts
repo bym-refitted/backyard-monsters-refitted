@@ -6,11 +6,9 @@ import {
   addAllianceMessage,
   getAllianceMessages,
 } from "../services/alliance/allianceMessages.js";
-import { AllianceMessageType } from "../enums/AllianceMessage.js";
+import { AllianceMessageType } from "../enums/Alliance.js";
 import {
-  ALLIANCE_CHANNEL_ALIAS,
   allianceChannelKey,
-  ChannelType,
   validateChannel,
 } from "./chatChannels.js";
 import { getHistory, pushMessage } from "./chatHistory.js";
@@ -27,6 +25,8 @@ import {
   subscribeToChannel,
   unsubscribeFromChannel,
 } from "./chatTransport.js";
+import { ALLIANCE_CHANNEL_ALIAS } from "../config/ChatConfig.js";
+import { ChannelType } from "../enums/Chat.js";
 
 interface ResolvedChannel {
   key: string;

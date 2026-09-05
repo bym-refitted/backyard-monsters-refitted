@@ -1,4 +1,4 @@
-import { AllianceRole } from "../../enums/AllianceRole.js";
+import { AllianceRole } from "../../enums/Alliance.js";
 import { Alliance } from "../../models/alliance.model.js";
 import { User } from "../../models/user.model.js";
 import { postgres } from "../../server.js";

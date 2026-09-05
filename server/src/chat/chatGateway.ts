@@ -1,6 +1,4 @@
-import { ChatControlType } from "../enums/AllianceMessage.js";
 import { logger } from "../utils/logger.js";
-import { ChannelType } from "./chatChannels.js";
 import { type ChatControlMessage } from "./chatControl.js";
 import {
   ClientMessageType,
@@ -21,6 +19,7 @@ import {
 } from "./chatRooms.js";
 import { clients, type SocketData } from "./chatState.js";
 import { initTransport, subscribeControl } from "./chatTransport.js";
+import { ChannelType, ChatControlType } from "../enums/Chat.js";
 
 type ServerWebSocket<T> = import("bun").ServerWebSocket<T>;
 

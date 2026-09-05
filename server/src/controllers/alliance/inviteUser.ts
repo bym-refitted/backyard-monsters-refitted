@@ -1,4 +1,4 @@
-import { AllianceInviteType } from "../../enums/AllianceInvite.js";
+import { AllianceInviteType } from "../../enums/Alliance.js";
 import { Status } from "../../enums/StatusCodes.js";
 import { User } from "../../models/user.model.js";
 import { postgres } from "../../server.js";
