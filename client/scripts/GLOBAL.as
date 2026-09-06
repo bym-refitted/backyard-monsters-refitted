@@ -1163,121 +1163,124 @@ package
          {
             CheckNetworkConnection(null);
          }
-         if (!isHalted && !GLOBAL._catchup)
+         // Don't tick if halted (crash/fatal error) or if the game is in catchup mode (loading)
+         if (isHalted || GLOBAL._catchup)
          {
-            t += 1;
-            if (MapRoomManager.instance.isOpen)
+            return;
+         }
+
+         t += 1;
+         if (MapRoomManager.instance.isOpen)
+         {
+            MapRoomManager.instance.Tick();
+            LOGGER.Tick();
+            MAILBOX.Tick();
+            AFK();
+         }
+         else
+         {
+            // Comment: This function call is used to force upgrade to map room 3 when the game first loads
+            MapRoomManager.instance.CheckForAndForceUpgradeFromMapRoom1();
+            ++_timePlayed;
+            tickableCount = int(tickables.length - 1);
+            tickableIdx = 0;
+            while (tickableIdx < tickableCount)
             {
-               MapRoomManager.instance.Tick();
-               LOGGER.Tick();
-               MAILBOX.Tick();
-               AFK();
+               tickables[tickableIdx].tick();
+               tickableIdx++;
+            }
+            allBuildings = InstanceManager.getInstancesByClass(BFOUNDATION);
+            resBuildingStoredAmount = 0;
+            resBuildingCountdownProduce = 0;
+            for each (curBuilding in allBuildings)
+            {
+               // collect stored amount and produceCountdown before tick, then compare after tick to detect overproduction
+               isBResource = curBuilding is BRESOURCE;
+               if (isBResource)
+               {
+                  resBuildingStoredAmount = curBuilding._stored.Get();
+                  resBuildingCountdownProduce = curBuilding._countdownProduce.Get();
+               }
+               curBuilding.Tick(1);
+               if (isBResource)
+               {
+                  // Presumably Anti-Cheat: detect overproduction (has produced even though production timer still running) and show error message
+                  if (resBuildingCountdownProduce > 1 && resBuildingStoredAmount != curBuilding._stored.Get())
+                  {
+                     LOGGER.Log("log", "BRESOURCE.StoredB " + resBuildingStoredAmount + " - " + curBuilding._stored.Get());
+                     GLOBAL.ErrorMessage("BRESOURCE.StoredB");
+                     return;
+                  }
+               }
+            }
+            HOUSING.catchupTick(1);
+            UPDATES.Check();
+            CREATURELOCKER.Tick();
+            HATCHERY.Tick();
+            HATCHERYCC.Tick();
+            STORE.ProcessPurchases();
+            BASE.Tick();
+            HOUSING.Update();
+            ACADEMY.Tick();
+            if (GLOBAL.mode == e_BASE_MODE.ATTACK || GLOBAL.mode == e_BASE_MODE.WMATTACK)
+            {
+               ATTACK.Tick();
+            }
+            QUEUE.Tick();
+            UI2.Update();
+            LOGGER.Tick();
+            MAILBOX.Tick();
+            AFK();
+            MONSTERBAITER.Tick();
+            MONSTERBUNKER.Tick();
+            if (_mode == GLOBAL.e_BASE_MODE.WMATTACK || _mode == GLOBAL.e_BASE_MODE.WMVIEW)
+            {
+               WMBASE.Tick();
+            }
+         }
+         if (_toggleYardWaiting && BASE._saveCounterA == BASE._saveCounterB && !BASE._saving)
+         {
+            _toggleYardWaiting = 0;
+            _nextOutpostWaiting = 0;
+            _showMapWaiting = 0;
+            MapRoomManager.instance.mapRoomVersion = MapRoomManager.MAP_ROOM_VERSION_1;
+            if (MAPROOM_INFERNO._open)
+            {
+               MAPROOM_INFERNO.Hide();
+            }
+            if (MAPROOM._open)
+            {
+               MAPROOM.Hide();
+            }
+            if (BASE.isInfernoMainYardOrOutpost)
+            {
+               yardTypeToLoad = MapRoomManager.instance.isInMapRoom3 ? int(EnumYardType.PLAYER) : int(EnumYardType.MAIN_YARD);
+               BASE.LoadBase(null, 0, 0, GLOBAL.e_BASE_MODE.BUILD, false, yardTypeToLoad);
             }
             else
             {
-               // Comment: This function call is used to force upgrade to map room 3 when the game first loads
-               MapRoomManager.instance.CheckForAndForceUpgradeFromMapRoom1();
-               ++_timePlayed;
-               tickableCount = int(tickables.length - 1);
-               tickableIdx = 0;
-               while (tickableIdx < tickableCount)
-               {
-                  tickables[tickableIdx].tick();
-                  tickableIdx++;
-               }
-               allBuildings = InstanceManager.getInstancesByClass(BFOUNDATION);
-               resBuildingStoredAmount = 0;
-               resBuildingCountdownProduce = 0;
-               for each (curBuilding in allBuildings)
-               {
-                  // collect stored amount and produceCountdown before tick, then compare after tick to detect overproduction
-                  isBResource = curBuilding is BRESOURCE;
-                  if (isBResource)
-                  {
-                     resBuildingStoredAmount = curBuilding._stored.Get();
-                     resBuildingCountdownProduce = curBuilding._countdownProduce.Get();
-                  }
-                  curBuilding.Tick(1);
-                  if (isBResource)
-                  {
-                     // Presumably Anti-Cheat: detect overproduction (has produced even though production timer still running) and show error message
-                     if (resBuildingCountdownProduce > 1 && resBuildingStoredAmount != curBuilding._stored.Get())
-                     {
-                        LOGGER.Log("log", "BRESOURCE.StoredB " + resBuildingStoredAmount + " - " + curBuilding._stored.Get());
-                        GLOBAL.ErrorMessage("BRESOURCE.StoredB");
-                        return;
-                     }
-                  }
-               }
-               HOUSING.catchupTick(1);
-               UPDATES.Check();
-               CREATURELOCKER.Tick();
-               HATCHERY.Tick();
-               HATCHERYCC.Tick();
-               STORE.ProcessPurchases();
-               BASE.Tick();
-               HOUSING.Update();
-               ACADEMY.Tick();
-               if (GLOBAL.mode == e_BASE_MODE.ATTACK || GLOBAL.mode == e_BASE_MODE.WMATTACK)
-               {
-                  ATTACK.Tick();
-               }
-               QUEUE.Tick();
-               UI2.Update();
-               LOGGER.Tick();
-               MAILBOX.Tick();
-               AFK();
-               MONSTERBAITER.Tick();
-               MONSTERBUNKER.Tick();
-               if (_mode == GLOBAL.e_BASE_MODE.WMATTACK || _mode == GLOBAL.e_BASE_MODE.WMVIEW)
-               {
-                  WMBASE.Tick();
-               }
+               BASE.LoadBase(GLOBAL._infBaseURL, 0, 0, GLOBAL.e_BASE_MODE.IBUILD, false, EnumYardType.INFERNO_YARD);
             }
-            if (_toggleYardWaiting && BASE._saveCounterA == BASE._saveCounterB && !BASE._saving)
-            {
-               _toggleYardWaiting = 0;
-               _nextOutpostWaiting = 0;
-               _showMapWaiting = 0;
-               MapRoomManager.instance.mapRoomVersion = MapRoomManager.MAP_ROOM_VERSION_1;
-               if (MAPROOM_INFERNO._open)
-               {
-                  MAPROOM_INFERNO.Hide();
-               }
-               if (MAPROOM._open)
-               {
-                  MAPROOM.Hide();
-               }
-               if (BASE.isInfernoMainYardOrOutpost)
-               {
-                  yardTypeToLoad = MapRoomManager.instance.isInMapRoom3 ? int(EnumYardType.PLAYER) : int(EnumYardType.MAIN_YARD);
-                  BASE.LoadBase(null, 0, 0, GLOBAL.e_BASE_MODE.BUILD, false, yardTypeToLoad);
-               }
-               else
-               {
-                  BASE.LoadBase(GLOBAL._infBaseURL, 0, 0, GLOBAL.e_BASE_MODE.IBUILD, false, EnumYardType.INFERNO_YARD);
-               }
-            }
-            else if (_nextOutpostWaiting && BASE._saveCounterA == BASE._saveCounterB && !BASE._saving)
-            {
-               _nextOutpostWaiting = 0;
-               _showMapWaiting = 0;
-               BASE.LoadNext();
-            }
-            // Comment: ReadyToShow() must be true before loading the map, otherwise it loads forever
-            else if (_showMapWaiting && BASE._saveCounterA == BASE._saveCounterB && !BASE._saving && !BASE._loading && MapRoomManager.instance.ReadyToShow())
-            {
-               _showMapWaiting = 0;
-               PLEASEWAIT.Hide();
-               MapRoomManager.instance.ShowDelayed();
-            }
-            if (BASE._needCurrentCell && GLOBAL._currentCell && !MapRoomManager.instance.isInMapRoom3 && BASE._saveCounterA == BASE._saveCounterB && !BASE._saving)
-            {
-               PLEASEWAIT.Hide();
-               BASE._needCurrentCell = false;
-               yardTypeToLoad = GLOBAL._currentCell.baseType == EnumYardType.INFERNO_OUTPOST ? int(EnumYardType.OUTPOST) : int(EnumYardType.MAIN_YARD);
-               BASE.LoadBase(null, 0, GLOBAL._currentCell.baseID, GLOBAL.e_BASE_MODE.BUILD, false, yardTypeToLoad);
-            }
+         }
+         else if (_nextOutpostWaiting && BASE._saveCounterA == BASE._saveCounterB && !BASE._saving)
+         {
+            _nextOutpostWaiting = 0;
+            _showMapWaiting = 0;
+            BASE.LoadNext();
+         }
+         // Comment: ReadyToShow() must be true before loading the map, otherwise it loads forever
+         else if (_showMapWaiting && BASE._saveCounterA == BASE._saveCounterB && !BASE._saving && !BASE._loading && MapRoomManager.instance.ReadyToShow())
+         {
+            _showMapWaiting = 0;
+            PLEASEWAIT.Hide();
+            MapRoomManager.instance.ShowDelayed();
+         }
+         if (BASE._needCurrentCell && GLOBAL._currentCell && !MapRoomManager.instance.isInMapRoom3 && BASE._saveCounterA == BASE._saveCounterB && !BASE._saving)
+         {
+            PLEASEWAIT.Hide();
+            BASE._needCurrentCell = false;
+            yardTypeToLoad = GLOBAL._currentCell.baseType == EnumYardType.INFERNO_OUTPOST ? int(EnumYardType.OUTPOST) : int(EnumYardType.MAIN_YARD);
+            BASE.LoadBase(null, 0, GLOBAL._currentCell.baseID, GLOBAL.e_BASE_MODE.BUILD, false, yardTypeToLoad);
          }
       }
 
