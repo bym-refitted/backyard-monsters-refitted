@@ -1168,7 +1168,7 @@ package
          {
             return;
          }
-
+         
          t += 1;
          if (MapRoomManager.instance.isOpen)
          {
@@ -1180,7 +1180,9 @@ package
          else
          {
             // Comment: This function call is used to force upgrade to map room 3 when the game first loads
-            MapRoomManager.instance.CheckForAndForceUpgradeFromMapRoom1();
+            // This function is responsible for showing a popup "Upgrade to MR3" if applicable
+            // Currently this function has no effect, so it is commented out
+            // MapRoomManager.instance.CheckForAndForceUpgradeFromMapRoom1();
             ++_timePlayed;
             tickableCount = int(tickables.length - 1);
             tickableIdx = 0;
