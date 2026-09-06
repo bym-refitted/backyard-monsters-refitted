@@ -1148,16 +1148,14 @@ package
 
       public static function Tick():void
       {
-         var _loc1_:int = 0;
-         var _loc2_:int = 0;
-         var _loc3_:Vector.<Object> = null;
-         var _loc4_:BFOUNDATION = null;
-         var _loc5_:Number = NaN;
-         var _loc6_:Number = NaN;
-         var _loc7_:* = false;
-         var _loc8_:int = 0;
-         var _loc9_:int = 0;
-         var _loc10_:int = 0;
+         var tickableCount:int = 0;
+         var tickableIdx:int = 0;
+         var allBuildings:Vector.<Object> = null;
+         var curBuilding:BFOUNDATION = null;
+         var resBuildingStoredAmount:Number = NaN;
+         var resBuildingCountdownProduce:Number = NaN;
+         var isBResource:* = false;
+         var yardTypeToLoad:int = 0;
 
          // Poll the server every 5 ticks to check for network connection
          connectionCounter += 1;
@@ -1180,30 +1178,32 @@ package
                // Comment: This function call is used to force upgrade to map room 3 when the game first loads
                MapRoomManager.instance.CheckForAndForceUpgradeFromMapRoom1();
                ++_timePlayed;
-               _loc1_ = int(tickables.length - 1);
-               _loc2_ = 0;
-               while (_loc2_ < _loc1_)
+               tickableCount = int(tickables.length - 1);
+               tickableIdx = 0;
+               while (tickableIdx < tickableCount)
                {
-                  tickables[_loc2_].tick();
-                  _loc2_++;
+                  tickables[tickableIdx].tick();
+                  tickableIdx++;
                }
-               _loc3_ = InstanceManager.getInstancesByClass(BFOUNDATION);
-               _loc5_ = 0;
-               _loc6_ = 0;
-               for each (_loc4_ in _loc3_)
+               allBuildings = InstanceManager.getInstancesByClass(BFOUNDATION);
+               resBuildingStoredAmount = 0;
+               resBuildingCountdownProduce = 0;
+               for each (curBuilding in allBuildings)
                {
-                  _loc7_ = _loc4_ is BRESOURCE;
-                  if (_loc7_)
+                  // collect stored amount and produceCountdown before tick, then compare after tick to detect overproduction
+                  isBResource = curBuilding is BRESOURCE;
+                  if (isBResource)
                   {
-                     _loc5_ = _loc4_._stored.Get();
-                     _loc6_ = _loc4_._countdownProduce.Get();
+                     resBuildingStoredAmount = curBuilding._stored.Get();
+                     resBuildingCountdownProduce = curBuilding._countdownProduce.Get();
                   }
-                  _loc4_.Tick(1);
-                  if (_loc7_)
+                  curBuilding.Tick(1);
+                  if (isBResource)
                   {
-                     if (_loc6_ > 1 && _loc5_ != _loc4_._stored.Get())
+                     // Presumably Anti-Cheat: detect overproduction (has produced even though production timer still running) and show error message
+                     if (resBuildingCountdownProduce > 1 && resBuildingStoredAmount != curBuilding._stored.Get())
                      {
-                        LOGGER.Log("log", "BRESOURCE.StoredB " + _loc5_ + " - " + _loc4_._stored.Get());
+                        LOGGER.Log("log", "BRESOURCE.StoredB " + resBuildingStoredAmount + " - " + curBuilding._stored.Get());
                         GLOBAL.ErrorMessage("BRESOURCE.StoredB");
                         return;
                      }
@@ -1250,8 +1250,8 @@ package
                }
                if (BASE.isInfernoMainYardOrOutpost)
                {
-                  _loc8_ = MapRoomManager.instance.isInMapRoom3 ? int(EnumYardType.PLAYER) : int(EnumYardType.MAIN_YARD);
-                  BASE.LoadBase(null, 0, 0, GLOBAL.e_BASE_MODE.BUILD, false, _loc8_);
+                  yardTypeToLoad = MapRoomManager.instance.isInMapRoom3 ? int(EnumYardType.PLAYER) : int(EnumYardType.MAIN_YARD);
+                  BASE.LoadBase(null, 0, 0, GLOBAL.e_BASE_MODE.BUILD, false, yardTypeToLoad);
                }
                else
                {
@@ -1267,7 +1267,6 @@ package
             // Comment: ReadyToShow() must be true before loading the map, otherwise it loads forever
             else if (_showMapWaiting && BASE._saveCounterA == BASE._saveCounterB && !BASE._saving && !BASE._loading && MapRoomManager.instance.ReadyToShow())
             {
-               _loc9_ = _showMapWaiting;
                _showMapWaiting = 0;
                PLEASEWAIT.Hide();
                MapRoomManager.instance.ShowDelayed();
@@ -1276,8 +1275,8 @@ package
             {
                PLEASEWAIT.Hide();
                BASE._needCurrentCell = false;
-               _loc10_ = GLOBAL._currentCell.baseType == EnumYardType.INFERNO_OUTPOST ? int(EnumYardType.OUTPOST) : int(EnumYardType.MAIN_YARD);
-               BASE.LoadBase(null, 0, GLOBAL._currentCell.baseID, GLOBAL.e_BASE_MODE.BUILD, false, _loc10_);
+               yardTypeToLoad = GLOBAL._currentCell.baseType == EnumYardType.INFERNO_OUTPOST ? int(EnumYardType.OUTPOST) : int(EnumYardType.MAIN_YARD);
+               BASE.LoadBase(null, 0, GLOBAL._currentCell.baseID, GLOBAL.e_BASE_MODE.BUILD, false, yardTypeToLoad);
             }
          }
       }
