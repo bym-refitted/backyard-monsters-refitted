@@ -77,22 +77,6 @@ package com.monsters.rendering
          this.renderer_friend::_canvas.unlock();
       }
       
-      private function cull(param1:Vector.<RasterData>) : void
-      {
-         var _loc3_:RasterData = null;
-         var _loc4_:Rectangle = null;
-         var _loc2_:Vector.<RasterData> = param1;
-         for each(_loc3_ in _loc2_)
-         {
-            (_loc4_ = _loc3_.renderer_friend::_rect).x = _loc3_.renderer_friend::_pt.x;
-            _loc4_.y = _loc3_.renderer_friend::_pt.y;
-            if(this.renderer_friend::_viewRect.intersects(_loc4_))
-            {
-               _loc2_[_loc2_.length] = _loc3_;
-            }
-         }
-      }
-      
       private function sortRasterData(param1:RasterData, param2:RasterData) : Number
       {
          return param1.renderer_friend::_depth - param2.renderer_friend::_depth;
