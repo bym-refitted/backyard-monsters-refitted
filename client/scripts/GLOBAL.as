@@ -1170,20 +1170,24 @@ package
          }
          
          t += 1;
-         if (MapRoomManager.instance.isOpen)
+         if (MapRoomManager.instance.isOpen) // Tick MapRoom stuff only
          {
             MapRoomManager.instance.Tick();
             LOGGER.Tick();
             MAILBOX.Tick();
             AFK();
          }
-         else
+         else // tick the base and other stuff
          {
             // Comment: This function call is used to force upgrade to map room 3 when the game first loads
             // This function is responsible for showing a popup "Upgrade to MR3" if applicable
             // Currently this function has no effect, so it is commented out
             // MapRoomManager.instance.CheckForAndForceUpgradeFromMapRoom1();
             ++_timePlayed;
+
+            // ============================
+            // Tick all registered tickables (ITickable)
+            // ============================
             tickableCount = int(tickables.length - 1);
             tickableIdx = 0;
             while (tickableIdx < tickableCount)
@@ -1191,6 +1195,11 @@ package
                tickables[tickableIdx].tick();
                tickableIdx++;
             }
+
+            // ============================
+            // Tick all Buildings (BFOUNDATION)
+            // ============================
+
             allBuildings = InstanceManager.getInstancesByClass(BFOUNDATION);
             resBuildingStoredAmount = 0;
             resBuildingCountdownProduce = 0;
@@ -1215,6 +1224,11 @@ package
                   }
                }
             }
+
+            // ============================
+            // Tick other systems
+            // ============================
+
             HOUSING.catchupTick(1);
             UPDATES.Check();
             CREATURELOCKER.Tick();
@@ -1240,6 +1254,11 @@ package
                WMBASE.Tick();
             }
          }
+
+         // ============================
+         // Handle deferred actions that require the base to be fully loaded and saved before proceeding
+         // ============================
+
          if (_toggleYardWaiting && BASE._saveCounterA == BASE._saveCounterB && !BASE._saving)
          {
             _toggleYardWaiting = 0;
