@@ -474,7 +474,7 @@ package
          }
          GRID.Cleanup();
          PATHING.Cleanup();
-         RasterData.clear();
+         RasterData.clearAll();
          _showingWhatsNew = false;
          _deltaResources = {
                "dirty": false,

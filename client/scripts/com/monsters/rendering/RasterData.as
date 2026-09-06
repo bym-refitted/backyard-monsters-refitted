@@ -131,7 +131,7 @@ package com.monsters.rendering
          renderer_friend::s_debugData.length = 0;
       }
       
-      public static function clear(param1:Boolean = false) : void
+      public static function clearAll(param1:Boolean = false) : void
       {
          var _loc2_:RasterData = null;
          for each(_loc2_ in renderer_friend::s_rasterData)
