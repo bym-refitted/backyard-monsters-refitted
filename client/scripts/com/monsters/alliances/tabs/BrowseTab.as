@@ -635,7 +635,7 @@ package com.monsters.alliances.tabs
             SOUNDS.Play("click1");
             const popY:int = Math.min(
                   TABLE_Y + rowBaseY,
-                  CONTENT_H - BrowseActionPopup.POPUP_H
+                  CONTENT_H - BrowseActionPopup.PopupHeight()
                ) + 12;
             _showActionsPopup(rowData, POP_X - 30, popY);
          };

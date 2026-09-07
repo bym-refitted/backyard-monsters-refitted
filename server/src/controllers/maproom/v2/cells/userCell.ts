@@ -54,7 +54,7 @@ export const userCell = async (ctx: Context, cell: WorldMapCell, cellOwners: Map
     b: cell.base_type,
     pi: 0,
     bid: cell.baseid,
-    aid: 0,
+    aid: cellOwner.alliance_id,
     i: cell.terrainHeight,
     v: cellSave.empirevalue,
     mine: mine ? 1 : 0,

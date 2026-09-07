@@ -41,8 +41,8 @@ package com.monsters.alliances.tabs
             "alliance_relation_ally"
          ];
 
-      public static const POPUP_H:int =
-         PAD + BTN_H + BTN_GAP + BTN_H + ICON_ROW_GAP + ICON_H + PAD;
+      private static const POPUP_H_MEMBER:int = PAD + BTN_H + BTN_GAP + BTN_H + PAD;
+      private static const POPUP_H_LEADER:int = POPUP_H_MEMBER + ICON_ROW_GAP + ICON_H;
 
       private var _rowData:Object;
       private var _dismiss:Function;
@@ -64,13 +64,25 @@ package com.monsters.alliances.tabs
          _build();
       }
 
+      /**
+       * The popup's height for the viewer, so BrowseTab can place it before one
+       * exists. A member's popup is the two buttons alone and is shorter by the
+       * swatch row.
+       *
+       * @returns {int} Height in pixels.
+       */
+      public static function PopupHeight():int
+      {
+         return ALLIANCES._isLeader ? POPUP_H_LEADER : POPUP_H_MEMBER;
+      }
+
       private function _build():void
       {
          var bg:MovieClip = addChild(new MovieClip()) as MovieClip;
          bg.mouseEnabled = false;
          bg.graphics.lineStyle(1, AllianceConstants.CELL_BORDER, 1);
          bg.graphics.beginFill(AllianceConstants.ACTION_BG, 1);
-         bg.graphics.drawRoundRect(0, 0, POPUP_W, POPUP_H, 3, 3);
+         bg.graphics.drawRoundRect(0, 0, POPUP_W, PopupHeight(), 3, 3);
          bg.graphics.endFill();
 
          const btnX:int = int((POPUP_W - BTN_W) / 2);
@@ -84,6 +96,8 @@ package com.monsters.alliances.tabs
          joinBtn.x = btnX;
          joinBtn.y = PAD + BTN_H + BTN_GAP;
          joinBtn.addEventListener(MouseEvent.CLICK, _onRequestJoin);
+
+         if (!ALLIANCES._isLeader) return;
 
          const iconsY:int = PAD + BTN_H + BTN_GAP + BTN_H + ICON_ROW_GAP;
          const startX:int = PAD;
