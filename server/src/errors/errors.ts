@@ -266,6 +266,14 @@ export const userAlreadyInAllianceErr = () =>
     isClientFriendly: true,
   });
 
+export const inviteLeaderOnlyErr = () =>
+  new ClientSafeError({
+    message: "Only the leader of the alliance can invite new members. Ask them to send the invitation for you.",
+    status: Status.FORBIDDEN,
+    data: {},
+    isClientFriendly: true,
+  });
+
 export const mustLeaveAllianceErr = () =>
   new ClientSafeError({
     message: "You must leave your alliance to join another.",

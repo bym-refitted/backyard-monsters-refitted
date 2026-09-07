@@ -11,6 +11,7 @@ import {
   publicReadLimiter,
   registerLimiter,
   allianceInviteLimiter,
+  allianceJoinRequestLimiter,
   searchAlliancesLimiter,
   snapshotLimiter,
   terrainLimiter,
@@ -175,7 +176,7 @@ router.get("/alliance/myalliance", verifyUserAuth, logRequest, myAlliance);
 router.get("/alliance/myalliancemembers", verifyUserAuth, logRequest, myAllianceMembers);
 router.get("/alliance/getsuggestedmembers", verifyUserAuth, logRequest, suggestedMembers);
 router.post("/alliance/searchalliances", verifyUserAuth, searchAlliancesLimiter, logRequest, searchAlliances);
-router.post("/alliance/requestjoin", verifyUserAuth, allianceInviteLimiter, logRequest, requestJoin);
+router.post("/alliance/requestjoin", verifyUserAuth, allianceJoinRequestLimiter, logRequest, requestJoin);
 router.post("/alliance/inviteuser", verifyUserAuth, allianceInviteLimiter, logRequest, inviteUser);
 router.post("/alliance/changeinvitestatus", verifyUserAuth, logRequest, changeInviteStatus);
 router.get("/alliance/getmessages", verifyUserAuth, logRequest, getMessages);

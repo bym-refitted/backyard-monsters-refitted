@@ -103,16 +103,30 @@ export const searchAlliancesLimiter = RateLimit.middleware({
 });
 
 /**
- * Rate limit for opening an alliance exchange - 10 per hour per user.
+ * Rate limit for a leader inviting players - 20 per minute per user.
  */
 export const allianceInviteLimiter = RateLimit.middleware({
-  interval: { hour: 1 },
-  max: 10,
+  interval: { min: 1 },
+  max: 20,
   prefixKey: "alliance-invite",
   keyGenerator: byUser,
   handler: async (ctx: Context) => {
     ctx.status = Status.TOO_MANY_REQUESTS;
-    ctx.body = { error: "Too many alliance requests. Please try again later." };
+    ctx.body = { error: "Too many alliance invites. Please slow down." };
+  },
+});
+
+/**
+ * Rate limit for a player asking to join an alliance - 10 per minute per user.
+ */
+export const allianceJoinRequestLimiter = RateLimit.middleware({
+  interval: { min: 1 },
+  max: 10,
+  prefixKey: "alliance-join-request",
+  keyGenerator: byUser,
+  handler: async (ctx: Context) => {
+    ctx.status = Status.TOO_MANY_REQUESTS;
+    ctx.body = { error: "Too many join requests. Please slow down." };
   },
 });
 
