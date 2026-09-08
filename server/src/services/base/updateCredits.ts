@@ -1,18 +1,18 @@
 import { Save } from "../../models/save.model.js";
 import { logger } from "../../utils/logger.js";
 import { type StoreItem, storeItems } from "../../game-data/store/storeItems.js";
-import { purchaseKeys, rewardCredits } from "../../game-data/store/purchaseKeys.js";
+import { mushroomCredits, purchaseKeys, rewardCredits } from "../../game-data/store/purchaseKeys.js";
 import { User } from "../../models/user.model.js";
+import { isShinyLocked } from "../user/shinyLock.js";
 import type { Context } from "koa";
-
-interface Mushrooms {
-  MUSHROOM1: number;
-  MUSHROOM2: number;
-  MUSHROOM3: number;
-}
 
 /**
  *  Keeps track of shiny (credits) spent and obtained.
+ *
+ * A locked account still collects mushrooms and quest rewards - those land in the stored
+ * balance and surface when the option is switched off. Only the spending branches below
+ * are refused.
+ *
  * @param {Save} save - The object representing the user's save data.
  * @param {string} item - The item identifier for which credits are spent or obtained.
  * @param {number} quantity - The quantity of the item affecting credit changes.
@@ -27,9 +27,8 @@ export const updateCredits = (ctx: Context, save: Save, item: string, quantity: 
   }
 
   // Handle mushrooms
-  const mushroomCredits: Mushrooms = { MUSHROOM1: 3, MUSHROOM2: 8, MUSHROOM3: 3 };
   if (item in mushroomCredits) {
-    userSave.credits += mushroomCredits[item as keyof Mushrooms];
+    userSave.credits += mushroomCredits[item];
     return;
   }
 
@@ -40,6 +39,10 @@ export const updateCredits = (ctx: Context, save: Save, item: string, quantity: 
     if (!collected) userSave.credits += rewardCredits[item];
     return;
   }
+
+  const shinyLocked = isShinyLocked(user);
+  
+  if (shinyLocked) return;
 
   // Handle purchases not in the store
   if (purchaseKeys.has(item)) {

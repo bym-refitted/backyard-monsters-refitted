@@ -3,16 +3,18 @@ import { Save } from "../../models/save.model.js";
 import { User } from "../../models/user.model.js";
 import { FilterFrontendKeys } from "../../utils/FrontendKey.js";
 import { getOutpostOwnerSave } from "./getOutpostOwnerSave.js";
+import { isShinyLocked, visibleCredits } from "../user/shinyLock.js";
 
 /**
  * State that belongs to the player rather than to any one of their yards. Served from
  * the main save whenever a player looks at a base they own, so an outpost reports the
  * same credits, resources and progress as the main yard rather than a stale copy.
  *
+ * @param {User} user - The viewer, whose no-shiny setting decides what credits reads
  * @param {Save} userSave - The viewer's main yard save
  */
-const mapOwnerState = (userSave: Save) => ({
-  credits: userSave.credits,
+const mapOwnerState = (user: User, userSave: Save) => ({
+  credits: visibleCredits(user, userSave.credits),
   fan: userSave.fan,
   resources: userSave.resources,
   lockerdata: userSave.lockerdata,
@@ -62,9 +64,13 @@ export const buildSaveData = (save: Save, user: User, ownerSave: Save | null): P
 
   const isOwner = save.type !== BaseType.INFERNO && save.userid === user.userid;
 
-  if (isOwner && user.save) return Object.assign(filteredSave, mapOwnerState(user.save));
+  if (isOwner && user.save) return Object.assign(filteredSave, mapOwnerState(user, user.save));
 
   if (ownerSave) filteredSave.resources = ownerSave.resources;
+
+  const shinyLocked = isShinyLocked(user);
+  
+  if (shinyLocked) filteredSave.credits = 0;
 
   return filteredSave;
 };
