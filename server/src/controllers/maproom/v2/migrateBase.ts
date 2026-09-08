@@ -12,8 +12,9 @@ import {
 import { joinOrCreateWorld } from "../../../services/maproom/v2/joinOrCreateWorld.js";
 import { leaveWorld } from "../../../services/maproom/v2/leaveWorld.js";
 import { MapRoomCell } from "../../../enums/MapRoom.js";
-import { relocateOutpostErr } from "../../../errors/errors.js";
+import { relocateOutpostErr, shinyLockedErr } from "../../../errors/errors.js";
 import { MigrateBaseSchema } from "../../../schemas/MigrateBaseSchema.js";
+import { isShinyLocked } from "../../../services/user/shinyLock.js";
 
 /**
  * Cooldown period for base migration.
@@ -38,6 +39,10 @@ export const migrateBase: KoaController = async (ctx) => {
   const { baseid, resources, shiny, type } = MigrateBaseSchema.parse(ctx.request.body);
 
   const currentUser: User = ctx.authUser;
+  const shinyLocked = isShinyLocked(currentUser);
+
+  if (shiny && shinyLocked) throw shinyLockedErr();
+
   await postgres.em.populate(currentUser, ["save"]);
 
   const userSave = currentUser.save!;

@@ -14,6 +14,7 @@ import { getTruces } from "../../../services/maproom/getTruces.js";
 import { BaseType } from "../../../enums/Base.js";
 import { mapRoomDisabledErr } from "../../../errors/errors.js";
 import { getAllianceRoster } from "../../../services/alliance/allianceData.js";
+import { visibleCredits } from "../../../services/user/shinyLock.js";
 
 /**
  * Schema for validating the request body when getting area data.
@@ -161,6 +162,8 @@ export const getArea: KoaController = async (ctx) => {
     }
   }
 
+  const credits = visibleCredits(user, save.credits);
+
   ctx.status = Status.OK;
   ctx.body = {
     error: 0,
@@ -170,7 +173,7 @@ export const getArea: KoaController = async (ctx) => {
     alliancedata,
     ...(sendresources === 1 && {
       resources: save.resources,
-      credits: save.credits,
+      credits,
     }),
   };
 };

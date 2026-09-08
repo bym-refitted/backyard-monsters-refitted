@@ -19,6 +19,7 @@ import { defenderLootHandler } from "../base/save/handlers/defenderLootHandler.j
 import { purchaseHandler } from "../base/save/handlers/purchaseHandler.js";
 import { resourcesHandler } from "../base/save/handlers/resourceHandler.js";
 import { damageProtection } from "../../services/maproom/v2/damageProtection.js";
+import { visibleCredits } from "../../services/user/shinyLock.js";
 
 export const infernoSave: KoaController = async (ctx) => {
   const user: User = ctx.authUser;
@@ -144,13 +145,14 @@ export const infernoSave: KoaController = async (ctx) => {
     await postgres.em.flush();
 
     const filteredSave = FilterFrontendKeys(baseSave);
+    const credits = visibleCredits(user, userSave.credits);
 
     ctx.status = Status.OK;
     ctx.body = {
       error: 0,
       ...filteredSave,
       champion: [],
-      credits: userSave.credits,
+      credits,
     };
   } catch (err) {
     logger.error(`Failed to save inferno base for user: ${user.username}: ${err}`);

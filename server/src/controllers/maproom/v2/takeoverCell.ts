@@ -13,7 +13,8 @@ import {
 import { getCurrentDateTime } from "../../../utils/getCurrentDateTime.js";
 import { validateRange } from "../../../services/maproom/v2/validateRange.js";
 import { TakeoverCellSchema } from "../../../schemas/TakeoverCellSchema.js";
-import { takeoverCellErr } from "../../../errors/errors.js";
+import { takeoverCellErr, shinyLockedErr } from "../../../errors/errors.js";
+import { isShinyLocked } from "../../../services/user/shinyLock.js";
 
 /**
  * Controller to handle the takeover of a cell on the world map via shiny or resources.
@@ -29,6 +30,10 @@ export const takeoverCell: KoaController = async (ctx) => {
   const { baseid, resources, shiny } = TakeoverCellSchema.parse(ctx.request.body);
 
   const currentUser: User = ctx.authUser;
+  const shinyLocked = isShinyLocked(currentUser);
+
+  if (shiny && shinyLocked) throw shinyLockedErr();
+
   await postgres.em.populate(currentUser, ["save"]);
 
   const userSave = currentUser.save!;

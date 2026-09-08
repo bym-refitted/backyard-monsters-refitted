@@ -37,6 +37,9 @@ export class User {
   @Property({ type: "boolean", default: false })
   banned: boolean = false;
 
+  @Property({ type: "boolean", default: false })
+  shiny_locked: boolean = false;
+
   @FrontendKey
   @Property({ type: "string", unique: true })
   @Index()

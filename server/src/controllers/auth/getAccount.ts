@@ -21,6 +21,7 @@ export const getAccount: KoaController = async (ctx) => {
     discord_verified: user.discord_verified,
     canChangeUsername: !cooldown,
     nextChangeAt: cooldown?.toISOString() ?? null,
+    settings: { shinyLocked: user.shiny_locked },
   };
 
   ctx.status = Status.OK;
