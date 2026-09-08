@@ -5,6 +5,7 @@ import { updateCredits } from "../../../../services/base/updateCredits.js";
 import { getCurrentDateTime } from "../../../../utils/getCurrentDateTime.js";
 import { isShinyLocked } from "../../../../services/user/shinyLock.js";
 import { isShinyGain } from "../../../../game-data/store/purchaseKeys.js";
+import { shinyLockedErr } from "../../../../errors/errors.js";
 import type { JsonObject } from "../../../../types/JsonObject.js";
 
 /**
@@ -13,6 +14,7 @@ import type { JsonObject } from "../../../../types/JsonObject.js";
  * @param {Context} ctx - The Koa context object
  * @param {[string, number]} purchaseData - The item key and quantity sent by the client
  * @param {Save} save - The save the purchase applies to
+ * @throws {ClientSafeError} If a locked account tries to spend shiny
  */
 export const purchaseHandler = (ctx: Context, purchaseData: [string, number], save: Save) => {
   if (!purchaseData) return;
@@ -22,7 +24,7 @@ export const purchaseHandler = (ctx: Context, purchaseData: [string, number], sa
   const isGain = isShinyGain(item);
   const shinyLocked = isShinyLocked(ctx.authUser);
 
-  if (shinyLocked && !isGain) return;
+  if (shinyLocked && !isGain) throw shinyLockedErr();
 
   const currentTime = getCurrentDateTime();
 
