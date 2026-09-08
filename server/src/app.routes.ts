@@ -83,6 +83,8 @@ import { deleteMessages } from "./controllers/alliance/deleteMessages.js";
 import { kickMember } from "./controllers/alliance/kickMember.js";
 import { promoteMember } from "./controllers/alliance/promoteMember.js";
 import { changeRelationship } from "./controllers/alliance/changeRelationship.js";
+import { getPowerups } from "./controllers/alliance/getPowerups.js";
+import { activatePowerup } from "./controllers/alliance/activatePowerup.js";
 
 const router = new Router();
 
@@ -178,6 +180,8 @@ router.get("/alliance/getsuggestedmembers", verifyUserAuth, logRequest, suggeste
 router.post("/alliance/searchalliances", verifyUserAuth, searchAlliancesLimiter, logRequest, searchAlliances);
 router.post("/alliance/requestjoin", verifyUserAuth, allianceJoinRequestLimiter, logRequest, requestJoin);
 router.post("/alliance/inviteuser", verifyUserAuth, allianceInviteLimiter, logRequest, inviteUser);
+router.get("/alliance/getpowerups", verifyUserAuth, logRequest, getPowerups);
+router.post("/alliance/activatepowerup", verifyUserAuth, logRequest, activatePowerup);
 router.post("/alliance/changeinvitestatus", verifyUserAuth, logRequest, changeInviteStatus);
 router.get("/alliance/getmessages", verifyUserAuth, logRequest, getMessages);
 router.post("/alliance/deletemessages", verifyUserAuth, logRequest, deleteMessages);

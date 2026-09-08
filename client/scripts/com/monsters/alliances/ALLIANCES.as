@@ -332,6 +332,44 @@ package com.monsters.alliances
       }
 
       /**
+       * Loads the alliance's power-ups for the Power-Ups tab.
+       *
+       * @param {Function} onDone - Receives the power-up rows, or null on failure.
+       */
+      public static function LoadPowerups(onDone:Function) : void
+      {
+         new URLLoaderApi().load(GLOBAL._allianceURL + "getpowerups",null,
+               function(response:Object):void
+               {
+                  onDone((response != null && !response.error) ? response.powerups : null);
+               },
+               function(e:IOErrorEvent):void
+               {
+                  onDone(null);
+               });
+      }
+
+      /**
+       * Starts a charged power-up for the whole alliance. Leader only - the
+       * server refuses anyone else with its own wording.
+       *
+       * @param {int} powerupId - Which power-up to start.
+       * @param {Function} onDone - Receives the server response, carrying the refreshed rows.
+       */
+      public static function ActivatePowerup(powerupId:int, onDone:Function) : void
+      {
+         new URLLoaderApi().load(GLOBAL._allianceURL + "activatepowerup",[["powerup_id",powerupId]],
+               function(response:Object):void
+               {
+                  onDone(response);
+               },
+               function(e:IOErrorEvent):void
+               {
+                  onDone(null);
+               });
+      }
+
+      /**
        * Rows in the cached inbox still waiting on the player, which labels the
        * Invites tab. Reads the cache rather than asking the server, so it is only
        * as fresh as the last LoadMessages().

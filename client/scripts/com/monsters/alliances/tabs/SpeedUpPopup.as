@@ -119,9 +119,13 @@ package com.monsters.alliances.tabs
       }
 
       /**
-       * Builds the ordered list of selectable reductions. Mirrors the original:
-       * fixed 1h / 2h / 4h steps plus a "Finish now" option for the full
-       * remaining time. Steps longer than the remaining cooldown are disabled.
+       * Builds the ordered list of selectable reductions. Mirrors the original's
+       * Ja(): fixed 1h / 2h / 4h steps plus a "Finish now" option for the full
+       * remaining time, each disabled once it exceeds what is left to charge.
+       *
+       * Costs come out at the store's own 20 Shiny an hour (SP2 is 20 for one
+       * hour, SP3 40 for two), so the rows read 20 / 40 / 80.
+       *
        * @returns {Array} Row descriptors { value, hours, cost, labelKey, enabled, finish }
        */
       private function _buildRowDescriptors():Array

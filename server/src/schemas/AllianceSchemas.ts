@@ -83,3 +83,10 @@ export const ChangeRelationshipSchema = z.object({
   target_alliance_id: z.coerce.number().int().positive(),
   relationship: z.coerce.number().int().pipe(z.enum(AllianceStance)),
 });
+
+/**
+ * Schema for the Power-Ups tab's leader-only Activate button.
+ */
+export const ActivatePowerupSchema = z.object({
+  powerup_id: z.coerce.number().int().positive(),
+});

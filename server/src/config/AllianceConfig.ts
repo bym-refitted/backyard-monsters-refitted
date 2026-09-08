@@ -1,4 +1,12 @@
-import { AllianceMessageType, AllianceStance } from "../enums/Alliance.js";
+import { AllianceMessageType, AlliancePowerupType, AllianceStance } from "../enums/Alliance.js";
+
+export interface PowerupRules {
+  powerup_id: number;
+  type: AlliancePowerupType;
+  running_time: number;
+  recharge_time: number;
+  hourly_cost: number;
+}
 
 /** Max members an alliance can hold. */
 export const MAX_ALLIANCE_MEMBERS = 50;
@@ -18,3 +26,31 @@ export const STANCE_LABEL: Record<AllianceStance, string> = {
   [AllianceStance.NEUTRAL]: "Neutral",
   [AllianceStance.FRIENDLY]: "Ally",
 };
+
+/**
+ * The rules governing each alliance power-up - how long it runs once started, how
+ * long it takes to charge, and what an hour off that charge costs in Shiny.
+ */
+export const POWERUP_RULES: PowerupRules[] = [
+  {
+    powerup_id: 1,
+    type: AlliancePowerupType.ARMAMENT,
+    running_time: 12 * 3600,
+    recharge_time: 7 * 24 * 3600,
+    hourly_cost: 20,
+  },
+  {
+    powerup_id: 2,
+    type: AlliancePowerupType.CONQUEST,
+    running_time: 6 * 3600,
+    recharge_time: 5 * 24 * 3600,
+    hourly_cost: 20,
+  },
+  {
+    powerup_id: 3,
+    type: AlliancePowerupType.DECLARE_WAR,
+    running_time: 12 * 3600,
+    recharge_time: 7 * 24 * 3600,
+    hourly_cost: 20,
+  },
+];
