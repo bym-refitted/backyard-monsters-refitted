@@ -13,11 +13,12 @@ import { getGeneratedCells, cellKey } from "../../../../services/maproom/v3/gene
 import { createAttackLog } from "../../../../services/base/createAttackLog.js";
 import { updateResources, Operation } from "../../../../services/base/updateResources.js";
 import { isAttackActive } from "../../../../services/base/isAttackActive.js";
-import { baseUnderAttackErr, baseProtectedErr, userOnlineErr, truceActiveErr } from "../../../../errors/errors.js";
+import { baseUnderAttackErr, baseProtectedErr, userOnlineErr, truceActiveErr, shinyLockedErr } from "../../../../errors/errors.js";
 import { redis } from "../../../../server.js";
 import { isTruceActive } from "../../../../services/mail/isTruceActive.js";
 import { MR1_TRIBE_IDS } from "../../../../game-data/tribes/v1/index.js";
 import { registerAttacker } from "../../../../services/maproom/v1/registerAttacker.js";
+import { isShinyLocked } from "../../../../services/user/shinyLock.js";
 import type { BuildingData } from "../../../../types/BuildingData.js";
 import {
   generateNoise,
@@ -137,6 +138,10 @@ export const baseModeAttack = async ({ user, baseid, mapversion, attackCost }: B
       const [r1, r2, r3] = attackCost.resources;
       updateResources({ r1, r2, r3 }, userSave.resources!, Operation.SUBTRACT);
     } else if (attackCost.shiny) {
+      const shinyLocked = isShinyLocked(user);
+
+      if (shinyLocked) throw shinyLockedErr();
+      
       userSave.credits = Math.max(0, userSave.credits - attackCost.shiny);
     }
   }

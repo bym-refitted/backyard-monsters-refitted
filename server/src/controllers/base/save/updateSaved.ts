@@ -14,6 +14,7 @@ import { baseModeView } from "../load/modes/baseModeView.js";
 import { infernoModeView } from "../load/modes/infernoModeView.js";
 import { extractTownHall } from "../../../utils/extractTownHall.js";
 import { mapSaveData } from "../../../services/base/mapSaveData.js";
+import { visibleCredits } from "../../../services/user/shinyLock.js";
 
 const UpdateSavedSchema = z.object({
   type: z.string(),
@@ -75,11 +76,13 @@ export const updateSaved: KoaController = async (ctx) => {
   flags.maproom2 = userSave.mr2upgraded || (townHall && townHall.l >= 6) ? 1 : 0;
   flags.mr2upgraded = userSave.mr2upgraded ? 1 : 0;
 
+  const credits = visibleCredits(user, userSave.credits);
+
   const responseBody = {
     error: 0,
     flags,
     ...filteredSave,
-    credits: userSave.credits
+    credits
   };
 
   ctx.status = Status.OK;
