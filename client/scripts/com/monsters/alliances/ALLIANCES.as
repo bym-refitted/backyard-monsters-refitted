@@ -461,6 +461,13 @@ package com.monsters.alliances
                {
                   if (response != null && !response.error)
                   {
+                     if (response.alliancedata)
+                     {
+                        _allianceID = int(response.alliancedata.alliance_id);
+                        _myAlliance = SetAlliance(response.alliancedata);
+                        _isLeader = Boolean(response.alliancedata.is_leader);
+                     }
+
                      InvalidateMyAlliance();
                      InvalidateMessages();
                      InvalidateMembers();
