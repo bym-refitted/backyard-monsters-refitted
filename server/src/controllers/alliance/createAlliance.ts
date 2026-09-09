@@ -8,6 +8,7 @@ import { postgres } from "../../server.js";
 import { CreateAllianceSchema } from "../../schemas/AllianceSchemas.js";
 import { addAllianceMember } from "../../services/alliance/membership.js";
 import { getWorldMapVersion } from "../../services/maproom/knownWorlds.js";
+import { assertDescriptionAllowed, assertNameAllowed } from "../../services/alliance/textFilter.js";
 import {
   allianceNameTakenErr,
   allianceNoWorldErr,
@@ -18,7 +19,8 @@ import type { KoaController } from "../../utils/KoaController.js";
 
 /**
  * Creates an alliance in the user's world, with them as leader. Rejects if they
- * are already in an alliance, have no world, or the name is taken.
+ * are already in an alliance, have no world, the name is taken, or either the
+ * name or description trips the profanity filter.
  *
  * @param {Context} ctx - Koa context.
  */
@@ -33,6 +35,9 @@ export const createAlliance: KoaController = async (ctx) => {
   if (!worldid) throw allianceNoWorldErr();
 
   const data = CreateAllianceSchema.parse(ctx.request.body);
+
+  assertNameAllowed(data.alliance_name);
+  assertDescriptionAllowed(data.alliance_desc);
 
   const mapVersion = await getWorldMapVersion(worldid);
 

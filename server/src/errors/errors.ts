@@ -220,6 +220,22 @@ export const allianceNameTakenErr = () =>
     isClientFriendly: true,
   });
 
+export const allianceNameBannedErr = () =>
+  new ClientSafeError({
+    message: "That alliance name isn't allowed. Please choose another.",
+    status: Status.BAD_REQUEST,
+    data: {},
+    isClientFriendly: true,
+  });
+
+export const allianceDescriptionBannedErr = () =>
+  new ClientSafeError({
+    message: "That alliance description isn't allowed. Please revise it.",
+    status: Status.BAD_REQUEST,
+    data: {},
+    isClientFriendly: true,
+  });
+
 export const allianceNoWorldErr = () =>
   new ClientSafeError({
     message: "You must join a world before creating an alliance.",
