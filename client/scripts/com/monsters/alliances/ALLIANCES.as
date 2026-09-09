@@ -493,9 +493,9 @@ package com.monsters.alliances
        * never told - and it is advisory: the map room warns before attacking an
        * ally rather than preventing it.
        *
-       * The My Alliance cache is dropped on success because the relationship map
-       * the map room reads travels on that payload, and would otherwise stay
-       * stale until the window was reopened.
+       * The map room colours cells from _myAlliance.relationships, which only a base
+       * load ever fills, so the new stance is written into it here - MapRoomCell
+       * re-runs Relations() on every draw and picks it up on the next one.
        *
        * @param {int} allianceId - The alliance being flagged.
        * @param {int} stance - -1 Foe, 0 Neutral, 1 Ally.
@@ -509,6 +509,10 @@ package com.monsters.alliances
                {
                   if(Boolean(response) && !response.error)
                   {
+                     if(_myAlliance)
+                     {
+                        _myAlliance.SetRelation(allianceId,stance);
+                     }
                      InvalidateMyAlliance();
                   }
                   onDone(response);
