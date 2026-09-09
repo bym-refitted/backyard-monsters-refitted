@@ -2,10 +2,14 @@ import { createHash } from "crypto";
 import { brotliCompress, constants, gzip } from "zlib";
 import { promisify } from "util";
 
+import { BaseType } from "../../../enums/Base.js";
 import { MapRoomCell, MapRoomVersion } from "../../../enums/MapRoom.js";
+import { Save } from "../../../models/save.model.js";
 import { User } from "../../../models/user.model.js";
 import { WorldMapCell } from "../../../models/worldmapcell.model.js";
 import { postgres } from "../../../server.js";
+import { calculateBaseLevel } from "../../base/calculateBaseLevel.js";
+import type { BuildingData } from "../../../types/BuildingData.js";
 
 /**
  * Builds and caches the MR2 occupancy snapshot served by /worldmapv2/snapshot.
@@ -37,6 +41,15 @@ interface CachedSnapshot {
 export interface SnapshotPlayer {
   name: string;
   avatar: string | null;
+  /** Map-room level, from the same calculateBaseLevel the in-game map uses. */
+  level: number;
+  /**
+   * Last save time truncated to the UTC day (unix seconds). Day granularity
+   * on purpose: it changes at most once per player per day, so an otherwise
+   * unchanged world keeps an unchanged payload (and ETag) instead of
+   * invalidating on every save.
+   */
+  savedate: number;
 }
 
 export type SnapshotCell = [
@@ -51,6 +64,13 @@ export type SnapshotCell = [
   damage: number,
   protectedUntil: number,
   destroyed: number,
+  /**
+   * Unix seconds when the base's last recorded build/upgrade finishes. A
+   * past timestamp means the worker is done; consumers compare against
+   * their own clock. 0 only when no build/upgrade was ever recorded.
+   * Appended last so existing positional consumers are unaffected.
+   */
+  workerFinish: number,
 ];
 
 interface CellRow {
@@ -65,6 +85,8 @@ interface CellRow {
   damage: number;
   protected: number;
   destroyed: number;
+  savetime: number;
+  buildingdata: Record<string, BuildingData> | null;
 }
 
 interface OwnerRow {
@@ -73,11 +95,46 @@ interface OwnerRow {
   pic_square: string | null;
 }
 
+interface OwnerSaveRow {
+  userid: number;
+  points: string;
+  basevalue: string;
+  savetime: number;
+}
+
 const compressBrotli = promisify(brotliCompress);
 const compressGzip = promisify(gzip);
 
 const SNAPSHOT_TTL_MS = 60000;
+const SECONDS_PER_DAY = 86400;
 const snapshotCache = new Map<string, CachedSnapshot>();
+
+/**
+ * Latest build/upgrade completion on a base, as an absolute unix timestamp.
+ *
+ * buildingdata stores countdowns (cB = build, cU = upgrade) as seconds
+ * remaining at save time, so completion = savetime + countdown. The value is
+ * NOT clamped to "now": a finished job simply reads as a timestamp in the
+ * past (consumers compare against their own clock). Deriving purely from the
+ * stored save keeps the payload byte-stable between rebuilds of an unchanged
+ * world - a clamp would flip the field to 0 the minute a timer expires and
+ * needlessly invalidate the ETag. Returns 0 only for bases that have no
+ * recorded build/upgrade at all.
+ */
+const workerFinishTime = (
+  buildingdata: Record<string, BuildingData> | null,
+  savetime: number,
+): number => {
+  if (!buildingdata) return 0;
+
+  let finish = 0;
+  for (const building of Object.values(buildingdata)) {
+    const countdown = Math.max(Number(building.cB) || 0, Number(building.cU) || 0);
+    if (countdown > 0) finish = Math.max(finish, savetime + countdown);
+  }
+
+  return finish;
+};
 
 /**
  * Builds a world's occupancy snapshot from the database.
@@ -106,6 +163,8 @@ const buildSnapshot = async (worldid: string): Promise<WorldSnapshot> => {
       "s.damage",
       "s.protected",
       "s.destroyed",
+      "s.savetime",
+      "s.buildingdata",
     ])
     .where({
       world: worldid,
@@ -123,12 +182,35 @@ const buildSnapshot = async (worldid: string): Promise<WorldSnapshot> => {
     .where({ userid: { $in: ownerIds } })
     .execute<OwnerRow[]>("all");
 
+  // Level and savedate come from each owner's MAIN save - level is a player
+  // property (calculateBaseLevel over the main's points + basevalue, exactly
+  // what userCell serves in-game), not a property of whichever outpost row
+  // happens to reference them.
+  const ownerSaves = await postgres.em
+    .createQueryBuilder(Save, "ms")
+    .select(["ms.userid", "ms.points", "ms.basevalue", "ms.savetime"])
+    .where({ userid: { $in: ownerIds }, type: BaseType.MAIN })
+    .execute<OwnerSaveRow[]>("all");
+
+  const mains = new Map<number, OwnerSaveRow>();
+  for (const save of ownerSaves) mains.set(save.userid, save);
+
   const players: Record<number, SnapshotPlayer> = {};
   const cells: SnapshotCell[] = [];
 
   for (const owner of owners) {
-    players[owner.userid] = { name: owner.username, avatar: owner.pic_square };
+    const main = mains.get(owner.userid);
+    players[owner.userid] = {
+      name: owner.username,
+      avatar: owner.pic_square,
+      level: main ? calculateBaseLevel(main.points, main.basevalue) : 0,
+      savedate: main
+        ? Math.floor(main.savetime / SECONDS_PER_DAY) * SECONDS_PER_DAY
+        : 0,
+    };
   }
+
+  const now = Math.floor(Date.now() / 1000);
 
   for (const row of rows) {
     cells.push([
@@ -143,10 +225,11 @@ const buildSnapshot = async (worldid: string): Promise<WorldSnapshot> => {
       row.damage,
       row.protected,
       row.destroyed,
+      workerFinishTime(row.buildingdata, row.savetime),
     ]);
   }
 
-  const generatedAt = Math.floor(Date.now() / 1000);
+  const generatedAt = now;
   const raw = Buffer.from(JSON.stringify({ worldid, generatedAt, players, cells }));
 
   const [brotli, gzip] = await Promise.all([
