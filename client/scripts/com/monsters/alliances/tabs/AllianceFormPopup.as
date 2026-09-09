@@ -474,6 +474,7 @@ package com.monsters.alliances.tabs
             {
                ALLIANCEWINDOW._mc.SelectTab(MY_ALLIANCE_TAB);
             }
+            ALLIANCES.LoadMyAlliance(ALLIANCEWINDOW.RefreshTabLabels);
             return;
          }
          GLOBAL.Message((response && response.error) ? String(response.error) : KEYS.Get("alliance_err_generic"));
@@ -526,6 +527,12 @@ package com.monsters.alliances.tabs
             {
                ALLIANCEWINDOW._mc.SelectTab(MY_ALLIANCE_TAB);
             }
+
+            // SelectTab rebuilds the tab strip from the store the invalidate above
+            // just emptied, so the Members label draws 0/0 and nothing puts it right -
+            // the tab's own load refills the store but never touches the strip. This
+            // coalesces onto that same request and refreshes the labels when it lands.
+            ALLIANCES.LoadMyAlliance(ALLIANCEWINDOW.RefreshTabLabels);
             return;
          }
          GLOBAL.Message((response && response.error) ? String(response.error) : KEYS.Get("alliance_err_generic"));
