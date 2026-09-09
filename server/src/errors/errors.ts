@@ -386,6 +386,22 @@ export const powerupNotReadyErr = () =>
     isClientFriendly: true,
   });
 
+export const powerupReadyErr = () =>
+  new ClientSafeError({
+    message: "This Power-Up is already charged and ready to activate.",
+    status: Status.CONFLICT,
+    data: {},
+    isClientFriendly: true,
+  });
+
+export const notEnoughShinyErr = () =>
+  new ClientSafeError({
+    message: "You do not have enough Shiny for that.",
+    status: Status.CONFLICT,
+    data: {},
+    isClientFriendly: true,
+  });
+
 export const powerupLeaderOnlyErr = () =>
   new ClientSafeError({
     message: `Only the leader of the alliance can activate a Power-Up.`,

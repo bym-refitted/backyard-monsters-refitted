@@ -6,7 +6,7 @@ import { storeItems } from "../../../game-data/store/storeItems.js";
 import { User } from "../../../models/user.model.js";
 import { getFlags } from "../../../game-data/flags.js";
 import { getCurrentDateTime } from "../../../utils/getCurrentDateTime.js";
-import { BaseMode, BaseType } from "../../../enums/Base.js";
+import { ATTACK_MODES, BaseMode, BaseType } from "../../../enums/Base.js";
 import { EnumYardType } from "../../../enums/EnumYardType.js";
 import { MapRoomVersion } from "../../../enums/MapRoom.js";
 import { WORLD_SIZE } from "../../../config/MapRoom2Config.js";
@@ -36,6 +36,7 @@ import { clearExpiredStoreItems } from "../../../services/base/clearExpiredStore
 import { extractTownHall } from "../../../utils/extractTownHall.js";
 import { getChatChannel, getOrCreateChatToken } from "../../../chat/chatChannels.js";
 import { getAllianceData } from "../../../services/alliance/allianceData.js";
+import { runningPowerups } from "../../../services/alliance/powerups.js";
 import { INFERNO_CHAT_CHANNEL } from "../../../config/ChatConfig.js";
 
 /**
@@ -117,9 +118,11 @@ export const baseLoad: KoaController = async (ctx) => {
   const userSave = user.save!;
   const isOwner = user.userid === baseSave.userid;
   const isInferno = baseSave.type === BaseType.INFERNO;
+  const isAttack = ATTACK_MODES.has(type);
 
   if (type === BaseMode.BUILD && mapversion === MapRoomVersion.V1) {
     userSave.level = calculateBaseLevel(userSave.points, userSave.basevalue);
+    
     const mr1Tribes = await createMR1Tribes(userSave, MR1_TRIBES);
     const wmstatus = new Map(userSave.wmstatus.map((status) => [status[0], status]));
 
@@ -275,11 +278,16 @@ export const baseLoad: KoaController = async (ctx) => {
     chatchannel = isInferno ? INFERNO_CHAT_CHANNEL : getChatChannel(userSave.mapversion);
   }
 
-  const alliance = isOwner && !isInferno ? await getAllianceData(user) : null;
+  const isOwnMainYard = isOwner && !isInferno;
+  const isOverworldAttack = isAttack && !isInferno;
+
+  const alliance = isOwnMainYard ? await getAllianceData(user) : null;
+  const powerups = isOwnMainYard ? await runningPowerups(user.alliance_id) : [];
+  const attpowerups = isOverworldAttack ? await runningPowerups(user.alliance_id) : [];
 
   const response: Record<string, unknown> = {
     ...filteredSave,
-    relationship: isOwner && !isInferno ? EnumBaseRelationship.SELF : EnumBaseRelationship.ENEMY,
+    relationship: isOwnMainYard ? EnumBaseRelationship.SELF : EnumBaseRelationship.ENEMY,
     canattack: attackAllowed,
     flags,
     worldsize: WORLD_SIZE,
@@ -290,11 +298,13 @@ export const baseLoad: KoaController = async (ctx) => {
     currenttime: getCurrentDateTime(),
     pic_square: avatar,
     chatservers: [process.env.CHAT_WS_HOST!],
+    ...(isAttack && { attpowerups }),
     ...(isOwner && {
       chatenabled: 1,
       chattoken,
       chatchannel,
       ...(alliance && { alliancedata: alliance }),
+      powerups,
     }),
   };
 

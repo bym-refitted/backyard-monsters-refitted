@@ -86,6 +86,7 @@ import { promoteMember } from "./controllers/alliance/promoteMember.js";
 import { changeRelationship } from "./controllers/alliance/changeRelationship.js";
 import { getPowerups } from "./controllers/alliance/getPowerups.js";
 import { activatePowerup } from "./controllers/alliance/activatePowerup.js";
+import { purchasePowerup } from "./controllers/alliance/purchasePowerup.js";
 
 const router = new Router();
 
@@ -184,6 +185,7 @@ router.post("/alliance/requestjoin", verifyUserAuth, allianceJoinRequestLimiter,
 router.post("/alliance/inviteuser", verifyUserAuth, allianceInviteLimiter, logRequest, inviteUser);
 router.get("/alliance/getpowerups", verifyUserAuth, logRequest, getPowerups);
 router.post("/alliance/activatepowerup", verifyUserAuth, logRequest, activatePowerup);
+router.post("/alliance/purchasepowerup", verifyUserAuth, logRequest, purchasePowerup);
 router.post("/alliance/changeinvitestatus", verifyUserAuth, logRequest, changeInviteStatus);
 router.get("/alliance/getmessages", verifyUserAuth, logRequest, getMessages);
 router.post("/alliance/deletemessages", verifyUserAuth, logRequest, deleteMessages);

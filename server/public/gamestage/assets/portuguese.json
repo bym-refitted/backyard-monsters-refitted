@@ -3891,6 +3891,8 @@
     "powerup_active": "Active!",
     "powerup_ready": "Ready!",
     "powerup_remaining": "remaining.",
+    "alliance_powerup_purchase_title": "CHARGE TIME REDUCED",
+    "alliance_powerup_purchase_body": "You have reduced the charging time for the #v1# Power-Up!",
     "alliance_err_powerup_leader_only": "Only the leader of the Alliance can activate a Power-Up.",
     "reduce_cooldown_time_hour": "Reduce time by <b>#v1#</b> hour for <b>#v2#</b>",
     "reduce_cooldown_time_hours": "Reduce time by <b>#v1#</b> hours for <b>#v2#</b>",

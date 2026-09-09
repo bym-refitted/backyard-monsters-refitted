@@ -370,6 +370,28 @@ package com.monsters.alliances
       }
 
       /**
+       * Spends Shiny to shorten a power-up's charge for the whole alliance. Open to
+       * any member, unlike activation.
+       *
+       * @param {int} powerupId - Which power-up to speed up.
+       * @param {int} hours - Hours to remove; the server clamps this to what is left.
+       * @param {Function} onDone - Receives the server response, carrying the refreshed rows.
+       */
+      public static function PurchasePowerup(powerupId:int, hours:int, onDone:Function) : void
+      {
+         new URLLoaderApi().load(GLOBAL._allianceURL + "purchasepowerup",
+               [["powerup_id",powerupId],["purchase_hours",hours]],
+               function(response:Object):void
+               {
+                  onDone(response);
+               },
+               function(e:IOErrorEvent):void
+               {
+                  onDone(null);
+               });
+      }
+
+      /**
        * Rows in the cached inbox still waiting on the player, which labels the
        * Invites tab. Reads the cache rather than asking the server, so it is only
        * as fresh as the last LoadMessages().

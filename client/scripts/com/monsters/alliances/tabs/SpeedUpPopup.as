@@ -1,5 +1,7 @@
 package com.monsters.alliances.tabs
 {
+   import com.cc.utils.SecNum;
+   import com.monsters.alliances.ALLIANCES;
    import com.monsters.display.ImageCache;
    import flash.display.Bitmap;
    import flash.display.BitmapData;
@@ -47,6 +49,7 @@ package com.monsters.alliances.tabs
       private var _data:Object;
       private var _rows:Array;
       private var _selectedValue:int = 1;
+      private var _onDone:Function;
 
       public function SpeedUpPopup()
       {
@@ -56,13 +59,15 @@ package com.monsters.alliances.tabs
       /**
        * Opens the dialog for a power-up.
        * @param {Object} data - Power-up descriptor:
-       *   { nameKey:String, icon:String, hourlyCost:int, remainingHrs:int }.
+       *   { powerupId:int, nameKey:String, icon:String, hourlyCost:int, remainingHrs:int }.
        *   Costs are computed as hourlyCost × hours; rows whose reduction exceeds
        *   the remaining time are shown disabled, matching the original.
+       * @param {Function} onDone - Called after a purchase lands, so the tab repaints.
        */
-      public function Show(data:Object):void
+      public function Show(data:Object, onDone:Function = null):void
       {
          _data = data;
+         _onDone = onDone;
          _rows = [];
          _selectedValue = 1;
          _mc = new MovieClip();
@@ -306,13 +311,56 @@ package com.monsters.alliances.tabs
             );
       }
 
+      /**
+       * Buys the selected reduction.
+       *
+       * The balance is checked here before anything is sent, the way the original
+       * did - a player who cannot afford it gets the Shiny prompt rather than a
+       * refusal from the server. The server checks again regardless, since this
+       * figure is only as fresh as the last base load.
+       */
       private function _onBuy(e:MouseEvent):void
       {
          SOUNDS.Play("click1");
-         // TODO: send the cooldown-reduction purchase to the server using
-         // _data plus _selectedValue (hours to remove), then surface the
-         // success/not-enough-shiny result.
+
+         var hours:int = _selectedValue;
+         var cost:int = int(_data.hourlyCost) * hours;
+         var onDone:Function = _onDone;
+
+         if (GLOBAL._credits == null || GLOBAL._credits.Get() < cost)
+         {
+            _onClose();
+            POPUPS.DisplayGetShiny();
+            return;
+         }
+
          _onClose();
+         PLEASEWAIT.Show(KEYS.Get("msg_loading"));
+
+         ALLIANCES.PurchasePowerup(int(_data.powerupId), hours, function(response:Object):void
+            {
+               PLEASEWAIT.Hide();
+
+               if (response == null || response.error)
+               {
+                  GLOBAL.Message((response && response.error)
+                     ? String(response.error)
+                     : KEYS.Get("alliance_err_generic"));
+                  return;
+               }
+
+               if (response.credits != null)
+               {
+                  GLOBAL._credits = new SecNum(int(response.credits));
+                  BASE._credits = new SecNum(int(response.credits));
+               }
+
+               new AllianceMessagePopup().Show(
+                  KEYS.Get("alliance_powerup_purchase_title"),
+                  KEYS.Get("alliance_powerup_purchase_body", {"v1": KEYS.Get(String(_data.nameKey))}));
+
+               if (onDone != null) onDone();
+            });
       }
 
       private function _onClose(e:MouseEvent = null):void

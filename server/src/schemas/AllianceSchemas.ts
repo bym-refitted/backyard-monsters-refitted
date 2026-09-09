@@ -90,3 +90,11 @@ export const ChangeRelationshipSchema = z.object({
 export const ActivatePowerupSchema = z.object({
   powerup_id: z.coerce.number().int().positive(),
 });
+
+/**
+ * Schema for the Speed Up dialog's Buy button.
+ */
+export const PurchasePowerupSchema = z.object({
+  powerup_id: z.coerce.number().int().positive(),
+  purchase_hours: z.coerce.number().int().positive(),
+});

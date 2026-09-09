@@ -443,11 +443,12 @@ package com.monsters.alliances.tabs
             SOUNDS.Play("click1");
             var remaining:int = int(data.endTime) - GLOBAL.Timestamp();
             new SpeedUpPopup().Show({
+                  powerupId: int(data.powerup_id),
                   nameKey: String(data.type) + "_name",
                   icon: "alliances/" + String(data.type) + "_icon.jpg",
                   hourlyCost: int(data.hourly_cost),
                   remainingHrs: Math.ceil(remaining / 3600)
-               });
+               }, _fetch);
          };
       }
 

@@ -1,8 +1,13 @@
+import { AlliancePowerupType } from "../../enums/Alliance.js";
 import { AlliancePowerup } from "../../models/alliancepowerup.model.js";
+import { Save } from "../../models/save.model.js";
+import type { User } from "../../models/user.model.js";
 import { postgres } from "../../server.js";
 import { getCurrentDateTime } from "../../utils/getCurrentDateTime.js";
 import {
+  notEnoughShinyErr,
   powerupNotReadyErr,
+  powerupReadyErr,
   powerupRunningErr,
   powerupUnknownErr,
 } from "../../errors/errors.js";
@@ -12,6 +17,20 @@ interface Powerup {
   rules: PowerupRules;
   status: AlliancePowerup;
 }
+
+export interface PowerupPurchase {
+  allianceId: number;
+  userSave: PayingSave;
+  powerupId: number;
+  hours: number;
+}
+
+interface RunningPowerup {
+  id: AlliancePowerupType;
+  endtime: number;
+}
+
+type PayingSave = Pick<Save, "credits">;
 
 /**
  * Loads an alliance's power-ups, seeding and expiring them as it goes.
@@ -81,4 +100,57 @@ export const startPowerup = async (allianceId: number, powerupId: number): Promi
   await postgres.em.flush();
 
   return powerups;
+};
+
+/**
+ * Spends Shiny to bring a charging power-up closer to ready.
+ *
+ * @param {PowerupPurchase} purchase - Alliance, paying save, power-up and hours asked for.
+ * @returns {Promise<Powerup[]>} All the alliance's power-ups, the sped-up one updated.
+ * @throws {ClientSafeError} When the id is unknown, it is running or already charged, or Shiny is short.
+ */
+export const reducePowerupCharge = async ({ allianceId, userSave, powerupId, hours,}: PowerupPurchase) => {
+  const powerups = await alliancePowerup(allianceId);
+
+  const powerup = powerups.find(({ rules }) => rules.powerup_id === powerupId);
+  if (!powerup) throw powerupUnknownErr();
+
+  const { rules, status } = powerup;
+  const now = getCurrentDateTime();
+
+  if (status.active) throw powerupRunningErr();
+
+  if (status.end_time <= now) throw powerupReadyErr();
+
+  const remainingHours = Math.ceil((status.end_time - now) / 3600);
+  const boughtHours = Math.min(hours, remainingHours);
+
+  const cost = boughtHours * rules.hourly_cost;
+
+  if (userSave.credits < cost) throw notEnoughShinyErr();
+
+  userSave.credits -= cost;
+
+  status.end_time = Math.max(now, status.end_time - boughtHours * 3600);
+
+  await postgres.em.flush();
+
+  return powerups;
+};
+
+/**
+ * The alliance's running power-ups, in the shape base load hands the client.
+ *
+ * @param {User["alliance_id"]} allianceId - The viewing player's alliance, if any.
+ * @returns {Promise<RunningPowerup[]>} Rows for POWERUPS.Setup.
+ */
+export const runningPowerups = async (allianceId: User["alliance_id"]): Promise<RunningPowerup[]> => {
+  if (!allianceId) return [];
+
+  const now = getCurrentDateTime();
+  const powerups = await alliancePowerup(allianceId);
+
+  return powerups
+    .filter(({ status }) => status.active && status.end_time > now)
+    .map(({ status }) => ({ id: status.powerup, endtime: status.end_time }));
 };
