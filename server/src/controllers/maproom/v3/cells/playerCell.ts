@@ -89,6 +89,7 @@ export const playerCell = async (ctx: Context, cell: WorldMapCell, cellOwners: M
     d: (cellSave?.damage ?? 0) >= 90 ? 1 : 0,
     t: hasTruce ? 1 : 0,
     rel: mine ? EnumBaseRelationship.SELF : EnumBaseRelationship.ENEMY,
+    aid: cellOwner.alliance_id ?? undefined,
     pic_square: cellOwner.pic_square ?? undefined,
   };
 };
