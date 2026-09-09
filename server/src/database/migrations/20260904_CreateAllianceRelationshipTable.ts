@@ -30,8 +30,18 @@ export class CreateAllianceRelationshipTable extends Migration {
 
     await this.execute(`
       ALTER TABLE bym.alliance_relationship
+      DROP CONSTRAINT IF EXISTS alliance_relationship_alliance_id_foreign
+    `);
+
+    await this.execute(`
+      ALTER TABLE bym.alliance_relationship
       ADD CONSTRAINT alliance_relationship_alliance_id_foreign
       FOREIGN KEY (alliance_id) REFERENCES bym.alliance(id) ON DELETE CASCADE
+    `);
+
+    await this.execute(`
+      ALTER TABLE bym.alliance_relationship
+      DROP CONSTRAINT IF EXISTS alliance_relationship_target_alliance_id_foreign
     `);
 
     await this.execute(`
@@ -48,6 +58,11 @@ export class CreateAllianceRelationshipTable extends Migration {
     await this.execute(`
       ALTER TABLE bym.alliance_message
       ADD COLUMN IF NOT EXISTS target_alliance_id INTEGER
+    `);
+
+    await this.execute(`
+      ALTER TABLE bym.alliance_message
+      DROP CONSTRAINT IF EXISTS alliance_message_target_alliance_id_foreign
     `);
 
     await this.execute(`

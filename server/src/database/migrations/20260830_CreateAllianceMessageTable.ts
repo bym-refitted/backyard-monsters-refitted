@@ -39,8 +39,18 @@ export class Migration20260830_CreateAllianceMessageTable extends Migration {
 
     await this.execute(`
       ALTER TABLE bym.alliance_message
+      DROP CONSTRAINT IF EXISTS alliance_message_alliance_id_foreign
+    `);
+
+    await this.execute(`
+      ALTER TABLE bym.alliance_message
       ADD CONSTRAINT alliance_message_alliance_id_foreign
       FOREIGN KEY (alliance_id) REFERENCES bym.alliance(id) ON DELETE CASCADE
+    `);
+
+    await this.execute(`
+      ALTER TABLE bym.alliance_message
+      DROP CONSTRAINT IF EXISTS alliance_message_user_id_foreign
     `);
 
     await this.execute(`

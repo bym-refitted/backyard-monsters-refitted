@@ -25,6 +25,11 @@ export class CreateAlliancePowerupTable extends Migration {
 
     await this.execute(`
       ALTER TABLE bym.alliance_powerup
+      DROP CONSTRAINT IF EXISTS alliance_powerup_alliance_id_foreign
+    `);
+
+    await this.execute(`
+      ALTER TABLE bym.alliance_powerup
       ADD CONSTRAINT alliance_powerup_alliance_id_foreign
       FOREIGN KEY (alliance_id) REFERENCES bym.alliance(id) ON DELETE CASCADE
     `);
