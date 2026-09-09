@@ -9,7 +9,7 @@ package com.bymrefitted.academy
       
       public static const ID:int = 26;
       
-      public static var _building:BUILDING26 = null;
+      internal static var _building:BUILDING26 = null;
       
       public static var _mc:ACADEMYPOPUP = null;
       
