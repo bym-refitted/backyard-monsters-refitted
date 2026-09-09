@@ -1,6 +1,7 @@
 package
 {
    import com.bymrefitted.academy.AcademyService;
+   import com.bymrefitted.buildings.AcademyBuilding;
    import com.monsters.alliances.tabs.AllianceMessagePopup;
    import com.monsters.managers.InstanceManager;
    import com.monsters.maproom3.popups.MapRoom3ConfirmMigrationPopup;
@@ -662,7 +663,7 @@ package
          }
          if(param1.target.labelKey == "btn_openacademy")
          {
-            AcademyService.Show(_building);
+            AcademyService.Show(_building as AcademyBuilding);
          }
          if(param1.target.labelKey == "btn_repair")
          {

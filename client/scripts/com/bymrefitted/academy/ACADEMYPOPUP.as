@@ -1,6 +1,6 @@
 package com.bymrefitted.academy
 {
-   import com.bymrefitted.academy.AcademyService;
+   import com.bymrefitted.buildings.AcademyBuilding;
    import com.monsters.display.ImageCache;
    import com.monsters.managers.InstanceManager;
    import flash.display.Bitmap;
@@ -446,7 +446,7 @@ package com.bymrefitted.academy
          }
          ++GLOBAL.player.m_upgrades[_monsterID].level;
          GLOBAL.player.upgradeHealthData(_monsterID);
-         buildingInstances = InstanceManager.getInstancesByClass(BUILDING26);
+         buildingInstances = InstanceManager.getInstancesByClass(AcademyBuilding);
          for each(building in buildingInstances)
          {
             if(building._upgrading == _monsterID)

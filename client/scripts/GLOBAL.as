@@ -1,6 +1,7 @@
 package
 {
    import com.bymrefitted.academy.AcademyService;
+   import com.bymrefitted.buildings.AcademyBuilding;
    import com.cc.tests.ABTest;
    import com.cc.utils.SecNum;
    import com.computus.model.Timekeeper;
@@ -204,7 +205,7 @@ package
 
       public static var _bLocker:BFOUNDATION;
 
-      public static var _bAcademy:BUILDING26;
+      public static var _bAcademy:AcademyBuilding;
 
       public static var _bHousing:BFOUNDATION;
 

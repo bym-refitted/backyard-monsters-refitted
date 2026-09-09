@@ -1,6 +1,7 @@
 package com.monsters.frontPage.messages.underusedFeatures
 {
    import com.bymrefitted.academy.AcademyService;
+   import com.bymrefitted.buildings.AcademyBuilding;
    import com.monsters.frontPage.messages.KeywordMessage;
    import com.monsters.managers.InstanceManager;
    
@@ -55,8 +56,8 @@ package com.monsters.frontPage.messages.underusedFeatures
       
       private function hasIdleAcademy() : Boolean
       {
-         var _loc2_:BUILDING26 = null;
-         var _loc1_:Vector.<Object> = InstanceManager.getInstancesByClass(BUILDING26);
+         var _loc2_:AcademyBuilding = null;
+         var _loc1_:Vector.<Object> = InstanceManager.getInstancesByClass(AcademyBuilding);
          for each(_loc2_ in _loc1_)
          {
             if(!_loc2_._upgrading)

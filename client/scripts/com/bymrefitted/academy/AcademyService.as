@@ -1,5 +1,6 @@
 package com.bymrefitted.academy
 {
+   import com.bymrefitted.buildings.AcademyBuilding;
    import com.cc.utils.SecNum;
    import com.monsters.managers.InstanceManager;
    import flash.events.MouseEvent;
@@ -9,7 +10,7 @@ package com.bymrefitted.academy
       
       public static const ID:int = 26;
       
-      internal static var _building:BUILDING26 = null;
+      internal static var _building:AcademyBuilding = null;
       
       public static var _mc:ACADEMYPOPUP = null;
       
@@ -33,7 +34,7 @@ package com.bymrefitted.academy
          super();
       }
       
-      public static function Show(academyBuildingToOpen:BUILDING26) : void
+      public static function Show(academyBuildingToOpen:AcademyBuilding) : void
       {
          if(!_open)
          {
@@ -158,10 +159,10 @@ package com.bymrefitted.academy
       
       internal static function CancelMonsterUpgrade(param1:String) : void
       {
-         var _loc3_:BUILDING26 = null;
+         var _loc3_:AcademyBuilding = null;
          delete GLOBAL.player.m_upgrades[param1].time;
          delete GLOBAL.player.m_upgrades[param1].duration;
-         var _loc2_:Vector.<Object> = InstanceManager.getInstancesByClass(BUILDING26);
+         var _loc2_:Vector.<Object> = InstanceManager.getInstancesByClass(AcademyBuilding);
          for each(_loc3_ in _loc2_)
          {
             if(_loc3_._upgrading == param1)
@@ -179,7 +180,7 @@ package com.bymrefitted.academy
          var stat:Array;
          var academyInstances:Vector.<Object>;
          var Post:Function;
-         var academy:BUILDING26 = null;
+         var academy:AcademyBuilding = null;
          var bragImage:String = null;
          var monsterName:String = null;
          var popupMC:popup_monster = null;
@@ -196,7 +197,7 @@ package com.bymrefitted.academy
          {
             LOGGER.KongStat([5,monsterID.substr(1)]);
          }
-         academyInstances = InstanceManager.getInstancesByClass(BUILDING26);
+         academyInstances = InstanceManager.getInstancesByClass(AcademyBuilding);
          for each(academy in academyInstances)
          {
             if(academy._upgrading == monsterID)
