@@ -1,4 +1,4 @@
-import { AlliancePowerupType } from "../../enums/Alliance.js";
+import { AllianceMessageType, AlliancePowerupType } from "../../enums/Alliance.js";
 import { AlliancePowerup } from "../../models/alliancepowerup.model.js";
 import { Save } from "../../models/save.model.js";
 import type { User } from "../../models/user.model.js";
@@ -12,6 +12,7 @@ import {
   powerupUnknownErr,
 } from "../../errors/errors.js";
 import { POWERUP_RULES, type PowerupRules } from "../../config/AllianceConfig.js";
+import { announceShout } from "./allianceMessages.js";
 
 interface Powerup {
   rules: PowerupRules;
@@ -20,10 +21,18 @@ interface Powerup {
 
 export interface PowerupPurchase {
   allianceId: number;
+  author: User;
   userSave: PayingSave;
   powerupId: number;
   hours: number;
 }
+
+export interface PowerupActivation {
+  allianceId: number;
+  author: User;
+  powerupId: number;
+}
+
 
 interface RunningPowerup {
   id: AlliancePowerupType;
@@ -81,7 +90,7 @@ export const alliancePowerup = async (allianceId: number): Promise<Powerup[]> =>
  * @returns {Promise<Powerup[]>} All the alliance's power-ups, the started one updated.
  * @throws {ClientSafeError} When the id is unknown, or it is already running or still charging.
  */
-export const startPowerup = async (allianceId: number, powerupId: number): Promise<Powerup[]> => {
+export const startPowerup = async ({ allianceId, author, powerupId }: PowerupActivation): Promise<Powerup[]> => {
   const powerups: Powerup[] = await alliancePowerup(allianceId);
 
   const powerup = powerups.find(({ rules }) => rules.powerup_id === powerupId);
@@ -99,6 +108,13 @@ export const startPowerup = async (allianceId: number, powerupId: number): Promi
 
   await postgres.em.flush();
 
+  await announceShout({
+    allianceId,
+    author,
+    type: AllianceMessageType.POWERUP_ACTIVATED,
+    body: rules.type,
+  });
+
   return powerups;
 };
 
@@ -109,7 +125,7 @@ export const startPowerup = async (allianceId: number, powerupId: number): Promi
  * @returns {Promise<Powerup[]>} All the alliance's power-ups, the sped-up one updated.
  * @throws {ClientSafeError} When the id is unknown, it is running or already charged, or Shiny is short.
  */
-export const reducePowerupCharge = async ({ allianceId, userSave, powerupId, hours,}: PowerupPurchase) => {
+export const reducePowerupCharge = async ({ allianceId, author, userSave, powerupId, hours }: PowerupPurchase) => {
   const powerups = await alliancePowerup(allianceId);
 
   const powerup = powerups.find(({ rules }) => rules.powerup_id === powerupId);
@@ -134,6 +150,13 @@ export const reducePowerupCharge = async ({ allianceId, userSave, powerupId, hou
   status.end_time = Math.max(now, status.end_time - boughtHours * 3600);
 
   await postgres.em.flush();
+
+  await announceShout({
+    allianceId,
+    author,
+    type: AllianceMessageType.POWERUP_PURCHASE,
+    body: JSON.stringify({ powerup: rules.type, hours: boughtHours }),
+  });
 
   return powerups;
 };

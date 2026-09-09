@@ -7,6 +7,7 @@ import type { User } from "../../models/user.model.js";
 import type { HistoryEntry } from "../../chat/chatProtocol.js";
 import { publishAllianceShout } from "../../chat/chatShouts.js";
 import { postgres } from "../../server.js";
+import { logger } from "../../utils/logger.js";
 import { composeShout } from "./shoutText.js";
 
 interface AllianceMessageDraft {
@@ -135,6 +136,20 @@ export const emitShout = async (shout: ShoutDraft) => {
 
   publishAllianceShout(message.allianceId, entry);
 };
+
+/**
+ * Raises a shout without letting it undo the action that caused it.
+ *
+ * By the time a shout is emitted the work is done and flushed - a member has
+ * joined, Shiny has been spent, a power-up is running - so a failure to announce
+ * it must not surface as a failure of the action. Logged and swallowed.
+ *
+ * @param {ShoutDraft} shout - The shout to raise.
+ */
+export const announceShout = async (shout: ShoutDraft) =>
+  await emitShout(shout).catch((err) =>
+    logger.error(`Alliance shout (${shout.type}) failed for alliance ${shout.allianceId}: ${err}`)
+  );
 
 /**
  * Reads an alliance's feed, oldest to newest.

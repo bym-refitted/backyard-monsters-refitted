@@ -3,7 +3,7 @@ import { Status } from "../../enums/StatusCodes.js";
 import { User } from "../../models/user.model.js";
 import { ActivatePowerupSchema } from "../../schemas/AllianceSchemas.js";
 import { requireAllianceMember } from "../../services/alliance/allianceAccess.js";
-import { startPowerup } from "../../services/alliance/powerups.js";
+import { startPowerup, type PowerupActivation } from "../../services/alliance/powerups.js";
 import { powerupLeaderOnlyErr } from "../../errors/errors.js";
 import type { KoaController } from "../../utils/KoaController.js";
 
@@ -25,7 +25,13 @@ export const activatePowerup: KoaController = async (ctx) => {
 
   const { powerup_id } = ActivatePowerupSchema.parse(ctx.request.body);
 
-  const resolved = await startPowerup(alliance.id, powerup_id);
+  const purchase: PowerupActivation = {
+    allianceId: alliance.id,
+    author: user,
+    powerupId: powerup_id
+  }
+
+  const resolved = await startPowerup(purchase);
 
   const powerups = resolved.map(({ rules, status }) => ({
     powerup_id: rules.powerup_id,

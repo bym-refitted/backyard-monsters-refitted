@@ -54,3 +54,10 @@ export const POWERUP_RULES: PowerupRules[] = [
     hourly_cost: 20,
   },
 ];
+
+/** How each power-up is named in a shout - the original's ap_*_name values. */
+export const POWERUP_LABEL: Record<AlliancePowerupType, string> = {
+  [AlliancePowerupType.ARMAMENT]: "Armament",
+  [AlliancePowerupType.CONQUEST]: "Conquest",
+  [AlliancePowerupType.DECLARE_WAR]: "Declare War",
+};

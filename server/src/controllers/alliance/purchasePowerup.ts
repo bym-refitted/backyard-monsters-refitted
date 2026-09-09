@@ -35,9 +35,10 @@ export const purchasePowerup: KoaController = async (ctx) => {
 
   const purchase: PowerupPurchase = {
     allianceId: alliance.id,
+    author: user,
     userSave: user.save!,
     powerupId: powerup_id,
-    hours: purchase_hours,
+    hours: purchase_hours
   };
 
   const resolved = await reducePowerupCharge(purchase);

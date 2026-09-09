@@ -1,5 +1,5 @@
-import { SHOUT_TEXT, STANCE_LABEL } from "../../config/AllianceConfig.js";
-import { AllianceMessageType, type AllianceStance } from "../../enums/Alliance.js";
+import { POWERUP_LABEL, SHOUT_TEXT, STANCE_LABEL } from "../../config/AllianceConfig.js";
+import { AllianceMessageType, type AllianceStance, type AlliancePowerupType } from "../../enums/Alliance.js";
 import type { Alliance } from "../../models/alliance.model.js";
 
 
@@ -38,22 +38,73 @@ const createRelationshipShoutText = (allianceName: string, relationship: Allianc
 };
 
 /**
+ * Builds the shout for a leader starting a power-up.
+ *
+ * @param {string} username - The leader who activated it.
+ * @param {string} body - The stored power-up type.
+ * @returns {string} The finished sentence, or empty if the type is unknown.
+ */
+const createPowerupActivatedText = (username: string, body: string) => {
+  const label = POWERUP_LABEL[body as AlliancePowerupType];
+
+  if (!label) return "";
+
+  return `${username} activated the ${label} Power-Up!`;
+};
+
+/**
+ * Builds the shout for a member spending Shiny on a power-up's charge.
+ *
+ * @param {string} username - The member who paid.
+ * @param {string} body - JSON: the power-up type and hours bought.
+ * @returns {string} The finished sentence, or empty if the payload is unusable.
+ */
+const createPowerupPurchaseText = (username: string, body: string) => {
+  let payload: { powerup?: string; hours?: number };
+
+  try {
+    payload = JSON.parse(body);
+  } catch {
+    return "";
+  }
+
+  const label = POWERUP_LABEL[payload.powerup as AlliancePowerupType];
+  const hours = Number(payload.hours);
+
+  if (!label || !hours) return "";
+
+  return `${username} has reduced the ${label} Power-Up by ${hours} ${hours === 1 ? "hour" : "hours"}.`;
+};
+
+/**
  * Picks the right builder for a stored row.
  *
- * Relationship shouts are the odd one out: their subject is an alliance rather
- * than a member, so the text comes from the joined target and the flag value
- * kept in `body` instead of from the author's name.
+ * The membership shouts are the default: their whole sentence is the author's
+ * name plus a fixed suffix. The three cases above it each need something the
+ * author does not carry, which is what `body` is for - a relationship shout
+ * stores its flag value, an activation the power-up started, a purchase the
+ * power-up and the hours bought.
  *
  * @param {AllianceMessageType} type - Which shout this is.
  * @param {string} username - The author, subject of every membership shout.
- * @param {string} body - The stored body, carrying the flag value on a relationship shout.
+ * @param {string} body - Whatever the sentence needs beyond the author's name.
  * @param {ShoutTarget} targetAlliance - The flagged alliance, present only on a relationship shout.
  * @returns {string} The finished sentence, or empty if it cannot be built.
  */
 export const composeShout = (type: AllianceMessageType, username: string, body: string, targetAlliance?: ShoutTarget) => {
-  if (type !== AllianceMessageType.RELATIONSHIP) return createShoutText(username, type);
+  switch (type) {
+    case AllianceMessageType.POWERUP_ACTIVATED:
+      return createPowerupActivatedText(username, body);
 
-  if (!targetAlliance) return "";
+    case AllianceMessageType.POWERUP_PURCHASE:
+      return createPowerupPurchaseText(username, body);
 
-  return createRelationshipShoutText(targetAlliance.name, Number(body) as AllianceStance);
+    case AllianceMessageType.RELATIONSHIP:
+      if (!targetAlliance) return "";
+
+      return createRelationshipShoutText(targetAlliance.name, Number(body) as AllianceStance);
+
+    default:
+      return createShoutText(username, type);
+  }
 };

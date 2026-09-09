@@ -28,6 +28,8 @@ package com.monsters.alliances.tabs
     */
    public class SpeedUpPopup
    {
+      private static const MY_ALLIANCE_TAB:int = 1;
+
       private static const BG_W:int = 460;
       private static const BG_H:int = 360;
       private static const PAD_H:int = 28;
@@ -357,7 +359,12 @@ package com.monsters.alliances.tabs
 
                new AllianceMessagePopup().Show(
                   KEYS.Get("alliance_powerup_purchase_title"),
-                  KEYS.Get("alliance_powerup_purchase_body", {"v1": KEYS.Get(String(_data.nameKey))}));
+                  KEYS.Get("alliance_powerup_purchase_body", {"v1": KEYS.Get(String(_data.nameKey))}),
+                  "alliance_btn_see_shouts",
+                  function():void
+                  {
+                     if (ALLIANCEWINDOW._mc != null) ALLIANCEWINDOW._mc.SelectTab(MY_ALLIANCE_TAB);
+                  });
 
                if (onDone != null) onDone();
             });

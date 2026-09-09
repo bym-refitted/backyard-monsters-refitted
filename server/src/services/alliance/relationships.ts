@@ -3,8 +3,7 @@ import { Alliance } from "../../models/alliance.model.js";
 import { AllianceRelationship } from "../../models/alliancerelationship.model.js";
 import { User } from "../../models/user.model.js";
 import { postgres } from "../../server.js";
-import { logger } from "../../utils/logger.js";
-import { emitShout } from "./allianceMessages.js";
+import { announceShout } from "./allianceMessages.js";
 
 export type Relationship = Record<number, AllianceStance>;
 export type RelationshipLookup = Map<number, AllianceStance>;
@@ -119,8 +118,7 @@ export const setAllianceRelationship = async (
     target,
   };
 
-  await emitShout(shout).catch((err) =>
-    logger.error(`Relationship shout failed for alliance ${alliance.id}: ${err}`));
+  await announceShout(shout);
 
   return true;
 };

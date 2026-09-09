@@ -21,10 +21,25 @@ package com.monsters.alliances.tabs
       private static const CONTENT_W:int = BG_W - PAD_H * 2;
 
       private var _mc:MovieClip;
+      private var _onAction:Function;
 
-      public function Show(title:String, body:String):void
+      /**
+       * Shows a dismissible alliance dialog.
+       *
+       * The button label and handler are overridable for the one dialog the
+       * original gave a destination rather than an acknowledgement - the Speed Up
+       * purchase, whose button reads "See Shouts" and lands on the feed the shout
+       * was just posted to.
+       *
+       * @param {String} title - Heading text.
+       * @param {String} body - Body copy, as HTML.
+       * @param {String} buttonKey - Language key for the button, defaulting to Ok.
+       * @param {Function} onAction - Ran after the dialog closes, when the button is clicked.
+       */
+      public function Show(title:String, body:String, buttonKey:String = null, onAction:Function = null):void
       {
          _mc = new MovieClip();
+         _onAction = onAction;
 
          var tBody:TextField = new TextField();
          tBody.wordWrap = true;
@@ -71,15 +86,29 @@ package com.monsters.alliances.tabs
          tBody.y = tTitle.y + titleH + TITLE_GAP;
 
          var btn:Button_CLIP = _mc.addChild(new Button_CLIP()) as Button_CLIP;
-         btn.Setup(KEYS.Get("alliance_btn_ok"), false, 140, 36);
+         btn.Setup(KEYS.Get(buttonKey != null ? buttonKey : "alliance_btn_ok"), false, 140, 36);
          btn.x = -int(btn.width * 0.5);
          btn.y = frameY + totalH - PAD_BTN;
-         btn.addEventListener(MouseEvent.CLICK, _onOk);
+         btn.addEventListener(MouseEvent.CLICK, _onButton);
 
          GLOBAL.BlockerAdd(GLOBAL._layerTop);
          GLOBAL._layerTop.addChild(_mc);
          POPUPSETTINGS.AlignToCenter(_mc);
          POPUPSETTINGS.ScaleUp(_mc);
+      }
+
+      /**
+       * The button, which runs the action after closing. Separate from _onOk
+       * because the frame's X also closes the dialog, and dismissing it should
+       * not take the player anywhere.
+       */
+      private function _onButton(e:MouseEvent = null):void
+      {
+         var action:Function = _onAction;
+
+         _onOk();
+
+         if (action != null) action();
       }
 
       private function _onOk(e:MouseEvent = null):void
@@ -91,6 +120,7 @@ package com.monsters.alliances.tabs
             _mc.parent.removeChild(_mc);
          }
          _mc = null;
+         _onAction = null;
       }
    }
 }

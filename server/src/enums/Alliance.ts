@@ -32,6 +32,8 @@ export enum AllianceMessageType {
   PROMOTED = "promoted",
   CREATED = "created",
   RELATIONSHIP = "relationship",
+  POWERUP_ACTIVATED = "powerup_activated",
+  POWERUP_PURCHASE = "powerup_purchase",
 }
 
 /**

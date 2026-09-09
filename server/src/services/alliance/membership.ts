@@ -5,8 +5,7 @@ import { Alliance } from "../../models/alliance.model.js";
 import { User } from "../../models/user.model.js";
 import { postgres } from "../../server.js";
 import { disconnectAllianceChat } from "../../chat/chatControl.js";
-import { emitShout, type ShoutDraft } from "./allianceMessages.js";
-import { logger } from "../../utils/logger.js";
+import { announceShout, emitShout, type ShoutDraft } from "./allianceMessages.js";
 
 type EntryShout = AllianceMessageType.CREATED | AllianceMessageType.JOINED;
 type ExitShout = AllianceMessageType.KICKED | AllianceMessageType.LEFT;
@@ -87,9 +86,7 @@ export const removeAllianceMember = async (
       body: "",
     };
 
-    await emitShout(shout).catch((err) =>
-      logger.error(`Alliance shout (${shoutType}) failed for alliance ${alliance.id}: ${err}`)
-    );
+    await announceShout(shout);
   }
 
   await disconnectAllianceChat(user.userid);
@@ -132,7 +129,5 @@ export const promoteAllianceMember = async (leader: User, member: User, alliance
     body: "",
   }
 
-  await emitShout(shout).catch((err) =>
-    logger.error(`Alliance shout (promoted) failed for alliance ${alliance.id}: ${err}`)
-  );
+  await announceShout(shout);
 };
