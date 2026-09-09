@@ -5,6 +5,7 @@ import { BaseType } from "../../enums/Base.js";
 import { User } from "../../models/user.model.js";
 import { postgres } from "../../server.js";
 import { calculateEmpirePoints } from "../base/calculateEmpirePoints.js";
+import { calculateBaseLevel } from "../base/calculateBaseLevel.js";
 import { getLastSeen } from "../maproom/getLastSeen.js";
 
 interface AllianceMemberStatus {
@@ -32,7 +33,6 @@ export const ALLIANCE_MEMBER_FIELDS = [
   "pic_square",
   "alliance_role",
   "save.baseid",
-  "save.level",
   "save.points",
   "save.basevalue",
   "save.protected",
@@ -69,7 +69,7 @@ export const toAllianceMember = (
     display_name: username,
     pic_square: pic_square ?? null,
     base_id: save.baseid,
-    level: save.level,
+    level: calculateBaseLevel(save.points, save.basevalue),
     points: calculateEmpirePoints(save.points, save.basevalue),
     last_attacker: save.lastattackername ?? "",
     is_leader: isLeader,
