@@ -59,7 +59,7 @@ package com.bymrefitted.academy
          }
       }
       
-      public static function StartMonsterUpgrade(param1:String, param2:Boolean = false) : Object
+      internal static function StartMonsterUpgrade(param1:String, param2:Boolean = false) : Object
       {
          var _loc6_:Array = null;
          if(!GLOBAL.player.m_upgrades[param1])
@@ -155,7 +155,7 @@ package com.bymrefitted.academy
          };
       }
       
-      public static function CancelMonsterUpgrade(param1:String) : void
+      internal static function CancelMonsterUpgrade(param1:String) : void
       {
          var _loc3_:BUILDING26 = null;
          delete GLOBAL.player.m_upgrades[param1].time;
@@ -173,7 +173,7 @@ package com.bymrefitted.academy
          BASE.Save();
       }
       
-      public static function FinishMonsterUpgrade(param1:String) : void
+      private static function FinishMonsterUpgrade(param1:String) : void
       {
          var stat:Array;
          var academyInstances:Vector.<Object>;
