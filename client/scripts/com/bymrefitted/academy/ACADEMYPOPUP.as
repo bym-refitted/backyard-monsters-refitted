@@ -1,4 +1,4 @@
-package
+package com.bymrefitted.academy
 {
    import com.bymrefitted.academy.AcademyService;
    import com.monsters.display.ImageCache;
