@@ -25,6 +25,18 @@ const getAreaSchema = z.object({
 });
 
 /**
+ * Fields loaded off the requesting player's own save.
+ */
+const OWN_SAVE_FIELDS = [
+  "save.basesaveid",
+  "save.worldid",
+  "save.credits",
+  "save.resources",
+  "save.points",
+  "save.basevalue",
+] as const;
+
+/**
  * User fields fetched alongside each WorldMapCell in the DB query for cell owners.
  * Restricted to only what the cell handlers need.
  */
@@ -75,7 +87,8 @@ export const getArea: KoaController = async (ctx) => {
   const { x, y, sendresources } = getAreaSchema.parse(ctx.request.body);
 
   const user: User = ctx.authUser;
-  await postgres.em.populate(user, ["save"]);
+
+  await postgres.em.populate(user, ["save"], { fields: OWN_SAVE_FIELDS });
 
   const save = user.save!;
   const worldid = save.worldid;
