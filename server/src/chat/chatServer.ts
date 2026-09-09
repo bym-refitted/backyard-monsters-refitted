@@ -3,9 +3,11 @@ import { logger } from "../utils/logger.js";
 import { initGateway, handleOpen, handleMessage, handleClose } from "./chatGateway.js";
 import { type SocketData } from "./chatState.js";
 
+const POLICY_PORTS = process.env.CHAT_POLICY_PORTS ?? process.env.CHAT_WS_PORT;
+
 const POLICY = Buffer.from(
   '<cross-domain-policy>' +
-  `<allow-access-from domain="*" to-ports="${process.env.CHAT_WS_PORT}" secure="false"/>` +
+  `<allow-access-from domain="*" to-ports="${POLICY_PORTS}" secure="false"/>` +
   '</cross-domain-policy>\0'
 );
 
