@@ -37,6 +37,7 @@ import { extractTownHall } from "../../../utils/extractTownHall.js";
 import { getChatChannel, getOrCreateChatToken } from "../../../chat/chatChannels.js";
 import { getAllianceData } from "../../../services/alliance/allianceData.js";
 import { runningPowerups } from "../../../services/alliance/powerups.js";
+import { cellRelationship, findRelationships } from "../../../services/alliance/relationships.js";
 import { INFERNO_CHAT_CHANNEL } from "../../../config/ChatConfig.js";
 
 /**
@@ -257,19 +258,19 @@ export const baseLoad: KoaController = async (ctx) => {
 
   const attackAllowed = canAttack(userSave, baseSave, mapversion);
 
-  let avatarUser;
+  let baseOwner;
 
   if (isOwner) {
-    avatarUser = user;
+    baseOwner = user;
   } else {
-    avatarUser = await postgres.em.findOne(
+    baseOwner = await postgres.em.findOne(
       User,
       { userid: baseSave.userid },
-      { fields: ["pic_square"] }
+      { fields: ["pic_square", "alliance_id"] }
     );
   }
 
-  const avatar = avatarUser?.pic_square;
+  const avatar = baseOwner?.pic_square;
   let chattoken: string | undefined;
   let chatchannel: string | undefined;
 
@@ -281,13 +282,23 @@ export const baseLoad: KoaController = async (ctx) => {
   const isOwnMainYard = isOwner && !isInferno;
   const isOverworldAttack = isAttack && !isInferno;
 
+  const ownerAllianceId = isInferno ? 0 : (baseOwner?.alliance_id ?? 0);
+  const flaggedAlliances = ownerAllianceId ? [ownerAllianceId] : [];
+  
+  const stances = await findRelationships(user.alliance_id, flaggedAlliances);
+
   const alliance = isOwnMainYard ? await getAllianceData(user) : null;
   const powerups = isOwnMainYard ? await runningPowerups(user.alliance_id) : [];
+
   const attpowerups = isOverworldAttack ? await runningPowerups(user.alliance_id) : [];
+
+  const relationship = isOwnMainYard
+    ? EnumBaseRelationship.SELF
+    : cellRelationship(user.alliance_id, ownerAllianceId, stances);
 
   const response: Record<string, unknown> = {
     ...filteredSave,
-    relationship: isOwnMainYard ? EnumBaseRelationship.SELF : EnumBaseRelationship.ENEMY,
+    relationship,
     canattack: attackAllowed,
     flags,
     worldsize: WORLD_SIZE,

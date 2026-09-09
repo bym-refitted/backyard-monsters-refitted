@@ -1,4 +1,5 @@
 import { AllianceMessageType, AllianceStance } from "../../enums/Alliance.js";
+import { EnumBaseRelationship } from "../../enums/EnumBaseRelationship.js";
 import { Alliance } from "../../models/alliance.model.js";
 import { AllianceRelationship } from "../../models/alliancerelationship.model.js";
 import { User } from "../../models/user.model.js";
@@ -121,4 +122,41 @@ export const setAllianceRelationship = async (
   await announceShout(shout);
 
   return true;
+};
+
+/**
+ * How a cell's owner should be tinted for the viewer, in Map Room 3 terms.
+ *
+ * MR3 colours the whole hex from a rel the server sends - blue for self, green
+ * for ally, yellow for neutral, red for enemy.
+ *
+ * @param {User["alliance_id"]} viewerAllianceId - The viewing player's alliance, if any.
+ * @param {number} ownerAllianceId - The cell owner's alliance, 0 when unaffiliated.
+ * @param {RelationshipLookup} stances - Flags the viewer's alliance has set, from findRelationships.
+ * @returns {EnumBaseRelationship} The value MR3 tints the cell by.
+ */
+export const cellRelationship = (
+  viewerAllianceId: User["alliance_id"],
+  ownerAllianceId: number,
+  stances: RelationshipLookup
+): EnumBaseRelationship => {
+  const notAffiliated = !viewerAllianceId || !ownerAllianceId;
+  const sameAlliance = viewerAllianceId === ownerAllianceId;
+
+  if (notAffiliated) return EnumBaseRelationship.ENEMY;
+
+  if (sameAlliance) return EnumBaseRelationship.ALLY;
+
+  const stance = stances.get(ownerAllianceId);
+
+  switch (stance) {
+    case AllianceStance.FRIENDLY:
+      return EnumBaseRelationship.ALLY;
+
+    case AllianceStance.HOSTILE:
+      return EnumBaseRelationship.ENEMY;
+
+    default:
+      return EnumBaseRelationship.NEUTRAL;
+  }
 };

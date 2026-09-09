@@ -18,6 +18,7 @@ import { TRIBE_REGEN_TIME } from "../../../config/MapRoom3Config.js";
 import { getLastSeen } from "../../../services/maproom/getLastSeen.js";
 import { getTruces } from "../../../services/maproom/getTruces.js";
 import { getAllianceRoster } from "../../../services/alliance/allianceData.js";
+import { findRelationships } from "../../../services/alliance/relationships.js";
 import { BaseType } from "../../../enums/Base.js";
 import { devConfig } from "../../../config/GameConfig.js";
 
@@ -240,6 +241,8 @@ export const getMapRoomCells: KoaController = async (ctx) => {
     }
 
     const alliancedata = await getAllianceRoster([...allianceIds]);
+
+    ctx.state.relationships = await findRelationships(user.alliance_id, [...allianceIds]);
 
     // =========================================================================
     // PHASE 5: Build cell data for all coordinates
