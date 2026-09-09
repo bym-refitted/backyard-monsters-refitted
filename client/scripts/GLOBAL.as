@@ -204,7 +204,7 @@ package
 
       public static var _bLocker:BFOUNDATION;
 
-      public static var _bAcademy:BFOUNDATION;
+      public static var _bAcademy:BUILDING26;
 
       public static var _bHousing:BFOUNDATION;
 

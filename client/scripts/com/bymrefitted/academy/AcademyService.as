@@ -9,7 +9,7 @@ package com.bymrefitted.academy
       
       public static const ID:int = 26;
       
-      public static var _building:BFOUNDATION = null;
+      public static var _building:BUILDING26 = null;
       
       public static var _mc:ACADEMYPOPUP = null;
       
@@ -33,12 +33,12 @@ package com.bymrefitted.academy
          super();
       }
       
-      public static function Show(param1:BFOUNDATION) : void
+      public static function Show(academyBuildingToOpen:BUILDING26) : void
       {
          if(!_open)
          {
             _open = true;
-            _building = param1;
+            _building = academyBuildingToOpen;
             GLOBAL.BlockerAdd();
             _mc = GLOBAL._layerWindows.addChild(new ACADEMYPOPUP()) as ACADEMYPOPUP;
             _mc.Center();
