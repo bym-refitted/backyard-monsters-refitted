@@ -2,9 +2,11 @@ import type { TCPSocketListenOptions } from "bun";
 import { logger } from "../utils/logger.js";
 import { initGateway, handleOpen, handleMessage, handleClose, type SocketData } from "./ChatGateway.js";
 
+const POLICY_PORTS = process.env.CHAT_POLICY_PORTS ?? process.env.CHAT_WS_PORT;
+
 const POLICY = Buffer.from(
   '<cross-domain-policy>' +
-  `<allow-access-from domain="*" to-ports="${process.env.CHAT_WS_PORT}" secure="false"/>` +
+  `<allow-access-from domain="*" to-ports="${POLICY_PORTS}" secure="false"/>` +
   '</cross-domain-policy>\0'
 );
 
