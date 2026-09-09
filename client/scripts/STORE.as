@@ -1,5 +1,6 @@
 package
 {
+   import com.bymrefitted.academy.AcademyService;
    import com.cc.utils.SecNum;
    import com.monsters.configs.BYMConfig;
    import com.monsters.display.ImageCache;
@@ -432,9 +433,9 @@ package
                   }
                }
             }
-            else if(GLOBAL._selectedBuilding._type == 26 && Boolean(ACADEMY._monsterID))
+            else if(GLOBAL._selectedBuilding._type == 26 && Boolean(AcademyService._monsterID))
             {
-               _loc2_ = GetTimeCost(GLOBAL.player.m_upgrades[ACADEMY._monsterID].time.Get() - GLOBAL.Timestamp());
+               _loc2_ = GetTimeCost(GLOBAL.player.m_upgrades[AcademyService._monsterID].time.Get() - GLOBAL.Timestamp());
             }
             else if(GLOBAL._selectedBuilding._type == 116 && Boolean((GLOBAL._bLab as MONSTERLAB)._upgrading))
             {
@@ -879,10 +880,10 @@ package
                }
                else if(_loc2_._type == 26)
                {
-                  if(ACADEMY._monsterID != null)
+                  if(AcademyService._monsterID != null)
                   {
-                     _loc3_ = GLOBAL.player.m_upgrades[ACADEMY._monsterID].time.Get() - GLOBAL.Timestamp();
-                     _loc4_ = KEYS.Get(CREATURELOCKER._creatures[ACADEMY._monsterID].name);
+                     _loc3_ = GLOBAL.player.m_upgrades[AcademyService._monsterID].time.Get() - GLOBAL.Timestamp();
+                     _loc4_ = KEYS.Get(CREATURELOCKER._creatures[AcademyService._monsterID].name);
                      if(_loc3_ > 0)
                      {
                         if(param1 == "SP1")
@@ -1148,10 +1149,10 @@ package
                }
                else if(_loc16_._type == 26)
                {
-                  if(ACADEMY._monsterID != null)
+                  if(AcademyService._monsterID != null)
                   {
-                     _loc12_ = GLOBAL.player.m_upgrades[ACADEMY._monsterID].time.Get() - GLOBAL.Timestamp();
-                     _loc13_ = String(CREATURELOCKER._creatures[ACADEMY._monsterID].name);
+                     _loc12_ = GLOBAL.player.m_upgrades[AcademyService._monsterID].time.Get() - GLOBAL.Timestamp();
+                     _loc13_ = String(CREATURELOCKER._creatures[AcademyService._monsterID].name);
                      if(_loc12_ > 0)
                      {
                         if(_loc9_ != "SP1")
@@ -1287,9 +1288,9 @@ package
                   {
                      _loc12_ = CREATURELOCKER._lockerData[CREATURELOCKER._unlocking].e - GLOBAL.Timestamp();
                   }
-                  if(_loc16_._type == 26 && ACADEMY._monsterID != null)
+                  if(_loc16_._type == 26 && AcademyService._monsterID != null)
                   {
-                     _loc12_ = GLOBAL.player.m_upgrades[ACADEMY._monsterID].time.Get() - GLOBAL.Timestamp();
+                     _loc12_ = GLOBAL.player.m_upgrades[AcademyService._monsterID].time.Get() - GLOBAL.Timestamp();
                   }
                   if(_loc16_._type == 116 && (GLOBAL._bLab as MONSTERLAB)._upgrading != null)
                   {
@@ -1771,10 +1772,10 @@ package
                   }
                   else if(_loc28_._type == 26)
                   {
-                     if(ACADEMY._monsterID != null)
+                     if(AcademyService._monsterID != null)
                      {
-                        _loc24_ = GLOBAL.player.m_upgrades[ACADEMY._monsterID].time.Get() - GLOBAL.Timestamp();
-                        _loc25_ = KEYS.Get(CREATURELOCKER._creatures[ACADEMY._monsterID].name);
+                        _loc24_ = GLOBAL.player.m_upgrades[AcademyService._monsterID].time.Get() - GLOBAL.Timestamp();
+                        _loc25_ = KEYS.Get(CREATURELOCKER._creatures[AcademyService._monsterID].name);
                         if(_loc24_ > 0)
                         {
                            if(item == "SP1")
@@ -2001,9 +2002,9 @@ package
                      {
                         _loc24_ = CREATURELOCKER._lockerData[CREATURELOCKER._unlocking].e - GLOBAL.Timestamp();
                      }
-                     if(_loc28_._type == 26 && ACADEMY._monsterID != null)
+                     if(_loc28_._type == 26 && AcademyService._monsterID != null)
                      {
-                        _loc24_ = GLOBAL.player.m_upgrades[ACADEMY._monsterID].time.Get() - GLOBAL.Timestamp();
+                        _loc24_ = GLOBAL.player.m_upgrades[AcademyService._monsterID].time.Get() - GLOBAL.Timestamp();
                      }
                      if(_loc28_._type == 116 && (GLOBAL._bLab as MONSTERLAB)._upgrading != null)
                      {
@@ -2614,21 +2615,21 @@ package
             else if(_loc15_._type == 26)
             {
                _loc8_ = 0;
-               if(ACADEMY._monsterID != null)
+               if(AcademyService._monsterID != null)
                {
-                  GLOBAL.player.m_upgrades[ACADEMY._monsterID].time.Add(-_loc16_);
-                  if(param1.substr(2,1) == "4" || GLOBAL.player.m_upgrades[ACADEMY._monsterID].time.Get() < GLOBAL.Timestamp())
+                  GLOBAL.player.m_upgrades[AcademyService._monsterID].time.Add(-_loc16_);
+                  if(param1.substr(2,1) == "4" || GLOBAL.player.m_upgrades[AcademyService._monsterID].time.Get() < GLOBAL.Timestamp())
                   {
                      _loc8_ = 1;
-                     GLOBAL.player.m_upgrades[ACADEMY._monsterID].time.Set(GLOBAL.Timestamp() + 1);
-                     LOGGER.Stat([4,ACADEMY._monsterID.substr(1),GLOBAL.player.m_upgrades[ACADEMY._monsterID].level,1,_loc4_]);
+                     GLOBAL.player.m_upgrades[AcademyService._monsterID].time.Set(GLOBAL.Timestamp() + 1);
+                     LOGGER.Stat([4,AcademyService._monsterID.substr(1),GLOBAL.player.m_upgrades[AcademyService._monsterID].level,1,_loc4_]);
                   }
                   else
                   {
-                     LOGGER.Stat([4,ACADEMY._monsterID.substr(1),GLOBAL.player.m_upgrades[ACADEMY._monsterID].level + 1,0,_loc4_]);
+                     LOGGER.Stat([4,AcademyService._monsterID.substr(1),GLOBAL.player.m_upgrades[AcademyService._monsterID].level + 1,0,_loc4_]);
                   }
                }
-               ACADEMY.Update();
+               AcademyService.Update();
             }
             else if(_loc15_._type == 116)
             {

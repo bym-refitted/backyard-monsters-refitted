@@ -1,5 +1,6 @@
 package
 {
+   import com.bymrefitted.academy.AcademyService;
    import com.cc.utils.SecNum;
    import com.jac.mouse.MouseWheelEnabler;
    import com.monsters.ai.TRIBES;
@@ -2257,7 +2258,7 @@ package
             if (isMainYard)
             {
                CREATURELOCKER.Tick();
-               ACADEMY.Tick();
+               AcademyService.Tick();
             }
             if (CREEPS._creepCount > 0)
             {

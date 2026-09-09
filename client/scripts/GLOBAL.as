@@ -1,5 +1,6 @@
 package
 {
+   import com.bymrefitted.academy.AcademyService;
    import com.cc.tests.ABTest;
    import com.cc.utils.SecNum;
    import com.computus.model.Timekeeper;
@@ -1217,7 +1218,7 @@ package
                STORE.ProcessPurchases();
                BASE.Tick();
                HOUSING.Update();
-               ACADEMY.Tick();
+               AcademyService.Tick();
                if (GLOBAL.mode == e_BASE_MODE.ATTACK || GLOBAL.mode == e_BASE_MODE.WMATTACK)
                {
                   ATTACK.Tick();

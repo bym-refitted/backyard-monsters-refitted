@@ -1,10 +1,10 @@
-package
+package com.bymrefitted.academy
 {
    import com.cc.utils.SecNum;
    import com.monsters.managers.InstanceManager;
    import flash.events.MouseEvent;
    
-   public class ACADEMY
+   public class AcademyService
    {
       
       public static const ID:int = 26;
@@ -28,7 +28,7 @@ package
       private static const _infernoMaxMonsters:int = 9;
        
       
-      public function ACADEMY()
+      public function AcademyService()
       {
          super();
       }

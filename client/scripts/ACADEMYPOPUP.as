@@ -1,5 +1,6 @@
 package
 {
+   import com.bymrefitted.academy.AcademyService;
    import com.monsters.display.ImageCache;
    import com.monsters.managers.InstanceManager;
    import flash.display.Bitmap;
@@ -106,9 +107,9 @@ package
                _maxStorage = CREATURES.GetProperty(_loc2_,"cStorage",10);
             }
          }
-         if(ACADEMY._building._upgrading)
+         if(AcademyService._building._upgrading)
          {
-            _page = int(String(ACADEMY._building._upgrading).substr(ACADEMY._building._upgrading.indexOf("C") + 1));
+            _page = int(String(AcademyService._building._upgrading).substr(AcademyService._building._upgrading.indexOf("C") + 1));
          }
          this.Setup(_monsterString + _page);
          speed_txt.htmlText = "<b>" + KEYS.Get("acad_att_speed") + "</b>";
@@ -165,7 +166,7 @@ package
          var _loc7_:Boolean = false;
          var _loc11_:Object = null;
          var _loc2_:Object = GLOBAL.player.m_upgrades[_monsterID];
-         var _loc3_:Object = ACADEMY.StartMonsterUpgrade(_monsterID,true);
+         var _loc3_:Object = AcademyService.StartMonsterUpgrade(_monsterID,true);
          var _loc4_:Array = CREATURELOCKER._creatures[_monsterID].trainingCosts[GLOBAL.player.m_upgrades[_monsterID].level - 1];
          if(Boolean(this._portraitImage) && Boolean(this._portraitImage.parent))
          {
@@ -194,7 +195,7 @@ package
             bB.mcR3.visible = false;
             bB.mcR4.visible = false;
             bB.mcTime.visible = false;
-            if(_monsterID == ACADEMY._building._upgrading)
+            if(_monsterID == AcademyService._building._upgrading)
             {
                bPrevious.visible = bNext.visible = false;
             }
@@ -417,7 +418,7 @@ package
       
       public function StartMonsterUpgrade(param1:MouseEvent) : void
       {
-         ACADEMY.StartMonsterUpgrade(_monsterID);
+         AcademyService.StartMonsterUpgrade(_monsterID);
          this.Setup(_monsterID);
       }
       
@@ -502,13 +503,13 @@ package
       
       public function CancelMonsterUpgradeB() : void
       {
-         ACADEMY.CancelMonsterUpgrade(_monsterID);
+         AcademyService.CancelMonsterUpgrade(_monsterID);
          this.Setup(_monsterID);
       }
       
       public function SpeedUp(param1:MouseEvent) : void
       {
-         ACADEMY._monsterID = _monsterID;
+         AcademyService._monsterID = _monsterID;
          STORE.SpeedUp("SP4");
       }
       
@@ -604,7 +605,7 @@ package
       
       public function Hide(param1:MouseEvent = null) : void
       {
-         ACADEMY.Hide(param1);
+         AcademyService.Hide(param1);
       }
       
       public function Center() : void

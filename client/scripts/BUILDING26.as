@@ -1,5 +1,6 @@
 package
 {
+   import com.bymrefitted.academy.AcademyService;
    import flash.display.Bitmap;
    import flash.display.BitmapData;
    import flash.display.MovieClip;
@@ -34,7 +35,7 @@ package
          {
             _upgrading = null;
          }
-         ACADEMY._monsterID = _upgrading;
+         AcademyService._monsterID = _upgrading;
          super.Click(param1);
       }
       

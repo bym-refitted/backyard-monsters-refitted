@@ -1,5 +1,6 @@
 package com.monsters.frontPage.messages.underusedFeatures
 {
+   import com.bymrefitted.academy.AcademyService;
    import com.monsters.frontPage.messages.KeywordMessage;
    import com.monsters.managers.InstanceManager;
    
@@ -25,7 +26,7 @@ package com.monsters.frontPage.messages.underusedFeatures
       
       override protected function onButtonClick() : void
       {
-         ACADEMY.Show(GLOBAL._bAcademy);
+         AcademyService.Show(GLOBAL._bAcademy);
          POPUPS.Next();
       }
       
@@ -36,7 +37,7 @@ package com.monsters.frontPage.messages.underusedFeatures
          var _loc6_:int = 0;
          var _loc1_:Object = CREATURELOCKER.GetAppropriateCreatures();
          var _loc2_:int = GLOBAL._bAcademy._lvl.Get();
-         var _loc3_:* = _loc2_ >= GLOBAL._buildingProps[ACADEMY.ID - 1].costs.length;
+         var _loc3_:* = _loc2_ >= GLOBAL._buildingProps[AcademyService.ID - 1].costs.length;
          for(_loc4_ in _loc1_)
          {
             _loc5_ = GLOBAL.player.m_upgrades[_loc4_];
