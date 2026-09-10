@@ -8,8 +8,11 @@ export interface PowerupRules {
   hourly_cost: number;
 }
 
-/** Max members an alliance can hold. */
 export const MAX_ALLIANCE_MEMBERS = 50;
+
+export const ALLIANCE_NAME_MIN_LENGTH = 3;
+
+export const ALLIANCE_NAME_MAX_LENGTH = 30;
 
 /** Text for different types of shouts for an alliance. */
 export const SHOUT_TEXT: Partial<Record<AllianceMessageType, string>> = {

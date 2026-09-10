@@ -6,7 +6,7 @@ import { AllianceInviteStatus, AllianceStance } from "../enums/Alliance.js";
  * Schema to validate alliance creation data.
  */
 export const CreateAllianceSchema = z.object({
-  alliance_name: z.string().trim().min(1).max(30),
+  alliance_name: z.string().trim(),
   alliance_image: z.coerce.number().int().min(1).max(41),
   alliance_desc: z.string().trim().min(1).max(255),
 });

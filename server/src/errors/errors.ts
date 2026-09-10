@@ -220,9 +220,25 @@ export const allianceNameTakenErr = () =>
     isClientFriendly: true,
   });
 
+export const allianceNameTooShortErr = () =>
+  new ClientSafeError({
+    message: "The alliance name is too short.",
+    status: Status.BAD_REQUEST,
+    data: {},
+    isClientFriendly: true,
+  });
+
+export const allianceNameTooLongErr = () =>
+  new ClientSafeError({
+    message: "The alliance name is too long.",
+    status: Status.BAD_REQUEST,
+    data: {},
+    isClientFriendly: true,
+  });
+
 export const allianceNameBannedErr = () =>
   new ClientSafeError({
-    message: "That alliance name isn't allowed. Please choose another.",
+    message: "The alliance name is not allowed.",
     status: Status.BAD_REQUEST,
     data: {},
     isClientFriendly: true,
@@ -230,7 +246,7 @@ export const allianceNameBannedErr = () =>
 
 export const allianceDescriptionBannedErr = () =>
   new ClientSafeError({
-    message: "That alliance description isn't allowed. Please revise it.",
+    message: "The alliance description is not allowed.",
     status: Status.BAD_REQUEST,
     data: {},
     isClientFriendly: true,
