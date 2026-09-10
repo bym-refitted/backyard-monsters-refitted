@@ -1,4 +1,4 @@
-import type { Save } from "../../models/save.model.js";
+import type { Save } from "../../database/models/save.model.js";
 import { getCurrentDateTime } from "../../utils/getCurrentDateTime.js";
 
 /**

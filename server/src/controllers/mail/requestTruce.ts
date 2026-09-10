@@ -2,10 +2,10 @@ import z from "zod";
 
 import { Status } from "../../enums/StatusCodes.js";
 import { TruceStatus } from "../../enums/TruceStatus.js";
-import { Message } from "../../models/message.model.js";
-import { Save } from "../../models/save.model.js";
-import { Truce } from "../../models/truce.model.js";
-import { User } from "../../models/user.model.js";
+import { Message } from "../../database/models/message.model.js";
+import { Save } from "../../database/models/save.model.js";
+import { Truce } from "../../database/models/truce.model.js";
+import { User } from "../../database/models/user.model.js";
 import { postgres } from "../../server.js";
 import { countUnreadMessage } from "../../services/mail/countUnreadMessage.js";
 import { findOrCreateThread } from "../../services/mail/findOrCreateThread.js";

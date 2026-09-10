@@ -1,4 +1,4 @@
-import { Save } from "../../../models/save.model.js";
+import { Save } from "../../../database/models/save.model.js";
 import { postgres } from "../../../server.js";
 import { Tribe, Tribes } from "../../../enums/Tribes.js";
 import { calculateTribeLevel, minimumTribeLevels } from "./calculateTribeLevel.js";

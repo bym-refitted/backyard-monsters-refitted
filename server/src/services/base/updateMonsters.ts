@@ -1,5 +1,5 @@
 import type { MonsterUpdate } from "../../controllers/base/save/handlers/monsterUpdateHandler.js";
-import { Save } from "../../models/save.model.js";
+import { Save } from "../../database/models/save.model.js";
 import { postgres } from "../../server.js";
 
 /**

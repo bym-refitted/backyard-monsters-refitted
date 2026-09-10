@@ -1,5 +1,5 @@
 import { postgres, redis } from "../server.js";
-import { User } from "../models/user.model.js";
+import { User } from "../database/models/user.model.js";
 import type { Context, Next } from "koa";
 import {
   authFailureErr,

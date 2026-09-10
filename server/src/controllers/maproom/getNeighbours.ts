@@ -1,9 +1,9 @@
 import z from "zod";
 import type { KoaController } from "../../utils/KoaController.js";
 import { Status } from "../../enums/StatusCodes.js";
-import { User } from "../../models/user.model.js";
-import { InfernoMaproom } from "../../models/infernomaproom.model.js";
-import { Maproom } from "../../models/maproom.model.js";
+import { User } from "../../database/models/user.model.js";
+import { InfernoMaproom } from "../../database/models/infernomaproom.model.js";
+import { Maproom } from "../../database/models/maproom.model.js";
 import { postgres } from "../../server.js";
 import { BaseType } from "../../enums/Base.js";
 import { findInfernoNeighbours } from "../../services/maproom/inferno/findInfernoNeighbours.js";

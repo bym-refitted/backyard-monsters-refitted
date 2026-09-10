@@ -1,7 +1,7 @@
 import type { Loaded } from "@mikro-orm/core";
-import { Save } from "../../../models/save.model.js";
-import { User } from "../../../models/user.model.js";
-import { WorldMapCell } from "../../../models/worldmapcell.model.js";
+import { Save } from "../../../database/models/save.model.js";
+import { User } from "../../../database/models/user.model.js";
+import { WorldMapCell } from "../../../database/models/worldmapcell.model.js";
 import { postgres } from "../../../server.js";
 import { logReport } from "../../base/reportManager.js";
 import { MapRoom2, MapRoomVersion } from "../../../enums/MapRoom.js";

@@ -1,12 +1,12 @@
 import type { Context } from "koa";
 import type { Loaded } from "@mikro-orm/core";
 import { EnumYardType } from "../../../enums/EnumYardType.js";
-import { WorldMapCell } from "../../../models/worldmapcell.model.js";
+import { WorldMapCell } from "../../../database/models/worldmapcell.model.js";
 import { wildMonsterCell } from "../../../controllers/maproom/v3/cells/wildMonsterCell.js";
 import { tribeOutpostCell } from "../../../controllers/maproom/v3/cells/tribeOutpostCell.js";
 import { terrainCell } from "../../../controllers/maproom/v3/cells/terrainCell.js";
 import { playerCell } from "../../../controllers/maproom/v3/cells/playerCell.js";
-import type { User } from "../../../models/user.model.js";
+import type { User } from "../../../database/models/user.model.js";
 import type { CellData } from "../../../types/CellData.js";
 
 /**

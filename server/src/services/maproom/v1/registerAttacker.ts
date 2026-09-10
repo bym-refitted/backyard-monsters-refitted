@@ -1,5 +1,5 @@
-import { Maproom } from "../../../models/maproom.model.js";
-import { User } from "../../../models/user.model.js";
+import { Maproom } from "../../../database/models/maproom.model.js";
+import { User } from "../../../database/models/user.model.js";
 import { postgres } from "../../../server.js";
 import { calculateBaseLevel } from "../../base/calculateBaseLevel.js";
 import { createNeighbourData } from "../createNeighbourData.js";

@@ -1,5 +1,5 @@
 import { BaseType } from "../../enums/Base.js";
-import { User } from "../../models/user.model.js";
+import { User } from "../../database/models/user.model.js";
 import { postgres } from "../../server.js";
 import { getCurrentDateTime } from "../../utils/getCurrentDateTime.js";
 import { getLastSeen } from "../maproom/getLastSeen.js";

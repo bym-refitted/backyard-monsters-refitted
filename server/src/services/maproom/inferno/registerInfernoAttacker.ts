@@ -1,5 +1,5 @@
-import { InfernoMaproom } from "../../../models/infernomaproom.model.js";
-import { User } from "../../../models/user.model.js";
+import { InfernoMaproom } from "../../../database/models/infernomaproom.model.js";
+import { User } from "../../../database/models/user.model.js";
 import { postgres } from "../../../server.js";
 import { calculateBaseLevel } from "../../base/calculateBaseLevel.js";
 import { createNeighbourData } from "../createNeighbourData.js";

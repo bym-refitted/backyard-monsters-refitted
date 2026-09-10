@@ -1,6 +1,6 @@
 import { POWERUP_LABEL, SHOUT_TEXT, STANCE_LABEL } from "../../config/AllianceConfig.js";
 import { AllianceMessageType, type AllianceStance, type AlliancePowerupType } from "../../enums/Alliance.js";
-import type { Alliance } from "../../models/alliance.model.js";
+import type { Alliance } from "../../database/models/alliance.model.js";
 
 
 type ShoutTarget = Pick<Alliance, "name"> | null;

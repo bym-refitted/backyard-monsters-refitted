@@ -1,8 +1,8 @@
 import { EntityManager, PostgreSqlDriver } from "@mikro-orm/postgresql";
 
 import { AllianceMessageType, AllianceRole } from "../../enums/Alliance.js";
-import { Alliance } from "../../models/alliance.model.js";
-import { User } from "../../models/user.model.js";
+import { Alliance } from "../../database/models/alliance.model.js";
+import { User } from "../../database/models/user.model.js";
 import { postgres } from "../../server.js";
 import { disconnectAllianceChat } from "../../chat/chatControl.js";
 import { announceShout, emitShout, type ShoutDraft } from "./allianceMessages.js";

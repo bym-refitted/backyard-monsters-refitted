@@ -2,8 +2,8 @@ import type { FilterQuery } from "@mikro-orm/core";
 
 import { Status } from "../../enums/StatusCodes.js";
 import { AllianceStance } from "../../enums/Alliance.js";
-import { Alliance } from "../../models/alliance.model.js";
-import { User } from "../../models/user.model.js";
+import { Alliance } from "../../database/models/alliance.model.js";
+import { User } from "../../database/models/user.model.js";
 import { postgres } from "../../server.js";
 import { SearchAlliancesSchema } from "../../schemas/AllianceSchemas.js";
 import { findRelationships, type RelationshipLookup } from "../../services/alliance/relationships.js";

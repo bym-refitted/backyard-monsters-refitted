@@ -1,5 +1,5 @@
 import { KorathReward, Reward } from "../../enums/Rewards.js";
-import { Save } from "../../models/save.model.js";
+import { Save } from "../../database/models/save.model.js";
 import { extractTownHall, type TownHall } from "../../utils/extractTownHall.js";
 
 const INITIAL_KRALLEN_DATA = { countdown: 443189, wins: 5, tier: 5, loot: 750000000000 };

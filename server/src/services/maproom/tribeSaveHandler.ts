@@ -2,7 +2,7 @@ import { MapRoomVersion } from "../../enums/MapRoom.js";
 import { tribeSaveV1 } from "./v1/tribeSaveV1.js";
 import { tribeSaveV2 } from "./v2/tribeSaveV2.js";
 import { tribeSaveV3 } from "./v3/tribeSaveV3.js";
-import type { User } from "../../models/user.model.js";
+import type { User } from "../../database/models/user.model.js";
 
 /**
  * Generates a wild monster Save for the given baseid.

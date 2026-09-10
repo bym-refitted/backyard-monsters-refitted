@@ -1,4 +1,4 @@
-import { User } from "../../models/user.model.js";
+import { User } from "../../database/models/user.model.js";
 import { postgres } from "../../server.js";
 
 export type LeaderBaseIds = Promise<Map<number, string | null>>;

@@ -2,8 +2,8 @@ import { UniqueConstraintViolationException, type RequiredEntityData } from "@mi
 
 import { Status } from "../../enums/StatusCodes.js";
 import { AllianceMessageType, AllianceRole } from "../../enums/Alliance.js";
-import { Alliance } from "../../models/alliance.model.js";
-import { User } from "../../models/user.model.js";
+import { Alliance } from "../../database/models/alliance.model.js";
+import { User } from "../../database/models/user.model.js";
 import { postgres } from "../../server.js";
 import { CreateAllianceSchema } from "../../schemas/AllianceSchemas.js";
 import { addAllianceMember } from "../../services/alliance/membership.js";

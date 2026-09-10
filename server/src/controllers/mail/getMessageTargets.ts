@@ -1,8 +1,8 @@
 import { MapRoomVersion } from "../../enums/MapRoom.js";
 import { Status } from "../../enums/StatusCodes.js";
 import { mailboxErr } from "../../errors/errors.js";
-import { Thread } from "../../models/thread.model.js";
-import { User } from "../../models/user.model.js";
+import { Thread } from "../../database/models/thread.model.js";
+import { User } from "../../database/models/user.model.js";
 import { postgres } from "../../server.js";
 import type { KoaController } from "../../utils/KoaController.js";
 

@@ -1,4 +1,4 @@
-import { Message } from "../../models/message.model.js";
+import { Message } from "../../database/models/message.model.js";
 import { postgres } from "../../server.js";
 
 /**

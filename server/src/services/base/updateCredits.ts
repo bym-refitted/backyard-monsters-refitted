@@ -1,8 +1,8 @@
-import { Save } from "../../models/save.model.js";
+import { Save } from "../../database/models/save.model.js";
 import { logger } from "../../utils/logger.js";
 import { type StoreItem, storeItems } from "../../game-data/store/storeItems.js";
 import { mushroomCredits, purchaseKeys, rewardCredits } from "../../game-data/store/purchaseKeys.js";
-import { User } from "../../models/user.model.js";
+import { User } from "../../database/models/user.model.js";
 import { isShinyLocked } from "../user/shinyLock.js";
 import type { Context } from "koa";
 

@@ -1,7 +1,7 @@
 import { molochTribes } from "../../../../game-data/tribes/inferno/molochTribes.js";
-import { InfernoMaproom, type TribeData } from "../../../../models/infernomaproom.model.js";
-import { Save } from "../../../../models/save.model.js";
-import { User } from "../../../../models/user.model.js";
+import { InfernoMaproom, type TribeData } from "../../../../database/models/infernomaproom.model.js";
+import { Save } from "../../../../database/models/save.model.js";
+import { User } from "../../../../database/models/user.model.js";
 import { postgres } from "../../../../server.js";
 
 export const infernoModeView = async (user: User, baseid: string) => {

@@ -1,5 +1,5 @@
 import { SaveKeys } from "../../../../enums/SaveKeys.js";
-import { Save } from "../../../../models/save.model.js";
+import { Save } from "../../../../database/models/save.model.js";
 import type { Resources } from "../../../../services/base/updateResources.js";
 
 type ResourceType = SaveKeys.RESOURCES | SaveKeys.IRESOURCES;

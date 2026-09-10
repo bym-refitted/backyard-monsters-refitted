@@ -1,6 +1,6 @@
 import { AllianceRole } from "../../enums/Alliance.js";
 import { Status } from "../../enums/StatusCodes.js";
-import { User } from "../../models/user.model.js";
+import { User } from "../../database/models/user.model.js";
 import { ActivatePowerupSchema } from "../../schemas/AllianceSchemas.js";
 import { requireAllianceMember } from "../../services/alliance/allianceAccess.js";
 import { startPowerup, type PowerupActivation } from "../../services/alliance/powerups.js";

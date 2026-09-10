@@ -2,7 +2,7 @@ import {
   type Resources,
   updateResources,
 } from "../../../../services/base/updateResources.js";
-import { Save } from "../../../../models/save.model.js";
+import { Save } from "../../../../database/models/save.model.js";
 import { SaveKeys } from "../../../../enums/SaveKeys.js";
 
 /**

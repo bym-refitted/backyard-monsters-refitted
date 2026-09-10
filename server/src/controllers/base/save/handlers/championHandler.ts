@@ -1,4 +1,4 @@
-import { Save } from "../../../../models/save.model.js";
+import { Save } from "../../../../database/models/save.model.js";
 import type { ChampionData } from "../../../../schemas/ChampionSchema.js";
 
 /**

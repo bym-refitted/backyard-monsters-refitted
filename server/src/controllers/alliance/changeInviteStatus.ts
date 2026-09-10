@@ -1,6 +1,6 @@
 import { AllianceInviteStatus, AllianceInviteType } from "../../enums/Alliance.js";
 import { Status } from "../../enums/StatusCodes.js";
-import { User } from "../../models/user.model.js";
+import { User } from "../../database/models/user.model.js";
 import { ChangeInviteStatusSchema } from "../../schemas/AllianceSchemas.js";
 import { answerInvite } from "../../services/alliance/allianceInvites.js";
 import { getAllianceData } from "../../services/alliance/allianceData.js";

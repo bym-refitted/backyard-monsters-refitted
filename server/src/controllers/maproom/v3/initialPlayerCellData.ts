@@ -1,7 +1,7 @@
-import { User } from "../../../models/user.model.js";
+import { User } from "../../../database/models/user.model.js";
 import { Status } from "../../../enums/StatusCodes.js";
 import { EnumYardType } from "../../../enums/EnumYardType.js";
-import { WorldMapCell } from "../../../models/worldmapcell.model.js";
+import { WorldMapCell } from "../../../database/models/worldmapcell.model.js";
 import { MapRoomVersion } from "../../../enums/MapRoom.js";
 import { postgres } from "../../../server.js";
 import { createCellData } from "../../../services/maproom/v3/createCellData.js";

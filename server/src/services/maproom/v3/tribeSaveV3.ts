@@ -1,4 +1,4 @@
-import { Save } from "../../../models/save.model.js";
+import { Save } from "../../../database/models/save.model.js";
 import { postgres } from "../../../server.js";
 import type { RequiredEntityData } from "@mikro-orm/core";
 import { EnumYardType } from "../../../enums/EnumYardType.js";
@@ -12,7 +12,7 @@ import { calculateStructureLevel } from "./calculateStructureLevel.js";
 import { getDefenderCoords } from "./getDefenderCoords.js";
 import { getDefenderLevels } from "./getDefenderLevels.js";
 import { getHexNeighborOffsets } from "./getHexNeighborOffsets.js";
-import { WorldMapCell } from "../../../models/worldmapcell.model.js";
+import { WorldMapCell } from "../../../database/models/worldmapcell.model.js";
 import { MapRoomVersion } from "../../../enums/MapRoom.js";
 
 /**

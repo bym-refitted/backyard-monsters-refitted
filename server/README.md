@@ -90,7 +90,7 @@ The server is built on a modern Bun runtime using Koa.js, TypeScript, and MikroO
 <br>
 
 ## 📂 Data Models
-**`models/`** - ORM entity definitions
+**`database/models/`** - ORM entity definitions
 - Users, saves, worlds, messages, threads
 - Attack logs, leaderboards, and more
 - `WorldMapCell` — tracks MR2/MR3 cell state (owner, base type, captured/destroyed timestamps, map version)

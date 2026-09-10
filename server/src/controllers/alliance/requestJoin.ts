@@ -1,7 +1,7 @@
 import { AllianceInviteType } from "../../enums/Alliance.js";
 import { Status } from "../../enums/StatusCodes.js";
-import { Alliance } from "../../models/alliance.model.js";
-import { User } from "../../models/user.model.js";
+import { Alliance } from "../../database/models/alliance.model.js";
+import { User } from "../../database/models/user.model.js";
 import { postgres } from "../../server.js";
 import { RequestJoinSchema } from "../../schemas/AllianceSchemas.js";
 import { getWorldMapVersion } from "../../services/maproom/knownWorlds.js";

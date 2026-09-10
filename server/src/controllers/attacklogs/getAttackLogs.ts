@@ -1,11 +1,11 @@
 import type { FilterQuery } from "@mikro-orm/core";
 import { Status } from "../../enums/StatusCodes.js";
 import { loadFailureErr } from "../../errors/errors.js";
-import { AttackLogs } from "../../models/attacklogs.model.js";
+import { AttackLogs } from "../../database/models/attacklogs.model.js";
 import { postgres, redis } from "../../server.js";
 import type { KoaController } from "../../utils/KoaController.js";
 import { AttackLogFilter } from "../../enums/AttackLogFilter.js";
-import { User } from "../../models/user.model.js";
+import { User } from "../../database/models/user.model.js";
 
 /**
  * Time-to-live (TTL) for attack logs cache in Redis.

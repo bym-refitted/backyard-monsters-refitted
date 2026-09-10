@@ -1,7 +1,7 @@
 import { EnumBaseRelationship } from "../../../../enums/EnumBaseRelationship.js";
 import { EnumYardType } from "../../../../enums/EnumYardType.js";
 import { Tribes } from "../../../../enums/Tribes.js";
-import { WorldMapCell } from "../../../../models/worldmapcell.model.js";
+import { WorldMapCell } from "../../../../database/models/worldmapcell.model.js";
 import { generateBaseId } from "../../../../utils/generateBaseId.js";
 import { getGeneratedCells, cellKey } from "../../../../services/maproom/v3/generateCells.js";
 import type { CellData } from "../../../../types/CellData.js";

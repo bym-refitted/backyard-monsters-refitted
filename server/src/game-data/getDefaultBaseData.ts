@@ -1,5 +1,5 @@
 import { devConfig } from "../config/GameConfig.js";
-import { User } from "../models/user.model.js";
+import { User } from "../database/models/user.model.js";
 import { getCurrentDateTime } from "../utils/getCurrentDateTime.js";
 import { Reward } from "../enums/Rewards.js";
 import { BaseType } from "../enums/Base.js";

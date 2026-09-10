@@ -1,8 +1,8 @@
 import type { KoaController } from "../../../utils/KoaController.js";
-import { User } from "../../../models/user.model.js";
+import { User } from "../../../database/models/user.model.js";
 import { postgres } from "../../../server.js";
 import { invalidateWorldsCache } from "../../../services/maproom/knownWorlds.js";
-import { WorldMapCell } from "../../../models/worldmapcell.model.js";
+import { WorldMapCell } from "../../../database/models/worldmapcell.model.js";
 import { Status } from "../../../enums/StatusCodes.js";
 import { BaseType } from "../../../enums/Base.js";
 import { MapRoomCell, MapRoomVersion } from "../../../enums/MapRoom.js";

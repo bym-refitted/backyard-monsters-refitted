@@ -1,5 +1,5 @@
 import { mailboxErr } from "../../errors/errors.js";
-import { Thread } from "../../models/thread.model.js";
+import { Thread } from "../../database/models/thread.model.js";
 import { postgres } from "../../server.js";
 
 /**

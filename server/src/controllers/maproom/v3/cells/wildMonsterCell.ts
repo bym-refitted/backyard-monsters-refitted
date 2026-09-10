@@ -1,7 +1,7 @@
 import { STRUCTURE_RANGE } from "../../../../config/MapRoom3Config.js";
 import { EnumBaseRelationship } from "../../../../enums/EnumBaseRelationship.js";
 import { Tribes } from "../../../../enums/Tribes.js";
-import { WorldMapCell } from "../../../../models/worldmapcell.model.js";
+import { WorldMapCell } from "../../../../database/models/worldmapcell.model.js";
 import { generateBaseId } from "../../../../utils/generateBaseId.js";
 import { calculateStructureLevel } from "../../../../services/maproom/v3/calculateStructureLevel.js";
 import type { CellData } from "../../../../types/CellData.js";

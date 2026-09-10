@@ -1,6 +1,6 @@
 import z from "zod";
 
-import { User } from "../../models/user.model.js";
+import { User } from "../../database/models/user.model.js";
 import type { KoaController } from "../../utils/KoaController.js";
 import { postgres } from "../../server.js";
 import { joinOrCreateWorld } from "../../services/maproom/v2/joinOrCreateWorld.js";
@@ -16,7 +16,7 @@ import {
   mustLeaveAllianceToChangeWorldErr,
   townHallLevelErr,
 } from "../../errors/errors.js";
-import { Maproom } from "../../models/maproom.model.js";
+import { Maproom } from "../../database/models/maproom.model.js";
 import { clearPendingInvites } from "../../services/alliance/allianceInvites.js";
 
 /**

@@ -1,8 +1,8 @@
-import { WorldMapCell } from "../../../models/worldmapcell.model.js";
-import { User } from "../../../models/user.model.js";
-import { Save } from "../../../models/save.model.js";
+import { WorldMapCell } from "../../../database/models/worldmapcell.model.js";
+import { User } from "../../../database/models/user.model.js";
+import { Save } from "../../../database/models/save.model.js";
 import { logger } from "../../../utils/logger.js";
-import { World } from "../../../models/world.model.js";
+import { World } from "../../../database/models/world.model.js";
 import { MapRoom2, MapRoomCell, MapRoomVersion } from "../../../enums/MapRoom.js";
 import { EntityManager, PostgreSqlDriver } from "@mikro-orm/postgresql";
 import { postgres } from "../../../server.js";

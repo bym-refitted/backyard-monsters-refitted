@@ -1,7 +1,7 @@
 import { molochTribes } from "../../../../game-data/tribes/inferno/molochTribes.js";
 import { BaseMode, BaseType } from "../../../../enums/Base.js";
-import { Save } from "../../../../models/save.model.js";
-import { User } from "../../../../models/user.model.js";
+import { Save } from "../../../../database/models/save.model.js";
+import { User } from "../../../../database/models/user.model.js";
 import { postgres } from "../../../../server.js";
 import { createAttackLog } from "../../../../services/base/createAttackLog.js";
 import { getCurrentDateTime } from "../../../../utils/getCurrentDateTime.js";
@@ -10,7 +10,7 @@ import { registerInfernoAttacker } from "../../../../services/maproom/inferno/re
 import {
   InfernoMaproom,
   type TribeData,
-} from "../../../../models/infernomaproom.model.js";
+} from "../../../../database/models/infernomaproom.model.js";
 import { damageProtection } from "../../../../services/maproom/v2/damageProtection.js";
 import { isAttackActive } from "../../../../services/base/isAttackActive.js";
 import { baseUnderAttackErr, baseProtectedErr, userOnlineErr } from "../../../../errors/errors.js";

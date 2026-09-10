@@ -1,7 +1,7 @@
 import bcrypt from "bcrypt";
 import type { KoaController } from "../../utils/KoaController.js";
 import { postgres } from "../../server.js";
-import { User } from "../../models/user.model.js";
+import { User } from "../../database/models/user.model.js";
 import { FilterFrontendKeys } from "../../utils/FrontendKey.js";
 import { emailUniqueErr, usernameUniqueErr } from "../../errors/errors.js";
 import { logger } from "../../utils/logger.js";

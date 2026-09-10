@@ -1,7 +1,7 @@
 import mikroOrmConfig from "../mikro-orm.config.js";
 
 import { MikroORM } from "@mikro-orm/core";
-import { Save } from "../models/save.model.js";
+import { Save } from "../database/models/save.model.js";
 import { BaseType } from "../enums/Base.js";
 
 /**

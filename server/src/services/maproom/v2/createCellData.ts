@@ -1,9 +1,9 @@
-import { WorldMapCell } from "../../../models/worldmapcell.model.js";
+import { WorldMapCell } from "../../../database/models/worldmapcell.model.js";
 import type { Context } from "koa";
 import { Terrain } from "../../../enums/MapRoom.js";
 import { userCell } from "../../../controllers/maproom/v2/cells/userCell.js";
 import { wildMonsterCell } from "../../../controllers/maproom/v2/cells/wildMonsterCell.js";
-import type { User } from "../../../models/user.model.js";
+import type { User } from "../../../database/models/user.model.js";
 
 /**
  * Constructs the necessary data object of a cell on the world map.

@@ -1,8 +1,8 @@
 import { BaseType } from "../../enums/Base.js";
 import { AllianceInviteStatus } from "../../enums/Alliance.js";
-import { AllianceInvite } from "../../models/allianceinvite.model.js";
-import type { Alliance } from "../../models/alliance.model.js";
-import { User } from "../../models/user.model.js";
+import { AllianceInvite } from "../../database/models/allianceinvite.model.js";
+import type { Alliance } from "../../database/models/alliance.model.js";
+import { User } from "../../database/models/user.model.js";
 import { postgres } from "../../server.js";
 import { getCurrentDateTime } from "../../utils/getCurrentDateTime.js";
 import { getLastSeen } from "../maproom/getLastSeen.js";

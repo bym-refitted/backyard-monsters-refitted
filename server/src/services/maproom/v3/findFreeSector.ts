@@ -1,6 +1,6 @@
 import { MapRoom3, MapRoomVersion } from "../../../enums/MapRoom.js";
-import { World } from "../../../models/world.model.js";
-import { WorldMapCell } from "../../../models/worldmapcell.model.js";
+import { World } from "../../../database/models/world.model.js";
+import { WorldMapCell } from "../../../database/models/worldmapcell.model.js";
 import { EntityManager, PostgreSqlDriver } from "@mikro-orm/postgresql";
 import { EnumYardType } from "../../../enums/EnumYardType.js";
 import { getDefenderCoords } from "./getDefenderCoords.js";

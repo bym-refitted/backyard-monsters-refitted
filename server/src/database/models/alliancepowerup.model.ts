@@ -1,7 +1,7 @@
 import { Entity, PrimaryKey, Property } from "@mikro-orm/decorators/es";
 import { PrimaryKeyProp } from "@mikro-orm/core";
 
-import { AlliancePowerupType } from "../enums/Alliance.js";
+import { AlliancePowerupType } from "../../enums/Alliance.js";
 
 @Entity({ tableName: "alliance_powerup" })
 export class AlliancePowerup {

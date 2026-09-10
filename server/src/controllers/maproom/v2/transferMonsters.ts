@@ -2,7 +2,7 @@ import z from "zod";
 
 import type { KoaController } from "../../../utils/KoaController.js";
 import { postgres } from "../../../server.js";
-import { Save } from "../../../models/save.model.js";
+import { Save } from "../../../database/models/save.model.js";
 import { Status } from "../../../enums/StatusCodes.js";
 
 interface Monster {

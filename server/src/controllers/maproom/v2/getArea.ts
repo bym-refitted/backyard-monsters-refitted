@@ -1,8 +1,8 @@
 import { z } from "zod";
 
 import type { KoaController } from "../../../utils/KoaController.js";
-import { User } from "../../../models/user.model.js";
-import { WorldMapCell } from "../../../models/worldmapcell.model.js";
+import { User } from "../../../database/models/user.model.js";
+import { WorldMapCell } from "../../../database/models/worldmapcell.model.js";
 import { postgres } from "../../../server.js";
 import { devConfig } from "../../../config/GameConfig.js";
 import { Status } from "../../../enums/StatusCodes.js";

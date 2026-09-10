@@ -1,12 +1,12 @@
 import { Status } from "../../enums/StatusCodes.js";
 import { mailboxErr } from "../../errors/errors.js";
-import { User } from "../../models/user.model.js";
+import { User } from "../../database/models/user.model.js";
 import type { KoaController } from "../../utils/KoaController.js";
 import { postgres } from "../../server.js";
 import { GetMessageSchema } from "./zod/GetMessageSchema.js";
 import { countUnreadMessage } from "../../services/mail/countUnreadMessage.js";
 import { findUserMessages } from "../../services/mail/findUserMessages.js";
-import { Message } from "../../models/message.model.js";
+import { Message } from "../../database/models/message.model.js";
 import { FilterFrontendKeys } from "../../utils/FrontendKey.js";
 
 /**

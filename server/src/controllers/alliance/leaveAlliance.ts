@@ -1,6 +1,6 @@
 import { Status } from "../../enums/StatusCodes.js";
 import { AllianceMessageType, AllianceRole } from "../../enums/Alliance.js";
-import { User } from "../../models/user.model.js";
+import { User } from "../../database/models/user.model.js";
 import { requireAllianceMember } from "../../services/alliance/allianceAccess.js";
 import { countOtherMembers, removeAllianceMember } from "../../services/alliance/membership.js";
 import { leaderMustTransferErr } from "../../errors/errors.js";

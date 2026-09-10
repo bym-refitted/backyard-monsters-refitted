@@ -1,5 +1,5 @@
-import { Save } from "../models/save.model.js";
-import { User } from "../models/user.model.js";
+import { Save } from "../database/models/save.model.js";
+import { User } from "../database/models/user.model.js";
 import { postgres, redis } from "../server.js";
 import { calculateBaseLevel } from "../services/base/calculateBaseLevel.js";
 import { chatTokenKey } from "./chatChannels.js";

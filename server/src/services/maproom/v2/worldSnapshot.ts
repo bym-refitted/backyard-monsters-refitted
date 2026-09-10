@@ -3,8 +3,8 @@ import { brotliCompress, constants, gzip } from "zlib";
 import { promisify } from "util";
 
 import { MapRoomCell, MapRoomVersion } from "../../../enums/MapRoom.js";
-import { User } from "../../../models/user.model.js";
-import { WorldMapCell } from "../../../models/worldmapcell.model.js";
+import { User } from "../../../database/models/user.model.js";
+import { WorldMapCell } from "../../../database/models/worldmapcell.model.js";
 import { postgres } from "../../../server.js";
 
 /**

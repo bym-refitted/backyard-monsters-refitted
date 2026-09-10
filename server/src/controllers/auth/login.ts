@@ -1,7 +1,7 @@
 import bcrypt from "bcrypt";
 import JWT from "jsonwebtoken";
 
-import { User } from "../../models/user.model.js";
+import { User } from "../../database/models/user.model.js";
 import { postgres, redis } from "../../server.js";
 import { FilterFrontendKeys } from "../../utils/FrontendKey.js";
 import type { KoaController } from "../../utils/KoaController.js";

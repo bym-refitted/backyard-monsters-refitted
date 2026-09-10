@@ -1,6 +1,6 @@
 import type { Context } from "koa";
-import type { User } from "../../../../models/user.model.js";
-import type { WorldMapCell } from "../../../../models/worldmapcell.model.js";
+import type { User } from "../../../../database/models/user.model.js";
+import type { WorldMapCell } from "../../../../database/models/worldmapcell.model.js";
 import { calculateBaseLevel } from "../../../../services/base/calculateBaseLevel.js";
 import { getCurrentDateTime } from "../../../../utils/getCurrentDateTime.js";
 import { MapRoomCell } from "../../../../enums/MapRoom.js";

@@ -1,7 +1,7 @@
 import { AllianceMessageType, AlliancePowerupType } from "../../enums/Alliance.js";
-import { AlliancePowerup } from "../../models/alliancepowerup.model.js";
-import { Save } from "../../models/save.model.js";
-import type { User } from "../../models/user.model.js";
+import { AlliancePowerup } from "../../database/models/alliancepowerup.model.js";
+import { Save } from "../../database/models/save.model.js";
+import type { User } from "../../database/models/user.model.js";
 import { postgres } from "../../server.js";
 import { getCurrentDateTime } from "../../utils/getCurrentDateTime.js";
 import {

@@ -1,5 +1,5 @@
 import { BaseMode, BaseType } from "../../../enums/Base.js";
-import { Save } from "../../../models/save.model.js";
+import { Save } from "../../../database/models/save.model.js";
 import { postgres } from "../../../server.js";
 import { getCurrentDateTime } from "../../../utils/getCurrentDateTime.js";
 

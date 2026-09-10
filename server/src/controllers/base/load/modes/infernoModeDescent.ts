@@ -1,8 +1,8 @@
 import { devConfig } from "../../../../config/GameConfig.js";
 import { BaseType } from "../../../../enums/Base.js";
-import { InfernoMaproom } from "../../../../models/infernomaproom.model.js";
-import { Save } from "../../../../models/save.model.js";
-import { User } from "../../../../models/user.model.js";
+import { InfernoMaproom } from "../../../../database/models/infernomaproom.model.js";
+import { Save } from "../../../../database/models/save.model.js";
+import { User } from "../../../../database/models/user.model.js";
 import { postgres } from "../../../../server.js";
 
 /**

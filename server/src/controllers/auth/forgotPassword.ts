@@ -6,7 +6,7 @@ import type { KoaController } from "../../utils/KoaController.js";
 import { logger } from "../../utils/logger.js";
 import { promises as fs } from "fs";
 import { postgres } from "../../server.js";
-import { User } from "../../models/user.model.js";
+import { User } from "../../database/models/user.model.js";
 import { authFailureErr } from "../../errors/errors.js";
 import { ForgotPasswordSchema } from "../../schemas/AuthSchemas.js";
 import { transporter } from "../../config/MailConfig.js";

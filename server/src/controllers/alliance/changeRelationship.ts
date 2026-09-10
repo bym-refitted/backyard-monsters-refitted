@@ -1,6 +1,6 @@
 import { Status } from "../../enums/StatusCodes.js";
-import { Alliance } from "../../models/alliance.model.js";
-import { User } from "../../models/user.model.js";
+import { Alliance } from "../../database/models/alliance.model.js";
+import { User } from "../../database/models/user.model.js";
 import { postgres } from "../../server.js";
 import { ChangeRelationshipSchema } from "../../schemas/AllianceSchemas.js";
 import { requireAllianceLeader } from "../../services/alliance/allianceAccess.js";

@@ -2,7 +2,7 @@ import { BaseType } from "../../enums/Base.js";
 import { EnumYardType } from "../../enums/EnumYardType.js";
 import { MapRoomVersion } from "../../enums/MapRoom.js";
 import { calculateBaseLevel } from "./calculateBaseLevel.js";
-import type { Save } from "../../models/save.model.js";
+import type { Save } from "../../database/models/save.model.js";
 
 /**
  * Determines whether an attacker is allowed to attack a given base.
