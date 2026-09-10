@@ -9,16 +9,20 @@ package
    import com.monsters.alliances.tabs.MyAllianceTab;
    import com.monsters.alliances.tabs.PowerUpsTab;
    import com.monsters.alliances.tabs.SuggestedTab;
+   import com.monsters.enums.EnumPlayerType;
    import flash.display.MovieClip;
    import flash.events.MouseEvent;
+   import flash.system.Capabilities;
+   import utils.DisplayScaler;
 
    public class ALLIANCEPOPUP extends MovieClip
    {
       private static const W:int = 860;
       private static const H:int = 580;
+
+      private static const FIT_MARGIN:int = 40;
       private static const CONTENT_X:int = 26;
       private static const CONTENT_Y:int = 63;
-      // TAB_LABELS indices of the two tabs whose labels carry a count.
       private static const MEMBERS_TAB:int = 3;
       private static const INVITES_TAB:int = 5;
 
@@ -327,15 +331,56 @@ package
          ALLIANCEWINDOW.Hide();
       }
 
+      /**
+       * Centres the window. On Android it is centred on its fitted, scaled size -
+       * the window is registered at its top-left, so centring on the unscaled size
+       * and then scaling pushed it off the right and bottom of the screen.
+       */
       public function Center():void
       {
-         POPUPSETTINGS.AlignToUpperLeft(this);
-         y += 70;
+         if (Capabilities.playerType == EnumPlayerType.DESKTOP)
+         {
+            var scale:Number = _fitScale();
+            x = GLOBAL._SCREENCENTER.x - W * scale * 0.5;
+            y = GLOBAL._SCREENCENTER.y - H * scale * 0.5;
+         }
+         else
+         {
+            POPUPSETTINGS.AlignToUpperLeft(this);
+            y += 70;
+         }
       }
 
       public function ScaleUp():void
       {
-         POPUPSETTINGS.ScaleUp(this);
+         if (Capabilities.playerType == EnumPlayerType.DESKTOP)
+         {
+            scaleX = scaleY = _fitScale();
+         }
+         else
+         {
+            POPUPSETTINGS.ScaleUp(this);
+         }
+      }
+
+      /**
+       * The device UI scale, reduced only as far as needed for the whole window to
+       * fit on screen. The window is 860x580 against a 600px design height, so at
+       * the plain UI scale it fills nearly the full screen height on every device,
+       * and is wider than the screen on 4:3 tablets.
+       *
+       * Measured against the W and H constants rather than width and height, which
+       * grow when a child popup overhangs the frame.
+       *
+       * @returns {Number} Scale to apply to the window.
+       */
+      private function _fitScale():Number
+      {
+         return Math.min(
+            DisplayScaler.getUIScale(),
+            (GLOBAL._SCREEN.width - FIT_MARGIN) / W,
+            (GLOBAL._SCREEN.height - FIT_MARGIN) / H
+         );
       }
    }
 }
