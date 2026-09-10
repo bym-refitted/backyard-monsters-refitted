@@ -59,6 +59,7 @@ package com.monsters.alliances.tabs
 
       // Original member pic is 25×25
       private static const AVATAR_SIZE:int = 25;
+      private static const AVATAR_PLACEHOLDER:String = GLOBAL.cdnUrl + "assets/bym-refitted-assets/placeholder.jpg";
 
       // Original actions button is 97×25
       private static const ACT_BTN_W:int = 97;
@@ -554,6 +555,10 @@ package com.monsters.alliances.tabs
          {
             avatar.contentLoaderInfo.removeEventListener(Event.COMPLETE, onLoad);
             avatar.contentLoaderInfo.removeEventListener(IOErrorEvent.IO_ERROR, onError);
+
+            // The placeholder is the last resort, so a missing one stops here
+            // rather than asking for itself forever.
+            if (url != AVATAR_PLACEHOLDER) _drawAvatar(parent, AVATAR_PLACEHOLDER, x, y);
          };
 
          avatar.contentLoaderInfo.addEventListener(Event.COMPLETE, onLoad);
