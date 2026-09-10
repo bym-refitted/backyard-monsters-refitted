@@ -11,21 +11,21 @@ package com.bymrefitted.academy
    public class ACADEMYPOPUP extends ACADEMYPOPUP_CLIP
    {
       
-      public static var _page:int = 1;
+      private static var _page:int = 1;
       
-      public static var _monsterID:String;
+      private static var _monsterID:String;
       
-      public static var _maxSpeed:Number = 0;
+      private static var _maxSpeed:Number = 0;
       
-      public static var _maxHealth:Number = 0;
+      private static var _maxHealth:Number = 0;
       
-      public static var _maxDamage:Number = 0;
+      private static var _maxDamage:Number = 0;
       
-      public static var _maxTime:Number = 0;
+      private static var _maxTime:Number = 0;
       
-      public static var _maxResource:Number = 0;
+      private static var _maxResource:Number = 0;
       
-      public static var _maxStorage:Number = 0;
+      private static var _maxStorage:Number = 0;
       
       private static var _monsterString:String = "C";
       
@@ -33,7 +33,7 @@ package com.bymrefitted.academy
       
       private static var lastAction:int = 0;
       
-      public static var _instantUpgradeCost:int = 0;
+      private static var _instantUpgradeCost:int = 0;
        
       
       private const _infernoFrameOffset:int = 6;
@@ -126,7 +126,7 @@ package com.bymrefitted.academy
          after_txt.htmlText = "<b>" + KEYS.Get("acad_att_after") + "</b>";
       }
       
-      public function Setup(param1:String) : void
+      private function Setup(param1:String) : void
       {
          _monsterID = param1;
          if(!GLOBAL.player.m_upgrades[_monsterID])
@@ -161,7 +161,7 @@ package com.bymrefitted.academy
          _instantUpgradeCost = _loc5_ + _loc6_;
       }
       
-      public function Update(param1:Boolean = false) : void
+      internal function Update(param1:Boolean = false) : void
       {
          var _loc7_:Boolean = false;
          var _loc11_:Object = null;
@@ -416,13 +416,13 @@ package com.bymrefitted.academy
          }
       }
       
-      public function StartMonsterUpgrade(param1:MouseEvent) : void
+      private function StartMonsterUpgrade(param1:MouseEvent) : void
       {
          AcademyService.StartMonsterUpgrade(_monsterID);
          this.Setup(_monsterID);
       }
       
-      public function InstantMonsterUpgrade(param1:MouseEvent) : void
+      private function InstantMonsterUpgrade(param1:MouseEvent) : void
       {
          var buildingInstances:Vector.<Object>;
          var Post:Function;
@@ -496,24 +496,24 @@ package com.bymrefitted.academy
          BASE.Purchase("ITR",_instantUpgradeCost,"academy");
       }
       
-      public function CancelMonsterUpgrade(param1:MouseEvent) : void
+      private function CancelMonsterUpgrade(param1:MouseEvent) : void
       {
          GLOBAL.Message(KEYS.Get("acad_confirmcancel",{"v1":KEYS.Get(CREATURELOCKER._creatures[_monsterID].name)}),KEYS.Get("acad_confirmcancel_btn"),this.CancelMonsterUpgradeB);
       }
       
-      public function CancelMonsterUpgradeB() : void
+      private function CancelMonsterUpgradeB() : void
       {
          AcademyService.CancelMonsterUpgrade(_monsterID);
          this.Setup(_monsterID);
       }
       
-      public function SpeedUp(param1:MouseEvent) : void
+      private function SpeedUp(param1:MouseEvent) : void
       {
          AcademyService._monsterID = _monsterID;
          STORE.SpeedUp("SP4");
       }
       
-      public function Previous(param1:MouseEvent = null) : void
+      private function Previous(param1:MouseEvent = null) : void
       {
          lastAction = -1;
          do
@@ -543,7 +543,7 @@ package com.bymrefitted.academy
          }
       }
       
-      public function Next(param1:MouseEvent = null) : void
+      private function Next(param1:MouseEvent = null) : void
       {
          lastAction = 1;
          do
@@ -573,7 +573,7 @@ package com.bymrefitted.academy
          }
       }
       
-      public function CheckMonsterLock(param1:String) : Boolean
+      private function CheckMonsterLock(param1:String) : Boolean
       {
          var _loc2_:Boolean = Boolean(CREATURELOCKER._creatures[param1].blocked);
          if(_loc2_)
@@ -602,18 +602,23 @@ package com.bymrefitted.academy
             }
          }
       }
-      
+
+      /**
+       * Hides the academy popup.
+       * 
+       * DO NOT DELETE! This function is dynamically invoked by frame::BtnClose using reflective calls.
+       */
       public function Hide(param1:MouseEvent = null) : void
       {
          AcademyService.Hide(param1);
       }
       
-      public function Center() : void
+      internal function Center() : void
       {
          POPUPSETTINGS.AlignToCenter(this);
       }
       
-      public function ScaleUp() : void
+      internal function ScaleUp() : void
       {
          POPUPSETTINGS.ScaleUp(this);
       }
