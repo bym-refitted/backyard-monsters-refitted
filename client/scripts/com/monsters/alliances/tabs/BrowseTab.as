@@ -240,9 +240,32 @@ package com.monsters.alliances.tabs
       }
 
       /**
-       * @param {int} relationship - Diplomacy value: -1 hostile, 0 neutral, 1 friendly.
-       * @returns {uint} The swatch colour for the row's relationship column.
+       * Recolours one row's shield frame after its relationship changes.
+       *
+       * A stance write only ever alters the `relationship` field of that one row -
+       * searchAlliances orders by empire points and filters on name and world, so
+       * nothing can reorder or drop out - which is why this repaints in place
+       * rather than refetching the page.
+       *
+       * @param {Object} rowData - The row whose relationship has just changed.
        */
+      private function _repaintRelationship(rowData:Object):void
+      {
+         var swatch:MovieClip = rowData.swatch as MovieClip;
+
+         if (swatch == null) return;
+
+         rowData.color = _relationshipColor(int(rowData.relationship));
+
+         swatch.graphics.clear();
+         swatch.graphics.beginFill(rowData.color, 1);
+         swatch.graphics.drawRect(0, 0, ICON_W, ROW_H);
+         swatch.graphics.endFill();
+         swatch.graphics.lineStyle(1, AllianceConstants.CELL_BORDER, 1);
+         swatch.graphics.moveTo(ICON_W, 0);
+         swatch.graphics.lineTo(ICON_W, ROW_H);
+      }
+
       private function _relationshipColor(relationship:int):uint
       {
          if (relationship < 0)
@@ -445,6 +468,8 @@ package com.monsters.alliances.tabs
             iconMC.y = rowBaseY;
             _loadShield(iconMC, int(rowData.image), 3);
 
+            rowData.swatch = iconMC;
+
             const nameX:int = C_NAME_X + 1 + ICON_W + 8;
             _addLabel(tableMC, rowData.name, nameX, rowBaseY, C_MEM_X - nameX - 5, ROW_H, false, TextFormatAlign.LEFT);
             _addLabel(tableMC, String(rowData.members), C_MEM_X, rowBaseY, C_MEM_W, ROW_H, false, TextFormatAlign.CENTER);
@@ -644,7 +669,13 @@ package com.monsters.alliances.tabs
       private function _showActionsPopup(rowData:Object, popX:int, popY:int):void
       {
          _dismissActivePopup();
-         _activePopup = new BrowseActionPopup(rowData, _dismissActivePopup, _fetch);
+         
+         var onRelationshipChanged:Function = function():void
+         {
+            _repaintRelationship(rowData);
+         };
+
+         _activePopup = new BrowseActionPopup(rowData, _dismissActivePopup, onRelationshipChanged);
          _activePopup.x = popX;
          _activePopup.y = popY;
          addChild(_activePopup);
