@@ -17,6 +17,8 @@ import { getDefenderLevels } from "../../../services/maproom/v3/getDefenderLevel
 import { TRIBE_REGEN_TIME } from "../../../config/MapRoom3Config.js";
 import { getLastSeen } from "../../../services/maproom/getLastSeen.js";
 import { getTruces } from "../../../services/maproom/getTruces.js";
+import { getAllianceRoster } from "../../../services/alliance/allianceData.js";
+import { findRelationships } from "../../../services/alliance/relationships.js";
 import { BaseType } from "../../../enums/Base.js";
 import { devConfig } from "../../../config/GameConfig.js";
 
@@ -28,6 +30,7 @@ const CELL_OWNER_FIELDS = [
   "userid",
   "username",
   "pic_square",
+  "alliance_id",
   "save.points",
   "save.basevalue",
 ] as const;
@@ -49,6 +52,11 @@ const CELL_SAVE_FIELDS = [
   "save.attacks",
 ] as const;
 
+/**
+ * Fields loaded off the requesting player's own save.
+ */
+const OWN_SAVE_FIELDS = ["save.basesaveid", "save.worldid"] as const;
+
 const MAX_CELLS_PER_REQUEST = 4250;
 
 export const getMapRoomCells: KoaController = async (ctx) => {
@@ -64,7 +72,8 @@ export const getMapRoomCells: KoaController = async (ctx) => {
     }
 
     const user: User = ctx.authUser;
-    await postgres.em.populate(user, ["save"]);
+
+    await postgres.em.populate(user, ["save"], { fields: OWN_SAVE_FIELDS });
 
     const save = user.save;
 
@@ -223,6 +232,18 @@ export const getMapRoomCells: KoaController = async (ctx) => {
     ctx.state.lastSeen = lastSeenMap;
     ctx.state.truces = truces;
 
+    const allianceIds = new Set<number>();
+
+    if (user.alliance_id) allianceIds.add(user.alliance_id);
+    
+    for (const owner of cellOwners.values()) {
+      if (owner.alliance_id) allianceIds.add(owner.alliance_id);
+    }
+
+    const alliancedata = await getAllianceRoster([...allianceIds]);
+
+    ctx.state.relationships = await findRelationships(user.alliance_id, [...allianceIds]);
+
     // =========================================================================
     // PHASE 5: Build cell data for all coordinates
     // =========================================================================
@@ -275,7 +296,7 @@ export const getMapRoomCells: KoaController = async (ctx) => {
     }
 
     ctx.status = Status.OK;
-    ctx.body = { celldata: [...cellsToReturn.values()] };
+    ctx.body = { celldata: [...cellsToReturn.values()], alliancedata };
   } catch (error) {
     logger.error(`Error in getMapRoomCells: ${error}`);
     throw loadFailureErr();

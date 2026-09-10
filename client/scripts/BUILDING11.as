@@ -230,13 +230,17 @@ package
       
       override public function Recycle() : void
       {
-         if(MapRoomManager.instance.isInMapRoom2)
+         // Comment: The original only guarded the Map Room 2 branch because Map Room 3
+         // could not be recycled at all - see map_cannot_recycle_map_room3 and
+         // the disabled guard below. Refitted re-enabled it, so the alliance
+         // check has to cover both branches now.
+         if (ALLIANCES._myAlliance != null)
          {
-            if(ALLIANCES._myAlliance != null)
-            {
-               GLOBAL.Message(KEYS.Get("map_alliance_recycle",{"v1":ALLIANCES._myAlliance.name}));
-               return;
-            }
+            GLOBAL.Message(KEYS.Get("map_alliance_recycle",{"v1":ALLIANCES._myAlliance.name}));
+            return;
+         }
+         if (MapRoomManager.instance.isInMapRoom2)
+         {
             GLOBAL._mapOutpostIDs.length = 0;
             GLOBAL.Message(KEYS.Get("newmap_recycle1"),KEYS.Get("btn_recycle"),this.RecycleD);
          }

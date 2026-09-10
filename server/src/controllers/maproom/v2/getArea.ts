@@ -8,20 +8,34 @@ import { devConfig } from "../../../config/GameConfig.js";
 import { Status } from "../../../enums/StatusCodes.js";
 import { createCellData } from "../../../services/maproom/v2/createCellData.js";
 import { generateNoise, getTerrainHeight } from "../../../services/maproom/v2/generateMap.js";
-import { MapRoomVersion } from "../../../enums/MapRoom.js";
+import { MapRoom2, MapRoomVersion } from "../../../enums/MapRoom.js";
 import { getLastSeen } from "../../../services/maproom/getLastSeen.js";
 import { getTruces } from "../../../services/maproom/getTruces.js";
 import { BaseType } from "../../../enums/Base.js";
 import { mapRoomDisabledErr } from "../../../errors/errors.js";
+import { getAllianceRoster } from "../../../services/alliance/allianceData.js";
+import { visibleCredits } from "../../../services/user/shinyLock.js";
 
 /**
  * Schema for validating the request body when getting area data.
  */
 const getAreaSchema = z.object({
-  x: z.string().transform(x => parseInt(x, 10)),
-  y: z.string().transform(y => parseInt(y, 10)),
-  sendresources: z.string().optional().transform(res => res ? parseInt(res, 10) : 0),
+  x: z.coerce.number().int().min(0).max(MapRoom2.WIDTH - 1),
+  y: z.coerce.number().int().min(0).max(MapRoom2.HEIGHT - 1),
+  sendresources: z.coerce.number().optional().default(0),
 });
+
+/**
+ * Fields loaded off the requesting player's own save.
+ */
+const OWN_SAVE_FIELDS = [
+  "save.basesaveid",
+  "save.worldid",
+  "save.credits",
+  "save.resources",
+  "save.points",
+  "save.basevalue",
+] as const;
 
 /**
  * User fields fetched alongside each WorldMapCell in the DB query for cell owners.
@@ -33,6 +47,7 @@ const CELL_OWNER_FIELDS = [
   "pic_square",
   "save.points",
   "save.basevalue",
+  "alliance_id",
 ] as const;
 
 /**
@@ -74,14 +89,14 @@ export const getArea: KoaController = async (ctx) => {
   const { x, y, sendresources } = getAreaSchema.parse(ctx.request.body);
 
   const user: User = ctx.authUser;
-  await postgres.em.populate(user, ["save"]);
+
+  await postgres.em.populate(user, ["save"], { fields: OWN_SAVE_FIELDS });
 
   const save = user.save!;
   const worldid = save.worldid;
 
   if (!worldid) throw new Error(`${user.username} has no world ID.`);
 
-  // We ignore width & height sent by the client as it's already hardcoded to 10 x 10
   const width = 10;
   const height = 10;
 
@@ -123,6 +138,16 @@ export const getArea: KoaController = async (ctx) => {
   ctx.state.lastSeen = lastSeen;
   ctx.state.truces = truces;
 
+  const allianceIds = new Set<number>();
+
+  if (user.alliance_id) allianceIds.add(user.alliance_id);
+  
+  for (const owner of cellOwners.values()) {
+    if (owner.alliance_id) allianceIds.add(owner.alliance_id);
+  }
+
+  const alliancedata = await getAllianceRoster([...allianceIds]);
+
   const cells: Record<number, Record<number, unknown>> = {};
   for (const cell of dbCells) {
     if (!cells[cell.x]) cells[cell.x] = {};
@@ -150,15 +175,18 @@ export const getArea: KoaController = async (ctx) => {
     }
   }
 
+  const credits = visibleCredits(user, save.credits);
+
   ctx.status = Status.OK;
   ctx.body = {
     error: 0,
     x: currentX,
     y: currentY,
     data: cells,
+    alliancedata,
     ...(sendresources === 1 && {
       resources: save.resources,
-      credits: save.credits,
+      credits,
     }),
   };
 };

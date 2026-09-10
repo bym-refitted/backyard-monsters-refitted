@@ -5,12 +5,17 @@ import {
   OneToOne,
   Index,
 } from "@mikro-orm/decorators/es";
+import { PrimaryKeyProp } from "@mikro-orm/core";
+
 import { Save } from "./save.model.js";
 import { FrontendKey } from "../utils/FrontendKey.js";
+import { AllianceRole } from "../enums/Alliance.js";
 import type { JsonObject } from "../types/JsonObject.js";
 
 @Entity({ tableName: "user" })
 export class User {
+
+  [PrimaryKeyProp]?: "userid";
   @FrontendKey
   @PrimaryKey({ autoincrement: true, type: "number" })
   userid!: number;
@@ -31,6 +36,9 @@ export class User {
 
   @Property({ type: "boolean", default: false })
   banned: boolean = false;
+
+  @Property({ type: "boolean", default: false })
+  shiny_locked: boolean = false;
 
   @FrontendKey
   @Property({ type: "string", unique: true })
@@ -99,4 +107,11 @@ export class User {
   @FrontendKey
   @Property({ type: "number", default: 0 })
   sendinvite: number = 0;
+
+  @Index()
+  @Property({ type: "number", nullable: true })
+  alliance_id?: number | null;
+
+  @Property({ type: "string", nullable: true })
+  alliance_role?: AllianceRole | null;
 }

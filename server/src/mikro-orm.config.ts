@@ -14,6 +14,12 @@ import { Message } from "./models/message.model.js";
 import { Thread } from "./models/thread.model.js";
 import { AttackLogs } from "./models/attacklogs.model.js";
 import { Truce } from "./models/truce.model.js";
+import { Alliance } from "./models/alliance.model.js";
+import { AllianceInvite } from "./models/allianceinvite.model.js";
+import { AllianceMessage } from "./models/alliancemessage.model.js";
+import { AlliancePowerup } from "./models/alliancepowerup.model.js";
+import { AllianceRelationship } from "./models/alliancerelationship.model.js";
+import { AllianceStats } from "./models/alliancestats.view.js";
 
 /**
  * List of entities to be used with MikroORM.
@@ -31,6 +37,12 @@ const entities = [
   Thread,
   AttackLogs,
   Truce,
+  Alliance,
+  AllianceInvite,
+  AllianceMessage,
+  AlliancePowerup,
+  AllianceRelationship,
+  AllianceStats,
 ];
 
 /**

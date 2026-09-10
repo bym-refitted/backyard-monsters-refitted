@@ -2,6 +2,7 @@ import { MapRoomVersion } from "../../enums/MapRoom.js";
 import { Status } from "../../enums/StatusCodes.js";
 import { EnumYardType } from "../../enums/EnumYardType.js";
 import { postgres, redis } from "../../server.js";
+import { isKnownWorld } from "../../services/maproom/knownWorlds.js";
 import type { KoaController } from "../../utils/KoaController.js";
 
 interface MR2Leaderboard {
@@ -23,7 +24,7 @@ interface MR3Leaderboard {
  * Time-to-live (TTL) for leaderboard cache in Redis.
  * Two hours (7200 seconds).
  */
-export const LB_CACHE_TTL = 7200;
+const LB_CACHE_TTL = 7200;
 
 /**
  * Controller to handle the retrieval of leaderboards for a specific world.
@@ -49,6 +50,20 @@ export const getLeaderboards: KoaController = async (ctx) => {
   }
 
   const version = Number(mapversion);
+
+  if (version !== MapRoomVersion.V2 && version !== MapRoomVersion.V3) {
+    ctx.status = Status.BAD_REQUEST;
+    ctx.body = { error: "Unsupported map version" };
+    return;
+  }
+
+  const worldExists = await isKnownWorld(worldid);
+
+  if (!worldExists) {
+    ctx.status = Status.BAD_REQUEST;
+    ctx.body = { error: "Unknown worldid" };
+    return;
+  }
 
   const cacheKey = `leaderboards_${worldid}_v${version}`;
   const cachedData = await redis.get(cacheKey);

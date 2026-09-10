@@ -1,5 +1,6 @@
 package
 {
+   import com.monsters.alliances.tabs.AllianceMessagePopup;
    import com.monsters.managers.InstanceManager;
    import com.monsters.maproom3.popups.MapRoom3ConfirmMigrationPopup;
    import com.monsters.maproom3.popups.MapRoom3RelocatePopup;
@@ -223,6 +224,10 @@ package
                         if(!MapRoomManager.instance.isInMapRoom2or3 && Boolean(GLOBAL._flags.maproom2) && _props.id == MAPROOM.TYPE)
                         {
                            _loc1_.push(["btn_upgrade",30]);
+                        }
+                        if(_props.id == MAPROOM.TYPE)
+                        {
+                           _loc1_.push(["btn_alliances",30,false]);
                         }
                      }
                      else if(_props.id == 12)
@@ -590,6 +595,17 @@ package
          if(param1.target.labelKey == "btn_viewmap")
          {
             GLOBAL.ShowMap();
+         }
+         if(param1.target.labelKey == "btn_alliances")
+         {
+            if(MapRoomManager.instance.isInMapRoom2or3)
+            {
+               ALLIANCEWINDOW.Show();
+            }
+            else
+            {
+               new AllianceMessagePopup().Show(KEYS.Get("alliance_locked_title"), KEYS.Get("alliance_locked_desc"));
+            }
          }
          if(param1.target.labelKey == "btn_openlab")
          {

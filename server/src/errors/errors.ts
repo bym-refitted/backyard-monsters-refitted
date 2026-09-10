@@ -196,3 +196,248 @@ export const truceActiveErr = () =>
     isClientFriendly: false,
   });
 
+export const shinyLockedErr = () =>
+  new ClientSafeError({
+    message: "Shiny is turned off on your account, so it cannot be spent. You can turn it back on from your account page in the launcher.",
+    status: Status.FORBIDDEN,
+    data: {},
+    isClientFriendly: true,
+  });
+
+export const alreadyInAllianceErr = () =>
+  new ClientSafeError({
+    message: "You are already a member of an alliance.",
+    status: Status.CONFLICT,
+    data: {},
+    isClientFriendly: true,
+  });
+
+export const allianceNameTakenErr = () =>
+  new ClientSafeError({
+    message: "The alliance name is already taken.",
+    status: Status.CONFLICT,
+    data: {},
+    isClientFriendly: true,
+  });
+
+export const allianceNameTooShortErr = () =>
+  new ClientSafeError({
+    message: "The alliance name is too short.",
+    status: Status.BAD_REQUEST,
+    data: {},
+    isClientFriendly: true,
+  });
+
+export const allianceNameTooLongErr = () =>
+  new ClientSafeError({
+    message: "The alliance name is too long.",
+    status: Status.BAD_REQUEST,
+    data: {},
+    isClientFriendly: true,
+  });
+
+export const allianceNameBannedErr = () =>
+  new ClientSafeError({
+    message: "The alliance name is not allowed.",
+    status: Status.BAD_REQUEST,
+    data: {},
+    isClientFriendly: true,
+  });
+
+export const allianceDescriptionBannedErr = () =>
+  new ClientSafeError({
+    message: "The alliance description is not allowed.",
+    status: Status.BAD_REQUEST,
+    data: {},
+    isClientFriendly: true,
+  });
+
+export const allianceNoWorldErr = () =>
+  new ClientSafeError({
+    message: "You must join a world before creating an alliance.",
+    status: Status.FORBIDDEN,
+    data: {},
+    isClientFriendly: true,
+  });
+
+/**
+ * The player's world id resolves to no known world - a deleted world, or a cached
+ * world list that has gone stale. Distinct from allianceNoWorldErr, which is the
+ * ordinary case of a player who has not joined a world at all.
+ */
+export const unknownWorldErr = () =>
+  new ClientSafeError({
+    message: "Your world could not be found. Please try again later.",
+    status: Status.INTERNAL_SERVER_ERROR,
+    data: {},
+    isClientFriendly: true,
+  });
+
+export const leaderMustTransferErr = (allianceName: string) =>
+  new ClientSafeError({
+    message: `Since you're the fearless leader of the ${allianceName} Alliance, you need to elect someone to succeed you before you go.  Go to the Members Tab and promote a current member to leader before you depart.`,
+    status: Status.FORBIDDEN,
+    data: {},
+    isClientFriendly: true,
+  });
+
+
+export const requestPendingErr = () =>
+  new ClientSafeError({
+    message: "You already have a request pending.",
+    status: Status.CONFLICT,
+    data: {},
+    isClientFriendly: true,
+  });
+
+export const invitePendingErr = () =>
+  new ClientSafeError({
+    message: "They already have an invite pending.",
+    status: Status.CONFLICT,
+    data: {},
+    isClientFriendly: true,
+  });
+
+export const userAlreadyInAllianceErr = () =>
+  new ClientSafeError({
+    message: "User is already in an alliance.",
+    status: Status.CONFLICT,
+    data: {},
+    isClientFriendly: true,
+  });
+
+export const inviteLeaderOnlyErr = () =>
+  new ClientSafeError({
+    message: "Only the leader of the alliance can invite new members. Ask them to send the invitation for you.",
+    status: Status.FORBIDDEN,
+    data: {},
+    isClientFriendly: true,
+  });
+
+export const mustLeaveAllianceErr = () =>
+  new ClientSafeError({
+    message: "You must leave your alliance to join another.",
+    status: Status.CONFLICT,
+    data: {},
+    isClientFriendly: true,
+  });
+
+export const mustLeaveAllianceToChangeWorldErr = () =>
+  new ClientSafeError({
+    message: "You must leave your alliance before you can change worlds.",
+    status: Status.CONFLICT,
+    data: {},
+    isClientFriendly: true,
+  });
+
+export const mustLeaveAllianceToAcceptErr = () =>
+  new ClientSafeError({
+    message: "You must leave your current alliance before accepting the invite.",
+    status: Status.CONFLICT,
+    data: {},
+    isClientFriendly: true,
+  });
+
+export const inviteNotPendingErr = () =>
+  new ClientSafeError({
+    message: "Invite has already been resolved.",
+    status: Status.CONFLICT,
+    data: {},
+    isClientFriendly: true,
+  });
+
+export const allianceFullErr = () =>
+  new ClientSafeError({
+    message: "The alliance is already full.",
+    status: Status.CONFLICT,
+    data: {},
+    isClientFriendly: true,
+  });
+
+export const cannotKickErr = () =>
+  new ClientSafeError({
+    message: "You cannot kick members.",
+    status: Status.FORBIDDEN,
+    data: {},
+    isClientFriendly: true,
+  });
+
+export const cannotChangeRelationshipErr = () =>
+  new ClientSafeError({
+    message: "You cannot change relationship statuses.",
+    status: Status.FORBIDDEN,
+    data: {},
+    isClientFriendly: true,
+  });
+
+export const cannotPromoteErr = () =>
+  new ClientSafeError({
+    message: "You cannot promote members.",
+    status: Status.FORBIDDEN,
+    data: {},
+    isClientFriendly: true,
+  });
+
+export const joinMapVersionErr = () =>
+  new ClientSafeError({
+    message: "That Alliance is on a different Map Room version.",
+    status: Status.FORBIDDEN,
+    data: {},
+    isClientFriendly: true,
+  });
+
+export const inviteMapVersionErr = (username: string) =>
+  new ClientSafeError({
+    message: `${username} is too far away to join your Alliance. They are on a different Map Room version.`,
+    status: Status.FORBIDDEN,
+    data: {},
+    isClientFriendly: true,
+  });
+
+export const powerupUnknownErr = () =>
+  new ClientSafeError({
+    message: "This Power-Up cannot be activated at this time.",
+    status: Status.BAD_REQUEST,
+    data: {},
+    isClientFriendly: true,
+  });
+
+export const powerupRunningErr = () =>
+  new ClientSafeError({
+    message: "This Power-Up is already active.",
+    status: Status.CONFLICT,
+    data: {},
+    isClientFriendly: true,
+  });
+
+export const powerupNotReadyErr = () =>
+  new ClientSafeError({
+    message: "This Power-Up is not ready to activate.",
+    status: Status.CONFLICT,
+    data: {},
+    isClientFriendly: true,
+  });
+
+export const powerupReadyErr = () =>
+  new ClientSafeError({
+    message: "This Power-Up is currently ready.",
+    status: Status.CONFLICT,
+    data: {},
+    isClientFriendly: true,
+  });
+
+export const notEnoughShinyErr = () =>
+  new ClientSafeError({
+    message: "You do not have enough Shiny for that.",
+    status: Status.CONFLICT,
+    data: {},
+    isClientFriendly: true,
+  });
+
+export const powerupLeaderOnlyErr = () =>
+  new ClientSafeError({
+    message: `Only the leader of the alliance can activate a Power-Up.`,
+    status: Status.FORBIDDEN,
+    data: {},
+    isClientFriendly: true,
+  });

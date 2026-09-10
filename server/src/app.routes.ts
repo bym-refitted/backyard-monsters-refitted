@@ -3,7 +3,19 @@ import Router from "@koa/router";
 import { logRequest } from "./middleware/logRequest.js";
 import { apiVersion } from "./middleware/apiVersioning.js";
 import { verifyUserAuth, verifyAccountStatus } from "./middleware/auth.js";
-import { changeUsernameLimiter, getCellsLimiter, loginLimiter, registerLimiter } from "./middleware/rateLimiters.js";
+import {
+  changeUsernameLimiter,
+  getAreaLimiter,
+  getCellsLimiter,
+  loginLimiter,
+  publicReadLimiter,
+  registerLimiter,
+  allianceInviteLimiter,
+  allianceJoinRequestLimiter,
+  searchAlliancesLimiter,
+  snapshotLimiter,
+  terrainLimiter,
+} from "./middleware/rateLimiters.js";
 import { Status } from "./enums/StatusCodes.js";
 
 import { init } from "./controllers/init.js";
@@ -15,6 +27,7 @@ import { forgotPassword } from "./controllers/auth/forgotPassword.js";
 import { resetPassword } from "./controllers/auth/resetPassword.js";
 import { changeUsername } from "./controllers/auth/changeUsername.js";
 import { getAccount } from "./controllers/auth/getAccount.js";
+import { updateSettings } from "./controllers/auth/updateSettings.js";
 
 import { baseLoad } from "./controllers/base/load/baseLoad.js";
 import { baseSave } from "./controllers/base/save/baseSave.js";
@@ -28,6 +41,8 @@ import { infernoMonsters } from "./controllers/inferno/infernoMonsters.js";
 import { getNeighbours } from "./controllers/maproom/getNeighbours.js";
 
 import { getArea } from "./controllers/maproom/v2/getArea.js";
+import { getSnapshot } from "./controllers/maproom/v2/bulk/getSnapshot.js";
+import { getTerrain } from "./controllers/maproom/v2/bulk/getTerrain.js";
 import { takeoverCell } from "./controllers/maproom/v2/takeoverCell.js";
 import { transferMonsters } from "./controllers/maproom/v2/transferMonsters.js";
 import { saveBookmarks } from "./controllers/maproom/v2/saveBookmarks.js";
@@ -54,6 +69,25 @@ import { getAttackLogs } from "./controllers/attacklogs/getAttackLogs.js";
 import { wildMonsterInvasion } from "./controllers/events/wildMonsterInvasion.js";
 import { recordDebugData } from "./controllers/debug/recordDebugData.js";
 
+import { createAlliance } from "./controllers/alliance/createAlliance.js";
+import { editAlliance } from "./controllers/alliance/editAlliance.js";
+import { leaveAlliance } from "./controllers/alliance/leaveAlliance.js";
+import { myAlliance } from "./controllers/alliance/myAlliance.js";
+import { searchAlliances } from "./controllers/alliance/searchAlliances.js";
+import { myAllianceMembers } from "./controllers/alliance/myAllianceMembers.js";
+import { suggestedMembers } from "./controllers/alliance/suggestedMembers.js";
+import { requestJoin } from "./controllers/alliance/requestJoin.js";
+import { inviteUser } from "./controllers/alliance/inviteUser.js";
+import { changeInviteStatus } from "./controllers/alliance/changeInviteStatus.js";
+import { getMessages } from "./controllers/alliance/getMessages.js";
+import { deleteMessages } from "./controllers/alliance/deleteMessages.js";
+import { kickMember } from "./controllers/alliance/kickMember.js";
+import { promoteMember } from "./controllers/alliance/promoteMember.js";
+import { changeRelationship } from "./controllers/alliance/changeRelationship.js";
+import { getPowerups } from "./controllers/alliance/getPowerups.js";
+import { activatePowerup } from "./controllers/alliance/activatePowerup.js";
+import { purchasePowerup } from "./controllers/alliance/purchasePowerup.js";
+
 const router = new Router();
 
 /**  ────────────────────────────────────────────────
@@ -72,6 +106,7 @@ router.post("/api/:apiVersion/player/reset-password", resetPassword);
 router.get("/api/:apiVersion/supportedLangs", apiVersion, logRequest, supportedLangs);
 router.get("/api/:apiVersion/player/account", apiVersion, verifyUserAuth, getAccount);
 router.post("/api/:apiVersion/player/changeusername", apiVersion, verifyUserAuth, changeUsernameLimiter, logRequest, changeUsername);
+router.post("/api/:apiVersion/player/settings", apiVersion, verifyUserAuth, logRequest, updateSettings);
 
 /**  ────────────────────────────────────────────────
 * 📦 Base
@@ -94,7 +129,9 @@ router.post("/api/:apiVersion/bm/neighbours/get", apiVersion, verifyUserAuth, lo
 /**  ────────────────────────────────────────────────
 * 📦 Map Room 2
 * ──────────────────────────────────────────────── */
-router.post("/worldmapv2/getarea", verifyUserAuth, verifyAccountStatus, logRequest, getArea);
+router.post("/worldmapv2/getarea", verifyUserAuth, verifyAccountStatus, getAreaLimiter, logRequest, getArea);
+router.get("/worldmapv2/terrain", verifyUserAuth, terrainLimiter, logRequest, getTerrain);
+router.get("/worldmapv2/snapshot", verifyUserAuth, snapshotLimiter, logRequest, getSnapshot);
 router.post("/worldmapv2/setmapversion", verifyUserAuth, logRequest, setMapVersion);
 router.post("/worldmapv2/takeoverCell", verifyUserAuth, verifyAccountStatus, logRequest, takeoverCell);
 router.post("/worldmapv2/transferassets", verifyUserAuth, verifyAccountStatus, logRequest, transferMonsters);
@@ -130,9 +167,31 @@ router.post("/api/:apiVersion/bm/yardplanner/savetemplate", apiVersion, verifyUs
 /**  ────────────────────────────────────────────────
 * 📦 Leaderboards & Attack Logs
 * ──────────────────────────────────────────────── */
-router.get("/api/:apiVersion/worlds", getAvailableWorlds);
-router.get("/api/:apiVersion/leaderboards", getLeaderboards);
+router.get("/api/:apiVersion/worlds", publicReadLimiter, getAvailableWorlds);
+router.get("/api/:apiVersion/leaderboards", publicReadLimiter, getLeaderboards);
 router.get("/api/:apiVersion/attacklogs", verifyUserAuth, getAttackLogs);
+
+/**  ────────────────────────────────────────────────
+* 📦 Alliances
+* ──────────────────────────────────────────────── */
+router.post("/alliance/createalliance", verifyUserAuth, logRequest, createAlliance);
+router.post("/alliance/editalliance", verifyUserAuth, logRequest, editAlliance);
+router.post("/alliance/leavealliance", verifyUserAuth, logRequest, leaveAlliance);
+router.get("/alliance/myalliance", verifyUserAuth, logRequest, myAlliance);
+router.get("/alliance/myalliancemembers", verifyUserAuth, logRequest, myAllianceMembers);
+router.get("/alliance/getsuggestedmembers", verifyUserAuth, logRequest, suggestedMembers);
+router.post("/alliance/searchalliances", verifyUserAuth, searchAlliancesLimiter, logRequest, searchAlliances);
+router.post("/alliance/requestjoin", verifyUserAuth, allianceJoinRequestLimiter, logRequest, requestJoin);
+router.post("/alliance/inviteuser", verifyUserAuth, allianceInviteLimiter, logRequest, inviteUser);
+router.get("/alliance/getpowerups", verifyUserAuth, logRequest, getPowerups);
+router.post("/alliance/activatepowerup", verifyUserAuth, logRequest, activatePowerup);
+router.post("/alliance/purchasepowerup", verifyUserAuth, logRequest, purchasePowerup);
+router.post("/alliance/changeinvitestatus", verifyUserAuth, logRequest, changeInviteStatus);
+router.get("/alliance/getmessages", verifyUserAuth, logRequest, getMessages);
+router.post("/alliance/deletemessages", verifyUserAuth, logRequest, deleteMessages);
+router.post("/alliance/kickmember", verifyUserAuth, logRequest, kickMember);
+router.post("/alliance/promotemember", verifyUserAuth, logRequest, promoteMember);
+router.post("/alliance/changerelationship", verifyUserAuth, logRequest, changeRelationship);
 
 /**  ────────────────────────────────────────────────
 * 📦 Events

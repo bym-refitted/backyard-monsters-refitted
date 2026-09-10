@@ -8,6 +8,18 @@ import { MapRoom2, MapRoomVersion } from "../../../enums/MapRoom.js";
 
 type RangeOptions = { baseid?: string; attackCell?: Loaded<WorldMapCell, never> };
 
+const DECLARE_WAR_RANGE = 2;
+
+const MAX_OUTPOST_RANGE = 4;
+
+/**
+ * A base's flinger range, with the Declare War allowance always included.
+ *
+ * @param {number} range - The base's own flinger range.
+ * @returns {number} The range to validate against.
+ */
+const withDeclareWar = (range: number) => (range > 0 ? range + DECLARE_WAR_RANGE : 0);
+
 /**
  * Validates if the target is within the attack range of the user's base.
  * Delegates to the appropriate version-specific handler based on map version.
@@ -85,9 +97,11 @@ const validateRangeV2 = async (user: User, save: Save, options: RangeOptions) =>
 
   // Then, we determine if the main yard is within range
   const mainYardRange = getMainYardRange(flinger);
+
+  const totalRange = withDeclareWar(mainYardRange);
   const distanceFromMain = getDistanceFromMain(cellX, cellY, homeX, homeY);
 
-  if (distanceFromMain <= mainYardRange) return save;
+  if (distanceFromMain <= totalRange) return save;
 
   if (outposts.length === 0)
     throw new Error("No outposts owned, and main base is out of range.");
@@ -95,9 +109,11 @@ const validateRangeV2 = async (user: User, save: Save, options: RangeOptions) =>
   const userOutposts = new Map(outposts.map(([x, y, id]) => [`${x}${y}`, id]));
   const outpostsInRange: { baseid: string; dx: number; dy: number }[] = [];
 
-  // Otherwise, we collect the baseid's of outposts within a 4-cell square area of the attack cell
-  for (let dx = -4; dx <= 4; dx++) {
-    for (let dy = -4; dy <= 4; dy++) {
+  // Otherwise, we collect the baseid's of outposts within reach of the attack cell.
+  const sweep = MAX_OUTPOST_RANGE + DECLARE_WAR_RANGE;
+
+  for (let dx = -sweep; dx <= sweep; dx++) {
+    for (let dy = -sweep; dy <= sweep; dy++) {
       const neighborX = (cellX + dx + MapRoom2.WIDTH) % MapRoom2.WIDTH;
       const neighborY = (cellY + dy + MapRoom2.HEIGHT) % MapRoom2.HEIGHT;
 
@@ -116,9 +132,10 @@ const validateRangeV2 = async (user: User, save: Save, options: RangeOptions) =>
 
   for (const outpostSave of outpostSaves) {
     const outpostRange = getOutpostRange(outpostSave.flinger);
+    const totalRange = withDeclareWar(outpostRange);
 
     for (const { dx, dy } of outpostsInRange) {
-      if (Math.abs(dx) <= outpostRange && Math.abs(dy) <= outpostRange) {
+      if (Math.abs(dx) <= totalRange && Math.abs(dy) <= totalRange) {
         return save;
       }
     }

@@ -3,6 +3,7 @@ import type { User } from "../../../../models/user.model.js";
 import type { WorldMapCell } from "../../../../models/worldmapcell.model.js";
 import type { CellData } from "../../../../types/CellData.js";
 import { EnumBaseRelationship } from "../../../../enums/EnumBaseRelationship.js";
+import { cellRelationship } from "../../../../services/alliance/relationships.js";
 import { calculateBaseLevel } from "../../../../services/base/calculateBaseLevel.js";
 import { PLAYER_RANGE, STRUCTURE_RANGE } from "../../../../config/MapRoom3Config.js";
 import { EnumYardType } from "../../../../enums/EnumYardType.js";
@@ -24,7 +25,7 @@ export const playerCell = async (ctx: Context, cell: WorldMapCell, cellOwners: M
   const [cellX, cellY] = [cell.x, cell.y];
 
   const currentUser: User = ctx.authUser;
-  const { lastSeen = new Map(), truces } = ctx.state;
+  const { lastSeen = new Map(), truces, relationships = new Map() } = ctx.state;
 
   const mine = currentUser.userid === cell.uid;
   const cellOwner = mine ? currentUser : cellOwners.get(cell.uid);
@@ -69,6 +70,12 @@ export const playerCell = async (ctx: Context, cell: WorldMapCell, cellOwners: M
 
   const hasTruce = !mine && !!truces.get(cellOwner.userid);
 
+  const allianceId = cellOwner.alliance_id ?? 0;
+
+  const relationship = mine
+    ? EnumBaseRelationship.SELF
+    : cellRelationship(currentUser.alliance_id, allianceId, relationships);
+
   return {
     uid: cellOwner.userid,
     b: cell.base_type,
@@ -88,7 +95,8 @@ export const playerCell = async (ctx: Context, cell: WorldMapCell, cellOwners: M
     p: isProtected ? 1 : 0,
     d: (cellSave?.damage ?? 0) >= 90 ? 1 : 0,
     t: hasTruce ? 1 : 0,
-    rel: mine ? EnumBaseRelationship.SELF : EnumBaseRelationship.ENEMY,
+    rel: relationship,
+    aid: allianceId || undefined,
     pic_square: cellOwner.pic_square ?? undefined,
   };
 };

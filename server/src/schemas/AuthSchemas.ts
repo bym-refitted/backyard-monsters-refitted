@@ -75,6 +75,15 @@ export const UserRegistrationSchema = z.object({
 export const ChangeUsernameSchema = z.object({ username: usernameSchema });
 
 /**
+ * Schema to validate an account settings update.
+ * - Callers send the whole settings block, not a partial one.
+ * - shinyLocked toggles no-shiny mode.
+ */
+export const UpdateSettingsSchema = z.object({
+  shinyLocked: z.boolean(),
+});
+
+/**
  * Schema to validate password reset data.
  * - Password must meet the password schema requirements.
  * - Token must be a string.

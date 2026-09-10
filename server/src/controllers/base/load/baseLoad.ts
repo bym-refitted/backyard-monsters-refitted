@@ -6,8 +6,7 @@ import { storeItems } from "../../../game-data/store/storeItems.js";
 import { User } from "../../../models/user.model.js";
 import { getFlags } from "../../../game-data/flags.js";
 import { getCurrentDateTime } from "../../../utils/getCurrentDateTime.js";
-import { BaseMode, BaseType } from "../../../enums/Base.js";
-import { Env } from "../../../enums/Env.js";
+import { ATTACK_MODES, BaseMode, BaseType } from "../../../enums/Base.js";
 import { EnumYardType } from "../../../enums/EnumYardType.js";
 import { MapRoomVersion } from "../../../enums/MapRoom.js";
 import { WORLD_SIZE } from "../../../config/MapRoom2Config.js";
@@ -33,8 +32,13 @@ import { MR1_TRIBES } from "../../../enums/Tribes.js";
 import { MR1_TRIBE_IDS } from "../../../game-data/tribes/v1/index.js";
 import { calculateBaseLevel } from "../../../services/base/calculateBaseLevel.js";
 import { mapSaveData } from "../../../services/base/mapSaveData.js";
+import { clearExpiredStoreItems } from "../../../services/base/clearExpiredStoreItems.js";
 import { extractTownHall } from "../../../utils/extractTownHall.js";
-import { getChatChannel, getOrCreateChatToken, INFERNO_CHAT_CHANNEL } from "../../../chat/chatChannels.js";
+import { getChatChannel, getOrCreateChatToken } from "../../../chat/chatChannels.js";
+import { getAllianceData } from "../../../services/alliance/allianceData.js";
+import { runningPowerups } from "../../../services/alliance/powerups.js";
+import { cellRelationship, findRelationships } from "../../../services/alliance/relationships.js";
+import { INFERNO_CHAT_CHANNEL } from "../../../config/ChatConfig.js";
 
 /**
  * Controller responsible for loading base modes based on the user's request.
@@ -113,9 +117,13 @@ export const baseLoad: KoaController = async (ctx) => {
   if (!baseSave) throw new Error("Base save not found.");
 
   const userSave = user.save!;
+  const isOwner = user.userid === baseSave.userid;
+  const isInferno = baseSave.type === BaseType.INFERNO;
+  const isAttack = ATTACK_MODES.has(type);
 
   if (type === BaseMode.BUILD && mapversion === MapRoomVersion.V1) {
     userSave.level = calculateBaseLevel(userSave.points, userSave.basevalue);
+    
     const mr1Tribes = await createMR1Tribes(userSave, MR1_TRIBES);
     const wmstatus = new Map(userSave.wmstatus.map((status) => [status[0], status]));
 
@@ -123,6 +131,11 @@ export const baseLoad: KoaController = async (ctx) => {
     userSave.wmstatus = [...wmstatus.values()];
     
     postgres.em.persist(userSave);
+    await postgres.em.flush();
+  }
+
+  if (isOwner && clearExpiredStoreItems(baseSave)) {
+    postgres.em.persist(baseSave);
     await postgres.em.flush();
   }
 
@@ -137,9 +150,6 @@ export const baseLoad: KoaController = async (ctx) => {
   flags.maproom2 = userSave.mr2upgraded || (townHall && townHall.l >= 6) ? 1 : 0;
   flags.mr2upgraded = userSave.mr2upgraded ? 1 : 0;
 
-  const isOwner = baseSave.type !== BaseType.INFERNO && user.userid === filteredSave.userid;
-  const isInfernoOwner = baseSave.type === BaseType.INFERNO && user.userid === filteredSave.userid;
-
   let totalResourceRate = 0;
   let totalResourceCapacity = 0;
   let totalStrongholdBonus = 0;
@@ -148,7 +158,7 @@ export const baseLoad: KoaController = async (ctx) => {
 
   if (mapversion === MapRoomVersion.V3) {
     // Sum production rate and storage capacity from all player-owned MR3 resource outposts.
-    if (isOwner) {
+    if (isOwner && !isInferno) {
       const resourceOutposts = await postgres.em.find(Save, {
         saveuserid: user.userid,
         type: BaseType.OUTPOST,
@@ -248,35 +258,47 @@ export const baseLoad: KoaController = async (ctx) => {
 
   const attackAllowed = canAttack(userSave, baseSave, mapversion);
 
-  let avatarUser;
+  let baseOwner;
 
   if (isOwner) {
-    avatarUser = user;
+    baseOwner = user;
   } else {
-    avatarUser = await postgres.em.findOne(
+    baseOwner = await postgres.em.findOne(
       User,
       { userid: baseSave.userid },
-      { fields: ["pic_square"] }
+      { fields: ["pic_square", "alliance_id"] }
     );
   }
 
-  const avatar = avatarUser?.pic_square;
+  const avatar = baseOwner?.pic_square;
   let chattoken: string | undefined;
   let chatchannel: string | undefined;
 
-  if (isOwner && process.env.ENV !== Env.LOCAL) {
+  if (isOwner) {
     chattoken = await getOrCreateChatToken(user.userid);
-    chatchannel = getChatChannel(userSave.mapversion);
+    chatchannel = isInferno ? INFERNO_CHAT_CHANNEL : getChatChannel(userSave.mapversion);
   }
 
-  if (isInfernoOwner && process.env.ENV !== Env.LOCAL) {
-    chattoken = await getOrCreateChatToken(user.userid);
-    chatchannel = INFERNO_CHAT_CHANNEL;
-  }
+  const isOwnMainYard = isOwner && !isInferno;
+  const isOverworldAttack = isAttack && !isInferno;
+
+  const ownerAllianceId = isInferno ? 0 : (baseOwner?.alliance_id ?? 0);
+  const flaggedAlliances = ownerAllianceId ? [ownerAllianceId] : [];
+  
+  const stances = await findRelationships(user.alliance_id, flaggedAlliances);
+
+  const alliance = isOwnMainYard ? await getAllianceData(user) : null;
+  const powerups = isOwnMainYard ? await runningPowerups(user.alliance_id) : [];
+
+  const attpowerups = isOverworldAttack ? await runningPowerups(user.alliance_id) : [];
+
+  const relationship = isOwnMainYard
+    ? EnumBaseRelationship.SELF
+    : cellRelationship(user.alliance_id, ownerAllianceId, stances);
 
   const response: Record<string, unknown> = {
     ...filteredSave,
-    relationship: isOwner ? EnumBaseRelationship.SELF : EnumBaseRelationship.ENEMY,
+    relationship,
     canattack: attackAllowed,
     flags,
     worldsize: WORLD_SIZE,
@@ -287,19 +309,17 @@ export const baseLoad: KoaController = async (ctx) => {
     currenttime: getCurrentDateTime(),
     pic_square: avatar,
     chatservers: [process.env.CHAT_WS_HOST!],
+    ...(isAttack && { attpowerups }),
     ...(isOwner && {
       chatenabled: 1,
       chattoken,
       chatchannel,
-    }),
-    ...(isInfernoOwner && {
-      chatenabled: 1,
-      chattoken,
-      chatchannel,
+      ...(alliance && { alliancedata: alliance }),
+      powerups,
     }),
   };
 
-  if (isOwner && mapversion === MapRoomVersion.V3) {
+  if (isOwner && !isInferno && mapversion === MapRoomVersion.V3) {
     response.player = { buffs: { 2: totalResourceRate, 10: totalResourceCapacity } };
   }
 

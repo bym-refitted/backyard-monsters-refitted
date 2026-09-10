@@ -1,0 +1,43 @@
+import { Migration } from "@mikro-orm/migrations";
+
+export class Migration20260626_CreateAllianceTable extends Migration {
+  async up(): Promise<void> {
+    await this.execute(`
+      CREATE TABLE IF NOT EXISTS bym.alliance (
+        id SERIAL PRIMARY KEY,
+        name VARCHAR(30) NOT NULL,
+        image INTEGER NOT NULL DEFAULT 1,
+        description VARCHAR(255) NOT NULL DEFAULT '',
+        leader_userid INTEGER NOT NULL,
+        leader_name VARCHAR(255) NOT NULL DEFAULT '',
+        world_id VARCHAR(64) NOT NULL,
+        map_version INTEGER NOT NULL DEFAULT 2,
+        created_at TIMESTAMP NOT NULL DEFAULT NOW()
+      )
+    `);
+
+    await this.execute(`
+      CREATE UNIQUE INDEX IF NOT EXISTS alliance_name_lower_idx ON bym.alliance (LOWER(name))
+    `);
+
+    await this.execute(`
+      CREATE INDEX IF NOT EXISTS alliance_leader_userid_index ON bym.alliance (leader_userid)
+    `);
+
+    await this.execute(`
+      ALTER TABLE bym."user"
+      ADD COLUMN IF NOT EXISTS alliance_id INTEGER,
+      ADD COLUMN IF NOT EXISTS alliance_role VARCHAR(10)
+    `);
+
+    await this.execute(`
+      CREATE INDEX IF NOT EXISTS user_alliance_id_index ON bym."user" (alliance_id)
+    `);
+
+    await this.execute(`
+      ALTER TABLE bym."user"
+      ADD CONSTRAINT fk_user_alliance
+      FOREIGN KEY (alliance_id) REFERENCES bym.alliance(id) ON DELETE SET NULL
+    `);
+  }
+}

@@ -561,7 +561,10 @@ package com.monsters.maproom_advanced
                param3[0].visible = true;
             }
          };
-         if(!this._cell._facebookID || this._cell._base <= 1)
+         // The original also required a Facebook id here. Every player had one on
+         // Facebook and none has one on Refitted, so the check hid the alliance
+         // shield on this popup outright.
+         if(this._cell._base <= 1)
          {
             this.mcAlliancePic.visible = false;
             this.mcRelations.visible = false;
