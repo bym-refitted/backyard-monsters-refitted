@@ -31,6 +31,25 @@ export const getCachedWorlds = async (): Promise<World[]> => {
 export const invalidateWorldsCache = () => redis.del(WORLDS_CACHE_KEY);
 
 /**
+ * The Map Room version a world runs, from the cached world list.
+ *
+ * A world's version is fixed at creation and the cache is dropped whenever one is
+ * created, so this never needs to reach the database on a warm cache.
+ *
+ * Callers hold the world of a player who may not be in one at all, so they narrow
+ * that away first - each has its own error for it - and this takes a world id it can
+ * rely on.
+ *
+ * @param {string} worldid - The world to look up.
+ * @returns {Promise<number | undefined>} Its map version, or undefined when unknown.
+ */
+export const getWorldMapVersion = async (worldid: string): Promise<number | undefined> => {
+  const worlds = await getCachedWorlds();
+
+  return worlds.find((world) => world.uuid === worldid)?.map_version;
+};
+
+/**
  * Checks a caller-supplied world id against the known worlds.
  *
  * Pass mapVersion on routes that are specific to one map room. World ids are

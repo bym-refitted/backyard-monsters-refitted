@@ -1,3 +1,5 @@
+import type { AllianceMessageType } from "../enums/Alliance.js";
+
 export enum ClientMessageType {
   Auth = "auth",
   Join = "join",
@@ -28,6 +30,7 @@ export enum ErrorCode {
   NotAuthenticated = "not_authenticated",
   InvalidChannel = "invalid_channel",
   NotInChannel = "not_in_channel",
+  ServerError = "server_error",
 }
 
 export enum AuthFailReason {
@@ -38,7 +41,10 @@ export enum AuthFailReason {
 export interface HistoryEntry {
   userId: number;
   displayName: string;
+  picSquare: string | null;
+  allianceImage: number | null;
   body: string;
+  messageType: AllianceMessageType;
   ts: number;
 }
 
@@ -62,7 +68,7 @@ export type ServerMessage =
   | { type: ServerMessageType.AuthOk; userId: number; displayName: string }
   | { type: ServerMessageType.AuthFail; reason: AuthFailReason }
   | { type: ServerMessageType.Joined; channel: string; history: HistoryEntry[] }
-  | { type: ServerMessageType.Message; channel: string; userId: number; displayName: string; body: string; ts: number }
+  | { type: ServerMessageType.Message; channel: string; messageType: AllianceMessageType; userId: number; displayName: string; picSquare: string | null; allianceImage: number | null; body: string; ts: number }
   | { type: ServerMessageType.UserEnter; channel: string; userId: number; displayName: string }
   | { type: ServerMessageType.UserExit; channel: string; userId: number }
   | { type: ServerMessageType.IgnoreList; list: IgnoreEntry[] }

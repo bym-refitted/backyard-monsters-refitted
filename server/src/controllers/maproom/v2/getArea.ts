@@ -13,6 +13,7 @@ import { getLastSeen } from "../../../services/maproom/getLastSeen.js";
 import { getTruces } from "../../../services/maproom/getTruces.js";
 import { BaseType } from "../../../enums/Base.js";
 import { mapRoomDisabledErr } from "../../../errors/errors.js";
+import { getAllianceRoster } from "../../../services/alliance/allianceData.js";
 import { visibleCredits } from "../../../services/user/shinyLock.js";
 
 /**
@@ -46,6 +47,7 @@ const CELL_OWNER_FIELDS = [
   "pic_square",
   "save.points",
   "save.basevalue",
+  "alliance_id",
 ] as const;
 
 /**
@@ -136,6 +138,16 @@ export const getArea: KoaController = async (ctx) => {
   ctx.state.lastSeen = lastSeen;
   ctx.state.truces = truces;
 
+  const allianceIds = new Set<number>();
+
+  if (user.alliance_id) allianceIds.add(user.alliance_id);
+  
+  for (const owner of cellOwners.values()) {
+    if (owner.alliance_id) allianceIds.add(owner.alliance_id);
+  }
+
+  const alliancedata = await getAllianceRoster([...allianceIds]);
+
   const cells: Record<number, Record<number, unknown>> = {};
   for (const cell of dbCells) {
     if (!cells[cell.x]) cells[cell.x] = {};
@@ -171,6 +183,7 @@ export const getArea: KoaController = async (ctx) => {
     x: currentX,
     y: currentY,
     data: cells,
+    alliancedata,
     ...(sendresources === 1 && {
       resources: save.resources,
       credits,

@@ -152,6 +152,21 @@ package com.monsters.alliances
          return _loc2_;
       }
       
+      /**
+       * Records this alliance's stance towards another, so the map room recolours
+       * without waiting for the next base load to resend the map.
+       *
+       * @param {int} param1 - The alliance being flagged.
+       * @param {int} param2 - -1 Foe, 0 Neutral, 1 Ally.
+       */
+      public function SetRelation(param1:int, param2:int) : void
+      {
+         if (this.relationships)
+         {
+            this.relationships[param1] = param2;
+         }
+      }
+      
       public function AlliancePic(param1:String, param2:MovieClip, param3:MovieClip = null, param4:Boolean = false) : void
       {
          var _loc5_:int = 0;

@@ -42,6 +42,19 @@ package com.monsters.display
       {
          this.onContentResize();
       }
+
+      public function scrollToBottom() : void
+      {
+         this.onContentResize();
+         if(this._content.height <= this._mask.height)
+         {
+            this._content.y = this._mask.y;
+            this._scroller.y = 0;
+            return;
+         }
+         this._content.y = this._mask.y - (this._content.height - this._mask.height);
+         this._scroller.y = height - this._scroller.height;
+      }
       
       protected function onContentResize(param1:Event = null) : void
       {

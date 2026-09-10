@@ -1,20 +1,24 @@
+import { ALLIANCE_CHANNEL_PREFIX, CHANNELS, INFERNO_CHAT_CHANNEL } from "../config/ChatConfig.js";
 import { MapRoomVersion } from "../enums/MapRoom.js";
 import { redis } from "../server.js";
 
-const CHANNELS: Record<number, string> = {
-  [MapRoomVersion.V1]: "chat:mr1-global",
-  [MapRoomVersion.V2]: "chat:mr2-global",
-  [MapRoomVersion.V3]: "chat:mr3-global",
-};
-
-export const INFERNO_CHAT_CHANNEL = "chat:inferno-global";
+/**
+ * Returns the channel key for an alliance's private chat.
+ *
+ * @param {number} allianceId - The alliance the channel belongs to.
+ * @returns {string} The channel key.
+ */
+export const allianceChannelKey = (allianceId: number) => `${ALLIANCE_CHANNEL_PREFIX}${allianceId}`;
 
 const VALID_CHANNELS = new Set([...Object.values(CHANNELS), INFERNO_CHAT_CHANNEL]);
 
 /**
- * Validates a server-issued chat channel key echoed back by the client.
+ * Validates a server-issued global chat channel key echoed back by the client.
  * The server computes the channel during base load and sends it as `chatchannel`.
  * The client echoes it unchanged on join — no parsing or mapping needed here.
+ *
+ * Alliance channels are not covered here: they are resolved from the joining
+ * player's membership instead of being accepted from the client.
  *
  * @param {string} channel - The channel key sent by the client.
  * @returns {string | null} The validated channel key, or null if invalid.

@@ -24,7 +24,8 @@ package com.monsters.chat
       
       private static var _displayNameMap:Dictionary = new Dictionary();
        
-      
+      private static const ALLIANCE_CHANNEL_PREFIX:String = "chat:alliance:";
+
       public const GLOBAL_CHANNEL:Channel = new Channel("World","system");
       
       public const IGNORE_LIST_CHANNEL:Channel = new Channel("IgnoreList","system");
@@ -119,6 +120,24 @@ package com.monsters.chat
          }
       }
       
+      /**
+       * The dock's chat transport, shared with any other feature that needs a
+       * channel on the same connection. The server allows one socket per player,
+       * so a second WSChatSystem would authenticate and close this one.
+       */
+      public static function get chatSystem() : IChatSystem
+      {
+         return _chat;
+      }
+
+      /**
+       * Whether a channel belongs to alliance chat rather than the global dock.
+       */
+      public static function isAllianceChannel(param1:String) : Boolean
+      {
+         return param1 != null && param1.indexOf(ALLIANCE_CHANNEL_PREFIX) == 0;
+      }
+
       public static function get serverInited() : Boolean
       {
          return _serverInited;
@@ -588,6 +607,10 @@ package com.monsters.chat
          if(param1.Success)
          {
             _loc2_ = param1.Get("channel") as Channel;
+            if(isAllianceChannel(_loc2_.Name))
+            {
+               return;
+            }
             this.clearChat();
             this.system_message("Joined channel " + _loc2_.Name + ".");
             this.system_message("Type /h for help.");
@@ -620,6 +643,10 @@ package com.monsters.chat
          if(param1.Success)
          {
             _loc2_ = param1.Get("channel") as Channel;
+            if(isAllianceChannel(_loc2_.Name))
+            {
+               return;
+            }
             _loc3_ = param1.Get("user") as String;
             _loc4_ = param1.Get("message") as String;
             if(this.userIsIgnored(_loc3_))
@@ -734,6 +761,10 @@ package com.monsters.chat
       {
          var _loc2_:ChatUser = param1.Get("user") as ChatUser;
          var _loc3_:ChatRoom = param1.Get("room") as ChatRoom;
+         if(_loc3_ != null && isAllianceChannel(_loc3_.name))
+         {
+            return;
+         }
          if(this.sector_channel == null)
          {
             LOGGER.Log("err","BYMChat.onUserEnter(): No sector has been joined yet");
@@ -755,6 +786,10 @@ package com.monsters.chat
       {
          var _loc2_:ChatUser = param1.Get("user") as ChatUser;
          var _loc3_:ChatRoom = param1.Get("room") as ChatRoom;
+         if(_loc3_ != null && isAllianceChannel(_loc3_.name))
+         {
+            return;
+         }
          delete _displayNameMap[_loc2_.name];
       }
       

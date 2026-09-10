@@ -1223,11 +1223,13 @@ package
          var _loc2_:int = 0;
          var _loc3_:MovieClip = null;
          var _loc1_:int = int(this._creatureButtons.length);
+         var scoutedCell:MapRoom3Cell = GLOBAL._currentCell as MapRoom3Cell;
+         
          _loc2_ = 1;
          while(_loc2_ < 5)
          {
             _loc3_ = mc["mcR" + _loc2_];
-            _loc3_.tR.htmlText = "<b>" + GLOBAL.FormatNumber((GLOBAL._currentCell as MapRoom3Cell).attackCost[_loc2_ - 1]) + "</b>";
+            _loc3_.tR.htmlText = !scoutedCell ? "" : "<b>" + GLOBAL.FormatNumber(scoutedCell.attackCost[_loc2_ - 1]) + "</b>";
             _loc3_.mcBar.visible = false;
             _loc2_++;
          }

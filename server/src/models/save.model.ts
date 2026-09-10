@@ -242,6 +242,9 @@ export class Save {
   @Property({ type: 'number', default: 0 })
   protect!: number;
 
+  @Property({ type: 'string', nullable: true })
+  lastattackername?: string | null;
+
   @FrontendKey
   @Property({ type: 'number', default: 0 })
   purchasecomplete!: number;
@@ -436,13 +439,6 @@ export class Save {
   @Property({ columnType: "jsonb", nullable: true })
   fbpromos: any[] = [];
 
-  @FrontendKey
-  @Property({ columnType: "jsonb", nullable: true })
-  powerups: string[] = [];
-
-  @FrontendKey
-  @Property({ columnType: "jsonb", nullable: true })
-  attpowerups: string[] = [];
 
   public static saveKeys: (keyof Save)[] = [
     "buildingdata",
@@ -487,8 +483,6 @@ export class Save {
     "sentinvites",
     "sentgifts",
     "fbpromos",
-    "powerups",
-    "attpowerups",
     "level",
     "catapult",
     "flinger",

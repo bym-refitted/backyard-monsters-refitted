@@ -1,6 +1,9 @@
 import type { TCPSocketListenOptions } from "bun";
 import { logger } from "../utils/logger.js";
-import { initGateway, handleOpen, handleMessage, handleClose, type SocketData } from "./ChatGateway.js";
+import { initGateway, handleOpen, handleMessage, handleClose } from "./chatGateway.js";
+import { type SocketData } from "./chatState.js";
+
+const POLICY_PORTS = process.env.CHAT_POLICY_PORTS ?? process.env.CHAT_WS_PORT;
 
 const POLICY_PORTS = process.env.CHAT_POLICY_PORTS ?? process.env.CHAT_WS_PORT;
 
@@ -12,7 +15,7 @@ const POLICY = Buffer.from(
 
 const POLICY_REQUEST = "<policy-file-request/>";
 
-const DEFAULT_SOCKET_DATA = { userId: null, displayName: "", channel: null, lastMsgAt: 0 };
+const DEFAULT_SOCKET_DATA = { userId: null, displayName: "", lastMsgAt: 0 };
 
 const POLICY_TIMEOUT_MS = 3000;
 
@@ -58,6 +61,14 @@ const startPolicyServer = () => {
  */
 export const startChatServer = () => {
   const PORT = Number(process.env.CHAT_WS_PORT);
+
+  process.on("unhandledRejection", (reason) => {
+    logger.error(`Unhandled rejection in chat process: ${reason}`);
+  });
+
+  process.on("uncaughtException", (err) => {
+    logger.error(`Uncaught exception in chat process: ${err.stack ?? err}`);
+  });
 
   initGateway();
   startPolicyServer();

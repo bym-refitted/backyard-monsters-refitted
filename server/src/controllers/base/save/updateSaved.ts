@@ -1,7 +1,7 @@
 import z from "zod";
 
 import { getFlags } from "../../../game-data/flags.js";
-import { BaseMode } from "../../../enums/Base.js";
+import { BaseMode, BaseType } from "../../../enums/Base.js";
 import { Status } from "../../../enums/StatusCodes.js";
 import { saveFailureErr } from "../../../errors/errors.js";
 import { Save } from "../../../models/save.model.js";
@@ -14,6 +14,8 @@ import { baseModeView } from "../load/modes/baseModeView.js";
 import { infernoModeView } from "../load/modes/infernoModeView.js";
 import { extractTownHall } from "../../../utils/extractTownHall.js";
 import { mapSaveData } from "../../../services/base/mapSaveData.js";
+import { getAllianceData } from "../../../services/alliance/allianceData.js";
+import { runningPowerups } from "../../../services/alliance/powerups.js";
 import { visibleCredits } from "../../../services/user/shinyLock.js";
 
 const UpdateSavedSchema = z.object({
@@ -59,6 +61,9 @@ export const updateSaved: KoaController = async (ctx) => {
 
   if (!baseSave) throw saveFailureErr();
 
+  const isOwner = user.userid === baseSave.userid;
+  const isInferno = baseSave.type === BaseType.INFERNO;
+
   baseSave.savetime = getCurrentDateTime();
   baseSave.id = baseSave.savetime; // client expects this.
 
@@ -78,13 +83,18 @@ export const updateSaved: KoaController = async (ctx) => {
 
   const credits = visibleCredits(user, userSave.credits);
 
-  const responseBody = {
+  const isOwnMainYard = isOwner && !isInferno;
+  
+  const alliance = isOwnMainYard ? await getAllianceData(user) : null;
+  const powerups = isOwnMainYard ? await runningPowerups(user.alliance_id) : null;
+
+  ctx.status = Status.OK;
+  ctx.body = {
     error: 0,
     flags,
     ...filteredSave,
-    credits
+    credits,
+    ...(alliance && { alliancedata: alliance }),
+    ...(powerups && { powerups }),
   };
-
-  ctx.status = Status.OK;
-  ctx.body = responseBody;
 };

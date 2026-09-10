@@ -1,6 +1,7 @@
 package com.monsters.mailbox
 {
    import com.monsters.mailbox.model.Contact;
+   import com.monsters.utils.TimeUtils;
    import com.monsters.mailbox.model.ThreadData;
    import flash.display.Loader;
    import flash.events.Event;
@@ -173,38 +174,7 @@ package com.monsters.mailbox
       
       public function getTimeDistanceString(param1:Number) : String
       {
-         var _loc5_:String = null;
-         var _loc2_:Number = GLOBAL.Timestamp();
-         var _loc3_:int = _loc2_ - param1;
-         var _loc4_:int = 0;
-         if(_loc3_ < 60)
-         {
-            _loc5_ = (_loc4_ = _loc3_) == 1 ? "mail_time_second" : "mail_time_seconds";
-         }
-         else if(_loc3_ < 60 * 60)
-         {
-            _loc5_ = (_loc4_ = int(_loc3_ / 60)) == 1 ? "mail_time_minute" : "mail_time_minutes";
-         }
-         else if(_loc3_ < 60 * 60 * 24)
-         {
-            _loc5_ = (_loc4_ = int(_loc3_ / 60 / 60)) == 1 ? "mail_time_hour" : "mail_time_hours";
-         }
-         else if(_loc3_ < 60 * 60 * 24 * 7)
-         {
-            _loc5_ = (_loc4_ = int(_loc3_ / 60 / 60 / 24)) == 1 ? "mail_time_day" : "mail_time_days";
-         }
-         else if(_loc3_ < 60 * 60 * 24 * 7 * 31)
-         {
-            _loc5_ = (_loc4_ = int(_loc3_ / 60 / 60 / 24 / 7)) == 1 ? "mail_time_week" : "mail_time_weeks";
-         }
-         else
-         {
-            _loc5_ = (_loc4_ = int(_loc3_ / 60 / 60 / 24 / 7 / 31)) == 1 ? "mail_time_month" : "mail_time_months";
-         }
-         return KEYS.Get("mail_time_ago",{
-            "v1":_loc4_,
-            "v2":KEYS.Get(_loc5_)
-         });
+         return TimeUtils.TimeDistance(param1);
       }
    }
 }

@@ -6,8 +6,7 @@ import { storeItems } from "../../../game-data/store/storeItems.js";
 import { User } from "../../../models/user.model.js";
 import { getFlags } from "../../../game-data/flags.js";
 import { getCurrentDateTime } from "../../../utils/getCurrentDateTime.js";
-import { BaseMode, BaseType } from "../../../enums/Base.js";
-import { Env } from "../../../enums/Env.js";
+import { ATTACK_MODES, BaseMode, BaseType } from "../../../enums/Base.js";
 import { EnumYardType } from "../../../enums/EnumYardType.js";
 import { MapRoomVersion } from "../../../enums/MapRoom.js";
 import { WORLD_SIZE } from "../../../config/MapRoom2Config.js";
@@ -35,7 +34,11 @@ import { calculateBaseLevel } from "../../../services/base/calculateBaseLevel.js
 import { mapSaveData } from "../../../services/base/mapSaveData.js";
 import { clearExpiredStoreItems } from "../../../services/base/clearExpiredStoreItems.js";
 import { extractTownHall } from "../../../utils/extractTownHall.js";
-import { getChatChannel, getOrCreateChatToken, INFERNO_CHAT_CHANNEL } from "../../../chat/chatChannels.js";
+import { getChatChannel, getOrCreateChatToken } from "../../../chat/chatChannels.js";
+import { getAllianceData } from "../../../services/alliance/allianceData.js";
+import { runningPowerups } from "../../../services/alliance/powerups.js";
+import { cellRelationship, findRelationships } from "../../../services/alliance/relationships.js";
+import { INFERNO_CHAT_CHANNEL } from "../../../config/ChatConfig.js";
 
 /**
  * Controller responsible for loading base modes based on the user's request.
@@ -116,9 +119,11 @@ export const baseLoad: KoaController = async (ctx) => {
   const userSave = user.save!;
   const isOwner = user.userid === baseSave.userid;
   const isInferno = baseSave.type === BaseType.INFERNO;
+  const isAttack = ATTACK_MODES.has(type);
 
   if (type === BaseMode.BUILD && mapversion === MapRoomVersion.V1) {
     userSave.level = calculateBaseLevel(userSave.points, userSave.basevalue);
+    
     const mr1Tribes = await createMR1Tribes(userSave, MR1_TRIBES);
     const wmstatus = new Map(userSave.wmstatus.map((status) => [status[0], status]));
 
@@ -253,30 +258,47 @@ export const baseLoad: KoaController = async (ctx) => {
 
   const attackAllowed = canAttack(userSave, baseSave, mapversion);
 
-  let avatarUser;
+  let baseOwner;
 
   if (isOwner) {
-    avatarUser = user;
+    baseOwner = user;
   } else {
-    avatarUser = await postgres.em.findOne(
+    baseOwner = await postgres.em.findOne(
       User,
       { userid: baseSave.userid },
-      { fields: ["pic_square"] }
+      { fields: ["pic_square", "alliance_id"] }
     );
   }
 
-  const avatar = avatarUser?.pic_square;
+  const avatar = baseOwner?.pic_square;
   let chattoken: string | undefined;
   let chatchannel: string | undefined;
 
-  if (isOwner && process.env.ENV !== Env.LOCAL) {
+  if (isOwner) {
     chattoken = await getOrCreateChatToken(user.userid);
     chatchannel = isInferno ? INFERNO_CHAT_CHANNEL : getChatChannel(userSave.mapversion);
   }
 
+  const isOwnMainYard = isOwner && !isInferno;
+  const isOverworldAttack = isAttack && !isInferno;
+
+  const ownerAllianceId = isInferno ? 0 : (baseOwner?.alliance_id ?? 0);
+  const flaggedAlliances = ownerAllianceId ? [ownerAllianceId] : [];
+  
+  const stances = await findRelationships(user.alliance_id, flaggedAlliances);
+
+  const alliance = isOwnMainYard ? await getAllianceData(user) : null;
+  const powerups = isOwnMainYard ? await runningPowerups(user.alliance_id) : [];
+
+  const attpowerups = isOverworldAttack ? await runningPowerups(user.alliance_id) : [];
+
+  const relationship = isOwnMainYard
+    ? EnumBaseRelationship.SELF
+    : cellRelationship(user.alliance_id, ownerAllianceId, stances);
+
   const response: Record<string, unknown> = {
     ...filteredSave,
-    relationship: isOwner && !isInferno ? EnumBaseRelationship.SELF : EnumBaseRelationship.ENEMY,
+    relationship,
     canattack: attackAllowed,
     flags,
     worldsize: WORLD_SIZE,
@@ -287,10 +309,13 @@ export const baseLoad: KoaController = async (ctx) => {
     currenttime: getCurrentDateTime(),
     pic_square: avatar,
     chatservers: [process.env.CHAT_WS_HOST!],
+    ...(isAttack && { attpowerups }),
     ...(isOwner && {
       chatenabled: 1,
       chattoken,
       chatchannel,
+      ...(alliance && { alliancedata: alliance }),
+      powerups,
     }),
   };
 

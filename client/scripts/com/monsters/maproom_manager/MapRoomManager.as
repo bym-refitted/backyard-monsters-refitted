@@ -1,5 +1,6 @@
 package com.monsters.maproom_manager
 {
+   import com.monsters.alliances.ALLIANCES;
    import com.monsters.maproom3.MapRoom3;
    import com.monsters.maproom3.MapRoom3Cell;
    import com.monsters.maproom_advanced.MapRoom;
@@ -273,6 +274,12 @@ package com.monsters.maproom_manager
       
       public function UpgradeToMapRoom3() : void
       {
+         if (ALLIANCES._myAlliance != null) 
+         {
+            GLOBAL.Message(KEYS.Get("map_alliance_upgrade",{"v1":ALLIANCES._myAlliance.name}));
+            return;
+         }
+
          GLOBAL._save = false;
          PLEASEWAIT.Show(KEYS.Get("upgrading_to_map_room3"));
          new URLLoaderApi().load(this.m_MapRoom3URL + "setmapversion",[["version",3]],this.MapRoom3UpgradeSuccess,this.MapRoom3UpgradeFail);

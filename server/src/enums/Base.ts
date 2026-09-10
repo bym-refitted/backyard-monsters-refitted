@@ -22,6 +22,13 @@ export enum BaseMode {
   DEFAULT = "0"                 // Default yard
 }
 
+export const ATTACK_MODES = new Set<string>([
+  BaseMode.ATTACK,
+  BaseMode.WMATTACK,
+  BaseMode.IATTACK,
+  BaseMode.IWMATTACK,
+]);
+
 /** 
  * Enum representing base types 
  * @enum {string}
