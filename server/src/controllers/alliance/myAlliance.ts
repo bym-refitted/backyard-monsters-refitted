@@ -1,7 +1,7 @@
 import { Status } from "../../enums/StatusCodes.js";
 import { User } from "../../models/user.model.js";
 import { getUserAlliance } from "../../services/alliance/allianceAccess.js";
-import { countOnlineMembers } from "../../services/alliance/allianceMember.js";
+import { getAllianceDetails } from "../../services/alliance/allianceMember.js";
 import type { KoaController } from "../../utils/KoaController.js";
 
 /**
@@ -23,7 +23,7 @@ export const myAlliance: KoaController = async (ctx) => {
     return;
   }
 
-  const online = await countOnlineMembers(alliance.id);
+  const { online, avgLevel } = await getAllianceDetails(alliance.id);
 
   ctx.status = Status.OK;
   ctx.body = {
@@ -34,7 +34,7 @@ export const myAlliance: KoaController = async (ctx) => {
       image: alliance.image,
       description: alliance.description,
       rank: alliance.stats?.global_rank,
-      avg_level: alliance.stats?.avg_level,
+      avg_level: avgLevel,
       leader_name: alliance.leader_name,
       number_of_members: alliance.stats?.member_count,
       online_members: online,

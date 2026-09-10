@@ -8,6 +8,11 @@ import { calculateEmpirePoints } from "../base/calculateEmpirePoints.js";
 import { calculateBaseLevel } from "../base/calculateBaseLevel.js";
 import { getLastSeen } from "../maproom/getLastSeen.js";
 
+export interface AllianceDetails {
+  online: number;
+  avgLevel: number;
+}
+
 interface AllianceMemberStatus {
   online: boolean;
   damage_protection: boolean;
@@ -37,6 +42,13 @@ export const ALLIANCE_MEMBER_FIELDS = [
   "save.basevalue",
   "save.protected",
   "save.lastattackername",
+] as const;
+
+const MEMBER_SUMMARY_FIELDS = [
+  "userid",
+  "save.type",
+  "save.points",
+  "save.basevalue",
 ] as const;
 
 /**
@@ -78,17 +90,31 @@ export const toAllianceMember = (
 };
 
 /**
- * Counts how many of an alliance's members are currently online.
+ * The member figures the My Alliance tab prints beside an alliance's name.
  *
- * @param {number} allianceId - The alliance to count.
- * @returns {Promise<number>} Members seen within the last-seen window.
+ * @param {number} allianceId - The alliance to summarise.
+ * @returns {Promise<AllianceDetails>} Members currently online, and the rounded average level.
  */
-export const countOnlineMembers = async (allianceId: number) => {
-  const members = await postgres.em.find(User, { alliance_id: allianceId }, { fields: ["userid"] });
+export const getAllianceDetails = async (allianceId: number): Promise<AllianceDetails> => {
+  const members = await postgres.em.find(User,
+    { alliance_id: allianceId },
+    { fields: MEMBER_SUMMARY_FIELDS }
+  );
 
-  if (members.length === 0) return 0;
+  if (members.length === 0) return { online: 0, avgLevel: 0 };
 
   const lastSeen = await getLastSeen(members.map(({ userid }) => userid), BaseType.MAIN);
 
-  return lastSeen.size;
+  const mainYards = members
+    .map(({ save }) => save)
+    .filter((save) => save?.type === BaseType.MAIN);
+
+  const levels = mainYards.reduce(
+    (sum, save) => sum + calculateBaseLevel(save!.points, save!.basevalue),
+    0
+  );
+
+  const average = mainYards.length === 0 ? 0 : Math.round(levels / mainYards.length);
+
+  return { online: lastSeen.size, avgLevel: average };
 };

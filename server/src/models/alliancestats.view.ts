@@ -23,7 +23,6 @@ const ALLIANCE_STATS_VIEW = `
     alliance_id,
     member_count,
     empire_points,
-    avg_level,
     rank() over (PARTITION BY world_id    ORDER BY empire_points DESC)::int AS world_rank,
     rank() over (PARTITION BY map_version ORDER BY empire_points DESC)::int AS global_rank
   FROM (
@@ -32,8 +31,7 @@ const ALLIANCE_STATS_VIEW = `
       a.world_id,
       a.map_version,
       count(u.userid)::int AS member_count,
-      coalesce(sum(s.points::numeric + s.basevalue::numeric), 0)::bigint AS empire_points,
-      coalesce(round(avg(s.level)), 0)::int AS avg_level
+      coalesce(sum(s.points::numeric + s.basevalue::numeric), 0)::bigint AS empire_points
     FROM bym.alliance a
     LEFT JOIN bym."user" u ON u.alliance_id = a.id
     LEFT JOIN bym.save s ON u.save_basesaveid = s.basesaveid AND s.type = 'main'
@@ -51,9 +49,6 @@ export class AllianceStats {
 
   @Property({ type: new BigIntType("number") })
   empire_points!: number;
-
-  @Property({ type: "number" })
-  avg_level!: number;
 
   @Property({ type: "number" })
   world_rank!: number;
