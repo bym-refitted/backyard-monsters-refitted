@@ -404,7 +404,7 @@ export const powerupNotReadyErr = () =>
 
 export const powerupReadyErr = () =>
   new ClientSafeError({
-    message: "This Power-Up is already charged and ready to activate.",
+    message: "This Power-Up is currently ready.",
     status: Status.CONFLICT,
     data: {},
     isClientFriendly: true,
