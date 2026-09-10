@@ -6,8 +6,10 @@ import type { KoaController } from "../../utils/KoaController.js";
 
 /**
  * Returns the authenticated user's alliance for the My Alliance tab, or
- * `alliance: null` when they are unaffiliated. Rank is the alliance's standing
- * within its own world by empire points.
+ * `alliance: null` when they are unaffiliated.
+ *
+ * Rank is the alliance's standing across its whole map version by empire points,
+ * not within its own world.
  *
  * @param {Context} ctx - Koa context.
  */
@@ -31,7 +33,7 @@ export const myAlliance: KoaController = async (ctx) => {
       name: alliance.name,
       image: alliance.image,
       description: alliance.description,
-      rank: alliance.stats?.world_rank,
+      rank: alliance.stats?.global_rank,
       avg_level: alliance.stats?.avg_level,
       leader_name: alliance.leader_name,
       number_of_members: alliance.stats?.member_count,
