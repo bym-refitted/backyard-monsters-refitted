@@ -15,10 +15,11 @@ export const infernoMonsters: KoaController = async (ctx) => {
   const user: User = ctx.authUser;
   let { type, imonsters } = InfernoMonstersSchema.parse(ctx.request.body);
 
-  let infernoSave = await postgres.em.findOne(Save, {
-    userid: user.userid,
-    type: BaseType.INFERNO,
-  });
+  let infernoSave = await postgres.em.findOne(
+    Save,
+    { userid: user.userid, type: BaseType.INFERNO },
+    { fields: ["monsters"] },
+  );
 
   if (!infernoSave) throw new Error("Inferno save not found");
 

@@ -4,7 +4,11 @@ import { postgres } from "../../../server.js";
 import { BaseType } from "../../../enums/Base.js";
 import { MapRoomVersion } from "../../../enums/MapRoom.js";
 import { calculateBaseLevel } from "../../base/calculateBaseLevel.js";
-import { createNeighbourData } from "../createNeighbourData.js";
+import {
+  createNeighbourData,
+  NEIGHBOUR_SEARCH_SAVE_FIELDS,
+  NEIGHBOUR_SEARCH_USER_FIELDS,
+} from "../createNeighbourData.js";
 import type { NeighbourData } from "../../../types/NeighbourData.js";
 
 /**
@@ -22,9 +26,6 @@ export const findOverworldNeighbours = async (user: User, save: Save): Promise<N
   const minLevel = Math.max(1, userLevel - levelRange);
   const maxLevel = userLevel + levelRange;
 
-  const validNeighbours: Array<{ save: Save; level: number }> = [];
-  const userIds = new Set<number>();
-
   const saves = await postgres.em.find(
     Save,
     {
@@ -33,10 +34,14 @@ export const findOverworldNeighbours = async (user: User, save: Save): Promise<N
       mapversion: MapRoomVersion.V1,
     },
     {
+      fields: NEIGHBOUR_SEARCH_SAVE_FIELDS,
       limit: 150,
       orderBy: { lastupdateAt: "DESC" },
     }
   );
+
+  const validNeighbours: Array<{ save: (typeof saves)[number]; level: number }> = [];
+  const userIds = new Set<number>();
 
   for (const neighbourSave of saves) {
     const level = calculateBaseLevel(neighbourSave.points, neighbourSave.basevalue);
@@ -49,12 +54,13 @@ export const findOverworldNeighbours = async (user: User, save: Save): Promise<N
     }
   }
 
-  const neighbourUsers = await postgres.em.find(User, {
-    userid: { $in: Array.from(userIds) },
-  });
+  const neighbourUsers = await postgres.em.find(
+    User,
+    { userid: { $in: Array.from(userIds) } },
+    { fields: NEIGHBOUR_SEARCH_USER_FIELDS }
+  );
 
-  const users = new Map<number, User>();
-  neighbourUsers.forEach((u) => users.set(u.userid, u));
+  const users = new Map(neighbourUsers.map((u) => [u.userid, u]));
 
   const cachedNeighbours: NeighbourData[] = [];
 

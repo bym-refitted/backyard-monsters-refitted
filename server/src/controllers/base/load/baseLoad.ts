@@ -44,6 +44,8 @@ type Stronghold = { level: number; cell?: { x: number; y: number } | null };
 
 const STRONGHOLD_FIELDS = ["level", "cell.x", "cell.y"] as const;
 
+const INFERNO_SAVE_MODES = new Set<string>([BaseMode.IBUILD, BaseMode.IATTACK, BaseMode.IWMATTACK]);
+
 /**
  * Controller responsible for loading base modes based on the user's request.
  *
@@ -53,9 +55,9 @@ const STRONGHOLD_FIELDS = ["level", "cell.x", "cell.y"] as const;
  */
 export const baseLoad: KoaController = async (ctx) => {
   const user: User = ctx.authUser;
-  await postgres.em.populate(user, ["save", "infernosave"]);
-
   const { baseid, type, mapversion, attackData, attackcost } = BaseLoadSchema.parse(ctx.request.body);
+
+  await postgres.em.populate(user, INFERNO_SAVE_MODES.has(type) ? ["save", "infernosave"] : ["save"]);
 
   let baseSave: Save | null = null;
 

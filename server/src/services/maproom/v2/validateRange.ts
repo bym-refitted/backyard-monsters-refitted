@@ -126,9 +126,11 @@ const validateRangeV2 = async (user: User, save: Save, options: RangeOptions) =>
     throw new Error("No outposts near attack cell.");
 
   // Query the database for the in-range outposts
-  const outpostSaves = await postgres.em.find(Save, {
-    baseid: { $in: outpostsInRange.map((outpost) => outpost.baseid) },
-  });
+  const outpostSaves = await postgres.em.find(
+    Save,
+    { baseid: { $in: outpostsInRange.map((outpost) => outpost.baseid) } },
+    { fields: ["flinger"] },
+  );
 
   for (const outpostSave of outpostSaves) {
     const outpostRange = getOutpostRange(outpostSave.flinger);

@@ -4,6 +4,8 @@ import type { Resources } from "../../../../services/base/updateResources.js";
 
 type ResourceType = SaveKeys.RESOURCES | SaveKeys.IRESOURCES;
 
+type LootTarget = Partial<Pick<Save, ResourceType>>;
+
 /**
  * The largest single-resource payout the client can produce from downing one building
  */
@@ -21,10 +23,10 @@ const MAX_LOOT_PER_RESOURCE = 10_000_000;
  * of the defender's buildings, not of the attack.
  *
  * @param {Resources} reported - The defender's resource delta as reported by the attacker
- * @param {Save} save - The save holding the defender's pool.
+ * @param {LootTarget} save - The save holding the defender's pool.
  * @param {ResourceType} [resourceType = SaveKeys.RESOURCES] - Which pool to draw from.
  */
-export const defenderLootHandler = (reported: Resources, save: Save, resourceType: ResourceType = SaveKeys.RESOURCES) => {
+export const defenderLootHandler = (reported: Resources, save: LootTarget, resourceType: ResourceType = SaveKeys.RESOURCES) => {
   const resources = save[resourceType] ?? {};
   const resourceKeys = ["r1", "r2", "r3", "r4"] as const;
 
