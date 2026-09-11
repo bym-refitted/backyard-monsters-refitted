@@ -56,24 +56,21 @@ export const updateNeighbourData = async (cachedNeighbours: NeighbourData[], bas
       User,
       { userid: { $in: userIds } },
       { fields: NEIGHBOUR_USER_FIELDS }
-    ) as unknown as Promise<User[]>,
-    
+    ),
+
     postgres.em.find(
       Save,
       { type: baseType, userid: { $in: userIds }, ...mr1Filter },
       { fields: NEIGHBOUR_SAVE_FIELDS }
-    ) as unknown as Promise<Save[]>,
+    ),
 
     getLastSeen(userIds, baseType),
 
     getTruces(currentUserId, userIds),
   ]);
 
-  const saves = new Map<number, Save>();
-  neighbourSaves.forEach((save) => saves.set(save.userid, save));
-
-  const owners = new Map<number, User>();
-  neighbourUsers.forEach((owner) => owners.set(owner.userid, owner));
+  const saves = new Map(neighbourSaves.map((save) => [save.userid, save]));
+  const owners = new Map(neighbourUsers.map((owner) => [owner.userid, owner]));
 
   const currentTime = getCurrentDateTime();
   let needsFlush = false;

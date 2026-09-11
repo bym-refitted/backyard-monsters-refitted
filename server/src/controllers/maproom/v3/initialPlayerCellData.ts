@@ -4,7 +4,7 @@ import { EnumYardType } from "../../../enums/EnumYardType.js";
 import { WorldMapCell } from "../../../database/models/worldmapcell.model.js";
 import { MapRoomVersion } from "../../../enums/MapRoom.js";
 import { postgres } from "../../../server.js";
-import { createCellData } from "../../../services/maproom/v3/createCellData.js";
+import { playerCell } from "./cells/playerCell.js";
 import type { KoaController } from "../../../utils/KoaController.js";
 import { logger } from "../../../utils/logger.js";
 
@@ -72,7 +72,7 @@ export const initialPlayerCellData: KoaController = async (ctx) => {
   const celldata = await Promise.all(
     playerCells
       .sort((cell) => (cell.base_type === EnumYardType.PLAYER ? -1 : 1))
-      .map((cell) => createCellData(cell as unknown as WorldMapCell, worldid, ctx, cellOwners)),
+      .map((cell) => playerCell(ctx, cell, cellOwners)),
   );
 
   ctx.status = Status.OK;

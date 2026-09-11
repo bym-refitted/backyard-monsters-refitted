@@ -1,5 +1,8 @@
+import type { Loaded } from "@mikro-orm/core";
 import type { Save } from "../../database/models/save.model.js";
 import { getCurrentDateTime } from "../../utils/getCurrentDateTime.js";
+
+type AttackState = Loaded<Save, never, "attackid" | "attacks">;
 
 /**
  * Maximum duration an attack can be considered active (7 minutes).
@@ -16,10 +19,10 @@ export const ATTACK_TIMEOUT = 7 * 60;
  * outside this window is treated as stale — typically left over from
  * an attacker who disconnected mid-attack.
  *
- * @param {Save} save - The save to check
+ * @param {AttackState} save - The save to check
  * @returns {boolean} True if the save is currently under an active attack
  */
-export const isAttackActive = (save: Save) => {
+export const isAttackActive = (save: AttackState) => {
   if (save.attackid === 0) return false;
 
   const lastAttack = save.attacks.at(-1);

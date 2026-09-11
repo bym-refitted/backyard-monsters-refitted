@@ -1,3 +1,4 @@
+import type { Loaded } from "@mikro-orm/core";
 import { EnumBaseRelationship } from "../../../../enums/EnumBaseRelationship.js";
 import { EnumYardType } from "../../../../enums/EnumYardType.js";
 import { Tribes } from "../../../../enums/Tribes.js";
@@ -7,7 +8,11 @@ import { getGeneratedCells, cellKey } from "../../../../services/maproom/v3/gene
 import type { CellData } from "../../../../types/CellData.js";
 import { MapRoomVersion } from "../../../../enums/MapRoom.js";
 
-export const tribeOutpostCell = async (cell: WorldMapCell, worldId: string): Promise<CellData> => {
+export type TribeOutpostCellFields = "*" | "save.damage" | "save.destroyed";
+
+type Cell = Loaded<WorldMapCell, "save", TribeOutpostCellFields>;
+
+export const tribeOutpostCell = async (cell: Cell, worldId: string): Promise<CellData> => {
   const [cellX, cellY] = [cell.x, cell.y];
 
   const tribeIndex = (cellX + cellY) % Tribes.length;
