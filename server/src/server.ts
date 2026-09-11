@@ -17,6 +17,7 @@ import { Env } from "./enums/Env.js";
 import { initAnticheat } from "./scripts/anticheat/anticheat.js";
 import { initialize as initVersionManifest } from "./config/VersionManifestConfig.js";
 import { startChatServer } from "./chat/chatServer.js";
+import { exitOnRedisReconnect } from "./utils/redisReconnectGuard.js";
 
 export const app = new Koa();
 app.proxy = true;
@@ -33,7 +34,8 @@ export const postgres = {} as {
 
 export const redis = new RedisClient(process.env.REDIS_URL);
 
-redis.onconnect = () => logger.info(`Connected to Redis server`);
+exitOnRedisReconnect(redis, "Redis", () => logger.info(`Connected to Redis server`));
+
 redis.onclose = (err) => logger.error(`Redis disconnected: ${err.message}`);
 
 // Initialize MikroORM, Redis, and start the Koa server
@@ -93,4 +95,7 @@ ${ascii_node}
 Server running on: ${BASE_URL}:${PORT}
     `);
   });
-})().catch((e) => logger.error(`Startup failed: ${e}`));
+})().catch((e) => {
+  logger.error(`Startup failed: ${e}`);
+  process.exit(1);
+});

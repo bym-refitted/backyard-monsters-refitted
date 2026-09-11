@@ -2,6 +2,7 @@ import { RedisClient } from "bun";
 
 import { redis } from "../server.js";
 import { logger } from "../utils/logger.js";
+import { exitOnRedisReconnect } from "../utils/redisReconnectGuard.js";
 import { CHAT_CONTROL_CHANNEL } from "./chatControl.js";
 import { channelMembers, clients } from "./chatState.js";
 
@@ -19,10 +20,10 @@ let redisSub: RedisClient;
 export const initTransport = (onReady: () => void) => {
   redisSub = new RedisClient(process.env.REDIS_URL);
 
-  redisSub.onconnect = () => {
+  exitOnRedisReconnect(redisSub, "Chat Redis subscriber", () => {
     logger.info("Chat Redis subscriber connected");
     onReady();
-  };
+  });
 
   redisSub.onclose = (err) => logger.error(`Chat Redis subscriber disconnected: ${err.message}`);
   redisSub.connect();
