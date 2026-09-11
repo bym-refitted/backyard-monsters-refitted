@@ -128,7 +128,7 @@ services:
 
   # Redis
   redis:
-    image: redis:8.4.0
+    image: redis:8.10.1
     container_name: bymr-redis-cache
     ports:
       - ${REDIS_PORT:-6379}:6379
