@@ -40,6 +40,10 @@ import { runningPowerups } from "../../../services/alliance/powerups.js";
 import { cellRelationship, findRelationships } from "../../../services/alliance/relationships.js";
 import { INFERNO_CHAT_CHANNEL } from "../../../config/ChatConfig.js";
 
+type Stronghold = { level: number; cell?: { x: number; y: number } | null };
+
+const STRONGHOLD_FIELDS = ["level", "cell.x", "cell.y"] as const;
+
 /**
  * Controller responsible for loading base modes based on the user's request.
  *
@@ -159,11 +163,15 @@ export const baseLoad: KoaController = async (ctx) => {
   if (mapversion === MapRoomVersion.V3) {
     // Sum production rate and storage capacity from all player-owned MR3 resource outposts.
     if (isOwner && !isInferno) {
-      const resourceOutposts = await postgres.em.find(Save, {
-        saveuserid: user.userid,
-        type: BaseType.OUTPOST,
-        wmid: EnumYardType.RESOURCE,
-      });
+      const resourceOutposts = await postgres.em.find(
+        Save,
+        {
+          saveuserid: user.userid,
+          type: BaseType.OUTPOST,
+          wmid: EnumYardType.RESOURCE,
+        },
+        { fields: ["level"] },
+      );
 
       for (const { level } of resourceOutposts) {
         totalResourceRate += RESOURCE_PRODUCTION_RATES[level];
@@ -204,9 +212,9 @@ export const baseLoad: KoaController = async (ctx) => {
             type: BaseType.OUTPOST,
             wmid: EnumYardType.STRONGHOLD,
           },
-          { populate: ["cell"] },
+          { populate: ["cell"], fields: STRONGHOLD_FIELDS },
         ),
-          
+
         postgres.em.find(
           Save,
           {
@@ -214,11 +222,11 @@ export const baseLoad: KoaController = async (ctx) => {
             type: BaseType.OUTPOST,
             wmid: EnumYardType.STRONGHOLD,
           },
-          { populate: ["cell"] },
+          { populate: ["cell"], fields: STRONGHOLD_FIELDS },
         ),
       ]);
 
-      const strongholdBonus = (strongholds: Save[]) => {
+      const strongholdBonus = (strongholds: Stronghold[]) => {
         let bonus = 0;
 
         for (const { level, cell } of strongholds) {
