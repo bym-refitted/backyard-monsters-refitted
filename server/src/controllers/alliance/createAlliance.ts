@@ -1,4 +1,4 @@
-import { UniqueConstraintViolationException, type RequiredEntityData } from "@mikro-orm/core";
+import { UniqueConstraintViolationException } from "@mikro-orm/core";
 
 import { Status } from "../../enums/StatusCodes.js";
 import { AllianceMessageType, AllianceRole } from "../../enums/Alliance.js";
@@ -51,7 +51,7 @@ export const createAlliance: KoaController = async (ctx) => {
     leader_name: user.username,
     world_id: worldid,
     map_version: mapVersion,
-  } as unknown as RequiredEntityData<Alliance>;
+  };
 
   const alliance = await postgres.em.transactional(async (em) => {
       const newAlliance = em.create(Alliance, allianceData);

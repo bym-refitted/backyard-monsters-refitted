@@ -5,7 +5,7 @@ import { getDefaultBaseData } from "../../game-data/getDefaultBaseData.js";
 import { User } from "./user.model.js";
 import { BaseType } from "../../enums/Base.js";
 import { WorldMapCell } from "./worldmapcell.model.js";
-import { type RequiredEntityData, BigIntType, UniqueConstraintViolationException } from "@mikro-orm/core";
+import { BigIntType, type Opt, PrimaryKeyProp, UniqueConstraintViolationException } from "@mikro-orm/core";
 import type { AttackDetails } from "../../controllers/base/load/modes/baseModeAttack.js";
 import type { Stats } from "../../services/events/wmi/invasionUtils.js";
 import type { ChampionData } from "../../schemas/ChampionSchema.js";
@@ -18,6 +18,9 @@ const NEXT_USER_BASEID = `SELECT nextval('bym.user_baseid_seq') AS baseid`;
 @Index({ properties: ["type", "worldid", "userid"] })
 @Entity({ tableName: "save" })
 export class Save {
+
+  [PrimaryKeyProp]?: "basesaveid";
+
   // IDs & Foreign Keys
   @FrontendKey
   @PrimaryKey({ autoincrement: true, type: 'number' })
@@ -26,7 +29,7 @@ export class Save {
   @Index()
   @FrontendKey
   @Property({ type: 'string', default: "0" })
-  baseid!: string;
+  baseid!: Opt<string>;
 
   @OneToOne({
     nullable: true,
@@ -38,7 +41,7 @@ export class Save {
 
   @FrontendKey
   @Property({ type: new BigIntType('number'), default: 0 })
-  homebaseid!: number;
+  homebaseid!: Opt<number>;
 
   @Index()
   @FrontendKey
@@ -52,25 +55,25 @@ export class Save {
 
   @FrontendKey
   @Property({ type: 'number', default: 0 })
-  attackid!: number;
+  attackid!: Opt<number>;
 
   @FrontendKey
   @Property({ type: 'number', default: 0 })
-  id!: number;
+  id!: Opt<number>;
 
   @FrontendKey
   @Property({ type: 'number', default: 0 })
-  baseid_inferno!: number;
+  baseid_inferno!: Opt<number>;
 
   @FrontendKey
   @Property({ type: 'number', default: 0 })
-  wmid!: number;
+  wmid!: Opt<number>;
 
   // Primatives
   @Index()
   @FrontendKey
   @Property({ type: 'string', default: "main" })
-  type!: string;
+  type!: Opt<string>;
 
   @FrontendKey
   @Property({ type: 'number' })
@@ -78,35 +81,35 @@ export class Save {
 
   @FrontendKey
   @Property({ type: 'number', default: 0 })
-  savetime!: number; // Updates each time a save is triggered
+  savetime!: Opt<number>; // Updates each time a save is triggered
 
   @FrontendKey
   @Property({ type: 'number', default: 0 })
-  seed!: number;
+  seed!: Opt<number>;
 
   @FrontendKey
   @Property({ type: 'number', default: 0 })
-  bookmarked!: number;
+  bookmarked!: Opt<number>;
 
   @FrontendKey
   @Property({ type: 'number', default: 0 })
-  fan!: number;
+  fan!: Opt<number>;
 
   @FrontendKey
   @Property({ type: 'number', default: 0 })
-  emailshared!: number;
+  emailshared!: Opt<number>;
 
   @FrontendKey
   @Property({ type: 'number', default: 0 })
-  unreadmessages!: number;
+  unreadmessages!: Opt<number>;
 
   @FrontendKey
   @Property({ type: 'number', default: 0 })
-  giftsentcount!: number;
+  giftsentcount!: Opt<number>;
 
   @FrontendKey
   @Property({ type: 'boolean', default: false })
-  canattack!: boolean;
+  canattack!: Opt<boolean>;
 
   @FrontendKey
   @Property({ type: 'string', nullable: true })
@@ -114,7 +117,7 @@ export class Save {
 
   @FrontendKey
   @Property({ type: 'number', default: 0 })
-  fortifycellid!: number;
+  fortifycellid!: Opt<number>;
 
   @FrontendKey
   @Property({ type: 'string' })
@@ -122,132 +125,132 @@ export class Save {
 
   @FrontendKey
   @Property({ type: 'number', default: 1 })
-  level!: number;
+  level!: Opt<number>;
 
   @FrontendKey
   @Property({ type: 'number', default: 0 })
-  catapult!: number;
+  catapult!: Opt<number>;
 
   @FrontendKey
   @Property({ type: 'number', default: 0 })
-  flinger!: number;
+  flinger!: Opt<number>;
 
   @FrontendKey
   @Property({ type: 'number', default: 0 })
-  destroyed!: number;
+  destroyed!: Opt<number>;
 
   @FrontendKey
   @Property({ type: 'number', default: 0 })
-  damage!: number;
+  damage!: Opt<number>;
 
   @FrontendKey
   @Property({ type: 'number', default: 0 })
-  locked!: number;
+  locked!: Opt<number>;
 
   @FrontendKey
   @Property({ type: 'string', default: "0" })
-  points!: string;
+  points!: Opt<string>;
 
   @FrontendKey
   @Property({ type: 'string', default: "0" })
-  basevalue!: string;
+  basevalue!: Opt<string>;
 
   @FrontendKey
   @Property({ type: 'number', default: 0 })
-  tutorialstage!: number;
+  tutorialstage!: Opt<number>;
 
   @FrontendKey
   @Property({ type: 'number', default: 1 })
-  protected!: number;
+  protected!: Opt<number>;
 
   @FrontendKey
   @Property({ type: 'number', default: 0 })
-  lastupdate!: number;
+  lastupdate!: Opt<number>;
 
   @FrontendKey
   @Property({ type: 'number', default: 0 })
-  usemap!: number;
+  usemap!: Opt<number>;
 
   @FrontendKey
   @Property({ type: 'number', check: "credits >= 0" })
   credits!: number;
 
   @Property({ type: 'number', default: 0 })
-  monthly_credits: number = 0;
+  monthly_credits: Opt<number> = 0;
 
   @FrontendKey
   @Property({ columnType: "jsonb" })
-  champion: ChampionData[] = [];
+  champion: Opt<ChampionData[]> = [];
 
   @FrontendKey
   @Property({ type: 'number', default: 0 })
-  empiredestroyed!: number;
+  empiredestroyed!: Opt<number>;
 
   @FrontendKey
   @Property({ type: 'string', nullable: true })
   worldid?: string | null;
 
   @Property({ type: 'number', default: MapRoomVersion.V1 })
-  mapversion: number = MapRoomVersion.V1;
+  mapversion: Opt<number> = MapRoomVersion.V1;
 
   @Property({ type: 'boolean', default: false })
-  mr2upgraded: boolean = false;
+  mr2upgraded: Opt<boolean> = false;
 
   @FrontendKey
   @Property({ type: 'number', default: 0 })
-  event_score!: number;
+  event_score!: Opt<number>;
 
   @FrontendKey
   @Property({ type: 'number', default: 0 })
-  chatenabled!: number;
+  chatenabled!: Opt<number>;
 
   @FrontendKey
   @Property({ type: 'number', default: 0 })
-  relationship!: number;
+  relationship!: Opt<number>;
 
   // Client save primitives
   @FrontendKey
   @Property({ type: 'number', default: 0 })
-  timeplayed!: number;
+  timeplayed!: Opt<number>;
 
   @FrontendKey
   @Property({ type: 'number', default: 128 })
-  version!: number;
+  version!: Opt<number>;
 
   @FrontendKey
   @Property({ type: 'number', default: 0 })
-  clienttime!: number;
+  clienttime!: Opt<number>;
 
   @FrontendKey
   @Property({ type: 'number', default: 0 })
-  baseseed!: number;
+  baseseed!: Opt<number>;
 
   @FrontendKey
   @Property({ type: 'number', default: 0 })
-  healtime!: number;
+  healtime!: Opt<number>;
 
   @FrontendKey
   @Property({ type: 'number', default: 0 })
-  empirevalue!: number;
+  empirevalue!: Opt<number>;
 
   @FrontendKey
   @Property({ type: 'string', default: "basename" })
-  basename!: string;
+  basename!: Opt<string>;
 
   @FrontendKey
   @Property({ type: 'number', default: 0 })
-  over!: number;
+  over!: Opt<number>;
 
   @FrontendKey
   @Property({ type: 'number', default: 0 })
-  protect!: number;
+  protect!: Opt<number>;
 
   @Property({ type: 'string', nullable: true })
   lastattackername?: string | null;
 
   @FrontendKey
   @Property({ type: 'number', default: 0 })
-  purchasecomplete!: number;
+  purchasecomplete!: Opt<number>;
 
   @FrontendKey
   @Property({ type: 'number', nullable: true })
@@ -256,7 +259,7 @@ export class Save {
   // Attack Objects
   @FrontendKey
   @Property({ columnType: "jsonb" })
-  attacks: AttackDetails[] = [];
+  attacks: Opt<AttackDetails[]> = [];
 
   // MR3 specific Objects
   @FrontendKey
@@ -365,13 +368,13 @@ export class Save {
   frontpage?: JsonObject | null = {};
 
   @Property({ type: Date })
-  takeoverDate: Date = new Date();
+  takeoverDate: Opt<Date> = new Date();
 
   @Property({ type: Date })
-  createdAt: Date = new Date();
+  createdAt: Opt<Date> = new Date();
 
   @Property({ type: Date, onUpdate: () => new Date() })
-  lastupdateAt: Date = new Date();
+  lastupdateAt: Opt<Date> = new Date();
 
   // Client save objects
   @FrontendKey
@@ -393,15 +396,15 @@ export class Save {
 
   @FrontendKey
   @Property({ columnType: "jsonb", nullable: true })
-  savetemplate: any[] = [];
+  savetemplate: Opt<any[]> = [];
 
   @FrontendKey
   @Property({ columnType: "jsonb", nullable: true })
-  updates: any[] = [];
+  updates: Opt<any[]> = [];
 
   @FrontendKey
   @Property({ columnType: "jsonb", nullable: true })
-  effects: (string | number)[][] = [];
+  effects: Opt<(string | number)[][]> = [];
 
   @FrontendKey
   @Property({ columnType: "jsonb", nullable: true })
@@ -409,38 +412,38 @@ export class Save {
 
   @FrontendKey
   @Property({ columnType: "jsonb", nullable: true })
-  outposts: [number, number, string][] = [];
+  outposts: Opt<[number, number, string][]> = [];
 
   @FrontendKey
   @Property({ columnType: "jsonb", nullable: true })
-  wmstatus: number[][] = [];
+  wmstatus: Opt<number[][]> = [];
 
   @FrontendKey
   @Property({ columnType: "jsonb", nullable: true })
-  chatservers: string[] = [];
+  chatservers: Opt<string[]> = [];
 
   @FrontendKey
   @Property({ columnType: "jsonb", nullable: true })
-  achieved: any[] = [];
+  achieved: Opt<any[]> = [];
 
   @FrontendKey
   @Property({ columnType: "jsonb", nullable: true })
-  gifts: any[] = [];
+  gifts: Opt<any[]> = [];
 
   @FrontendKey
   @Property({ columnType: "jsonb", nullable: true })
-  sentinvites: any[] = [];
+  sentinvites: Opt<any[]> = [];
 
   @FrontendKey
   @Property({ columnType: "jsonb", nullable: true })
-  sentgifts: any[] = [];
+  sentgifts: Opt<any[]> = [];
 
   @FrontendKey
   @Property({ columnType: "jsonb", nullable: true })
-  fbpromos: any[] = [];
+  fbpromos: Opt<any[]> = [];
 
 
-  public static saveKeys: (keyof Save)[] = [
+  public static saveKeys: Extract<keyof Save, string>[] = [
     "buildingdata",
     "buildingkeydata",
     "researchdata",
@@ -499,7 +502,7 @@ export class Save {
     "tutorialstage",
   ];
 
-  public static attackSaveKeys: (keyof Save)[] = [
+  public static attackSaveKeys: Extract<keyof Save, string>[] = [
     "destroyed",
     "damage",
     "locked",
@@ -516,7 +519,7 @@ export class Save {
 
   public static createMainSave = async (em: EntityManager<PostgreSqlDriver>, user: User) => {
     try {
-      const baseSave = em.create(Save, getDefaultBaseData(user, BaseType.MAIN) as unknown as RequiredEntityData<Save>);
+      const baseSave = em.create(Save, getDefaultBaseData(user, BaseType.MAIN));
 
       const [result] = await em.execute<[{ baseid: string }]>(NEXT_USER_BASEID);
       const baseid = result.baseid;
@@ -541,7 +544,7 @@ export class Save {
 
   public static createInfernoSave = async (em: EntityManager<PostgreSqlDriver>, user: User) => {
     const save = user.save!;
-    const infernoSave = em.create(Save, getDefaultBaseData(user, BaseType.INFERNO) as unknown as RequiredEntityData<Save>);
+    const infernoSave = em.create(Save, getDefaultBaseData(user, BaseType.INFERNO));
 
     const [result] = await em.execute<[{ baseid: string }]>(NEXT_USER_BASEID);
     const baseid = result.baseid;

@@ -2,7 +2,7 @@ import bcrypt from "bcrypt";
 import ormConfig from "../../mikro-orm.config.js";
 
 import { v4 as uuidv4 } from "uuid";
-import { MikroORM, type RequiredEntityData } from "@mikro-orm/core";
+import { MikroORM } from "@mikro-orm/core";
 import { getDefaultBaseData } from "../../game-data/getDefaultBaseData.js";
 import { AllianceRole } from "../../enums/Alliance.js";
 import { BaseType } from "../../enums/Base.js";
@@ -13,7 +13,6 @@ import { World } from "../models/world.model.js";
 import { addAllianceMember } from "../../services/alliance/membership.js";
 import { logger } from "../../utils/logger.js";
 import type { EntityManager, PostgreSqlDriver } from "@mikro-orm/postgresql";
-import type { UserData } from "../../types/EntityData.js";
 
 const NEXT_USER_BASEID = `SELECT nextval('bym.user_baseid_seq') AS baseid`;
 
@@ -72,7 +71,7 @@ const createSeedUser = async (em: EntityManager<PostgreSqlDriver>, passwordHash:
     username: uniqueId,
     email: `${uniqueId}@test.com`,
     password: passwordHash,
-  } as unknown as UserData);
+  });
 
   em.persist(user);
   await em.flush();
@@ -80,7 +79,7 @@ const createSeedUser = async (em: EntityManager<PostgreSqlDriver>, passwordHash:
   const save = em.create(Save, {
     ...getDefaultBaseData(user, BaseType.MAIN),
     saveuserid: user.userid,
-  } as unknown as RequiredEntityData<Save>);
+  });
 
   const [{ baseid }] = await em.execute<[{ baseid: string }]>(NEXT_USER_BASEID);
 
@@ -155,7 +154,7 @@ const createSeedUser = async (em: EntityManager<PostgreSqlDriver>, passwordHash:
         leader_name: leader.username,
         world_id: world.uuid,
         map_version: world.map_version,
-      } as unknown as RequiredEntityData<Alliance>);
+      });
 
       em.persist(alliance);
       await em.flush();

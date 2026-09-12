@@ -1,4 +1,5 @@
 import { Entity, Index, OneToOne, PrimaryKey, Property } from "@mikro-orm/decorators/es";
+import type { Opt } from "@mikro-orm/core";
 import { AllianceStats } from "./alliancestats.view.js";
 
 @Entity({ tableName: "alliance" })
@@ -10,26 +11,26 @@ export class Alliance {
   name!: string;
 
   @Property({ type: "number", default: 1 })
-  image: number = 1;
+  image: Opt<number> = 1;
 
   @Property({ type: "string", default: "" })
-  description: string = "";
+  description: Opt<string> = "";
 
   @Index()
   @Property({ type: "number" })
   leader_userid!: number;
 
   @Property({ type: "string", default: "" })
-  leader_name: string = "";
+  leader_name: Opt<string> = "";
 
   @Property({ type: "string" })
   world_id!: string;
 
   @Property({ type: "number", default: 2 })
-  map_version: number = 2;
+  map_version: Opt<number> = 2;
 
   @Property({ type: Date })
-  created_at: Date = new Date();
+  created_at: Opt<Date> = new Date();
 
   @OneToOne({ entity: () => AllianceStats, mappedBy: "alliance" })
   stats?: AllianceStats;

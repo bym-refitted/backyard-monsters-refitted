@@ -2,7 +2,7 @@ import bcrypt from "bcrypt";
 import ormConfig from "../../mikro-orm.config.js";
 
 import { v4 as uuidv4 } from "uuid";
-import { MikroORM, type RequiredEntityData } from "@mikro-orm/core";
+import { MikroORM } from "@mikro-orm/core";
 import { getDefaultBaseData } from "../../game-data/getDefaultBaseData.js";
 import { BaseType } from "../../enums/Base.js";
 import { Save } from "../models/save.model.js";
@@ -10,7 +10,6 @@ import { User } from "../models/user.model.js";
 import { joinNewWorldMap } from "../../services/maproom/v3/joinNewWorldMap.js";
 import { MapRoom3 } from "../../enums/MapRoom.js";
 import { logger } from "../../utils/logger.js";
-import type { UserData } from "../../types/EntityData.js";
 
 const NEXT_USER_BASEID = `SELECT nextval('bym.user_baseid_seq') AS baseid`;
 
@@ -54,7 +53,7 @@ const NEXT_USER_BASEID = `SELECT nextval('bym.user_baseid_seq') AS baseid`;
         { 
           ...userData, 
           password: hashedPassword 
-        } as unknown as UserData
+        }
       );
       
       em.persist(user);
@@ -67,8 +66,7 @@ const NEXT_USER_BASEID = `SELECT nextval('bym.user_baseid_seq') AS baseid`;
         { 
           ...saveData,
           saveuserid: user.userid
-        } as unknown as RequiredEntityData<Save>
-      );
+        }      );
 
       // Generate baseid from sequence (same as Save.createMainSave)
       const [result] = await em.execute<[{ baseid: string }]>(NEXT_USER_BASEID);

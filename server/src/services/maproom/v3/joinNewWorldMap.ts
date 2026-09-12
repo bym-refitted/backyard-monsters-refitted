@@ -10,7 +10,6 @@ import { findFreeSector } from "./findFreeSector.js";
 import { EnumYardType } from "../../../enums/EnumYardType.js";
 import { logger } from "../../../utils/logger.js";
 import { leaveWorld } from "../v2/leaveWorld.js";
-import type { WorldData } from "../../../types/EntityData.js";
 
 /**
  * Assigns a user to a Map Room 3 world by either joining an existing one with available space
@@ -47,7 +46,7 @@ export const joinNewWorldMap = async (
     world = shuffledWorlds[0];
     logger.info(`User ${user.username} assigned to existing world: ${world.name}`);
   } else {
-    world = em.create(World, {} as unknown as WorldData);
+    world = em.create(World, {});
     world.name = "New World";
     world.map_version = MapRoomVersion.V3;
     

@@ -9,7 +9,6 @@ import { User } from "../../database/models/user.model.js";
 import { postgres } from "../../server.js";
 import { countUnreadMessage } from "../../services/mail/countUnreadMessage.js";
 import { findOrCreateThread } from "../../services/mail/findOrCreateThread.js";
-import type { MessageData } from "../../types/EntityData.js";
 import { getCurrentDateTime } from "../../utils/getCurrentDateTime.js";
 import type { KoaController } from "../../utils/KoaController.js";
 import { mailboxErr, permissionErr } from "../../errors/errors.js";
@@ -92,7 +91,7 @@ export const requestTruce: KoaController = async (ctx) => {
     subject: `Truce Request from ${user.username}`,
     message,
     updatetime: getCurrentDateTime(),
-  } as unknown as MessageData);
+  });
 
   thread.messagecount++;
   thread.lastMessage = newMessage;

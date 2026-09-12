@@ -14,7 +14,6 @@ import { handleTruceRequest } from "../../services/mail/handleTruceRequest.js";
 import { handleTruceResponse } from "../../services/mail/handleTruceResponse.js";
 import { mailboxErr } from "../../errors/errors.js";
 import { logger } from "../../utils/logger.js";
-import type { MessageData } from "../../types/EntityData.js";
 
 /**
  * Controller to send message
@@ -99,7 +98,7 @@ export const sendMessage: KoaController = async (ctx) => {
       subject: filteredSubject,
       message: filteredMessage,
       updatetime: getCurrentDateTime(),
-    } as unknown as MessageData);
+    });
 
     thread.messagecount++;
     thread.lastMessage = newMessage;

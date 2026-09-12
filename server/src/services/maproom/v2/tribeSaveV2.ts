@@ -6,7 +6,6 @@ import { abunaki } from "../../../game-data/tribes/v2/abunaki.js";
 import { dreadnaught } from "../../../game-data/tribes/v2/dreadnaught.js";
 import { kozu } from "../../../game-data/tribes/v2/kozu.js";
 import { legionnaire } from "../../../game-data/tribes/v2/legionnaire.js";
-import type { RequiredEntityData } from "@mikro-orm/core";
 
 /**
  * Generates a save for a wild monster on Map Room 2 based on the given base ID.
@@ -37,7 +36,7 @@ export const tribeSaveV2 = (baseid: string, worldid: string | null | undefined) 
     level,
     wmid,
     worldid,
-  } as unknown as RequiredEntityData<Save>);
+  }, { partial: true });
 };
 
 /**
