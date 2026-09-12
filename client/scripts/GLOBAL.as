@@ -1148,15 +1148,6 @@ package
 
       public static function Tick():void
       {
-         var tickableCount:int = 0;
-         var tickableIdx:int = 0;
-         var allBuildings:Vector.<Object> = null;
-         var curBuilding:BFOUNDATION = null;
-         var resBuildingStoredAmount:Number = NaN;
-         var resBuildingCountdownProduce:Number = NaN;
-         var isBResource:* = false;
-         var yardTypeToLoad:int = 0;
-
          // Poll the server every 5 ticks to check for network connection
          connectionCounter += 1;
          if (connectionCounter % 30 == 0)
@@ -1188,25 +1179,22 @@ package
             // ============================
             // Tick all registered tickables (ITickable)
             // ============================
-            tickableCount = int(tickables.length - 1);
-            tickableIdx = 0;
-            while (tickableIdx < tickableCount)
+            for each (var tickable:ITickable in tickables)
             {
-               tickables[tickableIdx].tick();
-               tickableIdx++;
+               tickable.tick();
             }
 
             // ============================
             // Tick all Buildings (BFOUNDATION)
             // ============================
 
-            allBuildings = InstanceManager.getInstancesByClass(BFOUNDATION);
-            resBuildingStoredAmount = 0;
-            resBuildingCountdownProduce = 0;
-            for each (curBuilding in allBuildings)
+            var allBuildings:Vector.<Object> = InstanceManager.getInstancesByClass(BFOUNDATION);
+            var resBuildingStoredAmount:Number = 0;
+            var resBuildingCountdownProduce:Number = 0;
+            for each (var curBuilding:BFOUNDATION in allBuildings)
             {
                // collect stored amount and produceCountdown before tick, then compare after tick to detect overproduction
-               isBResource = curBuilding is BRESOURCE;
+               var isBResource: Boolean = curBuilding is BRESOURCE;
                if (isBResource)
                {
                   resBuildingStoredAmount = curBuilding._stored.Get();
@@ -1259,6 +1247,7 @@ package
          // Handle deferred actions that require the base to be fully loaded and saved before proceeding
          // ============================
 
+         var yardTypeToLoad:int = 0;
          if (_toggleYardWaiting && BASE._saveCounterA == BASE._saveCounterB && !BASE._saving)
          {
             _toggleYardWaiting = 0;
