@@ -65,75 +65,78 @@ package com.monsters.autobanking
          return null;
       }
       
-      public static function updateLoadData(param1:Object, param2:Object, param3:Object, param4:int, param5:Number) : Number
+      /**
+       * Calculates the autobank state when a base is loaded from the server.
+       */
+      public static function updateLoadData(rawGIP:Object, GIP:Object, processedGIP:Object, lastProcessed:int, lastProcessedGIP:Number) : Number
       {
-         var _loc6_:String = null;
-         var _loc7_:Object = null;
+         var gipKey:String = null;
+         var gip:Object = null;
          var _loc8_:int = 0;
          var _loc9_:Object = null;
          var _loc10_:int = 0;
          s_logCounter = 10;
-         if(param1)
+         if(rawGIP)
          {
-            if(param1[k_OPKEY_BASE + GLOBAL._homeBaseID])
+            if(rawGIP[k_OPKEY_BASE + GLOBAL._homeBaseID])
             {
-               delete param1[k_OPKEY_BASE + GLOBAL._homeBaseID];
+               delete rawGIP[k_OPKEY_BASE + GLOBAL._homeBaseID];
             }
-            if(Boolean(param1[k_OPKEY_TIME]) && (GLOBAL.mode !== GLOBAL.e_BASE_MODE.ATTACK || BYMConfig.instance.AUTOBANK_FIX))
+            if(Boolean(rawGIP[k_OPKEY_TIME]) && (GLOBAL.mode !== GLOBAL.e_BASE_MODE.ATTACK || BYMConfig.instance.AUTOBANK_FIX))
             {
-               param5 = Number(param1[k_OPKEY_TIME]);
-               delete param1[k_OPKEY_TIME];
+               lastProcessedGIP = Number(rawGIP[k_OPKEY_TIME]);
+               delete rawGIP[k_OPKEY_TIME];
             }
             else
             {
-               param5 = param4;
+               lastProcessedGIP = lastProcessed;
             }
-            if(GLOBAL.Timestamp() - param5 > 3600 * 24 * 2)
+            if(GLOBAL.Timestamp() - lastProcessedGIP > 3600 * 24 * 2)
             {
-               param5 = GLOBAL.Timestamp() - 3600 * 24 * 2;
+               lastProcessedGIP = GLOBAL.Timestamp() - 3600 * 24 * 2;
             }
             if(GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD || GLOBAL.mode == GLOBAL.e_BASE_MODE.ATTACK)
             {
-               for(_loc6_ in param1)
+               for(gipKey in rawGIP)
                {
-                  _loc7_ = param1[_loc6_];
-                  if(_loc6_ == k_OPKEY_TIME)
+                  gip = rawGIP[gipKey];
+                  if(gipKey == k_OPKEY_TIME)
                   {
-                     param5 = Number(param1[_loc6_]);
+                     lastProcessedGIP = Number(rawGIP[gipKey]);
                   }
                   else
                   {
-                     if(_loc7_ is String)
+                     if(gip is String)
                      {
                         break;
                      }
-                     if(_loc7_[k_OPKEY_TWIGS] != undefined)
+                     if(gip[k_OPKEY_TWIGS] != undefined)
                      {
-                        param3[_loc6_] = {
-                           "r1":new SecNum(_loc7_[k_OPKEY_TWIGS]),
-                           "r2":new SecNum(_loc7_[k_OPKEY_PEBBLES]),
-                           "r3":new SecNum(_loc7_[k_OPKEY_PUTTY]),
-                           "r4":new SecNum(_loc7_[k_OPKEY_GOO])
+                        processedGIP[gipKey] = {
+                           "r1":new SecNum(gip[k_OPKEY_TWIGS]),
+                           "r2":new SecNum(gip[k_OPKEY_PEBBLES]),
+                           "r3":new SecNum(gip[k_OPKEY_PUTTY]),
+                           "r4":new SecNum(gip[k_OPKEY_GOO])
                         };
                      }
                      else
                      {
-                        _loc8_ = int(param1[_loc6_]["height"]);
+                        _loc8_ = int(rawGIP[gipKey]["height"]);
                         if(_loc8_)
                         {
-                           delete _loc7_["height"];
+                           delete gip["height"];
                         }
                         else
                         {
                            _loc8_ = 100;
                         }
-                        param3[_loc6_] = {
+                        processedGIP[gipKey] = {
                            "r1":new SecNum(0),
                            "r2":new SecNum(0),
                            "r3":new SecNum(0),
                            "r4":new SecNum(0)
                         };
-                        for each(_loc9_ in _loc7_)
+                        for each(_loc9_ in gip)
                         {
                            if(_loc9_.t >= 1 && _loc9_.t < k_MAX_RESOURCES)
                            {
@@ -146,26 +149,26 @@ package com.monsters.autobanking
                                  _loc10_ = int(OUTPOST_YARD_PROPS._outpostProps[_loc9_.t - 1].produce[0]);
                               }
                               _loc10_ = Math.max(int(_loc10_ * GLOBAL._averageAltitude.Get() / _loc8_),1);
-                              param3[_loc6_]["r" + _loc9_.t].Add(_loc10_);
+                              processedGIP[gipKey]["r" + _loc9_.t].Add(_loc10_);
                            }
                         }
-                        param1[_loc6_] = {
-                           "r1":param3[_loc6_].r1.Get(),
-                           "r2":param3[_loc6_].r2.Get(),
-                           "r3":param3[_loc6_].r3.Get(),
-                           "r4":param3[_loc6_].r4.Get()
+                        rawGIP[gipKey] = {
+                           "r1":processedGIP[gipKey].r1.Get(),
+                           "r2":processedGIP[gipKey].r2.Get(),
+                           "r3":processedGIP[gipKey].r3.Get(),
+                           "r4":processedGIP[gipKey].r4.Get()
                         };
                      }
-                     param2[k_OPKEY_TWIGS].Add(param3[_loc6_][k_OPKEY_TWIGS].Get());
-                     param2[k_OPKEY_PEBBLES].Add(param3[_loc6_][k_OPKEY_PEBBLES].Get());
-                     param2[k_OPKEY_PUTTY].Add(param3[_loc6_][k_OPKEY_PUTTY].Get());
-                     param2[k_OPKEY_GOO].Add(param3[_loc6_][k_OPKEY_GOO].Get());
+                     GIP[k_OPKEY_TWIGS].Add(processedGIP[gipKey][k_OPKEY_TWIGS].Get());
+                     GIP[k_OPKEY_PEBBLES].Add(processedGIP[gipKey][k_OPKEY_PEBBLES].Get());
+                     GIP[k_OPKEY_PUTTY].Add(processedGIP[gipKey][k_OPKEY_PUTTY].Get());
+                     GIP[k_OPKEY_GOO].Add(processedGIP[gipKey][k_OPKEY_GOO].Get());
                   }
                }
-               param3[k_OPKEY_TIME] = param5;
+               processedGIP[k_OPKEY_TIME] = lastProcessedGIP;
             }
          }
-         return param5;
+         return lastProcessedGIP;
       }
       
       public static function setLocalGIP(param1:Object) : void
