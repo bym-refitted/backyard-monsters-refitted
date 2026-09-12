@@ -1,6 +1,5 @@
 package com.monsters.replayableEvents
 {
-   import com.bymrefitted.ui.interfaces.IHideActionHandler;
    import com.monsters.chat.Chat;
    import com.monsters.display.ImageCache;
    import flash.display.Bitmap;
@@ -10,7 +9,7 @@ package com.monsters.replayableEvents
    import flash.events.MouseEvent;
    import flash.utils.Timer;
    
-   public class ReplayableEventUI extends EventsBar_CLIP implements IReplayableEventUI, IHideActionHandler
+   public class ReplayableEventUI extends EventsBar_CLIP implements IReplayableEventUI
    {
       
       public static var CLICKED_ACTION:String = "eventBarAction";
@@ -215,7 +214,7 @@ package com.monsters.replayableEvents
          dispatchEvent(new Event(CLICKED_INFO));
       }
       
-      public function Hide(event:MouseEvent = null) : void
+      private function Hide() : void
       {
          if(Boolean(this) && Boolean(this.parent))
          {
