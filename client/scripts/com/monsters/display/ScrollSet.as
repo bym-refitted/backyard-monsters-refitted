@@ -1,6 +1,5 @@
 package com.monsters.display
 {
-   import com.bymrefitted.ui.interfaces.IHideActionHandler;
    import flash.display.MovieClip;
    import flash.display.Sprite;
    import flash.events.Event;
@@ -8,7 +7,7 @@ package com.monsters.display
    import flash.geom.Rectangle;
    import gs.TweenLite;
    
-   public class ScrollSet extends ScrollSet_CLIP implements IHideActionHandler
+   public class ScrollSet extends ScrollSet_CLIP
    {
       
       public static const BROWN:int = 0;
