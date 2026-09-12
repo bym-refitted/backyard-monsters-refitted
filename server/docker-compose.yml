@@ -58,14 +58,17 @@ services:
         - action: sync
           path: ./src
           target: /app/src
+        - action: sync
+          path: ./public
+          target: /app/public
     deploy:
       resources:
         limits:
+          memory: 1G
+          cpus: '2.0'
+        reservations:
           memory: 512M
           cpus: '0.5'
-        reservations:
-          memory: 256M
-          cpus: '0.25'
     depends_on:
       redis:
         condition: service_healthy
