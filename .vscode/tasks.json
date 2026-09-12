@@ -26,7 +26,7 @@
 			"label": "BYMR - Debug",
 			"detail": "Debug build with stack traces and trace() output.",
 			"type": "shell",
-			"command": "${workspaceFolder}/server/archived/flashplayers/flashplayer_debug.exe",
+			"command": "${workspaceFolder}/client/archived/flashplayers/flashplayer_debug.exe",
 			"args": ["", "bin/bymr-debug.swf"],
 			"group": { "kind": "build", "isDefault": true },
 			"dependsOn": "compile-debug"
@@ -36,7 +36,7 @@
 			"label": "BYMR - Local",
 			"detail": "Optimized local release build",
 			"type": "shell",
-			"command": "${workspaceFolder}/server/archived/flashplayers/flashplayer.exe",
+			"command": "${workspaceFolder}/client/archived/flashplayers/flashplayer.exe",
 			"args": ["", "bin/bymr-local.swf"],
 			"group": { "kind": "build", "isDefault": true },
 			"dependsOn": "compile-local"
@@ -46,7 +46,7 @@
 			"label": "BYMR - Stable",
 			"detail": "Optimized production release build",
 			"type": "shell",
-			"command": "${workspaceFolder}/server/archived/flashplayers/flashplayer.exe",
+			"command": "${workspaceFolder}/client/archived/flashplayers/flashplayer.exe",
 			"args": ["", "bin/bymr-stable.swf"],
 			"group": { "kind": "build", "isDefault": true },
 			"dependsOn": "compile-stable"
