@@ -58,7 +58,7 @@ export const sendMessage: KoaController = async (ctx) => {
     const recipient = await postgres.em.findOne(
       User,
       { userid: messageTargetId },
-      { populate: ["save"] }
+      { populate: ["save"], fields: ["blockedUsers", "save.unreadmessages"] }
     );
 
     if (!recipient || !recipient.save) {

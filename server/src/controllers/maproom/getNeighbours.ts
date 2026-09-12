@@ -105,7 +105,7 @@ const getInfernoNeighbours: KoaController = async (ctx) => {
  */
 const getOverworldNeighbours: KoaController = async (ctx) => {
   const user: User = ctx.authUser;
-  await postgres.em.populate(user, ["save"]);
+  await postgres.em.populate(user, ["save"], { fields: ["save.points", "save.basevalue"] });
 
   const save = user.save;
 

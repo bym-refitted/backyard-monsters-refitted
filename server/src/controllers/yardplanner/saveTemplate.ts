@@ -23,7 +23,7 @@ export const saveTemplate: KoaController = async (ctx) => {
   const user: User = ctx.authUser;
   let save = user.save!;
 
-  await postgres.em.populate(user, ["save"]);
+  await postgres.em.populate(user, ["save"], { fields: ["save.savetemplate"] });
 
   const existingSlotIndex = save.savetemplate.findIndex(
     (template) => template.slotid === requestBody.slotid

@@ -13,7 +13,7 @@ export const getTemplates: KoaController = async (ctx) => {
   const user: User = ctx.authUser;
   let save = user.save!;
 
-  await postgres.em.populate(user, ["save"]);
+  await postgres.em.populate(user, ["save"], { fields: ["save.savetemplate"] });
   const template = save.savetemplate;
 
   ctx.status = Status.OK;

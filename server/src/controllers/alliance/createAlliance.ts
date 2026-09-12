@@ -26,7 +26,7 @@ import type { KoaController } from "../../utils/KoaController.js";
  */
 export const createAlliance: KoaController = async (ctx) => {
   const user: User = ctx.authUser;
-  await postgres.em.populate(user, ["save"]);
+  await postgres.em.populate(user, ["save"], { fields: ["save.worldid"] });
 
   if (user.alliance_id) throw alreadyInAllianceErr();
 

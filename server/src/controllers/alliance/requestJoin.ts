@@ -26,7 +26,7 @@ import type { KoaController } from "../../utils/KoaController.js";
  */
 export const requestJoin: KoaController = async (ctx) => {
   const user: User = ctx.authUser;
-  await postgres.em.populate(user, ["save"]);
+  await postgres.em.populate(user, ["save"], { fields: ["save.worldid"] });
 
   const { alliance_id } = RequestJoinSchema.parse(ctx.request.body);
 

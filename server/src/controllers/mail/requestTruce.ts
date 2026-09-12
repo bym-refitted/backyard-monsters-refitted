@@ -36,7 +36,6 @@ const TruceSchema = z.object({
  */
 export const requestTruce: KoaController = async (ctx) => {
   const user: User = ctx.authUser;
-  await postgres.em.populate(user, ["save"]);
 
   const { baseid, message } = TruceSchema.parse(ctx.request.body);
 
@@ -99,7 +98,7 @@ export const requestTruce: KoaController = async (ctx) => {
   postgres.em.persist(thread);
   await postgres.em.flush();
 
-  const recipient = await postgres.em.findOne(User, { userid: targetUserid }, { populate: ["save"] });
+  const recipient = await postgres.em.findOne(User, { userid: targetUserid }, { populate: ["save"], fields: ["save.unreadmessages"] });
 
   if (recipient?.save) {
     recipient.save.unreadmessages = await countUnreadMessage(targetUserid);

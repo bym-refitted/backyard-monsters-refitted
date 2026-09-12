@@ -31,7 +31,7 @@ export const searchAlliances: KoaController = async (ctx) => {
 
   if (search) where.name = { $ilike: `%${search}%` };
 
-  await postgres.em.populate(user, ["save"]);
+  await postgres.em.populate(user, ["save"], { fields: ["save.worldid"] });
 
   const worldid = user.save?.worldid;
 

@@ -21,7 +21,7 @@ export const getMessageThread: KoaController = async (ctx) => {
   try {
     const user: User = ctx.authUser;
     const userSave = user.save!;
-    await postgres.em.populate(user, ["save"]);
+    await postgres.em.populate(user, ["save"], { fields: ["save.unreadmessages"] });
 
     const { threadid } = GetMessageSchema.parse(ctx.request.body);
 
