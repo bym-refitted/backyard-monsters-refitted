@@ -52,7 +52,8 @@ export const getNeighbours: KoaController = async (ctx) => {
  */
 const getInfernoNeighbours: KoaController = async (ctx) => {
   const user: User = ctx.authUser;
-  await postgres.em.populate(user, ["save", "infernosave"]);
+
+  await postgres.em.populate(user, ["infernosave"]);
 
   const infernoMaproom = await postgres.em.findOne(InfernoMaproom, { userid: user.userid });
 
