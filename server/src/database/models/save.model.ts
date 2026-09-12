@@ -174,9 +174,6 @@ export class Save {
   @Property({ type: 'number', check: "credits >= 0" })
   credits!: number;
 
-  @Property({ type: 'number', default: 0 })
-  monthly_credits: Opt<number> = 0;
-
   @FrontendKey
   @Property({ columnType: "jsonb" })
   champion: Opt<ChampionData[]> = [];

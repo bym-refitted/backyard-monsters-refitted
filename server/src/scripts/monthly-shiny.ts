@@ -57,7 +57,6 @@ const JOB_NAME = "monthly-shiny";
           { type: BaseType.MAIN },
           {
             credits: raw("credits + ?", [shinyAmount]),
-            monthly_credits: raw("monthly_credits + ?", [shinyAmount]),
           },
         );
 
