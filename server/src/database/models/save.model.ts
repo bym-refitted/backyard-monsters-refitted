@@ -48,7 +48,6 @@ export class Save {
   @Property({ type: 'number' })
   userid!: number;
 
-  @Index()
   @FrontendKey
   @Property({ type: 'number' })
   saveuserid!: number;

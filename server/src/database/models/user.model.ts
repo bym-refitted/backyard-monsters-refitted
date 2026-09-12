@@ -42,7 +42,6 @@ export class User {
 
   @Property({ type: "string", unique: true })
   @FrontendKey
-  @Index()
   email!: string;
 
   @Property({ type: "string" })

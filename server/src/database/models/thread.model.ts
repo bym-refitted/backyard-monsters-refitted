@@ -10,7 +10,6 @@ export class Thread {
   @PrimaryKey({ type: 'string' })
   id: string = v4();
 
-  @Index()
   @Property({ type: 'number', unique: true })
   threadid!: number;
 
