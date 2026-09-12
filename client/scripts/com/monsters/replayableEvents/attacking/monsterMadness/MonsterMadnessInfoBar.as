@@ -1,6 +1,5 @@
 package com.monsters.replayableEvents.attacking.monsterMadness
 {
-   import com.bymrefitted.ui.interfaces.IHideActionHandler;
    import com.monsters.chat.Chat;
    import com.monsters.display.ImageCache;
    import flash.display.Bitmap;
@@ -8,7 +7,7 @@ package com.monsters.replayableEvents.attacking.monsterMadness
    import flash.events.MouseEvent;
    import flash.utils.Timer;
    
-   public class MonsterMadnessInfoBar extends MonsterMadnessBar_CLIP implements IHideActionHandler
+   public class MonsterMadnessInfoBar extends MonsterMadnessBar_CLIP
    {
        
       
