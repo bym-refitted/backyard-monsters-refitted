@@ -14,6 +14,7 @@ import { Message } from "./database/models/message.model.js";
 import { Thread } from "./database/models/thread.model.js";
 import { AttackLogs } from "./database/models/attacklogs.model.js";
 import { Truce } from "./database/models/truce.model.js";
+import { JobRun } from "./database/models/jobrun.model.js";
 import { Alliance } from "./database/models/alliance.model.js";
 import { AllianceInvite } from "./database/models/allianceinvite.model.js";
 import { AllianceMessage } from "./database/models/alliancemessage.model.js";
@@ -37,6 +38,7 @@ const entities = [
   Thread,
   AttackLogs,
   Truce,
+  JobRun,
   Alliance,
   AllianceInvite,
   AllianceMessage,
