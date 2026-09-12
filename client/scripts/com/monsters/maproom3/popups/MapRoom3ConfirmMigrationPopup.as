@@ -1,10 +1,11 @@
 package com.monsters.maproom3.popups
 {
+   import com.bymrefitted.ui.interfaces.IHideActionHandler;
    import com.monsters.maproom_manager.MapRoomManager;
    import config.singletonlock.SingletonLock;
    import flash.events.MouseEvent;
    
-   public class MapRoom3ConfirmMigrationPopup extends popup_new_map_confirm
+   public class MapRoom3ConfirmMigrationPopup extends popup_new_map_confirm implements IHideActionHandler
    {
       
       private static var s_Instance:MapRoom3ConfirmMigrationPopup = null;
@@ -47,7 +48,7 @@ package com.monsters.maproom3.popups
          this.m_IsShowing = true;
       }
       
-      public function Hide() : void
+      public function Hide(param1:MouseEvent = null) : void
       {
          btnJuice.removeEventListener(MouseEvent.CLICK,this.OnConfirmButtonClicked);
          btnCancel.removeEventListener(MouseEvent.CLICK,this.OnCancelButtonClicked);

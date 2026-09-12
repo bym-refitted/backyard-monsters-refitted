@@ -1,5 +1,6 @@
 package com.monsters.maproom3
 {
+   import com.bymrefitted.ui.interfaces.IHideActionHandler;
    import com.monsters.alliances.ALLIANCES;
    import com.monsters.display.ImageCache;
    import com.monsters.mailbox.Message;
@@ -19,7 +20,7 @@ package com.monsters.maproom3
    import flash.text.TextField;
    import flash.text.TextFormat;
    
-   public class MapRoom3CellMouseover extends Sprite
+   public class MapRoom3CellMouseover extends Sprite implements IHideActionHandler
    {
       
       private static const PORTRAIT_WIDTH:int = 50;
@@ -269,7 +270,7 @@ package com.monsters.maproom3
          this.ShowButtons(param4);
       }
       
-      public function Hide() : void
+      public function Hide(param1:MouseEvent = null) : void
       {
          this.ClearInfo();
          visible = false;

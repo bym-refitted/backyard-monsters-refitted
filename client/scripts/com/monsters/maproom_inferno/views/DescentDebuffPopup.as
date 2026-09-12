@@ -1,11 +1,12 @@
 package com.monsters.maproom_inferno.views
 {
+   import com.bymrefitted.ui.interfaces.IHideActionHandler;
    import flash.display.MovieClip;
    import flash.events.MouseEvent;
    import flash.events.TimerEvent;
    import flash.utils.Timer;
    
-   public class DescentDebuffPopup extends descentDebuff_info_CLIP
+   public class DescentDebuffPopup extends descentDebuff_info_CLIP implements IHideActionHandler
    {
        
       
@@ -81,7 +82,7 @@ package com.monsters.maproom_inferno.views
          UI2._top.addChild(this);
       }
       
-      public function Hide() : void
+      public function Hide(param1:MouseEvent = null) : void
       {
          this._t.stop();
          this._t.removeEventListener(TimerEvent.TIMER,this.DepthCheck);

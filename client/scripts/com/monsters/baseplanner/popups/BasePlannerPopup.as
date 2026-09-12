@@ -1,5 +1,6 @@
 package com.monsters.baseplanner.popups
 {
+   import com.bymrefitted.ui.interfaces.IHideActionHandler;
    import com.monsters.baseplanner.BasePlanner;
    import com.monsters.baseplanner.PlannerDesignView;
    import com.monsters.baseplanner.PlannerExplorer;
@@ -15,7 +16,7 @@ package com.monsters.baseplanner.popups
    import flash.geom.Point;
    import flash.text.TextFieldAutoSize;
    
-   public class BasePlannerPopup extends Sprite
+   public class BasePlannerPopup extends Sprite implements IHideActionHandler
    {
       
       private static var _layoutSpacing:Point = new Point(10,10);

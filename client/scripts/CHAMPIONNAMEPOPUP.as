@@ -1,8 +1,9 @@
 package
 {
+   import com.bymrefitted.ui.interfaces.IHideActionHandler;
    import flash.events.MouseEvent;
    
-   public class CHAMPIONNAMEPOPUP extends GUARDIANNAMEPOPUP_CLIP
+   public class CHAMPIONNAMEPOPUP extends GUARDIANNAMEPOPUP_CLIP implements IHideActionHandler
    {
        
       
@@ -48,7 +49,7 @@ package
          BASE.Save();
       }
       
-      public function Hide() : void
+      public function Hide(param1:MouseEvent = null) : void
       {
          var _loc1_:String = String(CHAMPIONCAGE._guardians["G" + CREATURES._guardian._type].name);
          CREATURES._guardian._name = _loc1_;

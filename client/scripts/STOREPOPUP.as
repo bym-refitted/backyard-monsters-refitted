@@ -1,8 +1,9 @@
 package
 {
+   import com.bymrefitted.ui.interfaces.IHideActionHandler;
    import flash.events.MouseEvent;
    
-   public class STOREPOPUP extends STOREPOPUP_CLIP
+   public class STOREPOPUP extends STOREPOPUP_CLIP implements IHideActionHandler
    {
        
       

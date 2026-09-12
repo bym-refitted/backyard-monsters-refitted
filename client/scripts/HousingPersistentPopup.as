@@ -1,5 +1,6 @@
 package
 {
+   import com.bymrefitted.ui.interfaces.IHideActionHandler;
    import com.monsters.display.ImageCache;
    import com.monsters.display.ScrollSet;
    import com.monsters.managers.InstanceManager;
@@ -14,7 +15,7 @@ package
    import flash.display.Sprite;
    import flash.events.MouseEvent;
    
-   public class HousingPersistentPopup extends HousingPersistentPopup_CLIP
+   public class HousingPersistentPopup extends HousingPersistentPopup_CLIP implements IHideActionHandler
    {
        
       
@@ -914,7 +915,7 @@ package
          this.m_monsterBarList[param1].bJuice.buttonMode = false;
       }
       
-      public function Hide() : void
+      public function Hide(param1:MouseEvent = null) : void
       {
          HOUSING.Hide();
       }

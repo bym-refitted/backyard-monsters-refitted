@@ -1401,7 +1401,7 @@ package com.monsters.maproom_advanced
          Tutorial.ShowIfNeeded();
       }
       
-      public function Hide() : void
+      public function Hide(param1:MouseEvent = null) : void
       {
          if(_open)
          {

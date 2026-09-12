@@ -1,12 +1,14 @@
 package
 {
+   import com.bymrefitted.ui.interfaces.IHideActionHandler;
    import com.monsters.display.ImageCache;
    import com.monsters.effects.ResourceBombs;
    import flash.display.Bitmap;
    import flash.display.BitmapData;
    import flash.display.Sprite;
+   import flash.events.MouseEvent;
    
-   public class CATAPULTITEM extends CATAPULTITEM_view
+   public class CATAPULTITEM extends CATAPULTITEM_view implements IHideActionHandler
    {
        
       
@@ -121,7 +123,7 @@ package
          this._popup.visible = true;
       }
       
-      public function Hide() : void
+      public function Hide(param1:MouseEvent = null) : void
       {
          this._popup.visible = false;
       }

@@ -1,5 +1,6 @@
 package
 {
+   import com.bymrefitted.ui.interfaces.IHideActionHandler;
    import com.monsters.display.ImageCache;
    import com.monsters.effects.ResourceBombs;
    import flash.display.Bitmap;
@@ -8,7 +9,7 @@ package
    import flash.events.TimerEvent;
    import flash.utils.Timer;
    
-   public class CATAPULTPOPUP extends CATAPULTPOPUP_view
+   public class CATAPULTPOPUP extends CATAPULTPOPUP_view implements IHideActionHandler
    {
        
       
@@ -257,7 +258,7 @@ package
          }
       }
       
-      public function Hide() : void
+      public function Hide(param1:MouseEvent = null) : void
       {
          if(_mc.parent)
          {

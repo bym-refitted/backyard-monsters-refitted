@@ -1,5 +1,6 @@
 package com.monsters.maproom_advanced
 {
+   import com.bymrefitted.ui.interfaces.IHideActionHandler;
    
    import com.cc.utils.SecNum;
    import com.monsters.alliances.*;
@@ -19,7 +20,7 @@ package com.monsters.maproom_advanced
    import flash.geom.Point;
    import flash.net.URLRequest;
    
-   internal class PopupInfoEnemy extends PopupInfoEnemy_CLIP
+   internal class PopupInfoEnemy extends PopupInfoEnemy_CLIP implements IHideActionHandler
    {
       
       private static var _takeoverCost:SecNum;

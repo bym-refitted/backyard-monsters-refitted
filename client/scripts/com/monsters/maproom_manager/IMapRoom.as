@@ -1,5 +1,6 @@
 package com.monsters.maproom_manager
 {
+   import flash.events.MouseEvent;
    import flash.utils.Dictionary;
    
    public interface IMapRoom
@@ -32,7 +33,7 @@ package com.monsters.maproom_manager
       
       function ShowDelayed(param1:Boolean = false) : void;
       
-      function Hide() : void;
+      function Hide(param1:MouseEvent = null) : void;
       
       function Tick() : void;
       

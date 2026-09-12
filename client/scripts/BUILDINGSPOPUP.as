@@ -1,11 +1,12 @@
 package
 {
+   import com.bymrefitted.ui.interfaces.IHideActionHandler;
    import com.monsters.inventory.InventoryManager;
    import com.monsters.managers.InstanceManager;
    import flash.display.MovieClip;
    import flash.events.MouseEvent;
    
-   public class BUILDINGSPOPUP extends BUILDINGSPOPUP_CLIP
+   public class BUILDINGSPOPUP extends BUILDINGSPOPUP_CLIP implements IHideActionHandler
    {
        
       

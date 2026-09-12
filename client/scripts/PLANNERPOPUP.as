@@ -1,5 +1,6 @@
 package
 {
+   import com.bymrefitted.ui.interfaces.IHideActionHandler;
    import com.monsters.managers.InstanceManager;
    import flash.display.MovieClip;
    import flash.events.Event;
@@ -7,7 +8,7 @@ package
    import flash.geom.Point;
    import flash.geom.Rectangle;
    
-   public class PLANNERPOPUP extends PLANNERPOPUP_CLIP
+   public class PLANNERPOPUP extends PLANNERPOPUP_CLIP implements IHideActionHandler
    {
        
       

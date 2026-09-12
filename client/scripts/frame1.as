@@ -1,5 +1,8 @@
 package
 {
+   import com.bymrefitted.ui.interfaces.IFullScreenActionHandler;
+   import com.bymrefitted.ui.interfaces.IHelpActionHandler;
+   import com.bymrefitted.ui.interfaces.IHideActionHandler;
    import flash.display.Bitmap;
    import flash.display.DisplayObject;
    import flash.display.MovieClip;
@@ -287,9 +290,10 @@ package
       
       private function BtnClose(param1:MouseEvent = null) : void
       {
-         if("Hide" in parent)
+         var handler: IHideActionHandler = parent as IHideActionHandler;
+         if(handler != null)
          {
-            (parent as MovieClip).Hide();
+            handler.Hide(param1);
          }
          else
          {
@@ -299,18 +303,21 @@ package
       
       private function BtnHelp(param1:MouseEvent = null) : void
       {
-         if("Help" in parent)
+         var handler:IHelpActionHandler = parent as IHelpActionHandler;
+         if(handler != null)
          {
-            (parent as MovieClip).Help();
+            handler.Help(param1);
          }
       }
       
       private function BtnFullScreen(param1:MouseEvent = null) : void
       {
          GLOBAL.goFullScreen();
-         if("FullScreen" in parent)
+
+         var handler:IFullScreenActionHandler = parent as IFullScreenActionHandler;
+         if(handler != null)
          {
-            (parent as MovieClip).FullScreen();
+            handler.FullScreen(param1);
          }
       }
    }
