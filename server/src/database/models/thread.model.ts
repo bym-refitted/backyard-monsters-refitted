@@ -25,7 +25,6 @@ export class Thread {
   @Property({ type: 'number' })
   messagecount!: number;
 
-  @Index()
   @Property({ type: 'number', nullable: true })
   truce_id?: number;
 

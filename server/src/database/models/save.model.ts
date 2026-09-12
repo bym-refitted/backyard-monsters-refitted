@@ -16,6 +16,7 @@ import { MapRoomVersion } from "../../enums/MapRoom.js";
 const NEXT_USER_BASEID = `SELECT nextval('bym.user_baseid_seq') AS baseid`;
 
 @Index({ properties: ["type", "worldid", "userid"] })
+@Index({ properties: ["userid", "type"] })
 @Entity({ tableName: "save" })
 export class Save {
 

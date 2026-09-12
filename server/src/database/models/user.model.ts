@@ -95,7 +95,6 @@ export class User {
   @Property({ columnType: "jsonb", nullable: true })
   bookmarks?: JsonObject | null = {};
 
-  @Index({ name: "idx_user_blocked_users", type: "gin" })
   @Property({ columnType: "jsonb" })
   blockedUsers: Opt<number[]> = [];
 

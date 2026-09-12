@@ -5,8 +5,6 @@ import { v4 } from "uuid";
 
 @Index({ properties: ["userid", "userUnread"] })
 @Index({ properties: ["targetid", "targetUnread"] })
-@Index({ properties: ["userid", "createdAt"] })
-@Index({ properties: ["targetid", "createdAt"] })
 @Entity({ tableName: "message" })
 export class Message {
   @PrimaryKey({ type: 'string' })
