@@ -64,15 +64,11 @@ export const updateSaved: KoaController = async (ctx) => {
   const isOwner = user.userid === baseSave.userid;
   const isInferno = baseSave.type === BaseType.INFERNO;
 
-  baseSave.savetime = getCurrentDateTime();
-  baseSave.id = baseSave.savetime; // client expects this.
-
-  if (baseid !== BaseMode.DEFAULT && type === BaseMode.BUILD) {
-    postgres.em.persist(baseSave);
-    await postgres.em.flush();
-  }
-
   const filteredSave = await mapSaveData(baseSave, user);
+  const savetime = getCurrentDateTime();
+
+  filteredSave.savetime = savetime;
+  filteredSave.id = savetime;
 
   const flags = getFlags();
   flags.discordOldEnough = Number(ctx.meetsDiscordAgeCheck);
