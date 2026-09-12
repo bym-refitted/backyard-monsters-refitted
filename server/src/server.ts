@@ -59,13 +59,7 @@ redis.onclose = (err) => logger.error(`Redis disconnected: ${err.message}`);
 
   app.use(corsCacheControl);
 
-  app.use(
-    bodyParser({
-      enableTypes: ["json", "form"],
-      jsonLimit: "50mb",
-      formLimit: "50mb",
-    }),
-  );
+  app.use(bodyParser({ enableTypes: ["json", "form"], jsonLimit: "8mb", formLimit: "8mb"}));
 
   app.use((_, next: Next) => RequestContext.create(postgres.orm.em, next));
 
