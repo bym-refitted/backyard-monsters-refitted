@@ -1,6 +1,6 @@
 import mikroOrmConfig from "../mikro-orm.config.js";
 
-import { MikroORM } from "@mikro-orm/core";
+import { MikroORM, raw } from "@mikro-orm/core";
 import { Save } from "../database/models/save.model.js";
 import { BaseType } from "../enums/Base.js";
 
@@ -8,10 +8,14 @@ import { BaseType } from "../enums/Base.js";
  * This script is responsible for adding shiny to all main yard saves.
  * Current configurations runs once a month on the 20th at 13:00 UTC.
  *
+ * The credits are incremented in the database rather than loaded, changed and
+ * written back. Loading every main save cost seconds and gigabytes of heap, and
+ * a player who spent shiny while the job ran had that spend overwritten.
+ *
  * To run this script on a production server (using pm2):
  * 1) cd into the server directory
  * 2) run the command:
- * `pm2 start dist/scripts/monthly-shiny.js --cron "0 13 20 * *" --name "monthly-shiny" --no-autorestart`
+ * `pm2 start src/scripts/monthly-shiny.ts --interpreter bun --cron "0 13 20 * *" --name "monthly-shiny" --no-autorestart`
  */
 (async () => {
   try {
@@ -28,17 +32,18 @@ import { BaseType } from "../enums/Base.js";
     const orm = await MikroORM.init(mikroOrmConfig);
     const em = orm.em.fork();
 
-    const saves = await em.find(Save, { type: BaseType.MAIN });
-
     console.log(`Adding ${shinyAmount} credits to each save...`);
 
-    for (const save of saves) {
-      save.credits += shinyAmount;
-      save.monthly_credits += shinyAmount;
-    }
+    const updated = await em.nativeUpdate(
+      Save,
+      { type: BaseType.MAIN },
+      {
+        credits: raw("credits + ?", [shinyAmount]),
+        monthly_credits: raw("monthly_credits + ?", [shinyAmount]),
+      },
+    );
 
-    await em.flush();
-    console.log(`Updated ${saves.length} save(s) with +${shinyAmount} credits`);
+    console.log(`Updated ${updated} save(s) with +${shinyAmount} credits`);
 
     await orm.close();
     process.exit(0);
