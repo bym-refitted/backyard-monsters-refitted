@@ -774,6 +774,7 @@ package com.monsters.baseplanner.popups
       public function onDesignStateChange(param1:Event = null) : void
       {
          this.hasBeenSaved = false;
+         GLOBAL.UpdateAFKTimer();
       }
       
       public function Remove() : void
