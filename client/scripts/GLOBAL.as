@@ -1,5 +1,7 @@
 package
 {
+   import com.bymrefitted.academy.AcademyService;
+   import com.bymrefitted.buildings.AcademyBuilding;
    import com.cc.tests.ABTest;
    import com.cc.utils.SecNum;
    import com.computus.model.Timekeeper;
@@ -203,7 +205,7 @@ package
 
       public static var _bLocker:BFOUNDATION;
 
-      public static var _bAcademy:BFOUNDATION;
+      public static var _bAcademy:AcademyBuilding;
 
       public static var _bHousing:BFOUNDATION;
 
@@ -1217,7 +1219,7 @@ package
                STORE.ProcessPurchases();
                BASE.Tick();
                HOUSING.Update();
-               ACADEMY.Tick();
+               AcademyService.Tick();
                if (GLOBAL.mode == e_BASE_MODE.ATTACK || GLOBAL.mode == e_BASE_MODE.WMATTACK)
                {
                   ATTACK.Tick();

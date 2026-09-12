@@ -1,5 +1,7 @@
 package
 {
+   import com.bymrefitted.academy.AcademyService;
+   import com.bymrefitted.buildings.AcademyBuilding;
    import com.cc.utils.SecNum;
    import com.jac.mouse.MouseWheelEnabler;
    import com.monsters.ai.TRIBES;
@@ -2257,7 +2259,7 @@ package
             if (isMainYard)
             {
                CREATURELOCKER.Tick();
-               ACADEMY.Tick();
+               AcademyService.Tick();
             }
             if (CREEPS._creepCount > 0)
             {
@@ -5099,7 +5101,7 @@ package
          }
          else if (buildingNum == 26)
          {
-            buildingFoundation = new BUILDING26();
+            buildingFoundation = new AcademyBuilding();
          }
          else if (buildingNum == 27)
          {

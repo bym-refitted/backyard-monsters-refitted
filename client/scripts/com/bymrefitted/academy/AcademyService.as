@@ -1,15 +1,16 @@
-package
+package com.bymrefitted.academy
 {
+   import com.bymrefitted.buildings.AcademyBuilding;
    import com.cc.utils.SecNum;
    import com.monsters.managers.InstanceManager;
    import flash.events.MouseEvent;
    
-   public class ACADEMY
+   public class AcademyService
    {
       
       public static const ID:int = 26;
       
-      public static var _building:BFOUNDATION = null;
+      internal static var _building:AcademyBuilding = null;
       
       public static var _mc:ACADEMYPOPUP = null;
       
@@ -28,17 +29,17 @@ package
       private static const _infernoMaxMonsters:int = 9;
        
       
-      public function ACADEMY()
+      public function AcademyService()
       {
          super();
       }
       
-      public static function Show(param1:BFOUNDATION) : void
+      public static function Show(academyBuildingToOpen:AcademyBuilding) : void
       {
          if(!_open)
          {
             _open = true;
-            _building = param1;
+            _building = academyBuildingToOpen;
             GLOBAL.BlockerAdd();
             _mc = GLOBAL._layerWindows.addChild(new ACADEMYPOPUP()) as ACADEMYPOPUP;
             _mc.Center();
@@ -59,108 +60,109 @@ package
          }
       }
       
-      public static function StartMonsterUpgrade(param1:String, param2:Boolean = false) : Object
+      internal static function StartMonsterUpgrade(monsterToUpgradeId:String, checkOnly:Boolean = false) : Object
       {
-         var _loc6_:Array = null;
-         if(!GLOBAL.player.m_upgrades[param1])
+         var updateCosts:Array = null;
+         if(!GLOBAL.player.m_upgrades[monsterToUpgradeId])
          {
-            GLOBAL.player.m_upgrades[param1] = {"level":1};
+            GLOBAL.player.m_upgrades[monsterToUpgradeId] = {"level":1};
          }
-         var _loc3_:Boolean = false;
-         var _loc4_:String = "";
-         var _loc5_:String = KEYS.Get("acad_status_level",{"v1":GLOBAL.player.m_upgrades[param1].level});
+         var isError:Boolean = false;
+         var errorMessage:String = "";
+         var status:String = KEYS.Get("acad_status_level",{"v1":GLOBAL.player.m_upgrades[monsterToUpgradeId].level});
+
          if(Boolean(_building) && !_building._upgrading)
          {
-            if(!GLOBAL.player.m_upgrades[param1].time)
+            if(!GLOBAL.player.m_upgrades[monsterToUpgradeId].time)
             {
-               if(Boolean(CREATURELOCKER._lockerData[param1]) && CREATURELOCKER._lockerData[param1].t == 2)
+               if(Boolean(CREATURELOCKER._lockerData[monsterToUpgradeId]) && CREATURELOCKER._lockerData[monsterToUpgradeId].t == 2)
                {
-                  if(GLOBAL.player.m_upgrades[param1].level < CREATURELOCKER._creatures[param1].trainingCosts.length + 1)
+                  if(GLOBAL.player.m_upgrades[monsterToUpgradeId].level < CREATURELOCKER._creatures[monsterToUpgradeId].trainingCosts.length + 1)
                   {
-                     if(GLOBAL.player.m_upgrades[param1].level <= _building._lvl.Get())
+                     if(GLOBAL.player.m_upgrades[monsterToUpgradeId].level <= _building._lvl.Get())
                      {
-                        _loc6_ = CREATURELOCKER._creatures[param1].trainingCosts[GLOBAL.player.m_upgrades[param1].level - 1];
-                        if(BASE.Charge(3,_loc6_[0],true) > 0)
+                        updateCosts = CREATURELOCKER._creatures[monsterToUpgradeId].trainingCosts[GLOBAL.player.m_upgrades[monsterToUpgradeId].level - 1];
+                        if(BASE.Charge(3,updateCosts[0],true) > 0)
                         {
-                           if(!param2)
+                           if(!checkOnly)
                            {
-                              BASE.Charge(3,_loc6_[0]);
-                              GLOBAL.player.m_upgrades[param1].time = new SecNum(GLOBAL.Timestamp() + _loc6_[1]);
-                              GLOBAL.player.m_upgrades[param1].duration = _loc6_[1];
-                              _building._upgrading = param1;
+                              BASE.Charge(3,updateCosts[0]);
+                              GLOBAL.player.m_upgrades[monsterToUpgradeId].time = new SecNum(GLOBAL.Timestamp() + updateCosts[1]);
+                              GLOBAL.player.m_upgrades[monsterToUpgradeId].duration = updateCosts[1];
+                              _building._upgrading = monsterToUpgradeId;
                               BASE.Save();
-                              LOGGER.Stat([11,int(param1.substr(1)),GLOBAL.player.m_upgrades[param1].level + 1]);
+                              LOGGER.Stat([11,int(monsterToUpgradeId.substr(1)),GLOBAL.player.m_upgrades[monsterToUpgradeId].level + 1]);
                            }
                         }
                         else
                         {
-                           _loc3_ = true;
-                           _loc4_ = BASE.isInfernoMainYardOrOutpost ? KEYS.Get("acad_err_sulfur") : KEYS.Get("acad_err_putty");
-                           _loc5_ = BASE.isInfernoMainYardOrOutpost ? KEYS.Get("acad_err_sulfur") : KEYS.Get("acad_err_putty");
+                           isError = true;
+                           errorMessage = BASE.isInfernoMainYardOrOutpost ? KEYS.Get("acad_err_sulfur") : KEYS.Get("acad_err_putty");
+                           status = BASE.isInfernoMainYardOrOutpost ? KEYS.Get("acad_err_sulfur") : KEYS.Get("acad_err_putty");
                         }
                      }
                      else
                      {
-                        _loc3_ = true;
-                        _loc4_ = KEYS.Get("acad_err_upgrade");
-                        _loc5_ = KEYS.Get("acad_err_upgrade");
-                        if(BASE.isInfernoMainYardOrOutpost && GLOBAL.player.m_upgrades[param1].level >= 5)
+                        isError = true;
+                        errorMessage = KEYS.Get("acad_err_upgrade");
+                        status = KEYS.Get("acad_err_upgrade");
+                        if(BASE.isInfernoMainYardOrOutpost && GLOBAL.player.m_upgrades[monsterToUpgradeId].level >= 5)
                         {
-                           _loc3_ = true;
-                           _loc4_ = KEYS.Get("acad_err_fullytrained");
-                           _loc5_ = KEYS.Get("acad_err_lfullytrained",{"v1":GLOBAL.player.m_upgrades[param1].level});
+                           isError = true;
+                           errorMessage = KEYS.Get("acad_err_fullytrained");
+                           status = KEYS.Get("acad_err_lfullytrained",{"v1":GLOBAL.player.m_upgrades[monsterToUpgradeId].level});
                         }
                      }
                   }
                   else
                   {
-                     _loc3_ = true;
-                     _loc4_ = KEYS.Get("acad_err_fullytrained");
-                     _loc5_ = KEYS.Get("acad_err_lfullytrained",{"v1":GLOBAL.player.m_upgrades[param1].level});
+                     isError = true;
+                     errorMessage = KEYS.Get("acad_err_fullytrained");
+                     status = KEYS.Get("acad_err_lfullytrained",{"v1":GLOBAL.player.m_upgrades[monsterToUpgradeId].level});
                   }
                }
                else
                {
-                  _loc3_ = true;
-                  _loc4_ = KEYS.Get("acad_err_locked");
-                  _loc5_ = KEYS.Get("acad_err_locked");
+                  isError = true;
+                  errorMessage = KEYS.Get("acad_err_locked");
+                  status = KEYS.Get("acad_err_locked");
                }
             }
             else
             {
-               _loc3_ = true;
-               _loc4_ = KEYS.Get("acad_err_training",{"v1":GLOBAL.player.m_upgrades[param1].level + 1});
-               _loc5_ = KEYS.Get("acad_err_trainingstatus",{
-                  "v1":GLOBAL.player.m_upgrades[param1].level + 1,
-                  "v2":GLOBAL.ToTime(GLOBAL.player.m_upgrades[param1].time.Get() - GLOBAL.Timestamp())
+               isError = true;
+               errorMessage = KEYS.Get("acad_err_training",{"v1":GLOBAL.player.m_upgrades[monsterToUpgradeId].level + 1});
+               status = KEYS.Get("acad_err_trainingstatus",{
+                  "v1":GLOBAL.player.m_upgrades[monsterToUpgradeId].level + 1,
+                  "v2":GLOBAL.ToTime(GLOBAL.player.m_upgrades[monsterToUpgradeId].time.Get() - GLOBAL.Timestamp())
                });
             }
          }
          else
          {
-            _loc3_ = true;
-            _loc4_ = KEYS.Get("acad_err_busy");
-            if(GLOBAL.player.m_upgrades[param1].time)
+            isError = true;
+            errorMessage = KEYS.Get("acad_err_busy");
+            if(GLOBAL.player.m_upgrades[monsterToUpgradeId].time)
             {
-               _loc5_ = KEYS.Get("acad_err_trainingstatus",{
-                  "v1":GLOBAL.player.m_upgrades[param1].level + 1,
-                  "v2":GLOBAL.ToTime(GLOBAL.player.m_upgrades[param1].time.Get() - GLOBAL.Timestamp())
+               status = KEYS.Get("acad_err_trainingstatus",{
+                  "v1":GLOBAL.player.m_upgrades[monsterToUpgradeId].level + 1,
+                  "v2":GLOBAL.ToTime(GLOBAL.player.m_upgrades[monsterToUpgradeId].time.Get() - GLOBAL.Timestamp())
                });
             }
          }
          return {
-            "error":_loc3_,
-            "errorMessage":_loc4_,
-            "status":_loc5_
+            "error":isError,
+            "errorMessage":errorMessage,
+            "status":status
          };
       }
       
-      public static function CancelMonsterUpgrade(param1:String) : void
+      internal static function CancelMonsterUpgrade(param1:String) : void
       {
-         var _loc3_:BUILDING26 = null;
+         var _loc3_:AcademyBuilding = null;
          delete GLOBAL.player.m_upgrades[param1].time;
          delete GLOBAL.player.m_upgrades[param1].duration;
-         var _loc2_:Vector.<Object> = InstanceManager.getInstancesByClass(BUILDING26);
+         var _loc2_:Vector.<Object> = InstanceManager.getInstancesByClass(AcademyBuilding);
          for each(_loc3_ in _loc2_)
          {
             if(_loc3_._upgrading == param1)
@@ -173,12 +175,12 @@ package
          BASE.Save();
       }
       
-      public static function FinishMonsterUpgrade(param1:String) : void
+      private static function FinishMonsterUpgrade(param1:String) : void
       {
          var stat:Array;
          var academyInstances:Vector.<Object>;
          var Post:Function;
-         var academy:BUILDING26 = null;
+         var academy:AcademyBuilding = null;
          var bragImage:String = null;
          var monsterName:String = null;
          var popupMC:popup_monster = null;
@@ -195,7 +197,7 @@ package
          {
             LOGGER.KongStat([5,monsterID.substr(1)]);
          }
-         academyInstances = InstanceManager.getInstancesByClass(BUILDING26);
+         academyInstances = InstanceManager.getInstancesByClass(AcademyBuilding);
          for each(academy in academyInstances)
          {
             if(academy._upgrading == monsterID)

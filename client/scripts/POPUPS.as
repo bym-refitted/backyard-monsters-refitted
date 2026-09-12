@@ -1,6 +1,6 @@
 package
 {
-   
+   import com.bymrefitted.academy.AcademyService;
    import com.monsters.configs.BYMDevConfig;
    import com.monsters.display.ImageCache;
    import com.monsters.frontPage.FrontPageGraphic;
@@ -129,7 +129,7 @@ package
       public static function hasPopupsOpen() : Boolean
       {
          var _loc1_:Boolean = Boolean(GLOBAL._newBuilding) && (GLOBAL._newBuilding as BFOUNDATION)._placing == true;
-         return BUILDINGS._open || STORE._open || BUILDINGOPTIONS._open || ACADEMY._open || CREATURELOCKER._open || _loc1_ || Boolean(_mc) || _open;
+         return BUILDINGS._open || STORE._open || BUILDINGOPTIONS._open || AcademyService._open || CREATURELOCKER._open || _loc1_ || Boolean(_mc) || _open;
       }
       
       private static function NextDelayed(param1:int = 200) : void

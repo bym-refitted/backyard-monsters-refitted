@@ -1,5 +1,6 @@
-package
+package com.bymrefitted.academy
 {
+   import com.bymrefitted.buildings.AcademyBuilding;
    import com.monsters.display.ImageCache;
    import com.monsters.managers.InstanceManager;
    import flash.display.Bitmap;
@@ -10,21 +11,21 @@ package
    public class ACADEMYPOPUP extends ACADEMYPOPUP_CLIP
    {
       
-      public static var _page:int = 1;
+      private static var _page:int = 1;
       
-      public static var _monsterID:String;
+      private static var _monsterID:String;
       
-      public static var _maxSpeed:Number = 0;
+      private static var _maxSpeed:Number = 0;
       
-      public static var _maxHealth:Number = 0;
+      private static var _maxHealth:Number = 0;
       
-      public static var _maxDamage:Number = 0;
+      private static var _maxDamage:Number = 0;
       
-      public static var _maxTime:Number = 0;
+      private static var _maxTime:Number = 0;
       
-      public static var _maxResource:Number = 0;
+      private static var _maxResource:Number = 0;
       
-      public static var _maxStorage:Number = 0;
+      private static var _maxStorage:Number = 0;
       
       private static var _monsterString:String = "C";
       
@@ -32,7 +33,7 @@ package
       
       private static var lastAction:int = 0;
       
-      public static var _instantUpgradeCost:int = 0;
+      private static var _instantUpgradeCost:int = 0;
        
       
       private const _infernoFrameOffset:int = 6;
@@ -106,9 +107,9 @@ package
                _maxStorage = CREATURES.GetProperty(_loc2_,"cStorage",10);
             }
          }
-         if(ACADEMY._building._upgrading)
+         if(AcademyService._building._upgrading)
          {
-            _page = int(String(ACADEMY._building._upgrading).substr(ACADEMY._building._upgrading.indexOf("C") + 1));
+            _page = int(String(AcademyService._building._upgrading).substr(AcademyService._building._upgrading.indexOf("C") + 1));
          }
          this.Setup(_monsterString + _page);
          speed_txt.htmlText = "<b>" + KEYS.Get("acad_att_speed") + "</b>";
@@ -125,7 +126,7 @@ package
          after_txt.htmlText = "<b>" + KEYS.Get("acad_att_after") + "</b>";
       }
       
-      public function Setup(param1:String) : void
+      private function Setup(param1:String) : void
       {
          _monsterID = param1;
          if(!GLOBAL.player.m_upgrades[_monsterID])
@@ -160,12 +161,12 @@ package
          _instantUpgradeCost = _loc5_ + _loc6_;
       }
       
-      public function Update(param1:Boolean = false) : void
+      internal function Update(param1:Boolean = false) : void
       {
          var _loc7_:Boolean = false;
          var _loc11_:Object = null;
          var _loc2_:Object = GLOBAL.player.m_upgrades[_monsterID];
-         var _loc3_:Object = ACADEMY.StartMonsterUpgrade(_monsterID,true);
+         var _loc3_:Object = AcademyService.StartMonsterUpgrade(_monsterID,true);
          var _loc4_:Array = CREATURELOCKER._creatures[_monsterID].trainingCosts[GLOBAL.player.m_upgrades[_monsterID].level - 1];
          if(Boolean(this._portraitImage) && Boolean(this._portraitImage.parent))
          {
@@ -194,7 +195,7 @@ package
             bB.mcR3.visible = false;
             bB.mcR4.visible = false;
             bB.mcTime.visible = false;
-            if(_monsterID == ACADEMY._building._upgrading)
+            if(_monsterID == AcademyService._building._upgrading)
             {
                bPrevious.visible = bNext.visible = false;
             }
@@ -415,13 +416,13 @@ package
          }
       }
       
-      public function StartMonsterUpgrade(param1:MouseEvent) : void
+      private function StartMonsterUpgrade(param1:MouseEvent) : void
       {
-         ACADEMY.StartMonsterUpgrade(_monsterID);
+         AcademyService.StartMonsterUpgrade(_monsterID);
          this.Setup(_monsterID);
       }
       
-      public function InstantMonsterUpgrade(param1:MouseEvent) : void
+      private function InstantMonsterUpgrade(param1:MouseEvent) : void
       {
          var buildingInstances:Vector.<Object>;
          var Post:Function;
@@ -445,7 +446,7 @@ package
          }
          ++GLOBAL.player.m_upgrades[_monsterID].level;
          GLOBAL.player.upgradeHealthData(_monsterID);
-         buildingInstances = InstanceManager.getInstancesByClass(BUILDING26);
+         buildingInstances = InstanceManager.getInstancesByClass(AcademyBuilding);
          for each(building in buildingInstances)
          {
             if(building._upgrading == _monsterID)
@@ -495,24 +496,24 @@ package
          BASE.Purchase("ITR",_instantUpgradeCost,"academy");
       }
       
-      public function CancelMonsterUpgrade(param1:MouseEvent) : void
+      private function CancelMonsterUpgrade(param1:MouseEvent) : void
       {
          GLOBAL.Message(KEYS.Get("acad_confirmcancel",{"v1":KEYS.Get(CREATURELOCKER._creatures[_monsterID].name)}),KEYS.Get("acad_confirmcancel_btn"),this.CancelMonsterUpgradeB);
       }
       
-      public function CancelMonsterUpgradeB() : void
+      private function CancelMonsterUpgradeB() : void
       {
-         ACADEMY.CancelMonsterUpgrade(_monsterID);
+         AcademyService.CancelMonsterUpgrade(_monsterID);
          this.Setup(_monsterID);
       }
       
-      public function SpeedUp(param1:MouseEvent) : void
+      private function SpeedUp(param1:MouseEvent) : void
       {
-         ACADEMY._monsterID = _monsterID;
+         AcademyService._monsterID = _monsterID;
          STORE.SpeedUp("SP4");
       }
       
-      public function Previous(param1:MouseEvent = null) : void
+      private function Previous(param1:MouseEvent = null) : void
       {
          lastAction = -1;
          do
@@ -542,7 +543,7 @@ package
          }
       }
       
-      public function Next(param1:MouseEvent = null) : void
+      private function Next(param1:MouseEvent = null) : void
       {
          lastAction = 1;
          do
@@ -572,7 +573,7 @@ package
          }
       }
       
-      public function CheckMonsterLock(param1:String) : Boolean
+      private function CheckMonsterLock(param1:String) : Boolean
       {
          var _loc2_:Boolean = Boolean(CREATURELOCKER._creatures[param1].blocked);
          if(_loc2_)
@@ -601,18 +602,23 @@ package
             }
          }
       }
-      
+
+      /**
+       * Hides the academy popup.
+       * 
+       * DO NOT DELETE! This function is dynamically invoked by frame::BtnClose using reflective calls.
+       */
       public function Hide(param1:MouseEvent = null) : void
       {
-         ACADEMY.Hide(param1);
+         AcademyService.Hide(param1);
       }
       
-      public function Center() : void
+      internal function Center() : void
       {
          POPUPSETTINGS.AlignToCenter(this);
       }
       
-      public function ScaleUp() : void
+      internal function ScaleUp() : void
       {
          POPUPSETTINGS.ScaleUp(this);
       }
