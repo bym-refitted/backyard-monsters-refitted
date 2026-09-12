@@ -1,5 +1,6 @@
 package
 {
+   import com.bymrefitted.ui.interfaces.IHideActionHandler;
    import com.monsters.display.ImageCache;
    import com.monsters.effects.ResourceBombs;
    import com.monsters.siege.SiegeWeaponProperty;
@@ -26,7 +27,7 @@ package
    import gs.TweenLite;
    import gs.easing.*;
    
-   public class SIEGEWEAPONPOPUP extends SIEGEWEAPONPOPUP_view
+   public class SIEGEWEAPONPOPUP extends SIEGEWEAPONPOPUP_view implements IHideActionHandler
    {
        
       
@@ -524,7 +525,7 @@ package
          ResourceBombs.BombRemove();
       }
       
-      public function Hide() : void
+      public function Hide(param1:MouseEvent = null) : void
       {
          this._t.stop();
          this._t.removeEventListener(TimerEvent.TIMER,this.UpdateTimer);

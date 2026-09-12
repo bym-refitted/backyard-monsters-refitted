@@ -1,5 +1,6 @@
 package
 {
+   import com.bymrefitted.ui.interfaces.IHideActionHandler;
    import com.cc.utils.SecNum;
    import com.monsters.display.ImageCache;
    import flash.display.Bitmap;
@@ -7,7 +8,7 @@ package
    import flash.events.MouseEvent;
    import flash.geom.Point;
    
-   public class INFERNO_ASCENSION_POPUP extends InfernoTransferPopup_CLIP
+   public class INFERNO_ASCENSION_POPUP extends InfernoTransferPopup_CLIP implements IHideActionHandler
    {
        
       
@@ -192,7 +193,7 @@ package
          this.Hide();
       }
       
-      public function Hide() : void
+      public function Hide(param1:MouseEvent = null) : void
       {
          INFERNOPORTAL.HideAscendMonstersDialog();
       }

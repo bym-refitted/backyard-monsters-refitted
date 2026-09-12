@@ -5,6 +5,7 @@ package
    import flash.display.Bitmap;
    import flash.display.BitmapData;
    import flash.display.Sprite;
+   import flash.events.MouseEvent;
    
    public class CATAPULTITEM extends CATAPULTITEM_view
    {
@@ -121,7 +122,7 @@ package
          this._popup.visible = true;
       }
       
-      public function Hide() : void
+      public function Hide(param1:MouseEvent = null) : void
       {
          this._popup.visible = false;
       }

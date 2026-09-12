@@ -1,10 +1,11 @@
 package com.monsters.baseplanner.popups.transfer
 {
+   import com.bymrefitted.ui.interfaces.IHideActionHandler;
    import com.monsters.baseplanner.events.BasePlannerEvent;
    import flash.events.Event;
    import flash.events.MouseEvent;
    
-   public class BasePlannerTransferConfirmation extends BasePlannerTransferConfirmation_CLIP
+   public class BasePlannerTransferConfirmation extends BasePlannerTransferConfirmation_CLIP implements IHideActionHandler
    {
        
       
@@ -37,7 +38,7 @@ package com.monsters.baseplanner.popups.transfer
          dispatchEvent(new Event(Event.CLOSE));
       }
       
-      public function Hide() : void
+      public function Hide(param1:MouseEvent = null) : void
       {
          dispatchEvent(new Event(Event.CLOSE));
       }

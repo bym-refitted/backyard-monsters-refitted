@@ -1,5 +1,6 @@
 package
 {
+   import com.bymrefitted.ui.interfaces.IHideActionHandler;
    import com.monsters.display.ImageCache;
    import com.monsters.display.ScrollSetH;
    import com.monsters.monsters.champions.ChampionBase;
@@ -9,7 +10,7 @@ package
    import flash.display.Sprite;
    import flash.events.MouseEvent;
    
-   public class CHAMPIONSELECTPOPUP extends GUARDIANSELECTPOPUP_CLIP
+   public class CHAMPIONSELECTPOPUP extends GUARDIANSELECTPOPUP_CLIP implements IHideActionHandler
    {
        
       

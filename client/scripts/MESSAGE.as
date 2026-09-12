@@ -1,10 +1,11 @@
 package
 {
+   import com.bymrefitted.ui.interfaces.IHideActionHandler;
    import com.monsters.debug.Console;
    import flash.events.*;
    import flash.text.TextFieldAutoSize;
    
-   public class MESSAGE extends MESSAGE_CLIP
+   public class MESSAGE extends MESSAGE_CLIP implements IHideActionHandler
    {
        
       

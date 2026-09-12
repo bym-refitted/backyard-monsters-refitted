@@ -1,11 +1,13 @@
 package
 {
+   import com.bymrefitted.ui.interfaces.IHelpActionHandler;
+   import com.bymrefitted.ui.interfaces.IHideActionHandler;
    import flash.display.MovieClip;
    import flash.events.Event;
    import flash.events.MouseEvent;
    import flash.geom.Point;
    
-   public class MONSTERBAITERPOPUP extends MONSTERBAITERPOPUP_CLIP
+   public class MONSTERBAITERPOPUP extends MONSTERBAITERPOPUP_CLIP implements IHideActionHandler, IHelpActionHandler
    {
       
       private static const BAITER_BAR_WIDTH:int = 535;
@@ -238,7 +240,7 @@ package
          }
       }
       
-      public function Hide() : void
+      public function Hide(param1:MouseEvent = null) : void
       {
          MONSTERBAITER.Hide();
       }

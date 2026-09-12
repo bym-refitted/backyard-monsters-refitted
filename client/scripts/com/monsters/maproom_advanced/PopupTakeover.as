@@ -1,5 +1,6 @@
 package com.monsters.maproom_advanced
 {
+   import com.bymrefitted.ui.interfaces.IHideActionHandler;
    
    import com.cc.utils.SecNum;
    import com.monsters.display.ImageCache;
@@ -10,7 +11,7 @@ package com.monsters.maproom_advanced
    import flash.events.MouseEvent;
    import flash.geom.Point;
    
-   internal class PopupTakeover extends MapRoomPopup_takeover_CLIP
+   internal class PopupTakeover extends MapRoomPopup_takeover_CLIP implements IHideActionHandler
    {
       
       private static const TAKEOVER_CAP:int = 65000000;
@@ -145,7 +146,7 @@ package com.monsters.maproom_advanced
          });
       }
       
-      public function Hide() : void
+      public function Hide(param1:MouseEvent = null) : void
       {
          GLOBAL.BlockerRemove();
          this.parent.removeChild(this);

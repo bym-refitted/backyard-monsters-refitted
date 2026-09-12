@@ -1,5 +1,6 @@
 package com.monsters.event_store
 {
+   import com.bymrefitted.ui.interfaces.IHideActionHandler;
    import com.monsters.display.ImageCache;
    import com.monsters.replayableEvents.ReplayableEventHandler;
    import config.singletonlock.SingletonLock;
@@ -9,7 +10,7 @@ package com.monsters.event_store
    import flash.display.Sprite;
    import flash.events.MouseEvent;
    
-   public class EventStorePopup extends EventStorePopupMC
+   public class EventStorePopup extends EventStorePopupMC implements IHideActionHandler
    {
       
       private static var s_Instance:EventStorePopup = null;
@@ -86,7 +87,7 @@ package com.monsters.event_store
          this.m_TitleImage.x = -(this.m_TitleImage.width * 0.5);
       }
       
-      public function Hide() : void
+      public function Hide(param1:MouseEvent = null) : void
       {
          if(this.m_IsShowing == false)
          {

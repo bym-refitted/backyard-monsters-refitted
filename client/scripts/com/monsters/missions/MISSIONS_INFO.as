@@ -1,5 +1,6 @@
 package com.monsters.missions
 {
+   import com.bymrefitted.ui.interfaces.IHideActionHandler;
    import com.monsters.display.ImageCache;
    import com.monsters.maproom_advanced.PopupInfoMonster;
    import com.monsters.siege.SiegeWeapons;
@@ -9,7 +10,7 @@ package com.monsters.missions
    import flash.display.MovieClip;
    import flash.events.MouseEvent;
    
-   public class MISSIONS_INFO extends MISSIONS_INFO_CLIP
+   public class MISSIONS_INFO extends MISSIONS_INFO_CLIP implements IHideActionHandler
    {
        
       
@@ -195,7 +196,7 @@ package com.monsters.missions
          };
       }
       
-      public function Hide() : void
+      public function Hide(param1:MouseEvent = null) : void
       {
          QUESTS.Hide();
       }

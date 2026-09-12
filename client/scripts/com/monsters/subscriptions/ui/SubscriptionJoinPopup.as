@@ -1,5 +1,6 @@
 package com.monsters.subscriptions.ui
 {
+   import com.bymrefitted.ui.interfaces.IHideActionHandler;
    import com.monsters.display.ImageCache;
    import com.monsters.subscriptions.SubscriptionHandler;
    import flash.display.Bitmap;
@@ -8,7 +9,7 @@ package com.monsters.subscriptions.ui
    import flash.events.Event;
    import flash.events.MouseEvent;
    
-   public class SubscriptionJoinPopup extends subscriptions_promo_popup
+   public class SubscriptionJoinPopup extends subscriptions_promo_popup implements IHideActionHandler
    {
        
       
@@ -130,7 +131,7 @@ package com.monsters.subscriptions.ui
          }
       }
       
-      public function Hide() : void
+      public function Hide(param1:MouseEvent = null) : void
       {
          mcArrowLeft.removeEventListener(MouseEvent.CLICK,this.onArrowClickPrev);
          mcArrowRight.removeEventListener(MouseEvent.CLICK,this.onArrowClickNext);

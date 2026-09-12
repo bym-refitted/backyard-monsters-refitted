@@ -1,12 +1,13 @@
 package com.monsters.maproom_advanced
 {
+   import com.bymrefitted.ui.interfaces.IHideActionHandler;
    import com.monsters.display.ImageCache;
    import flash.display.Bitmap;
    import flash.display.BitmapData;
    import flash.events.Event;
    import flash.events.MouseEvent;
    
-   public class PopupMigrate extends MapRoomPopup_Migrate_CLIP
+   public class PopupMigrate extends MapRoomPopup_Migrate_CLIP implements IHideActionHandler
    {
       
       private static var instance:PopupMigrate;
@@ -73,7 +74,7 @@ package com.monsters.maproom_advanced
          instance = null;
       }
       
-      public function Hide() : void
+      public function Hide(param1:MouseEvent = null) : void
       {
          if(Boolean(this._closeHandler))
          {

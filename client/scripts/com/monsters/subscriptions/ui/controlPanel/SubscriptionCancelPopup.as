@@ -1,10 +1,11 @@
 package com.monsters.subscriptions.ui.controlPanel
 {
+   import com.bymrefitted.ui.interfaces.IHideActionHandler;
    import com.monsters.subscriptions.SubscriptionHandler;
    import flash.events.Event;
    import flash.events.MouseEvent;
    
-   public class SubscriptionCancelPopup extends subscriptions_cancelconfirm_popup
+   public class SubscriptionCancelPopup extends subscriptions_cancelconfirm_popup implements IHideActionHandler
    {
        
       

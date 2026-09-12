@@ -141,7 +141,7 @@ package com.monsters.replayableEvents.attacking.monsterMadness
          mcImage.addChild(new Bitmap(param2));
       }
       
-      public function Hide() : void
+      public function Hide(param1:MouseEvent = null) : void
       {
          if(Boolean(this) && Boolean(this.parent))
          {

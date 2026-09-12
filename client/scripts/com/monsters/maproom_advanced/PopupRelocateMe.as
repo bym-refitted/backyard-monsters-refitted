@@ -1,5 +1,6 @@
 package com.monsters.maproom_advanced
 {
+   import com.bymrefitted.ui.interfaces.IHideActionHandler;
    
    import com.cc.utils.SecNum;
    import com.monsters.maproom_manager.MapRoomManager;
@@ -9,7 +10,7 @@ package com.monsters.maproom_advanced
    import flash.events.MouseEvent;
    import flash.geom.Point;
    
-   internal class PopupRelocateMe extends PopupRelocateMe_CLIP
+   internal class PopupRelocateMe extends PopupRelocateMe_CLIP implements IHideActionHandler
    {
        
       
@@ -125,7 +126,7 @@ package com.monsters.maproom_advanced
          }
       }
       
-      public function Hide() : void
+      public function Hide(param1:MouseEvent = null) : void
       {
          GLOBAL.BlockerRemove();
          if(this.parent)
