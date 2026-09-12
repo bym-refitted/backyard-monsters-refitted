@@ -2,14 +2,13 @@ import z from "zod";
 
 import { Status } from "../../enums/StatusCodes.js";
 import { TruceStatus } from "../../enums/TruceStatus.js";
-import { Message } from "../../models/message.model.js";
-import { Save } from "../../models/save.model.js";
-import { Truce } from "../../models/truce.model.js";
-import { User } from "../../models/user.model.js";
+import { Message } from "../../database/models/message.model.js";
+import { Save } from "../../database/models/save.model.js";
+import { Truce } from "../../database/models/truce.model.js";
+import { User } from "../../database/models/user.model.js";
 import { postgres } from "../../server.js";
 import { countUnreadMessage } from "../../services/mail/countUnreadMessage.js";
 import { findOrCreateThread } from "../../services/mail/findOrCreateThread.js";
-import type { MessageData } from "../../types/EntityData.js";
 import { getCurrentDateTime } from "../../utils/getCurrentDateTime.js";
 import type { KoaController } from "../../utils/KoaController.js";
 import { mailboxErr, permissionErr } from "../../errors/errors.js";
@@ -37,7 +36,6 @@ const TruceSchema = z.object({
  */
 export const requestTruce: KoaController = async (ctx) => {
   const user: User = ctx.authUser;
-  await postgres.em.populate(user, ["save"]);
 
   const { baseid, message } = TruceSchema.parse(ctx.request.body);
 
@@ -92,7 +90,7 @@ export const requestTruce: KoaController = async (ctx) => {
     subject: `Truce Request from ${user.username}`,
     message,
     updatetime: getCurrentDateTime(),
-  } as unknown as MessageData);
+  });
 
   thread.messagecount++;
   thread.lastMessage = newMessage;
@@ -100,7 +98,7 @@ export const requestTruce: KoaController = async (ctx) => {
   postgres.em.persist(thread);
   await postgres.em.flush();
 
-  const recipient = await postgres.em.findOne(User, { userid: targetUserid }, { populate: ["save"] });
+  const recipient = await postgres.em.findOne(User, { userid: targetUserid }, { populate: ["save"], fields: ["save.unreadmessages"] });
 
   if (recipient?.save) {
     recipient.save.unreadmessages = await countUnreadMessage(targetUserid);

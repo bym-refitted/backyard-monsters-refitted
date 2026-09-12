@@ -1,9 +1,9 @@
 import { devConfig } from "../../../config/GameConfig.js";
-import { Save } from "../../../models/save.model.js";
+import { Save } from "../../../database/models/save.model.js";
 import { postgres, redis } from "../../../server.js";
 import type { KoaController } from "../../../utils/KoaController.js";
 import { storeItems } from "../../../game-data/store/storeItems.js";
-import { User } from "../../../models/user.model.js";
+import { User } from "../../../database/models/user.model.js";
 import { getFlags } from "../../../game-data/flags.js";
 import { getCurrentDateTime } from "../../../utils/getCurrentDateTime.js";
 import { ATTACK_MODES, BaseMode, BaseType } from "../../../enums/Base.js";
@@ -11,7 +11,7 @@ import { EnumYardType } from "../../../enums/EnumYardType.js";
 import { MapRoomVersion } from "../../../enums/MapRoom.js";
 import { WORLD_SIZE } from "../../../config/MapRoom2Config.js";
 import { RESOURCE_PRODUCTION_RATES, RESOURCE_CAPACITIES, DEFENDER_DAMAGE_REDUCTION, STRONGHOLD_BONUSES, STRUCTURE_RANGE } from "../../../config/MapRoom3Config.js";
-import { WorldMapCell } from "../../../models/worldmapcell.model.js";
+import { WorldMapCell } from "../../../database/models/worldmapcell.model.js";
 import { getDefenderCoords, isDefensiveStructure } from "../../../services/maproom/v3/getDefenderCoords.js";
 import { getHexDistance } from "../../../services/maproom/v3/getHexNeighborOffsets.js";
 import { Status } from "../../../enums/StatusCodes.js";
@@ -40,6 +40,12 @@ import { runningPowerups } from "../../../services/alliance/powerups.js";
 import { cellRelationship, findRelationships } from "../../../services/alliance/relationships.js";
 import { INFERNO_CHAT_CHANNEL } from "../../../config/ChatConfig.js";
 
+type Stronghold = { level: number; cell?: { x: number; y: number } | null };
+
+const STRONGHOLD_FIELDS = ["level", "cell.x", "cell.y"] as const;
+
+const INFERNO_SAVE_MODES = new Set<string>([BaseMode.IBUILD, BaseMode.IATTACK, BaseMode.IWMATTACK]);
+
 /**
  * Controller responsible for loading base modes based on the user's request.
  *
@@ -49,9 +55,9 @@ import { INFERNO_CHAT_CHANNEL } from "../../../config/ChatConfig.js";
  */
 export const baseLoad: KoaController = async (ctx) => {
   const user: User = ctx.authUser;
-  await postgres.em.populate(user, ["save", "infernosave"]);
-
   const { baseid, type, mapversion, attackData, attackcost } = BaseLoadSchema.parse(ctx.request.body);
+
+  await postgres.em.populate(user, INFERNO_SAVE_MODES.has(type) ? ["save", "infernosave"] : ["save"]);
 
   let baseSave: Save | null = null;
 
@@ -159,11 +165,15 @@ export const baseLoad: KoaController = async (ctx) => {
   if (mapversion === MapRoomVersion.V3) {
     // Sum production rate and storage capacity from all player-owned MR3 resource outposts.
     if (isOwner && !isInferno) {
-      const resourceOutposts = await postgres.em.find(Save, {
-        saveuserid: user.userid,
-        type: BaseType.OUTPOST,
-        wmid: EnumYardType.RESOURCE,
-      });
+      const resourceOutposts = await postgres.em.find(
+        Save,
+        {
+          saveuserid: user.userid,
+          type: BaseType.OUTPOST,
+          wmid: EnumYardType.RESOURCE,
+        },
+        { fields: ["level"] },
+      );
 
       for (const { level } of resourceOutposts) {
         totalResourceRate += RESOURCE_PRODUCTION_RATES[level];
@@ -204,9 +214,9 @@ export const baseLoad: KoaController = async (ctx) => {
             type: BaseType.OUTPOST,
             wmid: EnumYardType.STRONGHOLD,
           },
-          { populate: ["cell"] },
+          { populate: ["cell"], fields: STRONGHOLD_FIELDS },
         ),
-          
+
         postgres.em.find(
           Save,
           {
@@ -214,11 +224,11 @@ export const baseLoad: KoaController = async (ctx) => {
             type: BaseType.OUTPOST,
             wmid: EnumYardType.STRONGHOLD,
           },
-          { populate: ["cell"] },
+          { populate: ["cell"], fields: STRONGHOLD_FIELDS },
         ),
       ]);
 
-      const strongholdBonus = (strongholds: Save[]) => {
+      const strongholdBonus = (strongholds: Stronghold[]) => {
         let bonus = 0;
 
         for (const { level, cell } of strongholds) {

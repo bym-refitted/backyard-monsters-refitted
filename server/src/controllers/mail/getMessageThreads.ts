@@ -1,10 +1,10 @@
 import { Status } from "../../enums/StatusCodes.js";
 import { mailboxErr } from "../../errors/errors.js";
-import { User } from "../../models/user.model.js";
+import { User } from "../../database/models/user.model.js";
 import type { KoaController } from "../../utils/KoaController.js";
 
 import { postgres } from "../../server.js";
-import { Thread } from "../../models/thread.model.js";
+import { Thread } from "../../database/models/thread.model.js";
 import { FilterFrontendKeys } from "../../utils/FrontendKey.js";
 import { logger } from "../../utils/logger.js";
 

@@ -1,9 +1,9 @@
-import { UniqueConstraintViolationException, type RequiredEntityData } from "@mikro-orm/core";
+import { UniqueConstraintViolationException } from "@mikro-orm/core";
 
 import { Status } from "../../enums/StatusCodes.js";
 import { AllianceMessageType, AllianceRole } from "../../enums/Alliance.js";
-import { Alliance } from "../../models/alliance.model.js";
-import { User } from "../../models/user.model.js";
+import { Alliance } from "../../database/models/alliance.model.js";
+import { User } from "../../database/models/user.model.js";
 import { postgres } from "../../server.js";
 import { CreateAllianceSchema } from "../../schemas/AllianceSchemas.js";
 import { addAllianceMember } from "../../services/alliance/membership.js";
@@ -26,7 +26,7 @@ import type { KoaController } from "../../utils/KoaController.js";
  */
 export const createAlliance: KoaController = async (ctx) => {
   const user: User = ctx.authUser;
-  await postgres.em.populate(user, ["save"]);
+  await postgres.em.populate(user, ["save"], { fields: ["save.worldid"] });
 
   if (user.alliance_id) throw alreadyInAllianceErr();
 
@@ -51,7 +51,7 @@ export const createAlliance: KoaController = async (ctx) => {
     leader_name: user.username,
     world_id: worldid,
     map_version: mapVersion,
-  } as unknown as RequiredEntityData<Alliance>;
+  };
 
   const alliance = await postgres.em.transactional(async (em) => {
       const newAlliance = em.create(Alliance, allianceData);

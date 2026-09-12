@@ -4,9 +4,9 @@ import type { EntityManager, PostgreSqlDriver } from "@mikro-orm/postgresql";
 
 import { AllianceInviteStatus, AllianceInviteType, AllianceMessageType, AllianceRole } from "../../enums/Alliance.js";
 import { MAX_ALLIANCE_MEMBERS } from "../../config/AllianceConfig.js";
-import { Alliance } from "../../models/alliance.model.js";
-import { AllianceInvite } from "../../models/allianceinvite.model.js";
-import { User } from "../../models/user.model.js";
+import { Alliance } from "../../database/models/alliance.model.js";
+import { AllianceInvite } from "../../database/models/allianceinvite.model.js";
+import { User } from "../../database/models/user.model.js";
 import { postgres } from "../../server.js";
 import { addAllianceMember } from "./membership.js";
 import {

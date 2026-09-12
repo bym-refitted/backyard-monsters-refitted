@@ -1,11 +1,11 @@
-import { User } from "../../models/user.model.js";
+import { User } from "../../database/models/user.model.js";
 import { getCurrentDateTime } from "../getCurrentDateTime.js";
 
-export const infernoYardSandbox = (user?: User) => {
+export const infernoYardSandbox = (user: User) => {
   return {
     type: "inferno",
-    saveuserid: user?.userid,
-    userid: user?.userid,
+    saveuserid: user.userid,
+    userid: user.userid,
     wmid: 0,
     createtime: getCurrentDateTime(),
     savetime: 0,
@@ -17,11 +17,10 @@ export const infernoYardSandbox = (user?: User) => {
     giftsentcount: 0,
     id: 1703682844,
     canattack: false,
-    cellid: 831022,
     baseid_inferno: 0,
     fbid: "100002268912813",
     fortifycellid: 0,
-    name: user?.username || "Anonymous",
+    name: user.username,
     level: 1,
     catapult: 1,
     flinger: 1,

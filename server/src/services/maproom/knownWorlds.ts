@@ -1,5 +1,5 @@
 import { MapRoomVersion } from "../../enums/MapRoom.js";
-import { World } from "../../models/world.model.js";
+import { World } from "../../database/models/world.model.js";
 import { postgres, redis } from "../../server.js";
 
 export const WORLDS_CACHE_TTL = 86400;

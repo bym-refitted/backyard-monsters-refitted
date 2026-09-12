@@ -1,5 +1,5 @@
 import type { MonsterUpdate } from "../../controllers/base/save/handlers/monsterUpdateHandler.js";
-import { Save } from "../../models/save.model.js";
+import { Save } from "../../database/models/save.model.js";
 import { postgres } from "../../server.js";
 
 /**
@@ -15,7 +15,11 @@ import { postgres } from "../../server.js";
 export const updateMonsters = async (monsterupdates: MonsterUpdate[], saveuserid: number) => {
   // Fetch all bases that match the provided base IDs in one go
   const baseIds = monsterupdates.map((update) => update.baseid.toString());
-  const saves = await postgres.em.find(Save, { baseid: { $in: baseIds }, saveuserid });
+  const saves = await postgres.em.find(
+    Save,
+    { baseid: { $in: baseIds }, saveuserid },
+    { fields: ["baseid", "protected", "monsters"] },
+  );
 
   // Iterate over the saves and apply the updates
   for (const save of saves) {

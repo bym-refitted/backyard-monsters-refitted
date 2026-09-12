@@ -1,7 +1,7 @@
 import { AllianceInviteType } from "../../enums/Alliance.js";
 import { Status } from "../../enums/StatusCodes.js";
-import { Alliance } from "../../models/alliance.model.js";
-import { User } from "../../models/user.model.js";
+import { Alliance } from "../../database/models/alliance.model.js";
+import { User } from "../../database/models/user.model.js";
 import { postgres } from "../../server.js";
 import { RequestJoinSchema } from "../../schemas/AllianceSchemas.js";
 import { getWorldMapVersion } from "../../services/maproom/knownWorlds.js";
@@ -26,7 +26,7 @@ import type { KoaController } from "../../utils/KoaController.js";
  */
 export const requestJoin: KoaController = async (ctx) => {
   const user: User = ctx.authUser;
-  await postgres.em.populate(user, ["save"]);
+  await postgres.em.populate(user, ["save"], { fields: ["save.worldid"] });
 
   const { alliance_id } = RequestJoinSchema.parse(ctx.request.body);
 

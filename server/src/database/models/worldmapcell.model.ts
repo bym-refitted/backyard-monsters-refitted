@@ -6,7 +6,7 @@ import {
   PrimaryKey,
   Property,
 } from "@mikro-orm/decorators/es";
-import { FrontendKey } from "../utils/FrontendKey.js";
+import { FrontendKey } from "../../utils/FrontendKey.js";
 import { World } from "./world.model.js";
 import { Save } from "./save.model.js";
 

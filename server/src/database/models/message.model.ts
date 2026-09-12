@@ -1,11 +1,10 @@
 import { Entity, Index, PrimaryKey, Property } from "@mikro-orm/decorators/es";
-import { FrontendKey } from "../utils/FrontendKey.js";
+import type { Opt } from "@mikro-orm/core";
+import { FrontendKey } from "../../utils/FrontendKey.js";
 import { v4 } from "uuid";
 
 @Index({ properties: ["userid", "userUnread"] })
 @Index({ properties: ["targetid", "targetUnread"] })
-@Index({ properties: ["userid", "createdAt"] })
-@Index({ properties: ["targetid", "createdAt"] })
 @Entity({ tableName: "message" })
 export class Message {
   @PrimaryKey({ type: 'string' })
@@ -14,7 +13,7 @@ export class Message {
 
   @Property({ type: 'string', persist: false })
   @FrontendKey
-  messageid!: string;
+  messageid!: Opt<string>;
 
   @Index()
   @Property({ type: 'number' })
@@ -45,7 +44,7 @@ export class Message {
 
   @FrontendKey
   @Property({ type: 'number', persist: false })
-  unread!: number;
+  unread!: Opt<number>;
 
   @Property({ type: 'string', nullable: true, length: 580 })
   @FrontendKey
@@ -57,11 +56,11 @@ export class Message {
 
   @Property({ type: 'number', persist: false })
   @FrontendKey
-  messagecount!: number;
+  messagecount!: Opt<number>;
 
   @Property({ type: 'string', default: "0" })
   @FrontendKey
-  reportid: string = "0";
+  reportid: Opt<string> = "0";
 
   @Property({ type: 'string', nullable: true })
   @FrontendKey
@@ -88,7 +87,7 @@ export class Message {
   baseid: string | null = null;
 
   @Property({ type: Date, onCreate: () => new Date() })
-  createdAt: Date = new Date();
+  createdAt: Opt<Date> = new Date();
 
   selectUnread(userid: number) {
     this.unread = this.userid === userid ? this.userUnread : this.targetUnread;

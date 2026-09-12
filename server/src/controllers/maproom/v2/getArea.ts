@@ -1,8 +1,8 @@
 import { z } from "zod";
 
 import type { KoaController } from "../../../utils/KoaController.js";
-import { User } from "../../../models/user.model.js";
-import { WorldMapCell } from "../../../models/worldmapcell.model.js";
+import { User } from "../../../database/models/user.model.js";
+import { WorldMapCell } from "../../../database/models/worldmapcell.model.js";
 import { postgres } from "../../../server.js";
 import { devConfig } from "../../../config/GameConfig.js";
 import { Status } from "../../../enums/StatusCodes.js";
@@ -133,7 +133,7 @@ export const getArea: KoaController = async (ctx) => {
     getTruces(user.userid, ownerIds),
   ]);
 
-  const cellOwners = new Map<number, User>((ownersList as unknown as User[]).map(u => [u.userid, u]));
+  const cellOwners = new Map(ownersList.map((u) => [u.userid, u]));
 
   ctx.state.lastSeen = lastSeen;
   ctx.state.truces = truces;
@@ -152,7 +152,7 @@ export const getArea: KoaController = async (ctx) => {
   for (const cell of dbCells) {
     if (!cells[cell.x]) cells[cell.x] = {};
 
-    cells[cell.x][cell.y] = await createCellData(cell as WorldMapCell, worldid, ctx, cellOwners);
+    cells[cell.x][cell.y] = await createCellData(cell, worldid, ctx, cellOwners);
   }
 
   // Then, fill the remaining cells in-memory

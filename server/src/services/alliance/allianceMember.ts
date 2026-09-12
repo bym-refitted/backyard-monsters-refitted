@@ -2,7 +2,7 @@ import type { Loaded } from "@mikro-orm/core";
 
 import { AllianceRole } from "../../enums/Alliance.js";
 import { BaseType } from "../../enums/Base.js";
-import { User } from "../../models/user.model.js";
+import { User } from "../../database/models/user.model.js";
 import { postgres } from "../../server.js";
 import { calculateEmpirePoints } from "../base/calculateEmpirePoints.js";
 import { calculateBaseLevel } from "../base/calculateBaseLevel.js";

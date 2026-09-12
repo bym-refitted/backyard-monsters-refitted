@@ -1,16 +1,30 @@
-import { User } from "../../models/user.model.js";
-import { Save } from "../../models/save.model.js";
+import { User } from "../../database/models/user.model.js";
+import { Save } from "../../database/models/save.model.js";
 import type { NeighbourData } from "../../types/NeighbourData.js";
+
+export const NEIGHBOUR_SEARCH_SAVE_FIELDS = [
+  "userid", 
+  "baseid", 
+  "points", 
+  "basevalue", 
+  "lastupdateAt"
+] as const;
+
+export const NEIGHBOUR_SEARCH_USER_FIELDS = ["userid", "username", "pic_square"] as const;
+
+type NeighbourSave = Pick<Save, "userid" | "baseid" | "lastupdateAt">;
+
+type NeighbourUser = Pick<User, "username" | "pic_square">;
 
 /**
  * Creates a cached neighbour data object from a save and user.
  *
- * @param {Save} save - The neighbour's save data
- * @param {User} user - The neighbour's user data
+ * @param {NeighbourSave} save - The neighbour's save data
+ * @param {NeighbourUser} user - The neighbour's user data
  * @param {number} level - The calculated level of the neighbour
  * @returns {NeighbourData} NeighbourData object ready for caching
  */
-export const createNeighbourData = (save: Save, user: User, level: number): NeighbourData => {
+export const createNeighbourData = (save: NeighbourSave, user: NeighbourUser, level: number,): NeighbourData => {
   const timestamp = Math.floor(save.lastupdateAt.getTime() / 1000);
 
   return {

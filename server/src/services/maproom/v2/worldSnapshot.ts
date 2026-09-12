@@ -3,8 +3,8 @@ import { brotliCompress, constants, gzip } from "zlib";
 import { promisify } from "util";
 
 import { MapRoomCell, MapRoomVersion } from "../../../enums/MapRoom.js";
-import { User } from "../../../models/user.model.js";
-import { WorldMapCell } from "../../../models/worldmapcell.model.js";
+import { User } from "../../../database/models/user.model.js";
+import { WorldMapCell } from "../../../database/models/worldmapcell.model.js";
 import { postgres } from "../../../server.js";
 
 /**
@@ -17,8 +17,8 @@ import { postgres } from "../../../server.js";
  * alongside brotli and gzip copies and an ETag, so the controller only has to
  * pick an encoding.
  *
- * Rebuilt at most once a minute per world, so cost stays at one pair of queries
- * per world per minute however many consumers are polling.
+ * Rebuilt at most once every five minutes per world, so cost stays at one pair of queries
+ * per world per interval however many consumers are polling.
  */
 
 export interface WorldSnapshot {
@@ -76,7 +76,10 @@ interface OwnerRow {
 const compressBrotli = promisify(brotliCompress);
 const compressGzip = promisify(gzip);
 
-const SNAPSHOT_TTL_MS = 60000;
+const SNAPSHOT_TTL_MS = 300000;
+
+export const SNAPSHOT_MAX_AGE_SECONDS = SNAPSHOT_TTL_MS / 1000;
+
 const snapshotCache = new Map<string, CachedSnapshot>();
 
 /**

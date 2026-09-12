@@ -1,6 +1,6 @@
 import { MapRoom2, Terrain } from "../../../enums/MapRoom.js";
-import { World } from "../../../models/world.model.js";
-import { WorldMapCell } from "../../../models/worldmapcell.model.js";
+import { World } from "../../../database/models/world.model.js";
+import { WorldMapCell } from "../../../database/models/worldmapcell.model.js";
 import { EntityManager, PostgreSqlDriver } from "@mikro-orm/postgresql";
 import { logger } from "../../../utils/logger.js";
 import { generateNoise, getTerrainHeight } from "./generateMap.js";

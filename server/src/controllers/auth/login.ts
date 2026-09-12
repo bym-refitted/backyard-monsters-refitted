@@ -1,7 +1,7 @@
 import bcrypt from "bcrypt";
-import JWT from "jsonwebtoken";
+import JWT, { type SignOptions } from "jsonwebtoken";
 
-import { User } from "../../models/user.model.js";
+import { User } from "../../database/models/user.model.js";
 import { postgres, redis } from "../../server.js";
 import { FilterFrontendKeys } from "../../utils/FrontendKey.js";
 import type { KoaController } from "../../utils/KoaController.js";
@@ -16,8 +16,9 @@ import { type JwtClaims, verifyJwtToken } from "../../middleware/auth.js";
 import { Status } from "../../enums/StatusCodes.js";
 import { UserLoginSchema } from "../../schemas/AuthSchemas.js";
 import { Env } from "../../enums/Env.js";
-import type { StringValue } from "ms";
 import { fetchDiscordAvatar } from "../../services/discord/fetchDiscordAvatar.js";
+
+type SessionLifetime = NonNullable<SignOptions["expiresIn"]>;
 
 /**
  * Authenticates a user using a JWT token.
@@ -100,7 +101,7 @@ export const login: KoaController = async (ctx) => {
     } satisfies JwtClaims,
     process.env.SECRET_KEY!,
     {
-      expiresIn: sessionLifeTime as StringValue,
+      expiresIn: sessionLifeTime as SessionLifetime,
     }
   );
 

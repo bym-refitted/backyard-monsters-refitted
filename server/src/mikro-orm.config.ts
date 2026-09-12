@@ -2,24 +2,25 @@ import path from "path";
 
 import { defineConfig } from "@mikro-orm/postgresql";
 import { Migrator } from "@mikro-orm/migrations";
-import { Save } from "./models/save.model.js";
-import { User } from "./models/user.model.js";
-import { WorldMapCell } from "./models/worldmapcell.model.js";
-import { World } from "./models/world.model.js";
+import { Save } from "./database/models/save.model.js";
+import { User } from "./database/models/user.model.js";
+import { WorldMapCell } from "./database/models/worldmapcell.model.js";
+import { World } from "./database/models/world.model.js";
 import { Env } from "./enums/Env.js";
-import { Report } from "./models/report.model.js";
-import { InfernoMaproom } from "./models/infernomaproom.model.js";
-import { Maproom } from "./models/maproom.model.js";
-import { Message } from "./models/message.model.js";
-import { Thread } from "./models/thread.model.js";
-import { AttackLogs } from "./models/attacklogs.model.js";
-import { Truce } from "./models/truce.model.js";
-import { Alliance } from "./models/alliance.model.js";
-import { AllianceInvite } from "./models/allianceinvite.model.js";
-import { AllianceMessage } from "./models/alliancemessage.model.js";
-import { AlliancePowerup } from "./models/alliancepowerup.model.js";
-import { AllianceRelationship } from "./models/alliancerelationship.model.js";
-import { AllianceStats } from "./models/alliancestats.view.js";
+import { Report } from "./database/models/report.model.js";
+import { InfernoMaproom } from "./database/models/infernomaproom.model.js";
+import { Maproom } from "./database/models/maproom.model.js";
+import { Message } from "./database/models/message.model.js";
+import { Thread } from "./database/models/thread.model.js";
+import { AttackLogs } from "./database/models/attacklogs.model.js";
+import { Truce } from "./database/models/truce.model.js";
+import { JobRun } from "./database/models/jobrun.model.js";
+import { Alliance } from "./database/models/alliance.model.js";
+import { AllianceInvite } from "./database/models/allianceinvite.model.js";
+import { AllianceMessage } from "./database/models/alliancemessage.model.js";
+import { AlliancePowerup } from "./database/models/alliancepowerup.model.js";
+import { AllianceRelationship } from "./database/models/alliancerelationship.model.js";
+import { AllianceStats } from "./database/models/alliancestats.view.js";
 
 /**
  * List of entities to be used with MikroORM.
@@ -37,6 +38,7 @@ const entities = [
   Thread,
   AttackLogs,
   Truce,
+  JobRun,
   Alliance,
   AllianceInvite,
   AllianceMessage,

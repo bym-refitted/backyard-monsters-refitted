@@ -13,10 +13,12 @@ import { ErrorInterceptor } from "./middleware/clientSafeError.js";
 import { processLanguagesFile } from "./middleware/processLanguageFile.js";
 import { logMissingAssets, morganLogging } from "./middleware/morganLogging.js";
 import { corsCacheControl } from "./middleware/corsCacheControlSetup.js";
+import { isStaticPath } from "./utils/staticPaths.js";
 import { Env } from "./enums/Env.js";
 import { initAnticheat } from "./scripts/anticheat/anticheat.js";
 import { initialize as initVersionManifest } from "./config/VersionManifestConfig.js";
 import { startChatServer } from "./chat/chatServer.js";
+import { exitOnRedisReconnect } from "./utils/redisReconnectGuard.js";
 
 export const app = new Koa();
 app.proxy = true;
@@ -33,7 +35,8 @@ export const postgres = {} as {
 
 export const redis = new RedisClient(process.env.REDIS_URL);
 
-redis.onconnect = () => logger.info(`Connected to Redis server`);
+exitOnRedisReconnect(redis, "Redis", () => logger.info(`Connected to Redis server`));
+
 redis.onclose = (err) => logger.error(`Redis disconnected: ${err.message}`);
 
 // Initialize MikroORM, Redis, and start the Koa server
@@ -56,13 +59,7 @@ redis.onclose = (err) => logger.error(`Redis disconnected: ${err.message}`);
 
   app.use(corsCacheControl);
 
-  app.use(
-    bodyParser({
-      enableTypes: ["json", "form"],
-      jsonLimit: "50mb",
-      formLimit: "50mb",
-    }),
-  );
+  app.use(bodyParser({ enableTypes: ["json", "form"], jsonLimit: "8mb", formLimit: "8mb"}));
 
   app.use((_, next: Next) => RequestContext.create(postgres.orm.em, next));
 
@@ -72,7 +69,9 @@ redis.onclose = (err) => logger.error(`Redis disconnected: ${err.message}`);
 
   // Serve static files
   app.use(processLanguagesFile);
-  app.use(serve("public/"));
+
+  const staticFiles = serve("public/");
+  app.use((ctx, next) => isStaticPath(ctx.path) ? staticFiles(ctx, next) : next());
 
   process.on("unhandledRejection", (reason, promise) => {
     logger.error(`Unhandled Rejection at: ${promise} reason: ${reason}`);
@@ -93,4 +92,7 @@ ${ascii_node}
 Server running on: ${BASE_URL}:${PORT}
     `);
   });
-})().catch((e) => logger.error(`Startup failed: ${e}`));
+})().catch((e) => {
+  logger.error(`Startup failed: ${e}`);
+  process.exit(1);
+});

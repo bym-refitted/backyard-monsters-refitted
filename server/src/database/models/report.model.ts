@@ -1,7 +1,7 @@
 import { Entity, PrimaryKey, Property } from "@mikro-orm/decorators/es";
 
-import { FrontendKey } from "../utils/FrontendKey.js";
-import type { JsonObject } from "../types/JsonObject.js";
+import { FrontendKey } from "../../utils/FrontendKey.js";
+import type { JsonObject } from "../../types/JsonObject.js";
 
 @Entity({ tableName: "report" })
 export class Report {

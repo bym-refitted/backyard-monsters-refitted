@@ -1,6 +1,7 @@
 import type { Context } from "koa";
-import type { User } from "../../../../models/user.model.js";
-import type { WorldMapCell } from "../../../../models/worldmapcell.model.js";
+import type { Loaded } from "@mikro-orm/core";
+import type { User } from "../../../../database/models/user.model.js";
+import type { WorldMapCell } from "../../../../database/models/worldmapcell.model.js";
 import type { CellData } from "../../../../types/CellData.js";
 import { EnumBaseRelationship } from "../../../../enums/EnumBaseRelationship.js";
 import { cellRelationship } from "../../../../services/alliance/relationships.js";
@@ -10,6 +11,16 @@ import { EnumYardType } from "../../../../enums/EnumYardType.js";
 import { getCurrentDateTime } from "../../../../utils/getCurrentDateTime.js";
 import { isAttackActive } from "../../../../services/base/isAttackActive.js";
 
+export type PlayerCellFields = "*" | "save.level" | "save.protected" | "save.damage" | "save.attackid" | "save.attacks";
+
+export type PlayerCellOwner = Loaded<
+  User,
+  "save",
+  "userid" | "username" | "pic_square" | "alliance_id" | "save.points" | "save.basevalue"
+>;
+
+type Cell = Loaded<WorldMapCell, "save", PlayerCellFields>;
+
 /**
  * Handles the player's cell data on the world map for Map Room v3.
  *
@@ -18,10 +29,10 @@ import { isAttackActive } from "../../../../services/base/isAttackActive.js";
  * Data for a player cell comes from both the world map cell and the player's save data.
  *
  * @param {Context} ctx - The Koa context object.
- * @param {WorldMapCell} cell - The world map cell object.
- * @param {Map<number, User>} cellOwners - Pre-loaded map of user IDs to User entities.
+ * @param {Cell} cell - The world map cell, with the save fields this handler reads.
+ * @param {Map<number, PlayerCellOwner>} cellOwners - Pre-loaded map of user IDs to cell owners.
  */
-export const playerCell = async (ctx: Context, cell: WorldMapCell, cellOwners: Map<number, User>): Promise<CellData> => {
+export const playerCell = async (ctx: Context, cell: Cell, cellOwners: Map<number, PlayerCellOwner>): Promise<CellData> => {
   const [cellX, cellY] = [cell.x, cell.y];
 
   const currentUser: User = ctx.authUser;

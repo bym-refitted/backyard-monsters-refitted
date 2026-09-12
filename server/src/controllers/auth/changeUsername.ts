@@ -1,5 +1,5 @@
 import type { KoaController } from "../../utils/KoaController.js";
-import { User } from "../../models/user.model.js";
+import { User } from "../../database/models/user.model.js";
 import { Status } from "../../enums/StatusCodes.js";
 import { ChangeUsernameSchema } from "../../schemas/AuthSchemas.js";
 import { usernameCooldownErr } from "../../errors/errors.js";

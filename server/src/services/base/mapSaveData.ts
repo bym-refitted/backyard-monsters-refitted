@@ -1,9 +1,11 @@
 import { BaseType } from "../../enums/Base.js";
-import { Save } from "../../models/save.model.js";
-import { User } from "../../models/user.model.js";
+import { Save } from "../../database/models/save.model.js";
+import { User } from "../../database/models/user.model.js";
 import { FilterFrontendKeys } from "../../utils/FrontendKey.js";
 import { getOutpostOwnerSave } from "./getOutpostOwnerSave.js";
 import { isShinyLocked, visibleCredits } from "../user/shinyLock.js";
+
+type OwnerSave = Pick<Save, "resources">;
 
 /**
  * State that belongs to the player rather than to any one of their yards. Served from
@@ -56,10 +58,10 @@ export const mapSaveData = async (save: Save, user: User): Promise<Partial<Save>
  *
  * @param {Save} save - The save being sent
  * @param {User} user - The requesting user, who may or may not own it
- * @param {Save | null} ownerSave - The owner's main save when `save` is an outpost, null otherwise
+ * @param {OwnerSave | null} ownerSave - The owner's main save when `save` is an outpost, null otherwise
  * @returns {Partial<Save>} The frontend-visible fields
  */
-export const buildSaveData = (save: Save, user: User, ownerSave: Save | null): Partial<Save> => {
+export const buildSaveData = (save: Save, user: User, ownerSave: OwnerSave | null): Partial<Save> => {
   const filteredSave = FilterFrontendKeys(save);
 
   const isOwner = save.type !== BaseType.INFERNO && save.userid === user.userid;

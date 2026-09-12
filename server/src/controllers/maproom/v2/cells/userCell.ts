@@ -1,10 +1,28 @@
 import type { Context } from "koa";
-import type { User } from "../../../../models/user.model.js";
-import type { WorldMapCell } from "../../../../models/worldmapcell.model.js";
+import type { Loaded } from "@mikro-orm/core";
+import type { User } from "../../../../database/models/user.model.js";
+import type { WorldMapCell } from "../../../../database/models/worldmapcell.model.js";
 import { calculateBaseLevel } from "../../../../services/base/calculateBaseLevel.js";
 import { getCurrentDateTime } from "../../../../utils/getCurrentDateTime.js";
 import { MapRoomCell } from "../../../../enums/MapRoom.js";
 import { isAttackActive } from "../../../../services/base/isAttackActive.js";
+
+export type UserCellFields =
+  | "*"
+  | "save.locked"
+  | "save.protected"
+  | "save.damage"
+  | "save.empirevalue"
+  | "save.flinger"
+  | "save.catapult"
+  | "save.resources"
+  | "save.monsters"
+  | "save.attackid"
+  | "save.attacks";
+
+export type UserCellOwner = Loaded<User, "save", "userid" | "username" | "pic_square" | "alliance_id" | "save.points" | "save.basevalue">;
+
+type Cell = Loaded<WorldMapCell, "save", UserCellFields>;
 
 /**
  * Handles the user's homecell & outpost data on the world map.
@@ -14,10 +32,10 @@ import { isAttackActive } from "../../../../services/base/isAttackActive.js";
  * Data for a homeCell comes from both the world map cell and the user's save data.
  *
  * @param {Context} ctx - The Koa context object.
- * @param {WorldMapCell} cell - The world map cell object.
- * @param {Map<number, User>} cellOwners - Pre-loaded map of user IDs to User entities.
+ * @param {Cell} cell - The world map cell, with the save fields this handler reads.
+ * @param {Map<number, UserCellOwner>} cellOwners - Pre-loaded map of user IDs to cell owners.
  */
-export const userCell = async (ctx: Context, cell: WorldMapCell, cellOwners: Map<number, User>) => {
+export const userCell = async (ctx: Context, cell: Cell, cellOwners: Map<number, UserCellOwner>) => {
   const currentUser: User = ctx.authUser;
   const { lastSeen, truces } = ctx.state;
 

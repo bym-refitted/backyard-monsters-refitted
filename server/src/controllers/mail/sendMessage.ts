@@ -1,12 +1,12 @@
 import { Status } from "../../enums/StatusCodes.js";
 import { TruceStatus } from "../../enums/TruceStatus.js";
 import { MessageType } from "../../enums/MessageType.js";
-import { User } from "../../models/user.model.js";
+import { User } from "../../database/models/user.model.js";
 import type { KoaController } from "../../utils/KoaController.js";
 import { devConfig } from "../../config/GameConfig.js";
 import { SendMessageSchema } from "./zod/SendMessageSchema.js";
 import { postgres } from "../../server.js";
-import { Message } from "../../models/message.model.js";
+import { Message } from "../../database/models/message.model.js";
 import { getCurrentDateTime } from "../../utils/getCurrentDateTime.js";
 import { findOrCreateThread } from "../../services/mail/findOrCreateThread.js";
 import { countUnreadMessage } from "../../services/mail/countUnreadMessage.js";
@@ -14,7 +14,6 @@ import { handleTruceRequest } from "../../services/mail/handleTruceRequest.js";
 import { handleTruceResponse } from "../../services/mail/handleTruceResponse.js";
 import { mailboxErr } from "../../errors/errors.js";
 import { logger } from "../../utils/logger.js";
-import type { MessageData } from "../../types/EntityData.js";
 
 /**
  * Controller to send message
@@ -59,7 +58,7 @@ export const sendMessage: KoaController = async (ctx) => {
     const recipient = await postgres.em.findOne(
       User,
       { userid: messageTargetId },
-      { populate: ["save"] }
+      { populate: ["save"], fields: ["blockedUsers", "save.unreadmessages"] }
     );
 
     if (!recipient || !recipient.save) {
@@ -99,7 +98,7 @@ export const sendMessage: KoaController = async (ctx) => {
       subject: filteredSubject,
       message: filteredMessage,
       updatetime: getCurrentDateTime(),
-    } as unknown as MessageData);
+    });
 
     thread.messagecount++;
     thread.lastMessage = newMessage;

@@ -1,21 +1,26 @@
+import type { Loaded } from "@mikro-orm/core";
 import { STRUCTURE_RANGE } from "../../../../config/MapRoom3Config.js";
 import { EnumBaseRelationship } from "../../../../enums/EnumBaseRelationship.js";
 import { Tribes } from "../../../../enums/Tribes.js";
-import { WorldMapCell } from "../../../../models/worldmapcell.model.js";
+import { WorldMapCell } from "../../../../database/models/worldmapcell.model.js";
 import { generateBaseId } from "../../../../utils/generateBaseId.js";
 import { calculateStructureLevel } from "../../../../services/maproom/v3/calculateStructureLevel.js";
 import type { CellData } from "../../../../types/CellData.js";
 import { MapRoomVersion } from "../../../../enums/MapRoom.js";
 
+export type WildMonsterCellFields = "*" | "save.damage" | "save.destroyed";
+
+type Cell = Loaded<WorldMapCell, "save", WildMonsterCellFields>;
+
 /**
  * Formats a wild monster cell (stronghold, resource outpost, or defender) for Map Room 3.
  * Mirrors the MR2 wildMonsterCell pattern — deterministic tribe, level, and base ID from coordinates.
  *
- * @param {WorldMapCell} cell - WorldMapCell with x, y, base_type
+ * @param {Cell} cell - WorldMapCell with x, y, base_type
  * @param {string} worldId - The world UUID for base ID generation
  * @returns Formatted wild monster cell data
  */
-export const wildMonsterCell = async (cell: WorldMapCell, worldId: string): Promise<CellData> => {
+export const wildMonsterCell = async (cell: Cell, worldId: string): Promise<CellData> => {
   const [cellX, cellY] = [cell.x, cell.y];
 
   const tribeIndex = (cellX + cellY) % Tribes.length;

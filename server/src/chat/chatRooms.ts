@@ -1,6 +1,6 @@
 import { Filter as BadWords } from "bad-words";
 
-import { User } from "../models/user.model.js";
+import { User } from "../database/models/user.model.js";
 import { postgres } from "../server.js";
 import {
   addAllianceMessage,

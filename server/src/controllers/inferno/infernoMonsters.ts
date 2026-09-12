@@ -1,10 +1,10 @@
 import z from "zod";
 import { Status } from "../../enums/StatusCodes.js";
-import { User } from "../../models/user.model.js";
+import { User } from "../../database/models/user.model.js";
 import { postgres } from "../../server.js";
 import type { KoaController } from "../../utils/KoaController.js";
 import { BaseType } from "../../enums/Base.js";
-import { Save } from "../../models/save.model.js";
+import { Save } from "../../database/models/save.model.js";
 
 const InfernoMonstersSchema = z.object({
   type: z.string(),
@@ -15,10 +15,11 @@ export const infernoMonsters: KoaController = async (ctx) => {
   const user: User = ctx.authUser;
   let { type, imonsters } = InfernoMonstersSchema.parse(ctx.request.body);
 
-  let infernoSave = await postgres.em.findOne(Save, {
-    userid: user.userid,
-    type: BaseType.INFERNO,
-  });
+  let infernoSave = await postgres.em.findOne(
+    Save,
+    { userid: user.userid, type: BaseType.INFERNO },
+    { fields: ["monsters"] },
+  );
 
   if (!infernoSave) throw new Error("Inferno save not found");
 

@@ -1,6 +1,5 @@
-import { Save } from "../../../models/save.model.js";
+import { Save } from "../../../database/models/save.model.js";
 import { postgres } from "../../../server.js";
-import type { RequiredEntityData } from "@mikro-orm/core";
 import { EnumYardType } from "../../../enums/EnumYardType.js";
 import {
   STRUCTURE_SAVES,
@@ -12,7 +11,7 @@ import { calculateStructureLevel } from "./calculateStructureLevel.js";
 import { getDefenderCoords } from "./getDefenderCoords.js";
 import { getDefenderLevels } from "./getDefenderLevels.js";
 import { getHexNeighborOffsets } from "./getHexNeighborOffsets.js";
-import { WorldMapCell } from "../../../models/worldmapcell.model.js";
+import { WorldMapCell } from "../../../database/models/worldmapcell.model.js";
 import { MapRoomVersion } from "../../../enums/MapRoom.js";
 
 /**
@@ -75,7 +74,7 @@ export const tribeSaveV3 = async (baseid: string, worldid: string): Promise<Save
         level,
         wmid: EnumYardType.FORTIFICATION,
         worldid,
-      } as unknown as RequiredEntityData<Save>);
+      }, { partial: true });
     }
   }
 
@@ -100,7 +99,7 @@ export const tribeSaveV3 = async (baseid: string, worldid: string): Promise<Save
       level,
       wmid,
       worldid,
-    } as unknown as RequiredEntityData<Save>);
+    }, { partial: true });
   }
 
   if (structureType !== undefined) {
@@ -119,7 +118,7 @@ export const tribeSaveV3 = async (baseid: string, worldid: string): Promise<Save
       level,
       wmid: structureType,
       worldid,
-    } as unknown as RequiredEntityData<Save>);
+    }, { partial: true });
   }
 
   return null;

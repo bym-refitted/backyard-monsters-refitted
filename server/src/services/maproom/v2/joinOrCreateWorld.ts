@@ -1,14 +1,13 @@
-import { WorldMapCell } from "../../../models/worldmapcell.model.js";
-import { User } from "../../../models/user.model.js";
-import { Save } from "../../../models/save.model.js";
+import { WorldMapCell } from "../../../database/models/worldmapcell.model.js";
+import { User } from "../../../database/models/user.model.js";
+import { Save } from "../../../database/models/save.model.js";
 import { logger } from "../../../utils/logger.js";
-import { World } from "../../../models/world.model.js";
+import { World } from "../../../database/models/world.model.js";
 import { MapRoom2, MapRoomCell, MapRoomVersion } from "../../../enums/MapRoom.js";
 import { EntityManager, PostgreSqlDriver } from "@mikro-orm/postgresql";
 import { postgres } from "../../../server.js";
 import { invalidateWorldsCache } from "../knownWorlds.js";
 import { findFreeCell } from "./findFreeCell.js";
-import type { WorldData } from "../../../types/EntityData.js";
 
 /**
  * Assigns a user to a world by either joining an existing one with available space
@@ -43,7 +42,7 @@ export const joinOrCreateWorld = async (
     world = shuffledWorlds[0];
     logger.info(`User assigned to existing world: ${world.name}`);
   } else {
-    world = em.create(World, {} as unknown as WorldData);
+    world = em.create(World, {});
     world.name = "New World";
     world.map_version = MapRoomVersion.V2;
 

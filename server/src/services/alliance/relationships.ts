@@ -1,8 +1,8 @@
 import { AllianceMessageType, AllianceStance } from "../../enums/Alliance.js";
 import { EnumBaseRelationship } from "../../enums/EnumBaseRelationship.js";
-import { Alliance } from "../../models/alliance.model.js";
-import { AllianceRelationship } from "../../models/alliancerelationship.model.js";
-import { User } from "../../models/user.model.js";
+import { Alliance } from "../../database/models/alliance.model.js";
+import { AllianceRelationship } from "../../database/models/alliancerelationship.model.js";
+import { User } from "../../database/models/user.model.js";
 import { postgres } from "../../server.js";
 import { announceShout } from "./allianceMessages.js";
 

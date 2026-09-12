@@ -2,8 +2,8 @@ import { Status } from "../../enums/StatusCodes.js";
 import type { KoaController } from "../../utils/KoaController.js";
 import { ReportMessageSchema } from "./zod/ReportMessageSchema.js";
 import { postgres } from "../../server.js";
-import { Thread } from "../../models/thread.model.js";
-import { User } from "../../models/user.model.js";
+import { Thread } from "../../database/models/thread.model.js";
+import { User } from "../../database/models/user.model.js";
 import { mailboxErr } from "../../errors/errors.js";
 
 /**

@@ -1,10 +1,15 @@
-import { WorldMapCell } from "../../../../models/worldmapcell.model.js";
+import type { Loaded } from "@mikro-orm/core";
+import { WorldMapCell } from "../../../../database/models/worldmapcell.model.js";
 import { Tribes } from "../../../../enums/Tribes.js";
 import { calculateTribeLevel } from "../../../../services/maproom/v2/calculateTribeLevel.js";
 import { MapRoomCell } from "../../../../enums/MapRoom.js";
 import { generateBaseId } from "../../../../utils/generateBaseId.js";
 
-export const wildMonsterCell = async (cell: WorldMapCell, worldId: string) => {
+export type WildMonsterCellFields = "*" | "save.damage" | "save.destroyed";
+
+type Cell = Loaded<WorldMapCell, "save", WildMonsterCellFields>;
+
+export const wildMonsterCell = async (cell: Cell, worldId: string) => {
   const [cellX, cellY] = [cell.x, cell.y];
 
   const tribeIndex = (cellX + cellY) % Tribes.length;

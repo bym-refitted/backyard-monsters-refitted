@@ -1,5 +1,5 @@
 import { Entity, Index, PrimaryKey, Property } from "@mikro-orm/decorators/es";
-import { TruceStatus } from "../enums/TruceStatus.js";
+import { TruceStatus } from "../../enums/TruceStatus.js";
 
 @Index({ properties: ["initiator_userid", "status"] })
 @Index({ properties: ["recipient_userid", "status"] })

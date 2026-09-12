@@ -1,5 +1,5 @@
 import { TruceStatus } from "../../enums/TruceStatus.js";
-import { Truce } from "../../models/truce.model.js";
+import { Truce } from "../../database/models/truce.model.js";
 import { postgres } from "../../server.js";
 import { getCurrentDateTime } from "../../utils/getCurrentDateTime.js";
 

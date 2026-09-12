@@ -1,7 +1,7 @@
 import type { Loaded } from "@mikro-orm/core";
-import { Save } from "../../../models/save.model.js";
-import { User } from "../../../models/user.model.js";
-import { WorldMapCell } from "../../../models/worldmapcell.model.js";
+import { Save } from "../../../database/models/save.model.js";
+import { User } from "../../../database/models/user.model.js";
+import { WorldMapCell } from "../../../database/models/worldmapcell.model.js";
 import { postgres } from "../../../server.js";
 import { logReport } from "../../base/reportManager.js";
 import { MapRoom2, MapRoomVersion } from "../../../enums/MapRoom.js";
@@ -126,9 +126,11 @@ const validateRangeV2 = async (user: User, save: Save, options: RangeOptions) =>
     throw new Error("No outposts near attack cell.");
 
   // Query the database for the in-range outposts
-  const outpostSaves = await postgres.em.find(Save, {
-    baseid: { $in: outpostsInRange.map((outpost) => outpost.baseid) },
-  });
+  const outpostSaves = await postgres.em.find(
+    Save,
+    { baseid: { $in: outpostsInRange.map((outpost) => outpost.baseid) } },
+    { fields: ["flinger"] },
+  );
 
   for (const outpostSave of outpostSaves) {
     const outpostRange = getOutpostRange(outpostSave.flinger);

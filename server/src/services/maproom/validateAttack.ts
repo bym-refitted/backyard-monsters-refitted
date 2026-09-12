@@ -1,4 +1,4 @@
-import { User } from "../../models/user.model.js";
+import { User } from "../../database/models/user.model.js";
 import { loadFailureErr } from "../../errors/errors.js";
 import { logAttackViolation } from "../base/reportManager.js";
 import { monsterStats, mr3MonsterStats } from "../../game-data/stats/monsterStats.js";

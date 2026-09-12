@@ -1,9 +1,9 @@
 import type { TypeOf } from "zod";
 import { SaveKeys } from "../../../enums/SaveKeys.js";
 import { saveFailureErr } from "../../../errors/errors.js";
-import { Maproom } from "../../../models/maproom.model.js";
-import { Save } from "../../../models/save.model.js";
-import { User } from "../../../models/user.model.js";
+import { Maproom } from "../../../database/models/maproom.model.js";
+import { Save } from "../../../database/models/save.model.js";
+import { User } from "../../../database/models/user.model.js";
 import { postgres } from "../../../server.js";
 import { getCurrentDateTime } from "../../../utils/getCurrentDateTime.js";
 import { BaseSaveSchema } from "../../../schemas/BaseSaveSchema.js";

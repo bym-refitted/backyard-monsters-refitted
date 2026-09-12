@@ -1,6 +1,6 @@
 import { TruceStatus } from "../../enums/TruceStatus.js";
-import { Truce } from "../../models/truce.model.js";
-import type { Thread } from "../../models/thread.model.js";
+import { Truce } from "../../database/models/truce.model.js";
+import type { Thread } from "../../database/models/thread.model.js";
 import { postgres } from "../../server.js";
 import { getCurrentDateTime } from "../../utils/getCurrentDateTime.js";
 import { mailboxErr, permissionErr } from "../../errors/errors.js";

@@ -1,10 +1,11 @@
-import { User } from "../../../models/user.model.js";
+import { User } from "../../../database/models/user.model.js";
 import { Status } from "../../../enums/StatusCodes.js";
 import { CellSchema } from "../../../schemas/CellSchema.js";
 import { postgres } from "../../../server.js";
 import { MapRoom3, MapRoomVersion } from "../../../enums/MapRoom.js";
-import { WorldMapCell } from "../../../models/worldmapcell.model.js";
+import { WorldMapCell } from "../../../database/models/worldmapcell.model.js";
 import { getGeneratedCells, cellKey } from "../../../services/maproom/v3/generateCells.js";
+import type { MapCell } from "../../../services/maproom/v3/createCellData.js";
 import { EnumYardType } from "../../../enums/EnumYardType.js";
 import { createCellData } from "../../../services/maproom/v3/createCellData.js";
 import { getDefenderCoords, isDefensiveStructure } from "../../../services/maproom/v3/getDefenderCoords.js";
@@ -162,14 +163,11 @@ export const getMapRoomCells: KoaController = async (ctx) => {
     );
 
     // Player-owned cells take priority over tribe outposts at the same coordinate.
-    const dbCellsByCoord = new Map<string, WorldMapCell>();
+    const dbCellsByCoord = new Map<string, (typeof dbCells)[number]>();
 
     for (const cell of dbCells) {
       const key = `${cell.x},${cell.y}`;
-      // Cast required: field projection (CELL_SAVE_FIELDS) narrows the MikroORM Loaded
-      // type to a partial Save, which doesn't structurally satisfy WorldMapCell.save.
-      // At runtime the entity is a full WorldMapCell — all projected fields are accessed below.
-      if (!dbCellsByCoord.has(key) || cell.uid > 0) dbCellsByCoord.set(key, cell as unknown as WorldMapCell);
+      if (!dbCellsByCoord.has(key) || cell.uid > 0) dbCellsByCoord.set(key, cell);
     }
 
     let hasExpiredCells = false;
@@ -225,9 +223,7 @@ export const getMapRoomCells: KoaController = async (ctx) => {
       getTruces(user.userid, ownerIds),
     ]);
 
-    const cellOwners = new Map<number, User>(
-      (ownersList as unknown as User[]).map((u) => [u.userid, u]),
-    );
+    const cellOwners = new Map(ownersList.map((u) => [u.userid, u]));
 
     ctx.state.lastSeen = lastSeenMap;
     ctx.state.truces = truces;
@@ -252,7 +248,8 @@ export const getMapRoomCells: KoaController = async (ctx) => {
     for (const [key, { x, y }] of coords) {
       if (cellsToReturn.has(key)) continue;
 
-      let cell: WorldMapCell;
+      let cell: MapCell;
+      
       const dbCell = dbCellsByCoord.get(key);
       const genCell = generateCells.get(cellKey(x, y));
 

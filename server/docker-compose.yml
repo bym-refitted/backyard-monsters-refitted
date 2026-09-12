@@ -31,6 +31,7 @@ services:
   web:
     build: .
     container_name: bymr-api-server
+    restart: unless-stopped
     environment:
       - ENV=${ENV:-local}
       - BASE_URL=${BASE_URL:-http://localhost}
@@ -57,14 +58,17 @@ services:
         - action: sync
           path: ./src
           target: /app/src
+        - action: sync
+          path: ./public
+          target: /app/public
     deploy:
       resources:
         limits:
+          memory: 2G
+          cpus: '4.0'
+        reservations:
           memory: 512M
           cpus: '0.5'
-        reservations:
-          memory: 256M
-          cpus: '0.25'
     depends_on:
       redis:
         condition: service_healthy
@@ -127,7 +131,7 @@ services:
 
   # Redis
   redis:
-    image: redis:8.4.0
+    image: redis:8.10.1
     container_name: bymr-redis-cache
     ports:
       - ${REDIS_PORT:-6379}:6379

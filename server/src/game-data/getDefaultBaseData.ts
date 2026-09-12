@@ -1,5 +1,5 @@
 import { devConfig } from "../config/GameConfig.js";
-import { User } from "../models/user.model.js";
+import { User } from "../database/models/user.model.js";
 import { getCurrentDateTime } from "../utils/getCurrentDateTime.js";
 import { Reward } from "../enums/Rewards.js";
 import { BaseType } from "../enums/Base.js";
@@ -26,7 +26,6 @@ export const getDefaultBaseData = (user: User, baseType: BaseType) => {
   return {
     saveuserid: user.userid,
     userid: user.userid,
-    cellid: -1,
     name: user.username,
     credits: devConfig.shiny || 1000,
     createtime: currentTime,

@@ -1,13 +1,12 @@
 import bcrypt from "bcrypt";
 import type { KoaController } from "../../utils/KoaController.js";
 import { postgres } from "../../server.js";
-import { User } from "../../models/user.model.js";
+import { User } from "../../database/models/user.model.js";
 import { FilterFrontendKeys } from "../../utils/FrontendKey.js";
 import { emailUniqueErr, usernameUniqueErr } from "../../errors/errors.js";
 import { logger } from "../../utils/logger.js";
 import { Status } from "../../enums/StatusCodes.js";
 import { UserRegistrationSchema } from "../../schemas/AuthSchemas.js";
-import type { UserData } from "../../types/EntityData.js";
 import { BYMR_CDN } from "../../services/discord/fetchDiscordAvatar.js";
 
 /**
@@ -48,7 +47,7 @@ export const register: KoaController = async (ctx) => {
     ...registeredUser,
     pic_square: `${BYMR_CDN}/assets/bym-refitted-assets/placeholder.jpg`,
     password: hash,
-  } as unknown as UserData);
+  });
 
   postgres.em.persist(user);
   await postgres.em.flush();

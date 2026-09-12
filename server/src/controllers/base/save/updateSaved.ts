@@ -4,8 +4,8 @@ import { getFlags } from "../../../game-data/flags.js";
 import { BaseMode, BaseType } from "../../../enums/Base.js";
 import { Status } from "../../../enums/StatusCodes.js";
 import { saveFailureErr } from "../../../errors/errors.js";
-import { Save } from "../../../models/save.model.js";
-import { User } from "../../../models/user.model.js";
+import { Save } from "../../../database/models/save.model.js";
+import { User } from "../../../database/models/user.model.js";
 import { postgres, redis } from "../../../server.js";
 import { getCurrentDateTime } from "../../../utils/getCurrentDateTime.js";
 import type { KoaController } from "../../../utils/KoaController.js";
@@ -64,15 +64,11 @@ export const updateSaved: KoaController = async (ctx) => {
   const isOwner = user.userid === baseSave.userid;
   const isInferno = baseSave.type === BaseType.INFERNO;
 
-  baseSave.savetime = getCurrentDateTime();
-  baseSave.id = baseSave.savetime; // client expects this.
-
-  if (baseid !== BaseMode.DEFAULT && type === BaseMode.BUILD) {
-    postgres.em.persist(baseSave);
-    await postgres.em.flush();
-  }
-
   const filteredSave = await mapSaveData(baseSave, user);
+  const savetime = getCurrentDateTime();
+
+  filteredSave.savetime = savetime;
+  filteredSave.id = savetime;
 
   const flags = getFlags();
   flags.discordOldEnough = Number(ctx.meetsDiscordAgeCheck);

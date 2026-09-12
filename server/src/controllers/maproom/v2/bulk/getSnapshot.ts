@@ -1,7 +1,7 @@
 import { MapRoomVersion } from "../../../../enums/MapRoom.js";
 import { Status } from "../../../../enums/StatusCodes.js";
 import { isKnownWorld } from "../../../../services/maproom/knownWorlds.js";
-import { getWorldSnapshot } from "../../../../services/maproom/v2/worldSnapshot.js";
+import { getWorldSnapshot, SNAPSHOT_MAX_AGE_SECONDS } from "../../../../services/maproom/v2/worldSnapshot.js";
 import type { KoaController } from "../../../../utils/KoaController.js";
 
 /**
@@ -48,7 +48,7 @@ import type { KoaController } from "../../../../utils/KoaController.js";
  *   Vary: Accept-Encoding.
  *
  * Caching
- *   Rebuilt at most once a minute per world and served with a matching max-age
+ *   Rebuilt at most once every five minutes per world and served with a matching max-age
  *   and a strong ETag derived from the payload. Send the ETag back as
  *   If-None-Match to get a 304 with no body while nothing has changed.
  *
@@ -80,7 +80,7 @@ export const getSnapshot: KoaController = async (ctx) => {
 
   const snapshot = await getWorldSnapshot(worldid.toString());
 
-  ctx.set("Cache-Control", "public, max-age=60");
+  ctx.set("Cache-Control", `public, max-age=${SNAPSHOT_MAX_AGE_SECONDS}`);
   ctx.set("Vary", "Accept-Encoding");
   ctx.set("ETag", snapshot.etag);
   ctx.set("Access-Control-Expose-Headers", "ETag");

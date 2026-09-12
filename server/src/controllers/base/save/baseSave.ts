@@ -1,6 +1,6 @@
 import type { KoaController } from "../../../utils/KoaController.js";
-import { Save } from "../../../models/save.model.js";
-import { User } from "../../../models/user.model.js";
+import { Save } from "../../../database/models/save.model.js";
+import { User } from "../../../database/models/user.model.js";
 import { postgres, redis } from "../../../server.js";
 import { buildSaveData, mapSaveData } from "../../../services/base/mapSaveData.js";
 import { getCurrentDateTime } from "../../../utils/getCurrentDateTime.js";
@@ -23,7 +23,7 @@ import { buildingDataHandler } from "./handlers/buildingDataHandler.js";
 import { takeoverCellMR3, type TakeoverData } from "../../../services/maproom/v3/takeoverCellMR3.js";
 import { damageProtection } from "../../../services/maproom/v2/damageProtection.js";
 import { isMR3Structure } from "../../../services/maproom/v3/utils/isMR3Structure.js";
-import { WorldMapCell } from "../../../models/worldmapcell.model.js";
+import { WorldMapCell } from "../../../database/models/worldmapcell.model.js";
 import { MapRoomVersion } from "../../../enums/MapRoom.js";
 import { MR1_TRIBE_IDS } from "../../../game-data/tribes/v1/index.js";
 import { scaledMR1Tribes } from "../../../services/maproom/v1/scaledMR1Tribes.js";

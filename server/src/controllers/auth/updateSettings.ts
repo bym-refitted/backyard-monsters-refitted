@@ -1,5 +1,5 @@
 import type { KoaController } from "../../utils/KoaController.js";
-import { User } from "../../models/user.model.js";
+import { User } from "../../database/models/user.model.js";
 import { postgres } from "../../server.js";
 import { Status } from "../../enums/StatusCodes.js";
 import { UpdateSettingsSchema } from "../../schemas/AuthSchemas.js";

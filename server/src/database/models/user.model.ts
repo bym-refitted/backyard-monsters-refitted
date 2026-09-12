@@ -5,12 +5,12 @@ import {
   OneToOne,
   Index,
 } from "@mikro-orm/decorators/es";
-import { PrimaryKeyProp } from "@mikro-orm/core";
+import { PrimaryKeyProp, type Opt } from "@mikro-orm/core";
 
 import { Save } from "./save.model.js";
-import { FrontendKey } from "../utils/FrontendKey.js";
-import { AllianceRole } from "../enums/Alliance.js";
-import type { JsonObject } from "../types/JsonObject.js";
+import { FrontendKey } from "../../utils/FrontendKey.js";
+import { AllianceRole } from "../../enums/Alliance.js";
+import type { JsonObject } from "../../types/JsonObject.js";
 
 @Entity({ tableName: "user" })
 export class User {
@@ -35,21 +35,20 @@ export class User {
   username_changed_at?: Date | null;
 
   @Property({ type: "boolean", default: false })
-  banned: boolean = false;
+  banned: Opt<boolean> = false;
 
   @Property({ type: "boolean", default: false })
-  shiny_locked: boolean = false;
+  shiny_locked: Opt<boolean> = false;
 
-  @FrontendKey
   @Property({ type: "string", unique: true })
-  @Index()
+  @FrontendKey
   email!: string;
 
   @Property({ type: "string" })
   password!: string;
 
   @Property({ type: "boolean", default: false })
-  discord_verified: boolean = false;
+  discord_verified: Opt<boolean> = false;
 
   @Property({ type: "string", nullable: true })
   @Index()
@@ -63,10 +62,10 @@ export class User {
 
   @Property({ type: "string", default: "" })
   @FrontendKey
-  last_name: string = "";
+  last_name: Opt<string> = "";
 
   @Property({ type: "string", default: "" })
-  resetToken: string = "";
+  resetToken: Opt<string> = "";
 
   @FrontendKey
   @Property({ type: "string", nullable: true })
@@ -74,7 +73,7 @@ export class User {
 
   @FrontendKey
   @Property({ type: "number", default: 0 })
-  timeplayed: number = 0;
+  timeplayed: Opt<number> = 0;
 
   @FrontendKey
   @Property({ columnType: "jsonb", nullable: true })
@@ -82,31 +81,30 @@ export class User {
 
   @FrontendKey
   @Property({ type: "number", default: 0 })
-  friendcount: number = 0;
+  friendcount: Opt<number> = 0;
 
   @FrontendKey
   @Property({ type: "number", default: 0 })
-  sessioncount: number = 0;
+  sessioncount: Opt<number> = 0;
 
   @FrontendKey
   @Property({ type: "number", default: 100 })
-  addtime: number = 100;
+  addtime: Opt<number> = 100;
 
   @FrontendKey
   @Property({ columnType: "jsonb", nullable: true })
   bookmarks?: JsonObject | null = {};
 
-  @Index({ name: "idx_user_blocked_users", type: "gin" })
   @Property({ columnType: "jsonb" })
-  blockedUsers: number[] = [];
+  blockedUsers: Opt<number[]> = [];
 
   @FrontendKey
   @Property({ type: "number", default: 0 })
-  sendgift: number = 0;
+  sendgift: Opt<number> = 0;
 
   @FrontendKey
   @Property({ type: "number", default: 0 })
-  sendinvite: number = 0;
+  sendinvite: Opt<number> = 0;
 
   @Index()
   @Property({ type: "number", nullable: true })

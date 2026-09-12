@@ -1,4 +1,4 @@
-import { User } from "../../models/user.model.js";
+import { User } from "../../database/models/user.model.js";
 
 /**
  * Whether the account has opted into no-shiny mode.

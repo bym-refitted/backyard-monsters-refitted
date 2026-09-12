@@ -1,9 +1,9 @@
 import { UniqueConstraintViolationException } from "@mikro-orm/core";
 
-import { Alliance } from "../../models/alliance.model.js";
-import { User } from "../../models/user.model.js";
-import { Save } from "../../models/save.model.js";
-import { World } from "../../models/world.model.js";
+import { Alliance } from "../../database/models/alliance.model.js";
+import { User } from "../../database/models/user.model.js";
+import { Save } from "../../database/models/save.model.js";
+import { World } from "../../database/models/world.model.js";
 import { postgres } from "../../server.js";
 import { invalidateWorldsCache } from "../maproom/knownWorlds.js";
 import { usernameUniqueErr } from "../../errors/errors.js";
