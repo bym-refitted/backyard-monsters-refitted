@@ -1,6 +1,5 @@
 package
 {
-   import com.bymrefitted.ui.interfaces.IHideActionHandler;
    import com.monsters.display.ImageCache;
    import com.monsters.effects.ResourceBombs;
    import flash.display.Bitmap;
@@ -8,7 +7,7 @@ package
    import flash.display.Sprite;
    import flash.events.MouseEvent;
    
-   public class CATAPULTITEM extends CATAPULTITEM_view implements IHideActionHandler
+   public class CATAPULTITEM extends CATAPULTITEM_view
    {
        
       
