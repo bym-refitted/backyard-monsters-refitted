@@ -13,6 +13,7 @@ import { ErrorInterceptor } from "./middleware/clientSafeError.js";
 import { processLanguagesFile } from "./middleware/processLanguageFile.js";
 import { logMissingAssets, morganLogging } from "./middleware/morganLogging.js";
 import { corsCacheControl } from "./middleware/corsCacheControlSetup.js";
+import { isStaticPath } from "./utils/staticPaths.js";
 import { Env } from "./enums/Env.js";
 import { initAnticheat } from "./scripts/anticheat/anticheat.js";
 import { initialize as initVersionManifest } from "./config/VersionManifestConfig.js";
@@ -74,7 +75,9 @@ redis.onclose = (err) => logger.error(`Redis disconnected: ${err.message}`);
 
   // Serve static files
   app.use(processLanguagesFile);
-  app.use(serve("public/"));
+
+  const staticFiles = serve("public/");
+  app.use((ctx, next) => isStaticPath(ctx.path) ? staticFiles(ctx, next) : next());
 
   process.on("unhandledRejection", (reason, promise) => {
     logger.error(`Unhandled Rejection at: ${promise} reason: ${reason}`);
