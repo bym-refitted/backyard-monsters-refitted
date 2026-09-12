@@ -44,7 +44,6 @@ export class Save {
   @Property({ type: new BigIntType('number'), default: 0 })
   homebaseid!: Opt<number>;
 
-  @Index()
   @FrontendKey
   @Property({ type: 'number' })
   userid!: number;
