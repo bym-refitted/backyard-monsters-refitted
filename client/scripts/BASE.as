@@ -845,6 +845,7 @@ package
                }
                QUESTS._global.bonus_invites = _installsGenerated;
                _lastProcessed = int(serverData.savetime);
+               // Set the global timestamp to the last processed save time. Used to catch up the game logic since the last save.
                GLOBAL.t = _lastProcessed;
                _currentTime = int(serverData.currenttime);
                if (_lastProcessed < _currentTime - 60 * 60 * 24 * 30)

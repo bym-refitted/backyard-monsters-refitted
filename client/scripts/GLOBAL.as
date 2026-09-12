@@ -123,6 +123,9 @@ package
 
       public static var _SCREENHUDLEFT:Point;
 
+      /**
+       * The timestamp of the current tick. Used for synchronizing game logic.
+       */
       public static var t:int;
 
       public static var _baseURL:String;
