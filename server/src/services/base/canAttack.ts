@@ -1,4 +1,3 @@
-import { BaseType } from "../../enums/Base.js";
 import { EnumYardType } from "../../enums/EnumYardType.js";
 import { MapRoomVersion } from "../../enums/MapRoom.js";
 import { calculateBaseLevel } from "./calculateBaseLevel.js";
@@ -14,7 +13,7 @@ import type { Save } from "../../database/models/save.model.js";
  * @returns {boolean} Whether the attack is permitted.
  */
 export const canAttack = (attackerSave: Save, defenderSave: Save, mapversion?: MapRoomVersion): boolean => {
-  const isOwner = defenderSave.type !== BaseType.INFERNO && attackerSave.saveuserid === defenderSave.saveuserid;
+  // const isOwner = defenderSave.type !== BaseType.INFERNO && attackerSave.saveuserid === defenderSave.saveuserid;
   const attackerLevel = calculateBaseLevel(attackerSave.points, attackerSave.basevalue);
 
   /**
