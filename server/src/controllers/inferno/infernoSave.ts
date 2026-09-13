@@ -132,8 +132,12 @@ export const infernoSave: KoaController = async (ctx) => {
       await damageProtection(baseSave);
     }
 
-    baseSave.id = baseSave.savetime;
-    baseSave.savetime = getCurrentDateTime();
+    const keepOwnerSavetime = isAttack && baseSave.type !== BaseType.TRIBE;
+
+    if (!keepOwnerSavetime) {
+      baseSave.id = baseSave.savetime;
+      baseSave.savetime = getCurrentDateTime();
+    }
 
     if (!isAttack) {
       await redis.setex(`last-seen:inferno:${user.userid}`, 120, getCurrentDateTime().toString());
