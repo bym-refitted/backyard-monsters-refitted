@@ -1,6 +1,6 @@
 import { SaveKeys } from "../../../../enums/SaveKeys.js";
 import { Save } from "../../../../database/models/save.model.js";
-import type { BuildingData } from "../../../../types/BuildingData.js";
+import type { BuildingDataMap } from "../../../../types/BuildingData.js";
 
 enum Building {
   TRAP = 24,
@@ -26,7 +26,7 @@ export const buildingDataHandler = (buildingData: Record<string, any> | null, sa
 
   const savedBuildingData = save.buildingdata || {};
 
-  const result: Record<string, BuildingData> = {};
+  const result: BuildingDataMap = {};
 
   for (const [key, building] of Object.entries(savedBuildingData)) {
     const isTrap = building.t === Building.TRAP || building.t === Building.HEAVY_TRAP;
