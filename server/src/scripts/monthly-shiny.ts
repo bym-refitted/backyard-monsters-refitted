@@ -39,7 +39,7 @@ const JOB_NAME = "monthly-shiny";
       return;
     }
 
-    const shinyAmount = 400;
+    const shinyAmount = 500;
 
     // Via toPlainDate because Bun does not implement ZonedDateTime.toPlainYearMonth yet.
     const period = now.toPlainDate().toPlainYearMonth().toString();

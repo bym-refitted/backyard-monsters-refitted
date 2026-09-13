@@ -203,8 +203,15 @@ export const baseSave: KoaController = async (ctx) => {
 
   baseSave.attackid = saveData.over ? 0 : baseSave.attackid;
 
-  baseSave.id = baseSave.savetime;
-  baseSave.savetime = getCurrentDateTime();
+  // Attack saves keep the defender's buildingdata from the DB (buildingDataHandler), so savetime
+  // must stay at the owner's last save: every load replays timers and production from it.
+  // Tribes have no owner replay, and their wild monster expiry reads savetime.
+  const keepOwnerSavetime = isAttack && baseSave.type !== BaseType.TRIBE;
+
+  if (!keepOwnerSavetime) {
+    baseSave.id = baseSave.savetime;
+    baseSave.savetime = getCurrentDateTime();
+  }
 
   if (!isAttack) {
     await redis.setex(`last-seen:main:${user.userid}`, 120, getCurrentDateTime().toString());

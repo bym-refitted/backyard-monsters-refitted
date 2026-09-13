@@ -72,8 +72,6 @@ package
       
       private var configObject:Object;
       
-      private var _pathID:int = 0;
-      
       private var _jumping:Boolean = false;
       
       private var _jumpingUp:Boolean = false;
@@ -184,13 +182,29 @@ package
       {
       }
       
-      public function setWaypoints(param1:Array, param2:BFOUNDATION = null, param3:int = 0) : void
+      /**
+       * PATHING callback for a path request made by Target().
+       *
+       * PATHING.Clear() discards every pending request and calls back with pathingWasCleared set
+       * and no path. No path will follow, so a worker with a task asks again; otherwise it stands
+       * still, never reaches the building, and the task's countdown never starts.
+       *
+       * @param {Array} waypoints - Path to walk, empty when pathing was cleared
+       * @param {BFOUNDATION} targetBuilding - Building the path leads to
+       * @param {Boolean} pathingWasCleared - True when the request was discarded by PATHING.Clear()
+       */
+      public function setWaypoints(waypoints:Array, targetBuilding:BFOUNDATION = null, pathingWasCleared:Boolean = false) : void
       {
-         if(this._pathID == param3)
+         if(pathingWasCleared)
          {
-            this._hasPath = true;
-            this._waypoints = param1;
+            if (this._targetTask)
+            {
+               this.Target(new Point(this._targetTask._mc.x,this._targetTask._mc.y + this._targetTask._mcFootprint.height / 2),this._targetTask);
+            }
+            return;
          }
+         this._hasPath = true;
+         this._waypoints = waypoints;
       }
       
       public function Update(param1:Boolean = false) : void
