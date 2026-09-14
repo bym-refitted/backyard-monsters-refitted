@@ -1,5 +1,6 @@
-package
+package com.bymrefitted.buildings
 {
+   import com.bymrefitted.academy.AcademyService;
    import flash.display.Bitmap;
    import flash.display.BitmapData;
    import flash.display.MovieClip;
@@ -7,7 +8,7 @@ package
    import flash.events.MouseEvent;
    import flash.geom.Rectangle;
    
-   public class BUILDING26 extends BFOUNDATION
+   public class AcademyBuilding extends BFOUNDATION
    {
        
       
@@ -19,7 +20,7 @@ package
       
       public var _animBitmap:BitmapData;
       
-      public function BUILDING26()
+      public function AcademyBuilding()
       {
          super();
          _type = 26;
@@ -34,7 +35,7 @@ package
          {
             _upgrading = null;
          }
-         ACADEMY._monsterID = _upgrading;
+         AcademyService._monsterID = _upgrading;
          super.Click(param1);
       }
       

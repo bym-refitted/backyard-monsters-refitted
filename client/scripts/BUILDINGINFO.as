@@ -1,5 +1,7 @@
 package
 {
+   import com.bymrefitted.academy.AcademyService;
+   import com.bymrefitted.buildings.AcademyBuilding;
    import com.monsters.alliances.tabs.AllianceMessagePopup;
    import com.monsters.managers.InstanceManager;
    import com.monsters.maproom3.popups.MapRoom3ConfirmMigrationPopup;
@@ -558,7 +560,7 @@ package
             }
             _mc = null;
             _buttonsMC = null;
-            if(!STORE._open && !HATCHERY._open && !HATCHERYCC._open && !CREATURELOCKER._open && !ACADEMY._open && !MONSTERBUNKER._open && !STORE._streamline)
+            if(!STORE._open && !HATCHERY._open && !HATCHERYCC._open && !CREATURELOCKER._open && !AcademyService._open && !MONSTERBUNKER._open && !STORE._streamline)
             {
                BASE.BuildingDeselect();
             }
@@ -661,7 +663,7 @@ package
          }
          if(param1.target.labelKey == "btn_openacademy")
          {
-            ACADEMY.Show(_building);
+            AcademyService.Show(_building as AcademyBuilding);
          }
          if(param1.target.labelKey == "btn_repair")
          {

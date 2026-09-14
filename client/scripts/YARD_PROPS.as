@@ -1,5 +1,6 @@
 package
 {
+   import com.bymrefitted.buildings.AcademyBuilding;
    import com.cc.utils.SecNum;
    import com.monsters.siege.SiegeFactory;
    import com.monsters.siege.SiegeLab;
@@ -2931,7 +2932,7 @@ package
          "tutstage":200,
          "sale":0,
          "description":"monsteracademy_desc",
-         "cls":BUILDING26,
+         "cls":AcademyBuilding,
          "costs":[{
             "r1":new SecNum(100000),
             "r2":new SecNum(100000),

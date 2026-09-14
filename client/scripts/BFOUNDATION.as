@@ -1,5 +1,6 @@
 package
 {
+   import com.bymrefitted.buildings.*;
    import com.cc.utils.SecNum;
    import com.monsters.GameObject;
    import com.monsters.configs.BYMConfig;
@@ -4028,7 +4029,7 @@ package
          }
          if(this._type == 26)
          {
-            return _loc2_ ? new infernoAcademyHit() : new building26hit();
+            return _loc2_ ? new infernoAcademyHit() : new AcademyBuildingHit();
          }
          if(this._type == 27)
          {

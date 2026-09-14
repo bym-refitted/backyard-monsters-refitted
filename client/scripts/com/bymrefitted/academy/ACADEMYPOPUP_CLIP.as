@@ -1,4 +1,4 @@
-package
+package com.bymrefitted.academy
 {
    import flash.display.MovieClip;
    import flash.text.TextField;
