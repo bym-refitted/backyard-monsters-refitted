@@ -4,12 +4,18 @@ import { Status } from "../enums/StatusCodes.js";
 import type { Context } from "koa";
 
 /**
- * Keys a limit by account, falling back to IP only for unauthenticated routes.
+ * Keys a limiter by account, falling back to IP only for unauthenticated routes.
  *
- * @param {Context} ctx - The Koa context object.
- * @returns {Promise<string>} The rate limit bucket key.
+ * The limiter's prefix is part of the key because koa2-ratelimit keeps every
+ * limiter's counters in one shared store and uses a custom keyGenerator's result as
+ * the key verbatim; it only adds prefixKey in its default generator. Without the
+ * prefix, every limiter keyed by user counts into the same bucket, so browsing the
+ * map could rate limit an alliance join request or a username change.
+ *
+ * @param {string} prefixKey - The limiter's prefixKey, which scopes its counters.
+ * @returns {(ctx: Context) => Promise<string>} The key generator for that limiter.
  */
-const byUser = async (ctx: Context) => String(ctx.authUser?.userid ?? ctx.ip);
+const byUser = (prefixKey: string) => async (ctx: Context) => `${prefixKey}|${ctx.authUser?.userid ?? ctx.ip}`;
 
 /**
  * Rate limit for MR2 getarea - 120 requests per minute per user.
@@ -18,7 +24,7 @@ export const getAreaLimiter = RateLimit.middleware({
   interval: { min: 1 },
   max: 120,
   prefixKey: "getarea",
-  keyGenerator: byUser,
+  keyGenerator: byUser("getarea"),
   handler: async (ctx: Context) => {
     ctx.status = Status.TOO_MANY_REQUESTS;
     ctx.body = { error: "Too many area requests. Please slow down." };
@@ -63,7 +69,7 @@ export const terrainLimiter = RateLimit.middleware({
   interval: { min: 1 },
   max: 10,
   prefixKey: "terrain",
-  keyGenerator: byUser,
+  keyGenerator: byUser("terrain"),
   handler: async (ctx: Context) => {
     ctx.status = Status.TOO_MANY_REQUESTS;
     ctx.body = { error: "Too many terrain requests. Please slow down." };
@@ -80,7 +86,7 @@ export const snapshotLimiter = RateLimit.middleware({
   interval: { min: 1 },
   max: 10,
   prefixKey: "snapshot",
-  keyGenerator: byUser,
+  keyGenerator: byUser("snapshot"),
   handler: async (ctx: Context) => {
     ctx.status = Status.TOO_MANY_REQUESTS;
     ctx.body = { error: "Too many snapshot requests. Please slow down." };
@@ -94,7 +100,7 @@ export const getCellsLimiter = RateLimit.middleware({
   interval: { min: 1 },
   max: 60,
   prefixKey: "getcells",
-  keyGenerator: byUser,
+  keyGenerator: byUser("getcells"),
   handler: async (ctx: Context) => {
     ctx.status = Status.TOO_MANY_REQUESTS;
     ctx.body = { error: "Too many cell requests. Please slow down." };
@@ -108,7 +114,7 @@ export const searchAlliancesLimiter = RateLimit.middleware({
   interval: { min: 1 },
   max: 30,
   prefixKey: "searchalliances",
-  keyGenerator: byUser,
+  keyGenerator: byUser("searchalliances"),
   handler: async (ctx: Context) => {
     ctx.status = Status.TOO_MANY_REQUESTS;
     ctx.body = { error: "Too many alliance searches. Please slow down." };
@@ -122,7 +128,7 @@ export const allianceInviteLimiter = RateLimit.middleware({
   interval: { min: 1 },
   max: 20,
   prefixKey: "alliance-invite",
-  keyGenerator: byUser,
+  keyGenerator: byUser("alliance-invite"),
   handler: async (ctx: Context) => {
     ctx.status = Status.TOO_MANY_REQUESTS;
     ctx.body = { error: "Too many alliance invites. Please slow down." };
@@ -136,7 +142,7 @@ export const allianceJoinRequestLimiter = RateLimit.middleware({
   interval: { min: 1 },
   max: 10,
   prefixKey: "alliance-join-request",
-  keyGenerator: byUser,
+  keyGenerator: byUser("alliance-join-request"),
   handler: async (ctx: Context) => {
     ctx.status = Status.TOO_MANY_REQUESTS;
     ctx.body = { error: "Too many join requests. Please slow down." };
@@ -166,7 +172,7 @@ export const changeUsernameLimiter = RateLimit.middleware({
   interval: { min: 60 },
   max: 5,
   prefixKey: "changeusername",
-  keyGenerator: byUser,
+  keyGenerator: byUser("changeusername"),
   handler: async (ctx: Context) => {
     ctx.status = Status.TOO_MANY_REQUESTS;
     ctx.body = {
