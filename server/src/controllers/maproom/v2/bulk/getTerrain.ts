@@ -13,6 +13,9 @@ import type { KoaController } from "../../../../utils/KoaController.js";
  * Terrain is deterministic and fixed for the life of a world, so the entire map
  * is available in one request rather than through per-zone `getarea` calls.
  *
+ * Auth
+ *   X-API-Key   An active key from bym.api_consumer (see `bun run consumer:create`). Required.
+ *
  * Query
  *   worldid   The uuid of an existing world. Required.
  *

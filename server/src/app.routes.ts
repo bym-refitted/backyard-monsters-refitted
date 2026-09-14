@@ -3,6 +3,7 @@ import Router from "@koa/router";
 import { logRequest } from "./middleware/logRequest.js";
 import { apiVersion } from "./middleware/apiVersioning.js";
 import { verifyUserAuth, verifyAccountStatus } from "./middleware/auth.js";
+import { verifyApiConsumer } from "./middleware/apiConsumer.js";
 import {
   changeUsernameLimiter,
   debugDataLimiter,
@@ -131,8 +132,8 @@ router.post("/api/:apiVersion/bm/neighbours/get", apiVersion, verifyUserAuth, lo
 * 📦 Map Room 2
 * ──────────────────────────────────────────────── */
 router.post("/worldmapv2/getarea", verifyUserAuth, verifyAccountStatus, getAreaLimiter, logRequest, getArea);
-router.get("/worldmapv2/terrain", verifyUserAuth, terrainLimiter, logRequest, getTerrain);
-router.get("/worldmapv2/snapshot", verifyUserAuth, snapshotLimiter, logRequest, getSnapshot);
+router.get("/worldmapv2/terrain", verifyApiConsumer, terrainLimiter, logRequest, getTerrain);
+router.get("/worldmapv2/snapshot", verifyApiConsumer, snapshotLimiter, logRequest, getSnapshot);
 router.post("/worldmapv2/setmapversion", verifyUserAuth, logRequest, setMapVersion);
 router.post("/worldmapv2/takeoverCell", verifyUserAuth, verifyAccountStatus, logRequest, takeoverCell);
 router.post("/worldmapv2/transferassets", verifyUserAuth, verifyAccountStatus, logRequest, transferMonsters);
