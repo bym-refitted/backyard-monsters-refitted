@@ -25,6 +25,7 @@
   },
   "dependencies": {
     "@koa/router": "15.5.0",
+    "@logtape/file": "2.3.4",
     "@logtape/koa": "2.3.4",
     "@logtape/logtape": "2.3.4",
     "@logtape/pretty": "2.3.4",

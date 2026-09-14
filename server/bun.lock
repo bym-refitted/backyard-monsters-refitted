@@ -6,6 +6,7 @@
       "name": "backyard_monsters_refitted",
       "dependencies": {
         "@koa/router": "15.5.0",
+        "@logtape/file": "2.3.4",
         "@logtape/koa": "2.3.4",
         "@logtape/logtape": "2.3.4",
         "@logtape/pretty": "2.3.4",
@@ -112,6 +113,8 @@
     "@hapi/bourne": ["@hapi/bourne@3.0.0", "", {}, "sha512-Waj1cwPXJDucOib4a3bAISsKJVb15MKi9IvmTI/7ssVEm6sywXGjVJDhl6/umt1pK1ZS7PacXU3A1PmFKHEZ2w=="],
 
     "@koa/router": ["@koa/router@15.5.0", "", { "dependencies": { "debug": "^4.4.3", "http-errors": "^2.0.1", "koa-compose": "^4.1.0", "path-to-regexp": "^8.4.2" }, "peerDependencies": { "koa": "^2.0.0 || ^3.0.0" } }, "sha512-KSC0oG/5t6ITu5wqX4lJseA/dngoj14hEaohrLZEXtlUT2RRyJvwaJ0KV+5uQoaWrY3A8ClHOrBEU4g8dujn8Q=="],
+
+    "@logtape/file": ["@logtape/file@2.3.4", "", { "peerDependencies": { "@logtape/logtape": "^2.3.4" } }, "sha512-4jXkntOowasyo5qrAjV1RdL9iEbP80xYLcSgnorRgBaxkBVtN0kiYdtMC/975Sj6ATmCuuTrnWlvcO0tyrY/9w=="],
 
     "@logtape/koa": ["@logtape/koa@2.3.4", "", { "peerDependencies": { "@logtape/logtape": "^2.3.4", "koa": "^2.0.0 || ^3.0.0" } }, "sha512-lQFkmDtm9TudDkpNyPr7gSXGK9wJ9lGXeW3XJwO7efoonTjAEEGu8f7H5GIYJxCbzR3SjTeD0fME6HUILvFymQ=="],
 

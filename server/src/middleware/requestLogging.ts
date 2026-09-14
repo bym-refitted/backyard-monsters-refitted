@@ -27,17 +27,19 @@ export const logMissingAssets = async (ctx: Context, next: Next) => {
 /** Options for the LogTape Koa request logger. */
 const requestLoggingOptions: KoaLogTapeOptions = {
   category: ["bymr", "http"],
-  skip: (ctx) => ctx.url.startsWith("/assets"),
+  skip: (ctx) => ctx.url.startsWith("/assets") || ctx.path === "/connection",
   context: { include: ["requestId", "remoteAddr", "userAgent"] },
+  format: "structured-common",
 };
 
 /**
  * Structured request logging through LogTape.
  *
- * Writes one record per request once the response is sent, with method, url,
- * path, status, responseTime, contentLength, remoteAddr, userAgent and referrer
- * as properties. It logs under ["bymr", "http"] so it inherits the application
- * logger's sinks.
+ * Writes one record per request once the response is sent, using the
+ * "structured-common" format: method, url, path, status, responseTime,
+ * contentLength and remoteAddr. It omits referrer (always the SWF's URL) and
+ * userAgent, which the request context below supplies instead. It logs under
+ * ["bymr", "http"] so it inherits the application logger's sinks.
  *
  * It also opens a request-scoped context, so every LogTape record emitted while
  * the request is handled (controllers, ErrorInterceptor) carries the request's
@@ -45,6 +47,7 @@ const requestLoggingOptions: KoaLogTapeOptions = {
  * when present, generated otherwise, and echoed back in the response header.
  * Relies on contextLocalStorage being configured in utils/logger.ts.
  *
- * Asset requests are skipped.
+ * Asset requests and the /connection heartbeat (every client, every 30s) are
+ * skipped.
  */
 export const requestLogging = koaLogger(requestLoggingOptions);
