@@ -15,6 +15,9 @@ import type { KoaController } from "../../../../utils/KoaController.js";
  * /worldmapv2/terrain, and wild monster tribes and levels are pure functions of
  * the coordinates.
  *
+ * Auth
+ *   X-API-Key   An active key from bym.api_consumer (see `bun run consumer:create`). Required.
+ *
  * Query
  *   worldid   The uuid of an existing MR2 world. Required.
  *

@@ -60,7 +60,7 @@ export const debugDataLimiter = RateLimit.middleware({
 });
 
 /**
- * Rate limit for the MR2 terrain blob - 10 requests per minute per user.
+ * Rate limit for the MR2 terrain blob - 10 requests per minute per API consumer.
  *
  * Sized so one caller can bootstrap or revalidate every MR2 world inside a
  * single window; 304s pass through the limiter too.
@@ -69,7 +69,7 @@ export const terrainLimiter = RateLimit.middleware({
   interval: { min: 1 },
   max: 10,
   prefixKey: "terrain",
-  keyGenerator: byUser("terrain"),
+  keyGenerator: async (ctx: Context) => `terrain|${ctx.state.apiConsumer ?? ctx.ip}`,
   handler: async (ctx: Context) => {
     ctx.status = Status.TOO_MANY_REQUESTS;
     ctx.body = { error: "Too many terrain requests. Please slow down." };
@@ -77,7 +77,7 @@ export const terrainLimiter = RateLimit.middleware({
 });
 
 /**
- * Rate limit for the MR2 occupancy snapshot - 10 requests per minute per user.
+ * Rate limit for the MR2 occupancy snapshot - 10 requests per minute per API consumer.
  *
  * The payload is rebuilt at most once a minute, so anything above that rate is
  * served from cache or answered with a 304.
@@ -86,7 +86,7 @@ export const snapshotLimiter = RateLimit.middleware({
   interval: { min: 1 },
   max: 10,
   prefixKey: "snapshot",
-  keyGenerator: byUser("snapshot"),
+  keyGenerator: async (ctx: Context) => `snapshot|${ctx.state.apiConsumer ?? ctx.ip}`,
   handler: async (ctx: Context) => {
     ctx.status = Status.TOO_MANY_REQUESTS;
     ctx.body = { error: "Too many snapshot requests. Please slow down." };
