@@ -110,9 +110,16 @@ export const login: KoaController = async (ctx) => {
   await postgres.em.flush();
 
   const filteredUser = FilterFrontendKeys(user);
-  logger.info(
-    `User ${filteredUser.username} successful login | ID: ${filteredUser.userid} | Email: ${filteredUser.email} | IP Address: ${ctx.ip}`
-  );
+  const userAgent = ctx.get("user-agent") || "none";
+
+  logger.info("User {username} logged in | ID: {userid} | IP: {ip}", {
+    event: "login",
+    username: filteredUser.username,
+    userid: filteredUser.userid,
+    email: filteredUser.email,
+    ip: ctx.ip,
+    userAgent,
+  });
 
   ctx.status = Status.OK;
   ctx.body = {

@@ -11,7 +11,7 @@ import { logger } from "./utils/logger.js";
 import { ascii_node } from "./utils/ascii_art.js";
 import { ErrorInterceptor } from "./middleware/clientSafeError.js";
 import { processLanguagesFile } from "./middleware/processLanguageFile.js";
-import { logMissingAssets, morganLogging } from "./middleware/morganLogging.js";
+import { logMissingAssets, requestLogging } from "./middleware/requestLogging.js";
 import { corsCacheControl } from "./middleware/corsCacheControlSetup.js";
 import { isStaticPath } from "./utils/staticPaths.js";
 import { Env } from "./enums/Env.js";
@@ -65,7 +65,7 @@ redis.onclose = (err) => logger.error(`Redis disconnected: ${err.message}`);
 
   // Logs
   app.use(logMissingAssets);
-  if (process.env.ENV !== Env.LOCAL) app.use(morganLogging);
+  if (process.env.ENV !== Env.LOCAL) app.use(requestLogging);
 
   // Serve static files
   app.use(processLanguagesFile);
