@@ -5,6 +5,7 @@ import { apiVersion } from "./middleware/apiVersioning.js";
 import { verifyUserAuth, verifyAccountStatus } from "./middleware/auth.js";
 import {
   changeUsernameLimiter,
+  debugDataLimiter,
   getAreaLimiter,
   getCellsLimiter,
   loginLimiter,
@@ -201,6 +202,6 @@ router.get("/api/:apiVersion/events/wmi", apiVersion, logRequest, wildMonsterInv
 /**  ────────────────────────────────────────────────
 * 📦 Debug
 * ──────────────────────────────────────────────── */
-router.post("/api/:apiVersion/player/recorddebugdata", apiVersion, recordDebugData);
+router.post("/api/:apiVersion/player/recorddebugdata", apiVersion, debugDataLimiter, recordDebugData);
 
 export default router;

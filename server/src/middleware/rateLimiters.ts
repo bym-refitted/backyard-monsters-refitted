@@ -41,6 +41,19 @@ export const publicReadLimiter = RateLimit.middleware({
 });
 
 /**
+ * Rate limit for client debug logging - 120 requests per minute per IP.
+ */
+export const debugDataLimiter = RateLimit.middleware({
+  interval: { min: 1 },
+  max: 120,
+  prefixKey: "debug-data",
+  handler: async (ctx: Context) => {
+    ctx.status = Status.TOO_MANY_REQUESTS;
+    ctx.body = { error: "Too many debug log requests. Please slow down." };
+  },
+});
+
+/**
  * Rate limit for the MR2 terrain blob - 10 requests per minute per user.
  *
  * Sized so one caller can bootstrap or revalidate every MR2 world inside a
