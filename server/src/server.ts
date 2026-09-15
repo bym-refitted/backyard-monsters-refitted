@@ -27,7 +27,6 @@ app.proxyIpHeader = "CF-Connecting-IP";
 export const PORT = process.env.PORT || 3001;
 export const BASE_URL = process.env.BASE_URL;
 
-
 export const postgres = {} as {
   orm: MikroORM<PostgreSqlDriver>;
   em: EntityManager<PostgreSqlDriver>;
@@ -58,9 +57,7 @@ redis.onclose = (err) => logger.error(`Redis disconnected: ${err.message}`);
   startChatServer();
 
   app.use(corsCacheControl);
-
   app.use(bodyParser({ enableTypes: ["json", "form"], jsonLimit: "8mb", formLimit: "8mb"}));
-
   app.use((_, next: Next) => RequestContext.create(postgres.orm.em, next));
 
   // Logs
