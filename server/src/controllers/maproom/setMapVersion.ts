@@ -18,6 +18,8 @@ import {
 } from "../../errors/errors.js";
 import { Maproom } from "../../database/models/maproom.model.js";
 import { clearPendingInvites } from "../../services/alliance/allianceInvites.js";
+import { MAX_RESOURCE_CAPACITY } from "../../config/MapRoom2Config.js";
+import { RESOURCE_KEYS } from "../../services/base/updateResources.js";
 
 /**
  * Schema for validating the request body when setting the map version.
@@ -48,14 +50,22 @@ export const setMapVersion: KoaController = async (ctx) => {
   if (!ctx.meetsDiscordAgeCheck) throw discordAgeErr();
 
   switch (version) {
-    case MapRoomVersion.NONE:
+    case MapRoomVersion.NONE: {
       if (user.alliance_id) throw mustLeaveAllianceToChangeWorldErr();
 
       await clearPendingInvites(user.userid);
 
-      await leaveWorld(user, save);
+      if (save.mapversion === MapRoomVersion.V3 && save.resources) {
+        for (const key of RESOURCE_KEYS) {
+          if (Number(save.resources[key]) > MAX_RESOURCE_CAPACITY)
+            save.resources[key] = MAX_RESOURCE_CAPACITY;
+        }
+      }
+
       save.mapversion = MapRoomVersion.V1;
+      await leaveWorld(user, save);
       break;
+    }
 
     case MapRoomVersion.V1:
       save.mapversion = MapRoomVersion.V1;

@@ -25,3 +25,9 @@ export const TERRAIN_SCALE = 95;
  * @constant {number}
  */
 export const EDGE_TRANSITION_WIDTH = 3;
+
+/**
+ * The most of any one resource a Map Room 2 player can store
+ * @constant {number}
+ */
+export const MAX_RESOURCE_CAPACITY = 7_046_100_000;

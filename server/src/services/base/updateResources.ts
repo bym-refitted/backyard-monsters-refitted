@@ -16,6 +16,8 @@ export enum Operation {
   SUBTRACT = "subtract",
 }
 
+export const RESOURCE_KEYS = ["r1", "r2", "r3", "r4"] as const;
+
 /**
  * Updates the resources with the delta sent from the client.
  * 

@@ -1,6 +1,6 @@
 import { SaveKeys } from "../../../../enums/SaveKeys.js";
 import { Save } from "../../../../database/models/save.model.js";
-import type { Resources } from "../../../../services/base/updateResources.js";
+import { RESOURCE_KEYS, type Resources } from "../../../../services/base/updateResources.js";
 
 type ResourceType = SaveKeys.RESOURCES | SaveKeys.IRESOURCES;
 
@@ -28,9 +28,8 @@ const MAX_LOOT_PER_RESOURCE = 10_000_000;
  */
 export const defenderLootHandler = (reported: Resources, save: LootTarget, resourceType: ResourceType = SaveKeys.RESOURCES) => {
   const resources = save[resourceType] ?? {};
-  const resourceKeys = ["r1", "r2", "r3", "r4"] as const;
 
-  for (const key of resourceKeys) {
+  for (const key of RESOURCE_KEYS) {
     const delta = Number(reported[key]);
 
     if (!Number.isFinite(delta) || delta >= 0) continue;
