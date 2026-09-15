@@ -414,7 +414,6 @@ package
          }
          _guardianList.length = 0;
          clearOverlapCache();
-         Targeting.clearGridCaches();
       }
       
       public static function get _guardian() : ChampionBase

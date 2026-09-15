@@ -47,17 +47,13 @@ package com.monsters.monsters.creeps
       protected var m_altitudeMax:int;
       
       protected var m_altitudeMin:int;
-      
-      protected var m_findTargetsCounter:int = 0;
-      
-      protected static const FIND_TARGETS_INTERVAL:int = 200;
-      
-      // Performance optimization: Track position changes to minimize CreepCellMove calls
-      protected var _lastGridPosition:Point = null;
-      protected static const GRID_CELL_SIZE:int = 100; // Match Targeting._CELLSIZE
-      protected var _gridMoveCounter:int = 0;
-      protected static const GRID_UPDATE_INTERVAL:int = 5; // Only check for grid changes every 5 frames
-      
+
+      private var m_cellNode:String = null;
+
+      private var m_cellX:int;
+
+      private var m_cellY:int;
+
       public function CreepBase(param1:String, param2:String, param3:Point, param4:Number, param5:int = 0, param6:int = 2147483647, param7:Point = null, param8:Boolean = false, param9:BFOUNDATION = null, param10:Number = 1, param11:Boolean = false, param12:MonsterBase = null)
       {
          var _loc13_:Point = null;
@@ -89,10 +85,6 @@ package com.monsters.monsters.creeps
          graphic.mouseEnabled = false;
          graphic.mouseChildren = false;
          _speed = 0;
-         
-         // Performance optimization counters
-         this.m_findTargetsCounter = int(Math.random() * 200); // Randomize initial counter to spread load
-         
          moveSpeedProperty.value = CREATURES.GetProperty(_creatureID,"speed",param5,_friendly) / 2;
          if(TUTORIAL._stage < 200)
          {
@@ -421,38 +413,23 @@ package com.monsters.monsters.creeps
          {
             updateBuffs();
          }
-         
-         // Performance optimization: Only check for grid cell changes every few frames
-         _gridMoveCounter++;
-         if(_gridMoveCounter >= GRID_UPDATE_INTERVAL)
+         // CreepCellMove is a no-op while the cell and node are unchanged since its last call,
+         // so skip it and avoid building the cell key string every tick.
+         var cell:Point = GRID.FromISO(_tmpPoint.x,_tmpPoint.y);
+         var cellX:int = int(cell.x / Targeting._CELLSIZE);
+         var cellY:int = int(cell.y / Targeting._CELLSIZE);
+         if(this.m_cellNode === null || node !== this.m_cellNode || cellX != this.m_cellX || cellY != this.m_cellY)
          {
-            _gridMoveCounter = 0;
-            
-            // Calculate current grid position
-            var currentGridX:int = int(_tmpPoint.x / GRID_CELL_SIZE);
-            var currentGridY:int = int(_tmpPoint.y / GRID_CELL_SIZE);
-            
-            // Only call CreepCellMove if we've moved to a different grid cell
-            if(!_lastGridPosition || 
-               _lastGridPosition.x != currentGridX || 
-               _lastGridPosition.y != currentGridY)
+            newNode = Targeting.CreepCellMove(_tmpPoint,_id,this,node);
+            if(newNode)
             {
-               newNode = Targeting.CreepCellMove(_tmpPoint,_id,this,node);
-               if(newNode)
-               {
-                  node = newNode;
-               }
-               
-               // Update cached grid position
-               if(!_lastGridPosition)
-               {
-                  _lastGridPosition = new Point(currentGridX, currentGridY);
-               }
-               else
-               {
-                  _lastGridPosition.x = currentGridX;
-                  _lastGridPosition.y = currentGridY;
-               }
+               node = newNode;
+            }
+            if(newNode !== null)
+            {
+               this.m_cellNode = node;
+               this.m_cellX = cellX;
+               this.m_cellY = cellY;
             }
          }
          return false;
@@ -1076,16 +1053,7 @@ package com.monsters.monsters.creeps
          }
          if(!_looking && !_attacking && _frameNumber % (GLOBAL._catchup ? 300 : 150) == 0)
          {
-            // Performance optimization: Reduce frequency during high monster counts
-            var interval:int = GLOBAL._catchup ? 300 : 150;
-            if(CREEPS._creepCount > 20)
-            {
-               interval *= 2;
-            }
-            if(_frameNumber % interval == 0)
-            {
-               findTarget(_targetGroup);
-            }
+            findTarget(_targetGroup);
          }
          if(_atTarget)
          {
@@ -1783,13 +1751,7 @@ package com.monsters.monsters.creeps
          }
          if(_frameNumber % 200)
          {
-            // Performance optimization: Use counter instead of frame modulo
-            this.m_findTargetsCounter++;
-            if(this.m_findTargetsCounter >= FIND_TARGETS_INTERVAL)
-            {
-               this.m_findTargetsCounter = 0;
-               this.findDefenseTargets();
-            }
+            this.findDefenseTargets();
          }
          if(_atTarget && _behaviour == k_sBHVR_BUNKER)
          {
