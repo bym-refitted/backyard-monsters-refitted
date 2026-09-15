@@ -220,7 +220,7 @@
     "ai_trojan_letter": "Cher ami #v1#, <br>Trop de sang inutile a été versé sur nos bases. Il est temps de laisser nos monstres vivre le reste de leurs jours en paix.<br><br>Que cela soit connu sous le nom de Journée de l'Armistice ! En signe de sincérité, veuillez accepter ce monument en bois.",
     "ai_trojan_headline": "Les Monstres Sauvages vous ont laissé une note épinglée sur une grande structure en bois.",
     "ai_preparedefenses_btn": "Préparer les défenses !",
-    "ai_tribe": "tribu",
+    "ai_tribe": "#v1# Tribe",
     "ai_gooddefense": "Tu as défendu ta base avec succès face à la tribu #v1#",
     "ai_gooddefense_streamtitle": "Boo-Ya ! #fname# a défendu sa base avec succès contre la #v1# Tribu de Monstre Sauvage.",
     "ai_poordefense_ta": "Maudit soit ces Monstres sauvages!",

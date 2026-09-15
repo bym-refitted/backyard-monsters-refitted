@@ -12,4 +12,7 @@ export const transporter = nodemailer.createTransport({
   tls: { rejectUnauthorized: false },
   secure: process.env.ENV === Env.PROD,
   connectionTimeout: 30000,
+  disableFileAccess: true,
+  disableUrlAccess: true,
+  maxRecipients: 1,
 });

@@ -29,6 +29,7 @@ android/apk/BYMRefitted.apk
 
 # Server database / data
 server/data
+server/logs
 server/src/database/bym-db*
 server/src/database/migrations/.snapshot*
 

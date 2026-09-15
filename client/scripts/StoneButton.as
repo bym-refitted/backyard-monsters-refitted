@@ -40,10 +40,6 @@ package
          "key":"ui/lava3.png",
          "width":53,
          "height":37
-      },{
-         "key":"ui/lava4.png",
-         "width":55,
-         "height":37
       }];
        
       

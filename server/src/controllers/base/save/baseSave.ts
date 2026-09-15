@@ -18,6 +18,7 @@ import { defenderLootHandler } from "./handlers/defenderLootHandler.js";
 import { monsterUpdateHandler } from "./handlers/monsterUpdateHandler.js";
 import { validateSave } from "../../../scripts/anticheat/anticheat.js";
 import { getOutpostOwnerSave } from "../../../services/base/getOutpostOwnerSave.js";
+import { advanceBuildingTimers } from "../../../services/base/advanceBuildingTimers.js";
 import { championHandler } from "./handlers/championHandler.js";
 import { buildingDataHandler } from "./handlers/buildingDataHandler.js";
 import { takeoverCellMR3, type TakeoverData } from "../../../services/maproom/v3/takeoverCellMR3.js";
@@ -66,6 +67,8 @@ export const baseSave: KoaController = async (ctx) => {
   if (!isOwner && baseSave.attackid === 0) throw permissionErr();
 
   await validateSave(user, baseSave, body);
+
+  const storedHealthData = baseSave.buildinghealthdata;
 
   // Standard save logic
   for (const key of isAttack ? Save.attackSaveKeys : Save.saveKeys) {
@@ -203,15 +206,16 @@ export const baseSave: KoaController = async (ctx) => {
 
   baseSave.attackid = saveData.over ? 0 : baseSave.attackid;
 
-  // Attack saves keep the defender's buildingdata from the DB (buildingDataHandler), so savetime
-  // must stay at the owner's last save: every load replays timers and production from it.
-  // Tribes have no owner replay, and their wild monster expiry reads savetime.
-  const keepOwnerSavetime = isAttack && baseSave.type !== BaseType.TRIBE;
+  const now = getCurrentDateTime();
 
-  if (!keepOwnerSavetime) {
-    baseSave.id = baseSave.savetime;
-    baseSave.savetime = getCurrentDateTime();
+  // Attack saves store health from the attacker's replay but keep buildingdata from the DB,
+  // so the owner's countdowns are brought up to the attack before savetime moves to it.
+  if (isAttack && baseSave.buildingdata) {
+    baseSave.buildingdata = advanceBuildingTimers(baseSave.buildingdata, storedHealthData, now - baseSave.savetime);
   }
+
+  baseSave.id = baseSave.savetime;
+  baseSave.savetime = now;
 
   if (!isAttack) {
     await redis.setex(`last-seen:main:${user.userid}`, 120, getCurrentDateTime().toString());

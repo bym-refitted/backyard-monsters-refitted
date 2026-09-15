@@ -19,6 +19,7 @@ import { defenderLootHandler } from "../base/save/handlers/defenderLootHandler.j
 import { purchaseHandler } from "../base/save/handlers/purchaseHandler.js";
 import { resourcesHandler } from "../base/save/handlers/resourceHandler.js";
 import { damageProtection } from "../../services/maproom/v2/damageProtection.js";
+import { advanceBuildingTimers } from "../../services/base/advanceBuildingTimers.js";
 import { visibleCredits } from "../../services/user/shinyLock.js";
 
 export const infernoSave: KoaController = async (ctx) => {
@@ -54,6 +55,8 @@ export const infernoSave: KoaController = async (ctx) => {
     const isAttack = !isOwner && baseSave.attackid !== 0;
 
     if (!isOwner && baseSave.attackid === 0) throw permissionErr();
+
+    const storedHealthData = baseSave.buildinghealthdata;
 
     for (const key of isAttack ? Save.attackSaveKeys : Save.saveKeys) {
       const value = body[key] as string;
@@ -132,12 +135,14 @@ export const infernoSave: KoaController = async (ctx) => {
       await damageProtection(baseSave);
     }
 
-    const keepOwnerSavetime = isAttack && baseSave.type !== BaseType.TRIBE;
+    const now = getCurrentDateTime();
 
-    if (!keepOwnerSavetime) {
-      baseSave.id = baseSave.savetime;
-      baseSave.savetime = getCurrentDateTime();
+    if (isAttack && baseSave.buildingdata) {
+      baseSave.buildingdata = advanceBuildingTimers(baseSave.buildingdata, storedHealthData, now - baseSave.savetime);
     }
+
+    baseSave.id = baseSave.savetime;
+    baseSave.savetime = now;
 
     if (!isAttack) {
       await redis.setex(`last-seen:inferno:${user.userid}`, 120, getCurrentDateTime().toString());

@@ -1,6 +1,8 @@
+import type { BuildingHealthData } from "./BuildingData.js";
+
 export interface TribeData {
   baseid: string;
-  tribeHealthData: Record<string, number>;
+  tribeHealthData: BuildingHealthData;
   monsters?: Record<string, number>;
   destroyed?: number;
   destroyedAt?: number;

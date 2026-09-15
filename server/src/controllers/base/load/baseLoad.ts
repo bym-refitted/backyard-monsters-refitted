@@ -31,6 +31,7 @@ import { createMR1Tribes } from "../../../services/maproom/v1/createMR1Tribes.js
 import { MR1_TRIBES } from "../../../enums/Tribes.js";
 import { MR1_TRIBE_IDS } from "../../../game-data/tribes/v1/index.js";
 import { calculateBaseLevel } from "../../../services/base/calculateBaseLevel.js";
+import { RESOURCE_KEYS } from "../../../services/base/updateResources.js";
 import { mapSaveData } from "../../../services/base/mapSaveData.js";
 import { clearExpiredStoreItems } from "../../../services/base/clearExpiredStoreItems.js";
 import { extractTownHall } from "../../../utils/extractTownHall.js";
@@ -190,7 +191,7 @@ export const baseLoad: KoaController = async (ctx) => {
           const accumulated = Math.floor(totalResourceRate * elapsed);
 
           if (accumulated > 0 && userSave.resources) {
-            for (const resource of ["r1", "r2", "r3", "r4"])
+            for (const resource of RESOURCE_KEYS)
               userSave.resources[resource] += accumulated;
           }
         }

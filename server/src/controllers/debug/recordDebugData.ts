@@ -29,14 +29,12 @@ export const recordDebugData: KoaController = async (ctx) => {
 
     if (!body.key || !body.saveid || !body.value) throw debugClientErr();
 
+    const properties = { key: body.key, saveid: body.saveid, details: body.value };
+
     if (body.key === LOG_LEVEL.ERROR) {
-      logger.error(
-        `ERROR logged for basesaveid '${body.saveid}'. Details: ${body.value}`
-      );
+      logger.error("ERROR logged for basesaveid {saveid}. Details: {details}", properties);
     } else {
-      logger.info(
-        `INFO logged for basesaveid '${body.saveid}'. Details: ${body.value}`
-      );
+      logger.info("INFO logged for basesaveid {saveid}. Details: {details}", properties);
     }
 
     ctx.status = Status.OK;

@@ -75,7 +75,14 @@ export const ErrorInterceptor = async (ctx: Context, next: Next) => {
           isClientFriendly: true,
         });
     const errorObj = clientError.toSafeJson();
-    if (!isSafe) logger.error(`${JSON.stringify(errorObj)}`);
+
+    if (!isSafe) {
+      logger.error("Unhandled error on {method} {path}: {error}", {
+        method: ctx.method,
+        path: ctx.path,
+        error: err,
+      });
+    }
 
     console.error(
       `ErrorInterceptor error: ${errorObj.message} | status: ${errorObj.status}`
