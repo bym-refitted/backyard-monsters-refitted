@@ -1,5 +1,6 @@
 package
 {
+   import com.bymrefitted.ui.interfaces.IHideActionHandler;
    import com.monsters.display.ImageCache;
    import flash.display.Bitmap;
    import flash.display.BitmapData;
@@ -12,7 +13,7 @@ package
    * 
    * This file archives the original implementation for reference and renamed to WMIROUNDCOMPLETE_WM1.
    */
-   public class WMIROUNDCOMPLETE_WM1 extends ROUNDCOMPLETEPOPUP_CLIP
+   public class WMIROUNDCOMPLETE_WM1 extends ROUNDCOMPLETEPOPUP_CLIP implements IHideActionHandler
    {
       
       private static var _wave:Number;
@@ -277,7 +278,7 @@ package
          }
       }
       
-      public function Hide() : void
+      public function Hide(param1:MouseEvent = null) : void
       {
          _open = false;
          POPUPS.Next();

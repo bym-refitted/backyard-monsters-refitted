@@ -1,12 +1,13 @@
 package com.monsters.maproom_inferno
 {
+   import com.bymrefitted.ui.interfaces.IHideActionHandler;
    import com.monsters.maproom_inferno.views.*;
    import flash.display.MovieClip;
    import flash.display.Sprite;
    import flash.events.Event;
    import flash.events.MouseEvent;
    
-   public class DescentMapRoom extends MapRoomPopup_InfernoDescent
+   public class DescentMapRoom extends MapRoomPopup_InfernoDescent implements IHideActionHandler
    {
       
       public static var top:Sprite;
@@ -131,7 +132,7 @@ package com.monsters.maproom_inferno
          this.players.Get();
       }
       
-      public function Hide(... rest) : void
+      public function Hide(param1:MouseEvent = null) : void
       {
          if(BRIDGE.Hide)
          {

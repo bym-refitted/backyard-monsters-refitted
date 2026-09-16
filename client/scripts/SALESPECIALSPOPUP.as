@@ -1,5 +1,6 @@
 package
 {
+   import com.bymrefitted.ui.interfaces.IHideActionHandler;
    import com.monsters.display.BuildingAssetContainer;
    import flash.display.DisplayObject;
    import flash.display.MovieClip;
@@ -9,7 +10,7 @@ package
    import gs.TweenLite;
    import gs.easing.*;
    
-   public class SALESPECIALSPOPUP extends SALESPECIALSPOPUP_CLIP
+   public class SALESPECIALSPOPUP extends SALESPECIALSPOPUP_CLIP implements IHideActionHandler
    {
       
       public static var imageContainer:BuildingAssetContainer;

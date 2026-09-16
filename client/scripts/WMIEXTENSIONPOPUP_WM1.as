@@ -1,5 +1,6 @@
 package
 {
+   import com.bymrefitted.ui.interfaces.IHideActionHandler;
    import com.monsters.display.ImageCache;
    import flash.display.Bitmap;
    import flash.display.BitmapData;
@@ -12,7 +13,7 @@ package
    * 
    * This file archives the original implementation for reference and renamed to WMIEXTENSIONPOPUP_WM1.
    */
-   public class WMIEXTENSIONPOPUP_WM1 extends WMIEXTENSIONPOPUP_CLIP
+   public class WMIEXTENSIONPOPUP_WM1 extends WMIEXTENSIONPOPUP_CLIP implements IHideActionHandler
    {
       
       private static var _open:Boolean = false;
@@ -52,7 +53,7 @@ package
          return _open;
       }
       
-      public function Hide() : void
+      public function Hide(param1:MouseEvent = null) : void
       {
          _open = false;
          POPUPS.Next();

@@ -1,5 +1,8 @@
 package com.monsters.maproom_advanced
 {
+   import com.bymrefitted.ui.interfaces.IFullScreenActionHandler;
+   import com.bymrefitted.ui.interfaces.IHelpActionHandler;
+   import com.bymrefitted.ui.interfaces.IHideActionHandler;
    import com.monsters.alliances.AllyInfo;
    import com.monsters.display.ImageCache;
    import com.monsters.enums.EnumYardType;
@@ -15,8 +18,8 @@ package com.monsters.maproom_advanced
    import flash.geom.Point;
    import flash.geom.Rectangle;
    import flash.net.URLRequest;
-   
-   internal class MapRoomPopup extends MapRoomPopup_CLIP
+
+   internal class MapRoomPopup extends MapRoomPopup_CLIP implements IFullScreenActionHandler, IHelpActionHandler, IHideActionHandler
    {
        
       
@@ -1701,12 +1704,12 @@ package com.monsters.maproom_advanced
          this.BuffHide(null);
       }
       
-      public function Help() : void
+      public function Help(event: MouseEvent = null) : void
       {
          Tutorial.ForceShowAll();
       }
       
-      public function FullScreen() : void
+      public function FullScreen(event: MouseEvent = null) : void
       {
          if(GLOBAL.isFullScreen)
          {

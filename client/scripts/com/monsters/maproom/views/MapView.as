@@ -1,5 +1,6 @@
 package com.monsters.maproom.views
 {
+   import com.bymrefitted.ui.interfaces.IHideActionHandler;
    import com.monsters.display.ImageCache;
    import com.monsters.maproom.*;
    import flash.display.Bitmap;
@@ -14,7 +15,7 @@ package com.monsters.maproom.views
    import gs.TweenLite;
    import gs.easing.Quad;
    
-   public class MapView extends MapView_CLIP
+   public class MapView extends MapView_CLIP implements IHideActionHandler
    {
       
       private static var instance:MapView;
@@ -299,7 +300,7 @@ package com.monsters.maproom.views
          this.players.Get();
       }
       
-      public function Hide(... rest) : void
+      public function Hide(param1:MouseEvent = null) : void
       {
          stage.removeEventListener(MouseEvent.MOUSE_UP,this.stageUp);
       }

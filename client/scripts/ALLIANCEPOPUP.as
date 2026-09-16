@@ -1,5 +1,6 @@
 package
 {
+   import com.bymrefitted.ui.interfaces.IHideActionHandler;
    import com.monsters.alliances.ALLIANCES;
    import com.monsters.alliances.AllianceConstants;
    import com.monsters.alliances.AllianceTabBase;
@@ -12,7 +13,7 @@ package
    import flash.display.MovieClip;
    import flash.events.MouseEvent;
 
-   public class ALLIANCEPOPUP extends MovieClip
+   public class ALLIANCEPOPUP extends MovieClip implements IHideActionHandler
    {
       private static const W:int = 860;
       private static const H:int = 580;

@@ -1,11 +1,12 @@
 package
 {
+   import com.bymrefitted.ui.interfaces.IHideActionHandler;
    import com.monsters.display.ImageCache;
    import flash.display.Bitmap;
    import flash.display.BitmapData;
    import flash.events.MouseEvent;
    
-   public class popup_prefab_enlarge extends popup_prefab_enlarge_CLIP
+   public class popup_prefab_enlarge extends popup_prefab_enlarge_CLIP implements IHideActionHandler
    {
        
       

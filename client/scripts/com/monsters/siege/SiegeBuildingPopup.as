@@ -1,5 +1,6 @@
 package com.monsters.siege
 {
+   import com.bymrefitted.ui.interfaces.IHideActionHandler;
    import com.monsters.display.ImageCache;
    import com.monsters.display.ScrollSet;
    import com.monsters.siege.weapons.SiegeWeapon;
@@ -18,7 +19,7 @@ package com.monsters.siege
    import flash.text.TextField;
    import flash.utils.Timer;
    
-   public class SiegeBuildingPopup extends SIEGEBUILDINGPOPUP_CLIP
+   public class SiegeBuildingPopup extends SIEGEBUILDINGPOPUP_CLIP implements IHideActionHandler
    {
        
       
@@ -693,7 +694,7 @@ package com.monsters.siege
          mcResources.visible = true;
       }
       
-      public function Hide() : void
+      public function Hide(param1:MouseEvent = null) : void
       {
          this._timer.stop();
          SiegeBuilding.Hide();

@@ -1,5 +1,7 @@
 package
 {
+   import com.bymrefitted.ui.interfaces.IHelpActionHandler;
+   import com.bymrefitted.ui.interfaces.IHideActionHandler;
    import com.monsters.display.ImageCache;
    import com.monsters.display.ScrollSet;
    import com.monsters.managers.InstanceManager;
@@ -14,7 +16,7 @@ package
    import gs.TweenLite;
    import gs.easing.Circ;
    
-   public class HATCHERYCCPOPUP extends HATCHERYCCPOPUP_CLIP
+   public class HATCHERYCCPOPUP extends HATCHERYCCPOPUP_CLIP implements IHideActionHandler, IHelpActionHandler
    {
        
       

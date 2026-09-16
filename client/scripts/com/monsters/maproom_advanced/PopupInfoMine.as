@@ -1,5 +1,6 @@
 package com.monsters.maproom_advanced
 {
+   import com.bymrefitted.ui.interfaces.IHideActionHandler;
    import com.monsters.display.ScrollSet;
    import com.monsters.enums.EnumYardType;
    import com.monsters.mailbox.Message;
@@ -10,7 +11,7 @@ package com.monsters.maproom_advanced
    import gs.TweenLite;
    import gs.easing.Elastic;
    
-   internal class PopupInfoMine extends PopupInfoMine_CLIP
+   internal class PopupInfoMine extends PopupInfoMine_CLIP implements IHideActionHandler
    {
        
       

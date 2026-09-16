@@ -1,6 +1,8 @@
 package com.monsters.maproom3.bookmarks
 {
-   public class BookmarksPopup extends MapRoom3BookmarksPopup
+   import com.bymrefitted.ui.interfaces.IHideActionHandler;
+   import flash.events.MouseEvent;
+   public class BookmarksPopup extends MapRoom3BookmarksPopup implements IHideActionHandler
    {
       
       private static const MAX_BOOKMARKS_DISPLAY_LIST_LENGTH:uint = 10;
@@ -29,7 +31,7 @@ package com.monsters.maproom3.bookmarks
          return new BookmarksPopupMenuItem(param1);
       }
       
-      public function Hide() : void
+      public function Hide(param1:MouseEvent = null) : void
       {
          POPUPS.Next();
          if(this.m_BookmarkDisplayList != null)

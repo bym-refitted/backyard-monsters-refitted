@@ -1,9 +1,10 @@
 package com.monsters.radio
 {
+   import com.bymrefitted.ui.interfaces.IHideActionHandler;
    import flash.events.Event;
    import flash.events.MouseEvent;
    
-   public class RADIOSETTINGSPOPUP extends RADIOSETTINGSPOPUP_CLIP
+   public class RADIOSETTINGSPOPUP extends RADIOSETTINGSPOPUP_CLIP implements IHideActionHandler
    {
        
       
@@ -196,7 +197,7 @@ package com.monsters.radio
          tEmailInput.removeEventListener(MouseEvent.CLICK,this.onEmailClear);
       }
       
-      public function Hide() : void
+      public function Hide(param1:MouseEvent = null) : void
       {
          var _loc1_:Checkbox = cbNews as Checkbox;
          var _loc2_:Checkbox = cbAttack as Checkbox;

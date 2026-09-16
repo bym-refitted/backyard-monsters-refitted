@@ -1,5 +1,6 @@
 package com.monsters.event_store
 {
+   import com.bymrefitted.ui.interfaces.IHideActionHandler;
    import com.monsters.display.ImageCache;
    import com.monsters.replayableEvents.ReplayableEventHandler;
    import com.monsters.rewarding.RewardHandler;
@@ -8,7 +9,7 @@ package com.monsters.event_store
    import flash.display.BitmapData;
    import flash.events.MouseEvent;
    
-   public class EventStoreItemSelectedPopup extends EventStoreItemSelectedPopupMC
+   public class EventStoreItemSelectedPopup extends EventStoreItemSelectedPopupMC implements IHideActionHandler
    {
       
       private static var s_Instance:EventStoreItemSelectedPopup = null;
@@ -90,7 +91,7 @@ package com.monsters.event_store
          this.m_PreviewImage.bitmapData = param2;
       }
       
-      public function Hide() : void
+      public function Hide(param1:MouseEvent = null) : void
       {
          if(this.m_PrizeBeingDisplayed == null)
          {

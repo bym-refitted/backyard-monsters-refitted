@@ -1,12 +1,13 @@
 package com.monsters.maproom_advanced
 {
+   import com.bymrefitted.ui.interfaces.IHideActionHandler;
    import com.cc.utils.SecNum;
    import com.monsters.display.ScrollSet;
    import flash.display.MovieClip;
    import flash.events.Event;
    import flash.events.MouseEvent;
    
-   internal class PopupMonstersA extends PopupMonstersA_CLIP
+   internal class PopupMonstersA extends PopupMonstersA_CLIP implements IHideActionHandler
    {
        
       

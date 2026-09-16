@@ -1,11 +1,12 @@
 package
 {
+   import com.bymrefitted.ui.interfaces.IHideActionHandler;
    import com.monsters.display.ImageCache;
    import flash.display.Bitmap;
    import flash.display.BitmapData;
    import flash.events.MouseEvent;
    
-   public class DEFENSEEVENTPOPUP extends DEFENSEEVENTPOPUP_CLIP
+   public class DEFENSEEVENTPOPUP extends DEFENSEEVENTPOPUP_CLIP implements IHideActionHandler
    {
       
       private static var _open:Boolean = false;
@@ -71,7 +72,7 @@ package
          this.Hide();
       }
       
-      public function Hide() : void
+      public function Hide(param1:MouseEvent = null) : void
       {
          _open = false;
          POPUPS.Next();

@@ -1,5 +1,7 @@
 package
 {
+   import com.bymrefitted.ui.interfaces.IHelpActionHandler;
+   import com.bymrefitted.ui.interfaces.IHideActionHandler;
    import com.monsters.display.ImageCache;
    import flash.display.Bitmap;
    import flash.display.BitmapData;
@@ -9,7 +11,7 @@ package
    import gs.*;
    import gs.easing.*;
    
-   public class CREATURELOCKERPOPUP extends CREATURELOCKERPOPUP_CLIP
+   public class CREATURELOCKERPOPUP extends CREATURELOCKERPOPUP_CLIP implements IHideActionHandler, IHelpActionHandler
    {
       
       private static const _CREATURES_PER_PAGE:int = 4;

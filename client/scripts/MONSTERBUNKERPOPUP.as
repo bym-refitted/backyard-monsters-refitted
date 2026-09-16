@@ -1,5 +1,7 @@
 package
 {
+   import com.bymrefitted.ui.interfaces.IHelpActionHandler;
+   import com.bymrefitted.ui.interfaces.IHideActionHandler;
    import com.cc.utils.SecNum;
    import com.monsters.display.ImageCache;
    import com.monsters.display.ScrollSet;
@@ -12,7 +14,7 @@ package
    import flash.events.MouseEvent;
    import flash.geom.Point;
    
-   public class MONSTERBUNKERPOPUP extends MONSTERBUNKERPOPUP_CLIP
+   public class MONSTERBUNKERPOPUP extends MONSTERBUNKERPOPUP_CLIP implements IHideActionHandler, IHelpActionHandler
    {
        
       

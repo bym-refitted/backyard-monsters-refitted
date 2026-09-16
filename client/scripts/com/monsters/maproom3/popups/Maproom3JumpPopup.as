@@ -1,5 +1,6 @@
 package com.monsters.maproom3.popups
 {
+   import com.bymrefitted.ui.interfaces.IHideActionHandler;
    import com.monsters.enums.EnumYardType;
    import com.monsters.maproom_manager.IMapRoomCell;
    import com.monsters.maproom_manager.MapRoomManager;
@@ -8,7 +9,7 @@ package com.monsters.maproom3.popups
    import flash.events.MouseEvent;
    import flash.ui.Keyboard;
    
-   public class Maproom3JumpPopup extends MapRoomPopupJump
+   public class Maproom3JumpPopup extends MapRoomPopupJump implements IHideActionHandler
    {
       
       public static const k_clickedJump:String = "clickedJumpButton";
@@ -61,7 +62,7 @@ package com.monsters.maproom3.popups
          dispatchEvent(new Event(k_clickedJump));
       }
       
-      public function Hide() : void
+      public function Hide(param1:MouseEvent = null) : void
       {
          tX.removeEventListener(KeyboardEvent.KEY_UP,this.keyUpOnX);
          tY.removeEventListener(KeyboardEvent.KEY_UP,this.keyUpOnY);

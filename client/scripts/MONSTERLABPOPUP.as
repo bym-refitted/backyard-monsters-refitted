@@ -1,5 +1,6 @@
 package
 {
+   import com.bymrefitted.ui.interfaces.IHideActionHandler;
    import com.monsters.display.ImageCache;
    import com.monsters.display.ScrollSet;
    import flash.display.Bitmap;
@@ -9,7 +10,7 @@ package
    import flash.events.MouseEvent;
    import flash.text.TextField;
    
-   public class MONSTERLABPOPUP extends MONSTERLABPOPUP_CLIP
+   public class MONSTERLABPOPUP extends MONSTERLABPOPUP_CLIP implements IHideActionHandler
    {
       
       public static var _page:int = 1;

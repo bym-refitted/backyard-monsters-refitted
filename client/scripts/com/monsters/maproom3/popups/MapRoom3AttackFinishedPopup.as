@@ -1,11 +1,12 @@
 package com.monsters.maproom3.popups
 {
+   import com.bymrefitted.ui.interfaces.IHideActionHandler;
    import com.monsters.maproom_manager.MapRoomManager;
    import config.singletonlock.SingletonLock;
    import flash.events.Event;
    import flash.events.MouseEvent;
    
-   public class MapRoom3AttackFinishedPopup extends popup_attackend_CLIP
+   public class MapRoom3AttackFinishedPopup extends popup_attackend_CLIP implements IHideActionHandler
    {
       
       private static var s_Instance:MapRoom3AttackFinishedPopup = null;
@@ -41,7 +42,7 @@ package com.monsters.maproom3.popups
          POPUPS.Push(this);
       }
       
-      public function Hide() : void
+      public function Hide(param1:MouseEvent = null) : void
       {
          POPUPS.Next();
       }

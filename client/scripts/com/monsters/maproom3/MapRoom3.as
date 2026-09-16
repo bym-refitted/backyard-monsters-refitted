@@ -8,6 +8,7 @@ package com.monsters.maproom3
    import com.monsters.maproom_manager.IMapRoomCell;
    import flash.events.Event;
    import flash.events.IOErrorEvent;
+   import flash.events.MouseEvent;
    import flash.events.SecurityErrorEvent;
    import flash.geom.Point;
    import flash.net.URLLoader;
@@ -168,7 +169,7 @@ package com.monsters.maproom3
          m_MapRoom3Window.Init(this.m_LastCenterPoint);
       }
       
-      public function Hide() : void
+      public function Hide(param1:MouseEvent = null) : void
       {
          this.m_Open = false;
          this.m_LastCenterPoint = m_MapRoom3Window.centerPoint;

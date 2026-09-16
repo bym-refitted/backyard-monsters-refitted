@@ -1,12 +1,13 @@
 package com.monsters.maproom3.popups
 {
+   import com.bymrefitted.ui.interfaces.IHideActionHandler;
    import com.monsters.enums.EnumYardType;
    import com.monsters.maproom3.data.MapRoom3FriendData;
    import com.monsters.maproom_manager.MapRoomManager;
    import config.singletonlock.SingletonLock;
    import flash.events.MouseEvent;
    
-   public class MapRoom3RelocatePopup extends MapRoom3RelocateMainYardPopup
+   public class MapRoom3RelocatePopup extends MapRoom3RelocateMainYardPopup implements IHideActionHandler
    {
       
       private static var s_Instance:MapRoom3RelocatePopup = null;
@@ -77,7 +78,7 @@ package com.monsters.maproom3.popups
          contentsContainer.addChild(this.m_DisplayList);
       }
       
-      public function Hide() : void
+      public function Hide(param1:MouseEvent = null) : void
       {
          if(this.m_IsShowing == false)
          {

@@ -1,11 +1,12 @@
 package com.monsters.maproom_advanced
 {
+   import com.bymrefitted.ui.interfaces.IHideActionHandler;
    import com.monsters.maproom_manager.MapRoomManager;
    import flash.events.IOErrorEvent;
    import flash.events.MouseEvent;
    import flash.geom.Point;
    
-   public class PopupLostMainBase extends MapRoomPopup_LostMainBase_CLIP
+   public class PopupLostMainBase extends MapRoomPopup_LostMainBase_CLIP implements IHideActionHandler
    {
        
       

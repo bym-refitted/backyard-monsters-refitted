@@ -1,10 +1,11 @@
 package com.monsters.subscriptions.ui.controlPanel
 {
+   import com.bymrefitted.ui.interfaces.IHideActionHandler;
    import com.monsters.subscriptions.SubscriptionHandler;
    import flash.events.Event;
    import flash.events.MouseEvent;
    
-   public class MembershipPopup extends subscriptions_membership_popup
+   public class MembershipPopup extends subscriptions_membership_popup implements IHideActionHandler
    {
        
       

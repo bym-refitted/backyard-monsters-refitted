@@ -1,5 +1,6 @@
 package com.monsters.subscriptions.ui.controlPanel
 {
+   import com.bymrefitted.ui.interfaces.IHideActionHandler;
    import com.monsters.rewarding.RewardHandler;
    import com.monsters.subscriptions.SubscriptionHandler;
    import com.monsters.subscriptions.rewards.DAVEStatueReward;
@@ -9,7 +10,7 @@ package com.monsters.subscriptions.ui.controlPanel
    import flash.events.Event;
    import flash.events.MouseEvent;
    
-   public class SubscriptionControlPanelPopup extends subscriptions_controlPanel_popup
+   public class SubscriptionControlPanelPopup extends subscriptions_controlPanel_popup implements IHideActionHandler
    {
       
       public static const SAVE:String = "saveChanges";

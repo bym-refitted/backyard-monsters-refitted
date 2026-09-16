@@ -1,5 +1,6 @@
 package com.monsters.maproom_advanced
 {
+   import com.bymrefitted.ui.interfaces.IHideActionHandler;
 
    import com.cc.utils.SecNum;
    import com.monsters.alliances.*;
@@ -20,7 +21,7 @@ package com.monsters.maproom_advanced
    import flash.events.MouseEvent;
    import flash.net.URLRequest;
 
-   internal class PopupAttackA extends PopupAttackA_CLIP
+   internal class PopupAttackA extends PopupAttackA_CLIP implements IHideActionHandler
    {
       private var _cell:MapRoomCell;
 

@@ -1,5 +1,6 @@
 package com.monsters.maproom_inferno.views
 {
+   import com.bymrefitted.ui.interfaces.IHideActionHandler;
    import com.monsters.display.ImageCache;
    import com.monsters.maproom_inferno.*;
    import flash.display.Bitmap;
@@ -14,7 +15,7 @@ package com.monsters.maproom_inferno.views
    import gs.TweenLite;
    import gs.easing.Quad;
    
-   public class DescentView extends DescentView_CLIP
+   public class DescentView extends DescentView_CLIP implements IHideActionHandler
    {
       
       private static var instance:DescentView;
@@ -304,7 +305,7 @@ package com.monsters.maproom_inferno.views
          this.players.Get();
       }
       
-      public function Hide(... rest) : void
+      public function Hide(param1:MouseEvent = null) : void
       {
          stage.removeEventListener(MouseEvent.MOUSE_UP,this.stageUp);
       }

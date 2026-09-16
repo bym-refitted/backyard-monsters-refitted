@@ -1,5 +1,6 @@
 package
 {
+   import com.bymrefitted.ui.interfaces.IHideActionHandler;
    import com.monsters.display.ImageCache;
    import com.monsters.maproom_advanced.PopupInfoMonster;
    import com.monsters.siege.SiegeWeapons;
@@ -9,7 +10,7 @@ package
    import flash.display.MovieClip;
    import flash.events.*;
    
-   public class QUESTSPOPUP extends QUESTSPOPUP_CLIP
+   public class QUESTSPOPUP extends QUESTSPOPUP_CLIP implements IHideActionHandler
    {
        
       
@@ -402,7 +403,7 @@ package
          };
       }
       
-      public function Hide() : void
+      public function Hide(param1:MouseEvent = null) : void
       {
          QUESTS.Hide();
       }

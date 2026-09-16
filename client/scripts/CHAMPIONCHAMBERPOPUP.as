@@ -1,5 +1,6 @@
 package
 {
+   import com.bymrefitted.ui.interfaces.IHideActionHandler;
    import com.monsters.display.ImageCache;
    import com.monsters.display.ScrollSetH;
    import flash.display.Bitmap;
@@ -10,7 +11,7 @@ package
    import gs.TweenLite;
    import gs.easing.*;
    
-   public class CHAMPIONCHAMBERPOPUP extends GUARDIANCHAMBERPOPUP_CLIP
+   public class CHAMPIONCHAMBERPOPUP extends GUARDIANCHAMBERPOPUP_CLIP implements IHideActionHandler
    {
        
       

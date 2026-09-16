@@ -1,5 +1,7 @@
 package
 {
+   import com.bymrefitted.ui.interfaces.IHelpActionHandler;
+   import com.bymrefitted.ui.interfaces.IHideActionHandler;
    import com.monsters.display.ImageCache;
    import com.monsters.managers.InstanceManager;
    import flash.display.Bitmap;
@@ -7,7 +9,7 @@ package
    import flash.display.DisplayObject;
    import flash.events.MouseEvent;
    
-   public class ACADEMYPOPUP extends ACADEMYPOPUP_CLIP
+   public class ACADEMYPOPUP extends ACADEMYPOPUP_CLIP implements IHideActionHandler, IHelpActionHandler
    {
       
       public static var _page:int = 1;

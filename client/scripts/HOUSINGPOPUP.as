@@ -1,5 +1,6 @@
 package
 {
+   import com.bymrefitted.ui.interfaces.IHideActionHandler;
    import com.monsters.display.ImageCache;
    import com.monsters.display.ScrollSet;
    import com.monsters.managers.InstanceManager;
@@ -11,7 +12,7 @@ package
    import flash.events.MouseEvent;
    import flash.geom.Point;
    
-   public class HOUSINGPOPUP extends HOUSINGPOPUP_CLIP
+   public class HOUSINGPOPUP extends HOUSINGPOPUP_CLIP implements IHideActionHandler
    {
        
       
@@ -473,7 +474,7 @@ package
          INFERNOPORTAL.AscendMonsters();
       }
       
-      public function Hide() : void
+      public function Hide(param1:MouseEvent = null) : void
       {
          HOUSING.Hide();
       }

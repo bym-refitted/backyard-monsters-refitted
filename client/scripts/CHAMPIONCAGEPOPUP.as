@@ -1,5 +1,6 @@
 package
 {
+   import com.bymrefitted.ui.interfaces.IHideActionHandler;
    import com.monsters.display.ImageCache;
    import com.monsters.kingOfTheHill.KOTHHandler;
    import com.monsters.monsters.champions.ChampionBase;
@@ -18,7 +19,7 @@ package
    import gs.*;
    import gs.easing.*;
    
-   public class CHAMPIONCAGEPOPUP extends GUARDIANCAGEPOPUP_CLIP
+   public class CHAMPIONCAGEPOPUP extends GUARDIANCAGEPOPUP_CLIP implements IHideActionHandler
    {
       
       public static var _page:int = 0;

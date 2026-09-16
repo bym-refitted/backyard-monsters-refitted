@@ -1,11 +1,13 @@
 package com.monsters.maproom_inferno.views
 {
+   import com.bymrefitted.ui.interfaces.IHideActionHandler;
+   import flash.events.MouseEvent;
    import flash.events.TimerEvent;
    import flash.utils.Timer;
    import gs.TweenLite;
    import gs.easing.Elastic;
    
-   public class DescentBasePopup extends DescentBasePopup_CLIP
+   public class DescentBasePopup extends DescentBasePopup_CLIP implements IHideActionHandler
    {
        
       
@@ -122,7 +124,7 @@ package com.monsters.maproom_inferno.views
          this._t.addEventListener(TimerEvent.TIMER,this.DepthCheck);
       }
       
-      public function Hide() : void
+      public function Hide(param1:MouseEvent = null) : void
       {
          this._t.stop();
          this._t.removeEventListener(TimerEvent.TIMER,this.DepthCheck);

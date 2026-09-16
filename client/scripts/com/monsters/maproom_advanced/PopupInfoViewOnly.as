@@ -1,5 +1,6 @@
 package com.monsters.maproom_advanced
 {
+   import com.bymrefitted.ui.interfaces.IHideActionHandler;
    
    import com.monsters.display.ImageCache;
    import com.monsters.enums.EnumYardType;
@@ -11,7 +12,7 @@ package com.monsters.maproom_advanced
    import flash.events.MouseEvent;
    import flash.net.URLRequest;
    
-   internal class PopupInfoViewOnly extends PopupInfoViewOnly_CLIP
+   internal class PopupInfoViewOnly extends PopupInfoViewOnly_CLIP implements IHideActionHandler
    {
        
       

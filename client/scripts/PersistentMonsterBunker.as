@@ -1,5 +1,7 @@
 package
 {
+   import com.bymrefitted.ui.interfaces.IHelpActionHandler;
+   import com.bymrefitted.ui.interfaces.IHideActionHandler;
    import com.monsters.display.ImageCache;
    import com.monsters.display.ScrollSet;
    import com.monsters.managers.InstanceManager;
@@ -10,7 +12,7 @@ package
    import flash.events.MouseEvent;
    import flash.geom.Point;
    
-   public class PersistentMonsterBunker extends MonsterBunkerPopup_Persistent_CLIP
+   public class PersistentMonsterBunker extends MonsterBunkerPopup_Persistent_CLIP implements IHideActionHandler, IHelpActionHandler
    {
       
       private static const kBarWidth:int = 535;

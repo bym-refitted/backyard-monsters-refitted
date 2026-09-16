@@ -10,8 +10,9 @@ package
    import flash.display.MovieClip;
    import flash.events.MouseEvent;
    import flash.text.TextFieldAutoSize;
+   import com.bymrefitted.ui.interfaces.IHideActionHandler;
    
-   public class BUILDINGOPTIONSPOPUP extends BUILDINGOPTIONSPOPUP_CLIP
+   public class BUILDINGOPTIONSPOPUP extends BUILDINGOPTIONSPOPUP_CLIP implements IHideActionHandler
    {
        
       
@@ -1123,7 +1124,7 @@ package
          }
       }
       
-      public function Hide() : void
+      public function Hide(event:MouseEvent = null) : void
       {
          try
          {
