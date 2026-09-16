@@ -94,6 +94,20 @@ export const snapshotLimiter = RateLimit.middleware({
 });
 
 /**
+ * Rate limit for the MR2 player lookup - 60 requests per minute per API consumer.
+ */
+export const playersLimiter = RateLimit.middleware({
+  interval: { min: 1 },
+  max: 60,
+  prefixKey: "players",
+  keyGenerator: async (ctx: Context) => `players|${ctx.state.apiConsumer ?? ctx.ip}`,
+  handler: async (ctx: Context) => {
+    ctx.status = Status.TOO_MANY_REQUESTS;
+    ctx.body = { error: "Too many player requests. Please slow down." };
+  },
+});
+
+/**
  * Rate limit for MR3 getcells - 60 requests per minute per user.
  */
 export const getCellsLimiter = RateLimit.middleware({
