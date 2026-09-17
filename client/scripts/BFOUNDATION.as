@@ -509,14 +509,88 @@ package {
                 param1 *= 100 - (this._fortification.Get() * 10 + 10);
                 param1 /= 100;
             }
-            param1 *= !!armor ? 1 - armor : 1;
-            setHealth(health - param1);
-            if (health <= 0) {
-                this._repairing = 0;
-                setHealth(0);
-                if (!this._destroyed) {
-                    this.Destroyed(param2 != null);
-                }
+            this._mcHit.cacheAsBitmap = false;
+            this._mcHit.alpha = 0;
+         }
+         catch(e:Error)
+         {
+            LOGGER.Log("err","BFOUNDATION.SetProps:  mcHit | " + e.message + " | " + e.getStackTrace());
+            GLOBAL.ErrorMessage("BFOUNDATION.SetProps:  mcHit");
+            return;
+         }
+         try
+         {
+            _size = this._buildingProps.size;
+            this._class = this._buildingProps.type;
+         }
+         catch(e:Error)
+         {
+            LOGGER.Log("err","BFOUNDATION.SetProps:  size/class | " + e.message + " | " + e.getStackTrace());
+            GLOBAL.ErrorMessage("BFOUNDATION.SetProps:  size/class");
+            return;
+         }
+         try
+         {
+            this._mcFootprint.gotoAndStop(1);
+         }
+         catch(e:Error)
+         {
+            LOGGER.Log("err","BFOUNDATION.SetProps:  mcFootprint 2 | " + e.message + " | " + e.getStackTrace());
+            GLOBAL.ErrorMessage("BFOUNDATION.SetProps:  mcFootprint 2");
+            return;
+         }
+         try
+         {
+            this._attackgroup = this._buildingProps.attackgroup;
+            this._mouseOffset = new Point(0,int(this._mcFootprint.height / 20) * 10);
+            _middle = this._footprint[0].height * 0.5;
+         }
+         catch(e:Error)
+         {
+            LOGGER.Log("err","BFOUNDATION.SetProps:  end stuff | " + e.message + " | " + e.getStackTrace());
+            GLOBAL.ErrorMessage("BFOUNDATION.SetProps:  end");
+            return;
+         }
+         this.anim2Container = new BuildingAssetContainer();
+         this.anim2Container.mouseChildren = false;
+         this.anim2Container.mouseEnabled = false;
+         this.anim3Container = new BuildingAssetContainer();
+         this.anim3Container.mouseChildren = false;
+         this.anim3Container.mouseEnabled = false;
+         if(!BYMConfig.instance.RENDERER_ON)
+         {
+            _mc.addChild(this.anim2Container);
+            _mc.addChild(this.anim3Container);
+         }
+         if(this._buildingProps.isUntargetable)
+         {
+            targetableStatus = 1;
+         }
+         if(this._buildingProps.isImmobile)
+         {
+            moveSpeedProperty.value = 0;
+         }
+      }
+      
+      public function Bank() : void
+      {
+      }
+      
+      public function Description() : void
+      {
+         var _loc1_:Number = NaN;
+         var _loc2_:Object = null;
+         var effectiveLvl:int = getEffectiveLevel();
+         if(this._buildingProps.names != null && this._buildingProps.names.length >= effectiveLvl)
+         {
+            this._buildingTitle = "<b>" + this._buildingProps.names[effectiveLvl - 1] + "</b>";
+         }
+         else
+         {
+            this._buildingTitle = "<b>" + this._buildingProps.name + "</b>";
+            if(this._buildingProps.costs.length > 1)
+            {
+               this._buildingTitle += " " + KEYS.Get("bdg_level",{"v1":effectiveLvl});
             }
             else if (this._class != "wall") {
                 ATTACK.Log("b" + this._id, "<font color=\"#990000\">" + KEYS.Get("attack_log_%damaged", {
