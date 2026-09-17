@@ -148,6 +148,9 @@ package com.monsters.maproom_advanced {
                 };
             this.testAllianceIDs = [1, 2, 3, 102, 111];
             super();
+            mc.mcPlayer.stop();
+            mc.mcPlayer.mcFlag2.stop();
+            mc.mcPlayer.mcLevel.stop();
             mc.mcHit.addEventListener(MouseEvent.MOUSE_OVER, this.Over);
             mc.mcHit.addEventListener(MouseEvent.MOUSE_OUT, this.Out);
             mc.mcHit.addEventListener(MouseEvent.MOUSE_UP, this.Click);
