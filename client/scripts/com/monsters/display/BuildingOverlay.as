@@ -84,6 +84,7 @@ package com.monsters.display
          _loc3_ = _buildings[param1._id].container;
          _loc3_.mouseEnabled = false;
          _loc3_.mouseChildren = false;
+         _loc3_.visible = false;
          _loc2_ = _loc3_.addChild(new Bitmap(_buildings[param1._id].bmdtext));
          _loc2_.x = -26 + _loc4_.x + (51 - labelWidth) * 0.5;
          _loc2_.y = -32 + _loc4_.y;
@@ -289,7 +290,58 @@ package com.monsters.display
             for each (_loc1_ in _buildings) {
                 clearOverlay(_loc1_);
             }
-            _buildings = {};
-        }
-    }
+            else if(_loc8_.indexhp != -1)
+            {
+               _loc8_.indexhp = -1;
+               _loc5_ = _loc8_.bmdhp;
+               _loc5_.fillRect(_loc5_.rect,0);
+            }
+            _loc8_.container.visible = _loc8_.indextext != "" ||
+               _loc8_.indexprogress != -1 || _loc8_.indexhp != -1;
+         }
+      }
+      
+      public static function clearBuilding(param1:BFOUNDATION) : void
+      {
+         var _loc2_:Object = _buildings[param1._id];
+         if(!_loc2_)
+         {
+            return;
+         }
+         clearOverlay(_loc2_);
+         delete _buildings[param1._id];
+      }
+      
+      protected static function clearOverlay(param1:Object) : void
+      {
+         if(Boolean(param1.container) && MAP._BUILDINGTOPS && param1.container.parent == MAP._BUILDINGTOPS)
+         {
+            MAP._BUILDINGTOPS.removeChild(param1.container);
+         }
+         if(param1.bmdtext is BitmapData)
+         {
+            param1.bmdtext.dispose();
+         }
+         if(param1.bmdprogress is BitmapData)
+         {
+            param1.bmdprogress.dispose();
+         }
+         if(param1.bmdhp is BitmapData)
+         {
+            param1.bmdhp.dispose();
+         }
+         param1.container = null;
+         param1.indextext = null;
+      }
+      
+      public static function Clear() : void
+      {
+         var _loc1_:Object = null;
+         for each(_loc1_ in _buildings)
+         {
+            clearOverlay(_loc1_);
+         }
+         _buildings = {};
+      }
+   }
 }
