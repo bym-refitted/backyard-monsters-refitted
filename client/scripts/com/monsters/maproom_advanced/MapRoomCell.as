@@ -192,6 +192,8 @@ package com.monsters.maproom_advanced {
             mc.mcEdges.visible = false;
             mc.mcPrompt.enabled = false;
             mc.mcPrompt.visible = false;
+            mc.mcPrompt.bYes.stop();
+            mc.mcPrompt.bNo.stop();
         }
 
         internal function InvalidateVisibilityStructure(event:Event = null):void {
