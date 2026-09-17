@@ -1294,47 +1294,61 @@ package {
                         if (BYMConfig.instance.RENDERER_ON) {
                             _ROOT.stage.invalidate();
                         }
-                    }
-                    ++_frameNumber;
-                    _loc2_ = int(getTimer());
-                    if (!MapRoomManager.instance.isOpen) {
-                        WORKERS.Tick();
-                        EFFECTS.Tick();
-                        WMATTACK.Tick();
-                        MAPROOM.Tick();
-                        PATHING.Tick();
-                        Smoke.Tick();
-                        Fire.Tick();
-                        BASE.ShakeB();
-                        _player.tick();
-                    }
-                    if (!TUTORIAL.hasFinished) {
-                        TUTORIAL.Tick();
-                    }
-                    if (_flags.logfps) {
-                        if (_FPSframecount == 40 * 60) {
-                            LogFPS();
-                        }
-                        else if (_FPSframecount > 80 && _FPSframecount % 40 == 0) {
-                            _fps = int(1000 / ((_loc2_ - _FPStimestamp) / 40));
-                            if (_FPStimestamp > 0) {
-                                _FPSarray.push({"fps": _fps});
-                            }
-                            _FPStimestamp = _loc2_;
-                        }
-                    }
-                    else if (_FPSframecount % 40 == 0) {
-                        _fps = int(1000 / ((_loc2_ - _FPStimestamp) / 40));
-                        _FPStimestamp = _loc2_;
-                    }
-                    _FPSframecount += 1;
-                    if (_frameNumber % 3 == 0 && !BYMConfig.instance.RENDERER_ON) {
-                        MAP.SortDepth();
-                    }
-                }
-                else {
-                    _loops = 4;
-                }
+                        _loc6_++;
+                     }
+                     PROJECTILES.Tick();
+                     FIREBALLS.Tick();
+                     _loc7_++;
+                  }
+                  if (BYMConfig.instance.RENDERER_ON)
+                  {
+                     MAP.invalidate();
+                  }
+               }
+               ++ _frameNumber;
+               _loc2_ = int(getTimer());
+               if (!MapRoomManager.instance.isOpen)
+               {
+                  WORKERS.Tick();
+                  EFFECTS.Tick();
+                  WMATTACK.Tick();
+                  MAPROOM.Tick();
+                  PATHING.Tick();
+                  Smoke.Tick();
+                  Fire.Tick();
+                  BASE.ShakeB();
+                  _player.tick();
+               }
+               if (!TUTORIAL.hasFinished)
+               {
+                  TUTORIAL.Tick();
+               }
+               if (_flags.logfps)
+               {
+                  if (_FPSframecount == 40 * 60)
+                  {
+                     LogFPS();
+                  }
+                  else if (_FPSframecount > 80 && _FPSframecount % 40 == 0)
+                  {
+                     _fps = int(1000 / ((_loc2_ - _FPStimestamp) / 40));
+                     if (_FPStimestamp > 0)
+                     {
+                        _FPSarray.push( {"fps": _fps});
+                     }
+                     _FPStimestamp = _loc2_;
+                  }
+               }
+               else if (_FPSframecount % 40 == 0)
+               {
+                  _fps = int(1000 / ((_loc2_ - _FPStimestamp) / 40));
+                  _FPStimestamp = _loc2_;
+               }
+               _FPSframecount += 1;
+               if (_frameNumber % 3 == 0 && !BYMConfig.instance.RENDERER_ON)
+               {
+                  MAP.SortDepth();
+               }
             }
             else {
                 lastTime = 0;
