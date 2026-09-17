@@ -897,8 +897,9 @@ package com.monsters.maproom_advanced {
                 panTop = Math.max(panTop, topBound - cell.y);
                 panBottom = Math.min(panBottom, bottomBound - cell.y);
 
+                cell._rangeAlpha = cell.mc.mcGlow.alpha;
                 if (notDragged) {
-                    cell.mc.mcGlow.alpha = cell._over ? 0.5 : 0;
+                    cell._rangeAlpha = cell._over ? 0.5 : 0;
                     cell._inRange = false;
                 }
 
@@ -934,11 +935,11 @@ package com.monsters.maproom_advanced {
 
                     if (homeCell) {
                         if (!homeCell._over)
-                            homeCell.mc.mcGlow.alpha = 0.5;
+                            homeCell._rangeAlpha = 0.5;
                         homeCell._inRange = true;
                     }
 
-                    this.ApplyRangeHighlighting(GLOBAL._mapHome.x, GLOBAL._mapHome.y, flingerRange);
+                    this.ApplyRangeHighlighting(GLOBAL._mapHome.x, GLOBAL._mapHome.y, flingerRange, true);
                 }
 
                 for each (rangeCell in cellsWithRange) {
@@ -947,10 +948,15 @@ package com.monsters.maproom_advanced {
                         continue;
 
                     flingerRange = POWERUPS.Apply(POWERUPS.ALLIANCE_DECLAREWAR, [rangeCell._flingerRange.Get()]);
-                    this.ShowRange(rangeCell, flingerRange);
+                    this.ShowRange(rangeCell, flingerRange, true);
                 }
             }
 
+            for each (cell in this._cells) {
+                if (cell.mc.mcGlow.alpha != cell._rangeAlpha) {
+                    cell.mc.mcGlow.alpha = cell._rangeAlpha;
+                }
+            }
             this.UpdateViewport();
         }
 
@@ -987,14 +993,18 @@ package com.monsters.maproom_advanced {
             }
         }
 
-        public function ShowRange(param1:MapRoomCell, param2:int):void {
+        public function ShowRange(param1:MapRoomCell, param2:int, defer:Boolean = false):void {
             if (!this._dragged) {
                 if (param1._water == 0) {
                     if (!param1._over) {
-                        param1.mc.mcGlow.alpha = 0.5;
+                        if (defer) {
+                            param1._rangeAlpha = 0.5;
+                        } else {
+                            param1.mc.mcGlow.alpha = 0.5;
+                        }
                     }
                     param1._inRange = true;
-                    this.ApplyRangeHighlighting(param1.X, param1.Y, param2);
+                    this.ApplyRangeHighlighting(param1.X, param1.Y, param2, defer);
                 }
             }
         }
@@ -1006,7 +1016,7 @@ package com.monsters.maproom_advanced {
          * Cells within base flinger range get full highlight (alpha 0.5).
          * Cells in bonus range from Alliance Declare War powerup get dimmer highlight (alpha 0.35).
          */
-        private function ApplyRangeHighlighting(startOffsetX:int, startOffsetY:int, range:int):void {
+        private function ApplyRangeHighlighting(startOffsetX:int, startOffsetY:int, range:int, defer:Boolean = false):void {
             var cell:MapRoomCell;
             var distance:int;
             var currentOffsetX:int;
@@ -1037,7 +1047,12 @@ package com.monsters.maproom_advanced {
 
                     if (cell && !cell._water) {
                         if (!cell._over) {
-                            cell.mc.mcGlow.alpha = distance <= baseRange ? 0.5 : Math.max(cell.mc.mcGlow.alpha, 0.35);
+                            var alpha:Number = distance <= baseRange ? 0.5 : Math.max(defer ? cell._rangeAlpha : cell.mc.mcGlow.alpha, 0.35);
+                            if (defer) {
+                                cell._rangeAlpha = alpha;
+                            } else {
+                                cell.mc.mcGlow.alpha = alpha;
+                            }
                         }
                         cell._inRange = true;
                     }
