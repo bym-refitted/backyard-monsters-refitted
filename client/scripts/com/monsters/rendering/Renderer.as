@@ -33,10 +33,28 @@ package com.monsters.rendering
       private const _copyBounds:Rectangle = new Rectangle();
 
       private const _groundCache:GroundRasterCache = new GroundRasterCache();
+      private const _origin:Point = new Point();
+      private var _worldCanvas:BitmapData;
+      private var _worldWidth:int;
+      private var _worldHeight:int;
+      private const _worldRegion:Rectangle = new Rectangle();
+      private const _localRegion:Rectangle = new Rectangle();
+      private const _worldPoint:Point = new Point();
+      private const _localPoint:Point = new Point();
+      private const _single:Vector.<RasterData> = new Vector.<RasterData>(1,true);
+
+      public function setViewport(target:BitmapData, origin:Point) : void
+      {
+         this._canvas = target;
+         this._origin.setTo(origin.x,origin.y);
+      }
 
       public function dispose() : void
       {
          this._groundCache.dispose();
+         if(this._worldCanvas) this._worldCanvas.dispose();
+         this._worldCanvas = null;
+         this._single[0] = null;
       }
       
       private var _curCopyIndex:uint;
@@ -47,6 +65,7 @@ package com.monsters.rendering
       {
          super();
          this.renderer_friend::_canvas = param1;
+         this._origin.setTo(0,0);
          this.renderer_friend::_viewRect = param2;
       }
       
@@ -74,6 +93,7 @@ package com.monsters.rendering
       {
          this.dispose();
          this.renderer_friend::_canvas = param1;
+         this._origin.setTo(0,0);
       }
       
       public function render() : void
@@ -87,7 +107,10 @@ package com.monsters.rendering
          }
          this.renderer_friend::_canvas.lock();
          var ground:Vector.<RasterData> = RasterData.renderer_friend::s_unsortedData;
-         var cached:int = this._groundCache.render(ground,this,this.renderer_friend::_canvas);
+         var base:BitmapData = ground.length && ground[0] ? ground[0]._data as BitmapData : null;
+         this._worldWidth = Math.max(this._origin.x + this._canvas.width,base ? base.width : 0);
+         this._worldHeight = Math.max(this._origin.y + this._canvas.height,base ? base.height : 0);
+         var cached:int = this._groundCache.render(ground,this,this.renderer_friend::_canvas,this._origin);
          this.rasterize(ground,null,cached);
          this.rasterize(_loc1_);
          this.renderer_friend::_canvas.unlock();
@@ -137,11 +160,23 @@ package com.monsters.rendering
                 _loc1_.sort(this.sortRasterData);
                 RasterData.renderer_friend::s_needsSort = false;
             }
+            if(!target && (entry._scaleX != 100 || entry._scaleY != 100) &&
+               (this._worldWidth != canvas.width || this._worldHeight != canvas.height))
+            {
+               this.rasterizeScaledInWorld(entry,canvas);
+               i++;
+               continue;
+            }
             entryBmd = entry.renderer_friend::_data as BitmapData;
             this._pt.x = entry.renderer_friend::_pt.x;
             this._pt.y = entry.renderer_friend::_pt.y;
             if(entryBmd && !entry.renderer_friend::_blendMode && !entry.renderer_friend::_filter && (entry.renderer_friend::_scaleX & entry.renderer_friend::_scaleY) === 100)
             {
+               if(!target)
+               {
+                  this._pt.x = int(this._pt.x) - this._origin.x;
+                  this._pt.y = int(this._pt.y) - this._origin.y;
+               }
                if(entry.renderer_friend::_alpha !== 4278190080)
                {
                   alphaMask = new BitmapData(entryBmd.width,entryBmd.height,true,entry.renderer_friend::_alpha);
@@ -165,6 +200,11 @@ package com.monsters.rendering
             }
             else
             {
+               if(!target)
+               {
+                  this._pt.x -= this._origin.x;
+                  this._pt.y -= this._origin.y;
+               }
                this._matrix.createBox(entry.renderer_friend::_scaleX * 0.01,entry.renderer_friend::_scaleY * 0.01,0,this._pt.x,this._pt.y);
                if(Boolean(entry.renderer_friend::_filter) && Boolean(entryBmd))
                {
@@ -200,6 +240,42 @@ package com.monsters.rendering
                   }
                }
             }
-        }
-    }
+            i++;
+         }
+      }
+
+      private function rasterizeScaledInWorld(entry:RasterData, canvas:BitmapData) : void
+      {
+         this._worldRegion.setTo(this._origin.x,this._origin.y,canvas.width,canvas.height);
+         var source:BitmapData = entry._data as BitmapData;
+         if(source && !entry._filter)
+         {
+            var x:Number = entry._pt.x + source.width * entry._scaleX * 0.01;
+            var y:Number = entry._pt.y + source.height * entry._scaleY * 0.01;
+            var copied:Boolean = !entry._blendMode && (entry._scaleX & entry._scaleY) === 100;
+            if(copied) { x=entry._pt.x+source.width; y=entry._pt.y+source.height; }
+            var left:Number = Math.max(this._worldRegion.x,Math.floor(Math.min(entry._pt.x,x))-2);
+            var top:Number = Math.max(this._worldRegion.y,Math.floor(Math.min(entry._pt.y,y))-2);
+            var right:Number = Math.min(this._worldRegion.right,Math.ceil(Math.max(entry._pt.x,x))+2);
+            var bottom:Number = Math.min(this._worldRegion.bottom,Math.ceil(Math.max(entry._pt.y,y))+2);
+            if(right<=left || bottom<=top) return;
+            this._worldRegion.setTo(left,top,right-left,bottom-top);
+         }
+         if(!this._worldCanvas || this._worldCanvas.width != this._worldWidth ||
+            this._worldCanvas.height != this._worldHeight || this._worldCanvas.transparent != canvas.transparent)
+         {
+            if(this._worldCanvas) this._worldCanvas.dispose();
+            this._worldCanvas = new BitmapData(this._worldWidth,this._worldHeight,canvas.transparent,0);
+         }
+         this._localRegion.setTo(this._worldRegion.x-this._origin.x,this._worldRegion.y-this._origin.y,
+            this._worldRegion.width,this._worldRegion.height);
+         this._worldPoint.setTo(this._worldRegion.x,this._worldRegion.y);
+         this._worldCanvas.copyPixels(canvas,this._localRegion,this._worldPoint);
+         this._single[0] = entry;
+         this.rasterize(this._single,null,0,this._worldCanvas);
+         this._single[0] = null;
+         this._localPoint.setTo(this._localRegion.x,this._localRegion.y);
+         canvas.copyPixels(this._worldCanvas,this._worldRegion,this._localPoint);
+      }
+   }
 }

@@ -19,6 +19,7 @@ package com.monsters.rendering
       private var generation:uint;
       private const origin:Point = new Point();
       private const tile:Rectangle = new Rectangle();
+      private const view:Rectangle = new Rectangle();
       private const batch:Vector.<RasterData> = new Vector.<RasterData>();
 
       public function dispose() : void
@@ -30,14 +31,15 @@ package com.monsters.rendering
          batch.length = 0;
       }
 
-      public function render(entries:Vector.<RasterData>, renderer:Renderer, target:BitmapData) : int
+      public function render(entries:Vector.<RasterData>, renderer:Renderer, target:BitmapData, offset:Point) : int
       {
          var first:RasterData = entries.length ? entries[0] : null;
          var base:BitmapData = first ? first._data as BitmapData : null;
          if(!first || !base || base.transparent || !first.cacheable || first._cleared ||
             !first._pt || first._pt.x != 0 || first._pt.y != 0 || first._filter ||
             first._blendMode || first._alpha != 4278190080 || first._scaleX != 100 ||
-            first._scaleY != 100 || base.width != target.width || base.height != target.height)
+            first._scaleY != 100 || offset.x < 0 || offset.y < 0 ||
+            offset.x + target.width > base.width || offset.y + target.height > base.height)
          {
             dispose();
             return 0;
@@ -60,10 +62,10 @@ package com.monsters.rendering
             dispose();
             return 0;
          }
-         if(!bitmap || bitmap.width != target.width || bitmap.height != target.height)
+         if(!bitmap || bitmap.width != base.width || bitmap.height != base.height)
          {
             dispose();
-            bitmap = new BitmapData(target.width,target.height,false,0);
+            bitmap = new BitmapData(base.width,base.height,false,0);
             columns = Math.ceil(bitmap.width / TILE);
             rows = Math.ceil(bitmap.height / TILE);
             dirty = new Vector.<Boolean>(columns * rows,true);
@@ -133,7 +135,8 @@ package com.monsters.rendering
             dirty[index] = false;
          }
          bitmap.unlock();
-         target.copyPixels(bitmap,bitmap.rect,origin);
+         view.setTo(offset.x,offset.y,target.width,target.height);
+         target.copyPixels(bitmap,view,origin);
          return count;
       }
 

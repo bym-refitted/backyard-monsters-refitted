@@ -6,6 +6,7 @@ package
    import com.monsters.maproom_manager.MapRoomManager;
    import com.monsters.rendering.RasterData;
    import com.monsters.rendering.Renderer;
+   import com.monsters.rendering.ViewportCanvas;
    import flash.display.Bitmap;
    import flash.display.BitmapData;
    import flash.display.DisplayObject;
@@ -114,7 +115,7 @@ package
       
       private static var _canvas:BitmapData;
       
-      private static var _canvasContainer:Bitmap;
+      private static var _canvasContainer:ViewportCanvas;
       
       public static const MAP_WIDTH:uint = 3994;
       
@@ -160,8 +161,13 @@ package
             {
                _BGTILES = _GROUND.addChild(new MovieClip()) as MovieClip;
             }
-            catch (e:Error) {
-                LOGGER.Log("err", "MAP.Setup A: " + e.message + " | " + e.getStackTrace());
+            if(BYMConfig.instance.RENDERER_ON)
+            {
+               _canvas = new BitmapData(MAP_WIDTH,MAP_HEIGHT,false,0);
+               _canvasContainer = new ViewportCanvas(_canvas);
+               _canvasContainer.x = -MAP_WIDTH / 2;
+               _canvasContainer.y = -MAP_HEIGHT / 2;
+               _GROUND.addChild(_canvasContainer);
             }
          }
          catch(e:Error)
@@ -832,7 +838,7 @@ package
          return _canvas;
       }
       
-      public function get canvasContainer() : Bitmap
+      public function get canvasContainer() : ViewportCanvas
       {
          return _canvasContainer;
       }
@@ -851,14 +857,7 @@ package
       
       public function resizeCanvas() : void
       {
-         if(_inited && _canvas.width !== GLOBAL._SCREEN.width || _canvas.height !== GLOBAL._SCREEN.height)
-         {
-            _canvas = new BitmapData(GLOBAL._SCREEN.width,GLOBAL._SCREEN.height,true,4278255360);
-            _canvasContainer.bitmapData = _canvas;
-            _canvasContainer.x = GLOBAL._SCREEN.x;
-            _canvasContainer.y = GLOBAL._SCREEN.y;
-            this._renderer.canvas = _canvas;
-         }
+         if(_inited) GLOBAL._ROOT.stage.invalidate();
       }
       
       public function resizeViewRect() : void
@@ -874,6 +873,10 @@ package
       
       private function render(param1:Event) : void
       {
+         var previous:BitmapData = _canvas;
+         _canvas = _canvasContainer.prepare();
+         this._renderer.setViewport(_canvas,_canvasContainer.origin);
+         if(previous != _canvas) previous.dispose();
          this._renderer.render();
       }
 
