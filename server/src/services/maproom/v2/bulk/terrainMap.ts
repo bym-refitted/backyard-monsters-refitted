@@ -2,18 +2,20 @@ import { createHash } from "crypto";
 import { brotliCompress, constants, gzip } from "zlib";
 import { promisify } from "util";
 
-import { MapRoom2 } from "../../../enums/MapRoom.js";
+import { MapRoom2 } from "../../../../enums/MapRoom.js";
 import {
   EDGE_TRANSITION_WIDTH,
   NOISE_SCALE,
   TERRAIN_SCALE,
-} from "../../../config/MapRoom2Config.js";
-import { generateNoise, getTerrainHeight } from "./generateMap.js";
+} from "../../../../config/MapRoom2Config.js";
+import { generateNoise, getTerrainHeight } from "../generateMap.js";
+
+export type LazyEncoding = () => Promise<Buffer>;
 
 export interface TerrainMap {
   raw: Buffer;
   brotli: Buffer;
-  gzip: Buffer;
+  gzip: LazyEncoding;
   etag: string;
 }
 
@@ -27,6 +29,28 @@ const TERRAIN_PARAMS_HASH = createHash("sha1")
   .update(`${NOISE_SCALE}:${TERRAIN_SCALE}:${EDGE_TRANSITION_WIDTH}:${MapRoom2.WIDTH}x${MapRoom2.HEIGHT}`)
   .digest("hex")
   .slice(0, 8);
+
+/**
+ * Defers a compression until a caller negotiates that encoding, then reuses the result.
+ *
+ * Memoises the promise rather than the buffer, so concurrent requests share one
+ * compression; a rejection clears it so a transient failure is not cached.
+ *
+ * @param {LazyEncoding} compress - Produces the encoded copy.
+ * @returns {LazyEncoding} Getter for the encoded copy.
+ */
+export const lazyEncoding = (compress: LazyEncoding): LazyEncoding => {
+  let pending: Promise<Buffer> | undefined;
+
+  return () => {
+    pending ??= compress().catch((err) => {
+      pending = undefined;
+      throw err;
+    });
+
+    return pending;
+  };
+};
 
 /**
  * Generates the full terrain height map for a world.
@@ -45,11 +69,9 @@ const buildTerrainMap = async (worldid: string): Promise<TerrainMap> => {
     for (let y = 0; y < MapRoom2.HEIGHT; y++)
       raw[x * MapRoom2.HEIGHT + y] = getTerrainHeight(noise, x, y);
 
+  const brotli = await compressBrotli(raw, { params: { [constants.BROTLI_PARAM_QUALITY]: 11 } });
 
-  const [brotli, gzip] = await Promise.all([
-    compressBrotli(raw, { params: { [constants.BROTLI_PARAM_QUALITY]: 11 } }),
-    compressGzip(raw, { level: 9 }),
-  ]);
+  const gzip = lazyEncoding(() => compressGzip(raw, { level: 9 }));
 
   const etag = `"terrain-${TERRAIN_PARAMS_HASH}-${worldid}"`;
 

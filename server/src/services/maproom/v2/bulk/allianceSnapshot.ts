@@ -2,13 +2,14 @@ import { createHash } from "crypto";
 import { brotliCompress, constants, gzip } from "zlib";
 import { promisify } from "util";
 
-import { MapRoomVersion } from "../../../enums/MapRoom.js";
-import { AllianceStance } from "../../../enums/Alliance.js";
-import { Alliance } from "../../../database/models/alliance.model.js";
-import { AllianceRelationship } from "../../../database/models/alliancerelationship.model.js";
-import { User } from "../../../database/models/user.model.js";
-import { postgres } from "../../../server.js";
-import { getCurrentDateTime } from "../../../utils/getCurrentDateTime.js";
+import { MapRoomVersion } from "../../../../enums/MapRoom.js";
+import { AllianceStance } from "../../../../enums/Alliance.js";
+import { Alliance } from "../../../../database/models/alliance.model.js";
+import { AllianceRelationship } from "../../../../database/models/alliancerelationship.model.js";
+import { User } from "../../../../database/models/user.model.js";
+import { postgres } from "../../../../server.js";
+import { getCurrentDateTime } from "../../../../utils/getCurrentDateTime.js";
+import { lazyEncoding, type LazyEncoding } from "./terrainMap.js";
 
 /**
  * Builds and caches the MR2 alliance snapshot served by /worldmapv2/alliances.
@@ -22,7 +23,7 @@ import { getCurrentDateTime } from "../../../utils/getCurrentDateTime.js";
 export interface AllianceSnapshot {
   raw: Buffer;
   brotli: Buffer;
-  gzip: Buffer;
+  gzip: LazyEncoding;
   etag: string;
   generatedAt: number;
 }
@@ -139,12 +140,11 @@ const buildSnapshot = async (): Promise<AllianceSnapshot> => {
 
   const raw = Buffer.from(`{"generatedAt":${generatedAt},"alliances":${content}}`);
 
-  const [brotli, gzipped] = await Promise.all([
-    compressBrotli(raw, { params: { [constants.BROTLI_PARAM_QUALITY]: 5 } }),
-    compressGzip(raw, { level: 6 }),
-  ]);
+  const brotli = await compressBrotli(raw, { params: { [constants.BROTLI_PARAM_QUALITY]: 5 } });
 
-  return { raw, brotli, gzip: gzipped, etag, generatedAt };
+  const gzip = lazyEncoding(() => compressGzip(raw, { level: 6 }));
+
+  return { raw, brotli, gzip, etag, generatedAt };
 };
 
 /**

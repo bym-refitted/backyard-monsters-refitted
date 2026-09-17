@@ -1,7 +1,7 @@
 import { MapRoomVersion } from "../../../../enums/MapRoom.js";
 import { Status } from "../../../../enums/StatusCodes.js";
 import { isKnownWorld } from "../../../../services/maproom/knownWorlds.js";
-import { getTerrainMap } from "../../../../services/maproom/v2/terrainMap.js";
+import { getTerrainMap } from "../../../../services/maproom/v2/bulk/terrainMap.js";
 import type { KoaController } from "../../../../utils/KoaController.js";
 
 /**
@@ -85,7 +85,7 @@ export const getTerrain: KoaController = async (ctx) => {
 
   if (acceptEncoding && ctx.acceptsEncodings("gzip") === "gzip") {
     ctx.set("Content-Encoding", "gzip");
-    ctx.body = terrain.gzip;
+    ctx.body = await terrain.gzip();
     return;
   }
 

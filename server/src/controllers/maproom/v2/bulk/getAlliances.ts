@@ -2,7 +2,7 @@ import { Status } from "../../../../enums/StatusCodes.js";
 import {
   ALLIANCE_SNAPSHOT_MAX_AGE_SECONDS,
   getAllianceSnapshot,
-} from "../../../../services/maproom/v2/allianceSnapshot.js";
+} from "../../../../services/maproom/v2/bulk/allianceSnapshot.js";
 import type { KoaController } from "../../../../utils/KoaController.js";
 
 /**
@@ -90,7 +90,7 @@ export const getAlliances: KoaController = async (ctx) => {
 
   if (acceptEncoding && ctx.acceptsEncodings("gzip") === "gzip") {
     ctx.set("Content-Encoding", "gzip");
-    ctx.body = snapshot.gzip;
+    ctx.body = await snapshot.gzip();
     return;
   }
 

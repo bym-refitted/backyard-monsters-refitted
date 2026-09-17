@@ -2,10 +2,11 @@ import { createHash } from "crypto";
 import { brotliCompress, constants, gzip } from "zlib";
 import { promisify } from "util";
 
-import { MapRoomCell, MapRoomVersion } from "../../../enums/MapRoom.js";
-import { User } from "../../../database/models/user.model.js";
-import { WorldMapCell } from "../../../database/models/worldmapcell.model.js";
-import { postgres } from "../../../server.js";
+import { MapRoomCell, MapRoomVersion } from "../../../../enums/MapRoom.js";
+import { User } from "../../../../database/models/user.model.js";
+import { WorldMapCell } from "../../../../database/models/worldmapcell.model.js";
+import { postgres } from "../../../../server.js";
+import { lazyEncoding, type LazyEncoding } from "./terrainMap.js";
 
 /**
  * Builds and caches the MR2 occupancy snapshot served by /worldmapv2/snapshot.
@@ -24,7 +25,7 @@ import { postgres } from "../../../server.js";
 export interface WorldSnapshot {
   raw: Buffer;
   brotli: Buffer;
-  gzip: Buffer;
+  gzip: LazyEncoding;
   etag: string;
   generatedAt: number;
 }
@@ -157,10 +158,9 @@ const buildSnapshot = async (worldid: string): Promise<WorldSnapshot> => {
 
   const raw = Buffer.from(`{"generatedAt":${generatedAt},${content.slice(1)}`);
 
-  const [brotli, gzip] = await Promise.all([
-    compressBrotli(raw, { params: { [constants.BROTLI_PARAM_QUALITY]: 5 } }),
-    compressGzip(raw, { level: 6 }),
-  ]);
+  const brotli = await compressBrotli(raw, { params: { [constants.BROTLI_PARAM_QUALITY]: 5 } });
+
+  const gzip = lazyEncoding(() => compressGzip(raw, { level: 6 }));
 
   return { raw, brotli, gzip, etag, generatedAt };
 };

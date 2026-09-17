@@ -1,7 +1,7 @@
 import { MapRoomVersion } from "../../../../enums/MapRoom.js";
 import { Status } from "../../../../enums/StatusCodes.js";
 import { isKnownWorld } from "../../../../services/maproom/knownWorlds.js";
-import { getWorldSnapshot, SNAPSHOT_MAX_AGE_SECONDS } from "../../../../services/maproom/v2/worldSnapshot.js";
+import { getWorldSnapshot, SNAPSHOT_MAX_AGE_SECONDS } from "../../../../services/maproom/v2/bulk/worldSnapshot.js";
 import type { KoaController } from "../../../../utils/KoaController.js";
 
 /**
@@ -108,7 +108,7 @@ export const getSnapshot: KoaController = async (ctx) => {
 
   if (acceptEncoding && ctx.acceptsEncodings("gzip") === "gzip") {
     ctx.set("Content-Encoding", "gzip");
-    ctx.body = snapshot.gzip;
+    ctx.body = await snapshot.gzip();
     return;
   }
 
