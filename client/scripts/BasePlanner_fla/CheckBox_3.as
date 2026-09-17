@@ -1,16 +1,12 @@
-package BasePlanner_fla
-{
-   import flash.display.MovieClip;
-   
-   [Embed(source="/_assets/assets.swf", symbol="BasePlanner_fla.CheckBox_3")]
-   public dynamic class CheckBox_3 extends MovieClip
-   {
-       
-      
-      public function CheckBox_3()
-      {
-         super();
-         stop();
-      }
-   }
+package BasePlanner_fla {
+    import flash.display.MovieClip;
+
+    [Embed(source="/_assets/assets.swf", symbol="BasePlanner_fla.CheckBox_3")]
+    public dynamic class CheckBox_3 extends MovieClip {
+
+        public function CheckBox_3() {
+            super();
+            stop();
+        }
+    }
 }

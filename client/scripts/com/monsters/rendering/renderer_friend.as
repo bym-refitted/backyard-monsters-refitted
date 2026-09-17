@@ -1,4 +1,3 @@
-package com.monsters.rendering
-{
-   public namespace renderer_friend;
+package com.monsters.rendering {
+    public namespace renderer_friend;
 }

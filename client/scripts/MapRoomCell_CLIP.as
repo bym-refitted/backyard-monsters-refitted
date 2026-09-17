@@ -1,20 +1,16 @@
-package
-{
-   import flash.display.MovieClip;
+package {
+    import flash.display.MovieClip;
 
-   [Embed(source="/_assets/assets.swf", symbol="MapRoomCell_CLIP")]
-   public dynamic class MapRoomCell_CLIP extends MovieClip
-   {
+    [Embed(source="/_assets/assets.swf", symbol="MapRoomCell_CLIP")]
+    public dynamic class MapRoomCell_CLIP extends MovieClip {
 
-      public var mc:MovieClip;
+        public var mc:MovieClip;
 
-      public function MapRoomCell_CLIP()
-      {
-         super();
-         if (mc.mcPlayer.mcWorker)
-         {
-            mc.mcPlayer.mcWorker.stop();
-         }
-      }
-   }
+        public function MapRoomCell_CLIP() {
+            super();
+            if (mc.mcPlayer.mcWorker) {
+                mc.mcPlayer.mcWorker.stop();
+            }
+        }
+    }
 }

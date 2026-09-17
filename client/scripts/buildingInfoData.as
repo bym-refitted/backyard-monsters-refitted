@@ -1,11 +1,9 @@
-package
-{
+package {
     import flash.display.MovieClip;
     import flash.text.TextField;
 
     [Embed(source="/_assets/assets.swf", symbol="buildingInfo")]
-    public dynamic class buildingInfoData extends MovieClip
-    {
+    public dynamic class buildingInfoData extends MovieClip {
 
         public var tInfoRight:TextField;
 
@@ -15,8 +13,7 @@ package
 
         public var tInfoLeft:TextField;
 
-        public function buildingInfoData()
-        {
+        public function buildingInfoData() {
             super();
             stop();
         }

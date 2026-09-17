@@ -1,5 +1,4 @@
-package com.auth
-{
+package com.auth {
     import flash.display.Sprite;
     import flash.display.CapsStyle;
     import flash.display.JointStyle;
@@ -27,8 +26,7 @@ package com.auth
     import com.monsters.enums.EnumPlayerType;
 
     // TODO: This file needs a complete refactor. It is currently very messy and hard to read.
-    public class AuthForm extends Sprite
-    {
+    public class AuthForm extends Sprite {
 
         private var isRegisterForm:Boolean = false;
 
@@ -135,8 +133,7 @@ package com.auth
 
         private const DESIGN_HEIGHT:Number = 670;
 
-        public function AuthForm()
-        {
+        public function AuthForm() {
             background = new Sprite();
             addChild(background);
 
@@ -148,17 +145,14 @@ package com.auth
             // Load remembered email state early so it can prefill the Email field when created
             var remembered:Object = loadRememberEmail();
             rememberEmailEnabled = Boolean(remembered.enabled);
-            if (rememberEmailEnabled && remembered.email is String)
-            {
+            if (rememberEmailEnabled && remembered.email is String) {
                 emailValue = String(remembered.email);
             }
 
-            GLOBAL.eventDispatcher.addEventListener("initError", function(event:Event):void
-                {
+            GLOBAL.eventDispatcher.addEventListener("initError", function(event:Event):void {
                     errMessage.text = GLOBAL.initError;
                     // If loadingContainer is present, refresh the loading screen to update the title
-                    if (loadingContainer && loadingContainer.parent)
-                    {
+                    if (loadingContainer && loadingContainer.parent) {
                         Loading();
                     }
                 });
@@ -168,62 +162,51 @@ package com.auth
             checkContentLoadedTimer.start();
         }
 
-        private function checkContentLoaded(event:TimerEvent):void
-        {
+        private function checkContentLoaded(event:TimerEvent):void {
             // True: Once we receive the language file and supported languages from the server
             // This also let's us know whether a connection has been established.
-            if (GLOBAL.textContentLoaded && GLOBAL.supportedLangsLoaded)
-            {
+            if (GLOBAL.textContentLoaded && GLOBAL.supportedLangsLoaded) {
                 checkContentLoadedTimer.stop();
                 checkContentLoadedTimer.removeEventListener(TimerEvent.TIMER, checkContentLoaded);
-                if (loadingContainer && loadingContainer.parent)
-                {
+                if (loadingContainer && loadingContainer.parent) {
                     contentContainer.removeChild(loadingContainer);
                 }
                 handleContentLoaded();
             }
-            else
-            {
-                if (!loadingContainer || !loadingContainer.parent)
-                {
+            else {
+                if (!loadingContainer || !loadingContainer.parent) {
                     Loading();
                 }
             }
         }
 
-        public function formAddedToStageHandler(event:Event):void
-        {
+        public function formAddedToStageHandler(event:Event):void {
             removeEventListener(Event.ADDED_TO_STAGE, formAddedToStageHandler);
 
             drawBackground();
             centerContent();
             stage.addEventListener(Event.RESIZE, onStageResize);
 
-            if (!GLOBAL.textContentLoaded && !GLOBAL.supportedLangsLoaded)
-            {
+            if (!GLOBAL.textContentLoaded && !GLOBAL.supportedLangsLoaded) {
                 Loading();
             }
-            else
-            {
+            else {
                 // If text content is already loaded, proceed with UI setup
-                if (loadingContainer && loadingContainer.parent)
-                {
+                if (loadingContainer && loadingContainer.parent) {
                     contentContainer.removeChild(loadingContainer);
                 }
                 handleContentLoaded();
             }
         }
 
-        private function onStageResize(event:Event):void
-        {
+        private function onStageResize(event:Event):void {
             drawBackground();
             centerContent();
             GLOBAL.RefreshScreen();
             GLOBAL.ResizeLayer(GLOBAL._layerTop);
         }
 
-        private function drawBackground():void
-        {
+        private function drawBackground():void {
             // slight hack but its only 2-lines of shit
             var offsetX:Number = -(stage.stageWidth - DESIGN_WIDTH) / 2;
             var offsetY:Number = -(stage.stageHeight - DESIGN_HEIGHT) / 2;
@@ -233,25 +216,21 @@ package com.auth
             background.graphics.endFill();
         }
 
-        private function centerContent():void
-        {
-            if (Capabilities.playerType == EnumPlayerType.DESKTOP && stage)
-            {
+        private function centerContent():void {
+            if (Capabilities.playerType == EnumPlayerType.DESKTOP && stage) {
                 var fitScale:Number = Math.min(stage.stageWidth / DESIGN_WIDTH, stage.stageHeight / DESIGN_HEIGHT);
                 contentContainer.scaleX = contentContainer.scaleY = fitScale;
                 contentContainer.x = DESIGN_WIDTH * (1 - fitScale) / 2;
                 contentContainer.y = DESIGN_HEIGHT * (1 - fitScale) / 2;
             }
-            else
-            {
+            else {
                 contentContainer.scaleX = contentContainer.scaleY = 1;
                 contentContainer.x = 0;
                 contentContainer.y = 0;
             }
         }
 
-        private function handleContentLoaded():void
-        {
+        private function handleContentLoaded():void {
             // Global Initialization
             navContainer = new Sprite();
             formContainer = new Sprite();
@@ -287,8 +266,7 @@ package com.auth
             this.loader = new Loader();
             this.loader.load(new URLRequest(GLOBAL.cdnUrl + "assets/popups/C5-LAB-150.png"));
             this.loader.contentLoaderInfo.addEventListener(Event.COMPLETE, onImageLoaded);
-            this.loader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, function(e:IOErrorEvent):void
-                {
+            this.loader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, function(e:IOErrorEvent):void {
                 });
 
             usernameInput = createBlock(0, 0, "Username");
@@ -303,8 +281,7 @@ package com.auth
             basePasswordY = passwordInput.y;
 
             // Remember email checkbox (login form only)
-            if (!isRegisterForm)
-            {
+            if (!isRegisterForm) {
                 createRememberEmailToggle();
             }
 
@@ -321,11 +298,9 @@ package com.auth
             updateState();
         }
 
-        private function Loading():void
-        {
+        private function Loading():void {
             // Remove previous loadingContainer if present
-            if (loadingContainer && loadingContainer.parent)
-            {
+            if (loadingContainer && loadingContainer.parent) {
                 loadingContainer.parent.removeChild(loadingContainer);
             }
 
@@ -353,8 +328,7 @@ package com.auth
 
             // Create description (only for non-version mismatch)
             var loadingDesc:TextField;
-            if (!GLOBAL.versionMismatch)
-            {
+            if (!GLOBAL.versionMismatch) {
                 loadingDesc = new TextField();
                 var descFormat:TextFormat = new TextFormat();
                 descFormat.font = "Verdana";
@@ -395,23 +369,20 @@ package com.auth
             errMessage.autoSize = TextFieldAutoSize.LEFT;
 
             // Position elements based on version mismatch
-            if (GLOBAL.versionMismatch)
-            {
+            if (GLOBAL.versionMismatch) {
                 loadingTitle.y = 140;
                 errMessage.y = 190;
 
                 var updateImageLoader:Loader = new Loader();
                 updateImageLoader.load(new URLRequest(GLOBAL.serverUrl + "assets/popups/fantastic.png"));
-                updateImageLoader.contentLoaderInfo.addEventListener(Event.COMPLETE, function(e:Event):void
-                    {
+                updateImageLoader.contentLoaderInfo.addEventListener(Event.COMPLETE, function(e:Event):void {
                         var img:Bitmap = Bitmap(updateImageLoader.content);
                         img.x = (contentWidth - img.width) / 2;
                         img.y = 0;
                         loadingContainer.addChildAt(img, 0);
                     });
             }
-            else
-            {
+            else {
                 // Positions for normal loading (no image)
                 loadingTitle.y = 0;
                 errMessage.y = 90;
@@ -422,39 +393,32 @@ package com.auth
             loadingContainer.addChild(errMessage);
 
             // On AIR, contentContainer is already scaled via centerContent() — don't double-scale.
-            if (Capabilities.playerType != EnumPlayerType.DESKTOP)
-            {
+            if (Capabilities.playerType != EnumPlayerType.DESKTOP) {
                 var scale:Number = 2.2;
                 loadingContainer.scaleX = loadingContainer.scaleY = scale;
             }
 
-            if (stage)
-            {
-                if (Capabilities.playerType == EnumPlayerType.DESKTOP)
-                {
+            if (stage) {
+                if (Capabilities.playerType == EnumPlayerType.DESKTOP) {
                     loadingContainer.x = (DESIGN_WIDTH - contentWidth) / 2;
                     loadingContainer.y = DESIGN_HEIGHT / 2 - 80;
                 }
-                else
-                {
+                else {
                     loadingContainer.x = 0;
                     loadingContainer.y = 50;
                 }
             }
-            else
-            {
+            else {
                 loadingContainer.x = 200;
                 loadingContainer.y = 200;
             }
         }
 
-        public static function DiscordLink(param1:Event = null):void
-        {
+        public static function DiscordLink(param1:Event = null):void {
             GLOBAL.gotoURL("https://discord.gg/bymrefitted");
         }
 
-        private function HeaderTitle():void
-        {
+        private function HeaderTitle():void {
             var navWidth:Number = 800;
             var navHeight:Number = 50;
 
@@ -477,8 +441,7 @@ package com.auth
         }
 
         // Essentially creates a 'span' element.
-        private function createRichText(text:String, color:uint):TextField
-        {
+        private function createRichText(text:String, color:uint):TextField {
             var textField:TextField = new TextField();
             var textFormat:TextFormat = new TextFormat();
             textFormat.font = "Groboldov";
@@ -492,8 +455,7 @@ package com.auth
             return textField;
         }
 
-        private function onImageLoaded(event:Event):void
-        {
+        private function onImageLoaded(event:Event):void {
             image = Bitmap(loader.content);
 
             image.x = 150;
@@ -504,8 +466,7 @@ package com.auth
         }
 
         // Function to create and position input fields
-        private function createBlock(width:Number, height:Number, placeholder:String = "", isPassword:Boolean = false):TextField
-        {
+        private function createBlock(width:Number, height:Number, placeholder:String = "", isPassword:Boolean = false):TextField {
             var input:TextField = createInputField(width, height, placeholder, isPassword);
             formContainer.addChild(input);
 
@@ -513,18 +474,14 @@ package com.auth
             input.x = (FORM_WIDTH - input.width) / 2;
             input.y = startY;
 
-            input.addEventListener(Event.CHANGE, function(event:Event):void
-                {
-                    if (placeholder == "Email")
-                    {
+            input.addEventListener(Event.CHANGE, function(event:Event):void {
+                    if (placeholder == "Email") {
                         emailValue = input.text;
                     }
-                    else if (placeholder == "Password")
-                    {
+                    else if (placeholder == "Password") {
                         passwordValue = input.text;
                     }
-                    else if (placeholder == "Username")
-                    {
+                    else if (placeholder == "Username") {
                         usernameValue = input.text;
                     }
                 });
@@ -535,8 +492,7 @@ package com.auth
             return input;
         }
 
-        private function createInputField(width:Number, height:Number, placeholder:String = "", isPassword:Boolean = false):TextField
-        {
+        private function createInputField(width:Number, height:Number, placeholder:String = "", isPassword:Boolean = false):TextField {
             var input:TextField = new TextField();
             input.type = TextFieldType.INPUT;
             input.width = width;
@@ -559,13 +515,11 @@ package com.auth
             placeholderTextFormat.color = WHITE;
 
             // Prefill Email if enabled
-            if (placeholder == "Email" && rememberEmailEnabled && emailValue != "" && emailValue != "Email")
-            {
+            if (placeholder == "Email" && rememberEmailEnabled && emailValue != "" && emailValue != "Email") {
                 input.text = emailValue;
                 input.setTextFormat(inputTextFormat);
             }
-            else
-            {
+            else {
                 input.text = placeholder;
                 input.setTextFormat(placeholderTextFormat);
             }
@@ -573,21 +527,16 @@ package com.auth
             if (isPassword)
                 input.displayAsPassword = true;
 
-            if (placeholder)
-            {
-                input.addEventListener(FocusEvent.FOCUS_IN, function(event:FocusEvent):void
-                    {
-                        if (input.text == placeholder)
-                        {
+            if (placeholder) {
+                input.addEventListener(FocusEvent.FOCUS_IN, function(event:FocusEvent):void {
+                        if (input.text == placeholder) {
                             input.text = "";
                             input.setTextFormat(inputTextFormat);
                         }
                     });
 
-                input.addEventListener(FocusEvent.FOCUS_OUT, function(event:FocusEvent):void
-                    {
-                        if (input.text == "")
-                        {
+                input.addEventListener(FocusEvent.FOCUS_OUT, function(event:FocusEvent):void {
+                        if (input.text == "") {
                             input.text = placeholder;
                             input.setTextFormat(placeholderTextFormat);
                         }
@@ -598,9 +547,9 @@ package com.auth
         }
 
         // Remember Email: full-row checkbox + label
-        private function createRememberEmailToggle():void
-        {
-            if (rememberEmailRow) return;
+        private function createRememberEmailToggle():void {
+            if (rememberEmailRow)
+                return;
 
             rememberEmailRow = new Sprite();
             rememberEmailRow.buttonMode = true;
@@ -642,22 +591,21 @@ package com.auth
             layoutAuthControls();
         }
 
-        private function updateRememberEmailLabel():void
-        {
-            if (!rememberEmailLabel) return;
+        private function updateRememberEmailLabel():void {
+            if (!rememberEmailLabel)
+                return;
 
             var label:String = KEYS.Get("auth_remember_email");
             // Fallback for missing translation keys
-            if (!label || label == "" || label == "auth_remember_email")
-            {
+            if (!label || label == "" || label == "auth_remember_email") {
                 label = "Remember email";
             }
             rememberEmailLabel.text = label;
         }
 
-        private function redrawRememberEmailToggle():void
-        {
-            if (!rememberEmailRow) return;
+        private function redrawRememberEmailToggle():void {
+            if (!rememberEmailRow)
+                return;
 
             var rowW:Number = (passwordInput != null) ? passwordInput.width : 350;
             var rowH:Number = 34;
@@ -674,12 +622,10 @@ package com.auth
 
             rememberEmailBox.graphics.clear();
             rememberEmailBox.graphics.lineStyle(1, rememberEmailEnabled ? PRIMARY : WHITE, rememberEmailEnabled ? 1 : 0.35);
-            if (rememberEmailEnabled)
-            {
+            if (rememberEmailEnabled) {
                 rememberEmailBox.graphics.beginFill(PRIMARY, 1);
             }
-            else
-            {
+            else {
                 rememberEmailBox.graphics.beginFill(0x000000, 0);
             }
             rememberEmailBox.graphics.drawRoundRect(0, 0, boxSize, boxSize, 6, 6);
@@ -706,53 +652,47 @@ package com.auth
             rememberEmailRow.scrollRect = new Rectangle(0, 0, rowW, rowH);
         }
 
-        private function onRememberEmailToggleClick(event:MouseEvent):void
-        {
+        private function onRememberEmailToggleClick(event:MouseEvent):void {
             rememberEmailEnabled = !rememberEmailEnabled;
             redrawRememberEmailToggle();
 
             var current:String = (emailInput != null) ? emailInput.text : emailValue;
-            if (current == "Email") current = "";
+            if (current == "Email")
+                current = "";
 
             saveRememberEmail(current, rememberEmailEnabled);
             layoutAuthControls();
         }
 
-        private function reportRememberEmailError(message:String):void
-        {
-            if (rememberEmailErrorReported) return;
+        private function reportRememberEmailError(message:String):void {
+            if (rememberEmailErrorReported)
+                return;
             rememberEmailErrorReported = true;
 
-            try
-            {
+            try {
                 GLOBAL.Message(message);
             }
-            catch (e:Error)
-            {
+            catch (e:Error) {
                 // Ignore UI errors; this is best-effort reporting.
             }
         }
 
-        private function layoutAuthControls():void
-        {
-            if (!formContainer || !passwordInput || !submitButton) return;
+        private function layoutAuthControls():void {
+            if (!formContainer || !passwordInput || !submitButton)
+                return;
 
             var y:Number = passwordInput.y + passwordInput.height + 14;
 
             // If we have a password validation error field, place controls under it.
-            if (passwordErrorText && passwordErrorText.parent == formContainer && passwordErrorText.text != "")
-            {
+            if (passwordErrorText && passwordErrorText.parent == formContainer && passwordErrorText.text != "") {
                 y = passwordErrorText.y + passwordErrorText.height + 10;
             }
 
-            if (!isRegisterForm)
-            {
-                if (!rememberEmailRow)
-                {
+            if (!isRegisterForm) {
+                if (!rememberEmailRow) {
                     createRememberEmailToggle();
                 }
-                if (rememberEmailRow && rememberEmailRow.parent != formContainer)
-                {
+                if (rememberEmailRow && rememberEmailRow.parent != formContainer) {
                     formContainer.addChild(rememberEmailRow);
                 }
 
@@ -761,10 +701,8 @@ package com.auth
 
                 y = rememberEmailRow.y + rememberEmailRow.height + 18;
             }
-            else
-            {
-                if (rememberEmailRow && rememberEmailRow.parent)
-                {
+            else {
+                if (rememberEmailRow && rememberEmailRow.parent) {
                     rememberEmailRow.parent.removeChild(rememberEmailRow);
                 }
                 y += 10;
@@ -773,33 +711,27 @@ package com.auth
             submitButton.x = passwordInput.x + (passwordInput.width - submitButton.width) / 2;
             submitButton.y = y;
 
-            if (authLinkContainer)
-            {
+            if (authLinkContainer) {
                 authLinkContainer.x = passwordInput.x + (passwordInput.width - authLinkContainer.width) / 2;
                 authLinkContainer.y = submitButton.y + submitButton.height + 15;
             }
         }
 
-        private function loadRememberEmail():Object
-        {
-            var result:Object = { enabled: false, email: "" };
-            try
-            {
+        private function loadRememberEmail():Object {
+            var result:Object = {enabled: false, email: ""};
+            try {
                 var so:SharedObject = SharedObject.getLocal(REMEMBER_SO_NAME, REMEMBER_SO_PATH);
-                if (so && so.data)
-                {
+                if (so && so.data) {
                     result.enabled = Boolean(so.data[REMEMBER_ENABLED_KEY]);
                     result.email = (so.data[REMEMBER_EMAIL_KEY] is String) ? String(so.data[REMEMBER_EMAIL_KEY]) : "";
                 }
             }
-            catch (e:Error)
-            {
+            catch (e:Error) {
                 reportRememberEmailError("Failed to load saved email: " + e);
             }
 
             // Guard against corrupt/invalid saved data
-            if (result.enabled && result.email != "" && !isValidEmail(String(result.email)))
-            {
+            if (result.enabled && result.email != "" && !isValidEmail(String(result.email))) {
                 result.enabled = false;
                 result.email = "";
             }
@@ -807,35 +739,30 @@ package com.auth
             return result;
         }
 
-        private function saveRememberEmail(email:String, enabled:Boolean):void
-        {
-            try
-            {
+        private function saveRememberEmail(email:String, enabled:Boolean):void {
+            try {
                 var so:SharedObject = SharedObject.getLocal(REMEMBER_SO_NAME, REMEMBER_SO_PATH);
-                if (!so || !so.data) return;
+                if (!so || !so.data)
+                    return;
 
                 so.data[REMEMBER_ENABLED_KEY] = enabled;
 
                 // Only persist a real, non-empty email.
-                if (enabled && email != "" && isValidEmail(email))
-                {
+                if (enabled && email != "" && isValidEmail(email)) {
                     so.data[REMEMBER_EMAIL_KEY] = email;
                 }
-                else
-                {
+                else {
                     delete so.data[REMEMBER_EMAIL_KEY];
                 }
 
                 so.flush();
             }
-            catch (e:Error)
-            {
+            catch (e:Error) {
                 reportRememberEmailError("Failed to save email: " + e);
             }
         }
 
-        private function createSelectInput(defaultOption:String = "English"):Sprite
-        {
+        private function createSelectInput(defaultOption:String = "English"):Sprite {
             selectField = new Sprite();
             var selectWidth:Number = 80;
             var selectHeight:Number = 30;
@@ -862,8 +789,7 @@ package com.auth
             selectField.addChild(dropdownMenu);
 
             // Populate the dropdown menu with options
-            for (var index:int = 0; index < languages.length; index++)
-            {
+            for (var index:int = 0; index < languages.length; index++) {
                 var langSelectText:TextField = new TextField();
                 var langSelectTextStyle:TextFormat = new TextFormat();
                 langSelectTextStyle.font = "Groboldov";
@@ -883,8 +809,7 @@ package com.auth
             }
 
             // Handle click events to toggle the dropdown menu visibility
-            selectField.addEventListener(MouseEvent.CLICK, function(event:MouseEvent):void
-                {
+            selectField.addEventListener(MouseEvent.CLICK, function(event:MouseEvent):void {
                     dropdownMenu.visible = !dropdownMenu.visible;
                 });
 
@@ -894,8 +819,7 @@ package com.auth
         }
 
         // Function to handle language select event
-        private function langSelectClickHandler(event:MouseEvent):void
-        {
+        private function langSelectClickHandler(event:MouseEvent):void {
             var selectedLanguage:String = event.currentTarget.text;
             defaultText.text = selectedLanguage;
             defaultText.width = 200;
@@ -910,10 +834,8 @@ package com.auth
 
             // Iterate over the supported languages and pass them to KEYS.Setup()
             // to grab available language file.
-            for each (var language:String in languages)
-            {
-                if (selectedLanguage.toLocaleLowerCase() === language.toLocaleLowerCase())
-                {
+            for each (var language:String in languages) {
+                if (selectedLanguage.toLocaleLowerCase() === language.toLocaleLowerCase()) {
                     KEYS.Setup(language.toLowerCase());
                     return;
                 }
@@ -921,8 +843,7 @@ package com.auth
             KEYS.Setup("english");
         }
 
-        private function CreateBorder(input:TextField):Sprite
-        {
+        private function CreateBorder(input:TextField):Sprite {
             borderContainer = new Sprite();
             borderContainer.graphics.lineStyle(1, WHITE);
             borderContainer.graphics.moveTo(0, 2);
@@ -934,8 +855,7 @@ package com.auth
             return borderContainer;
         }
 
-        private function createButton():Sprite
-        {
+        private function createButton():Sprite {
             var formRadius:Number = 16;
             button = new Sprite();
             updateButtonColor();
@@ -968,11 +888,9 @@ package com.auth
             return button;
         }
 
-        private function FormNavigate():void
-        {
+        private function FormNavigate():void {
             // Remove old container if it exists (e.g., after state toggles/rebuilds)
-            if (authLinkContainer && authLinkContainer.parent)
-            {
+            if (authLinkContainer && authLinkContainer.parent) {
                 authLinkContainer.parent.removeChild(authLinkContainer);
             }
 
@@ -996,8 +914,7 @@ package com.auth
             mousePointerCursor(authLinkContainer);
 
             formContainer.addChild(authLinkContainer);
-            authLinkContainer.addEventListener(MouseEvent.CLICK, function(event:Event):void
-                {
+            authLinkContainer.addEventListener(MouseEvent.CLICK, function(event:Event):void {
                     isRegisterForm = !isRegisterForm;
                     updateState();
                 });
@@ -1005,8 +922,7 @@ package com.auth
             layoutAuthControls();
         }
 
-        private function updateFormFields():void
-        {
+        private function updateFormFields():void {
             // Make Login use the vertical space that Register reserves for the username field.
             // This keeps the topmost visible input closer to the image in both modes.
             var usernameH:Number = 35;
@@ -1015,30 +931,25 @@ package com.auth
 
             // baseEmailY/basePasswordY are captured in handleContentLoaded().
 
-            if (isRegisterForm)
-            {
+            if (isRegisterForm) {
                 // Restore base positions before placing the username field above Email.
                 emailInput.y = baseEmailY;
                 passwordInput.y = basePasswordY;
 
-                if (emailBorder)
-                {
+                if (emailBorder) {
                     emailBorder.x = emailInput.x;
                     emailBorder.y = emailInput.y + emailInput.height;
                 }
-                if (passwordBorder)
-                {
+                if (passwordBorder) {
                     passwordBorder.x = passwordInput.x;
                     passwordBorder.y = passwordInput.y + passwordInput.height;
                 }
 
                 // Re-seat existing error labels (if any) under their fields.
-                if (emailErrorText && emailErrorText.parent == formContainer && emailErrorText.text != "")
-                {
+                if (emailErrorText && emailErrorText.parent == formContainer && emailErrorText.text != "") {
                     emailErrorText.y = emailInput.y + emailInput.height + 5;
                 }
-                if (passwordErrorText && passwordErrorText.parent == formContainer && passwordErrorText.text != "")
-                {
+                if (passwordErrorText && passwordErrorText.parent == formContainer && passwordErrorText.text != "") {
                     passwordErrorText.y = passwordInput.y + passwordInput.height + 5;
                 }
 
@@ -1053,20 +964,17 @@ package com.auth
                 usernameInput.y = emailInput.y - usernameInput.height - gap;
 
                 // Ensure we don't stack multiple borders when toggling views
-                if (usernameBorder && usernameBorder.parent)
-                {
+                if (usernameBorder && usernameBorder.parent) {
                     usernameBorder.parent.removeChild(usernameBorder);
                 }
                 usernameBorder = CreateBorder(usernameInput);
 
                 // Hide/remove remember email on register view
-                if (rememberEmailRow && rememberEmailRow.parent)
-                {
+                if (rememberEmailRow && rememberEmailRow.parent) {
                     rememberEmailRow.parent.removeChild(rememberEmailRow);
                 }
             }
-            else
-            {
+            else {
                 // Hide username field on login
                 usernameInput.visible = false;
                 usernameInput.mouseEnabled = false;
@@ -1074,8 +982,7 @@ package com.auth
                 usernameInput.width = 0;
                 usernameInput.height = 0;
 
-                if (usernameBorder && usernameBorder.parent)
-                {
+                if (usernameBorder && usernameBorder.parent) {
                     usernameBorder.parent.removeChild(usernameBorder);
                 }
 
@@ -1083,143 +990,116 @@ package com.auth
                 emailInput.y = baseEmailY - loginShift;
                 passwordInput.y = basePasswordY - loginShift;
 
-                if (emailBorder)
-                {
+                if (emailBorder) {
                     emailBorder.x = emailInput.x;
                     emailBorder.y = emailInput.y + emailInput.height;
                 }
-                if (passwordBorder)
-                {
+                if (passwordBorder) {
                     passwordBorder.x = passwordInput.x;
                     passwordBorder.y = passwordInput.y + passwordInput.height;
                 }
 
                 // Re-seat existing error labels (if any) under their fields.
-                if (emailErrorText && emailErrorText.parent == formContainer && emailErrorText.text != "")
-                {
+                if (emailErrorText && emailErrorText.parent == formContainer && emailErrorText.text != "") {
                     emailErrorText.y = emailInput.y + emailInput.height + 5;
                 }
-                if (passwordErrorText && passwordErrorText.parent == formContainer && passwordErrorText.text != "")
-                {
+                if (passwordErrorText && passwordErrorText.parent == formContainer && passwordErrorText.text != "") {
                     passwordErrorText.y = passwordInput.y + passwordInput.height + 5;
                 }
 
                 // Ensure checkbox exists on login view
-                if (!rememberEmailRow)
-                {
+                if (!rememberEmailRow) {
                     createRememberEmailToggle();
                 }
-                else if (!rememberEmailRow.parent)
-                {
+                else if (!rememberEmailRow.parent) {
                     formContainer.addChild(rememberEmailRow);
                 }
             }
         }
 
-        private function updateLinkText():void
-        {
+        private function updateLinkText():void {
             hasAccountText.embedFonts = true;
             hasAccountText.antiAliasType = AntiAliasType.NORMAL;
             hasAccountText.text = isRegisterForm ? KEYS.Get("auth_login_link") : KEYS.Get("auth_register_link");
         }
 
-        private function updateLinkColour():void
-        {
+        private function updateLinkColour():void {
             hasAccountFormat.color = isRegisterForm ? SECONDARY : PRIMARY;
             hasAccountFormat.font = "Verdana";
             hasAccountText.defaultTextFormat = hasAccountFormat;
             hasAccountText.setTextFormat(hasAccountFormat);
         }
 
-        private function updateButtonText():void
-        {
+        private function updateButtonText():void {
             button.graphics.beginFill(isRegisterForm ? PRIMARY : SECONDARY);
             buttonText.text = isRegisterForm ? KEYS.Get("auth_register_btn").toUpperCase() : KEYS.Get("auth_login_btn").toUpperCase();
         }
 
-        private function updateButtonColor():void
-        {
+        private function updateButtonColor():void {
             button.graphics.beginFill(isRegisterForm ? SECONDARY : PRIMARY);
             button.graphics.drawRoundRect(0, 0, 350, 50, 12);
             button.graphics.endFill();
         }
 
-        private function mousePointerCursor(element:*):void
-        {
-            element.addEventListener(MouseEvent.ROLL_OVER, function(e:MouseEvent):void
-                {
+        private function mousePointerCursor(element:*):void {
+            element.addEventListener(MouseEvent.ROLL_OVER, function(e:MouseEvent):void {
                     Mouse.cursor = MouseCursor.BUTTON;
                 });
 
-            element.addEventListener(MouseEvent.ROLL_OUT, function(e:MouseEvent):void
-                {
+            element.addEventListener(MouseEvent.ROLL_OUT, function(e:MouseEvent):void {
                     Mouse.cursor = MouseCursor.AUTO;
                 });
         }
 
-        private function submitButtonClickHandler(event:MouseEvent):void
-        {
+        private function submitButtonClickHandler(event:MouseEvent):void {
             clearErrorMessages();
 
             var isUsernameValid:Boolean = isValidUsername(usernameValue);
             var isEmailValid:Boolean = isValidEmail(emailValue);
             var isPasswordValid:Boolean = isValidPassword(passwordValue);
 
-            if (isEmailValid && isPasswordValid)
-            {
+            if (isEmailValid && isPasswordValid) {
                 // Persist remembered email only on successful submit attempt (client-side)
-                if (!isRegisterForm)
-                {
+                if (!isRegisterForm) {
                     var current:String = emailValue;
-                    if (current == "Email") current = "";
+                    if (current == "Email")
+                        current = "";
                     saveRememberEmail(current, rememberEmailEnabled);
                 }
 
-                if (isRegisterForm)
-                {
-                    if (isUsernameValid)
-                    {
+                if (isRegisterForm) {
+                    if (isUsernameValid) {
                         var newUser:Array = [["username", usernameValue], ["email", emailValue], ["password", passwordValue], ["last_name", ""], ["pic_square", ""]];
 
-                        new URLLoaderApi().load(GLOBAL._apiURL + "player/register", newUser, registerNewUser, function(event:IOErrorEvent):void
-                            {
+                        new URLLoaderApi().load(GLOBAL._apiURL + "player/register", newUser, registerNewUser, function(event:IOErrorEvent):void {
                                 GLOBAL.Message("An error occurred during registration on the server.");
                             });
                     }
-                    else
-                    {
+                    else {
                         GLOBAL.Message("<b>Usernames must be:</b><br><br>• At least 2 characters long.<br>• No longer than 12 characters.<br>• Can only include numbers and letters.");
                     }
                 }
-                else
-                {
+                else {
                     // Authentication call
                     const authInfo:Array = [["email", emailValue], ["password", passwordValue]];
                     LOGIN.AuthenticateUser(authInfo);
                 }
             }
-            else
-            {
-                if (!isEmailValid)
-                {
+            else {
+                if (!isEmailValid) {
                     showErrorMessage(emailInput, "Please enter a valid email address");
                 }
-                if (!isPasswordValid)
-                {
+                if (!isPasswordValid) {
                     showErrorMessage(passwordInput, "Password must be at least 8 characters long and contain at least 1 special character");
                 }
-                if (!isUsernameValid && isRegisterForm)
-                {
+                if (!isUsernameValid && isRegisterForm) {
                     GLOBAL.Message("<b>Usernames must be:</b><br><br>• At least 2 characters long.<br>• No longer than 12 characters.<br>• Can only include numbers and letters.");
                 }
             }
         }
 
-
-        private function registerNewUser(serverData:Object):void
-        {
-            if (serverData.hasOwnProperty("error"))
-            {
+        private function registerNewUser(serverData:Object):void {
+            if (serverData.hasOwnProperty("error")) {
                 GLOBAL.Message(serverData.error);
                 return;
             }
@@ -1228,50 +1108,43 @@ package com.auth
             updateState();
         }
 
-        private function isValidUsername(username:String):Boolean
-        {
+        private function isValidUsername(username:String):Boolean {
             var pattern:RegExp = /^[a-zA-Z0-9_]+$/;
             return username.length >= 2 && username.length <= 12 && pattern.test(username);
         }
 
-        private function isValidEmail(email:String):Boolean
-        {
+        private function isValidEmail(email:String):Boolean {
             var emailPattern:RegExp = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
             return emailPattern.test(email);
         }
 
-        private function isValidPassword(password:String):Boolean
-        {
+        private function isValidPassword(password:String):Boolean {
             var trimmed:String = password.replace(/^\s+|\s+$/g, "");
             return trimmed.length >= 8 && /[^a-zA-Z0-9]/.test(trimmed);
         }
 
-        private function clearErrorMessages():void
-        {
-            if (emailErrorText && emailErrorText.parent)
-            {
+        private function clearErrorMessages():void {
+            if (emailErrorText && emailErrorText.parent) {
                 emailErrorText.parent.removeChild(emailErrorText);
             }
-            if (passwordErrorText && passwordErrorText.parent)
-            {
+            if (passwordErrorText && passwordErrorText.parent) {
                 passwordErrorText.parent.removeChild(passwordErrorText);
             }
 
-            if (emailErrorText) emailErrorText.text = "";
-            if (passwordErrorText) passwordErrorText.text = "";
+            if (emailErrorText)
+                emailErrorText.text = "";
+            if (passwordErrorText)
+                passwordErrorText.text = "";
 
             layoutAuthControls();
         }
 
-        private function showErrorMessage(inputField:TextField, errorMessage:String):void
-        {
+        private function showErrorMessage(inputField:TextField, errorMessage:String):void {
             // Remove any existing error field for this input to prevent stacking/overlap.
-            if (inputField == emailInput && emailErrorText && emailErrorText.parent)
-            {
+            if (inputField == emailInput && emailErrorText && emailErrorText.parent) {
                 emailErrorText.parent.removeChild(emailErrorText);
             }
-            else if (inputField == passwordInput && passwordErrorText && passwordErrorText.parent)
-            {
+            else if (inputField == passwordInput && passwordErrorText && passwordErrorText.parent) {
                 passwordErrorText.parent.removeChild(passwordErrorText);
             }
 
@@ -1289,12 +1162,10 @@ package com.auth
 
             formContainer.addChild(errorText);
 
-            if (inputField == emailInput)
-            {
+            if (inputField == emailInput) {
                 emailErrorText = errorText;
             }
-            else if (inputField == passwordInput)
-            {
+            else if (inputField == passwordInput) {
                 passwordErrorText = errorText;
             }
 
@@ -1302,47 +1173,43 @@ package com.auth
             layoutAuthControls();
         }
 
-        public function updateState():void
-        {
+        public function updateState():void {
             updateFormFields();
             updateButtonText();
             updateButtonColor();
             updateLinkText();
             updateLinkColour();
 
-            if (rememberEmailRow)
-            {
+            if (rememberEmailRow) {
                 redrawRememberEmailToggle();
             }
 
             layoutAuthControls();
         }
 
-        public function disposeUI():void
-        {
-            if (stage)
-            {
+        public function disposeUI():void {
+            if (stage) {
                 stage.removeEventListener(Event.RESIZE, onStageResize);
             }
 
             // Stop timer
-            if (checkContentLoadedTimer)
-            {
+            if (checkContentLoadedTimer) {
                 checkContentLoadedTimer.stop();
                 checkContentLoadedTimer.removeEventListener(TimerEvent.TIMER, checkContentLoaded);
             }
 
             // Remove event listeners
-            if (submitButton) submitButton.removeEventListener(MouseEvent.CLICK, submitButtonClickHandler);
-            if (rememberEmailRow) rememberEmailRow.removeEventListener(MouseEvent.CLICK, onRememberEmailToggleClick);
+            if (submitButton)
+                submitButton.removeEventListener(MouseEvent.CLICK, submitButtonClickHandler);
+            if (rememberEmailRow)
+                rememberEmailRow.removeEventListener(MouseEvent.CLICK, onRememberEmailToggleClick);
 
             // Dispose bitmap data to free memory
             if (image)
                 image.bitmapData.dispose();
 
             // Unload loader
-            if (loader)
-            {
+            if (loader) {
                 loader.contentLoaderInfo.removeEventListener(Event.COMPLETE, onImageLoaded);
                 loader.unload();
             }
@@ -1352,7 +1219,8 @@ package com.auth
                 background.graphics.clear();
 
             // Remove AuthForm from display list (removes all children too)
-            if (this.parent) this.parent.removeChild(this);
+            if (this.parent)
+                this.parent.removeChild(this);
         }
 
     }

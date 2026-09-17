@@ -1,11 +1,7 @@
-package
-{
-   public class Dynamic
-   {
-       
-      
-      public function Dynamic()
-      {
-      }
-   }
+package {
+    public class Dynamic {
+
+        public function Dynamic() {
+        }
+    }
 }

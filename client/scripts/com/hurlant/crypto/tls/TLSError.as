@@ -1,16 +1,16 @@
 /**
  * TLSError
- * 
+ *
  * A error that can be thrown when something wrong happens in the TLS protocol.
  * This is handled in TLSEngine by generating a TLS ALERT as appropriate.
  * Copyright (c) 2007 Henri Torgemane
- * 
+ *
  * See LICENSE.txt for full license information.
  */
 package com.hurlant.crypto.tls {
-	public class TLSError extends Error {
-		public static const close_notify:uint = 0;
-		public static const unexpected_message:uint = 10;
+    public class TLSError extends Error {
+        public static const close_notify:uint = 0;
+        public static const unexpected_message:uint = 10;
         public static const bad_record_mac:uint = 20;
         public static const decryption_failed:uint = 21;
         public static const record_overflow:uint = 22;
@@ -31,9 +31,9 @@ package com.hurlant.crypto.tls {
         public static const internal_error:uint = 80;
         public static const user_canceled:uint = 90;
         public static const no_renegotiation:uint = 100;
-        
+
         public function TLSError(message:String, id:int) {
-        	super(message,id);
+            super(message, id);
         }
-	}
+    }
 }
