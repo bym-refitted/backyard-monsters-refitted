@@ -51,7 +51,8 @@ import type { KoaController } from "../../../../utils/KoaController.js";
  *
  * Caching
  *   Rebuilt at most once every five minutes and served with a matching max-age
- *   and a strong ETag derived from the payload. Send the ETag back as
+ *   and a strong ETag derived from the payload. The ETag covers the alliance data
+ *   alone, so it only changes when an alliance does. Send the ETag back as
  *   If-None-Match to get a 304 with no body while nothing has changed.
  *
  * Status
@@ -65,7 +66,7 @@ import type { KoaController } from "../../../../utils/KoaController.js";
 export const getAlliances: KoaController = async (ctx) => {
   const snapshot = await getAllianceSnapshot();
 
-  ctx.set("Cache-Control", `public, max-age=${ALLIANCE_SNAPSHOT_MAX_AGE_SECONDS}`);
+  ctx.set("Cache-Control", `private, max-age=${ALLIANCE_SNAPSHOT_MAX_AGE_SECONDS}`);
   ctx.set("Vary", "Accept-Encoding");
   ctx.set("ETag", snapshot.etag);
   ctx.set("Access-Control-Expose-Headers", "ETag");

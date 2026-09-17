@@ -116,6 +116,7 @@ const buildSnapshot = async (worldid: string): Promise<WorldSnapshot> => {
       base_type: { $gte: MapRoomCell.WM },
       destroyed_at: null,
     })
+    .orderBy({ x: "asc", y: "asc" })
     .execute<CellRow[]>("all");
 
   const ownerIds = [...new Set(rows.map((row) => row.uid).filter(Boolean))];
@@ -150,14 +151,16 @@ const buildSnapshot = async (worldid: string): Promise<WorldSnapshot> => {
   }
 
   const generatedAt = Math.floor(Date.now() / 1000);
-  const raw = Buffer.from(JSON.stringify({ worldid, generatedAt, players, cells }));
+
+  const content = JSON.stringify({ worldid, players, cells });
+  const etag = `"snapshot-${createHash("sha1").update(content).digest("hex").slice(0, 16)}"`;
+
+  const raw = Buffer.from(`{"generatedAt":${generatedAt},${content.slice(1)}`);
 
   const [brotli, gzip] = await Promise.all([
     compressBrotli(raw, { params: { [constants.BROTLI_PARAM_QUALITY]: 5 } }),
     compressGzip(raw, { level: 6 }),
   ]);
-
-  const etag = `"snapshot-${createHash("sha1").update(raw).digest("hex").slice(0, 16)}"`;
 
   return { raw, brotli, gzip, etag, generatedAt };
 };
@@ -175,7 +178,9 @@ export const getWorldSnapshot = (worldid: string): Promise<WorldSnapshot> => {
 
   const fresh: CachedSnapshot = { builtAt: Date.now(), snapshot: buildSnapshot(worldid) };
 
-  fresh.snapshot.catch(() => snapshotCache.delete(worldid));
+  fresh.snapshot.catch(() => {
+    if (snapshotCache.get(worldid) === fresh) snapshotCache.delete(worldid);
+  });
   snapshotCache.set(worldid, fresh);
 
   return fresh.snapshot;

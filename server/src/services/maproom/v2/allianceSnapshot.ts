@@ -58,6 +58,12 @@ interface MemberRow {
   alliance_id: number;
 }
 
+interface RelationshipRow {
+  alliance: number;
+  targetAlliance: number;
+  relationship: AllianceStance;
+}
+
 const compressBrotli = promisify(brotliCompress);
 const compressGzip = promisify(gzip);
 
@@ -75,26 +81,32 @@ let snapshotCache: CachedSnapshot | undefined;
 const buildSnapshot = async (): Promise<AllianceSnapshot> => {
   const rows = await postgres.em
     .createQueryBuilder(Alliance, "a")
-    .select(["a.id", "a.name", "a.image", "a.description", "a.leader_userid", "a.world_id", "a.created_at"])
+    .select([
+      "a.id", 
+      "a.name", 
+      "a.image", 
+      "a.description", 
+      "a.leader_userid", 
+      "a.world_id", 
+      "a.created_at"
+    ])
     .where({ map_version: MapRoomVersion.V2 })
     .execute<AllianceRow[]>("all");
 
   const allianceIds = rows.map((row) => row.id);
 
-  const [members, relationships] = allianceIds.length
-    ? await Promise.all([
-        postgres.em
-          .createQueryBuilder(User, "u")
-          .select(["u.userid", "u.alliance_id"])
-          .where({ alliance_id: { $in: allianceIds } })
-          .execute<MemberRow[]>("all"),
-        postgres.em.find(
-          AllianceRelationship,
-          { alliance: { $in: allianceIds } },
-          { fields: ["alliance", "targetAlliance", "relationship"] }
-        ),
-      ])
-    : [[], []];
+  const members = await postgres.em
+    .createQueryBuilder(User, "u")
+    .select(["u.userid", "u.alliance_id"])
+    .where({ alliance_id: { $in: allianceIds } })
+    .orderBy({ alliance_id: "asc", userid: "asc" })
+    .execute<MemberRow[]>("all");
+
+  const relationships = await postgres.em
+    .createQueryBuilder(AllianceRelationship, "r")
+    .select(["r.alliance", "r.targetAlliance", "r.relationship"])
+    .where({ alliance: { $in: allianceIds } })
+    .execute<RelationshipRow[]>("all");
 
   const alliances: Record<number, SnapshotAlliance> = {};
 
@@ -116,19 +128,21 @@ const buildSnapshot = async (): Promise<AllianceSnapshot> => {
   }
 
   for (const flag of relationships) {
-    const alliance = alliances[flag.alliance.id];
-    if (alliance) alliance.relationships[flag.targetAlliance.id] = flag.relationship;
+    const alliance = alliances[flag.alliance];
+    if (alliance) alliance.relationships[flag.targetAlliance] = flag.relationship;
   }
 
   const generatedAt = getCurrentDateTime();
-  const raw = Buffer.from(JSON.stringify({ generatedAt, alliances }));
+
+  const content = JSON.stringify(alliances);
+  const etag = `"alliances-${createHash("sha1").update(content).digest("hex").slice(0, 16)}"`;
+
+  const raw = Buffer.from(`{"generatedAt":${generatedAt},"alliances":${content}}`);
 
   const [brotli, gzipped] = await Promise.all([
     compressBrotli(raw, { params: { [constants.BROTLI_PARAM_QUALITY]: 5 } }),
     compressGzip(raw, { level: 6 }),
   ]);
-
-  const etag = `"alliances-${createHash("sha1").update(raw).digest("hex").slice(0, 16)}"`;
 
   return { raw, brotli, gzip: gzipped, etag, generatedAt };
 };
