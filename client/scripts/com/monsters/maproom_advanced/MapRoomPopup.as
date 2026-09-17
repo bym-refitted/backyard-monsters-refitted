@@ -32,6 +32,8 @@ package com.monsters.maproom_advanced {
 
         private var _tempMovePoint:Point;
 
+        private var _panBounds:Rectangle;
+
         private var _sortArray:Array;
 
         private var _cellCountX:int;
@@ -609,6 +611,7 @@ package com.monsters.maproom_advanced {
         }
 
         private function GenerateCells(param1:Point):void {
+            this._panBounds = null;
             var cellIndex:int = 0;
             var rowIndex:int = 0;
             var mapRoomCell:MapRoomCell = null;
@@ -721,8 +724,10 @@ package com.monsters.maproom_advanced {
         private function ContainerMove(param1:MouseEvent = null):void {
             var newX:int = int(this._containerClickPoint.x - this._mouseClickPoint.x + this.mouseX);
             var newY:int = int(this._containerClickPoint.y - this._mouseClickPoint.y + this.mouseY);
+            var wasDragged:Boolean = this._dragged;
+            var cameraMoved:Boolean = this._cellContainer.x != newX || this._cellContainer.y != newY;
 
-            if (this._cellContainer.x != newX || this._cellContainer.y != newY) {
+            if (cameraMoved) {
                 this._cellContainer.x = newX;
                 this._cellContainer.y = newY;
             }
@@ -735,7 +740,20 @@ package com.monsters.maproom_advanced {
                 this._dragged = true;
                 this.HideBubble();
             }
-            this.Update();
+            if (wasDragged && this._dragged && this._panBounds &&
+                newX >= this._panBounds.left && newX <= this._panBounds.right &&
+                newY >= this._panBounds.top && newY <= this._panBounds.bottom &&
+                (!this._fullScreen || GLOBAL._ROOT.stage.displayState != StageDisplayState.NORMAL)) {
+                this.UpdatePopups();
+                if (cameraMoved) {
+                    this.UpdateViewport();
+                } else {
+                    this.bBookmarks.Enabled = MapRoom._bookmarks.length > 0 || MapRoom._viewOnly;
+                    this.DisplayBuffs();
+                }
+            } else {
+                this.Update();
+            }
         }
 
         private function ContainerRelease(param1:MouseEvent):void {
@@ -767,7 +785,6 @@ package com.monsters.maproom_advanced {
             var cellData:Object = null;
             var cell:MapRoomCell = null;
             var i:int = 0;
-            var homeCellVisible:Boolean = false;
             var flingerRange:Number = NaN;
             var oldCellKey:int;
             var cellsWithRange:Vector.<MapRoomCell> = null;
@@ -784,8 +801,6 @@ package com.monsters.maproom_advanced {
                     this._fallbackHomeCell.Setup(cellData);
                 }
             }
-            this._sortArray = [];
-
             var cellWidthFactor:Number = this._cellWidth * 0.75;
             var rightBound:Number = this._cellCountX * cellWidthFactor - cellWidthFactor * 5;
             var leftBound:Number = -(cellWidthFactor * 5);
@@ -797,6 +812,10 @@ package com.monsters.maproom_advanced {
             var containerY:Number = this._cellContainer.y;
             var notDragged:Boolean = !this._dragged;
             var checkRange:Boolean = !MapRoom._viewOnly;
+            var panLeft:Number = Number.NEGATIVE_INFINITY;
+            var panRight:Number = Number.POSITIVE_INFINITY;
+            var panTop:Number = Number.NEGATIVE_INFINITY;
+            var panBottom:Number = Number.POSITIVE_INFINITY;
 
             if (checkRange)
                 cellsWithRange = new Vector.<MapRoomCell>();
@@ -872,6 +891,7 @@ package com.monsters.maproom_advanced {
                     anyCellMoved = true;
                     delete this._cellLookup[oldCellKey];
                     this._cellLookup[cell.X * 10000 + cell.Y] = cell;
+                    cell.depth = cell.y * 1000 + cell.x;
                 }
                 if ((!cell._updated || param1) && cell._dataAge <= 0) {
                     cellData = MapRoom.GetCell(cell.X, cell.Y);
@@ -879,8 +899,10 @@ package com.monsters.maproom_advanced {
                         cell.Setup(cellData);
                     }
                 }
-                cell.depth = cell.y * 1000 + cell.x;
-                this._sortArray.push(cell);
+                panLeft = Math.max(panLeft, leftBound - cell.x);
+                panRight = Math.min(panRight, rightBound - cell.x);
+                panTop = Math.max(panTop, topBound - cell.y);
+                panBottom = Math.min(panBottom, bottomBound - cell.y);
 
                 if (notDragged) {
                     cell.mc.mcGlow.alpha = cell._over ? 0.5 : 0;
@@ -889,13 +911,12 @@ package com.monsters.maproom_advanced {
 
                 if (checkRange && cell._mine && cell._flingerRange.Get() > 0 && cell._base > 0) {
                     cellsWithRange.push(cell);
-                    if (cell.X == GLOBAL._mapHome.x && cell.Y == GLOBAL._mapHome.y) {
-                        homeCellVisible = true;
-                    }
                 }
             }
 
+            this._panBounds = new Rectangle(panLeft, panTop, panRight - panLeft, panBottom - panTop);
             if (anyCellMoved) {
+                this._sortArray = this._cells.concat();
                 this._sortArray.sortOn("depth", Array.NUMERIC);
                 i = 0;
                 while (i < this._sortArray.length) {
@@ -905,12 +926,7 @@ package com.monsters.maproom_advanced {
                     i++;
                 }
             }
-            if (Boolean(this._popupInfoMine) && Boolean(this._popupInfoMine.parent)) {
-                this._popupInfoMine.Update();
-            }
-            if (Boolean(this._popupAttackA) && Boolean(this._popupAttackA.parent)) {
-                this._popupAttackA.Update();
-            }
+            this.UpdatePopups();
 
             // Process collected range cells
             if (checkRange) {
@@ -942,6 +958,20 @@ package com.monsters.maproom_advanced {
                 }
             }
 
+            this.UpdateViewport();
+        }
+
+        private function UpdatePopups():void {
+            if (Boolean(this._popupInfoMine) && Boolean(this._popupInfoMine.parent)) {
+                this._popupInfoMine.Update();
+            }
+            if (Boolean(this._popupAttackA) && Boolean(this._popupAttackA.parent)) {
+                this._popupAttackA.Update();
+            }
+        }
+
+        private function UpdateViewport():void {
+            var cell:MapRoomCell;
             var viewport:Rectangle = mcMask.mcMask.getBounds(this._cellContainer);
             var stageToContainer:Matrix = this._cellContainer.transform.concatenatedMatrix;
             stageToContainer.invert();
