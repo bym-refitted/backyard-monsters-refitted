@@ -1,0 +1,29 @@
+{
+	"as3mxml.format.enabled": true,
+	"as3mxml.format.placeOpenBraceOnNewLine": false,
+	"as3mxml.format.insertSpaceAfterKeywordsInControlFlowStatements": true,
+	"as3mxml.format.insertSpaceBeforeAndAfterBinaryOperators": true,
+	"as3mxml.format.insertSpaceAfterCommaDelimiter": true,
+	"as3mxml.format.insertSpaceAfterSemicolonInForStatements": true,
+	"as3mxml.format.insertSpaceAfterFunctionKeywordForAnonymousFunctions": false,
+	"as3mxml.format.insertSpaceBetweenMetadataAttributes": true,
+	"as3mxml.format.insertSpaceAtStartOfLineComment": true,
+	"as3mxml.format.collapseEmptyBlocks": false,
+	"as3mxml.format.maxPreserveNewLines": 2,
+
+	"[actionscript]": {
+		"editor.defaultFormatter": "bowlerhatllc.vscode-as3mxml",
+		"editor.formatOnSave": true,
+		"editor.insertSpaces": true,
+		"editor.tabSize": 4,
+		"editor.detectIndentation": false
+	},
+
+	"[mxml]": {
+		"editor.defaultFormatter": "bowlerhatllc.vscode-as3mxml",
+		"editor.formatOnSave": true,
+		"editor.insertSpaces": true,
+		"editor.tabSize": 4,
+		"editor.detectIndentation": false
+	}
+}

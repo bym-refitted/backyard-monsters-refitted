@@ -1,7 +1,5 @@
-package com.monsters.interfaces
-{
-   public interface ICoreBuilding
-   {
-       
-   }
+package com.monsters.interfaces {
+    public interface ICoreBuilding {
+
+    }
 }

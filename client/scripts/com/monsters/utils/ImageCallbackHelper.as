@@ -1,7 +1,5 @@
-package com.monsters.utils
-{
-    public final class ImageCallbackHelper
-    {
+package com.monsters.utils {
+    public final class ImageCallbackHelper {
 
         private var _ref:Function;
 
@@ -13,8 +11,7 @@ package com.monsters.utils
 
         private var _imageDataB:Object;
 
-        public function ImageCallbackHelper(ref:Function, state:String, level:int, imageDataA:Object, imageDataB:Object)
-        {
+        public function ImageCallbackHelper(ref:Function, state:String, level:int, imageDataA:Object, imageDataB:Object) {
             super();
             this._ref = ref;
             this._state = state;
@@ -23,33 +20,27 @@ package com.monsters.utils
             this._imageDataB = imageDataB;
         }
 
-        public function get ref():Function
-        {
+        public function get ref():Function {
             return this._ref;
         }
 
-        public function get state():String
-        {
+        public function get state():String {
             return this._state;
         }
 
-        public function get level():int
-        {
+        public function get level():int {
             return this._level;
         }
 
-        public function get imageDataA():Object
-        {
+        public function get imageDataA():Object {
             return this._imageDataA;
         }
 
-        public function get imageDataB():Object
-        {
+        public function get imageDataB():Object {
             return this._imageDataB;
         }
 
-        public function clear():void
-        {
+        public function clear():void {
             this._ref = null;
             this._state = null;
             this._imageDataA = null;
