@@ -565,133 +565,118 @@ package
                 _dragging = true;
                 stage.addEventListener(MouseEvent.MOUSE_UP, Release);
             }
-        }
-
-        public static function Release(param1:MouseEvent):void {
-            _dragging = false;
-            _dragged = false;
-            stage.removeEventListener(MouseEvent.MOUSE_UP, Release);
-        }
-
-        public static function Focus(param1:Number, param2:Number):void {
-            var _loc3_:int = 0;
-            var _loc4_:int = 0;
-            if (!GLOBAL._catchup) {
-                tx = GLOBAL._SCREEN.x - (param1 - GLOBAL._SCREEN.width / 2);
-                ty = GLOBAL._SCREEN.y - (param2 - GLOBAL._SCREEN.height / 2);
-                _loc3_ = GLOBAL._SCREEN.width;
-                _loc4_ = GLOBAL._SCREEN.height;
-                _GROUND.x = tx;
-                _GROUND.y = ty;
-                _instance.resizeViewRect();
+            _loc5_++;
+         }
+      }
+      
+      private static function onMouseScroll(param1:MouseEvent) : void
+      {
+         GLOBAL.magnification += param1.delta * 0.05;
+      }
+      
+      public static function KeyUp(param1:KeyboardEvent) : void
+      {
+      }
+      
+      public static function Click(param1:MouseEvent = null) : void
+      {
+         if(UI2._scrollMap)
+         {
+            _dragX = stage.mouseX - _GROUND.x;
+            _dragY = stage.mouseY - _GROUND.y;
+            _startX = _GROUND.x;
+            _startY = _GROUND.y;
+            _dragging = true;
+            stage.addEventListener(MouseEvent.MOUSE_UP,Release);
+         }
+      }
+      
+      public static function Release(param1:MouseEvent) : void
+      {
+         _dragging = false;
+         _dragged = false;
+         stage.removeEventListener(MouseEvent.MOUSE_UP,Release);
+      }
+      
+      public static function Focus(param1:Number, param2:Number) : void
+      {
+         var _loc3_:int = 0;
+         var _loc4_:int = 0;
+         if(!GLOBAL._catchup)
+         {
+            tx = GLOBAL._SCREEN.x - (param1 - GLOBAL._SCREEN.width / 2);
+            ty = GLOBAL._SCREEN.y - (param2 - GLOBAL._SCREEN.height / 2);
+            _loc3_ = GLOBAL._SCREEN.width;
+            _loc4_ = GLOBAL._SCREEN.height;
+            _GROUND.x = tx;
+            _GROUND.y = ty;
+            _instance.resizeViewRect();
+         }
+      }
+      
+      public static function FocusTo(param1:int, param2:int, param3:Number, param4:Number = 0, param5:Number = 0, param6:Boolean = true, param7:Function = null) : void
+      {
+         var FocusToDone:Function;
+         var w:int = 0;
+         var h:int = 0;
+         var X:int = param1;
+         var Y:int = param2;
+         var time:Number = param3;
+         var delay:Number = param4;
+         var pause:Number = param5;
+         var ease:Boolean = param6;
+         var callback:Function = param7;
+         if(!GLOBAL._catchup)
+         {
+            FocusToDone = function():void
+            {
+               if(!_GROUND)
+               {
+                  return;
+               }
+               tx = _GROUND.x;
+               ty = _GROUND.y;
+               _autoScroll = false;
+               if(callback != null)
+               {
+                  callback();
+               }
+               _instance.resizeViewRect();
+               BFOUNDATION.updateAllRasterVisibility();
+            };
+            if(pause > 0)
+            {
+               UI2.Hide("top");
+               UI2.Hide("bottom");
             }
-        }
-
-        public static function FocusTo(param1:int, param2:int, param3:Number, param4:Number = 0, param5:Number = 0, param6:Boolean = true, param7:Function = null):void {
-            var FocusToDone:Function;
-            var w:int = 0;
-            var h:int = 0;
-            var X:int = param1;
-            var Y:int = param2;
-            var time:Number = param3;
-            var delay:Number = param4;
-            var pause:Number = param5;
-            var ease:Boolean = param6;
-            var callback:Function = param7;
-            if (!GLOBAL._catchup) {
-                FocusToDone = function():void {
-                    if (!_GROUND) {
-                        return;
-                    }
-                    tx = _GROUND.x;
-                    ty = _GROUND.y;
-                    _autoScroll = false;
-                    if (callback != null) {
-                        callback();
-                    }
-                    _instance.resizeViewRect();
-                    BFOUNDATION.updateAllRasterData();
-                };
-                if (pause > 0) {
-                    UI2.Hide("top");
-                    UI2.Hide("bottom");
-                }
-                _autoScroll = true;
-                tx = 0 - (X - 380);
-                ty = 0 - (Y - 340);
-                w = stage.stageWidth;
-                h = GLOBAL.GetGameHeight();
-                if (ease) {
-                    TweenLite.to(_GROUND, time, {
-                                "x": tx,
-                                "y": ty,
-                                "ease": Cubic.easeInOut,
-                                "delay": delay,
-                                "onUpdate": BFOUNDATION.updateAllRasterData,
-                                "onComplete": FocusToDone,
-                                "overwrite": false
-                            });
-                }
-                else {
-                    TweenLite.to(_GROUND, time, {
-                                "x": tx,
-                                "y": ty,
-                                "ease": Linear.easeNone,
-                                "delay": delay,
-                                "onUpdate": BFOUNDATION.updateAllRasterData,
-                                "onComplete": FocusToDone,
-                                "overwrite": false
-                            });
-                }
+            _autoScroll = true;
+            tx = 0 - (X - 380);
+            ty = 0 - (Y - 340);
+            w = stage.stageWidth;
+            h = GLOBAL.GetGameHeight();
+            if(ease)
+            {
+               TweenLite.to(_GROUND,time,{
+                  "x":tx,
+                  "y":ty,
+                  "ease":Cubic.easeInOut,
+                  "delay":delay,
+                  "onUpdate":BFOUNDATION.updateAllRasterVisibility,
+                  "onComplete":FocusToDone,
+                  "overwrite":false
+               });
             }
-        }
-
-        public static function FollowStart():void {
-            UI2.Hide("top");
-            UI2.Hide("bottom");
-            _following = true;
-        }
-
-        public static function FollowStop():void {
-            UI2.Show("top");
-            UI2.Show("bottom");
-            _following = false;
-        }
-
-        public static function Scroll(param1:Event = null):void {
-            var _loc12_:int = 0;
-            var _loc13_:Object = null;
-            var _loc14_:MonsterBase = null;
-            var _loc15_:Number = NaN;
-            var _loc16_:Number = NaN;
-            var _loc17_:Number = NaN;
-            var _loc18_:Number = NaN;
-            if (_following) {
-                _loc13_ = CREEPS._creeps;
-                tx = 0;
-                ty = 0;
-                for each (_loc14_ in _loc13_) {
-                    if (_loc14_._behaviour === "attack" || _loc14_._behaviour === "loot") {
-                        _loc12_++;
-                        tx += _loc14_.x;
-                        ty += _loc14_.y;
-                    }
-                }
-                if (_loc12_ <= 0) {
-                    tx = _dragX;
-                    ty = _dragY;
-                    if (CREEPS._creepCount == 0) {
-                        FollowStop();
-                    }
-                    return;
-                }
-                tx /= _loc12_;
-                ty /= _loc12_;
-                tx = 0 - tx + GLOBAL._ROOT.stage.stageWidth * 0.5;
-                ty = 0 - ty + GLOBAL._ROOT.stage.stageHeight * 0.5;
-                _dragX = tx;
-                _dragY = ty;
-                BFOUNDATION.updateAllRasterData();
+            else
+            {
+               TweenLite.to(_GROUND,time,{
+                  "x":tx,
+                  "y":ty,
+                  "ease":Linear.easeNone,
+                  "delay":delay,
+                  "onUpdate":BFOUNDATION.updateAllRasterVisibility,
+                  "onComplete":FocusToDone,
+                  "overwrite":false
+               });
             }
          }
       }
@@ -746,8 +731,27 @@ package
             if (GLOBAL._zoomed) {
                 _loc10_ = (_loc5_ - _loc2_ + _loc9_ / _loc11_) / _loc11_;
             }
-            if (tx > _loc10_) {
-                tx = _loc10_;
+            tx /= _loc12_;
+            ty /= _loc12_;
+            tx = 0 - tx + GLOBAL._ROOT.stage.stageWidth * 0.5;
+            ty = 0 - ty + GLOBAL._ROOT.stage.stageHeight * 0.5;
+            _dragX = tx;
+            _dragY = ty;
+            BFOUNDATION.updateAllRasterVisibility();
+         }
+         else if(_dragging && UI2._scrollMap && !_autoScroll && _canScroll)
+         {
+            _loc15_ = stage.mouseX;
+            _loc16_ = stage.mouseY;
+            tx = _loc15_ - _dragX >> 0;
+            ty = _loc16_ - _dragY >> 0;
+            _loc17_ = _loc15_ - (_dragX + _startX);
+            _loc18_ = _loc16_ - (_dragY + _startY);
+            _dragDistance = Math.abs(_loc17_ * _loc17_ + _loc18_ * _loc18_);
+            if(_dragDistance > 100)
+            {
+               _dragged = true;
+               BFOUNDATION.updateAllRasterVisibility();
             }
          }
          var _loc2_:int = GLOBAL._ROOT.stage.stageWidth;

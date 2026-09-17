@@ -1,38 +1,80 @@
-package {
-    import com.monsters.configs.BYMConfig;
-    import com.monsters.monsters.MonsterBase;
-    import com.monsters.rendering.RasterData;
-    import flash.geom.Point;
+package
+{
+   import com.monsters.configs.BYMConfig;
+   import com.monsters.monsters.MonsterBase;
+   import com.monsters.rendering.RasterData;
+   import flash.geom.Point;
+   import flash.geom.Rectangle;
+   
+   public class BTRAP extends BFOUNDATION
+   {
+       
+      
+      private var creeps:Array;
+      
+      private var maxDist:int;
+      
+      private var minDist:int;
+      
+      public var _hasTargets:Boolean;
+      
+      public var _targetCreeps:Array;
+      
+      public var _retarget:int;
+      
+      public function BTRAP()
+      {
+         super();
+         _fired = false;
+         this._retarget = 0;
+         _range = 20;
+         attackFlags = Targeting.getOldStyleTargets(-1);
+      }
+      
+      override public function SetProps() : void
+      {
+         var _loc1_:RasterData = null;
+         super.SetProps();
+         damageProperty.value = _buildingProps.damage[0];
+         if(GLOBAL.mode != GLOBAL.e_BASE_MODE.BUILD)
+         {
+            _mc.visible = false;
+            _mcBase.visible = false;
+         }
+      }
+      
+      override protected function updateRasterData() : void
+      {
+         if(GLOBAL.mode !== GLOBAL.e_BASE_MODE.BUILD)
+         {
+            _mc.visible = false;
+            _mcBase.visible = false;
+         }
+         super.updateRasterData();
+      }
+      
+      override protected function updateRasterVisibility(viewRect:Rectangle, offset:Point, bounds:Rectangle) : void
+      {
+         if(GLOBAL.mode !== GLOBAL.e_BASE_MODE.BUILD)
+         {
+            _mc.visible = false;
+            _mcBase.visible = false;
+         }
+         super.updateRasterVisibility(viewRect,offset,bounds);
+      }
 
-    public class BTRAP extends BFOUNDATION {
-
-        private var creeps:Array;
-
-        private var maxDist:int;
-
-        private var minDist:int;
-
-        public var _hasTargets:Boolean;
-
-        public var _targetCreeps:Array;
-
-        public var _retarget:int;
-
-        public function BTRAP() {
-            super();
-            _fired = false;
-            this._retarget = 0;
-            _range = 20;
-            attackFlags = Targeting.getOldStyleTargets(-1);
-        }
-
-        override public function SetProps():void {
-            var _loc1_:RasterData = null;
-            super.SetProps();
-            damageProperty.value = _buildingProps.damage[0];
-            if (GLOBAL.mode != GLOBAL.e_BASE_MODE.BUILD) {
-                _mc.visible = false;
-                _mcBase.visible = false;
+      override public function TickAttack() : void
+      {
+         if(_countdownBuild.Get() == 0 && !_fired)
+         {
+            if(!this._hasTargets)
+            {
+               if(this._retarget == 0)
+               {
+                  this.FindTargets();
+                  this._retarget = 20;
+               }
+               --this._retarget;
             }
         }
 

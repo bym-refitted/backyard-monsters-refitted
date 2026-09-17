@@ -1,361 +1,516 @@
-package {
-    import com.cc.utils.SecNum;
-    import com.monsters.GameObject;
-    import com.monsters.configs.BYMConfig;
-    import com.monsters.configs.BYMDevConfig;
-    import com.monsters.debug.Console;
-    import com.monsters.display.BuildingAssetContainer;
-    import com.monsters.display.BuildingOverlay;
-    import com.monsters.display.ImageCache;
-    import com.monsters.effects.fire.Fire;
-    import com.monsters.effects.smoke.Smoke;
-    import com.monsters.enums.EnumYardType;
-    import com.monsters.events.BuildingEvent;
-    import com.monsters.interfaces.ICoreBuilding;
-    import com.monsters.interfaces.ITargetable;
-    import com.monsters.inventory.InventoryManager;
-    import com.monsters.managers.InstanceManager;
-    import com.monsters.maproom_manager.MapRoomManager;
-    import com.monsters.monsters.MonsterBase;
-    import com.monsters.monsters.components.CModifiableProperty;
-    import com.monsters.pathing.PATHING;
-    import com.monsters.rendering.RasterData;
-    import com.monsters.utils.ImageCallbackHelper;
-    import com.monsters.utils.MovieClipUtils;
-    import flash.display.Bitmap;
-    import flash.display.BitmapData;
-    import flash.display.BlendMode;
-    import flash.display.DisplayObject;
-    import flash.display.MovieClip;
-    import flash.display.Sprite;
-    import flash.events.Event;
-    import flash.events.MouseEvent;
-    import flash.filters.ColorMatrixFilter;
-    import flash.geom.Matrix;
-    import flash.geom.Point;
-    import flash.geom.Rectangle;
-
-    public class BFOUNDATION extends GameObject {
-
-        public static const TICK_LIMIT:int = 1209600;
-
-        private static var s_totalBuildingHP:Number;
-
-        private static var s_totalBuildingMaxHP:Number;
-
-        public static const _IMAGE_NAMES:Array = ["shadow", "", "top", "anim", "anim2", "anim3"];
-
-        public static const _RASTERDATA_SHADOW:uint = 0;
-
-        public static const _RASTERDATA_FOOTPRINT:uint = 1;
-
-        public static const _RASTERDATA_TOP:uint = 2;
-
-        public static const _RASTERDATA_ANIM:uint = 3;
-
-        public static const _RASTERDATA_ANIM2:uint = 4;
-
-        public static const _RASTERDATA_ANIM3:uint = 5;
-
-        public static const _RASTERDATA_FORTFRONT:uint = 6;
-
-        public static const _RASTERDATA_FORTBACK:uint = 7;
-
-        public static const _RASTERDATA_AMOUNT:uint = 8;
-
-        public static const k_STATE_DESTROYED:String = "destroyed";
-
-        public static const k_STATE_DAMAGED:String = "damaged";
-
-        public static const k_STATE_DEFAULT:String = "";
-
-        public var _mcBase:MovieClip;
-
-        public var _mcFootprint:MovieClip;
-
-        public var _mcHit:MovieClip;
-
-        public var topContainer:BuildingAssetContainer;
-
-        public var animContainer:BuildingAssetContainer;
-
-        public var _fortBackContainer:BuildingAssetContainer;
-
-        public var _fortFrontContainer:BuildingAssetContainer;
-
-        public var _spriteAlert:Sprite;
-
-        public var _mcAlert:DisplayObject;
-
-        public var _position:Point;
-
-        public var _oldPosition:Point;
-
-        public var _stopMoveCount:int;
-
-        public var _moving:Boolean;
-
-        public var _mouseOffset:Point;
-
-        public var _footprint:Array;
-
-        public var _blockers:Array;
-
-        public var _gridCost:Array;
-
-        public var _clickTimer:int;
-
-        public var _prefab:int = 0;
-
-        public var _buildInstant:Boolean = false;
-
-        public var _buildInstantCost:SecNum;
-
-        public var _fortification:SecNum;
-
-        public const _nullPoint:Point = new Point(0, 0);
-
-        public var _animLoaded:Boolean = false;
-
-        public var _animBMD:BitmapData;
-
-        public var _animRect:Rectangle;
-
-        public var _animContainerBMD:BitmapData;
-
-        public var _animTick:int = 0;
-
-        public var _animFrames:int = 0;
-
-        public var anim2Container:BuildingAssetContainer;
-
-        public var _anim2BMD:BitmapData;
-
-        public var _anim2ContainerBMD:BitmapData;
-
-        public var _anim2Rect:Rectangle;
-
-        public var _anim2Frames:int = 0;
-
-        public var _anim2Tick:int = 0;
-
-        public var _anim2Loaded:Boolean = false;
-
-        public var anim3Container:BuildingAssetContainer;
-
-        public var _anim3BMD:BitmapData;
-
-        public var _anim3ContainerBMD:BitmapData;
-
-        public var _anim3Rect:Rectangle;
-
-        public var _anim3Frames:int = 0;
-
-        public var _anim3Tick:int = 0;
-
-        public var _anim3Loaded:Boolean = false;
-
-        public var _animRandomStart:Boolean = true;
-
-        public var _countdownBuild:SecNum;
-
-        public var _countdownUpgrade:SecNum;
-
-        public var _countdownRebuild:SecNum;
-
-        public var _countdownProduce:SecNum;
-
-        public var _countdownFortify:SecNum;
-
-        public var _stored:SecNum;
-
-        public var _lvl:SecNum;
-
-        public var _threadid:int;
-
-        public var _subject:String;
-
-        public var _senderid:int;
-
-        public var _senderName:String;
-
-        public var _senderPic:String;
-
-        public var _hpCountdownRebuild:int;
-
-        public var _hpCountdownProduce:int;
-
-        public var _hpStored:int;
-
-        public var _hpLvl:int;
-
-        public var _repairing:int;
-
-        public var _repairTime:int;
-
-        public var _productionStage:SecNum;
-
-        public var _looted:Boolean = false;
-
-        public var _hasWorker:Boolean;
-
-        public var _hasResources:Boolean;
-
-        public var _counter:Number;
-
-        public var _type:int;
-
-        public var _attackgroup:int;
-
-        public var _class:String;
-
-        public var _id:int;
-
-        public var _energy:int;
-
-        public var _fired:Boolean;
-
-        public var _creatures:Array;
-
-        public var _buildingTitle:String;
-
-        public var _buildingInstructions:String;
-
-        public var _buildingStats:String;
-
-        public var _buildingDescription:String;
-
-        public var _upgradeDescription:String;
-
-        public var _recycleDescription:String;
-
-        public var _specialDescription:String;
-
-        public var _repairDescription:String;
-
-        public var _blockRecycle:Boolean;
-
-        public var _upgradeCosts:String;
-
-        public var _recycleCosts:String;
-
-        public var _buildingProps:Object;
-
-        public var _resource:Number;
-
-        public var _range:int;
-
-        public var _rate:int;
-
-        public var _splash:int;
-
-        public var _speed:int;
-
-        public var _producing:int;
-
-        public var _constructed:Boolean;
-
-        public var _placing:Boolean;
-
-        public var _oldY:int;
-
-        public var _upgrading:String;
-
-        public var _origin:Point;
-
-        public var _shake:int;
-
-        public var _picking:Boolean;
-
-        public var _monsterQueue:Array;
-
-        public var _inProduction:String;
-
-        public var _taken:SecNum;
-
-        public var _spoutPoint:Point;
-
-        public var _spoutHeight:int;
-
-        public var _canFunction:Boolean;
-
-        public var _helpList:Array;
-
-        public var _destroyed:Boolean = false;
-
-        public var _renderState:String = null;
-
-        public var _oldRenderState:String = null;
-
-        public var _lastLoadedState:String = null;
-
-        public var _renderLevel:int = 0;
-
-        public var _renderFortLevel:int = 0;
-
-        public var _treat:int;
-
-        public var _expireTime:int = 0;
-
-        protected var imageData:Object;
-
-        private var _lastBarIndex:int = -1;
-
-        public var _overlayOffset:Point;
-
-        protected var _rasterData:Vector.<RasterData>;
-
-        protected var _rasterPt:Vector.<Point>;
-
-        protected var _offsets:Vector.<Point>;
-
-        protected var _sources:Vector.<DisplayObject>;
-
-        protected var _debugRasterData:RasterData;
-
-        protected var m_bmd:BitmapData;
-
-        protected var m_shadowBMD:BitmapData;
-
-        protected var m_footprintBMD:BitmapData;
-
-        protected var m_hitBMD:BitmapData;
-
-        protected var m_bmHit:Bitmap;
-
-        protected var m_hitOffsetIndex:uint;
-
-        protected var _imageCallbackHelpers:Vector.<ImageCallbackHelper>;
-
-        public var _recycled:Boolean = false;
-
-        public var damageProperty:CModifiableProperty;
-
-        private var _mouseClicked:Boolean;
-
-        public function BFOUNDATION() {
-            this._overlayOffset = new Point(0, 0);
-            super();
-            this._spoutPoint = new Point(1, -67);
-            this._spoutHeight = 135;
-            setHealth(1);
-            this._energy = 0;
-            this._buildingTitle = "";
-            this._buildingDescription = "";
-            this._buildingInstructions = "";
-            this._upgradeDescription = "";
-            this._buildingStats = "";
-            this._creatures = [];
-            this._helpList = [];
-            this._rasterData = new Vector.<RasterData>(_RASTERDATA_AMOUNT, true);
-            this._rasterPt = new Vector.<Point>(this._rasterData.length, true);
-            this._offsets = new Vector.<Point>(this._rasterData.length, true);
-            this._sources = new Vector.<DisplayObject>(this._rasterData.length, true);
-            var _loc1_:int = int(this._rasterPt.length - 1);
-            while (_loc1_ >= 0) {
-                this._rasterPt[_loc1_] = new Point();
-                this._offsets[_loc1_] = new Point();
-                _loc1_--;
+package
+{
+   import com.cc.utils.SecNum;
+   import com.monsters.GameObject;
+   import com.monsters.configs.BYMConfig;
+   import com.monsters.configs.BYMDevConfig;
+   import com.monsters.debug.Console;
+   import com.monsters.display.BuildingAssetContainer;
+   import com.monsters.display.BuildingOverlay;
+   import com.monsters.display.ImageCache;
+   import com.monsters.effects.fire.Fire;
+   import com.monsters.effects.smoke.Smoke;
+   import com.monsters.enums.EnumYardType;
+   import com.monsters.events.BuildingEvent;
+   import com.monsters.interfaces.ICoreBuilding;
+   import com.monsters.interfaces.ITargetable;
+   import com.monsters.inventory.InventoryManager;
+   import com.monsters.managers.InstanceManager;
+   import com.monsters.maproom_manager.MapRoomManager;
+   import com.monsters.monsters.MonsterBase;
+   import com.monsters.monsters.components.CModifiableProperty;
+   import com.monsters.pathing.PATHING;
+   import com.monsters.rendering.RasterData;
+   import com.monsters.utils.ImageCallbackHelper;
+   import com.monsters.utils.MovieClipUtils;
+   import flash.display.Bitmap;
+   import flash.display.BitmapData;
+   import flash.display.BlendMode;
+   import flash.display.DisplayObject;
+   import flash.display.MovieClip;
+   import flash.display.Sprite;
+   import flash.events.Event;
+   import flash.events.MouseEvent;
+   import flash.filters.ColorMatrixFilter;
+   import flash.geom.Matrix;
+   import flash.geom.Point;
+   import flash.geom.Rectangle;
+   
+   public class BFOUNDATION extends GameObject
+   {
+      
+      public static const TICK_LIMIT:int = 1209600;
+      
+      private static var s_totalBuildingHP:Number;
+      
+      private static var s_totalBuildingMaxHP:Number;
+      
+      public static const _IMAGE_NAMES:Array = ["shadow","","top","anim","anim2","anim3"];
+      
+      public static const _RASTERDATA_SHADOW:uint = 0;
+      
+      public static const _RASTERDATA_FOOTPRINT:uint = 1;
+      
+      public static const _RASTERDATA_TOP:uint = 2;
+      
+      public static const _RASTERDATA_ANIM:uint = 3;
+      
+      public static const _RASTERDATA_ANIM2:uint = 4;
+      
+      public static const _RASTERDATA_ANIM3:uint = 5;
+      
+      public static const _RASTERDATA_FORTFRONT:uint = 6;
+      
+      public static const _RASTERDATA_FORTBACK:uint = 7;
+      
+      public static const _RASTERDATA_AMOUNT:uint = 8;
+      
+      public static const k_STATE_DESTROYED:String = "destroyed";
+      
+      public static const k_STATE_DAMAGED:String = "damaged";
+      
+      public static const k_STATE_DEFAULT:String = "";
+       
+      
+      public var _mcBase:MovieClip;
+      
+      public var _mcFootprint:MovieClip;
+      
+      public var _mcHit:MovieClip;
+      
+      public var topContainer:BuildingAssetContainer;
+      
+      public var animContainer:BuildingAssetContainer;
+      
+      public var _fortBackContainer:BuildingAssetContainer;
+      
+      public var _fortFrontContainer:BuildingAssetContainer;
+      
+      public var _spriteAlert:Sprite;
+      
+      public var _mcAlert:DisplayObject;
+      
+      public var _position:Point;
+      
+      public var _oldPosition:Point;
+      
+      public var _stopMoveCount:int;
+      
+      public var _moving:Boolean;
+      
+      public var _mouseOffset:Point;
+      
+      public var _footprint:Array;
+      
+      public var _blockers:Array;
+      
+      public var _gridCost:Array;
+      
+      public var _clickTimer:int;
+      
+      public var _prefab:int = 0;
+      
+      public var _buildInstant:Boolean = false;
+      
+      public var _buildInstantCost:SecNum;
+      
+      public var _fortification:SecNum;
+      
+      public const _nullPoint:Point = new Point(0,0);
+      
+      public var _animLoaded:Boolean = false;
+      
+      public var _animBMD:BitmapData;
+      
+      public var _animRect:Rectangle;
+      
+      public var _animContainerBMD:BitmapData;
+      
+      public var _animTick:int = 0;
+      
+      public var _animFrames:int = 0;
+      
+      public var anim2Container:BuildingAssetContainer;
+      
+      public var _anim2BMD:BitmapData;
+      
+      public var _anim2ContainerBMD:BitmapData;
+      
+      public var _anim2Rect:Rectangle;
+      
+      public var _anim2Frames:int = 0;
+      
+      public var _anim2Tick:int = 0;
+      
+      public var _anim2Loaded:Boolean = false;
+      
+      public var anim3Container:BuildingAssetContainer;
+      
+      public var _anim3BMD:BitmapData;
+      
+      public var _anim3ContainerBMD:BitmapData;
+      
+      public var _anim3Rect:Rectangle;
+      
+      public var _anim3Frames:int = 0;
+      
+      public var _anim3Tick:int = 0;
+      
+      public var _anim3Loaded:Boolean = false;
+      
+      public var _animRandomStart:Boolean = true;
+      
+      public var _countdownBuild:SecNum;
+      
+      public var _countdownUpgrade:SecNum;
+      
+      public var _countdownRebuild:SecNum;
+      
+      public var _countdownProduce:SecNum;
+      
+      public var _countdownFortify:SecNum;
+      
+      public var _stored:SecNum;
+      
+      public var _lvl:SecNum;
+      
+      public var _threadid:int;
+      
+      public var _subject:String;
+      
+      public var _senderid:int;
+      
+      public var _senderName:String;
+      
+      public var _senderPic:String;
+      
+      public var _hpCountdownRebuild:int;
+      
+      public var _hpCountdownProduce:int;
+      
+      public var _hpStored:int;
+      
+      public var _hpLvl:int;
+      
+      public var _repairing:int;
+      
+      public var _repairTime:int;
+      
+      public var _productionStage:SecNum;
+      
+      public var _looted:Boolean = false;
+      
+      public var _hasWorker:Boolean;
+      
+      public var _hasResources:Boolean;
+      
+      public var _counter:Number;
+      
+      public var _type:int;
+      
+      public var _attackgroup:int;
+      
+      public var _class:String;
+      
+      public var _id:int;
+      
+      public var _energy:int;
+      
+      public var _fired:Boolean;
+      
+      public var _creatures:Array;
+      
+      public var _buildingTitle:String;
+      
+      public var _buildingInstructions:String;
+      
+      public var _buildingStats:String;
+      
+      public var _buildingDescription:String;
+      
+      public var _upgradeDescription:String;
+      
+      public var _recycleDescription:String;
+      
+      public var _specialDescription:String;
+      
+      public var _repairDescription:String;
+      
+      public var _blockRecycle:Boolean;
+      
+      public var _upgradeCosts:String;
+      
+      public var _recycleCosts:String;
+      
+      public var _buildingProps:Object;
+      
+      public var _resource:Number;
+      
+      public var _range:int;
+      
+      public var _rate:int;
+      
+      public var _splash:int;
+      
+      public var _speed:int;
+      
+      public var _producing:int;
+      
+      public var _constructed:Boolean;
+      
+      public var _placing:Boolean;
+      
+      public var _oldY:int;
+      
+      public var _upgrading:String;
+      
+      public var _origin:Point;
+      
+      public var _shake:int;
+      
+      public var _picking:Boolean;
+      
+      public var _monsterQueue:Array;
+      
+      public var _inProduction:String;
+      
+      public var _taken:SecNum;
+      
+      public var _spoutPoint:Point;
+      
+      public var _spoutHeight:int;
+      
+      public var _canFunction:Boolean;
+      
+      public var _helpList:Array;
+      
+      public var _destroyed:Boolean = false;
+      
+      public var _renderState:String = null;
+      
+      public var _oldRenderState:String = null;
+      
+      public var _lastLoadedState:String = null;
+      
+      public var _renderLevel:int = 0;
+      
+      public var _renderFortLevel:int = 0;
+      
+      public var _treat:int;
+      
+      public var _expireTime:int = 0;
+      
+      protected var imageData:Object;
+      
+      private var _lastBarIndex:int = -1;
+      
+      public var _overlayOffset:Point;
+      
+      protected var _rasterData:Vector.<RasterData>;
+      
+      protected var _rasterPt:Vector.<Point>;
+      
+      protected var _offsets:Vector.<Point>;
+      
+      protected var _sources:Vector.<DisplayObject>;
+      
+      protected var _debugRasterData:RasterData;
+      
+      protected var m_bmd:BitmapData;
+      
+      protected var m_shadowBMD:BitmapData;
+      
+      protected var m_footprintBMD:BitmapData;
+      
+      protected var m_hitBMD:BitmapData;
+      
+      protected var m_bmHit:Bitmap;
+      
+      protected var m_hitOffsetIndex:uint;
+      
+      protected var _imageCallbackHelpers:Vector.<ImageCallbackHelper>;
+      
+      public var _recycled:Boolean = false;
+      
+      public var damageProperty:CModifiableProperty;
+      
+      private var _mouseClicked:Boolean;
+
+      private var m_rasterGeometryCurrent:Boolean = false;
+      private var m_rasterGeometryX:Number;
+      private var m_rasterGeometryY:Number;
+      private var m_rasterGeometryAlpha:Number;
+      private var m_rasterGeometryMiddle:int;
+      private var m_rasterGeometryBaseX:Number;
+      private var m_rasterGeometryBaseY:Number;
+      private var m_rasterGeometryOffsetX:Number;
+      private var m_rasterGeometryOffsetY:Number;
+      private static const s_cameraRasterBounds:Rectangle = new Rectangle();
+      
+      public function BFOUNDATION()
+      {
+         this._overlayOffset = new Point(0,0);
+         super();
+         this._spoutPoint = new Point(1,-67);
+         this._spoutHeight = 135;
+         setHealth(1);
+         this._energy = 0;
+         this._buildingTitle = "";
+         this._buildingDescription = "";
+         this._buildingInstructions = "";
+         this._upgradeDescription = "";
+         this._buildingStats = "";
+         this._creatures = [];
+         this._helpList = [];
+         this._rasterData = new Vector.<RasterData>(_RASTERDATA_AMOUNT,true);
+         this._rasterPt = new Vector.<Point>(this._rasterData.length,true);
+         this._offsets = new Vector.<Point>(this._rasterData.length,true);
+         this._sources = new Vector.<DisplayObject>(this._rasterData.length,true);
+         var _loc1_:int = int(this._rasterPt.length - 1);
+         while(_loc1_ >= 0)
+         {
+            this._rasterPt[_loc1_] = new Point();
+            this._offsets[_loc1_] = new Point();
+            _loc1_--;
+         }
+         this._imageCallbackHelpers = new Vector.<ImageCallbackHelper>();
+         this._fortification = new SecNum(0);
+         this._countdownBuild = new SecNum(0);
+         this._countdownRebuild = new SecNum(0);
+         this._countdownUpgrade = new SecNum(0);
+         this._countdownProduce = new SecNum(0);
+         this._countdownFortify = new SecNum(0);
+         this._stored = new SecNum(0);
+         this._lvl = new SecNum(0);
+         this._hpCountdownRebuild = 0;
+         this._hpCountdownProduce = 0;
+         this._hpStored = 0;
+         this._hpLvl = 0;
+         this._inProduction = "";
+         this._productionStage = new SecNum(0);
+         this._constructed = false;
+         this._placing = true;
+         this._repairing = 0;
+         this._mouseOffset = new Point(0,0);
+         this._oldY = 0;
+         if(BASE.isOutpostOrInfernoOutpost)
+         {
+            this._blockRecycle = true;
+         }
+         InstanceManager.addInstance(this);
+         this.damageProperty = new CModifiableProperty();
+         graphic.addEventListener(Event.REMOVED_FROM_STAGE,this.removedFromStage);
+      }
+      
+      public static function get totalBuildingHP() : Number
+      {
+         return s_totalBuildingHP;
+      }
+      
+      public static function get totalBuildingMaxHP() : Number
+      {
+         return s_totalBuildingMaxHP;
+      }
+      
+      public static function updateAllRasterData() : void
+      {
+         var _loc2_:BFOUNDATION = null;
+         if(!BYMConfig.instance.RENDERER_ON)
+         {
+            return;
+         }
+         var _loc1_:Vector.<Object> = InstanceManager.getInstancesByClass(BFOUNDATION);
+         for each(_loc2_ in _loc1_)
+         {
+            _loc2_.updateRasterData();
+         }
+      }
+      
+      public static function updateAllRasterVisibility() : void
+      {
+         if(!BYMConfig.instance.RENDERER_ON)
+         {
+            return;
+         }
+         var viewRect:Rectangle = MAP.instance.viewRect;
+         var offset:Point = MAP.instance.offset;
+         var buildings:Vector.<Object> = InstanceManager.getInstancesByClass(BFOUNDATION);
+         for each(var building:BFOUNDATION in buildings)
+         {
+            building.updateRasterVisibility(viewRect,offset,s_cameraRasterBounds);
+         }
+      }
+
+      public static function redrawAllShadowData() : void
+      {
+         var _loc1_:Vector.<Object> = null;
+         var _loc3_:int = 0;
+      }
+      
+      private static function sortByDepth(param1:Object, param2:Object) : Number
+      {
+         if(!(param1 as BFOUNDATION).rasterPt[BFOUNDATION._RASTERDATA_SHADOW])
+         {
+            return 1;
+         }
+         if(!(param2 as BFOUNDATION).rasterPt[BFOUNDATION._RASTERDATA_SHADOW])
+         {
+            return -1;
+         }
+         return (param1 as BFOUNDATION).rasterPt[BFOUNDATION._RASTERDATA_SHADOW].y - (param2 as BFOUNDATION).rasterPt[BFOUNDATION._RASTERDATA_SHADOW].y;
+      }
+      
+      public static function getBuildingSaveData() : Vector.<Object>
+      {
+         var exportBuildingData:Object = null;
+         var buildingData:BFOUNDATION = null;
+         var hasTownHall:Boolean = false;
+         var saveData:Vector.<Object> = new Vector.<Object>();
+         var building:Vector.<Object> = InstanceManager.getInstancesByClass(BFOUNDATION);
+         var buildingHealthData:Object = {};
+         var buildingDataByID:Object = {};
+         var hashString:String = "";
+         saveData[0] = buildingDataByID;
+         saveData[1] = buildingHealthData;
+         s_totalBuildingHP = s_totalBuildingMaxHP = 0;
+         for each(buildingData in building)
+         {
+            if(!(buildingData is BMUSHROOM) && !(GLOBAL._newBuilding === buildingData))
+            {
+               if(buildingData is ICoreBuilding)
+               {
+                  hasTownHall = true;
+               }
+               if(buildingData is BTRAP && buildingData._fired || buildingData._type == 53 && buildingData._expireTime < GLOBAL.Timestamp())
+               {
+                  Console.warning("Ignored Building" + buildingData + buildingData._type + buildingData._expireTime + " setting buildinghealthdata to 0");
+                  buildingHealthData[buildingData._id] = 0;
+               }
+               else
+               {
+                  if(buildingData is BWALL === false)
+                  {
+                     if(BASE.isMainYardOrInfernoMainYard && (GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD || GLOBAL.mode == GLOBAL.e_BASE_MODE.IBUILD))
+                     {
+                        s_totalBuildingHP += buildingData.maxHealth;
+                     }
+                     else
+                     {
+                        s_totalBuildingHP += buildingData.health;
+                     }
+                     s_totalBuildingMaxHP += buildingData.maxHealth;
+                  }
+                  if(buildingData.health < buildingData.maxHealth)
+                  {
+                     buildingHealthData[buildingData._id] = int(buildingData.health);
+                  }
+                  exportBuildingData = buildingData.Export();
+                  if(exportBuildingData)
+                  {
+                     buildingDataByID[buildingData._id] = exportBuildingData;
+                     hashString += (exportBuildingData.X + exportBuildingData.Y).toString();
+                  }
+               }
             }
             this._imageCallbackHelpers = new Vector.<ImageCallbackHelper>();
             this._fortification = new SecNum(0);
@@ -887,10 +1042,53 @@ package {
             }
         }
 
-        public function getEstimatedRepairTimeRemaining():Number {
-            var _loc1_:int = 0;
-            if (this._lvl.Get() == 0) {
-                _loc1_ = int(this._buildingProps.repairTime[0]);
+      public function RenderClear(param1:Boolean = true) : void
+      {
+         this.m_rasterGeometryCurrent = false;
+         if(m_isCleared)
+         {
+            return;
+         }
+         if(param1)
+         {
+            this._renderState = null;
+         }
+         this._mcBase.Clear();
+         this.topContainer.Clear();
+         this.animContainer.Clear();
+         this.anim2Container.Clear();
+         this.anim3Container.Clear();
+      }
+      
+      public function Render(param1:String = "") : void
+      {
+         var FortImageCallback:Function;
+         var imageDataA:Object = null;
+         var imageDataB:Object = null;
+         var imageLevel:int = 0;
+         var fortImageDataA:Object = null;
+         var fortImageDataB:Object = null;
+         var fortImageLevel:int = 0;
+         var i:int = 0;
+         var loadImages:Array = null;
+         var length:uint = 0;
+         var imageGroupYardType:int = 0;
+         var j:int = 0;
+         var loadFortImages:Array = null;
+         var state:String = param1;
+         if(GLOBAL._catchup)
+         {
+            return;
+         }
+         if(this._renderState == null || state !== this._renderState || this._lvl.Get() != this._renderLevel)
+         {
+            this._renderLevel = this._lvl.Get();
+            var effectiveLevel:int = getEffectiveLevel();
+            imageDataA = GLOBAL._buildingProps[this._type - 1].imageData;
+            if(effectiveLevel == 0)
+            {
+               imageDataB = imageDataA[1];
+               imageLevel = 1;
             }
             else {
                 _loc1_ = int(this._buildingProps.repairTime[this._lvl.Get() - 1]);
@@ -1487,13 +1685,45 @@ package {
                 param3.x = this._offsets[param1].x;
                 param3.y = this._offsets[param1].y;
             }
-            else {
-                this._rasterPt[param1].x = _mc.x + this._offsets[param1].x - MAP.instance.offset.x;
-                this._rasterPt[param1].y = _mc.y + this._offsets[param1].y - MAP.instance.offset.y;
-                this._rasterData[param1] ||= new RasterData(param5, this._rasterPt[param1], int.MAX_VALUE);
-                this._rasterData[param1].data = param5;
-                this._rasterData[param1].visible = _mc.visible;
-                this._sources[param1] = param3;
+         }
+         this.m_rasterGeometryCurrent = false;
+         this.AnimFrame();
+      }
+      
+      protected function setupImage(param1:uint, param2:String, param3:BuildingAssetContainer, param4:Object, param5:BitmapData, param6:Number) : void
+      {
+         this.m_rasterGeometryCurrent = false;
+         this._offsets[param1].x = param4[_IMAGE_NAMES[param1] + param2][1].x;
+         this._offsets[param1].y = param4[_IMAGE_NAMES[param1] + param2][1].y;
+         if(!BYMConfig.instance.RENDERER_ON)
+         {
+            param3.Clear();
+            param3.addChild(new Bitmap(param5));
+            param3.x = this._offsets[param1].x;
+            param3.y = this._offsets[param1].y;
+         }
+         else
+         {
+            this._rasterPt[param1].x = _mc.x + this._offsets[param1].x - MAP.instance.offset.x;
+            this._rasterPt[param1].y = _mc.y + this._offsets[param1].y - MAP.instance.offset.y;
+            this._rasterData[param1] ||= new RasterData(param5,this._rasterPt[param1],int.MAX_VALUE);
+            this._rasterData[param1].data = param5;
+            this._rasterData[param1].visible = _mc.visible;
+            this._sources[param1] = param3;
+         }
+      }
+      
+      protected function setupHit(param1:uint, param2:int, param3:String) : void
+      {
+         if(MovieClipUtils.validateFrameLabel(this._mcHit as MovieClip,"f" + param2 + param3))
+         {
+            this._mcHit.gotoAndStop("f" + param2 + param3);
+         }
+         if(param3 == "destroyed" && this._type !== 14)
+         {
+            if(MovieClipUtils.validateFrameLabel(this._mcHit as MovieClip,"f" + param3))
+            {
+               this._mcHit.gotoAndStop("f" + param3);
             }
         }
 
@@ -1501,13 +1731,50 @@ package {
             if (MovieClipUtils.validateFrameLabel(this._mcHit as MovieClip, "f" + param2 + param3)) {
                 this._mcHit.gotoAndStop("f" + param2 + param3);
             }
-            if (param3 == "destroyed" && this._type !== 14) {
-                if (MovieClipUtils.validateFrameLabel(this._mcHit as MovieClip, "f" + param3)) {
-                    this._mcHit.gotoAndStop("f" + param3);
-                }
-                else if (GLOBAL._aiDesignMode) {
-                    print("BFOUNDATION.ImageCallback building has no hit 1 " + this._type + " frame f" + param3);
-                }
+         }
+         this.m_hitOffsetIndex = param1;
+         if(BYMConfig.instance.RENDERER_ON)
+         {
+            this._mcHit.x = _mc.x + this._offsets[param1].x;
+            this._mcHit.y = _mc.y + this._offsets[param1].y;
+         }
+         else
+         {
+            this._mcHit.x = this._offsets[param1].x;
+            this._mcHit.y = this._offsets[param1].y;
+         }
+      }
+      
+      public function showFootprint(param1:Boolean, param2:Boolean = false) : void
+      {
+         this.m_rasterGeometryCurrent = false;
+         if(this._mcFootprint)
+         {
+            if(BYMConfig.instance.RENDERER_ON && (this._mcFootprint.width | this._mcFootprint.height) !== 0)
+            {
+               this._offsets[_RASTERDATA_FOOTPRINT].x = -this._mcFootprint.width >> 1;
+               this._offsets[_RASTERDATA_FOOTPRINT].y = 0;
+               this._rasterPt[_RASTERDATA_FOOTPRINT].x = this._mcFootprint.x - (this._mcFootprint.width >> 1) - MAP.instance.offset.x;
+               this._rasterPt[_RASTERDATA_FOOTPRINT].y = this._mcFootprint.y - MAP.instance.offset.y;
+               if(!this.m_footprintBMD)
+               {
+                  this.m_footprintBMD = new BitmapData(this._mcFootprint.width,this._mcFootprint.height,true,0);
+                  this.m_footprintBMD.draw(this._mcFootprint,new Matrix(1,0,0,1,this._mcFootprint.width * 0.5,0));
+               }
+               else if(param2)
+               {
+                  this.m_footprintBMD.fillRect(this.m_footprintBMD.rect,0);
+                  this.m_footprintBMD.draw(this._mcFootprint,new Matrix(1,0,0,1,this._mcFootprint.width * 0.5,0));
+               }
+               this._rasterData[_RASTERDATA_FOOTPRINT] ||= new RasterData(this.m_footprintBMD,this._rasterPt[_RASTERDATA_FOOTPRINT],MAP.DEPTH_SHADOW + 1);
+               if(param2)
+               {
+                  this._rasterData[_RASTERDATA_FOOTPRINT].data = this.m_footprintBMD;
+               }
+               if((GLOBAL._selectedBuilding === this || GLOBAL._newBuilding === this) && this._rasterData[_RASTERDATA_SHADOW] is RasterData)
+               {
+                  this._rasterData[_RASTERDATA_SHADOW].visible = false;
+               }
             }
             this.m_hitOffsetIndex = param1;
             if (BYMConfig.instance.RENDERER_ON) {
@@ -1562,8 +1829,86 @@ package {
                     this._mcFootprint.visible = false;
                 }
             }
-            if (this._mcFootprint) {
-                this._mcFootprint.gotoAndStop(1);
+         }
+         this.Update();
+      }
+      
+      protected function updateRasterVisibility(viewRect:Rectangle, offset:Point, bounds:Rectangle) : void
+      {
+         if(m_isCleared)
+         {
+            return;
+         }
+         if(!this.m_rasterGeometryCurrent || !_mc || !this._mcBase || !_middle ||
+            this._moving || GLOBAL._newBuilding === this ||
+            this._rasterData[_RASTERDATA_FOOTPRINT] || m_children.length != 0 ||
+            _mc.x != this.m_rasterGeometryX || _mc.y != this.m_rasterGeometryY ||
+            _mc.alpha != this.m_rasterGeometryAlpha || _middle != this.m_rasterGeometryMiddle ||
+            this._mcBase.x != this.m_rasterGeometryBaseX || this._mcBase.y != this.m_rasterGeometryBaseY ||
+            offset.x != this.m_rasterGeometryOffsetX || offset.y != this.m_rasterGeometryOffsetY)
+         {
+            this.updateRasterData();
+            return;
+         }
+         var raster:RasterData;
+         var point:Point;
+         var source:DisplayObject;
+         var rect:Rectangle;
+         for(var index:int = _RASTERDATA_SHADOW + 1; index < _RASTERDATA_AMOUNT; ++index)
+         {
+            raster = this._rasterData[index];
+            point = this._rasterPt[index];
+            if(raster && point)
+            {
+               source = this._sources[index];
+               rect = raster.rect;
+               bounds.x = point.x;
+               bounds.y = point.y;
+               bounds.width = rect.width;
+               bounds.height = rect.height;
+               raster.visible = viewRect.intersects(bounds) && (source && !source.visible ? false : _mc.visible);
+            }
+         }
+         raster = this._rasterData[_RASTERDATA_SHADOW];
+         point = this._rasterPt[_RASTERDATA_SHADOW];
+         if(raster && point)
+         {
+            rect = raster.rect;
+            bounds.x = point.x;
+            bounds.y = point.y;
+            bounds.width = rect.width;
+            bounds.height = rect.height;
+            raster.visible = viewRect.intersects(bounds) && this._mcBase.visible;
+         }
+      }
+
+      override protected function updateRasterData() : void
+      {
+         var _loc4_:RasterData = null;
+         var _loc5_:Point = null;
+         var _loc6_:Number = NaN;
+         var _loc7_:Number = NaN;
+         var _loc8_:Boolean = false;
+         var _loc9_:DisplayObject = null;
+         var _loc10_:int = 0;
+         if(!BYMConfig.instance.RENDERER_ON || m_isCleared)
+         {
+            return;
+         }
+         var _loc1_:Point = MAP.instance.offset;
+         var _loc2_:Function = MAP.instance.viewRect.intersects;
+         var _loc3_:Rectangle = new Rectangle();
+         if(this._mcHit)
+         {
+            this._mcHit.x = _mc.x + this._offsets[this.m_hitOffsetIndex].x;
+            this._mcHit.y = _mc.y + this._offsets[this.m_hitOffsetIndex].y;
+         }
+         if(_mc)
+         {
+            _loc6_ = _mc.height * 0.5;
+            if(_middle)
+            {
+               _loc6_ = _middle;
             }
             if (param1) {
                 this.UnblockClicks();
@@ -1577,6 +1922,18 @@ package {
             }
          }
          super.updateRasterData();
+         this.m_rasterGeometryCurrent = Boolean(_mc) && Boolean(this._mcBase);
+         if(this.m_rasterGeometryCurrent)
+         {
+            this.m_rasterGeometryX = _mc.x;
+            this.m_rasterGeometryY = _mc.y;
+            this.m_rasterGeometryAlpha = _mc.alpha;
+            this.m_rasterGeometryMiddle = _middle;
+            this.m_rasterGeometryBaseX = this._mcBase.x;
+            this.m_rasterGeometryBaseY = this._mcBase.y;
+            this.m_rasterGeometryOffsetX = _loc1_.x;
+            this.m_rasterGeometryOffsetY = _loc1_.y;
+         }
       }
       
       protected function redrawShadowData() : void
@@ -1710,12 +2067,63 @@ package {
             if (!BYMConfig.instance.RENDERER_ON || m_isCleared) {
                 return;
             }
-            var _loc1_:Point = MAP.instance.offset;
-            var _loc2_:Function = MAP.instance.viewRect.intersects;
-            var _loc3_:Rectangle = new Rectangle();
-            if (this._mcHit) {
-                this._mcHit.x = _mc.x + this._offsets[this.m_hitOffsetIndex].x;
-                this._mcHit.y = _mc.y + this._offsets[this.m_hitOffsetIndex].y;
+         }
+         this.showFootprint(false,_loc3_ !== this._mcFootprint.currentFrame);
+         if(!BYMConfig.instance.RENDERER_ON)
+         {
+            MAP.SortDepth();
+         }
+      }
+      
+      public function Cancel() : void
+      {
+         if(GLOBAL._newBuilding === this)
+         {
+            this.clear();
+         }
+         GLOBAL._newBuilding = null;
+         if(_mc)
+         {
+            _mc.removeEventListener(Event.ENTER_FRAME,this.FollowMouseB);
+            _mc.removeEventListener(MouseEvent.MOUSE_DOWN,MAP.Click);
+         }
+         MAP._GROUND.removeEventListener(MouseEvent.MOUSE_UP,this.Place);
+         if(this._mcBase.parent)
+         {
+            this._mcBase.parent.removeChild(this._mcBase);
+         }
+         if(_mc.parent)
+         {
+            _mc.parent.removeChild(_mc);
+         }
+         if(this._mcHit.parent)
+         {
+            this._mcHit.parent.removeChild(this._mcHit);
+         }
+         if(this._mcFootprint.parent)
+         {
+            this._mcFootprint.parent.removeChild(this._mcFootprint);
+         }
+         BASE.BuildingDeselect();
+         this.clearRasterData();
+      }
+      
+      protected function clearRasterData() : void
+      {
+         this.m_rasterGeometryCurrent = false;
+         var _loc1_:RasterData = null;
+         var _loc2_:int = 0;
+         if(!BYMConfig.instance.RENDERER_ON || !this._rasterData)
+         {
+            return;
+         }
+         _loc2_ = int(this._rasterData.length - 1);
+         while(_loc2_ >= 0)
+         {
+            _loc1_ = this._rasterData[_loc2_];
+            if(_loc1_)
+            {
+               _loc1_.clear();
             }
             if (_mc) {
                 _loc6_ = _mc.height * 0.5;

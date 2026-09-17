@@ -1888,6 +1888,16 @@ package {
                 UI2.ResizeHandler(param1);
             }
         }
+         if (Chat._chatInited && Chat._bymChat && !Chat._bymChat._open)
+         {
+            _SCREENHUDLEFT = new Point(_SCREEN.x, _SCREEN.y + _SCREEN.height - 30 - 0);
+         }
+         if (MAP._GROUND)
+         {
+            MAP.instance.resizeViewRect();
+            BFOUNDATION.updateAllRasterVisibility();
+         }
+      }
 
         public static function RefreshScreen():void {
             var _loc3_:Rectangle = null;
