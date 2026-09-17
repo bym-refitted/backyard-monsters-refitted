@@ -26,7 +26,8 @@ import type { KoaController } from "../../../../utils/KoaController.js";
  *   {
  *     "worldid":     "<uuid>",
  *     "generatedAt": <unix seconds the snapshot was built>,
- *     "players":     { "<uid>": { "name": "<username>", "avatar": "<url|null>" } },
+ *     "players":     { "<uid>": { "name": "<username>", "avatar": "<url|null>",
+ *                                 "empirepoints": <int>, "savedate": <unix day> } },
  *     "cells":       [ [x, y, base_type, uid, baseid, empirevalue,
  *                       flinger, catapult, damage, protected, destroyed], ... ]
  *   }
@@ -35,6 +36,10 @@ import type { KoaController } from "../../../../utils/KoaController.js";
  *   of rows, and reference their owner by uid rather than inlining it.
  *   base_type is 1 for an attacked wild monster camp, 2 for a main yard and 3
  *   for an outpost.
+ *
+ *   empirepoints is the owner's main-save points + basevalue; base level is its
+ *   position in the experience table (see calculateBaseLevel). savedate is the
+ *   main save's savetime truncated to the UTC day.
  *
  *   Wild monster cells carry uid 0 and have no entry in players; their
  *   empirevalue, flinger, catapult and protected are always 0, so only damage

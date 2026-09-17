@@ -6,6 +6,8 @@ import { MapRoomCell, MapRoomVersion } from "../../../enums/MapRoom.js";
 import { User } from "../../../database/models/user.model.js";
 import { WorldMapCell } from "../../../database/models/worldmapcell.model.js";
 import { postgres } from "../../../server.js";
+import { calculateEmpirePoints } from "../../base/calculateEmpirePoints.js";
+import { getCurrentDateTime } from "../../../utils/getCurrentDateTime.js";
 
 /**
  * Builds and caches the MR2 occupancy snapshot served by /worldmapv2/snapshot.
@@ -37,6 +39,8 @@ interface CachedSnapshot {
 export interface SnapshotPlayer {
   name: string;
   avatar: string | null;
+  empirepoints: number;
+  savedate: number;
 }
 
 export type SnapshotCell = [
@@ -71,12 +75,19 @@ interface OwnerRow {
   userid: number;
   username: string;
   pic_square: string | null;
+  points: string | null;
+  basevalue: string | null;
+  savetime: number | null;
 }
 
 const compressBrotli = promisify(brotliCompress);
 const compressGzip = promisify(gzip);
 
 const SNAPSHOT_TTL_MS = 300000;
+
+const SECONDS_PER_DAY = 86400;
+
+const toUtcDay = (timestamp: number): number => Math.floor(timestamp / SECONDS_PER_DAY) * SECONDS_PER_DAY;
 
 export const SNAPSHOT_MAX_AGE_SECONDS = SNAPSHOT_TTL_MS / 1000;
 
@@ -122,7 +133,8 @@ const buildSnapshot = async (worldid: string): Promise<WorldSnapshot> => {
 
   const owners = await postgres.em
     .createQueryBuilder(User, "u")
-    .select(["u.userid", "u.username", "u.pic_square"])
+    .leftJoin("u.save", "save")
+    .select(["u.userid", "u.username", "u.pic_square", "save.points", "save.basevalue", "save.savetime"])
     .where({ userid: { $in: ownerIds } })
     .execute<OwnerRow[]>("all");
 
@@ -130,7 +142,12 @@ const buildSnapshot = async (worldid: string): Promise<WorldSnapshot> => {
   const cells: SnapshotCell[] = [];
 
   for (const owner of owners) {
-    players[owner.userid] = { name: owner.username, avatar: owner.pic_square };
+    const { userid, username: name, pic_square: avatar, points, basevalue, savetime } = owner;
+
+    const empirepoints = points && basevalue ? calculateEmpirePoints(points, basevalue) : 0;
+    const savedate = savetime ? toUtcDay(savetime) : 0;
+
+    players[userid] = { name, avatar, empirepoints, savedate };
   }
 
   for (const row of rows) {
@@ -149,7 +166,7 @@ const buildSnapshot = async (worldid: string): Promise<WorldSnapshot> => {
     ]);
   }
 
-  const generatedAt = Math.floor(Date.now() / 1000);
+  const generatedAt = getCurrentDateTime();
   const raw = Buffer.from(JSON.stringify({ worldid, generatedAt, players, cells }));
 
   const [brotli, gzip] = await Promise.all([
