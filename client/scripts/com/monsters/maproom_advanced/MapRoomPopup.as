@@ -11,6 +11,7 @@ package com.monsters.maproom_advanced {
     import flash.events.Event;
     import flash.events.IOErrorEvent;
     import flash.events.MouseEvent;
+    import flash.geom.Matrix;
     import flash.geom.Point;
     import flash.geom.Rectangle;
     import flash.net.URLRequest;
@@ -860,6 +861,7 @@ package com.monsters.maproom_advanced {
                     cellMoved = true;
                 }
                 if (cellMoved) {
+                    cell.InvalidateVisibilityBounds();
                     cell.mc.gotoAndStop(1);
                     cell.mc.y = 18;
                     cell.mc.mcPlayer.visible = false;
@@ -938,6 +940,15 @@ package com.monsters.maproom_advanced {
                     flingerRange = POWERUPS.Apply(POWERUPS.ALLIANCE_DECLAREWAR, [rangeCell._flingerRange.Get()]);
                     this.ShowRange(rangeCell, flingerRange);
                 }
+            }
+
+            var viewport:Rectangle = mcMask.mcMask.getBounds(this._cellContainer);
+            var stageToContainer:Matrix = this._cellContainer.transform.concatenatedMatrix;
+            stageToContainer.invert();
+            viewport.inflate(2 * (Math.abs(stageToContainer.a) + Math.abs(stageToContainer.c)),
+                2 * (Math.abs(stageToContainer.b) + Math.abs(stageToContainer.d)));
+            for each (cell in this._cells) {
+                cell.CullToBounds(viewport);
             }
 
             this.bBookmarks.Enabled = MapRoom._bookmarks.length > 0 || MapRoom._viewOnly;
