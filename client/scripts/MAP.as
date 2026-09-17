@@ -154,71 +154,21 @@ package {
             catch (e:Error) {
                 LOGGER.Log("err", "MAP.Setup A: " + e.message + " | " + e.getStackTrace());
             }
-            try {
-                _GROUND.x = tx;
-                _GROUND.y = ty;
-                _UNDERLAY = _GROUND.addChild(new MovieClip()) as MovieClip;
-                if (BYMConfig.instance.RENDERER_ON) {
-                    _EFFECTSBMP = new BitmapData(_canvas.width, _canvas.height, false, 0);
-                    _effectsRasterData = new RasterData(_EFFECTSBMP, new Point((_canvas.width - _EFFECTSBMP.width) * 0.5, (_canvas.height - _EFFECTSBMP.height) * 0.5), 0, null, true);
-                }
-                else {
-                    _EFFECTSBMP = new BitmapData(3200, 1800, true, 0);
-                    efxbmp = _GROUND.addChild(new Bitmap(_EFFECTSBMP)) as Bitmap;
-                    efxbmp.x = -_EFFECTSBMP.width * 0.5;
-                    efxbmp.y = -_EFFECTSBMP.height * 0.5;
-                }
-                s_texture = texture;
-                swapBG(s_texture);
-                _EFFECTS = _GROUND.addChild(new MovieClip()) as MovieClip;
-                _EFFECTS.mouseEnabled = false;
-                _EFFECTS.mouseChildren = false;
-                _EFFECTS.tabChildren = false;
-                _BUILDINGBASES = _GROUND.addChild(new MovieClip()) as MovieClip;
-                _BUILDINGBASES.mouseEnabled = false;
-                _BUILDINGBASES.mouseChildren = true;
-                _BUILDINGBASES.tabChildren = false;
-                _BUILDINGFOOTPRINTS = _GROUND.addChild(new MovieClip()) as MovieClip;
-                _BUILDINGFOOTPRINTS.mouseEnabled = false;
-                _BUILDINGFOOTPRINTS.mouseChildren = false;
-                _BUILDINGFOOTPRINTS.tabChildren = false;
-                _CREEPSMC = BYMConfig.instance.RENDERER_ON ? new MovieClip() : _GROUND.addChild(new MovieClip()) as MovieClip;
-                _CREEPSMC.mouseEnabled = false;
-                _CREEPSMC.mouseChildren = true;
-                _CREEPSMC.tabChildren = false;
-                _BUILDINGTOPS = _GROUND.addChild(new Sprite()) as Sprite;
-                _BUILDINGTOPS.mouseEnabled = false;
-                _BUILDINGTOPS.mouseChildren = true;
-                _BUILDINGTOPS.tabChildren = false;
-                _RESOURCES = _GROUND.addChild(new MovieClip()) as MovieClip;
-                _RESOURCES.mouseEnabled = false;
-                _RESOURCES.mouseChildren = false;
-                _RESOURCES.tabChildren = false;
-                _BUILDINGINFO = _GROUND.addChild(new MovieClip()) as MovieClip;
-                _BUILDINGINFO.mouseEnabled = false;
-                _BUILDINGINFO.mouseChildren = true;
-                _BUILDINGINFO.tabChildren = false;
-                _PROJECTILES = _GROUND.addChild(new MovieClip()) as MovieClip;
-                _PROJECTILES.mouseEnabled = false;
-                _PROJECTILES.mouseChildren = false;
-                _PROJECTILES.tabChildren = false;
-                _FIREBALLS = _GROUND.addChild(new MovieClip()) as MovieClip;
-                _FIREBALLS.mouseEnabled = false;
-                _FIREBALLS.mouseChildren = false;
-                _FIREBALLS.tabChildren = false;
-                _EFFECTSTOP = _GROUND.addChild(new MovieClip()) as MovieClip;
-                _EFFECTSTOP.mouseEnabled = false;
-                _EFFECTSTOP.mouseChildren = false;
-                _EFFECTSTOP.tabChildren = false;
-                _dragged = false;
-                _GROUND.addEventListener(MouseEvent.MOUSE_DOWN, Click);
-                _GROUND.addEventListener(Event.ENTER_FRAME, Scroll);
-                _GROUND.stage.addEventListener(KeyboardEvent.KEY_DOWN, KeyboardInputHandler.instance.OnKeyDown);
-                if (GLOBAL.DOES_USE_SCROLL) {
-                    _GROUND.stage.addEventListener(MouseEvent.MOUSE_WHEEL, onMouseScroll);
-                }
-                _GROUND.stage.addEventListener(KeyboardEvent.KEY_UP, KeyUp);
-                _EDGE = null;
+         }
+         catch(e:Error)
+         {
+            LOGGER.Log("err","MAP.Setup A: " + e.message + " | " + e.getStackTrace());
+         }
+         try
+         {
+            _GROUND.x = tx;
+            _GROUND.y = ty;
+            _UNDERLAY = _GROUND.addChild(new MovieClip()) as MovieClip;
+            if(BYMConfig.instance.RENDERER_ON)
+            {
+               _EFFECTSBMP = new BitmapData(_canvas.width,_canvas.height,false,0);
+               _effectsRasterData = new RasterData(_EFFECTSBMP,new Point((_canvas.width - _EFFECTSBMP.width) * 0.5,(_canvas.height - _EFFECTSBMP.height) * 0.5),0,null,true);
+               _effectsRasterData.cacheable = true;
             }
             catch (e:Error) {
                 LOGGER.Log("err", "MAP.Setup B: " + e.message + " | " + e.getStackTrace());
@@ -226,9 +176,54 @@ package {
             if (!BYMConfig.instance.RENDERER_ON) {
                 Edge();
             }
-            if (BYMConfig.instance.RENDERER_ON) {
-                this._renderer = new Renderer(_canvas, _viewRect);
-                GLOBAL._ROOT.addEventListener(Event.RENDER, this.render);
+            _GROUND.stage.addEventListener(KeyboardEvent.KEY_UP,KeyUp);
+            _EDGE = null;
+         }
+         catch(e:Error)
+         {
+            LOGGER.Log("err","MAP.Setup B: " + e.message + " | " + e.getStackTrace());
+         }
+         if(!BYMConfig.instance.RENDERER_ON)
+         {
+            Edge();
+         }
+         if(BYMConfig.instance.RENDERER_ON)
+         {
+            this._renderer = new Renderer(_canvas,_viewRect);
+            GLOBAL._ROOT.addEventListener(Event.RENDER,this.render);
+         }
+         Targeting.init();
+         _inited = true;
+      }
+      
+      public static function get effectsBMD() : BitmapData
+      {
+         if(_effectsRasterData) _effectsRasterData.invalidate();
+         return _EFFECTSBMP;
+      }
+      
+      public static function get texture() : String
+      {
+         return s_texture;
+      }
+      
+      public static function get instance() : MAP
+      {
+         return _instance;
+      }
+      
+      public static function swapBG(param1:String) : void
+      {
+         if(_effectsRasterData) _effectsRasterData.invalidate();
+         var _loc3_:DisplayObject = null;
+         var _loc4_:int = 0;
+         var _loc5_:int = 0;
+         s_texture = param1;
+         if(!BYMConfig.instance.RENDERER_ON)
+         {
+            while(_BGTILES.numChildren)
+            {
+               _BGTILES.removeChildAt(0);
             }
             Targeting.init();
             _inited = true;
@@ -365,39 +360,100 @@ package {
             if (GLOBAL.mode !== GLOBAL.e_BASE_MODE.BUILD && GLOBAL.mode !== GLOBAL.e_BASE_MODE.IBUILD) {
                 return;
             }
-            try {
-                if (Boolean(_EDGE) && _EDGE.parent == _UNDERLAY) {
-                    _UNDERLAY.removeChild(_EDGE);
-                }
-                _EDGE = BYMConfig.instance.RENDERER_ON ? new MovieClip() : _UNDERLAY.addChild(new MovieClip()) as MovieClip;
-                _EDGE.graphics.lineStyle(2, 16777215, 0.5);
-                iso = GRID.ToISO((0 - GLOBAL._mapWidth) / 2, (0 - GLOBAL._mapHeight) / 2, 0);
-                _EDGE.graphics.moveTo(iso.x, iso.y);
-                iso = GRID.ToISO(GLOBAL._mapWidth / 2, (0 - GLOBAL._mapHeight) / 2, 0);
-                _EDGE.graphics.lineTo(iso.x, iso.y);
-                iso = GRID.ToISO(GLOBAL._mapWidth / 2, GLOBAL._mapHeight / 2, 0);
-                _EDGE.graphics.lineTo(iso.x, iso.y);
-                iso = GRID.ToISO((0 - GLOBAL._mapWidth) / 2, GLOBAL._mapHeight / 2, 0);
-                _EDGE.graphics.lineTo(iso.x, iso.y);
-                iso = GRID.ToISO((0 - GLOBAL._mapWidth) / 2, (0 - GLOBAL._mapHeight) / 2, 0);
-                _EDGE.graphics.lineTo(iso.x, iso.y);
-                if (BYMConfig.instance.RENDERER_ON) {
-                    _EFFECTSBMP.draw(_EDGE, new Matrix(1, 0, 0, 1, _EFFECTSBMP.width * 0.5, _EFFECTSBMP.height * 0.5));
-                }
-                else {
-                    _EDGE.cacheAsBitmap = true;
-                }
+         }
+      }
+      
+      public static function swapIntBG(param1:int) : void
+      {
+         var _loc2_:String = null;
+         switch(param1)
+         {
+            case MAP_TYPE_ROCK:
+               _loc2_ = "rock";
+               break;
+            case MAP_TYPE_SAND:
+               _loc2_ = "sand";
+               break;
+            case MAP_TYPE_CRATER:
+               _loc2_ = "crater";
+               break;
+            case MAP_TYPE_LAVA:
+               _loc2_ = "lava";
+               break;
+            case MAP_TYPE_GRASS:
+            default:
+               _loc2_ = "grass";
+         }
+         swapBG(_loc2_);
+      }
+      
+      public static function Clear() : void
+      {
+         if(_instance && _instance._renderer) _instance._renderer.dispose();
+         if(_GROUND)
+         {
+            _GROUND.removeEventListener(MouseEvent.MOUSE_DOWN,Click);
+            _GROUND.removeEventListener(Event.ENTER_FRAME,Scroll);
+            while(_GROUND.numChildren)
+            {
+               _GROUND.removeChildAt(0);
             }
             catch (e:Error) {
                 LOGGER.Log("err", "MAP.Edge: " + e.message + " | " + e.getStackTrace());
             }
-        }
-
-        public static function SortDepth(param1:Boolean = false, param2:Boolean = false):void {
-            var _loc3_:DisplayObject = null;
-            var _loc6_:int = 0;
-            if (BYMConfig.instance.RENDERER_ON) {
-                return;
+         }
+         if(_instance && BYMConfig.instance.RENDERER_ON && GLOBAL._ROOT.hasEventListener(Event.RENDER))
+         {
+            GLOBAL._ROOT.removeEventListener(Event.RENDER,_instance.render);
+         }
+         _BGTILES = null;
+         _BUILDINGBASES = null;
+         _BUILDINGFOOTPRINTS = null;
+         _BUILDINGTOPS = null;
+         _RESOURCES = null;
+         _BUILDINGINFO = null;
+         _PROJECTILES = null;
+         _FIREBALLS = null;
+         _EFFECTS = null;
+         _EFFECTSTOP = null;
+         _GROUND = null;
+         s_texture = null;
+         if(_effectsRasterData)
+         {
+            _effectsRasterData.clear();
+         }
+         if(_bmdTile)
+         {
+            _bmdTile.dispose();
+         }
+         if(_canvas)
+         {
+            _canvas.dispose();
+         }
+         if(_EFFECTSBMP)
+         {
+            _EFFECTSBMP.dispose();
+         }
+         _effectsRasterData = null;
+         _bmdTile = null;
+         _canvas = null;
+         _EFFECTSBMP = null;
+         _inited = false;
+      }
+      
+      public static function Edge() : void
+      {
+         if(_effectsRasterData) _effectsRasterData.invalidate();
+         var iso:Point = null;
+         if(GLOBAL.mode !== GLOBAL.e_BASE_MODE.BUILD && GLOBAL.mode !== GLOBAL.e_BASE_MODE.IBUILD)
+         {
+            return;
+         }
+         try
+         {
+            if(Boolean(_EDGE) && _EDGE.parent == _UNDERLAY)
+            {
+               _UNDERLAY.removeChild(_EDGE);
             }
             var _loc4_:Array = [];
             var _loc5_:int = _BUILDINGTOPS.numChildren - 1;

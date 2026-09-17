@@ -1057,8 +1057,166 @@ package {
                 }
                 callbackHelperIndex--;
             }
-            if (!isCorrectHelper) {
-                return;
+            for each(_loc12_ in param1)
+            {
+               _loc13_ = String(_loc12_[0]);
+               imageBitmapData = _loc12_[1];
+               if(Boolean(imageDataB[_IMAGE_NAMES[_RASTERDATA_SHADOW] + state]) && imageDataA.baseurl + imageDataB[_IMAGE_NAMES[_RASTERDATA_SHADOW] + state][0] == _loc13_)
+               {
+                  this.m_shadowBMD = imageBitmapData;
+                  if(!BYMConfig.instance.RENDERER_ON)
+                  {
+                     (buildingAssetContainer = BuildingAssetContainer(this._mcBase)).Clear();
+                     (_loc17_ = buildingAssetContainer.addChild(new Bitmap(imageBitmapData))).blendMode = BlendMode.MULTIPLY;
+                     _loc17_.x = imageDataB[_IMAGE_NAMES[_RASTERDATA_SHADOW] + state][1].x;
+                     _loc17_.y = imageDataB[_IMAGE_NAMES[_RASTERDATA_SHADOW] + state][1].y;
+                  }
+                  else
+                  {
+                     this._offsets[_RASTERDATA_SHADOW].x = imageDataB[_IMAGE_NAMES[_RASTERDATA_SHADOW] + state][1].x;
+                     this._offsets[_RASTERDATA_SHADOW].y = imageDataB[_IMAGE_NAMES[_RASTERDATA_SHADOW] + state][1].y;
+                     this._rasterPt[_RASTERDATA_SHADOW].x = _mc.x + this._offsets[_RASTERDATA_SHADOW].x - MAP.instance.offset.x;
+                     this._rasterPt[_RASTERDATA_SHADOW].y = _mc.y + this._offsets[_RASTERDATA_SHADOW].y - MAP.instance.offset.y;
+                     this.redrawShadowData();
+                     this._rasterData[_RASTERDATA_SHADOW] ||= new RasterData(imageBitmapData,this._rasterPt[_RASTERDATA_SHADOW],MAP.DEPTH_SHADOW,BlendMode.MULTIPLY,true);
+                     this._rasterData[_RASTERDATA_SHADOW].cacheable = true;
+                  }
+               }
+               else if(Boolean(imageDataB[_IMAGE_NAMES[_RASTERDATA_TOP] + state]) && imageDataA.baseurl + imageDataB[_IMAGE_NAMES[_RASTERDATA_TOP] + state][0] == _loc13_)
+               {
+                  this.setupImage(_RASTERDATA_TOP,state,this.topContainer,imageDataB,imageBitmapData,int.MAX_VALUE);
+                  this.setupHit(_RASTERDATA_TOP,_loc9_,state);
+                  if(_loc7_)
+                  {
+                     this.updateRasterData();
+                  }
+               }
+               else if(Boolean(imageDataB[_IMAGE_NAMES[_RASTERDATA_ANIM] + state]) && imageDataA.baseurl + imageDataB[_IMAGE_NAMES[_RASTERDATA_ANIM] + state][0] == _loc13_)
+               {
+                  this._animBMD = imageBitmapData;
+                  this._animLoaded = true;
+                  _loc16_ = imageDataB[_IMAGE_NAMES[_RASTERDATA_ANIM] + state][1];
+                  this._animRect = new Rectangle(0,0,_loc16_.width,_loc16_.height);
+                  this._animFrames = imageDataB[_IMAGE_NAMES[_RASTERDATA_ANIM] + state][2];
+                  if(this._animRandomStart)
+                  {
+                     this._animTick = int(Math.random() * (this._animFrames - 2));
+                  }
+                  else
+                  {
+                     this._animTick = 0;
+                  }
+                  if(this._type == 9 || this._type == 19 || this._type == 25 || this._type == 54)
+                  {
+                     this._animTick = 0;
+                  }
+                  this._animContainerBMD = new BitmapData(_loc16_.width,_loc16_.height,true,16777215);
+                  this.setupImage(_RASTERDATA_ANIM,state,this.animContainer,imageDataB,this._animContainerBMD,int.MAX_VALUE);
+                  this.AnimFrame(false);
+                  if(!_mc.hasEventListener(Event.ENTER_FRAME))
+                  {
+                     _mc.addEventListener(Event.ENTER_FRAME,this.TickFast);
+                  }
+                  if(!imageDataB[_IMAGE_NAMES[_RASTERDATA_TOP] + state])
+                  {
+                     this.setupHit(_RASTERDATA_ANIM,_loc9_,state);
+                  }
+               }
+               else if(Boolean(imageDataB[_IMAGE_NAMES[_RASTERDATA_ANIM2] + state]) && imageDataA.baseurl + imageDataB[_IMAGE_NAMES[_RASTERDATA_ANIM2] + state][0] == _loc13_)
+               {
+                  this._anim2BMD = imageBitmapData;
+                  this._anim2Loaded = true;
+                  _loc16_ = imageDataB[_IMAGE_NAMES[_RASTERDATA_ANIM2] + state][1];
+                  this._anim2Rect = new Rectangle(0,0,_loc16_.width,_loc16_.height);
+                  this._anim2Frames = imageDataB[_IMAGE_NAMES[_RASTERDATA_ANIM2] + state][2];
+                  if(this._animRandomStart)
+                  {
+                     this._anim2Tick = int(Math.random() * (this._anim2Frames - 2));
+                  }
+                  else
+                  {
+                     this._anim2Tick = 0;
+                  }
+                  this._anim2ContainerBMD = new BitmapData(_loc16_.width,_loc16_.height,true,16777215);
+                  this.setupImage(_RASTERDATA_ANIM2,state,this.anim2Container,imageDataB,this._anim2ContainerBMD,int.MAX_VALUE);
+                  if(this._animLoaded && this._anim2Loaded && this._anim3Loaded)
+                  {
+                     this.AnimFrame(false);
+                     if(!_mc.hasEventListener(Event.ENTER_FRAME))
+                     {
+                        _mc.addEventListener(Event.ENTER_FRAME,this.TickFast);
+                     }
+                  }
+                  if(!imageDataB[_IMAGE_NAMES[_RASTERDATA_TOP] + state])
+                  {
+                     this.setupHit(_RASTERDATA_ANIM2,_loc9_,state);
+                  }
+               }
+               else if(Boolean(imageDataB[_IMAGE_NAMES[_RASTERDATA_ANIM3] + state]) && imageDataA.baseurl + imageDataB[_IMAGE_NAMES[_RASTERDATA_ANIM3] + state][0] == _loc13_)
+               {
+                  this._anim3BMD = imageBitmapData;
+                  this._anim3Loaded = true;
+                  _loc16_ = imageDataB[_IMAGE_NAMES[_RASTERDATA_ANIM3] + state][1];
+                  this._anim3Rect = new Rectangle(0,0,_loc16_.width,_loc16_.height);
+                  this._anim3Frames = imageDataB[_IMAGE_NAMES[_RASTERDATA_ANIM3] + state][2];
+                  if(this._animRandomStart)
+                  {
+                     this._anim3Tick = int(Math.random() * (this._anim3Frames - 2));
+                  }
+                  else
+                  {
+                     this._anim3Tick = 0;
+                  }
+                  this._anim3ContainerBMD = new BitmapData(_loc16_.width,_loc16_.height,true,16777215);
+                  this.setupImage(_RASTERDATA_ANIM3,state,this.anim3Container,imageDataB,this._anim3ContainerBMD,int.MAX_VALUE);
+                  if(this._animLoaded && this._anim2Loaded && this._anim3Loaded)
+                  {
+                     this.AnimFrame(false);
+                     if(!_mc.hasEventListener(Event.ENTER_FRAME))
+                     {
+                        _mc.addEventListener(Event.ENTER_FRAME,this.TickFast);
+                     }
+                  }
+                  if(!imageDataB[_IMAGE_NAMES[_RASTERDATA_TOP] + state])
+                  {
+                     this.setupHit(_RASTERDATA_ANIM3,_loc9_,state);
+                  }
+               }
+               else if(Boolean(imageDataB[_IMAGE_NAMES[_RASTERDATA_ANIM] + state]) && imageDataA.baseurl + imageDataB[_IMAGE_NAMES[_RASTERDATA_ANIM] + state][0] == _loc13_)
+               {
+                  this._animBMD = imageBitmapData;
+                  this._animLoaded = true;
+                  _loc16_ = imageDataB[_IMAGE_NAMES[_RASTERDATA_ANIM] + state][1];
+                  this._animRect = new Rectangle(0,0,_loc16_.width,_loc16_.height);
+                  this._animFrames = imageDataB[_IMAGE_NAMES[_RASTERDATA_ANIM] + state][2];
+                  if(this._animRandomStart)
+                  {
+                     this._animTick = int(Math.random() * (this._animFrames - 2));
+                  }
+                  else
+                  {
+                     this._animTick = 0;
+                  }
+                  if(this._type == 9 || this._type == 19 || this._type == 25 || this._type == 54)
+                  {
+                     this._animTick = 0;
+                  }
+                  this._animContainerBMD = new BitmapData(_loc16_.width,_loc16_.height,true,16777215);
+                  this.setupImage(_RASTERDATA_ANIM,state,this.animContainer,imageDataB,this._animContainerBMD,int.MAX_VALUE);
+                  this.AnimFrame(false);
+                  if(!_mc.hasEventListener(Event.ENTER_FRAME))
+                  {
+                     _mc.addEventListener(Event.ENTER_FRAME,this.TickFast);
+                  }
+                  if(!imageDataB[_IMAGE_NAMES[_RASTERDATA_TOP] + state])
+                  {
+                     this.setupHit(_RASTERDATA_ANIM,_loc9_,state);
+                  }
+               }
+               else if(imageDataB.topdestroyedfire && this._oldRenderState == k_STATE_DAMAGED && !GLOBAL._catchup && imageDataA.baseurl + imageDataB.topdestroyedfire[0] == _loc13_)
+               {
+                  Fire.Add(_mc,new Bitmap(imageBitmapData),new Point(imageDataB.topdestroyedfire[1].x,imageDataB.topdestroyedfire[1].y));
+               }
             }
             var state:String = callbackHelper.state;
             var _loc9_:int = callbackHelper.level;
@@ -1343,9 +1501,80 @@ package {
             if (health == 0 && !this._repairing) {
                 return TICK_LIMIT;
             }
-            var _loc1_:int = TICK_LIMIT;
-            if (this._countdownBuild.Get() > 0) {
-                _loc1_ = Math.min(_loc1_, this._countdownBuild.Get());
+         }
+         super.updateRasterData();
+      }
+      
+      protected function redrawShadowData() : void
+      {
+         var _loc3_:BitmapData = null;
+         if(!BYMConfig.instance.RENDERER_ON || !BYMConfig.instance.OPTIMIZED_SHADOWS || !this.m_shadowBMD)
+         {
+            return;
+         }
+         var _loc1_:Point = MAP.instance.offset;
+         var _loc2_:Point = this._rasterPt[_RASTERDATA_SHADOW];
+         if(Boolean(this._mcBase) && Boolean(_loc2_))
+         {
+            _loc2_.x = this._mcBase.x + this._offsets[_RASTERDATA_SHADOW].x - _loc1_.x;
+            _loc2_.y = this._mcBase.y + this._offsets[_RASTERDATA_SHADOW].y - _loc1_.y;
+         }
+         _loc3_ = new BitmapData(this.m_shadowBMD.width,this.m_shadowBMD.height,true);
+         var _loc4_:Rectangle = new Rectangle(this._rasterPt[_RASTERDATA_SHADOW].x,this._rasterPt[_RASTERDATA_SHADOW].y,_loc3_.width,_loc3_.height);
+         _loc3_.copyPixels(MAP.effectsBMD,_loc4_,new Point());
+         _loc3_.draw(this.m_shadowBMD,null,null,BlendMode.MULTIPLY);
+         if(this._rasterData[_RASTERDATA_SHADOW] is RasterData === false)
+         {
+            this._rasterData[_RASTERDATA_SHADOW] = new RasterData(_loc3_,this._rasterPt[_RASTERDATA_SHADOW],MAP.DEPTH_SHADOW,null,true);
+         }
+         else
+         {
+            this._rasterData[_RASTERDATA_SHADOW].data = _loc3_;
+         }
+         if(!this._moving)
+         {
+            this._rasterData[_RASTERDATA_SHADOW].visible = this._mcBase.visible;
+         }
+         this._rasterData[_RASTERDATA_SHADOW].cacheable = true;
+      }
+      
+      public function TickFast(param1:Event = null) : void
+      {
+      }
+      
+      public function TickAttack() : void
+      {
+      }
+      
+      public function AnimFrame(param1:Boolean = true) : void
+      {
+         var _loc2_:Boolean = false;
+         if(!GLOBAL._catchup && this._animBMD && Boolean(this._animContainerBMD))
+         {
+            this._animRect.x = this._animRect.width * this._animTick;
+            this._animContainerBMD.copyPixels(this._animBMD,this._animRect,this._nullPoint);
+            _loc2_ = true;
+            if(param1)
+            {
+               if(this._class == "resource")
+               {
+                  if(GLOBAL._harvesterOverdrive >= GLOBAL.Timestamp() && GLOBAL._harvesterOverdrivePower.Get() > 0)
+                  {
+                     this._animTick += GLOBAL._harvesterOverdrivePower.Get();
+                  }
+                  else
+                  {
+                     ++this._animTick;
+                  }
+               }
+               else
+               {
+                  ++this._animTick;
+               }
+               if(this._animTick >= this._animFrames)
+               {
+                  this._animTick = 0;
+               }
             }
             if (this._countdownUpgrade.Get() > 0) {
                 _loc1_ = Math.min(_loc1_, this._countdownUpgrade.Get());
