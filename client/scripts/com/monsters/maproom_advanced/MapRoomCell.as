@@ -387,6 +387,22 @@ package com.monsters.maproom_advanced {
             this._dirty = param1;
         }
 
+        internal function Recycle(serverData:Object):void {
+            this.InvalidateVisibilityBounds();
+            if (!serverData) {
+                mc.gotoAndStop(1);
+                mc.y = 18;
+                mc.mcPlayer.visible = false;
+            }
+            this._updated = false;
+            this._dataAge = 0;
+            this._inRange = false;
+            mc.mcGlow.gotoAndStop(1);
+            if (serverData) {
+                this.Setup(serverData);
+            }
+        }
+
         public function Setup(serverData:Object):void {
             var _loc3_:int = 0;
             var _loc4_:int = 0;

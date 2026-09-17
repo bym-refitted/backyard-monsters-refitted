@@ -880,20 +880,13 @@ package com.monsters.maproom_advanced {
                     cellMoved = true;
                 }
                 if (cellMoved) {
-                    cell.InvalidateVisibilityBounds();
-                    cell.mc.gotoAndStop(1);
-                    cell.mc.y = 18;
-                    cell.mc.mcPlayer.visible = false;
-                    cell._updated = false;
-                    cell._dataAge = 0;
-                    cell._inRange = false;
-                    cell.mc.mcGlow.gotoAndStop(1);
                     anyCellMoved = true;
                     delete this._cellLookup[oldCellKey];
                     this._cellLookup[cell.X * 10000 + cell.Y] = cell;
                     cell.depth = cell.y * 1000 + cell.x;
+                    cell.Recycle(MapRoom.GetCell(cell.X, cell.Y));
                 }
-                if ((!cell._updated || param1) && cell._dataAge <= 0) {
+                if (!cellMoved && (!cell._updated || param1) && cell._dataAge <= 0) {
                     cellData = MapRoom.GetCell(cell.X, cell.Y);
                     if (cellData) {
                         cell.Setup(cellData);
