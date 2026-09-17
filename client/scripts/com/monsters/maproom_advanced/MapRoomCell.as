@@ -123,6 +123,10 @@ package com.monsters.maproom_advanced {
 
         private var _visibilityCanCull:Boolean;
 
+        private var _visibilityViewport:Rectangle;
+
+        private var _visibilityRefreshPending:Boolean;
+
         private var inTest:Boolean = false;
 
         private var _inAllianceProps:Object;
@@ -200,7 +204,21 @@ package com.monsters.maproom_advanced {
             if (!this._visibilityCanCull) {
                 this._visibilityStructureDirty = true;
             }
-            this.visible = true;
+            if (!this._visibilityViewport) {
+                this.visible = true;
+            }
+            else if (!this._visibilityRefreshPending) {
+                this._visibilityRefreshPending = true;
+                addEventListener(Event.EXIT_FRAME, this.RefreshVisibility);
+            }
+        }
+
+        private function RefreshVisibility(event:Event):void {
+            removeEventListener(Event.EXIT_FRAME, this.RefreshVisibility);
+            this._visibilityRefreshPending = false;
+            if (this._visibilityViewport && this.parent && this.stage) {
+                this.CullToBounds(this._visibilityViewport);
+            }
         }
 
         private function HasStableVisibilityBounds(object:DisplayObject):Boolean {
@@ -227,6 +245,11 @@ package com.monsters.maproom_advanced {
         }
 
         internal function CullToBounds(viewport:Rectangle):void {
+            this._visibilityViewport = viewport;
+            if (this._visibilityRefreshPending) {
+                removeEventListener(Event.EXIT_FRAME, this.RefreshVisibility);
+                this._visibilityRefreshPending = false;
+            }
             if (this._visibilityStructureDirty) {
                 this._visibilityCanCull = this.HasStableVisibilityBounds(this);
                 this._visibilityStructureDirty = false;
@@ -981,6 +1004,9 @@ package com.monsters.maproom_advanced {
         }
 
         public function Cleanup():void {
+            removeEventListener(Event.EXIT_FRAME, this.RefreshVisibility);
+            this._visibilityRefreshPending = false;
+            this._visibilityViewport = null;
             removeEventListener(Event.ADDED, this.InvalidateVisibilityStructure);
             removeEventListener(Event.REMOVED, this.InvalidateVisibilityStructure);
             mc.mcHit.removeEventListener(MouseEvent.MOUSE_OVER, this.Over);
