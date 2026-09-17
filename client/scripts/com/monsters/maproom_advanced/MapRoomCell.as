@@ -95,6 +95,8 @@ package com.monsters.maproom_advanced {
 
         internal var _inRange:Boolean = false;
 
+        internal var _rangeAlpha:Number;
+
         internal var _over:Boolean = false;
 
         internal var _terrain:String;
