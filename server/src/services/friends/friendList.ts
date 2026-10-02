@@ -6,6 +6,7 @@ import { PLAYER_SEARCH_LIMIT, PLAYER_SEARCH_SUBSTRING_LENGTH } from "../../confi
 import { Friendship } from "../../database/models/friendship.model.js";
 import { User } from "../../database/models/user.model.js";
 import { postgres } from "../../server.js";
+import { acceptedScope } from "./friendships.js";
 import { calculateBaseLevel } from "../base/calculateBaseLevel.js";
 import { escapeLike } from "../../utils/escapeLike.js";
 import { getLastSeen } from "../maproom/getLastSeen.js";
@@ -170,6 +171,20 @@ const relationOf = (row: RelationRow | undefined, selfId: number): FriendRelatio
   if (row.status === FriendshipStatus.ACCEPTED) return FriendRelation.FRIENDS;
 
   return row.requester.userid === selfId ? FriendRelation.PENDING_OUTGOING : FriendRelation.PENDING_INCOMING;
+};
+
+/**
+ * The ids of everyone a player is actually friends with.
+ *
+ * @param {number} userId - The player whose friends are being read.
+ * @returns {Promise<Set<number>>} Their friends' user ids, empty when they have none.
+ */
+export const getFriendIds = async (userId: number): Promise<Set<number>> => {
+  const friendships = await postgres.em.find(Friendship, acceptedScope(userId), {
+    fields: ["requester", "recipient"],
+  });
+
+  return new Set(friendships.map((row) => (row.requester.userid === userId ? row.recipient.userid : row.requester.userid)));
 };
 
 /**

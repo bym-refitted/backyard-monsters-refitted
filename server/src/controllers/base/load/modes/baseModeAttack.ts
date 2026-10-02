@@ -16,6 +16,7 @@ import { isAttackActive } from "../../../../services/base/isAttackActive.js";
 import { baseUnderAttackErr, baseProtectedErr, userOnlineErr, truceActiveErr, shinyLockedErr } from "../../../../errors/errors.js";
 import { redis } from "../../../../server.js";
 import { isTruceActive } from "../../../../services/mail/isTruceActive.js";
+import { getFriendIds } from "../../../../services/friends/friendList.js";
 import { MR1_TRIBE_IDS } from "../../../../game-data/tribes/v1/index.js";
 import { registerAttacker } from "../../../../services/maproom/v1/registerAttacker.js";
 import { isShinyLocked } from "../../../../services/user/shinyLock.js";
@@ -77,12 +78,15 @@ export const baseModeAttack = async ({ user, baseid, mapversion, attackCost }: B
 
   if (save.attacks.length > 3) save.attacks = save.attacks.slice(-2);
 
+  const friendIds = await getFriendIds(save.userid);
+  const friend = friendIds.has(user.userid) ? 1 : 0;
+
   // Track the details of the attack
   const attackDetails: AttackDetails = {
     fbid: "",
     name: user.username,
     pic_square: user.pic_square ?? undefined,
-    friend: 0,
+    friend,
     count: 1,
     starttime: getCurrentDateTime(),
     seen: false,
