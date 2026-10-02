@@ -16,7 +16,7 @@ export interface JwtClaims {
   user: {
     email: string;
     discordId: string | null | undefined;
-    sessionType: SessionType.GAME | SessionType.LAUNCHER;
+    sessionType: SessionType;
   };
 }
 
