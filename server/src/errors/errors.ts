@@ -513,3 +513,35 @@ export const friendPendingLimitErr = (max: number) =>
     data: {},
     isClientFriendly: true,
   });
+
+export const giftNotFriendsErr = () =>
+  new ClientSafeError({
+    message: "You can only send gifts to your friends.",
+    status: Status.FORBIDDEN,
+    data: {},
+    isClientFriendly: true,
+  });
+
+export const giftCooldownErr = () =>
+  new ClientSafeError({
+    message: "You have already sent this friend a gift today.",
+    status: Status.CONFLICT,
+    data: {},
+    isClientFriendly: true,
+  });
+
+export const giftInboxFullErr = () =>
+  new ClientSafeError({
+    message: "This player has too many gifts waiting to be collected.",
+    status: Status.CONFLICT,
+    data: {},
+    isClientFriendly: true,
+  });
+
+export const giftSelfErr = () =>
+  new ClientSafeError({
+    message: "You cannot send yourself a gift.",
+    status: Status.BAD_REQUEST,
+    data: {},
+    isClientFriendly: true,
+  });

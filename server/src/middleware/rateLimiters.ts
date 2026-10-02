@@ -192,6 +192,20 @@ export const friendRequestLimiter = RateLimit.middleware({
 });
 
 /**
+ * Rate limit for sending gifts - 30 per hour per user.
+ */
+export const giftLimiter = RateLimit.middleware({
+  interval: { min: 60 },
+  max: 30,
+  prefixKey: "gift-send",
+  keyGenerator: byUser("gift-send"),
+  handler: async (ctx: Context) => {
+    ctx.status = Status.TOO_MANY_REQUESTS;
+    ctx.body = { error: "Too many gifts sent. Please try again later." };
+  },
+});
+
+/**
  * Rate limit for user registration - 3 requests per hour in prod, per minute in dev.
  */
 export const registerLimiter = RateLimit.middleware({

@@ -20,6 +20,7 @@ import {
   terrainLimiter,
   searchPlayersLimiter,
   friendRequestLimiter,
+  giftLimiter,
 } from "./middleware/rateLimiters.js";
 import { Status } from "./enums/StatusCodes.js";
 
@@ -77,6 +78,7 @@ import { searchPlayers } from "./controllers/friends/searchPlayers.js";
 import { sendFriendRequest } from "./controllers/friends/sendFriendRequest.js";
 import { respondFriendRequest } from "./controllers/friends/respondFriendRequest.js";
 import { removeFriend } from "./controllers/friends/removeFriend.js";
+import { sendGift } from "./controllers/gifts/sendGift.js";
 
 import { wildMonsterInvasion } from "./controllers/events/wildMonsterInvasion.js";
 import { recordDebugData } from "./controllers/debug/recordDebugData.js";
@@ -193,6 +195,7 @@ router.get("/api/:apiVersion/friends/search", apiVersion, verifyUserAuth, search
 router.post("/api/:apiVersion/friends/request", apiVersion, verifyUserAuth, verifyAccountStatus, friendRequestLimiter, logRequest, sendFriendRequest);
 router.post("/api/:apiVersion/friends/respond", apiVersion, verifyUserAuth, logRequest, respondFriendRequest);
 router.post("/api/:apiVersion/friends/remove", apiVersion, verifyUserAuth, logRequest, removeFriend);
+router.post("/api/:apiVersion/gifts/send", apiVersion, verifyUserAuth, verifyAccountStatus, giftLimiter, logRequest, sendGift);
 
 /**  ────────────────────────────────────────────────
 * 📦 Alliances

@@ -1,5 +1,6 @@
 import z from "zod";
 import { ChampionListSchema } from "./ChampionSchema.js";
+import { GiftIdsSchema } from "./GiftSchemas.js";
 import type { Resources } from "../services/base/updateResources.js";
 
 /**
@@ -152,6 +153,18 @@ export const BaseSaveSchema = z.object({
     .string()
     .optional()
     .transform((data) => data !== undefined ? parseInt(data, 10) : undefined),
+
+  /**
+   * The gifts the client collected this session, by id.
+   * @type {number[]}
+   */
+  gifts: GiftIdsSchema,
+
+  /**
+   * The accepted gifts the client has shown their sender, by id.
+   * @type {number[]}
+   */
+  sentgifts: GiftIdsSchema,
 
   /**
    * The attack ID, transformed from a string to a number, or undefined.

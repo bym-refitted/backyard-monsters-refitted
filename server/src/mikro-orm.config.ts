@@ -23,6 +23,7 @@ import { AllianceRelationship } from "./database/models/alliancerelationship.mod
 import { AllianceStats } from "./database/models/alliancestats.view.js";
 import { ApiConsumer } from "./database/models/apiconsumer.model.js";
 import { Friendship } from "./database/models/friendship.model.js";
+import { Gift } from "./database/models/gift.model.js";
 
 /**
  * List of entities to be used with MikroORM.
@@ -49,6 +50,7 @@ const entities = [
   AllianceStats,
   ApiConsumer,
   Friendship,
+  Gift,
 ];
 
 /**
