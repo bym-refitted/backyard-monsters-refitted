@@ -1,8 +1,8 @@
-import { QueryOrder, raw, type FilterQuery, type Loaded, type QueryOrderMap } from "@mikro-orm/core";
+import { QueryOrder, raw, type FilterQuery, type Loaded, type ObjectQuery, type QueryOrderMap } from "@mikro-orm/core";
 
 import { BaseType } from "../../enums/Base.js";
 import { FriendRelation, FriendshipStatus } from "../../enums/Friend.js";
-import { PLAYER_SEARCH_LIMIT } from "../../config/FriendConfig.js";
+import { PLAYER_SEARCH_LIMIT, PLAYER_SEARCH_SUBSTRING_LENGTH } from "../../config/FriendConfig.js";
 import { Friendship } from "../../database/models/friendship.model.js";
 import { User } from "../../database/models/user.model.js";
 import { postgres } from "../../server.js";
@@ -142,6 +142,22 @@ const byRelevance = (term: string): QueryOrderMap<User>[] => [
 ];
 
 /**
+ * How a term is matched against a name: a short one against the whole name,
+ * since the trigram index cannot serve a two character pattern; anything longer
+ * as a substring.
+ *
+ * @param {string} term - What the player typed.
+ * @returns {ObjectQuery<User>} The name clause for the search query.
+ */
+const matchesName = (term: string): ObjectQuery<User> => {
+  const isShortName = term.length < PLAYER_SEARCH_SUBSTRING_LENGTH;
+
+  if (isShortName) return { [raw((alias) => `lower(${alias}.username)`)]: term.toLowerCase() };
+
+  return { username: { $ilike: `%${escapeLike(term)}%` } };
+};
+
+/**
  * How a player relates to the searcher, read off the row the two of them share.
  *
  * @param {RelationRow | undefined} row - Their friendship row, absent when there is none.
@@ -228,6 +244,12 @@ export const getFriendList = async (user: User): Promise<FriendList> => {
  * rather than whichever match happens to sort earliest. An exact match scores
  * 1, so it leads on its own.
  *
+ * A two character term is matched against the whole name instead, served by the
+ * lower(username) index. Usernames may be that short, but the trigram index
+ * only answers patterns of three characters or more, so the substring form
+ * would scan every row to return mostly names that merely contain those two
+ * letters.
+ *
  * Leaves out the searcher, banned players, players without a base, and anyone
  * blocked in either direction.
  *
@@ -242,7 +264,7 @@ export const searchPlayers = async (user: User, term: string): Promise<PlayerSea
     userid: user.blockedUsers.length ? { $ne: selfId, $nin: user.blockedUsers } : { $ne: selfId },
     banned: false,
     save: { $ne: null },
-    username: { $ilike: `%${escapeLike(term)}%` },
+    ...matchesName(term),
   };
 
   const matches = await postgres.em.find(User, where, {
