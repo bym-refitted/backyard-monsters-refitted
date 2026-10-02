@@ -6,7 +6,7 @@ Welcome to the Backyard Monsters Refitted development team! This document covers
 
 ## 🤖 On AI-Assisted Contributions
 
-We're not banning AI tools, but we are strict about where they belong.
+We're not banning AI tools, in-fact, we encourage them - but we are strict about where they belong.
 
 **Reasonable use** is the mechanical stuff: boilerplate, repetitive edits across many files, type definitions, test scaffolding, formatting, renames, and other deterministic work where you already know exactly what the correct output looks like and you're just saving yourself the keystrokes.
 
