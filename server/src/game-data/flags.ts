@@ -54,7 +54,7 @@ export const getFlags = () => ({
   fanfriendbookmarkquests: 1,
   ticker: 0,
   chat: 2, // Enable chat (0=disabled, 1=no display, 2=display)
-  invites: 0, // Diable friend invites
+  invites: 1,
   gifts: 0, // Disable gifts
   event1: 1,
   event2: 0,
