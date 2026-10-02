@@ -12,6 +12,8 @@ import { MR1_TRIBES_MAP } from "../../../game-data/tribes/v1/index.js";
 
 type BaseSaveData = TypeOf<typeof BaseSaveSchema>;
 
+const TUTORIAL_END_STAGE = 205;
+
 /**
  * Persists MR1 tribe attack state (building health, monsters, destroyed) to
  * the player's Maproom.tribedata record
@@ -68,6 +70,10 @@ export const scaledMR1Tribes = async (user: User, saveData: BaseSaveData) => {
         break;
     }
   }
+
+  const tutorialStage = Math.min(saveData.tutorialstage ?? 0, TUTORIAL_END_STAGE);
+
+  if (tutorialStage > userSave.tutorialstage) userSave.tutorialstage = tutorialStage;
 
   postgres.em.persist(maproom);
   postgres.em.persist(userSave);

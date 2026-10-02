@@ -144,6 +144,16 @@ export const BaseSaveSchema = z.object({
     .transform((data) => data !== undefined ? parseInt(data, 10) : undefined),
 
   /**
+   * The attacker's tutorial stage, transformed from a string to a number, or undefined.
+   * Sent with every save, including attack saves.
+   * @type {number | undefined}
+   */
+  tutorialstage: z
+    .string()
+    .optional()
+    .transform((data) => data !== undefined ? parseInt(data, 10) : undefined),
+
+  /**
    * The attack ID, transformed from a string to a number, or undefined.
    * This property is optional.
    * @type {number | undefined}
