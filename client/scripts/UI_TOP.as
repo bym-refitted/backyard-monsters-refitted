@@ -1133,7 +1133,7 @@ package {
                     }
                     else {
                         // POPUPS.Gift();
-                        GLOBAL.Message(KEYS.Get("disabled_gifts"));
+                        POPUPS.DisplayGiftEmpty();
                     }
                 }
                 else if (label == "alert") {

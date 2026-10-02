@@ -88,7 +88,7 @@ package com.monsters.alliances.tabs {
             tTitle.antiAliasType = AntiAliasType.NORMAL;
             tTitle.width = BG_W - PAD_H * 2;
             tTitle.height = TITLE_H;
-            var titleFmt:TextFormat = new TextFormat("Groboldov", TITLE_SIZE, 0xFFFFFF);
+            var titleFmt:TextFormat = new TextFormat(FONTS.GROBOLDOV, TITLE_SIZE, 0xFFFFFF);
             titleFmt.align = TextFormatAlign.CENTER;
             tTitle.defaultTextFormat = titleFmt;
             tTitle.text = KEYS.Get(String(_data.nameKey)).toUpperCase();
@@ -166,7 +166,7 @@ package com.monsters.alliances.tabs {
             label.selectable = false;
             label.mouseEnabled = false;
             label.autoSize = TextFieldAutoSize.LEFT;
-            label.defaultTextFormat = new TextFormat("Verdana", 14, textColor);
+            label.defaultTextFormat = new TextFormat(FONTS.VERDANA, 14, textColor);
             label.htmlText = _rowText(row);
             label.x = x + RADIO_SIZE + 10;
             label.y = y + int((ROW_H - 20) / 2);

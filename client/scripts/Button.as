@@ -35,7 +35,7 @@ package {
             mouseChildren = false;
             buttonMode = true;
             this._format = new TextFormat();
-            this._format.font = "Verdana";
+            this._format.font = FONTS.VERDANA;
             this._format.size = 9;
             this._format.align = TextFormatAlign.CENTER;
             this._format.color = 3355443;

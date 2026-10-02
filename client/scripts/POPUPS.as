@@ -22,6 +22,10 @@ package {
 
         public static const k_CENTER:int = 2;
 
+        private static const k_DISCORD_INVITE_URL:String = "https://discord.gg/bymrefitted";
+
+        private static const k_FRIENDS_PAGE_URL:String = "https://bymrefitted.com/friends";
+
         private static var _popups:Object;
 
         private static var _mc:MovieClip;
@@ -459,24 +463,45 @@ package {
         }
 
         public static function DisplayGiftSelect(param1:MouseEvent = null):void {
-            AddBG();
-            if (BYMDevConfig.instance.USE_CLIENT_WITH_CALLBACK) {
-                GLOBAL.CallJSWithClient("cc.showFeedDialog", "callbackgift", ["gift"]);
-            }
-            else {
-                GLOBAL.CallJS("cc.showFeedDialog", ["gift", "callbackgift"]);
-            }
+            // Comment: the original code below was for Facebook gifts, which are no longer supported.
+            // AddBG();
+            // if (BYMDevConfig.instance.USE_CLIENT_WITH_CALLBACK) {
+            // GLOBAL.CallJSWithClient("cc.showFeedDialog", "callbackgift", ["gift"]);
+            // }
+            // else {
+            // GLOBAL.CallJS("cc.showFeedDialog", ["gift", "callbackgift"]);
+            // }
             LOGGER.Stat([20, 1]);
         }
 
+        /**
+         * Shown when the gift button is pressed with nothing waiting to collect.
+         *
+         * The original went straight to Facebook's gift dialog here. We keep the
+         * mystery sack art and explain where sacks come from instead, since gifts
+         * arrive from friends and friendships are managed outside the game.
+         */
+        public static function DisplayGiftEmpty(param1:MouseEvent = null):void {
+            POPUPS.Push(new GIFTPOPUP());
+        }
+
+        /** Sends the player to the friends page, which is where friendships live. */
+        public static function OpenFriendsPage():void {
+            GLOBAL.gotoURL(k_FRIENDS_PAGE_URL);
+            POPUPS.Next();
+        }
+
         public static function DisplayInviteSelect(param1:MouseEvent = null):void {
-            AddBG();
-            if (BYMDevConfig.instance.USE_CLIENT_WITH_CALLBACK) {
-                GLOBAL.CallJSWithClient("cc.showFeedDialog", "callbackgift", ["invite"]);
-            }
-            else {
-                GLOBAL.CallJS("cc.showFeedDialog", ["invite", "callbackgift"]);
-            }
+            GLOBAL.gotoURL(k_DISCORD_INVITE_URL);
+
+            // Comment: the original code below was for Facebook invites, which are no longer supported.
+            // AddBG();
+            // if (BYMDevConfig.instance.USE_CLIENT_WITH_CALLBACK) {
+            // GLOBAL.CallJSWithClient("cc.showFeedDialog", "callbackgift", ["invite"]);
+            // }
+            // else {
+            // GLOBAL.CallJS("cc.showFeedDialog", ["invite", "callbackgift"]);
+            // }
             LOGGER.Stat([21, 1]);
         }
 

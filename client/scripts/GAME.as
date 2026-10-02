@@ -47,6 +47,7 @@ package {
             var cdnUrl:String = GLOBAL.cdnUrl;
             super();
             _instance = this;
+            FONTS.Register();
             GLOBAL._local = !ExternalInterface.available;
             ReferencedExposedStructures.Include();
             if (this.parent) {

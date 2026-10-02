@@ -100,7 +100,7 @@ package com.monsters.alliances.tabs {
             tf.height = 18;
             tf.x = 0;
             tf.y = int((BTN_H - 16) / 2);
-            var fmt:TextFormat = new TextFormat("Verdana", BTN_FONT_SIZE, 0x333333, true);
+            var fmt:TextFormat = new TextFormat(FONTS.VERDANA, BTN_FONT_SIZE, 0x333333, true);
             fmt.align = TextFormatAlign.CENTER;
             tf.defaultTextFormat = fmt;
             tf.text = label;

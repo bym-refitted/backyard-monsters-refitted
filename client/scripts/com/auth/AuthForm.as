@@ -252,7 +252,7 @@ package com.auth {
             // Create title
             var loadingTitle:TextField = new TextField();
             var titleFormat:TextFormat = new TextFormat();
-            titleFormat.font = "Groboldov";
+            titleFormat.font = FONTS.GROBOLDOV;
             titleFormat.size = 32;
             titleFormat.color = WHITE;
             titleFormat.align = TextFormatAlign.CENTER;
@@ -271,7 +271,7 @@ package com.auth {
             if (!GLOBAL.versionMismatch) {
                 loadingDesc = new TextField();
                 var descFormat:TextFormat = new TextFormat();
-                descFormat.font = "Verdana";
+                descFormat.font = FONTS.VERDANA;
                 descFormat.size = 14;
                 descFormat.color = LIGHT_GRAY;
                 descFormat.align = TextFormatAlign.CENTER;
@@ -293,7 +293,7 @@ package com.auth {
             // Create error message
             errMessage = new TextField();
             var errFormat:TextFormat = new TextFormat();
-            errFormat.font = "Verdana";
+            errFormat.font = FONTS.VERDANA;
             errFormat.size = 16;
             errFormat.color = RED;
             errFormat.align = TextFormatAlign.CENTER;
@@ -367,7 +367,7 @@ package com.auth {
         private function createRichText(text:String, color:uint):TextField {
             var textField:TextField = new TextField();
             var textFormat:TextFormat = new TextFormat();
-            textFormat.font = "Groboldov";
+            textFormat.font = FONTS.GROBOLDOV;
             textFormat.size = 32;
             textFormat.color = color;
             textField.embedFonts = true;
@@ -422,7 +422,7 @@ package com.auth {
 
             // Normal input
             var inputTextFormat:TextFormat = new TextFormat();
-            inputTextFormat.font = "Verdana";
+            inputTextFormat.font = FONTS.VERDANA;
             inputTextFormat.size = 14;
             inputTextFormat.color = WHITE;
 
@@ -432,7 +432,7 @@ package com.auth {
 
             // Placeholder
             var placeholderTextFormat:TextFormat = new TextFormat();
-            placeholderTextFormat.font = "Verdana";
+            placeholderTextFormat.font = FONTS.VERDANA;
             placeholderTextFormat.size = 14;
             placeholderTextFormat.color = WHITE;
 
@@ -472,7 +472,7 @@ package com.auth {
 
             defaultText = new TextField();
             var defaultTextStyle:TextFormat = new TextFormat();
-            defaultTextStyle.font = "Groboldov";
+            defaultTextStyle.font = FONTS.GROBOLDOV;
             defaultTextStyle.size = 13;
 
             defaultText.textColor = WHITE;
@@ -493,7 +493,7 @@ package com.auth {
             for (var index:int = 0; index < languages.length; index++) {
                 var langSelectText:TextField = new TextField();
                 var langSelectTextStyle:TextFormat = new TextFormat();
-                langSelectTextStyle.font = "Groboldov";
+                langSelectTextStyle.font = FONTS.GROBOLDOV;
                 langSelectTextStyle.size = 13;
 
                 langSelectText.embedFonts = true;
@@ -572,7 +572,7 @@ package com.auth {
             buttonText.mouseEnabled = false;
 
             var textFormat:TextFormat = new TextFormat();
-            textFormat.font = "Groboldov";
+            textFormat.font = FONTS.GROBOLDOV;
             textFormat.size = 16;
             textFormat.align = TextFormatAlign.CENTER;
             buttonText.embedFonts = true;
@@ -636,7 +636,7 @@ package com.auth {
 
         private function updateLinkColour():void {
             hasAccountFormat.color = isRegisterForm ? SECONDARY : PRIMARY;
-            hasAccountFormat.font = "Verdana";
+            hasAccountFormat.font = FONTS.VERDANA;
             hasAccountText.defaultTextFormat = hasAccountFormat;
             hasAccountText.setTextFormat(hasAccountFormat);
         }

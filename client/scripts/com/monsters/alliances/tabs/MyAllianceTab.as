@@ -166,7 +166,7 @@ package com.monsters.alliances.tabs {
             tTitle.height = 30;
             tTitle.x = LEFT_CONTENT_X;
             tTitle.y = TITLE_Y;
-            var titleFmt:TextFormat = new TextFormat("Verdana", 16, 0x000000, true);
+            var titleFmt:TextFormat = new TextFormat(FONTS.VERDANA, 16, 0x000000, true);
             titleFmt.align = TextFormatAlign.LEFT;
             tTitle.defaultTextFormat = titleFmt;
             tTitle.text = String(data.name);
@@ -208,7 +208,7 @@ package com.monsters.alliances.tabs {
             descField.height = DESC_H - 12;
             descField.x = LEFT_CONTENT_X + 8;
             descField.y = DESC_Y + 8;
-            descField.defaultTextFormat = new TextFormat("Verdana", 13, 0x333333);
+            descField.defaultTextFormat = new TextFormat(FONTS.VERDANA, 13, 0x333333);
             descField.text = String(data.description);
 
             const btnGap:int = 24;
@@ -392,7 +392,7 @@ package com.monsters.alliances.tabs {
             body.selectable = false;
             body.mouseEnabled = false;
             body.width = textW;
-            body.defaultTextFormat = new TextFormat("Verdana", 12, 0x333333);
+            body.defaultTextFormat = new TextFormat(FONTS.VERDANA, 12, 0x333333);
             body.text = message;
             var bodyH:int = int(body.textHeight) + 6;
 
@@ -413,7 +413,7 @@ package com.monsters.alliances.tabs {
             nameField.height = 18;
             nameField.x = TEXT_X;
             nameField.y = NAME_Y;
-            nameField.defaultTextFormat = new TextFormat("Verdana", 12, 0x000000, true);
+            nameField.defaultTextFormat = new TextFormat(FONTS.VERDANA, 12, 0x000000, true);
             nameField.text = name;
 
             // Timestamps arrive in milliseconds; the shared helper works in seconds.
@@ -426,7 +426,7 @@ package com.monsters.alliances.tabs {
 
                 timeField.x = CHAT_MASK_W - SCROLLBAR_W - TIME_W - TIME_INSET_RIGHT + GUTTER;
                 timeField.y = TIME_INSET_TOP - GUTTER;
-                var timeFmt:TextFormat = new TextFormat("Verdana", 10, 0x000000);
+                var timeFmt:TextFormat = new TextFormat(FONTS.VERDANA, 10, 0x000000);
                 timeFmt.align = TextFormatAlign.RIGHT;
                 timeField.defaultTextFormat = timeFmt;
                 timeField.text = TimeUtils.TimeDistance(ts / 1000);
@@ -535,7 +535,7 @@ package com.monsters.alliances.tabs {
             body.selectable = false;
             body.mouseEnabled = false;
             body.width = textW;
-            var fmt:TextFormat = new TextFormat("Verdana", 12, 0x333333, true);
+            var fmt:TextFormat = new TextFormat(FONTS.VERDANA, 12, 0x333333, true);
             fmt.align = TextFormatAlign.CENTER;
             body.defaultTextFormat = fmt;
             body.text = message;
@@ -568,7 +568,7 @@ package com.monsters.alliances.tabs {
                 timeField.x = CHAT_MASK_W - SCROLLBAR_W - TIME_W - TIME_INSET_RIGHT + GUTTER;
                 timeField.y = TIME_INSET_TOP - GUTTER;
 
-                var timeFmt:TextFormat = new TextFormat("Verdana", 10, 0x000000);
+                var timeFmt:TextFormat = new TextFormat(FONTS.VERDANA, 10, 0x000000);
                 timeFmt.align = TextFormatAlign.RIGHT;
                 timeField.defaultTextFormat = timeFmt;
                 timeField.text = TimeUtils.TimeDistance(ts / 1000);
@@ -699,7 +699,7 @@ package com.monsters.alliances.tabs {
             _chatInput.height = FIELD_H;
             _chatInput.x = inputX + 6;
             _chatInput.y = ACTION_Y + int((ACTION_BTN_H - FIELD_H) / 2);
-            _chatInput.defaultTextFormat = new TextFormat("Verdana", 12, 0x333333);
+            _chatInput.defaultTextFormat = new TextFormat(FONTS.VERDANA, 12, 0x333333);
             _chatInput.addEventListener(KeyboardEvent.KEY_DOWN, _onInputKey);
 
             var postBtn:Button_CLIP = addChild(new Button_CLIP()) as Button_CLIP;
@@ -863,7 +863,7 @@ package com.monsters.alliances.tabs {
             tBody.selectable = false;
             tBody.mouseEnabled = false;
             tBody.width = CONTENT_W_INNER;
-            var bodyFmt:TextFormat = new TextFormat("Verdana", BODY_SIZE, 0x333333);
+            var bodyFmt:TextFormat = new TextFormat(FONTS.VERDANA, BODY_SIZE, 0x333333);
             bodyFmt.align = TextFormatAlign.CENTER;
             tBody.defaultTextFormat = bodyFmt;
             tBody.text = KEYS.Get("alliance_no_alliance_desc");
@@ -878,7 +878,7 @@ package com.monsters.alliances.tabs {
             tTitle.antiAliasType = AntiAliasType.NORMAL;
             tTitle.width = CONTENT_W_INNER;
             tTitle.height = titleH;
-            var titleFmt:TextFormat = new TextFormat("Groboldov", TITLE_SIZE, 0xFFFFFF);
+            var titleFmt:TextFormat = new TextFormat(FONTS.GROBOLDOV, TITLE_SIZE, 0xFFFFFF);
             titleFmt.align = TextFormatAlign.CENTER;
             tTitle.defaultTextFormat = titleFmt;
             tTitle.text = KEYS.Get("alliance_no_alliance_title");

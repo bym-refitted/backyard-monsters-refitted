@@ -189,7 +189,7 @@ package com.monsters.debug {
             this._input.background = true;
             this._input.backgroundColor = this._INPUT_COLOR;
             var _loc1_:TextFormat = new TextFormat();
-            _loc1_.font = "Verdana";
+            _loc1_.font = FONTS.VERDANA;
             _loc1_.size = 12;
             _loc1_.bold = true;
             _loc1_.color = 16777215;
@@ -379,7 +379,7 @@ import flash.text.TextFormat;
 
 class GlyphCache {
 
-    protected const _textFormat:TextFormat = new TextFormat("Verdana", 12, 14540253, true);
+    protected const _textFormat:TextFormat = new TextFormat(FONTS.VERDANA, 12, 14540253, true);
 
     protected const _textField:TextField = new TextField();
 

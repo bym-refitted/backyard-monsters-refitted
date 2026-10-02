@@ -103,7 +103,7 @@ package com.monsters.alliances.tabs {
             tTitle.antiAliasType = AntiAliasType.NORMAL;
             tTitle.width = BG_W - PAD_H * 2;
             tTitle.height = TITLE_H;
-            var titleFmt:TextFormat = new TextFormat("Groboldov", TITLE_SIZE, 0xFFFFFF);
+            var titleFmt:TextFormat = new TextFormat(FONTS.GROBOLDOV, TITLE_SIZE, 0xFFFFFF);
             titleFmt.align = TextFormatAlign.CENTER;
             tTitle.defaultTextFormat = titleFmt;
             tTitle.text = KEYS.Get(mode == MODE_CREATE ? "alliance_create_title" : "alliance_edit_title");
@@ -175,7 +175,7 @@ package com.monsters.alliances.tabs {
             tDesc.wordWrap = true;
             tDesc.multiline = true;
             tDesc.width = RIGHT_FORM_W;
-            tDesc.defaultTextFormat = new TextFormat("Verdana", 15, 0x333333);
+            tDesc.defaultTextFormat = new TextFormat(FONTS.VERDANA, 15, 0x333333);
             tDesc.htmlText = KEYS.Get(_mode == MODE_CREATE ? "alliance_create_desc" : "alliance_edit_desc");
             tDesc.height = int(tDesc.textHeight) + 6;
             tDesc.selectable = false;
@@ -215,7 +215,7 @@ package com.monsters.alliances.tabs {
             descField.height = textareaH - 8;
             descField.x = x + 6;
             descField.y = textareaY + 4;
-            descField.defaultTextFormat = new TextFormat("Verdana", 11, 0x333333);
+            descField.defaultTextFormat = new TextFormat(FONTS.VERDANA, 11, 0x333333);
             if (_mode == MODE_EDIT && _allianceDesc != null && _allianceDesc.length > 0) {
                 descField.text = _allianceDesc;
             }
@@ -259,7 +259,7 @@ package com.monsters.alliances.tabs {
             nameField.height = 18;
             nameField.x = x + 6;
             nameField.y = nameInputY + int((inputH - 18) / 2);
-            nameField.defaultTextFormat = new TextFormat("Verdana", 11, 0x333333);
+            nameField.defaultTextFormat = new TextFormat(FONTS.VERDANA, 11, 0x333333);
             if (_mode == MODE_CREATE) {
                 nameField.type = TextFieldType.INPUT;
                 nameField.selectable = true;
