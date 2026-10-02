@@ -18,6 +18,8 @@ import {
   snapshotLimiter,
   alliancesLimiter,
   terrainLimiter,
+  searchPlayersLimiter,
+  friendRequestLimiter,
 } from "./middleware/rateLimiters.js";
 import { Status } from "./enums/StatusCodes.js";
 
@@ -35,6 +37,7 @@ import { updateSettings } from "./controllers/auth/updateSettings.js";
 import { baseLoad } from "./controllers/base/load/baseLoad.js";
 import { baseSave } from "./controllers/base/save/baseSave.js";
 import { updateSaved } from "./controllers/base/save/updateSaved.js";
+import { saveUpdate } from "./controllers/base/save/saveUpdate.js";
 import { migrateBase } from "./controllers/maproom/v2/migrateBase.js";
 
 import { getNewMap } from "./controllers/maproom/getNewMap.js";
@@ -69,6 +72,11 @@ import { saveTemplate } from "./controllers/yardplanner/saveTemplate.js";
 import { getAvailableWorlds } from "./controllers/leaderboards/getAvailableWorlds.js";
 import { getLeaderboards } from "./controllers/leaderboards/getLeaderboards.js";
 import { getAttackLogs } from "./controllers/attacklogs/getAttackLogs.js";
+import { getFriends } from "./controllers/friends/getFriends.js";
+import { searchPlayers } from "./controllers/friends/searchPlayers.js";
+import { sendFriendRequest } from "./controllers/friends/sendFriendRequest.js";
+import { respondFriendRequest } from "./controllers/friends/respondFriendRequest.js";
+import { removeFriend } from "./controllers/friends/removeFriend.js";
 
 import { wildMonsterInvasion } from "./controllers/events/wildMonsterInvasion.js";
 import { recordDebugData } from "./controllers/debug/recordDebugData.js";
@@ -118,6 +126,7 @@ router.post("/api/:apiVersion/player/settings", apiVersion, verifyUserAuth, logR
 router.post("/base/load", verifyUserAuth, logRequest, baseLoad);
 router.post("/base/save", verifyUserAuth, logRequest, baseSave);
 router.post("/base/updatesaved", verifyUserAuth, logRequest, updateSaved);
+router.post("/base/saveupdate", verifyUserAuth, logRequest, saveUpdate);
 router.post("/base/migrate", verifyUserAuth, logRequest, migrateBase);
 
 /**  ────────────────────────────────────────────────
@@ -175,6 +184,15 @@ router.post("/api/:apiVersion/bm/yardplanner/savetemplate", apiVersion, verifyUs
 router.get("/api/:apiVersion/worlds", publicReadLimiter, getAvailableWorlds);
 router.get("/api/:apiVersion/leaderboards", publicReadLimiter, getLeaderboards);
 router.get("/api/:apiVersion/attacklogs", verifyUserAuth, getAttackLogs);
+
+/**  ────────────────────────────────────────────────
+* 📦 Friends (Social)
+* ──────────────────────────────────────────────── */
+router.get("/api/:apiVersion/friends", apiVersion, verifyUserAuth, getFriends);
+router.get("/api/:apiVersion/friends/search", apiVersion, verifyUserAuth, searchPlayersLimiter, searchPlayers);
+router.post("/api/:apiVersion/friends/request", apiVersion, verifyUserAuth, verifyAccountStatus, friendRequestLimiter, logRequest, sendFriendRequest);
+router.post("/api/:apiVersion/friends/respond", apiVersion, verifyUserAuth, logRequest, respondFriendRequest);
+router.post("/api/:apiVersion/friends/remove", apiVersion, verifyUserAuth, logRequest, removeFriend);
 
 /**  ────────────────────────────────────────────────
 * 📦 Alliances

@@ -164,6 +164,34 @@ export const allianceJoinRequestLimiter = RateLimit.middleware({
 });
 
 /**
+ * Rate limit for the launcher's player search - 30 requests per minute per user.
+ */
+export const searchPlayersLimiter = RateLimit.middleware({
+  interval: { min: 1 },
+  max: 30,
+  prefixKey: "searchplayers",
+  keyGenerator: byUser("searchplayers"),
+  handler: async (ctx: Context) => {
+    ctx.status = Status.TOO_MANY_REQUESTS;
+    ctx.body = { error: "Too many player searches. Please slow down." };
+  },
+});
+
+/**
+ * Rate limit for sending friend requests - 20 per hour per user.
+ */
+export const friendRequestLimiter = RateLimit.middleware({
+  interval: { min: 60 },
+  max: 20,
+  prefixKey: "friend-request",
+  keyGenerator: byUser("friend-request"),
+  handler: async (ctx: Context) => {
+    ctx.status = Status.TOO_MANY_REQUESTS;
+    ctx.body = { error: "Too many friend requests. Please try again later." };
+  },
+});
+
+/**
  * Rate limit for user registration - 3 requests per hour in prod, per minute in dev.
  */
 export const registerLimiter = RateLimit.middleware({
