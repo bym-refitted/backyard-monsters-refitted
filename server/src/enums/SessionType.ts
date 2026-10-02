@@ -6,4 +6,5 @@
 export enum SessionType {
   GAME = "game",
   LAUNCHER = "launcher",
+  WEBSITE = "website",
 }
