@@ -44,6 +44,19 @@ const authenticateWithToken = async (token: string) => {
 };
 
 /**
+ * How long the session key should live, read from the token it holds so that an
+ * abandoned session leaves Redis at the same moment its token stops being accepted.
+ *
+ * @param {string} token - The freshly signed token.
+ * @returns {number} Seconds until the token expires, never less than one.
+ */
+const sessionTtlSeconds = (token: string): number => {
+  const expiresAt = JWT.decode(token, { json: true })?.exp ?? 0;
+
+  return Math.max(1, expiresAt - Math.floor(Date.now() / 1000));
+};
+
+/**
  * Controller to handle user login.
  *
  * This controller authenticates a user based on either their email & password, or token.
@@ -105,7 +118,9 @@ export const login: KoaController = async (ctx) => {
     }
   );
 
-  await redis.set(`user-token:${sessionType}:${user.email}`, newToken);
+  const tokenTtl = sessionTtlSeconds(newToken);
+  await redis.setex(`user-token:${sessionType}:${user.email}`, tokenTtl, newToken);
+
   postgres.em.persist(user);
   await postgres.em.flush();
 
