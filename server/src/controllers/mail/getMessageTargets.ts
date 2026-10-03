@@ -4,6 +4,7 @@ import { mailboxErr } from "../../errors/errors.js";
 import { Thread } from "../../database/models/thread.model.js";
 import { User } from "../../database/models/user.model.js";
 import { postgres } from "../../server.js";
+import { getFriendIds } from "../../services/friends/friendList.js";
 import type { KoaController } from "../../utils/KoaController.js";
 
 interface TargetUser {
@@ -29,48 +30,49 @@ export const getMessageTargets: KoaController = async (ctx) => {
   try {
     const user: User = ctx.authUser;
 
-    const threads = await postgres.em.find(
-      Thread,
-      {
-        $or: [{ userid: user.userid }, { targetid: user.userid }],
-      },
-      { orderBy: { threadid: "DESC" } }
-    );
+    const [threads, friendIds] = await Promise.all([
+      postgres.em.find(
+        Thread,
+        {
+          $or: [{ userid: user.userid }, { targetid: user.userid }],
+        },
+        { orderBy: { threadid: "DESC" } }
+      ),
 
-    if (!threads.length) {
+      getFriendIds(user.userid),
+    ]);
+
+    const partnerIds = threads.map((thread) => thread.userid === user.userid ? thread.targetid : thread.userid);
+
+    const blocked = new Set(user.blockedUsers);
+
+    const targetIds = [...new Set([...partnerIds, ...friendIds])].filter((targetId) => !blocked.has(targetId));
+
+    if (!targetIds.length) {
       ctx.status = Status.OK;
       ctx.body = { targets: {} };
       return;
     }
 
-    // Unique user IDs that have had message threads with the authenticated user
-    const conversationPartnerIds = [
-      ...new Set(
-        threads.map((thread) =>
-          thread.userid === user.userid ? thread.targetid : thread.userid
-        )
-      ),
-    ];
-
     const users = await postgres.em.find(
       User,
       {
-        userid: { $in: conversationPartnerIds },
+        userid: { $in: targetIds },
       },
       {
-        fields: ["userid", "username", "last_name", "pic_square"],
+        fields: ["userid", "username", "last_name", "pic_square", "save.mapversion"],
       }
     );
 
     const targets: TargetUsers = Object.fromEntries(
-      users.map((user) => [
-        user.userid,
+      users.map((target) => [
+        target.userid,
         {
-          friend: 0,
-          mapver: MapRoomVersion.V2,
-          first_name: user.username,
-          last_name: user.last_name,
-          pic_square: user.pic_square,
+          friend: friendIds.has(target.userid) ? 1 : 0,
+          mapver: target.save?.mapversion ?? MapRoomVersion.V1,
+          first_name: target.username,
+          last_name: target.last_name,
+          pic_square: target.pic_square,
         },
       ])
     );

@@ -271,7 +271,7 @@ package com.monsters.alliances.tabs {
             tf.height = 24;
             tf.x = TABLE_X;
             tf.y = TABLE_Y + 12;
-            var fmt:TextFormat = new TextFormat("Verdana", 13, 0x5A3B1E, true);
+            var fmt:TextFormat = new TextFormat(FONTS.VERDANA, 13, 0x5A3B1E, true);
             fmt.align = TextFormatAlign.CENTER;
             tf.defaultTextFormat = fmt;
             tf.text = message;
@@ -343,7 +343,7 @@ package com.monsters.alliances.tabs {
             _searchField.height = FIELD_H;
             _searchField.x = inputX + 6;
             _searchField.y = CTRL_Y + int((INPUT_BOX_H - FIELD_H) / 2);
-            var sfmt:TextFormat = new TextFormat("Verdana", 11, 0x333333, true);
+            var sfmt:TextFormat = new TextFormat(FONTS.VERDANA, 11, 0x333333, true);
             _searchField.defaultTextFormat = sfmt;
             _searchField.addEventListener(KeyboardEvent.KEY_DOWN, _onSearchKey);
 
@@ -541,7 +541,7 @@ package com.monsters.alliances.tabs {
             tf.height = 16;
             tf.x = 0;
             tf.y = int((PAGE_BTN_SIZE - 16) / 2);
-            var fmt:TextFormat = new TextFormat("Verdana", 11, 0x333333, true);
+            var fmt:TextFormat = new TextFormat(FONTS.VERDANA, 11, 0x333333, true);
             fmt.align = TextFormatAlign.CENTER;
             tf.defaultTextFormat = fmt;
             tf.text = label;
@@ -695,7 +695,7 @@ package com.monsters.alliances.tabs {
             tf.height = 20;
             tf.x = 0;
             tf.y = int((h - 18) / 2);
-            var fmt:TextFormat = new TextFormat("Verdana", 11, active ? 0x333333 : 0x666666, true);
+            var fmt:TextFormat = new TextFormat(FONTS.VERDANA, 11, active ? 0x333333 : 0x666666, true);
             fmt.align = TextFormatAlign.CENTER;
             tf.defaultTextFormat = fmt;
             tf.text = label;

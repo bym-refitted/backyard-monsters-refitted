@@ -1,7 +1,7 @@
 import { MapRoomVersion } from "../../../../enums/MapRoom.js";
 import { Status } from "../../../../enums/StatusCodes.js";
 import { isKnownWorld } from "../../../../services/maproom/knownWorlds.js";
-import { getWorldSnapshot, SNAPSHOT_MAX_AGE_SECONDS } from "../../../../services/maproom/v2/worldSnapshot.js";
+import { getWorldSnapshot, SNAPSHOT_MAX_AGE_SECONDS } from "../../../../services/maproom/v2/bulk/worldSnapshot.js";
 import type { KoaController } from "../../../../utils/KoaController.js";
 
 /**
@@ -52,7 +52,8 @@ import type { KoaController } from "../../../../utils/KoaController.js";
  *
  * Caching
  *   Rebuilt at most once every five minutes per world and served with a matching max-age
- *   and a strong ETag derived from the payload. Send the ETag back as
+ *   and a strong ETag derived from the payload. The ETag covers the world and its
+ *   occupancy alone, so it only changes when a cell does. Send the ETag back as
  *   If-None-Match to get a 304 with no body while nothing has changed.
  *
  * Status
@@ -83,7 +84,7 @@ export const getSnapshot: KoaController = async (ctx) => {
 
   const snapshot = await getWorldSnapshot(worldid.toString());
 
-  ctx.set("Cache-Control", `public, max-age=${SNAPSHOT_MAX_AGE_SECONDS}`);
+  ctx.set("Cache-Control", `private, max-age=${SNAPSHOT_MAX_AGE_SECONDS}`);
   ctx.set("Vary", "Accept-Encoding");
   ctx.set("ETag", snapshot.etag);
   ctx.set("Access-Control-Expose-Headers", "ETag");
@@ -107,7 +108,7 @@ export const getSnapshot: KoaController = async (ctx) => {
 
   if (acceptEncoding && ctx.acceptsEncodings("gzip") === "gzip") {
     ctx.set("Content-Encoding", "gzip");
-    ctx.body = snapshot.gzip;
+    ctx.body = await snapshot.gzip();
     return;
   }
 

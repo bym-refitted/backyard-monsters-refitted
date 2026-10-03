@@ -23,6 +23,7 @@ import { championHandler } from "./handlers/championHandler.js";
 import { buildingDataHandler } from "./handlers/buildingDataHandler.js";
 import { takeoverCellMR3, type TakeoverData } from "../../../services/maproom/v3/takeoverCellMR3.js";
 import { damageProtection } from "../../../services/maproom/v2/damageProtection.js";
+import { acknowledgeGifts, claimGifts } from "../../../services/gifts/gifts.js";
 import { isMR3Structure } from "../../../services/maproom/v3/utils/isMR3Structure.js";
 import { WorldMapCell } from "../../../database/models/worldmapcell.model.js";
 import { MapRoomVersion } from "../../../enums/MapRoom.js";
@@ -143,6 +144,11 @@ export const baseSave: KoaController = async (ctx) => {
     }
 
     if (isOutpostOwner) updateOutposts(userSave, baseSave, key);
+  }
+
+  if (!isAttack) {
+    await claimGifts(user, saveData.gifts);
+    await acknowledgeGifts(user, saveData.sentgifts);
   }
 
   if (!isAttack && saveData.purchase) purchaseHandler(ctx, saveData.purchase, userSave);

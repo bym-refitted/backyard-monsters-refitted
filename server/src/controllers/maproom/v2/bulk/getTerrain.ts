@@ -1,7 +1,7 @@
 import { MapRoomVersion } from "../../../../enums/MapRoom.js";
 import { Status } from "../../../../enums/StatusCodes.js";
 import { isKnownWorld } from "../../../../services/maproom/knownWorlds.js";
-import { getTerrainMap } from "../../../../services/maproom/v2/terrainMap.js";
+import { getTerrainMap } from "../../../../services/maproom/v2/bulk/terrainMap.js";
 import type { KoaController } from "../../../../utils/KoaController.js";
 
 /**
@@ -29,7 +29,7 @@ import type { KoaController } from "../../../../utils/KoaController.js";
  *   carry Vary: Accept-Encoding.
  *
  * Caching
- *   public, max-age=31536000, immutable, with a strong ETag. Send it back as
+ *   private, max-age=31536000, immutable, with a strong ETag. Send it back as
  *   If-None-Match to get a 304 with no body. The ETag covers the terrain
  *   generation parameters as well as the world id, so it changes if a map is
  *   ever regenerated differently.
@@ -62,7 +62,7 @@ export const getTerrain: KoaController = async (ctx) => {
 
   const terrain = await getTerrainMap(worldid.toString());
 
-  ctx.set("Cache-Control", "public, max-age=31536000, immutable");
+  ctx.set("Cache-Control", "private, max-age=31536000, immutable");
   ctx.set("Vary", "Accept-Encoding");
   ctx.set("ETag", terrain.etag);
   ctx.set("Access-Control-Expose-Headers", "ETag");
@@ -85,7 +85,7 @@ export const getTerrain: KoaController = async (ctx) => {
 
   if (acceptEncoding && ctx.acceptsEncodings("gzip") === "gzip") {
     ctx.set("Content-Encoding", "gzip");
-    ctx.body = terrain.gzip;
+    ctx.body = await terrain.gzip();
     return;
   }
 

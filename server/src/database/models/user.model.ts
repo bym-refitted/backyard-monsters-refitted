@@ -12,7 +12,10 @@ import { FrontendKey } from "../../utils/FrontendKey.js";
 import { AllianceRole } from "../../enums/Alliance.js";
 import type { JsonObject } from "../../types/JsonObject.js";
 
+const USERNAME_LOWER_INDEX = `CREATE INDEX IF NOT EXISTS user_username_lower_index ON bym."user" (lower(username))`;
+
 @Entity({ tableName: "user" })
+@Index({ name: "user_username_lower_index", expression: USERNAME_LOWER_INDEX })
 export class User {
 
   [PrimaryKeyProp]?: "userid";

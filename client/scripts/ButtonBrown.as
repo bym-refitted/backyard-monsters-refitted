@@ -41,12 +41,12 @@ package {
             mouseChildren = false;
             buttonMode = true;
             this._format = new TextFormat();
-            this._format.font = "Verdana";
+            this._format.font = FONTS.VERDANA;
             this._format.size = 9;
             this._format.align = TextFormatAlign.CENTER;
             this._format.color = this._onColor;
             this._formatHighlight = new TextFormat();
-            this._formatHighlight.font = "Verdana";
+            this._formatHighlight.font = FONTS.VERDANA;
             this._formatHighlight.size = 9;
             this._formatHighlight.align = TextFormatAlign.CENTER;
             this._formatHighlight.color = this._offColor;

@@ -683,7 +683,7 @@ package com.monsters.maproom3 {
                 return;
             }
             var _loc1_:TextField = new TextField();
-            _loc1_.defaultTextFormat = new TextFormat("Verdana", 10, 16777215, true, null, null, null, null, TextFormatAlign.CENTER);
+            _loc1_.defaultTextFormat = new TextFormat(FONTS.VERDANA, 10, 16777215, true, null, null, null, null, TextFormatAlign.CENTER);
             _loc1_.width = int(HEX_WIDTH * 1.5);
             _loc1_.height = 20;
             _loc1_.x = int(-HEX_WIDTH * 0.25);

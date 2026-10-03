@@ -53,7 +53,7 @@ export const UserLoginSchema = z.object({
   email: emailSchema.optional(),
   password: passwordSchema.optional(),
   token: z.string().optional(),
-  sessionType: z.enum([SessionType.GAME, SessionType.LAUNCHER]).default(SessionType.GAME),
+  sessionType: z.enum(SessionType).default(SessionType.GAME),
 });
 
 /**

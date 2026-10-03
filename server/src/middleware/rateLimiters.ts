@@ -94,6 +94,20 @@ export const snapshotLimiter = RateLimit.middleware({
 });
 
 /**
+ * Rate limit for the MR2 alliance snapshot - 10 requests per minute per API consumer.
+ */
+export const alliancesLimiter = RateLimit.middleware({
+  interval: { min: 1 },
+  max: 10,
+  prefixKey: "alliances",
+  keyGenerator: async (ctx: Context) => `alliances|${ctx.state.apiConsumer ?? ctx.ip}`,
+  handler: async (ctx: Context) => {
+    ctx.status = Status.TOO_MANY_REQUESTS;
+    ctx.body = { error: "Too many alliance requests. Please slow down." };
+  },
+});
+
+/**
  * Rate limit for MR3 getcells - 60 requests per minute per user.
  */
 export const getCellsLimiter = RateLimit.middleware({
@@ -146,6 +160,48 @@ export const allianceJoinRequestLimiter = RateLimit.middleware({
   handler: async (ctx: Context) => {
     ctx.status = Status.TOO_MANY_REQUESTS;
     ctx.body = { error: "Too many join requests. Please slow down." };
+  },
+});
+
+/**
+ * Rate limit for the launcher's player search - 30 requests per minute per user.
+ */
+export const searchPlayersLimiter = RateLimit.middleware({
+  interval: { min: 1 },
+  max: 30,
+  prefixKey: "searchplayers",
+  keyGenerator: byUser("searchplayers"),
+  handler: async (ctx: Context) => {
+    ctx.status = Status.TOO_MANY_REQUESTS;
+    ctx.body = { error: "Too many player searches. Please slow down." };
+  },
+});
+
+/**
+ * Rate limit for sending friend requests - 20 per hour per user.
+ */
+export const friendRequestLimiter = RateLimit.middleware({
+  interval: { min: 60 },
+  max: 20,
+  prefixKey: "friend-request",
+  keyGenerator: byUser("friend-request"),
+  handler: async (ctx: Context) => {
+    ctx.status = Status.TOO_MANY_REQUESTS;
+    ctx.body = { error: "Too many friend requests. Please try again later." };
+  },
+});
+
+/**
+ * Rate limit for sending gifts - 30 per hour per user.
+ */
+export const giftLimiter = RateLimit.middleware({
+  interval: { min: 60 },
+  max: 30,
+  prefixKey: "gift-send",
+  keyGenerator: byUser("gift-send"),
+  handler: async (ctx: Context) => {
+    ctx.status = Status.TOO_MANY_REQUESTS;
+    ctx.body = { error: "Too many gifts sent. Please try again later." };
   },
 });
 

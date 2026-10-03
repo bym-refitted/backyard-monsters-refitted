@@ -155,7 +155,7 @@ package com.monsters.maproom3 {
             var _loc1_:DropShadowFilter = new DropShadowFilter();
             var _loc2_:TextFormat = new TextFormat();
             _loc2_.color = INFO_TEXT_COLOR_DEFAULT;
-            _loc2_.font = "Verdana";
+            _loc2_.font = FONTS.VERDANA;
             _loc2_.size = 11;
             this.m_InfoTextCellName = new TextField();
             this.m_InfoTextCellName.defaultTextFormat = _loc2_;
@@ -166,7 +166,7 @@ package com.monsters.maproom3 {
             this.m_InfoTextCellName.selectable = false;
             var _loc3_:TextFormat = new TextFormat();
             _loc3_.color = INFO_TEXT_COLOR_DEFAULT;
-            _loc3_.font = "Verdana";
+            _loc3_.font = FONTS.VERDANA;
             _loc3_.size = 10;
             this.m_InfoTextAlliance = new TextField();
             this.m_InfoTextAlliance.defaultTextFormat = _loc3_;
@@ -183,7 +183,7 @@ package com.monsters.maproom3 {
             this.m_InfoTextCellType.filters = [_loc1_];
             this.m_InfoTextCellType.selectable = false;
             var _loc4_:TextFormat;
-            (_loc4_ = new TextFormat()).font = "Verdana";
+            (_loc4_ = new TextFormat()).font = FONTS.VERDANA;
             _loc4_.size = 10;
             this.m_InfoTextBuff1 = new TextField();
             this.m_InfoTextBuff1.defaultTextFormat = _loc4_;

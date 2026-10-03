@@ -441,3 +441,107 @@ export const powerupLeaderOnlyErr = () =>
     data: {},
     isClientFriendly: true,
   });
+
+export const friendSelfErr = () =>
+  new ClientSafeError({
+    message: "You cannot add yourself as a friend.",
+    status: Status.BAD_REQUEST,
+    data: {},
+    isClientFriendly: true,
+  });
+
+export const friendUnavailableErr = () =>
+  new ClientSafeError({
+    message: "This player cannot be added as a friend.",
+    status: Status.NOT_FOUND,
+    data: {},
+    isClientFriendly: true,
+  });
+
+export const alreadyFriendsErr = () =>
+  new ClientSafeError({
+    message: "You are already friends with this player.",
+    status: Status.CONFLICT,
+    data: {},
+    isClientFriendly: true,
+  });
+
+export const friendRequestPendingErr = () =>
+  new ClientSafeError({
+    message: "You already have a friend request pending with this player.",
+    status: Status.CONFLICT,
+    data: {},
+    isClientFriendly: true,
+  });
+
+export const friendRequestNotFoundErr = () =>
+  new ClientSafeError({
+    message: "This friend request no longer exists.",
+    status: Status.NOT_FOUND,
+    data: {},
+    isClientFriendly: true,
+  });
+
+export const friendNotFoundErr = () =>
+  new ClientSafeError({
+    message: "You are not friends with this player.",
+    status: Status.NOT_FOUND,
+    data: {},
+    isClientFriendly: true,
+  });
+
+export const friendLimitErr = (max: number) =>
+  new ClientSafeError({
+    message: `You can have at most ${max} friends.`,
+    status: Status.CONFLICT,
+    data: {},
+    isClientFriendly: true,
+  });
+
+export const friendTargetLimitErr = () =>
+  new ClientSafeError({
+    message: "This player's friends list is full.",
+    status: Status.CONFLICT,
+    data: {},
+    isClientFriendly: true,
+  });
+
+export const friendPendingLimitErr = (max: number) =>
+  new ClientSafeError({
+    message: `You can have at most ${max} unanswered friend requests. Cancel some before sending more.`,
+    status: Status.CONFLICT,
+    data: {},
+    isClientFriendly: true,
+  });
+
+export const giftNotFriendsErr = () =>
+  new ClientSafeError({
+    message: "You can only send gifts to your friends.",
+    status: Status.FORBIDDEN,
+    data: {},
+    isClientFriendly: true,
+  });
+
+export const giftCooldownErr = () =>
+  new ClientSafeError({
+    message: "You have already sent this friend a gift today.",
+    status: Status.CONFLICT,
+    data: {},
+    isClientFriendly: true,
+  });
+
+export const giftInboxFullErr = () =>
+  new ClientSafeError({
+    message: "This player has too many gifts waiting to be collected.",
+    status: Status.CONFLICT,
+    data: {},
+    isClientFriendly: true,
+  });
+
+export const giftSelfErr = () =>
+  new ClientSafeError({
+    message: "You cannot send yourself a gift.",
+    status: Status.BAD_REQUEST,
+    data: {},
+    isClientFriendly: true,
+  });

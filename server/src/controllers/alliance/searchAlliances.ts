@@ -10,6 +10,7 @@ import { findRelationships, type RelationshipLookup } from "../../services/allia
 import { getLeaderBaseIds } from "../../services/alliance/allianceLeaders.js";
 import { getWorldMapVersion } from "../../services/maproom/knownWorlds.js";
 import type { KoaController } from "../../utils/KoaController.js";
+import { escapeLike } from "../../utils/escapeLike.js";
 import { allianceNoWorldErr, unknownWorldErr } from "../../errors/errors.js";
 
 const PAGE_SIZE = 10;
@@ -29,7 +30,7 @@ export const searchAlliances: KoaController = async (ctx) => {
 
   const where: FilterQuery<Alliance> = {};
 
-  if (search) where.name = { $ilike: `%${search}%` };
+  if (search) where.name = { $ilike: `%${escapeLike(search)}%` };
 
   await postgres.em.populate(user, ["save"], { fields: ["save.worldid"] });
 
