@@ -6,6 +6,7 @@ declare module "koa" {
   interface DefaultState {
     lastSeen: Map<number, number>;
     truces: Truces;
+    friends: Set<number>;
   }
 
   interface DefaultContext {

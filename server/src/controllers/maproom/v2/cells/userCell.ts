@@ -37,7 +37,7 @@ type Cell = Loaded<WorldMapCell, "save", UserCellFields>;
  */
 export const userCell = async (ctx: Context, cell: Cell, cellOwners: Map<number, UserCellOwner>) => {
   const currentUser: User = ctx.authUser;
-  const { lastSeen, truces } = ctx.state;
+  const { lastSeen, truces, friends } = ctx.state;
 
   const mine = currentUser.userid === cell.uid;
   const cellOwner = mine ? currentUser : cellOwners.get(cell.uid);
@@ -80,7 +80,7 @@ export const userCell = async (ctx: Context, cell: Cell, cellOwners: Map<number,
     c: cellSave.catapult,
     t: truceExpiry,
     n: cellOwner.username,
-    fr: 0,
+    fr: friends.has(cell.uid) ? 1 : 0,
     p: isProtected ? 1 : 0,
     r: cellSave.resources,
     m: cellSave.monsters || {},
