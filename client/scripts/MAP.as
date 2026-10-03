@@ -2,8 +2,10 @@ package {
     import com.monsters.configs.BYMConfig;
     import com.monsters.input.KeyboardInputHandler;
     import com.monsters.monsters.MonsterBase;
+    import com.monsters.maproom_manager.MapRoomManager;
     import com.monsters.rendering.RasterData;
     import com.monsters.rendering.Renderer;
+    import com.monsters.rendering.ViewportCanvas;
     import flash.display.Bitmap;
     import flash.display.BitmapData;
     import flash.display.DisplayObject;
@@ -12,6 +14,8 @@ package {
     import flash.display.Stage;
     import flash.events.*;
     import flash.geom.*;
+    import flash.utils.Timer;
+    import flash.utils.getTimer;
     import gs.*;
     import gs.easing.*;
 
@@ -109,7 +113,7 @@ package {
 
         private static var _canvas:BitmapData;
 
-        private static var _canvasContainer:Bitmap;
+        private static var _canvasContainer:ViewportCanvas;
 
         public static const MAP_WIDTH:uint = 3994;
 
@@ -122,6 +126,14 @@ package {
         public static var vol:Number = 1;
 
         protected var _renderer:Renderer;
+
+        public static const PRESENTATION_FPS:Number = 60;
+
+        private var _presentationTimer:Timer;
+
+        private var _lastPresentation:int;
+
+        private var _presentationStarted:Boolean;
 
         protected const _point:Point = new Point();
 
@@ -145,9 +157,9 @@ package {
                 }
                 if (BYMConfig.instance.RENDERER_ON) {
                     _canvas = new BitmapData(MAP_WIDTH, MAP_HEIGHT, false, 0);
-                    _canvasContainer = new Bitmap(_canvas);
-                    _canvasContainer.x -= _canvasContainer.width / 2;
-                    _canvasContainer.y -= _canvasContainer.height / 2;
+                    _canvasContainer = new ViewportCanvas(_canvas);
+                    _canvasContainer.x = -MAP_WIDTH / 2;
+                    _canvasContainer.y = -MAP_HEIGHT / 2;
                     _GROUND.addChild(_canvasContainer);
                 }
             }
@@ -161,6 +173,7 @@ package {
                 if (BYMConfig.instance.RENDERER_ON) {
                     _EFFECTSBMP = new BitmapData(_canvas.width, _canvas.height, false, 0);
                     _effectsRasterData = new RasterData(_EFFECTSBMP, new Point((_canvas.width - _EFFECTSBMP.width) * 0.5, (_canvas.height - _EFFECTSBMP.height) * 0.5), 0, null, true);
+                    _effectsRasterData.cacheable = true;
                 }
                 else {
                     _EFFECTSBMP = new BitmapData(3200, 1800, true, 0);
@@ -212,7 +225,8 @@ package {
                 _EFFECTSTOP.tabChildren = false;
                 _dragged = false;
                 _GROUND.addEventListener(MouseEvent.MOUSE_DOWN, Click);
-                _GROUND.addEventListener(Event.ENTER_FRAME, Scroll);
+                if (!BYMConfig.instance.RENDERER_ON)
+                    _GROUND.addEventListener(Event.ENTER_FRAME, Scroll);
                 _GROUND.stage.addEventListener(KeyboardEvent.KEY_DOWN, KeyboardInputHandler.instance.OnKeyDown);
                 if (GLOBAL.DOES_USE_SCROLL) {
                     _GROUND.stage.addEventListener(MouseEvent.MOUSE_WHEEL, onMouseScroll);
@@ -229,12 +243,18 @@ package {
             if (BYMConfig.instance.RENDERER_ON) {
                 this._renderer = new Renderer(_canvas, _viewRect);
                 GLOBAL._ROOT.addEventListener(Event.RENDER, this.render);
+                this._presentationTimer = new Timer(1000 / PRESENTATION_FPS);
+                this._presentationTimer.addEventListener(TimerEvent.TIMER, this.present);
+                this._lastPresentation = getTimer();
+                this._presentationTimer.start();
             }
             Targeting.init();
             _inited = true;
         }
 
         public static function get effectsBMD():BitmapData {
+            if (_effectsRasterData)
+                _effectsRasterData.invalidate();
             return _EFFECTSBMP;
         }
 
@@ -247,6 +267,8 @@ package {
         }
 
         public static function swapBG(param1:String):void {
+            if (_effectsRasterData)
+                _effectsRasterData.invalidate();
             var _loc3_:DisplayObject = null;
             var _loc4_:int = 0;
             var _loc5_:int = 0;
@@ -314,6 +336,13 @@ package {
         }
 
         public static function Clear():void {
+            if (_instance && _instance._presentationTimer) {
+                _instance._presentationTimer.stop();
+                _instance._presentationTimer.removeEventListener(TimerEvent.TIMER, _instance.present);
+                _instance._presentationTimer = null;
+            }
+            if (_instance && _instance._renderer)
+                _instance._renderer.dispose();
             if (_GROUND) {
                 _GROUND.removeEventListener(MouseEvent.MOUSE_DOWN, Click);
                 _GROUND.removeEventListener(Event.ENTER_FRAME, Scroll);
@@ -326,7 +355,7 @@ package {
                     _BUILDINGTOPS.removeChildAt(0);
                 }
             }
-            if (BYMConfig.instance.RENDERER_ON && GLOBAL._ROOT.hasEventListener(Event.RENDER)) {
+            if (_instance && BYMConfig.instance.RENDERER_ON && GLOBAL._ROOT.hasEventListener(Event.RENDER)) {
                 GLOBAL._ROOT.removeEventListener(Event.RENDER, _instance.render);
             }
             _BGTILES = null;
@@ -361,6 +390,8 @@ package {
         }
 
         public static function Edge():void {
+            if (_effectsRasterData)
+                _effectsRasterData.invalidate();
             var iso:Point = null;
             if (GLOBAL.mode !== GLOBAL.e_BASE_MODE.BUILD && GLOBAL.mode !== GLOBAL.e_BASE_MODE.IBUILD) {
                 return;
@@ -481,7 +512,7 @@ package {
                         callback();
                     }
                     _instance.resizeViewRect();
-                    BFOUNDATION.updateAllRasterData();
+                    BFOUNDATION.updateAllRasterVisibility();
                 };
                 if (pause > 0) {
                     UI2.Hide("top");
@@ -498,7 +529,7 @@ package {
                                 "y": ty,
                                 "ease": Cubic.easeInOut,
                                 "delay": delay,
-                                "onUpdate": BFOUNDATION.updateAllRasterData,
+                                "onUpdate": BFOUNDATION.updateAllRasterVisibility,
                                 "onComplete": FocusToDone,
                                 "overwrite": false
                             });
@@ -509,7 +540,7 @@ package {
                                 "y": ty,
                                 "ease": Linear.easeNone,
                                 "delay": delay,
-                                "onUpdate": BFOUNDATION.updateAllRasterData,
+                                "onUpdate": BFOUNDATION.updateAllRasterVisibility,
                                 "onComplete": FocusToDone,
                                 "overwrite": false
                             });
@@ -529,7 +560,7 @@ package {
             _following = false;
         }
 
-        public static function Scroll(param1:Event = null):void {
+        public static function Scroll(param1:Event = null, elapsed:Number = 25):void {
             var _loc12_:int = 0;
             var _loc13_:Object = null;
             var _loc14_:MonsterBase = null;
@@ -562,7 +593,7 @@ package {
                 ty = 0 - ty + GLOBAL._ROOT.stage.stageHeight * 0.5;
                 _dragX = tx;
                 _dragY = ty;
-                BFOUNDATION.updateAllRasterData();
+                BFOUNDATION.updateAllRasterVisibility();
             }
             else if (_dragging && UI2._scrollMap && !_autoScroll && _canScroll) {
                 _loc15_ = stage.mouseX;
@@ -574,7 +605,7 @@ package {
                 _dragDistance = Math.abs(_loc17_ * _loc17_ + _loc18_ * _loc18_);
                 if (_dragDistance > 100) {
                     _dragged = true;
-                    BFOUNDATION.updateAllRasterData();
+                    BFOUNDATION.updateAllRasterVisibility();
                 }
             }
             var _loc2_:int = GLOBAL._ROOT.stage.stageWidth;
@@ -617,21 +648,22 @@ package {
             d = 2;
             targX = _GROUND.x;
             targY = _GROUND.y;
+            var smoothing:Number = 1 - Math.pow(0.5, elapsed / 25);
             if (targX < tx) {
-                targX += tx - targX >> 1;
+                targX += int((tx - targX) * smoothing);
             }
             else if (targX > tx) {
-                targX -= targX - tx >> 1;
+                targX -= int((targX - tx) * smoothing);
             }
             if (Math.abs(targX - tx) <= 2) {
                 targX = tx;
                 --d;
             }
             if (targY < ty - 1) {
-                targY += ty - targY >> 1;
+                targY += int((ty - targY) * smoothing);
             }
             else {
-                targY -= targY - ty >> 1;
+                targY -= int((targY - ty) * smoothing);
             }
             if (Math.abs(targY - ty) <= 2) {
                 targY = ty;
@@ -648,7 +680,7 @@ package {
             return _canvas;
         }
 
-        public function get canvasContainer():Bitmap {
+        public function get canvasContainer():ViewportCanvas {
             return _canvasContainer;
         }
 
@@ -663,13 +695,8 @@ package {
         }
 
         public function resizeCanvas():void {
-            if (_inited && _canvas.width !== GLOBAL._SCREEN.width || _canvas.height !== GLOBAL._SCREEN.height) {
-                _canvas = new BitmapData(GLOBAL._SCREEN.width, GLOBAL._SCREEN.height, true, 4278255360);
-                _canvasContainer.bitmapData = _canvas;
-                _canvasContainer.x = GLOBAL._SCREEN.x;
-                _canvasContainer.y = GLOBAL._SCREEN.y;
-                this._renderer.canvas = _canvas;
-            }
+            if (_inited)
+                GLOBAL._ROOT.stage.invalidate();
         }
 
         public function resizeViewRect():void {
@@ -683,7 +710,30 @@ package {
         }
 
         private function render(param1:Event):void {
+            var previous:BitmapData = _canvas;
+            _canvas = _canvasContainer.prepare();
+            this._renderer.setViewport(_canvas, _canvasContainer.origin);
+            if (previous != _canvas)
+                previous.dispose();
             this._renderer.render();
+        }
+
+        public static function invalidate():void {
+            if (!_instance || !_instance._presentationTimer)
+                GLOBAL._ROOT.stage.invalidate();
+            else
+                _instance._presentationStarted = true;
+        }
+
+        private function present(event:TimerEvent):void {
+            var now:int = getTimer();
+            var elapsed:int = now - this._lastPresentation;
+            this._lastPresentation = now;
+            if (!this._presentationStarted || !_inited || !_GROUND || GLOBAL.isHalted || BASE._loading || MapRoomManager.instance.isOpen)
+                return;
+            Scroll(null, Math.min(100, elapsed));
+            GLOBAL._ROOT.stage.invalidate();
+            event.updateAfterEvent();
         }
     }
 }

@@ -333,6 +333,17 @@ package {
 
         private var _mouseClicked:Boolean;
 
+        private var m_rasterGeometryCurrent:Boolean = false;
+        private var m_rasterGeometryX:Number;
+        private var m_rasterGeometryY:Number;
+        private var m_rasterGeometryAlpha:Number;
+        private var m_rasterGeometryMiddle:int;
+        private var m_rasterGeometryBaseX:Number;
+        private var m_rasterGeometryBaseY:Number;
+        private var m_rasterGeometryOffsetX:Number;
+        private var m_rasterGeometryOffsetY:Number;
+        private static const s_cameraRasterBounds:Rectangle = new Rectangle();
+
         public function BFOUNDATION() {
             this._overlayOffset = new Point(0, 0);
             super();
@@ -401,6 +412,18 @@ package {
             var _loc1_:Vector.<Object> = InstanceManager.getInstancesByClass(BFOUNDATION);
             for each (_loc2_ in _loc1_) {
                 _loc2_.updateRasterData();
+            }
+        }
+
+        public static function updateAllRasterVisibility():void {
+            if (!BYMConfig.instance.RENDERER_ON) {
+                return;
+            }
+            var viewRect:Rectangle = MAP.instance.viewRect;
+            var offset:Point = MAP.instance.offset;
+            var buildings:Vector.<Object> = InstanceManager.getInstancesByClass(BFOUNDATION);
+            for each (var building:BFOUNDATION in buildings) {
+                building.updateRasterVisibility(viewRect, offset, s_cameraRasterBounds);
             }
         }
 
@@ -647,7 +670,7 @@ package {
                 else {
                     _mc.addChild(this._mcHit);
                 }
-                this._mcHit.cacheAsBitmap = true;
+                this._mcHit.cacheAsBitmap = false;
                 this._mcHit.alpha = 0;
             }
             catch (e:Error) {
@@ -860,6 +883,7 @@ package {
         }
 
         public function RenderClear(param1:Boolean = true):void {
+            this.m_rasterGeometryCurrent = false;
             if (m_isCleared) {
                 return;
             }
@@ -1117,6 +1141,7 @@ package {
                             this._rasterPt[_RASTERDATA_SHADOW].y = _mc.y + this._offsets[_RASTERDATA_SHADOW].y - MAP.instance.offset.y;
                             this.redrawShadowData();
                             this._rasterData[_RASTERDATA_SHADOW] ||= new RasterData(imageBitmapData, this._rasterPt[_RASTERDATA_SHADOW], MAP.DEPTH_SHADOW, BlendMode.MULTIPLY, true);
+                            this._rasterData[_RASTERDATA_SHADOW].cacheable = true;
                         }
                     }
                     else if (Boolean(imageDataB[_IMAGE_NAMES[_RASTERDATA_TOP] + state]) && imageDataA.baseurl + imageDataB[_IMAGE_NAMES[_RASTERDATA_TOP] + state][0] == _loc13_) {
@@ -1243,10 +1268,12 @@ package {
                     this._rasterData[_RASTERDATA_ANIM3] = null;
                 }
             }
+            this.m_rasterGeometryCurrent = false;
             this.AnimFrame();
         }
 
         protected function setupImage(param1:uint, param2:String, param3:BuildingAssetContainer, param4:Object, param5:BitmapData, param6:Number):void {
+            this.m_rasterGeometryCurrent = false;
             this._offsets[param1].x = param4[_IMAGE_NAMES[param1] + param2][1].x;
             this._offsets[param1].y = param4[_IMAGE_NAMES[param1] + param2][1].y;
             if (!BYMConfig.instance.RENDERER_ON) {
@@ -1289,6 +1316,7 @@ package {
         }
 
         public function showFootprint(param1:Boolean, param2:Boolean = false):void {
+            this.m_rasterGeometryCurrent = false;
             if (this._mcFootprint) {
                 if (BYMConfig.instance.RENDERER_ON && (this._mcFootprint.width | this._mcFootprint.height) !== 0) {
                     this._offsets[_RASTERDATA_FOOTPRINT].x = -this._mcFootprint.width >> 1;
@@ -1396,6 +1424,49 @@ package {
             this.Update();
         }
 
+        protected function updateRasterVisibility(viewRect:Rectangle, offset:Point, bounds:Rectangle):void {
+            if (m_isCleared) {
+                return;
+            }
+            if (!this.m_rasterGeometryCurrent || !_mc || !this._mcBase || !_middle ||
+                    this._moving || GLOBAL._newBuilding === this ||
+                    this._rasterData[_RASTERDATA_FOOTPRINT] || m_children.length != 0 ||
+                    _mc.x != this.m_rasterGeometryX || _mc.y != this.m_rasterGeometryY ||
+                    _mc.alpha != this.m_rasterGeometryAlpha || _middle != this.m_rasterGeometryMiddle ||
+                    this._mcBase.x != this.m_rasterGeometryBaseX || this._mcBase.y != this.m_rasterGeometryBaseY ||
+                    offset.x != this.m_rasterGeometryOffsetX || offset.y != this.m_rasterGeometryOffsetY) {
+                this.updateRasterData();
+                return;
+            }
+            var raster:RasterData;
+            var point:Point;
+            var source:DisplayObject;
+            var rect:Rectangle;
+            for (var index:int = _RASTERDATA_SHADOW + 1; index < _RASTERDATA_AMOUNT; ++index) {
+                raster = this._rasterData[index];
+                point = this._rasterPt[index];
+                if (raster && point) {
+                    source = this._sources[index];
+                    rect = raster.rect;
+                    bounds.x = point.x;
+                    bounds.y = point.y;
+                    bounds.width = rect.width;
+                    bounds.height = rect.height;
+                    raster.visible = viewRect.intersects(bounds) && (source && !source.visible ? false : _mc.visible);
+                }
+            }
+            raster = this._rasterData[_RASTERDATA_SHADOW];
+            point = this._rasterPt[_RASTERDATA_SHADOW];
+            if (raster && point) {
+                rect = raster.rect;
+                bounds.x = point.x;
+                bounds.y = point.y;
+                bounds.width = rect.width;
+                bounds.height = rect.height;
+                raster.visible = viewRect.intersects(bounds) && this._mcBase.visible;
+            }
+        }
+
         override protected function updateRasterData():void {
             var _loc4_:RasterData = null;
             var _loc5_:Point = null;
@@ -1455,6 +1526,17 @@ package {
                 }
             }
             super.updateRasterData();
+            this.m_rasterGeometryCurrent = Boolean(_mc) && Boolean(this._mcBase);
+            if (this.m_rasterGeometryCurrent) {
+                this.m_rasterGeometryX = _mc.x;
+                this.m_rasterGeometryY = _mc.y;
+                this.m_rasterGeometryAlpha = _mc.alpha;
+                this.m_rasterGeometryMiddle = _middle;
+                this.m_rasterGeometryBaseX = this._mcBase.x;
+                this.m_rasterGeometryBaseY = this._mcBase.y;
+                this.m_rasterGeometryOffsetX = _loc1_.x;
+                this.m_rasterGeometryOffsetY = _loc1_.y;
+            }
         }
 
         protected function redrawShadowData():void {
@@ -1481,6 +1563,7 @@ package {
             if (!this._moving) {
                 this._rasterData[_RASTERDATA_SHADOW].visible = this._mcBase.visible;
             }
+            this._rasterData[_RASTERDATA_SHADOW].cacheable = true;
         }
 
         public function TickFast(param1:Event = null):void {
@@ -1605,6 +1688,7 @@ package {
         }
 
         protected function clearRasterData():void {
+            this.m_rasterGeometryCurrent = false;
             var _loc1_:RasterData = null;
             var _loc2_:int = 0;
             if (!BYMConfig.instance.RENDERER_ON || !this._rasterData) {

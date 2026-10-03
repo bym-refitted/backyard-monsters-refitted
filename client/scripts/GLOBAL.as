@@ -1292,7 +1292,7 @@ package {
                             _loc7_++;
                         }
                         if (BYMConfig.instance.RENDERER_ON) {
-                            _ROOT.stage.invalidate();
+                            MAP.invalidate();
                         }
                     }
                     ++_frameNumber;
@@ -1907,7 +1907,7 @@ package {
             }
             if (MAP._GROUND) {
                 MAP.instance.resizeViewRect();
-                BFOUNDATION.updateAllRasterData();
+                BFOUNDATION.updateAllRasterVisibility();
             }
         }
 

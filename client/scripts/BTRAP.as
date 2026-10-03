@@ -3,6 +3,7 @@ package {
     import com.monsters.monsters.MonsterBase;
     import com.monsters.rendering.RasterData;
     import flash.geom.Point;
+    import flash.geom.Rectangle;
 
     public class BTRAP extends BFOUNDATION {
 
@@ -42,6 +43,14 @@ package {
                 _mcBase.visible = false;
             }
             super.updateRasterData();
+        }
+
+        override protected function updateRasterVisibility(viewRect:Rectangle, offset:Point, bounds:Rectangle):void {
+            if (GLOBAL.mode !== GLOBAL.e_BASE_MODE.BUILD) {
+                _mc.visible = false;
+                _mcBase.visible = false;
+            }
+            super.updateRasterVisibility(viewRect, offset, bounds);
         }
 
         override public function TickAttack():void {

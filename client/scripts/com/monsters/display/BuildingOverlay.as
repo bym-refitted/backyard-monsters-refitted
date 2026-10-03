@@ -9,7 +9,6 @@ package com.monsters.display {
     import flash.geom.Rectangle;
     import flash.text.TextField;
     import flash.text.TextFormat;
-    import flash.utils.getTimer;
 
     public class BuildingOverlay {
 
@@ -78,6 +77,7 @@ package com.monsters.display {
             _loc3_ = _buildings[param1._id].container;
             _loc3_.mouseEnabled = false;
             _loc3_.mouseChildren = false;
+            _loc3_.visible = false;
             _loc2_ = _loc3_.addChild(new Bitmap(_buildings[param1._id].bmdtext));
             _loc2_.x = -26 + _loc4_.x + (51 - labelWidth) * 0.5;
             _loc2_.y = -32 + _loc4_.y;
@@ -111,7 +111,6 @@ package com.monsters.display {
             var _loc11_:int = 0;
             var _loc3_:int = -1;
             var _loc4_:String = "";
-            var _loc7_:int = getTimer();
             if (!_buildings[param1._id]) {
                 Setup(param1);
             }
@@ -212,6 +211,8 @@ package com.monsters.display {
                     _loc5_ = _loc8_.bmdhp;
                     _loc5_.fillRect(_loc5_.rect, 0);
                 }
+                _loc8_.container.visible = _loc8_.indextext != "" ||
+                    _loc8_.indexprogress != -1 || _loc8_.indexhp != -1;
             }
         }
 
