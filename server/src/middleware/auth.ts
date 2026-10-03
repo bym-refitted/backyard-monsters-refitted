@@ -115,6 +115,7 @@ export const verifyJwtToken = (token: string): AuthTokenPayload => {
         discordId: null,
         meetsDiscordAgeCheck: true,
         sessionType: decoded.user?.sessionType,
+        sessionId: decoded.user?.sessionId,
       },
     };
   }
