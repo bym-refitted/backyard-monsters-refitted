@@ -1133,7 +1133,7 @@ package {
                     }
                     else {
                         // POPUPS.Gift();
-                        GLOBAL.Message(KEYS.Get("disabled_gifts"));
+                        POPUPS.DisplayGiftEmpty();
                     }
                 }
                 else if (label == "alert") {
@@ -1166,7 +1166,7 @@ package {
                     BUY.Offers("daily");
                 }
                 else if (label == "earn") {
-                    GLOBAL.Message(KEYS.Get("discord_earn"));
+                    POPUPS.OpenDiscord();
                 }
             };
         }

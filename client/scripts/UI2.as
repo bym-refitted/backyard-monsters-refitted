@@ -579,7 +579,7 @@ package {
         public static function DebugWarning():void {
             var _loc1_:String = "DEBUG MODE";
             var _loc2_:TextFormat = new TextFormat();
-            _loc2_.font = "Verdana";
+            _loc2_.font = FONTS.VERDANA;
             _loc2_.bold = true;
             _loc2_.size = 72;
             _loc2_.align = TextFormatAlign.CENTER;
@@ -606,7 +606,7 @@ package {
                 _loc2_ = param1;
             }
             var _loc3_:TextFormat = new TextFormat();
-            _loc3_.font = "Verdana";
+            _loc3_.font = FONTS.VERDANA;
             _loc3_.bold = true;
             _loc3_.size = 36;
             _loc3_.align = TextFormatAlign.CENTER;

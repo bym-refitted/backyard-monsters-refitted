@@ -195,7 +195,7 @@ package com.monsters.alliances.tabs {
             tTitle.height = 20;
             tTitle.x = TEXT_X;
             tTitle.y = rowY + TITLE_Y;
-            tTitle.defaultTextFormat = new TextFormat("Verdana", 13, 0x000000, true);
+            tTitle.defaultTextFormat = new TextFormat(FONTS.VERDANA, 13, 0x000000, true);
             tTitle.text = KEYS.Get(type + "_name");
 
             var tDesc:TextField = container.addChild(new TextField()) as TextField;
@@ -207,7 +207,7 @@ package com.monsters.alliances.tabs {
             tDesc.height = DESC_H;
             tDesc.x = TEXT_X;
             tDesc.y = rowY + DESC_Y;
-            tDesc.defaultTextFormat = new TextFormat("Verdana", 13, 0x333333);
+            tDesc.defaultTextFormat = new TextFormat(FONTS.VERDANA, 13, 0x333333);
             tDesc.text = KEYS.Get(type + "_description");
 
             var bar:MovieClip = container.addChild(new MovieClip()) as MovieClip;
@@ -231,7 +231,7 @@ package com.monsters.alliances.tabs {
             tBar.height = 18;
             tBar.x = barX;
             tBar.y = rowY + BAR_Y + 1;
-            var barFmt:TextFormat = new TextFormat("Verdana", 12, 0x000000, true);
+            var barFmt:TextFormat = new TextFormat(FONTS.VERDANA, 12, 0x000000, true);
             barFmt.align = TextFormatAlign.CENTER;
             tBar.defaultTextFormat = barFmt;
 

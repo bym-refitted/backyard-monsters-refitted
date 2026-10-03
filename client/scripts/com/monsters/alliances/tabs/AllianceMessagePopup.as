@@ -42,7 +42,7 @@ package com.monsters.alliances.tabs {
             tBody.wordWrap = true;
             tBody.multiline = true;
             tBody.width = CONTENT_W;
-            var bodyFmt:TextFormat = new TextFormat("Verdana", BODY_SIZE, 0x000000);
+            var bodyFmt:TextFormat = new TextFormat(FONTS.VERDANA, BODY_SIZE, 0x000000);
             bodyFmt.align = TextFormatAlign.CENTER;
             tBody.defaultTextFormat = bodyFmt;
             tBody.htmlText = body;
@@ -68,7 +68,7 @@ package com.monsters.alliances.tabs {
             tTitle.antiAliasType = AntiAliasType.NORMAL;
             tTitle.width = CONTENT_W;
             tTitle.height = titleH;
-            var titleFmt:TextFormat = new TextFormat("Groboldov", TITLE_SIZE, 0xFFFFFF);
+            var titleFmt:TextFormat = new TextFormat(FONTS.GROBOLDOV, TITLE_SIZE, 0xFFFFFF);
             titleFmt.align = TextFormatAlign.CENTER;
             tTitle.defaultTextFormat = titleFmt;
             tTitle.text = title;

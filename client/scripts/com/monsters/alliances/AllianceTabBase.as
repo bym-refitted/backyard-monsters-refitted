@@ -48,7 +48,7 @@ package com.monsters.alliances {
             tf.height = 20;
             tf.x = colX;
             tf.y = colY + int((rowH - 18) / 2);
-            var fmt:TextFormat = new TextFormat("Verdana", 12, color, bold);
+            var fmt:TextFormat = new TextFormat(FONTS.VERDANA, 12, color, bold);
             fmt.align = (align != null) ? align : TextFormatAlign.CENTER;
             tf.defaultTextFormat = fmt;
             tf.text = text;

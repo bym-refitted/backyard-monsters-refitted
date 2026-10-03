@@ -285,13 +285,15 @@ package {
         }
 
         public static function SendGift(param1:MouseEvent):void {
-            if (BYMDevConfig.instance.USE_CLIENT_WITH_CALLBACK) {
-                GLOBAL.CallJSWithClient("cc.showFeedDialog", "callbackgift", ["gift"]);
-            }
-            else {
-                GLOBAL.CallJS("cc.showFeedDialog", ["gift", "callbackgift"]);
-            }
-            POPUPS.Next();
+            // Comment: the original code below was for Facebook gifts, which are no longer supported
+            // if (BYMDevConfig.instance.USE_CLIENT_WITH_CALLBACK) {
+            // GLOBAL.CallJSWithClient("cc.showFeedDialog", "callbackgift", ["gift"]);
+            // }
+            // else {
+            // GLOBAL.CallJS("cc.showFeedDialog", ["gift", "callbackgift"]);
+            // }
+            // POPUPS.Next();
+            POPUPS.OpenFriendsPage();
         }
 
         public static function ClosePopup(param1:MouseEvent):void {

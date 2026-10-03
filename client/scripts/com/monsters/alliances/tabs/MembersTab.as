@@ -90,7 +90,7 @@ package com.monsters.alliances.tabs {
             tTitle.antiAliasType = AntiAliasType.NORMAL;
             tTitle.width = CONTENT_W - PAD * 2;
             tTitle.height = TITLE_H;
-            var titleFmt:TextFormat = new TextFormat("Groboldov", TITLE_SIZE, 0xFFFFFF);
+            var titleFmt:TextFormat = new TextFormat(FONTS.GROBOLDOV, TITLE_SIZE, 0xFFFFFF);
             titleFmt.align = TextFormatAlign.LEFT;
             tTitle.defaultTextFormat = titleFmt;
             tTitle.text = KEYS.Get(_titleKey);

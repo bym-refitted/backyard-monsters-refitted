@@ -31,6 +31,7 @@ import { createMR1Tribes } from "../../../services/maproom/v1/createMR1Tribes.js
 import { MR1_TRIBES } from "../../../enums/Tribes.js";
 import { MR1_TRIBE_IDS } from "../../../game-data/tribes/v1/index.js";
 import { calculateBaseLevel } from "../../../services/base/calculateBaseLevel.js";
+import { getAcceptedGifts, getPendingGifts } from "../../../services/gifts/gifts.js";
 import { RESOURCE_KEYS } from "../../../services/base/updateResources.js";
 import { mapSaveData } from "../../../services/base/mapSaveData.js";
 import { clearExpiredStoreItems } from "../../../services/base/clearExpiredStoreItems.js";
@@ -283,6 +284,12 @@ export const baseLoad: KoaController = async (ctx) => {
 
   const avatar = baseOwner?.pic_square;
   let chattoken: string | undefined;
+
+  const showsGifts = isOwner && !isInferno;
+
+  const gifts = showsGifts ? await getPendingGifts(user) : [];
+  const sentgifts = showsGifts ? await getAcceptedGifts(user) : [];
+
   let chatchannel: string | undefined;
 
   if (isOwner) {
@@ -322,6 +329,8 @@ export const baseLoad: KoaController = async (ctx) => {
     chatservers: [process.env.CHAT_WS_HOST!],
     ...(isAttack && { attpowerups }),
     ...(isOwner && {
+      gifts,
+      sentgifts,
       chatenabled: 1,
       chattoken,
       chatchannel,

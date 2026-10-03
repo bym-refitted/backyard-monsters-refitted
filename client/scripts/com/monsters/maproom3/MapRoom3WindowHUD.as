@@ -150,7 +150,7 @@ package com.monsters.maproom3 {
             this.m_CoordinatesPanel.addChild(this.m_CoordinatesBackground);
             var _loc2_:TextFormat = new TextFormat();
             _loc2_.color = 16777215;
-            _loc2_.font = "Verdana";
+            _loc2_.font = FONTS.VERDANA;
             _loc2_.size = 12;
             _loc2_.align = TextFormatAlign.CENTER;
             this.m_CoordinatesLabel = new TextField();
