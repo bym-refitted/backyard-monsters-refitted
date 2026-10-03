@@ -485,6 +485,12 @@ package {
             POPUPS.Push(new GIFTPOPUP());
         }
 
+        /** Sends the player to our Discord, where shiny and events are discussed. */
+        public static function OpenDiscord():void {
+            GLOBAL.gotoURL(k_DISCORD_INVITE_URL);
+            POPUPS.Next();
+        }
+
         /** Sends the player to the friends page, which is where friendships live. */
         public static function OpenFriendsPage():void {
             GLOBAL.gotoURL(k_FRIENDS_PAGE_URL);
