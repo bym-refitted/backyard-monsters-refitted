@@ -28,6 +28,7 @@ import { init } from "./controllers/init.js";
 import { supportedLangs } from "./controllers/supportedLangs.js";
 
 import { login } from "./controllers/auth/login.js";
+import { logout } from "./controllers/auth/logout.js";
 import { register } from "./controllers/auth/register.js";
 import { forgotPassword } from "./controllers/auth/forgotPassword.js";
 import { resetPassword } from "./controllers/auth/resetPassword.js";
@@ -114,6 +115,7 @@ router.get("/connection", (ctx) => (ctx.status = Status.OK));
 * 📦 Auth
 * ──────────────────────────────────────────────── */
 router.post("/api/:apiVersion/player/getinfo", apiVersion, loginLimiter, logRequest, login);
+router.post("/api/:apiVersion/player/logout", apiVersion, verifyUserAuth, logRequest, logout);
 router.post("/api/:apiVersion/player/register", apiVersion, registerLimiter, logRequest, register);
 router.post("/api/:apiVersion/player/forgotPassword", apiVersion, forgotPassword);
 router.post("/api/:apiVersion/player/reset-password", resetPassword);

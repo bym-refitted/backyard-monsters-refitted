@@ -25,6 +25,16 @@ export interface AuthTokenPayload {
 }
 
 /**
+ * Where a session's token is kept, one key per client type so that logging in on the
+ * launcher cannot evict a game session.
+ *
+ * @param {SessionType} sessionType - Which client the session belongs to.
+ * @param {string} email - The account the session belongs to.
+ * @returns {string} The Redis key holding that session's token.
+ */
+export const sessionTokenKey = (sessionType: SessionType, email: string): string => `user-token:${sessionType}:${email}`;
+
+/**
  * Middleware to enforce authentication for protected routes.
  *
  * This middleware checks for the presence of a valid Bearer token in the
@@ -46,7 +56,7 @@ export const verifyUserAuth = async (ctx: Context, next: Next) => {
   const sessionType = decodedToken.user.sessionType;
   const email = decodedToken.user.email;
 
-  const storedToken = await redis.get(`user-token:${sessionType}:${email}`);
+  const storedToken = await redis.get(sessionTokenKey(sessionType, email));
 
   if (storedToken !== token) throw authFailureErr();
 
@@ -56,6 +66,7 @@ export const verifyUserAuth = async (ctx: Context, next: Next) => {
 
   ctx.authUser = user;
   ctx.meetsDiscordAgeCheck = decodedToken.user.meetsDiscordAgeCheck;
+  ctx.sessionType = sessionType;
 
   if (!ctx.authUser) throw authFailureErr();
   await next();

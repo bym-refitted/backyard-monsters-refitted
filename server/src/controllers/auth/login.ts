@@ -12,7 +12,7 @@ import {
   tokenAuthFailureErr,
 } from "../../errors/errors.js";
 import { logger } from "../../utils/logger.js";
-import { type JwtClaims, verifyJwtToken } from "../../middleware/auth.js";
+import { sessionTokenKey, type JwtClaims, verifyJwtToken } from "../../middleware/auth.js";
 import { Status } from "../../enums/StatusCodes.js";
 import { UserLoginSchema } from "../../schemas/AuthSchemas.js";
 import { Env } from "../../enums/Env.js";
@@ -34,7 +34,7 @@ type SessionLifetime = NonNullable<SignOptions["expiresIn"]>;
 const authenticateWithToken = async (token: string) => {
   const { user } = verifyJwtToken(token);
 
-  const storedToken = await redis.get(`user-token:${user.sessionType}:${user.email}`);
+  const storedToken = await redis.get(sessionTokenKey(user.sessionType, user.email));
   if (storedToken !== token) throw tokenAuthFailureErr();
 
   let userRecord = await postgres.em.findOne(User, { email: user.email });
@@ -119,7 +119,7 @@ export const login: KoaController = async (ctx) => {
   );
 
   const tokenTtl = sessionTtlSeconds(newToken);
-  await redis.setex(`user-token:${sessionType}:${user.email}`, tokenTtl, newToken);
+  await redis.setex(sessionTokenKey(sessionType, user.email), tokenTtl, newToken);
 
   postgres.em.persist(user);
   await postgres.em.flush();
