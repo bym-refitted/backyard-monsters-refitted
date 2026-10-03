@@ -6,7 +6,6 @@ import { TruceStatus } from "../../enums/TruceStatus.js";
 import { getCurrentDateTime } from "../../utils/getCurrentDateTime.js";
 import { getLastSeen } from "./getLastSeen.js";
 import { getTruces } from "./getTruces.js";
-import { getFriendIds } from "../friends/friendList.js";
 import { isAttackActive } from "../base/isAttackActive.js";
 import { calculateBaseLevel } from "../base/calculateBaseLevel.js";
 import type { NeighbourData } from "../../types/NeighbourData.js";
@@ -44,15 +43,22 @@ const NEIGHBOUR_USER_FIELDS = ["userid", "username", "pic_square"] as const;
  *
  * @param {NeighbourData[]} cachedNeighbours - The cached neighbour data
  * @param {Base.MAIN | Base.INFERNO} baseType - Which save type to query for live updates
+ * @param {number} [currentUserId] - The player reading the list, for their truces
+ * @param {Set<number>} [friends] - Their friends, resolved once by the caller
  * @returns {Promise<NeighbourData[]>} - Updated neighbour data with current attack permissions
  */
-export const updateNeighbourData = async (cachedNeighbours: NeighbourData[], baseType: Base, currentUserId?: number): Promise<NeighbourData[]> => {
+export const updateNeighbourData = async (
+  cachedNeighbours: NeighbourData[],
+  baseType: Base,
+  currentUserId?: number,
+  friends: Set<number> = new Set()
+): Promise<NeighbourData[]> => {
   if (!cachedNeighbours.length) return cachedNeighbours;
 
   const userIds = cachedNeighbours.map((neighbour) => neighbour.userid);
   const mr1Filter = baseType === BaseType.MAIN ? { mapversion: MapRoomVersion.V1 } : {};
 
-  const [neighbourUsers, neighbourSaves, lastSeens, truces, friends] = await Promise.all([
+  const [neighbourUsers, neighbourSaves, lastSeens, truces] = await Promise.all([
     postgres.em.find(
       User,
       { userid: { $in: userIds } },
@@ -68,8 +74,6 @@ export const updateNeighbourData = async (cachedNeighbours: NeighbourData[], bas
     getLastSeen(userIds, baseType),
 
     getTruces(currentUserId, userIds),
-
-    currentUserId ? getFriendIds(currentUserId, userIds) : new Set<number>(),
   ]);
 
   const saves = new Map(neighbourSaves.map((save) => [save.userid, save]));

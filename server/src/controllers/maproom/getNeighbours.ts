@@ -8,7 +8,9 @@ import { postgres } from "../../server.js";
 import { BaseType } from "../../enums/Base.js";
 import { findInfernoNeighbours } from "../../services/maproom/inferno/findInfernoNeighbours.js";
 import { findOverworldNeighbours } from "../../services/maproom/v1/findOverworldNeighbours.js";
+import { addFriendNeighbours } from "../../services/maproom/v1/addFriendNeighbours.js";
 import { updateNeighbourData } from "../../services/maproom/updateNeighbourData.js";
+import { getFriendIds } from "../../services/friends/friendList.js";
 
 type NeighbourCache = { neighborsLastCalculated?: Date; neighbors: unknown[] };
 
@@ -134,7 +136,10 @@ const getOverworldNeighbours: KoaController = async (ctx) => {
     await postgres.em.flush();
   }
 
-  const neighbours = await updateNeighbourData(maproom.neighbors, BaseType.MAIN, user.userid);
+  const friendIds = await getFriendIds(user.userid);
+  
+  const withFriends = await addFriendNeighbours(save, maproom.neighbors, friendIds);
+  const neighbours = await updateNeighbourData(withFriends, BaseType.MAIN, user.userid, friendIds);
 
   ctx.status = Status.OK;
   ctx.body = { error: 0, wmbases: [], bases: neighbours };
