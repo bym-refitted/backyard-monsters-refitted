@@ -10,7 +10,7 @@ import type { KoaController } from "../../utils/KoaController.js";
  * @returns {Promise<void>} - A promise that resolves when the controller is complete.
  */
 export const logout: KoaController = async (ctx) => {
-  await redis.del(sessionTokenKey(ctx.sessionType, ctx.authUser.email));
+  await redis.del(sessionTokenKey(ctx.sessionType, ctx.authUser.email, ctx.sessionId));
 
   ctx.status = Status.OK;
   ctx.body = { error: 0 };
