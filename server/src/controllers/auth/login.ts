@@ -27,20 +27,25 @@ type SessionLifetime = NonNullable<SignOptions["expiresIn"]>;
  * from the database. If the token is valid and the user exists, it returns the user record.
  * If the token is invalid or the user does not exist, it throws an authentication failure error.
  *
- * @param {Context} ctx - The Koa context object.
- * @returns {Promise<User>} - A promise that resolves to the authenticated user record.
+ * @param {string} token - The token presented by the client.
+ * @returns {Promise<{ userRecord: User; sessionId: string }>} - The user, and the session the
+ * token belongs to so that signing back in renews that device rather than opening another.
  * @throws {Error} - Throws an error if the token is invalid or the user does not exist.
  */
 const authenticateWithToken = async (token: string) => {
   const { user } = verifyJwtToken(token);
 
-  const storedToken = await redis.get(sessionTokenKey(user.sessionType, user.email));
+  if (!user.sessionId) throw tokenAuthFailureErr();
+
+  const storedToken = await redis.get(sessionTokenKey(user.sessionType, user.email, user.sessionId));
   if (storedToken !== token) throw tokenAuthFailureErr();
 
   let userRecord = await postgres.em.findOne(User, { email: user.email });
   if (!userRecord) throw emailPasswordErr();
 
-  return userRecord;
+  const sessionId = user.sessionId;
+
+  return { userRecord, sessionId };
 };
 
 /**
@@ -72,10 +77,14 @@ const sessionTtlSeconds = (token: string): number => {
 export const login: KoaController = async (ctx) => {
   let { email, password, token, sessionType } = UserLoginSchema.parse(ctx.request.body);
   let user: User | null = null;
+  let sessionId: string | undefined;
 
   if (token) {
     try {
-      user = await authenticateWithToken(token);
+      const authenticated = await authenticateWithToken(token);
+
+      user = authenticated.userRecord;
+      sessionId = authenticated.sessionId;
     } catch (err) {
       if (!email || !password) throw err;
       logger.warn(`Token login failed: ${(err as Error).message}`);
@@ -96,6 +105,8 @@ export const login: KoaController = async (ctx) => {
   const sessionLifeTime = process.env.SESSION_LIFETIME || "30d";
   let discordId: string | null | undefined;
 
+  sessionId ??= crypto.randomUUID();
+
   // Check if the user has verified their Discord account
   if (process.env.ENV === Env.PROD) {
     if (!user.discord_verified) throw discordVerifyErr();
@@ -110,6 +121,7 @@ export const login: KoaController = async (ctx) => {
         email: user.email,
         discordId,
         sessionType,
+        sessionId,
       },
     } satisfies JwtClaims,
     process.env.SECRET_KEY!,
@@ -119,7 +131,7 @@ export const login: KoaController = async (ctx) => {
   );
 
   const tokenTtl = sessionTtlSeconds(newToken);
-  await redis.setex(sessionTokenKey(sessionType, user.email), tokenTtl, newToken);
+  await redis.setex(sessionTokenKey(sessionType, user.email, sessionId), tokenTtl, newToken);
 
   postgres.em.persist(user);
   await postgres.em.flush();

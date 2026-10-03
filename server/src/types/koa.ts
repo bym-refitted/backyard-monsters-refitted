@@ -12,6 +12,7 @@ declare module "koa" {
     authUser: User;
     meetsDiscordAgeCheck: boolean;
     sessionType: SessionType;
+    sessionId: string;
   }
 }
 
