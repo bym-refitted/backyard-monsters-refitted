@@ -27,11 +27,13 @@ import { BaseLoadSchema } from "../../../schemas/BaseLoadSchema.js";
 import { discordAgeErr } from "../../../errors/errors.js";
 import { EnumBaseRelationship } from "../../../enums/EnumBaseRelationship.js";
 import { canAttack } from "../../../services/base/canAttack.js";
+import { validateHelp } from "../../../services/base/validateHelp.js";
 import { createMR1Tribes } from "../../../services/maproom/v1/createMR1Tribes.js";
 import { MR1_TRIBES } from "../../../enums/Tribes.js";
 import { MR1_TRIBE_IDS } from "../../../game-data/tribes/v1/index.js";
 import { calculateBaseLevel } from "../../../services/base/calculateBaseLevel.js";
 import { getAcceptedGifts, getPendingGifts } from "../../../services/gifts/gifts.js";
+import { takeBaseUpdates } from "../../../services/base/baseUpdates.js";
 import { RESOURCE_KEYS } from "../../../services/base/updateResources.js";
 import { mapSaveData } from "../../../services/base/mapSaveData.js";
 import { clearExpiredStoreItems } from "../../../services/base/clearExpiredStoreItems.js";
@@ -47,6 +49,8 @@ type Stronghold = { level: number; cell?: { x: number; y: number } | null };
 const STRONGHOLD_FIELDS = ["level", "cell.x", "cell.y"] as const;
 
 const INFERNO_SAVE_MODES = new Set<string>([BaseMode.IBUILD, BaseMode.IATTACK, BaseMode.IWMATTACK]);
+
+const HELP_MODES = new Set<string>([BaseMode.HELP, BaseMode.IHELP]);
 
 /**
  * Controller responsible for loading base modes based on the user's request.
@@ -72,6 +76,14 @@ export const baseLoad: KoaController = async (ctx) => {
     case BaseMode.VIEW:
     case BaseMode.IVIEW:
       baseSave = await baseModeView(baseid, mapversion, user.save!.worldid, user);
+      break;
+
+    case BaseMode.HELP:
+      baseSave = await baseModeView(baseid, mapversion, user.save!.worldid, user);
+      break;
+
+    case BaseMode.IHELP:
+      baseSave = await infernoModeView(user, baseid);
       break;
 
     case BaseMode.ATTACK:
@@ -123,6 +135,10 @@ export const baseLoad: KoaController = async (ctx) => {
   }
 
   if (!baseSave) throw new Error("Base save not found.");
+
+  const isHelpMode = HELP_MODES.has(type);
+
+  if (isHelpMode) await validateHelp(user, baseSave);
 
   const userSave = user.save!;
   const isOwner = user.userid === baseSave.userid;
@@ -290,6 +306,8 @@ export const baseLoad: KoaController = async (ctx) => {
   const gifts = showsGifts ? await getPendingGifts(user) : [];
   const sentgifts = showsGifts ? await getAcceptedGifts(user) : [];
 
+  const updates = type === BaseMode.BUILD ? await takeBaseUpdates(userSave.baseid) : [];
+
   let chatchannel: string | undefined;
 
   if (isOwner) {
@@ -331,6 +349,7 @@ export const baseLoad: KoaController = async (ctx) => {
     ...(isOwner && {
       gifts,
       sentgifts,
+      updates,
       chatenabled: 1,
       chattoken,
       chatchannel,

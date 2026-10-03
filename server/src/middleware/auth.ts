@@ -17,12 +17,25 @@ export interface JwtClaims {
     email: string;
     discordId: string | null | undefined;
     sessionType: SessionType;
+    sessionId?: string;
   };
 }
 
 export interface AuthTokenPayload {
   user: JwtClaims["user"] & { meetsDiscordAgeCheck: boolean };
 }
+
+/**
+ * Where a session's token is kept: one key per device per client type, so that signing in
+ * on a second machine leaves the first one running.
+ *
+ * @param {SessionType} sessionType - Which client the session belongs to.
+ * @param {string} email - The account the session belongs to.
+ * @param {string} sessionId - The device's session.
+ * @returns {string} The Redis key holding that session's token.
+ */
+export const sessionTokenKey = (sessionType: SessionType, email: string, sessionId: string): string =>
+  `user-token:${sessionType}:${email}:${sessionId}`;
 
 /**
  * Middleware to enforce authentication for protected routes.
@@ -45,8 +58,11 @@ export const verifyUserAuth = async (ctx: Context, next: Next) => {
 
   const sessionType = decodedToken.user.sessionType;
   const email = decodedToken.user.email;
+  const sessionId = decodedToken.user.sessionId;
 
-  const storedToken = await redis.get(`user-token:${sessionType}:${email}`);
+  if (!sessionId) throw authFailureErr();
+
+  const storedToken = await redis.get(sessionTokenKey(sessionType, email, sessionId));
 
   if (storedToken !== token) throw authFailureErr();
 
@@ -56,6 +72,8 @@ export const verifyUserAuth = async (ctx: Context, next: Next) => {
 
   ctx.authUser = user;
   ctx.meetsDiscordAgeCheck = decodedToken.user.meetsDiscordAgeCheck;
+  ctx.sessionType = sessionType;
+  ctx.sessionId = sessionId;
 
   if (!ctx.authUser) throw authFailureErr();
   await next();
@@ -97,6 +115,7 @@ export const verifyJwtToken = (token: string): AuthTokenPayload => {
         discordId: null,
         meetsDiscordAgeCheck: true,
         sessionType: decoded.user?.sessionType,
+        sessionId: decoded.user?.sessionId,
       },
     };
   }

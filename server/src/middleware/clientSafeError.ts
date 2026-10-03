@@ -1,6 +1,7 @@
 import type { Context, Next } from "koa";
 import { logger } from "../utils/logger.js";
 import { Status } from "../enums/StatusCodes.js";
+import type { ErrorCode } from "../enums/ErrorCode.js";
 
 interface ConstructorParams {
   status: number;
@@ -8,6 +9,7 @@ interface ConstructorParams {
   internalInfo?: Error;
   message: string;
   isClientFriendly?: boolean;
+  code?: ErrorCode;
 }
 
 /**
@@ -20,6 +22,7 @@ export class ClientSafeError extends Error {
   internalInfo?: Error;
   error: string;
   isClientFriendly: boolean;
+  code?: ErrorCode;
 
   constructor({
     message = "Something went wrong, please contact support.",
@@ -27,6 +30,7 @@ export class ClientSafeError extends Error {
     data = {},
     internalInfo,
     isClientFriendly: isNiceError = false,
+    code,
   }: ConstructorParams) {
     super(message);
     this.name = "ClientSafeError";
@@ -35,12 +39,14 @@ export class ClientSafeError extends Error {
     this.internalInfo = internalInfo;
     this.error = message;
     this.isClientFriendly = isNiceError;
+    this.code = code;
   }
 
   // Create the json to return safely to client
   toSafeJson() {
     const responseBody = {
       error: undefined as string | undefined,
+      code: this.code,
       status: this.status,
       data: this.data,
       internalInfo: this.internalInfo?.stack, // This should be removed from the codebase
@@ -90,6 +96,6 @@ export const ErrorInterceptor = async (ctx: Context, next: Next) => {
 
     // Put me in jail for my sins - this is bad to accomdate for the client
     ctx.status = errorObj.error ? Status.OK : errorObj.status;
-    ctx.body = { error: errorObj.message, errorDetails: errorObj };
+    ctx.body = { error: errorObj.message, code: errorObj.code, errorDetails: errorObj };
   }
 };

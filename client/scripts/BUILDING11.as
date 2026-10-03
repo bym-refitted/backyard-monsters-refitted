@@ -143,6 +143,13 @@ package {
             return cost;
         }
 
+        override public function InstantUpgradeCost():int {
+            if (Boolean(GLOBAL._flags.mr2upgraded))
+                return 0;
+
+            return super.InstantUpgradeCost();
+        }
+
         override public function UpgradeB():void {
             if (Boolean(GLOBAL._flags.mr2upgraded)) {
                 this._buildingProps.costs[_lvl.Get()].time.Set(300);

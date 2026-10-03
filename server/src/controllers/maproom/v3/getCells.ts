@@ -2,6 +2,7 @@ import { User } from "../../../database/models/user.model.js";
 import { Status } from "../../../enums/StatusCodes.js";
 import { CellSchema } from "../../../schemas/CellSchema.js";
 import { postgres } from "../../../server.js";
+import { getFriendIds } from "../../../services/friends/friendList.js";
 import { MapRoom3, MapRoomVersion } from "../../../enums/MapRoom.js";
 import { WorldMapCell } from "../../../database/models/worldmapcell.model.js";
 import { getGeneratedCells, cellKey } from "../../../services/maproom/v3/generateCells.js";
@@ -214,19 +215,21 @@ export const getMapRoomCells: KoaController = async (ctx) => {
     // =========================================================================
     const ownerIds = [...new Set(dbCells.map((cell) => cell.uid).filter(Boolean))];
 
-    const [ownersList, lastSeenMap, truces] = await Promise.all([
+    const [ownersList, lastSeenMap, truces, friends] = await Promise.all([
       postgres.em.find(User, { userid: { $in: ownerIds } }, {
         populate: ["save"],
         fields: CELL_OWNER_FIELDS,
       }),
       getLastSeen(ownerIds, BaseType.MAIN),
       getTruces(user.userid, ownerIds),
+      getFriendIds(user.userid, ownerIds),
     ]);
 
     const cellOwners = new Map(ownersList.map((u) => [u.userid, u]));
 
     ctx.state.lastSeen = lastSeenMap;
     ctx.state.truces = truces;
+    ctx.state.friends = friends;
 
     const allianceIds = new Set<number>();
 
