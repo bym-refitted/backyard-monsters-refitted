@@ -1,0 +1,12 @@
+/**
+ * Machine readable reason for a ClientSafeError.
+ *
+ * @enum {string}
+ */
+export enum ErrorCode {
+  SESSION_INVALID = "SESSION_INVALID",
+  CREDENTIALS_INVALID = "CREDENTIALS_INVALID",
+  ACCOUNT_BANNED = "ACCOUNT_BANNED",
+  DISCORD_UNVERIFIED = "DISCORD_UNVERIFIED",
+  DISCORD_AGE = "DISCORD_AGE",
+}

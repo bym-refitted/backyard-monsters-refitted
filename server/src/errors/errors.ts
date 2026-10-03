@@ -1,5 +1,6 @@
 import { Status } from "../enums/StatusCodes.js";
 import { ClientSafeError } from "../middleware/clientSafeError.js";
+import { ErrorCode } from "../enums/ErrorCode.js";
 
 /**
  * Creates a new instance of `ClientSafeError` with the specified properties.
@@ -8,6 +9,7 @@ import { ClientSafeError } from "../middleware/clientSafeError.js";
  */
 export const authFailureErr = () =>
   new ClientSafeError({
+    code: ErrorCode.SESSION_INVALID,
     message: "Could not authenticate",
     status: Status.UNAUTHORIZED,
     data: {},
@@ -16,6 +18,7 @@ export const authFailureErr = () =>
 
 export const tokenAuthFailureErr = () =>
   new ClientSafeError({
+    code: ErrorCode.SESSION_INVALID,
     message: "Could not authenticate with user token",
     status: Status.UNAUTHORIZED,
     data: {},
@@ -24,6 +27,7 @@ export const tokenAuthFailureErr = () =>
 
 export const emailPasswordErr = () =>
   new ClientSafeError({
+    code: ErrorCode.CREDENTIALS_INVALID,
     message:
       "Your login credentials are incorrect. Please check and try again. If you forgot your password, you can reset it by clicking on forgot password.",
     status: Status.CONFLICT,
@@ -81,6 +85,7 @@ export const loadFailureErr = () =>
 
 export const userPermaBannedErr = () =>
   new ClientSafeError({
+    code: ErrorCode.ACCOUNT_BANNED,
     message:
       "Your account has been permanently banned. If you believe this is an error, please contact support.",
     status: Status.FORBIDDEN,
@@ -90,6 +95,7 @@ export const userPermaBannedErr = () =>
 
 export const antiCheatBanErr = () =>
   new ClientSafeError({
+    code: ErrorCode.ACCOUNT_BANNED,
     message:
       "Hey bud, it seems you got caught by a very basic anti-cheat, you're not that guy pal, enjoy the ban.",
     status: Status.FORBIDDEN,
@@ -99,6 +105,7 @@ export const antiCheatBanErr = () =>
 
 export const discordVerifyErr = () =>
   new ClientSafeError({
+    code: ErrorCode.DISCORD_UNVERIFIED,
     message:
       "In order to continue, you must verify your account on our Discord server, in the #claim-account channel.",
     status: Status.UNAUTHORIZED,
@@ -108,6 +115,7 @@ export const discordVerifyErr = () =>
 
 export const discordAgeErr = () =>
   new ClientSafeError({
+    code: ErrorCode.DISCORD_AGE,
     message:
       "Your discord account must be at least 1 week old in order to access this feature.",
     status: Status.UNAUTHORIZED,
