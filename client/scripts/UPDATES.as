@@ -244,7 +244,7 @@ package {
                     time = building.HelpB();
                 }
                 if (time > 0 && GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD) {
-                    _catchupList.push([GLOBAL.e_BASE_MODE.BUILD, update.fbid, update.name, GLOBAL._buildingProps[building._type - 1].name, time]);
+                    _catchupList.push([GLOBAL.e_BASE_MODE.BUILD, update.fbid, update.name, KEYS.Get(GLOBAL._buildingProps[building._type - 1].name), time]);
                 }
             }
             if (update.data[1] == "BP") {

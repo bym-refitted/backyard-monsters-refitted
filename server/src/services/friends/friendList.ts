@@ -6,7 +6,7 @@ import { PLAYER_SEARCH_LIMIT, PLAYER_SEARCH_SUBSTRING_LENGTH } from "../../confi
 import { Friendship } from "../../database/models/friendship.model.js";
 import { User } from "../../database/models/user.model.js";
 import { postgres } from "../../server.js";
-import { acceptedScope } from "./friendships.js";
+import { acceptedScope, pairScope } from "./friendships.js";
 import { calculateBaseLevel } from "../base/calculateBaseLevel.js";
 import { escapeLike } from "../../utils/escapeLike.js";
 import { getLastSeen } from "../maproom/getLastSeen.js";
@@ -174,13 +174,41 @@ const relationOf = (row: RelationRow | undefined, selfId: number): FriendRelatio
 };
 
 /**
- * The ids of everyone a player is actually friends with.
+ * Whether two players are friends, for the features that are friends only.
+ *
+ * @param {number} userId - One player.
+ * @param {number} otherId - The other player.
+ * @returns {Promise<boolean>} True when an accepted friendship joins them.
+ */
+export const areFriends = async (userId: number, otherId: number): Promise<boolean> => {
+  const matches = await postgres.em.count(Friendship, {
+    $and: [pairScope(userId, otherId), { status: FriendshipStatus.ACCEPTED }],
+  });
+
+  return matches > 0;
+};
+
+/**
+ * The ids of everyone a player is friends with, or just those of the players given.
  *
  * @param {number} userId - The player whose friends are being read.
+ * @param {number[]} [candidateIds] - Only consider these players, when the caller knows them.
  * @returns {Promise<Set<number>>} Their friends' user ids, empty when they have none.
  */
-export const getFriendIds = async (userId: number): Promise<Set<number>> => {
-  const friendships = await postgres.em.find(Friendship, acceptedScope(userId), {
+export const getFriendIds = async (userId: number, candidateIds?: number[]): Promise<Set<number>> => {
+  if (candidateIds?.length === 0) return new Set();
+
+  const scope: FilterQuery<Friendship> = candidateIds
+    ? {
+        status: FriendshipStatus.ACCEPTED,
+        $or: [
+          { requester: userId, recipient: { $in: candidateIds } },
+          { recipient: userId, requester: { $in: candidateIds } },
+        ],
+      }
+    : acceptedScope(userId);
+
+  const friendships = await postgres.em.find(Friendship, scope, {
     fields: ["requester", "recipient"],
   });
 

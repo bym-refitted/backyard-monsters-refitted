@@ -6,6 +6,7 @@ import { TruceStatus } from "../../enums/TruceStatus.js";
 import { getCurrentDateTime } from "../../utils/getCurrentDateTime.js";
 import { getLastSeen } from "./getLastSeen.js";
 import { getTruces } from "./getTruces.js";
+import { getFriendIds } from "../friends/friendList.js";
 import { isAttackActive } from "../base/isAttackActive.js";
 import { calculateBaseLevel } from "../base/calculateBaseLevel.js";
 import type { NeighbourData } from "../../types/NeighbourData.js";
@@ -51,7 +52,7 @@ export const updateNeighbourData = async (cachedNeighbours: NeighbourData[], bas
   const userIds = cachedNeighbours.map((neighbour) => neighbour.userid);
   const mr1Filter = baseType === BaseType.MAIN ? { mapversion: MapRoomVersion.V1 } : {};
 
-  const [neighbourUsers, neighbourSaves, lastSeens, truces] = await Promise.all([
+  const [neighbourUsers, neighbourSaves, lastSeens, truces, friends] = await Promise.all([
     postgres.em.find(
       User,
       { userid: { $in: userIds } },
@@ -67,6 +68,8 @@ export const updateNeighbourData = async (cachedNeighbours: NeighbourData[], bas
     getLastSeen(userIds, baseType),
 
     getTruces(currentUserId, userIds),
+
+    currentUserId ? getFriendIds(currentUserId, userIds) : new Set<number>(),
   ]);
 
   const saves = new Map(neighbourSaves.map((save) => [save.userid, save]));
@@ -117,6 +120,7 @@ export const updateNeighbourData = async (cachedNeighbours: NeighbourData[], bas
       neighbour.attackpermitted = AttackPermission.ATTACKABLE;
     }
 
+    neighbour.friend = friends.has(neighbour.userid) ? 1 : 0;
     neighbour.baseid = neighbourSave.baseid;
     neighbour.level = calculateBaseLevel(neighbourSave.points, neighbourSave.basevalue);
     neighbour.saved = lastSeens.get(neighbour.userid) ?? 0;

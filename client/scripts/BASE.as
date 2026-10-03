@@ -2162,8 +2162,6 @@ package {
                 MouseWheelEnabler.init(MAP.stage);
             }
             bb = 0;
-            upgradeCount = 0;
-            helpedCount = 0;
             if (!GLOBAL._flags.viximo && !GLOBAL._flags.kongregate) {
             }
             if (is711Valid()) {
