@@ -6,7 +6,7 @@ import router from "./app.routes.js";
 
 import { RedisClient } from "bun";
 import { MikroORM, RequestContext } from "@mikro-orm/core";
-import { EntityManager, PostgreSqlDriver } from "@mikro-orm/postgresql";
+import { PostgreSqlDriver } from "@mikro-orm/postgresql";
 import { logger } from "./utils/logger.js";
 import { ascii_node } from "./utils/ascii_art.js";
 import { ErrorInterceptor } from "./middleware/clientSafeError.js";
@@ -19,17 +19,28 @@ import { initAnticheat } from "./scripts/anticheat/anticheat.js";
 import { initialize as initVersionManifest } from "./config/VersionManifestConfig.js";
 import { startChatServer } from "./chat/chatServer.js";
 import { exitOnRedisReconnect } from "./utils/redisReconnectGuard.js";
+import type { PostgresEM } from "./types/PostgresEM.js";
 
 export const app = new Koa();
 app.proxy = true;
 app.proxyIpHeader = "CF-Connecting-IP";
+
+/**
+ * Replaces Koa's default console.error handler. A client dropping a static
+ * file mid-download is not a fault, and 404/exposed errors were never logged.
+ */
+app.on("error", (err: NodeJS.ErrnoException & { status?: number; expose?: boolean }) => {
+  if (err.code === "ERR_STREAM_PREMATURE_CLOSE" || err.status === 404 || err.expose) return;
+
+  logger.error("Koa error: {stack}", { stack: err.stack ?? String(err) });
+});
 
 export const PORT = process.env.PORT || 3001;
 export const BASE_URL = process.env.BASE_URL;
 
 export const postgres = {} as {
   orm: MikroORM<PostgreSqlDriver>;
-  em: EntityManager<PostgreSqlDriver>;
+  em: PostgresEM;
 };
 
 export const redis = new RedisClient(process.env.REDIS_URL);

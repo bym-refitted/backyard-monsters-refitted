@@ -12,7 +12,7 @@ import { User } from "../models/user.model.js";
 import { World } from "../models/world.model.js";
 import { addAllianceMember } from "../../services/alliance/membership.js";
 import { logger } from "../../utils/logger.js";
-import type { EntityManager, PostgreSqlDriver } from "@mikro-orm/postgresql";
+import type { PostgresEM } from "../../types/PostgresEM.js";
 
 const NEXT_USER_BASEID = `SELECT nextval('bym.user_baseid_seq') AS baseid`;
 
@@ -64,7 +64,7 @@ const ALLIANCE_SPECS: AllianceSpec[] = [
  * @param {string} worldid - The world the account's base sits in.
  * @returns {Promise<User>} The created user, with their save attached.
  */
-const createSeedUser = async (em: EntityManager<PostgreSqlDriver>, passwordHash: string, worldid: string): Promise<User> => {
+const createSeedUser = async (em: PostgresEM, passwordHash: string, worldid: string): Promise<User> => {
   const uniqueId = uuidv4().replace(/-/g, "").slice(0, 12);
 
   const user = em.create(User, {

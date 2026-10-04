@@ -1,7 +1,6 @@
 import { MapRoom3, MapRoomVersion } from "../../../enums/MapRoom.js";
 import { World } from "../../../database/models/world.model.js";
 import { WorldMapCell } from "../../../database/models/worldmapcell.model.js";
-import { EntityManager, PostgreSqlDriver } from "@mikro-orm/postgresql";
 import { EnumYardType } from "../../../enums/EnumYardType.js";
 import { getDefenderCoords } from "./getDefenderCoords.js";
 import { getGeneratedCells, cellKey, type GeneratedCell } from "./generateCells.js";
@@ -10,6 +9,7 @@ import { MIN_PLAYER_DISTANCE } from "../../../config/MapRoom3Config.js";
 import { loadFailureErr } from "../../../errors/errors.js";
 import { logger } from "../../../utils/logger.js";
 import { setTimeout } from "timers/promises";
+import type { PostgresEM } from "../../../types/PostgresEM.js";
 
 interface Cell {
   x: number | null;
@@ -59,13 +59,13 @@ const canOverride = (dbCell: WorldMapCell | null, genCell: GeneratedCell | undef
  * rules allow - which is never adjacent, since yards must stay MIN_PLAYER_DISTANCE apart.
  *
  * @param {World} world - The world the friend is in.
- * @param {EntityManager<PostgreSqlDriver>} em - The entity manager for database operations.
+ * @param {PostgresEM} em - The entity manager for database operations.
  * @param {number} originX - The friend's x.
  * @param {number} originY - The friend's y.
  * @returns {Promise<Cell>} The nearest free cell.
  * @throws {ClientSafeError} If nothing is free within the search radius.
  */
-export const findFreeSectorNear = async (world: World, em: EntityManager<PostgreSqlDriver>, originX: number, originY: number) => {
+export const findFreeSectorNear = async (world: World, em: PostgresEM, originX: number, originY: number) => {
   const maxRadius = MIN_PLAYER_DISTANCE * 4;
   const genCellsByCoord = getGeneratedCells();
 
@@ -149,11 +149,11 @@ const cellsAtDistance = (centreX: number, centreY: number, radius: number): HexC
  * 3. Cannot override: strongholds, resources, or other player bases
  *
  * @param {World} world - The world in which to find a free cell
- * @param {EntityManager<PostgreSqlDriver>} em - The entity manager for database operations
+ * @param {PostgresEM} em - The entity manager for database operations
  * @returns {Promise<Cell>} The coordinates and terrain height of the free cell
  * @throws {Error} If no free cell is found after several attempts
  */
-export const findFreeSector = async (world: World, em: EntityManager<PostgreSqlDriver>) => {
+export const findFreeSector = async (world: World, em: PostgresEM) => {
   let cell: Cell = { x: null, y: null, terrainHeight: null };
   const maxAttempts = 100;
 

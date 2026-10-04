@@ -3,7 +3,6 @@ import { User } from "../../../database/models/user.model.js";
 import { Save } from "../../../database/models/save.model.js";
 import { World } from "../../../database/models/world.model.js";
 import { MapRoom3, MapRoomVersion } from "../../../enums/MapRoom.js";
-import { EntityManager, PostgreSqlDriver } from "@mikro-orm/postgresql";
 import { postgres } from "../../../server.js";
 import { invalidateWorldsCache } from "../knownWorlds.js";
 import { findFreeSector, findFreeSectorNear } from "./findFreeSector.js";
@@ -11,6 +10,7 @@ import { EnumYardType } from "../../../enums/EnumYardType.js";
 import { logger } from "../../../utils/logger.js";
 import { leaveWorld } from "../v2/leaveWorld.js";
 import { leavePosition } from "./leavePosition.js";
+import type { PostgresEM } from "../../../types/PostgresEM.js";
 
 export interface Destination {
   world: World;
@@ -37,7 +37,7 @@ export interface Destination {
 export const joinNewWorldMap = async (
   user: User,
   save: Save,
-  em: EntityManager<PostgreSqlDriver> = postgres.em,
+  em: PostgresEM = postgres.em,
   destination?: Destination
 ) => {
   let world: World | null = destination?.world ?? null;

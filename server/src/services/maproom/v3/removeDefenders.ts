@@ -1,13 +1,10 @@
-import { EntityManager, PostgreSqlDriver } from "@mikro-orm/postgresql";
-
 import { BaseType } from "../../../enums/Base.js";
 import { EnumYardType } from "../../../enums/EnumYardType.js";
 import { MapRoomVersion } from "../../../enums/MapRoom.js";
 import { Save } from "../../../database/models/save.model.js";
 import { WorldMapCell } from "../../../database/models/worldmapcell.model.js";
 import { getDefenderCoords } from "./getDefenderCoords.js";
-
-type PostgresEM = EntityManager<PostgreSqlDriver>;
+import type { PostgresEM } from "../../../types/PostgresEM.js";
 
 /**
  * Deletes every fortification standing in a home cell's six defender slots.
