@@ -122,7 +122,6 @@ package com.monsters.baseplanner {
             }
             BASE.applyTemplate(this._activeTemplate.exportData());
             PLANNER.Hide();
-            BASE.Save();
         }
 
         protected function loadTemplate(param1:BasePlannerTransferEvent):void {

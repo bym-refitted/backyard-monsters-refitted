@@ -3599,9 +3599,6 @@ package {
         }
 
         public function moveTo(x:int, y:int):void {
-            // Skip moving the building if the position is already correct.
-            // This prevents a large lag spike when moving multiple buildings at once
-            // (ie. when using the yard planner).
             if (this.x == x && this.y == y) {
                 return;
             }
@@ -3617,6 +3614,28 @@ package {
             this.StopMove(null);
             this.updateRasterData();
             redrawAllShadowData();
+        }
+
+        /**
+         * Moves directly to a caller-validated position without entering drag mode.
+         * The caller must remove all old grid footprints before a batch, add the
+         * destination footprints afterward, then refresh pathfinding/depth and save.
+         */
+        public function setPosition(x:int, y:int):void {
+            if (this.x == x && this.y == y) {
+                return;
+            }
+
+            // Bypass the setters so both coordinates change before a single refresh.
+            _mc.x = x;
+            _mc.y = y;
+            this._mcBase.x = x;
+            this._mcBase.y = y;
+            this._mcFootprint.x = x;
+            this._mcFootprint.y = y;
+            this._position = new Point(x, y);
+            this.onMove();
+            this.updateRasterData();
         }
 
         protected function onMove():void {

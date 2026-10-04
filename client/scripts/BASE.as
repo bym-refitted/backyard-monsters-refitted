@@ -5021,20 +5021,44 @@ package {
         }
 
         public static function applyTemplate(param1:BaseTemplate):void {
-            var _loc2_:int = 0;
-            var _loc3_:BaseTemplateNode = null;
-            var _loc4_:Point = null;
-            var _loc5_:BFOUNDATION = null;
-            _loc2_ = 0;
-            while (_loc2_ < param1.nodes.length) {
-                _loc3_ = param1.nodes[_loc2_];
-                _loc4_ = GRID.ToISO(_loc3_.x, _loc3_.y, 0);
-                _loc5_ = getBuildingFromNode(_loc3_);
-                if (_loc5_) {
-                    _loc5_.moveTo(_loc4_.x, _loc4_.y);
+            var templateBuildings:Vector.<BFOUNDATION> = new Vector.<BFOUNDATION>();
+            var destinations:Vector.<Point> = new Vector.<Point>();
+            var building:BFOUNDATION;
+
+            var wasSaveBlocked:Boolean = _blockSave;
+            _blockSave = true;
+
+            // Resolve every node first: this also creates newly placed decorations.
+            for each (var node:BaseTemplateNode in param1.nodes) {
+                building = getBuildingFromNode(node);
+                if (building) {
+                    templateBuildings.push(building);
+                    destinations.push(GRID.ToISO(node.x, node.y, 0));
                 }
-                _loc2_++;
             }
+
+            // Clear all old footprints before adding any destinations, so swaps
+            // cannot clear cells that another building has just occupied.
+            for each (building in templateBuildings) {
+                building.GridCost(false);
+            }
+
+            for (var i:int = 0; i < templateBuildings.length; i++) {
+                templateBuildings[i].setPosition(destinations[i].x, destinations[i].y);
+            }
+
+            // Include unchanged buildings and new decorations, whose cells
+            // may have overlapped another building's old footprint.
+            for each (building in templateBuildings) {
+                building.GridCost(true);
+            }
+            PATHING.ResetCosts();
+
+            if (!BYMConfig.instance.RENDERER_ON) {
+                MAP.SortDepth();
+            }
+
+            _blockSave = wasSaveBlocked;
             Save();
         }
 
