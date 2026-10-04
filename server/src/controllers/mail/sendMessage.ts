@@ -12,8 +12,16 @@ import { findOrCreateThread } from "../../services/mail/findOrCreateThread.js";
 import { countUnreadMessage } from "../../services/mail/countUnreadMessage.js";
 import { handleTruceRequest } from "../../services/mail/handleTruceRequest.js";
 import { handleTruceResponse } from "../../services/mail/handleTruceResponse.js";
+import { handleMigrateInvite, handleMigrateRevoke, type InviteRecipient } from "../../services/mail/handleMigrateInvite.js";
 import { mailboxErr } from "../../errors/errors.js";
 import { logger } from "../../utils/logger.js";
+
+const RECIPIENT_FIELDS = [
+  "blockedUsers",
+  "save.unreadmessages",
+  "save.mapversion",
+  "save.worldid",
+] as const;
 
 /**
  * Controller to send message
@@ -58,7 +66,7 @@ export const sendMessage: KoaController = async (ctx) => {
     const recipient = await postgres.em.findOne(
       User,
       { userid: messageTargetId },
-      { populate: ["save"], fields: ["blockedUsers", "save.unreadmessages"] }
+      { populate: ["save"], fields: RECIPIENT_FIELDS }
     );
 
     if (!recipient || !recipient.save) {
@@ -74,6 +82,12 @@ export const sendMessage: KoaController = async (ctx) => {
       return;
     }
 
+    const invited: InviteRecipient = {
+      userid: messageTargetId,
+      mapversion: recipient.save.mapversion,
+      worldid: recipient.save.worldid,
+    };
+
     switch (message.type) {
       case MessageType.TRUCE_REQUEST:
         await handleTruceRequest(userid, messageTargetId, thread);
@@ -82,9 +96,17 @@ export const sendMessage: KoaController = async (ctx) => {
       case MessageType.TRUCE_ACCEPT:
         await handleTruceResponse(userid, thread, TruceStatus.ACCEPTED);
         break;
-        
+
       case MessageType.TRUCE_REJECT:
         await handleTruceResponse(userid, thread, TruceStatus.REJECTED);
+        break;
+
+      case MessageType.MIGRATE_REQUEST:
+        await handleMigrateInvite(userid, invited, message.baseid, thread);
+        break;
+
+      case MessageType.MIGRATE_REVOKE:
+        await handleMigrateRevoke(userid, thread);
         break;
     }
 

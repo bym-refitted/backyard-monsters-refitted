@@ -129,6 +129,7 @@ package com.monsters.maproom_advanced {
                 return;
             }
             if (this._cell._base > 1) {
+                this._profilePic = new Loader();
                 if (!GLOBAL._flags.viximo) {
                     this._profilePic.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, LoadImageError, false, 0, true);
                     this._profilePic.contentLoaderInfo.addEventListener(Event.COMPLETE, onImageLoad);
@@ -141,6 +142,7 @@ package com.monsters.maproom_advanced {
                     this._profilePic.contentLoaderInfo.addEventListener(Event.COMPLETE, onImageLoad);
                     this._profilePic.load(new URLRequest("http://graph.facebook.com/" + this._cell._facebookID + "/picture"));
                 }
+                this.mcProfilePic.mcBG.addChild(this._profilePic);
             }
             else {
                 switch (this._cell._name) {
