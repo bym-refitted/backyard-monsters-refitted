@@ -87,6 +87,7 @@ export const devConfig = {
     [MessageType.TRUCE_REQUEST]: true,
     [MessageType.TRUCE_ACCEPT]: true,
     [MessageType.TRUCE_REJECT]: true,
-    [MessageType.MIGRATE_REQUEST]: false,
+    [MessageType.MIGRATE_REQUEST]: true,
+    [MessageType.MIGRATE_REVOKE]: true,
   },
 };

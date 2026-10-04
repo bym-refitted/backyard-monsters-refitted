@@ -37,7 +37,7 @@ type Cell = Loaded<WorldMapCell, "save", UserCellFields>;
  */
 export const userCell = async (ctx: Context, cell: Cell, cellOwners: Map<number, UserCellOwner>) => {
   const currentUser: User = ctx.authUser;
-  const { lastSeen, truces, friends } = ctx.state;
+  const { lastSeen, truces, friends, pendingInvites = new Map<string, number>() } = ctx.state;
 
   const mine = currentUser.userid === cell.uid;
   const cellOwner = mine ? currentUser : cellOwners.get(cell.uid);
@@ -70,7 +70,7 @@ export const userCell = async (ctx: Context, cell: Cell, cellOwners: Map<number,
   return {
     uid: cellOwner.userid,
     b: cell.base_type,
-    pi: 0,
+    pi: mine ? pendingInvites.get(cell.baseid) ?? 0 : 0,
     bid: cell.baseid,
     aid: cellOwner.alliance_id,
     i: cell.terrainHeight,

@@ -4,9 +4,14 @@ import { User } from "../../database/models/user.model.js";
 import type { KoaController } from "../../utils/KoaController.js";
 
 import { postgres } from "../../server.js";
+import { MigrateStatus } from "../../enums/MigrateStatus.js";
 import { Thread } from "../../database/models/thread.model.js";
+import { WorldMapCell } from "../../database/models/worldmapcell.model.js";
 import { FilterFrontendKeys } from "../../utils/FrontendKey.js";
 import { logger } from "../../utils/logger.js";
+
+/** All the client needs of an offered outpost: which it is, and where to look at it. */
+const INVITED_CELL_FIELDS = ["baseid", "x", "y", "world"] as const;
 
 /**
  * Controller to get threads for mailbox.
@@ -38,6 +43,20 @@ export const getMessageThreads: KoaController = async (ctx) => {
       return thread.lastMessage && !blockedUsers.has(targetUser);
     });
 
+    // Only an open invitation needs its outpost
+    const invitedBaseids = filteredThreads.flatMap((thread) => {
+      const baseid = thread.migrate_baseid;
+      const inviteIsOpen = thread.migratestate === MigrateStatus.REQUESTED;
+
+      return inviteIsOpen && baseid ? [baseid] : [];
+    });
+
+    const invitedCells = invitedBaseids.length
+      ? await postgres.em.find(WorldMapCell, { baseid: { $in: invitedBaseids } }, { fields: INVITED_CELL_FIELDS })
+      : [];
+
+    const outposts = new Map(invitedCells.map((cell) => [cell.baseid, cell]));
+
     const threadMessages = filteredThreads.flatMap((thread, index) => {
       if (!thread.lastMessage) return [];
 
@@ -49,6 +68,16 @@ export const getMessageThreads: KoaController = async (ctx) => {
       lastMessage.messageid = index.toString();
       lastMessage.messagecount = thread.messagecount;
       lastMessage.trucestate = thread.trucestate ?? null;
+      lastMessage.migratestate = thread.migratestate ?? null;
+
+      const outpost = thread.migrate_baseid ? outposts.get(thread.migrate_baseid) : undefined;
+
+      if (outpost) {
+        lastMessage.baseid = outpost.baseid;
+        lastMessage.coords = [outpost.x, outpost.y];
+        lastMessage.worldid = outpost.world.uuid;
+      }
+
       lastMessage.userid = isSender ? lastMessage.targetid : lastMessage.userid;
       lastMessage.reportid = "0";
 

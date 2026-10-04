@@ -8,4 +8,5 @@ export enum MessageType {
   TRUCE_ACCEPT = "truceaccept",
   TRUCE_REJECT = "trucereject",
   MIGRATE_REQUEST = "migraterequest",
+  MIGRATE_REVOKE = "migraterevoke",
 }
