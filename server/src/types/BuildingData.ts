@@ -12,6 +12,7 @@ export interface BuildingData {
   rE?: number;                // repairing flag
   prefab?: number;            // kit type for outpost buildings
   m?: Record<string, number>; // monster bunker contents, count per creature id
+  hl?: number[];              // players who have sped this build up
   [key: string]: unknown;     // allow for future expansion without breaking type safety
 }
 
