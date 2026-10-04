@@ -6,10 +6,17 @@ import { MapRoom3, MapRoomVersion } from "../../../enums/MapRoom.js";
 import { EntityManager, PostgreSqlDriver } from "@mikro-orm/postgresql";
 import { postgres } from "../../../server.js";
 import { invalidateWorldsCache } from "../knownWorlds.js";
-import { findFreeSector } from "./findFreeSector.js";
+import { findFreeSector, findFreeSectorNear } from "./findFreeSector.js";
 import { EnumYardType } from "../../../enums/EnumYardType.js";
 import { logger } from "../../../utils/logger.js";
 import { leaveWorld } from "../v2/leaveWorld.js";
+import { leavePosition } from "./leavePosition.js";
+
+export interface Destination {
+  world: World;
+  x: number;
+  y: number;
+}
 
 /**
  * Assigns a user to a Map Room 3 world by either joining an existing one with available space
@@ -18,53 +25,63 @@ import { leaveWorld } from "../v2/leaveWorld.js";
  * Creates the player's main yard cell and 6 surrounding defender outpost cells in a hexagon formation.
  * Each defender gets its own Save entity with appropriate base data.
  *
- * Always leaves the user's current world (if any) and places them in a new position,
- * even if the selected world happens to be the same one they were already in.
+ * Leaves the user's current world first, unless the chosen world is the one they are
+ * already in, where only their old position is freed and their outposts are kept.
  *
  * @param {User} user - The user who is joining or relocating in the world
  * @param {Save} save - The user's main save data
  * @param {EntityManager} em - The entity manager for database operations
+ * @param {Destination} [destination] - Where to land via relocating next to a friend
  * @returns {Promise<void>} A promise that resolves when the operation is complete
  */
 export const joinNewWorldMap = async (
   user: User,
   save: Save,
-  em: EntityManager<PostgreSqlDriver> = postgres.em
+  em: EntityManager<PostgreSqlDriver> = postgres.em,
+  destination?: Destination
 ) => {
-  let world: World | null = null;
+  let world: World | null = destination?.world ?? null;
 
-  // Find available worlds with space (Map Room v3 only)
-  const availableWorlds = await em.find(World, {
-    playerCount: { $lt: MapRoom3.MAX_PLAYERS },
-    map_version: MapRoomVersion.V3,
-  });
+  if (!world) {
+    // Find available worlds with space (Map Room v3 only)
+    const availableWorlds = await em.find(World, {
+      playerCount: { $lt: MapRoom3.MAX_PLAYERS },
+      map_version: MapRoomVersion.V3,
+    });
 
-  // Randomly select from available worlds
-  const shuffledWorlds = availableWorlds.sort(() => Math.random() - 0.5);
+    // Randomly select from available worlds
+    const shuffledWorlds = availableWorlds.sort(() => Math.random() - 0.5);
 
-  if (shuffledWorlds.length > 0) {
-    world = shuffledWorlds[0];
-    logger.info(`User ${user.username} assigned to existing world: ${world.name}`);
-  } else {
-    world = em.create(World, {});
-    world.name = "New World";
-    world.map_version = MapRoomVersion.V3;
-    
-    logger.info("All worlds full, created new world.");
+    if (shuffledWorlds.length > 0) {
+      world = shuffledWorlds[0];
+      logger.info(`User ${user.username} assigned to existing world: ${world.name}`);
+    } else {
+      world = em.create(World, {});
+      world.name = "New World";
+      world.map_version = MapRoomVersion.V3;
+
+      logger.info("All worlds full, created new world.");
+    }
   }
 
-  await leaveWorld(user, save);
+  const sameWorld = save.worldid === world.uuid;
 
-  // leaveWorld decrements player_count without going through the identity map, so
-  // refresh before reading playerCount back.
-  await em.refresh(world);
+  if (sameWorld) {
+    await leavePosition(user, save);
+  } else {
+    await leaveWorld(user, save);
+    await em.refresh(world);
 
-  world.playerCount += 1;
+    world.playerCount += 1;
+  }
+
   save.usemap = 1;
   save.worldid = world.uuid;
 
   // Find an available cell for the user's main yard
-  const { x, y, terrainHeight } = await findFreeSector(world, em);
+  const { x, y, terrainHeight } = destination
+    ? await findFreeSectorNear(world, em, destination.x, destination.y)
+    : await findFreeSector(world, em);
 
   const homeCell = new WorldMapCell(world, x, y, terrainHeight);
   homeCell.uid = user.userid;
