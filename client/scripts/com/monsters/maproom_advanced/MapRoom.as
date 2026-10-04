@@ -81,7 +81,7 @@ package com.monsters.maproom_advanced {
 
         private static var _worldID:int = 0;
 
-        internal static var _inviteBaseID:int = 0;
+        internal static var _inviteBaseID:Number = 0;
 
         internal static var _inviteLocation:Point = new Point();
 
@@ -121,7 +121,7 @@ package com.monsters.maproom_advanced {
             _migrateThread = param1;
         }
 
-        public static function set inviteBaseID(param1:int):void {
+        public static function set inviteBaseID(param1:Number):void {
             _inviteBaseID = param1;
         }
 
@@ -137,7 +137,7 @@ package com.monsters.maproom_advanced {
             _empiredestroyed = param1;
         }
 
-        public static function _Setup(param1:Point, param2:int = 0, param3:int = 0, param4:Boolean = false, param5:Thread = null):void {
+        public static function _Setup(param1:Point, param2:int = 0, param3:Number = 0, param4:Boolean = false, param5:Thread = null):void {
             _homePoint = param1;
             _worldID = param2;
             _inviteBaseID = param3;

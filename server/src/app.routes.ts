@@ -41,6 +41,8 @@ import { baseSave } from "./controllers/base/save/baseSave.js";
 import { updateSaved } from "./controllers/base/save/updateSaved.js";
 import { saveUpdate } from "./controllers/base/save/saveUpdate.js";
 import { migrateBase } from "./controllers/maproom/v2/migrateBase.js";
+import { migrateToFriend } from "./controllers/maproom/v2/migrateToFriend.js";
+import { rejectMigrateToFriend } from "./controllers/maproom/v2/rejectMigrateToFriend.js";
 
 import { getNewMap } from "./controllers/maproom/getNewMap.js";
 import { setMapVersion } from "./controllers/maproom/setMapVersion.js";
@@ -132,6 +134,8 @@ router.post("/base/save", verifyUserAuth, logRequest, baseSave);
 router.post("/base/updatesaved", verifyUserAuth, logRequest, updateSaved);
 router.post("/base/saveupdate", verifyUserAuth, logRequest, saveUpdate);
 router.post("/base/migrate", verifyUserAuth, logRequest, migrateBase);
+router.post("/base/migratetofriend", verifyUserAuth, logRequest, migrateToFriend);
+router.post("/base/rejectmigratetofriend", verifyUserAuth, logRequest, rejectMigrateToFriend);
 
 /**  ────────────────────────────────────────────────
 * 📦 Map Room 1 / Inferno
@@ -162,6 +166,7 @@ router.post("/worldmapv3/initworldmap", verifyUserAuth, verifyAccountStatus, log
 router.get("/worldmapv3/initworldmap", verifyUserAuth, verifyAccountStatus, logRequest, initialPlayerCellData);
 router.post("/worldmapv3/getcells", verifyUserAuth, verifyAccountStatus, getCellsLimiter, logRequest, getMapRoomCells);
 router.get("/worldmapv3/relocate", verifyUserAuth, verifyAccountStatus, logRequest, relocate);
+router.post("/worldmapv3/relocate", verifyUserAuth, verifyAccountStatus, logRequest, relocate);
 router.get("/worldmapv3/getfriendinfo", verifyUserAuth, verifyAccountStatus, getFriendInfo);
 router.get("/worldmapv3/setmapversion", verifyUserAuth, verifyAccountStatus, logRequest, setMapVersion);
 router.post("/worldmapv3/setmapversion", verifyUserAuth, verifyAccountStatus, logRequest, setMapVersion);

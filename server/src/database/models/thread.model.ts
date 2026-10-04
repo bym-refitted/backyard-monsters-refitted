@@ -2,6 +2,7 @@ import { Entity, Index, OneToOne, PrimaryKey, Property } from "@mikro-orm/decora
 import { v4 } from "uuid";
 import { Message } from "./message.model.js";
 import type { TruceStatus } from "../../enums/TruceStatus.js";
+import type { MigrateStatus } from "../../enums/MigrateStatus.js";
 
 @Index({ properties: ["userid", "threadid"] })
 @Index({ properties: ["targetid", "threadid"] })
@@ -30,6 +31,12 @@ export class Thread {
 
   @Property({ type: 'string', nullable: true })
   trucestate?: TruceStatus;
+
+  @Property({ type: 'string', nullable: true })
+  migrate_baseid?: string;
+
+  @Property({ type: 'string', nullable: true })
+  migratestate?: MigrateStatus;
 
   @Property({ type: Date, onCreate: () => new Date() })
   createdAt: Date = new Date();

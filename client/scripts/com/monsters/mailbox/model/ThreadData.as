@@ -43,7 +43,7 @@ package com.monsters.mailbox.model {
 
         public var worldID:int;
 
-        public var baseID:int;
+        public var baseID:Number;
 
         public function ThreadData(param1:Object) {
             super();

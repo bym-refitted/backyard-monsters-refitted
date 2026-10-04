@@ -6,6 +6,7 @@ import { MapRoomVersion } from "../../../enums/MapRoom.js";
 import { calculateBaseLevel } from "../../base/calculateBaseLevel.js";
 import {
   createNeighbourData,
+  NEIGHBOUR_LEVEL_RANGE,
   NEIGHBOUR_SEARCH_SAVE_FIELDS,
   NEIGHBOUR_SEARCH_USER_FIELDS,
 } from "../createNeighbourData.js";
@@ -22,9 +23,8 @@ import type { NeighbourData } from "../../../types/NeighbourData.js";
  */
 export const findOverworldNeighbours = async (user: User, save: Save): Promise<NeighbourData[]> => {
   const userLevel = calculateBaseLevel(save.points, save.basevalue);
-  const levelRange = 7;
-  const minLevel = Math.max(1, userLevel - levelRange);
-  const maxLevel = userLevel + levelRange;
+  const minLevel = Math.max(1, userLevel - NEIGHBOUR_LEVEL_RANGE);
+  const maxLevel = userLevel + NEIGHBOUR_LEVEL_RANGE;
 
   const saves = await postgres.em.find(
     Save,

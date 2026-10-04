@@ -1,3 +1,6 @@
+/** An [x, y] cell position in the odd-r offset grid the map room is laid out on. */
+export type HexCoord = [number, number];
+
 // ODD-R (odd-row) horizontal hexagon offsets - matches client logic in MapRoom3CellGraphic.as lines 562-603
 // For EVEN rows (y % 2 == 0): left-aligned
 const HEX_OFFSETS_EVEN_ROW = [

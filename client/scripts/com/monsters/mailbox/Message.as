@@ -31,7 +31,7 @@ package com.monsters.mailbox {
 
         public var picker:FriendPicker;
 
-        public var baseID:int = 0;
+        public var baseID:Number = 0;
 
         public function Message(param1:String = "all") {
             super();

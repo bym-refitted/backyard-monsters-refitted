@@ -1,6 +1,9 @@
 import { BaseUpdate } from "../../database/models/baseupdate.model.js";
 import { postgres } from "../../server.js";
+import { registerHelp } from "./registerHelp.js";
 import type { User } from "../../database/models/user.model.js";
+
+const HELP_OPCODE = "BH";
 
 export type BaseUpdateEvent = [timestamp: number, opcode: string, ...args: unknown[]];
 
@@ -16,12 +19,20 @@ const DELIVERY_FIELDS = ["id", "data", "sender.userid", "sender.username"] as co
 /**
  * Stores an event posted against someone else's base, for its owner to replay.
  *
+ * A help is checked against the target's save first and dropped if it does not count, so
+ * the same player cannot speed up one building more than once. See registerHelp.
+ *
  * @param {User} sender - The player who was standing in the base.
  * @param {string} baseid - The base the event happened on.
  * @param {BaseUpdateEvent[]} events - The events as posted.
  */
 export const recordBaseUpdates = async (sender: User, baseid: string, events: BaseUpdateEvent[]) => {
   for (const event of events) {
+    const isHelp = event[1] === HELP_OPCODE;
+    const counted = isHelp ? await registerHelp(baseid, Number(event[2]), sender.userid) : true;
+
+    if (!counted) continue;
+
     const update = new BaseUpdate();
 
     update.baseid = baseid;
