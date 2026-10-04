@@ -3598,14 +3598,21 @@ package {
             this.updateRasterData();
         }
 
-        public function moveTo(param1:int, param2:int):void {
+        public function moveTo(x:int, y:int):void {
+            // Skip moving the building if the position is already correct.
+            // This prevents a large lag spike when moving multiple buildings at once
+            // (ie. when using the yard planner).
+            if (this.x == x && this.y == y) {
+                return;
+            }
+
             this.GridCost(false);
-            this.x = param1;
-            this.y = param2;
-            this._mcBase.x = param1;
-            this._mcBase.y = param2;
-            this._mcFootprint.x = param1;
-            this._mcFootprint.y = param2;
+            this.x = x;
+            this.y = y;
+            this._mcBase.x = x;
+            this._mcBase.y = y;
+            this._mcFootprint.x = x;
+            this._mcFootprint.y = y;
             this.StartMove();
             this.StopMove(null);
             this.updateRasterData();
