@@ -3,8 +3,6 @@ import { postgres } from "../../server.js";
 import { registerHelp } from "./registerHelp.js";
 import type { User } from "../../database/models/user.model.js";
 
-const HELP_OPCODE = "BH";
-
 export type BaseUpdateEvent = [timestamp: number, opcode: string, ...args: unknown[]];
 
 export interface BaseUpdateEntry {
@@ -13,6 +11,8 @@ export interface BaseUpdateEntry {
   name: string;
   data: string;
 }
+
+const HELP_OPCODE = "BH";
 
 const DELIVERY_FIELDS = ["id", "data", "sender.userid", "sender.username"] as const;
 
@@ -67,7 +67,7 @@ export const takeBaseUpdates = async (baseid: string): Promise<BaseUpdateEntry[]
 
   await postgres.em.nativeUpdate(
     BaseUpdate,
-    { baseid, delivered_at: null, id: { $lte: pending[pending.length - 1]!.id } },
+    { baseid, delivered_at: null, id: { $lte: pending[pending.length - 1].id } },
     { delivered_at: new Date() }
   );
 

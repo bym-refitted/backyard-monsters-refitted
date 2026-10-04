@@ -25,16 +25,6 @@ export const app = new Koa();
 app.proxy = true;
 app.proxyIpHeader = "CF-Connecting-IP";
 
-/**
- * Replaces Koa's default console.error handler. A client dropping a static
- * file mid-download is not a fault, and 404/exposed errors were never logged.
- */
-app.on("error", (err: NodeJS.ErrnoException & { status?: number; expose?: boolean }) => {
-  if (err.code === "ERR_STREAM_PREMATURE_CLOSE" || err.status === 404 || err.expose) return;
-
-  logger.error("Koa error: {stack}", { stack: err.stack ?? String(err) });
-});
-
 export const PORT = process.env.PORT || 3001;
 export const BASE_URL = process.env.BASE_URL;
 
