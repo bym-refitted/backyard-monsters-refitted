@@ -22,7 +22,11 @@ package com.monsters.maproom3.popups {
             this.m_ProfilePicture = new Loader();
             this.m_ProfilePicture.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, this.OnProfilePictureIOErrorEvent, false, 0, true);
             this.m_ProfilePicture.contentLoaderInfo.addEventListener(Event.COMPLETE, this.OnProfilePictureLoaded, false, 0, true);
-            this.m_ProfilePicture.load(new URLRequest("http://graph.facebook.com/" + this.m_FriendToDisplay.facebookId + "/picture"));
+            // Original pulled the avatar from Facebook, which has not served these for years:
+            // this.m_ProfilePicture.load(new URLRequest("http://graph.facebook.com/" + this.m_FriendToDisplay.facebookId + "/picture"));
+            if (this.m_FriendToDisplay.picSquare != "") {
+                this.m_ProfilePicture.load(new URLRequest(this.m_FriendToDisplay.picSquare));
+            }
             imageHolder.addChild(this.m_ProfilePicture);
             levelIcon.lv_txt.htmlText = "<b>" + this.m_FriendToDisplay.level + "</b>";
             nameText.htmlText = "<b>" + param1.name + "</b>";

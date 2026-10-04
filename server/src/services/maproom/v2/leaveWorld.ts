@@ -8,7 +8,7 @@ import { User } from "../../../database/models/user.model.js";
 import { World } from "../../../database/models/world.model.js";
 import { WorldMapCell } from "../../../database/models/worldmapcell.model.js";
 import { postgres } from "../../../server.js";
-import { getDefenderCoords } from "../v3/getDefenderCoords.js";
+import { removeDefenders } from "../v3/removeDefenders.js";
 
 /**
  * Removes a user from their current Map Room world, cleaning up all associated data atomically.
@@ -45,50 +45,7 @@ export const leaveWorld = async (user: User, save: Save) => {
       base_type: EnumYardType.PLAYER,
     });
 
-    if (homeCell) {
-      const defenderCoords = getDefenderCoords(homeCell.x, homeCell.y);
-
-      const orphanedDefenders = await em.find(WorldMapCell, {
-        $and: [
-          { $or: defenderCoords.map(([x, y]) => ({ x, y })) },
-          { world: worldid },
-          { map_version: MapRoomVersion.V3 },
-          { base_type: EnumYardType.FORTIFICATION },
-          { uid: { $ne: userid } },
-          { uid: { $gt: 0 } },
-        ],
-      });
-
-      if (orphanedDefenders.length > 0) {
-        const defenderBaseids = orphanedDefenders.map((cell) => cell.baseid);
-        const ownerUids = [...new Set(orphanedDefenders.map((cell) => cell.uid))];
-
-        // Remove the captured defender saves from each foreign owner's outpost list
-        for (const ownerUid of ownerUids) {
-          const ownerSave = await em.findOneOrFail(Save, {
-            userid: ownerUid,
-            type: BaseType.MAIN,
-          });
-
-          ownerSave.outposts = ownerSave.outposts.filter(
-            (outpost) => !defenderBaseids.includes(outpost[2]),
-          );
-          em.persist(ownerSave);
-        }
-
-        await em.nativeDelete(Save, { baseid: { $in: defenderBaseids } });
-      }
-
-      // Delete all DB-stored FORTIFICATION cells at defender positions, regardless of owner
-      await em.nativeDelete(WorldMapCell, {
-        $and: [
-          { $or: defenderCoords.map(([x, y]) => ({ x, y })) },
-          { world: worldid },
-          { map_version: MapRoomVersion.V3 },
-          { base_type: EnumYardType.FORTIFICATION },
-        ],
-      });
-    }
+    if (homeCell) await removeDefenders(em, worldid, homeCell, userid);
 
     await em.nativeDelete(Save, { userid, type: BaseType.OUTPOST });
     await em.nativeDelete(WorldMapCell, { uid: userid });

@@ -3,6 +3,8 @@ package com.monsters.maproom3.data {
 
         private var m_FacebookId:String;
 
+        private var m_PicSquare:String;
+
         private var m_Name:String;
 
         private var m_UserId:int;
@@ -24,6 +26,10 @@ package com.monsters.maproom3.data {
 
         public function get facebookId():String {
             return this.m_FacebookId;
+        }
+
+        public function get picSquare():String {
+            return this.m_PicSquare;
         }
 
         public function get name():String {
@@ -56,6 +62,7 @@ package com.monsters.maproom3.data {
 
         public function Map(param1:Object):void {
             this.m_FacebookId = param1.hasOwnProperty("fbid") ? String(param1["fbid"]) : "";
+            this.m_PicSquare = param1.hasOwnProperty("pic") ? String(param1["pic"]) : "";
             this.m_Name = param1.hasOwnProperty("name") ? String(param1["name"]) : "";
             this.m_UserId = param1.hasOwnProperty("userid") ? int(param1["userid"]) : -1;
             this.m_Level = param1.hasOwnProperty("level") ? int(param1["level"]) : 0;
