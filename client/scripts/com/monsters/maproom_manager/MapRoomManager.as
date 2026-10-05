@@ -75,11 +75,11 @@ package com.monsters.maproom_manager {
             this.m_CurrentMapRoom.mapHeight = param1;
         }
 
-        public function get worldID():int {
+        public function get worldID():String {
             return this.m_CurrentMapRoom.worldID;
         }
 
-        public function set worldID(param1:int):void {
+        public function set worldID(param1:String):void {
             this.m_CurrentMapRoom.worldID = param1;
         }
 

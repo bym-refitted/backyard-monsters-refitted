@@ -1,10 +1,10 @@
 import { MapRoom2, Terrain } from "../../../enums/MapRoom.js";
 import { World } from "../../../database/models/world.model.js";
 import { WorldMapCell } from "../../../database/models/worldmapcell.model.js";
-import { EntityManager, PostgreSqlDriver } from "@mikro-orm/postgresql";
 import { logger } from "../../../utils/logger.js";
 import { generateNoise, getTerrainHeight } from "./generateMap.js";
 import { setTimeout } from "timers/promises";
+import type { PostgresEM } from "../../../types/PostgresEM.js";
 
 /**
  * Interface representing a single cell
@@ -19,11 +19,11 @@ interface Cell {
  * Finds a free cell in a given world that is not water and not occupied by another player.
  *
  * @param {World} world - The world in which to find a free cell.
- * @param {EntityManager<PostgreSqlDriver>} em - The entity manager for database operations.
+ * @param {PostgresEM} em - The entity manager for database operations.
  * @returns {Promise<Cell>} - The coordinates and terrain height of the free cell.
  * @throws {Error} - If no free cell is found after several attempts.
  */
-export const findFreeCell = async (world: World, em: EntityManager<PostgreSqlDriver>) => {
+export const findFreeCell = async (world: World, em: PostgresEM) => {
   let cell: Cell = { x: null, y: null, terrainHeight: null };
   let maxAttempts = 10;
 

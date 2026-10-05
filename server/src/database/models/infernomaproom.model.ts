@@ -1,9 +1,9 @@
 import { Entity, PrimaryKey, Property } from "@mikro-orm/decorators/es";
-import { EntityManager, PostgreSqlDriver } from "@mikro-orm/postgresql";
 import type { Opt } from "@mikro-orm/core";
 import { User } from "./user.model.js";
 import type { NeighbourData } from "../../types/NeighbourData.js";
 import type { TribeData } from "../../types/TribeData.js";
+import type { PostgresEM } from "../../types/PostgresEM.js";
 
 export type { TribeData };
 
@@ -27,7 +27,7 @@ export class InfernoMaproom {
   @Property({ type: Date, onUpdate: () => new Date() })
   lastupdateAt: Opt<Date> = new Date();
 
-  public static setupInfernoMapRoomData = async (em: EntityManager<PostgreSqlDriver>, user: User) => {
+  public static setupInfernoMapRoomData = async (em: PostgresEM, user: User) => {
     const maproom = em.create(InfernoMaproom, { userid: user.userid });
 
     em.persist(maproom);

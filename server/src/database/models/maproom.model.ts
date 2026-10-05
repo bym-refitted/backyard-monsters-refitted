@@ -1,9 +1,9 @@
 import { Entity, PrimaryKey, Property } from "@mikro-orm/decorators/es";
-import { EntityManager, PostgreSqlDriver } from "@mikro-orm/postgresql";
 import type { Opt } from "@mikro-orm/core";
 import { User } from "./user.model.js";
 import type { NeighbourData } from "../../types/NeighbourData.js";
 import type { TribeData } from "../../types/TribeData.js";
+import type { PostgresEM } from "../../types/PostgresEM.js";
 
 @Entity({ tableName: "maproom" })
 export class Maproom {
@@ -25,7 +25,7 @@ export class Maproom {
   @Property({ type: Date, onUpdate: () => new Date() })
   lastupdateAt: Opt<Date> = new Date();
 
-  public static setupMapRoomData = async (em: EntityManager<PostgreSqlDriver>, user: User) => {
+  public static setupMapRoomData = async (em: PostgresEM, user: User) => {
     const maproom = em.create(Maproom, { userid: user.userid });
 
     em.persist(maproom);

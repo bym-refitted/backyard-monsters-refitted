@@ -1,5 +1,4 @@
 import { Entity, Property, PrimaryKey, OneToOne, Index } from "@mikro-orm/decorators/es";
-import { EntityManager, PostgreSqlDriver } from "@mikro-orm/postgresql";
 import { FrontendKey } from "../../utils/FrontendKey.js";
 import { getDefaultBaseData } from "../../game-data/getDefaultBaseData.js";
 import { User } from "./user.model.js";
@@ -12,6 +11,7 @@ import type { ChampionData } from "../../schemas/ChampionSchema.js";
 import type { JsonObject } from "../../types/JsonObject.js";
 import type { BuildingDataMap, BuildingHealthData } from "../../types/BuildingData.js";
 import { MapRoomVersion } from "../../enums/MapRoom.js";
+import type { PostgresEM } from "../../types/PostgresEM.js";
 
 const NEXT_USER_BASEID = `SELECT nextval('bym.user_baseid_seq') AS baseid`;
 
@@ -511,7 +511,7 @@ export class Save {
     "attackersiege",
   ];
 
-  public static createMainSave = async (em: EntityManager<PostgreSqlDriver>, user: User) => {
+  public static createMainSave = async (em: PostgresEM, user: User) => {
     try {
       const baseSave = em.create(Save, getDefaultBaseData(user, BaseType.MAIN));
 
@@ -536,7 +536,7 @@ export class Save {
     return mainSave;
   };
 
-  public static createInfernoSave = async (em: EntityManager<PostgreSqlDriver>, user: User) => {
+  public static createInfernoSave = async (em: PostgresEM, user: User) => {
     const save = user.save!;
     const infernoSave = em.create(Save, getDefaultBaseData(user, BaseType.INFERNO));
 

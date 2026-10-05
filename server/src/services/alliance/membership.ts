@@ -1,11 +1,10 @@
-import { EntityManager, PostgreSqlDriver } from "@mikro-orm/postgresql";
-
 import { AllianceMessageType, AllianceRole } from "../../enums/Alliance.js";
 import { Alliance } from "../../database/models/alliance.model.js";
 import { User } from "../../database/models/user.model.js";
 import { postgres } from "../../server.js";
 import { disconnectAllianceChat } from "../../chat/chatControl.js";
 import { announceShout, emitShout, type ShoutDraft } from "./allianceMessages.js";
+import type { PostgresEM } from "../../types/PostgresEM.js";
 
 type EntryShout = AllianceMessageType.CREATED | AllianceMessageType.JOINED;
 type ExitShout = AllianceMessageType.KICKED | AllianceMessageType.LEFT;
@@ -40,7 +39,7 @@ export const addAllianceMember = async (
   alliance: Alliance,
   role: AllianceRole,
   shoutType: EntryShout | null,
-  em: EntityManager<PostgreSqlDriver> = postgres.em
+  em: PostgresEM = postgres.em
 ) => {
   const { id } = alliance;
 

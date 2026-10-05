@@ -9,16 +9,18 @@ import { postgres } from "../../server.js";
 export interface InviteRecipient {
   userid: number;
   mapversion: number;
-  worldid?: string | null;
 }
 
 /**
  * Offers one of the sender's outposts to a friend, so they can move their yard onto it.
  *
- * Friends only, and only an outpost the sender actually owns in the world the recipient
- * is in - accepting moves the recipient's home onto that cell, so an invitation to
- * somebody else's outpost, or to another world, would be meaningless. The sender's own
- * world is the outpost's, since an outpost cannot be held in a world they have left.
+ * Friends only, and only an outpost the sender actually owns - accepting moves the
+ * recipient's home onto that cell, so an invitation to somebody else's outpost would be
+ * meaningless.
+ *
+ * The recipient may be in any Map Room 2 world, including another one. Accepting is how
+ * the original game let a player leave their empire to start again beside a friend, so
+ * the world the invitation crosses is the point of it rather than a problem.
  *
  * One open invitation per outpost: offering it to a second player while the first has
  * not answered would let both accept the same cell.
@@ -47,7 +49,6 @@ export const handleMigrateInvite = async (userid: number, recipient: InviteRecip
   ]);
 
   if (!friends || !outpost) throw permissionErr();
-  if (outpost.world.uuid !== recipient.worldid) throw permissionErr();
   if (openInvite && openInvite.threadid !== thread.threadid) throw permissionErr();
 
   thread.migrate_baseid = baseid;

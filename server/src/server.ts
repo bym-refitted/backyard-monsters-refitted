@@ -6,7 +6,7 @@ import router from "./app.routes.js";
 
 import { RedisClient } from "bun";
 import { MikroORM, RequestContext } from "@mikro-orm/core";
-import { EntityManager, PostgreSqlDriver } from "@mikro-orm/postgresql";
+import { PostgreSqlDriver } from "@mikro-orm/postgresql";
 import { logger } from "./utils/logger.js";
 import { ascii_node } from "./utils/ascii_art.js";
 import { ErrorInterceptor } from "./middleware/clientSafeError.js";
@@ -19,6 +19,7 @@ import { initAnticheat } from "./scripts/anticheat/anticheat.js";
 import { initialize as initVersionManifest } from "./config/VersionManifestConfig.js";
 import { startChatServer } from "./chat/chatServer.js";
 import { exitOnRedisReconnect } from "./utils/redisReconnectGuard.js";
+import type { PostgresEM } from "./types/PostgresEM.js";
 
 export const app = new Koa();
 app.proxy = true;
@@ -29,7 +30,7 @@ export const BASE_URL = process.env.BASE_URL;
 
 export const postgres = {} as {
   orm: MikroORM<PostgreSqlDriver>;
-  em: EntityManager<PostgreSqlDriver>;
+  em: PostgresEM;
 };
 
 export const redis = new RedisClient(process.env.REDIS_URL);

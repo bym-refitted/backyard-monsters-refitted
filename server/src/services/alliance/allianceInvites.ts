@@ -1,7 +1,5 @@
 import { LockMode, UniqueConstraintViolationException, type FilterQuery } from "@mikro-orm/core";
 
-import type { EntityManager, PostgreSqlDriver } from "@mikro-orm/postgresql";
-
 import { AllianceInviteStatus, AllianceInviteType, AllianceMessageType, AllianceRole } from "../../enums/Alliance.js";
 import { MAX_ALLIANCE_MEMBERS } from "../../config/AllianceConfig.js";
 import { Alliance } from "../../database/models/alliance.model.js";
@@ -18,6 +16,7 @@ import {
   requestPendingErr,
   userAlreadyInAllianceErr,
 } from "../../errors/errors.js";
+import type { PostgresEM } from "../../types/PostgresEM.js";
 
 interface InviteMessage {
   invite_id: number;
@@ -195,7 +194,7 @@ export const clearPendingInvites = async (userId: number): Promise<number> =>
  * @param {EntityManager} em - EntityManager to count through, so a caller inside a transaction counts within it.
  * @param {number} allianceId - The alliance being filled.
  */
-const checkAllianceSpace = async (em: EntityManager<PostgreSqlDriver>, allianceId: number) => {
+const checkAllianceSpace = async (em: PostgresEM, allianceId: number) => {
   const members = await em.count(User, { alliance_id: allianceId });
 
   if (members >= MAX_ALLIANCE_MEMBERS) throw allianceFullErr();

@@ -1,5 +1,3 @@
-import { EntityManager, PostgreSqlDriver } from "@mikro-orm/postgresql";
-
 import { AllianceMessageType } from "../../enums/Alliance.js";
 import { AllianceMessage } from "../../database/models/alliancemessage.model.js";
 import type { Alliance } from "../../database/models/alliance.model.js";
@@ -9,6 +7,7 @@ import { publishAllianceShout } from "../../chat/chatShouts.js";
 import { postgres } from "../../server.js";
 import { logger } from "../../utils/logger.js";
 import { composeShout } from "./shoutText.js";
+import type { PostgresEM } from "../../types/PostgresEM.js";
 
 interface AllianceMessageDraft {
   allianceId: number;
@@ -22,10 +21,9 @@ export interface ShoutDraft extends Omit<AllianceMessageDraft, "userId" | "targe
   author: User;
   type: AllianceMessageType;
   target?: Alliance | null;
-  em?: EntityManagerType;
+  em?: PostgresEM;
 }
 
-type EntityManagerType = EntityManager<PostgreSqlDriver>;
 type AllianceFeed = Promise<HistoryEntry[]>;
 
 const FEED_FIELDS = [
@@ -51,10 +49,10 @@ export const ALLIANCE_MESSAGE_LIMIT = 50;
  * something every caller has to remember.
  *
  * @param {number} alliance_id - The alliance to trim.
- * @param {EntityManager} em - EntityManager to write through, defaulting to the request's.
+ * @param {PostgresEM} em - PostgresEM to write through, defaulting to the request's.
  * @returns {Promise<number>} How many entries were removed.
  */
-const cutAllianceMessages = async (alliance_id: number, em: EntityManagerType = postgres.em) => {
+const cutAllianceMessages = async (alliance_id: number, em: PostgresEM = postgres.em) => {
   const findOptions = {
     fields: ["id"],
     orderBy: { id: "DESC" },
@@ -78,10 +76,10 @@ const cutAllianceMessages = async (alliance_id: number, em: EntityManagerType = 
  * poison the transaction and silently roll back whatever prompted the write.
  *
  * @param {AllianceMessageDraft} draft - The entry to store.
- * @param {EntityManager} em - EntityManager to write through, defaulting to the request's.
+ * @param {PostgresEM} em - PostgresEM to write through, defaulting to the request's.
  * @returns {Promise<AllianceMessage>} The stored row, carrying its id and timestamp.
  */
-export const addAllianceMessage = async (draft: AllianceMessageDraft, em: EntityManagerType = postgres.em) => {
+export const addAllianceMessage = async (draft: AllianceMessageDraft, em: PostgresEM = postgres.em) => {
   const { allianceId, userId, body, type, targetAllianceId } = draft;
 
   const row = {
@@ -155,10 +153,10 @@ export const announceShout = async (shout: ShoutDraft) =>
  * Reads an alliance's feed, oldest to newest.
  *
  * @param {number} allianceId - The alliance whose feed to read.
- * @param {EntityManager} em - EntityManager to read through, defaulting to the request's.
+ * @param {PostgresEM} em - PostgresEM to read through, defaulting to the request's.
  * @returns {AllianceFeed} Entries ordered oldest to newest.
  */
-export const getAllianceMessages = async (allianceId: number, em: EntityManagerType = postgres.em): AllianceFeed => {
+export const getAllianceMessages = async (allianceId: number, em: PostgresEM = postgres.em): AllianceFeed => {
   const rows = await em.find(
     AllianceMessage,
     { alliance_id: allianceId },

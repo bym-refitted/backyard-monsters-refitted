@@ -4,10 +4,10 @@ import { Save } from "../../../database/models/save.model.js";
 import { logger } from "../../../utils/logger.js";
 import { World } from "../../../database/models/world.model.js";
 import { MapRoom2, MapRoomCell, MapRoomVersion } from "../../../enums/MapRoom.js";
-import { EntityManager, PostgreSqlDriver } from "@mikro-orm/postgresql";
 import { postgres } from "../../../server.js";
 import { invalidateWorldsCache } from "../knownWorlds.js";
 import { findFreeCell } from "./findFreeCell.js";
+import type { PostgresEM } from "../../../types/PostgresEM.js";
 
 /**
  * Assigns a user to a world by either joining an existing one with available space
@@ -19,16 +19,11 @@ import { findFreeCell } from "./findFreeCell.js";
  *
  * @param {User} user - The user who is joining or relocating in the world.
  * @param {Save} save - The user's save data.
- * @param {EntityManager} em - The entity manager for database operations.
+ * @param {PostgresEM} em - The entity manager for database operations.
  * @param {boolean} relocate - Flag indicating whether the user is relocating.
  * @returns {Promise<void>} - A promise that resolves when the operation is complete.
  */
-export const joinOrCreateWorld = async (
-  user: User,
-  save: Save,
-  em: EntityManager<PostgreSqlDriver> = postgres.em,
-  relocate: Boolean = false
-) => {
+export const joinOrCreateWorld = async (user: User, save: Save, em: PostgresEM = postgres.em, relocate: Boolean = false) => {
   let world: World | null = null;
 
   let availableWorlds = await em.find(World, {

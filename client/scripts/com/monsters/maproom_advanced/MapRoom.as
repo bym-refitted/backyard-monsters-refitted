@@ -79,7 +79,7 @@ package com.monsters.maproom_advanced {
 
         internal static var _flingerInRange:Boolean = false;
 
-        private static var _worldID:int = 0;
+        private static var _worldID:String = "";
 
         internal static var _inviteBaseID:Number = 0;
 
@@ -137,7 +137,7 @@ package com.monsters.maproom_advanced {
             _empiredestroyed = param1;
         }
 
-        public static function _Setup(param1:Point, param2:int = 0, param3:Number = 0, param4:Boolean = false, param5:Thread = null):void {
+        public static function _Setup(param1:Point, param2:String = "", param3:Number = 0, param4:Boolean = false, param5:Thread = null):void {
             _homePoint = param1;
             _worldID = param2;
             _inviteBaseID = param3;
@@ -167,7 +167,7 @@ package com.monsters.maproom_advanced {
         internal static function HideFromViewOnly():void {
             if (_open && GLOBAL.mode != GLOBAL.e_BASE_MODE.ATTACK && GLOBAL.mode != GLOBAL.e_BASE_MODE.WMATTACK) {
                 SOUNDS.Play("close");
-                _worldID = 0;
+                _worldID = "";
                 _inviteBaseID = 0;
                 _viewOnly = false;
                 GLOBAL._currentCell = null;
@@ -1077,11 +1077,11 @@ package com.monsters.maproom_advanced {
             _mapHeight = param1;
         }
 
-        public function get worldID():int {
+        public function get worldID():String {
             return _worldID;
         }
 
-        public function set worldID(param1:int):void {
+        public function set worldID(param1:String):void {
             _worldID = param1;
         }
 

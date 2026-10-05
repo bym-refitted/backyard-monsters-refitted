@@ -5,6 +5,7 @@ import { User } from "../../../database/models/user.model.js";
 import { WorldMapCell } from "../../../database/models/worldmapcell.model.js";
 import { postgres } from "../../../server.js";
 import { getFriendIds } from "../../../services/friends/friendList.js";
+import { getInvitedWorld } from "../../../services/mail/getInvitedWorld.js";
 import { getPendingInvites } from "../../../services/mail/getPendingInvites.js";
 import { devConfig } from "../../../config/GameConfig.js";
 import { Status } from "../../../enums/StatusCodes.js";
@@ -24,6 +25,7 @@ import { visibleCredits } from "../../../services/user/shinyLock.js";
 const getAreaSchema = z.object({
   x: z.coerce.number().int().min(0).max(MapRoom2.WIDTH - 1),
   y: z.coerce.number().int().min(0).max(MapRoom2.HEIGHT - 1),
+  worldid: z.string().optional(),
   sendresources: z.coerce.number().optional().default(0),
 });
 
@@ -88,14 +90,15 @@ const CELL_SAVE_FIELDS = [
 export const getArea: KoaController = async (ctx) => {
   if (!devConfig.maproom) throw mapRoomDisabledErr();
   
-  const { x, y, sendresources } = getAreaSchema.parse(ctx.request.body);
+  const { x, y, sendresources, worldid: requestedWorld } = getAreaSchema.parse(ctx.request.body);
 
   const user: User = ctx.authUser;
-
   await postgres.em.populate(user, ["save"], { fields: OWN_SAVE_FIELDS });
 
   const save = user.save!;
-  const worldid = save.worldid;
+
+  const invitedWorld = requestedWorld ? await getInvitedWorld(user.userid, requestedWorld) : null;
+  const worldid = invitedWorld ?? save.worldid;
 
   if (!worldid) throw new Error(`${user.username} has no world ID.`);
 
