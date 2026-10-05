@@ -4,12 +4,14 @@ import { MigrateStatus } from "../../../enums/MigrateStatus.js";
 import { Save } from "../../../database/models/save.model.js";
 import { Thread } from "../../../database/models/thread.model.js";
 import { User } from "../../../database/models/user.model.js";
+import { World } from "../../../database/models/world.model.js";
 import { WorldMapCell } from "../../../database/models/worldmapcell.model.js";
 import { areFriends } from "../../friends/friendList.js";
 import { getCurrentDateTime } from "../../../utils/getCurrentDateTime.js";
 import { Operation, RESOURCE_KEYS, updateResources } from "../../base/updateResources.js";
 import { loadFailureErr, notEnoughShinyErr, permissionErr, shinyLockedErr } from "../../../errors/errors.js";
 import { isShinyLocked } from "../../user/shinyLock.js";
+import { leaveWorld } from "./leaveWorld.js";
 import { postgres } from "../../../server.js";
 
 export type MigrateOutcome =
@@ -92,13 +94,17 @@ const handOverOutpost = (save: OutpostGiver, baseid: string) => {
 /**
  * Accepts a friend's invitation to move onto one of their outposts.
  *
- * The outpost's cell is handed over rather than rebuilt: the accepting player's home cell
- * moves onto it, and the outpost itself - cell, save, and its place in the inviter's
- * outpost list and building resources - is gone. That is the same trade as migrating onto
- * your own outpost, which is why it costs the same and starts the same cooldown.
+ * Accepting means leaving an empire behind, which is what the client warns about: the
+ * player gives up every outpost they hold, their bookmarks and their stored building
+ * resources, and starts again with their main yard alone on the offered cell. That holds
+ * whether the outpost is in their own world or another one, so leaveWorld does the
+ * teardown either way and the yard is rebuilt where the outpost stood.
+ *
+ * The outpost itself - cell, save, and its place in the inviter's outpost list and
+ * building resources - is gone.
  *
  * Everything is re-checked here rather than trusted from when the invitation was sent:
- * friendships end, outposts get taken, and players change worlds in between.
+ * friendships end and outposts get taken between the offer and the answer.
  *
  * @param {User} user - The player accepting.
  * @param {string} baseid - The outpost being moved onto.
@@ -134,12 +140,8 @@ export const acceptMigrateInvite = async (user: User, baseid: string, threadid: 
   const isFriend = await areFriends(user.userid, inviterId);
   if (!isFriend) throw permissionErr();
 
-  const [homeCell, inviterSave] = await Promise.all([
-    postgres.em.findOne(WorldMapCell, {
-      uid: user.userid,
-      base_type: MapRoomCell.HOMECELL,
-      map_version: MapRoomVersion.V2,
-    }),
+  const [world, inviterSave] = await Promise.all([
+    postgres.em.findOne(World, { uuid: outpostCell.world.uuid }),
 
     postgres.em.findOne(
       Save,
@@ -148,17 +150,26 @@ export const acceptMigrateInvite = async (user: User, baseid: string, threadid: 
     ),
   ]);
 
-  if (!homeCell || !inviterSave) throw loadFailureErr();
-  if (homeCell.world.uuid !== outpostCell.world.uuid) throw permissionErr();
+  if (!world || !inviterSave) throw loadFailureErr();
 
   chargeForMove(user, save, useShiny);
 
   const { x, y, terrainHeight } = outpostCell;
 
-  homeCell.x = x;
-  homeCell.y = y;
-  homeCell.terrainHeight = terrainHeight;
+  await leaveWorld(user, save);
+  await postgres.em.refresh(world);
 
+  world.playerCount += 1;
+
+  const homeCell = new WorldMapCell(world, x, y, terrainHeight);
+
+  homeCell.uid = user.userid;
+  homeCell.base_type = MapRoomCell.HOMECELL;
+  homeCell.baseid = save.baseid;
+
+  save.usemap = 1;
+  save.worldid = world.uuid;
+  save.cell = homeCell;
   save.homebase = [x.toString(), y.toString()];
   save.cantmovetill = currenttime + COOLDOWN_PERIOD;
 
@@ -167,7 +178,7 @@ export const acceptMigrateInvite = async (user: User, baseid: string, threadid: 
   thread.migratestate = MigrateStatus.ACCEPTED;
 
   await postgres.em.transactional(async (em) => {
-    em.persist([homeCell, save, inviterSave, thread]);
+    em.persist([world, homeCell, save, inviterSave, thread]);
     em.remove([outpostCell.save!, outpostCell]);
 
     await em.flush();

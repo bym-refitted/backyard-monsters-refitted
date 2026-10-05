@@ -9,9 +9,9 @@ package com.monsters.maproom_manager {
 
         function set mapHeight(param1:int):void;
 
-        function get worldID():int;
+        function get worldID():String;
 
-        function set worldID(param1:int):void;
+        function set worldID(param1:String):void;
 
         function get isOpen():Boolean;
 

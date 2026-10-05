@@ -20,7 +20,6 @@ const RECIPIENT_FIELDS = [
   "blockedUsers",
   "save.unreadmessages",
   "save.mapversion",
-  "save.worldid",
 ] as const;
 
 /**
@@ -85,7 +84,6 @@ export const sendMessage: KoaController = async (ctx) => {
     const invited: InviteRecipient = {
       userid: messageTargetId,
       mapversion: recipient.save.mapversion,
-      worldid: recipient.save.worldid,
     };
 
     switch (message.type) {

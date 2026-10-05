@@ -29,7 +29,7 @@ package com.monsters.maproom3 {
 
         private var m_LastCenterPoint:Point = null;
 
-        private var m_WorldID:int = 0;
+        private var m_WorldID:String = "";
 
         private var m_Open:Boolean = false;
 
@@ -69,11 +69,11 @@ package com.monsters.maproom3 {
             return !!this.m_MapRoom3Data ? this.m_MapRoom3Data.allianceDataById : null;
         }
 
-        public function get worldID():int {
+        public function get worldID():String {
             return this.m_WorldID;
         }
 
-        public function set worldID(param1:int):void {
+        public function set worldID(param1:String):void {
             this.m_WorldID = param1;
         }
 

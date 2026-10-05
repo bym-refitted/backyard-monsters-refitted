@@ -41,7 +41,7 @@ package com.monsters.mailbox.model {
 
         public var coords:Point;
 
-        public var worldID:int;
+        public var worldID:String;
 
         public var baseID:Number;
 

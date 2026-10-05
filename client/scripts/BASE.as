@@ -748,7 +748,7 @@ package {
                     if (GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD || GLOBAL.mode == GLOBAL.e_BASE_MODE.IBUILD) {
                         GLOBAL._openBase = null;
                     }
-                    MapRoomManager.instance.worldID = 0;
+                    MapRoomManager.instance.worldID = "";
                     GLOBAL.SetFlags(serverData.flags);
                     QUESTS.Setup();
                     GLOBAL._reloadonerror = false;
