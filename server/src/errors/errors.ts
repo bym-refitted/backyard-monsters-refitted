@@ -412,6 +412,7 @@ export const joinOutsideWorldErr = () =>
 
 export const inviteOutsideWorldErr = (username: string) =>
   new ClientSafeError({
+    code: ErrorCode.ALLIANCE_OUTSIDE_WORLD,
     message: `${username} is too far away to join your Alliance. Invite them to move to one of your close-by Outposts.`,
     status: Status.FORBIDDEN,
     data: {},
