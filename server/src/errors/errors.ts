@@ -3,10 +3,16 @@ import { ClientSafeError } from "../middleware/clientSafeError.js";
 import { ErrorCode } from "../enums/ErrorCode.js";
 
 /**
- * Creates a new instance of `ClientSafeError` with the specified properties.
+ * The catalogue of errors the server is allowed to show a player.
  *
- * @returns A new `ClientSafeError` instance.
+ * Each export is a factory that builds a fresh `ClientSafeError`, so call sites
+ * read as `throw permissionErr()`. `ErrorInterceptor` passes these through to
+ * the client as-is; anything else thrown is logged and replaced with a generic
+ * "Something went wrong" response.
+ *
+ * Add new errors here rather than constructing `ClientSafeError` inline.
  */
+
 export const authFailureErr = () =>
   new ClientSafeError({
     code: ErrorCode.SESSION_INVALID,
@@ -268,11 +274,6 @@ export const allianceNoWorldErr = () =>
     isClientFriendly: true,
   });
 
-/**
- * The player's world id resolves to no known world - a deleted world, or a cached
- * world list that has gone stale. Distinct from allianceNoWorldErr, which is the
- * ordinary case of a player who has not joined a world at all.
- */
 export const unknownWorldErr = () =>
   new ClientSafeError({
     message: "Your world could not be found. Please try again later.",
