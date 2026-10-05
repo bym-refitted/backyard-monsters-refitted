@@ -1,73 +1,52 @@
 import { Save } from "../../../database/models/save.model.js";
-import { User } from "../../../database/models/user.model.js";
 import { postgres } from "../../../server.js";
 import { BaseType } from "../../../enums/Base.js";
 import { MapRoomVersion } from "../../../enums/MapRoom.js";
-import { calculateBaseLevel } from "../../base/calculateBaseLevel.js";
 import {
-  createNeighbourData,
+  NEIGHBOUR_INACTIVE_DAYS,
   NEIGHBOUR_LEVEL_RANGE,
-  NEIGHBOUR_SEARCH_SAVE_FIELDS,
-  NEIGHBOUR_SEARCH_USER_FIELDS,
-} from "../createNeighbourData.js";
-import type { NeighbourData } from "../../../types/NeighbourData.js";
+  NEIGHBOUR_SEARCH_POOL_SIZE,
+  NEIGHBOUR_SOFT_CAP,
+} from "../../../config/NeighbourConfig.js";
+import { getCurrentDateTime } from "../../../utils/getCurrentDateTime.js";
+import { getNeighbourIdsByUser } from "../neighbours.js";
 
 /**
- * Find MR1 overworld neighbours for a user and return data suitable for caching.
+ * Finds MR1 players to make a player's neighbours: recently played, within level range,
+ * not already on their map, and with room left on their own.
  *
- * Finds all Map Room 1 players within a specified level range.
- *
- * @param {User} user - The authenticated user to find neighbours for
- * @param {Save} save - The user's main save
- * @returns {Promise<NeighbourData[]>} - Array of neighbour data suitable for caching
+ * @param {number} userId - The player being found neighbours
+ * @param {number} userLevel - Their level, the centre of the range
+ * @param {number[]} neighbourIds - Players already on their map
+ * @param {number} limit - How many to find at most
+ * @returns {Promise<number[]>} Their user ids, most recently played first
  */
-export const findOverworldNeighbours = async (user: User, save: Save): Promise<NeighbourData[]> => {
-  const userLevel = calculateBaseLevel(save.points, save.basevalue);
-  const minLevel = Math.max(1, userLevel - NEIGHBOUR_LEVEL_RANGE);
-  const maxLevel = userLevel + NEIGHBOUR_LEVEL_RANGE;
+export const findOverworldNeighbours = async (userId: number, userLevel: number, neighbourIds: number[], limit: number) => {
+  const activeSince = getCurrentDateTime() - NEIGHBOUR_INACTIVE_DAYS * 24 * 60 * 60;
 
-  const saves = await postgres.em.find(
-    Save,
-    {
-      type: BaseType.MAIN,
-      userid: { $ne: user.userid },
-      mapversion: MapRoomVersion.V1,
+  const where = {
+    type: BaseType.MAIN,
+    mapversion: MapRoomVersion.V1,
+    userid: { $nin: [userId, ...neighbourIds] },
+    level: {
+      $gte: userLevel - NEIGHBOUR_LEVEL_RANGE,
+      $lte: userLevel + NEIGHBOUR_LEVEL_RANGE,
     },
-    {
-      fields: NEIGHBOUR_SEARCH_SAVE_FIELDS,
-      limit: 150,
-      orderBy: { lastupdateAt: "DESC" },
-    }
-  );
+    savetime: { $gte: activeSince },
+  };
 
-  const validNeighbours: Array<{ save: (typeof saves)[number]; level: number }> = [];
-  const userIds = new Set<number>();
+  const options = {
+    fields: ["userid"],
+    limit: NEIGHBOUR_SEARCH_POOL_SIZE,
+    orderBy: { savetime: "DESC" },
+  } as const;
 
-  for (const neighbourSave of saves) {
-    const level = calculateBaseLevel(neighbourSave.points, neighbourSave.basevalue);
+  const saves = await postgres.em.find(Save, where, options);
 
-    if (level >= minLevel && level <= maxLevel) {
-      validNeighbours.push({ save: neighbourSave, level });
-      userIds.add(neighbourSave.userid);
+  const inRange = saves.map((save) => save.userid);
+  const neighbourIdsByUser = await getNeighbourIdsByUser(inRange, BaseType.MAIN);
 
-      if (validNeighbours.length >= 25) break;
-    }
-  }
-
-  const neighbourUsers = await postgres.em.find(
-    User,
-    { userid: { $in: Array.from(userIds) } },
-    { fields: NEIGHBOUR_SEARCH_USER_FIELDS }
-  );
-
-  const users = new Map(neighbourUsers.map((u) => [u.userid, u]));
-
-  const cachedNeighbours: NeighbourData[] = [];
-
-  for (const { save: neighbourSave, level } of validNeighbours) {
-    const neighbourUser = users.get(neighbourSave.userid);
-    if (neighbourUser) cachedNeighbours.push(createNeighbourData(neighbourSave, neighbourUser, level));
-  }
-
-  return cachedNeighbours;
+  return inRange
+    .filter((candidateId) => neighbourIdsByUser.get(candidateId)!.size < NEIGHBOUR_SOFT_CAP)
+    .slice(0, limit);
 };

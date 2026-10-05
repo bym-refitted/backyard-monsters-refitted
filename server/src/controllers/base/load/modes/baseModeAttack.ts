@@ -13,12 +13,13 @@ import { getGeneratedCells, cellKey } from "../../../../services/maproom/v3/gene
 import { createAttackLog } from "../../../../services/base/createAttackLog.js";
 import { updateResources, Operation } from "../../../../services/base/updateResources.js";
 import { isAttackActive } from "../../../../services/base/isAttackActive.js";
-import { baseUnderAttackErr, baseProtectedErr, userOnlineErr, truceActiveErr, shinyLockedErr } from "../../../../errors/errors.js";
+import { baseUnderAttackErr, baseProtectedErr, userOnlineErr, playerLeftMapRoomErr, truceActiveErr, shinyLockedErr } from "../../../../errors/errors.js";
 import { redis } from "../../../../server.js";
 import { isTruceActive } from "../../../../services/mail/isTruceActive.js";
 import { getFriendIds } from "../../../../services/friends/friendList.js";
 import { MR1_TRIBE_IDS } from "../../../../game-data/tribes/v1/index.js";
-import { registerAttacker } from "../../../../services/maproom/v1/registerAttacker.js";
+import { recordAttack } from "../../../../services/maproom/attackHistory.js";
+import { addNeighbours } from "../../../../services/maproom/neighbours.js";
 import { isShinyLocked } from "../../../../services/user/shinyLock.js";
 import {
   generateNoise,
@@ -67,7 +68,13 @@ export const baseModeAttack = async ({ user, baseid, mapversion, attackCost }: B
     if (isAttackActive(save)) throw baseUnderAttackErr();
 
     if (save.type === BaseType.MAIN) {
+      const isMR1Attack = mapversion === MapRoomVersion.V1;
+      const hasLeftMR1 = save.mapversion !== MapRoomVersion.V1;
+
+      if (isMR1Attack && hasLeftMR1) throw playerLeftMapRoomErr();
+
       const lastSeen = await redis.get(`last-seen:${BaseType.MAIN}:${save.userid}`);
+      
       if (lastSeen && parseInt(lastSeen) >= getCurrentDateTime() - 60) throw userOnlineErr();
     }
 
@@ -164,7 +171,11 @@ export const baseModeAttack = async ({ user, baseid, mapversion, attackCost }: B
 
     if (!defender) throw new Error("Defender user not found.");
 
-    if (mapversion === MapRoomVersion.V1) await registerAttacker(user, defender);
+    if (mapversion === MapRoomVersion.V1) {
+      await recordAttack(user.userid, defender.userid, BaseType.MAIN);
+      await addNeighbours(user.userid, [defender.userid], BaseType.MAIN);
+    }
+    
     await createAttackLog(user, defender, save)
   }
 

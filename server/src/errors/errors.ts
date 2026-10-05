@@ -178,6 +178,14 @@ export const userOnlineErr = () =>
     isClientFriendly: false,
   });
 
+export const playerLeftMapRoomErr = () =>
+  new ClientSafeError({
+    message: "This player has moved to a different Map Room and can no longer be attacked.",
+    status: Status.CONFLICT,
+    data: {},
+    isClientFriendly: false,
+  });
+
 export const takeoverCellErr = () =>
   new ClientSafeError({
     message: "The server attempted to take over this cell but failed unexpectedly. Please try again.",
@@ -390,14 +398,6 @@ export const cannotPromoteErr = () =>
 export const joinMapVersionErr = () =>
   new ClientSafeError({
     message: "That Alliance is on a different Map Room version.",
-    status: Status.FORBIDDEN,
-    data: {},
-    isClientFriendly: true,
-  });
-
-export const inviteMapVersionErr = (username: string) =>
-  new ClientSafeError({
-    message: `${username} is too far away to join your Alliance. They are on a different Map Room version.`,
     status: Status.FORBIDDEN,
     data: {},
     isClientFriendly: true,

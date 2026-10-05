@@ -20,6 +20,8 @@ import { Maproom } from "../../database/models/maproom.model.js";
 import { clearPendingInvites } from "../../services/alliance/allianceInvites.js";
 import { MAX_RESOURCE_CAPACITY } from "../../config/MapRoom2Config.js";
 import { RESOURCE_KEYS } from "../../services/base/updateResources.js";
+import { removeAllNeighbours } from "../../services/maproom/neighbours.js";
+import { BaseType } from "../../enums/Base.js";
 
 /**
  * Schema for validating the request body when setting the map version.
@@ -89,6 +91,8 @@ export const setMapVersion: KoaController = async (ctx) => {
       const maproom1 = await postgres.em.findOne(Maproom, { userid: user.userid });
 
       if (maproom1) postgres.em.remove(maproom1);
+
+      await removeAllNeighbours(user.userid, BaseType.MAIN);
       break;
     }
 
@@ -107,6 +111,8 @@ export const setMapVersion: KoaController = async (ctx) => {
       const maproom1 = await postgres.em.findOne(Maproom, { userid: user.userid });
 
       if (maproom1) postgres.em.remove(maproom1);
+
+      await removeAllNeighbours(user.userid, BaseType.MAIN);
       break;
   }
   postgres.em.persist(save);
