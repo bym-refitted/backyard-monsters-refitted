@@ -11,6 +11,7 @@ import {
   allianceFullErr,
   inviteNotPendingErr,
   invitePendingErr,
+  inviteOutsideWorldErr,
   mustLeaveAllianceToAcceptErr,
   permissionErr,
   requestPendingErr,
@@ -275,6 +276,10 @@ export const answerInvite = async (user: User, inviteId: number, status: Allianc
   if (player.alliance_id) {
     throw isAnswerer ? mustLeaveAllianceToAcceptErr() : userAlreadyInAllianceErr();
   }
+
+  await postgres.em.populate(player, ["save"], { fields: ["save.worldid"] });
+
+  if (player.save?.worldid !== alliance.world_id) throw inviteOutsideWorldErr(player.username);
 
   // The transaction locks the alliance row to prevent two simultaneous acceptances from both sides
   await postgres.em.transactional(async (em) => {

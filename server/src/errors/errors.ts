@@ -402,6 +402,22 @@ export const inviteMapVersionErr = (username: string) =>
     isClientFriendly: true,
   });
 
+export const joinOutsideWorldErr = () =>
+  new ClientSafeError({
+    message: "That Alliance is in another world. Move to that world before joining it.",
+    status: Status.FORBIDDEN,
+    data: {},
+    isClientFriendly: true,
+  });
+
+export const inviteOutsideWorldErr = (username: string) =>
+  new ClientSafeError({
+    message: `${username} is too far away to join your Alliance. Invite them to move to one of your close-by Outposts.`,
+    status: Status.FORBIDDEN,
+    data: {},
+    isClientFriendly: true,
+  });
+
 export const powerupUnknownErr = () =>
   new ClientSafeError({
     message: "This Power-Up cannot be activated at this time.",
