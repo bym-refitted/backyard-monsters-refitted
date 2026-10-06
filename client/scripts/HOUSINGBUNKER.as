@@ -51,8 +51,8 @@ package {
             SetProps();
         }
 
-        override public function StopMoveB():void {
-            super.StopMoveB();
+        override protected function onMove():void {
+            super.onMove();
             UpdateHousedCreatureTargets();
         }
 
