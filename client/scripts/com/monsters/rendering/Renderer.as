@@ -26,22 +26,26 @@ package com.monsters.rendering {
 
         private const _drawBounds:Rectangle = new Rectangle();
 
+        private var _alphaMask:BitmapData;
+
+        private var _alphaMaskAlpha:uint;
+
         private var _curCopyIndex:uint;
 
         private var _curDrawIndex:uint;
 
-        public function Renderer(param1:BitmapData, param2:Rectangle) {
+        public function Renderer(canvas:BitmapData, viewRect:Rectangle) {
             super();
-            this.renderer_friend::_canvas = param1;
-            this.renderer_friend::_viewRect = param2;
+            this.renderer_friend::_canvas = canvas;
+            this.renderer_friend::_viewRect = viewRect;
         }
 
         public static function get debug():Boolean {
             return renderer_friend::_debug;
         }
 
-        public static function set debug(param1:Boolean):void {
-            renderer_friend::_debug = param1;
+        public static function set debug(enable:Boolean):void {
+            renderer_friend::_debug = enable;
             if (renderer_friend::_debug) {
                 _debugShape = _debugShape || new Shape();
                 RasterData.renderer_friend::showDebug();
@@ -52,70 +56,87 @@ package com.monsters.rendering {
             }
         }
 
-        public function set canvas(param1:BitmapData):void {
-            this.renderer_friend::_canvas = param1;
+        public function set canvas(canvas:BitmapData):void {
+            this.renderer_friend::_canvas = canvas;
+        }
+
+        public function dispose():void {
+            if (this._alphaMask) {
+                this._alphaMask.dispose();
+                this._alphaMask = null;
+            }
+        }
+
+        private function getAlphaMask(width:int, height:int, alpha:uint):BitmapData {
+            if (!this._alphaMask || this._alphaMask.width < width || this._alphaMask.height < height) {
+                if (this._alphaMask) {
+                    width = Math.max(width, this._alphaMask.width);
+                    height = Math.max(height, this._alphaMask.height);
+                }
+                var mask:BitmapData = new BitmapData(width, height, true, alpha);
+                if (this._alphaMask) {
+                    this._alphaMask.dispose();
+                }
+                this._alphaMask = mask;
+                this._alphaMaskAlpha = alpha;
+            }
+            else if (this._alphaMaskAlpha != alpha) {
+                this._alphaMask.fillRect(this._alphaMask.rect, alpha);
+                this._alphaMaskAlpha = alpha;
+            }
+            return this._alphaMask;
         }
 
         public function render():void {
-            var _loc1_:Vector.<RasterData> = RasterData.renderer_friend::s_visibleData;
+            var visibleData:Vector.<RasterData> = RasterData.renderer_friend::s_visibleData;
             this._curCopyIndex = this._curDrawIndex = 0;
             if (RasterData.renderer_friend::s_needsSort) {
-                _loc1_.sort(this.sortRasterData);
+                visibleData.sort(this.sortRasterData);
                 RasterData.renderer_friend::s_needsSort = false;
             }
             this.renderer_friend::_canvas.lock();
-            this.rasterize(RasterData.renderer_friend::s_unsortedData.concat(_loc1_));
+            this.rasterize(RasterData.renderer_friend::s_unsortedData.concat(visibleData));
             this.renderer_friend::_canvas.unlock();
         }
 
-        private function cull(param1:Vector.<RasterData>):void {
-            var _loc3_:RasterData = null;
-            var _loc4_:Rectangle = null;
-            var _loc2_:Vector.<RasterData> = param1;
-            for each (_loc3_ in _loc2_) {
-                (_loc4_ = _loc3_.renderer_friend::_rect).x = _loc3_.renderer_friend::_pt.x;
-                _loc4_.y = _loc3_.renderer_friend::_pt.y;
-                if (this.renderer_friend::_viewRect.intersects(_loc4_)) {
-                    _loc2_[_loc2_.length] = _loc3_;
+        private function cull(entries:Vector.<RasterData>):void {
+            for each (var entry:RasterData in entries) {
+                var bounds:Rectangle = entry.renderer_friend::_rect;
+                bounds.x = entry.renderer_friend::_pt.x;
+                bounds.y = entry.renderer_friend::_pt.y;
+
+                if (this.renderer_friend::_viewRect.intersects(bounds)) {
+                    entries[entries.length] = entry;
                 }
             }
         }
 
-        private function sortRasterData(param1:RasterData, param2:RasterData):Number {
-            return param1.renderer_friend::_depth - param2.renderer_friend::_depth;
+        private function sortRasterData(data1:RasterData, data2:RasterData):Number {
+            return data1.renderer_friend::_depth - data2.renderer_friend::_depth;
         }
 
-        private function rasterize(param1:Vector.<RasterData>):void {
-            var entries:Vector.<RasterData> = null;
-            var entry:RasterData = null;
-            var entryBmd:BitmapData = null;
-            var alphaMask:BitmapData = null;
-            var i:int = 0;
-
-            entries = param1;
-            var len:int = int(entries.length);
-
-            while (i < len) {
-                entry = entries[i];
+        private function rasterize(entries:Vector.<RasterData>):void {
+            for each (var entry:RasterData in entries) {
                 if (!entry || entry.renderer_friend::_cleared || !entry.renderer_friend::_pt) {
-                    i++;
                     continue;
                 }
-                entryBmd = entry.renderer_friend::_data as BitmapData;
+
+                var entryBmd:BitmapData = entry.renderer_friend::_data as BitmapData;
                 this._pt.x = entry.renderer_friend::_pt.x;
                 this._pt.y = entry.renderer_friend::_pt.y;
+
                 if (entryBmd && !entry.renderer_friend::_blendMode && !entry.renderer_friend::_filter && (entry.renderer_friend::_scaleX & entry.renderer_friend::_scaleY) === 100) {
-                    if (entry.renderer_friend::_alpha !== 4278190080) {
-                        alphaMask = new BitmapData(entryBmd.width, entryBmd.height, true, entry.renderer_friend::_alpha);
+                    var alphaMask:BitmapData = null;
+                    if (entry.renderer_friend::_alpha !== 0xff000000) {
+                        alphaMask = this.getAlphaMask(entryBmd.width, entryBmd.height, entry.renderer_friend::_alpha);
                     }
+
                     this.renderer_friend::_canvas.copyPixels(entryBmd, entryBmd.rect, this._pt, alphaMask);
-                    if (alphaMask) {
-                        alphaMask.dispose();
-                        alphaMask = null;
-                    }
+
                 }
                 else {
                     this._matrix.createBox(entry.renderer_friend::_scaleX * 0.01, entry.renderer_friend::_scaleY * 0.01, 0, this._pt.x, this._pt.y);
+
                     if (Boolean(entry.renderer_friend::_filter) && Boolean(entryBmd)) {
                         this._bm.bitmapData = entryBmd;
                         this._bm.filters = [entry.renderer_friend::_filter];
@@ -135,7 +156,6 @@ package com.monsters.rendering {
                         this.renderer_friend::_canvas.draw(entry.renderer_friend::_data, this._matrix, null, entry.renderer_friend::_blendMode);
                     }
                 }
-                i++;
             }
         }
     }

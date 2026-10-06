@@ -329,6 +329,9 @@ package {
             if (BYMConfig.instance.RENDERER_ON && GLOBAL._ROOT.hasEventListener(Event.RENDER)) {
                 GLOBAL._ROOT.removeEventListener(Event.RENDER, _instance.render);
             }
+            if (_instance && _instance._renderer) {
+                _instance._renderer.dispose();
+            }
             _BGTILES = null;
             _BUILDINGBASES = null;
             _BUILDINGFOOTPRINTS = null;
