@@ -9,7 +9,7 @@ import { WorldMapCell } from "../../../database/models/worldmapcell.model.js";
 import { areFriends } from "../../friends/friendList.js";
 import { getCurrentDateTime } from "../../../utils/getCurrentDateTime.js";
 import { Operation, RESOURCE_KEYS, updateResources } from "../../base/updateResources.js";
-import { loadFailureErr, notEnoughShinyErr, permissionErr, shinyLockedErr } from "../../../errors/errors.js";
+import { loadFailureErr, mustLeaveAllianceToChangeWorldErr, notEnoughShinyErr, permissionErr, shinyLockedErr } from "../../../errors/errors.js";
 import { isShinyLocked } from "../../user/shinyLock.js";
 import { leaveWorld } from "./leaveWorld.js";
 import { postgres } from "../../../server.js";
@@ -136,6 +136,8 @@ export const acceptMigrateInvite = async (user: User, baseid: string, threadid: 
   const inviterId = outpostCell.uid;
 
   if (inviterId === user.userid) throw permissionErr();
+
+  if (user.alliance_id) throw mustLeaveAllianceToChangeWorldErr();
 
   const isFriend = await areFriends(user.userid, inviterId);
   if (!isFriend) throw permissionErr();

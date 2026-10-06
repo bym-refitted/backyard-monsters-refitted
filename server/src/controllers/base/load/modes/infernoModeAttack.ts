@@ -6,14 +6,16 @@ import { postgres } from "../../../../server.js";
 import { createAttackLog } from "../../../../services/base/createAttackLog.js";
 import { getCurrentDateTime } from "../../../../utils/getCurrentDateTime.js";
 import type { AttackDetails } from "./baseModeAttack.js";
-import { registerInfernoAttacker } from "../../../../services/maproom/inferno/registerInfernoAttacker.js";
+import { recordAttack } from "../../../../services/maproom/attackHistory.js";
+import { addNeighbours, areNeighbours } from "../../../../services/maproom/neighbours.js";
+import { requireAttackLevel, type RequireAttackLevel } from "../../../../services/maproom/attackPermission.js";
 import {
   InfernoMaproom,
   type TribeData,
 } from "../../../../database/models/infernomaproom.model.js";
 import { damageProtection } from "../../../../services/maproom/v2/damageProtection.js";
 import { isAttackActive } from "../../../../services/base/isAttackActive.js";
-import { baseUnderAttackErr, baseProtectedErr, userOnlineErr } from "../../../../errors/errors.js";
+import { baseUnderAttackErr, baseProtectedErr, userOnlineErr, notNeighboursErr } from "../../../../errors/errors.js";
 import { redis } from "../../../../server.js";
 
 /**
@@ -42,6 +44,24 @@ export const infernoModeAttack = async (user: User, baseid: string) => {
   }
 
   if (save.protected > getCurrentDateTime()) throw baseProtectedErr();
+
+  const isNeighbour = await areNeighbours(user.userid, save.saveuserid, BaseType.INFERNO);
+
+  if (!isNeighbour) throw notNeighboursErr();
+
+  const attackerSave = user.infernosave;
+
+  if (!attackerSave) throw new Error("Attacker inferno save not found.");
+
+  const attack: RequireAttackLevel = {
+    attackerId: user.userid,
+    defenderId: save.saveuserid,
+    attackerSave,
+    defenderSave: save,
+    type: BaseType.INFERNO,
+  };
+
+  const permission = await requireAttackLevel(attack);
 
   const lastSeen = await redis.get(`last-seen:${BaseType.INFERNO}:${save.userid}`);
   
@@ -73,10 +93,9 @@ export const infernoModeAttack = async (user: User, baseid: string) => {
   if (!defender) throw new Error("Defender user not found.");
 
 
-  await Promise.all([
-    registerInfernoAttacker(user, defender),
-    createAttackLog(user, defender, save),
-  ]);
+  await recordAttack(user.userid, defender.userid, BaseType.INFERNO, permission);
+  await addNeighbours(user.userid, [defender.userid], BaseType.INFERNO);
+  await createAttackLog(user, defender, save);
 
   postgres.em.persist(save);
   await postgres.em.flush();

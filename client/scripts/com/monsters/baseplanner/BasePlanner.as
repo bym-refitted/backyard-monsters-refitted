@@ -122,7 +122,7 @@ package com.monsters.baseplanner {
             }
             BASE.applyTemplate(this._activeTemplate.exportData());
             PLANNER.Hide();
-            BASE.Save();
+            SOUNDS.Play("buildingplace");
         }
 
         protected function loadTemplate(param1:BasePlannerTransferEvent):void {

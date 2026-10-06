@@ -1,5 +1,5 @@
 import { BaseMode, BaseType } from "../../../../enums/Base.js";
-import { MapRoomCell, MapRoomVersion } from "../../../../enums/MapRoom.js";
+import { AttackPermission, MapRoomCell, MapRoomVersion } from "../../../../enums/MapRoom.js";
 import { World } from "../../../../database/models/world.model.js";
 import { WorldMapCell } from "../../../../database/models/worldmapcell.model.js";
 import { postgres } from "../../../../server.js";
@@ -13,12 +13,14 @@ import { getGeneratedCells, cellKey } from "../../../../services/maproom/v3/gene
 import { createAttackLog } from "../../../../services/base/createAttackLog.js";
 import { updateResources, Operation } from "../../../../services/base/updateResources.js";
 import { isAttackActive } from "../../../../services/base/isAttackActive.js";
-import { baseUnderAttackErr, baseProtectedErr, userOnlineErr, truceActiveErr, shinyLockedErr } from "../../../../errors/errors.js";
+import { baseUnderAttackErr, baseProtectedErr, userOnlineErr, playerLeftMapRoomErr, notNeighboursErr, truceActiveErr, shinyLockedErr } from "../../../../errors/errors.js";
 import { redis } from "../../../../server.js";
 import { isTruceActive } from "../../../../services/mail/isTruceActive.js";
 import { getFriendIds } from "../../../../services/friends/friendList.js";
 import { MR1_TRIBE_IDS } from "../../../../game-data/tribes/v1/index.js";
-import { registerAttacker } from "../../../../services/maproom/v1/registerAttacker.js";
+import { recordAttack } from "../../../../services/maproom/attackHistory.js";
+import { addNeighbours, areNeighbours } from "../../../../services/maproom/neighbours.js";
+import { levelGapFor, requireAttackLevel, type RequireAttackLevel } from "../../../../services/maproom/attackPermission.js";
 import { isShinyLocked } from "../../../../services/user/shinyLock.js";
 import {
   generateNoise,
@@ -61,13 +63,38 @@ export const baseModeAttack = async ({ user, baseid, mapversion, attackCost }: B
 
   if (!save) throw new Error(`Save not found for baseid: ${baseid}`);
 
+  let permission = AttackPermission.ATTACKABLE;
+
   if (save.type !== BaseType.TRIBE) {
     if (save.protected > getCurrentDateTime()) throw baseProtectedErr();
 
     if (isAttackActive(save)) throw baseUnderAttackErr();
 
     if (save.type === BaseType.MAIN) {
+      const isMR1Attack = mapversion === MapRoomVersion.V1;
+      const hasLeftMR1 = save.mapversion !== MapRoomVersion.V1;
+
+      if (isMR1Attack && hasLeftMR1) throw playerLeftMapRoomErr();
+
+      if (isMR1Attack) {
+        const isNeighbour = await areNeighbours(user.userid, save.saveuserid, BaseType.MAIN);
+
+        if (!isNeighbour) throw notNeighboursErr();
+      }
+
+      const attack: RequireAttackLevel = {
+        attackerId: user.userid,
+        defenderId: save.saveuserid,
+        attackerSave: userSave,
+        defenderSave: save,
+        type: BaseType.MAIN,
+        levelGap: levelGapFor(mapversion),
+      };
+
+      permission = await requireAttackLevel(attack);
+
       const lastSeen = await redis.get(`last-seen:${BaseType.MAIN}:${save.userid}`);
+      
       if (lastSeen && parseInt(lastSeen) >= getCurrentDateTime() - 60) throw userOnlineErr();
     }
 
@@ -164,7 +191,14 @@ export const baseModeAttack = async ({ user, baseid, mapversion, attackCost }: B
 
     if (!defender) throw new Error("Defender user not found.");
 
-    if (mapversion === MapRoomVersion.V1) await registerAttacker(user, defender);
+    if (save.type === BaseType.MAIN) {
+      await recordAttack(user.userid, defender.userid, BaseType.MAIN, permission);
+    }
+
+    if (mapversion === MapRoomVersion.V1) {
+      await addNeighbours(user.userid, [defender.userid], BaseType.MAIN);
+    }
+    
     await createAttackLog(user, defender, save)
   }
 

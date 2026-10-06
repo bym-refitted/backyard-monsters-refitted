@@ -3603,18 +3603,44 @@ package {
             this.updateRasterData();
         }
 
-        public function moveTo(param1:int, param2:int):void {
+        public function moveTo(x:int, y:int):void {
+            if (this.x == x && this.y == y) {
+                return;
+            }
+
             this.GridCost(false);
-            this.x = param1;
-            this.y = param2;
-            this._mcBase.x = param1;
-            this._mcBase.y = param2;
-            this._mcFootprint.x = param1;
-            this._mcFootprint.y = param2;
+            this.x = x;
+            this.y = y;
+            this._mcBase.x = x;
+            this._mcBase.y = y;
+            this._mcFootprint.x = x;
+            this._mcFootprint.y = y;
             this.StartMove();
             this.StopMove(null);
             this.updateRasterData();
             redrawAllShadowData();
+        }
+
+        /**
+         * Moves directly to a caller-validated position without entering drag mode.
+         * The caller must remove all old grid footprints before a batch, add the
+         * destination footprints afterward, then refresh pathfinding/depth and save.
+         */
+        public function setPosition(x:int, y:int):void {
+            if (this.x == x && this.y == y) {
+                return;
+            }
+
+            // Bypass the setters so both coordinates change before a single refresh.
+            _mc.x = x;
+            _mc.y = y;
+            this._mcBase.x = x;
+            this._mcBase.y = y;
+            this._mcFootprint.x = x;
+            this._mcFootprint.y = y;
+            this._position = new Point(x, y);
+            this.onMove();
+            this.updateRasterData();
         }
 
         protected function onMove():void {

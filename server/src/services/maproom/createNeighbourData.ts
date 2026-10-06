@@ -2,18 +2,6 @@ import { User } from "../../database/models/user.model.js";
 import { Save } from "../../database/models/save.model.js";
 import type { NeighbourData } from "../../types/NeighbourData.js";
 
-export const NEIGHBOUR_LEVEL_RANGE = 7;
-
-export const NEIGHBOUR_SEARCH_SAVE_FIELDS = [
-  "userid", 
-  "baseid", 
-  "points", 
-  "basevalue", 
-  "lastupdateAt"
-] as const;
-
-export const NEIGHBOUR_SEARCH_USER_FIELDS = ["userid", "username", "pic_square"] as const;
-
 type NeighbourSave = Pick<Save, "userid" | "baseid" | "lastupdateAt">;
 
 type NeighbourUser = Pick<User, "username" | "pic_square">;

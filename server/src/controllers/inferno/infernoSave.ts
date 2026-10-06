@@ -21,6 +21,7 @@ import { resourcesHandler } from "../base/save/handlers/resourceHandler.js";
 import { damageProtection } from "../../services/maproom/v2/damageProtection.js";
 import { advanceBuildingTimers } from "../../services/base/advanceBuildingTimers.js";
 import { visibleCredits } from "../../services/user/shinyLock.js";
+import { calculateBaseLevel } from "../../services/base/calculateBaseLevel.js";
 
 export const infernoSave: KoaController = async (ctx) => {
   const user: User = ctx.authUser;
@@ -143,6 +144,10 @@ export const infernoSave: KoaController = async (ctx) => {
 
     baseSave.id = baseSave.savetime;
     baseSave.savetime = now;
+
+    if (baseSave.type === BaseType.INFERNO) {
+      baseSave.level = calculateBaseLevel(baseSave.points, baseSave.basevalue);
+    }
 
     if (!isAttack) {
       await redis.setex(`last-seen:inferno:${user.userid}`, 120, getCurrentDateTime().toString());

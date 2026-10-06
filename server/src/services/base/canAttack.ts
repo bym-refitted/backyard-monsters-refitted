@@ -1,19 +1,24 @@
+import { BaseType } from "../../enums/Base.js";
 import { EnumYardType } from "../../enums/EnumYardType.js";
-import { MapRoomVersion } from "../../enums/MapRoom.js";
+import { AttackPermission, MapRoomVersion } from "../../enums/MapRoom.js";
 import { calculateBaseLevel } from "./calculateBaseLevel.js";
+import { getRetaliationsOwed } from "../maproom/attackHistory.js";
+import { levelGapFor, levelPermission } from "../maproom/attackPermission.js";
 import type { Save } from "../../database/models/save.model.js";
 
 /**
  * Determines whether an attacker is allowed to attack a given base.
  * Returns false if any restriction applies, true otherwise.
  *
+ * This is what the client reads as canattack when a player views a base. The
+ * same level rule is enforced when an attack is started, in requireAttackLevel.
+ *
  * @param {Save} attackerSave - The attacker's save.
  * @param {Save} defenderSave - The defender's save.
  * @param {MapRoomVersion} [mapversion] - The map room version.
- * @returns {boolean} Whether the attack is permitted.
+ * @returns {Promise<boolean>} Whether the attack is permitted.
  */
-export const canAttack = (attackerSave: Save, defenderSave: Save, mapversion?: MapRoomVersion): boolean => {
-  // const isOwner = defenderSave.type !== BaseType.INFERNO && attackerSave.saveuserid === defenderSave.saveuserid;
+export const canAttack = async (attackerSave: Save, defenderSave: Save, mapversion?: MapRoomVersion): Promise<boolean> => {
   const attackerLevel = calculateBaseLevel(attackerSave.points, attackerSave.basevalue);
 
   /**
@@ -27,18 +32,25 @@ export const canAttack = (attackerSave: Save, defenderSave: Save, mapversion?: M
     defenderSave.level <= 20
   ) return false;
 
-  /**
-   * PvP level restriction: attackers cannot attack player main yards more than
-   * 12 levels below them. Both players in the level 40–80 safe zone
-   * can always attack each other. Although the max level is 56, we use 80 as a client-safe upper bound.
-   *
-   * TODO: re-enable this when vengenance mode is implemented.
-   */
-  // if (defenderSave.type === BaseType.MAIN && !isOwner) {
-  //   const defenderLevel = calculateBaseLevel(defenderSave.points, defenderSave.basevalue);
-  //   const inSafeZone = attackerLevel >= 40 && attackerLevel <= 80 && defenderLevel >= 40 && defenderLevel <= 80;
-  //   if (attackerLevel - defenderLevel >= 12 && !inSafeZone) return false;
-  // }
+  const isOwner = attackerSave.saveuserid === defenderSave.saveuserid;
 
-  return true;
+  if (defenderSave.type !== BaseType.MAIN || isOwner) return true;
+
+  /**
+   * PvP level restriction: a player cannot attack a main yard too far below
+   * their own level, unless its owner attacked them first - they may then hit
+   * back once for each attack they took. Two players who have both reached the
+   * exemption level can always attack each other.
+   */
+  const defenderLevel = calculateBaseLevel(defenderSave.points, defenderSave.basevalue);
+
+  const levelGap = levelGapFor(mapversion);
+
+  const levels = { attackerLevel, defenderLevel, retaliations: 0, levelGap };
+
+  const permission = levelPermission(levels);
+  if (permission !== AttackPermission.LEVEL_RESTRICTION) return true;
+
+  const retaliations = await getRetaliationsOwed(attackerSave.saveuserid, defenderSave.saveuserid, BaseType.MAIN);
+  return retaliations > 0;
 };

@@ -12,7 +12,7 @@ import {
 import { joinOrCreateWorld } from "../../../services/maproom/v2/joinOrCreateWorld.js";
 import { leaveWorld } from "../../../services/maproom/v2/leaveWorld.js";
 import { MapRoomCell } from "../../../enums/MapRoom.js";
-import { relocateOutpostErr, shinyLockedErr } from "../../../errors/errors.js";
+import { mustLeaveAllianceToChangeWorldErr, relocateOutpostErr, shinyLockedErr } from "../../../errors/errors.js";
 import { MigrateBaseSchema } from "../../../schemas/MigrateBaseSchema.js";
 import { isShinyLocked } from "../../../services/user/shinyLock.js";
 
@@ -62,6 +62,7 @@ export const migrateBase: KoaController = async (ctx) => {
   // User is relocating due to their empire being overrun.
   if (type === BaseType.RANDOM) {
     if (userSave.outposts.length > 0) throw relocateOutpostErr();
+    if (currentUser.alliance_id) throw mustLeaveAllianceToChangeWorldErr();
 
     await leaveWorld(currentUser, userSave);
     await joinOrCreateWorld(currentUser, userSave, postgres.em, true);

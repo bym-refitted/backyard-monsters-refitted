@@ -1,7 +1,9 @@
 package {
+    import com.monsters.configs.BYMConfig;
     import com.monsters.display.BuildingOverlay;
     import com.monsters.interfaces.IAttackable;
     import com.monsters.monsters.MonsterBase;
+    import com.monsters.rendering.RasterData;
     import com.monsters.siege.weapons.Vacuum;
     import com.monsters.siege.weapons.VacuumHose;
     import flash.display.MovieClip;
@@ -17,6 +19,8 @@ package {
         public static const TYPE:int = 129;
 
         private var _shouldAnimate:Boolean;
+
+        private var _quakeGraphic:QuakeGraphic;
 
         public function INFERNOQUAKETOWER() {
             super();
@@ -39,8 +43,8 @@ package {
             _origin = new Point(_mc.x, _mc.y);
         }
 
-        override public function StopMoveB():void {
-            super.StopMoveB();
+        override protected function onMove():void {
+            super.onMove();
             _origin = new Point(_mc.x, _mc.y);
         }
 
@@ -58,7 +62,51 @@ package {
                     _mcBase.x = _origin.x;
                     _mcBase.y = _origin.y;
                 }
+                this.updateRasterData();
             }
+        }
+
+        /**
+         * Puts the tower back on its spot when its graphics are cleared mid-shake.
+         *
+         * A render that ends without an animation, such as the destroyed state, removes the
+         * TickFast listener, which would otherwise leave the tower resting a pixel or two off
+         * where it was placed. _shake is left running, so a render that keeps animating simply
+         * carries on shaking from here as it always did.
+         *
+         * @param clearRenderState Whether to forget the current render state
+         */
+        override public function RenderClear(clearRenderState:Boolean = true):void {
+            if (_shake > 0 && _origin) {
+                _mc.x = _origin.x;
+                _mc.y = _origin.y;
+                _mcBase.x = _origin.x;
+                _mcBase.y = _origin.y;
+            }
+            super.RenderClear(clearRenderState);
+        }
+
+        override protected function updateRasterData():void {
+            super.updateRasterData();
+            this.placeQuakeGraphic();
+        }
+
+        /**
+         * Keeps the ripple on the tower while the bitmap renderer is drawing it, so it shakes
+         * with the tower and follows the camera, as it does for free when it is a child of _mc.
+         * It is drawn just above the tower's own layers, which is where being a child put it.
+         */
+        private function placeQuakeGraphic():void {
+            var mapOffset:Point = null;
+            var topLayer:RasterData = null;
+
+            if (!this._quakeGraphic || !BYMConfig.instance.RENDERER_ON || !_mc || !_rasterData)
+                return;
+
+            mapOffset = MAP.instance.offset;
+            topLayer = _rasterData[_RASTERDATA_TOP];
+
+            this._quakeGraphic.moveTo(_mc.x - mapOffset.x, _mc.y - mapOffset.y, topLayer ? topLayer.depth + _RASTERDATA_AMOUNT : MAP.DEPTH_SHADOW + 1);
         }
 
         override public function Update(param1:Boolean = false):void {
@@ -150,11 +198,20 @@ package {
             }
             else {
                 this.Quake(int(damage * _loc1_ * _loc2_));
-                _loc3_ = new QuakeGraphic(20, _range * 2);
+                _loc3_ = new QuakeGraphic(20, _range * 2, BYMConfig.instance.RENDERER_ON ? new Point() : null);
                 _loc3_.graphic.y += _top;
-                _mc.addChild(_loc3_.graphic);
+
+                if (!BYMConfig.instance.RENDERER_ON) {
+                    _mc.addChild(_loc3_.graphic);
+                }
+
+                this._quakeGraphic = _loc3_;
+                this.placeQuakeGraphic();
             }
-            _origin = new Point(_mc.x, _mc.y);
+
+            if (_shake <= 0)
+                _origin = new Point(_mc.x, _mc.y);
+
             _shake = 10;
         }
 
@@ -250,37 +307,5 @@ package {
             _loc1_.Y = _loc2_.y;
             return _loc1_;
         }
-    }
-}
-
-import flash.display.Shape;
-import flash.filters.GlowFilter;
-import gs.TweenLite;
-
-class QuakeGraphic {
-
-    public var graphic:Shape;
-
-    public function QuakeGraphic(param1:uint, param2:uint) {
-        super();
-        this.graphic = new Shape();
-        this.graphic.graphics.lineStyle(0.3, 6710988, 0.5);
-        this.graphic.graphics.drawEllipse(-param1, -param1 / 2, param1 * 2, param1);
-        this.graphic.graphics.drawEllipse(-param1 * 0.8, -param1 / 2.5, param1 * 1.6, param1 * 0.8);
-        this.graphic.graphics.drawEllipse(-param1 * 0.6, -param1 / 3.333333, param1 * 1.2, param1 * 0.6);
-        var _loc3_:GlowFilter = new GlowFilter(3379402, 1, 20, 20, 5 + Math.random() * 5, 1, false, false);
-        this.graphic.filters = [_loc3_];
-        TweenLite.to(this.graphic, 1, {
-                    "width": param2 * 2,
-                    "height": param2,
-                    "alpha": 0,
-                    "onComplete": this.onComplete
-                });
-    }
-
-    private function onComplete():void {
-        this.graphic.parent.removeChild(this.graphic);
-        this.graphic.filters = [];
-        this.graphic = null;
     }
 }

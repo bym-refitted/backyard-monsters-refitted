@@ -4,11 +4,13 @@ import { User } from "../../database/models/user.model.js";
 import { postgres } from "../../server.js";
 import { InviteUserSchema } from "../../schemas/AllianceSchemas.js";
 import { requireAllianceMember } from "../../services/alliance/allianceAccess.js";
-import { getWorldMapVersion } from "../../services/maproom/knownWorlds.js";
 import { openInvite } from "../../services/alliance/allianceInvites.js";
+import { canJoinAlliance } from "../../services/alliance/allianceWorlds.js";
+import { MapRoomVersion } from "../../enums/MapRoom.js";
 import {
   inviteLeaderOnlyErr,
   inviteMapVersionErr,
+  inviteOutsideWorldErr,
   permissionErr,
   userAlreadyInAllianceErr,
 } from "../../errors/errors.js";
@@ -24,11 +26,10 @@ const INVITE_FIELDS = ["userid", "username", "alliance_id", "save.worldid"] as c
  * is the leader's to send rather than being refused outright. The original's map
  * room enabled the button for every member, so members do reach here.
  *
- * Alliances reach across worlds but not across Map Room versions, so a player on
- * the other version cannot be invited. The original restricted invites to the
- * leader's own world and sector, which assumed players could relocate towards each
- * other; ours cannot choose a world, so the rule is relaxed to match what a player
- * can actually reach by requesting to join.
+ * A Map Room 2 alliance belongs to one world, so only players in that world can be
+ * invited - as in the original, whose refusal pointed the leader at the outpost
+ * invitation as the way to bring a distant friend into their world. A Map Room 3
+ * alliance reaches across worlds, so any Map Room 3 player can be.
  *
  * @param {Context} ctx - Koa context.
  */
@@ -47,13 +48,13 @@ export const inviteUser: KoaController = async (ctx) => {
 
   if (player.alliance_id) throw userAlreadyInAllianceErr();
 
-  const worldid = player.save?.worldid;
-  if (!worldid) throw inviteMapVersionErr(player.username);
+  const canJoin = await canJoinAlliance(alliance, player.save?.worldid);
 
-  const mapVersion = await getWorldMapVersion(worldid);
-  const sameMapVersion = mapVersion === alliance.map_version;
-
-  if (!sameMapVersion) throw inviteMapVersionErr(player.username);
+  if (!canJoin) {
+    throw alliance.map_version === MapRoomVersion.V3 
+    ? inviteMapVersionErr(player.username) 
+    : inviteOutsideWorldErr(player.username);
+  }
 
   await openInvite(alliance, player.userid, AllianceInviteType.INVITE);
 

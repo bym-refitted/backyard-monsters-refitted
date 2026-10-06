@@ -650,6 +650,11 @@ package {
         }
 
         public function get offset():Point {
+            if (!_canvasContainer) {
+                this._point.x = 0;
+                this._point.y = 0;
+                return this._point;
+            }
             this._point.x = _canvasContainer.x;
             this._point.y = _canvasContainer.y;
             return this._point;
