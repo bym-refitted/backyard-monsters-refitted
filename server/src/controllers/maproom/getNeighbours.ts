@@ -2,34 +2,47 @@ import z from "zod";
 import type { KoaController } from "../../utils/KoaController.js";
 import { Status } from "../../enums/StatusCodes.js";
 import { User } from "../../database/models/user.model.js";
+import { Save } from "../../database/models/save.model.js";
 import { InfernoMaproom } from "../../database/models/infernomaproom.model.js";
 import { Maproom } from "../../database/models/maproom.model.js";
+import type { NeighbourAttackType } from "../../database/models/neighbourattack.model.js";
 import { postgres } from "../../server.js";
 import { BaseType } from "../../enums/Base.js";
-import { findInfernoNeighbours } from "../../services/maproom/inferno/findInfernoNeighbours.js";
-import { refreshNeighbours } from "../../services/maproom/v1/refreshNeighbours.js";
+import { refreshNeighbours } from "../../services/maproom/refreshNeighbours.js";
 import { getNeighbourIds, toNeighbourData } from "../../services/maproom/neighbours.js";
 import { applyAttackHistory } from "../../services/maproom/attackHistory.js";
 import { NEIGHBOUR_REFRESH_HOURS, MAX_CLIENT_NEIGHBOURS } from "../../config/NeighbourConfig.js";
 import { updateNeighbourData } from "../../services/maproom/updateNeighbourData.js";
 import { getFriendIds } from "../../services/friends/friendList.js";
+import type { NeighbourData } from "../../types/NeighbourData.js";
 
 type NeighbourCache = { neighborsLastCalculated?: Date; neighbors: unknown[] };
 
+interface NeighbourMap {
+  userId: number;
+  save: Pick<Save, "points" | "basevalue">;
+  maproom: Pick<Maproom | InfernoMaproom, "neighborsLastCalculated">;
+  neighbourIds: number[];
+  friendIds: Set<number>;
+  type: NeighbourAttackType;
+}
+
 const GetNeighboursSchema = z.object({ type: z.string().optional() });
 
-/** Full cache TTL once >= 10 neighbours are found. */
-const CACHE_VALIDITY_HOURS = 24 * 7 * 2;
+const MAPROOM_FIELDS = ["userid", "neighborsLastCalculated"] as const;
 
-/** Retry interval when the cached list has fewer than 10 neighbours. */
+/** Retry interval when a map has fewer than 10 neighbours. */
 const RETRY_CACHE_MINUTES = 30;
 
 /**
  * Controller to get neighbours for PvP matchmaking.
  * Branches on the type request body param:
- * 
- * 1. inferno - Inferno map room neighbours (cached, level-ranged, cross-world)
- * 2. absent/other - MR1 overworld neighbours (cached, level-ranged, global)
+ *
+ * 1. inferno - Inferno map room neighbours
+ * 2. absent/other - MR1 overworld neighbours
+ *
+ * On both maps a player's neighbours are the players they share a link with, so
+ * everyone on their map has them on theirs.
  *
  * @param {Context} ctx - Koa context object containing authenticated user and request/response
  * @returns {Promise<void>} - Sets response body with neighbour data or error
@@ -47,9 +60,7 @@ export const getNeighbours: KoaController = async (ctx) => {
 /**
  * Handles neighbour lookups for the Inferno Map Room.
  *
- * Serves the cached neighbour list if fresh; otherwise re-runs the search.
- * Uses a short 30-minute retry window when fewer than 10 neighbours are cached,
- * and the full 2-week TTL once the list is healthy.
+ * The Inferno map has no friends or truces, so neither is looked up.
  *
  * @param {Context} ctx - Koa context containing the authenticated user
  * @returns {Promise<void>} - Sets response body with inferno neighbour data
@@ -57,41 +68,35 @@ export const getNeighbours: KoaController = async (ctx) => {
 const getInfernoNeighbours: KoaController = async (ctx) => {
   const user: User = ctx.authUser;
 
-  await postgres.em.populate(user, ["infernosave"]);
+  await postgres.em.populate(user, ["infernosave"], { fields: ["infernosave.points", "infernosave.basevalue"] });
 
-  const infernoMaproom = await postgres.em.findOne(InfernoMaproom, { userid: user.userid });
+  const save = user.infernosave;
 
-  if (!infernoMaproom) throw new Error("Inferno maproom not found.");
-
-  const currentDate = new Date();
-  const cacheExpiry = new Date(currentDate.getTime() - CACHE_VALIDITY_HOURS * 60 * 60 * 1000);
-  const retryExpiry = new Date(currentDate.getTime() - RETRY_CACHE_MINUTES * 60 * 1000);
-
-  const getNewNeighbours = needsNewNeighbours(infernoMaproom, cacheExpiry, retryExpiry);
-
-  if (getNewNeighbours) {
-    const foundNeighbours = await findInfernoNeighbours(user);
-
-    // Preserve previous attack data on attackers who may have attacked before defender seeded
-    infernoMaproom.neighbors = foundNeighbours.map((newNeighbor) => {
-      const existing = infernoMaproom.neighbors.find((old) => old.userid === newNeighbor.userid);
-      if (existing) {
-        return {
-          ...newNeighbor,
-          attacksfrom: existing.attacksfrom || 0,
-          attacksto: existing.attacksto || 0,
-          retaliatecount: existing.retaliatecount || 0,
-        };
-      }
-      return newNeighbor;
-    });
-
-    infernoMaproom.neighborsLastCalculated = currentDate;
-    postgres.em.persist(infernoMaproom);
-    await postgres.em.flush();
+  if (!save) {
+    ctx.status = Status.OK;
+    ctx.body = { error: 0, wmbases: [], bases: [] };
+    return;
   }
 
-  const neighbours = await updateNeighbourData(infernoMaproom.neighbors, BaseType.INFERNO);
+  const [maproom, neighbourIds] = await Promise.all([
+    postgres.em.findOne(InfernoMaproom, { userid: user.userid }, { fields: MAPROOM_FIELDS }),
+    getNeighbourIds(user.userid, BaseType.INFERNO),
+  ]);
+
+  if (!maproom) throw new Error("Inferno maproom not found.");
+
+  const neighbourMap: NeighbourMap = {
+    userId: user.userid,
+    save,
+    maproom,
+    neighbourIds,
+    friendIds: new Set(),
+    type: BaseType.INFERNO,
+  };
+
+  const withHistory = await loadNeighbours(neighbourMap);
+
+  const neighbours = await updateNeighbourData(withHistory, BaseType.INFERNO);
 
   ctx.status = Status.OK;
   ctx.body = { error: 0, wmbases: [], bases: neighbours };
@@ -99,10 +104,6 @@ const getInfernoNeighbours: KoaController = async (ctx) => {
 
 /**
  * Handles neighbour lookups for the MR1 Overworld Map Room.
- *
- * A player's neighbours are the players they share a link with, so everyone on
- * their map has them on theirs. The map is tidied and topped up once a day,
- * or every 30 minutes while the map has fewer than 10 neighbours.
  *
  * @param {Context} ctx - Koa context containing the authenticated user
  * @returns {Promise<void>} - Sets response body with overworld neighbour data
@@ -119,8 +120,8 @@ const getOverworldNeighbours: KoaController = async (ctx) => {
     return;
   }
 
-  const [existingMaproom, friendIds, existingNeighbourIds] = await Promise.all([
-    postgres.em.findOne(Maproom, { userid: user.userid }, { fields: ["userid", "neighborsLastCalculated"] }),
+  const [existingMaproom, friendIds, neighbourIds] = await Promise.all([
+    postgres.em.findOne(Maproom, { userid: user.userid }, { fields: MAPROOM_FIELDS }),
     getFriendIds(user.userid),
     getNeighbourIds(user.userid, BaseType.MAIN),
   ]);
@@ -128,18 +129,50 @@ const getOverworldNeighbours: KoaController = async (ctx) => {
   // Initial Map Room 1 creation
   const maproom = existingMaproom ?? await Maproom.setupMapRoomData(postgres.em, user);
 
+  const neighbourMap: NeighbourMap = {
+    userId: user.userid,
+    save,
+    maproom,
+    neighbourIds,
+    friendIds,
+    type: BaseType.MAIN,
+  };
+
+  const withHistory = await loadNeighbours(neighbourMap);
+
+  const neighbours = await updateNeighbourData(withHistory, BaseType.MAIN, user.userid, friendIds);
+
+  ctx.status = Status.OK;
+  ctx.body = { error: 0, wmbases: [], bases: neighbours };
+};
+
+/**
+ * Builds a player's neighbour list for either map, with the attack history
+ * between them filled in.
+ *
+ * The map is tidied and topped up once a day, or every 30 minutes while it has
+ * fewer than 10 neighbours.
+ *
+ * @param {NeighbourMap} options - The map being read
+ * @param {number} options.userId - The player reading their map
+ * @param {Pick<Save, "points" | "basevalue">} options.save - Their save on that map, for their level
+ * @param {Pick<Maproom | InfernoMaproom, "neighborsLastCalculated">} options.maproom - Where the last refresh is recorded
+ * @param {number[]} options.neighbourIds - Everyone on their map now
+ * @param {Set<number>} options.friendIds - Their friends
+ * @param {NeighbourAttackType} options.type - Which map is being read
+ * @returns {Promise<NeighbourData[]>} Their neighbours, ready for updateNeighbourData
+ */
+const loadNeighbours = async ({ userId, save, maproom, neighbourIds, friendIds, type }: NeighbourMap): Promise<NeighbourData[]> => {
   const currentDate = new Date();
   const refreshExpiry = new Date(currentDate.getTime() - NEIGHBOUR_REFRESH_HOURS * 60 * 60 * 1000);
   const retryExpiry = new Date(currentDate.getTime() - RETRY_CACHE_MINUTES * 60 * 1000);
-
-  let neighbourIds = existingNeighbourIds;
 
   const cache = { neighborsLastCalculated: maproom.neighborsLastCalculated, neighbors: neighbourIds };
 
   const getNewNeighbours = needsNewNeighbours(cache, refreshExpiry, retryExpiry);
 
   if (getNewNeighbours) {
-    neighbourIds = await refreshNeighbours({ userId: user.userid, save, neighbourIds, friendIds });
+    neighbourIds = await refreshNeighbours({ userId, save, neighbourIds, friendIds, type });
 
     maproom.neighborsLastCalculated = currentDate;
     postgres.em.persist(maproom);
@@ -149,28 +182,24 @@ const getOverworldNeighbours: KoaController = async (ctx) => {
   const userIds = neighbourIds.slice(0, MAX_CLIENT_NEIGHBOURS);
   const neighbourData = toNeighbourData(userIds);
 
-  const withHistory = await applyAttackHistory(user.userid, neighbourData, BaseType.MAIN);
-  const neighbours = await updateNeighbourData(withHistory, BaseType.MAIN, user.userid, friendIds);
-
-  ctx.status = Status.OK;
-  ctx.body = { error: 0, wmbases: [], bases: neighbours };
+  return applyAttackHistory(userId, neighbourData, type);
 };
 
 /**
- * Determines whether a new neighbour search should be run.
+ * Determines whether a map is due a refresh.
  *
- * Returns true immediately if no search has ever been run. Otherwise applies
- * a short retry TTL when the cached list is thin (< 10), or the full cache TTL
- * when the list is healthy (>= 10).
+ * Returns true immediately if it has never had one. Otherwise applies a short
+ * retry interval when the map is thin (< 10), or the full refresh interval
+ * when it is healthy (>= 10).
  *
- * @param {NeighbourCache} cache - The maproom record holding the neighbour list and last-calculated timestamp
- * @param {Date} cacheExpiry - Cutoff date for the full 2-week TTL (now minus 2 weeks)
- * @param {Date} retryExpiry - Cutoff date for the short retry TTL (now minus 30 minutes)
- * @returns {boolean} - True if a new search should be run
+ * @param {NeighbourCache} cache - The neighbour list and when it was last refreshed
+ * @param {Date} cacheExpiry - Cutoff date for the full refresh interval
+ * @param {Date} retryExpiry - Cutoff date for the short retry interval (now minus 30 minutes)
+ * @returns {boolean} - True if a refresh should be run
  */
 const needsNewNeighbours = (cache: NeighbourCache, cacheExpiry: Date, retryExpiry: Date) => {
   if (!cache.neighborsLastCalculated) return true;
-  
+
   if (cache.neighbors.length < 10) return cache.neighborsLastCalculated < retryExpiry;
 
   return cache.neighborsLastCalculated < cacheExpiry;
