@@ -5,8 +5,11 @@ import { User } from "../../database/models/user.model.js";
 import { postgres } from "../../server.js";
 import { RequestJoinSchema } from "../../schemas/AllianceSchemas.js";
 import { openInvite } from "../../services/alliance/allianceInvites.js";
+import { canJoinAlliance } from "../../services/alliance/allianceWorlds.js";
+import { MapRoomVersion } from "../../enums/MapRoom.js";
 import {
   allianceNoWorldErr,
+  joinMapVersionErr,
   joinOutsideWorldErr,
   mustLeaveAllianceErr,
   permissionErr,
@@ -18,9 +21,10 @@ import type { KoaController } from "../../utils/KoaController.js";
  * Request to Join button. The request lands in the leader's Invites tab as a
  * pending row for them to accept or decline.
  *
- * An alliance belongs to one world, so only players already in that world can ask to
- * join it. The Browse tab still lists alliances from every world on the Map Room
- * version, as the original's did - looking is not joining.
+ * A Map Room 2 alliance belongs to one world, so only players already in that world
+ * can ask to join it. The Browse tab still lists alliances from every world on the
+ * Map Room version, as the original's did - looking is not joining. A Map Room 3
+ * alliance reaches across worlds, so any Map Room 3 player can ask.
  *
  * @param {Context} ctx - Koa context.
  */
@@ -38,7 +42,10 @@ export const requestJoin: KoaController = async (ctx) => {
   const worldid = user.save?.worldid;
   if (!worldid) throw allianceNoWorldErr();
 
-  if (worldid !== alliance.world_id) throw joinOutsideWorldErr();
+  const joinAlliance = await canJoinAlliance(alliance, worldid);
+
+  if (!joinAlliance) 
+    throw alliance.map_version === MapRoomVersion.V3 ? joinMapVersionErr() : joinOutsideWorldErr();
 
   await openInvite(alliance, user.userid, AllianceInviteType.REQUEST);
 
