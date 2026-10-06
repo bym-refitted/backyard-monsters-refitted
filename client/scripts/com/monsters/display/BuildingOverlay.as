@@ -112,7 +112,6 @@ package com.monsters.display {
             var _loc11_:int = 0;
             var _loc3_:int = -1;
             var _loc4_:String = "";
-            var _loc7_:int = getTimer();
             if (!_buildings[param1._id]) {
                 Setup(param1);
             }
