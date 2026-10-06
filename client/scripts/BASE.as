@@ -5028,37 +5028,41 @@ package {
             var wasSaveBlocked:Boolean = _blockSave;
             _blockSave = true;
 
-            // Resolve every node first: this also creates newly placed decorations.
-            for each (var node:BaseTemplateNode in param1.nodes) {
-                building = getBuildingFromNode(node);
-                if (building) {
-                    templateBuildings.push(building);
-                    destinations.push(GRID.ToISO(node.x, node.y, 0));
+            try {
+                // Resolve every node first: this also creates newly placed decorations.
+                for each (var node:BaseTemplateNode in param1.nodes) {
+                    building = getBuildingFromNode(node);
+                    if (building) {
+                        templateBuildings.push(building);
+                        destinations.push(GRID.ToISO(node.x, node.y, 0));
+                    }
+                }
+
+                // Clear all old footprints before adding any destinations, so swaps
+                // cannot clear cells that another building has just occupied.
+                for each (building in templateBuildings) {
+                    building.GridCost(false);
+                }
+
+                for (var i:int = 0; i < templateBuildings.length; i++) {
+                    templateBuildings[i].setPosition(destinations[i].x, destinations[i].y);
+                }
+
+                // Include unchanged buildings and new decorations, whose cells
+                // may have overlapped another building's old footprint.
+                for each (building in templateBuildings) {
+                    building.GridCost(true);
+                }
+                PATHING.ResetCosts();
+
+                if (!BYMConfig.instance.RENDERER_ON) {
+                    MAP.SortDepth();
                 }
             }
-
-            // Clear all old footprints before adding any destinations, so swaps
-            // cannot clear cells that another building has just occupied.
-            for each (building in templateBuildings) {
-                building.GridCost(false);
+            finally {
+                _blockSave = wasSaveBlocked;
             }
 
-            for (var i:int = 0; i < templateBuildings.length; i++) {
-                templateBuildings[i].setPosition(destinations[i].x, destinations[i].y);
-            }
-
-            // Include unchanged buildings and new decorations, whose cells
-            // may have overlapped another building's old footprint.
-            for each (building in templateBuildings) {
-                building.GridCost(true);
-            }
-            PATHING.ResetCosts();
-
-            if (!BYMConfig.instance.RENDERER_ON) {
-                MAP.SortDepth();
-            }
-
-            _blockSave = wasSaveBlocked;
             Save();
         }
 
