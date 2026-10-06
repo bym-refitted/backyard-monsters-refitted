@@ -1,5 +1,5 @@
 import { BaseMode, BaseType } from "../../../../enums/Base.js";
-import { MapRoomCell, MapRoomVersion } from "../../../../enums/MapRoom.js";
+import { AttackPermission, MapRoomCell, MapRoomVersion } from "../../../../enums/MapRoom.js";
 import { World } from "../../../../database/models/world.model.js";
 import { WorldMapCell } from "../../../../database/models/worldmapcell.model.js";
 import { postgres } from "../../../../server.js";
@@ -20,6 +20,7 @@ import { getFriendIds } from "../../../../services/friends/friendList.js";
 import { MR1_TRIBE_IDS } from "../../../../game-data/tribes/v1/index.js";
 import { recordAttack } from "../../../../services/maproom/attackHistory.js";
 import { addNeighbours, areNeighbours } from "../../../../services/maproom/neighbours.js";
+import { levelGapFor, requireAttackLevel, type RequireAttackLevel } from "../../../../services/maproom/attackPermission.js";
 import { isShinyLocked } from "../../../../services/user/shinyLock.js";
 import {
   generateNoise,
@@ -62,6 +63,8 @@ export const baseModeAttack = async ({ user, baseid, mapversion, attackCost }: B
 
   if (!save) throw new Error(`Save not found for baseid: ${baseid}`);
 
+  let permission = AttackPermission.ATTACKABLE;
+
   if (save.type !== BaseType.TRIBE) {
     if (save.protected > getCurrentDateTime()) throw baseProtectedErr();
 
@@ -78,6 +81,17 @@ export const baseModeAttack = async ({ user, baseid, mapversion, attackCost }: B
 
         if (!isNeighbour) throw notNeighboursErr();
       }
+
+      const attack: RequireAttackLevel = {
+        attackerId: user.userid,
+        defenderId: save.saveuserid,
+        attackerSave: userSave,
+        defenderSave: save,
+        type: BaseType.MAIN,
+        levelGap: levelGapFor(mapversion),
+      };
+
+      permission = await requireAttackLevel(attack);
 
       const lastSeen = await redis.get(`last-seen:${BaseType.MAIN}:${save.userid}`);
       
@@ -177,8 +191,11 @@ export const baseModeAttack = async ({ user, baseid, mapversion, attackCost }: B
 
     if (!defender) throw new Error("Defender user not found.");
 
+    if (save.type === BaseType.MAIN) {
+      await recordAttack(user.userid, defender.userid, BaseType.MAIN, permission);
+    }
+
     if (mapversion === MapRoomVersion.V1) {
-      await recordAttack(user.userid, defender.userid, BaseType.MAIN);
       await addNeighbours(user.userid, [defender.userid], BaseType.MAIN);
     }
     

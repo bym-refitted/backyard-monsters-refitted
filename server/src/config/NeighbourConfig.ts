@@ -1,5 +1,5 @@
 /** How many levels apart two players can be and still be made neighbours. */
-export const NEIGHBOUR_LEVEL_RANGE = 7;
+export const NEIGHBOUR_LEVEL_RANGE = 10;
 
 /**
  * How far apart in level two neighbours may drift before they stop being
@@ -7,6 +7,22 @@ export const NEIGHBOUR_LEVEL_RANGE = 7;
  * either side does not cost a neighbour straight away.
  */
 export const NEIGHBOUR_DROP_LEVEL_RANGE = NEIGHBOUR_LEVEL_RANGE + 3;
+
+/**
+ * How many levels below their own a player can still attack. Anyone further
+ * down is off limits, unless they attacked first.
+ */
+export const ATTACK_LEVEL_GAP = 7;
+
+/**
+ * The same limit on Map Room 2 and 3, where a player's targets are whoever is
+ * near them on the world map and are not picked by level: 12 or more levels
+ * below is off limits.
+ */
+export const WORLD_ATTACK_LEVEL_GAP = 11;
+
+/** Two players who have both reached this level can always attack each other. */
+export const ATTACK_LEVEL_EXEMPT_FROM = 40;
 
 /** How many neighbours a refresh tops a player's map up to. */
 export const NEIGHBOUR_TARGET = 40;

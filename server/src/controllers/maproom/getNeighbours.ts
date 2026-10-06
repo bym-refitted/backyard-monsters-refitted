@@ -12,8 +12,9 @@ import { refreshNeighbours } from "../../services/maproom/refreshNeighbours.js";
 import { getNeighbourIds, toNeighbourData } from "../../services/maproom/neighbours.js";
 import { applyAttackHistory } from "../../services/maproom/attackHistory.js";
 import { NEIGHBOUR_REFRESH_HOURS, MAX_CLIENT_NEIGHBOURS } from "../../config/NeighbourConfig.js";
-import { updateNeighbourData } from "../../services/maproom/updateNeighbourData.js";
+import { updateNeighbourData, type UpdateNeighbourData } from "../../services/maproom/updateNeighbourData.js";
 import { getFriendIds } from "../../services/friends/friendList.js";
+import { calculateBaseLevel } from "../../services/base/calculateBaseLevel.js";
 import type { NeighbourData } from "../../types/NeighbourData.js";
 
 type NeighbourCache = { neighborsLastCalculated?: Date; neighbors: unknown[] };
@@ -96,7 +97,13 @@ const getInfernoNeighbours: KoaController = async (ctx) => {
 
   const withHistory = await loadNeighbours(neighbourMap);
 
-  const neighbours = await updateNeighbourData(withHistory, BaseType.INFERNO);
+  const neighbourUpdate: UpdateNeighbourData = {
+    cachedNeighbours: withHistory,
+    baseType: BaseType.INFERNO,
+    viewerLevel: calculateBaseLevel(save.points, save.basevalue),
+  };
+
+  const neighbours = await updateNeighbourData(neighbourUpdate);
 
   ctx.status = Status.OK;
   ctx.body = { error: 0, wmbases: [], bases: neighbours };
@@ -140,7 +147,15 @@ const getOverworldNeighbours: KoaController = async (ctx) => {
 
   const withHistory = await loadNeighbours(neighbourMap);
 
-  const neighbours = await updateNeighbourData(withHistory, BaseType.MAIN, user.userid, friendIds);
+  const neighbourUpdate: UpdateNeighbourData = {
+    cachedNeighbours: withHistory,
+    baseType: BaseType.MAIN,
+    viewerLevel: calculateBaseLevel(save.points, save.basevalue),
+    currentUserId: user.userid,
+    friends: friendIds,
+  };
+
+  const neighbours = await updateNeighbourData(neighbourUpdate);
 
   ctx.status = Status.OK;
   ctx.body = { error: 0, wmbases: [], bases: neighbours };

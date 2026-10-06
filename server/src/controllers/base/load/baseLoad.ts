@@ -284,7 +284,7 @@ export const baseLoad: KoaController = async (ctx) => {
     }
   }
 
-  const attackAllowed = canAttack(userSave, baseSave, mapversion);
+  const attackAllowed = await canAttack(userSave, baseSave, mapversion);
 
   let baseOwner;
 
