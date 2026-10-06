@@ -24,6 +24,8 @@ package com.monsters.rendering {
 
         private const _bm:Bitmap = new Bitmap();
 
+        private const _drawBounds:Rectangle = new Rectangle();
+
         private var _curCopyIndex:uint;
 
         private var _curDrawIndex:uint;
@@ -118,6 +120,16 @@ package com.monsters.rendering {
                         this._bm.bitmapData = entryBmd;
                         this._bm.filters = [entry.renderer_friend::_filter];
                         this.renderer_friend::_canvas.draw(this._bm, this._matrix, null, entry.renderer_friend::_blendMode);
+                    }
+                    else if (entryBmd) {
+                        var right:Number = this._pt.x + entryBmd.width * this._matrix.a;
+                        var bottom:Number = this._pt.y + entryBmd.height * this._matrix.d;
+                        // Round outward and keep a pixel of padding at transformed edges.
+                        this._drawBounds.x = Math.floor(Math.min(this._pt.x, right)) - 1;
+                        this._drawBounds.y = Math.floor(Math.min(this._pt.y, bottom)) - 1;
+                        this._drawBounds.width = Math.ceil(Math.max(this._pt.x, right)) + 1 - this._drawBounds.x;
+                        this._drawBounds.height = Math.ceil(Math.max(this._pt.y, bottom)) + 1 - this._drawBounds.y;
+                        this.renderer_friend::_canvas.draw(entryBmd, this._matrix, null, entry.renderer_friend::_blendMode, this._drawBounds);
                     }
                     else {
                         this.renderer_friend::_canvas.draw(entry.renderer_friend::_data, this._matrix, null, entry.renderer_friend::_blendMode);
