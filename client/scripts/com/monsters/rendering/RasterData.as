@@ -145,6 +145,10 @@ package com.monsters.rendering {
             }
         }
 
+        public function get pt():Point {
+            return this.renderer_friend::_pt;
+        }
+
         public function set pt(param1:Point):void {
             this.renderer_friend::_pt = param1;
         }
