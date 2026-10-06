@@ -574,15 +574,16 @@ package {
             }
         }
 
-        override public function StopMoveB():void {
-            super.StopMoveB();
-            var _loc1_:int = 0;
-            while (_loc1_ < CREATURES._guardianList.length) {
-                if (CREATURES._guardianList[_loc1_]) {
-                    CREATURES._guardianList[_loc1_]._targetCenter = GRID.FromISO(_mc.x, _mc.y);
-                    CREATURES._guardianList[_loc1_].changeModeCage();
+        override protected function onMove():void {
+            super.onMove();
+
+            for each (var guardian:ChampionBase in CREATURES._guardianList) {
+                if (guardian == null) {
+                    continue;
                 }
-                _loc1_++;
+
+                guardian._targetCenter = GRID.FromISO(_mc.x, _mc.y);
+                guardian.changeModeCage();
             }
         }
 
