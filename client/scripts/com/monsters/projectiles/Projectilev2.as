@@ -1,5 +1,6 @@
 package com.monsters.projectiles {
     import com.monsters.GameObject;
+    import com.monsters.configs.BYMConfig;
     import com.monsters.events.ProjectileEvent;
     import com.monsters.interfaces.IAttackable;
     import com.monsters.interfaces.ITargetable;
@@ -8,6 +9,7 @@ package com.monsters.projectiles {
     import com.monsters.monsters.creeps.CreepBase;
     import com.monsters.projectiles.projectileComponents.ProjectileComponent;
     import com.monsters.rendering.RasterData;
+    import flash.display.Bitmap;
     import flash.display.BitmapData;
     import flash.display.IBitmapDrawable;
     import flash.events.EventDispatcher;
@@ -34,6 +36,8 @@ package com.monsters.projectiles {
         protected var m_components:Vector.<ProjectileComponent>;
 
         protected var m_rasterData:RasterData;
+
+        private var m_bitmap:Bitmap;
 
         protected var m_angleToTargetPoint:Number;
 
@@ -65,8 +69,18 @@ package com.monsters.projectiles {
 
         public function setup(param1:IBitmapDrawable, param2:Number, param3:Number, param4:ITargetable, param5:Number, param6:Number = 0, param7:IAttackable = null, ...rest):void {
             this.m_rasterData = new RasterData(param1, new Point(param2, param3), int.MAX_VALUE);
+            if (!BYMConfig.instance.RENDERER_ON) {
+                this.m_bitmap = MAP._PROJECTILES.addChild(new Bitmap(BitmapData(param1))) as Bitmap;
+            }
+
             this.m_x = param2 - BitmapData(this.m_rasterData.data).width * 0.5;
             this.m_y = param3 - BitmapData(this.m_rasterData.data).height * 0.5;
+
+            if (this.m_bitmap) {
+                this.m_bitmap.x = this.m_x;
+                this.m_bitmap.y = this.m_y;
+            }
+
             this.m_target = param4;
             this.m_speed = param5;
             this.m_damage = param6;
@@ -117,6 +131,7 @@ package com.monsters.projectiles {
             }
             if (this.m_target) {
                 this.render();
+                this.showBitmap();
             }
             else {
                 this.destroy();
@@ -143,6 +158,16 @@ package com.monsters.projectiles {
         protected function render():void {
             var _loc1_:Point = MAP.instance.offset;
             this.m_rasterData.pt = new Point(this.m_x - _loc1_.x, this.m_y - _loc1_.y);
+        }
+
+        /** Moves the on-screen bitmap to wherever render() put the raster data. */
+        private function showBitmap():void {
+            var mapOffset:Point = null;
+            if (this.m_bitmap) {
+                mapOffset = MAP.instance.offset;
+                this.m_bitmap.x = this.m_rasterData.pt.x + mapOffset.x;
+                this.m_bitmap.y = this.m_rasterData.pt.y + mapOffset.y;
+            }
         }
 
         private function hit():void {
@@ -173,6 +198,12 @@ package com.monsters.projectiles {
             this.m_target = null;
             this.m_rasterData.clear();
             this.m_rasterData = null;
+            if (this.m_bitmap) {
+                if (this.m_bitmap.parent) {
+                    this.m_bitmap.parent.removeChild(this.m_bitmap);
+                }
+                this.m_bitmap = null;
+            }
             this.targetOffset = null;
             GLOBAL.removeFastTickable(this);
             this.m_components = new Vector.<ProjectileComponent>();
