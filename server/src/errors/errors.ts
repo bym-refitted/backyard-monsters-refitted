@@ -186,6 +186,14 @@ export const playerLeftMapRoomErr = () =>
     isClientFriendly: false,
   });
 
+export const notNeighboursErr = () =>
+  new ClientSafeError({
+    message: "This player is not on your map.",
+    status: Status.FORBIDDEN,
+    data: {},
+    isClientFriendly: false,
+  });
+
 export const takeoverCellErr = () =>
   new ClientSafeError({
     message: "The server attempted to take over this cell but failed unexpectedly. Please try again.",

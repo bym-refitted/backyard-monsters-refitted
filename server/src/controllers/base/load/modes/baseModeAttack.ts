@@ -13,13 +13,13 @@ import { getGeneratedCells, cellKey } from "../../../../services/maproom/v3/gene
 import { createAttackLog } from "../../../../services/base/createAttackLog.js";
 import { updateResources, Operation } from "../../../../services/base/updateResources.js";
 import { isAttackActive } from "../../../../services/base/isAttackActive.js";
-import { baseUnderAttackErr, baseProtectedErr, userOnlineErr, playerLeftMapRoomErr, truceActiveErr, shinyLockedErr } from "../../../../errors/errors.js";
+import { baseUnderAttackErr, baseProtectedErr, userOnlineErr, playerLeftMapRoomErr, notNeighboursErr, truceActiveErr, shinyLockedErr } from "../../../../errors/errors.js";
 import { redis } from "../../../../server.js";
 import { isTruceActive } from "../../../../services/mail/isTruceActive.js";
 import { getFriendIds } from "../../../../services/friends/friendList.js";
 import { MR1_TRIBE_IDS } from "../../../../game-data/tribes/v1/index.js";
 import { recordAttack } from "../../../../services/maproom/attackHistory.js";
-import { addNeighbours } from "../../../../services/maproom/neighbours.js";
+import { addNeighbours, areNeighbours } from "../../../../services/maproom/neighbours.js";
 import { isShinyLocked } from "../../../../services/user/shinyLock.js";
 import {
   generateNoise,
@@ -72,6 +72,12 @@ export const baseModeAttack = async ({ user, baseid, mapversion, attackCost }: B
       const hasLeftMR1 = save.mapversion !== MapRoomVersion.V1;
 
       if (isMR1Attack && hasLeftMR1) throw playerLeftMapRoomErr();
+
+      if (isMR1Attack) {
+        const isNeighbour = await areNeighbours(user.userid, save.saveuserid, BaseType.MAIN);
+
+        if (!isNeighbour) throw notNeighboursErr();
+      }
 
       const lastSeen = await redis.get(`last-seen:${BaseType.MAIN}:${save.userid}`);
       

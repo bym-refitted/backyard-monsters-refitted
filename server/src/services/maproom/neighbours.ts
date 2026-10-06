@@ -54,6 +54,26 @@ export const addNeighbours = async (userId: number, otherIds: number[], type: Ne
 };
 
 /**
+ * Whether two players are on one another's maps.
+ *
+ * @param {number} userId - One player
+ * @param {number} otherId - The other player
+ * @param {NeighbourAttackType} type - Which map to check
+ * @returns {Promise<boolean>} True when they are neighbours
+ */
+export const areNeighbours = async (userId: number, otherId: number, type: NeighbourAttackType): Promise<boolean> => {
+  const where = {
+    type,
+    user_a_id: Math.min(userId, otherId),
+    user_b_id: Math.max(userId, otherId),
+  };
+
+  const links = await postgres.em.count(NeighbourLink, where);
+
+  return links > 0;
+};
+
+/**
  * Takes a player and each of the others off one another's maps.
  *
  * @param {number} userId - The player
