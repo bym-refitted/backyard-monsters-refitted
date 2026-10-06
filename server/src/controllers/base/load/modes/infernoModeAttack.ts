@@ -8,6 +8,7 @@ import { getCurrentDateTime } from "../../../../utils/getCurrentDateTime.js";
 import type { AttackDetails } from "./baseModeAttack.js";
 import { recordAttack } from "../../../../services/maproom/attackHistory.js";
 import { addNeighbours, areNeighbours } from "../../../../services/maproom/neighbours.js";
+import { requireAttackLevel, type RequireAttackLevel } from "../../../../services/maproom/attackPermission.js";
 import {
   InfernoMaproom,
   type TribeData,
@@ -48,6 +49,20 @@ export const infernoModeAttack = async (user: User, baseid: string) => {
 
   if (!isNeighbour) throw notNeighboursErr();
 
+  const attackerSave = user.infernosave;
+
+  if (!attackerSave) throw new Error("Attacker inferno save not found.");
+
+  const attack: RequireAttackLevel = {
+    attackerId: user.userid,
+    defenderId: save.saveuserid,
+    attackerSave,
+    defenderSave: save,
+    type: BaseType.INFERNO,
+  };
+
+  const permission = await requireAttackLevel(attack);
+
   const lastSeen = await redis.get(`last-seen:${BaseType.INFERNO}:${save.userid}`);
   
   if (lastSeen && parseInt(lastSeen) >= getCurrentDateTime() - 60) throw userOnlineErr();
@@ -78,7 +93,7 @@ export const infernoModeAttack = async (user: User, baseid: string) => {
   if (!defender) throw new Error("Defender user not found.");
 
 
-  await recordAttack(user.userid, defender.userid, BaseType.INFERNO);
+  await recordAttack(user.userid, defender.userid, BaseType.INFERNO, permission);
   await addNeighbours(user.userid, [defender.userid], BaseType.INFERNO);
   await createAttackLog(user, defender, save);
 

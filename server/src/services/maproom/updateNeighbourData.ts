@@ -10,9 +10,18 @@ import { isAttackActive } from "../base/isAttackActive.js";
 import { calculateBaseLevel } from "../base/calculateBaseLevel.js";
 import type { NeighbourData } from "../../types/NeighbourData.js";
 import { BaseType } from "../../enums/Base.js";
+import { levelPermission } from "./attackPermission.js";
 
 
 type Base = BaseType.MAIN | BaseType.INFERNO;
+
+export interface UpdateNeighbourData {
+  cachedNeighbours: NeighbourData[];
+  baseType: Base;
+  viewerLevel: number;
+  currentUserId?: number;
+  friends?: Set<number>;
+}
 
 /**
  * Save fields fetched when updating live neighbour data.
@@ -41,18 +50,21 @@ const NEIGHBOUR_USER_FIELDS = ["userid", "username", "pic_square"] as const;
  * Filters out neighbours whose saves no longer exist in the database,
  * and any who have since upgraded off MR1.
  *
- * @param {NeighbourData[]} cachedNeighbours - The cached neighbour data
- * @param {Base.MAIN | Base.INFERNO} baseType - Which save type to query for live updates
- * @param {number} [currentUserId] - The player reading the list, for their truces
- * @param {Set<number>} [friends] - Their friends, resolved once by the caller
+ * @param {UpdateNeighbourData} options - Update options
+ * @param {NeighbourData[]} options.cachedNeighbours - The cached neighbour data
+ * @param {Base.MAIN | Base.INFERNO} options.baseType - Which save type to query for live updates
+ * @param {number} options.viewerLevel - The level of the player reading the list, for the level restriction
+ * @param {number} [options.currentUserId] - The player reading the list, for their truces
+ * @param {Set<number>} [options.friends] - Their friends, resolved once by the caller
  * @returns {Promise<NeighbourData[]>} - Updated neighbour data with current attack permissions
  */
-export const updateNeighbourData = async (
-  cachedNeighbours: NeighbourData[],
-  baseType: Base,
-  currentUserId?: number,
-  friends: Set<number> = new Set()
-): Promise<NeighbourData[]> => {
+export const updateNeighbourData = async ({
+  cachedNeighbours,
+  baseType,
+  viewerLevel,
+  currentUserId,
+  friends = new Set(),
+}: UpdateNeighbourData): Promise<NeighbourData[]> => {
   if (!cachedNeighbours.length) return cachedNeighbours;
 
   const userIds = cachedNeighbours.map((neighbour) => neighbour.userid);
@@ -109,10 +121,9 @@ export const updateNeighbourData = async (
     const sevenDayExpiry = neighbourSave.createtime + sevenDays;
     const specialProtection = isProtected && neighbourSave.protected === sevenDayExpiry;
 
-    // TODO:
-    // 1. Add AttackPermission.LEVEL_RESTRICTION if the neighbour is more than 5 levels below the attacker.
-    // 2. Add AttackPermission.HIGHER_LEVEL if the neighbour is more than 5 levels above the attacker
-    // 3. Add AttackPermission.VENGEANCE_MODE for breaking the level restriction if a low level attacked a high level.
+    const level = calculateBaseLevel(neighbourSave.points, neighbourSave.basevalue);
+    const retaliations = neighbour.retaliatecount ?? 0;
+
     if (specialProtection) {
       neighbour.attackpermitted = AttackPermission.SPECIAL_PROTECTION;
     } else if (isProtected) {
@@ -121,12 +132,22 @@ export const updateNeighbourData = async (
       neighbour.attackpermitted = AttackPermission.UNDER_ATTACK;
       neighbour.attacker = lastAttack.name;
     } else {
-      neighbour.attackpermitted = AttackPermission.ATTACKABLE;
+      const levels = {
+        attackerLevel: viewerLevel,
+        defenderLevel: level,
+        retaliations,
+      };
+
+      neighbour.attackpermitted = levelPermission(levels);
     }
+
+    const isVengeance = neighbour.attackpermitted === AttackPermission.VENGEANCE_MODE;
+
+    neighbour.retaliatecount = isVengeance ? retaliations : 0;
 
     neighbour.friend = friends.has(neighbour.userid) ? 1 : 0;
     neighbour.baseid = neighbourSave.baseid;
-    neighbour.level = calculateBaseLevel(neighbourSave.points, neighbourSave.basevalue);
+    neighbour.level = level;
     neighbour.saved = lastSeens.get(neighbour.userid) ?? 0;
 
     const owner = owners.get(neighbour.userid);

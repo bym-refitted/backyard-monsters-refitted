@@ -29,4 +29,7 @@ export class NeighbourAttack {
 
   @Property({ type: Date })
   last_attack_at: Opt<Date> = new Date();
+
+  @Property({ type: "number" })
+  retaliations_owed: Opt<number> = 0;
 }

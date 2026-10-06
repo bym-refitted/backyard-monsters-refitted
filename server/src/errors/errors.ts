@@ -194,6 +194,14 @@ export const notNeighboursErr = () =>
     isClientFriendly: false,
   });
 
+export const levelTooLowErr = () =>
+  new ClientSafeError({
+    message: "You can't attack this person because their level is too low compared to yours. You will receive better loot for attacking someone closer to your level.",
+    status: Status.FORBIDDEN,
+    data: {},
+    isClientFriendly: false,
+  });
+
 export const takeoverCellErr = () =>
   new ClientSafeError({
     message: "The server attempted to take over this cell but failed unexpectedly. Please try again.",
