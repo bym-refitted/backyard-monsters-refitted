@@ -1,3 +1,4 @@
+import type { Loaded } from "@mikro-orm/core";
 import { Save } from "../../../database/models/save.model.js";
 import { User } from "../../../database/models/user.model.js";
 import { postgres } from "../../../server.js";
@@ -10,10 +11,7 @@ import { isAttackActive } from "../../base/isAttackActive.js";
 import { calculateBaseLevel } from "../../base/calculateBaseLevel.js";
 import type { NeighbourData } from "../../../types/NeighbourData.js";
 import { BaseType } from "../../../enums/Base.js";
-import { levelPermission } from "../attackPermission.js";
-
-
-type Base = BaseType.MAIN | BaseType.INFERNO;
+import { levelPermission, type LevelPermission } from "../attackPermission.js";
 
 export interface UpdateNeighbourData {
   cachedNeighbours: NeighbourData[];
@@ -22,6 +20,10 @@ export interface UpdateNeighbourData {
   currentUserId?: number;
   friends?: Set<number>;
 }
+
+type Base = BaseType.MAIN | BaseType.INFERNO;
+
+type NeighbourSave = Loaded<Save, never, (typeof NEIGHBOUR_SAVE_FIELDS)[number]>;
 
 /**
  * Save fields fetched when updating live neighbour data.
@@ -43,6 +45,55 @@ const NEIGHBOUR_SAVE_FIELDS = [
  * User fields fetched to refresh the display details cached on each neighbour.
  */
 const NEIGHBOUR_USER_FIELDS = ["userid", "username", "pic_square"] as const;
+
+/**
+ * How long starter protection lasts from the moment a base is created, in seconds.
+ */
+const STARTER_PROTECTION = 7 * 24 * 60 * 60;
+
+/**
+ * Clears protection that has run out and attack ids left behind by finished attacks.
+ *
+ * @param {NeighbourSave[]} saves - The neighbours' saves
+ * @param {number} currentTime - The current time, in seconds
+ */
+const clearExpiredState = async (saves: NeighbourSave[], currentTime: number) => {
+  let changed = false;
+
+  for (const save of saves) {
+    const protectionExpired = save.protected > 0 && save.protected <= currentTime;
+    const attackFinished = save.attackid !== 0 && !isAttackActive(save);
+
+    if (protectionExpired) save.protected = 0;
+    if (attackFinished) save.attackid = 0;
+
+    if (protectionExpired || attackFinished) {
+      postgres.em.persist(save);
+      changed = true;
+    }
+  }
+
+  if (changed) await postgres.em.flush();
+};
+
+/**
+ * Decides whether the viewer may attack this neighbour, before truces are applied.
+ *
+ * @param {NeighbourSave} save - The neighbour's save
+ * @param {LevelPermission} levels - Both levels and the retaliations the viewer is owed
+ * @param {number} currentTime - The current time, in seconds
+ * @returns {AttackPermission} The permission the client should show
+ */
+const getAttackPermission = (save: NeighbourSave, levels: LevelPermission, currentTime: number) => {
+  const isProtected = save.protected > currentTime;
+  const starterExpiry = save.createtime + STARTER_PROTECTION;
+
+  if (isProtected && save.protected === starterExpiry) return AttackPermission.SPECIAL_PROTECTION;
+  if (isProtected) return AttackPermission.DAMAGE_PROTECTION;
+  if (isAttackActive(save)) return AttackPermission.UNDER_ATTACK;
+
+  return levelPermission(levels);
+};
 
 /**
  * Updates dynamic fields on cached neighbour data with current save state.
@@ -92,53 +143,27 @@ export const updateNeighbourData = async ({
   const owners = new Map(neighbourUsers.map((owner) => [owner.userid, owner]));
 
   const currentTime = getCurrentDateTime();
-  let needsFlush = false;
 
-  for (const save of neighbourSaves) {
-    if (save.protected > 0 && save.protected <= currentTime) {
-      save.protected = 0;
-      postgres.em.persist(save);
-      needsFlush = true;
-    }
-  }
+  await clearExpiredState(neighbourSaves, currentTime);
 
-  const updatedNeighbours = cachedNeighbours.flatMap((neighbour) => {
+  return cachedNeighbours.flatMap((neighbour) => {
     const neighbourSave = saves.get(neighbour.userid);
 
     if (!neighbourSave) return [];
 
-    const isProtected = neighbourSave.protected > 0 && neighbourSave.protected > currentTime;
-    const lastAttack = neighbourSave.attacks.at(-1);
-    const isUnderAttack = isAttackActive(neighbourSave);
-
-    if (neighbourSave.attackid !== 0 && !isUnderAttack) {
-      neighbourSave.attackid = 0;
-      postgres.em.persist(neighbourSave);
-      needsFlush = true;
-    }
-
-    const sevenDays = 7 * 24 * 60 * 60;
-    const sevenDayExpiry = neighbourSave.createtime + sevenDays;
-    const specialProtection = isProtected && neighbourSave.protected === sevenDayExpiry;
-
     const level = calculateBaseLevel(neighbourSave.points, neighbourSave.basevalue);
     const retaliations = neighbour.retaliatecount ?? 0;
 
-    if (specialProtection) {
-      neighbour.attackpermitted = AttackPermission.SPECIAL_PROTECTION;
-    } else if (isProtected) {
-      neighbour.attackpermitted = AttackPermission.DAMAGE_PROTECTION;
-    } else if (isUnderAttack && lastAttack) {
-      neighbour.attackpermitted = AttackPermission.UNDER_ATTACK;
-      neighbour.attacker = lastAttack.name;
-    } else {
-      const levels = {
-        attackerLevel: viewerLevel,
-        defenderLevel: level,
-        retaliations,
-      };
+    const levels = {
+      attackerLevel: viewerLevel,
+      defenderLevel: level,
+      retaliations,
+    };
 
-      neighbour.attackpermitted = levelPermission(levels);
+    neighbour.attackpermitted = getAttackPermission(neighbourSave, levels, currentTime);
+
+    if (neighbour.attackpermitted === AttackPermission.UNDER_ATTACK) {
+      neighbour.attacker = neighbourSave.attacks.at(-1)?.name;
     }
 
     const isVengeance = neighbour.attackpermitted === AttackPermission.VENGEANCE_MODE;
@@ -164,17 +189,13 @@ export const updateNeighbourData = async ({
     if (!truce) return [neighbour];
 
     neighbour.trucestate = truce.trucestate;
-    
+
     if (truce.expires_at) neighbour.truceexpire = truce.expires_at - currentTime;
-    
+
     if (truce.trucestate === TruceStatus.ACCEPTED) {
       neighbour.attackpermitted = AttackPermission.TRUCE_ACTIVE;
     }
 
     return [neighbour];
   });
-
-  if (needsFlush) await postgres.em.flush();
-
-  return updatedNeighbours;
 };

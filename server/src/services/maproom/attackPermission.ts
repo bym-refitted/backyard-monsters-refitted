@@ -8,7 +8,7 @@ import { getRetaliationsOwed } from "./attackHistory.js";
 
 type LevelSave = Pick<Save, "points" | "basevalue">;
 
-interface LevelPermission {
+export interface LevelPermission {
   attackerLevel: number;
   defenderLevel: number;
   retaliations: number;
