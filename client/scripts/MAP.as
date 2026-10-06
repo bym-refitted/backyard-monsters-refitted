@@ -172,6 +172,7 @@ package {
                 if (BYMConfig.instance.RENDERER_ON) {
                     _EFFECTSBMP = new BitmapData(_canvas.width, _canvas.height, false, 0);
                     _effectsRasterData = new RasterData(_EFFECTSBMP, new Point((_canvas.width - _EFFECTSBMP.width) * 0.5, (_canvas.height - _EFFECTSBMP.height) * 0.5), 0, null, true);
+                    _effectsRasterData.cacheable = true;
                 }
                 else {
                     _EFFECTSBMP = new BitmapData(3200, 1800, true, 0);
@@ -252,6 +253,10 @@ package {
         }
 
         public static function get effectsBMD():BitmapData {
+            // Callers can edit the returned bitmap, so invalidate conservatively.
+            if (_effectsRasterData) {
+                _effectsRasterData.invalidate();
+            }
             return _EFFECTSBMP;
         }
 
@@ -264,6 +269,9 @@ package {
         }
 
         public static function swapBG(param1:String):void {
+            if (_effectsRasterData) {
+                _effectsRasterData.invalidate();
+            }
             var _loc3_:DisplayObject = null;
             var _loc4_:int = 0;
             var _loc5_:int = 0;
@@ -386,6 +394,9 @@ package {
         }
 
         public static function Edge():void {
+            if (_effectsRasterData) {
+                _effectsRasterData.invalidate();
+            }
             var iso:Point = null;
             if (GLOBAL.mode !== GLOBAL.e_BASE_MODE.BUILD && GLOBAL.mode !== GLOBAL.e_BASE_MODE.IBUILD) {
                 return;

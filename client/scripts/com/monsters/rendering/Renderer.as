@@ -26,6 +26,10 @@ package com.monsters.rendering {
 
         private const _drawBounds:Rectangle = new Rectangle();
 
+        private const _copyBounds:Rectangle = new Rectangle();
+
+        private const _groundCache:GroundRasterCache = new GroundRasterCache();
+
         private var _alphaMask:BitmapData;
 
         private var _alphaMaskAlpha:uint;
@@ -57,10 +61,12 @@ package com.monsters.rendering {
         }
 
         public function set canvas(canvas:BitmapData):void {
+            this._groundCache.dispose();
             this.renderer_friend::_canvas = canvas;
         }
 
         public function dispose():void {
+            this._groundCache.dispose();
             if (this._alphaMask) {
                 this._alphaMask.dispose();
                 this._alphaMask = null;
@@ -95,7 +101,9 @@ package com.monsters.rendering {
                 RasterData.renderer_friend::s_needsSort = false;
             }
             this.renderer_friend::_canvas.lock();
-            this.rasterize(RasterData.renderer_friend::s_unsortedData.concat(visibleData));
+            var groundEntries:Vector.<RasterData> = RasterData.renderer_friend::s_unsortedData;
+            var cachedEntryCount:int = this._groundCache.render(groundEntries, this, this.renderer_friend::_canvas);
+            this.rasterize(groundEntries.concat(visibleData), null, cachedEntryCount);
             this.renderer_friend::_canvas.unlock();
         }
 
@@ -115,8 +123,10 @@ package com.monsters.rendering {
             return data1.renderer_friend::_depth - data2.renderer_friend::_depth;
         }
 
-        private function rasterize(entries:Vector.<RasterData>):void {
-            for each (var entry:RasterData in entries) {
+        renderer_friend function rasterize(entries:Vector.<RasterData>, clip:Rectangle = null, start:int = 0, target:BitmapData = null):void {
+            var canvas:BitmapData = target || this.renderer_friend::_canvas;
+            for (var index:int = start; index < entries.length; ++index) {
+                var entry:RasterData = entries[index];
                 if (!entry || entry.renderer_friend::_cleared || !entry.renderer_friend::_pt) {
                     continue;
                 }
@@ -131,7 +141,18 @@ package com.monsters.rendering {
                         alphaMask = this.getAlphaMask(entryBmd.width, entryBmd.height, entry.renderer_friend::_alpha);
                     }
 
-                    this.renderer_friend::_canvas.copyPixels(entryBmd, entryBmd.rect, this._pt, alphaMask);
+                    this._copyBounds.setTo(0, 0, entryBmd.width, entryBmd.height);
+                    if (clip) {
+                        this._copyBounds.x = Math.max(0, clip.x - this._pt.x);
+                        this._copyBounds.y = Math.max(0, clip.y - this._pt.y);
+                        this._copyBounds.width = Math.min(entryBmd.width, clip.right - this._pt.x) - this._copyBounds.x;
+                        this._copyBounds.height = Math.min(entryBmd.height, clip.bottom - this._pt.y) - this._copyBounds.y;
+                        this._pt.x += this._copyBounds.x;
+                        this._pt.y += this._copyBounds.y;
+                    }
+                    if (this._copyBounds.width > 0 && this._copyBounds.height > 0) {
+                        canvas.copyPixels(entryBmd, this._copyBounds, this._pt, alphaMask);
+                    }
 
                 }
                 else {
@@ -140,7 +161,8 @@ package com.monsters.rendering {
                     if (Boolean(entry.renderer_friend::_filter) && Boolean(entryBmd)) {
                         this._bm.bitmapData = entryBmd;
                         this._bm.filters = [entry.renderer_friend::_filter];
-                        this.renderer_friend::_canvas.draw(this._bm, this._matrix, null, entry.renderer_friend::_blendMode);
+                        
+                        canvas.draw(this._bm, this._matrix, null, entry.renderer_friend::_blendMode, clip);
                     }
                     else if (entryBmd) {
                         var right:Number = this._pt.x + entryBmd.width * this._matrix.a;
@@ -150,10 +172,20 @@ package com.monsters.rendering {
                         this._drawBounds.y = Math.floor(Math.min(this._pt.y, bottom)) - 1;
                         this._drawBounds.width = Math.ceil(Math.max(this._pt.x, right)) + 1 - this._drawBounds.x;
                         this._drawBounds.height = Math.ceil(Math.max(this._pt.y, bottom)) + 1 - this._drawBounds.y;
-                        this.renderer_friend::_canvas.draw(entryBmd, this._matrix, null, entry.renderer_friend::_blendMode, this._drawBounds);
+                        if (clip) {
+                            right = Math.min(this._drawBounds.right, clip.right);
+                            bottom = Math.min(this._drawBounds.bottom, clip.bottom);
+                            this._drawBounds.x = Math.max(this._drawBounds.x, clip.x);
+                            this._drawBounds.y = Math.max(this._drawBounds.y, clip.y);
+                            this._drawBounds.width = right - this._drawBounds.x;
+                            this._drawBounds.height = bottom - this._drawBounds.y;
+                        }
+                        if (this._drawBounds.width > 0 && this._drawBounds.height > 0) {
+                            canvas.draw(entryBmd, this._matrix, null, entry.renderer_friend::_blendMode, this._drawBounds);
+                        }
                     }
                     else {
-                        this.renderer_friend::_canvas.draw(entry.renderer_friend::_data, this._matrix, null, entry.renderer_friend::_blendMode);
+                        canvas.draw(entry.renderer_friend::_data, this._matrix, null, entry.renderer_friend::_blendMode, clip);
                     }
                 }
             }

@@ -1117,6 +1117,7 @@ package {
                             this._rasterPt[_RASTERDATA_SHADOW].y = _mc.y + this._offsets[_RASTERDATA_SHADOW].y - MAP.instance.offset.y;
                             this.redrawShadowData();
                             this._rasterData[_RASTERDATA_SHADOW] ||= new RasterData(imageBitmapData, this._rasterPt[_RASTERDATA_SHADOW], MAP.DEPTH_SHADOW, BlendMode.MULTIPLY, true);
+                            this._rasterData[_RASTERDATA_SHADOW].cacheable = true;
                         }
                     }
                     else if (Boolean(imageDataB[_IMAGE_NAMES[_RASTERDATA_TOP] + state]) && imageDataA.baseurl + imageDataB[_IMAGE_NAMES[_RASTERDATA_TOP] + state][0] == _loc13_) {
@@ -1481,6 +1482,7 @@ package {
             if (!this._moving) {
                 this._rasterData[_RASTERDATA_SHADOW].visible = this._mcBase.visible;
             }
+            this._rasterData[_RASTERDATA_SHADOW].cacheable = true;
         }
 
         public function TickFast(param1:Event = null):void {
