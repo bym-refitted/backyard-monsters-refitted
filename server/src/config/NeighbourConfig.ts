@@ -12,16 +12,13 @@ export const NEIGHBOUR_DROP_LEVEL_RANGE = NEIGHBOUR_LEVEL_RANGE + 3;
 export const NEIGHBOUR_TARGET = 40;
 
 /** Neighbours a player may have before searches stop offering them to anyone else. */
-export const NEIGHBOUR_SOFT_CAP = 60;
+export const NEIGHBOUR_SOFT_CAP = 50;
 
 /** The most neighbours the client can display. */
 export const MAX_CLIENT_NEIGHBOURS = 180;
 
 /** The most friends a player is made neighbours with for being friends. */
 export const MAX_FRIEND_NEIGHBOURS = 10;
-
-/** How many recently active players one neighbour search looks through. */
-export const NEIGHBOUR_SEARCH_POOL_SIZE = 150;
 
 /** How long since a player last saved before they stop counting as active. */
 export const NEIGHBOUR_INACTIVE_DAYS = 30;

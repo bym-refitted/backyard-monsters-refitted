@@ -11,6 +11,7 @@ import { addFriendNeighbours } from "./addFriendNeighbours.js";
 import {
   NEIGHBOUR_DROP_LEVEL_RANGE,
   NEIGHBOUR_INACTIVE_DAYS,
+  NEIGHBOUR_SOFT_CAP,
   NEIGHBOUR_TARGET,
 } from "../../../config/NeighbourConfig.js";
 
@@ -64,7 +65,8 @@ export const refreshNeighbours = async ({ userId, save, neighbourIds, friendIds 
 /**
  * Removes neighbours who have left MR1, drifted out of level range or gone
  * inactive. A pair who attacked each other recently stay neighbours whatever
- * their levels, and a friend is not removed for being inactive.
+ * their levels, and a friend is not removed for being inactive. A map still
+ * over the cap after that is trimmed back to it.
  *
  * @param {RemoveIneligible} options - Removal options
  * @param {number} options.userId - The player whose map is being checked
@@ -108,8 +110,33 @@ const removeIneligible = async ({ userId, userLevel, neighbourIds, friendIds }: 
     if (shouldRemove(neighbourId)) toRemove.push(neighbourId);
     else toKeep.push(neighbourId);
   }
-
+  const overCap = overCapNeighbours(toKeep, opponentIds, friendIds);
+  
+  toRemove.push(...overCap);
   await removeNeighbours(userId, toRemove, BaseType.MAIN);
 
-  return toKeep;
+  const removed = new Set(toRemove);
+
+  return toKeep.filter((neighbourId) => !removed.has(neighbourId));
+};
+
+/**
+ * The neighbours to remove from a map that is over the cap, longest-standing
+ * first: the list arrives newest first, so the excess comes off the end.
+ * Recent opponents and friends are never chosen, so they are the only way a
+ * map stays over the cap.
+ *
+ * @param {number[]} neighbourIds - Everyone on the map, newest first
+ * @param {Set<number>} opponentIds - Players attacked, or attacked by, recently
+ * @param {Set<number>} friendIds - The player's friends
+ * @returns {number[]} The neighbours to remove, empty when the map is within the cap
+ */
+const overCapNeighbours = (neighbourIds: number[], opponentIds: Set<number>, friendIds: Set<number>): number[] => {
+  const excess = neighbourIds.length - NEIGHBOUR_SOFT_CAP;
+
+  if (excess <= 0) return [];
+
+  const removable = neighbourIds.filter((neighbourId) => !opponentIds.has(neighbourId) && !friendIds.has(neighbourId));
+
+  return removable.slice(-excess);
 };
