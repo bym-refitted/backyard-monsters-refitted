@@ -1,4 +1,5 @@
 package {
+    import com.monsters.configs.BYMConfig;
     import com.monsters.display.BuildingOverlay;
     import com.monsters.interfaces.IAttackable;
     import com.monsters.monsters.MonsterBase;
@@ -18,6 +19,10 @@ package {
 
         private var _shouldAnimate:Boolean;
 
+        private var _shakeOffset:Point = new Point();
+
+        private var _shadowShakeOffset:Point = new Point();
+
         public function INFERNOQUAKETOWER() {
             super();
             _type = 129;
@@ -29,36 +34,61 @@ package {
             attackFlags = Targeting.getOldStyleTargets(-1);
         }
 
-        override public function PlaceB():void {
-            super.PlaceB();
-            _origin = new Point(_mc.x, _mc.y);
-        }
-
-        override public function FollowMouseB(param1:Event = null):void {
-            super.FollowMouseB(param1);
-            _origin = new Point(_mc.x, _mc.y);
-        }
-
-        override public function StopMoveB():void {
-            super.StopMoveB();
-            _origin = new Point(_mc.x, _mc.y);
-        }
-
         override public function TickFast(param1:Event = null):void {
             super.TickFast(param1);
+
             if (_shake > 0) {
-                _mc.x = _origin.x - 2 + Math.random() * 4;
-                _mc.y = _origin.y - 2 + Math.random() * 4;
-                _mcBase.x = _origin.x - 1 + Math.random() * 2;
-                _mcBase.y = _origin.y - 1 + Math.random() * 2;
                 --_shake;
-                if (_shake == 0) {
-                    _mc.x = _origin.x;
-                    _mc.y = _origin.y;
-                    _mcBase.x = _origin.x;
-                    _mcBase.y = _origin.y;
+                _shakeOffset.x = _shake > 0 ? -2 + Math.random() * 4 : 0;
+                _shakeOffset.y = _shake > 0 ? -2 + Math.random() * 4 : 0;
+                _shadowShakeOffset.x = _shake > 0 ? -1 + Math.random() * 2 : 0;
+                _shadowShakeOffset.y = _shake > 0 ? -1 + Math.random() * 2 : 0;
+                this.updateShakeGraphics();
+            }
+        }
+
+        private function updateShakeGraphics():void {
+            // Keep the building root fixed: targeting, saving and the planner read it.
+            _mcBase.x = _mc.x + _shadowShakeOffset.x;
+            _mcBase.y = _mc.y + _shadowShakeOffset.y;
+
+            if (BYMConfig.instance.RENDERER_ON) {
+                this.updateRasterData();
+            }
+            else {
+                topContainer.x = _offsets[_RASTERDATA_TOP].x + _shakeOffset.x;
+                topContainer.y = _offsets[_RASTERDATA_TOP].y + _shakeOffset.y;
+                animContainer.x = _offsets[_RASTERDATA_ANIM].x + _shakeOffset.x;
+                animContainer.y = _offsets[_RASTERDATA_ANIM].y + _shakeOffset.y;
+            }
+        }
+
+        override protected function updateRasterData():void {
+            super.updateRasterData();
+            if (!BYMConfig.instance.RENDERER_ON || m_isCleared) {
+                return;
+            }
+
+            // Apply visual offsets after the normal refresh, including camera movement.
+            for each (var layer:uint in [_RASTERDATA_TOP, _RASTERDATA_ANIM]) {
+                if (_rasterData[layer]) {
+                    _rasterPt[layer].x += _shakeOffset.x;
+                    _rasterPt[layer].y += _shakeOffset.y;
                 }
             }
+        }
+
+        override public function RenderClear(param1:Boolean = true):void {
+            if (m_isCleared) {
+                return;
+            }
+
+            // A destroyed/static render can stop TickFast before the shake finishes.
+            _shake = 0;
+            _shakeOffset.x = _shakeOffset.y = 0;
+            _shadowShakeOffset.x = _shadowShakeOffset.y = 0;
+            this.updateShakeGraphics();
+            super.RenderClear(param1);
         }
 
         override public function Update(param1:Boolean = false):void {
@@ -154,7 +184,6 @@ package {
                 _loc3_.graphic.y += _top;
                 _mc.addChild(_loc3_.graphic);
             }
-            _origin = new Point(_mc.x, _mc.y);
             _shake = 10;
         }
 
@@ -239,16 +268,7 @@ package {
         override public function Setup(param1:Object):void {
             param1.t = _type;
             super.Setup(param1);
-            _origin = new Point(_mc.x, _mc.y);
             _animRandomStart = false;
-        }
-
-        override public function Export():Object {
-            var _loc1_:Object = super.Export();
-            var _loc2_:Point = GRID.FromISO(_origin.x, _origin.y);
-            _loc1_.X = _loc2_.x;
-            _loc1_.Y = _loc2_.y;
-            return _loc1_;
         }
     }
 }
