@@ -647,7 +647,7 @@ package {
                 else {
                     _mc.addChild(this._mcHit);
                 }
-                this._mcHit.cacheAsBitmap = true;
+                this._mcHit.cacheAsBitmap = false;
                 this._mcHit.alpha = 0;
             }
             catch (e:Error) {
