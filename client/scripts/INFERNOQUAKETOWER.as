@@ -39,8 +39,8 @@ package {
             _origin = new Point(_mc.x, _mc.y);
         }
 
-        override public function StopMoveB():void {
-            super.StopMoveB();
+        override protected function onMove():void {
+            super.onMove();
             _origin = new Point(_mc.x, _mc.y);
         }
 
