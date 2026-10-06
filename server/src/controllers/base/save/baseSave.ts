@@ -27,6 +27,7 @@ import { acknowledgeGifts, claimGifts } from "../../../services/gifts/gifts.js";
 import { isMR3Structure } from "../../../services/maproom/v3/utils/isMR3Structure.js";
 import { WorldMapCell } from "../../../database/models/worldmapcell.model.js";
 import { MapRoomVersion } from "../../../enums/MapRoom.js";
+import { calculateBaseLevel } from "../../../services/base/calculateBaseLevel.js";
 import { MR1_TRIBE_IDS } from "../../../game-data/tribes/v1/index.js";
 import { scaledMR1Tribes } from "../../../services/maproom/v1/scaledMR1Tribes.js";
 
@@ -222,6 +223,10 @@ export const baseSave: KoaController = async (ctx) => {
 
   baseSave.id = baseSave.savetime;
   baseSave.savetime = now;
+
+  if (baseSave.type === BaseType.MAIN && baseSave.mapversion === MapRoomVersion.V1) {
+    baseSave.level = calculateBaseLevel(baseSave.points, baseSave.basevalue);
+  }
 
   if (!isAttack) {
     await redis.setex(`last-seen:main:${user.userid}`, 120, getCurrentDateTime().toString());

@@ -7,8 +7,10 @@ import { Maproom } from "../../database/models/maproom.model.js";
 import { postgres } from "../../server.js";
 import { BaseType } from "../../enums/Base.js";
 import { findInfernoNeighbours } from "../../services/maproom/inferno/findInfernoNeighbours.js";
-import { findOverworldNeighbours } from "../../services/maproom/v1/findOverworldNeighbours.js";
-import { addFriendNeighbours } from "../../services/maproom/v1/addFriendNeighbours.js";
+import { refreshNeighbours } from "../../services/maproom/v1/refreshNeighbours.js";
+import { getNeighbourIds, toNeighbourData } from "../../services/maproom/neighbours.js";
+import { applyAttackHistory } from "../../services/maproom/attackHistory.js";
+import { NEIGHBOUR_REFRESH_HOURS, MAX_CLIENT_NEIGHBOURS } from "../../config/NeighbourConfig.js";
 import { updateNeighbourData } from "../../services/maproom/updateNeighbourData.js";
 import { getFriendIds } from "../../services/friends/friendList.js";
 
@@ -98,9 +100,9 @@ const getInfernoNeighbours: KoaController = async (ctx) => {
 /**
  * Handles neighbour lookups for the MR1 Overworld Map Room.
  *
- * Serves the cached neighbour list if fresh; otherwise re-runs the search.
- * Uses a short 30-minute retry window when fewer than 10 neighbours are cached,
- * and the full 2-week TTL once the list is healthy.
+ * A player's neighbours are the players they share a link with, so everyone on
+ * their map has them on theirs. The map is tidied and topped up once a day,
+ * or every 30 minutes while the map has fewer than 10 neighbours.
  *
  * @param {Context} ctx - Koa context containing the authenticated user
  * @returns {Promise<void>} - Sets response body with overworld neighbour data
@@ -117,29 +119,38 @@ const getOverworldNeighbours: KoaController = async (ctx) => {
     return;
   }
 
-  let maproom = await postgres.em.findOne(Maproom, { userid: user.userid });
+  const [existingMaproom, friendIds, existingNeighbourIds] = await Promise.all([
+    postgres.em.findOne(Maproom, { userid: user.userid }, { fields: ["userid", "neighborsLastCalculated"] }),
+    getFriendIds(user.userid),
+    getNeighbourIds(user.userid, BaseType.MAIN),
+  ]);
 
   // Initial Map Room 1 creation
-  if (!maproom) maproom = await Maproom.setupMapRoomData(postgres.em, user);
+  const maproom = existingMaproom ?? await Maproom.setupMapRoomData(postgres.em, user);
 
   const currentDate = new Date();
-  const cacheExpiry = new Date(currentDate.getTime() - CACHE_VALIDITY_HOURS * 60 * 60 * 1000);
+  const refreshExpiry = new Date(currentDate.getTime() - NEIGHBOUR_REFRESH_HOURS * 60 * 60 * 1000);
   const retryExpiry = new Date(currentDate.getTime() - RETRY_CACHE_MINUTES * 60 * 1000);
 
-  const getNewNeighbours = needsNewNeighbours(maproom, cacheExpiry, retryExpiry);
+  let neighbourIds = existingNeighbourIds;
+
+  const cache = { neighborsLastCalculated: maproom.neighborsLastCalculated, neighbors: neighbourIds };
+
+  const getNewNeighbours = needsNewNeighbours(cache, refreshExpiry, retryExpiry);
 
   if (getNewNeighbours) {
-    maproom.neighbors = await findOverworldNeighbours(user, save);
+    neighbourIds = await refreshNeighbours({ userId: user.userid, save, neighbourIds, friendIds });
 
     maproom.neighborsLastCalculated = currentDate;
     postgres.em.persist(maproom);
     await postgres.em.flush();
   }
 
-  const friendIds = await getFriendIds(user.userid);
-  
-  const withFriends = await addFriendNeighbours(save, maproom.neighbors, friendIds);
-  const neighbours = await updateNeighbourData(withFriends, BaseType.MAIN, user.userid, friendIds);
+  const userIds = neighbourIds.slice(0, MAX_CLIENT_NEIGHBOURS);
+  const neighbourData = toNeighbourData(userIds);
+
+  const withHistory = await applyAttackHistory(user.userid, neighbourData, BaseType.MAIN);
+  const neighbours = await updateNeighbourData(withHistory, BaseType.MAIN, user.userid, friendIds);
 
   ctx.status = Status.OK;
   ctx.body = { error: 0, wmbases: [], bases: neighbours };
