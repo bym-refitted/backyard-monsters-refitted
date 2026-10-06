@@ -1,25 +1,27 @@
-import { Save } from "../../../database/models/save.model.js";
-import { postgres } from "../../../server.js";
-import { BaseType } from "../../../enums/Base.js";
-import { MapRoomVersion } from "../../../enums/MapRoom.js";
-import { calculateBaseLevel } from "../../base/calculateBaseLevel.js";
-import { getCurrentDateTime } from "../../../utils/getCurrentDateTime.js";
-import { getRecentOpponentIds } from "../attackHistory.js";
-import { addNeighbours, removeNeighbours } from "../neighbours.js";
-import { findOverworldNeighbours } from "./findOverworldNeighbours.js";
-import { addFriendNeighbours } from "./addFriendNeighbours.js";
+import type { NeighbourAttackType } from "../../database/models/neighbourattack.model.js";
+import { Save } from "../../database/models/save.model.js";
+import { postgres } from "../../server.js";
+import { BaseType } from "../../enums/Base.js";
+import { MapRoomVersion } from "../../enums/MapRoom.js";
+import { calculateBaseLevel } from "../base/calculateBaseLevel.js";
+import { getCurrentDateTime } from "../../utils/getCurrentDateTime.js";
+import { getRecentOpponentIds } from "./attackHistory.js";
+import { addNeighbours, removeNeighbours } from "./neighbours.js";
+import { findNeighbours } from "./findNeighbours.js";
+import { addFriendNeighbours } from "./v1/addFriendNeighbours.js";
 import {
   NEIGHBOUR_DROP_LEVEL_RANGE,
   NEIGHBOUR_INACTIVE_DAYS,
   NEIGHBOUR_SOFT_CAP,
   NEIGHBOUR_TARGET,
-} from "../../../config/NeighbourConfig.js";
+} from "../../config/NeighbourConfig.js";
 
 interface RefreshNeighbours {
   userId: number;
   save: Pick<Save, "points" | "basevalue">;
   neighbourIds: number[];
   friendIds: Set<number>;
+  type: NeighbourAttackType;
 }
 
 interface RemoveIneligible {
@@ -27,43 +29,47 @@ interface RemoveIneligible {
   userLevel: number;
   neighbourIds: number[];
   friendIds: Set<number>;
+  type: NeighbourAttackType;
 }
 
 const NEIGHBOUR_SAVE_FIELDS = ["userid", "points", "basevalue", "savetime"] as const;
 
 /**
- * Tidies a player's MR1 map and tops it up.
+ * Tidies a player's map and tops it up.
  *
  * Removes neighbours who no longer belong on it, adds any friends who are
  * missing, then adds new players until the map is back at its target size.
+ * Friends are only added on Map Room 1; the Inferno map has no friend system.
  *
  * @param {RefreshNeighbours} options - Refresh options
  * @param {number} options.userId - The player whose map is being refreshed
- * @param {Pick<Save, "points" | "basevalue">} options.save - Their main save, for their level
+ * @param {Pick<Save, "points" | "basevalue">} options.save - Their save on that map, for their level
  * @param {number[]} options.neighbourIds - Everyone on their map now
  * @param {Set<number>} options.friendIds - Their friends
+ * @param {NeighbourAttackType} options.type - Which map is being refreshed
  * @returns {Promise<number[]>} Everyone on their map afterwards
  */
-export const refreshNeighbours = async ({ userId, save, neighbourIds, friendIds }: RefreshNeighbours): Promise<number[]> => {
+export const refreshNeighbours = async ({ userId, save, neighbourIds, friendIds, type }: RefreshNeighbours): Promise<number[]> => {
   const userLevel = calculateBaseLevel(save.points, save.basevalue);
+  const isOverworld = type === BaseType.MAIN;
 
-  const kept = await removeIneligible({ userId, userLevel, neighbourIds, friendIds });
-  const friends = await addFriendNeighbours(userId, userLevel, kept, friendIds);
+  const kept = await removeIneligible({ userId, userLevel, neighbourIds, friendIds, type });
+  const friends = isOverworld ? await addFriendNeighbours(userId, userLevel, kept, friendIds) : [];
   
   const current = [...friends, ...kept];
   const shortfall = NEIGHBOUR_TARGET - current.length;
 
   if (shortfall <= 0) return current;
 
-  const found = await findOverworldNeighbours(userId, userLevel, current, shortfall);
+  const found = await findNeighbours({ userId, userLevel, neighbourIds: current, limit: shortfall, type });
 
-  await addNeighbours(userId, found, BaseType.MAIN);
+  await addNeighbours(userId, found, type);
 
   return [...found, ...current];
 };
 
 /**
- * Removes neighbours who have left MR1, drifted out of level range or gone
+ * Removes neighbours who have left the map, drifted out of level range or gone
  * inactive. A pair who attacked each other recently stay neighbours whatever
  * their levels, and a friend is not removed for being inactive. A map still
  * over the cap after that is trimmed back to it.
@@ -73,18 +79,21 @@ export const refreshNeighbours = async ({ userId, save, neighbourIds, friendIds 
  * @param {number} options.userLevel - Their level, the centre of the range
  * @param {number[]} options.neighbourIds - Everyone on their map now
  * @param {Set<number>} options.friendIds - Their friends
+ * @param {NeighbourAttackType} options.type - Which map is being checked
  * @returns {Promise<number[]>} The neighbours who stay
  */
-const removeIneligible = async ({ userId, userLevel, neighbourIds, friendIds }: RemoveIneligible): Promise<number[]> => {
+const removeIneligible = async ({ userId, userLevel, neighbourIds, friendIds, type }: RemoveIneligible): Promise<number[]> => {
+  const isOverworld = type === BaseType.MAIN;
+
   const where = {
-    type: BaseType.MAIN,
-    mapversion: MapRoomVersion.V1,
+    type,
     userid: { $in: neighbourIds },
+    ...(isOverworld && { mapversion: MapRoomVersion.V1 }),
   };
 
   const [neighbourSaves, opponentIds] = await Promise.all([
     postgres.em.find(Save, where, { fields: NEIGHBOUR_SAVE_FIELDS }),
-    getRecentOpponentIds(userId, BaseType.MAIN),
+    getRecentOpponentIds(userId, type),
   ]);
 
   const saves = new Map(neighbourSaves.map((neighbourSave) => [neighbourSave.userid, neighbourSave]));
@@ -113,7 +122,7 @@ const removeIneligible = async ({ userId, userLevel, neighbourIds, friendIds }: 
   const overCap = overCapNeighbours(toKeep, opponentIds, friendIds);
   
   toRemove.push(...overCap);
-  await removeNeighbours(userId, toRemove, BaseType.MAIN);
+  await removeNeighbours(userId, toRemove, type);
 
   const removed = new Set(toRemove);
 
