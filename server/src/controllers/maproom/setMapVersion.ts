@@ -20,7 +20,7 @@ import { Maproom } from "../../database/models/maproom.model.js";
 import { clearPendingInvites } from "../../services/alliance/allianceInvites.js";
 import { MAX_RESOURCE_CAPACITY } from "../../config/MapRoom2Config.js";
 import { RESOURCE_KEYS } from "../../services/base/updateResources.js";
-import { removeAllNeighbours } from "../../services/maproom/neighbours.js";
+import { removeAllNeighbours } from "../../services/maproom/neighbours/neighbours.js";
 import { BaseType } from "../../enums/Base.js";
 
 /**

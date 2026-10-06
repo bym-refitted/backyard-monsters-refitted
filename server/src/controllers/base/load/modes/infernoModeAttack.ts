@@ -7,7 +7,7 @@ import { createAttackLog } from "../../../../services/base/createAttackLog.js";
 import { getCurrentDateTime } from "../../../../utils/getCurrentDateTime.js";
 import type { AttackDetails } from "./baseModeAttack.js";
 import { recordAttack } from "../../../../services/maproom/attackHistory.js";
-import { addNeighbours, areNeighbours } from "../../../../services/maproom/neighbours.js";
+import { addNeighbours, areNeighbours } from "../../../../services/maproom/neighbours/neighbours.js";
 import { requireAttackLevel, type RequireAttackLevel } from "../../../../services/maproom/attackPermission.js";
 import {
   InfernoMaproom,

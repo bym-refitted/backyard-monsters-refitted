@@ -1,16 +1,16 @@
-import { Save } from "../../database/models/save.model.js";
-import { User } from "../../database/models/user.model.js";
-import { postgres } from "../../server.js";
-import { AttackPermission, MapRoomVersion } from "../../enums/MapRoom.js";
-import { TruceStatus } from "../../enums/TruceStatus.js";
-import { getCurrentDateTime } from "../../utils/getCurrentDateTime.js";
-import { getLastSeen } from "./getLastSeen.js";
-import { getTruces } from "./getTruces.js";
-import { isAttackActive } from "../base/isAttackActive.js";
-import { calculateBaseLevel } from "../base/calculateBaseLevel.js";
-import type { NeighbourData } from "../../types/NeighbourData.js";
-import { BaseType } from "../../enums/Base.js";
-import { levelPermission } from "./attackPermission.js";
+import { Save } from "../../../database/models/save.model.js";
+import { User } from "../../../database/models/user.model.js";
+import { postgres } from "../../../server.js";
+import { AttackPermission, MapRoomVersion } from "../../../enums/MapRoom.js";
+import { TruceStatus } from "../../../enums/TruceStatus.js";
+import { getCurrentDateTime } from "../../../utils/getCurrentDateTime.js";
+import { getLastSeen } from "../getLastSeen.js";
+import { getTruces } from "../getTruces.js";
+import { isAttackActive } from "../../base/isAttackActive.js";
+import { calculateBaseLevel } from "../../base/calculateBaseLevel.js";
+import type { NeighbourData } from "../../../types/NeighbourData.js";
+import { BaseType } from "../../../enums/Base.js";
+import { levelPermission } from "../attackPermission.js";
 
 
 type Base = BaseType.MAIN | BaseType.INFERNO;

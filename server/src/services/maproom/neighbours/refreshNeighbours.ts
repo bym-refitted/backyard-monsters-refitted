@@ -1,20 +1,20 @@
-import type { NeighbourAttackType } from "../../database/models/neighbourattack.model.js";
-import { Save } from "../../database/models/save.model.js";
-import { postgres } from "../../server.js";
-import { BaseType } from "../../enums/Base.js";
-import { MapRoomVersion } from "../../enums/MapRoom.js";
-import { calculateBaseLevel } from "../base/calculateBaseLevel.js";
-import { getCurrentDateTime } from "../../utils/getCurrentDateTime.js";
-import { getRecentOpponentIds } from "./attackHistory.js";
+import type { NeighbourAttackType } from "../../../database/models/neighbourattack.model.js";
+import { Save } from "../../../database/models/save.model.js";
+import { postgres } from "../../../server.js";
+import { BaseType } from "../../../enums/Base.js";
+import { MapRoomVersion } from "../../../enums/MapRoom.js";
+import { calculateBaseLevel } from "../../base/calculateBaseLevel.js";
+import { getCurrentDateTime } from "../../../utils/getCurrentDateTime.js";
+import { getRecentOpponentIds } from "../attackHistory.js";
 import { addNeighbours, removeNeighbours } from "./neighbours.js";
 import { findNeighbours } from "./findNeighbours.js";
-import { addFriendNeighbours } from "./v1/addFriendNeighbours.js";
+import { addFriendNeighbours } from "./addFriendNeighbours.js";
 import {
   NEIGHBOUR_DROP_LEVEL_RANGE,
   NEIGHBOUR_INACTIVE_DAYS,
   NEIGHBOUR_SOFT_CAP,
   NEIGHBOUR_TARGET,
-} from "../../config/NeighbourConfig.js";
+} from "../../../config/NeighbourConfig.js";
 
 interface RefreshNeighbours {
   userId: number;

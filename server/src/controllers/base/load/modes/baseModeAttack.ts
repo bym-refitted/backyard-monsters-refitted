@@ -19,7 +19,7 @@ import { isTruceActive } from "../../../../services/mail/isTruceActive.js";
 import { getFriendIds } from "../../../../services/friends/friendList.js";
 import { MR1_TRIBE_IDS } from "../../../../game-data/tribes/v1/index.js";
 import { recordAttack } from "../../../../services/maproom/attackHistory.js";
-import { addNeighbours, areNeighbours } from "../../../../services/maproom/neighbours.js";
+import { addNeighbours, areNeighbours } from "../../../../services/maproom/neighbours/neighbours.js";
 import { levelGapFor, requireAttackLevel, type RequireAttackLevel } from "../../../../services/maproom/attackPermission.js";
 import { isShinyLocked } from "../../../../services/user/shinyLock.js";
 import {

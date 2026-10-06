@@ -1,10 +1,10 @@
 import type { UpsertManyOptions } from "@mikro-orm/core";
 
-import type { NeighbourAttackType } from "../../database/models/neighbourattack.model.js";
-import { NeighbourLink } from "../../database/models/neighbourlink.model.js";
-import { postgres } from "../../server.js";
+import type { NeighbourAttackType } from "../../../database/models/neighbourattack.model.js";
+import { NeighbourLink } from "../../../database/models/neighbourlink.model.js";
+import { postgres } from "../../../server.js";
 import { createNeighbourData } from "./createNeighbourData.js";
-import type { NeighbourData } from "../../types/NeighbourData.js";
+import type { NeighbourData } from "../../../types/NeighbourData.js";
 
 /**
  * Everyone on a player's map. Each of them has this player on theirs.

@@ -1,8 +1,8 @@
-import type { NeighbourAttackType } from "../../database/models/neighbourattack.model.js";
-import { NeighbourCandidate } from "../../database/models/neighbourcandidate.view.js";
-import { postgres } from "../../server.js";
-import { NEIGHBOUR_INACTIVE_DAYS, NEIGHBOUR_LEVEL_RANGE, NEIGHBOUR_SOFT_CAP } from "../../config/NeighbourConfig.js";
-import { getCurrentDateTime } from "../../utils/getCurrentDateTime.js";
+import type { NeighbourAttackType } from "../../../database/models/neighbourattack.model.js";
+import { NeighbourCandidate } from "../../../database/models/neighbourcandidate.view.js";
+import { postgres } from "../../../server.js";
+import { NEIGHBOUR_INACTIVE_DAYS, NEIGHBOUR_LEVEL_RANGE, NEIGHBOUR_SOFT_CAP } from "../../../config/NeighbourConfig.js";
+import { getCurrentDateTime } from "../../../utils/getCurrentDateTime.js";
 
 interface FindNeighbours {
   userId: number;
