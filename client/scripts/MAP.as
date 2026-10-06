@@ -1,6 +1,7 @@
 package {
     import com.monsters.configs.BYMConfig;
     import com.monsters.input.KeyboardInputHandler;
+    import com.monsters.maproom_manager.MapRoomManager;
     import com.monsters.monsters.MonsterBase;
     import com.monsters.rendering.RasterData;
     import com.monsters.rendering.Renderer;
@@ -12,6 +13,8 @@ package {
     import flash.display.Stage;
     import flash.events.*;
     import flash.geom.*;
+    import flash.utils.Timer;
+    import flash.utils.getTimer;
     import gs.*;
     import gs.easing.*;
 
@@ -123,6 +126,14 @@ package {
 
         protected var _renderer:Renderer;
 
+        public static const PRESENTATION_FPS:Number = 60;
+
+        private var _presentationTimer:Timer;
+
+        private var _lastPresentation:int;
+
+        private var _presentationStarted:Boolean;
+
         protected const _point:Point = new Point();
 
         public function MAP(param1:String) {
@@ -212,7 +223,9 @@ package {
                 _EFFECTSTOP.tabChildren = false;
                 _dragged = false;
                 _GROUND.addEventListener(MouseEvent.MOUSE_DOWN, Click);
-                _GROUND.addEventListener(Event.ENTER_FRAME, Scroll);
+                if (!BYMConfig.instance.RENDERER_ON) {
+                    _GROUND.addEventListener(Event.ENTER_FRAME, Scroll);
+                }
                 _GROUND.stage.addEventListener(KeyboardEvent.KEY_DOWN, KeyboardInputHandler.instance.OnKeyDown);
                 if (GLOBAL.DOES_USE_SCROLL) {
                     _GROUND.stage.addEventListener(MouseEvent.MOUSE_WHEEL, onMouseScroll);
@@ -229,6 +242,10 @@ package {
             if (BYMConfig.instance.RENDERER_ON) {
                 this._renderer = new Renderer(_canvas, _viewRect);
                 GLOBAL._ROOT.addEventListener(Event.RENDER, this.render);
+                this._presentationTimer = new Timer(1000 / PRESENTATION_FPS);
+                this._presentationTimer.addEventListener(TimerEvent.TIMER, this.present);
+                this._lastPresentation = getTimer();
+                this._presentationTimer.start();
             }
             Targeting.init();
             _inited = true;
@@ -314,6 +331,11 @@ package {
         }
 
         public static function Clear():void {
+            if (_instance && _instance._presentationTimer) {
+                _instance._presentationTimer.stop();
+                _instance._presentationTimer.removeEventListener(TimerEvent.TIMER, _instance.present);
+                _instance._presentationTimer = null;
+            }
             if (_GROUND) {
                 _GROUND.removeEventListener(MouseEvent.MOUSE_DOWN, Click);
                 _GROUND.removeEventListener(Event.ENTER_FRAME, Scroll);
@@ -326,7 +348,7 @@ package {
                     _BUILDINGTOPS.removeChildAt(0);
                 }
             }
-            if (BYMConfig.instance.RENDERER_ON && GLOBAL._ROOT.hasEventListener(Event.RENDER)) {
+            if (_instance && BYMConfig.instance.RENDERER_ON && GLOBAL._ROOT.hasEventListener(Event.RENDER)) {
                 GLOBAL._ROOT.removeEventListener(Event.RENDER, _instance.render);
             }
             if (_instance && _instance._renderer) {
@@ -532,7 +554,7 @@ package {
             _following = false;
         }
 
-        public static function Scroll(param1:Event = null):void {
+        public static function Scroll(param1:Event = null, elapsed:Number = 25):void {
             var _loc12_:int = 0;
             var _loc13_:Object = null;
             var _loc14_:MonsterBase = null;
@@ -620,21 +642,23 @@ package {
             d = 2;
             targX = _GROUND.x;
             targY = _GROUND.y;
+            // Preserve the original half-distance easing per 25 ms at any presentation rate.
+            var smoothing:Number = 1 - Math.pow(0.5, elapsed / 25);
             if (targX < tx) {
-                targX += tx - targX >> 1;
+                targX += int((tx - targX) * smoothing);
             }
             else if (targX > tx) {
-                targX -= targX - tx >> 1;
+                targX -= int((targX - tx) * smoothing);
             }
             if (Math.abs(targX - tx) <= 2) {
                 targX = tx;
                 --d;
             }
             if (targY < ty - 1) {
-                targY += ty - targY >> 1;
+                targY += int((ty - targY) * smoothing);
             }
             else {
-                targY -= targY - ty >> 1;
+                targY -= int((targY - ty) * smoothing);
             }
             if (Math.abs(targY - ty) <= 2) {
                 targY = ty;
@@ -688,6 +712,29 @@ package {
             _viewRect.height = _loc1_.height * (1 / _GROUND.scaleY) + _loc2_;
             _viewRect.x = -(_GROUND.x * (1 / _GROUND.scaleX)) - (1 / _GROUND.scaleX - 1) * _loc3_ + (MAP_WIDTH >>> 1) + _loc1_.x - _loc2_;
             _viewRect.y = -(_GROUND.y * (1 / _GROUND.scaleY)) - (1 / _GROUND.scaleY - 1) * _loc3_ + (MAP_HEIGHT >>> 1) + _loc1_.y - _loc2_;
+        }
+
+        public static function invalidate():void {
+            if (!_instance || !_instance._presentationTimer) {
+                GLOBAL._ROOT.stage.invalidate();
+            }
+            else {
+                // Wait for the first game update before starting independent presentation.
+                _instance._presentationStarted = true;
+            }
+        }
+
+        private function present(event:TimerEvent):void {
+            var now:int = getTimer();
+            var elapsed:int = now - this._lastPresentation;
+            this._lastPresentation = now;
+            if (!this._presentationStarted || !_inited || !_GROUND || GLOBAL.isHalted || BASE._loading || MapRoomManager.instance.isOpen) {
+                return;
+            }
+            Scroll(null, Math.min(100, elapsed));
+            GLOBAL._ROOT.stage.invalidate();
+            // Present without advancing the game's timeline or simulation ticks.
+            event.updateAfterEvent();
         }
 
         private function render(param1:Event):void {

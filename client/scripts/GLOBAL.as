@@ -1292,7 +1292,7 @@ package {
                             _loc7_++;
                         }
                         if (BYMConfig.instance.RENDERER_ON) {
-                            _ROOT.stage.invalidate();
+                            MAP.invalidate();
                         }
                     }
                     ++_frameNumber;
