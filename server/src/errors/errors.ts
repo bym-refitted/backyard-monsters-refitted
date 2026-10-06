@@ -411,6 +411,14 @@ export const joinMapVersionErr = () =>
     isClientFriendly: true,
   });
 
+export const inviteMapVersionErr = (username: string) =>
+  new ClientSafeError({
+    message: `${username} is too far away to join your Alliance. They are on a different Map Room version.`,
+    status: Status.FORBIDDEN,
+    data: {},
+    isClientFriendly: true,
+  });
+
 export const joinOutsideWorldErr = () =>
   new ClientSafeError({
     message: "That Alliance is in another world. Move to that world before joining it.",

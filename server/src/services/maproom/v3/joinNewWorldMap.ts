@@ -9,7 +9,6 @@ import { findFreeSector, findFreeSectorNear } from "./findFreeSector.js";
 import { EnumYardType } from "../../../enums/EnumYardType.js";
 import { logger } from "../../../utils/logger.js";
 import { leaveWorld } from "../v2/leaveWorld.js";
-import { mustLeaveAllianceToChangeWorldErr } from "../../../errors/errors.js";
 import { leavePosition } from "./leavePosition.js";
 import type { PostgresEM } from "../../../types/PostgresEM.js";
 
@@ -66,8 +65,6 @@ export const joinNewWorldMap = async (
   }
 
   const sameWorld = save.worldid === world.uuid;
-
-  if (!sameWorld && user.alliance_id) throw mustLeaveAllianceToChangeWorldErr();
 
   if (sameWorld) {
     await leavePosition(user, save);

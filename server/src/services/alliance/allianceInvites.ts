@@ -7,10 +7,13 @@ import { AllianceInvite } from "../../database/models/allianceinvite.model.js";
 import { User } from "../../database/models/user.model.js";
 import { postgres } from "../../server.js";
 import { addAllianceMember } from "./membership.js";
+import { canJoinAlliance } from "./allianceWorlds.js";
+import { MapRoomVersion } from "../../enums/MapRoom.js";
 import {
   allianceFullErr,
   inviteNotPendingErr,
   invitePendingErr,
+  inviteMapVersionErr,
   inviteOutsideWorldErr,
   mustLeaveAllianceToAcceptErr,
   permissionErr,
@@ -279,7 +282,13 @@ export const answerInvite = async (user: User, inviteId: number, status: Allianc
 
   await postgres.em.populate(player, ["save"], { fields: ["save.worldid"] });
 
-  if (player.save?.worldid !== alliance.world_id) throw inviteOutsideWorldErr(player.username);
+  const joinAlliance = await canJoinAlliance(alliance, player.save?.worldid);
+
+  if (!joinAlliance) {
+    throw alliance.map_version === MapRoomVersion.V3 
+    ? inviteMapVersionErr(player.username) 
+    : inviteOutsideWorldErr(player.username);
+  }
 
   // The transaction locks the alliance row to prevent two simultaneous acceptances from both sides
   await postgres.em.transactional(async (em) => {
