@@ -11,7 +11,7 @@ import type { KoaController } from "../utils/KoaController.js";
  * @returns {Promise<void>} - A promise that resolves when the controller is complete.
  */
 export const supportedLangs: KoaController = async (ctx) => {
-  const languages = ["English", "French", "Spanish", "Portuguese"];
+  const languages = ["English", "French", "Spanish", "Portuguese", "German", "Turkish"];
 
   ctx.status = Status.OK;
   ctx.body = languages;
