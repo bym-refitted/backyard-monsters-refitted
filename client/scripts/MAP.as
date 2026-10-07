@@ -758,6 +758,15 @@ package {
             BFOUNDATION.updateAllRasterData();
         }
 
+        public function redrawAfterResize():void {
+            if (!_inited || !this._renderer || !_GROUND || BASE._loading || MapRoomManager.instance.isOpen) {
+                return;
+            }
+            this.resizeViewRect();
+            // Resize can expose the bitmap before the next presentation timer fires.
+            this._renderer.render();
+        }
+
         public static function invalidate():void {
             if (!_instance || !_instance._presentationTimer) {
                 GLOBAL._ROOT.stage.invalidate();

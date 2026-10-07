@@ -1873,6 +1873,9 @@ package {
             else {
                 UI2.ResizeHandler(param1);
             }
+            if (MAP.instance) {
+                MAP.instance.redrawAfterResize();
+            }
         }
 
         public static function RefreshScreen():void {
