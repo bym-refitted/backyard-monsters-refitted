@@ -35,9 +35,9 @@
 			// Local build is used for releasing optimized local .swfs
 			"label": "BYMR - Local",
 			"detail": "Optimized local release build",
-			"type": "shell",
-			"command": "${workspaceFolder}/client/archived/flashplayers/flashplayer.exe",
-			"args": ["", "bin/bymr-local.swf"],
+			"type": "process",
+			"command": "powershell.exe",
+			"args": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", "${workspaceFolder}/tools/flashplayer/launch.ps1", "-Swf", "${workspaceFolder}/bin/bymr-local.swf"],
 			"group": { "kind": "build", "isDefault": true },
 			"dependsOn": "compile-local"
 		},
