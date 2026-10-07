@@ -621,7 +621,6 @@ package {
                 ty = 0 - ty + GLOBAL._ROOT.stage.stageHeight * 0.5;
                 _dragX = tx;
                 _dragY = ty;
-                BFOUNDATION.updateAllRasterData();
             }
             else if (_dragging && UI2._scrollMap && !_autoScroll && _canScroll) {
                 _loc15_ = stage.mouseX;
@@ -637,7 +636,6 @@ package {
                         _GROUND.hitArea = _dragHitArea;
                         _GROUND.mouseChildren = false;
                     }
-                    BFOUNDATION.updateAllRasterData();
                 }
             }
             var _loc2_:int = GLOBAL._ROOT.stage.stageWidth;
@@ -743,13 +741,21 @@ package {
         }
 
         public function resizeViewRect():void {
-            var _loc1_:Rectangle = GLOBAL._SCREEN;
-            var _loc2_:int = 32;
-            var _loc3_:int = 50;
-            _viewRect.width = _loc1_.width * (1 / _GROUND.scaleX) + _loc2_;
-            _viewRect.height = _loc1_.height * (1 / _GROUND.scaleY) + _loc2_;
-            _viewRect.x = -(_GROUND.x * (1 / _GROUND.scaleX)) - (1 / _GROUND.scaleX - 1) * _loc3_ + (MAP_WIDTH >>> 1) + _loc1_.x - _loc2_;
-            _viewRect.y = -(_GROUND.y * (1 / _GROUND.scaleY)) - (1 / _GROUND.scaleY - 1) * _loc3_ + (MAP_HEIGHT >>> 1) + _loc1_.y - _loc2_;
+            var screen:Rectangle = GLOBAL._SCREEN;
+            var padding:int = 32;
+            var scaleOffset:int = 50;
+            var inverseScaleX:Number = 1 / _GROUND.scaleX;
+            var inverseScaleY:Number = 1 / _GROUND.scaleY;
+            var width:Number = screen.width * inverseScaleX + padding;
+            var height:Number = screen.height * inverseScaleY + padding;
+            var x:Number = -_GROUND.x * inverseScaleX - (inverseScaleX - 1) * scaleOffset + (MAP_WIDTH >>> 1) + screen.x - padding;
+            var y:Number = -_GROUND.y * inverseScaleY - (inverseScaleY - 1) * scaleOffset + (MAP_HEIGHT >>> 1) + screen.y - padding;
+            if (_viewRect.x == x && _viewRect.y == y && _viewRect.width == width && _viewRect.height == height) {
+                return;
+            }
+            _viewRect.setTo(x, y, width, height);
+            // Visibility depends on these bounds, including after restoring the yard.
+            BFOUNDATION.updateAllRasterData();
         }
 
         public static function invalidate():void {
