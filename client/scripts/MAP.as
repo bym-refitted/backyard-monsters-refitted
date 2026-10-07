@@ -50,6 +50,8 @@ package {
 
         public static var _dragDistance:Number;
 
+        private static var _dragHitArea:Sprite;
+
         public static var _EFFECTSBMP:BitmapData;
 
         public static var _GROUND:Sprite;
@@ -151,6 +153,14 @@ package {
                 _viewRect.width = GLOBAL._SCREEN.width;
                 _viewRect.height = GLOBAL._SCREEN.height;
                 _GROUND = GLOBAL._layerMap.addChild(new Sprite()) as Sprite;
+                // A cheap mouse target while panning, preserving ground mouse-up handlers.
+                _dragHitArea = new Sprite();
+                _dragHitArea.graphics.beginFill(0);
+                _dragHitArea.graphics.drawRect(-MAP_WIDTH / 2, -MAP_HEIGHT / 2, MAP_WIDTH, MAP_HEIGHT);
+                _dragHitArea.graphics.endFill();
+                _dragHitArea.visible = false;
+                _dragHitArea.mouseEnabled = false;
+                _GROUND.addChild(_dragHitArea);
                 if (!BYMConfig.instance.RENDERER_ON) {
                     _BGTILES = _GROUND.addChild(new MovieClip()) as MovieClip;
                 }
@@ -339,6 +349,8 @@ package {
         }
 
         public static function Clear():void {
+            Release();
+            _dragHitArea = null;
             if (_instance && _instance._presentationTimer) {
                 _instance._presentationTimer.stop();
                 _instance._presentationTimer.removeEventListener(TimerEvent.TIMER, _instance.present);
@@ -471,13 +483,21 @@ package {
                 _startY = _GROUND.y;
                 _dragging = true;
                 stage.addEventListener(MouseEvent.MOUSE_UP, Release);
+                stage.addEventListener(Event.DEACTIVATE, Release);
+                stage.addEventListener(Event.MOUSE_LEAVE, Release);
             }
         }
 
-        public static function Release(param1:MouseEvent):void {
+        public static function Release(param1:Event = null):void {
+            if (_dragged && _GROUND) {
+                _GROUND.hitArea = null;
+                _GROUND.mouseChildren = true;
+            }
             _dragging = false;
             _dragged = false;
             stage.removeEventListener(MouseEvent.MOUSE_UP, Release);
+            stage.removeEventListener(Event.DEACTIVATE, Release);
+            stage.removeEventListener(Event.MOUSE_LEAVE, Release);
         }
 
         public static function Focus(param1:Number, param2:Number):void {
@@ -573,6 +593,9 @@ package {
             var _loc16_:Number = NaN;
             var _loc17_:Number = NaN;
             var _loc18_:Number = NaN;
+            if (_dragging && (!UI2._scrollMap || _autoScroll || !_canScroll || _following)) {
+                Release();
+            }
             if (_following) {
                 _loc13_ = CREEPS._creeps;
                 tx = 0;
@@ -609,7 +632,11 @@ package {
                 _loc18_ = _loc16_ - (_dragY + _startY);
                 _dragDistance = Math.abs(_loc17_ * _loc17_ + _loc18_ * _loc18_);
                 if (_dragDistance > 100) {
-                    _dragged = true;
+                    if (!_dragged) {
+                        _dragged = true;
+                        _GROUND.hitArea = _dragHitArea;
+                        _GROUND.mouseChildren = false;
+                    }
                     BFOUNDATION.updateAllRasterData();
                 }
             }
