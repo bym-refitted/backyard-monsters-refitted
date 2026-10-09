@@ -587,6 +587,7 @@ package {
             _loc2_.letterSpacing = -11;
             if (!_debugWarningTxt) {
                 _debugWarningTxt = new TextField();
+                _debugWarningTxt.cacheAsBitmap = true;
             }
             _debugWarningTxt.mouseEnabled = false;
             _debugWarningTxt.alpha = 0.8;

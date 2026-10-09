@@ -49,6 +49,15 @@ package com.monsters.rendering {
 
         renderer_friend var _cleared:Boolean;
 
+        // Mutable sources stay uncached unless their owner explicitly opts in.
+        public var cacheable:Boolean = false;
+
+        renderer_friend var _revision:uint;
+
+        public function invalidate():void {
+            ++this.renderer_friend::_revision;
+        }
+
         public function RasterData(param1:IBitmapDrawable, param2:Point, param3:Number, param4:String = null, param5:Boolean = false) {
             super();
             this.data = param1;
@@ -132,6 +141,7 @@ package com.monsters.rendering {
         }
 
         public function set data(param1:IBitmapDrawable):void {
+            this.invalidate();
             this.renderer_friend::_data = param1;
             switch (true) {
                 case this.renderer_friend::_data is BitmapData:

@@ -184,6 +184,12 @@ package com.monsters.maproom_advanced {
 
         internal static function ClearCells():void {
             _zones = {};
+            if (_homeCell) {
+                _homeCell.StopTimelines();
+            }
+            if (GLOBAL._currentCell is MapRoomCell) {
+                (GLOBAL._currentCell as MapRoomCell).StopTimelines();
+            }
         }
 
         internal static function JumpTo(param1:Point):void {
@@ -561,6 +567,7 @@ package com.monsters.maproom_advanced {
                                 (GLOBAL._currentCell as MapRoomCell).Setup(cell);
                                 (GLOBAL._currentCell as MapRoomCell).cellX = BASE._currentCellLoc.x;
                                 (GLOBAL._currentCell as MapRoomCell).cellY = BASE._currentCellLoc.y;
+                                (GLOBAL._currentCell as MapRoomCell).StopTimelines();
                                 _zones = {};
                             }
                         }

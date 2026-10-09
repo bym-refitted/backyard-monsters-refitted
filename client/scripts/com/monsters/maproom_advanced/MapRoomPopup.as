@@ -523,6 +523,7 @@ package com.monsters.maproom_advanced {
                     this._cellContainer.removeChildAt(0);
                 }
                 this._cellContainer.removeEventListener(MouseEvent.MOUSE_DOWN, this.ContainerClick);
+                this._cellContainer.removeEventListener(MouseEvent.MOUSE_MOVE, this.ContainerMove);
                 GLOBAL._ROOT.stage.removeEventListener(MouseEvent.MOUSE_UP, this.ContainerRelease);
                 if (this._cellContainer.parent) {
                     this._cellContainer.parent.removeChild(this._cellContainer);
@@ -539,6 +540,11 @@ package com.monsters.maproom_advanced {
                 this._cells = [];
             }
             this._cellLookup = null;
+            this._sortArray = [];
+            if (this._fallbackHomeCell) {
+                this._fallbackHomeCell.Cleanup();
+                this._fallbackHomeCell = null;
+            }
             this._tempMovePoint = null;
             this._lastBuffCount = -1;
             if (!MapRoom._viewOnly) {
@@ -626,6 +632,7 @@ package com.monsters.maproom_advanced {
                     this._cellContainer.removeChildAt(0);
                 }
                 this._cellContainer.removeEventListener(MouseEvent.MOUSE_DOWN, this.ContainerClick);
+                this._cellContainer.removeEventListener(MouseEvent.MOUSE_MOVE, this.ContainerMove);
                 GLOBAL._ROOT.stage.removeEventListener(MouseEvent.MOUSE_UP, this.ContainerRelease);
                 if (this._cellContainer.parent) {
                     this._cellContainer.parent.removeChild(this._cellContainer);
@@ -634,8 +641,8 @@ package com.monsters.maproom_advanced {
             }
             if (this._cells) {
                 cellIndex = int(this._cells.length - 1);
-                cellIndex = int(this._cells.length - 1);
                 while (cellIndex >= 0) {
+                    this._cells[cellIndex].Cleanup();
                     delete this._cells[cellIndex];
                     cellIndex--;
                 }
@@ -701,7 +708,11 @@ package com.monsters.maproom_advanced {
                 }
                 stageHeight++;
             }
+            if (this._fallbackHomeCell) {
+                this._fallbackHomeCell.Cleanup();
+            }
             this._fallbackHomeCell = new MapRoomCell();
+            this._fallbackHomeCell.StopTimelines();
             this._fallbackHomeCell.X = GLOBAL._mapHome.x;
             this._fallbackHomeCell.Y = GLOBAL._mapHome.y;
             this._cellContainer.addEventListener(MouseEvent.MOUSE_DOWN, this.ContainerClick);
@@ -781,6 +792,7 @@ package com.monsters.maproom_advanced {
                 cellData = MapRoom.GetCell(this._fallbackHomeCell.X, this._fallbackHomeCell.Y);
                 if (cellData) {
                     this._fallbackHomeCell.Setup(cellData);
+                    this._fallbackHomeCell.StopTimelines();
                 }
             }
             this._sortArray = [];
