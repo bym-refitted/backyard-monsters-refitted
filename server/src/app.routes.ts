@@ -84,6 +84,7 @@ import { removeFriend } from "./controllers/friends/removeFriend.js";
 import { sendGift } from "./controllers/gifts/sendGift.js";
 
 import { wildMonsterInvasion } from "./controllers/events/wildMonsterInvasion.js";
+import { acknowledgeEvent, loadEventBases } from "./controllers/events/replayableEvent.js";
 import { recordDebugData } from "./controllers/debug/recordDebugData.js";
 
 import { createAlliance } from "./controllers/alliance/createAlliance.js";
@@ -227,9 +228,24 @@ router.post("/alliance/promotemember", verifyUserAuth, logRequest, promoteMember
 router.post("/alliance/changerelationship", verifyUserAuth, logRequest, changeRelationship);
 
 /**  ────────────────────────────────────────────────
-* 📦 Events
+* 📦 Events - Replayable
+* ──────────────────────────────────────────────── */
+router.post("/api/:apiVersion/bm/event/startevent", apiVersion, verifyUserAuth, logRequest, acknowledgeEvent);
+router.post("/api/:apiVersion/bm/event/resetevent", apiVersion, verifyUserAuth, logRequest, acknowledgeEvent);
+router.post("/api/:apiVersion/bm/event/emailoptin", apiVersion, verifyUserAuth, logRequest, acknowledgeEvent);
+router.post("/api/:apiVersion/bm/event/loadbases", apiVersion, verifyUserAuth, logRequest, loadEventBases);
+router.post("/api/:apiVersion/bm/event/updatescore", apiVersion, verifyUserAuth, logRequest, acknowledgeEvent);
+router.post("/api/:apiVersion/bm/event/geteventscore", apiVersion, verifyUserAuth, logRequest, acknowledgeEvent);
+
+/**  ────────────────────────────────────────────────
+* 📦 Events - Wild Monster Invasion
 * ──────────────────────────────────────────────── */
 router.get("/api/:apiVersion/events/wmi", apiVersion, logRequest, wildMonsterInvasion);
+
+/**  ────────────────────────────────────────────────
+* 📦 Events - Brukkarg War
+* ──────────────────────────────────────────────── */
+router.post("/api/:apiVersion/bm/event/copybase", apiVersion, verifyUserAuth, logRequest, acknowledgeEvent);
 
 /**  ────────────────────────────────────────────────
 * 📦 Debug

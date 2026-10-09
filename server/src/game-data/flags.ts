@@ -13,6 +13,23 @@ const getInvasionFlags = () => {
 };
 
 /**
+ * Gets the flags for the replayable events.
+ *
+ * `ers` is the switch for the whole system: without it the client schedules no event.
+ * Each event that the server schedules then has its own start date flag. `ers` is
+ * only raised while one of them has a date, because with it raised the client also
+ * schedules its other events (Battletoads, Monster Blitzkrieg, Hell Raisers) by itself.
+ */
+const getReplayableEventFlags = () => {
+  const startDates = {
+    brukkargstart: devConfig.brukkargWarStartOverride,
+  };
+
+  const ers = Object.values(startDates).some(Boolean) ? 1 : 0;
+  return { ers, ...startDates };
+};
+
+/**
  * Configuration flags for game settings.
  * These flags are used to enable/disable features in game.
  */
@@ -59,6 +76,7 @@ export const getFlags = () => ({
   event1: 1,
   event2: 0,
   ...getInvasionFlags(),
+  ...getReplayableEventFlags(),
   iframestart_override: 0,
   mushrooms: 1,
   chatwhitelist: "",
@@ -76,7 +94,6 @@ export const getFlags = () => ({
   autoban_validate_fail: 0,
   autoban_client: 0,
   yp_version: 2,
-  ers: 0, // Used for enabling canScheduleNewEvent() in ReplayableEventHandler.as on client
   krallen: 1,
   subscriptions: 1,
   krallen_duration: 7,

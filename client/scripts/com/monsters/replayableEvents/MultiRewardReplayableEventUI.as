@@ -8,6 +8,7 @@ package com.monsters.replayableEvents {
     import flash.display.Sprite;
     import flash.events.Event;
     import flash.events.MouseEvent;
+    import com.monsters.replayableEvents.RewardGraphics;
 
     public class MultiRewardReplayableEventUI extends MultiRewardEventsBar implements IReplayableEventUI {
 
@@ -18,6 +19,8 @@ package com.monsters.replayableEvents {
         public static const k_REWARD_COLOR:uint = 15924337;
 
         public static const k_PROGRESS_COLOR:uint = 8567294;
+
+        private static const k_RIBBON_COUNT:uint = 3;
 
         private var _event:ReplayableEvent;
 
@@ -37,18 +40,18 @@ package com.monsters.replayableEvents {
         }
 
         public function setup(param1:ReplayableEvent):void {
-            var _loc2_:uint = 0;
-            var _loc3_:int = 0;
-            var _loc4_:uint = 0;
-            var _loc6_:uint = 0;
-            var _loc7_:ReplayableEventQuota = null;
-            var _loc8_:int = 0;
-            var _loc9_:EventRewardRibbon = null;
-            var _loc10_:Number = NaN;
-            var _loc11_:Sprite = null;
+            var i:uint = 0;
+            var quota:ReplayableEventQuota = null;
+            var rewardQuotas:Vector.<ReplayableEventQuota> = new Vector.<ReplayableEventQuota>();
+            var slot:int = 0;
+            var ribbon:EventRewardRibbon = null;
+            var previousScore:Number = NaN;
+            var segment:Sprite = null;
+            var barWidth:Number = NaN;
             this._event = param1;
             tScore.visible = false;
             tScore.mouseEnabled = false;
+            timeLabel.x = 49;
             buttonHelp.addEventListener(MouseEvent.CLICK, this.ShowInfoPopup);
             buttonHelp.buttonMode = true;
             if (this._event.buttonCopy) {
@@ -70,37 +73,46 @@ package com.monsters.replayableEvents {
             if (this._event.titleImage) {
                 ImageCache.GetImageWithCallBack(this._event.titleImage, this.onLogoLoaded);
             }
-            _loc2_ = 0;
-            _loc4_ = 3;
-            _loc6_ = 0;
-            while (_loc6_ < _loc4_) {
-                this.getChildByName("reward" + _loc6_).visible = false;
-                _loc6_++;
+            for (i = 0; i < k_RIBBON_COUNT; i++) {
+                this.getChildByName("reward" + i).visible = false;
             }
-            var _loc5_:uint = this._event.rewards.length;
-            _loc6_ = 0;
-            while (_loc6_ < _loc5_) {
-                if (!((_loc7_ = this._event.rewards[_loc6_]).rewardID == null || _loc7_.rewardID == "")) {
-                    _loc8_ = _loc4_ - (_loc5_ - 1) + _loc2_;
-                    if ((_loc9_ = this.getChildByName("reward" + String(_loc8_ - 1)) as EventRewardRibbon) == null) {
-                        break;
-                    }
-                    _loc9_.visible = true;
-                    ImageCache.GetImageWithCallBack(_loc7_.imageURL, this.onRewardImageLoaded, true, 4, "", [_loc9_]);
-                    _loc10_ = this._event.rewards[_loc6_].quota / this._event.maxScore - (_loc2_ > 0 ? this._event.rewards[_loc6_ - 1].quota / this._event.maxScore : 0);
-                    (_loc11_ = new Sprite()).x = _loc3_ + 2;
-                    _loc11_.y = 1;
-                    _loc11_.graphics.beginFill(k_REWARD_COLOR);
-                    _loc11_.graphics.drawRect(0, 0, _loc10_ * progressBarFillMask.width, progressBarFillMask.height - 2);
-                    this.progressBarFill.addChild(_loc11_);
-                    _loc3_ += _loc11_.width;
-                    this.m_rewardGraphics.push(new RewardGraphics(_loc11_, _loc9_));
-                    _loc2_++;
-                    if (_loc2_ >= _loc4_) {
-                        break;
-                    }
+
+            for each (quota in this._event.rewards) {
+                if (quota.rewardID) {
+                    rewardQuotas.push(quota);
                 }
-                _loc6_++;
+            }
+
+            barWidth = progressBarFillMask.width;
+
+            for (i = 0; i < rewardQuotas.length; i++) {
+                quota = rewardQuotas[i];
+                slot = k_RIBBON_COUNT - rewardQuotas.length + i;
+                ribbon = this.getChildByName("reward" + slot) as EventRewardRibbon;
+
+                if (ribbon == null)
+                    break;
+
+                ribbon.visible = true;
+                ImageCache.GetImageWithCallBack(quota.imageURL, this.onRewardImageLoaded, true, 4, "", [ribbon]);
+
+                if (i > 0) {
+                    previousScore = rewardQuotas[i - 1].quota;
+                }
+                else if (rewardQuotas.length > 1) {
+                    previousScore = Math.max(0, 2 * quota.quota - rewardQuotas[1].quota);
+                }
+                else {
+                    previousScore = 0;
+                }
+
+                segment = new Sprite();
+                segment.x = previousScore / this._event.maxScore * barWidth + 2;
+                segment.y = 1;
+                segment.graphics.beginFill(k_REWARD_COLOR);
+                segment.graphics.drawRect(0, 0, (quota.quota - previousScore) / this._event.maxScore * barWidth, progressBarFillMask.height - 2);
+                this.progressBarFill.addChild(segment);
+                this.m_rewardGraphics.push(new RewardGraphics(segment, ribbon));
             }
             this.m_progressBarFill = new Shape();
             this.m_progressBarFill.x += 2;
@@ -173,68 +185,5 @@ package com.monsters.replayableEvents {
         private function ShowInfoPopup(param1:MouseEvent = null):void {
             dispatchEvent(new Event(CLICKED_INFO));
         }
-    }
-}
-
-import com.monsters.replayableEvents.MultiRewardReplayableEventUI;
-import flash.display.DisplayObject;
-import flash.display.Sprite;
-import flash.events.Event;
-import flash.events.MouseEvent;
-import gs.TweenLite;
-
-class RewardGraphics {
-
-    public var ribbon:EventRewardRibbon;
-
-    public var fill:Sprite;
-
-    private var width:Number;
-
-    private var height:Number;
-
-    public function RewardGraphics(param1:Sprite, param2:EventRewardRibbon) {
-        super();
-        this.width = param1.width;
-        this.height = param1.height;
-        this.ribbon = param2;
-        this.fill = param1;
-        this.fill.addEventListener(MouseEvent.MOUSE_OVER, this.OnProgressBarSectionMouseOver, false, 0, true);
-        this.ribbon.addEventListener(MouseEvent.MOUSE_OVER, this.OnProgressBarSectionMouseOver, false, 0, true);
-        this.fill.addEventListener(MouseEvent.MOUSE_OUT, this.OnProgressBarSectionMouseOut, false, 0, true);
-        this.ribbon.addEventListener(MouseEvent.MOUSE_OUT, this.OnProgressBarSectionMouseOut, false, 0, true);
-        this.OnProgressBarSectionMouseOut();
-        this.fill.buttonMode = true;
-        this.ribbon.buttonMode = true;
-    }
-
-    protected function OnProgressBarSectionMouseOut(param1:Event = null):void {
-        TweenLite.to(this.ribbon.rewardImage0, 0.25, {"y": 0});
-        TweenLite.to(this.ribbon.rewardRibbon0, 0.25, {"y": 0});
-        this.SendRewardToBack(this.ribbon);
-        this.redraw(0);
-    }
-
-    protected function OnProgressBarSectionMouseOver(param1:Event):void {
-        TweenLite.to(this.ribbon.rewardImage0, 0.25, {"y": -50});
-        TweenLite.to(this.ribbon.rewardRibbon0, 0.25, {
-                    "y": -50,
-                    "onComplete": this.BringRewardToFront,
-                    "onCompleteParams": [this.ribbon]
-                });
-        this.redraw(1);
-    }
-
-    private function redraw(param1:Number):void {
-        this.fill.graphics.clear();
-        this.fill.graphics.lineStyle(1, 11053224);
-        this.fill.graphics.beginFill(MultiRewardReplayableEventUI.k_REWARD_COLOR, param1);
-        this.fill.graphics.drawRect(0, 0, this.width, this.height);
-    }
-
-    private function BringRewardToFront(param1:DisplayObject):void {
-    }
-
-    private function SendRewardToBack(param1:DisplayObject):void {
     }
 }
