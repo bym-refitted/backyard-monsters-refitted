@@ -1,5 +1,7 @@
-import { devConfig } from "../../../config/GameConfig.js";
 import { Invasion } from "../../../enums/Invasion.js";
+import { GameEvent } from "../../../enums/GameEvent.js";
+import { getScheduledEvent } from "../calendar/eventCalendar.js";
+import { getCurrentDateTime } from "../../../utils/getCurrentDateTime.js";
 
 interface InvasionEventPhases {
   invasionpop: number;
@@ -17,76 +19,58 @@ interface InvasionEventResult {
   phases: InvasionEventPhases;
 }
 
-type InvasionPop = Pick<InvasionEventDates, "start" | "end" | "extension"> & {
+type InvasionPop = Pick<InvasionEventDates, "start" | "end"> & {
   current: number;
+  countdown: number;
+};
+
+const invasionEvents: Record<Invasion, GameEvent> = {
+  [Invasion.WMI1]: GameEvent.WMI1,
+  [Invasion.WMI2]: GameEvent.WMI2,
+};
+
+const noInvasion: InvasionEventResult = {
+  dates: { start: 0, end: 0, extension: 0 },
+  phases: { invasionpop: -1, invasionpop2: -1 },
 };
 
 /**
- * Sets up invasion event dates and phases based on invasion type.
- * Handles different invasions (WMI1, WMI2) with dev overrides and calculates
- * start, end, and extension dates. Creates a 7-day event period starting on the 10th
- * of the appropriate month based on invasion type scheduling.
+ * Sets up invasion event dates and phases from the event calendar.
+ * The invasion stays hidden (phase -1) until its countdown begins, and when it is switched off.
  *
- * @param {Invasion} type - The type of invasion to set up (WMI1, WMI2, or default)
+ * @param {Invasion} type - The type of invasion to set up (WMI1 or WMI2)
  * @returns {InvasionEventResult} Object containing timestamps for event dates and calculated phase numbers
  */
 export const setupInvasionEvent = (type: Invasion): InvasionEventResult => {
-  const now = new Date();
-  let startDate: Date;
+  const scheduled = getScheduledEvent(invasionEvents[type]);
 
-  switch (type) {
-    case Invasion.WMI1:
-      if (devConfig.wmi1StartNowOverride) {
-        startDate = new Date(devConfig.wmi1StartNowOverride * 1000);
-      } else {
-        startDate = getNextInvasionDate(now, 0);
-      }
-      break;
+  if (!scheduled) return noInvasion;
 
-    case Invasion.WMI2:
-      if (devConfig.wmi2StartNowOverride) {
-        startDate = new Date(devConfig.wmi2StartNowOverride * 1000);
-      } else {
-        startDate = getNextInvasionDate(now, 1);
-      }
-      break;
-
-    default:
-      startDate = new Date(now.getFullYear(), now.getMonth(), 10);
-      break;
-  }
-
-  const endDate = new Date(startDate);
-  endDate.setDate(startDate.getDate() + 7);
-
-  const extensionDate = new Date(endDate);
-  extensionDate.setDate(endDate.getDate());
-
-  const current = Math.floor(now.getTime() / 1000);
-  const start = Math.floor(startDate.getTime() / 1000);
-  const end = Math.floor(endDate.getTime() / 1000);
-  const extension = Math.floor(extensionDate.getTime() / 1000);
-
-  const invasionpop = getInvasionPop({ current, start, end, extension });
-  const invasionpop2 = invasionpop;
+  const { countdown, start, end } = scheduled;
+  
+  const current = getCurrentDateTime();
+  const invasionpop = getInvasionPop({ current, countdown, start, end });
 
   return {
-    dates: { start, end, extension },
-    phases: { invasionpop, invasionpop2 },
+    dates: { start, end, extension: end },
+    phases: { invasionpop, invasionpop2: invasionpop },
   };
 };
 
 /**
  * Calculates invasion phase based on current timestamp relative to event dates.
  * Returns different phase numbers: 1-3 for pre-invasion countdown (based on days remaining),
- * 4 for active invasion period, 5 for extension period, and -1 for post-event.
+ * 4 for active invasion period, and -1 before the countdown begins and post-event.
  * Uses day-based thresholds to determine which phase the invasion is currently in.
  *
- * @param {InvasionPop} params - Object containing current timestamp and event start/end/extension timestamps
- * @returns {number} Phase number indicating invasion status (-1, 0-5)
+ * @param {InvasionPop} params - Object containing current timestamp and event countdown/start/end timestamps
+ * @returns {number} Phase number indicating invasion status (-1, 1-4)
  */
-const getInvasionPop = ({ current, start, end, extension }: InvasionPop) => {
+const getInvasionPop = ({ current, countdown, start, end }: InvasionPop) => {
   const SECONDS_PER_DAY = 86400;
+
+  if (current < countdown) return -1;
+
   const daysUntilStart = Math.ceil((start - current) / SECONDS_PER_DAY);
 
   if (current < start) {
@@ -94,25 +78,8 @@ const getInvasionPop = ({ current, start, end, extension }: InvasionPop) => {
     if (daysUntilStart > 3) return 2;
     return 3;
   }
+
   if (current < end) return 4;
-  if (current < extension) return 5;
+
   return -1;
-};
-
-/**
- * Gets the next invasion date based on month parity scheduling system.
- * WMI1 invasions occur in odd months, WMI2 in even months, always on the 10th.
- * If current month matches the parity, returns 10th of current month, otherwise
- * returns 10th of next month to maintain the alternating schedule.
- *
- * @param {Date} now - Current date to calculate from
- * @param {0 | 1} monthParity - Month parity (0 for even months, 1 for odd months)
- * @returns {Date} Next invasion start date set to the 10th of the appropriate month
- */
-const getNextInvasionDate = (now: Date, monthParity: 0 | 1): Date => {
-  const currentMonth = now.getMonth() + 1;
-
-  if (currentMonth % 2 === monthParity)
-    return new Date(now.getFullYear(), currentMonth - 1, 10);
-  else return new Date(now.getFullYear(), currentMonth, 10);
 };

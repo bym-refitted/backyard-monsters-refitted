@@ -1,6 +1,8 @@
 import { devConfig } from "../config/GameConfig.js";
 import { getActiveInvasion } from "../services/events/wmi/getActiveInvasion.js";
 import { setupInvasionEvent } from "../services/events/wmi/setupInvasionEvent.js";
+import { getActiveEvents } from "../services/events/calendar/eventCalendar.js";
+import { EVENTS } from "../config/EventCalendarConfig.js";
 
 /**
  * Gets the current invasion flags.
@@ -15,18 +17,17 @@ const getInvasionFlags = () => {
 /**
  * Gets the flags for the replayable events.
  *
- * `ers` is the switch for the whole system: without it the client schedules no event.
- * Each event that the server schedules then has its own start date flag. `ers` is
- * only raised while one of them has a date, because with it raised the client also
- * schedules its other events (Battletoads, Monster Blitzkrieg, Hell Raisers) by itself.
+ * `activeevents` lists the replayable events the calendar has running, each with the id
+ * the client knows it by and its start time. The client shows the one the player qualifies for.
+ *
+ * `ers` stays off: it lets the client schedule events for itself, which the calendar replaces.
  */
 const getReplayableEventFlags = () => {
-  const startDates = {
-    brukkargstart: devConfig.brukkargWarStartOverride,
-  };
+  const activeevents = getActiveEvents()
+    .filter(({ event }) => EVENTS[event].replayableId)
+    .map(({ event, start }) => ({ id: EVENTS[event].replayableId, start }));
 
-  const ers = Object.values(startDates).some(Boolean) ? 1 : 0;
-  return { ers, ...startDates };
+  return { ers: 0, activeevents };
 };
 
 /**

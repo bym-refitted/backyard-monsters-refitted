@@ -116,26 +116,6 @@ package com.monsters.replayableEvents.attackDefend.brukkargWar {
             return GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD && BASE.isMainYard;
         }
 
-        /**
-         * The original client hardcoded this to 1342724400 (19 July 2012).
-         * The server now owns the date.
-         */
-        override public function get originalStartDate():Number {
-            return Number(GLOBAL._flags.brukkargstart);
-        }
-
-        /**
-         * The start date saved with the player is only a copy of the server's.
-         * If the server has moved the event, follow it.
-         */
-        override protected function onImport():void {
-            var serverStartDate:Number = this.originalStartDate;
-
-            if (serverStartDate && serverStartDate != startDate) {
-                _dates = Vector.<Number>([serverStartDate, serverStartDate + _duration]);
-            }
-        }
-
         override protected function loadedBaseList(param1:Object):void {
             super.loadedBaseList(param1);
             if (_score == 4025 && _intactBaseList.length < 5) {

@@ -61,27 +61,6 @@ export const devConfig = {
   skipDescent: process.env.ENV === Env.PROD ? false : false,
 
   /*
-   * An override epoch timestamp for wild monster invasion 1 start time.
-   * If set, the event will start immediately from this timestamp.
-   * Default value is 0 - no override.
-   */
-  wmi1StartNowOverride: process.env.ENV === Env.PROD ? 0 : 0,
-
-  /*
-   * An override epoch timestamp for wild monster invasion 2 start time.
-   * If set, the event will start immediately from this timestamp.
-   * Default value is 0 - no override.
-   */
-  wmi2StartNowOverride: process.env.ENV === Env.PROD ? 0 : 0,
-
-  /*
-   * An epoch timestamp for the Brukkarg War start time. The event runs for 5 days from it,
-   * and is announced to players from 7 days before it.
-   * Default value is 0 - the event is off.
-   */
-  brukkargWarStartOverride: process.env.ENV === Env.PROD ? 0 : 1791569428,
-
-  /*
    * Sets whether the tutorial phase of the game is enabled or disabled.
    */
   skipTutorial: process.env.ENV !== Env.PROD,
