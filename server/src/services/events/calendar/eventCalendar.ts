@@ -121,3 +121,16 @@ export const getActiveEvents = (now = getCurrentDateTime()): ScheduledEvent[] =>
 
   return active;
 };
+
+/**
+ * Finds the active replayable event the client is asking about.
+ *
+ * @param {number} replayableId - The id the client knows the event by
+ * @param {number} now - The current time
+ * @returns {ScheduledEvent | null} The scheduled event, or null when it is not active
+ */
+export const getActiveReplayableEvent = (replayableId: number, now = getCurrentDateTime()): ScheduledEvent | null => {
+  const activeEvents = getActiveEvents(now);
+
+  return activeEvents.find(({ event }) => EVENTS[event].replayableId === replayableId) ?? null;
+};
