@@ -3,12 +3,13 @@ import { Status } from "../../enums/StatusCodes.js";
 import { EventIdSchema, UpdateEventScoreSchema } from "../../schemas/ReplayableEventSchemas.js";
 import { getActiveReplayableEvent } from "../../services/events/calendar/eventCalendar.js";
 import { addEventScore, getEventScore } from "../../services/events/replayable/eventScore.js";
-import { getEventBases } from "../../services/events/replayable/eventBases.js";
+import { copyEventBase, getEventBases } from "../../services/events/replayable/eventBases.js";
+import { postgres } from "../../server.js";
 import type { KoaController } from "../../utils/KoaController.js";
 
 /**
  * Acknowledges the replayable event calls the server has nothing to do for:
- * startevent, resetevent, emailoptin and, until it is built, copybase.
+ * startevent, resetevent and emailoptin.
  *
  * A player's score is stored against the start time of the scheduled event, so a
  * new run has no score to start or reset.
@@ -91,4 +92,31 @@ export const loadEventBases: KoaController = async (ctx) => {
 
   ctx.status = Status.OK;
   ctx.body = bases;
+};
+
+/**
+ * Copies the player's own base for the last attack of an event, and returns its base ID.
+ * The client asks several times, so the copy is made once and the same ID returned after.
+ * The response carries no `baseid` when there is no copy to attack, which the client ignores.
+ *
+ * @param {Context} ctx - Koa context.
+ */
+export const copyReplayableEventBase: KoaController = async (ctx) => {
+  const user: User = ctx.authUser;
+  const { eventid } = EventIdSchema.parse(ctx.request.body);
+
+  const scheduled = getActiveReplayableEvent(eventid);
+
+  if (!scheduled) {
+    ctx.status = Status.OK;
+    ctx.body = { error: 0 };
+    return;
+  }
+
+  await postgres.em.populate(user, ["save"]);
+
+  const baseid = await copyEventBase(user, scheduled);
+
+  ctx.status = Status.OK;
+  ctx.body = { error: 0, baseid };
 };

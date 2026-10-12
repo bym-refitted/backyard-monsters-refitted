@@ -86,6 +86,7 @@ import { sendGift } from "./controllers/gifts/sendGift.js";
 import { wildMonsterInvasion } from "./controllers/events/wildMonsterInvasion.js";
 import {
   acknowledgeEvent,
+  copyReplayableEventBase,
   getReplayableEventScore,
   loadEventBases,
   updateReplayableEventScore,
@@ -250,7 +251,7 @@ router.get("/api/:apiVersion/events/wmi", apiVersion, logRequest, wildMonsterInv
 /**  ────────────────────────────────────────────────
 * 📦 Events - Brukkarg War
 * ──────────────────────────────────────────────── */
-router.post("/api/:apiVersion/bm/event/copybase", apiVersion, verifyUserAuth, logRequest, acknowledgeEvent);
+router.post("/api/:apiVersion/bm/event/copybase", apiVersion, verifyUserAuth, logRequest, copyReplayableEventBase);
 
 /**  ────────────────────────────────────────────────
 * 📦 Debug

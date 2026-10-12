@@ -34,6 +34,14 @@ const baseDefaults = {
   event_score: 0,
 };
 
+export const brukkargCopyBase: SaveData = {
+  ...baseDefaults,
+  baseid: "905",
+  wmid: 905,
+  level: 0,
+  buildingdata: {},
+};
+
 /**
  * The Brukkarg War bases, in the order the player attacks them.
  *

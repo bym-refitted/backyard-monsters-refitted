@@ -3,6 +3,7 @@ import { EventSlot, GameEvent } from "../enums/GameEvent.js";
 export interface EventDefinition {
   replayableId?: number;
   maxScore?: number;
+  copyBaseScore?: number;
   runDays: number;
   enabled: boolean;
 }
@@ -55,6 +56,7 @@ export const EVENTS: Record<GameEvent, EventDefinition> = {
   [GameEvent.BRUKKARG_WAR]: {
     replayableId: 5,
     maxScore: 5025,
+    copyBaseScore: 4024,
     runDays: 5,
     enabled: false,
   },
