@@ -43,6 +43,7 @@ import { getAllianceData } from "../../../services/alliance/allianceData.js";
 import { runningPowerups } from "../../../services/alliance/powerups.js";
 import { cellRelationship, findRelationships } from "../../../services/alliance/relationships.js";
 import { INFERNO_CHAT_CHANNEL } from "../../../config/ChatConfig.js";
+import { isEventBase, loadEventBase } from "../../../services/events/replayable/eventBases.js";
 
 type Stronghold = { level: number; cell?: { x: number; y: number } | null };
 
@@ -124,9 +125,15 @@ export const baseLoad: KoaController = async (ctx) => {
       break;
 
     case BaseMode.WMATTACK:
-      if (!ctx.meetsDiscordAgeCheck && !MR1_TRIBE_IDS.has(baseid)) throw discordAgeErr();
+      if (!ctx.meetsDiscordAgeCheck && !MR1_TRIBE_IDS.has(baseid) && !isEventBase(baseid)) throw discordAgeErr();
       
       await validateAttack(user, attackData, mapversion);
+
+      if (isEventBase(baseid)) {
+        baseSave = await loadEventBase(user, baseid);
+        break;
+      }
+
       baseSave = await baseModeAttack({ user, baseid, mapversion, attackCost: attackcost });
       break;
 

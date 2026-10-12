@@ -12,6 +12,7 @@ export class CreateEventTable extends Migration {
         event      VARCHAR(255) NOT NULL,
         start_time INTEGER NOT NULL,
         score      INTEGER NOT NULL DEFAULT 0,
+        bases      JSONB NOT NULL DEFAULT '{}',
         updated_at TIMESTAMP NOT NULL DEFAULT NOW(),
         CONSTRAINT event_userid_event_start_time_unique UNIQUE (userid, event, start_time)
       )
