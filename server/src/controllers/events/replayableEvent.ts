@@ -8,18 +8,6 @@ import { postgres } from "../../server.js";
 import type { KoaController } from "../../utils/KoaController.js";
 
 /**
- * Acknowledges the replayable event calls the server has nothing to do for:
- * startevent, resetevent and emailoptin.
- *
- * A player's score is stored against the start time of the scheduled event, so a
- * new run has no score to start or reset.
- */
-export const acknowledgeEvent: KoaController = async (ctx) => {
-  ctx.status = Status.OK;
-  ctx.body = { error: 0 };
-};
-
-/**
  * Returns the player's score in an active replayable event.
  * The response carries no `score` when the event is not active, which the client ignores.
  *
