@@ -229,7 +229,9 @@ package {
                     }
                     _musicChannel = sound.play(param4, int.MAX_VALUE, new SoundTransform(param2, param3));
                     _currentMusic = param1;
-                    _musicChannel.addEventListener(Event.SOUND_COMPLETE, replayMusic);
+                    if (_musicChannel) {
+                        _musicChannel.addEventListener(Event.SOUND_COMPLETE, replayMusic);
+                    }
                 }
             }
         }
@@ -256,13 +258,21 @@ package {
         }
 
         public static function Tick():void {
+            try {
+                TickMusic();
+            }
+            catch (e:Error) {
+            }
+        }
+
+        private static function TickMusic():void {
             for (var soundName:String in _concurrent) {
                 if (_concurrent[soundName] > 0) {
                     _concurrent[soundName]--;
                 }
             }
             if (_currentMusic != _queuedMusic) {
-                if (_currentMusic) {
+                if (_currentMusic && _musicChannel) {
                     var currentMusicVolume:Number = _musicChannel.soundTransform.volume;
                     currentMusicVolume -= 0.05;
                     if (currentMusicVolume <= 0) {
