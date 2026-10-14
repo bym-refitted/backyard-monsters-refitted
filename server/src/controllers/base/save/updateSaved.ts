@@ -17,6 +17,7 @@ import { mapSaveData } from "../../../services/base/mapSaveData.js";
 import { getAllianceData } from "../../../services/alliance/allianceData.js";
 import { runningPowerups } from "../../../services/alliance/powerups.js";
 import { visibleCredits } from "../../../services/user/shinyLock.js";
+import { isEventBase, loadEventBase } from "../../../services/events/replayable/eventBases.js";
 
 const UpdateSavedSchema = z.object({
   type: z.string(),
@@ -55,6 +56,11 @@ export const updateSaved: KoaController = async (ctx) => {
       break;
 
     default:
+      if (isEventBase(baseid)) {
+        baseSave = await loadEventBase(user, baseid);
+        break;
+      }
+
       baseSave = await baseModeView(baseid, mapversion, worldid, user);
       break;
   }

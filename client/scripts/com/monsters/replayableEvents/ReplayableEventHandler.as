@@ -41,28 +41,65 @@ package com.monsters.replayableEvents {
         }
 
         public static function initialize(param1:Object = null):void {
-            var _loc2_:ReplayableEvent = null;
-            var _loc3_:Number = NaN;
+            // var _loc2_:ReplayableEvent = null;
+            // var _loc3_:Number = NaN;
             if (GLOBAL.isAtHome() && TUTORIAL.hasFinished) {
                 if (param1) {
                     importData(param1);
                 }
+                selectScheduledEvent();
                 if (activeEvent) {
                     activeEvent.initialize();
                     checkIfActiveEventIsFinished();
                 }
-                else if (canScheduleNewEvent()) {
-                    _loc2_ = getQualifiedEvent();
-                    if (_loc2_) {
-                        _loc3_ = getPotentialStartDateForEvent(_loc2_);
-                        if (_loc3_) {
-                            scheduleNewEvent(_loc2_, _loc3_);
-                            activeEvent.initialize();
-                        }
-                    }
-                }
+                // else if (canScheduleNewEvent()) {
+                // _loc2_ = getQualifiedEvent();
+                // if (_loc2_) {
+                // _loc3_ = getPotentialStartDateForEvent(_loc2_);
+                // if (_loc3_) {
+                // scheduleNewEvent(_loc2_, _loc3_);
+                // activeEvent.initialize();
+                // }
+                // }
+                // }
             }
             addUI();
+        }
+
+        /**
+         * Makes the active event the one the server's event calendar has running.
+         *
+         * The original client scheduled events for itself, per player (see canScheduleNewEvent).
+         * The server now sends the running events in the `activeevents` flag, and the player gets
+         * the highest priority one they qualify for. A start date that differs from the saved one
+         * is a new run of the event, which scheduleNewEvent resets.
+         */
+        private static function selectScheduledEvent():void {
+            var scheduled:Object = null;
+            var event:ReplayableEvent = null;
+            var selected:ReplayableEvent = null;
+            var startDate:Number = 0;
+
+            activeEvent = null;
+
+            for each (scheduled in GLOBAL._flags.activeevents) {
+                event = ReplayableEventLibrary.getEventByID(scheduled.id);
+
+                if (event && event.doesQualify() && (!selected || event.priority > selected.priority)) {
+                    selected = event;
+                    startDate = scheduled.start;
+                }
+            }
+
+            if (!selected)
+                return;
+
+            if (selected.startDate != startDate) {
+                scheduleNewEvent(selected, startDate);
+            }
+            else {
+                activeEvent = selected;
+            }
         }
 
         public static function updateDebugDate(param1:Number = 0):void {

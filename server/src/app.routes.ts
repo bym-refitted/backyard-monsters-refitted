@@ -84,6 +84,12 @@ import { removeFriend } from "./controllers/friends/removeFriend.js";
 import { sendGift } from "./controllers/gifts/sendGift.js";
 
 import { wildMonsterInvasion } from "./controllers/events/wildMonsterInvasion.js";
+import {
+  copyReplayableEventBase,
+  getReplayableEventScore,
+  loadEventBases,
+  updateReplayableEventScore,
+} from "./controllers/events/replayableEvent.js";
 import { recordDebugData } from "./controllers/debug/recordDebugData.js";
 
 import { createAlliance } from "./controllers/alliance/createAlliance.js";
@@ -227,13 +233,33 @@ router.post("/alliance/promotemember", verifyUserAuth, logRequest, promoteMember
 router.post("/alliance/changerelationship", verifyUserAuth, logRequest, changeRelationship);
 
 /**  ────────────────────────────────────────────────
-* 📦 Events
+* 📦 Events - Replayable
+* ──────────────────────────────────────────────── */
+router.post("/api/:apiVersion/bm/event/loadbases", apiVersion, verifyUserAuth, logRequest, loadEventBases);
+router.post("/api/:apiVersion/bm/event/updatescore", apiVersion, verifyUserAuth, logRequest, updateReplayableEventScore);
+router.post("/api/:apiVersion/bm/event/geteventscore", apiVersion, verifyUserAuth, logRequest, getReplayableEventScore);
+
+/**  ────────────────────────────────────────────────
+* 📦 Events - Wild Monster Invasion
 * ──────────────────────────────────────────────── */
 router.get("/api/:apiVersion/events/wmi", apiVersion, logRequest, wildMonsterInvasion);
+
+/**  ────────────────────────────────────────────────
+* 📦 Events - Brukkarg War
+* ──────────────────────────────────────────────── */
+router.post("/api/:apiVersion/bm/event/copybase", apiVersion, verifyUserAuth, logRequest, copyReplayableEventBase);
 
 /**  ────────────────────────────────────────────────
 * 📦 Debug
 * ──────────────────────────────────────────────── */
 router.post("/api/:apiVersion/player/recorddebugdata", apiVersion, debugDataLimiter, recordDebugData);
+
+/**  ────────────────────────────────────────────────
+* 📦 Unused (Archived) - called by the original client, not used by Refitted
+* ──────────────────────────────────────────────── */
+
+router.post("/api/:apiVersion/bm/event/startevent", apiVersion, verifyUserAuth, (ctx) => (ctx.body = { error: 0 }));
+router.post("/api/:apiVersion/bm/event/resetevent", apiVersion, verifyUserAuth, (ctx) => (ctx.body = { error: 0 }));
+router.post("/api/:apiVersion/bm/event/emailoptin", apiVersion, verifyUserAuth, (ctx) => (ctx.body = { error: 0 }));
 
 export default router;

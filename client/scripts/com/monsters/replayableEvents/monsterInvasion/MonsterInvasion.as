@@ -51,6 +51,11 @@ package com.monsters.replayableEvents.monsterInvasion {
         }
 
         protected function endWave():void {
+            var hasGroupsToSend:Boolean = this._internalWaveIndex < this._curSend.length;
+
+            if (hasGroupsToSend)
+                return;
+
             var _loc3_:int = 0;
             var _loc5_:BFOUNDATION = null;
             var _loc1_:int = 0;

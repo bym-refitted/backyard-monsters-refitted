@@ -5,7 +5,7 @@ import { BaseType } from "../../../enums/Base.js";
 import { FriendshipStatus } from "../../../enums/Friend.js";
 import { MapRoomVersion } from "../../../enums/MapRoom.js";
 import { MAX_FRIEND_NEIGHBOURS, NEIGHBOUR_LEVEL_RANGE } from "../../../config/NeighbourConfig.js";
-import { getNeighbourIdsByUser, addNeighbours } from "../neighbours.js";
+import { getNeighbourIdsByUser, addNeighbours } from "./neighbours.js";
 
 /**
  * Which of the given friends can take one more friend on their own map. A link

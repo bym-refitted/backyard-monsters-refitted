@@ -1,6 +1,6 @@
-import { User } from "../../database/models/user.model.js";
-import { Save } from "../../database/models/save.model.js";
-import type { NeighbourData } from "../../types/NeighbourData.js";
+import { User } from "../../../database/models/user.model.js";
+import { Save } from "../../../database/models/save.model.js";
+import type { NeighbourData } from "../../../types/NeighbourData.js";
 
 type NeighbourSave = Pick<Save, "userid" | "baseid" | "lastupdateAt">;
 

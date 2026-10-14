@@ -22,6 +22,7 @@ import { damageProtection } from "../../services/maproom/v2/damageProtection.js"
 import { advanceBuildingTimers } from "../../services/base/advanceBuildingTimers.js";
 import { visibleCredits } from "../../services/user/shinyLock.js";
 import { calculateBaseLevel } from "../../services/base/calculateBaseLevel.js";
+import { isEventBase, saveEventBaseAttack } from "../../services/events/replayable/eventBases.js";
 
 export const infernoSave: KoaController = async (ctx) => {
   const user: User = ctx.authUser;
@@ -38,9 +39,11 @@ export const infernoSave: KoaController = async (ctx) => {
     const { basesaveid } = saveData;
     let baseSave = await postgres.em.findOne(Save, { basesaveid });
 
-    // Otherwise, retrieve a moloch tribe and handle tribe save logic
+    // Otherwise, retrieve an event base or a moloch tribe and handle tribe save logic
     if (!baseSave) {
-      const tribeSave = await scaledInfernoTribes(user, saveData);
+      const saveTribeAttack = isEventBase(saveData.baseid) ? saveEventBaseAttack : scaledInfernoTribes;
+      const tribeSave = await saveTribeAttack(user, saveData);
+
       const filteredSave = FilterFrontendKeys(tribeSave);
 
       ctx.status = Status.OK;
