@@ -59,6 +59,7 @@ package com.monsters.replayableEvents.attackDefend {
         override protected function onInitialize():void {
             super.onInitialize();
             ReplayableEventHandler.callServerMethod("loadbases", [["eventid", _id]], this.loadedBaseList);
+            ReplayableEventHandler.callServerMethod("geteventscore", [["eventid", _id]], this.serverScoreCallback);
         }
 
         override public function pressedActionButton():void {

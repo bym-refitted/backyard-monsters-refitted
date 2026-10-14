@@ -1,6 +1,8 @@
 import { devConfig } from "../config/GameConfig.js";
 import { getActiveInvasion } from "../services/events/wmi/getActiveInvasion.js";
 import { setupInvasionEvent } from "../services/events/wmi/setupInvasionEvent.js";
+import { getActiveEvents } from "../services/events/calendar/eventCalendar.js";
+import { EVENTS } from "../config/EventCalendarConfig.js";
 
 /**
  * Gets the current invasion flags.
@@ -10,6 +12,22 @@ const getInvasionFlags = () => {
   const activeInvasion = getActiveInvasion();
   const invasionPhases = setupInvasionEvent(activeInvasion).phases;
   return { ...invasionPhases, activeInvasion };
+};
+
+/**
+ * Gets the flags for the replayable events.
+ *
+ * `activeevents` lists the replayable events the calendar has running, each with the id
+ * the client knows it by and its start time. The client shows the one the player qualifies for.
+ *
+ * `ers` stays off: it lets the client schedule events for itself, which the calendar replaces.
+ */
+const getReplayableEventFlags = () => {
+  const activeevents = getActiveEvents()
+    .filter(({ event }) => EVENTS[event].replayableId)
+    .map(({ event, start }) => ({ id: EVENTS[event].replayableId, start }));
+
+  return { ers: 0, activeevents };
 };
 
 /**
@@ -59,6 +77,7 @@ export const getFlags = () => ({
   event1: 1,
   event2: 0,
   ...getInvasionFlags(),
+  ...getReplayableEventFlags(),
   iframestart_override: 0,
   mushrooms: 1,
   chatwhitelist: "",
@@ -76,7 +95,6 @@ export const getFlags = () => ({
   autoban_validate_fail: 0,
   autoban_client: 0,
   yp_version: 2,
-  ers: 0, // Used for enabling canScheduleNewEvent() in ReplayableEventHandler.as on client
   krallen: 1,
   subscriptions: 1,
   krallen_duration: 7,

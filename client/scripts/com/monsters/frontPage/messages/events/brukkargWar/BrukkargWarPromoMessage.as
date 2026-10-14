@@ -8,7 +8,8 @@ package com.monsters.frontPage.messages.events.brukkargWar {
 
     public class BrukkargWarPromoMessage extends KeywordMessage {
 
-        private static const k_BRUKKARG_EVENT_PAGE_URL:String = "http://www.kixeye.com/brukkarg-war";
+        // private static const k_BRUKKARG_EVENT_PAGE_URL:String = "http://www.kixeye.com/brukkarg-war";
+        private static const k_BRUKKARG_EVENT_PAGE_URL:String = "https://backyardmonsters.fandom.com/wiki/Brukkarg_War";
 
         private var _action:Function;
 

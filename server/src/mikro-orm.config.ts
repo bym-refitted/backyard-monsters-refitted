@@ -24,6 +24,7 @@ import { AllianceStats } from "./database/models/alliancestats.view.js";
 import { ApiConsumer } from "./database/models/apiconsumer.model.js";
 import { Friendship } from "./database/models/friendship.model.js";
 import { Gift } from "./database/models/gift.model.js";
+import { Event } from "./database/models/event.model.js";
 import { BaseUpdate } from "./database/models/baseupdate.model.js";
 import { NeighbourAttack } from "./database/models/neighbourattack.model.js";
 import { NeighbourLink } from "./database/models/neighbourlink.model.js";
@@ -59,6 +60,7 @@ const entities = [
   NeighbourAttack,
   NeighbourLink,
   NeighbourCandidate,
+  Event,
 ];
 
 /**
