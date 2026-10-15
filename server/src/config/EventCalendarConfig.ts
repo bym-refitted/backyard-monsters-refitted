@@ -58,7 +58,7 @@ export const EVENTS: Record<GameEvent, EventDefinition> = {
     maxScore: 5025,
     copyBaseScore: 4024,
     runDays: 5,
-    enabled: false,
+    enabled: true,
   },
   [GameEvent.CREATURE_CARNAGE]: {
     replayableId: 1,
