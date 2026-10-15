@@ -9,7 +9,7 @@ import {
 import JWT from "jsonwebtoken";
 import { Env } from "../enums/Env.js";
 import { isDiscordAccountOldEnough } from "../services/discord/discordAccountStatus.js";
-import type { SessionType } from "../enums/SessionType.js";
+import { SessionType } from "../enums/SessionType.js";
 import { logger } from "../utils/logger.js";
 
 export interface JwtClaims {
@@ -26,8 +26,9 @@ export interface AuthTokenPayload {
 }
 
 /**
- * Where a session's token is kept: one key per device per client type, so that signing in
- * on a second machine leaves the first one running.
+ * Where a session's token is kept. Launcher and website sessions get one key per device, so
+ * signing in on a second machine leaves the first one running. Game sessions share one key
+ * per account, so opening a second game client evicts the first.
  *
  * @param {SessionType} sessionType - Which client the session belongs to.
  * @param {string} email - The account the session belongs to.
@@ -35,7 +36,9 @@ export interface AuthTokenPayload {
  * @returns {string} The Redis key holding that session's token.
  */
 export const sessionTokenKey = (sessionType: SessionType, email: string, sessionId: string): string =>
-  `user-token:${sessionType}:${email}:${sessionId}`;
+  sessionType === SessionType.GAME
+    ? `user-token:${SessionType.GAME}:${email}`
+    : `user-token:${sessionType}:${email}:${sessionId}`;
 
 /**
  * Middleware to enforce authentication for protected routes.
