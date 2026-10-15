@@ -8,6 +8,7 @@ import {
   SLOT_START_DAY,
 } from "../../../config/EventCalendarConfig.js";
 import { EventSlot, GameEvent } from "../../../enums/GameEvent.js";
+import { dateToEpoch, epochToDate } from "../../../utils/epochDate.js";
 import { getCurrentDateTime } from "../../../utils/getCurrentDateTime.js";
 
 const SECONDS_PER_DAY = 86400;
@@ -52,9 +53,7 @@ export const getEventOverride = (event: GameEvent): number => EVENT_START_OVERRI
  * @returns {ScheduledEvent[]} The scheduled events, in date order
  */
 const getEventSchedule = (now: number): ScheduledEvent[] => {
-  const instant = Temporal.Instant.fromEpochMilliseconds(now * 1000);
-  const today = instant.toZonedDateTimeISO(EVENT_TIME_ZONE);
-  const thisMonth = today.toPlainDate().toPlainYearMonth();
+  const thisMonth = epochToDate(now, EVENT_TIME_ZONE).toPlainYearMonth();
   
   const schedule: ScheduledEvent[] = [];
 
@@ -65,7 +64,7 @@ const getEventSchedule = (now: number): ScheduledEvent[] => {
 
     for (const slot of SLOTS) {
       const startDate = month.toPlainDate({ day: SLOT_START_DAY[slot] });
-      const start = startDate.toZonedDateTime(EVENT_TIME_ZONE).epochMilliseconds / 1000;
+      const start = dateToEpoch(startDate, EVENT_TIME_ZONE);
 
       for (const event of cycleMonth[slot]) schedule.push(toScheduledEvent(event, start));
     }

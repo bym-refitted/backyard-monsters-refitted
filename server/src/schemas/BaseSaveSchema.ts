@@ -1,6 +1,7 @@
 import z from "zod";
 import { ChampionListSchema } from "./ChampionSchema.js";
 import { GiftIdsSchema } from "./GiftSchemas.js";
+import { KrallenClientSchema } from "./KrallenSchema.js";
 import type { Resources } from "../services/base/updateResources.js";
 
 /**
@@ -47,6 +48,12 @@ export const BaseSaveSchema = z.object({
    * @type {ChampionData[] | undefined}
    */
   attackerchampion: ChampionListSchema,
+
+  /**
+   * The Hunt for Krallen data the client keeps, of which only the popup it has shown is used.
+   * @type {KrallenClientData | undefined}
+   */
+  krallen: KrallenClientSchema,
 
   /**
    * The building data, transformed from a JSON string to an object.

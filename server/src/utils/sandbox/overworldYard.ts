@@ -3892,6 +3892,7 @@ export const overworldYardSandbox = (user: User) => {
       wins: 5,
       tier: 5,
       loot: 750000000000,
+      lastShownTier: 0,
     },
     siege: null,
     buildingresources: {},

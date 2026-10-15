@@ -8,6 +8,7 @@ import { BigIntType, type Opt, PrimaryKeyProp, UniqueConstraintViolationExceptio
 import type { AttackDetails } from "../../controllers/base/load/modes/baseModeAttack.js";
 import type { Stats } from "../../services/events/wmi/invasionUtils.js";
 import type { ChampionData } from "../../schemas/ChampionSchema.js";
+import type { KrallenData } from "../../schemas/KrallenSchema.js";
 import type { JsonObject } from "../../types/JsonObject.js";
 import type { BuildingDataMap, BuildingHealthData } from "../../types/BuildingData.js";
 import { MapRoomVersion } from "../../enums/MapRoom.js";
@@ -345,7 +346,7 @@ export class Save {
 
   @FrontendKey
   @Property({ columnType: "jsonb", type: "json", nullable: true })
-  krallen?: JsonObject | null = null;
+  krallen?: KrallenData | null = null;
 
   @FrontendKey
   @Property({ columnType: "jsonb", nullable: true })

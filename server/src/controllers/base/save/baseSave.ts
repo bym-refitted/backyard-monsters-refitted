@@ -14,6 +14,7 @@ import { academyHandler } from "./handlers/academyHandler.js";
 import { BaseType } from "../../../enums/Base.js";
 import { permissionErr, saveFailureErr } from "../../../errors/errors.js";
 import { attackLootHandler } from "./handlers/attackLootHandler.js";
+import { krallenHandler } from "./handlers/krallenHandler.js";
 import { defenderLootHandler } from "./handlers/defenderLootHandler.js";
 import { monsterUpdateHandler } from "./handlers/monsterUpdateHandler.js";
 import { validateSave } from "../../../scripts/anticheat/anticheat.js";
@@ -131,6 +132,10 @@ export const baseSave: KoaController = async (ctx) => {
         if (isAttack) {
           userSave.siege = saveData.attackersiege;
         }
+        break;
+
+      case SaveKeys.KRALLEN:
+        krallenHandler(saveData.krallen, baseSave);
         break;
 
       default:
