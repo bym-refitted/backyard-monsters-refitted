@@ -1,8 +1,13 @@
 import {
+  KRALLEN_AWARD_THRESHOLD,
+  KRALLEN_KEPT_UPGRADE_THRESHOLD,
   KRALLEN_MAP_ROOMS,
   KRALLEN_MIN_TOWN_HALL,
+  KRALLEN_ROUND_DAYS,
   KRALLEN_ROUND_END_WEEKDAY,
   KRALLEN_TIME_ZONE,
+  KRALLEN_UPGRADE_THRESHOLD,
+  KRALLEN_WINS_TO_KEEP,
 } from "../../../config/KrallenConfig.js";
 import { Save } from "../../../database/models/save.model.js";
 import {
@@ -14,7 +19,17 @@ import { dateToEpoch, epochToDate } from "../../../utils/epochDate.js";
 import { extractTownHall } from "../../../utils/extractTownHall.js";
 import { getCurrentDateTime } from "../../../utils/getCurrentDateTime.js";
 
+type KrallenStreak = Pick<KrallenStoredData, "wins">;
+
 const DAYS_PER_WEEK = 7;
+
+const SECONDS_PER_DAY = 86400;
+
+const TIER_NONE = 0;
+
+const TIER_KRALLEN = 1;
+
+const TIER_UPGRADED = 2;
 
 /**
  * Gets the time the current Hunt for Krallen round ends. Every player shares the same
@@ -59,9 +74,45 @@ export const isKrallenEligible = (save: Save) => {
 };
 
 /**
- * Gets a player's stored Hunt for Krallen data for the current round. Data from a round
- * that has ended starts the current round with no loot. The latest attack is kept, so an
- * attack still running when a round ends only adds its remaining loot to the new round.
+ * Works out a player's tier and wins at the end of a round, from the loot they gathered in it.
+ *
+ * Winning adds to the streak and awards the Krallen, or its upgraded power above the upgrade
+ * target. Missing the target ends the streak and takes the Krallen away, unless the player
+ * has already won enough rounds in a row to keep it, in which case it drops to its base power.
+ * Once kept, the client shows the upgrade target as the loot above the award target
+ * (KOTHHandler.initialize), so that is the target used.
+ *
+ * @param {KrallenStreak} round - The player's progress going into the round's end
+ * @param {number} loot - The loot gathered in the round
+ * @returns {{ tier: number; wins: number }} The tier and wins after the round
+ */
+const settleRound = (round: KrallenStreak, loot: number) => {
+  const { wins } = round;
+
+  const ownsForGood = wins >= KRALLEN_WINS_TO_KEEP;
+  const hasWon = loot >= KRALLEN_AWARD_THRESHOLD;
+
+  if (hasWon) {
+    const upgradeTarget = ownsForGood ? KRALLEN_KEPT_UPGRADE_THRESHOLD : KRALLEN_UPGRADE_THRESHOLD;
+    const isUpgraded = loot >= upgradeTarget;
+
+    const wonRound = { wins: wins + 1, tier: isUpgraded ? TIER_UPGRADED : TIER_KRALLEN };
+
+    return wonRound;
+  }
+
+  if (ownsForGood) return { wins, tier: TIER_KRALLEN };
+
+  return { wins: 0, tier: TIER_NONE };
+};
+
+/**
+ * Gets a player's stored Hunt for Krallen data for the current round.
+ *
+ * When the saved round has ended, it is settled and the current round starts with no loot.
+ * Rounds missed since then count as rounds with no loot. A player with no saved round (who
+ * hasn't looted yet) has nothing to settle. The latest attack is kept, so an attack still
+ * running when a round ends only adds its remaining loot to the new round.
  *
  * @param {Save} save - The player's main yard
  * @param {number} now - The current time, in seconds
@@ -71,11 +122,22 @@ export const getCurrentRound = (save: Save, now: number = getCurrentDateTime()):
   const savedRound = KrallenStoredSchema.parse(save.krallen ?? {});
   const roundEnd = getRoundEnd(now);
 
-  const isCurrentRound = savedRound.roundEnd === roundEnd;
+  const isRoundOver = savedRound.roundEnd < roundEnd;
+  if (!isRoundOver) return savedRound;
 
-  if (isCurrentRound) return savedRound;
+  const newRound = { ...savedRound, loot: 0, lastShownTier: 0, roundEnd };
 
-  return { ...savedRound, loot: 0, lastShownTier: 0, roundEnd };
+  const hasSavedRound = savedRound.roundEnd > 0;
+  if (!hasSavedRound) return newRound;
+
+  const settledRound = settleRound(savedRound, savedRound.loot);
+
+  const nextRoundEnd = savedRound.roundEnd + KRALLEN_ROUND_DAYS * SECONDS_PER_DAY;
+  const hasMissedRounds = nextRoundEnd < roundEnd;
+
+  const settled = hasMissedRounds ? settleRound(settledRound, 0) : settledRound;
+
+  return { ...newRound, ...settled };
 };
 
 /**
