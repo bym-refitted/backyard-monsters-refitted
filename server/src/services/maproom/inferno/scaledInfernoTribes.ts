@@ -1,4 +1,4 @@
-import type { TypeOf } from "zod";
+import type { z } from "zod";
 import { resourcesHandler } from "../../../controllers/base/save/handlers/resourceHandler.js";
 import { SaveKeys } from "../../../enums/SaveKeys.js";
 import { saveFailureErr } from "../../../errors/errors.js";
@@ -10,7 +10,7 @@ import { getCurrentDateTime } from "../../../utils/getCurrentDateTime.js";
 import { BaseSaveSchema } from "../../../schemas/BaseSaveSchema.js";
 import { molochTribes } from "../../../game-data/tribes/inferno/molochTribes.js";
 
-type BaseSaveData = TypeOf<typeof BaseSaveSchema>;
+type BaseSaveData = z.infer<typeof BaseSaveSchema>;
 
 /**
  * Persists Inferno tribe attack state (building health, monsters, destroyed) to
