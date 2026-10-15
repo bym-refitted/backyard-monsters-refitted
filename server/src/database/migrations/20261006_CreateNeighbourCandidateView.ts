@@ -3,11 +3,16 @@ import { Migration } from "@mikro-orm/migrations";
 /**
  * Creates bym.neighbour_candidate, which lists every Map Room 1 main base with
  * the number of neighbours its owner has now, for the neighbour search.
+ *
+ * The view is dropped first because on a fresh install `schema:create` has
+ * already built it in its later shape, which CREATE OR REPLACE cannot narrow.
  */
 export class CreateNeighbourCandidateView extends Migration {
   async up(): Promise<void> {
+    await this.execute(`DROP VIEW IF EXISTS bym.neighbour_candidate`);
+
     await this.execute(`
-      CREATE OR REPLACE VIEW bym.neighbour_candidate AS
+      CREATE VIEW bym.neighbour_candidate AS
       SELECT
         s.userid,
         s.level,
