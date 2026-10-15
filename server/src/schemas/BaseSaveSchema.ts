@@ -2,6 +2,7 @@ import z from "zod";
 import { ChampionListSchema } from "./ChampionSchema.js";
 import { GiftIdsSchema } from "./GiftSchemas.js";
 import { KrallenClientSchema } from "./KrallenSchema.js";
+import { LootReportSchema } from "./LootReportSchema.js";
 import type { Resources } from "../services/base/updateResources.js";
 
 /**
@@ -95,6 +96,12 @@ export const BaseSaveSchema = z.object({
     .string()
     .optional()
     .transform((data) => (data ? (JSON.parse(data) as Resources) : undefined)),
+
+  /**
+   * The attack's running loot total, before anything the attacker spent.
+   * @type {LootReport | undefined}
+   */
+  lootreport: LootReportSchema,
 
   /**
    * The resource delta for the base being saved. During an attack this is the

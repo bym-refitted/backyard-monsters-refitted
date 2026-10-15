@@ -1,6 +1,10 @@
 import z from "zod";
 import { parseJsonSafely } from "../utils/parseJsonSafely.js";
 
+export type KrallenData = z.infer<typeof KrallenSchema>;
+
+export type KrallenStoredData = z.infer<typeof KrallenStoredSchema>;
+
 /**
  * A player's Hunt for Krallen progress, in the shape KOTHHandler reads it.
  */
@@ -12,7 +16,16 @@ export const KrallenSchema = z.object({
   lastShownTier: z.number().int().min(0).catch(0),    // highest mid-round popup already shown
 });
 
-export type KrallenData = z.infer<typeof KrallenSchema>;
+
+/**
+ * A player's Hunt for Krallen progress as stored: what the client reads, plus the round
+ * the loot belongs to and how much of the latest attack's loot has been counted.
+ */
+export const KrallenStoredSchema = KrallenSchema.extend({
+  roundEnd: z.number().catch(0),                            // end of the round the loot belongs to
+  attackId: z.string().catch(""),                           // the attack whose loot was counted last
+  attackLoot: z.number().min(0).catch(0),                   // loot from that attack already counted
+});
 
 /**
  * The part of the Hunt for Krallen data the client is allowed to save, read from the

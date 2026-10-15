@@ -1,10 +1,15 @@
 import {
+  KRALLEN_MAP_ROOMS,
   KRALLEN_MIN_TOWN_HALL,
   KRALLEN_ROUND_END_WEEKDAY,
   KRALLEN_TIME_ZONE,
 } from "../../../config/KrallenConfig.js";
 import { Save } from "../../../database/models/save.model.js";
-import { KrallenSchema, type KrallenData } from "../../../schemas/KrallenSchema.js";
+import {
+  KrallenStoredSchema,
+  type KrallenData,
+  type KrallenStoredData,
+} from "../../../schemas/KrallenSchema.js";
 import { dateToEpoch, epochToDate } from "../../../utils/epochDate.js";
 import { extractTownHall } from "../../../utils/extractTownHall.js";
 import { getCurrentDateTime } from "../../../utils/getCurrentDateTime.js";
@@ -30,17 +35,47 @@ export const getRoundEnd = (now: number = getCurrentDateTime()) => {
 };
 
 /**
+ * Checks whether a player is on a Map Room that takes part in Hunt for Krallen.
+ *
+ * @param {Save} save - The player's main yard
+ * @returns {boolean} Whether the player's Map Room takes part
+ */
+export const isInKrallenMapRoom = (save: Save) => KRALLEN_MAP_ROOMS.includes(save.mapversion);
+
+/**
  * Checks whether a player's main yard can take part in Hunt for Krallen.
  *
  * @param {Save} save - The player's main yard
  * @returns {boolean} Whether the player qualifies
  */
-const isKrallenEligible = (save: Save) => {
+export const isKrallenEligible = (save: Save) => {
+  if (!isInKrallenMapRoom(save)) return false;
+
   const townHall = extractTownHall(save.buildingdata ?? {});
 
   if (!townHall) return false;
 
   return townHall.l >= KRALLEN_MIN_TOWN_HALL;
+};
+
+/**
+ * Gets a player's stored Hunt for Krallen data for the current round. Data from a round
+ * that has ended starts the current round with no loot. The latest attack is kept, so an
+ * attack still running when a round ends only adds its remaining loot to the new round.
+ *
+ * @param {Save} save - The player's main yard
+ * @param {number} now - The current time, in seconds
+ * @returns {KrallenStoredData} The data for the current round
+ */
+export const getCurrentRound = (save: Save, now: number = getCurrentDateTime()): KrallenStoredData => {
+  const savedRound = KrallenStoredSchema.parse(save.krallen ?? {});
+  const roundEnd = getRoundEnd(now);
+
+  const isCurrentRound = savedRound.roundEnd === roundEnd;
+
+  if (isCurrentRound) return savedRound;
+
+  return { ...savedRound, loot: 0, lastShownTier: 0, roundEnd };
 };
 
 /**
@@ -54,8 +89,8 @@ const isKrallenEligible = (save: Save) => {
 export const getKrallenData = (save: Save, now: number = getCurrentDateTime()): KrallenData | null => {
   if (!isKrallenEligible(save)) return null;
 
-  const stored = KrallenSchema.parse(save.krallen ?? {});
-  const countdown = getRoundEnd(now) - now;
+  const { tier, wins, loot, lastShownTier, roundEnd } = getCurrentRound(save, now);
+  const countdown = roundEnd - now;
 
-  return { ...stored, countdown };
+  return { tier, wins, loot, countdown, lastShownTier };
 };

@@ -15,6 +15,7 @@ import { BaseType } from "../../../enums/Base.js";
 import { permissionErr, saveFailureErr } from "../../../errors/errors.js";
 import { attackLootHandler } from "./handlers/attackLootHandler.js";
 import { krallenHandler } from "./handlers/krallenHandler.js";
+import { addKrallenLoot } from "../../../services/events/krallen/krallenLoot.js";
 import { defenderLootHandler } from "./handlers/defenderLootHandler.js";
 import { monsterUpdateHandler } from "./handlers/monsterUpdateHandler.js";
 import { validateSave } from "../../../scripts/anticheat/anticheat.js";
@@ -175,6 +176,8 @@ export const baseSave: KoaController = async (ctx) => {
     if (saveData.attackloot) {
       attackLootHandler(saveData.attackloot, userSave);
     }
+
+    addKrallenLoot(userSave, saveData);
 
     if (saveData.resources) {
       const lootTarget = outpostOwnerSave ?? baseSave;
