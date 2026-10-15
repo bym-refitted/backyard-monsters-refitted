@@ -62,10 +62,7 @@ const updateKrallenRewards = (save: Save, round: KrallenStoredData) => {
  * @param {KrallenStoredData} round - The player's settled progress
  */
 const setRoundEndStats = (save: Save, round: KrallenStoredData) => {
-  const otherStats = { ...save.stats?.other };
-
-  delete otherStats[LAST_ROUND_LOOT_STAT];
-  delete otherStats[LAST_ROUND_TIER_STAT];
+  const { [LAST_ROUND_LOOT_STAT]: _, [LAST_ROUND_TIER_STAT]: __, ...otherStats } = save.stats?.other ?? {};
 
   const hasEndedRound = round.endedRoundLoot > 0;
 
