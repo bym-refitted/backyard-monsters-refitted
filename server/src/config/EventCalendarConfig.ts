@@ -21,6 +21,9 @@ export const POST_EVENT_DAYS = 2;
  * Epoch timestamps that force an event to start at a given time, or 0 to leave it
  * to the calendar. A forced event is announced from 7 days before, and runs even
  * when it is disabled below.
+ *
+ * While any override is set, every event without one is hidden. Setting the overrides
+ * back to 0 hands control back to the calendar, which carries on from wherever it is.
  */
 export const EVENT_START_OVERRIDES: Record<GameEvent, number> = {
   [GameEvent.WMI1]: 0,
