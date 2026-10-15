@@ -20,4 +20,6 @@ export const KRALLEN_SPECIAL2_THRESHOLD = 7_000_000_000;
 
 export const KRALLEN_WINS_TO_KEEP = 5;
 
+export const KRALLEN_MAX_LEVEL = 5;
+
 export const KRALLEN_CHAMPION_TYPE = 5;

@@ -114,6 +114,9 @@ const settleRound = (round: KrallenStreak, loot: number) => {
  * hasn't looted yet) has nothing to settle. The latest attack is kept, so an attack still
  * running when a round ends only adds its remaining loot to the new round.
  *
+ * The ended round's loot and tier are kept until the next full load tells the client, so
+ * it can show the end-of-round message even if an attack saved the new round first.
+ *
  * @param {Save} save - The player's main yard
  * @param {number} now - The current time, in seconds
  * @returns {KrallenStoredData} The data for the current round
@@ -137,7 +140,7 @@ export const getCurrentRound = (save: Save, now: number = getCurrentDateTime()):
 
   const settled = hasMissedRounds ? settleRound(settledRound, 0) : settledRound;
 
-  return { ...newRound, ...settled };
+  return { ...newRound, ...settled, endedRoundLoot: savedRound.loot, endedRoundTier: savedRound.tier };
 };
 
 /**

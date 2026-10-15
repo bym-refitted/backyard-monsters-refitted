@@ -25,6 +25,8 @@ export const KrallenStoredSchema = KrallenSchema.extend({
   roundEnd: z.number().catch(0),                            // end of the round the loot belongs to
   attackId: z.string().catch(""),                           // the attack whose loot was counted last
   attackLoot: z.number().min(0).catch(0),                   // loot from that attack already counted
+  endedRoundLoot: z.number().min(0).catch(0),               // loot of the last ended round, until the client is told
+  endedRoundTier: z.number().int().min(0).catch(0),         // tier going into the last ended round, until the client is told
 });
 
 /**
