@@ -1,6 +1,7 @@
 import type z from "zod";
 
 import { EVENTS } from "../../../config/EventCalendarConfig.js";
+import { attackLootHandler } from "../../../controllers/base/save/handlers/attackLootHandler.js";
 import { Event, type EventBaseState } from "../../../database/models/event.model.js";
 import { Save } from "../../../database/models/save.model.js";
 import { User } from "../../../database/models/user.model.js";
@@ -169,7 +170,7 @@ export const loadEventBase = async (user: User, baseid: string): Promise<Save> =
 
 /**
  * Handles a save posted during an attack on an event base.
- * Stores the attacker's remaining monsters and champion, and the base's building
+ * Stores the attacker's remaining monsters, champion and loot, and the base's building
  * health, monsters and destroyed state against the player's row for this run of the event.
  *
  * @param {User} user - The attacking user
@@ -186,6 +187,7 @@ export const saveEventBaseAttack = async (user: User, saveData: BaseSaveData): P
 
   if (saveData.attackcreatures) userSave.monsters = saveData.attackcreatures;
   if (saveData.attackerchampion) userSave.champion = saveData.attackerchampion;
+  if (saveData.attackloot) attackLootHandler(saveData.attackloot, userSave);
 
   postgres.em.persist(userSave);
 
