@@ -48,6 +48,12 @@ package {
             tMessage.y = mcBG.y + 20;
             bAction.y = mcBG.y + mcBG.height - 45;
             bAction2.y = mcBG.y + mcBG.height - 45;
+
+            if (param2 && param5) {
+                bAction.x = bAction.x - (bAction.width + 20) * 0.5;
+                bAction2.x = bAction2.x + (bAction2.width + 20) * 0.5;
+            }
+
             GLOBAL.BlockerAdd(GLOBAL._layerTop);
             this._mc = GLOBAL._layerTop.addChild(this) as MESSAGE_CLIP;
             this._mc.Center();
