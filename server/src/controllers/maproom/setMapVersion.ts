@@ -76,6 +76,8 @@ export const setMapVersion: KoaController = async (ctx) => {
     case MapRoomVersion.V2: {
       if (save.mapversion === MapRoomVersion.V3) break;
 
+      if (save.mapversion === MapRoomVersion.V2 && save.worldid) break;
+
       if (user.alliance_id) throw mustLeaveAllianceToChangeWorldErr();
 
       await clearPendingInvites(user.userid);
