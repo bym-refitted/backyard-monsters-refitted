@@ -936,7 +936,9 @@ package {
                 }
             }
             _loc2_ = 100 - 100 / _loc5_ * _loc4_;
-            if (MapRoomManager.instance.isInMapRoom3 && !_loc3_ && !BASE.isInfernoMainYardOrOutpost) {
+            var isEventBaseAttack:Boolean = BASE.isEventBaseId(BASE._baseID) && GLOBAL.mode == GLOBAL.e_BASE_MODE.WMATTACK;
+            // if (MapRoomManager.instance.isInMapRoom3 && !_loc3_ && !BASE.isInfernoMainYardOrOutpost) {
+            if (MapRoomManager.instance.isInMapRoom3 && !_loc3_ && !BASE.isInfernoMainYardOrOutpost && !isEventBaseAttack) {
                 EndBForMapRoom3();
                 return;
             }

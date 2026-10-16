@@ -1,4 +1,4 @@
-import type { TypeOf } from "zod";
+import type { z } from "zod";
 import { SaveKeys } from "../../../enums/SaveKeys.js";
 import { saveFailureErr } from "../../../errors/errors.js";
 import { Maproom } from "../../../database/models/maproom.model.js";
@@ -10,7 +10,7 @@ import { BaseSaveSchema } from "../../../schemas/BaseSaveSchema.js";
 import { attackLootHandler } from "../../../controllers/base/save/handlers/attackLootHandler.js";
 import { MR1_TRIBES_MAP } from "../../../game-data/tribes/v1/index.js";
 
-type BaseSaveData = TypeOf<typeof BaseSaveSchema>;
+type BaseSaveData = z.infer<typeof BaseSaveSchema>;
 
 const TUTORIAL_END_STAGE = 205;
 
