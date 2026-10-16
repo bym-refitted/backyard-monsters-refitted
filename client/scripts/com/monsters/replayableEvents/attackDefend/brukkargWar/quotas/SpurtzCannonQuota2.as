@@ -17,6 +17,9 @@ package com.monsters.replayableEvents.attackDefend.brukkargWar.quotas {
         /**
          * Shows the reward message without the reward when the player already holds the last
          * Spurtz Cannon reward, as this one would unlock cannons on top of the ones they own.
+         *
+         * The first reward is removed before this one is applied, as removing it blocks the
+         * Spurtz Cannon again and would leave the message's Build Now button doing nothing.
          */
         override public function metQuota():void {
             var hasThirdReward:Boolean = RewardHandler.instance.getRewardByID(SpurtzCannonReward3.ID) != null;
@@ -27,8 +30,10 @@ package com.monsters.replayableEvents.attackDefend.brukkargWar.quotas {
                 return;
             }
 
-            super.metQuota();
+            // super.metQuota();
+            // RewardHandler.instance.removeRewardByID(SpurtzCannonReward1.ID);
             RewardHandler.instance.removeRewardByID(SpurtzCannonReward1.ID);
+            super.metQuota();
         }
     }
 }
