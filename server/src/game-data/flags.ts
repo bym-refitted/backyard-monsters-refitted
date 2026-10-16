@@ -3,6 +3,12 @@ import { getActiveInvasion } from "../services/events/wmi/getActiveInvasion.js";
 import { setupInvasionEvent } from "../services/events/wmi/setupInvasionEvent.js";
 import { getActiveEvents } from "../services/events/calendar/eventCalendar.js";
 import { EVENTS } from "../config/EventCalendarConfig.js";
+import {
+  KRALLEN_AWARD_THRESHOLD,
+  KRALLEN_ROUND_DAYS,
+  KRALLEN_SPECIAL2_THRESHOLD,
+  KRALLEN_UPGRADE_THRESHOLD,
+} from "../config/KrallenConfig.js";
 
 /**
  * Gets the current invasion flags.
@@ -97,12 +103,12 @@ export const getFlags = () => ({
   yp_version: 2,
   krallen: 1,
   subscriptions: 1,
-  krallen_duration: 7,
   subscriptions_ab: 0,
   subscriptions_ab_admin: 0,
-  krallen_award_threshold: 250000000,
-  krallen_special1_award_threshold: 750000000,
-  krallen_special2_award_threshold: 7000000000,
+  krallen_duration: KRALLEN_ROUND_DAYS,
+  krallen_award_threshold: KRALLEN_AWARD_THRESHOLD,
+  krallen_special1_award_threshold: KRALLEN_UPGRADE_THRESHOLD,
+  krallen_special2_award_threshold: KRALLEN_SPECIAL2_THRESHOLD,
   saveicon: 1,
   event3start: 1364313600,
   event3end: 1364832000,

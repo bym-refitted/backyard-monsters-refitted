@@ -55,6 +55,9 @@ export const resetInvasionWaves = (stats: Stats["other"]) => {
   const currentEventEnd = dates.end;
   const currentEventStart = dates.start;
 
+  const hasInvasion = currentEventStart > 0;
+  if (!hasInvasion) return;
+
   const lastUserEventEnd = stats[lastEventEndKey] || 0;
 
   // Only reset waves if the user hasn't participated in this event yet

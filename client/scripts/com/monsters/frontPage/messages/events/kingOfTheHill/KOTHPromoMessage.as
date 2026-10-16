@@ -7,7 +7,8 @@ package com.monsters.frontPage.messages.events.kingOfTheHill {
 
     public class KOTHPromoMessage extends Message {
 
-        private const _EVENT_PAGE_URL:String = "http://www.kixeye.com/hunt-for-krallen/";
+        // private const _EVENT_PAGE_URL:String = "http://www.kixeye.com/hunt-for-krallen/";
+        private const _EVENT_PAGE_URL:String = "https://backyardmonsters.fandom.com/wiki/Hunt_for_Krallen";
 
         protected var _action:Function;
 

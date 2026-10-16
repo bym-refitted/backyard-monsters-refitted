@@ -163,8 +163,15 @@ package {
             mcCurrGuardian.stop();
             mcNextGuardian.stop();
             this.kothLootThresholds = [];
-            this.kothLootThresholds.push(int(KOTHHandler.instance.lootThresholds[1]));
-            this.kothLootThresholds.push(int(KOTHHandler.instance.lootThresholds[0]));
+            // this.kothLootThresholds.push(int(KOTHHandler.instance.lootThresholds[1]));
+            // this.kothLootThresholds.push(int(KOTHHandler.instance.lootThresholds[0]));
+
+            var lootThresholds:Vector.<uint> = KOTHHandler.instance.lootThresholds;
+            if (lootThresholds.length >= 2) {
+                this.kothLootThresholds.push(int(lootThresholds[1]));
+                this.kothLootThresholds.push(int(lootThresholds[0]));
+            }
+
             this.kothLootCurrent = 0;
             this.kothLootMax = this.kothLootThresholds[this.kothLootThresholds.length - 1];
             this.kothTimeEnd = KOTHHandler.instance.timeToReset + ReplayableEventHandler.currentTime;
