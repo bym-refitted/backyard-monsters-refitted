@@ -1,4 +1,5 @@
 import path from "path";
+import { existsSync } from "fs";
 
 import { defineConfig } from "@mikro-orm/postgresql";
 import { Migrator } from "@mikro-orm/migrations";
@@ -62,6 +63,10 @@ const entities = [
   NeighbourCandidate,
   Event,
 ];
+
+const envFile = path.resolve(import.meta.dirname, "../.env");
+
+if (!process.env.DB_NAME && existsSync(envFile)) process.loadEnvFile(envFile);
 
 /**
  * Configuration for MikroORM.
