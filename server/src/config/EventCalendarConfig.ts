@@ -8,13 +8,10 @@ export interface EventDefinition {
   enabled: boolean;
 }
 
-/** The time zone the calendar's dates are in. Events start at midnight in this zone. */
 export const EVENT_TIME_ZONE = "UTC";
 
-/** How long before its start an event is announced. */
 export const COUNTDOWN_DAYS = 7;
 
-/** How long a replayable event stays on screen after it ends */
 export const POST_EVENT_DAYS = 2;
 
 /**
@@ -76,7 +73,7 @@ export const EVENTS: Record<GameEvent, EventDefinition> = {
   [GameEvent.KING_OF_THE_HILL]: {
     replayableId: 4,
     runDays: 7,
-    // Launch announcement for Hunt for Krallen, which runs weekly on its own; only ever run once, by override.
+    // Launch announcement for Hunt for Krallen, which runs weekly on its own; not on the calendar, only ever run once, by override.
     enabled: false,
   },
   [GameEvent.HELL_RAISERS]: {
@@ -95,7 +92,7 @@ export const EVENTS: Record<GameEvent, EventDefinition> = {
 export const EVENT_CYCLE: Record<EventSlot, GameEvent[]>[] = [
   {
     [EventSlot.A]: [GameEvent.WMI1],
-    [EventSlot.B]: [GameEvent.KING_OF_THE_HILL, GameEvent.CREATURE_CARNAGE],
+    [EventSlot.B]: [GameEvent.CREATURE_CARNAGE],
   },
   {
     [EventSlot.A]: [GameEvent.MONSTER_MADNESS],
