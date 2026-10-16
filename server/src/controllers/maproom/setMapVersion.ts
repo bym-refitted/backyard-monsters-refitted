@@ -74,9 +74,10 @@ export const setMapVersion: KoaController = async (ctx) => {
       break;
 
     case MapRoomVersion.V2: {
-      if (save.mapversion === MapRoomVersion.V3) break;
+      const isMapRoom3 = save.mapversion === MapRoomVersion.V3;
+      const inMapRoom2 = save.mapversion === MapRoomVersion.V2 && Boolean(save.worldid);
 
-      if (save.mapversion === MapRoomVersion.V2 && save.worldid) break;
+      if (isMapRoom3 || inMapRoom2) break;
 
       if (user.alliance_id) throw mustLeaveAllianceToChangeWorldErr();
 
