@@ -1292,7 +1292,7 @@ package {
                             _loc7_++;
                         }
                         if (BYMConfig.instance.RENDERER_ON) {
-                            _ROOT.stage.invalidate();
+                            MAP.invalidate();
                         }
                     }
                     ++_frameNumber;
@@ -1872,6 +1872,9 @@ package {
             }
             else {
                 UI2.ResizeHandler(param1);
+            }
+            if (MAP.instance) {
+                MAP.instance.redrawAfterResize();
             }
         }
 
