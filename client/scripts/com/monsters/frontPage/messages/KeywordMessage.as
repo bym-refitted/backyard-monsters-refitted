@@ -5,11 +5,12 @@ package com.monsters.frontPage.messages {
 
         protected var _keyword:String;
 
-        public function KeywordMessage(param1:String, param2:String = null, param3:String = null) {
+        public function KeywordMessage(param1:String, param2:String = null, param3:String = null, showsOverlay:Boolean = true) {
             this._keyword = param1;
             var _loc4_:String = !!param3 ? param3 : PREFIX + param1 + ".jpg";
             super(PREFIX + this._keyword + "_title", PREFIX + this._keyword, _loc4_, param2, videoURL);
             name = this._keyword;
+            this.showsOverlay = showsOverlay;
         }
 
         public static function getImageURLFromKeyword(param1:String):String {

@@ -111,9 +111,16 @@ package com.monsters.replayableEvents.attackDefend.brukkargWar {
             return WAVES;
         }
 
+        /**
+         * Town Hall 2-4 players get Monster Blitzkrieg and Creature Carnage instead.
+         */
         override public function doesQualify():Boolean {
             // return false;
-            return GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD && BASE.isMainYard;
+            // return GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD && BASE.isMainYard;
+            var isAtHome:Boolean = GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD && BASE.isMainYard;
+            var hasTownHall5:Boolean = Boolean(GLOBAL.townHall) && GLOBAL.townHall._lvl.Get() >= 5;
+
+            return isAtHome && hasTownHall5;
         }
 
         override protected function loadedBaseList(param1:Object):void {

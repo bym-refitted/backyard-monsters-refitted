@@ -9,11 +9,11 @@ package com.monsters.frontPage.messages.events {
 
         private var _button:MovieClip;
 
-        public function ReplayableEventPromoMessage(param1:String, param2:String = "") {
+        public function ReplayableEventPromoMessage(param1:String, param2:String = "", showsOverlay:Boolean = true) {
             if (!param2 && !GLOBAL._flags.kongregate && !GLOBAL._flags.viximo) {
                 param2 = "btn_keepposted";
             }
-            super(param1, param2);
+            super(param1, param2, null, showsOverlay);
         }
 
         override public function setupButton(param1:Button):Button {

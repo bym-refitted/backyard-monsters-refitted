@@ -7,6 +7,7 @@ const INITIAL_KRALLEN_DATA = { countdown: 443189, wins: 5, tier: 5, loot: 750000
 /**
  * Adds rewards to the user's save data based on their Town Hall level.
  *
+ * Town Hall Level 5: Vorg and Slimeattikus unblocked, so they can be researched
  * Town Hall Level 6: Krallen
  * Town Hall Level 7: Korath
  * Town Hall Level 8: Rezghul
@@ -16,15 +17,24 @@ const INITIAL_KRALLEN_DATA = { countdown: 443189, wins: 5, tier: 5, loot: 750000
  */
 export const balancedReward = async (userSave: Save) => {
   let rewards = userSave.rewards!;
-  const { KORATH, KRALLEN, REZGHUL } = Reward;
+  const { VORG, SLIMEATTIKUS, KORATH, KRALLEN, REZGHUL } = Reward;
 
   // Early return if all rewards are already assigned
-  if (rewards[KORATH] && rewards[KRALLEN] && rewards[REZGHUL]) return;
+  if (rewards[VORG] && rewards[SLIMEATTIKUS] && rewards[KORATH] && rewards[KRALLEN] && rewards[REZGHUL]) return;
 
   const townHall: TownHall | null = extractTownHall(userSave.buildingdata ?? {});
   if (!townHall || !townHall.l) return;
 
   let townHallLevel = townHall.l;
+
+  // Town Hall Level 5
+  if (townHallLevel >= 5 && !rewards[VORG]) {
+    rewards[VORG] = { id: VORG };
+  }
+
+  if (townHallLevel >= 5 && !rewards[SLIMEATTIKUS]) {
+    rewards[SLIMEATTIKUS] = { id: SLIMEATTIKUS };
+  }
 
   // Town Hall Level 6
   if (townHallLevel >= 6 && !rewards[KRALLEN]) {

@@ -28,6 +28,8 @@ package com.monsters.frontPage.messages {
 
         protected var _bodyArguments:Object;
 
+        public var showsOverlay:Boolean = true;
+
         public function Message(param1:String, param2:String, param3:String = null, param4:String = null, param5:String = null) {
             super();
             this.title = KEYS.Get(param1);

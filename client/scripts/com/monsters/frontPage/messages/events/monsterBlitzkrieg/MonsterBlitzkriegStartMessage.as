@@ -5,7 +5,7 @@ package com.monsters.frontPage.messages.events.monsterBlitzkrieg {
     public class MonsterBlitzkriegStartMessage extends KeywordMessage {
 
         public function MonsterBlitzkriegStartMessage() {
-            super("event2start", "btn_nextwave");
+            super("event2start", "btn_nextwave", null, false);
             this.imageURL = _IMAGE_DIRECTORY + "fp_event2start.v2.jpg";
         }
 
