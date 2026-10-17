@@ -28,14 +28,21 @@ export const isEventBase = (baseid: string) => EVENT_BASES_MAP.has(baseid);
 
 /**
  * Lists the bases of an event in the form the client reads them, in attack order.
+ * Creature Carnage works out the player's progress from which bases are destroyed.
  *
  * @param {GameEvent} event - The event
- * @returns {{ id: number; level: number }[]} The bases
+ * @param {Event | null} progress - The player's row for this run of the event
+ * @returns {{ id: number; level: number; destroyed: boolean }[]} The bases
  */
-export const getEventBases = (event: GameEvent) => {
+export const getEventBases = (event: GameEvent, progress: Event | null) => {
   const bases = EVENT_BASES[event] ?? [];
 
-  return bases.map((base) => ({ id: Number(base.baseid), level: base.level }));
+  return bases.map((base) => {
+    const state = progress?.bases[String(base.baseid)];
+    const isDestroyed = Boolean(state?.destroyed);
+
+    return { id: Number(base.baseid), level: base.level, destroyed: isDestroyed };
+  });
 };
 
 /**

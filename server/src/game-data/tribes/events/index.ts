@@ -1,12 +1,14 @@
 import { GameEvent } from "../../../enums/GameEvent.js";
 import type { SaveData } from "../../../types/EntityData.js";
 import { brukkargBases, brukkargCopyBase } from "./brukkarg.js";
+import { creatureCarnageBases } from "./creatureCarnage.js";
 
 /**
  * The bases the player attacks during each event, in attack order.
  */
 export const EVENT_BASES: Partial<Record<GameEvent, SaveData[]>> = {
   [GameEvent.BRUKKARG_WAR]: brukkargBases,
+  [GameEvent.CREATURE_CARNAGE]: creatureCarnageBases,
 };
 
 /**

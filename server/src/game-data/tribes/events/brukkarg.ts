@@ -1,38 +1,5 @@
 import type { SaveData } from "../../../types/EntityData.js";
-
-const baseDefaults = {
-  type: "tribe",
-  userid: 0,
-  createtime: 0,
-  savetime: 0,
-  seed: 0,
-  saveuserid: 0,
-  bookmarked: 0,
-  fan: 0,
-  emailshared: 1,
-  unreadmessages: 0,
-  giftsentcount: 0,
-  id: 0,
-  canattack: false,
-  cellid: 0,
-  baseid_inferno: 0,
-  fbid: "",
-  fortifycellid: 0,
-  name: "",
-  catapult: 0,
-  flinger: 0,
-  destroyed: 0,
-  damage: 0,
-  locked: 0,
-  protected: 1,
-  lastupdate: 0,
-  usemap: 0,
-  credits: 0,
-  champion: [],
-  empiredestroyed: 1,
-  worldid: "0",
-  event_score: 0,
-};
+import { baseDefaults } from "./eventBaseDefaults.js";
 
 export const brukkargCopyBase: SaveData = {
   ...baseDefaults,
