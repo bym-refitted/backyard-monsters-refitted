@@ -4,7 +4,7 @@ package com.monsters.frontPage.messages.events.monsterBlitzkrieg {
     public class MonsterBlitzkriegPromoMessage3 extends ReplayableEventPromoMessage {
 
         public function MonsterBlitzkriegPromoMessage3() {
-            super("event2pop3");
+            super("event2pop3", "", false);
             this.imageURL = _IMAGE_DIRECTORY + "fp_event2pop3.v2.jpg";
         }
     }

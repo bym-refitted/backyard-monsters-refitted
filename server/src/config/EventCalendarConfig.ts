@@ -26,9 +26,9 @@ export const EVENT_START_OVERRIDES: Record<GameEvent, number> = {
   [GameEvent.WMI1]: 0,
   [GameEvent.WMI2]: 0,
   [GameEvent.MONSTER_MADNESS]: 0,
-  [GameEvent.BRUKKARG_WAR]: 1792237288,
+  [GameEvent.BRUKKARG_WAR]: 0,
   [GameEvent.CREATURE_CARNAGE]: 0,
-  [GameEvent.MONSTER_BLITZKRIEG]: 0,
+  [GameEvent.MONSTER_BLITZKRIEG]: 1792202015,
   [GameEvent.KING_OF_THE_HILL]: 0,
   [GameEvent.HELL_RAISERS]: 0,
 };
@@ -67,8 +67,9 @@ export const EVENTS: Record<GameEvent, EventDefinition> = {
   },
   [GameEvent.MONSTER_BLITZKRIEG]: {
     replayableId: 2,
+    maxScore: 10,
     runDays: 4,
-    enabled: false,
+    enabled: true,
   },
   [GameEvent.KING_OF_THE_HILL]: {
     replayableId: 4,
