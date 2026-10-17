@@ -151,7 +151,9 @@ package com.monsters.replayableEvents {
                     POPUPS.Push(new FrontPageGraphic(_loc1_));
                     _loc1_.viewed();
                 }
-                if (activeEvent.endDate - currentTime >= k_DURATION_STORE_IS_OPEN_AFTER_EVENT) {
+                // if (activeEvent.endDate - currentTime >= k_DURATION_STORE_IS_OPEN_AFTER_EVENT) {
+                var hasTimeLeft:Boolean = activeEvent.endDate - currentTime >= k_DURATION_STORE_IS_OPEN_AFTER_EVENT;
+                if (isCompleted || hasTimeLeft) {
                     if (_graphic) {
                         removeUI();
                     }
