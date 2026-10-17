@@ -4,7 +4,7 @@ package com.monsters.frontPage.messages.events.battletoads {
     public class BattletoadsEndMessage extends KeywordMessage {
 
         public function BattletoadsEndMessage() {
-            super("event1end");
+            super("event1end", null, null, false);
             this.imageURL = _IMAGE_DIRECTORY + "fp_event1end.v2.jpg";
         }
     }
