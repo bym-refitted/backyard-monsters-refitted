@@ -67,6 +67,17 @@ package com.monsters.replayableEvents {
         }
 
         /**
+         * Whether the player's active event is Monster Blitzkrieg or Creature Carnage. While it is,
+         * Wild Monster Invasions are hidden, as these are the only events for Town Hall 2-4.
+         */
+        public static function isLowTownHallEventActive():Boolean {
+            var isBlitzkrieg:Boolean = activeEvent == ReplayableEventLibrary.MONSTER_BLITZKRIEG;
+            var isCreatureCarnage:Boolean = activeEvent == ReplayableEventLibrary.BATTLE_TOADS;
+
+            return isBlitzkrieg || isCreatureCarnage;
+        }
+
+        /**
          * Makes the active event the one the server's event calendar has running.
          *
          * The original client scheduled events for itself, per player (see canScheduleNewEvent).

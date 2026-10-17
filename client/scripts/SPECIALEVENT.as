@@ -1,5 +1,6 @@
 package {
     import com.cc.utils.SecNum;
+    import com.monsters.replayableEvents.ReplayableEventHandler;
     import com.monsters.managers.InstanceManager;
     import com.monsters.monsters.champions.ChampionBase;
     import com.monsters.ui.UI_BOTTOM;
@@ -40,7 +41,8 @@ package {
 
         private static var _knownFlag:int = -1;
 
-        public static var _whatsNewComplete:Boolean = false;
+        // public static var _whatsNewComplete:Boolean = false;
+        public static var _whatsNewComplete:Boolean = true;
 
         private static const ACTIVE_OVERRIDE:Boolean = false;
 
@@ -1750,6 +1752,9 @@ package {
             if (!BASE.isMainYard) {
                 return false;
             }
+            if (ReplayableEventHandler.isLowTownHallEventActive()) {
+                return false;
+            }
             if (ACTIVE_OVERRIDE) {
                 return true;
             }
@@ -1780,6 +1785,9 @@ package {
 
         public static function FlagChanged():void {
             if (!_whatsNewComplete) {
+                return;
+            }
+            if (ReplayableEventHandler.isLowTownHallEventActive()) {
                 return;
             }
             if (GLOBAL.mode != GLOBAL.e_BASE_MODE.BUILD || !BASE.isMainYard || TUTORIAL._stage <= 200 || GLOBAL._sessionCount < 5) {
