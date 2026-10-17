@@ -4,7 +4,7 @@ package com.monsters.frontPage.messages.events.battletoads {
     public class BattletoadsRewardMessage extends KeywordMessage {
 
         public function BattletoadsRewardMessage() {
-            super("event1reward", "btn_brag");
+            super("event1reward", "btn_brag", null, false);
             this.imageURL = _IMAGE_DIRECTORY + "fp_event1reward.v2.jpg";
         }
 
