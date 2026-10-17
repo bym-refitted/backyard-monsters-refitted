@@ -30,6 +30,7 @@ export const creatureCarnageBases: SaveData[] = [
       "27": {
         X: -120,
         Y: -410,
+        l: 3,
         t: 21,
         id: 27,
       },
@@ -54,12 +55,14 @@ export const creatureCarnageBases: SaveData[] = [
       "31": {
         X: -230,
         Y: -80,
+        l: 3,
         t: 21,
         id: 31,
       },
       "32": {
         X: -230,
         Y: -170,
+        l: 3,
         t: 20,
         id: 32,
       },
@@ -130,6 +133,7 @@ export const creatureCarnageBases: SaveData[] = [
       "27": {
         X: 65,
         Y: -55,
+        l: 3,
         t: 21,
         id: 27,
       },
@@ -155,12 +159,14 @@ export const creatureCarnageBases: SaveData[] = [
       "31": {
         X: 105,
         Y: -295,
+        l: 3,
         t: 21,
         id: 31,
       },
       "32": {
         X: -25,
         Y: -255,
+        l: 3,
         t: 20,
         id: 32,
       },
@@ -222,6 +228,7 @@ export const creatureCarnageBases: SaveData[] = [
       "57": {
         X: -215,
         Y: -115,
+        l: 3,
         t: 21,
         id: 57,
       },
