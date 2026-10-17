@@ -102,14 +102,18 @@ export const EVENTS: Record<GameEvent, EventDefinition> = {
 export const EVENT_CYCLE: Record<EventSlot, GameEvent[]>[] = [
   {
     [EventSlot.A]: [GameEvent.WMI1],
-    [EventSlot.B]: [GameEvent.KING_OF_THE_HILL],
-  },
-  {
-    [EventSlot.A]: [GameEvent.MONSTER_MADNESS],
-    [EventSlot.B]: [GameEvent.WMI2],
+    [EventSlot.B]: [GameEvent.BRUKKARG_WAR],
   },
   {
     [EventSlot.A]: [GameEvent.HELL_RAISERS],
+    [EventSlot.B]: [GameEvent.MONSTER_MADNESS],
+  },
+  {
+    [EventSlot.A]: [GameEvent.WMI2],
     [EventSlot.B]: [GameEvent.BRUKKARG_WAR],
+  },
+  {
+    [EventSlot.A]: [GameEvent.HELL_RAISERS],
+    [EventSlot.B]: [GameEvent.MONSTER_MADNESS],
   },
 ];
