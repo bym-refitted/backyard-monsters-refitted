@@ -67,12 +67,24 @@ package com.monsters.replayableEvents {
         }
 
         /**
+         * Whether the player's active event is Monster Blitzkrieg or Creature Carnage. While it is,
+         * Wild Monster Invasions are hidden, as these are the only events for Town Hall 2-4.
+         */
+        public static function isLowTownHallEventActive():Boolean {
+            var isBlitzkrieg:Boolean = activeEvent == ReplayableEventLibrary.MONSTER_BLITZKRIEG;
+            var isCreatureCarnage:Boolean = activeEvent == ReplayableEventLibrary.BATTLE_TOADS;
+
+            return isBlitzkrieg || isCreatureCarnage;
+        }
+
+        /**
          * Makes the active event the one the server's event calendar has running.
          *
          * The original client scheduled events for itself, per player (see canScheduleNewEvent).
          * The server now sends the running events in the `activeevents` flag, and the player gets
          * the highest priority one they qualify for. A start date that differs from the saved one
-         * is a new run of the event, which scheduleNewEvent resets.
+         * is a new run of the event, which scheduleNewEvent resets. An event the player has already
+         * completed in this run is passed over, so the next one they qualify for is offered.
          */
         private static function selectScheduledEvent():void {
             var scheduled:Object = null;
@@ -85,7 +97,14 @@ package com.monsters.replayableEvents {
             for each (scheduled in GLOBAL._flags.activeevents) {
                 event = ReplayableEventLibrary.getEventByID(scheduled.id);
 
-                if (event && event.doesQualify() && (!selected || event.priority > selected.priority)) {
+                if (!event || !event.doesQualify())
+                    continue;
+
+                var isCompletedThisRun:Boolean = event.startDate == scheduled.start && event.hasCompletedEvent;
+                if (isCompletedThisRun)
+                    continue;
+
+                if (!selected || event.priority > selected.priority) {
                     selected = event;
                     startDate = scheduled.start;
                 }
@@ -122,6 +141,7 @@ package com.monsters.replayableEvents {
         private static function checkIfActiveEventIsFinished():void {
             var _loc1_:Message = null;
             if (Boolean(activeEvent) && (activeEvent.hasEventEnded || activeEvent.hasCompletedEvent)) {
+                var isCompleted:Boolean = activeEvent.hasCompletedEvent;
                 LOGGER.StatB({
                             "st1": "ERS",
                             "st2": activeEvent.name
@@ -131,13 +151,35 @@ package com.monsters.replayableEvents {
                     POPUPS.Push(new FrontPageGraphic(_loc1_));
                     _loc1_.viewed();
                 }
-                if (activeEvent.endDate - currentTime >= k_DURATION_STORE_IS_OPEN_AFTER_EVENT) {
+                // if (activeEvent.endDate - currentTime >= k_DURATION_STORE_IS_OPEN_AFTER_EVENT) {
+                var hasTimeLeft:Boolean = activeEvent.endDate - currentTime >= k_DURATION_STORE_IS_OPEN_AFTER_EVENT;
+                if (isCompleted || hasTimeLeft) {
                     if (_graphic) {
                         removeUI();
                     }
                     activeEvent = null;
+                    if (isCompleted) {
+                        offerNextEvent();
+                    }
                 }
             }
+        }
+
+        /**
+         * Offers the next event the player qualifies for straight after they complete one, so
+         * Creature Carnage follows Monster Blitzkrieg without waiting for the next base load.
+         */
+        private static function offerNextEvent():void {
+            if (!GLOBAL.isAtHome())
+                return;
+
+            selectScheduledEvent();
+
+            if (!activeEvent)
+                return;
+
+            activeEvent.initialize();
+            addUI();
         }
 
         public static function scheduleNewEvent(param1:ReplayableEvent, param2:Number):void {

@@ -5,10 +5,14 @@ package {
     import flash.geom.Point;
     import com.monsters.monsters.champions.ChampionBase;
     import com.monsters.enums.EnumInvasionType;
+<<<<<<< HEAD
     import flash.net.URLRequest;
     import flash.net.URLLoader;
     import flash.events.Event;
     import flash.net.URLRequestMethod;
+=======
+    import com.monsters.replayableEvents.ReplayableEventHandler;
+>>>>>>> 157fe3070794f74e04e4f4e3e5683180cc8e9517
 
     /*
    * This is the original SPECIALEVENT.as class for Wild Monster Invasion 1.
@@ -1139,6 +1143,9 @@ package {
             if (BASE.isOutpost || BASE.isInfernoMainYardOrOutpost) {
                 return false;
             }
+            if (ReplayableEventHandler.isLowTownHallEventActive()) {
+                return false;
+            }
             return SPECIALEVENT_WM1.invasionpop == 4 || SPECIALEVENT_WM1.invasionpop == 5;
         }
 
@@ -1161,6 +1168,9 @@ package {
         }
 
         public static function FlagChanged():void {
+            if (ReplayableEventHandler.isLowTownHallEventActive()) {
+                return;
+            }
             _knownFlag = invasionpop;
             switch (_knownFlag) {
                 case -1:

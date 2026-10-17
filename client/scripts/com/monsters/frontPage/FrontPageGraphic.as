@@ -110,20 +110,21 @@ package com.monsters.frontPage {
             dispatchEvent(new FrontPageEvent(FrontPageEvent.CHANGE_CATEGORY, _loc2_.category));
         }
 
-        public function showMessage(param1:Message):void {
+        public function showMessage(message:Message):void {
             this._container = this.createMessageContainer();
-            this._container.tTitle.htmlText = param1.title;
-            this._container.tBody.htmlText = param1.body;
+            this._container.tTitle.htmlText = message.title;
+            this._container.tBody.htmlText = message.body;
+            this._activeMessage = message;
             if (this._media) {
                 this.clearMedia();
             }
-            if (param1.videoURL) {
-                this.loadVideo(param1.videoURL);
+            if (message.videoURL) {
+                this.loadVideo(message.videoURL);
             }
-            else if (param1.imageURL) {
-                ImageCache.GetImageWithCallBack(param1.imageURL, this.loadedImage);
+            else if (message.imageURL) {
+                ImageCache.GetImageWithCallBack(message.imageURL, this.loadedImage);
             }
-            param1.setupButton(this._container.bAction);
+            message.setupButton(this._container.bAction);
         }
 
         private function createMessageContainer():frontpage_featuredItem_CLIP {
@@ -160,6 +161,7 @@ package com.monsters.frontPage {
         private function loadedImage(param1:String, param2:BitmapData):void {
             this._media = new Bitmap(param2);
             this._container.mcImage.addChild(this._media);
+            this._container.mcOverlay.visible = this._activeMessage.showsOverlay;
         }
     }
 }

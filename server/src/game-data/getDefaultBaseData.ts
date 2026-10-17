@@ -56,8 +56,6 @@ export const getDefaultBaseData = (user: User, baseType: BaseType) => {
     rewards: devConfig.unlockAllEventRewards
       ? {
           // Default event rewards
-          unblockSlimeattikus: { id: Reward.SLIMEATTIKUS },
-          unblockVorg: { id: Reward.VORG },
           goldenDAVE: { id: Reward.GOLDEN_DAVE },
           improvedHCC: { id: Reward.IMPROVED_HCC },
           extraTiles: { id: Reward.EXTRA_TILES },
