@@ -1,6 +1,7 @@
 package {
     import com.cc.tests.ABTest;
     import com.monsters.chat.Chat;
+    import com.monsters.replayableEvents.ReplayableEventHandler;
     import com.monsters.ui.*;
     import flash.display.MovieClip;
     import flash.display.StageDisplayState;
@@ -320,14 +321,15 @@ package {
                         var isWMI1Active:Boolean = activeEvent == SPECIALEVENT_WM1 && (SPECIALEVENT_WM1.invasionpop == 4 || SPECIALEVENT_WM1.invasionpop == 5);
                         var isWMI2Active:Boolean = activeEvent == SPECIALEVENT && SPECIALEVENT.invasionpop == 4;
                         var isEventActive:Boolean = isWMI1Active || isWMI2Active;
+                        var isHiddenByLowTownHallEvent:Boolean = ReplayableEventHandler.isLowTownHallEventActive();
 
-                        if (!activeEvent || (activeEvent == SPECIALEVENT && SPECIALEVENT.GetTimeUntilEnd() < 0) ||
+                        if (!activeEvent || isHiddenByLowTownHallEvent || (activeEvent == SPECIALEVENT && SPECIALEVENT.GetTimeUntilEnd() < 0) ||
                                 (activeEvent == SPECIALEVENT_WM1 && (SPECIALEVENT_WM1.GetTimeUntilEnd() < 0 || SPECIALEVENT_WM1.wave > SPECIALEVENT_WM1.numWaves || SPECIALEVENT_WM1.invasionpop == 4 && SPECIALEVENT_WM1.wave > SPECIALEVENT_WM1.BONUSWAVE2))) {
                             if (Boolean(_top.mcSpecialEvent) && _top.mcSpecialEvent.visible) {
                                 _top.mcSpecialEvent.visible = false;
                             }
                             SPECIALEVENT.updateNextWaveUI(); // This will hide all nextwave UIs
-                            if (activeEvent == SPECIALEVENT_WM1 && SPECIALEVENT_WM1.GetTimeUntilEnd() < 0 && SPECIALEVENT_WM1.GetTimeUntilEnd() > -86400 && GLOBAL.StatGet("wmi_end") == 0) {
+                            if (!isHiddenByLowTownHallEvent && activeEvent == SPECIALEVENT_WM1 && SPECIALEVENT_WM1.GetTimeUntilEnd() < 0 && SPECIALEVENT_WM1.GetTimeUntilEnd() > -86400 && GLOBAL.StatGet("wmi_end") == 0) {
                                 SPECIALEVENT_WM1.ShowEventEndPopup();
                             }
                         }

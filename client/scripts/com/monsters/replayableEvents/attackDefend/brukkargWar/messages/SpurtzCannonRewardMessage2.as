@@ -10,9 +10,9 @@ package com.monsters.replayableEvents.attackDefend.brukkargWar.messages {
 
         override protected function onButtonClick():void {
             POPUPS.Next();
-            if (YARD_PROPS._yardProps[SpurtzCannon.TYPE - 1].blocked) {
+            if (GLOBAL._buildingProps[SpurtzCannon.TYPE - 1].block)
                 return;
-            }
+
             BASE.addBuildingB(SpurtzCannon.TYPE, true);
             GLOBAL.eventDispatcher.addEventListener(BuildingEvent.PLACED_FOR_CONSTRUCTION, this.constructedBuilding);
         }

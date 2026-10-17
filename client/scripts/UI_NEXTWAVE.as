@@ -30,6 +30,9 @@ package {
             if (SPECIALEVENT.active) {
                 return false;
             }
+            if (WMATTACK._inProgress) {
+                return false;
+            }
             return true;
         }
 

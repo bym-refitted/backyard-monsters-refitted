@@ -4,8 +4,9 @@ package com.monsters.frontPage.messages.events.monsterBlitzkrieg {
     public class MonsterBlitzkriegRewardMessage extends KeywordMessage {
 
         public function MonsterBlitzkriegRewardMessage() {
-            super("event2reward", "btn_brag");
-            this.imageURL = _IMAGE_DIRECTORY + "fp_event2start.v2.jpg";
+            super("event2reward", "btn_brag", null, false);
+            // this.imageURL = _IMAGE_DIRECTORY + "fp_event2start.v2.jpg";
+            this.imageURL = _IMAGE_DIRECTORY + "fp_event2reward.v2.jpg";
         }
 
         override public function get areRequirementsMet():Boolean {

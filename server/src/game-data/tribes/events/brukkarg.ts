@@ -55,6 +55,16 @@ export const brukkargBases: SaveData[] = [
     baseid: "901",
     wmid: 901,
     level: 1,
+    resources: {
+      r1: 6_963_000,
+      r2: 4_807_000,
+      r3: 1_313_000,
+      r4: 832_000,
+      r1max: 7_000_000,
+      r2max: 7_000_000,
+      r3max: 7_000_000,
+      r4max: 7_000_000,
+    },
     buildingdata: {
       "0": {
         X: -70,
@@ -2371,6 +2381,16 @@ export const brukkargBases: SaveData[] = [
     baseid: "902",
     wmid: 902,
     level: 2,
+    resources: {
+      r1: 3_893_000,
+      r2: 6_577_000,
+      r3: 6_513_000,
+      r4: 5_684_000,
+      r1max: 7_000_000,
+      r2max: 7_000_000,
+      r3max: 7_000_000,
+      r4max: 7_000_000,
+    },
     buildingdata: {
       "0": {
         X: -70,
@@ -5713,6 +5733,16 @@ export const brukkargBases: SaveData[] = [
     baseid: "903",
     wmid: 903,
     level: 3,
+    resources: {
+      r1: 6_312_000,
+      r2: 8_022_000,
+      r3: 8_025_000,
+      r4: 7_651_000,
+      r1max: 9_000_000,
+      r2max: 9_000_000,
+      r3max: 9_000_000,
+      r4max: 9_000_000,
+    },
     buildingdata: {
       "0": {
         X: -70,
@@ -6788,6 +6818,16 @@ export const brukkargBases: SaveData[] = [
     baseid: "904",
     wmid: 904,
     level: 4,
+    resources: {
+      r1: 10_211_000,
+      r2: 12_241_000,
+      r3: 12_241_000,
+      r4: 14_387_000,
+      r1max: 15_000_000,
+      r2max: 15_000_000,
+      r3max: 15_000_000,
+      r4max: 15_000_000,
+    },
     buildingdata: {
       "0": {
         X: -70,

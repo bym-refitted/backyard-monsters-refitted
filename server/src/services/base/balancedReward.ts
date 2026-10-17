@@ -5,6 +5,7 @@ import { extractTownHall, type TownHall } from "../../utils/extractTownHall.js";
 /**
  * Adds rewards to the user's save data based on their Town Hall level.
  *
+ * Town Hall Level 5: Vorg and Slimeattikus unblocked, so they can be researched
  * Town Hall Level 7: Korath
  * Town Hall Level 8: Rezghul
  *
@@ -13,15 +14,24 @@ import { extractTownHall, type TownHall } from "../../utils/extractTownHall.js";
  */
 export const balancedReward = async (userSave: Save) => {
   let rewards = userSave.rewards!;
-  const { KORATH, REZGHUL } = Reward;
+  const { VORG, SLIMEATTIKUS, KORATH, REZGHUL } = Reward;
 
   // Early return if all rewards are already assigned
-  if (rewards[KORATH] && rewards[REZGHUL]) return;
+  if (rewards[VORG] && rewards[SLIMEATTIKUS] && rewards[KORATH] && rewards[REZGHUL]) return;
 
   const townHall: TownHall | null = extractTownHall(userSave.buildingdata ?? {});
   if (!townHall || !townHall.l) return;
 
   let townHallLevel = townHall.l;
+
+  // Town Hall Level 5
+  if (townHallLevel >= 5 && !rewards[VORG]) {
+    rewards[VORG] = { id: VORG };
+  }
+
+  if (townHallLevel >= 5 && !rewards[SLIMEATTIKUS]) {
+    rewards[SLIMEATTIKUS] = { id: SLIMEATTIKUS };
+  }
 
   // Town Hall Level 7
   if (townHallLevel >= 7 && !rewards[KORATH]) {

@@ -1,4 +1,5 @@
 package {
+    import com.monsters.replayableEvents.ReplayableEventHandler;
     import com.monsters.ui.UI_BOTTOM;
     import flash.display.MovieClip;
     import flash.events.MouseEvent;
@@ -38,6 +39,12 @@ package {
                 return false;
             }
             if (SPECIALEVENT_WM1.active) {
+                return false;
+            }
+            if (ReplayableEventHandler.isLowTownHallEventActive()) {
+                return false;
+            }
+            if (WMATTACK._inProgress) {
                 return false;
             }
             return true;

@@ -97,7 +97,10 @@ package com.monsters.maproom_advanced {
                 MapRoomManager.instance.Show();
             }
             else if (GLOBAL._loadmode == GLOBAL.mode) {
-                BASE.LoadBase(null, 0, 0, GLOBAL.e_BASE_MODE.BUILD, false, EnumYardType.MAIN_YARD);
+                // BASE.LoadBase(null, 0, 0, GLOBAL.e_BASE_MODE.BUILD, false, EnumYardType.MAIN_YARD);
+
+                var homeYardType:int = MapRoomManager.instance.isInMapRoom3 ? int(EnumYardType.PLAYER) : int(EnumYardType.MAIN_YARD);
+                BASE.LoadBase(null, 0, 0, GLOBAL.e_BASE_MODE.BUILD, false, homeYardType);
             }
             else if (MAPROOM_DESCENT._inDescent) {
                 MAPROOM_DESCENT.ExitDescent();
