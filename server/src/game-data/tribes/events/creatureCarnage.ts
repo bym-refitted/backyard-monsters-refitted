@@ -29,7 +29,7 @@ export const creatureCarnageBases: SaveData[] = [
       "27": {
         X: -120,
         Y: -410,
-        l: 3,
+        l: 1,
         t: 21,
         id: 27,
       },
@@ -54,14 +54,14 @@ export const creatureCarnageBases: SaveData[] = [
       "31": {
         X: -230,
         Y: -80,
-        l: 3,
+        l: 1,
         t: 21,
         id: 31,
       },
       "32": {
         X: -230,
         Y: -170,
-        l: 3,
+        l: 1,
         t: 20,
         id: 32,
       },
@@ -131,7 +131,7 @@ export const creatureCarnageBases: SaveData[] = [
       "27": {
         X: 65,
         Y: -55,
-        l: 3,
+        l: 1,
         t: 21,
         id: 27,
       },
@@ -157,14 +157,14 @@ export const creatureCarnageBases: SaveData[] = [
       "31": {
         X: 105,
         Y: -295,
-        l: 3,
+        l: 1,
         t: 21,
         id: 31,
       },
       "32": {
         X: -25,
         Y: -255,
-        l: 3,
+        l: 1,
         t: 20,
         id: 32,
       },
@@ -226,7 +226,7 @@ export const creatureCarnageBases: SaveData[] = [
       "57": {
         X: -215,
         Y: -115,
-        l: 3,
+        l: 2,
         t: 21,
         id: 57,
       },
@@ -267,7 +267,7 @@ export const creatureCarnageBases: SaveData[] = [
       "27": {
         X: 160,
         Y: -150,
-        l: 3,
+        l: 1,
         t: 21,
         id: 27,
       },
@@ -293,7 +293,7 @@ export const creatureCarnageBases: SaveData[] = [
       "31": {
         X: -30,
         Y: -310,
-        l: 3,
+        l: 2,
         t: 21,
         id: 31,
       },
@@ -355,7 +355,7 @@ export const creatureCarnageBases: SaveData[] = [
       "57": {
         X: -200,
         Y: -160,
-        l: 3,
+        l: 1,
         t: 21,
         id: 57,
       },
@@ -373,7 +373,7 @@ export const creatureCarnageBases: SaveData[] = [
       "75": {
         X: -35,
         Y: 25,
-        l: 3,
+        l: 2,
         t: 21,
         id: 75,
       },
@@ -475,7 +475,7 @@ export const creatureCarnageBases: SaveData[] = [
       "27": {
         X: 135,
         Y: -120,
-        l: 3,
+        l: 2,
         t: 21,
         id: 27,
       },
@@ -501,7 +501,7 @@ export const creatureCarnageBases: SaveData[] = [
       "31": {
         X: 135,
         Y: -190,
-        l: 3,
+        l: 1,
         t: 21,
         id: 31,
       },
@@ -563,7 +563,7 @@ export const creatureCarnageBases: SaveData[] = [
       "57": {
         X: 205,
         Y: -190,
-        l: 3,
+        l: 2,
         t: 21,
         id: 57,
       },
@@ -581,7 +581,7 @@ export const creatureCarnageBases: SaveData[] = [
       "75": {
         X: 205,
         Y: -120,
-        l: 3,
+        l: 2,
         t: 21,
         id: 75,
       },
@@ -714,7 +714,7 @@ export const creatureCarnageBases: SaveData[] = [
       "124": {
         X: 65,
         Y: -155,
-        l: 3,
+        l: 2,
         t: 20,
         id: 124,
       },
@@ -763,7 +763,7 @@ export const creatureCarnageBases: SaveData[] = [
       "31": {
         X: 255,
         Y: -155,
-        l: 3,
+        l: 2,
         t: 21,
         id: 31,
       },
@@ -814,21 +814,21 @@ export const creatureCarnageBases: SaveData[] = [
       "57": {
         X: -305,
         Y: -155,
-        l: 3,
+        l: 2,
         t: 21,
         id: 57,
       },
       "124": {
         X: -25,
         Y: -55,
-        l: 3,
+        l: 2,
         t: 20,
         id: 124,
       },
       "146": {
         X: -30,
         Y: -255,
-        l: 3,
+        l: 2,
         t: 20,
         id: 146,
       },
@@ -896,7 +896,7 @@ export const creatureCarnageBases: SaveData[] = [
       "31": {
         X: -20,
         Y: 10,
-        l: 3,
+        l: 2,
         t: 21,
         id: 31,
       },
@@ -954,7 +954,7 @@ export const creatureCarnageBases: SaveData[] = [
       "124": {
         X: -175,
         Y: -165,
-        l: 3,
+        l: 2,
         t: 20,
         id: 124,
       },
@@ -1166,7 +1166,7 @@ export const creatureCarnageBases: SaveData[] = [
       "57": {
         X: -215,
         Y: -155,
-        l: 3,
+        l: 2,
         t: 21,
         id: 57,
       },
