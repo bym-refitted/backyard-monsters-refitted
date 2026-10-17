@@ -29,9 +29,15 @@ package com.monsters.replayableEvents.yardCrawl.battletoads {
             super();
         }
 
+        /**
+         * Offered to Town Hall 2-4 players until they have won Vorg, as the original client ran
+         * it once per player.
+         */
         override public function doesQualify():Boolean {
             var _loc1_:uint = GLOBAL.townHall._lvl.Get();
-            return _loc1_ >= 2 && _loc1_ <= 4;
+            var hasWonReward:Boolean = RewardHandler.instance.getRewardByID(UnlockVorgReward.ID) != null;
+
+            return _loc1_ >= 2 && _loc1_ <= 4 && !hasWonReward;
         }
 
         public function doesAutomaticalyGetReward():Boolean {

@@ -36,9 +36,15 @@ package com.monsters.replayableEvents.monsterInvasion.monsterBlitzkrieg {
             return WAVES;
         }
 
+        /**
+         * Offered to Town Hall 3-4 players until they have won Slimeattikus, as the original
+         * client ran it once per player.
+         */
         override public function doesQualify():Boolean {
             var _loc1_:uint = GLOBAL.townHall._lvl.Get();
-            return _loc1_ >= 3 && _loc1_ <= 4;
+            var hasWonReward:Boolean = RewardHandler.instance.getRewardByID(UnlockSlimeattikusReward.ID) != null;
+
+            return _loc1_ >= 3 && _loc1_ <= 4 && !hasWonReward;
         }
 
         override protected function onEventComplete():void {

@@ -141,6 +141,7 @@ package com.monsters.replayableEvents {
         private static function checkIfActiveEventIsFinished():void {
             var _loc1_:Message = null;
             if (Boolean(activeEvent) && (activeEvent.hasEventEnded || activeEvent.hasCompletedEvent)) {
+                var isCompleted:Boolean = activeEvent.hasCompletedEvent;
                 LOGGER.StatB({
                             "st1": "ERS",
                             "st2": activeEvent.name
@@ -155,8 +156,28 @@ package com.monsters.replayableEvents {
                         removeUI();
                     }
                     activeEvent = null;
+                    if (isCompleted) {
+                        offerNextEvent();
+                    }
                 }
             }
+        }
+
+        /**
+         * Offers the next event the player qualifies for straight after they complete one, so
+         * Creature Carnage follows Monster Blitzkrieg without waiting for the next base load.
+         */
+        private static function offerNextEvent():void {
+            if (!GLOBAL.isAtHome())
+                return;
+
+            selectScheduledEvent();
+
+            if (!activeEvent)
+                return;
+
+            activeEvent.initialize();
+            addUI();
         }
 
         public static function scheduleNewEvent(param1:ReplayableEvent, param2:Number):void {
