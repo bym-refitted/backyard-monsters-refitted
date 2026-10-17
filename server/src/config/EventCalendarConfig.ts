@@ -1,11 +1,14 @@
 import { EventSlot, GameEvent } from "../enums/GameEvent.js";
 
 export interface EventDefinition {
+  runDays: number;
+  enabled: boolean;
   replayableId?: number;
   maxScore?: number;
   copyBaseScore?: number;
-  runDays: number;
-  enabled: boolean;
+  weekly?: boolean;
+  countdownDays?: number;
+  closingDays?: number;
 }
 
 /** The time zone the calendar's dates are in. Events start at midnight in this zone. */
@@ -28,7 +31,7 @@ export const EVENT_START_OVERRIDES: Record<GameEvent, number> = {
   [GameEvent.MONSTER_MADNESS]: 0,
   [GameEvent.BRUKKARG_WAR]: 0,
   [GameEvent.CREATURE_CARNAGE]: 0,
-  [GameEvent.MONSTER_BLITZKRIEG]: 1792202015,
+  [GameEvent.MONSTER_BLITZKRIEG]: 0,
   [GameEvent.KING_OF_THE_HILL]: 0,
   [GameEvent.HELL_RAISERS]: 0,
 };
@@ -62,13 +65,20 @@ export const EVENTS: Record<GameEvent, EventDefinition> = {
   },
   [GameEvent.CREATURE_CARNAGE]: {
     replayableId: 1,
-    runDays: 4,
+    maxScore: 10,
+    weekly: true,
+    countdownDays: 1,
+    closingDays: 0,
+    runDays: 6,
     enabled: false,
   },
   [GameEvent.MONSTER_BLITZKRIEG]: {
     replayableId: 2,
     maxScore: 10,
-    runDays: 4,
+    weekly: true,
+    countdownDays: 1,
+    closingDays: 0,
+    runDays: 6,
     enabled: true,
   },
   [GameEvent.KING_OF_THE_HILL]: {
@@ -87,19 +97,19 @@ export const EVENTS: Record<GameEvent, EventDefinition> = {
  * The event calendar: one entry per month, repeating. An event open to every
  * player has its slot to itself. Events that share a slot are for separate players
  * (by Town Hall level or Map Room); the client shows each player the one they
- * qualify for, and never more than one.
+ * qualify for, and never more than one. Weekly events are not on the calendar.
  */
 export const EVENT_CYCLE: Record<EventSlot, GameEvent[]>[] = [
   {
     [EventSlot.A]: [GameEvent.WMI1],
-    [EventSlot.B]: [GameEvent.KING_OF_THE_HILL, GameEvent.CREATURE_CARNAGE],
+    [EventSlot.B]: [GameEvent.KING_OF_THE_HILL],
   },
   {
     [EventSlot.A]: [GameEvent.MONSTER_MADNESS],
     [EventSlot.B]: [GameEvent.WMI2],
   },
   {
-    [EventSlot.A]: [GameEvent.HELL_RAISERS, GameEvent.MONSTER_BLITZKRIEG],
+    [EventSlot.A]: [GameEvent.HELL_RAISERS],
     [EventSlot.B]: [GameEvent.BRUKKARG_WAR],
   },
 ];

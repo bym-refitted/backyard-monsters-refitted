@@ -12,6 +12,8 @@ import { getCurrentDateTime } from "../../../utils/getCurrentDateTime.js";
 
 const SECONDS_PER_DAY = 86400;
 
+const DAYS_PER_WEEK = 7;
+
 const SLOTS = [EventSlot.A, EventSlot.B];
 
 export interface ScheduledEvent {
@@ -28,12 +30,16 @@ export interface ScheduledEvent {
  * @param {number} start - When it starts
  * @returns {ScheduledEvent} The event, with its countdown and end
  */
-const toScheduledEvent = (event: GameEvent, start: number): ScheduledEvent => ({
-  event,
-  countdown: start - COUNTDOWN_DAYS * SECONDS_PER_DAY,
-  start,
-  end: start + EVENTS[event].runDays * SECONDS_PER_DAY,
-});
+const toScheduledEvent = (event: GameEvent, start: number): ScheduledEvent => {
+  const { countdownDays = COUNTDOWN_DAYS, runDays } = EVENTS[event];
+
+  return {
+    event,
+    countdown: start - countdownDays * SECONDS_PER_DAY,
+    start,
+    end: start + runDays * SECONDS_PER_DAY,
+  };
+};
 
 /**
  * Gets the start time set for an event in `EVENT_START_OVERRIDES`.
@@ -75,8 +81,30 @@ const getEventSchedule = (now: number): ScheduledEvent[] => {
 };
 
 /**
+ * Gets the round of a weekly event that is counting down or running. Rounds start
+ * every Monday at midnight; once this week's round has ended, the next one is returned.
+ *
+ * @param {GameEvent} event - The weekly event
+ * @param {number} now - The current time
+ * @returns {ScheduledEvent} The round
+ */
+const getWeeklyRound = (event: GameEvent, now: number): ScheduledEvent => {
+  const instant = Temporal.Instant.fromEpochMilliseconds(now * 1000);
+  const today = instant.toZonedDateTimeISO(EVENT_TIME_ZONE).toPlainDate();
+  const monday = today.subtract({ days: today.dayOfWeek - 1 });
+
+  const start = monday.toZonedDateTime(EVENT_TIME_ZONE).epochMilliseconds / 1000;
+  const thisWeek = toScheduledEvent(event, start);
+
+  if (thisWeek.end > now) return thisWeek;
+
+  return toScheduledEvent(event, start + DAYS_PER_WEEK * SECONDS_PER_DAY);
+};
+
+/**
  * Gets the scheduled event that is under way, or the next one if none is.
- * A forced start time replaces the calendar for that event.
+ * A forced start time replaces the calendar for that event, and a weekly event
+ * returns its current round.
  *
  * @param {GameEvent} event - The event
  * @param {number} now - The current time
@@ -89,6 +117,8 @@ export const getScheduledEvent = (event: GameEvent, now = getCurrentDateTime()):
   if (override) return toScheduledEvent(event, override);
 
   if (!isEnabled) return null;
+
+  if (EVENTS[event].weekly) return getWeeklyRound(event, now);
 
   const schedule = getEventSchedule(now);
 
@@ -106,8 +136,10 @@ export const getActiveEvents = (now = getCurrentDateTime()): ScheduledEvent[] =>
   const active: ScheduledEvent[] = [];
 
   for (const event of Object.values(GameEvent)) {
-    const isReplayable = EVENTS[event].replayableId !== undefined;
-    const closing = isReplayable ? POST_EVENT_DAYS * SECONDS_PER_DAY : 0;
+    const { replayableId, closingDays = POST_EVENT_DAYS } = EVENTS[event];
+
+    const isReplayable = replayableId !== undefined;
+    const closing = isReplayable ? closingDays * SECONDS_PER_DAY : 0;
 
     const scheduled = getScheduledEvent(event, now - closing);
 
