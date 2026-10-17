@@ -9,7 +9,9 @@ import { GameEvent } from "../../../enums/GameEvent.js";
 import { EVENT_BY_BASE, EVENT_BASES, EVENT_BASES_MAP, EVENT_COPY_BASES } from "../../../game-data/tribes/events/index.js";
 import { BaseSaveSchema } from "../../../schemas/BaseSaveSchema.js";
 import { postgres } from "../../../server.js";
+import type { BuildingHealthData } from "../../../types/BuildingData.js";
 import type { SaveData } from "../../../types/EntityData.js";
+import { extractTownHall } from "../../../utils/extractTownHall.js";
 import { getCurrentDateTime } from "../../../utils/getCurrentDateTime.js";
 import { getActiveEvents, type ScheduledEvent } from "../calendar/eventCalendar.js";
 
@@ -79,15 +81,15 @@ const getBaseDamage = (state: EventBaseState | undefined) => {
 };
 
 /**
- * Gets the template an event base is built from.
+ * Gets the data an event base is built from.
  * The copy base takes its buildings from the stored copy of the player's own base.
  *
- * @param {SaveData} base - The static template of the base
+ * @param {SaveData} base - The static definition of the base
  * @param {GameEvent} event - The event the base belongs to
  * @param {Event | null} progress - The player's row for this run of the event
- * @returns {SaveData} The template
+ * @returns {SaveData} The base's data
  */
-const getBaseTemplate = (base: SaveData, event: GameEvent, progress: Event | null) => {
+const getBaseData = (base: SaveData, event: GameEvent, progress: Event | null) => {
   const isCopyBase = base === EVENT_COPY_BASES[event];
 
   if (!isCopyBase) return base;
@@ -154,13 +156,13 @@ export const loadEventBase = async (user: User, baseid: string): Promise<Save> =
   if (!key) throw new Error(`No active event for event base: ${baseid}`);
 
   const progress = await postgres.em.findOne(Event, key);
-  const template = getBaseTemplate(base, key.event, progress);
+  const baseData = getBaseData(base, key.event, progress);
 
   const save = Object.assign(new Save(), {
-    ...template,
+    ...baseData,
     attackid: Math.floor(Math.random() * 99999) + 1,
     buildinghealthdata: {},
-    monsters: template.monsters ?? {},
+    monsters: baseData.monsters ?? {},
   });
 
   if (!progress) return save;
@@ -173,6 +175,25 @@ export const loadEventBase = async (user: User, baseid: string): Promise<Save> =
   if (damage.monsters) save.monsters = damage.monsters;
 
   return save;
+};
+
+/**
+ * Works out whether an attack has destroyed an event base: its Town Hall is down, which is
+ * when the client itself treats the attack as won.
+ *
+ * @param {SaveData["buildingdata"]} buildingdata - The base's buildings
+ * @param {BuildingHealthData} buildinghealthdata - The health of each damaged building, 0 when destroyed
+ * @returns {number} 1 when destroyed, otherwise 0
+ */
+const getBaseDestroyed = (buildingdata: SaveData["buildingdata"], buildinghealthdata: BuildingHealthData) => {
+  if (!buildingdata) return 0;
+
+  const townHall = extractTownHall(buildingdata);
+  if (!townHall) return 0;
+
+  const isTownHallDown = buildinghealthdata[String(townHall.id)] === 0;
+
+  return isTownHallDown ? 1 : 0;
 };
 
 /**
@@ -203,17 +224,21 @@ export const saveEventBaseAttack = async (user: User, saveData: BaseSaveData): P
   if (!key) throw new Error(`No active event for event base: ${baseid}`);
 
   const existing = await postgres.em.findOne(Event, key);
-  const template = getBaseTemplate(base, key.event, existing);
+  const baseData = getBaseData(base, key.event, existing);
   const progress = existing ?? postgres.em.create(Event, key);
 
   const previous = getBaseDamage(progress.bases[baseid]);
   const previousHealth = previous ? previous.healthData : {};
   const firstAttackedAt = previous ? previous.firstAttackedAt : getCurrentDateTime();
 
+  const healthData = saveData.buildinghealthdata ?? previousHealth;
+
+  const destroyed = getBaseDestroyed(baseData.buildingdata, healthData);
+
   const state: EventBaseState = {
-    healthData: saveData.buildinghealthdata ?? previousHealth,
+    healthData,
     monsters: saveData.monsters,
-    destroyed: saveData.destroyed ?? 0,
+    destroyed,
     firstAttackedAt,
   };
 
@@ -223,9 +248,9 @@ export const saveEventBaseAttack = async (user: User, saveData: BaseSaveData): P
   await postgres.em.flush();
 
   return Object.assign(new Save(), {
-    ...template,
+    ...baseData,
     buildinghealthdata: state.healthData,
-    monsters: state.monsters ?? template.monsters ?? {},
+    monsters: state.monsters ?? baseData.monsters ?? {},
     destroyed: state.destroyed,
   });
 };
