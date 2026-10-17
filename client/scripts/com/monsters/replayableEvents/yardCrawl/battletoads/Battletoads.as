@@ -18,7 +18,9 @@ package com.monsters.replayableEvents.yardCrawl.battletoads {
             _originalStartDate = 0;
             _id = ID;
             _progress = -1;
-            _priority = 100;
+            // _priority = 100;
+            _priority = 600;
+            _duration = 518400;
             _yardsToDestroy = 10;
             _titleImage = "events/creatureCarnage/creatureCarnage_logo.v3.png";
             _imageURL = "events/creatureCarnage/creatureCarnage_event.v3.png";

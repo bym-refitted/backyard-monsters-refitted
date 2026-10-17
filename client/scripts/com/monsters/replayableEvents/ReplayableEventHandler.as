@@ -72,7 +72,8 @@ package com.monsters.replayableEvents {
          * The original client scheduled events for itself, per player (see canScheduleNewEvent).
          * The server now sends the running events in the `activeevents` flag, and the player gets
          * the highest priority one they qualify for. A start date that differs from the saved one
-         * is a new run of the event, which scheduleNewEvent resets.
+         * is a new run of the event, which scheduleNewEvent resets. An event the player has already
+         * completed in this run is passed over, so the next one they qualify for is offered.
          */
         private static function selectScheduledEvent():void {
             var scheduled:Object = null;
@@ -85,7 +86,14 @@ package com.monsters.replayableEvents {
             for each (scheduled in GLOBAL._flags.activeevents) {
                 event = ReplayableEventLibrary.getEventByID(scheduled.id);
 
-                if (event && event.doesQualify() && (!selected || event.priority > selected.priority)) {
+                if (!event || !event.doesQualify())
+                    continue;
+
+                var isCompletedThisRun:Boolean = event.startDate == scheduled.start && event.hasCompletedEvent;
+                if (isCompletedThisRun)
+                    continue;
+
+                if (!selected || event.priority > selected.priority) {
                     selected = event;
                     startDate = scheduled.start;
                 }
