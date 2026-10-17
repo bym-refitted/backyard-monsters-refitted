@@ -10,7 +10,16 @@ export const creatureCarnageBases: SaveData[] = [
     baseid: "906",
     wmid: 906,
     level: 1,
-    resources: {},
+    resources: {
+      r1: 15_800,
+      r2: 11_200,
+      r3: 14_000,
+      r4: 10_200,
+      r1max: 20_000,
+      r2max: 20_000,
+      r3max: 20_000,
+      r4max: 20_000,
+    },
     buildingdata: {
       "0": {
         X: -65,
@@ -112,7 +121,16 @@ export const creatureCarnageBases: SaveData[] = [
     baseid: "907",
     wmid: 907,
     level: 1,
-    resources: {},
+    resources: {
+      r1: 33_500,
+      r2: 24_200,
+      r3: 29_800,
+      r4: 29_800,
+      r1max: 40_000,
+      r2max: 40_000,
+      r3max: 40_000,
+      r4max: 40_000,
+    },
     buildingdata: {
       "0": {
         X: -65,
@@ -248,7 +266,16 @@ export const creatureCarnageBases: SaveData[] = [
     baseid: "908",
     wmid: 908,
     level: 1,
-    resources: {},
+    resources: {
+      r1: 48_400,
+      r2: 34_500,
+      r3: 45_600,
+      r4: 48_400,
+      r1max: 50_000,
+      r2max: 50_000,
+      r3max: 50_000,
+      r4max: 50_000,
+    },
     buildingdata: {
       "0": {
         X: -65,
@@ -456,7 +483,16 @@ export const creatureCarnageBases: SaveData[] = [
     baseid: "909",
     wmid: 909,
     level: 1,
-    resources: {},
+    resources: {
+      r1: 63_300,
+      r2: 46_600,
+      r3: 61_500,
+      r4: 67_100,
+      r1max: 70_000,
+      r2max: 70_000,
+      r3max: 70_000,
+      r4max: 70_000,
+    },
     buildingdata: {
       "0": {
         X: -65,
@@ -725,7 +761,16 @@ export const creatureCarnageBases: SaveData[] = [
     baseid: "910",
     wmid: 910,
     level: 1,
-    resources: {},
+    resources: {
+      r1: 60_500,
+      r2: 42_800,
+      r3: 53_100,
+      r4: 51_200,
+      r1max: 70_000,
+      r2max: 70_000,
+      r3max: 70_000,
+      r4max: 70_000,
+    },
     buildingdata: {
       "0": {
         X: -65,
@@ -858,7 +903,16 @@ export const creatureCarnageBases: SaveData[] = [
     baseid: "911",
     wmid: 911,
     level: 1,
-    resources: {},
+    resources: {
+      r1: 68_000,
+      r2: 47_500,
+      r3: 59_600,
+      r4: 54_900,
+      r1max: 70_000,
+      r2max: 70_000,
+      r3max: 70_000,
+      r4max: 70_000,
+    },
     buildingdata: {
       "0": {
         X: -65,
@@ -1077,7 +1131,16 @@ export const creatureCarnageBases: SaveData[] = [
     baseid: "912",
     wmid: 912,
     level: 1,
-    resources: {},
+    resources: {
+      r1: 55_900,
+      r2: 37_300,
+      r3: 48_400,
+      r4: 35_400,
+      r1max: 60_000,
+      r2max: 60_000,
+      r3max: 60_000,
+      r4max: 60_000,
+    },
     buildingdata: {
       "0": {
         X: -65,
@@ -1609,7 +1672,16 @@ export const creatureCarnageBases: SaveData[] = [
     baseid: "913",
     wmid: 913,
     level: 1,
-    resources: {},
+    resources: {
+      r1: 61_500,
+      r2: 40_000,
+      r3: 53_100,
+      r4: 37_300,
+      r1max: 70_000,
+      r2max: 70_000,
+      r3max: 70_000,
+      r4max: 70_000,
+    },
     buildingdata: {
       "0": {
         X: -65,
@@ -1795,7 +1867,16 @@ export const creatureCarnageBases: SaveData[] = [
     baseid: "914",
     wmid: 914,
     level: 1,
-    resources: {},
+    resources: {
+      r1: 93_100,
+      r2: 70_800,
+      r3: 84_700,
+      r4: 91_300,
+      r1max: 100_000,
+      r2max: 100_000,
+      r3max: 100_000,
+      r4max: 100_000,
+    },
     buildingdata: {
       "0": {
         X: -65,
@@ -2110,7 +2191,16 @@ export const creatureCarnageBases: SaveData[] = [
     baseid: "915",
     wmid: 915,
     level: 1,
-    resources: {},
+    resources: {
+      r1: 96_900,
+      r2: 71_700,
+      r3: 87_500,
+      r4: 87_500,
+      r1max: 100_000,
+      r2max: 100_000,
+      r3max: 100_000,
+      r4max: 100_000,
+    },
     buildingdata: {
       "0": {
         X: -65,
