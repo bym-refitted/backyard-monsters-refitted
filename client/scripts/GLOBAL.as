@@ -45,7 +45,7 @@ package {
 
         public static var cdnUrl:String = CONFIG::CDN_URL;
 
-        public static var apiVersionSuffix:String = "v1.2.4-beta";
+        public static var apiVersionSuffix:String = "v1.2.5-beta";
 
         public static var connectionCounter:int;
 
@@ -363,7 +363,16 @@ package {
 
         public static var _maxLoops:int = 800;
 
-        public static var _loopsBanked:int = 0;
+        /**
+         * Simulation steps run per millisecond of real time: 72 a second.
+         * The original banked 2 steps per 25 ms into an int, so every frame dropped its fraction and the
+         * real rate depended on frame pacing. Kixeye's speed demo (youtube.com/watch?v=vLGmoN_nctA) shows
+         * the same wave taking 30.2 s at 40 fps and 27.0 s at 4 fps, where nothing is lost: about 72 a second.
+         */
+        public static const SIM_STEPS_PER_MS:Number = 0.072;
+
+        // public static var _loopsBanked:int = 0;
+        public static var _loopsBanked:Number = 0;
 
         public static var lastTime:Number;
 
@@ -1235,8 +1244,9 @@ package {
                         if (_loopsBanked < 0) {
                             _loopsBanked = 0;
                         }
-                        _loopsBanked += 2 / 25 * (_loc3_ - lastTime);
-                        _loops = _loopsBanked;
+                        // _loopsBanked += 2 / 25 * (_loc3_ - lastTime);
+                        _loopsBanked += SIM_STEPS_PER_MS * (_loc3_ - lastTime);
+                        _loops = int(_loopsBanked);
                         if (_loops > _maxLoops) {
                             _loops = _maxLoops;
                         }
@@ -1296,7 +1306,7 @@ package {
                             _loc7_++;
                         }
                         if (BYMConfig.instance.RENDERER_ON) {
-                            _ROOT.stage.invalidate();
+                            MAP.invalidate();
                         }
                     }
                     ++_frameNumber;
@@ -1876,6 +1886,9 @@ package {
             }
             else {
                 UI2.ResizeHandler(param1);
+            }
+            if (MAP.instance) {
+                MAP.instance.redrawAfterResize();
             }
         }
 

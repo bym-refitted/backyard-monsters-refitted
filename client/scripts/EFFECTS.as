@@ -106,7 +106,7 @@ package {
 
         public static function Burn(param1:int, param2:int):void {
             var _loc3_:int = 80 * int(Math.random() * 4) - 80;
-            MAP.effectsBMD.copyPixels(_burns, new Rectangle(_loc3_, 0, 80, 40), new Point(param1 + MAP.effectsBMD.width * 0.5 - 40, param2 + MAP.effectsBMD.height * 0.5 - 20), null, null, true);
+            MAP.copyEffects(_burns, new Rectangle(_loc3_, 0, 80, 40), new Point(param1 + MAP.effectsBMD.width * 0.5 - 40, param2 + MAP.effectsBMD.height * 0.5 - 20), null, null, true);
         }
 
         public static function Lightning(param1:int, param2:int, param3:int, param4:int, param5:DisplayObjectContainer = null, param6:uint = 3197178):void {
@@ -249,7 +249,7 @@ package {
                     _loc7_.tx = 100;
                     _loc7_.ty = 50;
                 }
-                MAP.effectsBMD.copyPixels(_loc6_, new Rectangle(0, 0, _loc9_, _loc10_), new Point(param1 + MAP.effectsBMD.width * 0.5 - _loc9_ / 2, param2 + MAP.effectsBMD.height * 0.5 - _loc10_ / 2), null, null, true);
+                MAP.copyEffects(_loc6_, new Rectangle(0, 0, _loc9_, _loc10_), new Point(param1 + MAP.effectsBMD.width * 0.5 - _loc9_ / 2, param2 + MAP.effectsBMD.height * 0.5 - _loc10_ / 2), null, null, true);
             }
             catch (e:Error) {
             }

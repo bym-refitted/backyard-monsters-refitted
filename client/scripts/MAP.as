@@ -1,6 +1,7 @@
 package {
     import com.monsters.configs.BYMConfig;
     import com.monsters.input.KeyboardInputHandler;
+    import com.monsters.maproom_manager.MapRoomManager;
     import com.monsters.monsters.MonsterBase;
     import com.monsters.rendering.RasterData;
     import com.monsters.rendering.Renderer;
@@ -12,6 +13,8 @@ package {
     import flash.display.Stage;
     import flash.events.*;
     import flash.geom.*;
+    import flash.utils.Timer;
+    import flash.utils.getTimer;
     import gs.*;
     import gs.easing.*;
 
@@ -46,6 +49,8 @@ package {
         public static var _dragged:Boolean;
 
         public static var _dragDistance:Number;
+
+        private static var _dragHitArea:Sprite;
 
         public static var _EFFECTSBMP:BitmapData;
 
@@ -123,6 +128,14 @@ package {
 
         protected var _renderer:Renderer;
 
+        public static const PRESENTATION_FPS:Number = 60;
+
+        private var _presentationTimer:Timer;
+
+        private var _lastPresentation:int;
+
+        private var _presentationStarted:Boolean;
+
         protected const _point:Point = new Point();
 
         // This function is not decompiled correctly
@@ -133,6 +146,7 @@ package {
             var texture:String = param1;
             super();
             _instance = this;
+<<<<<<< HEAD
             tx = GLOBAL._SCREENINIT.width / 2;
             ty = GLOBAL._SCREENINIT.height / 2;
             rect = GLOBAL._SCREEN;
@@ -143,6 +157,35 @@ package {
             _GROUND = GLOBAL._layerMap.addChild(new Sprite()) as Sprite;
             if (!BYMConfig.instance.RENDERER_ON) {
                 _BGTILES = _GROUND.addChild(new MovieClip()) as MovieClip;
+=======
+            try {
+                tx = GLOBAL._SCREENINIT.width / 2;
+                ty = GLOBAL._SCREENINIT.height / 2;
+                rect = GLOBAL._SCREEN;
+                _viewRect.x = GLOBAL._SCREEN.x + MAP_WIDTH / 2;
+                _viewRect.y = GLOBAL._SCREEN.y + MAP_HEIGHT / 2;
+                _viewRect.width = GLOBAL._SCREEN.width;
+                _viewRect.height = GLOBAL._SCREEN.height;
+                _GROUND = GLOBAL._layerMap.addChild(new Sprite()) as Sprite;
+                // A cheap mouse target while panning, preserving ground mouse-up handlers.
+                _dragHitArea = new Sprite();
+                _dragHitArea.graphics.beginFill(0);
+                _dragHitArea.graphics.drawRect(-MAP_WIDTH / 2, -MAP_HEIGHT / 2, MAP_WIDTH, MAP_HEIGHT);
+                _dragHitArea.graphics.endFill();
+                _dragHitArea.visible = false;
+                _dragHitArea.mouseEnabled = false;
+                _GROUND.addChild(_dragHitArea);
+                if (!BYMConfig.instance.RENDERER_ON) {
+                    _BGTILES = _GROUND.addChild(new MovieClip()) as MovieClip;
+                }
+                if (BYMConfig.instance.RENDERER_ON) {
+                    _canvas = new BitmapData(MAP_WIDTH, MAP_HEIGHT, false, 0);
+                    _canvasContainer = new Bitmap(_canvas);
+                    _canvasContainer.x -= _canvasContainer.width / 2;
+                    _canvasContainer.y -= _canvasContainer.height / 2;
+                    _GROUND.addChild(_canvasContainer);
+                }
+>>>>>>> fcd19b53920881e7ea3683dbfe731f2c4ba4bc1e
             }
             if (BYMConfig.instance.RENDERER_ON) {
                 _canvas = new BitmapData(MAP_WIDTH, MAP_HEIGHT, false, 0);
@@ -151,12 +194,83 @@ package {
                 _canvasContainer.y -= _canvasContainer.height / 2;
                 _GROUND.addChild(_canvasContainer);
             }
+<<<<<<< HEAD
             _GROUND.x = tx;
             _GROUND.y = ty;
             _UNDERLAY = _GROUND.addChild(new MovieClip()) as MovieClip;
             if (BYMConfig.instance.RENDERER_ON) {
                 _EFFECTSBMP = new BitmapData(_canvas.width, _canvas.height, false, 0);
                 _effectsRasterData = new RasterData(_EFFECTSBMP, new Point((_canvas.width - _EFFECTSBMP.width) * 0.5, (_canvas.height - _EFFECTSBMP.height) * 0.5), 0, null, true);
+=======
+            try {
+                _GROUND.x = tx;
+                _GROUND.y = ty;
+                _UNDERLAY = _GROUND.addChild(new MovieClip()) as MovieClip;
+                if (BYMConfig.instance.RENDERER_ON) {
+                    _EFFECTSBMP = new BitmapData(_canvas.width, _canvas.height, false, 0);
+                    _effectsRasterData = new RasterData(_EFFECTSBMP, new Point((_canvas.width - _EFFECTSBMP.width) * 0.5, (_canvas.height - _EFFECTSBMP.height) * 0.5), 0, null, true);
+                    _effectsRasterData.cacheable = true;
+                }
+                else {
+                    _EFFECTSBMP = new BitmapData(3200, 1800, true, 0);
+                    efxbmp = _GROUND.addChild(new Bitmap(_EFFECTSBMP)) as Bitmap;
+                    efxbmp.x = -_EFFECTSBMP.width * 0.5;
+                    efxbmp.y = -_EFFECTSBMP.height * 0.5;
+                }
+                s_texture = texture;
+                swapBG(s_texture);
+                _EFFECTS = _GROUND.addChild(new MovieClip()) as MovieClip;
+                _EFFECTS.mouseEnabled = false;
+                _EFFECTS.mouseChildren = false;
+                _EFFECTS.tabChildren = false;
+                _BUILDINGBASES = _GROUND.addChild(new MovieClip()) as MovieClip;
+                _BUILDINGBASES.mouseEnabled = false;
+                _BUILDINGBASES.mouseChildren = true;
+                _BUILDINGBASES.tabChildren = false;
+                _BUILDINGFOOTPRINTS = _GROUND.addChild(new MovieClip()) as MovieClip;
+                _BUILDINGFOOTPRINTS.mouseEnabled = false;
+                _BUILDINGFOOTPRINTS.mouseChildren = false;
+                _BUILDINGFOOTPRINTS.tabChildren = false;
+                _CREEPSMC = BYMConfig.instance.RENDERER_ON ? new MovieClip() : _GROUND.addChild(new MovieClip()) as MovieClip;
+                _CREEPSMC.mouseEnabled = false;
+                _CREEPSMC.mouseChildren = true;
+                _CREEPSMC.tabChildren = false;
+                _BUILDINGTOPS = _GROUND.addChild(new Sprite()) as Sprite;
+                _BUILDINGTOPS.mouseEnabled = false;
+                _BUILDINGTOPS.mouseChildren = true;
+                _BUILDINGTOPS.tabChildren = false;
+                _RESOURCES = _GROUND.addChild(new MovieClip()) as MovieClip;
+                _RESOURCES.mouseEnabled = false;
+                _RESOURCES.mouseChildren = false;
+                _RESOURCES.tabChildren = false;
+                _BUILDINGINFO = _GROUND.addChild(new MovieClip()) as MovieClip;
+                _BUILDINGINFO.mouseEnabled = false;
+                _BUILDINGINFO.mouseChildren = true;
+                _BUILDINGINFO.tabChildren = false;
+                _PROJECTILES = _GROUND.addChild(new MovieClip()) as MovieClip;
+                _PROJECTILES.mouseEnabled = false;
+                _PROJECTILES.mouseChildren = false;
+                _PROJECTILES.tabChildren = false;
+                _FIREBALLS = _GROUND.addChild(new MovieClip()) as MovieClip;
+                _FIREBALLS.mouseEnabled = false;
+                _FIREBALLS.mouseChildren = false;
+                _FIREBALLS.tabChildren = false;
+                _EFFECTSTOP = _GROUND.addChild(new MovieClip()) as MovieClip;
+                _EFFECTSTOP.mouseEnabled = false;
+                _EFFECTSTOP.mouseChildren = false;
+                _EFFECTSTOP.tabChildren = false;
+                _dragged = false;
+                _GROUND.addEventListener(MouseEvent.MOUSE_DOWN, Click);
+                if (!BYMConfig.instance.RENDERER_ON) {
+                    _GROUND.addEventListener(Event.ENTER_FRAME, Scroll);
+                }
+                _GROUND.stage.addEventListener(KeyboardEvent.KEY_DOWN, KeyboardInputHandler.instance.OnKeyDown);
+                if (GLOBAL.DOES_USE_SCROLL) {
+                    _GROUND.stage.addEventListener(MouseEvent.MOUSE_WHEEL, onMouseScroll);
+                }
+                _GROUND.stage.addEventListener(KeyboardEvent.KEY_UP, KeyUp);
+                _EDGE = null;
+>>>>>>> fcd19b53920881e7ea3683dbfe731f2c4ba4bc1e
             }
             else {
                 _EFFECTSBMP = new BitmapData(3200, 1800, true, 0);
@@ -222,6 +336,10 @@ package {
             if (BYMConfig.instance.RENDERER_ON) {
                 this._renderer = new Renderer(_canvas, _viewRect);
                 GLOBAL._ROOT.addEventListener(Event.RENDER, this.render);
+                this._presentationTimer = new Timer(1000 / PRESENTATION_FPS);
+                this._presentationTimer.addEventListener(TimerEvent.TIMER, this.present);
+                this._lastPresentation = getTimer();
+                this._presentationTimer.start();
             }
             Targeting.init();
             _inited = true;
@@ -229,6 +347,16 @@ package {
 
         public static function get effectsBMD():BitmapData {
             return _EFFECTSBMP;
+        }
+
+        public static function copyEffects(param1:BitmapData, param2:Rectangle, param3:Point, param4:BitmapData = null, param5:Point = null, param6:Boolean = false):void {
+            if (!_EFFECTSBMP) {
+                return;
+            }
+            _EFFECTSBMP.copyPixels(param1, param2, param3, param4, param5, param6);
+            if (_instance && _instance._renderer) {
+                _instance._renderer.invalidateGroundRegion(param3.x, param3.y, param2.width, param2.height);
+            }
         }
 
         public static function get texture():String {
@@ -240,6 +368,9 @@ package {
         }
 
         public static function swapBG(param1:String):void {
+            if (_effectsRasterData) {
+                _effectsRasterData.invalidate();
+            }
             var _loc3_:DisplayObject = null;
             var _loc4_:int = 0;
             var _loc5_:int = 0;
@@ -307,6 +438,13 @@ package {
         }
 
         public static function Clear():void {
+            Release();
+            _dragHitArea = null;
+            if (_instance && _instance._presentationTimer) {
+                _instance._presentationTimer.stop();
+                _instance._presentationTimer.removeEventListener(TimerEvent.TIMER, _instance.present);
+                _instance._presentationTimer = null;
+            }
             if (_GROUND) {
                 _GROUND.removeEventListener(MouseEvent.MOUSE_DOWN, Click);
                 _GROUND.removeEventListener(Event.ENTER_FRAME, Scroll);
@@ -319,8 +457,11 @@ package {
                     _BUILDINGTOPS.removeChildAt(0);
                 }
             }
-            if (BYMConfig.instance.RENDERER_ON && GLOBAL._ROOT.hasEventListener(Event.RENDER)) {
+            if (_instance && BYMConfig.instance.RENDERER_ON && GLOBAL._ROOT.hasEventListener(Event.RENDER)) {
                 GLOBAL._ROOT.removeEventListener(Event.RENDER, _instance.render);
+            }
+            if (_instance && _instance._renderer) {
+                _instance._renderer.dispose();
             }
             _BGTILES = null;
             _BUILDINGBASES = null;
@@ -354,6 +495,9 @@ package {
         }
 
         public static function Edge():void {
+            if (_effectsRasterData) {
+                _effectsRasterData.invalidate();
+            }
             var iso:Point = null;
             if (GLOBAL.mode !== GLOBAL.e_BASE_MODE.BUILD && GLOBAL.mode !== GLOBAL.e_BASE_MODE.IBUILD) {
                 return;
@@ -428,13 +572,21 @@ package {
                 _startY = _GROUND.y;
                 _dragging = true;
                 stage.addEventListener(MouseEvent.MOUSE_UP, Release);
+                stage.addEventListener(Event.DEACTIVATE, Release);
+                stage.addEventListener(Event.MOUSE_LEAVE, Release);
             }
         }
 
-        public static function Release(param1:MouseEvent):void {
+        public static function Release(param1:Event = null):void {
+            if (_dragged && _GROUND) {
+                _GROUND.hitArea = null;
+                _GROUND.mouseChildren = true;
+            }
             _dragging = false;
             _dragged = false;
             stage.removeEventListener(MouseEvent.MOUSE_UP, Release);
+            stage.removeEventListener(Event.DEACTIVATE, Release);
+            stage.removeEventListener(Event.MOUSE_LEAVE, Release);
         }
 
         public static function Focus(param1:Number, param2:Number):void {
@@ -522,7 +674,7 @@ package {
             _following = false;
         }
 
-        public static function Scroll(param1:Event = null):void {
+        public static function Scroll(param1:Event = null, elapsed:Number = 25):void {
             var _loc12_:int = 0;
             var _loc13_:Object = null;
             var _loc14_:MonsterBase = null;
@@ -559,7 +711,6 @@ package {
                 ty = 0 - ty + GLOBAL._ROOT.stage.stageHeight * 0.5;
                 _dragX = tx;
                 _dragY = ty;
-                BFOUNDATION.updateAllRasterData();
             }
             else if (_dragging && UI2._scrollMap && !_autoScroll && _canScroll) {
                 _loc15_ = stage.mouseX;
@@ -570,8 +721,11 @@ package {
                 _loc18_ = _loc16_ - (_dragY + _startY);
                 _dragDistance = Math.abs(_loc17_ * _loc17_ + _loc18_ * _loc18_);
                 if (_dragDistance > 100) {
-                    _dragged = true;
-                    BFOUNDATION.updateAllRasterData();
+                    if (!_dragged) {
+                        _dragged = true;
+                        _GROUND.hitArea = _dragHitArea;
+                        _GROUND.mouseChildren = false;
+                    }
                 }
             }
             var _loc2_:int = GLOBAL._ROOT.stage.stageWidth;
@@ -614,21 +768,23 @@ package {
             d = 2;
             targX = _GROUND.x;
             targY = _GROUND.y;
+            // Preserve the original half-distance easing per 25 ms at any presentation rate.
+            var smoothing:Number = 1 - Math.pow(0.5, elapsed / 25);
             if (targX < tx) {
-                targX += tx - targX >> 1;
+                targX += int((tx - targX) * smoothing);
             }
             else if (targX > tx) {
-                targX -= targX - tx >> 1;
+                targX -= int((targX - tx) * smoothing);
             }
             if (Math.abs(targX - tx) <= 2) {
                 targX = tx;
                 --d;
             }
             if (targY < ty - 1) {
-                targY += ty - targY >> 1;
+                targY += int((ty - targY) * smoothing);
             }
             else {
-                targY -= targY - ty >> 1;
+                targY -= int((targY - ty) * smoothing);
             }
             if (Math.abs(targY - ty) <= 2) {
                 targY = ty;
@@ -675,13 +831,53 @@ package {
         }
 
         public function resizeViewRect():void {
-            var _loc1_:Rectangle = GLOBAL._SCREEN;
-            var _loc2_:int = 32;
-            var _loc3_:int = 50;
-            _viewRect.width = _loc1_.width * (1 / _GROUND.scaleX) + _loc2_;
-            _viewRect.height = _loc1_.height * (1 / _GROUND.scaleY) + _loc2_;
-            _viewRect.x = -(_GROUND.x * (1 / _GROUND.scaleX)) - (1 / _GROUND.scaleX - 1) * _loc3_ + (MAP_WIDTH >>> 1) + _loc1_.x - _loc2_;
-            _viewRect.y = -(_GROUND.y * (1 / _GROUND.scaleY)) - (1 / _GROUND.scaleY - 1) * _loc3_ + (MAP_HEIGHT >>> 1) + _loc1_.y - _loc2_;
+            var screen:Rectangle = GLOBAL._SCREEN;
+            var padding:int = 32;
+            var scaleOffset:int = 50;
+            var inverseScaleX:Number = 1 / _GROUND.scaleX;
+            var inverseScaleY:Number = 1 / _GROUND.scaleY;
+            var width:Number = screen.width * inverseScaleX + padding;
+            var height:Number = screen.height * inverseScaleY + padding;
+            var x:Number = -_GROUND.x * inverseScaleX - (inverseScaleX - 1) * scaleOffset + (MAP_WIDTH >>> 1) + screen.x - padding;
+            var y:Number = -_GROUND.y * inverseScaleY - (inverseScaleY - 1) * scaleOffset + (MAP_HEIGHT >>> 1) + screen.y - padding;
+            if (_viewRect.x == x && _viewRect.y == y && _viewRect.width == width && _viewRect.height == height) {
+                return;
+            }
+            _viewRect.setTo(x, y, width, height);
+            // Visibility depends on these bounds, including after restoring the yard.
+            BFOUNDATION.updateAllRasterData();
+        }
+
+        public function redrawAfterResize():void {
+            if (!_inited || !this._renderer || !_GROUND || BASE._loading || MapRoomManager.instance.isOpen) {
+                return;
+            }
+            this.resizeViewRect();
+            // Resize can expose the bitmap before the next presentation timer fires.
+            this._renderer.render();
+        }
+
+        public static function invalidate():void {
+            if (!_instance || !_instance._presentationTimer) {
+                GLOBAL._ROOT.stage.invalidate();
+            }
+            else {
+                // Wait for the first game update before starting independent presentation.
+                _instance._presentationStarted = true;
+            }
+        }
+
+        private function present(event:TimerEvent):void {
+            var now:int = getTimer();
+            var elapsed:int = now - this._lastPresentation;
+            this._lastPresentation = now;
+            if (!this._presentationStarted || !_inited || !_GROUND || GLOBAL.isHalted || BASE._loading || MapRoomManager.instance.isOpen) {
+                return;
+            }
+            Scroll(null, Math.min(100, elapsed));
+            GLOBAL._ROOT.stage.invalidate();
+            // Present without advancing the game's timeline or simulation ticks.
+            event.updateAfterEvent();
         }
 
         private function render(param1:Event):void {
