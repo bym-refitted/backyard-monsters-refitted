@@ -146,7 +146,6 @@ package {
             var texture:String = param1;
             super();
             _instance = this;
-<<<<<<< HEAD
             tx = GLOBAL._SCREENINIT.width / 2;
             ty = GLOBAL._SCREENINIT.height / 2;
             rect = GLOBAL._SCREEN;
@@ -155,37 +154,16 @@ package {
             _viewRect.width = GLOBAL._SCREEN.width;
             _viewRect.height = GLOBAL._SCREEN.height;
             _GROUND = GLOBAL._layerMap.addChild(new Sprite()) as Sprite;
+            // A cheap mouse target while panning, preserving ground mouse-up handlers.
+            _dragHitArea = new Sprite();
+            _dragHitArea.graphics.beginFill(0);
+            _dragHitArea.graphics.drawRect(-MAP_WIDTH / 2, -MAP_HEIGHT / 2, MAP_WIDTH, MAP_HEIGHT);
+            _dragHitArea.graphics.endFill();
+            _dragHitArea.visible = false;
+            _dragHitArea.mouseEnabled = false;
+            _GROUND.addChild(_dragHitArea);
             if (!BYMConfig.instance.RENDERER_ON) {
                 _BGTILES = _GROUND.addChild(new MovieClip()) as MovieClip;
-=======
-            try {
-                tx = GLOBAL._SCREENINIT.width / 2;
-                ty = GLOBAL._SCREENINIT.height / 2;
-                rect = GLOBAL._SCREEN;
-                _viewRect.x = GLOBAL._SCREEN.x + MAP_WIDTH / 2;
-                _viewRect.y = GLOBAL._SCREEN.y + MAP_HEIGHT / 2;
-                _viewRect.width = GLOBAL._SCREEN.width;
-                _viewRect.height = GLOBAL._SCREEN.height;
-                _GROUND = GLOBAL._layerMap.addChild(new Sprite()) as Sprite;
-                // A cheap mouse target while panning, preserving ground mouse-up handlers.
-                _dragHitArea = new Sprite();
-                _dragHitArea.graphics.beginFill(0);
-                _dragHitArea.graphics.drawRect(-MAP_WIDTH / 2, -MAP_HEIGHT / 2, MAP_WIDTH, MAP_HEIGHT);
-                _dragHitArea.graphics.endFill();
-                _dragHitArea.visible = false;
-                _dragHitArea.mouseEnabled = false;
-                _GROUND.addChild(_dragHitArea);
-                if (!BYMConfig.instance.RENDERER_ON) {
-                    _BGTILES = _GROUND.addChild(new MovieClip()) as MovieClip;
-                }
-                if (BYMConfig.instance.RENDERER_ON) {
-                    _canvas = new BitmapData(MAP_WIDTH, MAP_HEIGHT, false, 0);
-                    _canvasContainer = new Bitmap(_canvas);
-                    _canvasContainer.x -= _canvasContainer.width / 2;
-                    _canvasContainer.y -= _canvasContainer.height / 2;
-                    _GROUND.addChild(_canvasContainer);
-                }
->>>>>>> fcd19b53920881e7ea3683dbfe731f2c4ba4bc1e
             }
             if (BYMConfig.instance.RENDERER_ON) {
                 _canvas = new BitmapData(MAP_WIDTH, MAP_HEIGHT, false, 0);
@@ -194,83 +172,13 @@ package {
                 _canvasContainer.y -= _canvasContainer.height / 2;
                 _GROUND.addChild(_canvasContainer);
             }
-<<<<<<< HEAD
             _GROUND.x = tx;
             _GROUND.y = ty;
             _UNDERLAY = _GROUND.addChild(new MovieClip()) as MovieClip;
             if (BYMConfig.instance.RENDERER_ON) {
                 _EFFECTSBMP = new BitmapData(_canvas.width, _canvas.height, false, 0);
                 _effectsRasterData = new RasterData(_EFFECTSBMP, new Point((_canvas.width - _EFFECTSBMP.width) * 0.5, (_canvas.height - _EFFECTSBMP.height) * 0.5), 0, null, true);
-=======
-            try {
-                _GROUND.x = tx;
-                _GROUND.y = ty;
-                _UNDERLAY = _GROUND.addChild(new MovieClip()) as MovieClip;
-                if (BYMConfig.instance.RENDERER_ON) {
-                    _EFFECTSBMP = new BitmapData(_canvas.width, _canvas.height, false, 0);
-                    _effectsRasterData = new RasterData(_EFFECTSBMP, new Point((_canvas.width - _EFFECTSBMP.width) * 0.5, (_canvas.height - _EFFECTSBMP.height) * 0.5), 0, null, true);
-                    _effectsRasterData.cacheable = true;
-                }
-                else {
-                    _EFFECTSBMP = new BitmapData(3200, 1800, true, 0);
-                    efxbmp = _GROUND.addChild(new Bitmap(_EFFECTSBMP)) as Bitmap;
-                    efxbmp.x = -_EFFECTSBMP.width * 0.5;
-                    efxbmp.y = -_EFFECTSBMP.height * 0.5;
-                }
-                s_texture = texture;
-                swapBG(s_texture);
-                _EFFECTS = _GROUND.addChild(new MovieClip()) as MovieClip;
-                _EFFECTS.mouseEnabled = false;
-                _EFFECTS.mouseChildren = false;
-                _EFFECTS.tabChildren = false;
-                _BUILDINGBASES = _GROUND.addChild(new MovieClip()) as MovieClip;
-                _BUILDINGBASES.mouseEnabled = false;
-                _BUILDINGBASES.mouseChildren = true;
-                _BUILDINGBASES.tabChildren = false;
-                _BUILDINGFOOTPRINTS = _GROUND.addChild(new MovieClip()) as MovieClip;
-                _BUILDINGFOOTPRINTS.mouseEnabled = false;
-                _BUILDINGFOOTPRINTS.mouseChildren = false;
-                _BUILDINGFOOTPRINTS.tabChildren = false;
-                _CREEPSMC = BYMConfig.instance.RENDERER_ON ? new MovieClip() : _GROUND.addChild(new MovieClip()) as MovieClip;
-                _CREEPSMC.mouseEnabled = false;
-                _CREEPSMC.mouseChildren = true;
-                _CREEPSMC.tabChildren = false;
-                _BUILDINGTOPS = _GROUND.addChild(new Sprite()) as Sprite;
-                _BUILDINGTOPS.mouseEnabled = false;
-                _BUILDINGTOPS.mouseChildren = true;
-                _BUILDINGTOPS.tabChildren = false;
-                _RESOURCES = _GROUND.addChild(new MovieClip()) as MovieClip;
-                _RESOURCES.mouseEnabled = false;
-                _RESOURCES.mouseChildren = false;
-                _RESOURCES.tabChildren = false;
-                _BUILDINGINFO = _GROUND.addChild(new MovieClip()) as MovieClip;
-                _BUILDINGINFO.mouseEnabled = false;
-                _BUILDINGINFO.mouseChildren = true;
-                _BUILDINGINFO.tabChildren = false;
-                _PROJECTILES = _GROUND.addChild(new MovieClip()) as MovieClip;
-                _PROJECTILES.mouseEnabled = false;
-                _PROJECTILES.mouseChildren = false;
-                _PROJECTILES.tabChildren = false;
-                _FIREBALLS = _GROUND.addChild(new MovieClip()) as MovieClip;
-                _FIREBALLS.mouseEnabled = false;
-                _FIREBALLS.mouseChildren = false;
-                _FIREBALLS.tabChildren = false;
-                _EFFECTSTOP = _GROUND.addChild(new MovieClip()) as MovieClip;
-                _EFFECTSTOP.mouseEnabled = false;
-                _EFFECTSTOP.mouseChildren = false;
-                _EFFECTSTOP.tabChildren = false;
-                _dragged = false;
-                _GROUND.addEventListener(MouseEvent.MOUSE_DOWN, Click);
-                if (!BYMConfig.instance.RENDERER_ON) {
-                    _GROUND.addEventListener(Event.ENTER_FRAME, Scroll);
-                }
-                _GROUND.stage.addEventListener(KeyboardEvent.KEY_DOWN, KeyboardInputHandler.instance.OnKeyDown);
-                if (GLOBAL.DOES_USE_SCROLL) {
-                    _GROUND.stage.addEventListener(MouseEvent.MOUSE_WHEEL, onMouseScroll);
-                }
-                _GROUND.stage.addEventListener(KeyboardEvent.KEY_UP, KeyUp);
-                _EDGE = null;
->>>>>>> fcd19b53920881e7ea3683dbfe731f2c4ba4bc1e
+                _effectsRasterData.cacheable = true;
             }
             else {
                 _EFFECTSBMP = new BitmapData(3200, 1800, true, 0);
@@ -322,7 +230,9 @@ package {
             _EFFECTSTOP.tabChildren = false;
             _dragged = false;
             _GROUND.addEventListener(MouseEvent.MOUSE_DOWN, Click);
-            _GROUND.addEventListener(Event.ENTER_FRAME, Scroll);
+            if (!BYMConfig.instance.RENDERER_ON) {
+                _GROUND.addEventListener(Event.ENTER_FRAME, Scroll);
+            }
             _GROUND.stage.addEventListener(KeyboardEvent.KEY_DOWN, KeyboardInputHandler.instance.OnKeyDown);
             if (GLOBAL.DOES_USE_SCROLL) {
                 _GROUND.stage.addEventListener(MouseEvent.MOUSE_WHEEL, onMouseScroll);
