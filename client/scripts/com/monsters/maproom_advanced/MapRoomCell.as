@@ -6,9 +6,13 @@ package com.monsters.maproom_advanced {
     import flash.display.Bitmap;
     import flash.display.BitmapData;
     import flash.display.DisplayObject;
+    import flash.display.DisplayObjectContainer;
+    import flash.display.Loader;
     import flash.display.MovieClip;
+    import flash.events.Event;
     import flash.events.MouseEvent;
     import flash.geom.Point;
+    import flash.geom.Rectangle;
     import flash.utils.getTimer;
 
     public class MapRoomCell extends MapRoomCell_CLIP implements IMapRoomCell {
@@ -91,6 +95,8 @@ package com.monsters.maproom_advanced {
 
         internal var _inRange:Boolean = false;
 
+        internal var _rangeAlpha:Number;
+
         internal var _over:Boolean = false;
 
         internal var _terrain:String;
@@ -110,6 +116,18 @@ package com.monsters.maproom_advanced {
         private var _frame:int;
 
         public var depth:int;
+
+        private var _visibilityBounds:Rectangle;
+
+        private var _visibilityBoundsDirty:Boolean = true;
+
+        private var _visibilityStructureDirty:Boolean = true;
+
+        private var _visibilityCanCull:Boolean;
+
+        private var _visibilityViewport:Rectangle;
+
+        private var _visibilityRefreshPending:Boolean;
 
         private var inTest:Boolean = false;
 
@@ -148,6 +166,11 @@ package com.monsters.maproom_advanced {
                 };
             this.testAllianceIDs = [1, 2, 3, 102, 111];
             super();
+            addEventListener(Event.ADDED, this.InvalidateVisibilityStructure);
+            addEventListener(Event.REMOVED, this.InvalidateVisibilityStructure);
+            mc.mcPlayer.stop();
+            mc.mcPlayer.mcFlag2.stop();
+            mc.mcPlayer.mcLevel.stop();
             mc.mcHit.addEventListener(MouseEvent.MOUSE_OVER, this.Over);
             mc.mcHit.addEventListener(MouseEvent.MOUSE_OUT, this.Out);
             mc.mcHit.addEventListener(MouseEvent.MOUSE_UP, this.Click);
@@ -171,6 +194,87 @@ package com.monsters.maproom_advanced {
             mc.mcEdges.visible = false;
             mc.mcPrompt.enabled = false;
             mc.mcPrompt.visible = false;
+            mc.mcPrompt.bYes.stop();
+            mc.mcPrompt.bNo.stop();
+        }
+
+        internal function InvalidateVisibilityStructure(event:Event = null):void {
+            this._visibilityStructureDirty = true;
+            this.InvalidateVisibilityBounds();
+        }
+
+        internal function InvalidateVisibilityBounds():void {
+            this._visibilityBoundsDirty = true;
+            if (!this._visibilityCanCull) {
+                this._visibilityStructureDirty = true;
+            }
+            if (!this._visibilityViewport) {
+                this.visible = true;
+            }
+            else if (!this._visibilityRefreshPending) {
+                this._visibilityRefreshPending = true;
+                addEventListener(Event.EXIT_FRAME, this.RefreshVisibility);
+            }
+        }
+
+        private function RefreshVisibility(event:Event):void {
+            removeEventListener(Event.EXIT_FRAME, this.RefreshVisibility);
+            this._visibilityRefreshPending = false;
+            if (this._visibilityViewport && this.parent && this.stage) {
+                this.CullToBounds(this._visibilityViewport);
+            }
+        }
+
+        private function HasStableVisibilityBounds(object:DisplayObject):Boolean {
+            if (!object) {
+                return false;
+            }
+            var filters:Array = object.filters;
+            if ((filters && filters.length > 0) || object is Loader) {
+                return false;
+            }
+            var clip:MovieClip = object as MovieClip;
+            if (clip && clip.totalFrames > 1 && clip.isPlaying) {
+                return false;
+            }
+            var container:DisplayObjectContainer = object as DisplayObjectContainer;
+            if (container) {
+                for (var i:int = 0; i < container.numChildren; ++i) {
+                    if (!this.HasStableVisibilityBounds(container.getChildAt(i))) {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+
+        internal function CullToBounds(viewport:Rectangle):void {
+            this._visibilityViewport = viewport;
+            if (this._visibilityRefreshPending) {
+                removeEventListener(Event.EXIT_FRAME, this.RefreshVisibility);
+                this._visibilityRefreshPending = false;
+            }
+            if (this._visibilityStructureDirty) {
+                this._visibilityCanCull = this.HasStableVisibilityBounds(this);
+                this._visibilityStructureDirty = false;
+            }
+            if (!this._visibilityCanCull) {
+                this.visible = true;
+                return;
+            }
+            if (this._visibilityBoundsDirty) {
+                this._visibilityBounds = this.getBounds(this);
+                this._visibilityBounds.inflate(2, 2);
+                this._visibilityBoundsDirty = false;
+            }
+            var bounds:Rectangle = this._visibilityBounds;
+            var shown:Boolean = this.x + bounds.right >= viewport.left &&
+                this.x + bounds.left <= viewport.right &&
+                this.y + bounds.bottom >= viewport.top &&
+                this.y + bounds.top <= viewport.bottom;
+            if (this.visible != shown) {
+                this.visible = shown;
+            }
         }
 
         public function set alliance(param1:AllyInfo):void {
@@ -283,6 +387,22 @@ package com.monsters.maproom_advanced {
 
         public function set isDirty(param1:Boolean):void {
             this._dirty = param1;
+        }
+
+        internal function Recycle(serverData:Object):void {
+            this.InvalidateVisibilityBounds();
+            if (!serverData) {
+                mc.gotoAndStop(1);
+                mc.y = 18;
+                mc.mcPlayer.visible = false;
+            }
+            this._updated = false;
+            this._dataAge = 0;
+            this._inRange = false;
+            mc.mcGlow.gotoAndStop(1);
+            if (serverData) {
+                this.Setup(serverData);
+            }
         }
 
         public function Setup(serverData:Object):void {
@@ -473,6 +593,7 @@ package com.monsters.maproom_advanced {
         }
 
         public function Update():void {
+            this.InvalidateVisibilityStructure();
             if (this._height < 100) {
                 if (this._height < 80) {
                     mc.gotoAndStop("water1");
@@ -651,6 +772,7 @@ package com.monsters.maproom_advanced {
         }
 
         internal function Tick(param1:int = 0):Boolean {
+            this.InvalidateVisibilityBounds();
             var _loc3_:int = 0;
             var _loc4_:String = null;
             var _loc5_:int = 0;
@@ -873,6 +995,7 @@ package com.monsters.maproom_advanced {
         }
 
         private function Over(param1:MouseEvent):void {
+            this.InvalidateVisibilityBounds();
             this._over = true;
             if (MapRoom._viewOnly && this._baseID == MapRoom._inviteBaseID) {
                 mc.mcGlow.gotoAndStop(5);
@@ -887,6 +1010,7 @@ package com.monsters.maproom_advanced {
         }
 
         private function Out(param1:MouseEvent):void {
+            this.InvalidateVisibilityBounds();
             this._over = false;
             if (MapRoom._viewOnly && this._baseID == MapRoom._inviteBaseID) {
                 mc.mcGlow.gotoAndStop(6);
@@ -900,6 +1024,11 @@ package com.monsters.maproom_advanced {
         }
 
         public function Cleanup():void {
+            removeEventListener(Event.EXIT_FRAME, this.RefreshVisibility);
+            this._visibilityRefreshPending = false;
+            this._visibilityViewport = null;
+            removeEventListener(Event.ADDED, this.InvalidateVisibilityStructure);
+            removeEventListener(Event.REMOVED, this.InvalidateVisibilityStructure);
             mc.mcHit.removeEventListener(MouseEvent.MOUSE_OVER, this.Over);
             mc.mcHit.removeEventListener(MouseEvent.MOUSE_OUT, this.Out);
             mc.mcHit.removeEventListener(MouseEvent.MOUSE_UP, this.Click);
