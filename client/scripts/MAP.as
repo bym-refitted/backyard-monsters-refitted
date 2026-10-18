@@ -599,9 +599,6 @@ package {
             var _loc16_:Number = NaN;
             var _loc17_:Number = NaN;
             var _loc18_:Number = NaN;
-            if (_dragging && (!UI2._scrollMap || _autoScroll || !_canScroll || _following)) {
-                Release();
-            }
             if (_following) {
                 _loc13_ = CREEPS._creeps;
                 tx = 0;
