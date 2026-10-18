@@ -113,7 +113,7 @@ package com.monsters.effects.particles {
                 _loc6_.tx = _loc7_ * 0.5;
                 _loc6_.ty = _loc8_ * 0.5;
                 _loc5_.draw(param4, _loc6_);
-                MAP.effectsBMD.copyPixels(_loc5_, new Rectangle(0, 0, _loc7_, _loc8_), new Point(param1 + MAP.effectsBMD.width * 0.5 - _loc7_ / 2, param2 + MAP.effectsBMD.height * 0.5 - _loc8_ * 0.5), null, null, true);
+                MAP.copyEffects(_loc5_, new Rectangle(0, 0, _loc7_, _loc8_), new Point(param1 + MAP.effectsBMD.width * 0.5 - _loc7_ / 2, param2 + MAP.effectsBMD.height * 0.5 - _loc8_ * 0.5), null, null, true);
             }
             catch (e:Error) {
             }
