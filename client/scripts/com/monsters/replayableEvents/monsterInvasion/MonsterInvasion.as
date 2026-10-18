@@ -181,6 +181,7 @@ package com.monsters.replayableEvents.monsterInvasion {
             this._isActive = false;
             this._curSend = [];
             this._internalWaveIndex = 0;
+            this._waitTimer = 0;
             this._currentAttackers = [];
             WMATTACK.setEnd();
         }
