@@ -30,6 +30,7 @@ import { MapRoomVersion } from "../../../enums/MapRoom.js";
 import { calculateBaseLevel } from "../../../services/base/calculateBaseLevel.js";
 import { MR1_TRIBE_IDS } from "../../../game-data/tribes/v1/index.js";
 import { scaledMR1Tribes } from "../../../services/maproom/v1/scaledMR1Tribes.js";
+import { lowersTownHall } from "../../../services/base/lowersTownHall.js";
 
 /**
  * Controller responsible for saving the user's base data.
@@ -69,6 +70,11 @@ export const baseSave: KoaController = async (ctx) => {
   if (!isOwner && baseSave.attackid === 0) throw permissionErr();
 
   await validateSave(user, baseSave, body);
+
+  const isOwnMainYard = isOwner && baseSave.type === BaseType.MAIN;
+  const losesTownHall = isOwnMainYard && lowersTownHall(baseSave.buildingdata, saveData.buildingdata);
+
+  if (losesTownHall) throw saveFailureErr();
 
   const storedHealthData = baseSave.buildinghealthdata;
 
