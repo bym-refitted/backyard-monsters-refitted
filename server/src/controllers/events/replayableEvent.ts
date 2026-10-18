@@ -1,3 +1,4 @@
+import { Event } from "../../database/models/event.model.js";
 import { User } from "../../database/models/user.model.js";
 import { Status } from "../../enums/StatusCodes.js";
 import { EventIdSchema, UpdateEventScoreSchema } from "../../schemas/ReplayableEventSchemas.js";
@@ -59,13 +60,14 @@ export const updateReplayableEventScore: KoaController = async (ctx) => {
 };
 
 /**
- * Returns the bases the player attacks during an AttackDefend event.
- * The client reads the response as an ordered list of `{ id, level }`,
- * and attacks the entry at the index of the number of bases it has destroyed.
+ * Returns the bases the player attacks during an event, as an ordered list of
+ * `{ id, level, destroyed }`. AttackDefend events attack the entry at the index of the
+ * number of bases destroyed; YardCrawl events attack the first one not yet destroyed.
  *
  * @param {Context} ctx - Koa context.
  */
 export const loadEventBases: KoaController = async (ctx) => {
+  const user: User = ctx.authUser;
   const { eventid } = EventIdSchema.parse(ctx.request.body);
 
   const scheduled = getActiveReplayableEvent(eventid);
@@ -76,7 +78,12 @@ export const loadEventBases: KoaController = async (ctx) => {
     return;
   }
 
-  const bases = getEventBases(scheduled.event);
+  const { event, start } = scheduled;
+  const where = { userid: user.userid, event, start_time: start };
+  
+  const progress = await postgres.em.findOne(Event, where);
+
+  const bases = getEventBases(event, progress);
 
   ctx.status = Status.OK;
   ctx.body = bases;

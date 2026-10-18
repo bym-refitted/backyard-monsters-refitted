@@ -371,7 +371,9 @@ package {
                         else if (isBuildMode && isMainYard && isAllowedPlatform) {
                             // This section handles pre-event timing for both WM1 and WM2
                             if (activeEvent == SPECIALEVENT_WM1) {
-                                if (SPECIALEVENT_WM1.invasionpop != 1) {
+                                // if (SPECIALEVENT_WM1.invasionpop != 1) {
+                                var isWMI1CountingDown:Boolean = SPECIALEVENT_WM1.invasionpop >= 1 && SPECIALEVENT_WM1.invasionpop <= 3;
+                                if (isWMI1CountingDown) {
                                     if (!_top.mcSpecialEvent.visible) {
                                         _top.mcSpecialEvent.visible = true;
                                     }
@@ -398,7 +400,9 @@ package {
                                 }
                             }
                             else if (activeEvent == SPECIALEVENT) {
-                                if (SPECIALEVENT.invasionpop >= 0 && SPECIALEVENT.invasionpop <= 3) {
+                                // if (SPECIALEVENT.invasionpop >= 0 && SPECIALEVENT.invasionpop <= 3) {
+                                var isWMI2CountingDown:Boolean = SPECIALEVENT.invasionpop >= 1 && SPECIALEVENT.invasionpop <= 3;
+                                if (isWMI2CountingDown) {
                                     if (!_top.mcSpecialEvent.visible) {
                                         _top.mcSpecialEvent.visible = true;
                                     }

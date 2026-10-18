@@ -70,7 +70,7 @@ export const EVENTS: Record<GameEvent, EventDefinition> = {
     countdownDays: 1,
     closingDays: 0,
     runDays: 6,
-    enabled: false,
+    enabled: true,
   },
   [GameEvent.MONSTER_BLITZKRIEG]: {
     replayableId: 2,

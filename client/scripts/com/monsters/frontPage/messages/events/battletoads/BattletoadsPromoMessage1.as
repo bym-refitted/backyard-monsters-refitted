@@ -4,7 +4,7 @@ package com.monsters.frontPage.messages.events.battletoads {
     public class BattletoadsPromoMessage1 extends ReplayableEventPromoMessage {
 
         public function BattletoadsPromoMessage1() {
-            super("event1pop1");
+            super("event1pop1", "", false);
             this.imageURL = _IMAGE_DIRECTORY + "fp_event1pop1.v2.jpg";
         }
     }

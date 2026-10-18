@@ -5,7 +5,7 @@ package com.monsters.frontPage.messages.events.battletoads {
     public class BattletoadsStartMessage extends KeywordMessage {
 
         public function BattletoadsStartMessage() {
-            super("event1start", "btn_attack");
+            super("event1start", "btn_attack", null, false);
             this.imageURL = _IMAGE_DIRECTORY + "fp_event1start.v2.jpg";
         }
 

@@ -1,4 +1,5 @@
 package com.monsters.replayableEvents.yardCrawl {
+    import com.monsters.ai.TRIBES;
     import com.monsters.events.AttackEvent;
     import com.monsters.maproom_manager.MapRoomManager;
     import com.monsters.replayableEvents.ReplayableEvent;
@@ -27,19 +28,33 @@ package com.monsters.replayableEvents.yardCrawl {
             ReplayableEventHandler.callServerMethod("loadbases", [["eventid", _id]], this.loadedBaseList);
         }
 
-        private function loadedBaseList(param1:Object):void {
-            var _loc3_:Object = null;
+        /**
+         * Builds the list of bases still to destroy from the server's base list, and works out
+         * the score from how many are destroyed. Each base is registered as an event base, as
+         * AttackDefend does, so its attack loads and saves through the event base path and
+         * ATTACK.EndB finds its tribe.
+         *
+         * @param bases - The event's bases, each `{ id, level, destroyed }`
+         */
+        private function loadedBaseList(bases:Object):void {
+            var base:Object = null;
+            var baseCount:uint = 0;
+
             this._intactBaseList = new Vector.<Object>();
-            var _loc2_:uint = 0;
-            for each (_loc3_ in param1) {
-                if (!(_loc3_ is Number)) {
-                    _loc2_++;
-                    if (!_loc3_.destroyed) {
-                        this._intactBaseList.push(_loc3_);
-                    }
-                }
+
+            for each (base in bases) {
+                if (base is Number)
+                    continue;
+
+                baseCount++;
+                BASE.addEventBaseException(base.id);
+                TRIBES.B_IDS.push(base.id);
+
+                if (!base.destroyed)
+                    this._intactBaseList.push(base);
             }
-            this._yardsToDestroy = _loc2_;
+
+            this._yardsToDestroy = baseCount;
             this.score = this._yardsToDestroy - this._intactBaseList.length;
             this._intactBaseList.sort(this.compareBaseID);
         }

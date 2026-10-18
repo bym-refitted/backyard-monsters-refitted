@@ -957,19 +957,24 @@ package {
                 }
             }
             else if (GLOBAL.mode == GLOBAL.e_BASE_MODE.WMATTACK || GLOBAL.mode == GLOBAL.e_BASE_MODE.IWMATTACK) {
+                // MAPROOM_DESCENT.InDescent is true for anyone who hasn't finished the Descent, so event bases
+                // check that the player is really attacking a Descent yard and are won by their Town Hall
+                var isDescentAttack:Boolean = isEventBaseAttack ? _loc3_ : MAPROOM_DESCENT.InDescent;
                 _loc8_ = InstanceManager.getInstancesByClass(BUILDING14);
                 for each (_loc9_ in _loc8_) {
                     if (_loc9_.health == 0 && _loc9_._repairing == 0 && (GLOBAL.mode == GLOBAL.e_BASE_MODE.WMATTACK || GLOBAL.mode == GLOBAL.e_BASE_MODE.IWMATTACK)) {
                         if (TRIBES.TribeForBaseID(BASE._wmID).id == 2) {
                             ACHIEVEMENTS.Check("wm2hall", 1);
                         }
-                        if (!MAPROOM_DESCENT.InDescent) {
+                        // if (!MAPROOM_DESCENT.InDescent) {
+                        if (!isDescentAttack)
                             _loc1_ = true;
-                        }
+
                         break;
                     }
                 }
-                if (_loc2_ >= BYMConfig.k_sVICTORY_THRESHOLD && MAPROOM_DESCENT.InDescent) {
+                // if (_loc2_ >= BYMConfig.k_sVICTORY_THRESHOLD && MAPROOM_DESCENT.InDescent) {
+                if (_loc2_ >= BYMConfig.k_sVICTORY_THRESHOLD && isDescentAttack) {
                     _loc1_ = true;
                 }
                 if (INFERNO_DESCENT_POPUPS.isInDescent()) {
