@@ -65,6 +65,10 @@ package com.monsters.rendering {
             this.renderer_friend::_canvas = canvas;
         }
 
+        public function invalidateGroundRegion(param1:Number, param2:Number, param3:Number, param4:Number):void {
+            this._groundCache.invalidateRegion(param1, param2, param3, param4);
+        }
+
         public function dispose():void {
             this._groundCache.dispose();
             if (this._alphaMask) {

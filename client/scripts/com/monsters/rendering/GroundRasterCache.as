@@ -34,6 +34,17 @@ package com.monsters.rendering {
             tileEntries.length = 0;
         }
 
+        public function invalidateRegion(param1:Number, param2:Number, param3:Number, param4:Number):void {
+            if (!dirtyTiles || param3 <= 0 || param4 <= 0) {
+                return;
+            }
+            var left:Number = Math.floor(param1);
+            var top:Number = Math.floor(param2);
+            var right:Number = Math.ceil(param1 + param3);
+            var bottom:Number = Math.ceil(param2 + param4);
+            markTileRange(left, top, right, bottom);
+        }
+
         // Returns the number of leading entries already drawn onto the target.
         public function render(entries:Vector.<RasterData>, renderer:Renderer, target:BitmapData):int {
             var baseEntry:RasterData = entries.length ? entries[0] : null;
@@ -210,10 +221,14 @@ package com.monsters.rendering {
         }
 
         private function markTilesDirty(bounds:Rectangle):void {
-            var firstColumn:int = Math.max(0, Math.floor(bounds.x / TILE_SIZE));
-            var firstRow:int = Math.max(0, Math.floor(bounds.y / TILE_SIZE));
-            var lastColumn:int = Math.min(tileColumns - 1, Math.floor((bounds.right - 1) / TILE_SIZE));
-            var lastRow:int = Math.min(tileRows - 1, Math.floor((bounds.bottom - 1) / TILE_SIZE));
+            markTileRange(bounds.x, bounds.y, bounds.right, bounds.bottom);
+        }
+
+        private function markTileRange(left:Number, top:Number, right:Number, bottom:Number):void {
+            var firstColumn:int = Math.max(0, Math.floor(left / TILE_SIZE));
+            var firstRow:int = Math.max(0, Math.floor(top / TILE_SIZE));
+            var lastColumn:int = Math.min(tileColumns - 1, Math.floor((right - 1) / TILE_SIZE));
+            var lastRow:int = Math.min(tileRows - 1, Math.floor((bottom - 1) / TILE_SIZE));
 
             for (var row:int = firstRow; row <= lastRow; ++row) {
                 for (var column:int = firstColumn; column <= lastColumn; ++column) {

@@ -263,11 +263,17 @@ package {
         }
 
         public static function get effectsBMD():BitmapData {
-            // Callers can edit the returned bitmap, so invalidate conservatively.
-            if (_effectsRasterData) {
-                _effectsRasterData.invalidate();
-            }
             return _EFFECTSBMP;
+        }
+
+        public static function copyEffects(param1:BitmapData, param2:Rectangle, param3:Point, param4:BitmapData = null, param5:Point = null, param6:Boolean = false):void {
+            if (!_EFFECTSBMP) {
+                return;
+            }
+            _EFFECTSBMP.copyPixels(param1, param2, param3, param4, param5, param6);
+            if (_instance && _instance._renderer) {
+                _instance._renderer.invalidateGroundRegion(param3.x, param3.y, param2.width, param2.height);
+            }
         }
 
         public static function get texture():String {
