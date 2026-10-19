@@ -16,6 +16,9 @@ package {
     import flash.events.TransformGestureEvent;
     import flash.geom.Point;
     import com.monsters.external_interface.ExternalInterfaceManager;
+    import com.monsters.enums.EnumPlayerType;
+    import flash.system.Capabilities;
+    import utils.DisplayScaler;
     public class GAME extends Sprite {
 
         public static var _instance:GAME;
@@ -34,7 +37,9 @@ package {
 
         private var _previousDistance:Number = 0;
 
-        private var _scaleFactor:Number = 1;
+        private static const MIN_ZOOM:Number = 1.5 / 1.8;
+
+        private static const MAX_ZOOM:Number = 3.5 / 1.8;
 
         public function GAME() {
             var urls:Object = null;
@@ -144,6 +149,7 @@ package {
             GLOBAL._layerMessages.mouseEnabled = false;
             GLOBAL._layerTop.mouseEnabled = false;
             GLOBAL.RefreshScreen();
+            resetMapZoom();
             if (urls.openbase) {
                 GLOBAL._openBase = JSON.parse(urls.openbase);
             }
@@ -177,22 +183,19 @@ package {
             if (MapRoomManager.instance.isOpen)
                 return;
 
-            const MIN_SCALE:Number = 1.5;
-            const MAX_SCALE:Number = 3.5;
+            const uiScale:Number = DisplayScaler.getUIScale();
 
-            var prevScale:Number = _scaleFactor;
+            var prevScale:Number = GLOBAL._layerMap.scaleX;
+            var scale:Number = Math.max(MIN_ZOOM * uiScale, Math.min(MAX_ZOOM * uiScale, prevScale * event.scaleX));
 
-            _scaleFactor *= event.scaleX;
-            _scaleFactor = Math.max(MIN_SCALE, Math.min(MAX_SCALE, _scaleFactor));
-
-            if (_scaleFactor == prevScale)
+            if (scale == prevScale)
                 return;
 
             var globalPoint:Point = new Point(event.stageX, event.stageY);
             var localBefore:Point = GLOBAL._layerMap.globalToLocal(globalPoint);
 
-            GLOBAL._layerMap.scaleX = _scaleFactor;
-            GLOBAL._layerMap.scaleY = _scaleFactor;
+            GLOBAL._layerMap.scaleX = scale;
+            GLOBAL._layerMap.scaleY = scale;
 
             var localAfter:Point = GLOBAL._layerMap.globalToLocal(globalPoint);
 
@@ -205,18 +208,34 @@ package {
             clampLayerMap();
         }
 
-        private function clampLayerMap():void {
-            const viewWidth:Number = stage.stageWidth;
-            const viewHeight:Number = stage.stageHeight;
+        /**
+         * Starts a freshly created map layer at the minimum zoom, centred on the screen, so every
+         * device opens a base with the same framing. AIR (Android) only.
+         */
+        public static function resetMapZoom():void {
+            if (Capabilities.playerType != EnumPlayerType.DESKTOP || !GLOBAL._layerMap || !GLOBAL._SCREENCENTER)
+                return;
 
-            const contentWidth:Number = GLOBAL._layerMap.width * GLOBAL._layerMap.scaleX;
-            const contentHeight:Number = GLOBAL._layerMap.height * GLOBAL._layerMap.scaleY;
+            DisplayScaler.init(GLOBAL._ROOT.stage);
+            const scale:Number = MIN_ZOOM * DisplayScaler.getUIScale();
 
-            const minX:Number = Math.min(0, viewWidth - contentWidth);
-            const minY:Number = Math.min(0, viewHeight - contentHeight);
+            GLOBAL._layerMap.scaleX = scale;
+            GLOBAL._layerMap.scaleY = scale;
+            GLOBAL._layerMap.x = GLOBAL._SCREENCENTER.x * (1 - scale);
+            GLOBAL._layerMap.y = GLOBAL._SCREENCENTER.y * (1 - scale);
+            clampLayerMap();
+        }
 
-            GLOBAL._layerMap.x = Math.min(0, Math.max(minX, GLOBAL._layerMap.x));
-            GLOBAL._layerMap.y = Math.min(0, Math.max(minY, GLOBAL._layerMap.y));
+        /**
+         * Keeps the zoomed map layer inside the unzoomed screen. MAP.Scroll keeps the map covering
+         * that screen, so the zoomed view never shows past the map's edges.
+         */
+        private static function clampLayerMap():void {
+            const screen:Rectangle = GLOBAL._SCREEN;
+            const scale:Number = GLOBAL._layerMap.scaleX;
+
+            GLOBAL._layerMap.x = Math.max((1 - scale) * screen.right, Math.min((1 - scale) * screen.x, GLOBAL._layerMap.x));
+            GLOBAL._layerMap.y = Math.max((1 - scale) * screen.bottom, Math.min((1 - scale) * screen.y, GLOBAL._layerMap.y));
         }
 
         protected function uncaughtErrorThrown(param1:UncaughtErrorEvent):void {

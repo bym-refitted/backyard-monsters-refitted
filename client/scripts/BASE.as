@@ -413,6 +413,7 @@ package {
             GLOBAL._ROOT.removeChild(GLOBAL._layerMessages);
             GLOBAL._ROOT.removeChild(GLOBAL._layerTop);
             GLOBAL._layerMap = GLOBAL._ROOT.addChild(new Sprite()) as Sprite;
+            GAME.resetMapZoom();
             GLOBAL._layerUI = GLOBAL._ROOT.addChild(new Sprite()) as Sprite;
             GLOBAL._layerWindows = GLOBAL._ROOT.addChild(new Sprite()) as Sprite;
             GLOBAL._layerMessages = GLOBAL._ROOT.addChild(new Sprite()) as Sprite;

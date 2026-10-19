@@ -1,5 +1,6 @@
 package {
     import com.monsters.configs.BYMConfig;
+    import com.monsters.enums.EnumPlayerType;
     import com.monsters.input.KeyboardInputHandler;
     import com.monsters.maproom_manager.MapRoomManager;
     import com.monsters.monsters.MonsterBase;
@@ -8,11 +9,14 @@ package {
     import flash.display.Bitmap;
     import flash.display.BitmapData;
     import flash.display.DisplayObject;
+    import flash.display.Graphics;
     import flash.display.MovieClip;
+    import flash.display.Shape;
     import flash.display.Sprite;
     import flash.display.Stage;
     import flash.events.*;
     import flash.geom.*;
+    import flash.system.Capabilities;
     import flash.utils.Timer;
     import flash.utils.getTimer;
     import gs.*;
@@ -51,6 +55,12 @@ package {
         public static var _dragDistance:Number;
 
         private static var _dragHitArea:Sprite;
+
+        private static var _outerGround:Shape;
+
+        private static var _outerGroundTile:BitmapData;
+
+        private static const OUTER_GROUND_MARGIN:int = 8192;
 
         public static var _EFFECTSBMP:BitmapData;
 
@@ -154,6 +164,12 @@ package {
             _viewRect.width = GLOBAL._SCREEN.width;
             _viewRect.height = GLOBAL._SCREEN.height;
             _GROUND = GLOBAL._layerMap.addChild(new Sprite()) as Sprite;
+            // AIR (Android) clamps pinch-zoom panning to _layerMap's size, which counts hidden children,
+            // and its zoomed-in view never reaches past the map anyway.
+            if (Capabilities.playerType != EnumPlayerType.DESKTOP) {
+                _outerGround = _GROUND.addChild(new Shape()) as Shape;
+                _outerGround.visible = false;
+            }
             // A cheap mouse target while panning, preserving ground mouse-up handlers.
             _dragHitArea = new Sprite();
             _dragHitArea.graphics.beginFill(0);
@@ -291,6 +307,7 @@ package {
                 }
             }
             _bmdTile = MAPBG.MakeTile(s_texture);
+            drawOuterGround(_bmdTile);
             var _loc2_:Array = [];
             var _loc6_:Point = new Point();
             if (BYMConfig.instance.RENDERER_ON) {
@@ -323,6 +340,35 @@ package {
                     _loc4_++;
                 }
             }
+        }
+
+        /**
+         * Fills a frame around the map with the ground tile, in the same phase as the map's
+         * own tiling, so the ground continues seamlessly past the map's edges. The frame
+         * leaves a hole over the map, so the map's pixels are never drawn twice.
+         *
+         * @param {BitmapData} tile - The ground tile the map was built from
+         */
+        private static function drawOuterGround(tile:BitmapData):void {
+            if (!_outerGround || !tile)
+                return;
+
+            if (_outerGroundTile)
+                _outerGroundTile.dispose();
+
+            _outerGroundTile = new BitmapData(tile.width, tile.height, false, 0);
+            _outerGroundTile.copyPixels(tile, tile.rect, new Point());
+
+            var left:Number = -(MAP_WIDTH >>> 1);
+            var top:Number = -(MAP_HEIGHT >>> 1);
+            var phase:Matrix = BYMConfig.instance.RENDERER_ON ? new Matrix(1, 0, 0, 1, left, top) : new Matrix(1, 0, 0, 1, -1996, -996);
+            var fill:Graphics = _outerGround.graphics;
+
+            fill.clear();
+            fill.beginBitmapFill(_outerGroundTile, phase, true, false);
+            fill.drawRect(left - OUTER_GROUND_MARGIN, top - OUTER_GROUND_MARGIN, MAP_WIDTH + OUTER_GROUND_MARGIN * 2, MAP_HEIGHT + OUTER_GROUND_MARGIN * 2);
+            fill.drawRect(left, top, MAP_WIDTH, MAP_HEIGHT);
+            fill.endFill();
         }
 
         public static function swapIntBG(param1:int):void {
@@ -391,6 +437,11 @@ package {
             if (_bmdTile) {
                 _bmdTile.dispose();
             }
+            if (_outerGroundTile) {
+                _outerGroundTile.dispose();
+            }
+            _outerGround = null;
+            _outerGroundTile = null;
             if (_canvas) {
                 _canvas.dispose();
             }
@@ -625,8 +676,15 @@ package {
             else if (_dragging && UI2._scrollMap && !_autoScroll && _canScroll) {
                 _loc15_ = stage.mouseX;
                 _loc16_ = stage.mouseY;
-                tx = _loc15_ - _dragX >> 0;
-                ty = _loc16_ - _dragY >> 0;
+                if (Capabilities.playerType == EnumPlayerType.DESKTOP) {
+                    // Pinch zoom scales the map layer, so move the map by the finger's distance in map units.
+                    tx = _startX + (_loc15_ - (_dragX + _startX)) / GLOBAL._layerMap.scaleX >> 0;
+                    ty = _startY + (_loc16_ - (_dragY + _startY)) / GLOBAL._layerMap.scaleY >> 0;
+                }
+                else {
+                    tx = _loc15_ - _dragX >> 0;
+                    ty = _loc16_ - _dragY >> 0;
+                }
                 _loc17_ = _loc15_ - (_dragX + _startX);
                 _loc18_ = _loc16_ - (_dragY + _startY);
                 _dragDistance = Math.abs(_loc17_ * _loc17_ + _loc18_ * _loc18_);
@@ -638,42 +696,55 @@ package {
                     }
                 }
             }
-            var _loc2_:int = GLOBAL._ROOT.stage.stageWidth;
-            var _loc3_:int = GLOBAL._ROOT.stage.stageHeight;
-            var _loc4_:int = -1615;
-            var _loc5_:int = 2375;
-            var _loc6_:int = -650;
-            var _loc7_:int = 1325;
-            var _loc8_:int = 670;
-            var _loc9_:int = 760;
-            var _loc10_:int = _loc5_ - (_loc2_ >> 1);
-            var _loc11_:Number = 2;
-            if (GLOBAL._zoomed) {
-                _loc10_ = (_loc5_ - _loc2_ + _loc9_ / _loc11_) / _loc11_;
+            if (Capabilities.playerType == EnumPlayerType.DESKTOP) {
+                // Pinch zoom shows only part of the screen, so keep the part actually visible
+                // inside the same map edges the original limits use (x +-1995, y -990 to 985).
+                var layer:Sprite = GLOBAL._layerMap;
+                var viewLeft:Number = (GLOBAL._SCREEN.x - layer.x) / layer.scaleX;
+                var viewTop:Number = (GLOBAL._SCREEN.y - layer.y) / layer.scaleY;
+                var viewRight:Number = (GLOBAL._SCREEN.right - layer.x) / layer.scaleX;
+                var viewBottom:Number = (GLOBAL._SCREEN.bottom - layer.y) / layer.scaleY;
+                tx = Math.max(viewRight - 1995, Math.min(viewLeft + 1995, tx));
+                ty = Math.max(viewBottom - 985, Math.min(viewTop + 990, ty));
             }
-            if (tx > _loc10_) {
-                tx = _loc10_;
-            }
-            _loc10_ = _loc4_ + (_loc2_ >> 1);
-            if (GLOBAL._zoomed) {
-                _loc10_ = (_loc4_ + _loc2_ + _loc9_ / _loc11_) / _loc11_;
-            }
-            if (tx < _loc10_) {
-                tx = _loc10_;
-            }
-            _loc10_ = _loc6_ + (_loc3_ >> 1);
-            if (GLOBAL._zoomed) {
-                _loc10_ = (_loc6_ + _loc3_ + _loc8_ / _loc11_) / _loc11_;
-            }
-            if (ty < _loc10_) {
-                ty = _loc10_;
-            }
-            _loc10_ = _loc7_ - (_loc3_ >> 1);
-            if (GLOBAL._zoomed) {
-                _loc10_ = (_loc7_ - _loc3_ + _loc8_ / _loc11_) / _loc11_;
-            }
-            if (ty > _loc10_) {
-                ty = _loc10_;
+            else {
+                var _loc2_:int = GLOBAL._ROOT.stage.stageWidth;
+                var _loc3_:int = GLOBAL._ROOT.stage.stageHeight;
+                var _loc4_:int = -1615;
+                var _loc5_:int = 2375;
+                var _loc6_:int = -650;
+                var _loc7_:int = 1325;
+                var _loc8_:int = 670;
+                var _loc9_:int = 760;
+                var _loc10_:int = _loc5_ - (_loc2_ >> 1);
+                var _loc11_:Number = 2;
+                if (GLOBAL._zoomed) {
+                    _loc10_ = (_loc5_ - _loc2_ + _loc9_ / _loc11_) / _loc11_;
+                }
+                if (tx > _loc10_) {
+                    tx = _loc10_;
+                }
+                _loc10_ = _loc4_ + (_loc2_ >> 1);
+                if (GLOBAL._zoomed) {
+                    _loc10_ = (_loc4_ + _loc2_ + _loc9_ / _loc11_) / _loc11_;
+                }
+                if (tx < _loc10_) {
+                    tx = _loc10_;
+                }
+                _loc10_ = _loc6_ + (_loc3_ >> 1);
+                if (GLOBAL._zoomed) {
+                    _loc10_ = (_loc6_ + _loc3_ + _loc8_ / _loc11_) / _loc11_;
+                }
+                if (ty < _loc10_) {
+                    ty = _loc10_;
+                }
+                _loc10_ = _loc7_ - (_loc3_ >> 1);
+                if (GLOBAL._zoomed) {
+                    _loc10_ = (_loc7_ - _loc3_ + _loc8_ / _loc11_) / _loc11_;
+                }
+                if (ty > _loc10_) {
+                    ty = _loc10_;
+                }
             }
             d = 2;
             targX = _GROUND.x;
@@ -754,6 +825,9 @@ package {
                 return;
             }
             _viewRect.setTo(x, y, width, height);
+            if (_outerGround) {
+                _outerGround.visible = x + padding < 0 || y + padding < 0 || x + width > MAP_WIDTH || y + height > MAP_HEIGHT;
+            }
             // Visibility depends on these bounds, including after restoring the yard.
             BFOUNDATION.updateAllRasterData();
         }
