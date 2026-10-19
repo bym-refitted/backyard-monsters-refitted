@@ -1,0 +1,114 @@
+# Runs the Backyard Monsters Refitted server from the published image, without cloning the repo.
+#
+#   1. Put this file in an empty folder, next to a .env file (see below).
+#   2. docker compose -f docker-compose.selfhost.yml up -d
+#   3. To update: docker compose -f docker-compose.selfhost.yml pull && docker compose -f docker-compose.selfhost.yml up -d
+#
+# Minimal .env:
+#
+#   SECRET_KEY=<a long random string, e.g. from: openssl rand -hex 32>
+#   DB_PASSWORD=<a strong password>
+#   BASE_URL=http://<your server's public IP or domain>
+#   CHAT_WS_HOST=<your server's public IP or domain>:3010
+#
+# Optional: BYMR_VERSION (image tag: latest, edge, or a release such as 1.8.7-beta), ENV,
+# API_PORT, CHAT_WS_PORT, CDN_URL, USE_VERSION_MANAGEMENT, SESSION_LIFETIME, WEB_URL,
+# DISCORD_TOKEN, SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASSWORD.
+#
+# ENV=local (the default) skips JWT signature checks, so treat it as a private server.
+# ENV=production verifies tokens but requires players to link a Discord account to log in,
+# which needs DISCORD_TOKEN.
+name: bymr
+
+volumes:
+  db:
+
+networks:
+  bymr:
+
+x-server: &server
+  image: ghcr.io/bym-refitted/bymr-server:${BYMR_VERSION:-latest}
+  networks:
+    - bymr
+  environment:
+    ENV: ${ENV:-local}
+    BASE_URL: ${BASE_URL:?Set BASE_URL in .env to your server's public address}
+    PORT: 3001
+    SECRET_KEY: ${SECRET_KEY:?Set SECRET_KEY in .env to a long random string}
+    SESSION_LIFETIME: ${SESSION_LIFETIME:-30d}
+    DB_NAME: ${DB_NAME:-bym}
+    DB_HOST: db
+    DB_PORT: 5432
+    DB_USER: ${DB_USER:-postgres}
+    DB_PASSWORD: ${DB_PASSWORD:?Set DB_PASSWORD in .env}
+    REDIS_URL: redis://redis:6379
+    CDN_URL: ${CDN_URL:-}
+    USE_VERSION_MANAGEMENT: ${USE_VERSION_MANAGEMENT:-disabled}
+    CHAT_WS_PORT: ${CHAT_WS_PORT:-3010}
+    CHAT_WS_HOST: ${CHAT_WS_HOST:?Set CHAT_WS_HOST in .env to your server's public address and chat port}
+    WEB_URL: ${WEB_URL:-}
+    DISCORD_TOKEN: ${DISCORD_TOKEN:-}
+    SMTP_HOST: ${SMTP_HOST:-}
+    SMTP_PORT: ${SMTP_PORT:-}
+    SMTP_USER: ${SMTP_USER:-}
+    SMTP_PASSWORD: ${SMTP_PASSWORD:-}
+
+services:
+  # Creates the schema and runs migrations, then exits
+  db-init:
+    <<: *server
+    command: bun run db:init
+    restart: "no"
+    depends_on:
+      db:
+        condition: service_healthy
+
+  # API server
+  web:
+    <<: *server
+    container_name: bymr-api-server
+    restart: unless-stopped
+    ports:
+      - ${API_PORT:-3001}:3001
+      - ${CHAT_WS_PORT:-3010}:${CHAT_WS_PORT:-3010}
+      - 843:843
+    depends_on:
+      redis:
+        condition: service_healthy
+      db:
+        condition: service_healthy
+      db-init:
+        condition: service_completed_successfully
+
+  # Database (not exposed to the host)
+  db:
+    image: postgres:18.1
+    container_name: bymr-database
+    restart: unless-stopped
+    environment:
+      - POSTGRES_DB=${DB_NAME:-bym}
+      - POSTGRES_USER=${DB_USER:-postgres}
+      - POSTGRES_PASSWORD=${DB_PASSWORD:?Set DB_PASSWORD in .env}
+    networks:
+      - bymr
+    volumes:
+      - db:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-postgres} -d ${DB_NAME:-bym}"]
+      start_period: 10s
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  # Redis (not exposed to the host)
+  redis:
+    image: redis:8.10.1
+    container_name: bymr-redis-cache
+    restart: unless-stopped
+    networks:
+      - bymr
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 3

@@ -12,8 +12,6 @@ networks:
 services:
   # Database initialization service (runs once, then exits)
   db-init:
-    # To run a published image instead of building from source, replace build with:
-    #   image: ghcr.io/bym-refitted/bymr-server:latest
     build: .
     environment:
       - DB_NAME=${DB_NAME:-bym}
@@ -31,8 +29,6 @@ services:
 
   # API server
   web:
-    # To run a published image instead of building from source, replace build with:
-    #   image: ghcr.io/bym-refitted/bymr-server:latest
     build: .
     container_name: bymr-api-server
     restart: unless-stopped
