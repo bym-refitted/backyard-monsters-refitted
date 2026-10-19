@@ -8,7 +8,9 @@ package {
     import flash.display.Bitmap;
     import flash.display.BitmapData;
     import flash.display.DisplayObject;
+    import flash.display.Graphics;
     import flash.display.MovieClip;
+    import flash.display.Shape;
     import flash.display.Sprite;
     import flash.display.Stage;
     import flash.events.*;
@@ -51,6 +53,12 @@ package {
         public static var _dragDistance:Number;
 
         private static var _dragHitArea:Sprite;
+
+        private static var _outerGround:Shape;
+
+        private static var _outerGroundTile:BitmapData;
+
+        private static const OUTER_GROUND_MARGIN:int = 8192;
 
         public static var _EFFECTSBMP:BitmapData;
 
@@ -153,6 +161,8 @@ package {
                 _viewRect.width = GLOBAL._SCREEN.width;
                 _viewRect.height = GLOBAL._SCREEN.height;
                 _GROUND = GLOBAL._layerMap.addChild(new Sprite()) as Sprite;
+                _outerGround = _GROUND.addChild(new Shape()) as Shape;
+                _outerGround.visible = false;
                 // A cheap mouse target while panning, preserving ground mouse-up handlers.
                 _dragHitArea = new Sprite();
                 _dragHitArea.graphics.beginFill(0);
@@ -298,6 +308,7 @@ package {
                 }
             }
             _bmdTile = MAPBG.MakeTile(s_texture);
+            drawOuterGround(_bmdTile);
             var _loc2_:Array = [];
             var _loc6_:Point = new Point();
             if (BYMConfig.instance.RENDERER_ON) {
@@ -330,6 +341,35 @@ package {
                     _loc4_++;
                 }
             }
+        }
+
+        /**
+         * Fills a frame around the map with the ground tile, in the same phase as the map's
+         * own tiling, so the ground continues seamlessly past the map's edges. The frame
+         * leaves a hole over the map, so the map's pixels are never drawn twice.
+         *
+         * @param {BitmapData} tile - The ground tile the map was built from
+         */
+        private static function drawOuterGround(tile:BitmapData):void {
+            if (!_outerGround || !tile)
+                return;
+
+            if (_outerGroundTile)
+                _outerGroundTile.dispose();
+
+            _outerGroundTile = new BitmapData(tile.width, tile.height, false, 0);
+            _outerGroundTile.copyPixels(tile, tile.rect, new Point());
+
+            var left:Number = -(MAP_WIDTH >>> 1);
+            var top:Number = -(MAP_HEIGHT >>> 1);
+            var phase:Matrix = BYMConfig.instance.RENDERER_ON ? new Matrix(1, 0, 0, 1, left, top) : new Matrix(1, 0, 0, 1, -1996, -996);
+            var fill:Graphics = _outerGround.graphics;
+
+            fill.clear();
+            fill.beginBitmapFill(_outerGroundTile, phase, true, false);
+            fill.drawRect(left - OUTER_GROUND_MARGIN, top - OUTER_GROUND_MARGIN, MAP_WIDTH + OUTER_GROUND_MARGIN * 2, MAP_HEIGHT + OUTER_GROUND_MARGIN * 2);
+            fill.drawRect(left, top, MAP_WIDTH, MAP_HEIGHT);
+            fill.endFill();
         }
 
         public static function swapIntBG(param1:int):void {
@@ -398,6 +438,11 @@ package {
             if (_bmdTile) {
                 _bmdTile.dispose();
             }
+            if (_outerGroundTile) {
+                _outerGroundTile.dispose();
+            }
+            _outerGround = null;
+            _outerGroundTile = null;
             if (_canvas) {
                 _canvas.dispose();
             }
@@ -757,6 +802,9 @@ package {
                 return;
             }
             _viewRect.setTo(x, y, width, height);
+            if (_outerGround) {
+                _outerGround.visible = x + padding < 0 || y + padding < 0 || x + width > MAP_WIDTH || y + height > MAP_HEIGHT;
+            }
             // Visibility depends on these bounds, including after restoring the yard.
             BFOUNDATION.updateAllRasterData();
         }
