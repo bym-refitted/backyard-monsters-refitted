@@ -16,9 +16,13 @@ import { sessionTokenKey, type JwtClaims, verifyJwtToken } from "../../middlewar
 import { Status } from "../../enums/StatusCodes.js";
 import { UserLoginSchema } from "../../schemas/AuthSchemas.js";
 import { Env } from "../../enums/Env.js";
+import { SessionType } from "../../enums/SessionType.js";
 import { fetchDiscordAvatar } from "../../services/discord/fetchDiscordAvatar.js";
 
 type SessionLifetime = NonNullable<SignOptions["expiresIn"]>;
+
+/** Launcher and website tokens with less than this many seconds left are renewed rather than reused. */
+const RENEW_WITHIN_SECONDS = 7 * 24 * 60 * 60;
 
 /**
  * Authenticates a user using a JWT token.
@@ -28,8 +32,9 @@ type SessionLifetime = NonNullable<SignOptions["expiresIn"]>;
  * If the token is invalid or the user does not exist, it throws an authentication failure error.
  *
  * @param {string} token - The token presented by the client.
- * @returns {Promise<{ userRecord: User; sessionId: string }>} - The user, and the session the
- * token belongs to so that signing back in renews that device rather than opening another.
+ * @returns {Promise<{ userRecord: User; sessionId: string; sessionType: SessionType }>} - The user,
+ * the session the token belongs to so that signing back in renews that device rather than opening
+ * another, and the session type the token was issued for.
  * @throws {Error} - Throws an error if the token is invalid or the user does not exist.
  */
 const authenticateWithToken = async (token: string) => {
@@ -45,7 +50,7 @@ const authenticateWithToken = async (token: string) => {
 
   const sessionId = user.sessionId;
 
-  return { userRecord, sessionId };
+  return { userRecord, sessionId, sessionType: user.sessionType };
 };
 
 /**
@@ -62,10 +67,25 @@ const sessionTtlSeconds = (token: string): number => {
 };
 
 /**
+ * Whether a token login can hand back the token it was given instead of signing a new one.
+ * Game sessions are always renewed, since a new game token is what evicts an older game client.
+ *
+ * @param {string} token - The verified token the client signed in with.
+ * @param {SessionType} tokenSessionType - The session type the token was issued for.
+ * @param {SessionType} sessionType - The session type the client is signing in to.
+ * @returns {boolean} True when the token can be returned as it is.
+ */
+const canReuseToken = (token: string, tokenSessionType: SessionType, sessionType: SessionType): boolean =>
+  sessionType !== SessionType.GAME &&
+  tokenSessionType === sessionType &&
+  sessionTtlSeconds(token) > RENEW_WITHIN_SECONDS;
+
+/**
  * Controller to handle user login.
  *
  * This controller authenticates a user based on either their email & password, or token.
- * The token is stored in Redis for each login request, to later be validated in the middleware.
+ * A new token is stored in Redis to later be validated in the middleware, except when a launcher or
+ * website signs in with a token that is still far from expiry, which is handed back unchanged.
  * Additionally, the controller checks if the user is banned or has verified their Discord account.
  * The token signature is then constructed with the user's email and Discord ID, along with a flag
  * indicating if the user meets the Discord age check requirement.
@@ -78,6 +98,7 @@ export const login: KoaController = async (ctx) => {
   let { email, password, token, sessionType } = UserLoginSchema.parse(ctx.request.body);
   let user: User | null = null;
   let sessionId: string | undefined;
+  let reusableToken: string | undefined;
 
   if (token) {
     try {
@@ -85,6 +106,10 @@ export const login: KoaController = async (ctx) => {
 
       user = authenticated.userRecord;
       sessionId = authenticated.sessionId;
+
+      const reuse = canReuseToken(token, authenticated.sessionType, sessionType);
+
+      if (reuse) reusableToken = token;
     } catch (err) {
       if (!email || !password) throw err;
       logger.warn(`Token login failed: ${(err as Error).message}`);
@@ -115,23 +140,27 @@ export const login: KoaController = async (ctx) => {
     if (discordId) fetchDiscordAvatar(user.userid, discordId);
   }
 
-  const newToken = JWT.sign(
-    {
-      user: {
-        email: user.email,
-        discordId,
-        sessionType,
-        sessionId,
-      },
-    } satisfies JwtClaims,
-    process.env.SECRET_KEY!,
-    {
-      expiresIn: sessionLifeTime as SessionLifetime,
-    }
-  );
+  let newToken = reusableToken;
 
-  const tokenTtl = sessionTtlSeconds(newToken);
-  await redis.setex(sessionTokenKey(sessionType, user.email, sessionId), tokenTtl, newToken);
+  if (!newToken) {
+    newToken = JWT.sign(
+      {
+        user: {
+          email: user.email,
+          discordId,
+          sessionType,
+          sessionId,
+        },
+      } satisfies JwtClaims,
+      process.env.SECRET_KEY!,
+      {
+        expiresIn: sessionLifeTime as SessionLifetime,
+      }
+    );
+
+    const tokenTtl = sessionTtlSeconds(newToken);
+    await redis.setex(sessionTokenKey(sessionType, user.email, sessionId), tokenTtl, newToken);
+  }
 
   postgres.em.persist(user);
   await postgres.em.flush();
