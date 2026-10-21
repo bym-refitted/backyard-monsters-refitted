@@ -38,8 +38,9 @@ export class AttackLogs {
   @Property({ columnType: "jsonb", nullable: true })
   loot?: JsonObject = {};
 
+  // HTML from the client, stored as a JSON string
   @Property({ columnType: "jsonb", nullable: true })
-  attackreport: JsonObject = {};
+  attackreport: string = "";
 
   @Property({ type: Date })
   attacktime: Date = new Date();
