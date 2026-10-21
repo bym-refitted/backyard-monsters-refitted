@@ -1234,6 +1234,8 @@ package {
                 if (_render) {
                     _loc3_ = Number(getTimer());
                     _loc4_ = lastTime ? _loc3_ - lastTime : 0;
+                    // _local: AIR getTimer() advances while backgrounded; discard resume gaps.
+                    // Otherwise treat as TimeHax (original Flash anti-cheat).
                     if (lastTime && _loc4_ > TIME_ELAPSED_THRESHHOLD && !_aiDesignMode) {
                         if (_local) {
                             _loops = 2;
