@@ -18,6 +18,7 @@ package {
     import com.monsters.external_interface.ExternalInterfaceManager;
     import com.monsters.enums.EnumPlayerType;
     import flash.system.Capabilities;
+    import flash.utils.getTimer;
     import utils.DisplayScaler;
     public class GAME extends Sprite {
 
@@ -90,6 +91,29 @@ package {
             GLOBAL.CallJS("cc.enableMouseWheel");
         }
 
+        public static function persistToken(nextToken:String):void {
+            try {
+                if (!sharedObj) {
+                    sharedObj = SharedObject.getLocal("bymr_data", "/");
+                }
+                token = nextToken ? nextToken : "";
+                if (token) {
+                    sharedObj.data.token = token;
+                }
+                else {
+                    delete sharedObj.data.token;
+                }
+                sharedObj.flush();
+            }
+            catch (e:Error) {
+                LOGGER.Log("err", "Error persisting auth token: " + e.message);
+            }
+        }
+
+        public static function clearPersistedToken():void {
+            persistToken("");
+        }
+
         public function setLauncherVars(params:Object):void {
             try {
                 sharedObj = SharedObject.getLocal("bymr_data", "/");
@@ -102,6 +126,9 @@ package {
                 if (params && params.token) {
                     token = params.token;
                     sharedObj.data.token = token;
+                }
+                else if (sharedObj.data.token) {
+                    token = String(sharedObj.data.token);
                 }
                 sharedObj.flush();
             }
@@ -162,6 +189,9 @@ package {
             Multitouch.inputMode = MultitouchInputMode.GESTURE;
             stage.addEventListener(TransformGestureEvent.GESTURE_ZOOM, onZoom);
 
+            stage.addEventListener(Event.ACTIVATE, onAppActivate);
+            stage.addEventListener(Event.DEACTIVATE, onAppDeactivate);
+
             LOGIN.Login();
             stage.scaleMode = StageScaleMode.NO_SCALE;
             stage.addEventListener(Event.RESIZE, GLOBAL.ResizeGame);
@@ -177,6 +207,14 @@ package {
                     GLOBAL._SCREENINIT = new Rectangle(0, 0, 760, 750);
                 }
             }
+        }
+
+        private function onAppActivate(event:Event):void {
+            GLOBAL.lastTime = getTimer();
+        }
+
+        private function onAppDeactivate(event:Event):void {
+            GLOBAL.lastTime = getTimer();
         }
 
         private function onZoom(event:TransformGestureEvent):void {
