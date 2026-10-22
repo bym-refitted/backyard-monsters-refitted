@@ -6,6 +6,8 @@ package com.monsters.maproom_advanced {
     import flash.display.Bitmap;
     import flash.display.BitmapData;
     import flash.display.DisplayObject;
+    import flash.display.DisplayObjectContainer;
+    import flash.display.Loader;
     import flash.display.MovieClip;
     import flash.events.MouseEvent;
     import flash.geom.Point;
@@ -148,6 +150,9 @@ package com.monsters.maproom_advanced {
                 };
             this.testAllianceIDs = [1, 2, 3, 102, 111];
             super();
+            mc.mcPlayer.stop();
+            mc.mcPlayer.mcFlag2.stop();
+            mc.mcPlayer.mcLevel.stop();
             mc.mcHit.addEventListener(MouseEvent.MOUSE_OVER, this.Over);
             mc.mcHit.addEventListener(MouseEvent.MOUSE_OUT, this.Out);
             mc.mcHit.addEventListener(MouseEvent.MOUSE_UP, this.Click);
@@ -171,6 +176,8 @@ package com.monsters.maproom_advanced {
             mc.mcEdges.visible = false;
             mc.mcPrompt.enabled = false;
             mc.mcPrompt.visible = false;
+            mc.mcPrompt.bYes.stop();
+            mc.mcPrompt.bNo.stop();
         }
 
         public function set alliance(param1:AllyInfo):void {
@@ -900,11 +907,29 @@ package com.monsters.maproom_advanced {
         }
 
         public function Cleanup():void {
+            this.StopTimelines();
             mc.mcHit.removeEventListener(MouseEvent.MOUSE_OVER, this.Over);
             mc.mcHit.removeEventListener(MouseEvent.MOUSE_OUT, this.Out);
             mc.mcHit.removeEventListener(MouseEvent.MOUSE_UP, this.Click);
             this._allianceID = 0;
             this._alliance = null;
+        }
+
+        internal function StopTimelines():void {
+            StopChildTimelines(this);
+        }
+
+        private static function StopChildTimelines(object:DisplayObject):void {
+            var clip:MovieClip = object as MovieClip;
+            if (clip) {
+                clip.stop();
+            }
+            var container:DisplayObjectContainer = object as DisplayObjectContainer;
+            if (container && !(container is Loader)) {
+                for (var i:int = 0; i < container.numChildren; i++) {
+                    StopChildTimelines(container.getChildAt(i));
+                }
+            }
         }
 
         private function SecureMonsterData():void {

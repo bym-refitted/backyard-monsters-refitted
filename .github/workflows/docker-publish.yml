@@ -1,0 +1,126 @@
+# Builds the API server image (server/Dockerfile) and publishes it to GitHub Container Registry.
+#
+#   Release tag v1.8.6-beta    -> ghcr.io/bym-refitted/bymr-server:1.8.6-beta and :latest
+#   Push to main under server/ -> ghcr.io/bym-refitted/bymr-server:edge and :sha-<commit>
+#   Manual run on a branch     -> ghcr.io/bym-refitted/bymr-server:<branch>, for testing
+#
+# Each architecture builds on its own native runner, then the merge job joins them into one
+# multi-arch tag, so amd64 and arm64 hosts pull the same image name.
+name: Publish server image
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+    paths:
+      - "server/**"
+      - ".github/workflows/docker-publish.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: docker-publish-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref_type == 'branch' }}
+
+permissions:
+  contents: read
+  packages: write
+
+env:
+  IMAGE: ghcr.io/${{ github.repository_owner }}/bymr-server
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        include:
+          - platform: linux/amd64
+            runner: ubuntu-24.04
+          - platform: linux/arm64
+            runner: ubuntu-24.04-arm
+    runs-on: ${{ matrix.runner }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - id: arch
+        run: echo "name=${PLATFORM#linux/}" >> "$GITHUB_OUTPUT"
+        env:
+          PLATFORM: ${{ matrix.platform }}
+
+      - uses: docker/setup-buildx-action@v3
+
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.IMAGE }}
+
+      - id: build
+        uses: docker/build-push-action@v6
+        with:
+          context: server
+          platforms: ${{ matrix.platform }}
+          labels: ${{ steps.meta.outputs.labels }}
+          outputs: type=image,name=${{ env.IMAGE }},push-by-digest=true,name-canonical=true,push=true
+          cache-from: type=gha,scope=${{ steps.arch.outputs.name }}
+          cache-to: type=gha,scope=${{ steps.arch.outputs.name }},mode=max
+
+      - name: Export digest
+        run: |
+          mkdir -p "$RUNNER_TEMP/digests"
+          touch "$RUNNER_TEMP/digests/${DIGEST#sha256:}"
+        env:
+          DIGEST: ${{ steps.build.outputs.digest }}
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: digest-${{ steps.arch.outputs.name }}
+          path: ${{ runner.temp }}/digests/*
+          if-no-files-found: error
+          retention-days: 1
+
+  merge:
+    needs: build
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: ${{ runner.temp }}/digests
+          pattern: digest-*
+          merge-multiple: true
+
+      - uses: docker/setup-buildx-action@v3
+
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.IMAGE }}
+          flavor: latest=false
+          tags: |
+            type=match,pattern=v(.*),group=1
+            type=raw,value=latest,enable=${{ github.ref_type == 'tag' }}
+            type=edge,branch=main
+            type=sha,enable=${{ github.ref == 'refs/heads/main' }}
+            type=ref,event=branch,enable=${{ github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main' }}
+
+      - name: Create multi-arch tags
+        working-directory: ${{ runner.temp }}/digests
+        run: |
+          docker buildx imagetools create \
+            $(jq -cr '.tags | map("-t " + .) | join(" ")' <<< "$DOCKER_METADATA_OUTPUT_JSON") \
+            --annotation "index:org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}" \
+            --annotation "index:org.opencontainers.image.description=Backyard Monsters Refitted API server" \
+            $(printf '${{ env.IMAGE }}@sha256:%s ' *)
+
+      - name: Inspect image
+        run: docker buildx imagetools inspect "${{ env.IMAGE }}:${{ steps.meta.outputs.version }}"

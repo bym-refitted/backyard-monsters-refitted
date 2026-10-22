@@ -90,9 +90,12 @@ export const ErrorInterceptor = async (ctx: Context, next: Next) => {
       });
     }
 
-    console.error(
-      `ErrorInterceptor error: ${errorObj.message} | status: ${errorObj.status}`
-    );
+    logger.warn("{message} ({status}) on {method} {path}", {
+      message: errorObj.message,
+      status: errorObj.status,
+      method: ctx.method,
+      path: ctx.path,
+    });
 
     // Put me in jail for my sins - this is bad to accomdate for the client
     ctx.status = errorObj.error ? Status.OK : errorObj.status;

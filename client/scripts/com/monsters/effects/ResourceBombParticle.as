@@ -264,7 +264,7 @@ package com.monsters.effects {
             }
             if (BYMConfig.instance.RENDERER_ON) {
                 if (this.m_resourceId !== k_TYPE_TWIGS && MAP.effectsBMD && this.bmd_frame && this.m_rasterPt) {
-                    MAP.effectsBMD.copyPixels(this.bmd_frame, this.bmd_frame.rect, this.m_rasterPt);
+                    MAP.copyEffects(this.bmd_frame, this.bmd_frame.rect, this.m_rasterPt);
                 }
                 if (this.m_rasterData) {
                     this.m_rasterData.clear();

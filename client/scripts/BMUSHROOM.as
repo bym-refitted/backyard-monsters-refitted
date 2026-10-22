@@ -42,6 +42,10 @@ package {
                 _rasterData[_RASTERDATA_SHADOW] = _rasterData[_RASTERDATA_SHADOW] || new RasterData(_loc2_, _rasterPt[_RASTERDATA_SHADOW], MAP.DEPTH_SHADOW, BlendMode.MULTIPLY, true);
             }
             _loc2_.gotoAndStop(this._mushroomFrame);
+            if (BYMConfig.instance.RENDERER_ON) {
+                _rasterData[_RASTERDATA_SHADOW].cacheable = true;
+                _rasterData[_RASTERDATA_SHADOW].invalidate();
+            }
             _loc2_.mouseEnabled = false;
             _loc2_.mouseChildren = false;
             _loc2_.blendMode = BlendMode.MULTIPLY;

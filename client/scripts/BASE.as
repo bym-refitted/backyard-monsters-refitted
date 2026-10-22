@@ -3144,6 +3144,13 @@ package {
                 _saveCounterB = _saveCounterA;
                 return false;
             }
+            var isYardTornDown:Boolean = MapRoomManager.instance.isOpen;
+
+            if (isYardTornDown) {
+                _saveCounterB = _saveCounterA;
+                return false;
+            }
+
             _saving = true;
             _saveCounterB = _saveCounterA;
             fixNegativeResourceValues();
