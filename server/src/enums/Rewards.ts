@@ -8,6 +8,7 @@ export enum Reward {
   REZGHUL = "unlockRezghul",
   KORATH = "KorathReward",
   KRALLEN = "krallenReward",
+  KRALLEN_BUFF = "krallenBuffReward",
   SPURTZ1 = "spurtzCannonReward",
   SPURTZ2 = "spurtzCannonReward2",
   DIAMOND_SPURTZ = "spurtzCannonReward3",

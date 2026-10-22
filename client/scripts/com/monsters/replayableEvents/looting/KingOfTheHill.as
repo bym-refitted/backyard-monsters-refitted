@@ -59,7 +59,8 @@ package com.monsters.replayableEvents.looting {
         }
 
         override public function doesQualify():Boolean {
-            return false;
+            // return false;
+            return KOTHHandler.instance.doesQualify && Boolean(GLOBAL._flags.krallen);
         }
     }
 }

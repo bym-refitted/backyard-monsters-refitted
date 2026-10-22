@@ -36,6 +36,7 @@ import { getAcceptedGifts, getPendingGifts } from "../../../services/gifts/gifts
 import { takeBaseUpdates } from "../../../services/base/baseUpdates.js";
 import { RESOURCE_KEYS } from "../../../services/base/updateResources.js";
 import { mapSaveData } from "../../../services/base/mapSaveData.js";
+import { getKrallenData, isInKrallenMapRoom } from "../../../services/events/krallen/krallenRound.js";
 import { clearExpiredStoreItems } from "../../../services/base/clearExpiredStoreItems.js";
 import { extractTownHall } from "../../../utils/extractTownHall.js";
 import { getChatChannel, getOrCreateChatToken } from "../../../chat/chatChannels.js";
@@ -177,6 +178,11 @@ export const baseLoad: KoaController = async (ctx) => {
   }
 
   const filteredSave = await mapSaveData(baseSave, user);
+
+  if (type === BaseMode.BUILD && isOwner && baseSave.type === BaseType.MAIN) {
+    filteredSave.krallen = getKrallenData(baseSave);
+  }
+  
   const isTutorialEnabled = devConfig.skipTutorial ? 205 : filteredSave.tutorialstage;
 
   const flags = getFlags();
@@ -186,6 +192,7 @@ export const baseLoad: KoaController = async (ctx) => {
 
   flags.maproom2 = userSave.mr2upgraded || (townHall && townHall.l >= 6) ? 1 : 0;
   flags.mr2upgraded = userSave.mr2upgraded ? 1 : 0;
+  flags.krallen = isInKrallenMapRoom(userSave) ? 1 : 0;
 
   let totalResourceRate = 0;
   let totalResourceCapacity = 0;

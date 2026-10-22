@@ -82,13 +82,17 @@ await configure({
       lowestLevel: "debug",
       sinks: Object.keys(sinks),
     },
+    ...(isLocal
+      ? []
+      : [
+          {
+            category: ["bymr", "http"],
+            lowestLevel: "debug" as const,
+            sinks: ["file"],
+            parentSinks: "override" as const,
+          },
+        ]),
     {
-      /**
-       * Internal LogTape meta-logging.
-       *
-       * Reduced verbosity to avoid noise unless warnings
-       * or errors occur within the logging system itself.
-       */
       category: ["logtape", "meta"],
       lowestLevel: "warning",
       sinks: ["console"],

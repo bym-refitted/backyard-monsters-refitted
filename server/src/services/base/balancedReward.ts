@@ -2,13 +2,10 @@ import { KorathReward, Reward } from "../../enums/Rewards.js";
 import { Save } from "../../database/models/save.model.js";
 import { extractTownHall, type TownHall } from "../../utils/extractTownHall.js";
 
-const INITIAL_KRALLEN_DATA = { countdown: 443189, wins: 5, tier: 5, loot: 750000000000 };
-
 /**
  * Adds rewards to the user's save data based on their Town Hall level.
  *
  * Town Hall Level 5: Vorg and Slimeattikus unblocked, so they can be researched
- * Town Hall Level 6: Krallen
  * Town Hall Level 7: Korath
  * Town Hall Level 8: Rezghul
  *
@@ -17,10 +14,10 @@ const INITIAL_KRALLEN_DATA = { countdown: 443189, wins: 5, tier: 5, loot: 750000
  */
 export const balancedReward = async (userSave: Save) => {
   let rewards = userSave.rewards!;
-  const { VORG, SLIMEATTIKUS, KORATH, KRALLEN, REZGHUL } = Reward;
+  const { VORG, SLIMEATTIKUS, KORATH, REZGHUL } = Reward;
 
   // Early return if all rewards are already assigned
-  if (rewards[VORG] && rewards[SLIMEATTIKUS] && rewards[KORATH] && rewards[KRALLEN] && rewards[REZGHUL]) return;
+  if (rewards[VORG] && rewards[SLIMEATTIKUS] && rewards[KORATH] && rewards[REZGHUL]) return;
 
   const townHall: TownHall | null = extractTownHall(userSave.buildingdata ?? {});
   if (!townHall || !townHall.l) return;
@@ -36,20 +33,6 @@ export const balancedReward = async (userSave: Save) => {
     rewards[SLIMEATTIKUS] = { id: SLIMEATTIKUS };
   }
 
-  // Town Hall Level 6
-  if (townHallLevel >= 6 && !rewards[KRALLEN]) {
-    rewards[KRALLEN] = { id: KRALLEN, value: 1 };
-    addKrallenData(userSave);
-  }
-
-  if (townHallLevel >= 6 && rewards[KRALLEN] && userSave.krallen == null) {
-    const krallenChampion = userSave.champion.find((c) => c.t === 5);
-
-    if (krallenChampion) krallenChampion.status = 0;
-    
-    userSave.krallen = INITIAL_KRALLEN_DATA;
-  }
-
   // Town Hall Level 7
   if (townHallLevel >= 7 && !rewards[KORATH]) {
     rewards[KORATH] = { id: KORATH, value: KorathReward.FISTS_OF_DOOM };
@@ -58,31 +41,5 @@ export const balancedReward = async (userSave: Save) => {
   // Town Hall Level 8
   if (townHallLevel >= 8 && !rewards[REZGHUL]) {
     rewards[REZGHUL] = { id: REZGHUL };
-  }
-};
-
-/**
- * Adds Krallen data to the user's save, including champion data and reward metadata.
- *
- * @param {Save} userSave - The user's save data to update.
- */
-const addKrallenData = (userSave: Save) => {
-  const championData = userSave.champion;
-
-  const hasKrallenChampion = championData.some((champion) => champion.t === 5);
-
-  if (!hasKrallenChampion) {
-    championData.push({
-      fb: 0,
-      l: 5,
-      pl: 2,
-      status: 0,
-      t: 5,
-      ft: 1730563770,
-      fd: 0,
-      hp: 62000,
-    });
-
-    userSave.krallen = INITIAL_KRALLEN_DATA;
   }
 };

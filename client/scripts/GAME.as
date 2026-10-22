@@ -49,6 +49,13 @@ package {
 
             if (flashVarServerUrl != undefined && flashVarServerUrl != "") {
                 GLOBAL.serverUrl = String(flashVarServerUrl);
+                GLOBAL.cdnUrl = GLOBAL.serverUrl;
+            }
+
+            var flashVarCdnUrl:* = loaderInfo.parameters["cdnUrl"];
+
+            if (flashVarCdnUrl != undefined && flashVarCdnUrl != "") {
+                GLOBAL.cdnUrl = String(flashVarCdnUrl);
             }
 
             var serverUrl:String = GLOBAL.serverUrl;

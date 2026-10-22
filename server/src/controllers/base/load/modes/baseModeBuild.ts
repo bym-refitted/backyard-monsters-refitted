@@ -4,6 +4,7 @@ import { postgres } from "../../../../server.js";
 import { BaseMode } from "../../../../enums/Base.js";
 import { logger } from "../../../../utils/logger.js";
 import { balancedReward } from "../../../../services/base/balancedReward.js";
+import { settleKrallen } from "../../../../services/events/krallen/krallenSettlement.js";
 import { resetInvasionWaves } from "../../../../services/events/wmi/invasionUtils.js";
 import { isAttackActive } from "../../../../services/base/isAttackActive.js";
 import { baseUnderAttackErr, permissionErr } from "../../../../errors/errors.js";
@@ -32,6 +33,8 @@ export const baseModeBuild = async (user: User, baseid: string) => {
     if (isAttackActive(userSave)) throw baseUnderAttackErr();
 
     await balancedReward(userSave);
+
+    settleKrallen(userSave);
 
     if (userSave.stats?.other) resetInvasionWaves(userSave.stats.other);
 

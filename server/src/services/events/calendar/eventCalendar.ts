@@ -8,6 +8,7 @@ import {
   SLOT_START_DAY,
 } from "../../../config/EventCalendarConfig.js";
 import { EventSlot, GameEvent } from "../../../enums/GameEvent.js";
+import { dateToEpoch, epochToDate } from "../../../utils/epochDate.js";
 import { getCurrentDateTime } from "../../../utils/getCurrentDateTime.js";
 
 const SECONDS_PER_DAY = 86400;
@@ -51,6 +52,14 @@ const toScheduledEvent = (event: GameEvent, start: number): ScheduledEvent => {
 export const getEventOverride = (event: GameEvent): number => EVENT_START_OVERRIDES[event];
 
 /**
+ * Checks whether any event has a start override set. A forced event takes over from the
+ * calendar, so every calendar event without an override is hidden until the overrides are cleared.
+ *
+ * @returns {boolean} Whether an override is set
+ */
+const hasForcedEvent = () => Object.values(GameEvent).some((event) => getEventOverride(event) > 0);
+
+/**
  * Lists what the calendar holds from last month to one full cycle ahead, which is
  * always enough to contain the current and the next date of every event.
  *
@@ -58,9 +67,7 @@ export const getEventOverride = (event: GameEvent): number => EVENT_START_OVERRI
  * @returns {ScheduledEvent[]} The scheduled events, in date order
  */
 const getEventSchedule = (now: number): ScheduledEvent[] => {
-  const instant = Temporal.Instant.fromEpochMilliseconds(now * 1000);
-  const today = instant.toZonedDateTimeISO(EVENT_TIME_ZONE);
-  const thisMonth = today.toPlainDate().toPlainYearMonth();
+  const thisMonth = epochToDate(now, EVENT_TIME_ZONE).toPlainYearMonth();
   
   const schedule: ScheduledEvent[] = [];
 
@@ -71,7 +78,7 @@ const getEventSchedule = (now: number): ScheduledEvent[] => {
 
     for (const slot of SLOTS) {
       const startDate = month.toPlainDate({ day: SLOT_START_DAY[slot] });
-      const start = startDate.toZonedDateTime(EVENT_TIME_ZONE).epochMilliseconds / 1000;
+      const start = dateToEpoch(startDate, EVENT_TIME_ZONE);
 
       for (const event of cycleMonth[slot]) schedule.push(toScheduledEvent(event, start));
     }
@@ -103,22 +110,28 @@ const getWeeklyRound = (event: GameEvent, now: number): ScheduledEvent => {
 
 /**
  * Gets the scheduled event that is under way, or the next one if none is.
- * A forced start time replaces the calendar for that event, and a weekly event
- * returns its current round.
+ *
+ * A forced start time replaces the calendar for that event, and while any event is forced,
+ * every other calendar event is hidden. The calendar's dates are never moved, so an event hidden
+ * part-way through shows again, with its remaining time, once the overrides are cleared.
+ * Weekly events are never hidden: they return their current round.
  *
  * @param {GameEvent} event - The event
  * @param {number} now - The current time
- * @returns {ScheduledEvent | null} The scheduled event, or null when the event is switched off
+ * @returns {ScheduledEvent | null} The scheduled event, or null when the event is switched off or hidden
  */
 export const getScheduledEvent = (event: GameEvent, now = getCurrentDateTime()): ScheduledEvent | null => {
   const override = getEventOverride(event);
   const isEnabled = EVENTS[event].enabled;
+  const isHiddenByOverride = hasForcedEvent();
 
   if (override) return toScheduledEvent(event, override);
 
   if (!isEnabled) return null;
 
   if (EVENTS[event].weekly) return getWeeklyRound(event, now);
+
+  if (isHiddenByOverride) return null;
 
   const schedule = getEventSchedule(now);
 
