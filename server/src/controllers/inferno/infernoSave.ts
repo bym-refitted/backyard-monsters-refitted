@@ -23,6 +23,7 @@ import { advanceBuildingTimers } from "../../services/base/advanceBuildingTimers
 import { visibleCredits } from "../../services/user/shinyLock.js";
 import { calculateBaseLevel } from "../../services/base/calculateBaseLevel.js";
 import { isEventBase, saveEventBaseAttack } from "../../services/events/replayable/eventBases.js";
+import { updateAttackLog } from "../../services/base/createAttackLog.js";
 
 export const infernoSave: KoaController = async (ctx) => {
   const user: User = ctx.authUser;
@@ -59,6 +60,8 @@ export const infernoSave: KoaController = async (ctx) => {
     const isAttack = !isOwner && baseSave.attackid !== 0;
 
     if (!isOwner && baseSave.attackid === 0) throw permissionErr();
+
+    if (isAttack) await updateAttackLog(user, baseSave, body.attackreport as string | undefined);
 
     const storedHealthData = baseSave.buildinghealthdata;
 
