@@ -2,6 +2,8 @@ import { MapRoomVersion } from "../enums/MapRoom.js";
 
 export const KRALLEN_TIME_ZONE = "UTC";
 
+export const KRALLEN_START_TIME = 1792774800;
+
 export const KRALLEN_ROUND_END_WEEKDAY = 1;
 
 export const KRALLEN_ROUND_DAYS = 7;

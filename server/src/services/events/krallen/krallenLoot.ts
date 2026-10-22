@@ -26,7 +26,7 @@ export const addKrallenLoot = (save: Save, attack: KrallenAttackSave, now = getC
 
   if (!report || !attackId || report.isInferno) return;
 
-  const canTakePart = isKrallenEligible(save);
+  const canTakePart = isKrallenEligible(save, now);
 
   if (!canTakePart) return;
 
