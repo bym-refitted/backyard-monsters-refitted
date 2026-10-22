@@ -33,6 +33,7 @@ import { calculateBaseLevel } from "../../../services/base/calculateBaseLevel.js
 import { MR1_TRIBE_IDS } from "../../../game-data/tribes/v1/index.js";
 import { scaledMR1Tribes } from "../../../services/maproom/v1/scaledMR1Tribes.js";
 import { lowersTownHall } from "../../../services/base/lowersTownHall.js";
+import { addsSpurtzCannons, mergeSavedRewards } from "../../../services/events/replayable/spurtzRewards.js";
 
 /**
  * Controller responsible for saving the user's base data.
@@ -74,9 +75,14 @@ export const baseSave: KoaController = async (ctx) => {
   await validateSave(user, baseSave, body);
 
   const isOwnMainYard = isOwner && baseSave.type === BaseType.MAIN;
-  const losesTownHall = isOwnMainYard && lowersTownHall(baseSave.buildingdata, saveData.buildingdata);
+  
+  const { buildingdata: storedBuildings, rewards } = baseSave;
+  const savedBuildings = saveData.buildingdata;
 
-  if (losesTownHall) throw saveFailureErr();
+  const losesTownHall = isOwnMainYard && lowersTownHall(storedBuildings, savedBuildings);
+  const exceedsSpurtzLimit = isOwnMainYard && addsSpurtzCannons(storedBuildings, savedBuildings, rewards);
+
+  if (losesTownHall || exceedsSpurtzLimit) throw saveFailureErr();
 
   const storedHealthData = baseSave.buildinghealthdata;
 
@@ -143,6 +149,12 @@ export const baseSave: KoaController = async (ctx) => {
 
       case SaveKeys.KRALLEN:
         krallenHandler(saveData.krallen, baseSave);
+        break;
+
+      case SaveKeys.REWARDS:
+        if (!value) break;
+
+        baseSave.rewards = mergeSavedRewards(baseSave.rewards, JSON.parse(value));
         break;
 
       default:

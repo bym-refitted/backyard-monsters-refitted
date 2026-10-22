@@ -3,6 +3,7 @@ import { User } from "../../database/models/user.model.js";
 import { Status } from "../../enums/StatusCodes.js";
 import { EventIdSchema, UpdateEventScoreSchema } from "../../schemas/ReplayableEventSchemas.js";
 import { getActiveReplayableEvent } from "../../services/events/calendar/eventCalendar.js";
+import { getEventRewardFields } from "../../services/events/replayable/eventRewards.js";
 import { addEventScore, getEventScore } from "../../services/events/replayable/eventScore.js";
 import { copyEventBase, getEventBases } from "../../services/events/replayable/eventBases.js";
 import { postgres } from "../../server.js";
@@ -28,8 +29,11 @@ export const getReplayableEventScore: KoaController = async (ctx) => {
 
   const score = await getEventScore(user.userid, scheduled);
 
+  await postgres.em.populate(user, ["save"]);
+  const rewardFields = await getEventRewardFields(user.save!, scheduled.event, score);
+
   ctx.status = Status.OK;
-  ctx.body = { error: 0, score };
+  ctx.body = { error: 0, score, ...rewardFields };
 };
 
 /**
@@ -55,8 +59,11 @@ export const updateReplayableEventScore: KoaController = async (ctx) => {
 
   const score = await addEventScore(user.userid, scheduled, delta);
 
+  await postgres.em.populate(user, ["save"]);
+  const rewardFields = await getEventRewardFields(user.save!, scheduled.event, score);
+
   ctx.status = Status.OK;
-  ctx.body = { error: 0, score };
+  ctx.body = { error: 0, score, ...rewardFields };
 };
 
 /**

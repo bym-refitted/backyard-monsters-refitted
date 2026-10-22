@@ -66,6 +66,10 @@ package com.monsters.replayableEvents.attackDefend {
             var _loc1_:Boolean = false;
             var _loc2_:String = null;
             var _loc3_:uint = 0;
+
+            if (hasEventEnded)
+                return;
+
             if (!this.readyToAttackNextYard()) {
                 setupNextWave();
                 ++_numAttempts;

@@ -1,5 +1,6 @@
 import type z from "zod";
 
+import { KRALLEN_START_TIME } from "../../../config/KrallenConfig.js";
 import { Save } from "../../../database/models/save.model.js";
 import { BaseSaveSchema } from "../../../schemas/BaseSaveSchema.js";
 import type { KrallenStoredData } from "../../../schemas/KrallenSchema.js";
@@ -15,7 +16,8 @@ type KrallenAttackSave = Pick<BaseSaveData, "lootreport" | "attackid">;
  *
  * The client reports the attack's running loot total on every save of the attack, so
  * only the part not counted on an earlier save of the same attack is added. Inferno
- * loot doesn't count.
+ * loot doesn't count, and neither does loot from before the Hunt opens, during its
+ * launch countdown.
  *
  * @param {Save} save - The attacker's main yard
  * @param {KrallenAttackSave} attack - The attack's running loot total and attack id
@@ -26,7 +28,8 @@ export const addKrallenLoot = (save: Save, attack: KrallenAttackSave, now = getC
 
   if (!report || !attackId || report.isInferno) return;
 
-  const canTakePart = isKrallenEligible(save);
+  const hasStarted = now >= KRALLEN_START_TIME;
+  const canTakePart = hasStarted && isKrallenEligible(save);
 
   if (!canTakePart) return;
 

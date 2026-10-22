@@ -11,6 +11,7 @@ import type { ChampionData } from "../../schemas/ChampionSchema.js";
 import type { KrallenStoredData } from "../../schemas/KrallenSchema.js";
 import type { JsonObject } from "../../types/JsonObject.js";
 import type { BuildingDataMap, BuildingHealthData } from "../../types/BuildingData.js";
+import type { RewardsData } from "../../types/RewardData.js";
 import { MapRoomVersion } from "../../enums/MapRoom.js";
 import type { PostgresEM } from "../../types/PostgresEM.js";
 
@@ -286,7 +287,7 @@ export class Save {
 
   @FrontendKey
   @Property({ columnType: "jsonb", nullable: true })
-  rewards?: JsonObject | null = {};
+  rewards?: RewardsData | null = {};
 
   @FrontendKey
   @Property({ columnType: "jsonb", nullable: true })
