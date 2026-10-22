@@ -5,7 +5,6 @@ import {
   KRALLEN_MIN_TOWN_HALL,
   KRALLEN_ROUND_DAYS,
   KRALLEN_ROUND_END_WEEKDAY,
-  KRALLEN_START_TIME,
   KRALLEN_TIME_ZONE,
   KRALLEN_UPGRADE_THRESHOLD,
   KRALLEN_WINS_TO_KEEP,
@@ -59,17 +58,13 @@ export const getRoundEnd = (now: number = getCurrentDateTime()) => {
 export const isInKrallenMapRoom = (save: Save) => KRALLEN_MAP_ROOMS.includes(save.mapversion);
 
 /**
- * Checks whether a player's main yard can take part in Hunt for Krallen. Nobody can before
- * the Hunt opens, so no loot counts during its launch countdown.
+ * Checks whether a player's main yard can take part in Hunt for Krallen.
  *
  * @param {Save} save - The player's main yard
- * @param {number} now - The current time, in seconds
  * @returns {boolean} Whether the player qualifies
  */
-export const isKrallenEligible = (save: Save, now: number = getCurrentDateTime()) => {
-  const hasStarted = now >= KRALLEN_START_TIME;
-
-  if (!hasStarted || !isInKrallenMapRoom(save)) return false;
+export const isKrallenEligible = (save: Save) => {
+  if (!isInKrallenMapRoom(save)) return false;
 
   const townHall = extractTownHall(save.buildingdata ?? {});
 
@@ -157,7 +152,7 @@ export const getCurrentRound = (save: Save, now: number = getCurrentDateTime()):
  * @returns {KrallenData | null} The progress, or null when the player doesn't qualify
  */
 export const getKrallenData = (save: Save, now: number = getCurrentDateTime()): KrallenData | null => {
-  if (!isKrallenEligible(save, now)) return null;
+  if (!isKrallenEligible(save)) return null;
 
   const { tier, wins, loot, lastShownTier, roundEnd } = getCurrentRound(save, now);
   const countdown = roundEnd - now;
