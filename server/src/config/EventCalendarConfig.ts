@@ -32,7 +32,7 @@ export const EVENT_START_OVERRIDES: Record<GameEvent, number> = {
   [GameEvent.BRUKKARG_WAR]: 0,
   [GameEvent.CREATURE_CARNAGE]: 0,
   [GameEvent.MONSTER_BLITZKRIEG]: 0,
-  [GameEvent.KING_OF_THE_HILL]: 1792273252,
+  [GameEvent.KING_OF_THE_HILL]: 1792774800,
   [GameEvent.HELL_RAISERS]: 0,
 };
 
