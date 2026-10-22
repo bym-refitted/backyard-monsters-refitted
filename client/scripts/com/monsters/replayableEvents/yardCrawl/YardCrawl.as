@@ -65,6 +65,9 @@ package com.monsters.replayableEvents.yardCrawl {
 
         override public function pressedActionButton():void {
             var _loc2_:String = null;
+            if (hasEventEnded)
+                return;
+
             if (!this._intactBaseList || this._intactBaseList.length == 0) {
                 return;
             }

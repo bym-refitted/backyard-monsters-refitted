@@ -237,6 +237,9 @@ package com.monsters.replayableEvents.monsterInvasion {
         }
 
         override public function pressedActionButton():void {
+            if (hasEventEnded)
+                return;
+
             this.setupNextWave();
             ++this._numAttempts;
             LOGGER.StatB({

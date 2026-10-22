@@ -25,7 +25,8 @@ package com.monsters.replayableEvents.attackDefend.brukkargWar.rewards {
         }
 
         override public function canBeApplied():Boolean {
-            return GLOBAL.isAtHome();
+            // return GLOBAL.isAtHome();
+            return GLOBAL.isAtHome() && !SpurtzCannonRewards.isOutranked(ID);
         }
     }
 }

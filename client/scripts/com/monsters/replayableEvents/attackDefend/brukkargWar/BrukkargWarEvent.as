@@ -7,12 +7,17 @@ package com.monsters.replayableEvents.attackDefend.brukkargWar {
     import com.monsters.replayableEvents.ReplayableEventHandler;
     import com.monsters.replayableEvents.ReplayableEventQuota;
     import com.monsters.replayableEvents.ReplayableEventUI;
+    import com.monsters.replayableEvents.ServerGrantedQuota;
     import com.monsters.replayableEvents.attackDefend.AttackDefend;
     import com.monsters.replayableEvents.attackDefend.brukkargWar.messages.BrukkargWarFinalAttackMessage;
     import com.monsters.replayableEvents.attackDefend.brukkargWar.messages.BrukkargWarFirstAttackMessage;
-    import com.monsters.replayableEvents.attackDefend.brukkargWar.quotas.SpurtzCannonQuota1;
-    import com.monsters.replayableEvents.attackDefend.brukkargWar.quotas.SpurtzCannonQuota2;
-    import com.monsters.replayableEvents.attackDefend.brukkargWar.quotas.SpurtzCannonQuota3;
+    import com.monsters.replayableEvents.attackDefend.brukkargWar.messages.SpurtzCannonRewardMessage1;
+    import com.monsters.replayableEvents.attackDefend.brukkargWar.messages.SpurtzCannonRewardMessage2;
+    import com.monsters.replayableEvents.attackDefend.brukkargWar.messages.SpurtzCannonRewardMessage3;
+    import com.monsters.replayableEvents.attackDefend.brukkargWar.rewards.SpurtzCannonReward1;
+    import com.monsters.replayableEvents.attackDefend.brukkargWar.rewards.SpurtzCannonReward2;
+    import com.monsters.replayableEvents.attackDefend.brukkargWar.rewards.SpurtzCannonReward3;
+    import com.monsters.replayableEvents.attackDefend.brukkargWar.rewards.SpurtzCannonRewards;
     import com.monsters.replayableEvents.monsterInvasion.WaveObj;
 
     public class BrukkargWarEvent extends AttackDefend {
@@ -41,9 +46,12 @@ package com.monsters.replayableEvents.attackDefend.brukkargWar {
             _maxScore = SCORE_PER_YARD * 5;
             // _originalStartDate = 1342724400;
             m_mustBeInsideBase = true;
-            _quotas.push(new SpurtzCannonQuota1());
-            _quotas.push(new SpurtzCannonQuota2());
-            _quotas.push(new SpurtzCannonQuota3());
+            // _quotas.push(new SpurtzCannonQuota1());
+            // _quotas.push(new SpurtzCannonQuota2());
+            // _quotas.push(new SpurtzCannonQuota3());
+            _quotas.push(new ServerGrantedQuota(SCORE_PER_YARD * 3, "events/brukkargWar/brukkarg_reward_1.png", SpurtzCannonReward1.ID, new SpurtzCannonRewardMessage1()));
+            _quotas.push(new ServerGrantedQuota(SCORE_PER_YARD * 4, "events/brukkargWar/brukkarg_reward_2.png", SpurtzCannonReward2.ID, new SpurtzCannonRewardMessage2()));
+            _quotas.push(new ServerGrantedQuota(SCORE_PER_YARD * 5, "events/brukkargWar/brukkarg_reward_3.png", SpurtzCannonReward3.ID, new SpurtzCannonRewardMessage3()));
             _quotas.push(new ReplayableEventQuota(SCORE_PER_WAVE * 5, null, null, new BrukkargWarFirstAttackMessage()));
             _quotas.push(new ReplayableEventQuota(SCORE_PER_YARD * 4 + SCORE_PER_WAVE * 25, null, null, new BrukkargWarFinalAttackMessage()));
         }
@@ -64,7 +72,10 @@ package com.monsters.replayableEvents.attackDefend.brukkargWar {
         }
 
         override public function get buttonCopy():String {
-            if (readyToAttackNextYard()) {
+            if (hasEventEnded) {
+                _buttonCopy = null;
+            }
+            else if (readyToAttackNextYard()) {
                 _buttonCopy = KEYS.Get("btn_attack");
             }
             else {
@@ -93,6 +104,31 @@ package com.monsters.replayableEvents.attackDefend.brukkargWar {
             if (_score >= 4024) {
                 ReplayableEventHandler.callServerMethod("copybase", [["eventid", 5]], this.copyBaseCallback);
             }
+        }
+
+        override protected function serverScoreCallback(serverData:Object):void {
+            super.serverScoreCallback(serverData);
+            this.syncSpurtzReward(serverData);
+        }
+
+        override protected function verifyScoreFromServer(serverData:Object):void {
+            super.verifyScoreFromServer(serverData);
+            this.syncSpurtzReward(serverData);
+        }
+
+        /**
+         * Applies the Spurtz Cannon reward the server sends with the score. The server grants it
+         * once the score has earned it, and sends no reward field when it did not take the score.
+         *
+         * @param serverData The server's reply to a score request
+         */
+        private function syncSpurtzReward(serverData:Object):void {
+            var hasRewardField:Boolean = serverData.hasOwnProperty("spurtzreward");
+
+            if (!hasRewardField)
+                return;
+
+            SpurtzCannonRewards.sync(serverData.spurtzreward);
         }
 
         protected function copyBaseCallback(param1:Object):void {
