@@ -564,12 +564,10 @@ package {
             KEYS._storageURL = GLOBAL.languageUrl;
             KEYS.GetSupportedLanguages();
 
-            if (token) {
-                KEYS.Setup(language);
+            if (!language) {
+                language = "english";
             }
-            else {
-                KEYS.Setup("english");
-            }
+            KEYS.Setup(language);
         }
 
         public static function get townHall():BFOUNDATION {
@@ -1235,17 +1233,35 @@ package {
                 MapRoomManager.instance.TickFast();
                 if (_render) {
                     _loc3_ = Number(getTimer());
-                    if ((_loc4_ = _loc3_ - lastTime) > TIME_ELAPSED_THRESHHOLD && !_aiDesignMode) {
-                        LOGGER.Log("err", "TimeHax");
-                        ErrorMessage("Time Threshold Exceeded");
+                    _loc4_ = lastTime ? _loc3_ - lastTime : 0;
+                    // _local: AIR getTimer() advances while backgrounded; discard resume gaps.
+                    // Otherwise treat as TimeHax (original Flash anti-cheat).
+                    if (lastTime && _loc4_ > TIME_ELAPSED_THRESHHOLD && !_aiDesignMode) {
+                        if (_local) {
+                            _loops = 2;
+                            _loopsBanked = 0;
+                        }
+                        else {
+                            LOGGER.Log("err", "TimeHax");
+                            ErrorMessage("Time Threshold Exceeded");
+                            _loopsBanked -= _loops;
+                            if (_loopsBanked < 0) {
+                                _loopsBanked = 0;
+                            }
+                            _loopsBanked += SIM_STEPS_PER_MS * _loc4_;
+                            _loops = int(_loopsBanked);
+                            if (_loops > _maxLoops) {
+                                _loops = _maxLoops;
+                            }
+                        }
                     }
-                    if (lastTime) {
+                    else if (lastTime) {
                         _loopsBanked -= _loops;
                         if (_loopsBanked < 0) {
                             _loopsBanked = 0;
                         }
                         // _loopsBanked += 2 / 25 * (_loc3_ - lastTime);
-                        _loopsBanked += SIM_STEPS_PER_MS * (_loc3_ - lastTime);
+                        _loopsBanked += SIM_STEPS_PER_MS * _loc4_;
                         _loops = int(_loopsBanked);
                         if (_loops > _maxLoops) {
                             _loops = _maxLoops;
