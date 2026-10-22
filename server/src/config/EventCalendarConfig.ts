@@ -11,28 +11,28 @@ export interface EventDefinition {
   closingDays?: number;
 }
 
-/** The time zone the calendar's dates are in. Events start at midnight in this zone. */
 export const EVENT_TIME_ZONE = "UTC";
 
-/** How long before its start an event is announced. */
 export const COUNTDOWN_DAYS = 7;
 
-/** How long a replayable event stays on screen after it ends */
 export const POST_EVENT_DAYS = 2;
 
 /**
  * Epoch timestamps that force an event to start at a given time, or 0 to leave it
  * to the calendar. A forced event is announced from 7 days before, and runs even
  * when it is disabled below.
+ *
+ * While any override is set, every event without one is hidden. Setting the overrides
+ * back to 0 hands control back to the calendar, which carries on from wherever it is.
  */
 export const EVENT_START_OVERRIDES: Record<GameEvent, number> = {
   [GameEvent.WMI1]: 0,
   [GameEvent.WMI2]: 0,
   [GameEvent.MONSTER_MADNESS]: 0,
-  [GameEvent.BRUKKARG_WAR]: 1792237288,
+  [GameEvent.BRUKKARG_WAR]: 0,
   [GameEvent.CREATURE_CARNAGE]: 0,
   [GameEvent.MONSTER_BLITZKRIEG]: 0,
-  [GameEvent.KING_OF_THE_HILL]: 0,
+  [GameEvent.KING_OF_THE_HILL]: 1792273252,
   [GameEvent.HELL_RAISERS]: 0,
 };
 
@@ -84,6 +84,7 @@ export const EVENTS: Record<GameEvent, EventDefinition> = {
   [GameEvent.KING_OF_THE_HILL]: {
     replayableId: 4,
     runDays: 7,
+    // Launch announcement for Hunt for Krallen, which runs weekly on its own; not on the calendar, only ever run once, by override.
     enabled: false,
   },
   [GameEvent.HELL_RAISERS]: {

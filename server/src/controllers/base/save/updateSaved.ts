@@ -17,6 +17,7 @@ import { mapSaveData } from "../../../services/base/mapSaveData.js";
 import { getAllianceData } from "../../../services/alliance/allianceData.js";
 import { runningPowerups } from "../../../services/alliance/powerups.js";
 import { visibleCredits } from "../../../services/user/shinyLock.js";
+import { isInKrallenMapRoom } from "../../../services/events/krallen/krallenRound.js";
 import { isEventBase, loadEventBase } from "../../../services/events/replayable/eventBases.js";
 
 const UpdateSavedSchema = z.object({
@@ -82,6 +83,7 @@ export const updateSaved: KoaController = async (ctx) => {
   const townHall = extractTownHall(userSave.buildingdata || {});
   flags.maproom2 = userSave.mr2upgraded || (townHall && townHall.l >= 6) ? 1 : 0;
   flags.mr2upgraded = userSave.mr2upgraded ? 1 : 0;
+  flags.krallen = isInKrallenMapRoom(userSave) ? 1 : 0;
 
   const credits = visibleCredits(user, userSave.credits);
 

@@ -67,6 +67,8 @@ package com.monsters.kingOfTheHill {
         }
 
         public function initialize(param1:Object = null):void {
+            CHAMPIONCAGEPOPUP._kothEnabled = false;
+
             if (!GLOBAL._flags[this.name] || GLOBAL.mode != GLOBAL.e_BASE_MODE.BUILD || !BASE.isMainYard) {
                 return;
             }

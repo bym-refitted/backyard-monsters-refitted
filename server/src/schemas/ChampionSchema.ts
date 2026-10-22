@@ -1,4 +1,5 @@
 import z from "zod";
+import { parseJsonSafely } from "../utils/parseJsonSafely.js";
 
 /**
  * A single champion as the Flash client serialises it.
@@ -17,24 +18,6 @@ export const ChampionSchema = z.object({
 
 export type ChampionData = z.infer<typeof ChampionSchema>;
 
-/**
- * Reads the stringified champion payload without throwing, so a malformed
- * field can never take the entire base save down with it.
- *
- * @param {string | undefined} data - The raw value sent by the client
- * @returns {unknown} The parsed payload, or undefined if it was unreadable
- */
-const parseChampionJson = (data: string | undefined): unknown => {
-  if (!data) return undefined;
-
-  try {
-    return JSON.parse(data);
-    
-  } catch (_) {
-    return undefined;
-  }
-};
-
 const ChampionEntrySchema = ChampionSchema.nullable().catch(null);
 
 /**
@@ -49,7 +32,7 @@ const ChampionEntrySchema = ChampionSchema.nullable().catch(null);
 export const ChampionListSchema = z
   .string()
   .optional()
-  .transform(parseChampionJson)
+  .transform(parseJsonSafely)
   .pipe(
     z.array(ChampionEntrySchema).transform((entries) => {
       const champions = entries.filter((entry) => entry !== null);
