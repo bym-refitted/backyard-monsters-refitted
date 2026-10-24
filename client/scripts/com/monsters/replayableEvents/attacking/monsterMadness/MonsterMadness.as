@@ -20,9 +20,17 @@ package com.monsters.replayableEvents.attacking.monsterMadness {
 
         public static const LAST_SCORE:String = "mmscore";
 
-        public static const EVENT_DATES:Vector.<Date> = Vector.<Date>([new Date(2012, 2, 15, 12), new Date(2012, 2, 19, 12), new Date(2012, 2, 21, 12), new Date(2012, 2, 22, 12), new Date(2012, 2, 26, 12)]);
+        public static const LAST_RUN:String = "mmrun";
 
-        public static var today:Date = new Date(2012, 2, 23);
+        // public static const EVENT_DATES:Vector.<Date> = Vector.<Date>([new Date(2012, 2, 15, 12), new Date(2012, 2, 19, 12), new Date(2012, 2, 21, 12), new Date(2012, 2, 22, 12), new Date(2012, 2, 26, 12)]);
+
+        private static const PROMO_DAYS_BEFORE_START:Array = [7, 3, 1];
+
+        public static const START_DATE_INDEX:int = 3;
+
+        private static const SECONDS_PER_DAY:int = 86400;
+
+        // public static var today:Date = new Date(2012, 2, 23);
 
         public static var infoBar:MonsterMadnessInfoBar;
 
@@ -99,20 +107,41 @@ package com.monsters.replayableEvents.attacking.monsterMadness {
             return _loc1_ - currentTime;
         }
 
+        private static function get run():Object {
+            return GLOBAL._flags["monstermadness"];
+        }
+
         public static function get activeTime():Number {
-            return 1332442800;
+            // return 1332442800;
+            return run ? run.start : 0;
         }
 
         public static function get endTime():Number {
-            return 1332788400;
+            // return 1332788400;
+            return run ? run.end : 0;
         }
 
-        public static function get activeDate():Date {
-            return EVENT_DATES[3];
-        }
+        // public static function get activeDate():Date {
+        // return EVENT_DATES[3];
+        // }
 
-        public static function get endDate():Date {
-            return EVENT_DATES[EVENT_DATES.length - 1];
+        // public static function get endDate():Date {
+        // return EVENT_DATES[EVENT_DATES.length - 1];
+        // }
+
+        /**
+         * The run's dates in seconds, in the order of the original EVENT_DATES: the three promo
+         * dates, the start (START_DATE_INDEX) and the end.
+         */
+        public static function get eventDates():Vector.<Number> {
+            var dates:Vector.<Number> = new Vector.<Number>();
+
+            for each (var daysBefore:int in PROMO_DAYS_BEFORE_START) {
+                dates.push(activeTime - daysBefore * SECONDS_PER_DAY);
+            }
+
+            dates.push(activeTime, endTime);
+            return dates;
         }
 
         private static function getStage():Number {
@@ -129,7 +158,8 @@ package com.monsters.replayableEvents.attacking.monsterMadness {
                         _loc1_ = 2;
                     }
                 }
-                else if (currentTime > EVENT_DATES[0].getUTCSeconds()) {
+                // else if (currentTime > EVENT_DATES[0].getUTCSeconds()) {
+                else if (currentTime > eventDates[0]) {
                     _loc1_ = 1;
                 }
             }
@@ -152,7 +182,24 @@ package com.monsters.replayableEvents.attacking.monsterMadness {
             return true;
         }
 
+        /**
+         * Clears the stats kept from an earlier run when a new one starts, so its popups show again
+         * and its score starts from the server's rather than the last run's. The last popup shown is
+         * set to -1, as a popup only shows when its index is above it and the first one's is 0.
+         */
+        private static function resetStatsForNewRun():void {
+            var isNewRun:Boolean = activeTime > 0 && GLOBAL.StatGet(LAST_RUN) != activeTime;
+
+            if (!isNewRun)
+                return;
+
+            GLOBAL.StatSet(LAST_RUN, activeTime, false);
+            GLOBAL.StatSet(LAST_POPUP_INDEX, -1, false);
+            GLOBAL.StatSet(LAST_SCORE, 0, false);
+        }
+
         public static function initialize():void {
+            resetStatsForNewRun();
             var _loc1_:uint = uint(GLOBAL.StatGet(LAST_SCORE));
             var _loc2_:* = BASE.loadObject[SAVE_ID];
             if (_loc2_ && _loc2_ >= _loc1_ && !hasEventEnded || _loc1_ == -2126479027) {

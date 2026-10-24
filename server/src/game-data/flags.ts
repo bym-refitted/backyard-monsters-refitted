@@ -1,8 +1,8 @@
 import { devConfig } from "../config/GameConfig.js";
-import { getActiveInvasion } from "../services/events/wmi/getActiveInvasion.js";
-import { setupInvasionEvent } from "../services/events/wmi/setupInvasionEvent.js";
+import { getInvasionFlags } from "../services/events/wmi/getInvasionFlags.js";
+import { getReplayableEventFlags } from "../services/events/calendar/getReplayableEventFlags.js";
 import { getActiveEvents } from "../services/events/calendar/eventCalendar.js";
-import { EVENTS } from "../config/EventCalendarConfig.js";
+import { GameEvent } from "../enums/GameEvent.js";
 import {
   KRALLEN_AWARD_THRESHOLD,
   KRALLEN_ROUND_DAYS,
@@ -11,29 +11,16 @@ import {
 } from "../config/KrallenConfig.js";
 
 /**
- * Gets the current invasion flags.
- * These flags are used to determine the state of Wild Monster Invasion events.
+ * Gets the flag for Monster Madness. It isn't a replayable event, so instead of an
+ * `activeevents` entry it has its own `monstermadness` flag with the start and end of the
+ * run being announced or running. The flag is left out when there is no such run.
  */
-const getInvasionFlags = () => {
-  const activeInvasion = getActiveInvasion();
-  const invasionPhases = setupInvasionEvent(activeInvasion).phases;
-  return { ...invasionPhases, activeInvasion };
-};
+const getMonsterMadnessFlags = () => {
+  const run = getActiveEvents().find(({ event }) => event === GameEvent.MONSTER_MADNESS);
 
-/**
- * Gets the flags for the replayable events.
- *
- * `activeevents` lists the replayable events the calendar has running, each with the id
- * the client knows it by and its start time. The client shows the one the player qualifies for.
- *
- * `ers` stays off: it lets the client schedule events for itself, which the calendar replaces.
- */
-const getReplayableEventFlags = () => {
-  const activeevents = getActiveEvents()
-    .filter(({ event }) => EVENTS[event].replayableId)
-    .map(({ event, start }) => ({ id: EVENTS[event].replayableId, start }));
+  if (!run) return {};
 
-  return { ers: 0, activeevents };
+  return { monstermadness: { start: run.start, end: run.end } };
 };
 
 /**
@@ -84,6 +71,7 @@ export const getFlags = () => ({
   event2: 0,
   ...getInvasionFlags(),
   ...getReplayableEventFlags(),
+  ...getMonsterMadnessFlags(),
   iframestart_override: 0,
   mushrooms: 1,
   chatwhitelist: "",
