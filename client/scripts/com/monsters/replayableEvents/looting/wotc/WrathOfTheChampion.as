@@ -1,5 +1,6 @@
 package com.monsters.replayableEvents.looting.wotc {
     import com.monsters.frontPage.messages.Message;
+    import com.monsters.maproom_manager.MapRoomManager;
     import com.monsters.replayableEvents.*;
     import com.monsters.replayableEvents.attacking.monsterMadness.MonsterMadness;
     import com.monsters.replayableEvents.looting.wotc.messages.*;
@@ -36,8 +37,14 @@ package com.monsters.replayableEvents.looting.wotc {
             return hasEventStarted ? "events/wotc/mm_logo_meter.png" : "events/wotc/mm_logo_timer.v2.png";
         }
 
+        /**
+         * The score is fetched again on every base load as well as on construction, which only
+         * happens once a session: the server scores each takeover, so coming home from the
+         * World Map shows the new score without reloading the game.
+         */
         override protected function onInitialize():void {
             this.removeOwnedRewardQuotas();
+            getServerScore();
         }
 
         private function removeOwnedRewardQuotas():void {
@@ -83,8 +90,15 @@ package com.monsters.replayableEvents.looting.wotc {
             progress = _score / _maxScore;
         }
 
+        /**
+         * At home, for every Map Room but Map Room 3, which came after the event. Players without
+         * Map Room 2 still see it: its start message offers them the Map Room upgrade.
+         */
         override public function doesQualify():Boolean {
-            return false;
+            // return false;
+            var isAtHome:Boolean = GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD && BASE.isMainYard;
+
+            return isAtHome && !MapRoomManager.instance.isInMapRoom3;
         }
     }
 }
