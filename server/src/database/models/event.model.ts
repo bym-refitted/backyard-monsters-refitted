@@ -40,6 +40,9 @@ export class Event {
   @Property({ type: "json", columnType: "jsonb", nullable: true })
   base_copy?: EventBaseCopy | null;
 
+  @Property({ type: "json", columnType: "jsonb" })
+  taken_outposts: Opt<string[]> = [];
+
   @Property({ type: Date, onUpdate: () => new Date() })
   updated_at: Opt<Date> = new Date();
 }
