@@ -2,6 +2,7 @@ package com.monsters.replayableEvents {
     import com.monsters.replayableEvents.attackDefend.brukkargWar.BrukkargWarEvent;
     import com.monsters.replayableEvents.attacking.hellRaisers.HellRaisers;
     import com.monsters.replayableEvents.looting.KingOfTheHill;
+    import com.monsters.replayableEvents.looting.wotc.WrathOfTheChampion;
     import com.monsters.replayableEvents.monsterInvasion.monsterBlitzkrieg.MonsterBlitzkrieg;
     import com.monsters.replayableEvents.yardCrawl.battletoads.Battletoads;
 
@@ -18,7 +19,9 @@ package com.monsters.replayableEvents {
         public static const KING_OF_THE_HILL:KingOfTheHill = new KingOfTheHill();
 
         // public static const EVENTS:Vector.<ReplayableEvent> = Vector.<ReplayableEvent>([BATTLE_TOADS, MONSTER_BLITZKRIEG, BRUKKARG_EVENT, HELL_RAISERS]);
-        public static const EVENTS:Vector.<ReplayableEvent> = Vector.<ReplayableEvent>([BATTLE_TOADS, MONSTER_BLITZKRIEG, BRUKKARG_EVENT, HELL_RAISERS, KING_OF_THE_HILL]);
+        public static const WRATH_OF_THE_CHAMPION:WrathOfTheChampion = new WrathOfTheChampion();
+
+        public static const EVENTS:Vector.<ReplayableEvent> = Vector.<ReplayableEvent>([BATTLE_TOADS, MONSTER_BLITZKRIEG, BRUKKARG_EVENT, HELL_RAISERS, KING_OF_THE_HILL, WRATH_OF_THE_CHAMPION]);
 
         public function ReplayableEventLibrary() {
             super();
