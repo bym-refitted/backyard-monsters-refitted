@@ -52,9 +52,11 @@ export const EVENTS: Record<GameEvent, EventDefinition> = {
     runDays: 7, 
     enabled: true 
   },
-  [GameEvent.MONSTER_MADNESS]: { 
-    runDays: 4, 
-    enabled: false 
+  [GameEvent.MONSTER_MADNESS]: {
+    replayableId: 6,
+    maxScore: 160_125_000,
+    runDays: 4,
+    enabled: false,
   },
   [GameEvent.BRUKKARG_WAR]: {
     replayableId: 5,

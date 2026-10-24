@@ -1,27 +1,12 @@
 import { devConfig } from "../config/GameConfig.js";
 import { getInvasionFlags } from "../services/events/wmi/getInvasionFlags.js";
 import { getReplayableEventFlags } from "../services/events/calendar/getReplayableEventFlags.js";
-import { getActiveEvents } from "../services/events/calendar/eventCalendar.js";
-import { GameEvent } from "../enums/GameEvent.js";
 import {
   KRALLEN_AWARD_THRESHOLD,
   KRALLEN_ROUND_DAYS,
   KRALLEN_SPECIAL2_THRESHOLD,
   KRALLEN_UPGRADE_THRESHOLD,
 } from "../config/KrallenConfig.js";
-
-/**
- * Gets the flag for Monster Madness. It isn't a replayable event, so instead of an
- * `activeevents` entry it has its own `monstermadness` flag with the start and end of the
- * run being announced or running. The flag is left out when there is no such run.
- */
-const getMonsterMadnessFlags = () => {
-  const run = getActiveEvents().find(({ event }) => event === GameEvent.MONSTER_MADNESS);
-
-  if (!run) return {};
-
-  return { monstermadness: { start: run.start, end: run.end } };
-};
 
 /**
  * Configuration flags for game settings.
@@ -71,7 +56,6 @@ export const getFlags = () => ({
   event2: 0,
   ...getInvasionFlags(),
   ...getReplayableEventFlags(),
-  ...getMonsterMadnessFlags(),
   iframestart_override: 0,
   mushrooms: 1,
   chatwhitelist: "",
