@@ -7,6 +7,7 @@ import { getCurrentDateTime } from "../../../utils/getCurrentDateTime.js";
 import { getScheduledEvent } from "../calendar/eventCalendar.js";
 import { getTribeTakeoverValue } from "../../maproom/v2/tribeTakeoverValue.js";
 import { BaseType } from "../../../enums/Base.js";
+import { grantKorathReward } from "./korathRewards.js";
 
 /**
  * The empire value an Outpost scores when taken over. A player's Outpost has the value its owner's client last
@@ -25,14 +26,18 @@ const getTakeoverValue = (outpost: Save) => {
 /**
  * Adds an Outpost taken over on Map Room 2 to the player's Monster Madness score, at the empire
  * value it had before the takeover, tribe yards included. Only counts while the event is running,
- * and each Outpost only once per run. The score stops at the event's maximum.
+ * and each Outpost only once per run. The score stops at the event's maximum. A score that passes
+ * a goal grants that Korath level straight away.
  *
- * The score row is persisted, not flushed: the takeover flushes it with the rest of its changes.
+ * The score row and the player's yard are persisted, not flushed: the takeover flushes them with
+ * the rest of its changes.
  *
- * @param {number} userid - The player taking the Outpost over
+ * @param {Save} save - The main yard of the player taking the Outpost over
  * @param {Save} outpost - The Outpost's save, before its ownership changes
  */
-export const scoreOutpostTakeover = async (userid: number, outpost: Save) => {
+export const scoreOutpostTakeover = async (save: Save, outpost: Save) => {
+  const { userid } = save;
+
   const event = GameEvent.MONSTER_MADNESS;
   const scheduled = getScheduledEvent(event);
 
@@ -59,5 +64,7 @@ export const scoreOutpostTakeover = async (userid: number, outpost: Save) => {
   progress.score = Math.min(progress.score + getTakeoverValue(outpost), maxScore);
   progress.taken_outposts = [...progress.taken_outposts, baseid];
 
-  postgres.em.persist(progress);
+  grantKorathReward(save, progress.score);
+
+  postgres.em.persist([progress, save]);
 };

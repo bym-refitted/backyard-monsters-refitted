@@ -2153,9 +2153,10 @@ package {
             if (Boolean(GLOBAL.attackingPlayer) && GLOBAL.attackingPlayer != GLOBAL.player) {
                 GLOBAL.attackingPlayer.importPlayerSpecificHandlers(loadObject);
             }
-            if (!isInfernoMainYardOrOutpost) {
-                MonsterMadness.updateKorathStats();
-            }
+            // The server grants Korath (korathRewards.ts); this granted him from the client-saved mmscore stat.
+            // if (!isInfernoMainYardOrOutpost) {
+            // MonsterMadness.updateKorathStats();
+            // }
             FrontPageHandler.setup(loadObject["frontpage"]);
             FrontPageHandler.showPopup();
             if (GLOBAL.DOES_USE_SCROLL) {

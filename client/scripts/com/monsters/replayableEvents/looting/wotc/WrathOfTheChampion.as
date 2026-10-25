@@ -5,6 +5,7 @@ package com.monsters.replayableEvents.looting.wotc {
     import com.monsters.replayableEvents.attacking.monsterMadness.MonsterMadness;
     import com.monsters.replayableEvents.looting.wotc.messages.*;
     import com.monsters.replayableEvents.looting.wotc.quotas.WOTCQuota;
+    import com.monsters.replayableEvents.looting.wotc.rewards.KorathRewards;
 
     public class WrathOfTheChampion extends ReplayableEvent {
 
@@ -83,11 +84,27 @@ package com.monsters.replayableEvents.looting.wotc {
 
         override protected function setScoreFromServer(param1:Object):void {
             super.setScoreFromServer(param1);
+            this.syncKorathReward(param1);
             setMetQuotas();
             if (this.hasCompletedEvent) {
                 return;
             }
             progress = _score / _maxScore;
+        }
+
+        /**
+         * Applies the Korath level the server sends with the score. The server grants it once the score
+         * has earned it, and sends no reward field when the event isn't active.
+         *
+         * @param serverData The server's reply to a score request
+         */
+        private function syncKorathReward(serverData:Object):void {
+            var hasRewardField:Boolean = serverData.hasOwnProperty("korathreward");
+
+            if (!hasRewardField)
+                return;
+
+            KorathRewards.sync(serverData.korathreward);
         }
 
         /**

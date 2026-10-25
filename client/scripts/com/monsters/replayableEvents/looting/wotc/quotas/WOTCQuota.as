@@ -14,8 +14,13 @@ package com.monsters.replayableEvents.looting.wotc.quotas {
             this._rewardLevel = param3;
         }
 
+        /**
+         * Shows the reward's message once. The server grants the Korath level (korathRewards.ts) and the
+         * event applies it from the score reply (KorathRewards.sync), so meeting the quota no longer
+         * grants it here.
+         */
         override public function metQuota():void {
-            this.updateReward();
+            // this.updateReward();
             if (hasBeenAwarded) {
                 return;
             }

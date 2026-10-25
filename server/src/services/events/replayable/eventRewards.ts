@@ -1,11 +1,12 @@
 import { Save } from "../../../database/models/save.model.js";
 import { GameEvent } from "../../../enums/GameEvent.js";
+import { settleKorathReward } from "../monsterMadness/korathRewards.js";
 import { settleSpurtzReward } from "./spurtzRewards.js";
 
 /**
  * Gets the reward fields to send with a player's score in an event, granting any reward the
- * score has earned first. Only Brukkarg War has server-granted rewards: its Spurtz Cannon
- * reward goes out as `spurtzreward`.
+ * score has earned first. Brukkarg War's Spurtz Cannon reward goes out as `spurtzreward`, and
+ * Monster Madness's Korath level as `korathreward`.
  *
  * @param {Save} save - The player's main yard
  * @param {GameEvent} event - The event the score belongs to
@@ -13,11 +14,16 @@ import { settleSpurtzReward } from "./spurtzRewards.js";
  * @returns {Promise<Record<string, unknown>>} The fields to add to the response
  */
 export const getEventRewardFields = async (save: Save, event: GameEvent, score: number | undefined) => {
-  const isBrukkargWar = event === GameEvent.BRUKKARG_WAR;
+  if (score === undefined) return {};
 
-  if (!isBrukkargWar || score === undefined) return {};
+  switch (event) {
+    case GameEvent.BRUKKARG_WAR:
+      return { spurtzreward: await settleSpurtzReward(save, score) };
 
-  const spurtzreward = await settleSpurtzReward(save, score);
+    case GameEvent.MONSTER_MADNESS:
+      return { korathreward: await settleKorathReward(save, score) };
 
-  return { spurtzreward };
+    default:
+      return {};
+  }
 };

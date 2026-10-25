@@ -68,7 +68,7 @@ export const takeoverCell: KoaController = async (ctx) => {
 
   const isMapRoom2 = mapversion === MapRoomVersion.V2;
   
-  if (isMapRoom2) await scoreOutpostTakeover(currentUser.userid, cellSave);
+  if (isMapRoom2) await scoreOutpostTakeover(userSave, cellSave);
 
   // Clean up previous owner's save if the cell was player-owned
   const previousOwner = await postgres.em.findOne(
