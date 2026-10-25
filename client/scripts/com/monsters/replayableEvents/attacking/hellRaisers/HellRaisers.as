@@ -68,7 +68,10 @@ package com.monsters.replayableEvents.attacking.hellRaisers {
         }
 
         override public function doesQualify():Boolean {
-            return MapRoomManager.instance.isInMapRoom3;
+            // return MapRoomManager.instance.isInMapRoom3;
+            var isAtHome:Boolean = GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD && BASE.isMainYard;
+
+            return isAtHome && MapRoomManager.instance.isInMapRoom3;
         }
     }
 }
