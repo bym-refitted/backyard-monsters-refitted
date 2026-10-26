@@ -64,6 +64,10 @@ export const mapSaveData = async (save: Save, user: User): Promise<Partial<Save>
 export const buildSaveData = (save: Save, user: User, ownerSave: OwnerSave | null): Partial<Save> => {
   const filteredSave = FilterFrontendKeys(save);
 
+  // The client switches into MR2 on any load with usemap set and never switches back,
+  // so it must describe the viewer's map room, not that of whoever owns the yard.
+  if (save.type !== BaseType.INFERNO && user.save) filteredSave.usemap = user.save.usemap;
+
   const isOwner = save.type !== BaseType.INFERNO && save.userid === user.userid;
 
   if (isOwner && user.save) return Object.assign(filteredSave, mapOwnerState(user, user.save));
