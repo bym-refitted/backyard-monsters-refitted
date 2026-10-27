@@ -89,23 +89,6 @@ export const settleSpurtzReward = async (save: Save, score: number) => {
 };
 
 /**
- * Merges the rewards a client saved with the stored ones. The server owns the Spurtz Cannon
- * rewards, so the client's are ignored and the stored one is kept.
- *
- * @param {Rewards} stored - The rewards in the database
- * @param {RewardsData} saved - The rewards the client saved
- * @returns {RewardsData} The rewards to store
- */
-export const mergeSavedRewards = (stored: Rewards, saved: RewardsData): RewardsData => {
-  const merged = withoutSpurtzRewards(saved);
-  const heldReward = getSpurtzReward(stored);
-
-  if (heldReward) merged[heldReward] = { id: heldReward };
-
-  return merged;
-};
-
-/**
  * Counts the Spurtz Cannons and Black Diamond Spurtz Cannons in a yard.
  *
  * @param {Buildings} buildings - The yard's buildings

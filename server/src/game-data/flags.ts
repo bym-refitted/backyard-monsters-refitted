@@ -1,40 +1,12 @@
 import { devConfig } from "../config/GameConfig.js";
-import { getActiveInvasion } from "../services/events/wmi/getActiveInvasion.js";
-import { setupInvasionEvent } from "../services/events/wmi/setupInvasionEvent.js";
-import { getActiveEvents } from "../services/events/calendar/eventCalendar.js";
-import { EVENTS } from "../config/EventCalendarConfig.js";
+import { getInvasionFlags } from "../services/events/wmi/getInvasionFlags.js";
+import { getReplayableEventFlags } from "../services/events/calendar/getReplayableEventFlags.js";
 import {
   KRALLEN_AWARD_THRESHOLD,
   KRALLEN_ROUND_DAYS,
   KRALLEN_SPECIAL2_THRESHOLD,
   KRALLEN_UPGRADE_THRESHOLD,
 } from "../config/KrallenConfig.js";
-
-/**
- * Gets the current invasion flags.
- * These flags are used to determine the state of Wild Monster Invasion events.
- */
-const getInvasionFlags = () => {
-  const activeInvasion = getActiveInvasion();
-  const invasionPhases = setupInvasionEvent(activeInvasion).phases;
-  return { ...invasionPhases, activeInvasion };
-};
-
-/**
- * Gets the flags for the replayable events.
- *
- * `activeevents` lists the replayable events the calendar has running, each with the id
- * the client knows it by and its start time. The client shows the one the player qualifies for.
- *
- * `ers` stays off: it lets the client schedule events for itself, which the calendar replaces.
- */
-const getReplayableEventFlags = () => {
-  const activeevents = getActiveEvents()
-    .filter(({ event }) => EVENTS[event].replayableId)
-    .map(({ event, start }) => ({ id: EVENTS[event].replayableId, start }));
-
-  return { ers: 0, activeevents };
-};
 
 /**
  * Configuration flags for game settings.

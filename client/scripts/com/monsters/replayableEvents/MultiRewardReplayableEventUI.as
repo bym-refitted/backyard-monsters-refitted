@@ -51,7 +51,6 @@ package com.monsters.replayableEvents {
             this._event = param1;
             tScore.visible = false;
             tScore.mouseEnabled = false;
-            timeLabel.x = 49;
             buttonHelp.addEventListener(MouseEvent.CLICK, this.ShowInfoPopup);
             buttonHelp.buttonMode = true;
             if (this._event.buttonCopy) {

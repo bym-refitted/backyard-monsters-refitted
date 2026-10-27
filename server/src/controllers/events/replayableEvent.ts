@@ -1,3 +1,4 @@
+import { EVENTS } from "../../config/EventCalendarConfig.js";
 import { Event } from "../../database/models/event.model.js";
 import { User } from "../../database/models/user.model.js";
 import { Status } from "../../enums/StatusCodes.js";
@@ -38,6 +39,7 @@ export const getReplayableEventScore: KoaController = async (ctx) => {
 
 /**
  * Adds the points the client reports to the player's score, and returns the new score.
+ * Only events marked `clientScored` take points from the client; the rest are scored by the server.
  *
  * The response carries no `score` when the points are not accepted. The client ignores a
  * missing one, whereas a score lower than its own makes AttackDefend.as post the
@@ -50,8 +52,9 @@ export const updateReplayableEventScore: KoaController = async (ctx) => {
   const { eventid, delta } = UpdateEventScoreSchema.parse(ctx.request.body);
 
   const scheduled = getActiveReplayableEvent(eventid);
+  const isClientScored = scheduled ? EVENTS[scheduled.event].clientScored : false;
 
-  if (!scheduled) {
+  if (!scheduled || !isClientScored) {
     ctx.status = Status.OK;
     ctx.body = { error: 0 };
     return;

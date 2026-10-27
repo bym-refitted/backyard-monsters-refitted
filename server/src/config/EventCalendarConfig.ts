@@ -6,6 +6,7 @@ export interface EventDefinition {
   replayableId?: number;
   maxScore?: number;
   copyBaseScore?: number;
+  clientScored?: boolean;
   weekly?: boolean;
   countdownDays?: number;
   closingDays?: number;
@@ -52,20 +53,24 @@ export const EVENTS: Record<GameEvent, EventDefinition> = {
     runDays: 7, 
     enabled: true 
   },
-  [GameEvent.MONSTER_MADNESS]: { 
-    runDays: 4, 
-    enabled: false 
+  [GameEvent.MONSTER_MADNESS]: {
+    replayableId: 6,
+    maxScore: 160_125_000,
+    runDays: 4,
+    enabled: false,
   },
   [GameEvent.BRUKKARG_WAR]: {
     replayableId: 5,
     maxScore: 5025,
     copyBaseScore: 4024,
+    clientScored: true,
     runDays: 5,
     enabled: true,
   },
   [GameEvent.CREATURE_CARNAGE]: {
     replayableId: 1,
     maxScore: 10,
+    clientScored: true,
     weekly: true,
     countdownDays: 1,
     closingDays: 0,
@@ -75,6 +80,7 @@ export const EVENTS: Record<GameEvent, EventDefinition> = {
   [GameEvent.MONSTER_BLITZKRIEG]: {
     replayableId: 2,
     maxScore: 10,
+    clientScored: true,
     weekly: true,
     countdownDays: 1,
     closingDays: 0,
@@ -83,8 +89,8 @@ export const EVENTS: Record<GameEvent, EventDefinition> = {
   },
   [GameEvent.KING_OF_THE_HILL]: {
     replayableId: 4,
+    clientScored: true,
     runDays: 7,
-    // Launch announcement for Hunt for Krallen, which runs weekly on its own; not on the calendar, only ever run once, by override.
     enabled: false,
   },
   [GameEvent.HELL_RAISERS]: {

@@ -60,7 +60,10 @@ package com.monsters.replayableEvents.looting {
 
         override public function doesQualify():Boolean {
             // return false;
-            return KOTHHandler.instance.doesQualify && Boolean(GLOBAL._flags.krallen);
+            // return KOTHHandler.instance.doesQualify && Boolean(GLOBAL._flags.krallen);
+            var isAtHome:Boolean = GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD && BASE.isMainYard;
+
+            return isAtHome && KOTHHandler.instance.doesQualify && Boolean(GLOBAL._flags.krallen);
         }
     }
 }

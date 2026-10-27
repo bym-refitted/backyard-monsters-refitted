@@ -33,7 +33,8 @@ import { calculateBaseLevel } from "../../../services/base/calculateBaseLevel.js
 import { MR1_TRIBE_IDS } from "../../../game-data/tribes/v1/index.js";
 import { scaledMR1Tribes } from "../../../services/maproom/v1/scaledMR1Tribes.js";
 import { lowersTownHall } from "../../../services/base/lowersTownHall.js";
-import { addsSpurtzCannons, mergeSavedRewards } from "../../../services/events/replayable/spurtzRewards.js";
+import { addsSpurtzCannons } from "../../../services/events/replayable/spurtzRewards.js";
+import { mergeSavedRewards } from "../../../services/base/mergeSavedRewards.js";
 
 /**
  * Controller responsible for saving the user's base data.
