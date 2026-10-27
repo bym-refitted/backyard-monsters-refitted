@@ -25,6 +25,14 @@ package com.monsters.replayableEvents.monsterMadness.popups {
 
         private static const _infoSets:Vector.<MonsterMadnessPopupInfo> = Vector.<MonsterMadnessPopupInfo>([new MonsterMadnessPopupInfoSet1(), new MonsterMadnessPopupInfoSet2(), new MonsterMadnessPopupInfoSet3(), new MonsterMadnessPopupInfoSet4(), new MonsterMadnessPopupInfoGoal1(), new MonsterMadnessPopupInfoGoal1Complete(), new MonsterMadnessPopupInfoGoal2(), new MonsterMadnessPopupInfoGoal2Complete(), new MonsterMadnessPopupInfoGoal3(), new MonsterMadnessPopupInfoGoal3Complete(), new MonsterMadnessPopupInfoEventComplete()]);
 
+        private static const GOAL_1_SET:uint = 4;
+
+        private static const COMPLETED_GOAL_SETS:Array = [
+                {"points": MonsterMadness.POINTS_GOAL3, "setIndex": 9},
+                {"points": MonsterMadness.POINTS_GOAL2, "setIndex": 7},
+                {"points": MonsterMadness.POINTS_GOAL1, "setIndex": 5}
+            ];
+
         public var infoIndex:int;
 
         public function MonsterMadnessPopup() {
@@ -48,41 +56,99 @@ package com.monsters.replayableEvents.monsterMadness.popups {
             UI2.DebugWarningEdit("MM Userstate: " + _loc1_);
         }
 
+        // public static function getSetIndex():uint {
+        // var _loc2_:uint = 0;
+        // var _loc3_:uint = 0;
+        // var _loc4_:int = 0;
+        // var _loc5_:Number = NaN;
+        // var _loc6_:int = 0;
+        // var _loc1_:uint = MonsterMadness.EVENT_DATES.indexOf(MonsterMadness.activeDate);
+        // if (MonsterMadness.hasEventStarted || Boolean(MonsterMadness.points)) {
+        // _loc3_ = MonsterMadness.points;
+        // if (_loc3_ >= MonsterMadness.POINTS_GOAL3) {
+        // _loc2_ = 9;
+        // }
+        // else if (_loc3_ >= MonsterMadness.POINTS_GOAL2) {
+        // _loc2_ = 7;
+        // }
+        // else if (_loc3_ >= MonsterMadness.POINTS_GOAL1) {
+        // _loc2_ = 5;
+        // }
+        // else {
+        // _loc2_ = 4;
+        // }
+        // _loc4_ = GLOBAL.StatGet(MonsterMadness.LAST_POPUP_INDEX);
+        // if (_loc2_ <= _loc4_ && _infoSets[_loc2_].isOnlySeenOnce) {
+        // _loc2_++;
+        // }
+        // return _loc2_;
+        // }
+        // _loc5_ = MonsterMadness.currentTime;
+        // _loc6_ = int(_loc1_);
+        // while (_loc6_ >= 0) {
+        // if (_loc5_ >= MonsterMadness.EVENT_DATES[_loc6_].getUTCSeconds()) {
+        // return _loc6_;
+        // }
+        // _loc6_--;
+        // }
+        // return 0;
+        // }
+
+        /**
+         * Picks the popup set to show. Once the event has started, or the player has points, it is the
+         * set for the goal they have reached; before the start, it is the latest promo whose date has passed.
+         *
+         * @return The index of the set in _infoSets
+         */
         public static function getSetIndex():uint {
-            var _loc2_:uint = 0;
-            var _loc3_:uint = 0;
-            var _loc4_:int = 0;
-            var _loc5_:Number = NaN;
-            var _loc6_:int = 0;
-            var _loc1_:uint = MonsterMadness.EVENT_DATES.indexOf(MonsterMadness.activeDate);
-            if (MonsterMadness.hasEventStarted || Boolean(MonsterMadness.points)) {
-                _loc3_ = MonsterMadness.points;
-                if (_loc3_ >= MonsterMadness.POINTS_GOAL3) {
-                    _loc2_ = 9;
+            const isUnderway:Boolean = MonsterMadness.hasEventStarted || MonsterMadness.points > 0;
+
+            if (isUnderway)
+                return getGoalSetIndex(MonsterMadness.points);
+
+            return getPromoSetIndex(MonsterMadness.currentTime);
+        }
+
+        /**
+         * Gets the set for the highest goal the player has completed, or the first goal's when none is.
+         * A completed goal's set that only shows once and has already been shown moves on to the next set.
+         *
+         * @param points The player's score in the event
+         * @return The index of the set in _infoSets
+         */
+        private static function getGoalSetIndex(points:uint):uint {
+            var setIndex:uint = GOAL_1_SET;
+
+            for (var goalIndex:int = 0; goalIndex < COMPLETED_GOAL_SETS.length; goalIndex++) {
+                var completedGoal:Object = COMPLETED_GOAL_SETS[goalIndex];
+
+                if (points >= completedGoal.points) {
+                    setIndex = completedGoal.setIndex;
+                    break;
                 }
-                else if (_loc3_ >= MonsterMadness.POINTS_GOAL2) {
-                    _loc2_ = 7;
-                }
-                else if (_loc3_ >= MonsterMadness.POINTS_GOAL1) {
-                    _loc2_ = 5;
-                }
-                else {
-                    _loc2_ = 4;
-                }
-                _loc4_ = GLOBAL.StatGet(MonsterMadness.LAST_POPUP_INDEX);
-                if (_loc2_ <= _loc4_ && _infoSets[_loc2_].isOnlySeenOnce) {
-                    _loc2_++;
-                }
-                return _loc2_;
             }
-            _loc5_ = MonsterMadness.currentTime;
-            _loc6_ = int(_loc1_);
-            while (_loc6_ >= 0) {
-                if (_loc5_ >= MonsterMadness.EVENT_DATES[_loc6_].getUTCSeconds()) {
-                    return _loc6_;
-                }
-                _loc6_--;
+
+            const lastShownIndex:int = GLOBAL.StatGet(MonsterMadness.LAST_POPUP_INDEX);
+            const hasBeenShown:Boolean = setIndex <= lastShownIndex && _infoSets[setIndex].isOnlySeenOnce;
+
+            return hasBeenShown ? setIndex + 1 : setIndex;
+        }
+
+        /**
+         * Gets the latest promo set whose date has passed. The promo sets share their indexes with the
+         * event's dates: the three promo dates, then the start.
+         *
+         * @param now The current time, in seconds
+         * @return The index of the set in _infoSets
+         */
+        private static function getPromoSetIndex(now:Number):uint {
+            const eventDates:Vector.<Number> = MonsterMadness.eventDates;
+
+            for (var dateIndex:int = MonsterMadness.START_DATE_INDEX; dateIndex >= 0; dateIndex--) {
+                if (now >= eventDates[dateIndex])
+                    return dateIndex;
             }
+
             return 0;
         }
 

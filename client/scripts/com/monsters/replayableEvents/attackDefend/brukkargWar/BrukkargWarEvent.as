@@ -26,6 +26,8 @@ package com.monsters.replayableEvents.attackDefend.brukkargWar {
 
         private const _BUILDING_REWARD_ID:String = "C17";
 
+        private static const TIMER_X:Number = 49;
+
         private const _WAVES_TOTAL:uint = 25;
 
         public function BrukkargWarEvent() {
@@ -84,9 +86,17 @@ package com.monsters.replayableEvents.attackDefend.brukkargWar {
             return _buttonCopy;
         }
 
+        /**
+         * Brukkarg War's recreated running image has its timer box further left than the
+         * original panel art, so its timer is moved to fit.
+         */
         override public function createNewUI():IReplayableEventUI {
             if (hasEventStarted) {
-                return new MultiRewardReplayableEventUI();
+                // return new MultiRewardReplayableEventUI();
+                var runningUI:MultiRewardReplayableEventUI = new MultiRewardReplayableEventUI();
+                runningUI.timeLabel.x = TIMER_X;
+
+                return runningUI;
             }
             return new ReplayableEventUI();
         }

@@ -36,6 +36,9 @@ package {
         }
 
         public static function Setup():void {
+            if (_open)
+                return;
+
             _mc = null;
             loadState = 0;
             _open = false;
@@ -78,6 +81,10 @@ package {
         }
 
         public static function Show(param1:MouseEvent = null):void {
+            // Comment: a second Map click while the map loads added a second window and blocker.
+            if (_open) {
+                return;
+            }
             if (GLOBAL._otherStats["mrlsr"] != undefined) {
                 _lastSortReversed = GLOBAL.StatGet("mrlsr");
             }
@@ -105,6 +112,7 @@ package {
                                 // Loads Map Room 1
                                 // This can be triggered if save.usemap on the server is not set or 0
                                 _mc = new MapRoom();
+                                loadState = 1;
                                 _mc.init(bridge_obj);
                                 GLOBAL._layerTop.addChild(_mc);
                             }
@@ -151,14 +159,26 @@ package {
         }
 
         public static function Hide(param1:MouseEvent = null):void {
+            // Comment: _mc.Hide() calls back into this through BRIDGE.Hide, so the window is taken
+            // first to make the nested call a no-op instead of removing a second blocker.
+            var mc:MapRoom = _mc;
+            if (!mc) {
+                _open = false;
+                return;
+            }
+            _mc = null;
             try {
                 GLOBAL.BlockerRemove();
                 SOUNDS.Play("close");
-                GLOBAL._layerWindows.removeChild(_mc);
+                // Comment: the window sits on _layerTop until its player list loads (see ShowB), so
+                // closing it before then threw here and left it on screen.
+                // GLOBAL._layerWindows.removeChild(_mc);
+                if (mc.parent) {
+                    mc.parent.removeChild(mc);
+                }
                 _open = false;
-                _mc.Hide();
-                _mc = null;
                 loadState = 0;
+                mc.Hide();
             }
             catch (e:Error) {
             }

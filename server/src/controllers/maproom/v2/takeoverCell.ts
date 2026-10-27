@@ -15,6 +15,7 @@ import { validateRange } from "../../../services/maproom/v2/validateRange.js";
 import { TakeoverCellSchema } from "../../../schemas/TakeoverCellSchema.js";
 import { takeoverCellErr, shinyLockedErr } from "../../../errors/errors.js";
 import { isShinyLocked } from "../../../services/user/shinyLock.js";
+import { scoreOutpostTakeover } from "../../../services/events/monsterMadness/scoreOutpostTakeover.js";
 
 /**
  * Controller to handle the takeover of a cell on the world map via shiny or resources.
@@ -22,6 +23,7 @@ import { isShinyLocked } from "../../../services/user/shinyLock.js";
  * Retrieve the cell that is being taken over, by querying it with the baseid from the client.
  * To transfer ownership, update properties on the user, user's save, the cell and the associated cell save.
  * The previous owner's outposts are updated to reflect the takeover.
+ * While Monster Madness is running, a Map Room 2 Outpost also scores for the player.
  *
  * @param {Context} ctx - The Koa context object.
  * @throws Will throw an error if the base or base type is invalid.
@@ -63,6 +65,10 @@ export const takeoverCell: KoaController = async (ctx) => {
       userSave.resources ?? {},
       Operation.SUBTRACT
     );
+
+  const isMapRoom2 = mapversion === MapRoomVersion.V2;
+  
+  if (isMapRoom2) await scoreOutpostTakeover(userSave, cellSave);
 
   // Clean up previous owner's save if the cell was player-owned
   const previousOwner = await postgres.em.findOne(

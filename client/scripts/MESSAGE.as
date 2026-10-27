@@ -1,6 +1,7 @@
 package {
     import com.monsters.debug.Console;
     import flash.events.*;
+    import flash.geom.Rectangle;
     import flash.text.TextFieldAutoSize;
 
     public class MESSAGE extends MESSAGE_CLIP {
@@ -50,8 +51,7 @@ package {
             bAction2.y = mcBG.y + mcBG.height - 45;
 
             if (param2 && param5) {
-                bAction.x = bAction.x - (bAction.width + 20) * 0.5;
-                bAction2.x = bAction2.x + (bAction2.width + 20) * 0.5;
+                this.LayOutButtonPair();
             }
 
             GLOBAL.BlockerAdd(GLOBAL._layerTop);
@@ -59,6 +59,21 @@ package {
             this._mc.Center();
             this._mc.ScaleUp();
             return this;
+        }
+
+        /**
+         * Places bAction and bAction2 side by side, centred under the message, with bAction on the left.
+         * They start at different spots in the MESSAGE_CLIP symbol, so they are positioned from their
+         * bounds rather than nudged apart from where the symbol left them.
+         */
+        private function LayOutButtonPair():void {
+            var gap:int = 20;
+            var background:Rectangle = mcBG.getBounds(this);
+            var first:Rectangle = bAction.getBounds(this);
+            var second:Rectangle = bAction2.getBounds(this);
+            var left:Number = background.x + (background.width - (first.width + gap + second.width)) * 0.5;
+            bAction.x += left - first.x;
+            bAction2.x += left + first.width + gap - second.x;
         }
 
         public function Action(param1:MouseEvent):void {
