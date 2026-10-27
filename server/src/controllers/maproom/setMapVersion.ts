@@ -8,7 +8,6 @@ import { leaveWorld } from "../../services/maproom/v2/leaveWorld.js";
 import { FilterFrontendKeys } from "../../utils/FrontendKey.js";
 import { MapRoomVersion } from "../../enums/MapRoom.js";
 import { Status } from "../../enums/StatusCodes.js";
-import { Env } from "../../enums/Env.js";
 import { joinNewWorldMap } from "../../services/maproom/v3/joinNewWorldMap.js";
 import { extractTownHall } from "../../utils/extractTownHall.js";
 import {
@@ -125,10 +124,7 @@ export const setMapVersion: KoaController = async (ctx) => {
 
   const filteredSave = FilterFrontendKeys(save);
 
-  const baseurl =
-    process.env.ENV === Env.PROD
-      ? `${process.env.BASE_URL}/base/`
-      : `${process.env.BASE_URL}:${process.env.PORT}/base/`;
+  const baseurl = `${ctx.protocol}://${ctx.host}/base/`;
 
   ctx.status = Status.OK;
   ctx.body = {

@@ -125,9 +125,10 @@ package com.monsters.maproom {
 
         public function Hide(...rest):void {
             var _loc2_:Function = null;
-            if (BRIDGE.Hide) {
+            if (Boolean(BRIDGE) && Boolean(BRIDGE.Hide)) {
                 Obstruction.Clear();
                 this.mv.Clear();
+                this.players.removeEventListener(Event.COMPLETE, this.onPlayersFirstLoad);
                 this.players = null;
                 this.lv.Clear();
                 _loc2_ = BRIDGE.Hide;

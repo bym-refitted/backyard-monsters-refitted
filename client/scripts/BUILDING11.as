@@ -72,7 +72,11 @@ package {
                 GLOBAL.StatSet("mrl", 2, true);
                 GLOBAL._flags.mr2upgraded = 1;
                 MapRoomManager.instance.mapRoomVersion = MapRoomManager.MAP_ROOM_VERSION_2;
-                GLOBAL._baseURL = param1.baseurl;
+                // Comment: Kixeye could move a player to another server host on joining a world.
+                // Refitted has one server, which the client already saves to, and the server's
+                // copy of that address is wrong behind a reverse proxy.
+                // GLOBAL._baseURL = param1.baseurl;
+
                 GLOBAL._homeBaseID = param1.homebaseid;
                 BASE._loadedBaseID = param1.homebaseid;
                 BASE._baseID = 0;
@@ -247,7 +251,8 @@ package {
                 }
                 GLOBAL._bMap = null;
                 MapRoomManager.instance.DowngradeFromMapRoom3();
-                GLOBAL._baseURL = param1.baseurl;
+                // Comment: see NewWorldSuccess - keep saving to the server the client was built for.
+                // GLOBAL._baseURL = param1.baseurl;
                 BASE._baseID = 0;
                 BASE._loadedFriendlyBaseID = 0;
                 _loc2_ = 1;
