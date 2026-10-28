@@ -9,7 +9,8 @@ package com.monsters.replayableEvents.looting.wotc {
 
     public class WrathOfTheChampion extends ReplayableEvent {
 
-        public static const EVENT_PAGE_URL:String = "http://www.kixeye.com/monster-madness";
+        // public static const EVENT_PAGE_URL:String = "http://www.kixeye.com/monster-madness";
+        public static const EVENT_PAGE_URL:String = "https://backyardmonsters.fandom.com/wiki/Monster_Madness";
 
         protected var m_lastKnownScore:Number;
 
