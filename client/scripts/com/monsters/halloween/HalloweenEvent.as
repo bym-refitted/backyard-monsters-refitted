@@ -33,6 +33,7 @@ package com.monsters.halloween {
 
             SOUNDS.PlayMusic("musicbuild");
             new HalloweenKiddingPopup().Show(null, showGoodieBag);
+            POPUPS.Release();
         }
 
         private static function showGoodieBag():void {

@@ -1,6 +1,7 @@
 package com.monsters.halloween {
     import com.monsters.configs.BYMConfig;
     import com.monsters.pathing.PATHING;
+    import flash.display.StageDisplayState;
     import flash.events.MouseEvent;
 
     public class GiantPumpkin extends BDECORATION {
@@ -98,8 +99,26 @@ package com.monsters.halloween {
                 return;
 
             m_wasOpened = true;
+            POPUPS.Hold();
+            goFullscreen();
             SOUNDS.StopMusic();
             MAP.FocusTo(_mc.x, _mc.y, FOCUS_SECONDS, 0, 0, true, startOpening);
+        }
+
+        /**
+         * Puts the game in fullscreen for the show, unless it already is (GLOBAL.goFullScreen toggles, so it would take
+         * it out). Flash only allows it inside a click, so this runs straight from the dare's "Open the Pumpkin"; a
+         * player or host that refuses it leaves the game windowed.
+         */
+        private function goFullscreen():void {
+            if (GLOBAL._ROOT.stage.displayState != StageDisplayState.NORMAL)
+                return;
+
+            try {
+                GLOBAL.goFullScreen();
+            }
+            catch (e:SecurityError) {
+            }
         }
 
         public function remove():void {
