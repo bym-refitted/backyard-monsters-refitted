@@ -294,6 +294,19 @@ package {
             _currentMusic = null;
         }
 
+        /**
+         * Cuts the music off straight away, with nothing queued after it, until PlayMusic is called again.
+         */
+        public static function StopMusic():void {
+            if (_musicChannel) {
+                _musicChannel.stop();
+                _musicChannel.removeEventListener(Event.SOUND_COMPLETE, replayMusic);
+                _musicChannel = null;
+            }
+            _queuedMusic = null;
+            _currentMusic = null;
+        }
+
         public static function StopAll():void {
             SoundMixer.stopAll();
         }

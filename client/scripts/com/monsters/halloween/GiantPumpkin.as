@@ -1,4 +1,6 @@
 package com.monsters.halloween {
+    import com.monsters.configs.BYMConfig;
+    import com.monsters.pathing.PATHING;
     import flash.events.MouseEvent;
 
     public class GiantPumpkin extends BDECORATION {
@@ -10,6 +12,8 @@ package com.monsters.halloween {
         private var m_wasOpened:Boolean = false;
 
         private var m_isLiftingLid:Boolean = false;
+
+        private var m_hasExploded:Boolean = false;
 
         public function GiantPumpkin() {
             super(HalloweenEvent.GIANT_PUMPKIN_TYPE);
@@ -50,6 +54,29 @@ package com.monsters.halloween {
             var shouldAdvance:Boolean = param1 && m_isLiftingLid && !isOnLastFrame;
 
             _animTick = shouldAdvance ? frame + 1 : frame;
+
+            if (m_isLiftingLid && isOnLastFrame && !m_hasExploded) {
+                m_hasExploded = true;
+                HalloweenExplosion.play(HalloweenEvent.pumpkinExploded);
+            }
+        }
+
+        /**
+         * Keeps the pumpkin drawn while the yard shakes. The renderer skips a layer it judges off screen
+         * (MAP.viewRect), and the shake moves the ground after the view is worked out, so the pumpkin's tall
+         * animation, out past the yard's corner, blinked off and on. It's one building, so it's drawn whenever it's
+         * shown and the canvas clips it.
+         */
+        override protected function updateRasterData():void {
+            super.updateRasterData();
+
+            if (!BYMConfig.instance.RENDERER_ON || !_mc)
+                return;
+
+            for (var i:int = _RASTERDATA_SHADOW + 1; i < _RASTERDATA_AMOUNT; i++) {
+                if (_rasterData[i] && _rasterPt[i])
+                    _rasterData[i].visible = _sources[i] && !_sources[i].visible ? false : _mc.visible;
+            }
         }
 
         override public function Click(param1:MouseEvent = null):void {
@@ -63,7 +90,7 @@ package com.monsters.halloween {
             if (m_wasOpened)
                 return;
 
-            new HalloweenDarePopup().Show(open, HalloweenEvent.sawDare);
+            new HalloweenDarePopup().Show(open);
         }
 
         private function open():void {
@@ -71,7 +98,14 @@ package com.monsters.halloween {
                 return;
 
             m_wasOpened = true;
+            SOUNDS.StopMusic();
             MAP.FocusTo(_mc.x, _mc.y, FOCUS_SECONDS, 0, 0, true, startOpening);
+        }
+
+        public function remove():void {
+            GridCost(false);
+            PATHING.ResetCosts();
+            clear();
         }
 
         private function startOpening():void {

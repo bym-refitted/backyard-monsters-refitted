@@ -7,7 +7,7 @@ package com.monsters.halloween {
 
         private static const OFFSET_FROM_TOP_CORNER:Point = new Point(-225, 95);
 
-        private static const DARE_SEEN_STAT:String = "hwnDareSeen";
+        public static const SHINY_REWARD:int = 100;
 
         private static var s_pumpkin:GiantPumpkin;
 
@@ -20,21 +20,23 @@ package com.monsters.halloween {
                 return;
 
             addGiantPumpkin();
+            HalloweenExplosion.preload();
 
-            if (!hasSeenDareThisYear)
-                s_pumpkin.dare();
+            s_pumpkin.dare();
         }
 
-        public static function sawDare():void {
-            GLOBAL.StatSet(DARE_SEEN_STAT, currentYear);
+        public static function pumpkinExploded():void {
+            if (s_pumpkin) {
+                s_pumpkin.remove();
+                s_pumpkin = null;
+            }
+
+            SOUNDS.PlayMusic("musicbuild");
+            new HalloweenKiddingPopup().Show(null, showGoodieBag);
         }
 
-        private static function get hasSeenDareThisYear():Boolean {
-            return GLOBAL.StatGet(DARE_SEEN_STAT) == currentYear;
-        }
-
-        private static function get currentYear():int {
-            return new Date(GLOBAL.Timestamp() * 1000).fullYearUTC;
+        private static function showGoodieBag():void {
+            new HalloweenGoodiePopup().Show(HalloweenGoodiePopup.showGoodies);
         }
 
         public static function get pumpkinPosition():Point {
