@@ -10,7 +10,7 @@ package com.monsters.halloween {
 
         private static const SPECIAL_SUBMENU:int = 4;
 
-        public function HalloweenGoodiePopup() {
+        public function HalloweenGoodiePopup(shiny:int) {
             m_boxWidth = 545;
             m_boxHeight = 265;
             m_title = KEYS.Get("hwn_goodie_title");
@@ -18,7 +18,7 @@ package com.monsters.halloween {
             m_titleY = 16;
             m_textX = 140;
             m_textWidth = 348;
-            m_body = "<b>" + coloured(KEYS.Get("hwn_goodie_awarded", {"v1": HalloweenEvent.SHINY_REWARD}), TITLE_COLOUR) + "</b><br>" + KEYS.Get("hwn_goodie_body");
+            m_body = "<b>" + coloured(KEYS.Get("hwn_goodie_awarded", {"v1": shiny}), TITLE_COLOUR) + "</b><br>" + KEYS.Get("hwn_goodie_body");
             m_bodyColour = BODY_COLOUR;
             m_bodySize = 18;
             m_bodyY = 78;

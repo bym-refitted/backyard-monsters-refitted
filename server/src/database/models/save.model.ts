@@ -10,6 +10,7 @@ import type { Stats } from "../../services/events/wmi/invasionUtils.js";
 import type { ChampionData } from "../../schemas/ChampionSchema.js";
 import type { KrallenStoredData } from "../../schemas/KrallenSchema.js";
 import type { JsonObject } from "../../types/JsonObject.js";
+import type { StoredBuildings } from "../../types/StoredBuildings.js";
 import type { BuildingDataMap, BuildingHealthData } from "../../types/BuildingData.js";
 import type { RewardsData } from "../../types/RewardData.js";
 import { MapRoomVersion } from "../../enums/MapRoom.js";
@@ -275,7 +276,7 @@ export class Save {
 
   @FrontendKey
   @Property({ columnType: "jsonb", nullable: true })
-  researchdata?: JsonObject | null = {};
+  researchdata?: StoredBuildings | null = {};
 
   @FrontendKey
   @Property({ columnType: "jsonb", nullable: true })

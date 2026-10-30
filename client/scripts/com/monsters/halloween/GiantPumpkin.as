@@ -38,9 +38,9 @@ package com.monsters.halloween {
          * bitmap to be. BFOUNDATION only steps along the first row, so the frame's row is selected here and
          * BFOUNDATION draws its column.
          */
-        override public function AnimFrame(param1:Boolean = true):void {
+        override public function AnimFrame(advance:Boolean = true):void {
             if (!_animBMD || !_animRect) {
-                super.AnimFrame(param1);
+                super.AnimFrame(advance);
                 return;
             }
 
@@ -52,7 +52,7 @@ package com.monsters.halloween {
             _animTick = frame % framesPerRow;
             super.AnimFrame(false);
 
-            var shouldAdvance:Boolean = param1 && m_isLiftingLid && !isOnLastFrame;
+            var shouldAdvance:Boolean = advance && m_isLiftingLid && !isOnLastFrame;
 
             _animTick = shouldAdvance ? frame + 1 : frame;
 
@@ -80,7 +80,7 @@ package com.monsters.halloween {
             }
         }
 
-        override public function Click(param1:MouseEvent = null):void {
+        override public function Click(event:MouseEvent = null):void {
             if (MAP._dragged)
                 return;
 
@@ -100,6 +100,7 @@ package com.monsters.halloween {
 
             m_wasOpened = true;
             POPUPS.Hold();
+            HalloweenEvent.claimGoodieBag();
             goFullscreen();
             SOUNDS.StopMusic();
             MAP.FocusTo(_mc.x, _mc.y, FOCUS_SECONDS, 0, 0, true, startOpening);

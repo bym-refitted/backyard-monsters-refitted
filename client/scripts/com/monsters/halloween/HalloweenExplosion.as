@@ -31,6 +31,11 @@ package com.monsters.halloween {
 
         private static const LIGHT_SCALE:Number = 1.3 / 1.11;
 
+        /**
+         * The light is a soft wash, so it's saved at half size and drawn at twice that, as the scorch is.
+         */
+        private static const LIGHT_IMAGE_SCALE:Number = 2;
+
         private static const BASE_SCALE:Number = 1.3;
 
         private static const GROWTH:Number = 1.19;
@@ -75,6 +80,16 @@ package com.monsters.halloween {
 
         private static var s_wasZoomed:Boolean;
 
+        /**
+         * The show's images are only seen once a year, so they're freed from the image cache once it's over.
+         */
+        private static function releaseImages():void {
+            ImageCache.Release(IMAGE);
+            ImageCache.Release(LIGHT_IMAGE);
+            ImageCache.Release(CRATER_IMAGE);
+            ImageCache.Release(SCORCH_IMAGE);
+        }
+
         public static function preload():void {
             ImageCache.GetImageWithCallBack(IMAGE, null);
             ImageCache.GetImageWithCallBack(LIGHT_IMAGE, null);
@@ -116,8 +131,9 @@ package com.monsters.halloween {
 
             ImageCache.GetImageWithCallBack(LIGHT_IMAGE, function(url:String, image:BitmapData):void {
                     var bitmap:Bitmap = new Bitmap(image, "auto", true);
-                    bitmap.x = -image.width * 0.5;
-                    bitmap.y = -image.height * 0.5;
+                    bitmap.scaleX = bitmap.scaleY = LIGHT_IMAGE_SCALE;
+                    bitmap.x = -image.width * LIGHT_IMAGE_SCALE * 0.5;
+                    bitmap.y = -image.height * LIGHT_IMAGE_SCALE * 0.5;
                     s_light.addChild(bitmap);
                 });
 
@@ -215,6 +231,7 @@ package com.monsters.halloween {
                 s_crater.parent.removeChild(s_crater);
 
             s_crater = null;
+            releaseImages();
             zoomBack();
             unlockYard();
 
