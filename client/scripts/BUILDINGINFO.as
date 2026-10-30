@@ -255,6 +255,7 @@ package {
                             }
                             if (_props.type == "wall" && !_loc3_) {
                                 _loc1_.push(["btn_upgradeall", 30, 1]);
+                                _loc1_.push(["btn_upgradeline", 30]);
                             }
                             if (_props.type == "resource" && !_loc3_) {
                                 if (!GLOBAL._harvesterOverdrive || GLOBAL._harvesterOverdrive < GLOBAL.Timestamp()) {
@@ -581,6 +582,9 @@ package {
                 else {
                     STORE.ShowB(1, 0, ["BLK2", "BLK3", "BLK4", "BLK5"]);
                 }
+            }
+            if (param1.target.labelKey == "btn_upgradeline") {
+                BWALL.UpgradeLine(_building);
             }
             if (param1.target.labelKey == "btn_more") {
                 BUILDINGOPTIONS.Show(_building, "more");

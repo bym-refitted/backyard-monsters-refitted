@@ -1725,7 +1725,7 @@ package {
                             "r2": new SecNum(0),
                             "r3": new SecNum(0),
                             "r4": new SecNum(0),
-                            "time": new SecNum(5),
+                            "time": new SecNum(0),
                             "re": [[14, 1, 2]]
                         }, {
                             "r1": new SecNum(0),
@@ -1847,7 +1847,7 @@ package {
                             "r2": new SecNum(2000),
                             "r3": new SecNum(0),
                             "r4": new SecNum(0),
-                            "time": new SecNum(5),
+                            "time": new SecNum(0),
                             "re": [[14, 1, 3]]
                         }],
                     "imageData": {
