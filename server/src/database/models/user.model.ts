@@ -101,6 +101,12 @@ export class User {
   @Property({ columnType: "jsonb" })
   blockedUsers: Opt<number[]> = [];
 
+  @Property({ type: "boolean", default: false })
+  radio_attack_alerts: Opt<boolean> = false;
+
+  @Property({ type: "boolean", default: false })
+  radio_news_alerts: Opt<boolean> = false;
+
   @FrontendKey
   @Property({ type: "number", default: 0 })
   sendgift: Opt<number> = 0;

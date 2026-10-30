@@ -35,6 +35,7 @@ import { resetPassword } from "./controllers/auth/resetPassword.js";
 import { changeUsername } from "./controllers/auth/changeUsername.js";
 import { getAccount } from "./controllers/auth/getAccount.js";
 import { updateSettings } from "./controllers/auth/updateSettings.js";
+import { updateRadioAlerts } from "./controllers/auth/updateRadioAlerts.js";
 
 import { baseLoad } from "./controllers/base/load/baseLoad.js";
 import { baseSave } from "./controllers/base/save/baseSave.js";
@@ -121,7 +122,7 @@ router.post("/init", logRequest, init);
 router.get("/connection", (ctx) => (ctx.status = Status.OK));
 
 /**  ────────────────────────────────────────────────
-* 📦 Auth
+* 📦 Account & Auth
 * ──────────────────────────────────────────────── */
 router.post("/api/:apiVersion/player/getinfo", apiVersion, loginLimiter, logRequest, login);
 router.post("/api/:apiVersion/player/logout", apiVersion, verifyUserAuth, logRequest, logout);
@@ -132,6 +133,7 @@ router.get("/api/:apiVersion/supportedLangs", apiVersion, logRequest, supportedL
 router.get("/api/:apiVersion/player/account", apiVersion, verifyUserAuth, getAccount);
 router.post("/api/:apiVersion/player/changeusername", apiVersion, verifyUserAuth, changeUsernameLimiter, logRequest, changeUsername);
 router.post("/api/:apiVersion/player/settings", apiVersion, verifyUserAuth, logRequest, updateSettings);
+router.post("/api/:apiVersion/player/radio", apiVersion, verifyUserAuth, logRequest, updateRadioAlerts);
 
 /**  ────────────────────────────────────────────────
 * 📦 Base

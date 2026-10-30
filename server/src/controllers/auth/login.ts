@@ -18,6 +18,7 @@ import { UserLoginSchema } from "../../schemas/AuthSchemas.js";
 import { Env } from "../../enums/Env.js";
 import { SessionType } from "../../enums/SessionType.js";
 import { fetchDiscordAvatar } from "../../services/discord/fetchDiscordAvatar.js";
+import { radioAlertSettings } from "../../services/user/radioAlertSettings.js";
 
 type SessionLifetime = NonNullable<SignOptions["expiresIn"]>;
 
@@ -193,7 +194,6 @@ export const login: KoaController = async (ctx) => {
     tpid: "",
     currency_url: "",
     language: "en",
-    settings: {},
-    // TODO: add remaining keys that the client expects
+    radio: radioAlertSettings(user),
   };
 };

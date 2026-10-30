@@ -28,7 +28,7 @@ package {
 
         public static var _proxymail:String;
 
-        public static var _settings:Object;
+        // public static var _settings:Object;
 
         public static var _digits:Array;
 
@@ -172,10 +172,11 @@ package {
                 else {
                     MapRoomManager.instance.bookmarkData = {};
                 }
-                if (serverData.settings) {
-                    _settings = serverData.settings;
-                    RADIO.Setup(_settings);
-                }
+                // if (serverData.settings) {
+                // _settings = serverData.settings;
+                // RADIO.Setup(_settings);
+                // }
+                RADIO.Setup(serverData.radio);
                 if (serverData.proxy_email) {
                     _proxymail = serverData.proxy_email;
                 }
