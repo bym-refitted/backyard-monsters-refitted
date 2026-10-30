@@ -7,6 +7,7 @@ import { transporter } from "../../config/MailConfig.js";
 import { redis } from "../../server.js";
 import { getCurrentDateTime } from "../../utils/getCurrentDateTime.js";
 import { logger } from "../../utils/logger.js";
+import { unsubscribeLink } from "./unsubscribeLink.js";
 
 const ALERTS_PER_DAY = 2;
 
@@ -95,22 +96,31 @@ export const sendAttackAlert = async (attacker: User, defender: User, save: Save
 
     const attackerName = Bun.escapeHTML(attacker.username);
     const baseName = attackDetails(save);
-    const playLink = process.env.WEB_URL ?? "https://bymrefitted.com";
+    
+    const playLink = process.env.WEB_URL!;
+    const cdnUrl = process.env.CDN_URL!;
+    const unsubscribe = unsubscribeLink(defender.userid);
 
     const template = await Bun.file(TEMPLATE_PATH).text();
 
     const html = template
       .replace("{{attackerName}}", attackerName)
       .replace("{{baseName}}", baseName)
-      .replace("{{playLink}}", playLink);
+      .replace("{{playLink}}", playLink)
+      .replace("{{unsubscribeLink}}", unsubscribe)
+      .replaceAll("{{cdnUrl}}", cdnUrl);
 
     transporter
       .sendMail({
         from: "Backyard Monsters Refitted <info@bymrefitted.com>",
         to: defender.email,
         subject: `${attacker.username} is attacking ${baseName}! | BYM Refitted`,
-        text: `${attacker.username} is attacking ${baseName}!\n\nPlay now: ${playLink}\n\nYou are getting this because Attack Alerts are switched on in your Radio Tower. Untick them there to stop these emails.`,
+        text: `${attacker.username} is attacking ${baseName}!\n\nPlay now: ${playLink}\n\nYou are getting this because Attack Alerts are switched on in your Radio Tower. Unsubscribe: ${unsubscribe}`,
         html,
+        headers: {
+          "List-Unsubscribe": `<${unsubscribe}>`,
+          "List-Unsubscribe-Post": "List-Unsubscribe=One-Click",
+        },
       })
       .catch((error) => {
         logger.error("Attack alert email to user {userid} failed: {error}", { userid: defender.userid, error: String(error) });
