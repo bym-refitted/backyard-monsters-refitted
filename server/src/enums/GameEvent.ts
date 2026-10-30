@@ -12,6 +12,7 @@ export enum GameEvent {
   MONSTER_BLITZKRIEG = "monsterBlitzkrieg",
   KING_OF_THE_HILL = "kingOfTheHill",
   HELL_RAISERS = "hellRaisers",
+  HALLOWEEN = "halloween",
 }
 
 /**

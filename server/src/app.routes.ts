@@ -84,6 +84,7 @@ import { removeFriend } from "./controllers/friends/removeFriend.js";
 import { sendGift } from "./controllers/gifts/sendGift.js";
 
 import { wildMonsterInvasion } from "./controllers/events/wildMonsterInvasion.js";
+import { openHalloweenPumpkin } from "./controllers/events/halloween.js";
 import {
   copyReplayableEventBase,
   getReplayableEventScore,
@@ -248,6 +249,11 @@ router.get("/api/:apiVersion/events/wmi", apiVersion, logRequest, wildMonsterInv
 * 📦 Events - Brukkarg War
 * ──────────────────────────────────────────────── */
 router.post("/api/:apiVersion/bm/event/copybase", apiVersion, verifyUserAuth, logRequest, copyReplayableEventBase);
+
+/**  ────────────────────────────────────────────────
+* 📦 Events - Halloween
+* ──────────────────────────────────────────────── */
+router.post("/api/:apiVersion/bm/event/halloween/open", apiVersion, verifyUserAuth, logRequest, openHalloweenPumpkin);
 
 /**  ────────────────────────────────────────────────
 * 📦 Debug

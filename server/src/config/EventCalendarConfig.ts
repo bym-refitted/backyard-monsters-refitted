@@ -29,12 +29,13 @@ export const POST_EVENT_DAYS = 2;
 export const EVENT_START_OVERRIDES: Record<GameEvent, number> = {
   [GameEvent.WMI1]: 0,
   [GameEvent.WMI2]: 0,
-  [GameEvent.MONSTER_MADNESS]: 0,
+  [GameEvent.MONSTER_MADNESS]: 1793385649,
   [GameEvent.BRUKKARG_WAR]: 0,
   [GameEvent.CREATURE_CARNAGE]: 0,
   [GameEvent.MONSTER_BLITZKRIEG]: 0,
-  [GameEvent.KING_OF_THE_HILL]: 1792774800,
+  [GameEvent.KING_OF_THE_HILL]: 0,
   [GameEvent.HELL_RAISERS]: 0,
+  [GameEvent.HALLOWEEN]: 0,
 };
 
 /** The day of the month on which the event of each slot starts. */
@@ -96,6 +97,10 @@ export const EVENTS: Record<GameEvent, EventDefinition> = {
   [GameEvent.HELL_RAISERS]: {
     replayableId: 7,
     runDays: 4,
+    enabled: false,
+  },
+  [GameEvent.HALLOWEEN]: {
+    runDays: 1,
     enabled: false,
   },
 };

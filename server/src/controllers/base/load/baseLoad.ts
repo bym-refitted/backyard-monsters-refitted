@@ -45,6 +45,7 @@ import { runningPowerups } from "../../../services/alliance/powerups.js";
 import { cellRelationship, findRelationships } from "../../../services/alliance/relationships.js";
 import { INFERNO_CHAT_CHANNEL } from "../../../config/ChatConfig.js";
 import { isEventBase, loadEventBase } from "../../../services/events/replayable/eventBases.js";
+import { getHalloweenData } from "../../../services/events/halloween/halloween.js";
 
 type Stronghold = { level: number; cell?: { x: number; y: number } | null };
 
@@ -377,6 +378,10 @@ export const baseLoad: KoaController = async (ctx) => {
       powerups,
     }),
   };
+
+  if (type === BaseMode.BUILD && isOwner && baseSave.type === BaseType.MAIN) {
+    response.halloween = await getHalloweenData(user.userid);
+  }
 
   if (isOwner && !isInferno && mapversion === MapRoomVersion.V3) {
     response.player = { buffs: { 2: totalResourceRate, 10: totalResourceCapacity } };

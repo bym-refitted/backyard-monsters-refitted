@@ -1,5 +1,6 @@
 package {
     import com.cc.utils.SecNum;
+    import com.monsters.halloween.HalloweenMiniPumpkin;
     import com.monsters.siege.SiegeFactory;
     import com.monsters.siege.SiegeLab;
     import flash.geom.Point;
@@ -3982,8 +3983,10 @@ package {
                     "sale": 0,
                     "description": "Temporary pumpkin for picking",
                     "block": true,
-                    "cls": BDECORATION,
-                    "quantity": [0],
+                    // "cls": BDECORATION,
+                    "cls": HalloweenMiniPumpkin,
+                    // "quantity": [0],
+                    "quantity": [5],
                     "hp": [10],
                     "repairTime": [10],
                     "imageData": {
