@@ -14,6 +14,8 @@ package com.monsters.halloween {
     import gs.TweenLite;
     import gs.easing.Back;
     import gs.easing.Quad;
+    import com.monsters.enums.EnumPlayerType;
+    import flash.system.Capabilities;
 
     public class HalloweenPopup {
         private static const SCALE:Number = 0.66;
@@ -175,6 +177,9 @@ package com.monsters.halloween {
         }
 
         private function placeBox():void {
+            if (Capabilities.playerType == EnumPlayerType.DESKTOP)
+                return;
+
             var centreY:Number = GLOBAL._SCREEN.y + GLOBAL._SCREEN.height * m_centreHeight;
             m_box.y = int(centreY - m_mc.y - m_boxHeight * SCALE * 0.5);
         }
