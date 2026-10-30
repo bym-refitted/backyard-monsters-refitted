@@ -40,6 +40,7 @@ package {
     import com.monsters.replayableEvents.ReplayableEventHandler;
     import com.monsters.replayableEvents.attacking.monsterMadness.MonsterMadness;
     import com.monsters.rewarding.RewardHandler;
+    import com.monsters.halloween.HalloweenEvent;
     import com.monsters.siege.*;
     import flash.display.*;
     import flash.events.*;
@@ -1533,7 +1534,8 @@ package {
                         buildingTypeCounts[building.t] ||= 0;
                         ++buildingTypeCounts[building.t];
                     }
-                    if (!(building.t == 53 || building.t == 54)) {
+                    // if (!(building.t == 53 || building.t == 54)) {
+                    if (building.t != 54) {
                         currentBuilding = building;
                         if (building.t == 18) {
                             building.t = 17;
@@ -2148,6 +2150,7 @@ package {
             }
             FrontPageHandler.initialize();
             MonsterMadness.initialize();
+            HalloweenEvent.initialize();
             GLOBAL.player.initializeHandlers(loadObject);
             GLOBAL.player.importPlayerSpecificHandlers(loadObject);
             if (Boolean(GLOBAL.attackingPlayer) && GLOBAL.attackingPlayer != GLOBAL.player) {

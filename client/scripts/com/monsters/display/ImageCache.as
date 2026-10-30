@@ -117,6 +117,27 @@ package com.monsters.display {
             getInstance().cache = {};
         }
 
+        /**
+         * Frees a loaded image that won't be needed again, so its bitmap doesn't stay in memory for the rest of the
+         * session. Anything still showing it goes blank, so only release an image once it's off screen; asking for it
+         * again loads it afresh.
+         */
+        public static function Release(key:String):void {
+            var loaded:Loadable = getInstance().cache[key];
+
+            if (!loaded)
+                return;
+
+            delete getInstance().cache[key];
+
+            var image:Bitmap = loaded.loader.content as Bitmap;
+
+            if (image && image.bitmapData)
+                image.bitmapData.dispose();
+
+            loaded.loader.unload();
+        }
+
         public static function GetImageWithCallBack(param1:String, param2:Function = null, param3:Boolean = true, param4:int = 4, param5:String = "", param6:Array = null):void {
             var _loc9_:Loadable = null;
             var _loc10_:Loadable = null;

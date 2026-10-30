@@ -38,6 +38,8 @@ package {
 
         public static var _timer:Timer;
 
+        private static var _holds:int = 0;
+
         public function POPUPS() {
             super();
         }
@@ -178,6 +180,9 @@ package {
             var ImageLoaded:Function;
             var message:Array = null;
             var group:String = param1;
+            if (_holds > 0) {
+                return;
+            }
             if (!GLOBAL._catchup || group == "tip") {
                 _lastGroup = group;
                 message = _popups[group].shift();
@@ -275,6 +280,26 @@ package {
                     NextDelayed(500);
                 }
             }
+        }
+
+        /**
+         * Keeps queued popups from showing until Release, as during a scripted sequence they would land on top of. They
+         * still queue as usual. Holds count, so each Hold needs its own Release.
+         */
+        public static function Hold():void {
+            ++_holds;
+        }
+
+        /**
+         * Ends a Hold. Once the last is released, the queue carries on from "now", as it would have.
+         */
+        public static function Release():void {
+            if (_holds == 0)
+                return;
+
+            --_holds;
+            if (_holds == 0 && !_open)
+                Show("now");
         }
 
         public static function QueueCount(param1:String = "now"):int {
