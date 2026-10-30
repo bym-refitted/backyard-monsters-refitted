@@ -1534,7 +1534,8 @@ package {
                         buildingTypeCounts[building.t] ||= 0;
                         ++buildingTypeCounts[building.t];
                     }
-                    if (!(building.t == 53 || building.t == 54)) {
+                    // if (!(building.t == 53 || building.t == 54)) {
+                    if (building.t != 54) {
                         currentBuilding = building;
                         if (building.t == 18) {
                             building.t = 17;

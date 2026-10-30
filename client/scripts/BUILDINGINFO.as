@@ -1,5 +1,6 @@
 package {
     import com.monsters.alliances.tabs.AllianceMessagePopup;
+    import com.monsters.halloween.HalloweenMiniPumpkin;
     import com.monsters.managers.InstanceManager;
     import com.monsters.maproom3.popups.MapRoom3ConfirmMigrationPopup;
     import com.monsters.maproom3.popups.MapRoom3RelocatePopup;
@@ -247,7 +248,8 @@ package {
                                 _loc1_.push([MapRoom3RelocatePopup.k_RELOCATE_BUTTONINFO, 30, true]);
                             }
                         }
-                        if (_loc2_ && _props.type != "mushroom") {
+                        // if (_loc2_ && _props.type != "mushroom") {
+                        if (_loc2_ && _props.type != "mushroom" && _props.id != HalloweenMiniPumpkin.TYPE) {
                             if (_props.type != "decoration" && _props.id != MAPROOM.TYPE && !_loc3_) {
                                 _loc1_.push(["btn_upgrade", 30]);
                             }
@@ -285,7 +287,8 @@ package {
                 else {
                     _loc1_.push(["btn_help", 30]);
                 }
-                if (_props.type == "mushroom") {
+                // if (_props.type == "mushroom") {
+                if (_props.type == "mushroom" || _props.id == HalloweenMiniPumpkin.TYPE) {
                     _loc1_.push(["btn_pick", 30, true]);
                 }
                 _loc7_ = _mc.tName.y + _mc.tName.height + 5;
@@ -583,7 +586,13 @@ package {
                 BUILDINGOPTIONS.Show(_building, "more");
             }
             if (param1.target.labelKey == "btn_pick") {
-                MUSHROOMS.PickWorker(_building);
+                // MUSHROOMS.PickWorker(_building);
+                if (_building is HalloweenMiniPumpkin) {
+                    HalloweenMiniPumpkin(_building).sendWorker();
+                }
+                else {
+                    MUSHROOMS.PickWorker(_building);
+                }
             }
             if (param1.target.labelKey == "btn_speedup") {
                 Update();

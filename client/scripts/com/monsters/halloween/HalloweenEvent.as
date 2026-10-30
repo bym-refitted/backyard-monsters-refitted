@@ -33,7 +33,12 @@ package com.monsters.halloween {
             var isAtHome:Boolean = GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD && BASE.isMainYard;
             var halloween:Object = BASE.loadObject["halloween"];
 
-            if (!isAtHome || !TUTORIAL.hasFinished || !halloween || !halloween.active || halloween.opened)
+            if (!isAtHome || !TUTORIAL.hasFinished || !halloween || !halloween.active)
+                return;
+
+            HalloweenPumpkinPatch.growToday();
+
+            if (halloween.opened)
                 return;
 
             addGiantPumpkin();
