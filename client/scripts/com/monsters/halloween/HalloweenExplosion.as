@@ -109,6 +109,7 @@ package com.monsters.halloween {
             s_white.graphics.drawRect(GLOBAL._SCREEN.x, GLOBAL._SCREEN.y, GLOBAL._SCREEN.width, GLOBAL._SCREEN.height);
             s_white.graphics.endFill();
             GLOBAL._layerTop.addChild(s_white);
+            SOUNDS.Play("pumpkinexplosion");
 
             whiteScreen();
         }
@@ -148,8 +149,6 @@ package com.monsters.halloween {
                     bitmap.y = -image.height * 0.5;
                     s_explosion.addChild(bitmap);
                 });
-
-            SOUNDS.Play("destroytownhall");
 
             TweenLite.to(s_white, WHITE_OUT_SECONDS, {"alpha": 0, "ease": Quad.easeIn, "onComplete": removeWhite});
             TweenLite.to(s_light, BEAMS_OUT_SECONDS, {"alpha": 0, "ease": Quad.easeIn});

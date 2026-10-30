@@ -120,6 +120,8 @@ package {
                 "dig": attacksounds + "wormzer_dig.mp3",
                 "bunkerdoor": attacksounds + "bunkerdoor.mp3",
                 "pumpkintreat": othersounds + "sound_pumpkin_treat.mp3",
+                "pumpkinopen": othersounds + "sound_pumpkin_open.mp3",
+                "pumpkinexplosion": othersounds + "sound_pumpkin_explosion.mp3",
                 "musicattack": mainmusic + "Music_Attack.mp3",
                 "musicbuild": mainmusic + "Music_Building.mp3",
                 "musicpanic": mainmusic + "Music_UnderAttack.mp3",

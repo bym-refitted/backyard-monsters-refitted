@@ -3,6 +3,8 @@ package com.monsters.halloween {
     import com.monsters.pathing.PATHING;
     import flash.display.StageDisplayState;
     import flash.events.MouseEvent;
+    import flash.media.SoundChannel;
+    import gs.TweenLite;
 
     public class GiantPumpkin extends BDECORATION {
 
@@ -10,11 +12,19 @@ package com.monsters.halloween {
 
         private static const FOCUS_SECONDS:Number = 1;
 
+        /**
+         * How long after the lid starts lifting the pumpkin goes off: long enough for the opening rumble (4.5 s) to play
+         * out, then a pause with D.A.V.E. sat out of the pumpkin, as the original paused before its flash.
+         */
+        private static const EXPLODE_AFTER_SECONDS:Number = 6;
+
         private var m_wasOpened:Boolean = false;
 
         private var m_isLiftingLid:Boolean = false;
 
         private var m_hasExploded:Boolean = false;
+
+        private var m_openingSound:SoundChannel;
 
         public function GiantPumpkin() {
             super(HalloweenEvent.GIANT_PUMPKIN_TYPE);
@@ -55,11 +65,6 @@ package com.monsters.halloween {
             var shouldAdvance:Boolean = advance && m_isLiftingLid && !isOnLastFrame;
 
             _animTick = shouldAdvance ? frame + 1 : frame;
-
-            if (m_isLiftingLid && isOnLastFrame && !m_hasExploded) {
-                m_hasExploded = true;
-                HalloweenExplosion.play(HalloweenEvent.pumpkinExploded);
-            }
         }
 
         /**
@@ -131,6 +136,20 @@ package com.monsters.halloween {
         private function startOpening():void {
             m_isLiftingLid = true;
             BASE.Shake(SHAKE_AMOUNT);
+            m_openingSound = SOUNDS.Play("pumpkinopen");
+            TweenLite.delayedCall(EXPLODE_AFTER_SECONDS, explode);
+        }
+
+        private function explode():void {
+            if (m_hasExploded)
+                return;
+
+            m_hasExploded = true;
+
+            if (m_openingSound)
+                m_openingSound.stop();
+
+            HalloweenExplosion.play(HalloweenEvent.pumpkinExploded);
         }
     }
 }
