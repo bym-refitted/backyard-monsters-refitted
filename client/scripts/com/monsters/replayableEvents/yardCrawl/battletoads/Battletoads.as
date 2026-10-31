@@ -20,13 +20,14 @@ package com.monsters.replayableEvents.yardCrawl.battletoads {
             _progress = -1;
             // _priority = 100;
             _priority = 600;
-            _duration = 518400;
+            // _duration = 518400;
             _yardsToDestroy = 10;
             _titleImage = "events/creatureCarnage/creatureCarnage_logo.v3.png";
             _imageURL = "events/creatureCarnage/creatureCarnage_event.v3.png";
             _messages = Vector.<Message>([new BattletoadsPromoMessage1(), new BattletoadsPromoMessage2(), new BattletoadsPromoMessage3(), new BattletoadsStartMessage(), new BattletoadsEndMessage()]);
             _rewardMessage = new BattletoadsRewardMessage();
             super();
+            _duration = 518400;
         }
 
         /**
