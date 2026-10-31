@@ -3,6 +3,7 @@ package {
     import com.monsters.configs.BYMDevConfig;
     import com.monsters.display.ImageCache;
     import com.monsters.frontPage.FrontPageGraphic;
+    import com.monsters.halloween.HalloweenMiniPumpkin;
     import flash.display.Bitmap;
     import flash.display.BitmapData;
     import flash.display.DisplayObject;
@@ -609,7 +610,13 @@ package {
                     }
                     else if (param1 == 2 && Boolean(_loc4_)) {
                         BUILDINGINFO.Hide();
-                        MUSHROOMS.PickWorker(_loc4_);
+                        // MUSHROOMS.PickWorker(_loc4_);
+                        if (_loc4_ is HalloweenMiniPumpkin) {
+                            HalloweenMiniPumpkin(_loc4_).sendWorker();
+                        }
+                        else {
+                            MUSHROOMS.PickWorker(_loc4_);
+                        }
                     }
                     else if (param1 == 3 && Boolean(_loc4_)) {
                         if (int(_loc4_._buildingProps.fortify_costs[_loc4_._fortification.Get()].time.Get() * GLOBAL._buildTime) > 3600) {

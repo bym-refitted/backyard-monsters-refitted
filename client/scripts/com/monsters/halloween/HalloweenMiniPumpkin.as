@@ -10,6 +10,8 @@ package com.monsters.halloween {
 
         private static const PICK_SHAKES:int = 60;
 
+        private var _picked:Boolean = false;
+
         public function HalloweenMiniPumpkin() {
             super(TYPE);
         }
@@ -71,8 +73,16 @@ package com.monsters.halloween {
                 POPUPS.DisplayWorker(2, this);
         }
 
+        /**
+         * Called every frame by the worker standing at the pumpkin until the pick lets it go. A pumpkin is
+         * picked once, even if the worker is not released.
+         */
         override public function HasWorker():void {
+            if (_picked)
+                return;
+
             if (_shake > PICK_SHAKES) {
+                _picked = true;
                 _mc.x = _mcBase.x = _origin.x;
                 _mc.y = _mcBase.y = _origin.y;
                 HalloweenPumpkinPatch.pick(this);
