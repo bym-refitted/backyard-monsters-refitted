@@ -4,6 +4,7 @@ import { Save } from "../../../../database/models/save.model.js";
 import { User } from "../../../../database/models/user.model.js";
 import { postgres } from "../../../../server.js";
 import { createAttackLog } from "../../../../services/base/createAttackLog.js";
+import { sendAttackAlert } from "../../../../services/radio/sendAttackAlert.js";
 import { getCurrentDateTime } from "../../../../utils/getCurrentDateTime.js";
 import type { AttackDetails } from "./baseModeAttack.js";
 import { recordAttack } from "../../../../services/maproom/attackHistory.js";
@@ -96,6 +97,7 @@ export const infernoModeAttack = async (user: User, baseid: string) => {
   await recordAttack(user.userid, defender.userid, BaseType.INFERNO, permission);
   await addNeighbours(user.userid, [defender.userid], BaseType.INFERNO);
   await createAttackLog(user, defender, save);
+  await sendAttackAlert(user, defender, save);
 
   postgres.em.persist(save);
   await postgres.em.flush();

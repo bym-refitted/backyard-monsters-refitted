@@ -40,9 +40,11 @@ package {
        * @param {Object} data - the data to send in JSON format.
        * @param {String} method - the HTTP method to use (default is POST).
        * @param {Function} onComplete - a callback function to be called on successful completion of the request.
+       * @param {Function} onFail - called with no arguments if the request fails or the response isn't JSON.
+       * When omitted, the failure is shown as an orange error box.
        * @return {void}
        */
-        public function invokeApiRequest(url:String, data:Object, method:String = "POST", onComplete:Function = null):void {
+        public function invokeApiRequest(url:String, data:Object, method:String = "POST", onComplete:Function = null, onFail:Function = null):void {
             try {
                 var request:URLRequest = new URLRequest(url);
                 var loader:URLLoader = new URLLoader();
@@ -54,6 +56,7 @@ package {
 
                 if (data == null)
                     data = {};
+
                 if (method != URLRequestMethod.GET)
                     request.data = JSON.stringify(data);
 
@@ -62,19 +65,37 @@ package {
 
                 // On success, decode JSON and invoke callback
                 loader.addEventListener(Event.COMPLETE, function(e:Event):void {
-                        var response:Object = JSON.parse(loader.data);
+                        var response:Object;
+                        try {
+                            response = JSON.parse(loader.data);
+                        }
+                        catch (parseError:Error) {
+                            if (onFail != null) {
+                                onFail();
+                                return;
+                            }
+                            throw parseError;
+                        }
 
                         if (onComplete != null)
                             onComplete(response);
                     });
 
                 loader.addEventListener(IOErrorEvent.IO_ERROR, function(event:IOErrorEvent):void {
+                        if (onFail != null) {
+                            onFail();
+                            return;
+                        }
                         errMessage = "IOError error event occurred while making the request";
                         GLOBAL.ErrorMessage(errMessage, GLOBAL.ERROR_ORANGE_BOX_ONLY);
                     });
 
             }
             catch (error:Error) {
+                if (onFail != null) {
+                    onFail();
+                    return;
+                }
                 errMessage = "Error occurred while making the request: " + error.message;
                 GLOBAL.ErrorMessage(errMessage, GLOBAL.ERROR_ORANGE_BOX_ONLY);
             }

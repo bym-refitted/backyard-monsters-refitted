@@ -1,6 +1,7 @@
 package com.monsters.radio {
 
     import flash.display.StageDisplayState;
+    import flash.net.URLRequestMethod;
 
     public class RADIO {
 
@@ -20,26 +21,41 @@ package com.monsters.radio {
 
         public static var _isSaving:Boolean = false;
 
-        public static const ATTACK_KEY:String = "att";
+        // public static const ATTACK_KEY:String = "att";
 
-        public static const NEWS_KEY:String = "news";
+        // public static const NEWS_KEY:String = "news";
 
-        public static const ADDRESS_KEY:String = "address";
+        // public static const ADDRESS_KEY:String = "address";
 
-        public static const PROXY_KEY:String = "proxy";
+        // public static const PROXY_KEY:String = "proxy";
+
+        public static const ATTACK_ALERTS_KEY:String = "attackAlerts";
+
+        public static const NEWS_ALERTS_KEY:String = "newsAlerts";
 
         public function RADIO() {
             super();
         }
 
+        // Refitted: LOGIN no longer keeps its own copy. BASE calls Setup() with no argument on every
+        // base load, so that call now keeps the current settings instead of reloading them.
+        // public static function Setup(param1:Object = null):void {
+        // if (param1) {
+        // _settings = param1;
+        // }
+        // else if (LOGIN._settings) {
+        // _settings = LOGIN._settings;
+        // }
+        // else {
+        // _settings = {};
+        // }
+        // }
+
         public static function Setup(param1:Object = null):void {
             if (param1) {
                 _settings = param1;
             }
-            else if (LOGIN._settings) {
-                _settings = LOGIN._settings;
-            }
-            else {
+            else if (!_settings) {
                 _settings = {};
             }
         }
@@ -54,18 +70,39 @@ package com.monsters.radio {
             return null;
         }
 
-        public static function setProp(param1:String, param2:*):void {
-            _settings[param1] = param2;
-            var _loc3_:String = JSON.stringify(_settings);
-            new URLLoaderApi().load(GLOBAL._apiURL + "player/updateemail", [["settings", _loc3_]], handleSettingsSaveSucc, handleSettingsSaveFail);
+        // Refitted: replaced by SaveAlerts, which only adopts the settings once the server confirms them.
+        // public static function setProp(param1:String, param2:*):void {
+        // _settings[param1] = param2;
+        // var _loc3_:String = JSON.stringify(_settings);
+        // new URLLoaderApi().load(GLOBAL._apiURL + "player/updateemail", [["settings", _loc3_]], handleSettingsSaveSucc, handleSettingsSaveFail);
+        // _isSaving = true;
+        // _mc.bSaveToggle();
+        // }
+
+        /**
+         * Saves the player's alert settings from the popup.
+         * @param attackAlerts - Email the player when their yard is attacked.
+         * @param newsAlerts - News and updates; stored, but nothing sends these.
+         */
+        public static function SaveAlerts(attackAlerts:Boolean, newsAlerts:Boolean):void {
+            postAlerts(attackAlerts, newsAlerts, handleSettingsSaveSucc, handleSettingsSaveFail);
             _isSaving = true;
             _mc.bSaveToggle();
+        }
+
+        private static function postAlerts(attackAlerts:Boolean, newsAlerts:Boolean, onComplete:Function, onFail:Function):void {
+            var body:Object = {};
+
+            body[ATTACK_ALERTS_KEY] = attackAlerts;
+            body[NEWS_ALERTS_KEY] = newsAlerts;
+            new URLLoaderApi().invokeApiRequest(GLOBAL._apiURL + "player/radio", body, URLRequestMethod.POST, onComplete, onFail);
         }
 
         private static function handleSettingsSaveSucc(param1:Object):void {
             _isSaving = false;
             _mc.bSaveToggle();
             if (param1.error == 0) {
+                _settings = param1.radio;
                 GLOBAL.Message(KEYS.Get("radio_saveSucc"), null, null, null);
                 Hide();
             }
@@ -75,8 +112,9 @@ package com.monsters.radio {
             }
         }
 
-        private static function handleSettingsSaveFail(param1:Object):void {
+        private static function handleSettingsSaveFail():void {
             _isSaving = false;
+            _mc.bSaveToggle();
             GLOBAL.Message(KEYS.Get("radio_saveFail"), null, null, null);
         }
 
@@ -105,15 +143,17 @@ package com.monsters.radio {
         public static function RemoveName():void {
             var handleRemoveSucc:Function = null;
             var handleRemoveFail:Function = null;
-            var removeEmail:Function = function(param1:String, param2:*):void {
-                _settings[param1] = param2;
-                var _loc3_:String = JSON.stringify(_settings);
-                new URLLoaderApi().load(GLOBAL._apiURL + "player/updateemail", [["settings", _loc3_]], handleRemoveSucc, handleRemoveFail);
-                _isSaving = true;
-            };
+            // Refitted: recycling turns both alerts off through the same JSON request as the popup.
+            // var removeEmail:Function = function(param1:String, param2:*):void {
+            // _settings[param1] = param2;
+            // var _loc3_:String = JSON.stringify(_settings);
+            // new URLLoaderApi().load(GLOBAL._apiURL + "player/updateemail", [["settings", _loc3_]], handleRemoveSucc, handleRemoveFail);
+            // _isSaving = true;
+            // };
             handleRemoveSucc = function(param1:Object):void {
                 _isSaving = false;
                 if (param1.error == 0) {
+                    _settings = param1.radio;
                     GLOBAL.Message(KEYS.Get("radio_recycleConfirm"), null, null, null);
                     Hide();
                 }
@@ -122,21 +162,23 @@ package com.monsters.radio {
                     GLOBAL.Message(KEYS.Get("radio_recycleConfirm"), null, null, null);
                 }
             };
-            handleRemoveFail = function(param1:Object):void {
+            handleRemoveFail = function():void {
                 _isSaving = false;
                 GLOBAL.Message(KEYS.Get("radio_saveFail"), null, null, null);
             };
-            var obj:Object = {};
-            obj[RADIO.ATTACK_KEY] = 0;
-            if (obj[RADIO.ATTACK_KEY] == 1) {
-                QUESTS._global.email_att = 1;
-            }
-            obj[RADIO.NEWS_KEY] = 0;
-            if (obj[RADIO.NEWS_KEY] == 1) {
-                QUESTS._global.email_news = 1;
-            }
-            obj[RADIO.ADDRESS_KEY] = LOGIN._email;
-            removeEmail("o1", obj);
+            // var obj:Object = {};
+            // obj[RADIO.ATTACK_KEY] = 0;
+            // if (obj[RADIO.ATTACK_KEY] == 1) {
+            // QUESTS._global.email_att = 1;
+            // }
+            // obj[RADIO.NEWS_KEY] = 0;
+            // if (obj[RADIO.NEWS_KEY] == 1) {
+            // QUESTS._global.email_news = 1;
+            // }
+            // obj[RADIO.ADDRESS_KEY] = LOGIN._email;
+            // removeEmail("o1", obj);
+            postAlerts(false, false, handleRemoveSucc, handleRemoveFail);
+            _isSaving = true;
         }
 
         public static function TwitterFollow():void {
