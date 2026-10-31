@@ -11,6 +11,7 @@ import { getCurrentDateTime } from "../../../../utils/getCurrentDateTime.js";
 import { validateRange } from "../../../../services/maproom/v2/validateRange.js";
 import { getGeneratedCells, cellKey } from "../../../../services/maproom/v3/generateCells.js";
 import { createAttackLog } from "../../../../services/base/createAttackLog.js";
+import { sendAttackAlert } from "../../../../services/radio/sendAttackAlert.js";
 import { updateResources, Operation } from "../../../../services/base/updateResources.js";
 import { isAttackActive } from "../../../../services/base/isAttackActive.js";
 import { baseUnderAttackErr, baseProtectedErr, userOnlineErr, playerLeftMapRoomErr, notNeighboursErr, truceActiveErr, shinyLockedErr } from "../../../../errors/errors.js";
@@ -200,6 +201,7 @@ export const baseModeAttack = async ({ user, baseid, mapversion, attackCost }: B
     }
     
     await createAttackLog(user, defender, save)
+    await sendAttackAlert(user, defender, save);
   }
 
   return await validateRange(user, save, mapversion, { baseid });

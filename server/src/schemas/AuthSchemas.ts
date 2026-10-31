@@ -84,6 +84,16 @@ export const UpdateSettingsSchema = z.object({
 });
 
 /**
+ * Schema to validate a Radio Tower alert settings update.
+ * - Callers send both flags, not a partial update.
+ * - Alerts always go to the account email, so no address is sent.
+ */
+export const UpdateRadioAlertsSchema = z.object({
+  attackAlerts: z.boolean(),
+  newsAlerts: z.boolean(),
+});
+
+/**
  * Schema to validate password reset data.
  * - Password must meet the password schema requirements.
  * - Token must be a string.

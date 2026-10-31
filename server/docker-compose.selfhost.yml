@@ -12,7 +12,7 @@
 #   CHAT_WS_HOST=<your server's public IP or domain>:3010
 #
 # Optional: BYMR_VERSION (image tag: latest, edge, or a release such as 1.8.7-beta), ENV,
-# API_PORT, CHAT_WS_PORT, CDN_URL, USE_VERSION_MANAGEMENT, SESSION_LIFETIME, WEB_URL,
+# API_PORT, CHAT_WS_PORT, CDN_URL, SERVER_URL, USE_VERSION_MANAGEMENT, SESSION_LIFETIME, WEB_URL,
 # DISCORD_TOKEN, SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASSWORD.
 #
 # ENV=local (the default) skips JWT signature checks, so treat it as a private server.
@@ -43,6 +43,7 @@ x-server: &server
     DB_PASSWORD: ${DB_PASSWORD:?Set DB_PASSWORD in .env}
     REDIS_URL: redis://redis:6379
     CDN_URL: ${CDN_URL:-}
+    SERVER_URL: ${SERVER_URL:-}
     USE_VERSION_MANAGEMENT: ${USE_VERSION_MANAGEMENT:-disabled}
     CHAT_WS_PORT: ${CHAT_WS_PORT:-3010}
     CHAT_WS_HOST: ${CHAT_WS_HOST:?Set CHAT_WS_HOST in .env to your server's public address and chat port}
