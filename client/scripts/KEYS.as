@@ -26,11 +26,26 @@ package {
 
         public static function Setup(language:String = "english"):void {
             _setup = true;
+            if (!language) {
+                language = "english";
+            }
             var languageFile:URLLoader = new URLLoader();
-            languageFile.load(new URLRequest(_storageURL + language + ".json"));
+            var onFail:Function = function(event:Event):void {
+                    languageFile.removeEventListener(Event.COMPLETE, handleLangFileSucc);
+                    languageFile.removeEventListener(IOErrorEvent.IO_ERROR, onFail);
+                    languageFile.removeEventListener(SecurityErrorEvent.SECURITY_ERROR, onFail);
+                    if (language != "english") {
+                        Setup("english");
+                        return;
+                    }
+                    languageFileJson = {};
+                    GLOBAL.textContentLoaded = true;
+                    GLOBAL.eventDispatcher.dispatchEvent(new Event(LANGUAGE_FILE_LOADED));
+                };
             languageFile.addEventListener(Event.COMPLETE, handleLangFileSucc);
-            languageFile.addEventListener(IOErrorEvent.IO_ERROR, function(event:IOErrorEvent):void {
-                });
+            languageFile.addEventListener(IOErrorEvent.IO_ERROR, onFail);
+            languageFile.addEventListener(SecurityErrorEvent.SECURITY_ERROR, onFail);
+            languageFile.load(new URLRequest(_storageURL + language + ".json"));
         }
 
         public static function GetSupportedLanguages():void {

@@ -51,15 +51,39 @@ package {
                 GLOBAL.LanguageSetup();
             }
             else {
+                showAuthForm();
+            }
+        }
+
+        private static function showAuthForm():void {
+            if (!authForm) {
                 authForm = new AuthForm();
                 GLOBAL._layerTop.addChild(authForm);
+            }
+        }
+
+        private static function handleLocalAuthFailure(message:*):void {
+            PLEASEWAIT.Hide();
+            GAME.clearPersistedToken();
+            token = null;
+            showAuthForm();
+            if (message) {
+                GLOBAL.Message(String(message));
             }
         }
 
         private static function onLanguageLoaded(event:Event):void {
             GLOBAL.eventDispatcher.removeEventListener(KEYS.LANGUAGE_FILE_LOADED, onLanguageLoaded);
 
-            var authInfo:Array = [["token", GAME.sharedObj.data.token]];
+            var savedToken:String = GAME.token;
+            if (GAME.sharedObj && GAME.sharedObj.data && GAME.sharedObj.data.token) {
+                savedToken = String(GAME.sharedObj.data.token);
+            }
+            if (!savedToken) {
+                handleLocalAuthFailure(null);
+                return;
+            }
+            var authInfo:Array = [["token", savedToken]];
             AuthenticateUser(authInfo);
         }
 
@@ -69,19 +93,41 @@ package {
             if (GLOBAL._local) {
                 handleLoadSuccessful = function(serverData:Object):void {
                     if (serverData.hasOwnProperty("error") && serverData.error != 0) {
-                        GLOBAL.Message(serverData.error);
+                        handleLocalAuthFailure(serverData.error);
                         return;
                     }
 
                     if (serverData.error == 0) {
                         if (GLOBAL._local) {
-                            // Set token
                             token = serverData.token;
+                            GAME.persistToken(token);
+                            if (!GAME.sharedObj.data.language) {
+                                GAME.sharedObj.data.language = "english";
+                                try {
+                                    GAME.sharedObj.flush();
+                                }
+                                catch (e:Error) {
+                                }
+                            }
 
                             new URLLoaderApi().load(GLOBAL._apiURL + "bm/getnewmap", [["token", token]],
                                     function(mapData:Object):void {
-                                        MapRoomManager.instance.init(mapData.newmap, mapData.mapheaderurl);
+                                        if (mapData && mapData.hasOwnProperty("error") && mapData.error != 0) {
+                                            handleLocalAuthFailure(mapData.error);
+                                            return;
+                                        }
+                                        try {
+                                            MapRoomManager.instance.init(mapData.newmap, mapData.mapheaderurl);
+                                        }
+                                        catch (initErr:Error) {
+                                            handleLocalAuthFailure("Failed to initialize map data.");
+                                            return;
+                                        }
+                                        PLEASEWAIT.Hide();
                                         LOGIN.Process(serverData);
+                                    },
+                                    function(mapErr:IOErrorEvent):void {
+                                        handleLocalAuthFailure("An error occurred while loading map data.");
                                     });
                         }
                         else {
@@ -91,7 +137,7 @@ package {
                     }
                 };
                 handleLoadError = function(error:IOErrorEvent):void {
-                    GLOBAL._layerTop.addChild(GLOBAL.Message("An error occurred during login on the server."));
+                    handleLocalAuthFailure("An error occurred during login on the server.");
                 };
                 new URLLoaderApi().load(GLOBAL._apiURL + "player/getinfo", [["version", GLOBAL._version.Get()]].concat(authInfo), handleLoadSuccessful, handleLoadError);
             }
