@@ -69,7 +69,11 @@ package {
             if (UI2._scareAway) {
                 UI2._scareAway.addEventListener("scareAway", MONSTERBAITER.End);
             }
-            return WMATTACK.SpawnA(param1);
+            // return WMATTACK.SpawnA(param1);
+            WMATTACK.isSpawningInvasionWave = true;
+            var spawnedGroups:Array = WMATTACK.SpawnA(param1);
+            WMATTACK.isSpawningInvasionWave = false;
+            return spawnedGroups;
         }
 
         public static function TutorialAttack():void {
