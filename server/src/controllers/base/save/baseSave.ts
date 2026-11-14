@@ -19,6 +19,7 @@ import { addKrallenLoot } from "../../../services/events/krallen/krallenLoot.js"
 import { defenderLootHandler } from "./handlers/defenderLootHandler.js";
 import { monsterUpdateHandler } from "./handlers/monsterUpdateHandler.js";
 import { validateSave } from "../../../scripts/anticheat/anticheat.js";
+import { updateAttackLog } from "../../../services/base/createAttackLog.js";
 import { getOutpostOwnerSave } from "../../../services/base/getOutpostOwnerSave.js";
 import { advanceBuildingTimers } from "../../../services/base/advanceBuildingTimers.js";
 import { championHandler } from "./handlers/championHandler.js";
@@ -74,6 +75,8 @@ export const baseSave: KoaController = async (ctx) => {
   if (!isOwner && baseSave.attackid === 0) throw permissionErr();
 
   await validateSave(user, baseSave, body);
+
+  if (isAttack) await updateAttackLog(user, baseSave, body.attackreport as string | undefined);
 
   const isOwnMainYard = isOwner && baseSave.type === BaseType.MAIN;
   
