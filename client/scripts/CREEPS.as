@@ -240,7 +240,10 @@ package {
             }
         }
 
-        public static function Spawn(param1:String, param2:*, param3:String, param4:Point, param5:Number, param6:Number = 1, param7:Boolean = false, param8:Boolean = false):MonsterBase {
+        /**
+         * @param {int} level - Explicit monster level; 0 resolves it from the owning player's academy
+         */
+        public static function Spawn(param1:String, param2:*, param3:String, param4:Point, param5:Number, param6:Number = 1, param7:Boolean = false, param8:Boolean = false, level:int = 0):MonsterBase {
             var _loc9_:MonsterBase = null;
             ++_creepID;
             if (!param8) {
@@ -252,7 +255,7 @@ package {
             if (!_loc10_) {
                 _loc10_ = CreepBase;
             }
-            _loc9_ = new _loc10_(param1, param3, param4, param5, 0, int.MAX_VALUE, null, false, null, param6, param7);
+            _loc9_ = new _loc10_(param1, param3, param4, param5, level, int.MAX_VALUE, null, false, null, param6, param7);
             if (!BYMConfig.instance.RENDERER_ON) {
                 param2.addChild(_loc9_.graphic);
             }

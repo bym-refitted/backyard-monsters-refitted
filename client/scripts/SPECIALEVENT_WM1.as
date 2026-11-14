@@ -1023,15 +1023,21 @@ package {
             UI2._warning.Update("<font size=\"26\">" + _loc1_ + "</font>");
         }
 
+        /**
+         * Resets the per-monster wave powerups and levels. The original loops only reassigned
+         * the loop variable, so event powerups leaked onto later non-event enemy monsters.
+         */
         public static function ClearWildMonsterPowerups():void {
-            var _loc1_:* = undefined;
-            var _loc2_:* = undefined;
-            for each (_loc1_ in GLOBAL._wmCreaturePowerups) {
-                _loc1_ = null;
-            }
-            for each (_loc2_ in GLOBAL._wmCreatureLevels) {
-                _loc2_ = null;
-            }
+            // var _loc1_:* = undefined;
+            // var _loc2_:* = undefined;
+            // for each (_loc1_ in GLOBAL._wmCreaturePowerups) {
+            //     _loc1_ = null;
+            // }
+            // for each (_loc2_ in GLOBAL._wmCreatureLevels) {
+            //     _loc2_ = null;
+            // }
+            GLOBAL._wmCreaturePowerups = new Array();
+            GLOBAL._wmCreatureLevels = new Array();
         }
 
         public static function Tick():void {

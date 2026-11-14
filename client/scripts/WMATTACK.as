@@ -10,6 +10,7 @@ package {
     import com.monsters.monsters.components.abilities.Enrage;
     import com.monsters.monsters.components.abilities.TemporaryComponent;
     import com.monsters.pathing.PATHING;
+    import com.monsters.replayableEvents.monsterInvasion.InvasionMonsterStats;
     import com.monsters.replayableEvents.monsterInvasion.WaveObj;
     import flash.display.Bitmap;
     import flash.display.BitmapData;
@@ -118,6 +119,8 @@ package {
         public static var _attackersBaseID:int = 1;
 
         public static var _rage:int = 0;
+
+        public static var isSpawningInvasionWave:Boolean = false;
 
         public static var _enabled:Boolean;
 
@@ -750,6 +753,7 @@ package {
             if (_loc10_ > 50000000) {
                 _loc11_ = 0.9;
             }
+            var invasionLevel:int = isSpawningInvasionWave ? int(GLOBAL._wmCreatureLevels[param3]) : 0;
             param1 = GRID.FromISO(param1.x, param1.y);
             var _loc13_:Array = [];
             var _loc14_:int = 0;
@@ -760,7 +764,10 @@ package {
                 var offsetPoint:Point = getPooledPoint(Math.cos(_loc6_) * _loc7_, Math.sin(_loc6_) * _loc7_);
                 _loc8_ = param1.add(offsetPoint);
 
-                monster = CREEPS.Spawn(param3, MAP._BUILDINGTOPS, "bounce", GRID.ToISO(_loc8_.x, _loc8_.y, 0), _loc12_.random() * 360, _loc11_, true);
+                monster = CREEPS.Spawn(param3, MAP._BUILDINGTOPS, "bounce", GRID.ToISO(_loc8_.x, _loc8_.y, 0), _loc12_.random() * 360, _loc11_, true, false, invasionLevel);
+                if (isSpawningInvasionWave) {
+                    InvasionMonsterStats.applyOriginalStats(monster, invasionLevel, _loc11_);
+                }
                 if (_rage) {
                     monster.addComponent(new TemporaryComponent(new Enrage(2, 0), _rage));
                 }
