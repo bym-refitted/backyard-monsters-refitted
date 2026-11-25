@@ -24,7 +24,9 @@ export const reportMessageThread: KoaController = async (ctx) => {
   // Determine the other user in the thread
   const blockedUserId = thread.userid === user.userid ? thread.targetid : thread.userid;
 
-  if (user.blockedUsers.includes(blockedUserId)) {
+  const isSelf = blockedUserId === user.userid;
+
+  if (isSelf || user.blockedUsers.includes(blockedUserId)) {
     ctx.status = Status.OK;
     ctx.body = { error: 0 };
     return;

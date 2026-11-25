@@ -11,7 +11,6 @@ import { postgres } from "../../server.js";
  * @returns {Promise<Thread>} - A found or newly created Thread entity.
  */
 export const findOrCreateThread = async (threadId: number, targetId: number, userId: number) => {
-  // First, we attempt to find an existing thread
   if (threadId > 0) {
     const thread = await postgres.em.findOne(Thread, {
       threadid: threadId,
@@ -23,7 +22,8 @@ export const findOrCreateThread = async (threadId: number, targetId: number, use
     return thread;
   }
 
-  // Otherwise, create a new thread
+  if (targetId === userId) throw mailboxErr();
+
   const [lastThread] = await postgres.em.find(
     Thread,
     {},
