@@ -240,10 +240,23 @@ package {
             if (this._timeStamp > GLOBAL.Timestamp()) {
                 _loc1_ = Math.min(_loc1_, this._timeStamp - GLOBAL.Timestamp());
             }
-            else if (_inProduction != "" && _countdownProduce.Get() >= 0 && HOUSING.HousingStore(_inProduction, new Point(_mc.x, _mc.y), true, 0)) {
+            // else if (_inProduction != "" && _countdownProduce.Get() >= 0 && HOUSING.HousingStore(_inProduction, new Point(_mc.x, _mc.y), true, 0)) {
+            else if (this.canProduce && _inProduction != "" && _countdownProduce.Get() >= 0 && HOUSING.HousingStore(_inProduction, new Point(_mc.x, _mc.y), true, 0)) {
                 _loc1_ = Math.min(_loc1_, _countdownProduce.Get());
             }
             return _loc1_;
+        }
+
+        /**
+         * Whether Tick can advance production: built, not upgrading and at least half health.
+         * A damaged incubator's countdown can't move, so it mustn't shrink the load's catch-up
+         * steps to one second for the whole time since the last save.
+         */
+        private function get canProduce():Boolean {
+            var isIdle:Boolean = _countdownBuild.Get() + _countdownUpgrade.Get() == 0;
+            var isHealthy:Boolean = health >= maxHealth * 0.5 && health > 10;
+
+            return isIdle && isHealthy;
         }
 
         override public function Tick(param1:int):void {
