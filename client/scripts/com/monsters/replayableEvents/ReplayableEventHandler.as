@@ -71,10 +71,11 @@ package com.monsters.replayableEvents {
          * Wild Monster Invasions are hidden, as these are the only events for Town Hall 2-4.
          */
         public static function isLowTownHallEventActive():Boolean {
-            var isBlitzkrieg:Boolean = activeEvent == ReplayableEventLibrary.MONSTER_BLITZKRIEG;
-            var isCreatureCarnage:Boolean = activeEvent == ReplayableEventLibrary.BATTLE_TOADS;
+            return isLowTownHallEvent(activeEvent);
+        }
 
-            return isBlitzkrieg || isCreatureCarnage;
+        private static function isLowTownHallEvent(event:ReplayableEvent):Boolean {
+            return event == ReplayableEventLibrary.MONSTER_BLITZKRIEG || event == ReplayableEventLibrary.BATTLE_TOADS;
         }
 
         /**
@@ -85,12 +86,16 @@ package com.monsters.replayableEvents {
          * the highest priority one they qualify for. A start date that differs from the saved one
          * is a new run of the event, which scheduleNewEvent resets. An event the player has already
          * completed in this run is passed over, so the next one they qualify for is offered.
+         * Between Monster Blitzkrieg and Creature Carnage, the one already started in this run keeps
+         * its place, so a Town Hall upgrade that qualifies the player for Blitzkrieg doesn't take
+         * them out of a Carnage run (or the reverse).
          */
         private static function selectScheduledEvent():void {
             var scheduled:Object = null;
             var event:ReplayableEvent = null;
             var selected:ReplayableEvent = null;
             var startDate:Number = 0;
+            var isSelectedStarted:Boolean = false;
 
             activeEvent = null;
 
@@ -100,13 +105,18 @@ package com.monsters.replayableEvents {
                 if (!event || !event.doesQualify())
                     continue;
 
-                var isCompletedThisRun:Boolean = event.startDate == scheduled.start && event.hasCompletedEvent;
-                if (isCompletedThisRun)
+                var isStartedThisRun:Boolean = event.startDate == scheduled.start;
+
+                if (isStartedThisRun && event.hasCompletedEvent)
                     continue;
 
-                if (!selected || event.priority > selected.priority) {
+                var isStartedSwap:Boolean = Boolean(selected) && isLowTownHallEvent(event) && isLowTownHallEvent(selected) && isStartedThisRun != isSelectedStarted;
+                var outranksSelected:Boolean = !selected || (isStartedSwap ? isStartedThisRun : event.priority > selected.priority);
+
+                if (outranksSelected) {
                     selected = event;
                     startDate = scheduled.start;
+                    isSelectedStarted = isStartedThisRun;
                 }
             }
 
