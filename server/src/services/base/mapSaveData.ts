@@ -2,6 +2,7 @@ import { BaseType } from "../../enums/Base.js";
 import { Save } from "../../database/models/save.model.js";
 import { User } from "../../database/models/user.model.js";
 import { FilterFrontendKeys } from "../../utils/FrontendKey.js";
+import { EVENT_BASES_MAP } from "../../game-data/tribes/events/index.js";
 import { getOutpostOwnerSave } from "./getOutpostOwnerSave.js";
 import { isShinyLocked, visibleCredits } from "../user/shinyLock.js";
 
@@ -64,9 +65,11 @@ export const mapSaveData = async (save: Save, user: User): Promise<Partial<Save>
 export const buildSaveData = (save: Save, user: User, ownerSave: OwnerSave | null): Partial<Save> => {
   const filteredSave = FilterFrontendKeys(save);
 
-  // The client switches into MR2 on any load with usemap set and never switches back,
-  // so it must describe the viewer's map room, not that of whoever owns the yard.
-  if (save.type !== BaseType.INFERNO && user.save) filteredSave.usemap = user.save.usemap;
+  const isEventBase = EVENT_BASES_MAP.has(String(save.baseid));
+
+  if (save.type !== BaseType.INFERNO && user.save && !isEventBase) {
+    filteredSave.usemap = user.save.usemap;
+  }
 
   const isOwner = save.type !== BaseType.INFERNO && save.userid === user.userid;
 
