@@ -43,7 +43,7 @@ package {
 
         public static var cdnUrl:String = CONFIG::CDN_URL;
 
-        public static var apiVersionSuffix:String = "v1.9.3-beta";
+        public static var apiVersionSuffix:String = "v1.9.4-beta";
 
         public static var connectionCounter:int;
 
