@@ -28,7 +28,7 @@ export const POST_EVENT_DAYS = 2;
  */
 export const EVENT_START_OVERRIDES: Record<GameEvent, number> = {
   [GameEvent.WMI1]: 0,
-  [GameEvent.WMI2]: 1794657600,
+  [GameEvent.WMI2]: 0,
   [GameEvent.MONSTER_MADNESS]: 0,
   [GameEvent.BRUKKARG_WAR]: 0,
   [GameEvent.CREATURE_CARNAGE]: 0,
