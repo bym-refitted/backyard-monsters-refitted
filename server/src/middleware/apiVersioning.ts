@@ -20,7 +20,7 @@ export const apiVersion = async (ctx: Context, next: Next) => {
   if (validVersions.length > 0 && !validVersions.includes(apiVersion)) {
     ctx.status = Status.BAD_REQUEST;
     ctx.body = {
-      error: `Invalid API version. Expected one of: ${validVersions.join(", ")}, Received: ${apiVersion}`,
+      error: `Your game is out of date (${apiVersion}). Restart the launcher or app to update.`,
     };
     return;
   }
