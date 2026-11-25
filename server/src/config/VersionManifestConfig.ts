@@ -45,3 +45,16 @@ export const getAndroidVersion = (): string | null => {
   if (!manifest) return null;
   return `v${manifest.currentAndroidVersion}-beta`;
 };
+
+/**
+ * Whether a client may connect with this API version. Every version is accepted
+ * while version management is disabled.
+ *
+ * @param {string} version - The version the client sent, e.g. "v1.9.4-beta"
+ * @returns {boolean}
+ */
+export const isAcceptedVersion = (version: string): boolean => {
+  if (!manifest) return true;
+
+  return version === getGameVersion() || version === getAndroidVersion();
+};

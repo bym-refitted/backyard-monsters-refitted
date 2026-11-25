@@ -588,6 +588,20 @@ export const giftInboxFullErr = () =>
     isClientFriendly: true,
   });
 
+/**
+ * The client's API version isn't one the server accepts, so the player is on an old build.
+ *
+ * @param {string} apiVersion - The version the client sent
+ */
+export const versionMismatchErr = (apiVersion: string) =>
+  new ClientSafeError({
+    code: ErrorCode.GAME_OUTDATED,
+    message: `Your game is out of date (${apiVersion}). Restart the launcher or app to update.`,
+    status: Status.BAD_REQUEST,
+    data: {},
+    isClientFriendly: true,
+  });
+
 export const giftSelfErr = () =>
   new ClientSafeError({
     message: "You cannot send yourself a gift.",
