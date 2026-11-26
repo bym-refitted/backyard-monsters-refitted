@@ -88,6 +88,7 @@ package com.monsters.maproom_advanced {
             var i:int;
             this._sortArray = [];
             super();
+            POPUPSETTINGS.FitBackdrop(this);
             w = GLOBAL._ROOT.stage.stageWidth;
             h = GLOBAL.GetGameHeight();
             if (w > 1024) {
@@ -1507,6 +1508,7 @@ package com.monsters.maproom_advanced {
         }
 
         public function Resize():void {
+            POPUPSETTINGS.FitBackdrop(this);
             var _loc1_:Boolean = false;
             if (GLOBAL.isFullScreen) {
                 if (this._fullScreen != true) {

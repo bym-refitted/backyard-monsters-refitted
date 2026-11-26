@@ -1882,6 +1882,10 @@ package {
             }
             else {
                 UI2.ResizeHandler(param1);
+                // Loading can begin before the first yard enables ResizeLayer.
+                if (PLEASEWAIT._mc) {
+                    PLEASEWAIT._mc.Resize();
+                }
             }
             if (MAP.instance) {
                 MAP.instance.redrawAfterResize();
