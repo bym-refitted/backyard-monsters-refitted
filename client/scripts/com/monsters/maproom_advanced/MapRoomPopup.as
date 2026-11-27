@@ -17,7 +17,7 @@ package com.monsters.maproom_advanced {
 
     internal class MapRoomPopup extends MapRoomPopup_CLIP {
 
-        private var mapOffset:Point;
+        private var _recycleBounds:Rectangle;
 
         private var _cellContainer:MovieClip;
 
@@ -82,51 +82,26 @@ package com.monsters.maproom_advanced {
         public static var s_Instance:MapRoomPopup = null;
 
         public function MapRoomPopup() {
-            var w:int;
-            var h:int;
-            var r:Rectangle;
             var i:int;
             this._sortArray = [];
             super();
-            w = GLOBAL._ROOT.stage.stageWidth;
-            h = GLOBAL.GetGameHeight();
-            if (w > 1024) {
-                w = 1024;
-            }
-            if (h > 768) {
-                h = 768;
-            }
-            r = new Rectangle(0 - (w - 760) / 2, 0 - (h - 720) / 2, w, h);
-            if (GLOBAL.isFullScreen) {
-                this._fullScreen = true;
-                mcFrame.x = r.x + 175;
-                mcFrame.y = r.y + 20;
-                mcFrame.width = w - 195;
-                mcFrame.height = h - 40;
-                mcMask.x = r.x + 175;
-                mcMask.y = r.y + 20;
-                mcMask.mcMask.width = w - 195;
-                mcMask.mcMask.height = h - 40;
-                mcFrame2.x = r.x;
-                mcFrame2.y = r.y + 20;
-                mcBuffHolder.x = mcMask.width + mcMask.x - 70;
-                mcBuffHolder.y = mcMask.y + 28;
-            }
-            else {
-                this._fullScreen = false;
-                mcFrame.x = 190;
-                mcFrame.y = 20;
-                mcFrame.width = 760 - 20 - 190;
-                mcFrame.height = 520 - 40;
-                mcMask.x = mcFrame.x;
-                mcMask.y = mcFrame.y;
-                mcMask.mcMask.width = mcFrame.width;
-                mcMask.mcMask.height = mcFrame.height;
-                mcFrame2.x = 20;
-                mcFrame2.y = 20;
-                mcBuffHolder.x = mcMask.width + mcMask.x - 70;
-                mcBuffHolder.y = mcMask.y + 30;
-            }
+            // Scale from the original 1004 x 680 map window at 1280 x 720.
+            var windowWidth:int = Math.round(GLOBAL._ROOT.stage.stageWidth * 1004 / 1280 * 0.80);
+            var windowHeight:int = Math.round(GLOBAL.GetGameHeight() * 680 / 720 * 0.70);
+            this._fullScreen = GLOBAL.isFullScreen;
+            var sidebarWidth:int = this._fullScreen ? 175 : 170;
+            mcFrame2.x = Math.round(GLOBAL._SCREENCENTER.x - windowWidth / 2);
+            mcFrame2.y = Math.round(GLOBAL._SCREENCENTER.y - windowHeight / 2);
+            mcFrame.x = mcFrame2.x + sidebarWidth;
+            mcFrame.y = mcFrame2.y;
+            mcFrame.width = Math.max(1, windowWidth - sidebarWidth);
+            mcFrame.height = Math.max(1, windowHeight);
+            mcMask.x = mcFrame.x;
+            mcMask.y = mcFrame.y;
+            mcMask.mcMask.width = mcFrame.width;
+            mcMask.mcMask.height = mcFrame.height;
+            mcBuffHolder.x = mcMask.x + mcMask.mcMask.width - 70;
+            mcBuffHolder.y = mcMask.y + (this._fullScreen ? 28 : 30);
             mcInfo.x = mcFrame2.x + 20;
             mcInfo.y = mcFrame2.y + 270;
             mcInfo.visible = false;
@@ -613,20 +588,8 @@ package com.monsters.maproom_advanced {
             this.Update();
         }
 
-        private function GenerateCells(param1:Point):void {
+        private function GenerateCells(target:Point):void {
             var cellIndex:int = 0;
-            var rowIndex:int = 0;
-            var mapRoomCell:MapRoomCell = null;
-            var stageWidth:int = GLOBAL._ROOT.stage.stageWidth;
-            var stageHeight:int = GLOBAL.GetGameHeight();
-            LOGGER.Log("log", "val of param1: " + param1);
-            if (stageWidth > 1024) {
-                stageWidth = 1024;
-            }
-            if (stageHeight > 768) {
-                stageHeight = 768;
-            }
-            var _loc5_:Rectangle = new Rectangle(0 - (stageWidth - 760) / 2, 0 - (stageHeight - 520) / 2, stageWidth, stageHeight);
             if (this._cellContainer) {
                 while (this._cellContainer.numChildren > 0) {
                     this._cellContainer.removeChildAt(0);
@@ -651,63 +614,43 @@ package com.monsters.maproom_advanced {
             this._cellContainer = new MovieClip();
             this._sortArray = [];
             this._cellLookup = {};
-            if (GLOBAL.isFullScreen) {
-                this._cellCountX = 18;
-                this._cellCountY = 15;
-            }
-            else {
-                this._cellCountX = 16;
-                this._cellCountY = 14;
-            }
-            stageHeight = 0;
-            while (stageHeight < this._cellCountX) {
-                rowIndex = 0;
-                while (rowIndex < this._cellCountY) {
-                    (mapRoomCell = new MapRoomCell()).x = int(stageHeight * (this._cellWidth * 0.75) - this._cellWidth * 0.75 * 4);
-                    mapRoomCell.y = int(rowIndex * this._cellHeight - this._cellHeight * 5);
-                    mapRoomCell.X = stageHeight;
-                    mapRoomCell.Y = rowIndex;
+            // The terrain layer has its own authored scale. Measure in the same space as the cells.
+            var viewport:Rectangle = mcMask.mcMask.getBounds(mcMask.mcBG);
+            var columnStep:Number = this._cellWidth * 0.75;
+            // Two spare columns and three rows on each side cover staggered hexes and raised terrain.
+            // Recycle an even number of columns so each hex keeps its vertical stagger.
+            this._cellCountX = 2 * Math.ceil(viewport.width / (2 * columnStep)) + 4;
+            this._cellCountY = Math.ceil(viewport.height / this._cellHeight) + 6;
+            var middleColumn:int = int(this._cellCountX / 2);
+            var middleRow:int = int(this._cellCountY / 2);
+            for (var column:int = 0; column < this._cellCountX; column++) {
+                var worldX:int = (target.x + column - middleColumn + MapRoom._mapWidth) % MapRoom._mapWidth;
+                var stagger:Number = ((worldX & 1) - (int(target.x) & 1)) * this._cellHeight / 2;
+                for (var row:int = 0; row < this._cellCountY; row++) {
+                    var mapRoomCell:MapRoomCell = new MapRoomCell();
+                    mapRoomCell.X = worldX;
+                    mapRoomCell.Y = (target.y + row - middleRow + MapRoom._mapHeight) % MapRoom._mapHeight;
+                    mapRoomCell.x = (column - middleColumn) * columnStep;
+                    mapRoomCell.y = (row - middleRow) * this._cellHeight + stagger;
                     mapRoomCell.cacheAsBitmap = true;
                     mapRoomCell.mc.gotoAndStop(1);
                     mapRoomCell.mc.mcPlayer.visible = false;
-                    if (stageHeight % 2 == 0) {
-                        mapRoomCell.y += this._cellHeight * 0.5;
+                    if (column == middleColumn && row == middleRow) {
+                        var hex:Rectangle = mapRoomCell.mc.mcHit.getBounds(mapRoomCell);
+                        this._cellContainer.x = viewport.x + viewport.width / 2 - (hex.x + hex.width / 2);
+                        this._cellContainer.y = viewport.y + viewport.height / 2 - (hex.y + hex.height / 2);
                     }
                     this._cells.push(mapRoomCell);
                     mapRoomCell.depth = mapRoomCell.y * 1000 + mapRoomCell.x;
                     this._sortArray.push(mapRoomCell);
                     this._cellContainer.addChild(mapRoomCell);
-                    if (GLOBAL.isFullScreen) {
-                        mapRoomCell.Y += param1.y - 8;
-                        if (param1.x % 2) {
-                            mapRoomCell.X += param1.x - 8;
-                            this._cellContainer.x = -125;
-                            this._cellContainer.y = 18;
-                        }
-                        else {
-                            mapRoomCell.X += param1.x - 7;
-                            this._cellContainer.x = -9;
-                            this._cellContainer.y = 54;
-                        }
-                    }
-                    else {
-                        mapRoomCell.Y += param1.y - 7;
-                        if (param1.x % 2) {
-                            mapRoomCell.X += param1.x - 4;
-                            this._cellContainer.x = 209;
-                            this._cellContainer.y = 7;
-                        }
-                        else {
-                            mapRoomCell.X += param1.x - 5;
-                            this._cellContainer.x = 101;
-                            this._cellContainer.y = 40;
-                        }
-                    }
                     this._cellLookup[mapRoomCell.X * 10000 + mapRoomCell.Y] = mapRoomCell;
-                    rowIndex++;
                 }
-                stageHeight++;
             }
+            var poolWidth:Number = this._cellCountX * columnStep;
+            var poolHeight:Number = this._cellCountY * this._cellHeight;
+            this._recycleBounds = new Rectangle(this._cellContainer.x - poolWidth / 2,
+                this._cellContainer.y - poolHeight / 2, poolWidth, poolHeight);
             if (this._fallbackHomeCell) {
                 this._fallbackHomeCell.Cleanup();
             }
@@ -797,13 +740,12 @@ package com.monsters.maproom_advanced {
             }
             this._sortArray = [];
 
-            var cellWidthFactor:Number = this._cellWidth * 0.75;
-            var rightBound:Number = this._cellCountX * cellWidthFactor - cellWidthFactor * 5;
-            var leftBound:Number = -(cellWidthFactor * 5);
-            var bottomBound:Number = this._cellCountY * this._cellHeight - this._cellHeight * 5;
-            var topBound:Number = -(this._cellHeight * 5);
-            var xWrapAmount:Number = this._cellCountX * cellWidthFactor;
-            var yWrapAmount:Number = this._cellCountY * this._cellHeight;
+            var leftBound:Number = this._recycleBounds.left;
+            var rightBound:Number = this._recycleBounds.right;
+            var topBound:Number = this._recycleBounds.top;
+            var bottomBound:Number = this._recycleBounds.bottom;
+            var xWrapAmount:Number = this._recycleBounds.width;
+            var yWrapAmount:Number = this._recycleBounds.height;
             var containerX:Number = this._cellContainer.x;
             var containerY:Number = this._cellContainer.y;
             var notDragged:Boolean = !this._dragged;
@@ -816,59 +758,22 @@ package com.monsters.maproom_advanced {
                 cellMoved = false;
                 oldCellKey = cell.X * 10000 + cell.Y;
 
-                // Check right boundary
-                if (containerX + cell.x > rightBound) {
-                    cell.x -= xWrapAmount;
-                    cell.X -= this._cellCountX;
-
+                var xInView:Number = containerX + cell.x;
+                var yInView:Number = containerY + cell.y;
+                if (xInView < leftBound || xInView >= rightBound) {
+                    var wrapsX:int = Math.floor((xInView - leftBound) / xWrapAmount);
+                    cell.x -= wrapsX * xWrapAmount;
+                    cell.X = (cell.X - wrapsX * this._cellCountX) % MapRoom._mapWidth;
                     if (cell.X < 0)
                         cell.X += MapRoom._mapWidth;
                     cellMoved = true;
                 }
-
-                // Check bottom boundary
-                if (containerY + cell.y > bottomBound) {
-                    cell.y -= yWrapAmount;
-                    cell.Y -= this._cellCountY;
-
+                if (yInView < topBound || yInView >= bottomBound) {
+                    var wrapsY:int = Math.floor((yInView - topBound) / yWrapAmount);
+                    cell.y -= wrapsY * yWrapAmount;
+                    cell.Y = (cell.Y - wrapsY * this._cellCountY) % MapRoom._mapHeight;
                     if (cell.Y < 0)
                         cell.Y += MapRoom._mapHeight;
-                    cellMoved = true;
-                }
-                // Check left boundary
-                if (containerX + cell.x < leftBound) {
-                    cell.x += xWrapAmount;
-                    cell.X += this._cellCountX;
-
-                    if (cell.X > MapRoom._mapWidth - 1)
-                        cell.X -= MapRoom._mapWidth;
-                    cellMoved = true;
-                }
-                // Check top boundary
-                if (containerY + cell.y < topBound) {
-                    cell.y += yWrapAmount;
-                    cell.Y += this._cellCountY;
-
-                    if (cell.Y > MapRoom._mapHeight - 1)
-                        cell.Y -= MapRoom._mapHeight;
-                    cellMoved = true;
-                }
-
-                // Clamp coordinates to map bounds
-                if (cell.X < 0) {
-                    cell.X += MapRoom._mapWidth;
-                    cellMoved = true;
-                }
-                if (cell.Y < 0) {
-                    cell.Y += MapRoom._mapHeight;
-                    cellMoved = true;
-                }
-                if (cell.X >= MapRoom._mapWidth) {
-                    cell.X -= MapRoom._mapWidth;
-                    cellMoved = true;
-                }
-                if (cell.Y >= MapRoom._mapHeight) {
-                    cell.Y -= MapRoom._mapHeight;
                     cellMoved = true;
                 }
                 if (cellMoved) {
