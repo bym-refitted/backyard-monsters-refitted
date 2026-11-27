@@ -1,5 +1,8 @@
 package {
     import flash.display.DisplayObject;
+    import flash.display.DisplayObjectContainer;
+    import flash.display.Shape;
+    import flash.geom.Rectangle;
     import gs.TweenLite;
     import gs.easing.Quad;
 
@@ -16,6 +19,22 @@ package {
             param1.y = GLOBAL._SCREENCENTER.y - _BOTTOM_PADDING;
             if (GAME._isSmallSize) {
                 param1.y = GLOBAL._SCREENCENTER.y - _BOTTOM_PADDING / 2;
+            }
+        }
+
+        public static function FitBackdrop(popup:DisplayObjectContainer):void {
+            // Both popup symbols contain one direct Shape for the gradient. Their frames add other clips.
+            for (var i:int = 0; i < popup.numChildren; i++) {
+                var backdrop:Shape = popup.getChildAt(i) as Shape;
+                if (backdrop) {
+                    var artwork:Rectangle = backdrop.getBounds(backdrop);
+                    var scale:Number = Math.max(1, GLOBAL._ROOT.stage.stageWidth / artwork.width,
+                        GLOBAL.GetGameHeight() / artwork.height);
+                    backdrop.scaleX = backdrop.scaleY = scale;
+                    backdrop.x = GLOBAL._SCREENCENTER.x - popup.x - (artwork.x + artwork.width / 2) * scale;
+                    backdrop.y = GLOBAL._SCREENCENTER.y - popup.y - (artwork.y + artwork.height / 2) * scale;
+                    return;
+                }
             }
         }
 

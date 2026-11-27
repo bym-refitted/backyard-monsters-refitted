@@ -36,7 +36,7 @@ package {
                 _mc = GLOBAL._layerTop.addChild(new PLEASEWAITMC()) as PLEASEWAITMC;
                 _mc.tMessage.htmlText = "<b>" + param1 + "</b>";
                 _mc.mcFrame.Setup(false);
-                POPUPSETTINGS.AlignToCenter(_mc);
+                _mc.Resize();
             }
         }
 

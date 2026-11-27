@@ -15,5 +15,10 @@ package {
         public function PLEASEWAITMC() {
             super();
         }
+
+        public function Resize():void {
+            POPUPSETTINGS.AlignToCenter(this);
+            POPUPSETTINGS.FitBackdrop(this);
+        }
     }
 }
